@@ -19,7 +19,7 @@ vector is constant and y is read for its length alone."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.44.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,9 @@ vector is constant and <code>y</code> is read for its length alone.</p>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of observations. Only its length is used.</p></dd>
+<dd><p>A numeric vector of observations. Only its length is used when the
+parent's own expected information is closed form; where it is not, the
+parent block reads <code>y</code> itself, through <code>distrib_expected_hessian(parent, y, ...)</code>.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -84,12 +86,15 @@ generic before dispatch.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored: the expectation is exact. Present so that the
-signature matches the generic's.</p></dd>
+<dd><p>Forwarded to the parent's <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>, and
+read only where the parent has no closed form for it; every other block
+is an exact combination of the parent's density, score and observed
+Hessian at zero. <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> answers for this class by
+asking the parent.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason.</p></dd>
+<dd><p>Forwarded for the same reason and under the same condition.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -99,7 +104,9 @@ signature matches the generic's.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of numeric vectors of length <code>length(y)</code>, keyed as
-<code><a href="hess_names.html">hess_names(distrib@params)</a></code>, each vector constant.</p>
+<code><a href="hess_names.html">hess_names(distrib@params)</a></code>. Constant across observations
+when the parent's own expected information is; a parent evaluated by an
+approximation can vary by observation.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

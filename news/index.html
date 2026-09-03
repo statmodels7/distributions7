@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.44.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,17 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.44.0" id="distributions7-0440">distributions7 0.44.0<a class="anchor" aria-label="anchor" href="#distributions7-0440"></a></h2>
+<ul><li>
+<p><code>approx = "opg"</code> computes the outer product of the observed scores, and is the default where a family has no closed-form expected information. It used to be an alias of <code>"bartlett"</code>: the two are readings of the same identity, <code>E[l_ij] = -E[l_i l_j]</code>, and differ by orders of magnitude in cost, because <code>"bartlett"</code> evaluates the expectation – a sum over the support for a discrete family, a quadrature for a continuous one – while <code>"opg"</code> reads the integrand at the observation.</p>
+<p>Measured on <code><a href="../reference/pig1_distrib.html">pig1_distrib()</a></code> with <code>mu</code> varying by observation, one call at n = 1000: the identity evaluated 1.67 million rows of the family’s derivative kernel and took 18.4 s, against n rows and 0.04 s. At n = 500 a <code>statmod()</code> regression goes from 89.06 s to 0.64 s, same log-likelihood, coefficients agreeing to 1.2e-06. Six families reach this route: pig1, pig2, pseudohuber, skewnormal1, skewnormal2 and skewt.</p>
+</li>
+<li><p><code><a href="../reference/expected_by_opg.html">expected_by_opg()</a></code> is the new function; order 2 only, a higher order routing to <code><a href="../reference/expected_by_bartlett.html">expected_by_bartlett()</a></code>, the outer product of scores being the second-order identity with no counterpart above it.</p></li>
+<li><p><code><a href="../reference/expected_hessian_exact.html">expected_hessian_exact()</a></code> is EXPORTED. It says whether a family writes its expected information out, which is what a consumer reads to decide which matrix to report; <code>statmodels7</code>’s <code><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov()</a></code> now reads it.</p></li>
+<li><p><code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> reads the standard errors off the expected information only where the family writes it out, and off the observed Hessian otherwise – the condition is about the family and no longer about the optimizer that ran. A scoring step may be driven by any positive definite matrix, the score being exact, so the step takes the cheap one; a standard error is a different question. Measured on a PIG regression at n = 500, the outer product reports standard errors 5.7 per cent from those of the exact expectation where the observed information reports 0.6 per cent.</p></li>
+<li><p><code><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov()</a></code> on a <code>distrib_fit</code> takes <code>information</code> (<code>"fit"</code>, <code>"observed"</code> or <code>"expected"</code>) and <code>approx</code>, and recomputes at the optimum for the last two.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.43.0" id="distributions7-0430">distributions7 0.43.0<a class="anchor" aria-label="anchor" href="#distributions7-0430"></a></h2>
 <ul><li>

@@ -18,7 +18,7 @@ what this object holds.
 
 ``` r
 fisher_scoring(
-  approx = c("bartlett", "integrate", "mc", "opg"),
+  approx = c("opg", "bartlett", "integrate", "mc"),
   nsim = 10000,
   criterion = NULL,
   maxit = NULL

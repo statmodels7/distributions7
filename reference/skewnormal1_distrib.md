@@ -168,5 +168,5 @@ set.seed(5)
 x <- distrib_rng(d, 3000, list(mu = 2, sigma = 1.5, alpha = 4))
 coef(fit_distrib(d, x))
 #>       mu    sigma    alpha 
-#> 2.010681 1.505278 3.963568 
+#> 2.010681 1.505278 3.963562 
 ```

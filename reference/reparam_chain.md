@@ -10,7 +10,15 @@ registrations.
 ## Usage
 
 ``` r
-reparam_chain(distrib, y, theta, order, expected = FALSE)
+reparam_chain(
+  distrib,
+  y,
+  theta,
+  order,
+  expected = FALSE,
+  approx = "opg",
+  nsim = 10000
+)
 ```
 
 ## Arguments

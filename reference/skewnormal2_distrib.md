@@ -166,12 +166,12 @@ c(centered = smallest_eigenvalue(d, list(mu = 0, sigma = 1, gamma1 = 1e-6)),
   direct = smallest_eigenvalue(skewnormal1_distrib(),
                                list(mu = 0, sigma = 1, alpha = 0)))
 #>      centered        direct 
-#>  1.666723e-01 -5.738220e-27 
+#> -2.524355e-28  0.000000e+00 
 
 # A fit recovers all three moments.
 set.seed(11)
 x <- distrib_rng(d, 4000, list(mu = 3, sigma = 2, gamma1 = 0.6))
 coef(fit_distrib(d, x))
-#>        mu     sigma    gamma1 
-#> 2.9797006 1.9525233 0.5993477 
+#>       mu    sigma   gamma1 
+#> 2.979701 1.952524 0.599349 
 ```

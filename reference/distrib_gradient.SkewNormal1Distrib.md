@@ -90,7 +90,7 @@ x <- distrib_rng(d, 4000, th)
 fit <- fit_distrib(d, x)
 vapply(distrib_gradient(d, x, as.list(coef(fit))), sum, 0) / 4000
 #>            mu         sigma         alpha 
-#> -1.426984e-07 -8.674150e-08  4.154634e-08 
+#> -5.679367e-08 -1.828155e-07  1.972956e-09 
 
 # At symmetry the shape score is a fixed multiple of the location score,
 # which is where this parametrization loses rank.

@@ -1,5 +1,51 @@
 # Changelog
 
+## distributions7 0.44.0
+
+- `approx = "opg"` computes the outer product of the observed scores,
+  and is the default where a family has no closed-form expected
+  information. It used to be an alias of `"bartlett"`: the two are
+  readings of the same identity, `E[l_ij] = -E[l_i l_j]`, and differ by
+  orders of magnitude in cost, because `"bartlett"` evaluates the
+  expectation – a sum over the support for a discrete family, a
+  quadrature for a continuous one – while `"opg"` reads the integrand at
+  the observation.
+
+  Measured on
+  [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
+  with `mu` varying by observation, one call at n = 1000: the identity
+  evaluated 1.67 million rows of the family’s derivative kernel and took
+  18.4 s, against n rows and 0.04 s. At n = 500 a `statmod()` regression
+  goes from 89.06 s to 0.64 s, same log-likelihood, coefficients
+  agreeing to 1.2e-06. Six families reach this route: pig1, pig2,
+  pseudohuber, skewnormal1, skewnormal2 and skewt.
+
+- [`expected_by_opg()`](https://statmodels7.github.io/distributions7/reference/expected_by_opg.md)
+  is the new function; order 2 only, a higher order routing to
+  [`expected_by_bartlett()`](https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.md),
+  the outer product of scores being the second-order identity with no
+  counterpart above it.
+
+- [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
+  is EXPORTED. It says whether a family writes its expected information
+  out, which is what a consumer reads to decide which matrix to report;
+  `statmodels7`’s [`vcov()`](https://rdrr.io/r/stats/vcov.html) now
+  reads it.
+
+- [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+  reads the standard errors off the expected information only where the
+  family writes it out, and off the observed Hessian otherwise – the
+  condition is about the family and no longer about the optimizer that
+  ran. A scoring step may be driven by any positive definite matrix, the
+  score being exact, so the step takes the cheap one; a standard error
+  is a different question. Measured on a PIG regression at n = 500, the
+  outer product reports standard errors 5.7 per cent from those of the
+  exact expectation where the observed information reports 0.6 per cent.
+
+- [`vcov()`](https://rdrr.io/r/stats/vcov.html) on a `distrib_fit` takes
+  `information` (`"fit"`, `"observed"` or `"expected"`) and `approx`,
+  and recomputes at the optimum for the last two.
+
 ## distributions7 0.43.0
 
 - `mvstudent_t_distrib()` is split into two numbered families, as

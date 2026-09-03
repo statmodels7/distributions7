@@ -33,13 +33,13 @@ for what each line reports.
 ``` r
 fisher_scoring()
 #> Fisher scoring
-#>   expected information: bartlett  [ignored when the family has a closed form]
+#>   expected information: opg  [ignored when the family has a closed form]
 fisher_scoring(approx = "mc", nsim = 2000)
 #> Fisher scoring
 #>   expected information: mc (nsim = 2000)  [ignored when the family has a closed form]
 fisher_scoring(criterion = optimizers7::crit_grad(1e-9), maxit = 50)
 #> Fisher scoring
-#>   expected information: bartlett  [ignored when the family has a closed form]
+#>   expected information: opg  [ignored when the family has a closed form]
 #>   criterion: set here
 #>   maxit: 50
 ```

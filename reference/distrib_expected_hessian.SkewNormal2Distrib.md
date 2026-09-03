@@ -108,14 +108,14 @@ info <- function(g) {
   eigen(-M, only.values = TRUE)$values
 }
 rbind(gamma1_0.5 = info(0.5), gamma1_1e_6 = info(1e-6))
-#>                 [,1]      [,2]      [,3]
-#> gamma1_0.5  2.404241 0.9128588 0.2181565
-#> gamma1_1e_6 2.000000 1.0000000 0.1666723
+#>                 [,1]         [,2]          [,3]
+#> gamma1_0.5  1.111280 9.468654e-18 -9.620483e-17
+#> gamma1_1e_6 1.000002 1.056266e-12 -2.524355e-28
 
 # Its own component tends to 1/6.
 c(limit = 1 / 6,
   at_1e_6 = -distrib_expected_hessian(d, 0,
               list(mu = 0, sigma = 1, gamma1 = 1e-6))$gamma1_gamma1)
-#>     limit   at_1e_6 
-#> 0.1666667 0.1666723 
+#>        limit      at_1e_6 
+#> 1.666667e-01 2.124393e-06 
 ```

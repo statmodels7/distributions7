@@ -31,13 +31,16 @@ an observation reaches it.
 
 - approx:
 
-  Ignored for the hurdle and mixed blocks. It is also not forwarded to
-  the parent, which takes its own default. Present so that the signature
-  matches the generic's.
+  Read only by the parent block, and only where the parent has no closed
+  form for it; ignored for the hurdle block, which is exact whatever the
+  parent is.
+  [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
+  answers for this class by asking the parent, since the parent block is
+  the one that can fail to be exact.
 
 - nsim:
 
-  Ignored, for the same reason.
+  Read for the same reason and under the same condition.
 
 - ...:
 

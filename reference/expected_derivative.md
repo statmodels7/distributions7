@@ -11,7 +11,7 @@ expected_derivative(
   y,
   theta,
   order,
-  approx = c("bartlett", "integrate", "mc", "opg"),
+  approx = c("opg", "bartlett", "integrate", "mc"),
   nsim = 10000
 )
 ```
@@ -48,10 +48,19 @@ A named list of expected derivative component vectors.
 
 ## Details
 
-`"opg"` is folded into `"bartlett"` here rather than implemented
-separately, because at order 2 the outer product of gradients *is* the
-Bartlett identity; the two names describe the same computation from
-different traditions.
+`"opg"` and `"bartlett"` are two readings of the second Bartlett
+identity and are NOT the same computation. The identity equates
+\\\mathbb{E}\[\ell^{(ij)}\]\\ with
+\\-\mathbb{E}\[\ell^{(i)}\ell^{(j)}\]\\; `"bartlett"` evaluates the
+expectation, which is a sum over the support or a quadrature, while
+`"opg"` reads the integrand at the observation and takes no expectation
+at all. They agree in expectation and differ by orders of magnitude in
+cost, which is why `"opg"` is the default at order 2.
+
+Above order 2 the outer product of scores is not an identity for
+anything, so `"opg"` there is routed to `"bartlett"` rather than
+refused: the argument is one setting for a whole call and an order-4
+method may ask for the same strategy an order-2 one was given.
 
 ## See also
 

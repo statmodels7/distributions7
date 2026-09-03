@@ -17,7 +17,10 @@ returned vector is constant and `y` is read for its length alone.
 
 - y:
 
-  A numeric vector of observations. Only its length is used.
+  A numeric vector of observations. Only its length is used when the
+  parent's own expected information is closed form; where it is not, the
+  parent block reads `y` itself, through
+  `distrib_expected_hessian(parent, y, ...)`.
 
 - theta:
 
@@ -30,12 +33,17 @@ returned vector is constant and `y` is read for its length alone.
 
 - approx:
 
-  Ignored: the expectation is exact. Present so that the signature
-  matches the generic's.
+  Forwarded to the parent's
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
+  and read only where the parent has no closed form for it; every other
+  block is an exact combination of the parent's density, score and
+  observed Hessian at zero.
+  [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
+  answers for this class by asking the parent.
 
 - nsim:
 
-  Ignored, for the same reason.
+  Forwarded for the same reason and under the same condition.
 
 - ...:
 
@@ -44,8 +52,9 @@ returned vector is constant and `y` is read for its length alone.
 ## Value
 
 A named list of numeric vectors of length `length(y)`, keyed as
-[`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each vector constant.
+[`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md).
+Constant across observations when the parent's own expected information
+is; a parent evaluated by an approximation can vary by observation.
 
 ## Details
 

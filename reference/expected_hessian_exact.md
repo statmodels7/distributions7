@@ -1,8 +1,11 @@
 # Is a Family's Expected Information Written Out?
 
-A generic so that a family whose registered
+`TRUE` when the family computes its expected information in closed form,
+`FALSE` when a call to
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-method is not what its owning class suggests can say so;
+reaches a fallback and the answer is therefore an approximation. It is a
+generic so that a family whose registered method is not what its owning
+class suggests can say so;
 [`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md)
 asks it and
 [`expected_hessian_exact.distrib()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.distrib.md)
@@ -37,6 +40,33 @@ A single logical.
 
 ## Details
 
+The predicate is what a consumer reads to decide which information to
+report. Where it answers `TRUE` the expected information costs one
+evaluation and has the smaller variance, so it is the better matrix to
+invert; where it answers `FALSE` the choice is between an approximation
+and the observed Hessian, which every family has and which is exact.
+That is the rule
+[`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+follows for its standard errors and the one statmodels7 follows in
+[`vcov()`](https://rdrr.io/r/stats/vcov.html).
+
+Six of the shipped univariate families answer `FALSE`:
+[`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md),
+[`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md),
+[`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md),
+[`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md),
+[`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
+and
+[`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md).
+
+Asking the OWNING CLASS of the registered method is not enough on its
+own, which is why the generic exists: the pseudo-Huber registers a
+method of its own that calls the fallback and then patches the two
+components vanishing by symmetry, and the centered skew normal chains
+onto a parent whose expected information is itself a quadrature. Both
+would read as exact from the method's owner alone, and both cost seconds
+where a closed form costs milliseconds.
+
 The default reads the class the
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 method is registered on: the base classes carry the approximating method
@@ -67,7 +97,11 @@ which is what the two methods registered here do.
 ## See also
 
 [`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md),
-[`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
+the wrapper that asks this;
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
+for the quantity itself, and
+[`expected_by_opg()`](https://statmodels7.github.io/distributions7/reference/expected_by_opg.md)
+for the fallback a `FALSE` answer reaches.
 
 [`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md),
 [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
@@ -75,6 +109,9 @@ which is what the two methods registered here do.
 ## Examples
 
 ``` r
-distributions7:::expected_hessian_exact(gaussian1_distrib())
+# A Gaussian writes its information out; a Poisson-inverse gaussian does not.
+expected_hessian_exact(gaussian1_distrib())
 #> [1] TRUE
+expected_hessian_exact(pig1_distrib())
+#> [1] FALSE
 ```

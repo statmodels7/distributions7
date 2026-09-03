@@ -11,7 +11,17 @@ hand-written second parametrizations all do.
 ## Usage
 
 ``` r
-chain_derivatives(parent, y, th_par, maps, new_params, order, expected = FALSE)
+chain_derivatives(
+  parent,
+  y,
+  th_par,
+  maps,
+  new_params,
+  order,
+  expected = FALSE,
+  approx = "opg",
+  nsim = 10000
+)
 ```
 
 ## Arguments

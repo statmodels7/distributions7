@@ -86,7 +86,7 @@ th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 eh <- distrib_expected_hessian(d, y, th)
 vapply(eh, function(v) v[1], numeric(1))
 #>        mu_mu  sigma_sigma        nu_nu     mu_sigma        mu_nu     sigma_nu 
-#> -0.262082774 -0.917769722 -0.005412069  0.000000000  0.000000000 -0.066997583 
+#> -0.517296526 -0.818687986 -0.008195397  0.000000000  0.000000000 -0.081911373 
 
 # The two entries odd in the residual are exactly zero by symmetry, so the
 # location is orthogonal to the scale and the shape.

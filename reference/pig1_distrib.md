@@ -147,5 +147,5 @@ set.seed(63)
 x <- distrib_rng(d, 4000, th)
 coef(fit_distrib(d, x))
 #>        mu     sigma 
-#> 3.0102500 0.8074792 
+#> 3.0102487 0.8074771 
 ```

@@ -13,7 +13,15 @@ them.
 ## Usage
 
 ``` r
-sn2_chain(distrib, y, theta, order, expected = FALSE)
+sn2_chain(
+  distrib,
+  y,
+  theta,
+  order,
+  expected = FALSE,
+  approx = "opg",
+  nsim = 10000
+)
 ```
 
 ## Arguments

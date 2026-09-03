@@ -119,5 +119,5 @@ rank_gap <- function(a) {
   min(abs(eigen(-M, only.values = TRUE)$values))
 }
 vapply(c(0, 0.01, 0.5), rank_gap, 0)
-#> [1] 5.738220e-27 4.355679e-10 1.947533e-03
+#> [1] 0 0 0
 ```

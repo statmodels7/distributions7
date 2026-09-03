@@ -127,9 +127,9 @@ f1 <- fit_distrib(d, z, start = list(mu = 1, sigma = 1))
 f2 <- fit_distrib(d, z, start = list(mu = -1, sigma = 1))
 rbind(from_plus = c(coef(f1), logLik = as.numeric(logLik(f1))),
       from_minus = c(coef(f2), logLik = as.numeric(logLik(f2))))
-#>                   mu    sigma    logLik
-#> from_plus   1.504939 1.041631 -511.2516
-#> from_minus -1.504939 1.041631 -511.2516
+#>                   mu   sigma    logLik
+#> from_plus   1.504939 1.04163 -511.2516
+#> from_minus -1.504939 1.04163 -511.2516
 
 # A parent that is not symmetric about its location has no such invariance.
 sn <- folded(skewnormal1_distrib())

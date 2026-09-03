@@ -154,6 +154,8 @@ respect to the unconstrained parameters.
   : A Resolved Kernel for One Parameter's Link-Scale Derivatives
 - [`expected_derivative_methods`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
   : Strategies for Expected Derivatives
+- [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
+  : Is a Family's Expected Information Written Out?
 
 ## Estimation
 
@@ -2389,6 +2391,9 @@ divergent density.
 
 - [`expected_by_mc()`](https://statmodels7.github.io/distributions7/reference/expected_by_mc.md)
   : Expected Derivatives by Monte Carlo
+
+- [`expected_by_opg()`](https://statmodels7.github.io/distributions7/reference/expected_by_opg.md)
+  : The Information as the Outer Product of the Observed Scores
 
 - [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
   : Dispatch an Expected-Derivative Strategy

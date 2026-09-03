@@ -19,7 +19,7 @@ probability \(1-\pi\) that an observation reaches it."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.44.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,13 +86,15 @@ generic before dispatch.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored for the hurdle and mixed blocks. It is also not
-forwarded to the parent, which takes its own default. Present so that the
-signature matches the generic's.</p></dd>
+<dd><p>Read only by the parent block, and only where the parent has
+no closed form for it; ignored for the hurdle block, which is exact
+whatever the parent is. <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> answers for this class
+by asking the parent, since the parent block is the one that can fail to
+be exact.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason.</p></dd>
+<dd><p>Read for the same reason and under the same condition.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

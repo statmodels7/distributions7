@@ -24,7 +24,7 @@ fit_hess_matrix(
   y,
   theta,
   expected,
-  approx = "bartlett",
+  approx = "opg",
   nsim = 10000,
   threads = 1L
 )

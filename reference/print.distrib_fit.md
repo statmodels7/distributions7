@@ -84,7 +84,7 @@ g <- fit_distrib(gamma2_distrib(), rgamma(300, shape = 4, rate = 2))
 print(g, digits = 3)
 #> Maximum-likelihood fit: gamma2
 #> Observations: 300   Log-likelihood: -403   AIC: 810   BIC: 817
-#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 2 ms
+#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 3 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:

@@ -16,7 +16,7 @@ reparam_expected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = c("bartlett", "integrate", "mc", "opg"),
+  approx = c("opg", "bartlett", "integrate", "mc"),
   nsim = 10000,
   ...
 )
@@ -44,10 +44,17 @@ reparam_expected_hessian(
   Either `"parameter"` (the default) or `"link"`, handled by the generic
   after this method has returned.
 
+- approx, nsim:
+
+  Forwarded to the parent's
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
+  and read only where the parent has no closed form for it; a parent
+  that writes its expected information out ignores both, as every such
+  family does.
+
 - ...:
 
-  Passed to the parent's method, which is where `approx` and `nsim` are
-  read for a family that approximates its expected information.
+  Unused, and accepted so that the signature matches the generic's.
 
 ## Value
 
@@ -66,7 +73,9 @@ order.
 [`distrib_hessian.ReparamContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ReparamContinuousDistrib.md),
 which keeps the score term;
 [`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md);
-[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md).
+[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md);
+[`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md),
+which answers for this class by asking the parent.
 
 ## Examples
 

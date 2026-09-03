@@ -11,7 +11,7 @@ method is partial_loc_scale_grad_cdf() itself, shared with the Student t."><meta
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.44.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -117,7 +117,7 @@ shape, \(z = (q-\mu)/\sigma\) and \(f\) the density.</p>
 <span class="r-in"><span><span class="co"># Differencing the quadrature agrees, and costs more.</span></span></span>
 <span class="r-in"><span><span class="va">fd</span> <span class="op">&lt;-</span> <span class="fu"><a href="numerical_cdf_deriv.html">numerical_cdf_deriv</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">th</span>, order <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">fd</span><span class="op">$</span><span class="va">mu</span> <span class="op">/</span> <span class="fu"><a href="distrib_grad_cdf.html">distrib_grad_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">th</span>, log <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">$</span><span class="va">mu</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.175393e-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.509515e-11</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
