@@ -21,7 +21,7 @@ fewer, and distrib_deriv4.SkewTDistrib() says so where a reader meets one."><met
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.44.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.45.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,7 +109,7 @@ truncation falls.</p></dd>
 <span class="r-in"><span><span class="co"># Too small a step is worse than too large: rounding grows as h^-4.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1e-1</span>, <span class="fl">1e-2</span>, <span class="fl">1e-3</span>, <span class="fl">1e-4</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>       <span class="kw">function</span><span class="op">(</span><span class="va">h</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">fd5_fourth</span><span class="op">(</span><span class="va">f</span>, <span class="fl">0.7</span>, <span class="va">h</span><span class="op">)</span> <span class="op">-</span> <span class="va">truth</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.051007e-02 2.053625e-04 4.460588e-04 1.257439e+01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0205100667 0.0002052736 0.0004421196 3.6926037495</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

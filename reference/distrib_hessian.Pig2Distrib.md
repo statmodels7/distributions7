@@ -75,7 +75,7 @@ rbind(analytic = h$mu_alpha,
                  distrib_gradient(d, y, list(mu = 3, alpha = al - eps))$mu) /
                 (2 * eps))
 #>                [,1]       [,2]        [,3]          [,4]       [,5]      [,6]
-#> analytic -0.1176464 -0.0784309 -0.03921545 -1.110223e-16 0.03921545 0.0784309
+#> analytic -0.1176464 -0.0784309 -0.03921545 -2.220446e-16 0.03921545 0.0784309
 #> numeric  -0.1176464 -0.0784309 -0.03921545  0.000000e+00 0.03921545 0.0784309
 #>               [,7]
 #> analytic 0.1176464
@@ -87,5 +87,5 @@ c(observed = h$mu_alpha[1],
   expected = sum(distrib_expected_hessian(d, 0:200, th,
                                           approx = "bartlett")$mu_alpha))
 #>      observed      expected 
-#> -1.176464e-01 -8.836582e-15 
+#> -1.176464e-01 -1.456596e-14 
 ```

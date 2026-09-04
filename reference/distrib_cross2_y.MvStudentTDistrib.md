@@ -106,6 +106,6 @@ vapply(seq_along(d@params), function(k) {
   max(abs(c2[[k]] -
           (distrib_hess_y(d, y, tp) - distrib_hess_y(d, y, tm)) / (2 * h)))
 }, numeric(1))
-#> [1] 2.428202e-11 6.885559e-11 1.155835e-10 1.811258e-10 2.061795e-10
+#> [1] 2.428202e-11 6.885559e-11 1.211347e-10 1.811258e-10 2.061795e-10
 #> [6] 1.042630e-11
 ```

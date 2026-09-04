@@ -134,7 +134,7 @@ c(pig2 = sum(distrib_expected_hessian(d, 0:200, th,
                                       list(mu = 3, sigma = 0.8),
                                       approx = "bartlett")$mu_sigma))
 #>          pig2          pig1 
-#> -8.836582e-15  7.392208e+00 
+#> -1.456596e-14  7.392208e+00 
 
 # A large alpha is a small dispersion, and the family tends to the Poisson.
 rbind(pig2 = distrib_pdf(d, 0:5, list(mu = 3, alpha = 1e4)),

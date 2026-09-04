@@ -78,8 +78,8 @@ f <- function(p) sum(distrib_pdf(d, y, list(mu = p[1], alpha = p[2]),
 rbind(analytic = vapply(g, sum, 0),
       numeric = numDeriv::grad(f, c(3, al)))
 #>                     mu     alpha
-#> analytic -1.276756e-15 0.4698132
-#> numeric   3.932004e-11 0.4698132
+#> analytic -6.661338e-16 0.4698132
+#> numeric   5.625652e-12 0.4698132
 
 # The two scores are uncorrelated under the model, which is what
 # orthogonality means and what pig1 does not have.
@@ -89,5 +89,5 @@ c(pig2 = sum(distrib_expected_hessian(d, 0:200, th,
                                       list(mu = 3, sigma = 0.8),
                                       approx = "bartlett")$mu_sigma))
 #>          pig2          pig1 
-#> -8.836582e-15  7.392208e+00 
+#> -1.456596e-14  7.392208e+00 
 ```

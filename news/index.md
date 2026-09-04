@@ -1,5 +1,85 @@
 # Changelog
 
+## distributions7 0.45.0
+
+- The log-mass of
+  [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
+  and
+  [`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md)
+  no longer cancels in the Poisson limit. It carries
+  `1/sigma + psi(alpha)`, and with
+  `psi(alpha) = -alpha + log S_y(alpha)` the pair `1/sigma - alpha` is a
+  difference of two quantities of size `alpha` whose value is of size
+  `mu`. Both are now written in closed form:
+  `-2 mu/(1 + sqrt(1 + 2 sigma mu))` for pig1, and
+  `-mu [alpha/(mu + r)] [1 + mu/(alpha + r)]` with
+  `r = sqrt(mu^2 + alpha^2)` for pig2, which follows from
+  `alpha - r = -mu^2/(alpha + r)`. `psi_derivs()` reports `log S` beside
+  `psi`, so recovering it by adding `alpha` back – the same cancellation
+  – is not needed.
+
+  Measured at `mu = 0.3`: the direct form is 1.6e-4 out at
+  `alpha = 1e12`, reads exactly zero at 1e16 – a probability of one –
+  and +128 at 1e18, which is one ulp of 1e18, so the mass over the
+  support summed to `Inf`. The closed form reaches
+  [`dpois()`](https://rdrr.io/r/stats/Poisson.html) to 5.7e-8 at
+  `alpha = 1e6`, to 2.8e-17 at 1e16, and holds there to `alpha = 1e300`,
+  with the mass summing to 1 throughout. pig1 behaves the same as
+  `sigma` goes to 1e-300.
+
+  It was reachable from a fit and not only from a probe. On a count
+  model with a province in the dispersion equation, one province carried
+  no overdispersion, `alpha` ran to the flat region, and past 1e13 the
+  reward was the cancellation rather than the data: the fit parked at
+  `alpha = 1.3e103` and reported a log-likelihood of -4985.04 where the
+  same point evaluated correctly is -5239.635. The 254.60 is the honest
+  contribution of that province’s 1344 cells, -282.14, read as -27.54.
+
+- `pig2_hd_cpp()` is finite at every `alpha` a `log_link()` can produce.
+  Its derivatives divided by `r^3`, `r^5` and `r^7` and multiplied by
+  `alpha^3` and `alpha^4`, and `alpha^3` passes `double.xmax` at
+  `alpha = 5.6e102`, where `r_mma` read `Inf - Inf` and the whole
+  Hessian came back `NaN`. The partials of `r` are written in `r_m` and
+  `r_a`, which lie in `[0, 1]`, against powers of `1/r`; `r` itself
+  comes from `std::hypot`, finite where `mu^2 + alpha^2` is not. The Faa
+  di Bruno expansion is homogeneous – a term of order k carries `F_k`
+  and exactly k factors `S` – so it is written in `Q_k = F_k / b^k`,
+  each linear in `b = 1/sigma`, against `T_x = b S_x`;
+  `F_4 = 6 y b^4 + 24 b^5` alone left the doubles at `alpha = 4.5e61`.
+  All four orders are finite at `alpha = 1e300`.
+
+  Measured on 2e5 points, the two changes together cost nothing: pig2
+  221.2 ms against 222.4, pig1 214.9 against 226.9.
+
+- The score of
+  [`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md)
+  in `alpha` is closed for the same reason the value is. Since
+  `r^2 - m^2 = alpha^2` the cancelling pair is
+  `1/sigma - alpha = (r - m) - alpha`, and
+  `r - alpha = m^2/(r + alpha)`, so its derivative is
+  `-m^2/(r (r + alpha))`, a product of two bounded factors; the other
+  piece, `-y asinh(m/alpha)`, gives `y m/(alpha r)`. Both are of size
+  `alpha^-2`, which is what the score is. Assembled as
+  `-y/alpha + psi'(alpha) + F_1 S_a` the three terms are each of size
+  one: measured at `mu = 0.08`, the score was noise past `alpha = 1e8`
+  and read exactly -1 past 1e162, where `1/alpha^2` leaves the doubles.
+  `psi_derivs()` reports `A1 = psi'(alpha) + 1` beside `psi'`, that
+  being a third cancellation. The closed form agrees with `numDeriv` to
+  7.8e-08 and tracks `-m^2/(2 alpha^2)` at a ratio of 1.000000 from
+  `alpha = 1e4` to 1e100.
+
+  It changes what a fit sees. On the model above the aggregate score
+  over the province’s 1344 cells changes sign between `alpha = 3.16`
+  (+0.31) and `alpha = 10` (-0.73), so the likelihood asks for a finite
+  dispersion; the direct form reported no slope at all there.
+
+- `test-boundary-cancellation.R` gains the Poisson-inverse gaussian, the
+  only case there whose cancellation is in the value rather than in a
+  derivative. As the others it carries the negative control: the form
+  that was replaced is more than 90 per cent out at every `alpha` from
+  1e16 up, so reverting to it fails the test rather than passing it
+  silently.
+
 ## distributions7 0.44.0
 
 - `approx = "opg"` computes the outer product of the observed scores,

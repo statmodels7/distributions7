@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.44.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.45.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,23 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.45.0" id="distributions7-0450">distributions7 0.45.0<a class="anchor" aria-label="anchor" href="#distributions7-0450"></a></h2>
+<ul><li>
+<p>The log-mass of <code><a href="../reference/pig1_distrib.html">pig1_distrib()</a></code> and <code><a href="../reference/pig2_distrib.html">pig2_distrib()</a></code> no longer cancels in the Poisson limit. It carries <code>1/sigma + psi(alpha)</code>, and with <code>psi(alpha) = -alpha + log S_y(alpha)</code> the pair <code>1/sigma - alpha</code> is a difference of two quantities of size <code>alpha</code> whose value is of size <code>mu</code>. Both are now written in closed form: <code>-2 mu/(1 + sqrt(1 + 2 sigma mu))</code> for pig1, and <code>-mu [alpha/(mu + r)] [1 + mu/(alpha + r)]</code> with <code>r = sqrt(mu^2 + alpha^2)</code> for pig2, which follows from <code>alpha - r = -mu^2/(alpha + r)</code>. <code>psi_derivs()</code> reports <code>log S</code> beside <code>psi</code>, so recovering it by adding <code>alpha</code> back – the same cancellation – is not needed.</p>
+<p>Measured at <code>mu = 0.3</code>: the direct form is 1.6e-4 out at <code>alpha = 1e12</code>, reads exactly zero at 1e16 – a probability of one – and +128 at 1e18, which is one ulp of 1e18, so the mass over the support summed to <code>Inf</code>. The closed form reaches <code><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">dpois()</a></code> to 5.7e-8 at <code>alpha = 1e6</code>, to 2.8e-17 at 1e16, and holds there to <code>alpha = 1e300</code>, with the mass summing to 1 throughout. pig1 behaves the same as <code>sigma</code> goes to 1e-300.</p>
+<p>It was reachable from a fit and not only from a probe. On a count model with a province in the dispersion equation, one province carried no overdispersion, <code>alpha</code> ran to the flat region, and past 1e13 the reward was the cancellation rather than the data: the fit parked at <code>alpha = 1.3e103</code> and reported a log-likelihood of -4985.04 where the same point evaluated correctly is -5239.635. The 254.60 is the honest contribution of that province’s 1344 cells, -282.14, read as -27.54.</p>
+</li>
+<li>
+<p><code>pig2_hd_cpp()</code> is finite at every <code>alpha</code> a <code>log_link()</code> can produce. Its derivatives divided by <code>r^3</code>, <code>r^5</code> and <code>r^7</code> and multiplied by <code>alpha^3</code> and <code>alpha^4</code>, and <code>alpha^3</code> passes <code>double.xmax</code> at <code>alpha = 5.6e102</code>, where <code>r_mma</code> read <code>Inf - Inf</code> and the whole Hessian came back <code>NaN</code>. The partials of <code>r</code> are written in <code>r_m</code> and <code>r_a</code>, which lie in <code>[0, 1]</code>, against powers of <code>1/r</code>; <code>r</code> itself comes from <code>std::hypot</code>, finite where <code>mu^2 + alpha^2</code> is not. The Faa di Bruno expansion is homogeneous – a term of order k carries <code>F_k</code> and exactly k factors <code>S</code> – so it is written in <code>Q_k = F_k / b^k</code>, each linear in <code>b = 1/sigma</code>, against <code>T_x = b S_x</code>; <code>F_4 = 6 y b^4 + 24 b^5</code> alone left the doubles at <code>alpha = 4.5e61</code>. All four orders are finite at <code>alpha = 1e300</code>.</p>
+<p>Measured on 2e5 points, the two changes together cost nothing: pig2 221.2 ms against 222.4, pig1 214.9 against 226.9.</p>
+</li>
+<li>
+<p>The score of <code><a href="../reference/pig2_distrib.html">pig2_distrib()</a></code> in <code>alpha</code> is closed for the same reason the value is. Since <code>r^2 - m^2 = alpha^2</code> the cancelling pair is <code>1/sigma - alpha = (r - m) - alpha</code>, and <code>r - alpha = m^2/(r + alpha)</code>, so its derivative is <code>-m^2/(r (r + alpha))</code>, a product of two bounded factors; the other piece, <code>-y asinh(m/alpha)</code>, gives <code>y m/(alpha r)</code>. Both are of size <code>alpha^-2</code>, which is what the score is. Assembled as <code>-y/alpha + psi'(alpha) + F_1 S_a</code> the three terms are each of size one: measured at <code>mu = 0.08</code>, the score was noise past <code>alpha = 1e8</code> and read exactly -1 past 1e162, where <code>1/alpha^2</code> leaves the doubles. <code>psi_derivs()</code> reports <code>A1 = psi'(alpha) + 1</code> beside <code>psi'</code>, that being a third cancellation. The closed form agrees with <code>numDeriv</code> to 7.8e-08 and tracks <code>-m^2/(2 alpha^2)</code> at a ratio of 1.000000 from <code>alpha = 1e4</code> to 1e100.</p>
+<p>It changes what a fit sees. On the model above the aggregate score over the province’s 1344 cells changes sign between <code>alpha = 3.16</code> (+0.31) and <code>alpha = 10</code> (-0.73), so the likelihood asks for a finite dispersion; the direct form reported no slope at all there.</p>
+</li>
+<li><p><code>test-boundary-cancellation.R</code> gains the Poisson-inverse gaussian, the only case there whose cancellation is in the value rather than in a derivative. As the others it carries the negative control: the form that was replaced is more than 90 per cent out at every <code>alpha</code> from 1e16 up, so reverting to it fails the test rather than passing it silently.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.44.0" id="distributions7-0440">distributions7 0.44.0<a class="anchor" aria-label="anchor" href="#distributions7-0440"></a></h2>
 <ul><li>

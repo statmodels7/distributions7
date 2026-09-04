@@ -101,7 +101,7 @@ all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 vapply(distrib_deriv3(d, 0.4, th, expected = TRUE),
        function(v) v[1], numeric(1))
 #>          mu_mu_mu       mu_mu_sigma          mu_mu_nu    mu_sigma_sigma 
-#>     -6.938894e-18      3.055008e-01      2.612955e-02     -8.326673e-17 
+#>     -6.505213e-18      3.055008e-01      2.612955e-02      0.000000e+00 
 #>       mu_sigma_nu          mu_nu_nu sigma_sigma_sigma    sigma_sigma_nu 
 #>     -4.553649e-18     -1.192622e-18      3.135736e+00      7.878229e-02 
 #>       sigma_nu_nu          nu_nu_nu 

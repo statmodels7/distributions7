@@ -19,7 +19,7 @@ vanishes is its expectation. Measured at \(\mu = 3\),
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.44.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.45.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,7 +123,7 @@ the kernel, and <code><a href="distrib_hessian.html">distrib_hessian()</a></code
 <span class="r-in"><span>                 <span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, alpha <span class="op">=</span> <span class="va">al</span> <span class="op">-</span> <span class="va">eps</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu</span><span class="op">)</span> <span class="op">/</span></span></span>
 <span class="r-in"><span>                <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">eps</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                [,1]       [,2]        [,3]          [,4]       [,5]      [,6]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> analytic -0.1176464 -0.0784309 -0.03921545 -1.110223e-16 0.03921545 0.0784309</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> analytic -0.1176464 -0.0784309 -0.03921545 -2.220446e-16 0.03921545 0.0784309</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> numeric  -0.1176464 -0.0784309 -0.03921545  0.000000e+00 0.03921545 0.0784309</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               [,7]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> analytic 0.1176464</span>
@@ -135,7 +135,7 @@ the kernel, and <code><a href="distrib_hessian.html">distrib_hessian()</a></code
 <span class="r-in"><span>  expected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">200</span>, <span class="va">th</span>,</span></span>
 <span class="r-in"><span>                                          approx <span class="op">=</span> <span class="st">"bartlett"</span><span class="op">)</span><span class="op">$</span><span class="va">mu_alpha</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      observed      expected </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -1.176464e-01 -8.836582e-15 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -1.176464e-01 -1.456596e-14 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

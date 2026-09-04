@@ -140,7 +140,7 @@ c(pig1 = sum(distrib_expected_hessian(d, 0:200, th,
                                       list(mu = 3, alpha = 3.010399),
                                       approx = "bartlett")$mu_alpha))
 #>          pig1          pig2 
-#>  7.392208e+00 -9.660453e-15 
+#>  7.392208e+00 -5.459445e-15 
 
 # A fit recovers both parameters.
 set.seed(63)
