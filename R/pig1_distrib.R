@@ -44,7 +44,7 @@ NULL
 #' @seealso [pig1_distrib()] to build one;
 #'   [pig2_distrib()] for the parametrization whose two parameters are
 #'   orthogonal; [negbin2_distrib()] for the other overdispersed count family;
-#'   [pig_hd_block()] for the kernel all five derivative methods read.
+#'   the compiled kernels for the kernel all five derivative methods read.
 #'
 #' @examples
 #' d <- pig1_distrib()
@@ -62,110 +62,6 @@ NULL
 #' sum(distrib_pdf(d, 0:300, th))
 Pig1Distrib <- S7::new_class("Pig1Distrib", parent = discrete_distrib)
 
-#' @title Log-Likelihood Derivatives of the Poisson-Inverse Gaussian
-#'
-#' @description
-#' Evaluates the log-likelihood and its fourteen partial derivatives to fourth
-#' order at once, through one compiled kernel, and returns the block of
-#' components an order asks for. Both parametrizations use it, with a different
-#' `kernel` argument; every derivative method of both families is one call of
-#' this with a different `cols`.
-#'
-#' @details
-#' # The closed form the kernel evaluates
-#'
-#' With \eqn{c = 1 + 2\sigma\mu} and \eqn{\alpha = \sqrt{c}/\sigma}, the
-#' half-integer order collapses the Bessel function to a finite sum and the
-#' log-likelihood to
-#' \deqn{\ell(y) = y\log\mu - \tfrac{y}{2}\log c + \tfrac{1}{\sigma}
-#'   + \psi(\alpha) - \log y!,\qquad
-#'   \psi(\alpha) = -\alpha + \log S_y(\alpha),}
-#' \deqn{S_y(\alpha) = \sum_{k=0}^{y-1}
-#'   \dfrac{\Gamma(y+k)}{\Gamma(k+1)\Gamma(y-k)}\,(2\alpha)^{-k},
-#'   \qquad S_0 = 1.}
-#' \eqn{S_y} sums \eqn{y} positive terms on the log scale, so nothing cancels.
-#' The derivatives of \eqn{\psi} in \eqn{\alpha} are the weighted
-#' rising-factorial moments of \eqn{k} under those terms; everything else is
-#' elementary.
-#'
-#' # Which kernel runs
-#'
-#' `pig1_hd_cpp` and `pig2_hd_cpp` are **explicit closed-form kernels**, every
-#' partial written out by hand, and they are what the package methods run. A
-#' second pair, `pig1_hd_jet_cpp` and `pig2_hd_jet_cpp`, carries a bivariate
-#' jet truncated at total order four through the same expression; it shares no
-#' algebra with the explicit route, so the tests compare the two with no
-#' tolerance to hide behind, and it is not used in production. Measured over
-#' \eqn{2\times10^5} observations, the explicit kernel takes 0.24 seconds
-#' against the jet's 1.30, and the two agree to \eqn{5\times10^{-14}}.
-#'
-#' # Rows that are not admissible
-#'
-#' A `y` that is negative, non-integer or non-finite never reaches the kernel
-#' and gets a row of `NaN`. [distrib_pdf.Pig1Distrib()] turns that into a
-#' log-probability of `-Inf`, the right answer for a point off the support.
-#'
-#' @param y A numeric vector of observations. Recycled with `theta` to the
-#'   common length.
-#' @param theta The parameter list, already aligned and read positionally: the
-#'   mean first and the dispersion or \eqn{\alpha} second.
-#' @param cols A named character vector selecting the kernel columns wanted.
-#'   The names become the names of the result and the values are among
-#'   `"l"`, `"d10"`, `"d01"`, `"d20"`, `"d11"`, `"d02"`, `"d30"`, `"d21"`,
-#'   `"d12"`, `"d03"`, `"d40"`, `"d31"`, `"d22"`, `"d13"`, `"d04"`, where
-#'   `dij` is \eqn{\partial^{i+j}\ell/\partial\theta_1^i\partial\theta_2^j}.
-#' @param kernel The compiled kernel: `pig1_hd_cpp` for the mean-dispersion
-#'   parametrization or `pig2_hd_cpp` for the orthogonal one.
-#' @param threads A single positive integer, how many threads that kernel may
-#'   use. Defaults to `1L`. The result does not depend on the count.
-#'
-#' @return A named list of numeric vectors, one per entry of `cols`, each of
-#'   the recycled length, named by `names(cols)`.
-#'
-#' @section Notation:
-#' \eqn{\mu} is the mean, \eqn{\sigma} the dispersion, \eqn{\alpha} the Bessel
-#' argument, \eqn{K_\nu} the modified Bessel function of the second kind, and
-#' \eqn{\ell} the log-mass of one observation.
-#'
-#' @seealso [pig1_distrib()] and [pig2_distrib()] for the two families, and
-#'   [distrib_gradient.Pig1Distrib()] for a method that calls this.
-#'
-#' @examples
-#' # The score, taken directly.
-#' distributions7:::pig_hd_block(0:4, list(mu = 3, sigma = 0.8),
-#'                               c(mu = "d10", sigma = "d01"),
-#'                               distributions7:::pig1_hd_cpp)
-#'
-#' # ...which is what the method returns.
-#' all.equal(distributions7:::pig_hd_block(0:4, list(mu = 3, sigma = 0.8),
-#'                                         c(mu = "d10", sigma = "d01"),
-#'                                         distributions7:::pig1_hd_cpp),
-#'           distrib_gradient(pig1_distrib(), 0:4,
-#'                            list(mu = 3, sigma = 0.8)))
-#'
-#' # The explicit kernel and the jet twin agree, sharing no algebra.
-#' y <- as.numeric(0:6)
-#' max(abs(distributions7:::pig1_hd_cpp(y, rep(3, 7), rep(0.8, 7), 1L) -
-#'         distributions7:::pig1_hd_jet_cpp(y, rep(3, 7), rep(0.8, 7))))
-#'
-#' # A point off the support gives NaN here and -Inf in the density.
-#' distributions7:::pig_hd_block(c(-1, 1.5, 2), list(mu = 3, sigma = 0.8),
-#'                               c(l = "l"), distributions7:::pig1_hd_cpp)
-#'
-#' @keywords internal
-pig_hd_block <- function(y, theta, cols, kernel, threads = 1L) {
-  n <- max(length(y), length(theta[[1]]), length(theta[[2]]))
-  y <- rep_len(y, n)
-  p1 <- rep_len(theta[[1]], n)
-  p2 <- rep_len(theta[[2]], n)
-  ok <- is.finite(y) & y >= 0 & y == floor(y)
-  m <- matrix(NaN, n, 15)
-  if (any(ok)) m[ok, ] <- kernel(y[ok], p1[ok], p2[ok], threads)
-  colnames(m) <- c("l", "d10", "d01", "d20", "d11", "d02",
-                   "d30", "d21", "d12", "d03",
-                   "d40", "d31", "d22", "d13", "d04")
-  stats::setNames(lapply(cols, function(cc) m[, cc]), names(cols))
-}
 
 # --- S7 METHODS IMPLEMENTATION ---
 
@@ -205,10 +101,10 @@ pig_hd_block <- function(y, theta, cols, kernel, threads = 1L) {
 #' @section Notation:
 #' \eqn{\mu} is the mean, \eqn{\sigma} the dispersion, \eqn{K_\nu} the modified
 #' Bessel function of the second kind, and \eqn{S_y} the finite sum defined in
-#' [pig_hd_block()].
+#' `pig1_pdf_cpp`.
 #'
 #' @seealso [distrib_gradient.Pig1Distrib()] for the score,
-#'   [pig_hd_block()] for the kernel, [pig2_distrib()] for the same law in
+#'   `pig1_pdf_cpp` for the kernel, [pig2_distrib()] for the same law in
 #'   orthogonal coordinates, and [distrib_pdf()] for the generic.
 #'
 #' @examples
@@ -234,8 +130,7 @@ pig_hd_block <- function(y, theta, cols, kernel, threads = 1L) {
 #' # Off the support.
 #' distrib_pdf(d, c(-1, 1.5), th)
 S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE, ..., threads = 1L) {
-  out <- pig_hd_block(y, theta, c(l = "l"), pig1_hd_cpp, threads)$l
-  out[is.nan(out)] <- -Inf
+  out <- pig1_pdf_cpp(y, theta[[1]], theta[[2]], threads)
   if (log) out else exp(out)
 }
 
@@ -244,8 +139,8 @@ S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE,
 #'
 #' @description
 #' Returns the exact first derivatives of the log-mass in \eqn{(\mu, \sigma)},
-#' read off columns `d10` and `d01` of the compiled fourth-order kernel of
-#' [pig_hd_block()]. Nothing is differenced: the kernel writes every partial
+#' read off columns `d10` and `d01` of the compiled kernel of
+#' `pig1_gradient_cpp`. Nothing is differenced: the kernel writes every partial
 #' out in closed form from the finite Bessel sum.
 #'
 #' @param distrib A `Pig1Distrib` object, from [pig1_distrib()].
@@ -267,7 +162,7 @@ S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE,
 #' \eqn{\ell} is the log-mass of one observation, \eqn{\mu} the mean and
 #' \eqn{\sigma} the dispersion.
 #'
-#' @seealso [pig_hd_block()] for the kernel and the closed form it evaluates,
+#' @seealso `pig1_gradient_cpp` for the kernel and the closed form it evaluates,
 #'   [distrib_hessian.Pig1Distrib()] for the second derivatives, and
 #'   [distrib_gradient()] for the generic.
 #'
@@ -288,7 +183,7 @@ S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE,
 #' sum(distrib_expected_hessian(d, 0:200, th, approx = "bartlett")$mu_sigma)
 S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
                                                       scale = c("parameter", "link"), ..., threads = 1L) {
-  pig_hd_block(y, theta, c(mu = "d10", sigma = "d01"), pig1_hd_cpp, threads)
+  pig1_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Poisson-Inverse Gaussian Observed Hessian
@@ -297,7 +192,7 @@ S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
 #' @description
 #' Returns the exact second derivatives of the log-mass in
 #' \eqn{(\mu, \sigma)}, read off columns `d20`, `d02` and `d11` of the
-#' compiled fourth-order kernel of [pig_hd_block()].
+#' compiled kernel `pig1_hessian_cpp`.
 #'
 #' This is the **observed** curvature at the data. The expected information has
 #' no closed form for this family and comes from
@@ -319,7 +214,7 @@ S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
 #'   `mu_mu`, `sigma_sigma`, `mu_sigma`.
 #'
 #' @seealso [distrib_gradient.Pig1Distrib()] for the order below,
-#'   [distrib_deriv3.Pig1Distrib()] for the order above, [pig_hd_block()] for
+#'   [distrib_deriv3.Pig1Distrib()] for the order above, `pig1_hessian_cpp` for
 #'   the kernel, and [distrib_hessian()] for the generic.
 #'
 #' @examples
@@ -341,9 +236,7 @@ S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
 #' distrib_hessian(d, c(0, 3, 30), th)$mu_mu
 S7::method(distrib_hessian, Pig1Distrib) <- function(distrib, y, theta,
                                                      scale = c("parameter", "link"), ..., threads = 1L) {
-  pig_hd_block(y, theta,
-               c(mu_mu = "d20", sigma_sigma = "d02", mu_sigma = "d11"),
-               pig1_hd_cpp, threads)
+  pig1_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Poisson-Inverse Gaussian Third Derivatives
@@ -352,7 +245,7 @@ S7::method(distrib_hessian, Pig1Distrib) <- function(distrib, y, theta,
 #' @description
 #' Returns the exact third derivatives of the log-mass in \eqn{(\mu, \sigma)},
 #' read off columns `d30`, `d21`, `d12` and `d03` of the compiled fourth-order
-#' kernel of [pig_hd_block()]. The kernel computes all four orders in one pass,
+#' kernel of `pig1_deriv3_cpp`. The kernel computes this order alone,
 #' so this order costs no more than the score does.
 #'
 #' With `expected = TRUE` the value is an expectation instead, and there it is
@@ -382,7 +275,7 @@ S7::method(distrib_hessian, Pig1Distrib) <- function(distrib, y, theta,
 #'   `mu_sigma_sigma` and `sigma_sigma_sigma`.
 #'
 #' @seealso [distrib_hessian.Pig1Distrib()] for the order below,
-#'   [distrib_deriv4.Pig1Distrib()] for the order above, [pig_hd_block()] for
+#'   [distrib_deriv4.Pig1Distrib()] for the order above, `pig1_deriv3_cpp` for
 #'   the kernel, and [distrib_deriv3()] for the generic.
 #'
 #' @examples
@@ -410,10 +303,7 @@ S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
     return(expected_derivative(distrib, y, theta, order = 3L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  pig_hd_block(y, theta,
-               c(mu_mu_mu = "d30", mu_mu_sigma = "d21",
-                 mu_sigma_sigma = "d12", sigma_sigma_sigma = "d03"),
-               pig1_hd_cpp, threads)
+  pig1_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Poisson-Inverse Gaussian Fourth Derivatives
@@ -422,7 +312,7 @@ S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
 #' @description
 #' Returns the exact fourth derivatives of the log-mass in
 #' \eqn{(\mu, \sigma)}, read off the last five columns of the compiled kernel
-#' of [pig_hd_block()]. The kernel is a fourth-order one throughout, so this is
+#' of `pig1_deriv4_cpp`. The kernel is asked for this order alone, so this is
 #' the order it was written for and it costs the same as the score.
 #'
 #' With `expected = TRUE` the value is an expectation and is not closed form,
@@ -450,7 +340,7 @@ S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
 #'   `sigma_sigma_sigma_sigma`.
 #'
 #' @seealso [distrib_deriv3.Pig1Distrib()] for the order below,
-#'   [pig_hd_block()] for the kernel, and [distrib_deriv4()] for the generic.
+#'   `pig1_deriv4_cpp` for the kernel, and [distrib_deriv4()] for the generic.
 #'
 #' @examples
 #' d <- pig1_distrib()
@@ -482,11 +372,7 @@ S7::method(distrib_deriv4, Pig1Distrib) <- function(distrib, y, theta,
     return(expected_derivative(distrib, y, theta, order = 4L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  pig_hd_block(y, theta,
-               c(mu_mu_mu_mu = "d40", mu_mu_mu_sigma = "d31",
-                 mu_mu_sigma_sigma = "d22", mu_sigma_sigma_sigma = "d13",
-                 sigma_sigma_sigma_sigma = "d04"),
-               pig1_hd_cpp, threads)
+  pig1_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Poisson-Inverse Gaussian Random Generation
@@ -552,12 +438,47 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta, ...) {
 #' # The mass function, and how it is computed
 #'
 #' The mass carries the modified Bessel function \eqn{K_{y-1/2}}, which at
-#' half-integer order is a finite sum. What the kernel evaluates is that sum,
+#' half-integer order is a finite sum. What the kernels evaluate is that sum,
 #' on the log scale, after the prefactors have canceled; no Bessel routine is
-#' called. The log-likelihood and its fourteen partial derivatives to fourth
-#' order come out of one pass, all exact, so the fourth order costs what the
-#' score does. See [pig_hd_block()] for the expression and for the jet twin the
-#' tests hold it to.
+#' called. With \eqn{c = 1 + 2\sigma\mu} and \eqn{\alpha = \sqrt{c}/\sigma},
+#' \deqn{\ell(y) = y\log\mu - \tfrac{y}{2}\log c + \tfrac{1}{\sigma}
+#'   + \psi(\alpha) - \log y!,\qquad
+#'   \psi(\alpha) = -\alpha + \log S_y(\alpha),}
+#' \deqn{S_y(\alpha) = \sum_{k=0}^{y-1}
+#'   \dfrac{\Gamma(y+k)}{\Gamma(k+1)\Gamma(y-k)}\,(2\alpha)^{-k},
+#'   \qquad S_0 = 1.}
+#' \eqn{S_y} sums \eqn{y} positive terms on the log scale, so nothing
+#' cancels. The derivatives of \eqn{\psi} in \eqn{\alpha} are the weighted
+#' rising-factorial moments of \eqn{k} under those terms; everything else is
+#' elementary. Every partial to fourth order is written out by hand, so no
+#' order is differenced.
+#'
+#' # One kernel per generic
+#'
+#' There is one compiled kernel per quantity -- `pig1_pdf_cpp`,
+#' `pig1_gradient_cpp`, `pig1_hessian_cpp`, `pig1_deriv3_cpp`,
+#' `pig1_deriv4_cpp` and their `pig2` twins -- so asking for the mass does not
+#' evaluate four orders of derivatives. Each recycles a scalar parameter and
+#' tests the support itself, as every other compiled family's kernel does: a
+#' \eqn{y} that is negative, fractional or not finite reads `-Inf` in the mass
+#' and `NaN` in a derivative.
+#'
+#' The saving is smaller than the count of quantities suggests, because the
+#' cost is \eqn{S_y}, which is \eqn{O(y)} per observation and which every
+#' order pays in full: measured over \eqn{2\times10^4} observations the five
+#' kernels run at 21.0, 21.3, 22.0, 22.7 and 23.3 milliseconds.
+#'
+#' A second pair, `pig1_hd_jet_cpp` and `pig2_hd_jet_cpp`, carries a bivariate
+#' jet truncated at total order four through the same expression. It shares no
+#' algebra with the explicit route, so the tests compare the two with no
+#' tolerance to hide behind, and it is not used in production;
+#' `pig1_hd_cpp` and `pig2_hd_cpp` return all fifteen columns at once and
+#' exist to be that comparison's other side.
+#'
+#' @section Notation:
+#' \eqn{\mu} is the mean, \eqn{\sigma} the dispersion, \eqn{\alpha} the
+#' Bessel argument, \eqn{K_\nu} the modified Bessel function of the second
+#' kind, and \eqn{\ell} the log-mass of one observation.
 #'
 #' The **expected information** has no closed form and goes through the
 #' summation strategies of [expected_derivative_methods()].
@@ -611,7 +532,7 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta, ...) {
 #' @seealso [pig2_distrib()] for the orthogonal parametrization,
 #'   [negbin2_distrib()] for the other overdispersed count family,
 #'   [poisson_distrib()] for the limit at \eqn{\sigma \to 0},
-#'   [pig_hd_block()] for the kernel, and [Pig1Distrib] for the class.
+#'   the compiled kernels for the kernel, and [Pig1Distrib] for the class.
 #'
 #' @examples
 #' d <- pig1_distrib()

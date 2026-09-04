@@ -309,7 +309,7 @@ reference:
 - title: Generalized Pareto
   contents: [GPDDistrib, ends_with(".GPDDistrib")]
 - title: Poisson-inverse Gaussian
-  contents: [Pig1Distrib, ends_with(".Pig1Distrib"), pig_hd_block]
+  contents: [Pig1Distrib, ends_with(".Pig1Distrib")]
 - title: Poisson-inverse Gaussian, orthogonal
   contents: [Pig2Distrib, ends_with(".Pig2Distrib"), pig2_sigma]
 - title: NB1 negative binomial

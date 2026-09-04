@@ -46,7 +46,7 @@ NULL
 #' @seealso [pig2_distrib()] to build one;
 #'   [pig1_distrib()] for the mean-dispersion parametrization;
 #'   [pig2_sigma()] for the map between them;
-#'   [pig_hd_block()] for the kernel all five derivative methods read.
+#'   the compiled kernels for the kernel all five derivative methods read.
 #'
 #' @examples
 #' d <- pig2_distrib()
@@ -161,8 +161,7 @@ pig2_sigma <- function(mu, alpha) (mu + sqrt(mu^2 + alpha^2)) / alpha^2
 #' rbind(pig2 = distrib_pdf(d, y, list(mu = 3, alpha = 1e4)),
 #'       poisson = dpois(y, 3))
 S7::method(distrib_pdf, Pig2Distrib) <- function(distrib, y, theta, log = FALSE, ..., threads = 1L) {
-  out <- pig_hd_block(y, theta, c(l = "l"), pig2_hd_cpp, threads)$l
-  out[is.nan(out)] <- -Inf
+  out <- pig2_pdf_cpp(y, theta[[1]], theta[[2]], threads)
   if (log) out else exp(out)
 }
 
@@ -171,8 +170,8 @@ S7::method(distrib_pdf, Pig2Distrib) <- function(distrib, y, theta, log = FALSE,
 #'
 #' @description
 #' Returns the exact first derivatives of the log-mass in \eqn{(\mu, \alpha)},
-#' read off columns `d10` and `d01` of the compiled fourth-order kernel of
-#' [pig_hd_block()]. The kernel takes \eqn{\alpha} as a variable of its own, so
+#' read off columns `d10` and `d01` of the compiled kernel of
+#' `pig2_gradient_cpp`. The kernel takes \eqn{\alpha} as a variable of its own, so
 #' these are derivatives in the orthogonal coordinates directly and no chain
 #' rule through [pig2_sigma()] is composed.
 #'
@@ -198,7 +197,7 @@ S7::method(distrib_pdf, Pig2Distrib) <- function(distrib, y, theta, log = FALSE,
 #'
 #' @seealso [distrib_hessian.Pig2Distrib()] for the second derivatives,
 #'   [distrib_gradient.Pig1Distrib()] for the same quantity in mean and
-#'   dispersion, [pig_hd_block()] for the kernel, and [distrib_gradient()] for
+#'   dispersion, `pig2_gradient_cpp` for the kernel, and [distrib_gradient()] for
 #'   the generic.
 #'
 #' @examples
@@ -223,7 +222,7 @@ S7::method(distrib_pdf, Pig2Distrib) <- function(distrib, y, theta, log = FALSE,
 #'                                       approx = "bartlett")$mu_sigma))
 S7::method(distrib_gradient, Pig2Distrib) <- function(distrib, y, theta,
                                                       scale = c("parameter", "link"), ..., threads = 1L) {
-  pig_hd_block(y, theta, c(mu = "d10", alpha = "d01"), pig2_hd_cpp, threads)
+  pig2_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Orthogonal Poisson-Inverse Gaussian Observed Hessian
@@ -232,7 +231,7 @@ S7::method(distrib_gradient, Pig2Distrib) <- function(distrib, y, theta,
 #' @description
 #' Returns the exact second derivatives of the log-mass in
 #' \eqn{(\mu, \alpha)}, read off columns `d20`, `d02` and `d11` of the compiled
-#' fourth-order kernel of [pig_hd_block()].
+#' kernel `pig2_hessian_cpp`.
 #'
 #' The **observed** mixed entry is not zero at any single observation; what
 #' vanishes is its expectation. Measured at \eqn{\mu = 3},
@@ -254,7 +253,7 @@ S7::method(distrib_gradient, Pig2Distrib) <- function(distrib, y, theta,
 #'   `mu_mu`, `alpha_alpha`, `mu_alpha`.
 #'
 #' @seealso [distrib_gradient.Pig2Distrib()] for the order below,
-#'   [distrib_deriv3.Pig2Distrib()] for the order above, [pig_hd_block()] for
+#'   [distrib_deriv3.Pig2Distrib()] for the order above, `pig2_hessian_cpp` for
 #'   the kernel, and [distrib_hessian()] for the generic.
 #'
 #' @examples
@@ -279,9 +278,7 @@ S7::method(distrib_gradient, Pig2Distrib) <- function(distrib, y, theta,
 #'                                           approx = "bartlett")$mu_alpha))
 S7::method(distrib_hessian, Pig2Distrib) <- function(distrib, y, theta,
                                                      scale = c("parameter", "link"), ..., threads = 1L) {
-  pig_hd_block(y, theta,
-               c(mu_mu = "d20", alpha_alpha = "d02", mu_alpha = "d11"),
-               pig2_hd_cpp, threads)
+  pig2_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Orthogonal Poisson-Inverse Gaussian Third Derivatives
@@ -290,7 +287,7 @@ S7::method(distrib_hessian, Pig2Distrib) <- function(distrib, y, theta,
 #' @description
 #' Returns the exact third derivatives of the log-mass in
 #' \eqn{(\mu, \alpha)}, read off columns `d30`, `d21`, `d12` and `d03` of the
-#' compiled fourth-order kernel of [pig_hd_block()]. All four orders come out
+#' compiled kernel `pig2_deriv3_cpp`. All four orders come out
 #' of one pass of the kernel, so this order costs what the score does.
 #'
 #' With `expected = TRUE` the value is an expectation instead, and there it is
@@ -319,7 +316,7 @@ S7::method(distrib_hessian, Pig2Distrib) <- function(distrib, y, theta,
 #'   `mu_alpha_alpha` and `alpha_alpha_alpha`.
 #'
 #' @seealso [distrib_hessian.Pig2Distrib()] for the order below,
-#'   [distrib_deriv4.Pig2Distrib()] for the order above, [pig_hd_block()] for
+#'   [distrib_deriv4.Pig2Distrib()] for the order above, `pig2_deriv3_cpp` for
 #'   the kernel, and [distrib_deriv3()] for the generic.
 #'
 #' @examples
@@ -345,10 +342,7 @@ S7::method(distrib_deriv3, Pig2Distrib) <- function(distrib, y, theta,
     return(expected_derivative(distrib, y, theta, order = 3L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  pig_hd_block(y, theta,
-               c(mu_mu_mu = "d30", mu_mu_alpha = "d21",
-                 mu_alpha_alpha = "d12", alpha_alpha_alpha = "d03"),
-               pig2_hd_cpp, threads)
+  pig2_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Orthogonal Poisson-Inverse Gaussian Fourth Derivatives
@@ -357,7 +351,7 @@ S7::method(distrib_deriv3, Pig2Distrib) <- function(distrib, y, theta,
 #' @description
 #' Returns the exact fourth derivatives of the log-mass in
 #' \eqn{(\mu, \alpha)}, read off the last five columns of the compiled kernel
-#' of [pig_hd_block()]. The kernel is a fourth-order one throughout, so this is
+#' of `pig2_deriv4_cpp`. The kernel is asked for this order alone, so this is
 #' the order it was written for.
 #'
 #' With `expected = TRUE` the value is an expectation and is not closed form,
@@ -385,7 +379,7 @@ S7::method(distrib_deriv3, Pig2Distrib) <- function(distrib, y, theta,
 #'   `alpha_alpha_alpha_alpha`.
 #'
 #' @seealso [distrib_deriv3.Pig2Distrib()] for the order below,
-#'   [pig_hd_block()] for the kernel, and [distrib_deriv4()] for the generic.
+#'   `pig2_deriv4_cpp` for the kernel, and [distrib_deriv4()] for the generic.
 #'
 #' @examples
 #' d <- pig2_distrib()
@@ -411,11 +405,7 @@ S7::method(distrib_deriv4, Pig2Distrib) <- function(distrib, y, theta,
     return(expected_derivative(distrib, y, theta, order = 4L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  pig_hd_block(y, theta,
-               c(mu_mu_mu_mu = "d40", mu_mu_mu_alpha = "d31",
-                 mu_mu_alpha_alpha = "d22", mu_alpha_alpha_alpha = "d13",
-                 alpha_alpha_alpha_alpha = "d04"),
-               pig2_hd_cpp, threads)
+  pig2_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Orthogonal Poisson-Inverse Gaussian Random Generation
@@ -503,7 +493,7 @@ S7::method(distrib_rng, Pig2Distrib) <- function(distrib, n, theta, ...) {
 #' By the same compiled kernel as [pig1_distrib()], with \eqn{\alpha} as a
 #' variable of its own, so the Bessel argument needs no chain rule at all.
 #' Every partial to fourth order is exact and comes out of one pass; see
-#' [pig_hd_block()]. The expected information has no closed form and goes
+#' the compiled kernels. The expected information has no closed form and goes
 #' through [expected_derivative_methods()].
 #'
 #' # Parameter domains

@@ -27,36 +27,66 @@ negative binomial at the same variance}.
 }
 \section{The mass function, and how it is computed}{
 The mass carries the modified Bessel function \eqn{K_{y-1/2}}, which at
-half-integer order is a finite sum. What the kernel evaluates is that sum,
+half-integer order is a finite sum. What the kernels evaluate is that sum,
 on the log scale, after the prefactors have canceled; no Bessel routine is
-called. The log-likelihood and its fourteen partial derivatives to fourth
-order come out of one pass, all exact, so the fourth order costs what the
-score does. See \code{\link[=pig_hd_block]{pig_hd_block()}} for the expression and for the jet twin the
-tests hold it to.
-
-The \strong{expected information} has no closed form and goes through the
-summation strategies of \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
+called. With \eqn{c = 1 + 2\sigma\mu} and \eqn{\alpha = \sqrt{c}/\sigma},
+\deqn{\ell(y) = y\log\mu - \tfrac{y}{2}\log c + \tfrac{1}{\sigma}
+  + \psi(\alpha) - \log y!,\qquad
+  \psi(\alpha) = -\alpha + \log S_y(\alpha),}
+\deqn{S_y(\alpha) = \sum_{k=0}^{y-1}
+  \dfrac{\Gamma(y+k)}{\Gamma(k+1)\Gamma(y-k)}\,(2\alpha)^{-k},
+  \qquad S_0 = 1.}
+\eqn{S_y} sums \eqn{y} positive terms on the log scale, so nothing
+cancels. The derivatives of \eqn{\psi} in \eqn{\alpha} are the weighted
+rising-factorial moments of \eqn{k} under those terms; everything else is
+elementary. Every partial to fourth order is written out by hand, so no
+order is differenced.
 }
 
-\section{The tail}{
+\section{One kernel per generic}{
+There is one compiled kernel per quantity -- \code{pig1_pdf_cpp},
+\code{pig1_gradient_cpp}, \code{pig1_hessian_cpp}, \code{pig1_deriv3_cpp},
+\code{pig1_deriv4_cpp} and their \code{pig2} twins -- so asking for the mass does not
+evaluate four orders of derivatives. Each recycles a scalar parameter and
+tests the support itself, as every other compiled family's kernel does: a
+\eqn{y} that is negative, fractional or not finite reads \code{-Inf} in the mass
+and \code{NaN} in a derivative.
+
+The saving is smaller than the count of quantities suggests, because the
+cost is \eqn{S_y}, which is \eqn{O(y)} per observation and which every
+order pays in full: measured over \eqn{2\times10^4} observations the five
+kernels run at 21.0, 21.3, 22.0, 22.7 and 23.3 milliseconds.
+
+A second pair, \code{pig1_hd_jet_cpp} and \code{pig2_hd_jet_cpp}, carries a bivariate
+jet truncated at total order four through the same expression. It shares no
+algebra with the explicit route, so the tests compare the two with no
+tolerance to hide behind, and it is not used in production;
+\code{pig1_hd_cpp} and \code{pig2_hd_cpp} return all fifteen columns at once and
+exist to be that comparison's other side.
+}
+
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{\sigma} the dispersion, \eqn{\alpha} the
+Bessel argument, \eqn{K_\nu} the modified Bessel function of the second
+kind, and \eqn{\ell} the log-mass of one observation.
+
+The \strong{expected information} has no closed form and goes through the
+summation strategies of \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.The tail
+
 Measured at \eqn{\mu = 3}, \eqn{\sigma = 0.8}, against a negative binomial
 matched on the variance (\eqn{\theta = 1/\sigma}, both at 10.2): the mass at
 \eqn{y = 20} is \eqn{6.8\times10^{-4}} against \eqn{4.8\times10^{-4}}, at 40
 it is \eqn{5.8\times10^{-6}} against \eqn{5.4\times10^{-7}}, and at 60
 \eqn{7.2\times10^{-8}} against \eqn{5.6\times10^{-10}}. The gap widens with
-the count, and that widening is what a heavier tail means here.
-}
+the count, and that widening is what a heavier tail means here.Which parametrization to use
 
-\section{Which parametrization to use}{
 In this one \eqn{\mu} and \eqn{\sigma} are \strong{not} orthogonal: measured at
 the same setting, the mixed entry of the expected information summed over
 the support is 7.39. \code{\link[=pig2_distrib]{pig2_distrib()}} replaces \eqn{\sigma} by the Bessel
 argument \eqn{\alpha} and makes that entry zero, at the cost of a second
 parameter with no moment reading. Use this one to model the dispersion
-directly and that one to fit the two parameters independently.
-}
-
-\section{Parameter domains}{
+directly and that one to fit the two parameters independently.Parameter domains
 \itemize{
 \item \eqn{\mu \in (0, \infty)}
 \item \eqn{\sigma \in (0, \infty)}
@@ -111,5 +141,5 @@ Statistics} 17(2), 171--181.
 \code{\link[=pig2_distrib]{pig2_distrib()}} for the orthogonal parametrization,
 \code{\link[=negbin2_distrib]{negbin2_distrib()}} for the other overdispersed count family,
 \code{\link[=poisson_distrib]{poisson_distrib()}} for the limit at \eqn{\sigma \to 0},
-\code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel, and \link{Pig1Distrib} for the class.
+the compiled kernels for the kernel, and \link{Pig1Distrib} for the class.
 }

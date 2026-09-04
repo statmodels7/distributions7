@@ -1896,6 +1896,76 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pig1_pdf_cpp
+NumericVector pig1_pdf_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_pig1_pdf_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig1_pdf_cpp(y, mu, sigma, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig1_gradient_cpp
+List pig1_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_pig1_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig1_gradient_cpp(y, mu, sigma, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig1_hessian_cpp
+List pig1_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_pig1_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig1_hessian_cpp(y, mu, sigma, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig1_deriv3_cpp
+List pig1_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_pig1_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig1_deriv3_cpp(y, mu, sigma, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig1_deriv4_cpp
+List pig1_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_pig1_deriv4_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig1_deriv4_cpp(y, mu, sigma, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pig1_hd_cpp
 NumericMatrix pig1_hd_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
 RcppExport SEXP _distributions7_pig1_hd_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
@@ -1907,6 +1977,76 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
     rcpp_result_gen = Rcpp::wrap(pig1_hd_cpp(y, mu, sigma, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig2_pdf_cpp
+NumericVector pig2_pdf_cpp(NumericVector y, NumericVector mu, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_pig2_pdf_cpp(SEXP ySEXP, SEXP muSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig2_pdf_cpp(y, mu, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig2_gradient_cpp
+List pig2_gradient_cpp(NumericVector y, NumericVector mu, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_pig2_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig2_gradient_cpp(y, mu, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig2_hessian_cpp
+List pig2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_pig2_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig2_hessian_cpp(y, mu, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig2_deriv3_cpp
+List pig2_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_pig2_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig2_deriv3_cpp(y, mu, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig2_deriv4_cpp
+List pig2_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_pig2_deriv4_cpp(SEXP ySEXP, SEXP muSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig2_deriv4_cpp(y, mu, alpha, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2370,7 +2510,17 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_negbin_deriv4_expected_cpp", (DL_FUNC) &_distributions7_negbin_deriv4_expected_cpp, 4},
     {"_distributions7_pig1_hd_jet_cpp", (DL_FUNC) &_distributions7_pig1_hd_jet_cpp, 3},
     {"_distributions7_pig2_hd_jet_cpp", (DL_FUNC) &_distributions7_pig2_hd_jet_cpp, 3},
+    {"_distributions7_pig1_pdf_cpp", (DL_FUNC) &_distributions7_pig1_pdf_cpp, 4},
+    {"_distributions7_pig1_gradient_cpp", (DL_FUNC) &_distributions7_pig1_gradient_cpp, 4},
+    {"_distributions7_pig1_hessian_cpp", (DL_FUNC) &_distributions7_pig1_hessian_cpp, 4},
+    {"_distributions7_pig1_deriv3_cpp", (DL_FUNC) &_distributions7_pig1_deriv3_cpp, 4},
+    {"_distributions7_pig1_deriv4_cpp", (DL_FUNC) &_distributions7_pig1_deriv4_cpp, 4},
     {"_distributions7_pig1_hd_cpp", (DL_FUNC) &_distributions7_pig1_hd_cpp, 4},
+    {"_distributions7_pig2_pdf_cpp", (DL_FUNC) &_distributions7_pig2_pdf_cpp, 4},
+    {"_distributions7_pig2_gradient_cpp", (DL_FUNC) &_distributions7_pig2_gradient_cpp, 4},
+    {"_distributions7_pig2_hessian_cpp", (DL_FUNC) &_distributions7_pig2_hessian_cpp, 4},
+    {"_distributions7_pig2_deriv3_cpp", (DL_FUNC) &_distributions7_pig2_deriv3_cpp, 4},
+    {"_distributions7_pig2_deriv4_cpp", (DL_FUNC) &_distributions7_pig2_deriv4_cpp, 4},
     {"_distributions7_pig2_hd_cpp", (DL_FUNC) &_distributions7_pig2_hd_cpp, 4},
     {"_distributions7_poisson_gradient_cpp", (DL_FUNC) &_distributions7_poisson_gradient_cpp, 3},
     {"_distributions7_poisson_hessian_cpp", (DL_FUNC) &_distributions7_poisson_hessian_cpp, 3},

@@ -1,3 +1,67 @@
+# distributions7 0.46.0
+
+* The two Poisson-inverse gaussian families get ONE COMPILED KERNEL PER
+  GENERIC, as every other compiled family has: `pig1_pdf_cpp`,
+  `pig1_gradient_cpp`, `pig1_hessian_cpp`, `pig1_deriv3_cpp`,
+  `pig1_deriv4_cpp` and their `pig2` twins, in place of the single
+  fifteen-column block every method read. The shape was inherited rather
+  than chosen: the first version propagated a bivariate fourth-order jet,
+  which computes every partial together by construction, and when the jet
+  was replaced by explicit closed forms the block's signature stayed. So
+  the value cost four orders.
+
+  Each kernel now recycles a scalar parameter and tests the support itself,
+  which is what `gaussian.cpp` and `betabinom.cpp` already do, and returns a
+  named list; the ten methods are one line each, with nothing between them
+  and their kernel. **`pig_hd_block()` is gone**, and with it `pig_memo` and
+  `pig_hd_forget()`: pig was the only compiled family carrying an R helper
+  on that path. The mathematics that page documented -- the closed form of
+  \eqn{S_y(\alpha)}, which kernel runs, the jet twin -- moved onto
+  `pig1_distrib()`, where a reader looks for it.
+
+  `pig1_hd_cpp` and `pig2_hd_cpp` survive, returning all fifteen columns:
+  they are the reference the per-generic kernels are held to and the side
+  the jet twin compares against.
+
+  **No formula was retyped and the arithmetic is unchanged.** The body was
+  reordered, each statement placed at the greater of its own derivative
+  order and the order of everything it reads, and each stage returns once it
+  has written its own block. Against the previous release, over both
+  families and all five generics plus a scalar parameter and rows off the
+  support, **twelve comparisons of twelve are `identical()`**.
+
+  ⚠️ **What the split buys is smaller than the count of quantities
+  suggests.** At n = 20000 the kernels run at 22.8, 23.0, 23.3, 23.6 and
+  24.8 ms against the block's 27.9, so the value is 1.22x. The cost is not
+  the derivative tables: it is \eqn{S_y}, which is \eqn{O(y)} per
+  observation with three `lgammafn` calls a term and which every order pays
+  in full. Measured at a response of exactly zero, where that sum is empty,
+  the algebra alone runs 4.16 ms at order zero against 6.27 at order four;
+  at a mean of 3 the same pair is 24.87 against 27.49, and at a mean of 30
+  it is 116.03 against 117.43.
+
+  What the split does remove is the R layer: the helper's mask, its three
+  subsets, its NaN matrix and its scatter were 24 per cent of a gradient
+  call at that size and are now 2 per cent.
+
+  ⚠️ **And it costs the memo, which is stated rather than hidden.** The
+  helper kept a depth-one memo of the point it last evaluated, worth 1.19x
+  to 1.27x on a real regression, because one point is read several times an
+  iteration. Without it the same fits cost 1.032 s and 0.848 s against
+  0.926 s and 0.775 s. The duplication is not this family's and was closed
+  where it happens, in `statmodels7::iwls_pieces()`: with that, the same
+  fits cost 0.944 s and 0.753 s, the second being better than the memo ever
+  gave. Counted, a fit went from three evaluations of the score an
+  iteration to two.
+
+  ⚠️ **The families that reach the outer-product route are FOUR** --
+  `pig1`, `pig2`, `skewnormal1` and `skewt` -- and not every family, which
+  is what a first draft of this entry claimed. Every other family has a
+  closed-form expected information registered on its own class, so `approx`
+  is never read and no score is recomputed; `pseudohuber` and
+  `skewnormal2` register their own quadrature, which is not the outer
+  product either.
+
 # distributions7 0.45.0
 
 * The log-mass of `pig1_distrib()` and `pig2_distrib()` no longer cancels in

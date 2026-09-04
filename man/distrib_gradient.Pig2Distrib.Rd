@@ -27,8 +27,8 @@ length of the recycled inputs.
 }
 \description{
 Returns the exact first derivatives of the log-mass in \eqn{(\mu, \alpha)},
-read off columns \code{d10} and \code{d01} of the compiled fourth-order kernel of
-\code{\link[=pig_hd_block]{pig_hd_block()}}. The kernel takes \eqn{\alpha} as a variable of its own, so
+read off columns \code{d10} and \code{d01} of the compiled kernel of
+\code{pig2_gradient_cpp}. The kernel takes \eqn{\alpha} as a variable of its own, so
 these are derivatives in the orthogonal coordinates directly and no chain
 rule through \code{\link[=pig2_sigma]{pig2_sigma()}} is composed.
 
@@ -61,6 +61,6 @@ c(pig2 = sum(distrib_expected_hessian(d, 0:200, th,
 \seealso{
 \code{\link[=distrib_hessian.Pig2Distrib]{distrib_hessian.Pig2Distrib()}} for the second derivatives,
 \code{\link[=distrib_gradient.Pig1Distrib]{distrib_gradient.Pig1Distrib()}} for the same quantity in mean and
-dispersion, \code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel, and \code{\link[=distrib_gradient]{distrib_gradient()}} for
+dispersion, \code{pig2_gradient_cpp} for the kernel, and \code{\link[=distrib_gradient]{distrib_gradient()}} for
 the generic.
 }

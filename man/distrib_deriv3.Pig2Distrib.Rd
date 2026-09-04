@@ -37,7 +37,7 @@ A named list of four numeric vectors: \code{mu_mu_mu}, \code{mu_mu_alpha},
 \description{
 Returns the exact third derivatives of the log-mass in
 \eqn{(\mu, \alpha)}, read off columns \code{d30}, \code{d21}, \code{d12} and \code{d03} of the
-compiled fourth-order kernel of \code{\link[=pig_hd_block]{pig_hd_block()}}. All four orders come out
+compiled kernel \code{pig2_deriv3_cpp}. All four orders come out
 of one pass of the kernel, so this order costs what the score does.
 
 With \code{expected = TRUE} the value is an expectation instead, and there it is
@@ -61,6 +61,6 @@ rbind(analytic = d3$mu_mu_alpha,
 }
 \seealso{
 \code{\link[=distrib_hessian.Pig2Distrib]{distrib_hessian.Pig2Distrib()}} for the order below,
-\code{\link[=distrib_deriv4.Pig2Distrib]{distrib_deriv4.Pig2Distrib()}} for the order above, \code{\link[=pig_hd_block]{pig_hd_block()}} for
+\code{\link[=distrib_deriv4.Pig2Distrib]{distrib_deriv4.Pig2Distrib()}} for the order above, \code{pig2_deriv3_cpp} for
 the kernel, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

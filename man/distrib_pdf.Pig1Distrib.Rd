@@ -44,7 +44,7 @@ called.
 
 \eqn{\mu} is the mean, \eqn{\sigma} the dispersion, \eqn{K_\nu} the modified
 Bessel function of the second kind, and \eqn{S_y} the finite sum defined in
-\code{\link[=pig_hd_block]{pig_hd_block()}}.
+\code{pig1_pdf_cpp}.
 }
 
 \examples{
@@ -72,6 +72,6 @@ distrib_pdf(d, c(-1, 1.5), th)
 }
 \seealso{
 \code{\link[=distrib_gradient.Pig1Distrib]{distrib_gradient.Pig1Distrib()}} for the score,
-\code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel, \code{\link[=pig2_distrib]{pig2_distrib()}} for the same law in
+\code{pig1_pdf_cpp} for the kernel, \code{\link[=pig2_distrib]{pig2_distrib()}} for the same law in
 orthogonal coordinates, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

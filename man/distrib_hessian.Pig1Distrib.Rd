@@ -27,7 +27,7 @@ A named list of three numeric vectors in \code{\link[=hess_names]{hess_names()}}
 \description{
 Returns the exact second derivatives of the log-mass in
 \eqn{(\mu, \sigma)}, read off columns \code{d20}, \code{d02} and \code{d11} of the
-compiled fourth-order kernel of \code{\link[=pig_hd_block]{pig_hd_block()}}.
+compiled kernel \code{pig1_hessian_cpp}.
 
 This is the \strong{observed} curvature at the data. The expected information has
 no closed form for this family and comes from
@@ -54,6 +54,6 @@ distrib_hessian(d, c(0, 3, 30), th)$mu_mu
 }
 \seealso{
 \code{\link[=distrib_gradient.Pig1Distrib]{distrib_gradient.Pig1Distrib()}} for the order below,
-\code{\link[=distrib_deriv3.Pig1Distrib]{distrib_deriv3.Pig1Distrib()}} for the order above, \code{\link[=pig_hd_block]{pig_hd_block()}} for
+\code{\link[=distrib_deriv3.Pig1Distrib]{distrib_deriv3.Pig1Distrib()}} for the order above, \code{pig1_hessian_cpp} for
 the kernel, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

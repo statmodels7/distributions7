@@ -120,7 +120,7 @@ static Jet2 jet_sqrt(const Jet2& f) {
 // largest; the derivatives are cumulants of the rising-factorial moments
 // m_r = E[k (k+1) ... (k+r-1)] under the normalized terms, with
 // S^(r)/S = (-1)^r m_r / alpha^r.
-static void psi_derivs(double y, double alpha, double h[5],
+static void psi_derivs(double y, double alpha, int order, double h[5],
                        double* logS = nullptr, double* A1out = nullptr) {
     if (y < 0.5) {
         h[0] = -alpha; h[1] = -1.0; h[2] = h[3] = h[4] = 0.0;
@@ -137,13 +137,19 @@ static void psi_derivs(double y, double alpha, double h[5],
             R::lgammafn(y - k) - k * l2a;
         if (la[k] > mx) mx = la[k];
     }
+    // Only the moments the requested order reads are accumulated: the
+    // value needs none of them, the score only the first.
     double W = 0, m1 = 0, m2 = 0, m3 = 0, m4 = 0;
     for (int k = 0; k < n; ++k) {
         double u = std::exp(la[k] - mx);
         W += u;
+        if (order < 1) continue;
         m1 += k * u;
+        if (order < 2) continue;
         m2 += k * (k + 1.0) * u;
+        if (order < 3) continue;
         m3 += k * (k + 1.0) * (k + 2.0) * u;
+        if (order < 4) continue;
         m4 += k * (k + 1.0) * (k + 2.0) * (k + 3.0) * u;
     }
     m1 /= W; m2 /= W; m3 /= W; m4 /= W;
@@ -158,10 +164,18 @@ static void psi_derivs(double y, double alpha, double h[5],
     // A1 is d log S / d alpha, of size y^2/alpha^2. Recovering it from
     // h[1] by adding one back is the same cancellation again.
     if (A1out) *A1out = A1;
+    // Every entry is written whatever the order, the unread ones as zero,
+    // so a caller that declares h[5] and asks for the value alone never
+    // reads an uninitialized double.
     h[0] = -alpha + mx + std::log(W);
+    h[1] = h[2] = h[3] = h[4] = 0.0;
+    if (order < 1) return;
     h[1] = -1.0 + A1;
+    if (order < 2) return;
     h[2] = A2 - A1 * A1;
+    if (order < 3) return;
     h[3] = A3 - 3.0 * A1 * A2 + 2.0 * A1 * A1 * A1;
+    if (order < 4) return;
     h[4] = A4 - 4.0 * A1 * A3 - 3.0 * A2 * A2 +
         12.0 * A1 * A1 * A2 - 6.0 * A1 * A1 * A1 * A1;
 }
@@ -175,7 +189,7 @@ static void write_row(NumericMatrix& out, int i, const Jet2& l) {
 
 // [[Rcpp::export]]
 NumericMatrix pig1_hd_jet_cpp(NumericVector y, NumericVector mu,
-                          NumericVector sigma) {
+                              NumericVector sigma) {
     int n = y.size();
     NumericMatrix out(n, 15);
     for (int i = 0; i < n; ++i) {
@@ -185,7 +199,7 @@ NumericMatrix pig1_hd_jet_cpp(NumericVector y, NumericVector mu,
         Jet2 c = jet_add(jet_const(1.0), jet_scale(jet_mul(mj, sj), 2.0));
         Jet2 al = jet_mul(jet_sqrt(c), jet_recip(sj));
         double h[5];
-        psi_derivs(yy, al.v[0][0], h);
+        psi_derivs(yy, al.v[0][0], 4, h);
         Jet2 l = jet_add(
             jet_add(jet_scale(jet_log(mj), yy),
                     jet_scale(jet_log(c), -yy / 2.0)),
@@ -198,7 +212,7 @@ NumericMatrix pig1_hd_jet_cpp(NumericVector y, NumericVector mu,
 
 // [[Rcpp::export]]
 NumericMatrix pig2_hd_jet_cpp(NumericVector y, NumericVector mu,
-                          NumericVector alpha) {
+                              NumericVector alpha) {
     int n = y.size();
     NumericMatrix out(n, 15);
     for (int i = 0; i < n; ++i) {
@@ -212,7 +226,7 @@ NumericMatrix pig2_hd_jet_cpp(NumericVector y, NumericVector mu,
                           jet_recip(jet_mul(aj, aj)));
         Jet2 c = jet_add(jet_const(1.0), jet_scale(jet_mul(mj, sj), 2.0));
         double h[5];
-        psi_derivs(yy, a0, h);
+        psi_derivs(yy, a0, 4, h);
         Jet2 l = jet_add(
             jet_add(jet_scale(jet_log(mj), yy),
                     jet_scale(jet_log(c), -yy / 2.0)),
@@ -228,66 +242,99 @@ NumericMatrix pig2_hd_jet_cpp(NumericVector y, NumericVector mu,
 // The explicit closed-form kernels: what the package methods run.
 // ---------------------------------------------------------------------------
 
-// [[Rcpp::export]]
-NumericMatrix pig1_hd_cpp(NumericVector y, NumericVector mu,
-                          NumericVector sigma,
-                          int threads = 1) {
-    int n = y.size();
-    NumericMatrix out(n, 15);
-    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
-        double yy = y[i], m = mu[i], sg = sigma[i];
+// The block's column layout, which the wrappers and the guard read:
+// order k occupies PIG_LEN[k] columns starting at PIG_OFF[k].
+static const int PIG_OFF[5] = {0, 1, 3, 6, 10};
+static const int PIG_LEN[5] = {1, 2, 3, 4, 5};
+
+// One row of the pig1 surface: the log-mass and its partials in (mu, sigma).
+//
+// The body is the block's, cut by order: each stage computes
+// the tables its own derivatives need and returns, so asking
+// for the value does not pay for four orders. With `only` the
+// stage's block is written at v[0]; without it the fifteen
+// columns are filled in the block's own layout.
+static inline void pig1_row(double yy, double m, double sg,
+                      int order, bool only, double* v) {
+    // The support test lives here, as it does in every other
+    // compiled discrete family: a response that is negative,
+    // fractional or not finite has no mass, and the kernel says so
+    // rather than leaving a caller to mask afterwards. The value
+    // reads -Inf, which is the log-mass there; a derivative reads
+    // NaN, there being no derivative to report.
+    if (!R_finite(yy) || yy < 0.0 || yy != std::floor(yy)) {
+        int lo = only ? PIG_OFF[order] : 0;
+        int k = only ? PIG_LEN[order] : PIG_OFF[order] + PIG_LEN[order];
+        for (int j = 0; j < k; ++j)
+            v[j] = (lo + j == 0) ? R_NegInf : R_NaN;
+        return;
+    }
         double c = 1.0 + 2.0 * sg * m;
         double s = std::sqrt(c);
-
         // partials of s = sqrt(c), with c_mu = 2 sg, c_sg = 2 m, c_musg = 2
         double sc = s * c, sc2 = sc * c, sc3 = sc2 * c;
-        double s_m = sg / s,            s_s = m / s;
-        double s_mm = -sg * sg / sc;
-        double s_ss = -m * m / sc;
-        double s_ms = 1.0 / s - sg * m / sc;
-        double s_mmm = 3.0 * sg * sg * sg / sc2;
-        double s_mms = -2.0 * sg / sc + 3.0 * sg * sg * m / sc2;
-        double s_mss = -2.0 * m / sc + 3.0 * m * m * sg / sc2;
-        double s_sss = 3.0 * m * m * m / sc2;
-        double s_mmmm = -15.0 * sg * sg * sg * sg / sc3;
-        double s_mmms = 9.0 * sg * sg / sc2 - 15.0 * sg * sg * sg * m / sc3;
-        double s_mmss = -2.0 / sc + 12.0 * sg * m / sc2 -
-            15.0 * sg * sg * m * m / sc3;
-        double s_msss = 9.0 * m * m / sc2 - 15.0 * m * m * m * sg / sc3;
-        double s_ssss = -15.0 * m * m * m * m / sc3;
-
         // alpha = s / sg by the Leibniz rule against sg^{-1}
         double g1 = 1.0 / sg, g2 = g1 * g1, g3 = g2 * g1, g4 = g3 * g1,
             g5 = g4 * g1;
         double a = s * g1;
+        double p[5], logS;
+        psi_derivs(yy, a, order, p, &logS);
+        double p1 = p[1], p2 = p[2], p3 = p[3], p4 = p[4];
+        // -(y/2) log c: log of a bilinear c, partition sum written out
+        double cm = 2.0 * sg, cs = 2.0 * m, cms = 2.0;
+        double ic = 1.0 / c, ic2 = ic * ic, ic3 = ic2 * ic, ic4 = ic3 * ic;
+        double h = -yy / 2.0;
+        // the elementary pure pieces
+        double im = 1.0 / m;
+        int w = 0;
+        // 1/sigma + psi(alpha) = (1 - s)/sigma + log S with s = sqrt(c),
+        // and 1 - s = (1 - c)/(1 + s) = -2 sigma mu/(1 + s), so the pair
+        // is -2 mu/(1 + s) + log S. The two terms it replaces are each of
+        // size 1/sigma while their difference is of size mu: written
+        // directly the value loses a digit per factor of ten in alpha and
+        // is worthless past sigma = 1e-15, where the mass reads one and
+        // the support no longer sums to one.
+        v[w + 0] = yy * std::log(m) + h * std::log(c) -
+            2.0 * m / (1.0 + s) + logS - R::lgammafn(yy + 1.0);
+        if (order == 0) return;
+        double s_m = sg / s,            s_s = m / s;
         double a_m = s_m * g1;
         double a_s = s_s * g1 - s * g2;
+        // psi(alpha(mu, sigma)) by Faa di Bruno, written out per component
+        double P_m = p1 * a_m;
+        double P_s = p1 * a_s;
+        double G_m = h * cm * ic;
+        double G_s = h * cs * ic;
+        w = only ? 0 : 1;
+        v[w + 0] = yy * im + G_m + P_m;
+        v[w + 1] = G_s - g2 + P_s;
+        if (order == 1) return;
+        double s_mm = -sg * sg / sc;
+        double s_ss = -m * m / sc;
+        double s_ms = 1.0 / s - sg * m / sc;
         double a_mm = s_mm * g1;
         double a_ms = s_ms * g1 - s_m * g2;
         double a_ss = s_ss * g1 - 2.0 * s_s * g2 + 2.0 * s * g3;
+        double P_mm = p2 * a_m * a_m + p1 * a_mm;
+        double P_ms = p2 * a_m * a_s + p1 * a_ms;
+        double P_ss = p2 * a_s * a_s + p1 * a_ss;
+        double G_mm = -h * cm * cm * ic2;
+        double G_ms = h * (cms * ic - cm * cs * ic2);
+        double G_ss = -h * cs * cs * ic2;
+        w = only ? 0 : 3;
+        v[w + 0] = -yy * im * im + G_mm + P_mm;
+        v[w + 1] = G_ms + P_ms;
+        v[w + 2] = G_ss + 2.0 * g3 + P_ss;
+        if (order == 2) return;
+        double s_mmm = 3.0 * sg * sg * sg / sc2;
+        double s_mms = -2.0 * sg / sc + 3.0 * sg * sg * m / sc2;
+        double s_mss = -2.0 * m / sc + 3.0 * m * m * sg / sc2;
+        double s_sss = 3.0 * m * m * m / sc2;
         double a_mmm = s_mmm * g1;
         double a_mms = s_mms * g1 - s_mm * g2;
         double a_mss = s_mss * g1 - 2.0 * s_ms * g2 + 2.0 * s_m * g3;
         double a_sss = s_sss * g1 - 3.0 * s_ss * g2 + 6.0 * s_s * g3 -
             6.0 * s * g4;
-        double a_mmmm = s_mmmm * g1;
-        double a_mmms = s_mmms * g1 - s_mmm * g2;
-        double a_mmss = s_mmss * g1 - 2.0 * s_mms * g2 + 2.0 * s_mm * g3;
-        double a_msss = s_msss * g1 - 3.0 * s_mss * g2 + 6.0 * s_ms * g3 -
-            6.0 * s_m * g4;
-        double a_ssss = s_ssss * g1 - 4.0 * s_sss * g2 + 12.0 * s_ss * g3 -
-            24.0 * s_s * g4 + 24.0 * s * g5;
-
-        double p[5], logS;
-        psi_derivs(yy, a, p, &logS);
-        double p1 = p[1], p2 = p[2], p3 = p[3], p4 = p[4];
-
-        // psi(alpha(mu, sigma)) by Faa di Bruno, written out per component
-        double P_m = p1 * a_m;
-        double P_s = p1 * a_s;
-        double P_mm = p2 * a_m * a_m + p1 * a_mm;
-        double P_ms = p2 * a_m * a_s + p1 * a_ms;
-        double P_ss = p2 * a_s * a_s + p1 * a_ss;
         double P_mmm = p3 * a_m * a_m * a_m + 3.0 * p2 * a_mm * a_m +
             p1 * a_mmm;
         double P_mms = p3 * a_m * a_m * a_s +
@@ -296,6 +343,31 @@ NumericMatrix pig1_hd_cpp(NumericVector y, NumericVector mu,
             p2 * (a_ss * a_m + 2.0 * a_ms * a_s) + p1 * a_mss;
         double P_sss = p3 * a_s * a_s * a_s + 3.0 * p2 * a_ss * a_s +
             p1 * a_sss;
+        double G_mmm = 2.0 * h * cm * cm * cm * ic3;
+        double G_mms = h * (-2.0 * cm * cms * ic2 +
+                            2.0 * cm * cm * cs * ic3);
+        double G_mss = h * (-2.0 * cs * cms * ic2 +
+                            2.0 * cs * cs * cm * ic3);
+        double G_sss = 2.0 * h * cs * cs * cs * ic3;
+        w = only ? 0 : 6;
+        v[w + 0] = 2.0 * yy * im * im * im + G_mmm + P_mmm;
+        v[w + 1] = G_mms + P_mms;
+        v[w + 2] = G_mss + P_mss;
+        v[w + 3] = G_sss - 6.0 * g4 + P_sss;
+        if (order == 3) return;
+        double s_mmmm = -15.0 * sg * sg * sg * sg / sc3;
+        double s_mmms = 9.0 * sg * sg / sc2 - 15.0 * sg * sg * sg * m / sc3;
+        double s_mmss = -2.0 / sc + 12.0 * sg * m / sc2 -
+            15.0 * sg * sg * m * m / sc3;
+        double s_msss = 9.0 * m * m / sc2 - 15.0 * m * m * m * sg / sc3;
+        double s_ssss = -15.0 * m * m * m * m / sc3;
+        double a_mmmm = s_mmmm * g1;
+        double a_mmms = s_mmms * g1 - s_mmm * g2;
+        double a_mmss = s_mmss * g1 - 2.0 * s_mms * g2 + 2.0 * s_mm * g3;
+        double a_msss = s_msss * g1 - 3.0 * s_mss * g2 + 6.0 * s_ms * g3 -
+            6.0 * s_m * g4;
+        double a_ssss = s_ssss * g1 - 4.0 * s_sss * g2 + 12.0 * s_ss * g3 -
+            24.0 * s_s * g4 + 24.0 * s * g5;
         double P_mmmm = p4 * a_m * a_m * a_m * a_m +
             6.0 * p3 * a_mm * a_m * a_m +
             p2 * (3.0 * a_mm * a_mm + 4.0 * a_mmm * a_m) + p1 * a_mmmm;
@@ -316,22 +388,6 @@ NumericMatrix pig1_hd_cpp(NumericVector y, NumericVector mu,
         double P_ssss = p4 * a_s * a_s * a_s * a_s +
             6.0 * p3 * a_ss * a_s * a_s +
             p2 * (3.0 * a_ss * a_ss + 4.0 * a_sss * a_s) + p1 * a_ssss;
-
-        // -(y/2) log c: log of a bilinear c, partition sum written out
-        double cm = 2.0 * sg, cs = 2.0 * m, cms = 2.0;
-        double ic = 1.0 / c, ic2 = ic * ic, ic3 = ic2 * ic, ic4 = ic3 * ic;
-        double h = -yy / 2.0;
-        double G_m = h * cm * ic;
-        double G_s = h * cs * ic;
-        double G_mm = -h * cm * cm * ic2;
-        double G_ms = h * (cms * ic - cm * cs * ic2);
-        double G_ss = -h * cs * cs * ic2;
-        double G_mmm = 2.0 * h * cm * cm * cm * ic3;
-        double G_mms = h * (-2.0 * cm * cms * ic2 +
-                            2.0 * cm * cm * cs * ic3);
-        double G_mss = h * (-2.0 * cs * cms * ic2 +
-                            2.0 * cs * cs * cm * ic3);
-        double G_sss = 2.0 * h * cs * cs * cs * ic3;
         double G_mmmm = -6.0 * h * cm * cm * cm * cm * ic4;
         double G_mmms = h * (6.0 * cm * cm * cms * ic3 -
                              6.0 * cm * cm * cm * cs * ic4);
@@ -341,45 +397,182 @@ NumericMatrix pig1_hd_cpp(NumericVector y, NumericVector mu,
         double G_msss = h * (6.0 * cs * cs * cms * ic3 -
                              6.0 * cs * cs * cs * cm * ic4);
         double G_ssss = -6.0 * h * cs * cs * cs * cs * ic4;
+        w = only ? 0 : 10;
+        v[w + 0] = -6.0 * yy * im * im * im * im + G_mmmm + P_mmmm;
+        v[w + 1] = G_mmms + P_mmms;
+        v[w + 2] = G_mmss + P_mmss;
+        v[w + 3] = G_msss + P_msss;
+        v[w + 4] = G_ssss + 24.0 * g5 + P_ssss;
+}
 
-        // the elementary pure pieces
-        double im = 1.0 / m;
-        // 1/sigma + psi(alpha) = (1 - s)/sigma + log S with s = sqrt(c),
-        // and 1 - s = (1 - c)/(1 + s) = -2 sigma mu/(1 + s), so the pair
-        // is -2 mu/(1 + s) + log S. The two terms it replaces are each of
-        // size 1/sigma while their difference is of size mu: written
-        // directly the value loses a digit per factor of ten in alpha and
-        // is worthless past sigma = 1e-15, where the mass reads one and
-        // the support no longer sums to one.
-        out(i, 0) = yy * std::log(m) + h * std::log(c) -
-            2.0 * m / (1.0 + s) + logS - R::lgammafn(yy + 1.0);
-        out(i, 1) = yy * im + G_m + P_m;
-        out(i, 2) = G_s - g2 + P_s;
-        out(i, 3) = -yy * im * im + G_mm + P_mm;
-        out(i, 4) = G_ms + P_ms;
-        out(i, 5) = G_ss + 2.0 * g3 + P_ss;
-        out(i, 6) = 2.0 * yy * im * im * im + G_mmm + P_mmm;
-        out(i, 7) = G_mms + P_mms;
-        out(i, 8) = G_mss + P_mss;
-        out(i, 9) = G_sss - 6.0 * g4 + P_sss;
-        out(i, 10) = -6.0 * yy * im * im * im * im + G_mmmm + P_mmmm;
-        out(i, 11) = G_mmms + P_mmms;
-        out(i, 12) = G_mmss + P_mmss;
-        out(i, 13) = G_msss + P_msss;
-        out(i, 14) = G_ssss + 24.0 * g5 + P_ssss;
+// [[Rcpp::export]]
+NumericVector pig1_pdf_cpp(NumericVector y, NumericVector mu,
+                           NumericVector sigma, int threads = 1) {
+    int n = y.size();
+    NumericVector out(n);
+    double* op = out.begin();
+    bool mu_scalar = (mu.size() == 1), p2_scalar = (sigma.size() == 1);
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = sigma.begin();
+    // the scalar branch is read INSIDE the loop, never hoisted into a
+    // variable the workers write: that is the data race d7_par.h warns
+    // of, and it shows only where the parameter varies by observation.
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double v[1];
+        pig1_row(yp[i], mu_scalar ? mp[0] : mp[i],
+                 p2_scalar ? pp[0] : pp[i], 0, true, v);
+        op[i] = v[0];
     });
     return out;
 }
 
 // [[Rcpp::export]]
-NumericMatrix pig2_hd_cpp(NumericVector y, NumericVector mu,
-                          NumericVector alpha,
-                          int threads = 1) {
+List pig1_gradient_cpp(NumericVector y, NumericVector mu,
+                       NumericVector sigma, int threads = 1) {
+    int n = y.size();
+    NumericVector o0(n), o1(n);
+    double *d0 = o0.begin(), *d1 = o1.begin();
+    bool mu_scalar = (mu.size() == 1), p2_scalar = (sigma.size() == 1);
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = sigma.begin();
+    // the scalar branch is read INSIDE the loop, never hoisted into a
+    // variable the workers write: that is the data race d7_par.h warns
+    // of, and it shows only where the parameter varies by observation.
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double v[2];
+        pig1_row(yp[i], mu_scalar ? mp[0] : mp[i],
+                 p2_scalar ? pp[0] : pp[i], 1, true, v);
+        d0[i] = v[0];
+        d1[i] = v[1];
+    });
+    return List::create(
+        Named("mu") = o0,
+        Named("sigma") = o1
+    );
+}
+
+// [[Rcpp::export]]
+List pig1_hessian_cpp(NumericVector y, NumericVector mu,
+                      NumericVector sigma, int threads = 1) {
+    int n = y.size();
+    NumericVector o0(n), o1(n), o2(n);
+    double *d0 = o0.begin(), *d1 = o1.begin(), *d2 = o2.begin();
+    bool mu_scalar = (mu.size() == 1), p2_scalar = (sigma.size() == 1);
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = sigma.begin();
+    // the scalar branch is read INSIDE the loop, never hoisted into a
+    // variable the workers write: that is the data race d7_par.h warns
+    // of, and it shows only where the parameter varies by observation.
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double v[3];
+        pig1_row(yp[i], mu_scalar ? mp[0] : mp[i],
+                 p2_scalar ? pp[0] : pp[i], 2, true, v);
+        d0[i] = v[0];
+        d1[i] = v[1];
+        d2[i] = v[2];
+    });
+    return List::create(
+        Named("mu_mu") = o0,
+        Named("sigma_sigma") = o2,
+        Named("mu_sigma") = o1
+    );
+}
+
+// [[Rcpp::export]]
+List pig1_deriv3_cpp(NumericVector y, NumericVector mu,
+                     NumericVector sigma, int threads = 1) {
+    int n = y.size();
+    NumericVector o0(n), o1(n), o2(n), o3(n);
+    double *d0 = o0.begin(), *d1 = o1.begin(), *d2 = o2.begin(),
+        *d3 = o3.begin();
+    bool mu_scalar = (mu.size() == 1), p2_scalar = (sigma.size() == 1);
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = sigma.begin();
+    // the scalar branch is read INSIDE the loop, never hoisted into a
+    // variable the workers write: that is the data race d7_par.h warns
+    // of, and it shows only where the parameter varies by observation.
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double v[4];
+        pig1_row(yp[i], mu_scalar ? mp[0] : mp[i],
+                 p2_scalar ? pp[0] : pp[i], 3, true, v);
+        d0[i] = v[0];
+        d1[i] = v[1];
+        d2[i] = v[2];
+        d3[i] = v[3];
+    });
+    return List::create(
+        Named("mu_mu_mu") = o0,
+        Named("mu_mu_sigma") = o1,
+        Named("mu_sigma_sigma") = o2,
+        Named("sigma_sigma_sigma") = o3
+    );
+}
+
+// [[Rcpp::export]]
+List pig1_deriv4_cpp(NumericVector y, NumericVector mu,
+                     NumericVector sigma, int threads = 1) {
+    int n = y.size();
+    NumericVector o0(n), o1(n), o2(n), o3(n), o4(n);
+    double *d0 = o0.begin(), *d1 = o1.begin(), *d2 = o2.begin(),
+        *d3 = o3.begin(), *d4 = o4.begin();
+    bool mu_scalar = (mu.size() == 1), p2_scalar = (sigma.size() == 1);
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = sigma.begin();
+    // the scalar branch is read INSIDE the loop, never hoisted into a
+    // variable the workers write: that is the data race d7_par.h warns
+    // of, and it shows only where the parameter varies by observation.
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double v[5];
+        pig1_row(yp[i], mu_scalar ? mp[0] : mp[i],
+                 p2_scalar ? pp[0] : pp[i], 4, true, v);
+        d0[i] = v[0];
+        d1[i] = v[1];
+        d2[i] = v[2];
+        d3[i] = v[3];
+        d4[i] = v[4];
+    });
+    return List::create(
+        Named("mu_mu_mu_mu") = o0,
+        Named("mu_mu_mu_sigma") = o1,
+        Named("mu_mu_sigma_sigma") = o2,
+        Named("mu_sigma_sigma_sigma") = o3,
+        Named("sigma_sigma_sigma_sigma") = o4
+    );
+}
+
+// The fifteen-column block, kept as the reference the split
+// kernels are held to and as the route the jet twin compares
+// against. It runs the same body at order four.
+// [[Rcpp::export]]
+NumericMatrix pig1_hd_cpp(NumericVector y, NumericVector mu,
+                          NumericVector sigma, int threads = 1) {
     int n = y.size();
     NumericMatrix out(n, 15);
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
-        double yy = y[i], m = mu[i], aa = alpha[i];
+        double v[15];
+        pig1_row(y[i], mu[i], sigma[i], 4, false, v);
+        for (int j = 0; j < 15; ++j) out(i, j) = v[j];
+    });
+    return out;
+}
 
+// One row of the pig2 surface: the log-mass and its partials in (mu, alpha).
+//
+// The body is the block's, cut by order: each stage computes
+// the tables its own derivatives need and returns, so asking
+// for the value does not pay for four orders. With `only` the
+// stage's block is written at v[0]; without it the fifteen
+// columns are filled in the block's own layout.
+static inline void pig2_row(double yy, double m, double aa,
+                      int order, bool only, double* v) {
+    // The support test lives here, as it does in every other
+    // compiled discrete family: a response that is negative,
+    // fractional or not finite has no mass, and the kernel says so
+    // rather than leaving a caller to mask afterwards. The value
+    // reads -Inf, which is the log-mass there; a derivative reads
+    // NaN, there being no derivative to report.
+    if (!R_finite(yy) || yy < 0.0 || yy != std::floor(yy)) {
+        int lo = only ? PIG_OFF[order] : 0;
+        int k = only ? PIG_LEN[order] : PIG_OFF[order] + PIG_LEN[order];
+        for (int j = 0; j < k; ++j)
+            v[j] = (lo + j == 0) ? R_NegInf : R_NaN;
+        return;
+    }
         // r = sqrt(m^2 + a^2) and its partials, written in r_m and r_a --
         // which lie in [0, 1] -- against powers of 1/r. The direct form
         // divides by r^3, r^5 and r^7 and multiplies by a^3 and a^4, and
@@ -388,19 +581,6 @@ NumericMatrix pig2_hd_cpp(NumericVector y, NumericVector mu,
         // r itself finite where m^2 + a^2 does not.
         double r = std::hypot(m, aa);
         double ir = 1.0 / r, ir2 = ir * ir, ir3 = ir2 * ir;
-        double r_m = m * ir, r_a = aa * ir;
-        double rm2 = r_m * r_m, ra2 = r_a * r_a;
-        double r_mm = ra2 * ir, r_aa = rm2 * ir, r_ma = -r_m * r_a * ir;
-        double r_mmm = -3.0 * ra2 * r_m * ir2;
-        double r_mma = (2.0 * r_a - 3.0 * ra2 * r_a) * ir2;
-        double r_maa = (-r_m + 3.0 * r_m * ra2) * ir2;
-        double r_aaa = -3.0 * rm2 * r_a * ir2;
-        double r_mmmm = (-3.0 * ra2 + 15.0 * ra2 * rm2) * ir3;
-        double r_mmma = (-6.0 * r_a * r_m + 15.0 * ra2 * r_a * r_m) * ir3;
-        double r_mmaa = (2.0 - 15.0 * ra2 + 15.0 * ra2 * ra2) * ir3;
-        double r_maaa = (9.0 * r_m * r_a - 15.0 * r_m * ra2 * r_a) * ir3;
-        double r_aaaa = (-3.0 * rm2 + 15.0 * rm2 * ra2) * ir3;
-
         // sigma = (m + r) * a^{-2} by the Leibniz rule; u = m + r. The
         // powers of a are formed from ia so that a^4 cannot overflow;
         // where the true partial is below the smallest double the ladder
@@ -410,30 +590,10 @@ NumericMatrix pig2_hd_cpp(NumericVector y, NumericVector mu,
         double v1 = -2.0 * v0 * ia, v2 = 6.0 * v0 * v0,
             v3 = -24.0 * v0 * v0 * ia,
             v4 = 120.0 * v0 * v0 * v0;
-        double u = m + r, u_m = 1.0 + r_m;
-        double S_m = u_m * v0;
-        double S_a = r_a * v0 + u * v1;
-        double S_mm = r_mm * v0;
-        double S_ma = r_ma * v0 + u_m * v1;
-        double S_aa = r_aa * v0 + 2.0 * r_a * v1 + u * v2;
-        double S_mmm = r_mmm * v0;
-        double S_mma = r_mma * v0 + r_mm * v1;
-        double S_maa = r_maa * v0 + 2.0 * r_ma * v1 + u_m * v2;
-        double S_aaa = r_aaa * v0 + 3.0 * r_aa * v1 + 3.0 * r_a * v2 +
-            u * v3;
-        double S_mmmm = r_mmmm * v0;
-        double S_mmma = r_mmma * v0 + r_mmm * v1;
-        double S_mmaa = r_mmaa * v0 + 2.0 * r_mma * v1 + r_mm * v2;
-        double S_maaa = r_maaa * v0 + 3.0 * r_maa * v1 + 3.0 * r_ma * v2 +
-            u_m * v3;
-        double S_aaaa = r_aaaa * v0 + 4.0 * r_aaa * v1 + 6.0 * r_aa * v2 +
-            4.0 * r_a * v3 + u * v4;
-
         // b = 1/sigma = a / (t + sqrt(1 + t^2)) with t = m/a, which is
         // the same number as a^2/(m + r) with neither a^2 nor m + r formed.
         double t = m * ia, wt = std::hypot(1.0, t);
         double b = aa / (t + wt);
-
         // F(sigma) = -y log sigma + 1/sigma has F_k = d^k F / dsigma^k
         // carrying b^k, and every Faa di Bruno term of order k has exactly
         // k factors S: the powers cancel between them. The expansion is
@@ -445,19 +605,77 @@ NumericMatrix pig2_hd_cpp(NumericVector y, NumericVector mu,
         double Q2 = yy + 2.0 * b;
         double Q3 = -2.0 * yy - 6.0 * b;
         double Q4 = 6.0 * yy + 24.0 * b;
+        double p[5], logS, A1;
+        psi_derivs(yy, aa, order, p, &logS, &A1);
+        // pure pieces: y log m, -y log(a sigma) and 1/sigma - alpha.
+        //
+        // a sigma = (m + r)/a = t + sqrt(1 + t^2), so -y log(a sigma) is
+        // -y asinh(t): written as -y log a - y log sigma it is a
+        // difference of two quantities of size log a.
+        //
+        // 1/sigma - alpha = a(a - m - r)/(m + r), and alpha - r =
+        // -m^2/(alpha + r), so the pair is
+        //     -m [a/(m + r)] [1 + m/(a + r)],
+        // both factors bounded, tending to -m as alpha grows, which is
+        // the Poisson term. Written directly it is a difference of two
+        // quantities of size alpha whose value is of size mu: past
+        // alpha = 1e16 the log-mass read zero, that is a probability of
+        // one, and at 1e18 it read +128, one ulp of 1e18, so the mass
+        // over the support summed to Inf. A fit maximizing that reward
+        // drove the dispersion out of range instead of stopping.
+        double im = 1.0 / m;
+        double core = -m * (aa / (m + r)) * (1.0 + m / (aa + r));
+        int w = 0;
+        v[w + 0] = yy * std::log(m) - yy * std::asinh(t) + core + logS -
+            R::lgammafn(yy + 1.0);
+        if (order == 0) return;
+        double r_m = m * ir, r_a = aa * ir;
+        double rm2 = r_m * r_m, ra2 = r_a * r_a;
+        double u = m + r, u_m = 1.0 + r_m;
+        double S_m = u_m * v0;
+        double S_a = r_a * v0 + u * v1;
         double T_m = b * S_m, T_a = b * S_a;
-        double T_mm = b * S_mm, T_ma = b * S_ma, T_aa = b * S_aa;
-        double T_mmm = b * S_mmm, T_mma = b * S_mma, T_maa = b * S_maa,
-            T_aaa = b * S_aaa;
-        double T_mmmm = b * S_mmmm, T_mmma = b * S_mmma,
-            T_mmaa = b * S_mmaa, T_maaa = b * S_maaa, T_aaaa = b * S_aaaa;
-
         // F(sigma(m, a)) by the same written-out Faa di Bruno
         double P_m = Q1 * T_m;
-        double P_a = Q1 * T_a;
+        // The score in alpha, in closed form for the same reason the value
+        // is. Since r^2 - m^2 = alpha^2 the pair is 1/sigma - alpha =
+        // (r - m) - alpha, and r - alpha = m^2/(r + alpha), so its
+        // derivative is -m^2/(r(r + alpha)) = -r_m m/(r + alpha); the
+        // other piece, -y asinh(m/alpha), gives y m/(alpha r). Both are of
+        // size alpha^-2, which is what the score is. Assembled as
+        // -y/alpha + psi'(alpha) + F_1 S_a the three terms are each of
+        // size one: measured, the score was noise past alpha = 1e8 and
+        // read exactly -1 past 1e162, where 1/alpha^2 leaves the doubles,
+        // so a search saw a slope where the surface is flat.
+        double dD_a = -r_m * (m / (r + aa));
+        w = only ? 0 : 1;
+        v[w + 0] = yy * im + P_m;
+        v[w + 1] = yy * m * ir * ia + A1 + dD_a;
+        if (order == 1) return;
+        double r_mm = ra2 * ir, r_aa = rm2 * ir, r_ma = -r_m * r_a * ir;
+        double S_mm = r_mm * v0;
+        double S_ma = r_ma * v0 + u_m * v1;
+        double S_aa = r_aa * v0 + 2.0 * r_a * v1 + u * v2;
+        double T_mm = b * S_mm, T_ma = b * S_ma, T_aa = b * S_aa;
         double P_mm = Q2 * T_m * T_m + Q1 * T_mm;
         double P_ma = Q2 * T_m * T_a + Q1 * T_ma;
         double P_aa = Q2 * T_a * T_a + Q1 * T_aa;
+        w = only ? 0 : 3;
+        v[w + 0] = -yy * im * im + P_mm;
+        v[w + 1] = P_ma;
+        v[w + 2] = yy * ia * ia + p[2] + P_aa;
+        if (order == 2) return;
+        double r_mmm = -3.0 * ra2 * r_m * ir2;
+        double r_mma = (2.0 * r_a - 3.0 * ra2 * r_a) * ir2;
+        double r_maa = (-r_m + 3.0 * r_m * ra2) * ir2;
+        double r_aaa = -3.0 * rm2 * r_a * ir2;
+        double S_mmm = r_mmm * v0;
+        double S_mma = r_mma * v0 + r_mm * v1;
+        double S_maa = r_maa * v0 + 2.0 * r_ma * v1 + u_m * v2;
+        double S_aaa = r_aaa * v0 + 3.0 * r_aa * v1 + 3.0 * r_a * v2 +
+            u * v3;
+        double T_mmm = b * S_mmm, T_mma = b * S_mma, T_maa = b * S_maa,
+            T_aaa = b * S_aaa;
         double P_mmm = Q3 * T_m * T_m * T_m + 3.0 * Q2 * T_mm * T_m +
             Q1 * T_mmm;
         double P_mma = Q3 * T_m * T_m * T_a +
@@ -466,6 +684,26 @@ NumericMatrix pig2_hd_cpp(NumericVector y, NumericVector mu,
             Q2 * (T_aa * T_m + 2.0 * T_ma * T_a) + Q1 * T_maa;
         double P_aaa = Q3 * T_a * T_a * T_a + 3.0 * Q2 * T_aa * T_a +
             Q1 * T_aaa;
+        w = only ? 0 : 6;
+        v[w + 0] = 2.0 * yy * im * im * im + P_mmm;
+        v[w + 1] = P_mma;
+        v[w + 2] = P_maa;
+        v[w + 3] = -2.0 * yy * ia * ia * ia + p[3] + P_aaa;
+        if (order == 3) return;
+        double r_mmmm = (-3.0 * ra2 + 15.0 * ra2 * rm2) * ir3;
+        double r_mmma = (-6.0 * r_a * r_m + 15.0 * ra2 * r_a * r_m) * ir3;
+        double r_mmaa = (2.0 - 15.0 * ra2 + 15.0 * ra2 * ra2) * ir3;
+        double r_maaa = (9.0 * r_m * r_a - 15.0 * r_m * ra2 * r_a) * ir3;
+        double r_aaaa = (-3.0 * rm2 + 15.0 * rm2 * ra2) * ir3;
+        double S_mmmm = r_mmmm * v0;
+        double S_mmma = r_mmma * v0 + r_mmm * v1;
+        double S_mmaa = r_mmaa * v0 + 2.0 * r_mma * v1 + r_mm * v2;
+        double S_maaa = r_maaa * v0 + 3.0 * r_maa * v1 + 3.0 * r_ma * v2 +
+            u_m * v3;
+        double S_aaaa = r_aaaa * v0 + 4.0 * r_aaa * v1 + 6.0 * r_aa * v2 +
+            4.0 * r_a * v3 + u * v4;
+        double T_mmmm = b * S_mmmm, T_mmma = b * S_mmma,
+            T_mmaa = b * S_mmaa, T_maaa = b * S_maaa, T_aaaa = b * S_aaaa;
         double P_mmmm = Q4 * T_m * T_m * T_m * T_m +
             6.0 * Q3 * T_mm * T_m * T_m +
             Q2 * (3.0 * T_mm * T_mm + 4.0 * T_mmm * T_m) + Q1 * T_mmmm;
@@ -486,55 +724,156 @@ NumericMatrix pig2_hd_cpp(NumericVector y, NumericVector mu,
         double P_aaaa = Q4 * T_a * T_a * T_a * T_a +
             6.0 * Q3 * T_aa * T_a * T_a +
             Q2 * (3.0 * T_aa * T_aa + 4.0 * T_aaa * T_a) + Q1 * T_aaaa;
+        w = only ? 0 : 10;
+        v[w + 0] = -6.0 * yy * im * im * im * im + P_mmmm;
+        v[w + 1] = P_mmma;
+        v[w + 2] = P_mmaa;
+        v[w + 3] = P_maaa;
+        v[w + 4] = 6.0 * yy * ia * ia * ia * ia + p[4] + P_aaaa;
+}
 
-        double p[5], logS, A1;
-        psi_derivs(yy, aa, p, &logS, &A1);
+// [[Rcpp::export]]
+NumericVector pig2_pdf_cpp(NumericVector y, NumericVector mu,
+                           NumericVector alpha, int threads = 1) {
+    int n = y.size();
+    NumericVector out(n);
+    double* op = out.begin();
+    bool mu_scalar = (mu.size() == 1), p2_scalar = (alpha.size() == 1);
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = alpha.begin();
+    // the scalar branch is read INSIDE the loop, never hoisted into a
+    // variable the workers write: that is the data race d7_par.h warns
+    // of, and it shows only where the parameter varies by observation.
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double v[1];
+        pig2_row(yp[i], mu_scalar ? mp[0] : mp[i],
+                 p2_scalar ? pp[0] : pp[i], 0, true, v);
+        op[i] = v[0];
+    });
+    return out;
+}
 
-        // pure pieces: y log m, -y log(a sigma) and 1/sigma - alpha.
-        //
-        // a sigma = (m + r)/a = t + sqrt(1 + t^2), so -y log(a sigma) is
-        // -y asinh(t): written as -y log a - y log sigma it is a
-        // difference of two quantities of size log a.
-        //
-        // 1/sigma - alpha = a(a - m - r)/(m + r), and alpha - r =
-        // -m^2/(alpha + r), so the pair is
-        //     -m [a/(m + r)] [1 + m/(a + r)],
-        // both factors bounded, tending to -m as alpha grows, which is
-        // the Poisson term. Written directly it is a difference of two
-        // quantities of size alpha whose value is of size mu: past
-        // alpha = 1e16 the log-mass read zero, that is a probability of
-        // one, and at 1e18 it read +128, one ulp of 1e18, so the mass
-        // over the support summed to Inf. A fit maximizing that reward
-        // drove the dispersion out of range instead of stopping.
-        double im = 1.0 / m;
-        double core = -m * (aa / (m + r)) * (1.0 + m / (aa + r));
-        out(i, 0) = yy * std::log(m) - yy * std::asinh(t) + core + logS -
-            R::lgammafn(yy + 1.0);
-        out(i, 1) = yy * im + P_m;
-        // The score in alpha, in closed form for the same reason the value
-        // is. Since r^2 - m^2 = alpha^2 the pair is 1/sigma - alpha =
-        // (r - m) - alpha, and r - alpha = m^2/(r + alpha), so its
-        // derivative is -m^2/(r(r + alpha)) = -r_m m/(r + alpha); the
-        // other piece, -y asinh(m/alpha), gives y m/(alpha r). Both are of
-        // size alpha^-2, which is what the score is. Assembled as
-        // -y/alpha + psi'(alpha) + F_1 S_a the three terms are each of
-        // size one: measured, the score was noise past alpha = 1e8 and
-        // read exactly -1 past 1e162, where 1/alpha^2 leaves the doubles,
-        // so a search saw a slope where the surface is flat.
-        double dD_a = -r_m * (m / (r + aa));
-        out(i, 2) = yy * m * ir * ia + A1 + dD_a;
-        out(i, 3) = -yy * im * im + P_mm;
-        out(i, 4) = P_ma;
-        out(i, 5) = yy * ia * ia + p[2] + P_aa;
-        out(i, 6) = 2.0 * yy * im * im * im + P_mmm;
-        out(i, 7) = P_mma;
-        out(i, 8) = P_maa;
-        out(i, 9) = -2.0 * yy * ia * ia * ia + p[3] + P_aaa;
-        out(i, 10) = -6.0 * yy * im * im * im * im + P_mmmm;
-        out(i, 11) = P_mmma;
-        out(i, 12) = P_mmaa;
-        out(i, 13) = P_maaa;
-        out(i, 14) = 6.0 * yy * ia * ia * ia * ia + p[4] + P_aaaa;
+// [[Rcpp::export]]
+List pig2_gradient_cpp(NumericVector y, NumericVector mu,
+                       NumericVector alpha, int threads = 1) {
+    int n = y.size();
+    NumericVector o0(n), o1(n);
+    double *d0 = o0.begin(), *d1 = o1.begin();
+    bool mu_scalar = (mu.size() == 1), p2_scalar = (alpha.size() == 1);
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = alpha.begin();
+    // the scalar branch is read INSIDE the loop, never hoisted into a
+    // variable the workers write: that is the data race d7_par.h warns
+    // of, and it shows only where the parameter varies by observation.
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double v[2];
+        pig2_row(yp[i], mu_scalar ? mp[0] : mp[i],
+                 p2_scalar ? pp[0] : pp[i], 1, true, v);
+        d0[i] = v[0];
+        d1[i] = v[1];
+    });
+    return List::create(
+        Named("mu") = o0,
+        Named("alpha") = o1
+    );
+}
+
+// [[Rcpp::export]]
+List pig2_hessian_cpp(NumericVector y, NumericVector mu,
+                      NumericVector alpha, int threads = 1) {
+    int n = y.size();
+    NumericVector o0(n), o1(n), o2(n);
+    double *d0 = o0.begin(), *d1 = o1.begin(), *d2 = o2.begin();
+    bool mu_scalar = (mu.size() == 1), p2_scalar = (alpha.size() == 1);
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = alpha.begin();
+    // the scalar branch is read INSIDE the loop, never hoisted into a
+    // variable the workers write: that is the data race d7_par.h warns
+    // of, and it shows only where the parameter varies by observation.
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double v[3];
+        pig2_row(yp[i], mu_scalar ? mp[0] : mp[i],
+                 p2_scalar ? pp[0] : pp[i], 2, true, v);
+        d0[i] = v[0];
+        d1[i] = v[1];
+        d2[i] = v[2];
+    });
+    return List::create(
+        Named("mu_mu") = o0,
+        Named("alpha_alpha") = o2,
+        Named("mu_alpha") = o1
+    );
+}
+
+// [[Rcpp::export]]
+List pig2_deriv3_cpp(NumericVector y, NumericVector mu,
+                     NumericVector alpha, int threads = 1) {
+    int n = y.size();
+    NumericVector o0(n), o1(n), o2(n), o3(n);
+    double *d0 = o0.begin(), *d1 = o1.begin(), *d2 = o2.begin(),
+        *d3 = o3.begin();
+    bool mu_scalar = (mu.size() == 1), p2_scalar = (alpha.size() == 1);
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = alpha.begin();
+    // the scalar branch is read INSIDE the loop, never hoisted into a
+    // variable the workers write: that is the data race d7_par.h warns
+    // of, and it shows only where the parameter varies by observation.
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double v[4];
+        pig2_row(yp[i], mu_scalar ? mp[0] : mp[i],
+                 p2_scalar ? pp[0] : pp[i], 3, true, v);
+        d0[i] = v[0];
+        d1[i] = v[1];
+        d2[i] = v[2];
+        d3[i] = v[3];
+    });
+    return List::create(
+        Named("mu_mu_mu") = o0,
+        Named("mu_mu_alpha") = o1,
+        Named("mu_alpha_alpha") = o2,
+        Named("alpha_alpha_alpha") = o3
+    );
+}
+
+// [[Rcpp::export]]
+List pig2_deriv4_cpp(NumericVector y, NumericVector mu,
+                     NumericVector alpha, int threads = 1) {
+    int n = y.size();
+    NumericVector o0(n), o1(n), o2(n), o3(n), o4(n);
+    double *d0 = o0.begin(), *d1 = o1.begin(), *d2 = o2.begin(),
+        *d3 = o3.begin(), *d4 = o4.begin();
+    bool mu_scalar = (mu.size() == 1), p2_scalar = (alpha.size() == 1);
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = alpha.begin();
+    // the scalar branch is read INSIDE the loop, never hoisted into a
+    // variable the workers write: that is the data race d7_par.h warns
+    // of, and it shows only where the parameter varies by observation.
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double v[5];
+        pig2_row(yp[i], mu_scalar ? mp[0] : mp[i],
+                 p2_scalar ? pp[0] : pp[i], 4, true, v);
+        d0[i] = v[0];
+        d1[i] = v[1];
+        d2[i] = v[2];
+        d3[i] = v[3];
+        d4[i] = v[4];
+    });
+    return List::create(
+        Named("mu_mu_mu_mu") = o0,
+        Named("mu_mu_mu_alpha") = o1,
+        Named("mu_mu_alpha_alpha") = o2,
+        Named("mu_alpha_alpha_alpha") = o3,
+        Named("alpha_alpha_alpha_alpha") = o4
+    );
+}
+
+// The fifteen-column block, kept as the reference the split
+// kernels are held to and as the route the jet twin compares
+// against. It runs the same body at order four.
+// [[Rcpp::export]]
+NumericMatrix pig2_hd_cpp(NumericVector y, NumericVector mu,
+                          NumericVector alpha, int threads = 1) {
+    int n = y.size();
+    NumericMatrix out(n, 15);
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double v[15];
+        pig2_row(y[i], mu[i], alpha[i], 4, false, v);
+        for (int j = 0; j < 15; ++j) out(i, j) = v[j];
     });
     return out;
 }

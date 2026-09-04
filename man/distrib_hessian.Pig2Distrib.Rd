@@ -27,7 +27,7 @@ A named list of three numeric vectors in \code{\link[=hess_names]{hess_names()}}
 \description{
 Returns the exact second derivatives of the log-mass in
 \eqn{(\mu, \alpha)}, read off columns \code{d20}, \code{d02} and \code{d11} of the compiled
-fourth-order kernel of \code{\link[=pig_hd_block]{pig_hd_block()}}.
+kernel \code{pig2_hessian_cpp}.
 
 The \strong{observed} mixed entry is not zero at any single observation; what
 vanishes is its expectation. Measured at \eqn{\mu = 3},
@@ -57,6 +57,6 @@ c(observed = h$mu_alpha[1],
 }
 \seealso{
 \code{\link[=distrib_gradient.Pig2Distrib]{distrib_gradient.Pig2Distrib()}} for the order below,
-\code{\link[=distrib_deriv3.Pig2Distrib]{distrib_deriv3.Pig2Distrib()}} for the order above, \code{\link[=pig_hd_block]{pig_hd_block()}} for
+\code{\link[=distrib_deriv3.Pig2Distrib]{distrib_deriv3.Pig2Distrib()}} for the order above, \code{pig2_hessian_cpp} for
 the kernel, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

@@ -37,7 +37,7 @@ A named list of five numeric vectors: \code{mu_mu_mu_mu},
 \description{
 Returns the exact fourth derivatives of the log-mass in
 \eqn{(\mu, \sigma)}, read off the last five columns of the compiled kernel
-of \code{\link[=pig_hd_block]{pig_hd_block()}}. The kernel is a fourth-order one throughout, so this is
+of \code{pig1_deriv4_cpp}. The kernel is asked for this order alone, so this is
 the order it was written for and it costs the same as the score.
 
 With \code{expected = TRUE} the value is an expectation and is not closed form,
@@ -67,5 +67,5 @@ rbind(score = system.time(distrib_gradient(d, x, th))[["elapsed"]],
 }
 \seealso{
 \code{\link[=distrib_deriv3.Pig1Distrib]{distrib_deriv3.Pig1Distrib()}} for the order below,
-\code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel, and \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
+\code{pig1_deriv4_cpp} for the kernel, and \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

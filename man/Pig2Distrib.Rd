@@ -94,5 +94,5 @@ rbind(pig2 = distrib_pdf(d, 0:5, list(mu = 3, alpha = al)),
 \code{\link[=pig2_distrib]{pig2_distrib()}} to build one;
 \code{\link[=pig1_distrib]{pig1_distrib()}} for the mean-dispersion parametrization;
 \code{\link[=pig2_sigma]{pig2_sigma()}} for the map between them;
-\code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel all five derivative methods read.
+the compiled kernels for the kernel all five derivative methods read.
 }

@@ -92,5 +92,5 @@ sum(distrib_pdf(d, 0:300, th))
 \code{\link[=pig1_distrib]{pig1_distrib()}} to build one;
 \code{\link[=pig2_distrib]{pig2_distrib()}} for the parametrization whose two parameters are
 orthogonal; \code{\link[=negbin2_distrib]{negbin2_distrib()}} for the other overdispersed count family;
-\code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel all five derivative methods read.
+the compiled kernels for the kernel all five derivative methods read.
 }

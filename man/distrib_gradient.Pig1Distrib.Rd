@@ -27,8 +27,8 @@ length of the recycled inputs.
 }
 \description{
 Returns the exact first derivatives of the log-mass in \eqn{(\mu, \sigma)},
-read off columns \code{d10} and \code{d01} of the compiled fourth-order kernel of
-\code{\link[=pig_hd_block]{pig_hd_block()}}. Nothing is differenced: the kernel writes every partial
+read off columns \code{d10} and \code{d01} of the compiled kernel of
+\code{pig1_gradient_cpp}. Nothing is differenced: the kernel writes every partial
 out in closed form from the finite Bessel sum.
 }
 \section{Notation}{
@@ -54,7 +54,7 @@ rbind(analytic = vapply(g, sum, 0),
 sum(distrib_expected_hessian(d, 0:200, th, approx = "bartlett")$mu_sigma)
 }
 \seealso{
-\code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel and the closed form it evaluates,
+\code{pig1_gradient_cpp} for the kernel and the closed form it evaluates,
 \code{\link[=distrib_hessian.Pig1Distrib]{distrib_hessian.Pig1Distrib()}} for the second derivatives, and
 \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

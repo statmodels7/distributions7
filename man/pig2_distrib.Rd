@@ -51,7 +51,7 @@ own \eqn{\sigma_2}, which coincides with this \eqn{\alpha}.
 By the same compiled kernel as \code{\link[=pig1_distrib]{pig1_distrib()}}, with \eqn{\alpha} as a
 variable of its own, so the Bessel argument needs no chain rule at all.
 Every partial to fourth order is exact and comes out of one pass; see
-\code{\link[=pig_hd_block]{pig_hd_block()}}. The expected information has no closed form and goes
+the compiled kernels. The expected information has no closed form and goes
 through \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
 }
 

@@ -545,8 +545,48 @@ pig2_hd_jet_cpp <- function(y, mu, alpha) {
     .Call(`_distributions7_pig2_hd_jet_cpp`, y, mu, alpha)
 }
 
+pig1_pdf_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_pig1_pdf_cpp`, y, mu, sigma, threads)
+}
+
+pig1_gradient_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_pig1_gradient_cpp`, y, mu, sigma, threads)
+}
+
+pig1_hessian_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_pig1_hessian_cpp`, y, mu, sigma, threads)
+}
+
+pig1_deriv3_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_pig1_deriv3_cpp`, y, mu, sigma, threads)
+}
+
+pig1_deriv4_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_pig1_deriv4_cpp`, y, mu, sigma, threads)
+}
+
 pig1_hd_cpp <- function(y, mu, sigma, threads = 1L) {
     .Call(`_distributions7_pig1_hd_cpp`, y, mu, sigma, threads)
+}
+
+pig2_pdf_cpp <- function(y, mu, alpha, threads = 1L) {
+    .Call(`_distributions7_pig2_pdf_cpp`, y, mu, alpha, threads)
+}
+
+pig2_gradient_cpp <- function(y, mu, alpha, threads = 1L) {
+    .Call(`_distributions7_pig2_gradient_cpp`, y, mu, alpha, threads)
+}
+
+pig2_hessian_cpp <- function(y, mu, alpha, threads = 1L) {
+    .Call(`_distributions7_pig2_hessian_cpp`, y, mu, alpha, threads)
+}
+
+pig2_deriv3_cpp <- function(y, mu, alpha, threads = 1L) {
+    .Call(`_distributions7_pig2_deriv3_cpp`, y, mu, alpha, threads)
+}
+
+pig2_deriv4_cpp <- function(y, mu, alpha, threads = 1L) {
+    .Call(`_distributions7_pig2_deriv4_cpp`, y, mu, alpha, threads)
 }
 
 pig2_hd_cpp <- function(y, mu, alpha, threads = 1L) {
