@@ -259,3 +259,72 @@ test_that("the Student t's third derivatives survive its own chart", {
   expect_true(is.finite(Dcube(1e50, 1, 1)))
   expect_false(is.finite(Dcube(1e150, 1, 1)))
 })
+
+
+test_that("the Poisson-inverse gaussian's mass survives the Poisson limit", {
+  ## The only case here whose cancellation is in the VALUE rather than in a
+  ## derivative.  The log-mass carries
+  ##     1/sigma + psi(alpha) = (1/sigma - alpha) + log S_y(alpha),
+  ## and 1/sigma differs from alpha by mu: two quantities of size alpha
+  ## whose difference is of size mu.  Both parametrizations approach the
+  ## Poisson -- pig2 as alpha grows, pig1 as sigma shrinks -- and a fit
+  ## reaches it whenever a group carries no overdispersion.
+  d2 <- pig2_distrib()
+  d1 <- pig1_distrib()
+  mu <- 0.3
+  y <- 0:6
+  lp <- dpois(y, mu, log = TRUE)
+
+  ## the pair as the kernel used to form it, and the closed form it runs
+  ## now: alpha - r = -mu^2/(alpha + r) with r = sqrt(mu^2 + alpha^2), so
+  ## 1/sigma - alpha = -mu [alpha/(mu + r)] [1 + mu/(alpha + r)]
+  direct <- function(mu, a) {
+    sg <- (mu + sqrt(mu^2 + a^2)) / a^2
+    1 / sg - a
+  }
+  closed <- function(mu, a) {
+    r <- sqrt(mu^2 + a^2)
+    -mu * (a / (mu + r)) * (1 + mu / (a + r))
+  }
+
+  ## the mass reaches the limit and stays there, and stays a mass
+  for (a in c(1e12, 1e16, 1e18, 1e20, 1e103, 1e300)) {
+    got <- distrib_pdf(d2, y, list(mu = mu, alpha = a), log = TRUE)
+    expect_true(all(is.finite(got)))
+    expect_equal(got, lp, tolerance = 1e-10)
+    expect_equal(sum(distrib_pdf(d2, 0:80, list(mu = mu, alpha = a))), 1,
+                 tolerance = 1e-10)
+  }
+  for (s in c(1e-12, 1e-16, 1e-20, 1e-150, 1e-300)) {
+    got <- distrib_pdf(d1, y, list(mu = mu, sigma = s), log = TRUE)
+    expect_true(all(is.finite(got)))
+    expect_equal(got, lp, tolerance = 1e-10)
+    expect_equal(sum(distrib_pdf(d1, 0:80, list(mu = mu, sigma = s))), 1,
+                 tolerance = 1e-10)
+  }
+
+  ## and the form it replaced does not.  Past alpha = 1e16 the two terms
+  ## round to the same double, so their difference is a multiple of that
+  ## double's spacing -- zero, or 128 at alpha = 1e18 -- and never -mu.
+  ## A log-mass of 128 is a mass of 4e55, and the support summed to Inf.
+  for (a in c(1e16, 1e18, 1e20, 1e100)) {
+    expect_gt(abs(direct(mu, a) - (-mu)) / mu, 0.9)
+    expect_equal(closed(mu, a), -mu, tolerance = 1e-14)
+  }
+  ## where the direct form still has its digits the two agree
+  for (a in c(1, 10, 1e4, 1e8)) {
+    expect_equal(closed(mu, a), direct(mu, a), tolerance = 1e-7)
+  }
+
+  ## the derivative surface stays finite past the two thresholds it used to
+  ## cross: alpha^3 leaves the doubles at 5.6e102 and alpha^2 at 1.3e154
+  for (a in c(1e103, 1e160, 1e300)) {
+    th <- list(mu = mu, alpha = a)
+    expect_true(all(is.finite(unlist(distrib_gradient(d2, 1, th)))))
+    expect_true(all(is.finite(unlist(distrib_hessian(d2, 1, th)))))
+    expect_true(all(is.finite(unlist(distrib_deriv3(d2, 1, th)))))
+    expect_true(all(is.finite(unlist(distrib_deriv4(d2, 1, th)))))
+  }
+  expect_false(is.finite((1e103)^3))
+  expect_false(is.finite((1e160)^2))
+})

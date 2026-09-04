@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include "d7_par.h"
 #include <cstring>
+#include <cmath>
 using namespace Rcpp;
 
 // Poisson-inverse Gaussian, both parametrizations, log-likelihood
@@ -119,9 +120,12 @@ static Jet2 jet_sqrt(const Jet2& f) {
 // largest; the derivatives are cumulants of the rising-factorial moments
 // m_r = E[k (k+1) ... (k+r-1)] under the normalized terms, with
 // S^(r)/S = (-1)^r m_r / alpha^r.
-static void psi_derivs(double y, double alpha, double h[5]) {
+static void psi_derivs(double y, double alpha, double h[5],
+                       double* logS = nullptr, double* A1out = nullptr) {
     if (y < 0.5) {
         h[0] = -alpha; h[1] = -1.0; h[2] = h[3] = h[4] = 0.0;
+        if (logS) *logS = 0.0;
+        if (A1out) *A1out = 0.0;
         return;
     }
     int n = (int) y;
@@ -147,6 +151,13 @@ static void psi_derivs(double y, double alpha, double h[5]) {
     double A2 = m2 / (alpha * alpha);
     double A3 = -m3 / (alpha * alpha * alpha);
     double A4 = m4 / (alpha * alpha * alpha * alpha);
+    // log S alone is reported through logS. Recovering it from h[0] by
+    // adding alpha back is the cancellation this exists to avoid: h[0] is
+    // of size alpha and log S is of size log(y!).
+    if (logS) *logS = mx + std::log(W);
+    // A1 is d log S / d alpha, of size y^2/alpha^2. Recovering it from
+    // h[1] by adding one back is the same cancellation again.
+    if (A1out) *A1out = A1;
     h[0] = -alpha + mx + std::log(W);
     h[1] = -1.0 + A1;
     h[2] = A2 - A1 * A1;
@@ -267,8 +278,8 @@ NumericMatrix pig1_hd_cpp(NumericVector y, NumericVector mu,
         double a_ssss = s_ssss * g1 - 4.0 * s_sss * g2 + 12.0 * s_ss * g3 -
             24.0 * s_s * g4 + 24.0 * s * g5;
 
-        double p[5];
-        psi_derivs(yy, a, p);
+        double p[5], logS;
+        psi_derivs(yy, a, p, &logS);
         double p1 = p[1], p2 = p[2], p3 = p[3], p4 = p[4];
 
         // psi(alpha(mu, sigma)) by Faa di Bruno, written out per component
@@ -333,8 +344,15 @@ NumericMatrix pig1_hd_cpp(NumericVector y, NumericVector mu,
 
         // the elementary pure pieces
         double im = 1.0 / m;
-        out(i, 0) = yy * std::log(m) + h * std::log(c) + g1 + p[0] -
-            R::lgammafn(yy + 1.0);
+        // 1/sigma + psi(alpha) = (1 - s)/sigma + log S with s = sqrt(c),
+        // and 1 - s = (1 - c)/(1 + s) = -2 sigma mu/(1 + s), so the pair
+        // is -2 mu/(1 + s) + log S. The two terms it replaces are each of
+        // size 1/sigma while their difference is of size mu: written
+        // directly the value loses a digit per factor of ten in alpha and
+        // is worthless past sigma = 1e-15, where the mass reads one and
+        // the support no longer sums to one.
+        out(i, 0) = yy * std::log(m) + h * std::log(c) -
+            2.0 * m / (1.0 + s) + logS - R::lgammafn(yy + 1.0);
         out(i, 1) = yy * im + G_m + P_m;
         out(i, 2) = G_s - g2 + P_s;
         out(i, 3) = -yy * im * im + G_mm + P_mm;
@@ -362,29 +380,37 @@ NumericMatrix pig2_hd_cpp(NumericVector y, NumericVector mu,
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double yy = y[i], m = mu[i], aa = alpha[i];
 
-        // r = sqrt(m^2 + a^2) and its partials
-        double r = std::sqrt(m * m + aa * aa);
-        double r3 = r * r * r, r5 = r3 * r * r, r7 = r5 * r * r;
-        double r_m = m / r, r_a = aa / r;
-        double r_mm = aa * aa / r3, r_aa = m * m / r3, r_ma = -m * aa / r3;
-        double r_mmm = -3.0 * aa * aa * m / r5;
-        double r_mma = 2.0 * aa / r3 - 3.0 * aa * aa * aa / r5;
-        double r_maa = -m / r3 + 3.0 * m * aa * aa / r5;
-        double r_aaa = -3.0 * m * m * aa / r5;
-        double r_mmmm = -3.0 * aa * aa / r5 + 15.0 * aa * aa * m * m / r7;
-        double r_mmma = -6.0 * aa * m / r5 + 15.0 * aa * aa * aa * m / r7;
-        double r_mmaa = 2.0 / r3 - 15.0 * aa * aa / r5 +
-            15.0 * aa * aa * aa * aa / r7;
-        double r_maaa = 9.0 * m * aa / r5 - 15.0 * m * aa * aa * aa / r7;
-        double r_aaaa = -3.0 * m * m / r5 + 15.0 * m * m * aa * aa / r7;
+        // r = sqrt(m^2 + a^2) and its partials, written in r_m and r_a --
+        // which lie in [0, 1] -- against powers of 1/r. The direct form
+        // divides by r^3, r^5 and r^7 and multiplies by a^3 and a^4, and
+        // a^3 passes double.xmax at alpha = 5.6e102: there r_mma read
+        // Inf - Inf and the whole Hessian came back NaN. std::hypot keeps
+        // r itself finite where m^2 + a^2 does not.
+        double r = std::hypot(m, aa);
+        double ir = 1.0 / r, ir2 = ir * ir, ir3 = ir2 * ir;
+        double r_m = m * ir, r_a = aa * ir;
+        double rm2 = r_m * r_m, ra2 = r_a * r_a;
+        double r_mm = ra2 * ir, r_aa = rm2 * ir, r_ma = -r_m * r_a * ir;
+        double r_mmm = -3.0 * ra2 * r_m * ir2;
+        double r_mma = (2.0 * r_a - 3.0 * ra2 * r_a) * ir2;
+        double r_maa = (-r_m + 3.0 * r_m * ra2) * ir2;
+        double r_aaa = -3.0 * rm2 * r_a * ir2;
+        double r_mmmm = (-3.0 * ra2 + 15.0 * ra2 * rm2) * ir3;
+        double r_mmma = (-6.0 * r_a * r_m + 15.0 * ra2 * r_a * r_m) * ir3;
+        double r_mmaa = (2.0 - 15.0 * ra2 + 15.0 * ra2 * ra2) * ir3;
+        double r_maaa = (9.0 * r_m * r_a - 15.0 * r_m * ra2 * r_a) * ir3;
+        double r_aaaa = (-3.0 * rm2 + 15.0 * rm2 * ra2) * ir3;
 
-        // sigma = (m + r) * a^{-2} by the Leibniz rule; u = m + r
-        double v0 = 1.0 / (aa * aa);
-        double v1 = -2.0 * v0 / aa, v2 = 6.0 * v0 / (aa * aa),
-            v3 = -24.0 * v0 / (aa * aa * aa),
-            v4 = 120.0 * v0 / (aa * aa * aa * aa);
+        // sigma = (m + r) * a^{-2} by the Leibniz rule; u = m + r. The
+        // powers of a are formed from ia so that a^4 cannot overflow;
+        // where the true partial is below the smallest double the ladder
+        // underflows to zero, which is the honest reading there.
+        double ia = 1.0 / aa;
+        double v0 = ia * ia;
+        double v1 = -2.0 * v0 * ia, v2 = 6.0 * v0 * v0,
+            v3 = -24.0 * v0 * v0 * ia,
+            v4 = 120.0 * v0 * v0 * v0;
         double u = m + r, u_m = 1.0 + r_m;
-        double sig = u * v0;
         double S_m = u_m * v0;
         double S_a = r_a * v0 + u * v1;
         double S_mm = r_mm * v0;
@@ -403,58 +429,100 @@ NumericMatrix pig2_hd_cpp(NumericVector y, NumericVector mu,
         double S_aaaa = r_aaaa * v0 + 4.0 * r_aaa * v1 + 6.0 * r_aa * v2 +
             4.0 * r_a * v3 + u * v4;
 
-        // F(sigma) = -y log sigma + 1/sigma and its four derivatives
-        double is = 1.0 / sig, is2 = is * is, is3 = is2 * is,
-            is4 = is3 * is, is5 = is4 * is;
-        double F1 = -yy * is - is2;
-        double F2 = yy * is2 + 2.0 * is3;
-        double F3 = -2.0 * yy * is3 - 6.0 * is4;
-        double F4 = 6.0 * yy * is4 + 24.0 * is5;
+        // b = 1/sigma = a / (t + sqrt(1 + t^2)) with t = m/a, which is
+        // the same number as a^2/(m + r) with neither a^2 nor m + r formed.
+        double t = m * ia, wt = std::hypot(1.0, t);
+        double b = aa / (t + wt);
+
+        // F(sigma) = -y log sigma + 1/sigma has F_k = d^k F / dsigma^k
+        // carrying b^k, and every Faa di Bruno term of order k has exactly
+        // k factors S: the powers cancel between them. The expansion is
+        // therefore written in Q_k = F_k / b^k, each linear in b, against
+        // T_x = b S_x, each of size 1/a. Formed separately, F_4 = 6 y b^4
+        // + 24 b^5 leaves the doubles at alpha = 4.5e61 while the product
+        // it belongs to is of size a^{-3}.
+        double Q1 = -yy - b;
+        double Q2 = yy + 2.0 * b;
+        double Q3 = -2.0 * yy - 6.0 * b;
+        double Q4 = 6.0 * yy + 24.0 * b;
+        double T_m = b * S_m, T_a = b * S_a;
+        double T_mm = b * S_mm, T_ma = b * S_ma, T_aa = b * S_aa;
+        double T_mmm = b * S_mmm, T_mma = b * S_mma, T_maa = b * S_maa,
+            T_aaa = b * S_aaa;
+        double T_mmmm = b * S_mmmm, T_mmma = b * S_mmma,
+            T_mmaa = b * S_mmaa, T_maaa = b * S_maaa, T_aaaa = b * S_aaaa;
 
         // F(sigma(m, a)) by the same written-out Faa di Bruno
-        double P_m = F1 * S_m;
-        double P_a = F1 * S_a;
-        double P_mm = F2 * S_m * S_m + F1 * S_mm;
-        double P_ma = F2 * S_m * S_a + F1 * S_ma;
-        double P_aa = F2 * S_a * S_a + F1 * S_aa;
-        double P_mmm = F3 * S_m * S_m * S_m + 3.0 * F2 * S_mm * S_m +
-            F1 * S_mmm;
-        double P_mma = F3 * S_m * S_m * S_a +
-            F2 * (S_mm * S_a + 2.0 * S_ma * S_m) + F1 * S_mma;
-        double P_maa = F3 * S_m * S_a * S_a +
-            F2 * (S_aa * S_m + 2.0 * S_ma * S_a) + F1 * S_maa;
-        double P_aaa = F3 * S_a * S_a * S_a + 3.0 * F2 * S_aa * S_a +
-            F1 * S_aaa;
-        double P_mmmm = F4 * S_m * S_m * S_m * S_m +
-            6.0 * F3 * S_mm * S_m * S_m +
-            F2 * (3.0 * S_mm * S_mm + 4.0 * S_mmm * S_m) + F1 * S_mmmm;
-        double P_mmma = F4 * S_m * S_m * S_m * S_a +
-            F3 * (3.0 * S_ma * S_m * S_m + 3.0 * S_mm * S_m * S_a) +
-            F2 * (3.0 * S_mm * S_ma + 3.0 * S_mma * S_m + S_mmm * S_a) +
-            F1 * S_mmma;
-        double P_mmaa = F4 * S_m * S_m * S_a * S_a +
-            F3 * (S_mm * S_a * S_a + S_aa * S_m * S_m +
-                  4.0 * S_ma * S_m * S_a) +
-            F2 * (S_mm * S_aa + 2.0 * S_ma * S_ma +
-                  2.0 * S_maa * S_m + 2.0 * S_mma * S_a) +
-            F1 * S_mmaa;
-        double P_maaa = F4 * S_m * S_a * S_a * S_a +
-            F3 * (3.0 * S_ma * S_a * S_a + 3.0 * S_aa * S_m * S_a) +
-            F2 * (3.0 * S_aa * S_ma + 3.0 * S_maa * S_a + S_aaa * S_m) +
-            F1 * S_maaa;
-        double P_aaaa = F4 * S_a * S_a * S_a * S_a +
-            6.0 * F3 * S_aa * S_a * S_a +
-            F2 * (3.0 * S_aa * S_aa + 4.0 * S_aaa * S_a) + F1 * S_aaaa;
+        double P_m = Q1 * T_m;
+        double P_a = Q1 * T_a;
+        double P_mm = Q2 * T_m * T_m + Q1 * T_mm;
+        double P_ma = Q2 * T_m * T_a + Q1 * T_ma;
+        double P_aa = Q2 * T_a * T_a + Q1 * T_aa;
+        double P_mmm = Q3 * T_m * T_m * T_m + 3.0 * Q2 * T_mm * T_m +
+            Q1 * T_mmm;
+        double P_mma = Q3 * T_m * T_m * T_a +
+            Q2 * (T_mm * T_a + 2.0 * T_ma * T_m) + Q1 * T_mma;
+        double P_maa = Q3 * T_m * T_a * T_a +
+            Q2 * (T_aa * T_m + 2.0 * T_ma * T_a) + Q1 * T_maa;
+        double P_aaa = Q3 * T_a * T_a * T_a + 3.0 * Q2 * T_aa * T_a +
+            Q1 * T_aaa;
+        double P_mmmm = Q4 * T_m * T_m * T_m * T_m +
+            6.0 * Q3 * T_mm * T_m * T_m +
+            Q2 * (3.0 * T_mm * T_mm + 4.0 * T_mmm * T_m) + Q1 * T_mmmm;
+        double P_mmma = Q4 * T_m * T_m * T_m * T_a +
+            Q3 * (3.0 * T_ma * T_m * T_m + 3.0 * T_mm * T_m * T_a) +
+            Q2 * (3.0 * T_mm * T_ma + 3.0 * T_mma * T_m + T_mmm * T_a) +
+            Q1 * T_mmma;
+        double P_mmaa = Q4 * T_m * T_m * T_a * T_a +
+            Q3 * (T_mm * T_a * T_a + T_aa * T_m * T_m +
+                  4.0 * T_ma * T_m * T_a) +
+            Q2 * (T_mm * T_aa + 2.0 * T_ma * T_ma +
+                  2.0 * T_maa * T_m + 2.0 * T_mma * T_a) +
+            Q1 * T_mmaa;
+        double P_maaa = Q4 * T_m * T_a * T_a * T_a +
+            Q3 * (3.0 * T_ma * T_a * T_a + 3.0 * T_aa * T_m * T_a) +
+            Q2 * (3.0 * T_aa * T_ma + 3.0 * T_maa * T_a + T_aaa * T_m) +
+            Q1 * T_maaa;
+        double P_aaaa = Q4 * T_a * T_a * T_a * T_a +
+            6.0 * Q3 * T_aa * T_a * T_a +
+            Q2 * (3.0 * T_aa * T_aa + 4.0 * T_aaa * T_a) + Q1 * T_aaaa;
 
-        double p[5];
-        psi_derivs(yy, aa, p);
+        double p[5], logS, A1;
+        psi_derivs(yy, aa, p, &logS, &A1);
 
-        // pure pieces: y log m, -y log a + psi(a)
-        double im = 1.0 / m, ia = 1.0 / aa;
-        out(i, 0) = yy * std::log(m) - yy * std::log(aa) -
-            yy * std::log(sig) + is + p[0] - R::lgammafn(yy + 1.0);
+        // pure pieces: y log m, -y log(a sigma) and 1/sigma - alpha.
+        //
+        // a sigma = (m + r)/a = t + sqrt(1 + t^2), so -y log(a sigma) is
+        // -y asinh(t): written as -y log a - y log sigma it is a
+        // difference of two quantities of size log a.
+        //
+        // 1/sigma - alpha = a(a - m - r)/(m + r), and alpha - r =
+        // -m^2/(alpha + r), so the pair is
+        //     -m [a/(m + r)] [1 + m/(a + r)],
+        // both factors bounded, tending to -m as alpha grows, which is
+        // the Poisson term. Written directly it is a difference of two
+        // quantities of size alpha whose value is of size mu: past
+        // alpha = 1e16 the log-mass read zero, that is a probability of
+        // one, and at 1e18 it read +128, one ulp of 1e18, so the mass
+        // over the support summed to Inf. A fit maximizing that reward
+        // drove the dispersion out of range instead of stopping.
+        double im = 1.0 / m;
+        double core = -m * (aa / (m + r)) * (1.0 + m / (aa + r));
+        out(i, 0) = yy * std::log(m) - yy * std::asinh(t) + core + logS -
+            R::lgammafn(yy + 1.0);
         out(i, 1) = yy * im + P_m;
-        out(i, 2) = -yy * ia + p[1] + P_a;
+        // The score in alpha, in closed form for the same reason the value
+        // is. Since r^2 - m^2 = alpha^2 the pair is 1/sigma - alpha =
+        // (r - m) - alpha, and r - alpha = m^2/(r + alpha), so its
+        // derivative is -m^2/(r(r + alpha)) = -r_m m/(r + alpha); the
+        // other piece, -y asinh(m/alpha), gives y m/(alpha r). Both are of
+        // size alpha^-2, which is what the score is. Assembled as
+        // -y/alpha + psi'(alpha) + F_1 S_a the three terms are each of
+        // size one: measured, the score was noise past alpha = 1e8 and
+        // read exactly -1 past 1e162, where 1/alpha^2 leaves the doubles,
+        // so a search saw a slope where the surface is flat.
+        double dD_a = -r_m * (m / (r + aa));
+        out(i, 2) = yy * m * ir * ia + A1 + dD_a;
         out(i, 3) = -yy * im * im + P_mm;
         out(i, 4) = P_ma;
         out(i, 5) = yy * ia * ia + p[2] + P_aa;
