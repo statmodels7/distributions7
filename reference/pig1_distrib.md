@@ -37,28 +37,59 @@ here.
 ## The mass function, and how it is computed
 
 The mass carries the modified Bessel function \\K\_{y-1/2}\\, which at
-half-integer order is a finite sum. What the kernel evaluates is that
+half-integer order is a finite sum. What the kernels evaluate is that
 sum, on the log scale, after the prefactors have canceled; no Bessel
-routine is called. The log-likelihood and its fourteen partial
-derivatives to fourth order come out of one pass, all exact, so the
-fourth order costs what the score does. See
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-for the expression and for the jet twin the tests hold it to.
+routine is called. With \\c = 1 + 2\sigma\mu\\ and \\\alpha =
+\sqrt{c}/\sigma\\, \$\$\ell(y) = y\log\mu - \tfrac{y}{2}\log c +
+\tfrac{1}{\sigma} + \psi(\alpha) - \log y!,\qquad \psi(\alpha) =
+-\alpha + \log S_y(\alpha),\$\$ \$\$S_y(\alpha) = \sum\_{k=0}^{y-1}
+\dfrac{\Gamma(y+k)}{\Gamma(k+1)\Gamma(y-k)}\\(2\alpha)^{-k}, \qquad S_0
+= 1.\$\$ \\S_y\\ sums \\y\\ positive terms on the log scale, so nothing
+cancels. The derivatives of \\\psi\\ in \\\alpha\\ are the weighted
+rising-factorial moments of \\k\\ under those terms; everything else is
+elementary. Every partial to fourth order is written out by hand, so no
+order is differenced.
+
+## One kernel per generic
+
+There is one compiled kernel per quantity – `pig1_pdf_cpp`,
+`pig1_gradient_cpp`, `pig1_hessian_cpp`, `pig1_deriv3_cpp`,
+`pig1_deriv4_cpp` and their `pig2` twins – so asking for the mass does
+not evaluate four orders of derivatives. Each recycles a scalar
+parameter and tests the support itself, as every other compiled family's
+kernel does: a \\y\\ that is negative, fractional or not finite reads
+`-Inf` in the mass and `NaN` in a derivative.
+
+The saving is smaller than the count of quantities suggests, because the
+cost is \\S_y\\, which is \\O(y)\\ per observation and which every order
+pays in full: measured over \\2\times10^4\\ observations the five
+kernels run at 21.0, 21.3, 22.0, 22.7 and 23.3 milliseconds.
+
+A second pair, `pig1_hd_jet_cpp` and `pig2_hd_jet_cpp`, carries a
+bivariate jet truncated at total order four through the same expression.
+It shares no algebra with the explicit route, so the tests compare the
+two with no tolerance to hide behind, and it is not used in production;
+`pig1_hd_cpp` and `pig2_hd_cpp` return all fifteen columns at once and
+exist to be that comparison's other side.
+
+## Notation
+
+\\\mu\\ is the mean, \\\sigma\\ the dispersion, \\\alpha\\ the Bessel
+argument, \\K\_\nu\\ the modified Bessel function of the second kind,
+and \\\ell\\ the log-mass of one observation.
 
 The **expected information** has no closed form and goes through the
 summation strategies of
-[`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
-
-## The tail
+[`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).The
+tail
 
 Measured at \\\mu = 3\\, \\\sigma = 0.8\\, against a negative binomial
 matched on the variance (\\\theta = 1/\sigma\\, both at 10.2): the mass
 at \\y = 20\\ is \\6.8\times10^{-4}\\ against \\4.8\times10^{-4}\\, at
 40 it is \\5.8\times10^{-6}\\ against \\5.4\times10^{-7}\\, and at 60
 \\7.2\times10^{-8}\\ against \\5.6\times10^{-10}\\. The gap widens with
-the count, and that widening is what a heavier tail means here.
-
-## Which parametrization to use
+the count, and that widening is what a heavier tail means here.Which
+parametrization to use
 
 In this one \\\mu\\ and \\\sigma\\ are **not** orthogonal: measured at
 the same setting, the mixed entry of the expected information summed
@@ -67,9 +98,7 @@ over the support is 7.39.
 replaces \\\sigma\\ by the Bessel argument \\\alpha\\ and makes that
 entry zero, at the cost of a second parameter with no moment reading.
 Use this one to model the dispersion directly and that one to fit the
-two parameters independently.
-
-## Parameter domains
+two parameters independently.Parameter domains
 
 - \\\mu \in (0, \infty)\\
 
@@ -102,9 +131,8 @@ for the orthogonal parametrization,
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
 for the other overdispersed count family,
 [`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md)
-for the limit at \\\sigma \to 0\\,
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-for the kernel, and
+for the limit at \\\sigma \to 0\\, the compiled kernels for the kernel,
+and
 [Pig1Distrib](https://statmodels7.github.io/distributions7/reference/Pig1Distrib.md)
 for the class.
 

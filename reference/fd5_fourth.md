@@ -58,5 +58,5 @@ c(stencil = distributions7:::fd5_fourth(f, 0.7, 1e-2), truth = truth)
 # Too small a step is worse than too large: rounding grows as h^-4.
 vapply(c(1e-1, 1e-2, 1e-3, 1e-4),
        function(h) abs(distributions7:::fd5_fourth(f, 0.7, h) - truth), 0)
-#> [1] 0.0205100667 0.0002052736 0.0004421196 3.6926037495
+#> [1] 2.051007e-02 2.053625e-04 4.460588e-04 1.257439e+01
 ```

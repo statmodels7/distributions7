@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.45.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.46.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,19 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.46.0" id="distributions7-0460">distributions7 0.46.0<a class="anchor" aria-label="anchor" href="#distributions7-0460"></a></h2>
+<ul><li>
+<p>The two Poisson-inverse gaussian families get ONE COMPILED KERNEL PER GENERIC, as every other compiled family has: <code>pig1_pdf_cpp</code>, <code>pig1_gradient_cpp</code>, <code>pig1_hessian_cpp</code>, <code>pig1_deriv3_cpp</code>, <code>pig1_deriv4_cpp</code> and their <code>pig2</code> twins, in place of the single fifteen-column block every method read. The shape was inherited rather than chosen: the first version propagated a bivariate fourth-order jet, which computes every partial together by construction, and when the jet was replaced by explicit closed forms the block’s signature stayed. So the value cost four orders.</p>
+<p>Each kernel now recycles a scalar parameter and tests the support itself, which is what <code>gaussian.cpp</code> and <code>betabinom.cpp</code> already do, and returns a named list; the ten methods are one line each, with nothing between them and their kernel. <strong><code>pig_hd_block()</code> is gone</strong>, and with it <code>pig_memo</code> and <code>pig_hd_forget()</code>: pig was the only compiled family carrying an R helper on that path. The mathematics that page documented – the closed form of , which kernel runs, the jet twin – moved onto <code><a href="../reference/pig1_distrib.html">pig1_distrib()</a></code>, where a reader looks for it.</p>
+<p><code>pig1_hd_cpp</code> and <code>pig2_hd_cpp</code> survive, returning all fifteen columns: they are the reference the per-generic kernels are held to and the side the jet twin compares against.</p>
+<p><strong>No formula was retyped and the arithmetic is unchanged.</strong> The body was reordered, each statement placed at the greater of its own derivative order and the order of everything it reads, and each stage returns once it has written its own block. Against the previous release, over both families and all five generics plus a scalar parameter and rows off the support, <strong>twelve comparisons of twelve are <code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical()</a></code></strong>.</p>
+<p>⚠️ <strong>What the split buys is smaller than the count of quantities suggests.</strong> At n = 20000 the kernels run at 22.8, 23.0, 23.3, 23.6 and 24.8 ms against the block’s 27.9, so the value is 1.22x. The cost is not the derivative tables: it is , which is  per observation with three <code>lgammafn</code> calls a term and which every order pays in full. Measured at a response of exactly zero, where that sum is empty, the algebra alone runs 4.16 ms at order zero against 6.27 at order four; at a mean of 3 the same pair is 24.87 against 27.49, and at a mean of 30 it is 116.03 against 117.43.</p>
+<p>What the split does remove is the R layer: the helper’s mask, its three subsets, its NaN matrix and its scatter were 24 per cent of a gradient call at that size and are now 2 per cent.</p>
+<p>⚠️ <strong>And it costs the memo, which is stated rather than hidden.</strong> The helper kept a depth-one memo of the point it last evaluated, worth 1.19x to 1.27x on a real regression, because one point is read several times an iteration. Without it the same fits cost 1.032 s and 0.848 s against 0.926 s and 0.775 s. The duplication is not this family’s and was closed where it happens, in <code>statmodels7::iwls_pieces()</code>: with that, the same fits cost 0.944 s and 0.753 s, the second being better than the memo ever gave. Counted, a fit went from three evaluations of the score an iteration to two.</p>
+<p>⚠️ <strong>The families that reach the outer-product route are FOUR</strong> – <code>pig1</code>, <code>pig2</code>, <code>skewnormal1</code> and <code>skewt</code> – and not every family, which is what a first draft of this entry claimed. Every other family has a closed-form expected information registered on its own class, so <code>approx</code> is never read and no score is recomputed; <code>pseudohuber</code> and <code>skewnormal2</code> register their own quadrature, which is not the outer product either.</p>
+</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.45.0" id="distributions7-0450">distributions7 0.45.0<a class="anchor" aria-label="anchor" href="#distributions7-0450"></a></h2>
 <ul><li>

@@ -1,11 +1,9 @@
 # Poisson-Inverse Gaussian Score
 
 Returns the exact first derivatives of the log-mass in \\(\mu,
-\sigma)\\, read off columns `d10` and `d01` of the compiled fourth-order
-kernel of
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md).
-Nothing is differenced: the kernel writes every partial out in closed
-form from the finite Bessel sum.
+\sigma)\\, read off columns `d10` and `d01` of the compiled kernel of
+`pig1_gradient_cpp`. Nothing is differenced: the kernel writes every
+partial out in closed form from the finite Bessel sum.
 
 ## Arguments
 
@@ -50,8 +48,7 @@ length of the recycled inputs.
 
 ## See also
 
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-for the kernel and the closed form it evaluates,
+`pig1_gradient_cpp` for the kernel and the closed form it evaluates,
 [`distrib_hessian.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Pig1Distrib.md)
 for the second derivatives, and
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)

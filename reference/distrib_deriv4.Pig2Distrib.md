@@ -2,9 +2,8 @@
 
 Returns the exact fourth derivatives of the log-mass in \\(\mu,
 \alpha)\\, read off the last five columns of the compiled kernel of
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md).
-The kernel is a fourth-order one throughout, so this is the order it was
-written for.
+`pig2_deriv4_cpp`. The kernel is asked for this order alone, so this is
+the order it was written for.
 
 With `expected = TRUE` the value is an expectation and is not closed
 form, as at third order.
@@ -64,9 +63,7 @@ A named list of five numeric vectors: `mu_mu_mu_mu`, `mu_mu_mu_alpha`,
 ## See also
 
 [`distrib_deriv3.Pig2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig2Distrib.md)
-for the order below,
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-for the kernel, and
+for the order below, `pig2_deriv4_cpp` for the kernel, and
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 for the generic.
 

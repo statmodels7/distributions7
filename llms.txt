@@ -1700,8 +1700,6 @@ Rarely called directly, but useful as a reference for what is happening.
   : Poisson-Inverse Gaussian Random Generation
 - [`distrib_start.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_start.Pig1Distrib.md)
   : Poisson-Inverse Gaussian Starting Values
-- [`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-  : Log-Likelihood Derivatives of the Poisson-Inverse Gaussian
 
 ## Poisson-inverse Gaussian, orthogonal
 
@@ -3525,9 +3523,6 @@ divergent density.
 
 - [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
   : The Dispersion a Poisson-Inverse Gaussian Alpha Implies
-
-- [`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-  : Log-Likelihood Derivatives of the Poisson-Inverse Gaussian
 
 - [`plot.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.md)
   : Plot Method for Continuous Distributions

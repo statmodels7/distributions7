@@ -2,9 +2,8 @@
 
 Returns the exact fourth derivatives of the log-mass in \\(\mu,
 \sigma)\\, read off the last five columns of the compiled kernel of
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md).
-The kernel is a fourth-order one throughout, so this is the order it was
-written for and it costs the same as the score.
+`pig1_deriv4_cpp`. The kernel is asked for this order alone, so this is
+the order it was written for and it costs the same as the score.
 
 With `expected = TRUE` the value is an expectation and is not closed
 form, as at third order.
@@ -64,9 +63,7 @@ A named list of five numeric vectors: `mu_mu_mu_mu`, `mu_mu_mu_sigma`,
 ## See also
 
 [`distrib_deriv3.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig1Distrib.md)
-for the order below,
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-for the kernel, and
+for the order below, `pig1_deriv4_cpp` for the kernel, and
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 for the generic.
 
@@ -103,6 +100,6 @@ x <- distrib_rng(d, n, th)
 rbind(score = system.time(distrib_gradient(d, x, th))[["elapsed"]],
       fourth = system.time(distrib_deriv4(d, x, th))[["elapsed"]])
 #>         [,1]
-#> score  0.014
-#> fourth 0.013
+#> score  0.017
+#> fourth 0.014
 ```

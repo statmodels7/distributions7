@@ -1,12 +1,10 @@
 # Orthogonal Poisson-Inverse Gaussian Score
 
 Returns the exact first derivatives of the log-mass in \\(\mu,
-\alpha)\\, read off columns `d10` and `d01` of the compiled fourth-order
-kernel of
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md).
-The kernel takes \\\alpha\\ as a variable of its own, so these are
-derivatives in the orthogonal coordinates directly and no chain rule
-through
+\alpha)\\, read off columns `d10` and `d01` of the compiled kernel of
+`pig2_gradient_cpp`. The kernel takes \\\alpha\\ as a variable of its
+own, so these are derivatives in the orthogonal coordinates directly and
+no chain rule through
 [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
 is composed.
 
@@ -57,9 +55,8 @@ length of the recycled inputs.
 [`distrib_hessian.Pig2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Pig2Distrib.md)
 for the second derivatives,
 [`distrib_gradient.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Pig1Distrib.md)
-for the same quantity in mean and dispersion,
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-for the kernel, and
+for the same quantity in mean and dispersion, `pig2_gradient_cpp` for
+the kernel, and
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
 for the generic.
 

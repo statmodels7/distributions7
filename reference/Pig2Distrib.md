@@ -119,9 +119,8 @@ to build one;
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
 for the mean-dispersion parametrization;
 [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
-for the map between them;
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-for the kernel all five derivative methods read.
+for the map between them; the compiled kernels for the kernel all five
+derivative methods read.
 
 ## Examples
 

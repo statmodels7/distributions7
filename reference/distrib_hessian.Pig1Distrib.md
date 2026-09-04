@@ -2,8 +2,7 @@
 
 Returns the exact second derivatives of the log-mass in \\(\mu,
 \sigma)\\, read off columns `d20`, `d02` and `d11` of the compiled
-fourth-order kernel of
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md).
+kernel `pig1_hessian_cpp`.
 
 This is the **observed** curvature at the data. The expected information
 has no closed form for this family and comes from
@@ -52,9 +51,7 @@ order: `mu_mu`, `sigma_sigma`, `mu_sigma`.
 [`distrib_gradient.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Pig1Distrib.md)
 for the order below,
 [`distrib_deriv3.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig1Distrib.md)
-for the order above,
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-for the kernel, and
+for the order above, `pig1_hessian_cpp` for the kernel, and
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 for the generic.
 

@@ -52,15 +52,12 @@ A numeric vector of probabilities, of the length of the recycled inputs.
 
 \\\mu\\ is the mean, \\\sigma\\ the dispersion, \\K\_\nu\\ the modified
 Bessel function of the second kind, and \\S_y\\ the finite sum defined
-in
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md).
+in `pig1_pdf_cpp`.
 
 ## See also
 
 [`distrib_gradient.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Pig1Distrib.md)
-for the score,
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-for the kernel,
+for the score, `pig1_pdf_cpp` for the kernel,
 [`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md)
 for the same law in orthogonal coordinates, and
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)

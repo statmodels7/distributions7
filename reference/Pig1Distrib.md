@@ -117,9 +117,8 @@ to build one;
 [`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md)
 for the parametrization whose two parameters are orthogonal;
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
-for the other overdispersed count family;
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-for the kernel all five derivative methods read.
+for the other overdispersed count family; the compiled kernels for the
+kernel all five derivative methods read.
 
 ## Examples
 

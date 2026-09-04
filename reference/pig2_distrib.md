@@ -63,9 +63,8 @@ By the same compiled kernel as
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md),
 with \\\alpha\\ as a variable of its own, so the Bessel argument needs
 no chain rule at all. Every partial to fourth order is exact and comes
-out of one pass; see
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md).
-The expected information has no closed form and goes through
+out of one pass; see the compiled kernels. The expected information has
+no closed form and goes through
 [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 ## Parameter domains

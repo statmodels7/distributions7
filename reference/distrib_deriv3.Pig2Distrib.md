@@ -2,10 +2,8 @@
 
 Returns the exact third derivatives of the log-mass in \\(\mu,
 \alpha)\\, read off columns `d30`, `d21`, `d12` and `d03` of the
-compiled fourth-order kernel of
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md).
-All four orders come out of one pass of the kernel, so this order costs
-what the score does.
+compiled kernel `pig2_deriv3_cpp`. All four orders come out of one pass
+of the kernel, so this order costs what the score does.
 
 With `expected = TRUE` the value is an expectation instead, and there it
 is **not** closed form: the call routes to
@@ -69,9 +67,7 @@ A named list of four numeric vectors: `mu_mu_mu`, `mu_mu_alpha`,
 [`distrib_hessian.Pig2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Pig2Distrib.md)
 for the order below,
 [`distrib_deriv4.Pig2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Pig2Distrib.md)
-for the order above,
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-for the kernel, and
+for the order above, `pig2_deriv3_cpp` for the kernel, and
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
 for the generic.
 

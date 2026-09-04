@@ -2,8 +2,7 @@
 
 Returns the exact second derivatives of the log-mass in \\(\mu,
 \alpha)\\, read off columns `d20`, `d02` and `d11` of the compiled
-fourth-order kernel of
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md).
+kernel `pig2_hessian_cpp`.
 
 The **observed** mixed entry is not zero at any single observation; what
 vanishes is its expectation. Measured at \\\mu = 3\\, \\\alpha =
@@ -51,9 +50,7 @@ order: `mu_mu`, `alpha_alpha`, `mu_alpha`.
 [`distrib_gradient.Pig2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Pig2Distrib.md)
 for the order below,
 [`distrib_deriv3.Pig2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig2Distrib.md)
-for the order above,
-[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
-for the kernel, and
+for the order above, `pig2_hessian_cpp` for the kernel, and
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 for the generic.
 
