@@ -2,9 +2,18 @@
 % Please edit documentation in R/negbin1_higher.R
 \name{negbin1_components}
 \alias{negbin1_components}
+\alias{nb1_exact_cut}
+\alias{nb1_M_derivs}
+\alias{nb1_components_exact}
 \title{Derivative Components of NB1}
 \usage{
 negbin1_components(y, theta, order)
+
+nb1_exact_cut()
+
+nb1_M_derivs(th, order, cut = 0.5, nterm = 80L)
+
+nb1_components_exact(y, mu, th, order)
 }
 \arguments{
 \item{y}{A numeric vector of counts.}
@@ -27,6 +36,28 @@ Returns the components of
 \eqn{\partial^{a+b}\ell/\partial\mu^a\partial\theta^b} at any order from one
 to four, from the sparse form the NB1 log-likelihood takes in the size
 \eqn{r = \mu/\theta}.
+
+\code{nb1_exact_cut()} is the dispersion below which the cancellation-free
+assembly is used in place of the recursion in the size. It sits where the
+two agree and each is still comfortable: measured at \eqn{\mu = 4},
+\eqn{y = 3}, they agree to 4e-11 or better at \eqn{\theta = 1} and to
+5.5e-09 at \eqn{\theta = 0.1}, and part company below that.
+
+\code{nb1_M_derivs()} returns \eqn{M(\theta) = \log(1+\theta)/\theta} and its
+derivatives to the order asked for. It is the one composite piece of the
+cancellation-free form below, and it has a removable singularity at
+\eqn{\theta = 0}: the recursion \eqn{\theta M^{(b+1)} + (b+1)M^{(b)} =
+(-1)^b b!/(1+\theta)^{b+1}} divides by \eqn{\theta} and loses its digits
+there, while the series \eqn{M^{(b)} = (-1)^b \sum_{n\ge 0} (-1)^n
+\left[\prod_{i\le b}(n+i)\right]\theta^n/(n+b+1)} converges only below one.
+The crossover is MEASURED and not chosen: the two agree to between 1.9e-16
+and 3.4e-13 over \eqn{\theta} from 0.01 to 0.5, and each fails on its own
+side -- the recursion by 1.4e-04 at \eqn{\theta = 10^{-6}} and by 2.3e+08 at
+order four, the series by 1.1e-02 at \eqn{\theta = 0.8}. It is the shape the
+generalized Pareto's \code{Lambda} already carries one family over.
+
+\code{nb1_components_exact()} is the cancellation-free assembly, from the form in
+\eqn{\mu + i\theta} that \code{negbin1_psums_cpp()} documents.
 }
 \section{The sparse form, and the one composite piece}{
 Writing \eqn{r = \mu/\theta} the log-likelihood is

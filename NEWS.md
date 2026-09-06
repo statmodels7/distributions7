@@ -1,3 +1,256 @@
+# distributions7 0.49.0
+
+* THE PURE-DISPERSION DERIVATIVES AT ORDERS THREE AND FOUR no longer cancel,
+  in BOTH negative binomials and both observed and expected. Each family
+  tends to a Poisson from its own side -- negbin2 as `theta` runs away,
+  negbin1 as `theta` goes to zero and the size `r = mu/theta` runs away -- so
+  every derivative in the dispersion vanishes there and is written as a
+  difference of terms that agree to leading order, with the chain dividing by
+  the highest power at these orders.
+
+* negbin2, OBSERVED. The shift is `y`, a count, and the term in
+  `(y - mu)/s^k` that accompanies each polygamma difference is itself a sum
+  over the same range, so the two merge and factorize: with `t = th + j` and
+  `s = th + mu`,
+
+      l_ttt  = sum_{j<y} 2(mu-j)(s^2 + s t + t^2)/(t^3 s^3)
+               - mu^2 (3th + mu)/(th^2 s^3)
+      l_tttt = -sum_{j<y} 6(mu-j)(t+s)(t^2+s^2)/(t^4 s^4)
+               + 2 mu^2 (6th^2 + 4 th mu + mu^2)/(th^3 s^4)
+
+  Measured, the spelling replaced is 4.15e-02 out at `theta = 1e7` at order 3
+  and 3.09e-02 at order 4, where these are within 1.80e-13 over 105 cells
+  spanning `y` to 500, `mu` to 100 and `theta` from 0.1 to 1e9. The sum costs
+  `y` terms, so it is taken only where the direct form loses digits, which is
+  where `theta` is large against `y` and the sum is therefore SHORT: the
+  threshold is 100, measured -- the direct form is within 3.9e-10 at
+  `theta/y <= 100` and reaches 5e-02 at 1e6.
+
+* negbin2, EXPECTED. The closed term is `mu` times a constant and therefore
+  `E[sum_{j<Y} c]`, so it merges into the summand rather than being added
+  afterwards, exactly as `nb_E_ltt` does at order two. The composition it
+  replaces LOSES ITS SIGN at `theta = 1e7`, reading -3.23e-32 where the value
+  is +4.80e-34 at order 3 and +9.55e-39 where it is -2.88e-40 at order 4;
+  after, `value * theta^p` settles on its asymptote to eight figures
+  (47.99999, 48.00000 at `mu = 4`; 29999.99, 30000.00 at `mu = 100`).
+
+* negbin1. ⚠️ THE SIZE NEED NOT APPEAR AT ALL, which is what the recursion in
+  the powers of `r` was fighting. Since `lgamma(y+r) - lgamma(r)` is
+  `sum_{i<y} log(r + i)` and `r = mu/theta`, the `y log(theta)` each such term
+  carries cancels EXACTLY against the `C(theta)` part, leaving
+
+      l = sum_{i<y} log(mu + i theta) - log(y!)
+          - (mu/theta) log1p(theta) - y log1p(theta),
+
+  whose variable does not run away. Verified against `dnbinom` to between 0
+  and 2.2e-11, the last being R's own loss of the Poisson limit. Every
+  derivative is then elementary, and one pass over `i` serves every component
+  of an order, the denominator power being the order itself; the pass is
+  compiled (`negbin1_psums_cpp`). Measured at `mu = 4`, `y = 3`, the route
+  replaced reads 2.770e-01 at `theta = 1e-3` where the value is 2.797e-01,
+  -2.37 at 1e-4, -1.97e+09 at 1e-6 and -1.46e+17 at 1e-8, and at order four
+  8.97 at 1e-3 where the value is -1.59; the new one converges on 9/32 and
+  -1.5984375 with the gap falling like `theta` (1.6e-2, 1.6e-3, 1.6e-4,
+  1.6e-5).
+
+* `nb1_M_derivs()` is the one composite piece, `M(theta) = log1p(theta)/theta`
+  and its derivatives, which has a removable singularity at zero: the
+  recursion divides by `theta` and the series converges only below one. ⚠️ The
+  crossover is MEASURED -- the two agree to between 1.9e-16 and 3.4e-13 over
+  `theta` from 0.01 to 0.5 and each fails on its own side, the recursion by
+  2.3e+08 at order four at `theta = 1e-6` and the series by 1.1e-02 at 0.8.
+  It is the shape the generalized Pareto's `Lambda` already carries.
+
+* ⚠️ The negbin1 route is taken only below `nb1_exact_cut()`, which is 1: the
+  sum costs `y` terms an observation against the O(1) of the polygamma route,
+  and above the crossover that route is within 4e-11. On a real design of
+  57600 counts summing to 6.24e6 the whole pass is a few milliseconds
+  compiled, against 23 s for the same pass written in R -- which is why it is
+  compiled and not left in the assembly.
+
+* `test-negbin-higher-cancellation.R` pins all three, each with the form it
+  replaced as a negative control.
+
+# distributions7 0.48.0
+
+* The expected polygamma quantities of BOTH negative binomials are summed
+  as DIFFERENCES through an exact recurrence, where before they were
+  expectations with `psi^(n)(theta)` subtracted at the call site. The two
+  agree to leading order wherever the family tends to a Poisson -- negbin2
+  as `theta` runs away, negbin1 as `theta` goes to zero and the size
+  `r = mu/theta` runs away -- so the subtraction lost the answer. The shift
+  is `Y`, which is a count, and for an integer shift
+
+      psi^(n)(x + k) - psi^(n)(x) = (-1)^n n! sum_{j<k} 1/(x + j)^(n+1),
+
+  terms of ONE SIGN, accumulated beside the mass the loop already carries.
+  It is the device `psi_diff.h` states for the observed derivatives, applied
+  to the expected ones.
+
+* It is also the whole cost. One `trigamma` or `psigamma` call per term
+  becomes one division, and where `psi_T_rest` is below its crossover it
+  becomes one division instead of TWO `trigamma` calls, the second always at
+  the same argument. Measured on the 57600 fitted means of a real design,
+  one evaluation of each helper:
+
+  |                            | before   | after   |        |
+  |----------------------------|----------|---------|--------|
+  | `nb_E_trigamma` (negbin2)  | 3.570 s  | 0.070 s | 51x    |
+  | `nb_E_psigamma` order 3    | 6.500 s  | 0.070 s | 93x    |
+  | `nb_E_psigamma` order 4    | 6.600 s  | 0.080 s | 83x    |
+  | `nb1_E_Pr`, theta = 0.2    | 0.360 s  | 0.060 s | 6x     |
+  | `nb1_E_Pr`, theta = 100    | 40.14 s  | 0.250 s | 161x   |
+
+  The negbin1 spread is `psi_T_rest`: with the repetition loop sized by
+  elapsed time, a term costs 1451 ns at `r = 0.5` and 472 ns at `r = 6`
+  against 17.4 ns and 4.5 ns here, and 8.2 ns against 2.2 ns above
+  `r = 100`, where that helper is already its asymptotic series.
+
+* ⚠️ THE MASS SEED CARRIED A CANCELLATION OF ITS OWN, in `nb_E_trigamma`
+  and `nb_E_psigamma`. `log P(Y = 0)` was written
+  `theta * (log(theta) - log(theta + mu))`, and at `theta = 1.585e5` with
+  `mu = 0.1` those two logarithms are 11.9736 apiece while their difference
+  is 6.31e-07: seven digits lost on the seed, which the multiplicative
+  recurrence then carries to every term. It is `-theta * log1p(mu/theta)`.
+  Measured with nothing else changed, that one line reads 3.52e-07 out
+  where `log1p` reads 5.74e-13. negbin1's seed was already correct.
+
+* What the two together buy, over 277 cells spanning `mu` from 0.1 to 1e5
+  and `theta` from 0.05 to 1e6, against the same recurrence summed in R
+  with `dnbinom`: the route replaced is 2.08e-03 out at `mu = 0.1`,
+  `theta = 5.012e5` at order 2, 1.04e-03 at order 3 and 6.95e-04 at
+  order 4, where the kernels are now 3.07e-12 or better at every cell and
+  every order. Away from the Poisson limit the two routes agree to 1e-10
+  or better, which is what says the difference is the cancellation and not
+  a change of formula.
+
+* `test-negbin-polygamma-recurrence.R` pins it, with the route replaced
+  transcribed in R as the negative control: that transcription reproduces
+  the compiled measurement to the digit (2.08e-03 and 3.52e-07 at the two
+  cells) and must FAIL where the kernels pass, so the tolerance cannot be
+  met by a route that has gone back to subtracting at the end.
+
+* ⚠️ TWO THINGS ARE NOT REPAIRED HERE. The OBSERVED third and fourth
+  derivatives still write `R::psigamma(y + th, n) - R::psigamma(th, n)`
+  directly, which is the same cancellation at the same shift -- the gap
+  0.36.0 records.
+
+* AND negbin2's EXPECTED INFORMATION no longer loses its sign, which closes
+  what 0.32.0 records as unrepaired. `E[l_theta_theta]` used to be assembled
+  from the polygamma difference plus `mu/(theta(theta+mu))`, each of order
+  `mu/theta^2` while their sum is of order `mu^2/(2 theta^4)` -- thirteen
+  digits at `theta = 1e6`, which no accuracy in the summand reaches. The
+  second term is itself an expectation over the same support, since
+  `E[sum_{j<Y} c] = c mu`, so the two merge into ONE accumulation whose term
+  is `(theta(2j - mu) + j^2) / (theta (theta+mu) (theta+j)^2)`, a quotient of
+  exact polynomials.
+
+* The asymptote it is checked against is DERIVED and not fitted: expanding
+  both pieces in `1/theta`, the `theta^-3` term contributes `mu^2/theta^4`
+  and the `theta^-4` term `-3mu^2/(2 theta^4)`, so the information tends to
+  `mu^2/(2 theta^4)`. Over `mu` in {1, 4, 100} and `theta` from 10 to 1e8 the
+  new form is positive at all 24 cells and its gap to that asymptote falls
+  monotonically -- at `mu = 1`, 5.22e-06, 3.02e-07, 1.79e-08 at `theta` 1e6,
+  1e7, 1e8 -- where the composition reads -1.63e-25 at `mu = 4`,
+  `theta = 1e7` and -5.63e-28 at `mu = 100`, `theta = 1e8`. Over a grid of
+  56 cells the worst relative error is 4.15e-04 against the composition's
+  2.47e+07.
+
+* It costs nothing, measured BACK TO BACK: two whole fits of the same model
+  run one after the other give 263.6 s for the composition and 264.8 s for
+  this form, with the outer trajectory identical evaluation for evaluation.
+  ⚠️ Runs taken at different moments of the same session read 270.3 and
+  271.3 against 292.8 and 292.2 -- eight per cent, which is the machine and
+  not the change, and only running the two arms consecutively separates them.
+  Per term the two forms are within 1.4% of each other at every mean from 1
+  to 5e4, with the merged one never the slower.
+
+* ⚠️ THE TRADE, stated. Merging moves the cancellation from order `theta`
+  to order `theta/mu`, so it costs accuracy in the one corner where `mu` is
+  far larger than `theta`: at `theta = 100` and `mu` from 4.0e4 to 1.7e5 the
+  composition reads 3.45e-12 to 2.28e-11 against the merged sum's 6.98e-10 to
+  3.96e-09, a factor of 58 to 265 between two quantities that are both
+  negligible for an information matrix. `test-subnormal-seed.R` carries that
+  tolerance at 1e-7 where it was 1e-9, with the numbers beside it. A dispatch
+  by regime would recover both and is not taken: what it would buy is 1e-11
+  against 1e-9.
+
+* ⚠️ Two references that do NOT settle this, recorded so they are not
+  reached for again. A sum taken in R DIVERGES from the kernel past
+  `theta = 1e5` -- its own gap to the asymptote grows from 2.02e-05 to
+  1.07e-01 while the kernel's falls -- so there it is the reference that
+  fails. And the Poisson limit is not a reference at all: under a Poisson
+  mass the answer is exactly `3 mu^2/(2 theta^4)`, a factor of three, because
+  `E[Y(Y-1)]` is `mu^2` there against `mu^2(1 + 1/theta)` here and the
+  difference is precisely the term the derivation turns on. That the factor
+  comes out as exactly 3 is what confirms the derivation.
+
+# distributions7 0.47.0
+
+* The negative binomial with a linear variance computes each quantity and
+  no more. `nb1_parts()` takes the order asked for and returns after the
+  first-order block, where before it wrote every component whatever the
+  caller read: `negbin1_gradient_cpp` needs `P`, `Q` and the two
+  derivatives of the size, and was paying for `Pr` as well, which is the
+  only place `psi'` enters and below the crossover of `psi_T_rest` is two
+  `trigamma` calls an observation. Measured at 28800 observations the
+  gradient goes from 0.0117 s to 0.0050 s, and the value, the score and
+  the observed hessian are `identical()` to the previous release over
+  eight regimes of the parameters.
+
+* `nb1_E_Pr()`, the series the expected information rests on, sums the
+  mass through its own recurrence and stops on the accumulated mass,
+  where before it located a far-tail quantile with `R::qnbinom` and then
+  summed at least a hundred terms with one `R::dnbinom` each. That
+  quantile call is the one `nb_E_trigamma()` removed one family over for
+  the reason `d7_par.h` states: its search reaches `pbeta`, whose warning
+  path calls into the R API and kills the process from a worker thread.
+  It was also the cost, and with it gone `negbin1_expected_hessian_cpp`
+  runs through `d7::par_for` like every other kernel here, bit-identical
+  at any thread count. On a 28800-cell design with an offset one
+  evaluation goes from 1.2767 s to 0.3356 s, and to 0.0467 s over eight
+  threads. Against a reference summed in R the worst relative error over
+  98 points spanning `mu` from 0.01 to 20000 and `theta` from 1e-4 to 40
+  is 1.07e-09, against the old kernel's 1.04e-09.
+
+* ⚠️ The log scale is left on the threshold the loop switches at and not
+  on `exp(lpk)` merely being nonzero. The window where that matters is
+  narrow and ordinary: at `mu = 918.832`, `theta = 0.5` the size is
+  1837.7 and `log P(Y = 0)` is -745.1, so the mass at zero is a subnormal
+  with almost no significand, and seeding the multiplicative recurrence
+  there put `mu_theta` at -2.73e-02 where it is 1.2089e-04. Across that
+  whole window the kernel now agrees with the reference to 3e-13.
+
+* ⚠️ The same line was wrong in negbin2, in BOTH helpers that carry the
+  recurrence -- `nb_E_trigamma()`, which the expected information rests
+  on, and `nb_E_psigamma()`, which the expected third and fourth
+  derivatives rest on. It was found by grepping for the shape after
+  repairing negbin1 rather than by anything failing. Measured against a
+  sum taken in R over the family's own mass, at `mu = 1.702e5`,
+  `theta = 100`, where `log P(Y = 0)` is -744.0:
+  `E[trigamma(Y + theta)]` was 3.7e-02 out, and the error runs smoothly
+  up to that edge (2.3e-06 at -734, 1.4e-03 at -739). The window is
+  reached by an ordinary count model with a large mean and a mild
+  overdispersion, and nothing about the failure is loud.
+
+* ⚠️ A memo went with the parallelization, and what it was worth is
+  stated rather than buried. The loop this replaced carried the
+  expectation across CONSECUTIVE equal parameters, which fires wherever a
+  design repeats a mean in adjacent rows and nowhere at all under an
+  offset -- measured on those same 28800 cells, 28800 distinct means of
+  28800, so it never hit once and was what kept the loop sequential.
+  Where it does fire the change costs: 100 distinct means over 28800 rows
+  go from 0.0048 s to 0.4175 s sequentially, and to 0.0590 s over eight
+  threads.
+
+* ⚠️ Two things this does NOT repair, both measured and both older than
+  the change. The expected information's `theta` block is three terms of
+  order 1e13 summing to order 1e2 at `theta = 1e-6`, so a change to the
+  series at the 1e-10 level moves it entirely and no accuracy in the
+  summand reaches it. And `mu_theta` at a large mean is a difference of
+  two numbers near 4/3, carrying four to five digits of cancellation of
+  its own.
+
 # distributions7 0.46.0
 
 * The two Poisson-inverse gaussian families get ONE COMPILED KERNEL PER

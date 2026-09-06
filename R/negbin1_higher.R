@@ -64,11 +64,27 @@ NULL
 #' \eqn{r = \mu/\theta} runs away, and the two terms of the difference agree to
 #' leading order while the consumers above divide by \eqn{\theta^{a+b}}. The
 #' differences therefore go through [psi_shift_diff()], which forms them as an
-#' exact sum of reciprocals rather than as a subtraction. What that does not
-#' repair is the cancellation among the powers of \eqn{r} in the recursion
-#' itself: at orders three and four those terms are of size
+#' exact sum of reciprocals rather than as a subtraction.
+#'
+#' # Where the recursion cedes, and the form that does not
+#'
+#' What that does not repair is the cancellation among the powers of \eqn{r} in
+#' the recursion itself: at orders three and four those terms are of size
 #' \eqn{8\times10^6} at \eqn{\theta = 5\times10^{-4}} and sum to a value of
-#' order one, so neither this form nor the one it replaced is reliable there.
+#' order one. Measured at \eqn{\mu = 4}, \eqn{y = 3}, the third derivative in
+#' \eqn{\theta} reads \eqn{-1.97\times10^{9}} at \eqn{\theta = 10^{-6}} where
+#' the value is \eqn{9/32}, and the fourth \eqn{7.90\times10^{15}}.
+#'
+#' The size need not appear at all, which is what removes it. Since
+#' \eqn{\log\Gamma(y+r) - \log\Gamma(r) = \sum_{i<y}\log(r+i)} and
+#' \eqn{r = \mu/\theta}, the \eqn{y\log\theta} each such term carries cancels
+#' EXACTLY against \eqn{C(\theta)}, leaving
+#' \deqn{\ell = \sum_{i<y}\log(\mu + i\theta) - \log(y!)
+#'   - \frac{\mu}{\theta}\log(1+\theta) - y\log(1+\theta),}
+#' whose variable does not run away and whose every derivative is elementary.
+#' Below [nb1_exact_cut()] that is the route taken, through
+#' [nb1_components_exact()]; above it the recursion is within 4e-11 and costs
+#' \eqn{O(1)} where the sum costs \eqn{y} terms an observation.
 #'
 #' @param y A numeric vector of counts.
 #' @param theta A named list with components `mu` and `theta`, each a numeric
@@ -94,6 +110,28 @@ negbin1_components <- function(y, theta, order) {
   y <- rep_len(y, n)
   mu <- rep_len(mu, n)
   th <- rep_len(th, n)
+
+  # Below the crossover the route in the size loses the answer among the
+  # powers of r; the form in mu + i theta does not, and costs y terms an
+  # observation. Measured at mu = 4, y = 3, the two agree to between 4e-16 and
+  # 5.5e-09 down to theta = 0.1 and part company below it: at theta = 1e-3 the
+  # fourth derivative reads 8.97 against -1.59, and at 1e-8 5.8e+25 against
+  # -1.598437. The threshold is 1, where the agreement is 4e-11 or better.
+  esatta <- th < nb1_exact_cut()
+  if (all(esatta)) return(nb1_components_exact(y, mu, th, order))
+  if (any(esatta)) {
+    dentro <- nb1_components_exact(y[esatta], mu[esatta], th[esatta], order)
+    fuori <- negbin1_components(y[!esatta],
+                                list(mu = mu[!esatta], theta = th[!esatta]),
+                                order)
+    return(stats::setNames(lapply(names(fuori), function(nm) {
+      v <- numeric(n)
+      v[esatta] <- dentro[[nm]]
+      v[!esatta] <- fuori[[nm]]
+      v
+    }), names(fuori)))
+  }
+
   r <- mu / th
   om <- 1 + th
 
@@ -159,6 +197,86 @@ negbin1_components <- function(y, theta, order) {
     comp(sum(parts == "mu"), sum(parts == "theta"))
   }), nms)
 }
+
+#' @rdname negbin1_components
+#' @description
+#' `nb1_exact_cut()` is the dispersion below which the cancellation-free
+#' assembly is used in place of the recursion in the size. It sits where the
+#' two agree and each is still comfortable: measured at \eqn{\mu = 4},
+#' \eqn{y = 3}, they agree to 4e-11 or better at \eqn{\theta = 1} and to
+#' 5.5e-09 at \eqn{\theta = 0.1}, and part company below that.
+#' @keywords internal
+nb1_exact_cut <- function() 1
+
+#' @rdname negbin1_components
+#' @description
+#' `nb1_M_derivs()` returns \eqn{M(\theta) = \log(1+\theta)/\theta} and its
+#' derivatives to the order asked for. It is the one composite piece of the
+#' cancellation-free form below, and it has a removable singularity at
+#' \eqn{\theta = 0}: the recursion \eqn{\theta M^{(b+1)} + (b+1)M^{(b)} =
+#' (-1)^b b!/(1+\theta)^{b+1}} divides by \eqn{\theta} and loses its digits
+#' there, while the series \eqn{M^{(b)} = (-1)^b \sum_{n\ge 0} (-1)^n
+#' \left[\prod_{i\le b}(n+i)\right]\theta^n/(n+b+1)} converges only below one.
+#' The crossover is MEASURED and not chosen: the two agree to between 1.9e-16
+#' and 3.4e-13 over \eqn{\theta} from 0.01 to 0.5, and each fails on its own
+#' side -- the recursion by 1.4e-04 at \eqn{\theta = 10^{-6}} and by 2.3e+08 at
+#' order four, the series by 1.1e-02 at \eqn{\theta = 0.8}. It is the shape the
+#' generalized Pareto's `Lambda` already carries one family over.
+#' @keywords internal
+nb1_M_derivs <- function(th, order, cut = 0.5, nterm = 80L) {
+  out <- vector("list", order + 1L)
+  low <- th < cut
+  nn <- 0:nterm
+  for (b in 0:order) {
+    v <- numeric(length(th))
+    if (any(low)) {
+      co <- rep(1, length(nn))
+      for (i in seq_len(b)) co <- co * (nn + i)
+      w <- (-1)^b * ((-1)^nn * co / (nn + b + 1L))
+      # una potenza di theta per termine, accumulata per righe
+      acc <- numeric(sum(low)); tl <- th[low]; p <- rep(1, sum(low))
+      for (k in seq_along(nn)) { acc <- acc + w[k] * p; p <- p * tl }
+      v[low] <- acc
+    }
+    if (any(!low)) {
+      hi <- th[!low]
+      M <- log1p(hi) / hi
+      f <- 1
+      if (b >= 1L) for (m in 0:(b - 1L)) {
+        M <- ((-1)^m * f / (1 + hi)^(m + 1L) - (m + 1L) * M) / hi
+        f <- f * (m + 1L)
+      }
+      v[!low] <- M
+    }
+    out[[b + 1L]] <- v
+  }
+  out
+}
+
+#' @rdname negbin1_components
+#' @description
+#' `nb1_components_exact()` is the cancellation-free assembly, from the form in
+#' \eqn{\mu + i\theta} that `negbin1_psums_cpp()` documents.
+#' @keywords internal
+nb1_components_exact <- function(y, mu, th, order) {
+  S <- negbin1_psums_cpp(y, mu, th, as.integer(order))
+  Md <- nb1_M_derivs(th, order)
+  nms <- deriv_names(c("mu", "theta"), order)
+  stats::setNames(lapply(nms, function(nm) {
+    parts <- strsplit(nm, "_")[[1]]
+    a <- sum(parts == "mu")
+    b <- sum(parts == "theta")
+    out <- (-1)^(order - 1L) * factorial(order - 1L) * S[, b + 1L]
+    if (a == 0L) {
+      out <- out - mu * Md[[b + 1L]] -
+        y * (-1)^(b - 1L) * factorial(b - 1L) / (1 + th)^b
+    } else if (a == 1L) {
+      out <- out - Md[[b + 1L]]
+    }
+    out
+  }), nms)
+}
+
 
 
 #' @title NB1 Third-Order Derivatives

@@ -1814,6 +1814,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// negbin1_psums_cpp
+NumericMatrix negbin1_psums_cpp(NumericVector y, NumericVector mu, NumericVector theta, int order, int threads);
+RcppExport SEXP _distributions7_negbin1_psums_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(negbin1_psums_cpp(y, mu, theta, order, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // negbin_deriv3_cpp
 List negbin_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector theta, int threads);
 RcppExport SEXP _distributions7_negbin_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP, SEXP threadsSEXP) {
@@ -2504,6 +2519,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_negbin1_gradient_cpp", (DL_FUNC) &_distributions7_negbin1_gradient_cpp, 4},
     {"_distributions7_negbin1_hessian_cpp", (DL_FUNC) &_distributions7_negbin1_hessian_cpp, 4},
     {"_distributions7_negbin1_expected_hessian_cpp", (DL_FUNC) &_distributions7_negbin1_expected_hessian_cpp, 4},
+    {"_distributions7_negbin1_psums_cpp", (DL_FUNC) &_distributions7_negbin1_psums_cpp, 5},
     {"_distributions7_negbin_deriv3_cpp", (DL_FUNC) &_distributions7_negbin_deriv3_cpp, 4},
     {"_distributions7_negbin_deriv3_expected_cpp", (DL_FUNC) &_distributions7_negbin_deriv3_expected_cpp, 4},
     {"_distributions7_negbin_deriv4_cpp", (DL_FUNC) &_distributions7_negbin_deriv4_cpp, 4},

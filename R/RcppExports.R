@@ -521,6 +521,10 @@ negbin1_expected_hessian_cpp <- function(y, mu, theta, threads = 1L) {
     .Call(`_distributions7_negbin1_expected_hessian_cpp`, y, mu, theta, threads)
 }
 
+negbin1_psums_cpp <- function(y, mu, theta, order, threads = 1L) {
+    .Call(`_distributions7_negbin1_psums_cpp`, y, mu, theta, order, threads)
+}
+
 negbin_deriv3_cpp <- function(y, mu, theta, threads = 1L) {
     .Call(`_distributions7_negbin_deriv3_cpp`, y, mu, theta, threads)
 }
