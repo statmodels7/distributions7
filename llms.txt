@@ -3462,6 +3462,9 @@ divergent density.
   : The Size Behind an NB1 Mean
 
 - [`negbin1_components()`](https://statmodels7.github.io/distributions7/reference/negbin1_components.md)
+  [`nb1_exact_cut()`](https://statmodels7.github.io/distributions7/reference/negbin1_components.md)
+  [`nb1_M_derivs()`](https://statmodels7.github.io/distributions7/reference/negbin1_components.md)
+  [`nb1_components_exact()`](https://statmodels7.github.io/distributions7/reference/negbin1_components.md)
   : Derivative Components of NB1
 
 - [`new_check()`](https://statmodels7.github.io/distributions7/reference/new_check.md)

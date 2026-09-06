@@ -208,5 +208,5 @@ rbind(fitted  = coef(fit),
 set.seed(4)
 coef(fit_distrib(d, rpois(2000, 4)))
 #>           mu        theta 
-#> 3.941000e+00 1.666388e-08 
+#> 3.941000e+00 1.666262e-08 
 ```

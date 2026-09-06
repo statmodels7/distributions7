@@ -126,5 +126,5 @@ z <- distrib_rng(d, 2000, th)
 fit <- fit_distrib(d, z)
 vapply(distrib_gradient(d, z, as.list(coef(fit))), sum, numeric(1))
 #>           mu        theta 
-#> 4.972585e-14 7.359734e-04 
+#> 4.325880e-14 7.359734e-04 
 ```

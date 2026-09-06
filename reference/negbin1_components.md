@@ -5,10 +5,39 @@ Returns the components of
 one to four, from the sparse form the NB1 log-likelihood takes in the
 size \\r = \mu/\theta\\.
 
+`nb1_exact_cut()` is the dispersion below which the cancellation-free
+assembly is used in place of the recursion in the size. It sits where
+the two agree and each is still comfortable: measured at \\\mu = 4\\,
+\\y = 3\\, they agree to 4e-11 or better at \\\theta = 1\\ and to
+5.5e-09 at \\\theta = 0.1\\, and part company below that.
+
+`nb1_M_derivs()` returns \\M(\theta) = \log(1+\theta)/\theta\\ and its
+derivatives to the order asked for. It is the one composite piece of the
+cancellation-free form below, and it has a removable singularity at
+\\\theta = 0\\: the recursion \\\theta M^{(b+1)} + (b+1)M^{(b)} = (-1)^b
+b!/(1+\theta)^{b+1}\\ divides by \\\theta\\ and loses its digits there,
+while the series \\M^{(b)} = (-1)^b \sum\_{n\ge 0} (-1)^n
+\left\[\prod\_{i\le b}(n+i)\right\]\theta^n/(n+b+1)\\ converges only
+below one. The crossover is MEASURED and not chosen: the two agree to
+between 1.9e-16 and 3.4e-13 over \\\theta\\ from 0.01 to 0.5, and each
+fails on its own side – the recursion by 1.4e-04 at \\\theta = 10^{-6}\\
+and by 2.3e+08 at order four, the series by 1.1e-02 at \\\theta = 0.8\\.
+It is the shape the generalized Pareto's `Lambda` already carries one
+family over.
+
+`nb1_components_exact()` is the cancellation-free assembly, from the
+form in \\\mu + i\theta\\ that `negbin1_psums_cpp()` documents.
+
 ## Usage
 
 ``` r
 negbin1_components(y, theta, order)
+
+nb1_exact_cut()
+
+nb1_M_derivs(th, order, cut = 0.5, nterm = 80L)
+
+nb1_components_exact(y, mu, th, order)
 ```
 
 ## Arguments

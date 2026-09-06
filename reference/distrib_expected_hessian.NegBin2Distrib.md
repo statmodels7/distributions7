@@ -138,5 +138,5 @@ vapply(c(1e2, 1e4, 1e6),
        function(t) distrib_expected_hessian(d, 0,
                      list(mu = 4, theta = t))$theta_theta,
        numeric(1))
-#> [1] -7.326902e-08 -3.581440e-16  1.734243e-16
+#> [1] -7.326902e-08 -7.992805e-16 -7.999928e-24
 ```
