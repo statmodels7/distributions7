@@ -2,12 +2,12 @@
 % Please edit documentation in R/link_scale.R
 \name{bell_partial}
 \alias{bell_partial}
-\title{Partial Bell Polynomials for Orders up to Four}
+\title{Partial Bell Polynomials for Orders up to Five}
 \usage{
 bell_partial(m, j, h)
 }
 \arguments{
-\item{m}{The total order, 1 to 4.}
+\item{m}{The total order, 1 to 5.}
 
 \item{j}{The number of blocks, 1 to \code{m}.}
 
@@ -19,15 +19,21 @@ A numeric vector, the polynomial evaluated element-wise.
 }
 \description{
 The partial (incomplete) Bell polynomial \eqn{B_{m,j}} evaluated at the
-derivatives of the inverse link, for \eqn{m \le 4}.
+derivatives of the inverse link, for \eqn{m \le 5}.
 }
 \details{
 These are the coefficients Faa di Bruno's formula needs. Because each
 parameter carries its own link, the Jacobian of \eqn{\theta \mapsto \eta} is
 diagonal and the multivariate formula factorizes into a product of univariate
 ones, so only \eqn{B_{m,j}} for a single variable is required. They are
-written out rather than generated: there are ten of them below order five, and
-a table cannot be slower or wrong in a way a recursion could.
+written out rather than generated: there are fifteen of them at or below order
+five, and a table cannot be slower or wrong in a way a recursion could.
+
+The order-5 row was checked before it was written, against a construction of
+the same polynomials as the coefficient of \eqn{t^5/5!} in
+\eqn{(\sum_m x_m t^m/m!)^j/j!}, which shares no arithmetic with the table:
+the two agree to 1.8e-15, and the coefficients sum to the Bell number
+\eqn{B_5 = 52}.
 }
 \seealso{
 \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}, \code{\link[=to_link_scale]{to_link_scale()}}

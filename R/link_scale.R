@@ -80,7 +80,7 @@ NULL
 #'   [distrib_expected_hessian()], [distrib_deriv3()] and [distrib_deriv4()],
 #'   the five generics that take `scale`;
 #'   [bell_partial()] for the polynomials this assembles;
-#'   [linkfunctions7::linkinvderiv()], which supplies the four inverse-link
+#'   [linkfunctions7::linkinvderiv()], which supplies the five inverse-link
 #'   derivatives;
 #'   [fit_distrib()], which optimizes on this scale for the reason given above.
 NULL
@@ -99,21 +99,27 @@ NULL
 # where l_{...} are the parameter-scale derivatives and B_{m,j} are the partial
 # (incomplete) Bell polynomials.
 
-#' Partial Bell Polynomials for Orders up to Four
+#' Partial Bell Polynomials for Orders up to Five
 #'
 #' @description
 #' The partial (incomplete) Bell polynomial \eqn{B_{m,j}} evaluated at the
-#' derivatives of the inverse link, for \eqn{m \le 4}.
+#' derivatives of the inverse link, for \eqn{m \le 5}.
 #'
 #' @details
 #' These are the coefficients Faa di Bruno's formula needs. Because each
 #' parameter carries its own link, the Jacobian of \eqn{\theta \mapsto \eta} is
 #' diagonal and the multivariate formula factorizes into a product of univariate
 #' ones, so only \eqn{B_{m,j}} for a single variable is required. They are
-#' written out rather than generated: there are ten of them below order five, and
-#' a table cannot be slower or wrong in a way a recursion could.
+#' written out rather than generated: there are fifteen of them at or below order
+#' five, and a table cannot be slower or wrong in a way a recursion could.
 #'
-#' @param m The total order, 1 to 4.
+#' The order-5 row was checked before it was written, against a construction of
+#' the same polynomials as the coefficient of \eqn{t^5/5!} in
+#' \eqn{(\sum_m x_m t^m/m!)^j/j!}, which shares no arithmetic with the table:
+#' the two agree to 1.8e-15, and the coefficients sum to the Bell number
+#' \eqn{B_5 = 52}.
+#'
+#' @param m The total order, 1 to 5.
 #' @param j The number of blocks, 1 to `m`.
 #' @param h A list with `h[[k]]` the \eqn{k}-th derivative of the inverse
 #'   link evaluated at \eqn{\eta}, as a numeric vector.
@@ -147,7 +153,16 @@ bell_partial <- function(m, j, h) {
       h[[1]]^4                                       # B_{4,4}
     ))
   }
-  stop("Link-scale derivatives are implemented up to order 4.", call. = FALSE)
+  if (m == 5L) {
+    return(switch(j,
+      h[[5]],                                        # B_{5,1}
+      5 * h[[1]] * h[[4]] + 10 * h[[2]] * h[[3]],    # B_{5,2}
+      10 * h[[1]]^2 * h[[3]] + 15 * h[[1]] * h[[2]]^2, # B_{5,3}
+      10 * h[[1]]^3 * h[[2]],                        # B_{5,4}
+      h[[1]]^5                                       # B_{5,5}
+    ))
+  }
+  stop("Link-scale derivatives are implemented up to order 5.", call. = FALSE)
 }
 
 #' Index Tuples Matching the Package's Component Naming
@@ -238,7 +253,12 @@ inverse_link_derivs <- function(distrib, theta, order) {
       list(linkfunctions7::dlinkinv(lk, e),
            linkfunctions7::d2linkinv(lk, e),
            linkfunctions7::d3linkinv(lk, e),
-           linkfunctions7::d4linkinv(lk, e))
+           linkfunctions7::d4linkinv(lk, e)),
+      list(linkfunctions7::dlinkinv(lk, e),
+           linkfunctions7::d2linkinv(lk, e),
+           linkfunctions7::d3linkinv(lk, e),
+           linkfunctions7::d4linkinv(lk, e),
+           linkfunctions7::d5linkinv(lk, e))
     )
   })
 }
@@ -287,6 +307,9 @@ link_scale_lower_orders <- function(distrib, y, theta, expected, order) {
   }
   if (order >= 4L) {
     nat[[3]] <- distrib_deriv3(distrib, y, theta, expected = expected)
+  }
+  if (order >= 5L) {
+    nat[[4]] <- distrib_deriv4(distrib, y, theta, expected = expected)
   }
 
   nat

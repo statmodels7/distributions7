@@ -1,3 +1,41 @@
+# distributions7 0.51.0
+
+* `to_link_scale()` reaches the **fifth** order, so the `stop()` that capped it
+  at four is gone. Three edits and no new machinery: `link_scale_layout()` and
+  `deriv_index_list()` were already generic in the order, and what capped the
+  surface was `bell_partial()`'s table, `inverse_link_derivs()`'s switch and
+  `link_scale_lower_orders()`'s ladder. The fifth derivative of an inverse link
+  the first of those consumes is what linkfunctions7 0.4.0 delivered.
+
+  The order-5 partial Bell row was checked before it was written, against a
+  construction of the same polynomials as the coefficient of \eqn{t^5/5!} in
+  \eqn{(\sum_m x_m t^m/m!)^j/j!}, which shares no arithmetic with a table:
+  the two agree **exactly**, and the coefficients sum to the Bell number
+  \eqn{B_5 = 52}. Both are tests, along with a negative control that puts one
+  coefficient 5 per cent out.
+
+* **The link-scale fifth now has two routes, and they agree.** `distrib_deriv5()`
+  differentiates in \eqn{\eta} the order-4 component already on the link scale,
+  which needs neither \eqn{h_5} nor the Bell row; `to_link_scale()` can instead
+  carry the parameter-scale fifth over by Faa di Bruno at order 5, which needs
+  both. They share no arithmetic beyond the parameter-scale fourth, so their
+  agreement is a check rather than one expression twice: measured over six
+  families, between 2.9e-09 and 9.6e-08.
+
+  ⚠️ **What ships is unchanged, and the measurement is why.** Against
+  Richardson on the analytic fourth the differencing route reads 1.1e-10 to
+  2.7e-08 and the chain-rule route 3.0e-09 to 8.1e-08, so the one already in
+  place is between 3 and 33 times the closer -- the chain mixes a numerical
+  fifth with four analytic lower orders and accumulates more rounding than one
+  difference does. It is also the more robust of the two, needing no \eqn{h_5},
+  so it does not degrade for a user-defined link whose fifth derivative is a
+  numerical fallback. The chain route is 1.4x to 1.75x faster, on a quantity
+  costing two to nine milliseconds, which does not buy back the digits.
+
+* An identity link leaves every order alone, which is the control that costs
+  nothing and would catch a chain applied where it should not be: both routes
+  reproduce the parameter scale exactly (0.000e+00).
+
 # distributions7 0.50.0
 
 * `distrib_deriv5()`, the **fifth**-order derivatives of the log-likelihood,

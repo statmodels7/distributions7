@@ -82,7 +82,7 @@ all.equal(distrib_deriv4(d, y, th)$mu_mu_mu_mu,
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}} and \code{\link[=distrib_deriv4]{distrib_deriv4()}},
 the five generics that take \code{scale};
 \code{\link[=bell_partial]{bell_partial()}} for the polynomials this assembles;
-\code{\link[linkfunctions7:linkinvderiv]{linkfunctions7::linkinvderiv()}}, which supplies the four inverse-link
+\code{\link[linkfunctions7:linkinvderiv]{linkfunctions7::linkinvderiv()}}, which supplies the five inverse-link
 derivatives;
 \code{\link[=fit_distrib]{fit_distrib()}}, which optimizes on this scale for the reason given above.
 }
