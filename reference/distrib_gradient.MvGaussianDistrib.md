@@ -86,7 +86,7 @@ ll <- function(v) {
   sum(distrib_pdf(d, y, t2, log = TRUE))
 }
 max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
-#> [1] 4.389364e-09
+#> [1] 4.368311e-09
 
 # The mean component is the whitened residual, one row per observation.
 S <- mv_sigma(d, theta)

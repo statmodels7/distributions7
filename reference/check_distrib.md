@@ -45,10 +45,10 @@ check_distrib(
 - orders:
 
   Integer vector. Which parameter-derivative orders to check. Defaults
-  to `1:4`, the orders every family implements analytically. Add `5` to
-  check the numerical fifth as well; see the bullet below for what that
-  row compares and when it is emitted. Defaults to `1:4`; use e.g. `1:2`
-  for a faster run.
+  to `1:4`, the orders every family implements analytically; use e.g.
+  `1:2` for a faster run. Add `5` to check the numerical fifth as well;
+  see the bullet below for what that row compares and when it is
+  emitted.
 
 - tol:
 

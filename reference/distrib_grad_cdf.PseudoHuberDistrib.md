@@ -72,5 +72,5 @@ all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
 # Differencing the quadrature agrees, and costs more.
 fd <- numerical_cdf_deriv(d, q, th, order = 1)
 max(abs(fd$mu / distrib_grad_cdf(d, q, th, log = FALSE)$mu - 1))
-#> [1] 2.509515e-11
+#> [1] 2.175393e-11
 ```
