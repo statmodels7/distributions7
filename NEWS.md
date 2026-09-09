@@ -1,3 +1,90 @@
+# distributions7 0.52.0
+
+* The skew t's derivatives in `(mu, sigma, alpha)` are **closed form** at
+  orders three and four: ten of the twenty and fifteen of the thirty-five. The
+  location and the scale reach the log-density only through
+  `z = (y - mu)/sigma` and the shape only through `w = alpha u(z)`, so two
+  observations close the block. Differentiating in the shape never leaves it,
+  `d^c/dalpha^c l = u^c Lam^(c)(w)`; and for any function of `z` alone,
+  `d^a_mu d^b_sigma F = (-1)^(a+b) sigma^-(a+b) P_{a,b}(z)` with
+  `P_{a,b+1} = (a+b) P_{a,b} + z P'_{a,b}`. Every piece is elementary:
+  `u` and `log t_nu` are rational up to one square root, and
+  `Lam^(k)` comes from the Riccati recursion for `Q = t_{nu+1}/T_{nu+1}`,
+  exactly as a skew normal's inverse Mills ratio does. `skewt_msa_tower()`,
+  `skewt_msa_component()` and `skewt_msa_derivs()`.
+
+* The ten fourth-order components carrying **exactly one** `nu` are one
+  five-point difference along `nu` of the closed-form third derivative beside
+  them (`skewt_msa_nu1()`), which is the rule `distrib_hessian()`'s mixed
+  components already follow, read one order up. The generic construction took a
+  mixed **second** difference of the Hessian instead, and a second difference
+  amplifies rounding by `h^-2`.
+
+* `numerical_deriv3()` and `numerical_deriv4()` take `skip`, a character vector
+  of components to leave `NULL` for a caller that supplies them in closed form.
+  The names and their order do not move. With `skip = NULL`, the default, both
+  are `identical()` to what they returned before.
+
+* The licence for the orders that cannot be checked against a hand-written form
+  is that the **same assembly at orders one and two reproduces the family's
+  own score and Hessian**, derived separately and already under
+  `check_distrib()`: measured at 7.7e-17 to 1.7e-16. Against Richardson applied
+  to the hand-written Hessian, over fifteen settings of `(nu, alpha)` with
+  `nu` from 3 to 50, the closed forms read 3.6e-08 at order three and 2.4e-07
+  at order four, which is the reference's own floor.
+
+* What it buys, measured over that grid against the route it replaces: order
+  four went from **2.4e-05 to 2.4e-07**, and the ten components carrying one
+  `nu` are between **20 and 203 times** closer to Richardson. Order three shows
+  no gain there and is not claimed to: a first difference of an analytic
+  Hessian already sits at Richardson's own floor, so the reference cannot see
+  the difference. What order three buys is the two orders above it: the ten
+  fourth-order components carrying one `nu`, and the fifth order below.
+
+* ⚠️ It also closes a **nested difference** at the fifth order, which nothing
+  had noticed. `numerical_deriv5()` differences `distrib_deriv4()`, and for a
+  component free of `nu` that fourth derivative was itself a SECOND difference
+  of the Hessian in the same variables -- a difference of a difference, which
+  this package forbids everywhere. Measured with two accuracies of the same
+  first difference, sharing only their centre node: over the 21 order-5
+  components free of `nu` the two agree to **2.5e-10** where the route replaced
+  gave **4.8e-03, 3.6e-03 and 1.2e-02** at `nu` of 5, 8 and 20. Seven orders of
+  magnitude, and it is what order three buys, since order three shows no gain
+  of its own.
+
+* And it is **cheaper**, the fifteen closed components no longer being
+  differenced at all: at `n = 20000` `distrib_deriv4()` costs 5.05 s where the
+  generic construction alone costs 17.79 s, which is where the page's earlier
+  "about sixteen seconds" came from.
+
+* `has_exact_deriv4()` answers **`TRUE`** for the skew t, which is a decision
+  recorded here rather than a consequence of the closed forms above: with part
+  of the family exact, what the predicate should say about it is a choice. It
+  owns its fourth-order method, so the default owner reading gives that answer
+  and no override is registered for it. The predicate is one logical for the
+  whole family and says the family **supplies** the derivative, not that every
+  component of it is a closed form: fifteen of the thirty-five are, the twenty
+  carrying `nu` are single stencils, and a model needing a fourth derivative of
+  this family gets one.
+
+* ⚠️ What that costs is a measurement rather than a promise, and it depends on
+  `nu`. `check_distrib(orders = 1:5)` now emits an order-5 row for the skew t;
+  `check_distrib()`'s own `rel()` floors its denominator at 1, so for a small
+  component it reads an **absolute** error, and the stencil noise in `nu` falls
+  as `nu` grows. Swept over `nu` in 3, 5, 8, 20, 50 and `alpha` in -2, 0.5, 3,
+  the row reads **3.7e-03 to 4.6e-03 at `nu` = 3**, where it fails against the
+  default tolerance of 1e-3, is marginal at 5, and reads 4.4e-05 to 4.3e-04 at
+  8 and 5.1e-06 to 3.7e-05 at 20, where it passes with orders of margin. Both
+  ends are asserted in the tests. `orders` still defaults to `1:4`, so no
+  existing caller meets that row.
+
+* ⚠️ Read **per component against its own scale** the fifth order of this
+  family is untrustworthy at every `nu`, and that is the statement to carry
+  rather than the row's verdict: the two accuracies of `numerical_deriv5()`,
+  which share only their centre node, disagree by 5e-02 to 1.1 over that grid,
+  while the 21 components free of `nu` agree to **2.5e-10** -- the range every
+  family whose fourth order is genuinely analytic sits in, 1.3e-10 to 1.2e-07.
+
 # distributions7 0.51.0
 
 * `to_link_scale()` reaches the **fifth** order, so the `stop()` that capped it

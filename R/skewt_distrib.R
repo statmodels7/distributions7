@@ -732,24 +732,334 @@ S7::method(distrib_hessian, SkewTDistrib) <- function(distrib, y, theta, scale =
   )
 }
 
+#' @title The Skew t Tower in the Location, Scale and Shape
+#' @name skewt_msa_tower
+#'
+#' @description
+#' Builds the table of \eqn{\partial^i_z\,\partial^c_\alpha \ell} that the
+#' third and fourth derivatives of a skew t read, for every pair with
+#' \eqn{c + i \le 4}. Together with [skewt_msa_component()] it gives in closed
+#' form every derivative of the log-density that does not involve \eqn{\nu}.
+#'
+#' @details
+#' # Why the block closes
+#'
+#' With \eqn{z = (y-\mu)/\sigma} and \eqn{u(z) = z\sqrt{(\nu+1)/(\nu+z^2)}},
+#' the log-density is
+#' \deqn{\ell = \log 2 - \log\sigma + g(z) + \Lambda(\alpha\,u(z)),}
+#' where \eqn{g = \log t_\nu} and \eqn{\Lambda = \log T_{\nu+1}}. Neither
+#' \eqn{\mu} nor \eqn{\sigma} appears anywhere but inside \eqn{z}, and
+#' \eqn{\alpha} nowhere but inside \eqn{w = \alpha u}, so two observations
+#' settle the whole block.
+#'
+#' The shape enters the argument of \eqn{\Lambda} linearly, so differentiating
+#' in it never leaves the table:
+#' \deqn{\Phi_c(z) \;=\; \dfrac{\partial^c \ell}{\partial\alpha^c}
+#'   \;=\; u(z)^c\,\Lambda^{(c)}(w), \qquad c \ge 1 .}
+#'
+#' The location and the scale then act on a function of \eqn{z} alone, and for
+#' any such \eqn{F},
+#' \deqn{\dfrac{\partial^{a+b} F}{\partial\mu^a\,\partial\sigma^b}
+#'       = \dfrac{(-1)^{a+b}}{\sigma^{a+b}}\;P_{a,b}(z), \qquad
+#'       P_{a,b}(z) = \sum_{i=0}^{b}\binom{b}{i}
+#'         \left[\prod_{k=i}^{b-1}(a+k)\right] z^i\,F^{(a+i)}(z),}
+#' which follows by induction from \eqn{P_{a,0} = F^{(a)}} and
+#' \eqn{P_{a,b+1} = (a+b)\,P_{a,b} + z\,P_{a,b}'}. The explicit
+#' \eqn{-\log\sigma} contributes only to the pure-\eqn{\sigma} components,
+#' where it adds \eqn{(-1)^b (b-1)!\,\sigma^{-b}}.
+#'
+#' # Nothing in it needs a difference
+#'
+#' \eqn{u} and \eqn{g} are rational in \eqn{z} up to one square root, so their
+#' four derivatives are written out. \eqn{\Lambda^{(k)}} follows from the
+#' Riccati recursion \eqn{Q' = Q(G-Q)} for \eqn{Q = t_{\nu+1}/T_{\nu+1}} and
+#' \eqn{G = \partial_w \log t_{\nu+1}}, differentiated twice more, exactly as a
+#' skew normal's inverse Mills ratio is handled. The two chain rules that
+#' remain, \eqn{(u^c)^{(j)}} and \eqn{\partial_z^p \Lambda^{(c)}(\alpha u)},
+#' are Faa di Bruno sums over the partial Bell polynomials of \eqn{u}.
+#'
+#' What is left outside the table is \eqn{\nu}, which enters the degrees of
+#' freedom of \eqn{T_{\nu+1}} and therefore carries the obstruction
+#' [distrib_gradient.SkewTDistrib()] records.
+#'
+#' @param y A numeric vector of observations.
+#' @param mu,sigma,alpha,nu The four parameters, each of length 1 or of the
+#'   length of `y`.
+#'
+#' @return A named list. `z` is the standardized residual; the remaining
+#'   fifteen elements are named `"c_i"` and hold
+#'   \eqn{\partial_z^i \Phi_c(z)} for every \eqn{c + i \le 4}, with
+#'   \eqn{\Phi_0 = \ell} up to the terms free of \eqn{z}, so that `"0_0"` is
+#'   `NA_real_` and is never read.
+#'
+#' @seealso [skewt_msa_component()], which reads one derivative off the table,
+#'   and [skewt_pieces()], whose `a`, `e` and `q` are this function's
+#'   \eqn{g'}, \eqn{u'} and \eqn{Q}.
+#'
+#' @examples
+#' tw <- distributions7:::skewt_msa_tower(c(-0.4, 1.2), 0, 1, 0.7, 8)
+#' names(tw)
+#'
+#' @keywords internal
+skewt_msa_tower <- function(y, mu, sigma, alpha, nu) {
+  z <- (y - mu) / sigma
+  m <- nu + 1
+  s <- nu + z^2
+  rm <- sqrt(m)
+
+  # u = z sqrt((nu+1)/(nu+z^2)) and its four z-derivatives, written out.
+  u <- z * rm / sqrt(s)
+  u1 <- nu * rm * s^(-1.5)
+  u2 <- -3 * nu * rm * z * s^(-2.5)
+  u3 <- -3 * nu * rm * (nu - 4 * z^2) * s^(-3.5)
+  u4 <- 15 * nu * rm * z * (3 * nu - 4 * z^2) * s^(-4.5)
+
+  # g = log t_nu and its four z-derivatives.
+  gz <- list(
+    -m * z / s,
+    -m * (nu - z^2) / s^2,
+    2 * m * z * (3 * nu - z^2) / s^3,
+    6 * m * (nu^2 - 6 * nu * z^2 + z^4) / s^4
+  )
+
+  # Lam^(k)(w) = Q^(k-1)(w) by the Riccati recursion, Q formed on the log scale
+  # for the reason skewt_pieces() gives.
+  w <- alpha * u
+  q <- exp(stats::dt(w, df = m, log = TRUE) - stats::pt(w, df = m, log.p = TRUE))
+  mw <- m + w^2
+  g0 <- -(m + 1) * w / mw
+  g1 <- -(m + 1) * (m - w^2) / mw^2
+  g2 <- 2 * (m + 1) * w * (3 * m - w^2) / mw^3
+  q1 <- q * (g0 - q)
+  q2 <- q1 * (g0 - q) + q * (g1 - q1)
+  q3 <- q2 * (g0 - q) + 2 * q1 * (g1 - q1) + q * (g2 - q2)
+  lam <- list(q, q1, q2, q3)
+
+  hu <- list(u1, u2, u3, u4)
+  bell <- function(mm, j) {
+    switch(mm,
+      hu[[1]],
+      switch(j, hu[[2]], hu[[1]]^2),
+      switch(j, hu[[3]], 3 * hu[[1]] * hu[[2]], hu[[1]]^3),
+      switch(j, hu[[4]], 4 * hu[[1]] * hu[[3]] + 3 * hu[[2]]^2,
+        6 * hu[[1]]^2 * hu[[2]], hu[[1]]^4)
+    )
+  }
+  upow <- function(cc, j) {
+    if (j == 0L) {
+      return(u^cc)
+    }
+    acc <- 0
+    for (r in seq_len(min(j, cc))) {
+      acc <- acc + prod(cc - seq_len(r) + 1) * u^(cc - r) * bell(j, r)
+    }
+    acc
+  }
+  lamchain <- function(cc, p) {
+    if (p == 0L) {
+      return(lam[[cc]])
+    }
+    acc <- 0
+    for (r in seq_len(p)) acc <- acc + lam[[cc + r]] * alpha^r * bell(p, r)
+    acc
+  }
+
+  out <- vector("list", 15L)
+  nms <- character(15L)
+  k <- 0L
+  for (cc in 0:4) {
+    for (i in 0:(4L - cc)) {
+      k <- k + 1L
+      nms[k] <- paste0(cc, "_", i)
+      out[[k]] <- if (cc == 0L) {
+        if (i == 0L) NA_real_ else gz[[i]] + lamchain(0L, i)
+      } else {
+        acc <- 0
+        for (p in 0:i) acc <- acc + choose(i, p) * upow(cc, i - p) * lamchain(cc, p)
+        acc
+      }
+    }
+  }
+  names(out) <- nms
+  c(list(z = z), out)
+}
+
+#' @title One Skew t Derivative in the Location, Scale and Shape
+#' @name skewt_msa_component
+#'
+#' @description
+#' Reads \eqn{\partial^a_\mu \partial^b_\sigma \partial^c_\alpha \ell} off the
+#' table [skewt_msa_tower()] builds, by the \eqn{P_{a,b}} sum that function's
+#' page derives.
+#'
+#' @details
+#' A term whose coefficient \eqn{\prod_{k=i}^{b-1}(a+k)} vanishes is dropped
+#' rather than multiplied, because the factor it would multiply is the entry
+#' `"0_0"`, which the table does not hold: in R `0 * NA` is `NA`.
+#'
+#' @param tw A list from [skewt_msa_tower()].
+#' @param sigma The scale, of length 1 or of the length of the response.
+#' @param a,b,c Non-negative integers, the number of times the derivative is
+#'   taken in \eqn{\mu}, in \eqn{\sigma} and in \eqn{\alpha}. Their sum is the
+#'   order.
+#'
+#' @return A numeric vector, one value per observation.
+#'
+#' @seealso [skewt_msa_tower()] for the table and the derivation, and
+#'   [skewt_msa_derivs()], which loops this over a whole order.
+#'
+#' @examples
+#' tw <- distributions7:::skewt_msa_tower(c(-0.4, 1.2), 0, 1, 0.7, 8)
+#' distributions7:::skewt_msa_component(tw, 1, a = 2L, b = 1L, c = 0L)
+#'
+#' @keywords internal
+skewt_msa_component <- function(tw, sigma, a, b, c) {
+  z <- tw$z
+  acc <- 0
+  for (i in 0:b) {
+    ris <- if (i > b - 1L) 1 else prod(a + (i:(b - 1L)))
+    if (ris == 0) next
+    acc <- acc + choose(b, i) * ris * z^i * tw[[paste0(c, "_", a + i)]]
+  }
+  val <- (-1)^(a + b) * acc / sigma^(a + b)
+  # The explicit -log(sigma) survives only where nothing differentiates z.
+  if (a == 0L && c == 0L && b >= 1L) {
+    val <- val + (-1)^b * factorial(b - 1L) / sigma^b
+  }
+  val
+}
+
+#' @title Every Skew t Derivative of an Order That Avoids the Degrees of Freedom
+#' @name skewt_msa_derivs
+#'
+#' @description
+#' Returns, in closed form, the components of a given order whose indices are
+#' all drawn from \eqn{(\mu, \sigma, \alpha)}: ten of the twenty at order
+#' three and fifteen of the thirty-five at order four.
+#'
+#' @details
+#' The multi-indices and the names come from [deriv_indices()] and
+#' [deriv_names()], the same enumeration, so a name is never recovered by
+#' splitting a string.
+#'
+#' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list with components `mu`, `sigma`, `alpha` and `nu`.
+#' @param order A single integer, the order of differentiation.
+#'
+#' @return A named list of numeric vectors, a subset of [deriv_names()] at that
+#'   order, holding every component free of \eqn{\nu}.
+#'
+#' @seealso [skewt_msa_tower()] for the derivation and
+#'   [distrib_deriv3.SkewTDistrib()] for the method that reads this.
+#'
+#' @examples
+#' d <- skewt_distrib()
+#' m <- distributions7:::skewt_msa_derivs(
+#'   d, c(-0.4, 1.2), list(mu = 0, sigma = 1, alpha = 0.7, nu = 8), 3L)
+#' names(m)
+#'
+#' @keywords internal
+skewt_msa_derivs <- function(distrib, y, theta, order) {
+  params <- distrib@params
+  idx <- deriv_indices(params, order)
+  nms <- deriv_names(params, order)
+  keep <- vapply(idx, function(i) !any(i == 4L), logical(1))
+  tw <- skewt_msa_tower(y, theta[[1]], theta[[2]], theta[[3]], theta[[4]])
+  out <- lapply(idx[keep], function(i) {
+    skewt_msa_component(tw, theta[[2]], sum(i == 1L), sum(i == 2L), sum(i == 3L))
+  })
+  names(out) <- nms[keep]
+  out
+}
+
+#' @title Skew t Fourth Derivatives Carrying Exactly One Degree-of-Freedom Index
+#' @name skewt_msa_nu1
+#'
+#' @description
+#' Returns the ten fourth-order components with exactly one index equal to
+#' \eqn{\nu}, each as one five-point difference in \eqn{\nu} of the
+#' **closed-form** third derivative beside it.
+#'
+#' @details
+#' This is the rule [distrib_hessian.SkewTDistrib()]'s mixed components already
+#' follow, read one order up: one difference, taken of an analytic quantity.
+#' The generic construction of [numerical_deriv4()] would instead take a mixed
+#' second difference of the Hessian, which is licensed but loses the digits a
+#' second difference costs.
+#'
+#' The third-order component each one differentiates is found by dropping the
+#' \eqn{\nu} from the multi-index and looking the result up among the
+#' third-order indices, so no name is parsed.
+#'
+#' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list with components `mu`, `sigma`, `alpha` and `nu`.
+#' @param nu The degrees of freedom, of length 1.
+#' @param h The step, from [skewt_nu_step()].
+#'
+#' @return A named list of ten numeric vectors.
+#'
+#' @seealso [skewt_msa_derivs()] for the quantity being differenced and
+#'   [fd5_first()] for the stencil.
+#'
+#' @examples
+#' d <- skewt_distrib()
+#' th <- list(mu = 0, sigma = 1, alpha = 0.7, nu = 8)
+#' n1 <- distributions7:::skewt_msa_nu1(
+#'   d, c(-0.4, 1.2), th, 8, distributions7:::skewt_nu_step(8))
+#' names(n1)
+#'
+#' @keywords internal
+skewt_msa_nu1 <- function(distrib, y, theta, nu, h) {
+  params <- distrib@params
+  i4 <- deriv_indices(params, 4L)
+  n4 <- deriv_names(params, 4L)
+  one <- vapply(i4, function(i) sum(i == 4L) == 1L, logical(1))
+  if (!any(one)) {
+    return(list())
+  }
+  key <- vapply(i4[one], function(i) paste(i[i != 4L], collapse = ","), character(1))
+  i3 <- deriv_indices(params, 3L)
+  lut <- stats::setNames(deriv_names(params, 3L),
+                         vapply(i3, paste, character(1), collapse = ","))
+  need <- unname(lut[key])
+
+  d3_at <- function(v) {
+    th <- theta
+    th[[4]] <- v
+    do.call(cbind, skewt_msa_derivs(distrib, y, th, 3L)[need])
+  }
+  g <- fd5_first(d3_at, nu, h)
+  out <- lapply(seq_along(need), function(k) g[, k])
+  names(out) <- n4[one]
+  out
+}
+
 #' @title Skew t Third Derivatives
 #' @name distrib_deriv3.SkewTDistrib
 #'
 #' @description
-#' Computes the twenty third derivatives of the log-density, assembled so that
-#' no stencil is ever applied to another stencil's output. Ten of the twenty
-#' involve \eqn{\nu}.
+#' Computes the twenty third derivatives of the log-density. The ten free of
+#' \eqn{\nu} are closed form; each of the other ten costs one stencil applied
+#' to an analytic quantity, so no stencil is ever applied to another stencil's
+#' output.
 #'
 #' @details
 #' # How the twenty are obtained
 #'
-#' A component whose Hessian entry is closed form goes through the generic
-#' construction of [numerical_deriv3()], which is one stencil on an analytic
-#' quantity. That covers both indices in \eqn{(\mu, \sigma, \alpha)}, and also
-#' one index equal to \eqn{\nu} where the stencil runs along a different
-#' variable.
+#' The ten whose indices are all drawn from \eqn{(\mu, \sigma, \alpha)} come
+#' from [skewt_msa_derivs()] and difference nothing. That page derives the
+#' block: the location and the scale reach the log-density only through
+#' \eqn{z}, the shape only through \eqn{\alpha u(z)}, and the ratio
+#' \eqn{Q = t_{\nu+1}/T_{\nu+1}} obeys a Riccati recursion, so every piece is
+#' elementary.
 #'
-#' The components the generic construction would nest are replaced:
+#' The six carrying exactly one \eqn{\nu} go through the generic construction
+#' of [numerical_deriv3()], which steps a closed-form Hessian entry once along
+#' \eqn{\nu}: one stencil, on an analytic quantity.
+#'
+#' The four the generic construction would nest are replaced:
 #' \eqn{(i, \nu, \nu)} for \eqn{i} in \eqn{(\mu, \sigma, \alpha)} is one
 #' five-point second difference of the **closed-form** score component
 #' \eqn{i}, through [fd5_second()]; and \eqn{(\nu, \nu, \nu)} is one
@@ -757,6 +1067,12 @@ S7::method(distrib_hessian, SkewTDistrib) <- function(distrib, y, theta, scale =
 #' [fd5_third()].
 #'
 #' # Accuracy
+#'
+#' The ten closed-form components are exact. Against Richardson extrapolation
+#' applied to an independently written transcription of the same algebra, over
+#' fifteen settings of \eqn{(\nu, \alpha)} with \eqn{\nu} from 3 to 50, they
+#' agree to \eqn{3.6\times10^{-8}}, which is the reference's own floor rather
+#' than theirs.
 #'
 #' The pure-\eqn{\nu} component is the loosest at this order. Measured at
 #' \eqn{\mu = 0}, \eqn{\sigma = 1}, \eqn{\alpha = 3}, \eqn{\nu = 6} on four
@@ -818,7 +1134,11 @@ S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected
     return(expected_derivative(distrib, y, theta, order = 3L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  out <- numerical_deriv3(distrib, y, theta)
+  # The block in (mu, sigma, alpha) is closed form; nothing is differenced for
+  # it, and numerical_deriv3() is not asked for the components it supplies.
+  msa <- skewt_msa_derivs(distrib, y, theta, 3L)
+  out <- numerical_deriv3(distrib, y, theta, skip = names(msa))
+  out[names(msa)] <- msa
   nu <- theta[[4]]
   h <- skewt_nu_step(nu)
   grad_at <- function(v, comp) {
@@ -841,14 +1161,36 @@ S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected
 #'
 #' @description
 #' Computes the thirty-five fourth derivatives of the log-density, with the
-#' discipline of [distrib_deriv3.SkewTDistrib()]: the generic construction
-#' serves every component whose Hessian entry is closed form, and the ones it
-#' would nest are replaced by one stencil each. \eqn{(i, \nu, \nu, \nu)}
-#' becomes a third difference of the closed-form score component \eqn{i}, and
-#' \eqn{(\nu, \nu, \nu, \nu)} a fourth difference of the log-density. Twenty of
-#' the thirty-five involve \eqn{\nu}.
+#' discipline of [distrib_deriv3.SkewTDistrib()]. Fifteen are closed form, ten
+#' more are one difference in \eqn{\nu} of a closed-form third derivative, and
+#' each of the remaining ten costs one stencil on an analytic quantity. Twenty
+#' of the thirty-five involve \eqn{\nu}.
 #'
 #' @details
+#' # How the thirty-five are obtained
+#'
+#' The fifteen free of \eqn{\nu} come from [skewt_msa_derivs()] and difference
+#' nothing.
+#'
+#' The ten carrying exactly one \eqn{\nu} come from [skewt_msa_nu1()], one
+#' five-point difference along \eqn{\nu} of the **closed-form** third
+#' derivative beside them. This is the rule
+#' [distrib_hessian.SkewTDistrib()]'s mixed components already follow, read one
+#' order up. The generic construction would instead take a mixed second
+#' difference of the Hessian, and a second difference amplifies rounding by
+#' \eqn{h^{-2}}: measured over fifteen settings of \eqn{(\nu, \alpha)}, the
+#' route it replaces sits between 20 and 203 times further from Richardson on
+#' the analytic third derivative.
+#'
+#' The six carrying \eqn{\nu} twice go through [numerical_deriv4()], which for
+#' them is one second difference along \eqn{\nu} of a closed-form Hessian
+#' entry.
+#'
+#' The four the generic construction would nest are replaced:
+#' \eqn{(i, \nu, \nu, \nu)} is a third difference of the closed-form score
+#' component \eqn{i}, and \eqn{(\nu, \nu, \nu, \nu)} a fourth difference of the
+#' log-density.
+#'
 #' # The step for the pure-nu component
 #'
 #' A fourth difference amplifies rounding by \eqn{h^{-4}}, so
@@ -867,10 +1209,12 @@ S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected
 #'
 #' # Cost
 #'
-#' This is the dearest method in the family: the twenty \eqn{\nu} components
-#' each cost four or five evaluations of an analytic quantity over the whole
-#' vector. Measured at \eqn{n = 20{,}000} it takes about sixteen seconds,
-#' against sixty milliseconds for the score.
+#' This is the dearest method in the family: the ten components carrying
+#' \eqn{\nu} more than once each cost four or five evaluations of an analytic
+#' quantity over the whole vector. Measured at \eqn{n = 20{,}000} it takes
+#' about five seconds, against eighty milliseconds for the score and about
+#' eighteen seconds for the generic construction alone, which is what it cost
+#' before fifteen of its components stopped being differenced at all.
 #'
 #' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -913,14 +1257,54 @@ S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected
 #'                  distrib_deriv3(d, y, list(mu = 0, sigma = 1,
 #'                                            alpha = 3 - eps, nu = 6))$mu_mu_alpha) /
 #'                 (2 * eps))
+# The family owns the fourth-order method registered below, so
+# has_exact_deriv4() answers TRUE by its default owner reading and no override
+# is registered here. That is deliberate (Giovanni, 2026-09-09) and it is a
+# statement about the family rather than about every one of its components:
+# fifteen of the thirty-five are closed form (see skewt_msa_derivs) and the
+# twenty carrying nu are single stencils on analytic quantities, the density
+# carrying T_{nu+1}, whose derivative in the degrees of freedom has no
+# elementary expression. A model needing a fourth derivative of this family
+# gets one, which is what the predicate is read for.
+#
+# WHAT IT COSTS, measured rather than asserted. check_distrib(orders = 1:5)
+# emits an order-5 row for this family and whether that row passes depends on
+# nu: the fifth order is one difference of the fourth, a difference amplifies
+# whatever noise the fourth carries by 1/h, and the twenty components carrying
+# nu are stencils. check_distrib reads that noise as an ABSOLUTE error, its
+# rel() flooring the denominator at 1, and it falls as nu grows. Swept over nu
+# in 3, 5, 8, 20, 50 and alpha in -2, 0.5, 3, at n of 20 and 40:
+#
+#     nu =  3   3.7e-03 .. 4.6e-03   FAILS against the default tol of 1e-3
+#     nu =  5   3.0e-04 .. 2.4e-03   marginal, 4 of 6 draws pass
+#     nu =  8   4.4e-05 .. 4.3e-04   passes
+#     nu = 20   5.1e-06 .. 3.7e-05   passes
+#     nu = 50   1.9e-07 .. 3.0e-06   passes
+#
+# `orders` defaults to 1:4, so no existing caller meets that row at all.
+#
+# IN RELATIVE TERMS the fifth order is not trustworthy at any nu, and that is
+# the statement to carry rather than the row's verdict: read per component
+# against its own scale the same two rules disagree by 5e-02 to 1.1 over that
+# whole grid, where the 21 components free of nu agree to 2.5e-10 -- the range
+# every family whose fourth order is genuinely analytic sits in, 1.3e-10 to
+# 1.2e-07.
 S7::method(distrib_deriv4, SkewTDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  out <- numerical_deriv4(distrib, y, theta)
   nu <- theta[[4]]
   h <- skewt_nu_step(nu)
+  # Fifteen components are closed form and ten more are one difference in nu of
+  # a closed-form third derivative, so the generic construction is asked only
+  # for the six that carry nu twice, where it is one second difference of an
+  # analytic Hessian entry.
+  msa <- skewt_msa_derivs(distrib, y, theta, 4L)
+  nu1 <- skewt_msa_nu1(distrib, y, theta, nu, h)
+  out <- numerical_deriv4(distrib, y, theta, skip = c(names(msa), names(nu1)))
+  out[names(msa)] <- msa
+  out[names(nu1)] <- nu1
   grad_at <- function(v, comp) {
     th <- theta; th[[4]] <- v
     distrib_gradient(distrib, y, th)[[comp]]

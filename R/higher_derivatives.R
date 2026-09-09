@@ -22,6 +22,10 @@ NULL
 #' @param theta A named list of parameters (each of length 1 or `length(y)`).
 #' @param h_rel Numeric. Relative finite-difference step. Defaults to
 #'   `.Machine$double.eps^(1/3)`.
+#' @param skip Character vector of component names, or `NULL`, the default.
+#'   A named component is left `NULL` in the result rather than computed, for
+#'   a caller that supplies it in closed form. The names and their order are
+#'   unchanged, so nothing downstream has to know which were skipped.
 #'
 #' @return A named list of third-derivative component vectors, keyed as in
 #'   [`deriv_names(distrib@params, 3)`][deriv_names].
@@ -37,7 +41,7 @@ NULL
 #' numerical_deriv3(gaussian1_distrib(), 0, list(mu = 0, sigma = 1))
 #'
 #' @export
-numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3)) {
+numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3), skip = NULL) {
   params <- distrib@params
   bounds <- distrib@params_bounds
   nms <- deriv_names(params, 3)
@@ -50,6 +54,7 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 
   for (t in seq_along(nms)) {
     nm <- nms[t]
+    if (nm %in% skip) next
     idx <- idx_of[[t]]
     i <- idx[1]; j <- idx[2]; k <- idx[3]
     hk <- fd_steps(theta[[k]], bounds[[params[k]]], h_rel)
@@ -79,6 +84,10 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' @param theta A named list of parameters (each of length 1 or `length(y)`).
 #' @param h_rel Numeric. Relative finite-difference step. Defaults to
 #'   `.Machine$double.eps^(1/4)`.
+#' @param skip Character vector of component names, or `NULL`, the default.
+#'   A named component is left `NULL` in the result rather than computed, for
+#'   a caller that supplies it in closed form. The names and their order are
+#'   unchanged, so nothing downstream has to know which were skipped.
 #'
 #' @return A named list of fourth-derivative component vectors, keyed as in
 #'   [`deriv_names(distrib@params, 4)`][deriv_names].
@@ -95,7 +104,7 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' numerical_deriv4(gaussian1_distrib(), 0, list(mu = 0, sigma = 1))
 #'
 #' @export
-numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 4)) {
+numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 4), skip = NULL) {
   params <- distrib@params
   bounds <- distrib@params_bounds
   nms <- deriv_names(params, 4)
@@ -111,6 +120,7 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 
   for (t in seq_along(nms)) {
     nm <- nms[t]
+    if (nm %in% skip) next
     idx <- idx_of[[t]]
     i <- idx[1]; j <- idx[2]; k <- idx[3]; l <- idx[4]
     hcomp <- paste(params[c(i, j)], collapse = "_")

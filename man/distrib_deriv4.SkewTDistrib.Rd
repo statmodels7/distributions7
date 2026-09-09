@@ -31,13 +31,35 @@ fourth-order component, from \code{mu_mu_mu_mu} to \code{nu_nu_nu_nu}.
 }
 \description{
 Computes the thirty-five fourth derivatives of the log-density, with the
-discipline of \code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}}: the generic construction
-serves every component whose Hessian entry is closed form, and the ones it
-would nest are replaced by one stencil each. \eqn{(i, \nu, \nu, \nu)}
-becomes a third difference of the closed-form score component \eqn{i}, and
-\eqn{(\nu, \nu, \nu, \nu)} a fourth difference of the log-density. Twenty of
-the thirty-five involve \eqn{\nu}.
+discipline of \code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}}. Fifteen are closed form, ten
+more are one difference in \eqn{\nu} of a closed-form third derivative, and
+each of the remaining ten costs one stencil on an analytic quantity. Twenty
+of the thirty-five involve \eqn{\nu}.
 }
+\section{How the thirty-five are obtained}{
+The fifteen free of \eqn{\nu} come from \code{\link[=skewt_msa_derivs]{skewt_msa_derivs()}} and difference
+nothing.
+
+The ten carrying exactly one \eqn{\nu} come from \code{\link[=skewt_msa_nu1]{skewt_msa_nu1()}}, one
+five-point difference along \eqn{\nu} of the \strong{closed-form} third
+derivative beside them. This is the rule
+\code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}}'s mixed components already follow, read one
+order up. The generic construction would instead take a mixed second
+difference of the Hessian, and a second difference amplifies rounding by
+\eqn{h^{-2}}: measured over fifteen settings of \eqn{(\nu, \alpha)}, the
+route it replaces sits between 20 and 203 times further from Richardson on
+the analytic third derivative.
+
+The six carrying \eqn{\nu} twice go through \code{\link[=numerical_deriv4]{numerical_deriv4()}}, which for
+them is one second difference along \eqn{\nu} of a closed-form Hessian
+entry.
+
+The four the generic construction would nest are replaced:
+\eqn{(i, \nu, \nu, \nu)} is a third difference of the closed-form score
+component \eqn{i}, and \eqn{(\nu, \nu, \nu, \nu)} a fourth difference of the
+log-density.
+}
+
 \section{The step for the pure-nu component}{
 A fourth difference amplifies rounding by \eqn{h^{-4}}, so
 \code{\link[=fd5_fourth]{fd5_fourth()}} is called at \strong{ten times} \code{\link[=skewt_nu_step]{skewt_nu_step()}}'s step rather
@@ -55,10 +77,12 @@ whole array and reports \eqn{3.5\times10^{-4}} here.
 }
 
 \section{Cost}{
-This is the dearest method in the family: the twenty \eqn{\nu} components
-each cost four or five evaluations of an analytic quantity over the whole
-vector. Measured at \eqn{n = 20{,}000} it takes about sixteen seconds,
-against sixty milliseconds for the score.
+This is the dearest method in the family: the ten components carrying
+\eqn{\nu} more than once each cost four or five evaluations of an analytic
+quantity over the whole vector. Measured at \eqn{n = 20{,}000} it takes
+about five seconds, against eighty milliseconds for the score and about
+eighteen seconds for the generic construction alone, which is what it cost
+before fifteen of its components stopped being differenced at all.
 }
 
 \examples{

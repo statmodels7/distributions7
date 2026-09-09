@@ -4,7 +4,13 @@
 \alias{numerical_deriv4}
 \title{Numerical Fourth-Order Derivatives of the Log-Density}
 \usage{
-numerical_deriv4(distrib, y, theta, h_rel = .Machine$double.eps^(1/4))
+numerical_deriv4(
+  distrib,
+  y,
+  theta,
+  h_rel = .Machine$double.eps^(1/4),
+  skip = NULL
+)
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{"distrib"}.}
@@ -15,6 +21,11 @@ numerical_deriv4(distrib, y, theta, h_rel = .Machine$double.eps^(1/4))
 
 \item{h_rel}{Numeric. Relative finite-difference step. Defaults to
 \code{.Machine$double.eps^(1/4)}.}
+
+\item{skip}{Character vector of component names, or \code{NULL}, the default.
+A named component is left \code{NULL} in the result rather than computed, for
+a caller that supplies it in closed form. The names and their order are
+unchanged, so nothing downstream has to know which were skipped.}
 }
 \value{
 A named list of fourth-derivative component vectors, keyed as in

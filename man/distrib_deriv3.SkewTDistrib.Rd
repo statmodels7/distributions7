@@ -30,18 +30,24 @@ A named list of twenty numeric vectors, one per distinct third-order
 component, from \code{mu_mu_mu} to \code{nu_nu_nu} as \code{\link[=deriv_names]{deriv_names()}} names them.
 }
 \description{
-Computes the twenty third derivatives of the log-density, assembled so that
-no stencil is ever applied to another stencil's output. Ten of the twenty
-involve \eqn{\nu}.
+Computes the twenty third derivatives of the log-density. The ten free of
+\eqn{\nu} are closed form; each of the other ten costs one stencil applied
+to an analytic quantity, so no stencil is ever applied to another stencil's
+output.
 }
 \section{How the twenty are obtained}{
-A component whose Hessian entry is closed form goes through the generic
-construction of \code{\link[=numerical_deriv3]{numerical_deriv3()}}, which is one stencil on an analytic
-quantity. That covers both indices in \eqn{(\mu, \sigma, \alpha)}, and also
-one index equal to \eqn{\nu} where the stencil runs along a different
-variable.
+The ten whose indices are all drawn from \eqn{(\mu, \sigma, \alpha)} come
+from \code{\link[=skewt_msa_derivs]{skewt_msa_derivs()}} and difference nothing. That page derives the
+block: the location and the scale reach the log-density only through
+\eqn{z}, the shape only through \eqn{\alpha u(z)}, and the ratio
+\eqn{Q = t_{\nu+1}/T_{\nu+1}} obeys a Riccati recursion, so every piece is
+elementary.
 
-The components the generic construction would nest are replaced:
+The six carrying exactly one \eqn{\nu} go through the generic construction
+of \code{\link[=numerical_deriv3]{numerical_deriv3()}}, which steps a closed-form Hessian entry once along
+\eqn{\nu}: one stencil, on an analytic quantity.
+
+The four the generic construction would nest are replaced:
 \eqn{(i, \nu, \nu)} for \eqn{i} in \eqn{(\mu, \sigma, \alpha)} is one
 five-point second difference of the \strong{closed-form} score component
 \eqn{i}, through \code{\link[=fd5_second]{fd5_second()}}; and \eqn{(\nu, \nu, \nu)} is one
@@ -50,6 +56,12 @@ five-point third difference of the log-density itself, through
 }
 
 \section{Accuracy}{
+The ten closed-form components are exact. Against Richardson extrapolation
+applied to an independently written transcription of the same algebra, over
+fifteen settings of \eqn{(\nu, \alpha)} with \eqn{\nu} from 3 to 50, they
+agree to \eqn{3.6\times10^{-8}}, which is the reference's own floor rather
+than theirs.
+
 The pure-\eqn{\nu} component is the loosest at this order. Measured at
 \eqn{\mu = 0}, \eqn{\sigma = 1}, \eqn{\alpha = 3}, \eqn{\nu = 6} on four
 observations, \code{nu_nu_nu} is \eqn{-0.0061280} against \eqn{-0.0061270} from

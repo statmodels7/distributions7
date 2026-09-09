@@ -4,7 +4,13 @@
 \alias{numerical_deriv3}
 \title{Numerical Third-Order Derivatives of the Log-Density}
 \usage{
-numerical_deriv3(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
+numerical_deriv3(
+  distrib,
+  y,
+  theta,
+  h_rel = .Machine$double.eps^(1/3),
+  skip = NULL
+)
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{"distrib"}.}
@@ -15,6 +21,11 @@ numerical_deriv3(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
 
 \item{h_rel}{Numeric. Relative finite-difference step. Defaults to
 \code{.Machine$double.eps^(1/3)}.}
+
+\item{skip}{Character vector of component names, or \code{NULL}, the default.
+A named component is left \code{NULL} in the result rather than computed, for
+a caller that supplies it in closed form. The names and their order are
+unchanged, so nothing downstream has to know which were skipped.}
 }
 \value{
 A named list of third-derivative component vectors, keyed as in

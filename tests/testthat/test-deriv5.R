@@ -182,6 +182,34 @@ test_that("has_exact_deriv4 reads the owner, and a wrapper asks its parent", {
 })
 
 
+test_that("a family that owns its method answers TRUE, exact in part or not", {
+  # The skew t's density carries T_{nu+1}, whose derivative in the degrees of
+  # freedom has no elementary form, so twenty of its thirty-five fourth-order
+  # components are single stencils on analytic quantities and fifteen are
+  # closed form. The predicate is one logical for the whole family and answers
+  # what the owner reading gives: the family supplies the method, so a model
+  # needing a fourth derivative of it gets one.
+  expect_true(has_exact_deriv4(skewt_distrib()))
+
+  # What that costs is measured rather than assumed: two rules of different
+  # accuracy, sharing only their centre node, disagree far past what a smooth
+  # quantity gives, so nothing should read this family's fifth order as
+  # accurate. Whether the order-5 row check_distrib() emits for it PASSES is a
+  # separate question and depends on nu -- see the block below.
+  y <- c(-1.4, -0.3, 0.6, 1.5)
+  th <- list(mu = 0, sigma = 1, alpha = 0.5, nu = 8)
+  a2 <- distrib_deriv5(skewt_distrib(), y, th)
+  a4 <- numerical_deriv5(skewt_distrib(), y, th, accuracy = 4L)
+  expect_gt(rel5(a2, a4), 1e-3)
+
+  # the control: a family whose fourth IS analytic agrees on the same probe
+  a2g <- distrib_deriv5(student_t1_distrib(), y, list(mu = 0, sigma = 1, nu = 8))
+  a4g <- numerical_deriv5(student_t1_distrib(), y, list(mu = 0, sigma = 1, nu = 8),
+                          accuracy = 4L)
+  expect_lt(rel5(a2g, a4g), 1e-6)
+})
+
+
 test_that("a density-only family answers, and says the answer is unchecked", {
   # The promise is that a distribution needs only distrib_pdf(), and it is not
   # withdrawn at the fifth order. What is withdrawn is the claim that the
@@ -208,4 +236,50 @@ test_that("a density-only family answers, and says the answer is unchecked", {
   got <- distrib_deriv5(bare, c(-1, 0, 1), list(mu = 0.3, sigma = 1.2))
   expect_length(got, 6L)
   expect_true(all(vapply(got, function(v) all(is.finite(v)), logical(1))))
+})
+
+
+test_that("check_distrib emits the order-5 row only where it means something", {
+  # Not emitted where the fourth is a fallback, following the convention the
+  # multivariate battery uses: a check that does not apply is absent rather
+  # than reported with a status every consumer reading `status != \"OK\"` would
+  # misread.
+  r <- check_distrib(gaussian1_distrib(), theta = list(mu = 0.3, sigma = 1.2),
+                     n = 40, nsim = 1e4, orders = 1:5, verbose = FALSE)
+  row <- r[grepl("deriv5", r$check), ]
+  expect_identical(nrow(row), 1L)
+  expect_identical(row$status, "OK")
+
+  # The skew t owns its method, so the row IS emitted. Whether it passes is a
+  # measured fact about the family and not a promise: twenty of its thirty-five
+  # components are single stencils in nu, rel() above floors its denominator at
+  # 1 and so reads their noise as an ABSOLUTE error, and that noise falls as nu
+  # grows. Swept over nu in 3, 5, 8, 20, 50 and alpha in -2, 0.5, 3 the row
+  # reads 3.7e-03 to 4.6e-03 at nu = 3, 4.4e-05 to 4.3e-04 at nu = 8 and
+  # 5.1e-06 to 3.7e-05 at nu = 20, against a tolerance of 1e-3. Both ends are
+  # asserted, so neither the pass nor the failure can surprise a later reader.
+  set.seed(9)
+  rs <- check_distrib(skewt_distrib(),
+                      theta = list(mu = 0, sigma = 1, alpha = 0.5, nu = 8),
+                      n = 40, nsim = 1e4, orders = 1:5, verbose = FALSE)
+  rows <- rs[grepl("deriv5", rs$check), ]
+  expect_identical(nrow(rows), 1L)
+  expect_identical(rows$status, "OK")
+
+  # and at nu = 3, where the stencil noise is largest, the same row fails --
+  # the declared cost of the predicate answering TRUE for a family exact in
+  # part, and the reason `orders` defaults to 1:4
+  set.seed(9)
+  r3 <- check_distrib(skewt_distrib(),
+                      theta = list(mu = 0, sigma = 1, alpha = 0.5, nu = 3),
+                      n = 40, nsim = 1e4, orders = 1:5, verbose = FALSE)
+  row3 <- r3[grepl("deriv5", r3$check), ]
+  expect_identical(nrow(row3), 1L)
+  expect_identical(row3$status, "FAIL")
+
+  # and the default `orders` does not reach it, so the row count of every
+  # existing caller is unchanged
+  r4 <- check_distrib(gaussian1_distrib(), theta = list(mu = 0.3, sigma = 1.2),
+                      n = 40, nsim = 1e4, verbose = FALSE)
+  expect_identical(sum(grepl("deriv5", r4$check)), 0L)
 })
