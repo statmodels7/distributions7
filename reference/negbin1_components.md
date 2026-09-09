@@ -96,11 +96,27 @@ leading order while the consumers above divide by \\\theta^{a+b}\\. The
 differences therefore go through
 [`psi_shift_diff()`](https://statmodels7.github.io/distributions7/reference/psi_shift_diff.md),
 which forms them as an exact sum of reciprocals rather than as a
-subtraction. What that does not repair is the cancellation among the
-powers of \\r\\ in the recursion itself: at orders three and four those
-terms are of size \\8\times10^6\\ at \\\theta = 5\times10^{-4}\\ and sum
-to a value of order one, so neither this form nor the one it replaced is
-reliable there.
+subtraction.
+
+## Where the recursion cedes, and the form that does not
+
+What that does not repair is the cancellation among the powers of \\r\\
+in the recursion itself: at orders three and four those terms are of
+size \\8\times10^6\\ at \\\theta = 5\times10^{-4}\\ and sum to a value
+of order one. Measured at \\\mu = 4\\, \\y = 3\\, the third derivative
+in \\\theta\\ reads \\-1.97\times10^{9}\\ at \\\theta = 10^{-6}\\ where
+the value is \\9/32\\, and the fourth \\7.90\times10^{15}\\.
+
+The size need not appear at all, which is what removes it. Since
+\\\log\Gamma(y+r) - \log\Gamma(r) = \sum\_{i\<y}\log(r+i)\\ and \\r =
+\mu/\theta\\, the \\y\log\theta\\ each such term carries cancels EXACTLY
+against \\C(\theta)\\, leaving \$\$\ell = \sum\_{i\<y}\log(\mu +
+i\theta) - \log(y!) - \frac{\mu}{\theta}\log(1+\theta) -
+y\log(1+\theta),\$\$ whose variable does not run away and whose every
+derivative is elementary. Below `nb1_exact_cut()` that is the route
+taken, through `nb1_components_exact()`; above it the recursion is
+within 4e-11 and costs \\O(1)\\ where the sum costs \\y\\ terms an
+observation.
 
 ## See also
 

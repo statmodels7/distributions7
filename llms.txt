@@ -534,6 +534,8 @@ respect to the unconstrained parameters.
   : Analytical Third-Order Derivatives
 - [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
   : Analytical Fourth-Order Derivatives
+- [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
+  : Fifth-Order Derivatives
 - [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
   : Gradient of the Log-Density with Respect to the Response
 - [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
@@ -564,6 +566,8 @@ respect to the unconstrained parameters.
   : Strategies for Expected Derivatives
 - [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
   : Is a Family's Expected Information Written Out?
+- [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
+  : Is a Family's Fourth Derivative Its Own
 
 ## Estimation
 
@@ -719,6 +723,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Numerical Third-Order Derivatives of the Log-Density
 - [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md)
   : Numerical Fourth-Order Derivatives of the Log-Density
+- [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md)
+  : Fifth-Order Derivatives by One Central Difference
 - [`numerical_grad_y()`](https://statmodels7.github.io/distributions7/reference/numerical_grad_y.md)
   : Numerical Gradient of the Log-Density with Respect to the Response
 - [`numerical_hess_y()`](https://statmodels7.github.io/distributions7/reference/numerical_hess_y.md)
@@ -2191,7 +2197,7 @@ divergent density.
   : Complete Bell Polynomial in the Parent's Log-Derivatives
 
 - [`bell_partial()`](https://statmodels7.github.io/distributions7/reference/bell_partial.md)
-  : Partial Bell Polynomials for Orders up to Four
+  : Partial Bell Polynomials for Orders up to Five
 
 - [`beta2_higher()`](https://statmodels7.github.io/distributions7/reference/beta2_higher.md)
   : Higher Derivatives of the Beta in Its Shapes
@@ -2475,6 +2481,11 @@ divergent density.
   :
 
   Default Fourth-Order Derivatives for `distrib` Objects
+
+- [`distrib_deriv5.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.distrib.md)
+  :
+
+  Default Fifth-Order Derivatives for `distrib` Objects
 
 - [`distrib_deriv_component()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv_component.md)
   : One Component of the Parent's Derivative
@@ -2929,6 +2940,9 @@ divergent density.
 
 - [`has_exact_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md)
   : Can the Parent Supply Exact CDF Derivatives?
+
+- [`has_exact_deriv4.distrib`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.distrib.md)
+  : Whether a Family's Fourth Derivative Is Analytic
 
 - [`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md)
   : Does This Distribution Compute Its Expected Information Exactly?
@@ -3749,6 +3763,20 @@ divergent density.
 
 - [`skewt_moment_pieces()`](https://statmodels7.github.io/distributions7/reference/skewt_moment_pieces.md)
   : The Quantities a Skew t's Moments Are Built From
+
+- [`skewt_msa_component()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_component.md)
+  : One Skew t Derivative in the Location, Scale and Shape
+
+- [`skewt_msa_derivs()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_derivs.md)
+  : Every Skew t Derivative of an Order That Avoids the Degrees of
+  Freedom
+
+- [`skewt_msa_nu1()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_nu1.md)
+  : Skew t Fourth Derivatives Carrying Exactly One Degree-of-Freedom
+  Index
+
+- [`skewt_msa_tower()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_tower.md)
+  : The Skew t Tower in the Location, Scale and Shape
 
 - [`skewt_nu_step()`](https://statmodels7.github.io/distributions7/reference/skewt_nu_step.md)
   : The Step a Skew t Differences the Degrees of Freedom With

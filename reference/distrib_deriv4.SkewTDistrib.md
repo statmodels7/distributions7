@@ -2,12 +2,10 @@
 
 Computes the thirty-five fourth derivatives of the log-density, with the
 discipline of
-[`distrib_deriv3.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewTDistrib.md):
-the generic construction serves every component whose Hessian entry is
-closed form, and the ones it would nest are replaced by one stencil
-each. \\(i, \nu, \nu, \nu)\\ becomes a third difference of the
-closed-form score component \\i\\, and \\(\nu, \nu, \nu, \nu)\\ a fourth
-difference of the log-density. Twenty of the thirty-five involve
+[`distrib_deriv3.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewTDistrib.md).
+Fifteen are closed form, ten more are one difference in \\\nu\\ of a
+closed-form third derivative, and each of the remaining ten costs one
+stencil on an analytic quantity. Twenty of the thirty-five involve
 \\\nu\\.
 
 ## Arguments
@@ -55,6 +53,34 @@ difference of the log-density. Twenty of the thirty-five involve
 A named list of thirty-five numeric vectors, one per distinct
 fourth-order component, from `mu_mu_mu_mu` to `nu_nu_nu_nu`.
 
+## How the thirty-five are obtained
+
+The fifteen free of \\\nu\\ come from
+[`skewt_msa_derivs()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_derivs.md)
+and difference nothing.
+
+The ten carrying exactly one \\\nu\\ come from
+[`skewt_msa_nu1()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_nu1.md),
+one five-point difference along \\\nu\\ of the **closed-form** third
+derivative beside them. This is the rule
+[`distrib_hessian.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewTDistrib.md)'s
+mixed components already follow, read one order up. The generic
+construction would instead take a mixed second difference of the
+Hessian, and a second difference amplifies rounding by \\h^{-2}\\:
+measured over fifteen settings of \\(\nu, \alpha)\\, the route it
+replaces sits between 20 and 203 times further from Richardson on the
+analytic third derivative.
+
+The six carrying \\\nu\\ twice go through
+[`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md),
+which for them is one second difference along \\\nu\\ of a closed-form
+Hessian entry.
+
+The four the generic construction would nest are replaced: \\(i, \nu,
+\nu, \nu)\\ is a third difference of the closed-form score component
+\\i\\, and \\(\nu, \nu, \nu, \nu)\\ a fourth difference of the
+log-density.
+
 ## The step for the pure-nu component
 
 A fourth difference amplifies rounding by \\h^{-4}\\, so
@@ -75,10 +101,12 @@ of the whole array and reports \\3.5\times10^{-4}\\ here.
 
 ## Cost
 
-This is the dearest method in the family: the twenty \\\nu\\ components
-each cost four or five evaluations of an analytic quantity over the
-whole vector. Measured at \\n = 20{,}000\\ it takes about sixteen
-seconds, against sixty milliseconds for the score.
+This is the dearest method in the family: the ten components carrying
+\\\nu\\ more than once each cost four or five evaluations of an analytic
+quantity over the whole vector. Measured at \\n = 20{,}000\\ it takes
+about five seconds, against eighty milliseconds for the score and about
+eighteen seconds for the generic construction alone, which is what it
+cost before fifteen of its components stopped being differenced at all.
 
 ## See also
 
@@ -118,6 +146,6 @@ rbind(analytic = d4$mu_mu_alpha_alpha,
                                            alpha = 3 - eps, nu = 6))$mu_mu_alpha) /
                 (2 * eps))
 #>                [,1]      [,2]      [,3]         [,4]
-#> analytic -0.2739461 0.9096393 0.7661879 -0.007254262
-#> numeric  -0.2739428 0.9096170 0.7661854 -0.007254277
+#> analytic -0.2739461 0.9096393 0.7661879 -0.007254261
+#> numeric  -0.2739461 0.9096393 0.7661879 -0.007254261
 ```

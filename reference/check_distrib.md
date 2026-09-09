@@ -45,7 +45,10 @@ check_distrib(
 - orders:
 
   Integer vector. Which parameter-derivative orders to check. Defaults
-  to `1:4`; use e.g. `1:2` for a faster run.
+  to `1:4`, the orders every family implements analytically. Add `5` to
+  check the numerical fifth as well; see the bullet below for what that
+  row compares and when it is emitted. Defaults to `1:4`; use e.g. `1:2`
+  for a faster run.
 
 - tol:
 
@@ -86,6 +89,24 @@ The checks performed are:
   [`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md)
   and
   [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md).
+
+- **deriv5**, when `5` is among `orders`:
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
+  against
+  [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md)
+  at a higher accuracy, five stencil nodes instead of three. No family
+  writes the fifth order out, so there is no analytic value to compare
+  against and this checks the differencing rather than a family's
+  algebra. It is emitted only where
+  [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
+  is `TRUE`: where the fourth order is itself a fallback the fifth is a
+  difference of a difference and no verdict on it would mean anything. A
+  family that owns its fourth-order method while building part of it
+  from stencils passes that test and may still fail this row:
+  [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
+  fails it at `nu = 3` and passes from `nu = 8` upward, the noise read
+  here being absolute and falling as `nu` grows. It is why `orders`
+  defaults to `1:4`.
 
 - **expected information**:
   [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)

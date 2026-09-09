@@ -1,5 +1,262 @@
 # Changelog
 
+## distributions7 0.52.0
+
+- The skew t’s derivatives in `(mu, sigma, alpha)` are **closed form**
+  at orders three and four: ten of the twenty and fifteen of the
+  thirty-five. The location and the scale reach the log-density only
+  through `z = (y - mu)/sigma` and the shape only through
+  `w = alpha u(z)`, so two observations close the block. Differentiating
+  in the shape never leaves it, `d^c/dalpha^c l = u^c Lam^(c)(w)`; and
+  for any function of `z` alone,
+  `d^a_mu d^b_sigma F = (-1)^(a+b) sigma^-(a+b) P_{a,b}(z)` with
+  `P_{a,b+1} = (a+b) P_{a,b} + z P'_{a,b}`. Every piece is elementary:
+  `u` and `log t_nu` are rational up to one square root, and `Lam^(k)`
+  comes from the Riccati recursion for `Q = t_{nu+1}/T_{nu+1}`, exactly
+  as a skew normal’s inverse Mills ratio does.
+  [`skewt_msa_tower()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_tower.md),
+  [`skewt_msa_component()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_component.md)
+  and
+  [`skewt_msa_derivs()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_derivs.md).
+
+- The ten fourth-order components carrying **exactly one** `nu` are one
+  five-point difference along `nu` of the closed-form third derivative
+  beside them
+  ([`skewt_msa_nu1()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_nu1.md)),
+  which is the rule
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)’s
+  mixed components already follow, read one order up. The generic
+  construction took a mixed **second** difference of the Hessian
+  instead, and a second difference amplifies rounding by `h^-2`.
+
+- [`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md)
+  and
+  [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md)
+  take `skip`, a character vector of components to leave `NULL` for a
+  caller that supplies them in closed form. The names and their order do
+  not move. With `skip = NULL`, the default, both are
+  [`identical()`](https://rdrr.io/r/base/identical.html) to what they
+  returned before.
+
+- The licence for the orders that cannot be checked against a
+  hand-written form is that the **same assembly at orders one and two
+  reproduces the family’s own score and Hessian**, derived separately
+  and already under
+  [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md):
+  measured at 7.7e-17 to 1.7e-16. Against Richardson applied to the
+  hand-written Hessian, over fifteen settings of `(nu, alpha)` with `nu`
+  from 3 to 50, the closed forms read 3.6e-08 at order three and 2.4e-07
+  at order four, which is the reference’s own floor.
+
+- What it buys, measured over that grid against the route it replaces:
+  order four went from **2.4e-05 to 2.4e-07**, and the ten components
+  carrying one `nu` are between **20 and 203 times** closer to
+  Richardson. Order three shows no gain there and is not claimed to: a
+  first difference of an analytic Hessian already sits at Richardson’s
+  own floor, so the reference cannot see the difference. What order
+  three buys is the two orders above it: the ten fourth-order components
+  carrying one `nu`, and the fifth order below.
+
+- ⚠️ It also closes a **nested difference** at the fifth order, which
+  nothing had noticed.
+  [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md)
+  differences
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md),
+  and for a component free of `nu` that fourth derivative was itself a
+  SECOND difference of the Hessian in the same variables – a difference
+  of a difference, which this package forbids everywhere. Measured with
+  two accuracies of the same first difference, sharing only their centre
+  node: over the 21 order-5 components free of `nu` the two agree to
+  **2.5e-10** where the route replaced gave **4.8e-03, 3.6e-03 and
+  1.2e-02** at `nu` of 5, 8 and 20. Seven orders of magnitude, and it is
+  what order three buys, since order three shows no gain of its own.
+
+- And it is **cheaper**, the fifteen closed components no longer being
+  differenced at all: at `n = 20000`
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+  costs 5.05 s where the generic construction alone costs 17.79 s, which
+  is where the page’s earlier “about sixteen seconds” came from.
+
+- [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
+  answers **`TRUE`** for the skew t, which is a decision recorded here
+  rather than a consequence of the closed forms above: with part of the
+  family exact, what the predicate should say about it is a choice. It
+  owns its fourth-order method, so the default owner reading gives that
+  answer and no override is registered for it. The predicate is one
+  logical for the whole family and says the family **supplies** the
+  derivative, not that every component of it is a closed form: fifteen
+  of the thirty-five are, the twenty carrying `nu` are single stencils,
+  and a model needing a fourth derivative of this family gets one.
+
+- ⚠️ What that costs is a measurement rather than a promise, and it
+  depends on `nu`. `check_distrib(orders = 1:5)` now emits an order-5
+  row for the skew t;
+  [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)’s
+  own `rel()` floors its denominator at 1, so for a small component it
+  reads an **absolute** error, and the stencil noise in `nu` falls as
+  `nu` grows. Swept over `nu` in 3, 5, 8, 20, 50 and `alpha` in -2, 0.5,
+  3, the row reads **3.7e-03 to 4.6e-03 at `nu` = 3**, where it fails
+  against the default tolerance of 1e-3, is marginal at 5, and reads
+  4.4e-05 to 4.3e-04 at 8 and 5.1e-06 to 3.7e-05 at 20, where it passes
+  with orders of margin. Both ends are asserted in the tests. `orders`
+  still defaults to `1:4`, so no existing caller meets that row.
+
+- ⚠️ Read **per component against its own scale** the fifth order of
+  this family is untrustworthy at every `nu`, and that is the statement
+  to carry rather than the row’s verdict: the two accuracies of
+  [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md),
+  which share only their centre node, disagree by 5e-02 to 1.1 over that
+  grid, while the 21 components free of `nu` agree to **2.5e-10** – the
+  range every family whose fourth order is genuinely analytic sits in,
+  1.3e-10 to 1.2e-07.
+
+## distributions7 0.51.0
+
+- [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
+  reaches the **fifth** order, so the
+  [`stop()`](https://rdrr.io/r/base/stop.html) that capped it at four is
+  gone. Three edits and no new machinery:
+  [`link_scale_layout()`](https://statmodels7.github.io/distributions7/reference/link_scale_layout.md)
+  and
+  [`deriv_index_list()`](https://statmodels7.github.io/distributions7/reference/deriv_index_list.md)
+  were already generic in the order, and what capped the surface was
+  [`bell_partial()`](https://statmodels7.github.io/distributions7/reference/bell_partial.md)’s
+  table,
+  [`inverse_link_derivs()`](https://statmodels7.github.io/distributions7/reference/inverse_link_derivs.md)’s
+  switch and
+  [`link_scale_lower_orders()`](https://statmodels7.github.io/distributions7/reference/link_scale_lower_orders.md)’s
+  ladder. The fifth derivative of an inverse link the first of those
+  consumes is what linkfunctions7 0.4.0 delivered.
+
+  The order-5 partial Bell row was checked before it was written,
+  against a construction of the same polynomials as the coefficient of
+  in , which shares no arithmetic with a table: the two agree
+  **exactly**, and the coefficients sum to the Bell number . Both are
+  tests, along with a negative control that puts one coefficient 5 per
+  cent out.
+
+- **The link-scale fifth now has two routes, and they agree.**
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
+  differentiates in the order-4 component already on the link scale,
+  which needs neither nor the Bell row;
+  [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
+  can instead carry the parameter-scale fifth over by Faa di Bruno at
+  order 5, which needs both. They share no arithmetic beyond the
+  parameter-scale fourth, so their agreement is a check rather than one
+  expression twice: measured over six families, between 2.9e-09 and
+  9.6e-08.
+
+  ⚠️ **What ships is unchanged, and the measurement is why.** Against
+  Richardson on the analytic fourth the differencing route reads 1.1e-10
+  to 2.7e-08 and the chain-rule route 3.0e-09 to 8.1e-08, so the one
+  already in place is between 3 and 33 times the closer – the chain
+  mixes a numerical fifth with four analytic lower orders and
+  accumulates more rounding than one difference does. It is also the
+  more robust of the two, needing no , so it does not degrade for a
+  user-defined link whose fifth derivative is a numerical fallback. The
+  chain route is 1.4x to 1.75x faster, on a quantity costing two to nine
+  milliseconds, which does not buy back the digits.
+
+- An identity link leaves every order alone, which is the control that
+  costs nothing and would catch a chain applied where it should not be:
+  both routes reproduce the parameter scale exactly (0.000e+00).
+
+## distributions7 0.50.0
+
+- [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md),
+  the **fifth**-order derivatives of the log-likelihood, on the
+  parameter scale and on the link scale. The order exists because each
+  order of differentiating a score-driven filter’s predictor through its
+  own recursion draws in one more order of the family – the curvature
+  reaches the third, the directional third derivative the fourth, and
+  the outer Hessian of a model carrying such a term the fifth. Writing
+  it inside the term that needs it would be the private helper this
+  package exists to abolish.
+
+  No family computes it in closed form. Every one reaches
+  [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md),
+  which applies **one** central difference to the analytic fourth. That
+  is the rule the rest of the derivative surface obeys and it is worth
+  saying that
+  [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md)
+  deliberately does not: it differences the analytic Hessian twice,
+  which it can afford because a second difference of an exact quantity
+  is still only two orders removed from one. A fifth built the same way
+  would not be.
+
+  The nodes, the weights and the step are all ’s. `fd_derivative()` is
+  not called directly for the reason
+  [`numDeriv_grad()`](https://statmodels7.github.io/distributions7/reference/numDeriv_grad.md)
+  already records – its `f` maps a vector of points to the values at
+  those points, while this one reads a whole named list at each node –
+  so the offsets and weights are taken from the library instead and
+  `accuracy` is an argument rather than new arithmetic. A node of zero
+  weight is skipped, so the default rule costs two evaluations of the
+  fourth order per parameter, and grouping the components by the index
+  being differentiated makes the whole order cost `2p` rather than two
+  per component.
+
+  Measured against Richardson extrapolation on the analytic fourth, over
+  seven families on both scales: between **7.6e-11 and 1.9e-08**. So the
+  numerical fifth is not a placeholder for the architecture – it is
+  accurate enough to build the outer Hessian on.
+
+- The link scale needs neither the fifth derivative of a link nor an
+  order-5 entry in
+  [`bell_partial()`](https://statmodels7.github.io/distributions7/reference/bell_partial.md).
+  Differentiating in the order-4 component **already on the link scale**
+  – itself analytic, being a Faa di Bruno chain of analytic pieces –
+  gives the fifth on that scale directly. The
+  [`stop()`](https://rdrr.io/r/base/stop.html) at `link_scale.R:150`
+  therefore stays where it is until analytic fifth derivatives arrive.
+
+- [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
+  says whether the quantity being differenced is itself analytic, which
+  is what the fifth order is worth. The default reads the class that
+  owns the registered
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+  method; a wrapper overrides it and asks its parent, a wrapper’s fourth
+  derivative being a partition sum over the parent’s first four.
+  [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+  gains an order-5 row, emitted only where the predicate is `TRUE` and
+  reached by `orders = 1:5`, so no existing caller’s row count moves.
+
+  ⚠️ **A family may own its fourth-order method and still not be exact
+  in every component**, which is the shape
+  [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
+  already records for the pseudo-Huber and skewnormal2.
+  [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
+  is that case here, and the predicate answers `TRUE` for it by the
+  owner reading: it owns the method, while its density carries , whose
+  derivative in the degrees of freedom has no elementary form, so its
+  higher orders are built from single stencils on analytic quantities.
+  Differencing them amplifies whatever noise they carry by . Measured at
+  , the order-5 components from the three-point rule and from the
+  five-point one – which share only their centre node – disagree by
+  1.8e-02 at , **1.7e-01** at 8 and 2.2e-02 at 20, where every family
+  whose fourth order is genuinely analytic agrees between 1.3e-10 and
+  1.2e-07.
+
+  ⚠️ A census over the other 38 univariate families found one further
+  disagreement, at the generalized Pareto, and **it was the probe and
+  not the family**:
+  [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
+  had put the shape near the crossover of its own series branch. At
+  fixed values all three routes agree between 1.6e-10 and 6.8e-08 and
+  its order 4 is right to 2.0e-08.
+
+- A family defined with nothing but
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
+  still answers at the fifth order – the promise that a distribution
+  needs only a density is not withdrawn – but there the fourth is itself
+  a difference, so the fifth is a difference of a difference.
+  [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
+  is `FALSE` for it and for every wrapper of it, and
+  [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+  emits no verdict rather than one nobody earned. Measured on a
+  density-only gaussian the fifth is 3e+04 relative to the analytic
+  family’s, which is not a derivative of anything.
+
 ## distributions7 0.49.0
 
 - THE PURE-DISPERSION DERIVATIVES AT ORDERS THREE AND FOUR no longer

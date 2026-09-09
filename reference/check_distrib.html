@@ -15,7 +15,7 @@ counterpart."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.49.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.52.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,6 +94,9 @@ expected-information checks. Defaults to 200000.</p></dd>
 
 <dt id="arg-orders">orders<a class="anchor" aria-label="anchor" href="#arg-orders"></a></dt>
 <dd><p>Integer vector. Which parameter-derivative orders to check.
+Defaults to <code>1:4</code>, the orders every family implements analytically. Add
+<code>5</code> to check the numerical fifth as well; see the bullet below for what
+that row compares and when it is emitted.
 Defaults to <code>1:4</code>; use e.g. <code>1:2</code> for a faster run.</p></dd>
 
 
@@ -123,6 +126,17 @@ distributions, and the generalized-inverse inequalities for discrete ones).</p><
 <li><p><strong>gradient, hessian, deriv3, deriv4</strong>: analytical values against
 <code><a href="numerical_gradient.html">numerical_gradient()</a></code>, <code><a href="numerical_hessian.html">numerical_hessian()</a></code>,
 <code><a href="numerical_deriv3.html">numerical_deriv3()</a></code> and <code><a href="numerical_deriv4.html">numerical_deriv4()</a></code>.</p></li>
+<li><p><strong>deriv5</strong>, when <code>5</code> is among <code>orders</code>: <code><a href="distrib_deriv5.html">distrib_deriv5()</a></code> against
+<code><a href="numerical_deriv5.html">numerical_deriv5()</a></code> at a higher accuracy, five stencil nodes instead of
+three. No family writes the fifth order out, so there is no analytic value
+to compare against and this checks the differencing rather than a family's
+algebra. It is emitted only where <code><a href="has_exact_deriv4.html">has_exact_deriv4()</a></code> is <code>TRUE</code>: where the
+fourth order is itself a fallback the fifth is a difference of a difference
+and no verdict on it would mean anything. A family that owns its
+fourth-order method while building part of it from stencils passes that
+test and may still fail this row: <code><a href="skewt_distrib.html">skewt_distrib()</a></code> fails it at <code>nu = 3</code>
+and passes from <code>nu = 8</code> upward, the noise read here being absolute and
+falling as <code>nu</code> grows. It is why <code>orders</code> defaults to <code>1:4</code>.</p></li>
 <li><p><strong>expected information</strong>: <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> against a
 Monte Carlo estimate of \(-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]\). The outer
 product of the score is used as reference because it remains valid when the

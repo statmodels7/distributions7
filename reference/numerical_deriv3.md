@@ -11,7 +11,13 @@ the reference used to validate the analytical kernels.
 ## Usage
 
 ``` r
-numerical_deriv3(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
+numerical_deriv3(
+  distrib,
+  y,
+  theta,
+  h_rel = .Machine$double.eps^(1/3),
+  skip = NULL
+)
 ```
 
 ## Arguments
@@ -32,6 +38,13 @@ numerical_deriv3(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
 
   Numeric. Relative finite-difference step. Defaults to
   `.Machine$double.eps^(1/3)`.
+
+- skip:
+
+  Character vector of component names, or `NULL`, the default. A named
+  component is left `NULL` in the result rather than computed, for a
+  caller that supplies it in closed form. The names and their order are
+  unchanged, so nothing downstream has to know which were skipped.
 
 ## Value
 

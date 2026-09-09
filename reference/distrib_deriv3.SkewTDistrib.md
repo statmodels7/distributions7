@@ -1,8 +1,9 @@
 # Skew t Third Derivatives
 
-Computes the twenty third derivatives of the log-density, assembled so
-that no stencil is ever applied to another stencil's output. Ten of the
-twenty involve \\\nu\\.
+Computes the twenty third derivatives of the log-density. The ten free
+of \\\nu\\ are closed form; each of the other ten costs one stencil
+applied to an analytic quantity, so no stencil is ever applied to
+another stencil's output.
 
 ## Arguments
 
@@ -53,22 +54,35 @@ names them.
 
 ## How the twenty are obtained
 
-A component whose Hessian entry is closed form goes through the generic
-construction of
-[`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md),
-which is one stencil on an analytic quantity. That covers both indices
-in \\(\mu, \sigma, \alpha)\\, and also one index equal to \\\nu\\ where
-the stencil runs along a different variable.
+The ten whose indices are all drawn from \\(\mu, \sigma, \alpha)\\ come
+from
+[`skewt_msa_derivs()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_derivs.md)
+and difference nothing. That page derives the block: the location and
+the scale reach the log-density only through \\z\\, the shape only
+through \\\alpha u(z)\\, and the ratio \\Q = t\_{\nu+1}/T\_{\nu+1}\\
+obeys a Riccati recursion, so every piece is elementary.
 
-The components the generic construction would nest are replaced: \\(i,
-\nu, \nu)\\ for \\i\\ in \\(\mu, \sigma, \alpha)\\ is one five-point
-second difference of the **closed-form** score component \\i\\, through
+The six carrying exactly one \\\nu\\ go through the generic construction
+of
+[`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md),
+which steps a closed-form Hessian entry once along \\\nu\\: one stencil,
+on an analytic quantity.
+
+The four the generic construction would nest are replaced: \\(i, \nu,
+\nu)\\ for \\i\\ in \\(\mu, \sigma, \alpha)\\ is one five-point second
+difference of the **closed-form** score component \\i\\, through
 [`fd5_second()`](https://statmodels7.github.io/distributions7/reference/fd5_second.md);
 and \\(\nu, \nu, \nu)\\ is one five-point third difference of the
 log-density itself, through
 [`fd5_third()`](https://statmodels7.github.io/distributions7/reference/fd5_third.md).
 
 ## Accuracy
+
+The ten closed-form components are exact. Against Richardson
+extrapolation applied to an independently written transcription of the
+same algebra, over fifteen settings of \\(\nu, \alpha)\\ with \\\nu\\
+from 3 to 50, they agree to \\3.6\times10^{-8}\\, which is the
+reference's own floor rather than theirs.
 
 The pure-\\\nu\\ component is the loosest at this order. Measured at
 \\\mu = 0\\, \\\sigma = 1\\, \\\alpha = 3\\, \\\nu = 6\\ on four

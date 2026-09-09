@@ -66,7 +66,7 @@ the five generics that take `scale`;
 [`bell_partial()`](https://statmodels7.github.io/distributions7/reference/bell_partial.md)
 for the polynomials this assembles;
 [`linkfunctions7::linkinvderiv()`](https://statmodels7.github.io/linkfunctions7/reference/linkinvderiv.html),
-which supplies the four inverse-link derivatives;
+which supplies the five inverse-link derivatives;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md),
 which optimizes on this scale for the reason given above.
 
