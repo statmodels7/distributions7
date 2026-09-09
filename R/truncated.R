@@ -2032,6 +2032,15 @@ S7::method(distrib_expected_hessian, TruncatedContinuousDistrib) <- trunc_expect
 # E_T[l^(ij)], so at least one quadrature always runs. A method registered on
 # this class would otherwise make the default expected_hessian_exact() answer
 # TRUE for every truncated family, including ones whose parent is exact.
+# The same question one order down the derivative surface: a wrapper's
+# fourth derivative is a partition sum over the parent's first four, so it
+# is analytic exactly when the parent's are. Reading the owner of the
+# registered method instead would answer TRUE for a wrapper of a
+# density-only family, whose fourth order is a difference.
+S7::method(has_exact_deriv4, TruncatedContinuousDistrib) <- function(x, ...) {
+  has_exact_deriv4(x@parent_distrib)
+}
+
 S7::method(expected_hessian_exact, TruncatedContinuousDistrib) <- function(x, ...) FALSE
 
 #' @title Truncated Analytical Expected Hessian (Discrete)
@@ -2090,6 +2099,15 @@ S7::method(distrib_expected_hessian, TruncatedDiscreteDistrib) <- trunc_expected
 
 # See the continuous branch's registration above: NEVER exact, for the same
 # reason (trunc_score_prod_mean() always quadratures/sums).
+# The same question one order down the derivative surface: a wrapper's
+# fourth derivative is a partition sum over the parent's first four, so it
+# is analytic exactly when the parent's are. Reading the owner of the
+# registered method instead would answer TRUE for a wrapper of a
+# density-only family, whose fourth order is a difference.
+S7::method(has_exact_deriv4, TruncatedDiscreteDistrib) <- function(x, ...) {
+  has_exact_deriv4(x@parent_distrib)
+}
+
 S7::method(expected_hessian_exact, TruncatedDiscreteDistrib) <- function(x, ...) FALSE
 
 #' @title Atoms of a Truncated Continuous Distribution

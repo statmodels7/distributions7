@@ -89,11 +89,27 @@ is a count. As \eqn{\theta \to 0} the family tends to the Poisson,
 \eqn{r = \mu/\theta} runs away, and the two terms of the difference agree to
 leading order while the consumers above divide by \eqn{\theta^{a+b}}. The
 differences therefore go through \code{\link[=psi_shift_diff]{psi_shift_diff()}}, which forms them as an
-exact sum of reciprocals rather than as a subtraction. What that does not
-repair is the cancellation among the powers of \eqn{r} in the recursion
-itself: at orders three and four those terms are of size
+exact sum of reciprocals rather than as a subtraction.
+}
+
+\section{Where the recursion cedes, and the form that does not}{
+What that does not repair is the cancellation among the powers of \eqn{r} in
+the recursion itself: at orders three and four those terms are of size
 \eqn{8\times10^6} at \eqn{\theta = 5\times10^{-4}} and sum to a value of
-order one, so neither this form nor the one it replaced is reliable there.
+order one. Measured at \eqn{\mu = 4}, \eqn{y = 3}, the third derivative in
+\eqn{\theta} reads \eqn{-1.97\times10^{9}} at \eqn{\theta = 10^{-6}} where
+the value is \eqn{9/32}, and the fourth \eqn{7.90\times10^{15}}.
+
+The size need not appear at all, which is what removes it. Since
+\eqn{\log\Gamma(y+r) - \log\Gamma(r) = \sum_{i<y}\log(r+i)} and
+\eqn{r = \mu/\theta}, the \eqn{y\log\theta} each such term carries cancels
+EXACTLY against \eqn{C(\theta)}, leaving
+\deqn{\ell = \sum_{i<y}\log(\mu + i\theta) - \log(y!)
+  - \frac{\mu}{\theta}\log(1+\theta) - y\log(1+\theta),}
+whose variable does not run away and whose every derivative is elementary.
+Below \code{\link[=nb1_exact_cut]{nb1_exact_cut()}} that is the route taken, through
+\code{\link[=nb1_components_exact]{nb1_components_exact()}}; above it the recursion is within 4e-11 and costs
+\eqn{O(1)} where the sum costs \eqn{y} terms an observation.
 }
 
 \seealso{

@@ -865,6 +865,15 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
 # pig1_distrib())` would otherwise claim an exact expected information it does
 # not have, and statmodels7's `vcov()` would report standard errors from an
 # approximation believing them exact.
+# The same question one order down the derivative surface: a wrapper's
+# fourth derivative is a partition sum over the parent's first four, so it
+# is analytic exactly when the parent's are. Reading the owner of the
+# registered method instead would answer TRUE for a wrapper of a
+# density-only family, whose fourth order is a difference.
+S7::method(has_exact_deriv4, ZeroInflatedDistrib) <- function(x, ...) {
+  has_exact_deriv4(x@parent_distrib)
+}
+
 S7::method(expected_hessian_exact, ZeroInflatedDistrib) <- function(x, ...) {
   expected_hessian_exact(x@parent_distrib)
 }

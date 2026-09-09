@@ -68,6 +68,9 @@ safe_check <- function(name, expr) {
 #' @param nsim Integer. Monte Carlo sample size used for the random generator and
 #'   expected-information checks. Defaults to 200000.
 #' @param orders Integer vector. Which parameter-derivative orders to check.
+#'   Defaults to `1:4`, the orders every family implements analytically. Add
+#'   `5` to check the numerical fifth as well; see the bullet below for what
+#'   that row compares and when it is emitted.
 #'   Defaults to `1:4`; use e.g. `1:2` for a faster run.
 #' @param tol Numeric. Relative tolerance for the finite-difference comparisons.
 #'   Defaults to `1e-3`.
@@ -89,6 +92,17 @@ safe_check <- function(name, expr) {
 #' - **gradient, hessian, deriv3, deriv4**: analytical values against
 #'   [numerical_gradient()], [numerical_hessian()],
 #'   [numerical_deriv3()] and [numerical_deriv4()].
+#' - **deriv5**, when `5` is among `orders`: [distrib_deriv5()] against
+#'   [numerical_deriv5()] at a higher accuracy, five stencil nodes instead of
+#'   three. No family writes the fifth order out, so there is no analytic value
+#'   to compare against and this checks the differencing rather than a family's
+#'   algebra. It is emitted only where [has_exact_deriv4()] is `TRUE`: where the
+#'   fourth order is itself a fallback the fifth is a difference of a difference
+#'   and no verdict on it would mean anything. A family that owns its
+#'   fourth-order method while building part of it from stencils passes that
+#'   test and may still fail this row: [skewt_distrib()] fails it at `nu = 3`
+#'   and passes from `nu = 8` upward, the noise read here being absolute and
+#'   falling as `nu` grows. It is why `orders` defaults to `1:4`.
 #' - **expected information**: [distrib_expected_hessian()] against a
 #'   Monte Carlo estimate of \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}. The outer
 #'   product of the score is used as reference because it remains valid when the
@@ -304,6 +318,38 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
       e <- numerical_deriv4(distrib, y, theta)
       err <- max(vapply(names(a), function(k) rel(a[[k]], e[[k]]), numeric(1)))
       new_check("deriv4 vs finite differences", err < tol, err)
+    })
+  }
+  # The fifth order has no analytic implementation to compare against: every
+  # family reaches numerical_deriv5(), one central difference of the fourth.
+  # What can be checked is that difference against a HIGHER-ACCURACY rule from
+  # the same library -- five nodes instead of three, different weights and a
+  # different step -- which catches a mis-keyed component, a wrong grouping or
+  # a wrong scale, and is the only in-package reference there is. The
+  # independent one, Richardson on the analytic fourth, lives in the tests,
+  # where numDeriv may be named.
+  #
+  # The row is emitted only where the fourth order is the family's own. Where
+  # it is not, the fifth is a difference of a difference -- measured on a
+  # density-only gaussian it is 3e+04 relative, which is not a derivative of
+  # anything -- and reporting a verdict on it would be reporting a pass nobody
+  # earned. This follows the convention the multivariate battery already uses:
+  # a check that does not apply is not emitted, rather than emitted with a
+  # third status that every consumer reading `status != "OK"` would misread.
+  #
+  # A family may own that method and still build part of it from single
+  # stencils, in which case the row IS emitted and its verdict is a
+  # measurement rather than a promise. Note that rel() above floors the
+  # denominator at 1, so what this row reads for a small component is an
+  # ABSOLUTE error: the skew t reads 3.7e-03 to 4.6e-03 at nu = 3, where it
+  # fails, and 4.4e-05 to 4.3e-04 at nu = 8, where it passes. `orders` defaults
+  # to 1:4, so the row is reached only by a caller who asked for it.
+  if (5 %in% orders && has_exact_deriv4(distrib)) {
+    res[[length(res) + 1L]] <- safe_check("deriv5 vs a higher-accuracy rule", {
+      a <- distrib_deriv5(distrib, y, theta)
+      e <- numerical_deriv5(distrib, y, theta, accuracy = 4L)
+      err <- max(vapply(names(a), function(k) rel(a[[k]], e[[k]]), numeric(1)))
+      new_check("deriv5 vs a higher-accuracy rule", err < tol, err)
     })
   }
 

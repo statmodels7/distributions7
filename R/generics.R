@@ -517,6 +517,123 @@ distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib,
   }
 })
 
+#' Fifth-Order Derivatives
+#'
+#' @description
+#' The unique fifth-order partial derivatives of the log-likelihood with
+#' respect to the distribution's parameters, on the parameter scale or on the
+#' link scale.
+#'
+#' @details
+#' The order exists because each order of differentiating a score-driven
+#' filter's predictor through its own recursion draws in one more order of the
+#' family: the curvature reaches the third, the directional third derivative
+#' the fourth, and the outer Hessian of a model carrying such a term the
+#' fifth. Writing it inside the term that needs it would be the private helper
+#' this package exists to abolish, so it is a family quantity like any other.
+#'
+#' No family computes it in closed form yet. Every one reaches
+#' [numerical_deriv5()], which applies **one** central difference to the
+#' analytic fourth order -- not a difference of a difference, which is the
+#' rule the whole derivative surface obeys. Against Richardson extrapolation
+#' on the same analytic fourth that is worth about 1e-10, so the numerical
+#' fifth is accurate enough to build on rather than a placeholder for the
+#' architecture.
+#'
+#' Unlike its siblings this generic carries no `expected` argument. The
+#' criterion of a model with a filter reads the observed information -- a
+#' filter has no expected one -- and an expectation of the fifth order would
+#' sit on top of a numerical quantity, which is two approximations deep.
+#' [expected_derivative()] is generic in the order, so the expected fifth can
+#' be added the day something asks for it.
+#'
+#' @param distrib A distribution object inheriting from the `distrib` class.
+#' @param y A numeric vector of observations.
+#' @param theta A named list (or named numeric vector) of distribution
+#'   parameters. Each parameter must have length 1 or `length(y)`.
+#' @param scale `"parameter"` (the default) for derivatives with respect to
+#'   the parameters, `"link"` for derivatives with respect to the
+#'   unconstrained predictors. The link scale is obtained by differentiating
+#'   the order-4 component **already on the link scale**, so it needs neither
+#'   the fifth derivative of a link nor an order-5 entry in
+#'   [bell_partial()].
+#' @param ... Additional arguments passed to the specific method.
+#'
+#' @return A named list of derivative-component vectors, each of length
+#'   `length(y)`, keyed as
+#'   [`deriv_names(distrib@params, 5)`][deriv_names] gives them (e.g.
+#'   `"mu_mu_sigma_sigma_sigma"`).
+#'
+#' @examples
+#' distrib_deriv5(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#'
+#' @seealso [distrib_deriv4()] for the order below, [numerical_deriv5()] for
+#'   the differencing, and [has_exact_deriv4()] for the predicate that says
+#'   whether the quantity being differenced is itself analytic.
+#' @export
+distrib_deriv5 <- S7::new_generic("distrib_deriv5", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+  args <- check_derivative_args(distrib, y, theta)
+  y <- args$y
+  theta <- args$theta
+  scale <- match.arg(scale)
+  S7::S7_dispatch()
+})
+
+#' Is a Family's Fourth Derivative Its Own
+#'
+#' @description
+#' Whether the family supplies its own fourth-order derivatives, rather than
+#' reaching one of the base classes' numerical fallbacks.
+#'
+#' @details
+#' The fifth order is one central difference of the fourth, so what it is
+#' worth depends entirely on what it differences. Where the fourth is the
+#' family's own the result is an ordinary numerical derivative of a quantity
+#' the family computes directly; where the fourth is the package's own
+#' fallback the fifth is a difference of a difference, which this package
+#' forbids everywhere else and which no tolerance can rescue.
+#'
+#' A family reached that way still gets an answer -- a distribution needs only
+#' [distrib_pdf()], and that promise is not withdrawn at the fifth order --
+#' but [check_distrib()] emits no order-5 row for it, a check that does not
+#' apply being absent rather than reported with a status every consumer would
+#' misread.
+#'
+#' The default reads the class that owns the registered
+#' [distrib_deriv4()] method, the documented S7 route. A wrapper overrides it
+#' and asks its parent instead: a wrapper's fourth derivative is a partition
+#' sum over the parent's first four, so it is its own exactly when the
+#' parent's are.
+#'
+#' A family may own its fourth-order method and still build part of it from
+#' single stencils on analytic quantities, and the predicate is one logical
+#' for the whole family. [skewt_distrib()] is that case: fifteen of its
+#' thirty-five fourth-order components are closed form and the twenty carrying
+#' `nu` are not, and it answers `TRUE`, a model needing a fourth derivative of
+#' that family getting one. What that costs is measured rather than asserted.
+#' `check_distrib(skewt_distrib(), orders = 1:5)` emits an order-5 row whose
+#' verdict depends on `nu`, [check_distrib()] reading an absolute error and the
+#' stencil noise falling as `nu` grows: swept over `nu` from 3 to 50 the row
+#' fails at `nu = 3` (3.7e-03 to 4.6e-03 against a tolerance of 1e-3), is
+#' marginal at 5, and passes from 8 upward with orders of margin. Read per
+#' component against its own scale the fifth order of that family is
+#' untrustworthy at every `nu`, which is why `orders` defaults to `1:4`.
+#'
+#' @param x A distribution object.
+#' @param ... Unused.
+#'
+#' @return A single logical.
+#'
+#' @examples
+#' has_exact_deriv4(gaussian1_distrib())
+#' has_exact_deriv4(truncated(gaussian1_distrib(), lower = 0))
+#'
+#' @seealso [distrib_deriv5()], the consumer; [expected_hessian_exact()],
+#'   the predicate this is modelled on.
+#' @export
+has_exact_deriv4 <- S7::new_generic("has_exact_deriv4", "x")
+
+
 #' Gradient of the Log-Density with Respect to the Response
 #'
 #' @description

@@ -550,6 +550,10 @@ for (.fixed_cls in list(FixedContinuousDistrib, FixedDiscreteDistrib)) {
   S7::method(expected_hessian_exact, .fixed_cls) <- function(x, ...) {
     expected_hessian_exact(x@parent_distrib)
   }
+  S7::method(has_exact_deriv4, .fixed_cls) <- function(x, ...) {
+    has_exact_deriv4(x@parent_distrib)
+  }
+
 
   S7::method(distrib_deriv3, .fixed_cls) <- function(distrib, y, theta,
                                                      expected = FALSE,
@@ -752,6 +756,11 @@ S7::method(distrib_expected_hessian, FixedMultivariateDistrib) <-
 S7::method(expected_hessian_exact, FixedMultivariateDistrib) <- function(x, ...) {
   expected_hessian_exact(x@parent_distrib)
 }
+
+S7::method(has_exact_deriv4, FixedMultivariateDistrib) <- function(x, ...) {
+  has_exact_deriv4(x@parent_distrib)
+}
+
 
 S7::method(distrib_deriv3, FixedMultivariateDistrib) <-
   function(distrib, y, theta, expected = FALSE,

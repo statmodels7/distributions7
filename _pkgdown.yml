@@ -107,6 +107,7 @@ reference:
   - distrib_dexpected_hessian
   - distrib_deriv3
   - distrib_deriv4
+  - distrib_deriv5
   - distrib_grad_y
   - distrib_hess_y
   - distrib_deriv3_y
@@ -121,6 +122,7 @@ reference:
   - distrib_kernel
   - expected_derivative_methods
   - expected_hessian_exact
+  - has_exact_deriv4
 
 - title: Estimation
   contents:
@@ -205,6 +207,7 @@ reference:
   - numerical_hessian
   - numerical_deriv3
   - numerical_deriv4
+  - numerical_deriv5
   - numerical_grad_y
   - numerical_hess_y
   - numerical_deriv_y

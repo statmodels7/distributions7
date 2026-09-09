@@ -700,6 +700,16 @@ S7::method(distrib_deriv3, FoldedDistrib) <- fold_deriv_k(3L)
 #'              sum(distrib_deriv3(d, y, tm)[["mu_mu_sigma"]])) / (2 * h))
 S7::method(distrib_deriv4, FoldedDistrib) <- fold_deriv_k(4L)
 
+# The same question one order down the derivative surface: a wrapper's
+# fourth derivative is a partition sum over the parent's first four, so it
+# is analytic exactly when the parent's are. Reading the owner of the
+# registered method instead would answer TRUE for a wrapper of a
+# density-only family, whose fourth order is a difference.
+S7::method(has_exact_deriv4, FoldedDistrib) <- function(x, ...) {
+  has_exact_deriv4(x@parent_distrib)
+}
+
+
 #' @title Folded Response Gradient
 #' @name distrib_grad_y.FoldedDistrib
 #'

@@ -28,6 +28,9 @@ Defaults to 100.}
 expected-information checks. Defaults to 200000.}
 
 \item{orders}{Integer vector. Which parameter-derivative orders to check.
+Defaults to \code{1:4}, the orders every family implements analytically. Add
+\code{5} to check the numerical fifth as well; see the bullet below for what
+that row compares and when it is emitted.
 Defaults to \code{1:4}; use e.g. \code{1:2} for a faster run.}
 
 \item{tol}{Numeric. Relative tolerance for the finite-difference comparisons.
@@ -59,6 +62,17 @@ distributions, and the generalized-inverse inequalities for discrete ones).
 \item \strong{gradient, hessian, deriv3, deriv4}: analytical values against
 \code{\link[=numerical_gradient]{numerical_gradient()}}, \code{\link[=numerical_hessian]{numerical_hessian()}},
 \code{\link[=numerical_deriv3]{numerical_deriv3()}} and \code{\link[=numerical_deriv4]{numerical_deriv4()}}.
+\item \strong{deriv5}, when \code{5} is among \code{orders}: \code{\link[=distrib_deriv5]{distrib_deriv5()}} against
+\code{\link[=numerical_deriv5]{numerical_deriv5()}} at a higher accuracy, five stencil nodes instead of
+three. No family writes the fifth order out, so there is no analytic value
+to compare against and this checks the differencing rather than a family's
+algebra. It is emitted only where \code{\link[=has_exact_deriv4]{has_exact_deriv4()}} is \code{TRUE}: where the
+fourth order is itself a fallback the fifth is a difference of a difference
+and no verdict on it would mean anything. A family that owns its
+fourth-order method while building part of it from stencils passes that
+test and may still fail this row: \code{\link[=skewt_distrib]{skewt_distrib()}} fails it at \code{nu = 3}
+and passes from \code{nu = 8} upward, the noise read here being absolute and
+falling as \code{nu} grows. It is why \code{orders} defaults to \code{1:4}.
 \item \strong{expected information}: \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} against a
 Monte Carlo estimate of \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}. The outer
 product of the score is used as reference because it remains valid when the

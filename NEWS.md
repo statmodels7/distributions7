@@ -1,3 +1,79 @@
+# distributions7 0.50.0
+
+* `distrib_deriv5()`, the **fifth**-order derivatives of the log-likelihood,
+  on the parameter scale and on the link scale. The order exists because each
+  order of differentiating a score-driven filter's predictor through its own
+  recursion draws in one more order of the family -- the curvature reaches the
+  third, the directional third derivative the fourth, and the outer Hessian of
+  a model carrying such a term the fifth. Writing it inside the term that
+  needs it would be the private helper this package exists to abolish.
+
+  No family computes it in closed form. Every one reaches `numerical_deriv5()`,
+  which applies **one** central difference to the analytic fourth. That is the
+  rule the rest of the derivative surface obeys and it is worth saying that
+  `numerical_deriv4()` deliberately does not: it differences the analytic
+  Hessian twice, which it can afford because a second difference of an exact
+  quantity is still only two orders removed from one. A fifth built the same
+  way would not be.
+
+  The nodes, the weights and the step are all \pkg{numericals7}'s.
+  `fd_derivative()` is not called directly for the reason
+  `numDeriv_grad()` already records -- its `f` maps a vector of points to the
+  values at those points, while this one reads a whole named list at each node
+  -- so the offsets and weights are taken from the library instead and
+  `accuracy` is an argument rather than new arithmetic. A node of zero weight
+  is skipped, so the default rule costs two evaluations of the fourth order per
+  parameter, and grouping the components by the index being differentiated
+  makes the whole order cost `2p` rather than two per component.
+
+  Measured against Richardson extrapolation on the analytic fourth, over seven
+  families on both scales: between **7.6e-11 and 1.9e-08**. So the numerical
+  fifth is not a placeholder for the architecture -- it is accurate enough to
+  build the outer Hessian on.
+
+* The link scale needs neither the fifth derivative of a link nor an order-5
+  entry in `bell_partial()`. Differentiating in \eqn{\eta} the order-4
+  component **already on the link scale** -- itself analytic, being a Faa di
+  Bruno chain of analytic pieces -- gives the fifth on that scale directly. The
+  `stop()` at `link_scale.R:150` therefore stays where it is until analytic
+  fifth derivatives arrive.
+
+* `has_exact_deriv4()` says whether the quantity being differenced is itself
+  analytic, which is what the fifth order is worth. The default reads the class
+  that owns the registered `distrib_deriv4()` method; a wrapper overrides it and
+  asks its parent, a wrapper's fourth derivative being a partition sum over the
+  parent's first four. `check_distrib()` gains an order-5 row, emitted only
+  where the predicate is `TRUE` and reached by `orders = 1:5`, so no existing
+  caller's row count moves.
+
+  ⚠️ **A family may own its fourth-order method and still not be exact in every
+  component**, which is the shape `expected_hessian_exact()` already records
+  for the pseudo-Huber and skewnormal2. `skewt_distrib()` is that case here,
+  and the predicate answers `TRUE` for it by the owner reading: it owns the
+  method, while its density carries \eqn{T_{\nu+1}}, whose derivative in the
+  degrees of freedom has no elementary form, so its higher orders are built
+  from single stencils on analytic quantities. Differencing them amplifies
+  whatever noise they carry by \eqn{1/h}. Measured at
+  \eqn{\mu = 0, \sigma = 1, \alpha = 0.5}, the order-5 components from the
+  three-point rule and from the five-point one -- which share only their centre
+  node -- disagree by 1.8e-02 at \eqn{\nu = 5}, **1.7e-01** at 8 and 2.2e-02
+  at 20, where every family whose fourth order is genuinely analytic agrees
+  between 1.3e-10 and 1.2e-07.
+
+  ⚠️ A census over the other 38 univariate families found one further
+  disagreement, at the generalized Pareto, and **it was the probe and not the
+  family**: `generate_random_theta()` had put the shape near the crossover of
+  its own series branch. At fixed values all three routes agree between 1.6e-10
+  and 6.8e-08 and its order 4 is right to 2.0e-08.
+
+* A family defined with nothing but `distrib_pdf()` still answers at the fifth
+  order -- the promise that a distribution needs only a density is not
+  withdrawn -- but there the fourth is itself a difference, so the fifth is a
+  difference of a difference. `has_exact_deriv4()` is `FALSE` for it and for
+  every wrapper of it, and `check_distrib()` emits no verdict rather than one
+  nobody earned. Measured on a density-only gaussian the fifth is 3e+04
+  relative to the analytic family's, which is not a derivative of anything.
+
 # distributions7 0.49.0
 
 * THE PURE-DISPERSION DERIVATIVES AT ORDERS THREE AND FOUR no longer cancel,

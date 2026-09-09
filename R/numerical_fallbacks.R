@@ -1259,3 +1259,46 @@ S7::method(expected_hessian_exact, distrib) <- function(x, ...) {
     !is_class(owner, discrete_distrib) &&
     !is_class(owner, multivariate_distrib)
 }
+
+
+#' @title Whether a Family's Fourth Derivative Is Analytic
+#' @name has_exact_deriv4.distrib
+#'
+#' @description
+#' The default: a [distrib_deriv4()] method owned by one of the base classes
+#' is the package's own numerical fallback, and anything else is the family's
+#' own method.
+#'
+#' @details
+#' The comparison is by class name and package rather than with
+#' `identical()`, for the reason recorded on [is_class()]: `identical()` on an
+#' S7 class is object identity and is false for a class re-created from the
+#' same definition, as happens whenever a package's code is evaluated instead
+#' of loaded.
+#'
+#' A wrapper must not use this reading. Its fourth derivative is registered on
+#' its own class, so the owner test says analytic, while the partition sum it
+#' evaluates is over the **parent's** first four derivatives and is analytic
+#' only when those are. Every wrapper therefore overrides the generic and asks
+#' its parent, which is why the test is a generic at all.
+#'
+#' @param x A distribution object.
+#' @param ... Unused.
+#'
+#' @return A single logical.
+#'
+#' @seealso [has_exact_deriv4()], the generic; [expected_hessian_exact()],
+#'   which answers the same shape of question about the expected information.
+#' @keywords internal
+S7::method(has_exact_deriv4, distrib) <- function(x, ...) {
+  m <- tryCatch(
+    S7::method(distrib_deriv4, S7::S7_class(x)),
+    error = function(e) NULL
+  )
+  if (is.null(m)) return(FALSE)
+  owner <- attr(m, "signature")[[1]]
+  !is_class(owner, distrib) &&
+    !is_class(owner, continuous_distrib) &&
+    !is_class(owner, discrete_distrib) &&
+    !is_class(owner, multivariate_distrib)
+}
