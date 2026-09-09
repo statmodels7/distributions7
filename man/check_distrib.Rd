@@ -28,10 +28,10 @@ Defaults to 100.}
 expected-information checks. Defaults to 200000.}
 
 \item{orders}{Integer vector. Which parameter-derivative orders to check.
-Defaults to \code{1:4}, the orders every family implements analytically. Add
-\code{5} to check the numerical fifth as well; see the bullet below for what
-that row compares and when it is emitted.
-Defaults to \code{1:4}; use e.g. \code{1:2} for a faster run.}
+Defaults to \code{1:4}, the orders every family implements analytically; use
+e.g. \code{1:2} for a faster run. Add \code{5} to check the numerical fifth as
+well; see the bullet below for what that row compares and when it is
+emitted.}
 
 \item{tol}{Numeric. Relative tolerance for the finite-difference comparisons.
 Defaults to \code{1e-3}.}

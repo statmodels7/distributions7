@@ -68,10 +68,10 @@ safe_check <- function(name, expr) {
 #' @param nsim Integer. Monte Carlo sample size used for the random generator and
 #'   expected-information checks. Defaults to 200000.
 #' @param orders Integer vector. Which parameter-derivative orders to check.
-#'   Defaults to `1:4`, the orders every family implements analytically. Add
-#'   `5` to check the numerical fifth as well; see the bullet below for what
-#'   that row compares and when it is emitted.
-#'   Defaults to `1:4`; use e.g. `1:2` for a faster run.
+#'   Defaults to `1:4`, the orders every family implements analytically; use
+#'   e.g. `1:2` for a faster run. Add `5` to check the numerical fifth as
+#'   well; see the bullet below for what that row compares and when it is
+#'   emitted.
 #' @param tol Numeric. Relative tolerance for the finite-difference comparisons.
 #'   Defaults to `1e-3`.
 #' @param verbose Logical. If `TRUE` (default) a readable report is printed.
