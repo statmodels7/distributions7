@@ -820,6 +820,39 @@ distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(dist
 #' @export
 expected_hessian_exact <- S7::new_generic("expected_hessian_exact", "x")
 
+#' The Kink a Family Carries
+#'
+#' @description
+#' The one non-smooth piece of a log-density, as the composition
+#' \eqn{c(\theta)\,\phi(v(y,\theta))} of [kink_spec()], or `NULL` for a family
+#' that is smooth in every parameter. [params_order()] reads the order of
+#' differentiability off the answer.
+#'
+#' @details
+#' Three families declare one, all for the same reason -- an absolute value of
+#' the residual in the log-density -- and every other family inherits the base
+#' method, which returns `NULL`.
+#'
+#' A wrapper does not propagate the declaration today, so a wrapper of a kinked
+#' family returns `NULL` here while `params_smooth` still records the kink;
+#' [params_order()] reports `NA` there rather than `Inf`, which says the order
+#' has not been established rather than that the parameter is smooth.
+#'
+#' @param distrib An object inheriting from class `"distrib"`.
+#'
+#' @return A [kink_spec()], or `NULL` when the family is smooth.
+#'
+#' @examples
+#' kink_decomposition(gaussian1_distrib())
+#' kink_decomposition(laplace_distrib())
+#'
+#' @seealso [kink_spec()] for the object, [params_order()] for the order
+#'   deduced from it, [check_kink()] for the validator, and
+#'   [param_smoothness()] for the logical this generalises.
+#' @export
+kink_decomposition <- S7::new_generic("kink_decomposition", "distrib",
+                                      function(distrib) S7::S7_dispatch())
+
 #' Generate Random Parameters
 #'
 #' @description Generates sensible random parameters for a distribution based on its mathematical domain.

@@ -1183,3 +1183,44 @@ enet_distrib <- function(link_mu = identity_link(),
     params_smooth = c(mu = FALSE, lambda = TRUE, alpha = TRUE)
   )
 }
+
+#' @name kink_decomposition.EnetDistrib
+#' @title The Elastic Net's Kink
+#'
+#' @description
+#' The log-density is \eqn{-a\lvert y-\mu\rvert - c(y-\mu)^2/2 - \log Z} with
+#' \eqn{a = \lambda\alpha} and \eqn{c = \lambda(1-\alpha)}, so the composition
+#' is the absolute value at \eqn{v = y - \mu} with
+#' \eqn{c(\theta) = -\lambda\alpha}.
+#'
+#' @details
+#' The quadratic half and the normalizing constant are smooth, so the location
+#' is again the only non-smooth parameter, and \eqn{m_\mu = 0} for every
+#' \eqn{\alpha > 0}.
+#'
+#' The SIZE of the kink is \eqn{2\lambda\alpha} and goes to zero with
+#' \eqn{\alpha}, which is why a detector reading the second Bartlett identity
+#' finds this family in one sweep and not in another: at a small \eqn{\alpha}
+#' the family is nearly Gaussian and the missing curvature disappears into the
+#' scale of the rest of the matrix. The kink is there at every \eqn{\alpha > 0}
+#' all the same, and the declaration says so where a measurement of the
+#' curvature cannot.
+#'
+#' @param distrib An `EnetDistrib` object.
+#'
+#' @return A [kink_spec()] with `phi = "abs"`.
+#'
+#' @examples
+#' kink_decomposition(enet_distrib())
+#' params_order(enet_distrib())
+#'
+#' @seealso [kink_decomposition()] for the generic, [enet_distrib()] for the
+#'   family.
+#' @keywords internal
+S7::method(kink_decomposition, EnetDistrib) <- function(distrib) {
+  kink_spec(
+    phi  = "abs",
+    v    = function(y, theta) y - theta$mu,
+    dv   = function(y, theta) list(mu = -1, lambda = 0, alpha = 0),
+    coef = function(theta) -theta$lambda * theta$alpha)
+}

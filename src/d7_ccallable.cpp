@@ -65,7 +65,7 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
             // higher polygammas that struct also carries are not needed
             // here, and skipping them changes no computed value
             // see psi_diff.h; the R method's expression, written out
-            double f1 = d7::psi_log_rest(s) + d7::psi_Ew(z - 1.0);
+            double f1 = d7::psi_log_rest(s) + d7::psi_Ew2(z, z - 1.0);
             double f2 = 1.0 / s - R::trigamma(s);
             double s1 = -s * s, s2 = 2.0 * s * s * s;
             out[0] = f1 * (-s * s);

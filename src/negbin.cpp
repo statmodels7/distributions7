@@ -193,7 +193,7 @@ List negbin_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta,
         // the two brackets of the rewrite, each cancellation performed
         // symbolically: see the note at the head of this file
         grad_theta[i] = d7::psi_A_rest(y[i], th) +
-            d7::psi_Ew((y[i] - m) / th_plus_mu);
+            d7::psi_Ew2((y[i] + th) / th_plus_mu, (y[i] - m) / th_plus_mu);
     });
 
     return List::create(Named("mu") = grad_mu, Named("theta") = grad_theta);

@@ -835,3 +835,36 @@ laplace2_distrib <- function(link_mu = identity_link(), link_lambda = log_link()
     params_smooth = c(mu = FALSE, lambda = TRUE)
   )
 }
+
+#' @name kink_decomposition.Laplace2Distrib
+#' @title The Rate-Parametrized Laplace's Kink
+#'
+#' @description
+#' The log-density is \eqn{\log(\lambda/2) - \lambda \lvert y - \mu \rvert}, so
+#' the composition is the absolute value at \eqn{v = y - \mu} with
+#' \eqn{c(\theta) = -\lambda}.
+#'
+#' @details
+#' The same kink as [laplace_distrib()]'s, carried across the map
+#' \eqn{\lambda = 1/\sigma}: a reparametrization moves the coefficient in front
+#' and leaves the argument alone, so the order is unchanged and the location is
+#' again the only non-smooth parameter.
+#'
+#' @param distrib A `Laplace2Distrib` object.
+#'
+#' @return A [kink_spec()] with `phi = "abs"`.
+#'
+#' @examples
+#' kink_decomposition(laplace2_distrib())
+#' params_order(laplace2_distrib())
+#'
+#' @seealso [kink_decomposition()] for the generic, [laplace2_distrib()] for
+#'   the family.
+#' @keywords internal
+S7::method(kink_decomposition, Laplace2Distrib) <- function(distrib) {
+  kink_spec(
+    phi  = "abs",
+    v    = function(y, theta) y - theta$mu,
+    dv   = function(y, theta) list(mu = -1, lambda = 0),
+    coef = function(theta) -theta$lambda)
+}

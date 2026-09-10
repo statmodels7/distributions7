@@ -230,6 +230,11 @@ reference:
   - dexpected_names
   - dexpected_key
   - param_smoothness
+  - params_order
+  - kink_decomposition
+  - kink_spec
+  - kink_order
+  - check_kink
   - generate_random_theta
   - distrib_generics
   - starts_with("coef.")

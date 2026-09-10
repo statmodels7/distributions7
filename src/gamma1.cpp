@@ -34,7 +34,7 @@ inline Fs gamma1_parts(double y, double m, double phi) {
     Fs o;
     // [log s - psi(s)] + [log z - (z-1)]: two cancelling pairs, each
     // written out.  See psi_diff.h.
-    o.f1 = d7::psi_log_rest(s) + d7::psi_Ew(z - 1.0);
+    o.f1 = d7::psi_log_rest(s) + d7::psi_Ew2(z, z - 1.0);
     o.f2 = d7::psi1_rest(s);
     o.f3 = d7::psi2_rest(s);
     o.f4 = d7::psi3_rest(s);

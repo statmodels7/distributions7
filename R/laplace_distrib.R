@@ -867,3 +867,42 @@ laplace_distrib <- function(link_mu = identity_link(), link_sigma = log_link()) 
     params_smooth = c(mu = FALSE, sigma = TRUE)
   )
 }
+
+#' @name kink_decomposition.LaplaceDistrib
+#' @title The Laplace's Kink
+#'
+#' @description
+#' The log-density is \eqn{-\log(2\sigma) - \lvert y - \mu \rvert / \sigma}, so
+#' the composition is the absolute value at \eqn{v = y - \mu} with
+#' \eqn{c(\theta) = -1/\sigma}.
+#'
+#' @details
+#' Only the location moves the kink: \eqn{\partial v/\partial \mu = -1} and
+#' \eqn{\partial v/\partial \sigma = 0}, so [params_order()] reports
+#' \eqn{m_\mu = 0} and \eqn{m_\sigma = \infty}, which is what `params_smooth`
+#' has recorded as `c(mu = FALSE, sigma = TRUE)` all along.
+#'
+#' The scale is smooth even though it stands in front of the absolute value,
+#' because a coefficient multiplying \eqn{\phi} is differentiable wherever
+#' \eqn{\phi} is bounded; what breaks a derivative is the argument crossing the
+#' origin, not the factor.
+#'
+#' @param distrib A `LaplaceDistrib` object.
+#'
+#' @return A [kink_spec()] with `phi = "abs"`.
+#'
+#' @examples
+#' kink_decomposition(laplace_distrib())
+#' params_order(laplace_distrib())
+#' check_kink(laplace_distrib())
+#'
+#' @seealso [kink_decomposition()] for the generic, [laplace_distrib()] for the
+#'   family.
+#' @keywords internal
+S7::method(kink_decomposition, LaplaceDistrib) <- function(distrib) {
+  kink_spec(
+    phi  = "abs",
+    v    = function(y, theta) y - theta$mu,
+    dv   = function(y, theta) list(mu = -1, sigma = 0),
+    coef = function(theta) -1 / theta$sigma)
+}

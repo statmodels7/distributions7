@@ -76,6 +76,38 @@ inline double psi_Ew(double w) {
     return std::log1p(w) - w;
 }
 
+// THE SAME QUANTITY WHERE 1 + w IS KNOWN EXACTLY AND FORMING w LOSES IT.
+//
+// Both call sites of psi_Ew compute 1 + w from its own inputs rather than by
+// adding one to w -- y/mu for the gamma, (y+theta)/(theta+mu) for the
+// negative binomial -- so both spellings of log(1+w) - w are available and
+// they fail at opposite ends:
+//
+//   log1p(w) - w    carries w exactly and represents 1 + w only to an
+//                   ABSOLUTE eps, so its error is about eps/(2(1+w)) and
+//                   grows without bound as 1 + w -> 0.  Once 1 + w falls
+//                   below eps/2 the subtraction that formed w has lost the
+//                   argument outright: w is exactly -1 and log1p(-1) is -Inf,
+//                   MEASURED at y/mu = 8.3e-18 on an ordinary gamma of shape
+//                   0.236, where the value is -38.33 and the log-density
+//                   itself is finite and smooth.
+//   log(opw) - w    carries 1 + w exactly and its error is about
+//                   eps * |log opw|, which stays bounded wherever the value
+//                   does.
+//
+// Setting the two errors equal gives 1/(2 opw) = |log opw|, i.e. opw ~ 0.35:
+// the crossover is DERIVED from the expression that binds, in the sense
+// linkfunctions7's exp_floor is, rather than chosen.  Measured on the summed
+// score of a gamma sample the switch costs nothing where nothing is wrong --
+// bit-identical at shapes 1 and 4 -- and repairs 3.2e-03 at shape 0.236.
+inline double psi_Ew2(double opw, double w) {
+    if (std::fabs(w) < 1e-3) {
+        return w * w * (-0.5 + w * (1.0 / 3.0 + w * (-0.25 + w * 0.2)));
+    }
+    if (opw < 0.35) return std::log(opw) - w;
+    return std::log1p(w) - w;
+}
+
 
 // A POLYGAMMA MINUS ITS OWN LEADING ASYMPTOTE, which is the shape the gamma
 // carries four times over.  From
