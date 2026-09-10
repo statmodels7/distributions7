@@ -270,7 +270,11 @@ md_skewnormal2 <- function(psi) {
   qd <- fdb1(list(0.5 / sq, -0.25 / sq^3, 0.375 / sq^5, -0.9375 / sq^7), ud)
 
   cb <- b^2 - 1
-  D <- b^2 + cb * r^2
+  # b^2 + (b^2-1) r^2 is b^2 (1 - delta^2) exactly, and the second form
+  # is the one that survives the top of the range: the first reaches
+  # -1.11e-16 at the largest skewness the link can produce, where the
+  # quantity is 9.42e-17.
+  D <- b^2 * sn_one_minus_delta2(g, sign(g))
   ad_r <- list(b^2 * D^-1.5,
                -3 * b^2 * cb * r * D^-2.5,
                -3 * b^2 * cb * (D - 5 * cb * r^2) * D^-3.5,

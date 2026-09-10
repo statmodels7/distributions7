@@ -81,6 +81,57 @@ sn_max_skew <- function() {
   (4 - pi) / 2 * (b / sqrt(1 - b^2))^3
 }
 
+#' @title One Minus the Squared Skewness Parameter
+#'
+#' @description
+#' Returns \eqn{1 - \delta^2}, the quantity the shape of the direct
+#' parametrization divides by. Written in the skewness alone it is
+#' \deqn{1 - \delta^2 = 1 -
+#'       \left(\dfrac{\lvert\gamma_1\rvert}{\gamma_{\max}}\right)^{2/3},}
+#' with \eqn{\gamma_{\max}} the ceiling of [sn_max_skew()], and it is
+#' evaluated through `log` and `expm1`, which leaves no cancellation in it.
+#'
+#' @details
+#' The identity is exact rather than an expansion near the ceiling. With
+#' \eqn{c = (2\lvert\gamma_1\rvert/(4-\pi))^{1/3}} the map forms
+#' \eqn{\mu_z = c/\sqrt{1+c^2}} and \eqn{\delta = \mu_z/b}, and \eqn{c^2}
+#' equals \eqn{(\lvert\gamma_1\rvert/\gamma_{\max})^{2/3}\,b^2/(1-b^2)}, so the
+#' ratio to the ceiling carries the whole of the degeneracy.
+#'
+#' The two forms this replaces differ from it only at the top of the range,
+#' and both subtract two nearly equal numbers there. `1 - (mu_z/b)^2` reaches
+#' exactly zero at the largest skewness [linkfunctions7::bounded_link()] can
+#' produce, and the \eqn{b^2 + (b^2-1)c^2} of [md_skewnormal2()] reaches
+#' \eqn{-1.11\times 10^{-16}}. At that skewness, one unit in the last place
+#' inside the bound, this returns \eqn{9.42\times 10^{-17}}, and the shape
+#' that follows from it is \eqn{1.36\times 10^{8}} and finite.
+#'
+#' @param gamma1 The skewness, a numeric vector. Nothing is validated here:
+#'   the result is positive strictly inside
+#'   \eqn{(-\gamma_{\max}, \gamma_{\max})}, zero at either bound and negative
+#'   outside them.
+#' @param s The sign of `gamma1`, \eqn{\pm 1}, taken by the caller from its
+#'   plain value.
+#'
+#' @return A numeric vector of the length of `gamma1`.
+#'
+#' @seealso [sn_cp_to_dp()] and [md_skewnormal2()], the two places that divide
+#'   by it, and [sn_max_skew()] for the ceiling it is written against.
+#'
+#' @examples
+#' g <- distributions7:::sn_max_skew() * c(0.5, 0.9, 0.999, 1 - 1e-15)
+#' distributions7:::sn_one_minus_delta2(g, 1)
+#'
+#' # The expression it replaces has already lost the last of those.
+#' b <- distributions7:::sn_b()
+#' cc <- (2 * g / (4 - pi))^(1 / 3)
+#' 1 - (cc / sqrt(1 + cc^2) / b)^2
+#'
+#' @keywords internal
+sn_one_minus_delta2 <- function(gamma1, s) {
+  -expm1((2 / 3) * log(s * gamma1 / sn_max_skew()))
+}
+
 #' @title From the Centered Parameters to the Direct Ones
 #'
 #' @description
@@ -141,12 +192,14 @@ sn_cp_to_dp <- function(mu, sigma, gamma1, s) {
   # |gamma1| as s * gamma1: away from zero the sign is locally constant, so
   # this is exact and carries the right derivatives when the argument is a jet.
   cc <- s * (2 * (s * gamma1) / (4 - pi))^(1 / 3)
-  muz <- cc / sqrt(1 + cc^2)
-  del <- muz / b
-  om <- sigma / sqrt(1 - muz^2)
-  list(mu = mu - om * muz,
-       sigma = om,
-       alpha = del / sqrt(1 - del^2))
+  # The three expressions are md_skewnormal2()'s, so the value and its
+  # derivatives are read off one algebraic form. The scale is a product
+  # rather than a quotient because 1 + cc^2 and 1 - muz^2 are reciprocal,
+  # and the shape divides by sn_one_minus_delta2(), which is the only place
+  # the parametrization degenerates.
+  list(mu = mu - sigma * cc,
+       sigma = sigma * sqrt(1 + cc^2),
+       alpha = cc / (b * sqrt(sn_one_minus_delta2(gamma1, s))))
 }
 
 #' @title Skew Normal Distribution Class, Centered Parametrization
@@ -263,7 +316,79 @@ SkewNormal2Distrib <- S7::new_class("SkewNormal2Distrib",
 sn2_theta <- function(theta) {
   g <- theta[[3]]
   s <- ifelse(g >= 0, 1, -1)
-  sn_cp_to_dp(theta[[1]], theta[[2]], g, s)
+  dp <- sn_cp_to_dp(theta[[1]], theta[[2]], g, s)
+  sn2_reject_unmappable(dp, theta)
+  dp
+}
+
+#' @title Reject Centered Parameters the Map Cannot Carry
+#'
+#' @description
+#' Checks that the direct parameters [sn_cp_to_dp()] has produced are usable,
+#' and raises in the centered family's own terms when they are not.
+#'
+#' @details
+#' Every probability function of [skewnormal2_distrib()] evaluates the parent
+#' at the mapped parameters, and the parent validates what it is handed
+#' against its own domains. Without this check a caller who wrote `gamma1`
+#' reads an error about `alpha`, a parameter the model does not have, and
+#' about `"skew normal1"`, a family the call does not name. The message here
+#' reports the centered parameter responsible and the value it holds.
+#'
+#' The check states a property of the delegation rather than guarding a value
+#' the public surface can reach. [skewnormal2_distrib()] bounds `gamma1` and
+#' every generic validates it before dispatch, so a skewness outside its
+#' domain is reported before the map runs; what remains reachable is a `sigma`
+#' and a `gamma1` each inside its own domain whose implied scale or
+#' location leaves the doubles.
+#'
+#' @param dp The direct parameters, as returned by [sn_cp_to_dp()].
+#' @param theta The centered parameters the caller supplied, ordered as
+#'   `c("mu", "sigma", "gamma1")`.
+#'
+#' @return Invisibly `NULL`; raises an error naming `"skew normal2"` if any
+#'   mapped parameter is not finite or the mapped scale is not positive.
+#'
+#' @seealso [sn2_theta()], which calls it, and [sn_cp_to_dp()] for the map.
+#'
+#' @examples
+#' # A skewness at the ceiling is reported in the centered family's own terms.
+#' th <- list(mu = 0, sigma = 1, gamma1 = distributions7:::sn_max_skew())
+#' try(distributions7:::sn2_theta(th))
+#'
+#' # A scale and a skewness each inside its own domain whose implied scale
+#' # is not.
+#' th2 <- list(mu = 0, sigma = 1.1e308, gamma1 = 0.99)
+#' try(distributions7:::sn2_theta(th2))
+#'
+#' @keywords internal
+sn2_reject_unmappable <- function(dp, theta) {
+  if (all(is.finite(dp$mu)) && all(is.finite(dp$sigma)) &&
+      all(dp$sigma > 0) && all(is.finite(dp$alpha))) {
+    return(invisible(NULL))
+  }
+
+  n <- max(lengths(dp))
+  mu <- rep_len(dp$mu, n)
+  sg <- rep_len(dp$sigma, n)
+  al <- rep_len(dp$alpha, n)
+  i <- which(!(is.finite(mu) & is.finite(sg) & sg > 0 & is.finite(al)))[1L]
+  at <- function(k) format(rep_len(theta[[k]], n)[i])
+
+  cause <- if (!is.finite(al[i])) {
+    paste0("  'gamma1' = ", at(3L), " is at the ceiling ",
+           format(sn_max_skew()), " of the skewness a skew normal\n",
+           "  can carry, where the shape it maps to is not finite")
+  } else if (!is.finite(sg[i]) || sg[i] <= 0) {
+    paste0("  'sigma' = ", at(2L), " and 'gamma1' = ", at(3L),
+           " imply a scale that is not finite")
+  } else {
+    paste0("  'mu' = ", at(1L), ", 'sigma' = ", at(2L),
+           " and 'gamma1' = ", at(3L),
+           " imply a location that is not finite")
+  }
+  stop("Invalid parameter value(s) for the 'skew normal2' distribution:\n",
+       cause, ".", call. = FALSE)
 }
 
 #' @title Derivatives of the Skew Normal in Its Centered Parametrization
