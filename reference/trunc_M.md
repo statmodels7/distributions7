@@ -75,5 +75,5 @@ unlist(M)
 EH <- distributions7:::trunc_hess_mean(tn, theta)
 ES <- distributions7:::trunc_score_prod_mean(tn, theta)
 max(abs(unlist(M) - (unlist(EH) + unlist(ES))))
-#> [1] 1.387779e-15
+#> [1] 1.276756e-15
 ```

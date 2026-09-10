@@ -103,5 +103,5 @@ zz <- distrib_rng(d, 2000, th)
 fit <- fit_distrib(d, zz)
 vapply(distrib_gradient(d, zz, as.list(coef(fit))), sum, numeric(1))
 #>            mu           phi 
-#> -7.048322e-14 -6.346140e-06 
+#> -6.940997e-14 -6.346140e-06 
 ```

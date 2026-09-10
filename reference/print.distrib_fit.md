@@ -64,7 +64,7 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 print(fit_distrib(d, y))
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 1 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 2 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -84,7 +84,7 @@ g <- fit_distrib(gamma2_distrib(), rgamma(300, shape = 4, rate = 2))
 print(g, digits = 3)
 #> Maximum-likelihood fit: gamma2
 #> Observations: 300   Log-likelihood: -403   AIC: 810   BIC: 817
-#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 2 ms
+#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 3 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:

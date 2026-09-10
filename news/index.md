@@ -1,5 +1,120 @@
 # Changelog
 
+## distributions7 0.54.0
+
+- **A family declares WHERE its log-density is not smooth, and the order
+  of differentiability follows from the declaration rather than being a
+  second thing to get wrong.**
+  [`kink_decomposition()`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.md)
+  is a new generic returning the one non-smooth piece as
+  `c(theta) * phi(v(y, theta))`: `phi` names the composition, `v` its
+  argument and the derivatives of that argument in the parameters,
+  `coef` the multiplier in front. The base method returns `NULL`, so
+  every family is smooth until it says otherwise, and three declare —
+  `laplace`, `laplace2` and `enet`, all for the same reason, an absolute
+  value of the residual.
+
+- [`params_order()`](https://statmodels7.github.io/distributions7/reference/params_order.md)
+  reads the order off it: the order of the composition for every
+  parameter the kink’s argument moves with, and `Inf` for the rest. It
+  is DEDUCED and not declared, which is why `v` carries its own
+  derivatives — the set of non-smooth parameters is , measured at probe
+  values rather than assumed. A Huber likelihood puts its kink at ,
+  which moves with the location, the scale and the cut-off together, and
+  that test names all three without the family listing them.
+
+- The order the five compositions leave, each measured as the first
+  derivative that jumps across the origin and kept only where the jump
+  does not shrink with the step: 0 for and , 1 for , 2 for , and -1 for
+  , which is not continuous at all and is reported apart — there a
+  smoothing would repair a discontinuity of the log-density rather than
+  a missing derivative, and the unsmoothed problem has no well-defined
+  maximum.
+
+- [`check_kink()`](https://statmodels7.github.io/distributions7/reference/check_kink.md)
+  holds a declaration to the family that declares it, which is what
+  makes it worth trusting. The load-bearing check is the JUMP: the score
+  of jumps by as `y` crosses the kink, and the family’s own score is
+  written independently of the declaration, so the two can be compared.
+  Measured, `laplace` and `laplace2` agree at 0.00e+00 and `enet` at
+  1.0e-06. Two further checks isolate `dv` against a difference of `v`,
+  and assert that the parameters the declaration calls smooth really are
+  — without the third a declaration naming too few parameters would
+  pass.
+
+- ⚠️ **Nothing consumes any of this and no behaviour moves.** Against a
+  battery of twelve fitted models spanning `linpar`, `s`, `te`,
+  `random`, `ridge`, `lasso`, a distributional model, a Poisson, a
+  Gamma, `gas`, `seg` and `regime`, the log-likelihood, the
+  coefficients, the hyperparameters, the effective degrees of freedom,
+  `vcov`, the convergence flag and the certificate are
+  [`identical()`](https://rdrr.io/r/base/identical.html): 168
+  comparisons and no difference.
+
+- ⚠️ **A WRAPPER REPORTS `NA` AND NOT `Inf`.** No wrapper propagates the
+  declaration yet, so `truncated(laplace_distrib())` returns `NULL` from
+  [`kink_decomposition()`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.md)
+  while `params_smooth` still records the kink.
+  [`params_order()`](https://statmodels7.github.io/distributions7/reference/params_order.md)
+  reports `NA` there, which says the order has not been established;
+  `Inf` would say the parameter is smooth, which it is not. A consumer
+  must read `NA` as unusable. `fixed(laplace_distrib(), mu = 0)` is the
+  case that genuinely becomes smooth, the wrapper removing the only
+  non-smooth parameter, and it reports `Inf`.
+
+- ⚠️ **The elastic net’s kink is real at every `alpha` and its SIZE is**
+  , which is why a detector reading the second Bartlett identity finds
+  the family in one sweep and not in another: at a small `alpha` the
+  family is nearly Gaussian and the missing curvature disappears into
+  the scale of the rest of the matrix. The declaration says so where a
+  measurement of the curvature cannot.
+
+- **`log(1+w) - w` is computed from the ratio where forming `w` loses
+  it, and three call sites carried the same defect.** `psi_Ew(z - 1)`
+  represents only to an absolute `eps`, so its error is about and grows
+  without bound as `z` goes to zero; below the subtraction has lost the
+  argument outright, `z - 1` is exactly `-1`, and `log1p(-1)` is `-Inf`.
+  `psi_Ew2(opw, w)` takes the ratio as well, which both call sites
+  already compute from their own inputs – `y/mu` for the gamma, for the
+  negative binomial – so no approximation is involved and the crossover
+  is DERIVED: setting the two spellings’ errors equal gives , i.e. .
+
+- ⚠️ **It was reachable from an ordinary fit and the degradation was
+  gradual before it was catastrophic**: 2.9e-10 at `z = 1e-8`, 2.6e-05
+  at 1e-14, then `-Inf`. A gamma of shape 0.236 puts 6.3 observations of
+  20000 below 1e-15, and one such observation takes the whole summed
+  score with it – measured, 13 of 40 seeds of
+  [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
+  left `gamma1`’s `phi_phi` at `-Inf`, and 0 of 40 do now. `negbin2`’s
+  dispersion score read `-Inf` at a zero count with , where the value is
+  ; rides a log link whose floor is 1.9e-77, and a count model with no
+  overdispersion drives it there.
+
+- The repaired values agree with a central difference of the analytic
+  log-density at 1.0e-08 – the reference’s own accuracy – from
+  `z = 1e-6` down to 1e-40, and `negbin2` agrees with the closed form at
+  **0.00e+00** for every at or below 1e-16.
+
+- ⚠️ **The cost was measured rather than assumed, and it is nothing
+  where nothing was wrong.** On the summed score of a gamma sample the
+  switch is bit-identical at shapes 1 and 4, moves 2.0e-12 at shape 0.5,
+  and repairs 3.2e-03 at shape 0.236. Against a battery of twelve fitted
+  models one quantity moved: the certificate’s mode error on a Gamma
+  fit, 2.290433e-14 to 2.290433e-14, a relative 3.8e-10 on a number
+  eleven orders below the 1e-3 it is compared against. The
+  log-likelihood, the coefficients, `vcov`, the effective degrees of
+  freedom, the convergence flag and the certificate state are
+  [`identical()`](https://rdrr.io/r/base/identical.html).
+
+- ⚠️ **The third site is the C-callable twin**, `d7_ccallable.cpp`,
+  which mirrors `gamma1_parts` expression by expression and is held to
+  it by [`identical()`](https://rdrr.io/r/base/identical.html);
+  repairing one and not the other would have turned that twin test red.
+  The rule this file records for a shape of mistake – grep for the
+  shape, then measure each occurrence – is what turned one repair into
+  three, and the `negbin` site was found that way rather than by
+  anything failing.
+
 ## distributions7 0.53.0
 
 - The centered skew normal’s map to the direct parametrization is

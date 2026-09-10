@@ -358,6 +358,16 @@ Rarely called directly, but useful as a reference for what is happening.
   : The Key of One Component of the Expected Information's Derivative
 - [`param_smoothness()`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md)
   : Per-Parameter Smoothness of the Log-Likelihood
+- [`params_order()`](https://statmodels7.github.io/distributions7/reference/params_order.md)
+  : The Order of Differentiability of a Family in Each Parameter
+- [`kink_decomposition()`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.md)
+  : The Kink a Family Carries
+- [`kink_spec()`](https://statmodels7.github.io/distributions7/reference/kink_spec.md)
+  : The Composition That Carries a Kink
+- [`kink_order()`](https://statmodels7.github.io/distributions7/reference/kink_order.md)
+  : The Order Left by a Composition
+- [`check_kink()`](https://statmodels7.github.io/distributions7/reference/check_kink.md)
+  : Check a Declared Kink Against the Family
 - [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
   : Generate Random Parameters
 - [`distrib_generics`](https://statmodels7.github.io/distributions7/reference/distrib_generics.md)
@@ -2364,6 +2374,21 @@ divergent density.
 - [`.enet_rate_maps()`](https://statmodels7.github.io/distributions7/reference/dot-enet_rate_maps.md)
   : The Map From the Rates to the Elastic Net's Parameters
 
+- [`.kink_locate()`](https://statmodels7.github.io/distributions7/reference/dot-kink_locate.md)
+  : Where the Kink Sits on the Response Scale
+
+- [`.kink_probe_theta()`](https://statmodels7.github.io/distributions7/reference/dot-kink_probe_theta.md)
+  : A Trial Parameter Value Inside Every Interval
+
+- [`.kink_probe_y()`](https://statmodels7.github.io/distributions7/reference/dot-kink_probe_y.md)
+  : A Few Points of the Support
+
+- [`.kink_report()`](https://statmodels7.github.io/distributions7/reference/dot-kink_report.md)
+  : Print the Table of check_kink
+
+- [`.kink_touched()`](https://statmodels7.github.io/distributions7/reference/dot-kink_touched.md)
+  : Which Parameters a Kink Moves With
+
 - [`.mvt_const_slices()`](https://statmodels7.github.io/distributions7/reference/dot-mvt_const_slices.md)
   : Repeat a Constant Matrix Across Slices
 
@@ -2571,6 +2596,18 @@ divergent density.
 
 - [`is_zero_wrapper()`](https://statmodels7.github.io/distributions7/reference/is_zero_wrapper.md)
   : Does This Distribution Already Model a Probability of Zero
+
+- [`kink_decomposition.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.EnetDistrib.md)
+  : The Elastic Net's Kink
+
+- [`kink_decomposition.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.Laplace2Distrib.md)
+  : The Rate-Parametrized Laplace's Kink
+
+- [`kink_decomposition.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.LaplaceDistrib.md)
+  : The Laplace's Kink
+
+- [`kink_decomposition.distrib`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.distrib.md)
+  : The Base Method: No Kink
 
 - [`kurtosis.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.BernoulliDistrib.md)
   : Excess Kurtosis of the Bernoulli Distribution
