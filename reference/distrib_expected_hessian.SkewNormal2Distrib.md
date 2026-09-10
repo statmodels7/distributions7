@@ -109,7 +109,7 @@ info <- function(g) {
 }
 rbind(gamma1_0.5 = info(0.5), gamma1_1e_6 = info(1e-6))
 #>                 [,1]         [,2]          [,3]
-#> gamma1_0.5  1.111280 9.188218e-18 -9.648496e-17
+#> gamma1_0.5  1.111280 1.898614e-17 -3.625039e-17
 #> gamma1_1e_6 1.000002 1.056298e-12 -2.524355e-28
 
 # Its own component tends to 1/6.

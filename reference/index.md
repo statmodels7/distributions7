@@ -3379,6 +3379,9 @@ divergent density.
 - [`sn2_chain()`](https://statmodels7.github.io/distributions7/reference/sn2_chain.md)
   : Derivatives of the Skew Normal in Its Centered Parametrization
 
+- [`sn2_reject_unmappable()`](https://statmodels7.github.io/distributions7/reference/sn2_reject_unmappable.md)
+  : Reject Centered Parameters the Map Cannot Carry
+
 - [`sn2_theta()`](https://statmodels7.github.io/distributions7/reference/sn2_theta.md)
   : The Direct Parameters a Centered Triple Implies
 
@@ -3396,6 +3399,9 @@ divergent density.
 
 - [`sn_max_skew()`](https://statmodels7.github.io/distributions7/reference/sn_max_skew.md)
   : The Largest Skewness a Skew Normal Can Reach
+
+- [`sn_one_minus_delta2()`](https://statmodels7.github.io/distributions7/reference/sn_one_minus_delta2.md)
+  : One Minus the Squared Skewness Parameter
 
 - [`split_index()`](https://statmodels7.github.io/distributions7/reference/split_index.md)
   : Split a Multi-Index Into Parent and Wrapper Parts

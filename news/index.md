@@ -1,5 +1,66 @@
 # Changelog
 
+## distributions7 0.53.0
+
+- The centered skew normal’s map to the direct parametrization is
+  **finite at every skewness the link can produce**, where it returned
+  `Inf` from a predictor of about 36 upward. `bounded_link()` keeps
+  `gamma1` strictly inside `(-0.9952717, 0.9952717)` and hands back the
+  last double below the bound; `1 - delta^2`, formed there as
+  `1 - (mu_z/b)^2`, rounds to exactly zero, so the shape came out `1/0`
+  where its value is `-1.36e8` and perfectly representable.
+  [`sn_one_minus_delta2()`](https://statmodels7.github.io/distributions7/reference/sn_one_minus_delta2.md)
+  evaluates the same quantity as `1 - (|gamma1|/gamma_max)^(2/3)`
+  through `log` and `expm1`, an exact identity with no cancellation left
+  in it.
+
+- **The derivative tables carried the same defect one step later.**
+  [`md_skewnormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  formed `D = b^2 + (b^2-1) r^2`, which is that same `b^2 (1 - delta^2)`
+  written so that it cancels: at the last representable skewness it
+  reaches `-1.11e-16` where the quantity is `9.42e-17`, so `sqrt(D)` was
+  `NaN` and every derivative order with it. Both places read one shared
+  helper now, so the value and its derivatives follow from one algebraic
+  form, where the map and the tables had been written from two.
+
+- A skewness the map cannot carry is **reported in the centered family’s
+  own terms**. Every probability function of
+  [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
+  evaluates the parent at the mapped parameters, and the parent
+  validates what it is handed against its own domains, so a caller who
+  wrote `gamma1` read an error naming `alpha` and `"skew normal1"`,
+  neither of which the call mentions.
+  [`sn2_theta()`](https://statmodels7.github.io/distributions7/reference/sn2_theta.md)
+  is the one place the delegation happens and now checks what it is
+  about to pass on, through
+  [`sn2_reject_unmappable()`](https://statmodels7.github.io/distributions7/reference/sn2_reject_unmappable.md),
+  which names `"skew normal2"`, the centered parameter responsible and
+  its value.
+
+- ⚠️ **No ordinary fit moves**, and the controls are transcriptions of
+  the expressions replaced rather than the package read back to itself.
+  The map agrees with the old one to `1.15e-14` over 27 settings of
+  `(sigma, gamma1)`; the four derivative orders, summed as a fit reads
+  them, agree **exactly** at `gamma1` of `0.4`, `-0.7` and `1e-4`, the
+  two forms coinciding bit for bit there, and to `7.85e-11` at `0.9`.
+  Against an independent route, the round trip through
+  [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)’s
+  own
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.md),
+  the map reproduces the skewness it was given with a gap of `0` at the
+  last representable value.
+  [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+  passes all thirteen checks and the guard costs 0.06 per cent of one
+  gradient.
+
+- ⚠️ The check states a property of the delegation rather than guarding
+  a value the public surface reaches today: `gamma1` is bounded on the
+  constructor and every generic validates it before dispatch, so a
+  skewness outside its domain is already reported correctly. What stays
+  reachable is a `sigma` and a `gamma1` each inside its own domain whose
+  implied scale or location leaves the doubles, from `sigma = 1.1e308`
+  upward.
+
 ## distributions7 0.52.0
 
 - The skew t’s derivatives in `(mu, sigma, alpha)` are **closed form**

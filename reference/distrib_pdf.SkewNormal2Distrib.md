@@ -80,7 +80,7 @@ all.equal(distrib_pdf(d, y, th),
 c(mass = integrate(function(v) distrib_pdf(d, v, th), -Inf, Inf)$value,
   mean = integrate(function(v) v * distrib_pdf(d, v, th), -Inf, Inf)$value)
 #>          mass          mean 
-#>  1.000000e+00 -2.257916e-14 
+#>  1.000000e+00 -2.254447e-14 
 
 # At zero skewness the density is the Gaussian's, where the derivatives
 # are not defined.

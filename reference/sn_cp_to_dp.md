@@ -93,6 +93,6 @@ distributions7:::sn_cp_to_dp(3, 2, 0, 1)
 dp <- distributions7:::sn_cp_to_dp(0, 1, 0.5, 1)
 d1 <- skewnormal1_distrib()
 c(mean = mean(d1, dp), sd = sqrt(variance(d1, dp)), skew = skewness(d1, dp))
-#> mean   sd skew 
-#>  0.0  1.0  0.5 
+#>          mean            sd          skew 
+#> -2.220446e-16  1.000000e+00  5.000000e-01 
 ```
