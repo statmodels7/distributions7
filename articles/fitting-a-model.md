@@ -41,7 +41,7 @@ fit <- fit_distrib(d, y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -844   AIC: 1692   BIC: 1700
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 152 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 133 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -276,7 +276,7 @@ invisible(check_distrib(d, list(mu = 3, sigma2 = 2)))
 #>   [OK  ] density integrates to 1                     5.58e-10
 #>   [OK  ] density is non-negative                     1.07e-02
 #>   [OK  ] cdf in [0,1] and non-decreasing             2.46e-02
-#>   [OK  ] cdf agrees with the density                 2.32e-11
+#>   [OK  ] cdf agrees with the density                 9.19e-12
 #>   [OK  ] quantile/cdf round-trip                     5.55e-17
 #>   [OK  ] rng matches the cdf                         1.17e+00
 #>   [OK  ] gradient vs finite differences              6.49e-11
@@ -284,7 +284,7 @@ invisible(check_distrib(d, list(mu = 3, sigma2 = 2)))
 #>   [OK  ] deriv3 vs finite differences                1.75e-10
 #>   [OK  ] deriv4 vs finite differences                6.98e-08
 #>   [OK  ] expected information vs Monte Carlo         1.75e+00
-#>   [OK  ] response derivatives vs finite differences  2.70e-08
+#>   [OK  ] response derivatives vs finite differences  2.07e-08
 #>   [OK  ] link-scale gradient vs finite differences   5.59e-08
 #> 
 #> All 13 checks passed.

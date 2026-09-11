@@ -9,7 +9,7 @@ than letting it abort the report."><meta property="og:image" content="https://st
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.54.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.55.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,8 @@ than letting it abort the report.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>The value of <code>expr</code>, or a failed row carrying the error message.</p>
+    <p>The value of <code>expr</code>, or a failed row carrying the error message and
+the attribute <code>from_error = TRUE</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -75,6 +76,10 @@ that throws is itself a result. Without this, the first component to raise
 would end the run and hide every check after it, which is the least useful
 moment to
 stop being informative.</p>
+<p>The failed row is marked with the attribute <code>from_error</code>, which
+<code><a href="check_distrib.html">check_distrib()</a></code> reads before assembling the table: a check whose
+computation raised has failed, and it is never mistaken for one whose
+statistic merely came out non-finite, which is reported as not run.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

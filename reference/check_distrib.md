@@ -62,7 +62,10 @@ check_distrib(
 ## Value
 
 Invisibly, a `data.frame` with one row per check and columns `check`,
-`status` (`"OK"` or `"FAIL"`), `statistic` and `detail`.
+`status` (`"OK"` or `"FAIL"`), `statistic` and `detail`. A check whose
+statistic came out `NaN` or `NA` is not a row: it is listed in the
+attribute `"skipped"`, a data frame with columns `check` and `reason`,
+which is present only when some check was skipped.
 
 ## Details
 
@@ -72,7 +75,10 @@ The checks performed are:
   support.
 
 - **cdf**: values in \\\[0,1\]\\ and monotonicity along a grid of
-  quantiles.
+  quantiles, and its agreement with the density: for a continuous family
+  a central difference of the cdf against the density, with the step the
+  response derivatives use, and for a discrete one \\F(k) - F(k-1)\\
+  against the mass.
 
 - **quantile**: round-trip against the CDF (\\F(Q(p)) = p\\ for
   continuous distributions, and the generalized-inverse inequalities for
@@ -115,19 +121,43 @@ The checks performed are:
   the score is used as reference because it remains valid when the
   log-likelihood is not differentiable in a parameter (see
   [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)).
+  A draw landing exactly on a finite bound of a continuous support,
+  where the score of a family singular at that bound is infinite, is
+  left out of the estimate and counted in the row's `detail`; a score
+  that is not finite at an interior point still leaves the row without a
+  statistic.
 
 - **response derivatives** (continuous only):
   [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
   and
   [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
-  against finite differences in \\y\\.
+  against central differences in \\y\\ whose step is chosen observation
+  by observation by
+  [`fd_stable_quotient()`](https://statmodels7.github.io/distributions7/reference/fd_stable_quotient.md),
+  between a step cut to under half the distance to a bound and one
+  scaled on that distance, each divided by the steps its evaluation
+  points actually lie at. A draw closer than \\128\lvert
+  b\rvert\varepsilon\\ to a finite bound \\b \ne 0\\, where the spacing
+  of doubles is absolute and no central difference compares a
+  derivative, is left out and counted in the row's `detail`.
 
 - **link scale**: `scale = "link"` derivatives against finite
   differences of the log-likelihood in \\\eta\\.
 
-Distributions that rely on the numerical fallbacks will trivially pass
-the corresponding derivative checks, since analytical and numerical
-values then coincide by construction.
+Distributions that rely on the numerical fallbacks pass the
+corresponding parameter-derivative checks trivially, since analytical
+and numerical values then coincide by construction. The response
+fallbacks take the cut step alone, so near a bound they can differ from
+the reference, which is what the row then reports.
+
+A check whose statistic comes out `NaN` or `NA` has nothing to judge, as
+the expected information of a family where it does not exist, and is not
+a row of the table: it is listed with its reason in the attribute
+`"skipped"`, and every row that is in the table reads `"OK"` or
+`"FAIL"`. An infinite statistic is a failure, being a component that
+overflows where its reference does not; so is a check whose computation
+raised an error, and so is a density or a distribution function that is
+not finite, those three checks being defined on the values themselves.
 
 Mixed distributions — a density with point masses on top of it, as
 produced by

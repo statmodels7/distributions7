@@ -2870,11 +2870,18 @@ divergent density.
 - [`fd_second()`](https://statmodels7.github.io/distributions7/reference/fd_second.md)
   : A Second Derivative From One Stencil
 
+- [`fd_stable_quotient()`](https://statmodels7.github.io/distributions7/reference/fd_stable_quotient.md)
+  : A Response Difference That Chooses Its Step
+
 - [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
   : Finite-Difference Steps That Respect a Parameter's Domain
 
 - [`fd_steps_y()`](https://statmodels7.github.io/distributions7/reference/fd_steps_y.md)
   : Finite-Difference Steps That Respect the Support
+
+- [`fd_first_taken()`](https://statmodels7.github.io/distributions7/reference/fd_taken.md)
+  [`fd_second_taken()`](https://statmodels7.github.io/distributions7/reference/fd_taken.md)
+  : Central Differences on the Steps Actually Taken
 
 - [`fdb1()`](https://statmodels7.github.io/distributions7/reference/fdb1.md)
   : Univariate Composition to Fourth Order

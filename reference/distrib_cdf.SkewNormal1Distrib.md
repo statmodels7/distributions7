@@ -80,7 +80,7 @@ rbind(owen = distrib_cdf(d, q, th),
       quadrature = vapply(q, function(u)
         integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))
 #>                    [,1]        [,2]      [,3]      [,4]
-#> owen       5.089200e-12 0.006369453 0.3892944 0.9544997
+#> owen       5.089134e-12 0.006369453 0.3892944 0.9544997
 #> quadrature 5.089126e-12 0.006369453 0.3892944 0.9544997
 
 # At shape zero, T(z, 0) = 0 and the identity is the Gaussian's.

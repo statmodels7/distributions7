@@ -186,7 +186,7 @@ lap_cdf <- function(q, mu, b) {
 }
 q <- c(-3, -1, 0, 1, 4)
 max(abs(distrib_cdf(d, q, th) - lap_cdf(q, 1, 2)))   # ~1e-10
-#> [1] 1.44329e-15
+#> [1] 1.110223e-16
 ```
 
 ``` r
@@ -376,13 +376,13 @@ check_distrib(laplace_distrib(), theta = list(mu = 1, b = 2),
 #>   [OK  ] density integrates to 1                     1.81e-10
 #>   [OK  ] density is non-negative                     5.00e-03
 #>   [OK  ] cdf in [0,1] and non-decreasing             2.46e-02
-#>   [OK  ] cdf agrees with the density                 6.25e-07
+#>   [OK  ] cdf agrees with the density                 3.78e-07
 #>   [OK  ] quantile/cdf round-trip                     1.39e-17
 #>   [OK  ] rng matches the cdf                         1.70e+00
 #>   [OK  ] gradient vs finite differences              6.37e-11
 #>   [OK  ] hessian vs finite differences               0.00e+00
 #>   [OK  ] expected information vs Monte Carlo         9.33e-01
-#>   [OK  ] response derivatives vs finite differences  0.00e+00
+#>   [OK  ] response derivatives vs finite differences  8.06e-12
 #>   [OK  ] link-scale gradient vs finite differences   3.20e-09
 #> 
 #> All 11 checks passed.
@@ -441,7 +441,7 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit_distrib(d, y)
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 407 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 438 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
