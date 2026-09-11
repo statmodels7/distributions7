@@ -1,3 +1,104 @@
+# distributions7 0.55.0
+
+* **`check_distrib()`'s response-derivative row no longer fails correct
+  families near a support bound.** Its reference was a central difference
+  whose step was cut to 0.49 of the distance to the bound, and on a
+  log-density carrying \eqn{(a-1)\log y} the relative error of that difference
+  is \eqn{(h/d)^2/3} once the cut binds: a plateau of 9.4e-02 on the first
+  derivative and 1.4e-01 on the second, which halving the step cannot expose
+  because both steps are cut alike. Measured over 32 continuous families,
+  three parameter values and five seeds, the row failed 35 times in 480, all
+  on families singular at a bound (gamma1 14, gamma2 10, chisq 4, beta1 3,
+  beta2 3, lognormal1 1), whose derivatives agree with Richardson to 1e-10.
+  The reference is now `fd_stable_quotient()`, internal: it evaluates the
+  difference at the clamped step and at a step scaled on the distance to the
+  bound, each also at half its step, and keeps per observation the one that
+  agrees better with itself, the clamped step on a tie. Over the same census
+  the row fails nowhere, its worst at 5.0e-05.
+
+* ⚠️ Neither step is right everywhere, which is why both are read. On a sweep
+  to within 1e-8 of a bound the new reference fails none of 264 points of the
+  families singular there, where the clamped step fails 165 on the first
+  derivative and 198 on the second; on the families smooth at the bound it
+  fails 1 and 47 of 144, where the clamped step fails 0 and 43. It costs four
+  differences where one did, except on a family with no finite bound, where
+  the two steps coincide and the clamped difference is returned at once.
+  `fd_steps_y()` takes `to_bound = c("clamp", "scale")` for the second step,
+  its default unchanged.
+
+* **Near a bound that is not zero the reference divides by the steps it
+  actually takes, and a draw in the last places of that bound is left out.**
+  Near zero the spacing of doubles is relative; near any other bound it is
+  absolute, and within about 1e-10 of it a step that is not a whole number of
+  units is not the step its evaluation points lie at, while the scaled step
+  falls below one unit and rounds to zero. The quotients now divide by
+  \eqn{(y+h)-y} and \eqn{y-(y-h)}, through the internal `fd_first_taken()` and
+  `fd_second_taken()`, and no candidate step is shorter than
+  \eqn{2\lvert y\rvert\epsilon}. Their relative error still grows as about
+  \eqn{5.4/d^2} in the distance \eqn{d} counted in units of the spacing, so a
+  draw closer than \eqn{128\lvert b\rvert\epsilon} to a bound \eqn{b \ne 0},
+  256 units, is left out of the row and counted in its detail, as a Monte
+  Carlo draw exactly on a bound is. Measured on 2000 samples of 100 draws from
+  `beta1_distrib()`, singular at 1: at `mu = 0.5, phi = 0.5` the row failed in
+  486 samples, fails in 10 on the steps taken and in none with the draws left
+  out (30 of 200000); at `mu = 0.9, phi = 1`, where 2.5 per cent of the draws
+  land exactly on 1, it failed in 1999, fails in 1285 and then in none, with
+  4.4 per cent of the draws left out. Over the census of 32 families no
+  verdict moves and no draw is left out, the worst statistic going from
+  3.0e-05 to 5.0e-05, and on the distribution function's grid no statistic
+  moves by more than 1.4e-10.
+
+* **The row comparing the distribution function with the density uses the
+  same reference.** It differenced at 1e-5 max(1, |x|), a step not kept inside
+  the support, and failed on the grid points nearest a bound: 3 rows over the
+  same families and parameter values (gamma1 twice and gamma2 once, the worst
+  at 1.1e-02), and 66 of 144 and 85 of 264 points of a sweep toward the bounds
+  of the families smooth and singular there. It fails none of either now, its
+  worst at 9.2e-05. ⚠️ The relative step moves from 1e-5 to
+  \eqn{\epsilon^{1/3}} = 6.06e-06 on every family, so the row's statistic moves
+  wherever it is computed: on `laplace_distrib()`, `laplace2_distrib()` and
+  `enet_distrib()`, whose density has a kink the grid crosses, it falls by the
+  ratio of the two steps, 0.6055, and on `gaussian1_distrib()` from 7.3e-12 to
+  6.1e-12.
+
+* **A check whose statistic has no value is reported as not run.** A row
+  whose statistic came out `NaN` or `NA` without its computation raising
+  compares nothing, and reporting it as a failure made a correct family fail:
+  the generalized Pareto at \eqn{\xi < -1/2}, where the expected information
+  does not exist, failed in 5 runs of 5. Such a row is left out of the table
+  and recorded with its reason in the attribute `"skipped"`, and `print()`
+  lists it as not run. An infinite statistic stays in the table and fails,
+  being a component that overflows where its reference does not; so do a
+  density or a distribution function that is not finite, whose checks are
+  defined on those values, and a check whose computation raised.
+
+* **A Monte Carlo draw exactly on a finite bound is left out of the
+  expected-information row and counted in its detail.** A log-density
+  singular at the bound is not finite there, nor is the score, and one such
+  draw made the whole Monte Carlo mean `NaN`: on `beta1_distrib()` with
+  `nsim = 2e5`, 5 to 11 draws per seed land exactly on 1 in double precision,
+  and the row came back `NaN` in 3 seeds of 3 where without them its statistic
+  reads 0.51, 0.75 and 1.9. A point mass the family declares through
+  `distrib_atoms()` stays in, and a score that is not finite at an interior
+  point still leaves the row without a statistic.
+
+* ⚠️ **Nothing a fit reads moves.** The battery of twelve fitted models (168
+  comparisons) and the net of the smoothers' move to numericals7 (529 leaves)
+  are `identical()`. In the net of this batch every check table moves, 88
+  leaves: the distribution-function row on all 44 entries; the response row on
+  gamma1 in five seeds of five (four from a failure to a pass), on beta1 in
+  five of five (all five from a failure to a pass, three of them only once
+  the quotients divide by the steps taken), and by rounding on the families
+  with no finite bound, every verdict unchanged (gaussian1 in two seeds,
+  laplace, laplace2, enet and the injected families built on laplace); and the
+  expected-information row on beta1 in two seeds, from a failure at `NaN` to a
+  pass with one and two draws left out. The 1.4e-10 above is the census's:
+  near a non-zero bound the steps taken move the distribution-function row
+  more, beta1 at `mu = 0.5, phi = 0.5` reading 1.7e-10 where the nominal
+  quotient read 5.3e-09 and the old step 1.6e-05. The fits of that net are
+  identical against statmodels7 0.124.0; what moves there with 0.125.0 is
+  statmodels7's own.
+
 # distributions7 0.54.0
 
 * **A family declares WHERE its log-density is not smooth, and the order of

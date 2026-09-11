@@ -250,3 +250,235 @@ test_that("check_distrib draws its own theta when none is supplied", {
   expect_s3_class(res, "data.frame")
   expect_gt(nrow(res), 0)
 })
+
+test_that("a check whose statistic has no value is reported as not run", {
+  # The generalized Pareto's expected information does not exist for
+  # xi < -1/2, so that row has no statistic to judge. It used to be a FAIL on
+  # a correct family, in five runs of five; it is listed as not run instead,
+  # and every row that is in the table still says OK or FAIL.
+  set.seed(11)
+  res <- check_distrib(gpd_distrib(), list(sigma = 1, xi = -0.7), n = 40,
+                       nsim = 2e4, orders = 1:2, verbose = FALSE)
+  expect_true(all(res$status %in% c("OK", "FAIL")))
+  expect_false("expected information vs Monte Carlo" %in% res$check)
+  sk <- attr(res, "skipped")
+  expect_named(sk, c("check", "reason"))
+  expect_equal(sk$check, "expected information vs Monte Carlo")
+  expect_match(sk$reason, "the statistic is NA")
+  # measured at three seeds, every row that is emitted passes
+  expect_true(all(res$status == "OK"),
+    label = paste("gpd:", paste(res$check[res$status != "OK"], collapse = "; ")))
+
+  out <- utils::capture.output(
+    check_distrib(gpd_distrib(), list(sigma = 1, xi = -0.7), n = 20,
+                  nsim = 1e4, orders = 1, verbose = TRUE))
+  expect_true(any(grepl("expected information vs Monte Carlo +not run", out)))
+  expect_true(any(grepl("1 check not run", out)))
+
+  # a run with nothing skipped carries no attribute
+  set.seed(2)
+  ok <- check_distrib(gaussian1_distrib(), list(mu = 0, sigma = 1), n = 30,
+                      nsim = 2e4, orders = 1:2, verbose = FALSE)
+  expect_null(attr(ok, "skipped"))
+})
+
+test_that("an infinite statistic is a defect and stays a failure", {
+  # Only NaN and NA mean there is nothing to judge. A component that overflows
+  # where its reference does not is exactly what the check exists to catch, so
+  # reading an infinite statistic as not run would hide it.
+  BadInf <- S7::new_class("BadInfScore", parent = continuous_distrib, package = NULL)
+  S7::method(distrib_pdf, BadInf) <- function(distrib, y, theta, log = FALSE) {
+    stats::dnorm(y, theta[[1]], theta[[2]], log = log)
+  }
+  S7::method(distrib_gradient, BadInf) <- function(distrib, y, theta,
+                                                   scale = c("parameter", "link"), ...) {
+    r <- y - theta[[1]]
+    g <- list(mu = r / theta[[2]]^2, sigma = (r^2 - theta[[2]]^2) / theta[[2]]^3)
+    g$mu[1] <- -Inf
+    g
+  }
+  bad <- BadInf(
+    distrib_name = "bad inf", dimension = "univariate", bounds = c(-Inf, Inf),
+    params = c("mu", "sigma"), params_interpretation = c(mu = "m", sigma = "s"),
+    n_params = 2, params_bounds = list(mu = c(-Inf, Inf), sigma = c(0, Inf)),
+    link_params = list(mu = linkfunctions7::identity_link(),
+                       sigma = linkfunctions7::log_link()))
+  set.seed(3)
+  res <- check_distrib(bad, list(mu = 0, sigma = 1), n = 30, nsim = 2e4,
+                       orders = 1, verbose = FALSE)
+  row <- res[res$check == "gradient vs finite differences", ]
+  expect_equal(row$status, "FAIL")
+  expect_equal(row$statistic, Inf)
+})
+
+test_that("a Monte Carlo draw exactly on a bound is left out and counted", {
+  # The Weibull's score in its shape carries log(y), which is -Inf at y = 0, so
+  # a single draw landing exactly on the lower bound made the whole
+  # expected-information row NaN. Three such draws are put among the large
+  # sample; the derivative checks draw fewer than a thousand and see none.
+  wb <- weibull1_distrib()
+  W0 <- S7::new_class("WeibullOnBound", parent = S7::S7_class(wb), package = NULL)
+  S7::method(distrib_rng, W0) <- function(distrib, n, theta, ...) {
+    y <- stats::rweibull(n, shape = theta[[2]], scale = theta[[1]])
+    if (n >= 1000) y[1:3] <- 0
+    y
+  }
+  w0 <- do.call(W0, S7::props(wb))
+  set.seed(21)
+  res <- check_distrib(w0, list(mu = 2, sigma = 1.5), n = 40, nsim = 2e4,
+                       orders = 1:2, verbose = FALSE)
+  row <- res[res$check == "expected information vs Monte Carlo", ]
+  expect_equal(nrow(row), 1L)
+  expect_equal(row$status, "OK")
+  expect_match(row$detail, "3 of 20000 draws fell exactly on a bound")
+  expect_null(attr(res, "skipped"))
+
+  # A non-finite score at an INTERIOR point is not a bound, and still leaves
+  # the row without a value: a gaussian whose score is NaN at one interior
+  # point, drawn three times.
+  gs <- gaussian1_distrib()
+  G0 <- S7::new_class("GaussianNaNScore", parent = S7::S7_class(gs), package = NULL)
+  S7::method(distrib_rng, G0) <- function(distrib, n, theta, ...) {
+    y <- stats::rnorm(n, theta[[1]], theta[[2]])
+    if (n >= 1000) y[1:3] <- theta[[1]] + 0.5
+    y
+  }
+  S7::method(distrib_gradient, G0) <- function(distrib, y, theta,
+                                               scale = c("parameter", "link"), ...) {
+    r <- y - theta[[1]]
+    g <- list(mu = r / theta[[2]]^2, sigma = (r^2 - theta[[2]]^2) / theta[[2]]^3)
+    g$mu[r == 0.5] <- NaN
+    g
+  }
+  g0 <- do.call(G0, S7::props(gs))
+  set.seed(21)
+  res2 <- check_distrib(g0, list(mu = 0, sigma = 1), n = 40, nsim = 2e4,
+                        orders = 1:2, verbose = FALSE)
+  expect_false("expected information vs Monte Carlo" %in% res2$check)
+  expect_equal(attr(res2, "skipped")$check, "expected information vs Monte Carlo")
+})
+
+test_that("the response reference chooses its step near a bound", {
+  # A gamma with shape 1/2 carries (a - 1) log y near zero. A central
+  # difference whose step is cut to 0.49 of the distance to the bound has a
+  # relative error of (h/d)^2/3 once the cut binds, 9.4e-02 on the first
+  # derivative, which halving the step cannot expose; the quotient that also
+  # tries a step scaled on the distance reads the closed form to 2e-10.
+  d <- gamma1_distrib()
+  th <- list(mu = 2, phi = 2)
+  y <- c(1e-5, 1e-6, 1e-7)
+  eps <- .Machine$double.eps
+  lp <- function(v) distrib_pdf(d, v, th, log = TRUE)
+  q1 <- function(h) (lp(y + h) - lp(y - h)) / (2 * h)
+  g <- distrib_grad_y(d, y, th)
+  cut <- abs(q1(fd_steps_y(y, d@bounds, eps^(1 / 3))) / g - 1)
+  chosen <- abs(fd_stable_quotient(q1, y, d@bounds, eps^(1 / 3)) / g - 1)
+  expect_true(all(cut > 1e-2))
+  expect_true(all(chosen < 1e-8))
+
+  # where no bound is finite the two steps coincide, and the cut quotient
+  # comes back as it is without the three further differences
+  y2 <- c(-3, 0.2, 5)
+  gs <- gaussian1_distrib()
+  lq <- function(v) distrib_pdf(gs, v, list(mu = 0, sigma = 1), log = TRUE)
+  calls <- 0L
+  q2 <- function(h) {
+    calls <<- calls + 1L
+    (lq(y2 + h) - lq(y2 - h)) / (2 * h)
+  }
+  expect_identical(fd_stable_quotient(q2, y2, c(-Inf, Inf), eps^(1 / 3)),
+                   q2(fd_steps_y(y2, c(-Inf, Inf), eps^(1 / 3))))
+  expect_equal(calls, 2L)
+})
+
+test_that("the cdf row keeps its step inside the support", {
+  # A gamma with shape 1/5 puts the lowest grid point 3.3e-05 above zero. The
+  # old step of 1e-5 max(1, |x|) is not kept inside the support, and its
+  # difference is out by 2.4e-02 against a threshold of 1e-4.
+  d <- gamma1_distrib()
+  th <- list(mu = 1, phi = 5)
+  grid <- distrib_quantile(d, seq(0.1, 0.9, length.out = 15), th)
+  f <- distrib_pdf(d, grid, th)
+  old_h <- pmax(abs(grid), 1) * 1e-5
+  old <- (distrib_cdf(d, grid + old_h, th) - distrib_cdf(d, grid - old_h, th)) / (2 * old_h)
+  expect_gt(max(abs(old - f) / pmax(1, abs(f))), 1e-4)
+
+  set.seed(1)
+  res <- check_distrib(d, th, n = 100, nsim = 2e4, orders = 1:2, verbose = FALSE)
+  expect_equal(res$status[res$check == "cdf agrees with the density"], "OK")
+  expect_equal(res$status[res$check == "response derivatives vs finite differences"], "OK")
+
+  # and a 5% error in the response score near the bound is still caught
+  Bad <- S7::new_class("Gamma1BadResponseScore", parent = S7::S7_class(d),
+                       package = NULL)
+  S7::method(distrib_grad_y, Bad) <- function(distrib, y, theta, ...) {
+    a <- 1 / theta[[2]]
+    1.05 * ((a - 1) / y - a / theta[[1]])
+  }
+  bad <- do.call(Bad, S7::props(d))
+  set.seed(1)
+  res_bad <- check_distrib(bad, list(mu = 3, phi = 2), n = 100, nsim = 2e4,
+                           orders = 1:2, verbose = FALSE)
+  expect_equal(res_bad$status[res_bad$check == "response derivatives vs finite differences"],
+               "FAIL")
+})
+
+test_that("near a non-zero bound the reference divides by the steps taken", {
+  # beta1 at mu 0.5, phi 0.5 is singular at 1, where the spacing of doubles is
+  # absolute. A step that is not a whole number of units of that spacing is
+  # not the step the evaluation points lie at, and one below a unit rounds to
+  # zero; the reference on the steps taken, with no step below two units,
+  # reads the closed form where the nominal quotients sit on a plateau.
+  d <- beta1_distrib()
+  th <- list(mu = 0.5, phi = 0.5)
+  y <- 1 - c(1e-10, 1e-12, 1e-13)
+  b <- d@bounds
+  eps <- .Machine$double.eps
+  lp <- function(v) distrib_pdf(d, v, th, log = TRUE)
+  l0 <- lp(y)
+  g <- distrib_grad_y(d, y, th)
+  hh <- distrib_hess_y(d, y, th)
+  rel <- function(a, e) abs(a - e) / pmax(1, abs(e))
+  eg <- rel(fd_stable_quotient(function(h) fd_first_taken(lp, y, h), y, b, eps^(1 / 3)), g)
+  eh <- rel(fd_stable_quotient(function(h) fd_second_taken(lp, y, h, l0), y, b, eps^(1 / 4)), hh)
+  expect_true(all(eg < 1e-4))
+  expect_true(all(eh < 1e-4))
+  ng <- rel(fd_stable_quotient(function(h) (lp(y + h) - lp(y - h)) / (2 * h), y, b, eps^(1 / 3)), g)
+  nh <- rel(fd_stable_quotient(function(h) (lp(y + h) - 2 * l0 + lp(y - h)) / h^2, y, b, eps^(1 / 4)), hh)
+  expect_gt(max(ng, nh), 1e-2)
+
+  # where the steps are exact the two quotients are the uniform ones, bit for bit
+  x <- c(0.3, 2, 7)
+  f <- function(v) sin(v) + v^3
+  h <- 2^-10
+  expect_identical(fd_first_taken(f, x, h), (f(x + h) - f(x - h)) / (2 * h))
+  expect_identical(fd_second_taken(f, x, h), (f(x + h) - 2 * f(x) + f(x - h)) / h^2)
+})
+
+test_that("a draw in the last places of a non-zero bound is left out of the response row", {
+  # Three draws are put within 128 |b| eps of 1, at 3, 16 and 200 units of the
+  # spacing there, where no central difference in double precision compares a
+  # derivative: at 16 units the reference is out by more than the tolerance.
+  d <- beta1_distrib()
+  B1 <- S7::new_class("Beta1NearOne", parent = S7::S7_class(d), package = NULL)
+  S7::method(distrib_rng, B1) <- function(distrib, n, theta, ...) {
+    y <- stats::rbeta(n, theta[[1]] * theta[[2]], (1 - theta[[1]]) * theta[[2]])
+    if (n < 1000) y[1:3] <- 1 - c(3, 16, 200) * 2^-53
+    y
+  }
+  b1 <- do.call(B1, S7::props(d))
+  th <- list(mu = 0.5, phi = 0.5)
+  set.seed(4)
+  res <- check_distrib(b1, th, n = 60, nsim = 2e4, orders = 1:2, verbose = FALSE)
+  row <- res[res$check == "response derivatives vs finite differences", ]
+  expect_equal(row$status, "OK")
+  expect_match(row$detail, "3 of 60 draws lay within 128 |b| eps of a non-zero bound",
+               fixed = TRUE)
+
+  yy <- 1 - 16 * 2^-53
+  lp <- function(v) distrib_pdf(d, v, th, log = TRUE)
+  ref <- fd_stable_quotient(function(h) fd_first_taken(lp, yy, h), yy, d@bounds,
+                            .Machine$double.eps^(1 / 3))
+  an <- distrib_grad_y(d, yy, th)
+  expect_gt(abs(ref - an) / abs(an), 1e-3)
+})

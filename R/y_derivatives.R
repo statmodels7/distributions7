@@ -10,17 +10,19 @@ NULL
 #'
 #' @description
 #' Returns the step for a central difference in the RESPONSE: `h_rel` scaled by
-#' \eqn{\max(1, |y|)}, then shrunk so that \eqn{y \pm h} stays strictly inside
-#' the distribution's support. It is the response counterpart of [fd_steps()],
-#' and both numerical response derivatives take their step from it.
+#' \eqn{\max(1, |y|)} and kept strictly inside the distribution's support,
+#' either by cutting it to under half the distance to the nearest finite bound
+#' or by scaling it on that distance. It is the response counterpart of
+#' [fd_steps()], and both numerical response derivatives take their step from
+#' it.
 #'
 #' @details
 #' The scaling by \eqn{\max(1, |y|)} makes the step relative where the response
 #' is large and absolute where it is small, so a value near zero is not
 #' differenced with a step below the resolution of a double.
 #'
-#' The clamp is what the support requires. A gamma observation at
-#' \eqn{y = 10^{-3}} differenced with the default step of
+#' `to_bound = "clamp"` is what the support requires and no more. A gamma
+#' observation at \eqn{y = 10^{-3}} differenced with the default step of
 #' \eqn{6 \times 10^{-6}} needs no help, but one at \eqn{y = 10^{-8}} would be
 #' evaluated at a negative point, where the density is not defined and
 #' `distrib_pdf()` returns `-Inf`. The factor 0.49 leaves the step under half
@@ -28,12 +30,27 @@ NULL
 #' to spare: at \eqn{y = 10^{-8}} the step becomes \eqn{4.9\times 10^{-9}} and
 #' the left point \eqn{5.1\times 10^{-9}}.
 #'
+#' `to_bound = "scale"` takes \eqn{h = h_{rel}\min(\max(1, |y|), d)}, with
+#' \eqn{d} the distance to the nearest finite bound, so the step shrinks in
+#' proportion as the response approaches the bound rather than sitting at
+#' \eqn{0.49\,d}. Where the log-density is singular at the bound, as a gamma's
+#' with a shape other than one or a beta's, the clamped step's relative error
+#' is \eqn{(h/d)^2/3} and stops falling once the clamp binds: a plateau of
+#' 9.4e-02 on the first derivative and 1.4e-01 on the second, which the scaled
+#' step removes. Where the log-density is smooth at the bound the scaled step
+#' is the worse of the two at the smallest distances, its shorter step letting
+#' the rounding dominate, and [fd_stable_quotient()] is what chooses between
+#' them.
+#'
 #' @param y A numeric vector of observations.
 #' @param bounds A numeric vector of length two, the distribution's support.
-#'   An infinite endpoint imposes no clamp on that side.
+#'   An infinite endpoint imposes nothing on that side.
 #' @param h_rel The relative step size, a single positive number. The callers
 #'   pass \eqn{\varepsilon^{1/3}} at first order and \eqn{\varepsilon^{1/4}} at
 #'   second.
+#' @param to_bound `"clamp"`, the default, or `"scale"`, as above. The two give
+#'   the same step wherever \eqn{d \ge \max(1, |y|)}, which is every
+#'   observation of a family with no finite bound.
 #'
 #' @return A numeric vector of steps, as long as `y`, every entry positive.
 #'
@@ -43,7 +60,8 @@ NULL
 #' epsilon, `.Machine$double.eps`.
 #'
 #' @seealso [fd_steps()] for the parameter counterpart, and
-#'   [numerical_grad_y()] and [numerical_hess_y()], its two callers.
+#'   [numerical_grad_y()] and [numerical_hess_y()], which take the clamped
+#'   step, and [fd_stable_quotient()], which takes both.
 #'
 #' @keywords internal
 #'
@@ -59,14 +77,186 @@ NULL
 #' h <- distributions7:::fd_steps_y(y, c(0, Inf), h_rel)
 #' rbind(step = h, left_point = y - h)
 #'
+#' # Scaled on the distance instead, the step keeps shrinking with it.
+#' distributions7:::fd_steps_y(y, c(0, Inf), h_rel, "scale")
+#'
 #' # The two steps the callers use differ by a factor of twenty.
 #' c(first_order = .Machine$double.eps^(1 / 3),
 #'   second_order = .Machine$double.eps^(1 / 4))
-fd_steps_y <- function(y, bounds, h_rel) {
+fd_steps_y <- function(y, bounds, h_rel, to_bound = c("clamp", "scale")) {
+  to_bound <- match.arg(to_bound)
+  if (identical(to_bound, "scale")) {
+    s <- pmax(1, abs(y))
+    if (is.finite(bounds[1])) s <- pmin(s, y - bounds[1])
+    if (is.finite(bounds[2])) s <- pmin(s, bounds[2] - y)
+    return(h_rel * s)
+  }
   h <- h_rel * pmax(1, abs(y))
   if (is.finite(bounds[1])) h <- pmin(h, 0.49 * (y - bounds[1]))
   if (is.finite(bounds[2])) h <- pmin(h, 0.49 * (bounds[2] - y))
   h
+}
+
+#' @title A Response Difference That Chooses Its Step
+#'
+#' @description
+#' Evaluates a central difference in the response at both steps of
+#' [fd_steps_y()] and keeps, observation by observation, the one that agrees
+#' better with itself at half its step. It is the reference [check_distrib()]
+#' compares a family's response derivatives and its distribution function
+#' against.
+#'
+#' @details
+#' For each of the two steps the quotient \eqn{q(h)} is also taken at
+#' \eqn{h/2}, and its self-consistency is \eqn{|q(h/2) - q(h)|/|q(h)|}:
+#' infinite where \eqn{q(h/2)} is not finite, and undefined where \eqn{q(h)}
+#' is exactly zero. The step scaled on the distance to the bound is kept only
+#' where both readings are defined and its own is strictly the smaller;
+#' everywhere else, ties included, the clamped step is kept. The value
+#' returned is the quotient at the full step.
+#'
+#' Neither step is right everywhere, which is why both are read. Where the
+#' log-density is singular at a bound the clamped step has an error that stops
+#' falling once the clamp binds, and where it is smooth at the bound the
+#' scaled step is the worse one at the smallest distances. Measured over
+#' [check_distrib()]'s response row for 32 continuous families, three
+#' parameter values and five seeds, the clamped reference failed 35 rows of
+#' 480, all of families singular at a bound, and this one fails none, its
+#' worst at 5.0e-05. On a sweep to within \eqn{10^{-8}} of a bound it has no
+#' failure among 264 points of the singular families, where the clamped step
+#' fails 165 on the first derivative and 198 on the second, and it fails 1 and
+#' 47 of 144 on the families smooth at the bound, where the clamped step fails
+#' 0 and 43. On the distribution function the same choice took the check's
+#' grid from 3 failed rows to none.
+#'
+#' Where it keeps the scaled step and the clamped one would have passed, which
+#' is 6 points of that sweep's 816, the scaled numerator is a whole number of
+#' units in the last place of the log-density that scales exactly with the
+#' step, so the quotient agrees with itself to the bit at half the step and
+#' the test reads it as perfectly stable.
+#'
+#' It costs four quotients where one would do, except where the two steps
+#' coincide at every observation, which is every call on a family with no
+#' finite bound: there the clamped quotient is returned at once.
+#'
+#' # Near a bound that is not zero
+#'
+#' Near zero the spacing of doubles is relative, so a step scaled on the
+#' distance can be as small as the distance asks. Near any other bound the
+#' spacing is absolute, one unit of the last place at the bound, and within
+#' about \eqn{10^{-10}} of it two things go wrong. A step that is not a whole
+#' number of units is not the step the evaluation points lie at, so a quotient
+#' dividing by the nominal step is out by their rounding; and the scaled step
+#' falls below one unit and rounds to zero. The choice cannot see either,
+#' reading the same arithmetic at both steps. So no candidate step is shorter
+#' than \eqn{2\lvert y\rvert\varepsilon}, which leaves its half step at least
+#' one unit long, and the quotient a caller passes divides by the steps
+#' actually taken, as [fd_first_taken()] and [fd_second_taken()] do. Measured
+#' on [beta1_distrib()] at `mu = 0.5, phi = 0.5`, singular at 1, the response
+#' row of 100 draws failed in 486 samples of 2000 with the nominal quotient
+#' and fails in 10 with both repairs; over the census above no verdict moves
+#' and the worst statistic goes from 3.0e-05 to 5.0e-05, and on the
+#' distribution function's grid no statistic moves by more than 1.4e-10. What
+#' neither repair reaches is a point within a few units of such a bound, where
+#' the relative error of the reference falls as about \eqn{5.4/d^2} in the
+#' distance \eqn{d} counted in units; [check_distrib()] leaves those draws out.
+#'
+#' @param quotient A function of a vector of steps as long as `y`, returning
+#'   the difference quotient at those steps. It should divide by the steps its
+#'   evaluation points actually lie at, as [fd_first_taken()] does.
+#' @param y The points, a numeric vector.
+#' @param bounds The support, a numeric vector of length two.
+#' @param h_rel The relative step, a single positive number.
+#'
+#' @return A numeric vector as long as `y`.
+#'
+#' @seealso [fd_steps_y()] for the two steps, [check_distrib()] for where it
+#'   is used, [fd_first_taken()] and [fd_second_taken()] for quotients on the
+#'   steps taken.
+#'
+#' @keywords internal
+fd_stable_quotient <- function(quotient, y, bounds, h_rel) {
+  # no candidate below two units of the spacing at y, so that its half step is
+  # still a step: within about 1e-11 of a non-zero bound the scaled step
+  # otherwise rounds to zero
+  fl <- 2 * pmax(abs(y), 2^-1022) * .Machine$double.eps
+  hA <- pmax(fd_steps_y(y, bounds, h_rel, "clamp"), fl)
+  hB <- pmax(fd_steps_y(y, bounds, h_rel, "scale"), fl)
+  a1 <- quotient(hA)
+  if (isTRUE(all(hA == hB))) return(a1)
+  a2 <- quotient(hA / 2)
+  b1 <- quotient(hB)
+  b2 <- quotient(hB / 2)
+  own <- function(x1, x2) {
+    out <- rep(NA_real_, length(x1))
+    fin2 <- is.finite(x2)
+    out[!fin2] <- Inf
+    nz <- fin2 & !is.na(x1) & x1 != 0
+    out[nz] <- abs(x2[nz] - x1[nz]) / abs(x1[nz])
+    out
+  }
+  kA <- own(a1, a2)
+  kB <- own(b1, b2)
+  ifelse(!is.na(kB) & !is.na(kA) & kB < kA, b1, a1)
+}
+
+#' @title Central Differences on the Steps Actually Taken
+#'
+#' @description
+#' `fd_first_taken()` and `fd_second_taken()` form the central differences of
+#' first and second order, dividing by the distances their evaluation points
+#' actually lie at rather than by the nominal step.
+#'
+#' @details
+#' The point \eqn{x + h} is a double, so the step it lies at is
+#' \eqn{h_+ = (x + h) - x}, a subtraction that is exact, and the step on the
+#' other side is \eqn{h_- = x - (x - h)}. Both may differ from \eqn{h}, and
+#' from each other, by the rounding of the evaluation points, at most one unit
+#' of the last place. With them
+#' \deqn{f'(x) \approx \frac{f(x+h) - f(x-h)}{h_+ + h_-}, \qquad
+#'   f''(x) \approx \frac{2\{h_- f(x+h) - (h_+ + h_-) f(x) + h_+ f(x-h)\}}
+#'   {h_+ h_- (h_+ + h_-)},}
+#' which are the uniform formulas wherever \eqn{h_+ = h_- = h}. The
+#' correction is of the order of one unit of the last place over the step:
+#' negligible for a step of many units, and the whole of the accuracy for a
+#' step of a few, which is what a step within about \eqn{10^{-10}} of a
+#' non-zero bound is.
+#'
+#' @param f A vectorized function of the points.
+#' @param x The points, a numeric vector.
+#' @param h The steps, as long as `x` or of length one.
+#' @param f0 `f(x)`, when the caller already has it.
+#'
+#' @return A numeric vector as long as `x`.
+#'
+#' @seealso [fd_stable_quotient()], whose callers pass these.
+#'
+#' @examples
+#' # 1e-10 below the bound of log(1 - x), a step of 6e-16 is 5.4 units of the
+#' # last place, and the nominal quotient carries the rounding of its points
+#' x <- 1 - 1e-10
+#' h <- 6e-16
+#' f <- function(v) log1p(-v)
+#' exact <- -1 / (1 - x)
+#' c(nominal = (f(x + h) - f(x - h)) / (2 * h) / exact - 1,
+#'   taken = distributions7:::fd_first_taken(f, x, h) / exact - 1)
+#'
+#' @name fd_taken
+#' @keywords internal
+NULL
+
+#' @rdname fd_taken
+fd_first_taken <- function(f, x, h) {
+  hp <- (x + h) - x
+  hm <- x - (x - h)
+  (f(x + h) - f(x - h)) / (hp + hm)
+}
+
+#' @rdname fd_taken
+fd_second_taken <- function(f, x, h, f0 = f(x)) {
+  hp <- (x + h) - x
+  hm <- x - (x - h)
+  2 * (hm * f(x + h) - (hp + hm) * f0 + hp * f(x - h)) / (hp * hm * (hp + hm))
 }
 
 #' @title Numerical Gradient of the Log-Density with Respect to the Response

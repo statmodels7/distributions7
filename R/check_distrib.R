@@ -38,16 +38,26 @@ new_check <- function(name, ok, stat, detail = NA_character_) {
 #' moment to
 #' stop being informative.
 #'
+#' The failed row is marked with the attribute `from_error`, which
+#' [check_distrib()] reads before assembling the table: a check whose
+#' computation raised has failed, and it is never mistaken for one whose
+#' statistic merely came out non-finite, which is reported as not run.
+#'
 #' @param name The check's name, used for the row built on failure.
 #' @param expr The expression to evaluate; normally returns a row from
 #'   [new_check()].
 #'
-#' @return The value of `expr`, or a failed row carrying the error message.
+#' @return The value of `expr`, or a failed row carrying the error message and
+#'   the attribute `from_error = TRUE`.
 #'
 #' @seealso [check_distrib()], [new_check()]
 #' @keywords internal
 safe_check <- function(name, expr) {
-  tryCatch(expr, error = function(e) new_check(name, FALSE, NA_real_, conditionMessage(e)))
+  tryCatch(expr, error = function(e) {
+    row <- new_check(name, FALSE, NA_real_, conditionMessage(e))
+    attr(row, "from_error") <- TRUE
+    row
+  })
 }
 
 #' Numerically Validate a Distribution
@@ -78,13 +88,19 @@ safe_check <- function(name, expr) {
 #'
 #' @return Invisibly, a `data.frame` with one row per check and columns
 #'   `check`, `status` (`"OK"` or `"FAIL"`), `statistic`
-#'   and `detail`.
+#'   and `detail`. A check whose statistic came out `NaN` or `NA` is not a row:
+#'   it is listed in the attribute `"skipped"`, a data frame with columns
+#'   `check` and `reason`, which is present only when some check was skipped.
 #'
 #' @details
 #' The checks performed are:
 #'
 #' - **density**: non-negativity and integration/summation to 1 over the support.
-#' - **cdf**: values in \eqn{[0,1]} and monotonicity along a grid of quantiles.
+#' - **cdf**: values in \eqn{[0,1]} and monotonicity along a grid of quantiles,
+#'   and its agreement with the density: for a continuous family a central
+#'   difference of the cdf against the density, with the step the response
+#'   derivatives use, and for a discrete one \eqn{F(k) - F(k-1)} against the
+#'   mass.
 #' - **quantile**: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
 #'   distributions, and the generalized-inverse inequalities for discrete ones).
 #' - **rng**: the sample mean and variance of a large draw agree with
@@ -107,14 +123,36 @@ safe_check <- function(name, expr) {
 #'   Monte Carlo estimate of \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}. The outer
 #'   product of the score is used as reference because it remains valid when the
 #'   log-likelihood is not differentiable in a parameter (see [laplace_distrib()]).
+#'   A draw landing exactly on a finite bound of a continuous support, where the
+#'   score of a family singular at that bound is infinite, is left out of the
+#'   estimate and counted in the row's `detail`; a score that is not finite at
+#'   an interior point still leaves the row without a statistic.
 #' - **response derivatives** (continuous only): [distrib_grad_y()] and
-#'   [distrib_hess_y()] against finite differences in \eqn{y}.
+#'   [distrib_hess_y()] against central differences in \eqn{y} whose step is
+#'   chosen observation by observation by [fd_stable_quotient()], between a
+#'   step cut to under half the distance to a bound and one scaled on that
+#'   distance, each divided by the steps its evaluation points actually lie
+#'   at. A draw closer than \eqn{128\lvert b\rvert\varepsilon} to a finite
+#'   bound \eqn{b \ne 0}, where the spacing of doubles is absolute and no
+#'   central difference compares a derivative, is left out and counted in the
+#'   row's `detail`.
 #' - **link scale**: `scale = "link"` derivatives against finite
 #'   differences of the log-likelihood in \eqn{\eta}.
 #'
-#' Distributions that rely on the numerical fallbacks will trivially pass the
-#' corresponding derivative checks, since analytical and numerical values then
-#' coincide by construction.
+#' Distributions that rely on the numerical fallbacks pass the corresponding
+#' parameter-derivative checks trivially, since analytical and numerical values
+#' then coincide by construction. The response fallbacks take the cut step
+#' alone, so near a bound they can differ from the reference, which is what the
+#' row then reports.
+#'
+#' A check whose statistic comes out `NaN` or `NA` has nothing to judge, as the
+#' expected information of a family where it does not exist, and is not a row
+#' of the table: it is listed with its reason in the attribute `"skipped"`, and
+#' every row that is in the table reads `"OK"` or `"FAIL"`. An infinite
+#' statistic is a failure, being a component that overflows where its reference
+#' does not; so is a check whose computation raised an error, and so is a
+#' density or a distribution function that is not finite, those three checks
+#' being defined on the values themselves.
 #'
 #' Mixed distributions --- a density with point masses on top of it, as produced by
 #' [zero_adjusted()] on a continuous parent --- are handled as long as they
@@ -230,9 +268,20 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
         stop("the atoms leave too little of the support to compare F' against f.",
              call. = FALSE)
       }
-      h <- pmax(abs(grid), 1) * 1e-5
-      d_num <- (distrib_cdf(distrib, grid + h, theta) -
-                distrib_cdf(distrib, grid - h, theta)) / (2 * h)
+      # THE SAME STEP AS THE RESPONSE ROW. It was 1e-5 max(1, |x|), not kept
+      # inside the support, and it failed where the grid comes close to a
+      # bound: measured over this grid for 32 continuous families and three
+      # parameter values, 3 rows (gamma1 twice and gamma2 once, the worst at
+      # 1.1e-02 on the grid point nearest the bound), and on a sweep toward the
+      # bounds 66 of 144 points of the families smooth at the bound and 85 of
+      # 264 of the singular ones. fd_stable_quotient() fails none of either,
+      # its worst at 9.2e-05. Dividing by the steps actually taken moves no
+      # statistic of the census's grid by more than 1.4e-10; near a non-zero
+      # bound it moves more, beta1 at mu = 0.5 and phi = 0.5 reading 1.7e-10
+      # where the nominal quotient read 5.3e-09.
+      d_num <- fd_stable_quotient(
+        function(h) fd_first_taken(function(v) distrib_cdf(distrib, v, theta), grid, h),
+        grid, b, .Machine$double.eps^(1 / 3))
       err <- rel(d_num, distrib_pdf(distrib, grid, theta))
     } else {
       ks <- distrib_quantile(distrib, seq(0.1, 0.9, length.out = 9), theta)
@@ -356,6 +405,23 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   # --- expected information (outer product of the score) -------------------
   res[[length(res) + 1L]] <- safe_check("expected information vs Monte Carlo", {
     ys <- distrib_rng(distrib, nsim, theta)
+    # A draw EXACTLY on a finite bound of a continuous support is left out and
+    # counted. There a log-density that is logarithmic at the bound is not
+    # finite, nor is the score, and one such draw turned the whole Monte Carlo
+    # mean into NaN: measured on beta1 with nsim = 2e5, 5 to 11 draws per seed
+    # land exactly on 1 in double precision and the row came back NaN in 3
+    # seeds of 3, where without them z reads 0.51, 0.75 and 1.9. A point mass
+    # the family declares through distrib_atoms() is not such a draw and stays
+    # in. A score that is not finite anywhere else is not left out, and the
+    # statistic then stays non-finite.
+    on_bound <- rep(FALSE, length(ys))
+    if (is_cont) {
+      if (is.finite(b[1])) on_bound <- on_bound | ys == b[1]
+      if (is.finite(b[2])) on_bound <- on_bound | ys == b[2]
+      on_bound <- on_bound & !(ys %in% atoms$y)
+    }
+    n_bound <- sum(on_bound)
+    if (n_bound) ys <- ys[!on_bound]
     g <- distrib_gradient(distrib, ys, theta)
     # approx = "bartlett" IS THE POINT HERE, and must be asked for rather than
     # left to the default. This check wants the actual EXPECTATION, to compare
@@ -371,7 +437,7 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
         nm <- paste(params[c(i, j)], collapse = "_")
         prod_ij <- g[[i]] * g[[j]]
         mc <- -base::mean(prod_ij)
-        se <- stats::sd(prod_ij) / sqrt(nsim)
+        se <- stats::sd(prod_ij) / sqrt(length(ys))
         # The score product is not always random: for a non-smooth location
         # parameter it is constant across draws (the Laplace score is
         # sign(y-mu)/b, so its square is 1/b^2 everywhere), leaving a standard
@@ -383,7 +449,16 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
         worst <- max(worst, abs(a[[nm]][1] - mc) / den)
       }
     }
-    new_check("expected information vs Monte Carlo", worst < 6, worst)
+    detail <- character(0)
+    if (!all(vapply(a, function(v) all(is.finite(v)), logical(1)))) {
+      detail <- "the family's expected information is not finite at these parameters"
+    }
+    if (n_bound) {
+      detail <- c(detail, sprintf("%d of %d draws fell exactly on a bound of the support and were left out",
+                                  n_bound, nsim))
+    }
+    new_check("expected information vs Monte Carlo", worst < 6, worst,
+              if (length(detail)) paste(detail, collapse = "; ") else NA_character_)
   })
 
   # --- response derivatives (continuous only) ------------------------------
@@ -396,6 +471,31 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
         stop("too few draws land away from the atoms to check the response derivatives.",
              call. = FALSE)
       }
+      # A DRAW IN THE LAST PLACES OF A NON-ZERO BOUND IS LEFT OUT AND COUNTED,
+      # as a draw exactly on a bound is in the Monte Carlo row. Near zero the
+      # spacing of doubles is relative; near any other bound it is absolute,
+      # the reference's shortest step is two units of it, and its relative
+      # error falls as about 5.4/d^2 with d the distance counted in units:
+      # measured on beta1 and beta2 singular at 1, 1.3e-03 on the first
+      # derivative and 2.0e-03 on the second at 64 units, 8.1e-05 and 1.2e-04
+      # at 256. The draws closer than 256 units, 128 |b| eps, compare nothing.
+      # On beta1 at mu 0.9 and phi 1 they are 4.4 per cent of the draws, and
+      # with them the row failed in 1285 samples of 2000 even on the steps
+      # taken; without them, in none. The census below has no such draw.
+      near <- rep(FALSE, length(y))
+      if (is.finite(b[1]) && b[1] != 0) {
+        near <- near | (y - b[1] < 128 * abs(b[1]) * .Machine$double.eps)
+      }
+      if (is.finite(b[2]) && b[2] != 0) {
+        near <- near | (b[2] - y < 128 * abs(b[2]) * .Machine$double.eps)
+      }
+      n_near <- sum(near)
+      n_away <- length(y)
+      if (n_near) y <- y[!near]
+      if (length(y) < 5) {
+        stop("too few draws land away from a non-zero bound to check the response derivatives.",
+             call. = FALSE)
+      }
       # Differencing in y crosses the same kink, so the same guard applies --
       # and here it applies ALWAYS, not only when a parameter is declared
       # non-smooth. What makes a difference in the RESPONSE unreliable is the
@@ -403,27 +503,47 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
       # its, so `smooth_all` was TRUE and the guard returned early without
       # examining anything.
       #
-      # NECESSARY AND NOT SUFFICIENT, and the measurement says so: passing
-      # FALSE takes the false failures over ten families and five seeds from
-      # 24 to 22, and gamma1 at mu = 3, phi = 2 still reports one. The
-      # remaining cause is that halving the step does not expose the error --
-      # near y = 0 the log-density carries (a-1)log y, whose second
-      # difference is wrong at BOTH steps by a comparable amount, so the two
-      # agree with each other while agreeing with nothing else. Measured
-      # there, the analytic derivative agrees with Richardson to 4e-11 while
-      # the plain central difference is out by 5e-3: the reference is the
-      # weak side, and the check needs a better one rather than a wider
-      # tolerance. See the open item in CLAUDE.md.
-      g_ref <- numerical_grad_y(distrib, y, theta)
-      k1 <- fd_is_reliable(function(h) list(v = numerical_grad_y(distrib, y, theta, h_rel = h)),
+      # THE REFERENCE CHOOSES ITS STEP. With the step cut to 0.49 of the
+      # distance to a bound, the relative error of a central difference on a
+      # log-density carrying (a-1) log y is (h/d)^2/3 once the cut binds, a
+      # plateau of 9.4e-02 on the first derivative and 1.4e-01 on the second
+      # that halving the step cannot expose, the two steps being cut alike.
+      # Measured over 32 continuous families, three parameter values and five
+      # seeds, that reference failed 35 rows of 480, all of families singular
+      # at a bound (gamma1 14, gamma2 10, chisq 4, beta1 3, beta2 3,
+      # lognormal1 1), on analytic derivatives that agree with Richardson to
+      # 1e-10. A step scaled on the distance removes the plateau and is worse
+      # where the log-density is smooth at the bound, so fd_stable_quotient()
+      # reads both and keeps, per observation, the one that agrees with itself
+      # at half its step: the same census fails no row, the worst at 3.0e-05.
+      # The quotients divide by the steps actually taken, and no step is below
+      # two units of the spacing at y (see fd_stable_quotient()): over the
+      # census no verdict moves and the worst goes to 5.0e-05, while on beta1
+      # at mu 0.5 and phi 0.5, singular at 1, the row failed in 486 samples of
+      # 2000 on the nominal quotient, fails in 10 on the steps taken, and in
+      # none with the draws above left out.
+      lp <- function(v) distrib_pdf(distrib, v, theta, log = TRUE)
+      l0 <- lp(y)
+      grad_ref <- function(h_rel) {
+        fd_stable_quotient(function(h) fd_first_taken(lp, y, h), y, b, h_rel)
+      }
+      hess_ref <- function(h_rel) {
+        fd_stable_quotient(function(h) fd_second_taken(lp, y, h, l0), y, b, h_rel)
+      }
+      g_ref <- grad_ref(.Machine$double.eps^(1 / 3))
+      k1 <- fd_is_reliable(function(h) list(v = grad_ref(h)),
                            list(v = g_ref), .Machine$double.eps^(1 / 3), FALSE)
-      h_ref <- numerical_hess_y(distrib, y, theta)
-      k2 <- fd_is_reliable(function(h) list(v = numerical_hess_y(distrib, y, theta, h_rel = h)),
+      h_ref <- hess_ref(.Machine$double.eps^(1 / 4))
+      k2 <- fd_is_reliable(function(h) list(v = hess_ref(h)),
                            list(v = h_ref), .Machine$double.eps^(1 / 4), FALSE)
       e1 <- rel(distrib_grad_y(distrib, y, theta)[k1], g_ref[k1])
       e2 <- rel(distrib_hess_y(distrib, y, theta)[k2], h_ref[k2])
       err <- max(e1, e2)
-      new_check("response derivatives vs finite differences", err < tol, err)
+      new_check("response derivatives vs finite differences", err < tol, err,
+                if (n_near) {
+                  sprintf("%d of %d draws lay within 128 |b| eps of a non-zero bound and were left out",
+                          n_near, n_away)
+                } else NA_character_)
     })
   }
 
@@ -460,8 +580,44 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
     new_check("link-scale gradient vs finite differences", worst < tol, worst)
   })
 
-  out <- do.call(rbind, res)
+  # A CHECK WITH NO VERDICT IS NOT EMITTED. A row whose statistic came out NaN
+  # or NA without its computation raising -- a reference that is not finite
+  # somewhere, a sample the statistic cannot be formed from, an expected
+  # information the family itself reports as not existing -- compares nothing,
+  # and reporting it as FAIL made a correct family fail: the generalized Pareto
+  # at xi < -1/2, where the information does not exist, failed in 5 runs of 5.
+  # It is left out of the table and recorded with its reason in the attribute
+  # "skipped", so every row that is there says "OK" or "FAIL". Only NaN and NA
+  # are read that way: an INFINITE statistic is a component that overflows
+  # where its reference does not, which is a defect this check exists to catch
+  # (gamma1's phi_phi read -Inf against a finite difference until distributions7
+  # 0.54.0), so it stays a row and fails. Three rows are excepted, their
+  # criterion being defined on the values themselves: a density or a cdf that
+  # is not finite fails its own check, and the discrete round-trip carries NA
+  # by construction. A row whose computation raised keeps its FAIL, whatever
+  # its statistic.
+  on_values <- c("density is non-negative", "cdf in [0,1] and non-decreasing",
+                 if (!is_cont) "quantile/cdf round-trip")
+  skipped <- list()
+  kept <- vapply(res, function(r) {
+    if (isTRUE(attr(r, "from_error")) || r$check %in% on_values ||
+        !is.na(r$statistic)) {
+      return(TRUE)
+    }
+    skipped[[length(skipped) + 1L]] <<- data.frame(
+      check = r$check,
+      reason = paste(c(sprintf("the statistic is %s", format(r$statistic)),
+                       if (!is.na(r$detail)) r$detail), collapse = "; "),
+      stringsAsFactors = FALSE)
+    FALSE
+  }, logical(1))
+  out <- if (any(kept)) do.call(rbind, res[kept]) else res[[1L]][0L, , drop = FALSE]
   rownames(out) <- NULL
+  if (length(skipped)) {
+    sk <- do.call(rbind, skipped)
+    rownames(sk) <- NULL
+    attr(out, "skipped") <- sk
+  }
 
   if (verbose) print_check_table(distrib, out, theta, n, nsim)
 
@@ -496,12 +652,25 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
     cat(sprintf("  [%-4s] %-*s%s\n", out$status[i], width, out$check[i], stat))
     if (!is.na(out$detail[i])) cat("         ", out$detail[i], "\n", sep = "")
   }
+  sk <- attr(out, "skipped")
+  if (!is.null(sk) && nrow(sk)) {
+    wsk <- max(width, nchar(sk$check))
+    for (i in seq_len(nrow(sk))) {
+      cat(sprintf("  [ -- ] %-*s  not run\n", wsk, sk$check[i]))
+      cat("         ", sk$reason[i], "\n", sep = "")
+    }
+  }
   n_fail <- sum(out$status == "FAIL")
+  n_skip <- if (is.null(sk)) 0L else nrow(sk)
   cat("\n", if (n_fail == 0) {
     sprintf("All %d checks passed.\n", nrow(out))
   } else {
     sprintf("%d of %d checks FAILED.\n", n_fail, nrow(out))
   }, sep = "")
+  if (n_skip) {
+    cat(sprintf("%d check%s not run, the statistic having no value to judge.\n",
+                n_skip, if (n_skip == 1L) "" else "s"))
+  }
   invisible(NULL)
 }
 

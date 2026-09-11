@@ -41,7 +41,9 @@ Defaults to \code{1e-3}.}
 \value{
 Invisibly, a \code{data.frame} with one row per check and columns
 \code{check}, \code{status} (\code{"OK"} or \code{"FAIL"}), \code{statistic}
-and \code{detail}.
+and \code{detail}. A check whose statistic came out \code{NaN} or \code{NA} is not a row:
+it is listed in the attribute \code{"skipped"}, a data frame with columns
+\code{check} and \code{reason}, which is present only when some check was skipped.
 }
 \description{
 Runs a battery of numerical self-consistency checks on a \code{distrib} object.
@@ -54,7 +56,11 @@ counterpart.
 The checks performed are:
 \itemize{
 \item \strong{density}: non-negativity and integration/summation to 1 over the support.
-\item \strong{cdf}: values in \eqn{[0,1]} and monotonicity along a grid of quantiles.
+\item \strong{cdf}: values in \eqn{[0,1]} and monotonicity along a grid of quantiles,
+and its agreement with the density: for a continuous family a central
+difference of the cdf against the density, with the step the response
+derivatives use, and for a discrete one \eqn{F(k) - F(k-1)} against the
+mass.
 \item \strong{quantile}: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
 distributions, and the generalized-inverse inequalities for discrete ones).
 \item \strong{rng}: the sample mean and variance of a large draw agree with
@@ -77,15 +83,37 @@ falling as \code{nu} grows. It is why \code{orders} defaults to \code{1:4}.
 Monte Carlo estimate of \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}. The outer
 product of the score is used as reference because it remains valid when the
 log-likelihood is not differentiable in a parameter (see \code{\link[=laplace_distrib]{laplace_distrib()}}).
+A draw landing exactly on a finite bound of a continuous support, where the
+score of a family singular at that bound is infinite, is left out of the
+estimate and counted in the row's \code{detail}; a score that is not finite at
+an interior point still leaves the row without a statistic.
 \item \strong{response derivatives} (continuous only): \code{\link[=distrib_grad_y]{distrib_grad_y()}} and
-\code{\link[=distrib_hess_y]{distrib_hess_y()}} against finite differences in \eqn{y}.
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} against central differences in \eqn{y} whose step is
+chosen observation by observation by \code{\link[=fd_stable_quotient]{fd_stable_quotient()}}, between a
+step cut to under half the distance to a bound and one scaled on that
+distance, each divided by the steps its evaluation points actually lie
+at. A draw closer than \eqn{128\lvert b\rvert\varepsilon} to a finite
+bound \eqn{b \ne 0}, where the spacing of doubles is absolute and no
+central difference compares a derivative, is left out and counted in the
+row's \code{detail}.
 \item \strong{link scale}: \code{scale = "link"} derivatives against finite
 differences of the log-likelihood in \eqn{\eta}.
 }
 
-Distributions that rely on the numerical fallbacks will trivially pass the
-corresponding derivative checks, since analytical and numerical values then
-coincide by construction.
+Distributions that rely on the numerical fallbacks pass the corresponding
+parameter-derivative checks trivially, since analytical and numerical values
+then coincide by construction. The response fallbacks take the cut step
+alone, so near a bound they can differ from the reference, which is what the
+row then reports.
+
+A check whose statistic comes out \code{NaN} or \code{NA} has nothing to judge, as the
+expected information of a family where it does not exist, and is not a row
+of the table: it is listed with its reason in the attribute \code{"skipped"}, and
+every row that is in the table reads \code{"OK"} or \code{"FAIL"}. An infinite
+statistic is a failure, being a component that overflows where its reference
+does not; so is a check whose computation raised an error, and so is a
+density or a distribution function that is not finite, those three checks
+being defined on the values themselves.
 
 Mixed distributions --- a density with point masses on top of it, as produced by
 \code{\link[=zero_adjusted]{zero_adjusted()}} on a continuous parent --- are handled as long as they

@@ -13,7 +13,8 @@ safe_check(name, expr)
 \code{\link[=new_check]{new_check()}}.}
 }
 \value{
-The value of \code{expr}, or a failed row carrying the error message.
+The value of \code{expr}, or a failed row carrying the error message and
+the attribute \code{from_error = TRUE}.
 }
 \description{
 Evaluates a check expression and converts any error into a failed row rather
@@ -25,6 +26,11 @@ that throws is itself a result. Without this, the first component to raise
 would end the run and hide every check after it, which is the least useful
 moment to
 stop being informative.
+
+The failed row is marked with the attribute \code{from_error}, which
+\code{\link[=check_distrib]{check_distrib()}} reads before assembling the table: a check whose
+computation raised has failed, and it is never mistaken for one whose
+statistic merely came out non-finite, which is reported as not run.
 }
 \seealso{
 \code{\link[=check_distrib]{check_distrib()}}, \code{\link[=new_check]{new_check()}}
