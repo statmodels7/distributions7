@@ -1,12 +1,12 @@
-#' @include distrib.R generics.R utility_functions.R moments.R cross_derivatives.R cross2_derivatives.R cross_theta2_derivatives.R mv_summary.R
+#' @include distrib.R generics.R utility_functions.R moments.R cross_derivatives.R cross2_derivatives.R cross_theta2_derivatives.R mv_summary.R y_higher.R
 NULL
 
 #' @title S7 Class for Distributions With Fixed Parameters (Continuous)
 #' @name FixedContinuousDistrib
 #'
 #' @section Methods:
-#' `fixed()` registers 22 methods on this class:
-#' `distrib_atoms()`, `distrib_cdf()`, `distrib_cross2_y()`, `distrib_cross_y()`, `distrib_deriv3()`, `distrib_deriv4()`, `distrib_expected_hessian()`, `distrib_grad_cdf()`, `distrib_grad_y()`, `distrib_grad_y_hess()`, `distrib_gradient()`, `distrib_hess_cdf()`, `distrib_hess_y()`, `distrib_hess_y_hess()`, `distrib_hessian()`, `distrib_pdf()`, `distrib_quantile()`, `distrib_rng()`, `kurtosis()`, `skewness()`, `std_dev()`, `variance()`.
+#' `fixed()` registers 24 methods on this class:
+#' `distrib_atoms()`, `distrib_cdf()`, `distrib_cross2_y()`, `distrib_cross_y()`, `distrib_deriv3()`, `distrib_deriv3_y()`, `distrib_deriv4()`, `distrib_deriv4_y()`, `distrib_expected_hessian()`, `distrib_grad_cdf()`, `distrib_grad_y()`, `distrib_grad_y_hess()`, `distrib_gradient()`, `distrib_hess_cdf()`, `distrib_hess_y()`, `distrib_hess_y_hess()`, `distrib_hessian()`, `distrib_pdf()`, `distrib_quantile()`, `distrib_rng()`, `kurtosis()`, `skewness()`, `std_dev()`, `variance()`.
 #'
 #' Every one splices the held values back into `theta` and delegates to the
 #' parent. The derivative methods then subset the parent's answer by the names
@@ -19,7 +19,9 @@ NULL
 #' @aliases distrib_cross2_y.FixedContinuousDistrib
 #' @aliases distrib_cross_y.FixedContinuousDistrib
 #' @aliases distrib_deriv3.FixedContinuousDistrib
+#' @aliases distrib_deriv3_y.FixedContinuousDistrib
 #' @aliases distrib_deriv4.FixedContinuousDistrib
+#' @aliases distrib_deriv4_y.FixedContinuousDistrib
 #' @aliases distrib_expected_hessian.FixedContinuousDistrib
 #' @aliases distrib_grad_cdf.FixedContinuousDistrib
 #' @aliases distrib_grad_y.FixedContinuousDistrib
@@ -437,6 +439,23 @@ fixed_full_theta <- function(distrib, theta) {
 # splitting on the underscore commits for a parameter whose own name contains
 # one.
 # ---------------------------------------------------------------------------
+
+# The third and fourth response derivatives delegate like the orders below.
+# Without these a fixed family fell back to the base class's stencil on the
+# log-density, so fixed(student_t1_distrib(), mu = 0) -- a heavy-tailed prior --
+# took a difference where its parent has the closed form. Continuous only: a
+# discrete family has no response derivative to delegate to.
+S7::method(distrib_deriv3_y, FixedContinuousDistrib) <- function(distrib, y,
+                                                                 theta, ...) {
+  distrib_deriv3_y(distrib@parent_distrib, y, fixed_full_theta(distrib, theta),
+                   ...)
+}
+
+S7::method(distrib_deriv4_y, FixedContinuousDistrib) <- function(distrib, y,
+                                                                 theta, ...) {
+  distrib_deriv4_y(distrib@parent_distrib, y, fixed_full_theta(distrib, theta),
+                   ...)
+}
 
 for (.fixed_cls in list(FixedContinuousDistrib, FixedDiscreteDistrib)) {
   S7::method(distrib_pdf, .fixed_cls) <- function(distrib, y, theta, log = FALSE, ...) {

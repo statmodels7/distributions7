@@ -380,3 +380,21 @@ test_that("the wrapper reports the quantities the family declares", {
   expect_identical(dim(rz$jacobian), c(3L, 3L))
   expect_equal(unname(rz$jacobian), unname(rd$jacobian[, 3:5, drop = FALSE]))
 })
+
+test_that("the higher response derivatives delegate to the parent", {
+  # fixed(student_t1, mu = 0) is the heavy-tailed prior of penalties7, and
+  # without these methods it took the base class's stencil where its parent
+  # has the closed form. The identity is what pins the route: a stencil can be
+  # close, and cannot be identical.
+  st <- student_t1_distrib()
+  z <- fixed(st, mu = 0)
+  y <- c(-2.4, -0.3, 0.05, 1.7, 6.2)
+  th <- list(sigma = 1.3, nu = 4)
+  full <- list(mu = 0, sigma = 1.3, nu = 4)
+  expect_identical(distrib_deriv3_y(z, y, th), distrib_deriv3_y(st, y, full))
+  expect_identical(distrib_deriv4_y(z, y, th), distrib_deriv4_y(st, y, full))
+  expect_false(identical(distrib_deriv3_y(z, y, th),
+                         numerical_deriv_y(z, y, th, 3L)))
+  expect_equal(distrib_deriv3_y(z, y, th), numerical_deriv_y(z, y, th, 3L),
+               tolerance = 1e-5)
+})

@@ -1,3 +1,14 @@
+# distributions7 0.57.0
+
+* **`fixed()` delegates `distrib_deriv3_y()` and `distrib_deriv4_y()` to its
+  parent**, as it already did for the first two response derivatives. Without
+  the two methods a fixed continuous family took the base class's stencil on
+  the log-density, so `fixed(student_t1_distrib(), mu = 0)` -- the
+  heavy-tailed prior of `penalties7` -- differenced where its parent carries
+  the closed form. The route is pinned by an identity against the parent,
+  which a stencil cannot satisfy. Continuous families only: a discrete family
+  has no response derivative to delegate to.
+
 # distributions7 0.56.0
 
 * **`check_distrib()`'s cdf row leaves out a grid point in the last places of

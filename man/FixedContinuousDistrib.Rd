@@ -7,7 +7,9 @@
 \alias{distrib_cross2_y.FixedContinuousDistrib}
 \alias{distrib_cross_y.FixedContinuousDistrib}
 \alias{distrib_deriv3.FixedContinuousDistrib}
+\alias{distrib_deriv3_y.FixedContinuousDistrib}
 \alias{distrib_deriv4.FixedContinuousDistrib}
+\alias{distrib_deriv4_y.FixedContinuousDistrib}
 \alias{distrib_expected_hessian.FixedContinuousDistrib}
 \alias{distrib_grad_cdf.FixedContinuousDistrib}
 \alias{distrib_grad_y.FixedContinuousDistrib}
@@ -81,8 +83,8 @@ picks this class or one of its two siblings from the parent.
 }
 \section{Methods}{
 
-\code{fixed()} registers 22 methods on this class:
-\code{distrib_atoms()}, \code{distrib_cdf()}, \code{distrib_cross2_y()}, \code{distrib_cross_y()}, \code{distrib_deriv3()}, \code{distrib_deriv4()}, \code{distrib_expected_hessian()}, \code{distrib_grad_cdf()}, \code{distrib_grad_y()}, \code{distrib_grad_y_hess()}, \code{distrib_gradient()}, \code{distrib_hess_cdf()}, \code{distrib_hess_y()}, \code{distrib_hess_y_hess()}, \code{distrib_hessian()}, \code{distrib_pdf()}, \code{distrib_quantile()}, \code{distrib_rng()}, \code{kurtosis()}, \code{skewness()}, \code{std_dev()}, \code{variance()}.
+\code{fixed()} registers 24 methods on this class:
+\code{distrib_atoms()}, \code{distrib_cdf()}, \code{distrib_cross2_y()}, \code{distrib_cross_y()}, \code{distrib_deriv3()}, \code{distrib_deriv3_y()}, \code{distrib_deriv4()}, \code{distrib_deriv4_y()}, \code{distrib_expected_hessian()}, \code{distrib_grad_cdf()}, \code{distrib_grad_y()}, \code{distrib_grad_y_hess()}, \code{distrib_gradient()}, \code{distrib_hess_cdf()}, \code{distrib_hess_y()}, \code{distrib_hess_y_hess()}, \code{distrib_hessian()}, \code{distrib_pdf()}, \code{distrib_quantile()}, \code{distrib_rng()}, \code{kurtosis()}, \code{skewness()}, \code{std_dev()}, \code{variance()}.
 
 Every one splices the held values back into \code{theta} and delegates to the
 parent. The derivative methods then subset the parent's answer by the names
