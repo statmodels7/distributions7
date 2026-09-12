@@ -101,13 +101,15 @@ parent's with the held values in brackets.
 ## Methods
 
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
-registers 22 methods on this class:
+registers 24 methods on this class:
 [`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md),
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md),
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md),
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
+[`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md),
+[`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md),
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md),

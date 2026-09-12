@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.56.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.57.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,11 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.57.0" id="distributions7-0570">distributions7 0.57.0<a class="anchor" aria-label="anchor" href="#distributions7-0570"></a></h2>
+<ul><li>
+<strong><code><a href="../reference/fixed.html">fixed()</a></code> delegates <code><a href="../reference/distrib_deriv3_y.html">distrib_deriv3_y()</a></code> and <code><a href="../reference/distrib_deriv3_y.html">distrib_deriv4_y()</a></code> to its parent</strong>, as it already did for the first two response derivatives. Without the two methods a fixed continuous family took the base class’s stencil on the log-density, so <code>fixed(student_t1_distrib(), mu = 0)</code> – the heavy-tailed prior of <code>penalties7</code> – differenced where its parent carries the closed form. The route is pinned by an identity against the parent, which a stencil cannot satisfy. Continuous families only: a discrete family has no response derivative to delegate to.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.56.0" id="distributions7-0560">distributions7 0.56.0<a class="anchor" aria-label="anchor" href="#distributions7-0560"></a></h2>
 <ul><li><p><strong><code><a href="../reference/check_distrib.html">check_distrib()</a></code>’s cdf row leaves out a grid point in the last places of a non-zero bound, as its response row already does.</strong> The response row has excluded a draw within <code>128 |b| eps</code> of such a bound since 0.55.0, where the spacing of doubles is absolute and the reference compares nothing; the cdf row, whose grid is the deciles, did not, on the reading that those deciles sit nowhere near a bound. Measured, that is true of every family but one: beta2 is 4.9e+04 units away at worst and the two von Mises 3.2e+14, while <strong>beta1 reaches zero units — the grid point IS the bound.</strong> It carries , which inside <code><a href="../reference/generate_random_theta.html">generate_random_theta()</a></code>’s own box reaches , and its upper decile is then , which stops being representable below about 0.06. Over 20000 draws of that generator the row <strong>failed 59 times (0.30%) on analytic code, with statistics up to 8.006</strong>, every one between 0.5 and 85 units of the bound, and a further 185 (0.93%) had the grid collapse onto the bound and the row was not emitted at all.</p></li>
