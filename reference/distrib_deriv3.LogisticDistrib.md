@@ -118,7 +118,7 @@ all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 # symmetry and comes back at the quadrature's own accuracy, not at zero.
 lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 #> $mu_mu_mu
-#> [1] 4.336809e-19
+#> [1] 3.903128e-18
 #> 
 #> $mu_mu_sigma
 #> [1] 0.1481481

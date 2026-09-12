@@ -120,10 +120,10 @@ z <- distrib_rng(d, 2e5, th)
 rbind(expected = vapply(distrib_deriv3(d, y, th, expected = TRUE),
                         function(v) v[1], numeric(1)),
       averaged = vapply(distrib_deriv3(d, z, th), mean, numeric(1)))
-#>              mu_mu_mu mu_mu_sigma    mu_mu_nu mu_sigma_sigma   mu_sigma_nu
-#> expected 2.775558e-17   0.6076389 -0.01388889  -1.110223e-16 -3.469447e-18
-#> averaged 7.771678e-04   0.6061054 -0.01396171  -3.885839e-03  1.479138e-04
+#>              mu_mu_mu mu_mu_sigma    mu_mu_nu mu_sigma_sigma  mu_sigma_nu
+#> expected 2.775558e-17   0.6076389 -0.01388889    0.000000000 0.0000000000
+#> averaged 7.771678e-04   0.6061054 -0.01396171   -0.003885839 0.0001479138
 #>              mu_nu_nu sigma_sigma_sigma sigma_sigma_nu  sigma_nu_nu    nu_nu_nu
-#> expected 0.000000e+00          2.748843     -0.1041667 -0.005555556 0.002511281
+#> expected 4.336809e-19          2.748843     -0.1041667 -0.005555556 0.002511281
 #> averaged 8.536436e-06          2.756510     -0.1044698 -0.005578214 0.002510767
 ```

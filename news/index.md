@@ -120,6 +120,24 @@
   relative between two evaluations at one step, against 17.3 between the
   step and its half.
 
+- ⚠️ **THE CHOICE MAKES THE NUMERICAL INFORMATION A DISCONTINUOUS
+  FUNCTION OF THE POINT, and it costs a fit nothing.** Two nearby points
+  can take different candidates, so the Hessian jumps where a fixed step
+  would move smoothly: measured on a density-only Gompertz whose two
+  parameters both lie below one, perturbing a parameter by moves the
+  numerical Hessian by 5.7e-05 relative where the clamped step moves it
+  by 9.2e-07. A margin in the choice – keeping the scaled step only
+  where its reading is several times better – is free in accuracy (307
+  and 238 unchanged at margins of 2, 5 and 10) and removes the jump at
+  the smallest perturbations but not at , so it is not taken and the
+  discontinuity is declared instead. What licenses that is a measurement
+  on fits rather than on points: over nine density-only families whose
+  parameters fall below one, all nine converge under both rules, **in
+  the same 140 iterations**, with vcov() against the analytic family at
+  5.49e-07 and 5.59e-07 and its reproducibility from a displaced start
+  at 4.00e-07 and 4.04e-07. An optimizer does not sample the Hessian at
+  points apart.
+
 - ⚠️ **What this costs in the ORDINARY regime, which the census near the
   bound could not see.** Over 2539 components at the parameter values
   [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
