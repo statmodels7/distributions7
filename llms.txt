@@ -2870,8 +2870,14 @@ divergent density.
 - [`fd_second()`](https://statmodels7.github.io/distributions7/reference/fd_second.md)
   : A Second Derivative From One Stencil
 
+- [`fd_self_consistency()`](https://statmodels7.github.io/distributions7/reference/fd_self_consistency.md)
+  : The Self-Consistency of a Difference Quotient Under Step Halving
+
 - [`fd_stable_quotient()`](https://statmodels7.github.io/distributions7/reference/fd_stable_quotient.md)
   : A Response Difference That Chooses Its Step
+
+- [`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md)
+  : A Parameter Step That Chooses Itself
 
 - [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
   : Finite-Difference Steps That Respect a Parameter's Domain

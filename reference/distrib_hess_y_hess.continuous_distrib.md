@@ -55,7 +55,7 @@ y <- c(0.5, 1, 2)
 theta <- list(mu = 2, sigma2 = 1)
 h <- distrib_hess_y_hess(d, y, theta)
 c(h$mu_mu[1], h$mu_sigma2[1], h$sigma2_sigma2[1])
-#> [1]  -7.999997  16.000000 -31.999982
+#> [1]  -7.999997  16.000000 -31.999976
 
 # Against a numerical Hessian of the response curvature.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))

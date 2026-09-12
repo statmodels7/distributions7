@@ -15,7 +15,7 @@ distrib_pdf gets its score function for free."><meta property="og:image" content
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.55.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.56.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,11 +95,12 @@ parameter,</p>
 <p>so the cost is two density evaluations per parameter. Truncation is of
 order \(h^{2}\) and rounding of order \(\varepsilon / h\), which the
 default \(h \propto \varepsilon^{1/3}\) balances.</p>
-<p>Steps are scaled by <code>max(1, |theta|)</code> and automatically shrunk near the
-boundaries of <code>distrib@params_bounds</code> so that the evaluation points remain
-inside the parameter domain. Accuracy is roughly <code>eps^(2/3)</code> (about 8
-significant digits): sufficient for optimization, but slower and less precise
-than an analytical implementation.</p>
+<p>Steps are scaled by <code>max(1, |theta|)</code> and kept inside the boundaries of
+<code>distrib@params_bounds</code>, by <code><a href="fd_stable_step.html">fd_stable_step()</a></code>, which reads both of
+<code><a href="fd_steps.html">fd_steps()</a></code>'s candidates and keeps the one that agrees better with itself
+at half its own step. Accuracy is roughly <code>eps^(2/3)</code> (about 8 significant
+digits): sufficient for optimization, but slower and less precise than an
+analytical implementation.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

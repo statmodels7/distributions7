@@ -45,12 +45,16 @@ Each component is \\\[\ell(\theta_i + h) - \ell(\theta_i - h)\]/(2h)\\,
 so one gradient costs \\2p\\ evaluations of the log-density. The step is
 \\h = \varepsilon^{1/3}\max(1, \|\theta_i\|) \approx 6.06\times10^{-6}\\
 at a parameter of order one, which balances the \\O(h^2)\\ truncation of
-a central difference against a rounding term growing as \\1/h\\. Near a
-finite boundary
+a central difference against a rounding term growing as \\1/h\\.
+Parameter domains here are open and a step through zero returns `NaN`
+from the density for reasons that look like a defect in the family, so
+near a finite boundary the step is kept inside:
 [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
-shrinks it to 49% of the distance, since parameter domains here are open
-and a step through zero returns `NaN` from the density for reasons that
-look like a defect in the family.
+offers it cut to 49\\ or scaled on that distance, and
+[`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md)
+keeps whichever agrees better with itself at half its own step. On a
+gamma at a dispersion of \\10^{-6}\\ that choice is worth five orders,
+the relative error going from 3.5e-01 to 1.1e-06.
 
 ## What it delivers
 

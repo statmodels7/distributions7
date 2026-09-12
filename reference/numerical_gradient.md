@@ -50,11 +50,15 @@ so the cost is two density evaluations per parameter. Truncation is of
 order \\h^{2}\\ and rounding of order \\\varepsilon / h\\, which the
 default \\h \propto \varepsilon^{1/3}\\ balances.
 
-Steps are scaled by `max(1, |theta|)` and automatically shrunk near the
-boundaries of `distrib@params_bounds` so that the evaluation points
-remain inside the parameter domain. Accuracy is roughly `eps^(2/3)`
-(about 8 significant digits): sufficient for optimization, but slower
-and less precise than an analytical implementation.
+Steps are scaled by `max(1, |theta|)` and kept inside the boundaries of
+`distrib@params_bounds`, by
+[`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md),
+which reads both of
+[`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)'s
+candidates and keeps the one that agrees better with itself at half its
+own step. Accuracy is roughly `eps^(2/3)` (about 8 significant digits):
+sufficient for optimization, but slower and less precise than an
+analytical implementation.
 
 ## See also
 
