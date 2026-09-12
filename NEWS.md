@@ -1,3 +1,112 @@
+# distributions7 0.56.0
+
+* **`check_distrib()`'s cdf row leaves out a grid point in the last places of
+  a non-zero bound, as its response row already does.** The response row has
+  excluded a draw within `128 |b| eps` of such a bound since 0.55.0, where the
+  spacing of doubles is absolute and the reference compares nothing; the cdf
+  row, whose grid is the deciles, did not, on the reading that those deciles
+  sit nowhere near a bound. Measured, that is true of every family but one:
+  beta2 is 4.9e+04 units away at worst and the two von Mises 3.2e+14, while
+  **beta1 reaches zero units — the grid point IS the bound.** It carries
+  \eqn{\mathrm{shape}_2 = (1-\mu)\phi}, which inside `generate_random_theta()`'s
+  own box reaches \eqn{0.1 \times 0.1 = 0.01}, and its upper decile is then
+  \eqn{1 - O(e^{-c/\mathrm{shape}_2})}, which stops being representable below
+  about 0.06. Over 20000 draws of that generator the row **failed 59 times
+  (0.30%) on analytic code, with statistics up to 8.006**, every one between
+  0.5 and 85 units of the bound, and a further 185 (0.93%) had the grid
+  collapse onto the bound and the row was not emitted at all.
+
+* Measured on the four worst parameter values of that census, before and
+  after: 8.006, 3.451, 1.86e-01 and 4.43e-04, all FAIL, become 7.6e-09,
+  3.9e-07, 4.2e-08 and 1.1e-09, all OK, one grid point of fifteen left out and
+  counted in each. Over 400 draws of `generate_random_theta()` the row now
+  fails **0 times against 1** and is **emitted every time against 4 silent
+  drops**, its worst statistic 8.5e-06 against 1.96e-02. ⚠️ Where the grid is
+  not near a bound nothing moves: beta1 at `mu = 0.5, phi = 0.5` reads
+  1.664e-10 and at `mu = 0.3, phi = 3` 7.959e-11, identical before and after.
+  A discrete family compares an exact difference of the distribution function
+  against the mass, with no step at all, so nothing is left out there. The
+  non-regression net that captures `check_distrib()`'s table and printed text
+  for six families over five seeds sees no leaf move from this at all: the
+  parameter values it carries put no decile near a bound.
+
+* **A numerical derivative in the PARAMETERS chooses its step near a bound,
+  as the response direction already does.** `fd_steps()` cut its step to 49%
+  of the distance to the nearest finite bound, and where the log-density is
+  singular in that parameter there the error of such a difference stops
+  falling once the cut binds. It now offers a second candidate,
+  `to_bound = "scale"`, which scales the step ON that distance, and the new
+  `fd_stable_step()` evaluates the quotient at both, each also at half its own
+  step, and keeps the one that agrees better with itself. Measured over a
+  census of 324 cells at distances from 1 to 1e-8 from a bound, against the
+  families' own analytic derivatives: the gradient goes from **199 to 307**
+  components within 1e-6 and the diagonal Hessian from **106 to 238**; on a
+  gamma at a dispersion of 1e-6 the gradient's relative error goes from
+  3.5e-01 to 1.1e-06.
+
+* ⚠️ **The choice is made for the whole vector, not observation by
+  observation, which is the opposite of `fd_stable_quotient()` in the response
+  direction.** There each observation carries its own \eqn{y} and therefore
+  its own step, so a per-observation choice is a choice between two quantities
+  that genuinely differ; here the parameter is usually one number for the
+  whole sample and the two candidates estimate the same thing, so the
+  variation of the reading across observations is rounding. Measured, the
+  whole-vector choice puts 307 gradients and 238 Hessian components within
+  1e-6 against 285 and 229, and on the 46 cells where the two differ it is the
+  better on 44 (on the gpd the per-observation choice returns `Inf` where the
+  whole-vector one reads 8.3e-08).
+
+* ⚠️ **Where the two steps coincide nothing moves, by construction rather than
+  by tolerance.** That is every parameter with no finite bound and every
+  positive parameter at or above one: the clamped quotient is returned at once
+  and is `identical()` to what the previous release produced, 61 cells of 324
+  taking that path. Elsewhere the choice costs four quotients where one would
+  do.
+
+* **What the choice costs in time**, at 500 observations, before and after.
+  Where the two steps coincide, a gaussian pays the extra call and nothing
+  else — gradient 0.188 to 0.230 ms, Hessian 0.375 to 0.426, fourth
+  derivative 1.172 to 1.148 — and a gamma at a dispersion of 2 reads 0.499 to
+  0.549, 1.178 to 1.230 and 7.120 to 7.047. Where they differ it is the
+  measured 4 quotients against 1: a gamma at a dispersion of 0.3 goes 0.522 to
+  1.318 ms on the gradient, 1.154 to 1.957 on the Hessian and 6.551 to 10.174
+  at fourth order, and a beta, whose two parameters both carry two finite
+  bounds, 0.637 to 1.632, 1.464 to 2.295 and 1.382 to 1.867. The higher orders
+  cost proportionally less because the choice is paid once per parameter.
+  `fd_stable_step(need_value = FALSE)` is what keeps the coinciding case free
+  there: those callers read only the step, so nothing is evaluated at all —
+  without it a gamma at a dispersion of 2 paid 9.087 ms for the two Hessians
+  of a choice that was never in doubt.
+
+* **All seven callers take the chosen step**: `numerical_gradient()`,
+  `numerical_hessian()`, `numerical_deriv3()`, `numerical_deriv4()`,
+  `numerical_cross_y()`, `numerical_cross2_y()`, `numerical_theta2_y()` and
+  `numerical_dexpected_hessian()`. Each chooses with its own `h_rel` and its
+  own stencil; a single choice made at first order and reused would cost 2
+  cells of 324 on the Hessian, the two tests agreeing on 244 of the 263 cells
+  where the steps differ at all. For the Hessian and the two higher orders the
+  step is chosen once per parameter and then used by every component that
+  parameter enters, the mixed ones included, so the choice is paid once per
+  parameter rather than once per component.
+
+* ⚠️ **`numerical_dexpected_hessian()` does not choose its step under
+  `approx = "mc"`**, and the link scale, which carries no finite bound, has
+  nothing to choose. A Monte Carlo expected information is not the same number
+  twice, so the reading would be of that noise: measured on pig1, the quotient
+  moves by 2.75 relative between two evaluations at one step, against 17.3
+  between the step and its half.
+
+* ⚠️ **What this costs in the ORDINARY regime, which the census near the bound
+  could not see.** Over 2539 components at the parameter values
+  `generate_random_theta()` produces, 174 improve and 44 worsen, the median
+  ratio among those that move being 0.53. The worst case is `enet`'s
+  `alpha_alpha_alpha` at third order, from 1.16e-08 to 7.34e-08, and no
+  component crosses 1e-4 or 1e-3 in either direction; at 1e-6, one leaves and
+  six enter. `check_distrib()` inherits the change, since it takes these
+  functions as its reference in the parameter direction, and 20 of its rows
+  move on `beta1` and `enet`: `deriv4` on beta1 from 2.38e-07 to 1.91e-06 and
+  on enet from 7.67e-07 to 3.12e-06, every verdict unchanged.
+
 # distributions7 0.55.0
 
 * **`check_distrib()`'s response-derivative row no longer fails correct

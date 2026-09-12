@@ -52,12 +52,34 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
   out <- vector("list", length(nms))
   names(out) <- nms
 
+  # The step of each parameter is chosen once, on the whole Hessian differenced
+  # along it, and then used by every component that differences along that
+  # parameter: the choice costs four evaluations per parameter rather than per
+  # component, and it does not depend on which component happens to come first.
+  hsteps <- vector("list", length(params))
+  step_for <- function(k) {
+    if (is.null(hsteps[[k]])) {
+      quotient <- function(hk) {
+        tp <- tm <- theta
+        tp[[k]] <- theta[[k]] + hk
+        tm[[k]] <- theta[[k]] - hk
+        mapply(function(a, b) (a - b) / (2 * hk),
+               distrib_hessian(distrib, y, tp),
+               distrib_hessian(distrib, y, tm), SIMPLIFY = FALSE)
+      }
+      hsteps[[k]] <<- fd_stable_step(quotient, theta[[k]],
+                                     bounds[[params[k]]], h_rel,
+                                     need_value = FALSE)$h
+    }
+    hsteps[[k]]
+  }
+
   for (t in seq_along(nms)) {
     nm <- nms[t]
     if (nm %in% skip) next
     idx <- idx_of[[t]]
     i <- idx[1]; j <- idx[2]; k <- idx[3]
-    hk <- fd_steps(theta[[k]], bounds[[params[k]]], h_rel)
+    hk <- step_for(k)
     hcomp <- paste(params[c(i, j)], collapse = "_")
 
     tp <- tm <- theta
@@ -118,14 +140,35 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
   # once rather than once per component with k == l.
   H0 <- H(theta)
 
+  # As in numerical_deriv3(), the step of each parameter is chosen once, here on
+  # the second difference of the whole Hessian along that parameter, and reused
+  # by every component that steps along it.
+  hsteps <- vector("list", length(params))
+  step_for <- function(k) {
+    if (is.null(hsteps[[k]])) {
+      quotient <- function(hk) {
+        tp <- tm <- theta
+        tp[[k]] <- theta[[k]] + hk
+        tm[[k]] <- theta[[k]] - hk
+        Hp <- H(tp); Hm <- H(tm)
+        stats::setNames(lapply(names(H0), function(nm)
+          (Hp[[nm]] - 2 * H0[[nm]] + Hm[[nm]]) / (hk^2)), names(H0))
+      }
+      hsteps[[k]] <<- fd_stable_step(quotient, theta[[k]],
+                                     bounds[[params[k]]], h_rel,
+                                     need_value = FALSE)$h
+    }
+    hsteps[[k]]
+  }
+
   for (t in seq_along(nms)) {
     nm <- nms[t]
     if (nm %in% skip) next
     idx <- idx_of[[t]]
     i <- idx[1]; j <- idx[2]; k <- idx[3]; l <- idx[4]
     hcomp <- paste(params[c(i, j)], collapse = "_")
-    hk <- fd_steps(theta[[k]], bounds[[params[k]]], h_rel)
-    hl <- fd_steps(theta[[l]], bounds[[params[l]]], h_rel)
+    hk <- step_for(k)
+    hl <- step_for(l)
 
     if (k == l) {
       tp <- tm <- theta

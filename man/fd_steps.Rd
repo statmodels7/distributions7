@@ -4,7 +4,7 @@
 \alias{fd_steps}
 \title{Finite-Difference Steps That Respect a Parameter's Domain}
 \usage{
-fd_steps(theta_j, bounds_j, h_rel)
+fd_steps(theta_j, bounds_j, h_rel, to_bound = c("clamp", "scale"))
 }
 \arguments{
 \item{theta_j}{A numeric vector, the values of one parameter.}
@@ -14,14 +14,17 @@ fd_steps(theta_j, bounds_j, h_rel)
 
 \item{h_rel}{The relative step size, typically a root of machine epsilon
 chosen for the stencil in use.}
+
+\item{to_bound}{\code{"clamp"}, the default, or \code{"scale"}, as above.}
 }
 \value{
 A numeric vector of steps, the same length as \code{theta_j}.
 }
 \description{
 Builds the step \eqn{h} for a central difference in one parameter: scaled by
-the parameter's magnitude, then shrunk so that \eqn{\theta \pm h} stays
-strictly inside the parameter's mathematical domain.
+the parameter's magnitude and kept strictly inside the parameter's
+mathematical domain, either by cutting it to under half the distance to the
+nearest finite bound or by scaling it on that distance.
 }
 \details{
 The domain clamp is what allows a finite-difference fallback to be offered at
@@ -31,10 +34,25 @@ non-negative. A step chosen from the magnitude alone therefore takes a small
 for reasons that look like a bug in the density. Clamping to 49\\% of the
 distance to each finite boundary keeps both evaluation points inside.
 
+\code{to_bound = "scale"} takes \eqn{h = h_{rel}\min(\max(1,|\theta|), d)}, with
+\eqn{d} the distance to the nearest finite bound, so the step shrinks in
+proportion as the parameter approaches the bound rather than sitting at
+\eqn{0.49\,d}. Where the log-density is singular in that parameter at the
+bound the clamped step's error stops falling once the clamp binds, and where
+the log-density instead saturates the scaled step is the worse of the two,
+its shorter step letting the rounding dominate. Neither is right everywhere,
+and \code{\link[=fd_stable_step]{fd_stable_step()}} is what chooses between them.
+
+The two give the same step wherever \eqn{d \ge \max(1, |\theta|)}, which is
+every parameter of a family with no finite bound, and also a positive
+parameter at or above one.
+
 A parameter already on or outside its boundary cannot be rescued this way, and
 is reported rather than differentiated.
 }
 \seealso{
-\code{\link[=numerical_gradient]{numerical_gradient()}}, \code{\link[=numerical_hessian]{numerical_hessian()}}
+\code{\link[=fd_stable_step]{fd_stable_step()}}, which chooses between the two, and
+\code{\link[=numerical_gradient]{numerical_gradient()}} and \code{\link[=numerical_hessian]{numerical_hessian()}}, which take the chosen
+step. \code{\link[=fd_steps_y]{fd_steps_y()}} is the response counterpart.
 }
 \keyword{internal}

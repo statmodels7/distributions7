@@ -366,15 +366,16 @@ numerical_theta2_y <- function(distrib, y, theta, inner,
   diffs <- stats::setNames(vector("list", length(params)), params)
   for (j in seq_along(params)) {
     p <- params[j]
-    h <- fd_steps(theta[[j]], distrib@params_bounds[[p]], h_rel)
-    th_up <- theta
-    th_dn <- theta
-    th_up[[j]] <- theta[[j]] + h
-    th_dn[[j]] <- theta[[j]] - h
-    up <- inner(th_up)
-    dn <- inner(th_dn)
-    diffs[[p]] <- stats::setNames(
-      lapply(params, function(q) (up[[q]] - dn[[q]]) / (2 * h)), params)
+    quotient <- function(h) {
+      th_up <- th_dn <- theta
+      th_up[[j]] <- theta[[j]] + h
+      th_dn[[j]] <- theta[[j]] - h
+      up <- inner(th_up)
+      dn <- inner(th_dn)
+      stats::setNames(lapply(params, function(q) (up[[q]] - dn[[q]]) / (2 * h)), params)
+    }
+    diffs[[p]] <- fd_stable_step(quotient, theta[[j]],
+                                 distrib@params_bounds[[p]], h_rel)$value
   }
   prs <- hess_pairs(params)
   stats::setNames(lapply(names(prs), function(nm) {

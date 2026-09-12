@@ -268,6 +268,34 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
         stop("the atoms leave too little of the support to compare F' against f.",
              call. = FALSE)
       }
+      # A GRID POINT IN THE LAST PLACES OF A NON-ZERO BOUND IS LEFT OUT AND
+      # COUNTED, the rule the response row already applies to a draw, for the
+      # same reason: near zero the spacing of doubles is relative, near any
+      # other bound it is absolute, and within a few hundred units of it the
+      # reference compares nothing. This grid is the deciles, which on almost
+      # every family sit nowhere near a bound -- measured, beta2 is 4.9e+04
+      # units away at worst and the two von Mises 3.2e+14. beta1 is the
+      # exception, because it carries shape2 = (1 - mu) phi, whose box reaches
+      # 0.1 x 0.1 = 0.01, and its upper decile is then 1 - O(exp(-c/shape2)),
+      # which stops being representable below about shape2 = 0.06: over 20000
+      # draws of generate_random_theta() the row failed 59 times, with
+      # statistics up to 8.006 on analytic code, every one of them between 0.5
+      # and 85 units of the bound, and a further 185 draws had the grid
+      # collapse onto the bound outright.
+      near <- rep(FALSE, length(grid))
+      if (is.finite(b[1]) && b[1] != 0) {
+        near <- near | (grid - b[1] < 128 * abs(b[1]) * .Machine$double.eps)
+      }
+      if (is.finite(b[2]) && b[2] != 0) {
+        near <- near | (b[2] - grid < 128 * abs(b[2]) * .Machine$double.eps)
+      }
+      n_near <- sum(near)
+      n_all <- length(grid)
+      if (n_near) grid <- grid[!near]
+      if (length(grid) < 3) {
+        stop("too much of the grid lies within 128 |b| eps of a non-zero bound to compare F' against f.",
+             call. = FALSE)
+      }
       # THE SAME STEP AS THE RESPONSE ROW. It was 1e-5 max(1, |x|), not kept
       # inside the support, and it failed where the grid comes close to a
       # bound: measured over this grid for 32 continuous families and three
@@ -288,8 +316,17 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
       ks <- unique(ks[ks > b[1]])
       err <- rel(distrib_cdf(distrib, ks, theta) - distrib_cdf(distrib, ks - 1, theta),
                  distrib_pdf(distrib, ks, theta))
+      # a discrete family compares an exact difference of the distribution
+      # function against the mass, with no step, so a point on a bound costs
+      # it nothing and nothing is left out
+      n_near <- 0L
+      n_all <- length(ks)
     }
-    new_check("cdf agrees with the density", err < 1e-4, err)
+    new_check("cdf agrees with the density", err < 1e-4, err,
+              if (n_near) {
+                sprintf("%d of %d grid points lay within 128 |b| eps of a non-zero bound and were left out",
+                        n_near, n_all)
+              } else NA_character_)
   })
 
   # --- quantile ------------------------------------------------------------

@@ -155,13 +155,15 @@ numerical_cross_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 
   names(out) <- keep
   for (j in match(keep, params)) {
     p <- params[j]
-    h <- fd_steps(theta[[j]], distrib@params_bounds[[p]], h_rel)
-    th_up <- theta
-    th_dn <- theta
-    th_up[[j]] <- theta[[j]] + h
-    th_dn[[j]] <- theta[[j]] - h
-    out[[p]] <- (distrib_grad_y(distrib, y, th_up) -
-      distrib_grad_y(distrib, y, th_dn)) / (2 * h)
+    quotient <- function(h) {
+      th_up <- th_dn <- theta
+      th_up[[j]] <- theta[[j]] + h
+      th_dn[[j]] <- theta[[j]] - h
+      (distrib_grad_y(distrib, y, th_up) -
+        distrib_grad_y(distrib, y, th_dn)) / (2 * h)
+    }
+    out[[p]] <- fd_stable_step(quotient, theta[[j]],
+                               distrib@params_bounds[[p]], h_rel)$value
   }
   out
 }

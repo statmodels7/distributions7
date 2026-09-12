@@ -224,30 +224,53 @@ numerical_dexpected_hessian <- function(distrib, y, theta,
   hn <- hess_names(params)
   out <- stats::setNames(vector("list", length(hn) * length(params)),
                          dexpected_names(params))
+  # A Monte Carlo expected information is not the same number twice, so the
+  # self-consistency reading fd_stable_step() takes would be of that noise
+  # rather than of the step: measured on pig1, the quotient moves by 2.75
+  # relative between two evaluations at one step, against 17.3 between the step
+  # and its half. The step is therefore chosen only where the quantity being
+  # differenced is deterministic.
+  choose_step <- !identical(approx, "mc")
+
   for (k in seq_along(params)) {
     p <- params[k]
+    E <- function(th) distrib_expected_hessian(distrib, y, th, scale = scale,
+                                               approx = approx, nsim = nsim)
     # the point the difference is taken at, and the two points it is taken
     # between, on whichever scale the derivative was asked for
     if (link) {
       lk <- distrib@link_params[[p]]
       base <- linkfunctions7::linkfun(lk, theta[[p]])
       h <- h_rel * pmax(1, abs(base))
-      up <- linkfunctions7::linkinv(lk, base + h)
-      dn <- linkfunctions7::linkinv(lk, base - h)
+      shift <- function(hh) {
+        tu <- td <- theta
+        tu[[p]] <- linkfunctions7::linkinv(lk, base + hh)
+        td[[p]] <- linkfunctions7::linkinv(lk, base - hh)
+        list(tu, td)
+      }
     } else {
-      h <- fd_steps(theta[[p]], distrib@params_bounds[[p]], h_rel)
-      up <- theta[[p]] + h
-      dn <- theta[[p]] - h
+      shift <- function(hh) {
+        tu <- td <- theta
+        tu[[p]] <- theta[[p]] + hh
+        td[[p]] <- theta[[p]] - hh
+        list(tu, td)
+      }
     }
-    tu <- td <- theta
-    tu[[p]] <- up
-    td[[p]] <- dn
-    a <- distrib_expected_hessian(distrib, y, tu, scale = scale,
-                                  approx = approx, nsim = nsim)
-    b <- distrib_expected_hessian(distrib, y, td, scale = scale,
-                                  approx = approx, nsim = nsim)
+    quotient <- function(hh) {
+      s <- shift(hh)
+      a <- E(s[[1L]]); b <- E(s[[2L]])
+      stats::setNames(lapply(hn, function(nm) (a[[nm]] - b[[nm]]) / (2 * hh)), hn)
+    }
+    # The link scale carries no finite bound, so there is nothing to choose
+    # there and the magnitude step stands.
+    q <- if (link || !choose_step) {
+      if (!link) h <- fd_steps(theta[[p]], distrib@params_bounds[[p]], h_rel)
+      quotient(h)
+    } else {
+      fd_stable_step(quotient, theta[[p]], distrib@params_bounds[[p]], h_rel)$value
+    }
     for (nm in hn) {
-      out[[paste0(nm, "_", p)]] <- (a[[nm]] - b[[nm]]) / (2 * h)
+      out[[paste0(nm, "_", p)]] <- q[[nm]]
     }
   }
   out

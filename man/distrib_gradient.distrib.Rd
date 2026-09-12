@@ -32,10 +32,14 @@ Each component is \eqn{[\ell(\theta_i + h) - \ell(\theta_i - h)]/(2h)}, so
 one gradient costs \eqn{2p} evaluations of the log-density. The step is
 \eqn{h = \varepsilon^{1/3}\max(1, |\theta_i|) \approx 6.06\times10^{-6}}
 at a parameter of order one, which balances the \eqn{O(h^2)} truncation of a
-central difference against a rounding term growing as \eqn{1/h}. Near a
-finite boundary \code{\link[=fd_steps]{fd_steps()}} shrinks it to 49\% of the distance, since
-parameter domains here are open and a step through zero returns \code{NaN} from
-the density for reasons that look like a defect in the family.
+central difference against a rounding term growing as \eqn{1/h}. Parameter
+domains here are open and a step through zero returns \code{NaN} from the density
+for reasons that look like a defect in the family, so near a finite boundary
+the step is kept inside: \code{\link[=fd_steps]{fd_steps()}} offers it cut to 49\\% of the distance
+or scaled on that distance, and \code{\link[=fd_stable_step]{fd_stable_step()}} keeps whichever agrees
+better with itself at half its own step. On a gamma at a dispersion of
+\eqn{10^{-6}} that choice is worth five orders, the relative error going
+from 3.5e-01 to 1.1e-06.
 }
 
 \section{What it delivers}{
