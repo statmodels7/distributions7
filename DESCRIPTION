@@ -1,6 +1,6 @@
 Package: distributions7
 Title: S7 Framework for Probability Distributions
-Version: 0.57.0
+Version: 0.58.0
 Authors@R: 
     person("Giovanni", "Tinervia", , "giovannitinervia9@gmail.com", role = c("aut", "cre"))
 Description: Provides a consistent S7 object-oriented infrastructure for probability distributions. Each 'distrib' object encapsulates standard statistical functions alongside analytical derivatives.
@@ -101,6 +101,7 @@ Collate:
     'multivariate.R'
     'check_distrib_mv.R'
     'cross2_derivatives.R'
+    'cross3_derivatives.R'
     'cross_derivatives_families.R'
     'cross_derivatives_simple.R'
     'cross_theta2_derivatives.R'

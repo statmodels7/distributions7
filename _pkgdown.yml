@@ -113,6 +113,7 @@ reference:
   - distrib_deriv3_y
   - distrib_cross_y
   - distrib_cross2_y
+  - distrib_cross3_y
   - distrib_grad_y_hess
   - distrib_hess_y_hess
   - distrib_grad_cdf
@@ -213,6 +214,7 @@ reference:
   - numerical_deriv_y
   - numerical_cross_y
   - numerical_cross2_y
+  - numerical_cross3_y
   - numerical_theta2_y
   - numerical_cdf_deriv
   - quad_rows
