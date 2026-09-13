@@ -530,6 +530,8 @@ respect to the unconstrained parameters.
   : Analytical Expected Hessian
 - [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
   : The Derivative of the Expected Information
+- [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
+  : The Second Derivative of the Expected Information
 - [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
   : Analytical Third-Order Derivatives
 - [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
@@ -768,6 +770,11 @@ Rarely called directly, but useful as a reference for what is happening.
   : The Names of the Expected Information's Derivative
 - [`dexpected_key()`](https://statmodels7.github.io/distributions7/reference/dexpected_key.md)
   : The Key of One Component of the Expected Information's Derivative
+- [`d2expected_names()`](https://statmodels7.github.io/distributions7/reference/d2expected_names.md)
+  : The Names of the Expected Information's Second Derivative
+- [`d2expected_key()`](https://statmodels7.github.io/distributions7/reference/d2expected_key.md)
+  : The Key of One Component of the Expected Information's Second
+  Derivative
 - [`param_smoothness()`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md)
   : Per-Parameter Smoothness of the Log-Likelihood
 - [`params_order()`](https://statmodels7.github.io/distributions7/reference/params_order.md)
@@ -2297,6 +2304,13 @@ divergent density.
 - [`deriv_indices()`](https://statmodels7.github.io/distributions7/reference/deriv_indices.md)
   : Index Tuples Behind the Higher-Order Derivative Names
 
+- [`dexpected_analytic()`](https://statmodels7.github.io/distributions7/reference/dexpected_analytic.md)
+  : The Analytic Derivatives of the Expected Information, on Either
+  Scale
+
+- [`dexpected_link()`](https://statmodels7.github.io/distributions7/reference/dexpected_link.md)
+  : The Derivatives of the Link-Scale Expected Information
+
 - [`dir_b_index()`](https://statmodels7.github.io/distributions7/reference/dir_b_index.md)
   : The Position of a Second-Derivative Block
 
@@ -2461,6 +2475,9 @@ divergent density.
 - [`distrib_cross_y.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.multivariate_distrib.md)
   : No Numerical Mixed Response Derivative in Several Dimensions
 
+- [`distrib_d2expected_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.distrib.md)
+  : Default Second Derivative of the Expected Information
+
 - [`distrib_deriv3.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvGaussianDistrib.md)
   : Multivariate Gaussian Third Derivatives
 
@@ -2507,6 +2524,26 @@ divergent density.
 
 - [`distrib_deriv_component()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv_component.md)
   : One Component of the Parent's Derivative
+
+- [`distrib_dexpected_hessian.Beta1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.Beta1Distrib.md)
+  [`distrib_d2expected_hessian.Beta1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.Beta1Distrib.md)
+  : Beta Derivatives of the Expected Information in Mean and Precision
+
+- [`distrib_dexpected_hessian.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.Gamma1Distrib.md)
+  [`distrib_d2expected_hessian.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.Gamma1Distrib.md)
+  : Gamma Derivatives of the Expected Information in Mean and Dispersion
+
+- [`distrib_dexpected_hessian.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.Gaussian1Distrib.md)
+  [`distrib_d2expected_hessian.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.Gaussian1Distrib.md)
+  : Gaussian Derivatives of the Expected Information
+
+- [`distrib_dexpected_hessian.NegBin2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin2Distrib.md)
+  [`distrib_d2expected_hessian.NegBin2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin2Distrib.md)
+  : Negative Binomial Derivatives of the Expected Information, NB2
+
+- [`distrib_dexpected_hessian.PoissonDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.PoissonDistrib.md)
+  [`distrib_d2expected_hessian.PoissonDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.PoissonDistrib.md)
+  : Poisson Derivatives of the Expected Information
 
 - [`distrib_dexpected_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.distrib.md)
   : Default Derivative of the Expected Information
@@ -2998,6 +3035,9 @@ divergent density.
 
 - [`has_mv_support()`](https://statmodels7.github.io/distributions7/reference/has_mv_support.md)
   : Whether a Multivariate Family Enumerates Its Support
+
+- [`hess_pair_name()`](https://statmodels7.github.io/distributions7/reference/hess_pair_name.md)
+  : The Hessian Name of a Pair of Parameters
 
 - [`hess_pairs()`](https://statmodels7.github.io/distributions7/reference/hess_pairs.md)
   : Invert the Hessian Component Names
