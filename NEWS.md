@@ -1,3 +1,37 @@
+# distributions7 0.59.0
+
+* **`distrib_d2expected_hessian()`, the second derivative of the expected
+  information in the parameters**, and analytic first and second derivatives
+  for `gaussian1_distrib()`, `poisson_distrib()`, `gamma1_distrib()`,
+  `negbin2_distrib()` and `beta1_distrib()`, each from a compiled kernel. The
+  exact outer Hessian of a marginal criterion on the expected information reads
+  them. Differentiating the expectation twice moves the measure twice,
+  \eqn{\partial_{cd}\mathbb{E}[\ell_{ab}] = \mathbb{E}[\ell_{abcd}] +
+  \mathbb{E}[\ell_{abd}\ell_c] + \mathbb{E}[\ell_{abc}\ell_d] +
+  \mathbb{E}[\ell_{ab}\ell_{cd}] + \mathbb{E}[\ell_{ab}\ell_c\ell_d]}, and no
+  Bartlett identity isolates those moments, so each family differentiates its
+  own written-out expected information; negbin2's
+  \eqn{\mathbb{E}[\ell_{\theta\theta}]} is a sum over the support whose mass
+  moves with the parameters, and its derivatives carry the score of the mass
+  beside the summand over the same recurrence. The link scale is Leibniz's rule
+  on \eqn{\mathbb{E}[\ell_{ab}]h_a'h_b'}, written once in `dexpected_link()`.
+  There is NO numerical default for the second derivative: a difference of the
+  first, itself a difference for most families, would be a difference of a
+  difference, so the base method signals an error. Keys come from
+  `d2expected_names()` and `d2expected_key()`.
+* Validated against routes that share no arithmetic with the kernels: the
+  moment identities by `expectation()` agree to `5.8e-10` at order 1 and
+  `6.7e-09` at order 2 over the five families (a component that is zero by
+  construction compared absolutely, the quadrature leaving `1e-10` there); the
+  stencil the first derivative replaces agrees to `1.0e-08`; the link-scale
+  second derivative agrees with a difference of the analytic link-scale first
+  to `2.5e-07`. On negbin2 at \eqn{\theta = 1000} the stencil disagrees with
+  the analytic first derivative by `4.7e-04`, and the analytic one sits on the
+  derived asymptote \eqn{2\mu^2/\theta^5}, so there the stencil is the weak
+  side. A coefficient 10 per cent out in beta1's kernel fails the order-2
+  identity test, and a Leibniz term removed fails the link-scale test on all
+  five families.
+
 # distributions7 0.58.0
 
 * **`distrib_cross3_y()`, the derivative of the third response derivative in

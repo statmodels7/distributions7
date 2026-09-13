@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R
+#' @include distrib.R generics.R dexpected_hessian.R
 NULL
 
 #' @title Negative Binomial Distribution Class, NB2
@@ -571,6 +571,44 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 S7::method(distrib_expected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
                                        threads = 1L) {
   negbin_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
+}
+
+#' @title Negative Binomial Derivatives of the Expected Information, NB2
+#' @name distrib_dexpected_hessian.NegBin2Distrib
+#' @aliases distrib_d2expected_hessian.NegBin2Distrib
+#' @description
+#' The first and second derivatives of the expected information in
+#' \eqn{(\mu, \theta)}, from a compiled kernel. \eqn{\mathbb{E}[\ell_{\mu\mu}]
+#' = -\theta/(\mu(\theta+\mu))} is differentiated in closed form and
+#' \eqn{\mathbb{E}[\ell_{\mu\theta}] = 0}. \eqn{\mathbb{E}[\ell_{\theta\theta}]
+#' = S = \sum_k p_k U_k} is a sum over the support whose mass depends on the
+#' parameters, so a derivative moves the mass as well as the summand:
+#' \deqn{\partial_x S = \sum_k p_k (U_{k,x} + U_k s_x(k)),}
+#' \deqn{\partial_{xy} S = \sum_k p_k \big(U_{k,xy} + U_{k,x} s_y + U_{k,y} s_x
+#'   + U_k (s_{xy} + s_x s_y)\big),}
+#' with \eqn{s} the score of the log-mass at \eqn{k}. Every piece is an exact
+#' polynomial in \eqn{k} or a sum \eqn{\sum_{j<k}(\theta+j)^{-r}} accumulated
+#' beside the mass, over the recurrence and stopping rule the expected
+#' information itself uses. On the link scale the result is carried across by
+#' [dexpected_link()].
+#' @param distrib A `NegBin2Distrib` object.
+#' @param y A numeric vector of observations, read for its length.
+#' @param theta A named list with `mu` and `theta`.
+#' @param scale `"parameter"` or `"link"`.
+#' @param approx,nsim Unused.
+#' @param ... Unused.
+#' @param threads A single positive integer, the kernel's thread count.
+#' @return A named list keyed as [dexpected_names()] or [d2expected_names()].
+#' @seealso [distrib_dexpected_hessian()], [distrib_d2expected_hessian()]
+#' @keywords internal
+S7::method(distrib_dexpected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+  dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
+                     function(k) negbin_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
+}
+
+S7::method(distrib_d2expected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+  dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
+                     function(k) negbin_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
 }
 
 #' @title Negative Binomial Third-Order Derivatives, NB2

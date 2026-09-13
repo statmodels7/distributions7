@@ -105,6 +105,7 @@ reference:
   - distrib_hessian
   - distrib_expected_hessian
   - distrib_dexpected_hessian
+  - distrib_d2expected_hessian
   - distrib_deriv3
   - distrib_deriv4
   - distrib_deriv5
@@ -231,6 +232,8 @@ reference:
   - hess_names
   - dexpected_names
   - dexpected_key
+  - d2expected_names
+  - d2expected_key
   - param_smoothness
   - params_order
   - kink_decomposition

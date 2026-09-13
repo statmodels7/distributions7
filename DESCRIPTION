@@ -1,6 +1,6 @@
 Package: distributions7
 Title: S7 Framework for Probability Distributions
-Version: 0.58.0
+Version: 0.59.0
 Authors@R: 
     person("Giovanni", "Tinervia", , "giovannitinervia9@gmail.com", role = c("aut", "cre"))
 Description: Provides a consistent S7 object-oriented infrastructure for probability distributions. Each 'distrib' object encapsulates standard statistical functions alongside analytical derivatives.
@@ -38,6 +38,10 @@ Collate:
     'generics.R'
     'distrib.R'
     'bernoulli_distrib.R'
+    'numerical_functions.R'
+    'utility_functions.R'
+    'numerical_derivatives.R'
+    'dexpected_hessian.R'
     'beta1_distrib.R'
     'beta2_distrib.R'
     'betabinom1_distrib.R'
@@ -69,13 +73,11 @@ Collate:
     'weibull1_distrib.R'
     'laplace2_distrib.R'
     'laplace_distrib.R'
-    'numerical_functions.R'
     'pseudohuber_distrib.R'
     'negbin2_distrib.R'
     'moments.R'
     'reparametrize.R'
     'betabinom1_higher.R'
-    'utility_functions.R'
     'cdf_derivatives.R'
     'reparam_maps.R'
     'cdf_derivatives_families.R'
@@ -95,7 +97,6 @@ Collate:
     'cdf_survival_higher.R'
     'cdf_normal_higher.R'
     'cdf_skewnormal_higher.R'
-    'numerical_derivatives.R'
     'higher_derivatives.R'
     'check_distrib.R'
     'multivariate.R'
@@ -105,7 +106,6 @@ Collate:
     'cross_derivatives_families.R'
     'cross_derivatives_simple.R'
     'cross_theta2_derivatives.R'
-    'dexpected_hessian.R'
     'dirichlet_distrib.R'
     'distributions7-package.R'
     'enet_higher.R'

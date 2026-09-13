@@ -41,6 +41,10 @@ beta_expected_hessian_cpp <- function(y, mu, phi, threads = 1L) {
     .Call(`_distributions7_beta_expected_hessian_cpp`, y, mu, phi, threads)
 }
 
+beta_dexpected_cpp <- function(y, mu, phi, order, threads = 1L) {
+    .Call(`_distributions7_beta_dexpected_cpp`, y, mu, phi, order, threads)
+}
+
 beta_deriv3_cpp <- function(y, mu, phi, threads = 1L) {
     .Call(`_distributions7_beta_deriv3_cpp`, y, mu, phi, threads)
 }
@@ -205,6 +209,10 @@ gamma1_deriv4_cpp <- function(y, mu, phi, threads = 1L) {
     .Call(`_distributions7_gamma1_deriv4_cpp`, y, mu, phi, threads)
 }
 
+gamma1_dexpected_cpp <- function(y, mu, phi, order, threads = 1L) {
+    .Call(`_distributions7_gamma1_dexpected_cpp`, y, mu, phi, order, threads)
+}
+
 gamma1_deriv4_expected_cpp <- function(y, mu, phi, threads = 1L) {
     .Call(`_distributions7_gamma1_deriv4_expected_cpp`, y, mu, phi, threads)
 }
@@ -235,6 +243,10 @@ gaussian_hessian_cpp <- function(y, mu, sigma, threads = 1L) {
 
 gaussian_expected_hessian_cpp <- function(y, mu, sigma, threads = 1L) {
     .Call(`_distributions7_gaussian_expected_hessian_cpp`, y, mu, sigma, threads)
+}
+
+gaussian_dexpected_cpp <- function(y, mu, sigma, order, threads = 1L) {
+    .Call(`_distributions7_gaussian_dexpected_cpp`, y, mu, sigma, order, threads)
 }
 
 gaussian2_gradient_cpp <- function(y, mu, sigma2, threads = 1L) {
@@ -493,6 +505,10 @@ lognormal_deriv4_expected_cpp <- function(y, mu, sigma2, threads = 1L) {
     .Call(`_distributions7_lognormal_deriv4_expected_cpp`, y, mu, sigma2, threads)
 }
 
+negbin_dexpected_cpp <- function(y, mu, theta, order, threads = 1L) {
+    .Call(`_distributions7_negbin_dexpected_cpp`, y, mu, theta, order, threads)
+}
+
 negbin_gradient_cpp <- function(y, mu, theta, threads = 1L) {
     .Call(`_distributions7_negbin_gradient_cpp`, y, mu, theta, threads)
 }
@@ -607,6 +623,10 @@ poisson_hessian_cpp <- function(y, mu, threads = 1L) {
 
 poisson_expected_hessian_cpp <- function(y, mu, threads = 1L) {
     .Call(`_distributions7_poisson_expected_hessian_cpp`, y, mu, threads)
+}
+
+poisson_dexpected_cpp <- function(y, mu, order, threads = 1L) {
+    .Call(`_distributions7_poisson_dexpected_cpp`, y, mu, order, threads)
 }
 
 poisson_deriv3_cpp <- function(y, mu, threads = 1L) {

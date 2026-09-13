@@ -222,6 +222,69 @@ List gamma1_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector phi,
                         Named("phi_phi_phi_phi") = e);
 }
 
+// The derivatives of the expected information in the parameters.
+//
+//   E_mm = -s/mu^2,   E_mp = 0,   E_pp = q(s) = f2(s) s^4,   s = 1/phi,
+//
+// with f2 = 1/s - psi'(s) and its derivatives f3, f4 the psi_diff.h "rest"
+// forms, so no cancellation is formed at large s. With ds/dphi = -s^2,
+//
+//   d_phi E_pp    = -s^2 q'(s),            q'  = f3 s^4 + 4 f2 s^3
+//   d_phiphi E_pp =  s^4 q''(s) + 2 s^3 q', q'' = f4 s^4 + 8 f3 s^3 + 12 f2 s^2
+//
+// and E_mm = -mu^-2 phi^-1 is differentiated as a monomial. E_mp is zero
+// identically, so every derivative of it is zero.
+// [[Rcpp::export]]
+List gamma1_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector phi,
+                          int order, int threads = 1) {
+    int n = y.size();
+    bool m_s = (mu.size() == 1), p_s = (phi.size() == 1);
+    const double *mp = mu.begin(), *pp = phi.begin();
+    NumericVector zero(n);
+    if (order == 1) {
+        NumericVector mmm(n), mmp(n), ppp(n);
+        double *a = mmm.begin(), *b = mmp.begin(), *c = ppp.begin();
+        d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+            double m = m_s ? mp[0] : mp[i];
+            double p = p_s ? pp[0] : pp[i];
+            double s = 1.0 / p, s2 = s * s, s3 = s2 * s, s4 = s2 * s2;
+            double im = 1.0 / m, im2 = im * im;
+            double f2 = d7::psi1_rest(s), f3 = d7::psi2_rest(s);
+            double q1 = f3 * s4 + 4.0 * f2 * s3;
+            a[i] = 2.0 * s * im2 * im;
+            b[i] = s2 * im2;
+            c[i] = -s2 * q1;
+        });
+        return List::create(
+            Named("mu_mu_mu") = mmm, Named("mu_mu_phi") = mmp,
+            Named("phi_phi_mu") = zero, Named("phi_phi_phi") = ppp,
+            Named("mu_phi_mu") = clone(zero), Named("mu_phi_phi") = clone(zero));
+    }
+    NumericVector mm_mm(n), mm_pp(n), mm_mp(n), pp_pp(n);
+    double *a = mm_mm.begin(), *b = mm_pp.begin(), *c = mm_mp.begin(),
+           *d = pp_pp.begin();
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = m_s ? mp[0] : mp[i];
+        double p = p_s ? pp[0] : pp[i];
+        double s = 1.0 / p, s2 = s * s, s3 = s2 * s, s4 = s2 * s2;
+        double im = 1.0 / m, im2 = im * im;
+        double f2 = d7::psi1_rest(s), f3 = d7::psi2_rest(s), f4 = d7::psi3_rest(s);
+        double q1 = f3 * s4 + 4.0 * f2 * s3;
+        double q2 = f4 * s4 + 8.0 * f3 * s3 + 12.0 * f2 * s2;
+        a[i] = -6.0 * s * im2 * im2;
+        b[i] = -2.0 * s3 * im2;
+        c[i] = -2.0 * s2 * im2 * im;
+        d[i] = s4 * q2 + 2.0 * s3 * q1;
+    });
+    return List::create(
+        Named("mu_mu_mu_mu") = mm_mm, Named("mu_mu_phi_phi") = mm_pp,
+        Named("mu_mu_mu_phi") = mm_mp,
+        Named("phi_phi_mu_mu") = zero, Named("phi_phi_phi_phi") = pp_pp,
+        Named("phi_phi_mu_phi") = clone(zero),
+        Named("mu_phi_mu_mu") = clone(zero), Named("mu_phi_phi_phi") = clone(zero),
+        Named("mu_phi_mu_phi") = clone(zero));
+}
+
 // [[Rcpp::export]]
 List gamma1_deriv4_expected_cpp(NumericVector y, NumericVector mu,
                                 NumericVector phi, int threads = 1) {

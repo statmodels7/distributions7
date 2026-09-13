@@ -143,6 +143,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// beta_dexpected_cpp
+List beta_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector phi, int order, int threads);
+RcppExport SEXP _distributions7_beta_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(beta_dexpected_cpp(y, mu, phi, order, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // beta_deriv3_cpp
 List beta_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector phi, int threads);
 RcppExport SEXP _distributions7_beta_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP, SEXP threadsSEXP) {
@@ -710,6 +725,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gamma1_dexpected_cpp
+List gamma1_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector phi, int order, int threads);
+RcppExport SEXP _distributions7_gamma1_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gamma1_dexpected_cpp(y, mu, phi, order, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gamma1_deriv4_expected_cpp
 List gamma1_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector phi, int threads);
 RcppExport SEXP _distributions7_gamma1_deriv4_expected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP, SEXP threadsSEXP) {
@@ -819,6 +849,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
     rcpp_result_gen = Rcpp::wrap(gaussian_expected_hessian_cpp(y, mu, sigma, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gaussian_dexpected_cpp
+List gaussian_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int order, int threads);
+RcppExport SEXP _distributions7_gaussian_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gaussian_dexpected_cpp(y, mu, sigma, order, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1716,6 +1761,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// negbin_dexpected_cpp
+List negbin_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector theta, int order, int threads);
+RcppExport SEXP _distributions7_negbin_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(negbin_dexpected_cpp(y, mu, theta, order, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // negbin_gradient_cpp
 List negbin_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta, int threads);
 RcppExport SEXP _distributions7_negbin_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP, SEXP threadsSEXP) {
@@ -2118,6 +2178,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// poisson_dexpected_cpp
+List poisson_dexpected_cpp(NumericVector y, NumericVector mu, int order, int threads);
+RcppExport SEXP _distributions7_poisson_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(poisson_dexpected_cpp(y, mu, order, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // poisson_deriv3_cpp
 List poisson_deriv3_cpp(NumericVector y, NumericVector mu, int threads);
 RcppExport SEXP _distributions7_poisson_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
@@ -2399,6 +2473,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_beta_gradient_cpp", (DL_FUNC) &_distributions7_beta_gradient_cpp, 4},
     {"_distributions7_beta_hessian_cpp", (DL_FUNC) &_distributions7_beta_hessian_cpp, 4},
     {"_distributions7_beta_expected_hessian_cpp", (DL_FUNC) &_distributions7_beta_expected_hessian_cpp, 4},
+    {"_distributions7_beta_dexpected_cpp", (DL_FUNC) &_distributions7_beta_dexpected_cpp, 5},
     {"_distributions7_beta_deriv3_cpp", (DL_FUNC) &_distributions7_beta_deriv3_cpp, 4},
     {"_distributions7_beta_deriv4_cpp", (DL_FUNC) &_distributions7_beta_deriv4_cpp, 4},
     {"_distributions7_betabinom_gradient_cpp", (DL_FUNC) &_distributions7_betabinom_gradient_cpp, 5},
@@ -2440,6 +2515,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_gamma1_deriv3_cpp", (DL_FUNC) &_distributions7_gamma1_deriv3_cpp, 4},
     {"_distributions7_gamma1_deriv3_expected_cpp", (DL_FUNC) &_distributions7_gamma1_deriv3_expected_cpp, 4},
     {"_distributions7_gamma1_deriv4_cpp", (DL_FUNC) &_distributions7_gamma1_deriv4_cpp, 4},
+    {"_distributions7_gamma1_dexpected_cpp", (DL_FUNC) &_distributions7_gamma1_dexpected_cpp, 5},
     {"_distributions7_gamma1_deriv4_expected_cpp", (DL_FUNC) &_distributions7_gamma1_deriv4_expected_cpp, 4},
     {"_distributions7_gamma_deriv3_cpp", (DL_FUNC) &_distributions7_gamma_deriv3_cpp, 4},
     {"_distributions7_gamma_deriv3_expected_cpp", (DL_FUNC) &_distributions7_gamma_deriv3_expected_cpp, 4},
@@ -2448,6 +2524,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_gaussian_gradient_cpp", (DL_FUNC) &_distributions7_gaussian_gradient_cpp, 4},
     {"_distributions7_gaussian_hessian_cpp", (DL_FUNC) &_distributions7_gaussian_hessian_cpp, 4},
     {"_distributions7_gaussian_expected_hessian_cpp", (DL_FUNC) &_distributions7_gaussian_expected_hessian_cpp, 4},
+    {"_distributions7_gaussian_dexpected_cpp", (DL_FUNC) &_distributions7_gaussian_dexpected_cpp, 5},
     {"_distributions7_gaussian2_gradient_cpp", (DL_FUNC) &_distributions7_gaussian2_gradient_cpp, 4},
     {"_distributions7_gaussian2_hessian_cpp", (DL_FUNC) &_distributions7_gaussian2_hessian_cpp, 4},
     {"_distributions7_gaussian2_expected_hessian_cpp", (DL_FUNC) &_distributions7_gaussian2_expected_hessian_cpp, 4},
@@ -2512,6 +2589,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_lognormal_deriv3_expected_cpp", (DL_FUNC) &_distributions7_lognormal_deriv3_expected_cpp, 4},
     {"_distributions7_lognormal_deriv4_cpp", (DL_FUNC) &_distributions7_lognormal_deriv4_cpp, 4},
     {"_distributions7_lognormal_deriv4_expected_cpp", (DL_FUNC) &_distributions7_lognormal_deriv4_expected_cpp, 4},
+    {"_distributions7_negbin_dexpected_cpp", (DL_FUNC) &_distributions7_negbin_dexpected_cpp, 5},
     {"_distributions7_negbin_gradient_cpp", (DL_FUNC) &_distributions7_negbin_gradient_cpp, 4},
     {"_distributions7_negbin_hessian_cpp", (DL_FUNC) &_distributions7_negbin_hessian_cpp, 4},
     {"_distributions7_negbin_expected_hessian_cpp", (DL_FUNC) &_distributions7_negbin_expected_hessian_cpp, 4},
@@ -2541,6 +2619,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_poisson_gradient_cpp", (DL_FUNC) &_distributions7_poisson_gradient_cpp, 3},
     {"_distributions7_poisson_hessian_cpp", (DL_FUNC) &_distributions7_poisson_hessian_cpp, 3},
     {"_distributions7_poisson_expected_hessian_cpp", (DL_FUNC) &_distributions7_poisson_expected_hessian_cpp, 3},
+    {"_distributions7_poisson_dexpected_cpp", (DL_FUNC) &_distributions7_poisson_dexpected_cpp, 4},
     {"_distributions7_poisson_deriv3_cpp", (DL_FUNC) &_distributions7_poisson_deriv3_cpp, 3},
     {"_distributions7_poisson_deriv3_expected_cpp", (DL_FUNC) &_distributions7_poisson_deriv3_expected_cpp, 3},
     {"_distributions7_poisson_deriv4_cpp", (DL_FUNC) &_distributions7_poisson_deriv4_cpp, 3},

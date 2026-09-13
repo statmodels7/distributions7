@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R
+#' @include distrib.R generics.R dexpected_hessian.R
 NULL
 
 #' @title Gaussian Distribution Class, Mean and Standard Deviation
@@ -463,6 +463,39 @@ S7::method(distrib_hessian, Gaussian1Distrib) <- function(distrib, y, theta, sca
 #' distrib_expected_hessian(d, 0, th)$mu_sigma
 S7::method(distrib_expected_hessian, Gaussian1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
   gaussian_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
+}
+
+#' @title Gaussian Derivatives of the Expected Information
+#' @name distrib_dexpected_hessian.Gaussian1Distrib
+#' @aliases distrib_d2expected_hessian.Gaussian1Distrib
+#' @description
+#' The first and second derivatives of the expected information in the
+#' parameters, in closed form from a compiled kernel. Only the standard
+#' deviation moves it:
+#' \deqn{\partial_\sigma \mathbb{E}[\ell_{\mu\mu}] = \dfrac{2}{\sigma^3},\quad
+#'       \partial_\sigma \mathbb{E}[\ell_{\sigma\sigma}] = \dfrac{4}{\sigma^3},\quad
+#'       \partial_{\sigma\sigma} \mathbb{E}[\ell_{\mu\mu}] = -\dfrac{6}{\sigma^4},\quad
+#'       \partial_{\sigma\sigma} \mathbb{E}[\ell_{\sigma\sigma}] = -\dfrac{12}{\sigma^4},}
+#' every other component being zero. On the link scale the result is carried
+#' across by [dexpected_link()].
+#' @param distrib A `Gaussian1Distrib` object.
+#' @param y A numeric vector of observations, read for its length.
+#' @param theta A named list with `mu` and `sigma`.
+#' @param scale `"parameter"` or `"link"`.
+#' @param approx,nsim Unused.
+#' @param ... Unused.
+#' @param threads A single positive integer, the kernel's thread count.
+#' @return A named list keyed as [dexpected_names()] or [d2expected_names()].
+#' @seealso [distrib_dexpected_hessian()], [distrib_d2expected_hessian()]
+#' @keywords internal
+S7::method(distrib_dexpected_hessian, Gaussian1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+  dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
+                     function(k) gaussian_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
+}
+
+S7::method(distrib_d2expected_hessian, Gaussian1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+  dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
+                     function(k) gaussian_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
 }
 
 #' @title Gaussian Third-Order Derivatives

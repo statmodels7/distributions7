@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R
+#' @include distrib.R generics.R dexpected_hessian.R
 NULL
 
 #' @title Poisson Distribution Class
@@ -453,6 +453,33 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
                                        threads = 1L) {
   poisson_expected_hessian_cpp(y, theta[[1]], threads)
+}
+
+#' @title Poisson Derivatives of the Expected Information
+#' @name distrib_dexpected_hessian.PoissonDistrib
+#' @aliases distrib_d2expected_hessian.PoissonDistrib
+#' @description
+#' The first and second derivatives of \eqn{\mathbb{E}[\ell_{\mu\mu}] =
+#' -1/\mu}, \eqn{1/\mu^2} and \eqn{-2/\mu^3}, from a compiled kernel. On the
+#' link scale the result is carried across by [dexpected_link()].
+#' @param distrib A `PoissonDistrib` object.
+#' @param y A numeric vector of observations, read for its length.
+#' @param theta A named list with `mu`.
+#' @param scale `"parameter"` or `"link"`.
+#' @param approx,nsim Unused.
+#' @param ... Unused.
+#' @param threads A single positive integer, the kernel's thread count.
+#' @return A named list keyed as [dexpected_names()] or [d2expected_names()].
+#' @seealso [distrib_dexpected_hessian()], [distrib_d2expected_hessian()]
+#' @keywords internal
+S7::method(distrib_dexpected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+  dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
+                     function(k) poisson_dexpected_cpp(y, theta[[1]], k, threads))
+}
+
+S7::method(distrib_d2expected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+  dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
+                     function(k) poisson_dexpected_cpp(y, theta[[1]], k, threads))
 }
 
 #' @title Poisson Third-Order Derivative

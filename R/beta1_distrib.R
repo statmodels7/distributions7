@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R
+#' @include distrib.R generics.R dexpected_hessian.R
 NULL
 
 #' @title Beta Distribution Class, Mean and Precision
@@ -525,6 +525,43 @@ S7::method(distrib_hessian, Beta1Distrib) <- function(distrib, y, theta, scale =
 S7::method(distrib_expected_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
                                        threads = 1L) {
   beta_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
+}
+
+#' @title Beta Derivatives of the Expected Information in Mean and Precision
+#' @name distrib_dexpected_hessian.Beta1Distrib
+#' @aliases distrib_d2expected_hessian.Beta1Distrib
+#' @description
+#' The first and second derivatives of the expected information in
+#' \eqn{(\mu, \phi)}, from a compiled kernel. With \eqn{\alpha = \mu\phi},
+#' \eqn{\beta = (1-\mu)\phi} and polygamma functions evaluated there and at
+#' \eqn{\phi},
+#' \deqn{\mathbb{E}[\ell_{\mu\mu}] = -\phi^2(\psi'(\alpha) + \psi'(\beta)),\quad
+#'   \mathbb{E}[\ell_{\mu\phi}] = -\phi(\mu\psi'(\alpha) - (1-\mu)\psi'(\beta)),}
+#' \deqn{\mathbb{E}[\ell_{\phi\phi}] = \psi'(\phi) - \mu^2\psi'(\alpha)
+#'   - (1-\mu)^2\psi'(\beta),}
+#' and every component is the ordinary derivative of one of the three through
+#' \eqn{\partial\alpha/\partial\mu = \phi}, \eqn{\partial\beta/\partial\mu =
+#' -\phi}, \eqn{\partial\alpha/\partial\phi = \mu},
+#' \eqn{\partial\beta/\partial\phi = 1-\mu}. On the link scale the result is
+#' carried across by [dexpected_link()].
+#' @param distrib A `Beta1Distrib` object.
+#' @param y A numeric vector of observations, read for its length.
+#' @param theta A named list with `mu` and `phi`.
+#' @param scale `"parameter"` or `"link"`.
+#' @param approx,nsim Unused.
+#' @param ... Unused.
+#' @param threads A single positive integer, the kernel's thread count.
+#' @return A named list keyed as [dexpected_names()] or [d2expected_names()].
+#' @seealso [distrib_dexpected_hessian()], [distrib_d2expected_hessian()]
+#' @keywords internal
+S7::method(distrib_dexpected_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+  dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
+                     function(k) beta_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
+}
+
+S7::method(distrib_d2expected_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+  dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
+                     function(k) beta_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
 }
 
 #' @title Beta Third-Order Derivatives in Mean and Precision

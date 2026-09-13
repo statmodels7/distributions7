@@ -158,6 +158,150 @@ static double nb_E_ltt(double mu, double theta) {
     return s;
 }
 
+// THE DERIVATIVES OF E[l_theta_theta] IN (mu, theta).
+//
+// nb_E_ltt() above is S(mu, theta) = sum_k p_k U_k with
+//   U_k = sum_{j<k} u_j = k/(theta c) - A2_k,   c = theta + mu,
+//   A_r,k = sum_{j<k} (theta + j)^-r,
+// and differentiating a sum weighted by the mass moves the mass as well as the
+// summand, p_k,x = p_k s_x(k) with s the score of the log-mass at k:
+//
+//   d_x  S = sum p (U_x + U s_x)
+//   d_xy S = sum p (U_xy + U_x s_y + U_y s_x + U (s_xy + s_x s_y))
+//
+// where every piece is an exact polynomial in k or one of the A_r:
+//   U_mu      = -k/(theta c^2)
+//   U_theta   = -k(2 theta + mu)/(theta^2 c^2) + 2 A3
+//   U_mumu    =  2k/(theta c^3)
+//   U_mutheta =  k(3 theta + mu)/(theta^2 c^3)
+//   U_thth    =  2k(3 theta^2 + 3 theta mu + mu^2)/(theta^3 c^3) - 6 A4
+//   s_mu      =  theta (k - mu)/(mu c)
+//   s_theta   =  A1 - log1p(mu/theta) + (mu - k)/c
+//   s_mumu    =  (k + theta)/c^2 - k/mu^2
+//   s_mutheta =  (k - mu)/c^2
+//   s_thth    = -A2 + mu/(theta c) + (k - mu)/c^2
+//
+// The mass comes from the recurrence and the stopping rule of nb_E_ltt(),
+// seed and log-scale switch included, for the reasons recorded there; the tail
+// past 1 - 1e-12 of the mass is dropped. Order 1 writes (d_mu S, d_theta S) to
+// out, order 2 (d_mumu S, d_thth S, d_mutheta S).
+static void nb_dE_ltt(double mu, double theta, int order, double *out) {
+    double ratio = mu / (theta + mu);
+    double lratio = std::log(mu) - std::log(theta + mu);
+    double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + mu / theta))
+                 + 40.0 * (mu + theta) / theta;
+    int kmax = (int) std::min(cap, 2.0e9);
+    const double c = theta + mu, c2 = c * c, c3 = c2 * c;
+    const double den = theta * c;
+    const double L = std::log1p(mu / theta);
+    const double th2 = theta * theta, th3 = th2 * theta;
+
+    double U = 0.0, A1 = 0.0, A2 = 0.0, A3 = 0.0, A4 = 0.0, cum = 0.0;
+    double r1 = 0.0, r2 = 0.0, r3 = 0.0;
+    double lpk = -theta * std::log1p(mu / theta);
+    bool logscale = (lpk <= -640.0);
+    double pk = std::exp(lpk);
+    for (int k = 0; k <= kmax; ++k) {
+        double kd = (double) k;
+        double sm = theta * (kd - mu) / (mu * c);
+        double st = A1 - L + (mu - kd) / c;
+        double Um = -kd / (theta * c2);
+        double Ut = -kd * (2.0 * theta + mu) / (th2 * c2) + 2.0 * A3;
+        if (order == 1) {
+            r1 += pk * (Um + U * sm);
+            r2 += pk * (Ut + U * st);
+        } else {
+            double smm = (kd + theta) / c2 - kd / (mu * mu);
+            double smt = (kd - mu) / c2;
+            double stt = -A2 + mu / (theta * c) + (kd - mu) / c2;
+            double Umm = 2.0 * kd / (theta * c3);
+            double Umt = kd * (3.0 * theta + mu) / (th2 * c3);
+            double Utt = 2.0 * kd * (3.0 * th2 + 3.0 * theta * mu + mu * mu) /
+                         (th3 * c3) - 6.0 * A4;
+            r1 += pk * (Umm + 2.0 * Um * sm + U * (smm + sm * sm));
+            r2 += pk * (Utt + 2.0 * Ut * st + U * (stt + st * st));
+            r3 += pk * (Umt + Um * st + Ut * sm + U * (smt + sm * st));
+        }
+        cum += pk;
+        bool last = (cum >= 1.0 - 1e-12 && k >= 100);
+        double tk = theta + kd, iv = 1.0 / tk, iv2 = iv * iv;
+        U += (theta * (2.0 * kd - mu) + kd * kd) / (den * tk * tk);
+        A1 += iv;
+        A2 += iv2;
+        A3 += iv2 * iv;
+        A4 += iv2 * iv2;
+        if (last) break;
+        if (logscale) {
+            lpk += lratio + std::log((k + theta) / (k + 1.0));
+            pk = std::exp(lpk);
+            if (lpk > -640.0) logscale = false;
+        } else {
+            pk *= (k + theta) / (k + 1.0) * ratio;
+        }
+    }
+    out[0] = r1;
+    out[1] = r2;
+    if (order != 1) out[2] = r3;
+}
+
+// The derivatives of the expected information in the parameters.
+//   E_mm = -theta/(mu c) = -1/mu + 1/c,  E_mt = 0,  E_tt = nb_E_ltt(),
+// with E_mm's written in factored form so that nothing cancels as theta -> 0:
+//   d_mu E_mm      =  theta(theta + 2 mu)/(mu^2 c^2),  d_theta E_mm = -1/c^2
+//   d_mumu E_mm    = -2 theta (c^2 + c mu + mu^2)/(mu^3 c^3)
+//   d_mutheta E_mm =  2/c^3,  d_thth E_mm = 2/c^3.
+// [[Rcpp::export]]
+List negbin_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector theta,
+                          int order, int threads = 1) {
+    int n = y.size();
+    bool m_s = (mu.size() == 1), t_s = (theta.size() == 1);
+    const double *mp = mu.begin(), *tp = theta.begin();
+    NumericVector zero(n);
+    if (order == 1) {
+        NumericVector mm_m(n), mm_t(n), tt_m(n), tt_t(n);
+        double *a = mm_m.begin(), *b = mm_t.begin(), *e = tt_m.begin(),
+               *f = tt_t.begin();
+        d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+            double m = m_s ? mp[0] : mp[i];
+            double th = t_s ? tp[0] : tp[i];
+            double c = th + m, c2 = c * c;
+            double r[3];
+            nb_dE_ltt(m, th, 1, r);
+            a[i] = th * (th + 2.0 * m) / (m * m * c2);
+            b[i] = -1.0 / c2;
+            e[i] = r[0];
+            f[i] = r[1];
+        });
+        return List::create(
+            Named("mu_mu_mu") = mm_m, Named("mu_mu_theta") = mm_t,
+            Named("theta_theta_mu") = tt_m, Named("theta_theta_theta") = tt_t,
+            Named("mu_theta_mu") = zero, Named("mu_theta_theta") = clone(zero));
+    }
+    NumericVector mm_mm(n), mm_tt(n), mm_mt(n), tt_mm(n), tt_tt(n), tt_mt(n);
+    double *a = mm_mm.begin(), *b = mm_tt.begin(), *cc = mm_mt.begin(),
+           *e = tt_mm.begin(), *f = tt_tt.begin(), *g = tt_mt.begin();
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = m_s ? mp[0] : mp[i];
+        double th = t_s ? tp[0] : tp[i];
+        double c = th + m, c2 = c * c, c3 = c2 * c;
+        double r[3];
+        nb_dE_ltt(m, th, 2, r);
+        a[i] = -2.0 * th * (c2 + c * m + m * m) / (m * m * m * c3);
+        b[i] = 2.0 / c3;
+        cc[i] = 2.0 / c3;
+        e[i] = r[0];
+        f[i] = r[1];
+        g[i] = r[2];
+    });
+    return List::create(
+        Named("mu_mu_mu_mu") = mm_mm, Named("mu_mu_theta_theta") = mm_tt,
+        Named("mu_mu_mu_theta") = mm_mt,
+        Named("theta_theta_mu_mu") = tt_mm, Named("theta_theta_theta_theta") = tt_tt,
+        Named("theta_theta_mu_theta") = tt_mt,
+        Named("mu_theta_mu_mu") = zero, Named("mu_theta_theta_theta") = clone(zero),
+        Named("mu_theta_mu_theta") = clone(zero));
+}
+
 // [[Rcpp::export]]
 List negbin_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta,
                         int threads = 1) {

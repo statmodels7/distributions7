@@ -109,3 +109,50 @@ List gaussian_expected_hessian_cpp(NumericVector y, NumericVector mu,
         Named("mu_sigma") = hess_mu_sigma
     );
 }
+
+// The derivatives of the expected information in the parameters. With
+// E_mm = -1/sigma^2, E_ss = -2/sigma^2 and E_ms = 0, only the sigma
+// derivatives survive:
+//   d_s E_mm = 2/sigma^3,   d_s E_ss = 4/sigma^3,
+//   d_ss E_mm = -6/sigma^4, d_ss E_ss = -12/sigma^4.
+// Keys are "<ab>_<c>" at order 1 and "<ab>_<cd>" at order 2, with <ab> and
+// <cd> spelled as hess_names() spells them.
+// [[Rcpp::export]]
+List gaussian_dexpected_cpp(NumericVector y, NumericVector mu,
+                            NumericVector sigma, int order, int threads = 1) {
+    int n = y.size();
+    bool sigma_is_scalar = (sigma.size() == 1);
+    const double *sp = sigma.begin();
+    NumericVector zero(n);
+    if (order == 1) {
+        NumericVector mms(n), sss(n);
+        double *a = mms.begin(), *b = sss.begin();
+        d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
+            double s = sigma_is_scalar ? sp[0] : sp[i];
+            double inv = 1.0 / s, inv3 = inv * inv * inv;
+            a[i] = 2.0 * inv3;
+            b[i] = 4.0 * inv3;
+        });
+        return List::create(
+            Named("mu_mu_mu") = zero, Named("mu_mu_sigma") = mms,
+            Named("sigma_sigma_mu") = clone(zero), Named("sigma_sigma_sigma") = sss,
+            Named("mu_sigma_mu") = clone(zero), Named("mu_sigma_sigma") = clone(zero));
+    }
+    NumericVector mmss(n), ssss(n);
+    double *a = mmss.begin(), *b = ssss.begin();
+    d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
+        double s = sigma_is_scalar ? sp[0] : sp[i];
+        double inv = 1.0 / s, inv2 = inv * inv, inv4 = inv2 * inv2;
+        a[i] = -6.0 * inv4;
+        b[i] = -12.0 * inv4;
+    });
+    return List::create(
+        Named("mu_mu_mu_mu") = zero, Named("mu_mu_sigma_sigma") = mmss,
+        Named("mu_mu_mu_sigma") = clone(zero),
+        Named("sigma_sigma_mu_mu") = clone(zero),
+        Named("sigma_sigma_sigma_sigma") = ssss,
+        Named("sigma_sigma_mu_sigma") = clone(zero),
+        Named("mu_sigma_mu_mu") = clone(zero),
+        Named("mu_sigma_sigma_sigma") = clone(zero),
+        Named("mu_sigma_mu_sigma") = clone(zero));
+}

@@ -69,6 +69,24 @@ List poisson_expected_hessian_cpp(NumericVector y, NumericVector mu,
         }
         hess_mu_mu[i] = val;
     });
-    
+
     return List::create(Named("mu_mu") = hess_mu_mu);
+}
+
+// The derivatives of E_mm = -1/mu: 1/mu^2 at order 1, -2/mu^3 at order 2.
+// [[Rcpp::export]]
+List poisson_dexpected_cpp(NumericVector y, NumericVector mu, int order,
+                           int threads = 1) {
+    int n = y.size();
+    NumericVector out(n);
+    bool mu_is_scalar = (mu.size() == 1);
+    const double *mp = mu.begin();
+    double *o = out.begin();
+    d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
+        double m = mu_is_scalar ? mp[0] : mp[i];
+        double inv = 1.0 / m;
+        o[i] = (order == 1) ? inv * inv : -2.0 * inv * inv * inv;
+    });
+    if (order == 1) return List::create(Named("mu_mu_mu") = out);
+    return List::create(Named("mu_mu_mu_mu") = out);
 }

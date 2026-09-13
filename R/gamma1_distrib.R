@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R
+#' @include distrib.R generics.R dexpected_hessian.R
 NULL
 
 #' @title Gamma Distribution Class, Mean and Dispersion
@@ -539,6 +539,41 @@ S7::method(distrib_expected_hessian, Gamma1Distrib) <- function(distrib, y, thet
                                                                  nsim = 10000, ...,
                                                                  threads = 1L) {
   gamma1_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
+}
+
+#' @title Gamma Derivatives of the Expected Information in Mean and Dispersion
+#' @name distrib_dexpected_hessian.Gamma1Distrib
+#' @aliases distrib_d2expected_hessian.Gamma1Distrib
+#' @description
+#' The first and second derivatives of the expected information in
+#' \eqn{(\mu, \phi)}, from a compiled kernel. With \eqn{s = 1/\phi},
+#' \eqn{\mathbb{E}[\ell_{\mu\mu}] = -s/\mu^2}, \eqn{\mathbb{E}[\ell_{\mu\phi}]
+#' = 0} and \eqn{\mathbb{E}[\ell_{\phi\phi}] = q(s) = s^4(1/s - \psi'(s))};
+#' writing \eqn{f_2 = 1/s - \psi'(s)} and \eqn{f_3}, \eqn{f_4} its derivatives,
+#' \deqn{\partial_\phi \mathbb{E}[\ell_{\phi\phi}] = -s^2 q'(s),\qquad
+#'   \partial_{\phi\phi} \mathbb{E}[\ell_{\phi\phi}] = s^4 q''(s) + 2 s^3 q'(s),}
+#' with \eqn{q' = f_3 s^4 + 4 f_2 s^3} and \eqn{q'' = f_4 s^4 + 8 f_3 s^3 +
+#' 12 f_2 s^2}, each \eqn{f_k} read in the form that forms no cancellation at
+#' large \eqn{s}. The derivatives of \eqn{-\mu^{-2}\phi^{-1}} are monomials. On
+#' the link scale the result is carried across by [dexpected_link()].
+#' @param distrib A `Gamma1Distrib` object.
+#' @param y A numeric vector of observations, read for its length.
+#' @param theta A named list with `mu` and `phi`.
+#' @param scale `"parameter"` or `"link"`.
+#' @param approx,nsim Unused.
+#' @param ... Unused.
+#' @param threads A single positive integer, the kernel's thread count.
+#' @return A named list keyed as [dexpected_names()] or [d2expected_names()].
+#' @seealso [distrib_dexpected_hessian()], [distrib_d2expected_hessian()]
+#' @keywords internal
+S7::method(distrib_dexpected_hessian, Gamma1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+  dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
+                     function(k) gamma1_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
+}
+
+S7::method(distrib_d2expected_hessian, Gamma1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+  dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
+                     function(k) gamma1_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
 }
 
 #' @title Gamma Third-Order Derivatives in Mean and Dispersion

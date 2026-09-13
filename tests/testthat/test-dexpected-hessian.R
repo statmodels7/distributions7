@@ -108,3 +108,128 @@ test_that("the keys are built and enumerated by the same rule", {
   expect_named(distrib_dexpected_hessian(d, 0, list(mu = 2, phi = 1.5)),
                dexpected_names(d@params), ignore.order = TRUE)
 })
+
+# The five families whose derivatives of the expected information are written
+# out in a compiled kernel, at a point where every component that is not zero
+# by construction is of order one.
+analytic_dexpected_cases <- function() list(
+  list(d = gaussian1_distrib(), th = list(mu = 0.4, sigma = 1.7)),
+  list(d = poisson_distrib(),   th = list(mu = 3.2)),
+  list(d = gamma1_distrib(),    th = list(mu = 2.1, phi = 0.37)),
+  list(d = negbin2_distrib(),   th = list(mu = 4.3, theta = 2.6)),
+  list(d = beta1_distrib(),     th = list(mu = 0.42, phi = 5.5))
+)
+
+# |a - b| against the size of the whole list, so that a component that is zero
+# by construction is compared absolutely: the quadrature leaves 1e-10 there.
+expect_close_list <- function(a, b, tol) {
+  sc <- max(1, vapply(b, function(v) max(abs(v)), numeric(1)))
+  gap <- vapply(names(b), function(k) max(abs(a[[k]] - b[[k]])), numeric(1))
+  expect_lt(max(gap) / sc, tol)
+}
+
+test_that("the analytic first derivatives obey E[l_abc] + E[l_ab l_c]", {
+  # The right-hand side by expectation() -- a quadrature or an exact sum over
+  # the support -- which shares no arithmetic with the kernels.
+  for (cs in analytic_dexpected_cases()) {
+    d <- cs$d; th <- cs$th; P <- d@params; np <- length(P)
+    a <- distrib_dexpected_hessian(d, 0, th)
+    expect_identical(names(a), dexpected_names(P))
+    want <- list()
+    for (i in 1:np) for (j in i:np) for (k in 1:np) {
+      hab <- hess_pair_name(P, i, j)
+      want[[dexpected_key(P, i, j, k)]] <- expectation(d, function(y, theta)
+        distrib_deriv3(d, y, theta)[[paste(P[sort(c(i, j, k))], collapse = "_")]] +
+          distrib_hessian(d, y, theta)[[hab]] *
+          distrib_gradient(d, y, theta)[[P[k]]], theta = th)
+    }
+    expect_close_list(a, want, 1e-7)
+  }
+})
+
+test_that("the analytic second derivatives obey the five-moment identity", {
+  for (cs in analytic_dexpected_cases()) {
+    d <- cs$d; th <- cs$th; P <- d@params; np <- length(P)
+    a <- distrib_d2expected_hessian(d, 0, th)
+    expect_identical(names(a), d2expected_names(P))
+    srt <- function(ix) paste(P[sort(ix)], collapse = "_")
+    want <- list()
+    for (i in 1:np) for (j in i:np) for (k in 1:np) for (l in k:np) {
+      hab <- hess_pair_name(P, i, j)
+      want[[d2expected_key(P, i, j, k, l)]] <- expectation(d, function(y, theta) {
+        g <- distrib_gradient(d, y, theta)
+        h <- distrib_hessian(d, y, theta)
+        d3 <- distrib_deriv3(d, y, theta)
+        distrib_deriv4(d, y, theta)[[srt(c(i, j, k, l))]] +
+          d3[[srt(c(i, j, l))]] * g[[P[k]]] + d3[[srt(c(i, j, k))]] * g[[P[l]]] +
+          h[[hab]] * h[[hess_pair_name(P, k, l)]] +
+          h[[hab]] * g[[P[k]]] * g[[P[l]]]
+      }, theta = th)
+    }
+    expect_close_list(a, want, 1e-7)
+  }
+})
+
+test_that("the analytic first derivatives agree with the stencil they replace", {
+  for (cs in analytic_dexpected_cases()) {
+    for (sc in c("parameter", "link")) {
+      a <- distrib_dexpected_hessian(cs$d, 0, cs$th, scale = sc)
+      n <- numerical_dexpected_hessian(cs$d, 0, cs$th, sc)
+      expect_close_list(a, n, 1e-6)
+    }
+  }
+})
+
+test_that("the link-scale second derivatives are the derivative of the first", {
+  # One central difference of the ANALYTIC link-scale first derivative along
+  # the free coordinate, which is a reference and not a route: it shares the
+  # kernels and nothing of dexpected_link()'s second-order Leibniz terms.
+  for (cs in analytic_dexpected_cases()) {
+    d <- cs$d; th <- cs$th; P <- d@params; np <- length(P)
+    a <- distrib_d2expected_hessian(d, 0, th, scale = "link")
+    want <- list()
+    for (k in 1:np) {
+      lk <- d@link_params[[P[k]]]
+      e0 <- linkfunctions7::linkfun(lk, th[[k]])
+      h <- 1e-5 * max(1, abs(e0))
+      tp <- tm <- th
+      tp[[k]] <- linkfunctions7::linkinv(lk, e0 + h)
+      tm[[k]] <- linkfunctions7::linkinv(lk, e0 - h)
+      up <- distrib_dexpected_hessian(d, 0, tp, scale = "link")
+      dn <- distrib_dexpected_hessian(d, 0, tm, scale = "link")
+      for (i in 1:np) for (j in i:np) for (l in k:np) {
+        k1 <- dexpected_key(P, i, j, l)
+        want[[d2expected_key(P, i, j, k, l)]] <- (up[[k1]] - dn[[k1]]) / (2 * h)
+      }
+    }
+    expect_close_list(a, want, 1e-6)
+  }
+})
+
+test_that("the analytic kernels are identical at any thread count", {
+  n <- 600L
+  for (cs in analytic_dexpected_cases()) {
+    th <- lapply(cs$th, function(v) v * seq(0.9, 1.1, length.out = n))
+    if (!is.null(th$mu) && S7::S7_inherits(cs$d, Beta1Distrib)) {
+      th$mu <- seq(0.3, 0.6, length.out = n)
+    }
+    y <- rep(0, n)
+    for (fn in list(distrib_dexpected_hessian, distrib_d2expected_hessian)) {
+      expect_identical(fn(cs$d, y, th, threads = 1L), fn(cs$d, y, th, threads = 2L))
+    }
+  }
+})
+
+test_that("a family without a second derivative of its expected information is refused", {
+  d <- weibull1_distrib()
+  expect_error(distrib_d2expected_hessian(d, 1, list(mu = 1, sigma = 2)),
+               "no analytic second derivative")
+})
+
+test_that("the second-derivative keys are symmetric in each pair", {
+  P <- c("mu", "sigma")
+  expect_length(d2expected_names(P), length(hess_names(P))^2)
+  expect_identical(d2expected_key(P, 1, 2, 2, 1), d2expected_key(P, 2, 1, 1, 2))
+  expect_false(identical(d2expected_key(P, 1, 1, 2, 2), d2expected_key(P, 2, 2, 1, 1)))
+  expect_true(all(d2expected_key(P, 2, 1, 1, 2) %in% d2expected_names(P)))
+})

@@ -275,3 +275,268 @@ numerical_dexpected_hessian <- function(distrib, y, theta,
   }
   out
 }
+
+
+#' The Second Derivative of the Expected Information
+#'
+#' @description
+#' \eqn{\partial^2\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,\partial\theta_d},
+#' one component per pair \eqn{(a,b)} and per pair \eqn{(c,d)}.
+#'
+#' @details
+#' Differentiating the identity of [distrib_dexpected_hessian()] once more
+#' moves the measure a second time,
+#' \deqn{\frac{\partial^2}{\partial\theta_c\,\partial\theta_d}\mathbb{E}[\ell_{ab}]
+#'   = \mathbb{E}[\ell_{abcd}] + \mathbb{E}[\ell_{abd}\ell_{c}]
+#'   + \mathbb{E}[\ell_{abc}\ell_{d}] + \mathbb{E}[\ell_{ab}\ell_{cd}]
+#'   + \mathbb{E}[\ell_{ab}\ell_{c}\ell_{d}],}
+#' and no Bartlett identity isolates those moments. A family supplies the
+#' components as ordinary derivatives of its own written-out expected
+#' information; the components are symmetric in \eqn{(a,b)} and in \eqn{(c,d)}
+#' separately, and are keyed by [d2expected_names()].
+#'
+#' **There is no numerical default.** A difference of
+#' [distrib_dexpected_hessian()], whose own default is already a difference,
+#' would be the nested differencing the package forbids, so the base method
+#' signals an error and a family that does not register one has no second
+#' derivative. The families that do are `gaussian1_distrib()`,
+#' `poisson_distrib()`, `gamma1_distrib()`, `negbin2_distrib()` and
+#' `beta1_distrib()`, each from a compiled kernel.
+#'
+#' On `scale = "link"` the expected information is
+#' \eqn{F_{ab} = \mathbb{E}[\ell_{ab}]\,h_a' h_b'}, with no term in \eqn{h''}
+#' because \eqn{\mathbb{E}[\ell_a] = 0}, and its derivatives follow by
+#' Leibniz's rule, written once in [dexpected_link()].
+#'
+#' @param distrib A distribution object inheriting from `distrib`.
+#' @param y A numeric vector of observations.
+#' @param theta A named list of parameters, each of length 1 or
+#'   `length(y)`.
+#' @param scale `"parameter"` or `"link"`.
+#' @param approx,nsim Accepted for symmetry with
+#'   [distrib_dexpected_hessian()]; no method reads them.
+#' @param ... Passed to methods.
+#'
+#' @return A named list of numeric vectors, keyed as
+#'   [`d2expected_names(distrib@params)`][d2expected_names].
+#'
+#' @examples
+#' d <- gaussian1_distrib()
+#' str(distrib_d2expected_hessian(d, 0, list(mu = 0, sigma = 1)))
+#'
+#' @seealso [distrib_dexpected_hessian()], [d2expected_names()]
+#'
+#' @export
+distrib_d2expected_hessian <- S7::new_generic(
+  "distrib_d2expected_hessian", "distrib",
+  function(distrib, y, theta, scale = c("parameter", "link"),
+           approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000,
+           ...) {
+    args <- check_derivative_args(distrib, y, theta)
+    y <- args$y
+    theta <- args$theta
+    S7::S7_dispatch()
+  })
+
+
+#' @title Default Second Derivative of the Expected Information
+#' @name distrib_d2expected_hessian.distrib
+#' @description
+#' Signals an error: a family without its own method has no second derivative
+#' of the expected information, a difference of a difference being refused.
+#' @param distrib A distribution object.
+#' @param y A numeric vector of observations.
+#' @param theta A named list of parameters.
+#' @param scale Either `"parameter"` or `"link"`.
+#' @param approx,nsim Unused.
+#' @param ... Unused.
+#' @return Does not return.
+#' @keywords internal
+S7::method(distrib_d2expected_hessian, distrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"),
+    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
+  stop(sprintf(paste0(
+    "'%s' has no analytic second derivative of its expected information,\n",
+    "  and differencing the first would be a difference of a difference."),
+    distrib@distrib_name), call. = FALSE)
+}
+
+
+#' The Names of the Expected Information's Second Derivative
+#'
+#' @description
+#' One key per pair \eqn{(a,b)} and pair \eqn{(c,d)}, each pair spelled as
+#' [hess_names()] spells it, joined `ab` first.
+#'
+#' @param params A character vector of parameter names, in the family's order.
+#'
+#' @return A character vector, `length(hess_names(params))^2` long.
+#'
+#' @examples
+#' d2expected_names(c("mu", "sigma"))
+#'
+#' @seealso [d2expected_key()], [dexpected_names()]
+#'
+#' @export
+d2expected_names <- function(params) {
+  hn <- hess_names(params)
+  as.vector(t(outer(hn, hn, paste, sep = "_")))
+}
+
+
+#' The Key of One Component of the Expected Information's Second Derivative
+#'
+#' @description
+#' The name under which [distrib_d2expected_hessian()] returns
+#' \eqn{\partial^2\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,\partial\theta_d}.
+#'
+#' @param params A character vector of parameter names, in the family's order.
+#' @param a,b Indices of the information's pair; their order does not matter.
+#' @param c,d Indices of the parameters differentiated in; their order does not
+#'   matter either.
+#'
+#' @return A single string.
+#'
+#' @examples
+#' d2expected_key(c("mu", "sigma"), 1, 1, 2, 2)
+#'
+#' @seealso [d2expected_names()], [dexpected_key()]
+#'
+#' @export
+d2expected_key <- function(params, a, b, c, d) {
+  paste0(hess_pair_name(params, a, b), "_", hess_pair_name(params, c, d))
+}
+
+
+#' The Hessian Name of a Pair of Parameters
+#'
+#' @description
+#' `params[a]_params[b]` in whichever order [hess_names()] lists it.
+#'
+#' @param params A character vector of parameter names.
+#' @param a,b Indices into `params`.
+#'
+#' @return A single string.
+#'
+#' @keywords internal
+hess_pair_name <- function(params, a, b) {
+  nm <- hess_names(params)
+  want <- paste(params[c(a, b)], collapse = "_")
+  if (!want %in% nm) want <- paste(params[c(b, a)], collapse = "_")
+  if (!want %in% nm) {
+    stop(sprintf("No Hessian component for '%s' and '%s'.",
+                 params[a], params[b]), call. = FALSE)
+  }
+  want
+}
+
+
+#' The Analytic Derivatives of the Expected Information, on Either Scale
+#'
+#' @description
+#' Reads a family's compiled kernel at order 1 or 2 on the parameter scale and
+#' carries the result onto the link scale where it is asked for.
+#'
+#' @param distrib A distribution object.
+#' @param y,theta As the generic takes them.
+#' @param scale `"parameter"` or `"link"`.
+#' @param order `1L` for [distrib_dexpected_hessian()], `2L` for
+#'   [distrib_d2expected_hessian()].
+#' @param threads The thread count passed to the kernel and to the family's
+#'   expected information.
+#' @param kern A function of the order returning the kernel's named list on the
+#'   parameter scale.
+#'
+#' @return A named list keyed as [dexpected_names()] or [d2expected_names()].
+#'
+#' @seealso [dexpected_link()]
+#'
+#' @keywords internal
+dexpected_analytic <- function(distrib, y, theta, scale, order, threads, kern) {
+  params <- distrib@params
+  d1 <- kern(1L)[dexpected_names(params)]
+  d2 <- if (order == 2L) kern(2L)[d2expected_names(params)] else NULL
+  if (identical(scale, "parameter")) return(if (order == 1L) d1 else d2)
+  E <- distrib_expected_hessian(distrib, y, theta, scale = "parameter",
+                                threads = threads)
+  h <- inverse_link_derivs(distrib, theta, order + 1L)
+  dexpected_link(params, E, d1, d2, h, order)
+}
+
+
+#' The Derivatives of the Link-Scale Expected Information
+#'
+#' @description
+#' Leibniz's rule on \eqn{F_{ab} = E_{ab}\,h_a' h_b'}, written once for every
+#' family.
+#'
+#' @details
+#' Each parameter moves with its own coordinate only, so with
+#' \eqn{u_{ab} = h_a' h_b'},
+#' \deqn{\partial_c u = [a{=}c]\,h_a'' h_b' + [b{=}c]\,h_a' h_b'',}
+#' \deqn{\partial_{cd} u = [a{=}c{=}d]\,h_a''' h_b' + ([a{=}c][b{=}d] +
+#'   [b{=}c][a{=}d])\,h_a'' h_b'' + [b{=}c{=}d]\,h_a' h_b''',}
+#' and
+#' \deqn{\partial_c F = (\partial_c E)\,h_c' u + E\,\partial_c u,}
+#' \deqn{\partial_{cd} F = (\partial_{cd} E)\,h_c' h_d' u
+#'   + [c{=}d]\,(\partial_c E)\,h_c'' u + (\partial_c E)\,h_c'\,\partial_d u
+#'   + (\partial_d E)\,h_d'\,\partial_c u + E\,\partial_{cd} u.}
+#'
+#' @param params The parameter names.
+#' @param E The expected information on the parameter scale.
+#' @param d1 Its first derivatives, keyed as [dexpected_names()].
+#' @param d2 Its second derivatives, keyed as [d2expected_names()], or `NULL`
+#'   at order 1.
+#' @param h The inverse link's derivatives, from [inverse_link_derivs()], to
+#'   order `order + 1`.
+#' @param order `1L` or `2L`.
+#'
+#' @return A named list on the link scale.
+#'
+#' @keywords internal
+dexpected_link <- function(params, E, d1, d2, h, order) {
+  p <- length(params)
+  pairs <- which(upper.tri(diag(p), diag = TRUE), arr.ind = TRUE)
+  h1 <- function(i) h[[i]][[1L]]
+  h2 <- function(i) h[[i]][[2L]]
+  h3 <- function(i) h[[i]][[3L]]
+  du <- function(a, b, c) {
+    (if (a == c) h2(a) * h1(b) else 0) + (if (b == c) h1(a) * h2(b) else 0)
+  }
+  if (order == 1L) {
+    out <- stats::setNames(vector("list", length(d1)), names(d1))
+    for (r in seq_len(nrow(pairs))) {
+      a <- pairs[r, 1L]; b <- pairs[r, 2L]
+      Eab <- E[[hess_pair_name(params, a, b)]]
+      u <- h1(a) * h1(b)
+      for (c in seq_len(p)) {
+        key <- dexpected_key(params, a, b, c)
+        out[[key]] <- d1[[key]] * h1(c) * u + Eab * du(a, b, c)
+      }
+    }
+    return(out)
+  }
+  d2u <- function(a, b, c, d) {
+    (if (a == c && a == d) h3(a) * h1(b) else 0) +
+      (if (a == c && b == d) h2(a) * h2(b) else 0) +
+      (if (b == c && a == d) h2(a) * h2(b) else 0) +
+      (if (b == c && b == d) h1(a) * h3(b) else 0)
+  }
+  out <- stats::setNames(vector("list", length(d2)), names(d2))
+  for (r in seq_len(nrow(pairs))) {
+    a <- pairs[r, 1L]; b <- pairs[r, 2L]
+    Eab <- E[[hess_pair_name(params, a, b)]]
+    u <- h1(a) * h1(b)
+    for (s in seq_len(nrow(pairs))) {
+      c <- pairs[s, 1L]; d <- pairs[s, 2L]
+      dc <- d1[[dexpected_key(params, a, b, c)]]
+      dd <- d1[[dexpected_key(params, a, b, d)]]
+      key <- d2expected_key(params, a, b, c, d)
+      out[[key]] <- d2[[key]] * h1(c) * h1(d) * u +
+        (if (c == d) dc * h2(c) * u else 0) +
+        dc * h1(c) * du(a, b, d) + dd * h1(d) * du(a, b, c) +
+        Eab * d2u(a, b, c, d)
+    }
+  }
+  out
+}
