@@ -189,6 +189,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.StudentT1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.continuous_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.continuous_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Beta1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Beta2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.ChisqDistrib.html</loc></url>
@@ -930,6 +932,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/link_scale_layout.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/link_scale_lower_orders.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/loc_cross3_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv_k.html</loc></url>
@@ -1085,6 +1088,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_cross2_y.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/numerical_cross3_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_cross_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_deriv3.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_deriv4.html</loc></url>

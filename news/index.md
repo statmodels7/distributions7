@@ -1,5 +1,27 @@
 # Changelog
 
+## distributions7 0.58.0
+
+- **[`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md),
+  the derivative of the third response derivative in each parameter**, .
+  The second derivative of a marginal criterion in the hyperparameters
+  reads it for a penalty whose Hessian moves with the coefficients, a
+  heavy-tailed prior on a random effect being the case. The fourteen
+  location families take it from
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+  by the identity , the same identity
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
+  uses for them; every other continuous family takes one central
+  difference of
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
+  in each parameter, through
+  [`numerical_cross3_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross3_y.md).
+  [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+  delegates it, subset to the free parameters. On a Student t, a
+  logistic and a gaussian the identity agrees with Richardson on the
+  analytic third response derivative to `1e-6`, and a test asserts the
+  route by identity against the fourth derivative it reads.
+
 ## distributions7 0.57.0
 
 - **[`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)

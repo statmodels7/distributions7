@@ -139,6 +139,8 @@ respect to the unconstrained parameters.
   : Mixed Response-Parameter Derivatives of the Log-Density
 - [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
   : Mixed Second-Response Parameter Derivatives of the Log-Density
+- [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md)
+  : Mixed Third-Response Parameter Derivatives of the Log-Density
 - [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
   : Hyperparameter Hessian of the Response Gradient
 - [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
@@ -327,6 +329,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Numerical Mixed Response-Parameter Derivatives
 - [`numerical_cross2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross2_y.md)
   : Numerical Mixed Second-Response Parameter Derivatives
+- [`numerical_cross3_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross3_y.md)
+  : Numerical Mixed Third-Response Parameter Derivatives
 - [`numerical_theta2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.md)
   : Numerical Hyperparameter Hessians of the Response Derivatives
 - [`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md)
@@ -1956,6 +1960,10 @@ divergent density.
   : Default Mixed Second-Response Derivatives for Continuous
   Distributions
 
+- [`distrib_cross3_y.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.continuous_distrib.md)
+  : Default Mixed Third-Response Derivatives for Continuous
+  Distributions
+
 - [`distrib_cross_y.Beta1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Beta1Distrib.md)
   : Beta Mixed Derivatives in Mean and Precision
 
@@ -2746,6 +2754,9 @@ divergent density.
 
 - [`link_scale_lower_orders()`](https://statmodels7.github.io/distributions7/reference/link_scale_lower_orders.md)
   : Lower-Order Parameter-Scale Derivatives for the Chain Rule
+
+- [`loc_cross3_y()`](https://statmodels7.github.io/distributions7/reference/loc_cross3_y.md)
+  : The Mixed Third-Response Derivative of a Location Family
 
 - [`loc_deriv_y_k()`](https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.md)
   : The Response Derivative of a Location Family

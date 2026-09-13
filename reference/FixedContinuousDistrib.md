@@ -101,10 +101,11 @@ parent's with the held values in brackets.
 ## Methods
 
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
-registers 24 methods on this class:
+registers 25 methods on this class:
 [`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md),
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md),
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
+[`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md),
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md),
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
 [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md),
