@@ -13,7 +13,7 @@ the parameter direction takes its step from it."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.59.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.60.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,15 @@ the parameter direction takes its step from it.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fd_stable_step</span><span class="op">(</span><span class="va">quotient</span>, <span class="va">theta_j</span>, <span class="va">bounds_j</span>, <span class="va">h_rel</span>, need_value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fd_stable_step</span><span class="op">(</span></span>
+<span>  <span class="va">quotient</span>,</span>
+<span>  <span class="va">theta_j</span>,</span>
+<span>  <span class="va">bounds_j</span>,</span>
+<span>  <span class="va">h_rel</span>,</span>
+<span>  need_value <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  order <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  accuracy <span class="op">=</span> <span class="fl">2L</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -86,6 +94,13 @@ over all of them together.</p></dd>
 step. <code>FALSE</code> for a caller that wants only the step, and then nothing is
 evaluated at all where the two candidates coincide: the higher orders read
 only <code>h</code>, and their quotient is a difference of whole Hessians.</p></dd>
+
+
+<dt id="arg-order-accuracy">order, accuracy<a class="anchor" aria-label="anchor" href="#arg-order-accuracy"></a></dt>
+<dd><p>The stencil the quotient implements, passed to
+<code><a href="fd_steps.html">fd_steps()</a></code> so that the clamp is on the outermost node. The defaults are
+the central difference; a caller whose quotient is a second difference
+passes <code>order = 2</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -13,7 +13,7 @@ nearest finite bound or by scaling it on that distance."><meta property="og:imag
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.59.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.60.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,14 @@ nearest finite bound or by scaling it on that distance.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fd_steps</span><span class="op">(</span><span class="va">theta_j</span>, <span class="va">bounds_j</span>, <span class="va">h_rel</span>, to_bound <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"clamp"</span>, <span class="st">"scale"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fd_steps</span><span class="op">(</span></span>
+<span>  <span class="va">theta_j</span>,</span>
+<span>  <span class="va">bounds_j</span>,</span>
+<span>  <span class="va">h_rel</span>,</span>
+<span>  to_bound <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"clamp"</span>, <span class="st">"scale"</span><span class="op">)</span>,</span>
+<span>  order <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  accuracy <span class="op">=</span> <span class="fl">2L</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -77,6 +84,12 @@ chosen for the stencil in use.</p></dd>
 
 <dt id="arg-to-bound">to_bound<a class="anchor" aria-label="anchor" href="#arg-to-bound"></a></dt>
 <dd><p><code>"clamp"</code>, the default, or <code>"scale"</code>, as above.</p></dd>
+
+
+<dt id="arg-order-accuracy">order, accuracy<a class="anchor" aria-label="anchor" href="#arg-order-accuracy"></a></dt>
+<dd><p>The stencil the step is for, which fix its reach
+through <code><a href="https://statmodels7.github.io/numericals7/reference/fd_offsets.html" class="external-link">numericals7::fd_offsets()</a></code>. The defaults are the central
+difference, whose reach is one.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -104,12 +117,32 @@ every parameter of a family with no finite bound, and also a positive
 parameter at or above one.</p>
 <p>A parameter already on or outside its boundary cannot be rescued this way, and
 is reported rather than differentiated.</p>
+<p>The clamp is on the stencil's OUTERMOST node and not on the step, so it
+divides by the reach, the largest offset the rule evaluates at in units of
+\(h\). That number is the stencil's and is read from
+<code><a href="https://statmodels7.github.io/numericals7/reference/fd_offsets.html" class="external-link">numericals7::fd_offsets()</a></code> rather than assumed: a central difference and a
+three-point second difference both reach one step out, which is every use
+this package makes of the clamped branch today, while the five-point rules
+of accuracy four reach two. Without the division a step cut to
+\(0.49 d\) puts the outermost node of a reach-two rule at \(0.98 d\),
+which is inside the domain and not what the clamp says it is.</p>
+<p>With the reach accounted for, the clamped branch at the default <code>h_rel</code> is
+<code><a href="https://statmodels7.github.io/numericals7/reference/fd_step.html" class="external-link">numericals7::fd_step()</a></code> with <code>bounds</code>, and a test asserts the two are
+<code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical()</a></code> so they cannot drift. It is written here rather than
+delegated because <code>h_rel</code> is an argument the callers vary:
+<code><a href="fd_stable_step.html">fd_stable_step()</a></code> halves it and <code><a href="check_distrib.html">check_distrib()</a></code> reads the quotient at two
+steps, neither of which <code>fd_step()</code> can express.</p>
+<p>The scaled branch needs no such division. Its step is at most
+\(h_{rel} d\), so the outermost node sits at \(d(1 - r\,h_{rel})\) for
+a reach \(r\), inside the domain for any stencil at any root of machine
+epsilon.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="fd_stable_step.html">fd_stable_step()</a></code>, which chooses between the two, and
 <code><a href="numerical_gradient.html">numerical_gradient()</a></code> and <code><a href="numerical_hessian.html">numerical_hessian()</a></code>, which take the chosen
-step. <code><a href="fd_steps_y.html">fd_steps_y()</a></code> is the response counterpart.</p></div>
+step. <code><a href="fd_steps_y.html">fd_steps_y()</a></code> is the response counterpart.
+<code><a href="https://statmodels7.github.io/numericals7/reference/fd_step.html" class="external-link">numericals7::fd_step()</a></code> is the same rule at the default <code>h_rel</code>.</p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

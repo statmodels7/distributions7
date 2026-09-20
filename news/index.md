@@ -1,5 +1,81 @@
 # Changelog
 
+## distributions7 0.60.0
+
+- **The clamped step reads the stencil’s reach from `numericals7`
+  instead of assuming it is one.** `fd_steps(..., "clamp")` cut the step
+  to 49 per cent of the distance to the nearest bound, which is a
+  statement about the step and not about the nodes: a rule that
+  evaluates two steps out then puts its outermost node at 98 per cent of
+  that distance. The ceiling now divides by the reach, the largest
+  offset the stencil evaluates at, taken from
+  [`numericals7::fd_offsets()`](https://statmodels7.github.io/numericals7/reference/fd_offsets.html)
+  rather than written here.
+  [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
+  and
+  [`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md)
+  gain `order` and `accuracy`, defaulting to the central difference;
+  [`numerical_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md)
+  and
+  [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md),
+  whose quotients are second differences, declare `order = 2`.
+
+- ⚠️ **Nothing computed moves, and it is inert by construction rather
+  than within a tolerance.** Every site that reaches the clamped branch
+  is a first or second difference at accuracy two, where the reach is
+  one and the division is by one exactly. Against a worktree of the
+  previous release, over five families at bounded and unbounded
+  parameters and at values from the ordinary range down to 1e-6 from a
+  bound: the gradient, the Hessian, the third and fourth derivatives,
+  the mixed response block and the step itself are
+  [`identical()`](https://rdrr.io/r/base/identical.html) on **76 leaves
+  of 76**, none empty and none raising. The suite is 755 blocks and 7794
+  passing with nothing failing or skipped.
+
+- ⚠️ **So the release is prophylactic**, and the two rules part only
+  where nothing calls them today. At `theta` = 1e-3 against a bound at
+  zero, order one at accuracy four: the outermost node sat at 2.0e-05
+  and sits at 5.1e-04, which is the 49 per cent the clamp has always
+  claimed. What the change buys is that raising an `accuracy` cannot
+  quietly move a node to the edge of the domain.
+
+- A test asserts that the clamped branch at the default `h_rel` is
+  [`numericals7::fd_step()`](https://statmodels7.github.io/numericals7/reference/fd_step.html)
+  with `bounds`, by **identity** over four orders and two accuracies and
+  four domains, so the two cannot drift; a second asserts that the
+  outermost node lands at 49 per cent of the distance whatever the
+  reach, with a positive control that the reach really is more than one
+  somewhere; a third asserts that every clamped site in use has reach
+  one, so the inertness above is under test rather than in prose.
+  Injecting the rule the release replaces – the reach held at one –
+  fails 20 assertions.
+
+- ⚠️ **Converting the fifteen hand-written quotients to `numericals7`’s
+  nodes and weights was measured and NOT taken.** At the default
+  accuracy the two routes are bit-identical, `0.00e+00` at every
+  parameter and every theta, with the same two density evaluations: the
+  conversion is arithmetically inert and its whole cost is the
+  construction. Timed with the repetition loop sized by elapsed time,
+  `numericals7`’s route against the quotient written out: **2.89x at n =
+  100**, 1.34x at 1000, 1.10x at 10000 and 1.04x at 100000. Two thirds
+  of that is `fd_weights()` solving a Vandermonde system for what is a
+  constant of the order and the accuracy, and hoisting it out of the
+  call recovers most of it (2.89x becomes 1.49x). What it would buy is a
+  reachable `accuracy`, worth between 1.8x and 81x on a first derivative
+  over the four cells measured – 5.89e-11 against 7.76e-13 on a
+  location, and only 8.11e-10 against 4.46e-10 on a scale of 0.3, where
+  the fifth derivative the order-four rule truncates against is itself
+  large – at exactly twice the density evaluations.
+
+- ⚠️ **The response direction is deliberately untouched.**
+  [`numerical_deriv_y()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv_y.md)
+  compensates for its reach-two stencils by halving the step,
+  `fd_steps_y(...) / 2`, which is the same thing as this release’s
+  division only where the clamp binds: away from a bound it halves the
+  step everywhere, where `numericals7`’s rule leaves it at the balanced
+  value. Converting it would move numbers rather than preserve them, so
+  it is a decision and not a repair.
+
 ## distributions7 0.59.0
 
 - **[`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md),

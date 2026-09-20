@@ -8,7 +8,14 @@ the nearest finite bound or by scaling it on that distance.
 ## Usage
 
 ``` r
-fd_steps(theta_j, bounds_j, h_rel, to_bound = c("clamp", "scale"))
+fd_steps(
+  theta_j,
+  bounds_j,
+  h_rel,
+  to_bound = c("clamp", "scale"),
+  order = 1L,
+  accuracy = 2L
+)
 ```
 
 ## Arguments
@@ -29,6 +36,12 @@ fd_steps(theta_j, bounds_j, h_rel, to_bound = c("clamp", "scale"))
 - to_bound:
 
   `"clamp"`, the default, or `"scale"`, as above.
+
+- order, accuracy:
+
+  The stencil the step is for, which fix its reach through
+  [`numericals7::fd_offsets()`](https://statmodels7.github.io/numericals7/reference/fd_offsets.html).
+  The defaults are the central difference, whose reach is one.
 
 ## Value
 
@@ -62,6 +75,34 @@ parameter at or above one.
 A parameter already on or outside its boundary cannot be rescued this
 way, and is reported rather than differentiated.
 
+The clamp is on the stencil's OUTERMOST node and not on the step, so it
+divides by the reach, the largest offset the rule evaluates at in units
+of \\h\\. That number is the stencil's and is read from
+[`numericals7::fd_offsets()`](https://statmodels7.github.io/numericals7/reference/fd_offsets.html)
+rather than assumed: a central difference and a three-point second
+difference both reach one step out, which is every use this package
+makes of the clamped branch today, while the five-point rules of
+accuracy four reach two. Without the division a step cut to \\0.49 d\\
+puts the outermost node of a reach-two rule at \\0.98 d\\, which is
+inside the domain and not what the clamp says it is.
+
+With the reach accounted for, the clamped branch at the default `h_rel`
+is
+[`numericals7::fd_step()`](https://statmodels7.github.io/numericals7/reference/fd_step.html)
+with `bounds`, and a test asserts the two are
+[`identical()`](https://rdrr.io/r/base/identical.html) so they cannot
+drift. It is written here rather than delegated because `h_rel` is an
+argument the callers vary:
+[`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md)
+halves it and
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+reads the quotient at two steps, neither of which `fd_step()` can
+express.
+
+The scaled branch needs no such division. Its step is at most \\h\_{rel}
+d\\, so the outermost node sits at \\d(1 - r\\h\_{rel})\\ for a reach
+\\r\\, inside the domain for any stencil at any root of machine epsilon.
+
 ## See also
 
 [`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md),
@@ -72,3 +113,5 @@ and
 which take the chosen step.
 [`fd_steps_y()`](https://statmodels7.github.io/distributions7/reference/fd_steps_y.md)
 is the response counterpart.
+[`numericals7::fd_step()`](https://statmodels7.github.io/numericals7/reference/fd_step.html)
+is the same rule at the default `h_rel`.

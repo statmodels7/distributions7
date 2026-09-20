@@ -9,7 +9,15 @@ parameter direction takes its step from it.
 ## Usage
 
 ``` r
-fd_stable_step(quotient, theta_j, bounds_j, h_rel, need_value = TRUE)
+fd_stable_step(
+  quotient,
+  theta_j,
+  bounds_j,
+  h_rel,
+  need_value = TRUE,
+  order = 1L,
+  accuracy = 2L
+)
 ```
 
 ## Arguments
@@ -39,6 +47,14 @@ fd_stable_step(quotient, theta_j, bounds_j, h_rel, need_value = TRUE)
   for a caller that wants only the step, and then nothing is evaluated
   at all where the two candidates coincide: the higher orders read only
   `h`, and their quotient is a difference of whole Hessians.
+
+- order, accuracy:
+
+  The stencil the quotient implements, passed to
+  [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
+  so that the clamp is on the outermost node. The defaults are the
+  central difference; a caller whose quotient is a second difference
+  passes `order = 2`.
 
 ## Value
 
