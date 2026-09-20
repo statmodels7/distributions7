@@ -98,7 +98,7 @@ vapply(seq_along(d@params), function(k) {
   max(abs(cy[[k]] -
           (distrib_grad_y(d, y, tp) - distrib_grad_y(d, y, tm)) / (2 * h)))
 }, numeric(1))
-#> [1] 2.464828e-11 2.847478e-11 8.014878e-11 7.835999e-11 7.881074e-11
+#> [1] 2.464828e-11 2.847478e-11 1.023532e-10 7.835999e-11 7.881074e-11
 #> [6] 1.358529e-11
 
 # As nu grows every shared component approaches the gaussian's.

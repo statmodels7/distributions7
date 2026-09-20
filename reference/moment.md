@@ -141,7 +141,7 @@ moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE)  # sigma^2
 
 # p is recycled against theta, so one call covers a grid of orders.
 moment(d, list(mu = 0, sigma = 1), p = 1:4, central = TRUE)   # 0, 1, 0, 3
-#> [1] -2.775558e-17  1.000000e+00  0.000000e+00  3.000000e+00
+#> [1] 0 1 0 3
 
 # Centering at zero recovers the raw moment.
 all.equal(moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE, mu = 0),
