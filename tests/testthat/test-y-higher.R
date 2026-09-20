@@ -157,3 +157,57 @@ test_that("a discrete family has no response derivative at these orders", {
   expect_error(distrib_deriv3_y(poisson_distrib(), 2, list(mu = 3)))
   expect_error(distrib_deriv4_y(poisson_distrib(), 2, list(mu = 3)))
 })
+## `numerical_deriv_y()` evaluates two steps out, so its clamp has to be on
+## that outermost node.  It used to divide the step by two by hand, which is
+## the same thing only where the clamp binds: away from a bound it halved the
+## step everywhere and sat below the balanced value.  The step is now
+## `fd_steps_y()`'s with the stencil's reach, which at the default `h_rel` is
+## `numericals7::fd_step()`.
+test_that("the response step of orders three and four is numericals7's", {
+  d <- gamma1_distrib()
+  y <- c(1e-4, 0.05, 0.4, 2, 5, 12)
+  for (order in 3:4) {
+    h_rel <- .Machine$double.eps^(1 / (order + 2))
+    expect_identical(
+      fd_steps_y(y, d@bounds, h_rel, "clamp", order = order),
+      numericals7::fd_step(y, order, accuracy = 2L, bounds = d@bounds),
+      info = paste("order", order))
+  }
+  # and the orders below keep the reach-one step, so nothing there moves
+  for (order in 1:2) {
+    h_rel <- .Machine$double.eps^(1 / (order + 2))
+    expect_identical(fd_steps_y(y, d@bounds, h_rel, "clamp"),
+                     fd_steps_y(y, d@bounds, h_rel, "clamp", order = order))
+  }
+})
+
+## What the step buys, on the only consumer the fallback has: a family that
+## registers `distrib_pdf` and nothing else.  Every shipped continuous family
+## carries its own orders three and four in the response, so the reference is
+## the shipped family's analytic value and the subject is the bare twin.
+test_that("the fallback's fourth response derivative is the better for it", {
+  bare_of <- function(real, nm) {
+    cls <- S7::new_class(paste0("BareStep", nm), parent = continuous_distrib)
+    S7::method(distrib_pdf, cls) <- function(distrib, y, theta, log = FALSE, ...)
+      distrib_pdf(real, y, theta, log = log)
+    cls(distrib_name = paste0("bare ", nm), dimension = "univariate",
+        bounds = real@bounds, params = real@params, n_params = real@n_params,
+        params_bounds = real@params_bounds, link_params = real@link_params,
+        params_smooth = real@params_smooth,
+        params_interpretation = real@params_interpretation)
+  }
+  cases <- list(
+    list(nm = "Gauss", d = gaussian1_distrib(), th = list(mu = 0.3, sigma = 1.2),
+         y = c(-2, -0.5, 0.3, 1, 3)),
+    list(nm = "Logis", d = logistic_distrib(), th = list(mu = 0, sigma = 1),
+         y = c(-3, -1, 0, 1, 4)),
+    list(nm = "Gumb", d = gumbel_distrib(), th = list(mu = 0, sigma = 1),
+         y = c(-2, -0.5, 0.5, 2, 4)))
+  for (cs in cases) {
+    b <- bare_of(cs$d, cs$nm)
+    got <- distrib_deriv4_y(b, cs$y, cs$th)
+    ana <- distrib_deriv4_y(cs$d, cs$y, cs$th)
+    # the half step this replaces, measured at 3.8e-04, 5.5e-04 and 3.8e-05
+    expect_lt(max(abs(got - ana)) / max(abs(ana), 1), 1e-4)
+  }
+})

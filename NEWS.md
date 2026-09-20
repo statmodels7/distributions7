@@ -1,3 +1,62 @@
+# distributions7 0.61.0
+
+* **The response direction takes the same clamp, and drops the halving it
+  used by hand.** `numerical_deriv_y()` evaluates two steps out at both of
+  the orders it serves, and compensated with `fd_steps_y(...) / 2`. That is
+  0.60.0's rule only where the clamp binds: away from a bound it halved the
+  step everywhere and sat below the balanced value, where the ceiling needs
+  dividing and the step itself does not. `fd_steps_y()` gains `order` and
+  `accuracy` as `fd_steps()` did, and at the default `h_rel` the clamped
+  branch is `numericals7::fd_step()` with `bounds`, which a test asserts by
+  identity.
+
+* ⚠️ **What it buys, measured on the only consumer the fallback has.** Every
+  shipped continuous family registers its own third and fourth response
+  derivatives, so `numerical_deriv_y()` is reachable from a distribution that
+  defines `distrib_pdf` and nothing else -- which is the bargain the package
+  offers, and the measurement is against the shipped family's analytic value
+  with a bare twin as the subject:
+
+  | | order 3 | order 4 |
+  |---|---|---|
+  | gaussian | 4.38e-06 -> 5.48e-07 | 3.88e-04 -> 2.42e-05 |
+  | Student t | 3.00e-07 -> 4.46e-07 | 2.50e-04 -> 2.47e-05 |
+  | logistic | 9.72e-07 -> 3.98e-07 | 5.51e-04 -> 4.46e-05 |
+  | gumbel | 3.70e-07 -> 5.23e-07 | 3.81e-05 -> 4.94e-06 |
+
+  At the fourth order it is 7.7x to 16x on all four. ⚠️ At the THIRD it is
+  mixed and the cost is stated rather than averaged away: 8.0x and 2.4x
+  better on two families and 1.5x and 1.4x WORSE on the other two.
+
+* The step it moves to is the one the error minimizes, which is why both
+  orders were converted rather than the fourth alone. Sweeping the multiplier
+  over 0.25, 0.5, 1, 2 and 4 times `numericals7::fd_step()` across six
+  families, the argument of the minimum is 1 for four of six at order 3 and
+  1 or 2 for five of six at order 4, while the halved step this replaces is
+  the minimum for exactly one family at one order. ⚠️ `invgauss1` wants 0.25
+  at both orders, being truncation-dominated over the whole range, and
+  neither rule offers that.
+
+* ⚠️ **Nothing shipped moves**, and the census says why rather than a
+  tolerance: no shipped family reaches this fallback, so over 20 families and
+  120 leaves -- the four response generics at random parameters -- every one
+  is `identical()` to 0.60.0. The orders one and two in the response keep the
+  reach-one step and are identical by construction.
+
+* ⚠️ **The time is a wash**, which was the other half of the question: the
+  two routes evaluate the same five nodes, and the whole call measures 0.97x
+  to 1.02x over n of 100, 1000 and 100000 at both orders.
+
+* ⚠️ **What the step does NOT reach is a point against a bound**, where the
+  clamp binds and the two rules coincide exactly. A Gamma observation at
+  1e-4 from zero reads a relative 2.2e-01 at order 3 and 2.5e-01 at order 4,
+  before and after alike, the fifth derivative of the log-density there
+  being of order 1e20. Away from the bound the same family reads 5.3e-12 and
+  better. That limit is the fallback's own and is documented on its page.
+
+* Suite 757 blocks, 7801 passing, nothing failing or skipped. Injecting the
+  halving back fails four assertions.
+
 # distributions7 0.60.0
 
 * **The clamped step reads the stencil's reach from `numericals7` instead of

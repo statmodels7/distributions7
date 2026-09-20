@@ -59,7 +59,7 @@ NULL
 #' @export
 numerical_deriv_y <- function(distrib, y, theta, order,
                               h_rel = .Machine$double.eps^(1 / (order + 2))) {
-  h <- fd_steps_y(y, distrib@bounds, h_rel) / 2
+  h <- fd_steps_y(y, distrib@bounds, h_rel, "clamp", order = order)
   ld <- function(s) distrib_pdf(distrib, y + s * h, theta, log = TRUE)
   if (order == 3L) {
     (-0.5 * ld(-2) + ld(-1) - ld(1) + 0.5 * ld(2)) / h^3

@@ -4,7 +4,14 @@
 \alias{fd_steps_y}
 \title{Finite-Difference Steps That Respect the Support}
 \usage{
-fd_steps_y(y, bounds, h_rel, to_bound = c("clamp", "scale"))
+fd_steps_y(
+  y,
+  bounds,
+  h_rel,
+  to_bound = c("clamp", "scale"),
+  order = 1L,
+  accuracy = 2L
+)
 }
 \arguments{
 \item{y}{A numeric vector of observations.}
@@ -19,6 +26,12 @@ second.}
 \item{to_bound}{\code{"clamp"}, the default, or \code{"scale"}, as above. The two give
 the same step wherever \eqn{d \ge \max(1, |y|)}, which is every
 observation of a family with no finite bound.}
+
+\item{order, accuracy}{The stencil the step is for, which fix its reach
+through \code{\link[numericals7:fd_offsets]{numericals7::fd_offsets()}}: the clamp is on the OUTERMOST node,
+so a rule evaluating two steps out is cut to half of what a central
+difference is. The defaults are the central difference, whose reach is
+one, which is every caller but \code{\link[=numerical_deriv_y]{numerical_deriv_y()}}.}
 }
 \value{
 A numeric vector of steps, as long as \code{y}, every entry positive.

@@ -48,6 +48,11 @@ NULL
 #' @param h_rel The relative step size, a single positive number. The callers
 #'   pass \eqn{\varepsilon^{1/3}} at first order and \eqn{\varepsilon^{1/4}} at
 #'   second.
+#' @param order,accuracy The stencil the step is for, which fix its reach
+#'   through [numericals7::fd_offsets()]: the clamp is on the OUTERMOST node,
+#'   so a rule evaluating two steps out is cut to half of what a central
+#'   difference is. The defaults are the central difference, whose reach is
+#'   one, which is every caller but [numerical_deriv_y()].
 #' @param to_bound `"clamp"`, the default, or `"scale"`, as above. The two give
 #'   the same step wherever \eqn{d \ge \max(1, |y|)}, which is every
 #'   observation of a family with no finite bound.
@@ -83,7 +88,8 @@ NULL
 #' # The two steps the callers use differ by a factor of twenty.
 #' c(first_order = .Machine$double.eps^(1 / 3),
 #'   second_order = .Machine$double.eps^(1 / 4))
-fd_steps_y <- function(y, bounds, h_rel, to_bound = c("clamp", "scale")) {
+fd_steps_y <- function(y, bounds, h_rel, to_bound = c("clamp", "scale"),
+                       order = 1L, accuracy = 2L) {
   to_bound <- match.arg(to_bound)
   if (identical(to_bound, "scale")) {
     s <- pmax(1, abs(y))
@@ -91,9 +97,10 @@ fd_steps_y <- function(y, bounds, h_rel, to_bound = c("clamp", "scale")) {
     if (is.finite(bounds[2])) s <- pmin(s, bounds[2] - y)
     return(h_rel * s)
   }
+  reach <- numericals7::fd_offsets(order, accuracy = accuracy)$reach
   h <- h_rel * pmax(1, abs(y))
-  if (is.finite(bounds[1])) h <- pmin(h, 0.49 * (y - bounds[1]))
-  if (is.finite(bounds[2])) h <- pmin(h, 0.49 * (bounds[2] - y))
+  if (is.finite(bounds[1])) h <- pmin(h, 0.49 * (y - bounds[1]) / reach)
+  if (is.finite(bounds[2])) h <- pmin(h, 0.49 * (bounds[2] - y) / reach)
   h
 }
 
