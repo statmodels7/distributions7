@@ -38,6 +38,12 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
+          # CRAN's macOS build machine began compressing its binaries with
+          # zstd on 2026-09-16 while still naming them .tgz, and pak reads
+          # gzip, bzip2 and xz only: every package CRAN has rebuilt since
+          # then fails to install with "unknown archive type".  The Posit
+          # package manager serves the same binaries gzipped.
+          use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
