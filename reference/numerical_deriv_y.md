@@ -60,5 +60,5 @@ against the \\\varepsilon/h^{k}\\ rounding.
 ``` r
 numerical_deriv_y(gaussian1_distrib(), c(-1, 0, 1),
                   list(mu = 0, sigma = 1), order = 3)
-#> [1] 0 0 0
+#> [1] -2.73871e-07  0.00000e+00  2.73871e-07
 ```

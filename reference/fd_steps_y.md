@@ -11,7 +11,14 @@ and both numerical response derivatives take their step from it.
 ## Usage
 
 ``` r
-fd_steps_y(y, bounds, h_rel, to_bound = c("clamp", "scale"))
+fd_steps_y(
+  y,
+  bounds,
+  h_rel,
+  to_bound = c("clamp", "scale"),
+  order = 1L,
+  accuracy = 2L
+)
 ```
 
 ## Arguments
@@ -36,6 +43,15 @@ fd_steps_y(y, bounds, h_rel, to_bound = c("clamp", "scale"))
   `"clamp"`, the default, or `"scale"`, as above. The two give the same
   step wherever \\d \ge \max(1, \|y\|)\\, which is every observation of
   a family with no finite bound.
+
+- order, accuracy:
+
+  The stencil the step is for, which fix its reach through
+  [`numericals7::fd_offsets()`](https://statmodels7.github.io/numericals7/reference/fd_offsets.html):
+  the clamp is on the OUTERMOST node, so a rule evaluating two steps out
+  is cut to half of what a central difference is. The defaults are the
+  central difference, whose reach is one, which is every caller but
+  [`numerical_deriv_y()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv_y.md).
 
 ## Value
 

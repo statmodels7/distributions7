@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.60.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.61.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,34 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.61.0" id="distributions7-0610">distributions7 0.61.0<a class="anchor" aria-label="anchor" href="#distributions7-0610"></a></h2>
+<ul><li><p><strong>The response direction takes the same clamp, and drops the halving it used by hand.</strong> <code><a href="../reference/numerical_deriv_y.html">numerical_deriv_y()</a></code> evaluates two steps out at both of the orders it serves, and compensated with <code>fd_steps_y(...) / 2</code>. That is 0.60.0’s rule only where the clamp binds: away from a bound it halved the step everywhere and sat below the balanced value, where the ceiling needs dividing and the step itself does not. <code><a href="../reference/fd_steps_y.html">fd_steps_y()</a></code> gains <code>order</code> and <code>accuracy</code> as <code><a href="../reference/fd_steps.html">fd_steps()</a></code> did, and at the default <code>h_rel</code> the clamped branch is <code><a href="https://statmodels7.github.io/numericals7/reference/fd_step.html" class="external-link">numericals7::fd_step()</a></code> with <code>bounds</code>, which a test asserts by identity.</p></li>
+<li>
+<p>⚠️ <strong>What it buys, measured on the only consumer the fallback has.</strong> Every shipped continuous family registers its own third and fourth response derivatives, so <code><a href="../reference/numerical_deriv_y.html">numerical_deriv_y()</a></code> is reachable from a distribution that defines <code>distrib_pdf</code> and nothing else – which is the bargain the package offers, and the measurement is against the shipped family’s analytic value with a bare twin as the subject:</p>
+<table class="table"><thead><tr><th></th>
+<th>order 3</th>
+<th>order 4</th>
+</tr></thead><tbody><tr><td>gaussian</td>
+<td>4.38e-06 -&gt; 5.48e-07</td>
+<td>3.88e-04 -&gt; 2.42e-05</td>
+</tr><tr><td>Student t</td>
+<td>3.00e-07 -&gt; 4.46e-07</td>
+<td>2.50e-04 -&gt; 2.47e-05</td>
+</tr><tr><td>logistic</td>
+<td>9.72e-07 -&gt; 3.98e-07</td>
+<td>5.51e-04 -&gt; 4.46e-05</td>
+</tr><tr><td>gumbel</td>
+<td>3.70e-07 -&gt; 5.23e-07</td>
+<td>3.81e-05 -&gt; 4.94e-06</td>
+</tr></tbody></table><p>At the fourth order it is 7.7x to 16x on all four. ⚠️ At the THIRD it is mixed and the cost is stated rather than averaged away: 8.0x and 2.4x better on two families and 1.5x and 1.4x WORSE on the other two.</p>
+</li>
+<li><p>The step it moves to is the one the error minimizes, which is why both orders were converted rather than the fourth alone. Sweeping the multiplier over 0.25, 0.5, 1, 2 and 4 times <code><a href="https://statmodels7.github.io/numericals7/reference/fd_step.html" class="external-link">numericals7::fd_step()</a></code> across six families, the argument of the minimum is 1 for four of six at order 3 and 1 or 2 for five of six at order 4, while the halved step this replaces is the minimum for exactly one family at one order. ⚠️ <code>invgauss1</code> wants 0.25 at both orders, being truncation-dominated over the whole range, and neither rule offers that.</p></li>
+<li><p>⚠️ <strong>Nothing shipped moves</strong>, and the census says why rather than a tolerance: no shipped family reaches this fallback, so over 20 families and 120 leaves – the four response generics at random parameters – every one is <code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical()</a></code> to 0.60.0. The orders one and two in the response keep the reach-one step and are identical by construction.</p></li>
+<li><p>⚠️ <strong>The time is a wash</strong>, which was the other half of the question: the two routes evaluate the same five nodes, and the whole call measures 0.97x to 1.02x over n of 100, 1000 and 100000 at both orders.</p></li>
+<li><p>⚠️ <strong>What the step does NOT reach is a point against a bound</strong>, where the clamp binds and the two rules coincide exactly. A Gamma observation at 1e-4 from zero reads a relative 2.2e-01 at order 3 and 2.5e-01 at order 4, before and after alike, the fifth derivative of the log-density there being of order 1e20. Away from the bound the same family reads 5.3e-12 and better. That limit is the fallback’s own and is documented on its page.</p></li>
+<li><p>Suite 757 blocks, 7801 passing, nothing failing or skipped. Injecting the halving back fails four assertions.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.60.0" id="distributions7-0600">distributions7 0.60.0<a class="anchor" aria-label="anchor" href="#distributions7-0600"></a></h2>
 <ul><li><p><strong>The clamped step reads the stencil’s reach from <code>numericals7</code> instead of assuming it is one.</strong> <code>fd_steps(..., "clamp")</code> cut the step to 49 per cent of the distance to the nearest bound, which is a statement about the step and not about the nodes: a rule that evaluates two steps out then puts its outermost node at 98 per cent of that distance. The ceiling now divides by the reach, the largest offset the stencil evaluates at, taken from <code><a href="https://statmodels7.github.io/numericals7/reference/fd_offsets.html" class="external-link">numericals7::fd_offsets()</a></code> rather than written here. <code><a href="../reference/fd_steps.html">fd_steps()</a></code> and <code><a href="../reference/fd_stable_step.html">fd_stable_step()</a></code> gain <code>order</code> and <code>accuracy</code>, defaulting to the central difference; <code><a href="../reference/numerical_hessian.html">numerical_hessian()</a></code> and <code><a href="../reference/numerical_deriv4.html">numerical_deriv4()</a></code>, whose quotients are second differences, declare <code>order = 2</code>.</p></li>
