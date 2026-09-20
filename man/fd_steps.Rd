@@ -4,7 +4,14 @@
 \alias{fd_steps}
 \title{Finite-Difference Steps That Respect a Parameter's Domain}
 \usage{
-fd_steps(theta_j, bounds_j, h_rel, to_bound = c("clamp", "scale"))
+fd_steps(
+  theta_j,
+  bounds_j,
+  h_rel,
+  to_bound = c("clamp", "scale"),
+  order = 1L,
+  accuracy = 2L
+)
 }
 \arguments{
 \item{theta_j}{A numeric vector, the values of one parameter.}
@@ -16,6 +23,10 @@ fd_steps(theta_j, bounds_j, h_rel, to_bound = c("clamp", "scale"))
 chosen for the stencil in use.}
 
 \item{to_bound}{\code{"clamp"}, the default, or \code{"scale"}, as above.}
+
+\item{order, accuracy}{The stencil the step is for, which fix its reach
+through \code{\link[numericals7:fd_offsets]{numericals7::fd_offsets()}}. The defaults are the central
+difference, whose reach is one.}
 }
 \value{
 A numeric vector of steps, the same length as \code{theta_j}.
@@ -49,10 +60,33 @@ parameter at or above one.
 
 A parameter already on or outside its boundary cannot be rescued this way, and
 is reported rather than differentiated.
+
+The clamp is on the stencil's OUTERMOST node and not on the step, so it
+divides by the reach, the largest offset the rule evaluates at in units of
+\eqn{h}. That number is the stencil's and is read from
+\code{\link[numericals7:fd_offsets]{numericals7::fd_offsets()}} rather than assumed: a central difference and a
+three-point second difference both reach one step out, which is every use
+this package makes of the clamped branch today, while the five-point rules
+of accuracy four reach two. Without the division a step cut to
+\eqn{0.49 d} puts the outermost node of a reach-two rule at \eqn{0.98 d},
+which is inside the domain and not what the clamp says it is.
+
+With the reach accounted for, the clamped branch at the default \code{h_rel} is
+\code{\link[numericals7:fd_step]{numericals7::fd_step()}} with \code{bounds}, and a test asserts the two are
+\code{identical()} so they cannot drift. It is written here rather than
+delegated because \code{h_rel} is an argument the callers vary:
+\code{\link[=fd_stable_step]{fd_stable_step()}} halves it and \code{check_distrib()} reads the quotient at two
+steps, neither of which \code{fd_step()} can express.
+
+The scaled branch needs no such division. Its step is at most
+\eqn{h_{rel} d}, so the outermost node sits at \eqn{d(1 - r\,h_{rel})} for
+a reach \eqn{r}, inside the domain for any stencil at any root of machine
+epsilon.
 }
 \seealso{
 \code{\link[=fd_stable_step]{fd_stable_step()}}, which chooses between the two, and
 \code{\link[=numerical_gradient]{numerical_gradient()}} and \code{\link[=numerical_hessian]{numerical_hessian()}}, which take the chosen
 step. \code{\link[=fd_steps_y]{fd_steps_y()}} is the response counterpart.
+\code{\link[numericals7:fd_step]{numericals7::fd_step()}} is the same rule at the default \code{h_rel}.
 }
 \keyword{internal}

@@ -153,3 +153,58 @@ test_that("the derivative of an expected information does not choose its step un
   q <- suppressWarnings(distrib_expected_hessian(d, y, th, approx = "bartlett"))
   expect_identical(p, q)
 })
+## The clamp is numericals7's rule, and this is what says so.  `fd_steps()`
+## writes it out rather than delegating, because `h_rel` is an argument the
+## callers vary and `numericals7::fd_step()` derives its own from the order and
+## the accuracy.  At the step `fd_step()` would have chosen the two must
+## therefore agree, and by identity rather than by tolerance: they are the same
+## arithmetic in the same order, and any drift in either package is a defect
+## rather than a rounding.
+test_that("the clamped step is numericals7::fd_step()", {
+  theta <- c(10, 1, 0.5, 0.1, 1e-3, 1e-6, 1e-9)
+  for (order in 1:4) {
+    for (accuracy in c(2L, 4L)) {
+      h_rel <- numericals7::fd_step(1, order, accuracy = accuracy)
+      for (b in list(c(0, Inf), c(-Inf, 1), c(0, 20), NULL)) {
+        x <- if (is.null(b) || !is.finite(b[2])) theta else theta[theta < b[2]]
+        expect_identical(
+          fd_steps(x, b, h_rel, "clamp", order, accuracy),
+          numericals7::fd_step(x, order, accuracy = accuracy, bounds = b),
+          info = paste("order", order, "accuracy", accuracy))
+      }
+    }
+  }
+})
+
+## The reach is read from the stencil and not assumed to be one, so a rule that
+## evaluates two steps out has its OUTERMOST node at 49% of the distance to the
+## bound rather than at 98%.  Nothing in the package reaches this today -- every
+## clamped site is a first or second difference at accuracy two, where the reach
+## is one -- so the assertion is what keeps the rule correct if an accuracy is
+## ever raised.
+test_that("the clamp is on the outermost node", {
+  b <- c(0, Inf)
+  x <- 1e-3
+  h_rel <- 1                      # large enough that the clamp always binds
+  for (order in 1:4) {
+    for (accuracy in c(2L, 4L)) {
+      reach <- numericals7::fd_offsets(order, accuracy = accuracy)$reach
+      h <- fd_steps(x, b, h_rel, "clamp", order, accuracy)
+      expect_equal(x - reach * h, 0.51 * x, tolerance = 1e-12,
+                   info = paste("order", order, "accuracy", accuracy))
+      expect_gt(x - reach * h, 0)
+    }
+  }
+  # and the reach really is more than one somewhere, or the block is vacuous
+  expect_gt(numericals7::fd_offsets(1L, accuracy = 4L)$reach, 1)
+  expect_gt(numericals7::fd_offsets(3L, accuracy = 2L)$reach, 1)
+})
+
+## Every live caller of the clamped branch is a reach-one stencil, which is
+## what makes this release inert.  Asserted rather than asserted-in-prose: if a
+## caller ever passes an order and accuracy whose reach is not one, the step it
+## gets moves and this goes red.
+test_that("the clamped sites in use have reach one", {
+  for (a in list(c(1L, 2L), c(2L, 2L)))
+    expect_identical(numericals7::fd_offsets(a[1], accuracy = a[2])$reach, 1L)
+})

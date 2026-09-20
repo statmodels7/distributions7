@@ -4,7 +4,15 @@
 \alias{fd_stable_step}
 \title{A Parameter Step That Chooses Itself}
 \usage{
-fd_stable_step(quotient, theta_j, bounds_j, h_rel, need_value = TRUE)
+fd_stable_step(
+  quotient,
+  theta_j,
+  bounds_j,
+  h_rel,
+  need_value = TRUE,
+  order = 1L,
+  accuracy = 2L
+)
 }
 \arguments{
 \item{quotient}{A function of one step, returning the difference quotient at
@@ -23,6 +31,11 @@ over all of them together.}
 step. \code{FALSE} for a caller that wants only the step, and then nothing is
 evaluated at all where the two candidates coincide: the higher orders read
 only \code{h}, and their quotient is a difference of whole Hessians.}
+
+\item{order, accuracy}{The stencil the quotient implements, passed to
+\code{\link[=fd_steps]{fd_steps()}} so that the clamp is on the outermost node. The defaults are
+the central difference; a caller whose quotient is a second difference
+passes \code{order = 2}.}
 }
 \value{
 A list of two elements: \code{h}, the step chosen, and \code{value}, the

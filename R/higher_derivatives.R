@@ -156,7 +156,7 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
       }
       hsteps[[k]] <<- fd_stable_step(quotient, theta[[k]],
                                      bounds[[params[k]]], h_rel,
-                                     need_value = FALSE)$h
+                                     need_value = FALSE, order = 2L)$h
     }
     hsteps[[k]]
   }

@@ -33,20 +33,47 @@ NULL
 #' A parameter already on or outside its boundary cannot be rescued this way, and
 #' is reported rather than differentiated.
 #'
+#' The clamp is on the stencil's OUTERMOST node and not on the step, so it
+#' divides by the reach, the largest offset the rule evaluates at in units of
+#' \eqn{h}. That number is the stencil's and is read from
+#' [numericals7::fd_offsets()] rather than assumed: a central difference and a
+#' three-point second difference both reach one step out, which is every use
+#' this package makes of the clamped branch today, while the five-point rules
+#' of accuracy four reach two. Without the division a step cut to
+#' \eqn{0.49 d} puts the outermost node of a reach-two rule at \eqn{0.98 d},
+#' which is inside the domain and not what the clamp says it is.
+#'
+#' With the reach accounted for, the clamped branch at the default `h_rel` is
+#' [numericals7::fd_step()] with `bounds`, and a test asserts the two are
+#' `identical()` so they cannot drift. It is written here rather than
+#' delegated because `h_rel` is an argument the callers vary:
+#' [fd_stable_step()] halves it and `check_distrib()` reads the quotient at two
+#' steps, neither of which `fd_step()` can express.
+#'
+#' The scaled branch needs no such division. Its step is at most
+#' \eqn{h_{rel} d}, so the outermost node sits at \eqn{d(1 - r\,h_{rel})} for
+#' a reach \eqn{r}, inside the domain for any stencil at any root of machine
+#' epsilon.
+#'
 #' @param theta_j A numeric vector, the values of one parameter.
 #' @param bounds_j A length-2 numeric vector giving that parameter's domain, or
 #'   `NULL`.
 #' @param h_rel The relative step size, typically a root of machine epsilon
 #'   chosen for the stencil in use.
 #' @param to_bound `"clamp"`, the default, or `"scale"`, as above.
+#' @param order,accuracy The stencil the step is for, which fix its reach
+#'   through [numericals7::fd_offsets()]. The defaults are the central
+#'   difference, whose reach is one.
 #'
 #' @return A numeric vector of steps, the same length as `theta_j`.
 #'
 #' @seealso [fd_stable_step()], which chooses between the two, and
 #'   [numerical_gradient()] and [numerical_hessian()], which take the chosen
 #'   step. [fd_steps_y()] is the response counterpart.
+#'   [numericals7::fd_step()] is the same rule at the default `h_rel`.
 #' @keywords internal
-fd_steps <- function(theta_j, bounds_j, h_rel, to_bound = c("clamp", "scale")) {
+fd_steps <- function(theta_j, bounds_j, h_rel, to_bound = c("clamp", "scale"),
+                     order = 1L, accuracy = 2L) {
   to_bound <- match.arg(to_bound)
   if (identical(to_bound, "scale")) {
     s <- pmax(1, abs(theta_j))
@@ -56,10 +83,13 @@ fd_steps <- function(theta_j, bounds_j, h_rel, to_bound = c("clamp", "scale")) {
     }
     h <- h_rel * s
   } else {
+    reach <- numericals7::fd_offsets(order, accuracy = accuracy)$reach
     h <- h_rel * pmax(1, abs(theta_j))
     if (!is.null(bounds_j)) {
-      if (is.finite(bounds_j[1])) h <- pmin(h, 0.49 * (theta_j - bounds_j[1]))
-      if (is.finite(bounds_j[2])) h <- pmin(h, 0.49 * (bounds_j[2] - theta_j))
+      if (is.finite(bounds_j[1]))
+        h <- pmin(h, 0.49 * (theta_j - bounds_j[1]) / reach)
+      if (is.finite(bounds_j[2]))
+        h <- pmin(h, 0.49 * (bounds_j[2] - theta_j) / reach)
     }
   }
   if (any(!is.finite(h) | h <= 0)) {
@@ -143,7 +173,10 @@ fd_self_consistency <- function(x_half, x_full) {
 #'   step. `FALSE` for a caller that wants only the step, and then nothing is
 #'   evaluated at all where the two candidates coincide: the higher orders read
 #'   only `h`, and their quotient is a difference of whole Hessians.
-#'
+#' @param order,accuracy The stencil the quotient implements, passed to
+#'   [fd_steps()] so that the clamp is on the outermost node. The defaults are
+#'   the central difference; a caller whose quotient is a second difference
+#'   passes `order = 2`.
 #' @return A list of two elements: `h`, the step chosen, and `value`, the
 #'   quotient at it, or `NULL` when `need_value` is `FALSE` and no quotient had
 #'   to be taken.
@@ -152,9 +185,10 @@ fd_self_consistency <- function(x_half, x_full) {
 #'   the reading they are compared on, and [fd_stable_quotient()] for the
 #'   response direction.
 #' @keywords internal
-fd_stable_step <- function(quotient, theta_j, bounds_j, h_rel, need_value = TRUE) {
-  hA <- fd_steps(theta_j, bounds_j, h_rel, "clamp")
-  hB <- fd_steps(theta_j, bounds_j, h_rel, "scale")
+fd_stable_step <- function(quotient, theta_j, bounds_j, h_rel, need_value = TRUE,
+                           order = 1L, accuracy = 2L) {
+  hA <- fd_steps(theta_j, bounds_j, h_rel, "clamp", order, accuracy)
+  hB <- fd_steps(theta_j, bounds_j, h_rel, "scale", order, accuracy)
   if (isTRUE(all(hA == hB))) {
     return(list(h = hA, value = if (need_value) quotient(hA) else NULL))
   }
@@ -274,7 +308,8 @@ numerical_hessian <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 
       tm[[j]] <- theta[[j]] - hj
       (lp(tp) - 2 * lp0 + lp(tm)) / (hj^2)
     }
-    fd_stable_step(quotient, theta[[j]], distrib@params_bounds[[params[j]]], h_rel)
+    fd_stable_step(quotient, theta[[j]], distrib@params_bounds[[params[j]]],
+                   h_rel, order = 2L)
   })
   h <- lapply(chosen, `[[`, "h")
 
