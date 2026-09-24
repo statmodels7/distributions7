@@ -78,6 +78,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/beta2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/beta2_higher.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/betabinom1_components.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/betabinom1_cum.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/betabinom1_dexpected.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/betabinom2_component.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/betabinom2_derivs.html</loc></url>
@@ -120,6 +122,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/deriv_indices.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/deriv_names.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dexpected_analytic.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dexpected_chain.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dexpected_key.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dexpected_link.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dexpected_names.html</loc></url>
@@ -344,9 +347,14 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.Beta1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.Gamma1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.Gaussian1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.PoissonDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.ReparamContinuousDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.StudentT1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.VonMises1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Beta1Distrib.html</loc></url>
@@ -1149,11 +1157,14 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/psi_shift_diff.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/quad_rows.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/recip_1p_sq.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/register_dexpected.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_dy_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_phi_terms_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_surv_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_chain.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/reparam_dexpected.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/reparam_dexpected_method.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_stencil_derivs.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_tables.html</loc></url>
@@ -1238,6 +1249,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/std_dev.numeric.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/student_t1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/student_t2_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/support_dexpected.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/surv_cdf_deriv_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/theta2_link_scale.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/to_link_scale.html</loc></url>
@@ -1310,6 +1322,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/vm2_parts.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/vm_cdf.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/vm_dexpected.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull1_distrib.html</loc></url>

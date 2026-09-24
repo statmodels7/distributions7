@@ -2226,6 +2226,13 @@ divergent density.
 - [`betabinom1_components()`](https://statmodels7.github.io/distributions7/reference/betabinom1_components.md)
   : Derivative Components of the Beta-Binomial in Mean and Dispersion
 
+- [`betabinom1_cum()`](https://statmodels7.github.io/distributions7/reference/betabinom1_cum.md)
+  : The Beta-Binomial's Cumulative Mass Over Its Support
+
+- [`betabinom1_dexpected()`](https://statmodels7.github.io/distributions7/reference/betabinom1_dexpected.md)
+  : The Beta-Binomial's Expected-Information Derivatives in Mean and
+  Dispersion
+
 - [`betabinom2_component()`](https://statmodels7.github.io/distributions7/reference/betabinom2_component.md)
   : One Component of a Beta-Binomial Derivative in the Shapes
 
@@ -2307,6 +2314,9 @@ divergent density.
 - [`dexpected_analytic()`](https://statmodels7.github.io/distributions7/reference/dexpected_analytic.md)
   : The Analytic Derivatives of the Expected Information, on Either
   Scale
+
+- [`dexpected_chain()`](https://statmodels7.github.io/distributions7/reference/dexpected_chain.md)
+  : The Chain Rule for the Expected Information's Derivatives
 
 - [`dexpected_link()`](https://statmodels7.github.io/distributions7/reference/dexpected_link.md)
   : The Derivatives of the Link-Scale Expected Information
@@ -2537,6 +2547,14 @@ divergent density.
   [`distrib_d2expected_hessian.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.Gaussian1Distrib.md)
   : Gaussian Derivatives of the Expected Information
 
+- [`distrib_dexpected_hessian.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin1Distrib.md)
+  [`distrib_d2expected_hessian.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin1Distrib.md)
+  [`distrib_dexpected_hessian.BetaBinom1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin1Distrib.md)
+  [`distrib_d2expected_hessian.BetaBinom1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin1Distrib.md)
+  [`distrib_dexpected_hessian.BetaBinom2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin1Distrib.md)
+  [`distrib_d2expected_hessian.BetaBinom2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin1Distrib.md)
+  : Derivatives of the Expected Information, Sums Over the Support
+
 - [`distrib_dexpected_hessian.NegBin2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin2Distrib.md)
   [`distrib_d2expected_hessian.NegBin2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin2Distrib.md)
   : Negative Binomial Derivatives of the Expected Information, NB2
@@ -2545,8 +2563,64 @@ divergent density.
   [`distrib_d2expected_hessian.PoissonDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.PoissonDistrib.md)
   : Poisson Derivatives of the Expected Information
 
+- [`distrib_dexpected_hessian.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.ReparamContinuousDistrib.md)
+  [`distrib_d2expected_hessian.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.ReparamContinuousDistrib.md)
+  [`distrib_dexpected_hessian.ReparamDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.ReparamContinuousDistrib.md)
+  [`distrib_d2expected_hessian.ReparamDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.ReparamContinuousDistrib.md)
+  : Derivatives of the Expected Information, Reparametrized Families
+
+- [`distrib_dexpected_hessian.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.StudentT1Distrib.md)
+  [`distrib_d2expected_hessian.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.StudentT1Distrib.md)
+  [`distrib_dexpected_hessian.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.StudentT1Distrib.md)
+  [`distrib_d2expected_hessian.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.StudentT1Distrib.md)
+  : Derivatives of the Expected Information, Student t and Generalized
+  Gamma
+
+- [`distrib_dexpected_hessian.VonMises1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.VonMises1Distrib.md)
+  [`distrib_d2expected_hessian.VonMises1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.VonMises1Distrib.md)
+  [`distrib_dexpected_hessian.VonMises2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.VonMises1Distrib.md)
+  [`distrib_d2expected_hessian.VonMises2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.VonMises1Distrib.md)
+  : Derivatives of the Expected Information, von Mises
+
 - [`distrib_dexpected_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.distrib.md)
   : Default Derivative of the Expected Information
+
+- [`distrib_dexpected_hessian.elementary`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.BinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.BinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.Gaussian2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.Gaussian2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.Gaussian3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.Gaussian3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.Lognormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.Lognormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.InvGauss1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.InvGauss1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.InvGauss2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.InvGauss2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.Beta2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.Beta2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.Weibull1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.Weibull1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  : Derivatives of the Expected Information, Elementary Families
 
 - [`distrib_expected_hessian.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvGaussianDistrib.md)
   : Multivariate Gaussian Expected Information
@@ -3683,6 +3757,9 @@ divergent density.
 - [`recip_1p_sq()`](https://statmodels7.github.io/distributions7/reference/recip_1p_sq.md)
   : Derivatives of the Reciprocal of One Plus a Square
 
+- [`register_dexpected()`](https://statmodels7.github.io/distributions7/reference/register_dexpected.md)
+  : Register a Family's Derivatives of the Expected Information
+
 - [`register_dy_k()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md)
   : Register the Third and Fourth Response Derivatives of a Family
 
@@ -3698,6 +3775,12 @@ divergent density.
 
 - [`reparam_chain()`](https://statmodels7.github.io/distributions7/reference/reparam_chain.md)
   : Parameter Derivatives of a Reparametrized Distribution
+
+- [`reparam_dexpected()`](https://statmodels7.github.io/distributions7/reference/reparam_dexpected.md)
+  : The Expected Information's Derivatives Through a Reparametrization
+
+- [`reparam_dexpected_method()`](https://statmodels7.github.io/distributions7/reference/reparam_dexpected_method.md)
+  : A Method Body for the Reparametrized Families
 
 - [`md_betabinom1()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_lognormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
@@ -3927,6 +4010,10 @@ divergent density.
 - [`std_dev.numeric`](https://statmodels7.github.io/distributions7/reference/std_dev.numeric.md)
   : Sample Standard Deviation
 
+- [`support_dexpected()`](https://statmodels7.github.io/distributions7/reference/support_dexpected.md)
+  : Derivatives of the Expected Information as Exact Sums Over a Finite
+  Support
+
 - [`surv_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/surv_cdf_deriv_k.md)
   : CDF Derivatives From an Exponential Survival Function
 
@@ -4125,6 +4212,9 @@ divergent density.
 
 - [`vm_cdf()`](https://statmodels7.github.io/distributions7/reference/vm_cdf.md)
   : The Distribution Function of a von Mises by Its Bessel Series
+
+- [`vm_dexpected()`](https://statmodels7.github.io/distributions7/reference/vm_dexpected.md)
+  : The von Mises Families' Derivative Tables
 
 - [`weibull_gamma_factors()`](https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.md)
   : Gamma Factors of a Weibull's Moments

@@ -74,9 +74,10 @@ families that do are
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md),
 [`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md),
 [`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md),
-[`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
-and
-[`beta1_distrib()`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md),
+[`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md),
+[`beta1_distrib()`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md)
+and the seventeen listed on
+[distrib_dexpected_hessian.elementary](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md),
 each from a compiled kernel.
 
 On `scale = "link"` the expected information is \\F\_{ab} =
