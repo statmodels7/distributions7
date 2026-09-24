@@ -92,5 +92,5 @@ c(gamma = max(abs(distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
 
 # d decides what happens at the origin.
 distrib_pdf(d, 1e-8, list(a = 2, d = c(0.5, 1, 2), p = 1.5))
-#> [1] 3959.255
+#> [1] 3.959255e+03 5.538661e-01 4.199424e-09
 ```

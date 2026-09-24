@@ -25,7 +25,7 @@ y)^2\), with \(\mathrm{se}(\hat\mu) = \hat\sigma/\sqrt{n}\) and
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.62.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.63.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -197,8 +197,14 @@ would not.</p>
     </div>
     <div class="section level2">
     <h2 id="restarts-the-fallback-and-the-tie-break">Restarts, the fallback and the tie-break<a class="anchor" aria-label="anchor" href="#restarts-the-fallback-and-the-tie-break"></a></h2>
-    <p>Each starting value is tried in turn and the search stops at the first run
-that converges. Fisher scoring and Newton's method fall back to BFGS from
+    <p>Each starting value is tried in turn, and the search stops once two runs
+that converged have reached the best objective found so far, to a relative
+\(10^{-8}\) of the mean negative log-likelihood. A single converged run is
+not taken as the answer because it may be a degenerate stationary point:
+on <code><a href="zero_adjusted.html">zero_adjusted()</a></code> of <code><a href="pig1_distrib.html">pig1_distrib()</a></code> the first start converges at a
+log-likelihood about 97 units below the maximum the other starts reach.
+Where fewer than two runs converge every start is tried and the best is
+kept. Fisher scoring and Newton's method fall back to BFGS from
 the same starting value when they fail; an optimizer the caller named does
 not. Among the runs that finish, a converged one beats a non-converged one
 and the objective breaks ties, so the fit reports the best run and not the
@@ -224,7 +230,7 @@ discarded before any comparison.</p>
 <span class="r-in"><span><span class="va">fit</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Maximum-likelihood fit: gaussian1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 2 ms</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 6 ms</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Converged: yes (gradient (max-norm) &lt; 1e-06)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter scale:</span>

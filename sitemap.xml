@@ -634,6 +634,9 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.ZeroInflatedDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.ZeroInflatedDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_kernel.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.Beta1Distrib.html</loc></url>
@@ -787,6 +790,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_start.Pig2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_start.distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_start.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_start.zero_wrappers.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distributions7-package.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-describe_probe.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_ac_derivs.html</loc></url>
@@ -1157,6 +1161,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/psi_shift_diff.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/quad_rows.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/recip_1p_sq.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/recycle_point.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_dexpected.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_dy_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.html</loc></url>

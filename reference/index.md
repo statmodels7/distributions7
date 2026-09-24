@@ -175,6 +175,8 @@ respect to the unconstrained parameters.
   : S7 Class for Fisher Scoring Specifications
 - [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
   : A Starting Value Drawn From the Data
+- [`distrib_intercept_start()`](https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.md)
+  : Starting Values for a Regression's Intercepts, Read Off the Data
 - [`distrib_fit()`](https://statmodels7.github.io/distributions7/reference/distrib_fit_class.md)
   : S7 Class for Maximum-Likelihood Fits
 - [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
@@ -2429,6 +2431,12 @@ divergent density.
 
   Default Numerical Hessian for `distrib` Objects
 
+- [`distrib_intercept_start.ZeroInflatedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.ZeroInflatedDistrib.md)
+  : The Mixing Weight Starts at the Proportion of Zeros
+
+- [`distrib_intercept_start.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.distrib.md)
+  : No Intercept Needs a Start of Its Own
+
 - [`distrib_pdf.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MvGaussianDistrib.md)
   : Multivariate Gaussian Density
 
@@ -2473,6 +2481,9 @@ divergent density.
 
 - [`distrib_start.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_start.distrib.md)
   : Random Starting Values
+
+- [`start_zero_wrapper()`](https://statmodels7.github.io/distributions7/reference/distrib_start.zero_wrappers.md)
+  : Starting Values for the Zero Wrappers, Read Off the Data
 
 - [`distributions7`](https://statmodels7.github.io/distributions7/reference/distributions7-package.md)
   [`distributions7-package`](https://statmodels7.github.io/distributions7/reference/distributions7-package.md)
@@ -3348,6 +3359,9 @@ divergent density.
 
 - [`recip_1p_sq()`](https://statmodels7.github.io/distributions7/reference/recip_1p_sq.md)
   : Derivatives of the Reciprocal of One Plus a Square
+
+- [`recycle_point()`](https://statmodels7.github.io/distributions7/reference/recycle_point.md)
+  : Recycle a Single Point Against Parameters That Vary by Observation
 
 - [`register_dexpected()`](https://statmodels7.github.io/distributions7/reference/register_dexpected.md)
   : Register a Family's Derivatives of the Expected Information

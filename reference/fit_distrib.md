@@ -161,13 +161,23 @@ parameter scale would not.
 
 ## Restarts, the fallback and the tie-break
 
-Each starting value is tried in turn and the search stops at the first
-run that converges. Fisher scoring and Newton's method fall back to BFGS
-from the same starting value when they fail; an optimizer the caller
-named does not. Among the runs that finish, a converged one beats a
-non-converged one and the objective breaks ties, so the fit reports the
-best run and not the last. A run of a discrete family whose
-log-likelihood came back positive is discarded before any comparison.
+Each starting value is tried in turn, and the search stops once two runs
+that converged have reached the best objective found so far, to a
+relative \\10^{-8}\\ of the mean negative log-likelihood. A single
+converged run is not taken as the answer because it may be a degenerate
+stationary point: on
+[`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+of
+[`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
+the first start converges at a log-likelihood about 97 units below the
+maximum the other starts reach. Where fewer than two runs converge every
+start is tried and the best is kept. Fisher scoring and Newton's method
+fall back to BFGS from the same starting value when they fail; an
+optimizer the caller named does not. Among the runs that finish, a
+converged one beats a non-converged one and the objective breaks ties,
+so the fit reports the best run and not the last. A run of a discrete
+family whose log-likelihood came back positive is discarded before any
+comparison.
 
 ## See also
 
@@ -194,7 +204,7 @@ fit <- fit_distrib(d, y)
 fit
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 2 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 6 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:

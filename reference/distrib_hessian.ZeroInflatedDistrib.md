@@ -91,7 +91,7 @@ ref <- vapply(distributions7:::hess_pairs(d@params),
               function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
               numeric(1))
 max(abs(vapply(H, sum, numeric(1)) - ref))
-#> [1] 4.271214e-10
+#> [1] 1.588853e-08
 
 # At a positive observation the mixed block is exactly zero and the zi
 # block is a constant; at a zero neither is.
