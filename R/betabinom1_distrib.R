@@ -193,11 +193,12 @@ S7::method(distrib_cdf, BetaBinom1Distrib) <- function(distrib, q, theta,
                                                       lower.tail = TRUE,
                                                       log.p = FALSE, ...) {
   n <- distrib@size
-  supp <- 0:n
-  mass <- exp(betabinom_logpmf_cpp(supp, theta[[1]], theta[[2]], n))
-  cum <- cumsum(mass)
   k <- floor(q)
-  p <- ifelse(k < 0, 0, ifelse(k >= n, 1, cum[pmin(pmax(k, 0), n) + 1L]))
+  cum <- betabinom1_cum(n, theta, length(q))
+  if (is.matrix(cum)) k <- rep_len(k, nrow(cum))
+  kk <- pmin(pmax(k, 0), n) + 1L
+  at <- if (is.matrix(cum)) cum[cbind(seq_along(k), kk)] else cum[kk]
+  p <- ifelse(k < 0, 0, ifelse(k >= n, 1, at))
   p <- pmin(pmax(p, 0), 1)
   if (!lower.tail) p <- 1 - p
   if (log.p) log(p) else p
@@ -253,13 +254,52 @@ S7::method(distrib_quantile, BetaBinom1Distrib) <- function(distrib, p, theta,
   if (log.p) p <- exp(p)
   if (!lower.tail) p <- 1 - p
   n <- distrib@size
-  cum <- cumsum(exp(betabinom_logpmf_cpp(0:n, theta[[1]], theta[[2]], n)))
-  vapply(p, function(pp) {
+  cum <- betabinom1_cum(n, theta, length(p))
+  if (is.matrix(cum)) p <- rep_len(p, nrow(cum))
+  vapply(seq_along(p), function(i) {
+    pp <- p[i]
     if (is.na(pp)) return(NA_real_)
     if (pp <= 0) return(0)
     if (pp >= 1) return(n)
-    (0:n)[which(cum >= pp - 1e-12)[1L]]
+    ci <- if (is.matrix(cum)) cum[i, ] else cum
+    (0:n)[which(ci >= pp - 1e-12)[1L]]
   }, numeric(1))
+}
+
+#' The Beta-Binomial's Cumulative Mass Over Its Support
+#'
+#' @description
+#' The cumulative mass over \eqn{\{0, \dots, n\}}: a vector where both
+#' parameters are scalar, and otherwise a matrix with one row per observation,
+#' each observation's parameters crossed with the support.
+#'
+#' @details
+#' The kernel reads its parameters per element, so handing it the support
+#' against a vector of parameters recycled nothing and read past the end of
+#' the shorter vector; that is what the matrix branch replaced.
+#'
+#' @param n The size.
+#' @param theta A named list with the two parameters.
+#' @param len The length of the quantity the caller evaluates at.
+#'
+#' @return A numeric vector of length `n + 1`, or a matrix with `n + 1`
+#'   columns.
+#'
+#' @keywords internal
+betabinom1_cum <- function(n, theta, len) {
+  a <- theta[[1]]
+  b <- theta[[2]]
+  if (length(a) == 1L && length(b) == 1L) {
+    return(cumsum(exp(betabinom_logpmf_cpp(0:n, a, b, n))))
+  }
+  nn <- max(len, length(a), length(b))
+  m <- n + 1L
+  mass <- exp(betabinom_logpmf_cpp(rep(0:n, each = nn),
+                                   rep(rep_len(a, nn), times = m),
+                                   rep(rep_len(b, nn), times = m), n))
+  mass <- matrix(mass, nn, m)
+  if (m > 1L) for (j in 2:m) mass[, j] <- mass[, j] + mass[, j - 1L]
+  mass
 }
 
 #' @title Beta-Binomial Random Generation

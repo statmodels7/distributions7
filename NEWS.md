@@ -1,3 +1,84 @@
+# distributions7 0.62.0
+
+* **The first and second derivatives of the expected information are
+  analytic for 33 families, where 0.59.0 covered five.** The 28 added are the
+  Bernoulli, binomial, exponential, geometric, chi-squared, Cauchy, logistic,
+  Gumbel, the gaussian by its variance and by its precision, both lognormals,
+  both inverse gaussians, the gamma by its variance, the beta by its shapes,
+  both Weibulls, the generalized Pareto, the Student t by its scale and by its
+  standard deviation, both generalized gammas, both von Mises, the NB1 and
+  both beta-binomials. They are what the exact outer
+  Hessian of statmodels7 reads on the expected information, which until now
+  differenced the exact gradient for every family outside the five.
+
+  They come by four routes, chosen by what the family's expected information
+  is:
+  - an elementary function of the parameters: seventeen compiled kernels in
+    `src/dexpected_kernels.cpp`, each component an ordinary derivative of the
+    family's written-out E[l_ab] (`distrib_dexpected_hessian.elementary`),
+    with the Student t by its scale and the generalized gamma beside them;
+  - a family written as a map of another: `reparam_dexpected()` carries the
+    parent's derivatives through the map's hand-written partials, E being a
+    tensor, so every reparametrized family whose parent is covered is
+    covered with no kernel of its own;
+  - the von Mises, whose information is -kappa A(kappa) and -A'(kappa) in the
+    Bessel ratio A = I1/I0, read from `numericals7::bessel_i_ratio_derivs()`;
+  - a sum over the support: the NB1 through the exact recurrences of its
+    polygamma differences, compiled beside its mass, and the beta-binomial
+    through a kernel where every derivative of the log-mass is a sum of
+    negative powers and no polygamma is called.
+
+* Every component was derived before it was written and checked three ways:
+  against the moment identities d_c E_ab = E[l_abc + l_ab l_c] and its
+  second-order counterpart through `expectation()` (1e-12 relative or
+  better), against one Richardson difference of the analytic order below
+  (1e-10 or better, never a nested difference), and against the asymptote
+  where one exists -- the gamma at a large shape, the Student t at a large nu,
+  the von Mises at a large concentration. The tests assert all three, and a
+  component made 5 per cent wrong fails six of them.
+
+* **Where the expected information cancels, the derivatives inherit it, and
+  that is stated rather than repaired.** The NB1 toward its Poisson limit
+  composes c0 + c1 G with G an expectation of a trigamma difference, and the
+  composition cancels as the information itself does: against exact sums over
+  the support its derivatives read 1e-09 at theta = 0.7, 1e-07 at 0.2 and
+  1e-05 at 0.05. The Student t's derivatives in nu take a series in 1/nu above
+  nu = 30, from the duplication identity, where the polygamma differences
+  lose their digits.
+
+* **The beta-binomial by its shapes returned a wrong expected information
+  wherever the shapes varied by observation**, which is every regression. The
+  sum over the support used a vector of shapes against the support points, so
+  R recycled one against the other: measured on the census of the certificate,
+  a `betabinom2_distrib()` smooth could not be fitted under REML at all. Every
+  observation's shapes are now crossed with the support. **And
+  `betabinom1_distrib()`'s distribution and quantile functions read past the
+  end of their table when the parameters varied by observation**; they build
+  one table per observation now, through `betabinom1_cum()`.
+
+* **Three faster routes, each identical to the one it replaces.**
+  `reparam_dexpected()` resolved its lookup keys with `paste()` and `sort()`
+  inside four nested loops and now resolves them once, into lists indexed by
+  integers: the second derivative on the link scale at n = 4000 goes from 0.54
+  s to 0.075 s on `student_t2_distrib()` and from 0.55 s to 0.093 s on
+  `gengamma2_distrib()`, and over 24 cases the result is `identical()`.
+  `dexpected_analytic()` reads both orders from one call where a kernel returns
+  them, and the beta-binomial kernel does, so its sum over the support is paid
+  once: over 33 families on both scales, 132 comparisons are `identical()`
+  apart from the beta-binomial's, which moved to the new kernel and agrees with
+  the sum over the family's own observed derivatives to 5.5e-12 relative. That
+  kernel takes the second derivative at n = 4000 from 2.28 s to 0.15 s on
+  `betabinom1_distrib()` and from 0.96 s to 0.17 s on `betabinom2_distrib()`;
+  `support_dexpected()` remains as the twin it is tested against.
+
+* What it buys in statmodels7, measured at n = 4000 on a smooth in the first
+  parameter under `reml("expected")`: `statmod_certificate()` on the expected
+  route drops from a median of 38.9 to 14.3 per cent of the fit over 31
+  families, and every one is now read analytically where 29 were differenced --
+  the Bernoulli 57.9 to 4.5, the Student t 60.2 to 24.3, the beta-binomial
+  70.9 to 20.4, the von Mises 31.5 to 2.5. `vonmises2_distrib()`, whose
+  certificate read `unknown`, now reads `converged`.
+
 # distributions7 0.61.0
 
 * **The response direction takes the same clamp, and drops the halving it

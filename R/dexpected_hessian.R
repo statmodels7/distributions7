@@ -300,8 +300,9 @@ numerical_dexpected_hessian <- function(distrib, y, theta,
 #' would be the nested differencing the package forbids, so the base method
 #' signals an error and a family that does not register one has no second
 #' derivative. The families that do are `gaussian1_distrib()`,
-#' `poisson_distrib()`, `gamma1_distrib()`, `negbin2_distrib()` and
-#' `beta1_distrib()`, each from a compiled kernel.
+#' `poisson_distrib()`, `gamma1_distrib()`, `negbin2_distrib()`,
+#' `beta1_distrib()` and the seventeen listed on
+#' [distrib_dexpected_hessian.elementary], each from a compiled kernel.
 #'
 #' On `scale = "link"` the expected information is
 #' \eqn{F_{ab} = \mathbb{E}[\ell_{ab}]\,h_a' h_b'}, with no term in \eqn{h''}
@@ -445,7 +446,10 @@ hess_pair_name <- function(params, a, b) {
 #' @param threads The thread count passed to the kernel and to the family's
 #'   expected information.
 #' @param kern A function of the order returning the kernel's named list on the
-#'   parameter scale.
+#'   parameter scale. A kernel asked for order 2 may return the order-1
+#'   components beside the order-2 ones, and where it does they are read from
+#'   that one call rather than from a second: a route that sums over the
+#'   support pays for the family's derivatives once.
 #'
 #' @return A named list keyed as [dexpected_names()] or [d2expected_names()].
 #'
@@ -454,9 +458,17 @@ hess_pair_name <- function(params, a, b) {
 #' @keywords internal
 dexpected_analytic <- function(distrib, y, theta, scale, order, threads, kern) {
   params <- distrib@params
-  d1 <- kern(1L)[dexpected_names(params)]
-  d2 <- if (order == 2L) kern(2L)[d2expected_names(params)] else NULL
-  if (identical(scale, "parameter")) return(if (order == 1L) d1 else d2)
+  n1 <- dexpected_names(params)
+  if (order == 1L) {
+    d1 <- kern(1L)[n1]
+    if (identical(scale, "parameter")) return(d1)
+    d2 <- NULL
+  } else {
+    k2 <- kern(2L)
+    d2 <- k2[d2expected_names(params)]
+    if (identical(scale, "parameter")) return(d2)
+    d1 <- if (all(n1 %in% names(k2))) k2[n1] else kern(1L)[n1]
+  }
   E <- distrib_expected_hessian(distrib, y, theta, scale = "parameter",
                                 threads = threads)
   h <- inverse_link_derivs(distrib, theta, order + 1L)

@@ -555,6 +555,24 @@ betabinom2_expected <- function(distrib, y, theta, order) {
   b <- theta[[2]]
   n <- distrib@size
   supp <- 0:n
+  if (length(a) > 1L || length(b) > 1L) {
+    # Parameters that vary by observation: every observation's shapes are
+    # crossed with the support and the sum is taken row by row. Summing over
+    # the support with a vector of shapes would recycle one against the other,
+    # which is what this branch replaced.
+    nn <- max(length(y), length(a), length(b))
+    m <- n + 1L
+    yy <- rep(supp, each = nn)
+    aa <- rep(rep_len(a, nn), times = m)
+    bb <- rep(rep_len(b, nn), times = m)
+    th <- stats::setNames(list(aa, bb), distrib@params)
+    w <- distrib_pdf(distrib, yy, th)
+    d <- betabinom2_derivs(yy, aa, bb, n, order, distrib@params)
+    nm <- if (order == 2L) hess_names(distrib@params) else names(d)
+    return(stats::setNames(lapply(nm, function(k) {
+      rowSums(matrix(w * d[[k]], nn, m))
+    }), nm))
+  }
   w <- distrib_pdf(distrib, supp, theta)
   d <- betabinom2_derivs(supp, a, b, n, order, distrib@params)
   nm <- if (order == 2L) hess_names(distrib@params) else names(d)

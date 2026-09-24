@@ -145,6 +145,82 @@ d7_scalar_probe <- function(cls, k, y, theta) {
     .Call(`_distributions7_d7_scalar_probe`, cls, k, y, theta)
 }
 
+bernoulli_dexpected_cpp <- function(y, mu, order, threads = 1L) {
+    .Call(`_distributions7_bernoulli_dexpected_cpp`, y, mu, order, threads)
+}
+
+binomial_dexpected_cpp <- function(y, mu, size, order, threads = 1L) {
+    .Call(`_distributions7_binomial_dexpected_cpp`, y, mu, size, order, threads)
+}
+
+exponential_dexpected_cpp <- function(y, mu, order, threads = 1L) {
+    .Call(`_distributions7_exponential_dexpected_cpp`, y, mu, order, threads)
+}
+
+geometric_dexpected_cpp <- function(y, mu, order, threads = 1L) {
+    .Call(`_distributions7_geometric_dexpected_cpp`, y, mu, order, threads)
+}
+
+chisq_dexpected_cpp <- function(y, mu, order, threads = 1L) {
+    .Call(`_distributions7_chisq_dexpected_cpp`, y, mu, order, threads)
+}
+
+cauchy_dexpected_cpp <- function(y, mu, sigma, order, threads = 1L) {
+    .Call(`_distributions7_cauchy_dexpected_cpp`, y, mu, sigma, order, threads)
+}
+
+logistic_dexpected_cpp <- function(y, mu, sigma, order, threads = 1L) {
+    .Call(`_distributions7_logistic_dexpected_cpp`, y, mu, sigma, order, threads)
+}
+
+gumbel_dexpected_cpp <- function(y, mu, sigma, order, threads = 1L) {
+    .Call(`_distributions7_gumbel_dexpected_cpp`, y, mu, sigma, order, threads)
+}
+
+gaussian2_dexpected_cpp <- function(y, mu, sigma2, order, threads = 1L) {
+    .Call(`_distributions7_gaussian2_dexpected_cpp`, y, mu, sigma2, order, threads)
+}
+
+gaussian3_dexpected_cpp <- function(y, mu, tau, order, threads = 1L) {
+    .Call(`_distributions7_gaussian3_dexpected_cpp`, y, mu, tau, order, threads)
+}
+
+invgauss1_dexpected_cpp <- function(y, mu, phi, order, threads = 1L) {
+    .Call(`_distributions7_invgauss1_dexpected_cpp`, y, mu, phi, order, threads)
+}
+
+invgauss2_dexpected_cpp <- function(y, mu, lambda, order, threads = 1L) {
+    .Call(`_distributions7_invgauss2_dexpected_cpp`, y, mu, lambda, order, threads)
+}
+
+gamma2_dexpected_cpp <- function(y, mu, sigma2, order, threads = 1L) {
+    .Call(`_distributions7_gamma2_dexpected_cpp`, y, mu, sigma2, order, threads)
+}
+
+beta2_dexpected_cpp <- function(y, alpha, beta, order, threads = 1L) {
+    .Call(`_distributions7_beta2_dexpected_cpp`, y, alpha, beta, order, threads)
+}
+
+weibull1_dexpected_cpp <- function(y, mu, sigma, order, threads = 1L) {
+    .Call(`_distributions7_weibull1_dexpected_cpp`, y, mu, sigma, order, threads)
+}
+
+student_t1_dexpected_cpp <- function(y, mu, sigma, nu, order, threads = 1L) {
+    .Call(`_distributions7_student_t1_dexpected_cpp`, y, mu, sigma, nu, order, threads)
+}
+
+gengamma1_dexpected_cpp <- function(y, a, d, p, order, threads = 1L) {
+    .Call(`_distributions7_gengamma1_dexpected_cpp`, y, a, d, p, order, threads)
+}
+
+gpd_dexpected_cpp <- function(y, sigma, xi, order, threads = 1L) {
+    .Call(`_distributions7_gpd_dexpected_cpp`, y, sigma, xi, order, threads)
+}
+
+betabinom_shapes_dexpected_cpp <- function(y, alpha, beta, size, order, threads = 1L) {
+    .Call(`_distributions7_betabinom_shapes_dexpected_cpp`, y, alpha, beta, size, order, threads)
+}
+
 exponential_gradient_cpp <- function(y, mu, threads = 1L) {
     .Call(`_distributions7_exponential_gradient_cpp`, y, mu, threads)
 }
@@ -535,6 +611,10 @@ negbin1_hessian_cpp <- function(y, mu, theta, threads = 1L) {
 
 negbin1_expected_hessian_cpp <- function(y, mu, theta, threads = 1L) {
     .Call(`_distributions7_negbin1_expected_hessian_cpp`, y, mu, theta, threads)
+}
+
+negbin1_dexpected_cpp <- function(y, mu, theta, order, threads = 1L) {
+    .Call(`_distributions7_negbin1_dexpected_cpp`, y, mu, theta, order, threads)
 }
 
 negbin1_psums_cpp <- function(y, mu, theta, order, threads = 1L) {

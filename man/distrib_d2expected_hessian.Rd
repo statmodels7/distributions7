@@ -54,8 +54,9 @@ separately, and are keyed by \code{\link[=d2expected_names]{d2expected_names()}}
 would be the nested differencing the package forbids, so the base method
 signals an error and a family that does not register one has no second
 derivative. The families that do are \code{gaussian1_distrib()},
-\code{poisson_distrib()}, \code{gamma1_distrib()}, \code{negbin2_distrib()} and
-\code{beta1_distrib()}, each from a compiled kernel.
+\code{poisson_distrib()}, \code{gamma1_distrib()}, \code{negbin2_distrib()},
+\code{beta1_distrib()} and the seventeen listed on
+\link{distrib_dexpected_hessian.elementary}, each from a compiled kernel.
 
 On \code{scale = "link"} the expected information is
 \eqn{F_{ab} = \mathbb{E}[\ell_{ab}]\,h_a' h_b'}, with no term in \eqn{h''}
