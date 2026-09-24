@@ -215,7 +215,10 @@ S7::method(distrib_pdf, BetaBinom2Distrib) <- function(distrib, y, theta, log = 
   ok <- y >= 0 & y <= n & y == round(y)
   out <- rep(-Inf, length(y))
   if (any(ok)) {
-    out[ok] <- betabinom_log_mass(y[ok], a, b, n)
+    # the shapes are subset with the response: a parameter per observation
+    # read without it is misaligned wherever a response is off the support
+    sub <- function(v) if (length(v) > 1L) v[ok] else v
+    out[ok] <- betabinom_log_mass(y[ok], sub(a), sub(b), n)
   }
   if (log) out else exp(out)
 }

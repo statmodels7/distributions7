@@ -478,8 +478,14 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' would not.
 #'
 #' # Restarts, the fallback and the tie-break
-#' Each starting value is tried in turn and the search stops at the first run
-#' that converges. Fisher scoring and Newton's method fall back to BFGS from
+#' Each starting value is tried in turn, and the search stops once two runs
+#' that converged have reached the best objective found so far, to a relative
+#' \eqn{10^{-8}} of the mean negative log-likelihood. A single converged run is
+#' not taken as the answer because it may be a degenerate stationary point:
+#' on [zero_adjusted()] of [pig1_distrib()] the first start converges at a
+#' log-likelihood about 97 units below the maximum the other starts reach.
+#' Where fewer than two runs converge every start is tried and the best is
+#' kept. Fisher scoring and Newton's method fall back to BFGS from
 #' the same starting value when they fail; an optimizer the caller named does
 #' not. Among the runs that finish, a converged one beats a non-converged one
 #' and the objective breaks ties, so the fit reports the best run and not the
@@ -755,6 +761,8 @@ fit_distrib <- function(distrib, y, start = NULL,
   impossible <- 0L
 
   res <- NULL
+  conv_values <- numeric(0)
+  agree_tol <- function(v) 1e-8 * max(1, abs(v))
   for (eta0 in starts) {
     if (!is.finite(nll(eta0))) next
     # An error raised inside the optimizer must be treated like a failure to
@@ -795,10 +803,24 @@ fit_distrib <- function(distrib, y, start = NULL,
       better <- is.null(res) ||
         (isTRUE(this$converged) && !isTRUE(res$converged)) ||
         (isTRUE(this$converged) == isTRUE(res$converged) &&
-           this$value < res$value)
+           this$value < res$value - agree_tol(res$value))
       if (better) res <- this
+      if (isTRUE(this$converged)) conv_values <- c(conv_values, this$value)
     }
-    if (!is.null(res) && isTRUE(res$converged)) break
+    # The search stops once TWO converged runs have reached the best objective
+    # found, not at the first converged run. A single converged run can be a
+    # degenerate stationary point: on zero_adjusted(pig1_distrib()) the first
+    # start converged at a log-likelihood of -2851.73, where nine of the ten
+    # starts reach -2754.36. Running every start costs 6.5 times the first-
+    # converged rule over the univariate families; confirming the best by a
+    # second run costs one more fit wherever the first converged run is already
+    # the maximum. The objective is -l/n, so the agreement is per observation.
+    # A later run replaces the kept one only by MORE than that tolerance: two
+    # runs at one maximum differ in the last bits, and letting a random start
+    # win on rounding made the reported estimate depend on the random stream
+    # at 1e-9 relative, which is what the thread-count twin test caught.
+    if (!is.null(res) && isTRUE(res$converged) &&
+        sum(abs(conv_values - res$value) <= agree_tol(res$value)) >= 2L) break
   }
 
   if (is.null(res)) {

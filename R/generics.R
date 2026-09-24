@@ -111,6 +111,7 @@ NULL
 #' @export
 distrib_pdf <- S7::new_generic("distrib_pdf", "distrib", function(distrib, y, theta, ...) {
   theta <- align_theta(distrib, theta)
+  y <- recycle_point(distrib, y, theta)
   S7::S7_dispatch()
 })
 
@@ -141,6 +142,7 @@ distrib_pdf <- S7::new_generic("distrib_pdf", "distrib", function(distrib, y, th
 #' @export
 distrib_cdf <- S7::new_generic("distrib_cdf", "distrib", function(distrib, q, theta, ...) {
   theta <- align_theta(distrib, theta)
+  q <- recycle_point(distrib, q, theta)
   S7::S7_dispatch()
 })
 
@@ -172,6 +174,7 @@ distrib_cdf <- S7::new_generic("distrib_cdf", "distrib", function(distrib, q, th
 #' @export
 distrib_quantile <- S7::new_generic("distrib_quantile", "distrib", function(distrib, p, theta, ...) {
   theta <- align_theta(distrib, theta)
+  p <- recycle_point(distrib, p, theta)
   S7::S7_dispatch()
 })
 
@@ -296,6 +299,41 @@ check_derivative_args <- function(distrib, y, theta) {
     y <- rep(y, n)
   }
   list(y = y, theta = theta)
+}
+
+#' Recycle a Single Point Against Parameters That Vary by Observation
+#'
+#' @description
+#' Returns `x` repeated to the common length of the parameters when `x` has
+#' length one and some parameter is longer, and `x` unchanged otherwise.
+#'
+#' @details
+#' [distrib_pdf()], [distrib_cdf()] and [distrib_quantile()] call it before
+#' dispatch, as [check_derivative_args()] recycles the response for the
+#' derivative generics. A compiled kernel sizes its output by the length of
+#' the response, so without it a single point evaluated at parameters of
+#' length \eqn{n} returned ONE value, read at the first observation's
+#' parameters. Measured on eight families -- `negbin1_distrib()`,
+#' `pig1_distrib()`, `pig2_distrib()`, `betabinom1_distrib()`,
+#' `betabinom2_distrib()`, `gengamma1_distrib()`, `gengamma2_distrib()` and
+#' `gpd_distrib()` -- and reachable wherever a wrapper evaluates its parent at
+#' a fixed point: [zero_inflated()] reads \eqn{f(0)} that way, and with
+#' parameters varying by observation its derivatives were out by a relative
+#' 0.5 to 38 on those parents while its density, evaluated at the full
+#' response, was right. A multivariate response is a matrix and is left alone.
+#'
+#' @param distrib A `distrib` object.
+#' @param x The response, quantile or probability, a numeric vector.
+#' @param theta The aligned parameter list.
+#'
+#' @return A numeric vector.
+#'
+#' @seealso [check_derivative_args()], the derivative generics' counterpart.
+#' @keywords internal
+recycle_point <- function(distrib, x, theta) {
+  if (length(x) != 1L || S7::S7_inherits(distrib, multivariate_distrib)) return(x)
+  n <- max(lengths(theta[seq_len(distrib@n_params)]), 1L)
+  if (n > 1L) rep(x, n) else x
 }
 
 #' Analytical Gradient

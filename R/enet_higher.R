@@ -123,24 +123,27 @@ NULL
   zero <- rep(0, length(z))
 
   # d^j/dc^j of c^{-1/2}, j = 0..4
-  u <- c(cc^-0.5, -0.5 * cc^-1.5, 0.75 * cc^-2.5,
-         -1.875 * cc^-3.5, 6.5625 * cc^-4.5)
+  # a LIST and not c(): the rates vary by observation, and c() of five
+  # vectors of length n is one vector of length 5n whose first element is
+  # the first observation's alone
+  u <- list(cc^-0.5, -0.5 * cc^-1.5, 0.75 * cc^-2.5,
+            -1.875 * cc^-3.5, 6.5625 * cc^-4.5)
   # x = a c^{-1/2}: a key with two or more a's is an exact zero, which the
   # table says by leaving it out
-  xmap <- list("1" = u[1], "2" = p$a * u[2], "1,2" = u[2],
-               "2,2" = p$a * u[3], "1,2,2" = u[3],
-               "2,2,2" = p$a * u[4], "1,2,2,2" = u[4],
-               "2,2,2,2" = p$a * u[5])
+  xmap <- list("1" = u[[1]], "2" = p$a * u[[2]], "1,2" = u[[2]],
+               "2,2" = p$a * u[[3]], "1,2,2" = u[[3]],
+               "2,2,2" = p$a * u[[4]], "1,2,2,2" = u[[4]],
+               "2,2,2,2" = p$a * u[[5]])
   LD <- list(list(x = -p$g), list(x_x = -p$dg),
              list(x_x_x = -p$d2g), list(x_x_x_x = -p$d3g))
   N <- lapply(seq_len(order), function(k) {
     chain_assemble(LD[seq_len(k)], "x", list(x = xmap), c("a", "c"), k, 1L)
   })
   # and the + (1/2) log c of the normalizer, which is pure in c
-  lg <- c(0.5 / cc, -0.5 / cc^2, 1 / cc^3, -3 / cc^4)
+  lg <- list(0.5 / cc, -0.5 / cc^2, 1 / cc^3, -3 / cc^4)
   for (k in seq_len(order)) {
     key <- paste(rep("c", k), collapse = "_")
-    N[[k]][[key]] <- N[[k]][[key]] + lg[k]
+    N[[k]][[key]] <- N[[k]][[key]] + lg[[k]]
   }
 
   out <- lapply(seq_len(order), function(k) {

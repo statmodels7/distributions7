@@ -132,6 +132,7 @@ reference:
   - fisher_scoring
   - FisherScoring
   - distrib_start
+  - distrib_intercept_start
   - distrib_fit_class
   - check_distrib
 

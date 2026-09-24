@@ -1,3 +1,88 @@
+# distributions7 0.63.0
+
+* **`zero_inflated()` derivatives were wrong wherever the parameters varied
+  by observation, on five parents.** The wrapper reads the parent's mass at
+  zero as `distrib_pdf(parent, 0, theta)`, a single point at parameters of
+  length \eqn{n}, and on `negbin1_distrib()`, `pig1_distrib()`,
+  `pig2_distrib()`, `betabinom1_distrib()` and `betabinom2_distrib()` that call
+  returned ONE value, read at the first observation's parameters: their
+  compiled kernels size the output by the length of the response. Every zero
+  was then weighted by the first observation's \eqn{f(0)}. Measured against
+  one Richardson pass on the analytic order below, with every parameter
+  varying by observation, the score, the observed Hessian and the third and
+  fourth derivatives were out by a relative 0.55 to 38 on the parameter scale
+  and 0.05 to 1.0 on the link scale, and the expected information by 4 to 27
+  against an exact sum over the support. The density at the full response was
+  right, so a fit's log-likelihood was right and its derivatives were not. On
+  the Poisson, negbin2, geometric and binomial parents, whose densities come
+  from R's own recycling functions, nothing was wrong.
+
+* The repair is in the generics and not in the wrapper: `distrib_pdf()`,
+  `distrib_cdf()` and `distrib_quantile()` now recycle a single point to the
+  parameters' common length before dispatch, as `check_derivative_args()`
+  already did for the derivative generics (`recycle_point()`). A census of
+  every univariate family, three shapes of lengths and eight surfaces found
+  the same defect in three more families, `gengamma1_distrib()`,
+  `gengamma2_distrib()` and `gpd_distrib()`, and none after it. With it the
+  zero-inflated derivatives agree with Richardson to between 1e-11 and 1e-8
+  on all nine discrete parents, both scales, orders one to four, and the
+  expected information with the support sum to 1e-12 wherever the parent's
+  is exact. Where the parent approximates it (pig1, pig2) the wrapper
+  inherits the approximation and says so through `expected_hessian_exact()`;
+  with `approx = "bartlett"` it agrees with the support sum to 1e-13.
+  `zero_adjusted()` reads its parent the same way and was checked the same
+  day: its first and second derivatives agree to 2e-9 or better on six
+  parents.
+
+* **The zero-inflated log density is computed on the log scale.** It was
+  `log()` of the linear mixture, which underflows wherever the parent's mass
+  does: `-Inf` for a Poisson of mean 1 at \eqn{y = 200}, where the value is
+  -864.59, so one count far in the tail made a fit's log-likelihood infinite.
+  Away from zero it is now \eqn{\log(1-\pi) + \log f(y)}, at zero a
+  log-sum-exp; the linear scale is unchanged.
+
+* **`enet_distrib()`'s third and fourth derivatives read the first
+  observation's rates** where the parameters varied by observation: the
+  powers of \eqn{c} were collected with `c()`, which concatenates five
+  vectors of length \eqn{n} into one of length \eqn{5n}, so every observation
+  used the first observation's. Out by a relative 52 at order three and 28 at
+  order four against a loop of scalar calls, and exact after.
+
+* `betabinom2_distrib()`'s density subsets its shapes with the response where
+  some response is off the support; read without it they were misaligned, and
+  R warned that the replacement length was not a multiple.
+
+* `distrib_intercept_start()`, a new generic: the starting value, on the
+  parameter scale, a family reads off the data for a regression's
+  intercept where the intercept-only fit is not a usable start. The base
+  method asks for nothing; `zero_inflated()` answers with the observed
+  proportion of zeros for its mixing weight, kept inside
+  \eqn{[1/(2n), 1 - 1/(2n)]}. Under the model
+  \eqn{P(Y = 0) = \pi + (1-\pi) f(0) \ge \pi}, so it over-estimates
+  \eqn{\pi} from the side away from the flat end of the chart.
+
+* **`fit_distrib()` no longer keeps the first converged run.** It went on
+  to the next start only while no run had converged, so a start converging
+  to a degenerate stationary point ended the search: on a zero-adjusted
+  Poisson-inverse Gaussian sample the first start converged at
+  \eqn{\mu \to 0}, \eqn{\sigma \to \infty}, a log-likelihood of -2519.18,
+  where the other four reach -2313.49. The search now stops once two
+  converged runs have reached the best objective found, to a relative
+  \eqn{10^{-8}} of the mean negative log-likelihood. Measured over the 40
+  univariate families at \eqn{n = 500}, it costs 1.56 times the old rule
+  where running every start costs 6.24, and gives up at most 1.8e-11 of
+  log-likelihood against the best of all five starts (the old rule 2.9e-10).
+
+* `zero_adjusted()` and `zero_inflated()` have `distrib_start()` methods.
+  They took the univariate fallback, which reads a location off the median
+  of the whole sample, zero when half the values are, so the first start sat
+  at the edge of a log link. The mixing probability now starts at the
+  proportion of zeros, and the parent's parameters where the parent's own
+  `distrib_start()` puts them, read on the non-zero observations for a
+  zero-adjusted family and on all of them for a zero-inflated one. On the
+  zero-adjusted Poisson-inverse Gaussian sample of a real regression the fit
+  goes from -2851.73 to -2754.36.
+
 # distributions7 0.62.0
 
 * **The first and second derivatives of the expected information are

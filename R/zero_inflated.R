@@ -356,10 +356,22 @@ S7::method(distrib_pdf, ZeroInflatedDistrib) <- function(distrib, y, theta, log 
   pars <- split_mix_theta(distrib, theta)
   zi <- pars$mix
 
-  res <- (1 - zi) * distrib_pdf(distrib@parent_distrib, y, pars$orig, log = FALSE) +
-    zi * (y == 0)
-
-  if (log) log(res) else res
+  if (!log) {
+    return((1 - zi) * distrib_pdf(distrib@parent_distrib, y, pars$orig, log = FALSE) +
+             zi * (y == 0))
+  }
+  # On the log scale from the parent's log density: log of the sum above
+  # underflows to -Inf wherever the parent's mass does, which in a count
+  # model is any observation far in the tail -- measured -Inf for a Poisson
+  # of mean 1 at y = 200, where the value is -864.59. Away from zero the
+  # value is log(1 - zi) + log f(y); at zero it is the log of a sum of two
+  # terms, taken as a log-sum-exp around the larger.
+  lf <- distrib_pdf(distrib@parent_distrib, y, pars$orig, log = TRUE)
+  la <- log1p(-zi) + lf
+  lz <- log(zi)
+  m <- pmax(lz, la)
+  at0 <- m + log(exp(lz - m) + exp(la - m))
+  ifelse(y == 0, at0, la)
 }
 
 #' @title Zero-Inflated Cumulative Distribution Function

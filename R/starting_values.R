@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R multivariate.R mvgaussian_distrib.R mvstudent_t_distrib.R pig1_distrib.R pig2_distrib.R
+#' @include distrib.R generics.R multivariate.R mvgaussian_distrib.R mvstudent_t_distrib.R pig1_distrib.R pig2_distrib.R zero_inflated.R zero_adjusted.R
 NULL
 
 #' @title A Starting Value Drawn From the Data
@@ -101,6 +101,194 @@ S7::method(distrib_start, distrib) <- function(distrib, y, n_start = 5L, ...) {
   lapply(seq_len(max(1L, n_start)), function(i) generate_random_theta(distrib))
 }
 
+
+#' @title Starting Values for a Regression's Intercepts, Read Off the Data
+#'
+#' @description
+#' Returns, on the **parameter** scale, a starting value for each parameter
+#' whose intercept a regression should not take from the intercept-only
+#' maximum likelihood fit. A modelling layer carries each value onto the
+#' parameter's own link and writes it to that equation's intercept. The base
+#' method returns an empty list: for most families the intercept-only fit is
+#' the right start.
+#'
+#' @details
+#' The case this exists for is [zero_inflated()]. Without covariates the
+#' parent's overdispersion can absorb the excess zeros, so the intercept-only
+#' maximum puts the mixing weight at the edge of its domain -- measured,
+#' \eqn{\pi = 2.2 \times 10^{-308}} on a negative binomial with a true
+#' \eqn{\pi = 0.25} -- which is right for that model and a trap as a start for
+#' a model with covariates: the link is flat there, the score on the
+#' unconstrained scale vanishes, and the fit stays at the edge reporting
+#' convergence while an interior maximum 7.6 log-likelihood units higher
+#' exists. See [distrib_intercept_start.ZeroInflatedDistrib()].
+#'
+#' @param distrib An object inheriting from `distrib`.
+#' @param y The response, a numeric vector.
+#' @param ... Passed to methods. No shipped method reads it.
+#'
+#' @return A named list of single numbers on the parameter scale, possibly
+#'   empty, each strictly inside its parameter's bounds and named after an
+#'   entry of `distrib@params`.
+#'
+#' @examples
+#' distrib_intercept_start(poisson_distrib(), c(0, 1, 3))
+#' distrib_intercept_start(zero_inflated(poisson_distrib()), c(0, 0, 1, 3))
+#'
+#' @seealso [distrib_start()], the starting values [fit_distrib()] uses.
+#' @export
+distrib_intercept_start <- S7::new_generic("distrib_intercept_start", "distrib",
+  function(distrib, y, ...) {
+    S7::S7_dispatch()
+  }
+)
+
+#' @title No Intercept Needs a Start of Its Own
+#' @name distrib_intercept_start.distrib
+#' @description The base method: an empty list, the intercept-only fit being
+#'   the start for every parameter.
+#' @param distrib A [distrib()] object.
+#' @param y The response. Unused.
+#' @param ... Unused.
+#' @return An empty list.
+#' @seealso [distrib_intercept_start()] for the generic.
+#' @keywords internal
+S7::method(distrib_intercept_start, distrib) <- function(distrib, y, ...) {
+  list()
+}
+
+#' @title The Mixing Weight Starts at the Proportion of Zeros
+#' @name distrib_intercept_start.ZeroInflatedDistrib
+#'
+#' @description
+#' Returns the observed proportion of zeros \eqn{\hat p_0} as the start of the
+#' zero-inflation probability, kept inside \eqn{[1/(2n), 1 - 1/(2n)]}.
+#'
+#' @details
+#' Under the model \eqn{P(Y = 0) = \pi + (1 - \pi) f(0) \ge \pi}, so
+#' \eqn{\hat p_0} over-estimates \eqn{\pi} and does so from the side away from
+#' the flat end of the chart, which is what makes it a safe start. Measured
+#' against the intercept-only start over three parents (negative binomial,
+#' Poisson-inverse Gaussian, Poisson), with and without inflation, three samples
+#' each: never worse in log-likelihood, better in three of the nine samples
+#' WITHOUT inflation (by 0.43, 0.05 and 3.03, where the default stopped at the
+#' edge and an interior maximum was higher), and converging in all eighteen. On
+#' the sample where the default stopped at \eqn{\pi = 0} with an inflated
+#' negative binomial, every start with a linear predictor between -5 and -1.1
+#' reached the interior maximum and every start at -7 or below did not.
+#'
+#' The value is on the parameter scale; the layer that uses it carries it onto
+#' the parameter's own link, whichever it is.
+#'
+#' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
+#' @param y The response, a numeric vector.
+#' @param ... Unused.
+#'
+#' @return A named list of one number, named after the mixing parameter.
+#'
+#' @seealso [distrib_intercept_start()] for the generic, [zero_inflated()].
+#' @keywords internal
+S7::method(distrib_intercept_start, ZeroInflatedDistrib) <- function(distrib, y, ...) {
+  y <- as.numeric(y)
+  y <- y[is.finite(y)]
+  n <- length(y)
+  if (!n) return(list())
+  p0 <- min(max(mean(y == 0), 1 / (2 * n)), 1 - 1 / (2 * n))
+  stats::setNames(list(p0), distrib@params[distrib@n_params])
+}
+
+
+#' @title Starting Values for the Zero Wrappers, Read Off the Data
+#' @name distrib_start.zero_wrappers
+#'
+#' @description
+#' Starting values for [zero_adjusted()] and [zero_inflated()]. The mixing
+#' probability starts at the observed proportion of zeros \eqn{\hat p_0},
+#' kept inside \eqn{[1/(2n), 1 - 1/(2n)]}, and the parent's parameters start
+#' where [distrib_start()] of the PARENT puts them: on the non-zero
+#' observations for a zero-adjusted family, whose positive part is the parent
+#' away from zero, and on every observation for a zero-inflated one, whose
+#' parent also produces zeros.
+#'
+#' @details
+#' Without these methods the wrappers took the univariate fallback, which reads
+#' the location off the median of the whole sample: on data with half their
+#' values at zero that is zero, and a start at a mean of zero is the edge of a
+#' log link. On a zero-adjusted Poisson-inverse Gaussian sample the first
+#' start then converged to a degenerate point (\eqn{\mu \to 0},
+#' \eqn{\sigma \to \infty}) 97 log-likelihood units below the maximum.
+#'
+#' For a zero-adjusted family \eqn{\hat p_0} is the maximum likelihood estimate
+#' of the mixing probability, the likelihood factorizing into a binomial part
+#' and a positive part. For a zero-inflated one it over-estimates \eqn{\pi},
+#' since \eqn{P(Y = 0) = \pi + (1-\pi) f(0) \ge \pi}, and does so from the
+#' side away from the flat end of the chart; see
+#' [distrib_intercept_start.ZeroInflatedDistrib()]. Only the first start
+#' carries \eqn{\hat p_0}; the others keep a random mixing probability, and
+#' the parent's own starts in the same order.
+#'
+#' @param distrib A `ZeroAdjustedDiscreteDistrib`,
+#'   `ZeroAdjustedContinuousDistrib` or `ZeroInflatedDistrib`.
+#' @param y The response, a numeric vector.
+#' @param n_start How many starting values, a single positive integer.
+#' @param keep A function of the response returning which observations the
+#'   parent's starts are read from.
+#'
+#' @return A list of `n_start` named parameter lists on the parameter scale,
+#'   in the order of `distrib@params`.
+#'
+#' @seealso [distrib_start()] for the generic, [zero_adjusted()],
+#'   [zero_inflated()], [distrib_intercept_start()].
+#' @keywords internal
+start_zero_wrapper <- function(distrib, y, n_start = 5L, keep) {
+  n_start <- max(1L, n_start)
+  out <- lapply(seq_len(n_start), function(i) generate_random_theta(distrib))
+  yy <- as.numeric(y)
+  yy <- yy[is.finite(yy)]
+  n <- length(yy)
+  if (!n) return(out)
+  params <- distrib@params
+  mix <- params[distrib@n_params]
+  par <- distrib@parent_distrib
+  sub <- yy[keep(yy)]
+  pst <- if (length(sub) >= 2L) {
+    tryCatch(distrib_start(par, sub, n_start = n_start), error = function(e) NULL)
+  } else {
+    NULL
+  }
+  p0 <- min(max(mean(yy == 0), 1 / (2 * n)), 1 - 1 / (2 * n))
+  for (k in seq_len(n_start)) {
+    th <- out[[k]]
+    if (!is.null(pst) && k <= length(pst)) {
+      pk <- pst[[k]]
+      for (p in intersect(par@params, names(pk))) th[[p]] <- pk[[p]]
+    }
+    if (k == 1L) th[[mix]] <- p0
+    out[[k]] <- th[params]
+  }
+  out
+}
+
+#' @rdname distrib_start.zero_wrappers
+#' @name distrib_start.ZeroAdjustedDiscreteDistrib
+#' @keywords internal
+S7::method(distrib_start, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, n_start = 5L, ...) {
+  start_zero_wrapper(distrib, y, n_start, keep = function(v) v > 0)
+}
+
+#' @rdname distrib_start.zero_wrappers
+#' @name distrib_start.ZeroAdjustedContinuousDistrib
+#' @keywords internal
+S7::method(distrib_start, ZeroAdjustedContinuousDistrib) <- function(distrib, y, n_start = 5L, ...) {
+  start_zero_wrapper(distrib, y, n_start, keep = function(v) v != 0)
+}
+
+#' @rdname distrib_start.zero_wrappers
+#' @name distrib_start.ZeroInflatedDistrib
+#' @keywords internal
+S7::method(distrib_start, ZeroInflatedDistrib) <- function(distrib, y, n_start = 5L, ...) {
+  start_zero_wrapper(distrib, y, n_start, keep = function(v) rep(TRUE, length(v)))
+}
 
 #' @title The Moment Estimates a Multivariate Family Starts From
 #'
