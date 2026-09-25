@@ -17,9 +17,10 @@ A single logical.
 A single logical.
 }
 \description{
-\code{TRUE} when the family computes its expected information in closed form,
-\code{FALSE} when a call to \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} reaches a fallback and
-the answer is therefore an approximation. It is a generic so that a family
+\code{TRUE} when the family computes its expected information exactly, in
+closed form or by a quadrature of its own to working precision, and \code{FALSE}
+when a call to \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} reaches a fallback and the
+answer is therefore an approximation. It is a generic so that a family
 whose registered method is not what its owning class suggests can say so;
 \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}} asks it and
 \code{\link[=expected_hessian_exact.distrib]{expected_hessian_exact.distrib()}} is the default.
@@ -37,39 +38,27 @@ the observed Hessian, which every family has and which is exact. That is
 the rule \code{\link[=fit_distrib]{fit_distrib()}} follows for its standard errors and the one
 \pkg{statmodels7} follows in \code{vcov()}.
 
-Six of the shipped univariate families answer \code{FALSE}:
-\code{\link[=pig1_distrib]{pig1_distrib()}}, \code{\link[=pig2_distrib]{pig2_distrib()}}, \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}},
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} and \code{\link[=skewt_distrib]{skewt_distrib()}}.
+Two of the shipped univariate families answer \code{FALSE}: \code{\link[=pig1_distrib]{pig1_distrib()}} and
+\code{\link[=pig2_distrib]{pig2_distrib()}}. The skew normals, the skew t and the pseudo-Huber answer
+\code{TRUE}, their expected information being one quadrature over the
+standardized response per distinct shape; see \code{\link[=loc_scale_expected]{loc_scale_expected()}}.
 
 Asking the OWNING CLASS of the registered method is not enough on its own,
-which is why the generic exists: the pseudo-Huber registers a method of its
-own that calls the fallback and then patches the two components vanishing by
-symmetry, and the centered skew normal chains onto a parent whose expected
-information is itself a quadrature. Both would read as exact from the
-method's owner alone, and both cost seconds where a closed form costs
-milliseconds.
+which is why the generic exists: a method registered on a family's own class
+may chain onto a parent that approximates, and a family that does so
+answers for its parent.
 
 The default reads the class the \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}
 method is registered on: the base classes carry the approximating method and
 every other registration is, by default, a family that wrote the expectation
 out.
 
-\strong{Reading the owner is not sufficient, and two families prove it.} A
-method registered on a family's own class may still be a CHAIN onto a parent
-that approximates, and then the owner says "written out" about arithmetic
-that is a quadrature. Measured at 100 observations, where thirty-four
-families answer in a median of 0.183 ms:
-\code{skewnormal2_distrib()} costs 5220 ms, more than the
-\code{skewnormal1_distrib()} it chains onto, which costs 2230, and
-\code{pseudohuber_distrib()} costs 10980 ms. Both were reported as exact.
-The consequences were real rather than cosmetic: \code{\link[=fit_distrib]{fit_distrib()}}
-rejected a legitimate \code{fisher_scoring(approx = )} on those two with a
-message stating that the family "computes its expected information in
-closed form", which is untrue, and its standard-error branch entered a
-multi-second quadrature believing it cheap.
-
-A family that chains onto another therefore answers for its parent, which is
-what the two methods registered here do.
+\strong{Reading the owner is not sufficient in general.} A method registered on
+a family's own class may be a CHAIN onto a parent that approximates, and
+then the owner says "written out" about arithmetic that is not. A family
+that chains onto another therefore answers for its parent, which is what
+the wrappers and \code{skewnormal2_distrib()} do, the last answering for
+\code{skewnormal1_distrib()}.
 }
 \examples{
 # A Gaussian writes its information out; a Poisson-inverse gaussian does not.

@@ -2,39 +2,22 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{expected_hessian_exact.SkewNormal2Distrib}
 \alias{expected_hessian_exact.SkewNormal2Distrib}
-\title{The Centered Skew Normal Does Not Write Its Expected Information Out}
+\title{The Centered Skew Normal Answers for Its Parent}
 \arguments{
 \item{x}{A \code{SkewNormal2Distrib} object.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-\code{FALSE}, a logical of length 1.
+A logical of length 1.
 }
 \description{
-Returns \code{FALSE}, by asking \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} the same question. The
-registration of \code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian.SkewNormal2Distrib()}} says where
-the arithmetic is assembled, not that it is closed form: it is a chain onto
-the parent, whose own expected information is the base class's quadrature.
-}
-\details{
-Reading the owning class would answer \code{TRUE} here and be wrong, which is
-this predicate's whole reason for existing as a generic. The cost separates
-the two cases by four orders of magnitude: measured at 100 observations,
-this family costs 5220 milliseconds and the parent it chains onto 2230,
-where the families that do write their information out answer in a median of
-0.183 milliseconds.
-
-Reported as exact, it made \code{\link[=fit_distrib]{fit_distrib()}} reject a legitimate
-\code{fisher_scoring(approx = )} here with a message saying the family computes
-its expected information in closed form, which is untrue.
+Returns what \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} returns, the expected information here
+being a chain onto that parent's.
 }
 \examples{
-# Neither parametrization of the skew normal writes its information out.
 eh <- distributions7:::expected_hessian_exact
-c(centered = eh(skewnormal2_distrib()),
-  direct = eh(skewnormal1_distrib()),
-  gaussian = eh(gaussian1_distrib()))
+c(centered = eh(skewnormal2_distrib()), direct = eh(skewnormal1_distrib()))
 
 }
 \seealso{

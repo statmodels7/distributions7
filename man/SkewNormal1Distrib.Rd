@@ -75,7 +75,9 @@ Registered in this file:
 \code{\link[=distrib_deriv3.SkewNormal1Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.SkewNormal1Distrib]{distrib_deriv4()}},
 \code{\link[=distrib_grad_y.SkewNormal1Distrib]{distrib_grad_y()}},
-\code{\link[=distrib_hess_y.SkewNormal1Distrib]{distrib_hess_y()}}.
+\code{\link[=distrib_hess_y.SkewNormal1Distrib]{distrib_hess_y()}}, and the expected
+information with its two derivatives,
+\code{\link[=distrib_expected_hessian.SkewNormal1Distrib]{distrib_expected_hessian()}}.
 
 Registered elsewhere in the package, all closed form: the four moments
 \code{\link[=mean.SkewNormal1Distrib]{mean()}}, \code{\link[=variance.SkewNormal1Distrib]{variance()}},
@@ -91,9 +93,9 @@ through \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}}, in
 \code{\link[=distrib_grad_y_hess]{distrib_hess_y_hess()}} in \code{theta2_families.R}.
 
 The \strong{quantile} comes from \code{\link[=continuous_distrib]{continuous_distrib()}}, by root finding on the
-distribution function. So does the \strong{expected information}: this family has
-none in elementary form, so \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} approximates it by
-the strategy named in its \code{approx} argument.
+distribution function. The \strong{expected information} has no elementary form
+and is computed by one quadrature per distinct \eqn{\alpha}; see
+\code{\link[=distrib_expected_hessian.SkewNormal1Distrib]{distrib_expected_hessian.SkewNormal1Distrib()}}.
 }
 
 \examples{

@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R skewnormal1_distrib.R reparametrize.R moments.R
+#' @include distrib.R generics.R skewnormal1_distrib.R reparametrize.R moments.R dexpected_hessian.R
 NULL
 
 # The skew normal in Azzalini's CENTERED parametrization: the mean, the standard
@@ -842,13 +842,16 @@ S7::method(distrib_hessian, SkewNormal2Distrib) <- function(distrib, y, theta,
 
 #' @title Skew Normal Expected Information in the Centered Parametrization
 #' @name distrib_expected_hessian.SkewNormal2Distrib
+#' @aliases distrib_dexpected_hessian.SkewNormal2Distrib
+#'   distrib_d2expected_hessian.SkewNormal2Distrib
 #'
 #' @description
 #' Computes the expected second derivatives by carrying the parent's expected
 #' information through the same congruence the observed Hessian uses,
-#' \eqn{J^\top E[\ell''] J} with \eqn{J} the Jacobian of [sn_cp_to_dp()]. The
-#' first-order term of the chain rule drops out under expectation, the score
-#' having mean zero.
+#' \eqn{J^\top E[\ell''] J} with \eqn{J} the Jacobian of [sn_cp_to_dp()], and
+#' through [distrib_dexpected_hessian()] and [distrib_d2expected_hessian()] its
+#' first and second derivatives in the parameters. The first-order term of the
+#' chain rule drops out under expectation, the score having mean zero.
 #'
 #' The matrix is **non-singular at zero skewness**, which the direct
 #' parametrization's is not: there the score for \eqn{\alpha} is exactly
@@ -858,14 +861,15 @@ S7::method(distrib_hessian, SkewNormal2Distrib) <- function(distrib, y, theta,
 #' what the centered parametrization is for.
 #'
 #' @details
-#' # Cost, and where the digits run out
+#' # Where the parent's quantities come from
 #'
-#' The parent's own expected information is the base class's quadrature, so
-#' this method is a chain on top of a numerical quantity: measured at 100
-#' observations it costs about 5.2 seconds against the parent's 2.2, where a
-#' family that writes its information out answers in a median of 0.18
-#' milliseconds. [expected_hessian_exact()] therefore returns `FALSE` here, and
-#' `approx` is read.
+#' The parent is [skewnormal1_distrib()], whose expected information and its two
+#' derivatives are one quadrature over \eqn{z} per distinct shape; see
+#' [distrib_expected_hessian.SkewNormal1Distrib()]. The derivatives here are
+#' the parent's carried through the map by [dexpected_chain()], which needs the
+#' map's partials to third order and reads them from [md_skewnormal2()].
+#'
+#' # Where the digits run out
 #'
 #' The congruence is a difference of terms of size \eqn{\gamma_1^{-2/3}}, so
 #' the limit is approached and then lost. Measured, the \eqn{\gamma_1}
@@ -874,29 +878,28 @@ S7::method(distrib_hessian, SkewNormal2Distrib) <- function(distrib, y, theta,
 #' \eqn{10^{-12}}. A fit does not visit those values, and a genuinely
 #' symmetric problem is better posed in [skewnormal1_distrib()].
 #'
+#' `approx` and `nsim` are accepted for the generic's sake and ignored.
+#'
 #' @param distrib A `SkewNormal2Distrib` object, from [skewnormal2_distrib()].
 #' @param y A numeric vector. Its values do not enter the result, which is an
 #'   expectation; only its length does, through recycling.
 #' @param theta A named list with components `mu`, `sigma` and `gamma1`. The
 #'   skewness must not be exactly zero.
-#' @param scale Either `"parameter"`, the default, or `"link"`. The
-#'   transformation is applied in the generic's body.
-#' @param approx One of `"bartlett"`, `"integrate"`, `"mc"` or `"opg"`, the
-#'   strategy the parent uses for its own expectation. Defaults to
-#'   `"bartlett"`, the variance of the score.
-#' @param nsim A single positive integer, the Monte Carlo sample size used when
-#'   `approx = "mc"`. Defaults to `10000`.
+#' @param scale Either `"parameter"`, the default, or `"link"`.
+#' @param approx,nsim Ignored.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads The thread count passed to the parent's kernels.
 #'
-#' @return A named list of six numeric vectors, in [hess_names()]'s order.
-#'   Every entry is an expectation, so it does not depend on `y`.
+#' @return A named list of numeric vectors: for [distrib_expected_hessian()]
+#'   six, in [hess_names()]'s order, and for the two derivatives those keyed as
+#'   [dexpected_names()] and [d2expected_names()]. Every entry is an
+#'   expectation, so it does not depend on `y`.
 #'
 #' @section Errors:
 #' Signals an error when any element of `gamma1` is exactly zero.
 #'
 #' @seealso [distrib_hessian.SkewNormal2Distrib()] for the observed curvature,
-#'   [expected_hessian_exact.SkewNormal2Distrib()] for why this counts as
-#'   approximated, and [distrib_expected_hessian()] for the generic.
+#'   and [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- skewnormal2_distrib()
@@ -922,51 +925,87 @@ S7::method(distrib_hessian, SkewNormal2Distrib) <- function(distrib, y, theta,
 S7::method(distrib_expected_hessian, SkewNormal2Distrib) <- function(distrib, y, theta,
                                                                       scale = c("parameter", "link"),
                                                                       approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                      nsim = 10000, ...) {
-  sn2_chain(distrib, y, theta, 2L, expected = TRUE,
-           approx = approx, nsim = nsim)[hess_names(distrib@params)]
+                                                                      nsim = 10000, ..., threads = 1L) {
+  sn2_chain(distrib, y, theta, 2L, expected = TRUE)[hess_names(distrib@params)]
 }
 
-#' @title The Centered Skew Normal Does Not Write Its Expected Information Out
+S7::method(distrib_dexpected_hessian, SkewNormal2Distrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"),
+    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    threads = 1L) {
+  dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
+                     function(k) sn2_dexpected(distrib, y, theta, k, threads))
+}
+
+S7::method(distrib_d2expected_hessian, SkewNormal2Distrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"),
+    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    threads = 1L) {
+  dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
+                     function(k) sn2_dexpected(distrib, y, theta, k, threads))
+}
+
+
+#' The Centered Skew Normal's Expected Information Derivatives
+#'
+#' @description
+#' The parent's expected information and its derivatives, from
+#' [skewnormal1_distrib()], carried through the map to the centered
+#' parametrization by [dexpected_chain()].
+#'
+#' @param distrib A `SkewNormal2Distrib` object.
+#' @param y,theta As the generics take them; the skewness must not be zero.
+#' @param order `1L` or `2L`.
+#' @param threads The thread count passed to the parent's kernels.
+#'
+#' @return A named list on the parameter scale, keyed as [dexpected_names()] or
+#'   [d2expected_names()].
+#'
+#' @keywords internal
+sn2_dexpected <- function(distrib, y, theta, order, threads = 1L) {
+  theta <- align_theta(distrib, theta)
+  if (any(theta[[3L]] == 0)) {
+    stop("The centered parametrization has no derivatives at zero skewness.",
+         call. = FALSE)
+  }
+  parent <- skewnormal1_distrib()
+  th_par <- sn2_theta(theta)
+  E <- distrib_expected_hessian(parent, y, th_par, threads = threads)
+  d1 <- distrib_dexpected_hessian(parent, y, th_par, threads = threads)
+  d2 <- if (order == 2L) {
+    distrib_d2expected_hessian(parent, y, th_par, threads = threads)
+  }
+  dexpected_chain(parent@params, distrib@params, E, d1, d2,
+                  md_skewnormal2(theta[1:3]), order, length(y))
+}
+
+#' @title The Centered Skew Normal Answers for Its Parent
 #' @name expected_hessian_exact.SkewNormal2Distrib
 #'
 #' @description
-#' Returns `FALSE`, by asking [skewnormal1_distrib()] the same question. The
-#' registration of [distrib_expected_hessian.SkewNormal2Distrib()] says where
-#' the arithmetic is assembled, not that it is closed form: it is a chain onto
-#' the parent, whose own expected information is the base class's quadrature.
-#'
-#' @details
-#' Reading the owning class would answer `TRUE` here and be wrong, which is
-#' this predicate's whole reason for existing as a generic. The cost separates
-#' the two cases by four orders of magnitude: measured at 100 observations,
-#' this family costs 5220 milliseconds and the parent it chains onto 2230,
-#' where the families that do write their information out answer in a median of
-#' 0.183 milliseconds.
-#'
-#' Reported as exact, it made [fit_distrib()] reject a legitimate
-#' `fisher_scoring(approx = )` here with a message saying the family computes
-#' its expected information in closed form, which is untrue.
+#' Returns what [skewnormal1_distrib()] returns, the expected information here
+#' being a chain onto that parent's.
 #'
 #' @param x A `SkewNormal2Distrib` object.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return `FALSE`, a logical of length 1.
+#' @return A logical of length 1.
 #'
 #' @seealso [expected_hessian_exact()] for the generic and the rule it
 #'   encodes, and [distrib_expected_hessian.SkewNormal2Distrib()] for the
 #'   method it describes.
 #'
 #' @examples
-#' # Neither parametrization of the skew normal writes its information out.
 #' eh <- distributions7:::expected_hessian_exact
-#' c(centered = eh(skewnormal2_distrib()),
-#'   direct = eh(skewnormal1_distrib()),
-#'   gaussian = eh(gaussian1_distrib()))
+#' c(centered = eh(skewnormal2_distrib()), direct = eh(skewnormal1_distrib()))
 #'
 #' @keywords internal
 S7::method(expected_hessian_exact, SkewNormal2Distrib) <- function(x, ...) {
   expected_hessian_exact(skewnormal1_distrib())
+}
+
+S7::method(expected_hessian_by_quadrature, SkewNormal2Distrib) <- function(x, ...) {
+  expected_hessian_by_quadrature(skewnormal1_distrib())
 }
 
 #' @title Skew Normal Third Derivatives in the Centered Parametrization

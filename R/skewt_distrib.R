@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R skewnormal1_distrib.R
+#' @include distrib.R generics.R skewnormal1_distrib.R expected_loc_scale.R
 NULL
 
 #' @title Skew t Distribution Class
@@ -40,7 +40,9 @@ NULL
 #'   [`distrib_deriv3()`][distrib_deriv3.SkewTDistrib],
 #'   [`distrib_deriv4()`][distrib_deriv4.SkewTDistrib],
 #'   [`distrib_grad_y()`][distrib_grad_y.SkewTDistrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.SkewTDistrib].
+#'   [`distrib_hess_y()`][distrib_hess_y.SkewTDistrib], and the expected
+#'   information with its two derivatives,
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.SkewTDistrib].
 #'
 #' Registered elsewhere: all four moments in `moments.R`
 #' ([`mean()`][mean.SkewTDistrib], [`variance()`][variance.SkewTDistrib],
@@ -51,10 +53,10 @@ NULL
 #' [`distrib_grad_cdf()`][distrib_grad_cdf] in `cdf_derivatives_families.R`.
 #'
 #' The **distribution function** and the **quantile function** come from
-#' [continuous_distrib()], by quadrature and by root finding on it. So does the
-#' **expected information**: this family has none in elementary form, so
-#' [distrib_expected_hessian()] approximates it, and
-#' `method = "newton"` is much the cheaper way to fit it.
+#' [continuous_distrib()], by quadrature and by root finding on it. The
+#' **expected information** has no elementary form and is computed by one
+#' quadrature per distinct \eqn{(\alpha, \nu)}; see
+#' [distrib_expected_hessian.SkewTDistrib()].
 #'
 #' @section What is closed form and what is not:
 #' Every derivative in \eqn{\mu}, \eqn{\sigma} and \eqn{\alpha} is closed form.
@@ -1036,6 +1038,72 @@ skewt_msa_nu1 <- function(distrib, y, theta, nu, h) {
   out
 }
 
+#' @title Skew t Expected Hessian and Its Derivatives
+#' @name distrib_expected_hessian.SkewTDistrib
+#' @aliases distrib_dexpected_hessian.SkewTDistrib
+#'   distrib_d2expected_hessian.SkewTDistrib
+#' @description
+#' Returns the expected information, and through [distrib_dexpected_hessian()]
+#' and [distrib_d2expected_hessian()] its first and second derivatives in the
+#' parameters.
+#'
+#' @details
+#' No component has an elementary form. The family is a location-scale family,
+#' so every component equals its value at \eqn{\mu = 0}, \eqn{\sigma = 1} times
+#' \eqn{\sigma^{-k}}, with \eqn{k} the number of indices on \eqn{\mu} or
+#' \eqn{\sigma}. The value there depends on \eqn{(\alpha, \nu)} alone and is one
+#' integral over \eqn{z} of the observed derivatives against the density, taken
+#' once per distinct pair by the exp-sinh rule of [loc_scale_expected()].
+#'
+#' The integral is exact to the rule's accuracy, and what it integrates carries
+#' the family's own accuracy: every derivative in \eqn{(\mu, \sigma, \alpha)}
+#' is closed form, and every one involving \eqn{\nu} comes from a single
+#' stencil on an analytic quantity, as documented on
+#' [distrib_hessian.SkewTDistrib()]. Against an adaptive quadrature the
+#' expected information agrees to \eqn{9\times10^{-12}}; the second derivative
+#' agrees with a difference of the first to \eqn{10^{-3}} relative at
+#' \eqn{\nu = 5}, the components carrying \eqn{\nu} several times being
+#' differenced ones.
+#'
+#' The tail is integrated to \eqn{|z| = 10^{60}}, which leaves a relative
+#' \eqn{10^{-60\nu}/\nu} and is negligible for \eqn{\nu \ge 0.3}.
+#'
+#' `approx` and `nsim` are accepted for the generic's sake and ignored.
+#'
+#' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
+#' @param y A numeric vector of observations. Its length sets the length of
+#'   each returned component; the values themselves are not read.
+#' @param theta A named list with components `mu`, `sigma`, `alpha` and `nu`,
+#'   each a numeric vector of length 1 or of the length of `y`.
+#' @param scale One of `"parameter"` (the default) or `"link"`, matched by
+#'   [base::match.arg()].
+#' @param approx,nsim Ignored.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads The thread count passed to the family's kernels.
+#'
+#' @return A named list of numeric vectors of length `length(y)`: for
+#'   [distrib_expected_hessian()] the components keyed as [hess_names()], for
+#'   the two derivatives those keyed as [dexpected_names()] and
+#'   [d2expected_names()].
+#'
+#' @seealso [loc_scale_expected()] for the construction,
+#'   [distrib_hessian.SkewTDistrib()] for the quantity this is the expectation
+#'   of, and [distrib_expected_hessian()] for the generic.
+#'
+#' @examples
+#' d <- skewt_distrib()
+#' th <- list(mu = 1, sigma = 2, alpha = 2, nu = 5)
+#' e <- distrib_expected_hessian(d, 0, th)
+#' vapply(e, function(v) v[1], numeric(1))
+#'
+#' # One quadrature serves every observation sharing a shape: the location and
+#' # the scale only rescale the result.
+#' e2 <- distrib_expected_hessian(d, 0, list(mu = -3, sigma = 1, alpha = 2, nu = 5))
+#' e$alpha_alpha / e2$alpha_alpha
+NULL
+
+register_loc_scale_expected(SkewTDistrib)
+
 #' @title Skew t Third Derivatives
 #' @name distrib_deriv3.SkewTDistrib
 #'
@@ -1506,10 +1574,9 @@ S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta, ...) {
 #'
 #' # Fitting
 #'
-#' The expected information has no closed form, so it is approximated by the
-#' strategy named in `approx`, at one quadrature per component.
-#' `method = optimizers7::newton()` is much the cheaper route: the observed
-#' Hessian is the closed form above and needs no integration.
+#' The expected information has no closed form and is computed by one
+#' quadrature over \eqn{z} per distinct \eqn{(\alpha, \nu)}, so Fisher scoring
+#' on an intercept-only fit pays for one integral per iteration.
 #'
 #' The distribution function and the quantile function likewise have no
 #' elementary form; the base class integrates the density and inverts the
@@ -1590,11 +1657,12 @@ S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta, ...) {
 #'     skew = skewness(d, p), kurt = kurtosis(d, p))
 #' }, numeric(5)))
 #'
-#' # The observed Hessian is the cheap route: this family has no closed-form
-#' # expected information, so Fisher scoring would quadrature it at every step.
+#' # Fitting by Fisher scoring, the default, and by Newton on the observed
+#' # Hessian reaches the same estimate.
 #' set.seed(1)
 #' x <- distrib_rng(d, 200, th)
-#' coef(fit_distrib(d, x, method = optimizers7::newton(), start = th))
+#' rbind(fisher = coef(fit_distrib(d, x, start = th)),
+#'       newton = coef(fit_distrib(d, x, method = optimizers7::newton(), start = th)))
 #'
 #' @export
 skewt_distrib <- function(link_mu = identity_link(),

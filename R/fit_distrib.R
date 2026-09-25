@@ -600,9 +600,10 @@ fit_distrib <- function(distrib, y, start = NULL,
   if (!is.null(fs) && !identical(fs@approx, fs_default_approx) &&
       has_exact_expected_hessian(distrib)) {
     stop(sprintf(paste0(
-      "'%s' computes its expected information in closed form, so the 'approx'\n",
-      "  of fisher_scoring() would be ignored. Use fisher_scoring() with no\n",
-      "  arguments: the fit will take the exact expression."
+      "'%s' computes its expected information exactly, in closed form or by\n",
+      "  a quadrature of its own, so the 'approx' of fisher_scoring()\n",
+      "  would be ignored. Use fisher_scoring() with no arguments: the fit\n",
+      "  will take the exact expression."
     ), distrib@distrib_name), call. = FALSE)
   }
 

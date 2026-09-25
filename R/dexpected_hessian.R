@@ -22,12 +22,12 @@ NULL
 # on an analytic quantity -- the same licence the skew t has for its degrees of
 # freedom, and not the nested differencing the package forbids.
 #
-# Where the expected information is itself an integral the licence lapses, and
-# the reason is COST rather than accuracy. Measured at 100 observations, the
-# six families that approximate it cost 1880 to 147300 ms against a median of
-# 0.183 ms for the thirty-four that do not -- four orders of magnitude -- so a
-# derivative asking for 2p of those calls per evaluation is not a slower route
-# but an unusable one.
+# Where the expected information is itself an approximation the licence
+# lapses, and the reason is COST rather than accuracy: measured at 100
+# observations, the families that approximated it by a quadrature per
+# observation cost 1880 to 147300 ms against a median of 0.183 ms for those
+# that did not -- four orders of magnitude -- so a derivative asking for 2p of
+# those calls per evaluation is not a slower route but an unusable one.
 
 #' The Derivative of the Expected Information
 #'

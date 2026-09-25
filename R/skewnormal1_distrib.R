@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R
+#' @include distrib.R generics.R expected_loc_scale.R
 NULL
 
 #' @title Skew Normal Distribution Class
@@ -44,7 +44,9 @@ NULL
 #'   [`distrib_deriv3()`][distrib_deriv3.SkewNormal1Distrib],
 #'   [`distrib_deriv4()`][distrib_deriv4.SkewNormal1Distrib],
 #'   [`distrib_grad_y()`][distrib_grad_y.SkewNormal1Distrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.SkewNormal1Distrib].
+#'   [`distrib_hess_y()`][distrib_hess_y.SkewNormal1Distrib], and the expected
+#'   information with its two derivatives,
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.SkewNormal1Distrib].
 #'
 #' Registered elsewhere in the package, all closed form: the four moments
 #' [`mean()`][mean.SkewNormal1Distrib], [`variance()`][variance.SkewNormal1Distrib],
@@ -60,9 +62,9 @@ NULL
 #' [`distrib_hess_y_hess()`][distrib_grad_y_hess] in `theta2_families.R`.
 #'
 #' The **quantile** comes from [continuous_distrib()], by root finding on the
-#' distribution function. So does the **expected information**: this family has
-#' none in elementary form, so [distrib_expected_hessian()] approximates it by
-#' the strategy named in its `approx` argument.
+#' distribution function. The **expected information** has no elementary form
+#' and is computed by one quadrature per distinct \eqn{\alpha}; see
+#' [distrib_expected_hessian.SkewNormal1Distrib()].
 #'
 #' @seealso [skewnormal1_distrib()] to build one;
 #'   [skewnormal2_distrib()] for the same law in Azzalini's centered
@@ -391,18 +393,18 @@ S7::method(distrib_gradient, SkewNormal1Distrib) <- function(distrib, y, theta, 
 #'       \qquad
 #'       \dfrac{\partial^2 \ell}{\partial \alpha^2} = z^2 R'.}
 #'
-#' This is the **observed** curvature at the data. The family has no elementary
-#' expected information, so [distrib_expected_hessian()] falls to the base
-#' class and approximates it; see there for the strategies and their cost.
+#' This is the **observed** curvature at the data. Its expectation has no
+#' elementary form and is computed by
+#' [distrib_expected_hessian.SkewNormal1Distrib()].
 #'
 #' @details
 #' # Singularity at symmetry
 #'
 #' At \eqn{\alpha = 0} the expected information of this parametrization has rank
 #' 2, not 3. The reason is in the score: the shape and location components are
-#' exactly proportional there, so no data can separate them. Measured on the
-#' approximated information at \eqn{\mu = 0}, \eqn{\sigma = 1}, its eigenvalues
-#' are 2, 1.637 and \eqn{-5.6\times10^{-17}}, and the smallest one grows like
+#' exactly proportional there, so no data can separate them. Measured at
+#' \eqn{\mu = 0}, \eqn{\sigma = 1}, its eigenvalues are 2, 1.637 and
+#' \eqn{-2.6\times10^{-27}}, and the smallest one grows like
 #' \eqn{\alpha^4} as the shape moves off zero: \eqn{4.4\times10^{-10}} at
 #' \eqn{\alpha = 0.01} and \eqn{1.9\times10^{-3}} at \eqn{\alpha = 0.5}.
 #'
@@ -431,7 +433,7 @@ S7::method(distrib_gradient, SkewNormal1Distrib) <- function(distrib, y, theta, 
 #'
 #' @seealso [distrib_gradient.SkewNormal1Distrib()] for the score,
 #'   [distrib_deriv3.SkewNormal1Distrib()] for the next order,
-#'   [distrib_expected_hessian()] for the approximated expectation, and
+#'   [distrib_expected_hessian.SkewNormal1Distrib()] for the expectation, and
 #'   [distrib_hessian()] for the generic.
 #'
 #' @examples
@@ -477,6 +479,76 @@ S7::method(distrib_hessian, SkewNormal1Distrib) <- function(distrib, y, theta, s
     sigma_alpha = -(z * r + alpha * z^2 * dr) / sigma
   )
 }
+
+#' @title Skew Normal Expected Hessian and Its Derivatives
+#' @name distrib_expected_hessian.SkewNormal1Distrib
+#' @aliases distrib_dexpected_hessian.SkewNormal1Distrib
+#'   distrib_d2expected_hessian.SkewNormal1Distrib
+#' @description
+#' Returns the expected information, and through [distrib_dexpected_hessian()]
+#' and [distrib_d2expected_hessian()] its first and second derivatives in the
+#' parameters.
+#'
+#' @details
+#' No component has an elementary form. In Azzalini's notation, with
+#' \eqn{b = \sqrt{2/\pi}} and
+#' \eqn{a_k = \mathbb{E}\!\left[Z^k \{\phi(\alpha Z)/\Phi(\alpha Z)\}^2\right]}
+#' for \eqn{Z} a standard skew normal of shape \eqn{\alpha},
+#' \deqn{-\mathbb{E}[\ell_{\mu\mu}] = \frac{1 + \alpha^2 a_0}{\sigma^2},\quad
+#'   -\mathbb{E}[\ell_{\sigma\sigma}] = \frac{2 + \alpha^2 a_2}{\sigma^2},\quad
+#'   -\mathbb{E}[\ell_{\alpha\alpha}] = a_2,}
+#' and each \eqn{a_k} is an integral that has no closed form. The family is a
+#' location-scale family, so every component equals its value at
+#' \eqn{\mu = 0}, \eqn{\sigma = 1} times \eqn{\sigma^{-k}}, with \eqn{k} the
+#' number of indices on \eqn{\mu} or \eqn{\sigma}. The value there depends on
+#' \eqn{\alpha} alone and is one integral over \eqn{z} of the analytic observed
+#' derivatives against the density, taken once per distinct \eqn{\alpha} by the
+#' exp-sinh rule of [loc_scale_expected()]. It reproduces the three expressions
+#' above, computed from the \eqn{a_k} by an independent quadrature, to the last
+#' printed digit.
+#'
+#' At \eqn{\alpha = 0} the information has rank 2 and not 3: its eigenvalues at
+#' \eqn{\mu = 0}, \eqn{\sigma = 1} are 2, 1.637 and \eqn{-2.6\times10^{-27}},
+#' and the smallest grows like \eqn{\alpha^4}, reading
+#' \eqn{4.4\times10^{-10}} at \eqn{\alpha = 0.01} and \eqn{1.9\times10^{-3}} at
+#' \eqn{\alpha = 0.5}. See [distrib_hessian.SkewNormal1Distrib()] for why.
+#'
+#' `approx` and `nsim` are accepted for the generic's sake and ignored.
+#'
+#' @param distrib A `SkewNormal1Distrib` object, from [skewnormal1_distrib()].
+#' @param y A numeric vector of observations. Its length sets the length of
+#'   each returned component; the values themselves are not read.
+#' @param theta A named list with components `mu`, `sigma` and `alpha`, each a
+#'   numeric vector of length 1 or of the length of `y`.
+#' @param scale One of `"parameter"` (the default) or `"link"`, matched by
+#'   [base::match.arg()].
+#' @param approx,nsim Ignored.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads The thread count passed to the family's kernels.
+#'
+#' @return A named list of numeric vectors of length `length(y)`: for
+#'   [distrib_expected_hessian()] the components keyed as [hess_names()], for
+#'   the two derivatives those keyed as [dexpected_names()] and
+#'   [d2expected_names()].
+#'
+#' @seealso [loc_scale_expected()] for the construction,
+#'   [distrib_hessian.SkewNormal1Distrib()] for the quantity this is the
+#'   expectation of, and [distrib_expected_hessian()] for the generic.
+#'
+#' @examples
+#' d <- skewnormal1_distrib()
+#' a <- 2
+#' e <- distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, alpha = a))
+#'
+#' # Azzalini's form, with the a_k computed by an independent quadrature.
+#' ak <- sapply(c(0, 2), function(k) integrate(function(z)
+#'   2 * z^k * exp(dnorm(z, log = TRUE) + 2 * dnorm(a * z, log = TRUE) -
+#'                 pnorm(a * z, log.p = TRUE)), -Inf, Inf, rel.tol = 1e-12)$value)
+#' rbind(azzalini = c(1 + a^2 * ak[1], 2 + a^2 * ak[2], ak[2]),
+#'       package = -c(e$mu_mu, e$sigma_sigma, e$alpha_alpha))
+NULL
+
+register_loc_scale_expected(SkewNormal1Distrib)
 
 #' @title Skew Normal Third Derivatives
 #' @name distrib_deriv3.SkewNormal1Distrib
@@ -786,10 +858,12 @@ S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta, ..
 #' it: \eqn{R' = -R(t+R)}, so every derivative of \eqn{\log\Phi(t)} is a
 #' polynomial in \eqn{t} and \eqn{R}.
 #'
-#' The **expected** information has no elementary form, so none is registered
-#' and [distrib_expected_hessian()] approximates it by the strategy named in
-#' its `approx` argument. The expected third and fourth orders share that
-#' obstruction.
+#' The **expected** information has no elementary form. It depends on
+#' \eqn{\alpha} alone once the location and the scale are factored out, so it
+#' is one integral over \eqn{z} per distinct \eqn{\alpha}, and so are its first
+#' and second derivatives; see [distrib_expected_hessian.SkewNormal1Distrib()].
+#' The expected third and fourth orders returned by `expected = TRUE` still
+#' come from `expected_derivative()`.
 #'
 #' # Singularity at symmetry
 #'
@@ -797,7 +871,7 @@ S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta, ..
 #' shows why: the shape component is \eqn{z\sqrt{2/\pi}} and the location
 #' component \eqn{z/\sigma}, so the two are exactly proportional and no data
 #' can separate them. Measured, the smallest eigenvalue is
-#' \eqn{-5.6\times10^{-17}} against a largest of 2 at \eqn{\alpha = 0}, and it
+#' \eqn{-2.6\times10^{-27}} against a largest of 2 at \eqn{\alpha = 0}, and it
 #' grows like \eqn{\alpha^4} thereafter.
 #'
 #' The consequence for use is that a fit whose true shape is near zero

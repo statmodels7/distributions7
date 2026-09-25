@@ -2,6 +2,8 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{distrib_expected_hessian.SkewNormal2Distrib}
 \alias{distrib_expected_hessian.SkewNormal2Distrib}
+\alias{distrib_dexpected_hessian.SkewNormal2Distrib}
+\alias{distrib_d2expected_hessian.SkewNormal2Distrib}
 \title{Skew Normal Expected Information in the Centered Parametrization}
 \arguments{
 \item{distrib}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
@@ -12,28 +14,27 @@ expectation; only its length does, through recycling.}
 \item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}. The
 skewness must not be exactly zero.}
 
-\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
-transformation is applied in the generic's body.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}.}
 
-\item{approx}{One of \code{"bartlett"}, \code{"integrate"}, \code{"mc"} or \code{"opg"}, the
-strategy the parent uses for its own expectation. Defaults to
-\code{"bartlett"}, the variance of the score.}
-
-\item{nsim}{A single positive integer, the Monte Carlo sample size used when
-\code{approx = "mc"}. Defaults to \code{10000}.}
+\item{approx, nsim}{Ignored.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{The thread count passed to the parent's kernels.}
 }
 \value{
-A named list of six numeric vectors, in \code{\link[=hess_names]{hess_names()}}'s order.
-Every entry is an expectation, so it does not depend on \code{y}.
+A named list of numeric vectors: for \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}
+six, in \code{\link[=hess_names]{hess_names()}}'s order, and for the two derivatives those keyed as
+\code{\link[=dexpected_names]{dexpected_names()}} and \code{\link[=d2expected_names]{d2expected_names()}}. Every entry is an
+expectation, so it does not depend on \code{y}.
 }
 \description{
 Computes the expected second derivatives by carrying the parent's expected
 information through the same congruence the observed Hessian uses,
-\eqn{J^\top E[\ell''] J} with \eqn{J} the Jacobian of \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}. The
-first-order term of the chain rule drops out under expectation, the score
-having mean zero.
+\eqn{J^\top E[\ell''] J} with \eqn{J} the Jacobian of \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}, and
+through \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} and \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} its
+first and second derivatives in the parameters. The first-order term of the
+chain rule drops out under expectation, the score having mean zero.
 
 The matrix is \strong{non-singular at zero skewness}, which the direct
 parametrization's is not: there the score for \eqn{\alpha} is exactly
@@ -42,20 +43,23 @@ Measured at \eqn{\mu = 0}, \eqn{\sigma = 1}, the eigenvalues here tend to
 2, 1 and \eqn{1/6} as \eqn{\gamma_1 \to 0}. Removing that singularity is
 what the centered parametrization is for.
 }
-\section{Cost, and where the digits run out}{
-The parent's own expected information is the base class's quadrature, so
-this method is a chain on top of a numerical quantity: measured at 100
-observations it costs about 5.2 seconds against the parent's 2.2, where a
-family that writes its information out answers in a median of 0.18
-milliseconds. \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} therefore returns \code{FALSE} here, and
-\code{approx} is read.
+\section{Where the parent's quantities come from}{
+The parent is \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, whose expected information and its two
+derivatives are one quadrature over \eqn{z} per distinct shape; see
+\code{\link[=distrib_expected_hessian.SkewNormal1Distrib]{distrib_expected_hessian.SkewNormal1Distrib()}}. The derivatives here are
+the parent's carried through the map by \code{\link[=dexpected_chain]{dexpected_chain()}}, which needs the
+map's partials to third order and reads them from \code{\link[=md_skewnormal2]{md_skewnormal2()}}.
+}
 
+\section{Where the digits run out}{
 The congruence is a difference of terms of size \eqn{\gamma_1^{-2/3}}, so
 the limit is approached and then lost. Measured, the \eqn{\gamma_1}
 component is 0.16666782 against \eqn{1/6 = 0.16666667} at
 \eqn{\gamma_1 = 10^{-8}}, 0.1655 at \eqn{10^{-10}}, and \strong{negative} at
 \eqn{10^{-12}}. A fit does not visit those values, and a genuinely
 symmetric problem is better posed in \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.
+
+\code{approx} and \code{nsim} are accepted for the generic's sake and ignored.
 }
 
 \section{Errors}{
@@ -87,6 +91,5 @@ c(limit = 1 / 6,
 }
 \seealso{
 \code{\link[=distrib_hessian.SkewNormal2Distrib]{distrib_hessian.SkewNormal2Distrib()}} for the observed curvature,
-\code{\link[=expected_hessian_exact.SkewNormal2Distrib]{expected_hessian_exact.SkewNormal2Distrib()}} for why this counts as
-approximated, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
+and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

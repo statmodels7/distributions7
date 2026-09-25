@@ -84,12 +84,16 @@ test_that("orders 3 and 4 route opg to bartlett", {
   }
 })
 
-test_that("expected_hessian_exact is exported and names the six families", {
+test_that("expected_hessian_exact is exported and names the families that approximate", {
   expect_true(expected_hessian_exact(gaussian1_distrib()))
   expect_true(expected_hessian_exact(poisson_distrib()))
-  for (fn in c("pig1_distrib", "pig2_distrib", "pseudohuber_distrib",
-               "skewnormal1_distrib", "skewnormal2_distrib", "skewt_distrib")) {
+  for (fn in c("pig1_distrib", "pig2_distrib")) {
     expect_false(expected_hessian_exact(do.call(fn, list())), info = fn)
+  }
+  # the location-scale families compute theirs by one quadrature per shape
+  for (fn in c("pseudohuber_distrib", "skewnormal1_distrib",
+               "skewnormal2_distrib", "skewt_distrib")) {
+    expect_true(expected_hessian_exact(do.call(fn, list())), info = fn)
   }
 })
 

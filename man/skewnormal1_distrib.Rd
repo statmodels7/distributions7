@@ -56,10 +56,12 @@ the third and fourth orders, in compiled kernels. One identity does all of
 it: \eqn{R' = -R(t+R)}, so every derivative of \eqn{\log\Phi(t)} is a
 polynomial in \eqn{t} and \eqn{R}.
 
-The \strong{expected} information has no elementary form, so none is registered
-and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} approximates it by the strategy named in
-its \code{approx} argument. The expected third and fourth orders share that
-obstruction.
+The \strong{expected} information has no elementary form. It depends on
+\eqn{\alpha} alone once the location and the scale are factored out, so it
+is one integral over \eqn{z} per distinct \eqn{\alpha}, and so are its first
+and second derivatives; see \code{\link[=distrib_expected_hessian.SkewNormal1Distrib]{distrib_expected_hessian.SkewNormal1Distrib()}}.
+The expected third and fourth orders returned by \code{expected = TRUE} still
+come from \code{expected_derivative()}.
 }
 
 \section{Singularity at symmetry}{
@@ -67,7 +69,7 @@ At \eqn{\alpha = 0} the expected information has rank 2 and not 3. The score
 shows why: the shape component is \eqn{z\sqrt{2/\pi}} and the location
 component \eqn{z/\sigma}, so the two are exactly proportional and no data
 can separate them. Measured, the smallest eigenvalue is
-\eqn{-5.6\times10^{-17}} against a largest of 2 at \eqn{\alpha = 0}, and it
+\eqn{-2.6\times10^{-27}} against a largest of 2 at \eqn{\alpha = 0}, and it
 grows like \eqn{\alpha^4} thereafter.
 
 The consequence for use is that a fit whose true shape is near zero

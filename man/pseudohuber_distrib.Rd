@@ -110,20 +110,18 @@ lower tail is integrated. The quantile inverts it by root-finding, and the
 generator inverts it at uniform variates, so a sample costs one root-find
 per draw.
 
-The \strong{expected information has no closed form either}. Its four non-zero
-components come from \code{\link[=expected_derivative]{expected_derivative()}}, and the two containing
-\eqn{\mu} an odd number of times are replaced by exact zeros, the law being
-symmetric. That makes the location orthogonal to the scale and the shape.
-\code{\link[=expected_hessian_exact.PseudoHuberDistrib]{expected_hessian_exact.PseudoHuberDistrib()}} declares the approximation, so
-a caller who branches on the distinction branches correctly; at 100
-observations it costs about 11 seconds against a median of 0.183
-milliseconds for a family that writes its information out.
+The \strong{expected information has no elementary form either}, but it depends
+on \eqn{\nu} alone once the location and the scale are factored out, so it
+is one integral over \eqn{z} per distinct \eqn{\nu}, taken by the rule of
+\code{\link[=loc_scale_expected]{loc_scale_expected()}}; see
+\code{\link[=distrib_expected_hessian.PseudoHuberDistrib]{distrib_expected_hessian.PseudoHuberDistrib()}}. The components containing
+\eqn{\mu} an odd number of times vanish, the law being symmetric, so the
+location is orthogonal to the scale and the shape.
 }
 
 \section{Estimation}{
-\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Given the
-cost of the expected information, \code{method = optimizers7::newton()} on the
-observed Hessian is the cheaper route here, and it is closed form.
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale, by Fisher
+scoring on the expected information by default.
 }
 
 \section{Notation}{
@@ -162,7 +160,8 @@ rbind(residual = rr,
       pseudohuber = distrib_gradient(d, 0.4 + rr, th)$mu,
       gaussian = rr / 1.2^2)
 
-# The expected information is a quadrature here, and the family says so.
+# The expected information depends on nu alone once mu and sigma are
+# factored out, so it is computed once per distinct nu.
 distributions7:::expected_hessian_exact(d)
 
 # The quantile inverts the distribution function, and the generator

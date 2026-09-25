@@ -1,6 +1,6 @@
 Package: distributions7
 Title: S7 Framework for Probability Distributions
-Version: 0.63.0
+Version: 0.64.0
 Authors@R: 
     person("Giovanni", "Tinervia", , "giovannitinervia9@gmail.com", role = c("aut", "cre"))
 Description: Provides a consistent S7 object-oriented infrastructure for probability distributions. Each 'distrib' object encapsulates standard statistical functions alongside analytical derivatives.
@@ -67,6 +67,7 @@ Collate:
     'logistic_distrib.R'
     'cauchy_distrib.R'
     'gaussian1_distrib.R'
+    'expected_loc_scale.R'
     'skewnormal1_distrib.R'
     'skewt_distrib.R'
     'gumbel_distrib.R'

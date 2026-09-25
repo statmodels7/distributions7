@@ -73,9 +73,10 @@ Registered on this class in this file:
 \code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian()}},
 \code{\link[=distrib_pdf.PseudoHuberDistrib]{distrib_pdf()}},
 \code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.PseudoHuberDistrib]{distrib_rng()}}, and the predicate
-\code{\link[=expected_hessian_exact.PseudoHuberDistrib]{expected_hessian_exact()}},
-which answers \code{FALSE} here.
+\code{\link[=distrib_rng.PseudoHuberDistrib]{distrib_rng()}}, and the expected
+information with its two derivatives,
+\code{\link[=distrib_expected_hessian.PseudoHuberDistrib]{distrib_expected_hessian()}},
+registered through \code{\link[=register_loc_scale_expected]{register_loc_scale_expected()}}.
 
 Registered from other files: the mixed derivative
 \code{\link[=distrib_cross_y.PseudoHuberDistrib]{distrib_cross_y()}} and the
@@ -98,8 +99,8 @@ S7::S7_inherits(d, continuous_distrib)
 d@params
 d@params_interpretation
 
-# This is the one family here whose expected information is not written
-# out, and the predicate says so.
+# The expected information is computed exactly, by one quadrature per
+# distinct shape.
 distributions7:::expected_hessian_exact(d)
 }
 \seealso{

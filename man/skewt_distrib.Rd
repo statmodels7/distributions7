@@ -92,10 +92,9 @@ the score \strong{per observation}, which leaves room: measured on samples of
 }
 
 \section{Fitting}{
-The expected information has no closed form, so it is approximated by the
-strategy named in \code{approx}, at one quadrature per component.
-\code{method = optimizers7::newton()} is much the cheaper route: the observed
-Hessian is the closed form above and needs no integration.
+The expected information has no closed form and is computed by one
+quadrature over \eqn{z} per distinct \eqn{(\alpha, \nu)}, so Fisher scoring
+on an intercept-only fit pays for one integral per iteration.
 
 The distribution function and the quantile function likewise have no
 elementary form; the base class integrates the density and inverts the
@@ -161,11 +160,12 @@ t(vapply(c(1.5, 2.5, 3.5, 4.5), function(v) {
     skew = skewness(d, p), kurt = kurtosis(d, p))
 }, numeric(5)))
 
-# The observed Hessian is the cheap route: this family has no closed-form
-# expected information, so Fisher scoring would quadrature it at every step.
+# Fitting by Fisher scoring, the default, and by Newton on the observed
+# Hessian reaches the same estimate.
 set.seed(1)
 x <- distrib_rng(d, 200, th)
-coef(fit_distrib(d, x, method = optimizers7::newton(), start = th))
+rbind(fisher = coef(fit_distrib(d, x, start = th)),
+      newton = coef(fit_distrib(d, x, method = optimizers7::newton(), start = th)))
 
 }
 \references{

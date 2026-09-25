@@ -56,12 +56,11 @@ test_that("the link scale is the expected information's own", {
 })
 
 test_that("a family that approximates its expected information is refused", {
-  # Not an accuracy judgement: measured at 100 observations these six cost
-  # 1880 to 147300 ms against a median of 0.183 ms for the thirty-four that
-  # write the expectation out, so 2p of those calls per evaluation is
+  # Not an accuracy judgement: an expected information approximated per
+  # observation costs seconds at 100 observations against a median of 0.183 ms
+  # for a family that writes it out, so 2p of those calls per evaluation is
   # unusable rather than merely slow.
-  for (d in list(skewnormal1_distrib(), skewnormal2_distrib(),
-                 pseudohuber_distrib(), skewt_distrib())) {
+  for (d in list(pig1_distrib(), pig2_distrib())) {
     th <- generate_random_theta(d)
     expect_error(distrib_dexpected_hessian(d, distrib_rng(d, 1L, th), th),
                  "approximates its expected information")
@@ -69,25 +68,30 @@ test_that("a family that approximates its expected information is refused", {
 })
 
 test_that("the exactness predicate follows the arithmetic, not the owner", {
-  # skewnormal2 registers its own method and pseudohuber registers one that
-  # patches two components of the fallback, so reading the owning class said
-  # "written out" about a quadrature in both. The consequences were live:
-  # fit_distrib() rejected a legitimate fisher_scoring(approx = ) on them with
-  # a message that was untrue.
-  expect_false(has_exact_expected_hessian(skewnormal2_distrib()))
-  expect_false(has_exact_expected_hessian(pseudohuber_distrib()))
-  expect_false(has_exact_expected_hessian(skewnormal1_distrib()))
+  # skewnormal2 chains onto skewnormal1 and answers for it
+  expect_identical(has_exact_expected_hessian(skewnormal2_distrib()),
+                   has_exact_expected_hessian(skewnormal1_distrib()))
+  expect_true(has_exact_expected_hessian(skewnormal2_distrib()))
+  expect_true(has_exact_expected_hessian(pseudohuber_distrib()))
+  expect_false(has_exact_expected_hessian(pig1_distrib()))
   # and the ones that do write it out still say so, including a family
   # reached through a reparametrization whose parent is exact
   expect_true(has_exact_expected_hessian(gaussian1_distrib()))
   expect_true(has_exact_expected_hessian(negbin2_distrib()))
   expect_true(has_exact_expected_hessian(weibull3_distrib()))
-  # the refusal that had been turned into an error is available again
-  expect_silent(fit_distrib(pseudohuber_distrib(),
-                            distrib_rng(pseudohuber_distrib(), 5L,
-                                        list(mu = 0, sigma = 1, nu = 1)),
-                            method = fisher_scoring(approx = "mc", nsim = 20L),
-                            n_start = 1L))
+  # a strategy for the approximation is accepted where there is one to make,
+  # and refused where the family computes its information exactly
+  set.seed(1)
+  y <- distrib_rng(pig1_distrib(), 30L, list(mu = 3, sigma = 0.5))
+  expect_no_error(fit_distrib(pig1_distrib(), y,
+                              method = fisher_scoring(approx = "mc", nsim = 20L),
+                              n_start = 1L))
+  expect_error(fit_distrib(pseudohuber_distrib(),
+                           distrib_rng(pseudohuber_distrib(), 5L,
+                                       list(mu = 0, sigma = 1, nu = 1)),
+                           method = fisher_scoring(approx = "mc", nsim = 20L),
+                           n_start = 1L),
+               "computes its expected information exactly")
 })
 
 test_that("the keys are built and enumerated by the same rule", {
@@ -262,8 +266,8 @@ test_that("the analytic kernels are identical at any thread count", {
 })
 
 test_that("a family without a second derivative of its expected information is refused", {
-  d <- skewnormal1_distrib()
-  expect_error(distrib_d2expected_hessian(d, 1, list(mu = 0, sigma = 1, alpha = 1)),
+  d <- pig1_distrib()
+  expect_error(distrib_d2expected_hessian(d, 1, list(mu = 2, sigma = 0.5)),
                "no analytic second derivative")
 })
 

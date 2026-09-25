@@ -70,7 +70,9 @@ Registered in this file:
 \code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.SkewTDistrib]{distrib_deriv4()}},
 \code{\link[=distrib_grad_y.SkewTDistrib]{distrib_grad_y()}},
-\code{\link[=distrib_hess_y.SkewTDistrib]{distrib_hess_y()}}.
+\code{\link[=distrib_hess_y.SkewTDistrib]{distrib_hess_y()}}, and the expected
+information with its two derivatives,
+\code{\link[=distrib_expected_hessian.SkewTDistrib]{distrib_expected_hessian()}}.
 
 Registered elsewhere: all four moments in \code{moments.R}
 (\code{\link[=mean.SkewTDistrib]{mean()}}, \code{\link[=variance.SkewTDistrib]{variance()}},
@@ -81,10 +83,10 @@ derivative \code{\link[=distrib_cross_y]{distrib_cross_y()}} in
 \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} in \code{cdf_derivatives_families.R}.
 
 The \strong{distribution function} and the \strong{quantile function} come from
-\code{\link[=continuous_distrib]{continuous_distrib()}}, by quadrature and by root finding on it. So does the
-\strong{expected information}: this family has none in elementary form, so
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} approximates it, and
-\code{method = "newton"} is much the cheaper way to fit it.
+\code{\link[=continuous_distrib]{continuous_distrib()}}, by quadrature and by root finding on it. The
+\strong{expected information} has no elementary form and is computed by one
+quadrature per distinct \eqn{(\alpha, \nu)}; see
+\code{\link[=distrib_expected_hessian.SkewTDistrib]{distrib_expected_hessian.SkewTDistrib()}}.
 }
 
 \section{What is closed form and what is not}{

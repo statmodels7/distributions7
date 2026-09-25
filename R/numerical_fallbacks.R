@@ -1191,22 +1191,12 @@ has_exact_expected_hessian <- function(x) {
 #' every other registration is, by default, a family that wrote the expectation
 #' out.
 #'
-#' **Reading the owner is not sufficient, and two families prove it.** A
-#' method registered on a family's own class may still be a CHAIN onto a parent
-#' that approximates, and then the owner says "written out" about arithmetic
-#' that is a quadrature. Measured at 100 observations, where thirty-four
-#' families answer in a median of 0.183 ms:
-#' `skewnormal2_distrib()` costs 5220 ms, more than the
-#' `skewnormal1_distrib()` it chains onto, which costs 2230, and
-#' `pseudohuber_distrib()` costs 10980 ms. Both were reported as exact.
-#' The consequences were real rather than cosmetic: [fit_distrib()]
-#' rejected a legitimate `fisher_scoring(approx = )` on those two with a
-#' message stating that the family "computes its expected information in
-#' closed form", which is untrue, and its standard-error branch entered a
-#' multi-second quadrature believing it cheap.
-#'
-#' A family that chains onto another therefore answers for its parent, which is
-#' what the two methods registered here do.
+#' **Reading the owner is not sufficient in general.** A method registered on
+#' a family's own class may be a CHAIN onto a parent that approximates, and
+#' then the owner says "written out" about arithmetic that is not. A family
+#' that chains onto another therefore answers for its parent, which is what
+#' the wrappers and `skewnormal2_distrib()` do, the last answering for
+#' `skewnormal1_distrib()`.
 #'
 #' @param x An object inheriting from class `"distrib"`.
 #'
@@ -1229,13 +1219,9 @@ NULL
 #' expected information out. It answers `FALSE` for a family that registers
 #' nothing and `TRUE` for one that registers its own method.
 #'
-#' The reading is right for 34 of the 40 univariate families and wrong for two,
-#' which declare a method of their own for themselves. The pseudo-Huber's
-#' method calls [expected_derivative()] and patches the two components that
-#' vanish by symmetry, and `skewnormal2`'s chains onto `skewnormal1`, whose
-#' expected information is the base class's quadrature. Both therefore
-#' **override this generic** in place of relying on the owner test, which is
-#' why the test is a generic at all.
+#' A family whose registered method chains onto a parent overrides this
+#' generic and answers for the parent, which is why the test is a generic at
+#' all; `skewnormal2_distrib()` is one.
 #'
 #' @param x A distribution object.
 #' @param ... Unused.

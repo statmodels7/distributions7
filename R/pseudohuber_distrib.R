@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R numerical_functions.R
+#' @include distrib.R generics.R numerical_functions.R expected_loc_scale.R
 NULL
 
 #' @title Pseudo-Huber Distribution Class
@@ -47,9 +47,10 @@ NULL
 #'   [`distrib_hessian()`][distrib_hessian.PseudoHuberDistrib],
 #'   [`distrib_pdf()`][distrib_pdf.PseudoHuberDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.PseudoHuberDistrib],
-#'   [`distrib_rng()`][distrib_rng.PseudoHuberDistrib], and the predicate
-#'   [`expected_hessian_exact()`][expected_hessian_exact.PseudoHuberDistrib],
-#'   which answers `FALSE` here.
+#'   [`distrib_rng()`][distrib_rng.PseudoHuberDistrib], and the expected
+#'   information with its two derivatives,
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.PseudoHuberDistrib],
+#'   registered through [register_loc_scale_expected()].
 #'
 #' Registered from other files: the mixed derivative
 #'   [`distrib_cross_y()`][distrib_cross_y.PseudoHuberDistrib] and the
@@ -71,8 +72,8 @@ NULL
 #' d@params
 #' d@params_interpretation
 #'
-#' # This is the one family here whose expected information is not written
-#' # out, and the predicate says so.
+#' # The expected information is computed exactly, by one quadrature per
+#' # distinct shape.
 #' distributions7:::expected_hessian_exact(d)
 PseudoHuberDistrib <- S7::new_class("PseudoHuberDistrib", parent = continuous_distrib)
 
@@ -534,51 +535,54 @@ S7::method(distrib_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, s
   pseudohuber_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }
 
-#' @title Pseudo-Huber Expected Hessian
+#' @title Pseudo-Huber Expected Hessian and Its Derivatives
 #' @name distrib_expected_hessian.PseudoHuberDistrib
+#' @aliases distrib_dexpected_hessian.PseudoHuberDistrib
+#'   distrib_d2expected_hessian.PseudoHuberDistrib
 #' @description
-#' Returns the expectation of the observed Hessian under the model. **There is
-#' no closed form**, so the four components that do not vanish are obtained by
-#' the strategy `approx` names, normally a numerical integration of the
-#' observed Hessian against the density through [expectation()]. The two
-#' components containing \eqn{\mu} an odd number of times are then **replaced
-#' by exact zeros**: the law is symmetric about \eqn{\mu}, so
-#' \eqn{\mathbb{E}[r] = \mathbb{E}[r^3] = 0} and the \eqn{\mu\sigma} and
-#' \eqn{\mu\nu} entries vanish. The location is therefore orthogonal to both
-#' other parameters, and \eqn{\hat\mu} is asymptotically independent of them.
+#' Returns the expectation of the observed Hessian under the model, and through
+#' [distrib_dexpected_hessian()] and [distrib_d2expected_hessian()] its first
+#' and second derivatives in the parameters.
 #'
-#' The method **improves** the approximation rather than replacing it, which is
-#' why [expected_hessian_exact.PseudoHuberDistrib()] answers `FALSE`. Reading
-#' the method's owning class would say the family writes its information out;
-#' it does not, and the cost says so: measured at 100 observations this takes
-#' about 11 seconds, where the families that do write it out answer in a median
-#' of 0.183 milliseconds.
+#' @details
+#' The family is a location-scale family, so every component equals its value
+#' at \eqn{\mu = 0}, \eqn{\sigma = 1} times \eqn{\sigma^{-k}}, with \eqn{k} the
+#' number of indices on \eqn{\mu} or \eqn{\sigma}. The value at the standard
+#' location and scale is a function of \eqn{\nu} alone and is an integral over
+#' \eqn{z} of the analytic observed derivatives against the density, taken once
+#' for each distinct \eqn{\nu} by the exp-sinh rule of [loc_scale_expected()].
+#' No component has an elementary closed form: the integrands carry
+#' \eqn{(\nu + z^2)^{-1/2}}, which leads to Bickley functions rather than to
+#' the Bessel functions of the normalizing constant.
+#'
+#' The law is symmetric about \eqn{\mu}, so every component carrying \eqn{\mu}
+#' an odd number of times vanishes. The rule's nodes are symmetric about zero,
+#' so the two halves of such an integral cancel and the entry comes back as
+#' zero.
+#'
+#' `approx` and `nsim` are accepted for the generic's sake and ignored.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
 #' @param y A numeric vector of observations. Its length sets the length of
-#'   each returned component.
+#'   each returned component; the values themselves are not read.
 #' @param theta A named list with components `mu`, `sigma` and `nu`, each a
 #'   numeric vector of length 1 or of the length of `y`. `sigma` and `nu` must
 #'   be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx One of `"bartlett"` (the default), `"integrate"`, `"mc"` or
-#'   `"opg"`, the strategy [expected_derivative()] uses. **Read here**, unlike
-#'   on the families that write their information out.
-#' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. Defaults to `10000`.
+#'   [base::match.arg()].
+#' @param approx,nsim Ignored.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads The thread count passed to the family's kernels.
 #'
-#' @return A named list of six numeric vectors, `mu_mu`, `sigma_sigma`,
-#'   `nu_nu`, `mu_sigma`, `mu_nu` and `sigma_nu`, each of length `length(y)`.
-#'   `mu_sigma` and `mu_nu` are exactly zero.
+#' @return A named list of numeric vectors of length `length(y)`: for
+#'   [distrib_expected_hessian()] the six components `mu_mu`, `sigma_sigma`,
+#'   `nu_nu`, `mu_sigma`, `mu_nu` and `sigma_nu`; for the two derivatives the
+#'   components keyed as [dexpected_names()] and [d2expected_names()].
 #'
-#' @seealso [distrib_hessian.PseudoHuberDistrib()] for the quantity this is the
-#'   expectation of, [expected_hessian_exact.PseudoHuberDistrib()] for the
-#'   predicate that reports this is not a closed form,
-#'   [fisher_scoring()], which reads that predicate, and
-#'   [distrib_expected_hessian()] for the generic.
+#' @seealso [loc_scale_expected()] for the construction,
+#'   [distrib_hessian.PseudoHuberDistrib()] for the quantity this is the
+#'   expectation of, and [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- pseudohuber_distrib()
@@ -587,63 +591,16 @@ S7::method(distrib_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, s
 #' eh <- distrib_expected_hessian(d, y, th)
 #' vapply(eh, function(v) v[1], numeric(1))
 #'
-#' # The two entries odd in the residual are exactly zero by symmetry, so the
-#' # location is orthogonal to the scale and the shape.
+#' # The entries odd in the residual vanish by symmetry.
 #' c(eh$mu_sigma[1], eh$mu_nu[1])
 #'
-#' # Unlike the families that write their information out, this one reads
-#' # `approx`: a Monte Carlo strategy gives a different, noisier answer. It is
-#' # also the dear one, drawing from a generator that root-finds, so `nsim` is
-#' # kept small here.
-#' set.seed(1)
-#' vapply(distrib_expected_hessian(d, y, th, approx = "mc", nsim = 200),
-#'        function(v) v[1], numeric(1))
-S7::method(distrib_expected_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
-  n <- length(y)
-  out <- expected_derivative(distrib, y, theta, order = 2L,
-                             approx = match.arg(approx), nsim = nsim)
-  # exact by symmetry: E[r] = E[r^3] = 0
-  out$mu_sigma <- rep(0, n)
-  out$mu_nu <- rep(0, n)
-  out
-}
+#' # The information does not depend on the observations, and scales with
+#' # sigma^-2 in the location and scale block.
+#' e2 <- distrib_expected_hessian(d, y, list(mu = 0.4, sigma = 2.4, nu = 2))
+#' eh$mu_mu[1] / e2$mu_mu[1]
+NULL
 
-#' @title The Pseudo-Huber Does Not Write Its Expected Information Out
-#' @name expected_hessian_exact.PseudoHuberDistrib
-#' @description
-#' Answers `FALSE`, declaring that this family's expected information is a
-#' numerical approximation and not a formula, so that callers who branch on the
-#' distinction branch correctly.
-#'
-#' @details
-#' The predicate's default reads the class a method is registered on, which
-#' here would answer `TRUE` and be wrong.
-#' [distrib_expected_hessian.PseudoHuberDistrib()] is registered on this class,
-#' but what it does is call [expected_derivative()] and then replace the two
-#' components that vanish by symmetry: it **improves** the approximation rather
-#' than replacing it.
-#'
-#' The cost is the discriminator. Measured at 100 observations the method takes
-#' about 11 seconds, where the families that do write their information out
-#' answer in a median of 0.183 milliseconds. Two consequences were live before
-#' the declaration: [fit_distrib()] rejected a legitimate
-#' `fisher_scoring(approx = )` here with a message saying the family computes
-#' its expected information in closed form, which is untrue; and its
-#' standard-error branch entered a multi-second quadrature believing it a
-#' formula.
-#'
-#' @param x A `PseudoHuberDistrib` object, from [pseudohuber_distrib()].
-#' @param ... Unused, and accepted so that the signature matches the generic's.
-#'
-#' @return `FALSE`, a logical of length 1.
-#'
-#' @seealso [expected_hessian_exact()] for the generic and its default,
-#'   [distrib_expected_hessian.PseudoHuberDistrib()] for the method this
-#'   describes, and [fisher_scoring()] for the consumer.
-#' @keywords internal
-S7::method(expected_hessian_exact, PseudoHuberDistrib) <- function(x, ...) {
-  FALSE
-}
+register_loc_scale_expected(PseudoHuberDistrib)
 
 #' @title Pseudo-Huber Third-Order Derivatives
 #' @name distrib_deriv3.PseudoHuberDistrib
@@ -986,20 +943,18 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' generator inverts it at uniform variates, so a sample costs one root-find
 #' per draw.
 #'
-#' The **expected information has no closed form either**. Its four non-zero
-#' components come from [expected_derivative()], and the two containing
-#' \eqn{\mu} an odd number of times are replaced by exact zeros, the law being
-#' symmetric. That makes the location orthogonal to the scale and the shape.
-#' [expected_hessian_exact.PseudoHuberDistrib()] declares the approximation, so
-#' a caller who branches on the distinction branches correctly; at 100
-#' observations it costs about 11 seconds against a median of 0.183
-#' milliseconds for a family that writes its information out.
+#' The **expected information has no elementary form either**, but it depends
+#' on \eqn{\nu} alone once the location and the scale are factored out, so it
+#' is one integral over \eqn{z} per distinct \eqn{\nu}, taken by the rule of
+#' [loc_scale_expected()]; see
+#' [distrib_expected_hessian.PseudoHuberDistrib()]. The components containing
+#' \eqn{\mu} an odd number of times vanish, the law being symmetric, so the
+#' location is orthogonal to the scale and the shape.
 #'
 #' # Estimation
 #'
-#' [fit_distrib()] maximizes the log-likelihood on the link scale. Given the
-#' cost of the expected information, `method = optimizers7::newton()` on the
-#' observed Hessian is the cheaper route here, and it is closed form.
+#' [fit_distrib()] maximizes the log-likelihood on the link scale, by Fisher
+#' scoring on the expected information by default.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location,
@@ -1053,7 +1008,8 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #'       pseudohuber = distrib_gradient(d, 0.4 + rr, th)$mu,
 #'       gaussian = rr / 1.2^2)
 #'
-#' # The expected information is a quadrature here, and the family says so.
+#' # The expected information depends on nu alone once mu and sigma are
+#' # factored out, so it is computed once per distinct nu.
 #' distributions7:::expected_hessian_exact(d)
 #'
 #' # The quantile inverts the distribution function, and the generator

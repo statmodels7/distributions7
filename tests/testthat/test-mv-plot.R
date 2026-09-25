@@ -92,13 +92,13 @@ test_that("the strategy for the expected information lives on fisher_scoring()",
   # the default carries no claim and is accepted everywhere
   expect_silent(fit_distrib(g, yg, method = fisher_scoring()))
 
-  # and where the strategy does change something it is taken: the skew
-  # normal's expected information has no closed form and cannot have one
+  # and where the strategy does change something it is taken: the
+  # Poisson-inverse gaussian approximates its expected information
   set.seed(53)
-  ysn <- distrib_rng(skewnormal1_distrib(), 200,
-                     list(mu = 0, sigma = 1, alpha = 2))
-  expect_silent(fit_distrib(skewnormal1_distrib(), ysn,
-                            method = fisher_scoring(approx = "opg")))
+  ypg <- distrib_rng(pig1_distrib(), 40, list(mu = 3, sigma = 0.5))
+  expect_no_error(fit_distrib(pig1_distrib(), ypg,
+                              method = fisher_scoring(approx = "mc", nsim = 20L),
+                              n_start = 1L))
 
   # the object validates its own arguments
   expect_error(fisher_scoring(approx = "nonsense"), "should be one of")
@@ -137,20 +137,17 @@ test_that("a family is asked correctly whether its expected information is exact
                 label = d@distrib_name)
   }
 
-  # These do not write the expectation out. Two of them REGISTER a method of
-  # their own and were listed as exact until the question was measured rather
-  # than read off the owning class: pseudohuber's method calls
-  # expected_derivative() and then replaces the two components that vanish by
-  # symmetry, and skewnormal2's is the chain onto skewnormal1, whose expected
-  # information is the base class's quadrature. Timed at 100 observations they
-  # cost 10980 ms and 5220 ms -- the latter MORE than the 2230 of the parent it
-  # chains onto -- where the families that do write it out answer in a median
-  # of 0.183 ms.
-  approximated <- list(skewnormal1_distrib(), skewt_distrib(),
-                       pseudohuber_distrib(), skewnormal2_distrib())
-  for (d in approximated) {
+  # These approximate the expectation. The location-scale families that used
+  # to -- the skew normals, the skew t, the pseudo-Huber -- compute it by one
+  # quadrature per distinct shape since 0.64.0 and answer TRUE.
+  for (d in list(pig1_distrib(), pig2_distrib())) {
     expect_false(distributions7:::has_exact_expected_hessian(d),
                  label = d@distrib_name)
+  }
+  for (d in list(skewnormal1_distrib(), skewt_distrib(),
+                 pseudohuber_distrib(), skewnormal2_distrib())) {
+    expect_true(distributions7:::has_exact_expected_hessian(d),
+                label = d@distrib_name)
   }
   # The multivariate t was among them until its scale mixture closed it.
   expect_true(distributions7:::has_exact_expected_hessian(
@@ -158,10 +155,10 @@ test_that("a family is asked correctly whether its expected information is exact
 
   # and the consequence, at the level a caller sees it
   set.seed(71)
-  ys <- distrib_rng(skewnormal1_distrib(), 200,
-                    list(mu = 0, sigma = 1, alpha = 3))
-  expect_silent(
-    fit_distrib(skewnormal1_distrib(), ys, method = fisher_scoring(approx = "opg"))
+  ys <- distrib_rng(pig2_distrib(), 40, list(mu = 3, alpha = 2))
+  expect_no_error(
+    fit_distrib(pig2_distrib(), ys, method = fisher_scoring(approx = "mc", nsim = 20L),
+                n_start = 1L)
   )
   # A strategy the family would ignore is refused -- and it has to be a
   # NON-DEFAULT one, "opg" being the default since 0.44.0 and therefore

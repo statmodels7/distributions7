@@ -18,13 +18,9 @@ package's approximations, and anything else is taken to have written its
 expected information out. It answers \code{FALSE} for a family that registers
 nothing and \code{TRUE} for one that registers its own method.
 
-The reading is right for 34 of the 40 univariate families and wrong for two,
-which declare a method of their own for themselves. The pseudo-Huber's
-method calls \code{\link[=expected_derivative]{expected_derivative()}} and patches the two components that
-vanish by symmetry, and \code{skewnormal2}'s chains onto \code{skewnormal1}, whose
-expected information is the base class's quadrature. Both therefore
-\strong{override this generic} in place of relying on the owner test, which is
-why the test is a generic at all.
+A family whose registered method chains onto a parent overrides this
+generic and answers for the parent, which is why the test is a generic at
+all; \code{skewnormal2_distrib()} is one.
 }
 \seealso{
 \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}}, the predicate consumers call;

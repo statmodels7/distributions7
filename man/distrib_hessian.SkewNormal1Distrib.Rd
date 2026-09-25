@@ -43,16 +43,16 @@ the notation of \code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradie
       \qquad
       \dfrac{\partial^2 \ell}{\partial \alpha^2} = z^2 R'.}
 
-This is the \strong{observed} curvature at the data. The family has no elementary
-expected information, so \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} falls to the base
-class and approximates it; see there for the strategies and their cost.
+This is the \strong{observed} curvature at the data. Its expectation has no
+elementary form and is computed by
+\code{\link[=distrib_expected_hessian.SkewNormal1Distrib]{distrib_expected_hessian.SkewNormal1Distrib()}}.
 }
 \section{Singularity at symmetry}{
 At \eqn{\alpha = 0} the expected information of this parametrization has rank
 2, not 3. The reason is in the score: the shape and location components are
-exactly proportional there, so no data can separate them. Measured on the
-approximated information at \eqn{\mu = 0}, \eqn{\sigma = 1}, its eigenvalues
-are 2, 1.637 and \eqn{-5.6\times10^{-17}}, and the smallest one grows like
+exactly proportional there, so no data can separate them. Measured at
+\eqn{\mu = 0}, \eqn{\sigma = 1}, its eigenvalues are 2, 1.637 and
+\eqn{-2.6\times10^{-27}}, and the smallest one grows like
 \eqn{\alpha^4} as the shape moves off zero: \eqn{4.4\times10^{-10}} at
 \eqn{\alpha = 0.01} and \eqn{1.9\times10^{-3}} at \eqn{\alpha = 0.5}.
 
@@ -96,6 +96,6 @@ vapply(c(0, 0.01, 0.5), rank_gap, 0)
 \seealso{
 \code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradient.SkewNormal1Distrib()}} for the score,
 \code{\link[=distrib_deriv3.SkewNormal1Distrib]{distrib_deriv3.SkewNormal1Distrib()}} for the next order,
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the approximated expectation, and
+\code{\link[=distrib_expected_hessian.SkewNormal1Distrib]{distrib_expected_hessian.SkewNormal1Distrib()}} for the expectation, and
 \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

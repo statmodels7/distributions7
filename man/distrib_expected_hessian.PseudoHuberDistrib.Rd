@@ -2,52 +2,57 @@
 % Please edit documentation in R/pseudohuber_distrib.R
 \name{distrib_expected_hessian.PseudoHuberDistrib}
 \alias{distrib_expected_hessian.PseudoHuberDistrib}
-\title{Pseudo-Huber Expected Hessian}
+\alias{distrib_dexpected_hessian.PseudoHuberDistrib}
+\alias{distrib_d2expected_hessian.PseudoHuberDistrib}
+\title{Pseudo-Huber Expected Hessian and Its Derivatives}
 \arguments{
 \item{distrib}{A \code{PseudoHuberDistrib} object, from
 \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
 \item{y}{A numeric vector of observations. Its length sets the length of
-each returned component.}
+each returned component; the values themselves are not read.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
 numeric vector of length 1 or of the length of \code{y}. \code{sigma} and \code{nu} must
 be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}.}
 
-\item{approx}{One of \code{"bartlett"} (the default), \code{"integrate"}, \code{"mc"} or
-\code{"opg"}, the strategy \code{\link[=expected_derivative]{expected_derivative()}} uses. \strong{Read here}, unlike
-on the families that write their information out.}
-
-\item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. Defaults to \code{10000}.}
+\item{approx, nsim}{Ignored.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{The thread count passed to the family's kernels.}
 }
 \value{
-A named list of six numeric vectors, \code{mu_mu}, \code{sigma_sigma},
-\code{nu_nu}, \code{mu_sigma}, \code{mu_nu} and \code{sigma_nu}, each of length \code{length(y)}.
-\code{mu_sigma} and \code{mu_nu} are exactly zero.
+A named list of numeric vectors of length \code{length(y)}: for
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} the six components \code{mu_mu}, \code{sigma_sigma},
+\code{nu_nu}, \code{mu_sigma}, \code{mu_nu} and \code{sigma_nu}; for the two derivatives the
+components keyed as \code{\link[=dexpected_names]{dexpected_names()}} and \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-Returns the expectation of the observed Hessian under the model. \strong{There is
-no closed form}, so the four components that do not vanish are obtained by
-the strategy \code{approx} names, normally a numerical integration of the
-observed Hessian against the density through \code{\link[=expectation]{expectation()}}. The two
-components containing \eqn{\mu} an odd number of times are then \strong{replaced
-by exact zeros}: the law is symmetric about \eqn{\mu}, so
-\eqn{\mathbb{E}[r] = \mathbb{E}[r^3] = 0} and the \eqn{\mu\sigma} and
-\eqn{\mu\nu} entries vanish. The location is therefore orthogonal to both
-other parameters, and \eqn{\hat\mu} is asymptotically independent of them.
+Returns the expectation of the observed Hessian under the model, and through
+\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} and \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} its first
+and second derivatives in the parameters.
+}
+\details{
+The family is a location-scale family, so every component equals its value
+at \eqn{\mu = 0}, \eqn{\sigma = 1} times \eqn{\sigma^{-k}}, with \eqn{k} the
+number of indices on \eqn{\mu} or \eqn{\sigma}. The value at the standard
+location and scale is a function of \eqn{\nu} alone and is an integral over
+\eqn{z} of the analytic observed derivatives against the density, taken once
+for each distinct \eqn{\nu} by the exp-sinh rule of \code{\link[=loc_scale_expected]{loc_scale_expected()}}.
+No component has an elementary closed form: the integrands carry
+\eqn{(\nu + z^2)^{-1/2}}, which leads to Bickley functions rather than to
+the Bessel functions of the normalizing constant.
 
-The method \strong{improves} the approximation rather than replacing it, which is
-why \code{\link[=expected_hessian_exact.PseudoHuberDistrib]{expected_hessian_exact.PseudoHuberDistrib()}} answers \code{FALSE}. Reading
-the method's owning class would say the family writes its information out;
-it does not, and the cost says so: measured at 100 observations this takes
-about 11 seconds, where the families that do write it out answer in a median
-of 0.183 milliseconds.
+The law is symmetric about \eqn{\mu}, so every component carrying \eqn{\mu}
+an odd number of times vanishes. The rule's nodes are symmetric about zero,
+so the two halves of such an integral cancel and the entry comes back as
+zero.
+
+\code{approx} and \code{nsim} are accepted for the generic's sake and ignored.
 }
 \examples{
 d <- pseudohuber_distrib()
@@ -56,22 +61,16 @@ th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 eh <- distrib_expected_hessian(d, y, th)
 vapply(eh, function(v) v[1], numeric(1))
 
-# The two entries odd in the residual are exactly zero by symmetry, so the
-# location is orthogonal to the scale and the shape.
+# The entries odd in the residual vanish by symmetry.
 c(eh$mu_sigma[1], eh$mu_nu[1])
 
-# Unlike the families that write their information out, this one reads
-# `approx`: a Monte Carlo strategy gives a different, noisier answer. It is
-# also the dear one, drawing from a generator that root-finds, so `nsim` is
-# kept small here.
-set.seed(1)
-vapply(distrib_expected_hessian(d, y, th, approx = "mc", nsim = 200),
-       function(v) v[1], numeric(1))
+# The information does not depend on the observations, and scales with
+# sigma^-2 in the location and scale block.
+e2 <- distrib_expected_hessian(d, y, list(mu = 0.4, sigma = 2.4, nu = 2))
+eh$mu_mu[1] / e2$mu_mu[1]
 }
 \seealso{
+\code{\link[=loc_scale_expected]{loc_scale_expected()}} for the construction,
 \code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian.PseudoHuberDistrib()}} for the quantity this is the
-expectation of, \code{\link[=expected_hessian_exact.PseudoHuberDistrib]{expected_hessian_exact.PseudoHuberDistrib()}} for the
-predicate that reports this is not a closed form,
-\code{\link[=fisher_scoring]{fisher_scoring()}}, which reads that predicate, and
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
+expectation of, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

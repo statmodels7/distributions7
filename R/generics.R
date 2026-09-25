@@ -813,9 +813,10 @@ distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(dist
 #' Is a Family's Expected Information Written Out?
 #'
 #' @description
-#' `TRUE` when the family computes its expected information in closed form,
-#' `FALSE` when a call to [distrib_expected_hessian()] reaches a fallback and
-#' the answer is therefore an approximation. It is a generic so that a family
+#' `TRUE` when the family computes its expected information exactly, in
+#' closed form or by a quadrature of its own to working precision, and `FALSE`
+#' when a call to [distrib_expected_hessian()] reaches a fallback and the
+#' answer is therefore an approximation. It is a generic so that a family
 #' whose registered method is not what its owning class suggests can say so;
 #' [has_exact_expected_hessian()] asks it and
 #' [expected_hessian_exact.distrib()] is the default.
@@ -829,17 +830,15 @@ distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(dist
 #' the rule [fit_distrib()] follows for its standard errors and the one
 #' \pkg{statmodels7} follows in `vcov()`.
 #'
-#' Six of the shipped univariate families answer `FALSE`:
-#' [pig1_distrib()], [pig2_distrib()], [pseudohuber_distrib()],
-#' [skewnormal1_distrib()], [skewnormal2_distrib()] and [skewt_distrib()].
+#' Two of the shipped univariate families answer `FALSE`: [pig1_distrib()] and
+#' [pig2_distrib()]. The skew normals, the skew t and the pseudo-Huber answer
+#' `TRUE`, their expected information being one quadrature over the
+#' standardized response per distinct shape; see [loc_scale_expected()].
 #'
 #' Asking the OWNING CLASS of the registered method is not enough on its own,
-#' which is why the generic exists: the pseudo-Huber registers a method of its
-#' own that calls the fallback and then patches the two components vanishing by
-#' symmetry, and the centered skew normal chains onto a parent whose expected
-#' information is itself a quadrature. Both would read as exact from the
-#' method's owner alone, and both cost seconds where a closed form costs
-#' milliseconds.
+#' which is why the generic exists: a method registered on a family's own class
+#' may chain onto a parent that approximates, and a family that does so
+#' answers for its parent.
 #'
 #' @param x An object inheriting from class `"distrib"`.
 #' @param ... Passed to methods.

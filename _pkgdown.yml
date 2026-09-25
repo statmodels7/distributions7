@@ -124,6 +124,7 @@ reference:
   - distrib_kernel
   - expected_derivative_methods
   - expected_hessian_exact
+  - expected_hessian_by_quadrature
   - has_exact_deriv4
 
 - title: Estimation
