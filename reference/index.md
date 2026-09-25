@@ -162,6 +162,8 @@ respect to the unconstrained parameters.
   : Strategies for Expected Derivatives
 - [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
   : Is a Family's Expected Information Written Out?
+- [`expected_hessian_by_quadrature()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_by_quadrature.md)
+  : Is a Family's Expected Information Computed by Quadrature?
 - [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
   : Is a Family's Fourth Derivative Its Own
 
@@ -691,7 +693,9 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_deriv4.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.PseudoHuberDistrib.md)
   : Pseudo-Huber Fourth-Order Derivatives
 - [`distrib_expected_hessian.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.PseudoHuberDistrib.md)
-  : Pseudo-Huber Expected Hessian
+  [`distrib_dexpected_hessian.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.PseudoHuberDistrib.md)
+  [`distrib_d2expected_hessian.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.PseudoHuberDistrib.md)
+  : Pseudo-Huber Expected Hessian and Its Derivatives
 - [`distrib_grad_cdf.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.PseudoHuberDistrib.md)
   : Pseudo-Huber Log-CDF Gradient
 - [`distrib_grad_y.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.PseudoHuberDistrib.md)
@@ -719,6 +723,10 @@ Rarely called directly, but useful as a reference for what is happening.
   : Skew Normal Third Derivatives
 - [`distrib_deriv4.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewNormal1Distrib.md)
   : Skew Normal Fourth Derivatives
+- [`distrib_expected_hessian.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal1Distrib.md)
+  [`distrib_dexpected_hessian.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal1Distrib.md)
+  [`distrib_d2expected_hessian.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal1Distrib.md)
+  : Skew Normal Expected Hessian and Its Derivatives
 - [`distrib_grad_y.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewNormal1Distrib.md)
   : Skew Normal Response Derivative
 - [`distrib_gradient.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal1Distrib.md)
@@ -743,6 +751,8 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_deriv4.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewNormal2Distrib.md)
   : Skew Normal Fourth Derivatives in the Centered Parametrization
 - [`distrib_expected_hessian.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal2Distrib.md)
+  [`distrib_dexpected_hessian.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal2Distrib.md)
+  [`distrib_d2expected_hessian.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal2Distrib.md)
   : Skew Normal Expected Information in the Centered Parametrization
 - [`distrib_grad_y.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewNormal2Distrib.md)
   : Skew Normal Response Derivative in the Centered Parametrization
@@ -778,6 +788,10 @@ Rarely called directly, but useful as a reference for what is happening.
   : Skew t Third Derivatives
 - [`distrib_deriv4.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewTDistrib.md)
   : Skew t Fourth Derivatives
+- [`distrib_expected_hessian.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md)
+  [`distrib_dexpected_hessian.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md)
+  [`distrib_d2expected_hessian.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md)
+  : Skew t Expected Hessian and Its Derivatives
 - [`distrib_grad_y.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewTDistrib.md)
   : Skew t Response Derivative
 - [`distrib_gradient.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md)
@@ -2562,14 +2576,11 @@ divergent density.
 - [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
   : Dispatch an Expected-Derivative Strategy
 
-- [`expected_hessian_exact.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.PseudoHuberDistrib.md)
-  : The Pseudo-Huber Does Not Write Its Expected Information Out
-
 - [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
   : Is a Family's Expected Information Written Out?
 
 - [`expected_hessian_exact.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.SkewNormal2Distrib.md)
-  : The Centered Skew Normal Does Not Write Its Expected Information Out
+  : The Centered Skew Normal Answers for Its Parent
 
 - [`expected_hessian_exact.distrib`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.distrib.md)
   : Whether the Owner of the Method Settles the Question
@@ -2908,6 +2919,9 @@ divergent density.
 - [`loc_scale_deriv_cdf_k()`](https://statmodels7.github.io/distributions7/reference/loc_scale_deriv_cdf_k.md)
   : Location-Scale Third and Fourth Log-CDF Derivatives
 
+- [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md)
+  : The Expected Information of a Location-Scale Family
+
 - [`loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_grad_cdf.md)
   : Location-Scale CDF Gradient
 
@@ -2917,6 +2931,9 @@ divergent density.
 
 - [`loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_hess_cdf.md)
   : Location-Scale CDF Hessian
+
+- [`loc_scale_rule()`](https://statmodels7.github.io/distributions7/reference/loc_scale_rule.md)
+  : The Quadrature Rule of the Location-Scale Expectations
 
 - [`loc_scale_theta2_block()`](https://statmodels7.github.io/distributions7/reference/loc_scale_theta2_block.md)
   : The Location and Scale Block of a Second-Order Mixed Derivative
@@ -3369,6 +3386,9 @@ divergent density.
 - [`register_dy_k()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md)
   : Register the Third and Fourth Response Derivatives of a Family
 
+- [`register_loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/register_loc_scale_expected.md)
+  : Register the Location-Scale Expected Information on a Family
+
 - [`register_mapped_cdf_k()`](https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.md)
   : Register the Higher CDF Orders on a Mapped Family
 
@@ -3576,6 +3596,9 @@ divergent density.
 
 - [`sn2_chain()`](https://statmodels7.github.io/distributions7/reference/sn2_chain.md)
   : Derivatives of the Skew Normal in Its Centered Parametrization
+
+- [`sn2_dexpected()`](https://statmodels7.github.io/distributions7/reference/sn2_dexpected.md)
+  : The Centered Skew Normal's Expected Information Derivatives
 
 - [`sn2_reject_unmappable()`](https://statmodels7.github.io/distributions7/reference/sn2_reject_unmappable.md)
   : Reject Centered Parameters the Map Cannot Carry

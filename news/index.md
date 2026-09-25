@@ -1,5 +1,77 @@
 # Changelog
 
+## distributions7 0.64.0
+
+- **The skew normals, the skew t and the pseudo-Huber compute their
+  expected information exactly.** Until this release they had no
+  expected information of their own and fell back on an approximation,
+  the outer product of the scores by default, which depends on the
+  response. All four are location-scale families, so every component of
+  the expected information equals its value at , times , with the number
+  of indices on or , and the value there depends on the shape alone.
+  [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md)
+  takes it as one integral over the standardized response of the
+  family’s own analytic derivatives against its density, once for each
+  distinct shape and not once for each observation. The same integrals,
+  with the measure differentiated as well as the integrand, give
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md),
+  so the exact outer derivatives on the expected information reach these
+  families too.
+  [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
+  carries its parent’s quantities through the map with
+  [`dexpected_chain()`](https://statmodels7.github.io/distributions7/reference/dexpected_chain.md).
+
+- The integrals are taken by an exp-sinh rule on each half-line
+  ([`loc_scale_rule()`](https://statmodels7.github.io/distributions7/reference/loc_scale_rule.md)):
+  step 1/32, nodes from 1e-16 to 1e60 in , about 580 in all. Its nodes
+  cluster at the origin, where these families put their one sharp
+  feature, and the transformation turns the Student t’s algebraic tail
+  into an exponential one. Against a rule at half the step it reproduces
+  the information to 3e-14 and its second derivative to 7e-09 on the
+  skew normal up to , the hardest case measured; at a step of 1/24 that
+  second derivative is 2e-04 out. The upper end stops at 1e60 because
+  the skew t’s derivatives in are not finite at 1e130, where its density
+  is still positive; the tail left out is negligible for .
+
+- Validated against routes that share no arithmetic with it: the skew
+  normal’s full matrix against Azzalini’s expression in the integrals ,
+  computed by an independent quadrature, to 1e-10 (it agrees to the last
+  printed digit); the pseudo-Huber and the skew t against an adaptive
+  quadrature of each component, to between 1e-17 and 9e-12; the first
+  and second derivatives against a Richardson difference of the order
+  below, to 1e-7 on the skew normals and the pseudo-Huber. On the skew t
+  the second derivative agrees to 1e-3 at , its components carrying
+  several times being differenced ones. A rule whose weights are 1e-6
+  out fails the Azzalini check.
+
+- **What it costs.** With the shape the same for every observation it
+  costs one integral, under 0.01 s at 1000 observations. With the shape
+  modelled it costs one integral per observation: 0.6 s for the skew
+  normal, 0.9 s for the pseudo-Huber and 6.8 s for the skew t at 1000
+  observations. Before, the per-observation quadrature took 0.17 to 0.7
+  s for ONE observation.
+
+- [`expected_hessian_by_quadrature()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_by_quadrature.md),
+  new and exported, says which families compute their expected
+  information this way: the four above, and a wrapper of one of them. It
+  is a statement about cost, read beside
+  [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md),
+  which now answers `TRUE` for the four. Only
+  [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
+  and
+  [`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md)
+  still approximate their expected information. The class pages,
+  [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)’s
+  message rejecting an `approx` where the information is exact, and the
+  pages of the two predicates say so.
+
+- ⚠️ The skew normal’s eigenvalues at symmetry, quoted on its pages,
+  were measured on the old approximation. Remeasured on the exact
+  information at , : 2, 1.637 and at , the smallest growing like ( at
+  0.01, at 0.5).
+
 ## distributions7 0.63.0
 
 - **[`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)

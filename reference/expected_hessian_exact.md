@@ -1,6 +1,7 @@
 # Is a Family's Expected Information Written Out?
 
-`TRUE` when the family computes its expected information in closed form,
+`TRUE` when the family computes its expected information exactly, in
+closed form or by a quadrature of its own to working precision, and
 `FALSE` when a call to
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 reaches a fallback and the answer is therefore an approximation. It is a
@@ -50,22 +51,19 @@ That is the rule
 follows for its standard errors and the one statmodels7 follows in
 [`vcov()`](https://rdrr.io/r/stats/vcov.html).
 
-Six of the shipped univariate families answer `FALSE`:
-[`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md),
-[`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md),
-[`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md),
-[`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md),
-[`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
+Two of the shipped univariate families answer `FALSE`:
+[`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
 and
-[`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md).
+[`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md).
+The skew normals, the skew t and the pseudo-Huber answer `TRUE`, their
+expected information being one quadrature over the standardized response
+per distinct shape; see
+[`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md).
 
 Asking the OWNING CLASS of the registered method is not enough on its
-own, which is why the generic exists: the pseudo-Huber registers a
-method of its own that calls the fallback and then patches the two
-components vanishing by symmetry, and the centered skew normal chains
-onto a parent whose expected information is itself a quadrature. Both
-would read as exact from the method's owner alone, and both cost seconds
-where a closed form costs milliseconds.
+own, which is why the generic exists: a method registered on a family's
+own class may chain onto a parent that approximates, and a family that
+does so answers for its parent.
 
 The default reads the class the
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
@@ -73,26 +71,14 @@ method is registered on: the base classes carry the approximating method
 and every other registration is, by default, a family that wrote the
 expectation out.
 
-**Reading the owner is not sufficient, and two families prove it.** A
-method registered on a family's own class may still be a CHAIN onto a
-parent that approximates, and then the owner says "written out" about
-arithmetic that is a quadrature. Measured at 100 observations, where
-thirty-four families answer in a median of 0.183 ms:
+**Reading the owner is not sufficient in general.** A method registered
+on a family's own class may be a CHAIN onto a parent that approximates,
+and then the owner says "written out" about arithmetic that is not. A
+family that chains onto another therefore answers for its parent, which
+is what the wrappers and
 [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
-costs 5220 ms, more than the
-[`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
-it chains onto, which costs 2230, and
-[`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
-costs 10980 ms. Both were reported as exact. The consequences were real
-rather than cosmetic:
-[`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-rejected a legitimate `fisher_scoring(approx = )` on those two with a
-message stating that the family "computes its expected information in
-closed form", which is untrue, and its standard-error branch entered a
-multi-second quadrature believing it cheap.
-
-A family that chains onto another therefore answers for its parent,
-which is what the two methods registered here do.
+do, the last answering for
+[`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md).
 
 ## See also
 

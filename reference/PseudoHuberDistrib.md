@@ -110,9 +110,10 @@ Registered on this class in this file:
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.PseudoHuberDistrib.md),
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.PseudoHuberDistrib.md),
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.PseudoHuberDistrib.md),
-and the predicate
-[`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.PseudoHuberDistrib.md),
-which answers `FALSE` here.
+and the expected information with its two derivatives,
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.PseudoHuberDistrib.md),
+registered through
+[`register_loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/register_loc_scale_expected.md).
 
 Registered from other files: the mixed derivative
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.PseudoHuberDistrib.md)
@@ -158,8 +159,8 @@ d@params_interpretation
 #>         mu      sigma         nu 
 #> "location"    "scale"    "shape" 
 
-# This is the one family here whose expected information is not written
-# out, and the predicate says so.
+# The expected information is computed exactly, by one quadrature per
+# distinct shape.
 distributions7:::expected_hessian_exact(d)
-#> [1] FALSE
+#> [1] TRUE
 ```

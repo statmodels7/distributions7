@@ -29,7 +29,7 @@ information are numerical; that is the price of the family."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.63.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.64.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -178,20 +178,18 @@ batched over the quantiles and reflected about \(\mu\) so that only the
 lower tail is integrated. The quantile inverts it by root-finding, and the
 generator inverts it at uniform variates, so a sample costs one root-find
 per draw.</p>
-<p>The <strong>expected information has no closed form either</strong>. Its four non-zero
-components come from <code><a href="expected_derivative.html">expected_derivative()</a></code>, and the two containing
-\(\mu\) an odd number of times are replaced by exact zeros, the law being
-symmetric. That makes the location orthogonal to the scale and the shape.
-<code><a href="expected_hessian_exact.PseudoHuberDistrib.html">expected_hessian_exact.PseudoHuberDistrib()</a></code> declares the approximation, so
-a caller who branches on the distinction branches correctly; at 100
-observations it costs about 11 seconds against a median of 0.183
-milliseconds for a family that writes its information out.</p>
+<p>The <strong>expected information has no elementary form either</strong>, but it depends
+on \(\nu\) alone once the location and the scale are factored out, so it
+is one integral over \(z\) per distinct \(\nu\), taken by the rule of
+<code><a href="loc_scale_expected.html">loc_scale_expected()</a></code>; see
+<code><a href="distrib_expected_hessian.PseudoHuberDistrib.html">distrib_expected_hessian.PseudoHuberDistrib()</a></code>. The components containing
+\(\mu\) an odd number of times vanish, the law being symmetric, so the
+location is orthogonal to the scale and the shape.</p>
     </div>
     <div class="section level2">
     <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>
-    <p><code><a href="fit_distrib.html">fit_distrib()</a></code> maximizes the log-likelihood on the link scale. Given the
-cost of the expected information, <code>method = optimizers7::newton()</code> on the
-observed Hessian is the cheaper route here, and it is closed form.</p>
+    <p><code><a href="fit_distrib.html">fit_distrib()</a></code> maximizes the log-likelihood on the link scale, by Fisher
+scoring on the expected information by default.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -266,9 +264,10 @@ family of your own against the same battery this one passes;
 <span class="r-out co"><span class="r-pr">#&gt;</span> pseudohuber 0.4230609 0.7671455  0.828685  0.8330405</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> gaussian    0.6944444 2.7777778 11.111111 44.4444444</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The expected information is a quadrature here, and the family says so.</span></span></span>
+<span class="r-in"><span><span class="co"># The expected information depends on nu alone once mu and sigma are</span></span></span>
+<span class="r-in"><span><span class="co"># factored out, so it is computed once per distinct nu.</span></span></span>
 <span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="expected_hessian_exact.html">expected_hessian_exact</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The quantile inverts the distribution function, and the generator</span></span></span>
 <span class="r-in"><span><span class="co"># inverts it at uniform variates, so a draw costs a root-find over a</span></span></span>

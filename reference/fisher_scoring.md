@@ -158,9 +158,10 @@ vapply(c("bartlett", "integrate"), function(a) {
 
 # The same argument on a family that HAS one is rejected, not ignored.
 try(fit_distrib(d, y, method = fisher_scoring(approx = "mc")))
-#> Error : 'gaussian1' computes its expected information in closed form, so the 'approx'
-#>   of fisher_scoring() would be ignored. Use fisher_scoring() with no
-#>   arguments: the fit will take the exact expression.
+#> Error : 'gaussian1' computes its expected information exactly, in closed form or by
+#>   a quadrature of its own, so the 'approx' of fisher_scoring()
+#>   would be ignored. Use fisher_scoring() with no arguments: the fit
+#>   will take the exact expression.
 
 # The stopping rule and the budget belong to the method.
 fit <- fit_distrib(d, y, method = fisher_scoring(maxit = 1))

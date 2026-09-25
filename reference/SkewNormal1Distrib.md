@@ -111,7 +111,9 @@ Registered in this file:
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewNormal1Distrib.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewNormal1Distrib.md),
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewNormal1Distrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewNormal1Distrib.md).
+[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewNormal1Distrib.md),
+and the expected information with its two derivatives,
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal1Distrib.md).
 
 Registered elsewhere in the package, all closed form: the four moments
 [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.SkewNormal1Distrib.md),
@@ -135,10 +137,10 @@ in `theta2_families.R`.
 
 The **quantile** comes from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
-by root finding on the distribution function. So does the **expected
-information**: this family has none in elementary form, so
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-approximates it by the strategy named in its `approx` argument.
+by root finding on the distribution function. The **expected
+information** has no elementary form and is computed by one quadrature
+per distinct \\\alpha\\; see
+[`distrib_expected_hessian.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal1Distrib.md).
 
 ## See also
 

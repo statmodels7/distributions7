@@ -108,7 +108,9 @@ Registered in this file:
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewTDistrib.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewTDistrib.md),
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewTDistrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewTDistrib.md).
+[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewTDistrib.md),
+and the expected information with its two derivatives,
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md).
 
 Registered elsewhere: all four moments in `moments.R`
 ([`mean()`](https://statmodels7.github.io/distributions7/reference/mean.SkewTDistrib.md),
@@ -123,11 +125,10 @@ in `cdf_derivatives_families.R`.
 
 The **distribution function** and the **quantile function** come from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
-by quadrature and by root finding on it. So does the **expected
-information**: this family has none in elementary form, so
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-approximates it, and `method = "newton"` is much the cheaper way to fit
-it.
+by quadrature and by root finding on it. The **expected information**
+has no elementary form and is computed by one quadrature per distinct
+\\(\alpha, \nu)\\; see
+[`distrib_expected_hessian.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md).
 
 ## What is closed form and what is not
 

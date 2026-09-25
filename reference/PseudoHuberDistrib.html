@@ -27,7 +27,7 @@ relationships between them."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.63.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.64.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -155,9 +155,10 @@ and the domains \((-\infty, \infty)\), \((0, \infty)\),
 <code><a href="distrib_hessian.PseudoHuberDistrib.html">distrib_hessian()</a></code>,
 <code><a href="distrib_pdf.PseudoHuberDistrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_quantile.PseudoHuberDistrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.PseudoHuberDistrib.html">distrib_rng()</a></code>, and the predicate
-<code><a href="expected_hessian_exact.PseudoHuberDistrib.html">expected_hessian_exact()</a></code>,
-which answers <code>FALSE</code> here.</p>
+<code><a href="distrib_rng.PseudoHuberDistrib.html">distrib_rng()</a></code>, and the expected
+information with its two derivatives,
+<code><a href="distrib_expected_hessian.PseudoHuberDistrib.html">distrib_expected_hessian()</a></code>,
+registered through <code><a href="register_loc_scale_expected.html">register_loc_scale_expected()</a></code>.</p>
 <p>Registered from other files: the mixed derivative
 <code><a href="distrib_cross_y.PseudoHuberDistrib.html">distrib_cross_y()</a></code> and the
 distribution-function derivatives
@@ -190,10 +191,10 @@ moments <code><a href="mean.PseudoHuberDistrib.html">mean()</a></code>,
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mu      sigma         nu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> "location"    "scale"    "shape" </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># This is the one family here whose expected information is not written</span></span></span>
-<span class="r-in"><span><span class="co"># out, and the predicate says so.</span></span></span>
+<span class="r-in"><span><span class="co"># The expected information is computed exactly, by one quadrature per</span></span></span>
+<span class="r-in"><span><span class="co"># distinct shape.</span></span></span>
 <span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="expected_hessian_exact.html">expected_hessian_exact</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

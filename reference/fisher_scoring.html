@@ -23,7 +23,7 @@ object holds."><meta property="og:image" content="https://statmodels7.github.io/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.63.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.64.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -197,9 +197,10 @@ that a caller cannot come to believe a fit used a strategy it never read.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The same argument on a family that HAS one is rejected, not ignored.</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, method <span class="op">=</span> <span class="fu">fisher_scoring</span><span class="op">(</span>approx <span class="op">=</span> <span class="st">"mc"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error : 'gaussian1' computes its expected information in closed form, so the 'approx'</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   of fisher_scoring() would be ignored. Use fisher_scoring() with no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   arguments: the fit will take the exact expression.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Error : 'gaussian1' computes its expected information exactly, in closed form or by</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   a quadrature of its own, so the 'approx' of fisher_scoring()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   would be ignored. Use fisher_scoring() with no arguments: the fit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   will take the exact expression.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The stopping rule and the budget belong to the method.</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, method <span class="op">=</span> <span class="fu">fisher_scoring</span><span class="op">(</span>maxit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>

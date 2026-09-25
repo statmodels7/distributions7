@@ -21,7 +21,7 @@ skewnormal1_distrib(), and both together give the Gaussian."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.63.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.64.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -138,10 +138,9 @@ the score <strong>per observation</strong>, which leaves room: measured on sampl
     </div>
     <div class="section level2">
     <h2 id="fitting">Fitting<a class="anchor" aria-label="anchor" href="#fitting"></a></h2>
-    <p>The expected information has no closed form, so it is approximated by the
-strategy named in <code>approx</code>, at one quadrature per component.
-<code>method = optimizers7::newton()</code> is much the cheaper route: the observed
-Hessian is the closed form above and needs no integration.</p>
+    <p>The expected information has no closed form and is computed by one
+quadrature over \(z\) per distinct \((\alpha, \nu)\), so Fisher scoring
+on an intercept-only fit pays for one integral per iteration.</p>
 <p>The distribution function and the quantile function likewise have no
 elementary form; the base class integrates the density and inverts the
 result by root finding.</p>
@@ -229,13 +228,15 @@ and <a href="SkewTDistrib.html">SkewTDistrib</a> for the class and its method li
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 3.5 0.9875438 1.358091 6.021607      NaN</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 4.5 0.9210146 0.951732 2.575662 34.78593</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The observed Hessian is the cheap route: this family has no closed-form</span></span></span>
-<span class="r-in"><span><span class="co"># expected information, so Fisher scoring would quadrature it at every step.</span></span></span>
+<span class="r-in"><span><span class="co"># Fitting by Fisher scoring, the default, and by Newton on the observed</span></span></span>
+<span class="r-in"><span><span class="co"># Hessian reaches the same estimate.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">200</span>, <span class="va">th</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">x</span>, method <span class="op">=</span> <span class="fu">optimizers7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/optimizers7/reference/newton.html" class="external-link">newton</a></span><span class="op">(</span><span class="op">)</span>, start <span class="op">=</span> <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          mu       sigma       alpha          nu </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -0.02273172  0.95605508  2.98317264  3.77234496 </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>fisher <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">x</span>, start <span class="op">=</span> <span class="va">th</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      newton <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">x</span>, method <span class="op">=</span> <span class="fu">optimizers7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/optimizers7/reference/newton.html" class="external-link">newton</a></span><span class="op">(</span><span class="op">)</span>, start <span class="op">=</span> <span class="va">th</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 mu     sigma    alpha       nu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fisher -0.02273143 0.9560544 2.983171 3.772340</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> newton -0.02273172 0.9560551 2.983173 3.772345</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

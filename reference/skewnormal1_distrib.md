@@ -74,11 +74,14 @@ so are the third and fourth orders, in compiled kernels. One identity
 does all of it: \\R' = -R(t+R)\\, so every derivative of \\\log\Phi(t)\\
 is a polynomial in \\t\\ and \\R\\.
 
-The **expected** information has no elementary form, so none is
-registered and
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-approximates it by the strategy named in its `approx` argument. The
-expected third and fourth orders share that obstruction.
+The **expected** information has no elementary form. It depends on
+\\\alpha\\ alone once the location and the scale are factored out, so it
+is one integral over \\z\\ per distinct \\\alpha\\, and so are its first
+and second derivatives; see
+[`distrib_expected_hessian.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal1Distrib.md).
+The expected third and fourth orders returned by `expected = TRUE` still
+come from
+[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md).
 
 ## Singularity at symmetry
 
@@ -86,7 +89,7 @@ At \\\alpha = 0\\ the expected information has rank 2 and not 3. The
 score shows why: the shape component is \\z\sqrt{2/\pi}\\ and the
 location component \\z/\sigma\\, so the two are exactly proportional and
 no data can separate them. Measured, the smallest eigenvalue is
-\\-5.6\times10^{-17}\\ against a largest of 2 at \\\alpha = 0\\, and it
+\\-2.6\times10^{-27}\\ against a largest of 2 at \\\alpha = 0\\, and it
 grows like \\\alpha^4\\ thereafter.
 
 The consequence for use is that a fit whose true shape is near zero
@@ -168,5 +171,5 @@ set.seed(5)
 x <- distrib_rng(d, 3000, list(mu = 2, sigma = 1.5, alpha = 4))
 coef(fit_distrib(d, x))
 #>       mu    sigma    alpha 
-#> 2.010681 1.505278 3.963562 
+#> 2.010681 1.505278 3.963568 
 ```

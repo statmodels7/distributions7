@@ -122,7 +122,7 @@ vapply(c("bartlett", "integrate"), function(a) {
 
 set.seed(3)
 sum(distrib_expected_hessian(sn, y, th, approx = "mc", nsim = 500)$alpha_alpha)
-#> [1] -1.064756
+#> [1] -1.085353
 
 # A family that writes its expected information out ignores the argument,
 # and fit_distrib() rejects one given there rather than dropping it.

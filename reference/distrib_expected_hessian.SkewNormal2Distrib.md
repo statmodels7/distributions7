@@ -3,9 +3,14 @@
 Computes the expected second derivatives by carrying the parent's
 expected information through the same congruence the observed Hessian
 uses, \\J^\top E\[\ell''\] J\\ with \\J\\ the Jacobian of
-[`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md).
-The first-order term of the chain rule drops out under expectation, the
-score having mean zero.
+[`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md),
+and through
+[`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
+and
+[`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
+its first and second derivatives in the parameters. The first-order term
+of the chain rule drops out under expectation, the score having mean
+zero.
 
 The matrix is **non-singular at zero skewness**, which the direct
 parametrization's is not: there the score for \\\alpha\\ is exactly
@@ -33,39 +38,45 @@ what the centered parametrization is for.
 
 - scale:
 
-  Either `"parameter"`, the default, or `"link"`. The transformation is
-  applied in the generic's body.
+  Either `"parameter"`, the default, or `"link"`.
 
-- approx:
+- approx, nsim:
 
-  One of `"bartlett"`, `"integrate"`, `"mc"` or `"opg"`, the strategy
-  the parent uses for its own expectation. Defaults to `"bartlett"`, the
-  variance of the score.
-
-- nsim:
-
-  A single positive integer, the Monte Carlo sample size used when
-  `approx = "mc"`. Defaults to `10000`.
+  Ignored.
 
 - ...:
 
   Unused, and accepted so that the signature matches the generic's.
 
+- threads:
+
+  The thread count passed to the parent's kernels.
+
 ## Value
 
-A named list of six numeric vectors, in
+A named list of numeric vectors: for
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
+six, in
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)'s
-order. Every entry is an expectation, so it does not depend on `y`.
+order, and for the two derivatives those keyed as
+[`dexpected_names()`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md)
+and
+[`d2expected_names()`](https://statmodels7.github.io/distributions7/reference/d2expected_names.md).
+Every entry is an expectation, so it does not depend on `y`.
 
-## Cost, and where the digits run out
+## Where the parent's quantities come from
 
-The parent's own expected information is the base class's quadrature, so
-this method is a chain on top of a numerical quantity: measured at 100
-observations it costs about 5.2 seconds against the parent's 2.2, where
-a family that writes its information out answers in a median of 0.18
-milliseconds.
-[`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
-therefore returns `FALSE` here, and `approx` is read.
+The parent is
+[`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md),
+whose expected information and its two derivatives are one quadrature
+over \\z\\ per distinct shape; see
+[`distrib_expected_hessian.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal1Distrib.md).
+The derivatives here are the parent's carried through the map by
+[`dexpected_chain()`](https://statmodels7.github.io/distributions7/reference/dexpected_chain.md),
+which needs the map's partials to third order and reads them from
+[`md_skewnormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md).
+
+## Where the digits run out
 
 The congruence is a difference of terms of size \\\gamma_1^{-2/3}\\, so
 the limit is approached and then lost. Measured, the \\\gamma_1\\
@@ -75,6 +86,8 @@ fit does not visit those values, and a genuinely symmetric problem is
 better posed in
 [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md).
 
+`approx` and `nsim` are accepted for the generic's sake and ignored.
+
 ## Errors
 
 Signals an error when any element of `gamma1` is exactly zero.
@@ -82,9 +95,7 @@ Signals an error when any element of `gamma1` is exactly zero.
 ## See also
 
 [`distrib_hessian.SkewNormal2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewNormal2Distrib.md)
-for the observed curvature,
-[`expected_hessian_exact.SkewNormal2Distrib()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.SkewNormal2Distrib.md)
-for why this counts as approximated, and
+for the observed curvature, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 for the generic.
 
@@ -108,14 +119,14 @@ info <- function(g) {
   eigen(-M, only.values = TRUE)$values
 }
 rbind(gamma1_0.5 = info(0.5), gamma1_1e_6 = info(1e-6))
-#>                 [,1]         [,2]          [,3]
-#> gamma1_0.5  1.111280 1.894091e-17 -3.628814e-17
-#> gamma1_1e_6 1.000002 1.056266e-12 -2.524355e-28
+#>                 [,1]      [,2]      [,3]
+#> gamma1_0.5  2.404241 0.9128588 0.2181565
+#> gamma1_1e_6 2.000000 1.0000000 0.1666723
 
 # Its own component tends to 1/6.
 c(limit = 1 / 6,
   at_1e_6 = -distrib_expected_hessian(d, 0,
               list(mu = 0, sigma = 1, gamma1 = 1e-6))$gamma1_gamma1)
-#>        limit      at_1e_6 
-#> 1.666667e-01 2.124393e-06 
+#>     limit   at_1e_6 
+#> 0.1666667 0.1666723 
 ```

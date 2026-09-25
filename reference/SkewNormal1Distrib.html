@@ -33,7 +33,7 @@ relationships between them."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.63.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.64.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -162,7 +162,9 @@ interpretations <code>c(mu = "location", sigma = "scale", alpha = "shape")</code
 <code><a href="distrib_deriv3.SkewNormal1Distrib.html">distrib_deriv3()</a></code>,
 <code><a href="distrib_deriv4.SkewNormal1Distrib.html">distrib_deriv4()</a></code>,
 <code><a href="distrib_grad_y.SkewNormal1Distrib.html">distrib_grad_y()</a></code>,
-<code><a href="distrib_hess_y.SkewNormal1Distrib.html">distrib_hess_y()</a></code>.</p>
+<code><a href="distrib_hess_y.SkewNormal1Distrib.html">distrib_hess_y()</a></code>, and the expected
+information with its two derivatives,
+<code><a href="distrib_expected_hessian.SkewNormal1Distrib.html">distrib_expected_hessian()</a></code>.</p>
 <p>Registered elsewhere in the package, all closed form: the four moments
 <code><a href="mean.SkewNormal1Distrib.html">mean()</a></code>, <code><a href="variance.SkewNormal1Distrib.html">variance()</a></code>,
 <code><a href="skewness.SkewNormal1Distrib.html">skewness()</a></code> and
@@ -176,9 +178,9 @@ through <code><a href="distrib_deriv3_cdf.html">distrib_deriv4_cdf()</a></code>,
 <code><a href="distrib_grad_y_hess.html">distrib_grad_y_hess()</a></code> and
 <code><a href="distrib_grad_y_hess.html">distrib_hess_y_hess()</a></code> in <code>theta2_families.R</code>.</p>
 <p>The <strong>quantile</strong> comes from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>, by root finding on the
-distribution function. So does the <strong>expected information</strong>: this family has
-none in elementary form, so <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> approximates it by
-the strategy named in its <code>approx</code> argument.</p>
+distribution function. The <strong>expected information</strong> has no elementary form
+and is computed by one quadrature per distinct \(\alpha\); see
+<code><a href="distrib_expected_hessian.SkewNormal1Distrib.html">distrib_expected_hessian.SkewNormal1Distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

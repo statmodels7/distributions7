@@ -3,23 +3,15 @@
 package's approximations, and anything else is taken to have written its
 expected information out. It answers FALSE for a family that registers
 nothing and TRUE for one that registers its own method.
-The reading is right for 34 of the 40 univariate families and wrong for two,
-which declare a method of their own for themselves. The pseudo-Huber's
-method calls expected_derivative() and patches the two components that
-vanish by symmetry, and skewnormal2's chains onto skewnormal1, whose
-expected information is the base class's quadrature. Both therefore
-override this generic in place of relying on the owner test, which is
-why the test is a generic at all."><meta property="og:description" content="The default: a method owned by one of the base classes is one of the
+A family whose registered method chains onto a parent overrides this
+generic and answers for the parent, which is why the test is a generic at
+all; skewnormal2_distrib() is one."><meta property="og:description" content="The default: a method owned by one of the base classes is one of the
 package's approximations, and anything else is taken to have written its
 expected information out. It answers FALSE for a family that registers
 nothing and TRUE for one that registers its own method.
-The reading is right for 34 of the 40 univariate families and wrong for two,
-which declare a method of their own for themselves. The pseudo-Huber's
-method calls expected_derivative() and patches the two components that
-vanish by symmetry, and skewnormal2's chains onto skewnormal1, whose
-expected information is the base class's quadrature. Both therefore
-override this generic in place of relying on the owner test, which is
-why the test is a generic at all."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+A family whose registered method chains onto a parent overrides this
+generic and answers for the parent, which is why the test is a generic at
+all; skewnormal2_distrib() is one."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +19,7 @@ why the test is a generic at all."><meta property="og:image" content="https://st
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.63.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.64.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,13 +56,9 @@ why the test is a generic at all."><meta property="og:image" content="https://st
 package's approximations, and anything else is taken to have written its
 expected information out. It answers <code>FALSE</code> for a family that registers
 nothing and <code>TRUE</code> for one that registers its own method.</p>
-<p>The reading is right for 34 of the 40 univariate families and wrong for two,
-which declare a method of their own for themselves. The pseudo-Huber's
-method calls <code><a href="expected_derivative.html">expected_derivative()</a></code> and patches the two components that
-vanish by symmetry, and <code>skewnormal2</code>'s chains onto <code>skewnormal1</code>, whose
-expected information is the base class's quadrature. Both therefore
-<strong>override this generic</strong> in place of relying on the owner test, which is
-why the test is a generic at all.</p>
+<p>A family whose registered method chains onto a parent overrides this
+generic and answers for the parent, which is why the test is a generic at
+all; <code><a href="skewnormal2_distrib.html">skewnormal2_distrib()</a></code> is one.</p>
     </div>
 
 

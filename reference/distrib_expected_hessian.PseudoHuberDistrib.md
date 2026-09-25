@@ -1,23 +1,11 @@
-# Pseudo-Huber Expected Hessian
+# Pseudo-Huber Expected Hessian and Its Derivatives
 
-Returns the expectation of the observed Hessian under the model. **There
-is no closed form**, so the four components that do not vanish are
-obtained by the strategy `approx` names, normally a numerical
-integration of the observed Hessian against the density through
-[`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md).
-The two components containing \\\mu\\ an odd number of times are then
-**replaced by exact zeros**: the law is symmetric about \\\mu\\, so
-\\\mathbb{E}\[r\] = \mathbb{E}\[r^3\] = 0\\ and the \\\mu\sigma\\ and
-\\\mu\nu\\ entries vanish. The location is therefore orthogonal to both
-other parameters, and \\\hat\mu\\ is asymptotically independent of them.
-
-The method **improves** the approximation rather than replacing it,
-which is why
-[`expected_hessian_exact.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.PseudoHuberDistrib.md)
-answers `FALSE`. Reading the method's owning class would say the family
-writes its information out; it does not, and the cost says so: measured
-at 100 observations this takes about 11 seconds, where the families that
-do write it out answer in a median of 0.183 milliseconds.
+Returns the expectation of the observed Hessian under the model, and
+through
+[`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
+and
+[`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
+its first and second derivatives in the parameters.
 
 ## Arguments
 
@@ -29,7 +17,7 @@ do write it out answer in a median of 0.183 milliseconds.
 - y:
 
   A numeric vector of observations. Its length sets the length of each
-  returned component.
+  returned component; the values themselves are not read.
 
 - theta:
 
@@ -40,40 +28,56 @@ do write it out answer in a median of 0.183 milliseconds.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html).
 
-- approx:
+- approx, nsim:
 
-  One of `"bartlett"` (the default), `"integrate"`, `"mc"` or `"opg"`,
-  the strategy
-  [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-  uses. **Read here**, unlike on the families that write their
-  information out.
-
-- nsim:
-
-  A single positive integer, the sample size when `approx = "mc"`.
-  Defaults to `10000`.
+  Ignored.
 
 - ...:
 
   Unused, and accepted so that the signature matches the generic's.
 
+- threads:
+
+  The thread count passed to the family's kernels.
+
 ## Value
 
-A named list of six numeric vectors, `mu_mu`, `sigma_sigma`, `nu_nu`,
-`mu_sigma`, `mu_nu` and `sigma_nu`, each of length `length(y)`.
-`mu_sigma` and `mu_nu` are exactly zero.
+A named list of numeric vectors of length `length(y)`: for
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
+the six components `mu_mu`, `sigma_sigma`, `nu_nu`, `mu_sigma`, `mu_nu`
+and `sigma_nu`; for the two derivatives the components keyed as
+[`dexpected_names()`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md)
+and
+[`d2expected_names()`](https://statmodels7.github.io/distributions7/reference/d2expected_names.md).
+
+## Details
+
+The family is a location-scale family, so every component equals its
+value at \\\mu = 0\\, \\\sigma = 1\\ times \\\sigma^{-k}\\, with \\k\\
+the number of indices on \\\mu\\ or \\\sigma\\. The value at the
+standard location and scale is a function of \\\nu\\ alone and is an
+integral over \\z\\ of the analytic observed derivatives against the
+density, taken once for each distinct \\\nu\\ by the exp-sinh rule of
+[`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md).
+No component has an elementary closed form: the integrands carry
+\\(\nu + z^2)^{-1/2}\\, which leads to Bickley functions rather than to
+the Bessel functions of the normalizing constant.
+
+The law is symmetric about \\\mu\\, so every component carrying \\\mu\\
+an odd number of times vanishes. The rule's nodes are symmetric about
+zero, so the two halves of such an integral cancel and the entry comes
+back as zero.
+
+`approx` and `nsim` are accepted for the generic's sake and ignored.
 
 ## See also
 
+[`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md)
+for the construction,
 [`distrib_hessian.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.PseudoHuberDistrib.md)
-for the quantity this is the expectation of,
-[`expected_hessian_exact.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.PseudoHuberDistrib.md)
-for the predicate that reports this is not a closed form,
-[`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
-which reads that predicate, and
+for the quantity this is the expectation of, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 for the generic.
 
@@ -85,21 +89,18 @@ y <- c(-2.5, 0.3, 1.8)
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 eh <- distrib_expected_hessian(d, y, th)
 vapply(eh, function(v) v[1], numeric(1))
-#>        mu_mu  sigma_sigma        nu_nu     mu_sigma        mu_nu     sigma_nu 
-#> -0.517296526 -0.818687986 -0.008195397  0.000000000  0.000000000 -0.081911373 
+#>         mu_mu   sigma_sigma         nu_nu      mu_sigma         mu_nu 
+#> -2.620828e-01 -9.177697e-01 -5.412069e-03 -1.616963e-20  1.769121e-21 
+#>      sigma_nu 
+#> -6.699758e-02 
 
-# The two entries odd in the residual are exactly zero by symmetry, so the
-# location is orthogonal to the scale and the shape.
+# The entries odd in the residual vanish by symmetry.
 c(eh$mu_sigma[1], eh$mu_nu[1])
-#> [1] 0 0
+#> [1] -1.616963e-20  1.769121e-21
 
-# Unlike the families that write their information out, this one reads
-# `approx`: a Monte Carlo strategy gives a different, noisier answer. It is
-# also the dear one, drawing from a generator that root-finds, so `nsim` is
-# kept small here.
-set.seed(1)
-vapply(distrib_expected_hessian(d, y, th, approx = "mc", nsim = 200),
-       function(v) v[1], numeric(1))
-#>        mu_mu  sigma_sigma        nu_nu     mu_sigma        mu_nu     sigma_nu 
-#> -0.283301188 -0.659597777 -0.001592754  0.000000000  0.000000000 -0.063362162 
+# The information does not depend on the observations, and scales with
+# sigma^-2 in the location and scale block.
+e2 <- distrib_expected_hessian(d, y, list(mu = 0.4, sigma = 2.4, nu = 2))
+eh$mu_mu[1] / e2$mu_mu[1]
+#> [1] 4
 ```

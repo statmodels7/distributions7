@@ -14,11 +14,9 @@ with \\R' = -R(t+R)\\, \$\$\dfrac{\partial^2 \ell}{\partial \mu^2} =
 R'}{\sigma}, \qquad \dfrac{\partial^2 \ell}{\partial \alpha^2} = z^2
 R'.\$\$
 
-This is the **observed** curvature at the data. The family has no
-elementary expected information, so
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-falls to the base class and approximates it; see there for the
-strategies and their cost.
+This is the **observed** curvature at the data. Its expectation has no
+elementary form and is computed by
+[`distrib_expected_hessian.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal1Distrib.md).
 
 ## Arguments
 
@@ -61,11 +59,10 @@ ordering.
 At \\\alpha = 0\\ the expected information of this parametrization has
 rank 2, not 3. The reason is in the score: the shape and location
 components are exactly proportional there, so no data can separate them.
-Measured on the approximated information at \\\mu = 0\\, \\\sigma = 1\\,
-its eigenvalues are 2, 1.637 and \\-5.6\times10^{-17}\\, and the
-smallest one grows like \\\alpha^4\\ as the shape moves off zero:
-\\4.4\times10^{-10}\\ at \\\alpha = 0.01\\ and \\1.9\times10^{-3}\\ at
-\\\alpha = 0.5\\.
+Measured at \\\mu = 0\\, \\\sigma = 1\\, its eigenvalues are 2, 1.637
+and \\-2.6\times10^{-27}\\, and the smallest one grows like \\\alpha^4\\
+as the shape moves off zero: \\4.4\times10^{-10}\\ at \\\alpha = 0.01\\
+and \\1.9\times10^{-3}\\ at \\\alpha = 0.5\\.
 
 The singularity belongs to the family as parametrized, not to the
 implementation. Azzalini's centered parametrization removes it, and
@@ -83,8 +80,8 @@ lives in the separate object
 for the score,
 [`distrib_deriv3.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewNormal1Distrib.md)
 for the next order,
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-for the approximated expectation, and
+[`distrib_expected_hessian.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal1Distrib.md)
+for the expectation, and
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 for the generic.
 
@@ -119,5 +116,5 @@ rank_gap <- function(a) {
   min(abs(eigen(-M, only.values = TRUE)$values))
 }
 vapply(c(0, 0.01, 0.5), rank_gap, 0)
-#> [1] 0 0 0
+#> [1] 1.110223e-16 4.355684e-10 1.947533e-03
 ```

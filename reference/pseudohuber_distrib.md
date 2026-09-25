@@ -122,24 +122,22 @@ lower tail is integrated. The quantile inverts it by root-finding, and
 the generator inverts it at uniform variates, so a sample costs one
 root-find per draw.
 
-The **expected information has no closed form either**. Its four
-non-zero components come from
-[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
-and the two containing \\\mu\\ an odd number of times are replaced by
-exact zeros, the law being symmetric. That makes the location orthogonal
-to the scale and the shape.
-[`expected_hessian_exact.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.PseudoHuberDistrib.md)
-declares the approximation, so a caller who branches on the distinction
-branches correctly; at 100 observations it costs about 11 seconds
-against a median of 0.183 milliseconds for a family that writes its
-information out.
+The **expected information has no elementary form either**, but it
+depends on \\\nu\\ alone once the location and the scale are factored
+out, so it is one integral over \\z\\ per distinct \\\nu\\, taken by the
+rule of
+[`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md);
+see
+[`distrib_expected_hessian.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.PseudoHuberDistrib.md).
+The components containing \\\mu\\ an odd number of times vanish, the law
+being symmetric, so the location is orthogonal to the scale and the
+shape.
 
 ## Estimation
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-maximizes the log-likelihood on the link scale. Given the cost of the
-expected information, `method = optimizers7::newton()` on the observed
-Hessian is the cheaper route here, and it is closed form.
+maximizes the log-likelihood on the link scale, by Fisher scoring on the
+expected information by default.
 
 ## Notation
 
@@ -221,9 +219,10 @@ rbind(residual = rr,
 #> pseudohuber 0.4230609 0.7671455  0.828685  0.8330405
 #> gaussian    0.6944444 2.7777778 11.111111 44.4444444
 
-# The expected information is a quadrature here, and the family says so.
+# The expected information depends on nu alone once mu and sigma are
+# factored out, so it is computed once per distinct nu.
 distributions7:::expected_hessian_exact(d)
-#> [1] FALSE
+#> [1] TRUE
 
 # The quantile inverts the distribution function, and the generator
 # inverts it at uniform variates, so a draw costs a root-find over a
