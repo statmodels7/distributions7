@@ -82,10 +82,21 @@ test_that("zero_inflated() derivatives are right with parameters by observation"
         kh <- which(vapply(hess_pairs(P), function(ab) identical(sort(match(ab, P)), sort(ix[1:2])), TRUE))
         expect_equal(d3[[r]][i], Jh[kh, ix[3]], tolerance = 1e-6)
       }
-      # the expected information against the exact sum over the support. The
-      # pig2 draw at alpha = 0.67 has a tail heavy enough that a sum stopped
-      # at 2000 is 2e-5 out on mu_mu while its mass already prints as one;
-      # at 20000 it agrees with the bartlett route to every printed digit
+      # the expected information read with parameters by observation against
+      # the same quantity read at this observation's parameters alone: the
+      # recycling this block is about. For the Poisson-inverse Gaussians that
+      # is the whole reference -- their exactness is test-pig-expected.R's,
+      # and a sum over 0..20000 with a row costing O(y) was 340 s of this
+      # suite's 646 -- and the other families are summed over the support too.
+      one <- distrib_expected_hessian(d, y[i], ths[[i]])
+      for (nm in names(eh)) {
+        expect_equal(eh[[nm]][i], one[[nm]], tolerance = 1e-12, label = nm)
+      }
+      if (grepl("poisson-inverse", par@distrib_name)) next
+      # The pig2 draw at alpha = 0.67 has a tail heavy enough that a sum
+      # stopped at 2000 is 2e-5 out on mu_mu while its mass already prints as
+      # one, which is why the sum runs to 20000 where the support is not
+      # bounded
       up <- if (is.finite(d@bounds[2])) d@bounds[2] else 20000
       yy <- 0:up
       pp <- distrib_pdf(d, yy, ths[[i]])
