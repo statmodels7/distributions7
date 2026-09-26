@@ -81,8 +81,7 @@ rbind(analytic = h$mu_alpha,
 # The mixed entry is not zero observation by observation; its expectation
 # is.
 c(observed = h$mu_alpha[1],
-  expected = sum(distrib_expected_hessian(d, 0:200, th,
-                                          approx = "bartlett")$mu_alpha))
+  expected = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha))
 #>      observed      expected 
-#> -1.176464e-01 -1.456596e-14 
+#> -1.176464e-01 -8.183878e-15 
 ```

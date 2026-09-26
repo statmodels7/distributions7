@@ -107,8 +107,9 @@ starting value in `starting_values.R`.
 The **distribution function** and the **quantile** come from
 [`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md),
 where both are exact sums over the support. The **expected information**
-has no closed form and goes through
-[`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
+is computed exactly, with its first and second derivatives, by one pass
+over the support; see
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md).
 
 ## See also
 

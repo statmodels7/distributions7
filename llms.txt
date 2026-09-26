@@ -570,8 +570,8 @@ respect to the unconstrained parameters.
   : Strategies for Expected Derivatives
 - [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
   : Is a Family's Expected Information Written Out?
-- [`expected_hessian_by_quadrature()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_by_quadrature.md)
-  : Is a Family's Expected Information Computed by Quadrature?
+- [`expected_hessian_costly()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_costly.md)
+  : Is a Family's Exact Expected Information Costly to Compute?
 - [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
   : Is a Family's Fourth Derivative Its Own
 
@@ -2643,6 +2643,14 @@ divergent density.
 
 - [`distrib_expected_hessian.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvStudentTDistrib.md)
   : Multivariate Student t Expected Information
+
+- [`distrib_expected_hessian.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md)
+  [`distrib_dexpected_hessian.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md)
+  [`distrib_d2expected_hessian.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md)
+  [`distrib_expected_hessian.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md)
+  [`distrib_dexpected_hessian.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md)
+  [`distrib_d2expected_hessian.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md)
+  : Poisson-Inverse Gaussian Expected Information
 
 - [`reparam_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ReparamContinuousDistrib.md)
   : Expected Information of a Reparametrized Distribution

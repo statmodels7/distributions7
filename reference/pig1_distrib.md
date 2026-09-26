@@ -78,9 +78,9 @@ exist to be that comparison's other side.
 argument, \\K\_\nu\\ the modified Bessel function of the second kind,
 and \\\ell\\ the log-mass of one observation.
 
-The **expected information** has no closed form and goes through the
-summation strategies of
-[`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).The
+The **expected information** is computed exactly, with its first and
+second derivatives, by one pass over the support per observation; see
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md).The
 tail
 
 Measured at \\\mu = 3\\, \\\sigma = 0.8\\, against a negative binomial
@@ -162,18 +162,16 @@ rbind(pig = distrib_pdf(d, c(20, 40, 60), th),
 #> negbin 0.0004803803 5.368144e-07 5.596723e-10
 
 # The two parameters are not orthogonal, which pig2_distrib() repairs.
-c(pig1 = sum(distrib_expected_hessian(d, 0:200, th,
-                                      approx = "bartlett")$mu_sigma),
+c(pig1 = sum(distrib_expected_hessian(d, 0:200, th)$mu_sigma),
   pig2 = sum(distrib_expected_hessian(pig2_distrib(), 0:200,
-                                      list(mu = 3, alpha = 3.010399),
-                                      approx = "bartlett")$mu_alpha))
+                                      list(mu = 3, alpha = 3.010399))$mu_alpha))
 #>          pig1          pig2 
-#>  7.392208e+00 -5.459445e-15 
+#>  7.392208e+00 -2.110234e-16 
 
 # A fit recovers both parameters.
 set.seed(63)
 x <- distrib_rng(d, 4000, th)
 coef(fit_distrib(d, x))
 #>        mu     sigma 
-#> 3.0102487 0.8074771 
+#> 3.0102500 0.8074792 
 ```

@@ -21,7 +21,7 @@ relationships between its properties."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.64.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -143,8 +143,9 @@ relationships between its properties.</p>
 starting value in <code>starting_values.R</code>.</p>
 <p>The <strong>distribution function</strong> and the <strong>quantile</strong> come from
 <code><a href="discrete_distrib.html">discrete_distrib()</a></code>, where both are exact sums over the support. The
-<strong>expected information</strong> has no closed form and goes
-through <code><a href="expected_derivative_methods.html">expected_derivative_methods()</a></code>.</p>
+<strong>expected information</strong> is computed exactly, with its first and second
+derivatives, by one pass over the support; see
+<code><a href="distrib_expected_hessian.Pig2Distrib.html">distrib_expected_hessian()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

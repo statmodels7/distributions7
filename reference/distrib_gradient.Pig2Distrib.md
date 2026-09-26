@@ -80,11 +80,9 @@ rbind(analytic = vapply(g, sum, 0),
 
 # The two scores are uncorrelated under the model, which is what
 # orthogonality means and what pig1 does not have.
-c(pig2 = sum(distrib_expected_hessian(d, 0:200, th,
-                                      approx = "bartlett")$mu_alpha),
+c(pig2 = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha),
   pig1 = sum(distrib_expected_hessian(pig1_distrib(), 0:200,
-                                      list(mu = 3, sigma = 0.8),
-                                      approx = "bartlett")$mu_sigma))
+                                      list(mu = 3, sigma = 0.8))$mu_sigma))
 #>          pig2          pig1 
-#> -1.456596e-14  7.392208e+00 
+#> -8.183878e-15  7.392208e+00 
 ```

@@ -99,5 +99,5 @@ for the fallback a `FALSE` answer reaches.
 expected_hessian_exact(gaussian1_distrib())
 #> [1] TRUE
 expected_hessian_exact(pig1_distrib())
-#> [1] FALSE
+#> [1] TRUE
 ```

@@ -15,7 +15,7 @@ negative binomial at the same variance."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.64.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -125,8 +125,9 @@ exist to be that comparison's other side.</p>
 <p>\(\mu\) is the mean, \(\sigma\) the dispersion, \(\alpha\) the
 Bessel argument, \(K_\nu\) the modified Bessel function of the second
 kind, and \(\ell\) the log-mass of one observation.</p>
-<p>The <strong>expected information</strong> has no closed form and goes through the
-summation strategies of <code><a href="expected_derivative_methods.html">expected_derivative_methods()</a></code>.The tail</p>
+<p>The <strong>expected information</strong> is computed exactly, with its first and
+second derivatives, by one pass over the support per observation; see
+<code><a href="distrib_expected_hessian.Pig2Distrib.html">distrib_expected_hessian()</a></code>.The tail</p>
 <p>Measured at \(\mu = 3\), \(\sigma = 0.8\), against a negative binomial
 matched on the variance (\(\theta = 1/\sigma\), both at 10.2): the mass at
 \(y = 20\) is \(6.8\times10^{-4}\) against \(4.8\times10^{-4}\), at 40
@@ -190,20 +191,18 @@ the compiled kernels for the kernel, and <a href="Pig1Distrib.html">Pig1Distrib<
 <span class="r-out co"><span class="r-pr">#&gt;</span> negbin 0.0004803803 5.368144e-07 5.596723e-10</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The two parameters are not orthogonal, which pig2_distrib() repairs.</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>pig1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">200</span>, <span class="va">th</span>,</span></span>
-<span class="r-in"><span>                                      approx <span class="op">=</span> <span class="st">"bartlett"</span><span class="op">)</span><span class="op">$</span><span class="va">mu_sigma</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>pig1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">200</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_sigma</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  pig2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="fu"><a href="pig2_distrib.html">pig2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">200</span>,</span></span>
-<span class="r-in"><span>                                      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, alpha <span class="op">=</span> <span class="fl">3.010399</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                                      approx <span class="op">=</span> <span class="st">"bartlett"</span><span class="op">)</span><span class="op">$</span><span class="va">mu_alpha</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, alpha <span class="op">=</span> <span class="fl">3.010399</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu_alpha</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          pig1          pig2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  7.392208e+00 -5.459445e-15 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7.392208e+00 -2.110234e-16 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A fit recovers both parameters.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">63</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">4000</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        mu     sigma </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3.0102487 0.8074771 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3.0102500 0.8074792 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

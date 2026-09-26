@@ -5,10 +5,8 @@ Returns the exact second derivatives of the log-mass in \\(\mu,
 kernel `pig1_hessian_cpp`.
 
 This is the **observed** curvature at the data. The expected information
-has no closed form for this family and comes from
-[`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md),
-whose default here is the exact sum over the support; see
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md).
+is computed exactly by one pass over the support; see
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md).
 
 ## Arguments
 

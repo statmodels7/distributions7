@@ -63,9 +63,10 @@ By the same compiled kernel as
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md),
 with \\\alpha\\ as a variable of its own, so the Bessel argument needs
 no chain rule at all. Every partial to fourth order is exact and comes
-out of one pass; see the compiled kernels. The expected information has
-no closed form and goes through
-[`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
+out of one pass; see the compiled kernels. The expected information is
+computed exactly, with its first and second derivatives, by one pass
+over the support per observation; see
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md).
 
 ## Parameter domains
 
@@ -127,13 +128,11 @@ all.equal(distrib_pdf(d, 0:5, th),
 #> [1] TRUE
 
 # The property the parametrization exists for.
-c(pig2 = sum(distrib_expected_hessian(d, 0:200, th,
-                                      approx = "bartlett")$mu_alpha),
+c(pig2 = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha),
   pig1 = sum(distrib_expected_hessian(pig1_distrib(), 0:200,
-                                      list(mu = 3, sigma = 0.8),
-                                      approx = "bartlett")$mu_sigma))
+                                      list(mu = 3, sigma = 0.8))$mu_sigma))
 #>          pig2          pig1 
-#> -1.456596e-14  7.392208e+00 
+#> -8.183878e-15  7.392208e+00 
 
 # A large alpha is a small dispersion, and the family tends to the Poisson.
 rbind(pig2 = distrib_pdf(d, 0:5, list(mu = 3, alpha = 1e4)),

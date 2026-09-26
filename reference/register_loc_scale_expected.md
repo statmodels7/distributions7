@@ -8,7 +8,7 @@ and
 on a location-scale class, each computed by
 [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md),
 and
-[`expected_hessian_by_quadrature()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_by_quadrature.md)
+[`expected_hessian_costly()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_costly.md)
 answering `TRUE`.
 
 ## Usage

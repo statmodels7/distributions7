@@ -1,5 +1,70 @@
 # Changelog
 
+## distributions7 0.65.0
+
+- **The two Poisson-inverse Gaussians compute their expected information
+  exactly, with its first and second derivatives.** They were the last
+  two families to fall back on the outer product of the scores, which
+  depends on the response. `pig1_expected_cpp()` and
+  `pig2_expected_cpp()` sum over the support, for each observation, the
+  mass times products of the observed derivatives, written through the
+  second Bartlett identity with the measure moving: , and at the first
+  order . The direct forms in sum terms whose mean is of a higher order
+  in the dispersion than the terms: measured on pig2 at , reads -0.318
+  at and -1611 at against a limit of -2, where the score form reads
+  -2.00006 and -2.000006.
+
+- Each observed derivative reads and its derivatives, which cost terms
+  apiece when computed afresh; the kernels take them from the Bessel
+  recurrence , differentiated and written on positive quantities, so a
+  pass costs a number of terms linear in the support. Against the exact
+  sum over the support the package already had (`approx = "bartlett"`),
+  the information agrees to 1.7e-12 to 4.8e-10, at 25 microseconds an
+  observation against 19 milliseconds at , and 2.1 milliseconds against
+  8.7 seconds at , . The outer product it replaces was out by between 63
+  per cent and a factor of 56 on the same cases.
+
+- The pass stops past the mean once the remaining mass, bounded
+  geometrically by the larger of the current ratio of consecutive masses
+  and its limit and widened for the growth of the summands, is below of
+  the mass accumulated. A bound on the limit alone stopped the sums
+  early near the Poisson limit, where the ratio is about ; a bound on
+  the accumulated mass alone does not terminate at .
+
+- **pig1’s observed derivatives in the dispersion no longer cancel at a
+  small dispersion.** The row composed through , whose partials carry
+  and cancel against those of : the score in lost digits as , 5e-10 at ,
+  4.5e-2 at and every digit at . It is written now in and in with , both
+  smooth as , the second a polynomial in with positive coefficients
+  whose derivatives are summed with the power of already divided out.
+  Against the per-count chain from pig2, a product and so free of
+  cancellation, the score agrees to 2.4e-15 at every down to , and it
+  tends to . The expected information of pig1 runs the same recurrence
+  in , and at it and its two derivatives settle on -2 + 10 sigma, 10 and
+  -52 monotonically down to . Away from the corner the row agrees with
+  the earlier algebra, kept as the jet twin, to 4.4e-12.
+
+- [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
+  answers `TRUE` for both families, so every shipped family now computes
+  its expected information exactly. The tests of the approximation
+  strategies run on a family written in the tests for the purpose, which
+  borrows pig1’s mass and derivatives and registers no expected
+  information.
+
+- **`expected_hessian_by_quadrature()` is renamed
+  [`expected_hessian_costly()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_costly.md).**
+  The predicate says that an exact expected information costs far more
+  than the observed one, which is what statmodels7’s
+  `iwls(hessian = "auto")` reads; the Poisson-inverse Gaussians answer
+  `TRUE` and sum over the support rather than integrating, so the old
+  name no longer described its members. Measured at 1000 observations
+  with the dispersion developed over a covariate, a statmodels7 fit
+  takes 3.9 s on the expected information against 0.7 s on the observed
+  one for pig1, and 2.4 against 0.4 for pig2, at the same estimate.
+  Where both parameters are scalar, as in
+  [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md),
+  one pass serves every observation.
+
 ## distributions7 0.64.0
 
 - **The skew normals, the skew t and the pseudo-Huber compute their
@@ -53,10 +118,10 @@
   observations. Before, the per-observation quadrature took 0.17 to 0.7
   s for ONE observation.
 
-- [`expected_hessian_by_quadrature()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_by_quadrature.md),
-  new and exported, says which families compute their expected
-  information this way: the four above, and a wrapper of one of them. It
-  is a statement about cost, read beside
+- `expected_hessian_by_quadrature()`, new and exported, says which
+  families compute their expected information this way: the four above,
+  and a wrapper of one of them. It is a statement about cost, read
+  beside
   [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md),
   which now answers `TRUE` for the four. Only
   [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)

@@ -466,7 +466,7 @@ set.seed(2)
 fit_distrib(bernoulli_distrib(), rbinom(50, 1, 0.9))
 #> Maximum-likelihood fit: bernoulli
 #> Observations: 50   Log-likelihood: -20.25   AIC: 42.5   BIC: 44.41
-#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 2   time: 4 ms
+#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 2   time: 5 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
