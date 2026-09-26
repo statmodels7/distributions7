@@ -143,12 +143,17 @@ test_that("the link scale is carried by the shared rule", {
 test_that("the four families declare the quadrature, and a wrapper answers for its parent", {
   for (d in list(skewnormal1_distrib(), skewnormal2_distrib(), skewt_distrib(),
                  pseudohuber_distrib())) {
-    expect_true(expected_hessian_by_quadrature(d), label = d@distrib_name)
+    expect_true(expected_hessian_costly(d), label = d@distrib_name)
     expect_true(expected_hessian_exact(d), label = d@distrib_name)
   }
-  for (d in list(gaussian1_distrib(), gamma1_distrib(), pig1_distrib())) {
-    expect_false(expected_hessian_by_quadrature(d), label = d@distrib_name)
+  for (d in list(gaussian1_distrib(), gamma1_distrib())) {
+    expect_false(expected_hessian_costly(d), label = d@distrib_name)
   }
-  expect_true(expected_hessian_by_quadrature(fixed(skewt_distrib(), nu = 6)))
-  expect_false(expected_hessian_by_quadrature(fixed(gaussian1_distrib(), mu = 0)))
+  # the Poisson-inverse Gaussians sum over the support per observation
+  for (d in list(pig1_distrib(), pig2_distrib())) {
+    expect_true(expected_hessian_costly(d), label = d@distrib_name)
+    expect_true(expected_hessian_exact(d), label = d@distrib_name)
+  }
+  expect_true(expected_hessian_costly(fixed(skewt_distrib(), nu = 6)))
+  expect_false(expected_hessian_costly(fixed(gaussian1_distrib(), mu = 0)))
 })

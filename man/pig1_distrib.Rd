@@ -71,8 +71,9 @@ exist to be that comparison's other side.
 Bessel argument, \eqn{K_\nu} the modified Bessel function of the second
 kind, and \eqn{\ell} the log-mass of one observation.
 
-The \strong{expected information} has no closed form and goes through the
-summation strategies of \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.The tail
+The \strong{expected information} is computed exactly, with its first and
+second derivatives, by one pass over the support per observation; see
+\code{\link[=distrib_expected_hessian.Pig2Distrib]{distrib_expected_hessian()}}.The tail
 
 Measured at \eqn{\mu = 3}, \eqn{\sigma = 0.8}, against a negative binomial
 matched on the variance (\eqn{\theta = 1/\sigma}, both at 10.2): the mass at
@@ -117,11 +118,9 @@ rbind(pig = distrib_pdf(d, c(20, 40, 60), th),
       negbin = distrib_pdf(nb, c(20, 40, 60), nbth))
 
 # The two parameters are not orthogonal, which pig2_distrib() repairs.
-c(pig1 = sum(distrib_expected_hessian(d, 0:200, th,
-                                      approx = "bartlett")$mu_sigma),
+c(pig1 = sum(distrib_expected_hessian(d, 0:200, th)$mu_sigma),
   pig2 = sum(distrib_expected_hessian(pig2_distrib(), 0:200,
-                                      list(mu = 3, alpha = 3.010399),
-                                      approx = "bartlett")$mu_alpha))
+                                      list(mu = 3, alpha = 3.010399))$mu_alpha))
 
 # A fit recovers both parameters.
 set.seed(63)

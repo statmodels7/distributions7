@@ -16,7 +16,7 @@ scale.}
 \description{
 Registers \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} and
 \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} on a location-scale class, each computed by
-\code{\link[=loc_scale_expected]{loc_scale_expected()}}, and \code{\link[=expected_hessian_by_quadrature]{expected_hessian_by_quadrature()}} answering
+\code{\link[=loc_scale_expected]{loc_scale_expected()}}, and \code{\link[=expected_hessian_costly]{expected_hessian_costly()}} answering
 \code{TRUE}.
 }
 \details{

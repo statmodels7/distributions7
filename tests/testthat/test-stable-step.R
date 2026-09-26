@@ -139,7 +139,9 @@ test_that("the derivative of an expected information does not choose its step un
   ## self-consistency reading would be of that noise rather than of the step.
   ## Measured on pig1, the quotient moves by 2.75 relative between two
   ## evaluations at ONE step, against 17.3 between the step and its half.
-  d <- pig1_distrib()
+  ## pig1 computes its expected information exactly since 0.65.0, so the
+  ## approximation is reached through a family that registers none.
+  d <- pig_bare_distrib()
   expect_false(expected_hessian_exact(d))
   set.seed(4)
   th <- list(mu = 1.5, sigma = 0.8)

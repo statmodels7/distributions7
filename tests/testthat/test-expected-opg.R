@@ -23,7 +23,7 @@ test_that("opg is no longer an alias of bartlett, and is the default", {
   # The two are readings of one identity and NOT the same computation: this is
   # what 0.44.0 changed, so the check is that they DIFFER per observation on a
   # family with no closed form, and that the default is the cheap one.
-  d <- pig1_distrib()
+  d <- pig_bare_distrib()
   y <- c(1, 3, 6, 10)
   th <- list(mu = 4, sigma = 0.7)
 
@@ -87,9 +87,13 @@ test_that("orders 3 and 4 route opg to bartlett", {
 test_that("expected_hessian_exact is exported and names the families that approximate", {
   expect_true(expected_hessian_exact(gaussian1_distrib()))
   expect_true(expected_hessian_exact(poisson_distrib()))
+  # every shipped family computes its expected information exactly, the two
+  # Poisson-inverse Gaussians by one pass over the support since 0.65.0
   for (fn in c("pig1_distrib", "pig2_distrib")) {
-    expect_false(expected_hessian_exact(do.call(fn, list())), info = fn)
+    expect_true(expected_hessian_exact(do.call(fn, list())), info = fn)
   }
+  # a family that registers none answers FALSE
+  expect_false(expected_hessian_exact(pig_bare_distrib()))
   # the location-scale families compute theirs by one quadrature per shape
   for (fn in c("pseudohuber_distrib", "skewnormal1_distrib",
                "skewnormal2_distrib", "skewt_distrib")) {
@@ -100,7 +104,7 @@ test_that("expected_hessian_exact is exported and names the families that approx
 test_that("a fit reads its standard errors off the observed information where the expected one is not exact", {
   skip_on_cran()
   set.seed(3)
-  d <- pig1_distrib()
+  d <- pig_bare_distrib()
   y <- distrib_rng(d, 300L, list(mu = 4, sigma = 0.6))
   fit <- fit_distrib(d, y)
 

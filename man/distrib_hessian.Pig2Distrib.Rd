@@ -52,8 +52,7 @@ rbind(analytic = h$mu_alpha,
 # The mixed entry is not zero observation by observation; its expectation
 # is.
 c(observed = h$mu_alpha[1],
-  expected = sum(distrib_expected_hessian(d, 0:200, th,
-                                          approx = "bartlett")$mu_alpha))
+  expected = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha))
 }
 \seealso{
 \code{\link[=distrib_gradient.Pig2Distrib]{distrib_gradient.Pig2Distrib()}} for the order below,

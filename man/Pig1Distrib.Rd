@@ -69,8 +69,9 @@ starting value in \code{starting_values.R}.
 
 The \strong{distribution function} and the \strong{quantile} come from
 \code{\link[=discrete_distrib]{discrete_distrib()}}, where both are exact sums over the support. The
-\strong{expected information} has no closed form and goes
-through \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
+\strong{expected information} is computed exactly, with its first and second
+derivatives, by one pass over the support; see
+\code{\link[=distrib_expected_hessian.Pig2Distrib]{distrib_expected_hessian()}}.
 }
 
 \examples{

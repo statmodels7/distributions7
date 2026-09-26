@@ -92,11 +92,11 @@ test_that("the strategy for the expected information lives on fisher_scoring()",
   # the default carries no claim and is accepted everywhere
   expect_silent(fit_distrib(g, yg, method = fisher_scoring()))
 
-  # and where the strategy does change something it is taken: the
-  # Poisson-inverse gaussian approximates its expected information
+  # and where the strategy does change something it is taken, on a family
+  # that registers no expected information of its own
   set.seed(53)
-  ypg <- distrib_rng(pig1_distrib(), 40, list(mu = 3, sigma = 0.5))
-  expect_no_error(fit_distrib(pig1_distrib(), ypg,
+  ypg <- distrib_rng(pig_bare_distrib(), 40, list(mu = 3, sigma = 0.5))
+  expect_no_error(fit_distrib(pig_bare_distrib(), ypg,
                               method = fisher_scoring(approx = "mc", nsim = 20L),
                               n_start = 1L))
 
@@ -137,13 +137,15 @@ test_that("a family is asked correctly whether its expected information is exact
                 label = d@distrib_name)
   }
 
-  # These approximate the expectation. The location-scale families that used
-  # to -- the skew normals, the skew t, the pseudo-Huber -- compute it by one
-  # quadrature per distinct shape since 0.64.0 and answer TRUE.
+  # No shipped family approximates the expectation any longer: the
+  # location-scale families compute it by one quadrature per distinct shape
+  # since 0.64.0, the Poisson-inverse Gaussians by one pass over the support
+  # since 0.65.0. A family that registers none answers FALSE.
   for (d in list(pig1_distrib(), pig2_distrib())) {
-    expect_false(distributions7:::has_exact_expected_hessian(d),
-                 label = d@distrib_name)
+    expect_true(distributions7:::has_exact_expected_hessian(d),
+                label = d@distrib_name)
   }
+  expect_false(distributions7:::has_exact_expected_hessian(pig_bare_distrib()))
   for (d in list(skewnormal1_distrib(), skewt_distrib(),
                  pseudohuber_distrib(), skewnormal2_distrib())) {
     expect_true(distributions7:::has_exact_expected_hessian(d),
@@ -155,9 +157,9 @@ test_that("a family is asked correctly whether its expected information is exact
 
   # and the consequence, at the level a caller sees it
   set.seed(71)
-  ys <- distrib_rng(pig2_distrib(), 40, list(mu = 3, alpha = 2))
+  ys <- distrib_rng(pig_bare_distrib(), 40, list(mu = 3, sigma = 0.5))
   expect_no_error(
-    fit_distrib(pig2_distrib(), ys, method = fisher_scoring(approx = "mc", nsim = 20L),
+    fit_distrib(pig_bare_distrib(), ys, method = fisher_scoring(approx = "mc", nsim = 20L),
                 n_start = 1L)
   )
   # A strategy the family would ignore is refused -- and it has to be a

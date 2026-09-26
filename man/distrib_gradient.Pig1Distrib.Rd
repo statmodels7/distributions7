@@ -51,7 +51,7 @@ rbind(analytic = vapply(g, sum, 0),
 
 # The mean and the dispersion are not orthogonal here: the mixed entry of
 # the expected information is far from zero. pig2_distrib() removes that.
-sum(distrib_expected_hessian(d, 0:200, th, approx = "bartlett")$mu_sigma)
+sum(distrib_expected_hessian(d, 0:200, th)$mu_sigma)
 }
 \seealso{
 \code{pig1_gradient_cpp} for the kernel and the closed form it evaluates,

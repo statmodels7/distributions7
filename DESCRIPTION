@@ -1,6 +1,6 @@
 Package: distributions7
 Title: S7 Framework for Probability Distributions
-Version: 0.64.0
+Version: 0.65.0
 Authors@R: 
     person("Giovanni", "Tinervia", , "giovannitinervia9@gmail.com", role = c("aut", "cre"))
 Description: Provides a consistent S7 object-oriented infrastructure for probability distributions. Each 'distrib' object encapsulates standard statistical functions alongside analytical derivatives.
@@ -132,6 +132,7 @@ Collate:
     'mv_higher.R'
     'negbin1_higher.R'
     'numerical_fallbacks.R'
+    'pig_expected.R'
     'psi_diff.R'
     'reparametrized_families.R'
     'starting_values.R'

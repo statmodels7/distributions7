@@ -215,11 +215,9 @@ S7::method(distrib_pdf, Pig2Distrib) <- function(distrib, y, theta, log = FALSE,
 #'
 #' # The two scores are uncorrelated under the model, which is what
 #' # orthogonality means and what pig1 does not have.
-#' c(pig2 = sum(distrib_expected_hessian(d, 0:200, th,
-#'                                       approx = "bartlett")$mu_alpha),
+#' c(pig2 = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha),
 #'   pig1 = sum(distrib_expected_hessian(pig1_distrib(), 0:200,
-#'                                       list(mu = 3, sigma = 0.8),
-#'                                       approx = "bartlett")$mu_sigma))
+#'                                       list(mu = 3, sigma = 0.8))$mu_sigma))
 S7::method(distrib_gradient, Pig2Distrib) <- function(distrib, y, theta,
                                                       scale = c("parameter", "link"), ..., threads = 1L) {
   pig2_gradient_cpp(y, theta[[1]], theta[[2]], threads)
@@ -274,8 +272,7 @@ S7::method(distrib_gradient, Pig2Distrib) <- function(distrib, y, theta,
 #' # The mixed entry is not zero observation by observation; its expectation
 #' # is.
 #' c(observed = h$mu_alpha[1],
-#'   expected = sum(distrib_expected_hessian(d, 0:200, th,
-#'                                           approx = "bartlett")$mu_alpha))
+#'   expected = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha))
 S7::method(distrib_hessian, Pig2Distrib) <- function(distrib, y, theta,
                                                      scale = c("parameter", "link"), ..., threads = 1L) {
   pig2_hessian_cpp(y, theta[[1]], theta[[2]], threads)
@@ -493,8 +490,10 @@ S7::method(distrib_rng, Pig2Distrib) <- function(distrib, n, theta, ...) {
 #' By the same compiled kernel as [pig1_distrib()], with \eqn{\alpha} as a
 #' variable of its own, so the Bessel argument needs no chain rule at all.
 #' Every partial to fourth order is exact and comes out of one pass; see
-#' the compiled kernels. The expected information has no closed form and goes
-#' through [expected_derivative_methods()].
+#' the compiled kernels. The expected information is computed exactly, with
+#' its first and second derivatives, by one pass over the support per
+#' observation; see
+#' [`distrib_expected_hessian()`][distrib_expected_hessian.Pig2Distrib].
 #'
 #' # Parameter domains
 #'
@@ -545,11 +544,9 @@ S7::method(distrib_rng, Pig2Distrib) <- function(distrib, n, theta, ...) {
 #'           distrib_pdf(pig1_distrib(), 0:5, list(mu = 3, sigma = 0.8)))
 #'
 #' # The property the parametrization exists for.
-#' c(pig2 = sum(distrib_expected_hessian(d, 0:200, th,
-#'                                       approx = "bartlett")$mu_alpha),
+#' c(pig2 = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha),
 #'   pig1 = sum(distrib_expected_hessian(pig1_distrib(), 0:200,
-#'                                       list(mu = 3, sigma = 0.8),
-#'                                       approx = "bartlett")$mu_sigma))
+#'                                       list(mu = 3, sigma = 0.8))$mu_sigma))
 #'
 #' # A large alpha is a small dispersion, and the family tends to the Poisson.
 #' rbind(pig2 = distrib_pdf(d, 0:5, list(mu = 3, alpha = 1e4)),

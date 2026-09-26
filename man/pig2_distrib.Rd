@@ -51,8 +51,10 @@ own \eqn{\sigma_2}, which coincides with this \eqn{\alpha}.
 By the same compiled kernel as \code{\link[=pig1_distrib]{pig1_distrib()}}, with \eqn{\alpha} as a
 variable of its own, so the Bessel argument needs no chain rule at all.
 Every partial to fourth order is exact and comes out of one pass; see
-the compiled kernels. The expected information has no closed form and goes
-through \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
+the compiled kernels. The expected information is computed exactly, with
+its first and second derivatives, by one pass over the support per
+observation; see
+\code{\link[=distrib_expected_hessian.Pig2Distrib]{distrib_expected_hessian()}}.
 }
 
 \section{Parameter domains}{
@@ -87,11 +89,9 @@ all.equal(distrib_pdf(d, 0:5, th),
           distrib_pdf(pig1_distrib(), 0:5, list(mu = 3, sigma = 0.8)))
 
 # The property the parametrization exists for.
-c(pig2 = sum(distrib_expected_hessian(d, 0:200, th,
-                                      approx = "bartlett")$mu_alpha),
+c(pig2 = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha),
   pig1 = sum(distrib_expected_hessian(pig1_distrib(), 0:200,
-                                      list(mu = 3, sigma = 0.8),
-                                      approx = "bartlett")$mu_sigma))
+                                      list(mu = 3, sigma = 0.8))$mu_sigma))
 
 # A large alpha is a small dispersion, and the family tends to the Poisson.
 rbind(pig2 = distrib_pdf(d, 0:5, list(mu = 3, alpha = 1e4)),

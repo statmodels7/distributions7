@@ -60,11 +60,10 @@ test_that("a family that approximates its expected information is refused", {
   # observation costs seconds at 100 observations against a median of 0.183 ms
   # for a family that writes it out, so 2p of those calls per evaluation is
   # unusable rather than merely slow.
-  for (d in list(pig1_distrib(), pig2_distrib())) {
-    th <- generate_random_theta(d)
-    expect_error(distrib_dexpected_hessian(d, distrib_rng(d, 1L, th), th),
-                 "approximates its expected information")
-  }
+  d <- pig_bare_distrib()
+  th <- list(mu = 3, sigma = 0.8)
+  expect_error(distrib_dexpected_hessian(d, distrib_rng(d, 1L, th), th),
+               "approximates its expected information")
 })
 
 test_that("the exactness predicate follows the arithmetic, not the owner", {
@@ -73,7 +72,8 @@ test_that("the exactness predicate follows the arithmetic, not the owner", {
                    has_exact_expected_hessian(skewnormal1_distrib()))
   expect_true(has_exact_expected_hessian(skewnormal2_distrib()))
   expect_true(has_exact_expected_hessian(pseudohuber_distrib()))
-  expect_false(has_exact_expected_hessian(pig1_distrib()))
+  expect_true(has_exact_expected_hessian(pig1_distrib()))
+  expect_false(has_exact_expected_hessian(pig_bare_distrib()))
   # and the ones that do write it out still say so, including a family
   # reached through a reparametrization whose parent is exact
   expect_true(has_exact_expected_hessian(gaussian1_distrib()))
@@ -82,8 +82,8 @@ test_that("the exactness predicate follows the arithmetic, not the owner", {
   # a strategy for the approximation is accepted where there is one to make,
   # and refused where the family computes its information exactly
   set.seed(1)
-  y <- distrib_rng(pig1_distrib(), 30L, list(mu = 3, sigma = 0.5))
-  expect_no_error(fit_distrib(pig1_distrib(), y,
+  y <- distrib_rng(pig_bare_distrib(), 30L, list(mu = 3, sigma = 0.5))
+  expect_no_error(fit_distrib(pig_bare_distrib(), y,
                               method = fisher_scoring(approx = "mc", nsim = 20L),
                               n_start = 1L))
   expect_error(fit_distrib(pseudohuber_distrib(),
@@ -266,7 +266,7 @@ test_that("the analytic kernels are identical at any thread count", {
 })
 
 test_that("a family without a second derivative of its expected information is refused", {
-  d <- pig1_distrib()
+  d <- pig_bare_distrib()
   expect_error(distrib_d2expected_hessian(d, 1, list(mu = 2, sigma = 0.5)),
                "no analytic second derivative")
 })

@@ -38,8 +38,9 @@ NULL
 #'
 #' The **distribution function** and the **quantile** come from
 #' [discrete_distrib()], where both are exact sums over the support. The
-#' **expected information** has no closed form and goes
-#' through [expected_derivative_methods()].
+#' **expected information** is computed exactly, with its first and second
+#' derivatives, by one pass over the support; see
+#' [`distrib_expected_hessian()`][distrib_expected_hessian.Pig2Distrib].
 #'
 #' @seealso [pig1_distrib()] to build one;
 #'   [pig2_distrib()] for the parametrization whose two parameters are
@@ -180,7 +181,7 @@ S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE,
 #'
 #' # The mean and the dispersion are not orthogonal here: the mixed entry of
 #' # the expected information is far from zero. pig2_distrib() removes that.
-#' sum(distrib_expected_hessian(d, 0:200, th, approx = "bartlett")$mu_sigma)
+#' sum(distrib_expected_hessian(d, 0:200, th)$mu_sigma)
 S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
                                                       scale = c("parameter", "link"), ..., threads = 1L) {
   pig1_gradient_cpp(y, theta[[1]], theta[[2]], threads)
@@ -194,10 +195,9 @@ S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
 #' \eqn{(\mu, \sigma)}, read off columns `d20`, `d02` and `d11` of the
 #' compiled kernel `pig1_hessian_cpp`.
 #'
-#' This is the **observed** curvature at the data. The expected information has
-#' no closed form for this family and comes from
-#' [expected_derivative_methods()], whose default here is the exact sum over
-#' the support; see [distrib_expected_hessian()].
+#' This is the **observed** curvature at the data. The expected information is
+#' computed exactly by one pass over the support; see
+#' [`distrib_expected_hessian()`][distrib_expected_hessian.Pig2Distrib].
 #'
 #' @param distrib A `Pig1Distrib` object, from [pig1_distrib()].
 #' @param y A numeric vector of counts. A value off the support gives `NaN`.
@@ -480,8 +480,9 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta, ...) {
 #' Bessel argument, \eqn{K_\nu} the modified Bessel function of the second
 #' kind, and \eqn{\ell} the log-mass of one observation.
 #'
-#' The **expected information** has no closed form and goes through the
-#' summation strategies of [expected_derivative_methods()].
+#' The **expected information** is computed exactly, with its first and
+#' second derivatives, by one pass over the support per observation; see
+#' [`distrib_expected_hessian()`][distrib_expected_hessian.Pig2Distrib].
 #'
 #' # The tail
 #'
@@ -550,11 +551,9 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta, ...) {
 #'       negbin = distrib_pdf(nb, c(20, 40, 60), nbth))
 #'
 #' # The two parameters are not orthogonal, which pig2_distrib() repairs.
-#' c(pig1 = sum(distrib_expected_hessian(d, 0:200, th,
-#'                                       approx = "bartlett")$mu_sigma),
+#' c(pig1 = sum(distrib_expected_hessian(d, 0:200, th)$mu_sigma),
 #'   pig2 = sum(distrib_expected_hessian(pig2_distrib(), 0:200,
-#'                                       list(mu = 3, alpha = 3.010399),
-#'                                       approx = "bartlett")$mu_alpha))
+#'                                       list(mu = 3, alpha = 3.010399))$mu_alpha))
 #'
 #' # A fit recovers both parameters.
 #' set.seed(63)

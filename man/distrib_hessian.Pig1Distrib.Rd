@@ -29,10 +29,9 @@ Returns the exact second derivatives of the log-mass in
 \eqn{(\mu, \sigma)}, read off columns \code{d20}, \code{d02} and \code{d11} of the
 compiled kernel \code{pig1_hessian_cpp}.
 
-This is the \strong{observed} curvature at the data. The expected information has
-no closed form for this family and comes from
-\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}, whose default here is the exact sum over
-the support; see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}.
+This is the \strong{observed} curvature at the data. The expected information is
+computed exactly by one pass over the support; see
+\code{\link[=distrib_expected_hessian.Pig2Distrib]{distrib_expected_hessian()}}.
 }
 \examples{
 d <- pig1_distrib()

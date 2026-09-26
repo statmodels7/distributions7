@@ -693,6 +693,14 @@ pig2_hd_cpp <- function(y, mu, alpha, threads = 1L) {
     .Call(`_distributions7_pig2_hd_cpp`, y, mu, alpha, threads)
 }
 
+pig2_expected_cpp <- function(y, mu, alpha, order, threads = 1L) {
+    .Call(`_distributions7_pig2_expected_cpp`, y, mu, alpha, order, threads)
+}
+
+pig1_expected_cpp <- function(y, mu, sigma, order, threads = 1L) {
+    .Call(`_distributions7_pig1_expected_cpp`, y, mu, sigma, order, threads)
+}
+
 poisson_gradient_cpp <- function(y, mu, threads = 1L) {
     .Call(`_distributions7_poisson_gradient_cpp`, y, mu, threads)
 }

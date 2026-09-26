@@ -187,29 +187,41 @@ loc_scale_rule <- local({
 })
 
 
-#' Is a Family's Expected Information Computed by Quadrature?
+#' Is a Family's Exact Expected Information Costly to Compute?
 #'
 #' @description
-#' `TRUE` when the family's expected information is exact but obtained by a
-#' quadrature over the standardized response for each distinct value of its
-#' shape parameters, as [loc_scale_expected()] does; `FALSE` otherwise.
+#' `TRUE` when the family's expected information is exact but costs far more
+#' than its observed information, because it is obtained by an integral or a
+#' sum for each observation or each distinct shape; `FALSE` otherwise.
 #'
 #' @details
 #' The answer is a statement about cost, and it is read beside
-#' [expected_hessian_exact()], which states accuracy. A family answering `TRUE`
-#' to both computes its expected information exactly, at one integral per
-#' distinct shape: nothing where the shape is the same for every observation,
-#' and one integral per observation where it is modelled. Measured on smooth
-#' regressions at 1000 observations with the shape developed over a covariate,
-#' a fit that takes the scoring step on this information costs 7 to 21 times
-#' one that takes it on the observed information, at the same estimate.
-#' \pkg{statmodels7}'s `iwls(hessian = "auto")` therefore settles on the
-#' observed information for such a family.
+#' [expected_hessian_exact()], which states accuracy. Two kinds of family
+#' answer `TRUE`.
 #'
-#' Four shipped families answer `TRUE`: [skewnormal1_distrib()],
-#' [skewnormal2_distrib()], [skewt_distrib()] and [pseudohuber_distrib()]. The
-#' default answers for a wrapper's parent, read off its `parent_distrib`
-#' property, and `FALSE` for a family without one.
+#' The location-scale families [skewnormal1_distrib()],
+#' [skewnormal2_distrib()], [skewt_distrib()] and [pseudohuber_distrib()]
+#' take one integral over the standardized response per distinct shape, from
+#' [loc_scale_expected()]: nothing where the shape is the same for every
+#' observation, one integral per observation where it is modelled. Measured
+#' on smooth regressions at 1000 observations with the shape developed over a
+#' covariate, a fit that takes the scoring step on this information costs 7
+#' to 21 times one that takes it on the observed information, at the same
+#' estimate.
+#'
+#' The Poisson-inverse Gaussians [pig1_distrib()] and [pig2_distrib()] sum
+#' over the support for each observation, over a number of terms that grows
+#' as \eqn{\sigma\mu}: about 25 microseconds an observation at
+#' \eqn{\mu = 3}, \eqn{\sigma = 0.3} and 2 milliseconds at \eqn{\mu = 30},
+#' \eqn{\sigma = 3}, against a few microseconds for the observed information.
+#' Measured at 1000 observations, a fit on it costs 1 to 6 times one on the
+#' observed information at the same estimate, and far more where the fit
+#' passes through a large \eqn{\sigma\mu}.
+#'
+#' \pkg{statmodels7}'s `iwls(hessian = "auto")` therefore settles on the
+#' observed information for these families. The default answers for a
+#' wrapper's parent, read off its `parent_distrib` property, and `FALSE` for a
+#' family without one.
 #'
 #' @param x An object inheriting from class `"distrib"`.
 #' @param ... Passed to methods.
@@ -217,20 +229,21 @@ loc_scale_rule <- local({
 #' @return A single logical.
 #'
 #' @examples
-#' expected_hessian_by_quadrature(skewt_distrib())
-#' expected_hessian_by_quadrature(gaussian1_distrib())
-#' expected_hessian_by_quadrature(fixed(skewt_distrib(), nu = 6))
+#' expected_hessian_costly(skewt_distrib())
+#' expected_hessian_costly(pig1_distrib())
+#' expected_hessian_costly(gaussian1_distrib())
+#' expected_hessian_costly(fixed(skewt_distrib(), nu = 6))
 #'
 #' @seealso [expected_hessian_exact()], [loc_scale_expected()]
 #'
 #' @export
-expected_hessian_by_quadrature <- S7::new_generic(
-  "expected_hessian_by_quadrature", "x",
+expected_hessian_costly <- S7::new_generic(
+  "expected_hessian_costly", "x",
   function(x, ...) S7::S7_dispatch())
 
-S7::method(expected_hessian_by_quadrature, distrib) <- function(x, ...) {
+S7::method(expected_hessian_costly, distrib) <- function(x, ...) {
   if ("parent_distrib" %in% S7::prop_names(x)) {
-    return(expected_hessian_by_quadrature(x@parent_distrib))
+    return(expected_hessian_costly(x@parent_distrib))
   }
   FALSE
 }
@@ -241,7 +254,7 @@ S7::method(expected_hessian_by_quadrature, distrib) <- function(x, ...) {
 #' @description
 #' Registers [distrib_expected_hessian()], [distrib_dexpected_hessian()] and
 #' [distrib_d2expected_hessian()] on a location-scale class, each computed by
-#' [loc_scale_expected()], and [expected_hessian_by_quadrature()] answering
+#' [loc_scale_expected()], and [expected_hessian_costly()] answering
 #' `TRUE`.
 #'
 #' @details
@@ -278,6 +291,6 @@ register_loc_scale_expected <- function(cls) {
                        function(k) loc_scale_expected(distrib, theta, k,
                                                       length(y), threads))
   }
-  S7::method(expected_hessian_by_quadrature, cls) <- function(x, ...) TRUE
+  S7::method(expected_hessian_costly, cls) <- function(x, ...) TRUE
   invisible(NULL)
 }

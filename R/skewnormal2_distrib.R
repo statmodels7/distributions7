@@ -1004,8 +1004,8 @@ S7::method(expected_hessian_exact, SkewNormal2Distrib) <- function(x, ...) {
   expected_hessian_exact(skewnormal1_distrib())
 }
 
-S7::method(expected_hessian_by_quadrature, SkewNormal2Distrib) <- function(x, ...) {
-  expected_hessian_by_quadrature(skewnormal1_distrib())
+S7::method(expected_hessian_costly, SkewNormal2Distrib) <- function(x, ...) {
+  expected_hessian_costly(skewnormal1_distrib())
 }
 
 #' @title Skew Normal Third Derivatives in the Centered Parametrization

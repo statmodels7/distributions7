@@ -72,3 +72,33 @@ fit_report <- function(fit, distrib, y) {
   sprintf("method %s, %d iterations, criterion '%s', note '%s', score/n %.3e",
           fit@method, fit@iterations, fit@criterion, fit@note, sc)
 }
+
+# A discrete family that APPROXIMATES its expected information: the mass, the
+# score, the Hessian and the draws of pig1_distrib(), and no expected method of
+# its own, so the base class's strategies apply. Every shipped family now
+# computes its expected information exactly, and the approximation machinery
+# (approx =, the refusals that read expected_hessian_exact(), the outer
+# product) is tested on this one.
+PigBare <- S7::new_class("PigBare", parent = discrete_distrib, package = NULL)
+S7::method(distrib_pdf, PigBare) <- function(distrib, y, theta, log = FALSE, ...) {
+  distrib_pdf(pig1_distrib(), y, theta, log = log)
+}
+S7::method(distrib_gradient, PigBare) <- function(distrib, y, theta,
+                                                  scale = c("parameter", "link"), ...) {
+  distrib_gradient(pig1_distrib(), y, theta)
+}
+S7::method(distrib_hessian, PigBare) <- function(distrib, y, theta,
+                                                 scale = c("parameter", "link"), ...) {
+  distrib_hessian(pig1_distrib(), y, theta)
+}
+S7::method(distrib_rng, PigBare) <- function(distrib, n, theta, ...) {
+  distrib_rng(pig1_distrib(), n, theta)
+}
+pig_bare_distrib <- function() {
+  p <- pig1_distrib()
+  PigBare(distrib_name = "pig bare", dimension = "univariate",
+          bounds = c(0, Inf), params = c("mu", "sigma"), n_params = 2,
+          params_bounds = p@params_bounds, link_params = p@link_params,
+          params_smooth = c(mu = TRUE, sigma = TRUE),
+          params_interpretation = p@params_interpretation)
+}

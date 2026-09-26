@@ -1,3 +1,74 @@
+# distributions7 0.65.0
+
+* **The two Poisson-inverse Gaussians compute their expected information
+  exactly, with its first and second derivatives.** They were the last two
+  families to fall back on the outer product of the scores, which depends on
+  the response. `pig1_expected_cpp()` and `pig2_expected_cpp()` sum over the
+  support, for each observation, the mass times products of the observed
+  derivatives, written through the second Bartlett identity with the measure
+  moving: \eqn{\mathbb{E}[\ell_{ab}] = -\mathbb{E}[\ell_a\ell_b]}, and at the
+  first order \eqn{-\mathbb{E}[\ell_{ac}\ell_b + \ell_a\ell_{bc} +
+  \ell_a\ell_b\ell_c]}. The direct forms in \eqn{\mathbb{E}[\ell_{ab}]} sum
+  terms whose mean is of a higher order in the dispersion than the terms:
+  measured on pig2 at \eqn{\mu = 2}, \eqn{\alpha^4\,\mathbb{E}[\ell_{\alpha
+  \alpha}]} reads -0.318 at \eqn{\alpha = 10^5} and -1611 at \eqn{10^6}
+  against a limit of -2, where the score form reads -2.00006 and -2.000006.
+
+* Each observed derivative reads \eqn{\log S_y} and its derivatives, which
+  cost \eqn{y} terms apiece when computed afresh; the kernels take them from
+  the Bessel recurrence \eqn{S_{y+1} = S_{y-1} + \{(2y-1)/\alpha\}S_y},
+  differentiated and written on positive quantities, so a pass costs a
+  number of terms linear in the support. Against the exact sum over the
+  support the package already had (`approx = "bartlett"`), the information
+  agrees to 1.7e-12 to 4.8e-10, at 25 microseconds an observation against
+  19 milliseconds at \eqn{\mu = 3}, \eqn{\sigma = 0.3} and 2.1 milliseconds
+  against 8.7 seconds at \eqn{\mu = 30}, \eqn{\sigma = 3}. The outer product
+  it replaces was out by between 63 per cent and a factor of 56 on the same
+  cases.
+
+* The pass stops past the mean once the remaining mass, bounded
+  geometrically by the larger of the current ratio of consecutive masses and
+  its limit \eqn{2\sigma\mu/(1+2\sigma\mu)} and widened for the growth of the
+  summands, is below \eqn{10^{-17}} of the mass accumulated. A bound on the
+  limit alone stopped the sums early near the Poisson limit, where the ratio
+  is about \eqn{\mu/y}; a bound on the accumulated mass alone does not
+  terminate at \eqn{\sigma\mu = 9000}.
+
+* **pig1's observed derivatives in the dispersion no longer cancel at a small
+  dispersion.** The row composed \eqn{\psi(\alpha) = -\alpha + \log S} through
+  \eqn{\alpha(\mu,\sigma)}, whose partials carry \eqn{\sigma^{-k}} and cancel
+  against those of \eqn{1/\sigma}: the score in \eqn{\sigma} lost digits as
+  \eqn{\sigma^{-2}}, 5e-10 at \eqn{10^{-4}}, 4.5e-2 at \eqn{10^{-8}} and every
+  digit at \eqn{10^{-9}}. It is written now in \eqn{G = 1/\sigma - \alpha =
+  -2\mu/(1+\sqrt c)} and in \eqn{\log S_y(w)} with \eqn{w = 1/(2\alpha) =
+  \sigma/(2\sqrt c)}, both smooth as \eqn{\sigma \to 0}, the second a
+  polynomial in \eqn{w} with positive coefficients whose derivatives are
+  summed with the power of \eqn{w} already divided out. Against the
+  per-count chain from pig2, a product and so free of cancellation, the score
+  agrees to 2.4e-15 at every \eqn{\sigma} down to \eqn{10^{-9}}, and it tends
+  to \eqn{((y-\mu)^2 - y)/2}. The expected information of pig1 runs the same
+  recurrence in \eqn{w}, and at \eqn{\mu = 2} it and its two derivatives
+  settle on -2 + 10 sigma, 10 and -52 monotonically down to
+  \eqn{\sigma = 10^{-12}}. Away from the corner the row agrees with the
+  earlier algebra, kept as the jet twin, to 4.4e-12.
+
+* `expected_hessian_exact()` answers `TRUE` for both families, so every
+  shipped family now computes its expected information exactly. The tests of
+  the approximation strategies run on a family written in the tests for the
+  purpose, which borrows pig1's mass and derivatives and registers no
+  expected information.
+
+* **`expected_hessian_by_quadrature()` is renamed `expected_hessian_costly()`.**
+  The predicate says that an exact expected information costs far more than
+  the observed one, which is what statmodels7's `iwls(hessian = "auto")`
+  reads; the Poisson-inverse Gaussians answer `TRUE` and sum over the support
+  rather than integrating, so the old name no longer described its members.
+  Measured at 1000 observations with the dispersion developed over a
+  covariate, a statmodels7 fit takes 3.9 s on the expected information
+  against 0.7 s on the observed one for pig1, and 2.4 against 0.4 for pig2,
+  at the same estimate. Where both parameters are scalar, as in
+  `fit_distrib()`, one pass serves every observation.
+
 # distributions7 0.64.0
 
 * **The skew normals, the skew t and the pseudo-Huber compute their expected
