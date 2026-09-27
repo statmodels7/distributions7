@@ -749,6 +749,15 @@ mv_matrix_pieces <- function(s, eta, inverted, derivs = FALSE,
 
   if (derivs || derivs2) {
     d <- parameters7::param_d1(s, eta)
+    # THE DERIVATIVES OF THE INVERSE, read from the chart and never formed as
+    # -Sigma^-1 A Sigma^-1. Near a singular covariance Sigma^-1 is large and
+    # nearly of rank one, and that sandwich cancels: at a log-Cholesky free
+    # value log L22 = -11.5 it carried a relative error of 1e-7, which a trace
+    # of products of order 1e10 turned into an error of order one in the
+    # exact outer gradient. On the precision side the chart's own derivatives
+    # are those of the inverse and are exact.
+    out$ai <- lapply(if (isTRUE(inverted)) d else
+      parameters7::param_inv_d1(s, eta), unname)
     if (isTRUE(inverted)) {
       d <- lapply(d, function(ak) -(sigma %*% ak %*% sigma))
     }
@@ -760,6 +769,7 @@ mv_matrix_pieces <- function(s, eta, inverted, derivs = FALSE,
     d2ld <- parameters7::param_d2logdet(s, eta)
     out$d2logdet <- if (isTRUE(inverted)) -d2ld else d2ld
     d2 <- parameters7::param_d2(s, eta)
+    out$ai2 <- if (isTRUE(inverted)) d2 else parameters7::param_inv_d2(s, eta)
     if (isTRUE(inverted)) {
       idx <- parameters7::param_tuple_indices(s)
       a1 <- parameters7::param_d1(s, eta)

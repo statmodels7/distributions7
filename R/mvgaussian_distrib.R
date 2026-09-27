@@ -1362,15 +1362,16 @@ S7::method(distrib_cross_y, MvGaussianDistrib) <-
     y <- as_mv_matrix(distrib, y)
     p <- distrib@n_dim
     pc <- mvg_pieces(distrib, theta, derivs = TRUE)
-    w <- mvg_residuals(y, pc)$w
+    r <- mvg_residuals(y, pc)$r
     si <- pc$sigma_inv
     n <- nrow(y)
 
     mu_part <- lapply(seq_len(p), function(j) {
       matrix(si[j, ], nrow = n, ncol = p, byrow = TRUE)
     })
-    # rows: (Sigma^-1 A_k w_i)' = w_i' A_k Sigma^-1, both matrices symmetric
-    eta_part <- lapply(pc$a, function(ak) w %*% ak %*% si)
+    # rows: w_i' A_k Sigma^-1 = -r_i' d_k(Sigma^-1), read through the chart's
+    # derivative of the inverse rather than as a sandwich of Sigma^-1
+    eta_part <- lapply(pc$ai, function(ak) -(r %*% ak))
 
     stats::setNames(c(mu_part, eta_part), distrib@params)
   }
@@ -1449,7 +1450,7 @@ S7::method(distrib_cross2_y, MvGaussianDistrib) <-
     si <- pc$sigma_inv
     zero <- matrix(0, p, p)
     stats::setNames(
-      c(rep(list(zero), p), lapply(pc$a, function(ak) si %*% ak %*% si)),
+      c(rep(list(zero), p), lapply(pc$ai, function(ak) -ak)),
       distrib@params)
   }
 
@@ -1529,9 +1530,7 @@ S7::method(distrib_hess_y_hess, MvGaussianDistrib) <-
       if (a <= p || b <= p) return(zero)
       ka <- a - p
       kb <- b - p
-      aa <- pc$a[[ka]]
-      ab <- pc$a[[kb]]
-      si %*% (mvg_a2(pc, ka, kb) - aa %*% si %*% ab - ab %*% si %*% aa) %*% si
+      -mv_ai2(pc, ka, kb)
     }), hess_names(nm))
   }
 
@@ -1612,8 +1611,7 @@ S7::method(distrib_grad_y_hess, MvGaussianDistrib) <-
     p <- distrib@n_dim
     n <- nrow(y)
     pc <- mvg_pieces(distrib, theta, derivs2 = TRUE)
-    si <- pc$sigma_inv
-    w <- mvg_residuals(y, pc)$w
+    r <- mvg_residuals(y, pc)$r
     nm <- distrib@params
     zero <- matrix(0, n, p)
     stats::setNames(lapply(hess_names(nm), function(k) {
@@ -1626,16 +1624,13 @@ S7::method(distrib_grad_y_hess, MvGaussianDistrib) <-
       if (a <= p || b <= p) {
         j <- if (a <= p) a else b
         kk <- if (a <= p) b - p else a - p
-        # -(Sigma^-1 A_k Sigma^-1) e_j, the same row at every observation
-        m <- -(si %*% pc$a[[kk]] %*% si)
+        # d_k(Sigma^-1) e_j, the same row at every observation
+        m <- pc$ai[[kk]]
         return(matrix(m[, j], nrow = n, ncol = p, byrow = TRUE))
       }
       ka <- a - p
       kb <- b - p
-      aa <- pc$a[[ka]]
-      ab <- pc$a[[kb]]
-      mid <- mvg_a2(pc, ka, kb) - aa %*% si %*% ab - ab %*% si %*% aa
-      w %*% mid %*% si
+      -(r %*% mv_ai2(pc, ka, kb))
     }), hess_names(nm))
   }
 
@@ -1685,6 +1680,26 @@ mvg_a2 <- function(pc, k, l) {
   nm <- pc$s@free_names
   ij <- sort(c(k, l))
   pc$a2[[paste(nm[ij], collapse = ":")]]
+}
+
+
+#' @title The Second Derivative of the Inverse, by Position
+#'
+#' @description
+#' As [mvg_a2()], for the second derivative of \eqn{\Sigma^{-1}} that
+#' [mv_matrix_pieces()] reads from the chart. Shared by the gaussian and the
+#' Student t.
+#'
+#' @param pc Pieces carrying `ai2`, from [mv_matrix_pieces()] with `derivs2`.
+#' @param k,l Positions among the structure's free values.
+#'
+#' @return A \eqn{p \times p} numeric matrix.
+#'
+#' @keywords internal
+mv_ai2 <- function(pc, k, l) {
+  nm <- pc$s@free_names
+  ij <- sort(c(k, l))
+  unname(pc$ai2[[paste(nm[ij], collapse = ":")]])
 }
 
 #' @title Mean of a Multivariate Gaussian

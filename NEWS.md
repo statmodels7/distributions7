@@ -1,3 +1,34 @@
+# distributions7 0.66.0
+
+* The multivariate gaussian and Student t read the derivatives of
+  `Sigma^-1` from `parameters7::param_inv_d1()` and `param_inv_d2()` rather
+  than forming them as `-Sigma^-1 A_k Sigma^-1` and its second-order twin.
+  The two are the same quantity, and they separate near a singular
+  covariance: at a log-Cholesky free value `log L22 = -11.5` the sandwich
+  read the first derivative with a relative error of order 1e-7 and the
+  second one entirely wrong. `mv_matrix_pieces()` carries them as `ai` and
+  `ai2`; on the precision side they are the chart's own derivatives. The
+  sites are the gaussian's `distrib_cross_y()`, `distrib_cross2_y()`,
+  `distrib_hess_y_hess()` and `distrib_grad_y_hess()`, and the t's
+  `mvt_dpieces()`.
+
+  For the gaussian, the second derivative in the response and two matrix
+  coordinates now agrees with a Richardson difference of the order below to
+  1e-11 at that point, where the sandwich was out by an amount a new test
+  (`test-mv-near-singular.R`) catches. This is what the exact outer gradient
+  of statmodels7 reads for a correlated random effect: there the trace of
+  the penalty's derivative against the inverse of the penalized information
+  was off by O(1), and it now agrees with a difference of the
+  log-determinant to the reference's own accuracy.
+
+  The Student t's second-order response derivatives near a singular scale
+  matrix are NOT settled by this. Its response Hessian carries
+  `w w' / (nu + q)` with `q` of order 1e10 there, which cancels in its own
+  right, and no Richardson reference is stable at that point; the version
+  before this one was no better against it.
+
+* Requires parameters7 0.21.0.
+
 # distributions7 0.65.0
 
 * **The two Poisson-inverse Gaussians compute their expected information

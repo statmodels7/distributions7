@@ -1650,9 +1650,11 @@ mvt_dpieces <- function(distrib, y, theta) {
 
   # Sigma^-1 A_k w, as rows, and w' A_k w -- the two quantities every matrix
   # component is written in
-  v <- lapply(pc$a, function(ak) (w %*% ak) %*% si)
+  # Sigma^-1 A_k Sigma^-1 = -d_k(Sigma^-1), from the chart and not as a
+  # sandwich, which cancels near a singular scale matrix
+  v <- lapply(pc$ai, function(ak) -(z$r %*% ak))
   gq <- lapply(pc$a, function(ak) rowSums((w %*% ak) * w))
-  P <- lapply(pc$a, function(ak) si %*% ak %*% si)
+  P <- lapply(pc$ai, function(ak) -ak)
 
   sa <- wa <- Sa <- vector("list", npar)
   Na <- numeric(npar)
@@ -1695,8 +1697,9 @@ mvt_dpieces <- function(distrib, y, theta) {
       mid <- pc$a[[ka]] %*% si %*% pc$a[[kb]] +
         pc$a[[kb]] %*% si %*% pc$a[[ka]] - mvt_a2(pc, ka, kb)
       s_ab <- rowSums((w %*% mid) * w)
-      w_ab <- (w %*% mid) %*% si
-      S_ab <- si %*% mid %*% si
+      # Sigma^-1 mid Sigma^-1 is the second derivative of the inverse
+      S_ab <- mv_ai2(pc, ka, kb)
+      w_ab <- z$r %*% S_ab
     }
     # nu is linear in the recursion: every pair naming it has vanishing
     # second derivatives of s, w and the inverse, and only c and d move
