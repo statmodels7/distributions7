@@ -2267,6 +2267,223 @@ S7::method(distrib_hess_y, MvStudentTDistrib) <- function(distrib, y, theta, ...
 }
 
 
+#' @title Multivariate Student t Third and Fourth Response Derivatives
+#' @name distrib_deriv3_y.MvStudentTDistrib
+#'
+#' @description
+#' Compute the third and fourth derivatives of the log-density in the
+#' response, one array per observation. With \eqn{w = \Sigma^{-1}(y-\mu)},
+#' \eqn{q = (y-\mu)^\top w}, \eqn{s = \nu + q}, \eqn{N = \nu + p} and
+#' \eqn{\Omega = \Sigma^{-1}}, the log-density is
+#' \eqn{-\tfrac{N}{2}\log s} plus terms free of \eqn{y}, and
+#' \deqn{\ell_{ijk} = \frac{2N}{s^2}\left(\Omega_{ij}w_k + \Omega_{ik}w_j +
+#'   \Omega_{jk}w_i\right) - \frac{8N}{s^3}\,w_iw_jw_k,}
+#' \deqn{\ell_{ijkl} = \frac{2N}{s^2}\left(\Omega_{ij}\Omega_{kl} +
+#'   \Omega_{ik}\Omega_{jl} + \Omega_{il}\Omega_{jk}\right)
+#'   - \frac{8N}{s^3}\sum_{(xy)(zt)}\Omega_{xy}w_zw_t
+#'   + \frac{48N}{s^4}\,w_iw_jw_kw_l,}
+#' where the middle sum runs over the six ways of choosing the pair
+#' \eqn{(x, y)} from \eqn{\{i, j, k, l\}}, the other two indices taking the
+#' \eqn{w}s. Each follows from the order below by \eqn{\partial s/\partial y
+#' = 2w} and \eqn{\partial w/\partial y = \Omega}.
+#'
+#' @details
+#' A multivariate Student t prior over a block of coefficients has a Hessian
+#' that moves with the coefficients, so the derivative of a marginal
+#' criterion in the hyperparameters reads these arrays through
+#' [penalties7::penalty_dhessian_beta()] and
+#' [penalties7::penalty_d2hessian_beta()].
+#'
+#' @param distrib An [MvStudentTDistrib] object, from
+#'   [mvstudent_t1_distrib()] or [mvstudent_t2_distrib()].
+#' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
+#'   length \eqn{p} is read as a single observation.
+#' @param theta A named list of parameters, each component a single number.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return `distrib_deriv3_y()` a \eqn{p \times p \times p \times n} numeric
+#'   array, `distrib_deriv4_y()` a \eqn{p \times p \times p \times p \times n}
+#'   one; slice \eqn{i} in the last dimension belongs to row \eqn{i} of `y`.
+#'
+#' @seealso [distrib_hess_y.MvStudentTDistrib()] for the order below,
+#'   [distrib_cross3_y.MvStudentTDistrib()] for the derivative in the
+#'   parameters, and [distrib_deriv3_y()] for the generics.
+#'
+#' @examples
+#' d <- mvstudent_t1_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+#' set.seed(1)
+#' y <- distrib_rng(d, 3, theta)
+#' d3 <- distrib_deriv3_y(d, y, theta)
+#' dim(d3)
+#'
+#' # Against a difference of the response Hessian along the first coordinate.
+#' h <- 1e-5
+#' yp <- y; yp[, 1] <- yp[, 1] + h
+#' ym <- y; ym[, 1] <- ym[, 1] - h
+#' max(abs(d3[, , 1, ] -
+#'         (distrib_hess_y(d, yp, theta) - distrib_hess_y(d, ym, theta)) / (2 * h)))
+#'
+#' @keywords internal
+S7::method(distrib_deriv3_y, MvStudentTDistrib) <- function(distrib, y, theta,
+                                                            ...) {
+  y <- as_mv_matrix(distrib, y)
+  z <- mvt_dpieces(distrib, y, theta)
+  mvt_y_tensor(z, 3L)
+}
+
+#' @rdname distrib_deriv3_y.MvStudentTDistrib
+#' @name distrib_deriv4_y.MvStudentTDistrib
+#' @keywords internal
+S7::method(distrib_deriv4_y, MvStudentTDistrib) <- function(distrib, y, theta,
+                                                            ...) {
+  y <- as_mv_matrix(distrib, y)
+  z <- mvt_dpieces(distrib, y, theta)
+  mvt_y_tensor(z, 4L)
+}
+
+#' @title Multivariate Student t Third Response Derivative in a Parameter
+#' @name distrib_cross3_y.MvStudentTDistrib
+#'
+#' @description
+#' Computes \eqn{\partial^4\ell/\partial y_i\partial y_j\partial y_k\,
+#' \partial\theta_a}, one \eqn{p \times p \times p \times n} array per
+#' parameter. With the notation of
+#' [distrib_deriv3_y.MvStudentTDistrib()], write
+#' \eqn{T_{ijk} = \Omega_{ij}w_k + \Omega_{ik}w_j + \Omega_{jk}w_i}. The
+#' derivative of
+#' \eqn{\ell_{ijk} = 2Ns^{-2}T_{ijk} - 8Ns^{-3}w_iw_jw_k} in \eqn{\theta_a} is
+#' \deqn{\left(\frac{2N_a}{s^2} - \frac{4Ns_a}{s^3}\right)T_{ijk}
+#'   + \frac{2N}{s^2}\,\partial_aT_{ijk}
+#'   - \left(\frac{8N_a}{s^3} - \frac{24Ns_a}{s^4}\right)w_iw_jw_k
+#'   - \frac{8N}{s^3}\,\partial_a(w_iw_jw_k),}
+#' with \eqn{N_a}, \eqn{s_a}, \eqn{\partial_aw} and \eqn{\partial_a\Omega}
+#' from [mvt_dpieces()]: \eqn{N_a} is one for \eqn{\nu} and zero otherwise.
+#'
+#' @param distrib An [MvStudentTDistrib] object.
+#' @param y An \eqn{n \times p} numeric matrix of observations.
+#' @param theta A named list of parameters, each component a single number.
+#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
+#'   generic before dispatch.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list of \eqn{p \times p \times p \times n} numeric arrays,
+#'   one per parameter, in `distrib@params` order.
+#'
+#' @seealso [distrib_deriv3_y.MvStudentTDistrib()], whose derivative in the
+#'   parameters this is, and [distrib_cross3_y()] for the generic.
+#'
+#' @examples
+#' d <- mvstudent_t1_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+#' set.seed(1)
+#' y <- distrib_rng(d, 3, theta)
+#' c3 <- distrib_cross3_y(d, y, theta)
+#'
+#' # Against a difference of the third response derivative in nu.
+#' h <- 1e-5
+#' tp <- theta; tp$nu <- 6 + h
+#' tm <- theta; tm$nu <- 6 - h
+#' max(abs(c3$nu - (distrib_deriv3_y(d, y, tp) -
+#'                  distrib_deriv3_y(d, y, tm)) / (2 * h)))
+#'
+#' @keywords internal
+S7::method(distrib_cross3_y, MvStudentTDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    y <- as_mv_matrix(distrib, y)
+    z <- mvt_dpieces(distrib, y, theta)
+    N <- z$cw * z$s
+    stats::setNames(lapply(seq_len(z$npar), function(a) {
+      Na <- if (a == z$npar) 1 else 0
+      mvt_y_tensor3_d(z, N[1L], Na, z$sa[[a]], z$wa[[a]], z$Sa[[a]])
+    }), distrib@params)
+  }
+
+#' @title Response Tensors of the Multivariate Student t
+#'
+#' @description
+#' `mvt_y_tensor()` assembles the third or fourth response derivative of
+#' [distrib_deriv3_y.MvStudentTDistrib()] from the pieces of [mvt_dpieces()],
+#' one observation at a time. `mvt_y_tensor3_d()` assembles the derivative of
+#' the third one in a parameter, given that parameter's derivatives of
+#' \eqn{N}, \eqn{s}, \eqn{w} and \eqn{\Omega}.
+#'
+#' @param z The result of [mvt_dpieces()].
+#' @param order `3L` or `4L`.
+#' @param N The single number \eqn{\nu + p}.
+#' @param Na The derivative of \eqn{N} in the parameter.
+#' @param sa A numeric vector of length \eqn{n}, the derivative of \eqn{s}.
+#' @param wa An \eqn{n \times p} matrix, the derivative of \eqn{w}.
+#' @param Oa A \eqn{p \times p} matrix, the derivative of \eqn{\Omega}.
+#'
+#' @return A numeric array with \eqn{n} as its last dimension.
+#'
+#' @seealso [distrib_deriv3_y.MvStudentTDistrib()],
+#'   [distrib_cross3_y.MvStudentTDistrib()].
+#'
+#' @examples
+#' d <- mvstudent_t1_distrib(2)
+#' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+#'               sigma_L2.1 = 0, nu = 4)
+#' z <- distributions7:::mvt_dpieces(d, matrix(c(1, -1), 1, 2), theta)
+#' dim(distributions7:::mvt_y_tensor(z, 3L))
+#'
+#' @keywords internal
+mvt_y_tensor <- function(z, order) {
+  p <- z$p
+  n <- z$n
+  N <- z$cw[1L] * z$s[1L]
+  O <- z$si
+  out <- array(0, dim = c(rep(p, order), n))
+  for (i in seq_len(n)) {
+    w <- z$w[i, ]
+    s <- z$s[i]
+    if (order == 3L) {
+      T3 <- outer(O, w) + aperm(outer(O, w), c(1L, 3L, 2L)) +
+        aperm(outer(O, w), c(3L, 1L, 2L))
+      out[, , , i] <- 2 * N / s^2 * T3 - 8 * N / s^3 * outer(outer(w, w), w)
+    } else {
+      OO <- outer(O, O)
+      Q <- OO + aperm(OO, c(1L, 3L, 2L, 4L)) + aperm(OO, c(1L, 4L, 3L, 2L))
+      Ow <- outer(O, outer(w, w))
+      M <- Ow + aperm(Ow, c(1L, 3L, 2L, 4L)) + aperm(Ow, c(1L, 3L, 4L, 2L)) +
+        aperm(Ow, c(3L, 1L, 2L, 4L)) + aperm(Ow, c(3L, 1L, 4L, 2L)) +
+        aperm(Ow, c(3L, 4L, 1L, 2L))
+      w4 <- outer(outer(w, w), outer(w, w))
+      out[, , , , i] <- 2 * N / s^2 * Q - 8 * N / s^3 * M + 48 * N / s^4 * w4
+    }
+  }
+  out
+}
+
+#' @rdname mvt_y_tensor
+#' @keywords internal
+mvt_y_tensor3_d <- function(z, N, Na, sa, wa, Oa) {
+  p <- z$p
+  n <- z$n
+  O <- z$si
+  sym3 <- function(A) A + aperm(A, c(1L, 3L, 2L)) + aperm(A, c(3L, 1L, 2L))
+  out <- array(0, dim = c(p, p, p, n))
+  for (i in seq_len(n)) {
+    w <- z$w[i, ]
+    wd <- wa[i, ]
+    s <- z$s[i]
+    sd <- sa[i]
+    T3 <- sym3(outer(O, w))
+    dT3 <- sym3(outer(Oa, w) + outer(O, wd))
+    ww <- outer(outer(w, w), w)
+    dww <- outer(outer(wd, w), w) + outer(outer(w, wd), w) +
+      outer(outer(w, w), wd)
+    out[, , , i] <- (2 * Na / s^2 - 4 * N * sd / s^3) * T3 +
+      2 * N / s^2 * dT3 - (8 * Na / s^3 - 24 * N * sd / s^4) * ww -
+      8 * N / s^3 * dww
+  }
+  out
+}
+
+
 #' @title Mean of a Multivariate Student t
 #' @name mean.MvStudentTDistrib
 #'

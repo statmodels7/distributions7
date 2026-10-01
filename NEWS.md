@@ -1,3 +1,46 @@
+# distributions7 0.67.0
+
+* The multivariate Student t (`mvstudent_t1_distrib()`,
+  `mvstudent_t2_distrib()`) has its third and fourth response derivatives,
+  `distrib_deriv3_y()` and `distrib_deriv4_y()`, as one
+  \eqn{p \times p \times p} and one \eqn{p \times p \times p \times p} array
+  per observation, and the derivative of the third in each parameter,
+  `distrib_cross3_y()`, all in closed form. With \eqn{w = \Sigma^{-1}(y-\mu)},
+  \eqn{s = \nu + q} and \eqn{N = \nu + p} they are polynomials in \eqn{w}
+  and \eqn{\Sigma^{-1}} over powers of \eqn{s}. Against one central
+  difference of the order below they agree to 2e-11 (third), 1.9e-10 (fourth)
+  and 4.7e-10 (mixed) on arrays of order one. `fixed()` of a multivariate
+  family passes the three on. A multivariate t prior over a block of random
+  effects reads them through \pkg{penalties7}, which is what gives the
+  marginal criterion of such a model its exact derivatives.
+
+
+# distributions7 0.66.1
+
+* The negative binomial expected information (`negbin2_distrib()`) passes a
+  parameter that is the same number at every observation to its kernel as one
+  number (`constant_to_scalar()`). The kernel sums its series once for a scalar
+  pair and copies the result, and it repeated the same sum for each of `n`
+  equal values. A fit with no covariates on the mean and the dispersion is
+  this case, and it is what the starting values of `statmod()` use. The values
+  returned are identical.
+
+* The series of the negative binomial expected information and of its
+  derivatives (`negbin.cpp`, `negbin_hd.cpp`) stop after 1e6 terms, where the
+  cap was 2e9. Below `theta/mu` of about 3e-5 the tail needs 1e7 to 1e9 terms
+  and one series costs 0.2 s or more; above that nothing changes, because the
+  loop breaks on the accumulated mass long before 1e6. The region below is the
+  edge of the parameter space, and its information is not read for an
+  estimate.
+
+  Where it mattered: `fit_distrib()` and the starting values of `statmod()`
+  fit `zero_adjusted(negbin2)` to the 900 counts of `rpart::solder` from ten
+  starts, and one of them creeps along `theta -> 0` with one 0.2 s series per
+  iteration. Measured with the same optimum (log-likelihood -2395.102): the ten
+  starts cost 33 s before and 0.1 s now, with one start 0.2 s either way.
+  `statmod()` of the hurdle model on the same data went from 37 s to the
+  figure given in the book's chapter 5.
+
 # distributions7 0.66.0
 
 * The multivariate gaussian and Student t read the derivatives of

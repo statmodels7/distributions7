@@ -723,6 +723,28 @@ S7::method(distrib_hess_y, FixedMultivariateDistrib) <-
                    ...)
   }
 
+# the third and fourth response derivatives and the mixed one, which a
+# multivariate prior whose Hessian moves with the coefficients is read through
+S7::method(distrib_deriv3_y, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, ...) {
+    distrib_deriv3_y(distrib@parent_distrib, y,
+                     fixed_full_theta(distrib, theta), ...)
+  }
+
+S7::method(distrib_deriv4_y, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, ...) {
+    distrib_deriv4_y(distrib@parent_distrib, y,
+                     fixed_full_theta(distrib, theta), ...)
+  }
+
+S7::method(distrib_cross3_y, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    out <- distrib_cross3_y(distrib@parent_distrib, y,
+                            fixed_full_theta(distrib, theta),
+                            scale = "parameter", ...)
+    out[distrib@params]
+  }
+
 S7::method(distrib_cross_y, FixedMultivariateDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
     out <- distrib_cross_y(distrib@parent_distrib, y,

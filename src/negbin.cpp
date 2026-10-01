@@ -112,12 +112,16 @@ using namespace Rcpp;
 // hard cap covers the geometric tail (decay ratio mu/(theta+mu), so
 // ~30(mu+theta)/theta terms reach 1e-12) and the loop almost always breaks on
 // the mass long before it.
+// The loop is also capped at 1e6 terms. Below theta/mu of about 3e-5 the tail
+// needs 1e7 to 1e9 terms, one series then costs 0.2 s or more, and a fit that
+// creeps along theta -> 0 pays it at every iteration; that region is the edge
+// of the parameter space and its information is not read for an estimate.
 static double nb_E_ltt(double mu, double theta) {
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
     double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + mu / theta))
                  + 40.0 * (mu + theta) / theta;
-    int kmax = (int) std::min(cap, 2.0e9);
+    int kmax = (int) std::min(cap, 1.0e6);
     const double den = theta * (theta + mu);
 
     double s = 0.0, cum = 0.0, U = 0.0;
@@ -190,7 +194,7 @@ static void nb_dE_ltt(double mu, double theta, int order, double *out) {
     double lratio = std::log(mu) - std::log(theta + mu);
     double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + mu / theta))
                  + 40.0 * (mu + theta) / theta;
-    int kmax = (int) std::min(cap, 2.0e9);
+    int kmax = (int) std::min(cap, 1.0e6);
     const double c = theta + mu, c2 = c * c, c3 = c2 * c;
     const double den = theta * c;
     const double L = std::log1p(mu / theta);

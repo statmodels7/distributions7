@@ -104,7 +104,7 @@ static double nb_E_dtheta(double mu, double theta, int nd) {
     const double lratio = std::log(mu) - std::log(theta + mu);
     const double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + mu / theta))
                        + 40.0 * (mu + theta) / theta;
-    const int kmax = (int) std::min(cap, 2.0e9);
+    const int kmax = (int) std::min(cap, 1.0e6);
     const double s = theta + mu, th2 = theta * theta, th3 = th2 * theta;
     const double s2 = s * s, s3 = s2 * s;
     const double A3 = th2 * mu * (3.0 * theta + 2.0 * mu);

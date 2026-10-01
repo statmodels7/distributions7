@@ -570,7 +570,28 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 #'        numeric(1))
 S7::method(distrib_expected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
                                        threads = 1L) {
-  negbin_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
+  negbin_expected_hessian_cpp(y, constant_to_scalar(theta[[1]]),
+                              constant_to_scalar(theta[[2]]), threads)
+}
+
+#' @title A Constant Parameter Vector as One Number
+#' @description
+#' Returns `x[1]` when `x` has several elements that are all equal and none
+#' missing, and `x` unchanged otherwise. A compiled kernel that sums a series
+#' for each observation computes it once for a scalar parameter and copies the
+#' result, but repeats the same sum `length(x)` times for a vector of equal
+#' values. A fit with no covariates on the parameters is this case, and at a
+#' dispersion near \eqn{10^{-13}} one sum of the negative binomial expected
+#' information runs to millions of terms. The values returned by the kernel are
+#' the same either way.
+#' @param x A numeric vector.
+#' @return A numeric vector, of length one when `x` is constant.
+#' @examples
+#' constant_to_scalar(rep(2, 5))
+#' constant_to_scalar(c(2, 3))
+#' @keywords internal
+constant_to_scalar <- function(x) {
+  if (length(x) > 1L && !anyNA(x) && all(x == x[1L])) x[1L] else x
 }
 
 #' @title Negative Binomial Derivatives of the Expected Information, NB2
