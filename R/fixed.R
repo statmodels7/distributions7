@@ -934,7 +934,11 @@ S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
 #' # What is accepted
 #'
 #' Fixed values are single finite numbers, strictly inside the OPEN domain of
-#' their parameter. Fixing a parameter of a distribution that is already a
+#' their parameter. A multivariate family's mean is the vector parameter
+#' `mu1, ..., mup`, and the name `mu` fixes all of it: `mu = 0` holds every
+#' coordinate at zero, and `mu = c(0, 1, 2)` holds each at its own value. The
+#' same holds for any parameter named as a stem followed by the indices
+#' `1, ..., k`. Fixing a parameter of a distribution that is already a
 #' fixed-parameter wrapper collapses the two into one wrapper around the
 #' original parent. Fixing a WRAPPER's own parameter is allowed and useful:
 #' `fixed(zero_inflated(d), zi = 0.3)` is a zero-inflated model with a known
@@ -947,7 +951,7 @@ S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
 #'
 #' A prior. `fixed(gaussian1_distrib(), mu = 0)` is the ridge penalty with its
 #' scale free, `fixed(laplace2_distrib(), mu = 0)` is the lasso, and
-#' `fixed(mvgaussian1_distrib(p), mu1 = 0, ...)` is what a random effect is
+#' `fixed(mvgaussian1_distrib(p), mu = 0)` is what a random effect is
 #' distributed by. `fixed(folded(gaussian1_distrib()), mu = 0)` is the
 #' half-normal.
 #'
@@ -966,7 +970,9 @@ S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
 #' @param ... The fixed values, named after the parameters they fix, as in
 #'   `fixed(gaussian1_distrib(), mu = 0)`. Each must be a single finite number
 #'   strictly inside its parameter's domain, and each name must be a parameter
-#'   of `distrib`. A name that is not, a value outside the domain, a value that
+#'   of `distrib`, or the stem of a vector parameter such as a multivariate
+#'   mean, whose value is then one number for every coordinate or one number
+#'   per coordinate. A name that is not, a value outside the domain, a value that
 #'   is not a single number, and an empty `...` are each rejected with an error
 #'   saying which condition failed.
 #'
@@ -982,6 +988,9 @@ S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
 #'   the methods do.
 #'
 #' @examples
+#' # A multivariate gaussian with its whole mean held at zero.
+#' fixed(mvgaussian1_distrib(3), mu = 0)@params
+#'
 #' # A gaussian with a known mean: only sigma remains.
 #' d <- fixed(gaussian1_distrib(), mu = 0)
 #' d@params
@@ -1023,7 +1032,7 @@ fixed <- function(distrib, ...) {
     )
   }
 
-  fix <- list(...)
+  fix <- fixed_expand_stems(list(...), distrib@params)
   if (length(fix) == 0L) {
     stop(paste0(
       "fixed() needs at least one named value, as in fixed(d, mu = 0). With\n",
@@ -1133,3 +1142,60 @@ fixed <- function(distrib, ...) {
     do.call(FixedContinuousDistrib, common)
   }
 }
+
+
+#' @title Expand the Stem of a Vector Parameter in fixed()
+#'
+#' @description
+#' Replaces a name that is not a parameter but is the stem of the parameters
+#' `stem1, ..., stemk` by those parameters, recycling a single value or taking
+#' one value per coordinate. It is what lets `fixed(mvgaussian1_distrib(3),
+#' mu = 0)` hold the whole mean at zero.
+#'
+#' @param fix The named list of values passed to [fixed()].
+#' @param params The parameter names of the distribution being fixed.
+#'
+#' @return The list with every stem expanded into its coordinates. A name that
+#'   is a parameter, or matches no stem, is returned unchanged for [fixed()]
+#'   to check.
+#'
+#' @examples
+#' distributions7:::fixed_expand_stems(list(mu = 0, sigma = 1),
+#'                                     c("mu1", "mu2", "sigma"))
+#' distributions7:::fixed_expand_stems(list(mu = c(1, 2)), c("mu1", "mu2"))
+#'
+#' @keywords internal
+fixed_expand_stems <- function(fix, params) {
+  nms <- names(fix)
+  if (is.null(nms)) return(fix)
+  out <- list()
+  for (i in seq_along(fix)) {
+    nm <- nms[i]
+    v <- fix[[i]]
+    if (!nzchar(nm) || nm %in% params) {
+      out[length(out) + 1L] <- list(v)
+      names(out)[length(out)] <- nm
+      next
+    }
+    k <- 0L
+    while (paste0(nm, k + 1L) %in% params) k <- k + 1L
+    if (k == 0L) {
+      out[length(out) + 1L] <- list(v)
+      names(out)[length(out)] <- nm
+      next
+    }
+    if (!is.numeric(v) || !(length(v) %in% c(1L, k))) {
+      stop(sprintf(paste0(
+        "The value fixing '%s' must be one number for every coordinate or %d ",
+        "numbers, one per coordinate %s1, ..., %s%d."
+      ), nm, k, nm, nm, k), call. = FALSE)
+    }
+    v <- rep_len(v, k)
+    for (j in seq_len(k)) {
+      out[length(out) + 1L] <- list(v[[j]])
+      names(out)[length(out)] <- paste0(nm, j)
+    }
+  }
+  out
+}
+

@@ -398,3 +398,40 @@ test_that("the higher response derivatives delegate to the parent", {
   expect_equal(distrib_deriv3_y(z, y, th), numerical_deriv_y(z, y, th, 3L),
                tolerance = 1e-5)
 })
+
+test_that("the stem of a vector parameter fixes all its coordinates", {
+  d <- mvgaussian1_distrib(3)
+  a <- fixed(d, mu = 0)
+  b <- fixed(d, mu1 = 0, mu2 = 0, mu3 = 0)
+  expect_identical(a@params, b@params)
+  expect_identical(a@fixed_params, b@fixed_params)
+
+  # one value per coordinate
+  e <- fixed(d, mu = c(1, 2, 3))
+  expect_identical(unlist(e@fixed_params), c(mu1 = 1, mu2 = 2, mu3 = 3))
+
+  # a length that is neither one nor the dimension, and a coordinate named
+  # twice through the stem, are rejected
+  expect_error(fixed(d, mu = c(0, 1)), "one number for every coordinate")
+  expect_error(fixed(d, mu = 0, mu1 = 0), "more than once")
+
+  # a univariate parameter is never read as a stem
+  expect_identical(fixed(gaussian1_distrib(), mu = 0)@params, "sigma")
+})
+
+test_that("a compound symmetry reports its standard deviation and correlation", {
+  d <- fixed(mvgaussian1_distrib(3, parameters7::compound_symmetry(3)), mu = 0)
+  th <- align_theta(d, list(sigma_log_scale = log(4), sigma_logit_rho = 0.3))
+  der <- mv_derived(d, th)
+  expect_identical(names(der$value), c("sd", "rho"))
+  S <- mv_sigma(d, th)
+  expect_equal(der$value[["sd"]], sqrt(S[1, 1]))
+  expect_equal(der$value[["rho"]], S[1, 2] / S[1, 1])
+  # the Jacobian of sd against a difference of the value
+  f <- function(x) {
+    mv_derived(d, align_theta(d, list(sigma_log_scale = x[1],
+                                      sigma_logit_rho = x[2])))$value
+  }
+  expect_equal(unname(der$jacobian),
+               unname(numDeriv::jacobian(f, unlist(th))), tolerance = 1e-8)
+})

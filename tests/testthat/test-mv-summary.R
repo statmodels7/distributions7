@@ -82,11 +82,10 @@ test_that("a precision parametrization reports what it describes directly", {
   ds_der <- mv_derived(ds, ths)
   do_der <- mv_derived(do, tho)
 
-  # the standard deviations and correlations of the response are the same
-  # whichever side is parametrized: they are properties of the law
-  expect_equal(do_der$value[names(ds_der$value)], ds_der$value)
-
-  # and the precision form adds the readings that are its own
+  # the precision form reports the readings that are its own and nothing of
+  # the covariance, which the covariance form reports
+  expect_false(any(names(ds_der$value) %in% names(do_der$value)))
+  expect_false(any(grepl("^(sd|cor)_", names(do_der$value))))
   omega <- solve(unname(sigma))
   expect_equal(
     unname(do_der$value[paste0("cvar_v", 1:3)]), 1 / diag(omega)
@@ -96,12 +95,14 @@ test_that("a precision parametrization reports what it describes directly", {
     -omega[1, 2] / sqrt(omega[1, 1] * omega[2, 2])
   )
 
-  # in two dimensions there is nothing to condition on, so the partial
-  # correlation would repeat the correlation and is not printed
+  # in two dimensions the partial correlation is the correlation, and is
+  # reported all the same, the correlation not being among the quantities
   d2 <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
   set.seed(63)
-  v2 <- mv_derived(d2, generate_random_theta(d2))$value
-  expect_false(any(grepl("^pcor_", names(v2))))
+  th2 <- generate_random_theta(d2)
+  v2 <- mv_derived(d2, th2)$value
+  s2 <- mv_sigma(d2, th2)
+  expect_equal(unname(v2[["pcor_v1_v2"]]), s2[1, 2] / sqrt(s2[1, 1] * s2[2, 2]))
   expect_true(any(grepl("^cvar_", names(v2))))
 })
 
@@ -304,13 +305,18 @@ test_that("the two parametrizations report the same uncertainty", {
   y <- distrib_rng(ds, 1000, th)
   do <- mvgaussian2_distrib(3, parameters7::log_cholesky(3))
 
-  a <- mv_summary(fit_distrib(ds, y))
-  b <- mv_summary(fit_distrib(do, y))
-  common <- rownames(a)
-  expect_equal(a[common, "Estimate"], b[common, "Estimate"], tolerance = 1e-5)
-  expect_equal(a[common, "Std. Error"], b[common, "Std. Error"],
-    tolerance = 1e-4
-  )
+  # The two report different quantities, so the matrix entries are read on
+  # both through the base method, which describes the law and not the chart.
+  base <- S7::method(mv_derived, multivariate_distrib)
+  entries <- function(fit) {
+    der <- base(fit@distrib, align_theta(fit@distrib, as.list(fit@coefficients)))
+    cbind(est = der$value,
+          se = sqrt(diag(der$jacobian %*% fit@vcov %*% t(der$jacobian))))
+  }
+  a <- entries(fit_distrib(ds, y))
+  b <- entries(fit_distrib(do, y))
+  expect_equal(a[, "est"], b[, "est"], tolerance = 1e-5)
+  expect_equal(a[, "se"], b[, "se"], tolerance = 1e-3)
 })
 
 
@@ -327,23 +333,24 @@ test_that("a structured matrix reports the quantities the family is about", {
 
   expect_true("Autoregressive structure" %in% blk)
   rows <- rownames(s)[blk == "Autoregressive structure"]
-  expect_identical(rows, c("scale", "pacf1", "pacf2", "phi1", "phi2"))
+  expect_identical(rows, c("sd", "pacf1", "pacf2", "phi1", "phi2"))
 
-  # The block is not a restatement of the covariance: the lag-one correlation
-  # IS the first partial autocorrelation, and the two must agree to the digit,
-  # while the coefficients appear nowhere else in the summary.
-  expect_equal(s["pacf1", "Estimate"], s["cor_v1_v2", "Estimate"],
-    tolerance = 1e-10)
-  expect_equal(s["pacf1", "Std. Error"], s["cor_v1_v2", "Std. Error"],
-    tolerance = 1e-10)
-  expect_false(any(grepl("^phi", rownames(s)[blk != "Autoregressive structure"])))
+  # The block is the whole summary: the standard deviation of every coordinate
+  # and the correlation of every pair would repeat it.
+  expect_identical(rownames(s), rows)
+
+  # sd is the square root of the common variance, and the lag-one correlation
+  # IS the first partial autocorrelation
+  S <- mv_sigma(fit@distrib, as.list(fit@coefficients))
+  expect_equal(s["sd", "Estimate"], sqrt(S[1, 1]), tolerance = 1e-10)
+  expect_equal(s["pacf1", "Estimate"], S[1, 2] / S[1, 1], tolerance = 1e-10)
 
   # an order-q autoregression has phi_q = r_q whatever the data
   expect_equal(s["phi2", "Estimate"], s["pacf2", "Estimate"], tolerance = 1e-10)
 
   # every interval stays in the set its quantity lives in, which is what
   # building it on the declared scale is for
-  expect_gt(s["scale", "2.5%"], 0)
+  expect_gt(s["sd", "2.5%"], 0)
   expect_gt(s["pacf1", "2.5%"], -1)
   expect_lt(s["pacf1", "97.5%"], 1)
   expect_lt(s["pacf2", "97.5%"], 1)

@@ -13,7 +13,9 @@ from \code{continuous_distrib}, \code{discrete_distrib} or \code{multivariate_di
 \item{...}{The fixed values, named after the parameters they fix, as in
 \code{fixed(gaussian1_distrib(), mu = 0)}. Each must be a single finite number
 strictly inside its parameter's domain, and each name must be a parameter
-of \code{distrib}. A name that is not, a value outside the domain, a value that
+of \code{distrib}, or the stem of a vector parameter such as a multivariate
+mean, whose value is then one number for every coordinate or one number
+per coordinate. A name that is not, a value outside the domain, a value that
 is not a single number, and an empty \code{...} are each rejected with an error
 saying which condition failed.}
 }
@@ -48,7 +50,11 @@ standard errors and intervals for them alone.
 
 \section{What is accepted}{
 Fixed values are single finite numbers, strictly inside the OPEN domain of
-their parameter. Fixing a parameter of a distribution that is already a
+their parameter. A multivariate family's mean is the vector parameter
+\verb{mu1, ..., mup}, and the name \code{mu} fixes all of it: \code{mu = 0} holds every
+coordinate at zero, and \code{mu = c(0, 1, 2)} holds each at its own value. The
+same holds for any parameter named as a stem followed by the indices
+\verb{1, ..., k}. Fixing a parameter of a distribution that is already a
 fixed-parameter wrapper collapses the two into one wrapper around the
 original parent. Fixing a WRAPPER's own parameter is allowed and useful:
 \code{fixed(zero_inflated(d), zi = 0.3)} is a zero-inflated model with a known
@@ -61,7 +67,7 @@ silently would hide a missing argument.
 \section{What it is for}{
 A prior. \code{fixed(gaussian1_distrib(), mu = 0)} is the ridge penalty with its
 scale free, \code{fixed(laplace2_distrib(), mu = 0)} is the lasso, and
-\code{fixed(mvgaussian1_distrib(p), mu1 = 0, ...)} is what a random effect is
+\code{fixed(mvgaussian1_distrib(p), mu = 0)} is what a random effect is
 distributed by. \code{fixed(folded(gaussian1_distrib()), mu = 0)} is the
 half-normal.
 
@@ -79,6 +85,9 @@ parameters named.
 }
 
 \examples{
+# A multivariate gaussian with its whole mean held at zero.
+fixed(mvgaussian1_distrib(3), mu = 0)@params
+
 # A gaussian with a known mean: only sigma remains.
 d <- fixed(gaussian1_distrib(), mu = 0)
 d@params

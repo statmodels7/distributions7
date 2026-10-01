@@ -13,9 +13,11 @@
 }
 \value{
 A named list with \code{value}, \code{jacobian}, \code{transform} and \code{block}, as
-\code{\link[=mv_derived]{mv_derived()}} documents: \eqn{p} scale standard deviations on the log
-scale and \eqn{p(p-1)/2} correlations on Fisher's \eqn{z}, plus whatever
-the matrix parametrization declares.
+\code{\link[=mv_derived]{mv_derived()}} documents: the structure's own block where it declares
+one; otherwise \eqn{p} scale standard deviations on the log scale and
+\eqn{p(p-1)/2} correlations on Fisher's \eqn{z}, or for the inverse
+parametrization \eqn{p} conditional scales and \eqn{p(p-1)/2} partial
+correlations.
 }
 \description{
 Returns the square roots of the diagonal of the SCALE matrix and the
@@ -25,6 +27,12 @@ supplies. The correlations are the response's as well: the covariance is
 leaves its correlations alone. The diagonal quantities are NOT standard
 deviations of the response, and are named \code{scale_sd_v1}, ..., \code{scale_sd_vp}
 and blocked as \code{"Scale standard deviations"} to say so.
+
+The rule of \code{\link[=mv_derived.MvGaussianDistrib]{mv_derived.MvGaussianDistrib()}} holds here as well: a
+structured parametrization reports its own block alone, its \code{scale} as the
+square root \code{scale_sd} on the scale-matrix side, and the inverse
+parametrization reports the conditional scales \eqn{1/M_{jj}} and the
+partial correlations and nothing of the scale matrix.
 }
 \details{
 The degrees of freedom appear in no quantity here. \eqn{\nu} is already an

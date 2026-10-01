@@ -2,9 +2,10 @@
 % Please edit documentation in R/mv_summary.R
 \name{mv_derived.MvGaussianDistrib}
 \alias{mv_derived.MvGaussianDistrib}
-\title{Standard Deviations and Correlations of a Multivariate Gaussian}
+\title{Interpretable Quantities of a Multivariate Gaussian}
 \arguments{
-\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}
+or \code{\link[=mvgaussian2_distrib]{mvgaussian2_distrib()}}.}
 
 \item{theta}{A named list of parameters, already aligned by the generic.}
 
@@ -12,37 +13,38 @@
 }
 \value{
 A named list with \code{value}, \code{jacobian}, \code{transform} and \code{block}, as
-\code{\link[=mv_derived]{mv_derived()}} documents. A covariance parametrization gives
-\eqn{p(p+1)/2} quantities; a precision one adds \eqn{p} conditional
-variances and, above \eqn{p = 2}, \eqn{p(p-1)/2} partial correlations.
+\code{\link[=mv_derived]{mv_derived()}} documents: the structure's own block where it declares one;
+otherwise \eqn{p} standard deviations and \eqn{p(p-1)/2} correlations for
+a covariance, or \eqn{p} conditional variances and \eqn{p(p-1)/2} partial
+correlations for a precision.
 }
 \description{
-Returns the standard deviations and correlations of the response, whichever
-side the parametrization carries, with the closed-form Jacobian
-\code{\link[=mv_sd_cor]{mv_sd_cor()}} supplies. A PRECISION parametrization reports two further
-blocks, which are what it describes directly: the conditional variances
-\eqn{1/\Omega_{jj} = \operatorname{Var}(Y_j \mid Y_{-j})}, and above two
-dimensions the partial correlations
-\eqn{-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}}, the correlation of two
-coordinates given all the others, which is zero exactly where the precision
-has a zero.
+Returns the quantities the chosen parametrization describes, with their
+Jacobian. Where the matrix parametrization declares its own block through
+\code{parameters7::param_readable()} (a compound symmetry, an AR(1), an AR(p)),
+that block alone is returned, with the common variance \code{scale} reported as
+its square root \code{sd} on the covariance side. Otherwise a COVARIANCE
+parametrization reports the standard deviations and the correlations, and a
+PRECISION parametrization reports the conditional variances
+\eqn{1/\Omega_{jj} = \operatorname{Var}(Y_j \mid Y_{-j})} and the partial
+correlations \eqn{-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}}, the
+correlation of two coordinates given all the others.
 }
+\section{One parametrization, one set of quantities}{
+A user who writes the model on the precision asks to read the precision, so
+the marginal standard deviations and correlations are not reported beside
+its own quantities; they remain available from \code{mv_sigma()} and
+\code{variance()}. In the same way a structured matrix is fixed by its few
+parameters, and the standard deviation of every coordinate and the
+correlation of every pair would repeat them.
+}
+
 \section{What a precision's diagonal means}{
-The quantity with a reading is the conditional VARIANCE, so the diagonal
-quantities \code{\link[=mv_sd_cor]{mv_sd_cor()}} produces from \eqn{\Omega} are square roots of the
-wrong thing; they are dropped and \eqn{1/\Omega_{jj}} is reported instead.
-Its ratio to the marginal variance is \eqn{1 - R_j^2} for the regression of
-that coordinate on all the others.
-
-At \eqn{p = 2} there is nothing to condition on, so the partial correlation
-IS the correlation and is not printed twice.
-}
-
-\section{The parametrization's own quantities}{
-Whatever the matrix parametrization declares through
-\code{parameters7::param_readable()} is appended as a further block. An AR(1)
-covariance is about a scale and a correlation; a log-Cholesky one declares
-nothing and the summary stops at the standard deviations.
+The quantity with a reading is the conditional VARIANCE, so
+\eqn{1/\Omega_{jj}} is reported rather than a square root of
+\eqn{\Omega_{jj}}. Its ratio to the marginal variance is \eqn{1 - R_j^2} for
+the regression of that coordinate on all the others. At \eqn{p = 2} the
+partial correlation equals the correlation.
 }
 
 \section{Notation}{
@@ -59,30 +61,27 @@ theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5)
 mv_derived(d, theta)$value
 
-# The precision side reports the same law's standard deviations and
-# correlation, and adds the conditional variances.
+# The precision side reports the conditional variances and the partial
+# correlation, and nothing of the covariance.
 o <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 th_o <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0, omega_log_L2 = 0,
              omega_L2.1 = 0.5)
 od <- mv_derived(o, th_o)
 od$value
-od$block
 
 # A conditional variance is 1 / Omega_jj, and is at most the marginal one.
 Om <- parameters7::param_value(o@param, unlist(th_o)[3:5])
 c(conditional = 1 / Om[1, 1], marginal = mv_sigma(o, th_o)[1, 1])
 
-# At three dimensions the partial correlations appear as a block of their
-# own, the partial and the marginal no longer coinciding.
-o3 <- mvgaussian2_distrib(3, parameters7::log_cholesky(3))
-th3 <- as.list(stats::setNames(
-  c(0, 0, 0, 0, 0, 0, 0.5, -0.4, 0.3), o3@params))
-unique(mv_derived(o3, th3)$block)
+# A compound symmetry reports its standard deviation and its correlation.
+cs <- mvgaussian1_distrib(3, parameters7::compound_symmetry(3))
+mv_derived(cs, list(mu1 = 0, mu2 = 0, mu3 = 0, sigma_log_scale = log(4),
+                    sigma_logit_rho = 0))$value
 
 }
 \seealso{
 \code{\link[=mv_sd_cor]{mv_sd_cor()}} for the closed-form Jacobian,
-\code{\link[=mv_param_block]{mv_param_block()}} for the appended block, \code{\link[=mv_summary]{mv_summary()}} for the printed
-result, and \code{\link[=mv_derived]{mv_derived()}} for the generic.
+\code{\link[=mv_own_block]{mv_own_block()}} for the structure's own block, \code{\link[=mv_summary]{mv_summary()}} for the
+printed result, and \code{\link[=mv_derived]{mv_derived()}} for the generic.
 }
 \keyword{internal}

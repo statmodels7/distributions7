@@ -224,6 +224,57 @@ mv_param_block <- function(distrib, theta) {
 }
 
 
+#' @title The Quantities a Structured Parametrization Is About
+#'
+#' @description
+#' Returns the block [mv_param_block()] declares, with the structure's common
+#' variance `scale` replaced by its square root where the matrix is a
+#' covariance or a scale matrix, or `NULL` where the structure declares no
+#' block. A structured matrix such as `compound_symmetry()` or `ar1()` is fixed
+#' by these few quantities, so they are what a summary reports in place of the
+#' standard deviation of every coordinate and the correlation of every pair,
+#' which repeat them.
+#'
+#' @details
+#' The standard deviation is \eqn{\sqrt{s}} with \eqn{s} the `scale`, so its
+#' Jacobian row is the `scale` row times \eqn{1/(2\sqrt{s})}; it is intervalled
+#' on the log scale, as `scale` was. Where the matrix is a precision the
+#' `scale` is a precision's common diagonal and is reported as it is.
+#'
+#' @param distrib A multivariate distribution object.
+#' @param theta Its parameters, aligned.
+#' @param sd_label The name given to the square root of `scale`.
+#'
+#' @return The result of [mv_param_block()], possibly with one row renamed and
+#'   transformed, or `NULL`.
+#'
+#' @seealso [mv_param_block()] for the declared block, [mv_derived()] for the
+#'   consumer.
+#'
+#' @examples
+#' d <- mvgaussian1_distrib(3, parameters7::compound_symmetry(3))
+#' th <- distributions7:::align_theta(d, list(mu1 = 0, mu2 = 0, mu3 = 0,
+#'   sigma_log_scale = log(4), sigma_logit_rho = 0))
+#' distributions7:::mv_own_block(d, th)$value
+#'
+#' @keywords internal
+mv_own_block <- function(distrib, theta, sd_label = "sd") {
+  pb <- mv_param_block(distrib, theta)
+  if (is.null(pb) || isTRUE(distrib@inverted)) return(pb)
+  k <- which(names(pb$value) == "scale")
+  if (length(k) != 1L) return(pb)
+  s <- pb$value[[k]]
+  pb$jacobian[k, ] <- pb$jacobian[k, ] / (2 * sqrt(s))
+  pb$value[[k]] <- sqrt(s)
+  pb$transform[[k]] <- "log"
+  nm <- names(pb$value)
+  nm[k] <- sd_label
+  names(pb$value) <- names(pb$transform) <- names(pb$block) <- nm
+  rownames(pb$jacobian) <- nm
+  pb
+}
+
+
 #' @title Append One Block of Derived Quantities to Another
 #'
 #' @description
@@ -547,47 +598,49 @@ mv_sigma_derivs <- function(distrib, theta, n_before) {
 }
 
 
-#' @title Standard Deviations and Correlations of a Multivariate Gaussian
+#' @title Interpretable Quantities of a Multivariate Gaussian
 #' @name mv_derived.MvGaussianDistrib
 #'
 #' @description
-#' Returns the standard deviations and correlations of the response, whichever
-#' side the parametrization carries, with the closed-form Jacobian
-#' [mv_sd_cor()] supplies. A PRECISION parametrization reports two further
-#' blocks, which are what it describes directly: the conditional variances
-#' \eqn{1/\Omega_{jj} = \operatorname{Var}(Y_j \mid Y_{-j})}, and above two
-#' dimensions the partial correlations
-#' \eqn{-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}}, the correlation of two
-#' coordinates given all the others, which is zero exactly where the precision
-#' has a zero.
+#' Returns the quantities the chosen parametrization describes, with their
+#' Jacobian. Where the matrix parametrization declares its own block through
+#' `parameters7::param_readable()` (a compound symmetry, an AR(1), an AR(p)),
+#' that block alone is returned, with the common variance `scale` reported as
+#' its square root `sd` on the covariance side. Otherwise a COVARIANCE
+#' parametrization reports the standard deviations and the correlations, and a
+#' PRECISION parametrization reports the conditional variances
+#' \eqn{1/\Omega_{jj} = \operatorname{Var}(Y_j \mid Y_{-j})} and the partial
+#' correlations \eqn{-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}}, the
+#' correlation of two coordinates given all the others.
 #'
 #' @details
+#' # One parametrization, one set of quantities
+#'
+#' A user who writes the model on the precision asks to read the precision, so
+#' the marginal standard deviations and correlations are not reported beside
+#' its own quantities; they remain available from `mv_sigma()` and
+#' `variance()`. In the same way a structured matrix is fixed by its few
+#' parameters, and the standard deviation of every coordinate and the
+#' correlation of every pair would repeat them.
+#'
 #' # What a precision's diagonal means
 #'
-#' The quantity with a reading is the conditional VARIANCE, so the diagonal
-#' quantities [mv_sd_cor()] produces from \eqn{\Omega} are square roots of the
-#' wrong thing; they are dropped and \eqn{1/\Omega_{jj}} is reported instead.
-#' Its ratio to the marginal variance is \eqn{1 - R_j^2} for the regression of
-#' that coordinate on all the others.
+#' The quantity with a reading is the conditional VARIANCE, so
+#' \eqn{1/\Omega_{jj}} is reported rather than a square root of
+#' \eqn{\Omega_{jj}}. Its ratio to the marginal variance is \eqn{1 - R_j^2} for
+#' the regression of that coordinate on all the others. At \eqn{p = 2} the
+#' partial correlation equals the correlation.
 #'
-#' At \eqn{p = 2} there is nothing to condition on, so the partial correlation
-#' IS the correlation and is not printed twice.
-#'
-#' # The parametrization's own quantities
-#'
-#' Whatever the matrix parametrization declares through
-#' `parameters7::param_readable()` is appended as a further block. An AR(1)
-#' covariance is about a scale and a correlation; a log-Cholesky one declares
-#' nothing and the summary stops at the standard deviations.
-#'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()]
+#'   or [mvgaussian2_distrib()].
 #' @param theta A named list of parameters, already aligned by the generic.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with `value`, `jacobian`, `transform` and `block`, as
-#'   [mv_derived()] documents. A covariance parametrization gives
-#'   \eqn{p(p+1)/2} quantities; a precision one adds \eqn{p} conditional
-#'   variances and, above \eqn{p = 2}, \eqn{p(p-1)/2} partial correlations.
+#'   [mv_derived()] documents: the structure's own block where it declares one;
+#'   otherwise \eqn{p} standard deviations and \eqn{p(p-1)/2} correlations for
+#'   a covariance, or \eqn{p} conditional variances and \eqn{p(p-1)/2} partial
+#'   correlations for a precision.
 #'
 #' @section Notation:
 #' \eqn{\Sigma} is the covariance, \eqn{\Omega = \Sigma^{-1}} the precision,
@@ -596,8 +649,8 @@ mv_sigma_derivs <- function(distrib, theta, n_before) {
 #' response with that coordinate removed.
 #'
 #' @seealso [mv_sd_cor()] for the closed-form Jacobian,
-#'   [mv_param_block()] for the appended block, [mv_summary()] for the printed
-#'   result, and [mv_derived()] for the generic.
+#'   [mv_own_block()] for the structure's own block, [mv_summary()] for the
+#'   printed result, and [mv_derived()] for the generic.
 #'
 #' @examples
 #' d <- mvgaussian1_distrib(2)
@@ -605,40 +658,37 @@ mv_sigma_derivs <- function(distrib, theta, n_before) {
 #'               sigma_L2.1 = 0.5)
 #' mv_derived(d, theta)$value
 #'
-#' # The precision side reports the same law's standard deviations and
-#' # correlation, and adds the conditional variances.
+#' # The precision side reports the conditional variances and the partial
+#' # correlation, and nothing of the covariance.
 #' o <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 #' th_o <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0, omega_log_L2 = 0,
 #'              omega_L2.1 = 0.5)
 #' od <- mv_derived(o, th_o)
 #' od$value
-#' od$block
 #'
 #' # A conditional variance is 1 / Omega_jj, and is at most the marginal one.
 #' Om <- parameters7::param_value(o@param, unlist(th_o)[3:5])
 #' c(conditional = 1 / Om[1, 1], marginal = mv_sigma(o, th_o)[1, 1])
 #'
-#' # At three dimensions the partial correlations appear as a block of their
-#' # own, the partial and the marginal no longer coinciding.
-#' o3 <- mvgaussian2_distrib(3, parameters7::log_cholesky(3))
-#' th3 <- as.list(stats::setNames(
-#'   c(0, 0, 0, 0, 0, 0, 0.5, -0.4, 0.3), o3@params))
-#' unique(mv_derived(o3, th3)$block)
+#' # A compound symmetry reports its standard deviation and its correlation.
+#' cs <- mvgaussian1_distrib(3, parameters7::compound_symmetry(3))
+#' mv_derived(cs, list(mu1 = 0, mu2 = 0, mu3 = 0, sigma_log_scale = log(4),
+#'                     sigma_logit_rho = 0))$value
 #'
 #' @keywords internal
 S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
-  p <- distrib@n_dim
-  sigma <- unname(mv_sigma(distrib, theta))
-  a <- mv_sigma_derivs(distrib, theta, n_before = p)
-  out <- mv_sd_cor(sigma, a, distrib@params)
+  own <- mv_own_block(distrib, theta, sd_label = "sd")
+  if (!is.null(own)) return(own)
 
+  p <- distrib@n_dim
   if (!isTRUE(distrib@inverted)) {
-    return(mv_append_block(out, mv_param_block(distrib, theta)))
+    sigma <- unname(mv_sigma(distrib, theta))
+    a <- mv_sigma_derivs(distrib, theta, n_before = p)
+    return(mv_sd_cor(sigma, a, distrib@params))
   }
 
-  # The precision's own reading. Omega and its derivatives are the matrix parameter's
-  # matrix directly, with no inversion, so they are taken from it rather than
-  # from the covariance computed above.
+  # The precision's own reading. Omega and its derivatives are the matrix
+  # parameter's matrix directly, with no inversion.
   s <- distrib@param
   v <- mv_flat_theta(distrib, theta)
   eta <- v[p + seq_len(s@n_free)]
@@ -651,15 +701,10 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
   # A partial correlation is minus the correlation of the precision, so its
   # derivatives are those of mv_sd_cor() with the sign flipped. The diagonal
   # quantities that helper produces are square roots and are dropped: what a
-  # precision's diagonal means is the CONDITIONAL VARIANCE
-  # \eqn{1/\Omega_{jj} = \mathrm{Var}(Y_j \mid Y_{-j})}, whose ratio to the
-  # marginal variance is \eqn{1 - R_j^2} for the regression of that coordinate
-  # on all the others. The variance is the quantity with that reading, not its
-  # square root.
+  # precision's diagonal means is the conditional variance 1/Omega_jj.
   pc <- mv_sd_cor(omega, aw, distrib@params)
-  # In two dimensions there is nothing to condition on, so the partial
-  # correlation IS the correlation and printing it again would be noise.
-  keep <- grepl("^cor_", names(pc$value)) & p >= 3L
+  keep <- grepl("^cor_", names(pc$value))
+  nm_pc <- sub("^cor_", "pcor_", names(pc$value)[keep])
   cvar <- 1 / diag(omega)
   nm_cvar <- sprintf("cvar_v%d", seq_len(p))
   jac_cvar <- matrix(0, p, distrib@n_params,
@@ -670,26 +715,16 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
     jac_cvar[, l] <- -diag(aw[[l]]) / diag(omega)^2
   }
 
-  mv_append_block(list(
-    value = c(out$value,
-              stats::setNames(cvar, nm_cvar),
-              stats::setNames(-pc$value[keep],
-                              sub("^cor_", "pcor_", names(pc$value)[keep]))),
-    jacobian = rbind(
-      out$jacobian,
-      jac_cvar,
-      `rownames<-`(-pc$jacobian[keep, , drop = FALSE],
-                   sub("^cor_", "pcor_", names(pc$value)[keep]))
-    ),
-    transform = c(out$transform,
-                  stats::setNames(rep("log", p), nm_cvar),
-                  stats::setNames(rep("atanh", sum(keep)),
-                                  sub("^cor_", "pcor_", names(pc$value)[keep]))),
-    block = c(out$block,
-              stats::setNames(rep("Conditional variances", p), nm_cvar),
-              stats::setNames(rep("Partial correlations", sum(keep)),
-                              sub("^cor_", "pcor_", names(pc$value)[keep])))
-  ), mv_param_block(distrib, theta))
+  list(
+    value = c(stats::setNames(cvar, nm_cvar),
+              stats::setNames(-pc$value[keep], nm_pc)),
+    jacobian = rbind(jac_cvar,
+                     `rownames<-`(-pc$jacobian[keep, , drop = FALSE], nm_pc)),
+    transform = c(stats::setNames(rep("log", p), nm_cvar),
+                  stats::setNames(rep("atanh", sum(keep)), nm_pc)),
+    block = c(stats::setNames(rep("Conditional variances", p), nm_cvar),
+              stats::setNames(rep("Partial correlations", sum(keep)), nm_pc))
+  )
 }
 
 
@@ -705,6 +740,12 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
 #' deviations of the response, and are named `scale_sd_v1`, ..., `scale_sd_vp`
 #' and blocked as `"Scale standard deviations"` to say so.
 #'
+#' The rule of [mv_derived.MvGaussianDistrib()] holds here as well: a
+#' structured parametrization reports its own block alone, its `scale` as the
+#' square root `scale_sd` on the scale-matrix side, and the inverse
+#' parametrization reports the conditional scales \eqn{1/M_{jj}} and the
+#' partial correlations and nothing of the scale matrix.
+#'
 #' @details
 #' The degrees of freedom appear in no quantity here. \eqn{\nu} is already an
 #' interpretable parameter on its own scale, so [confint.distrib_fit()]
@@ -717,9 +758,11 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with `value`, `jacobian`, `transform` and `block`, as
-#'   [mv_derived()] documents: \eqn{p} scale standard deviations on the log
-#'   scale and \eqn{p(p-1)/2} correlations on Fisher's \eqn{z}, plus whatever
-#'   the matrix parametrization declares.
+#'   [mv_derived()] documents: the structure's own block where it declares
+#'   one; otherwise \eqn{p} scale standard deviations on the log scale and
+#'   \eqn{p(p-1)/2} correlations on Fisher's \eqn{z}, or for the inverse
+#'   parametrization \eqn{p} conditional scales and \eqn{p(p-1)/2} partial
+#'   correlations.
 #'
 #' @section Notation:
 #' \eqn{\Sigma} is the scale matrix, \eqn{\nu} the degrees of freedom and
@@ -754,15 +797,16 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
 #'
 #' @keywords internal
 S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
-  p <- distrib@n_dim
-  sigma <- unname(mv_sigma(distrib, theta))
-  a <- mv_sigma_derivs(distrib, theta, n_before = p)
-  out <- mv_sd_cor(sigma, a, distrib@params,
-                   sd_label = "scale_sd",
-                   sd_block = "Scale standard deviations")
+  own <- mv_own_block(distrib, theta, sd_label = "scale_sd")
+  if (!is.null(own)) return(own)
 
+  p <- distrib@n_dim
   if (!isTRUE(distrib@inverted)) {
-    return(mv_append_block(out, mv_param_block(distrib, theta)))
+    sigma <- unname(mv_sigma(distrib, theta))
+    a <- mv_sigma_derivs(distrib, theta, n_before = p)
+    return(mv_sd_cor(sigma, a, distrib@params,
+                     sd_label = "scale_sd",
+                     sd_block = "Scale standard deviations"))
   }
 
   # The inverse parametrization's own reading. Sigma^-1 and its derivatives are
@@ -785,9 +829,7 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
   aw[p + seq_len(s@n_free)] <- lapply(parameters7::param_d1(s, eta), unname)
 
   pc <- mv_sd_cor(om, aw, distrib@params)
-  # In two dimensions there is nothing to condition on, so the partial
-  # correlation IS the correlation and printing it again would be noise.
-  keep <- grepl("^cor_", names(pc$value)) & p >= 3L
+  keep <- grepl("^cor_", names(pc$value))
   cscale <- 1 / diag(om)
   nm_cs <- sprintf("cscale_v%d", seq_len(p))
   jac_cs <- matrix(0, p, distrib@n_params,
@@ -813,7 +855,7 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
               stats::setNames(rep("Partial correlations", sum(keep)), nm_pc))
   )
 
-  mv_append_block(mv_append_block(out, extra), mv_param_block(distrib, theta))
+  extra
 }
 
 

@@ -1,3 +1,24 @@
+# distributions7 0.68.0
+
+* A multivariate family reports the quantities of the parametrization it was
+  given and no others. `mv_derived()`, and through it `mv_summary()` and the
+  summaries built on it, return for a structured matrix that declares its own
+  block (`compound_symmetry()`, `ar1()`, `autoregressive()`) that block
+  alone, with the common variance `scale` reported as its square root `sd`
+  (`scale_sd` for the multivariate t) on the covariance side; the standard
+  deviation of every coordinate and the correlation of every pair, which
+  repeated it, are gone. A precision parametrization (`mvgaussian2_distrib()`,
+  `mvstudent_t2_distrib()`) reports its conditional variances (scales) and
+  partial correlations and no longer the marginal standard deviations and
+  correlations, which `mv_sigma()` and `variance()` still give; at two
+  dimensions the partial correlation is now reported. The new internal
+  `mv_own_block()` carries the conversion, its Jacobian checked against a
+  difference of the value at 1e-8.
+* `fixed()` reads the stem of a vector parameter: `fixed(mvgaussian1_distrib(3),
+  mu = 0)` holds the whole mean at zero, and `mu = c(0, 1, 2)` holds each
+  coordinate at its own value. A length that is neither one nor the dimension
+  is rejected.
+
 # distributions7 0.67.0
 
 * The multivariate Student t (`mvstudent_t1_distrib()`,
