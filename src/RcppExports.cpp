@@ -508,6 +508,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// d7_info_probe
+Rcpp::List d7_info_probe(std::string cls, int k, Rcpp::NumericVector y, Rcpp::NumericMatrix theta);
+RcppExport SEXP _distributions7_d7_info_probe(SEXP clsSEXP, SEXP kSEXP, SEXP ySEXP, SEXP thetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type cls(clsSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type theta(thetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(d7_info_probe(cls, k, y, theta));
+    return rcpp_result_gen;
+END_RCPP
+}
 // bernoulli_dexpected_cpp
 List bernoulli_dexpected_cpp(NumericVector y, NumericVector mu, int order, int threads);
 RcppExport SEXP _distributions7_bernoulli_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
@@ -2828,6 +2842,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_chisq_deriv3_cpp", (DL_FUNC) &_distributions7_chisq_deriv3_cpp, 3},
     {"_distributions7_chisq_deriv4_cpp", (DL_FUNC) &_distributions7_chisq_deriv4_cpp, 3},
     {"_distributions7_d7_scalar_probe", (DL_FUNC) &_distributions7_d7_scalar_probe, 4},
+    {"_distributions7_d7_info_probe", (DL_FUNC) &_distributions7_d7_info_probe, 4},
     {"_distributions7_bernoulli_dexpected_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected_cpp, 4},
     {"_distributions7_binomial_dexpected_cpp", (DL_FUNC) &_distributions7_binomial_dexpected_cpp, 5},
     {"_distributions7_exponential_dexpected_cpp", (DL_FUNC) &_distributions7_exponential_dexpected_cpp, 4},

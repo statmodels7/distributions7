@@ -145,6 +145,10 @@ d7_scalar_probe <- function(cls, k, y, theta) {
     .Call(`_distributions7_d7_scalar_probe`, cls, k, y, theta)
 }
 
+d7_info_probe <- function(cls, k, y, theta) {
+    .Call(`_distributions7_d7_info_probe`, cls, k, y, theta)
+}
+
 bernoulli_dexpected_cpp <- function(y, mu, order, threads = 1L) {
     .Call(`_distributions7_bernoulli_dexpected_cpp`, y, mu, order, threads)
 }

@@ -78,6 +78,50 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
     }
 }
 
+// The expected information a filter driven by a scaled score reads at every
+// step: out[0] the (k, k) expected second derivative E[l_kk], out[1] its
+// derivative in the same parameter, both on the parameter scale. Each line
+// mirrors the family's expected_hessian and dexpected kernels (gaussian.cpp,
+// gamma1.cpp), so the scaled fast route is the scaled callback route.
+void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
+    switch (id) {
+    case 0: {                       // gaussian1 (mu, sigma), as gaussian.cpp
+        double sdev = th[1];
+        double inv = 1.0 / sdev;
+        double inv2 = inv * inv;
+        if (k == 0) {
+            out[0] = -inv2;
+            out[1] = 0.0;
+        } else {
+            double inv3 = inv * inv * inv;
+            out[0] = -2.0 * inv2;
+            out[1] = 4.0 * inv3;
+        }
+        break;
+    }
+    case 1: {                       // gamma1 (mu, phi), as gamma1.cpp
+        double m = th[0], p = th[1];
+        double s = 1.0 / p;
+        if (k == 0) {
+            double m2 = m * m;
+            double im = 1.0 / m, im2 = im * im;
+            out[0] = -s / m2;
+            out[1] = 2.0 * s * im2 * im;
+        } else {
+            double s1 = -s * s;
+            double s2 = s * s, s3 = s2 * s, s4 = s2 * s2;
+            double f2 = d7::psi1_rest(s), f3 = d7::psi2_rest(s);
+            double q1 = f3 * s4 + 4.0 * f2 * s3;
+            out[0] = f2 * s1 * s1;
+            out[1] = -s2 * q1;
+        }
+        break;
+    }
+    default:
+        out[0] = R_NaN; out[1] = R_NaN;
+    }
+}
+
 } // extern "C"
 
 // exposed to this package's own tests: the twin comparison against
@@ -99,10 +143,30 @@ Rcpp::List d7_scalar_probe(std::string cls, int k, Rcpp::NumericVector y,
                               Rcpp::_["curvature"] = h);
 }
 
+// the twin of d7_scalar_probe() for the expected information
+// [[Rcpp::export]]
+Rcpp::List d7_info_probe(std::string cls, int k, Rcpp::NumericVector y,
+                         Rcpp::NumericMatrix theta) {
+    int id = d7_scalar_id(cls.c_str());
+    int n = y.size(), np = theta.ncol();
+    Rcpp::NumericVector e(n), de(n);
+    std::vector<double> th(np);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        double out[2];
+        d7_info_dinfo(id, k - 1, y[i], th.data(), out);
+        e[i] = out[0]; de[i] = out[1];
+    }
+    return Rcpp::List::create(Rcpp::_["id"] = id, Rcpp::_["expected"] = e,
+                              Rcpp::_["dexpected"] = de);
+}
+
 // [[Rcpp::init]]
 void d7_register_ccallable(DllInfo* dll) {
     R_RegisterCCallable("distributions7", "d7_scalar_id",
                         (DL_FUNC) d7_scalar_id);
     R_RegisterCCallable("distributions7", "d7_score_curv",
                         (DL_FUNC) d7_score_curv);
+    R_RegisterCCallable("distributions7", "d7_info_dinfo",
+                        (DL_FUNC) d7_info_dinfo);
 }
