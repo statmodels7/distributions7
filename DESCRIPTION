@@ -107,6 +107,7 @@ Collate:
     'cross_derivatives_families.R'
     'cross_derivatives_simple.R'
     'cross_theta2_derivatives.R'
+    'd34expected_hessian.R'
     'dexpected_families.R'
     'dexpected_reparam.R'
     'dexpected_support.R'
