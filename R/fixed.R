@@ -745,11 +745,16 @@ S7::method(distrib_cross3_y, FixedMultivariateDistrib) <-
     out[distrib@params]
   }
 
+# Every derivative below reads the parent on the PARAMETER scale, as the
+# univariate methods do: the generic of this class applies the link once, so a
+# parent asked for the link scale would apply it a second time. With every free
+# parameter on the identity link the two coincide, which is how the defect went
+# unseen; nu of the multivariate t or phi of the Dirichlet left free exposed it.
 S7::method(distrib_cross_y, FixedMultivariateDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
     out <- distrib_cross_y(distrib@parent_distrib, y,
                            fixed_full_theta(distrib, theta),
-                           scale = scale, ...)
+                           scale = "parameter", ...)
     out[distrib@params]
   }
 
@@ -757,7 +762,7 @@ S7::method(distrib_cross2_y, FixedMultivariateDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
     out <- distrib_cross2_y(distrib@parent_distrib, y,
                             fixed_full_theta(distrib, theta),
-                            scale = scale, ...)
+                            scale = "parameter", ...)
     out[distrib@params]
   }
 
@@ -765,7 +770,7 @@ S7::method(distrib_grad_y_hess, FixedMultivariateDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
     out <- distrib_grad_y_hess(distrib@parent_distrib, y,
                                fixed_full_theta(distrib, theta),
-                               scale = scale, ...)
+                               scale = "parameter", ...)
     out[hess_names(distrib@params)]
   }
 
@@ -773,7 +778,7 @@ S7::method(distrib_hess_y_hess, FixedMultivariateDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
     out <- distrib_hess_y_hess(distrib@parent_distrib, y,
                                fixed_full_theta(distrib, theta),
-                               scale = scale, ...)
+                               scale = "parameter", ...)
     out[hess_names(distrib@params)]
   }
 
@@ -781,7 +786,7 @@ S7::method(distrib_gradient, FixedMultivariateDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
     out <- distrib_gradient(distrib@parent_distrib, y,
                             fixed_full_theta(distrib, theta),
-                            scale = scale, ...)
+                            scale = "parameter", ...)
     out[distrib@params]
   }
 
@@ -789,7 +794,7 @@ S7::method(distrib_hessian, FixedMultivariateDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
     out <- distrib_hessian(distrib@parent_distrib, y,
                            fixed_full_theta(distrib, theta),
-                           scale = scale, ...)
+                           scale = "parameter", ...)
     out[hess_names(distrib@params)]
   }
 
@@ -799,7 +804,7 @@ S7::method(distrib_expected_hessian, FixedMultivariateDistrib) <-
            nsim = 10000, ...) {
     out <- distrib_expected_hessian(distrib@parent_distrib, y,
                                     fixed_full_theta(distrib, theta),
-                                    scale = scale, approx = approx,
+                                    scale = "parameter", approx = approx,
                                     nsim = nsim, ...)
     out[hess_names(distrib@params)]
   }
@@ -823,7 +828,7 @@ S7::method(distrib_deriv3, FixedMultivariateDistrib) <-
            nsim = 10000, ...) {
     out <- distrib_deriv3(distrib@parent_distrib, y,
                           fixed_full_theta(distrib, theta),
-                          expected = expected, scale = scale,
+                          expected = expected, scale = "parameter",
                           approx = approx, nsim = nsim, ...)
     out[deriv_names(distrib@params, 3L)]
   }
@@ -835,7 +840,7 @@ S7::method(distrib_deriv4, FixedMultivariateDistrib) <-
            nsim = 10000, ...) {
     out <- distrib_deriv4(distrib@parent_distrib, y,
                           fixed_full_theta(distrib, theta),
-                          expected = expected, scale = scale,
+                          expected = expected, scale = "parameter",
                           approx = approx, nsim = nsim, ...)
     out[deriv_names(distrib@params, 4L)]
   }
