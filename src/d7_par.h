@@ -34,7 +34,11 @@
 //     through qnbinom's search reaching pbeta, and reproduced locally on
 //     2026-08-21 with lchoose at a non-integer second argument, which
 //     warns by design. The p/q family, lchoose/choose and the Bessel
-//     functions are all in this class;
+//     functions are all in this class. lchoose() and choose() are excluded
+//     at every argument besides: they call R_CheckStack() on entry, which
+//     makes the same check against the worker's stack and aborts
+//     (reproduced 2026-10-04 at integer arguments); betabinom's log-mass
+//     uses lchoose_int() (pt_betabinom.h) instead;
 //
 //   - anything whose value is not thread-invariant breaks the bit-identity
 //     the guarantee above promises. Measured locally on 2026-08-21, one

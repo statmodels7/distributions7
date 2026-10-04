@@ -296,3 +296,17 @@ test_that("the skew normal and skew t kernels agree at 1 and 2 threads", {
     both(fn, y, 0.2, 1.3, -1.5, 4)
   }
 })
+
+test_that("the beta-binomial log-mass runs on worker threads", {
+  # R's lchoose() checks the C stack on every call and aborts from a worker
+  # whatever its arguments; the log-mass uses a copy without the check,
+  # which returns lchoose()'s values
+  set.seed(9)
+  n <- 40000
+  y <- as.numeric(sample(0:12, n, replace = TRUE))
+  mu <- runif(n, 0.2, 0.8); sg <- runif(n, 0.05, 2)
+  one <- betabinom_logpmf_cpp(y, mu, sg, 12, 1L)
+  for (r in 1:5) {
+    expect_identical(betabinom_logpmf_cpp(y, mu, sg, 12, 4L), one)
+  }
+})

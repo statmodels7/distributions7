@@ -25,17 +25,30 @@ namespace d7 {
 // sums of logarithms, which form nothing larger than n log S. Without this
 // the difference of the two beta functions collapses to zero at large shapes
 // and every mass comes back as one.
-// The two lchoose calls are what make this body admissible in a parallel
-// region, and only because every caller reaches it through the support
-// guard in betabinom_logpmf_cpp: lchoose warns when its SECOND argument is
-// not an integer, and a warning raised from a worker thread kills the
-// process (d7_par.h). Do not remove the `y != floor(y)` test there without
-// replacing these with a form that has no warning path.
+// R's lchoose() (src/nmath/choose.c, R 4.6.0) at a non-negative integer n
+// and an integer k, its branches and expressions without the R_CheckStack()
+// it calls on every entry: that check reads the calling thread's stack
+// bounds and, from a worker thread, aborts with "C stack usage is too close
+// to the limit", whatever the arguments. The values are lchoose()'s.
+inline double lchoose_int(double n, double k) {
+    if (k < 2) {
+        if (k < 0) return R_NegInf;
+        if (k == 0) return 0.;
+        return std::log(std::fabs(n));
+    }
+    if (n < k) return R_NegInf;
+    if (n - k < 2) return lchoose_int(n, n - k);
+    return -std::log(n + 1.) - R::lbeta(n - k + 1., k + 1.);
+}
+
+// Every caller reaches this with an integer y in 0..n (the support guard of
+// betabinom_logpmf_cpp and of the registry's log-density, or the sums over
+// the support), which lchoose_int() requires.
 inline double bb_log_mass(double y, double A, double B, double n) {
     double S = A + B;
     static const double eps = std::numeric_limits<double>::epsilon();
     if (R_FINITE(S) && R::lgammafn(S + n) * eps < 1e-8) {
-        return R::lchoose(n, y) + (R::lbeta(y + A, n - y + B) - R::lbeta(A, B));
+        return lchoose_int(n, y) + (R::lbeta(y + A, n - y + B) - R::lbeta(A, B));
     }
     double s1 = 0.0, s2 = 0.0, s3 = 0.0;
     int N = (int) n;
@@ -44,7 +57,7 @@ inline double bb_log_mass(double y, double A, double B, double n) {
         if (j < n - y)      s2 += std::log(B + j);
         s3 += std::log(S + j);
     }
-    return R::lchoose(n, y) + s1 + s2 - s3;
+    return lchoose_int(n, y) + s1 + s2 - s3;
 }
 
 struct BBderiv {
