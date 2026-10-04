@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include <cmath>
 #include "pt_pseudohuber.h"
+#include "pt_sqrt.h"
 using namespace Rcpp;
 
 // Observed third/fourth-order derivatives of the Pseudo-Huber log-density,
@@ -34,8 +35,8 @@ List pseudohuber_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sig
         double s2 = s * s, s3 = s2 * s;
         double r = m - y[i], r2 = r * r, r4 = r2 * r2;
         double S = v * s2 + r2;
-        double S12 = std::sqrt(S), S52 = S * S * S12;
-        double sv = std::sqrt(v);
+        double S12 = d7::sqrt_cr(S), S52 = S * S * S12;
+        double sv = d7::sqrt_cr(v);
 
         double k0 = d7::bessel_k_scaled(sv, 0.0);
         double k1 = d7::bessel_k_scaled(sv, 1.0);
@@ -83,8 +84,8 @@ List pseudohuber_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sig
         double s2 = s * s, s3 = s2 * s, s4 = s2 * s2, s5 = s4 * s, s7 = s5 * s2;
         double r = m - y[i], r2 = r * r, r4 = r2 * r2, r6 = r4 * r2, r8 = r4 * r4;
         double S = v * s2 + r2;
-        double S12 = std::sqrt(S), S32 = S * S12, S52 = S * S * S12, S72 = S * S * S * S12;
-        double sv = std::sqrt(v), v2 = v * v, v3 = v2 * v, v4 = v2 * v2, v32 = v * sv;
+        double S12 = d7::sqrt_cr(S), S32 = S * S12, S52 = S * S * S12, S72 = S * S * S * S12;
+        double sv = d7::sqrt_cr(v), v2 = v * v, v3 = v2 * v, v4 = v2 * v2, v32 = v * sv;
 
         double k0 = d7::bessel_k_scaled(sv, 0.0);
         double k1 = d7::bessel_k_scaled(sv, 1.0);

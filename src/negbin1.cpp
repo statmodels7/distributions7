@@ -2,6 +2,7 @@
 #include "d7_par.h"
 #include "psi_diff.h"
 #include "pt_negbin1.h"
+#include "pt_sqrt.h"
 using namespace Rcpp;
 
 // Negative binomial with a variance LINEAR in the mean: Var(Y) = mu (1 + theta),
@@ -155,7 +156,7 @@ static void nb1_G_derivs2(double mu, double th, double* G) {
     double ratio = th / (1.0 + th);
     double lratio = std::log(th) - std::log1p(th);
     double L = std::log1p(th), op = 1.0 + th, iop2 = 1.0 / (op * op);
-    double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + th))
+    double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + th))
                  + 40.0 / (-std::log(ratio));
     int kmax = (int) std::min(cap, 2.0e9);
     double lpk = -r * std::log1p(th);

@@ -48,6 +48,7 @@
 #include "pt_logpdf.h"
 #include "pt_wrappers.h"
 #include "pt_loc_scale.h"
+#include "pt_sqrt.h"
 
 // The scalar C entry points of the fast route piano_parallel.txt section 2a
 // describes: the score and the second derivative of the log-density in ONE
@@ -233,12 +234,12 @@ bool center_scale(int inner, const double* th, double* c, double* s) {
     case 0: case 10: case 11: case 23: case 24: case 27: case 28:
     case 34: case 35: case 36: case 37: case 38:
         *c = th[0]; *s = th[1]; return true;
-    case 12: *c = th[0]; *s = std::sqrt(th[1]); return true;
-    case 13: *c = th[0]; *s = 1.0 / std::sqrt(th[1]); return true;
+    case 12: *c = th[0]; *s = d7::sqrt_cr(th[1]); return true;
+    case 13: *c = th[0]; *s = 1.0 / d7::sqrt_cr(th[1]); return true;
     case 29: *c = th[0]; *s = 1.0 / th[1]; return true;
     case 32: {
         double a = th[1] * th[2], cc = th[1] * (1.0 - th[2]);
-        *c = th[0]; *s = 1.0 / (a + std::sqrt(cc)); return true;
+        *c = th[0]; *s = 1.0 / (a + d7::sqrt_cr(cc)); return true;
     }
     default: return false;
     }

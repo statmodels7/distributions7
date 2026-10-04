@@ -5,6 +5,7 @@
 #include <cmath>
 #include "pt_bessel_k.h"
 #include "pt_loc_scale.h"
+#include "pt_sqrt.h"
 
 // The pseudo-Huber family (mu, sigma, nu): with res = y - mu and
 // D = sqrt(nu + res^2/sigma^2),
@@ -25,7 +26,7 @@ struct PhNu { double sv, k0, k1, k2, k3, r1, r2, nu_const; };
 
 inline PhNu ph_nu(double v) {
     PhNu P;
-    P.sv = std::sqrt(v);
+    P.sv = d7::sqrt_cr(v);
     P.k0 = bessel_k_scaled(P.sv, 0.0);
     P.k1 = bessel_k_scaled(P.sv, 1.0);
     P.k2 = bessel_k_scaled(P.sv, 2.0);
@@ -67,7 +68,7 @@ inline double pseudohuber_hess_nu_nu(double D3, const PhNu& P) {
 // S = nu sigma^2 + r^2, so that D^k = S^(k/2) / sigma^k
 inline double pseudohuber_d3_mu_mu_mu(double v, double s, double r,
                                       double S) {
-    double S12 = std::sqrt(S), S52 = S * S * S12;
+    double S12 = d7::sqrt_cr(S), S52 = S * S * S12;
     return 3.0 * v * s * r / S52;
 }
 
@@ -75,7 +76,7 @@ inline double pseudohuber_d3_sigma_sigma_sigma(double s, double r2,
                                                double S) {
     double s2 = s * s, s3 = s2 * s, s4 = s2 * s2;
     double r4 = r2 * r2, r6 = r4 * r2;
-    double S12 = std::sqrt(S), S32 = S * S12, S52 = S * S * S12;
+    double S12 = d7::sqrt_cr(S), S32 = S * S12, S52 = S * S * S12;
     return -2.0 / s3 + 12.0 * r2 / (s4 * S12)
         - 9.0 * r4 / (s4 * S32) + 3.0 * r6 / (s4 * S52);
 }
@@ -84,7 +85,7 @@ inline double pseudohuber_d3_sigma_sigma_sigma(double s, double r2,
 inline double pseudohuber_d3_nu_nu_nu(double v, double s, double S,
                                       const PhNu& P, double k4) {
     double s2 = s * s, s4 = s2 * s2, s5 = s4 * s;
-    double S12 = std::sqrt(S), S52 = S * S * S12;
+    double S12 = d7::sqrt_cr(S), S52 = S * S * S12;
     double sv = P.sv, v2 = v * v, v32 = v * sv;
     double k0 = P.k0, k1 = P.k1, k2 = P.k2, k3 = P.k3;
     double A = k0 + k2;
@@ -104,7 +105,7 @@ inline double pseudohuber_d3_nu_nu_nu(double v, double s, double S,
 inline double pseudohuber_logpdf(double y, double mu, double sigma, double v,
                                  const PhNu& P) {
     double z = (y - mu) / sigma;
-    double D = std::sqrt(v + z * z);
+    double D = d7::sqrt_cr(v + z * z);
     double log_norm = std::log(2.0) + std::log(sigma) + 0.5 * std::log(v) +
         std::log(P.k1) - P.sv;
     return -D - log_norm;
@@ -116,7 +117,7 @@ inline void pseudohuber_score_curv(int k, double y, const double* th,
     const double m = th[0], s = th[1], v = th[2];
     const double s2 = s * s;
     const double res = y - m, res2 = res * res;
-    const double D = std::sqrt(v + res2 / s2), D3 = D * D * D;
+    const double D = d7::sqrt_cr(v + res2 / s2), D3 = D * D * D;
     if (k == 0) {
         out[0] = pseudohuber_score_mu(res, s2, D);
         out[1] = pseudohuber_hess_mu_mu(v, s2, D3);
@@ -143,7 +144,7 @@ inline void pseudohuber_quad_diag(int k, const double* shape, double* out,
         const double z = R.x[j];
         const double fw = std::exp(pseudohuber_logpdf(z, 0.0, 1.0, v, P)) * R.w[j];
         const double res = z, res2 = res * res;
-        const double D = std::sqrt(v + res2 / 1.0), D3 = D * D * D;
+        const double D = d7::sqrt_cr(v + res2 / 1.0), D3 = D * D * D;
         double H;
         if (k == 0) H = pseudohuber_hess_mu_mu(v, 1.0, D3);
         else if (k == 1) H = pseudohuber_hess_sigma_sigma(res2, 1.0, 1.0, D, D3);

@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include <R_ext/Rdynload.h>
 #include "pt_pseudohuber.h"
+#include "pt_sqrt.h"
 using namespace Rcpp;
 
 // The pseudo-Huber score and Hessian in (mu, sigma, nu), one kernel each,
@@ -52,7 +53,7 @@ List pseudohuber_gradient_cpp(NumericVector y, NumericVector mu, NumericVector s
 
         double res = y[i] - m;
         double res2 = res * res;
-        double D = std::sqrt(v + res2 / s2);
+        double D = d7::sqrt_cr(v + res2 / s2);
 
         grad_mu[i] = d7::pseudohuber_score_mu(res, s2, D);
         grad_sigma[i] = d7::pseudohuber_score_sigma(res2, s, s2, D);
@@ -93,7 +94,7 @@ List pseudohuber_hessian_cpp(NumericVector y, NumericVector mu, NumericVector si
 
         double res = y[i] - m;
         double res2 = res * res;
-        double D = std::sqrt(v + res2 / s2);
+        double D = d7::sqrt_cr(v + res2 / s2);
         double D3 = D * D * D;
 
         hess_mu_mu[i] = d7::pseudohuber_hess_mu_mu(v, s2, D3);

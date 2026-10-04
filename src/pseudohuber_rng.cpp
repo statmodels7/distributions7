@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include <algorithm>
 #include <cmath>
+#include "pt_sqrt.h"
 using namespace Rcpp;
 
 // Random generation for the pseudo-Huber (symmetric hyperbolic) family as a
@@ -34,10 +35,10 @@ RouBox rou_box(double omega) {
   // depressed cubic t^3 + p t + q, x = t - a/3
   const double p = b - a * a / 3.0;
   const double q = 2.0 * a * a * a / 27.0 - a * b / 3.0 + c;
-  double arg = -q / 2.0 * std::sqrt(-27.0 / (p * p * p));
+  double arg = -q / 2.0 * d7::sqrt_cr(-27.0 / (p * p * p));
   arg = std::max(-1.0, std::min(1.0, arg));
   const double phi = std::acos(arg);
-  const double r = std::sqrt(-4.0 * p / 3.0);
+  const double r = d7::sqrt_cr(-4.0 * p / 3.0);
   double xs[3];
   for (int k = 0; k < 3; k++)
     xs[k] = r * std::cos((phi + 2.0 * M_PI * k) / 3.0) - a / 3.0;
@@ -81,7 +82,7 @@ NumericVector pseudohuber_rng_cpp(int n, NumericVector mu, NumericVector sigma1,
   RouBox box = {0.0, 0.0};
   for (int i = 0; i < n; i++) {
     const double m = mu[i % nm], s1 = sigma1[i % ns], v = nu[i % nn];
-    const double omega = std::sqrt(v);
+    const double omega = d7::sqrt_cr(v);
     double w;
     if (omega < 1e-8) {
       w = 2.0 * s1 * s1 * exp_rand();
@@ -92,7 +93,7 @@ NumericVector pseudohuber_rng_cpp(int n, NumericVector mu, NumericVector sigma1,
       }
       w = s1 * s1 * omega * gig1_draw(omega, box);
     }
-    out[i] = m + std::sqrt(w) * norm_rand();
+    out[i] = m + d7::sqrt_cr(w) * norm_rand();
   }
   return out;
 }

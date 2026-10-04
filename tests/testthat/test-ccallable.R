@@ -194,6 +194,14 @@ test_that("the log-density entry is distrib_pdf()'s, bit for bit", {
       expect_identical(got, ref, label = cls)
     }
   }
+  # a near-tie of the square root in D = sqrt(nu + z^2), which MinGW's
+  # library sqrt misrounded by one ulp in a build at -O0
+  y <- 1.5092648866770235
+  mu <- 0.33886842332719114
+  expect_identical(
+    d7_logpdf_probe("PseudoHuberDistrib", y, cbind(mu, 1.2, 6))$logpdf,
+    distrib_pdf(pseudohuber_distrib(), y, list(mu = mu, sigma = 1.2, nu = 6),
+                log = TRUE))
 })
 
 # wrapped families: fixed() over families with and without constants

@@ -4,6 +4,7 @@
 #include <Rcpp.h>
 #include <cmath>
 #include "pt_loc_scale.h"
+#include "pt_sqrt.h"
 
 // The skew normal in its centered parametrization (mu, sigma, gamma1); see
 // skewnormal2.cpp for the construction. With w = (y - mu)/sigma,
@@ -38,9 +39,9 @@ inline double sn2_r(double g) {
 // at the ceiling of the skewness, where this keeps its digits
 inline double sn2_Dq(double g) {
   const double gmax = (4.0 - M_PI) / 2.0 *
-    std::pow(std::sqrt(SN2_B2) / std::sqrt(1.0 - SN2_B2), 3.0);
-  if (g == 0.0) return std::sqrt(SN2_B2);
-  return std::sqrt(SN2_B2 * -std::expm1((2.0 / 3.0) * std::log(std::fabs(g) / gmax)));
+    std::pow(d7::sqrt_cr(SN2_B2) / d7::sqrt_cr(1.0 - SN2_B2), 3.0);
+  if (g == 0.0) return d7::sqrt_cr(SN2_B2);
+  return d7::sqrt_cr(SN2_B2 * -std::expm1((2.0 / 3.0) * std::log(std::fabs(g) / gmax)));
 }
 
 // phi(x)/Phi(x) on the log scale, finite far below where both underflow
@@ -230,7 +231,7 @@ template <class P_t>
 inline double sn2_grad_G1_0(double w, double X, double Z1, const P_t& P) {
   (void) w; (void) X; (void) Z1;
   if (sn2_series_region(X, P.r)) {
-    return -(P.r + w)/P.p0 + Z1*P.r/(P.Dq*std::sqrt(P.p0));
+    return -(P.r + w)/P.p0 + Z1*P.r/(P.Dq*d7::sqrt_cr(P.p0));
   }
   const double f0 = P.r + w;
   const double f4 = f0*P.p3;
@@ -241,7 +242,7 @@ template <class P_t>
 inline double sn2_G1_0(double w, double X, double Z1, const P_t& P) {
   (void) w; (void) X; (void) Z1;
   if (sn2_series_region(X, P.r)) {
-    return -P.p3*(P.r + w) + Z1*P.r/(P.Dq*std::sqrt(P.p2));
+    return -P.p3*(P.r + w) + Z1*P.r/(P.Dq*d7::sqrt_cr(P.p2));
   }
   const double f0 = P.r + w;
   const double f4 = f0*P.p3;
@@ -495,14 +496,14 @@ inline double skewnormal2_d3_gamma1_gamma1_gamma1(double G0_3) {
 // c = sign(g) (2|g|/(4 - pi))^(1/3), xi = mu - s c,
 // omega = s sqrt(1 + c^2), alpha = c / (b sqrt(1 - delta^2))
 inline double skewnormal2_logpdf(double y, double mu, double s, double g) {
-  const double b = std::sqrt(2 / M_PI);
+  const double b = d7::sqrt_cr(2 / M_PI);
   const double sg = (g >= 0) ? 1.0 : -1.0;
   const double cc = sg * R_pow(2 * (sg * g) / (4 - M_PI), 1.0 / 3.0);
-  const double max_skew = (4 - M_PI) / 2 * R_pow(b / std::sqrt(1 - b * b), 3.0);
+  const double max_skew = (4 - M_PI) / 2 * R_pow(b / d7::sqrt_cr(1 - b * b), 3.0);
   const double omd2 = -std::expm1((2.0 / 3.0) * std::log(sg * g / max_skew));
   const double xi = mu - s * cc;
-  const double omega = s * std::sqrt(1 + cc * cc);
-  const double alpha = cc / (b * std::sqrt(omd2));
+  const double omega = s * d7::sqrt_cr(1 + cc * cc);
+  const double alpha = cc / (b * d7::sqrt_cr(omd2));
   const double z = (y - xi) / omega;
   return std::log(2.0) - std::log(omega) + R::dnorm4(z, 0.0, 1.0, 1) +
     R::pnorm5(alpha * z, 0.0, 1.0, 1, 1);
@@ -528,7 +529,7 @@ inline void skewnormal2_score_curv(int k, double y, const double* th,
   const Sn2ShapeAll P = sn2_shape_all(gv);
   const double r = P.r, Dq = P.Dq;
   const double w = (y - m) / s;
-  const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+  const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
   const double Z1 = sn2_zeta1(X);
   if (k == 0) {
     out[0] = skewnormal2_score_mu(sn2_grad_G1_0(w, X, Z1, P), s);
@@ -559,7 +560,7 @@ inline void skewnormal2_quad_diag(int k, const double* shape, double* out,
     const double w = R.x[j];
     const double fw = std::exp(skewnormal2_logpdf(w, 0.0, 1.0, gv)) * R.w[j];
     if (fw == 0.0) continue;
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     const double Z1 = sn2_zeta1(X);
     double g, H, T3 = 0.0;
     if (k == 0) {

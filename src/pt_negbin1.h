@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cmath>
 #include "psi_diff.h"
+#include "pt_sqrt.h"
 
 // The negative binomial with a variance linear in the mean, in (mu, theta),
 // r = mu/theta: the parts of the log-mass (nb1_parts), the support sums that
@@ -91,7 +92,7 @@ inline double nb1_E_Pr(double mu, double th) {
     double r = mu / th;
     double ratio = th / (1.0 + th);
     double lratio = std::log(th) - std::log1p(th);
-    double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + th))
+    double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + th))
                  + 40.0 / (-std::log(ratio));
     int kmax = (int) std::min(cap, 2.0e9);
 
@@ -131,7 +132,7 @@ inline void nb1_G_derivs1(double mu, double th, double* G) {
     double ratio = th / (1.0 + th);
     double lratio = std::log(th) - std::log1p(th);
     double L = std::log1p(th), op = 1.0 + th;
-    double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + th))
+    double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + th))
                  + 40.0 / (-std::log(ratio));
     int kmax = (int) std::min(cap, 2.0e9);
     double lpk = -r * std::log1p(th);

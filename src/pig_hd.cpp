@@ -5,6 +5,7 @@
 #include <cstring>
 #include <cmath>
 #include <vector>
+#include "pt_sqrt.h"
 using namespace Rcpp;
 using d7::psi_derivs;
 using d7::PIG_OFF;
@@ -121,7 +122,7 @@ static Jet2 jet_recip(const Jet2& f) {
 }
 
 static Jet2 jet_sqrt(const Jet2& f) {
-    double x = f.v[0][0], s = std::sqrt(x);
+    double x = f.v[0][0], s = d7::sqrt_cr(x);
     double h[5] = { s, 0.5 / s, -0.25 / (s * x), 0.375 / (s * x * x),
                     -0.9375 / (s * x * x * x) };
     return jet_compose(h, f);
@@ -230,7 +231,7 @@ static inline void pig1_row(double yy, double m, double sg,
         return;
     }
     double c = 1.0 + 2.0 * sg * m;
-    double s = std::sqrt(c);
+    double s = d7::sqrt_cr(c);
     double w = 0.5 * sg / s;
     double L[5];
     if (pre) {
@@ -909,7 +910,7 @@ static List pig_expected_run(NumericVector y, NumericVector mu,
             }
         } else if (ok) {
             if (pig1) {
-                double w = 0.5 * x / std::sqrt(1.0 + 2.0 * x * m);
+                double w = 0.5 * x / d7::sqrt_cr(1.0 + 2.0 * x * m);
                 ok = pig_expected_obs<ORDER, PigSeqW>(m, x, w, 2.0 * x * m,
                                                       row, E, D1, D2);
             } else {

@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include "pt_bessel_k.h"
 #include "pt_loc_scale.h"
+#include "pt_sqrt.h"
 
 // The pseudo-Huber family in its standard-deviation parametrization
 // (mu, sigma, nu): with R(nu) = sqrt(nu) K_2(sqrt(nu)) / K_1(sqrt(nu)),
@@ -27,7 +28,7 @@ struct NuPart {
 };
 
 inline void nu_part(double v, int K, NuPart &o) {
-  const double t = std::sqrt(v);
+  const double t = d7::sqrt_cr(v);
   double km[8] = {0};
   for (int m = 0; m <= K + 2; m++) km[m] = bessel_k_scaled(t, (double) m);
   o.R[0] = t * km[2] / km[1];
@@ -114,7 +115,7 @@ struct Ph2Terms { double R, h; };
 
 inline Ph2Terms pseudohuber2_terms(double v) {
     Ph2Terms T;
-    const double t = std::sqrt(v);
+    const double t = d7::sqrt_cr(v);
     const double k1 = bessel_k_scaled(t, 1.0), k2 = bessel_k_scaled(t, 2.0);
     T.R = t * k2 / k1;
     // log K_n(t) = log(scaled K_n(t)) - t
@@ -196,7 +197,7 @@ inline double pseudohuber2_d3_nu_nu_nu(double w, double Q, double D,
 inline double pseudohuber2_logpdf(double y, double mu, double sigma, double v,
                                   const Ph2Terms& T) {
     const double z = (y - mu) / sigma;
-    const double D = std::sqrt(v + T.R * (z * z));
+    const double D = d7::sqrt_cr(v + T.R * (z * z));
     return -D - std::log(2.0) - std::log(sigma) + T.h;
 }
 
@@ -208,7 +209,7 @@ inline void pseudohuber2_score_curv(int k, double y, const double* th,
     nu_part(v, k == 2 ? 2 : 0, np);
     const double r = y - m, s2 = s * s;
     const double w = r * r / s2;
-    const double D = std::sqrt(v + np.R[0] * w);
+    const double D = d7::sqrt_cr(v + np.R[0] * w);
     if (k == 0) {
         out[0] = pseudohuber2_score_mu(r, s, D, np);
         out[1] = pseudohuber2_hess_mu_mu(r, s2, D, np);
@@ -235,7 +236,7 @@ inline void pseudohuber2_quad_diag(int k, const double* shape, double* out,
         const double z = R.x[j];
         const double fw = std::exp(pseudohuber2_logpdf(z, 0.0, 1.0, v, T)) * R.w[j];
         const double r = z, w = r * r / 1.0;
-        const double Q = v + np.R[0] * w, D = std::sqrt(Q);
+        const double Q = v + np.R[0] * w, D = d7::sqrt_cr(Q);
         double H;
         if (k == 0) H = pseudohuber2_hess_mu_mu(r, 1.0, D, np);
         else if (k == 1) H = pseudohuber2_hess_sigma_sigma(1.0, 1.0, w, D, np);

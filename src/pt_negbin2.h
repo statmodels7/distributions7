@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cmath>
 #include "psi_diff.h"
+#include "pt_sqrt.h"
 
 // Negative binomial in the mean and the size, Var = mu + mu^2/theta: one
 // function per component and order for the quantities the scalar registry
@@ -136,7 +137,7 @@ inline double negbin2_expected_mu_mu(double m, double th) {
 inline double negbin2_expected_theta_theta(double mu, double theta) {
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
-    double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + mu / theta))
+    double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + mu / theta))
                  + 40.0 * (mu + theta) / theta;
     int kmax = (int) std::min(cap, 1.0e6);
     const double den = theta * (theta + mu);
@@ -209,7 +210,7 @@ inline double negbin2_dexpected_theta_theta_theta_term(
 inline double negbin2_dexpected_theta_theta_theta(double mu, double theta) {
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
-    double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + mu / theta))
+    double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + mu / theta))
                  + 40.0 * (mu + theta) / theta;
     int kmax = (int) std::min(cap, 1.0e6);
     const double c = theta + mu, c2 = c * c;

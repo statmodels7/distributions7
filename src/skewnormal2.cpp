@@ -2,6 +2,7 @@
 #include <cmath>
 #include "d7_par.h"
 #include "pt_skewnormal2.h"
+#include "pt_sqrt.h"
 using namespace Rcpp;
 using d7::SN2_C;
 using d7::SN2_B2;
@@ -227,7 +228,7 @@ List skewnormal2_gradient_cpp(NumericVector y, NumericVector mu, NumericVector s
     const double r = P.r;
     const double w = (y[i] - m) / s;
     const double Dq = P.Dq;
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -262,7 +263,7 @@ List skewnormal2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector si
     const double r = P.r;
     const double w = (y[i] - m) / s;
     const double Dq = P.Dq;
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -311,7 +312,7 @@ List skewnormal2_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sig
     const double r = P.r;
     const double w = (y[i] - m) / s;
     const double Dq = P.Dq;
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -375,7 +376,7 @@ List skewnormal2_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sig
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -406,7 +407,7 @@ List skewnormal2_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sig
       const double e3 = std::pow(X, 2);
       const double e4 = 3*X;
       const double e5 = std::pow(Z1, 2);
-      G1_0 = -e2*(r + w) + Z1*r/(Dq*std::sqrt(e1));
+      G1_0 = -e2*(r + w) + Z1*r/(Dq*d7::sqrt_cr(e1));
       G2_0 = -e2*(1 + Z1*e0*(X + Z1)/std::pow(Dq, 2));
       G3_0 = Z1*std::pow(r, 3)*(Z1*e4 + e3 + 2*e5 - 1)/(std::pow(Dq, 3)*std::pow(e1, 3.0/2.0));
       G4_0 = -Z1*std::pow(r, 4)*(std::pow(X, 3) + 12*X*e5 + 6*std::pow(Z1, 3) + 7*Z1*e3 - 4*Z1 - e4)/(std::pow(Dq, 4)*std::pow(e1, 2));
@@ -652,7 +653,7 @@ List skewnormal2_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sig
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -694,7 +695,7 @@ List skewnormal2_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sig
       const double e5 = std::pow(Z1, 2);
       const double e6 = std::pow(X, 3);
       const double e7 = std::pow(Z1, 3);
-      G1_0 = -e2*(r + w) + Z1*r/(Dq*std::sqrt(e1));
+      G1_0 = -e2*(r + w) + Z1*r/(Dq*d7::sqrt_cr(e1));
       G2_0 = -e2*(1 + Z1*e0*(X + Z1)/std::pow(Dq, 2));
       G3_0 = Z1*std::pow(r, 3)*(Z1*e4 + e3 + 2*e5 - 1)/(std::pow(Dq, 3)*std::pow(e1, 3.0/2.0));
       G4_0 = -Z1*std::pow(r, 4)*(12*X*e5 + 7*Z1*e3 - 4*Z1 - e4 + e6 + 6*e7)/(std::pow(Dq, 4)*std::pow(e1, 2));
@@ -1145,7 +1146,7 @@ List skewnormal2_cross_y_cpp(NumericVector y, NumericVector mu, NumericVector si
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -1159,7 +1160,7 @@ List skewnormal2_cross_y_cpp(NumericVector y, NumericVector mu, NumericVector si
       const double e0 = std::pow(r, 2);
       const double e1 = e0 + 1;
       const double e2 = 1.0/e1;
-      G1_0 = -e2*(r + w) + Z1*r/(Dq*std::sqrt(e1));
+      G1_0 = -e2*(r + w) + Z1*r/(Dq*d7::sqrt_cr(e1));
       G2_0 = -e2*(1 + Z1*e0*(X + Z1)/std::pow(Dq, 2));
     } else {
       const double f0 = r + w;
@@ -1199,7 +1200,7 @@ List skewnormal2_cross2_y_cpp(NumericVector y, NumericVector mu, NumericVector s
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -1253,7 +1254,7 @@ List skewnormal2_grad_y_hess_cpp(NumericVector y, NumericVector mu, NumericVecto
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -1272,7 +1273,7 @@ List skewnormal2_grad_y_hess_cpp(NumericVector y, NumericVector mu, NumericVecto
       const double e0 = std::pow(r, 2);
       const double e1 = e0 + 1;
       const double e2 = 1.0/e1;
-      G1_0 = -e2*(r + w) + Z1*r/(Dq*std::sqrt(e1));
+      G1_0 = -e2*(r + w) + Z1*r/(Dq*d7::sqrt_cr(e1));
       G2_0 = -e2*(1 + Z1*e0*(X + Z1)/std::pow(Dq, 2));
       G3_0 = Z1*std::pow(r, 3)*(std::pow(X, 2) + 3*X*Z1 + 2*std::pow(Z1, 2) - 1)/(std::pow(Dq, 3)*std::pow(e1, 3.0/2.0));
     } else {
@@ -1353,7 +1354,7 @@ List skewnormal2_hess_y_hess_cpp(NumericVector y, NumericVector mu, NumericVecto
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -1454,13 +1455,13 @@ List skewnormal2_dy1_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
     double G1_0 = 0.0;
     const double e0 = std::pow(r, 2) + 1;
-    G1_0 = -(r + w)/e0 + Z1*r/(Dq*std::sqrt(e0));
+    G1_0 = -(r + w)/e0 + Z1*r/(Dq*d7::sqrt_cr(e0));
     o_y[i] = G1_0/s;
   });
   return List::create(Named("y") = o_y);
@@ -1477,7 +1478,7 @@ List skewnormal2_dy2_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -1500,7 +1501,7 @@ List skewnormal2_dy3_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -1522,7 +1523,7 @@ List skewnormal2_dy4_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;

@@ -5,6 +5,7 @@
 #include <cmath>
 #include <algorithm>
 #include "pt_loc_scale.h"
+#include "pt_sqrt.h"
 
 // Azzalini's skew t in (mu, sigma, alpha, nu): one function per component
 // and order for the score and the diagonal of the Hessian, called by the
@@ -39,10 +40,10 @@ inline SkewtPieces skewt_pieces(double y, double mu, double sigma,
     double z = (y - mu) / sigma;
     double m = nu + 1.0;
     double s = nu + z * z;
-    double cc = std::sqrt(m / s);
+    double cc = d7::sqrt_cr(m / s);
     double w = alpha * z * cc;
     double q = std::exp(R::dt(w, m, 1) - skewt_pt()(w, m, 1, 1));
-    double e = nu * std::sqrt(m) / std::pow(s, 1.5);
+    double e = nu * d7::sqrt_cr(m) / std::pow(s, 1.5);
     P.z = z;
     P.w = w;
     P.c = cc;
@@ -50,7 +51,7 @@ inline SkewtPieces skewt_pieces(double y, double mu, double sigma,
     P.da = -m * (nu - z * z) / (s * s);
     P.e = e;
     P.b = alpha * e;
-    P.db = -3.0 * alpha * nu * std::sqrt(m) * z / std::pow(s, 2.5);
+    P.db = -3.0 * alpha * nu * d7::sqrt_cr(m) * z / std::pow(s, 2.5);
     P.q = q;
     P.dq = q * (-(m + 1.0) * w / (m + w * w) - q);
     return P;
@@ -59,7 +60,7 @@ inline SkewtPieces skewt_pieces(double y, double mu, double sigma,
 inline double skewt_logpdf(double y, double mu, double sigma, double alpha,
                            double nu) {
     double z = (y - mu) / sigma;
-    double w = alpha * z * std::sqrt((nu + 1.0) / (nu + z * z));
+    double w = alpha * z * d7::sqrt_cr((nu + 1.0) / (nu + z * z));
     return std::log(2.0) - std::log(sigma) + R::dt(z, nu, 1) +
         skewt_pt()(w, nu + 1.0, 1, 1);
 }
@@ -136,8 +137,8 @@ inline SkewtD3 skewt_d3_pieces(double y, double mu, double sigma,
     double z = (y - mu) / sigma;
     double m = nu + 1.0;
     double s = nu + z * z;
-    double rm = std::sqrt(m);
-    double u = z * rm / std::sqrt(s);
+    double rm = d7::sqrt_cr(m);
+    double u = z * rm / d7::sqrt_cr(s);
     double u1 = nu * rm * R_pow(s, -1.5);
     double u2 = -3.0 * nu * rm * z * R_pow(s, -2.5);
     double u3 = -3.0 * nu * rm * (nu - 4.0 * z * z) * R_pow(s, -3.5);

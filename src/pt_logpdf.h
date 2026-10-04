@@ -12,6 +12,7 @@
 #include "pt_pseudohuber2.h"
 #include "pt_pig.h"
 #include "pt_betabinom.h"
+#include "pt_sqrt.h"
 
 // The log-density of one observation, one function per family, th being the
 // family's parameters followed by its constants as the scalar registry
@@ -79,13 +80,13 @@ inline double logistic_logpdf(double y, const double* th) {
     return R::dlogis(y, th[0], th[1], 1);
 }
 inline double gaussian2_logpdf(double y, const double* th) {
-    return R::dnorm4(y, th[0], std::sqrt(th[1]), 1);
+    return R::dnorm4(y, th[0], d7::sqrt_cr(th[1]), 1);
 }
 inline double gaussian3_logpdf(double y, const double* th) {
-    return R::dnorm4(y, th[0], 1.0 / std::sqrt(th[1]), 1);
+    return R::dnorm4(y, th[0], 1.0 / d7::sqrt_cr(th[1]), 1);
 }
 inline double lognormal1_logpdf(double y, const double* th) {
-    return R::dlnorm(y, th[0], std::sqrt(th[1]), 1);
+    return R::dlnorm(y, th[0], d7::sqrt_cr(th[1]), 1);
 }
 
 // statmod's .dinvgauss() at mean m and dispersion phi
@@ -133,13 +134,13 @@ inline double weibull3_logpdf(double y, const double* th) {
 inline double lognormal2_logpdf(double y, const double* th) {
     double m = th[0];
     double s = std::log1p(th[1] / (m * m));
-    return R::dlnorm(y, std::log(m) - s / 2.0, std::sqrt(s), 1);
+    return R::dlnorm(y, std::log(m) - s / 2.0, d7::sqrt_cr(s), 1);
 }
 inline double student_t1_logpdf(double y, const double* th) {
     return R::dt((y - th[0]) / th[1], th[2], 1) - std::log(th[1]);
 }
 inline double student_t2_logpdf(double y, const double* th) {
-    double s0 = th[1] * std::sqrt(1.0 - 2.0 / th[2]);
+    double s0 = th[1] * d7::sqrt_cr(1.0 - 2.0 / th[2]);
     return R::dt((y - th[0]) / s0, th[2], 1) - std::log(s0);
 }
 // gengamma_logpdf_cpp()'s body at scale a, shape d and power p
@@ -189,7 +190,7 @@ inline double enet_logM(double x) {
 inline double enet_logpdf(double y, const double* th) {
     double lam = th[1], al = th[2];
     double a = lam * al, c = lam * (1.0 - al);
-    double x = a / std::sqrt(c);
+    double x = a / d7::sqrt_cr(c);
     double z = y - th[0];
     double log_z = std::log(2.0) - 0.5 * std::log(c) + enet_logM(x);
     return -a * std::fabs(z) - c * (z * z) / 2.0 - log_z;

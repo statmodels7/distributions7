@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "pt_pseudohuber2.h"
+#include "pt_sqrt.h"
 using namespace Rcpp;
 
 // The pseudo-Huber family in its standard-deviation parametrization
@@ -169,7 +170,7 @@ List high_order(int m, NumericVector y, NumericVector mu, NumericVector sigma,
           qt[a * 36 + j * 6 + k] = np.R[k] * B[a] * Cj[j];
     qt[1] += 1.0;   // the nu in Q
     const double Q = qt[0] + v;
-    const double D = std::sqrt(Q);
+    const double D = d7::sqrt_cr(Q);
     double dq[6];   // D / Q^b
     dq[0] = D;
     for (int b = 1; b <= m; b++) dq[b] = dq[b - 1] / Q;
@@ -223,7 +224,7 @@ List pseudohuber2_gradient_cpp(NumericVector y, NumericVector mu,
     if (!(v == last_nu)) { nu_part(v, 1, np); last_nu = v; }
     const double r = y[i] - m_i;
     const double w = r * r / (s * s);
-    const double D = std::sqrt(v + np.R[0] * w);
+    const double D = d7::sqrt_cr(v + np.R[0] * w);
     g_mu[i] = d7::pseudohuber2_score_mu(r, s, D, np);
     g_sigma[i] = d7::pseudohuber2_score_sigma(s, w, D, np);
     g_nu[i] = d7::pseudohuber2_score_nu(w, D, np);
@@ -250,7 +251,7 @@ List pseudohuber2_hessian_cpp(NumericVector y, NumericVector mu,
     const double s2 = s * s, s3 = s2 * s;
     const double R0 = np.R[0], R1 = np.R[1];
     const double w = r * r / s2;
-    const double D = std::sqrt(v + R0 * w);
+    const double D = d7::sqrt_cr(v + R0 * w);
     const double i2D = 0.5 / D, i4D3 = 0.25 / (D * D * D);
     // partials of Q
     const double Qm = -2.0 * R0 * r / s2, Qs = -2.0 * R0 * w / s,

@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_sqrt.h"
 using namespace Rcpp;
 
 // Third/fourth-order derivatives of the Negative Binomial (NB2) log-mass,
@@ -102,7 +103,7 @@ static inline double nb_d4_theta(double y, double mu, double th) {
 static double nb_E_dtheta(double mu, double theta, int nd) {
     const double ratio = mu / (theta + mu);
     const double lratio = std::log(mu) - std::log(theta + mu);
-    const double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + mu / theta))
+    const double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + mu / theta))
                        + 40.0 * (mu + theta) / theta;
     const int kmax = (int) std::min(cap, 1.0e6);
     const double s = theta + mu, th2 = theta * theta, th3 = th2 * theta;

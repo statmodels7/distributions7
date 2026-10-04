@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include "pig_asym.h"
+#include "pt_sqrt.h"
 
 // The Poisson-inverse Gaussian in both parametrizations: what the kernels of
 // pig_hd.cpp and the scalar registry share. The special functions are
@@ -366,7 +367,7 @@ inline bool pig_in_support(double yy) {
 // w = 1/(2 alpha), at which log S is differentiated; pig1_row()'s expression
 inline double pig1_w(double m, double sg) {
     double c = 1.0 + 2.0 * sg * m;
-    double s = std::sqrt(c);
+    double s = d7::sqrt_cr(c);
     return 0.5 * sg / s;
 }
 
@@ -378,7 +379,7 @@ inline double pig1_slot(int i, int j, double yy, double m, double sg,
     const int k = pix(i, j);
     if (!pig_in_support(yy)) return (k == 0) ? R_NegInf : R_NaN;
     double c = 1.0 + 2.0 * sg * m;
-    double s = std::sqrt(c);
+    double s = d7::sqrt_cr(c);
     double w = 0.5 * sg / s;
     double C[15] = {0};
     C[0] = c; C[1] = 2.0 * sg; C[2] = 2.0 * m; C[4] = 2.0;
@@ -624,7 +625,7 @@ inline void pig1_info_dinfo(int k, double y, const double* th, double* out) {
             D = (k == 0) ? pig1_asym1_0(m, x) : pig1_asym1_3(m, x);
             ok[0] = ok[1] = true;
         } else {
-            double w = 0.5 * x / std::sqrt(1.0 + 2.0 * x * m);
+            double w = 0.5 * x / d7::sqrt_cr(1.0 + 2.0 * x * m);
             pig_diag_obs<PigSeqW>(m, w, 2.0 * x * m,
                 [&](double yy, const double* pre, double* val, double* g,
                     double* h) {

@@ -2,6 +2,7 @@
 #include "d7_par.h"
 #include "psi_diff.h"
 #include "pt_negbin2.h"
+#include "pt_sqrt.h"
 using namespace Rcpp;
 
 // THE DISPERSION AT LARGE theta.
@@ -79,7 +80,7 @@ using namespace Rcpp;
 static void nb_dE_ltt1(double mu, double theta, double *out) {
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
-    double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + mu / theta))
+    double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + mu / theta))
                  + 40.0 * (mu + theta) / theta;
     int kmax = (int) std::min(cap, 1.0e6);
     const double c = theta + mu, c2 = c * c;
@@ -121,7 +122,7 @@ static void nb_dE_ltt1(double mu, double theta, double *out) {
 static void nb_dE_ltt2(double mu, double theta, double *out) {
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
-    double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + mu / theta))
+    double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + mu / theta))
                  + 40.0 * (mu + theta) / theta;
     int kmax = (int) std::min(cap, 1.0e6);
     const double c = theta + mu, c2 = c * c, c3 = c2 * c;

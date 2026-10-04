@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include <cmath>
 #include "pt_lognormal2.h"
+#include "pt_sqrt.h"
 using namespace Rcpp;
 
 // The lognormal in the mean m and the variance v of Y. With C = log(y/m)
@@ -1905,7 +1906,7 @@ List lognormal2_dcdf1_cpp(NumericVector y, NumericVector mean, NumericVector var
     const double yy = y[i];
     const double C = std::log(yy / m);
     const double t3 = 2*C*t1;
-    const double t4 = M_SQRT2*std::exp(-1.0/2.0*C)*std::exp(-1.0/8.0*S)*std::exp(-1.0/2.0*std::pow(C, 2)*t1)/(std::sqrt(M_PI)*std::sqrt(S));
+    const double t4 = M_SQRT2*std::exp(-1.0/2.0*C)*std::exp(-1.0/8.0*S)*std::exp(-1.0/2.0*std::pow(C, 2)*t1)/(d7::sqrt_cr(M_PI)*d7::sqrt_cr(S));
     o_mean[i] = (1.0/4.0)*t4*(2*C*t0*t1 - m*t2*t3 + m*t2 - 3*t0);
     o_var[i] = (1.0/8.0)*t2*t4*(1 - t3);
   }
@@ -1965,7 +1966,7 @@ List lognormal2_dcdf2_cpp(NumericVector y, NumericVector mean, NumericVector var
     const double t11 = C*t4;
     const double t12 = C*t2*t5;
     const double t13 = t4*t6;
-    const double t16 = M_SQRT2*std::exp(-1.0/2.0*C)*std::exp(-1.0/8.0*S)*std::exp(-1.0/2.0*t2*t6)/(std::sqrt(M_PI)*std::sqrt(S));
+    const double t16 = M_SQRT2*std::exp(-1.0/2.0*C)*std::exp(-1.0/8.0*S)*std::exp(-1.0/2.0*t2*t6)/(d7::sqrt_cr(M_PI)*d7::sqrt_cr(S));
     const double t18 = 8*t9;
     o_mean_mean[i] = t16*((9.0/8.0)*C*t0*t14*t2 + (3.0/2.0)*C*t0*t14*t4 + (3.0/2.0)*C*t1*t4 - 7.0/8.0*C*t3 + (1.0/4.0)*t0*t14*t4*t6 - t1*t10 + (5.0/4.0)*t1*t4*t6 + (3.0/16.0)*t1 - t10*t15 - 3*t11*t5 - 3.0/4.0*t12 - 3.0/2.0*t13*t5 - 1.0/4.0*t15*t2 - 9.0/16.0*t15 + (3.0/2.0)*t2*t5 - 5.0/4.0*t3 + t5*t7*t8 + (5.0/8.0)*t5);
     o_var_var[i] = (1.0/64.0)*t14*t16*(18*C*t2 + 24*C*t4 - t17 - t18 + 4*t4*t6 - 9);
@@ -2069,7 +2070,7 @@ List lognormal2_dcdf3_cpp(NumericVector y, NumericVector mean, NumericVector var
     const double t33 = t10*t2;
     const double t34 = 15*t14;
     const double t35 = (3.0/2.0)*t21;
-    const double t40 = M_SQRT2*std::exp(-1.0/2.0*C)*std::exp(-1.0/8.0*S)*std::exp(-1.0/2.0*t10*t4)/(std::sqrt(M_PI)*std::sqrt(S));
+    const double t40 = M_SQRT2*std::exp(-1.0/2.0*C)*std::exp(-1.0/8.0*S)*std::exp(-1.0/2.0*t10*t4)/(d7::sqrt_cr(M_PI)*d7::sqrt_cr(S));
     const double t43 = (15.0/4.0)*t7;
     const double t44 = (1.0/4.0)*t21;
     const double t49 = 480*t7;
@@ -2228,7 +2229,7 @@ List lognormal2_dcdf4_cpp(NumericVector y, NumericVector mean, NumericVector var
     const double t48 = t2*t8;
     const double t49 = t4*t8;
     const double t50 = t36*t43;
-    const double t54 = M_SQRT2*std::exp(-1.0/2.0*C)*std::exp(-1.0/8.0*S)*std::exp(-1.0/2.0*t5*t8)/(std::sqrt(M_PI)*std::sqrt(S));
+    const double t54 = M_SQRT2*std::exp(-1.0/2.0*C)*std::exp(-1.0/8.0*S)*std::exp(-1.0/2.0*t5*t8)/(d7::sqrt_cr(M_PI)*d7::sqrt_cr(S));
     const double t58 = 13440*t26;
     const double t59 = 2688*t34;
     const double t63 = C*t38;

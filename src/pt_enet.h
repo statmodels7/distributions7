@@ -4,6 +4,7 @@
 #include <Rcpp.h>
 #include <cmath>
 #include "pt_mills.h"
+#include "pt_sqrt.h"
 
 
 // The elastic-net density in (mu, lambda, alpha),
@@ -47,11 +48,11 @@ inline EnetPar enet_par(double lam, double al) {
     P.al = al;
     P.a = lam * al;
     P.c = lam * (1.0 - al);
-    P.x = P.a / std::sqrt(P.c);
+    P.x = P.a / d7::sqrt_cr(P.c);
     P.g = enet_G(P.x);
     P.dg = 1.0 + P.x * P.g - P.g * P.g;
     double cc = P.c, x = P.x, g = P.g, dg = P.dg;
-    P.za = g / std::sqrt(cc);
+    P.za = g / d7::sqrt_cr(cc);
     P.zc = -(1.0 + x * g) / (2.0 * cc);
     P.zaa = dg / cc;
     P.zac = -(x * dg + g) / (2.0 * std::pow(cc, 1.5));
@@ -65,7 +66,7 @@ struct EnetT3 { double aaa, aac, acc, ccc; };
 inline EnetT3 enet_t3(const EnetPar& P) {
     double c = P.c, x = P.x, g = P.g, dg = P.dg;
     double d2g = g + x * dg - 2.0 * g * dg;
-    double rc = std::sqrt(c);
+    double rc = d7::sqrt_cr(c);
     double xa = 1.0 / rc, xc = -x / (2.0 * c);
     double xac = -0.5 / (c * rc), xcc = 3.0 * x / (4.0 * c * c);
     double xacc = 0.75 / (c * c * rc), xccc = -15.0 * x / (8.0 * c * c * c);
