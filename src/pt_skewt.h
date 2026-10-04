@@ -17,10 +17,18 @@
 // the R methods take them. The caller evaluates the log-density at the
 // stencil's nodes (skewt_logpdf) and passes the values.
 //
-// These functions call the t distribution function, whose R implementation
-// may signal a warning: the kernels that use them run on the calling thread.
+// The t distribution function is numericals7's n7_pt(), R's pt() compiled
+// without its warnings, resolved once through R_GetCCallable on the calling
+// thread (skewt_pt()), so that the kernels and the registry may run these
+// functions on worker threads. R::dt() is silent at positive degrees of
+// freedom.
 
 namespace d7 {
+
+typedef double (*N7Pt)(double, double, int, int);
+
+// n7_pt, resolved on first use; the first call must be on the calling thread
+N7Pt skewt_pt();
 
 struct SkewtPieces { double z, w, c, a, da, e, b, db, q, dq; };
 
@@ -32,7 +40,7 @@ inline SkewtPieces skewt_pieces(double y, double mu, double sigma,
     double s = nu + z * z;
     double cc = std::sqrt(m / s);
     double w = alpha * z * cc;
-    double q = std::exp(R::dt(w, m, 1) - R::pt(w, m, 1, 1));
+    double q = std::exp(R::dt(w, m, 1) - skewt_pt()(w, m, 1, 1));
     double e = nu * std::sqrt(m) / std::pow(s, 1.5);
     P.z = z;
     P.w = w;
@@ -52,7 +60,7 @@ inline double skewt_logpdf(double y, double mu, double sigma, double alpha,
     double z = (y - mu) / sigma;
     double w = alpha * z * std::sqrt((nu + 1.0) / (nu + z * z));
     return std::log(2.0) - std::log(sigma) + R::dt(z, nu, 1) +
-        R::pt(w, nu + 1.0, 1, 1);
+        skewt_pt()(w, nu + 1.0, 1, 1);
 }
 
 // the step in nu, and the stencil weights on the offsets -2, -1, 0, 1, 2,
