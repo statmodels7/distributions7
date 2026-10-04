@@ -8,6 +8,13 @@
 ## usethis namespace: end
 NULL
 
+# The von Mises kernels (src/vonmises.cpp) call numericals7's compiled Bessel
+# ratio through R_GetCCallable, which finds an entry point only once
+# numericals7's DLL is loaded; importing a function loads its namespace with
+# this one.
+#' @importFrom numericals7 bessel_i_ratio
+NULL
+
 #' Register the Package's S7 Methods on Load
 #'
 #' @description

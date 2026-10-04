@@ -231,10 +231,11 @@ S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta, ...) {
 #' with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} the derivative of
 #' \eqn{\log I_0} and also the **mean resultant length** of the family.
 #'
-#' The ratio comes from [numericals7::bessel_i_ratio()], which switches to an
-#' asymptotic expansion past \eqn{\kappa = 10^4}. R's own scaled `besselI`
-#' underflows to an exact zero between \eqn{10^5} and \eqn{10^6}, so forming
-#' the ratio from two calls gives `NaN` over part of that band.
+#' The components are computed by a compiled kernel. The ratio comes from
+#' numericals7's compiled [numericals7::bessel_i_ratio()], which is finite and
+#' accurate at any concentration. R's own scaled `besselI` underflows to an
+#' exact zero between \eqn{10^5} and \eqn{10^6}, so forming the ratio from two
+#' calls gives `NaN` over part of that band.
 #'
 #' With `scale = "link"` the generic applies the chain rule for the links the
 #' family carries. This method always returns the parameter scale.
@@ -248,6 +249,9 @@ S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta, ...) {
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `kappa`, each of
 #'   length `max(length(y), length(mu), length(kappa))`.
@@ -285,9 +289,9 @@ S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta, ...) {
 #' mle <- as.list(coef(fit_distrib(d, z)))
 #' vapply(distrib_gradient(d, z, mle), sum, numeric(1))
 S7::method(distrib_gradient, VonMises1Distrib) <- function(distrib, y, theta,
-                                                           scale = c("parameter", "link"), ...) {
-  d <- y - theta[[1]]
-  list(mu = theta[[2]] * sin(d), kappa = cos(d) - numericals7::bessel_i_ratio(theta[[2]]))
+                                                           scale = c("parameter", "link"), ...,
+                                                           threads = 1L) {
+  vonmises1_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title von Mises Observed Hessian
@@ -305,11 +309,10 @@ S7::method(distrib_gradient, VonMises1Distrib) <- function(distrib, y, theta,
 #' inside \eqn{\log I_0}. It therefore equals its own expectation at every
 #' observation.
 #'
-#' \eqn{A'} comes from the Riccati recurrence
-#' \eqn{A' = 1 - A/\kappa - A^2}, which [numericals7::bessel_i_ratio_derivs()]
-#' runs, so no second Bessel evaluation is needed. It is the variance of
+#' \eqn{A'} comes from [numericals7::bessel_i_ratio_d1()], accurate to the
+#' last bits at any concentration. It is the variance of
 #' \eqn{\cos(Y-\mu)} and is positive, so the information is positive
-#' definite.
+#' definite. The components are computed by a compiled kernel.
 #'
 #' @param distrib A `VonMises1Distrib` object, from [vonmises1_distrib()].
 #' @param y A numeric vector of angles in \eqn{[-\pi, \pi)}.
@@ -320,6 +323,9 @@ S7::method(distrib_gradient, VonMises1Distrib) <- function(distrib, y, theta,
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `mu_kappa` and
 #'   `kappa_kappa`, each of length
@@ -333,7 +339,7 @@ S7::method(distrib_gradient, VonMises1Distrib) <- function(distrib, y, theta,
 #'
 #' @seealso [distrib_gradient.VonMises1Distrib()] for the score,
 #'   [distrib_expected_hessian.VonMises1Distrib()] for the expectation of this
-#'   quantity, [numericals7::bessel_i_ratio_derivs()] for \eqn{A'}, and
+#'   quantity, [numericals7::bessel_i_ratio_d1()] for \eqn{A'}, and
 #'   [distrib_hessian()] for the generic.
 #'
 #' @examples
@@ -346,10 +352,10 @@ S7::method(distrib_gradient, VonMises1Distrib) <- function(distrib, y, theta,
 #' # The pure-concentration entry is one number, repeated.
 #' unique(h$kappa_kappa)
 #'
-#' # And it is minus A', which the Riccati recurrence gives.
+#' # And it is minus A', which satisfies the Riccati identity.
 #' A <- numericals7::bessel_i_ratio(2)
 #' c(riccati = 1 - A / 2 - A^2,
-#'   supplied = numericals7::bessel_i_ratio_derivs(2)$d1)
+#'   supplied = numericals7::bessel_i_ratio_d1(2))
 #'
 #' # numDeriv on the summed log-density reproduces the summed matrix.
 #' fn <- function(p)
@@ -358,11 +364,9 @@ S7::method(distrib_gradient, VonMises1Distrib) <- function(distrib, y, theta,
 #' rbind(numeric = c(H[1, 1], H[2, 2], H[1, 2]),
 #'       closed = c(sum(h$mu_mu), sum(h$kappa_kappa), sum(h$mu_kappa)))
 S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
-                                                          scale = c("parameter", "link"), ...) {
-  d <- y - theta[[1]]
-  k <- theta[[2]]
-  list(mu_mu = -k * cos(d), mu_kappa = sin(d),
-       kappa_kappa = rep_len(-numericals7::bessel_i_ratio_derivs(k)$d1, length(d)))
+                                                          scale = c("parameter", "link"), ...,
+                                                          threads = 1L) {
+  vonmises1_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title von Mises Expected Hessian
@@ -394,6 +398,9 @@ S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
 #'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `mu_kappa` and
 #'   `kappa_kappa`, each of length `length(y)` and constant along it.
@@ -418,7 +425,7 @@ S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
 #' # two parameters are orthogonal.
 #' A <- numericals7::bessel_i_ratio(2)
 #' c(mu_mu = -2 * A, mu_kappa = 0,
-#'   kappa_kappa = -numericals7::bessel_i_ratio_derivs(2)$d1)
+#'   kappa_kappa = -numericals7::bessel_i_ratio_d1(2))
 #'
 #' # Averaging the observed Hessian over draws reaches the same three numbers.
 #' set.seed(1)
@@ -431,12 +438,10 @@ S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
 S7::method(distrib_expected_hessian, VonMises1Distrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
                                                                    approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                   nsim = 10000, ...) {
-  k <- theta[[2]]
-  a <- numericals7::bessel_i_ratio_derivs(k)
-  n <- length(y)
-  list(mu_mu = rep_len(-k * a$A, n), mu_kappa = rep_len(0, n),
-       kappa_kappa = rep_len(-a$d1, n))
+                                                                   nsim = 10000, ...,
+                                                                   threads = 1L) {
+  n <- max(length(y), length(theta[[1]]), length(theta[[2]]))
+  vonmises1_expected_hessian_cpp(n, theta[[2]], threads)
 }
 
 #' @title von Mises First Derivative in the Response
@@ -722,8 +727,8 @@ vonmises1_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' \eqn{\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)} with the order, the
 #' \eqn{\mu\mu\kappa} component is \eqn{-\cos(y-\mu)}, and the
 #' pure-\eqn{\kappa} one is \eqn{-A''(\kappa)}, which
-#' [numericals7::bessel_i_ratio_derivs()] supplies from the Riccati recursion
-#' \eqn{A' = 1 - A/\kappa - A^2} differentiated.
+#' [numericals7::bessel_i_ratio_d2()] supplies. The components are computed
+#' by a compiled kernel.
 #'
 #' With `expected = TRUE` the method calls [expected_derivative()], which is
 #' the one place on this page where `approx` and `nsim` are read.
@@ -746,6 +751,9 @@ vonmises1_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' @param nsim A single positive integer, the sample size when
 #'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_kappa`,
 #'   `mu_kappa_kappa` and `kappa_kappa_kappa`, each of length `length(y)`.
@@ -759,7 +767,7 @@ vonmises1_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #'
 #' @seealso [distrib_hessian.VonMises1Distrib()] for the order below,
 #'   [distrib_deriv4.VonMises1Distrib()] for the order above,
-#'   [numericals7::bessel_i_ratio_derivs()] for the derivatives of \eqn{A}, and
+#'   [numericals7::bessel_i_ratio_d1()] for the derivatives of \eqn{A}, and
 #'   [distrib_deriv3()] for the generic.
 #'
 #' @examples
@@ -782,19 +790,13 @@ S7::method(distrib_deriv3, VonMises1Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
                                                          expected = FALSE,
                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                         nsim = 10000, ...) {
+                                                         nsim = 10000, ...,
+                                                         threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 3L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  d <- y - theta[[1]]
-  k <- theta[[2]]
-  ad <- numericals7::bessel_i_ratio_derivs(k)
-  n <- length(d)
-  list(mu_mu_mu = -k * sin(d),
-       mu_mu_kappa = -cos(d),
-       mu_kappa_kappa = rep_len(0, n),
-       kappa_kappa_kappa = rep_len(-ad$d2, n))
+  vonmises1_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title von Mises Fourth-Order Derivatives
@@ -830,6 +832,9 @@ S7::method(distrib_deriv3, VonMises1Distrib) <- function(distrib, y, theta,
 #' @param nsim A single positive integer, the sample size when
 #'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
 #'   `mu_mu_mu_kappa`, `mu_mu_kappa_kappa`, `mu_kappa_kappa_kappa` and
@@ -842,7 +847,7 @@ S7::method(distrib_deriv3, VonMises1Distrib) <- function(distrib, y, theta,
 #' \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
 #'
 #' @seealso [distrib_deriv3.VonMises1Distrib()] for the order below and the
-#'   construction, [numericals7::bessel_i_ratio_derivs()] for the derivatives
+#'   construction, [numericals7::bessel_i_ratio_d1()] for the derivatives
 #'   of \eqn{A}, and [distrib_deriv4()] for the generic.
 #'
 #' @examples
@@ -865,21 +870,13 @@ S7::method(distrib_deriv4, VonMises1Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
                                                          expected = FALSE,
                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                         nsim = 10000, ...) {
+                                                         nsim = 10000, ...,
+                                                         threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  d <- y - theta[[1]]
-  k <- theta[[2]]
-  ad <- numericals7::bessel_i_ratio_derivs(k)
-  n <- length(d)
-  z <- rep_len(0, n)
-  list(mu_mu_mu_mu = k * cos(d),
-       mu_mu_mu_kappa = -sin(d),
-       mu_mu_kappa_kappa = z,
-       mu_kappa_kappa_kappa = z,
-       kappa_kappa_kappa_kappa = rep_len(-ad$d3, n))
+  vonmises1_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 

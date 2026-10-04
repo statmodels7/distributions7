@@ -24,9 +24,8 @@ zeroth order and is never asked for.}
 
 \item{inside}{A logical vector saying which quantiles lie inside the
 support, or \code{NULL} (the default), which reads \code{q > distrib@bounds[1]}. A
-family whose support depends on a parameter, as the generalized Pareto's
-does at a negative shape, supplies its own; the fixed bounds cannot see
-it.}
+family whose support depends on a parameter supplies its own; the fixed
+bounds cannot see it.}
 }
 \value{
 A named list of numeric vectors, derivatives of \eqn{F} itself on
@@ -65,7 +64,6 @@ what suppresses that.
 
 \seealso{
 \code{\link[=register_surv_cdf]{register_surv_cdf()}}, which turns a pieces function into the four
-methods; \code{\link[=bell_f_ratio]{bell_f_ratio()}} for the partition sum;
-\code{\link[=gpd_surv_pieces]{gpd_surv_pieces()}} for the most involved of the three families.
+methods; \code{\link[=bell_f_ratio]{bell_f_ratio()}} for the partition sum.
 }
 \keyword{internal}

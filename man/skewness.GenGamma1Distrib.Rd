@@ -23,6 +23,11 @@ Assembled from the first three raw moments,
 value depends on the two shapes alone; unlike a gamma's it can be negative,
 which is part of what the second shape parameter buys.
 }
+\details{
+The numerator and the denominator are the central moments \eqn{\mu_3} and
+\eqn{\mu_2} of \eqn{Y/m_1}, computed as \code{\link[=variance.GenGamma1Distrib]{variance.GenGamma1Distrib()}}
+describes, so that \eqn{\gamma_1 = \mu_3/\mu_2^{3/2}}.
+}
 \section{Notation}{
 
 \eqn{d > 0} and \eqn{p > 0} are the two shapes and \eqn{m_k} the \eqn{k}-th
@@ -41,7 +46,6 @@ skewness(d, list(a = c(0.1, 1, 100), d = 3, p = 1.5))
 
 }
 \seealso{
-\code{\link[=kurtosis.GenGamma1Distrib]{kurtosis.GenGamma1Distrib()}}, from the same raw moments;
-\code{\link[=gengamma_raw_moments]{gengamma_raw_moments()}}, \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.
+\code{\link[=kurtosis.GenGamma1Distrib]{kurtosis.GenGamma1Distrib()}}, \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.
 }
 \keyword{internal}

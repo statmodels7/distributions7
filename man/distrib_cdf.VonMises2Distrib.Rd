@@ -44,7 +44,7 @@ rbind(series = distrib_cdf(d2, y, th),
         numeric(1)))
 
 # And with the concentration parametrization at the implied concentration.
-k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+k <- numericals7::bessel_i_ratio_inverse(0.7)
 all.equal(distrib_cdf(d2, y, th),
           distrib_cdf(vonmises1_distrib(), y, list(mu = 0.5, kappa = k)))
 }

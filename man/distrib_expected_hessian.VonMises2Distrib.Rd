@@ -22,6 +22,10 @@ the signature matches the generic's, where it selects between
 \item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{rho_rho} and
@@ -34,9 +38,9 @@ form and with no quadrature or simulation. Since
 \eqn{\mathbb{E}[\cos(Y-\mu)] = A(\kappa)} and
 \eqn{\mathbb{E}[\sin(Y-\mu)] = 0}, the term carrying the map's second
 derivative drops out and
-\deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\kappa A(\kappa), \qquad
+\deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\kappa\rho, \qquad
       \mathbb{E}[\ell^{(\mu\rho)}] = 0, \qquad
-      \mathbb{E}[\ell^{(\rho\rho)}] = -\dfrac{1}{A'(\kappa)}.}
+      \mathbb{E}[\ell^{(\rho\rho)}] = -\kappa'(\rho) = -\dfrac{1}{A'(\kappa)}.}
 
 The last equality is the reparametrization identity: the information in
 \eqn{\kappa} is \eqn{A'(\kappa)} and \eqn{\kappa'(\rho) = 1/A'(\kappa)}, so
@@ -63,8 +67,8 @@ vapply(eh, function(v) v[1], numeric(1))
 
 # The reparametrization identity: the information in rho is the reciprocal
 # of the information in kappa.
-k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
-Ap <- numericals7::bessel_i_ratio_derivs(k)$d1
+k <- numericals7::bessel_i_ratio_inverse(0.7)
+Ap <- numericals7::bessel_i_ratio_d1(k)
 c(supplied = eh$rho_rho[1], reciprocal = -1 / Ap)
 
 # Averaging the observed Hessian over draws reaches the same three numbers.

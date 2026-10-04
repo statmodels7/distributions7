@@ -84,19 +84,19 @@ mapped_theta2_methods <- function(parent, th_par, tables) {
   list(
     cross2 = function(distrib, y, theta, scale = c("parameter", "link"),
                       ...) {
-      mapped_cross2_y(distrib, parent, th_par(theta), tables(theta), y)
+      mapped_cross2_y(distrib, parent, th_par(theta), tables(theta, 1L), y)
     },
     grad2 = function(distrib, y, theta, scale = c("parameter", "link"),
                      ...) {
       th <- th_par(theta)
-      mapped_theta2(distrib, parent, th, tables(theta), y,
+      mapped_theta2(distrib, parent, th, tables(theta, 2L), y,
                     distrib_cross_y(parent, y, th),
                     distrib_grad_y_hess(parent, y, th))
     },
     hess2 = function(distrib, y, theta, scale = c("parameter", "link"),
                      ...) {
       th <- th_par(theta)
-      mapped_theta2(distrib, parent, th, tables(theta), y,
+      mapped_theta2(distrib, parent, th, tables(theta, 2L), y,
                     distrib_cross2_y(parent, y, th),
                     distrib_hess_y_hess(parent, y, th))
     })
@@ -218,7 +218,6 @@ scale_only_theta2 <- function(distrib, y, theta, order = 1L, at = 1L) {
 #' @aliases distrib_grad_y_hess.ExponentialDistrib
 #'   distrib_hess_y_hess.ExponentialDistrib
 #'   distrib_grad_y_hess.Weibull1Distrib distrib_hess_y_hess.Weibull1Distrib
-#'   distrib_grad_y_hess.GPDDistrib distrib_hess_y_hess.GPDDistrib
 #'
 #' @keywords internal
 #'
@@ -294,21 +293,21 @@ scale_only_theta2_methods <- function(at = 1L) {
 #'   [distrib_cross2_y()] for the generic.
 #'
 #' @aliases distrib_cross2_y.ExponentialDistrib
-#'   distrib_cross2_y.Weibull1Distrib distrib_cross2_y.GPDDistrib
+#'   distrib_cross2_y.Weibull1Distrib
 #'
 #' @keywords internal
 #'
 #' @examples
 #' y <- c(0.4, 1.1, 2.3)
 #'
-#' # The generalized Pareto: a scale and a shape.
-#' d <- gpd_distrib()
-#' theta <- list(sigma = 1.5, xi = 0.3)
+#' # The Weibull: a scale and a shape.
+#' d <- weibull1_distrib()
+#' theta <- list(mu = 1.5, sigma = 1.3)
 #' vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #'
 #' # Against a numerical derivative of the response Hessian.
-#' f <- function(v) distrib_hess_y(d, y[1], list(sigma = v[1], xi = v[2]))
-#' numDeriv::grad(f, c(1.5, 0.3))
+#' f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
+#' numDeriv::grad(f, c(1.5, 1.3))
 #'
 #' # The exponential has one parameter, so nothing is differenced.
 #' distrib_cross2_y(exponential_distrib(), y, list(mu = 1.5))
@@ -365,7 +364,7 @@ S7::method(distrib_hess_y_hess, InvGauss2Distrib) <- .m$hess2
 rm(.m)
 
 
-# --- the three families with no location ------------------------------------
+# --- the two families with no location --------------------------------------
 
 .s <- scale_only_theta2_methods(1L)
 S7::method(distrib_cross2_y, ExponentialDistrib) <- scale_only_cross2_method(1L)
@@ -375,10 +374,6 @@ S7::method(distrib_hess_y_hess, ExponentialDistrib) <- .s$hess2
 S7::method(distrib_cross2_y, Weibull1Distrib) <- scale_only_cross2_method(1L)
 S7::method(distrib_grad_y_hess, Weibull1Distrib) <- .s$grad2
 S7::method(distrib_hess_y_hess, Weibull1Distrib) <- .s$hess2
-
-S7::method(distrib_cross2_y, GPDDistrib) <- scale_only_cross2_method(1L)
-S7::method(distrib_grad_y_hess, GPDDistrib) <- .s$grad2
-S7::method(distrib_hess_y_hess, GPDDistrib) <- .s$hess2
 
 rm(.s)
 

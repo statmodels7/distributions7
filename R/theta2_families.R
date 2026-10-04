@@ -543,10 +543,14 @@ S7::method(distrib_hess_y_hess, CauchyDistrib) <- loc_scale_hess_y_hess
 S7::method(distrib_grad_y_hess, GumbelDistrib) <- loc_scale_grad_y_hess
 S7::method(distrib_hess_y_hess, GumbelDistrib) <- loc_scale_hess_y_hess
 
-S7::method(distrib_grad_y_hess, StudentT1Distrib) <-
-  partial_loc_scale_grad_y_hess
-S7::method(distrib_hess_y_hess, StudentT1Distrib) <-
-  partial_loc_scale_hess_y_hess
+S7::method(distrib_grad_y_hess, StudentT1Distrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"), ...) {
+  student_t1_grad_y_hess_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+}
+S7::method(distrib_hess_y_hess, StudentT1Distrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"), ...) {
+  student_t1_hess_y_hess_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+}
 
 S7::method(distrib_grad_y_hess, PseudoHuberDistrib) <-
   partial_loc_scale_grad_y_hess
@@ -560,3 +564,21 @@ S7::method(distrib_hess_y_hess, SkewNormal1Distrib) <-
 
 S7::method(distrib_grad_y_hess, SkewTDistrib) <- partial_loc_scale_grad_y_hess
 S7::method(distrib_hess_y_hess, SkewTDistrib) <- partial_loc_scale_hess_y_hess
+
+# the centered skew normal's own kernels (see distrib_grad_y.SkewNormal2Distrib)
+S7::method(distrib_cross2_y, SkewNormal2Distrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  skewnormal2_cross2_y_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
+}
+
+S7::method(distrib_grad_y_hess, SkewNormal2Distrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  sn2_reject_zero(theta, "mixed second derivative")
+  skewnormal2_grad_y_hess_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
+}
+
+S7::method(distrib_hess_y_hess, SkewNormal2Distrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  sn2_reject_zero(theta, "mixed second derivative")
+  skewnormal2_hess_y_hess_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
+}

@@ -52,9 +52,8 @@ NULL
 #'   zeroth order and is never asked for.
 #' @param inside A logical vector saying which quantiles lie inside the
 #'   support, or `NULL` (the default), which reads `q > distrib@bounds[1]`. A
-#'   family whose support depends on a parameter, as the generalized Pareto's
-#'   does at a negative shape, supplies its own; the fixed bounds cannot see
-#'   it.
+#'   family whose support depends on a parameter supplies its own; the fixed
+#'   bounds cannot see it.
 #'
 #' @return A named list of numeric vectors, derivatives of \eqn{F} itself on
 #'   the natural scale, keyed as
@@ -62,8 +61,7 @@ NULL
 #'   wherever `inside` is `FALSE`.
 #'
 #' @seealso [register_surv_cdf()], which turns a pieces function into the four
-#'   methods; [bell_f_ratio()] for the partition sum;
-#'   [gpd_surv_pieces()] for the most involved of the three families.
+#'   methods; [bell_f_ratio()] for the partition sum.
 #'
 #' @keywords internal
 surv_cdf_deriv_k <- function(distrib, q, theta, order, Lval, Lderiv,
@@ -71,8 +69,8 @@ surv_cdf_deriv_k <- function(distrib, q, theta, order, Lval, Lderiv,
   params <- distrib@params
   # below the support F is identically zero and so is every derivative; L is
   # still finite there and would otherwise produce a survival above one. A
-  # family whose support depends on a parameter -- the generalized Pareto at a
-  # negative shape -- says so itself rather than being read off the bounds.
+  # family whose support depends on a parameter says so itself rather than
+  # being read off the bounds.
   if (is.null(inside)) inside <- q > distrib@bounds[1L]
   S <- exp(Lval)
   idx <- deriv_indices(params, order)
@@ -85,8 +83,8 @@ surv_cdf_deriv_k <- function(distrib, q, theta, order, Lval, Lderiv,
 #' @description
 #' Turns a function returning \eqn{L = \log(1-F)} and its partial-derivative
 #' evaluator into the four S7 methods, so that a family states its survival
-#' function once instead of four times. Three families are registered through
-#' it: the exponential, the Weibull and the generalized Pareto.
+#' function once instead of four times. Two families are registered through
+#' it: the exponential and the Weibull.
 #'
 #' @details
 #' All four orders are registered, [distrib_grad_cdf()] included, so these
@@ -106,9 +104,8 @@ surv_cdf_deriv_k <- function(distrib, q, theta, order, Lval, Lderiv,
 #' @return Invisibly `NULL`. Called for the registration.
 #'
 #' @seealso [surv_cdf_deriv_k()], the body it registers;
-#'   [distrib_grad_cdf.ExponentialDistrib()],
-#'   [distrib_grad_cdf.Weibull1Distrib()] and
-#'   [distrib_grad_cdf.GPDDistrib()], the three families.
+#'   [distrib_grad_cdf.ExponentialDistrib()] and
+#'   [distrib_grad_cdf.Weibull1Distrib()], the two families.
 #'
 #' @keywords internal
 register_surv_cdf <- function(cls, pieces) {
@@ -301,261 +298,3 @@ register_surv_cdf(Weibull1Distrib, function(distrib, q, theta) {
     Lderiv = function(block) -eh * bell_f_ratio(block, hderiv)
   )
 })
-
-
-# --- the generalized Pareto ------------------------------------------------
-#
-# Its survival function is exp(L) too, with L = -log1p(xi q/sigma)/xi, so the
-# route above applies. What it needs is a form of L free of the 1/xi: writing
-# u = xi q / sigma and
-#
-#   Lambda(u) = log1p(u)/u,        L = -(q/sigma) Lambda(u),
-#
-# every division by the shape disappears, the whole removable singularity
-# sitting inside Lambda, which is analytic with Lambda(0) = 1. The exponential
-# limit is then an ordinary point rather than a special case.
-
-#' Derivatives of log1p(u)/u
-#'
-#' @description
-#' Returns \eqn{\Lambda(u) = \log(1+u)/u} and its first four derivatives, one
-#' vector per order. The function is analytic at the origin, with
-#' \eqn{\Lambda(0) = 1}, and it is the device that removes every division by
-#' the generalized Pareto's shape from that family's survival function.
-#'
-#' @details
-#' # Two routes, and where they change over
-#'
-#' Differentiating \eqn{u\Lambda = \log(1+u)} gives the recursion
-#' \deqn{u\,\Lambda^{(r)} + r\,\Lambda^{(r-1)}
-#'       = \frac{(-1)^{r-1}(r-1)!}{(1+u)^{r}},}
-#' which is exact away from the origin and useless at it: it divides by
-#' \eqn{u} and subtracts two nearly equal quantities. Measured against the
-#' Taylor series, its fourth derivative is wrong by a factor of \eqn{10^{39}}
-#' at \eqn{u = 10^{-14}}, by 1.7 at \eqn{10^{-4}} and by
-#' \eqn{3\times10^{-8}} at \eqn{10^{-2}}.
-#'
-#' Below \eqn{|u| = 1/2} the series
-#' \deqn{\Lambda^{(r)}(u) = \sum_{m \ge r} (-1)^{m}\frac{m!}{(m-r)!}
-#'       \frac{u^{m-r}}{m+1}}
-#' is used instead, where the two agree to \eqn{10^{-16}}. Its truncation is
-#' set so that the \eqn{m^4} weight at the switch point stays under the
-#' rounding.
-#'
-#' # Why the expression is arranged this way
-#'
-#' Differentiating \eqn{L = -\log(1+\xi q/\sigma)/\xi} directly gives terms in
-#' \eqn{\xi^{-1-m}} that cancel only in the limit, which needs a guard and is
-#' fragile whatever the guard. Writing \eqn{L = -(q/\sigma)\Lambda(u)} puts the
-#' whole removable singularity inside one univariate function, and the
-#' exponential limit \eqn{\xi \to 0} becomes an ordinary point of the formula.
-#'
-#' @section Notation:
-#' \eqn{u = \xi q/\sigma} with \eqn{\xi} the shape and \eqn{\sigma} the scale.
-#'
-#' @param u A numeric vector, greater than \eqn{-1}. Values at or below
-#'   \eqn{-1} are outside the support and are masked out by the caller before
-#'   they reach here.
-#'
-#' @return A list of five numeric vectors the length of `u`, orders 0 to 4. At
-#'   \eqn{u = 0} they are 1, \eqn{-1/2}, \eqn{2/3}, \eqn{-3/2} and
-#'   \eqn{24/5}.
-#'
-#' @seealso [gpd_surv_pieces()], the one consumer;
-#'   [distrib_grad_cdf.GPDDistrib()] for the family.
-#'
-#' @examples
-#' # The limits at the origin, reached through the series branch.
-#' vapply(distributions7:::gpd_lambda_derivs(1e-14), function(v) v[1],
-#'        numeric(1))
-#'
-#' @keywords internal
-gpd_lambda_derivs <- function(u) {
-  R <- 4L
-  out <- lapply(seq_len(R + 1L), function(i) rep(NA_real_, length(u)))
-  small <- abs(u) <= 0.5
-  if (any(small)) {
-    us <- u[small]
-    for (r in 0:R) {
-      acc <- rep(0, length(us))
-      for (m in r:(r + 120L)) {
-        acc <- acc + (-1)^m * exp(lfactorial(m) - lfactorial(m - r)) *
-          us^(m - r) / (m + 1)
-      }
-      out[[r + 1L]][small] <- acc
-    }
-  }
-  if (any(!small)) {
-    ub <- u[!small]
-    prev <- log1p(ub) / ub
-    out[[1L]][!small] <- prev
-    for (r in seq_len(R)) {
-      prev <- ((-1)^(r - 1L) * factorial(r - 1L) / (1 + ub)^r - r * prev) / ub
-      out[[r + 1L]][!small] <- prev
-    }
-  }
-  out
-}
-
-#' The Exponential Survival Pieces of a Generalized Pareto
-#'
-#' @description
-#' Returns \eqn{L = \log(1-F)} and an evaluator of its partial derivatives in
-#' \eqn{(\sigma, \xi)}, in the form [register_surv_cdf()] wants. Writing
-#' \eqn{L = -z\,\Lambda(u)} with \eqn{z = q/\sigma} and \eqn{u = \xi z} is what
-#' keeps every division by the shape out of the expression.
-#'
-#' @details
-#' # How the partials split
-#'
-#' The scale enters \eqn{z} as a plain reciprocal, and \eqn{u} is bilinear in
-#' the shape and \eqn{z}, so a block naming the shape twice contributes nothing
-#' to \eqn{u}. The partials of \eqn{\Lambda(u)} follow by Faa di Bruno over
-#' that, and the product with \eqn{z} by Leibniz over the scale indices alone,
-#' the shape not entering \eqn{z}.
-#'
-#' # The support
-#'
-#' A negative shape bounds the support above, at \eqn{u = -1}, so the mask is
-#' `q > 0 & u > -1` and is supplied here, the family's fixed bounds being
-#' unable to see it. Past the upper endpoint every derivative of \eqn{F} is
-#' exactly zero.
-#'
-#' @section Notation:
-#' \eqn{\sigma > 0} is the scale, \eqn{\xi} the shape of either sign,
-#' \eqn{z = q/\sigma}, \eqn{u = \xi z} and \eqn{\Lambda(u) = \log(1+u)/u}.
-#'
-#' @param distrib A `GPDDistrib` object, from [gpd_distrib()].
-#' @param q A numeric vector of quantiles.
-#' @param theta A named list with components `sigma` (positive) and `xi` (any
-#'   real value), each a numeric vector of length 1 or `n`.
-#'
-#' @return A list with `Lval` (a numeric vector), `Lderiv` (a function of a
-#'   block of parameter names) and `inside` (a logical vector).
-#'
-#' @seealso [gpd_lambda_derivs()] for the univariate function;
-#'   [surv_cdf_deriv_k()] and [register_surv_cdf()];
-#'   [distrib_grad_cdf.GPDDistrib()] for the family page.
-#'
-#' @keywords internal
-gpd_surv_pieces <- function(distrib, q, theta) {
-  sigma <- theta[[1]]
-  xi <- theta[[2]]
-  nm <- distrib@params
-  n <- length(q)
-  z <- q / sigma
-  u <- xi * z
-  # a negative shape bounds the support above, at u = -1; past it the survival
-  # is zero and every derivative of F vanishes
-  inside <- q > 0 & u > -1
-  u_safe <- ifelse(inside, u, 0)
-  z_safe <- ifelse(inside, z, 0)
-  lam <- gpd_lambda_derivs(u_safe)
-
-  # d^j z / d sigma^j
-  dz <- lapply(0:4, function(j)
-    rep_len(q * (-1)^j * factorial(j) / sigma^(1 + j), n))
-  # d^{j sigma, k xi} u; u is bilinear, so two shape indices give zero
-  du <- function(j, k) {
-    if (k >= 2L) return(rep(0, n))
-    if (k == 1L) return(dz[[j + 1L]])
-    xi * dz[[j + 1L]]
-  }
-  # d^S Lambda(u) by Faa di Bruno over u
-  dG <- function(j, k) {
-    S <- c(rep("s", j), rep("x", k))
-    if (!length(S)) return(lam[[1L]])
-    acc <- 0
-    for (part in index_partitions(S)) {
-      term <- lam[[length(part) + 1L]]
-      for (b in part) term <- term * du(sum(b == "s"), sum(b == "x"))
-      acc <- acc + term
-    }
-    acc
-  }
-
-  list(
-    Lval = -z_safe * lam[[1L]],
-    inside = inside,
-    Lderiv = function(block) {
-      j <- sum(block == nm[1L])
-      k <- sum(block == nm[2L])
-      acc <- 0
-      for (i in 0:j) acc <- acc + choose(j, i) * dz[[i + 1L]] * dG(j - i, k)
-      -acc
-    }
-  )
-}
-
-#' @title Generalized Pareto Log-CDF Derivatives
-#' @name distrib_grad_cdf.GPDDistrib
-#' @aliases distrib_hess_cdf.GPDDistrib distrib_deriv3_cdf.GPDDistrib
-#'   distrib_deriv4_cdf.GPDDistrib
-#'
-#' @description
-#' Closed form at every order from one to four, from the survival function
-#' \eqn{S = (1 + \xi q/\sigma)^{-1/\xi}}. Its logarithm is written
-#' \eqn{L = -(q/\sigma)\,\Lambda(\xi q/\sigma)} with
-#' \eqn{\Lambda(u) = \log(1+u)/u}, which carries no division by the shape, so
-#' the exponential limit \eqn{\xi \to 0} is an ordinary point of the formula
-#' and not a branch.
-#'
-#' @details
-#' # The support moves with the shape
-#'
-#' At \eqn{\xi \ge 0} the support is \eqn{(0, \infty)}; at \eqn{\xi < 0} it is
-#' bounded above at \eqn{\sigma/|\xi|}, and past that endpoint every derivative
-#' is exactly zero. The mask is computed in [gpd_surv_pieces()], the family's
-#' fixed bounds being unable to record a support that moves with a parameter.
-#'
-#' # What it is worth, and the limit as a check
-#'
-#' Against a product stencil on the same cdf at \eqn{\sigma = 1},
-#' \eqn{\xi = 0.3}: \eqn{5.2\times10^{-11}} at order 1,
-#' \eqn{2.7\times10^{-7}} at order 2, \eqn{1.7\times10^{-5}} at order 3 and
-#' \eqn{8.4\times10^{-4}} at order 4. At \eqn{\xi = 0} the scale component
-#' equals the exponential family's to the last bit, and the fourth derivative
-#' reads the same value at \eqn{\xi = 10^{-7}} and at \eqn{10^{-9}}, which is
-#' what a removable singularity handled properly looks like.
-#'
-#' @section Notation:
-#' \eqn{\sigma > 0} is the scale, \eqn{\xi} the shape of either sign,
-#' \eqn{u = \xi q/\sigma}, \eqn{\Lambda(u) = \log(1+u)/u}, \eqn{F} the
-#' distribution function and \eqn{S = 1 - F} the survival function.
-#'
-#' @param distrib A `GPDDistrib` object, from [gpd_distrib()].
-#' @param q A numeric vector of quantiles. Values outside the support give
-#'   derivatives of exactly zero.
-#' @param theta A named list with components `sigma` (positive) and `xi` (any
-#'   real value), each a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
-#' @param ... Unused, and accepted so that the signature matches the generic's.
-#'
-#' @return A named list of numeric vectors of the order the generic asked for,
-#'   keyed as [`deriv_names(distrib@params, order)`][deriv_names]: two
-#'   components for the gradient, three for the Hessian, four at order 3 and
-#'   five at order 4.
-#'
-#' @seealso [gpd_surv_pieces()] and [gpd_lambda_derivs()] for the construction;
-#'   [distrib_grad_cdf.ExponentialDistrib()], the \eqn{\xi = 0} case;
-#'   [gpd_distrib()].
-#'
-#' @examples
-#' d <- gpd_distrib()
-#' q <- c(0.5, 2, 5)
-#'
-#' # At shape zero the scale component is the exponential family's.
-#' rbind(gpd = distrib_grad_cdf(d, q, list(sigma = 3, xi = 0),
-#'                              log = FALSE)$sigma,
-#'       exponential = distrib_grad_cdf(exponential_distrib(), q,
-#'                                      list(mu = 3), log = FALSE)$mu)
-#'
-#' # A negative shape bounds the support at sigma / |xi| = 2.
-#' distrib_grad_cdf(d, c(1, 2, 3), list(sigma = 1, xi = -0.5),
-#'                  log = FALSE)$sigma
-#'
-#' @keywords internal
-register_surv_cdf(GPDDistrib, gpd_surv_pieces)

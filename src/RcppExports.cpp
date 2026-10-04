@@ -143,18 +143,31 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// beta_dexpected_cpp
-List beta_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector phi, int order, int threads);
-RcppExport SEXP _distributions7_beta_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// beta_dexpected1_cpp
+List beta_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector phi, int threads);
+RcppExport SEXP _distributions7_beta_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type phi(phiSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(beta_dexpected_cpp(y, mu, phi, order, threads));
+    rcpp_result_gen = Rcpp::wrap(beta_dexpected1_cpp(y, mu, phi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// beta_dexpected2_cpp
+List beta_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector phi, int threads);
+RcppExport SEXP _distributions7_beta_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(beta_dexpected2_cpp(y, mu, phi, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -522,277 +535,449 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// bernoulli_dexpected_cpp
-List bernoulli_dexpected_cpp(NumericVector y, NumericVector mu, int order, int threads);
-RcppExport SEXP _distributions7_bernoulli_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// bernoulli_dexpected1_cpp
+List bernoulli_dexpected1_cpp(NumericVector y, NumericVector mu, int threads);
+RcppExport SEXP _distributions7_bernoulli_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(bernoulli_dexpected_cpp(y, mu, order, threads));
+    rcpp_result_gen = Rcpp::wrap(bernoulli_dexpected1_cpp(y, mu, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// binomial_dexpected_cpp
-List binomial_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector size, int order, int threads);
-RcppExport SEXP _distributions7_binomial_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sizeSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// bernoulli_dexpected2_cpp
+List bernoulli_dexpected2_cpp(NumericVector y, NumericVector mu, int threads);
+RcppExport SEXP _distributions7_bernoulli_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(bernoulli_dexpected2_cpp(y, mu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// binomial_dexpected1_cpp
+List binomial_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector size, int threads);
+RcppExport SEXP _distributions7_binomial_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sizeSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(binomial_dexpected_cpp(y, mu, size, order, threads));
+    rcpp_result_gen = Rcpp::wrap(binomial_dexpected1_cpp(y, mu, size, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// exponential_dexpected_cpp
-List exponential_dexpected_cpp(NumericVector y, NumericVector mu, int order, int threads);
-RcppExport SEXP _distributions7_exponential_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// binomial_dexpected2_cpp
+List binomial_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector size, int threads);
+RcppExport SEXP _distributions7_binomial_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sizeSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type size(sizeSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(exponential_dexpected_cpp(y, mu, order, threads));
+    rcpp_result_gen = Rcpp::wrap(binomial_dexpected2_cpp(y, mu, size, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// geometric_dexpected_cpp
-List geometric_dexpected_cpp(NumericVector y, NumericVector mu, int order, int threads);
-RcppExport SEXP _distributions7_geometric_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// exponential_dexpected1_cpp
+List exponential_dexpected1_cpp(NumericVector y, NumericVector mu, int threads);
+RcppExport SEXP _distributions7_exponential_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(geometric_dexpected_cpp(y, mu, order, threads));
+    rcpp_result_gen = Rcpp::wrap(exponential_dexpected1_cpp(y, mu, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// chisq_dexpected_cpp
-List chisq_dexpected_cpp(NumericVector y, NumericVector mu, int order, int threads);
-RcppExport SEXP _distributions7_chisq_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// exponential_dexpected2_cpp
+List exponential_dexpected2_cpp(NumericVector y, NumericVector mu, int threads);
+RcppExport SEXP _distributions7_exponential_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(chisq_dexpected_cpp(y, mu, order, threads));
+    rcpp_result_gen = Rcpp::wrap(exponential_dexpected2_cpp(y, mu, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// cauchy_dexpected_cpp
-List cauchy_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int order, int threads);
-RcppExport SEXP _distributions7_cauchy_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// geometric_dexpected1_cpp
+List geometric_dexpected1_cpp(NumericVector y, NumericVector mu, int threads);
+RcppExport SEXP _distributions7_geometric_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(geometric_dexpected1_cpp(y, mu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// geometric_dexpected2_cpp
+List geometric_dexpected2_cpp(NumericVector y, NumericVector mu, int threads);
+RcppExport SEXP _distributions7_geometric_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(geometric_dexpected2_cpp(y, mu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// chisq_dexpected1_cpp
+List chisq_dexpected1_cpp(NumericVector y, NumericVector mu, int threads);
+RcppExport SEXP _distributions7_chisq_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(chisq_dexpected1_cpp(y, mu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// chisq_dexpected2_cpp
+List chisq_dexpected2_cpp(NumericVector y, NumericVector mu, int threads);
+RcppExport SEXP _distributions7_chisq_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(chisq_dexpected2_cpp(y, mu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cauchy_dexpected1_cpp
+List cauchy_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_cauchy_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cauchy_dexpected_cpp(y, mu, sigma, order, threads));
+    rcpp_result_gen = Rcpp::wrap(cauchy_dexpected1_cpp(y, mu, sigma, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// logistic_dexpected_cpp
-List logistic_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int order, int threads);
-RcppExport SEXP _distributions7_logistic_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// cauchy_dexpected2_cpp
+List cauchy_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_cauchy_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(logistic_dexpected_cpp(y, mu, sigma, order, threads));
+    rcpp_result_gen = Rcpp::wrap(cauchy_dexpected2_cpp(y, mu, sigma, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// gumbel_dexpected_cpp
-List gumbel_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int order, int threads);
-RcppExport SEXP _distributions7_gumbel_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// logistic_dexpected1_cpp
+List logistic_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_logistic_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(gumbel_dexpected_cpp(y, mu, sigma, order, threads));
+    rcpp_result_gen = Rcpp::wrap(logistic_dexpected1_cpp(y, mu, sigma, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// gaussian2_dexpected_cpp
-List gaussian2_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector sigma2, int order, int threads);
-RcppExport SEXP _distributions7_gaussian2_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// logistic_dexpected2_cpp
+List logistic_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_logistic_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(logistic_dexpected2_cpp(y, mu, sigma, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gumbel_dexpected1_cpp
+List gumbel_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_gumbel_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gumbel_dexpected1_cpp(y, mu, sigma, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gumbel_dexpected2_cpp
+List gumbel_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_gumbel_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gumbel_dexpected2_cpp(y, mu, sigma, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gaussian2_dexpected1_cpp
+List gaussian2_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector sigma2, int threads);
+RcppExport SEXP _distributions7_gaussian2_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type sigma2(sigma2SEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(gaussian2_dexpected_cpp(y, mu, sigma2, order, threads));
+    rcpp_result_gen = Rcpp::wrap(gaussian2_dexpected1_cpp(y, mu, sigma2, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// gaussian3_dexpected_cpp
-List gaussian3_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector tau, int order, int threads);
-RcppExport SEXP _distributions7_gaussian3_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP tauSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// gaussian2_dexpected2_cpp
+List gaussian2_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector sigma2, int threads);
+RcppExport SEXP _distributions7_gaussian2_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma2(sigma2SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gaussian2_dexpected2_cpp(y, mu, sigma2, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gaussian3_dexpected1_cpp
+List gaussian3_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector tau, int threads);
+RcppExport SEXP _distributions7_gaussian3_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP tauSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(gaussian3_dexpected_cpp(y, mu, tau, order, threads));
+    rcpp_result_gen = Rcpp::wrap(gaussian3_dexpected1_cpp(y, mu, tau, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// invgauss1_dexpected_cpp
-List invgauss1_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector phi, int order, int threads);
-RcppExport SEXP _distributions7_invgauss1_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// gaussian3_dexpected2_cpp
+List gaussian3_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector tau, int threads);
+RcppExport SEXP _distributions7_gaussian3_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP tauSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gaussian3_dexpected2_cpp(y, mu, tau, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// invgauss1_dexpected1_cpp
+List invgauss1_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector phi, int threads);
+RcppExport SEXP _distributions7_invgauss1_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type phi(phiSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(invgauss1_dexpected_cpp(y, mu, phi, order, threads));
+    rcpp_result_gen = Rcpp::wrap(invgauss1_dexpected1_cpp(y, mu, phi, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// invgauss2_dexpected_cpp
-List invgauss2_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector lambda, int order, int threads);
-RcppExport SEXP _distributions7_invgauss2_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP lambdaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// invgauss1_dexpected2_cpp
+List invgauss1_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector phi, int threads);
+RcppExport SEXP _distributions7_invgauss1_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(invgauss1_dexpected2_cpp(y, mu, phi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// invgauss2_dexpected1_cpp
+List invgauss2_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector lambda, int threads);
+RcppExport SEXP _distributions7_invgauss2_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP lambdaSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(invgauss2_dexpected_cpp(y, mu, lambda, order, threads));
+    rcpp_result_gen = Rcpp::wrap(invgauss2_dexpected1_cpp(y, mu, lambda, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// gamma2_dexpected_cpp
-List gamma2_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector sigma2, int order, int threads);
-RcppExport SEXP _distributions7_gamma2_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// invgauss2_dexpected2_cpp
+List invgauss2_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector lambda, int threads);
+RcppExport SEXP _distributions7_invgauss2_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP lambdaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(invgauss2_dexpected2_cpp(y, mu, lambda, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gamma2_dexpected1_cpp
+List gamma2_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector sigma2, int threads);
+RcppExport SEXP _distributions7_gamma2_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type sigma2(sigma2SEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(gamma2_dexpected_cpp(y, mu, sigma2, order, threads));
+    rcpp_result_gen = Rcpp::wrap(gamma2_dexpected1_cpp(y, mu, sigma2, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// beta2_dexpected_cpp
-List beta2_dexpected_cpp(NumericVector y, NumericVector alpha, NumericVector beta, int order, int threads);
-RcppExport SEXP _distributions7_beta2_dexpected_cpp(SEXP ySEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// gamma2_dexpected2_cpp
+List gamma2_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector sigma2, int threads);
+RcppExport SEXP _distributions7_gamma2_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma2(sigma2SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gamma2_dexpected2_cpp(y, mu, sigma2, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// beta2_dexpected1_cpp
+List beta2_dexpected1_cpp(NumericVector y, NumericVector alpha, NumericVector beta, int threads);
+RcppExport SEXP _distributions7_beta2_dexpected1_cpp(SEXP ySEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type beta(betaSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(beta2_dexpected_cpp(y, alpha, beta, order, threads));
+    rcpp_result_gen = Rcpp::wrap(beta2_dexpected1_cpp(y, alpha, beta, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// weibull1_dexpected_cpp
-List weibull1_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int order, int threads);
-RcppExport SEXP _distributions7_weibull1_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// beta2_dexpected2_cpp
+List beta2_dexpected2_cpp(NumericVector y, NumericVector alpha, NumericVector beta, int threads);
+RcppExport SEXP _distributions7_beta2_dexpected2_cpp(SEXP ySEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(beta2_dexpected2_cpp(y, alpha, beta, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull1_dexpected1_cpp
+List weibull1_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_weibull1_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(weibull1_dexpected_cpp(y, mu, sigma, order, threads));
+    rcpp_result_gen = Rcpp::wrap(weibull1_dexpected1_cpp(y, mu, sigma, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// student_t1_dexpected_cpp
-List student_t1_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int order, int threads);
-RcppExport SEXP _distributions7_student_t1_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// weibull1_dexpected2_cpp
+List weibull1_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_weibull1_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(student_t1_dexpected_cpp(y, mu, sigma, nu, order, threads));
+    rcpp_result_gen = Rcpp::wrap(weibull1_dexpected2_cpp(y, mu, sigma, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// gengamma1_dexpected_cpp
-List gengamma1_dexpected_cpp(NumericVector y, NumericVector a, NumericVector d, NumericVector p, int order, int threads);
-RcppExport SEXP _distributions7_gengamma1_dexpected_cpp(SEXP ySEXP, SEXP aSEXP, SEXP dSEXP, SEXP pSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type a(aSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type d(dSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
-    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(gengamma1_dexpected_cpp(y, a, d, p, order, threads));
-    return rcpp_result_gen;
-END_RCPP
-}
-// gpd_dexpected_cpp
-List gpd_dexpected_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int order, int threads);
-RcppExport SEXP _distributions7_gpd_dexpected_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// gpd_dexpected1_cpp
+List gpd_dexpected1_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_dexpected1_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(gpd_dexpected_cpp(y, sigma, xi, order, threads));
+    rcpp_result_gen = Rcpp::wrap(gpd_dexpected1_cpp(y, sigma, xi, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// betabinom_shapes_dexpected_cpp
-List betabinom_shapes_dexpected_cpp(NumericVector y, NumericVector alpha, NumericVector beta, double size, int order, int threads);
-RcppExport SEXP _distributions7_betabinom_shapes_dexpected_cpp(SEXP ySEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP sizeSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// gpd_dexpected2_cpp
+List gpd_dexpected2_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_dexpected2_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_dexpected2_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// betabinom_shapes_dexpected1_cpp
+List betabinom_shapes_dexpected1_cpp(NumericVector y, NumericVector alpha, NumericVector beta, double size, int threads);
+RcppExport SEXP _distributions7_betabinom_shapes_dexpected1_cpp(SEXP ySEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP sizeSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -800,9 +985,23 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< double >::type size(sizeSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(betabinom_shapes_dexpected_cpp(y, alpha, beta, size, order, threads));
+    rcpp_result_gen = Rcpp::wrap(betabinom_shapes_dexpected1_cpp(y, alpha, beta, size, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// betabinom_shapes_dexpected2_cpp
+List betabinom_shapes_dexpected2_cpp(NumericVector y, NumericVector alpha, NumericVector beta, double size, int threads);
+RcppExport SEXP _distributions7_betabinom_shapes_dexpected2_cpp(SEXP ySEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP sizeSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< double >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(betabinom_shapes_dexpected2_cpp(y, alpha, beta, size, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1023,18 +1222,31 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// gamma1_dexpected_cpp
-List gamma1_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector phi, int order, int threads);
-RcppExport SEXP _distributions7_gamma1_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// gamma1_dexpected1_cpp
+List gamma1_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector phi, int threads);
+RcppExport SEXP _distributions7_gamma1_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type phi(phiSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(gamma1_dexpected_cpp(y, mu, phi, order, threads));
+    rcpp_result_gen = Rcpp::wrap(gamma1_dexpected1_cpp(y, mu, phi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gamma1_dexpected2_cpp
+List gamma1_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector phi, int threads);
+RcppExport SEXP _distributions7_gamma1_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gamma1_dexpected2_cpp(y, mu, phi, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1150,18 +1362,31 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// gaussian_dexpected_cpp
-List gaussian_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int order, int threads);
-RcppExport SEXP _distributions7_gaussian_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// gaussian_dexpected1_cpp
+List gaussian_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_gaussian_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(gaussian_dexpected_cpp(y, mu, sigma, order, threads));
+    rcpp_result_gen = Rcpp::wrap(gaussian_dexpected1_cpp(y, mu, sigma, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gaussian_dexpected2_cpp
+List gaussian_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_gaussian_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gaussian_dexpected2_cpp(y, mu, sigma, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1404,48 +1629,573 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// gengamma_gradient_cpp
-List gengamma_gradient_cpp(NumericVector y, NumericVector a, NumericVector d, NumericVector p, int threads);
-RcppExport SEXP _distributions7_gengamma_gradient_cpp(SEXP ySEXP, SEXP aSEXP, SEXP dSEXP, SEXP pSEXP, SEXP threadsSEXP) {
+// gengamma1_gradient_cpp
+List gengamma1_gradient_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_gradient_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type a(aSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type d(dSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(gengamma_gradient_cpp(y, a, d, p, threads));
+    rcpp_result_gen = Rcpp::wrap(gengamma1_gradient_cpp(y, a_, d_, p_, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// gengamma_hessian_cpp
-List gengamma_hessian_cpp(NumericVector y, NumericVector a, NumericVector d, NumericVector p, int threads);
-RcppExport SEXP _distributions7_gengamma_hessian_cpp(SEXP ySEXP, SEXP aSEXP, SEXP dSEXP, SEXP pSEXP, SEXP threadsSEXP) {
+// gengamma1_hessian_cpp
+List gengamma1_hessian_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_hessian_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type a(aSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type d(dSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(gengamma_hessian_cpp(y, a, d, p, threads));
+    rcpp_result_gen = Rcpp::wrap(gengamma1_hessian_cpp(y, a_, d_, p_, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// gengamma_expected_hessian_cpp
-List gengamma_expected_hessian_cpp(NumericVector y, NumericVector a, NumericVector d, NumericVector p, int threads);
-RcppExport SEXP _distributions7_gengamma_expected_hessian_cpp(SEXP ySEXP, SEXP aSEXP, SEXP dSEXP, SEXP pSEXP, SEXP threadsSEXP) {
+// gengamma1_expected_hessian_cpp
+List gengamma1_expected_hessian_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_expected_hessian_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type a(aSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type d(dSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(gengamma_expected_hessian_cpp(y, a, d, p, threads));
+    rcpp_result_gen = Rcpp::wrap(gengamma1_expected_hessian_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_deriv3_cpp
+List gengamma1_deriv3_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_deriv3_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_deriv3_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_deriv3_expected_cpp
+List gengamma1_deriv3_expected_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_deriv3_expected_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_deriv3_expected_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_deriv4_cpp
+List gengamma1_deriv4_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_deriv4_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_deriv4_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_deriv4_expected_cpp
+List gengamma1_deriv4_expected_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_deriv4_expected_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_deriv4_expected_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_deriv5_cpp
+List gengamma1_deriv5_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_deriv5_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_deriv5_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_dexpected1_cpp
+List gengamma1_dexpected1_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_dexpected1_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_dexpected1_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_dexpected2_cpp
+List gengamma1_dexpected2_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_dexpected2_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_dexpected2_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_cross_y_cpp
+List gengamma1_cross_y_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_cross_y_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_cross_y_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_cross2_y_cpp
+List gengamma1_cross2_y_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_cross2_y_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_cross2_y_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_grad_y_hess_cpp
+List gengamma1_grad_y_hess_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_grad_y_hess_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_grad_y_hess_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_hess_y_hess_cpp
+List gengamma1_hess_y_hess_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_hess_y_hess_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_hess_y_hess_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_dy1_cpp
+List gengamma1_dy1_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_dy1_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_dy1_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_dy2_cpp
+List gengamma1_dy2_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_dy2_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_dy2_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_dy3_cpp
+List gengamma1_dy3_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_dy3_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_dy3_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma1_dy4_cpp
+List gengamma1_dy4_cpp(NumericVector y, NumericVector a_, NumericVector d_, NumericVector p_, int threads);
+RcppExport SEXP _distributions7_gengamma1_dy4_cpp(SEXP ySEXP, SEXP a_SEXP, SEXP d_SEXP, SEXP p_SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a_(a_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma1_dy4_cpp(y, a_, d_, p_, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_gradient_cpp
+List gengamma2_gradient_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_gradient_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_gradient_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_hessian_cpp
+List gengamma2_hessian_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_hessian_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_hessian_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_expected_hessian_cpp
+List gengamma2_expected_hessian_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_expected_hessian_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_expected_hessian_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_deriv3_cpp
+List gengamma2_deriv3_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_deriv3_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_deriv3_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_deriv3_expected_cpp
+List gengamma2_deriv3_expected_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_deriv3_expected_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_deriv3_expected_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_deriv4_cpp
+List gengamma2_deriv4_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_deriv4_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_deriv4_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_deriv4_expected_cpp
+List gengamma2_deriv4_expected_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_deriv4_expected_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_deriv4_expected_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_deriv5_cpp
+List gengamma2_deriv5_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_deriv5_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_deriv5_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_dexpected1_cpp
+List gengamma2_dexpected1_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_dexpected1_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_dexpected1_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_dexpected2_cpp
+List gengamma2_dexpected2_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_dexpected2_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_dexpected2_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_cross_y_cpp
+List gengamma2_cross_y_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_cross_y_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_cross_y_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_cross2_y_cpp
+List gengamma2_cross2_y_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_cross2_y_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_cross2_y_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_grad_y_hess_cpp
+List gengamma2_grad_y_hess_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_grad_y_hess_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_grad_y_hess_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_hess_y_hess_cpp
+List gengamma2_hess_y_hess_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_hess_y_hess_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_hess_y_hess_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_dy1_cpp
+List gengamma2_dy1_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_dy1_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_dy1_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_dy2_cpp
+List gengamma2_dy2_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_dy2_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_dy2_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_dy3_cpp
+List gengamma2_dy3_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_dy3_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_dy3_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma2_dy4_cpp
+List gengamma2_dy4_cpp(NumericVector y, NumericVector mean_, NumericVector d_, NumericVector p_);
+RcppExport SEXP _distributions7_gengamma2_dy4_cpp(SEXP ySEXP, SEXP mean_SEXP, SEXP d_SEXP, SEXP p_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d_(d_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p_(p_SEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma2_dy4_cpp(y, mean_, d_, p_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma_logmean_cpp
+NumericVector gengamma_logmean_cpp(NumericVector k, NumericVector h);
+RcppExport SEXP _distributions7_gengamma_logmean_cpp(SEXP kSEXP, SEXP hSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type k(kSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type h(hSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma_logmean_cpp(k, h));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma_mu2_cpp
+NumericVector gengamma_mu2_cpp(NumericVector k, NumericVector h);
+RcppExport SEXP _distributions7_gengamma_mu2_cpp(SEXP kSEXP, SEXP hSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type k(kSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type h(hSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma_mu2_cpp(k, h));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma_mu3_cpp
+NumericVector gengamma_mu3_cpp(NumericVector k, NumericVector h);
+RcppExport SEXP _distributions7_gengamma_mu3_cpp(SEXP kSEXP, SEXP hSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type k(kSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type h(hSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma_mu3_cpp(k, h));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma_kappa4_cpp
+NumericVector gengamma_kappa4_cpp(NumericVector k, NumericVector h);
+RcppExport SEXP _distributions7_gengamma_kappa4_cpp(SEXP kSEXP, SEXP hSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type k(kSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type h(hSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma_kappa4_cpp(k, h));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1593,6 +2343,356 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
     rcpp_result_gen = Rcpp::wrap(gpd_expected_hessian_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_deriv3_cpp
+List gpd_deriv3_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_deriv3_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_deriv3_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_deriv3_expected_cpp
+List gpd_deriv3_expected_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_deriv3_expected_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_deriv3_expected_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_deriv4_cpp
+List gpd_deriv4_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_deriv4_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_deriv4_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_deriv4_expected_cpp
+List gpd_deriv4_expected_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_deriv4_expected_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_deriv4_expected_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_deriv5_cpp
+List gpd_deriv5_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_deriv5_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_deriv5_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_dy1_cpp
+List gpd_dy1_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_dy1_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_dy1_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_dy2_cpp
+List gpd_dy2_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_dy2_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_dy2_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_dy3_cpp
+List gpd_dy3_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_dy3_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_dy3_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_dy4_cpp
+List gpd_dy4_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_dy4_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_dy4_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_cross_y_cpp
+List gpd_cross_y_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_cross_y_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_cross_y_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_cross2_y_cpp
+List gpd_cross2_y_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_cross2_y_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_cross2_y_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_grad_y_hess_cpp
+List gpd_grad_y_hess_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_grad_y_hess_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_grad_y_hess_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_hess_y_hess_cpp
+List gpd_hess_y_hess_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_hess_y_hess_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_hess_y_hess_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_grad_cdf_lower_cpp
+List gpd_grad_cdf_lower_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_grad_cdf_lower_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_grad_cdf_lower_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_grad_cdf_upper_cpp
+List gpd_grad_cdf_upper_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_grad_cdf_upper_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_grad_cdf_upper_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_grad_surv_cpp
+List gpd_grad_surv_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_grad_surv_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_grad_surv_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_hess_cdf_lower_cpp
+List gpd_hess_cdf_lower_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_hess_cdf_lower_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_hess_cdf_lower_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_hess_cdf_upper_cpp
+List gpd_hess_cdf_upper_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_hess_cdf_upper_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_hess_cdf_upper_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_hess_surv_cpp
+List gpd_hess_surv_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_hess_surv_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_hess_surv_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_deriv3_cdf_lower_cpp
+List gpd_deriv3_cdf_lower_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_deriv3_cdf_lower_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_deriv3_cdf_lower_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_deriv3_cdf_upper_cpp
+List gpd_deriv3_cdf_upper_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_deriv3_cdf_upper_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_deriv3_cdf_upper_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_deriv3_surv_cpp
+List gpd_deriv3_surv_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_deriv3_surv_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_deriv3_surv_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_deriv4_cdf_lower_cpp
+List gpd_deriv4_cdf_lower_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_deriv4_cdf_lower_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_deriv4_cdf_lower_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_deriv4_cdf_upper_cpp
+List gpd_deriv4_cdf_upper_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_deriv4_cdf_upper_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_deriv4_cdf_upper_cpp(y, sigma, xi, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_deriv4_surv_cpp
+List gpd_deriv4_surv_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads);
+RcppExport SEXP _distributions7_gpd_deriv4_surv_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_deriv4_surv_cpp(y, sigma, xi, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2003,6 +3103,292 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// lognormal2_gradient_cpp
+List lognormal2_gradient_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_gradient_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_gradient_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_hessian_cpp
+List lognormal2_hessian_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_hessian_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_hessian_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_expected_hessian_cpp
+List lognormal2_expected_hessian_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_expected_hessian_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_expected_hessian_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_deriv3_cpp
+List lognormal2_deriv3_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_deriv3_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_deriv3_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_deriv3_expected_cpp
+List lognormal2_deriv3_expected_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_deriv3_expected_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_deriv3_expected_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_deriv4_cpp
+List lognormal2_deriv4_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_deriv4_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_deriv4_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_deriv4_expected_cpp
+List lognormal2_deriv4_expected_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_deriv4_expected_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_deriv4_expected_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_deriv5_cpp
+List lognormal2_deriv5_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_deriv5_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_deriv5_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_dexpected1_cpp
+List lognormal2_dexpected1_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_dexpected1_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_dexpected1_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_dexpected2_cpp
+List lognormal2_dexpected2_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_dexpected2_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_dexpected2_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_dcdf1_cpp
+List lognormal2_dcdf1_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_dcdf1_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_dcdf1_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_dcdf2_cpp
+List lognormal2_dcdf2_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_dcdf2_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_dcdf2_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_dcdf3_cpp
+List lognormal2_dcdf3_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_dcdf3_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_dcdf3_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_dcdf4_cpp
+List lognormal2_dcdf4_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_dcdf4_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_dcdf4_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_cross_y_cpp
+List lognormal2_cross_y_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_cross_y_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_cross_y_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_cross2_y_cpp
+List lognormal2_cross2_y_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_cross2_y_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_cross2_y_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_grad_y_hess_cpp
+List lognormal2_grad_y_hess_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_grad_y_hess_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_grad_y_hess_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_hess_y_hess_cpp
+List lognormal2_hess_y_hess_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_hess_y_hess_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_hess_y_hess_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_dy1_cpp
+List lognormal2_dy1_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_dy1_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_dy1_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_dy2_cpp
+List lognormal2_dy2_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_dy2_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_dy2_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_dy3_cpp
+List lognormal2_dy3_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_dy3_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_dy3_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal2_dy4_cpp
+List lognormal2_dy4_cpp(NumericVector y, NumericVector mean, NumericVector var);
+RcppExport SEXP _distributions7_lognormal2_dy4_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP varSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type var(varSEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal2_dy4_cpp(y, mean, var));
+    return rcpp_result_gen;
+END_RCPP
+}
 // lognormal_deriv3_cpp
 List lognormal_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma2, int threads);
 RcppExport SEXP _distributions7_lognormal_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP threadsSEXP) {
@@ -2059,18 +3445,31 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// negbin_dexpected_cpp
-List negbin_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector theta, int order, int threads);
-RcppExport SEXP _distributions7_negbin_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// negbin_dexpected1_cpp
+List negbin_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector theta, int threads);
+RcppExport SEXP _distributions7_negbin_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(negbin_dexpected_cpp(y, mu, theta, order, threads));
+    rcpp_result_gen = Rcpp::wrap(negbin_dexpected1_cpp(y, mu, theta, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// negbin_dexpected2_cpp
+List negbin_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector theta, int threads);
+RcppExport SEXP _distributions7_negbin_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(negbin_dexpected2_cpp(y, mu, theta, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2172,18 +3571,31 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// negbin1_dexpected_cpp
-List negbin1_dexpected_cpp(NumericVector y, NumericVector mu, NumericVector theta, int order, int threads);
-RcppExport SEXP _distributions7_negbin1_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// negbin1_dexpected1_cpp
+List negbin1_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector theta, int threads);
+RcppExport SEXP _distributions7_negbin1_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(negbin1_dexpected_cpp(y, mu, theta, order, threads));
+    rcpp_result_gen = Rcpp::wrap(negbin1_dexpected1_cpp(y, mu, theta, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// negbin1_dexpected2_cpp
+List negbin1_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector theta, int threads);
+RcppExport SEXP _distributions7_negbin1_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(negbin1_dexpected2_cpp(y, mu, theta, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2453,32 +3865,86 @@ BEGIN_RCPP
 END_RCPP
 }
 // pig2_expected_cpp
-List pig2_expected_cpp(NumericVector y, NumericVector mu, NumericVector alpha, int order, int threads);
-RcppExport SEXP _distributions7_pig2_expected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP alphaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+List pig2_expected_cpp(NumericVector y, NumericVector mu, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_pig2_expected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(pig2_expected_cpp(y, mu, alpha, order, threads));
+    rcpp_result_gen = Rcpp::wrap(pig2_expected_cpp(y, mu, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig2_dexpected1_cpp
+List pig2_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_pig2_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig2_dexpected1_cpp(y, mu, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig2_dexpected2_cpp
+List pig2_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_pig2_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig2_dexpected2_cpp(y, mu, alpha, threads));
     return rcpp_result_gen;
 END_RCPP
 }
 // pig1_expected_cpp
-List pig1_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int order, int threads);
-RcppExport SEXP _distributions7_pig1_expected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+List pig1_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_pig1_expected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(pig1_expected_cpp(y, mu, sigma, order, threads));
+    rcpp_result_gen = Rcpp::wrap(pig1_expected_cpp(y, mu, sigma, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig1_dexpected1_cpp
+List pig1_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_pig1_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig1_dexpected1_cpp(y, mu, sigma, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig1_dexpected2_cpp
+List pig1_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
+RcppExport SEXP _distributions7_pig1_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig1_dexpected2_cpp(y, mu, sigma, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2521,17 +3987,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// poisson_dexpected_cpp
-List poisson_dexpected_cpp(NumericVector y, NumericVector mu, int order, int threads);
-RcppExport SEXP _distributions7_poisson_dexpected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+// poisson_dexpected1_cpp
+List poisson_dexpected1_cpp(NumericVector y, NumericVector mu, int threads);
+RcppExport SEXP _distributions7_poisson_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(poisson_dexpected_cpp(y, mu, order, threads));
+    rcpp_result_gen = Rcpp::wrap(poisson_dexpected1_cpp(y, mu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// poisson_dexpected2_cpp
+List poisson_dexpected2_cpp(NumericVector y, NumericVector mu, int threads);
+RcppExport SEXP _distributions7_poisson_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(poisson_dexpected2_cpp(y, mu, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2615,6 +4093,87 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pseudohuber2_gradient_cpp
+List pseudohuber2_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu);
+RcppExport SEXP _distributions7_pseudohuber2_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    rcpp_result_gen = Rcpp::wrap(pseudohuber2_gradient_cpp(y, mu, sigma, nu));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pseudohuber2_hessian_cpp
+List pseudohuber2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu);
+RcppExport SEXP _distributions7_pseudohuber2_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    rcpp_result_gen = Rcpp::wrap(pseudohuber2_hessian_cpp(y, mu, sigma, nu));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pseudohuber2_deriv3_cpp
+List pseudohuber2_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu);
+RcppExport SEXP _distributions7_pseudohuber2_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    rcpp_result_gen = Rcpp::wrap(pseudohuber2_deriv3_cpp(y, mu, sigma, nu));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pseudohuber2_deriv4_cpp
+List pseudohuber2_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu);
+RcppExport SEXP _distributions7_pseudohuber2_deriv4_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    rcpp_result_gen = Rcpp::wrap(pseudohuber2_deriv4_cpp(y, mu, sigma, nu));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pseudohuber2_deriv5_cpp
+List pseudohuber2_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu);
+RcppExport SEXP _distributions7_pseudohuber2_deriv5_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    rcpp_result_gen = Rcpp::wrap(pseudohuber2_deriv5_cpp(y, mu, sigma, nu));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pseudohuber2_nu_terms_cpp
+List pseudohuber2_nu_terms_cpp(NumericVector nu);
+RcppExport SEXP _distributions7_pseudohuber2_nu_terms_cpp(SEXP nuSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    rcpp_result_gen = Rcpp::wrap(pseudohuber2_nu_terms_cpp(nu));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pseudohuber_deriv3_cpp
 List pseudohuber_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu);
 RcppExport SEXP _distributions7_pseudohuber_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP) {
@@ -2640,6 +4199,262 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
     rcpp_result_gen = Rcpp::wrap(pseudohuber_deriv4_cpp(y, mu, sigma, nu));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pseudohuber_rng_cpp
+NumericVector pseudohuber_rng_cpp(int n, NumericVector mu, NumericVector sigma1, NumericVector nu);
+RcppExport SEXP _distributions7_pseudohuber_rng_cpp(SEXP nSEXP, SEXP muSEXP, SEXP sigma1SEXP, SEXP nuSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma1(sigma1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    rcpp_result_gen = Rcpp::wrap(pseudohuber_rng_cpp(n, mu, sigma1, nu));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pseudohuber_rou_box_cpp
+NumericVector pseudohuber_rou_box_cpp(double omega);
+RcppExport SEXP _distributions7_pseudohuber_rou_box_cpp(SEXP omegaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type omega(omegaSEXP);
+    rcpp_result_gen = Rcpp::wrap(pseudohuber_rou_box_cpp(omega));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_expected_series_cpp
+List skewnormal2_expected_series_cpp(NumericVector sigma, NumericVector gamma1);
+RcppExport SEXP _distributions7_skewnormal2_expected_series_cpp(SEXP sigmaSEXP, SEXP gamma1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_expected_series_cpp(sigma, gamma1));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_dexpected1_series_cpp
+List skewnormal2_dexpected1_series_cpp(NumericVector sigma, NumericVector gamma1);
+RcppExport SEXP _distributions7_skewnormal2_dexpected1_series_cpp(SEXP sigmaSEXP, SEXP gamma1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_dexpected1_series_cpp(sigma, gamma1));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_dexpected2_series_cpp
+List skewnormal2_dexpected2_series_cpp(NumericVector sigma, NumericVector gamma1);
+RcppExport SEXP _distributions7_skewnormal2_dexpected2_series_cpp(SEXP sigmaSEXP, SEXP gamma1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_dexpected2_series_cpp(sigma, gamma1));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_gradient_cpp
+List skewnormal2_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector gamma1, int threads);
+RcppExport SEXP _distributions7_skewnormal2_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP gamma1SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_gradient_cpp(y, mu, sigma, gamma1, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_hessian_cpp
+List skewnormal2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector gamma1, int threads);
+RcppExport SEXP _distributions7_skewnormal2_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP gamma1SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_hessian_cpp(y, mu, sigma, gamma1, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_deriv3_cpp
+List skewnormal2_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector gamma1, int threads);
+RcppExport SEXP _distributions7_skewnormal2_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP gamma1SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_deriv3_cpp(y, mu, sigma, gamma1, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_deriv4_cpp
+List skewnormal2_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector gamma1, int threads);
+RcppExport SEXP _distributions7_skewnormal2_deriv4_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP gamma1SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_deriv4_cpp(y, mu, sigma, gamma1, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_deriv5_cpp
+List skewnormal2_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector gamma1, int threads);
+RcppExport SEXP _distributions7_skewnormal2_deriv5_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP gamma1SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_deriv5_cpp(y, mu, sigma, gamma1, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_cross_y_cpp
+List skewnormal2_cross_y_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector gamma1, int threads);
+RcppExport SEXP _distributions7_skewnormal2_cross_y_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP gamma1SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_cross_y_cpp(y, mu, sigma, gamma1, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_cross2_y_cpp
+List skewnormal2_cross2_y_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector gamma1, int threads);
+RcppExport SEXP _distributions7_skewnormal2_cross2_y_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP gamma1SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_cross2_y_cpp(y, mu, sigma, gamma1, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_grad_y_hess_cpp
+List skewnormal2_grad_y_hess_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector gamma1, int threads);
+RcppExport SEXP _distributions7_skewnormal2_grad_y_hess_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP gamma1SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_grad_y_hess_cpp(y, mu, sigma, gamma1, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_hess_y_hess_cpp
+List skewnormal2_hess_y_hess_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector gamma1, int threads);
+RcppExport SEXP _distributions7_skewnormal2_hess_y_hess_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP gamma1SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_hess_y_hess_cpp(y, mu, sigma, gamma1, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_dy1_cpp
+List skewnormal2_dy1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector gamma1, int threads);
+RcppExport SEXP _distributions7_skewnormal2_dy1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP gamma1SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_dy1_cpp(y, mu, sigma, gamma1, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_dy2_cpp
+List skewnormal2_dy2_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector gamma1, int threads);
+RcppExport SEXP _distributions7_skewnormal2_dy2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP gamma1SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_dy2_cpp(y, mu, sigma, gamma1, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_dy3_cpp
+List skewnormal2_dy3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector gamma1, int threads);
+RcppExport SEXP _distributions7_skewnormal2_dy3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP gamma1SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_dy3_cpp(y, mu, sigma, gamma1, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal2_dy4_cpp
+List skewnormal2_dy4_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector gamma1, int threads);
+RcppExport SEXP _distributions7_skewnormal2_dy4_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP gamma1SEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gamma1(gamma1SEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal2_dy4_cpp(y, mu, sigma, gamma1, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2673,9 +4488,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// student_t_gradient_cpp
-List student_t_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
-RcppExport SEXP _distributions7_student_t_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+// student_t1_gradient_cpp
+List student_t1_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -2684,13 +4499,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(student_t_gradient_cpp(y, mu, sigma, nu, threads));
+    rcpp_result_gen = Rcpp::wrap(student_t1_gradient_cpp(y, mu, sigma, nu, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// student_t_hessian_cpp
-List student_t_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
-RcppExport SEXP _distributions7_student_t_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+// student_t1_hessian_cpp
+List student_t1_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -2699,13 +4514,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(student_t_hessian_cpp(y, mu, sigma, nu, threads));
+    rcpp_result_gen = Rcpp::wrap(student_t1_hessian_cpp(y, mu, sigma, nu, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// student_t_expected_hessian_cpp
-List student_t_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
-RcppExport SEXP _distributions7_student_t_expected_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+// student_t1_expected_hessian_cpp
+List student_t1_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_expected_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -2714,13 +4529,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(student_t_expected_hessian_cpp(y, mu, sigma, nu, threads));
+    rcpp_result_gen = Rcpp::wrap(student_t1_expected_hessian_cpp(y, mu, sigma, nu, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// student_t_deriv3_cpp
-List student_t_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
-RcppExport SEXP _distributions7_student_t_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+// student_t1_deriv3_cpp
+List student_t1_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -2729,13 +4544,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(student_t_deriv3_cpp(y, mu, sigma, nu, threads));
+    rcpp_result_gen = Rcpp::wrap(student_t1_deriv3_cpp(y, mu, sigma, nu, threads));
     return rcpp_result_gen;
 END_RCPP
 }
-// student_t_deriv4_cpp
-List student_t_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
-RcppExport SEXP _distributions7_student_t_deriv4_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+// student_t1_deriv3_expected_cpp
+List student_t1_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_deriv3_expected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -2744,7 +4559,944 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(student_t_deriv4_cpp(y, mu, sigma, nu, threads));
+    rcpp_result_gen = Rcpp::wrap(student_t1_deriv3_expected_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t1_deriv4_cpp
+List student_t1_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_deriv4_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t1_deriv4_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t1_deriv4_expected_cpp
+List student_t1_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_deriv4_expected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t1_deriv4_expected_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t1_deriv5_cpp
+List student_t1_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_deriv5_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t1_deriv5_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t1_dexpected1_cpp
+List student_t1_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t1_dexpected1_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t1_dexpected2_cpp
+List student_t1_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t1_dexpected2_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t1_cross_y_cpp
+List student_t1_cross_y_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_cross_y_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t1_cross_y_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t1_cross2_y_cpp
+List student_t1_cross2_y_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_cross2_y_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t1_cross2_y_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t1_grad_y_hess_cpp
+List student_t1_grad_y_hess_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_grad_y_hess_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t1_grad_y_hess_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t1_hess_y_hess_cpp
+List student_t1_hess_y_hess_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_hess_y_hess_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t1_hess_y_hess_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t1_dy1_cpp
+List student_t1_dy1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_dy1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t1_dy1_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t1_dy2_cpp
+List student_t1_dy2_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_dy2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t1_dy2_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t1_dy3_cpp
+List student_t1_dy3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_dy3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t1_dy3_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t1_dy4_cpp
+List student_t1_dy4_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t1_dy4_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t1_dy4_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_gradient_cpp
+List student_t2_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_gradient_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_hessian_cpp
+List student_t2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_hessian_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_expected_hessian_cpp
+List student_t2_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_expected_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_expected_hessian_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_deriv3_cpp
+List student_t2_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_deriv3_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_deriv3_expected_cpp
+List student_t2_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_deriv3_expected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_deriv3_expected_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_deriv4_cpp
+List student_t2_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_deriv4_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_deriv4_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_deriv4_expected_cpp
+List student_t2_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_deriv4_expected_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_deriv4_expected_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_deriv5_cpp
+List student_t2_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_deriv5_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_deriv5_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_dexpected1_cpp
+List student_t2_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_dexpected1_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_dexpected2_cpp
+List student_t2_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_dexpected2_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_cross_y_cpp
+List student_t2_cross_y_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_cross_y_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_cross_y_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_cross2_y_cpp
+List student_t2_cross2_y_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_cross2_y_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_cross2_y_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_grad_y_hess_cpp
+List student_t2_grad_y_hess_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_grad_y_hess_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_grad_y_hess_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_hess_y_hess_cpp
+List student_t2_hess_y_hess_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_hess_y_hess_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_hess_y_hess_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_dy1_cpp
+List student_t2_dy1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_dy1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_dy1_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_dy2_cpp
+List student_t2_dy2_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_dy2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_dy2_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_dy3_cpp
+List student_t2_dy3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_dy3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_dy3_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// student_t2_dy4_cpp
+List student_t2_dy4_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_student_t2_dy4_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(student_t2_dy4_cpp(y, mu, sigma, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises1_gradient_cpp
+List vonmises1_gradient_cpp(NumericVector y, NumericVector mu, NumericVector kappa, int threads);
+RcppExport SEXP _distributions7_vonmises1_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP kappaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises1_gradient_cpp(y, mu, kappa, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises1_hessian_cpp
+List vonmises1_hessian_cpp(NumericVector y, NumericVector mu, NumericVector kappa, int threads);
+RcppExport SEXP _distributions7_vonmises1_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP kappaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises1_hessian_cpp(y, mu, kappa, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises1_expected_hessian_cpp
+List vonmises1_expected_hessian_cpp(int n, NumericVector kappa, int threads);
+RcppExport SEXP _distributions7_vonmises1_expected_hessian_cpp(SEXP nSEXP, SEXP kappaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises1_expected_hessian_cpp(n, kappa, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises1_deriv3_cpp
+List vonmises1_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector kappa, int threads);
+RcppExport SEXP _distributions7_vonmises1_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP kappaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises1_deriv3_cpp(y, mu, kappa, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises1_deriv4_cpp
+List vonmises1_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector kappa, int threads);
+RcppExport SEXP _distributions7_vonmises1_deriv4_cpp(SEXP ySEXP, SEXP muSEXP, SEXP kappaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises1_deriv4_cpp(y, mu, kappa, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises1_dexpected1_cpp
+List vonmises1_dexpected1_cpp(NumericVector kappa, int threads);
+RcppExport SEXP _distributions7_vonmises1_dexpected1_cpp(SEXP kappaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises1_dexpected1_cpp(kappa, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises1_dexpected2_cpp
+List vonmises1_dexpected2_cpp(NumericVector kappa, int threads);
+RcppExport SEXP _distributions7_vonmises1_dexpected2_cpp(SEXP kappaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises1_dexpected2_cpp(kappa, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises2_gradient_cpp
+List vonmises2_gradient_cpp(NumericVector y, NumericVector mu, NumericVector rho, int threads);
+RcppExport SEXP _distributions7_vonmises2_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP rhoSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises2_gradient_cpp(y, mu, rho, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises2_hessian_cpp
+List vonmises2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector rho, int threads);
+RcppExport SEXP _distributions7_vonmises2_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP rhoSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises2_hessian_cpp(y, mu, rho, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises2_expected_hessian_cpp
+List vonmises2_expected_hessian_cpp(int n, NumericVector rho, int threads);
+RcppExport SEXP _distributions7_vonmises2_expected_hessian_cpp(SEXP nSEXP, SEXP rhoSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises2_expected_hessian_cpp(n, rho, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises2_deriv3_cpp
+List vonmises2_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector rho, int threads);
+RcppExport SEXP _distributions7_vonmises2_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP rhoSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises2_deriv3_cpp(y, mu, rho, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises2_deriv4_cpp
+List vonmises2_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector rho, int threads);
+RcppExport SEXP _distributions7_vonmises2_deriv4_cpp(SEXP ySEXP, SEXP muSEXP, SEXP rhoSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises2_deriv4_cpp(y, mu, rho, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises2_dexpected1_cpp
+List vonmises2_dexpected1_cpp(NumericVector rho, int threads);
+RcppExport SEXP _distributions7_vonmises2_dexpected1_cpp(SEXP rhoSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises2_dexpected1_cpp(rho, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vonmises2_dexpected2_cpp
+List vonmises2_dexpected2_cpp(NumericVector rho, int threads);
+RcppExport SEXP _distributions7_vonmises2_dexpected2_cpp(SEXP rhoSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(vonmises2_dexpected2_cpp(rho, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_gradient_cpp
+List weibull3_gradient_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_gradient_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_gradient_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_hessian_cpp
+List weibull3_hessian_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_hessian_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_hessian_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_expected_hessian_cpp
+List weibull3_expected_hessian_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_expected_hessian_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_expected_hessian_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_deriv3_cpp
+List weibull3_deriv3_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_deriv3_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_deriv3_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_deriv3_expected_cpp
+List weibull3_deriv3_expected_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_deriv3_expected_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_deriv3_expected_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_deriv4_cpp
+List weibull3_deriv4_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_deriv4_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_deriv4_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_deriv4_expected_cpp
+List weibull3_deriv4_expected_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_deriv4_expected_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_deriv4_expected_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_deriv5_cpp
+List weibull3_deriv5_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_deriv5_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_deriv5_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_dexpected1_cpp
+List weibull3_dexpected1_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_dexpected1_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_dexpected1_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_dexpected2_cpp
+List weibull3_dexpected2_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_dexpected2_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_dexpected2_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_dcdf1_cpp
+List weibull3_dcdf1_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_dcdf1_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_dcdf1_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_dcdf2_cpp
+List weibull3_dcdf2_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_dcdf2_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_dcdf2_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_dcdf3_cpp
+List weibull3_dcdf3_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_dcdf3_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_dcdf3_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_dcdf4_cpp
+List weibull3_dcdf4_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_dcdf4_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_dcdf4_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_cross_y_cpp
+List weibull3_cross_y_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_cross_y_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_cross_y_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_cross2_y_cpp
+List weibull3_cross2_y_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_cross2_y_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_cross2_y_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_grad_y_hess_cpp
+List weibull3_grad_y_hess_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_grad_y_hess_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_grad_y_hess_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_hess_y_hess_cpp
+List weibull3_hess_y_hess_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_hess_y_hess_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_hess_y_hess_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_dy1_cpp
+List weibull3_dy1_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_dy1_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_dy1_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_dy2_cpp
+List weibull3_dy2_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_dy2_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_dy2_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_dy3_cpp
+List weibull3_dy3_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_dy3_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_dy3_cpp(y, mean, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weibull3_dy4_cpp
+List weibull3_dy4_cpp(NumericVector y, NumericVector mean, NumericVector sigma);
+RcppExport SEXP _distributions7_weibull3_dy4_cpp(SEXP ySEXP, SEXP meanSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(weibull3_dy4_cpp(y, mean, sigma));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2816,7 +5568,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_beta_gradient_cpp", (DL_FUNC) &_distributions7_beta_gradient_cpp, 4},
     {"_distributions7_beta_hessian_cpp", (DL_FUNC) &_distributions7_beta_hessian_cpp, 4},
     {"_distributions7_beta_expected_hessian_cpp", (DL_FUNC) &_distributions7_beta_expected_hessian_cpp, 4},
-    {"_distributions7_beta_dexpected_cpp", (DL_FUNC) &_distributions7_beta_dexpected_cpp, 5},
+    {"_distributions7_beta_dexpected1_cpp", (DL_FUNC) &_distributions7_beta_dexpected1_cpp, 4},
+    {"_distributions7_beta_dexpected2_cpp", (DL_FUNC) &_distributions7_beta_dexpected2_cpp, 4},
     {"_distributions7_beta_deriv3_cpp", (DL_FUNC) &_distributions7_beta_deriv3_cpp, 4},
     {"_distributions7_beta_deriv4_cpp", (DL_FUNC) &_distributions7_beta_deriv4_cpp, 4},
     {"_distributions7_betabinom_gradient_cpp", (DL_FUNC) &_distributions7_betabinom_gradient_cpp, 5},
@@ -2843,25 +5596,40 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_chisq_deriv4_cpp", (DL_FUNC) &_distributions7_chisq_deriv4_cpp, 3},
     {"_distributions7_d7_scalar_probe", (DL_FUNC) &_distributions7_d7_scalar_probe, 4},
     {"_distributions7_d7_info_probe", (DL_FUNC) &_distributions7_d7_info_probe, 4},
-    {"_distributions7_bernoulli_dexpected_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected_cpp, 4},
-    {"_distributions7_binomial_dexpected_cpp", (DL_FUNC) &_distributions7_binomial_dexpected_cpp, 5},
-    {"_distributions7_exponential_dexpected_cpp", (DL_FUNC) &_distributions7_exponential_dexpected_cpp, 4},
-    {"_distributions7_geometric_dexpected_cpp", (DL_FUNC) &_distributions7_geometric_dexpected_cpp, 4},
-    {"_distributions7_chisq_dexpected_cpp", (DL_FUNC) &_distributions7_chisq_dexpected_cpp, 4},
-    {"_distributions7_cauchy_dexpected_cpp", (DL_FUNC) &_distributions7_cauchy_dexpected_cpp, 5},
-    {"_distributions7_logistic_dexpected_cpp", (DL_FUNC) &_distributions7_logistic_dexpected_cpp, 5},
-    {"_distributions7_gumbel_dexpected_cpp", (DL_FUNC) &_distributions7_gumbel_dexpected_cpp, 5},
-    {"_distributions7_gaussian2_dexpected_cpp", (DL_FUNC) &_distributions7_gaussian2_dexpected_cpp, 5},
-    {"_distributions7_gaussian3_dexpected_cpp", (DL_FUNC) &_distributions7_gaussian3_dexpected_cpp, 5},
-    {"_distributions7_invgauss1_dexpected_cpp", (DL_FUNC) &_distributions7_invgauss1_dexpected_cpp, 5},
-    {"_distributions7_invgauss2_dexpected_cpp", (DL_FUNC) &_distributions7_invgauss2_dexpected_cpp, 5},
-    {"_distributions7_gamma2_dexpected_cpp", (DL_FUNC) &_distributions7_gamma2_dexpected_cpp, 5},
-    {"_distributions7_beta2_dexpected_cpp", (DL_FUNC) &_distributions7_beta2_dexpected_cpp, 5},
-    {"_distributions7_weibull1_dexpected_cpp", (DL_FUNC) &_distributions7_weibull1_dexpected_cpp, 5},
-    {"_distributions7_student_t1_dexpected_cpp", (DL_FUNC) &_distributions7_student_t1_dexpected_cpp, 6},
-    {"_distributions7_gengamma1_dexpected_cpp", (DL_FUNC) &_distributions7_gengamma1_dexpected_cpp, 6},
-    {"_distributions7_gpd_dexpected_cpp", (DL_FUNC) &_distributions7_gpd_dexpected_cpp, 5},
-    {"_distributions7_betabinom_shapes_dexpected_cpp", (DL_FUNC) &_distributions7_betabinom_shapes_dexpected_cpp, 6},
+    {"_distributions7_bernoulli_dexpected1_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected1_cpp, 3},
+    {"_distributions7_bernoulli_dexpected2_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected2_cpp, 3},
+    {"_distributions7_binomial_dexpected1_cpp", (DL_FUNC) &_distributions7_binomial_dexpected1_cpp, 4},
+    {"_distributions7_binomial_dexpected2_cpp", (DL_FUNC) &_distributions7_binomial_dexpected2_cpp, 4},
+    {"_distributions7_exponential_dexpected1_cpp", (DL_FUNC) &_distributions7_exponential_dexpected1_cpp, 3},
+    {"_distributions7_exponential_dexpected2_cpp", (DL_FUNC) &_distributions7_exponential_dexpected2_cpp, 3},
+    {"_distributions7_geometric_dexpected1_cpp", (DL_FUNC) &_distributions7_geometric_dexpected1_cpp, 3},
+    {"_distributions7_geometric_dexpected2_cpp", (DL_FUNC) &_distributions7_geometric_dexpected2_cpp, 3},
+    {"_distributions7_chisq_dexpected1_cpp", (DL_FUNC) &_distributions7_chisq_dexpected1_cpp, 3},
+    {"_distributions7_chisq_dexpected2_cpp", (DL_FUNC) &_distributions7_chisq_dexpected2_cpp, 3},
+    {"_distributions7_cauchy_dexpected1_cpp", (DL_FUNC) &_distributions7_cauchy_dexpected1_cpp, 4},
+    {"_distributions7_cauchy_dexpected2_cpp", (DL_FUNC) &_distributions7_cauchy_dexpected2_cpp, 4},
+    {"_distributions7_logistic_dexpected1_cpp", (DL_FUNC) &_distributions7_logistic_dexpected1_cpp, 4},
+    {"_distributions7_logistic_dexpected2_cpp", (DL_FUNC) &_distributions7_logistic_dexpected2_cpp, 4},
+    {"_distributions7_gumbel_dexpected1_cpp", (DL_FUNC) &_distributions7_gumbel_dexpected1_cpp, 4},
+    {"_distributions7_gumbel_dexpected2_cpp", (DL_FUNC) &_distributions7_gumbel_dexpected2_cpp, 4},
+    {"_distributions7_gaussian2_dexpected1_cpp", (DL_FUNC) &_distributions7_gaussian2_dexpected1_cpp, 4},
+    {"_distributions7_gaussian2_dexpected2_cpp", (DL_FUNC) &_distributions7_gaussian2_dexpected2_cpp, 4},
+    {"_distributions7_gaussian3_dexpected1_cpp", (DL_FUNC) &_distributions7_gaussian3_dexpected1_cpp, 4},
+    {"_distributions7_gaussian3_dexpected2_cpp", (DL_FUNC) &_distributions7_gaussian3_dexpected2_cpp, 4},
+    {"_distributions7_invgauss1_dexpected1_cpp", (DL_FUNC) &_distributions7_invgauss1_dexpected1_cpp, 4},
+    {"_distributions7_invgauss1_dexpected2_cpp", (DL_FUNC) &_distributions7_invgauss1_dexpected2_cpp, 4},
+    {"_distributions7_invgauss2_dexpected1_cpp", (DL_FUNC) &_distributions7_invgauss2_dexpected1_cpp, 4},
+    {"_distributions7_invgauss2_dexpected2_cpp", (DL_FUNC) &_distributions7_invgauss2_dexpected2_cpp, 4},
+    {"_distributions7_gamma2_dexpected1_cpp", (DL_FUNC) &_distributions7_gamma2_dexpected1_cpp, 4},
+    {"_distributions7_gamma2_dexpected2_cpp", (DL_FUNC) &_distributions7_gamma2_dexpected2_cpp, 4},
+    {"_distributions7_beta2_dexpected1_cpp", (DL_FUNC) &_distributions7_beta2_dexpected1_cpp, 4},
+    {"_distributions7_beta2_dexpected2_cpp", (DL_FUNC) &_distributions7_beta2_dexpected2_cpp, 4},
+    {"_distributions7_weibull1_dexpected1_cpp", (DL_FUNC) &_distributions7_weibull1_dexpected1_cpp, 4},
+    {"_distributions7_weibull1_dexpected2_cpp", (DL_FUNC) &_distributions7_weibull1_dexpected2_cpp, 4},
+    {"_distributions7_gpd_dexpected1_cpp", (DL_FUNC) &_distributions7_gpd_dexpected1_cpp, 4},
+    {"_distributions7_gpd_dexpected2_cpp", (DL_FUNC) &_distributions7_gpd_dexpected2_cpp, 4},
+    {"_distributions7_betabinom_shapes_dexpected1_cpp", (DL_FUNC) &_distributions7_betabinom_shapes_dexpected1_cpp, 5},
+    {"_distributions7_betabinom_shapes_dexpected2_cpp", (DL_FUNC) &_distributions7_betabinom_shapes_dexpected2_cpp, 5},
     {"_distributions7_exponential_gradient_cpp", (DL_FUNC) &_distributions7_exponential_gradient_cpp, 3},
     {"_distributions7_exponential_hessian_cpp", (DL_FUNC) &_distributions7_exponential_hessian_cpp, 3},
     {"_distributions7_exponential_expected_hessian_cpp", (DL_FUNC) &_distributions7_exponential_expected_hessian_cpp, 3},
@@ -2878,7 +5646,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_gamma1_deriv3_cpp", (DL_FUNC) &_distributions7_gamma1_deriv3_cpp, 4},
     {"_distributions7_gamma1_deriv3_expected_cpp", (DL_FUNC) &_distributions7_gamma1_deriv3_expected_cpp, 4},
     {"_distributions7_gamma1_deriv4_cpp", (DL_FUNC) &_distributions7_gamma1_deriv4_cpp, 4},
-    {"_distributions7_gamma1_dexpected_cpp", (DL_FUNC) &_distributions7_gamma1_dexpected_cpp, 5},
+    {"_distributions7_gamma1_dexpected1_cpp", (DL_FUNC) &_distributions7_gamma1_dexpected1_cpp, 4},
+    {"_distributions7_gamma1_dexpected2_cpp", (DL_FUNC) &_distributions7_gamma1_dexpected2_cpp, 4},
     {"_distributions7_gamma1_deriv4_expected_cpp", (DL_FUNC) &_distributions7_gamma1_deriv4_expected_cpp, 4},
     {"_distributions7_gamma_deriv3_cpp", (DL_FUNC) &_distributions7_gamma_deriv3_cpp, 4},
     {"_distributions7_gamma_deriv3_expected_cpp", (DL_FUNC) &_distributions7_gamma_deriv3_expected_cpp, 4},
@@ -2887,7 +5656,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_gaussian_gradient_cpp", (DL_FUNC) &_distributions7_gaussian_gradient_cpp, 4},
     {"_distributions7_gaussian_hessian_cpp", (DL_FUNC) &_distributions7_gaussian_hessian_cpp, 4},
     {"_distributions7_gaussian_expected_hessian_cpp", (DL_FUNC) &_distributions7_gaussian_expected_hessian_cpp, 4},
-    {"_distributions7_gaussian_dexpected_cpp", (DL_FUNC) &_distributions7_gaussian_dexpected_cpp, 5},
+    {"_distributions7_gaussian_dexpected1_cpp", (DL_FUNC) &_distributions7_gaussian_dexpected1_cpp, 4},
+    {"_distributions7_gaussian_dexpected2_cpp", (DL_FUNC) &_distributions7_gaussian_dexpected2_cpp, 4},
     {"_distributions7_gaussian2_gradient_cpp", (DL_FUNC) &_distributions7_gaussian2_gradient_cpp, 4},
     {"_distributions7_gaussian2_hessian_cpp", (DL_FUNC) &_distributions7_gaussian2_hessian_cpp, 4},
     {"_distributions7_gaussian2_expected_hessian_cpp", (DL_FUNC) &_distributions7_gaussian2_expected_hessian_cpp, 4},
@@ -2905,9 +5675,46 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_gaussian_deriv4_cpp", (DL_FUNC) &_distributions7_gaussian_deriv4_cpp, 4},
     {"_distributions7_gaussian_deriv4_expected_cpp", (DL_FUNC) &_distributions7_gaussian_deriv4_expected_cpp, 4},
     {"_distributions7_gengamma_logpdf_cpp", (DL_FUNC) &_distributions7_gengamma_logpdf_cpp, 5},
-    {"_distributions7_gengamma_gradient_cpp", (DL_FUNC) &_distributions7_gengamma_gradient_cpp, 5},
-    {"_distributions7_gengamma_hessian_cpp", (DL_FUNC) &_distributions7_gengamma_hessian_cpp, 5},
-    {"_distributions7_gengamma_expected_hessian_cpp", (DL_FUNC) &_distributions7_gengamma_expected_hessian_cpp, 5},
+    {"_distributions7_gengamma1_gradient_cpp", (DL_FUNC) &_distributions7_gengamma1_gradient_cpp, 5},
+    {"_distributions7_gengamma1_hessian_cpp", (DL_FUNC) &_distributions7_gengamma1_hessian_cpp, 5},
+    {"_distributions7_gengamma1_expected_hessian_cpp", (DL_FUNC) &_distributions7_gengamma1_expected_hessian_cpp, 5},
+    {"_distributions7_gengamma1_deriv3_cpp", (DL_FUNC) &_distributions7_gengamma1_deriv3_cpp, 5},
+    {"_distributions7_gengamma1_deriv3_expected_cpp", (DL_FUNC) &_distributions7_gengamma1_deriv3_expected_cpp, 5},
+    {"_distributions7_gengamma1_deriv4_cpp", (DL_FUNC) &_distributions7_gengamma1_deriv4_cpp, 5},
+    {"_distributions7_gengamma1_deriv4_expected_cpp", (DL_FUNC) &_distributions7_gengamma1_deriv4_expected_cpp, 5},
+    {"_distributions7_gengamma1_deriv5_cpp", (DL_FUNC) &_distributions7_gengamma1_deriv5_cpp, 5},
+    {"_distributions7_gengamma1_dexpected1_cpp", (DL_FUNC) &_distributions7_gengamma1_dexpected1_cpp, 5},
+    {"_distributions7_gengamma1_dexpected2_cpp", (DL_FUNC) &_distributions7_gengamma1_dexpected2_cpp, 5},
+    {"_distributions7_gengamma1_cross_y_cpp", (DL_FUNC) &_distributions7_gengamma1_cross_y_cpp, 5},
+    {"_distributions7_gengamma1_cross2_y_cpp", (DL_FUNC) &_distributions7_gengamma1_cross2_y_cpp, 5},
+    {"_distributions7_gengamma1_grad_y_hess_cpp", (DL_FUNC) &_distributions7_gengamma1_grad_y_hess_cpp, 5},
+    {"_distributions7_gengamma1_hess_y_hess_cpp", (DL_FUNC) &_distributions7_gengamma1_hess_y_hess_cpp, 5},
+    {"_distributions7_gengamma1_dy1_cpp", (DL_FUNC) &_distributions7_gengamma1_dy1_cpp, 5},
+    {"_distributions7_gengamma1_dy2_cpp", (DL_FUNC) &_distributions7_gengamma1_dy2_cpp, 5},
+    {"_distributions7_gengamma1_dy3_cpp", (DL_FUNC) &_distributions7_gengamma1_dy3_cpp, 5},
+    {"_distributions7_gengamma1_dy4_cpp", (DL_FUNC) &_distributions7_gengamma1_dy4_cpp, 5},
+    {"_distributions7_gengamma2_gradient_cpp", (DL_FUNC) &_distributions7_gengamma2_gradient_cpp, 4},
+    {"_distributions7_gengamma2_hessian_cpp", (DL_FUNC) &_distributions7_gengamma2_hessian_cpp, 4},
+    {"_distributions7_gengamma2_expected_hessian_cpp", (DL_FUNC) &_distributions7_gengamma2_expected_hessian_cpp, 4},
+    {"_distributions7_gengamma2_deriv3_cpp", (DL_FUNC) &_distributions7_gengamma2_deriv3_cpp, 4},
+    {"_distributions7_gengamma2_deriv3_expected_cpp", (DL_FUNC) &_distributions7_gengamma2_deriv3_expected_cpp, 4},
+    {"_distributions7_gengamma2_deriv4_cpp", (DL_FUNC) &_distributions7_gengamma2_deriv4_cpp, 4},
+    {"_distributions7_gengamma2_deriv4_expected_cpp", (DL_FUNC) &_distributions7_gengamma2_deriv4_expected_cpp, 4},
+    {"_distributions7_gengamma2_deriv5_cpp", (DL_FUNC) &_distributions7_gengamma2_deriv5_cpp, 4},
+    {"_distributions7_gengamma2_dexpected1_cpp", (DL_FUNC) &_distributions7_gengamma2_dexpected1_cpp, 4},
+    {"_distributions7_gengamma2_dexpected2_cpp", (DL_FUNC) &_distributions7_gengamma2_dexpected2_cpp, 4},
+    {"_distributions7_gengamma2_cross_y_cpp", (DL_FUNC) &_distributions7_gengamma2_cross_y_cpp, 4},
+    {"_distributions7_gengamma2_cross2_y_cpp", (DL_FUNC) &_distributions7_gengamma2_cross2_y_cpp, 4},
+    {"_distributions7_gengamma2_grad_y_hess_cpp", (DL_FUNC) &_distributions7_gengamma2_grad_y_hess_cpp, 4},
+    {"_distributions7_gengamma2_hess_y_hess_cpp", (DL_FUNC) &_distributions7_gengamma2_hess_y_hess_cpp, 4},
+    {"_distributions7_gengamma2_dy1_cpp", (DL_FUNC) &_distributions7_gengamma2_dy1_cpp, 4},
+    {"_distributions7_gengamma2_dy2_cpp", (DL_FUNC) &_distributions7_gengamma2_dy2_cpp, 4},
+    {"_distributions7_gengamma2_dy3_cpp", (DL_FUNC) &_distributions7_gengamma2_dy3_cpp, 4},
+    {"_distributions7_gengamma2_dy4_cpp", (DL_FUNC) &_distributions7_gengamma2_dy4_cpp, 4},
+    {"_distributions7_gengamma_logmean_cpp", (DL_FUNC) &_distributions7_gengamma_logmean_cpp, 2},
+    {"_distributions7_gengamma_mu2_cpp", (DL_FUNC) &_distributions7_gengamma_mu2_cpp, 2},
+    {"_distributions7_gengamma_mu3_cpp", (DL_FUNC) &_distributions7_gengamma_mu3_cpp, 2},
+    {"_distributions7_gengamma_kappa4_cpp", (DL_FUNC) &_distributions7_gengamma_kappa4_cpp, 2},
     {"_distributions7_geometric_gradient_cpp", (DL_FUNC) &_distributions7_geometric_gradient_cpp, 3},
     {"_distributions7_geometric_hessian_cpp", (DL_FUNC) &_distributions7_geometric_hessian_cpp, 3},
     {"_distributions7_geometric_expected_hessian_cpp", (DL_FUNC) &_distributions7_geometric_expected_hessian_cpp, 3},
@@ -2919,6 +5726,31 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_gpd_gradient_cpp", (DL_FUNC) &_distributions7_gpd_gradient_cpp, 4},
     {"_distributions7_gpd_hessian_cpp", (DL_FUNC) &_distributions7_gpd_hessian_cpp, 4},
     {"_distributions7_gpd_expected_hessian_cpp", (DL_FUNC) &_distributions7_gpd_expected_hessian_cpp, 4},
+    {"_distributions7_gpd_deriv3_cpp", (DL_FUNC) &_distributions7_gpd_deriv3_cpp, 4},
+    {"_distributions7_gpd_deriv3_expected_cpp", (DL_FUNC) &_distributions7_gpd_deriv3_expected_cpp, 4},
+    {"_distributions7_gpd_deriv4_cpp", (DL_FUNC) &_distributions7_gpd_deriv4_cpp, 4},
+    {"_distributions7_gpd_deriv4_expected_cpp", (DL_FUNC) &_distributions7_gpd_deriv4_expected_cpp, 4},
+    {"_distributions7_gpd_deriv5_cpp", (DL_FUNC) &_distributions7_gpd_deriv5_cpp, 4},
+    {"_distributions7_gpd_dy1_cpp", (DL_FUNC) &_distributions7_gpd_dy1_cpp, 4},
+    {"_distributions7_gpd_dy2_cpp", (DL_FUNC) &_distributions7_gpd_dy2_cpp, 4},
+    {"_distributions7_gpd_dy3_cpp", (DL_FUNC) &_distributions7_gpd_dy3_cpp, 4},
+    {"_distributions7_gpd_dy4_cpp", (DL_FUNC) &_distributions7_gpd_dy4_cpp, 4},
+    {"_distributions7_gpd_cross_y_cpp", (DL_FUNC) &_distributions7_gpd_cross_y_cpp, 4},
+    {"_distributions7_gpd_cross2_y_cpp", (DL_FUNC) &_distributions7_gpd_cross2_y_cpp, 4},
+    {"_distributions7_gpd_grad_y_hess_cpp", (DL_FUNC) &_distributions7_gpd_grad_y_hess_cpp, 4},
+    {"_distributions7_gpd_hess_y_hess_cpp", (DL_FUNC) &_distributions7_gpd_hess_y_hess_cpp, 4},
+    {"_distributions7_gpd_grad_cdf_lower_cpp", (DL_FUNC) &_distributions7_gpd_grad_cdf_lower_cpp, 4},
+    {"_distributions7_gpd_grad_cdf_upper_cpp", (DL_FUNC) &_distributions7_gpd_grad_cdf_upper_cpp, 4},
+    {"_distributions7_gpd_grad_surv_cpp", (DL_FUNC) &_distributions7_gpd_grad_surv_cpp, 4},
+    {"_distributions7_gpd_hess_cdf_lower_cpp", (DL_FUNC) &_distributions7_gpd_hess_cdf_lower_cpp, 4},
+    {"_distributions7_gpd_hess_cdf_upper_cpp", (DL_FUNC) &_distributions7_gpd_hess_cdf_upper_cpp, 4},
+    {"_distributions7_gpd_hess_surv_cpp", (DL_FUNC) &_distributions7_gpd_hess_surv_cpp, 4},
+    {"_distributions7_gpd_deriv3_cdf_lower_cpp", (DL_FUNC) &_distributions7_gpd_deriv3_cdf_lower_cpp, 4},
+    {"_distributions7_gpd_deriv3_cdf_upper_cpp", (DL_FUNC) &_distributions7_gpd_deriv3_cdf_upper_cpp, 4},
+    {"_distributions7_gpd_deriv3_surv_cpp", (DL_FUNC) &_distributions7_gpd_deriv3_surv_cpp, 4},
+    {"_distributions7_gpd_deriv4_cdf_lower_cpp", (DL_FUNC) &_distributions7_gpd_deriv4_cdf_lower_cpp, 4},
+    {"_distributions7_gpd_deriv4_cdf_upper_cpp", (DL_FUNC) &_distributions7_gpd_deriv4_cdf_upper_cpp, 4},
+    {"_distributions7_gpd_deriv4_surv_cpp", (DL_FUNC) &_distributions7_gpd_deriv4_surv_cpp, 4},
     {"_distributions7_gpd_poly_cpp", (DL_FUNC) &_distributions7_gpd_poly_cpp, 3},
     {"_distributions7_gumbel_deriv3_cpp", (DL_FUNC) &_distributions7_gumbel_deriv3_cpp, 4},
     {"_distributions7_gumbel_deriv3_expected_cpp", (DL_FUNC) &_distributions7_gumbel_deriv3_expected_cpp, 4},
@@ -2948,11 +5780,34 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_lognormal_gradient_cpp", (DL_FUNC) &_distributions7_lognormal_gradient_cpp, 4},
     {"_distributions7_lognormal_hessian_cpp", (DL_FUNC) &_distributions7_lognormal_hessian_cpp, 4},
     {"_distributions7_lognormal_expected_hessian_cpp", (DL_FUNC) &_distributions7_lognormal_expected_hessian_cpp, 4},
+    {"_distributions7_lognormal2_gradient_cpp", (DL_FUNC) &_distributions7_lognormal2_gradient_cpp, 3},
+    {"_distributions7_lognormal2_hessian_cpp", (DL_FUNC) &_distributions7_lognormal2_hessian_cpp, 3},
+    {"_distributions7_lognormal2_expected_hessian_cpp", (DL_FUNC) &_distributions7_lognormal2_expected_hessian_cpp, 3},
+    {"_distributions7_lognormal2_deriv3_cpp", (DL_FUNC) &_distributions7_lognormal2_deriv3_cpp, 3},
+    {"_distributions7_lognormal2_deriv3_expected_cpp", (DL_FUNC) &_distributions7_lognormal2_deriv3_expected_cpp, 3},
+    {"_distributions7_lognormal2_deriv4_cpp", (DL_FUNC) &_distributions7_lognormal2_deriv4_cpp, 3},
+    {"_distributions7_lognormal2_deriv4_expected_cpp", (DL_FUNC) &_distributions7_lognormal2_deriv4_expected_cpp, 3},
+    {"_distributions7_lognormal2_deriv5_cpp", (DL_FUNC) &_distributions7_lognormal2_deriv5_cpp, 3},
+    {"_distributions7_lognormal2_dexpected1_cpp", (DL_FUNC) &_distributions7_lognormal2_dexpected1_cpp, 3},
+    {"_distributions7_lognormal2_dexpected2_cpp", (DL_FUNC) &_distributions7_lognormal2_dexpected2_cpp, 3},
+    {"_distributions7_lognormal2_dcdf1_cpp", (DL_FUNC) &_distributions7_lognormal2_dcdf1_cpp, 3},
+    {"_distributions7_lognormal2_dcdf2_cpp", (DL_FUNC) &_distributions7_lognormal2_dcdf2_cpp, 3},
+    {"_distributions7_lognormal2_dcdf3_cpp", (DL_FUNC) &_distributions7_lognormal2_dcdf3_cpp, 3},
+    {"_distributions7_lognormal2_dcdf4_cpp", (DL_FUNC) &_distributions7_lognormal2_dcdf4_cpp, 3},
+    {"_distributions7_lognormal2_cross_y_cpp", (DL_FUNC) &_distributions7_lognormal2_cross_y_cpp, 3},
+    {"_distributions7_lognormal2_cross2_y_cpp", (DL_FUNC) &_distributions7_lognormal2_cross2_y_cpp, 3},
+    {"_distributions7_lognormal2_grad_y_hess_cpp", (DL_FUNC) &_distributions7_lognormal2_grad_y_hess_cpp, 3},
+    {"_distributions7_lognormal2_hess_y_hess_cpp", (DL_FUNC) &_distributions7_lognormal2_hess_y_hess_cpp, 3},
+    {"_distributions7_lognormal2_dy1_cpp", (DL_FUNC) &_distributions7_lognormal2_dy1_cpp, 3},
+    {"_distributions7_lognormal2_dy2_cpp", (DL_FUNC) &_distributions7_lognormal2_dy2_cpp, 3},
+    {"_distributions7_lognormal2_dy3_cpp", (DL_FUNC) &_distributions7_lognormal2_dy3_cpp, 3},
+    {"_distributions7_lognormal2_dy4_cpp", (DL_FUNC) &_distributions7_lognormal2_dy4_cpp, 3},
     {"_distributions7_lognormal_deriv3_cpp", (DL_FUNC) &_distributions7_lognormal_deriv3_cpp, 4},
     {"_distributions7_lognormal_deriv3_expected_cpp", (DL_FUNC) &_distributions7_lognormal_deriv3_expected_cpp, 4},
     {"_distributions7_lognormal_deriv4_cpp", (DL_FUNC) &_distributions7_lognormal_deriv4_cpp, 4},
     {"_distributions7_lognormal_deriv4_expected_cpp", (DL_FUNC) &_distributions7_lognormal_deriv4_expected_cpp, 4},
-    {"_distributions7_negbin_dexpected_cpp", (DL_FUNC) &_distributions7_negbin_dexpected_cpp, 5},
+    {"_distributions7_negbin_dexpected1_cpp", (DL_FUNC) &_distributions7_negbin_dexpected1_cpp, 4},
+    {"_distributions7_negbin_dexpected2_cpp", (DL_FUNC) &_distributions7_negbin_dexpected2_cpp, 4},
     {"_distributions7_negbin_gradient_cpp", (DL_FUNC) &_distributions7_negbin_gradient_cpp, 4},
     {"_distributions7_negbin_hessian_cpp", (DL_FUNC) &_distributions7_negbin_hessian_cpp, 4},
     {"_distributions7_negbin_expected_hessian_cpp", (DL_FUNC) &_distributions7_negbin_expected_hessian_cpp, 4},
@@ -2960,7 +5815,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_negbin1_gradient_cpp", (DL_FUNC) &_distributions7_negbin1_gradient_cpp, 4},
     {"_distributions7_negbin1_hessian_cpp", (DL_FUNC) &_distributions7_negbin1_hessian_cpp, 4},
     {"_distributions7_negbin1_expected_hessian_cpp", (DL_FUNC) &_distributions7_negbin1_expected_hessian_cpp, 4},
-    {"_distributions7_negbin1_dexpected_cpp", (DL_FUNC) &_distributions7_negbin1_dexpected_cpp, 5},
+    {"_distributions7_negbin1_dexpected1_cpp", (DL_FUNC) &_distributions7_negbin1_dexpected1_cpp, 4},
+    {"_distributions7_negbin1_dexpected2_cpp", (DL_FUNC) &_distributions7_negbin1_dexpected2_cpp, 4},
     {"_distributions7_negbin1_psums_cpp", (DL_FUNC) &_distributions7_negbin1_psums_cpp, 5},
     {"_distributions7_negbin_deriv3_cpp", (DL_FUNC) &_distributions7_negbin_deriv3_cpp, 4},
     {"_distributions7_negbin_deriv3_expected_cpp", (DL_FUNC) &_distributions7_negbin_deriv3_expected_cpp, 4},
@@ -2980,27 +5836,123 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_pig2_deriv3_cpp", (DL_FUNC) &_distributions7_pig2_deriv3_cpp, 4},
     {"_distributions7_pig2_deriv4_cpp", (DL_FUNC) &_distributions7_pig2_deriv4_cpp, 4},
     {"_distributions7_pig2_hd_cpp", (DL_FUNC) &_distributions7_pig2_hd_cpp, 4},
-    {"_distributions7_pig2_expected_cpp", (DL_FUNC) &_distributions7_pig2_expected_cpp, 5},
-    {"_distributions7_pig1_expected_cpp", (DL_FUNC) &_distributions7_pig1_expected_cpp, 5},
+    {"_distributions7_pig2_expected_cpp", (DL_FUNC) &_distributions7_pig2_expected_cpp, 4},
+    {"_distributions7_pig2_dexpected1_cpp", (DL_FUNC) &_distributions7_pig2_dexpected1_cpp, 4},
+    {"_distributions7_pig2_dexpected2_cpp", (DL_FUNC) &_distributions7_pig2_dexpected2_cpp, 4},
+    {"_distributions7_pig1_expected_cpp", (DL_FUNC) &_distributions7_pig1_expected_cpp, 4},
+    {"_distributions7_pig1_dexpected1_cpp", (DL_FUNC) &_distributions7_pig1_dexpected1_cpp, 4},
+    {"_distributions7_pig1_dexpected2_cpp", (DL_FUNC) &_distributions7_pig1_dexpected2_cpp, 4},
     {"_distributions7_poisson_gradient_cpp", (DL_FUNC) &_distributions7_poisson_gradient_cpp, 3},
     {"_distributions7_poisson_hessian_cpp", (DL_FUNC) &_distributions7_poisson_hessian_cpp, 3},
     {"_distributions7_poisson_expected_hessian_cpp", (DL_FUNC) &_distributions7_poisson_expected_hessian_cpp, 3},
-    {"_distributions7_poisson_dexpected_cpp", (DL_FUNC) &_distributions7_poisson_dexpected_cpp, 4},
+    {"_distributions7_poisson_dexpected1_cpp", (DL_FUNC) &_distributions7_poisson_dexpected1_cpp, 3},
+    {"_distributions7_poisson_dexpected2_cpp", (DL_FUNC) &_distributions7_poisson_dexpected2_cpp, 3},
     {"_distributions7_poisson_deriv3_cpp", (DL_FUNC) &_distributions7_poisson_deriv3_cpp, 3},
     {"_distributions7_poisson_deriv3_expected_cpp", (DL_FUNC) &_distributions7_poisson_deriv3_expected_cpp, 3},
     {"_distributions7_poisson_deriv4_cpp", (DL_FUNC) &_distributions7_poisson_deriv4_cpp, 3},
     {"_distributions7_poisson_deriv4_expected_cpp", (DL_FUNC) &_distributions7_poisson_deriv4_expected_cpp, 3},
     {"_distributions7_pseudohuber_gradient_cpp", (DL_FUNC) &_distributions7_pseudohuber_gradient_cpp, 4},
     {"_distributions7_pseudohuber_hessian_cpp", (DL_FUNC) &_distributions7_pseudohuber_hessian_cpp, 4},
+    {"_distributions7_pseudohuber2_gradient_cpp", (DL_FUNC) &_distributions7_pseudohuber2_gradient_cpp, 4},
+    {"_distributions7_pseudohuber2_hessian_cpp", (DL_FUNC) &_distributions7_pseudohuber2_hessian_cpp, 4},
+    {"_distributions7_pseudohuber2_deriv3_cpp", (DL_FUNC) &_distributions7_pseudohuber2_deriv3_cpp, 4},
+    {"_distributions7_pseudohuber2_deriv4_cpp", (DL_FUNC) &_distributions7_pseudohuber2_deriv4_cpp, 4},
+    {"_distributions7_pseudohuber2_deriv5_cpp", (DL_FUNC) &_distributions7_pseudohuber2_deriv5_cpp, 4},
+    {"_distributions7_pseudohuber2_nu_terms_cpp", (DL_FUNC) &_distributions7_pseudohuber2_nu_terms_cpp, 1},
     {"_distributions7_pseudohuber_deriv3_cpp", (DL_FUNC) &_distributions7_pseudohuber_deriv3_cpp, 4},
     {"_distributions7_pseudohuber_deriv4_cpp", (DL_FUNC) &_distributions7_pseudohuber_deriv4_cpp, 4},
+    {"_distributions7_pseudohuber_rng_cpp", (DL_FUNC) &_distributions7_pseudohuber_rng_cpp, 4},
+    {"_distributions7_pseudohuber_rou_box_cpp", (DL_FUNC) &_distributions7_pseudohuber_rou_box_cpp, 1},
+    {"_distributions7_skewnormal2_expected_series_cpp", (DL_FUNC) &_distributions7_skewnormal2_expected_series_cpp, 2},
+    {"_distributions7_skewnormal2_dexpected1_series_cpp", (DL_FUNC) &_distributions7_skewnormal2_dexpected1_series_cpp, 2},
+    {"_distributions7_skewnormal2_dexpected2_series_cpp", (DL_FUNC) &_distributions7_skewnormal2_dexpected2_series_cpp, 2},
+    {"_distributions7_skewnormal2_gradient_cpp", (DL_FUNC) &_distributions7_skewnormal2_gradient_cpp, 5},
+    {"_distributions7_skewnormal2_hessian_cpp", (DL_FUNC) &_distributions7_skewnormal2_hessian_cpp, 5},
+    {"_distributions7_skewnormal2_deriv3_cpp", (DL_FUNC) &_distributions7_skewnormal2_deriv3_cpp, 5},
+    {"_distributions7_skewnormal2_deriv4_cpp", (DL_FUNC) &_distributions7_skewnormal2_deriv4_cpp, 5},
+    {"_distributions7_skewnormal2_deriv5_cpp", (DL_FUNC) &_distributions7_skewnormal2_deriv5_cpp, 5},
+    {"_distributions7_skewnormal2_cross_y_cpp", (DL_FUNC) &_distributions7_skewnormal2_cross_y_cpp, 5},
+    {"_distributions7_skewnormal2_cross2_y_cpp", (DL_FUNC) &_distributions7_skewnormal2_cross2_y_cpp, 5},
+    {"_distributions7_skewnormal2_grad_y_hess_cpp", (DL_FUNC) &_distributions7_skewnormal2_grad_y_hess_cpp, 5},
+    {"_distributions7_skewnormal2_hess_y_hess_cpp", (DL_FUNC) &_distributions7_skewnormal2_hess_y_hess_cpp, 5},
+    {"_distributions7_skewnormal2_dy1_cpp", (DL_FUNC) &_distributions7_skewnormal2_dy1_cpp, 5},
+    {"_distributions7_skewnormal2_dy2_cpp", (DL_FUNC) &_distributions7_skewnormal2_dy2_cpp, 5},
+    {"_distributions7_skewnormal2_dy3_cpp", (DL_FUNC) &_distributions7_skewnormal2_dy3_cpp, 5},
+    {"_distributions7_skewnormal2_dy4_cpp", (DL_FUNC) &_distributions7_skewnormal2_dy4_cpp, 5},
     {"_distributions7_skewnormal_deriv3_cpp", (DL_FUNC) &_distributions7_skewnormal_deriv3_cpp, 5},
     {"_distributions7_skewnormal_deriv4_cpp", (DL_FUNC) &_distributions7_skewnormal_deriv4_cpp, 5},
-    {"_distributions7_student_t_gradient_cpp", (DL_FUNC) &_distributions7_student_t_gradient_cpp, 5},
-    {"_distributions7_student_t_hessian_cpp", (DL_FUNC) &_distributions7_student_t_hessian_cpp, 5},
-    {"_distributions7_student_t_expected_hessian_cpp", (DL_FUNC) &_distributions7_student_t_expected_hessian_cpp, 5},
-    {"_distributions7_student_t_deriv3_cpp", (DL_FUNC) &_distributions7_student_t_deriv3_cpp, 5},
-    {"_distributions7_student_t_deriv4_cpp", (DL_FUNC) &_distributions7_student_t_deriv4_cpp, 5},
+    {"_distributions7_student_t1_gradient_cpp", (DL_FUNC) &_distributions7_student_t1_gradient_cpp, 5},
+    {"_distributions7_student_t1_hessian_cpp", (DL_FUNC) &_distributions7_student_t1_hessian_cpp, 5},
+    {"_distributions7_student_t1_expected_hessian_cpp", (DL_FUNC) &_distributions7_student_t1_expected_hessian_cpp, 5},
+    {"_distributions7_student_t1_deriv3_cpp", (DL_FUNC) &_distributions7_student_t1_deriv3_cpp, 5},
+    {"_distributions7_student_t1_deriv3_expected_cpp", (DL_FUNC) &_distributions7_student_t1_deriv3_expected_cpp, 5},
+    {"_distributions7_student_t1_deriv4_cpp", (DL_FUNC) &_distributions7_student_t1_deriv4_cpp, 5},
+    {"_distributions7_student_t1_deriv4_expected_cpp", (DL_FUNC) &_distributions7_student_t1_deriv4_expected_cpp, 5},
+    {"_distributions7_student_t1_deriv5_cpp", (DL_FUNC) &_distributions7_student_t1_deriv5_cpp, 5},
+    {"_distributions7_student_t1_dexpected1_cpp", (DL_FUNC) &_distributions7_student_t1_dexpected1_cpp, 5},
+    {"_distributions7_student_t1_dexpected2_cpp", (DL_FUNC) &_distributions7_student_t1_dexpected2_cpp, 5},
+    {"_distributions7_student_t1_cross_y_cpp", (DL_FUNC) &_distributions7_student_t1_cross_y_cpp, 5},
+    {"_distributions7_student_t1_cross2_y_cpp", (DL_FUNC) &_distributions7_student_t1_cross2_y_cpp, 5},
+    {"_distributions7_student_t1_grad_y_hess_cpp", (DL_FUNC) &_distributions7_student_t1_grad_y_hess_cpp, 5},
+    {"_distributions7_student_t1_hess_y_hess_cpp", (DL_FUNC) &_distributions7_student_t1_hess_y_hess_cpp, 5},
+    {"_distributions7_student_t1_dy1_cpp", (DL_FUNC) &_distributions7_student_t1_dy1_cpp, 5},
+    {"_distributions7_student_t1_dy2_cpp", (DL_FUNC) &_distributions7_student_t1_dy2_cpp, 5},
+    {"_distributions7_student_t1_dy3_cpp", (DL_FUNC) &_distributions7_student_t1_dy3_cpp, 5},
+    {"_distributions7_student_t1_dy4_cpp", (DL_FUNC) &_distributions7_student_t1_dy4_cpp, 5},
+    {"_distributions7_student_t2_gradient_cpp", (DL_FUNC) &_distributions7_student_t2_gradient_cpp, 5},
+    {"_distributions7_student_t2_hessian_cpp", (DL_FUNC) &_distributions7_student_t2_hessian_cpp, 5},
+    {"_distributions7_student_t2_expected_hessian_cpp", (DL_FUNC) &_distributions7_student_t2_expected_hessian_cpp, 5},
+    {"_distributions7_student_t2_deriv3_cpp", (DL_FUNC) &_distributions7_student_t2_deriv3_cpp, 5},
+    {"_distributions7_student_t2_deriv3_expected_cpp", (DL_FUNC) &_distributions7_student_t2_deriv3_expected_cpp, 5},
+    {"_distributions7_student_t2_deriv4_cpp", (DL_FUNC) &_distributions7_student_t2_deriv4_cpp, 5},
+    {"_distributions7_student_t2_deriv4_expected_cpp", (DL_FUNC) &_distributions7_student_t2_deriv4_expected_cpp, 5},
+    {"_distributions7_student_t2_deriv5_cpp", (DL_FUNC) &_distributions7_student_t2_deriv5_cpp, 5},
+    {"_distributions7_student_t2_dexpected1_cpp", (DL_FUNC) &_distributions7_student_t2_dexpected1_cpp, 5},
+    {"_distributions7_student_t2_dexpected2_cpp", (DL_FUNC) &_distributions7_student_t2_dexpected2_cpp, 5},
+    {"_distributions7_student_t2_cross_y_cpp", (DL_FUNC) &_distributions7_student_t2_cross_y_cpp, 5},
+    {"_distributions7_student_t2_cross2_y_cpp", (DL_FUNC) &_distributions7_student_t2_cross2_y_cpp, 5},
+    {"_distributions7_student_t2_grad_y_hess_cpp", (DL_FUNC) &_distributions7_student_t2_grad_y_hess_cpp, 5},
+    {"_distributions7_student_t2_hess_y_hess_cpp", (DL_FUNC) &_distributions7_student_t2_hess_y_hess_cpp, 5},
+    {"_distributions7_student_t2_dy1_cpp", (DL_FUNC) &_distributions7_student_t2_dy1_cpp, 5},
+    {"_distributions7_student_t2_dy2_cpp", (DL_FUNC) &_distributions7_student_t2_dy2_cpp, 5},
+    {"_distributions7_student_t2_dy3_cpp", (DL_FUNC) &_distributions7_student_t2_dy3_cpp, 5},
+    {"_distributions7_student_t2_dy4_cpp", (DL_FUNC) &_distributions7_student_t2_dy4_cpp, 5},
+    {"_distributions7_vonmises1_gradient_cpp", (DL_FUNC) &_distributions7_vonmises1_gradient_cpp, 4},
+    {"_distributions7_vonmises1_hessian_cpp", (DL_FUNC) &_distributions7_vonmises1_hessian_cpp, 4},
+    {"_distributions7_vonmises1_expected_hessian_cpp", (DL_FUNC) &_distributions7_vonmises1_expected_hessian_cpp, 3},
+    {"_distributions7_vonmises1_deriv3_cpp", (DL_FUNC) &_distributions7_vonmises1_deriv3_cpp, 4},
+    {"_distributions7_vonmises1_deriv4_cpp", (DL_FUNC) &_distributions7_vonmises1_deriv4_cpp, 4},
+    {"_distributions7_vonmises1_dexpected1_cpp", (DL_FUNC) &_distributions7_vonmises1_dexpected1_cpp, 2},
+    {"_distributions7_vonmises1_dexpected2_cpp", (DL_FUNC) &_distributions7_vonmises1_dexpected2_cpp, 2},
+    {"_distributions7_vonmises2_gradient_cpp", (DL_FUNC) &_distributions7_vonmises2_gradient_cpp, 4},
+    {"_distributions7_vonmises2_hessian_cpp", (DL_FUNC) &_distributions7_vonmises2_hessian_cpp, 4},
+    {"_distributions7_vonmises2_expected_hessian_cpp", (DL_FUNC) &_distributions7_vonmises2_expected_hessian_cpp, 3},
+    {"_distributions7_vonmises2_deriv3_cpp", (DL_FUNC) &_distributions7_vonmises2_deriv3_cpp, 4},
+    {"_distributions7_vonmises2_deriv4_cpp", (DL_FUNC) &_distributions7_vonmises2_deriv4_cpp, 4},
+    {"_distributions7_vonmises2_dexpected1_cpp", (DL_FUNC) &_distributions7_vonmises2_dexpected1_cpp, 2},
+    {"_distributions7_vonmises2_dexpected2_cpp", (DL_FUNC) &_distributions7_vonmises2_dexpected2_cpp, 2},
+    {"_distributions7_weibull3_gradient_cpp", (DL_FUNC) &_distributions7_weibull3_gradient_cpp, 3},
+    {"_distributions7_weibull3_hessian_cpp", (DL_FUNC) &_distributions7_weibull3_hessian_cpp, 3},
+    {"_distributions7_weibull3_expected_hessian_cpp", (DL_FUNC) &_distributions7_weibull3_expected_hessian_cpp, 3},
+    {"_distributions7_weibull3_deriv3_cpp", (DL_FUNC) &_distributions7_weibull3_deriv3_cpp, 3},
+    {"_distributions7_weibull3_deriv3_expected_cpp", (DL_FUNC) &_distributions7_weibull3_deriv3_expected_cpp, 3},
+    {"_distributions7_weibull3_deriv4_cpp", (DL_FUNC) &_distributions7_weibull3_deriv4_cpp, 3},
+    {"_distributions7_weibull3_deriv4_expected_cpp", (DL_FUNC) &_distributions7_weibull3_deriv4_expected_cpp, 3},
+    {"_distributions7_weibull3_deriv5_cpp", (DL_FUNC) &_distributions7_weibull3_deriv5_cpp, 3},
+    {"_distributions7_weibull3_dexpected1_cpp", (DL_FUNC) &_distributions7_weibull3_dexpected1_cpp, 3},
+    {"_distributions7_weibull3_dexpected2_cpp", (DL_FUNC) &_distributions7_weibull3_dexpected2_cpp, 3},
+    {"_distributions7_weibull3_dcdf1_cpp", (DL_FUNC) &_distributions7_weibull3_dcdf1_cpp, 3},
+    {"_distributions7_weibull3_dcdf2_cpp", (DL_FUNC) &_distributions7_weibull3_dcdf2_cpp, 3},
+    {"_distributions7_weibull3_dcdf3_cpp", (DL_FUNC) &_distributions7_weibull3_dcdf3_cpp, 3},
+    {"_distributions7_weibull3_dcdf4_cpp", (DL_FUNC) &_distributions7_weibull3_dcdf4_cpp, 3},
+    {"_distributions7_weibull3_cross_y_cpp", (DL_FUNC) &_distributions7_weibull3_cross_y_cpp, 3},
+    {"_distributions7_weibull3_cross2_y_cpp", (DL_FUNC) &_distributions7_weibull3_cross2_y_cpp, 3},
+    {"_distributions7_weibull3_grad_y_hess_cpp", (DL_FUNC) &_distributions7_weibull3_grad_y_hess_cpp, 3},
+    {"_distributions7_weibull3_hess_y_hess_cpp", (DL_FUNC) &_distributions7_weibull3_hess_y_hess_cpp, 3},
+    {"_distributions7_weibull3_dy1_cpp", (DL_FUNC) &_distributions7_weibull3_dy1_cpp, 3},
+    {"_distributions7_weibull3_dy2_cpp", (DL_FUNC) &_distributions7_weibull3_dy2_cpp, 3},
+    {"_distributions7_weibull3_dy3_cpp", (DL_FUNC) &_distributions7_weibull3_dy3_cpp, 3},
+    {"_distributions7_weibull3_dy4_cpp", (DL_FUNC) &_distributions7_weibull3_dy4_cpp, 3},
     {"_distributions7_weibull_deriv3_cpp", (DL_FUNC) &_distributions7_weibull_deriv3_cpp, 4},
     {"_distributions7_weibull_deriv3_expected_cpp", (DL_FUNC) &_distributions7_weibull_deriv3_expected_cpp, 4},
     {"_distributions7_weibull_deriv4_cpp", (DL_FUNC) &_distributions7_weibull_deriv4_cpp, 4},

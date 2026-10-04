@@ -19,8 +19,7 @@ betabinom1_dexpected(y, mu, sigma, size, order, threads = 1L)
 }
 \value{
 A named list on the parameter scale, keyed as \code{\link[=dexpected_names]{dexpected_names()}}
-at order 1 and as \code{\link[=dexpected_names]{dexpected_names()}} followed by \code{\link[=d2expected_names]{d2expected_names()}} at
-order 2.
+at order 1 and as \code{\link[=d2expected_names]{d2expected_names()}} at order 2.
 }
 \description{
 \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} is the shapes \eqn{a = \mu/\sigma} and

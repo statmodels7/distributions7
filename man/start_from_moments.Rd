@@ -31,7 +31,7 @@ and whose rest are random draws. It is the method both
 univariate family in the package uses.
 
 The data-based value comes from \code{\link[=moment_estimates]{moment_estimates()}} where the family has an
-entry there, which 37 of the 42 univariate families do. The other five fall
+entry there, which 38 of the 43 univariate families do. The other five fall
 back to reading \code{params_interpretation}: a parameter meaning a location is
 started at the sample median, one meaning a spread at the sample standard
 deviation or its square, one meaning degrees of freedom at what the sample

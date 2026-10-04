@@ -13,42 +13,26 @@ NULL
 # another here would mislead exactly the reader who knows the field.
 
 
-#' Lognormal Distribution in the Mean and Variance of Y
+#' Lognormal Distribution in the Mean and Variance of Y, Obtained
 #'
 #' @description
-#' Creates a lognormal distribution object parametrized by the mean and the
-#' variance of \eqn{Y} itself, rather than of \eqn{\log Y}.
+#' The same family as [lognormal2_distrib()], obtained through
+#' [reparametrize()] on [lognormal1_distrib()] rather than written out.
 #'
 #' @details
-#' The parameters of [lognormal1_distrib()] describe \eqn{\log Y}, so
-#' neither of them is a moment of \eqn{Y}. Here they are, through
-#' \deqn{\mu_{\log} = \log\dfrac{m^2}{\sqrt{v + m^2}}, \qquad
-#'       \sigma^2_{\log} = \log\left(1 + \dfrac{v}{m^2}\right)}
-#' which is the parametrization a regression on the mean wants.
-#'
-#' Built with [reparametrize()], so every derivative to fourth order,
-#' observed and expected, is exact.
-#'
-#' @section The distribution:
-#' \deqn{f(y) = \frac{1}{y\sqrt{2\pi s^{2}}}\exp\!\left\{-\frac{(\log y - m)^{2}}{2s^{2}}\right\}, \quad s^{2} = \log\!\left(1+\frac{v}{\mu^{2}}\right)\!, \; m = \log\mu - \frac{s^{2}}{2}}
-#' on \eqn{y \in (0, \infty)}.
-#'
-#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = v}
+#' This exists as a reference for the tests and is not exported:
+#' [lognormal2_distrib()] carries its own kernels, so the two are independent
+#' implementations of one law.
 #'
 #' @param link_mean Link function for the mean. Defaults to the log.
 #' @param link_var Link function for the variance. Defaults to the log.
 #'
 #' @return A reparametrized distribution object.
 #'
-#' @seealso [lognormal1_distrib()], [reparametrize()]
+#' @seealso [lognormal2_distrib()]
 #'
-#' @examples
-#' d <- lognormal2_distrib()
-#' theta <- list(mean = 3, var = 2)
-#' c(mean = mean(d, theta), variance = variance(d, theta))
-#'
-#' @export
-lognormal2_distrib <- function(link_mean = log_link(), link_var = log_link()) {
+#' @keywords internal
+lognormal2_by_reparam <- function(link_mean = log_link(), link_var = log_link()) {
   reparametrize(
     lognormal1_distrib(),
     map = function(psi) {
@@ -65,49 +49,26 @@ lognormal2_distrib <- function(link_mean = log_link(), link_var = log_link()) {
 }
 
 
-#' Weibull Distribution in the Mean
+#' Weibull Distribution in the Mean, Obtained
 #'
 #' @description
-#' Creates a Weibull distribution object parametrized by its mean and its
-#' shape.
+#' The same family as [weibull3_distrib()], obtained through
+#' [reparametrize()] on [weibull1_distrib()] rather than written out.
 #'
 #' @details
-#' The first parameter of [weibull1_distrib()] is the scale and not
-#' the mean: the mean is \eqn{\mu\,\Gamma(1 + 1/\sigma)}. Inverting that gives
-#' the map used here,
-#' \deqn{\mu = \dfrac{m}{\Gamma(1 + 1/\sigma)},}
-#' so every derivative becomes a derivative of the gamma function, which is
-#' why [weibull1_distrib()] is not written this way.
-#'
-#' The number follows gamlss, where the Weibull in the mean is `WEI3`.
-#' Leaving `weibull2` unused is deliberate: it names a different
-#' parametrization there.
-#'
-#' @section The distribution:
-#' \deqn{f(y) = \frac{\sigma}{b}\left(\frac{y}{b}\right)^{\sigma-1}e^{-(y/b)^{\sigma}}, \qquad b = \frac{\mu}{\Gamma(1+1/\sigma)}}
-#' on \eqn{y \in (0, \infty)}.
-#'
-#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = b^{2}\left[\Gamma(1+2/\sigma) - \Gamma(1+1/\sigma)^{2}\right]}
+#' This exists as a reference for the tests and is not exported:
+#' [weibull3_distrib()] carries its own kernels, so the two are independent
+#' implementations of one law.
 #'
 #' @param link_mean Link function for the mean. Defaults to the log.
 #' @param link_sigma Link function for the shape. Defaults to the log.
 #'
 #' @return A reparametrized distribution object.
 #'
-#' @seealso [weibull1_distrib()], [reparametrize()]
+#' @seealso [weibull3_distrib()]
 #'
-#' @examples
-#' d <- weibull3_distrib()
-#' theta <- list(mean = 4, sigma = 1.7)
-#' mean(d, theta)
-#'
-#' @references
-#' Rigby, R. A. and Stasinopoulos, D. M. (2005). Generalized additive models
-#' for location, scale and shape. *Journal of the Royal Statistical
-#' Society, Series C* 54, 507-554.
-#'
-#' @export
-weibull3_distrib <- function(link_mean = log_link(), link_sigma = log_link()) {
+#' @keywords internal
+weibull3_by_reparam <- function(link_mean = log_link(), link_sigma = log_link()) {
   reparametrize(
     weibull1_distrib(),
     map = function(psi) {
@@ -123,29 +84,16 @@ weibull3_distrib <- function(link_mean = log_link(), link_sigma = log_link()) {
 }
 
 
-#' Student t Distribution in the Standard Deviation
+#' Student t Distribution in the Standard Deviation, Obtained
 #'
 #' @description
-#' Creates a Student t distribution object whose second parameter is the
-#' standard deviation rather than the scale.
+#' The same family as [student_t2_distrib()], obtained through
+#' [reparametrize()] on [student_t1_distrib()] rather than written out.
 #'
 #' @details
-#' The scale of [student_t1_distrib()] is not the standard
-#' deviation: the two differ by \eqn{\sqrt{\nu/(\nu-2)}}. Here the map is
-#' \deqn{\sigma_{\text{scale}} = \sigma\sqrt{\dfrac{\nu-2}{\nu}},}
-#' which exists only for \eqn{\nu > 2}, and the constructor bounds \eqn{\nu}
-#' there rather than letting the map return a complex number several frames
-#' down. This is `TF2` in gamlss.
-#'
-#' The restriction is the point rather than a limitation: a family
-#' parametrized by a standard deviation is a family whose standard deviation
-#' exists.
-#'
-#' @section The distribution:
-#' \deqn{f(y) = \frac{1}{s_0}\,t_{\nu}\!\left(\frac{y-\mu}{s_0}\right), \qquad s_0 = \sigma\sqrt{\frac{\nu-2}{\nu}}}
-#' on \eqn{y \in \mathbb{R}}.
-#'
-#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}}
+#' This exists as a reference for the tests and is not exported:
+#' [student_t2_distrib()] carries its own kernels, so the two are independent
+#' implementations of one law.
 #'
 #' @param link_mu Link function for the location. Defaults to the identity.
 #' @param link_sigma Link function for the standard deviation. Defaults to the
@@ -155,17 +103,12 @@ weibull3_distrib <- function(link_mean = log_link(), link_sigma = log_link()) {
 #'
 #' @return A reparametrized distribution object.
 #'
-#' @seealso [student_t1_distrib()], [reparametrize()]
+#' @seealso [student_t2_distrib()]
 #'
-#' @examples
-#' d <- student_t2_distrib()
-#' theta <- list(mu = 0, sigma = 2, nu = 8)
-#' variance(d, theta)
-#'
-#' @export
-student_t2_distrib <- function(link_mu = identity_link(),
-                               link_sigma = log_link(),
-                               link_nu = bounded_link(lwr = 2)) {
+#' @keywords internal
+student_t2_by_reparam <- function(link_mu = identity_link(),
+                                  link_sigma = log_link(),
+                                  link_nu = bounded_link(lwr = 2)) {
   reparametrize(
     student_t1_distrib(),
     map = function(psi) {
@@ -184,24 +127,16 @@ student_t2_distrib <- function(link_mu = identity_link(),
 }
 
 
-#' Generalized Gamma Distribution in the Mean
+#' Generalized Gamma Distribution in the Mean, Obtained
 #'
 #' @description
-#' Creates a generalized gamma distribution object whose first parameter is the
-#' mean.
+#' The same family as [gengamma2_distrib()], obtained through
+#' [reparametrize()] on [gengamma1_distrib()] rather than written out.
 #'
 #' @details
-#' The Stacy parametrization of [gengamma1_distrib()] carries a
-#' scale, a shape and a power, and exposes no mean at all, which is awkward for
-#' a family a regression would put a linear predictor on. Since
-#' \eqn{\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)}, the map is
-#' \deqn{a = m\,\dfrac{\Gamma(d/p)}{\Gamma((d+1)/p)}.}
-#'
-#' @section The distribution:
-#' \deqn{f(y) = \frac{p\,y^{d-1}}{a^{d}\,\Gamma(d/p)}\,e^{-(y/a)^{p}}, \qquad a = \mu\,\frac{\Gamma(d/p)}{\Gamma((d+1)/p)}}
-#' on \eqn{y \in (0, \infty)}.
-#'
-#' \deqn{\mathbb{E}[Y] = \mu}
+#' This exists as a reference for the tests and is not exported:
+#' [gengamma2_distrib()] carries its own kernels, so the two are independent
+#' implementations of one law.
 #'
 #' @param link_mean Link function for the mean. Defaults to the log.
 #' @param link_d Link function for the shape. Defaults to the log.
@@ -209,16 +144,11 @@ student_t2_distrib <- function(link_mu = identity_link(),
 #'
 #' @return A reparametrized distribution object.
 #'
-#' @seealso [gengamma1_distrib()], [reparametrize()]
+#' @seealso [gengamma2_distrib()]
 #'
-#' @examples
-#' d <- gengamma2_distrib()
-#' theta <- list(mean = 5, d = 3, p = 1.5)
-#' mean(d, theta)
-#'
-#' @export
-gengamma2_distrib <- function(link_mean = log_link(), link_d = log_link(),
-                              link_p = log_link()) {
+#' @keywords internal
+gengamma2_by_reparam <- function(link_mean = log_link(), link_d = log_link(),
+                                 link_p = log_link()) {
   reparametrize(
     gengamma1_distrib(),
     map = function(psi) {

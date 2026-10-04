@@ -2,46 +2,40 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{distrib_grad_y.SkewNormal2Distrib}
 \alias{distrib_grad_y.SkewNormal2Distrib}
-\title{Skew Normal Response Derivative in the Centered Parametrization}
+\alias{distrib_hess_y.SkewNormal2Distrib}
+\alias{distrib_cross2_y.SkewNormal2Distrib}
+\alias{distrib_grad_y_hess.SkewNormal2Distrib}
+\alias{distrib_hess_y_hess.SkewNormal2Distrib}
+\title{Skew Normal Derivatives in the Response, Centered Parametrization}
 \arguments{
-\item{distrib}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
+\item{distrib}{A \code{SkewNormal2Distrib} object.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}, each a
-numeric vector of length 1 or of the length of \code{y}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}.}
 
-\item{...}{Passed to \code{\link[=distrib_grad_y.SkewNormal1Distrib]{distrib_grad_y.SkewNormal1Distrib()}}.}
+\item{scale}{\code{"parameter"} or \code{"link"}, for the mixed derivatives.}
+
+\item{...}{Unused.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A numeric vector of the length of the recycled inputs.
+A numeric vector for the derivatives in the response; a named list
+for the mixed derivatives.
 }
 \description{
-Computes \eqn{\partial\ell/\partial y} by delegating to
-\code{\link[=distrib_grad_y.SkewNormal1Distrib]{distrib_grad_y.SkewNormal1Distrib()}} at the implied direct parameters. The
-value is the parent's unchanged: a change of parameters does not touch a
-derivative in the response, the two variables being separate arguments of
-the same log-density.
-
-It is therefore defined at \eqn{\gamma_1 = 0}, where the parameter
-derivatives are not: nothing here differentiates the map.
+The first and second derivatives of the log-density in the response, and
+the mixed derivatives of orders one and two in the response and one and two
+in \eqn{(\mu, \sigma, \gamma_1)}, each from its own compiled kernel, written
+as the parameter derivatives are (see
+\code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient.SkewNormal2Distrib()}}).
 }
 \examples{
 d <- skewnormal2_distrib()
-y <- c(-1, 0.3, 1.7)
-th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
-
-# Against a central difference of the log-density in the response.
-eps <- 1e-6
-rbind(analytic = distrib_grad_y(d, y, th),
-      numeric = (distrib_pdf(d, y + eps, th, log = TRUE) -
-                 distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps))
-
-# Defined at zero skewness, where the parameter derivatives are not.
-all.equal(distrib_grad_y(d, y, list(mu = 0, sigma = 1, gamma1 = 0)), -y)
+distrib_grad_y(d, c(-1.7, 0.3), list(mu = 0.2, sigma = 1.3, gamma1 = 0.4))
 }
 \seealso{
-\code{\link[=distrib_hess_y.SkewNormal2Distrib]{distrib_hess_y.SkewNormal2Distrib()}} for the second derivative,
-\code{\link[=distrib_grad_y.SkewNormal1Distrib]{distrib_grad_y.SkewNormal1Distrib()}} for the closed form it delegates to,
-and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
+\code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient.SkewNormal2Distrib()}}.
 }

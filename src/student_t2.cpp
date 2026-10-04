@@ -1,0 +1,1302 @@
+#include <Rcpp.h>
+#include <cmath>
+#include "d7_par.h"
+using namespace Rcpp;
+
+// The Student t in its location mu, standard deviation s and degrees of
+// freedom nu > 2. With z = (y - mu)/s, k = nu - 2, q = z^2/k and
+// t = 1/(1 + q), the log-density is
+//   c(nu) - log s - log(pi)/2 - (k + 3)/2 log(1 + q),
+//   c(nu) = lgamma((nu+1)/2) - lgamma(nu/2) - log(nu - 2)/2.
+// Every component below is a closed form derived offline with sympy
+// (stabilita/gen_student_t2.py, T_FAMILY=t2), one exported function per
+// order and per surface, and is checked numerically in the tests.
+//
+// Every derivative in nu vanishes as nu grows and is a difference of terms
+// agreeing to leading order. The data part is cancelled symbolically and
+// written in q, z, 1/k and t, which neither cancel nor overflow at the nu
+// the link can produce; the score's logarithm enters as
+// D(q) = q/(1+q) - log1p(q). Each quantity of nu alone that carries a
+// polygamma, t2_V*, has two branches: the direct form below nu = 20, and
+// above it the asymptotic series in h = 1/nu, exact to h^40, from
+// Stirling's series. The expectations are closed, t being Beta(nu/2, 1/2)
+// under the model.
+
+// D(q) = q/(1+q) - log1p(q). The direct form cancels as q -> 0, where D is
+// -q^2/2. With w = q/(2+q), q/(1+q) = 2w/(1+w) and log1p(q) = 2 atanh(w), so
+//   D = -2w^2/(1+w) - 2 sum_{j>=1} w^(2j+1)/(2j+1),
+// a sum of terms of one sign; below q = 0.5 (w <= 0.2) twelve terms reach
+// the last bit, and above it the direct form loses at most a few.
+static inline double t2_D(double q) {
+  if (q < 0.5) {
+    const double w = q / (2.0 + q), w2 = w * w;
+    double acc = 1.0 / 25.0;
+    for (int j = 11; j >= 1; j--) acc = 1.0 / (2.0 * j + 1.0) + w2 * acc;
+    return -2.0 * w2 / (1.0 + w) - 2.0 * w * w2 * acc;
+  }
+  return q / (1.0 + q) - std::log1p(q);
+}
+
+static inline double t2_V0(double nu) {
+  if (nu >= 20.0) {
+    const double h = 1.0 / nu;
+    return std::pow(h, 2) * (-0.75 + h * (-2.0 + h * (-4.125 + h * (-8.0 + h * (-15.75 + h * (-32.0 + h * (-65.0625 + h * (-128.0 + h * (-248.25 + h * (-512.0 + h * (-1110.375 + h * (-2048.0 + h * (-2730.75 + h * (-8192.0 + h * (-45433.03125 + h * (-32768.0 + h * (735036.75 + h * (-131072.0 + h * (-28003466.625 + h * (-524288.0 + h * (1179480554.25 + h * (-2097152.0 + h * (-60528174355.6875 + h * (-8388608.0 + h * (3679400001321.75 + h * (-33554432.0 + h * (-261707677015447.88 + h * (-134217728.0 + h * (2.153141787236484e+16 + h * (-536870912.0 + h * (-2.0288775585910433e+18 + h * (-2147483648.0 + h * (2.1708009902194275e+20 + h * (-8589934592.0 + h * (-2.6173826968472997e+22 + h * (-34359738368.0 + h * (3.532414887686319e+24 + h * (-137438953472.0 + h * (-5.304203340686493e+26 + h * (-549755813888.0))))))))))))))))))))))))))))))))))))))));
+  }
+  const double PA0 = R::psigamma(0.5 * (nu + 1.0), 0.0);
+  const double PB0 = R::psigamma(0.5 * nu, 0.0);
+  return (1.0/2.0)*PA0 - 1.0/2.0*PB0 - (1.0/2.0)/(nu - 2);
+}
+
+static inline double t2_V1(double nu) {
+  if (nu >= 20.0) {
+    const double h = 1.0 / nu;
+    return std::pow(h, 3) * (1.5 + h * (6.0 + h * (16.5 + h * (40.0 + h * (94.5 + h * (224.0 + h * (520.5 + h * (1152.0 + h * (2482.5 + h * (5632.0 + h * (13324.5 + h * (26624.0 + h * (38230.5 + h * (122880.0 + h * (726928.5 + h * (557056.0 + h * (-13230661.5 + h * (2490368.0 + h * (560069332.5 + h * (11010048.0 + h * (-25948572193.5 + h * (48234496.0 + h * (1452676184536.5 + h * (209715200.0 + h * (-95664400034365.5 + h * (905969664.0 + h * (7327814956432540.0 + h * (3892314112.0 + h * (-6.459425361709452e+17 + h * (16642998272.0 + h * (6.492408187491339e+19 + h * (70866960384.0 + h * (-7.380723366746053e+21 + h * (300647710720.0 + h * (9.422577708650279e+23 + h * (1271310319616.0 + h * (-1.3423176573208012e+26 + h * (5360119185408.0 + h * (2.1216813362745974e+28 + h * (22539988369408.0))))))))))))))))))))))))))))))))))))))));
+  }
+  const double PA1 = R::psigamma(0.5 * (nu + 1.0), 1.0);
+  const double PB1 = R::psigamma(0.5 * nu, 1.0);
+  return (1.0/4.0)*PA1 - 1.0/4.0*PB1 + (1.0/2.0)/std::pow(nu - 2, 2);
+}
+
+static inline double t2_V2(double nu) {
+  if (nu >= 20.0) {
+    const double h = 1.0 / nu;
+    return std::pow(h, 4) * (-1.5 + h * (3.0 + h * (-21.5 + h * (21.0 + h * (-185.5 + h * (267.0 + h * (-1501.5 + h * (2721.0 + h * (-12321.5 + h * (29127.0 + h * (-104069.5 + h * (249405.0 + h * (-901129.5 + h * (2960643.0 + h * (-7935405.5 + h * (8434713.0 + h * (-70588529.5 + h * (762222975.0 + h * (-631451989.5 + h * (-24096858315.0 + h * (-5665591641.5 + h * (1469485613883.0 + h * (-50912031101.5 + h * (-95512480432239.0 + h * (-457861550785.5 + h * (7329185006684727.0 + h * (-4119232822821.5 + h * (-6.459301936838193e+17 + h * (-37066473997481.5 + h * (6.492419300919504e+19 + h * (-333569632862029.5 + h * (-7.380722366314896e+21 + h * (-3002003573362449.5 + h * (9.422577798698589e+23 + h * (-2.7017505310940404e+16 + h * (-1.342317656510326e+26 + h * (-2.431553029622236e+17 + h * (2.1216813362745974e+28 + h * (22539988369408.0)))))))))))))))))))))))))))))))))))))));
+  }
+  const double PA1 = R::psigamma(0.5 * (nu + 1.0), 1.0);
+  const double PB1 = R::psigamma(0.5 * nu, 1.0);
+  return (1.0/4.0)*PA1 - 1.0/4.0*PB1 + (-3*nu - 15)/(2*std::pow(nu, 4) - 18*std::pow(nu, 2) + 8*nu + 24) + (1.0/2.0)/std::pow(nu - 2, 2);
+}
+
+static inline double t2_V3(double nu) {
+  if (nu >= 20.0) {
+    const double h = 1.0 / nu;
+    return std::pow(h, 4) * (-4.5 + h * (-24.0 + h * (-82.5 + h * (-240.0 + h * (-661.5 + h * (-1792.0 + h * (-4684.5 + h * (-11520.0 + h * (-27307.5 + h * (-67584.0 + h * (-173218.5 + h * (-372736.0 + h * (-573457.5 + h * (-1966080.0 + h * (-12357784.5 + h * (-10027008.0 + h * (251382568.5 + h * (-49807360.0 + h * (-11761455982.5 + h * (-242221056.0 + h * (596817160450.5 + h * (-1157627904.0 + h * (-36316904613412.5 + h * (-5452595200.0 + h * (2582938800927868.5 + h * (-25367150592.0 + h * (-2.1250663373654368e+17 + h * (-116769423360.0 + h * (2.0024218621299302e+19 + h * (-532575944704.0 + h * (-2.1424947018721418e+21 + h * (-2409476653056.0 + h * (2.5832531783611187e+23 + h * (-10823317585920.0 + h * (-3.486353752200603e+25 + h * (-48309792145408.0 + h * (5.235038863551124e+27 + h * (-214404767416320.0 + h * (-8.69889347872585e+29 + h * (-946679511515136.0))))))))))))))))))))))))))))))))))))))));
+  }
+  const double PA2 = R::psigamma(0.5 * (nu + 1.0), 2.0);
+  const double PB2 = R::psigamma(0.5 * nu, 2.0);
+  return (1.0/8.0)*PA2 - 1.0/8.0*PB2 - 1/std::pow(nu - 2, 3);
+}
+
+static inline double t2_V4(double nu) {
+  if (nu >= 20.0) {
+    const double h = 1.0 / nu;
+    return std::pow(h, 5) * (9.0 + h * (-36.0 + h * (351.0 + h * (-1305.0 + h * (8693.0 + h * (-39402.0 + h * (213819.0 + h * (-1040499.0 + h * (5327985.0 + h * (-26505252.0 + h * (133266455.0 + h * (-665462493.0 + h * (3334101933.0 + h * (-16677900990.0 + h * (83386719411.0 + h * (-416682550503.0 + h * (2085048073385.0 + h * (-10437245145720.0 + h * (52130025018639.0 + h * (-260056733235345.0 + h * (1303287161682789.0 + h * (-6552789713368146.0 + h * (3.2582518727074092e+16 + h * (-1.6033001798896304e+17 + h * (8.14566079280641e+17 + h * (-4.285340443127665e+18 + h * (2.0364180244144456e+19 + h * (-8.179671399925876e+19 + h * (5.091047617150186e+20 + h * (-4.6880187962301177e+21 + h * (1.27276213492719e+22 + h * (1.946872085030212e+23 + h * (3.18190554516763e+23 + h * (-3.6454490317937506e+25 + h * (7.954764050109779e+24 + h * (5.195265043090143e+27 + h * (-214404767416320.0 + h * (-8.69889347872585e+29 + h * (-946679511515136.0)))))))))))))))))))))))))))))))))))))));
+  }
+  const double PA2 = R::psigamma(0.5 * (nu + 1.0), 2.0);
+  const double PB2 = R::psigamma(0.5 * nu, 2.0);
+  const double u0 = std::pow(nu, 2);
+  return (1.0/8.0)*PA2 - 1.0/8.0*PB2 + (93*nu + 9*u0 + 120)/(2*std::pow(nu, 6) + 6*std::pow(nu, 5) - 38*std::pow(nu, 4) - 46*std::pow(nu, 3) - 8*nu + 228*u0 - 240) - 1/std::pow(nu - 2, 3);
+}
+
+static inline double t2_V5(double nu) {
+  if (nu >= 20.0) {
+    const double h = 1.0 / nu;
+    return std::pow(h, 5) * (18.0 + h * (120.0 + h * (495.0 + h * (1680.0 + h * (5292.0 + h * (16128.0 + h * (46845.0 + h * (126720.0 + h * (327690.0 + h * (878592.0 + h * (2425059.0 + h * (5591040.0 + h * (9175320.0 + h * (33423360.0 + h * (222440121.0 + h * (190513152.0 + h * (-5027651370.0 + h * (1045954560.0 + h * (258752031615.0 + h * (5571084288.0 + h * (-14323611850812.0 + h * (28940697600.0 + h * (944239519948725.0 + h * (147220070400.0 + h * (-7.232228642598032e+16 + h * (735647367168.0 + h * (6.37519901209631e+18 + h * (3619852124160.0 + h * (-6.407749958815777e+20 + h * (17575006175232.0 + h * (7.284481986365282e+22 + h * (84331682856960.0 + h * (-9.299711442100027e+24 + h * (400462750679040.0 + h * (1.324814425836229e+27 + h * (1884081893670912.0 + h * (-2.09401554542045e+29 + h * (8790595464069120.0 + h * (3.6535352610648566e+31 + h * (4.070721899515085e+16))))))))))))))))))))))))))))))))))))))));
+  }
+  const double PA3 = R::psigamma(0.5 * (nu + 1.0), 3.0);
+  const double PB3 = R::psigamma(0.5 * nu, 3.0);
+  return (1.0/16.0)*PA3 - 1.0/16.0*PB3 + 3/std::pow(nu - 2, 4);
+}
+
+static inline double t2_V6(double nu) {
+  if (nu >= 20.0) {
+    const double h = 1.0 / nu;
+    return std::pow(h, 6) * (-54.0 + h * (324.0 + h * (-4119.0 + h * (25536.0 + h * (-215472.0 + h * (1504776.0 + h * (-11089761.0 + h * (78669876.0 + h * (-560957034.0 + h * (3964217748.0 + h * (-27970619787.0 + h * (196807953912.0 + h * (-1383012798852.0 + h * (9707262418608.0 + h * (-68081417587989.0 + h * (477218778759180.0 + h * (-3343849624017150.0 + h * (2.342358259126614e+16 + h * (-1.640452232027054e+17 + h * (1.1487118100939676e+18 + h * (-8.043131181168573e+18 + h * (5.631310260678806e+19 + h * (-3.942363110349204e+20 + h * (2.7598378613088e+21 + h * (-1.9320651326450806e+22 + h * (1.3525733465893676e+23 + h * (-9.46788717136438e+23 + h * (6.627040249373051e+24 + h * (-4.639456719282255e+25 + h * (3.248388152798589e+26 + h * (-2.2733817937716025e+27 + h * (1.5904472847711494e+28 + h * (-1.1139690792783572e+29 + h * (7.811056699894509e+29 + h * (-5.458478489289088e+30 + h * (-2.09401554542045e+29 + h * (8790595464069120.0 + h * (3.6535352610648566e+31 + h * (4.070721899515085e+16)))))))))))))))))))))))))))))))))))))));
+  }
+  const double PA3 = R::psigamma(0.5 * (nu + 1.0), 3.0);
+  const double PB3 = R::psigamma(0.5 * nu, 3.0);
+  const double u0 = std::pow(nu, 2);
+  const double u1 = std::pow(nu, 3);
+  return (1.0/16.0)*PA3 - 1.0/16.0*PB3 + (-1239*nu - 318*u0 - 18*u1 - 1155)/(std::pow(nu, 8) + 8*std::pow(nu, 7) - 18*std::pow(nu, 6) - 160*std::pow(nu, 5) + 265*std::pow(nu, 4) - 544*nu - 1736*u0 + 888*u1 + 1680) + 3/std::pow(nu - 2, 4);
+}
+
+static inline double t2_V7(double nu) {
+  if (nu >= 20.0) {
+    const double h = 1.0 / nu;
+    return std::pow(h, 6) * (-90.0 + h * (-720.0 + h * (-3465.0 + h * (-13440.0 + h * (-47628.0 + h * (-161280.0 + h * (-515295.0 + h * (-1520640.0 + h * (-4259970.0 + h * (-12300288.0 + h * (-36375885.0 + h * (-89456640.0 + h * (-155980440.0 + h * (-601620480.0 + h * (-4226362299.0 + h * (-3810263040.0 + h * (105580678770.0 + h * (-23011000320.0 + h * (-5951296727145.0 + h * (-133706022912.0 + h * (358090296270300.0 + h * (-752458137600.0 + h * (-2.5494467038615576e+16 + h * (-4122161971200.0 + h * (2.0973463063534292e+18 + h * (-22069421015040.0 + h * (-1.9763116937498562e+20 + h * (-115835267973120.0 + h * (2.114557486409206e+22 + h * (-597550209957888.0 + h * (-2.549568695227849e+24 + h * (-3035940582850560.0 + h * (3.44089323357701e+26 + h * (-1.521758452580352e+16 + h * (-5.166776260761293e+28 + h * (-7.536327574683648e+16 + h * (8.585463736223844e+30 + h * (-3.6920500949090304e+17 + h * (-1.5710201622578883e+33 + h * (-1.7911176357866373e+18))))))))))))))))))))))))))))))))))))))));
+  }
+  const double PA4 = R::psigamma(0.5 * (nu + 1.0), 4.0);
+  const double PB4 = R::psigamma(0.5 * nu, 4.0);
+  return (1.0/32.0)*PA4 - 1.0/32.0*PB4 - 12/std::pow(nu - 2, 5);
+}
+
+static inline double t2_V8(double nu) {
+  if (nu >= 20.0) {
+    const double h = 1.0 / nu;
+    return std::pow(h, 5) * (6.0 + h * (-15.0 + h * (129.0 + h * (-147.0 + h * (1484.0 + h * (-2403.0 + h * (15015.0 + h * (-29931.0 + h * (147858.0 + h * (-378651.0 + h * (1456973.0 + h * (-3741075.0 + h * (14418072.0 + h * (-50330931.0 + h * (142837299.0 + h * (-160259547.0 + h * (1411770590.0 + h * (-16006682475.0 + h * (13891943769.0 + h * (554227741245.0 + h * (135974199396.0 + h * (-36737140347075.0 + h * (1323712808639.0 + h * (2578836971670453.0 + h * (12820123421994.0 + h * (-2.125463651938571e+17 + h * (123576984684645.0 + h * (2.0023836004198396e+19 + h * (1186127167919408.0 + h * (-2.1424983693034366e+21 + h * (1.1341367517309004e+16 + h * (2.5832528282102135e+23 + h * (1.0807212864104818e+17 + h * (-3.4863537855184777e+25 + h * (1.0266652018157354e+18 + h * (5.235038860390271e+27 + h * (-214404767416320.0 + h * (-8.69889347872585e+29 + h * (-946679511515136.0)))))))))))))))))))))))))))))))))))))));
+  }
+  const double PA2 = R::psigamma(0.5 * (nu + 1.0), 2.0);
+  const double PB2 = R::psigamma(0.5 * nu, 2.0);
+  const double u0 = std::pow(nu, 2);
+  const double u1 = std::pow(nu, 3);
+  return (1.0/8.0)*PA2 - 1.0/8.0*PB2 + (129*nu + 78*u0 + 9*u1 - 12)/(2*std::pow(nu, 7) + 4*std::pow(nu, 6) - 28*std::pow(nu, 5) - 40*std::pow(nu, 4) - 168*nu + 116*u0 + 130*u1 - 144) - 1/std::pow(nu - 2, 3);
+}
+
+static inline double t2_V9(double nu) {
+  if (nu >= 20.0) {
+    const double h = 1.0 / nu;
+    return std::pow(h, 6) * (-30.0 + h * (90.0 + h * (-903.0 + h * (1176.0 + h * (-13356.0 + h * (24030.0 + h * (-165165.0 + h * (359172.0 + h * (-1922154.0 + h * (5301114.0 + h * (-21854595.0 + h * (59857200.0 + h * (-245107224.0 + h * (905956758.0 + h * (-2713908681.0 + h * (3205190940.0 + h * (-29647182390.0 + h * (352147014450.0 + h * (-319514706687.0 + h * (-13301465789880.0 + h * (-3399354984900.0 + h * (955165649023950.0 + h * (-35740245833253.0 + h * (-7.220743520677269e+16 + h * (-371783579237826.0 + h * (6.376390955815713e+18 + h * (-3830886525223995.0 + h * (-6.407627521343487e+20 + h * (-3.914219654134046e+16 + h * (7.284494455631684e+22 + h * (-3.969478631058151e+17 + h * (-9.299710181556769e+24 + h * (-3.998668759718783e+18 + h * (1.3248144384970216e+27 + h * (-4.003994287081368e+19 + h * (-2.09401554542045e+29 + h * (8790595464069120.0 + h * (3.6535352610648566e+31 + h * (4.070721899515085e+16)))))))))))))))))))))))))))))))))))))));
+  }
+  const double PA3 = R::psigamma(0.5 * (nu + 1.0), 3.0);
+  const double PB3 = R::psigamma(0.5 * nu, 3.0);
+  const double u0 = std::pow(nu, 2);
+  const double u1 = std::pow(nu, 3);
+  const double u2 = std::pow(nu, 4);
+  const double u3 = std::pow(nu, 5);
+  return (1.0/16.0)*PA3 - 1.0/16.0*PB3 + (-267*nu - 801*u0 - 735*u1 - 222*u2 - 18*u3 - 429)/(std::pow(nu, 10) + 4*std::pow(nu, 9) - 15*std::pow(nu, 8) - 64*std::pow(nu, 7) + 83*std::pow(nu, 6) + 864*nu - 72*u0 - 920*u1 - 173*u2 + 372*u3 + 432) + 3/std::pow(nu - 2, 4);
+}
+
+// order 1 of log f in (mu, sigma, nu)
+// [[Rcpp::export]]
+List student_t2_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu(n);
+  NumericVector o_sigma(n);
+  NumericVector o_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, V0; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double V0 = t2_V0(v);
+    return Prm{m, s, ik, V0};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double V0 = P.V0; (void) V0;
+    const double z = (y[i] - m) / s;
+    const double q = z * z * ik;
+    const double t = 1.0 / (1.0 + q);
+    (void) t; (void) q;
+    const double DQ = t2_D(q);
+    const double w0 = t/s;
+    o_mu[i] = w0*z*(3*ik + 1);
+    o_sigma[i] = w0*(2*q + std::pow(z, 2) - 1);
+    o_nu[i] = (1.0/2.0)*DQ + V0 + (3.0/2.0)*ik*q*t;
+  });
+  return List::create(Named("mu") = o_mu, Named("sigma") = o_sigma, Named("nu") = o_nu);
+}
+
+// order 2 of log f in (mu, sigma, nu)
+// [[Rcpp::export]]
+List student_t2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu_mu(n);
+  NumericVector o_sigma_sigma(n);
+  NumericVector o_nu_nu(n);
+  NumericVector o_mu_sigma(n);
+  NumericVector o_mu_nu(n);
+  NumericVector o_sigma_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, V1, w0, w6; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double V1 = t2_V1(v);
+    const double w0 = 3*ik;
+    const double w6 = std::pow(ik, 2);
+    return Prm{m, s, ik, V1, w0, w6};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double V1 = P.V1; (void) V1;
+    const double w0 = P.w0; (void) w0;
+    const double w6 = P.w6; (void) w6;
+    const double z = (y[i] - m) / s;
+    const double q = z * z * ik;
+    const double t = 1.0 / (1.0 + q);
+    (void) t; (void) q;
+    const double w1 = std::pow(t, 2);
+    const double w2 = w1/std::pow(s, 2);
+    const double w3 = std::pow(q, 2);
+    const double w4 = std::pow(z, 2);
+    const double w5 = w1*w3;
+    const double w7 = q*w1;
+    const double w8 = (q - w0)/s;
+    o_mu_mu[i] = w2*(q*w0 + q - w0 - 1);
+    o_sigma_sigma[i] = w2*(-q*w4 - 7*q - 2*w3 - 3*w4 + 1);
+    o_nu_nu[i] = V1 + (1.0/2.0)*ik*w5 - 3.0/2.0*w5*w6 - 3*w6*w7;
+    o_mu_sigma[i] = -2*w2*z*(w0 + 1);
+    o_mu_nu[i] = ik*w1*w8*z;
+    o_sigma_nu[i] = w7*w8;
+  });
+  return List::create(Named("mu_mu") = o_mu_mu, Named("sigma_sigma") = o_sigma_sigma, Named("nu_nu") = o_nu_nu, Named("mu_sigma") = o_mu_sigma, Named("mu_nu") = o_mu_nu, Named("sigma_nu") = o_sigma_nu);
+}
+
+// order 2, expected
+// [[Rcpp::export]]
+List student_t2_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu_mu(n);
+  NumericVector o_sigma_sigma(n);
+  NumericVector o_nu_nu(n);
+  NumericVector o_mu_sigma(n);
+  NumericVector o_mu_nu(n);
+  NumericVector o_sigma_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, V2, w0, w1, w2; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double V2 = t2_V2(v);
+    const double w0 = std::pow(ik, 2);
+    const double w1 = 5*ik + 1;
+    const double w2 = 1/(std::pow(s, 2)*w1);
+    return Prm{m, s, ik, V2, w0, w1, w2};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double V2 = P.V2; (void) V2;
+    const double w0 = P.w0; (void) w0;
+    const double w1 = P.w1; (void) w1;
+    const double w2 = P.w2; (void) w2;
+    o_mu_mu[i] = -w2*(6*w0 + w1);
+    o_sigma_sigma[i] = -2*w2*(2*ik + 1);
+    o_nu_nu[i] = V2;
+    o_mu_sigma[i] = 0;
+    o_mu_nu[i] = 0;
+    o_sigma_nu[i] = -6*std::pow(ik, 3)/(s*(8*ik + 15*w0 + 1));
+  });
+  return List::create(Named("mu_mu") = o_mu_mu, Named("sigma_sigma") = o_sigma_sigma, Named("nu_nu") = o_nu_nu, Named("mu_sigma") = o_mu_sigma, Named("mu_nu") = o_mu_nu, Named("sigma_nu") = o_sigma_nu);
+}
+
+// order 3 of log f in (mu, sigma, nu)
+// [[Rcpp::export]]
+List student_t2_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu_mu_mu(n);
+  NumericVector o_mu_mu_sigma(n);
+  NumericVector o_mu_mu_nu(n);
+  NumericVector o_mu_sigma_sigma(n);
+  NumericVector o_mu_sigma_nu(n);
+  NumericVector o_mu_nu_nu(n);
+  NumericVector o_sigma_sigma_sigma(n);
+  NumericVector o_sigma_sigma_nu(n);
+  NumericVector o_sigma_nu_nu(n);
+  NumericVector o_nu_nu_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, V3, w2, w9, w12, w16; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double V3 = t2_V3(v);
+    const double w2 = 9*ik;
+    const double w9 = -3*ik;
+    const double w12 = std::pow(s, -2);
+    const double w16 = std::pow(ik, 2);
+    return Prm{m, s, ik, V3, w2, w9, w12, w16};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double V3 = P.V3; (void) V3;
+    const double w2 = P.w2; (void) w2;
+    const double w9 = P.w9; (void) w9;
+    const double w12 = P.w12; (void) w12;
+    const double w16 = P.w16; (void) w16;
+    const double z = (y[i] - m) / s;
+    const double q = z * z * ik;
+    const double t = 1.0 / (1.0 + q);
+    (void) t; (void) q;
+    const double w0 = 3*q;
+    const double w1 = ik*w0;
+    const double w3 = w1 - w2;
+    const double w4 = q + w3 - 3;
+    const double w5 = std::pow(t, 3);
+    const double w6 = 2*w5;
+    const double w7 = w6/std::pow(s, 3);
+    const double w8 = w7*z;
+    const double w10 = q*w2 + w0 + w9;
+    const double w11 = std::pow(q, 2);
+    const double w13 = w12*w5;
+    const double w14 = 2*q;
+    const double w15 = w6*z;
+    const double w17 = (3*ik - q)/s;
+    const double w18 = std::pow(q, 3);
+    const double w19 = std::pow(z, 2);
+    const double w20 = std::pow(ik, 3)*w5;
+    const double w21 = 9*w20;
+    const double w22 = w16*w5;
+    o_mu_mu_mu[i] = ik*w4*w8;
+    o_mu_mu_sigma[i] = w7*(1 - w10);
+    o_mu_mu_nu[i] = ik*w13*(-w10 + w11);
+    o_mu_sigma_sigma[i] = -w4*w8;
+    o_mu_sigma_nu[i] = ik*w12*w15*(-w1 - w14 - w9);
+    o_mu_nu_nu[i] = w15*w16*w17;
+    o_sigma_sigma_sigma[i] = w7*(15*q + w0*w19 + w11*w19 + 6*w11 + 2*w18 + 6*w19 - 1);
+    o_sigma_sigma_nu[i] = q*w13*(-5*q - w11 - w3);
+    o_sigma_nu_nu[i] = ik*w14*w17*w5;
+    o_nu_nu_nu[i] = V3 + q*w21 + w11*w21 - 3.0/2.0*w11*w22 + 3*w18*w20 - 1.0/2.0*w18*w22;
+  });
+  return List::create(Named("mu_mu_mu") = o_mu_mu_mu, Named("mu_mu_sigma") = o_mu_mu_sigma, Named("mu_mu_nu") = o_mu_mu_nu, Named("mu_sigma_sigma") = o_mu_sigma_sigma, Named("mu_sigma_nu") = o_mu_sigma_nu, Named("mu_nu_nu") = o_mu_nu_nu, Named("sigma_sigma_sigma") = o_sigma_sigma_sigma, Named("sigma_sigma_nu") = o_sigma_sigma_nu, Named("sigma_nu_nu") = o_sigma_nu_nu, Named("nu_nu_nu") = o_nu_nu_nu);
+}
+
+// order 3, expected
+// [[Rcpp::export]]
+List student_t2_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu_mu_mu(n);
+  NumericVector o_mu_mu_sigma(n);
+  NumericVector o_mu_mu_nu(n);
+  NumericVector o_mu_sigma_sigma(n);
+  NumericVector o_mu_sigma_nu(n);
+  NumericVector o_mu_nu_nu(n);
+  NumericVector o_sigma_sigma_sigma(n);
+  NumericVector o_sigma_sigma_nu(n);
+  NumericVector o_sigma_nu_nu(n);
+  NumericVector o_nu_nu_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, V4, w0, w1, w2, w3, w4, w5; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double V4 = t2_V4(v);
+    const double w0 = std::pow(ik, 2);
+    const double w1 = std::pow(ik, 3);
+    const double w2 = 1.0/(12*ik + 35*w0 + 1);
+    const double w3 = 2*w2/std::pow(s, 3);
+    const double w4 = 2*ik + 1;
+    const double w5 = w2/std::pow(s, 2);
+    return Prm{m, s, ik, V4, w0, w1, w2, w3, w4, w5};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double V4 = P.V4; (void) V4;
+    const double w0 = P.w0; (void) w0;
+    const double w1 = P.w1; (void) w1;
+    const double w2 = P.w2; (void) w2;
+    const double w3 = P.w3; (void) w3;
+    const double w4 = P.w4; (void) w4;
+    const double w5 = P.w5; (void) w5;
+    o_mu_mu_mu[i] = 0;
+    o_mu_mu_sigma[i] = w3*(9*ik + 26*w0 + 24*w1 + 1);
+    o_mu_mu_nu[i] = 12*w1*w4*w5;
+    o_mu_sigma_sigma[i] = 0;
+    o_mu_sigma_nu[i] = 0;
+    o_mu_nu_nu[i] = 0;
+    o_sigma_sigma_sigma[i] = w3*(33*ik + 46*w0 + 5);
+    o_sigma_sigma_nu[i] = 6*w0*w5*(3*ik - 1);
+    o_sigma_nu_nu[i] = 24*std::pow(ik, 4)*w4/(s*(15*ik + 71*w0 + 105*w1 + 1));
+    o_nu_nu_nu[i] = V4;
+  });
+  return List::create(Named("mu_mu_mu") = o_mu_mu_mu, Named("mu_mu_sigma") = o_mu_mu_sigma, Named("mu_mu_nu") = o_mu_mu_nu, Named("mu_sigma_sigma") = o_mu_sigma_sigma, Named("mu_sigma_nu") = o_mu_sigma_nu, Named("mu_nu_nu") = o_mu_nu_nu, Named("sigma_sigma_sigma") = o_sigma_sigma_sigma, Named("sigma_sigma_nu") = o_sigma_sigma_nu, Named("sigma_nu_nu") = o_sigma_nu_nu, Named("nu_nu_nu") = o_nu_nu_nu);
+}
+
+// order 4 of log f in (mu, sigma, nu)
+// [[Rcpp::export]]
+List student_t2_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu_mu_mu_mu(n);
+  NumericVector o_mu_mu_mu_sigma(n);
+  NumericVector o_mu_mu_mu_nu(n);
+  NumericVector o_mu_mu_sigma_sigma(n);
+  NumericVector o_mu_mu_sigma_nu(n);
+  NumericVector o_mu_mu_nu_nu(n);
+  NumericVector o_mu_sigma_sigma_sigma(n);
+  NumericVector o_mu_sigma_sigma_nu(n);
+  NumericVector o_mu_sigma_nu_nu(n);
+  NumericVector o_mu_nu_nu_nu(n);
+  NumericVector o_sigma_sigma_sigma_sigma(n);
+  NumericVector o_sigma_sigma_sigma_nu(n);
+  NumericVector o_sigma_sigma_nu_nu(n);
+  NumericVector o_sigma_nu_nu_nu(n);
+  NumericVector o_nu_nu_nu_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, V5, w0, w4, w8, w12, w16, w17, w20, w23, w24, w25, w28, w36; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double V5 = t2_V5(v);
+    const double w0 = 3*ik;
+    const double w4 = 18*ik;
+    const double w8 = std::pow(s, -4);
+    const double w12 = -w0;
+    const double w16 = std::pow(s, -3);
+    const double w17 = std::pow(ik, 2);
+    const double w20 = ik*w16;
+    const double w23 = std::pow(s, -2);
+    const double w24 = w17*w23;
+    const double w25 = 9*ik;
+    const double w28 = std::pow(ik, 3);
+    const double w36 = std::pow(ik, 4);
+    return Prm{m, s, ik, V5, w0, w4, w8, w12, w16, w17, w20, w23, w24, w25, w28, w36};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double V5 = P.V5; (void) V5;
+    const double w0 = P.w0; (void) w0;
+    const double w4 = P.w4; (void) w4;
+    const double w8 = P.w8; (void) w8;
+    const double w12 = P.w12; (void) w12;
+    const double w16 = P.w16; (void) w16;
+    const double w17 = P.w17; (void) w17;
+    const double w20 = P.w20; (void) w20;
+    const double w23 = P.w23; (void) w23;
+    const double w24 = P.w24; (void) w24;
+    const double w25 = P.w25; (void) w25;
+    const double w28 = P.w28; (void) w28;
+    const double w36 = P.w36; (void) w36;
+    const double z = (y[i] - m) / s;
+    const double q = z * z * ik;
+    const double t = 1.0 / (1.0 + q);
+    (void) t; (void) q;
+    const double w1 = std::pow(q, 2);
+    const double w2 = w0*w1;
+    const double w3 = 6*q;
+    const double w5 = q*w4;
+    const double w6 = w1 - w5;
+    const double w7 = w0 + w2 - w3 + w6 + 1;
+    const double w9 = std::pow(t, 4);
+    const double w10 = 6*w9;
+    const double w11 = w10*w8;
+    const double w13 = q*w0 + q + w12 - 1;
+    const double w14 = w9*z;
+    const double w15 = w14*w8;
+    const double w18 = 2*w14;
+    const double w19 = 2*w1 + w2;
+    const double w21 = 5*q;
+    const double w22 = -w1;
+    const double w26 = 2*q;
+    const double w27 = 4*w9;
+    const double w29 = w10*w28;
+    const double w30 = (q - w0)/s;
+    const double w31 = std::pow(q, 3);
+    const double w32 = std::pow(q, 4);
+    const double w33 = std::pow(z, 2);
+    const double w34 = 4*w1;
+    const double w35 = w26*w9;
+    const double w37 = w36*w9;
+    const double w38 = 36*w37;
+    const double w39 = w32*w9;
+    o_mu_mu_mu_mu[i] = ik*w11*w7;
+    o_mu_mu_mu_sigma[i] = -24*ik*w13*w15;
+    o_mu_mu_mu_nu[i] = w16*w17*w18*(-8*q + w4 + w6 + 3);
+    o_mu_mu_sigma_sigma[i] = -w11*w7;
+    o_mu_mu_sigma_nu[i] = w10*w20*(8*ik*q - ik + 2*q - w19);
+    o_mu_mu_nu_nu[i] = w10*w24*(ik*w21 - ik + q + w22);
+    o_mu_sigma_sigma_sigma[i] = 24*w13*w15;
+    o_mu_sigma_sigma_nu[i] = w18*w20*(24*ik*q + 10*q - w19 - w25);
+    o_mu_sigma_nu_nu[i] = w24*w27*z*(ik*w3 + w12 + w22 + w26);
+    o_mu_nu_nu_nu[i] = w29*w30*z;
+    o_sigma_sigma_sigma_sigma[i] = w11*(-26*q - 9*w1 - w21*w33 - w31*w33 - 8*w31 - 2*w32 - w33*w34 - 10*w33 + 1);
+    o_sigma_sigma_sigma_nu[i] = w16*w35*(15*q + w31 + w34 - w4 + w5);
+    o_sigma_sigma_nu_nu[i] = ik*w23*w35*(q*w25 + w21 + w22 - w25);
+    o_sigma_nu_nu_nu[i] = w17*w3*w30*w9;
+    o_nu_nu_nu_nu[i] = V5 - q*w38 + w1*w29 - 54*w1*w37 + w27*w28*w31 + w28*w39 - w31*w38 - 9*w36*w39;
+  });
+  return List::create(Named("mu_mu_mu_mu") = o_mu_mu_mu_mu, Named("mu_mu_mu_sigma") = o_mu_mu_mu_sigma, Named("mu_mu_mu_nu") = o_mu_mu_mu_nu, Named("mu_mu_sigma_sigma") = o_mu_mu_sigma_sigma, Named("mu_mu_sigma_nu") = o_mu_mu_sigma_nu, Named("mu_mu_nu_nu") = o_mu_mu_nu_nu, Named("mu_sigma_sigma_sigma") = o_mu_sigma_sigma_sigma, Named("mu_sigma_sigma_nu") = o_mu_sigma_sigma_nu, Named("mu_sigma_nu_nu") = o_mu_sigma_nu_nu, Named("mu_nu_nu_nu") = o_mu_nu_nu_nu, Named("sigma_sigma_sigma_sigma") = o_sigma_sigma_sigma_sigma, Named("sigma_sigma_sigma_nu") = o_sigma_sigma_sigma_nu, Named("sigma_sigma_nu_nu") = o_sigma_sigma_nu_nu, Named("sigma_nu_nu_nu") = o_sigma_nu_nu_nu, Named("nu_nu_nu_nu") = o_nu_nu_nu_nu);
+}
+
+// order 4, expected
+// [[Rcpp::export]]
+List student_t2_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu_mu_mu_mu(n);
+  NumericVector o_mu_mu_mu_sigma(n);
+  NumericVector o_mu_mu_mu_nu(n);
+  NumericVector o_mu_mu_sigma_sigma(n);
+  NumericVector o_mu_mu_sigma_nu(n);
+  NumericVector o_mu_mu_nu_nu(n);
+  NumericVector o_mu_sigma_sigma_sigma(n);
+  NumericVector o_mu_sigma_sigma_nu(n);
+  NumericVector o_mu_sigma_nu_nu(n);
+  NumericVector o_mu_nu_nu_nu(n);
+  NumericVector o_sigma_sigma_sigma_sigma(n);
+  NumericVector o_sigma_sigma_sigma_nu(n);
+  NumericVector o_sigma_sigma_nu_nu(n);
+  NumericVector o_sigma_nu_nu_nu(n);
+  NumericVector o_nu_nu_nu_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, V6, w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double V6 = t2_V6(v);
+    const double w0 = 6*ik;
+    const double w1 = std::pow(ik, 2);
+    const double w2 = std::pow(ik, 3);
+    const double w3 = 24*w2;
+    const double w4 = 1/(std::pow(s, 4)*(16*ik + 63*w1 + 1));
+    const double w5 = w4*(9*ik + 26*w1 + w3 + 1);
+    const double w6 = 1.0/(21*ik + 143*w1 + 315*w2 + 1);
+    const double w7 = 6*w1*w6/std::pow(s, 3);
+    const double w8 = std::pow(ik, 4);
+    const double w9 = w0 + 8*w1 + 1;
+    const double w10 = w6/std::pow(s, 2);
+    return Prm{m, s, ik, V6, w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double V6 = P.V6; (void) V6;
+    const double w0 = P.w0; (void) w0;
+    const double w1 = P.w1; (void) w1;
+    const double w2 = P.w2; (void) w2;
+    const double w3 = P.w3; (void) w3;
+    const double w4 = P.w4; (void) w4;
+    const double w5 = P.w5; (void) w5;
+    const double w6 = P.w6; (void) w6;
+    const double w7 = P.w7; (void) w7;
+    const double w8 = P.w8; (void) w8;
+    const double w9 = P.w9; (void) w9;
+    const double w10 = P.w10; (void) w10;
+    o_mu_mu_mu_mu[i] = w0*w5;
+    o_mu_mu_mu_sigma[i] = 0;
+    o_mu_mu_mu_nu[i] = 0;
+    o_mu_mu_sigma_sigma[i] = -6*w5;
+    o_mu_mu_sigma_nu[i] = -w7*(-3*ik + 10*w1 + w3 - 1);
+    o_mu_mu_nu_nu[i] = -36*w10*w8*w9;
+    o_mu_sigma_sigma_sigma[i] = 0;
+    o_mu_sigma_sigma_nu[i] = 0;
+    o_mu_sigma_nu_nu[i] = 0;
+    o_mu_nu_nu_nu[i] = 0;
+    o_sigma_sigma_sigma_sigma[i] = -18*w4*(23*ik + 34*w1 + 3);
+    o_sigma_sigma_sigma_nu[i] = w7*(29*ik - 48*w1 + 9);
+    o_sigma_sigma_nu_nu[i] = -12*w10*w2*(4*ik + 12*w1 - 1);
+    o_sigma_nu_nu_nu[i] = -108*std::pow(ik, 5)*w9/(s*(24*ik + 206*w1 + 744*w2 + 945*w8 + 1));
+    o_nu_nu_nu_nu[i] = V6;
+  });
+  return List::create(Named("mu_mu_mu_mu") = o_mu_mu_mu_mu, Named("mu_mu_mu_sigma") = o_mu_mu_mu_sigma, Named("mu_mu_mu_nu") = o_mu_mu_mu_nu, Named("mu_mu_sigma_sigma") = o_mu_mu_sigma_sigma, Named("mu_mu_sigma_nu") = o_mu_mu_sigma_nu, Named("mu_mu_nu_nu") = o_mu_mu_nu_nu, Named("mu_sigma_sigma_sigma") = o_mu_sigma_sigma_sigma, Named("mu_sigma_sigma_nu") = o_mu_sigma_sigma_nu, Named("mu_sigma_nu_nu") = o_mu_sigma_nu_nu, Named("mu_nu_nu_nu") = o_mu_nu_nu_nu, Named("sigma_sigma_sigma_sigma") = o_sigma_sigma_sigma_sigma, Named("sigma_sigma_sigma_nu") = o_sigma_sigma_sigma_nu, Named("sigma_sigma_nu_nu") = o_sigma_sigma_nu_nu, Named("sigma_nu_nu_nu") = o_sigma_nu_nu_nu, Named("nu_nu_nu_nu") = o_nu_nu_nu_nu);
+}
+
+// order 5 of log f in (mu, sigma, nu)
+// [[Rcpp::export]]
+List student_t2_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu_mu_mu_mu_mu(n);
+  NumericVector o_mu_mu_mu_mu_sigma(n);
+  NumericVector o_mu_mu_mu_mu_nu(n);
+  NumericVector o_mu_mu_mu_sigma_sigma(n);
+  NumericVector o_mu_mu_mu_sigma_nu(n);
+  NumericVector o_mu_mu_mu_nu_nu(n);
+  NumericVector o_mu_mu_sigma_sigma_sigma(n);
+  NumericVector o_mu_mu_sigma_sigma_nu(n);
+  NumericVector o_mu_mu_sigma_nu_nu(n);
+  NumericVector o_mu_mu_nu_nu_nu(n);
+  NumericVector o_mu_sigma_sigma_sigma_sigma(n);
+  NumericVector o_mu_sigma_sigma_sigma_nu(n);
+  NumericVector o_mu_sigma_sigma_nu_nu(n);
+  NumericVector o_mu_sigma_nu_nu_nu(n);
+  NumericVector o_mu_nu_nu_nu_nu(n);
+  NumericVector o_sigma_sigma_sigma_sigma_sigma(n);
+  NumericVector o_sigma_sigma_sigma_sigma_nu(n);
+  NumericVector o_sigma_sigma_sigma_nu_nu(n);
+  NumericVector o_sigma_sigma_nu_nu_nu(n);
+  NumericVector o_sigma_nu_nu_nu_nu(n);
+  NumericVector o_nu_nu_nu_nu_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, V7, w0, w2, w4, w7, w17, w22, w33, w34, w35, w38, w42, w43, w46; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double V7 = t2_V7(v);
+    const double w0 = std::pow(ik, 2);
+    const double w2 = 3*ik;
+    const double w4 = 15*ik;
+    const double w7 = 30*ik;
+    const double w17 = 6*ik;
+    const double w22 = std::pow(s, -4);
+    const double w33 = std::pow(ik, 3);
+    const double w34 = 9*ik;
+    const double w35 = std::pow(s, -3);
+    const double w38 = -w2;
+    const double w42 = std::pow(s, -2);
+    const double w43 = w33*w42;
+    const double w46 = std::pow(ik, 4);
+    return Prm{m, s, ik, V7, w0, w2, w4, w7, w17, w22, w33, w34, w35, w38, w42, w43, w46};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double V7 = P.V7; (void) V7;
+    const double w0 = P.w0; (void) w0;
+    const double w2 = P.w2; (void) w2;
+    const double w4 = P.w4; (void) w4;
+    const double w7 = P.w7; (void) w7;
+    const double w17 = P.w17; (void) w17;
+    const double w22 = P.w22; (void) w22;
+    const double w33 = P.w33; (void) w33;
+    const double w34 = P.w34; (void) w34;
+    const double w35 = P.w35; (void) w35;
+    const double w38 = P.w38; (void) w38;
+    const double w42 = P.w42; (void) w42;
+    const double w43 = P.w43; (void) w43;
+    const double w46 = P.w46; (void) w46;
+    const double z = (y[i] - m) / s;
+    const double q = z * z * ik;
+    const double t = 1.0 / (1.0 + q);
+    (void) t; (void) q;
+    const double w1 = std::pow(q, 2);
+    const double w3 = w1*w2;
+    const double w5 = 10*q;
+    const double w6 = -w5;
+    const double w8 = -q*w7 + w6;
+    const double w9 = w1 + w3 + w4 + w8 + 5;
+    const double w10 = std::pow(t, 5);
+    const double w11 = 24*w10;
+    const double w12 = w11/std::pow(s, 5);
+    const double w13 = w12*w9*z;
+    const double w14 = 5*w1;
+    const double w15 = w1*w4 + w14 + w2 + w8 + 1;
+    const double w16 = ik*w12;
+    const double w18 = ik*q;
+    const double w19 = 60*w18;
+    const double w20 = std::pow(q, 3);
+    const double w21 = -w20;
+    const double w23 = w10*w22;
+    const double w24 = 6*w23;
+    const double w25 = 2*w1;
+    const double w26 = 5*q;
+    const double w27 = q*w4;
+    const double w28 = -w26 - w27;
+    const double w29 = w25 + w28 + 1;
+    const double w30 = w17 + w3;
+    const double w31 = w0*z;
+    const double w32 = w11*w22;
+    const double w36 = 12*w10;
+    const double w37 = w35*w36;
+    const double w39 = 45*w18;
+    const double w40 = 2*q;
+    const double w41 = ik*w1;
+    const double w44 = 6*w10;
+    const double w45 = 3*w1 + w28;
+    const double w47 = w11*(-q + w2)/s;
+    const double w48 = std::pow(q, 4);
+    const double w49 = std::pow(q, 5);
+    const double w50 = std::pow(z, 2);
+    const double w51 = 5*w20;
+    const double w52 = std::pow(ik, 5)*w10;
+    const double w53 = 180*w52;
+    const double w54 = w10*w46;
+    const double w55 = 30*w54;
+    const double w56 = 360*w52;
+    o_mu_mu_mu_mu_mu[i] = w0*w13;
+    o_mu_mu_mu_mu_sigma[i] = -w15*w16;
+    o_mu_mu_mu_mu_nu[i] = w0*w24*(15*q - w1*w7 - 15*w1 - w17 + w19 - w21 - 1);
+    o_mu_mu_mu_sigma_sigma[i] = -w16*w9*z;
+    o_mu_mu_mu_sigma_nu[i] = w31*w32*(-w29 - w30);
+    o_mu_mu_mu_nu_nu[i] = w33*w37*z*(-w29 - w34);
+    o_mu_mu_sigma_sigma_sigma[i] = w12*w15;
+    o_mu_mu_sigma_sigma_nu[i] = w17*w23*(45*ik*w1 + 20*w1 - w2*w20 - 2*w20 - w38 - w39 - w5);
+    o_mu_mu_sigma_nu_nu[i] = w0*w37*(ik + w14 - 13*w18 + w21 - w40 + 10*w41);
+    o_mu_mu_nu_nu_nu[i] = w43*w44*(-3*q + w14 - 21*w18 - w38);
+    o_mu_sigma_sigma_sigma_sigma[i] = w13;
+    o_mu_sigma_sigma_sigma_nu[i] = ik*w32*z*(w1*w17 + w2 + w45);
+    o_mu_sigma_sigma_nu_nu[i] = 4*w10*w31*w35*(13*w1 + w21 + w34 - w39 + 18*w41 + w6);
+    o_mu_sigma_nu_nu_nu[i] = w36*w43*z*(-q*w34 + w25 - w38 - w40);
+    o_mu_nu_nu_nu_nu[i] = w46*w47*z;
+    o_sigma_sigma_sigma_sigma_sigma[i] = w12*(40*q + 10*w1*w50 + w14 + 20*w20 + w26*w50 + w48*w50 + 10*w48 + 2*w49 + w50*w51 + 15*w50 - 1);
+    o_sigma_sigma_sigma_sigma_nu[i] = q*w24*(6*ik*w1 + 30*ik - 35*q - 7*w1 - w19 - w48 - w51);
+    o_sigma_sigma_sigma_nu_nu[i] = w18*w37*(w30 + w45);
+    o_sigma_sigma_nu_nu_nu[i] = q*w0*w42*w44*(3*w1 - w26 - w27 + w34);
+    o_sigma_nu_nu_nu_nu[i] = q*w33*w47;
+    o_nu_nu_nu_nu_nu[i] = V7 + q*w53 - w1*w55 + w1*w56 - w20*w55 + w20*w56 + w48*w53 - 15*w48*w54 + 36*w49*w52 - 3*w49*w54;
+  });
+  return List::create(Named("mu_mu_mu_mu_mu") = o_mu_mu_mu_mu_mu, Named("mu_mu_mu_mu_sigma") = o_mu_mu_mu_mu_sigma, Named("mu_mu_mu_mu_nu") = o_mu_mu_mu_mu_nu, Named("mu_mu_mu_sigma_sigma") = o_mu_mu_mu_sigma_sigma, Named("mu_mu_mu_sigma_nu") = o_mu_mu_mu_sigma_nu, Named("mu_mu_mu_nu_nu") = o_mu_mu_mu_nu_nu, Named("mu_mu_sigma_sigma_sigma") = o_mu_mu_sigma_sigma_sigma, Named("mu_mu_sigma_sigma_nu") = o_mu_mu_sigma_sigma_nu, Named("mu_mu_sigma_nu_nu") = o_mu_mu_sigma_nu_nu, Named("mu_mu_nu_nu_nu") = o_mu_mu_nu_nu_nu, Named("mu_sigma_sigma_sigma_sigma") = o_mu_sigma_sigma_sigma_sigma, Named("mu_sigma_sigma_sigma_nu") = o_mu_sigma_sigma_sigma_nu, Named("mu_sigma_sigma_nu_nu") = o_mu_sigma_sigma_nu_nu, Named("mu_sigma_nu_nu_nu") = o_mu_sigma_nu_nu_nu, Named("mu_nu_nu_nu_nu") = o_mu_nu_nu_nu_nu, Named("sigma_sigma_sigma_sigma_sigma") = o_sigma_sigma_sigma_sigma_sigma, Named("sigma_sigma_sigma_sigma_nu") = o_sigma_sigma_sigma_sigma_nu, Named("sigma_sigma_sigma_nu_nu") = o_sigma_sigma_sigma_nu_nu, Named("sigma_sigma_nu_nu_nu") = o_sigma_sigma_nu_nu_nu, Named("sigma_nu_nu_nu_nu") = o_sigma_nu_nu_nu_nu, Named("nu_nu_nu_nu_nu") = o_nu_nu_nu_nu_nu);
+}
+
+// first derivatives of the expected Hessian
+// [[Rcpp::export]]
+List student_t2_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu_mu_mu(n);
+  NumericVector o_mu_mu_sigma(n);
+  NumericVector o_mu_mu_nu(n);
+  NumericVector o_sigma_sigma_mu(n);
+  NumericVector o_sigma_sigma_sigma(n);
+  NumericVector o_sigma_sigma_nu(n);
+  NumericVector o_nu_nu_mu(n);
+  NumericVector o_nu_nu_sigma(n);
+  NumericVector o_nu_nu_nu(n);
+  NumericVector o_mu_sigma_mu(n);
+  NumericVector o_mu_sigma_sigma(n);
+  NumericVector o_mu_sigma_nu(n);
+  NumericVector o_mu_nu_mu(n);
+  NumericVector o_mu_nu_sigma(n);
+  NumericVector o_mu_nu_nu(n);
+  NumericVector o_sigma_nu_mu(n);
+  NumericVector o_sigma_nu_sigma(n);
+  NumericVector o_sigma_nu_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, V8, w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double V8 = t2_V8(v);
+    const double w0 = std::pow(ik, 2);
+    const double w1 = 6*w0;
+    const double w2 = 5*ik;
+    const double w3 = w2 + 1;
+    const double w4 = 1/(std::pow(s, 3)*w3);
+    const double w5 = std::pow(s, -2);
+    const double w6 = w5/(10*ik + 25*w0 + 1);
+    const double w7 = std::pow(ik, 3);
+    const double w8 = 6*w7;
+    const double w9 = 15*w0;
+    const double w10 = std::pow(ik, 4);
+    const double w11 = 16*ik;
+    return Prm{m, s, ik, V8, w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double V8 = P.V8; (void) V8;
+    const double w0 = P.w0; (void) w0;
+    const double w1 = P.w1; (void) w1;
+    const double w2 = P.w2; (void) w2;
+    const double w3 = P.w3; (void) w3;
+    const double w4 = P.w4; (void) w4;
+    const double w5 = P.w5; (void) w5;
+    const double w6 = P.w6; (void) w6;
+    const double w7 = P.w7; (void) w7;
+    const double w8 = P.w8; (void) w8;
+    const double w9 = P.w9; (void) w9;
+    const double w10 = P.w10; (void) w10;
+    const double w11 = P.w11; (void) w11;
+    o_mu_mu_mu[i] = 0;
+    o_mu_mu_sigma[i] = 2*w4*(w1 + w3);
+    o_mu_mu_nu[i] = w6*w8*(w2 + 2);
+    o_sigma_sigma_mu[i] = 0;
+    o_sigma_sigma_sigma[i] = 4*w4*(2*ik + 1);
+    o_sigma_sigma_nu[i] = -w1*w6;
+    o_nu_nu_mu[i] = 0;
+    o_nu_nu_sigma[i] = 0;
+    o_nu_nu_nu[i] = V8;
+    o_mu_sigma_mu[i] = 0;
+    o_mu_sigma_sigma[i] = 0;
+    o_mu_sigma_nu[i] = 0;
+    o_mu_nu_mu[i] = 0;
+    o_mu_nu_sigma[i] = 0;
+    o_mu_nu_nu[i] = 0;
+    o_sigma_nu_mu[i] = 0;
+    o_sigma_nu_sigma[i] = w5*w8/(8*ik + w9 + 1);
+    o_sigma_nu_nu[i] = 6*w10*(w11 + w9 + 3)/(s*(94*w0 + 225*w10 + w11 + 240*w7 + 1));
+  });
+  return List::create(Named("mu_mu_mu") = o_mu_mu_mu, Named("mu_mu_sigma") = o_mu_mu_sigma, Named("mu_mu_nu") = o_mu_mu_nu, Named("sigma_sigma_mu") = o_sigma_sigma_mu, Named("sigma_sigma_sigma") = o_sigma_sigma_sigma, Named("sigma_sigma_nu") = o_sigma_sigma_nu, Named("nu_nu_mu") = o_nu_nu_mu, Named("nu_nu_sigma") = o_nu_nu_sigma, Named("nu_nu_nu") = o_nu_nu_nu, Named("mu_sigma_mu") = o_mu_sigma_mu, Named("mu_sigma_sigma") = o_mu_sigma_sigma, Named("mu_sigma_nu") = o_mu_sigma_nu, Named("mu_nu_mu") = o_mu_nu_mu, Named("mu_nu_sigma") = o_mu_nu_sigma, Named("mu_nu_nu") = o_mu_nu_nu, Named("sigma_nu_mu") = o_sigma_nu_mu, Named("sigma_nu_sigma") = o_sigma_nu_sigma, Named("sigma_nu_nu") = o_sigma_nu_nu);
+}
+
+// second derivatives of the expected Hessian
+// [[Rcpp::export]]
+List student_t2_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu_mu_mu_mu(n);
+  NumericVector o_mu_mu_sigma_sigma(n);
+  NumericVector o_mu_mu_nu_nu(n);
+  NumericVector o_mu_mu_mu_sigma(n);
+  NumericVector o_mu_mu_mu_nu(n);
+  NumericVector o_mu_mu_sigma_nu(n);
+  NumericVector o_sigma_sigma_mu_mu(n);
+  NumericVector o_sigma_sigma_sigma_sigma(n);
+  NumericVector o_sigma_sigma_nu_nu(n);
+  NumericVector o_sigma_sigma_mu_sigma(n);
+  NumericVector o_sigma_sigma_mu_nu(n);
+  NumericVector o_sigma_sigma_sigma_nu(n);
+  NumericVector o_nu_nu_mu_mu(n);
+  NumericVector o_nu_nu_sigma_sigma(n);
+  NumericVector o_nu_nu_nu_nu(n);
+  NumericVector o_nu_nu_mu_sigma(n);
+  NumericVector o_nu_nu_mu_nu(n);
+  NumericVector o_nu_nu_sigma_nu(n);
+  NumericVector o_mu_sigma_mu_mu(n);
+  NumericVector o_mu_sigma_sigma_sigma(n);
+  NumericVector o_mu_sigma_nu_nu(n);
+  NumericVector o_mu_sigma_mu_sigma(n);
+  NumericVector o_mu_sigma_mu_nu(n);
+  NumericVector o_mu_sigma_sigma_nu(n);
+  NumericVector o_mu_nu_mu_mu(n);
+  NumericVector o_mu_nu_sigma_sigma(n);
+  NumericVector o_mu_nu_nu_nu(n);
+  NumericVector o_mu_nu_mu_sigma(n);
+  NumericVector o_mu_nu_mu_nu(n);
+  NumericVector o_mu_nu_sigma_nu(n);
+  NumericVector o_sigma_nu_mu_mu(n);
+  NumericVector o_sigma_nu_sigma_sigma(n);
+  NumericVector o_sigma_nu_nu_nu(n);
+  NumericVector o_sigma_nu_mu_sigma(n);
+  NumericVector o_sigma_nu_mu_nu(n);
+  NumericVector o_sigma_nu_sigma_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, V9, w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16, w17; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double V9 = t2_V9(v);
+    const double w0 = std::pow(ik, 2);
+    const double w1 = 5*ik;
+    const double w2 = w1 + 1;
+    const double w3 = 1/(std::pow(s, 4)*w2);
+    const double w4 = std::pow(ik, 4);
+    const double w5 = 15*ik;
+    const double w6 = 25*w0;
+    const double w7 = std::pow(s, -2);
+    const double w8 = std::pow(ik, 3);
+    const double w9 = w7/(75*w0 + w5 + 125*w8 + 1);
+    const double w10 = 12*w8;
+    const double w11 = std::pow(s, -3);
+    const double w12 = w11/(10*ik + w6 + 1);
+    const double w13 = 15*w0;
+    const double w14 = std::pow(ik, 5);
+    const double w15 = 237*w0;
+    const double w16 = 225*w4;
+    const double w17 = 16*ik;
+    return Prm{m, s, ik, V9, w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16, w17};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double V9 = P.V9; (void) V9;
+    const double w0 = P.w0; (void) w0;
+    const double w1 = P.w1; (void) w1;
+    const double w2 = P.w2; (void) w2;
+    const double w3 = P.w3; (void) w3;
+    const double w4 = P.w4; (void) w4;
+    const double w5 = P.w5; (void) w5;
+    const double w6 = P.w6; (void) w6;
+    const double w7 = P.w7; (void) w7;
+    const double w8 = P.w8; (void) w8;
+    const double w9 = P.w9; (void) w9;
+    const double w10 = P.w10; (void) w10;
+    const double w11 = P.w11; (void) w11;
+    const double w12 = P.w12; (void) w12;
+    const double w13 = P.w13; (void) w13;
+    const double w14 = P.w14; (void) w14;
+    const double w15 = P.w15; (void) w15;
+    const double w16 = P.w16; (void) w16;
+    const double w17 = P.w17; (void) w17;
+    o_mu_mu_mu_mu[i] = 0;
+    o_mu_mu_sigma_sigma[i] = -6*w3*(6*w0 + w2);
+    o_mu_mu_nu_nu[i] = -12*w4*w9*(w5 + w6 + 3);
+    o_mu_mu_mu_sigma[i] = 0;
+    o_mu_mu_mu_nu[i] = 0;
+    o_mu_mu_sigma_nu[i] = -w10*w12*(w1 + 2);
+    o_sigma_sigma_mu_mu[i] = 0;
+    o_sigma_sigma_sigma_sigma[i] = -12*w3*(2*ik + 1);
+    o_sigma_sigma_nu_nu[i] = w10*w9;
+    o_sigma_sigma_mu_sigma[i] = 0;
+    o_sigma_sigma_mu_nu[i] = 0;
+    o_sigma_sigma_sigma_nu[i] = 12*w0*w12;
+    o_nu_nu_mu_mu[i] = 0;
+    o_nu_nu_sigma_sigma[i] = 0;
+    o_nu_nu_nu_nu[i] = V9;
+    o_nu_nu_mu_sigma[i] = 0;
+    o_nu_nu_mu_nu[i] = 0;
+    o_nu_nu_sigma_nu[i] = 0;
+    o_mu_sigma_mu_mu[i] = 0;
+    o_mu_sigma_sigma_sigma[i] = 0;
+    o_mu_sigma_nu_nu[i] = 0;
+    o_mu_sigma_mu_sigma[i] = 0;
+    o_mu_sigma_mu_nu[i] = 0;
+    o_mu_sigma_sigma_nu[i] = 0;
+    o_mu_nu_mu_mu[i] = 0;
+    o_mu_nu_sigma_sigma[i] = 0;
+    o_mu_nu_nu_nu[i] = 0;
+    o_mu_nu_mu_sigma[i] = 0;
+    o_mu_nu_mu_nu[i] = 0;
+    o_mu_nu_sigma_nu[i] = 0;
+    o_sigma_nu_mu_mu[i] = 0;
+    o_sigma_nu_sigma_sigma[i] = -w10*w11/(8*ik + w13 + 1);
+    o_sigma_nu_nu_nu[i] = -12*w14*(64*ik + w15 + w16 + 360*w8 + 6)/(s*(3375*std::pow(ik, 6) + 24*ik + 5400*w14 + w15 + 3555*w4 + 1232*w8 + 1));
+    o_sigma_nu_mu_sigma[i] = 0;
+    o_sigma_nu_mu_nu[i] = 0;
+    o_sigma_nu_sigma_nu[i] = -6*w4*w7*(w13 + w17 + 3)/(94*w0 + w16 + w17 + 240*w8 + 1);
+  });
+  return List::create(Named("mu_mu_mu_mu") = o_mu_mu_mu_mu, Named("mu_mu_sigma_sigma") = o_mu_mu_sigma_sigma, Named("mu_mu_nu_nu") = o_mu_mu_nu_nu, Named("mu_mu_mu_sigma") = o_mu_mu_mu_sigma, Named("mu_mu_mu_nu") = o_mu_mu_mu_nu, Named("mu_mu_sigma_nu") = o_mu_mu_sigma_nu, Named("sigma_sigma_mu_mu") = o_sigma_sigma_mu_mu, Named("sigma_sigma_sigma_sigma") = o_sigma_sigma_sigma_sigma, Named("sigma_sigma_nu_nu") = o_sigma_sigma_nu_nu, Named("sigma_sigma_mu_sigma") = o_sigma_sigma_mu_sigma, Named("sigma_sigma_mu_nu") = o_sigma_sigma_mu_nu, Named("sigma_sigma_sigma_nu") = o_sigma_sigma_sigma_nu, Named("nu_nu_mu_mu") = o_nu_nu_mu_mu, Named("nu_nu_sigma_sigma") = o_nu_nu_sigma_sigma, Named("nu_nu_nu_nu") = o_nu_nu_nu_nu, Named("nu_nu_mu_sigma") = o_nu_nu_mu_sigma, Named("nu_nu_mu_nu") = o_nu_nu_mu_nu, Named("nu_nu_sigma_nu") = o_nu_nu_sigma_nu, Named("mu_sigma_mu_mu") = o_mu_sigma_mu_mu, Named("mu_sigma_sigma_sigma") = o_mu_sigma_sigma_sigma, Named("mu_sigma_nu_nu") = o_mu_sigma_nu_nu, Named("mu_sigma_mu_sigma") = o_mu_sigma_mu_sigma, Named("mu_sigma_mu_nu") = o_mu_sigma_mu_nu, Named("mu_sigma_sigma_nu") = o_mu_sigma_sigma_nu, Named("mu_nu_mu_mu") = o_mu_nu_mu_mu, Named("mu_nu_sigma_sigma") = o_mu_nu_sigma_sigma, Named("mu_nu_nu_nu") = o_mu_nu_nu_nu, Named("mu_nu_mu_sigma") = o_mu_nu_mu_sigma, Named("mu_nu_mu_nu") = o_mu_nu_mu_nu, Named("mu_nu_sigma_nu") = o_mu_nu_sigma_nu, Named("sigma_nu_mu_mu") = o_sigma_nu_mu_mu, Named("sigma_nu_sigma_sigma") = o_sigma_nu_sigma_sigma, Named("sigma_nu_nu_nu") = o_sigma_nu_nu_nu, Named("sigma_nu_mu_sigma") = o_sigma_nu_mu_sigma, Named("sigma_nu_mu_nu") = o_sigma_nu_mu_nu, Named("sigma_nu_sigma_nu") = o_sigma_nu_sigma_nu);
+}
+
+// 1 in y and 1 in (mu, sigma, nu)
+// [[Rcpp::export]]
+List student_t2_cross_y_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu(n);
+  NumericVector o_sigma(n);
+  NumericVector o_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, w0; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double w0 = 3*ik;
+    return Prm{m, s, ik, w0};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double w0 = P.w0; (void) w0;
+    const double z = (y[i] - m) / s;
+    const double q = z * z * ik;
+    const double t = 1.0 / (1.0 + q);
+    (void) t; (void) q;
+    const double w1 = std::pow(t, 2);
+    const double w2 = w1/std::pow(s, 2);
+    o_mu[i] = w2*(3*ik - q*w0 - q + 1);
+    o_sigma[i] = 2*w2*z*(w0 + 1);
+    o_nu[i] = ik*w1*z*(-q + w0)/s;
+  });
+  return List::create(Named("mu") = o_mu, Named("sigma") = o_sigma, Named("nu") = o_nu);
+}
+
+// 2 in y and 1 in (mu, sigma, nu)
+// [[Rcpp::export]]
+List student_t2_cross2_y_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu(n);
+  NumericVector o_sigma(n);
+  NumericVector o_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, w0; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double w0 = 9*ik;
+    return Prm{m, s, ik, w0};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double w0 = P.w0; (void) w0;
+    const double z = (y[i] - m) / s;
+    const double q = z * z * ik;
+    const double t = 1.0 / (1.0 + q);
+    (void) t; (void) q;
+    const double w1 = 3*q;
+    const double w2 = std::pow(t, 3);
+    const double w3 = 2*w2/std::pow(s, 3);
+    const double w4 = -3*ik + q*w0 + w1;
+    o_mu[i] = ik*w3*z*(ik*w1 + q - w0 - 3);
+    o_sigma[i] = w3*(1 - w4);
+    o_nu[i] = ik*w2*(std::pow(q, 2) - w4)/std::pow(s, 2);
+  });
+  return List::create(Named("mu") = o_mu, Named("sigma") = o_sigma, Named("nu") = o_nu);
+}
+
+// 1 in y and 2 in (mu, sigma, nu)
+// [[Rcpp::export]]
+List student_t2_grad_y_hess_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu_mu(n);
+  NumericVector o_sigma_sigma(n);
+  NumericVector o_nu_nu(n);
+  NumericVector o_mu_sigma(n);
+  NumericVector o_mu_nu(n);
+  NumericVector o_sigma_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, w0, w8, w10; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double w0 = 3*ik;
+    const double w8 = -w0;
+    const double w10 = ik/std::pow(s, 2);
+    return Prm{m, s, ik, w0, w8, w10};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double w0 = P.w0; (void) w0;
+    const double w8 = P.w8; (void) w8;
+    const double w10 = P.w10; (void) w10;
+    const double z = (y[i] - m) / s;
+    const double q = z * z * ik;
+    const double t = 1.0 / (1.0 + q);
+    (void) t; (void) q;
+    const double w1 = q*w0;
+    const double w2 = -9*ik + q + w1 - 3;
+    const double w3 = std::pow(t, 3);
+    const double w4 = 2*w3;
+    const double w5 = w4/std::pow(s, 3);
+    const double w6 = w5*z;
+    const double w7 = w4*z;
+    const double w9 = 9*ik*q + 3*q + w8;
+    o_mu_mu[i] = -ik*w2*w6;
+    o_sigma_sigma[i] = w2*w6;
+    o_nu_nu[i] = std::pow(ik, 2)*w7*(q - w0)/s;
+    o_mu_sigma[i] = w5*(w9 - 1);
+    o_mu_nu[i] = w10*w3*(-std::pow(q, 2) + w9);
+    o_sigma_nu[i] = w10*w7*(2*q + w1 + w8);
+  });
+  return List::create(Named("mu_mu") = o_mu_mu, Named("sigma_sigma") = o_sigma_sigma, Named("nu_nu") = o_nu_nu, Named("mu_sigma") = o_mu_sigma, Named("mu_nu") = o_mu_nu, Named("sigma_nu") = o_sigma_nu);
+}
+
+// 2 in y and 2 in (mu, sigma, nu)
+// [[Rcpp::export]]
+List student_t2_hess_y_hess_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_mu_mu(n);
+  NumericVector o_sigma_sigma(n);
+  NumericVector o_nu_nu(n);
+  NumericVector o_mu_sigma(n);
+  NumericVector o_mu_nu(n);
+  NumericVector o_sigma_nu(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, w1, w3, w6, w10, w12; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double w1 = 3*ik;
+    const double w3 = 18*ik;
+    const double w6 = std::pow(s, -4);
+    const double w10 = std::pow(ik, 2);
+    const double w12 = std::pow(s, -3);
+    return Prm{m, s, ik, w1, w3, w6, w10, w12};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double w1 = P.w1; (void) w1;
+    const double w3 = P.w3; (void) w3;
+    const double w6 = P.w6; (void) w6;
+    const double w10 = P.w10; (void) w10;
+    const double w12 = P.w12; (void) w12;
+    const double z = (y[i] - m) / s;
+    const double q = z * z * ik;
+    const double t = 1.0 / (1.0 + q);
+    (void) t; (void) q;
+    const double w0 = std::pow(q, 2);
+    const double w2 = w0*w1;
+    const double w4 = -q*w3 + w0;
+    const double w5 = -6*q + w1 + w2 + w4 + 1;
+    const double w7 = std::pow(t, 4);
+    const double w8 = 6*w7;
+    const double w9 = w6*w8;
+    const double w11 = w7*z;
+    o_mu_mu[i] = ik*w5*w9;
+    o_sigma_sigma[i] = -w5*w9;
+    o_nu_nu[i] = w10*w8*(5*ik*q - ik + q - w0)/std::pow(s, 2);
+    o_mu_sigma[i] = 24*ik*w11*w6*(-q*w1 - q + w1 + 1);
+    o_mu_nu[i] = 2*w10*w11*w12*(-8*q + w3 + w4 + 3);
+    o_sigma_nu[i] = ik*w12*w8*(8*ik*q - ik + 2*q - 2*w0 - w2);
+  });
+  return List::create(Named("mu_mu") = o_mu_mu, Named("sigma_sigma") = o_sigma_sigma, Named("nu_nu") = o_nu_nu, Named("mu_sigma") = o_mu_sigma, Named("mu_nu") = o_mu_nu, Named("sigma_nu") = o_sigma_nu);
+}
+
+// order 1 of log f in y
+// [[Rcpp::export]]
+List student_t2_dy1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_y(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    return Prm{m, s, ik};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double z = (y[i] - m) / s;
+    const double q = z * z * ik;
+    const double t = 1.0 / (1.0 + q);
+    (void) t; (void) q;
+    o_y[i] = -t*z*(3*ik + 1)/s;
+  });
+  return List::create(Named("y") = o_y);
+}
+
+// order 2 of log f in y
+// [[Rcpp::export]]
+List student_t2_dy2_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_y(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, w0; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double w0 = 3*ik;
+    return Prm{m, s, ik, w0};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double w0 = P.w0; (void) w0;
+    const double z = (y[i] - m) / s;
+    const double q = z * z * ik;
+    const double t = 1.0 / (1.0 + q);
+    (void) t; (void) q;
+    o_y[i] = std::pow(t, 2)*(q*w0 + q - w0 - 1)/std::pow(s, 2);
+  });
+  return List::create(Named("y") = o_y);
+}
+
+// order 3 of log f in y
+// [[Rcpp::export]]
+List student_t2_dy3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_y(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    return Prm{m, s, ik};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double z = (y[i] - m) / s;
+    const double q = z * z * ik;
+    const double t = 1.0 / (1.0 + q);
+    (void) t; (void) q;
+    o_y[i] = 2*ik*std::pow(t, 3)*z*(-3*ik*q + 9*ik - q + 3)/std::pow(s, 3);
+  });
+  return List::create(Named("y") = o_y);
+}
+
+// order 4 of log f in y
+// [[Rcpp::export]]
+List student_t2_dy4_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu, int threads = 1) {
+  const int n = y.size();
+  const int n_mu = mu.size(), n_sigma = sigma.size(), n_nu = nu.size();
+  NumericVector o_y(n);
+  // the quantities of the parameters alone, once when they are scalars
+  struct Prm { double m, s, ik, w0; };
+  auto make = [&](std::size_t i) {
+    const double m = mu[i % n_mu], s = sigma[i % n_sigma];
+    const double v = nu[i % n_nu];
+    const double ik = 1.0 / (v - 2.0);
+    const double w0 = 3*ik;
+    return Prm{m, s, ik, w0};
+  };
+  const bool scalar = n_mu == 1 && n_sigma == 1 && n_nu == 1;
+  Prm P0{};
+  if (scalar) P0 = make(0);
+  d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
+    const Prm P = scalar ? P0 : make(i);
+    const double m = P.m; (void) m;
+    const double s = P.s; (void) s;
+    const double ik = P.ik; (void) ik;
+    const double w0 = P.w0; (void) w0;
+    const double z = (y[i] - m) / s;
+    const double q = z * z * ik;
+    const double t = 1.0 / (1.0 + q);
+    (void) t; (void) q;
+    const double w1 = std::pow(q, 2);
+    o_y[i] = 6*ik*std::pow(t, 4)*(-18*ik*q - 6*q + w0*w1 + w0 + w1 + 1)/std::pow(s, 4);
+  });
+  return List::create(Named("y") = o_y);
+}

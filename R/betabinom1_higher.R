@@ -13,21 +13,26 @@ NULL
 
 #' @rdname reparam_map_derivs
 #' @keywords internal
-md_betabinom1 <- function(psi) {
+md_betabinom1 <- function(psi, order) {
   m <- psi[[1]]
   s <- psi[[2]]
   one <- rep_len(1, max(length(m), length(s)))
   q <- 1 - m
-  list(
-    list("1" = one / s, "2" = -m / s^2,
-         "1,2" = -one / s^2, "2,2" = 2 * m / s^3,
-         "1,2,2" = 2 * one / s^3, "2,2,2" = -6 * m / s^4,
-         "1,2,2,2" = -6 * one / s^4, "2,2,2,2" = 24 * m / s^5),
-    list("1" = -one / s, "2" = -q / s^2,
-         "1,2" = one / s^2, "2,2" = 2 * q / s^3,
-         "1,2,2" = -2 * one / s^3, "2,2,2" = -6 * q / s^4,
-         "1,2,2,2" = 6 * one / s^4, "2,2,2,2" = 24 * q / s^5)
-  )
+  # alpha = m/s and beta = (1-m)/s: d^j (1/s) = (-1)^j j! s^-(j+1), and the
+  # partials carrying m once are those of 1/s one order down
+  out <- list(list("1" = one / s), list("1" = -one / s))
+  for (j in seq_len(order)) {
+    r <- (-1)^j * factorial(j) / s^(j + 1L)
+    k2 <- paste(rep("2", j), collapse = ",")
+    out[[1]][[k2]] <- m * r
+    out[[2]][[k2]] <- q * r
+    if (j < order) {
+      k12 <- paste(c("1", rep("2", j)), collapse = ",")
+      out[[1]][[k12]] <- one * r
+      out[[2]][[k12]] <- -one * r
+    }
+  }
+  out
 }
 
 #' Derivative Components of the Beta-Binomial in Mean and Dispersion
@@ -77,7 +82,7 @@ betabinom1_components <- function(distrib, y, theta, order) {
     parent = betabinom2_distrib(size = distrib@size),
     y = y,
     th_par = list(alpha = m / s, beta = (1 - m) / s),
-    maps = md_betabinom1(theta[1:2]),
+    maps = md_betabinom1(theta[1:2], order),
     new_params = distrib@params,
     order = order
   )

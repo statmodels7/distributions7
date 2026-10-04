@@ -1,3 +1,246 @@
+# distributions7 0.69.0
+
+* Every derivative surface forms only the orders it reads.
+  `fdb1()` and `fdb2()`, the written-out Faa di Bruno compositions, return
+  the partials of one order per call, where they returned every order to the
+  fourth; `fdb1_upto()` is removed. The map tables of the second
+  parametrizations (`md_lognormal2()` and the rest) take the highest order
+  to form, and each caller passes the one it reads: one for a gradient, a
+  distribution function's gradient or a mixed response derivative, two for
+  a Hessian or an expected information, the order plus one for a derivative
+  of the expected information. ⚠️ A `map_derivs` passed to `reparametrize()`
+  is now a function of two arguments, `function(psi, order)`, returning the
+  partials up to `order`; a function of one argument is rejected. The
+  numerical fallback forms its stencils to the same order.
+  `gengamma_components()` forms the two compositions at the order asked for
+  alone and `gpd_components()` up to it; the skew normal's third derivative
+  no longer forms the fourth derivative of log Phi.
+
+* The derivatives of the expected information are one compiled kernel per
+  order for every family that has them, where 25 kernels took the order as
+  an argument: `bernoulli_dexpected1_cpp()` and `bernoulli_dexpected2_cpp()`
+  and so on, and for the Poisson-inverse Gaussians `pig1_expected_cpp()` (the
+  information), `pig1_dexpected1_cpp()` and `pig1_dexpected2_cpp()`. The
+  generalized gamma's first-order kernel no longer evaluates polygammas of
+  order three, the negative binomials' first-order sums over the support no
+  longer accumulate the terms only the second order reads, and the
+  beta-binomial's first-order kernel forms its power sums to the third order
+  where it formed them to the fourth. Of 336 surfaces (28 families, both
+  orders, both scales, scalar and per-observation parameters) 318 are
+  bit-identical and the beta-binomials agree to 1.2e-12.
+  The second derivative of pig2's information on the link scale reads the
+  first derivatives from the first-order kernel; against exact sums both are
+  within 2e-13 of their scale (the 6.5e-10 first reported here was a relative
+  difference on entries that are zero by orthogonality). The
+  second derivative of the beta-binomial in mean and dispersion now runs two
+  passes over the support, one per order, where it ran one: 20 ms against 14
+  at n = 2000 and size 20.
+
+* The von Mises families compute their derivatives with compiled kernels,
+  one per order, and read the Bessel ratio from numericals7 0.18.0's
+  per-order functions, where every method computed the ratio's derivatives
+  to order four whatever it needed. `vonmises2_distrib()` no longer passes
+  through the chain rule on `vonmises1_distrib()`: since
+  d log I0(kappa(rho)) / d rho = rho kappa'(rho), its derivatives of order n
+  in rho are (cos(y - mu) - rho) kappa^(n) - (n - 1) kappa^(n-1), and only
+  the derivatives of the inverse are needed. Against 150-digit values the
+  largest relative error over orders one to four is 4.7e-15 for vonmises1
+  and 1.5e-14 for vonmises2, from a concentration of 1e-8 to 1e5. Before,
+  vonmises1's third and fourth derivatives in kappa had no correct digit
+  below kappa = 1e-7 and were out by 8e-11 and 5e-10 at 1e-3, and
+  vonmises2's fourth derivative in rho was out by 6.8e8 at rho = 8.9e-9 and
+  by 2e-6 at 5e-4. The gradient of vonmises2 takes 1.8 us per observation
+  (3.4 before), its fourth derivative 2.2 (3.0). The internal `vm2_parts()`
+  is removed.
+
+* `skewnormal2_distrib()`'s derivatives come from kernels of its own, one
+  per order and surface, rather than from the chain rule through
+  `skewnormal1_distrib()` with the map's partials tabulated to order four. A
+  derivative in the skewness is `(3 c r^2)^-1 d/dr` with `r` its cube root,
+  and the closed forms cancel terms of order `r^(-2k)` as the skewness goes
+  to zero; there the kernels use the series of the log-density in `r`,
+  computed offline at 60 digits. Against exact values every component is
+  within 4e-11 from a skewness of 1e-8 to the ceiling, where the chain lost
+  1.3e-5 at the fourth order at 1e-8 and its numerical fifth order every
+  digit below 1e-4. The score is now returned at zero skewness, where it is
+  finite; the observed derivatives of order two and more diverge there like
+  `gamma1^(-2/3)` and are still rejected, with the reason. The expected
+  information comes from its series in `r` below a skewness of 3e-3 and from
+  quadrature of the family's own derivatives above it; it is exact at zero
+  skewness, `diag(1, 2, 1/6)/sigma^2`, and within 5e-12 everywhere measured,
+  where the former route lost 1.7e-5 at 1e-8 and returned zero for
+  `E[l_mu_gamma1]`. The derivatives of the distribution function still go
+  through the map, whose partials are now formed to the order asked for.
+* `student_t1_distrib()`'s kernels are generated like those of
+  `student_t2_distrib()`, one per order and surface. New: the fifth order,
+  the expected third and fourth orders in closed form (they were
+  quadratures), the third and fourth derivatives in the response, and the
+  first and second derivatives of the expected information each from its
+  own kernel (they shared one kernel with the order as an argument).
+  Against exact values at 250 digits every component is within 4e-13 from
+  `nu = 0.3` to `1e10`; the former fourth order was 1.3e-3 out at
+  `nu = 1e6` and wrong in every digit by `1e10`, and the quadrature behind
+  the expected third and fourth orders was 9 per cent out at `nu = 1e3`.
+  The kernels of both Student t families take a thread count.
+* A fifth order written analytically is carried to the link scale.
+  `distrib_deriv5()`, unlike the generics of orders one to four, leaves the
+  link scale to its methods, and the analytic methods of this version had
+  returned the parameter scale for `scale = "link"`; they now compose it
+  with orders one to four through `to_link_scale()`.
+* `gengamma2_distrib()` is a family of its own (class `GenGamma2Distrib`)
+  rather than a `reparametrize()` of `gengamma1_distrib()`. Every derivative
+  in the mean, the shape and the power to order five, the expected
+  information, its expected third and fourth derivatives and its first two
+  derivatives, and the derivatives in the response are closed forms, each in
+  its own compiled kernel. Towards the lognormal, as `d/p` and `d` grow, the
+  terms of every derivative in `d` and `p` agree to several orders: the data
+  enter through two variables that are small there, and the coefficients,
+  functions of `(d, p)` alone, are formed in double-double arithmetic above
+  `d/p = 10` or `d = 10` and in double below. Against exact values at 1200
+  bits, the gradient, the Hessian and the expected information agree to
+  3e-14 or better everywhere measured, `d/p` from 0.5 to 1e7; orders three
+  to five to 1e-10 below the threshold, 7e-13 from it to `d/p = 2e5`, and
+  3e-5 at `d/p = 1e7`. The former construction lost 1e-3 at `d/p = 1e4`, was
+  wrong in every digit from `d/p = 2e5`, and could not be evaluated from
+  `d/p` about 170, `gamma(d/p)` overflowing in its map. The derivatives of the
+  distribution function are numerical, as for `gengamma1_distrib()`. Measured
+  at 1000 observations, the fifth order costs 0.4 microseconds an
+  observation when only the mean varies and 9.5 to 86 when `d` varies too,
+  against 600 to 780 for the former construction. The former construction is
+  the internal reference `gengamma2_by_reparam()`.
+* `student_t2_distrib()` is a family of its own (class `StudentT2Distrib`)
+  rather than a `reparametrize()` of `student_t1_distrib()`. Every
+  derivative in the location, the standard deviation and the degrees of
+  freedom to order five, the expected information, its expected third and
+  fourth derivatives and its first two derivatives, and the derivatives in
+  the response are closed forms, each in its own compiled kernel. The part in
+  the data is reduced symbolically and written in `q = z^2/(nu - 2)`,
+  `1/(nu - 2)` and `1/(1 + q)`; the quantities of `nu` alone are evaluated
+  from the polygamma functions below `nu = 20` and from their asymptotic
+  series above it. Against exact values at 250 digits, every component is
+  within 8e-13 relative from `nu = 2.5` to `1e10`, where the direct forms
+  lose all their digits by `nu = 1e8`, and every surface is finite at
+  `nu = .Machine$double.xmax`. The expectations are closed forms, `1/(1 + q)`
+  being beta distributed under the model. The derivatives of the distribution
+  function in `nu` are differenced, as for `student_t1_distrib()`. Measured
+  at 1000 observations, the third to fifth orders cost 0.3 ms against 9, 60
+  and 300 ms. The former construction is the internal reference
+  `student_t2_by_reparam()`.
+* `weibull3_distrib()` is a family of its own (class `Weibull3Distrib`)
+  rather than a `reparametrize()` of `weibull1_distrib()`, written like
+  `lognormal2_distrib()`: every surface a closed form in its own compiled
+  kernel, in `log(y / m)`, `lgamma(1 + 1/sigma)` and the polygamma functions
+  at `1 + 1/sigma`; the expectations use that `(y/b)^sigma` is a standard
+  exponential. The former construction is the internal reference
+  `weibull3_by_reparam()`.
+* `lognormal2_distrib()` is a family of its own (class `Lognormal2Distrib`)
+  rather than a `reparametrize()` of `lognormal1_distrib()`. Every surface is
+  a closed form in its own compiled kernel, one per order: the derivatives in
+  the mean and the variance to order five, the expected information, its
+  expected third and fourth derivatives and its first two derivatives, the
+  derivatives in the response, the mixed derivatives and the derivatives of
+  the distribution function to order four. The forms are written in
+  `log(y / m)` and `log1p(v / m^2)`, so the logarithm of the mean cancels.
+  They agree with the former construction, kept as the internal reference
+  `lognormal2_by_reparam()`, on every surface. Measured at 1e5 observations,
+  the gradient costs the same and the second to fourth orders cost 0.013,
+  0.013 and 0.020 s against 0.023, 0.043 and 0.157 s.
+* New family `pseudohuber2_distrib()`: the pseudo-Huber parametrized by its
+  location, its standard deviation and its shape, so that the gaussian limit
+  is reached along `nu` alone at a fixed `sigma`. Every derivative of the
+  log-density in the parameters to order five is in closed form, each order
+  in its own compiled kernel; it is the first family with an analytic fifth
+  order. The correlation of the scale and the log shape in the inverse
+  expected information is -0.37 at `nu = 1` and -0.05 at `nu = 1000`,
+  against -0.93 and -0.9997 for `pseudohuber_distrib()`. Measured at 1e5
+  observations, each order costs less than the same order of
+  `pseudohuber_distrib()` (0.002 against 0.004 s for the gradient, 0.28 s
+  against 1.11 s for the numerical fifth order).
+* The generator of `pseudohuber_distrib()` and `pseudohuber2_distrib()` draws
+  the family as a normal variance mixture with a generalized inverse Gaussian
+  mixing variable, sampled by the ratio-of-uniforms method with the mode
+  shifted (Hormann and Leydold, 2014), instead of inverting the quadrature
+  cdf: about 0.1 microseconds a draw against 9 milliseconds. Over seven shapes
+  from 1e-6 to 1e6, the empirical cdf of 1e6 draws at nine quantiles gave 63
+  binomial z-scores with standard deviation 0.95. The draws for a given seed
+  differ from those of 0.68.0.
+
+* `distrib_intercept_start()` has a method for `skewnormal1_distrib()`. When
+  the absolute sample skewness is at least 0.9 it returns the moment estimate
+  of `mu`, `sigma` and `alpha` with the skewness held at 0.9, so that a
+  regression does not start from the half-normal limit of the intercept-only
+  fit. On `MASS::Cars93`, price on horse power, that limit was
+  `alpha = 1.4e6`, and a `statmodels7::statmod()` fit could not leave it.
+* `distrib_intercept_start()` has a method for `pseudohuber_distrib()`. When
+  the sample excess kurtosis is below 0.05 it returns `nu = 10`, the mean, and
+  the `sigma` that matches the sample variance, so that a regression does not
+  start from the gaussian limit of the intercept-only fit, where `sigma` and
+  `nu` run to zero and infinity together. On ten simulated regressions with a
+  strong covariate, the regression started from that limit stopped 7.3 to
+  15.8 log-likelihood units below its maximum in four.
+
+* `gengamma1_distrib()`'s derivatives come from compiled kernels of its own,
+  one per order and surface, generated from the closed form in
+  `U = p log(y/a)` and `e^U`: orders one to five, the expected third and
+  fourth orders in closed form (they were quadratures, which failed on 395
+  of 1100 values measured and erred by up to 60% elsewhere), the derivatives
+  in the response and the mixed ones (stencils before), and the derivatives
+  of the expected information. The polygamma functions are taken at
+  `k + 1`, `k = d/p`, so that the poles in `1/k` the derivatives combine
+  cancel in the closed form: at `k = 2e-5` the former derivative of the
+  information lost 7e-7. Against exact values every surface is within 5e-15
+  of its scale from `k = 2e-5` to `1e8` (the score 2.4e-11 at `k = 1e8`,
+  the conditioning of `(U - psi(k))/p`), and an extreme scale no longer
+  gives `NaN`. Every surface is faster: the fifth order 0.15 us per
+  observation against 17, the expected third order 250 us against nothing
+  measurable. `gengamma_gradient_cpp()`, `gengamma_hessian_cpp()` and
+  `gengamma_expected_hessian_cpp()` are removed; `gengamma_components()`
+  stays as an independent reference for the tests.
+
+* `gpd_distrib()`'s derivatives come from compiled kernels of its own, one
+  per order and surface, the log-density included. Writing
+  `W = log(t)/xi = z phi(xi z)`, only the pure shape components carry
+  `phi^(j)`, summed as a series where it would cancel, so no form divides by
+  the shape and `xi = 0` is an ordinary point; `t = 1 + xi y/sigma` is
+  formed from the exact product `xi y`, which near the upper end of the
+  support (`xi < 0`) kept 1e-4 of every surface from being lost. The
+  expected third and fourth orders are closed forms, `NA` where they do not
+  exist (`xi <= -1/3` and `-1/4`; the quadrature returned numbers there),
+  and the derivatives of the distribution function and its logarithm, both
+  tails, are compiled: 0.15 to 0.5 us per observation against 46 to 51.
+  Every surface is within 5e-14 of its scale over the measured domain; the
+  derivatives of the log-density outside the support are `NaN`.
+  `gpd_surv_pieces()` and `gpd_lambda_derivs()` are removed.
+
+* The variance, skewness and kurtosis of `gengamma1_distrib()` and
+  `gengamma2_distrib()` no longer cancel towards the lognormal: the central
+  moments of `Y/E[Y]` come from the series of the cumulant generating
+  function of `log Y` through Stirling numbers, in double-double arithmetic.
+  The variance at `d/p = 1e6` was out by 2.4e-4 and is within 1e-15; the
+  kurtosis lost every digit and is within 1e-11 except at `p = 2` and
+  `p = 4` (and the skewness at `p = 3`) with `d/p` past 1e5, where the
+  leading coefficient vanishes and the value is ill conditioned in `p`
+  itself. `gengamma_raw_moments()` and `gengamma2_ratios()` are removed.
+
+* The expected information of `pig1_distrib()` and `pig2_distrib()` and its
+  two derivatives come from their series in `sigma` or `1/alpha`, to order
+  20, where `(1 + mu) sigma` or `(1 + mu)/alpha` is at most 0.06. Near the
+  Poisson limit the sums over the support add terms of size one to results
+  of size `sigma^2` or `alpha^-3`: pig2's second derivative was out by
+  2.2e-5 at `alpha = 1e4` and by fifteen times its value at `1e6`, pig1's
+  information by 1.6e-4 at `sigma = 1e-6`. Every component is within 4e-16
+  there, against sums exact to 60 digits.
+
+* `skewnormal2_distrib()`'s derivatives of the distribution function at
+  zero skewness: the first order is its limit, from
+  `F = Phi(z) - gamma1 (z^2 - 1) phi(z)/6 + O(gamma1^(4/3))`, and the higher
+  orders, which diverge in the skewness, are rejected as the log-density's
+  are, where an internal error was signalled.
+
+* The third and fourth derivatives in the response of `weibull1_distrib()`
+  were wrong when its shape varied by observation (`dy_pow()` reduced the
+  exponent to one number).
+
 # distributions7 0.68.0
 
 * A multivariate family reports the quantities of the parametrization it was

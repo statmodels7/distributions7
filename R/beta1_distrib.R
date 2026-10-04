@@ -556,12 +556,14 @@ S7::method(distrib_expected_hessian, Beta1Distrib) <- function(distrib, y, theta
 #' @keywords internal
 S7::method(distrib_dexpected_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
-                     function(k) beta_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
+                     function(k) (if (k == 1L) beta_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
+                       else beta_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)))
 }
 
 S7::method(distrib_d2expected_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
-                     function(k) beta_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
+                     function(k) (if (k == 1L) beta_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
+                       else beta_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)))
 }
 
 #' @title Beta Third-Order Derivatives in Mean and Precision

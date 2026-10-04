@@ -285,9 +285,10 @@ test_that("the centred parametrization is singular at zero skewness", {
   }, 0)
   expect_true(all(is.finite(g1)))
   expect_lt(max(g1) - min(g1), 1e-3)
-  # and the point itself is REJECTED, with the reason named, rather than left
-  # to reach a comparison against NA several frames further on
-  expect_error(distrib_gradient(d2, y, at(0)), "zero skewness")
+  # the score at the point itself is that limit, from the series of the
+  # log-density in gamma1^(1/3)
+  expect_equal(sum(distrib_gradient(d2, y, at(0))$gamma1), mean(g1), tolerance = 1e-6)
+  # the second derivatives are rejected there, with the reason named
   expect_error(distrib_hessian(d2, y, at(0)), "skewnormal1_distrib")
 
   # the second derivative diverges like gamma1^(-2/3): a hundredfold step in

@@ -346,17 +346,5 @@ S7::method(distrib_cross2_y, Gaussian1Distrib) <- function(distrib, y, theta,
 S7::method(distrib_cross2_y, StudentT1Distrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"),
                                                            ...) {
-  mu <- theta[[1]]
-  sigma <- theta[[2]]
-  nu <- theta[[3]]
-  z <- (y - mu) / sigma
-  d <- nu + z^2
-  Q <- (nu - z^2) / d^2
-  Qz <- 2 * z * (z^2 - 3 * nu) / d^3
-  Qnu <- (3 * z^2 - nu) / d^3
-  list(
-    mu = (nu + 1) * Qz / sigma^3,
-    sigma = (nu + 1) * (2 * Q + z * Qz) / sigma^3,
-    nu = -(Q + (nu + 1) * Qnu) / sigma^2
-  )
+  student_t1_cross2_y_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }

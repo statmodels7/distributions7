@@ -320,13 +320,11 @@ test_that("a component 5 per cent out fails the Richardson comparison", {
   d <- gamma2_distrib(); th <- list(mu = 2.1, sigma2 = 1.3)
   r <- dexpected_richardson(d, th)
   good <- distrib_d2expected_hessian(d, 0, th)
-  real <- gamma2_dexpected_cpp
-  local_mocked_bindings(gamma2_dexpected_cpp = function(y, mu, sigma2, order, threads = 1) {
-    out <- real(y, mu, sigma2, order, threads)
-    if (order == 2L) {
-      k <- names(out)[which.max(vapply(out, function(v) max(abs(v)), 0))]
-      out[[k]] <- 1.05 * out[[k]]
-    }
+  real <- gamma2_dexpected2_cpp
+  local_mocked_bindings(gamma2_dexpected2_cpp = function(y, mu, sigma2, threads = 1) {
+    out <- real(y, mu, sigma2, threads)
+    k <- names(out)[which.max(vapply(out, function(v) max(abs(v)), 0))]
+    out[[k]] <- 1.05 * out[[k]]
     out
   })
   bad <- distrib_d2expected_hessian(d, 0, th)
@@ -399,6 +397,43 @@ test_that("the beta-binomial kernel agrees with the sum over the family's own de
       for (nm in names(a)) {
         expect_lt(max(abs(a[[nm]] - b[[nm]])) / max(abs(b[[nm]]), 1e-300), 1e-10,
                   label = paste(class(d)[1], nm))
+      }
+    }
+  }
+})
+
+
+test_that("the PIG's expected information keeps its digits near the Poisson limit", {
+  # exact values (stabilita/pig*_dexpected_ref.py, 60 digits); summed over the
+  # support these components lost 2.2e-5 (pig2, alpha = 1e4) and 1.6e-4
+  # (pig1, sigma = 1e-6), and are now taken from their series
+  d2 <- pig2_distrib(); th2 <- list(mu = 2, alpha = 1e4)
+  expect_equal(distrib_d2expected_hessian(d2, 1, th2)$mu_mu_mu_alpha,
+               5.99999940000004199999748e-16, tolerance = 1e-14)
+  expect_equal(distrib_dexpected_hessian(d2, 1, th2)$alpha_alpha_alpha,
+               8.00299891937016653838692e-20, tolerance = 1e-14)
+  expect_equal(distrib_expected_hessian(d2, 1, th2)$alpha_alpha,
+               -2.000599819910020815376692e-16, tolerance = 1e-14)
+  expect_identical(distrib_expected_hessian(d2, 1, th2)$mu_alpha, 0)
+  d1 <- pig1_distrib(); th1 <- list(mu = 2, sigma = 1e-6)
+  expect_equal(distrib_expected_hessian(d1, 1, th1)$mu_sigma,
+               1.99998600005399967299478e-12, tolerance = 1e-14)
+  expect_equal(distrib_dexpected_hessian(d1, 1, th1)$mu_mu_sigma,
+               0.999996000011999960000351, tolerance = 1e-14)
+  expect_equal(distrib_d2expected_hessian(d1, 1, th1)$sigma_sigma_sigma_sigma,
+               -51.99977200167997316018852, tolerance = 1e-14)
+  # the series and the sums meet at the threshold (1 + mu) x = 0.06
+  for (m in c(0.5, 2, 20)) {
+    x <- 0.06 / (1 + m)
+    for (dd in list(list(d1, list(mu = m, sigma = x * c(0.999, 1.001))),
+                    list(d2, list(mu = m, alpha = 1 / x * c(1.001, 0.999))))) {
+      for (f in list(distrib_expected_hessian, distrib_dexpected_hessian,
+                     distrib_d2expected_hessian)) {
+        v <- f(dd[[1]], c(1, 1), dd[[2]])
+        for (nm in names(v)) {
+          sc <- max(abs(unlist(v)))
+          expect_lt(abs(v[[nm]][1] - v[[nm]][2]), 1e-2 * sc, label = nm)
+        }
       }
     }
   }

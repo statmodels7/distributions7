@@ -9,14 +9,20 @@
 il <- function() linkfunctions7::identity_link()
 ll <- function() linkfunctions7::log_link()
 
+# keep the partials of a written table up to the order asked for, which is
+# what the map_derivs contract returns
+upto <- function(tab, order) {
+  lapply(tab, function(t) t[lengths(strsplit(names(t), ",")) <= order])
+}
+
 # explicit map derivatives, so the twins stay at machine precision
-mdg2 <- function(psi) {
+mdg2 <- function(psi, order) {
   v <- psi[[2]]
-  list(
+  upto(list(
     list("1" = rep_len(1, length(v))),
     list("2" = 0.5 / sqrt(v), "2,2" = -0.25 / v^1.5,
          "2,2,2" = 0.375 / v^2.5, "2,2,2,2" = -0.9375 / v^3.5)
-  )
+  ), order)
 }
 
 reparam_gaussian2 <- function() {
@@ -30,11 +36,11 @@ reparam_gaussian2 <- function() {
   )
 }
 
-mdb2 <- function(psi) {
+mdb2 <- function(psi, order) {
   a <- psi[[1]]; b <- psi[[2]]
   s <- a + b
   one <- rep_len(1, length(s))
-  list(
+  upto(list(
     list("1" = b / s^2, "2" = -a / s^2,
          "1,1" = -2 * b / s^3, "1,2" = (a - b) / s^3, "2,2" = 2 * a / s^3,
          "1,1,1" = 6 * b / s^4, "1,1,2" = (4 * b - 2 * a) / s^4,
@@ -43,7 +49,7 @@ mdb2 <- function(psi) {
          "1,1,2,2" = (12 * a - 12 * b) / s^5,
          "1,2,2,2" = (18 * a - 6 * b) / s^5, "2,2,2,2" = 24 * a / s^5),
     list("1" = one, "2" = one)
-  )
+  ), order)
 }
 
 reparam_beta2 <- function() {
@@ -90,14 +96,14 @@ test_that("the mechanism reproduces the families written by hand", {
   expect_lt(worst_gap(all_derivs(r, y, th), all_derivs(h, y, th)), 1e-12)
 
   # a map that is dense, both parent parameters moving with both new ones
-  mdrg <- function(psi) {
+  mdrg <- function(psi, order) {
     m <- psi[[1]]; ph <- psi[[2]]
     one <- rep_len(1, length(m))
-    list(
+    upto(list(
       list("1" = one),
       list("1" = 2 * ph * m, "2" = m^2, "1,1" = 2 * ph * one,
            "1,2" = 2 * m, "1,1,2" = 2 * one)
-    )
+    ), order)
   }
   rg <- reparametrize(
     gamma2_distrib(),
@@ -181,7 +187,7 @@ test_that("the constructor probes inside each parameter's own interval", {
   # back to zero put the probe outside the domain, and a map like
   # sqrt((nu-2)/nu) warned "NaNs produced" at construction, naming neither the
   # parameter nor the reason.
-  expect_silent(student_t2_distrib())
+  expect_silent(student_t2_by_reparam())
 
   # and a map that genuinely cannot be evaluated says where
   expect_error(
@@ -219,10 +225,10 @@ test_that("reparametrize refuses what it cannot use", {
 
 test_that("the four families built on it are what they say", {
   cases <- list(
-    list(lognormal2_distrib(), list(mean = 3, var = 2)),
-    list(weibull3_distrib(), list(mean = 4, sigma = 1.7)),
-    list(student_t2_distrib(), list(mu = 0, sigma = 2, nu = 8)),
-    list(gengamma2_distrib(), list(mean = 5, d = 3, p = 1.5))
+    list(lognormal2_by_reparam(), list(mean = 3, var = 2)),
+    list(weibull3_by_reparam(), list(mean = 4, sigma = 1.7)),
+    list(student_t2_by_reparam(), list(mu = 0, sigma = 2, nu = 8)),
+    list(gengamma2_by_reparam(), list(mean = 5, d = 3, p = 1.5))
   )
   for (cs in cases) {
     d <- cs[[1]]
@@ -239,8 +245,8 @@ test_that("the four families built on it are what they say", {
   }
 
   # and the two that name a variance name it
-  expect_equal(variance(lognormal2_distrib(), list(mean = 3, var = 2)), 2)
-  expect_equal(variance(student_t2_distrib(), list(mu = 0, sigma = 2, nu = 8)), 4)
+  expect_equal(variance(lognormal2_by_reparam(), list(mean = 3, var = 2)), 2)
+  expect_equal(variance(student_t2_by_reparam(), list(mu = 0, sigma = 2, nu = 8)), 4)
 })
 
 
@@ -307,4 +313,51 @@ test_that("the stencil fallback serves a map with no derivatives supplied", {
   ha <- distrib_hessian(r, y, th)
   hb <- distrib_hessian(h, y, th)
   for (nm in names(hb)) expect_equal(ha[[nm]], hb[[nm]], tolerance = 1e-4)
+})
+
+
+test_that("map tables are formed only to the order a caller reads", {
+  # a map_derivs of one argument cannot be told the order, so it is rejected
+  expect_error(
+    reparametrize(gaussian1_distrib(),
+                  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+                  params = c("mu", "sigma2"),
+                  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+                  links = list(mu = il(), sigma2 = ll()),
+                  map_derivs = function(psi) mdg2(psi, 4L)),
+    "function\\(psi, order\\)")
+  longest <- function(tab) {
+    max(unlist(lapply(tab, function(t) lengths(strsplit(names(t), ",")))))
+  }
+  maps <- list(
+    list(f = distributions7:::md_lognormal2, th = list(3, 2)),
+    list(f = distributions7:::md_weibull3, th = list(4, 1.7)),
+    list(f = distributions7:::md_student_t2, th = list(0, 2, 8)),
+    list(f = distributions7:::md_gengamma2, th = list(5, 3, 1.5)),
+    list(f = distributions7:::md_invgauss2, th = list(2, 3)),
+    list(f = distributions7:::md_laplace2, th = list(0, 2)),
+    list(f = distributions7:::md_gaussian2, th = list(0, 2)),
+    list(f = distributions7:::md_gaussian3, th = list(0, 2)),
+    list(f = distributions7:::md_skewnormal2, th = list(0, 1, 0.4)),
+    list(f = distributions7:::md_betabinom1, th = list(0.3, 0.2)))
+  for (mp in maps) {
+    full <- mp$f(mp$th, 4L)
+    for (o in 1:4) {
+      tab <- mp$f(mp$th, o)
+      expect_equal(longest(tab), o)
+      # the partials of order up to o are those of the full table
+      for (i in seq_along(full)) {
+        keep <- full[[i]][lengths(strsplit(names(full[[i]]), ",")) <= o]
+        expect_identical(tab[[i]][names(keep)], keep)
+        expect_setequal(names(tab[[i]]), names(keep))
+      }
+    }
+  }
+  # and the numerical fallback forms the same keys
+  r <- reparametrize(gaussian1_distrib(),
+                     map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+                     params = c("mu", "sigma2"),
+                     bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+                     links = list(mu = il(), sigma2 = ll()))
+  expect_equal(longest(distributions7:::reparam_tables(r, list(0, 2), 2L)), 2)
 })

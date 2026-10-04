@@ -53,6 +53,7 @@ reference:
   - laplace2_distrib
   - enet_distrib
   - pseudohuber_distrib
+  - pseudohuber2_distrib
   - skewnormal1_distrib
   - skewnormal2_distrib
   - skewt_distrib
@@ -149,7 +150,6 @@ reference:
   - skewness
   - kurtosis
   - moment_const
-  - gengamma_raw_moments
   - betabinom_factorial_moments
   - central_from_factorial
   - betabinom_central
@@ -276,6 +276,8 @@ reference:
   contents: [LogisticDistrib, ends_with(".LogisticDistrib")]
 - title: Student's t
   contents: [StudentT1Distrib, ends_with(".StudentT1Distrib")]
+- title: Student's t, standard deviation
+  contents: [StudentT2Distrib, ends_with(".StudentT2Distrib")]
 - title: Laplace
   contents: [LaplaceDistrib, ends_with(".LaplaceDistrib")]
 - title: Laplace, location and rate
@@ -284,17 +286,21 @@ reference:
   contents: [EnetDistrib, ends_with(".EnetDistrib")]
 - title: Pseudo-Huber
   contents: [PseudoHuberDistrib, ends_with(".PseudoHuberDistrib")]
+- title: Pseudo-Huber, standard deviation
+  contents: [PseudoHuber2Distrib, ends_with(".PseudoHuber2Distrib")]
 - title: Skew normal
   contents: [SkewNormal1Distrib, ends_with(".SkewNormal1Distrib")]
 - title: Skew normal, centered
   contents: [SkewNormal2Distrib, ends_with(".SkewNormal2Distrib"),
-             sn_b, sn_max_skew, sn_cp_to_dp, sn2_theta, sn2_chain]
+             sn_b, sn_max_skew, sn_cp_to_dp, sn2_theta]
 - title: Skew t
   contents: [SkewTDistrib, ends_with(".SkewTDistrib")]
 - title: Gumbel
   contents: [GumbelDistrib, ends_with(".GumbelDistrib")]
 - title: Weibull
   contents: [Weibull1Distrib, ends_with(".Weibull1Distrib")]
+- title: Weibull in the mean
+  contents: [Weibull3Distrib, ends_with(".Weibull3Distrib")]
 - title: Exponential
   contents: [ExponentialDistrib, ends_with(".ExponentialDistrib")]
 - title: Chi-squared
@@ -309,6 +315,8 @@ reference:
   contents: [InvGauss2Distrib, ends_with(".InvGauss2Distrib")]
 - title: Lognormal
   contents: [Lognormal1Distrib, ends_with(".Lognormal1Distrib")]
+- title: Lognormal, mean and variance
+  contents: [Lognormal2Distrib, ends_with(".Lognormal2Distrib")]
 - title: Beta
   contents: [Beta1Distrib, ends_with(".Beta1Distrib")]
 - title: Beta in its shapes
@@ -323,10 +331,12 @@ reference:
   contents: [NegBin2Distrib, ends_with(".NegBin2Distrib")]
 - title: Generalized gamma
   contents: [GenGamma1Distrib, ends_with(".GenGamma1Distrib")]
+- title: Generalized gamma in the mean
+  contents: [GenGamma2Distrib, ends_with(".GenGamma2Distrib")]
 - title: von Mises
   contents: [VonMises1Distrib, ends_with(".VonMises1Distrib")]
 - title: von Mises in its resultant length
-  contents: [VonMises2Distrib, ends_with(".VonMises2Distrib"), vm2_parts]
+  contents: [VonMises2Distrib, ends_with(".VonMises2Distrib")]
 - title: Generalized Pareto
   contents: [GPDDistrib, ends_with(".GPDDistrib")]
 - title: Poisson-inverse Gaussian

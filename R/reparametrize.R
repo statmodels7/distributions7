@@ -177,19 +177,23 @@ reparam_theta <- function(distrib, theta) {
 #' @param distrib A reparametrized distribution.
 #' @param theta A named list of the new parameters, already aligned by
 #'   [reparam_theta()]'s caller. Only the first `n_params` components are read.
+#' @param order The highest order of partial the caller reads, an integer from
+#'   1 to 4: one for a gradient, a distribution function's gradient or a mixed
+#'   response derivative, two for a Hessian or an expected information, and
+#'   so on. No partial of higher order is formed.
 #'
 #' @return A list over the parent's parameters, each element a keyed list of
-#'   that component's partial derivatives.
+#'   that component's partial derivatives up to order `order`.
 #'
 #' @seealso [reparam_stencil_derivs()] for the numerical route;
 #'   [reparam_map_derivs()] for the hand-written tables;
 #'   [chain_derivatives()], the consumer.
 #'
 #' @keywords internal
-reparam_tables <- function(distrib, theta) {
+reparam_tables <- function(distrib, theta, order) {
   q <- distrib@n_params
   psi <- theta[seq_len(q)]
-  distrib@reparam_derivs(psi)
+  distrib@reparam_derivs(psi, order)
 }
 
 #' One Stencil Per Map Partial
@@ -214,8 +218,9 @@ reparam_tables <- function(distrib, theta) {
 #' @param parent_params A character vector naming the parent's, which fixes the
 #'   order of the returned list.
 #'
-#' @return A function of the new parameters, usable as an object's
-#'   `reparam_derivs`, returning the keyed tables [reparam_tables()] describes.
+#' @return A function of the new parameters and the highest order to form,
+#'   usable as an object's `reparam_derivs`, returning the keyed tables
+#'   [reparam_tables()] describes.
 #'
 #' @seealso [reparam_tables()], which calls the result;
 #'   [numericals7::fd_derivative()] for the stencil;
@@ -225,11 +230,11 @@ reparam_tables <- function(distrib, theta) {
 reparam_stencil_derivs <- function(map, params, parent_params) {
   q <- length(params)
   pp <- length(parent_params)
-  function(psi) {
+  function(psi, order) {
     n <- max(lengths(psi))
     rows <- if (n > 1L) seq_len(n) else 1L
     tabs <- lapply(seq_len(pp), function(i) list())
-    tuples <- unlist(lapply(1:4, function(r) {
+    tuples <- unlist(lapply(seq_len(order), function(r) {
       g <- expand.grid(rep(list(seq_len(q)), r))
       keys <- apply(g, 1L, function(z) paste(sort(z), collapse = ","))
       unique(keys)
@@ -307,7 +312,7 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE,
     parent = distrib@parent_distrib,
     y = y,
     th_par = reparam_theta(distrib, theta),
-    maps = reparam_tables(distrib, theta),
+    maps = reparam_tables(distrib, theta, order),
     new_params = distrib@params,
     order = order,
     expected = expected,
@@ -1163,6 +1168,14 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #' Returns the same law as `distrib`, parametrized by quantities of the
 #' caller's choosing.
 #'
+#' The function is meant for trying a parametrization the package does not
+#' ship. Every derivative it returns is assembled from the parent's
+#' derivatives through the map, one order at a time, so it costs more than a
+#' family written for that parametrization; a parametrization used in a
+#' real analysis is better written as a distribution of its own, with its
+#' derivatives in compiled code, which is how the families of this package
+#' are written.
+#'
 #' @details
 #' A reparametrization is not a link. A link changes the scale a parameter is
 #' *modeled* on and leaves the parameter what it was; here the parameter
@@ -1214,13 +1227,16 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #'   each new parameter lives in.
 #' @param links A named list of \pkg{linkfunctions7} links, one per new
 #'   parameter.
-#' @param map_derivs An optional function returning, for each parent
-#'   parameter, the non-zero partial derivatives of the map with respect to
-#'   the new parameters to fourth order, keyed by the sorted tuple of
+#' @param map_derivs An optional function of two arguments, the named list
+#'   of new parameters and `order`, an integer from 1 to 4, returning for each
+#'   parent parameter the non-zero partial derivatives of the map with respect
+#'   to the new parameters up to order `order`, keyed by the sorted tuple of
 #'   new-parameter positions ("1", "1,2", "2,2,3,3", ...); a missing key is
-#'   an exact zero. The shipped second parametrizations supply hand-written
-#'   tables (see [reparam_map_derivs()]); when `NULL`, each
-#'   needed partial comes from one finite-difference stencil on the map.
+#'   an exact zero. Each caller passes the highest order it reads, so a
+#'   gradient asks for order one and a fourth derivative for order four. The
+#'   shipped second parametrizations supply hand-written tables (see
+#'   [reparam_map_derivs()]); when `NULL`, each needed partial comes from one
+#'   finite-difference stencil on the map.
 #' @param interpretation An optional named character vector describing each new
 #'   parameter; defaults to the parameter names.
 #' @param name An optional name for the result; defaults to the parent's with
@@ -1325,6 +1341,12 @@ reparametrize <- function(distrib, map, params, bounds, links,
     ReparamDiscreteDistrib
   } else {
     ReparamContinuousDistrib
+  }
+
+  if (!is.null(map_derivs) &&
+      (!is.function(map_derivs) || length(formals(map_derivs)) < 2L)) {
+    stop("'map_derivs' must be a function of the new parameters and the ",
+         "highest order to form, function(psi, order).", call. = FALSE)
   }
 
   cls(

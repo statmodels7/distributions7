@@ -20,33 +20,32 @@ setting. \code{sigma} and \code{nu} must be strictly positive.}
 A numeric vector of \code{n} draws.
 }
 \description{
-Draws \code{n} independent variates by inverse transform: uniform variates from
-\code{\link[stats:Uniform]{stats::runif()}} passed through
-\code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile.PseudoHuberDistrib()}}. Each draw therefore costs a
-root-find over a quadrature, which makes this the slowest generator in the
-package; a sample of a few thousand is comfortable, a sample of a million is
-not. The draws depend on \code{.Random.seed} in the usual way.
+Draws \code{n} independent variates as a normal variance mixture,
+\eqn{Y = \mu + \sqrt{W} Z} with \eqn{Z} standard normal and
+\eqn{W = \sigma^2 \sqrt{\nu}\, X}, where \eqn{X} follows the generalized
+inverse Gaussian law with density proportional to
+\eqn{\exp\{-\sqrt{\nu}\,(x + 1/x)/2\}}. \eqn{X} is drawn by the
+ratio-of-uniforms method with the mode shifted to the origin (Hormann and
+Leydold, 2014), whose bounding box is set once per distinct \eqn{\nu};
+below \eqn{\nu = 10^{-16}} the mixing law is its exponential limit. The
+draws depend on \code{.Random.seed} in the usual way.
 }
 \examples{
 d <- pseudohuber_distrib()
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 
-# The draws are the quantile function at uniform variates, which is the
-# whole mechanism and the whole cost.
+# The moments of a sample sit where the sampling error puts them.
 set.seed(6)
-a <- distrib_rng(d, 5, th)
-set.seed(6)
-identical(a, distrib_quantile(d, runif(5), th))
-
-# A sample of a few hundred is comfortable, and its moments sit where the
-# sampling error of that size puts them.
-set.seed(6)
-z <- distrib_rng(d, 300, th)
+z <- distrib_rng(d, 1e5, th)
 rbind(sample = c(mean(z), var(z)),
       theoretical = c(mean(d, th), variance(d, th)))
 }
+\references{
+Hormann, W. and Leydold, J. (2014). Generating generalized inverse Gaussian
+random variates. \emph{Statistics and Computing}, \strong{24}(4), 547-557.
+}
 \seealso{
-\code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile.PseudoHuberDistrib()}} for the inversion,
+\code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile.PseudoHuberDistrib()}} for the quantile function,
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
 \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

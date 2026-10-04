@@ -22,12 +22,18 @@ using namespace Rcpp;
 //   d/dsigma [A(z)/sigma^k] = -(z A'(z) + k A(z)) / sigma^(k+1);
 // the alpha components differentiate g(t) directly through t = alpha z.
 
-static inline void sn_g(double t, double g[5]) {
+// g1 to g3, what the third order reads, and g1 to g4 for the fourth; the
+// third-order kernel does not form g4
+static inline void sn_g3(double t, double g[5]) {
     double R = std::exp(R::dnorm4(t, 0.0, 1.0, 1) - R::pnorm5(t, 0.0, 1.0, 1, 1));
     double g2 = -R * (t + R);
     double g3 = -g2 * (t + R) - R * (1.0 + g2);
-    double g4 = -g3 * (t + 2.0 * R) - 2.0 * g2 * (1.0 + g2);
-    g[1] = R; g[2] = g2; g[3] = g3; g[4] = g4;
+    g[1] = R; g[2] = g2; g[3] = g3;
+}
+
+static inline void sn_g4(double t, double g[5]) {
+    sn_g3(t, g);
+    g[4] = -g[3] * (t + 2.0 * g[1]) - 2.0 * g[2] * (1.0 + g[2]);
 }
 
 // [[Rcpp::export]]
@@ -53,7 +59,7 @@ List skewnormal_deriv3_cpp(NumericVector y, NumericVector mu,
         double z2 = z * z, z3 = z2 * z, t2 = t * t;
 
         double g[5];
-        sn_g(t, g);
+        sn_g3(t, g);
         double h1 = -z + a * g[1];
         double h2 = -1.0 + a * a * g[2];
         double h3 = a * a * a * g[3];
@@ -111,7 +117,7 @@ List skewnormal_deriv4_cpp(NumericVector y, NumericVector mu,
         double t2 = t * t, t3 = t2 * t;
 
         double g[5];
-        sn_g(t, g);
+        sn_g4(t, g);
         double h1 = -z + a * g[1];
         double h2 = -1.0 + a * a * g[2];
         double h3 = a * a * a * g[3];

@@ -624,12 +624,14 @@ constant_to_scalar <- function(x) {
 #' @keywords internal
 S7::method(distrib_dexpected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
-                     function(k) negbin_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
+                     function(k) (if (k == 1L) negbin_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
+                       else negbin_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)))
 }
 
 S7::method(distrib_d2expected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
-                     function(k) negbin_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
+                     function(k) (if (k == 1L) negbin_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
+                       else negbin_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)))
 }
 
 #' @title Negative Binomial Third-Order Derivatives, NB2

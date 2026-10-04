@@ -669,5 +669,5 @@ test_that("only the mathematical obstructions are left on the cdf stencil", {
     }
   }
   expect_setequal(open, c("beta1", "beta2", "chisq", "gamma1", "gamma2",
-                          "gengamma1", "vonmises1", "vonmises2"))
+                          "gengamma1", "gengamma2", "vonmises1", "vonmises2"))
 })

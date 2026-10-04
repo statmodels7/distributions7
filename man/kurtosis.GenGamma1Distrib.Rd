@@ -8,7 +8,7 @@
 
 \item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive,
 each a numeric vector of length 1 or \code{n}. Only \code{d} and \code{p} enter the
-value; the fourth-order combination cancels heavily at small dispersions.}
+value.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -22,6 +22,16 @@ Assembled from the first four raw moments,
 with \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale cancels, and
 the two shapes move the skewness and the kurtosis with some freedom, where a
 gamma ties them by \eqn{\gamma_2 = 3\gamma_1^2/2}.
+}
+\details{
+The excess is the fourth cumulant over the squared variance,
+\eqn{\gamma_2 = (\mu_4 - 3\mu_2^2)/\mu_2^2}, with the central moments of
+\eqn{Y/m_1} computed as \code{\link[=variance.GenGamma1Distrib]{variance.GenGamma1Distrib()}} describes and the
+difference \eqn{\mu_4 - 3\mu_2^2} formed in the same double-double
+arithmetic. Towards the lognormal the excess is of order \eqn{1/k},
+\eqn{k = d/p}, with coefficient \eqn{2(4h - 1)(2h - 1)}, \eqn{h = 1/p}; at
+\eqn{p = 2} and \eqn{p = 4} that coefficient vanishes and the excess is of
+order \eqn{1/k^2}.
 }
 \section{Notation}{
 
@@ -42,7 +52,6 @@ all.equal(kurtosis(d, th), 1.5 * skewness(d, th)^2)
 
 }
 \seealso{
-\code{\link[=skewness.GenGamma1Distrib]{skewness.GenGamma1Distrib()}}, from the same raw moments;
-\code{\link[=gengamma_raw_moments]{gengamma_raw_moments()}}, \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.
+\code{\link[=skewness.GenGamma1Distrib]{skewness.GenGamma1Distrib()}}, \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.
 }
 \keyword{internal}

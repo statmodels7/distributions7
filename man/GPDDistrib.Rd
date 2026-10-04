@@ -71,13 +71,12 @@ Registered in this file, all compiled apart from the first four:
 \code{\link[=distrib_hessian.GPDDistrib]{distrib_hessian()}},
 \code{\link[=distrib_expected_hessian.GPDDistrib]{distrib_expected_hessian()}}.
 
-Registered elsewhere: the third and fourth orders in \code{gpd_higher.R}
-(\code{\link[=distrib_deriv3.GPDDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.GPDDistrib]{distrib_deriv4()}}); the response derivatives
-and the mixed one in \code{cross_derivatives_families.R}
-(\code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{\link[=distrib_hess_y]{distrib_hess_y()}},
-\code{\link[=distrib_cross_y]{distrib_cross_y()}}); the four moments in \code{moments.R};
-and the second-order response derivatives in \code{theta2_more.R}.
+Registered elsewhere, compiled, in \code{gpd_higher.R}: the orders three to five
+(\code{\link[=distrib_deriv3.GPDDistrib]{distrib_deriv3()}}), the derivatives in the
+response (\code{\link[=distrib_grad_y.GPDDistrib]{distrib_grad_y()}}) and those of the
+distribution function (\code{\link[=distrib_grad_cdf.GPDDistrib]{distrib_grad_cdf()}});
+the derivatives of the expected information in \code{dexpected_families.R}; and
+the four moments in \code{moments.R}.
 }
 
 \section{What the moving endpoint costs}{

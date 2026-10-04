@@ -17,6 +17,10 @@ positive.}
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{mu_kappa} and
@@ -36,11 +40,10 @@ apart from the normalizing constant, so \eqn{\kappa} appears twice only
 inside \eqn{\log I_0}. It therefore equals its own expectation at every
 observation.
 
-\eqn{A'} comes from the Riccati recurrence
-\eqn{A' = 1 - A/\kappa - A^2}, which \code{\link[numericals7:bessel_i_ratio_derivs]{numericals7::bessel_i_ratio_derivs()}}
-runs, so no second Bessel evaluation is needed. It is the variance of
+\eqn{A'} comes from \code{\link[numericals7:bessel_i_ratio_d1]{numericals7::bessel_i_ratio_d1()}}, accurate to the
+last bits at any concentration. It is the variance of
 \eqn{\cos(Y-\mu)} and is positive, so the information is positive
-definite.
+definite. The components are computed by a compiled kernel.
 }
 \section{Notation}{
 
@@ -60,10 +63,10 @@ names(h)
 # The pure-concentration entry is one number, repeated.
 unique(h$kappa_kappa)
 
-# And it is minus A', which the Riccati recurrence gives.
+# And it is minus A', which satisfies the Riccati identity.
 A <- numericals7::bessel_i_ratio(2)
 c(riccati = 1 - A / 2 - A^2,
-  supplied = numericals7::bessel_i_ratio_derivs(2)$d1)
+  supplied = numericals7::bessel_i_ratio_d1(2))
 
 # numDeriv on the summed log-density reproduces the summed matrix.
 fn <- function(p)
@@ -75,6 +78,6 @@ rbind(numeric = c(H[1, 1], H[2, 2], H[1, 2]),
 \seealso{
 \code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient.VonMises1Distrib()}} for the score,
 \code{\link[=distrib_expected_hessian.VonMises1Distrib]{distrib_expected_hessian.VonMises1Distrib()}} for the expectation of this
-quantity, \code{\link[numericals7:bessel_i_ratio_derivs]{numericals7::bessel_i_ratio_derivs()}} for \eqn{A'}, and
+quantity, \code{\link[numericals7:bessel_i_ratio_d1]{numericals7::bessel_i_ratio_d1()}} for \eqn{A'}, and
 \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

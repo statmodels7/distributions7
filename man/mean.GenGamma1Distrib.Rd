@@ -22,6 +22,11 @@ moment. None of the three parameters is the mean: \eqn{a} is a scale and
 shapes into the mean.
 }
 \details{
+The logarithm of the gamma ratio is formed in Stirling's form,
+\eqn{(k - 1/2)\log(1 + h/k) + h\log(k + h) - h} plus the difference of the
+two remainders, for \eqn{k = d/p \ge 10} and \eqn{h = 1/p}, where the
+difference of the two log-gamma values would lose digits.
+
 The family nests four the toolkit ships separately, and each is a check on
 this formula: the gamma at \eqn{p = 1}, the Weibull at \eqn{d = p}, the
 exponential at \eqn{d = p = 1} and the half-normal at
@@ -47,7 +52,6 @@ all.equal(mean(d, list(a = sqrt(2), d = 1, p = 2)), sqrt(2 / pi))
 
 }
 \seealso{
-\code{\link[=variance.GenGamma1Distrib]{variance.GenGamma1Distrib()}}, \code{\link[=gengamma_raw_moments]{gengamma_raw_moments()}} for the
-shared quantities, \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.
+\code{\link[=variance.GenGamma1Distrib]{variance.GenGamma1Distrib()}}, \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.
 }
 \keyword{internal}

@@ -31,7 +31,6 @@ distributions7:::sn2_theta(list(mu = 0, sigma = 1, gamma1 = -0.5))
 
 }
 \seealso{
-\code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} for the map itself and \code{\link[=sn2_chain]{sn2_chain()}} for the
-derivative route that uses the same map.
+\code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} for the map itself.
 }
 \keyword{internal}

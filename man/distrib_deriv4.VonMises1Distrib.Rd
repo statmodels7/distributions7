@@ -29,6 +29,10 @@ or \code{"opg"}. Read only when \code{expected = TRUE}.}
 \code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
 A named list of five numeric vectors, \code{mu_mu_mu_mu},
@@ -75,6 +79,6 @@ all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-5)
 }
 \seealso{
 \code{\link[=distrib_deriv3.VonMises1Distrib]{distrib_deriv3.VonMises1Distrib()}} for the order below and the
-construction, \code{\link[numericals7:bessel_i_ratio_derivs]{numericals7::bessel_i_ratio_derivs()}} for the derivatives
+construction, \code{\link[numericals7:bessel_i_ratio_d1]{numericals7::bessel_i_ratio_d1()}} for the derivatives
 of \eqn{A}, and \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

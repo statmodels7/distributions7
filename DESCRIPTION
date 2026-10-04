@@ -1,6 +1,6 @@
 Package: distributions7
 Title: S7 Framework for Probability Distributions
-Version: 0.68.0
+Version: 0.69.0
 Authors@R: 
     person("Giovanni", "Tinervia", , "giovannitinervia9@gmail.com", role = c("aut", "cre"))
 Description: Provides a consistent S7 object-oriented infrastructure for probability distributions. Each 'distrib' object encapsulates standard statistical functions alongside analytical derivatives.
@@ -17,7 +17,7 @@ LinkingTo:
     RcppParallel
 Imports:
     graphics,
-    numericals7 (>= 0.15.0),
+    numericals7 (>= 0.18.0),
     parameters7 (>= 0.21.0),
     linkfunctions7 (>= 0.4.0),
     optimizers7,
@@ -126,21 +126,26 @@ Collate:
     'fixed.R'
     'folded.R'
     'gengamma1_higher.R'
+    'gengamma2_distrib.R'
     'gpd_higher.R'
     'kink_decomposition.R'
+    'lognormal2_distrib.R'
     'methods.R'
     'multinomial_distrib.R'
     'mv_higher.R'
     'negbin1_higher.R'
     'numerical_fallbacks.R'
     'pig_expected.R'
+    'theta2_families.R'
+    'pseudohuber2_distrib.R'
     'psi_diff.R'
     'reparametrized_families.R'
     'starting_values.R'
-    'theta2_families.R'
+    'student_t2_distrib.R'
     'theta2_mapped.R'
     'theta2_more.R'
     'transformations.R'
+    'weibull3_distrib.R'
     'wrapper_derivatives.R'
 Suggests:
     testthat (>= 3.0.0),

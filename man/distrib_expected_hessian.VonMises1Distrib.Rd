@@ -22,6 +22,10 @@ the signature matches the generic's, where it selects between
 \item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{mu_kappa} and
@@ -60,7 +64,7 @@ vapply(eh, function(v) v[1], numeric(1))
 # two parameters are orthogonal.
 A <- numericals7::bessel_i_ratio(2)
 c(mu_mu = -2 * A, mu_kappa = 0,
-  kappa_kappa = -numericals7::bessel_i_ratio_derivs(2)$d1)
+  kappa_kappa = -numericals7::bessel_i_ratio_d1(2))
 
 # Averaging the observed Hessian over draws reaches the same three numbers.
 set.seed(1)

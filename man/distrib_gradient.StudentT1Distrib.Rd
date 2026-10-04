@@ -59,11 +59,18 @@ does not depend on the thread count.
 
 \section{Large degrees of freedom}{
 
-Every component is written as a ratio in \eqn{z = r/\sigma} and
-\eqn{u = z^2/\nu} instead of as a quotient by powers of \eqn{D}, because
-\eqn{\nu\sigma^2} overflows well before the log link's own clamp is reached.
-All three components stay finite at every \eqn{\nu} the chart can produce,
-up to \code{.Machine$double.xmax}.
+Every derivative in \eqn{\nu} vanishes as \eqn{\nu} grows and is a
+difference of terms agreeing to leading order. The part in the data is
+reduced symbolically and written in \eqn{z = r/\sigma}, \eqn{q = z^2/\nu},
+\eqn{1/\nu} and \eqn{t = 1/(1+q)}, never as a quotient by powers of
+\eqn{D}, whose \eqn{\nu\sigma^2} overflows well before the log link's clamp;
+the score in \eqn{\nu} carries the logarithm through
+\eqn{q/(1+q) - \log(1+q)}. The derivatives of
+\eqn{\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2) - \tfrac12\log\nu} come from
+the polygamma functions below \eqn{\nu = 20} and from their asymptotic series
+in \eqn{1/\nu} above it. All three components keep their digits and stay
+finite at every \eqn{\nu} the chart can produce, up to
+\code{.Machine$double.xmax}.
 }
 
 \examples{

@@ -346,11 +346,18 @@ S7::method(distrib_rng, StudentT1Distrib) <- function(distrib, n, theta, ...) {
 #' \eqn{\psi} is the digamma function, `digamma()` in R.
 #'
 #' @section Large degrees of freedom:
-#' Every component is written as a ratio in \eqn{z = r/\sigma} and
-#' \eqn{u = z^2/\nu} instead of as a quotient by powers of \eqn{D}, because
-#' \eqn{\nu\sigma^2} overflows well before the log link's own clamp is reached.
-#' All three components stay finite at every \eqn{\nu} the chart can produce,
-#' up to `.Machine$double.xmax`.
+#' Every derivative in \eqn{\nu} vanishes as \eqn{\nu} grows and is a
+#' difference of terms agreeing to leading order. The part in the data is
+#' reduced symbolically and written in \eqn{z = r/\sigma}, \eqn{q = z^2/\nu},
+#' \eqn{1/\nu} and \eqn{t = 1/(1+q)}, never as a quotient by powers of
+#' \eqn{D}, whose \eqn{\nu\sigma^2} overflows well before the log link's clamp;
+#' the score in \eqn{\nu} carries the logarithm through
+#' \eqn{q/(1+q) - \log(1+q)}. The derivatives of
+#' \eqn{\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2) - \tfrac12\log\nu} come from
+#' the polygamma functions below \eqn{\nu = 20} and from their asymptotic series
+#' in \eqn{1/\nu} above it. All three components keep their digits and stay
+#' finite at every \eqn{\nu} the chart can produce, up to
+#' `.Machine$double.xmax`.
 #'
 #' @seealso [distrib_hessian.StudentT1Distrib()] for the second derivatives,
 #'   [distrib_expected_hessian.StudentT1Distrib()] for their expectation,
@@ -382,7 +389,7 @@ S7::method(distrib_rng, StudentT1Distrib) <- function(distrib, n, theta, ...) {
 #' vapply(distrib_gradient(d, z, mle), sum, numeric(1))
 S7::method(distrib_gradient, StudentT1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...,
                                        threads = 1L) {
-  student_t_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
+  student_t1_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Student t Observed Hessian
@@ -459,7 +466,7 @@ S7::method(distrib_gradient, StudentT1Distrib) <- function(distrib, y, theta, sc
 #'       mu_mu = 6 * (rr^2 - 5 * 1.2^2) / (5 * 1.2^2 + rr^2)^2)
 S7::method(distrib_hessian, StudentT1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...,
                                        threads = 1L) {
-  student_t_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
+  student_t1_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Student t Expected Hessian
@@ -544,7 +551,7 @@ S7::method(distrib_hessian, StudentT1Distrib) <- function(distrib, y, theta, sca
 #' identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
 S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
                                        threads = 1L) {
-  student_t_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
+  student_t1_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Student t Third-Order Derivatives
@@ -555,11 +562,12 @@ S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, t
 #' are closed form and run in a compiled kernel decomposed over the elements of
 #' the output, so they do not depend on the thread count.
 #'
-#' **The expected values have no closed form.** With `expected = TRUE` the
-#' method calls [expected_derivative()], which integrates the observed
-#' derivatives against the density by the strategy `approx` names. That is the
-#' one place on this page where `approx` and `nsim` are read; on the observed
-#' branch both are ignored.
+#' The expected values are closed forms too: under the model
+#' \eqn{1/(1 + z^2/\nu)} follows a beta distribution with parameters
+#' \eqn{\nu/2} and \eqn{1/2}, so the expectation of every component is a
+#' rational function of \eqn{\nu} plus the derivatives of
+#' \eqn{\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2)}. `approx` and `nsim`
+#' are accepted for the generic's signature and ignored.
 #'
 #' @param distrib A `StudentT1Distrib` object, from [student_t1_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -568,18 +576,14 @@ S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, t
 #'   numeric vector of length 1 or of the length of `y`. A component of length
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
-#'   model is returned in place of the value at the data, computed numerically.
-#'   Defaults to `FALSE`.
+#'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`, the strategy [expected_derivative()] uses. Read only when
-#'   `expected = TRUE`.
-#' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#' @param approx,nsim Accepted for the generic's signature; the expectations
+#'   are closed forms.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Read only on the observed branch. Defaults to `1L`.
+#'   use. Defaults to `1L`.
 #'
 #' @return A named list of ten numeric vectors, `mu_mu_mu`, `mu_mu_sigma`,
 #'   `mu_mu_nu`, `mu_sigma_sigma`, `mu_sigma_nu`, `mu_nu_nu`,
@@ -587,19 +591,16 @@ S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, t
 #'   of length `max(length(y), length(mu), length(sigma), length(nu))`.
 #'
 #' @section Large degrees of freedom:
-#' Every component is divided by \eqn{D^3} with \eqn{D = \nu\sigma^2 + r^2},
-#' and \eqn{D^3} overflows at \eqn{5.6\times10^{102}} where the log link
-#' reaches \eqn{1.8\times10^{308}}. The shipped kernel is written in
-#' \eqn{z = r/\sigma}, \eqn{u = z^2/\nu} and \eqn{t = 1/(1+u)} instead, so all
-#' ten stay finite to `.Machine$double.xmax`. **On the link scale they do
-#' not**: the chain rule forms \eqn{(h')^k} against a component of order
-#' \eqn{\nu^{-k}}, and one of the ten ceases to be finite at
-#' \eqn{\nu = 10^{150}}. That regime is where the family is a Gaussian in all
-#' but name.
+#' See [distrib_gradient.StudentT1Distrib()]: every order is written in
+#' \eqn{z = r/\sigma}, \eqn{q = z^2/\nu} and \eqn{t = 1/(1+q)}, and the
+#' quantities of \eqn{\nu} alone switch to their asymptotic series above
+#' \eqn{\nu = 20}, so all ten components keep their digits and stay finite to
+#' `.Machine$double.xmax`. On the link scale the chain rule forms
+#' \eqn{(h')^k} against a component of order \eqn{\nu^{-k}}, and one of the
+#' ten ceases to be finite at \eqn{\nu = 10^{150}}.
 #'
 #' @seealso [distrib_hessian.StudentT1Distrib()] for the order below,
-#'   [distrib_deriv4.StudentT1Distrib()] for the order above,
-#'   [expected_derivative()] for the numerical expectation, and
+#'   [distrib_deriv4.StudentT1Distrib()] for the order above, and
 #'   [distrib_deriv3()] for the generic.
 #'
 #' @examples
@@ -616,8 +617,8 @@ S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, t
 #' dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 5))$mu_mu
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 #'
-#' # The expected branch is a quadrature, and averaging the observed one over
-#' # draws reaches it; the components odd in the residual go to zero.
+#' # Averaging the observed branch over draws reaches the expected one; the
+#' # components odd in the residual go to zero.
 #' set.seed(2)
 #' z <- distrib_rng(d, 2e5, th)
 #' rbind(expected = vapply(distrib_deriv3(d, y, th, expected = TRUE),
@@ -626,10 +627,9 @@ S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, t
 S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
                                        threads = 1L) {
   if (expected) {
-    expected_derivative(distrib, y, theta, order = 3L,
-                        approx = match.arg(approx), nsim = nsim)
+    student_t1_deriv3_expected_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   } else {
-    student_t_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
+    student_t1_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   }
 }
 
@@ -641,10 +641,9 @@ S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expe
 #' values are closed form and run in a compiled kernel decomposed over the
 #' elements of the output, so they do not depend on the thread count.
 #'
-#' **The expected values have no closed form.** With `expected = TRUE` the
-#' method calls [expected_derivative()], which integrates the observed
-#' derivatives against the density by the strategy `approx` names. That is the
-#' one place on this page where `approx` and `nsim` are read.
+#' The expected values are closed forms, as for the third order (see
+#' [distrib_deriv3.StudentT1Distrib()]). `approx` and `nsim` are accepted for
+#' the generic's signature and ignored.
 #'
 #' @param distrib A `StudentT1Distrib` object, from [student_t1_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -653,37 +652,27 @@ S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expe
 #'   numeric vector of length 1 or of the length of `y`. A component of length
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
-#'   model is returned in place of the value at the data, computed numerically.
-#'   Defaults to `FALSE`.
+#'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`, the strategy [expected_derivative()] uses. Read only when
-#'   `expected = TRUE`.
-#' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#' @param approx,nsim Accepted for the generic's signature; the expectations
+#'   are closed forms.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Read only on the observed branch. Defaults to `1L`.
+#'   use. Defaults to `1L`.
 #'
 #' @return A named list of fifteen numeric vectors named for the multi-index
 #'   they carry, from `mu_mu_mu_mu` to `nu_nu_nu_nu`, each of length
 #'   `max(length(y), length(mu), length(sigma), length(nu))`.
 #'
 #' @section Large degrees of freedom:
-#' Unlike the third order, the fourth is **not** rewritten in the ratio
-#' variables and ceases to be finite at a large \eqn{\nu}: measured at
-#' \eqn{\sigma = 1.2}, eight of the fifteen components are finite at
-#' \eqn{\nu = 10^{150}}, five at \eqn{10^{300}} and two at
-#' `.Machine$double.xmax`. A `NaN` there is a loud failure and is preferable to
-#' a plausible wrong number, and the regime is one in which the family is a
-#' Gaussian in all but name. An outer criterion that reads this order at a
-#' \eqn{\nu} run to its clamp is reported as having no finite gradient rather
-#' than being given one.
+#' Written like the third order, in \eqn{z}, \eqn{q = z^2/\nu} and
+#' \eqn{t = 1/(1+q)}, with the quantities of \eqn{\nu} alone on their
+#' asymptotic series above \eqn{\nu = 20}: all fifteen components keep their
+#' digits and stay finite to `.Machine$double.xmax`.
 #'
 #' @seealso [distrib_deriv3.StudentT1Distrib()] for the order below,
-#'   [distrib_hessian.StudentT1Distrib()] for the second order,
-#'   [expected_derivative()] for the numerical expectation, and
+#'   [distrib_hessian.StudentT1Distrib()] for the second order, and
 #'   [distrib_deriv4()] for the generic.
 #'
 #' @examples
@@ -701,18 +690,49 @@ S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expe
 #' dn <- distrib_deriv3(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 5))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-5)
 #'
-#' # At a degrees of freedom the log link can produce, part of the order is
-#' # not representable and says so.
+#' # At a degrees of freedom the log link can produce, every component is
+#' # finite.
 #' big <- distrib_deriv4(d, y, list(mu = 0.4, sigma = 1.2, nu = 1e300))
-#' sum(vapply(big, function(v) is.finite(v[1]), logical(1)))
+#' all(vapply(big, function(v) all(is.finite(v)), logical(1)))
 S7::method(distrib_deriv4, StudentT1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
                                        threads = 1L) {
   if (expected) {
-    expected_derivative(distrib, y, theta, order = 4L,
-                        approx = match.arg(approx), nsim = nsim)
+    student_t1_deriv4_expected_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   } else {
-    student_t_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
+    student_t1_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   }
+}
+
+#' @title Student t Fifth-Order Derivatives
+#' @name distrib_deriv5.StudentT1Distrib
+#' @description
+#' Computes the twenty-one distinct fifth derivatives of the location-scale
+#' Student t log-density in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, closed
+#' forms from a compiled kernel written like the lower orders (see
+#' [distrib_deriv3.StudentT1Distrib()]).
+#'
+#' @param distrib A `StudentT1Distrib` object, from [student_t1_distrib()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list with components `mu`, `sigma` and `nu`.
+#' @param scale One of `"parameter"` (the default) or `"link"`; read by the
+#'   generic.
+#' @param ... Unused.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Defaults to `1L`.
+#'
+#' @return A named list of twenty-one numeric vectors named for the
+#'   multi-index they carry.
+#'
+#' @seealso [distrib_deriv4.StudentT1Distrib()] for the order below and
+#'   [distrib_deriv5()] for the generic.
+#'
+#' @examples
+#' d <- student_t1_distrib()
+#' length(distrib_deriv5(d, c(-2.5, 0.3), list(mu = 0.4, sigma = 1.2, nu = 5)))
+S7::method(distrib_deriv5, StudentT1Distrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  deriv5_scale(distrib, y, theta, student_t1_deriv5_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads),
+               match.arg(scale))
 }
 
 #' @title Student t First Derivative in the Response
@@ -765,9 +785,7 @@ S7::method(distrib_deriv4, StudentT1Distrib) <- function(distrib, y, theta, expe
 #'            distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps),
 #'           distrib_grad_y(d, y, th), tolerance = 1e-6)
 S7::method(distrib_grad_y, StudentT1Distrib) <- function(distrib, y, theta, ...) {
-  r <- y - theta[[1]]
-  nu <- theta[[3]]
-  -(nu + 1) * r / (nu * theta[[2]]^2 + r^2)
+  student_t1_dy1_cpp(y, theta[[1]], theta[[2]], theta[[3]])$y
 }
 
 #' @title Student t Second Derivative in the Response
@@ -821,10 +839,7 @@ S7::method(distrib_grad_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' # convex in the response out there.
 #' distrib_hess_y(d, 0.4 + c(1, 2, 4, 8), th)
 S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta, ...) {
-  r <- y - theta[[1]]
-  nu <- theta[[3]]
-  vs2 <- nu * theta[[2]]^2
-  (nu + 1) * (r^2 - vs2) / (vs2 + r^2)^2
+  student_t1_dy2_cpp(y, theta[[1]], theta[[2]], theta[[3]])$y
 }
 
 # --- CONSTRUCTOR WRAPPER ---
@@ -835,10 +850,11 @@ S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' Builds the distribution object for the location-scale Student t family,
 #' parametrized by a location \eqn{\mu}, a scale \eqn{\sigma > 0} and degrees
 #' of freedom \eqn{\nu > 0}. The returned object carries closed-form
-#' derivatives of the log-density to fourth order in the parameters, closed
-#' first and second derivatives in the response, and a closed expected Hessian;
-#' the expected third and fourth orders are the only quantities that go through
-#' a numerical route.
+#' derivatives of the log-density to fifth order in the parameters and to
+#' fourth order in the response, the mixed derivatives, and the expected
+#' information with its expected third and fourth orders and its first two
+#' derivatives, all closed forms; the derivatives of the distribution function
+#' in \eqn{\nu} are differenced.
 #'
 #' The family is the standard heavy-tailed alternative to a Gaussian. Its
 #' location score redescends, so a gross outlier contributes almost nothing to

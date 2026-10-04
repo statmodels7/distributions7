@@ -147,7 +147,7 @@ test_that("the chain refuses to pretend when the parent has no closed form", {
   # gengamma1 differences its own cdf, so gengamma2's chain must fall back
   # rather than carry an approximation and call it exact
   expect_false(distributions7:::has_exact_cdf_deriv(gengamma1_distrib(), 1L))
-  d <- gengamma2_distrib()
+  d <- gengamma2_by_reparam()
   th <- list(mean = 1.2, d = 2, p = 1.5)
   q <- c(0.5, 1.4)
   got <- distrib_grad_cdf(d, q, th, lower.tail = TRUE, log = FALSE)
@@ -161,7 +161,7 @@ test_that("a wrong map derivative is caught by the chain", {
   q <- c(-0.3, 0.6, 2.1)
   th <- list(mu = 0.5, sigma2 = 1.7)
   parent <- gaussian1_distrib()
-  bad <- distributions7:::md_gaussian2(th)
+  bad <- distributions7:::md_gaussian2(th, 1L)
   bad[[2]][["2"]] <- bad[[2]][["2"]] * 1.05
   d1 <- distributions7:::chain_cdf_deriv(
     parent, q, list(mu = th[[1]], sigma = sqrt(th[[2]])), bad,

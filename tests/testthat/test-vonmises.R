@@ -71,7 +71,7 @@ test_that("the direction and the concentration are orthogonal", {
     }
 
     # A'(kappa) is the variance of cos(Y - mu), hence positive
-    expect_gt(numericals7::bessel_i_ratio_derivs(th$kappa)$d1, 0)
+    expect_gt(numericals7::bessel_i_ratio_d1(th$kappa), 0)
   }
 })
 
@@ -233,7 +233,7 @@ test_that("the resultant-length family is the concentration one at its kappa", {
   d2 <- vonmises2_distrib()
   x <- seq(-pi, pi - 1e-9, length.out = 21)
   for (rho in c(0.05, 0.3, 0.7, 0.95)) {
-    k <- numericals7::bessel_i_ratio_inverse(rho)$kappa
+    k <- numericals7::bessel_i_ratio_inverse(rho)
     expect_identical(distrib_cdf(d2, x, list(mu = 0.5, rho = rho)),
                      distrib_cdf(d1, x, list(mu = 0.5, kappa = k)))
   }
@@ -250,4 +250,55 @@ test_that("a concentration varying by observation is read per row", {
   one <- vapply(seq_along(x), function(i)
     distrib_cdf(d, x[i], list(mu = 0.3, kappa = kk[i])), numeric(1))
   expect_equal(got, one, tolerance = 1e-12)
+})
+
+test_that("a scalar and a per-observation parameter give the same bits", {
+  # the kernels evaluate the Bessel ratio once for a scalar parameter and
+  # per observation otherwise; the two paths must agree exactly
+  y <- c(-2.5, -1, 0, 0.5, 2, 3)
+  n <- length(y)
+  cases <- list(list(vonmises1_distrib(), list(mu = 0.4, kappa = 3.7)),
+                list(vonmises1_distrib(), list(mu = 0.4, kappa = 1e-6)),
+                list(vonmises2_distrib(), list(mu = 0.4, rho = 0.83)),
+                list(vonmises2_distrib(), list(mu = 0.4, rho = 1e-4)))
+  for (cs in cases) {
+    d <- cs[[1]]; th <- cs[[2]]
+    thv <- list(th[[1]], rep(th[[2]], n))
+    names(thv) <- names(th)
+    for (f in list(distrib_gradient, distrib_hessian, distrib_deriv3,
+                   distrib_deriv4, distrib_expected_hessian)) {
+      expect_identical(f(d, y, th), f(d, y, thv))
+      expect_identical(f(d, y, thv, threads = 2L), f(d, y, thv))
+    }
+  }
+})
+
+test_that("the resultant-length derivatives match the chain rule written out", {
+  # the kernels use d log I0(kappa(rho)) / d rho = rho kappa'(rho); the
+  # Faa di Bruno expansion through A and the inverse's derivatives is the
+  # same quantity by other arithmetic
+  d2 <- vonmises2_distrib()
+  y <- c(-2, 0.1, 1.3)
+  for (rho in c(1e-4, 0.3, 0.9, 0.999)) {
+    th <- list(mu = 0.2, rho = rho)
+    k <- numericals7::bessel_i_ratio_inverse(rho)
+    A <- numericals7::bessel_i_ratio(k)
+    a1 <- numericals7::bessel_i_ratio_d1(k)
+    a2 <- numericals7::bessel_i_ratio_d2(k)
+    a3 <- numericals7::bessel_i_ratio_d3(k)
+    k1 <- numericals7::bessel_i_ratio_inverse_d1(k)
+    k2 <- numericals7::bessel_i_ratio_inverse_d2(k)
+    k3 <- numericals7::bessel_i_ratio_inverse_d3(k)
+    k4 <- numericals7::bessel_i_ratio_inverse_d4(k)
+    cc <- cos(y - 0.2)
+    phi3 <- a2 * k1^3 + 3 * a1 * k1 * k2 + A * k3
+    phi4 <- a3 * k1^4 + 6 * a2 * k1^2 * k2 + a1 * (3 * k2^2 + 4 * k1 * k3) +
+      A * k4
+    scale3 <- max(abs(cc * k3), abs(phi3))
+    scale4 <- max(abs(cc * k4), abs(phi4))
+    expect_lt(max(abs(distrib_deriv3(d2, y, th)$rho_rho_rho -
+                        (cc * k3 - phi3))) / scale3, 1e-13)
+    expect_lt(max(abs(distrib_deriv4(d2, y, th)$rho_rho_rho_rho -
+                        (cc * k4 - phi4))) / scale4, 1e-13)
+  }
 })

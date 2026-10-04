@@ -175,12 +175,12 @@ test_that("the lognormal's chain is the gaussian's carried by hand", {
                tolerance = 1e-12)
 })
 
-test_that("lognormal2 inherits it through the map", {
-  # lognormal2 is a reparametrize() wrapper on lognormal1, so closing the
-  # parent is what makes the child exact rather than merely registered
+test_that("a reparametrize() of lognormal1 inherits it through the map", {
+  # lognormal2_by_reparam() is a reparametrize() wrapper on lognormal1, so
+  # closing the parent is what makes the child exact rather than registered
   skip_if_not_installed("numDeriv")
   y <- c(0.5, 1.4, 3.1)
-  d <- lognormal2_distrib()
+  d <- lognormal2_by_reparam()
   th <- list(mean = 1.5, var = 0.9)
   prs <- distributions7:::hess_pairs(d@params)
   for (order in 1:2) {

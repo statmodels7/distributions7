@@ -7,8 +7,7 @@
 \item{x}{A \code{GenGamma1Distrib}, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
 \item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive,
-each a numeric vector of length 1 or \code{n}. Cancellation between the two
-raw moments costs digits where the coefficient of variation is small.}
+each a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -21,6 +20,18 @@ Closed form from the first two raw moments,
 \eqn{\operatorname{Var}(Y) = m_2 - m_1^2} with
 \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale enters as a
 square and the two shapes through the gamma ratios.
+}
+\details{
+The difference is not formed. With \eqn{k = d/p} and \eqn{h = 1/p}, the
+cumulant generating function of \eqn{\log(Y/m_1)} is
+\eqn{K(s) = \sum_{n \ge 2} \psi^{(n-1)}(k)\,h^n (s^n - s)/n!}, and with
+\eqn{e^{K(s)} = \sum_n a_n s^n} the central moments of \eqn{Y/m_1} are
+\deqn{\mu_r = r!\sum_{n \ge r} S(n, r)\,a_n,}
+\eqn{S} the Stirling numbers of the second kind, a sum in which the leading
+orders that cancel in \eqn{m_2 - m_1^2} are absent. It is evaluated in
+double-double arithmetic where \eqn{8h \le k}, and as
+\eqn{\exp(\log m_2 - 2\log m_1) - 1} from Stirling's form of the log-gamma
+differences elsewhere. Then \eqn{\operatorname{Var}(Y) = m_1^2\mu_2}.
 }
 \section{Notation}{
 
@@ -38,9 +49,12 @@ all.equal(variance(d, list(a = 2, d = 3, p = 1)), 12)
 all.equal(variance(d, list(a = 2, d = 3, p = 3)),
           variance(weibull1_distrib(), list(mu = 2, sigma = 3)))
 
+# Towards the lognormal the coefficient of variation is about sqrt(1/d).
+variance(d, list(a = 1, d = 1e6, p = 1)) / mean(d, list(a = 1, d = 1e6, p = 1))^2
+
 }
 \seealso{
 \code{\link[=mean.GenGamma1Distrib]{mean.GenGamma1Distrib()}}, \code{\link[=skewness.GenGamma1Distrib]{skewness.GenGamma1Distrib()}},
-\code{\link[=gengamma_raw_moments]{gengamma_raw_moments()}}, \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.
 }
 \keyword{internal}

@@ -330,6 +330,69 @@ local({
 })
 
 # the second parametrization is the first at its direct parameters, and its
-# gate now passes at every order
-register_mapped_cdf_k(SkewNormal2Distrib, skewnormal1_distrib,
-                      sn2_theta, md_skewnormal2, orders = 1:4)
+# gate now passes at every order; the map's partials are formed to the order
+# asked for and no further
+# At zero skewness the map's derivative in gamma1 is infinite (alpha grows
+# like gamma1^(1/3)): there the first derivatives are their limits, from
+# F = Phi(z) - gamma1 (z^2 - 1) phi(z)/6 + O(gamma1^(4/3)), and the higher
+# orders, which diverge in gamma1, are rejected as the log-density's are.
+local({
+  gens <- list(distrib_grad_cdf, distrib_hess_cdf,
+               distrib_deriv3_cdf, distrib_deriv4_cdf)
+  what <- c("", "Hessian of the distribution function",
+            "third derivative of the distribution function",
+            "fourth derivative of the distribution function")
+  make <- function(o) {
+    force(o)
+    function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
+      if (o >= 2L) sn2_reject_zero(theta, what[o])
+      zero <- theta[[3L]] == 0
+      if (!any(zero)) {
+        return(mapped_cdf_deriv_k(distrib, skewnormal1_distrib(), sn2_theta(theta),
+                                  md_skewnormal2(theta, o), q, theta, o,
+                                  lower.tail, log, q_par = q))
+      }
+      sn2_grad_cdf_zero(distrib, q, theta, zero, lower.tail, log)
+    }
+  }
+  for (o in 1:4) S7::method(gens[[o]], SkewNormal2Distrib) <- make(o)
+})
+
+#' @title The Skew Normal's CDF Gradient at Zero Skewness
+#' @name sn2_grad_cdf_zero
+#' @description Returns [distrib_grad_cdf()] for the centered skew normal when
+#'   some skewness is exactly zero. Those rows take the limit of the gradient,
+#'   from \eqn{F = \Phi(z) - \gamma_1 (z^2 - 1)\phi(z)/6 + O(\gamma_1^{4/3})}
+#'   with \eqn{z = (q - \mu)/\sigma}: the normal's derivatives in \eqn{\mu}
+#'   and \eqn{\sigma}, and \eqn{-(z^2 - 1)\phi(z)/6} in \eqn{\gamma_1}; the
+#'   other rows go through the map.
+#' @param distrib A `SkewNormal2Distrib` object.
+#' @param q A numeric vector of quantiles.
+#' @param theta A parameter list.
+#' @param zero A logical vector, the rows whose skewness is zero.
+#' @param lower.tail,log As in [distrib_grad_cdf()].
+#' @return A named list of three numeric vectors, `mu`, `sigma` and `gamma1`.
+#' @keywords internal
+sn2_grad_cdf_zero <- function(distrib, q, theta, zero, lower.tail, log) {
+  n <- max(length(q), lengths(theta))
+  q <- rep_len(q, n)
+  th <- lapply(theta, rep_len, n)
+  zero <- rep_len(zero, n)
+  out <- list(mu = numeric(n), sigma = numeric(n), gamma1 = numeric(n))
+  if (any(!zero)) {
+    sub <- lapply(th, `[`, !zero)
+    g <- distrib_grad_cdf(distrib, q[!zero], sub, lower.tail = lower.tail, log = log)
+    for (nm in names(out)) out[[nm]][!zero] <- g[[nm]]
+  }
+  s <- th[[2L]][zero]
+  z <- (q[zero] - th[[1L]][zero]) / s
+  dz <- stats::dnorm(z)
+  dF <- list(mu = -dz / s, sigma = -z * dz / s, gamma1 = -(z^2 - 1) * dz / 6)
+  sgn <- if (lower.tail) 1 else -1
+  P <- stats::pnorm(z, lower.tail = lower.tail)
+  for (nm in names(out)) {
+    v <- sgn * dF[[nm]]
+    out[[nm]][zero] <- if (log) v / P else v
+  }
+  out
+}

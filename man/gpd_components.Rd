@@ -77,8 +77,9 @@ straddling the cut does not pay for both in full.
 }
 
 \seealso{
-\code{\link[=distrib_deriv3.GPDDistrib]{distrib_deriv3.GPDDistrib()}} and \code{\link[=distrib_deriv4.GPDDistrib]{distrib_deriv4.GPDDistrib()}},
-which call this; \code{\link[=fdb2]{fdb2()}} for the two-variable composition template; and
+\code{\link[=distrib_deriv3.GPDDistrib]{distrib_deriv3.GPDDistrib()}} for the compiled kernels this
+assembly is checked against; \code{\link[=fdb2]{fdb2()}} for the two-variable composition
+template; and
 \code{\link[=gpd_distrib]{gpd_distrib()}} for the family.
 }
 \keyword{internal}

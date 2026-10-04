@@ -106,9 +106,9 @@ are the derivatives in the response and the mixed derivative
 \section{What is numerical, and what it costs}{
 The distribution function has no elementary form and is a quadrature,
 batched over the quantiles and reflected about \eqn{\mu} so that only the
-lower tail is integrated. The quantile inverts it by root-finding, and the
-generator inverts it at uniform variates, so a sample costs one root-find
-per draw.
+lower tail is integrated. The quantile inverts it by root-finding. The
+generator does not use either: it draws the family as a normal variance
+mixture with a generalized inverse Gaussian mixing variable.
 
 The \strong{expected information has no elementary form either}, but it depends
 on \eqn{\nu} alone once the location and the scale are factored out, so it
@@ -164,9 +164,7 @@ rbind(residual = rr,
 # factored out, so it is computed once per distinct nu.
 distributions7:::expected_hessian_exact(d)
 
-# The quantile inverts the distribution function, and the generator
-# inverts it at uniform variates, so a draw costs a root-find over a
-# quadrature. That is what makes fitting this family dear.
+# The quantile inverts the distribution function by root-finding.
 q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 rbind(quantile = q, back = distrib_cdf(d, q, th))
 

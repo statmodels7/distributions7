@@ -4,9 +4,9 @@ NULL
 # The von Mises in its mean resultant length. The concentration and the
 # resultant length are related by rho = A(kappa) = I_1(kappa)/I_0(kappa), a
 # strictly increasing bijection from (0, Inf) onto (0, 1) whose inverse has no
-# closed form. numericals7::bessel_i_ratio_inverse() obtains it by root
-# finding and differentiates it by the inverse function rule, with A' to
-# A'''' from the Bessel recurrences rather than four more evaluations.
+# closed form. numericals7::bessel_i_ratio_inverse() obtains it by Newton's
+# method; the derivatives are compiled kernels (src/vonmises.cpp), one per
+# order, which read the inverse's derivatives from A' ... A^(n).
 
 #' @title von Mises Distribution Class, Mean Resultant Length
 #' @name VonMises2Distrib
@@ -75,47 +75,6 @@ NULL
 #' vapply(d@link_params, function(l) l@link_name, character(1))
 VonMises2Distrib <- S7::new_class("VonMises2Distrib", parent = continuous_distrib)
 
-#' The Pieces a von Mises Derivative in the Resultant Length Needs
-#'
-#' @description
-#' Evaluates the concentration \eqn{\kappa = A^{-1}(\rho)}, its four
-#' derivatives in \eqn{\rho}, and the derivatives of
-#' \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} at that concentration, once per
-#' call, so that a density or a derivative method shares them.
-#'
-#' @details
-#' The inverse of \eqn{A} has no closed form.
-#' [numericals7::bessel_i_ratio_inverse()] obtains \eqn{\kappa} by root finding
-#' on \eqn{\log\kappa} and differentiates it by the inverse function rule, so
-#' \eqn{\mathrm{d}\kappa/\mathrm{d}\rho = 1/A'(\kappa)} and the higher
-#' derivatives follow from \eqn{A'} to \eqn{A^{(4)}}. Those come from the
-#' Bessel recurrences and from the same two evaluations \eqn{A} already needs,
-#' so no further Bessel call is made at any order.
-#'
-#' The map is very steep near \eqn{\rho = 1}: measured,
-#' \eqn{\mathrm{d}\kappa/\mathrm{d}\rho} is 2.00 at \eqn{\rho = 0.01}, 3.14 at
-#' 0.5, 199 at 0.95 and \eqn{5.0\times10^{5}} at 0.999.
-#'
-#' @param theta A named list with components `mu` and `rho`, each a numeric
-#'   vector of length 1 or of a common length. `rho` must lie in \eqn{(0, 1)};
-#'   only it is read here, `mu` not entering the map.
-#'
-#' @return A named list with `kappa`, the concentration; `kd`, the result of
-#'   [numericals7::bessel_i_ratio_inverse()], carrying `kappa` and its
-#'   derivatives `d1` to `d4` in \eqn{\rho}; and `ad`, the result of
-#'   [numericals7::bessel_i_ratio_derivs()] at that concentration, carrying `A`
-#'   and its derivatives `d1` to `d4` in \eqn{\kappa}.
-#'
-#' @seealso [distrib_gradient.VonMises2Distrib()] for the first consumer,
-#'   [numericals7::bessel_i_ratio_inverse()] for the root finding, and
-#'   [vonmises2_distrib()] for the family.
-#'
-#' @keywords internal
-vm2_parts <- function(theta) {
-  kd <- numericals7::bessel_i_ratio_inverse(theta[[2]])
-  list(kappa = kd$kappa, kd = kd, ad = numericals7::bessel_i_ratio_derivs(kd$kappa))
-}
-
 # --- S7 METHODS IMPLEMENTATION ---
 
 #' @title von Mises Density in the Resultant Length
@@ -163,7 +122,7 @@ vm2_parts <- function(theta) {
 #'
 #' # It is the same law as the concentration parametrization, at the
 #' # concentration this resultant length implies.
-#' k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+#' k <- numericals7::bessel_i_ratio_inverse(0.7)
 #' k
 #' all.equal(distrib_pdf(d2, y, th),
 #'           distrib_pdf(vonmises1_distrib(), y, list(mu = 0.5, kappa = k)))
@@ -174,8 +133,9 @@ S7::method(distrib_pdf, VonMises2Distrib) <- function(distrib, y, theta,
                                                      log = FALSE, ...,
                                                      threads = 1L) {
   distrib_pdf(vonmises1_distrib(), y,
-              list(mu = theta[[1]], kappa = vm2_parts(theta)$kappa), log = log,
-              threads = threads)
+              list(mu = theta[[1]],
+                   kappa = numericals7::bessel_i_ratio_inverse(theta[[2]], threads)),
+              log = log, threads = threads)
 }
 
 #' @title von Mises Random Generation in the Resultant Length
@@ -212,7 +172,8 @@ S7::method(distrib_pdf, VonMises2Distrib) <- function(distrib, y, theta,
 #' c(circular_mean = atan2(mean(sin(z)), mean(cos(z))), mu = 0.5)
 S7::method(distrib_rng, VonMises2Distrib) <- function(distrib, n, theta, ...) {
   distrib_rng(vonmises1_distrib(), n,
-              list(mu = theta[[1]], kappa = vm2_parts(theta)$kappa))
+              list(mu = theta[[1]],
+                   kappa = numericals7::bessel_i_ratio_inverse(theta[[2]])))
 }
 
 #' @title von Mises Score in the Resultant Length
@@ -223,15 +184,16 @@ S7::method(distrib_rng, VonMises2Distrib) <- function(distrib, n, theta, ...) {
 #' observation, in closed form:
 #' \deqn{\dfrac{\partial\ell}{\partial\mu} = \kappa\sin(y-\mu), \qquad
 #'       \dfrac{\partial\ell}{\partial\rho}
-#'         = \left\{\cos(y-\mu) - A(\kappa)\right\}\kappa'(\rho),}
+#'         = \left\{\cos(y-\mu) - \rho\right\}\kappa'(\rho),}
 #' with \eqn{\kappa = A^{-1}(\rho)} and
 #' \eqn{\kappa'(\rho) = 1/A'(\kappa)} from the inverse function rule.
 #'
-#' The map touches the **second parameter only**, so the chain rule is the
-#' one-variable one: the direction's component is unchanged from the
-#' concentration parametrization, and the second is that family's multiplied by
-#' a single factor. No multivariate expansion and no cancellation are involved
-#' at any order.
+#' The map touches the **second parameter only**, so the direction's component
+#' is unchanged from the concentration parametrization. In the second,
+#' \eqn{\partial \log I_0(\kappa(\rho))/\partial\rho = A(\kappa)\kappa'(\rho)
+#' = \rho\,\kappa'(\rho)}, so the difference \eqn{\cos(y-\mu) - \rho} is
+#' formed from \eqn{\rho} itself. The components are computed by a compiled
+#' kernel.
 #'
 #' With `scale = "link"` the generic applies the chain rule for the links the
 #' family carries. This method always returns the parameter scale.
@@ -244,6 +206,9 @@ S7::method(distrib_rng, VonMises2Distrib) <- function(distrib, n, theta, ...) {
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `rho`, each of length
 #'   `max(length(y), length(mu), length(rho))`.
@@ -273,31 +238,28 @@ S7::method(distrib_rng, VonMises2Distrib) <- function(distrib, n, theta, ...) {
 #'
 #' # The direction component is unchanged from the concentration
 #' # parametrization, the map touching the second parameter only.
-#' k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+#' k <- numericals7::bessel_i_ratio_inverse(0.7)
 #' all.equal(g$mu,
 #'           distrib_gradient(vonmises1_distrib(), y,
 #'                            list(mu = 0.5, kappa = k))$mu)
 S7::method(distrib_gradient, VonMises2Distrib) <- function(distrib, y, theta,
-                                                           scale = c("parameter", "link"), ...) {
-  p <- vm2_parts(theta)
-  d <- y - theta[[1]]
-  list(mu = p$kappa * sin(d),
-       rho = (cos(d) - p$ad$A) * p$kd$d1)
+                                                           scale = c("parameter", "link"), ...,
+                                                           threads = 1L) {
+  vonmises2_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title von Mises Observed Hessian in the Resultant Length
 #' @name distrib_hessian.VonMises2Distrib
 #' @description
 #' Computes the three distinct second derivatives of the log-density in
-#' \eqn{\mu} and \eqn{\rho}, one value per observation, in closed form. The
-#' concentration parametrization's second derivatives are carried through the
-#' one-variable chain rule,
-#' \deqn{\ell^{(\rho\rho)} = \ell^{(\kappa\kappa)}\{\kappa'(\rho)\}^2
-#'                          + \ell^{(\kappa)}\kappa''(\rho), \qquad
-#'       \ell^{(\mu\rho)} = \ell^{(\mu\kappa)}\kappa'(\rho),}
-#' with \eqn{\ell^{(\kappa\kappa)} = -A'(\kappa)},
-#' \eqn{\ell^{(\mu\kappa)} = \sin(y-\mu)} and
-#' \eqn{\ell^{(\mu\mu)} = -\kappa\cos(y-\mu)} unchanged.
+#' \eqn{\mu} and \eqn{\rho}, one value per observation, in closed form:
+#' \deqn{\ell^{(\mu\mu)} = -\kappa\cos(y-\mu), \qquad
+#'       \ell^{(\mu\rho)} = \sin(y-\mu)\,\kappa'(\rho), \qquad
+#'       \ell^{(\rho\rho)} = \{\cos(y-\mu) - \rho\}\kappa''(\rho)
+#'                          - \kappa'(\rho),}
+#' the last from differentiating the score's
+#' \eqn{\{\cos(y-\mu) - \rho\}\kappa'(\rho)}. The components are computed
+#' by a compiled kernel.
 #'
 #' Unlike in the concentration parametrization, the pure second derivative is
 #' **not** free of the data: the term in \eqn{\kappa''} carries
@@ -311,6 +273,9 @@ S7::method(distrib_gradient, VonMises2Distrib) <- function(distrib, y, theta,
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `rho_rho` and
 #'   `mu_rho`, each of length `max(length(y), length(mu), length(rho))`.
@@ -343,14 +308,9 @@ S7::method(distrib_gradient, VonMises2Distrib) <- function(distrib, y, theta,
 #' # concentration parametrization it does not.
 #' h$rho_rho
 S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
-                                                          scale = c("parameter", "link"), ...) {
-  p <- vm2_parts(theta)
-  d <- y - theta[[1]]
-  list(
-    mu_mu = -p$kappa * cos(d),
-    rho_rho = -p$ad$d1 * p$kd$d1^2 + (cos(d) - p$ad$A) * p$kd$d2,
-    mu_rho = sin(d) * p$kd$d1
-  )
+                                                          scale = c("parameter", "link"), ...,
+                                                          threads = 1L) {
+  vonmises2_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title von Mises Expected Hessian in the Resultant Length
@@ -361,9 +321,9 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #' \eqn{\mathbb{E}[\cos(Y-\mu)] = A(\kappa)} and
 #' \eqn{\mathbb{E}[\sin(Y-\mu)] = 0}, the term carrying the map's second
 #' derivative drops out and
-#' \deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\kappa A(\kappa), \qquad
+#' \deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\kappa\rho, \qquad
 #'       \mathbb{E}[\ell^{(\mu\rho)}] = 0, \qquad
-#'       \mathbb{E}[\ell^{(\rho\rho)}] = -\dfrac{1}{A'(\kappa)}.}
+#'       \mathbb{E}[\ell^{(\rho\rho)}] = -\kappa'(\rho) = -\dfrac{1}{A'(\kappa)}.}
 #'
 #' The last equality is the reparametrization identity: the information in
 #' \eqn{\kappa} is \eqn{A'(\kappa)} and \eqn{\kappa'(\rho) = 1/A'(\kappa)}, so
@@ -387,6 +347,9 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `rho_rho` and
 #'   `mu_rho`, each of length `length(y)` and constant along it. `mu_rho` is
@@ -410,8 +373,8 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #'
 #' # The reparametrization identity: the information in rho is the reciprocal
 #' # of the information in kappa.
-#' k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
-#' Ap <- numericals7::bessel_i_ratio_derivs(k)$d1
+#' k <- numericals7::bessel_i_ratio_inverse(0.7)
+#' Ap <- numericals7::bessel_i_ratio_d1(k)
 #' c(supplied = eh$rho_rho[1], reciprocal = -1 / Ap)
 #'
 #' # Averaging the observed Hessian over draws reaches the same three numbers.
@@ -421,14 +384,10 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 S7::method(distrib_expected_hessian, VonMises2Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
                                                                     approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                    nsim = 10000, ...) {
-  p <- vm2_parts(theta)
-  n <- length(y)
-  list(
-    mu_mu = rep(-p$kappa * p$ad$A, length.out = n),
-    rho_rho = rep(-p$ad$d1 * p$kd$d1^2, length.out = n),
-    mu_rho = rep(0, length.out = n)
-  )
+                                                                    nsim = 10000, ...,
+                                                                    threads = 1L) {
+  n <- max(length(y), length(theta[[1]]), length(theta[[2]]))
+  vonmises2_expected_hessian_cpp(n, theta[[2]], threads)
 }
 
 #' @title Mean of a von Mises in the Resultant Length
@@ -462,7 +421,8 @@ S7::method(distrib_expected_hessian, VonMises2Distrib) <- function(distrib, y, t
 S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   mean(vonmises1_distrib(),
-       list(mu = theta[[1]], kappa = vm2_parts(theta)$kappa), ...)
+       list(mu = theta[[1]],
+            kappa = numericals7::bessel_i_ratio_inverse(theta[[2]])), ...)
 }
 
 
@@ -565,7 +525,7 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #'
 #' # The same law as the concentration parametrization at the implied kappa.
 #' th <- list(mu = 0.5, rho = 0.7)
-#' k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+#' k <- numericals7::bessel_i_ratio_inverse(0.7)
 #' all.equal(distrib_pdf(d, c(-1, 0, 1), th),
 #'           distrib_pdf(vonmises1_distrib(), c(-1, 0, 1),
 #'                       list(mu = 0.5, kappa = k)))
@@ -578,7 +538,8 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' # The map is steep near one, so a nearly deterministic direction is better
 #' # conditioned in kappa than in rho.
 #' vapply(c(0.01, 0.5, 0.95, 0.999),
-#'        function(r) numericals7::bessel_i_ratio_inverse(r)$d1, numeric(1))
+#'        function(r) numericals7::bessel_i_ratio_inverse_d1(
+#'          numericals7::bessel_i_ratio_inverse(r)), numeric(1))
 #'
 #' # Fitting recovers both parameters.
 #' set.seed(3)
@@ -619,8 +580,12 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' \eqn{\mu}-derivative of \eqn{\cos(y-\mu)} and \eqn{\kappa^{(b)}} the
 #' \eqn{b}-th derivative of \eqn{A^{-1}}: the concentration parametrization's
 #' \eqn{\mu}-derivatives are linear in \eqn{\kappa}, so the composition has
-#' nothing to expand. The pure-\eqn{\rho} component carries the full
-#' one-variable Faa di Bruno on \eqn{\log I_0}, written out.
+#' nothing to expand. Since \eqn{\partial\log I_0(\kappa(\rho))/\partial\rho
+#' = \rho\,\kappa'(\rho)}, the pure-\eqn{\rho} component is
+#' \eqn{\{\cos(y-\mu) - \rho\}\kappa'''(\rho) - 2\kappa''(\rho)}. The
+#' components are computed by a compiled kernel, which reads
+#' \eqn{\kappa'}, \eqn{\kappa''} and \eqn{\kappa'''} from
+#' \eqn{A'}, \eqn{A''} and \eqn{A'''} by the inverse function rule.
 #'
 #' With `expected = TRUE` the method calls [expected_derivative()], which is
 #' the one place on this page where `approx` and `nsim` are read.
@@ -643,6 +608,9 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' @param nsim A single positive integer, the sample size when
 #'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_rho`,
 #'   `mu_rho_rho` and `rho_rho_rho`, each of length `length(y)`.
@@ -654,8 +622,8 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #'
 #' @seealso [distrib_hessian.VonMises2Distrib()] for the order below,
 #'   [distrib_deriv4.VonMises2Distrib()] for the order above,
-#'   [vm2_parts()] for the map's derivatives, and [distrib_deriv3()] for the
-#'   generic.
+#'   [numericals7::bessel_i_ratio_inverse_d1()] for the map's derivatives, and
+#'   [distrib_deriv3()] for the generic.
 #'
 #' @examples
 #' d2 <- vonmises2_distrib()
@@ -678,21 +646,13 @@ S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
                                                          expected = FALSE,
                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                         nsim = 10000, ...) {
+                                                         nsim = 10000, ...,
+                                                         threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 3L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  p <- vm2_parts(theta)
-  d <- y - theta[[1]]
-  A <- p$ad
-  k <- p$kd
-  # d^3/drho^3 of log I_0(kappa(rho)), Faa di Bruno written out
-  phi3 <- A$d2 * k$d1^3 + 3 * A$d1 * k$d1 * k$d2 + A$A * k$d3
-  list(mu_mu_mu = -sin(d) * p$kappa,
-       mu_mu_rho = -cos(d) * k$d1,
-       mu_rho_rho = sin(d) * k$d2,
-       rho_rho_rho = cos(d) * k$d3 - phi3)
+  vonmises2_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title von Mises Fourth-Order Derivatives in the Resultant Length
@@ -702,8 +662,9 @@ S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
 #' \eqn{\mu} and \eqn{\rho}, in closed form, by the construction
 #' [distrib_deriv3.VonMises2Distrib()] describes carried one order further: a
 #' single term \eqn{D_a \kappa^{(b)}(\rho)} for every component carrying a
-#' \eqn{\mu}, and the fourth-order one-variable Faa di Bruno on
-#' \eqn{\log I_0} for the pure-\eqn{\rho} one.
+#' \eqn{\mu}, and
+#' \eqn{\{\cos(y-\mu) - \rho\}\kappa^{(4)}(\rho) - 3\kappa'''(\rho)} for
+#' the pure-\eqn{\rho} one.
 #'
 #' With `expected = TRUE` the method calls [expected_derivative()], which is
 #' the one place on this page where `approx` and `nsim` are read.
@@ -726,6 +687,9 @@ S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
 #' @param nsim A single positive integer, the sample size when
 #'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
 #'   `mu_mu_mu_rho`, `mu_mu_rho_rho`, `mu_rho_rho_rho` and `rho_rho_rho_rho`,
@@ -737,8 +701,8 @@ S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
 #' concentration and \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
 #'
 #' @seealso [distrib_deriv3.VonMises2Distrib()] for the order below and the
-#'   construction, [vm2_parts()] for the map's derivatives, and
-#'   [distrib_deriv4()] for the generic.
+#'   construction, [numericals7::bessel_i_ratio_inverse_d1()] for the map's
+#'   derivatives, and [distrib_deriv4()] for the generic.
 #'
 #' @examples
 #' d2 <- vonmises2_distrib()
@@ -757,22 +721,13 @@ S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
                                                          expected = FALSE,
                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                         nsim = 10000, ...) {
+                                                         nsim = 10000, ...,
+                                                         threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  p <- vm2_parts(theta)
-  d <- y - theta[[1]]
-  A <- p$ad
-  k <- p$kd
-  phi4 <- A$d3 * k$d1^4 + 6 * A$d2 * k$d1^2 * k$d2 +
-    A$d1 * (3 * k$d2^2 + 4 * k$d1 * k$d3) + A$A * k$d4
-  list(mu_mu_mu_mu = cos(d) * p$kappa,
-       mu_mu_mu_rho = -sin(d) * k$d1,
-       mu_mu_rho_rho = -cos(d) * k$d2,
-       mu_rho_rho_rho = sin(d) * k$d3,
-       rho_rho_rho_rho = cos(d) * k$d4 - phi4)
+  vonmises2_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 
@@ -818,11 +773,11 @@ S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
 #'         numeric(1)))
 #'
 #' # And with the concentration parametrization at the implied concentration.
-#' k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+#' k <- numericals7::bessel_i_ratio_inverse(0.7)
 #' all.equal(distrib_cdf(d2, y, th),
 #'           distrib_cdf(vonmises1_distrib(), y, list(mu = 0.5, kappa = k)))
 #' @keywords internal
 S7::method(distrib_cdf, VonMises2Distrib) <- function(distrib, q, theta,
                                                       ...) {
-  vm_cdf(q, theta[[1]], vm2_parts(theta)$kappa)
+  vm_cdf(q, theta[[1]], numericals7::bessel_i_ratio_inverse(theta[[2]]))
 }

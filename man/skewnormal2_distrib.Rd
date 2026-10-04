@@ -44,10 +44,11 @@ The map passes through
 \eqn{c = \mathrm{sign}(\gamma_1)(2|\gamma_1|/(4-\pi))^{1/3}}, and two things
 follow from it. It carries a sign, so \code{\link[=sn2_theta]{sn2_theta()}} reads that off the plain
 value and hands it to \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} as an argument, leaving a body with no
-\code{abs()} in it to differentiate. And its derivatives are written out by hand
-in \code{\link[=md_skewnormal2]{md_skewnormal2()}}, as a keyed table of the map's partials, which
-\code{\link[=chain_derivatives]{chain_derivatives()}} consumes. The toolkit assembles higher-order
-derivatives from written-out tables throughout.
+\code{abs()} in it to differentiate. And the derivatives of the log-density in
+the centered parameters are written out per order in compiled kernels (see
+\code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient.SkewNormal2Distrib()}}); near \eqn{\gamma_1 = 0}, where
+their closed forms cancel, they come from the series of the log-density in
+\eqn{\gamma_1^{1/3}}.
 }
 
 \section{What the map costs, and what it buys}{
@@ -59,8 +60,9 @@ contributions cancel, so the information in \eqn{\gamma_1} tends to
 
 The \strong{observed} curvature does diverge, at the rate the cube root sets:
 \eqn{\gamma_1^{-2/3}}, measured at 4.642 per decade against
-\eqn{10^{2/3} = 4.6416}. The parameter derivatives are therefore rejected at
-\eqn{\gamma_1 = 0} exactly, with a message naming the cause. The density,
+\eqn{10^{2/3} = 4.6416}. The derivatives of order two and more are
+therefore rejected at \eqn{\gamma_1 = 0} exactly, with a message naming the
+cause; the score and the expected information are returned there. The density,
 the distribution function, the quantile function, the generator and both
 response derivatives are fine there and equal the Gaussian's.
 

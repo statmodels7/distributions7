@@ -35,16 +35,15 @@ For the Student t, with \eqn{w_1 = 1 + 1/\nu} and \eqn{w_3 = 1 + 3/\nu},
 \eqn{\mathbb{E}[\ell_{\sigma\nu}] = 2\nu^{-2}/(w_1 w_3 \sigma)} and
 \deqn{\mathbb{E}[\ell_{\nu\nu}] = \tfrac14\{\psi'((\nu+1)/2) - \psi'(\nu/2)\}
   + \frac{\nu+5}{2\nu(\nu+1)(\nu+3)} = -\frac{7}{2\nu^4} + \frac{13}{\nu^5} - \dots,}
-whose terms cancel from order \eqn{\nu^{-2}}; its derivatives in \eqn{\nu}
-are taken from the asymptotic series above \eqn{\nu = 30}, the series'
-coefficients being exact integers from the duplication identity
-\eqn{\psi'((\nu+1)/2) - \psi'(\nu/2) = 4\psi'(\nu) - 2\psi'(\nu/2)}.
+whose terms cancel from order \eqn{\nu^{-2}}; it and its derivatives in
+\eqn{\nu} are taken from their asymptotic series in \eqn{1/\nu} above
+\eqn{\nu = 20}, derived from Stirling's series, and the first and second
+derivatives come from one kernel each.
 
 For the generalized gamma by scale \eqn{a} and shapes \eqn{d, p}, each
-component is \eqn{a^{\alpha} p^{\beta} F(k)} with \eqn{k = d/p} and
-\eqn{F} a combination of \eqn{\psi(k)}, \eqn{\psi(k+1)} and their
-derivatives, differentiated through \eqn{\partial k/\partial d = 1/p} and
-\eqn{\partial k/\partial p = -k/p}.
+component is a power of \eqn{1/a} times a closed form in \eqn{(d, p)} and
+the polygamma functions at \eqn{k + 1}, \eqn{k = d/p}, derived offline as
+\code{\link[=distrib_deriv3.GenGamma1Distrib]{distrib_deriv3.GenGamma1Distrib()}} describes.
 }
 \seealso{
 \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}, \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}}

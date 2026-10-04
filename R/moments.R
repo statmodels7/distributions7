@@ -4077,46 +4077,14 @@ S7::method(kurtosis, GPDDistrib) <- function(x, theta, ...) {
 # --- gengamma1 -------------------------------------------------------------
 #
 # Every raw moment is a ratio of gamma functions,
-#   E[Y^k] = a^k Gamma((d+k)/p) / Gamma(d/p),
-# so the four central moments follow from four of them. The ratio is formed
-# through lgamma, since Gamma((d+k)/p) overflows long before the ratio does.
-
-#' Raw Moments of a Generalized Gamma
-#'
-#' @description
-#' Returns the first four raw moments
-#' \eqn{E[Y^k] = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)} for \eqn{k = 1, \ldots, 4}.
-#' The four moment methods of the family share this helper and assemble
-#' different combinations of the four values.
-#'
-#' @details
-#' The gamma ratio is formed on the log scale, as
-#' `exp(k * log(a) + lgamma((d + k) / p) - lgamma(d / p))`, so it stays finite
-#' at shapes where either gamma function on its own would overflow.
-#'
-#' @param a The scale parameter, a positive numeric vector.
-#' @param d The first shape parameter, a positive numeric vector.
-#' @param p The second shape parameter, a positive numeric vector. Small `p`
-#'   pushes \eqn{(d+k)/p} to large arguments, where the log scale earns its
-#'   keep.
-#'
-#' @return A list of four numeric vectors, the raw moments of order 1 to 4,
-#'   each recycled to the longest of `a`, `d` and `p`.
-#'
-#' @seealso [mean.GenGamma1Distrib()], [variance.GenGamma1Distrib()],
-#'   [skewness.GenGamma1Distrib()] and [kurtosis.GenGamma1Distrib()] for the
-#'   four consumers.
-#'
-#' @examples
-#' # At d = p the family is Weibull, and the first raw moment is its mean.
-#' distributions7:::gengamma_raw_moments(2, 3, 3)[[1]]
-#' mean(weibull1_distrib(), list(mu = 2, sigma = 3))
-#'
-#' @keywords internal
-gengamma_raw_moments <- function(a, d, p) {
-  k0 <- d / p
-  lapply(1:4, function(k) exp(k * log(a) + lgamma(k0 + k / p) - lgamma(k0)))
-}
+#   E[Y^j] = a^j Gamma(k + j h) / Gamma(k),   k = d/p, h = 1/p,
+# but the central moments are not formed from the raw ones: towards the
+# lognormal they agree to several orders and the variance lost 2.4e-4 at
+# k = 1e6. The compiled functions of src/gengamma_moments.cpp return the
+# central moments of Y/E[Y] (and the fourth cumulant) by the series of the
+# cumulant generating function of log Y, in double-double, where 8h <= k,
+# and by expm1 of lgamma differences elsewhere; the same functions serve
+# gengamma2.
 
 #' @title Mean of the Generalized Gamma Distribution
 #' @name mean.GenGamma1Distrib
@@ -4128,6 +4096,11 @@ gengamma_raw_moments <- function(a, d, p) {
 #' shapes into the mean.
 #'
 #' @details
+#' The logarithm of the gamma ratio is formed in Stirling's form,
+#' \eqn{(k - 1/2)\log(1 + h/k) + h\log(k + h) - h} plus the difference of the
+#' two remainders, for \eqn{k = d/p \ge 10} and \eqn{h = 1/p}, where the
+#' difference of the two log-gamma values would lose digits.
+#'
 #' The family nests four the toolkit ships separately, and each is a check on
 #' this formula: the gamma at \eqn{p = 1}, the Weibull at \eqn{d = p}, the
 #' exponential at \eqn{d = p = 1} and the half-normal at
@@ -4144,8 +4117,7 @@ gengamma_raw_moments <- function(a, d, p) {
 #' @return A numeric vector of means, of length equal to the longest of the
 #'   three components.
 #'
-#' @seealso [variance.GenGamma1Distrib()], [gengamma_raw_moments()] for the
-#'   shared quantities, [gengamma1_distrib()].
+#' @seealso [variance.GenGamma1Distrib()], [gengamma1_distrib()].
 #'
 #' @examples
 #' d <- gengamma1_distrib()
@@ -4163,7 +4135,7 @@ gengamma_raw_moments <- function(a, d, p) {
 #' @keywords internal
 S7::method(mean, GenGamma1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  gengamma_raw_moments(theta[[1]], theta[[2]], theta[[3]])[[1]]
+  theta[[1]] * exp(gengamma_logmean_cpp(theta[[2]] / theta[[3]], 1 / theta[[3]]))
 }
 
 #' @title Variance of the Generalized Gamma Distribution
@@ -4175,21 +4147,32 @@ S7::method(mean, GenGamma1Distrib) <- function(x, theta, ...) {
 #' \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale enters as a
 #' square and the two shapes through the gamma ratios.
 #'
+#' @details
+#' The difference is not formed. With \eqn{k = d/p} and \eqn{h = 1/p}, the
+#' cumulant generating function of \eqn{\log(Y/m_1)} is
+#' \eqn{K(s) = \sum_{n \ge 2} \psi^{(n-1)}(k)\,h^n (s^n - s)/n!}, and with
+#' \eqn{e^{K(s)} = \sum_n a_n s^n} the central moments of \eqn{Y/m_1} are
+#' \deqn{\mu_r = r!\sum_{n \ge r} S(n, r)\,a_n,}
+#' \eqn{S} the Stirling numbers of the second kind, a sum in which the leading
+#' orders that cancel in \eqn{m_2 - m_1^2} are absent. It is evaluated in
+#' double-double arithmetic where \eqn{8h \le k}, and as
+#' \eqn{\exp(\log m_2 - 2\log m_1) - 1} from Stirling's form of the log-gamma
+#' differences elsewhere. Then \eqn{\operatorname{Var}(Y) = m_1^2\mu_2}.
+#'
 #' @section Notation:
 #' \eqn{a > 0} is the scale, \eqn{d > 0} and \eqn{p > 0} the two shapes, and
 #' \eqn{m_k} the \eqn{k}-th raw moment.
 #'
 #' @param x A `GenGamma1Distrib`, from [gengamma1_distrib()].
 #' @param theta A named list with components `a`, `d` and `p`, all positive,
-#'   each a numeric vector of length 1 or `n`. Cancellation between the two
-#'   raw moments costs digits where the coefficient of variation is small.
+#'   each a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length equal to the longest of the
 #'   three components.
 #'
 #' @seealso [mean.GenGamma1Distrib()], [skewness.GenGamma1Distrib()],
-#'   [gengamma_raw_moments()], [gengamma1_distrib()].
+#'   [gengamma1_distrib()].
 #'
 #' @examples
 #' d <- gengamma1_distrib()
@@ -4201,11 +4184,15 @@ S7::method(mean, GenGamma1Distrib) <- function(x, theta, ...) {
 #' all.equal(variance(d, list(a = 2, d = 3, p = 3)),
 #'           variance(weibull1_distrib(), list(mu = 2, sigma = 3)))
 #'
+#' # Towards the lognormal the coefficient of variation is about sqrt(1/d).
+#' variance(d, list(a = 1, d = 1e6, p = 1)) / mean(d, list(a = 1, d = 1e6, p = 1))^2
+#'
 #' @keywords internal
 S7::method(variance, GenGamma1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  m <- gengamma_raw_moments(theta[[1]], theta[[2]], theta[[3]])
-  m[[2]] - m[[1]]^2
+  k <- theta[[2]] / theta[[3]]
+  h <- 1 / theta[[3]]
+  (theta[[1]] * exp(gengamma_logmean_cpp(k, h)))^2 * gengamma_mu2_cpp(k, h)
 }
 
 #' @title Skewness of the Generalized Gamma Distribution
@@ -4217,6 +4204,11 @@ S7::method(variance, GenGamma1Distrib) <- function(x, theta, ...) {
 #' \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale cancels, so the
 #' value depends on the two shapes alone; unlike a gamma's it can be negative,
 #' which is part of what the second shape parameter buys.
+#'
+#' @details
+#' The numerator and the denominator are the central moments \eqn{\mu_3} and
+#' \eqn{\mu_2} of \eqn{Y/m_1}, computed as [variance.GenGamma1Distrib()]
+#' describes, so that \eqn{\gamma_1 = \mu_3/\mu_2^{3/2}}.
 #'
 #' @section Notation:
 #' \eqn{d > 0} and \eqn{p > 0} are the two shapes and \eqn{m_k} the \eqn{k}-th
@@ -4231,8 +4223,7 @@ S7::method(variance, GenGamma1Distrib) <- function(x, theta, ...) {
 #' @return A numeric vector, of length equal to the longest of the three
 #'   components.
 #'
-#' @seealso [kurtosis.GenGamma1Distrib()], from the same raw moments;
-#'   [gengamma_raw_moments()], [gengamma1_distrib()].
+#' @seealso [kurtosis.GenGamma1Distrib()], [gengamma1_distrib()].
 #'
 #' @examples
 #' d <- gengamma1_distrib()
@@ -4247,9 +4238,9 @@ S7::method(variance, GenGamma1Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(skewness, GenGamma1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  m <- gengamma_raw_moments(theta[[1]], theta[[2]], theta[[3]])
-  v <- m[[2]] - m[[1]]^2
-  (m[[3]] - 3 * m[[1]] * m[[2]] + 2 * m[[1]]^3) / v^1.5
+  k <- theta[[2]] / theta[[3]]
+  h <- 1 / theta[[3]]
+  gengamma_mu3_cpp(k, h) / gengamma_mu2_cpp(k, h)^1.5 + moment_const(theta, 3L, 0)
 }
 
 #' @title Excess Kurtosis of the Generalized Gamma Distribution
@@ -4262,6 +4253,16 @@ S7::method(skewness, GenGamma1Distrib) <- function(x, theta, ...) {
 #' the two shapes move the skewness and the kurtosis with some freedom, where a
 #' gamma ties them by \eqn{\gamma_2 = 3\gamma_1^2/2}.
 #'
+#' @details
+#' The excess is the fourth cumulant over the squared variance,
+#' \eqn{\gamma_2 = (\mu_4 - 3\mu_2^2)/\mu_2^2}, with the central moments of
+#' \eqn{Y/m_1} computed as [variance.GenGamma1Distrib()] describes and the
+#' difference \eqn{\mu_4 - 3\mu_2^2} formed in the same double-double
+#' arithmetic. Towards the lognormal the excess is of order \eqn{1/k},
+#' \eqn{k = d/p}, with coefficient \eqn{2(4h - 1)(2h - 1)}, \eqn{h = 1/p}; at
+#' \eqn{p = 2} and \eqn{p = 4} that coefficient vanishes and the excess is of
+#' order \eqn{1/k^2}.
+#'
 #' @section Notation:
 #' \eqn{d > 0} and \eqn{p > 0} are the two shapes and \eqn{m_k} the \eqn{k}-th
 #' raw moment.
@@ -4269,14 +4270,13 @@ S7::method(skewness, GenGamma1Distrib) <- function(x, theta, ...) {
 #' @param x A `GenGamma1Distrib`, from [gengamma1_distrib()].
 #' @param theta A named list with components `a`, `d` and `p`, all positive,
 #'   each a numeric vector of length 1 or `n`. Only `d` and `p` enter the
-#'   value; the fourth-order combination cancels heavily at small dispersions.
+#'   value.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length equal to the longest
 #'   of the three components.
 #'
-#' @seealso [skewness.GenGamma1Distrib()], from the same raw moments;
-#'   [gengamma_raw_moments()], [gengamma1_distrib()].
+#' @seealso [skewness.GenGamma1Distrib()], [gengamma1_distrib()].
 #'
 #' @examples
 #' d <- gengamma1_distrib()
@@ -4292,9 +4292,9 @@ S7::method(skewness, GenGamma1Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(kurtosis, GenGamma1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  m <- gengamma_raw_moments(theta[[1]], theta[[2]], theta[[3]])
-  v <- m[[2]] - m[[1]]^2
-  (m[[4]] - 4 * m[[1]] * m[[3]] + 6 * m[[1]]^2 * m[[2]] - 3 * m[[1]]^4) / v^2 - 3
+  k <- theta[[2]] / theta[[3]]
+  h <- 1 / theta[[3]]
+  gengamma_kappa4_cpp(k, h) / gengamma_mu2_cpp(k, h)^2 + moment_const(theta, 3L, 0)
 }
 
 # --- poisson ---------------------------------------------------------------

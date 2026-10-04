@@ -474,12 +474,14 @@ S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, the
 #' @keywords internal
 S7::method(distrib_dexpected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
-                     function(k) poisson_dexpected_cpp(y, theta[[1]], k, threads))
+                     function(k) (if (k == 1L) poisson_dexpected1_cpp(y, theta[[1]], threads)
+                       else poisson_dexpected2_cpp(y, theta[[1]], threads)))
 }
 
 S7::method(distrib_d2expected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
-                     function(k) poisson_dexpected_cpp(y, theta[[1]], k, threads))
+                     function(k) (if (k == 1L) poisson_dexpected1_cpp(y, theta[[1]], threads)
+                       else poisson_dexpected2_cpp(y, theta[[1]], threads)))
 }
 
 #' @title Poisson Third-Order Derivative

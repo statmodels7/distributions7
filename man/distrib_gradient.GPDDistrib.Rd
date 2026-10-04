@@ -35,12 +35,11 @@ compiled kernel. With \eqn{z = y/\sigma}, \eqn{t = 1 + \xi z} and
 
 The shape component is written this way only away from zero. Both of its
 terms blow up as \eqn{\xi \to 0} and their difference has the finite limit
-\eqn{z^2/2 - z}, so the kernel evaluates it through the analytic function
-\eqn{\Lambda(u) = \log(1+u)/u} instead, whose derivatives come from a
-recursion above \eqn{|u| = 1/2} and from a Taylor series below it. Measured
-at \eqn{z = 1}, the component reads \eqn{-0.4967}, \eqn{-0.49997},
-\eqn{-0.5000000} at \eqn{\xi = 10^{-2}, 10^{-4}, 10^{-8}} against the limit
-\eqn{-1/2}.
+\eqn{z^2/2 - z}, so the kernel evaluates it as
+\eqn{-z/t - z^2\phi'(u)}, \eqn{u = \xi z}, with
+\eqn{\phi(u) = \log(1+u)/u} computed as \code{\link[=distrib_deriv3.GPDDistrib]{distrib_deriv3.GPDDistrib()}}
+describes; \eqn{\xi = 0} is an ordinary point of that form. \eqn{t} is
+formed from the exact product \eqn{\xi y}.
 }
 \section{Notation}{
 

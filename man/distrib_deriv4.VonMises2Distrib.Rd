@@ -29,6 +29,10 @@ or \code{"opg"}. Read only when \code{expected = TRUE}.}
 \code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
 A named list of five numeric vectors, \code{mu_mu_mu_mu},
@@ -40,8 +44,9 @@ Computes the five distinct fourth derivatives of the log-density in
 \eqn{\mu} and \eqn{\rho}, in closed form, by the construction
 \code{\link[=distrib_deriv3.VonMises2Distrib]{distrib_deriv3.VonMises2Distrib()}} describes carried one order further: a
 single term \eqn{D_a \kappa^{(b)}(\rho)} for every component carrying a
-\eqn{\mu}, and the fourth-order one-variable Faa di Bruno on
-\eqn{\log I_0} for the pure-\eqn{\rho} one.
+\eqn{\mu}, and
+\eqn{\{\cos(y-\mu) - \rho\}\kappa^{(4)}(\rho) - 3\kappa'''(\rho)} for
+the pure-\eqn{\rho} one.
 
 With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which is
 the one place on this page where \code{approx} and \code{nsim} are read.
@@ -69,6 +74,6 @@ all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-5)
 }
 \seealso{
 \code{\link[=distrib_deriv3.VonMises2Distrib]{distrib_deriv3.VonMises2Distrib()}} for the order below and the
-construction, \code{\link[=vm2_parts]{vm2_parts()}} for the map's derivatives, and
-\code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
+construction, \code{\link[numericals7:bessel_i_ratio_inverse_d1]{numericals7::bessel_i_ratio_inverse_d1()}} for the map's
+derivatives, and \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

@@ -35,36 +35,6 @@ S7::method(distrib_cross_y, VonMises1Distrib) <- function(distrib, y, theta,
   list(mu = theta[[2]] * cos(d), kappa = -sin(d))
 }
 
-#' @title Generalized Gamma Mixed Derivatives
-#' @name distrib_cross_y.GenGamma1Distrib
-#' @description
-#' Closed form. With \eqn{w = (y/a)^p} and \eqn{L = \log(y/a)},
-#' \eqn{\ell^{(y)} = ((d-1) - pw)/y}, so the components are \eqn{p^2w/(ay)},
-#' \eqn{1/y} and \eqn{-w(1 + pL)/y}.
-#' @param distrib A `GenGamma1Distrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list containing `a`, `d` and `p`.
-#' @param scale Handled by the generic before dispatch.
-#' @param ... Unused.
-#' @return A named list with components `a`, `d` and `p`, each a numeric vector of
-#'   length `length(y)`. Measured against Richardson on the analytic
-#'   response gradient the worst is \eqn{2.8\times10^{-11}} relative.
-#'
-#' @seealso [gengamma1_distrib()] for the family and its parametrization;
-#'   [distrib_cross_y()] for the generic.
-#' @keywords internal
-S7::method(distrib_cross_y, GenGamma1Distrib) <- function(distrib, y, theta,
-                                                          scale = c("parameter", "link"),
-                                                          ...) {
-  a <- theta[[1]]
-  pp <- theta[[3]]
-  r <- y / a
-  w <- r^pp
-  list(a = pp^2 * w / (a * y),
-       d = 1 / y + 0 * w,
-       p = -w * (1 + pp * base::log(r)) / y)
-}
-
 #' @title Gaussian Mixed Derivatives in Mean and Variance
 #' @name distrib_cross_y.Gaussian2Distrib
 #' @description
@@ -295,8 +265,9 @@ S7::method(distrib_cross_y, Gamma2Distrib) <- function(distrib, y, theta,
 #' @title Skew Normal Mixed Derivatives in the Centered Parametrization
 #' @name distrib_cross_y.SkewNormal2Distrib
 #' @description
-#' The direct parametrization's mixed block carried by the first-order chain
-#' rule on the centered-to-direct map.
+#' The derivatives of the log-density in the response and once in each
+#' parameter, from a compiled kernel written as the parameter derivatives are
+#' (see [distrib_gradient.SkewNormal2Distrib()]).
 #' @param distrib A `SkewNormal2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu`, `sigma` and `gamma1`.
@@ -313,6 +284,5 @@ S7::method(distrib_cross_y, Gamma2Distrib) <- function(distrib, y, theta,
 S7::method(distrib_cross_y, SkewNormal2Distrib) <- function(distrib, y, theta,
                                                             scale = c("parameter", "link"),
                                                             ...) {
-  mapped_cross_y(distrib, skewnormal1_distrib(), sn2_theta(theta),
-                 md_skewnormal2(theta[1:3]), y)
+  skewnormal2_cross_y_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }
