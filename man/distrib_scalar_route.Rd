@@ -36,7 +36,8 @@ observation followed by its constants. \code{d7_scalar_thread_safe(id)} returns
 may be called from a worker thread, and 0 otherwise.
 
 The default method returns the class name when the registry covers the
-class and no constants; the binomial carries its size as a constant.
+class and no constants; the binomial and the two beta-binomials carry
+their size as a constant.
 }
 \examples{
 distrib_scalar_route(gaussian1_distrib())

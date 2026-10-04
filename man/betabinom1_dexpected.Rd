@@ -25,7 +25,9 @@ at order 1 and as \code{\link[=d2expected_names]{d2expected_names()}} at order 2
 \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} is the shapes \eqn{a = \mu/\sigma} and
 \eqn{b = (1-\mu)/\sigma} under another name, so its derivatives are the
 shapes' ones, summed exactly over the support by the compiled kernel, and
-carried across by \code{\link[=dexpected_chain]{dexpected_chain()}} with the map's partials written out:
+carried across with the map's partials written out (at order 1 by the
+compiled kernel \code{betabinom1_dexpected1_cpp}, at order 2 by
+\code{\link[=dexpected_chain]{dexpected_chain()}}):
 \eqn{a_\mu = 1/\sigma}, \eqn{a_\sigma = -\mu/\sigma^2},
 \eqn{a_{\mu\sigma} = -1/\sigma^2}, \eqn{a_{\sigma\sigma} = 2\mu/\sigma^3},
 \eqn{a_{\mu\sigma\sigma} = 2/\sigma^3},

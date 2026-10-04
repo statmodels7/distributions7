@@ -16,6 +16,9 @@ recycled. Both must be strictly positive.}
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, the number of threads the
+compiled kernel may use. Defaults to \code{1L}.}
 }
 \value{
 A named list of two numeric vectors, \code{alpha} and \code{beta}, each of
@@ -29,7 +32,10 @@ the two shapes, one value per observation, in closed form:
           - \psi(n+\alpha+\beta) + \psi(\alpha+\beta),}
 and the same with \eqn{n-y} and \eqn{\beta} in place of \eqn{y} and
 \eqn{\alpha}. The two share the term in \eqn{\alpha+\beta}, which is the
-only part a mixed second derivative keeps.
+only part a mixed second derivative keeps. The compiled kernel evaluates
+each difference of digammas as a series remainder plus one \code{log1p()}, the
+form \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} uses, so that the score keeps its digits as the
+shapes grow.
 
 With \code{scale = "link"} the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter

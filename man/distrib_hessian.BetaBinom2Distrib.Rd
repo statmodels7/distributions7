@@ -16,6 +16,9 @@ recycled. Both must be strictly positive.}
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, the number of threads the
+compiled kernel may use. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{alpha_alpha}, \code{beta_beta}
@@ -35,7 +38,8 @@ and the same with \eqn{n-y} and \eqn{\beta}. The \strong{mixed} component keeps
 only the shared term,
 \eqn{-\psi_1(n+S) + \psi_1(S)}, the two shapes entering the log-mass
 separately otherwise, so it does not depend on the data at all and equals
-its own expectation at every observation.
+its own expectation at every observation. The compiled kernel evaluates the
+differences of trigammas as series remainders, as for the score.
 }
 \section{Notation}{
 

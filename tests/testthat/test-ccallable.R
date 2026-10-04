@@ -48,7 +48,9 @@ ccallable_families <- list(
   PseudoHuber2Distrib = function() pseudohuber2_distrib(),
   SkewNormal2Distrib = function() skewnormal2_distrib(),
   Pig1Distrib = function() pig1_distrib(),
-  Pig2Distrib = function() pig2_distrib()
+  Pig2Distrib = function() pig2_distrib(),
+  BetaBinom1Distrib = function() betabinom1_distrib(size = 9),
+  BetaBinom2Distrib = function() betabinom2_distrib(size = 9)
 )
 
 # the constants a family carries besides its parameters follow the

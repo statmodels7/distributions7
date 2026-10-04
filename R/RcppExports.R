@@ -85,6 +85,14 @@ betabinom_logpmf_cpp <- function(y, mu, sigma, size, threads = 1L) {
     .Call(`_distributions7_betabinom_logpmf_cpp`, y, mu, sigma, size, threads)
 }
 
+betabinom2_gradient_cpp <- function(y, alpha, beta, size, threads = 1L) {
+    .Call(`_distributions7_betabinom2_gradient_cpp`, y, alpha, beta, size, threads)
+}
+
+betabinom2_hessian_cpp <- function(y, alpha, beta, size, threads = 1L) {
+    .Call(`_distributions7_betabinom2_hessian_cpp`, y, alpha, beta, size, threads)
+}
+
 binomial_gradient_cpp <- function(y, mu, size, threads = 1L) {
     .Call(`_distributions7_binomial_gradient_cpp`, y, mu, size, threads)
 }
@@ -303,6 +311,14 @@ gpd_dexpected2_cpp <- function(y, sigma, xi, threads = 1L) {
 
 betabinom_shapes_dexpected1_cpp <- function(y, alpha, beta, size, threads = 1L) {
     .Call(`_distributions7_betabinom_shapes_dexpected1_cpp`, y, alpha, beta, size, threads)
+}
+
+betabinom2_expected_cpp <- function(y, alpha, beta, size, threads = 1L) {
+    .Call(`_distributions7_betabinom2_expected_cpp`, y, alpha, beta, size, threads)
+}
+
+betabinom1_dexpected1_cpp <- function(y, mu, sigma, size, threads = 1L) {
+    .Call(`_distributions7_betabinom1_dexpected1_cpp`, y, mu, sigma, size, threads)
 }
 
 betabinom_shapes_dexpected2_cpp <- function(y, alpha, beta, size, threads = 1L) {

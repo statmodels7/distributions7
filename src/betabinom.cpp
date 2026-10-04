@@ -1,8 +1,14 @@
 #include <Rcpp.h>
 #include "d7_par.h"
 #include "psi_diff.h"
+#include "pt_betabinom.h"
 #include <limits>
 using namespace Rcpp;
+using d7::BBderiv;
+using d7::BBmap;
+using d7::bb_map;
+using d7::bb_shape_derivs;
+using d7::bb_log_mass;
 
 // Beta-binomial with size n, written in the mean proportion mu and the
 // dispersion sigma. The shape parameters are A = mu/sigma and
@@ -18,92 +24,6 @@ using namespace Rcpp;
 // Var(Y) = n mu (1-mu) [1 + (n-1) sigma/(1+sigma)], so sigma -> 0 recovers
 // the binomial and the family is overdispersed for every sigma > 0.
 
-// The log-mass, by whichever of two routes is accurate at the shapes given.
-// The two beta functions are of magnitude S log S and their difference is of
-// order one, so the ordinary route carries an absolute error of eps times
-// that magnitude; past 1e-8 the shifts, being integers, are expanded as exact
-// sums of logarithms, which form nothing larger than n log S. Without this
-// the difference of the two beta functions collapses to zero at large shapes
-// and every mass comes back as one.
-// The two lchoose calls are what make this body admissible in a parallel
-// region, and only because every caller reaches it through the support
-// guard in betabinom_logpmf_cpp: lchoose warns when its SECOND argument is
-// not an integer, and a warning raised from a worker thread kills the
-// process (d7_par.h). Do not remove the `y != floor(y)` test there without
-// replacing these with a form that has no warning path.
-static inline double bb_log_mass(double y, double A, double B, double n) {
-    double S = A + B;
-    static const double eps = std::numeric_limits<double>::epsilon();
-    if (R_FINITE(S) && R::lgammafn(S + n) * eps < 1e-8) {
-        return R::lchoose(n, y) + (R::lbeta(y + A, n - y + B) - R::lbeta(A, B));
-    }
-    double s1 = 0.0, s2 = 0.0, s3 = 0.0;
-    int N = (int) n;
-    for (int j = 0; j < N; j++) {
-        if (j < y)          s1 += std::log(A + j);
-        if (j < n - y)      s2 += std::log(B + j);
-        s3 += std::log(S + j);
-    }
-    return R::lchoose(n, y) + s1 + s2 - s3;
-}
-
-struct BBderiv {
-    double lA, lB;              // first order in the shapes
-    double lAA, lAB, lBB;       // second order
-};
-
-// EACH CANCELLATION WRITTEN OUT.  As the concentration S = A + B grows the
-// family tends to the binomial and every derivative in the shapes vanishes,
-// so each was a difference of digammas at arguments a whole SIZE apart:
-// measured, dl/dA is wrong by 5.6e-05 at S = 1e6, EXACTLY ZERO at 1e9 where
-// the value is 1.9e-17, and 1.9e+08 out at 1e12 -- while a fit at a true
-// concentration of 3000 reports 1.7e+08 and one on binomial data 3.1e+09.
-//
-// The log-mass above has carried the exact form since 0.20.0, summing
-// log(A+j) over the support rather than differencing two lbeta; these are
-// the derivatives of that sum and had not followed it.  With
-// psi(x+k) - psi(x) = psi_A_rest(k,x) + log1p(k/x), the two logarithms
-// combine into one log1p of a small quantity:
-//   log1p(y/A) - log1p(n/S) = log1p((y S - A n)/(A(S+n)))
-// and the same for B.  Nothing here is O(n): the sums the log-mass needs are
-// replaced by the series, which is O(1) in the size.
-static inline BBderiv bb_shape_derivs(double y, double n, double A, double B) {
-    double S = A + B;
-    double Sn = S + n;
-    BBderiv d;
-    double aS  = d7::psi_A_rest(n, S);
-    double tS  = d7::psi_T_rest(n, S);
-    double nSn = n / (S * Sn);
-    d.lA  = d7::psi_A_rest(y, A) - aS +
-        std::log1p((y * S - A * n) / (A * Sn));
-    d.lB  = d7::psi_A_rest(n - y, B) - aS +
-        std::log1p(((n - y) * S - B * n) / (B * Sn));
-    d.lAA = d7::psi_T_rest(y, A) - tS - y / (A * (A + y)) + nSn;
-    d.lBB = d7::psi_T_rest(n - y, B) - tS -
-        (n - y) / (B * (B + n - y)) + nSn;
-    d.lAB = -tS + nSn;
-    return d;
-}
-
-// The shapes and their first two derivatives in (mu, sigma).
-struct BBmap {
-    double A, B;
-    double Am, As, Amm, Ams, Ass;
-    double Bm, Bs, Bmm, Bms, Bss;
-};
-
-static inline BBmap bb_map(double mu, double s) {
-    BBmap m;
-    double s2 = s * s, s3 = s2 * s;
-    m.A = mu / s;          m.B = (1.0 - mu) / s;
-    m.Am = 1.0 / s;        m.Bm = -1.0 / s;
-    m.As = -mu / s2;       m.Bs = -(1.0 - mu) / s2;
-    m.Amm = 0.0;           m.Bmm = 0.0;
-    m.Ams = -1.0 / s2;     m.Bms = 1.0 / s2;
-    m.Ass = 2.0 * mu / s3; m.Bss = 2.0 * (1.0 - mu) / s3;
-    return m;
-}
-
 // [[Rcpp::export]]
 List betabinom_gradient_cpp(NumericVector y, NumericVector mu,
                             NumericVector sigma, double size,
@@ -116,9 +36,9 @@ List betabinom_gradient_cpp(NumericVector y, NumericVector mu,
         double m = mu_s ? mu[0] : mu[i];
         double s = si_s ? sigma[0] : sigma[i];
         BBmap mp = bb_map(m, s);
-        BBderiv d = bb_shape_derivs(y[i], size, mp.A, mp.B);
-        g_mu[i]    = d.lA * mp.Am + d.lB * mp.Bm;
-        g_sigma[i] = d.lA * mp.As + d.lB * mp.Bs;
+        d7::BBd1 d = d7::bb_shape_d1(y[i], size, mp.A, mp.B);
+        g_mu[i]    = d7::betabinom1_score_mu(d, mp);
+        g_sigma[i] = d7::betabinom1_score_sigma(d, mp);
     });
     return List::create(Named("mu") = g_mu, Named("sigma") = g_sigma);
 }
@@ -137,18 +57,9 @@ List betabinom_hessian_cpp(NumericVector y, NumericVector mu,
         BBmap mp = bb_map(m, s);
         BBderiv d = bb_shape_derivs(y[i], size, mp.A, mp.B);
 
-        h_mm[i] = d.lAA * mp.Am * mp.Am
-                + 2.0 * d.lAB * mp.Am * mp.Bm
-                + d.lBB * mp.Bm * mp.Bm
-                + d.lA * mp.Amm + d.lB * mp.Bmm;
-        h_ms[i] = d.lAA * mp.Am * mp.As
-                + d.lAB * (mp.Am * mp.Bs + mp.As * mp.Bm)
-                + d.lBB * mp.Bm * mp.Bs
-                + d.lA * mp.Ams + d.lB * mp.Bms;
-        h_ss[i] = d.lAA * mp.As * mp.As
-                + 2.0 * d.lAB * mp.As * mp.Bs
-                + d.lBB * mp.Bs * mp.Bs
-                + d.lA * mp.Ass + d.lB * mp.Bss;
+        h_mm[i] = d7::betabinom1_hess_mu_mu(d, mp);
+        h_ms[i] = d7::betabinom1_hess_mu_sigma(d, mp);
+        h_ss[i] = d7::betabinom1_hess_sigma_sigma(d, mp);
     });
     return List::create(Named("mu_mu") = h_mm,
                         Named("mu_sigma") = h_ms,
@@ -185,18 +96,9 @@ List betabinom_expected_hessian_cpp(NumericVector y, NumericVector mu,
             for (int k = 0; k <= N; k++) {
                 double p = std::exp(bb_log_mass(k, mp.A, mp.B, size));
                 BBderiv d = bb_shape_derivs(k, size, mp.A, mp.B);
-                e_mm += p * (d.lAA * mp.Am * mp.Am
-                             + 2.0 * d.lAB * mp.Am * mp.Bm
-                             + d.lBB * mp.Bm * mp.Bm
-                             + d.lA * mp.Amm + d.lB * mp.Bmm);
-                e_ms += p * (d.lAA * mp.Am * mp.As
-                             + d.lAB * (mp.Am * mp.Bs + mp.As * mp.Bm)
-                             + d.lBB * mp.Bm * mp.Bs
-                             + d.lA * mp.Ams + d.lB * mp.Bms);
-                e_ss += p * (d.lAA * mp.As * mp.As
-                             + 2.0 * d.lAB * mp.As * mp.Bs
-                             + d.lBB * mp.Bs * mp.Bs
-                             + d.lA * mp.Ass + d.lB * mp.Bss);
+                e_mm += p * d7::betabinom1_hess_mu_mu(d, mp);
+                e_ms += p * d7::betabinom1_hess_mu_sigma(d, mp);
+                e_ss += p * d7::betabinom1_hess_sigma_sigma(d, mp);
             }
             last_m = m; last_s = s;
         }
@@ -226,4 +128,40 @@ NumericVector betabinom_logpmf_cpp(NumericVector y, NumericVector mu,
         }
     });
     return out;
+}
+
+// The shape parametrization (alpha, beta): the score and the Hessian are the
+// shapes' derivatives of bb_shape_derivs() themselves.
+// [[Rcpp::export]]
+List betabinom2_gradient_cpp(NumericVector y, NumericVector alpha,
+                             NumericVector beta, double size, int threads = 1) {
+    int n = y.size();
+    NumericVector g_a(n), g_b(n);
+    bool a_s = (alpha.size() == 1), b_s = (beta.size() == 1);
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double a = a_s ? alpha[0] : alpha[i];
+        double b = b_s ? beta[0] : beta[i];
+        d7::BBd1 d = d7::bb_shape_d1_mixed(y[i], size, a, b);
+        g_a[i] = d.lA;
+        g_b[i] = d.lB;
+    });
+    return List::create(Named("alpha") = g_a, Named("beta") = g_b);
+}
+
+// [[Rcpp::export]]
+List betabinom2_hessian_cpp(NumericVector y, NumericVector alpha,
+                            NumericVector beta, double size, int threads = 1) {
+    int n = y.size();
+    NumericVector h_aa(n), h_bb(n), h_ab(n);
+    bool a_s = (alpha.size() == 1), b_s = (beta.size() == 1);
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double a = a_s ? alpha[0] : alpha[i];
+        double b = b_s ? beta[0] : beta[i];
+        d7::BBd2 d = d7::bb_shape_d2_mixed(y[i], size, a, b);
+        h_aa[i] = d.lAA;
+        h_bb[i] = d.lBB;
+        h_ab[i] = d.lAB;
+    });
+    return List::create(Named("alpha_alpha") = h_aa, Named("beta_beta") = h_bb,
+                        Named("alpha_beta") = h_ab);
 }

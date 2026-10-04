@@ -41,6 +41,7 @@
 #include "pt_pseudohuber2.h"
 #include "pt_skewnormal2.h"
 #include "pt_pig.h"
+#include "pt_betabinom.h"
 
 // The scalar C entry points of the fast route piano_parallel.txt section 2a
 // describes: the score and the second derivative of the log-density in ONE
@@ -107,7 +108,9 @@ const char* const d7_scalar_classes[] = {
     "PseudoHuber2Distrib",  // 37
     "SkewNormal2Distrib",   // 38
     "Pig1Distrib",          // 39
-    "Pig2Distrib"           // 40
+    "Pig2Distrib",          // 40
+    "BetaBinom1Distrib",    // 41
+    "BetaBinom2Distrib"     // 42
 };
 
 const int d7_n_scalar_classes =
@@ -180,6 +183,8 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
     case 38: d7::skewnormal2_score_curv(k, y, th, out); break;
     case 39: d7::pig1_score_curv(k, y, th, out); break;
     case 40: d7::pig2_score_curv(k, y, th, out); break;
+    case 41: d7::betabinom1_score_curv(k, y, th, out); break;
+    case 42: d7::betabinom2_score_curv(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }
@@ -248,6 +253,8 @@ void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
     case 38: d7::skewnormal2_info_dinfo(k, y, th, out); break;
     case 39: d7::pig1_info_dinfo(k, y, th, out); break;
     case 40: d7::pig2_info_dinfo(k, y, th, out); break;
+    case 41: d7::betabinom1_info_dinfo(k, y, th, out); break;
+    case 42: d7::betabinom2_info_dinfo(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }

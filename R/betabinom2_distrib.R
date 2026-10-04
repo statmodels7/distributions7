@@ -340,7 +340,10 @@ S7::method(distrib_rng, BetaBinom2Distrib) <- function(distrib, n, theta, ...) {
 #'           - \psi(n+\alpha+\beta) + \psi(\alpha+\beta),}
 #' and the same with \eqn{n-y} and \eqn{\beta} in place of \eqn{y} and
 #' \eqn{\alpha}. The two share the term in \eqn{\alpha+\beta}, which is the
-#' only part a mixed second derivative keeps.
+#' only part a mixed second derivative keeps. The compiled kernel evaluates
+#' each difference of digammas as a series remainder plus one `log1p()`, the
+#' form [betabinom1_distrib()] uses, so that the score keeps its digits as the
+#' shapes grow.
 #'
 #' With `scale = "link"` the generic applies the chain rule for the links the
 #' family carries before returning. This method always returns the parameter
@@ -354,6 +357,8 @@ S7::method(distrib_rng, BetaBinom2Distrib) <- function(distrib, n, theta, ...) {
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, the number of threads the
+#'   compiled kernel may use. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `alpha` and `beta`, each of
 #'   length `max(length(y), length(alpha), length(beta))`.
@@ -399,13 +404,9 @@ S7::method(distrib_rng, BetaBinom2Distrib) <- function(distrib, n, theta, ...) {
 #' w <- distrib_pdf(d, 0:10, th)
 #' vapply(g, function(v) sum(w * v), numeric(1))
 S7::method(distrib_gradient, BetaBinom2Distrib) <- function(distrib, y, theta,
-                                                             scale = c("parameter", "link"), ...) {
-  a <- theta[[1]]
-  b <- theta[[2]]
-  n <- distrib@size
-  ds <- digamma(a + b) - digamma(n + a + b)
-  list(alpha = digamma(y + a) - digamma(a) + ds,
-       beta = digamma(n - y + b) - digamma(b) + ds)
+                                                             scale = c("parameter", "link"), ...,
+                                                             threads = 1L) {
+  betabinom2_gradient_cpp(y, theta[[1]], theta[[2]], distrib@size, threads)
 }
 
 #' @title Beta-Binomial Observed Hessian in Its Shapes
@@ -422,7 +423,8 @@ S7::method(distrib_gradient, BetaBinom2Distrib) <- function(distrib, y, theta,
 #' only the shared term,
 #' \eqn{-\psi_1(n+S) + \psi_1(S)}, the two shapes entering the log-mass
 #' separately otherwise, so it does not depend on the data at all and equals
-#' its own expectation at every observation.
+#' its own expectation at every observation. The compiled kernel evaluates the
+#' differences of trigammas as series remainders, as for the score.
 #'
 #' @param distrib A `BetaBinom2Distrib` object, from [betabinom2_distrib()].
 #' @param y A numeric vector of counts in \eqn{\{0, \dots, n\}}.
@@ -432,6 +434,8 @@ S7::method(distrib_gradient, BetaBinom2Distrib) <- function(distrib, y, theta,
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, the number of threads the
+#'   compiled kernel may use. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `alpha_alpha`, `beta_beta`
 #'   and `alpha_beta`, each of length
@@ -464,10 +468,9 @@ S7::method(distrib_gradient, BetaBinom2Distrib) <- function(distrib, y, theta,
 #' dn <- distrib_gradient(d, 0:10, list(alpha = 2 - eps, beta = 3))$alpha
 #' all.equal((up - dn) / (2 * eps), h$alpha_alpha, tolerance = 1e-6)
 S7::method(distrib_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
-                                                            scale = c("parameter", "link"), ...) {
-  d <- betabinom2_derivs(y, theta[[1]], theta[[2]], distrib@size, 2L,
-                         distrib@params)
-  d[hess_names(distrib@params)]
+                                                            scale = c("parameter", "link"), ...,
+                                                            threads = 1L) {
+  betabinom2_hessian_cpp(y, theta[[1]], theta[[2]], distrib@size, threads)
 }
 
 #' @title Beta-Binomial Expected Hessian in Its Shapes
@@ -488,9 +491,8 @@ S7::method(distrib_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
 #' @param y A numeric vector of counts. Only its length is read, the
 #'   expectation not depending on the data; the values are ignored.
 #' @param theta A named list with components `alpha` and `beta`, each a numeric
-#'   vector of length 1. Both must be strictly positive. One weighted sum is
-#'   built for the whole call, so a parameter varying by observation is not
-#'   supported here.
+#'   vector of length 1 or of the length of `y`. Both must be strictly
+#'   positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param approx Ignored here, the expectation being an exact sum. Accepted so
@@ -498,6 +500,8 @@ S7::method(distrib_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
 #'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, the number of threads the
+#'   compiled kernel may use. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `alpha_alpha`, `beta_beta`
 #'   and `alpha_beta`, each of length `length(y)` and each constant along it.
@@ -513,7 +517,7 @@ S7::method(distrib_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
 #' vapply(eh, function(v) v[1], numeric(1))
 #'
 #' # It is the mass-weighted sum of the observed Hessian over the support,
-#' # written out here by hand and agreeing exactly.
+#' # written out here by hand and agreeing to rounding.
 #' w <- distrib_pdf(d, 0:10, th)
 #' vapply(distrib_hessian(d, 0:10, th), function(v) sum(w * v), numeric(1))
 #'
@@ -523,8 +527,9 @@ S7::method(distrib_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
 S7::method(distrib_expected_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
                                                                      scale = c("parameter", "link"),
                                                                      approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                     nsim = 10000, ...) {
-  betabinom2_expected(distrib, y, theta, 2L)
+                                                                     nsim = 10000, ...,
+                                                                     threads = 1L) {
+  betabinom2_expected_cpp(y, theta[[1]], theta[[2]], distrib@size, threads)
 }
 
 #' Expected Derivatives of the Beta-Binomial by Exact Summation

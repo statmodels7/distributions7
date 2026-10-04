@@ -1,4 +1,5 @@
-#' @include distrib.R binomial_distrib.R
+#' @include distrib.R binomial_distrib.R betabinom1_distrib.R
+#'   betabinom2_distrib.R
 NULL
 
 #' The Scalar Route of a Distribution
@@ -24,7 +25,8 @@ NULL
 #' may be called from a worker thread, and 0 otherwise.
 #'
 #' The default method returns the class name when the registry covers the
-#' class and no constants; the binomial carries its size as a constant.
+#' class and no constants; the binomial and the two beta-binomials carry
+#' their size as a constant.
 #'
 #' @param distrib A distribution object inheriting from `distrib`.
 #' @param ... Passed to methods.
@@ -53,4 +55,12 @@ S7::method(distrib_scalar_route, distrib) <- function(distrib, ...) {
 
 S7::method(distrib_scalar_route, BinomialDistrib) <- function(distrib, ...) {
   list(name = "BinomialDistrib", constants = list(size = distrib@size))
+}
+
+S7::method(distrib_scalar_route, BetaBinom1Distrib) <- function(distrib, ...) {
+  list(name = "BetaBinom1Distrib", constants = list(size = distrib@size))
+}
+
+S7::method(distrib_scalar_route, BetaBinom2Distrib) <- function(distrib, ...) {
+  list(name = "BetaBinom2Distrib", constants = list(size = distrib@size))
 }

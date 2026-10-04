@@ -18,6 +18,7 @@
 #include <vector>
 #include "d7_par.h"
 #include "psi_diff.h"
+#include "pt_betabinom.h"
 #include "pt_constants.h"
 #include "pt_bernoulli.h"
 #include "pt_binomial.h"
@@ -607,55 +608,10 @@ List gpd_dexpected2_cpp(NumericVector y, NumericVector sigma, NumericVector xi,
 // hess_names()) and the first derivatives, which read the log-mass's
 // derivatives to total order three; the second returns the second
 // derivatives alone, which read them to order four.
-namespace {
-
-const double kBBfk[5] = {0.0, 1.0, -1.0, 2.0, -6.0};
-const int kBBpu[3] = {0, 1, 0}, kBBpv[3] = {0, 1, 1};
-
-// the cumulative power sums to order K (3 or 4) and log P(Y = 0)
-struct BBSums {
-    int N, K;
-    std::vector<double> SA, SB;
-    double SC[5];
-    double lp0;
-    BBSums(double a, double b, int N_, int K_)
-        : N(N_), K(K_), SA(K_ * (N_ + 1), 0.0), SB(K_ * (N_ + 1), 0.0),
-          lp0(0.0) {
-        for (int k = 0; k < 5; ++k) SC[k] = 0.0;
-        for (int m = 0; m < N; ++m) {
-            double ia = 1.0 / (a + m), ib = 1.0 / (b + m), ic = 1.0 / (a + b + m);
-            double pa = 1.0, pb = 1.0, pc = 1.0;
-            for (int k = 1; k <= K; ++k) {
-                pa *= ia; pb *= ib; pc *= ic;
-                SA[(k - 1) * (N + 1) + m + 1] = SA[(k - 1) * (N + 1) + m] + pa;
-                SB[(k - 1) * (N + 1) + m + 1] = SB[(k - 1) * (N + 1) + m] + pb;
-                SC[k] += pc;
-            }
-            lp0 -= std::log1p(a / (b + m));
-        }
-    }
-    // the derivatives at y = j with na differentiations in a and nb in b,
-    // na + nb <= K, into D
-    void at(int j, double D[5][5]) const {
-        for (int na = 0; na <= K; ++na) {
-            for (int nb = 0; na + nb <= K; ++nb) {
-                int k = na + nb;
-                if (k == 0) { D[na][nb] = 0.0; continue; }
-                double c = -kBBfk[k] * SC[k];
-                if (nb == 0) c += kBBfk[k] * SA[(k - 1) * (N + 1) + j];
-                else if (na == 0) c += kBBfk[k] * SB[(k - 1) * (N + 1) + N - j];
-                D[na][nb] = c;
-            }
-        }
-    }
-};
-
-inline double bb_next_lp(double lp, int j, int N, double a, double b) {
-    return lp + std::log((N - j) / (j + 1.0)) +
-        std::log((j + a) / (N - j - 1.0 + b));
-}
-
-}  // namespace
+using d7::BBSums;
+using d7::bb_next_lp;
+using d7::kBBpu;
+using d7::kBBpv;
 
 // [[Rcpp::export]]
 List betabinom_shapes_dexpected1_cpp(NumericVector y, NumericVector alpha,
@@ -668,32 +624,58 @@ List betabinom_shapes_dexpected1_cpp(NumericVector y, NumericVector alpha,
     keys.insert(keys.end(), k1.begin(), k1.end());
     return dexp_run(y.size(), threads, d7::kMinCostly, keys,
                     [&](std::size_t i, double* o) {
+        d7::bb_shapes_dexp1(Av[i], Bv[i], N, o);
+    });
+}
+
+// The shapes' expected information alone, the first three entries of
+// bb_shapes_dexp1() (BBSums to order two gives the same sums).
+// [[Rcpp::export]]
+List betabinom2_expected_cpp(NumericVector y, NumericVector alpha,
+                             NumericVector beta, double size, int threads = 1) {
+    Par Av(alpha), Bv(beta);
+    const int N = static_cast<int>(size);
+    std::vector<std::string> keys = {"alpha_alpha", "beta_beta", "alpha_beta"};
+    return dexp_run(y.size(), threads, d7::kMinCostly, keys,
+                    [&](std::size_t i, double* o) {
         const double a = Av[i], b = Bv[i];
-        const BBSums S(a, b, N, 3);
+        const BBSums S(a, b, N, 2);
         double lp = S.lp0;
-        double acc[9];
-        for (int k = 0; k < 9; ++k) acc[k] = 0.0;
+        double acc[3] = {0.0, 0.0, 0.0};
         for (int j = 0; j <= N; ++j) {
             double D[5][5];
             S.at(j, D);
             double p = std::exp(lp);
-            int w = 0;
             for (int r = 0; r < 3; ++r) {
                 int n0 = (kBBpu[r] == 0) + (kBBpv[r] == 0), n1 = 2 - n0;
-                acc[w++] += p * D[n0][n1];
-            }
-            for (int r = 0; r < 3; ++r) {
-                int n0 = (kBBpu[r] == 0) + (kBBpv[r] == 0), n1 = 2 - n0;
-                double lab = D[n0][n1];
-                for (int c = 0; c < 2; ++c) {
-                    int c0 = n0 + (c == 0), c1 = n1 + (c == 1);
-                    double lc = D[c == 0][c == 1];
-                    acc[w++] += p * (D[c0][c1] + lab * lc);
-                }
+                acc[r] += p * D[n0][n1];
             }
             if (j < N) lp = bb_next_lp(lp, j, N, a, b);
         }
-        for (int k = 0; k < 9; ++k) o[k] = acc[k];
+        for (int k = 0; k < 3; ++k) o[k] = acc[k];
+    });
+}
+
+// betabinom1's first derivatives of the expected information in
+// (mu, sigma): the shapes' ones at a = mu/sigma, b = (1 - mu)/sigma, carried
+// across by betabinom1_dexpected_entry().
+// [[Rcpp::export]]
+List betabinom1_dexpected1_cpp(NumericVector y, NumericVector mu,
+                               NumericVector sigma, double size,
+                               int threads = 1) {
+    Par M(mu), Sg(sigma);
+    const int N = static_cast<int>(size);
+    return dexp_run(y.size(), threads, d7::kMinCostly,
+                    dexp_keys2("mu", "sigma", 1),
+                    [&](std::size_t i, double* o) {
+        const double m = M[i], s = Sg[i];
+        double sh[9];
+        d7::bb_shapes_dexp1(m / s, (1.0 - m) / s, N, sh);
+        const int pa[3] = {0, 1, 0}, pb[3] = {0, 1, 1};
+        int w = 0;
+        for (int r = 0; r < 3; ++r)
+            for (int c = 0; c < 2; ++c)
+                o[w++] = d7::betabinom1_dexpected_entry(pa[r], pb[r], c, m, s, sh);
     });
 }
 

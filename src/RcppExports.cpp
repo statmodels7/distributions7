@@ -301,6 +301,36 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// betabinom2_gradient_cpp
+List betabinom2_gradient_cpp(NumericVector y, NumericVector alpha, NumericVector beta, double size, int threads);
+RcppExport SEXP _distributions7_betabinom2_gradient_cpp(SEXP ySEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP sizeSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< double >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(betabinom2_gradient_cpp(y, alpha, beta, size, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// betabinom2_hessian_cpp
+List betabinom2_hessian_cpp(NumericVector y, NumericVector alpha, NumericVector beta, double size, int threads);
+RcppExport SEXP _distributions7_betabinom2_hessian_cpp(SEXP ySEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP sizeSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< double >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(betabinom2_hessian_cpp(y, alpha, beta, size, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // binomial_gradient_cpp
 List binomial_gradient_cpp(NumericVector y, NumericVector mu, NumericVector size, int threads);
 RcppExport SEXP _distributions7_binomial_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sizeSEXP, SEXP threadsSEXP) {
@@ -1050,6 +1080,36 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type size(sizeSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
     rcpp_result_gen = Rcpp::wrap(betabinom_shapes_dexpected1_cpp(y, alpha, beta, size, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// betabinom2_expected_cpp
+List betabinom2_expected_cpp(NumericVector y, NumericVector alpha, NumericVector beta, double size, int threads);
+RcppExport SEXP _distributions7_betabinom2_expected_cpp(SEXP ySEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP sizeSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< double >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(betabinom2_expected_cpp(y, alpha, beta, size, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// betabinom1_dexpected1_cpp
+List betabinom1_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector sigma, double size, int threads);
+RcppExport SEXP _distributions7_betabinom1_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP sizeSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(betabinom1_dexpected1_cpp(y, mu, sigma, size, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -6022,6 +6082,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_betabinom_hessian_cpp", (DL_FUNC) &_distributions7_betabinom_hessian_cpp, 5},
     {"_distributions7_betabinom_expected_hessian_cpp", (DL_FUNC) &_distributions7_betabinom_expected_hessian_cpp, 5},
     {"_distributions7_betabinom_logpmf_cpp", (DL_FUNC) &_distributions7_betabinom_logpmf_cpp, 5},
+    {"_distributions7_betabinom2_gradient_cpp", (DL_FUNC) &_distributions7_betabinom2_gradient_cpp, 5},
+    {"_distributions7_betabinom2_hessian_cpp", (DL_FUNC) &_distributions7_betabinom2_hessian_cpp, 5},
     {"_distributions7_binomial_gradient_cpp", (DL_FUNC) &_distributions7_binomial_gradient_cpp, 4},
     {"_distributions7_binomial_hessian_cpp", (DL_FUNC) &_distributions7_binomial_hessian_cpp, 4},
     {"_distributions7_binomial_expected_hessian_cpp", (DL_FUNC) &_distributions7_binomial_expected_hessian_cpp, 4},
@@ -6077,6 +6139,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_gpd_dexpected1_cpp", (DL_FUNC) &_distributions7_gpd_dexpected1_cpp, 4},
     {"_distributions7_gpd_dexpected2_cpp", (DL_FUNC) &_distributions7_gpd_dexpected2_cpp, 4},
     {"_distributions7_betabinom_shapes_dexpected1_cpp", (DL_FUNC) &_distributions7_betabinom_shapes_dexpected1_cpp, 5},
+    {"_distributions7_betabinom2_expected_cpp", (DL_FUNC) &_distributions7_betabinom2_expected_cpp, 5},
+    {"_distributions7_betabinom1_dexpected1_cpp", (DL_FUNC) &_distributions7_betabinom1_dexpected1_cpp, 5},
     {"_distributions7_betabinom_shapes_dexpected2_cpp", (DL_FUNC) &_distributions7_betabinom_shapes_dexpected2_cpp, 5},
     {"_distributions7_enet_gradient_cpp", (DL_FUNC) &_distributions7_enet_gradient_cpp, 5},
     {"_distributions7_enet_hessian_cpp", (DL_FUNC) &_distributions7_enet_hessian_cpp, 5},
