@@ -594,7 +594,7 @@ S7::method(distrib_rng, SkewNormal2Distrib) <- function(distrib, n, theta, ...) 
 #' @description Returns the bound on \eqn{|\gamma_1|} below which
 #'   [distrib_expected_hessian.SkewNormal2Distrib()] and its derivatives come
 #'   from the series in \eqn{r = (\gamma_1/c)^{1/3}} rather than from
-#'   quadrature. It matches `SN2_GE` in `src/skewnormal2.cpp`.
+#'   quadrature. It matches `SN2_GE` in `src/pt_skewnormal2.h`.
 #' @return A single number.
 #' @keywords internal
 sn2_ge <- function() 3e-3

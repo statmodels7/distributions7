@@ -4586,6 +4586,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sn2_ge_cpp
+double sn2_ge_cpp();
+RcppExport SEXP _distributions7_sn2_ge_cpp() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(sn2_ge_cpp());
+    return rcpp_result_gen;
+END_RCPP
+}
 // skewnormal2_expected_series_cpp
 List skewnormal2_expected_series_cpp(NumericVector sigma, NumericVector gamma1);
 RcppExport SEXP _distributions7_skewnormal2_expected_series_cpp(SEXP sigmaSEXP, SEXP gamma1SEXP) {
@@ -6322,6 +6332,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_pseudohuber_rou_box_cpp", (DL_FUNC) &_distributions7_pseudohuber_rou_box_cpp, 1},
     {"_distributions7_skewnormal1_gradient_cpp", (DL_FUNC) &_distributions7_skewnormal1_gradient_cpp, 5},
     {"_distributions7_skewnormal1_hessian_cpp", (DL_FUNC) &_distributions7_skewnormal1_hessian_cpp, 5},
+    {"_distributions7_sn2_ge_cpp", (DL_FUNC) &_distributions7_sn2_ge_cpp, 0},
     {"_distributions7_skewnormal2_expected_series_cpp", (DL_FUNC) &_distributions7_skewnormal2_expected_series_cpp, 2},
     {"_distributions7_skewnormal2_dexpected1_series_cpp", (DL_FUNC) &_distributions7_skewnormal2_dexpected1_series_cpp, 2},
     {"_distributions7_skewnormal2_dexpected2_series_cpp", (DL_FUNC) &_distributions7_skewnormal2_dexpected2_series_cpp, 2},

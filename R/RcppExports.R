@@ -1325,6 +1325,10 @@ skewnormal1_hessian_cpp <- function(y, mu, sigma, alpha, threads = 1L) {
     .Call(`_distributions7_skewnormal1_hessian_cpp`, y, mu, sigma, alpha, threads)
 }
 
+sn2_ge_cpp <- function() {
+    .Call(`_distributions7_sn2_ge_cpp`)
+}
+
 skewnormal2_expected_series_cpp <- function(sigma, gamma1) {
     .Call(`_distributions7_skewnormal2_expected_series_cpp`, sigma, gamma1)
 }

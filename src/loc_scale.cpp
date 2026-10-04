@@ -8,6 +8,7 @@
 #include "pt_skewt.h"
 #include "pt_pseudohuber.h"
 #include "pt_pseudohuber2.h"
+#include "pt_skewnormal2.h"
 using namespace Rcpp;
 
 // The exp-sinh rule of loc_scale_rule() (expected_loc_scale.R), built once
@@ -82,6 +83,7 @@ List loc_scale_diag_cpp(std::string fam, NumericMatrix U, int order,
     else if (fam == "SkewTDistrib") { tag = 1; p = 4; d7::skewt_pt(); }
     else if (fam == "PseudoHuberDistrib") { tag = 2; p = 3; d7::bessel_k_fn(); }
     else if (fam == "PseudoHuber2Distrib") { tag = 3; p = 3; d7::bessel_k_fn(); }
+    else if (fam == "SkewNormal2Distrib") { tag = 4; p = 3; }
     else Rcpp::stop("no compiled quadrature for this family");
     const int m = U.nrow(), ns = U.ncol();
     NumericMatrix info(m, p), dinfo(m, p);
@@ -99,6 +101,7 @@ List loc_scale_diag_cpp(std::string fam, NumericMatrix U, int order,
         case 1: d7::skewt_quad_diag(k, shape, out, want_d); break;
         case 2: d7::pseudohuber_quad_diag(k, shape, out, want_d); break;
         case 3: d7::pseudohuber2_quad_diag(k, shape, out, want_d); break;
+        case 4: d7::skewnormal2_quad_diag(k, shape, out, want_d); break;
         }
         ip[r + (std::size_t) k * m] = out[0];
         dp[r + (std::size_t) k * m] = want_d ? out[1] : 0.0;

@@ -168,8 +168,8 @@ loc_scale_expected <- function(distrib, theta, order, n, threads = 1L) {
 #'
 #' @keywords internal
 loc_scale_compiled <- function() {
-  c("SkewNormal1Distrib", "SkewTDistrib", "PseudoHuberDistrib",
-    "PseudoHuber2Distrib")
+  c("SkewNormal1Distrib", "SkewNormal2Distrib", "SkewTDistrib",
+    "PseudoHuberDistrib", "PseudoHuber2Distrib")
 }
 
 

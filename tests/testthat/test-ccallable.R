@@ -45,7 +45,8 @@ ccallable_families <- list(
   SkewNormal1Distrib = function() skewnormal1_distrib(),
   SkewTDistrib = function() skewt_distrib(),
   PseudoHuberDistrib = function() pseudohuber_distrib(),
-  PseudoHuber2Distrib = function() pseudohuber2_distrib()
+  PseudoHuber2Distrib = function() pseudohuber2_distrib(),
+  SkewNormal2Distrib = function() skewnormal2_distrib()
 )
 
 # the constants a family carries besides its parameters follow the
@@ -114,6 +115,23 @@ test_that("the scalar entries are the vector kernels, bit for bit", {
     ccallable_twin(cls, c(-4.5, 5), 2)
   }
   for (cls in loc_scale_compiled()) ccallable_twin(cls, c(-1, 1), 3, TRUE)
+})
+
+test_that("the centered skew normal's series region is the R one", {
+  expect_identical(sn2_ge_cpp(), sn2_ge())
+  d <- skewnormal2_distrib()
+  g <- c(-2.9e-3, -1e-3, -2e-5, 3e-6, 4e-4, 2.99e-3, 3.01e-3, -0.2, 0.6)
+  th <- list(mu = rep(0.3, 9), sigma = seq(0.5, 2, length.out = 9), gamma1 = g)
+  y <- seq(-1, 2, length.out = 9)
+  tm <- do.call(cbind, th)
+  E <- distrib_expected_hessian(d, y, th)
+  dE <- distrib_dexpected_hessian(d, y, th)
+  for (k in 1:3) {
+    p <- d@params[k]
+    e <- d7_info_probe("SkewNormal2Distrib", k, y, tm)
+    expect_identical(e$expected, E[[paste(p, p, sep = "_")]])
+    expect_identical(e$dexpected, dE[[paste(p, p, p, sep = "_")]])
+  }
 })
 
 test_that("the compiled quadrature rule is the R rule", {
