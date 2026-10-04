@@ -43,7 +43,9 @@ ccallable_families <- list(
   EnetDistrib = function() enet_distrib(),
   NegBin1Distrib = function() negbin1_distrib(),
   SkewNormal1Distrib = function() skewnormal1_distrib(),
-  SkewTDistrib = function() skewt_distrib()
+  SkewTDistrib = function() skewt_distrib(),
+  PseudoHuberDistrib = function() pseudohuber_distrib(),
+  PseudoHuber2Distrib = function() pseudohuber2_distrib()
 )
 
 # the constants a family carries besides its parameters follow the

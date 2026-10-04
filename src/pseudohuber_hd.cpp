@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include <cmath>
+#include "pt_pseudohuber.h"
 using namespace Rcpp;
 
 // Observed third/fourth-order derivatives of the Pseudo-Huber log-density,
@@ -7,7 +8,8 @@ using namespace Rcpp;
 //   r = mu - y,   S = nu*sigma^2 + r^2
 // so that (nu + r^2/sigma^2)^(k/2) = S^(k/2) / sigma^k.
 //
-// Bessel functions appear only in the pure-nu derivatives (the normalizing
+// Bessel functions appear only in the pure-nu derivatives, from numericals7's
+// n7_bessel_k (pt_bessel_k.h), which returns R's values (the normalizing
 // constant depends on sigma and nu separably). Every such term is homogeneous of
 // the same degree in K over the same degree in K1, so the exponentially scaled
 // Bessel functions may be used throughout: the e^{-x} factors cancel exactly and
@@ -29,40 +31,30 @@ List pseudohuber_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sig
         double s = sig_s ? sigma[0] : sigma[i];
         double v = nu_s ? nu[0] : nu[i];
 
-        double s2 = s * s, s3 = s2 * s, s4 = s2 * s2, s5 = s4 * s;
-        double r = m - y[i], r2 = r * r, r4 = r2 * r2, r6 = r4 * r2;
+        double s2 = s * s, s3 = s2 * s;
+        double r = m - y[i], r2 = r * r, r4 = r2 * r2;
         double S = v * s2 + r2;
-        double S12 = std::sqrt(S), S32 = S * S12, S52 = S * S * S12;
-        double sv = std::sqrt(v), v2 = v * v, v32 = v * sv;
+        double S12 = std::sqrt(S), S52 = S * S * S12;
+        double sv = std::sqrt(v);
 
-        double k0 = R::bessel_k(sv, 0.0, 2.0);
-        double k1 = R::bessel_k(sv, 1.0, 2.0);
-        double k2 = R::bessel_k(sv, 2.0, 2.0);
-        double k3 = R::bessel_k(sv, 3.0, 2.0);
-        double k4 = R::bessel_k(sv, 4.0, 2.0);
-        double A = k0 + k2;
+        double k0 = d7::bessel_k_scaled(sv, 0.0);
+        double k1 = d7::bessel_k_scaled(sv, 1.0);
+        double k2 = d7::bessel_k_scaled(sv, 2.0);
+        double k3 = d7::bessel_k_scaled(sv, 3.0);
+        double k4 = d7::bessel_k_scaled(sv, 4.0);
 
-        mu_mu_mu[i] = 3.0 * v * s * r / S52;
+        mu_mu_mu[i] = d7::pseudohuber_d3_mu_mu_mu(v, s, r, S);
         mu_mu_sigma[i] = v * (2.0 * v * s2 - r2) / S52;
         mu_mu_nu[i] = s * (v * s2 - 2.0 * r2) / (2.0 * S52);
         mu_sigma_sigma[i] = (6.0 * S * S - 7.0 * v * s2 * r2 - 4.0 * r4) * (-r) / (s3 * S52);
         mu_sigma_nu[i] = (-2.0 * v * s2 + r2) * r / (2.0 * S52);
         mu_nu_nu[i] = -3.0 * s3 * r / (4.0 * S52);
-        sigma_sigma_sigma[i] = -2.0 / s3 + 12.0 * r2 / (s4 * S12)
-            - 9.0 * r4 / (s4 * S32) + 3.0 * r6 / (s4 * S52);
+        sigma_sigma_sigma[i] = d7::pseudohuber_d3_sigma_sigma_sigma(s, r2, S);
         sigma_sigma_nu[i] = 3.0 * v * s * r2 / (2.0 * S52);
         sigma_nu_nu[i] = 3.0 * s2 * r2 / (4.0 * S52);
 
-        nu_nu_nu[i] = (
-            -32.0 / (v2 * v)
-            - 12.0 * s5 / S52
-            + 6.0 * A / (v2 * sv * k1)
-            - 3.0 * A * A / (v2 * k1 * k1)
-            + A * A * A / (v32 * k1 * k1 * k1)
-            - 3.0 * A * (3.0 * k1 + k3) / (2.0 * v32 * k1 * k1)
-            + 2.0 * (3.0 + k3 / k1) / v2
-            + (2.0 * (3.0 * k1 + k3) + sv * (3.0 * k0 + 4.0 * k2 + k4)) / (2.0 * v2 * k1)
-        ) / 32.0;
+        const d7::PhNu P = {sv, k0, k1, k2, k3, 0.0, 0.0, 0.0};
+        nu_nu_nu[i] = d7::pseudohuber_d3_nu_nu_nu(v, s, S, P, k4);
     }
 
     return List::create(
@@ -94,12 +86,12 @@ List pseudohuber_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sig
         double S12 = std::sqrt(S), S32 = S * S12, S52 = S * S * S12, S72 = S * S * S * S12;
         double sv = std::sqrt(v), v2 = v * v, v3 = v2 * v, v4 = v2 * v2, v32 = v * sv;
 
-        double k0 = R::bessel_k(sv, 0.0, 2.0);
-        double k1 = R::bessel_k(sv, 1.0, 2.0);
-        double k2 = R::bessel_k(sv, 2.0, 2.0);
-        double k3 = R::bessel_k(sv, 3.0, 2.0);
-        double k4 = R::bessel_k(sv, 4.0, 2.0);
-        double k5 = R::bessel_k(sv, 5.0, 2.0);
+        double k0 = d7::bessel_k_scaled(sv, 0.0);
+        double k1 = d7::bessel_k_scaled(sv, 1.0);
+        double k2 = d7::bessel_k_scaled(sv, 2.0);
+        double k3 = d7::bessel_k_scaled(sv, 3.0);
+        double k4 = d7::bessel_k_scaled(sv, 4.0);
+        double k5 = d7::bessel_k_scaled(sv, 5.0);
         double k1_2 = k1 * k1, k1_3 = k1_2 * k1, k1_4 = k1_2 * k1_2;
         double k0_2 = k0 * k0, k0_3 = k0_2 * k0, k0_4 = k0_2 * k0_2;
         double k2_2 = k2 * k2, k2_3 = k2_2 * k2, k2_4 = k2_2 * k2_2;

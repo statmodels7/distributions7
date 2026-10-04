@@ -57,7 +57,7 @@ List skewnormal_deriv3_cpp(NumericVector y, NumericVector mu,
         double s2 = s * s, s3 = s2 * s;
         double z = (y[i] - m) / s;
         double t = a * z;
-        double z2 = z * z, z3 = z2 * z, t2 = t * t;
+        double z2 = z * z, t2 = t * t;
 
         double g[5];
         sn_g3(t, g);

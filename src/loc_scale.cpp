@@ -6,6 +6,8 @@
 #include "pt_loc_scale.h"
 #include "pt_skewnormal1.h"
 #include "pt_skewt.h"
+#include "pt_pseudohuber.h"
+#include "pt_pseudohuber2.h"
 using namespace Rcpp;
 
 // The exp-sinh rule of loc_scale_rule() (expected_loc_scale.R), built once
@@ -71,13 +73,15 @@ List loc_scale_rule_cpp() {
 
 // The standardized diagonal for each row of U, the distinct shapes: column k
 // of `info` is I_kk and of `dinfo` D_kk (left zero at order 0). `fam` is the
-// class name; the families are those loc_scale_diag_family() names.
+// class name; the families are those loc_scale_compiled() names.
 // [[Rcpp::export]]
 List loc_scale_diag_cpp(std::string fam, NumericMatrix U, int order,
                         int threads = 1) {
     int tag = -1, p = 0;
     if (fam == "SkewNormal1Distrib") { tag = 0; p = 3; }
     else if (fam == "SkewTDistrib") { tag = 1; p = 4; d7::skewt_pt(); }
+    else if (fam == "PseudoHuberDistrib") { tag = 2; p = 3; d7::bessel_k_fn(); }
+    else if (fam == "PseudoHuber2Distrib") { tag = 3; p = 3; d7::bessel_k_fn(); }
     else Rcpp::stop("no compiled quadrature for this family");
     const int m = U.nrow(), ns = U.ncol();
     NumericMatrix info(m, p), dinfo(m, p);
@@ -89,10 +93,12 @@ List loc_scale_diag_cpp(std::string fam, NumericMatrix U, int order,
         const int r = (int) (task % m), k = (int) (task / m);
         double shape[2] = {0.0, 0.0};
         for (int j = 0; j < ns && j < 2; ++j) shape[j] = up[r + (std::size_t) j * m];
-        double out[2];
+        double out[2] = {0.0, 0.0};
         switch (tag) {
         case 0: d7::skewnormal1_quad_diag(k, shape, out, want_d); break;
         case 1: d7::skewt_quad_diag(k, shape, out, want_d); break;
+        case 2: d7::pseudohuber_quad_diag(k, shape, out, want_d); break;
+        case 3: d7::pseudohuber2_quad_diag(k, shape, out, want_d); break;
         }
         ip[r + (std::size_t) k * m] = out[0];
         dp[r + (std::size_t) k * m] = want_d ? out[1] : 0.0;

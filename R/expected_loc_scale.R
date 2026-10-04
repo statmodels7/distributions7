@@ -167,7 +167,10 @@ loc_scale_expected <- function(distrib, theta, order, n, threads = 1L) {
 #' @return A character vector of S7 class names.
 #'
 #' @keywords internal
-loc_scale_compiled <- function() c("SkewNormal1Distrib", "SkewTDistrib")
+loc_scale_compiled <- function() {
+  c("SkewNormal1Distrib", "SkewTDistrib", "PseudoHuberDistrib",
+    "PseudoHuber2Distrib")
+}
 
 
 #' The Quadrature Rule of the Location-Scale Expectations
