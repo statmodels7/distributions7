@@ -70,7 +70,7 @@ test_that("the route names every covered class and answers NULL elsewhere", {
   expect_identical(distrib_scalar_route(binomial_distrib(size = 7))$constants,
                    list(size = 7))
   expect_null(distrib_scalar_route(mvgaussian1_distrib(n_dim = 2)))
-  expect_null(distrib_scalar_route(zero_inflated(poisson_distrib())))
+  expect_null(distrib_scalar_route(truncated(poisson_distrib(), lower = 1)))
   expect_identical(d7_scalar_thread_safe_probe("NoSuchDistrib"), -1L)
 })
 
@@ -210,7 +210,17 @@ ccallable_wrappers <- list(
   function() fix_last(gamma1_distrib(), 0.4),
   function() fixed(skewt_distrib(), alpha = 1.5, nu = 6),
   function() fix_last(betabinom1_distrib(size = 9), 0.2),
-  function() fix_last(negbin2_distrib(), 3)
+  function() fix_last(negbin2_distrib(), 3),
+  function() zero_inflated(poisson_distrib()),
+  function() zero_inflated(negbin2_distrib()),
+  function() zero_inflated(negbin1_distrib()),
+  function() zero_inflated(betabinom1_distrib(size = 9)),
+  function() zero_inflated(pig1_distrib()),
+  function() zero_adjusted(poisson_distrib()),
+  function() zero_adjusted(negbin2_distrib()),
+  function() zero_adjusted(binomial_distrib(size = 7)),
+  function() zero_adjusted(gamma1_distrib()),
+  function() zero_adjusted(lognormal1_distrib())
 )
 
 test_that("a wrapped family's entries are the wrapper's methods, bit for bit", {
@@ -226,4 +236,6 @@ test_that("a route the registry cannot read is rejected", {
   expect_identical(d7_scalar_thread_safe_probe("FixedContinuousDistrib:4|Gaussian1Distrib"), -1L)
   expect_identical(d7_scalar_thread_safe_probe("NoWrapper|Gaussian1Distrib"), -1L)
   expect_null(distrib_scalar_route(fixed(zero_inflated(poisson_distrib()), mu = 2)))
+  expect_identical(d7_scalar_thread_safe_probe("ZeroInflatedDistrib:1|PoissonDistrib"), -1L)
+  expect_null(distrib_scalar_route(zero_inflated(truncated(poisson_distrib(), upper = 50))))
 })

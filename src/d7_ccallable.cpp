@@ -45,6 +45,7 @@
 #include "pt_pig.h"
 #include "pt_betabinom.h"
 #include "pt_logpdf.h"
+#include "pt_wrappers.h"
 
 // The scalar C entry points of the fast route piano_parallel.txt section 2a
 // describes: the score and the second derivative of the log-density in ONE
@@ -159,7 +160,10 @@ const int kWrapBase = 100000;
 struct WrapName { const char* name; int code; };
 const WrapName d7_wrappers[] = {
     {"FixedContinuousDistrib", 1},
-    {"FixedDiscreteDistrib", 1}
+    {"FixedDiscreteDistrib", 1},
+    {"ZeroInflatedDistrib", 2},
+    {"ZeroAdjustedDiscreteDistrib", 3},
+    {"ZeroAdjustedContinuousDistrib", 4}
 };
 const int d7_n_wrappers = sizeof(d7_wrappers) / sizeof(d7_wrappers[0]);
 
@@ -191,6 +195,8 @@ int wrap_id(const char* cls, const char* bar) {
     if (code == 1) {
         const int P = d7_n_params[inner];
         if (aux == 0 || aux >= (1 << P)) return -1;
+    } else if (aux != 0) {
+        return -1;
     }
     return kWrapBase * code + 1000 * aux + inner;
 }
@@ -214,6 +220,15 @@ int fixed_inner(int inner, int mask, int k, const double* th, double* full) {
     return jk;
 }
 
+// the zero wrappers: the parent's vector (its parameters, then its
+// constants) and the wrapper's probability, which follows the parameters
+double zero_inner(int inner, const double* th, double* full) {
+    const int P = d7_n_params[inner], nc = d7_n_constants[inner];
+    for (int j = 0; j < P; ++j) full[j] = th[j];
+    for (int c = 0; c < nc; ++c) full[P + c] = th[P + 1 + c];
+    return th[P];
+}
+
 void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
     const int code = id / kWrapBase, aux = (id % kWrapBase) / 1000,
         inner = id % 1000;
@@ -221,6 +236,35 @@ void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
     if (code == 1) {
         const int j = fixed_inner(inner, aux, k, th, full);
         d7_score_curv(inner, j, y, full, out);
+        return;
+    }
+    if (code >= 2 && code <= 4) {
+        const int P = d7_n_params[inner];
+        const double z = zero_inner(inner, th, full);
+        const double f0 = (code == 4) ? 0.0 : std::exp(d7_logpdf(inner, 0.0, full));
+        if (k == P) {
+            if (code == 2) {
+                out[0] = d7::zi_score_zi(y, z, f0);
+                out[1] = d7::zi_curv_zi(y, z, f0);
+            } else {
+                out[0] = d7::za_score_za(y, z);
+                out[1] = d7::za_curv_za(y, z);
+            }
+            return;
+        }
+        double gh[2], sh0[2] = {0.0, 0.0};
+        d7_score_curv(inner, k, y, full, gh);
+        if (code != 4) d7_score_curv(inner, k, 0.0, full, sh0);
+        if (code == 2) {
+            out[0] = d7::zi_score_parent(y, z, f0, gh[0]);
+            out[1] = d7::zi_curv_parent(y, z, f0, sh0[0], sh0[1], gh[1]);
+        } else if (code == 3) {
+            out[0] = d7::zad_score_parent(y, f0, sh0[0], gh[0]);
+            out[1] = d7::zad_curv_parent(y, f0, sh0[0], sh0[1], gh[1]);
+        } else {
+            out[0] = d7::zac_score_parent(y, gh[0]);
+            out[1] = d7::zac_curv_parent(y, gh[1]);
+        }
         return;
     }
     out[0] = R_NaN; out[1] = R_NaN;
@@ -235,6 +279,35 @@ void wrap_info_dinfo(int id, int k, double y, const double* th, double* out) {
         d7_info_dinfo(inner, j, y, full, out);
         return;
     }
+    if (code >= 2 && code <= 4) {
+        const int P = d7_n_params[inner];
+        const double z = zero_inner(inner, th, full);
+        const double f0 = (code == 4) ? 0.0 : std::exp(d7_logpdf(inner, 0.0, full));
+        if (k == P) {
+            if (code == 2) {
+                out[0] = d7::zi_info_zi(z, f0);
+                out[1] = d7::zi_dinfo_zi(z, f0);
+            } else {
+                out[0] = d7::za_info_za(z);
+                out[1] = d7::za_dinfo_za(z);
+            }
+            return;
+        }
+        double ed[2], sh0[2] = {0.0, 0.0};
+        d7_info_dinfo(inner, k, y, full, ed);
+        if (code != 4) d7_score_curv(inner, k, 0.0, full, sh0);
+        if (code == 2) {
+            out[0] = d7::zi_info_parent(z, f0, sh0[0], sh0[1], ed[0]);
+            out[1] = d7::zi_dinfo_parent(z, f0, sh0[0], sh0[1], ed[1]);
+        } else if (code == 3) {
+            out[0] = d7::zad_info_parent(z, f0, sh0[0], sh0[1], ed[0]);
+            out[1] = d7::zad_dinfo_parent(z, f0, sh0[0], sh0[1], ed[0], ed[1]);
+        } else {
+            out[0] = d7::zac_info_parent(z, ed[0]);
+            out[1] = d7::zac_dinfo_parent(z, ed[1]);
+        }
+        return;
+    }
     out[0] = R_NaN; out[1] = R_NaN;
 }
 
@@ -245,6 +318,14 @@ double wrap_logpdf(int id, double y, const double* th) {
     if (code == 1) {
         fixed_inner(inner, aux, 0, th, full);
         return d7_logpdf(inner, y, full);
+    }
+    if (code >= 2 && code <= 4) {
+        const double z = zero_inner(inner, th, full);
+        const double lf = d7_logpdf(inner, y, full);
+        if (code == 2) return d7::zi_logpdf(y, z, lf);
+        if (code == 4) return d7::zac_logpdf(y, z, lf);
+        const double f0 = std::exp(d7_logpdf(inner, 0.0, full));
+        return d7::zad_logpdf(y, z, f0, lf);
     }
     return R_NaN;
 }

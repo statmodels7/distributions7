@@ -236,7 +236,7 @@ zi_deriv_k <- function(order) {
     zi <- theta[[distrib@n_params]]
     n <- length(y)
 
-    f0 <- distrib_pdf(parent, 0, pars)
+    f0 <- exp(distrib_pdf(parent, 0, pars, log = TRUE))
     L0 <- zi + (1 - zi) * f0
     w0 <- (1 - zi) * f0 / L0
 
@@ -331,7 +331,7 @@ za_disc_deriv_k <- function(order) {
     za <- theta[[distrib@n_params]]
     n <- length(y)
 
-    f0 <- distrib_pdf(parent, 0, pars)
+    f0 <- exp(distrib_pdf(parent, 0, pars, log = TRUE))
     ell_0 <- parent_ell(parent, 0, pars, order, p_names)
 
     ratio <- memo_ratio(function(block) {

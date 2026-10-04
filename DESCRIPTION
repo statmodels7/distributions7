@@ -148,6 +148,7 @@ Collate:
     'transformations.R'
     'weibull3_distrib.R'
     'wrapper_derivatives.R'
+    'zero_wrapper_dexpected.R'
 Suggests:
     testthat (>= 3.0.0),
     knitr,

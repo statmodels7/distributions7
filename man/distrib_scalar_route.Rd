@@ -45,8 +45,10 @@ being what the wrapper needs besides its constants, and its constants are
 the inner family's followed by the wrapper's. For \code{\link[=fixed]{fixed()}}, \code{aux} is the
 mask of the fixed parameters (bit \code{j - 1} for the \code{j}-th parameter of the
 inner family) and the wrapper's constants are the fixed values in the
-inner family's order. A wrapper of a wrapper, or a fixed value that varies
-by observation, has no route.
+inner family's order. For \code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} there is
+no \code{aux} and no constant of the wrapper's own, the probability being the
+last parameter. A wrapper of a wrapper, or a fixed value that varies by
+observation, has no route.
 }
 \examples{
 distrib_scalar_route(gaussian1_distrib())

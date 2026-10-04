@@ -1,5 +1,5 @@
 #' @include distrib.R binomial_distrib.R betabinom1_distrib.R
-#'   betabinom2_distrib.R fixed.R
+#'   betabinom2_distrib.R fixed.R zero_inflated.R zero_adjusted.R
 NULL
 
 #' The Scalar Route of a Distribution
@@ -34,8 +34,10 @@ NULL
 #' the inner family's followed by the wrapper's. For [fixed()], `aux` is the
 #' mask of the fixed parameters (bit `j - 1` for the `j`-th parameter of the
 #' inner family) and the wrapper's constants are the fixed values in the
-#' inner family's order. A wrapper of a wrapper, or a fixed value that varies
-#' by observation, has no route.
+#' inner family's order. For [zero_inflated()] and [zero_adjusted()] there is
+#' no `aux` and no constant of the wrapper's own, the probability being the
+#' last parameter. A wrapper of a wrapper, or a fixed value that varies by
+#' observation, has no route.
 #'
 #' @param distrib A distribution object inheriting from `distrib`.
 #' @param ... Passed to methods.
@@ -103,3 +105,27 @@ fixed_scalar_route <- function(distrib, ...) {
 }
 S7::method(distrib_scalar_route, FixedContinuousDistrib) <- fixed_scalar_route
 S7::method(distrib_scalar_route, FixedDiscreteDistrib) <- fixed_scalar_route
+
+#' The Scalar Route of a Zero Wrapper
+#'
+#' @description
+#' Returns the route of a family built by [zero_inflated()] or
+#' [zero_adjusted()]: the name `"<class>|<inner name>"` and the inner
+#' family's constants, as [distrib_scalar_route()] describes, or `NULL` when
+#' the parent has no route of its own.
+#'
+#' @param distrib A zero-inflated or zero-adjusted family.
+#' @param ... Unused.
+#'
+#' @return A list with components `name` and `constants`, or `NULL`.
+#'
+#' @keywords internal
+zero_scalar_route <- function(distrib, ...) {
+  inner <- distrib_scalar_route(distrib@parent_distrib)
+  if (is.null(inner) || grepl("|", inner$name, fixed = TRUE)) return(NULL)
+  cls <- attr(S7::S7_class(distrib), "name")
+  list(name = paste0(cls, "|", inner$name), constants = inner$constants)
+}
+S7::method(distrib_scalar_route, ZeroInflatedDistrib) <- zero_scalar_route
+S7::method(distrib_scalar_route, ZeroAdjustedDiscreteDistrib) <- zero_scalar_route
+S7::method(distrib_scalar_route, ZeroAdjustedContinuousDistrib) <- zero_scalar_route
