@@ -162,3 +162,28 @@ test_that("an unknown family answers -1", {
                       cbind(c(1, 1), c(1, 1)))
   expect_identical(pr$id, -1L)
 })
+
+test_that("the log-density entry is distrib_pdf()'s, bit for bit", {
+  # the centered skew normal's distrib_pdf() maps to the direct parameters in
+  # R with other arithmetic, so it is held to rounding
+  loose <- "SkewNormal2Distrib"
+  for (cls in names(ccallable_families)) {
+    d <- ccallable_families[[cls]]()
+    set.seed(4)
+    n <- 60
+    th <- lapply(d@params, function(p)
+      linkfunctions7::linkinv(d@link_params[[p]], runif(n, -1, 1)))
+    names(th) <- d@params
+    y <- vapply(seq_len(n), function(i) distrib_rng(d, 1, lapply(th, `[`, i)), 0)
+    # off the support, and between counts for a discrete family
+    y[1:4] <- c(-3, -0.5, 1.5, 1e6)
+    tm <- do.call(cbind, c(th, ccallable_constants(d, n)))
+    got <- d7_logpdf_probe(cls, y, tm)$logpdf
+    ref <- suppressWarnings(distrib_pdf(d, y, th, log = TRUE))
+    if (cls %in% loose) {
+      expect_equal(got, ref, tolerance = 1e-14, label = cls)
+    } else {
+      expect_identical(got, ref, label = cls)
+    }
+  }
+})

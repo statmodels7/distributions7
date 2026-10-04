@@ -173,6 +173,10 @@ d7_info_probe <- function(cls, k, y, theta) {
     .Call(`_distributions7_d7_info_probe`, cls, k, y, theta)
 }
 
+d7_logpdf_probe <- function(cls, y, theta) {
+    .Call(`_distributions7_d7_logpdf_probe`, cls, y, theta)
+}
+
 d7_scalar_thread_safe_probe <- function(cls) {
     .Call(`_distributions7_d7_scalar_thread_safe_probe`, cls)
 }

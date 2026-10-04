@@ -31,7 +31,8 @@ The entry points are \code{d7_scalar_id(name)}, \code{d7_score_curv(id, k, y, th
 the log-density in parameter \eqn{k}, and \code{d7_info_dinfo(id, k, y, th, out)}, which writes the \eqn{(k, k)} expected second derivative and its
 derivative in the same parameter, all on the parameter scale, with \code{k}
 counted from zero over \code{distrib@params} and \code{th} the parameters of one
-observation followed by its constants. \code{d7_scalar_thread_safe(id)} returns
+observation followed by its constants. \code{d7_logpdf(id, y, th)} returns the
+log-density of one observation. \code{d7_scalar_thread_safe(id)} returns
 1 when the entries of a distribution never reach the R API, so that they
 may be called from a worker thread, and 0 otherwise.
 

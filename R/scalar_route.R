@@ -20,7 +20,8 @@ NULL
 #' out)`, which writes the \eqn{(k, k)} expected second derivative and its
 #' derivative in the same parameter, all on the parameter scale, with `k`
 #' counted from zero over `distrib@params` and `th` the parameters of one
-#' observation followed by its constants. `d7_scalar_thread_safe(id)` returns
+#' observation followed by its constants. `d7_logpdf(id, y, th)` returns the
+#' log-density of one observation. `d7_scalar_thread_safe(id)` returns
 #' 1 when the entries of a distribution never reach the R API, so that they
 #' may be called from a worker thread, and 0 otherwise.
 #'

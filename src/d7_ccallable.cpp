@@ -42,6 +42,7 @@
 #include "pt_skewnormal2.h"
 #include "pt_pig.h"
 #include "pt_betabinom.h"
+#include "pt_logpdf.h"
 
 // The scalar C entry points of the fast route piano_parallel.txt section 2a
 // describes: the score and the second derivative of the log-density in ONE
@@ -118,6 +119,21 @@ const int d7_n_scalar_classes =
 
 } // namespace
 
+namespace d7 {
+
+// Resolved on first use, on the calling thread. Not a guarded static, for
+// the reason vm_bessel() gives in vonmises.cpp.
+static N7LogBesselI n7lbi_ptr = nullptr;
+
+N7LogBesselI vm_log_i0_fn() {
+    if (n7lbi_ptr == nullptr)
+        n7lbi_ptr = (N7LogBesselI) R_GetCCallable("numericals7",
+                                                  "n7_log_bessel_i");
+    return n7lbi_ptr;
+}
+
+}  // namespace d7
+
 extern "C" {
 
 // Called once by the consumer on its own thread, before any loop: the von
@@ -128,7 +144,10 @@ extern "C" {
 int d7_scalar_id(const char* cls) {
     for (int i = 0; i < d7_n_scalar_classes; ++i) {
         if (std::strcmp(cls, d7_scalar_classes[i]) == 0) {
-            if (std::strncmp(cls, "VonMises", 8) == 0) d7::vm_bessel();
+            if (std::strncmp(cls, "VonMises", 8) == 0) {
+                d7::vm_bessel();
+                d7::vm_log_i0_fn();
+            }
             if (std::strcmp(cls, "SkewTDistrib") == 0) d7::skewt_pt();
             if (std::strncmp(cls, "PseudoHuber", 11) == 0) d7::bessel_k_fn();
             return i;
@@ -260,6 +279,58 @@ void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
     }
 }
 
+
+// the log-density of one observation, th as for d7_score_curv(); NaN for an
+// unknown id
+double d7_logpdf(int id, double y, const double* th) {
+    switch (id) {
+    case 0: return d7::gaussian1_logpdf(y, th);
+    case 1: return d7::gamma1_logpdf(y, th);
+    case 2: return d7::poisson_logpdf(y, th);
+    case 3: return d7::negbin2_logpdf(y, th);
+    case 4: return d7::beta1_logpdf(y, th);
+    case 5: return d7::bernoulli_logpdf(y, th);
+    case 6: return d7::binomial_logpdf(y, th);
+    case 7: return d7::exponential_logpdf(y, th);
+    case 8: return d7::geometric_logpdf(y, th);
+    case 9: return d7::chisq_logpdf(y, th);
+    case 10: return d7::cauchy_logpdf(y, th);
+    case 11: return d7::logistic_logpdf(y, th);
+    case 12: return d7::gaussian2_logpdf(y, th);
+    case 13: return d7::gaussian3_logpdf(y, th);
+    case 14: return d7::lognormal1_logpdf(y, th);
+    case 15: return d7::invgauss1_logpdf(y, th);
+    case 16: return d7::invgauss2_logpdf(y, th);
+    case 17: return d7::gamma2_logpdf(y, th);
+    case 18: return d7::gpd_logpdf(y, th);
+    case 19: return d7::vonmises1_logpdf(y, th);
+    case 20: return d7::vonmises2_logpdf(y, th);
+    case 21: return d7::weibull3_logpdf(y, th);
+    case 22: return d7::lognormal2_logpdf(y, th);
+    case 23: return d7::student_t1_logpdf(y, th);
+    case 24: return d7::student_t2_logpdf(y, th);
+    case 25: return d7::gengamma1_logpdf(y, th);
+    case 26: return d7::gengamma2_logpdf(y, th);
+    case 27: return d7::gumbel_logpdf(y, th);
+    case 28: return d7::laplace_logpdf(y, th);
+    case 29: return d7::laplace2_logpdf(y, th);
+    case 30: return d7::weibull1_logpdf(y, th);
+    case 31: return d7::beta2_logpdf(y, th);
+    case 32: return d7::enet_logpdf(y, th);
+    case 33: return d7::negbin1_logpdf(y, th);
+    case 34: return d7::skewnormal1_logpdf_th(y, th);
+    case 35: return d7::skewt_logpdf_th(y, th);
+    case 36: return d7::pseudohuber_logpdf_th(y, th);
+    case 37: return d7::pseudohuber2_logpdf_th(y, th);
+    case 38: return d7::skewnormal2_logpdf_th(y, th);
+    case 39: return d7::pig1_logpdf(y, th);
+    case 40: return d7::pig2_logpdf(y, th);
+    case 41: return d7::betabinom1_logpdf(y, th);
+    case 42: return d7::betabinom2_logpdf(y, th);
+    default: return R_NaN;
+    }
+}
+
 } // extern "C"
 
 // exposed to this package's own tests: the twin comparison against
@@ -300,6 +371,21 @@ Rcpp::List d7_info_probe(std::string cls, int k, Rcpp::NumericVector y,
 }
 
 // d7_scalar_thread_safe() by class name, for the tests
+// the twin of d7_scalar_probe() for the log-density
+// [[Rcpp::export]]
+Rcpp::List d7_logpdf_probe(std::string cls, Rcpp::NumericVector y,
+                           Rcpp::NumericMatrix theta) {
+    int id = d7_scalar_id(cls.c_str());
+    int n = y.size(), np = theta.ncol();
+    Rcpp::NumericVector lp(n);
+    std::vector<double> th(np);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        lp[i] = d7_logpdf(id, y[i], th.data());
+    }
+    return Rcpp::List::create(Rcpp::_["id"] = id, Rcpp::_["logpdf"] = lp);
+}
+
 // [[Rcpp::export]]
 int d7_scalar_thread_safe_probe(std::string cls) {
     return d7_scalar_thread_safe(d7_scalar_id(cls.c_str()));
@@ -323,4 +409,6 @@ void d7_register_ccallable(DllInfo* dll) {
                         (DL_FUNC) d7_info_dinfo);
     R_RegisterCCallable("distributions7", "d7_scalar_thread_safe",
                         (DL_FUNC) d7_scalar_thread_safe);
+    R_RegisterCCallable("distributions7", "d7_logpdf",
+                        (DL_FUNC) d7_logpdf);
 }
