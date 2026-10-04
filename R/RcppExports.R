@@ -177,6 +177,14 @@ d7_logpdf_probe <- function(cls, y, theta) {
     .Call(`_distributions7_d7_logpdf_probe`, cls, y, theta)
 }
 
+d7_center_scale_probe <- function(cls, theta) {
+    .Call(`_distributions7_d7_center_scale_probe`, cls, theta)
+}
+
+fold_rule_cpp <- function(c, s) {
+    .Call(`_distributions7_fold_rule_cpp`, c, s)
+}
+
 d7_scalar_thread_safe_probe <- function(cls) {
     .Call(`_distributions7_d7_scalar_thread_safe_probe`, cls)
 }

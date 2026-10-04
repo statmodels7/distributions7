@@ -489,16 +489,23 @@ inline double skewnormal2_d3_gamma1_gamma1_gamma1(double G0_3) {
   return G0_3;
 }
 
-// log f: skewnormal1's density at the direct parameters
-// xi = mu - s r, omega = s sqrt(1 + r^2), alpha = r / Dq
+// log f: skewnormal1's density at the direct parameters, mapped as
+// sn_cp_to_dp() (skewnormal2_distrib.R) maps them, expression for
+// expression, so that it is distrib_pdf()'s to the last bit: with
+// c = sign(g) (2|g|/(4 - pi))^(1/3), xi = mu - s c,
+// omega = s sqrt(1 + c^2), alpha = c / (b sqrt(1 - delta^2))
 inline double skewnormal2_logpdf(double y, double mu, double s, double g) {
-  const double r = sn2_r(g), Dq = sn2_Dq(g);
-  const double w = (y - mu) / s;
-  const double q = std::sqrt(1.0 + r * r);
-  const double z = (w + r) / q;
-  const double X = r / Dq * (w + r) / q;
-  return std::log(2.0) - std::log(s) - 0.5 * std::log(1.0 + r * r) +
-    R::dnorm4(z, 0.0, 1.0, 1) + R::pnorm5(X, 0.0, 1.0, 1, 1);
+  const double b = std::sqrt(2 / M_PI);
+  const double sg = (g >= 0) ? 1.0 : -1.0;
+  const double cc = sg * R_pow(2 * (sg * g) / (4 - M_PI), 1.0 / 3.0);
+  const double max_skew = (4 - M_PI) / 2 * R_pow(b / std::sqrt(1 - b * b), 3.0);
+  const double omd2 = -std::expm1((2.0 / 3.0) * std::log(sg * g / max_skew));
+  const double xi = mu - s * cc;
+  const double omega = s * std::sqrt(1 + cc * cc);
+  const double alpha = cc / (b * std::sqrt(omd2));
+  const double z = (y - xi) / omega;
+  return std::log(2.0) - std::log(omega) + R::dnorm4(z, 0.0, 1.0, 1) +
+    R::pnorm5(alpha * z, 0.0, 1.0, 1, 1);
 }
 
 // the diagonal of the expected information and of its derivative in the

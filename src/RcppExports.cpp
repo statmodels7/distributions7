@@ -620,6 +620,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// d7_center_scale_probe
+Rcpp::NumericMatrix d7_center_scale_probe(std::string cls, Rcpp::NumericMatrix theta);
+RcppExport SEXP _distributions7_d7_center_scale_probe(SEXP clsSEXP, SEXP thetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type cls(clsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type theta(thetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(d7_center_scale_probe(cls, theta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fold_rule_cpp
+Rcpp::List fold_rule_cpp(double c, double s);
+RcppExport SEXP _distributions7_fold_rule_cpp(SEXP cSEXP, SEXP sSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    Rcpp::traits::input_parameter< double >::type s(sSEXP);
+    rcpp_result_gen = Rcpp::wrap(fold_rule_cpp(c, s));
+    return rcpp_result_gen;
+END_RCPP
+}
 // d7_scalar_thread_safe_probe
 int d7_scalar_thread_safe_probe(std::string cls);
 RcppExport SEXP _distributions7_d7_scalar_thread_safe_probe(SEXP clsSEXP) {
@@ -6118,6 +6142,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_d7_scalar_probe", (DL_FUNC) &_distributions7_d7_scalar_probe, 4},
     {"_distributions7_d7_info_probe", (DL_FUNC) &_distributions7_d7_info_probe, 4},
     {"_distributions7_d7_logpdf_probe", (DL_FUNC) &_distributions7_d7_logpdf_probe, 3},
+    {"_distributions7_d7_center_scale_probe", (DL_FUNC) &_distributions7_d7_center_scale_probe, 2},
+    {"_distributions7_fold_rule_cpp", (DL_FUNC) &_distributions7_fold_rule_cpp, 2},
     {"_distributions7_d7_scalar_thread_safe_probe", (DL_FUNC) &_distributions7_d7_scalar_thread_safe_probe, 1},
     {"_distributions7_d7_scalar_classes_covered", (DL_FUNC) &_distributions7_d7_scalar_classes_covered, 0},
     {"_distributions7_bernoulli_dexpected1_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected1_cpp, 3},

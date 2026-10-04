@@ -135,8 +135,10 @@ FoldedDistrib <- S7::new_class("FoldedDistrib",
 #'
 #' @keywords internal
 fold_parts <- function(parent, x, theta) {
-  fp <- distrib_pdf(parent, x, theta)
-  fm <- distrib_pdf(parent, -x, theta)
+  # each density as the exponential of the log-density, the form the
+  # scalar registry reads (d7_logpdf)
+  fp <- exp(distrib_pdf(parent, x, theta, log = TRUE))
+  fm <- exp(distrib_pdf(parent, -x, theta, log = TRUE))
   fp[!is.finite(fp)] <- 0
   fm[!is.finite(fm)] <- 0
   L <- fp + fm

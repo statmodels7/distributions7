@@ -46,6 +46,7 @@
 #include "pt_betabinom.h"
 #include "pt_logpdf.h"
 #include "pt_wrappers.h"
+#include "pt_loc_scale.h"
 
 // The scalar C entry points of the fast route piano_parallel.txt section 2a
 // describes: the score and the second derivative of the log-density in ONE
@@ -163,7 +164,8 @@ const WrapName d7_wrappers[] = {
     {"FixedDiscreteDistrib", 1},
     {"ZeroInflatedDistrib", 2},
     {"ZeroAdjustedDiscreteDistrib", 3},
-    {"ZeroAdjustedContinuousDistrib", 4}
+    {"ZeroAdjustedContinuousDistrib", 4},
+    {"FoldedDistrib", 5}
 };
 const int d7_n_wrappers = sizeof(d7_wrappers) / sizeof(d7_wrappers[0]);
 
@@ -222,6 +224,107 @@ int fixed_inner(int inner, int mask, int k, const double* th, double* full) {
 
 // the zero wrappers: the parent's vector (its parameters, then its
 // constants) and the wrapper's probability, which follows the parameters
+// a center and a scale of the parent, from its parameters, where the
+// parent is a location-scale family on the real line: what folded()'s
+// quadrature centers and scales its rule by; false elsewhere
+bool center_scale(int inner, const double* th, double* c, double* s) {
+    switch (inner) {
+    case 0: case 10: case 11: case 23: case 24: case 27: case 28:
+    case 34: case 35: case 36: case 37: case 38:
+        *c = th[0]; *s = th[1]; return true;
+    case 12: *c = th[0]; *s = std::sqrt(th[1]); return true;
+    case 13: *c = th[0]; *s = 1.0 / std::sqrt(th[1]); return true;
+    case 29: *c = th[0]; *s = 1.0 / th[1]; return true;
+    case 32: {
+        double a = th[1] * th[2], cc = th[1] * (1.0 - th[2]);
+        *c = th[0]; *s = 1.0 / (a + std::sqrt(cc)); return true;
+    }
+    default: return false;
+    }
+}
+
+// folded(): the parent's (k, k) pieces at y and -y, and the folded score
+// and second derivative from them
+void fold_score_curv(int inner, int k, double y, const double* full,
+                     double* out) {
+    double ghp[2], ghm[2];
+    d7_score_curv(inner, k, y, full, ghp);
+    d7_score_curv(inner, k, -y, full, ghm);
+    const d7::FoldW W = d7::fold_w(d7_logpdf(inner, y, full),
+                                   d7_logpdf(inner, -y, full));
+    out[0] = d7::fold_score(W.w, ghp[0], ghm[0]);
+    out[1] = d7::fold_curv(W.w, ghp[0], ghm[0], ghp[1], ghm[1]);
+}
+
+// The nodes and weights of folded()'s quadrature over y in (0, Inf), for a
+// parent centered at c with scale s: a tanh-sinh rule on [0, |c|], whose
+// nodes cluster at both ends -- at zero, where the weight f(y)/(f(y) +
+// f(-y)) turns from 1/2 to 1 over a width of order s^2/|c|, and at |c|,
+// where the mass is and where a parent with a kink at its center puts it --
+// and the exp-sinh rule of pt_loc_scale.h scaled by s on [|c|, Inf). Both
+// have step 1/32; the tanh-sinh nodes run until their distance to an end
+// falls below 1e-17 of the interval.
+void fold_rule(double c, double s, std::vector<double>& y,
+               std::vector<double>& w) {
+    y.clear();
+    w.clear();
+    const double a = std::fabs(c);
+    const double h = 1.0 / 32.0, hp = M_PI / 2.0;
+    if (a > 0) {
+        const int K = (int) std::floor(3.2 / h);
+        for (int i = -K; i <= K; ++i) {
+            const double t = i * h;
+            const double u = hp * std::sinh(t);
+            const double e = std::exp(-2.0 * std::fabs(u));
+            const double lo = a * e / (1.0 + e);       // distance to the near end
+            const double yy = (u < 0) ? lo : a - lo;
+            const double ww = h * hp * std::cosh(t) * a * 2.0 * e /
+                ((1.0 + e) * (1.0 + e));
+            if (!(yy > 0) || !(yy < a)) continue;
+            y.push_back(yy);
+            w.push_back(ww);
+        }
+    }
+    const d7::LocScaleRule R = d7::loc_scale_rule();
+    for (int j = R.n / 2; j < R.n; ++j) {
+        y.push_back(a + s * R.x[j]);
+        w.push_back(s * R.w[j]);
+    }
+}
+
+// folded()'s (k, k) expected second derivative and its derivative in k, as
+// integrals over y of the folded density by fold_rule(); by the second
+// Bartlett identity E[l_kk] = -E[l_k^2] and d_k E[l_kk] =
+// -E[2 l_kk l_k + l_k^3]. The sums are accumulated in long double in node
+// order, as folded_expected() in R accumulates them.
+void fold_info_dinfo(int inner, int k, const double* full, double* out) {
+    double c, s;
+    if (!center_scale(inner, full, &c, &s)) {
+        out[0] = out[1] = R_NaN;
+        return;
+    }
+    std::vector<double> ys, ws;
+    fold_rule(c, s, ys, ws);
+    long double a0 = 0.0L, a1 = 0.0L;
+    for (std::size_t j = 0; j < ys.size(); ++j) {
+        const double y = ys[j];
+        const d7::FoldW Wt = d7::fold_w(d7_logpdf(inner, y, full),
+                                        d7_logpdf(inner, -y, full));
+        const double fw = Wt.L * ws[j];
+        if (fw == 0.0) continue;
+        double ghp[2], ghm[2];
+        d7_score_curv(inner, k, y, full, ghp);
+        d7_score_curv(inner, k, -y, full, ghm);
+        const double g = d7::fold_score(Wt.w, ghp[0], ghm[0]);
+        const double h = d7::fold_curv(Wt.w, ghp[0], ghm[0], ghp[1], ghm[1]);
+        a0 += (g * g) * fw;
+        a1 += (h * g + g * h + g * g * g) * fw;
+    }
+    const double r0 = (double) a0, r1 = (double) a1;
+    out[0] = R_FINITE(r0) ? -r0 : NA_REAL;
+    out[1] = R_FINITE(r1) ? -r1 : NA_REAL;
+}
+
 double zero_inner(int inner, const double* th, double* full) {
     const int P = d7_n_params[inner], nc = d7_n_constants[inner];
     for (int j = 0; j < P; ++j) full[j] = th[j];
@@ -236,6 +339,10 @@ void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
     if (code == 1) {
         const int j = fixed_inner(inner, aux, k, th, full);
         d7_score_curv(inner, j, y, full, out);
+        return;
+    }
+    if (code == 5) {
+        fold_score_curv(inner, k, y, th, out);
         return;
     }
     if (code >= 2 && code <= 4) {
@@ -279,6 +386,10 @@ void wrap_info_dinfo(int id, int k, double y, const double* th, double* out) {
         d7_info_dinfo(inner, j, y, full, out);
         return;
     }
+    if (code == 5) {
+        fold_info_dinfo(inner, k, th, out);
+        return;
+    }
     if (code >= 2 && code <= 4) {
         const int P = d7_n_params[inner];
         const double z = zero_inner(inner, th, full);
@@ -318,6 +429,11 @@ double wrap_logpdf(int id, double y, const double* th) {
     if (code == 1) {
         fixed_inner(inner, aux, 0, th, full);
         return d7_logpdf(inner, y, full);
+    }
+    if (code == 5) {
+        const d7::FoldW W = d7::fold_w(d7_logpdf(inner, y, th),
+                                       d7_logpdf(inner, -y, th));
+        return d7::fold_logpdf(y, W);
     }
     if (code >= 2 && code <= 4) {
         const double z = zero_inner(inner, th, full);
@@ -425,7 +541,7 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
 // without their warnings and, for the latter, without R's allocator. The
 // quadrature families (pt_loc_scale.h) keep their cache in thread-local
 // storage. A family whose entries evaluate a function that may warn (R's
-// pt, pbeta, lchoose at a non-integer, R's Bessel K) answers 0.
+// pt, pbeta, lchoose, R's Bessel K) answers 0.
 int d7_scalar_thread_safe(int id) {
     if (id >= kWrapBase) id = id % 1000;
     if (id < 0 || id >= d7_n_scalar_classes) return -1;
@@ -594,6 +710,37 @@ Rcpp::List d7_logpdf_probe(std::string cls, Rcpp::NumericVector y,
         lp[i] = d7_logpdf(id, y[i], th.data());
     }
     return Rcpp::List::create(Rcpp::_["id"] = id, Rcpp::_["logpdf"] = lp);
+}
+
+// the center and scale folded()'s quadrature reads, one row per observation,
+// NA where the family has none
+// [[Rcpp::export]]
+Rcpp::NumericMatrix d7_center_scale_probe(std::string cls,
+                                          Rcpp::NumericMatrix theta) {
+    int id = d7_scalar_id(cls.c_str());
+    int n = theta.nrow(), np = theta.ncol();
+    Rcpp::NumericMatrix out(n, 2);
+    std::vector<double> th(np);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        double c = NA_REAL, s = NA_REAL;
+        if (id < 0 || id >= kWrapBase || !center_scale(id, th.data(), &c, &s)) {
+            c = NA_REAL;
+            s = NA_REAL;
+        }
+        out(i, 0) = c;
+        out(i, 1) = s;
+    }
+    return out;
+}
+
+// fold_rule() for folded_expected() in R, which reads the same nodes
+// [[Rcpp::export]]
+Rcpp::List fold_rule_cpp(double c, double s) {
+    std::vector<double> y, w;
+    fold_rule(c, s, y, w);
+    return Rcpp::List::create(Rcpp::_["y"] = Rcpp::wrap(y),
+                              Rcpp::_["w"] = Rcpp::wrap(w));
 }
 
 // [[Rcpp::export]]

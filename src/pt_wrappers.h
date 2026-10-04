@@ -134,6 +134,39 @@ inline double zac_logpdf(double y, double z, double lf) {
     return std::log(1 - z) + lf;
 }
 
+// ---- folded() ----------------------------------------------------------------
+//
+// From the parent's log-density at y and -y (lp, lm) and its (k, k) score
+// and second derivative there (gp, hp at y, gm, hm at -y): the weight
+// w = f(y)/(f(y) + f(-y)) of fold_parts(), the score w gp + (1 - w) gm and
+// the second derivative R2 - R1^2 of log_deriv() over the block ratios
+// R1 = w gp + (1 - w) gm, R2 = w (hp + gp^2) + (1 - w)(hm + gm^2).
+
+struct FoldW { double fp, fm, L, w; };
+
+inline FoldW fold_w(double lp, double lm) {
+    FoldW W;
+    W.fp = std::exp(lp);
+    W.fm = std::exp(lm);
+    if (!R_FINITE(W.fp)) W.fp = 0;
+    if (!R_FINITE(W.fm)) W.fm = 0;
+    W.L = W.fp + W.fm;
+    W.w = (W.L > 0) ? W.fp / W.L : 0.5;
+    return W;
+}
+inline double fold_score(double w, double gp, double gm) {
+    return w * gp + (1 - w) * gm;
+}
+inline double fold_curv(double w, double gp, double gm, double hp, double hm) {
+    double r1 = w * gp + (1 - w) * gm;
+    double r2 = w * (hp + gp * gp) + (1 - w) * (hm + gm * gm);
+    return r2 - r1 * r1;
+}
+inline double fold_logpdf(double y, const FoldW& W) {
+    if (y < 0) return R_NegInf;
+    return std::log(W.L);
+}
+
 } // namespace d7
 
 #endif

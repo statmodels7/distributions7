@@ -174,9 +174,7 @@ test_that("an unknown family answers -1", {
 })
 
 test_that("the log-density entry is distrib_pdf()'s, bit for bit", {
-  # the centered skew normal's distrib_pdf() maps to the direct parameters in
-  # R with other arithmetic, so it is held to rounding
-  loose <- "SkewNormal2Distrib"
+  loose <- character()
   for (cls in names(ccallable_families)) {
     d <- ccallable_families[[cls]]()
     set.seed(4)
@@ -220,7 +218,13 @@ ccallable_wrappers <- list(
   function() zero_adjusted(negbin2_distrib()),
   function() zero_adjusted(binomial_distrib(size = 7)),
   function() zero_adjusted(gamma1_distrib()),
-  function() zero_adjusted(lognormal1_distrib())
+  function() zero_adjusted(lognormal1_distrib()),
+  function() folded(gaussian1_distrib()),
+  function() folded(student_t1_distrib()),
+  function() folded(laplace_distrib()),
+  function() folded(cauchy_distrib()),
+  function() folded(skewnormal1_distrib()),
+  function() folded(skewnormal2_distrib())
 )
 
 test_that("a wrapped family's entries are the wrapper's methods, bit for bit", {
@@ -237,5 +241,23 @@ test_that("a route the registry cannot read is rejected", {
   expect_identical(d7_scalar_thread_safe_probe("NoWrapper|Gaussian1Distrib"), -1L)
   expect_null(distrib_scalar_route(fixed(zero_inflated(poisson_distrib()), mu = 2)))
   expect_identical(d7_scalar_thread_safe_probe("ZeroInflatedDistrib:1|PoissonDistrib"), -1L)
+  expect_null(distrib_scalar_route(folded(vonmises1_distrib())))
   expect_null(distrib_scalar_route(zero_inflated(truncated(poisson_distrib(), upper = 50))))
+})
+
+test_that("folded()'s expected information meets 30-digit values", {
+  # mpmath's quadrature of -E[l_k^2] at 30 digits, split at |mu|
+  d <- folded(gaussian1_distrib())
+  e <- distrib_expected_hessian(d, 1, list(mu = 3, sigma = 0.5))
+  expect_equal(e$mu_mu, -3.9999999992522573708, tolerance = 1e-14)
+  expect_equal(e$sigma_sigma, -7.9999998923250613929, tolerance = 1e-14)
+  e <- distrib_expected_hessian(d, 1, list(mu = 0.5, sigma = 1.2))
+  expect_equal(e$mu_mu, -0.18228458070607484782, tolerance = 1e-14)
+  expect_equal(e$sigma_sigma, -1.0332223168483544876, tolerance = 1e-14)
+  # the Laplace parent, whose kink at its center the rule is split at
+  l <- folded(laplace_distrib())
+  m <- vapply(list(c(0.5, 1.2), c(3, 0.5), c(-1, 2)), function(p)
+    distrib_expected_hessian(l, 1, list(mu = p[1], sigma = p[2]))$mu_mu, 0)
+  expect_equal(m, c(-0.273693449951955, -3.99995084660318, -0.115529289315002),
+               tolerance = 1e-11)
 })
