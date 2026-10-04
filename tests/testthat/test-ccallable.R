@@ -46,7 +46,9 @@ ccallable_families <- list(
   SkewTDistrib = function() skewt_distrib(),
   PseudoHuberDistrib = function() pseudohuber_distrib(),
   PseudoHuber2Distrib = function() pseudohuber2_distrib(),
-  SkewNormal2Distrib = function() skewnormal2_distrib()
+  SkewNormal2Distrib = function() skewnormal2_distrib(),
+  Pig1Distrib = function() pig1_distrib(),
+  Pig2Distrib = function() pig2_distrib()
 )
 
 # the constants a family carries besides its parameters follow the
@@ -74,13 +76,16 @@ test_that("every covered class has a constructor in this file", {
   expect_setequal(d7_scalar_classes_covered(), names(ccallable_families))
 })
 
-ccallable_twin <- function(cls, eta_range, seed, const_shape = FALSE) {
+ccallable_twin <- function(cls, eta_range, seed, const_shape = FALSE,
+                           ranges = NULL) {
   d <- ccallable_families[[cls]]()
   set.seed(seed)
   n <- 80
-  th <- lapply(d@params, function(p)
-    linkfunctions7::linkinv(d@link_params[[p]],
-                            runif(n, eta_range[1], eta_range[2])))
+  # `ranges`, where given, holds one eta range per parameter
+  th <- lapply(d@params, function(p) {
+    rg <- if (is.null(ranges)) eta_range else ranges[[p]]
+    linkfunctions7::linkinv(d@link_params[[p]], runif(n, rg[1], rg[2]))
+  })
   names(th) <- d@params
   # one shape for every observation, which the quadrature families' cache
   # serves after the first call
@@ -109,11 +114,20 @@ ccallable_twin <- function(cls, eta_range, seed, const_shape = FALSE) {
 }
 
 test_that("the scalar entries are the vector kernels, bit for bit", {
-  for (cls in names(ccallable_families)) {
+  # the Poisson-inverse Gaussian's support sums grow as sigma mu, which the
+  # common wide range takes past 1e4; its ranges below reach the series
+  # branch near the Poisson limit and the heavy tail at a moderate cost
+  pig <- c("Pig1Distrib", "Pig2Distrib")
+  for (cls in setdiff(names(ccallable_families), pig)) {
     ccallable_twin(cls, c(-0.5, 0.5), 1)
     # wider, so that the series branches of the remainders are reached
     ccallable_twin(cls, c(-4.5, 5), 2)
   }
+  for (cls in pig) ccallable_twin(cls, c(-0.5, 0.5), 1)
+  ccallable_twin("Pig1Distrib", NULL, 2,
+                 ranges = list(mu = c(-4.5, 1.5), sigma = c(-4.5, 1.5)))
+  ccallable_twin("Pig2Distrib", NULL, 2,
+                 ranges = list(mu = c(-4.5, 1.5), alpha = c(-1.5, 5)))
   for (cls in loc_scale_compiled()) ccallable_twin(cls, c(-1, 1), 3, TRUE)
 })
 

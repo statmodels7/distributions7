@@ -1,10 +1,20 @@
 #include <Rcpp.h>
 #include "d7_par.h"
 #include "pig_asym.h"
+#include "pt_pig.h"
 #include <cstring>
 #include <cmath>
 #include <vector>
 using namespace Rcpp;
+using d7::psi_derivs;
+using d7::PIG_OFF;
+using d7::PIG_LEN;
+using d7::pix;
+using d7::pig_compose;
+using d7::pig_logS_w;
+using d7::PigSeq;
+using d7::PigSeqW;
+using d7::PIG_ASYM_CUT;
 
 // Poisson-inverse Gaussian, both parametrizations, log-likelihood
 // derivatives to fourth order.
@@ -117,71 +127,6 @@ static Jet2 jet_sqrt(const Jet2& f) {
     return jet_compose(h, f);
 }
 
-// psi(alpha) = -alpha + log S_y(alpha) and four derivatives in alpha.
-// The terms of S are positive, summed by the log-sum-exp anchored at the
-// largest; the derivatives are cumulants of the rising-factorial moments
-// m_r = E[k (k+1) ... (k+r-1)] under the normalized terms, with
-// S^(r)/S = (-1)^r m_r / alpha^r.
-static void psi_derivs(double y, double alpha, int order, double h[5],
-                       double* logS = nullptr, double* A1out = nullptr) {
-    if (y < 0.5) {
-        h[0] = -alpha; h[1] = -1.0; h[2] = h[3] = h[4] = 0.0;
-        if (logS) *logS = 0.0;
-        if (A1out) *A1out = 0.0;
-        return;
-    }
-    int n = (int) y;
-    double l2a = std::log(2.0 * alpha);
-    double mx = -1e308;
-    std::vector<double> la(n);
-    for (int k = 0; k < n; ++k) {
-        la[k] = R::lgammafn(y + k) - R::lgammafn(k + 1.0) -
-            R::lgammafn(y - k) - k * l2a;
-        if (la[k] > mx) mx = la[k];
-    }
-    // Only the moments the requested order reads are accumulated: the
-    // value needs none of them, the score only the first.
-    double W = 0, m1 = 0, m2 = 0, m3 = 0, m4 = 0;
-    for (int k = 0; k < n; ++k) {
-        double u = std::exp(la[k] - mx);
-        W += u;
-        if (order < 1) continue;
-        m1 += k * u;
-        if (order < 2) continue;
-        m2 += k * (k + 1.0) * u;
-        if (order < 3) continue;
-        m3 += k * (k + 1.0) * (k + 2.0) * u;
-        if (order < 4) continue;
-        m4 += k * (k + 1.0) * (k + 2.0) * (k + 3.0) * u;
-    }
-    m1 /= W; m2 /= W; m3 /= W; m4 /= W;
-    double A1 = -m1 / alpha;
-    double A2 = m2 / (alpha * alpha);
-    double A3 = -m3 / (alpha * alpha * alpha);
-    double A4 = m4 / (alpha * alpha * alpha * alpha);
-    // log S alone is reported through logS. Recovering it from h[0] by
-    // adding alpha back is the cancellation this exists to avoid: h[0] is
-    // of size alpha and log S is of size log(y!).
-    if (logS) *logS = mx + std::log(W);
-    // A1 is d log S / d alpha, of size y^2/alpha^2. Recovering it from
-    // h[1] by adding one back is the same cancellation again.
-    if (A1out) *A1out = A1;
-    // Every entry is written whatever the order, the unread ones as zero,
-    // so a caller that declares h[5] and asks for the value alone never
-    // reads an uninitialized double.
-    h[0] = -alpha + mx + std::log(W);
-    h[1] = h[2] = h[3] = h[4] = 0.0;
-    if (order < 1) return;
-    h[1] = -1.0 + A1;
-    if (order < 2) return;
-    h[2] = A2 - A1 * A1;
-    if (order < 3) return;
-    h[3] = A3 - 3.0 * A1 * A2 + 2.0 * A1 * A1 * A1;
-    if (order < 4) return;
-    h[4] = A4 - 4.0 * A1 * A3 - 3.0 * A2 * A2 +
-        12.0 * A1 * A1 * A2 - 6.0 * A1 * A1 * A1 * A1;
-}
-
 // the fourteen partials, flattened in the fixed order the R side reads
 static void write_row(NumericMatrix& out, int i, const Jet2& l) {
     static const int A[15] = {0, 1, 0, 2, 1, 0, 3, 2, 1, 0, 4, 3, 2, 1, 0};
@@ -243,95 +188,15 @@ NumericMatrix pig2_hd_jet_cpp(NumericVector y, NumericVector mu,
 // ---------------------------------------------------------------------------
 // The explicit closed-form kernels: what the package methods run.
 // ---------------------------------------------------------------------------
-
-// The block's column layout, which the wrappers and the guard read:
-// order k occupies PIG_LEN[k] columns starting at PIG_OFF[k].
-static const int PIG_OFF[5] = {0, 1, 3, 6, 10};
-static const int PIG_LEN[5] = {1, 2, 3, 4, 5};
-
-// The partials of a bivariate function in (mu, sigma), orders 0 to 4, sit in
-// fifteen slots: slot PIG_OFF[i + j] + j holds d^{i+j} / dmu^i dsigma^j.
-static inline int pix(int i, int j) { return PIG_OFF[i + j] + j; }
-
-// h(F(mu, sigma)) for a univariate h with derivatives h[0..4] at F's value
-// and F's partials in F[15]: Faa di Bruno written out per component, the
-// same expressions the pig2 row composes psi with.
-static void pig_compose(const double h[5], const double* F, int order,
-                        double* out) {
-    out[0] = h[0];
-    if (order < 1) return;
-    double m = F[1], u = F[2];
-    out[1] = h[1] * m;
-    out[2] = h[1] * u;
-    if (order < 2) return;
-    double mm = F[3], mu = F[4], uu = F[5];
-    out[3] = h[2] * m * m + h[1] * mm;
-    out[4] = h[2] * m * u + h[1] * mu;
-    out[5] = h[2] * u * u + h[1] * uu;
-    if (order < 3) return;
-    double mmm = F[6], mmu = F[7], muu = F[8], uuu = F[9];
-    out[6] = h[3] * m * m * m + 3.0 * h[2] * mm * m + h[1] * mmm;
-    out[7] = h[3] * m * m * u + h[2] * (mm * u + 2.0 * mu * m) + h[1] * mmu;
-    out[8] = h[3] * m * u * u + h[2] * (uu * m + 2.0 * mu * u) + h[1] * muu;
-    out[9] = h[3] * u * u * u + 3.0 * h[2] * uu * u + h[1] * uuu;
-    if (order < 4) return;
-    out[10] = h[4] * m * m * m * m + 6.0 * h[3] * mm * m * m +
-        h[2] * (3.0 * mm * mm + 4.0 * mmm * m) + h[1] * F[10];
-    out[11] = h[4] * m * m * m * u +
-        h[3] * (3.0 * mu * m * m + 3.0 * mm * m * u) +
-        h[2] * (3.0 * mm * mu + 3.0 * mmu * m + mmm * u) + h[1] * F[11];
-    out[12] = h[4] * m * m * u * u +
-        h[3] * (mm * u * u + uu * m * m + 4.0 * mu * m * u) +
-        h[2] * (mm * uu + 2.0 * mu * mu + 2.0 * muu * m + 2.0 * mmu * u) +
-        h[1] * F[12];
-    out[13] = h[4] * m * u * u * u +
-        h[3] * (3.0 * mu * u * u + 3.0 * uu * m * u) +
-        h[2] * (3.0 * uu * mu + 3.0 * muu * u + uuu * m) + h[1] * F[13];
-    out[14] = h[4] * u * u * u * u + 6.0 * h[3] * uu * u * u +
-        h[2] * (3.0 * uu * uu + 4.0 * uuu * u) + h[1] * F[14];
-}
-
-// log S_y as a function of w = 1/(2 alpha), with its four derivatives in w.
-// S_y(w) = sum_k a_{y,k} w^k is a polynomial with positive coefficients, so
-// S^(r)(w)/S = sum_{k>=r} a_{y,k} (k)_r w^{k-r} / S is finite as w -> 0 and
-// is summed with the power of w already divided out; the derivatives of
-// log S are the cumulants of those ratios. In alpha the same quantities
-// carry alpha^-r and the chain onto sigma cancels at a small dispersion.
-static void pig_logS_w(double y, double w, int order, double L[5]) {
-    L[0] = L[1] = L[2] = L[3] = L[4] = 0.0;
-    if (y < 0.5) return;
-    int n = (int) y;
-    double lw = std::log(w);
-    std::vector<double> la(n);
-    double mx = -1e308;
-    for (int k = 0; k < n; ++k) {
-        la[k] = R::lgammafn(y + k) - R::lgammafn(k + 1.0) -
-            R::lgammafn(y - k) + (k == 0 ? 0.0 : k * lw);
-        if (la[k] > mx) mx = la[k];
-    }
-    double W = 0.0, nr[5] = {0, 0, 0, 0, 0};
-    for (int k = 0; k < n; ++k) {
-        W += std::exp(la[k] - mx);
-        double fall = 1.0;
-        for (int r = 1; r <= order && r <= k; ++r) {
-            fall *= (k - r + 1);
-            // a_{y,k} (k)_r w^{k-r}, the power of w taken off inside the
-            // exponent so a small w never underflows before it is divided
-            nr[r] += fall * std::exp(la[k] - mx - r * lw);
-        }
-    }
-    L[0] = mx + std::log(W);
-    for (int r = 1; r <= order; ++r) nr[r] /= W;
-    if (order < 1) return;
-    L[1] = nr[1];
-    if (order < 2) return;
-    L[2] = nr[2] - nr[1] * nr[1];
-    if (order < 3) return;
-    L[3] = nr[3] - 3.0 * nr[1] * nr[2] + 2.0 * nr[1] * nr[1] * nr[1];
-    if (order < 4) return;
-    L[4] = nr[4] - 4.0 * nr[1] * nr[3] - 3.0 * nr[2] * nr[2] +
-        12.0 * nr[1] * nr[1] * nr[2] - 6.0 * nr[1] * nr[1] * nr[1] * nr[1];
-}
+//
+// The scores of both parametrizations and pig2's Hessian call the component
+// functions of pt_pig.h, which the scalar registry calls as well; pig1's
+// Hessian, the higher orders and the expected information run the rows
+// below. The choice is measured (n = 5000, ns per point at -O2): pig1's
+// score 700-900 by row and 700 by component, pig2's 800-1000 and 800,
+// pig2's Hessian 800-900 and 800, pig1's Hessian 800-900 by row against
+// 1000-1100 by component. The two routes return the same numbers, the
+// component functions computing each partial with the row's expressions.
 
 // One row of the pig1 surface: the log-mass and its partials in (mu, sigma).
 //
@@ -456,11 +321,12 @@ List pig1_gradient_cpp(NumericVector y, NumericVector mu,
     // variable the workers write: that is the data race d7_par.h warns
     // of, and it shows only where the parameter varies by observation.
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
-        double v[2];
-        pig1_row(yp[i], mu_scalar ? mp[0] : mp[i],
-                 p2_scalar ? pp[0] : pp[i], 1, true, v);
-        d0[i] = v[0];
-        d1[i] = v[1];
+        double yy = yp[i], m = mu_scalar ? mp[0] : mp[i],
+            sg = p2_scalar ? pp[0] : pp[i];
+        double L[5] = {0, 0, 0, 0, 0};
+        if (d7::pig_in_support(yy)) pig_logS_w(yy, d7::pig1_w(m, sg), 1, L);
+        d0[i] = d7::pig1_score_mu(yy, m, sg, L);
+        d1[i] = d7::pig1_score_sigma(yy, m, sg, L);
     });
     return List::create(
         Named("mu") = o0,
@@ -792,11 +658,13 @@ List pig2_gradient_cpp(NumericVector y, NumericVector mu,
     // variable the workers write: that is the data race d7_par.h warns
     // of, and it shows only where the parameter varies by observation.
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
-        double v[2];
-        pig2_row(yp[i], mu_scalar ? mp[0] : mp[i],
-                 p2_scalar ? pp[0] : pp[i], 1, true, v);
-        d0[i] = v[0];
-        d1[i] = v[1];
+        double yy = yp[i], m = mu_scalar ? mp[0] : mp[i],
+            aa = p2_scalar ? pp[0] : pp[i];
+        double p[5] = {0, 0, 0, 0, 0}, logS = 0.0, A1 = 0.0;
+        if (d7::pig_in_support(yy)) psi_derivs(yy, aa, 1, p, &logS, &A1);
+        const d7::Pig2Base B = d7::pig2_base(yy, m, aa);
+        d0[i] = d7::pig2_score_mu(yy, m, B);
+        d1[i] = d7::pig2_score_alpha(yy, m, aa, B, A1);
     });
     return List::create(
         Named("mu") = o0,
@@ -816,12 +684,14 @@ List pig2_hessian_cpp(NumericVector y, NumericVector mu,
     // variable the workers write: that is the data race d7_par.h warns
     // of, and it shows only where the parameter varies by observation.
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
-        double v[3];
-        pig2_row(yp[i], mu_scalar ? mp[0] : mp[i],
-                 p2_scalar ? pp[0] : pp[i], 2, true, v);
-        d0[i] = v[0];
-        d1[i] = v[1];
-        d2[i] = v[2];
+        double yy = yp[i], m = mu_scalar ? mp[0] : mp[i],
+            aa = p2_scalar ? pp[0] : pp[i];
+        double p[5] = {0, 0, 0, 0, 0}, logS = 0.0, A1 = 0.0;
+        if (d7::pig_in_support(yy)) psi_derivs(yy, aa, 2, p, &logS, &A1);
+        const d7::Pig2Base B = d7::pig2_base(yy, m, aa);
+        d0[i] = d7::pig2_hess_mu_mu(yy, B);
+        d1[i] = d7::pig2_hess_mu_alpha(yy, B);
+        d2[i] = d7::pig2_hess_alpha_alpha(yy, B, p[2]);
     });
     return List::create(
         Named("mu_mu") = o0,
@@ -905,123 +775,6 @@ NumericMatrix pig2_hd_cpp(NumericVector y, NumericVector mu,
     });
     return out;
 }
-
-// ---------------------------------------------------------------------------
-// The expected information, exactly, by one pass over the support.
-// ---------------------------------------------------------------------------
-//
-// E[l_ab] is a sum over y of the mass times the observed component, and
-// each observed component reads log S_y and the rising-factorial moments
-// m_r of k under the terms of S_y. Computed afresh at each y by
-// psi_derivs() those cost y terms apiece, so the sum over the support is
-// quadratic in its length. They satisfy a recurrence in y instead. With
-// S_y(a) = sqrt(2a/pi) e^a K_{y-1/2}(a), the Bessel recurrence
-// K_{v+1} = K_{v-1} + (2v/a) K_v reads
-//
-//   S_{y+1} = S_{y-1} + ((2y - 1)/a) S_y,          S_0 = S_1 = 1,
-//
-// and differentiating it r times in a, with M_r = (-a)^r S^(r) = m_r S,
-//
-//   M_{r,y+1} = M_{r,y-1} + ((2y - 1)/a) sum_j C(r,j) j! M_{r-j,y},
-//
-// every term positive. Divided through by S_{y+1} it is a combination
-// with positive weights w + v = 1 of quantities already computed, so
-// nothing cancels and the recurrence is forward stable. The ratio
-// S_{y+1}/S_y - 1 is carried directly, the step to log S being a log1p:
-// formed as rho + t - 1 it cancels at a large a, where it is of size y/a.
-struct PigSeq {
-    double a;
-    int y;
-    double mp[5], mc[5];   // moments at y - 1 and at y, m_0 = 1
-    double logS;           // log S_y
-    double e;              // S_y / S_{y-1} - 1
-    explicit PigSeq(double alpha) : a(alpha), y(0), logS(0.0), e(0.0) {
-        for (int r = 0; r < 5; ++r) mp[r] = mc[r] = (r == 0) ? 1.0 : 0.0;
-    }
-    // advance from y to y + 1
-    void next() {
-        if (y == 0) { y = 1; e = 0.0; return; }   // S_1 = S_0 = 1
-        double t = (2.0 * y - 1.0) / a;
-        double d = t - e / (1.0 + e);             // S_{y+1}/S_y - 1
-        double ratio = 1.0 + d;
-        double w = 1.0 / (ratio * (1.0 + e));     // S_{y-1}/S_{y+1}
-        double v = t / ratio;                     // (t S_y)/S_{y+1}
-        double s1 = mc[1] + 1.0;
-        double s2 = mc[2] + 2.0 * mc[1] + 2.0;
-        double s3 = mc[3] + 3.0 * mc[2] + 6.0 * mc[1] + 6.0;
-        double s4 = mc[4] + 4.0 * mc[3] + 12.0 * mc[2] + 24.0 * mc[1] + 24.0;
-        double n1 = w * mp[1] + v * s1, n2 = w * mp[2] + v * s2,
-            n3 = w * mp[3] + v * s3, n4 = w * mp[4] + v * s4;
-        for (int r = 0; r < 5; ++r) mp[r] = mc[r];
-        mc[1] = n1; mc[2] = n2; mc[3] = n3; mc[4] = n4;
-        logS += std::log1p(d);
-        e = d;
-        ++y;
-    }
-    // what psi_derivs() hands a row, from the same formulas:
-    // h[0..4], then log S, then A1 = d log S / d a
-    void pre(double out[7]) const {
-        double A1 = -mc[1] / a;
-        double A2 = mc[2] / (a * a);
-        double A3 = -mc[3] / (a * a * a);
-        double A4 = mc[4] / (a * a * a * a);
-        out[0] = -a + logS;
-        out[1] = -1.0 + A1;
-        out[2] = A2 - A1 * A1;
-        out[3] = A3 - 3.0 * A1 * A2 + 2.0 * A1 * A1 * A1;
-        out[4] = A4 - 4.0 * A1 * A3 - 3.0 * A2 * A2 +
-            12.0 * A1 * A1 * A2 - 6.0 * A1 * A1 * A1 * A1;
-        out[5] = logS;
-        out[6] = A1;
-    }
-};
-
-// The same recurrence in w = 1/(2 alpha), for pig1, whose row reads the
-// derivatives of log S in w. S_{y+1} = S_{y-1} + 2(2y - 1) w S_y, and with
-// N_r = S^(r)(w), r times differentiated,
-//
-//   N_{r,y+1} = N_{r,y-1} + 2(2y - 1) (w N_{r,y} + r N_{r-1,y}),
-//
-// every term positive. Divided through by S_{y+1} the weights are finite as
-// w -> 0, which is the Poisson limit, so nothing there is formed from a
-// power of 1/w.
-struct PigSeqW {
-    double w;
-    int y;
-    double np[5], nc[5];   // N_r / S at y - 1 and at y
-    double logS, e;
-    explicit PigSeqW(double ww) : w(ww), y(0), logS(0.0), e(0.0) {
-        for (int r = 0; r < 5; ++r) np[r] = nc[r] = (r == 0) ? 1.0 : 0.0;
-    }
-    void next() {
-        if (y == 0) { y = 1; e = 0.0; return; }
-        double two = 2.0 * (2.0 * y - 1.0);
-        double t = two * w;
-        double d = t - e / (1.0 + e);
-        double R = 1.0 + d;
-        double Wt = 1.0 / (R * (1.0 + e)), V = t / R, U = two / R;
-        double n1 = Wt * np[1] + V * nc[1] + U * nc[0];
-        double n2 = Wt * np[2] + V * nc[2] + 2.0 * U * nc[1];
-        double n3 = Wt * np[3] + V * nc[3] + 3.0 * U * nc[2];
-        double n4 = Wt * np[4] + V * nc[4] + 4.0 * U * nc[3];
-        for (int r = 0; r < 5; ++r) np[r] = nc[r];
-        nc[1] = n1; nc[2] = n2; nc[3] = n3; nc[4] = n4;
-        logS += std::log1p(d);
-        e = d;
-        ++y;
-    }
-    // log S and its four derivatives in w, the cumulants of N_r / S
-    void pre(double out[7]) const {
-        double n1 = nc[1], n2 = nc[2], n3 = nc[3], n4 = nc[4];
-        out[0] = logS;
-        out[1] = n1;
-        out[2] = n2 - n1 * n1;
-        out[3] = n3 - 3.0 * n1 * n2 + 2.0 * n1 * n1 * n1;
-        out[4] = n4 - 4.0 * n1 * n3 - 3.0 * n2 * n2 +
-            12.0 * n1 * n1 * n2 - 6.0 * n1 * n1 * n1 * n1;
-        out[5] = out[6] = 0.0;
-    }
-};
 
 // the observed components of one row, indexed by how many of their
 // indices fall on the second parameter
@@ -1119,12 +872,6 @@ static bool pig_expected_obs(double m, double p2, double arg, double tail,
     return false;
 }
 
-// The threshold on tau = (1 + mu) x, x = sigma (pig1) or 1/alpha (pig2),
-// below which the series of pig_asym.h replaces the sums. Measured against
-// exact sums (stabilita/pig_cmp.R, pig*_dexpected_ref.py): at tau = 0.05 the
-// order-20 series is within 2e-15 of every component, where the sums lose up
-// to 5e-11; above 0.1 the series converges too slowly.
-static const double PIG_ASYM_CUT = 0.06;
 
 template <int ORDER, class Row>
 static List pig_expected_run(NumericVector y, NumericVector mu,

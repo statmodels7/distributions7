@@ -40,6 +40,7 @@
 #include "pt_pseudohuber.h"
 #include "pt_pseudohuber2.h"
 #include "pt_skewnormal2.h"
+#include "pt_pig.h"
 
 // The scalar C entry points of the fast route piano_parallel.txt section 2a
 // describes: the score and the second derivative of the log-density in ONE
@@ -104,7 +105,9 @@ const char* const d7_scalar_classes[] = {
     "SkewTDistrib",         // 35
     "PseudoHuberDistrib",   // 36
     "PseudoHuber2Distrib",  // 37
-    "SkewNormal2Distrib"    // 38
+    "SkewNormal2Distrib",   // 38
+    "Pig1Distrib",          // 39
+    "Pig2Distrib"           // 40
 };
 
 const int d7_n_scalar_classes =
@@ -175,6 +178,8 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
     case 36: d7::pseudohuber_score_curv(k, y, th, out); break;
     case 37: d7::pseudohuber2_score_curv(k, y, th, out); break;
     case 38: d7::skewnormal2_score_curv(k, y, th, out); break;
+    case 39: d7::pig1_score_curv(k, y, th, out); break;
+    case 40: d7::pig2_score_curv(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }
@@ -241,6 +246,8 @@ void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
     case 36: d7::pseudohuber_info_dinfo(k, y, th, out); break;
     case 37: d7::pseudohuber2_info_dinfo(k, y, th, out); break;
     case 38: d7::skewnormal2_info_dinfo(k, y, th, out); break;
+    case 39: d7::pig1_info_dinfo(k, y, th, out); break;
+    case 40: d7::pig2_info_dinfo(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }
