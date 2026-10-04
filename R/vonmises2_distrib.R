@@ -150,8 +150,9 @@ S7::method(distrib_pdf, VonMises2Distrib) <- function(distrib, y, theta,
 #' @param distrib A `VonMises2Distrib` object, from [vonmises2_distrib()].
 #' @param n A single positive integer, the number of draws.
 #' @param theta A named list with components `mu` and `rho`, each a numeric
-#'   vector of length 1. `mu` must lie in \eqn{(-\pi, \pi)} and `rho` in
-#'   \eqn{(0, 1)}.
+#'   vector of length 1 or `n`, recycled to `n` otherwise as by the generic.
+#'   `mu` must lie in \eqn{(-\pi, \pi)} and `rho` in \eqn{(0, 1)}. Draw `i` is
+#'   generated at `mu[i]` and `rho[i]`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` angles in \eqn{[-\pi, \pi)}.

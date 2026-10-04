@@ -1,3 +1,11 @@
+# distributions7 0.69.1
+
+* `distrib_rng()` for the two von Mises families draws each angle at its own
+  parameters when `kappa` (or `rho`) varies by observation. The envelope's
+  constants were recycled against the proposals, with a warning, and the
+  accepted draws were not matched to their observations. A scalar
+  concentration takes the previous path and gives the same draws.
+
 # distributions7 0.69.0
 
 * Every derivative surface forms only the orders it reads.

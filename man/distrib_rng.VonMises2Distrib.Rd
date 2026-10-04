@@ -9,8 +9,9 @@
 \item{n}{A single positive integer, the number of draws.}
 
 \item{theta}{A named list with components \code{mu} and \code{rho}, each a numeric
-vector of length 1. \code{mu} must lie in \eqn{(-\pi, \pi)} and \code{rho} in
-\eqn{(0, 1)}.}
+vector of length 1 or \code{n}, recycled to \code{n} otherwise as by the generic.
+\code{mu} must lie in \eqn{(-\pi, \pi)} and \code{rho} in \eqn{(0, 1)}. Draw \code{i} is
+generated at \code{mu[i]} and \code{rho[i]}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

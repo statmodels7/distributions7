@@ -89,6 +89,39 @@ test_that("the generator reproduces the direction and the resultant length", {
 })
 
 
+test_that("per-observation parameters give each draw its own mu and kappa", {
+  # two groups interleaved, so a draw matched to the wrong observation's
+  # parameters would mix the groups' directions and resultant lengths
+  n <- 4e4
+  g <- rep_len(1:2, n)
+  mu <- c(-1, 1.5)[g]
+  kappa <- c(0.5, 8)[g]
+  direction <- function(y) atan2(mean(sin(y)), mean(cos(y)))
+
+  set.seed(6)
+  y1 <- expect_no_warning(
+    distrib_rng(vonmises1_distrib(), n, list(mu = mu, kappa = kappa)))
+  set.seed(7)
+  y2 <- expect_no_warning(
+    distrib_rng(vonmises2_distrib(), n,
+                list(mu = mu, rho = numericals7::bessel_i_ratio(kappa))))
+
+  for (y in list(y1, y2)) {
+    expect_length(y, n)
+    expect_true(all(y >= -pi & y < pi))
+    for (j in 1:2) {
+      expect_equal(direction(y[g == j]), c(-1, 1.5)[j], tolerance = 0.05)
+      # mean of cos(y - mu) is unbiased for A(kappa); compared within four
+      # standard errors, since at kappa = 0.5 a relative tolerance on a
+      # resultant near 0.24 is about one standard error
+      cy <- cos(y[g == j] - c(-1, 1.5)[j])
+      expect_lt(abs(mean(cy) - numericals7::bessel_i_ratio(c(0.5, 8)[j])),
+                4 * stats::sd(cy) / sqrt(length(cy)))
+    }
+  }
+})
+
+
 test_that("the validator passes and a fit recovers the parameters", {
   d <- vonmises1_distrib()
   set.seed(3)

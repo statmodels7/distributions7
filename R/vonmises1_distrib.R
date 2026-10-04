@@ -162,15 +162,18 @@ S7::method(distrib_pdf, VonMises1Distrib) <- function(distrib, y, theta,
 #'
 #' The accepted angles are drawn about zero and then shifted by \eqn{\mu} and
 #' wrapped back into \eqn{[-\pi, \pi)}, so every draw lies in the declared
-#' support. The loop over-proposes and repeats until `n` draws have been
-#' accepted, so it consumes an unpredictable number of R's uniform streams.
+#' support. With a scalar `kappa` the envelope's constants are built once and
+#' the loop over-proposes and repeats until `n` draws have been accepted. With
+#' a `kappa` that varies by observation each draw has its own envelope, and the
+#' loop proposes once for every draw not yet accepted, so that draw `i` is
+#' generated at `kappa[i]` and shifted by `mu[i]`. Either way the loop consumes
+#' an unpredictable number of R's uniform streams.
 #'
 #' @param distrib A `VonMises1Distrib` object, from [vonmises1_distrib()].
 #' @param n A single positive integer, the number of draws.
 #' @param theta A named list with components `mu` and `kappa`, each a numeric
-#'   vector of length 1. `mu` must lie in \eqn{(-\pi, \pi)} and `kappa` be
-#'   strictly positive. The envelope's constants are built once per call, so a
-#'   parameter varying by observation is not supported here.
+#'   vector of length 1 or `n`, recycled to `n` otherwise as by the generic.
+#'   `mu` must lie in \eqn{(-\pi, \pi)} and `kappa` be strictly positive.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` angles in \eqn{[-\pi, \pi)}.
@@ -205,19 +208,39 @@ S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta, ...) {
   b <- (a - sqrt(2 * a)) / (2 * k)
   r <- (1 + b * b) / (2 * b)
 
-  out <- numeric(0)
-  while (length(out) < n) {
-    m <- 2 * (n - length(out)) + 16
-    u1 <- stats::runif(m); u2 <- stats::runif(m); u3 <- stats::runif(m)
-    z <- cos(pi * u1)
-    f <- (1 + r * z) / (r + z)
-    c0 <- k * (r - f)
-    ok <- (c0 * (2 - c0) - u2 > 0) | (log(c0 / u2) + 1 - c0 >= 0)
-    ang <- sign(u3 - 0.5) * acos(pmin(pmax(f, -1), 1))
-    out <- c(out, ang[ok])
+  if (length(k) == 1L) {
+    # one envelope for every draw: over-propose and keep the accepted ones
+    out <- numeric(0)
+    while (length(out) < n) {
+      m <- 2 * (n - length(out)) + 16
+      u1 <- stats::runif(m); u2 <- stats::runif(m); u3 <- stats::runif(m)
+      z <- cos(pi * u1)
+      f <- (1 + r * z) / (r + z)
+      c0 <- k * (r - f)
+      ok <- (c0 * (2 - c0) - u2 > 0) | (log(c0 / u2) + 1 - c0 >= 0)
+      ang <- sign(u3 - 0.5) * acos(pmin(pmax(f, -1), 1))
+      out <- c(out, ang[ok])
+    }
+    out <- out[seq_len(n)]
+  } else {
+    # one envelope per draw: propose once for each pending index and keep
+    # the indices whose proposal was rejected for the next round
+    out <- numeric(n)
+    todo <- seq_len(n)
+    while (length(todo)) {
+      m <- length(todo)
+      u1 <- stats::runif(m); u2 <- stats::runif(m); u3 <- stats::runif(m)
+      rr <- r[todo]
+      z <- cos(pi * u1)
+      f <- (1 + rr * z) / (rr + z)
+      c0 <- k[todo] * (rr - f)
+      ok <- (c0 * (2 - c0) - u2 > 0) | (log(c0 / u2) + 1 - c0 >= 0)
+      out[todo[ok]] <- sign(u3[ok] - 0.5) * acos(pmin(pmax(f[ok], -1), 1))
+      todo <- todo[!ok]
+    }
   }
   # wrapped back into the declared support
-  ((out[seq_len(n)] + mu + pi) %% (2 * pi)) - pi
+  ((out + mu + pi) %% (2 * pi)) - pi
 }
 
 #' @title von Mises Score

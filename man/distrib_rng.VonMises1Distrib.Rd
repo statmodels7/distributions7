@@ -9,9 +9,8 @@
 \item{n}{A single positive integer, the number of draws.}
 
 \item{theta}{A named list with components \code{mu} and \code{kappa}, each a numeric
-vector of length 1. \code{mu} must lie in \eqn{(-\pi, \pi)} and \code{kappa} be
-strictly positive. The envelope's constants are built once per call, so a
-parameter varying by observation is not supported here.}
+vector of length 1 or \code{n}, recycled to \code{n} otherwise as by the generic.
+\code{mu} must lie in \eqn{(-\pi, \pi)} and \code{kappa} be strictly positive.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -27,8 +26,12 @@ the density, never enters.
 
 The accepted angles are drawn about zero and then shifted by \eqn{\mu} and
 wrapped back into \eqn{[-\pi, \pi)}, so every draw lies in the declared
-support. The loop over-proposes and repeats until \code{n} draws have been
-accepted, so it consumes an unpredictable number of R's uniform streams.
+support. With a scalar \code{kappa} the envelope's constants are built once and
+the loop over-proposes and repeats until \code{n} draws have been accepted. With
+a \code{kappa} that varies by observation each draw has its own envelope, and the
+loop proposes once for every draw not yet accepted, so that draw \code{i} is
+generated at \code{kappa[i]} and shifted by \code{mu[i]}. Either way the loop consumes
+an unpredictable number of R's uniform streams.
 }
 \examples{
 d <- vonmises1_distrib()
