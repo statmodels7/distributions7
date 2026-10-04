@@ -197,7 +197,7 @@ S7::method(distrib_grad_y_hess, ReparamContinuousDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
     parent <- distrib@parent_distrib
     th <- reparam_theta(distrib, theta)
-    maps <- reparam_tables(distrib, theta)
+    maps <- reparam_tables(distrib, theta, 2L)
     mapped_theta2(distrib, parent, th, maps, y,
                   distrib_cross_y(parent, y, th),
                   distrib_grad_y_hess(parent, y, th))
@@ -210,7 +210,7 @@ S7::method(distrib_hess_y_hess, ReparamContinuousDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
     parent <- distrib@parent_distrib
     th <- reparam_theta(distrib, theta)
-    maps <- reparam_tables(distrib, theta)
+    maps <- reparam_tables(distrib, theta, 2L)
     mapped_theta2(distrib, parent, th, maps, y,
                   distrib_cross2_y(parent, y, th),
                   distrib_hess_y_hess(parent, y, th))
@@ -271,7 +271,7 @@ S7::method(distrib_cross2_y, ReparamContinuousDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
     parent <- distrib@parent_distrib
     th <- reparam_theta(distrib, theta)
-    mapped_cross2_y(distrib, parent, th, reparam_tables(distrib, theta), y)
+    mapped_cross2_y(distrib, parent, th, reparam_tables(distrib, theta, 1L), y)
   }
 
 

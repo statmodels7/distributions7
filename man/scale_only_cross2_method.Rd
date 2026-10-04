@@ -4,7 +4,6 @@
 \alias{scale_only_cross2_method}
 \alias{distrib_cross2_y.ExponentialDistrib}
 \alias{distrib_cross2_y.Weibull1Distrib}
-\alias{distrib_cross2_y.GPDDistrib}
 \title{The Scale Component of the Response Curvature's Derivative}
 \usage{
 scale_only_cross2_method(at = 1L)
@@ -39,14 +38,14 @@ where there is no location and \eqn{(y-\mu)/\sigma} where there is.
 \examples{
 y <- c(0.4, 1.1, 2.3)
 
-# The generalized Pareto: a scale and a shape.
-d <- gpd_distrib()
-theta <- list(sigma = 1.5, xi = 0.3)
+# The Weibull: a scale and a shape.
+d <- weibull1_distrib()
+theta <- list(mu = 1.5, sigma = 1.3)
 vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 
 # Against a numerical derivative of the response Hessian.
-f <- function(v) distrib_hess_y(d, y[1], list(sigma = v[1], xi = v[2]))
-numDeriv::grad(f, c(1.5, 0.3))
+f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
+numDeriv::grad(f, c(1.5, 1.3))
 
 # The exponential has one parameter, so nothing is differenced.
 distrib_cross2_y(exponential_distrib(), y, list(mu = 1.5))

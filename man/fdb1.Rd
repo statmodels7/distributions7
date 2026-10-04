@@ -2,27 +2,29 @@
 % Please edit documentation in R/reparam_maps.R
 \name{fdb1}
 \alias{fdb1}
-\title{Univariate Composition to Fourth Order}
+\title{Univariate Composition, One Order}
 \usage{
-fdb1(h, u)
+fdb1(h, u, order)
 }
 \arguments{
-\item{h}{A list of the outer derivatives \code{h1} to \code{h4} at the
+\item{h}{A list of the outer derivatives \code{h1} to at least \code{h_order} at the
 inner value.}
 
-\item{u}{A list of the inner derivatives \code{u1} to \code{u4}.}
+\item{u}{A list of the inner derivatives \code{u1} to at least \code{u_order}.}
+
+\item{order}{An integer from 1 to 4.}
 }
 \value{
-A named list with components \code{h1} to \code{h4}, the four derivatives
-of the composition, each the length of the vectors passed in.
+A numeric vector, the derivative of order \code{order} of the
+composition.
 }
 \description{
-The derivatives of \eqn{h(u(x))} for scalar chains, Faa di Bruno written
-out: \eqn{(h \circ u)'' = h''u_1^2 + h'u_2} and so on to order four.
+The derivative of order \code{order} of \eqn{h(u(x))} for scalar chains, Faa di
+Bruno written out: \eqn{(h \circ u)'' = h''u_1^2 + h'u_2} and so on to
+order four. Each order is its own formula and forms nothing above it.
 }
 \seealso{
 \code{\link[=fdb2]{fdb2()}} for a bivariate inner function;
-\code{\link[=reparametrize]{reparametrize()}}, which consumes these through \code{map_derivs};
-\code{\link[=chain_assemble]{chain_assemble()}} for the general partition sum this writes out.
+\code{\link[=reparam_map_derivs]{reparam_map_derivs()}}, which consumes it.
 }
 \keyword{internal}

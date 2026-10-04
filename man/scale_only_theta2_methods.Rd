@@ -6,8 +6,6 @@
 \alias{distrib_hess_y_hess.ExponentialDistrib}
 \alias{distrib_grad_y_hess.Weibull1Distrib}
 \alias{distrib_hess_y_hess.Weibull1Distrib}
-\alias{distrib_grad_y_hess.GPDDistrib}
-\alias{distrib_hess_y_hess.GPDDistrib}
 \title{The Mixed Grid of a Family With No Location}
 \usage{
 scale_only_theta2_methods(at = 1L)

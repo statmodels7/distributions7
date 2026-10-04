@@ -29,6 +29,10 @@ or \code{"opg"}. Read only when \code{expected = TRUE}.}
 \code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_kappa},
@@ -45,8 +49,8 @@ cycles: the pure-\eqn{\mu} components run through
 \eqn{\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)} with the order, the
 \eqn{\mu\mu\kappa} component is \eqn{-\cos(y-\mu)}, and the
 pure-\eqn{\kappa} one is \eqn{-A''(\kappa)}, which
-\code{\link[numericals7:bessel_i_ratio_derivs]{numericals7::bessel_i_ratio_derivs()}} supplies from the Riccati recursion
-\eqn{A' = 1 - A/\kappa - A^2} differentiated.
+\code{\link[numericals7:bessel_i_ratio_d1]{numericals7::bessel_i_ratio_d2()}} supplies. The components are computed
+by a compiled kernel.
 
 With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which is
 the one place on this page where \code{approx} and \code{nsim} are read.
@@ -79,6 +83,6 @@ all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 \seealso{
 \code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian.VonMises1Distrib()}} for the order below,
 \code{\link[=distrib_deriv4.VonMises1Distrib]{distrib_deriv4.VonMises1Distrib()}} for the order above,
-\code{\link[numericals7:bessel_i_ratio_derivs]{numericals7::bessel_i_ratio_derivs()}} for the derivatives of \eqn{A}, and
+\code{\link[numericals7:bessel_i_ratio_d1]{numericals7::bessel_i_ratio_d1()}} for the derivatives of \eqn{A}, and
 \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

@@ -277,8 +277,8 @@ S7::method(distrib_cdf, PseudoHuberDistrib) <- function(distrib, q, theta, lower
 #'   `max(length(p), length(mu), length(sigma), length(nu))`.
 #'
 #' @seealso [distrib_cdf.PseudoHuberDistrib()] for the function inverted here,
-#'   [distrib_rng.PseudoHuberDistrib()], which draws by inverting it at uniform
-#'   variates, and [distrib_quantile()] for the generic.
+#'   [distrib_rng.PseudoHuberDistrib()] for the generator, and
+#'   [distrib_quantile()] for the generic.
 #'
 #' @examples
 #' d <- pseudohuber_distrib()
@@ -338,12 +338,19 @@ S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, 
 #' @title Pseudo-Huber Random Number Generator
 #' @name distrib_rng.PseudoHuberDistrib
 #' @description
-#' Draws `n` independent variates by inverse transform: uniform variates from
-#' [stats::runif()] passed through
-#' [distrib_quantile.PseudoHuberDistrib()]. Each draw therefore costs a
-#' root-find over a quadrature, which makes this the slowest generator in the
-#' package; a sample of a few thousand is comfortable, a sample of a million is
-#' not. The draws depend on `.Random.seed` in the usual way.
+#' Draws `n` independent variates as a normal variance mixture,
+#' \eqn{Y = \mu + \sqrt{W} Z} with \eqn{Z} standard normal and
+#' \eqn{W = \sigma^2 \sqrt{\nu}\, X}, where \eqn{X} follows the generalized
+#' inverse Gaussian law with density proportional to
+#' \eqn{\exp\{-\sqrt{\nu}\,(x + 1/x)/2\}}. \eqn{X} is drawn by the
+#' ratio-of-uniforms method with the mode shifted to the origin (Hormann and
+#' Leydold, 2014), whose bounding box is set once per distinct \eqn{\nu};
+#' below \eqn{\nu = 10^{-16}} the mixing law is its exponential limit. The
+#' draws depend on `.Random.seed` in the usual way.
+#'
+#' @references
+#' Hormann, W. and Leydold, J. (2014). Generating generalized inverse Gaussian
+#' random variates. *Statistics and Computing*, **24**(4), 547-557.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -356,7 +363,7 @@ S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, 
 #'
 #' @return A numeric vector of `n` draws.
 #'
-#' @seealso [distrib_quantile.PseudoHuberDistrib()] for the inversion,
+#' @seealso [distrib_quantile.PseudoHuberDistrib()] for the quantile function,
 #'   [fit_distrib()] to estimate the parameters back from a sample, and
 #'   [distrib_rng()] for the generic.
 #'
@@ -364,21 +371,14 @@ S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, 
 #' d <- pseudohuber_distrib()
 #' th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 #'
-#' # The draws are the quantile function at uniform variates, which is the
-#' # whole mechanism and the whole cost.
+#' # The moments of a sample sit where the sampling error puts them.
 #' set.seed(6)
-#' a <- distrib_rng(d, 5, th)
-#' set.seed(6)
-#' identical(a, distrib_quantile(d, runif(5), th))
-#'
-#' # A sample of a few hundred is comfortable, and its moments sit where the
-#' # sampling error of that size puts them.
-#' set.seed(6)
-#' z <- distrib_rng(d, 300, th)
+#' z <- distrib_rng(d, 1e5, th)
 #' rbind(sample = c(mean(z), var(z)),
 #'       theoretical = c(mean(d, th), variance(d, th)))
 S7::method(distrib_rng, PseudoHuberDistrib) <- function(distrib, n, theta, ...) {
-  distrib_quantile(distrib, stats::runif(n), theta)
+  pseudohuber_rng_cpp(as.integer(n), as.numeric(theta[[1]]),
+                      as.numeric(theta[[2]]), as.numeric(theta[[3]]))
 }
 
 #' @title Pseudo-Huber Score
@@ -939,9 +939,9 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #'
 #' The distribution function has no elementary form and is a quadrature,
 #' batched over the quantiles and reflected about \eqn{\mu} so that only the
-#' lower tail is integrated. The quantile inverts it by root-finding, and the
-#' generator inverts it at uniform variates, so a sample costs one root-find
-#' per draw.
+#' lower tail is integrated. The quantile inverts it by root-finding. The
+#' generator does not use either: it draws the family as a normal variance
+#' mixture with a generalized inverse Gaussian mixing variable.
 #'
 #' The **expected information has no elementary form either**, but it depends
 #' on \eqn{\nu} alone once the location and the scale are factored out, so it
@@ -1012,9 +1012,7 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' # factored out, so it is computed once per distinct nu.
 #' distributions7:::expected_hessian_exact(d)
 #'
-#' # The quantile inverts the distribution function, and the generator
-#' # inverts it at uniform variates, so a draw costs a root-find over a
-#' # quadrature. That is what makes fitting this family dear.
+#' # The quantile inverts the distribution function by root-finding.
 #' q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 #' rbind(quantile = q, back = distrib_cdf(d, q, th))
 #'

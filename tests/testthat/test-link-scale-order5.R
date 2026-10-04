@@ -44,7 +44,21 @@ ls5_cases <- function() {
     student_t1 = list(d = student_t1_distrib(), th = list(mu = 0.2, sigma = 1.1, nu = 6),
                       y = c(-1.3, -0.2, 0.4, 1.1)),
     beta1      = list(d = beta1_distrib(),      th = list(mu = 0.4, phi = 6),
-                      y = c(0.15, 0.31, 0.5, 0.68))
+                      y = c(0.15, 0.31, 0.5, 0.68)),
+    # families whose fifth order is analytic: the method returns the
+    # parameter scale and deriv5_scale() carries it to the link
+    student_t2 = list(d = student_t2_distrib(), th = list(mu = 0.2, sigma = 1.1, nu = 6),
+                      y = c(-1.3, -0.2, 0.4, 1.1)),
+    weibull3   = list(d = weibull3_distrib(),   th = list(mean = 1.5, sigma = 2.0),
+                      y = c(0.4, 0.9, 1.6, 2.7)),
+    lognormal2 = list(d = lognormal2_distrib(), th = list(mean = 1.5, var = 0.8),
+                      y = c(0.4, 0.9, 1.6, 2.7)),
+    gengamma2  = list(d = gengamma2_distrib(),  th = list(mean = 1.5, d = 2, p = 1.5),
+                      y = c(0.4, 0.9, 1.6, 2.7)),
+    pseudohuber2 = list(d = pseudohuber2_distrib(), th = list(mu = 0.2, sigma = 1.1, nu = 2),
+                        y = c(-1.3, -0.2, 0.4, 1.1)),
+    skewnormal2 = list(d = skewnormal2_distrib(), th = list(mu = 0.2, sigma = 1.1, gamma1 = 0.4),
+                       y = c(-1.3, -0.2, 0.4, 1.1))
   )
 }
 

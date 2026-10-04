@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R multivariate.R mvgaussian_distrib.R mvstudent_t_distrib.R pig1_distrib.R pig2_distrib.R zero_inflated.R zero_adjusted.R
+#' @include distrib.R generics.R multivariate.R mvgaussian_distrib.R mvstudent_t_distrib.R pig1_distrib.R pig2_distrib.R zero_inflated.R zero_adjusted.R pseudohuber2_distrib.R
 NULL
 
 #' @title A Starting Value Drawn From the Data
@@ -196,6 +196,105 @@ S7::method(distrib_intercept_start, ZeroInflatedDistrib) <- function(distrib, y,
   p0 <- min(max(mean(y == 0), 1 / (2 * n)), 1 - 1 / (2 * n))
   stats::setNames(list(p0), distrib@params[distrib@n_params])
 }
+
+#' @title The Direct Skew Normal Starts at Its Moment Estimate
+#' @name distrib_intercept_start.SkewNormal1Distrib
+#'
+#' @description
+#' Returns the moment estimate of \eqn{(\mu, \sigma, \alpha)}, with the sample
+#' skewness held at 0.9, when the absolute sample skewness is at least 0.9,
+#' and an empty list otherwise.
+#'
+#' @details
+#' The skewness of the skew normal is bounded by
+#' \eqn{\gamma_{\max} \approx 0.9953}. When the sample skewness of the
+#' response is beyond that bound, the intercept-only maximum likelihood fit
+#' has \eqn{\alpha \to \infty} and \eqn{\mu} at the smallest observation, which
+#' is the half-normal limit. In the direct parametrization the curvature in
+#' \eqn{\mu} there grows as \eqn{\alpha^2}, so a regression started from that
+#' point takes steps of order \eqn{1/\alpha^2} and does not reach its maximum.
+#' The moment estimate with the skewness held at 0.9 gives \eqn{\alpha = 6.3}
+#' and the matching location and scale. Measured on `MASS::Cars93`, price on
+#' horse power (marginal skewness 1.48): the intercept-only start was at
+#' \eqn{\alpha = 1.4 \times 10^6} and the REML criterion was unavailable at
+#' the starting point, and from the moment estimate the fit converged to the
+#' marginal log-likelihood of [skewnormal2_distrib()] on the same model.
+#'
+#' @param distrib A `SkewNormal1Distrib` object, from [skewnormal1_distrib()].
+#' @param y The response, a numeric vector.
+#' @param ... Unused.
+#'
+#' @return A named list with `mu`, `sigma` and `alpha`, or an empty list.
+#'
+#' @seealso [distrib_intercept_start()] for the generic,
+#'   [skewnormal1_distrib()].
+#' @keywords internal
+S7::method(distrib_intercept_start, SkewNormal1Distrib) <- function(distrib, y, ...) {
+  y <- as.numeric(y)
+  y <- y[is.finite(y)]
+  if (length(y) < 3L) return(list())
+  z <- (y - mean(y)) / stats::sd(y)
+  skew <- mean(z^3)
+  if (!is.finite(skew) || abs(skew) < 0.9) return(list())
+  st <- moment_estimates(distrib, y)
+  if (is.null(st)) list() else st
+}
+
+#' @title The Pseudo-Huber Starts at a Finite Shape Below Gaussian Kurtosis
+#' @name distrib_intercept_start.PseudoHuberDistrib
+#'
+#' @description
+#' Returns \eqn{\mu = \bar y}, \eqn{\nu = 10} and the \eqn{\sigma} that gives
+#' the sample variance at that \eqn{\nu}, when the sample excess kurtosis is
+#' below 0.05, and an empty list otherwise.
+#'
+#' @details
+#' The excess kurtosis of the pseudo-Huber family lies in \eqn{(0, 3)}, and it
+#' tends to zero in the gaussian limit \eqn{\nu \to \infty}, where the variance
+#' \eqn{\sigma^2 \sqrt{\nu} K_2(\sqrt{\nu}) / K_1(\sqrt{\nu})} stays finite only
+#' if \eqn{\sigma \to 0}. When the sample excess kurtosis of the response is
+#' zero or negative, the intercept-only maximum likelihood fit reaches that
+#' limit, and a regression started there stays on the ridge
+#' \eqn{\sigma \propto \nu^{-1/4}}. Measured on ten simulated regressions with
+#' a strong covariate: the intercept-only fit ended at \eqn{\log\nu} between 27
+#' and 40 in the six samples with a non-positive excess kurtosis and at most
+#' 6.0 in the others, and the regression started there stopped 7.3 to 15.8
+#' log-likelihood units below its maximum in four of the six. From
+#' \eqn{\nu = 1}, 3 or 10 every one of the ten reached its maximum.
+#' \eqn{\nu = 10} gives an excess kurtosis of 0.85.
+#'
+#' The same method is registered on [pseudohuber2_distrib()], where the
+#' returned `sigma` is the sample standard deviation.
+#'
+#' @aliases distrib_intercept_start.PseudoHuber2Distrib
+#' @param distrib A `PseudoHuberDistrib` object, from [pseudohuber_distrib()],
+#'   or a `PseudoHuber2Distrib` object, from [pseudohuber2_distrib()].
+#' @param y The response, a numeric vector.
+#' @param ... Unused.
+#'
+#' @return A named list with `mu`, `sigma` and `nu`, or an empty list.
+#'
+#' @seealso [distrib_intercept_start()] for the generic,
+#'   [pseudohuber_distrib()].
+#' @keywords internal
+S7::method(distrib_intercept_start, PseudoHuberDistrib) <- function(distrib, y, ...) {
+  y <- as.numeric(y)
+  y <- y[is.finite(y)]
+  if (length(y) < 4L) return(list())
+  s <- stats::sd(y)
+  if (!is.finite(s) || s <= 0) return(list())
+  z <- (y - mean(y)) / s
+  kurt <- mean(z^4) - 3
+  if (!is.finite(kurt) || kurt >= 0.05) return(list())
+  nu0 <- 10
+  v1 <- variance(distrib, theta = list(mu = 0, sigma = 1, nu = nu0))
+  list(mu = mean(y), sigma = s / sqrt(v1), nu = nu0)
+}
+
+# the standard-deviation parametrization reaches the same gaussian limit at a
+# fixed sigma, and takes the same start; there sigma / sqrt(v1) is s itself
+S7::method(distrib_intercept_start, PseudoHuber2Distrib) <-
+  S7::method(distrib_intercept_start, PseudoHuberDistrib)
 
 
 #' @title Starting Values for the Zero Wrappers, Read Off the Data
@@ -574,7 +673,7 @@ S7::method(distrib_start, Pig2Distrib) <- function(distrib, y, n_start = 5L, ...
 #' univariate family in the package uses.
 #'
 #' The data-based value comes from [moment_estimates()] where the family has an
-#' entry there, which 37 of the 42 univariate families do. The other five fall
+#' entry there, which 38 of the 43 univariate families do. The other five fall
 #' back to reading `params_interpretation`: a parameter meaning a location is
 #' started at the sample median, one meaning a spread at the sample standard
 #' deviation or its square, one meaning degrees of freedom at what the sample
@@ -716,7 +815,7 @@ S7::method(distrib_start, discrete_distrib) <- start_from_moments
 #' @description
 #' Returns the parameters a family's own first two moments imply for a sample,
 #' in closed form where the inversion has one, and `NULL` where this family has
-#' no entry. **37 of the 42 univariate families have one.**
+#' no entry. **38 of the 43 univariate families have one.**
 #'
 #' A starting value should be an estimate. For most families the moment
 #' estimate is one line: the sample mean and variance are set equal to the
@@ -834,6 +933,23 @@ moment_estimates <- function(distrib, y) {
     weibull3 = list(mean = m, sigma = max((s / m)^(-1.086), 1e-2)),
     # The centred parametrization IS the first three moments.
     skewnormal2 = list(mu = m, sigma = s, gamma1 = skew),
+    # the standard-deviation pseudo-Huber: sigma is s, and nu inverts the
+    # family's excess kurtosis 3 K3 K1 / K2^2 - 3, which falls from 3 to 0;
+    # the sample value is held in [0.85, 2.9], nu = 10 to about 0.01
+    pseudohuber2 = {
+      kt <- min(max(kurt, 0.85), 2.9)
+      kf <- function(lv) {
+        t <- exp(lv / 2)
+        k1 <- besselK(t, 1, expon.scaled = TRUE)
+        k2 <- besselK(t, 2, expon.scaled = TRUE)
+        k3 <- besselK(t, 3, expon.scaled = TRUE)
+        3 * k3 * k1 / k2^2 - 3 - kt
+      }
+      lv <- tryCatch(stats::uniroot(kf, c(log(1e-3), log(100)),
+                                    tol = 1e-8)$root,
+                     error = function(e) log(3))
+      list(mu = m, sigma = s, nu = exp(lv))
+    },
     # and the direct one carries them across the map of reparam_maps.R:
     # with r the real cube root of 2 gamma1/(4 - pi) and b^2 = 2/pi,
     # xi = m - s r, omega = s sqrt(1 + r^2), alpha = r/sqrt(b^2 + (b^2-1) r^2)

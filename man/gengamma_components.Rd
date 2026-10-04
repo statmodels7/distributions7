@@ -48,8 +48,8 @@ hand-written form rest on the orders that can.
 }
 
 \seealso{
-\code{\link[=distrib_deriv3.GenGamma1Distrib]{distrib_deriv3.GenGamma1Distrib()}} and
-\code{\link[=distrib_deriv4.GenGamma1Distrib]{distrib_deriv4.GenGamma1Distrib()}}, which call this;
+\code{\link[=distrib_deriv3.GenGamma1Distrib]{distrib_deriv3.GenGamma1Distrib()}} for the compiled kernels
+this assembly is checked against;
 \code{\link[=fdb2]{fdb2()}} for the two-variable composition template; and
 \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} for the family.
 }

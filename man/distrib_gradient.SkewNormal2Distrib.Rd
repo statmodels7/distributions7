@@ -2,77 +2,69 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{distrib_gradient.SkewNormal2Distrib}
 \alias{distrib_gradient.SkewNormal2Distrib}
-\title{Skew Normal Score in the Centered Parametrization}
+\alias{distrib_hessian.SkewNormal2Distrib}
+\alias{distrib_deriv3.SkewNormal2Distrib}
+\alias{distrib_deriv4.SkewNormal2Distrib}
+\alias{distrib_deriv5.SkewNormal2Distrib}
+\title{Skew Normal Derivatives in the Centered Parametrization}
 \arguments{
-\item{distrib}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
+\item{distrib}{A \code{SkewNormal2Distrib} object.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}. The
-skewness must not be exactly zero; see the error below.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}.}
 
-\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
-transformation is applied in the generic's body, so this method always
-returns the parameter scale.}
+\item{scale}{\code{"parameter"} or \code{"link"}; the link scale is applied by the
+generic (by \code{\link[=deriv5_scale]{deriv5_scale()}} at the fifth order).}
 
-\item{...}{Unused, and accepted so that the signature matches the generic's.}
+\item{expected}{Logical; for orders three and four, whether the expected
+derivative is returned, by \code{\link[=expected_derivative]{expected_derivative()}}.}
+
+\item{approx, nsim}{Passed to \code{\link[=expected_derivative]{expected_derivative()}} when \code{expected} is
+\code{TRUE}.}
+
+\item{...}{Unused.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A named list of three numeric vectors, \code{mu}, \code{sigma} and \code{gamma1},
-each of the length of the recycled inputs.
+A named list with one numeric vector per component: 3, 6, 10, 15
+and 21 components at orders one to five.
 }
 \description{
-Computes the three first derivatives of the log-density in the centered
-parameters, by carrying \code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradient.SkewNormal1Distrib()}}'s through
-the Jacobian of \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}:
-\deqn{\dfrac{\partial \ell}{\partial \psi_j}
-      = \sum_{k} \dfrac{\partial \ell}{\partial \theta_k}
-                 \dfrac{\partial \theta_k}{\partial \psi_j},
-      \qquad \psi = (\mu, \sigma, \gamma_1),\;
-             \theta = (\xi, \omega, \alpha).}
-
-The component in \eqn{\gamma_1} stays of order one however small
-\eqn{\gamma_1} is, although the Jacobian itself grows without bound.
-Measured at \eqn{y = 0.5}, \eqn{\mu = 0}, \eqn{\sigma = 1}, the score reads
-\eqn{-0.2152, -0.2257, -0.2284, -0.2290} at
-\eqn{\gamma_1 = 10^{-2}, 10^{-4}, 10^{-6}, 10^{-8}} while
-\eqn{\partial\alpha/\partial\gamma_1} reads \eqn{5.1, 258} at the first two.
-The divergent parts cancel, and that cancellation is the reason the
-parametrization exists.
+Return the derivatives of the log-density in \eqn{(\mu, \sigma, \gamma_1)}
+of orders one to five, each from its own compiled kernel.
 }
-\section{Errors}{
+\details{
+With \eqn{w = (y - \mu)/\sigma}, \eqn{c = (4 - \pi)/2} and
+\eqn{r = \mathrm{sign}(\gamma_1)(|\gamma_1|/c)^{1/3}}, the log-density is
+\deqn{\ell = -\log\sigma - \tfrac12\log(1 + r^2) - \tfrac12 z^2 + \log\Phi(x),
+  \quad z = \frac{w + r}{\sqrt{1 + r^2}}, \quad
+  x = \frac{r\,z}{\sqrt{b^2 - (1 - b^2) r^2}},}
+with \eqn{b = \sqrt{2/\pi}}, and a derivative in \eqn{\gamma_1} is
+\eqn{(3 c r^2)^{-1}\partial_r}. Every component is a combination of the
+derivatives of \eqn{F = \ell + \log\sigma} in \eqn{w} and \eqn{\gamma_1},
+derived offline. Their closed forms in \eqn{x}, \eqn{w}, \eqn{r} and
+\eqn{\phi(x)/\Phi(x)} cancel terms of order \eqn{r^{-2k}} as
+\eqn{\gamma_1 \to 0}, so where \eqn{|x| < 0.4} and \eqn{|r| < 0.4} the
+kernels take the derivatives in \eqn{\gamma_1} from the series
+\eqn{F = \sum_{n \ge 3} F_n(w) r^n}, whose coefficients are polynomials in
+\eqn{w} computed offline at 60 digits.
 
-Signals an error when any element of \code{gamma1} is exactly zero: the map runs
-through a cube root and is not differentiable there. The density is defined
-at that point, and \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} carries the same family with
-ordinary derivatives at symmetry.
+The series has no \eqn{r} and no \eqn{r^2} term, so the score is finite at
+\eqn{\gamma_1 = 0}; its \eqn{r^4} and \eqn{r^5} terms do not vanish, so the
+derivatives of order two or more in \eqn{\gamma_1} diverge there and the
+methods of order two and more signal an error at zero skewness.
 }
-
-\section{Notation}{
-
-\eqn{\ell} is the log-density of one observation, \eqn{\psi} the centered
-parameters and \eqn{\theta} the direct ones.
-}
-
 \examples{
 d <- skewnormal2_distrib()
-y <- c(-1, 0.3, 1.7)
-th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
-g <- distrib_gradient(d, y, th)
-
-# Against numerical differentiation of the log-density itself.
-f <- function(p) sum(distrib_pdf(d, y, as.list(setNames(p, names(th))),
-                                 log = TRUE))
-rbind(analytic = vapply(g, sum, 0),
-      numeric = numDeriv::grad(f, unlist(th)))
-
-# The score in the skewness stays bounded as the map's Jacobian diverges.
-vapply(10^-c(2, 4, 6, 8),
-       function(v) distrib_gradient(d, 0.5,
-                     list(mu = 0, sigma = 1, gamma1 = v))$gamma1, 0)
+th <- list(mu = 0.2, sigma = 1.3, gamma1 = 0.4)
+y <- c(-1.7, 0.3, 2.4)
+distrib_gradient(d, y, th)
+# the score is finite at zero skewness
+distrib_gradient(d, y, list(mu = 0.2, sigma = 1.3, gamma1 = 0))$gamma1
 }
 \seealso{
-\code{\link[=sn2_chain]{sn2_chain()}} for the partition sum this calls,
-\code{\link[=distrib_hessian.SkewNormal2Distrib]{distrib_hessian.SkewNormal2Distrib()}} for the next order, and
-\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
+\code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian.SkewNormal2Distrib()}}.
 }

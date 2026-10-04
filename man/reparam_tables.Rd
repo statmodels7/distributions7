@@ -4,17 +4,22 @@
 \alias{reparam_tables}
 \title{The Map Derivatives as Keyed Tables}
 \usage{
-reparam_tables(distrib, theta)
+reparam_tables(distrib, theta, order)
 }
 \arguments{
 \item{distrib}{A reparametrized distribution.}
 
 \item{theta}{A named list of the new parameters, already aligned by
 \code{\link[=reparam_theta]{reparam_theta()}}'s caller. Only the first \code{n_params} components are read.}
+
+\item{order}{The highest order of partial the caller reads, an integer from
+1 to 4: one for a gradient, a distribution function's gradient or a mixed
+response derivative, two for a Hessian or an expected information, and
+so on. No partial of higher order is formed.}
 }
 \value{
 A list over the parent's parameters, each element a keyed list of
-that component's partial derivatives.
+that component's partial derivatives up to order \code{order}.
 }
 \description{
 Returns, for every parent parameter, the partial derivatives of that

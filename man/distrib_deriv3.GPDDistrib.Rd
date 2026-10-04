@@ -2,81 +2,90 @@
 % Please edit documentation in R/gpd_higher.R
 \name{distrib_deriv3.GPDDistrib}
 \alias{distrib_deriv3.GPDDistrib}
-\title{Generalized Pareto Third-Order Derivatives}
+\alias{distrib_deriv4.GPDDistrib}
+\alias{distrib_deriv5.GPDDistrib}
+\title{Generalized Pareto Derivatives of Orders Three to Five}
 \arguments{
 \item{distrib}{A \code{GPDDistrib} object, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
-\item{y}{A numeric vector of observations on the support. With
-\code{expected = TRUE} only its length is read.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length is read.}
 
-\item{theta}{A named list with components \code{sigma} and \code{xi}, each a numeric
-vector of length 1 or of the length of \code{y}. \code{sigma} must be strictly
-positive; \code{xi} may be of either sign, including zero.}
+\item{theta}{A named list with components \code{sigma} (positive) and \code{xi} (any
+real value), each a numeric vector of length 1 or of the length of \code{y}.}
 
-\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
-model is returned in place of the value at the data, computed numerically.
-Defaults to \code{FALSE}.}
+\item{expected}{Logical of length 1; for orders three and four, whether the
+expectation under the model is returned. Defaults to \code{FALSE}.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\item{scale}{\code{"parameter"} or \code{"link"}; the link scale is applied by the
+generic for orders three and four and by \code{\link[=deriv5_scale]{deriv5_scale()}} for order five.}
 
-\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}. Read only when \code{expected = TRUE}.}
+\item{approx, nsim}{Accepted for the generic's signature; the expectations
+are closed forms.}
 
-\item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+\item{...}{Unused.}
 
-\item{...}{Unused, and accepted so that the signature matches the generic's.}
-
-\item{threads}{A single positive integer, how many threads the polynomial
-kernel of the series branch may use. Defaults to \code{1L}.}
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}. The result does not depend on the count.}
 }
 \value{
-A named list of four numeric vectors, \code{sigma_sigma_sigma},
-\code{sigma_sigma_xi}, \code{sigma_xi_xi} and \code{xi_xi_xi}, each of length
-\code{max(length(y), lengths(theta))}.
+A named list with one numeric vector per component, keyed as
+\code{\link[=deriv_names]{deriv_names()}} keys them: 4, 5 and 6 components at orders three, four
+and five.
 }
 \description{
-Computes the four distinct third derivatives of the generalized Pareto
-log-density in \eqn{\sigma} and \eqn{\xi}, \strong{in closed form}, through
-\code{\link[=gpd_components]{gpd_components()}}. The log-density splits as
-\eqn{-\log\sigma - \log t - \log(t)/\xi} with \eqn{t = 1 + \xi y/\sigma}, and
-the last piece is taken from its own series wherever the Leibniz form's
-terms of size \eqn{\xi^{-(b+1)}} cancel against each other.
-
-With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}} instead: the
-expected third derivatives have no closed form. That is the one place on
-this page where \code{approx} and \code{nsim} are read.
+Return the third, fourth and fifth derivatives of the log-density in
+\eqn{(\sigma, \xi)}, and for orders three and four their expectations, each
+from its own compiled kernel.
 }
-\section{Notation}{
+\details{
+With \eqn{z = y/\sigma}, \eqn{t = 1 + \xi z} and \eqn{u = \xi z}, the
+log-density is \eqn{-\log\sigma - \log t - W} with
+\eqn{W = \log(t)/\xi = z\,\phi(u)} and \eqn{\phi(u) = \log(1+u)/u}. Every
+component is a closed form derived offline and written out, \eqn{\sigma^{-r}}
+times a form in \eqn{z}, \eqn{\xi} and \eqn{1/t} for \eqn{r} derivatives in
+\eqn{\sigma}. Since \eqn{\partial W/\partial z = 1/t}, only the pure
+\eqn{\xi} component contains \eqn{\phi}, through
+\eqn{\partial^j W/\partial\xi^j = z^{j+1}\phi^{(j)}(u)} with
+\deqn{\phi^{(j)}(u) = \frac{(-1)^j j!}{u^{j+1}} \sum_{i > j}
+  \frac{v^i}{i}, \qquad v = \frac{u}{1+u},}
+summed as a series in \eqn{v} for \eqn{|v| \le 3/4} and as \eqn{\log t}
+minus the first \eqn{j} terms elsewhere, so that no form divides by
+\eqn{\xi} and \eqn{\xi = 0} is an ordinary point. \eqn{t} is formed from
+the exact product \eqn{\xi y}, which keeps its relative accuracy near the
+upper end of the support when \eqn{\xi < 0}.
 
-\eqn{\ell} is the log-density of one observation, \eqn{\sigma > 0} the
-scale, \eqn{\xi} the shape, \eqn{z = y/\sigma} and \eqn{t = 1 + \xi z}.
+The expected derivatives follow from \eqn{V = (1 + \xi Y/\sigma)^{-1/\xi}},
+uniform on \eqn{(0, 1)}: each is a rational function of \eqn{\xi} over
+\eqn{\sigma^r}. They exist for \eqn{\xi > -1/3} at order three and
+\eqn{\xi > -1/4} at order four, and are \code{NA} below; \code{approx} and \code{nsim} are
+not read.
+
+Outside the support, \eqn{y < 0} or \eqn{1 + \xi y/\sigma \le 0}, every
+component is \code{NaN}.
 }
-
 \examples{
 d <- gpd_distrib()
-y <- c(0.5, 2, 8)
+y <- c(0.3, 1.5, 6)
 th <- list(sigma = 1.5, xi = 0.3)
 d3 <- distrib_deriv3(d, y, th)
 names(d3)
 
-# A central difference of the Hessian reproduces the pure-scale component.
+# A central difference of the Hessian reproduces the pure shape component.
 eps <- 1e-5
-up <- distrib_hessian(d, y, list(sigma = 1.5 + eps, xi = 0.3))$sigma_sigma
-dn <- distrib_hessian(d, y, list(sigma = 1.5 - eps, xi = 0.3))$sigma_sigma
-all.equal((up - dn) / (2 * eps), d3$sigma_sigma_sigma, tolerance = 1e-6)
+up <- distrib_hessian(d, y, list(sigma = 1.5, xi = 0.3 + eps))$xi_xi
+dn <- distrib_hessian(d, y, list(sigma = 1.5, xi = 0.3 - eps))$xi_xi
+all.equal((up - dn) / (2 * eps), d3$xi_xi_xi, tolerance = 1e-6)
 
-# At a shape near zero the family is the exponential, and the scale
-# components converge onto that family's at rate O(xi).
-de <- exponential_distrib()
-vapply(c(1e-6, 1e-9), function(x)
-  max(abs(distrib_deriv3(d, y, list(sigma = 1.5, xi = x))$sigma_sigma_sigma -
-          distrib_deriv3(de, y, list(mu = 1.5))$mu_mu_mu)), numeric(1))
+# The shape zero is an ordinary point.
+distrib_deriv4(d, y, list(sigma = 1.5, xi = 0))$xi_xi_xi_xi
+
+# The expected third derivatives, NA where they do not exist.
+distrib_deriv3(d, 1, list(sigma = 1.5, xi = c(0.2, -0.4)),
+               expected = TRUE)$xi_xi_xi
 }
 \seealso{
 \code{\link[=distrib_hessian.GPDDistrib]{distrib_hessian.GPDDistrib()}} for the order below,
-\code{\link[=distrib_deriv4.GPDDistrib]{distrib_deriv4.GPDDistrib()}} for the order above,
-\code{\link[=gpd_components]{gpd_components()}} for the two routes and the measured threshold, and
+\code{\link[=gpd_components]{gpd_components()}} for an independent assembly of orders one to four, and
 \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

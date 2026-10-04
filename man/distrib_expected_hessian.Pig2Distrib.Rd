@@ -61,6 +61,16 @@ For \code{\link[=pig1_distrib]{pig1_distrib()}} the recurrence runs in \eqn{w = 
 \eqn{\sigma \to 0}, where those in \eqn{\alpha} carry
 \eqn{\sigma^{-k}} and cancel.
 
+Near the Poisson limit even the forms in the score sum terms of size one to
+results of size \eqn{\sigma^2} or \eqn{\alpha^{-3}}. There, for
+\eqn{(1 + \mu)x \le 0.06} with \eqn{x = \sigma} (pig1) or \eqn{x = 1/\alpha}
+(pig2), the three quantities are taken from their series in \eqn{x}, to
+order 20, derived offline: the log-mass is the Poisson's plus a power series
+in \eqn{\sigma} whose coefficients are polynomials in \eqn{y}, so every
+expectation is a combination of Poisson moments and its coefficients are
+polynomials in \eqn{\mu} and \eqn{1/\mu}. The mixed entry of pig2 is zero at
+every order of that series, the parametrization being orthogonal.
+
 The \code{approx} and \code{nsim} arguments are accepted and ignored.
 }
 \examples{
@@ -77,6 +87,7 @@ c(kernel = distrib_expected_hessian(d, 1, th)$alpha_alpha,
 }
 \seealso{
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}; \code{pig1_expected_cpp()} and
-\code{pig2_expected_cpp()} for the kernels.
+\code{pig2_expected_cpp()} for the kernels, with \code{pig1_dexpected1_cpp()} and
+the like for its derivatives.
 }
 \keyword{internal}

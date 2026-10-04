@@ -204,11 +204,21 @@ for (.cls in list(Gaussian1Distrib, Gaussian2Distrib, Gaussian3Distrib,
                   CauchyDistrib, LogisticDistrib, LaplaceDistrib,
                   Laplace2Distrib, EnetDistrib, PseudoHuberDistrib,
                   StudentT1Distrib, SkewNormal1Distrib,
-                  SkewNormal2Distrib, SkewTDistrib, GumbelDistrib)) {
+                  SkewTDistrib, GumbelDistrib)) {
   S7::method(distrib_deriv3_y, .cls) <- loc_deriv_y_k(3L)
   S7::method(distrib_deriv4_y, .cls) <- loc_deriv_y_k(4L)
 }
 rm(.cls)
+
+# the centered skew normal has its own kernels in the response, which hold
+# at zero skewness, where its parameter derivatives of order two and more
+# are rejected
+S7::method(distrib_deriv3_y, SkewNormal2Distrib) <- function(distrib, y, theta, ...) {
+  skewnormal2_dy3_cpp(y, theta[[1]], theta[[2]], theta[[3]])$y
+}
+S7::method(distrib_deriv4_y, SkewNormal2Distrib) <- function(distrib, y, theta, ...) {
+  skewnormal2_dy4_cpp(y, theta[[1]], theta[[2]], theta[[3]])$y
+}
 
 
 # --- the families whose response is not a pure location ---------------------
@@ -250,7 +260,12 @@ dy_log1m <- function(c, y, k) -c * factorial(k - 1L) / (1 - y)^k
 
 #' @rdname dy_log
 #' @keywords internal
-dy_pow <- function(c, p, y, k) c * prod(p - seq_len(k) + 1) * y^(p - k)
+dy_pow <- function(c, p, y, k) {
+  # the falling factorial elementwise: p may vary by observation
+  ff <- 1
+  for (j in seq_len(k)) ff <- ff * (p - j + 1)
+  c * ff * y^(p - k)
+}
 
 #' @rdname dy_log
 #' @keywords internal
@@ -297,10 +312,10 @@ dy_of_log <- function(gd, y, k) {
 #'
 #' @section Registered on:
 #' This body serves both third- and fourth-order response derivatives on the
-#' fourteen families whose response is not a pure location, so
-#' `?distrib_deriv3_y.Gamma1Distrib` and its twenty-seven siblings open this
+#' twelve families whose response is not a pure location, so
+#' `?distrib_deriv3_y.Gamma1Distrib` and its twenty-three siblings open this
 #' page:
-#' `Gamma1Distrib`, `Gamma2Distrib`, `ChisqDistrib`, `ExponentialDistrib`, `Beta1Distrib`, `Beta2Distrib`, `Weibull1Distrib`, `GenGamma1Distrib`, `InvGauss1Distrib`, `InvGauss2Distrib`, `Lognormal1Distrib`, `GPDDistrib`, `VonMises1Distrib`, `VonMises2Distrib`.
+#' `Gamma1Distrib`, `Gamma2Distrib`, `ChisqDistrib`, `ExponentialDistrib`, `Beta1Distrib`, `Beta2Distrib`, `Weibull1Distrib`, `InvGauss1Distrib`, `InvGauss2Distrib`, `Lognormal1Distrib`, `VonMises1Distrib`, `VonMises2Distrib`.
 #'
 #' @seealso [loc_deriv_y_k()], the companion for the location families;
 #'   [distrib_deriv3_y.continuous_distrib()] for the stencil a family outside
@@ -314,11 +329,9 @@ dy_of_log <- function(gd, y, k) {
 #' @aliases distrib_deriv3_y.Beta1Distrib distrib_deriv4_y.Beta1Distrib
 #' @aliases distrib_deriv3_y.Beta2Distrib distrib_deriv4_y.Beta2Distrib
 #' @aliases distrib_deriv3_y.Weibull1Distrib distrib_deriv4_y.Weibull1Distrib
-#' @aliases distrib_deriv3_y.GenGamma1Distrib distrib_deriv4_y.GenGamma1Distrib
 #' @aliases distrib_deriv3_y.InvGauss1Distrib distrib_deriv4_y.InvGauss1Distrib
 #' @aliases distrib_deriv3_y.InvGauss2Distrib distrib_deriv4_y.InvGauss2Distrib
 #' @aliases distrib_deriv3_y.Lognormal1Distrib distrib_deriv4_y.Lognormal1Distrib
-#' @aliases distrib_deriv3_y.GPDDistrib distrib_deriv4_y.GPDDistrib
 #' @aliases distrib_deriv3_y.VonMises1Distrib distrib_deriv4_y.VonMises1Distrib
 #' @aliases distrib_deriv3_y.VonMises2Distrib distrib_deriv4_y.VonMises2Distrib
 #' @keywords internal
@@ -365,12 +378,6 @@ register_dy_k(Weibull1Distrib, function(distrib, y, theta, k) {
   dy_log(sigma - 1, y, k) + dy_pow(-theta[[1]]^-sigma, sigma, y, k)
 })
 
-# generalized gamma: (d - 1) log y - (y/a)^p
-register_dy_k(GenGamma1Distrib, function(distrib, y, theta, k) {
-  p <- theta[[3]]
-  dy_log(theta[[2]] - 1, y, k) + dy_pow(-theta[[1]]^-p, p, y, k)
-})
-
 # inverse gaussian: -1.5 log y - y/(2 phi mu^2) - 1/(2 phi y)
 register_dy_k(InvGauss1Distrib, function(distrib, y, theta, k) {
   dy_log(-1.5, y, k) + dy_pow(-1 / (2 * theta[[2]]), -1, y, k)
@@ -388,24 +395,13 @@ register_dy_k(Lognormal1Distrib, function(distrib, y, theta, k) {
   dy_of_log(gd, y, k)
 })
 
-# generalized Pareto: -(1 + 1/xi) log(1 + xi y / sigma). The coefficient is
-# written as xi^k + xi^(k-1) rather than (1 + 1/xi) xi^k, which is the same
-# number and stays finite as xi goes to zero, where the family is exponential
-# and every order above the first vanishes.
-register_dy_k(GPDDistrib, function(distrib, y, theta, k) {
-  sigma <- theta[[1]]
-  xi <- theta[[2]]
-  cf <- -(xi^k + xi^(k - 1L)) / sigma^k
-  cf * (-1)^(k - 1L) * factorial(k - 1L) / (1 + xi * y / sigma)^k
-})
-
 # von Mises: kappa cos(y - mu), whose derivatives are the same four functions
 # in rotation
 register_dy_k(VonMises1Distrib, function(distrib, y, theta, k) {
   dy_cos(theta[[2]], theta[[1]], y, k)
 })
 register_dy_k(VonMises2Distrib, function(distrib, y, theta, k) {
-  dy_cos(vm2_parts(theta)$kappa, theta[[1]], y, k)
+  dy_cos(numericals7::bessel_i_ratio_inverse(theta[[2]]), theta[[1]], y, k)
 })
 
 # a reparametrization acts on the parameters and the derivative is taken in the

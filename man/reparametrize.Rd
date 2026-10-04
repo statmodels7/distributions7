@@ -29,13 +29,16 @@ each new parameter lives in.}
 \item{links}{A named list of \pkg{linkfunctions7} links, one per new
 parameter.}
 
-\item{map_derivs}{An optional function returning, for each parent
-parameter, the non-zero partial derivatives of the map with respect to
-the new parameters to fourth order, keyed by the sorted tuple of
+\item{map_derivs}{An optional function of two arguments, the named list
+of new parameters and \code{order}, an integer from 1 to 4, returning for each
+parent parameter the non-zero partial derivatives of the map with respect
+to the new parameters up to order \code{order}, keyed by the sorted tuple of
 new-parameter positions ("1", "1,2", "2,2,3,3", ...); a missing key is
-an exact zero. The shipped second parametrizations supply hand-written
-tables (see \code{\link[=reparam_map_derivs]{reparam_map_derivs()}}); when \code{NULL}, each
-needed partial comes from one finite-difference stencil on the map.}
+an exact zero. Each caller passes the highest order it reads, so a
+gradient asks for order one and a fourth derivative for order four. The
+shipped second parametrizations supply hand-written tables (see
+\code{\link[=reparam_map_derivs]{reparam_map_derivs()}}); when \code{NULL}, each needed partial comes from one
+finite-difference stencil on the map.}
 
 \item{interpretation}{An optional named character vector describing each new
 parameter; defaults to the parameter names.}
@@ -51,6 +54,14 @@ A distribution object of class
 \description{
 Returns the same law as \code{distrib}, parametrized by quantities of the
 caller's choosing.
+
+The function is meant for trying a parametrization the package does not
+ship. Every derivative it returns is assembled from the parent's
+derivatives through the map, one order at a time, so it costs more than a
+family written for that parametrization; a parametrization used in a
+real analysis is better written as a distribution of its own, with its
+derivatives in compiled code, which is how the families of this package
+are written.
 }
 \details{
 A reparametrization is not a link. A link changes the scale a parameter is

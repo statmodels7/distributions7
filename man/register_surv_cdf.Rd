@@ -19,8 +19,8 @@ Invisibly \code{NULL}. Called for the registration.
 \description{
 Turns a function returning \eqn{L = \log(1-F)} and its partial-derivative
 evaluator into the four S7 methods, so that a family states its survival
-function once instead of four times. Three families are registered through
-it: the exponential, the Weibull and the generalized Pareto.
+function once instead of four times. Two families are registered through
+it: the exponential and the Weibull.
 }
 \details{
 All four orders are registered, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} included, so these
@@ -34,8 +34,7 @@ sharing one order.
 }
 \seealso{
 \code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}}, the body it registers;
-\code{\link[=distrib_grad_cdf.ExponentialDistrib]{distrib_grad_cdf.ExponentialDistrib()}},
-\code{\link[=distrib_grad_cdf.Weibull1Distrib]{distrib_grad_cdf.Weibull1Distrib()}} and
-\code{\link[=distrib_grad_cdf.GPDDistrib]{distrib_grad_cdf.GPDDistrib()}}, the three families.
+\code{\link[=distrib_grad_cdf.ExponentialDistrib]{distrib_grad_cdf.ExponentialDistrib()}} and
+\code{\link[=distrib_grad_cdf.Weibull1Distrib]{distrib_grad_cdf.Weibull1Distrib()}}, the two families.
 }
 \keyword{internal}

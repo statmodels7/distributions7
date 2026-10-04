@@ -38,9 +38,10 @@ NULL
 #'   [`distrib_hessian()`][distrib_hessian.GenGamma1Distrib],
 #'   [`distrib_expected_hessian()`][distrib_expected_hessian.GenGamma1Distrib].
 #'
-#' Registered elsewhere: the third and fourth orders in `gengamma1_higher.R`;
-#' the response derivatives in `cross_derivatives_families.R`; the mixed one in
-#' `cross_derivatives_simple.R`; and the four moments in `moments.R`.
+#' Registered elsewhere: the orders three to five and the derivatives in the
+#' response, compiled, in `gengamma1_higher.R`; the derivatives of the expected
+#' information in `dexpected_reparam.R`; and the four moments in `moments.R`.
+#' The derivatives of the distribution function are numerical.
 #'
 #' @section The one representation everything rests on:
 #' \eqn{u = (Y/a)^p} is Gamma with shape \eqn{k = d/p} and unit rate, exactly.
@@ -366,7 +367,7 @@ S7::method(distrib_rng, GenGamma1Distrib) <- function(distrib, n, theta, ...) {
 #' vapply(distrib_gradient(d, x, as.list(coef(fit))), sum, 0) / 2000
 S7::method(distrib_gradient, GenGamma1Distrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"), ..., threads = 1L) {
-  gengamma_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
+  gengamma1_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Generalized Gamma Observed Hessian
@@ -424,7 +425,7 @@ S7::method(distrib_gradient, GenGamma1Distrib) <- function(distrib, y, theta,
 #'                                              p = 1.5 - eps))$d) / (2 * eps))
 S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
                                                           scale = c("parameter", "link"), ..., threads = 1L) {
-  gengamma_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
+  gengamma1_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Generalized Gamma Expected Information
@@ -502,7 +503,7 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
                                                                    scale = c("parameter", "link"),
                                                                    approx = c("opg", "bartlett", "integrate", "mc"),
                                                                    nsim = 10000, ..., threads = 1L) {
-  gengamma_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
+  gengamma1_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 # --- CONSTRUCTOR WRAPPER ---

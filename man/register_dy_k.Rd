@@ -16,16 +16,12 @@
 \alias{distrib_deriv4_y.Beta2Distrib}
 \alias{distrib_deriv3_y.Weibull1Distrib}
 \alias{distrib_deriv4_y.Weibull1Distrib}
-\alias{distrib_deriv3_y.GenGamma1Distrib}
-\alias{distrib_deriv4_y.GenGamma1Distrib}
 \alias{distrib_deriv3_y.InvGauss1Distrib}
 \alias{distrib_deriv4_y.InvGauss1Distrib}
 \alias{distrib_deriv3_y.InvGauss2Distrib}
 \alias{distrib_deriv4_y.InvGauss2Distrib}
 \alias{distrib_deriv3_y.Lognormal1Distrib}
 \alias{distrib_deriv4_y.Lognormal1Distrib}
-\alias{distrib_deriv3_y.GPDDistrib}
-\alias{distrib_deriv4_y.GPDDistrib}
 \alias{distrib_deriv3_y.VonMises1Distrib}
 \alias{distrib_deriv4_y.VonMises1Distrib}
 \alias{distrib_deriv3_y.VonMises2Distrib}
@@ -49,10 +45,10 @@ that a family writes its rule once instead of twice.
 \section{Registered on}{
 
 This body serves both third- and fourth-order response derivatives on the
-fourteen families whose response is not a pure location, so
-\code{?distrib_deriv3_y.Gamma1Distrib} and its twenty-seven siblings open this
+twelve families whose response is not a pure location, so
+\code{?distrib_deriv3_y.Gamma1Distrib} and its twenty-three siblings open this
 page:
-\code{Gamma1Distrib}, \code{Gamma2Distrib}, \code{ChisqDistrib}, \code{ExponentialDistrib}, \code{Beta1Distrib}, \code{Beta2Distrib}, \code{Weibull1Distrib}, \code{GenGamma1Distrib}, \code{InvGauss1Distrib}, \code{InvGauss2Distrib}, \code{Lognormal1Distrib}, \code{GPDDistrib}, \code{VonMises1Distrib}, \code{VonMises2Distrib}.
+\code{Gamma1Distrib}, \code{Gamma2Distrib}, \code{ChisqDistrib}, \code{ExponentialDistrib}, \code{Beta1Distrib}, \code{Beta2Distrib}, \code{Weibull1Distrib}, \code{InvGauss1Distrib}, \code{InvGauss2Distrib}, \code{Lognormal1Distrib}, \code{VonMises1Distrib}, \code{VonMises2Distrib}.
 }
 
 \seealso{

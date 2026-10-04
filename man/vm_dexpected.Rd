@@ -4,7 +4,7 @@
 \alias{vm_dexpected}
 \title{The von Mises Families' Derivative Tables}
 \usage{
-vm_dexpected(P, n, order, f1, f2, g1, g2)
+vm_dexpected(P, n, order, f, g)
 }
 \arguments{
 \item{P}{The two parameter names.}
@@ -13,9 +13,9 @@ vm_dexpected(P, n, order, f1, f2, g1, g2)
 
 \item{order}{\code{1L} or \code{2L}.}
 
-\item{f1, f2}{The first and second derivatives of \eqn{f}.}
+\item{f}{The derivative of order \code{order} of \eqn{f}.}
 
-\item{g1, g2}{The first and second derivatives of \eqn{g}.}
+\item{g}{The derivative of order \code{order} of \eqn{g}.}
 }
 \value{
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code{\link[=d2expected_names]{d2expected_names()}}.

@@ -18,16 +18,15 @@ NULL
 #' \eqn{\mathbb{E}[\ell_{\sigma\nu}] = 2\nu^{-2}/(w_1 w_3 \sigma)} and
 #' \deqn{\mathbb{E}[\ell_{\nu\nu}] = \tfrac14\{\psi'((\nu+1)/2) - \psi'(\nu/2)\}
 #'   + \frac{\nu+5}{2\nu(\nu+1)(\nu+3)} = -\frac{7}{2\nu^4} + \frac{13}{\nu^5} - \dots,}
-#' whose terms cancel from order \eqn{\nu^{-2}}; its derivatives in \eqn{\nu}
-#' are taken from the asymptotic series above \eqn{\nu = 30}, the series'
-#' coefficients being exact integers from the duplication identity
-#' \eqn{\psi'((\nu+1)/2) - \psi'(\nu/2) = 4\psi'(\nu) - 2\psi'(\nu/2)}.
+#' whose terms cancel from order \eqn{\nu^{-2}}; it and its derivatives in
+#' \eqn{\nu} are taken from their asymptotic series in \eqn{1/\nu} above
+#' \eqn{\nu = 20}, derived from Stirling's series, and the first and second
+#' derivatives come from one kernel each.
 #'
 #' For the generalized gamma by scale \eqn{a} and shapes \eqn{d, p}, each
-#' component is \eqn{a^{\alpha} p^{\beta} F(k)} with \eqn{k = d/p} and
-#' \eqn{F} a combination of \eqn{\psi(k)}, \eqn{\psi(k+1)} and their
-#' derivatives, differentiated through \eqn{\partial k/\partial d = 1/p} and
-#' \eqn{\partial k/\partial p = -k/p}.
+#' component is a power of \eqn{1/a} times a closed form in \eqn{(d, p)} and
+#' the polygamma functions at \eqn{k + 1}, \eqn{k = d/p}, derived offline as
+#' [distrib_deriv3.GenGamma1Distrib()] describes.
 #'
 #' @param distrib A distribution object of one of the classes above.
 #' @param y A numeric vector of observations, read for its length.
@@ -41,10 +40,14 @@ NULL
 #' @keywords internal
 NULL
 
-register_dexpected(StudentT1Distrib, function(d, y, th, k, t)
-  student_t1_dexpected_cpp(y, th[[1]], th[[2]], th[[3]], k, t))
-register_dexpected(GenGamma1Distrib, function(d, y, th, k, t)
-  gengamma1_dexpected_cpp(y, th[[1]], th[[2]], th[[3]], k, t))
+register_dexpected(StudentT1Distrib, function(d, y, th, k, t) {
+  if (k == 1L) student_t1_dexpected1_cpp(y, th[[1]], th[[2]], th[[3]], t)
+  else student_t1_dexpected2_cpp(y, th[[1]], th[[2]], th[[3]], t)
+})
+register_dexpected(GenGamma1Distrib, function(d, y, th, k, t) {
+  if (k == 1L) gengamma1_dexpected1_cpp(y, th[[1]], th[[2]], th[[3]], t)
+  else gengamma1_dexpected2_cpp(y, th[[1]], th[[2]], th[[3]], t)
+})
 
 
 #' The Expected Information's Derivatives Through a Reparametrization
@@ -84,7 +87,8 @@ reparam_dexpected <- function(distrib, y, theta, order, threads = 1L) {
   Pp <- parent@params
   Pn <- distrib@params
   th_par <- reparam_theta(distrib, theta)
-  maps <- reparam_tables(distrib, theta)
+  # the derivative of order k of the information reads the map to order k + 1
+  maps <- reparam_tables(distrib, theta, order + 1L)
   E <- distrib_expected_hessian(parent, y, th_par, scale = "parameter",
                                 threads = threads)
   d1 <- distrib_dexpected_hessian(parent, y, th_par, scale = "parameter",

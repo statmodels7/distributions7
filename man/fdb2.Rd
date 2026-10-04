@@ -2,32 +2,35 @@
 % Please edit documentation in R/reparam_maps.R
 \name{fdb2}
 \alias{fdb2}
-\title{Bivariate Composition to Fourth Order}
+\title{Bivariate Composition, One Order}
 \usage{
-fdb2(h, u)
+fdb2(h, u, order)
 }
 \arguments{
-\item{h}{A list of the outer derivatives \code{h1} to \code{h4} at the
+\item{h}{A list of the outer derivatives \code{h1} to at least \code{h_order} at the
 inner value.}
 
 \item{u}{The named list of inner partials.}
+
+\item{order}{An integer from 1 to 4.}
 }
 \value{
-A named list of the fourteen partials of the composition, keyed
-exactly as \code{u} is: \code{x}, \code{z}, \code{xx}, \code{xz}, \code{zz}, \code{xxx}, \code{xxz}, \code{xzz},
-\code{zzz}, \code{xxxx}, \code{xxxz}, \code{xxzz}, \code{xzzz}, \code{zzzz}.
+A named list of the partials of order \code{order} of the composition,
+keyed as \code{u} is.
 }
 \description{
-The fourteen partials of \eqn{h(u(x, z))} for a scalar outer \eqn{h} and
-a bivariate inner \eqn{u}, Faa di Bruno written out component by
-component. The inner partials arrive as a named list with entries
-\code{x}, \code{z}, \code{xx}, \code{xz}, \code{zz}, \code{xxx},
-\code{xxz}, \code{xzz}, \code{zzz}, \code{xxxx}, \code{xxxz},
-\code{xxzz}, \code{xzzz}, \code{zzzz}; missing entries count as zero.
+The partials of order \code{order} of \eqn{h(u(x, z))} for a scalar outer
+\eqn{h} and a bivariate inner \eqn{u}, Faa di Bruno written out component
+by component: two partials at order one, three at order two, four at order
+three and five at order four. The inner partials arrive as a named list
+with entries \code{x}, \code{z}, \code{xx}, \code{xz}, \code{zz}, \code{xxx}, \code{xxz}, \code{xzz}, \code{zzz},
+\code{xxxx}, \code{xxxz}, \code{xxzz}, \code{xzzz}, \code{zzzz}; missing entries count as zero, and
+only the entries of order up to \code{order} are read. A caller that needs
+several orders calls it once per order.
 }
 \seealso{
 \code{\link[=fdb1]{fdb1()}} for a univariate inner function;
-\code{\link[=reparametrize]{reparametrize()}}, which consumes these through \code{map_derivs};
-\code{\link[=chain_assemble]{chain_assemble()}} for the general partition sum this writes out.
+\code{\link[=gengamma_components]{gengamma_components()}}, \code{\link[=gpd_components]{gpd_components()}} and \code{\link[=reparam_map_derivs]{reparam_map_derivs()}},
+which consume it.
 }
 \keyword{internal}

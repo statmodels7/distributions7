@@ -258,7 +258,46 @@ List negbin1_expected_hessian_cpp(NumericVector y, NumericVector mu,
 // V = -sum 6/(r+j)^4, accumulated beside the mass as nb1_E_Pr accumulates T.
 // The mass is the one nb1_E_Pr sums, seeded and switched out of log scale by
 // the same rule, and the loop stops on the same accumulated mass.
-static void nb1_G_derivs(double mu, double th, double* G) {
+// The first order reads G, G_r and G_t, which need T and U beside the mass;
+// the second all six, which need V as well.
+static void nb1_G_derivs1(double mu, double th, double* G) {
+    double r = mu / th;
+    double ratio = th / (1.0 + th);
+    double lratio = std::log(th) - std::log1p(th);
+    double L = std::log1p(th), op = 1.0 + th;
+    double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + th))
+                 + 40.0 / (-std::log(ratio));
+    int kmax = (int) std::min(cap, 2.0e9);
+    double lpk = -r * std::log1p(th);
+    bool logscale = (lpk <= -640.0);
+    double pk = std::exp(lpk);
+    double S = 0.0, T = 0.0, U = 0.0, cum = 0.0;
+    double s[3] = {0, 0, 0};
+    for (int k = 0; k <= kmax; ++k) {
+        double kd = (double) k;
+        double a = S - L;
+        double b = (kd - mu) / (th * op);
+        s[0] += pk * T;
+        s[1] += pk * (a * T + U);
+        s[2] += pk * b * T;
+        cum += pk;
+        if (cum >= 1.0 - 1e-12) break;
+        double v = 1.0 / (r + kd), v2 = v * v;
+        S += v;
+        T -= v2;
+        U += 2.0 * v2 * v;
+        if (logscale) {
+            lpk += lratio + std::log((kd + r) / (kd + 1.0));
+            pk = std::exp(lpk);
+            if (lpk > -640.0) logscale = false;
+        } else {
+            pk *= (kd + r) / (kd + 1.0) * ratio;
+        }
+    }
+    for (int j = 0; j < 3; ++j) G[j] = (cum > 0) ? s[j] / cum : 0.0;
+}
+
+static void nb1_G_derivs2(double mu, double th, double* G) {
     double r = mu / th;
     double ratio = th / (1.0 + th);
     double lratio = std::log(th) - std::log1p(th);
@@ -301,11 +340,62 @@ static void nb1_G_derivs(double mu, double th, double* G) {
 }
 
 // [[Rcpp::export]]
-List negbin1_dexpected_cpp(NumericVector y, NumericVector mu,
-                           NumericVector theta, int order, int threads = 1) {
+List negbin1_dexpected1_cpp(NumericVector y, NumericVector mu,
+                            NumericVector theta, int threads = 1) {
     int n = y.size();
     bool mu_s = (mu.size() == 1), th_s = (theta.size() == 1);
-    int K = order == 1 ? 6 : 9;
+    const int K = 6;
+    std::vector<NumericVector> v(K);
+    std::vector<double*> p(K);
+    for (int k = 0; k < K; ++k) { v[k] = NumericVector(n); p[k] = v[k].begin(); }
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = mu_s ? mu[0] : mu[i];
+        double t = th_s ? theta[0] : theta[i];
+        double r = m / t, g[3];
+        nb1_G_derivs1(m, t, g);
+        // G and its first derivatives in (mu, theta): d_mu = d_r / t,
+        // d_theta|mu = d_theta|r - (r/t) d_r
+        double G = g[0], it = 1.0 / t, rt = r * it;
+        double Gm = g[1] * it, Gt = g[2] - rt * g[1];
+        double it2 = it * it, it3 = it2 * it, it4 = it2 * it2, it5 = it4 * it;
+        double op = 1.0 + t, iop = 1.0 / op, iop2 = iop * iop, iop3 = iop2 * iop;
+        // c0, c1 and their first derivatives, per component (mm, tt, mt):
+        // index 0 value, 1 d_mu, 2 d_theta
+        // E_mm = G / t^2
+        double a0[3] = {it2, 0.0, -2.0 * it3};
+        double z0[3] = {0, 0, 0};
+        // E_tt = m^2 G / t^4 + m h(t)
+        double a1[3] = {m * m * it4, 2.0 * m * it4, -4.0 * m * m * it5};
+        double h = 2.0 * it2 * iop + it * iop2 - it2 + iop2;
+        double h1 = 2.0 * (-2.0 * it3 * iop - it2 * iop2)
+                    - it2 * iop2 - 2.0 * it * iop3 + 2.0 * it3 - 2.0 * iop3;
+        double z1[3] = {m * h, h, m * h1};
+        // E_mt = -m G / t^3 - 1/(t (1 + t))
+        double a2[3] = {-m * it3, -it3, 3.0 * m * it4};
+        double q = t * op, q1 = 1.0 + 2.0 * t, iq = 1.0 / q, iq2 = iq * iq;
+        double z2[3] = {-iq, 0.0, q1 * iq2};
+        const double* A[3] = {a0, a1, a2};
+        const double* Z[3] = {z0, z1, z2};
+        for (int e = 0; e < 3; ++e) {
+            p[2 * e][i] = Z[e][1] + A[e][1] * G + A[e][0] * Gm;
+            p[2 * e + 1][i] = Z[e][2] + A[e][2] * G + A[e][0] * Gt;
+        }
+    });
+    CharacterVector nm = CharacterVector::create(
+        "mu_mu_mu", "mu_mu_theta", "theta_theta_mu",
+        "theta_theta_theta", "mu_theta_mu", "mu_theta_theta");
+    List out(K);
+    for (int k = 0; k < K; ++k) out[k] = v[k];
+    out.attr("names") = nm;
+    return out;
+}
+
+// [[Rcpp::export]]
+List negbin1_dexpected2_cpp(NumericVector y, NumericVector mu,
+                            NumericVector theta, int threads = 1) {
+    int n = y.size();
+    bool mu_s = (mu.size() == 1), th_s = (theta.size() == 1);
+    const int K = 9;
     std::vector<NumericVector> v(K);
     std::vector<double*> p(K);
     for (int k = 0; k < K; ++k) { v[k] = NumericVector(n); p[k] = v[k].begin(); }
@@ -313,7 +403,7 @@ List negbin1_dexpected_cpp(NumericVector y, NumericVector mu,
         double m = mu_s ? mu[0] : mu[i];
         double t = th_s ? theta[0] : theta[i];
         double r = m / t, g[6];
-        nb1_G_derivs(m, t, g);
+        nb1_G_derivs2(m, t, g);
         // G and its derivatives in (mu, theta): d_mu = d_r / t,
         // d_theta|mu = d_theta|r - (r/t) d_r
         double G = g[0], it = 1.0 / t, rt = r * it;
@@ -352,28 +442,16 @@ List negbin1_dexpected_cpp(NumericVector y, NumericVector mu,
         }
         for (int e = 0; e < 3; ++e) {
             double *A = c1[e], *Z = c0[e];
-            double dm = Z[1] + A[1] * G + A[0] * Gm;
-            double dt = Z[2] + A[2] * G + A[0] * Gt;
-            if (order == 1) {
-                p[2 * e][i] = dm;
-                p[2 * e + 1][i] = dt;
-            } else {
-                double mm = Z[3] + A[3] * G + 2.0 * A[1] * Gm + A[0] * Gmm;
-                double tt = Z[4] + A[4] * G + 2.0 * A[2] * Gt + A[0] * Gtt;
-                double mt = Z[5] + A[5] * G + A[1] * Gt + A[2] * Gm + A[0] * Gmt;
-                p[3 * e][i] = mm;
-                p[3 * e + 1][i] = tt;
-                p[3 * e + 2][i] = mt;
-            }
+            p[3 * e][i] = Z[3] + A[3] * G + 2.0 * A[1] * Gm + A[0] * Gmm;
+            p[3 * e + 1][i] = Z[4] + A[4] * G + 2.0 * A[2] * Gt + A[0] * Gtt;
+            p[3 * e + 2][i] = Z[5] + A[5] * G + A[1] * Gt + A[2] * Gm + A[0] * Gmt;
         }
     });
-    CharacterVector nm = order == 1 ?
-        CharacterVector::create("mu_mu_mu", "mu_mu_theta", "theta_theta_mu",
-                                "theta_theta_theta", "mu_theta_mu", "mu_theta_theta") :
-        CharacterVector::create("mu_mu_mu_mu", "mu_mu_theta_theta", "mu_mu_mu_theta",
-                                "theta_theta_mu_mu", "theta_theta_theta_theta",
-                                "theta_theta_mu_theta", "mu_theta_mu_mu",
-                                "mu_theta_theta_theta", "mu_theta_mu_theta");
+    CharacterVector nm = CharacterVector::create(
+        "mu_mu_mu_mu", "mu_mu_theta_theta", "mu_mu_mu_theta",
+        "theta_theta_mu_mu", "theta_theta_theta_theta",
+        "theta_theta_mu_theta", "mu_theta_mu_mu",
+        "mu_theta_theta_theta", "mu_theta_mu_theta");
     List out(K);
     for (int k = 0; k < K; ++k) out[k] = v[k];
     out.attr("names") = nm;

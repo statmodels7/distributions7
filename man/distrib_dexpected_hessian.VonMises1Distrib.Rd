@@ -19,7 +19,8 @@
 
 \item{...}{Unused.}
 
-\item{threads}{Unused; accepted for the shared signature.}
+\item{threads}{A single positive integer, how many threads the kernel may
+use.}
 }
 \value{
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code{\link[=d2expected_names]{d2expected_names()}}.
@@ -27,9 +28,8 @@ A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code
 \description{
 The first and second derivatives of the expected information in the
 parameters, from the derivatives of the Bessel ratio
-\eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} that
-\code{\link[numericals7:bessel_i_ratio_derivs]{numericals7::bessel_i_ratio_derivs()}} and
-\code{\link[numericals7:bessel_i_ratio_inverse]{numericals7::bessel_i_ratio_inverse()}} return.
+\eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} and of its inverse, computed by
+one compiled kernel per order from numericals7's compiled Bessel ratio.
 }
 \details{
 By the concentration, \eqn{\mathbb{E}[\ell_{\mu\mu}] = -\kappa A(\kappa)} and
@@ -38,9 +38,9 @@ By the concentration, \eqn{\mathbb{E}[\ell_{\mu\mu}] = -\kappa A(\kappa)} and
 length \eqn{\rho = A(\kappa)}, \eqn{\mathbb{E}[\ell_{\mu\mu}] = -\rho\,\kappa(\rho)}
 and \eqn{\mathbb{E}[\ell_{\rho\rho}] = -\kappa'(\rho)}, so they read the
 inverse's derivatives \eqn{\kappa'}, \eqn{\kappa''} and \eqn{\kappa'''}.
-Nothing moves with the direction \eqn{\mu}. The expected information of
-either family is itself computed in R from the same functions, which is why
-these are too.
+Nothing moves with the direction \eqn{\mu}. The first-order kernel reads
+\eqn{A} to \eqn{A''} (or \eqn{\kappa} to \eqn{\kappa''}), the second-order
+one \eqn{A'} to \eqn{A'''} (or \eqn{\kappa'} to \eqn{\kappa'''}).
 }
 \seealso{
 \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}, \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}}

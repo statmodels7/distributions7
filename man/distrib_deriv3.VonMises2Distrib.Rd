@@ -29,6 +29,10 @@ or \code{"opg"}. Read only when \code{expected = TRUE}.}
 \code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_rho},
@@ -42,8 +46,12 @@ one \eqn{\mu} collapses to a \strong{single term}
 \eqn{\mu}-derivative of \eqn{\cos(y-\mu)} and \eqn{\kappa^{(b)}} the
 \eqn{b}-th derivative of \eqn{A^{-1}}: the concentration parametrization's
 \eqn{\mu}-derivatives are linear in \eqn{\kappa}, so the composition has
-nothing to expand. The pure-\eqn{\rho} component carries the full
-one-variable Faa di Bruno on \eqn{\log I_0}, written out.
+nothing to expand. Since \eqn{\partial\log I_0(\kappa(\rho))/\partial\rho
+= \rho\,\kappa'(\rho)}, the pure-\eqn{\rho} component is
+\eqn{\{\cos(y-\mu) - \rho\}\kappa'''(\rho) - 2\kappa''(\rho)}. The
+components are computed by a compiled kernel, which reads
+\eqn{\kappa'}, \eqn{\kappa''} and \eqn{\kappa'''} from
+\eqn{A'}, \eqn{A''} and \eqn{A'''} by the inverse function rule.
 
 With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which is
 the one place on this page where \code{approx} and \code{nsim} are read.
@@ -76,6 +84,6 @@ vapply(d3, function(v) v[1], numeric(1))
 \seealso{
 \code{\link[=distrib_hessian.VonMises2Distrib]{distrib_hessian.VonMises2Distrib()}} for the order below,
 \code{\link[=distrib_deriv4.VonMises2Distrib]{distrib_deriv4.VonMises2Distrib()}} for the order above,
-\code{\link[=vm2_parts]{vm2_parts()}} for the map's derivatives, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the
-generic.
+\code{\link[numericals7:bessel_i_ratio_inverse_d1]{numericals7::bessel_i_ratio_inverse_d1()}} for the map's derivatives, and
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pig_asym.h"
 #include <cstring>
 #include <cmath>
 #include <vector>
@@ -1050,10 +1051,13 @@ static const int PIG_PB[3] = {0, 1, 1};
 // on q alone stopped the Poisson-limit sums early, and a rule on the
 // accumulated mass alone does not terminate: summing 1e5 terms rounds the
 // running total by more than the tolerance it is compared with.
-template <class Seq, class Row>
+// ORDER is a compile-time constant: 0 for the expected information, 1 and 2
+// for its first and second derivatives, so each exported kernel below is its
+// own compiled function and accumulates its own order alone.
+template <int ORDER, class Seq, class Row>
 static bool pig_expected_obs(double m, double p2, double arg, double tail,
-                             int order, Row row,
-                             double* E, double* D1, double* D2) {
+                             Row row, double* E, double* D1, double* D2) {
+    const int order = ORDER;
     int ord = order + 1;
     for (int j = 0; j < 3; ++j) E[j] = 0.0;
     for (int j = 0; j < 6; ++j) D1[j] = 0.0;
@@ -1083,13 +1087,15 @@ static bool pig_expected_obs(double m, double p2, double arg, double tail,
         for (int p = 0; p < 3; ++p) {
             int a = PIG_PA[p], b = PIG_PB[p];
             double ga = pig_g(v, a), gb = pig_g(v, b), gab = ga * gb;
-            if (order == 0) { E[p] -= f * gab; continue; }
-            for (int c = 0; c < 2; ++c) {
-                double gc = pig_g(v, c);
-                D1[2 * p + c] -= f * (pig_h(v, a + c) * gb +
-                    ga * pig_h(v, b + c) + gab * gc);
+            if (ORDER == 0) { E[p] -= f * gab; continue; }
+            if (ORDER == 1) {
+                for (int c = 0; c < 2; ++c) {
+                    double gc = pig_g(v, c);
+                    D1[2 * p + c] -= f * (pig_h(v, a + c) * gb +
+                        ga * pig_h(v, b + c) + gab * gc);
+                }
+                continue;
             }
-            if (order < 2) continue;
             for (int s = 0; s < 3; ++s) {
                 int c = PIG_PA[s], d = PIG_PB[s];
                 double gc = pig_g(v, c), gd = pig_g(v, d);
@@ -1113,12 +1119,20 @@ static bool pig_expected_obs(double m, double p2, double arg, double tail,
     return false;
 }
 
-template <class Row>
+// The threshold on tau = (1 + mu) x, x = sigma (pig1) or 1/alpha (pig2),
+// below which the series of pig_asym.h replaces the sums. Measured against
+// exact sums (stabilita/pig_cmp.R, pig*_dexpected_ref.py): at tau = 0.05 the
+// order-20 series is within 2e-15 of every component, where the sums lose up
+// to 5e-11; above 0.1 the series converges too slowly.
+static const double PIG_ASYM_CUT = 0.06;
+
+template <int ORDER, class Row>
 static List pig_expected_run(NumericVector y, NumericVector mu,
-                             NumericVector p2, int order, int threads,
+                             NumericVector p2, int threads,
                              const char* pname, Row row, bool pig1) {
+    const int order = ORDER;
     int n = std::max(y.size(), std::max(mu.size(), p2.size()));
-    int no = (order == 0) ? 3 : ((order == 1) ? 6 : 15);
+    int no = (order == 0) ? 3 : ((order == 1) ? 6 : 9);
     std::vector<NumericVector> out(no);
     std::vector<double*> op(no);
     for (int j = 0; j < no; ++j) { out[j] = NumericVector(n); op[j] = out[j].begin(); }
@@ -1133,23 +1147,33 @@ static List pig_expected_run(NumericVector y, NumericVector mu,
         double m = ms ? mp[0] : mp[i], x = ps ? pp[0] : pp[i];
         double E[3], D1[6], D2[9];
         bool ok = R_finite(m) && R_finite(x) && m > 0.0 && x > 0.0;
-        if (ok) {
+        // near the Poisson limit the sums add terms of size one to results of
+        // size sigma^2 or alpha^-3: there the series of pig_asym.h is used
+        const double xs = pig1 ? x : 1.0 / x;
+        if (ok && (1.0 + m) * xs <= PIG_ASYM_CUT) {
+            if (pig1) {
+                if constexpr (ORDER == 0) pig1_asym0(m, xs, E);
+                else if constexpr (ORDER == 1) pig1_asym1(m, xs, D1);
+                else pig1_asym2(m, xs, D2);
+            } else {
+                if constexpr (ORDER == 0) pig2_asym0(m, xs, E);
+                else if constexpr (ORDER == 1) pig2_asym1(m, xs, D1);
+                else pig2_asym2(m, xs, D2);
+            }
+        } else if (ok) {
             if (pig1) {
                 double w = 0.5 * x / std::sqrt(1.0 + 2.0 * x * m);
-                ok = pig_expected_obs<PigSeqW>(m, x, w, 2.0 * x * m, order,
-                                               row, E, D1, D2);
+                ok = pig_expected_obs<ORDER, PigSeqW>(m, x, w, 2.0 * x * m,
+                                                      row, E, D1, D2);
             } else {
                 double t = m / x;
                 double b = x / (t + std::hypot(1.0, t));   // 1/sigma
-                ok = pig_expected_obs<PigSeq>(m, x, x, 2.0 * m / b, order,
-                                              row, E, D1, D2);
+                ok = pig_expected_obs<ORDER, PigSeq>(m, x, x, 2.0 * m / b,
+                                                     row, E, D1, D2);
             }
         }
-        double* src = (order == 0) ? E : D1;
-        for (int j = 0; j < no; ++j) {
-            double val = (j < 6 || order == 0) ? src[j] : D2[j - 6];
-            op[j][i] = ok ? val : NA_REAL;
-        }
+        double* src = (order == 0) ? E : ((order == 1) ? D1 : D2);
+        for (int j = 0; j < no; ++j) op[j][i] = ok ? src[j] : NA_REAL;
     });
     if (nrun < n)
         for (int j = 0; j < no; ++j)
@@ -1162,33 +1186,66 @@ static List pig_expected_run(NumericVector y, NumericVector mu,
     for (int j = 0; j < no; ++j) res[j] = out[j];
     if (order == 0) {
         for (int j = 0; j < 3; ++j) nms[j] = hs[j];
-    } else {
+    } else if (order == 1) {
         for (int p = 0; p < 3; ++p)
             for (int c = 0; c < 2; ++c) nms[2 * p + c] = hs[p] + "_" + ps2[c];
-        if (order == 2)
-            for (int p = 0; p < 3; ++p)
-                for (int s = 0; s < 3; ++s) nms[6 + 3 * p + s] = hs[p] + "_" + hs[s];
+    } else {
+        for (int p = 0; p < 3; ++p)
+            for (int s = 0; s < 3; ++s) nms[3 * p + s] = hs[p] + "_" + hs[s];
     }
     res.names() = nms;
     return res;
 }
 
+namespace {
+struct Pig2Row {
+    void operator()(double yy, double m, double x, int ord, double* v,
+                    const double* pre) const {
+        pig2_row(yy, m, x, ord, false, v, pre);
+    }
+};
+struct Pig1Row {
+    void operator()(double yy, double m, double x, int ord, double* v,
+                    const double* pre) const {
+        pig1_row(yy, m, x, ord, false, v, pre);
+    }
+};
+}  // namespace
+
+// The expected information, and its first and second derivatives, one kernel
+// each.
 // [[Rcpp::export]]
 List pig2_expected_cpp(NumericVector y, NumericVector mu, NumericVector alpha,
-                       int order, int threads = 1) {
-    auto row = [](double yy, double m, double x, int ord, double* v,
-                  const double* pre) {
-        pig2_row(yy, m, x, ord, false, v, pre);
-    };
-    return pig_expected_run(y, mu, alpha, order, threads, "alpha", row, false);
+                       int threads = 1) {
+    return pig_expected_run<0>(y, mu, alpha, threads, "alpha", Pig2Row(), false);
+}
+
+// [[Rcpp::export]]
+List pig2_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector alpha,
+                         int threads = 1) {
+    return pig_expected_run<1>(y, mu, alpha, threads, "alpha", Pig2Row(), false);
+}
+
+// [[Rcpp::export]]
+List pig2_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector alpha,
+                         int threads = 1) {
+    return pig_expected_run<2>(y, mu, alpha, threads, "alpha", Pig2Row(), false);
 }
 
 // [[Rcpp::export]]
 List pig1_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
-                       int order, int threads = 1) {
-    auto row = [](double yy, double m, double x, int ord, double* v,
-                  const double* pre) {
-        pig1_row(yy, m, x, ord, false, v, pre);
-    };
-    return pig_expected_run(y, mu, sigma, order, threads, "sigma", row, true);
+                       int threads = 1) {
+    return pig_expected_run<0>(y, mu, sigma, threads, "sigma", Pig1Row(), true);
+}
+
+// [[Rcpp::export]]
+List pig1_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                         int threads = 1) {
+    return pig_expected_run<1>(y, mu, sigma, threads, "sigma", Pig1Row(), true);
+}
+
+// [[Rcpp::export]]
+List pig1_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                         int threads = 1) {
+    return pig_expected_run<2>(y, mu, sigma, threads, "sigma", Pig1Row(), true);
 }

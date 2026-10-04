@@ -305,16 +305,7 @@ S7::method(distrib_cross_y, Gaussian1Distrib) <- function(distrib, y, theta,
 S7::method(distrib_cross_y, StudentT1Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
                                                          ...) {
-  mu <- theta[[1]]
-  sigma <- theta[[2]]
-  nu <- theta[[3]]
-  r <- y - mu
-  d <- nu * sigma^2 + r^2
-  list(
-    mu = (nu + 1) * (nu * sigma^2 - r^2) / d^2,
-    sigma = 2 * nu * sigma * (nu + 1) * r / d^2,
-    nu = -r * (r^2 - sigma^2) / d^2
-  )
+  student_t1_cross_y_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }
 
 #' @title Mixed Derivatives of a Truncated Distribution

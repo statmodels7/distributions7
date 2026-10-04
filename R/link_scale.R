@@ -563,3 +563,29 @@ distrib_kernel <- function(distrib, param) {
     }
   )
 }
+
+#' Carry an Analytic Fifth Order to the Link Scale
+#'
+#' @description
+#' The [distrib_deriv5()] generic, unlike those of orders one to four, does
+#' not apply the link scale itself, because its numerical default
+#' differentiates on the link scale directly. A family with its own fifth
+#' order returns the parameter scale and passes it here, which composes it
+#' with the parameter-scale orders one to four through [to_link_scale()].
+#'
+#' @param distrib A distribution object.
+#' @param y,theta The observations and the parameters, as given to the method.
+#' @param res The fifth order on the parameter scale.
+#' @param scale `"parameter"` or `"link"`.
+#'
+#' @return `res` itself on the parameter scale, its link-scale composition
+#'   otherwise.
+#'
+#' @seealso [link_scale_lower_orders()], [to_link_scale()].
+#'
+#' @keywords internal
+deriv5_scale <- function(distrib, y, theta, res, scale) {
+  if (!identical(scale, "link")) return(res)
+  nat <- link_scale_lower_orders(distrib, y, theta, FALSE, 5L)
+  to_link_scale(distrib, theta, c(nat, list(res)), 5L)
+}

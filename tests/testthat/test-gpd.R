@@ -92,7 +92,7 @@ test_that("the expected information is the closed form, checked by quadrature", 
         distrib_hessian(d, distrib_quantile(d, u, th), th)[[k]]
       }, 0, 1, rel.tol = 1e-8, subdivisions = 8000L)$value
     }, numeric(1))
-    got <- vapply(distrib_expected_hessian(d, 0, th), function(v) v[1],
+    got <- vapply(distrib_expected_hessian(d, 0, th)[names(q)], function(v) v[1],
                   numeric(1))
     expect_equal(got, q, tolerance = 1e-7, label = as.character(x))
   }
@@ -158,9 +158,13 @@ test_that("the generalized Pareto's assembly reproduces the compiled kernel", {
     for (nm in names(r)) expect_equal(g[[nm]], r[[nm]], tolerance = 1e-11)
     h <- distributions7:::gpd_components(y, th, 2L)
     r <- distrib_hessian(d, y, th)
-    # since the kernel's xi direction switches on xi*z as this assembly does,
-    # the two agree at machine precision on every branch
-    for (nm in names(r)) expect_equal(h[[nm]], r[[nm]], tolerance = 1e-13)
+    for (nm in names(r)) expect_equal(h[[nm]], r[[nm]], tolerance = 1e-12)
+    for (ord in 3:4) {
+      a <- distributions7:::gpd_components(y, th, ord)
+      r <- if (ord == 3L) distrib_deriv3(d, y, th) else distrib_deriv4(d, y, th)
+      expect_setequal(names(r), names(a))
+      for (nm in names(r)) expect_equal(r[[nm]], a[[nm]], tolerance = 1e-10, label = nm)
+    }
   }
 })
 
@@ -207,4 +211,127 @@ test_that("the generalized Pareto is closed at third and fourth order", {
       }
     }
   }
+})
+
+
+test_that("the generalized Pareto's fifth order is the derivative of its fourth", {
+  skip_if_not_installed("numDeriv")
+  d <- gpd_distrib()
+  y <- c(0.2, 1.1, 3.5)
+  for (th in list(list(sigma = 1.2, xi = 0.35), list(sigma = 2.0, xi = -0.25))) {
+    got <- distrib_deriv5(d, y, th)
+    expect_length(got, 6L)
+    for (nm in names(got)) {
+      parts <- strsplit(nm, "_")[[1]]
+      j <- match(parts[5], d@params)
+      head_nm <- paste(parts[1:4], collapse = "_")
+      ref <- vapply(seq_along(y), function(i) {
+        numDeriv::grad(function(z) {
+          t2 <- th; t2[[j]] <- z
+          distrib_deriv4(d, y[i], t2)[[head_nm]]
+        }, th[[j]])
+      }, numeric(1))
+      expect_equal(got[[nm]], ref, tolerance = 1e-7, label = nm)
+    }
+  }
+})
+
+
+test_that("the generalized Pareto's expected higher derivatives are the integrals", {
+  # on the probability scale, as for the information; they exist above
+  # xi = -1/3 and -1/4 and are NA at and below
+  d <- gpd_distrib()
+  for (x in c(-0.1, 0.25, 1.5)) {
+    th <- list(sigma = 1.4, xi = x)
+    for (ord in 3:4) {
+      got <- if (ord == 3L) distrib_deriv3(d, 1, th, expected = TRUE)
+             else distrib_deriv4(d, 1, th, expected = TRUE)
+      obs <- if (ord == 3L) distrib_deriv3 else distrib_deriv4
+      for (nm in names(got)) {
+        ref <- stats::integrate(function(u) obs(d, distrib_quantile(d, u, th), th)[[nm]],
+                                0, 1, rel.tol = 1e-10, subdivisions = 8000L)$value
+        expect_equal(got[[nm]], ref, tolerance = 1e-7, label = paste(x, nm))
+      }
+    }
+  }
+  e3 <- distrib_deriv3(d, 1, list(sigma = 1.4, xi = c(-0.34, -1 / 3, -0.32)), expected = TRUE)
+  expect_equal(is.na(e3$xi_xi_xi), c(TRUE, TRUE, FALSE))
+  e4 <- distrib_deriv4(d, 1, list(sigma = 1.4, xi = c(-0.26, -0.25, -0.24)), expected = TRUE)
+  expect_equal(is.na(e4$xi_xi_xi_xi), c(TRUE, TRUE, FALSE))
+})
+
+
+test_that("the generalized Pareto keeps its accuracy at the end of the support", {
+  # y within a relative 1e-12 of sigma/|xi|: formed from the rounded product
+  # xi*y, t lost 1e-4; exact values from stabilita/gen_gpd_ref.py
+  d <- gpd_distrib()
+  th <- list(sigma = 1.5, xi = -0.7)
+  y <- 2.142857142855
+  g <- distrib_gradient(d, y, th)
+  expect_equal(g$sigma, 285704595153.8072843052, tolerance = 1e-13)
+  expect_equal(g$xi, 612224132417.4830211302, tolerance = 1e-13)
+  h <- distrib_hessian(d, y, th)
+  expect_equal(h$xi_xi, -8.745762395554034366918e+23, tolerance = 1e-13)
+  # outside the support every derivative of the log-density is NaN
+  expect_true(all(is.nan(unlist(distrib_deriv3(d, c(-1, 3), th)))))
+})
+
+
+test_that("the generalized Pareto's response derivatives are closed", {
+  skip_if_not_installed("numDeriv")
+  d <- gpd_distrib()
+  y <- c(0.2, 1.1, 3.5)
+  for (th in list(list(sigma = 1.2, xi = 0.35), list(sigma = 2.0, xi = -0.25),
+                  list(sigma = 1.5, xi = 0))) {
+    for (i in seq_along(y)) {
+      dy <- function(f) numDeriv::grad(function(z) f(d, z, th), y[i])
+      expect_equal(distrib_deriv3_y(d, y, th)[i], dy(distrib_hess_y), tolerance = 1e-8)
+      expect_equal(distrib_deriv4_y(d, y, th)[i], dy(distrib_deriv3_y), tolerance = 1e-8)
+      c2 <- distrib_cross2_y(d, y, th)
+      for (nm in names(c2)) {
+        ref <- numDeriv::grad(function(z) distrib_cross_y(d, z, th)[[nm]], y[i])
+        expect_equal(c2[[nm]][i], ref, tolerance = 1e-8, label = nm)
+      }
+      gh <- distrib_grad_y_hess(d, y, th)
+      hh <- distrib_hess_y_hess(d, y, th)
+      for (nm in names(gh)) {
+        ref <- numDeriv::grad(function(z) distrib_hessian(d, z, th)[[nm]], y[i])
+        expect_equal(gh[[nm]][i], ref, tolerance = 1e-8, label = nm)
+        ref <- numDeriv::grad(function(z) distrib_grad_y_hess(d, z, th)[[nm]], y[i])
+        expect_equal(hh[[nm]][i], ref, tolerance = 1e-8, label = nm)
+      }
+    }
+  }
+})
+
+
+test_that("the generalized Pareto's four cdf surfaces agree with one another", {
+  # log F, log S, S and F from their own kernels: d log S = dS / S, and
+  # d log F = dF / F, at first order; the second orders through the product
+  d <- gpd_distrib()
+  q <- c(0.3, 2, 8)
+  for (th in list(list(sigma = 1.5, xi = 0.3), list(sigma = 1.5, xi = -0.1),
+                  list(sigma = 1.5, xi = 0))) {
+    S <- distrib_cdf(d, q, th, lower.tail = FALSE)
+    F <- distrib_cdf(d, q, th)
+    gS <- distrib_grad_cdf(d, q, th, lower.tail = FALSE, log = FALSE)
+    gF <- distrib_grad_cdf(d, q, th, log = FALSE)
+    lS <- distrib_grad_cdf(d, q, th, lower.tail = FALSE)
+    lF <- distrib_grad_cdf(d, q, th)
+    hS <- distrib_hess_cdf(d, q, th, lower.tail = FALSE, log = FALSE)
+    hlS <- distrib_hess_cdf(d, q, th, lower.tail = FALSE)
+    for (nm in names(gS)) {
+      expect_equal(gF[[nm]], -gS[[nm]], tolerance = 1e-15)
+      expect_equal(lS[[nm]], gS[[nm]] / S, tolerance = 1e-13)
+      expect_equal(lF[[nm]], gF[[nm]] / F, tolerance = 1e-13)
+    }
+    expect_equal(hlS$sigma_xi, hS$sigma_xi / S - gS$sigma * gS$xi / S^2,
+                 tolerance = 1e-12)
+  }
+  # below zero log F is -Inf: NaN; past the upper end every derivative is 0
+  th <- list(sigma = 1, xi = -0.5)
+  expect_true(all(is.nan(distrib_grad_cdf(d, c(-1, 0), th)$sigma)))
+  expect_equal(distrib_deriv4_cdf(d, c(2, 3), th)$xi_xi_xi_xi, c(0, 0))
+  expect_equal(distrib_deriv4_cdf(d, c(-1, 2), th, lower.tail = FALSE)$sigma_sigma_sigma_sigma,
+               c(0, 0))
 })

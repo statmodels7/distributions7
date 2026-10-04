@@ -227,7 +227,7 @@ S7::method(distrib_grad_cdf, ReparamContinuousDistrib) <-
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
     mapped_cdf_deriv(distrib, distrib@parent_distrib,
                      reparam_theta(distrib, theta),
-                     reparam_tables(distrib, theta),
+                     reparam_tables(distrib, theta, 1L),
                      q, theta, 1L, lower.tail, log)
   }
 
@@ -286,7 +286,7 @@ S7::method(distrib_hess_cdf, ReparamContinuousDistrib) <-
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
     mapped_cdf_deriv(distrib, distrib@parent_distrib,
                      reparam_theta(distrib, theta),
-                     reparam_tables(distrib, theta),
+                     reparam_tables(distrib, theta, 2L),
                      q, theta, 2L, lower.tail, log)
   }
 
@@ -345,7 +345,7 @@ S7::method(distrib_grad_cdf, Gaussian2Distrib) <-
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
     mapped_cdf_deriv(distrib, gaussian1_distrib(),
                      list(mu = theta[[1]], sigma = sqrt(theta[[2]])),
-                     md_gaussian2(theta), q, theta, 1L, lower.tail, log)
+                     md_gaussian2(theta, 1L), q, theta, 1L, lower.tail, log)
   }
 
 #' @title Gaussian Log-CDF Hessian in Mean and Variance
@@ -392,7 +392,7 @@ S7::method(distrib_hess_cdf, Gaussian2Distrib) <-
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
     mapped_cdf_deriv(distrib, gaussian1_distrib(),
                      list(mu = theta[[1]], sigma = sqrt(theta[[2]])),
-                     md_gaussian2(theta), q, theta, 2L, lower.tail, log)
+                     md_gaussian2(theta, 2L), q, theta, 2L, lower.tail, log)
   }
 
 #' @title Gaussian Log-CDF Gradient in Mean and Precision
@@ -440,7 +440,7 @@ S7::method(distrib_grad_cdf, Gaussian3Distrib) <-
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
     mapped_cdf_deriv(distrib, gaussian1_distrib(),
                      list(mu = theta[[1]], sigma = 1 / sqrt(theta[[2]])),
-                     md_gaussian3(theta), q, theta, 1L, lower.tail, log)
+                     md_gaussian3(theta, 1L), q, theta, 1L, lower.tail, log)
   }
 
 #' @title Gaussian Log-CDF Hessian in Mean and Precision
@@ -486,7 +486,7 @@ S7::method(distrib_hess_cdf, Gaussian3Distrib) <-
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
     mapped_cdf_deriv(distrib, gaussian1_distrib(),
                      list(mu = theta[[1]], sigma = 1 / sqrt(theta[[2]])),
-                     md_gaussian3(theta), q, theta, 2L, lower.tail, log)
+                     md_gaussian3(theta, 2L), q, theta, 2L, lower.tail, log)
   }
 
 #' @title Inverse Gaussian Log-CDF Gradient in Mean and Rate
@@ -544,7 +544,7 @@ S7::method(distrib_grad_cdf, InvGauss2Distrib) <-
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
     mapped_cdf_deriv(distrib, invgauss1_distrib(),
                      list(mu = theta[[1]], phi = 1 / theta[[2]]),
-                     md_invgauss2(theta), q, theta, 1L, lower.tail, log)
+                     md_invgauss2(theta, 1L), q, theta, 1L, lower.tail, log)
   }
 
 

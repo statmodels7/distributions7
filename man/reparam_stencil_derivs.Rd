@@ -16,8 +16,9 @@ a named list of the parent's.}
 order of the returned list.}
 }
 \value{
-A function of the new parameters, usable as an object's
-\code{reparam_derivs}, returning the keyed tables \code{\link[=reparam_tables]{reparam_tables()}} describes.
+A function of the new parameters and the highest order to form,
+usable as an object's \code{reparam_derivs}, returning the keyed tables
+\code{\link[=reparam_tables]{reparam_tables()}} describes.
 }
 \description{
 The numerical fallback behind \code{\link[=reparam_tables]{reparam_tables()}}: every partial of the map

@@ -68,17 +68,16 @@ direct parameters:
 \code{\link[=distrib_pdf.SkewNormal2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.SkewNormal2Distrib]{distrib_cdf()}},
 \code{\link[=distrib_quantile.SkewNormal2Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.SkewNormal2Distrib]{distrib_rng()}},
-\code{\link[=distrib_grad_y.SkewNormal2Distrib]{distrib_grad_y()}},
-\code{\link[=distrib_hess_y.SkewNormal2Distrib]{distrib_hess_y()}}.
+\code{\link[=distrib_rng.SkewNormal2Distrib]{distrib_rng()}}.
 
-The parameter derivatives carry the parent's through the map by the
-partition sum of \code{\link[=chain_derivatives]{chain_derivatives()}}:
-\code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient()}},
-\code{\link[=distrib_hessian.SkewNormal2Distrib]{distrib_hessian()}},
-\code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_deriv3.SkewNormal2Distrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.SkewNormal2Distrib]{distrib_deriv4()}}.
+The derivatives in the parameters and in the response come from compiled
+kernels of the family's own, one per order and surface:
+\code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient()}} to
+\code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_deriv5()}},
+\code{\link[=distrib_grad_y.SkewNormal2Distrib]{distrib_grad_y()}} and the mixed
+derivatives. The expected information and its derivatives are series in
+\eqn{\gamma_1^{1/3}} near zero skewness and quadratures elsewhere:
+\code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian()}}.
 
 Three of the four moments are a parameter read back:
 \code{\link[=mean.SkewNormal2Distrib]{mean()}},
@@ -90,12 +89,13 @@ and is the parent's at the implied direct parameters.
 
 \section{The point at zero skewness}{
 
-The parameter derivatives are \strong{rejected} at \eqn{\gamma_1 = 0} exactly.
 The map runs through a cube root, so \eqn{\partial\alpha/\partial\gamma_1}
-is unbounded there; the first derivatives of the log-density have a finite
-limit but the second ones grow like \eqn{\gamma_1^{-2/3}}, so the point is
-excluded with a message rather than approximated. The \strong{density} and the
-distribution function are fine there and equal the Gaussian's.
+is unbounded at \eqn{\gamma_1 = 0}. The score has a finite limit there and
+is returned, and so is the expected information; the observed derivatives
+of order two and more in \eqn{\gamma_1} grow like \eqn{\gamma_1^{-2/3}}, and
+they and the derivatives of the expected information are rejected at
+\eqn{\gamma_1 = 0} exactly. The density and the distribution function equal
+the Gaussian's there.
 }
 
 \examples{

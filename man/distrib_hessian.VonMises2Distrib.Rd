@@ -16,6 +16,10 @@ vector of length 1 or of the length of \code{y}. \code{mu} must lie in
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{rho_rho} and
@@ -23,15 +27,14 @@ A named list of three numeric vectors, \code{mu_mu}, \code{rho_rho} and
 }
 \description{
 Computes the three distinct second derivatives of the log-density in
-\eqn{\mu} and \eqn{\rho}, one value per observation, in closed form. The
-concentration parametrization's second derivatives are carried through the
-one-variable chain rule,
-\deqn{\ell^{(\rho\rho)} = \ell^{(\kappa\kappa)}\{\kappa'(\rho)\}^2
-                         + \ell^{(\kappa)}\kappa''(\rho), \qquad
-      \ell^{(\mu\rho)} = \ell^{(\mu\kappa)}\kappa'(\rho),}
-with \eqn{\ell^{(\kappa\kappa)} = -A'(\kappa)},
-\eqn{\ell^{(\mu\kappa)} = \sin(y-\mu)} and
-\eqn{\ell^{(\mu\mu)} = -\kappa\cos(y-\mu)} unchanged.
+\eqn{\mu} and \eqn{\rho}, one value per observation, in closed form:
+\deqn{\ell^{(\mu\mu)} = -\kappa\cos(y-\mu), \qquad
+      \ell^{(\mu\rho)} = \sin(y-\mu)\,\kappa'(\rho), \qquad
+      \ell^{(\rho\rho)} = \{\cos(y-\mu) - \rho\}\kappa''(\rho)
+                         - \kappa'(\rho),}
+the last from differentiating the score's
+\eqn{\{\cos(y-\mu) - \rho\}\kappa'(\rho)}. The components are computed
+by a compiled kernel.
 
 Unlike in the concentration parametrization, the pure second derivative is
 \strong{not} free of the data: the term in \eqn{\kappa''} carries

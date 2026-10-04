@@ -117,7 +117,7 @@ test_that("the kernel does not depend on the count of threads", {
                      fn(d, rep(1, 3), th, threads = 2L))
   }
   # a parameter outside its domain reads NA rather than a partial sum
-  expect_true(all(is.na(unlist(pig2_expected_cpp(1, -1, 2, 0L)))))
+  expect_true(all(is.na(unlist(pig2_expected_cpp(1, -1, 2)))))
 })
 
 test_that("the two parametrizations are one law: pig1 is pig2 through the map", {

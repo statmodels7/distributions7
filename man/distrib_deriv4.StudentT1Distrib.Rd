@@ -14,23 +14,18 @@ numeric vector of length 1 or of the length of \code{y}. A component of length
 1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
-model is returned in place of the value at the data, computed numerically.
-Defaults to \code{FALSE}.}
+model is returned in place of the value at the data. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}, the strategy \code{\link[=expected_derivative]{expected_derivative()}} uses. Read only when
-\code{expected = TRUE}.}
-
-\item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+\item{approx, nsim}{Accepted for the generic's signature; the expectations
+are closed forms.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Read only on the observed branch. Defaults to \code{1L}.}
+use. Defaults to \code{1L}.}
 }
 \value{
 A named list of fifteen numeric vectors named for the multi-index
@@ -43,22 +38,16 @@ Student t log-density in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}. The observed
 values are closed form and run in a compiled kernel decomposed over the
 elements of the output, so they do not depend on the thread count.
 
-\strong{The expected values have no closed form.} With \code{expected = TRUE} the
-method calls \code{\link[=expected_derivative]{expected_derivative()}}, which integrates the observed
-derivatives against the density by the strategy \code{approx} names. That is the
-one place on this page where \code{approx} and \code{nsim} are read.
+The expected values are closed forms, as for the third order (see
+\code{\link[=distrib_deriv3.StudentT1Distrib]{distrib_deriv3.StudentT1Distrib()}}). \code{approx} and \code{nsim} are accepted for
+the generic's signature and ignored.
 }
 \section{Large degrees of freedom}{
 
-Unlike the third order, the fourth is \strong{not} rewritten in the ratio
-variables and ceases to be finite at a large \eqn{\nu}: measured at
-\eqn{\sigma = 1.2}, eight of the fifteen components are finite at
-\eqn{\nu = 10^{150}}, five at \eqn{10^{300}} and two at
-\code{.Machine$double.xmax}. A \code{NaN} there is a loud failure and is preferable to
-a plausible wrong number, and the regime is one in which the family is a
-Gaussian in all but name. An outer criterion that reads this order at a
-\eqn{\nu} run to its clamp is reported as having no finite gradient rather
-than being given one.
+Written like the third order, in \eqn{z}, \eqn{q = z^2/\nu} and
+\eqn{t = 1/(1+q)}, with the quantities of \eqn{\nu} alone on their
+asymptotic series above \eqn{\nu = 20}: all fifteen components keep their
+digits and stay finite to \code{.Machine$double.xmax}.
 }
 
 \examples{
@@ -76,14 +65,13 @@ up <- distrib_deriv3(d, y, list(mu = 0.4 + eps, sigma = 1.2, nu = 5))$mu_mu_mu
 dn <- distrib_deriv3(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 5))$mu_mu_mu
 all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-5)
 
-# At a degrees of freedom the log link can produce, part of the order is
-# not representable and says so.
+# At a degrees of freedom the log link can produce, every component is
+# finite.
 big <- distrib_deriv4(d, y, list(mu = 0.4, sigma = 1.2, nu = 1e300))
-sum(vapply(big, function(v) is.finite(v[1]), logical(1)))
+all(vapply(big, function(v) all(is.finite(v)), logical(1)))
 }
 \seealso{
 \code{\link[=distrib_deriv3.StudentT1Distrib]{distrib_deriv3.StudentT1Distrib()}} for the order below,
-\code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}} for the second order,
-\code{\link[=expected_derivative]{expected_derivative()}} for the numerical expectation, and
+\code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}} for the second order, and
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

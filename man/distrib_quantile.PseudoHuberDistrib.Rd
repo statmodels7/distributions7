@@ -57,6 +57,6 @@ q - 0.4
 }
 \seealso{
 \code{\link[=distrib_cdf.PseudoHuberDistrib]{distrib_cdf.PseudoHuberDistrib()}} for the function inverted here,
-\code{\link[=distrib_rng.PseudoHuberDistrib]{distrib_rng.PseudoHuberDistrib()}}, which draws by inverting it at uniform
-variates, and \code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
+\code{\link[=distrib_rng.PseudoHuberDistrib]{distrib_rng.PseudoHuberDistrib()}} for the generator, and
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

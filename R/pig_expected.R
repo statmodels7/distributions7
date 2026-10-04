@@ -44,6 +44,16 @@ NULL
 #' \eqn{\sigma \to 0}, where those in \eqn{\alpha} carry
 #' \eqn{\sigma^{-k}} and cancel.
 #'
+#' Near the Poisson limit even the forms in the score sum terms of size one to
+#' results of size \eqn{\sigma^2} or \eqn{\alpha^{-3}}. There, for
+#' \eqn{(1 + \mu)x \le 0.06} with \eqn{x = \sigma} (pig1) or \eqn{x = 1/\alpha}
+#' (pig2), the three quantities are taken from their series in \eqn{x}, to
+#' order 20, derived offline: the log-mass is the Poisson's plus a power series
+#' in \eqn{\sigma} whose coefficients are polynomials in \eqn{y}, so every
+#' expectation is a combination of Poisson moments and its coefficients are
+#' polynomials in \eqn{\mu} and \eqn{1/\mu}. The mixed entry of pig2 is zero at
+#' every order of that series, the parametrization being orthogonal.
+#'
 #' The `approx` and `nsim` arguments are accepted and ignored.
 #'
 #' @param distrib A `Pig1Distrib` or `Pig2Distrib` object.
@@ -58,7 +68,8 @@ NULL
 #'   [d2expected_names()].
 #'
 #' @seealso [distrib_expected_hessian()]; `pig1_expected_cpp()` and
-#'   `pig2_expected_cpp()` for the kernels.
+#'   `pig2_expected_cpp()` for the kernels, with `pig1_dexpected1_cpp()` and
+#'   the like for its derivatives.
 #'
 #' @examples
 #' d <- pig2_distrib()
@@ -76,7 +87,7 @@ S7::method(distrib_expected_hessian, Pig2Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
     approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
     threads = 1L) {
-  pig2_expected_cpp(y, theta[[1]], theta[[2]], 0L, threads)
+  pig2_expected_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 S7::method(distrib_dexpected_hessian, Pig2Distrib) <- function(
@@ -84,8 +95,10 @@ S7::method(distrib_dexpected_hessian, Pig2Distrib) <- function(
     approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
     threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
-                     function(k) pig2_expected_cpp(y, theta[[1]], theta[[2]],
-                                                   k, threads))
+                     function(k) {
+                       if (k == 1L) pig2_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
+                       else pig2_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)
+                     })
 }
 
 S7::method(distrib_d2expected_hessian, Pig2Distrib) <- function(
@@ -93,15 +106,17 @@ S7::method(distrib_d2expected_hessian, Pig2Distrib) <- function(
     approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
     threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
-                     function(k) pig2_expected_cpp(y, theta[[1]], theta[[2]],
-                                                   k, threads))
+                     function(k) {
+                       if (k == 1L) pig2_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
+                       else pig2_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)
+                     })
 }
 
 S7::method(distrib_expected_hessian, Pig1Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
     approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
     threads = 1L) {
-  pig1_expected_cpp(y, theta[[1]], theta[[2]], 0L, threads)
+  pig1_expected_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 S7::method(distrib_dexpected_hessian, Pig1Distrib) <- function(
@@ -109,8 +124,10 @@ S7::method(distrib_dexpected_hessian, Pig1Distrib) <- function(
     approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
     threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
-                     function(k) pig1_expected_cpp(y, theta[[1]], theta[[2]],
-                                                   k, threads))
+                     function(k) {
+                       if (k == 1L) pig1_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
+                       else pig1_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)
+                     })
 }
 
 S7::method(distrib_d2expected_hessian, Pig1Distrib) <- function(
@@ -118,8 +135,10 @@ S7::method(distrib_d2expected_hessian, Pig1Distrib) <- function(
     approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
     threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
-                     function(k) pig1_expected_cpp(y, theta[[1]], theta[[2]],
-                                                   k, threads))
+                     function(k) {
+                       if (k == 1L) pig1_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
+                       else pig1_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)
+                     })
 }
 
 # The sum over the support is exact and costs far more than the observed

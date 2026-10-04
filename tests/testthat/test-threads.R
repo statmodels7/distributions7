@@ -66,9 +66,11 @@ test_that("the transcendental families' kernels agree too", {
     both(fn, yb, rep(0.4, n), rep(5, n))
   }
   yt <- rt(n, df = 6)
-  for (fn in list(student_t_gradient_cpp, student_t_hessian_cpp,
-                  student_t_expected_hessian_cpp, student_t_deriv3_cpp,
-                  student_t_deriv4_cpp)) {
+  for (fn in list(student_t1_gradient_cpp, student_t1_hessian_cpp,
+                  student_t1_expected_hessian_cpp, student_t1_deriv3_cpp,
+                  student_t1_deriv4_cpp, student_t1_deriv5_cpp,
+                  student_t1_deriv3_expected_cpp, student_t1_dexpected2_cpp,
+                  student_t2_gradient_cpp, student_t2_deriv4_cpp)) {
     both(fn, yt, rep(0, n), rep(1.2, n), rep(6, n))
   }
   yi <- 1 / rgamma(n, shape = 3, rate = 2)
@@ -241,8 +243,17 @@ test_that("the newly converted kernels agree at 1 and 2 threads", {
   }
   both(bernoulli_gradient_cpp, as.numeric(rbinom(n, 1, .4)), runif(n, .2, .8))
   both(binomial_gradient_cpp, as.numeric(rbinom(n, 10, .4)), runif(n, .2, .8), 10)
-  both(gengamma_gradient_cpp, yp, vp, vq, vp + 0.5)
-  both(gpd_gradient_cpp, yp, vp, runif(n, 0.05, 0.4))
+  for (fn in list(gengamma1_gradient_cpp, gengamma1_hessian_cpp,
+                  gengamma1_deriv3_cpp, gengamma1_deriv5_cpp,
+                  gengamma1_deriv4_expected_cpp, gengamma1_dexpected2_cpp,
+                  gengamma1_hess_y_hess_cpp)) {
+    both(fn, yp, vp, vq, vp + 0.5)
+  }
+  for (fn in list(gpd_gradient_cpp, gpd_hessian_cpp, gpd_deriv3_cpp,
+                  gpd_deriv5_cpp, gpd_deriv4_expected_cpp, gpd_hess_y_hess_cpp,
+                  gpd_deriv4_cdf_lower_cpp, gpd_deriv3_surv_cpp)) {
+    both(fn, yp, vp, runif(n, 0.05, 0.4))
+  }
   both(skewnormal_deriv3_cpp, yr, vp, vq, runif(n, -1, 1))
   both(skewnormal_deriv4_cpp, yr, vp, vq, runif(n, -1, 1))
 })

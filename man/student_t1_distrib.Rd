@@ -35,10 +35,11 @@ An S7 object of class \code{StudentT1Distrib}, inheriting from
 Builds the distribution object for the location-scale Student t family,
 parametrized by a location \eqn{\mu}, a scale \eqn{\sigma > 0} and degrees
 of freedom \eqn{\nu > 0}. The returned object carries closed-form
-derivatives of the log-density to fourth order in the parameters, closed
-first and second derivatives in the response, and a closed expected Hessian;
-the expected third and fourth orders are the only quantities that go through
-a numerical route.
+derivatives of the log-density to fifth order in the parameters and to
+fourth order in the response, the mixed derivatives, and the expected
+information with its expected third and fourth orders and its first two
+derivatives, all closed forms; the derivatives of the distribution function
+in \eqn{\nu} are differenced.
 
 The family is the standard heavy-tailed alternative to a Gaussian. Its
 location score redescends, so a gross outlier contributes almost nothing to

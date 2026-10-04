@@ -56,7 +56,8 @@ NULL
 NULL
 
 register_dexpected(NegBin1Distrib, function(d, y, th, k, t)
-  negbin1_dexpected_cpp(y, th[[1]], th[[2]], k, t))
+  (if (k == 1L) negbin1_dexpected1_cpp(y, th[[1]], th[[2]], t)
+    else negbin1_dexpected2_cpp(y, th[[1]], th[[2]], t)))
 
 
 #' Derivatives of the Expected Information as Exact Sums Over a Finite Support
@@ -124,8 +125,10 @@ support_dexpected <- function(distrib, y, theta, order, N, threads = 1L) {
   out
 }
 
-register_dexpected(BetaBinom2Distrib, function(d, y, th, k, t)
-  betabinom_shapes_dexpected_cpp(y, th[[1]], th[[2]], d@size, k, t))
+register_dexpected(BetaBinom2Distrib, function(d, y, th, k, t) {
+  if (k == 1L) betabinom_shapes_dexpected1_cpp(y, th[[1]], th[[2]], d@size, t)
+  else betabinom_shapes_dexpected2_cpp(y, th[[1]], th[[2]], d@size, t)
+})
 register_dexpected(BetaBinom1Distrib, function(d, y, th, k, t)
   betabinom1_dexpected(y, th[[1]], th[[2]], d@size, k, t))
 
@@ -150,8 +153,7 @@ register_dexpected(BetaBinom1Distrib, function(d, y, th, k, t)
 #' @param threads Passed to the kernel.
 #'
 #' @return A named list on the parameter scale, keyed as [dexpected_names()]
-#'   at order 1 and as [dexpected_names()] followed by [d2expected_names()] at
-#'   order 2.
+#'   at order 1 and as [d2expected_names()] at order 2.
 #'
 #' @seealso [support_dexpected()], [dexpected_chain()]
 #'
@@ -159,20 +161,14 @@ register_dexpected(BetaBinom1Distrib, function(d, y, th, k, t)
 betabinom1_dexpected <- function(y, mu, sigma, size, order, threads = 1L) {
   n <- length(y)
   s <- sigma; m1 <- 1 - mu
-  kp <- betabinom_shapes_dexpected_cpp(y, mu / s, m1 / s, size, order, threads)
+  a <- mu / s; b <- m1 / s
+  kp <- betabinom_shapes_dexpected1_cpp(y, a, b, size, threads)
   Pp <- c("alpha", "beta"); Pn <- c("mu", "sigma")
-  s2 <- s * s; s3 <- s2 * s; s4 <- s3 * s
-  maps <- list(
-    list("1" = 1 / s, "2" = -mu / s2, "1,2" = -1 / s2, "2,2" = 2 * mu / s3,
-         "1,2,2" = 2 / s3, "2,2,2" = -6 * mu / s4),
-    list("1" = -1 / s, "2" = -m1 / s2, "1,2" = 1 / s2, "2,2" = 2 * m1 / s3,
-         "1,2,2" = -2 / s3, "2,2,2" = -6 * m1 / s4))
+  # the derivative of order k of the information reads the map to order k + 1
+  maps <- md_betabinom1(list(mu, sigma), order + 1L)
   E <- kp[hess_names(Pp)]
   d1 <- kp[dexpected_names(Pp)]
-  out <- dexpected_chain(Pp, Pn, E, d1, NULL, maps, 1L, n)
-  if (order == 2L) {
-    d2 <- kp[d2expected_names(Pp)]
-    out <- c(out, dexpected_chain(Pp, Pn, E, d1, d2, maps, 2L, n))
-  }
-  out
+  if (order == 1L) return(dexpected_chain(Pp, Pn, E, d1, NULL, maps, 1L, n))
+  d2 <- betabinom_shapes_dexpected2_cpp(y, a, b, size, threads)
+  dexpected_chain(Pp, Pn, E, d1, d2, maps, 2L, n)
 }

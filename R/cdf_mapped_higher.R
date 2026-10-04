@@ -182,7 +182,7 @@ register_mapped_cdf_k <- function(cls, parent_fn, th_fn, md_fn,
   make <- function(o) {
     force(o)
     function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
-      mapped_cdf_deriv_k(distrib, parent_fn(), th_fn(theta), md_fn(theta),
+      mapped_cdf_deriv_k(distrib, parent_fn(), th_fn(theta), md_fn(theta, o),
                          q, theta, o, lower.tail, log, q_par = q_fn(q))
     }
   }
@@ -247,7 +247,7 @@ S7::method(distrib_deriv3_cdf, ReparamContinuousDistrib) <-
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
     mapped_cdf_deriv_k(distrib, distrib@parent_distrib,
                        reparam_theta(distrib, theta),
-                       reparam_tables(distrib, theta),
+                       reparam_tables(distrib, theta, 3L),
                        q, theta, 3L, lower.tail, log)
   }
 
@@ -258,7 +258,7 @@ S7::method(distrib_deriv4_cdf, ReparamContinuousDistrib) <-
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
     mapped_cdf_deriv_k(distrib, distrib@parent_distrib,
                        reparam_theta(distrib, theta),
-                       reparam_tables(distrib, theta),
+                       reparam_tables(distrib, theta, 4L),
                        q, theta, 4L, lower.tail, log)
   }
 

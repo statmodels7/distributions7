@@ -16,6 +16,10 @@ vector of length 1 or of the length of \code{y}. \code{mu} must lie in
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{rho}, each of length
@@ -27,15 +31,16 @@ direction \eqn{\mu} and the mean resultant length \eqn{\rho}, one value per
 observation, in closed form:
 \deqn{\dfrac{\partial\ell}{\partial\mu} = \kappa\sin(y-\mu), \qquad
       \dfrac{\partial\ell}{\partial\rho}
-        = \left\{\cos(y-\mu) - A(\kappa)\right\}\kappa'(\rho),}
+        = \left\{\cos(y-\mu) - \rho\right\}\kappa'(\rho),}
 with \eqn{\kappa = A^{-1}(\rho)} and
 \eqn{\kappa'(\rho) = 1/A'(\kappa)} from the inverse function rule.
 
-The map touches the \strong{second parameter only}, so the chain rule is the
-one-variable one: the direction's component is unchanged from the
-concentration parametrization, and the second is that family's multiplied by
-a single factor. No multivariate expansion and no cancellation are involved
-at any order.
+The map touches the \strong{second parameter only}, so the direction's component
+is unchanged from the concentration parametrization. In the second,
+\eqn{\partial \log I_0(\kappa(\rho))/\partial\rho = A(\kappa)\kappa'(\rho)
+= \rho\,\kappa'(\rho)}, so the difference \eqn{\cos(y-\mu) - \rho} is
+formed from \eqn{\rho} itself. The components are computed by a compiled
+kernel.
 
 With \code{scale = "link"} the generic applies the chain rule for the links the
 family carries. This method always returns the parameter scale.
@@ -62,7 +67,7 @@ rbind(numeric = numDeriv::grad(fn, c(0.5, 0.7)),
 
 # The direction component is unchanged from the concentration
 # parametrization, the map touching the second parameter only.
-k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+k <- numericals7::bessel_i_ratio_inverse(0.7)
 all.equal(g$mu,
           distrib_gradient(vonmises1_distrib(), y,
                            list(mu = 0.5, kappa = k))$mu)

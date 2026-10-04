@@ -40,13 +40,12 @@ NULL
 #'   [`distrib_hessian()`][distrib_hessian.GPDDistrib],
 #'   [`distrib_expected_hessian()`][distrib_expected_hessian.GPDDistrib].
 #'
-#' Registered elsewhere: the third and fourth orders in `gpd_higher.R`
-#' ([`distrib_deriv3()`][distrib_deriv3.GPDDistrib],
-#' [`distrib_deriv4()`][distrib_deriv4.GPDDistrib]); the response derivatives
-#' and the mixed one in `cross_derivatives_families.R`
-#' ([`distrib_grad_y()`][distrib_grad_y], [`distrib_hess_y()`][distrib_hess_y],
-#' [`distrib_cross_y()`][distrib_cross_y]); the four moments in `moments.R`;
-#' and the second-order response derivatives in `theta2_more.R`.
+#' Registered elsewhere, compiled, in `gpd_higher.R`: the orders three to five
+#' ([`distrib_deriv3()`][distrib_deriv3.GPDDistrib]), the derivatives in the
+#' response ([`distrib_grad_y()`][distrib_grad_y.GPDDistrib]) and those of the
+#' distribution function ([`distrib_grad_cdf()`][distrib_grad_cdf.GPDDistrib]);
+#' the derivatives of the expected information in `dexpected_families.R`; and
+#' the four moments in `moments.R`.
 #'
 #' @section What the moving endpoint costs:
 #' The derivatives are correct as derivatives of the log-density at every
@@ -393,12 +392,11 @@ S7::method(distrib_rng, GPDDistrib) <- function(distrib, n, theta, ...) {
 #'
 #' The shape component is written this way only away from zero. Both of its
 #' terms blow up as \eqn{\xi \to 0} and their difference has the finite limit
-#' \eqn{z^2/2 - z}, so the kernel evaluates it through the analytic function
-#' \eqn{\Lambda(u) = \log(1+u)/u} instead, whose derivatives come from a
-#' recursion above \eqn{|u| = 1/2} and from a Taylor series below it. Measured
-#' at \eqn{z = 1}, the component reads \eqn{-0.4967}, \eqn{-0.49997},
-#' \eqn{-0.5000000} at \eqn{\xi = 10^{-2}, 10^{-4}, 10^{-8}} against the limit
-#' \eqn{-1/2}.
+#' \eqn{z^2/2 - z}, so the kernel evaluates it as
+#' \eqn{-z/t - z^2\phi'(u)}, \eqn{u = \xi z}, with
+#' \eqn{\phi(u) = \log(1+u)/u} computed as [distrib_deriv3.GPDDistrib()]
+#' describes; \eqn{\xi = 0} is an ordinary point of that form. \eqn{t} is
+#' formed from the exact product \eqn{\xi y}.
 #'
 #' @param distrib A `GPDDistrib` object, from [gpd_distrib()].
 #' @param y A numeric vector of observations.

@@ -7,9 +7,9 @@ test_that("a reparametrized family's mixed grid matches Richardson", {
   cases <- list(
     list(d = gaussian2_distrib(), th = list(mu = 0.4, sigma2 = 1.7), y = yr),
     list(d = gaussian3_distrib(), th = list(mu = 0.4, tau = 0.6), y = yr),
-    list(d = student_t2_distrib(), th = list(mu = 0.2, sigma = 1.3, nu = 8),
+    list(d = student_t2_by_reparam(), th = list(mu = 0.2, sigma = 1.3, nu = 8),
          y = yr),
-    list(d = lognormal2_distrib(), th = list(mean = 1.4, var = 0.7), y = yp)
+    list(d = lognormal2_by_reparam(), th = list(mean = 1.4, var = 0.7), y = yp)
   )
   for (cs in cases) {
     d <- cs$d

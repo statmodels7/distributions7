@@ -6,90 +6,51 @@
 \alias{distrib_d2expected_hessian.SkewNormal2Distrib}
 \title{Skew Normal Expected Information in the Centered Parametrization}
 \arguments{
-\item{distrib}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
+\item{distrib}{A \code{SkewNormal2Distrib} object.}
 
-\item{y}{A numeric vector. Its values do not enter the result, which is an
-expectation; only its length does, through recycling.}
+\item{y}{A numeric vector of observations, read for its length.}
 
-\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}. The
-skewness must not be exactly zero.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}.}
 
-\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}.}
+\item{scale}{\code{"parameter"} or \code{"link"}.}
 
-\item{approx, nsim}{Ignored.}
+\item{approx, nsim}{Accepted for the generics' signatures and unused.}
 
-\item{...}{Unused, and accepted so that the signature matches the generic's.}
+\item{...}{Unused.}
 
-\item{threads}{The thread count passed to the parent's kernels.}
+\item{threads}{A single positive integer, passed to the kernels behind the
+quadrature.}
 }
 \value{
-A named list of numeric vectors: for \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}
-six, in \code{\link[=hess_names]{hess_names()}}'s order, and for the two derivatives those keyed as
-\code{\link[=dexpected_names]{dexpected_names()}} and \code{\link[=d2expected_names]{d2expected_names()}}. Every entry is an
-expectation, so it does not depend on \code{y}.
+A named list keyed as \code{\link[=hess_names]{hess_names()}}, \code{\link[=dexpected_names]{dexpected_names()}} or
+\code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-Computes the expected second derivatives by carrying the parent's expected
-information through the same congruence the observed Hessian uses,
-\eqn{J^\top E[\ell''] J} with \eqn{J} the Jacobian of \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}, and
-through \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} and \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} its
-first and second derivatives in the parameters. The first-order term of the
-chain rule drops out under expectation, the score having mean zero.
-
-The matrix is \strong{non-singular at zero skewness}, which the direct
-parametrization's is not: there the score for \eqn{\alpha} is exactly
-proportional to the score for the location and the information loses a rank.
-Measured at \eqn{\mu = 0}, \eqn{\sigma = 1}, the eigenvalues here tend to
-2, 1 and \eqn{1/6} as \eqn{\gamma_1 \to 0}. Removing that singularity is
-what the centered parametrization is for.
+The expected information and its first two derivatives in the parameters.
+For \eqn{|\gamma_1| <} \code{\link[=sn2_ge]{sn2_ge()}} they come from their series in
+\eqn{r = (\gamma_1/c)^{1/3}}; elsewhere from the quadrature of
+\code{\link[=loc_scale_expected]{loc_scale_expected()}} over the family's own observed derivatives, the
+family being location-scale in \eqn{(\mu, \sigma)} at fixed
+\eqn{\gamma_1}.
 }
-\section{Where the parent's quantities come from}{
-The parent is \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, whose expected information and its two
-derivatives are one quadrature over \eqn{z} per distinct shape; see
-\code{\link[=distrib_expected_hessian.SkewNormal1Distrib]{distrib_expected_hessian.SkewNormal1Distrib()}}. The derivatives here are
-the parent's carried through the map by \code{\link[=dexpected_chain]{dexpected_chain()}}, which needs the
-map's partials to third order and reads them from \code{\link[=md_skewnormal2]{md_skewnormal2()}}.
+\details{
+The series is the series in \eqn{r} of the observed components integrated
+term by term against the series of the density, with gaussian moments,
+computed offline at 60 digits. It is asymptotic rather than convergent,
+and below the bound its terms fall under \eqn{10^{-20}} before they turn.
+The information is finite at \eqn{\gamma_1 = 0}, where it is
+\eqn{\mathrm{diag}(1, 2, 1/6)/\sigma^2} with the sign of a Hessian, but it is
+not analytic in \eqn{\gamma_1} there: \eqn{E[\ell_{\gamma_1\gamma_1}]}
+carries a term in \eqn{\gamma_1^{2/3}} and \eqn{E[\ell_{\mu\gamma_1}]} one
+in \eqn{\gamma_1^{4/3}}. Its derivatives in \eqn{\gamma_1} are therefore
+infinite at zero skewness, where the two derivative methods signal an
+error.
 }
-
-\section{Where the digits run out}{
-The congruence is a difference of terms of size \eqn{\gamma_1^{-2/3}}, so
-the limit is approached and then lost. Measured, the \eqn{\gamma_1}
-component is 0.16666782 against \eqn{1/6 = 0.16666667} at
-\eqn{\gamma_1 = 10^{-8}}, 0.1655 at \eqn{10^{-10}}, and \strong{negative} at
-\eqn{10^{-12}}. A fit does not visit those values, and a genuinely
-symmetric problem is better posed in \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.
-
-\code{approx} and \code{nsim} are accepted for the generic's sake and ignored.
-}
-
-\section{Errors}{
-
-Signals an error when any element of \code{gamma1} is exactly zero.
-}
-
 \examples{
 d <- skewnormal2_distrib()
-th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
-e <- distrib_expected_hessian(d, 0, th)
-names(e)
-
-# The information is positive definite, and stays so into symmetry, where
-# the direct parametrization loses a rank.
-info <- function(g) {
-  e <- distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, gamma1 = g))
-  M <- matrix(c(e$mu_mu, e$mu_sigma, e$mu_gamma1,
-                e$mu_sigma, e$sigma_sigma, e$sigma_gamma1,
-                e$mu_gamma1, e$sigma_gamma1, e$gamma1_gamma1), 3, 3)
-  eigen(-M, only.values = TRUE)$values
-}
-rbind(gamma1_0.5 = info(0.5), gamma1_1e_6 = info(1e-6))
-
-# Its own component tends to 1/6.
-c(limit = 1 / 6,
-  at_1e_6 = -distrib_expected_hessian(d, 0,
-              list(mu = 0, sigma = 1, gamma1 = 1e-6))$gamma1_gamma1)
+# finite at zero skewness, where the direct parametrization's is singular
+distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, gamma1 = 0))
 }
 \seealso{
-\code{\link[=distrib_hessian.SkewNormal2Distrib]{distrib_hessian.SkewNormal2Distrib()}} for the observed curvature,
-and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
+\code{\link[=loc_scale_expected]{loc_scale_expected()}}, \code{\link[=sn2_ge]{sn2_ge()}}.
 }

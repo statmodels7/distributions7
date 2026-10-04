@@ -9,7 +9,7 @@
 test_that("vonmises2 is the von Mises at the matching concentration", {
   d <- vonmises2_distrib()
   th <- list(mu = 0.5, rho = 0.7)
-  k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+  k <- numericals7::bessel_i_ratio_inverse(0.7)
   set.seed(2)
   y <- distrib_rng(d, 200, th)
   expect_identical(distrib_pdf(d, y, th),
@@ -25,7 +25,7 @@ test_that("vonmises2 is the von Mises at the matching concentration", {
   # the expected information in rho is the inverse of the one in kappa, which
   # is what a one-to-one change of a single parameter must give
   eh <- distrib_expected_hessian(d, 0, th)
-  expect_equal(eh[["rho_rho"]][1], -1 / numericals7::bessel_i_ratio_derivs(k)$d1, tolerance = 1e-10)
+  expect_equal(eh[["rho_rho"]][1], -1 / numericals7::bessel_i_ratio_d1(k), tolerance = 1e-10)
   expect_identical(eh[["mu_rho"]][1], 0)
 
   set.seed(9)
@@ -135,8 +135,10 @@ test_that("skewnormal2 agrees with the direct family at matching parameters", {
   expect_identical(distrib_pdf(d2, y, th2), distrib_pdf(d1, y, th1))
   expect_identical(distrib_cdf(d2, y, th2), distrib_cdf(d1, y, th1))
   # the response derivatives are the parent's, the coordinates having changed
-  # and the response not
-  expect_identical(distrib_grad_y(d2, y, th2), distrib_grad_y(d1, y, th1))
+  # and the response not; the centered family computes them with kernels of
+  # its own, so they agree to the last bits rather than identically
+  expect_equal(distrib_grad_y(d2, y, th2), distrib_grad_y(d1, y, th1), tolerance = 1e-13)
+  expect_equal(distrib_hess_y(d2, y, th2), distrib_hess_y(d1, y, th1), tolerance = 1e-13)
 })
 
 

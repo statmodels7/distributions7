@@ -568,12 +568,14 @@ S7::method(distrib_expected_hessian, Gamma1Distrib) <- function(distrib, y, thet
 #' @keywords internal
 S7::method(distrib_dexpected_hessian, Gamma1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
-                     function(k) gamma1_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
+                     function(k) (if (k == 1L) gamma1_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
+                       else gamma1_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)))
 }
 
 S7::method(distrib_d2expected_hessian, Gamma1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
-                     function(k) gamma1_dexpected_cpp(y, theta[[1]], theta[[2]], k, threads))
+                     function(k) (if (k == 1L) gamma1_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
+                       else gamma1_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)))
 }
 
 #' @title Gamma Third-Order Derivatives in Mean and Dispersion

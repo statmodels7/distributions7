@@ -386,96 +386,7 @@ S7::method(distrib_cross_y, Weibull1Distrib) <- function(distrib, y, theta,
        sigma = (1 - w - sg * w * L) / y)
 }
 
-#' @title Generalized Pareto Mixed Derivatives
-#' @name distrib_cross_y.GPDDistrib
-#' @description
-#' Closed form at both parameters, from
-#' \eqn{\ell^{(y)} = -(\xi+1)/(\sigma t)} with \eqn{t = 1 + \xi y/\sigma}:
-#' the scale gives \eqn{(\xi+1)(t - \xi z)/(\sigma^2 t^2)} and the shape
-#' \eqn{-1/(\sigma t) + (\xi+1)y/(\sigma^2 t^2)}. Neither carries a
-#' \eqn{1/\xi}, so the shape direction needs no series at the exponential
-#' limit.
-#' @param distrib A `GPDDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list containing `sigma` and `xi`.
-#' @param scale Handled by the generic before dispatch.
-#' @param ... Unused.
-#' @return A named list with components `sigma` and `xi`, each a numeric vector of
-#'   length `length(y)`. Measured against Richardson on the analytic
-#'   response gradient the worst is \eqn{4.9\times10^{-11}} relative.
-#'
-#' @seealso [gpd_distrib()] for the family and for the removable singularity at
-#'   \eqn{\xi = 0}; [distrib_grad_y.GPDDistrib()] for the quantity
-#'   differentiated; [distrib_cross_y()] for the generic.
-#' @keywords internal
-S7::method(distrib_cross_y, GPDDistrib) <- function(distrib, y, theta,
-                                                    scale = c("parameter", "link"),
-                                                    ...) {
-  sg <- theta[[1]]
-  xi <- theta[[2]]
-  z <- y / sg
-  t <- 1 + xi * z
-  list(sigma = (xi + 1) * (t - xi * z) / (sg^2 * t^2) + 0 * y,
-       xi = -1 / (sg * t) + (xi + 1) * y / (sg^2 * t^2))
-}
-
-
 # --- the response derivatives two families were missing --------------------
-
-#' @title Generalized Pareto Response Derivatives
-#' @name distrib_grad_y.GPDDistrib
-#' @description
-#' Closed form: \eqn{\ell^{(y)} = -(\xi+1)/(\sigma t)} and
-#' \eqn{\ell^{(yy)} = \xi(\xi+1)/(\sigma t)^2}, with
-#' \eqn{t = 1 + \xi y/\sigma}.
-#' @param distrib A `GPDDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list containing `sigma` and `xi`.
-#' @param ... Unused.
-#' @return A numeric vector.
-#' @keywords internal
-S7::method(distrib_grad_y, GPDDistrib) <- function(distrib, y, theta, ...) {
-  sg <- theta[[1]]
-  xi <- theta[[2]]
-  -(xi + 1) / (sg * (1 + xi * y / sg)) + 0 * y
-}
-
-#' @rdname distrib_grad_y.GPDDistrib
-#' @name distrib_hess_y.GPDDistrib
-#' @keywords internal
-S7::method(distrib_hess_y, GPDDistrib) <- function(distrib, y, theta, ...) {
-  sg <- theta[[1]]
-  xi <- theta[[2]]
-  t <- 1 + xi * y / sg
-  xi * (xi + 1) / (sg * t)^2 + 0 * y
-}
-
-#' @title Generalized Gamma Response Derivatives
-#' @name distrib_grad_y.GenGamma1Distrib
-#' @description
-#' Closed form. With \eqn{w = (y/a)^p},
-#' \eqn{\ell^{(y)} = ((d-1) - pw)/y} and
-#' \eqn{\ell^{(yy)} = (pw(1-p) - (d-1))/y^2}.
-#' @param distrib A `GenGamma1Distrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list containing `a`, `d` and `p`.
-#' @param ... Unused.
-#' @return A numeric vector.
-#' @keywords internal
-S7::method(distrib_grad_y, GenGamma1Distrib) <- function(distrib, y, theta, ...) {
-  w <- (y / theta[[1]])^theta[[3]]
-  ((theta[[2]] - 1) - theta[[3]] * w) / y
-}
-
-#' @rdname distrib_grad_y.GenGamma1Distrib
-#' @name distrib_hess_y.GenGamma1Distrib
-#' @keywords internal
-S7::method(distrib_hess_y, GenGamma1Distrib) <- function(distrib, y, theta, ...) {
-  p <- theta[[3]]
-  w <- (y / theta[[1]])^p
-  (p * w * (1 - p) - (theta[[2]] - 1)) / y^2
-}
-
 
 # --- families written as a map of another ----------------------------------
 #
@@ -537,7 +448,7 @@ S7::method(distrib_cross_y, ReparamContinuousDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
     mapped_cross_y(distrib, distrib@parent_distrib,
                    reparam_theta(distrib, theta),
-                   reparam_tables(distrib, theta), y)
+                   reparam_tables(distrib, theta, 1L), y)
   }
 
 #' @title Inverse Gaussian Response and Mixed Derivatives in Mean and Shape
@@ -573,7 +484,7 @@ S7::method(distrib_cross_y, InvGauss2Distrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
     mapped_cross_y(distrib, invgauss1_distrib(),
                    list(mu = theta[[1]], phi = 1 / theta[[2]]),
-                   md_invgauss2(theta), y)
+                   md_invgauss2(theta, 1L), y)
   }
 
 #' @title von Mises Response and Mixed Derivatives in the Resultant Length
@@ -589,18 +500,18 @@ S7::method(distrib_cross_y, InvGauss2Distrib) <-
 #' @return A numeric vector.
 #' @keywords internal
 S7::method(distrib_grad_y, VonMises2Distrib) <- function(distrib, y, theta, ...) {
-  p <- vm2_parts(theta)
   distrib_grad_y(vonmises1_distrib(), y,
-                 list(mu = theta[[1]], kappa = p$kappa))
+                 list(mu = theta[[1]],
+                      kappa = numericals7::bessel_i_ratio_inverse(theta[[2]])))
 }
 
 #' @rdname distrib_grad_y.VonMises2Distrib
 #' @name distrib_hess_y.VonMises2Distrib
 #' @keywords internal
 S7::method(distrib_hess_y, VonMises2Distrib) <- function(distrib, y, theta, ...) {
-  p <- vm2_parts(theta)
   distrib_hess_y(vonmises1_distrib(), y,
-                 list(mu = theta[[1]], kappa = p$kappa))
+                 list(mu = theta[[1]],
+                      kappa = numericals7::bessel_i_ratio_inverse(theta[[2]])))
 }
 
 #' @rdname distrib_grad_y.VonMises2Distrib
@@ -609,9 +520,10 @@ S7::method(distrib_hess_y, VonMises2Distrib) <- function(distrib, y, theta, ...)
 #' @keywords internal
 S7::method(distrib_cross_y, VonMises2Distrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-    p <- vm2_parts(theta)
+    kappa <- numericals7::bessel_i_ratio_inverse(theta[[2]])
     one <- rep_len(1, max(lengths(theta[1:2])))
     mapped_cross_y(distrib, vonmises1_distrib(),
-                   list(mu = theta[[1]], kappa = p$kappa),
-                   list(list("1" = one), list("2" = p$kd$d1)), y)
+                   list(mu = theta[[1]], kappa = kappa),
+                   list(list("1" = one),
+                        list("2" = numericals7::bessel_i_ratio_inverse_d1(kappa))), y)
   }

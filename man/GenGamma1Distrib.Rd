@@ -69,9 +69,10 @@ Registered in this file, the last three compiled:
 \code{\link[=distrib_hessian.GenGamma1Distrib]{distrib_hessian()}},
 \code{\link[=distrib_expected_hessian.GenGamma1Distrib]{distrib_expected_hessian()}}.
 
-Registered elsewhere: the third and fourth orders in \code{gengamma1_higher.R};
-the response derivatives in \code{cross_derivatives_families.R}; the mixed one in
-\code{cross_derivatives_simple.R}; and the four moments in \code{moments.R}.
+Registered elsewhere: the orders three to five and the derivatives in the
+response, compiled, in \code{gengamma1_higher.R}; the derivatives of the expected
+information in \code{dexpected_reparam.R}; and the four moments in \code{moments.R}.
+The derivatives of the distribution function are numerical.
 }
 
 \section{The one representation everything rests on}{
