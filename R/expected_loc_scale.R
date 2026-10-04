@@ -110,13 +110,23 @@ loc_scale_expected <- function(distrib, theta, order, n, threads = 1L) {
     val[idx] / sig^k
   }
 
+  # the diagonal entries, and the derivative of each in its own parameter,
+  # from the compiled rule that the scalar registry reads as well
+  cls <- attr(S7::S7_class(distrib), "name")
+  D <- if (cls %in% loc_scale_compiled()) {
+    loc_scale_diag_cpp(cls, U, order, threads)
+  }
+
   pairs <- which(upper.tri(diag(p), diag = TRUE), arr.ind = TRUE)
   out <- list()
   if (order == 0L) {
     for (r in seq_len(nrow(pairs))) {
       a <- pairs[r, 1L]; b <- pairs[r, 2L]
-      out[[hess_pair_name(params, a, b)]] <-
+      out[[hess_pair_name(params, a, b)]] <- if (a == b && !is.null(D)) {
+        scaled(D$info[, a], c(a, b))
+      } else {
         scaled(integrate_rows(H[[hess_pair_name(params, a, b)]]), c(a, b))
+      }
     }
     return(out[hess_names(params)])
   }
@@ -124,8 +134,12 @@ loc_scale_expected <- function(distrib, theta, order, n, threads = 1L) {
     a <- pairs[r, 1L]; b <- pairs[r, 2L]
     Hab <- H[[hess_pair_name(params, a, b)]]
     for (c in seq_len(p)) {
-      v <- T3[[nm_k(c(a, b, c))]] + Hab * g[[c]]
-      out[[dexpected_key(params, a, b, c)]] <- scaled(integrate_rows(v), c(a, b, c))
+      out[[dexpected_key(params, a, b, c)]] <- if (a == b && b == c && !is.null(D)) {
+        scaled(D$dinfo[, a], c(a, b, c))
+      } else {
+        v <- T3[[nm_k(c(a, b, c))]] + Hab * g[[c]]
+        scaled(integrate_rows(v), c(a, b, c))
+      }
     }
     if (order == 2L) {
       for (s in seq_len(nrow(pairs))) {
@@ -140,6 +154,20 @@ loc_scale_expected <- function(distrib, theta, order, n, threads = 1L) {
   }
   out
 }
+
+
+#' The Families Whose Location-Scale Diagonal Is Compiled
+#'
+#' @description
+#' Returns the class names of the families for which [loc_scale_expected()]
+#' takes the diagonal of the expected information, and the derivative of each
+#' diagonal entry in its own parameter, from compiled code. The same code
+#' serves the scalar C registry, so the two routes agree to the last bit.
+#'
+#' @return A character vector of S7 class names.
+#'
+#' @keywords internal
+loc_scale_compiled <- function() c("SkewNormal1Distrib", "SkewTDistrib")
 
 
 #' The Quadrature Rule of the Location-Scale Expectations

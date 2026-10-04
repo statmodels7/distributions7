@@ -35,6 +35,8 @@
 #include "pt_beta2.h"
 #include "pt_enet.h"
 #include "pt_negbin1.h"
+#include "pt_skewnormal1.h"
+#include "pt_skewt.h"
 
 // The scalar C entry points of the fast route piano_parallel.txt section 2a
 // describes: the score and the second derivative of the log-density in ONE
@@ -94,7 +96,9 @@ const char* const d7_scalar_classes[] = {
     "Weibull1Distrib",      // 30
     "Beta2Distrib",         // 31
     "EnetDistrib",          // 32
-    "NegBin1Distrib"        // 33
+    "NegBin1Distrib",       // 33
+    "SkewNormal1Distrib",   // 34
+    "SkewTDistrib"          // 35
 };
 
 const int d7_n_scalar_classes =
@@ -105,12 +109,14 @@ const int d7_n_scalar_classes =
 extern "C" {
 
 // Called once by the consumer on its own thread, before any loop: the von
-// Mises families resolve numericals7's Bessel-ratio entry points here, so
-// that no lookup into R happens later from a worker.
+// Mises families resolve numericals7's Bessel-ratio entry points here, and
+// the skew t numericals7's t distribution function, so that no lookup into R
+// happens later from a worker.
 int d7_scalar_id(const char* cls) {
     for (int i = 0; i < d7_n_scalar_classes; ++i) {
         if (std::strcmp(cls, d7_scalar_classes[i]) == 0) {
             if (std::strncmp(cls, "VonMises", 8) == 0) d7::vm_bessel();
+            if (std::strcmp(cls, "SkewTDistrib") == 0) d7::skewt_pt();
             return i;
         }
     }
@@ -156,6 +162,8 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
     case 31: d7::beta2_score_curv(k, y, th, out); break;
     case 32: d7::enet_score_curv(k, y, th, out); break;
     case 33: d7::negbin1_score_curv(k, y, th, out); break;
+    case 34: d7::skewnormal1_score_curv(k, y, th, out); break;
+    case 35: d7::skewt_score_curv(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }
@@ -168,9 +176,11 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
 // lgammafn and dt at positive arguments, where nmath's warnings (precision
 // near a negative integer, lgammacor's underflow past 3.7e306, reached only
 // above 4.9e6) cannot fire; dnorm and pnorm, whose only warning is the
-// silent ME_DOMAIN; and numericals7's Bessel ratio, which is plain C. A
-// family whose entries evaluate a function that may warn (pt, pbeta,
-// lchoose at a non-integer, the Bessel K) answers 0.
+// silent ME_DOMAIN; numericals7's Bessel ratio, which is plain C; and
+// numericals7's n7_pt, R's pt() compiled without its warnings. The
+// quadrature families (pt_loc_scale.h) keep their cache in thread-local
+// storage. A family whose entries evaluate a function that may warn (R's
+// pt, pbeta, lchoose at a non-integer, the Bessel K) answers 0.
 int d7_scalar_thread_safe(int id) {
     if (id < 0 || id >= d7_n_scalar_classes) return -1;
     return 1;
@@ -214,6 +224,8 @@ void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
     case 31: d7::beta2_info_dinfo(k, y, th, out); break;
     case 32: d7::enet_info_dinfo(k, y, th, out); break;
     case 33: d7::negbin1_info_dinfo(k, y, th, out); break;
+    case 34: d7::skewnormal1_info_dinfo(k, y, th, out); break;
+    case 35: d7::skewt_info_dinfo(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }

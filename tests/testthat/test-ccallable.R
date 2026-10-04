@@ -41,7 +41,9 @@ ccallable_families <- list(
   Weibull1Distrib = function() weibull1_distrib(),
   Beta2Distrib = function() beta2_distrib(),
   EnetDistrib = function() enet_distrib(),
-  NegBin1Distrib = function() negbin1_distrib()
+  NegBin1Distrib = function() negbin1_distrib(),
+  SkewNormal1Distrib = function() skewnormal1_distrib(),
+  SkewTDistrib = function() skewt_distrib()
 )
 
 # the constants a family carries besides its parameters follow the
@@ -69,7 +71,7 @@ test_that("every covered class has a constructor in this file", {
   expect_setequal(d7_scalar_classes_covered(), names(ccallable_families))
 })
 
-ccallable_twin <- function(cls, eta_range, seed) {
+ccallable_twin <- function(cls, eta_range, seed, const_shape = FALSE) {
   d <- ccallable_families[[cls]]()
   set.seed(seed)
   n <- 80
@@ -77,6 +79,9 @@ ccallable_twin <- function(cls, eta_range, seed) {
     linkfunctions7::linkinv(d@link_params[[p]],
                             runif(n, eta_range[1], eta_range[2])))
   names(th) <- d@params
+  # one shape for every observation, which the quadrature families' cache
+  # serves after the first call
+  if (const_shape) th[-(1:2)] <- lapply(th[-(1:2)], function(v) rep(v[1], n))
   # one draw per observation at its own parameters: the von Mises rng
   # recycles a per-observation kappa against its proposals
   y <- vapply(seq_len(n), function(i) distrib_rng(d, 1, lapply(th, `[`, i)), 0)
@@ -106,6 +111,11 @@ test_that("the scalar entries are the vector kernels, bit for bit", {
     # wider, so that the series branches of the remainders are reached
     ccallable_twin(cls, c(-4.5, 5), 2)
   }
+  for (cls in loc_scale_compiled()) ccallable_twin(cls, c(-1, 1), 3, TRUE)
+})
+
+test_that("the compiled quadrature rule is the R rule", {
+  expect_identical(loc_scale_rule_cpp(), loc_scale_rule())
 })
 
 test_that("an unknown family answers -1", {

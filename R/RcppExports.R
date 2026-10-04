@@ -945,6 +945,14 @@ laplace_deriv4_expected_cpp <- function(y, mu, b, threads = 1L) {
     .Call(`_distributions7_laplace_deriv4_expected_cpp`, y, mu, b, threads)
 }
 
+loc_scale_rule_cpp <- function() {
+    .Call(`_distributions7_loc_scale_rule_cpp`)
+}
+
+loc_scale_diag_cpp <- function(fam, U, order, threads = 1L) {
+    .Call(`_distributions7_loc_scale_diag_cpp`, fam, U, order, threads)
+}
+
 logistic_gradient_cpp <- function(y, mu, sigma, threads = 1L) {
     .Call(`_distributions7_logistic_gradient_cpp`, y, mu, sigma, threads)
 }

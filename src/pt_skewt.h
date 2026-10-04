@@ -4,6 +4,7 @@
 #include <Rcpp.h>
 #include <cmath>
 #include <algorithm>
+#include "pt_loc_scale.h"
 
 // Azzalini's skew t in (mu, sigma, alpha, nu): one function per component
 // and order for the score and the diagonal of the Hessian, called by the
@@ -119,6 +120,154 @@ inline double skewt_hess_nu_nu(const double* lp, double h) {
     double acc = 0.0;
     for (int k = 0; k < 5; ++k) acc = acc + kSkewtW2[k] * lp[k];
     return acc / (h * h);
+}
+
+// The third derivatives on the diagonal. Those in (mu, sigma, alpha) are
+// skewt_msa_tower() and skewt_msa_component() (skewt_distrib.R) written in
+// C: with u = z sqrt((nu+1)/(nu+z^2)), w = alpha u, Q = t_{nu+1}(w)/T_{nu+1}(w)
+// and its w-derivatives q1, q2 by the Riccati recursion, L1 to L3 are the
+// z-derivatives of log t_nu(z) + log T_{nu+1}(alpha u(z)). The powers are
+// R_pow(), which is what R's ^ evaluates (powl() on 64-bit Windows).
+struct SkewtD3 { double z, u, q2, L1, L2, L3; };
+
+inline SkewtD3 skewt_d3_pieces(double y, double mu, double sigma,
+                               double alpha, double nu) {
+    SkewtD3 D;
+    double z = (y - mu) / sigma;
+    double m = nu + 1.0;
+    double s = nu + z * z;
+    double rm = std::sqrt(m);
+    double u = z * rm / std::sqrt(s);
+    double u1 = nu * rm * R_pow(s, -1.5);
+    double u2 = -3.0 * nu * rm * z * R_pow(s, -2.5);
+    double u3 = -3.0 * nu * rm * (nu - 4.0 * z * z) * R_pow(s, -3.5);
+    double gz1 = -m * z / s;
+    double gz2 = -m * (nu - z * z) / (s * s);
+    double gz3 = 2.0 * m * z * (3.0 * nu - z * z) / R_pow(s, 3.0);
+    double w = alpha * u;
+    double q = std::exp(R::dt(w, m, 1) - skewt_pt()(w, m, 1, 1));
+    double mw = m + w * w;
+    double g0 = -(m + 1.0) * w / mw;
+    double g1 = -(m + 1.0) * (m - w * w) / (mw * mw);
+    double q1 = q * (g0 - q);
+    double q2 = q1 * (g0 - q) + q * (g1 - q1);
+    D.z = z;
+    D.u = u;
+    D.q2 = q2;
+    D.L1 = gz1 + q * alpha * u1;
+    D.L2 = gz2 + (q * alpha * u2 + q1 * (alpha * alpha) * (u1 * u1));
+    D.L3 = gz3 + (q * alpha * u3 + q1 * (alpha * alpha) * (3.0 * u1 * u2) +
+                  q2 * R_pow(alpha, 3.0) * R_pow(u1, 3.0));
+    return D;
+}
+
+inline double skewt_d3_mu_mu_mu(const SkewtD3& D, double sigma) {
+    return -D.L3 / R_pow(sigma, 3.0);
+}
+
+inline double skewt_d3_sigma_sigma_sigma(const SkewtD3& D, double sigma) {
+    double z = D.z;
+    double acc = 6.0 * z * D.L1 + 6.0 * (z * z) * D.L2 +
+        R_pow(z, 3.0) * D.L3;
+    double s3 = R_pow(sigma, 3.0);
+    return -acc / s3 + -2.0 / s3;
+}
+
+inline double skewt_d3_alpha_alpha_alpha(const SkewtD3& D) {
+    return R_pow(D.u, 3.0) * D.q2;
+}
+
+// lp[k] the log-density at nu + (k - 2) h, k = 0..4; lp[2] is not read
+inline double skewt_d3_nu_nu_nu(const double* lp, double h) {
+    const double w3[5] = {-0.5, 1.0, 0.0, -1.0, 0.5};
+    double acc = 0.0;
+    for (int k = 0; k < 5; ++k) {
+        if (w3[k] == 0.0) continue;
+        acc = acc + w3[k] * lp[k];
+    }
+    return acc / R_pow(h, 3.0);
+}
+
+// the routers of the scalar registry: th = (mu, sigma, alpha, nu)
+inline void skewt_score_curv(int k, double y, const double* th, double* out) {
+    const double m = th[0], s = th[1], a = th[2], v = th[3];
+    if (k < 3) {
+        const SkewtPieces P = skewt_pieces(y, m, s, a, v);
+        if (k == 0) {
+            out[0] = skewt_score_mu(P, s);
+            out[1] = skewt_hess_mu_mu(P, s);
+        } else if (k == 1) {
+            out[0] = skewt_score_sigma(P, s);
+            out[1] = skewt_hess_sigma_sigma(P, s);
+        } else {
+            out[0] = skewt_score_alpha(P);
+            out[1] = skewt_hess_alpha_alpha(P);
+        }
+        return;
+    }
+    const double h = skewt_nu_step(v);
+    double lp[5];
+    for (int j = 0; j < 5; ++j) lp[j] = skewt_logpdf(y, m, s, a, v + (j - 2) * h);
+    out[0] = skewt_score_nu(lp, h);
+    out[1] = skewt_hess_nu_nu(lp, h);
+}
+
+// the standardized diagonal pair of parameter k at shape = (alpha, nu), by
+// the rule of pt_loc_scale.h
+inline void skewt_quad_diag(int k, const double* shape, double* out,
+                            bool want_d) {
+    const double a = shape[0], v = shape[1];
+    const LocScaleRule R = loc_scale_rule();
+    const double h = skewt_nu_step(v);
+    LocScaleSum S;
+    for (int j = 0; j < R.n; ++j) {
+        const double z = R.x[j];
+        double g = 0.0, H, T3 = 0.0;
+        if (k < 3) {
+            const double fw = std::exp(skewt_logpdf(z, 0.0, 1.0, a, v)) * R.w[j];
+            if (fw == 0.0) continue;
+            const SkewtPieces P = skewt_pieces(z, 0.0, 1.0, a, v);
+            if (k == 0) H = skewt_hess_mu_mu(P, 1.0);
+            else if (k == 1) H = skewt_hess_sigma_sigma(P, 1.0);
+            else H = skewt_hess_alpha_alpha(P);
+            if (!want_d) { S.add0(fw, H); continue; }
+            const SkewtD3 D = skewt_d3_pieces(z, 0.0, 1.0, a, v);
+            if (k == 0) {
+                g = skewt_score_mu(P, 1.0);
+                T3 = skewt_d3_mu_mu_mu(D, 1.0);
+            } else if (k == 1) {
+                g = skewt_score_sigma(P, 1.0);
+                T3 = skewt_d3_sigma_sigma_sigma(D, 1.0);
+            } else {
+                g = skewt_score_alpha(P);
+                T3 = skewt_d3_alpha_alpha_alpha(D);
+            }
+            S.add(fw, g, H, T3);
+        } else {
+            double lp[5];
+            lp[2] = skewt_logpdf(z, 0.0, 1.0, a, v);
+            const double fw = std::exp(lp[2]) * R.w[j];
+            if (fw == 0.0) continue;
+            for (int i = 0; i < 5; ++i) {
+                if (i != 2) lp[i] = skewt_logpdf(z, 0.0, 1.0, a, v + (i - 2) * h);
+            }
+            H = skewt_hess_nu_nu(lp, h);
+            if (!want_d) { S.add0(fw, H); continue; }
+            g = skewt_score_nu(lp, h);
+            T3 = skewt_d3_nu_nu_nu(lp, h);
+            S.add(fw, g, H, T3);
+        }
+    }
+    S.result(out);
+}
+
+inline void skewt_info_dinfo(int k, double y, const double* th, double* out) {
+    (void) y;
+    double std2[2];
+    loc_scale_cached(1, k, th + 2, 2, [&](double* v) {
+        skewt_quad_diag(k, th + 2, v, true);
+    }, std2);
+    loc_scale_unstandardize(k, th[1], std2, out);
 }
 
 } // namespace d7

@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_skewnormal1.h"
 using namespace Rcpp;
 
 // Third/fourth-order derivatives of the Azzalini skew normal log-density.
@@ -64,16 +65,16 @@ List skewnormal_deriv3_cpp(NumericVector y, NumericVector mu,
         double h2 = -1.0 + a * a * g[2];
         double h3 = a * a * a * g[3];
 
-        mu_mu_mu[i] = -h3 / s3;
+        mu_mu_mu[i] = d7::skewnormal1_d3_mu_mu_mu(s, a, g[3]);
         mu_mu_sigma[i] = -(z * h3 + 2.0 * h2) / s3;
         mu_mu_alpha[i] = a * (2.0 * g[2] + t * g[3]) / s2;
         mu_sigma_sigma[i] = -(z2 * h3 + 4.0 * z * h2 + 2.0 * h1) / s3;
         mu_sigma_alpha[i] = (g[1] + 3.0 * t * g[2] + t2 * g[3]) / s2;
         mu_alpha_alpha[i] = -z * (2.0 * g[2] + t * g[3]) / s;
-        sigma_sigma_sigma[i] = -(2.0 + 6.0 * z * h1 + 6.0 * z2 * h2 + z3 * h3) / s3;
+        sigma_sigma_sigma[i] = d7::skewnormal1_d3_sigma_sigma_sigma(z, s, a, g[1], g[2], g[3]);
         sigma_sigma_alpha[i] = z * (2.0 * g[1] + 4.0 * t * g[2] + t2 * g[3]) / s2;
         sigma_alpha_alpha[i] = -z2 * (2.0 * g[2] + t * g[3]) / s;
-        alpha_alpha_alpha[i] = z3 * g[3];
+        alpha_alpha_alpha[i] = d7::skewnormal1_d3_alpha_alpha_alpha(z, g[3]);
     });
 
     return List::create(

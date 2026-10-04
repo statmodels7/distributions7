@@ -3296,6 +3296,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// loc_scale_rule_cpp
+List loc_scale_rule_cpp();
+RcppExport SEXP _distributions7_loc_scale_rule_cpp() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(loc_scale_rule_cpp());
+    return rcpp_result_gen;
+END_RCPP
+}
+// loc_scale_diag_cpp
+List loc_scale_diag_cpp(std::string fam, NumericMatrix U, int order, int threads);
+RcppExport SEXP _distributions7_loc_scale_diag_cpp(SEXP famSEXP, SEXP USEXP, SEXP orderSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type fam(famSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type U(USEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(loc_scale_diag_cpp(fam, U, order, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // logistic_gradient_cpp
 List logistic_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
 RcppExport SEXP _distributions7_logistic_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
@@ -6203,6 +6227,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_laplace_deriv3_expected_cpp", (DL_FUNC) &_distributions7_laplace_deriv3_expected_cpp, 4},
     {"_distributions7_laplace_deriv4_cpp", (DL_FUNC) &_distributions7_laplace_deriv4_cpp, 4},
     {"_distributions7_laplace_deriv4_expected_cpp", (DL_FUNC) &_distributions7_laplace_deriv4_expected_cpp, 4},
+    {"_distributions7_loc_scale_rule_cpp", (DL_FUNC) &_distributions7_loc_scale_rule_cpp, 0},
+    {"_distributions7_loc_scale_diag_cpp", (DL_FUNC) &_distributions7_loc_scale_diag_cpp, 4},
     {"_distributions7_logistic_gradient_cpp", (DL_FUNC) &_distributions7_logistic_gradient_cpp, 4},
     {"_distributions7_logistic_hessian_cpp", (DL_FUNC) &_distributions7_logistic_hessian_cpp, 4},
     {"_distributions7_logistic_expected_hessian_cpp", (DL_FUNC) &_distributions7_logistic_expected_hessian_cpp, 4},
