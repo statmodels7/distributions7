@@ -236,7 +236,7 @@ fold_ratio <- function(parent, x, theta, order, params, w) {
 #' or fourth order; the same two functions serve every order the parent
 #' supplies.
 #'
-#' @param order The derivative order, `3L` or `4L`.
+#' @param order The derivative order, `3L`, `4L` or `5L`.
 #'
 #' @return A function with the signature of `distrib_deriv3()`, suitable for
 #'   `S7::method(...) <- `.

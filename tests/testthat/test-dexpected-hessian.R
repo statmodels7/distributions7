@@ -508,3 +508,27 @@ test_that("the Student t third derivatives hold their limit far in the tails", {
     expect_true(all(is.finite(unlist(far))))
   }
 })
+
+test_that("the truncated derivatives agree with Richardson on the analytic order below", {
+  skip_if_not_installed("numDeriv")
+  cases <- list(
+    list(d = truncated(poisson_distrib(), lower = 1), th = list(mu = 2.3)),
+    list(d = truncated(negbin2_distrib(), lower = 1), th = list(mu = 1.7, theta = 0.8)),
+    list(d = truncated(gaussian1_distrib(), lower = -1, upper = 2),
+         th = list(mu = 0.3, sigma = 1.2))
+  )
+  for (cs in cases) {
+    expect_true(has_d2expected_hessian(cs$d))
+    r <- dexpected_richardson(cs$d, cs$th)
+    expect_close_list(distrib_dexpected_hessian(cs$d, 0, cs$th), r$r1, 1e-8)
+    expect_close_list(distrib_d2expected_hessian(cs$d, 0, cs$th), r$r2, 1e-8)
+  }
+})
+
+test_that("the truncated derivatives follow parameters that vary by observation", {
+  d <- truncated(poisson_distrib(), lower = 1)
+  mu <- c(0.4, 2.3, 5)
+  all <- distrib_d2expected_hessian(d, rep(1, 3), list(mu = mu))
+  one <- vapply(mu, function(m) distrib_d2expected_hessian(d, 1, list(mu = m))[[1]], 0)
+  expect_equal(all[[1]], one, tolerance = 1e-14)
+})

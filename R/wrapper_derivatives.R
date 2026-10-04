@@ -286,7 +286,8 @@ distrib_deriv_component <- function(parent, y, theta, idx, params, order) {
   key <- canon_key(idx, params)
   switch(as.character(order),
     "3" = distrib_deriv3(parent, y, theta)[[key]],
-    "4" = distrib_deriv4(parent, y, theta)[[key]]
+    "4" = distrib_deriv4(parent, y, theta)[[key]],
+    "5" = distrib_deriv5(parent, y, theta)[[key]]
   )
 }
 

@@ -605,6 +605,8 @@ has_exact_cdf_deriv <- function(parent, order) {
 #' tg <- truncated(gamma2_distrib(), lower = 0.5, upper = 5)
 #' is.null(distributions7:::trunc_mass_derivs(tg, list(mu = 2, sigma2 = 1), 1L))
 trunc_mass_derivs <- function(distrib, theta, order) {
+  # the distribution function's derivatives stop at order four
+  if (order > 4L) return(NULL)
   if (!has_exact_cdf_deriv(distrib@parent_distrib, order)) return(NULL)
   parent <- distrib@parent_distrib
   params <- distrib@params

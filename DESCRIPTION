@@ -147,8 +147,10 @@ Collate:
     'theta2_mapped.R'
     'theta2_more.R'
     'transformations.R'
-    'weibull3_distrib.R'
     'wrapper_derivatives.R'
+    'truncated_dexpected.R'
+    'weibull3_distrib.R'
+    'wrapper_deriv5.R'
     'zero_wrapper_dexpected.R'
 Suggests:
     testthat (>= 3.0.0),

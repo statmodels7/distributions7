@@ -7,7 +7,7 @@
 fold_deriv_k(order)
 }
 \arguments{
-\item{order}{The derivative order, \code{3L} or \code{4L}.}
+\item{order}{The derivative order, \code{3L}, \code{4L} or \code{5L}.}
 }
 \value{
 A function with the signature of \code{distrib_deriv3()}, suitable for

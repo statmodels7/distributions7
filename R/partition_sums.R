@@ -144,7 +144,7 @@ log_deriv <- function(idx, ratio) {
 #' @param parent The parent distribution.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the parent's parameters.
-#' @param max_order The highest order needed, 1 to 4.
+#' @param max_order The highest order needed, 1 to 5.
 #' @param params The parent's parameter names, in declaration order.
 #'
 #' @return A function of one block, returning that component's vector.
@@ -157,5 +157,6 @@ parent_ell <- function(parent, y, theta, max_order, params) {
   if (max_order >= 2) d[[2]] <- distrib_hessian(parent, y, theta)
   if (max_order >= 3) d[[3]] <- distrib_deriv3(parent, y, theta)
   if (max_order >= 4) d[[4]] <- distrib_deriv4(parent, y, theta)
+  if (max_order >= 5) d[[5]] <- distrib_deriv5(parent, y, theta)
   function(block) d[[length(block)]][[canon_key(block, params)]]
 }
