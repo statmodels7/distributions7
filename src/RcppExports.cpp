@@ -535,6 +535,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// d7_scalar_classes_covered
+Rcpp::CharacterVector d7_scalar_classes_covered();
+RcppExport SEXP _distributions7_d7_scalar_classes_covered() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(d7_scalar_classes_covered());
+    return rcpp_result_gen;
+END_RCPP
+}
 // bernoulli_dexpected1_cpp
 List bernoulli_dexpected1_cpp(NumericVector y, NumericVector mu, int threads);
 RcppExport SEXP _distributions7_bernoulli_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
@@ -5596,6 +5606,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_chisq_deriv4_cpp", (DL_FUNC) &_distributions7_chisq_deriv4_cpp, 3},
     {"_distributions7_d7_scalar_probe", (DL_FUNC) &_distributions7_d7_scalar_probe, 4},
     {"_distributions7_d7_info_probe", (DL_FUNC) &_distributions7_d7_info_probe, 4},
+    {"_distributions7_d7_scalar_classes_covered", (DL_FUNC) &_distributions7_d7_scalar_classes_covered, 0},
     {"_distributions7_bernoulli_dexpected1_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected1_cpp, 3},
     {"_distributions7_bernoulli_dexpected2_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected2_cpp, 3},
     {"_distributions7_binomial_dexpected1_cpp", (DL_FUNC) &_distributions7_binomial_dexpected1_cpp, 4},

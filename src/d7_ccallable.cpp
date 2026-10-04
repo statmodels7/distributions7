@@ -1,34 +1,56 @@
 #include <Rcpp.h>
-#include "psi_diff.h"
 #include <R_ext/Rdynload.h>
 #include <cstring>
 #include <cmath>
+#include "pt_gaussian1.h"
+#include "pt_gamma1.h"
+#include "pt_poisson.h"
+#include "pt_negbin2.h"
+#include "pt_beta1.h"
 
 // The scalar C entry points of the fast route piano_parallel.txt section 2a
 // describes: the score and the second derivative of the log-density in ONE
 // parameter at ONE observation, on the parameter scale, which is what a
-// score-driven filter reads at every step of its recursion. A consumer
-// resolves them once with R_GetCCallable and its loop then calls plain
-// function pointers, touching no R API -- the precondition for any thread
-// near that loop.
+// score-driven filter reads at every step of its recursion, and the
+// expected second derivative with its derivative in the same parameter,
+// which a filter driven by a scaled score reads. A consumer resolves them
+// once with R_GetCCallable and its loop then calls plain function pointers,
+// touching no R API -- the precondition for any thread near that loop.
 //
 // The families covered are keyed by their S7 CLASS name, which is
 // unambiguous where a distrib_name is shared across parametrizations, and
 // an unknown name answers -1: the consumer keeps its R callbacks, so
-// coverage is a speed property and never a correctness one. Every
-// expression MIRRORS the family's own vector kernel line for line
-// (gaussian.cpp, gamma1.cpp) -- the same operations in the same order, so
-// the fast route is bit-identical to the callback route, which a twin test
-// asserts. The remaining compiled families take the same few lines each
-// when a measurement names them; the sixteen families whose derivatives
-// live in vectorized R have no C body to point at and stay on the
-// callbacks (piano_parallel.txt, section 3bis).
+// coverage is a speed property and never a correctness one.
+//
+// This file holds no formula. Each family's header (pt_<family>.h) carries
+// one function per component and order, which the family's vector kernels
+// call as well, and two routers by parameter index that compute only the
+// special functions that index needs; a case below calls a router. The
+// fast route is therefore bit-identical to the callback route by
+// construction, and the twin tests in test-ccallable.R assert it.
+
+namespace {
+
+// the id of a family is its position here
+const char* const d7_scalar_classes[] = {
+    "Gaussian1Distrib",     // 0
+    "Gamma1Distrib",        // 1
+    "PoissonDistrib",       // 2
+    "NegBin2Distrib",       // 3
+    "Beta1Distrib"          // 4
+};
+
+const int d7_n_scalar_classes =
+    sizeof(d7_scalar_classes) / sizeof(d7_scalar_classes[0]);
+
+} // namespace
 
 extern "C" {
 
 int d7_scalar_id(const char* cls) {
-    if (std::strcmp(cls, "Gaussian1Distrib") == 0) return 0;
-    if (std::strcmp(cls, "Gamma1Distrib") == 0) return 1;
+    for (int i = 0; i < d7_n_scalar_classes; ++i) {
+        if (std::strcmp(cls, d7_scalar_classes[i]) == 0) return i;
+    }
     return -1;
 }
 
@@ -37,86 +59,25 @@ int d7_scalar_id(const char* cls) {
 // out[1] the (k, k) second derivative, both on the parameter scale
 void d7_score_curv(int id, int k, double y, const double* th, double* out) {
     switch (id) {
-    case 0: {                       // gaussian1 (mu, sigma), as gaussian.cpp
-        double m = th[0], sdev = th[1];
-        double inv = 1.0 / sdev;
-        double z = (y - m) / sdev;
-        if (k == 0) {
-            double inv2 = inv * inv;
-            out[0] = z * inv;
-            out[1] = -inv2;
-        } else {
-            double inv2 = inv * inv;
-            out[0] = (z * z - 1.0) * inv;
-            out[1] = (1.0 - 3.0 * z * z) * inv2;
-        }
-        break;
-    }
-    case 1: {                       // gamma1 (mu, phi), as gamma1.cpp
-        double m = th[0], p = th[1];
-        double s = 1.0 / p;
-        double z = y / m;
-        if (k == 0) {
-            double m2 = m * m;
-            out[0] = s * (z - 1.0) / m;
-            out[1] = s * (1.0 - 2.0 * z) / m2;
-        } else {
-            // the same expressions gamma1_parts writes for f1 and f2; the
-            // higher polygammas that struct also carries are not needed
-            // here, and skipping them changes no computed value
-            // see psi_diff.h; the R method's expression, written out
-            double f1 = d7::psi_log_rest(s) + d7::psi_Ew2(z, z - 1.0);
-            double f2 = 1.0 / s - R::trigamma(s);
-            double s1 = -s * s, s2 = 2.0 * s * s * s;
-            out[0] = f1 * (-s * s);
-            out[1] = f2 * s1 * s1 + f1 * s2;
-        }
-        break;
-    }
+    case 0: d7::gaussian1_score_curv(k, y, th, out); break;
+    case 1: d7::gamma1_score_curv(k, y, th, out); break;
+    case 2: d7::poisson_score_curv(k, y, th, out); break;
+    case 3: d7::negbin2_score_curv(k, y, th, out); break;
+    case 4: d7::beta1_score_curv(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }
 }
 
-// The expected information a filter driven by a scaled score reads at every
-// step: out[0] the (k, k) expected second derivative E[l_kk], out[1] its
-// derivative in the same parameter, both on the parameter scale. Each line
-// mirrors the family's expected_hessian and dexpected kernels (gaussian.cpp,
-// gamma1.cpp), so the scaled fast route is the scaled callback route.
+// out[0] the (k, k) expected second derivative E[l_kk], out[1] its
+// derivative in the same parameter, both on the parameter scale
 void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
     switch (id) {
-    case 0: {                       // gaussian1 (mu, sigma), as gaussian.cpp
-        double sdev = th[1];
-        double inv = 1.0 / sdev;
-        double inv2 = inv * inv;
-        if (k == 0) {
-            out[0] = -inv2;
-            out[1] = 0.0;
-        } else {
-            double inv3 = inv * inv * inv;
-            out[0] = -2.0 * inv2;
-            out[1] = 4.0 * inv3;
-        }
-        break;
-    }
-    case 1: {                       // gamma1 (mu, phi), as gamma1.cpp
-        double m = th[0], p = th[1];
-        double s = 1.0 / p;
-        if (k == 0) {
-            double m2 = m * m;
-            double im = 1.0 / m, im2 = im * im;
-            out[0] = -s / m2;
-            out[1] = 2.0 * s * im2 * im;
-        } else {
-            double s1 = -s * s;
-            double s2 = s * s, s3 = s2 * s, s4 = s2 * s2;
-            double f2 = d7::psi1_rest(s), f3 = d7::psi2_rest(s);
-            double q1 = f3 * s4 + 4.0 * f2 * s3;
-            out[0] = f2 * s1 * s1;
-            out[1] = -s2 * q1;
-        }
-        break;
-    }
+    case 0: d7::gaussian1_info_dinfo(k, y, th, out); break;
+    case 1: d7::gamma1_info_dinfo(k, y, th, out); break;
+    case 2: d7::poisson_info_dinfo(k, y, th, out); break;
+    case 3: d7::negbin2_info_dinfo(k, y, th, out); break;
+    case 4: d7::beta1_info_dinfo(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }
@@ -159,6 +120,14 @@ Rcpp::List d7_info_probe(std::string cls, int k, Rcpp::NumericVector y,
     }
     return Rcpp::List::create(Rcpp::_["id"] = id, Rcpp::_["expected"] = e,
                               Rcpp::_["dexpected"] = de);
+}
+
+// the classes the registry covers, for the twin tests
+// [[Rcpp::export]]
+Rcpp::CharacterVector d7_scalar_classes_covered() {
+    Rcpp::CharacterVector out(d7_n_scalar_classes);
+    for (int i = 0; i < d7_n_scalar_classes; ++i) out[i] = d7_scalar_classes[i];
+    return out;
 }
 
 // [[Rcpp::init]]
