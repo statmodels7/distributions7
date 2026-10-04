@@ -108,9 +108,12 @@ test_that("only the score-based forms give the information for a non-regular mod
   expect_equal(bart$mu_mu[1], -1 / th$b^2, tolerance = 1e-6)
   expect_equal(bart$b_b[1], -1 / th$b^2, tolerance = 1e-6)
 
-  # quadrature of the observed Hessian misses the kink and returns 0 for mu
+  # the observed l_mumu is 0 almost everywhere and its integral misses the
+  # point mass at the kink, so for a non-smooth parameter "integrate" takes
+  # the Bartlett form at order 2
   integ <- distrib_expected_hessian(bl, 0, th, approx = "integrate")
-  expect_equal(integ$mu_mu[1], 0, tolerance = 1e-6)
+  expect_equal(integ$mu_mu[1], -1 / th$b^2, tolerance = 1e-6)
+  expect_equal(integ$b_b[1], -1 / th$b^2, tolerance = 1e-6)
 
   # opg, the default, is EXACT here and needs no expectation at all: the
   # squared score of a Laplace is 1/b^2 almost surely rather than in

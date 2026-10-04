@@ -22,7 +22,9 @@ panels of every parameter combination are refined in one call, so a vector
 \code{theta} costs matrix evaluations rather than one adaptive run per
 value. The domain of each combination is split at its 0.1, 0.5 and 0.9
 quantiles, which anchors the quadrature on the probability mass wherever it
-sits. A combination the batched quadrature rejects -- an integrable
+sits. For a family with a non-smooth parameter, the points that
+\code{\link[=kink_knots]{kink_knots()}} returns are knots as well, so that no panel contains a jump
+of the score. A combination the batched quadrature rejects -- an integrable
 endpoint singularity too harsh for bisection -- is rescued by one scalar
 \code{\link[stats:integrate]{stats::integrate()}} run, whose extrapolation reaches it; an
 error naming the combination is raised only when both routes fail.

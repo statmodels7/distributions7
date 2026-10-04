@@ -1,4 +1,4 @@
-#' @include generics.R distrib.R
+#' @include generics.R distrib.R folded.R truncated.R
 NULL
 
 # THE ORDER OF DIFFERENTIABILITY OF A LOG-DENSITY IN ITS PARAMETERS.
@@ -492,4 +492,97 @@ check_kink <- function(distrib, theta = NULL, tol = 1e-6, verbose = TRUE) {
                   p, jumps[[p]], pred[[p]]))
   }
   invisible(NULL)
+}
+
+#' Where a Family's Kinks Sit on the Response Scale
+#'
+#' @description
+#' Returns the points of \eqn{[\mathrm{lower}, \mathrm{upper}]} at which the
+#' log-density of a family is not smooth in its parameters, for one parameter
+#' combination. [expectation()] adds them to the knots of its quadrature, so
+#' that no panel straddles a jump of the score.
+#'
+#' @details
+#' The base method solves \eqn{v(y, \theta) = 0} for the \eqn{v} of the
+#' family's [kink_decomposition()]. It evaluates \eqn{v} on a grid of the
+#' range, which is twice as dense on its central half, and refines each
+#' sign change with [stats::uniroot()], so that a \eqn{v} with several roots
+#' (a Huber likelihood has two) gives each of them. A family that declares no
+#' decomposition returns no point, even when `params_smooth` records a
+#' non-smooth parameter, since the location of its kink is then unknown.
+#'
+#' A [folded()] family has a kink at \eqn{\lvert y^* \rvert} for every kink
+#' \eqn{y^*} of its parent, its density being \eqn{f(y) + f(-y)}, and a
+#' [truncated()] family has its parent's kinks.
+#'
+#' @param distrib An object inheriting from class `"distrib"`.
+#' @param theta A named list of parameter values, one value each.
+#' @param lower,upper The finite range searched.
+#' @param ... Unused.
+#'
+#' @return A numeric vector, possibly empty.
+#'
+#' @examples
+#' distributions7:::kink_knots(laplace_distrib(), list(mu = 0.5, sigma = 2), -10, 10)
+#' distributions7:::kink_knots(folded(laplace_distrib()),
+#'                             list(mu = -0.5, sigma = 2), 0, 10)
+#'
+#' @seealso [kink_decomposition()], [expectation()].
+#' @keywords internal
+kink_knots <- S7::new_generic("kink_knots", "distrib",
+  fun = function(distrib, theta, lower, upper, ...) S7::S7_dispatch())
+
+S7::method(kink_knots, distrib) <- function(distrib, theta, lower, upper, ...) {
+  kd <- kink_decomposition(distrib)
+  if (is.null(kd) || !is.finite(lower) || !is.finite(upper) || upper <= lower)
+    return(numeric(0))
+  .kink_roots(kd, theta, lower, upper)
+}
+
+S7::method(kink_knots, FoldedDistrib) <- function(distrib, theta, lower, upper, ...) {
+  r <- max(abs(c(lower, upper)))
+  k <- kink_knots(distrib@parent_distrib, theta, -r, r)
+  unique(abs(k[k != 0]))
+}
+
+S7::method(kink_knots, TruncatedContinuousDistrib) <- function(distrib, theta, lower, upper, ...) {
+  kink_knots(distrib@parent_distrib, theta, lower, upper)
+}
+
+#' The Roots of a Kink's Argument in a Range
+#'
+#' @description
+#' Evaluates \eqn{v(y, \theta)} of a [kink_spec()] on 129 equally spaced
+#' points of \eqn{[\mathrm{lower}, \mathrm{upper}]} and 129 more on its
+#' central half, and refines each sign change with [stats::uniroot()]. A grid point at
+#' which \eqn{v} is exactly zero is returned as it is.
+#'
+#' @param kd A [kink_spec()].
+#' @param theta A named list of parameter values, one value each.
+#' @param lower,upper The finite range searched.
+#'
+#' @return A numeric vector of roots, possibly empty.
+#'
+#' @examples
+#' d <- laplace_distrib()
+#' distributions7:::.kink_roots(kink_decomposition(d), list(mu = 1, sigma = 1), -5, 5)
+#'
+#' @keywords internal
+.kink_roots <- function(kd, theta, lower, upper) {
+  w <- upper - lower
+  y <- sort(unique(c(seq(lower, upper, length.out = 129L),
+                     seq(lower + w / 4, upper - w / 4, length.out = 129L))))
+  v <- tryCatch(rep_len(as.numeric(kd@v(y, theta)), length(y)),
+                error = function(e) rep(NA_real_, length(y)))
+  ok <- is.finite(v)
+  out <- y[ok & v == 0]
+  s <- which(ok[-length(y)] & ok[-1L] & v[-length(y)] * v[-1L] < 0)
+  f <- function(x) kd@v(x, theta)
+  for (i in s) {
+    r <- tryCatch(stats::uniroot(f, c(y[i], y[i + 1L]), f.lower = v[i],
+                                 f.upper = v[i + 1L], tol = 1e-14)$root,
+                  error = function(e) NA_real_)
+    if (is.finite(r)) out <- c(out, r)
+  }
+  sort(unique(out))
 }

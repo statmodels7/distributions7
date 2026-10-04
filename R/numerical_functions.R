@@ -153,7 +153,9 @@ expectation_columns <- function(f_env_theta, dots) {
 #' `theta` costs matrix evaluations rather than one adaptive run per
 #' value. The domain of each combination is split at its 0.1, 0.5 and 0.9
 #' quantiles, which anchors the quadrature on the probability mass wherever it
-#' sits. A combination the batched quadrature rejects -- an integrable
+#' sits. For a family with a non-smooth parameter, the points that
+#' [kink_knots()] returns are knots as well, so that no panel contains a jump
+#' of the score. A combination the batched quadrature rejects -- an integrable
 #' endpoint singularity too harsh for bisection -- is rescued by one scalar
 #' [stats::integrate()] run, whose extrapolation reaches it; an
 #' error naming the combination is raised only when both routes fail.
@@ -173,10 +175,23 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
   qs <- suppressWarnings(distrib_quantile(distrib, rep(pr, times = cols$n), th_rep))
   qm <- matrix(qs, nrow = length(pr))
 
+  # A kink of the log-density is a jump of the score, and a panel that
+  # straddles one converges to a wrong value without signalling it (14 per
+  # cent on one component of a folded laplace2 whose median fell 4e-4 from
+  # the kink), so every kink the family locates is a knot.
+  kinked <- !all(param_smoothness(distrib))
+
   lower <- upper <- numeric(0)
   comb <- integer(0)
   for (j in seq_len(cols$n)) {
     kj <- qm[, j]
+    if (kinked) {
+      qj <- kj[is.finite(kj)]
+      sp <- if (length(qj) > 1L && diff(range(qj)) > 0) diff(range(qj)) else 1
+      lo <- if (is.finite(b[1L])) b[1L] else min(c(qj, 0)) - 30 * sp
+      hi <- if (is.finite(b[2L])) b[2L] else max(c(qj, 0)) + 30 * sp
+      kj <- c(kj, kink_knots(distrib, lapply(cols$th, `[`, j), lo, hi))
+    }
     kj <- unique(kj[is.finite(kj) & kj > b[1L] & kj < b[2L]])
     knots <- sort(c(b[1L], kj, b[2L]))
     lower <- c(lower, knots[-length(knots)])

@@ -45,8 +45,11 @@ available in closed form.}
 directly against the density (numerical quadrature for continuous
 distributions, series summation for discrete ones). Deterministic and
 normally the most accurate when the observed derivative is available in
-closed form. Estimates \eqn{\mathbb{E}[\partial^k \ell]} literally, which
-for a non-regular model is \emph{not} the information.}
+closed form. Estimates \eqn{\mathbb{E}[\partial^k \ell]} literally,
+with one exception: at order 2, for a family with a non-smooth
+parameter (see \code{\link[=param_smoothness]{param_smoothness()}}), it evaluates
+\eqn{-\mathbb{E}[\ell_i \ell_j]} as \code{"bartlett"} does, because the
+observed \eqn{\ell_{ij}} then lacks the point mass at the kink.}
 
 \item{\code{"mc"}}{Simulates \code{nsim} observations from the distribution
 and averages the observed derivative over them. The simplest and most
@@ -62,23 +65,23 @@ quantile function slow enough to make inverse transform sampling the
 bottleneck; prefer \code{"bartlett"} or \code{"integrate"} in that case.}
 }
 
-\strong{Defaults.} \code{distrib_expected_hessian} defaults to
-\code{"bartlett"}, because at order 2 it is both the cheapest (only first
-derivatives) and the most broadly valid. \code{distrib_deriv3} and
+\strong{Defaults.} \code{distrib_expected_hessian} defaults to \code{"opg"}, which needs
+one score evaluation per observation and no expectation. \code{distrib_deriv3} and
 \code{distrib_deriv4} default to \code{"integrate"}, since at those orders
 direct integration of the available derivative is usually cheaper and more
 accurate.
 
-\strong{What the kink costs, measured.} On a Laplace carrying a density, a score
-and a Hessian but no expected method, at \eqn{\sigma = 1} over 200
-observations: \code{"bartlett"} returns \eqn{-200}, which is \eqn{-n/\sigma^2}
-and agrees with the shipped family's closed form to the digit, while
-\code{"integrate"} and \code{"mc"} both return \strong{exactly 0}. Neither is wrong about
-what it computes. The observed \eqn{\ell_{\mu\mu}} really is zero almost
-everywhere, so its expectation is zero; what fails is the identification of
-that expectation with \eqn{-\mathcal{I}(\theta)}, which is the second
-Bartlett identity. Only the score-based route survives, and the information
-of a non-regular family is \emph{defined} as the variance of the score.
+\strong{Non-smooth parameters.} Where the log-density has a kink in a
+parameter, the observed second derivative has a point mass at the kink, and
+an average of its pointwise values does not contain that mass. For the
+Laplace location, \eqn{\ell_{\mu\mu}} is zero almost everywhere, so its
+pointwise average is zero, while the information is \eqn{1/\sigma^2}. The
+information of such a family is the variance of the score, which is what
+the second Bartlett identity evaluates. \code{"bartlett"}, \code{"opg"} and, at
+order 2, \code{"integrate"} therefore return \eqn{-1/\sigma^2} per observation;
+\code{"mc"} averages the observed \eqn{\ell_{\mu\mu}} and returns 0. When the
+family declares where its kink is, through \code{\link[=kink_decomposition]{kink_decomposition()}}, the
+quadrature of \code{\link[=expectation]{expectation()}} places a knot there.
 }
 \examples{
 # A family with no closed-form expected information reads 'approx'. The two
