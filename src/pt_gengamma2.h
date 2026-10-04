@@ -789,7 +789,7 @@ inline void gengamma2_coefs_score_mean(double dv, double pv, double* K) {
   const double k0d = dv / pv;
   if (k0d < GG2_KC && dv < GG2_DC) {
     const double k1d = (dv + 1.0) / pv;
-    double PAv[12], Gv[12];
+    double PAv[12] = {0}, Gv[12] = {0};
     (void) k1d;
     gengamma2_coef_score_mean<double>(dv, pv, PAv, Gv, 0.0, K);
   } else {
@@ -805,7 +805,7 @@ inline void gengamma2_coefs_score_d(double dv, double pv, double* K) {
   const double k0d = dv / pv;
   if (k0d < GG2_KC && dv < GG2_DC) {
     const double k1d = (dv + 1.0) / pv;
-    double PAv[12], Gv[12];
+    double PAv[12] = {0}, Gv[12] = {0};
     (void) k1d;
     Gv[0] = R::psigamma(k1d, 0.0) - R::psigamma(k0d, 0.0);
     gengamma2_coef_score_d<double>(dv, pv, PAv, Gv, gg2_B0(k0d), K);
@@ -823,7 +823,7 @@ inline void gengamma2_coefs_score_p(double dv, double pv, double* K) {
   const double k0d = dv / pv;
   if (k0d < GG2_KC && dv < GG2_DC) {
     const double k1d = (dv + 1.0) / pv;
-    double PAv[12], Gv[12];
+    double PAv[12] = {0}, Gv[12] = {0};
     (void) k1d;
     Gv[0] = R::psigamma(k1d, 0.0) - R::psigamma(k0d, 0.0);
     gengamma2_coef_score_p<double>(dv, pv, PAv, Gv, gg2_B0(k0d), K);
@@ -841,7 +841,7 @@ inline void gengamma2_coefs_hess_mean_mean(double dv, double pv, double* K) {
   const double k0d = dv / pv;
   if (k0d < GG2_KC && dv < GG2_DC) {
     const double k1d = (dv + 1.0) / pv;
-    double PAv[12], Gv[12];
+    double PAv[12] = {0}, Gv[12] = {0};
     (void) k1d;
     gengamma2_coef_hess_mean_mean<double>(dv, pv, PAv, Gv, 0.0, K);
   } else {
@@ -857,7 +857,7 @@ inline void gengamma2_coefs_hess_d_d(double dv, double pv, double* K) {
   const double k0d = dv / pv;
   if (k0d < GG2_KC && dv < GG2_DC) {
     const double k1d = (dv + 1.0) / pv;
-    double PAv[12], Gv[12];
+    double PAv[12] = {0}, Gv[12] = {0};
     (void) k1d;
     PAv[1] = R::psigamma(k0d, 1.0);
     Gv[0] = R::psigamma(k1d, 0.0) - R::psigamma(k0d, 0.0);
@@ -879,7 +879,7 @@ inline void gengamma2_coefs_hess_p_p(double dv, double pv, double* K) {
   const double k0d = dv / pv;
   if (k0d < GG2_KC && dv < GG2_DC) {
     const double k1d = (dv + 1.0) / pv;
-    double PAv[12], Gv[12];
+    double PAv[12] = {0}, Gv[12] = {0};
     (void) k1d;
     PAv[1] = R::psigamma(k0d, 1.0);
     Gv[0] = R::psigamma(k1d, 0.0) - R::psigamma(k0d, 0.0);
@@ -901,7 +901,7 @@ inline void gengamma2_coefs_expected_mean_mean(double dv, double pv, double* K) 
   const double k0d = dv / pv;
   if (k0d < GG2_KC && dv < GG2_DC) {
     const double k1d = (dv + 1.0) / pv;
-    double PAv[12], Gv[12];
+    double PAv[12] = {0}, Gv[12] = {0};
     (void) k1d;
     gengamma2_coef_expected_mean_mean<double>(dv, pv, PAv, Gv, 0.0, K);
   } else {
@@ -917,7 +917,7 @@ inline void gengamma2_coefs_expected_d_d(double dv, double pv, double* K) {
   const double k0d = dv / pv;
   if (k0d < GG2_KC && dv < GG2_DC) {
     const double k1d = (dv + 1.0) / pv;
-    double PAv[12], Gv[12];
+    double PAv[12] = {0}, Gv[12] = {0};
     (void) k1d;
     PAv[1] = R::psigamma(k0d, 1.0);
     Gv[0] = R::psigamma(k1d, 0.0) - R::psigamma(k0d, 0.0);
@@ -937,7 +937,7 @@ inline void gengamma2_coefs_expected_p_p(double dv, double pv, double* K) {
   const double k0d = dv / pv;
   if (k0d < GG2_KC && dv < GG2_DC) {
     const double k1d = (dv + 1.0) / pv;
-    double PAv[12], Gv[12];
+    double PAv[12] = {0}, Gv[12] = {0};
     (void) k1d;
     PAv[1] = R::psigamma(k0d, 1.0);
     Gv[0] = R::psigamma(k1d, 0.0) - R::psigamma(k0d, 0.0);
@@ -957,7 +957,7 @@ inline void gengamma2_coefs_dexpected_mean_mean_mean(double dv, double pv, doubl
   const double k0d = dv / pv;
   if (k0d < GG2_KC && dv < GG2_DC) {
     const double k1d = (dv + 1.0) / pv;
-    double PAv[12], Gv[12];
+    double PAv[12] = {0}, Gv[12] = {0};
     (void) k1d;
     gengamma2_coef_dexpected_mean_mean_mean<double>(dv, pv, PAv, Gv, 0.0, K);
   } else {
@@ -973,7 +973,7 @@ inline void gengamma2_coefs_dexpected_d_d_d(double dv, double pv, double* K) {
   const double k0d = dv / pv;
   if (k0d < GG2_KC && dv < GG2_DC) {
     const double k1d = (dv + 1.0) / pv;
-    double PAv[12], Gv[12];
+    double PAv[12] = {0}, Gv[12] = {0};
     (void) k1d;
     PAv[2] = R::psigamma(k0d, 2.0);
     Gv[0] = R::psigamma(k1d, 0.0) - R::psigamma(k0d, 0.0);
@@ -995,7 +995,7 @@ inline void gengamma2_coefs_dexpected_p_p_p(double dv, double pv, double* K) {
   const double k0d = dv / pv;
   if (k0d < GG2_KC && dv < GG2_DC) {
     const double k1d = (dv + 1.0) / pv;
-    double PAv[12], Gv[12];
+    double PAv[12] = {0}, Gv[12] = {0};
     (void) k1d;
     PAv[1] = R::psigamma(k0d, 1.0);
     PAv[2] = R::psigamma(k0d, 2.0);

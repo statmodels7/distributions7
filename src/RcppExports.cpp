@@ -577,6 +577,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// d7_scalar_thread_safe_probe
+int d7_scalar_thread_safe_probe(std::string cls);
+RcppExport SEXP _distributions7_d7_scalar_thread_safe_probe(SEXP clsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type cls(clsSEXP);
+    rcpp_result_gen = Rcpp::wrap(d7_scalar_thread_safe_probe(cls));
+    return rcpp_result_gen;
+END_RCPP
+}
 // d7_scalar_classes_covered
 Rcpp::CharacterVector d7_scalar_classes_covered();
 RcppExport SEXP _distributions7_d7_scalar_classes_covered() {
@@ -5997,6 +6008,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_chisq_deriv4_cpp", (DL_FUNC) &_distributions7_chisq_deriv4_cpp, 3},
     {"_distributions7_d7_scalar_probe", (DL_FUNC) &_distributions7_d7_scalar_probe, 4},
     {"_distributions7_d7_info_probe", (DL_FUNC) &_distributions7_d7_info_probe, 4},
+    {"_distributions7_d7_scalar_thread_safe_probe", (DL_FUNC) &_distributions7_d7_scalar_thread_safe_probe, 1},
     {"_distributions7_d7_scalar_classes_covered", (DL_FUNC) &_distributions7_d7_scalar_classes_covered, 0},
     {"_distributions7_bernoulli_dexpected1_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected1_cpp, 3},
     {"_distributions7_bernoulli_dexpected2_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected2_cpp, 3},

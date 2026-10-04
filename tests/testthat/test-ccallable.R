@@ -44,12 +44,26 @@ ccallable_families <- list(
   NegBin1Distrib = function() negbin1_distrib()
 )
 
-# the constants a family carries besides its parameters, which follow the
-# parameters in the vector the registry reads
+# the constants a family carries besides its parameters follow the
+# parameters in the vector the registry reads, as distrib_scalar_route()
+# lists them
 ccallable_constants <- function(d, n) {
-  if (S7::S7_inherits(d, BinomialDistrib)) return(list(size = rep(d@size, length.out = n)))
-  list()
+  lapply(distrib_scalar_route(d)$constants, rep, length.out = n)
 }
+
+test_that("the route names every covered class and answers NULL elsewhere", {
+  for (cls in names(ccallable_families)) {
+    r <- distrib_scalar_route(ccallable_families[[cls]]())
+    expect_identical(r$name, cls)
+    expect_true(is.list(r$constants))
+    expect_identical(d7_scalar_thread_safe_probe(cls), 1L)
+  }
+  expect_identical(distrib_scalar_route(binomial_distrib(size = 7))$constants,
+                   list(size = 7))
+  expect_null(distrib_scalar_route(mvgaussian1_distrib(n_dim = 2)))
+  expect_null(distrib_scalar_route(zero_inflated(poisson_distrib())))
+  expect_identical(d7_scalar_thread_safe_probe("NoSuchDistrib"), -1L)
+})
 
 test_that("every covered class has a constructor in this file", {
   expect_setequal(d7_scalar_classes_covered(), names(ccallable_families))

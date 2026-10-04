@@ -140,6 +140,7 @@ Collate:
     'pseudohuber2_distrib.R'
     'psi_diff.R'
     'reparametrized_families.R'
+    'scalar_route.R'
     'starting_values.R'
     'student_t2_distrib.R'
     'theta2_mapped.R'

@@ -165,6 +165,10 @@ d7_info_probe <- function(cls, k, y, theta) {
     .Call(`_distributions7_d7_info_probe`, cls, k, y, theta)
 }
 
+d7_scalar_thread_safe_probe <- function(cls) {
+    .Call(`_distributions7_d7_scalar_thread_safe_probe`, cls)
+}
+
 d7_scalar_classes_covered <- function() {
     .Call(`_distributions7_d7_scalar_classes_covered`)
 }

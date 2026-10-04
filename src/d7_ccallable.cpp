@@ -161,6 +161,21 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
     }
 }
 
+// 1 when the family's entries never reach the R API, so that a consumer may
+// call them from a worker thread, 0 otherwise; -1 for an unknown id. The
+// audit behind the 1s: the entries call R's digamma, trigamma and psigamma
+// (orders below 100), whose failures set errno without a warning;
+// lgammafn and dt at positive arguments, where nmath's warnings (precision
+// near a negative integer, lgammacor's underflow past 3.7e306, reached only
+// above 4.9e6) cannot fire; dnorm and pnorm, whose only warning is the
+// silent ME_DOMAIN; and numericals7's Bessel ratio, which is plain C. A
+// family whose entries evaluate a function that may warn (pt, pbeta,
+// lchoose at a non-integer, the Bessel K) answers 0.
+int d7_scalar_thread_safe(int id) {
+    if (id < 0 || id >= d7_n_scalar_classes) return -1;
+    return 1;
+}
+
 // out[0] the (k, k) expected second derivative E[l_kk], out[1] its
 // derivative in the same parameter, both on the parameter scale
 void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
@@ -243,6 +258,12 @@ Rcpp::List d7_info_probe(std::string cls, int k, Rcpp::NumericVector y,
                               Rcpp::_["dexpected"] = de);
 }
 
+// d7_scalar_thread_safe() by class name, for the tests
+// [[Rcpp::export]]
+int d7_scalar_thread_safe_probe(std::string cls) {
+    return d7_scalar_thread_safe(d7_scalar_id(cls.c_str()));
+}
+
 // the classes the registry covers, for the twin tests
 // [[Rcpp::export]]
 Rcpp::CharacterVector d7_scalar_classes_covered() {
@@ -259,4 +280,6 @@ void d7_register_ccallable(DllInfo* dll) {
                         (DL_FUNC) d7_score_curv);
     R_RegisterCCallable("distributions7", "d7_info_dinfo",
                         (DL_FUNC) d7_info_dinfo);
+    R_RegisterCCallable("distributions7", "d7_scalar_thread_safe",
+                        (DL_FUNC) d7_scalar_thread_safe);
 }

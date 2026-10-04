@@ -125,6 +125,7 @@ reference:
   - distrib_deriv3_cdf
   - link_scale_derivatives
   - distrib_kernel
+  - distrib_scalar_route
   - expected_derivative_methods
   - expected_hessian_exact
   - expected_hessian_costly
