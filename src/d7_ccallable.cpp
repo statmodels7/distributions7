@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <string>
 #include <cmath>
+#include <cfloat>
 #include "pt_gaussian1.h"
 #include "pt_gamma1.h"
 #include "pt_poisson.h"
@@ -320,7 +321,22 @@ void fold_info_dinfo(int inner, int k, const double* full, double* out) {
         a0 += (g * g) * fw;
         a1 += (h * g + g * h + g * g * g) * fw;
     }
-    const double r0 = (double) a0, r1 = (double) a1;
+    const double r0 = (double) a0;
+    double r1 = (double) a1;
+    // a parent with a kink at its center (laplace, laplace2, enet): the
+    // folded score in the center jumps at y* = |c|, a point that moves with
+    // c, and d_c E[l_cc] carries the boundary term L(y*) [G(y*-) - G(y*+)]
+    // sign(c), G = l_c^2, the one-sided scores read four units in the last
+    // place either side of y*
+    if (k == 0 && (inner == 28 || inner == 29 || inner == 32) && c != 0) {
+        const double a = std::fabs(c);
+        const d7::FoldW W0 = d7::fold_w(d7_logpdf(inner, a, full),
+                                        d7_logpdf(inner, -a, full));
+        double lo[2], hi[2];
+        fold_score_curv(inner, 0, a * (1 + (-4) * DBL_EPSILON), full, lo);
+        fold_score_curv(inner, 0, a * (1 + 4 * DBL_EPSILON), full, hi);
+        r1 = r1 + W0.L * (lo[0] * lo[0] - hi[0] * hi[0]) * (c > 0 ? 1.0 : -1.0);
+    }
     out[0] = R_FINITE(r0) ? -r0 : NA_REAL;
     out[1] = R_FINITE(r1) ? -r1 : NA_REAL;
 }

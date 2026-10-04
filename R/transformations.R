@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R
+#' @include distrib.R generics.R dexpected_families.R
 NULL
 
 #' @title S7 Class for Variable Transformers
@@ -1064,6 +1064,35 @@ S7::method(has_exact_deriv4, TransformedDistrib) <- function(x, ...) {
 S7::method(expected_hessian_exact, TransformedDistrib) <- function(x, ...) {
   expected_hessian_exact(x@parent_distrib)
 }
+
+#' The Derivatives of a Transformed Family's Expected Information
+#'
+#' @description
+#' Returns the parent family's first (`k = 1`) or second (`k = 2`)
+#' derivatives of the expected information on the parameter scale. A
+#' transformation of the response leaves the expected information unchanged
+#' as a function of the parameters, so its derivatives are the parent's.
+#' Registered through [register_dexpected()].
+#'
+#' @param d A transformed family, from [transformation()].
+#' @param y The response, read for its length.
+#' @param th The parameters.
+#' @param k The order, `1L` or `2L`.
+#' @param t The thread count passed to the parent's methods.
+#'
+#' @return A named list keyed as [dexpected_names()] (`k = 1`) or
+#'   [d2expected_names()] (`k = 2`).
+#'
+#' @keywords internal
+transformed_dexpected <- function(d, y, th, k, t) {
+  if (k == 1L) {
+    return(distrib_dexpected_hessian(d@parent_distrib, y, th,
+                                     scale = "parameter", threads = t))
+  }
+  distrib_d2expected_hessian(d@parent_distrib, y, th, scale = "parameter",
+                             threads = t)
+}
+register_dexpected(TransformedDistrib, transformed_dexpected)
 
 # --- CONSTRUCTOR WRAPPER ---
 

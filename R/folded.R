@@ -207,8 +207,15 @@ fold_parts <- function(parent, x, theta) {
 fold_ratio <- function(parent, x, theta, order, params, w) {
   ell_p <- parent_ell(parent, x, theta, order, params)
   ell_m <- parent_ell(parent, -x, theta, order, params)
+  # a preimage whose weight is zero contributes zero, also where its ratio
+  # overflows (the density underflowing faster than the ratio grows)
+  wm <- 1 - w
   memo_ratio(function(block) {
-    w * bell_f_ratio(block, ell_p) + (1 - w) * bell_f_ratio(block, ell_m)
+    rp <- w * bell_f_ratio(block, ell_p)
+    rm <- wm * bell_f_ratio(block, ell_m)
+    rp[w == 0] <- 0
+    rm[wm == 0] <- 0
+    rp + rm
   }, params)
 }
 

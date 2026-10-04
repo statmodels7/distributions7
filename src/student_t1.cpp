@@ -226,6 +226,18 @@ List student_t1_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigm
     o_sigma_sigma_nu[i] = q*w14*(-5*q - w12 - w2);
     o_sigma_nu_nu[i] = w0*w17*w5;
     o_nu_nu_nu[i] = V3 + 3*w12*w19 - 3.0/2.0*w12*w21 + w19*w20 + w19*w8 - 1.0/2.0*w20*w21;
+    if (q > 1e100) {
+      // beyond q = 1e100 the powers q^3 overflow and t^3 underflows; the
+      // three components that carry q^3 t^3 are written in u = q t and t
+      const double u = q * t, u2 = u * u, u3 = u2 * u, t2 = t * t;
+      const double v = 1.0 / ik;
+      o_sigma_sigma_sigma[i] = 2 / (s * s * s) *
+        (u3 * v + 3 * u2 * t * v + 6 * u * t2 * v + 3 * u * t2 - t2 * t);
+      o_sigma_sigma_nu[i] = w13 *
+        (-5 * u2 * t - u3 - ik * u2 * t + 3 * ik * u * t2);
+      o_nu_nu_nu[i] = V3 + ik * w16 * (3 * u2 * t + u3 + 3 * u * t2) -
+        w16 * (1.5 * u2 * t + 0.5 * u3);
+    }
   });
   return List::create(Named("mu_mu_mu") = o_mu_mu_mu, Named("mu_mu_sigma") = o_mu_mu_sigma, Named("mu_mu_nu") = o_mu_mu_nu, Named("mu_sigma_sigma") = o_mu_sigma_sigma, Named("mu_sigma_nu") = o_mu_sigma_nu, Named("mu_nu_nu") = o_mu_nu_nu, Named("sigma_sigma_sigma") = o_sigma_sigma_sigma, Named("sigma_sigma_nu") = o_sigma_sigma_nu, Named("sigma_nu_nu") = o_sigma_nu_nu, Named("nu_nu_nu") = o_nu_nu_nu);
 }
