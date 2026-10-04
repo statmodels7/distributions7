@@ -176,6 +176,79 @@ test_that("folded() refuses what it would silently mishandle", {
 })
 
 
+test_that("a wrapper is rejected for an atom only when its parent has one", {
+  # fixed(), reparametrize() and truncated() register distrib_atoms() only to
+  # pass the parent's atoms on, so the registration alone decides nothing
+  rp <- function(d, extra = list(), extra_bounds = list(), extra_links = list())
+    reparametrize(d,
+      map = function(psi) c(list(mu = psi$mu, sigma = sqrt(psi$s2)),
+                            psi[names(extra)]),
+      params = c("mu", "s2", names(extra)),
+      bounds = c(list(mu = c(-Inf, Inf), s2 = c(0, Inf)), extra_bounds),
+      links = c(list(mu = linkfunctions7::identity_link(),
+                     s2 = linkfunctions7::log_link()), extra_links))
+  for (d in list(fixed(laplace_distrib(), sigma = 1.2),
+                 fixed(gaussian1_distrib(), sigma = 1.2),
+                 rp(laplace_distrib()),
+                 truncated(gaussian1_distrib(), lower = -1, upper = 3))) {
+    expect_false(declares_atoms(d), label = d@distrib_name)
+    expect_true(S7::S7_inherits(folded(d), FoldedDistrib),
+                label = d@distrib_name)
+  }
+
+  za <- zero_adjusted(gaussian1_distrib())
+  for (d in list(fixed(za, sigma = 1),
+                 fixed(rp(za, extra = list(za = 1),
+                          extra_bounds = list(za = c(0, 1)),
+                          extra_links = list(za = linkfunctions7::logit_link())),
+                       s2 = 1),
+                 truncated(za, lower = -1, upper = 3))) {
+    expect_true(declares_atoms(d), label = d@distrib_name)
+    expect_error(folded(d), "atom")
+  }
+})
+
+
+test_that("the fold of a fixed gaussian has the folded normal's information", {
+  # With sigma held at s, the score in mu is (x tanh(mu x / s^2) - mu) / s^2.
+  # It is even in x, so its second moment under the fold is an expectation
+  # over Y ~ N(mu, s^2), computed here by integrate() and nothing else.
+  ref <- function(mu, s) {
+    g <- function(y) (y * tanh(mu * y / s^2) - mu)^2 * stats::dnorm(y, mu, s)
+    stats::integrate(g, -Inf, Inf, rel.tol = 1e-12)$value / s^4
+  }
+  for (s in c(0.5, 1.2, 3)) {
+    d <- folded(fixed(gaussian1_distrib(), sigma = s))
+    for (mu in c(0.3, 1, 2.5, 6)) {
+      eh <- distrib_expected_hessian(d, y = 1, theta = list(mu = mu))
+      expect_equal(-eh[["mu_mu"]], ref(mu, s), tolerance = 1e-10,
+                   label = sprintf("s = %g, mu = %g", s, mu))
+    }
+    # the sign of mu is not identified at zero, where the information vanishes
+    eh0 <- distrib_expected_hessian(d, y = 1, theta = list(mu = 0))
+    expect_lt(abs(eh0[["mu_mu"]]), 1e-12)
+  }
+})
+
+
+test_that("the fold of a truncated gaussian is the reflected truncated law", {
+  d <- folded(truncated(gaussian1_distrib(), lower = -1, upper = 3))
+  th <- list(mu = 0.4, sigma = 1.1)
+  Z <- stats::pnorm(3, 0.4, 1.1) - stats::pnorm(-1, 0.4, 1.1)
+  x <- c(0.2, 0.9, 1.5, 2.8)
+  # below |lower| both preimages lie inside the truncation, above it only +x
+  hand <- (stats::dnorm(x, 0.4, 1.1) +
+             ifelse(x <= 1, stats::dnorm(-x, 0.4, 1.1), 0)) / Z
+  expect_equal(distrib_pdf(d, x, th), hand, tolerance = 1e-12)
+  expect_equal(d@bounds, c(0, 3))
+
+  set.seed(5)
+  res <- check_distrib(d, verbose = FALSE)
+  expect_true(all(res$status == "OK"),
+    label = paste(res$check[res$status != "OK"], collapse = ", "))
+})
+
+
 test_that("the sign of a symmetric parent's location is not identified", {
   # f(-x; mu) = f(x; -mu) for a parent symmetric about its location, so the
   # two terms of L merely swap: the likelihood is EXACTLY even in mu. This is

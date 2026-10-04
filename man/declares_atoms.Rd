@@ -11,8 +11,9 @@ declares_atoms(parent)
 }
 \value{
 \code{TRUE} when \code{\link[=distrib_atoms]{distrib_atoms()}} is registered on a class strictly
-below \code{distrib}, \code{FALSE} when the method comes from the base class or is
-absent.
+below \code{distrib} other than the three passing wrappers, or when one of
+those wraps a distribution for which the function returns \code{TRUE};
+\code{FALSE} when the method comes from the base class or is absent.
 }
 \description{
 Answers whether a distribution registers \code{\link[=distrib_atoms]{distrib_atoms()}} for itself, which
@@ -22,6 +23,12 @@ not of a value: a distribution with an atom declares one at every parameter
 setting, and a value taken at one setting could be empty by accident.
 }
 \details{
+The wrappers \code{\link[=fixed]{fixed()}}, \code{\link[=reparametrize]{reparametrize()}} and \code{\link[=truncated]{truncated()}} register
+\code{\link[=distrib_atoms]{distrib_atoms()}} on their continuous classes only to report the parent's
+atoms, so their registration says nothing about the wrapped family. For
+these classes the function is applied to \code{parent@parent_distrib} instead,
+and a wrapper of a family without atoms declares none.
+
 The argument is named \code{parent} deliberately. The base class of this package
 is called \code{distrib}, and an argument of that name would shadow it: the
 comparison meant for the base class would then be against the object. That
@@ -36,6 +43,11 @@ distributions7:::declares_atoms(zero_adjusted(gaussian1_distrib()))
 
 # Which is why folded() rejects the second by name.
 try(folded(zero_adjusted(gaussian1_distrib())))
+
+# A wrapper declares atoms exactly when the family it wraps does.
+distributions7:::declares_atoms(fixed(gaussian1_distrib(), sigma = 1.2))
+distributions7:::declares_atoms(fixed(zero_adjusted(gaussian1_distrib()),
+                                      sigma = 1.2))
 
 }
 \seealso{

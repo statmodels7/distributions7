@@ -836,6 +836,12 @@ S7::method(distrib_hess_y, FoldedDistrib) <- function(distrib, y, theta, ...) {
 #' setting, and a value taken at one setting could be empty by accident.
 #'
 #' @details
+#' The wrappers [fixed()], [reparametrize()] and [truncated()] register
+#' [distrib_atoms()] on their continuous classes only to report the parent's
+#' atoms, so their registration says nothing about the wrapped family. For
+#' these classes the function is applied to `parent@parent_distrib` instead,
+#' and a wrapper of a family without atoms declares none.
+#'
 #' The argument is named `parent` deliberately. The base class of this package
 #' is called `distrib`, and an argument of that name would shadow it: the
 #' comparison meant for the base class would then be against the object. That
@@ -844,8 +850,9 @@ S7::method(distrib_hess_y, FoldedDistrib) <- function(distrib, y, theta, ...) {
 #' @param parent A `distrib` object.
 #'
 #' @return `TRUE` when [distrib_atoms()] is registered on a class strictly
-#'   below `distrib`, `FALSE` when the method comes from the base class or is
-#'   absent.
+#'   below `distrib` other than the three passing wrappers, or when one of
+#'   those wraps a distribution for which the function returns `TRUE`;
+#'   `FALSE` when the method comes from the base class or is absent.
 #'
 #' @seealso [distrib_atoms()] for the generic, [folded()], which consults this,
 #'   and [zero_adjusted()], which produces a parent it rejects.
@@ -860,13 +867,26 @@ S7::method(distrib_hess_y, FoldedDistrib) <- function(distrib, y, theta, ...) {
 #' # Which is why folded() rejects the second by name.
 #' try(folded(zero_adjusted(gaussian1_distrib())))
 #'
+#' # A wrapper declares atoms exactly when the family it wraps does.
+#' distributions7:::declares_atoms(fixed(gaussian1_distrib(), sigma = 1.2))
+#' distributions7:::declares_atoms(fixed(zero_adjusted(gaussian1_distrib()),
+#'                                       sigma = 1.2))
+#'
 #' @keywords internal
 declares_atoms <- function(parent) {
   m <- tryCatch(S7::method(distrib_atoms, S7::S7_class(parent)),
                 error = function(e) NULL)
   if (is.null(m)) return(FALSE)
   reg <- tryCatch(attr(m, "signature")[[1]], error = function(e) NULL)
-  !is.null(reg) && !is_class(reg, distrib)
+  if (is.null(reg) || is_class(reg, distrib)) return(FALSE)
+  # these wrappers register distrib_atoms only to pass the parent's atoms on,
+  # so they carry one exactly when the parent does
+  passes_on <- list(FixedContinuousDistrib, ReparamContinuousDistrib,
+                    TruncatedContinuousDistrib)
+  if (any(vapply(passes_on, function(cl) is_class(reg, cl), logical(1)))) {
+    return(declares_atoms(parent@parent_distrib))
+  }
+  TRUE
 }
 
 # --- CONSTRUCTOR WRAPPER ---
