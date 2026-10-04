@@ -101,7 +101,9 @@ numerical_deriv_y <- function(distrib, y, theta, order,
 distrib_deriv3_y <- S7::new_generic(
   "distrib_deriv3_y", "distrib",
   function(distrib, y, theta, ...) {
-    theta <- align_theta(distrib, theta)
+    args <- check_derivative_args(distrib, y, theta)
+    y <- args$y
+    theta <- args$theta
     S7::S7_dispatch()
   })
 
@@ -114,7 +116,9 @@ distrib_deriv3_y <- S7::new_generic(
 distrib_deriv4_y <- S7::new_generic(
   "distrib_deriv4_y", "distrib",
   function(distrib, y, theta, ...) {
-    theta <- align_theta(distrib, theta)
+    args <- check_derivative_args(distrib, y, theta)
+    y <- args$y
+    theta <- args$theta
     S7::S7_dispatch()
   })
 

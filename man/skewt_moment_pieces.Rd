@@ -14,8 +14,8 @@ below 1 give \code{NaN} in \code{bnu} and \code{mz}; values at or below 2 give \
 \code{vz} as well.}
 }
 \value{
-A named list with \code{delta}, \code{bnu}, \code{mz} and \code{vz}, each a numeric
-vector recycled to the longer of \code{alpha} and \code{nu}.
+A named list with \code{nu}, \code{delta}, \code{bnu}, \code{mz} and \code{vz}, each a
+numeric vector recycled to the longer of \code{alpha} and \code{nu}.
 }
 \description{
 Returns the four pieces the family's four moment methods share:

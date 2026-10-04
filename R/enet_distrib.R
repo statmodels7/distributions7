@@ -802,7 +802,7 @@ S7::method(distrib_grad_y, EnetDistrib) <- function(distrib, y, theta, ...) {
 #'                                              alpha = a)), 0)
 S7::method(distrib_hess_y, EnetDistrib) <- function(distrib, y, theta, ...) {
   p <- .enet_parts(theta)
-  rep(-p$c, length(y))
+  rep_len(-p$c, length(y))
 }
 
 #' @title Elastic-Net Mixed Response-Parameter Derivatives
@@ -872,7 +872,7 @@ S7::method(distrib_cross_y, EnetDistrib) <- function(distrib, y, theta,
   z <- y - p$mu
   s <- sign(z)
   list(
-    mu = rep(p$c, length(z)),
+    mu = rep_len(p$c, length(z)),
     lambda = -p$al * s - (1 - p$al) * z,
     alpha = p$lam * (z - s)
   )

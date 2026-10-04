@@ -1,3 +1,25 @@
+# distributions7 0.69.2
+
+* `distrib_deriv3_y()`, `distrib_deriv4_y()`, `distrib_deriv3_cdf()` and
+  `distrib_deriv4_cdf()` recycle a single point against parameters that vary
+  by observation, as the orders below them do. The response derivatives
+  returned one value, read at the first observation's parameters, and the
+  cdf derivatives returned one value per observation computed at the wrong
+  point. `truncated()` of a discrete family reads the cdf derivatives at its
+  lower end in that way, so its third to fifth parameter derivatives were
+  wrong with parameters by observation.
+
+* `distrib_hess_y()` and `distrib_cross_y()` for `enet_distrib()` return one
+  value per observation with parameters by observation, where they returned
+  the square of that number of values; the numerical orders built on them
+  (`distrib_cross2_y()`, `distrib_grad_y_hess()`, `distrib_hess_y_hess()`)
+  follow.
+
+* The variance, skewness and kurtosis of `skewt_distrib()` vary with `alpha`
+  when `alpha` varies by observation and `nu` does not; they repeated the
+  value at the first `alpha`. The skewness of `gpd_distrib()` no longer warns
+  when `xi` takes values on both sides of 1/3.
+
 # distributions7 0.69.1
 
 * `distrib_rng()` for the two von Mises families draws each angle at its own

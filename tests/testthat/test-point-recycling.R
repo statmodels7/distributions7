@@ -155,3 +155,93 @@ test_that("betabinom2 keeps a parameter per observation aligned off the support"
                  distrib_pdf(d, 3, list(alpha = 3, beta = 5), log = TRUE)),
                tolerance = 1e-12)
 })
+
+
+# The third and fourth response and cdf derivatives took the point as given,
+# so with a single point and parameters by observation the response
+# derivatives came back length 1, read at the first observation's parameters,
+# and the cdf derivatives at the right length with wrong values (-20.06 where
+# the Poisson's mu_mu_mu at q = 3, mu = 8 is 0.0069). The truncated discrete
+# wrapper reads F at its lower end that way, so its own third to fifth
+# derivatives were wrong with parameters by observation. The four generics now
+# recycle the point as the orders below them do.
+
+point_families <- function() {
+  ctors <- sort(grep("_distrib$", getNamespaceExports("distributions7"), value = TRUE))
+  out <- list()
+  for (nm in ctors) {
+    f <- get(nm)
+    if ("n_dim" %in% names(formals(f))) next
+    d <- tryCatch(if ("size" %in% names(formals(f))) f(size = 10) else f(),
+                  error = function(e) NULL)
+    if (!is.null(d) && !S7::S7_inherits(d, multivariate_distrib)) out[[nm]] <- d
+  }
+  out
+}
+# component by component, the vector call against the scalar calls
+expect_by_obs <- function(vec, refs, label, tolerance = 1e-8) {
+  for (nm in names(refs[[1]])) {
+    expect_length(vec[[nm]], length(refs))
+    expect_equal(vec[[nm]], vapply(refs, function(r) r[[nm]][1], numeric(1)),
+                 tolerance = tolerance, label = paste(label, nm))
+  }
+}
+
+test_that("orders three and four recycle a single point against vector parameters", {
+  fams <- point_families()
+  expect_gte(length(fams), 42L)
+  gens <- list(
+    deriv3_y = function(d, x, t) distrib_deriv3_y(d, x, t),
+    deriv4_y = function(d, x, t) distrib_deriv4_y(d, x, t),
+    deriv3_cdf = function(d, x, t) distrib_deriv3_cdf(d, x, t),
+    deriv4_cdf = function(d, x, t) distrib_deriv4_cdf(d, x, t))
+  for (nm in names(fams)) {
+    d <- fams[[nm]]
+    set.seed(3)
+    ths <- replicate(3, generate_random_theta(d), simplify = FALSE)
+    th <- by_obs(d, ths)
+    x <- distrib_rng(d, 1, ths[[1]])
+    for (g in names(gens)) {
+      refs <- tryCatch(lapply(ths, function(t) gens[[g]](d, x, t)), error = function(e) NULL)
+      if (is.null(refs)) next                  # not defined for this family
+      vec <- gens[[g]](d, x, th)
+      if (!is.list(vec)) {
+        expect_equal(vec, unlist(refs), tolerance = 1e-8, label = paste(nm, g))
+      } else {
+        expect_by_obs(vec, refs, paste(nm, g))
+      }
+    }
+  }
+})
+
+test_that("the truncated discrete wrapper's higher derivatives follow parameters by observation", {
+  y <- c(1, 3, 7)
+  for (d in list(truncated(poisson_distrib(), lower = 1),
+                 truncated(negbin2_distrib(), lower = 1, upper = 30))) {
+    set.seed(4)
+    ths <- replicate(3, generate_random_theta(d), simplify = FALSE)
+    th <- by_obs(d, ths)
+    for (f in list(distrib_hessian, distrib_deriv3, distrib_deriv4, distrib_deriv5)) {
+      refs <- lapply(1:3, function(i) f(d, y[i], ths[[i]]))
+      expect_by_obs(f(d, y, th), refs, d@distrib_name)
+    }
+  }
+})
+
+test_that("enet's constant response components recycle against vector parameters", {
+  d <- enet_distrib()
+  y <- c(-1.2, 0.3, 2.5)
+  ths <- list(list(mu = 0, lambda = 1, alpha = 0.3), list(mu = 0.5, lambda = 2, alpha = 0.6),
+              list(mu = -0.4, lambda = 0.7, alpha = 0.8))
+  th <- by_obs(d, ths)
+  hv <- distrib_hess_y(d, y, th)
+  expect_length(hv, 3L)
+  expect_equal(hv, vapply(1:3, function(i) distrib_hess_y(d, y[i], ths[[i]]), 0))
+  expect_by_obs(distrib_cross_y(d, y, th), lapply(1:3, function(i) distrib_cross_y(d, y[i], ths[[i]])),
+                "enet cross_y")
+  # the numerical orders built on those two now have one entry per observation
+  for (f in list(distrib_cross2_y, distrib_grad_y_hess, distrib_hess_y_hess)) {
+    expect_by_obs(f(d, y, th), lapply(1:3, function(i) f(d, y[i], ths[[i]])), "enet",
+                  tolerance = 1e-5)
+  }
+})

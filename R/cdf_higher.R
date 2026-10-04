@@ -347,7 +347,9 @@ cdf_tables <- function(distrib, q, theta, order) {
 distrib_deriv3_cdf <- S7::new_generic(
   "distrib_deriv3_cdf", "distrib",
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
-    theta <- align_theta(distrib, theta)
+    args <- check_derivative_args(distrib, q, theta)
+    q <- args$y
+    theta <- args$theta
     S7::S7_dispatch()
   })
 
@@ -361,7 +363,9 @@ distrib_deriv3_cdf <- S7::new_generic(
 distrib_deriv4_cdf <- S7::new_generic(
   "distrib_deriv4_cdf", "distrib",
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
-    theta <- align_theta(distrib, theta)
+    args <- check_derivative_args(distrib, q, theta)
+    q <- args$y
+    theta <- args$theta
     S7::S7_dispatch()
   })
 

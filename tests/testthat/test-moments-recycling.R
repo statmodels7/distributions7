@@ -147,3 +147,38 @@ test_that("a recycled moment is the scalar one repeated", {
   vary <- variance(d, list(mu = 0, sigma = c(1, 2, 3), alpha = 3))
   expect_equal(vary, one * c(1, 4, 9) / 4)
 })
+
+
+test_that("every moment at distinct settings is the scalar moment at each", {
+  # The sweep above varies one parameter over three IDENTICAL settings, so a
+  # method that repeated the first setting's value passed it: the skew t's
+  # variance, skewness and kurtosis did, through an ifelse() on nu that
+  # returned the length of nu when only alpha varied.
+  set.seed(20261004L)
+  fams <- uni_families()
+  gens <- list(mean = mean, variance = variance,
+               skewness = skewness, kurtosis = kurtosis)
+  for (nm in names(fams)) {
+    d <- fams[[nm]]
+    ths <- replicate(3, generate_random_theta(d), simplify = FALSE)
+    for (p in d@params) {
+      t3 <- ths[[1]]
+      t3[[p]] <- vapply(ths, `[[`, numeric(1), p)
+      sc <- lapply(1:3, function(i) { t <- ths[[1]]; t[[p]] <- ths[[i]][[p]]; t })
+      for (g in names(gens)) {
+        ref <- tryCatch(vapply(sc, function(t) gens[[g]](d, t), numeric(1)),
+                        error = function(e) NULL)
+        if (is.null(ref)) next
+        expect_equal(gens[[g]](d, t3), ref, tolerance = 1e-8,
+                     label = paste(nm, g, "varying", p))
+      }
+    }
+  }
+
+  d <- skewt_distrib()
+  th <- list(mu = 0.3, sigma = 1.2, alpha = c(-2, 0.5, 3), nu = 6)
+  one <- function(f, a) f(d, list(mu = 0.3, sigma = 1.2, alpha = a, nu = 6))
+  for (f in list(variance, skewness, kurtosis)) {
+    expect_equal(f(d, th), vapply(c(-2, 0.5, 3), function(a) one(f, a), 0))
+  }
+})

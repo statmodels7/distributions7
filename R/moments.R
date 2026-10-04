@@ -1979,8 +1979,8 @@ S7::method(kurtosis, SkewNormal1Distrib) <- function(x, theta, ...) {
 #'   below 1 give `NaN` in `bnu` and `mz`; values at or below 2 give `NaN` in
 #'   `vz` as well.
 #'
-#' @return A named list with `delta`, `bnu`, `mz` and `vz`, each a numeric
-#'   vector recycled to the longer of `alpha` and `nu`.
+#' @return A named list with `nu`, `delta`, `bnu`, `mz` and `vz`, each a
+#'   numeric vector recycled to the longer of `alpha` and `nu`.
 #'
 #' @seealso [mean.SkewTDistrib()], [variance.SkewTDistrib()],
 #'   [skewness.SkewTDistrib()] and [kurtosis.SkewTDistrib()] for the four
@@ -1993,11 +1993,15 @@ S7::method(kurtosis, SkewNormal1Distrib) <- function(x, theta, ...) {
 #'
 #' @keywords internal
 skewt_moment_pieces <- function(alpha, nu) {
+  # ifelse() returns the length of its test, so both are recycled first
+  n <- max(length(alpha), length(nu))
+  alpha <- rep_len(alpha, n)
+  nu <- rep_len(nu, n)
   delta <- alpha / sqrt(1 + alpha^2)
   bnu <- ifelse(nu > 1, sqrt(nu / pi) * exp(lgamma((nu - 1) / 2) - lgamma(nu / 2)), NaN)
   mz <- delta * bnu
   vz <- ifelse(nu > 2, nu / (nu - 2) - mz^2, NaN)
-  list(delta = delta, bnu = bnu, mz = mz, vz = vz)
+  list(nu = nu, delta = delta, bnu = bnu, mz = mz, vz = vz)
 }
 
 #' @title Mean of the Skew t Distribution
@@ -2158,8 +2162,8 @@ S7::method(variance, SkewTDistrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(skewness, SkewTDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  nu <- theta[[4]]
-  p <- skewt_moment_pieces(theta[[3]], nu)
+  p <- skewt_moment_pieces(theta[[3]], theta[[4]])
+  nu <- p$nu
   val <- (p$mz / p$vz^1.5) *
     (nu * (3 - p$delta^2) / (nu - 3) - 3 * nu / (nu - 2) + 2 * p$mz^2)
   ifelse(nu > 3, val, NaN) + moment_const(theta, 4L, 0)
@@ -2217,8 +2221,8 @@ S7::method(skewness, SkewTDistrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(kurtosis, SkewTDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  nu <- theta[[4]]
-  p <- skewt_moment_pieces(theta[[3]], nu)
+  p <- skewt_moment_pieces(theta[[3]], theta[[4]])
+  nu <- p$nu
   val <- (3 * nu^2 / ((nu - 2) * (nu - 4)) -
     4 * p$mz^2 * nu * (3 - p$delta^2) / (nu - 3) +
     6 * p$mz^2 * nu / (nu - 2) - 3 * p$mz^4) / p$vz^2 - 3
@@ -4022,7 +4026,13 @@ S7::method(skewness, GPDDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   n <- max(lengths(theta[seq_len(2)]))
   xi <- rep(theta[[2]], length.out = n)
-  ifelse(xi < 1 / 3, 2 * (1 + xi) * sqrt(1 - 2 * xi) / (1 - 3 * xi), Inf)
+  # evaluated only where it exists, so a mixed vector warns no more than a
+  # scalar does
+  out <- rep(Inf, n)
+  out[is.na(xi)] <- NA_real_
+  ok <- which(xi < 1 / 3)
+  out[ok] <- 2 * (1 + xi[ok]) * sqrt(1 - 2 * xi[ok]) / (1 - 3 * xi[ok])
+  out
 }
 
 #' @title Excess Kurtosis of the Generalized Pareto Distribution
