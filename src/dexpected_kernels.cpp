@@ -18,6 +18,7 @@
 #include <vector>
 #include "d7_par.h"
 #include "psi_diff.h"
+#include "pt_constants.h"
 #include "pt_bernoulli.h"
 #include "pt_binomial.h"
 #include "pt_exponential.h"
@@ -31,6 +32,9 @@
 #include "pt_invgauss2.h"
 #include "pt_gamma2.h"
 #include "pt_gpd.h"
+#include "pt_gumbel.h"
+#include "pt_weibull1.h"
+#include "pt_beta2.h"
 using namespace Rcpp;
 
 namespace {
@@ -93,8 +97,8 @@ struct Par {
     double operator[](std::size_t i) const { return s ? x[0] : x[i]; }
 };
 
-const double kEG = 0.57721566490153286061;          // Euler-Mascheroni
-const double kGumbelC = (1.0 - kEG) * (1.0 - kEG) + M_PI * M_PI / 6.0;
+const double kEG = d7::kEulerGamma;
+const double kGumbelC = d7::kGumbelInfo;
 
 }  // namespace
 
@@ -284,13 +288,8 @@ List logistic_dexpected2_cpp(NumericVector y, NumericVector mu,
 // [[Rcpp::export]]
 List gumbel_dexpected1_cpp(NumericVector y, NumericVector mu,
                            NumericVector sigma, int threads = 1) {
-    // the gumbel's components move to their own header with its port
-    return locscale_dexpected1(y, sigma, threads, gumbel_k, [](double s) {
-        double k[3];
-        gumbel_k(k);
-        double u = 1.0 / s, u3 = u * u * u;
-        return -2.0 * k[1] * u3;
-    });
+    return locscale_dexpected1(y, sigma, threads, gumbel_k,
+                               d7::gumbel_dexpected_sigma_sigma_sigma);
 }
 
 // [[Rcpp::export]]
@@ -484,7 +483,8 @@ List beta2_dexpected1_cpp(NumericVector y, NumericVector alpha,
         double a = A[i], b = B[i];
         double ps = R::psigamma(a + b, 2), pa = R::psigamma(a, 2),
                pb = R::psigamma(b, 2);
-        double w[6] = {ps - pa, ps, ps, ps - pb, ps, ps};
+        double w[6] = {d7::beta2_dexpected_alpha_alpha_alpha(pa, ps), ps, ps,
+                       d7::beta2_dexpected_beta_beta_beta(pb, ps), ps, ps};
         for (int j = 0; j < 6; ++j) o[j] = w[j];
     });
 }
@@ -515,10 +515,9 @@ List weibull1_dexpected1_cpp(NumericVector y, NumericVector mu,
                     dexp_keys2("mu", "sigma", 1),
                     [&](std::size_t i, double* o) {
         double m = M[i], s = S[i];
-        double im = 1.0 / m, im2 = im * im, im3 = im2 * im;
-        double is = 1.0 / s, is3 = is * is * is;
-        double w[6] = {2.0 * s * s * im3, -2.0 * s * im2,
-                       0.0, 2.0 * kGumbelC * is3,
+        double im = 1.0 / m, im2 = im * im;
+        double w[6] = {d7::weibull1_dexpected_mu_mu_mu(m, s), -2.0 * s * im2,
+                       0.0, d7::weibull1_dexpected_sigma_sigma_sigma(s),
                        -k * im2, 0.0};
         for (int j = 0; j < 6; ++j) o[j] = w[j];
     });

@@ -76,9 +76,9 @@ test_that("on the parameter scale the gaussian's mean entry is -1/sigma^2", {
 })
 
 test_that("a family without an analytic second derivative signals an error", {
-  expect_error(distrib_d3expected_hessian(laplace_distrib(), 0,
-                                          list(mu = 0, sigma = 1)),
-               "no analytic second derivative")
+  expect_error(distrib_d3expected_hessian(
+    zero_inflated(poisson_distrib()), 1, list(mu = 2, zi = 0.2)),
+    "no analytic second derivative")
   expect_error(distrib_d4expected_hessian(
     zero_inflated(poisson_distrib()), 1, list(mu = 2, zi = 0.2)),
     "no analytic second derivative")

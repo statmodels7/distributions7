@@ -28,6 +28,11 @@
 #include "pt_student_t2.h"
 #include "pt_gengamma1.h"
 #include "pt_gengamma2.h"
+#include "pt_gumbel.h"
+#include "pt_laplace.h"
+#include "pt_laplace2.h"
+#include "pt_weibull1.h"
+#include "pt_beta2.h"
 
 // The scalar C entry points of the fast route piano_parallel.txt section 2a
 // describes: the score and the second derivative of the log-density in ONE
@@ -80,7 +85,12 @@ const char* const d7_scalar_classes[] = {
     "StudentT1Distrib",     // 23
     "StudentT2Distrib",     // 24
     "GenGamma1Distrib",     // 25
-    "GenGamma2Distrib"      // 26
+    "GenGamma2Distrib",     // 26
+    "GumbelDistrib",        // 27
+    "LaplaceDistrib",       // 28
+    "Laplace2Distrib",      // 29
+    "Weibull1Distrib",      // 30
+    "Beta2Distrib"          // 31
 };
 
 const int d7_n_scalar_classes =
@@ -135,6 +145,11 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
     case 24: d7::student_t2_score_curv(k, y, th, out); break;
     case 25: d7::gengamma1_score_curv(k, y, th, out); break;
     case 26: d7::gengamma2_score_curv(k, y, th, out); break;
+    case 27: d7::gumbel_score_curv(k, y, th, out); break;
+    case 28: d7::laplace_score_curv(k, y, th, out); break;
+    case 29: d7::laplace2_score_curv(k, y, th, out); break;
+    case 30: d7::weibull1_score_curv(k, y, th, out); break;
+    case 31: d7::beta2_score_curv(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }
@@ -171,6 +186,11 @@ void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
     case 24: d7::student_t2_info_dinfo(k, y, th, out); break;
     case 25: d7::gengamma1_info_dinfo(k, y, th, out); break;
     case 26: d7::gengamma2_info_dinfo(k, y, th, out); break;
+    case 27: d7::gumbel_info_dinfo(k, y, th, out); break;
+    case 28: d7::laplace_info_dinfo(k, y, th, out); break;
+    case 29: d7::laplace2_info_dinfo(k, y, th, out); break;
+    case 30: d7::weibull1_info_dinfo(k, y, th, out); break;
+    case 31: d7::beta2_info_dinfo(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }

@@ -300,6 +300,9 @@ S7::method(distrib_rng, LaplaceDistrib) <- function(distrib, n, theta, ...) {
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma`, each of
 #'   length `max(length(y), length(mu), length(sigma))`.
@@ -332,14 +335,8 @@ S7::method(distrib_rng, LaplaceDistrib) <- function(distrib, n, theta, ...) {
 #' set.seed(12)
 #' z <- distrib_rng(d, 401, list(mu = 3, sigma = 2))
 #' sum(distrib_gradient(d, z, list(mu = median(z), sigma = 2))$mu)
-S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  mu <- theta[[1]]
-  b <- theta[[2]]
-  r <- y - mu
-  list(
-    mu = sign(r) / b,
-    sigma = (abs(r) / b - 1) / b
-  )
+S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  laplace_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Laplace Observed Hessian
@@ -374,6 +371,9 @@ S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scal
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, each of length `max(length(y), length(mu), length(sigma))`.
@@ -405,16 +405,8 @@ S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scal
 #' z <- distrib_rng(d, 1e5, th)
 #' c(observed_mean = mean(distrib_hessian(d, z, th)$mu_mu),
 #'   expected = distrib_expected_hessian(d, 0, th)$mu_mu)
-S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  mu <- theta[[1]]
-  b <- theta[[2]]
-  r <- y - mu
-  n <- length(y)
-  list(
-    mu_mu = rep(0, n),
-    sigma_sigma = (b - 2 * abs(r)) / b^3,
-    mu_sigma = -sign(r) / b^2
-  )
+S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  laplace_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Laplace Expected Hessian
@@ -450,6 +442,9 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #'   \eqn{1/\sigma^2}.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, each of length `length(y)` and constant within itself when the
@@ -490,14 +485,8 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #' # Fisher scoring can fit the family because this matrix is nonsingular;
 #' # a Newton step on the observed Hessian would divide by zero in mu.
 #' coef(fit_distrib(d, z))
-S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
-  b <- theta[[2]]
-  n <- length(y)
-  list(
-    mu_mu = rep(-1 / b^2, length.out = n),
-    sigma_sigma = rep(-1 / b^2, length.out = n),
-    mu_sigma = rep(0, n)
-  )
+S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+  laplace_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Laplace Third-Order Derivatives

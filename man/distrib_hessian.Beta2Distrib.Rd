@@ -16,6 +16,10 @@ positive.}
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{alpha_alpha}, \code{beta_beta}

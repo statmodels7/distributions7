@@ -34,7 +34,12 @@ ccallable_families <- list(
   StudentT1Distrib = function() student_t1_distrib(),
   StudentT2Distrib = function() student_t2_distrib(),
   GenGamma1Distrib = function() gengamma1_distrib(),
-  GenGamma2Distrib = function() gengamma2_distrib()
+  GenGamma2Distrib = function() gengamma2_distrib(),
+  GumbelDistrib = function() gumbel_distrib(),
+  LaplaceDistrib = function() laplace_distrib(),
+  Laplace2Distrib = function() laplace2_distrib(),
+  Weibull1Distrib = function() weibull1_distrib(),
+  Beta2Distrib = function() beta2_distrib()
 )
 
 # the constants a family carries besides its parameters, which follow the

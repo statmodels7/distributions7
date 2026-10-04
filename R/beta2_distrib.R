@@ -281,9 +281,8 @@ S7::method(distrib_rng, Beta2Distrib) <- function(distrib, n, theta, ...) {
 #' each component is the corresponding statistic minus its expectation. That
 #' is also why every derivative beyond this one is free of the response.
 #'
-#' The value is computed in plain R, this family carrying no compiled kernel,
-#' and \eqn{\log(1-y)} is formed with [base::log1p()] so that it stays accurate
-#' at `y` near zero.
+#' The value is computed by a compiled kernel, and \eqn{\log(1-y)} is formed
+#' with `log1p()` so that it stays accurate at `y` near zero.
 #'
 #' With `scale = "link"` the generic applies the chain rule for the links the
 #' family carries before returning. This method always returns the parameter
@@ -298,6 +297,9 @@ S7::method(distrib_rng, Beta2Distrib) <- function(distrib, n, theta, ...) {
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `alpha` and `beta`, each of
 #'   length `max(length(y), length(alpha), length(beta))`.
@@ -333,12 +335,9 @@ S7::method(distrib_rng, Beta2Distrib) <- function(distrib, n, theta, ...) {
 #' fit <- fit_distrib(d, zz)
 #' vapply(distrib_gradient(d, zz, as.list(coef(fit))), sum, numeric(1))
 S7::method(distrib_gradient, Beta2Distrib) <- function(distrib, y, theta,
-                                                        scale = c("parameter", "link"), ...) {
-  a <- theta[[1]]
-  b <- theta[[2]]
-  ds <- digamma(a + b)
-  list(alpha = log(y) - digamma(a) + ds,
-       beta = log1p(-y) - digamma(b) + ds)
+                                                        scale = c("parameter", "link"), ...,
+                                                        threads = 1L) {
+  beta2_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' Higher Derivatives of the Beta in Its Shapes
@@ -423,6 +422,9 @@ beta2_higher <- function(theta, n, order) {
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `alpha_alpha`, `beta_beta`
 #'   and `alpha_beta`, in that order, each of length `length(y)`. The three
@@ -460,9 +462,9 @@ beta2_higher <- function(theta, n, order) {
 #' dn <- distrib_gradient(d, y, list(alpha = 2 - eps, beta = 5))$alpha
 #' all.equal((up - dn) / (2 * eps), h$alpha_alpha, tolerance = 1e-5)
 S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
-                                                       scale = c("parameter", "link"), ...) {
-  h <- beta2_higher(theta, length(y), 2L)
-  h[hess_names(distrib@params)]
+                                                       scale = c("parameter", "link"), ...,
+                                                       threads = 1L) {
+  beta2_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Beta Expected Hessian in the Shapes
@@ -500,6 +502,9 @@ S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
 #'   quadrature, Monte Carlo and outer-product routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `alpha_alpha`, `beta_beta`
 #'   and `alpha_beta`, in that order, each of length `length(y)`.
@@ -536,9 +541,9 @@ S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
 S7::method(distrib_expected_hessian, Beta2Distrib) <- function(distrib, y, theta,
                                                                 scale = c("parameter", "link"),
                                                                 approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                nsim = 10000, ...) {
-  h <- beta2_higher(theta, length(y), 2L)
-  h[hess_names(distrib@params)]
+                                                                nsim = 10000, ...,
+                                                                threads = 1L) {
+  beta2_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Beta Third-Order Derivatives in the Shapes

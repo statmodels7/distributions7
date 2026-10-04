@@ -17,6 +17,10 @@ recycled. Both must be strictly positive.}
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
 A named list of two numeric vectors, \code{alpha} and \code{beta}, each of
@@ -34,9 +38,8 @@ the shapes with sufficient statistics \eqn{\log y} and \eqn{\log(1-y)}, so
 each component is the corresponding statistic minus its expectation. That
 is also why every derivative beyond this one is free of the response.
 
-The value is computed in plain R, this family carrying no compiled kernel,
-and \eqn{\log(1-y)} is formed with \code{\link[base:Log]{base::log1p()}} so that it stays accurate
-at \code{y} near zero.
+The value is computed by a compiled kernel, and \eqn{\log(1-y)} is formed
+with \code{log1p()} so that it stays accurate at \code{y} near zero.
 
 With \code{scale = "link"} the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter

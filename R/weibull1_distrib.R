@@ -329,6 +329,9 @@ S7::method(distrib_rng, Weibull1Distrib) <- function(distrib, n, theta, ...) {
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma`, each of
 #'   length `max(length(y), length(mu), length(sigma))`.
@@ -364,14 +367,8 @@ S7::method(distrib_rng, Weibull1Distrib) <- function(distrib, n, theta, ...) {
 #' # On the link scale both components are multiplied by h' = theta, both
 #' # parameters riding a log by default.
 #' distrib_gradient(d, y, th, scale = "link")$mu / g$mu
-S7::method(distrib_gradient, Weibull1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  mu <- theta[[1]]
-  sigma <- theta[[2]]
-  p <- weibull_pieces(y, mu, sigma)
-  list(
-    mu = sigma * (p$u - 1) / mu,
-    sigma = 1 / sigma + (1 - p$u) * p$lz
-  )
+S7::method(distrib_gradient, Weibull1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  weibull1_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Weibull Observed Hessian
@@ -399,6 +396,9 @@ S7::method(distrib_gradient, Weibull1Distrib) <- function(distrib, y, theta, sca
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, each of length `max(length(y), length(mu), length(sigma))`.
@@ -433,15 +433,8 @@ S7::method(distrib_gradient, Weibull1Distrib) <- function(distrib, y, theta, sca
 #' # below the 33rd percentile at this shape, so the observed information is
 #' # not positive definite at every observation while its expectation is.
 #' h$mu_mu
-S7::method(distrib_hessian, Weibull1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  mu <- theta[[1]]
-  sigma <- theta[[2]]
-  p <- weibull_pieces(y, mu, sigma)
-  list(
-    mu_mu = sigma * (1 - (1 + sigma) * p$u) / mu^2,
-    sigma_sigma = -1 / sigma^2 - p$u * p$lz^2,
-    mu_sigma = (p$u - 1 + sigma * p$u * p$lz) / mu
-  )
+S7::method(distrib_hessian, Weibull1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  weibull1_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Weibull Expected Hessian
@@ -492,6 +485,9 @@ S7::method(distrib_hessian, Weibull1Distrib) <- function(distrib, y, theta, scal
 #'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, each of length `length(y)` and each constant along it.
@@ -525,16 +521,8 @@ S7::method(distrib_hessian, Weibull1Distrib) <- function(distrib, y, theta, scal
 #'
 #' # The strategy argument is inert, the expectation being exact.
 #' identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
-S7::method(distrib_expected_hessian, Weibull1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
-  mu <- theta[[1]]
-  sigma <- theta[[2]]
-  n <- length(y)
-  eg <- -digamma(1)   # the Euler-Mascheroni constant
-  list(
-    mu_mu = rep(-sigma^2 / mu^2, length.out = n),
-    sigma_sigma = rep(-((1 - eg)^2 + pi^2 / 6) / sigma^2, length.out = n),
-    mu_sigma = rep((1 - eg) / mu, length.out = n)
-  )
+S7::method(distrib_expected_hessian, Weibull1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+  weibull1_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Weibull Third-Order Derivatives

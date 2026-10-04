@@ -49,6 +49,18 @@ beta_dexpected2_cpp <- function(y, mu, phi, threads = 1L) {
     .Call(`_distributions7_beta_dexpected2_cpp`, y, mu, phi, threads)
 }
 
+beta2_gradient_cpp <- function(y, alpha, beta, threads = 1L) {
+    .Call(`_distributions7_beta2_gradient_cpp`, y, alpha, beta, threads)
+}
+
+beta2_hessian_cpp <- function(y, alpha, beta, threads = 1L) {
+    .Call(`_distributions7_beta2_hessian_cpp`, y, alpha, beta, threads)
+}
+
+beta2_expected_hessian_cpp <- function(y, alpha, beta, threads = 1L) {
+    .Call(`_distributions7_beta2_expected_hessian_cpp`, y, alpha, beta, threads)
+}
+
 beta_deriv3_cpp <- function(y, mu, phi, threads = 1L) {
     .Call(`_distributions7_beta_deriv3_cpp`, y, mu, phi, threads)
 }
@@ -781,6 +793,18 @@ gpd_poly_cpp <- function(u, coef, threads) {
     .Call(`_distributions7_gpd_poly_cpp`, u, coef, threads)
 }
 
+gumbel_gradient_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_gumbel_gradient_cpp`, y, mu, sigma, threads)
+}
+
+gumbel_hessian_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_gumbel_hessian_cpp`, y, mu, sigma, threads)
+}
+
+gumbel_expected_hessian_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_gumbel_expected_hessian_cpp`, y, mu, sigma, threads)
+}
+
 gumbel_deriv3_cpp <- function(y, mu, sigma, threads = 1L) {
     .Call(`_distributions7_gumbel_deriv3_cpp`, y, mu, sigma, threads)
 }
@@ -843,6 +867,46 @@ invgauss_deriv4_cpp <- function(y, mu, phi, threads = 1L) {
 
 invgauss_deriv4_expected_cpp <- function(y, mu, phi, threads = 1L) {
     .Call(`_distributions7_invgauss_deriv4_expected_cpp`, y, mu, phi, threads)
+}
+
+laplace_gradient_cpp <- function(y, mu, b, threads = 1L) {
+    .Call(`_distributions7_laplace_gradient_cpp`, y, mu, b, threads)
+}
+
+laplace_hessian_cpp <- function(y, mu, b, threads = 1L) {
+    .Call(`_distributions7_laplace_hessian_cpp`, y, mu, b, threads)
+}
+
+laplace_expected_hessian_cpp <- function(y, mu, b, threads = 1L) {
+    .Call(`_distributions7_laplace_expected_hessian_cpp`, y, mu, b, threads)
+}
+
+laplace_dexpected1_cpp <- function(y, mu, b, threads = 1L) {
+    .Call(`_distributions7_laplace_dexpected1_cpp`, y, mu, b, threads)
+}
+
+laplace_dexpected2_cpp <- function(y, mu, b, threads = 1L) {
+    .Call(`_distributions7_laplace_dexpected2_cpp`, y, mu, b, threads)
+}
+
+laplace2_gradient_cpp <- function(y, mu, lambda, threads = 1L) {
+    .Call(`_distributions7_laplace2_gradient_cpp`, y, mu, lambda, threads)
+}
+
+laplace2_hessian_cpp <- function(y, mu, lambda, threads = 1L) {
+    .Call(`_distributions7_laplace2_hessian_cpp`, y, mu, lambda, threads)
+}
+
+laplace2_expected_hessian_cpp <- function(y, mu, lambda, threads = 1L) {
+    .Call(`_distributions7_laplace2_expected_hessian_cpp`, y, mu, lambda, threads)
+}
+
+laplace2_dexpected1_cpp <- function(y, mu, lambda, threads = 1L) {
+    .Call(`_distributions7_laplace2_dexpected1_cpp`, y, mu, lambda, threads)
+}
+
+laplace2_dexpected2_cpp <- function(y, mu, lambda, threads = 1L) {
+    .Call(`_distributions7_laplace2_dexpected2_cpp`, y, mu, lambda, threads)
 }
 
 laplace_deriv3_cpp <- function(y, mu, b, threads = 1L) {
@@ -1495,6 +1559,18 @@ vonmises2_dexpected1_cpp <- function(rho, threads = 1L) {
 
 vonmises2_dexpected2_cpp <- function(rho, threads = 1L) {
     .Call(`_distributions7_vonmises2_dexpected2_cpp`, rho, threads)
+}
+
+weibull1_gradient_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_weibull1_gradient_cpp`, y, mu, sigma, threads)
+}
+
+weibull1_hessian_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_weibull1_hessian_cpp`, y, mu, sigma, threads)
+}
+
+weibull1_expected_hessian_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_weibull1_expected_hessian_cpp`, y, mu, sigma, threads)
 }
 
 weibull3_gradient_cpp <- function(y, mean, sigma) {

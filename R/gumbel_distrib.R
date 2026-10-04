@@ -322,6 +322,9 @@ S7::method(distrib_rng, GumbelDistrib) <- function(distrib, n, theta, ...) {
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma`, each of
 #'   length `max(length(y), length(mu), length(sigma))`.
@@ -359,15 +362,8 @@ S7::method(distrib_rng, GumbelDistrib) <- function(distrib, n, theta, ...) {
 #' s <- distrib_rng(d, 2000, list(mu = 3, sigma = 2))
 #' fit <- fit_distrib(d, s)
 #' vapply(distrib_gradient(d, s, as.list(coef(fit))), sum, numeric(1))
-S7::method(distrib_gradient, GumbelDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  mu <- theta[[1]]
-  sigma <- theta[[2]]
-  z <- (y - mu) / sigma
-  w <- exp(-z)
-  list(
-    mu = (1 - w) / sigma,
-    sigma = (z * (1 - w) - 1) / sigma
-  )
+S7::method(distrib_gradient, GumbelDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  gumbel_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gumbel Observed Hessian
@@ -393,6 +389,9 @@ S7::method(distrib_gradient, GumbelDistrib) <- function(distrib, y, theta, scale
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, in that order, each of length
@@ -433,17 +432,8 @@ S7::method(distrib_gradient, GumbelDistrib) <- function(distrib, y, theta, scale
 #' up <- distrib_gradient(d, y, list(mu = 0 + eps, sigma = 1))$mu
 #' dn <- distrib_gradient(d, y, list(mu = 0 - eps, sigma = 1))$mu
 #' all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-5)
-S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  mu <- theta[[1]]
-  sigma <- theta[[2]]
-  z <- (y - mu) / sigma
-  w <- exp(-z)
-  s2 <- sigma^2
-  list(
-    mu_mu = -w / s2,
-    sigma_sigma = (1 - 2 * z + 2 * z * w - z^2 * w) / s2,
-    mu_sigma = -(1 - w + z * w) / s2
-  )
+S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  gumbel_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gumbel Expected Hessian
@@ -487,6 +477,9 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #'   quadrature, Monte Carlo and outer-product routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, in that order, each of length `length(y)` and constant within
@@ -528,16 +521,8 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #' rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
 #'       expected = vapply(distrib_expected_hessian(d, z, th),
 #'                         function(v) v[1], numeric(1)))
-S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
-  sigma <- theta[[2]]
-  n <- length(y)
-  s2 <- sigma^2
-  eg <- -digamma(1)   # the Euler-Mascheroni constant
-  list(
-    mu_mu = rep(-1 / s2, length.out = n),
-    sigma_sigma = rep(-((1 - eg)^2 + pi^2 / 6) / s2, length.out = n),
-    mu_sigma = rep((1 - eg) / s2, length.out = n)
-  )
+S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+  gumbel_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gumbel Third-Order Derivatives
