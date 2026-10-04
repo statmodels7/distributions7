@@ -34,6 +34,7 @@
 #include "pt_weibull1.h"
 #include "pt_beta2.h"
 #include "pt_enet.h"
+#include "pt_negbin1.h"
 
 // The scalar C entry points of the fast route piano_parallel.txt section 2a
 // describes: the score and the second derivative of the log-density in ONE
@@ -92,7 +93,8 @@ const char* const d7_scalar_classes[] = {
     "Laplace2Distrib",      // 29
     "Weibull1Distrib",      // 30
     "Beta2Distrib",         // 31
-    "EnetDistrib"           // 32
+    "EnetDistrib",          // 32
+    "NegBin1Distrib"        // 33
 };
 
 const int d7_n_scalar_classes =
@@ -153,6 +155,7 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
     case 30: d7::weibull1_score_curv(k, y, th, out); break;
     case 31: d7::beta2_score_curv(k, y, th, out); break;
     case 32: d7::enet_score_curv(k, y, th, out); break;
+    case 33: d7::negbin1_score_curv(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }
@@ -195,6 +198,7 @@ void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
     case 30: d7::weibull1_info_dinfo(k, y, th, out); break;
     case 31: d7::beta2_info_dinfo(k, y, th, out); break;
     case 32: d7::enet_info_dinfo(k, y, th, out); break;
+    case 33: d7::negbin1_info_dinfo(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }
