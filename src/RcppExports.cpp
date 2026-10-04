@@ -1057,6 +1057,66 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// enet_gradient_cpp
+List enet_gradient_cpp(NumericVector y, NumericVector mu, NumericVector lambda, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_enet_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP lambdaSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(enet_gradient_cpp(y, mu, lambda, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// enet_hessian_cpp
+List enet_hessian_cpp(NumericVector y, NumericVector mu, NumericVector lambda, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_enet_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP lambdaSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(enet_hessian_cpp(y, mu, lambda, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// enet_expected_hessian_cpp
+List enet_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector lambda, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_enet_expected_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP lambdaSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(enet_expected_hessian_cpp(y, mu, lambda, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// enet_dexpected1_cpp
+List enet_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector lambda, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_enet_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP lambdaSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(enet_dexpected1_cpp(y, mu, lambda, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // exponential_gradient_cpp
 List exponential_gradient_cpp(NumericVector y, NumericVector mu, int threads);
 RcppExport SEXP _distributions7_exponential_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
@@ -4461,6 +4521,36 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// skewnormal1_gradient_cpp
+List skewnormal1_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_skewnormal1_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal1_gradient_cpp(y, mu, sigma, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewnormal1_hessian_cpp
+List skewnormal1_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_skewnormal1_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewnormal1_hessian_cpp(y, mu, sigma, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // skewnormal2_expected_series_cpp
 List skewnormal2_expected_series_cpp(NumericVector sigma, NumericVector gamma1);
 RcppExport SEXP _distributions7_skewnormal2_expected_series_cpp(SEXP sigmaSEXP, SEXP gamma1SEXP) {
@@ -4719,6 +4809,38 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
     rcpp_result_gen = Rcpp::wrap(skewnormal_deriv4_cpp(y, mu, sigma, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewt_gradient_cpp
+List skewt_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector alpha, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_skewt_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP alphaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewt_gradient_cpp(y, mu, sigma, alpha, nu, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// skewt_hessian_cpp
+List skewt_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector alpha, NumericVector nu, int threads);
+RcppExport SEXP _distributions7_skewt_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP alphaSEXP, SEXP nuSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skewt_hessian_cpp(y, mu, sigma, alpha, nu, threads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -5910,6 +6032,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_gpd_dexpected2_cpp", (DL_FUNC) &_distributions7_gpd_dexpected2_cpp, 4},
     {"_distributions7_betabinom_shapes_dexpected1_cpp", (DL_FUNC) &_distributions7_betabinom_shapes_dexpected1_cpp, 5},
     {"_distributions7_betabinom_shapes_dexpected2_cpp", (DL_FUNC) &_distributions7_betabinom_shapes_dexpected2_cpp, 5},
+    {"_distributions7_enet_gradient_cpp", (DL_FUNC) &_distributions7_enet_gradient_cpp, 5},
+    {"_distributions7_enet_hessian_cpp", (DL_FUNC) &_distributions7_enet_hessian_cpp, 5},
+    {"_distributions7_enet_expected_hessian_cpp", (DL_FUNC) &_distributions7_enet_expected_hessian_cpp, 5},
+    {"_distributions7_enet_dexpected1_cpp", (DL_FUNC) &_distributions7_enet_dexpected1_cpp, 5},
     {"_distributions7_exponential_gradient_cpp", (DL_FUNC) &_distributions7_exponential_gradient_cpp, 3},
     {"_distributions7_exponential_hessian_cpp", (DL_FUNC) &_distributions7_exponential_hessian_cpp, 3},
     {"_distributions7_exponential_expected_hessian_cpp", (DL_FUNC) &_distributions7_exponential_expected_hessian_cpp, 3},
@@ -6156,6 +6282,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_pseudohuber_deriv4_cpp", (DL_FUNC) &_distributions7_pseudohuber_deriv4_cpp, 4},
     {"_distributions7_pseudohuber_rng_cpp", (DL_FUNC) &_distributions7_pseudohuber_rng_cpp, 4},
     {"_distributions7_pseudohuber_rou_box_cpp", (DL_FUNC) &_distributions7_pseudohuber_rou_box_cpp, 1},
+    {"_distributions7_skewnormal1_gradient_cpp", (DL_FUNC) &_distributions7_skewnormal1_gradient_cpp, 5},
+    {"_distributions7_skewnormal1_hessian_cpp", (DL_FUNC) &_distributions7_skewnormal1_hessian_cpp, 5},
     {"_distributions7_skewnormal2_expected_series_cpp", (DL_FUNC) &_distributions7_skewnormal2_expected_series_cpp, 2},
     {"_distributions7_skewnormal2_dexpected1_series_cpp", (DL_FUNC) &_distributions7_skewnormal2_dexpected1_series_cpp, 2},
     {"_distributions7_skewnormal2_dexpected2_series_cpp", (DL_FUNC) &_distributions7_skewnormal2_dexpected2_series_cpp, 2},
@@ -6174,6 +6302,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_skewnormal2_dy4_cpp", (DL_FUNC) &_distributions7_skewnormal2_dy4_cpp, 5},
     {"_distributions7_skewnormal_deriv3_cpp", (DL_FUNC) &_distributions7_skewnormal_deriv3_cpp, 5},
     {"_distributions7_skewnormal_deriv4_cpp", (DL_FUNC) &_distributions7_skewnormal_deriv4_cpp, 5},
+    {"_distributions7_skewt_gradient_cpp", (DL_FUNC) &_distributions7_skewt_gradient_cpp, 6},
+    {"_distributions7_skewt_hessian_cpp", (DL_FUNC) &_distributions7_skewt_hessian_cpp, 6},
     {"_distributions7_student_t1_gradient_cpp", (DL_FUNC) &_distributions7_student_t1_gradient_cpp, 5},
     {"_distributions7_student_t1_hessian_cpp", (DL_FUNC) &_distributions7_student_t1_hessian_cpp, 5},
     {"_distributions7_student_t1_expected_hessian_cpp", (DL_FUNC) &_distributions7_student_t1_expected_hessian_cpp, 5},

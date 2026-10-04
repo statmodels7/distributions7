@@ -4,6 +4,7 @@
 #' @include gaussian2_distrib.R gaussian3_distrib.R lognormal1_distrib.R
 #' @include invgauss1_distrib.R invgauss2_distrib.R gamma2_distrib.R
 #' @include beta2_distrib.R weibull1_distrib.R gpd_distrib.R
+#' @include laplace_distrib.R laplace2_distrib.R enet_distrib.R
 NULL
 
 #' @title Derivatives of the Expected Information, Elementary Families
@@ -42,13 +43,18 @@ NULL
 #'   distrib_d2expected_hessian.Weibull1Distrib
 #'   distrib_dexpected_hessian.GPDDistrib
 #'   distrib_d2expected_hessian.GPDDistrib
+#'   distrib_dexpected_hessian.LaplaceDistrib
+#'   distrib_d2expected_hessian.LaplaceDistrib
+#'   distrib_dexpected_hessian.Laplace2Distrib
+#'   distrib_d2expected_hessian.Laplace2Distrib
+#'   distrib_dexpected_hessian.EnetDistrib
 #' @description
 #' The first and second derivatives of the expected information in the
-#' parameters, from compiled kernels, for seventeen families whose expected
-#' information is an elementary function of the parameters. Each component is
-#' an ordinary derivative of the family's written-out
-#' \eqn{\mathbb{E}[\ell_{ab}]}; on the link scale the result is carried across
-#' by [dexpected_link()].
+#' parameters, from compiled kernels, for the families whose expected
+#' information is a written-out function of the parameters. Each component is
+#' an ordinary derivative of the family's \eqn{\mathbb{E}[\ell_{ab}]}; on the
+#' link scale the result is carried across by [dexpected_link()]. The elastic
+#' net has the first derivatives only.
 #'
 #' @details
 #' The expected informations differentiated, on the parameter scale:
@@ -80,7 +86,14 @@ NULL
 #'   \item generalized Pareto by its scale and shape: with \eqn{d = 1 + 2\xi},
 #'     \eqn{-1/(d\sigma^2)}, \eqn{-1/(d\sigma(1+\xi))} and
 #'     \eqn{-2/(d(1+\xi))}, and `NA` for \eqn{\xi \le -1/2}, where the
-#'     information does not exist.
+#'     information does not exist;
+#'   \item Laplace by its scale \eqn{b}: \eqn{-1/b^2} for both parameters;
+#'     by its rate: \eqn{-\lambda^2} and \eqn{-1/\lambda^2};
+#'   \item elastic net, with \eqn{a = \lambda\alpha},
+#'     \eqn{c = \lambda(1-\alpha)} and \eqn{Z} the normalizing constant:
+#'     \eqn{-(a^2 - 2acZ_a - 2c^2Z_c)} in the location and the second
+#'     derivatives of \eqn{-\log Z} in the two rates, whose derivatives are the
+#'     third derivatives of \eqn{\log Z}, written through the Mills ratio.
 #' }
 #'
 #' @param distrib A distribution object of one of the classes above.
@@ -177,6 +190,17 @@ register_dexpected(Beta2Distrib, function(d, y, th, k, t)
 register_dexpected(Weibull1Distrib, function(d, y, th, k, t)
   (if (k == 1L) weibull1_dexpected1_cpp(y, th[[1]], th[[2]], t)
     else weibull1_dexpected2_cpp(y, th[[1]], th[[2]], t)))
+# the elastic net carries the first derivatives only: its second derivatives
+# would need the fourth of the normalizing constant
+S7::method(distrib_dexpected_hessian, EnetDistrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"),
+    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    threads = 1L) {
+  dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
+                     function(k) enet_dexpected1_cpp(y, theta[[1]], theta[[2]],
+                                                     theta[[3]], threads))
+}
+
 register_dexpected(LaplaceDistrib, function(d, y, th, k, t)
   (if (k == 1L) laplace_dexpected1_cpp(y, th[[1]], th[[2]], t)
     else laplace_dexpected2_cpp(y, th[[1]], th[[2]], t)))

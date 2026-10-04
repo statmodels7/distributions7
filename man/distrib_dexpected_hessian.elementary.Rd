@@ -36,6 +36,11 @@
 \alias{distrib_d2expected_hessian.Weibull1Distrib}
 \alias{distrib_dexpected_hessian.GPDDistrib}
 \alias{distrib_d2expected_hessian.GPDDistrib}
+\alias{distrib_dexpected_hessian.LaplaceDistrib}
+\alias{distrib_d2expected_hessian.LaplaceDistrib}
+\alias{distrib_dexpected_hessian.Laplace2Distrib}
+\alias{distrib_d2expected_hessian.Laplace2Distrib}
+\alias{distrib_dexpected_hessian.EnetDistrib}
 \title{Derivatives of the Expected Information, Elementary Families}
 \arguments{
 \item{distrib}{A distribution object of one of the classes above.}
@@ -57,11 +62,11 @@ A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code
 }
 \description{
 The first and second derivatives of the expected information in the
-parameters, from compiled kernels, for seventeen families whose expected
-information is an elementary function of the parameters. Each component is
-an ordinary derivative of the family's written-out
-\eqn{\mathbb{E}[\ell_{ab}]}; on the link scale the result is carried across
-by \code{\link[=dexpected_link]{dexpected_link()}}.
+parameters, from compiled kernels, for the families whose expected
+information is a written-out function of the parameters. Each component is
+an ordinary derivative of the family's \eqn{\mathbb{E}[\ell_{ab}]}; on the
+link scale the result is carried across by \code{\link[=dexpected_link]{dexpected_link()}}. The elastic
+net has the first derivatives only.
 }
 \details{
 The expected informations differentiated, on the parameter scale:
@@ -93,7 +98,14 @@ constant and \eqn{C = (1-\gamma)^2 + \pi^2/6};
 \item generalized Pareto by its scale and shape: with \eqn{d = 1 + 2\xi},
 \eqn{-1/(d\sigma^2)}, \eqn{-1/(d\sigma(1+\xi))} and
 \eqn{-2/(d(1+\xi))}, and \code{NA} for \eqn{\xi \le -1/2}, where the
-information does not exist.
+information does not exist;
+\item Laplace by its scale \eqn{b}: \eqn{-1/b^2} for both parameters;
+by its rate: \eqn{-\lambda^2} and \eqn{-1/\lambda^2};
+\item elastic net, with \eqn{a = \lambda\alpha},
+\eqn{c = \lambda(1-\alpha)} and \eqn{Z} the normalizing constant:
+\eqn{-(a^2 - 2acZ_a - 2c^2Z_c)} in the location and the second
+derivatives of \eqn{-\log Z} in the two rates, whose derivatives are the
+third derivatives of \eqn{\log Z}, written through the Mills ratio.
 }
 }
 \seealso{

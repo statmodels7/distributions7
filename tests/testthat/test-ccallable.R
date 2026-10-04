@@ -39,7 +39,8 @@ ccallable_families <- list(
   LaplaceDistrib = function() laplace_distrib(),
   Laplace2Distrib = function() laplace2_distrib(),
   Weibull1Distrib = function() weibull1_distrib(),
-  Beta2Distrib = function() beta2_distrib()
+  Beta2Distrib = function() beta2_distrib(),
+  EnetDistrib = function() enet_distrib()
 )
 
 # the constants a family carries besides its parameters, which follow the

@@ -305,6 +305,22 @@ betabinom_shapes_dexpected2_cpp <- function(y, alpha, beta, size, threads = 1L) 
     .Call(`_distributions7_betabinom_shapes_dexpected2_cpp`, y, alpha, beta, size, threads)
 }
 
+enet_gradient_cpp <- function(y, mu, lambda, alpha, threads = 1L) {
+    .Call(`_distributions7_enet_gradient_cpp`, y, mu, lambda, alpha, threads)
+}
+
+enet_hessian_cpp <- function(y, mu, lambda, alpha, threads = 1L) {
+    .Call(`_distributions7_enet_hessian_cpp`, y, mu, lambda, alpha, threads)
+}
+
+enet_expected_hessian_cpp <- function(y, mu, lambda, alpha, threads = 1L) {
+    .Call(`_distributions7_enet_expected_hessian_cpp`, y, mu, lambda, alpha, threads)
+}
+
+enet_dexpected1_cpp <- function(y, mu, lambda, alpha, threads = 1L) {
+    .Call(`_distributions7_enet_dexpected1_cpp`, y, mu, lambda, alpha, threads)
+}
+
 exponential_gradient_cpp <- function(y, mu, threads = 1L) {
     .Call(`_distributions7_exponential_gradient_cpp`, y, mu, threads)
 }
@@ -1289,6 +1305,14 @@ pseudohuber_rou_box_cpp <- function(omega) {
     .Call(`_distributions7_pseudohuber_rou_box_cpp`, omega)
 }
 
+skewnormal1_gradient_cpp <- function(y, mu, sigma, alpha, threads = 1L) {
+    .Call(`_distributions7_skewnormal1_gradient_cpp`, y, mu, sigma, alpha, threads)
+}
+
+skewnormal1_hessian_cpp <- function(y, mu, sigma, alpha, threads = 1L) {
+    .Call(`_distributions7_skewnormal1_hessian_cpp`, y, mu, sigma, alpha, threads)
+}
+
 skewnormal2_expected_series_cpp <- function(sigma, gamma1) {
     .Call(`_distributions7_skewnormal2_expected_series_cpp`, sigma, gamma1)
 }
@@ -1359,6 +1383,14 @@ skewnormal_deriv3_cpp <- function(y, mu, sigma, alpha, threads = 1L) {
 
 skewnormal_deriv4_cpp <- function(y, mu, sigma, alpha, threads = 1L) {
     .Call(`_distributions7_skewnormal_deriv4_cpp`, y, mu, sigma, alpha, threads)
+}
+
+skewt_gradient_cpp <- function(y, mu, sigma, alpha, nu, threads = 1L) {
+    .Call(`_distributions7_skewt_gradient_cpp`, y, mu, sigma, alpha, nu, threads)
+}
+
+skewt_hessian_cpp <- function(y, mu, sigma, alpha, nu, threads = 1L) {
+    .Call(`_distributions7_skewt_hessian_cpp`, y, mu, sigma, alpha, nu, threads)
 }
 
 student_t1_gradient_cpp <- function(y, mu, sigma, nu, threads = 1L) {

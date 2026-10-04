@@ -548,6 +548,9 @@ S7::method(distrib_rng, SkewTDistrib) <- function(distrib, n, theta, ...) {
 #'   transformation to the link scale is applied in the generic's body, so this
 #'   method always returns the parameter scale.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer. Accepted for the signature
+#'   the generic shares; the kernel runs on the calling thread, since the
+#'   t distribution function it evaluates may signal a warning.
 #'
 #' @return A named list of four numeric vectors, `mu`, `sigma`, `alpha` and
 #'   `nu`, each of the length of the recycled inputs.
@@ -581,25 +584,8 @@ S7::method(distrib_rng, SkewTDistrib) <- function(distrib, n, theta, ...) {
 #' # At shape zero the score in alpha is not zero: the tilting factor is at
 #' # its inflection, so alpha is still identified.
 #' distrib_gradient(d, y, list(mu = 0, sigma = 1, alpha = 0, nu = 6))$alpha
-S7::method(distrib_gradient, SkewTDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  mu <- theta[[1]]
-  sigma <- theta[[2]]
-  alpha <- theta[[3]]
-  nu <- theta[[4]]
-  p <- skewt_pieces(y, mu, sigma, alpha, nu)
-  d <- p$a + p$q * p$b
-
-  h <- skewt_nu_step(nu)
-  lp <- function(v) {
-    distrib_pdf(distrib, y, list(mu, sigma, alpha, v), log = TRUE)
-  }
-
-  list(
-    mu = -d / sigma,
-    sigma = -(1 + p$z * d) / sigma,
-    alpha = p$q * p$z * p$c,
-    nu = fd5_first(lp, nu, h)
-  )
+S7::method(distrib_gradient, SkewTDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  skewt_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]], theta[[4]], threads)
 }
 
 #' @title Skew t Observed Hessian
@@ -654,6 +640,9 @@ S7::method(distrib_gradient, SkewTDistrib) <- function(distrib, y, theta, scale 
 #'   transformation is applied in the generic's body, so this method always
 #'   returns the parameter scale.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer. Accepted for the signature
+#'   the generic shares; the kernel runs on the calling thread, since the
+#'   t distribution function it evaluates may signal a warning.
 #'
 #' @return A named list of ten numeric vectors in [hess_names()]'s order:
 #'   `mu_mu`, `sigma_sigma`, `alpha_alpha`, `nu_nu`, then `mu_sigma`,
@@ -686,52 +675,8 @@ S7::method(distrib_gradient, SkewTDistrib) <- function(distrib, y, theta, scale 
 #' # The curvature in the location turns positive far out, as a Student t's
 #' # does and a Gaussian's does not.
 #' range(distrib_hess_y(d, seq(-20, 20, by = 0.5), th))
-S7::method(distrib_hessian, SkewTDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  mu <- theta[[1]]
-  sigma <- theta[[2]]
-  alpha <- theta[[3]]
-  nu <- theta[[4]]
-  p <- skewt_pieces(y, mu, sigma, alpha, nu)
-  d <- p$a + p$q * p$b
-  dd <- p$da + p$dq * p$b^2 + p$q * p$db
-  s2 <- sigma^2
-  zc <- p$z * p$c
-  mixed_alpha <- p$dq * p$b * zc + p$q * p$e
-
-  # --- the components involving nu -----------------------------------------
-  hn <- skewt_nu_step(nu)
-  lp <- function(v) {
-    distrib_pdf(distrib, y, list(mu, sigma, alpha, v), log = TRUE)
-  }
-  nu_nu <- fd5_second(lp, nu, hn)
-
-  # The mixed components step the CLOSED-FORM score in nu, so only one
-  # difference is taken and it is taken of an analytic quantity. Stepping the
-  # log-density in both directions instead would be a difference of a
-  # difference in one of them.
-  grad_at <- function(v) {
-    pv <- skewt_pieces(y, mu, sigma, alpha, v)
-    dv <- pv$a + pv$q * pv$b
-    cbind(
-      mu = -dv / sigma,
-      sigma = -(1 + pv$z * dv) / sigma,
-      alpha = pv$q * pv$z * pv$c
-    )
-  }
-  gnu <- fd5_first(grad_at, nu, hn)
-
-  list(
-    mu_mu = dd / s2,
-    sigma_sigma = (1 + 2 * p$z * d + p$z^2 * dd) / s2,
-    alpha_alpha = p$dq * zc^2,
-    nu_nu = nu_nu,
-    mu_sigma = (d + p$z * dd) / s2,
-    mu_alpha = -mixed_alpha / sigma,
-    mu_nu = gnu[, "mu"],
-    sigma_alpha = -p$z * mixed_alpha / sigma,
-    sigma_nu = gnu[, "sigma"],
-    alpha_nu = gnu[, "alpha"]
-  )
+S7::method(distrib_hessian, SkewTDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  skewt_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], theta[[4]], threads)
 }
 
 #' @title The Skew t Tower in the Location, Scale and Shape
