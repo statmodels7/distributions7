@@ -24,13 +24,14 @@ List weibull3_gradient_cpp(NumericVector y, NumericVector mean, NumericVector si
   double P0 = 0.0;
   double t1 = 0.0;
   double t2 = 0.0;
+  d7::Weibull3GradientPar P{};
   auto set_params = [&](int i) {
     m = mean[i % n_mean]; s = sigma[i % n_sigma];
-    const double x1 = 1.0 + 1.0 / s; (void) x1;
-    LG = R::lgammafn(x1);
-    P0 = R::psigamma(x1, 0.0);
-    t1 = 1.0/s;
-    t2 = P0*t1;
+    P = d7::weibull3_gradient_par(m, s);
+    LG = P.LG;
+    P0 = P.P0;
+    t1 = P.t1;
+    t2 = P.t2;
   };
   const bool scalar = n_mean == 1 && n_sigma == 1;
   if (scalar) set_params(0);
@@ -39,8 +40,8 @@ List weibull3_gradient_cpp(NumericVector y, NumericVector mean, NumericVector si
     const double yy = y[i];
     const double C = std::log(yy / m);
     const double t0 = std::exp(C*s)*std::exp(LG*s);
-    o_mean[i] = d7::weibull3_score_mean(m, s, t0);
-    o_sigma[i] = d7::weibull3_score_sigma(s, C, LG, P0, t0);
+    o_mean[i] = d7::weibull3_score_mean(P, m, s, t0);
+    o_sigma[i] = d7::weibull3_score_sigma(P, C, t0);
   }
   (void) LG;
   return List::create(Named("mean") = o_mean, Named("sigma") = o_sigma);
@@ -62,17 +63,18 @@ List weibull3_hessian_cpp(NumericVector y, NumericVector mean, NumericVector sig
   double t6 = 0.0;
   double t7 = 0.0;
   double t8 = 0.0;
+  d7::Weibull3HessianPar P{};
   auto set_params = [&](int i) {
     m = mean[i % n_mean]; s = sigma[i % n_sigma];
-    const double x1 = 1.0 + 1.0 / s; (void) x1;
-    LG = R::lgammafn(x1);
-    P0 = R::psigamma(x1, 0.0);
-    P1 = R::psigamma(x1, 1.0);
-    t2 = LG*s;
-    t3 = std::exp(t2);
-    t6 = std::pow(s, -2);
-    t7 = std::pow(s, -3);
-    t8 = 1.0/s;
+    P = d7::weibull3_hessian_par(m, s);
+    LG = P.LG;
+    P0 = P.P0;
+    P1 = P.P1;
+    t2 = P.t2;
+    t3 = P.t3;
+    t6 = P.t6;
+    t7 = P.t7;
+    t8 = P.t8;
   };
   const bool scalar = n_mean == 1 && n_sigma == 1;
   if (scalar) set_params(0);
@@ -84,8 +86,8 @@ List weibull3_hessian_cpp(NumericVector y, NumericVector mean, NumericVector sig
     const double t1 = std::exp(t0);
     const double t4 = t1*t3;
     const double t5 = t4 - 1;
-    o_mean_mean[i] = d7::weibull3_hess_mean_mean(m, s, t1, t3);
-    o_sigma_sigma[i] = d7::weibull3_hess_sigma_sigma(s, C, LG, P0, P1, t1, t3);
+    o_mean_mean[i] = d7::weibull3_hess_mean_mean(P, m, s, t1);
+    o_sigma_sigma[i] = d7::weibull3_hess_sigma_sigma(P, C, t1);
     o_mean_sigma[i] = (-P0*t4 + t0*t4 + t2*t4 + t5)/m;
   }
   (void) LG;
@@ -103,19 +105,20 @@ List weibull3_expected_hessian_cpp(NumericVector y, NumericVector mean, NumericV
   double m = 0.0, s = 0.0, LG = 0.0;
   double P0 = 0.0;
   double t0 = 0.0;
+  d7::Weibull3ExpectedPar P{};
   auto set_params = [&](int i) {
     m = mean[i % n_mean]; s = sigma[i % n_sigma];
-    const double x1 = 1.0 + 1.0 / s; (void) x1;
-    LG = R::lgammafn(x1);
-    P0 = R::psigamma(x1, 0.0);
-    t0 = std::pow(s, 2);
+    P = d7::weibull3_expected_par(m, s);
+    LG = P.LG;
+    P0 = P.P0;
+    t0 = P.t0;
   };
   const bool scalar = n_mean == 1 && n_sigma == 1;
   if (scalar) set_params(0);
   for (int i = 0; i < n; i++) {
     if (!scalar) set_params(i);
-    o_mean_mean[i] = d7::weibull3_expected_mean_mean(m, s);
-    o_sigma_sigma[i] = d7::weibull3_expected_sigma_sigma(s, P0);
+    o_mean_mean[i] = d7::weibull3_expected_mean_mean(P, m);
+    o_sigma_sigma[i] = d7::weibull3_expected_sigma_sigma(P);
     o_mean_sigma[i] = (0.42278433509846714 - 1.0*P0)/m;
   }
   (void) LG;
@@ -616,24 +619,25 @@ List weibull3_dexpected1_cpp(NumericVector y, NumericVector mean, NumericVector 
   double t0 = 0.0;
   double t1 = 0.0;
   double t2 = 0.0;
+  d7::Weibull3DexpectedPar P{};
   auto set_params = [&](int i) {
     m = mean[i % n_mean]; s = sigma[i % n_sigma];
-    const double x1 = 1.0 + 1.0 / s; (void) x1;
-    LG = R::lgammafn(x1);
-    P0 = R::psigamma(x1, 0.0);
-    P1 = R::psigamma(x1, 1.0);
-    t0 = std::pow(s, 2);
-    t1 = std::pow(m, -2);
-    t2 = P1/s;
+    P = d7::weibull3_dexpected_par(m, s);
+    LG = P.LG;
+    P0 = P.P0;
+    P1 = P.P1;
+    t0 = P.t0;
+    t1 = P.t1;
+    t2 = P.t2;
   };
   const bool scalar = n_mean == 1 && n_sigma == 1;
   if (scalar) set_params(0);
   for (int i = 0; i < n; i++) {
     if (!scalar) set_params(i);
-    o_mean_mean_mean[i] = d7::weibull3_dexpected_mean_mean_mean(m, s);
+    o_mean_mean_mean[i] = d7::weibull3_dexpected_mean_mean_mean(P, m);
     o_mean_mean_sigma[i] = -2.0*s*t1;
     o_sigma_sigma_mean[i] = 0;
-    o_sigma_sigma_sigma[i] = d7::weibull3_dexpected_sigma_sigma_sigma(s, P0, P1);
+    o_sigma_sigma_sigma[i] = d7::weibull3_dexpected_sigma_sigma_sigma(P, s);
     o_mean_sigma_mean[i] = t1*(1.0*P0 - 0.42278433509846714);
     o_mean_sigma_sigma[i] = 1.0*P1/(m*t0);
   }

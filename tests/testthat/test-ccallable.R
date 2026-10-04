@@ -32,7 +32,9 @@ ccallable_families <- list(
   Weibull3Distrib = function() weibull3_distrib(),
   Lognormal2Distrib = function() lognormal2_distrib(),
   StudentT1Distrib = function() student_t1_distrib(),
-  StudentT2Distrib = function() student_t2_distrib()
+  StudentT2Distrib = function() student_t2_distrib(),
+  GenGamma1Distrib = function() gengamma1_distrib(),
+  GenGamma2Distrib = function() gengamma2_distrib()
 )
 
 # the constants a family carries besides its parameters, which follow the

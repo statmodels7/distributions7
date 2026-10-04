@@ -26,6 +26,8 @@
 #include "pt_lognormal2.h"
 #include "pt_student_t1.h"
 #include "pt_student_t2.h"
+#include "pt_gengamma1.h"
+#include "pt_gengamma2.h"
 
 // The scalar C entry points of the fast route piano_parallel.txt section 2a
 // describes: the score and the second derivative of the log-density in ONE
@@ -76,7 +78,9 @@ const char* const d7_scalar_classes[] = {
     "Weibull3Distrib",      // 21
     "Lognormal2Distrib",    // 22
     "StudentT1Distrib",     // 23
-    "StudentT2Distrib"      // 24
+    "StudentT2Distrib",     // 24
+    "GenGamma1Distrib",     // 25
+    "GenGamma2Distrib"      // 26
 };
 
 const int d7_n_scalar_classes =
@@ -129,6 +133,8 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
     case 22: d7::lognormal2_score_curv(k, y, th, out); break;
     case 23: d7::student_t1_score_curv(k, y, th, out); break;
     case 24: d7::student_t2_score_curv(k, y, th, out); break;
+    case 25: d7::gengamma1_score_curv(k, y, th, out); break;
+    case 26: d7::gengamma2_score_curv(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }
@@ -163,6 +169,8 @@ void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
     case 22: d7::lognormal2_info_dinfo(k, y, th, out); break;
     case 23: d7::student_t1_info_dinfo(k, y, th, out); break;
     case 24: d7::student_t2_info_dinfo(k, y, th, out); break;
+    case 25: d7::gengamma1_info_dinfo(k, y, th, out); break;
+    case 26: d7::gengamma2_info_dinfo(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }

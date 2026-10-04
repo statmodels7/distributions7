@@ -194,6 +194,18 @@ inline double negbin2_dexpected_mu_mu_mu(double m, double th) {
 // with c = theta + mu and A_r = sum_{j<k} (theta + j)^-r. The mass, its
 // seed, its log-scale switch and its stopping rule are those of
 // negbin2_expected_theta_theta(); negbin.cpp has the derivation in full.
+//
+// The summand at k, from the running sums U, A1 and A3 at k, is its own
+// function: the vector kernel, which forms d_mu S in the same pass, adds
+// it too.
+inline double negbin2_dexpected_theta_theta_theta_term(
+    double kd, double pk, double U, double A1, double A3, double L,
+    double mu, double theta, double c, double c2, double th2) {
+    double st = A1 - L + (mu - kd) / c;
+    double Ut = -kd * (2.0 * theta + mu) / (th2 * c2) + 2.0 * A3;
+    return pk * (Ut + U * st);
+}
+
 inline double negbin2_dexpected_theta_theta_theta(double mu, double theta) {
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
@@ -212,9 +224,8 @@ inline double negbin2_dexpected_theta_theta_theta(double mu, double theta) {
     double pk = std::exp(lpk);
     for (int k = 0; k <= kmax; ++k) {
         double kd = (double) k;
-        double st = A1 - L + (mu - kd) / c;
-        double Ut = -kd * (2.0 * theta + mu) / (th2 * c2) + 2.0 * A3;
-        r2 += pk * (Ut + U * st);
+        r2 += negbin2_dexpected_theta_theta_theta_term(kd, pk, U, A1, A3, L,
+                                                        mu, theta, c, c2, th2);
         cum += pk;
         bool last = (cum >= 1.0 - 1e-12 && k >= 100);
         double tk = theta + kd, iv = 1.0 / tk, iv2 = iv * iv;
