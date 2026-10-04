@@ -18,6 +18,18 @@
 #include <vector>
 #include "d7_par.h"
 #include "psi_diff.h"
+#include "pt_bernoulli.h"
+#include "pt_binomial.h"
+#include "pt_exponential.h"
+#include "pt_geometric.h"
+#include "pt_chisq.h"
+#include "pt_cauchy.h"
+#include "pt_logistic.h"
+#include "pt_gaussian2.h"
+#include "pt_gaussian3.h"
+#include "pt_invgauss1.h"
+#include "pt_invgauss2.h"
+#include "pt_gamma2.h"
 using namespace Rcpp;
 
 namespace {
@@ -95,8 +107,7 @@ List bernoulli_dexpected1_cpp(NumericVector y, NumericVector mu, int threads = 1
     Par M(mu);
     return dexp_run(y.size(), threads, d7::kMinCheap, dexp_keys1("mu", 1),
                     [&](std::size_t i, double* o) {
-        double m = M[i], q = m * (1.0 - m), s = 1.0 - 2.0 * m, q2 = q * q;
-        o[0] = s / q2;
+        o[0] = d7::bernoulli_dexpected_mu_mu_mu(M[i]);
     });
 }
 
@@ -117,8 +128,7 @@ List binomial_dexpected1_cpp(NumericVector y, NumericVector mu,
     Par M(mu), N(size);
     return dexp_run(y.size(), threads, d7::kMinCheap, dexp_keys1("mu", 1),
                     [&](std::size_t i, double* o) {
-        double m = M[i], q = m * (1.0 - m), s = 1.0 - 2.0 * m, q2 = q * q;
-        o[0] = N[i] * (s / q2);
+        o[0] = d7::binomial_dexpected_mu_mu_mu(M[i], N[i]);
     });
 }
 
@@ -140,8 +150,7 @@ List exponential_dexpected1_cpp(NumericVector y, NumericVector mu,
     Par M(mu);
     return dexp_run(y.size(), threads, d7::kMinCheap, dexp_keys1("mu", 1),
                     [&](std::size_t i, double* o) {
-        double u = 1.0 / M[i], u3 = u * u * u;
-        o[0] = 2.0 * u3;
+        o[0] = d7::exponential_dexpected_mu_mu_mu(M[i]);
     });
 }
 
@@ -163,8 +172,7 @@ List geometric_dexpected1_cpp(NumericVector y, NumericVector mu,
     Par M(mu);
     return dexp_run(y.size(), threads, d7::kMinCheap, dexp_keys1("mu", 1),
                     [&](std::size_t i, double* o) {
-        double m = M[i], q = m * (1.0 + m), s = 1.0 + 2.0 * m, q2 = q * q;
-        o[0] = s / q2;
+        o[0] = d7::geometric_dexpected_mu_mu_mu(M[i]);
     });
 }
 
@@ -185,7 +193,7 @@ List chisq_dexpected1_cpp(NumericVector y, NumericVector mu, int threads = 1) {
     Par M(mu);
     return dexp_run(y.size(), threads, d7::kMinCostly, dexp_keys1("mu", 1),
                     [&](std::size_t i, double* o) {
-        o[0] = -R::psigamma(0.5 * M[i], 2) / 8.0;
+        o[0] = d7::chisq_dexpected_mu_mu_mu(R::psigamma(0.5 * M[i], 2));
     });
 }
 
@@ -202,9 +210,11 @@ List chisq_dexpected2_cpp(NumericVector y, NumericVector mu, int threads = 1) {
 
 namespace {
 // d/ds (k/s^2) = -2k/s^3, d2/ds2 = 6k/s^4; nothing moves with the location.
-template <typename Kfun>
+// At order 1 the diagonal d_s E_ss is the family's own component function,
+// dss, and the template writes only the other two.
+template <typename Kfun, typename Dfun>
 List locscale_dexpected1(NumericVector y, NumericVector sigma, int threads,
-                         const Kfun& kab) {
+                         const Kfun& kab, const Dfun& dss) {
     Par S(sigma);
     double k[3];
     kab(k);   // E_mm, E_ss, E_ms, each as k / sigma^2
@@ -214,7 +224,7 @@ List locscale_dexpected1(NumericVector y, NumericVector sigma, int threads,
         double u = 1.0 / S[i], u3 = u * u * u;
         for (int r = 0; r < 3; ++r) {
             o[2 * r] = 0.0;
-            o[2 * r + 1] = -2.0 * k[r] * u3;
+            o[2 * r + 1] = r == 1 ? dss(S[i]) : -2.0 * k[r] * u3;
         }
     });
 }
@@ -247,7 +257,8 @@ inline void gumbel_k(double* k) { k[0] = -1.0; k[1] = -kGumbelC; k[2] = 1.0 - kE
 // [[Rcpp::export]]
 List cauchy_dexpected1_cpp(NumericVector y, NumericVector mu,
                            NumericVector sigma, int threads = 1) {
-    return locscale_dexpected1(y, sigma, threads, cauchy_k);
+    return locscale_dexpected1(y, sigma, threads, cauchy_k,
+                               d7::cauchy_dexpected_sigma_sigma_sigma);
 }
 
 // [[Rcpp::export]]
@@ -259,7 +270,8 @@ List cauchy_dexpected2_cpp(NumericVector y, NumericVector mu,
 // [[Rcpp::export]]
 List logistic_dexpected1_cpp(NumericVector y, NumericVector mu,
                              NumericVector sigma, int threads = 1) {
-    return locscale_dexpected1(y, sigma, threads, logistic_k);
+    return locscale_dexpected1(y, sigma, threads, logistic_k,
+                               d7::logistic_dexpected_sigma_sigma_sigma);
 }
 
 // [[Rcpp::export]]
@@ -271,7 +283,13 @@ List logistic_dexpected2_cpp(NumericVector y, NumericVector mu,
 // [[Rcpp::export]]
 List gumbel_dexpected1_cpp(NumericVector y, NumericVector mu,
                            NumericVector sigma, int threads = 1) {
-    return locscale_dexpected1(y, sigma, threads, gumbel_k);
+    // the gumbel's components move to their own header with its port
+    return locscale_dexpected1(y, sigma, threads, gumbel_k, [](double s) {
+        double k[3];
+        gumbel_k(k);
+        double u = 1.0 / s, u3 = u * u * u;
+        return -2.0 * k[1] * u3;
+    });
 }
 
 // [[Rcpp::export]]
@@ -291,8 +309,9 @@ List gaussian2_dexpected1_cpp(NumericVector y, NumericVector mu,
     return dexp_run(y.size(), threads, d7::kMinCheap,
                     dexp_keys2("mu", "sigma2", 1),
                     [&](std::size_t i, double* o) {
-        double u = 1.0 / V[i], u2 = u * u, u3 = u2 * u;
-        double w[6] = {0.0, u2, 0.0, u3, 0.0, 0.0};
+        double u = 1.0 / V[i], u2 = u * u;
+        double w[6] = {d7::gaussian2_dexpected_mu_mu_mu(), u2, 0.0,
+                       d7::gaussian2_dexpected_sigma2_sigma2_sigma2(u), 0.0, 0.0};
         for (int k = 0; k < 6; ++k) o[k] = w[k];
     });
 }
@@ -318,8 +337,8 @@ List gaussian3_dexpected1_cpp(NumericVector y, NumericVector mu,
     return dexp_run(y.size(), threads, d7::kMinCheap,
                     dexp_keys2("mu", "tau", 1),
                     [&](std::size_t i, double* o) {
-        double u = 1.0 / T[i], u3 = u * u * u;
-        double w[6] = {0.0, -1.0, 0.0, u3, 0.0, 0.0};
+        double w[6] = {d7::gaussian3_dexpected_mu_mu_mu(), -1.0, 0.0,
+                       d7::gaussian3_dexpected_tau_tau_tau(T[i]), 0.0, 0.0};
         for (int k = 0; k < 6; ++k) o[k] = w[k];
     });
 }
@@ -347,9 +366,10 @@ List invgauss1_dexpected1_cpp(NumericVector y, NumericVector mu,
                     dexp_keys2("mu", "phi", 1),
                     [&](std::size_t i, double* o) {
         double m = M[i], p = F[i];
-        double im = 1.0 / m, im3 = im * im * im, im4 = im3 * im;
-        double ip = 1.0 / p, ip2 = ip * ip, ip3 = ip2 * ip;
-        double w[6] = {3.0 * ip * im4, ip2 * im3, 0.0, ip3, 0.0, 0.0};
+        double im = 1.0 / m, im3 = im * im * im;
+        double ip = 1.0 / p, ip2 = ip * ip;
+        double w[6] = {d7::invgauss1_dexpected_mu_mu_mu(m, p), ip2 * im3, 0.0,
+                       d7::invgauss1_dexpected_phi_phi_phi(p), 0.0, 0.0};
         for (int k = 0; k < 6; ++k) o[k] = w[k];
     });
 }
@@ -379,9 +399,9 @@ List invgauss2_dexpected1_cpp(NumericVector y, NumericVector mu,
                     dexp_keys2("mu", "lambda", 1),
                     [&](std::size_t i, double* o) {
         double m = M[i], L = La[i];
-        double im = 1.0 / m, im3 = im * im * im, im4 = im3 * im;
-        double iL = 1.0 / L, iL3 = iL * iL * iL;
-        double w[6] = {3.0 * L * im4, -im3, 0.0, iL3, 0.0, 0.0};
+        double im = 1.0 / m, im3 = im * im * im;
+        double w[6] = {d7::invgauss2_dexpected_mu_mu_mu(m, L), -im3, 0.0,
+                       d7::invgauss2_dexpected_lambda_lambda_lambda(L), 0.0, 0.0};
         for (int k = 0; k < 6; ++k) o[k] = w[k];
     });
 }
@@ -417,10 +437,10 @@ List gamma2_dexpected1_cpp(NumericVector y, NumericVector mu,
         double r1 = d7::psi1_rest(a), r2 = d7::psi2_rest(a);
         double g = -a * r1, g1 = -r1 - a * r2;
         double iv = 1.0 / v, iv2 = iv * iv, iv3 = iv2 * iv;
-        o[0] = -8.0 * m * g1 * iv2;
+        o[0] = d7::gamma2_dexpected_mu_mu_mu(m, v, r1, r2);
         o[1] = (1.0 + 4.0 * g + 4.0 * a * g1) * iv2;
         o[2] = -2.0 * m * (g + a * g1) * iv3;
-        o[3] = a * (3.0 * g + a * g1) * iv3;
+        o[3] = d7::gamma2_dexpected_sigma2_sigma2_sigma2(m, v, r1, r2);
         o[4] = (2.0 * g + 4.0 * a * g1) * iv2;
         o[5] = -2.0 * m * (2.0 * g + a * g1) * iv3;
     });

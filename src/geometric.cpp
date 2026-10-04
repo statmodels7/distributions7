@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_geometric.h"
 using namespace Rcpp;
 
 // Geometric on {0, 1, 2, ...} in the MEAN parametrization. With success
@@ -28,7 +29,7 @@ List geometric_gradient_cpp(NumericVector y, NumericVector mu,
         // LOCAL to the region: a scalar hoisted out of the loop and
         // written inside it is shared once the iterations are split
         const double m = mu_is_scalar ? mu[0] : mu[i];
-        g[i] = (y[i] - m) / (m * (1.0 + m));
+        g[i] = d7::geometric_score_mu(y[i], m);
     });
     return List::create(Named("mu") = g);
 }
@@ -44,10 +45,7 @@ List geometric_hessian_cpp(NumericVector y, NumericVector mu,
         // LOCAL to the region: a scalar hoisted out of the loop and
         // written inside it is shared once the iterations are split
         const double m = mu_is_scalar ? mu[0] : mu[i];
-        double a, b;
-        geom_terms(y[i], m, a, b);
-        double om = 1.0 + m;
-        h[i] = -(a / (m * m) - b / (om * om));
+        h[i] = d7::geometric_hess_mu_mu(y[i], m);
     });
     return List::create(Named("mu_mu") = h);
 }
@@ -63,7 +61,7 @@ List geometric_expected_hessian_cpp(NumericVector y, NumericVector mu,
         // LOCAL to the region: a scalar hoisted out of the loop and
         // written inside it is shared once the iterations are split
         const double m = mu_is_scalar ? mu[0] : mu[i];
-        h[i] = -1.0 / (m * (1.0 + m));
+        h[i] = d7::geometric_expected_mu_mu(m);
     });
     return List::create(Named("mu_mu") = h);
 }

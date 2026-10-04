@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_gaussian2.h"
 using namespace Rcpp;
 
 // Gaussian in the mean and the VARIANCE, l = -log(2 pi v)/2 - r^2/(2 v),
@@ -23,9 +24,8 @@ List gaussian2_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sig
         double v = v_s ? sigma2[0] : sigma2[i];
         double u = 1.0 / v;
         double r = y[i] - m;
-        double z2 = r * r / v;
-        g_mu[i] = r * u;
-        g_v[i] = 0.5 * (z2 - 1.0) * u;
+        g_mu[i] = d7::gaussian2_score_mu(r, u);
+        g_v[i] = d7::gaussian2_score_sigma2(r, v, u);
     });
     return List::create(Named("mu") = g_mu, Named("sigma2") = g_v);
 }
@@ -42,10 +42,9 @@ List gaussian2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigm
         double v = v_s ? sigma2[0] : sigma2[i];
         double u = 1.0 / v, u2 = u * u;
         double r = y[i] - m;
-        double z2 = r * r / v;
-        h_mm[i] = -u;
+        h_mm[i] = d7::gaussian2_hess_mu_mu(u);
         h_mv[i] = -r * u2;
-        h_vv[i] = (0.5 - z2) * u2;
+        h_vv[i] = d7::gaussian2_hess_sigma2_sigma2(r, v, u);
     });
     return List::create(Named("mu_mu") = h_mm, Named("mu_sigma2") = h_mv,
                         Named("sigma2_sigma2") = h_vv);
@@ -61,9 +60,9 @@ List gaussian2_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVe
     d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
         double v = v_s ? sigma2[0] : sigma2[i];
         double u = 1.0 / v;
-        h_mm[i] = -u;
+        h_mm[i] = d7::gaussian2_expected_mu_mu(u);
         h_mv[i] = 0.0;
-        h_vv[i] = -0.5 * u * u;
+        h_vv[i] = d7::gaussian2_expected_sigma2_sigma2(u);
     });
     return List::create(Named("mu_mu") = h_mm, Named("mu_sigma2") = h_mv,
                         Named("sigma2_sigma2") = h_vv);

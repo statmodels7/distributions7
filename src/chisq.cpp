@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_chisq.h"
 using namespace Rcpp;
 
 // Chi-squared in the MEAN parametrization: the mean IS the degrees of
@@ -20,13 +21,12 @@ List chisq_gradient_cpp(NumericVector y, NumericVector mu,
     int n = y.size();
     NumericVector g(n);
     bool mu_is_scalar = (mu.size() == 1);
-    const double log2 = std::log(2.0);
 
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         // LOCAL to the region: a scalar hoisted out of the loop and
         // written inside it is shared once the iterations are split
         const double m = mu_is_scalar ? mu[0] : mu[i];
-        g[i] = 0.5 * (std::log(y[i]) - log2 - R::digamma(0.5 * m));
+        g[i] = d7::chisq_score_mu(std::log(y[i]), R::digamma(0.5 * m));
     });
     return List::create(Named("mu") = g);
 }
@@ -42,7 +42,7 @@ List chisq_hessian_cpp(NumericVector y, NumericVector mu,
         // LOCAL to the region: a scalar hoisted out of the loop and
         // written inside it is shared once the iterations are split
         const double m = mu_is_scalar ? mu[0] : mu[i];
-        h[i] = -0.25 * R::trigamma(0.5 * m);
+        h[i] = d7::chisq_hess_mu_mu(R::trigamma(0.5 * m));
     });
     return List::create(Named("mu_mu") = h);
 }

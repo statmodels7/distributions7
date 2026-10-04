@@ -12,8 +12,28 @@ ccallable_families <- list(
   Gamma1Distrib = function() gamma1_distrib(),
   PoissonDistrib = function() poisson_distrib(),
   NegBin2Distrib = function() negbin2_distrib(),
-  Beta1Distrib = function() beta1_distrib()
+  Beta1Distrib = function() beta1_distrib(),
+  BernoulliDistrib = function() bernoulli_distrib(),
+  BinomialDistrib = function() binomial_distrib(size = 7),
+  ExponentialDistrib = function() exponential_distrib(),
+  GeometricDistrib = function() geometric_distrib(),
+  ChisqDistrib = function() chisq_distrib(),
+  CauchyDistrib = function() cauchy_distrib(),
+  LogisticDistrib = function() logistic_distrib(),
+  Gaussian2Distrib = function() gaussian2_distrib(),
+  Gaussian3Distrib = function() gaussian3_distrib(),
+  Lognormal1Distrib = function() lognormal1_distrib(),
+  InvGauss1Distrib = function() invgauss1_distrib(),
+  InvGauss2Distrib = function() invgauss2_distrib(),
+  Gamma2Distrib = function() gamma2_distrib()
 )
+
+# the constants a family carries besides its parameters, which follow the
+# parameters in the vector the registry reads
+ccallable_constants <- function(d, n) {
+  if (S7::S7_inherits(d, BinomialDistrib)) return(list(size = rep(d@size, length.out = n)))
+  list()
+}
 
 test_that("every covered class has a constructor in this file", {
   expect_setequal(d7_scalar_classes_covered(), names(ccallable_families))
@@ -28,7 +48,7 @@ ccallable_twin <- function(cls, eta_range, seed) {
                             runif(n, eta_range[1], eta_range[2])))
   names(th) <- d@params
   y <- distrib_rng(d, n, th)
-  tm <- do.call(cbind, th)
+  tm <- do.call(cbind, c(th, ccallable_constants(d, n)))
   g <- distrib_gradient(d, y, th)
   h <- distrib_hessian(d, y, th)
   E <- distrib_expected_hessian(d, y, th)

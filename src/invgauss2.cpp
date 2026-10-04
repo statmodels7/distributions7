@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_invgauss2.h"
 using namespace Rcpp;
 
 // Inverse gaussian in the mean and the SHAPE lambda, the classical
@@ -22,9 +23,8 @@ List invgauss2_gradient_cpp(NumericVector y, NumericVector mu, NumericVector lam
     d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
         double m = m_s ? mu[0] : mu[i];
         double L = l_s ? lambda[0] : lambda[i];
-        double r = y[i] - m, m2 = m * m, m3 = m2 * m;
-        g_mu[i] = L * r / m3;
-        g_l[i] = 0.5 / L - r * r / (2.0 * m2 * y[i]);
+        g_mu[i] = d7::invgauss2_score_mu(y[i], m, L);
+        g_l[i] = d7::invgauss2_score_lambda(y[i], m, L);
     });
     return List::create(Named("mu") = g_mu, Named("lambda") = g_l);
 }
@@ -39,10 +39,10 @@ List invgauss2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector lamb
     d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
         double m = m_s ? mu[0] : mu[i];
         double L = l_s ? lambda[0] : lambda[i];
-        double m2 = m * m, m3 = m2 * m, m4 = m2 * m2;
-        h_mm[i] = L * (2.0 * m - 3.0 * y[i]) / m4;
+        double m3 = m * m * m;
+        h_mm[i] = d7::invgauss2_hess_mu_mu(y[i], m, L);
         h_ml[i] = (y[i] - m) / m3;
-        h_ll[i] = -0.5 / (L * L);
+        h_ll[i] = d7::invgauss2_hess_lambda_lambda(L);
     });
     return List::create(Named("mu_mu") = h_mm, Named("mu_lambda") = h_ml,
                         Named("lambda_lambda") = h_ll);
@@ -58,9 +58,9 @@ List invgauss2_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVe
     d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
         double m = m_s ? mu[0] : mu[i];
         double L = l_s ? lambda[0] : lambda[i];
-        h_mm[i] = -L / (m * m * m);
+        h_mm[i] = d7::invgauss2_expected_mu_mu(m, L);
         h_ml[i] = 0.0;
-        h_ll[i] = -0.5 / (L * L);
+        h_ll[i] = d7::invgauss2_expected_lambda_lambda(L);
     });
     return List::create(Named("mu_mu") = h_mm, Named("mu_lambda") = h_ml,
                         Named("lambda_lambda") = h_ll);

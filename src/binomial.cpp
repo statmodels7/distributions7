@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_binomial.h"
 using namespace Rcpp;
 
 // [[Rcpp::export]]
@@ -15,7 +16,7 @@ List binomial_gradient_cpp(NumericVector y, NumericVector mu, NumericVector size
         double m = mu_is_scalar ? mu[0] : mu[i];
         double sz = size_is_scalar ? size[0] : size[i];
         
-        grad_mu[i] = (y[i] - sz * m) / (m * (1.0 - m));
+        grad_mu[i] = d7::binomial_score_mu(y[i], m, sz);
     });
     
     return List::create(Named("mu") = grad_mu);
@@ -34,11 +35,7 @@ List binomial_hessian_cpp(NumericVector y, NumericVector mu, NumericVector size,
         double m = mu_is_scalar ? mu[0] : mu[i];
         double sz = size_is_scalar ? size[0] : size[i];
         
-        double m2 = m * m;
-        double one_m = 1.0 - m;
-        double one_m2 = one_m * one_m;
-        
-        hess_mu_mu[i] = -(y[i] / m2) - ((sz - y[i]) / one_m2);
+        hess_mu_mu[i] = d7::binomial_hess_mu_mu(y[i], m, sz);
     });
     
     return List::create(Named("mu_mu") = hess_mu_mu);
@@ -57,7 +54,7 @@ List binomial_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVec
         double m = mu_is_scalar ? mu[0] : mu[i];
         double sz = size_is_scalar ? size[0] : size[i];
         
-        hess_mu_mu[i] = -sz / (m * (1.0 - m));
+        hess_mu_mu[i] = d7::binomial_expected_mu_mu(m, sz);
     });
     return List::create(Named("mu_mu") = hess_mu_mu);
 }

@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_lognormal1.h"
 #include <cmath>
 using namespace Rcpp;
 
@@ -20,8 +21,8 @@ List lognormal_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sig
         double log_y = std::log(y[i]);
         double res = log_y - m;
         
-        grad_mu[i] = res / s2;
-        grad_sigma2[i] = (res * res - s2) / (2.0 * s2 * s2);
+        grad_mu[i] = d7::lognormal1_score_mu(res, s2);
+        grad_sigma2[i] = d7::lognormal1_score_sigma2(res, s2);
     });
     
     return List::create(Named("mu") = grad_mu, Named("sigma2") = grad_sigma2);
@@ -44,8 +45,8 @@ List lognormal_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigm
         double log_y = std::log(y[i]);
         double res = log_y - m;
         
-        hess_mu_mu[i] = -1.0 / s2;
-        hess_sigma2_sigma2[i] = 0.5 / s4 - (res * res) / (s4 * s2);
+        hess_mu_mu[i] = d7::lognormal1_hess_mu_mu(s2);
+        hess_sigma2_sigma2[i] = d7::lognormal1_hess_sigma2_sigma2(res, s2);
         hess_mu_sigma2[i] = -res / s4;
     });
     
@@ -63,8 +64,8 @@ List lognormal_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVe
     d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double s2 = sigma2_is_scalar ? sigma2[0] : sigma2[i];
         
-        hess_mu_mu[i] = -1.0 / s2;
-        hess_sigma2_sigma2[i] = -0.5 / (s2 * s2);
+        hess_mu_mu[i] = d7::lognormal1_expected_mu_mu(s2);
+        hess_sigma2_sigma2[i] = d7::lognormal1_expected_sigma2_sigma2(s2);
         hess_mu_sigma2[i] = 0.0;
     });
     

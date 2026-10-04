@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_gamma2.h"
 using namespace Rcpp;
 
 // [[Rcpp::export]]
@@ -38,8 +39,8 @@ List gamma_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma2,
         
         double log_y = std::log(y[i]);
         
-        grad_mu[i] = (-2.0 * m * digamma_alpha + 2.0 * m * log_lambda + m + 2.0 * m * log_y - y[i]) / s2;
-        grad_sigma2[i] = -(m * (-m * digamma_alpha + m + m * (log_lambda + log_y) - y[i])) / (s2 * s2);
+        grad_mu[i] = d7::gamma2_score_mu(y[i], m, s2, digamma_alpha, log_lambda, log_y);
+        grad_sigma2[i] = d7::gamma2_score_sigma2(y[i], m, s2, digamma_alpha, log_lambda, log_y);
     });
     
     return List::create(Named("mu") = grad_mu, Named("sigma2") = grad_sigma2);
@@ -84,8 +85,8 @@ List gamma_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma2,
         
         double log_y = std::log(y[i]);
         
-        hess_mu_mu[i] = (-(4.0 * m * m * trigamma_alpha) / s2 - 2.0 * digamma_alpha + 2.0 * log_lambda + 2.0 * log_y + 3.0) / s2;
-        hess_sigma2_sigma2[i] = -(m * (2.0 * m * s2 * digamma_alpha + m * m * m * trigamma_alpha + s2 * (-2.0 * m * log_lambda - 3.0 * m - 2.0 * m * log_y + 2.0 * y[i]))) / (s2 * s2 * s2 * s2);
+        hess_mu_mu[i] = d7::gamma2_hess_mu_mu(m, s2, digamma_alpha, trigamma_alpha, log_lambda, log_y);
+        hess_sigma2_sigma2[i] = d7::gamma2_hess_sigma2_sigma2(y[i], m, s2, digamma_alpha, trigamma_alpha, log_lambda, log_y);
         hess_mu_sigma2[i] = (2.0 * m * s2 * digamma_alpha + 2.0 * m * m * m * trigamma_alpha + s2 * (-2.0 * m * log_lambda - 3.0 * m - 2.0 * m * log_y + y[i])) / (s2 * s2 * s2);
     });
     
@@ -122,8 +123,8 @@ List gamma_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector
             trigamma_alpha = R::trigamma(alpha);
         }
         
-        hess_mu_mu[i] = (3.0 * s2 - 4.0 * m * m * trigamma_alpha) / (s2 * s2);
-        hess_sigma2_sigma2[i] = -(m * m * (m * m * trigamma_alpha - s2)) / (s2 * s2 * s2 * s2);
+        hess_mu_mu[i] = d7::gamma2_expected_mu_mu(m, s2, trigamma_alpha);
+        hess_sigma2_sigma2[i] = d7::gamma2_expected_sigma2_sigma2(m, s2, trigamma_alpha);
         hess_mu_sigma2[i] = 2.0 * m * (m * m * trigamma_alpha - s2) / (s2 * s2 * s2);
     });
     return List::create(Named("mu_mu") = hess_mu_mu, Named("sigma2_sigma2") = hess_sigma2_sigma2, Named("mu_sigma2") = hess_mu_sigma2);
