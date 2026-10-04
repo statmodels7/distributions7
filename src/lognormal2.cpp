@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include <cmath>
+#include "pt_lognormal2.h"
 using namespace Rcpp;
 
 // The lognormal in the mean m and the variance v of Y. With C = log(y/m)
@@ -41,10 +42,8 @@ List lognormal2_gradient_cpp(NumericVector y, NumericVector mean, NumericVector 
     if (!scalar) set_params(i);
     const double yy = y[i];
     const double C = std::log(yy / m);
-    const double t5 = std::pow(C, 2);
-    const double t7 = t5*t6;
-    o_mean[i] = C*t2 - t0*t7 + (3.0/4.0)*t0 - t1*t4 + t2 + t4*t7 - 1.0/4.0*t4;
-    o_var[i] = (1.0/8.0)*t3*(-4*t1 + 4*t5*t6 - 1);
+    o_mean[i] = d7::lognormal2_score_mean(m, v, S, C);
+    o_var[i] = d7::lognormal2_score_var(m, v, S, C);
   }
   (void) S;
   return List::create(Named("mean") = o_mean, Named("var") = o_var);
@@ -99,9 +98,8 @@ List lognormal2_hessian_cpp(NumericVector y, NumericVector mean, NumericVector v
     const double C = std::log(yy / m);
     const double t5 = std::pow(C, 2);
     const double t7 = t5*t6;
-    const double t8 = 4*t7;
-    o_mean_mean[i] = 4*C*t1*t2 - C*t1*t3 - C*t10 + 2*t0*t12*t2 + 2*t0*t12*t3 - t0*t12*t8 + (1.0/2.0)*t0*t12 + t1*t2*t5 + 2*t1*t2 - 2*t1*t3 - t1*t8 - 3.0/4.0*t1 - t10 - t11*t12*t2*t5 + t2*t4*t5 - t3*t4 + 8*t4*t5*t6 - 1.0/4.0*t4;
-    o_var_var[i] = t12*(-t13*t5 + t13 + (1.0/2.0)*t3 - t7 + 1.0/8.0);
+    o_mean_mean[i] = d7::lognormal2_hess_mean_mean(m, v, S, C);
+    o_var_var[i] = d7::lognormal2_hess_var_var(m, v, S, C);
     o_mean_var[i] = -C*t15 + m*t12*t2 + m*t12*t3 + (1.0/4.0)*m*t12 + 2*t14*t4*t5*t6 - t15 - t16*t2*t5 - 2*t16*t7;
   }
   (void) S;
@@ -151,8 +149,8 @@ List lognormal2_expected_hessian_cpp(NumericVector y, NumericVector mean, Numeri
   if (scalar) set_params(0);
   for (int i = 0; i < n; i++) {
     if (!scalar) set_params(i);
-    o_mean_mean[i] = -t1*t2*t4*v + (1.0/2.0)*t1*t2*v + (1.0/2.0)*t1 - 2*t10*t9 - t3*t8 - t4*t7 - t4*t9 - t7 - 1.0/2.0*t8 - 1.0/2.0*t9;
-    o_var_var[i] = (1.0/8.0)*t6*(-4*t10 - t4);
+    o_mean_mean[i] = d7::lognormal2_expected_mean_mean(m, v, S);
+    o_var_var[i] = d7::lognormal2_expected_var_var(m, v, S);
     o_mean_var[i] = (1.0/2.0)*t1*t12 + t10*t11*t7 + (1.0/2.0)*t12*t7;
   }
   (void) S;
@@ -1124,10 +1122,10 @@ List lognormal2_dexpected1_cpp(NumericVector y, NumericVector mean, NumericVecto
   if (scalar) set_params(0);
   for (int i = 0; i < n; i++) {
     if (!scalar) set_params(i);
-    o_mean_mean_mean[i] = -13.0/2.0*m*t37 - m*t60 + (43.0/2.0)*m*t62 + 32*m*t70 + 18*m*t71 + (11.0/2.0)*m*t73 - t10*t5*v + t10*t6*t7 + t15*t16 - 4*t15 - t16*t57 + t17*t18 + (15.0/2.0)*t17*t21 - t19*t20 + t22*t27 - t22*t28 - t22 - 14*t24*v + (25.0/2.0)*t25*v - 32*t26*t57 - t28*t52 - t3*t5 + t3 + 10*t34*t35 + 4*t34*t41 - t36*t39 - 7.0/2.0*t36*t41 - t38*t8 + (5.0/2.0)*t4*t52 + (29.0/2.0)*t4*t57 - 8*t40*t41 + t42*t47 - t49*t58 + 12*t49 + t50*t51 - t50*t61 - t52*t58 + t52 - t53*t54 + t54*t55 + 6*t57 + (27.0/2.0)*t63*v + t64*t67 + 2*t64*t68 + 16*t66*t77 + (3.0/2.0)*t68*t75 + (17.0/2.0)*t68*t77 + 10*t72*v + (13.0/2.0)*t74*v + t75*t76 + t75*t78 + t76*t77;
+    o_mean_mean_mean[i] = d7::lognormal2_dexpected_mean_mean_mean(m, v, S);
     o_mean_mean_var[i] = -t1*t34 + t12*t47 - t13*t36 - t17 + t19*t34 - 6*t23*t82 + t28*t87 + 2*t29*t66 + t29*t68 + 5*t31*t66 + (13.0/4.0)*t31*t68 + (17.0/4.0)*t32*t68 + t32*t78 + t32*t90 - 7.0/4.0*t36*t84 - 13.0/4.0*t37 + t38*t84 + 4*t4*t87 - 4*t40*t84 + t47*t86 - t5*t80 + t5*t85 + t60 + 8*t62 + t67*t89 + (3.0/4.0)*t68*t89 + 16*t70 + 9*t71 + (11.0/4.0)*t73 + (1.0/2.0)*t80 - t81*t82 - t81 - t83 + t85 + t87 + 6*t88 + t89*t90;
     o_var_var_mean[i] = -m*t27*t51 + m*t95 - 5.0/2.0*t0*t59 + t100*t99 + t12*t68*t92 - t18*t40 + t19*t66*t8 + 2*t20*t26 + 2*t24 + (1.0/4.0)*t25 - t26*t39*t46 - t26*t48*t97 - t35*t47*t6 - t53*t96 + t54*t69 + (3.0/4.0)*t63 + t68*t96*v + 4*t69*t99 + (5.0/2.0)*t72 + (1.0/4.0)*t74 + t8*t90*v - t91 - t93 - 1.0/4.0*t98;
-    o_var_var_var[i] = t1*t104 + t1*t53 + t1*t94 + t100*t86 + t101*t11 + t101*t12 + t102*t11 + t102*t12 + t103*t11 + t103*t12 - t34 - 1.0/8.0*t36 - t40 + t61 + (1.0/4.0)*t68*t86 + t95;
+    o_var_var_var[i] = d7::lognormal2_dexpected_var_var_var(m, v, S);
     o_mean_var_mean[i] = (1.0/2.0)*t1*t12*t4*t65 + 8*t1*t26*t46*v - 1.0/2.0*t1*t36 - 6*t1*t61 - t105 - t106*t85 - t106*t87 - t107*t45 + t11*t4*t65*v + t11*t6*t65*v + 16*t12*t26*t46 - t14*t26*t7*t79 + 5*t14*t6 - t16*t85 - t17 + 8*t26*t30*t46*t79 + 4*t26*t33*v + (1.0/2.0)*t29*t4*t65 + 2*t29*t6*t65 + 2*t30*t46*t6*t79 - t31*t90 - t32*t76 - t34*t45 - t6*t80 - 7.0/2.0*t62 - 8*t70 - 3*t71 - 1.0/2.0*t83 - 7.0/2.0*t88;
     o_mean_var_var[i] = (1.0/4.0)*m*t12*t4*t65 - t0*t105 + (3.0/2.0)*t0*t14*t6 + 2*t0*t26*t33*v - 3.0/2.0*t0*t71 - t104*t8 - t107*t18 - t18*t61 - t35*t55 + (1.0/4.0)*t4*t42*t65 + (1.0/2.0)*t4*t65*t8*v + t42*t6*t65 + (1.0/2.0)*t6*t65*t8*v - t70*t97 - t90*t99 - t91 - t93 - t98;
   }

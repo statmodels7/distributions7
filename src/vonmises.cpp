@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include "d7_par.h"
+#include "pt_vonmises.h"
 using namespace Rcpp;
 
 // The von Mises families, one kernel per derivative order.
@@ -22,23 +23,15 @@ using namespace Rcpp;
 // functions (src/bessel_ratio.cpp there), resolved once through
 // R_GetCCallable on the calling thread, before any worker starts.
 
-namespace {
-
-struct N7Bessel {
-  double (*A)(double);
-  double (*d1)(double);
-  double (*d2)(double);
-  double (*d3)(double);
-  void (*upto)(double, int, double*);
-  double (*inv)(double);
-};
+namespace d7 {
 
 // Resolved on first use, on the calling thread. Not a guarded static: a
 // lookup that fails raises an R error, and a longjmp out of a static
 // initializer leaves its guard held, so every later call would block.
-N7Bessel n7b_ptrs = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
+// d7_scalar_id() resolves it for the registry, on the consumer's thread.
+static N7Bessel n7b_ptrs = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
 
-const N7Bessel& n7b() {
+const N7Bessel& vm_bessel() {
   if (n7b_ptrs.inv == nullptr) {
     N7Bessel b;
     b.A = (double (*)(double)) R_GetCCallable("numericals7", "n7_bessel_ratio");
@@ -54,31 +47,12 @@ const N7Bessel& n7b() {
   return n7b_ptrs;
 }
 
-// the derivatives of the inverse kappa(rho) to order n from A' ... A^(n)
-// at kappa, into k[1..n]
-inline void vm_inverse_derivs(const double* a, int n, double* k) {
-  const double p1 = a[1], ip1 = 1.0 / p1;
-  k[1] = ip1;
-  if (n < 2) return;
-  const double p2 = a[2], ip3 = ip1 * ip1 * ip1;
-  k[2] = -p2 * ip3;
-  if (n < 3) return;
-  const double p3 = a[3], ip5 = ip3 * ip1 * ip1;
-  k[3] = (3.0 * p2 * p2 - p1 * p3) * ip5;
-  if (n < 4) return;
-  const double p4 = a[4];
-  k[4] = (-15.0 * p2 * p2 * p2 + 10.0 * p1 * p2 * p3 - p1 * p1 * p4) *
-    ip5 * ip1 * ip1;
-}
+}  // namespace d7
 
-// kappa(rho) and its derivatives to order n (1 <= n <= 4), k[0] = kappa
-inline void vm2_kappa(const N7Bessel& B, double rho, int n, double* k) {
-  double a[5];
-  k[0] = B.inv(rho);
-  B.upto(k[0], n, a);
-  vm_inverse_derivs(a, n, k);
-}
-
+namespace {
+using d7::N7Bessel;
+using d7::vm2_kappa;
+inline const N7Bessel& n7b() { return d7::vm_bessel(); }
 }  // namespace
 
 // --- vonmises1 -------------------------------------------------------------
@@ -95,8 +69,8 @@ List vonmises1_gradient_cpp(NumericVector y, NumericVector mu,
   d7::par_for(n, threads, ks ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
     const double k = kappa[i % n_k], d = y[i % n_y] - mu[i % n_mu];
     const double A = ks ? A0 : B.A(k);
-    o_mu[i] = k * std::sin(d);
-    o_kappa[i] = std::cos(d) - A;
+    o_mu[i] = d7::vonmises1_score_mu(k, std::sin(d));
+    o_kappa[i] = d7::vonmises1_score_kappa(std::cos(d), A);
   });
   return List::create(Named("mu") = o_mu, Named("kappa") = o_kappa);
 }
@@ -112,9 +86,9 @@ List vonmises1_hessian_cpp(NumericVector y, NumericVector mu,
   const double D0 = ks ? B.d1(kappa[0]) : 0.0;
   d7::par_for(n, threads, ks ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
     const double k = kappa[i % n_k], d = y[i % n_y] - mu[i % n_mu];
-    o_mm[i] = -k * std::cos(d);
+    o_mm[i] = d7::vonmises1_hess_mu_mu(k, std::cos(d));
     o_mk[i] = std::sin(d);
-    o_kk[i] = -(ks ? D0 : B.d1(k));
+    o_kk[i] = d7::vonmises1_hess_kappa_kappa(ks ? D0 : B.d1(k));
   });
   return List::create(Named("mu_mu") = o_mm, Named("mu_kappa") = o_mk,
                       Named("kappa_kappa") = o_kk);
@@ -134,9 +108,9 @@ List vonmises1_expected_hessian_cpp(int n, NumericVector kappa, int threads = 1)
     const double k = kappa[i % n_k];
     double a[2];
     if (ks) { a[0] = a0[0]; a[1] = a0[1]; } else B.upto(k, 1, a);
-    o_mm[i] = -k * a[0];
+    o_mm[i] = d7::vonmises1_expected_mu_mu(k, a[0]);
     o_mk[i] = 0.0;
-    o_kk[i] = -a[1];
+    o_kk[i] = d7::vonmises1_expected_kappa_kappa(a[1]);
   });
   return List::create(Named("mu_mu") = o_mm, Named("mu_kappa") = o_mk,
                       Named("kappa_kappa") = o_kk);
@@ -199,7 +173,7 @@ List vonmises1_dexpected1_cpp(NumericVector kappa, int threads = 1) {
     double a[3];
     B.upto(k, 2, a);
     f[i] = -(a[0] + k * a[1]);
-    g[i] = -a[2];
+    g[i] = d7::vonmises1_dexpected_kappa_kappa_kappa(a[2]);
   });
   return List::create(Named("f") = f, Named("g") = g);
 }
@@ -236,8 +210,8 @@ List vonmises2_gradient_cpp(NumericVector y, NumericVector mu,
     const double r = rho[i % n_r], d = y[i % n_y] - mu[i % n_mu];
     double k[2];
     if (rs) { k[0] = k0[0]; k[1] = k0[1]; } else vm2_kappa(B, r, 1, k);
-    o_mu[i] = k[0] * std::sin(d);
-    o_rho[i] = (std::cos(d) - r) * k[1];
+    o_mu[i] = d7::vonmises2_score_mu(k[0], std::sin(d));
+    o_rho[i] = d7::vonmises2_score_rho(std::cos(d), r, k[1]);
   });
   return List::create(Named("mu") = o_mu, Named("rho") = o_rho);
 }
@@ -257,8 +231,8 @@ List vonmises2_hessian_cpp(NumericVector y, NumericVector mu,
     double k[3];
     if (rs) { k[0] = k0[0]; k[1] = k0[1]; k[2] = k0[2]; } else vm2_kappa(B, r, 2, k);
     const double c = std::cos(d);
-    o_mm[i] = -k[0] * c;
-    o_rr[i] = (c - r) * k[2] - k[1];
+    o_mm[i] = d7::vonmises2_hess_mu_mu(k[0], c);
+    o_rr[i] = d7::vonmises2_hess_rho_rho(c, r, k[1], k[2]);
     o_mr[i] = std::sin(d) * k[1];
   });
   return List::create(Named("mu_mu") = o_mm, Named("rho_rho") = o_rr,
@@ -277,8 +251,8 @@ List vonmises2_expected_hessian_cpp(int n, NumericVector rho, int threads = 1) {
     const double r = rho[i % n_r];
     double k[2];
     if (rs) { k[0] = k0[0]; k[1] = k0[1]; } else vm2_kappa(B, r, 1, k);
-    o_mm[i] = -k[0] * r;
-    o_rr[i] = -k[1];
+    o_mm[i] = d7::vonmises2_expected_mu_mu(k[0], r);
+    o_rr[i] = d7::vonmises2_expected_rho_rho(k[1]);
     o_mr[i] = 0.0;
   });
   return List::create(Named("mu_mu") = o_mm, Named("rho_rho") = o_rr,
@@ -349,7 +323,7 @@ List vonmises2_dexpected1_cpp(NumericVector rho, int threads = 1) {
     double k[3];
     vm2_kappa(B, r, 2, k);
     f[i] = -(k[0] + r * k[1]);
-    g[i] = -k[2];
+    g[i] = d7::vonmises2_dexpected_rho_rho_rho(k[2]);
   });
   return List::create(Named("f") = f, Named("g") = g);
 }

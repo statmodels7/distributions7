@@ -30,6 +30,7 @@
 #include "pt_invgauss1.h"
 #include "pt_invgauss2.h"
 #include "pt_gamma2.h"
+#include "pt_gpd.h"
 using namespace Rcpp;
 
 namespace {
@@ -559,10 +560,11 @@ List gpd_dexpected1_cpp(NumericVector y, NumericVector sigma, NumericVector xi,
         }
         double d = 1.0 + 2.0 * x, F = 1.0 / (d * (1.0 + x)), c = 3.0 + 4.0 * x;
         double F1 = -c * F * F;
-        double is = 1.0 / s, is2 = is * is, is3 = is2 * is;
+        double is = 1.0 / s, is2 = is * is;
         double id = 1.0 / d, id2 = id * id;
-        double w[6] = {2.0 * id * is3, 2.0 * id2 * is2,   // E_ss: d_s, d_x
-                       0.0, -2.0 * F1,                     // E_xx
+        double w[6] = {d7::gpd_dexpected_sigma_sigma_sigma(s, x),
+                       2.0 * id2 * is2,                    // E_ss: d_s, d_x
+                       0.0, d7::gpd_dexpected_xi_xi_xi(x), // E_xx
                        F * is2, -F1 * is};                 // E_sx
         for (int k = 0; k < 6; ++k) o[k] = w[k];
     });

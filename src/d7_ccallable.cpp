@@ -20,6 +20,12 @@
 #include "pt_invgauss1.h"
 #include "pt_invgauss2.h"
 #include "pt_gamma2.h"
+#include "pt_gpd.h"
+#include "pt_vonmises.h"
+#include "pt_weibull3.h"
+#include "pt_lognormal2.h"
+#include "pt_student_t1.h"
+#include "pt_student_t2.h"
 
 // The scalar C entry points of the fast route piano_parallel.txt section 2a
 // describes: the score and the second derivative of the log-density in ONE
@@ -63,7 +69,14 @@ const char* const d7_scalar_classes[] = {
     "Lognormal1Distrib",    // 14
     "InvGauss1Distrib",     // 15
     "InvGauss2Distrib",     // 16
-    "Gamma2Distrib"         // 17
+    "Gamma2Distrib",        // 17
+    "GPDDistrib",           // 18
+    "VonMises1Distrib",     // 19
+    "VonMises2Distrib",     // 20
+    "Weibull3Distrib",      // 21
+    "Lognormal2Distrib",    // 22
+    "StudentT1Distrib",     // 23
+    "StudentT2Distrib"      // 24
 };
 
 const int d7_n_scalar_classes =
@@ -73,9 +86,15 @@ const int d7_n_scalar_classes =
 
 extern "C" {
 
+// Called once by the consumer on its own thread, before any loop: the von
+// Mises families resolve numericals7's Bessel-ratio entry points here, so
+// that no lookup into R happens later from a worker.
 int d7_scalar_id(const char* cls) {
     for (int i = 0; i < d7_n_scalar_classes; ++i) {
-        if (std::strcmp(cls, d7_scalar_classes[i]) == 0) return i;
+        if (std::strcmp(cls, d7_scalar_classes[i]) == 0) {
+            if (std::strncmp(cls, "VonMises", 8) == 0) d7::vm_bessel();
+            return i;
+        }
     }
     return -1;
 }
@@ -103,6 +122,13 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
     case 15: d7::invgauss1_score_curv(k, y, th, out); break;
     case 16: d7::invgauss2_score_curv(k, y, th, out); break;
     case 17: d7::gamma2_score_curv(k, y, th, out); break;
+    case 18: d7::gpd_score_curv(k, y, th, out); break;
+    case 19: d7::vonmises1_score_curv(k, y, th, out); break;
+    case 20: d7::vonmises2_score_curv(k, y, th, out); break;
+    case 21: d7::weibull3_score_curv(k, y, th, out); break;
+    case 22: d7::lognormal2_score_curv(k, y, th, out); break;
+    case 23: d7::student_t1_score_curv(k, y, th, out); break;
+    case 24: d7::student_t2_score_curv(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }
@@ -130,6 +156,13 @@ void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
     case 15: d7::invgauss1_info_dinfo(k, y, th, out); break;
     case 16: d7::invgauss2_info_dinfo(k, y, th, out); break;
     case 17: d7::gamma2_info_dinfo(k, y, th, out); break;
+    case 18: d7::gpd_info_dinfo(k, y, th, out); break;
+    case 19: d7::vonmises1_info_dinfo(k, y, th, out); break;
+    case 20: d7::vonmises2_info_dinfo(k, y, th, out); break;
+    case 21: d7::weibull3_info_dinfo(k, y, th, out); break;
+    case 22: d7::lognormal2_info_dinfo(k, y, th, out); break;
+    case 23: d7::student_t1_info_dinfo(k, y, th, out); break;
+    case 24: d7::student_t2_info_dinfo(k, y, th, out); break;
     default:
         out[0] = R_NaN; out[1] = R_NaN;
     }

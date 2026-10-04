@@ -25,7 +25,14 @@ ccallable_families <- list(
   Lognormal1Distrib = function() lognormal1_distrib(),
   InvGauss1Distrib = function() invgauss1_distrib(),
   InvGauss2Distrib = function() invgauss2_distrib(),
-  Gamma2Distrib = function() gamma2_distrib()
+  Gamma2Distrib = function() gamma2_distrib(),
+  GPDDistrib = function() gpd_distrib(),
+  VonMises1Distrib = function() vonmises1_distrib(),
+  VonMises2Distrib = function() vonmises2_distrib(),
+  Weibull3Distrib = function() weibull3_distrib(),
+  Lognormal2Distrib = function() lognormal2_distrib(),
+  StudentT1Distrib = function() student_t1_distrib(),
+  StudentT2Distrib = function() student_t2_distrib()
 )
 
 # the constants a family carries besides its parameters, which follow the
@@ -47,7 +54,9 @@ ccallable_twin <- function(cls, eta_range, seed) {
     linkfunctions7::linkinv(d@link_params[[p]],
                             runif(n, eta_range[1], eta_range[2])))
   names(th) <- d@params
-  y <- distrib_rng(d, n, th)
+  # one draw per observation at its own parameters: the von Mises rng
+  # recycles a per-observation kappa against its proposals
+  y <- vapply(seq_len(n), function(i) distrib_rng(d, 1, lapply(th, `[`, i)), 0)
   tm <- do.call(cbind, c(th, ccallable_constants(d, n)))
   g <- distrib_gradient(d, y, th)
   h <- distrib_hessian(d, y, th)
