@@ -1,6 +1,8 @@
 #include <Rcpp.h>
 #include <R_ext/Rdynload.h>
 #include <cstring>
+#include <cstdlib>
+#include <string>
 #include <cmath>
 #include "pt_gaussian1.h"
 #include "pt_gamma1.h"
@@ -117,6 +119,11 @@ const char* const d7_scalar_classes[] = {
 const int d7_n_scalar_classes =
     sizeof(d7_scalar_classes) / sizeof(d7_scalar_classes[0]);
 
+// the number of parameters and of constants of each family, by id: what a
+// wrapper reads to rebuild the inner family's vector
+const int d7_n_params[] = {2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 2, 3, 2, 3, 4, 3, 3, 3, 2, 2, 2, 2};
+const int d7_n_constants[] = {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1};
+
 } // namespace
 
 namespace d7 {
@@ -134,6 +141,116 @@ N7LogBesselI vm_log_i0_fn() {
 
 }  // namespace d7
 
+namespace {
+
+// ---- the wrappers ------------------------------------------------------------
+//
+// A wrapped family is named "<WrapperClass>[:aux]|<InnerClass>" by
+// distrib_scalar_route() and identified by kWrapBase * w + 1000 * aux + inner,
+// w the wrapper's code below and aux what the wrapper needs besides its
+// constants (for fixed() the mask of the fixed parameters). th is the
+// wrapper's parameters, then the inner family's constants, then the
+// wrapper's own; k counts the wrapper's parameters from zero. Each entry
+// rebuilds the inner family's vector and reads the inner family's entries;
+// the composition formulas are in pt_wrappers.h.
+
+const int kWrapBase = 100000;
+
+struct WrapName { const char* name; int code; };
+const WrapName d7_wrappers[] = {
+    {"FixedContinuousDistrib", 1},
+    {"FixedDiscreteDistrib", 1}
+};
+const int d7_n_wrappers = sizeof(d7_wrappers) / sizeof(d7_wrappers[0]);
+
+}  // namespace
+
+extern "C" {
+int d7_scalar_id(const char* cls);
+void d7_score_curv(int id, int k, double y, const double* th, double* out);
+void d7_info_dinfo(int id, int k, double y, const double* th, double* out);
+double d7_logpdf(int id, double y, const double* th);
+}
+
+namespace {
+
+int wrap_id(const char* cls, const char* bar) {
+    std::string head(cls, bar - cls);
+    int aux = 0;
+    std::size_t colon = head.find(':');
+    if (colon != std::string::npos) {
+        aux = std::atoi(head.c_str() + colon + 1);
+        head = head.substr(0, colon);
+    }
+    int code = -1;
+    for (int i = 0; i < d7_n_wrappers; ++i)
+        if (head == d7_wrappers[i].name) code = d7_wrappers[i].code;
+    if (code < 0 || std::strchr(bar + 1, '|') != nullptr) return -1;
+    int inner = d7_scalar_id(bar + 1);
+    if (inner < 0 || aux < 0 || aux >= 100) return -1;
+    if (code == 1) {
+        const int P = d7_n_params[inner];
+        if (aux == 0 || aux >= (1 << P)) return -1;
+    }
+    return kWrapBase * code + 1000 * aux + inner;
+}
+
+// fixed(): the inner vector from the free values, the inner constants and
+// the fixed values, and the inner index of free parameter k
+int fixed_inner(int inner, int mask, int k, const double* th, double* full) {
+    const int P = d7_n_params[inner], nc = d7_n_constants[inner];
+    int nf = 0;
+    for (int j = 0; j < P; ++j) nf += !((mask >> j) & 1);
+    int fi = 0, xi = 0, jk = -1;
+    for (int j = 0; j < P; ++j) {
+        if ((mask >> j) & 1) {
+            full[j] = th[nf + nc + xi++];
+        } else {
+            if (fi == k) jk = j;
+            full[j] = th[fi++];
+        }
+    }
+    for (int c = 0; c < nc; ++c) full[P + c] = th[nf + c];
+    return jk;
+}
+
+void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
+    const int code = id / kWrapBase, aux = (id % kWrapBase) / 1000,
+        inner = id % 1000;
+    double full[16];
+    if (code == 1) {
+        const int j = fixed_inner(inner, aux, k, th, full);
+        d7_score_curv(inner, j, y, full, out);
+        return;
+    }
+    out[0] = R_NaN; out[1] = R_NaN;
+}
+
+void wrap_info_dinfo(int id, int k, double y, const double* th, double* out) {
+    const int code = id / kWrapBase, aux = (id % kWrapBase) / 1000,
+        inner = id % 1000;
+    double full[16];
+    if (code == 1) {
+        const int j = fixed_inner(inner, aux, k, th, full);
+        d7_info_dinfo(inner, j, y, full, out);
+        return;
+    }
+    out[0] = R_NaN; out[1] = R_NaN;
+}
+
+double wrap_logpdf(int id, double y, const double* th) {
+    const int code = id / kWrapBase, aux = (id % kWrapBase) / 1000,
+        inner = id % 1000;
+    double full[16];
+    if (code == 1) {
+        fixed_inner(inner, aux, 0, th, full);
+        return d7_logpdf(inner, y, full);
+    }
+    return R_NaN;
+}
+
+}  // namespace
+
 extern "C" {
 
 // Called once by the consumer on its own thread, before any loop: the von
@@ -142,6 +259,8 @@ extern "C" {
 // families its Bessel K, so that no lookup into R happens later from a
 // worker.
 int d7_scalar_id(const char* cls) {
+    const char* bar = std::strchr(cls, '|');
+    if (bar != nullptr) return wrap_id(cls, bar);
     for (int i = 0; i < d7_n_scalar_classes; ++i) {
         if (std::strcmp(cls, d7_scalar_classes[i]) == 0) {
             if (std::strncmp(cls, "VonMises", 8) == 0) {
@@ -160,6 +279,10 @@ int d7_scalar_id(const char* cls) {
 // full parameter vector at this observation; out[0] the score component,
 // out[1] the (k, k) second derivative, both on the parameter scale
 void d7_score_curv(int id, int k, double y, const double* th, double* out) {
+    if (id >= kWrapBase) {
+        wrap_score_curv(id, k, y, th, out);
+        return;
+    }
     switch (id) {
     case 0: d7::gaussian1_score_curv(k, y, th, out); break;
     case 1: d7::gamma1_score_curv(k, y, th, out); break;
@@ -223,6 +346,7 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
 // storage. A family whose entries evaluate a function that may warn (R's
 // pt, pbeta, lchoose at a non-integer, R's Bessel K) answers 0.
 int d7_scalar_thread_safe(int id) {
+    if (id >= kWrapBase) id = id % 1000;
     if (id < 0 || id >= d7_n_scalar_classes) return -1;
     return 1;
 }
@@ -230,6 +354,10 @@ int d7_scalar_thread_safe(int id) {
 // out[0] the (k, k) expected second derivative E[l_kk], out[1] its
 // derivative in the same parameter, both on the parameter scale
 void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
+    if (id >= kWrapBase) {
+        wrap_info_dinfo(id, k, y, th, out);
+        return;
+    }
     switch (id) {
     case 0: d7::gaussian1_info_dinfo(k, y, th, out); break;
     case 1: d7::gamma1_info_dinfo(k, y, th, out); break;
@@ -283,6 +411,7 @@ void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
 // the log-density of one observation, th as for d7_score_curv(); NaN for an
 // unknown id
 double d7_logpdf(int id, double y, const double* th) {
+    if (id >= kWrapBase) return wrap_logpdf(id, y, th);
     switch (id) {
     case 0: return d7::gaussian1_logpdf(y, th);
     case 1: return d7::gamma1_logpdf(y, th);

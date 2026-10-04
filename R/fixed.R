@@ -684,6 +684,40 @@ for (.fixed_cls in list(FixedContinuousDistrib, FixedDiscreteDistrib)) {
 }
 rm(.fixed_cls)
 
+#' The Derivatives of a Fixed Family's Expected Information
+#'
+#' @description
+#' Returns the parent family's first (`k = 1`) or second (`k = 2`)
+#' derivatives of the expected information at the full parameter vector,
+#' subset to the free parameters, on the parameter scale. Registered through
+#' [register_dexpected()], which carries them to the link scale with the
+#' wrapper's links.
+#'
+#' @param d A fixed family, from [fixed()].
+#' @param y The response, read for its length.
+#' @param th The free parameters.
+#' @param k The order, `1L` or `2L`.
+#' @param t The thread count passed to the parent's methods.
+#'
+#' @return A named list keyed as [dexpected_names()] (`k = 1`) or
+#'   [d2expected_names()] (`k = 2`) over the free parameters.
+#'
+#' @keywords internal
+fixed_dexpected <- function(d, y, th, k, t) {
+  parent <- d@parent_distrib
+  full <- fixed_full_theta(d, th)
+  if (k == 1L) {
+    res <- distrib_dexpected_hessian(parent, y, full, scale = "parameter",
+                                     threads = t)
+    return(res[dexpected_names(d@params)])
+  }
+  res <- distrib_d2expected_hessian(parent, y, full, scale = "parameter",
+                                    threads = t)
+  res[d2expected_names(d@params)]
+}
+register_dexpected(FixedContinuousDistrib, fixed_dexpected)
+register_dexpected(FixedDiscreteDistrib, fixed_dexpected)
+
 # ---------------------------------------------------------------------------
 # The multivariate branch.
 #

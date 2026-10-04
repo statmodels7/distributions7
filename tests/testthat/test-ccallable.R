@@ -79,8 +79,12 @@ test_that("every covered class has a constructor in this file", {
 })
 
 ccallable_twin <- function(cls, eta_range, seed, const_shape = FALSE,
-                           ranges = NULL) {
-  d <- ccallable_families[[cls]]()
+                           ranges = NULL, d = NULL) {
+  # a wrapped family is passed as `d` and addressed by its route's name, and
+  # its log-density is compared as well
+  wrapped <- !is.null(d)
+  if (wrapped) cls <- distrib_scalar_route(d)$name
+  else d <- ccallable_families[[cls]]()
   set.seed(seed)
   n <- 80
   # `ranges`, where given, holds one eta range per parameter
@@ -112,6 +116,12 @@ ccallable_twin <- function(cls, eta_range, seed, const_shape = FALSE,
                      label = paste(cls, p, "expected"))
     expect_identical(e$dexpected, dE[[paste(p, p, p, sep = "_")]],
                      label = paste(cls, p, "dexpected"))
+  }
+  if (wrapped) {
+    expect_identical(d7_logpdf_probe(cls, y, tm)$logpdf,
+                     distrib_pdf(d, y, th, log = TRUE),
+                     label = paste(cls, "log-density"))
+    expect_identical(d7_scalar_thread_safe_probe(cls), 1L)
   }
 }
 
@@ -186,4 +196,34 @@ test_that("the log-density entry is distrib_pdf()'s, bit for bit", {
       expect_identical(got, ref, label = cls)
     }
   }
+})
+
+# wrapped families: fixed() over families with and without constants
+fix_last <- function(d, value) {
+  args <- list(d)
+  args[[d@params[d@n_params]]] <- value
+  do.call(fixed, args)
+}
+ccallable_wrappers <- list(
+  function() fixed(student_t1_distrib(), nu = 5),
+  function() fixed(gaussian1_distrib(), mu = 0.3),
+  function() fix_last(gamma1_distrib(), 0.4),
+  function() fixed(skewt_distrib(), alpha = 1.5, nu = 6),
+  function() fix_last(betabinom1_distrib(size = 9), 0.2),
+  function() fix_last(negbin2_distrib(), 3)
+)
+
+test_that("a wrapped family's entries are the wrapper's methods, bit for bit", {
+  for (mk in ccallable_wrappers) {
+    d <- mk()
+    expect_false(is.null(distrib_scalar_route(d)))
+    ccallable_twin(NULL, c(-0.5, 0.5), 5, d = d)
+  }
+})
+
+test_that("a route the registry cannot read is rejected", {
+  expect_identical(d7_scalar_thread_safe_probe("FixedContinuousDistrib:0|Gaussian1Distrib"), -1L)
+  expect_identical(d7_scalar_thread_safe_probe("FixedContinuousDistrib:4|Gaussian1Distrib"), -1L)
+  expect_identical(d7_scalar_thread_safe_probe("NoWrapper|Gaussian1Distrib"), -1L)
+  expect_null(distrib_scalar_route(fixed(zero_inflated(poisson_distrib()), mu = 2)))
 })

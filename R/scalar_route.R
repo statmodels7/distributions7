@@ -1,5 +1,5 @@
 #' @include distrib.R binomial_distrib.R betabinom1_distrib.R
-#'   betabinom2_distrib.R
+#'   betabinom2_distrib.R fixed.R
 NULL
 
 #' The Scalar Route of a Distribution
@@ -28,6 +28,14 @@ NULL
 #' The default method returns the class name when the registry covers the
 #' class and no constants; the binomial and the two beta-binomials carry
 #' their size as a constant.
+#'
+#' A wrapped family is named `"<wrapper class>[:aux]|<inner class>"`, `aux`
+#' being what the wrapper needs besides its constants, and its constants are
+#' the inner family's followed by the wrapper's. For [fixed()], `aux` is the
+#' mask of the fixed parameters (bit `j - 1` for the `j`-th parameter of the
+#' inner family) and the wrapper's constants are the fixed values in the
+#' inner family's order. A wrapper of a wrapper, or a fixed value that varies
+#' by observation, has no route.
 #'
 #' @param distrib A distribution object inheriting from `distrib`.
 #' @param ... Passed to methods.
@@ -65,3 +73,33 @@ S7::method(distrib_scalar_route, BetaBinom1Distrib) <- function(distrib, ...) {
 S7::method(distrib_scalar_route, BetaBinom2Distrib) <- function(distrib, ...) {
   list(name = "BetaBinom2Distrib", constants = list(size = distrib@size))
 }
+
+#' The Scalar Route of a Fixed Family
+#'
+#' @description
+#' Returns the route of a family built by [fixed()]: the name
+#' `"<class>:<mask>|<inner name>"` and the inner family's constants followed
+#' by the fixed values, as [distrib_scalar_route()] describes, or `NULL` when
+#' the parent has no route of its own or a fixed value varies by
+#' observation.
+#'
+#' @param distrib A fixed family.
+#' @param ... Unused.
+#'
+#' @return A list with components `name` and `constants`, or `NULL`.
+#'
+#' @keywords internal
+fixed_scalar_route <- function(distrib, ...) {
+  inner <- distrib_scalar_route(distrib@parent_distrib)
+  if (is.null(inner) || grepl("|", inner$name, fixed = TRUE)) return(NULL)
+  fp <- distrib@fixed_params
+  if (any(lengths(fp) != 1L)) return(NULL)
+  P <- distrib@parent_distrib@params
+  is_fixed <- P %in% names(fp)
+  mask <- sum(2^(which(is_fixed) - 1L))
+  cls <- attr(S7::S7_class(distrib), "name")
+  list(name = paste0(cls, ":", mask, "|", inner$name),
+       constants = c(inner$constants, unname(fp[P[is_fixed]])))
+}
+S7::method(distrib_scalar_route, FixedContinuousDistrib) <- fixed_scalar_route
+S7::method(distrib_scalar_route, FixedDiscreteDistrib) <- fixed_scalar_route

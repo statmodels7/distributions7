@@ -39,6 +39,14 @@ may be called from a worker thread, and 0 otherwise.
 The default method returns the class name when the registry covers the
 class and no constants; the binomial and the two beta-binomials carry
 their size as a constant.
+
+A wrapped family is named \code{"<wrapper class>[:aux]|<inner class>"}, \code{aux}
+being what the wrapper needs besides its constants, and its constants are
+the inner family's followed by the wrapper's. For \code{\link[=fixed]{fixed()}}, \code{aux} is the
+mask of the fixed parameters (bit \code{j - 1} for the \code{j}-th parameter of the
+inner family) and the wrapper's constants are the fixed values in the
+inner family's order. A wrapper of a wrapper, or a fixed value that varies
+by observation, has no route.
 }
 \examples{
 distrib_scalar_route(gaussian1_distrib())
