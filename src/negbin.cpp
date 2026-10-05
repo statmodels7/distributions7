@@ -71,8 +71,7 @@ using namespace Rcpp;
 //
 // The mass comes from the recurrence and the stopping rule of
 // negbin2_expected_theta_theta(),
-// seed and log-scale switch included, for the reasons recorded there; the tail
-// past 1 - 1e-12 of the mass is dropped. nb_dE_ltt1() writes (d_mu S,
+// seed and log-scale switch included, for the reasons recorded there. nb_dE_ltt1() writes (d_mu S,
 // d_theta S) to out in one pass, the d_theta summand being
 // negbin2_dexpected_theta_theta_theta_term() of pt_negbin2.h, which the
 // registry's d_theta sum also adds; nb_dE_ltt2() writes (d_mumu S,
@@ -80,15 +79,14 @@ using namespace Rcpp;
 static void nb_dE_ltt1(double mu, double theta, double *out) {
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
-    double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + mu / theta))
-                 + 40.0 * (mu + theta) / theta;
-    int kmax = (int) std::min(cap, 1.0e6);
+    const int kmax = d7::negbin2_series_cap(mu, theta);
+    const double mode = d7::negbin2_series_mode(mu, theta);
     const double c = theta + mu, c2 = c * c;
     const double den = theta * c;
     const double L = std::log1p(mu / theta);
     const double th2 = theta * theta;
 
-    double U = 0.0, A1 = 0.0, A3 = 0.0, cum = 0.0;
+    double U = 0.0, A1 = 0.0, A3 = 0.0;
     double r1 = 0.0, r2 = 0.0;
     double lpk = -theta * std::log1p(mu / theta);
     bool logscale = (lpk <= -640.0);
@@ -100,8 +98,7 @@ static void nb_dE_ltt1(double mu, double theta, double *out) {
         r1 += pk * (Um + U * sm);
         r2 += d7::negbin2_dexpected_theta_theta_theta_term(kd, pk, U, A1, A3, L,
                                                             mu, theta, c, c2, th2);
-        cum += pk;
-        bool last = (cum >= 1.0 - 1e-12 && k >= 100);
+        bool last = d7::negbin2_series_done(kd, pk, mode);
         double tk = theta + kd, iv = 1.0 / tk, iv2 = iv * iv;
         U += (theta * (2.0 * kd - mu) + kd * kd) / (den * tk * tk);
         A1 += iv;
@@ -122,15 +119,14 @@ static void nb_dE_ltt1(double mu, double theta, double *out) {
 static void nb_dE_ltt2(double mu, double theta, double *out) {
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
-    double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + mu / theta))
-                 + 40.0 * (mu + theta) / theta;
-    int kmax = (int) std::min(cap, 1.0e6);
+    const int kmax = d7::negbin2_series_cap(mu, theta);
+    const double mode = d7::negbin2_series_mode(mu, theta);
     const double c = theta + mu, c2 = c * c, c3 = c2 * c;
     const double den = theta * c;
     const double L = std::log1p(mu / theta);
     const double th2 = theta * theta, th3 = th2 * theta;
 
-    double U = 0.0, A1 = 0.0, A2 = 0.0, A3 = 0.0, A4 = 0.0, cum = 0.0;
+    double U = 0.0, A1 = 0.0, A2 = 0.0, A3 = 0.0, A4 = 0.0;
     double r1 = 0.0, r2 = 0.0, r3 = 0.0;
     double lpk = -theta * std::log1p(mu / theta);
     bool logscale = (lpk <= -640.0);
@@ -151,8 +147,7 @@ static void nb_dE_ltt2(double mu, double theta, double *out) {
         r1 += pk * (Umm + 2.0 * Um * sm + U * (smm + sm * sm));
         r2 += pk * (Utt + 2.0 * Ut * st + U * (stt + st * st));
         r3 += pk * (Umt + Um * st + Ut * sm + U * (smt + sm * st));
-        cum += pk;
-        bool last = (cum >= 1.0 - 1e-12 && k >= 100);
+        bool last = d7::negbin2_series_done(kd, pk, mode);
         double tk = theta + kd, iv = 1.0 / tk, iv2 = iv * iv;
         U += (theta * (2.0 * kd - mu) + kd * kd) / (den * tk * tk);
         A1 += iv;

@@ -59,6 +59,32 @@ inline double negbin2_expected_mu_mu(double m, double th) {
     return -th / (m * th_plus_mu);
 }
 
+// THE STOPPING RULE OF THE SERIES BELOW, shared by every sum over the support
+// of the negative binomial's expected information and its derivatives
+// (negbin.cpp, negbin_hd.cpp). The loop stops past the mode, and not before
+// k = 100, once p_k (1 + k)^2 falls below 1e-17, (1 + k)^2 bounding the
+// growth of the largest summand. An earlier rule stopped when the accumulated
+// mass reached 1 - 1e-12 and added U (1 - cum) for the tail; measured against
+// mpmath on 31 cells with theta < 1e4, that left 5e-11 on E[l_theta_theta],
+// 1.5e-7 on its derivative in mu and 3.7e-9 on its derivative in theta, and
+// this rule leaves 2.6e-14, 6.3e-13 and 1.9e-11 for 1.7 times the terms. The
+// accumulated mass cannot serve at a tighter tolerance: its own rounding keeps
+// it below 1 - 1e-16. The cap allows the geometric tail, of ratio
+// mu/(theta + mu), the extra terms down to 1e-17.
+inline bool negbin2_series_done(double kd, double pk, double mode) {
+    return kd >= 100.0 && kd > mode && pk * (1.0 + kd) * (1.0 + kd) <= 1e-17;
+}
+
+inline double negbin2_series_mode(double mu, double theta) {
+    return (theta > 1.0) ? mu * (theta - 1.0) / theta : 0.0;
+}
+
+inline int negbin2_series_cap(double mu, double theta) {
+    const double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + mu / theta))
+                       + 80.0 * (mu + theta) / theta;
+    return (int) std::min(cap, 1.0e6);
+}
+
 // THE EXPECTED SECOND DERIVATIVE IN theta, E[l_theta_theta], AS ONE SUM.
 //
 // It used to be assembled from two pieces -- E[psi'(Y+theta)] with psi'(theta)
@@ -121,15 +147,13 @@ inline double negbin2_expected_mu_mu(double m, double th) {
 //
 // The mass comes from the pmf recurrence p_{k+1} = p_k * (k + theta) / (k + 1)
 // * mu / (theta + mu), carried in log scale until p_k is representable, and
-// the loop stops when the accumulated mass reaches 1 - 1e-12 -- the point a
-// far-tail quantile would have located.  The quantile call an earlier version
+// the loop stops by negbin2_series_done().  The quantile call an earlier version
 // used here is off limits: this helper runs inside d7::par_for workers, and
 // qnbinom's search reaches pbeta, whose warning path calls into the R API and
 // killed the process from a worker thread on four of the five CI platforms.
 // Everything below is plain C arithmetic, which never takes such a path.  The
-// hard cap covers the geometric tail (decay ratio mu/(theta+mu), so
-// ~30(mu+theta)/theta terms reach 1e-12) and the loop almost always breaks on
-// the mass long before it.
+// hard cap covers the geometric tail (negbin2_series_cap()) and the loop
+// almost always stops by its rule long before it.
 // The loop is also capped at 1e6 terms. Below theta/mu of about 3e-5 the tail
 // needs 1e7 to 1e9 terms, one series then costs 0.2 s or more, and a fit that
 // creeps along theta -> 0 pays it at every iteration; that region is the edge
@@ -137,12 +161,11 @@ inline double negbin2_expected_mu_mu(double m, double th) {
 inline double negbin2_expected_theta_theta(double mu, double theta) {
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
-    double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + mu / theta))
-                 + 40.0 * (mu + theta) / theta;
-    int kmax = (int) std::min(cap, 1.0e6);
+    const int kmax = negbin2_series_cap(mu, theta);
+    const double mode = negbin2_series_mode(mu, theta);
     const double den = theta * (theta + mu);
 
-    double s = 0.0, cum = 0.0, U = 0.0;
+    double s = 0.0, U = 0.0;
     // log P(Y = 0) is -theta log1p(mu/theta) and NOT theta (log theta -
     // log(theta + mu)): at theta = 1.585e5 with mu = 0.1 those two logarithms
     // are 11.9736 apiece and their difference 6.31e-07, so the seed loses
@@ -163,9 +186,8 @@ inline double negbin2_expected_theta_theta(double mu, double theta) {
     int k = 0;
     for (; k <= kmax; ++k) {
         s += U * pk;
-        cum += pk;
-        bool last = (cum >= 1.0 - 1e-12 && k >= 100);
         double kd = (double) k, tk = theta + kd;
+        bool last = negbin2_series_done(kd, pk, mode);
         U += (theta * (2.0 * kd - mu) + kd * kd) / (den * tk * tk);
         if (last) { ++k; break; }
         if (logscale) {
@@ -176,7 +198,6 @@ inline double negbin2_expected_theta_theta(double mu, double theta) {
             pk *= (k + theta) / (k + 1.0) * ratio;
         }
     }
-    if (cum < 1.0) s += U * (1.0 - cum);
     return s;
 }
 
@@ -210,15 +231,14 @@ inline double negbin2_dexpected_theta_theta_theta_term(
 inline double negbin2_dexpected_theta_theta_theta(double mu, double theta) {
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
-    double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + mu / theta))
-                 + 40.0 * (mu + theta) / theta;
-    int kmax = (int) std::min(cap, 1.0e6);
+    const int kmax = negbin2_series_cap(mu, theta);
+    const double mode = negbin2_series_mode(mu, theta);
     const double c = theta + mu, c2 = c * c;
     const double den = theta * c;
     const double L = std::log1p(mu / theta);
     const double th2 = theta * theta;
 
-    double U = 0.0, A1 = 0.0, A3 = 0.0, cum = 0.0;
+    double U = 0.0, A1 = 0.0, A3 = 0.0;
     double r2 = 0.0;
     double lpk = -theta * std::log1p(mu / theta);
     bool logscale = (lpk <= -640.0);
@@ -227,8 +247,7 @@ inline double negbin2_dexpected_theta_theta_theta(double mu, double theta) {
         double kd = (double) k;
         r2 += negbin2_dexpected_theta_theta_theta_term(kd, pk, U, A1, A3, L,
                                                         mu, theta, c, c2, th2);
-        cum += pk;
-        bool last = (cum >= 1.0 - 1e-12 && k >= 100);
+        bool last = negbin2_series_done(kd, pk, mode);
         double tk = theta + kd, iv = 1.0 / tk, iv2 = iv * iv;
         U += (theta * (2.0 * kd - mu) + kd * kd) / (den * tk * tk);
         A1 += iv;

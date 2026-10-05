@@ -194,3 +194,23 @@ test_that("negbin1's expected information holds at both ends of its range", {
               label = sprintf("mu = %g, theta = %g", cc[[1]], cc[[2]]))
   }
 })
+
+test_that("negbin2's expected information and its derivatives meet 50-digit sums", {
+  # mpmath, direct sums at 50 digits differentiated by mpmath.diff; with the
+  # series stopped at 1 - 1e-12 of the mass these cells were off by up to
+  # 3e-12 (E), 1.5e-7 (d_mu) and 3.7e-9 (d_theta)
+  ref <- rbind(
+    c(2.13, 0.497, -0.898989550729504168699, -0.270864401444219648623, 3.91626622853024363208),
+    c(10, 0.05, -73.5363393523210209830, -1.52278056851493475368, 2001.57274994269311574),
+    c(100, 2, -0.135809216481713459380, -0.0000845426291988511638329, 0.145710077009267802240),
+    c(1000, 10, -0.00505700416261852427155, -0.000000107577536078807698489, 0.00103752843104423499545))
+  d <- negbin2_distrib()
+  for (i in seq_len(nrow(ref))) {
+    th <- list(mu = ref[i, 1], theta = ref[i, 2])
+    e <- distrib_expected_hessian(d, 0, th)
+    de <- distrib_dexpected_hessian(d, 0, th)
+    expect_equal(e$theta_theta, ref[i, 3], tolerance = 1e-13)
+    expect_equal(de$theta_theta_mu, ref[i, 4], tolerance = 1e-12)
+    expect_equal(de$theta_theta_theta, ref[i, 5], tolerance = 1e-12)
+  }
+})

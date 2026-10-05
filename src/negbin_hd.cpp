@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include "d7_par.h"
 #include "pt_sqrt.h"
+#include "pt_negbin2.h"
 using namespace Rcpp;
 
 // Third/fourth-order derivatives of the Negative Binomial (NB2) log-mass,
@@ -10,7 +11,7 @@ using namespace Rcpp;
 // The expected pure-theta derivatives need an expectation of a polygamma over
 // the support, summed with the same pmf recurrence as the expected Hessian's
 // nb_E_trigamma_diff, carried in log scale until p_k is representable and
-// stopped when the accumulated mass reaches 1 - 1e-12. No quantile or mass
+// stopped by negbin2_series_done() of pt_negbin2.h. No quantile or mass
 // function is called: this helper runs inside d7::par_for workers, and
 // qnbinom's search reaches pbeta, whose warning path calls into the R API and
 // killed the process from a worker thread on four of the five CI platforms.
@@ -103,9 +104,8 @@ static inline double nb_d4_theta(double y, double mu, double th) {
 static double nb_E_dtheta(double mu, double theta, int nd) {
     const double ratio = mu / (theta + mu);
     const double lratio = std::log(mu) - std::log(theta + mu);
-    const double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + mu / theta))
-                       + 40.0 * (mu + theta) / theta;
-    const int kmax = (int) std::min(cap, 1.0e6);
+    const int kmax = d7::negbin2_series_cap(mu, theta);
+    const double mode = d7::negbin2_series_mode(mu, theta);
     const double s = theta + mu, th2 = theta * theta, th3 = th2 * theta;
     const double s2 = s * s, s3 = s2 * s;
     const double A3 = th2 * mu * (3.0 * theta + 2.0 * mu);
@@ -114,16 +114,15 @@ static double nb_E_dtheta(double mu, double theta, int nd) {
         * (6.0 * th2 + 8.0 * theta * mu + 3.0 * mu * mu);
     const double K4 = 3.0 * th2 + 3.0 * theta * mu + mu * mu;
 
-    double acc = 0.0, cum = 0.0, U = 0.0;
+    double acc = 0.0, U = 0.0;
     double lpk = -theta * std::log1p(mu / theta);
     bool logscale = (lpk <= -640.0);
     double pk = std::exp(lpk);
     int k = 0;
     for (; k <= kmax; ++k) {
         acc += U * pk;
-        cum += pk;
-        const bool last = (cum >= 1.0 - 1e-12 && k >= 100);
         const double j = (double) k, t = theta + j, t2 = t * t;
+        const bool last = d7::negbin2_series_done(j, pk, mode);
         if (nd == 2) {
             U += (A3 - B3 * j * (3.0 * th2 + 3.0 * j * theta + j * j))
                  / (t2 * t * th2 * s2);
@@ -141,7 +140,6 @@ static double nb_E_dtheta(double mu, double theta, int nd) {
             pk *= (k + theta) / (k + 1.0) * ratio;
         }
     }
-    if (cum < 1.0) acc += U * (1.0 - cum);
     return acc;
 }
 
