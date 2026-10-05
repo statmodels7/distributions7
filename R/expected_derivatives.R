@@ -43,8 +43,11 @@ NULL
 #'     directly against the density (numerical quadrature for continuous
 #'     distributions, series summation for discrete ones). Deterministic and
 #'     normally the most accurate when the observed derivative is available in
-#'     closed form. Estimates \eqn{\mathbb{E}[\partial^k \ell]} literally, which
-#'     for a non-regular model is *not* the information.}
+#'     closed form. Estimates \eqn{\mathbb{E}[\partial^k \ell]} literally,
+#'     with one exception: at order 2, for a family with a non-smooth
+#'     parameter (see [param_smoothness()]), it evaluates
+#'     \eqn{-\mathbb{E}[\ell_i \ell_j]} as `"bartlett"` does, because the
+#'     observed \eqn{\ell_{ij}} then lacks the point mass at the kink.}
 #'
 #'   \item{`"mc"`}{Simulates `nsim` observations from the distribution
 #'     and averages the observed derivative over them. The simplest and most
@@ -60,23 +63,23 @@ NULL
 #'     bottleneck; prefer `"bartlett"` or `"integrate"` in that case.}
 #' }
 #'
-#' **Defaults.** `distrib_expected_hessian` defaults to
-#' `"bartlett"`, because at order 2 it is both the cheapest (only first
-#' derivatives) and the most broadly valid. `distrib_deriv3` and
+#' **Defaults.** `distrib_expected_hessian` defaults to `"opg"`, which needs
+#' one score evaluation per observation and no expectation. `distrib_deriv3` and
 #' `distrib_deriv4` default to `"integrate"`, since at those orders
 #' direct integration of the available derivative is usually cheaper and more
 #' accurate.
 #'
-#' **What the kink costs, measured.** On a Laplace carrying a density, a score
-#' and a Hessian but no expected method, at \eqn{\sigma = 1} over 200
-#' observations: `"bartlett"` returns \eqn{-200}, which is \eqn{-n/\sigma^2}
-#' and agrees with the shipped family's closed form to the digit, while
-#' `"integrate"` and `"mc"` both return **exactly 0**. Neither is wrong about
-#' what it computes. The observed \eqn{\ell_{\mu\mu}} really is zero almost
-#' everywhere, so its expectation is zero; what fails is the identification of
-#' that expectation with \eqn{-\mathcal{I}(\theta)}, which is the second
-#' Bartlett identity. Only the score-based route survives, and the information
-#' of a non-regular family is *defined* as the variance of the score.
+#' **Non-smooth parameters.** Where the log-density has a kink in a
+#' parameter, the observed second derivative has a point mass at the kink, and
+#' an average of its pointwise values does not contain that mass. For the
+#' Laplace location, \eqn{\ell_{\mu\mu}} is zero almost everywhere, so its
+#' pointwise average is zero, while the information is \eqn{1/\sigma^2}. The
+#' information of such a family is the variance of the score, which is what
+#' the second Bartlett identity evaluates. `"bartlett"`, `"opg"` and, at
+#' order 2, `"integrate"` therefore return \eqn{-1/\sigma^2} per observation;
+#' `"mc"` averages the observed \eqn{\ell_{\mu\mu}} and returns 0. When the
+#' family declares where its kink is, through [kink_decomposition()], the
+#' quadrature of [expectation()] places a knot there.
 #'
 #' @return Nothing. This page documents the `approx` argument shared by the
 #'   three generics named above; the value returned is theirs.
@@ -156,14 +159,12 @@ observed_deriv <- function(distrib, y, theta, order) {
 #'
 #' @details
 #' What this estimates is \eqn{\mathbb{E}[\partial^k \ell]} literally. For a
-#' regular model that is the quantity wanted. For a non-regular one it is not
-#' the information, and the difference is total rather than small: on a Laplace
-#' with no closed-form expected method, at \eqn{\sigma = 1} over 200
-#' observations, this returns **exactly 0** for the location component while
-#' [expected_by_bartlett()] returns \eqn{-200 = -n/\sigma^2}, which is the
-#' information. The observed \eqn{\ell_{\mu\mu}} is zero almost everywhere, so
-#' its integral against the density is zero and the point mass at the kink is
-#' invisible to it.
+#' regular model that is the quantity wanted. For a family with a non-smooth
+#' parameter it is not: the observed \eqn{\ell_{ij}} has a point mass at the
+#' kink, which an integral of its pointwise values does not contain (on a
+#' Laplace the location component would be 0 instead of
+#' \eqn{-1/\sigma^2}). At order 2 such a family is therefore passed to
+#' [expected_by_bartlett()], which needs only the score.
 #'
 #' Quadrature is also unreliable where the observed derivative is itself a
 #' finite difference, since it then integrates numerical noise. That error is
@@ -186,6 +187,9 @@ observed_deriv <- function(distrib, y, theta, order) {
 #'   [expectation()], which does the integration.
 #' @keywords internal
 expected_by_integrate <- function(distrib, y, theta, order) {
+  if (order == 2L && !all(param_smoothness(distrib))) {
+    return(expected_by_bartlett(distrib, y, theta, 2L))
+  }
   n <- length(y)
   nms <- if (order == 2L) hess_names(distrib@params) else deriv_names(distrib@params, order)
   out <- lapply(nms, function(nm) {
@@ -342,12 +346,12 @@ expected_by_opg <- function(distrib, y, theta) {
 #' others -- which is why [numericals7::set_partitions()] is the whole algorithm and
 #' why the top-order derivative is never needed.
 #'
-#' At order 2 this reduces to the outer product of gradients,
-#' \eqn{\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]}, which is both the
-#' cheapest route and the only one that survives a model where the
-#' log-likelihood has a kink: there \eqn{\mathbb{E}[\partial^2 \ell]} genuinely
-#' is not the information, while the score variance still is. That is why it is
-#' the default at order 2 and why `"opg"` is accepted as a spelling of it.
+#' At order 2 this reduces to
+#' \eqn{\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]}, which needs only
+#' the score and remains the information where the log-likelihood has a kink:
+#' there the pointwise average of \eqn{\partial^2 \ell} is not the information,
+#' while the score variance still is. [expected_by_integrate()] calls this
+#' function at order 2 for such a family.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations; only its length is used.

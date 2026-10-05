@@ -28,14 +28,12 @@ in closed form.
 }
 \details{
 What this estimates is \eqn{\mathbb{E}[\partial^k \ell]} literally. For a
-regular model that is the quantity wanted. For a non-regular one it is not
-the information, and the difference is total rather than small: on a Laplace
-with no closed-form expected method, at \eqn{\sigma = 1} over 200
-observations, this returns \strong{exactly 0} for the location component while
-\code{\link[=expected_by_bartlett]{expected_by_bartlett()}} returns \eqn{-200 = -n/\sigma^2}, which is the
-information. The observed \eqn{\ell_{\mu\mu}} is zero almost everywhere, so
-its integral against the density is zero and the point mass at the kink is
-invisible to it.
+regular model that is the quantity wanted. For a family with a non-smooth
+parameter it is not: the observed \eqn{\ell_{ij}} has a point mass at the
+kink, which an integral of its pointwise values does not contain (on a
+Laplace the location component would be 0 instead of
+\eqn{-1/\sigma^2}). At order 2 such a family is therefore passed to
+\code{\link[=expected_by_bartlett]{expected_by_bartlett()}}, which needs only the score.
 
 Quadrature is also unreliable where the observed derivative is itself a
 finite difference, since it then integrates numerical noise. That error is
