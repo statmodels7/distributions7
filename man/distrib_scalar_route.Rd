@@ -47,8 +47,10 @@ mask of the fixed parameters (bit \code{j - 1} for the \code{j}-th parameter of 
 inner family) and the wrapper's constants are the fixed values in the
 inner family's order. For \code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} there is
 no \code{aux} and no constant of the wrapper's own, the probability being the
-last parameter. A wrapper of a wrapper, or a fixed value that varies by
-observation, has no route.
+last parameter. For \code{\link[=transformation]{transformation()}}, \code{aux} is the code of the
+transformer, which must be one of the twelve ready-made ones, and the
+wrapper's constants are the transformer's parameters. A wrapper of a
+wrapper, or a transformer built with \code{\link[=transformer]{transformer()}}, has no route.
 }
 \examples{
 distrib_scalar_route(gaussian1_distrib())

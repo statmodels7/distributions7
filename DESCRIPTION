@@ -147,6 +147,7 @@ Collate:
     'theta2_mapped.R'
     'theta2_more.R'
     'transformations.R'
+    'transformed_route.R'
     'wrapper_derivatives.R'
     'truncated_dexpected.R'
     'weibull3_distrib.R'

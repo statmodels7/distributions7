@@ -232,7 +232,24 @@ ccallable_wrappers <- list(
   function() folded(laplace_distrib()),
   function() folded(cauchy_distrib()),
   function() folded(skewnormal1_distrib()),
-  function() folded(skewnormal2_distrib())
+  function() folded(skewnormal2_distrib()),
+  # transformation() with each of the twelve ready-made transformers
+  function() transformation(gamma1_distrib(), log_transform()),
+  function() transformation(gaussian1_distrib(), exp_transform()),
+  function() transformation(gamma2_distrib(), inverse_transform()),
+  function() transformation(gamma1_distrib(), sqrt_transform()),
+  function() transformation(weibull1_distrib(), power_transform(3)),
+  function() transformation(gamma1_distrib(), power_transform(0.5)),
+  function() transformation(student_t1_distrib(), asinh_transform()),
+  function() transformation(gamma1_distrib(), bc_transform(0.5)),
+  function() transformation(gamma1_distrib(), bc_transform(-0.7)),
+  function() transformation(gaussian1_distrib(), yj_transform(0.3)),
+  function() transformation(gaussian1_distrib(), yj_transform(0)),
+  function() transformation(gaussian1_distrib(), yj_transform(2)),
+  function() transformation(logistic_distrib(), affine_transform(1, -2)),
+  function() transformation(beta1_distrib(), logit_transform()),
+  function() transformation(gaussian1_distrib(), expit_transform()),
+  function() transformation(gamma1_distrib(), softplus_transform(2))
 )
 
 test_that("a wrapped family's entries are the wrapper's methods, bit for bit", {
@@ -251,6 +268,28 @@ test_that("a route the registry cannot read is rejected", {
   expect_identical(d7_scalar_thread_safe_probe("ZeroInflatedDistrib:1|PoissonDistrib"), -1L)
   expect_null(distrib_scalar_route(folded(vonmises1_distrib())))
   expect_null(distrib_scalar_route(zero_inflated(truncated(poisson_distrib(), upper = 50))))
+  # a transformer built by hand, or a ready-made one with a function
+  # replaced, has no code; a Box-Cox at lambda = 0 is the log transformer
+  tr <- log_transform()
+  tr@trans_abs_jac <- function(y, log = TRUE) if (log) 2 * y else exp(2 * y)
+  expect_null(distrib_scalar_route(transformation(gamma1_distrib(), tr)))
+  tr <- transformer(name = "cube", trans_fun = function(x) x^3,
+                    trans_inv = function(y) sign(y) * abs(y)^(1 / 3),
+                    trans_abs_jac = function(y, log = TRUE) -log(3) - 2 / 3 * log(abs(y)),
+                    trans_inv_hessian = function(y) 0, grad_log_jac = function(y) 0,
+                    hess_log_jac = function(y) 0, bounds_fun = function(b) b^3,
+                    valid_support = function(b) TRUE, decreasing = FALSE)
+  expect_null(distrib_scalar_route(transformation(gaussian1_distrib(), tr)))
+  expect_identical(
+    distrib_scalar_route(transformation(gamma1_distrib(), bc_transform(0)))$name,
+    "TransformedDistrib:1|Gamma1Distrib")
+  expect_identical(
+    distrib_scalar_route(transformation(gaussian1_distrib(), affine_transform(1, -2)))$constants,
+    list(loc = 1, scale = -2))
+  expect_null(distrib_scalar_route(
+    transformation(fixed(gaussian1_distrib(), mu = 0), exp_transform())))
+  expect_identical(d7_scalar_thread_safe_probe("TransformedDistrib:0|Gaussian1Distrib"), -1L)
+  expect_identical(d7_scalar_thread_safe_probe("TransformedDistrib:13|Gaussian1Distrib"), -1L)
 })
 
 test_that("folded()'s expected information meets 30-digit values", {

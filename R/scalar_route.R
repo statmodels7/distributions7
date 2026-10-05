@@ -36,8 +36,10 @@ NULL
 #' inner family) and the wrapper's constants are the fixed values in the
 #' inner family's order. For [zero_inflated()] and [zero_adjusted()] there is
 #' no `aux` and no constant of the wrapper's own, the probability being the
-#' last parameter. A wrapper of a wrapper, or a fixed value that varies by
-#' observation, has no route.
+#' last parameter. For [transformation()], `aux` is the code of the
+#' transformer, which must be one of the twelve ready-made ones, and the
+#' wrapper's constants are the transformer's parameters. A wrapper of a
+#' wrapper, or a transformer built with [transformer()], has no route.
 #'
 #' @param distrib A distribution object inheriting from `distrib`.
 #' @param ... Passed to methods.

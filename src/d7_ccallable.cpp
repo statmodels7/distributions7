@@ -47,6 +47,7 @@
 #include "pt_betabinom.h"
 #include "pt_logpdf.h"
 #include "pt_wrappers.h"
+#include "pt_transform.h"
 #include "pt_loc_scale.h"
 #include "pt_sqrt.h"
 
@@ -152,7 +153,8 @@ namespace {
 // A wrapped family is named "<WrapperClass>[:aux]|<InnerClass>" by
 // distrib_scalar_route() and identified by kWrapBase * w + 1000 * aux + inner,
 // w the wrapper's code below and aux what the wrapper needs besides its
-// constants (for fixed() the mask of the fixed parameters). th is the
+// constants (for fixed() the mask of the fixed parameters, for
+// transformation() the code of the transformer in pt_transform.h). th is the
 // wrapper's parameters, then the inner family's constants, then the
 // wrapper's own; k counts the wrapper's parameters from zero. Each entry
 // rebuilds the inner family's vector and reads the inner family's entries;
@@ -167,7 +169,8 @@ const WrapName d7_wrappers[] = {
     {"ZeroInflatedDistrib", 2},
     {"ZeroAdjustedDiscreteDistrib", 3},
     {"ZeroAdjustedContinuousDistrib", 4},
-    {"FoldedDistrib", 5}
+    {"FoldedDistrib", 5},
+    {"TransformedDistrib", 6}
 };
 const int d7_n_wrappers = sizeof(d7_wrappers) / sizeof(d7_wrappers[0]);
 
@@ -199,6 +202,8 @@ int wrap_id(const char* cls, const char* bar) {
     if (code == 1) {
         const int P = d7_n_params[inner];
         if (aux == 0 || aux >= (1 << P)) return -1;
+    } else if (code == 6) {
+        if (aux < 1 || aux > d7::kTransformN) return -1;
     } else if (aux != 0) {
         return -1;
     }
@@ -342,6 +347,13 @@ void fold_info_dinfo(int inner, int k, const double* full, double* out) {
     out[1] = R_FINITE(r1) ? -r1 : NA_REAL;
 }
 
+// transformation(): the parent's vector is the wrapper's own (the same
+// parameters and the parent's constants), and the transformer's parameters
+// follow it
+const double* transform_par(int inner, const double* th) {
+    return th + d7_n_params[inner] + d7_n_constants[inner];
+}
+
 double zero_inner(int inner, const double* th, double* full) {
     const int P = d7_n_params[inner], nc = d7_n_constants[inner];
     for (int j = 0; j < P; ++j) full[j] = th[j];
@@ -360,6 +372,11 @@ void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
     }
     if (code == 5) {
         fold_score_curv(inner, k, y, th, out);
+        return;
+    }
+    if (code == 6) {
+        d7_score_curv(inner, k, d7::transform_inv(aux, y, transform_par(inner, th)),
+                      th, out);
         return;
     }
     if (code >= 2 && code <= 4) {
@@ -407,6 +424,11 @@ void wrap_info_dinfo(int id, int k, double y, const double* th, double* out) {
         fold_info_dinfo(inner, k, th, out);
         return;
     }
+    if (code == 6) {
+        d7_info_dinfo(inner, k, d7::transform_inv(aux, y, transform_par(inner, th)),
+                      th, out);
+        return;
+    }
     if (code >= 2 && code <= 4) {
         const int P = d7_n_params[inner];
         const double z = zero_inner(inner, th, full);
@@ -451,6 +473,12 @@ double wrap_logpdf(int id, double y, const double* th) {
         const d7::FoldW W = d7::fold_w(d7_logpdf(inner, y, th),
                                        d7_logpdf(inner, -y, th));
         return d7::fold_logpdf(y, W);
+    }
+    if (code == 6) {
+        const double* tp = transform_par(inner, th);
+        return d7::transform_logpdf(
+            d7_logpdf(inner, d7::transform_inv(aux, y, tp), th),
+            d7::transform_log_jac(aux, y, tp));
     }
     if (code >= 2 && code <= 4) {
         const double z = zero_inner(inner, th, full);
@@ -558,7 +586,8 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
 // without their warnings and, for the latter, without R's allocator. The
 // quadrature families (pt_loc_scale.h) keep their cache in thread-local
 // storage. A family whose entries evaluate a function that may warn (R's
-// pt, pbeta, lchoose, R's Bessel K) answers 0.
+// pt, pbeta, lchoose, R's Bessel K) answers 0. A transformed family adds
+// R_pow and nmath's plogis, qlogis and dlogis, which never warn.
 int d7_scalar_thread_safe(int id) {
     if (id >= kWrapBase) id = id % 1000;
     if (id < 0 || id >= d7_n_scalar_classes) return -1;
