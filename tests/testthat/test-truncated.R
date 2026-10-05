@@ -252,3 +252,43 @@ test_that("check_distrib validates the truncated wrappers", {
                                paste(out$check[out$status == "FAIL"], collapse = ", ")))
   }
 })
+
+test_that("a truncated binomial reads its size at the observation of each support point", {
+  # the parent was evaluated at the expanded support points with its size
+  # vector recycled against them: the mass read 0.912 where it is 0.922
+  sz <- rep(c(5, 9), length.out = 6)
+  d <- truncated(binomial_distrib(size = sz), lower = 1)
+  y <- c(1, 2, 3, 4, 2, 7)
+  expect_equal(distrib_pdf(d, y, list(mu = 0.4)),
+               dbinom(y, sz, 0.4) / (1 - 0.6^sz), tolerance = 1e-14)
+  # the score of log f/Z in mu, written out: y/mu - (size - y)/(1 - mu) less
+  # the derivative of log Z, size (1 - mu)^(size - 1)/Z
+  Z <- 1 - 0.6^sz
+  expect_equal(distrib_gradient(d, y, list(mu = 0.4))$mu,
+               y / 0.4 - (sz - y) / 0.6 - sz * 0.6^(sz - 1) / Z, tolerance = 1e-13)
+  ei <- vapply(seq_along(y), function(i) {
+    k <- 1:sz[i]
+    p <- dbinom(k, sz[i], 0.4) / Z[i]
+    s <- k / 0.4 - (sz[i] - k) / 0.6 - sz[i] * 0.6^(sz[i] - 1) / Z[i]
+    -sum(p * s^2)
+  }, numeric(1))
+  expect_equal(distrib_expected_hessian(d, y, list(mu = 0.4))$mu_mu, ei,
+               tolerance = 1e-13)
+})
+
+test_that("the truncation's parts are computed once per distinct parameter vector", {
+  pr <- distributions7:::trunc_route_parts
+  n <- 40
+  cases <- list(
+    list(truncated(gaussian1_distrib(), lower = 0), list(mu = 0.3, sigma = 0.8)),
+    list(truncated(fixed(student_t1_distrib(), nu = 5), lower = 0),
+         list(mu = rep(c(0.2, 0.5, 0.9), length.out = n), sigma = 1.2)),
+    list(truncated(binomial_distrib(size = rep(c(5, 9), length.out = n)), lower = 1),
+         list(mu = 0.4)))
+  for (cs in cases) {
+    for (w in c("z", "grad", "hess", "info", "dinfo")) {
+      expect_identical(pr(cs[[1]], numeric(n), cs[[2]], w),
+                       pr(cs[[1]], numeric(n), cs[[2]], w, rows = seq_len(n)))
+    }
+  }
+})

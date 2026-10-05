@@ -4,7 +4,7 @@
 \alias{trunc_route_parts}
 \title{The Retained Mass of a Truncated Family and the Sums of Its Information}
 \usage{
-trunc_route_parts(distrib, y, theta, what)
+trunc_route_parts(distrib, y, theta, what, rows = NULL)
 }
 \arguments{
 \item{distrib}{A truncated family.}
@@ -15,6 +15,9 @@ trunc_route_parts(distrib, y, theta, what)
 
 \item{what}{One of \code{"z"}, \code{"grad"}, \code{"hess"}, \code{"info"} and \code{"dinfo"},
 each adding quantities to those of the previous one.}
+
+\item{rows}{\code{NULL}, or the observations to compute; the function sets it
+when it computes each distinct parameter vector once.}
 }
 \value{
 \code{NULL} when the family has no route; otherwise a list with \code{Z},

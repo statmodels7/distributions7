@@ -49,7 +49,7 @@ cycles: the pure-\eqn{\mu} components run through
 \eqn{\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)} with the order, the
 \eqn{\mu\mu\kappa} component is \eqn{-\cos(y-\mu)}, and the
 pure-\eqn{\kappa} one is \eqn{-A''(\kappa)}, which
-\code{\link[numericals7:bessel_i_ratio_d2]{numericals7::bessel_i_ratio_d2()}} supplies. The components are computed
+\code{\link[numericals7:bessel_i_ratio_d1]{numericals7::bessel_i_ratio_d2()}} supplies. The components are computed
 by a compiled kernel.
 
 With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which is

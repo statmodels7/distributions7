@@ -73,6 +73,8 @@ S7::method(distrib_scalar_route, TruncatedContinuousDistrib) <- truncated_scalar
 #' @param theta A named list of parameter values.
 #' @param what One of `"z"`, `"grad"`, `"hess"`, `"info"` and `"dinfo"`,
 #'   each adding quantities to those of the previous one.
+#' @param rows `NULL`, or the observations to compute; the function sets it
+#'   when it computes each distinct parameter vector once.
 #'
 #' @return `NULL` when the family has no route; otherwise a list with `Z`,
 #'   `Zi` (named by parameter), and, as `what` requires, `Zij` and `S` (named
@@ -80,7 +82,7 @@ S7::method(distrib_scalar_route, TruncatedContinuousDistrib) <- truncated_scalar
 #'   over the observations.
 #'
 #' @keywords internal
-trunc_route_parts <- function(distrib, y, theta, what) {
+trunc_route_parts <- function(distrib, y, theta, what, rows = NULL) {
   if (!is_truncated(distrib)) return(NULL)
   route <- distrib_scalar_route(distrib)
   if (is.null(route)) return(NULL)
@@ -94,6 +96,33 @@ trunc_route_parts <- function(distrib, y, theta, what) {
   tm <- do.call(cbind, c(unname(th), lapply(unname(route$constants), rep_len,
                                             length.out = n)))
   if (!is.matrix(tm)) tm <- matrix(tm, nrow = n)
+  # the quantities depend on the parameters alone, so rows that repeat a
+  # parameter vector are computed once: an intercept-only fit rebuilt the
+  # quadrature rule at every observation for one vector. The rows are keyed
+  # by their exact bits, and a sum over the support or a rule (discrete, or
+  # orders 4 and 5) is worth the keying; the closed-form ends take the
+  # shortcut only where every column is constant
+  if (is.null(rows) && n > 1L) {
+    first <- if (all(tm == rep(tm[1L, ], each = n), na.rm = FALSE) %in% TRUE) {
+      rep.int(1L, n)
+    } else if (disc || lev >= 4L) {
+      key <- do.call(paste, c(lapply(seq_len(ncol(tm)), function(j)
+        sprintf("%a", tm[, j])), sep = "|"))
+      match(key, key)
+    }
+    if (!is.null(first) && anyDuplicated(first)) {
+      u <- which(first == seq_len(n))
+      out <- trunc_route_parts(distrib, y, theta, what, rows = u)
+      at <- match(first, u)
+      return(rapply(out, function(v) v[at], how = "list"))
+    }
+  }
+  n0 <- n
+  if (!is.null(rows)) {
+    tm <- tm[rows, , drop = FALSE]
+    th <- lapply(th, `[`, rows)
+    n <- length(rows)
+  }
   pairs <- which(upper.tri(diag(p), diag = TRUE), arr.ind = TRUE)
   pairs <- pairs[order(pairs[, 1L] != pairs[, 2L], pairs[, 1L], pairs[, 2L]), ,
                  drop = FALSE]
@@ -143,6 +172,11 @@ trunc_route_parts <- function(distrib, y, theta, what) {
   }
 
   thp <- lapply(th, `[`, idx)
+  # the parent is evaluated at points that belong to the rows idx, and a
+  # constant that varies by observation (a binomial's size) is taken there
+  # too: recycled against the points, it gave a mass of 0.912 where it is
+  # 0.922, and read past its end once the rows were subset
+  parent <- distrib_at_rows(parent, if (is.null(rows)) idx else rows[idx], n0)
   sumg <- function(v) {
     r <- ld_group_sum(as.numeric(v), idx, n)
     if (!disc) r[unplaced] <- NaN
@@ -205,4 +239,29 @@ trunc_route_parts <- function(distrib, y, theta, what) {
   }
   out$D <- D
   out
+}
+
+#' A Family at Selected Observations
+#'
+#' @description
+#' Returns `distrib` with every constant that varies by observation (a
+#' binomial's or a beta-binomial's `size`), its parents' included, taken at
+#' the observations `idx`, so that the family can be evaluated at points that
+#' belong to those observations.
+#'
+#' @param distrib A univariate family.
+#' @param idx Integer indices of observations, one per point.
+#' @param n The number of observations the constants are recycled to.
+#'
+#' @return The family, with its varying constants of length `length(idx)`.
+#'
+#' @keywords internal
+distrib_at_rows <- function(distrib, idx, n) {
+  if (S7::prop_exists(distrib, "parent_distrib")) {
+    distrib@parent_distrib <- distrib_at_rows(distrib@parent_distrib, idx, n)
+  }
+  if (S7::prop_exists(distrib, "size") && length(distrib@size) > 1L) {
+    distrib@size <- rep_len(distrib@size, n)[idx]
+  }
+  distrib
 }
