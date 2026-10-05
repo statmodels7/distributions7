@@ -1,3 +1,27 @@
+# distributions7 0.71.0
+
+* The expected information of `negbin1_distrib()` and its first and second
+  derivatives are sums over the support whose summands are rational in
+  `(mu, theta)`, differentiated in `(mu, theta)` inside the sums. Against
+  sums at 50 digits the largest error relative to the largest component of
+  its order goes from 7.4e-7 to 1.6e-10 at `mu = 100`, `theta = 0.05`, and
+  from 5e-2 to 4.5e-6 at `theta = 0.001`; the dispersion entry stays
+  negative toward the Poisson limit, where it turned positive from
+  `theta = 1e-8`. The series over the support of `negbin1_distrib()` stops on
+  its terms, as that of `negbin2_distrib()` does, and no longer at a fixed
+  fraction of the accumulated mass.
+* The third to fifth derivatives of `pseudohuber2_distrib()` are closed forms
+  in `u = r/A` and powers of `1/A`, `A = sqrt(nu sigma^2 + R(nu) r^2)`; the
+  sum over the partial derivatives of `Q` lost every digit from `|z|` near
+  1e6.
+* `truncated()` computes its retained mass, its derivatives and its
+  information sums once for each distinct parameter vector, and a
+  `gas()` fit over a truncated gaussian runs in 3.9 s where it took 26.6 s.
+  A truncated binomial with a `size` that varies by observation evaluates
+  its parent at each support point with the size of that point's
+  observation; the size was recycled against the support points, and the
+  density, the score and the expected information were wrong.
+
 # distributions7 0.70.0
 
 * Every univariate family has compiled scalar entries, registered with
