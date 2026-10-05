@@ -404,29 +404,44 @@ yj_transform <- function(lambda) {
     trans_abs_jac = function(y, log = TRUE) {
       log_J <- numeric(length(y))
       pos <- y >= 0
-      if (any(pos)) log_J[pos] <- ((1 - lambda) / lambda) * log(lambda * y[pos] + 1)
-      if (any(!pos)) log_J[!pos] <- ((lambda - 1) / lam2) * log(1 - lam2 * y[!pos])
+      # at lambda = 0 the inverse is expm1(y) on y >= 0, and at lambda = 2
+      # it is -expm1(-y) on y < 0, whose log-Jacobians are y and -y; the
+      # general expressions are 0 * Inf there
+      if (any(pos)) {
+        log_J[pos] <- if (abs(lambda) < 1e-10) y[pos] else
+          ((1 - lambda) / lambda) * log1p(lambda * y[pos])
+      }
+      if (any(!pos)) {
+        log_J[!pos] <- if (abs(lam2) < 1e-10) -y[!pos] else
+          ((lambda - 1) / lam2) * log1p(-lam2 * y[!pos])
+      }
       if (log) log_J else exp(log_J)
     },
     trans_inv_hessian = function(y) {
       h <- numeric(length(y))
       pos <- y >= 0
-      if (any(pos)) h[pos] <- (1 - lambda) * (lambda * y[pos] + 1)^((1 - 2 * lambda) / lambda)
-      if (any(!pos)) h[!pos] <- (lam2 - 1) * (1 - lam2 * y[!pos])^((1 - 2 * lam2) / lam2)
+      if (any(pos)) {
+        h[pos] <- if (abs(lambda) < 1e-10) exp(y[pos]) else
+          (1 - lambda) * (lambda * y[pos] + 1)^((1 - 2 * lambda) / lambda)
+      }
+      if (any(!pos)) {
+        h[!pos] <- if (abs(lam2) < 1e-10) -exp(-y[!pos]) else
+          (lam2 - 1) * (1 - lam2 * y[!pos])^((1 - 2 * lam2) / lam2)
+      }
       h
     },
     grad_log_jac = function(y) {
       g <- numeric(length(y))
       pos <- y >= 0
       if (any(pos)) g[pos] <- (1 - lambda) / (lambda * y[pos] + 1)
-      if (any(!pos)) g[!pos] <- (lambda - 1) / (1 - lam2 * y[!pos])
+      if (any(!pos)) g[!pos] <- (1 - lambda) / (1 - lam2 * y[!pos])
       g
     },
     hess_log_jac = function(y) {
       h <- numeric(length(y))
       pos <- y >= 0
       if (any(pos)) h[pos] <- -(lambda * (1 - lambda)) / (lambda * y[pos] + 1)^2
-      if (any(!pos)) h[!pos] <- ((lambda - 1) * lam2) / (1 - lam2 * y[!pos])^2
+      if (any(!pos)) h[!pos] <- ((1 - lambda) * lam2) / (1 - lam2 * y[!pos])^2
       h
     },
     decreasing = FALSE
