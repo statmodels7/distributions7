@@ -605,6 +605,8 @@ has_exact_cdf_deriv <- function(parent, order) {
 #' tg <- truncated(gamma2_distrib(), lower = 0.5, upper = 5)
 #' is.null(distributions7:::trunc_mass_derivs(tg, list(mu = 2, sigma2 = 1), 1L))
 trunc_mass_derivs <- function(distrib, theta, order) {
+  # the distribution function's derivatives stop at order four
+  if (order > 4L) return(NULL)
   if (!has_exact_cdf_deriv(distrib@parent_distrib, order)) return(NULL)
   parent <- distrib@parent_distrib
   params <- distrib@params
@@ -972,7 +974,8 @@ trunc_hess_mean <- function(distrib, theta) {
 #' # It integrates to one over the interval, which the parent's does not.
 #' integrate(function(y) distrib_pdf(tn, y, theta), -1, 2)$value
 trunc_pdf <- function(distrib, y, theta, log = FALSE, ...) {
-  Z <- trunc_constants(distrib, theta)$Z
+  parts <- trunc_route_parts(distrib, y, theta, "z")
+  Z <- if (is.null(parts)) trunc_constants(distrib, theta)$Z else parts$Z
   ld <- distrib_pdf(distrib@parent_distrib, y, theta, log = TRUE) - log(Z)
   outside <- !trunc_inside(distrib, y)
   if (any(outside)) ld[rep_len(outside, length(ld))] <- -Inf
@@ -1220,7 +1223,9 @@ trunc_rng <- function(distrib, n, theta, ...) {
 #' gp <- distrib_gradient(gaussian1_distrib(), y, theta)
 #' round(unlist(g) - unlist(gp), 8)
 trunc_gradient <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  m <- trunc_score_mean(distrib, theta)
+  parts <- trunc_route_parts(distrib, y, theta, "grad")
+  m <- if (is.null(parts)) trunc_score_mean(distrib, theta) else
+    lapply(parts$Zi, function(v) v / parts$Z)
   g <- distrib_gradient(distrib@parent_distrib, y, theta)
   stats::setNames(lapply(distrib@params, function(p) g[[p]] - m[[p]]), distrib@params)
 }
@@ -1289,8 +1294,14 @@ trunc_gradient <- function(distrib, y, theta, scale = c("parameter", "link"), ..
 #' round(unlist(H) - unlist(Hp), 8)
 trunc_hessian <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   n <- length(y)
-  m <- trunc_score_mean(distrib, theta)
-  M <- trunc_M(distrib, theta)
+  parts <- trunc_route_parts(distrib, y, theta, "hess")
+  if (is.null(parts)) {
+    m <- trunc_score_mean(distrib, theta)
+    M <- trunc_M(distrib, theta)
+  } else {
+    m <- lapply(parts$Zi, function(v) v / parts$Z)
+    M <- lapply(parts$Zij, function(v) v / parts$Z)
+  }
   h <- distrib_hessian(distrib@parent_distrib, y, theta)
   pairs <- hess_pairs(distrib@params)
 
@@ -1375,8 +1386,14 @@ trunc_expected_hessian <- function(distrib, y, theta, scale = c("parameter", "li
                                    approx = c("opg", "bartlett", "integrate", "mc"),
                                    nsim = 10000, ...) {
   n <- length(y)
-  m <- trunc_score_mean(distrib, theta)
-  ES <- trunc_score_prod_mean(distrib, theta)
+  parts <- trunc_route_parts(distrib, y, theta, "info")
+  if (is.null(parts)) {
+    m <- trunc_score_mean(distrib, theta)
+    ES <- trunc_score_prod_mean(distrib, theta)
+  } else {
+    m <- lapply(parts$Zi, function(v) v / parts$Z)
+    ES <- lapply(parts$S, function(v) v / parts$Z)
+  }
   pairs <- hess_pairs(distrib@params)
 
   # E[H_T] = -Cov_T(s_i, s_j): the parent's expected Hessian cancels exactly

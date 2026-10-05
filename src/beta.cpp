@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_beta1.h"
 using namespace Rcpp;
 
 // [[Rcpp::export]]
@@ -40,10 +41,11 @@ List beta_gradient_cpp(NumericVector y, NumericVector mu, NumericVector phi,
         
         double log_y = std::log(y[i]);
         double log_1_y = std::log(1.0 - y[i]);
-        double log_ratio = log_y - log_1_y;
         
-        grad_mu[i] = p * (log_ratio - digamma_alpha + digamma_beta);
-        grad_phi[i] = digamma_p - m * digamma_alpha - (1.0 - m) * digamma_beta + m * log_y + (1.0 - m) * log_1_y;
+        grad_mu[i] = d7::beta1_score_mu(p, log_y, log_1_y, digamma_alpha,
+                                        digamma_beta);
+        grad_phi[i] = d7::beta1_score_phi(m, log_y, log_1_y, digamma_p,
+                                          digamma_alpha, digamma_beta);
     });
     
     return List::create(Named("mu") = grad_mu, Named("phi") = grad_phi);
@@ -93,8 +95,9 @@ List beta_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi,
         
         double log_ratio = std::log(y[i] / (1.0 - y[i]));
         
-        hess_mu_mu[i] = -p * p * (trigamma_alpha + trigamma_beta);
-        hess_phi_phi[i] = trigamma_p - m * m * trigamma_alpha - (1.0 - m) * (1.0 - m) * trigamma_beta;
+        hess_mu_mu[i] = d7::beta1_hess_mu_mu(p, trigamma_alpha, trigamma_beta);
+        hess_phi_phi[i] = d7::beta1_hess_phi_phi(m, trigamma_p, trigamma_alpha,
+                                                 trigamma_beta);
         
         double term1 = log_ratio - digamma_alpha + digamma_beta;
         double term2 = p * (m * trigamma_alpha - (1.0 - m) * trigamma_beta);
@@ -141,8 +144,10 @@ List beta_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector 
             trigamma_p = R::trigamma(p);
         }
         
-        hess_mu_mu[i] = -p * p * (trigamma_alpha + trigamma_beta);
-        hess_phi_phi[i] = trigamma_p - m * m * trigamma_alpha - (1.0 - m) * (1.0 - m) * trigamma_beta;
+        hess_mu_mu[i] = d7::beta1_expected_mu_mu(p, trigamma_alpha,
+                                                 trigamma_beta);
+        hess_phi_phi[i] = d7::beta1_expected_phi_phi(m, trigamma_p,
+                                                     trigamma_alpha, trigamma_beta);
         hess_mu_phi[i] = -p * (m * trigamma_alpha - (1.0 - m) * trigamma_beta);
     });
 
@@ -177,10 +182,10 @@ List beta_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector phi, i
         double a1 = R::trigamma(al), b1 = R::trigamma(be);
         double a2 = R::psigamma(al, 2), b2 = R::psigamma(be, 2);
         double c2 = R::psigamma(p, 2);
-        o1[i] = -p * p * p * (a2 - b2);
+        o1[i] = d7::beta1_dexpected_mu_mu_mu(p, a2, b2);
         o2[i] = -2.0 * p * (a1 + b1) - p * p * (m * a2 + n * b2);
         o3[i] = -2.0 * m * a1 - m * m * p * a2 + 2.0 * n * b1 + n * n * p * b2;
-        o4[i] = c2 - m * m * m * a2 - n * n * n * b2;
+        o4[i] = d7::beta1_dexpected_phi_phi_phi(m, c2, a2, b2);
         o5[i] = -p * (a1 + b1) - p * p * (m * a2 + n * b2);
         o6[i] = -(m * a1 - n * b1) - p * (m * m * a2 - n * n * b2);
     });

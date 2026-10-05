@@ -501,8 +501,21 @@ link_scale_layout <- local({
 #' @param param The name of the parameter whose unconstrained scale the
 #'   derivatives are taken with respect to.
 #'
-#' @return A list of three functions of `(y, theta, eta)`:
-#'   `logdens`, `score` and `curvature`.
+#' The kernel also carries the expected information of the same coordinate and
+#' its derivative in that coordinate, which a filter whose score is scaled by a
+#' power of the information reads at each step. On the link scale the
+#' information is \eqn{I_p = -\mathbb{E}[\ell_{pp}]\,h'(\eta_p)^2}, with no
+#' term in \eqn{h''} because the score has mean zero, and
+#'
+#' \deqn{\frac{\partial I_p}{\partial \eta_p}
+#'   = -\frac{\partial\mathbb{E}[\ell_{pp}]}{\partial\theta_p}\,h'^3
+#'     - 2\,\mathbb{E}[\ell_{pp}]\,h'\,h''.}
+#'
+#' The two methods are looked up when first called, so a family without an
+#' expected information still yields the other three functions.
+#'
+#' @return A list of five functions of `(y, theta, eta)`:
+#'   `logdens`, `score`, `curvature`, `information` and `dinformation`.
 #'
 #' @examples
 #' d <- gaussian1_distrib()
@@ -538,6 +551,15 @@ distrib_kernel <- function(distrib, param) {
   m_h1 <- S7::method(linkfunctions7::dlinkinv, lcls)
   m_h2 <- S7::method(linkfunctions7::d2linkinv, lcls)
   key_pp <- paste0(param, "_", param)
+  key_ppp <- dexpected_key(params, ip, ip, ip)
+  m_exp <- NULL
+  m_dexp <- NULL
+  expected_methods <- function() {
+    if (is.null(m_exp)) {
+      m_exp <<- S7::method(distrib_expected_hessian, cls)
+      m_dexp <<- S7::method(distrib_dexpected_hessian, cls)
+    }
+  }
 
   # linkinv()'s own generic body applies this, and skipping it would hand
   # back a parameter sitting exactly on a bound its family rejects.
@@ -560,6 +582,20 @@ distrib_kernel <- function(distrib, param) {
       h <- m_hess(distrib, y, th, scale = "parameter")[[key_pp]]
       h1 <- m_h1(lk, eta)
       h * h1 * h1 + g * m_h2(lk, eta)
+    },
+    information = function(y, theta, eta) {
+      expected_methods()
+      E <- m_exp(distrib, y, at(theta, eta), scale = "parameter")[[key_pp]]
+      h1 <- m_h1(lk, eta)
+      -E * h1 * h1
+    },
+    dinformation = function(y, theta, eta) {
+      expected_methods()
+      th <- at(theta, eta)
+      E <- m_exp(distrib, y, th, scale = "parameter")[[key_pp]]
+      dE <- m_dexp(distrib, y, th, scale = "parameter")[[key_ppp]]
+      h1 <- m_h1(lk, eta)
+      -(dE * h1 * h1 * h1 + 2 * E * h1 * m_h2(lk, eta))
     }
   )
 }

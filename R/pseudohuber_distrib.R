@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R numerical_functions.R expected_loc_scale.R
+#' @include distrib.R generics.R numerical_functions.R expected_loc_scale.R cdf_compiled.R
 NULL
 
 #' @title Pseudo-Huber Distribution Class
@@ -159,19 +159,12 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
 #' @title Pseudo-Huber Cumulative Distribution Function
 #' @name distrib_cdf.PseudoHuberDistrib
 #' @description
-#' Computes \eqn{F(q) = P(Y \le q)} by numerical integration of the density.
-#' The family has no elementary distribution function, so there is nothing
-#' closed form to call.
-#'
-#' Two devices keep the quadrature honest. The law is symmetric about
-#' \eqn{\mu}, so a quantile above the location is **reflected**,
-#' \eqn{F(q) = 1 - F(2\mu - q)}, and only the lower tail is ever integrated,
-#' where the integrand decays away from a finite endpoint. And every quantile
-#' is one **row** of a single batched quadrature through [quad_rows()], so a
-#' vector of `q` is integrated in a single call.
-#'
-#' A row that fails to reach the requested accuracy signals an error naming the
-#' positions, instead of returning a plausible number.
+#' Computes \eqn{F(q) = P(Y \le q)} by numerical integration of the density,
+#' the family having no elementary distribution function. The integral is
+#' taken by the compiled rule of [compiled_cdf()], over the tail on the side
+#' of \eqn{q} away from \eqn{\mu}: below the location it is \eqn{F}, above
+#' it the survival function, so that neither tail is a difference of two
+#' numbers near one.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -181,17 +174,13 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
 #'   1 is recycled; a vector gives one integration per parameter setting.
 #'   `sigma` and `nu` must be strictly positive.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default,
-#'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)},
-#'   formed as \eqn{1 - F}.
+#'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
-#'   probability is returned, taken after the quadrature, so it carries the
-#'   quadrature's own accuracy rather than improving on it in the far tail.
-#'   Defaults to `FALSE`.
+#'   probability is returned, taken after the quadrature. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
-#'   `max(length(q), length(mu), length(sigma), length(nu))`, clamped to that
-#'   range.
+#'   `max(length(q), length(mu), length(sigma), length(nu))`.
 #'
 #' @seealso [distrib_quantile.PseudoHuberDistrib()] for the inverse,
 #'   [distrib_pdf.PseudoHuberDistrib()] for the integrand,
@@ -203,7 +192,7 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
 #' d <- pseudohuber_distrib()
 #' th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 #'
-#' # The quadrature, and the symmetry the method exploits.
+#' # The quadrature, and the symmetry of the law about its location.
 #' distrib_cdf(d, c(-1, 0.4, 2), th)
 #' distrib_cdf(d, 0.4 - 1.5, th) + distrib_cdf(d, 0.4 + 1.5, th)
 #'
@@ -213,36 +202,7 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
 #' # It agrees with a direct integration of the density.
 #' c(method = distrib_cdf(d, 2, th),
 #'   integral = integrate(function(v) distrib_pdf(d, v, th), -Inf, 2)$value)
-S7::method(distrib_cdf, PseudoHuberDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
-  all_params <- expand_params(c(list(.q = q), theta))
-  qv <- all_params$.q
-  th_cols <- all_params[distrib@params]
-
-  # By symmetry F(q) = 1 - F(2 mu - q): integrate only over the lower tail,
-  # where the integrand is anchored at the finite endpoint. Every quantile is
-  # one row of a single batched quadrature.
-  mu <- th_cols[[1L]]
-  left <- qv <= mu
-  up <- ifelse(left, qv, 2 * mu - qv)
-
-  integrand <- function(x, i) {
-    xv <- as.numeric(x)
-    idx <- rep(i, times = ncol(x))
-    distrib_pdf(distrib, xv, lapply(th_cols, function(v) v[idx]))
-  }
-  vals <- quad_rows(integrand, -Inf, up)
-  if (anyNA(vals)) {
-    stop(sprintf(
-      "The cdf quadrature did not reach the requested accuracy at quantile(s) %s.",
-      paste(which(is.na(vals)), collapse = ", ")
-    ), call. = FALSE)
-  }
-  res <- ifelse(left, vals, 1 - vals)
-
-  res <- pmin(pmax(res, 0), 1)
-  if (!lower.tail) res <- 1 - res
-  if (log.p) log(res) else res
-}
+S7::method(distrib_cdf, PseudoHuberDistrib) <- compiled_cdf
 
 #' @title Pseudo-Huber Quantile Function
 #' @name distrib_quantile.PseudoHuberDistrib

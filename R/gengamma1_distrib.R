@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R
+#' @include distrib.R generics.R cdf_compiled.R
 NULL
 
 #' @title Generalized Gamma Distribution Class
@@ -644,3 +644,8 @@ gengamma1_distrib <- function(link_a = log_link(), link_d = log_link(),
     link_params = list(a = link_a, d = link_d, p = link_p)
   )
 }
+
+# the distribution function's derivatives from the compiled kernels
+# (compiled_cdf())
+S7::method(distrib_grad_cdf, GenGamma1Distrib) <- compiled_grad_cdf
+S7::method(distrib_hess_cdf, GenGamma1Distrib) <- compiled_hess_cdf

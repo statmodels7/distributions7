@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R numerical_functions.R dexpected_families.R moments.R gengamma1_distrib.R
+#' @include distrib.R generics.R numerical_functions.R dexpected_families.R moments.R gengamma1_distrib.R cdf_compiled.R
 NULL
 
 #' @title Generalized Gamma Distribution Class, Mean
@@ -382,3 +382,8 @@ gengamma2_distrib <- function(link_mean = log_link(), link_d = log_link(),
     link_params = list(mean = link_mean, d = link_d, p = link_p)
   )
 }
+
+# the distribution function's derivatives from the compiled kernels
+# (compiled_cdf())
+S7::method(distrib_grad_cdf, GenGamma2Distrib) <- compiled_grad_cdf
+S7::method(distrib_hess_cdf, GenGamma2Distrib) <- compiled_hess_cdf

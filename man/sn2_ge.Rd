@@ -13,6 +13,6 @@ A single number.
 Returns the bound on \eqn{|\gamma_1|} below which
 \code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian.SkewNormal2Distrib()}} and its derivatives come
 from the series in \eqn{r = (\gamma_1/c)^{1/3}} rather than from
-quadrature. It matches \code{SN2_GE} in \code{src/skewnormal2.cpp}.
+quadrature. It matches \code{SN2_GE} in \code{src/pt_skewnormal2.h}.
 }
 \keyword{internal}

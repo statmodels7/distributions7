@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R utility_functions.R numerical_functions.R
+#' @include distrib.R generics.R utility_functions.R numerical_functions.R cdf_compiled.R
 #' @include gaussian1_distrib.R logistic_distrib.R cauchy_distrib.R laplace_distrib.R
 #' @include laplace2_distrib.R
 #' @include lognormal1_distrib.R invgauss1_distrib.R poisson_distrib.R binomial_distrib.R
@@ -1539,15 +1539,10 @@ partial_loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log
 #'
 #' @description
 #' Closed form in the location and the scale, \eqn{-f(q)} and \eqn{-z f(q)}
-#' with \eqn{z = (q-\mu)/\sigma}; the degrees of freedom are differenced. The
-#' method is [partial_loc_scale_grad_cdf()] itself, shared with the
-#' pseudo-Huber.
-#'
-#' @details
-#' The derivative of a Student t distribution function with respect to its
-#' degrees of freedom has no elementary form, which is the same obstruction the
-#' skew t meets in its own \eqn{\nu} components. One central difference of the
-#' analytic cdf covers it, and only that component pays for the evaluations.
+#' with \eqn{z = (q-\mu)/\sigma}; the component in the degrees of freedom is the integral of
+#' the density's own derivative, taken by the compiled rule. The method is
+#' [compiled_grad_cdf()] itself, shared with the other families whose
+#' distribution function has no closed derivative in a shape parameter.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\nu > 0} the
@@ -1565,7 +1560,7 @@ partial_loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log
 #' @return A named list of three numeric vectors, `mu`, `sigma` and `nu`, each
 #'   the length of `q` recycled against `theta`.
 #'
-#' @seealso [partial_loc_scale_grad_cdf()] for the shared body;
+#' @seealso [compiled_grad_cdf()] for the shared body;
 #'   [distrib_hess_cdf.StudentT1Distrib()] for the second order;
 #'   [student_t1_distrib()].
 #'
@@ -1578,24 +1573,20 @@ partial_loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log
 #' all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
 #'           -distrib_pdf(d, q, th))
 #'
-#' # The degrees of freedom are differenced; the component is small and negative
-#' # in the lower tail, heavier tails putting more mass below a low quantile.
+#' # The component in the degrees of freedom is small and negative in the
+#' # lower tail, heavier tails putting more mass below a low quantile.
 #' distrib_grad_cdf(d, q, th, log = FALSE)$nu
-S7::method(distrib_grad_cdf, StudentT1Distrib) <- partial_loc_scale_grad_cdf
+S7::method(distrib_grad_cdf, StudentT1Distrib) <- compiled_grad_cdf
 
 #' @title Pseudo-Huber Log-CDF Gradient
 #' @name distrib_grad_cdf.PseudoHuberDistrib
 #'
 #' @description
 #' Closed form in the location and the scale, \eqn{-f(q)} and \eqn{-z f(q)}
-#' with \eqn{z = (q-\mu)/\sigma}; the shape \eqn{\nu} is differenced. The
-#' method is [partial_loc_scale_grad_cdf()] itself, shared with the Student t.
-#'
-#' @details
-#' This family's distribution function is itself a quadrature, so an evaluation
-#' of it is dear and the split is worth more here than elsewhere: a gradient at
-#' 500 quantiles costs 0.08 s against 0.18 s when all three components are
-#' differenced, since the closed pair needs the density alone.
+#' with \eqn{z = (q-\mu)/\sigma}; the component in the shape \eqn{\nu} is the integral of
+#' the density's own derivative, taken by the compiled rule. The method is
+#' [compiled_grad_cdf()] itself, shared with the other families whose
+#' distribution function has no closed derivative in a shape parameter.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\nu > 0} the
@@ -1613,7 +1604,7 @@ S7::method(distrib_grad_cdf, StudentT1Distrib) <- partial_loc_scale_grad_cdf
 #' @return A named list of three numeric vectors, `mu`, `sigma` and `nu`, each
 #'   the length of `q` recycled against `theta`.
 #'
-#' @seealso [partial_loc_scale_grad_cdf()] for the shared body;
+#' @seealso [compiled_grad_cdf()] for the shared body;
 #'   [distrib_hess_cdf.PseudoHuberDistrib()] for the second order;
 #'   [pseudohuber_distrib()].
 #'
@@ -1626,7 +1617,6 @@ S7::method(distrib_grad_cdf, StudentT1Distrib) <- partial_loc_scale_grad_cdf
 #' all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
 #'           -distrib_pdf(d, q, th))
 #'
-#' # Differencing the quadrature agrees, and costs more.
-#' fd <- numerical_cdf_deriv(d, q, th, order = 1)
-#' max(abs(fd$mu / distrib_grad_cdf(d, q, th, log = FALSE)$mu - 1))
-S7::method(distrib_grad_cdf, PseudoHuberDistrib) <- partial_loc_scale_grad_cdf
+#' # The shape component, on the log scale of the lower tail.
+#' distrib_grad_cdf(d, q, th)$nu
+S7::method(distrib_grad_cdf, PseudoHuberDistrib) <- compiled_grad_cdf

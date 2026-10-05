@@ -13,7 +13,7 @@ parent_ell(parent, y, theta, max_order, params)
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{max_order}{The highest order needed, 1 to 4.}
+\item{max_order}{The highest order needed, 1 to 5.}
 
 \item{params}{The parent's parameter names, in declaration order.}
 }

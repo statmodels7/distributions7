@@ -217,7 +217,7 @@ S7::method(distrib_pdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, the
   parent <- distrib@parent_distrib
   za <- pars$mix
 
-  f0 <- distrib_pdf(parent, 0, pars$orig)
+  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
   log_res_pos <- log(1 - za) + distrib_pdf(parent, y, pars$orig, log = TRUE) - log1p(-f0)
 
   log_res <- ifelse(y == 0, rep(log(za), length.out = length(y)), log_res_pos)
@@ -496,7 +496,7 @@ S7::method(distrib_gradient, ZeroAdjustedDiscreteDistrib) <- function(distrib, y
   za <- pars$mix
   za_name <- distrib@params[distrib@n_params]
 
-  f0 <- distrib_pdf(parent, 0, pars$orig)
+  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
   score_0 <- distrib_gradient(parent, 0, pars$orig)
   correction <- f0 / (1 - f0)
 
@@ -580,7 +580,7 @@ S7::method(distrib_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y,
   za_name <- distrib@params[distrib@n_params]
   n <- length(y)
 
-  f0 <- distrib_pdf(parent, 0, pars$orig)
+  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
   grad_0 <- distrib_gradient(parent, 0, pars$orig)
   hess_0_obs <- distrib_hessian(parent, 0, pars$orig)
   h_orig <- distrib_hessian(parent, y, pars$orig)
@@ -689,7 +689,7 @@ S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(di
   za_name <- distrib@params[distrib@n_params]
   n <- length(y)
 
-  f0 <- distrib_pdf(parent, 0, pars$orig)
+  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
   grad_0 <- distrib_gradient(parent, 0, pars$orig)
   hess_0_obs <- distrib_hessian(parent, 0, pars$orig)
   h_orig_exp <- distrib_expected_hessian(parent, y, pars$orig,

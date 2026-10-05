@@ -138,7 +138,9 @@ register_dexpected(BetaBinom1Distrib, function(d, y, th, k, t)
 #' [betabinom1_distrib()] is the shapes \eqn{a = \mu/\sigma} and
 #' \eqn{b = (1-\mu)/\sigma} under another name, so its derivatives are the
 #' shapes' ones, summed exactly over the support by the compiled kernel, and
-#' carried across by [dexpected_chain()] with the map's partials written out:
+#' carried across with the map's partials written out (at order 1 by the
+#' compiled kernel `betabinom1_dexpected1_cpp`, at order 2 by
+#' [dexpected_chain()]):
 #' \eqn{a_\mu = 1/\sigma}, \eqn{a_\sigma = -\mu/\sigma^2},
 #' \eqn{a_{\mu\sigma} = -1/\sigma^2}, \eqn{a_{\sigma\sigma} = 2\mu/\sigma^3},
 #' \eqn{a_{\mu\sigma\sigma} = 2/\sigma^3},
@@ -159,6 +161,9 @@ register_dexpected(BetaBinom1Distrib, function(d, y, th, k, t)
 #'
 #' @keywords internal
 betabinom1_dexpected <- function(y, mu, sigma, size, order, threads = 1L) {
+  if (order == 1L) {
+    return(betabinom1_dexpected1_cpp(y, mu, sigma, size, threads))
+  }
   n <- length(y)
   s <- sigma; m1 <- 1 - mu
   a <- mu / s; b <- m1 / s

@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_logistic.h"
 using namespace Rcpp;
 
 // [[Rcpp::export]]
@@ -19,8 +20,8 @@ List logistic_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigm
         double res = y[i] - m;
         double tanh_z = std::tanh(0.5 * res / s);
         
-        grad_mu[i] = tanh_z / s;
-        grad_sigma[i] = (res * tanh_z - s) / (s * s);
+        grad_mu[i] = d7::logistic_score_mu(tanh_z, s);
+        grad_sigma[i] = d7::logistic_score_sigma(res, tanh_z, s);
     });
     
     return List::create(Named("mu") = grad_mu, Named("sigma") = grad_sigma);
@@ -48,8 +49,8 @@ List logistic_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma
         double tanh_z = std::tanh(z_half);
         double sech2_z = 1.0 - tanh_z * tanh_z;
         
-        hess_mu_mu[i] = -sech2_z / (2.0 * s2);
-        hess_sigma_sigma[i] = (1.0 - 4.0 * z_half * tanh_z - 2.0 * z_half * z_half * sech2_z) / s2;
+        hess_mu_mu[i] = d7::logistic_hess_mu_mu(tanh_z, s);
+        hess_sigma_sigma[i] = d7::logistic_hess_sigma_sigma(res, tanh_z, s);
         hess_mu_sigma[i] = -(tanh_z + z_half * sech2_z) / s2;
     });
     
@@ -68,11 +69,8 @@ List logistic_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVec
 
     d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
-        double s2 = s * s;
-        
-        hess_mu_mu[i] = -1.0 / (3.0 * s2);
-        // M_PI è predefinito in Rmath.h (incluso tramite Rcpp.h)
-        hess_sigma_sigma[i] = -(3.0 + M_PI * M_PI) / (9.0 * s2);
+        hess_mu_mu[i] = d7::logistic_expected_mu_mu(s);
+        hess_sigma_sigma[i] = d7::logistic_expected_sigma_sigma(s);
         hess_mu_sigma[i] = 0.0;
     });
     

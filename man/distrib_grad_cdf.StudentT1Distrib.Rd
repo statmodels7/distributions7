@@ -23,15 +23,10 @@ the length of \code{q} recycled against \code{theta}.
 }
 \description{
 Closed form in the location and the scale, \eqn{-f(q)} and \eqn{-z f(q)}
-with \eqn{z = (q-\mu)/\sigma}; the degrees of freedom are differenced. The
-method is \code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}} itself, shared with the
-pseudo-Huber.
-}
-\details{
-The derivative of a Student t distribution function with respect to its
-degrees of freedom has no elementary form, which is the same obstruction the
-skew t meets in its own \eqn{\nu} components. One central difference of the
-analytic cdf covers it, and only that component pays for the evaluations.
+with \eqn{z = (q-\mu)/\sigma}; the component in the degrees of freedom is the integral of
+the density's own derivative, taken by the compiled rule. The method is
+\code{\link[=compiled_grad_cdf]{compiled_grad_cdf()}} itself, shared with the other families whose
+distribution function has no closed derivative in a shape parameter.
 }
 \section{Notation}{
 
@@ -48,12 +43,12 @@ q <- c(-1, 0.5, 2)
 all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th))
 
-# The degrees of freedom are differenced; the component is small and negative
-# in the lower tail, heavier tails putting more mass below a low quantile.
+# The component in the degrees of freedom is small and negative in the
+# lower tail, heavier tails putting more mass below a low quantile.
 distrib_grad_cdf(d, q, th, log = FALSE)$nu
 }
 \seealso{
-\code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}} for the shared body;
+\code{\link[=compiled_grad_cdf]{compiled_grad_cdf()}} for the shared body;
 \code{\link[=distrib_hess_cdf.StudentT1Distrib]{distrib_hess_cdf.StudentT1Distrib()}} for the second order;
 \code{\link[=student_t1_distrib]{student_t1_distrib()}}.
 }

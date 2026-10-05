@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_exponential.h"
 using namespace Rcpp;
 
 // Exponential in the MEAN parametrization: f(y) = exp(-y/mu)/mu, so
@@ -23,7 +24,7 @@ List exponential_gradient_cpp(NumericVector y, NumericVector mu,
         // LOCAL to the region: a scalar hoisted out of the loop and
         // written inside it is shared once the iterations are split
         const double m = mu_is_scalar ? mu[0] : mu[i];
-        grad_mu[i] = (y[i] - m) / (m * m);
+        grad_mu[i] = d7::exponential_score_mu(y[i], m);
     });
     return List::create(Named("mu") = grad_mu);
 }
@@ -39,8 +40,7 @@ List exponential_hessian_cpp(NumericVector y, NumericVector mu,
         // LOCAL to the region: a scalar hoisted out of the loop and
         // written inside it is shared once the iterations are split
         const double m = mu_is_scalar ? mu[0] : mu[i];
-        double m2 = m * m;
-        h[i] = 1.0 / m2 - 2.0 * y[i] / (m2 * m);
+        h[i] = d7::exponential_hess_mu_mu(y[i], m);
     });
     return List::create(Named("mu_mu") = h);
 }
@@ -56,7 +56,7 @@ List exponential_expected_hessian_cpp(NumericVector y, NumericVector mu,
         // LOCAL to the region: a scalar hoisted out of the loop and
         // written inside it is shared once the iterations are split
         const double m = mu_is_scalar ? mu[0] : mu[i];
-        h[i] = -1.0 / (m * m);
+        h[i] = d7::exponential_expected_mu_mu(m);
     });
     return List::create(Named("mu_mu") = h);
 }

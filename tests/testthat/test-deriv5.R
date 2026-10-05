@@ -283,3 +283,64 @@ test_that("check_distrib emits the order-5 row only where it means something", {
                       n = 40, nsim = 1e4, verbose = FALSE)
   expect_identical(sum(grepl("deriv5", r4$check)), 0L)
 })
+
+test_that("a wrapper of an analytic parent sums its partitions at order 5", {
+  cases <- list(
+    folded = list(d = folded(student_t2_distrib()),
+                  th = list(mu = 0.5, sigma = 1.3, nu = 5), y = c(0.2, 0.9, 2.4)),
+    za = list(d = zero_adjusted(lognormal2_distrib()),
+              th = list(mean = 2, var = 1.5, za = 0.3), y = c(0, 0.7, 1.9)),
+    transf = list(d = transformation(student_t2_distrib(), exp_transform()),
+                  th = list(mu = 0.2, sigma = 0.9, nu = 5), y = c(0.5, 1.4, 3.1)),
+    fixed = list(d = fixed(student_t1_distrib(), nu = 5),
+                 th = list(mu = 0.3, sigma = 1.2), y = c(-0.8, 0.4, 1.7))
+  )
+  for (nm in names(cases)) {
+    cs <- cases[[nm]]
+    expect_true(has_exact_deriv5(cs$d), label = nm)
+    for (sc in c("parameter", "link")) {
+      got <- distrib_deriv5(cs$d, cs$y, cs$th, scale = sc)
+      ref <- ref_deriv5(cs$d, cs$y, cs$th, sc)
+      expect_lt(rel5(got, ref), 1e-6, label = sprintf("%s deriv5, %s scale", nm, sc))
+    }
+  }
+})
+
+test_that("the folded fifth derivative of an analytic parent is exact", {
+  # against R's symbolic D() on the folded log-density of a t with nu = 5
+  d <- folded(fixed(student_t1_distrib(), nu = 5))
+  th <- list(mu = 0.7, sigma = 1.2)
+  e <- quote(log((1 + ((y - mu) / sigma)^2 / 5)^(-3) +
+                   (1 + ((y + mu) / sigma)^2 / 5)^(-3)) - log(sigma))
+  P <- d@params
+  ref <- vapply(deriv_indices(P, 5), function(r) {
+    ex <- e
+    for (k in r) ex <- D(ex, P[k])
+    eval(ex, c(list(y = 0.4), th))
+  }, 0)
+  got <- unlist(distrib_deriv5(d, 0.4, th)[deriv_names(P, 5)])
+  expect_lt(max(abs(got - ref) / pmax(1, abs(ref))), 1e-12)
+})
+
+test_that("a wrapper of a parent without an analytic fifth order keeps the stencil", {
+  d <- zero_inflated(poisson_distrib())
+  th <- list(mu = 2.3, zi = 0.3)
+  expect_false(has_exact_deriv5(d))
+  expect_identical(distrib_deriv5(d, c(0, 3), th),
+                   numerical_deriv5(d, c(0, 3), th))
+})
+
+test_that("a truncated family of an analytic parent sums its partitions at order 5", {
+  # The t's cdf derivatives in nu are differenced, and a stencil on the
+  # truncated fourth order amplifies that noise to 3e-3 in the nu-nu
+  # components; with every ratio d^B Z / Z taken by quadrature the reference
+  # reads no stencil inside, and the partition sum agrees with it.
+  local_mocked_bindings(trunc_mass_derivs = function(...) NULL)
+  d <- truncated(student_t1_distrib(), lower = 0)
+  th <- list(mu = 0.4, sigma = 1.1, nu = 6)
+  y <- c(0.2, 0.9, 2.4)
+  expect_true(has_exact_deriv5(d))
+  got <- distrib_deriv5(d, y, th)
+  ref <- ref_deriv5(d, y, th)
+  expect_lt(rel5(got, ref), 1e-6)
+})

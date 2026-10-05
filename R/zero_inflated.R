@@ -635,7 +635,9 @@ S7::method(distrib_gradient, ZeroInflatedDistrib) <- function(distrib, y, theta,
   parent <- distrib@parent_distrib
   zi <- pars$mix
 
-  f0 <- distrib_pdf(parent, 0, pars$orig)
+  # f(0) as the exponential of the log-mass, the form the scalar registry
+  # reads (d7_logpdf), here and in the methods below
+  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
   l0 <- zi + (1 - zi) * f0
 
   grad_orig <- distrib_gradient(parent, y, pars$orig)
@@ -726,7 +728,7 @@ S7::method(distrib_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, 
   zi_name <- distrib@params[distrib@n_params]
   n <- length(y)
 
-  f0 <- distrib_pdf(parent, 0, pars$orig)
+  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
   l0 <- zi + (1 - zi) * f0
   w0 <- ((1 - zi) * f0) / l0
 
@@ -836,7 +838,7 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
   zi_name <- distrib@params[distrib@n_params]
   n <- length(y)
 
-  f0 <- distrib_pdf(parent, 0, pars$orig)
+  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
   l0 <- zi + (1 - zi) * f0
   w0 <- ((1 - zi) * f0) / l0
 

@@ -236,7 +236,7 @@ zi_deriv_k <- function(order) {
     zi <- theta[[distrib@n_params]]
     n <- length(y)
 
-    f0 <- distrib_pdf(parent, 0, pars)
+    f0 <- exp(distrib_pdf(parent, 0, pars, log = TRUE))
     L0 <- zi + (1 - zi) * f0
     w0 <- (1 - zi) * f0 / L0
 
@@ -286,7 +286,8 @@ distrib_deriv_component <- function(parent, y, theta, idx, params, order) {
   key <- canon_key(idx, params)
   switch(as.character(order),
     "3" = distrib_deriv3(parent, y, theta)[[key]],
-    "4" = distrib_deriv4(parent, y, theta)[[key]]
+    "4" = distrib_deriv4(parent, y, theta)[[key]],
+    "5" = distrib_deriv5(parent, y, theta)[[key]]
   )
 }
 
@@ -331,7 +332,7 @@ za_disc_deriv_k <- function(order) {
     za <- theta[[distrib@n_params]]
     n <- length(y)
 
-    f0 <- distrib_pdf(parent, 0, pars)
+    f0 <- exp(distrib_pdf(parent, 0, pars, log = TRUE))
     ell_0 <- parent_ell(parent, 0, pars, order, p_names)
 
     ratio <- memo_ratio(function(block) {

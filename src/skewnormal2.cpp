@@ -1,7 +1,18 @@
 #include <Rcpp.h>
 #include <cmath>
 #include "d7_par.h"
+#include "pt_skewnormal2.h"
+#include "pt_sqrt.h"
 using namespace Rcpp;
+using d7::SN2_C;
+using d7::SN2_B2;
+using d7::SN2_E;
+using d7::SN2_EP;
+using d7::sn2_r;
+using d7::sn2_Dq;
+using d7::sn2_zeta1;
+using d7::sn2_eser;
+using d7::sn2_spow;
 
 // The skew normal in its centered parametrization: mean mu, standard
 // deviation s, skewness g. With w = (y - mu)/s, c = (4 - pi)/2 and
@@ -21,31 +32,6 @@ using namespace Rcpp;
 // of order two or more in g diverge like g^(-2/3) at g = 0, and the series
 // returns them as such; the score is finite there.
 
-#define SN2_XC 0.4
-#define SN2_RC 0.4
-static const double SN2_C = (4.0 - M_PI) / 2.0;
-static const double SN2_B2 = 2.0 / M_PI;
-
-static inline double sn2_r(double g) {
-  if (g == 0.0) return 0.0;
-  const double a = std::cbrt(std::fabs(g) / SN2_C);
-  return g > 0.0 ? a : -a;
-}
-
-// sqrt(b^2 - (1 - b^2) r^2) = b sqrt(1 - delta^2), with
-// 1 - delta^2 = -expm1((2/3) log(|g|/g_max)): the difference reaches 1e-16
-// at the ceiling of the skewness, where this keeps its digits
-static inline double sn2_Dq(double g) {
-  const double gmax = (4.0 - M_PI) / 2.0 *
-    std::pow(std::sqrt(SN2_B2) / std::sqrt(1.0 - SN2_B2), 3.0);
-  if (g == 0.0) return std::sqrt(SN2_B2);
-  return std::sqrt(SN2_B2 * -std::expm1((2.0 / 3.0) * std::log(std::fabs(g) / gmax)));
-}
-
-// phi(x)/Phi(x) on the log scale, finite far below where both underflow
-static inline double sn2_zeta1(double x) {
-  return std::exp(R::dnorm4(x, 0.0, 1.0, 1) - R::pnorm5(x, 0.0, 1.0, 1, 1));
-}
 // F_n(w) = sum_m SN2_FN[n][m] w^m, n = 0..60
 static const double SN2_FN[61][63] = {
   {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
@@ -111,7 +97,7 @@ static const double SN2_FN[61][63] = {
   {2.7785272605131308e-05, -9.325545349014173e-64, -0.0007127702009763897, -8.475033194524206e-64, 0.0027047981782023257, -3.2061258368738614e-65, -0.0033507636496826, 3.9113188916716615e-64, 0.0014263416931812089, -9.479190123000555e-65, 7.625916538519873e-05, -4.439132169780745e-65, -0.00016902697873275358, 1.0781179495072956e-65, 2.7112421158860557e-06, 3.707706326203923e-66, 1.24395592832219e-05, -5.2640455155601773e-67, 4.285432207417605e-08, -2.223286211277597e-67, -6.287995822219488e-07, 7.377772293028289e-69, -3.584956636436871e-08, 8.531565537070189e-69, 2.13139534390251e-08, 3.940821483154881e-70, 2.617705540076226e-09, -1.7548971426854913e-70, -4.2320354499922314e-10, -1.9524375823517696e-71, -8.77692753765181e-11, 9.390098278701688e-73, 2.4283984042089174e-12, 2.7891573868478536e-73, 1.382035792670409e-12, 2.6198435815905808e-74, 7.598234218383966e-14, 8.801621369082283e-76, -2.8446962328885114e-15, -3.273500723234335e-76, -1.2761065277800969e-15, -5.09542275186372e-77, -2.0803093130683213e-16, -1.3874287861894106e-78, -4.62866211217263e-18, 2.2705093489489527e-79, 2.1865278342381788e-18, 2.1644464401525768e-80, 2.0007052312360108e-19, 7.610867100045228e-82, -1.7605097496893988e-22, 1.1097975356463831e-83, -8.31671601456922e-22, 4.226406761993134e-86, -4.507106109495597e-23, 0.0, -8.968937851449257e-25, 0.0, -2.614514510270905e-27, 0.0, 8.290259213922011e-29, 0.0, 0.0},
 };
 // the expected information near g = 0: E_ij = s^-p sum_n e_n r^n, n = 0..36
-static const double SN2_E[6][37] = {
+const double d7::SN2_E[6][37] = {
   {-1.0, 0.0, 0.0, 0.0, 4.861730685829017e-62, 0.0, -0.09210789654637659, 5.099119879473012e-63, -0.013365653033732793, -4.199414835562271e-63, 0.06520116047699949, 7.186408042426932e-63, -0.058294890618599236, -7.719197577895411e-63, -0.10766224128023372, 5.504902791513162e-63, 0.2807301075218861, -3.7458445042104696e-64, 0.03697858476861648, -9.280809623085609e-64, -1.440602294227654, -1.1716476239997153e-62, 2.253400476771234, 3.507796667482027e-62, 6.395622269205, -8.715129589547056e-63, -33.89103883000437, -1.9002413004921813e-61, 11.640344963720489, 4.0490240986201754e-61, 391.5393331984101, 9.236120945385606e-61, -1249.5603084177467, -6.536387340580265e-60, -2748.089840327975, 4.7497272068209817e-60, 32164.973539687275},
   {-2.0, 0.0, 0.0, 0.0, 0.28318530717958645, 0.0, -0.46053948273188294, -3.3671283226464246e-62, -0.08766950833114437, 1.7524070274799709e-62, 0.6426613448254385, 6.328139282789434e-63, -0.5068974932600451, -1.7427861011093587e-62, -1.3244688541901162, -4.107657875195037e-63, 3.695463415670373, 5.879012628283282e-62, 0.7904308141145241, -6.989710734255054e-62, -24.139375065550066, -1.2554188816201308e-61, 41.25005085611763, 5.188230242986429e-61, 129.68266271243633, -5.5164879891749475e-62, -750.6757958090394, -3.907492497338614e-60, 302.6398057465488, 8.75481309801881e-60, 10081.979016826546, 2.2094271805872673e-59, -35153.73842944256, -1.6631681022841947e-58, -78836.65698009547, 1.3021316909694515e-58, 1018538.5505118083},
   {-0.16666666666666666, 8.22672468402429e-62, -0.032246367900843446, -4.182949298925884e-62, 0.25956286680523927, 2.661772693469987e-62, -0.3298561470789122, 9.934803042209098e-63, -0.7018394070166593, -1.5564029901372201e-62, 2.364608445171229, 2.708174927976753e-63, 0.17237574537847317, -2.5711078116763195e-62, -16.080645064984488, 1.9929796859574125e-61, 29.444333012795656, -4.970231514216836e-61, 88.06924644678925, 3.095856488847944e-61, -527.0410944230673, 1.6056605135466314e-60, 214.0839119742406, -3.6166482789832926e-60, 7115.061477036166, -1.0014755729719534e-59, -24507.572259030843, 6.576685678522453e-59, -57260.26686441783, -4.287620928173265e-59, 713449.4312956741, -8.28890542978197e-58, -1178846.7474884896, 3.09775408053731e-57, -14446227.558857417, 5.975169117969308e-57, 91932808.47646183},
@@ -119,7 +105,7 @@ static const double SN2_E[6][37] = {
   {1.166815364598964e-61, 0.0, 2.3032449124114968e-61, 0.0, 0.04719755119659775, -5.575169136047872e-62, -0.09261092353235863, 6.616442159873611e-62, -0.06237455289330274, -6.264999841762863e-62, 0.29123850994665545, 5.551437337040813e-62, -0.1529587080736895, -5.489944438700123e-62, -1.053678435273995, 6.864533023647829e-62, 2.403953498465044, -9.030509845325024e-62, 2.5910341476599723, 8.492701671925362e-62, -23.51788954285456, -5.308318578136352e-64, 26.292578987274382, -1.089632807742694e-61, 192.40946784223104, -2.0173778454454698e-61, -819.5579495690534, 1.6495339595409277e-60, -537.2778498728829, -2.1123836848563618e-60, 15183.124295008687, -1.2156713856345397e-59, -37903.02480694172, 5.576412450826435e-59, -194452.9800721132, 2.5476013039962645e-59, 1595420.5869734113},
   {0.0, -7.778769097326427e-62, 0.0, 0.2146018366025517, -9.756545988083775e-62, 0.039233572804876535, 7.317409491062832e-62, -0.396418532257222, -4.578480871235051e-62, 0.39968343893028374, 3.99548886867011e-62, 0.947328168589277, -5.944920991737752e-62, -2.9464795176832705, 9.301911383934182e-62, -0.412298144017977, -9.791989835390637e-62, 19.674429358633336, 1.6413180431558023e-62, -34.87774709582741, 1.1879882320496532e-61, -106.7963494217092, 4.982815208398606e-62, 629.0100934362621, -1.1830790650730406e-60, -254.80607380407898, 2.2573823624942318e-60, -8469.604119404306, 5.520616156129832e-60, 29353.19927041868, -3.616012224482793e-59, 67201.0796239909, 2.0380871402928384e-59, -852478.08920601, 4.687354172973355e-58, 1448341.8380803082, -1.7029288781642772e-57},
 };
-static const int SN2_EP[6] = {2, 2, 0, 2, 1, 1};
+const int d7::SN2_EP[6] = {2, 2, 0, 2, 1, 1};
 
 // G_ak = d^a_w d^k_g F from the series, for a <= amax, 1 <= k <= kmax:
 // G_ak = sum_n prod_(i<k) (n - 3i)/(3c) r^(n - 3k) F_n^(a)(w); GS is
@@ -147,27 +133,35 @@ static void sn2_series(double w, double r, int amax, int kmax, double* GS) {
   }
 }
 
-#define SN2_GE 0.001
-
-// sum_n e_n prod_(i<k) (n - 3i)/(3c) r^(n - 3k): the k-th derivative in g
-static double sn2_eser(const double* e, double r, int k) {
+// G_ak alone, the same sum in the same order as sn2_series() forms it at any
+// amax >= a and kmax >= k, so the two agree to the last bit
+double d7::sn2_G_series(int a, int k, double w, double r) {
   double out = 0.0;
-  for (int nn = 0; nn <= 36; nn++) {
-    if (e[nn] == 0.0) continue;
+  double der[8];
+  for (int nn = 3; nn <= 60; nn++) {
+    for (int b = 0; b <= a; b++) der[b] = 0.0;
+    for (int m = nn + 2; m >= 0; m--) {
+      for (int b = a; b >= 1; b--) der[b] = der[b] * w + der[b - 1];
+      der[0] = der[0] * w + SN2_FN[nn][m];
+    }
+    double fa = 1.0;
+    for (int b = 1; b <= a; b++) { fa *= b; der[b] *= fa; }
     double fac = 1.0;
-    for (int i = 0; i < k; i++) fac *= (nn - 3.0 * i) / (3.0 * SN2_C);
-    if (fac == 0.0) continue;
-    out += e[nn] * fac * std::pow(r, nn - 3 * k);
+    bool zero = false;
+    for (int j = 1; j <= k; j++) {
+      fac *= (nn - 3.0 * (j - 1)) / (3.0 * SN2_C);
+      if (fac == 0.0) { zero = true; break; }
+    }
+    if (zero) continue;
+    const double rp = std::pow(r, nn - 3 * k);
+    out += fac * rp * der[a];
   }
   return out;
 }
 
-// d^j/ds^j s^-p = (-1)^j p (p+1) ... (p+j-1) s^(-p-j)
-static double sn2_spow(double s, int p, int j) {
-  double c = 1.0;
-  for (int i = 0; i < j; i++) c *= -(p + i);
-  return c * std::pow(s, -p - j);
-}
+// SN2_GE, for the test that holds it equal to sn2_ge()
+// [[Rcpp::export]]
+double sn2_ge_cpp() { return SN2_GE; }
 
 // The expected information for |g| < SN2_GE, from its series.
 // [[Rcpp::export]]
@@ -226,38 +220,26 @@ List skewnormal2_gradient_cpp(NumericVector y, NumericVector mu, NumericVector s
   NumericVector o_mu(n);
   NumericVector o_sigma(n);
   NumericVector o_gamma1(n);
+  const bool g_scalar = n_g == 1;
+  const d7::Sn2ShapeGrad P0 = d7::sn2_shape_grad(n_g > 0 ? gamma1[0] : 0.0);
   d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
     const double m = mu[i % n_mu], s = sigma[i % n_s], gv = gamma1[i % n_g];
-    const double r = sn2_r(gv);
+    const d7::Sn2ShapeGrad P = g_scalar ? P0 : d7::sn2_shape_grad(gv);
+    const double r = P.r;
     const double w = (y[i] - m) / s;
-    const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double Dq = P.Dq;
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
     double G1_0 = 0.0;
     double G0_1 = 0.0;
-    if (std::fabs(X) < SN2_XC && std::fabs(r) < SN2_RC) {
-      double GS[1][2];
-      sn2_series(w, r, 0, 1, &GS[0][0]);
-      G0_1 = GS[0][1];
-      const double e0 = std::pow(r, 2) + 1;
-      G1_0 = -(r + w)/e0 + Z1*r/(Dq*std::sqrt(e0));
-    } else {
-      const double f0 = r + w;
-      const double f1 = std::pow(r, 2);
-      const double f2 = f1 + 1;
-      const double f3 = 1.0/f2;
-      const double f4 = f0*f3;
-      const double f5 = 1.0/Dq;
-      const double f6 = std::pow(f2, -1.0/2.0);
-      G1_0 = Z1*f5*f6*r - f4;
-      G0_1 = -1.0/3.0*(Z1*f5*f6*(f1*f4 - 2*r - w + f0*f1*(-1 + M_2_PI)/std::pow(Dq, 2)) - std::pow(f0, 2)*r/std::pow(f2, 2) + f3*r + f4)/(f1*(2 - 1.0/2.0*M_PI));
-    }
-    const double u0 = 1.0/s;
-    o_mu[i] = -G1_0*u0;
-    o_sigma[i] = -u0*(G1_0*w + 1);
-    o_gamma1[i] = G0_1;
+    G1_0 = d7::sn2_grad_G1_0(w, X, Z1, P);
+    const double gs01 = d7::sn2_series_region(X, r) ? d7::sn2_G_series(0, 1, w, r) : 0.0;
+    G0_1 = d7::sn2_G0_1(w, X, Z1, P, gs01);
+    o_mu[i] = d7::skewnormal2_score_mu(G1_0, s);
+    o_sigma[i] = d7::skewnormal2_score_sigma(G1_0, w, s);
+    o_gamma1[i] = d7::skewnormal2_score_gamma1(G0_1);
   });
   return List::create(Named("mu") = o_mu, Named("sigma") = o_sigma, Named("gamma1") = o_gamma1);
 }
@@ -273,12 +255,15 @@ List skewnormal2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector si
   NumericVector o_mu_sigma(n);
   NumericVector o_mu_gamma1(n);
   NumericVector o_sigma_gamma1(n);
+  const bool g_scalar = n_g == 1;
+  const d7::Sn2ShapeHess P0 = d7::sn2_shape_hess(n_g > 0 ? gamma1[0] : 0.0);
   d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
     const double m = mu[i % n_mu], s = sigma[i % n_s], gv = gamma1[i % n_g];
-    const double r = sn2_r(gv);
+    const d7::Sn2ShapeHess P = g_scalar ? P0 : d7::sn2_shape_hess(gv);
+    const double r = P.r;
     const double w = (y[i] - m) / s;
-    const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double Dq = P.Dq;
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -286,55 +271,17 @@ List skewnormal2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector si
     double G2_0 = 0.0;
     double G1_1 = 0.0;
     double G0_2 = 0.0;
-    if (std::fabs(X) < SN2_XC && std::fabs(r) < SN2_RC) {
-      double GS[2][3];
-      sn2_series(w, r, 1, 2, &GS[0][0]);
-      G1_1 = GS[1][1];
-      G0_2 = GS[0][2];
-      const double e0 = std::pow(r, 2);
-      const double e1 = e0 + 1;
-      const double e2 = 1.0/e1;
-      G1_0 = -e2*(r + w) + Z1*r/(Dq*std::sqrt(e1));
-      G2_0 = -e2*(1 + Z1*e0*(X + Z1)/std::pow(Dq, 2));
-    } else {
-      const double f0 = r + w;
-      const double f1 = std::pow(r, 2);
-      const double f2 = f1 + 1;
-      const double f3 = 1.0/f2;
-      const double f4 = f0*f3;
-      const double f5 = 1.0/Dq;
-      const double f6 = std::pow(f2, -1.0/2.0);
-      const double f7 = std::pow(Dq, -2);
-      const double f8 = f1*f7;
-      const double f9 = X + Z1;
-      const double f10 = Z1*f9;
-      const double f11 = 1.0/r;
-      const double f12 = 1.0/(4 - M_PI);
-      const double f13 = 1 - 2/M_PI;
-      const double f14 = f0*f13*f8;
-      const double f15 = 2*r;
-      const double f16 = -f0*f1*f3 + f15 + w;
-      const double f17 = std::pow(f2, -2);
-      const double f18 = f0*f17;
-      const double f19 = f1*f3;
-      const double f20 = -f13;
-      const double f21 = f20*f8;
-      const double f22 = Z1*f6;
-      const double f23 = f22*f5;
-      const double f24 = std::pow(r, 3);
-      const double f25 = f0*f21 + f1*f4 - f15 - w;
-      const double f26 = std::pow(f0, 2);
-      const double f27 = f20*f7;
-      G1_0 = Z1*f5*f6*r - f4;
-      G2_0 = -f3*(f10*f8 + 1);
-      G1_1 = (2.0/3.0)*f11*f12*(Z1*f3*f7*f9*(-f14 - f16) - f11*(-f15*f18 + f23*(f19 + f21 - 1) + f3));
-      G0_2 = -2.0/9.0*f12*(f10*f11*std::pow(f25, 2)*f3*f7 - f11*(4*f0*f17*r + 2*f1*f17 - 4*f1*f26/std::pow(f2, 3) + f17*f26 - f23*(f0*f15*f27 - 3*f18*f24 + 2*f19 + f21 - f24*f27*f4 + 3*f4*r - 2) - 2*f3) + 2*(f17*f26*r - f23*f25 - f3*r - f4)/f1 + f13*f22*(-3*f14 - f16)/std::pow(Dq, 3))/(f24*(2 - 1.0/2.0*M_PI));
-    }
+    double GS[2][3] = {{0.0}};
+    if (d7::sn2_series_region(X, r)) sn2_series(w, r, 1, 2, &GS[0][0]);
+    G1_1 = d7::sn2_hess_G1_1(w, X, Z1, P, GS[1][1]);
+    G1_0 = d7::sn2_G1_0(w, X, Z1, P);
+    G2_0 = d7::sn2_G2_0(w, X, Z1, P);
+    G0_2 = d7::sn2_G0_2(w, X, Z1, P, GS[0][2]);
     const double u0 = std::pow(s, -2);
     const double u1 = G1_1/s;
-    o_mu_mu[i] = G2_0*u0;
-    o_sigma_sigma[i] = u0*(2*G1_0*w + G2_0*std::pow(w, 2) + 1);
-    o_gamma1_gamma1[i] = G0_2;
+    o_mu_mu[i] = d7::skewnormal2_hess_mu_mu(G2_0, s);
+    o_sigma_sigma[i] = d7::skewnormal2_hess_sigma_sigma(G1_0, G2_0, w, s);
+    o_gamma1_gamma1[i] = d7::skewnormal2_hess_gamma1_gamma1(G0_2);
     o_mu_sigma[i] = u0*(G1_0 + G2_0*w);
     o_mu_gamma1[i] = -u1;
     o_sigma_gamma1[i] = -u1*w;
@@ -357,12 +304,15 @@ List skewnormal2_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sig
   NumericVector o_sigma_sigma_gamma1(n);
   NumericVector o_sigma_gamma1_gamma1(n);
   NumericVector o_gamma1_gamma1_gamma1(n);
+  const bool g_scalar = n_g == 1;
+  const d7::Sn2ShapeD3 P0 = d7::sn2_shape_d3(n_g > 0 ? gamma1[0] : 0.0);
   d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
     const double m = mu[i % n_mu], s = sigma[i % n_s], gv = gamma1[i % n_g];
-    const double r = sn2_r(gv);
+    const d7::Sn2ShapeD3 P = g_scalar ? P0 : d7::sn2_shape_d3(gv);
+    const double r = P.r;
     const double w = (y[i] - m) / s;
-    const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double Dq = P.Dq;
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -373,119 +323,30 @@ List skewnormal2_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sig
     double G2_1 = 0.0;
     double G1_2 = 0.0;
     double G0_3 = 0.0;
-    if (std::fabs(X) < SN2_XC && std::fabs(r) < SN2_RC) {
-      double GS[3][4];
-      sn2_series(w, r, 2, 3, &GS[0][0]);
-      G1_1 = GS[1][1];
-      G2_1 = GS[2][1];
-      G1_2 = GS[1][2];
-      G0_3 = GS[0][3];
-      const double e0 = std::pow(r, 2);
-      const double e1 = e0 + 1;
-      const double e2 = 1.0/e1;
-      G1_0 = -e2*(r + w) + Z1*r/(Dq*std::sqrt(e1));
-      G2_0 = -e2*(1 + Z1*e0*(X + Z1)/std::pow(Dq, 2));
-      G3_0 = Z1*std::pow(r, 3)*(std::pow(X, 2) + 3*X*Z1 + 2*std::pow(Z1, 2) - 1)/(std::pow(Dq, 3)*std::pow(e1, 3.0/2.0));
-    } else {
-      const double f0 = r + w;
-      const double f1 = std::pow(r, 2);
-      const double f2 = f1 + 1;
-      const double f3 = 1.0/f2;
-      const double f4 = f0*f3;
-      const double f5 = 1.0/Dq;
-      const double f6 = std::pow(f2, -1.0/2.0);
-      const double f7 = std::pow(Dq, -2);
-      const double f8 = f1*f7;
-      const double f9 = X + Z1;
-      const double f10 = Z1*f9;
-      const double f11 = std::pow(r, 3);
-      const double f12 = std::pow(Dq, -3);
-      const double f13 = Z1*f12;
-      const double f14 = f13*(std::pow(X, 2) + 3*X*Z1 + 2*std::pow(Z1, 2) - 1)/std::pow(f2, 3.0/2.0);
-      const double f15 = 1.0/r;
-      const double f16 = 1 - 2/M_PI;
-      const double f17 = f16*f8;
-      const double f18 = f0*f17;
-      const double f19 = 2*r;
-      const double f20 = -f0*f1*f3 + f19 + w;
-      const double f21 = -f18 - f20;
-      const double f22 = std::pow(f2, -2);
-      const double f23 = f0*f22;
-      const double f24 = f1*f3;
-      const double f25 = -f16;
-      const double f26 = f25*f8;
-      const double f27 = f24 + f26 - 1;
-      const double f28 = Z1*f6;
-      const double f29 = f28*f5;
-      const double f30 = -f19*f23 + f27*f29 + f3;
-      const double f31 = 4 - M_PI;
-      const double f32 = (2.0/3.0)/f31;
-      const double f33 = 2*f22;
-      const double f34 = -f1*f3 + 1;
-      const double f35 = 2*f3;
-      const double f36 = f10*f7;
-      const double f37 = f35*f36;
-      const double f38 = f15*f37;
-      const double f39 = 1.0/f1;
-      const double f40 = std::pow(f31, -2);
-      const double f41 = f0*f26;
-      const double f42 = f1*f4 - f19 - w;
-      const double f43 = f41 + f42;
-      const double f44 = 2*f39;
-      const double f45 = -3*f18 - f20;
-      const double f46 = f16*f7;
-      const double f47 = f45*f46;
-      const double f48 = 3*f4;
-      const double f49 = 3*f22;
-      const double f50 = f0*f49;
-      const double f51 = f11*f50;
-      const double f52 = f25*f7;
-      const double f53 = f0*f52;
-      const double f54 = f11*f52;
-      const double f55 = f19*f53 + 2*f24 + f26 - f4*f54 + f48*r - f51 - 2;
-      const double f56 = f15*f55;
-      const double f57 = -f43*f44 + f47 + f56;
-      const double f58 = f3*f36;
-      const double f59 = 3*f17;
-      const double f60 = f12*f16*f28;
-      const double f61 = std::pow(f2, -3);
-      const double f62 = 8*f61;
-      const double f63 = f0*f1;
-      const double f64 = 2*f46;
-      const double f65 = std::pow(r, 4);
-      const double f66 = f15*f58;
-      const double f67 = f6*(3*f0*f11*f16*f3*f7 + 3*f0*f3*r - 6*f0*f46*r + 2*f1*f3 - f51 - f59 - 2);
-      const double f68 = f13*f16;
-      const double f69 = f45*f60;
-      const double f70 = std::pow(f43, 2);
-      const double f71 = f3*r;
-      const double f72 = std::pow(f0, 2);
-      const double f73 = f22*f72*r - f29*f43 - f4 - f71;
-      const double f74 = f61*f72;
-      const double f75 = 4*f0*f22*r + 2*f1*f22 - 4*f1*f74 + f22*f72 - f29*f55 - f35;
-      G1_0 = Z1*f5*f6*r - f4;
-      G2_0 = -f3*(f10*f8 + 1);
-      G3_0 = f11*f14;
-      G1_1 = f15*f32*(Z1*f21*f3*f7*f9 - f15*f30);
-      G2_1 = f32*(-f14*f21 + f15*f33 + f38*(-f17 - f34));
-      G1_2 = (4.0/9.0)*f39*f40*(f14*f15*std::pow(f21, 2) - f15*(-f15*(f0*f33 + 4*f22*r + f29*r*(f1*f49 - f24*f46 - 3*f3 + f64) - f62*f63) + f27*f38*f43 - f30*f44 + f60*(-f34 - f59)) + f57*f58);
-      G0_3 = -4.0/27.0*f40*(f14*f39*std::pow(f43, 3) - f15*(f15*f69 + f15*(6*f0*f22 - f11*f62 + 24*f11*f72/std::pow(f2, 4) + 12*f22*r - f29*(15*f0*f61*f65 - 18*f1*f23 - 9*f11*f22 - 5*f26*f4 - f35*f54 + f48 + f50*f52*f65 + 4*f52*r + 2*f53 + 9*f71) - 24*f61*f63 - 12*f74*r) + f37*f39*f70 - f37*f43*f56 - 4*f39*f75 - f67*f68 + 6*f73/f11) + f43*f57*f66 + f44*(f15*f75 - f44*f73 - f66*f70 - f69) + f68*(f15*f35*f43*f45*f5*f9 + f15*f67 - f44*f45*f6 + f47*f6 + f6*f64*(6*f41 + f42)))/(f65*(2 - 1.0/2.0*M_PI));
-    }
+    double GS[3][4] = {{0.0}};
+    if (d7::sn2_series_region(X, r)) sn2_series(w, r, 2, 3, &GS[0][0]);
+    G1_1 = d7::sn2_G1_1(w, X, Z1, P, GS[1][1]);
+    G2_1 = d7::sn2_G2_1(w, X, Z1, P, GS[2][1]);
+    G1_2 = d7::sn2_G1_2(w, X, Z1, P, GS[1][2]);
+    G1_0 = d7::sn2_G1_0(w, X, Z1, P);
+    G2_0 = d7::sn2_G2_0(w, X, Z1, P);
+    G3_0 = d7::sn2_G3_0(w, X, Z1, P);
+    G0_3 = d7::sn2_G0_3(w, X, Z1, P, GS[0][3]);
     const double u0 = std::pow(s, -3);
     const double u1 = std::pow(s, -2);
     const double u2 = std::pow(w, 2);
     const double u3 = G2_1*w;
     const double u4 = G1_2/s;
-    o_mu_mu_mu[i] = -G3_0*u0;
+    o_mu_mu_mu[i] = d7::skewnormal2_d3_mu_mu_mu(G3_0, s);
     o_mu_mu_sigma[i] = -u0*(2*G2_0 + G3_0*w);
     o_mu_mu_gamma1[i] = G2_1*u1;
     o_mu_sigma_sigma[i] = -u0*(2*G1_0 + 4*G2_0*w + G3_0*u2);
     o_mu_sigma_gamma1[i] = u1*(G1_1 + u3);
     o_mu_gamma1_gamma1[i] = -u4;
-    o_sigma_sigma_sigma[i] = -u0*(6*G1_0*w + 6*G2_0*u2 + G3_0*std::pow(w, 3) + 2);
+    o_sigma_sigma_sigma[i] = d7::skewnormal2_d3_sigma_sigma_sigma(G1_0, G2_0, G3_0, w, s);
     o_sigma_sigma_gamma1[i] = u1*w*(2*G1_1 + u3);
     o_sigma_gamma1_gamma1[i] = -u4*w;
-    o_gamma1_gamma1_gamma1[i] = G0_3;
+    o_gamma1_gamma1_gamma1[i] = d7::skewnormal2_d3_gamma1_gamma1_gamma1(G0_3);
   });
   return List::create(Named("mu_mu_mu") = o_mu_mu_mu, Named("mu_mu_sigma") = o_mu_mu_sigma, Named("mu_mu_gamma1") = o_mu_mu_gamma1, Named("mu_sigma_sigma") = o_mu_sigma_sigma, Named("mu_sigma_gamma1") = o_mu_sigma_gamma1, Named("mu_gamma1_gamma1") = o_mu_gamma1_gamma1, Named("sigma_sigma_sigma") = o_sigma_sigma_sigma, Named("sigma_sigma_gamma1") = o_sigma_sigma_gamma1, Named("sigma_gamma1_gamma1") = o_sigma_gamma1_gamma1, Named("gamma1_gamma1_gamma1") = o_gamma1_gamma1_gamma1);
 }
@@ -515,7 +376,7 @@ List skewnormal2_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sig
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -546,7 +407,7 @@ List skewnormal2_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sig
       const double e3 = std::pow(X, 2);
       const double e4 = 3*X;
       const double e5 = std::pow(Z1, 2);
-      G1_0 = -e2*(r + w) + Z1*r/(Dq*std::sqrt(e1));
+      G1_0 = -e2*(r + w) + Z1*r/(Dq*d7::sqrt_cr(e1));
       G2_0 = -e2*(1 + Z1*e0*(X + Z1)/std::pow(Dq, 2));
       G3_0 = Z1*std::pow(r, 3)*(Z1*e4 + e3 + 2*e5 - 1)/(std::pow(Dq, 3)*std::pow(e1, 3.0/2.0));
       G4_0 = -Z1*std::pow(r, 4)*(std::pow(X, 3) + 12*X*e5 + 6*std::pow(Z1, 3) + 7*Z1*e3 - 4*Z1 - e4)/(std::pow(Dq, 4)*std::pow(e1, 2));
@@ -792,7 +653,7 @@ List skewnormal2_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sig
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -834,7 +695,7 @@ List skewnormal2_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sig
       const double e5 = std::pow(Z1, 2);
       const double e6 = std::pow(X, 3);
       const double e7 = std::pow(Z1, 3);
-      G1_0 = -e2*(r + w) + Z1*r/(Dq*std::sqrt(e1));
+      G1_0 = -e2*(r + w) + Z1*r/(Dq*d7::sqrt_cr(e1));
       G2_0 = -e2*(1 + Z1*e0*(X + Z1)/std::pow(Dq, 2));
       G3_0 = Z1*std::pow(r, 3)*(Z1*e4 + e3 + 2*e5 - 1)/(std::pow(Dq, 3)*std::pow(e1, 3.0/2.0));
       G4_0 = -Z1*std::pow(r, 4)*(12*X*e5 + 7*Z1*e3 - 4*Z1 - e4 + e6 + 6*e7)/(std::pow(Dq, 4)*std::pow(e1, 2));
@@ -1285,7 +1146,7 @@ List skewnormal2_cross_y_cpp(NumericVector y, NumericVector mu, NumericVector si
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -1299,7 +1160,7 @@ List skewnormal2_cross_y_cpp(NumericVector y, NumericVector mu, NumericVector si
       const double e0 = std::pow(r, 2);
       const double e1 = e0 + 1;
       const double e2 = 1.0/e1;
-      G1_0 = -e2*(r + w) + Z1*r/(Dq*std::sqrt(e1));
+      G1_0 = -e2*(r + w) + Z1*r/(Dq*d7::sqrt_cr(e1));
       G2_0 = -e2*(1 + Z1*e0*(X + Z1)/std::pow(Dq, 2));
     } else {
       const double f0 = r + w;
@@ -1339,7 +1200,7 @@ List skewnormal2_cross2_y_cpp(NumericVector y, NumericVector mu, NumericVector s
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -1393,7 +1254,7 @@ List skewnormal2_grad_y_hess_cpp(NumericVector y, NumericVector mu, NumericVecto
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -1412,7 +1273,7 @@ List skewnormal2_grad_y_hess_cpp(NumericVector y, NumericVector mu, NumericVecto
       const double e0 = std::pow(r, 2);
       const double e1 = e0 + 1;
       const double e2 = 1.0/e1;
-      G1_0 = -e2*(r + w) + Z1*r/(Dq*std::sqrt(e1));
+      G1_0 = -e2*(r + w) + Z1*r/(Dq*d7::sqrt_cr(e1));
       G2_0 = -e2*(1 + Z1*e0*(X + Z1)/std::pow(Dq, 2));
       G3_0 = Z1*std::pow(r, 3)*(std::pow(X, 2) + 3*X*Z1 + 2*std::pow(Z1, 2) - 1)/(std::pow(Dq, 3)*std::pow(e1, 3.0/2.0));
     } else {
@@ -1493,7 +1354,7 @@ List skewnormal2_hess_y_hess_cpp(NumericVector y, NumericVector mu, NumericVecto
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -1594,13 +1455,13 @@ List skewnormal2_dy1_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
     double G1_0 = 0.0;
     const double e0 = std::pow(r, 2) + 1;
-    G1_0 = -(r + w)/e0 + Z1*r/(Dq*std::sqrt(e0));
+    G1_0 = -(r + w)/e0 + Z1*r/(Dq*d7::sqrt_cr(e0));
     o_y[i] = G1_0/s;
   });
   return List::create(Named("y") = o_y);
@@ -1617,7 +1478,7 @@ List skewnormal2_dy2_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -1640,7 +1501,7 @@ List skewnormal2_dy3_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;
@@ -1662,7 +1523,7 @@ List skewnormal2_dy4_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
     const double r = sn2_r(gv);
     const double w = (y[i] - m) / s;
     const double Dq = sn2_Dq(gv);
-    const double X = r / Dq * (w + r) / std::sqrt(1.0 + r * r);
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
     (void) Dq;
     const double Z1 = sn2_zeta1(X);
     (void) Z1; (void) s;

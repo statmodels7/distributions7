@@ -17,6 +17,10 @@ transformation to the link scale is applied in the generic's body, so this
 method always returns the parameter scale.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer. Accepted for the signature
+the generic shares; the kernel runs on the calling thread, since the
+t distribution function it evaluates may signal a warning.}
 }
 \value{
 A named list of four numeric vectors, \code{mu}, \code{sigma}, \code{alpha} and

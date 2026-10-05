@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_gaussian1.h"
 using namespace Rcpp;
 
 // Gaussian in the mean and the STANDARD DEVIATION. Every component is written
@@ -36,8 +37,8 @@ List gaussian_gradient_cpp(NumericVector y, NumericVector mu,
         double inv = 1.0 / s;
         double z = (yp[i] - m) / s;
 
-        gm[i] = z * inv;
-        gs[i] = (z * z - 1.0) * inv;
+        gm[i] = d7::gaussian1_score_mu(z, inv);
+        gs[i] = d7::gaussian1_score_sigma(z, inv);
     });
 
     return List::create(
@@ -69,8 +70,8 @@ List gaussian_hessian_cpp(NumericVector y, NumericVector mu,
         double inv2 = inv * inv;
         double z = (yp[i] - m) / s;
 
-        hmm[i] = -inv2;
-        hss[i] = (1.0 - 3.0 * z * z) * inv2;
+        hmm[i] = d7::gaussian1_hess_mu_mu(inv);
+        hss[i] = d7::gaussian1_hess_sigma_sigma(z, inv);
         hms[i] = -2.0 * z * inv2;
     });
     return List::create(
@@ -97,10 +98,9 @@ List gaussian_expected_hessian_cpp(NumericVector y, NumericVector mu,
     d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
         double s = sigma_is_scalar ? sp[0] : sp[i];
         double inv = 1.0 / s;
-        double inv2 = inv * inv;
 
-        hmm[i] = -inv2;
-        hss[i] = -2.0 * inv2;
+        hmm[i] = d7::gaussian1_expected_mu_mu(inv);
+        hss[i] = d7::gaussian1_expected_sigma_sigma(inv);
         hms[i] = 0.0;
     });
     return List::create(
@@ -130,7 +130,7 @@ List gaussian_dexpected1_cpp(NumericVector y, NumericVector mu,
         double s = sigma_is_scalar ? sp[0] : sp[i];
         double inv = 1.0 / s, inv3 = inv * inv * inv;
         a[i] = 2.0 * inv3;
-        b[i] = 4.0 * inv3;
+        b[i] = d7::gaussian1_dexpected_sigma_sigma_sigma(inv);
     });
     return List::create(
         Named("mu_mu_mu") = zero, Named("mu_mu_sigma") = mms,

@@ -15,41 +15,30 @@ numeric vector of length 1 or of the length of \code{q}. A component of length
 \code{sigma} and \code{nu} must be strictly positive.}
 
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
-probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)},
-formed as \eqn{1 - F}.}
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
-probability is returned, taken after the quadrature, so it carries the
-quadrature's own accuracy rather than improving on it in the far tail.
-Defaults to \code{FALSE}.}
+probability is returned, taken after the quadrature. Defaults to \code{FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of probabilities in \eqn{[0, 1]}, of length
-\code{max(length(q), length(mu), length(sigma), length(nu))}, clamped to that
-range.
+\code{max(length(q), length(mu), length(sigma), length(nu))}.
 }
 \description{
-Computes \eqn{F(q) = P(Y \le q)} by numerical integration of the density.
-The family has no elementary distribution function, so there is nothing
-closed form to call.
-
-Two devices keep the quadrature honest. The law is symmetric about
-\eqn{\mu}, so a quantile above the location is \strong{reflected},
-\eqn{F(q) = 1 - F(2\mu - q)}, and only the lower tail is ever integrated,
-where the integrand decays away from a finite endpoint. And every quantile
-is one \strong{row} of a single batched quadrature through \code{\link[=quad_rows]{quad_rows()}}, so a
-vector of \code{q} is integrated in a single call.
-
-A row that fails to reach the requested accuracy signals an error naming the
-positions, instead of returning a plausible number.
+Computes \eqn{F(q) = P(Y \le q)} by numerical integration of the density,
+the family having no elementary distribution function. The integral is
+taken by the compiled rule of \code{\link[=compiled_cdf]{compiled_cdf()}}, over the tail on the side
+of \eqn{q} away from \eqn{\mu}: below the location it is \eqn{F}, above
+it the survival function, so that neither tail is a difference of two
+numbers near one.
 }
 \examples{
 d <- pseudohuber_distrib()
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 
-# The quadrature, and the symmetry the method exploits.
+# The quadrature, and the symmetry of the law about its location.
 distrib_cdf(d, c(-1, 0.4, 2), th)
 distrib_cdf(d, 0.4 - 1.5, th) + distrib_cdf(d, 0.4 + 1.5, th)
 

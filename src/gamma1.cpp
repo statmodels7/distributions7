@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include "d7_par.h"
 #include "psi_diff.h"
+#include "pt_gamma1.h"
 using namespace Rcpp;
 
 // Gamma in the mean and the DISPERSION, Var = phi mu^2, which is the GLM
@@ -83,9 +84,8 @@ List gamma1_gradient_cpp(NumericVector y, NumericVector mu, NumericVector phi,
         double m = m_s ? mp[0] : mp[i];
         double p = p_s ? pp[0] : pp[i];
         double s = 1.0 / p;
-        Fs o = gamma1_parts(yp[i], m, p);
-        gm[i] = o.m1;
-        gp[i] = o.f1 * (-s * s);
+        gm[i] = d7::gamma1_score_mu(yp[i], m, s);
+        gp[i] = d7::gamma1_score_phi(s, d7::gamma1_f1(yp[i], m, s));
     });
     return List::create(Named("mu") = g_mu, Named("phi") = g_ph);
 }
@@ -102,11 +102,12 @@ List gamma1_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi,
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = m_s ? mp[0] : mp[i];
         double p = p_s ? pp[0] : pp[i];
-        double s = 1.0 / p, s1 = -s * s, s2 = 2.0 * s * s * s;
-        Fs o = gamma1_parts(yp[i], m, p);
-        hmm[i] = o.m2;
-        hmp[i] = o.ms1 * s1;
-        hpp[i] = o.f2 * s1 * s1 + o.f1 * s2;
+        double s = 1.0 / p, s1 = -s * s;
+        double z = yp[i] / m;
+        hmm[i] = d7::gamma1_hess_mu_mu(yp[i], m, s);
+        hmp[i] = (z - 1.0) / m * s1;
+        hpp[i] = d7::gamma1_hess_phi_phi(s, d7::gamma1_f1(yp[i], m, s),
+                                         d7::psi1_rest(s));
     });
     return List::create(Named("mu_mu") = h_mm, Named("mu_phi") = h_mp,
                         Named("phi_phi") = h_pp);
@@ -124,11 +125,10 @@ List gamma1_expected_hessian_cpp(NumericVector y, NumericVector mu,
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = m_s ? mp[0] : mp[i];
         double p = p_s ? pp[0] : pp[i];
-        double s = 1.0 / p, s1 = -s * s;
-        Fs o = gamma1_parts_expected(m, p);
-        hmm[i] = o.m2;
+        double s = 1.0 / p;
+        hmm[i] = d7::gamma1_expected_mu_mu(m, s);
         hmp[i] = 0.0;
-        hpp[i] = o.f2 * s1 * s1;
+        hpp[i] = d7::gamma1_expected_phi_phi(s, d7::psi1_rest(s));
     });
     return List::create(Named("mu_mu") = h_mm, Named("mu_phi") = h_mp,
                         Named("phi_phi") = h_pp);
@@ -245,13 +245,12 @@ List gamma1_dexpected1_cpp(NumericVector y, NumericVector mu, NumericVector phi,
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = m_s ? mp[0] : mp[i];
         double p = p_s ? pp[0] : pp[i];
-        double s = 1.0 / p, s2 = s * s, s3 = s2 * s, s4 = s2 * s2;
+        double s = 1.0 / p, s2 = s * s;
         double im = 1.0 / m, im2 = im * im;
-        double f2 = d7::psi1_rest(s), f3 = d7::psi2_rest(s);
-        double q1 = f3 * s4 + 4.0 * f2 * s3;
-        a[i] = 2.0 * s * im2 * im;
+        a[i] = d7::gamma1_dexpected_mu_mu_mu(m, s);
         b[i] = s2 * im2;
-        c[i] = -s2 * q1;
+        c[i] = d7::gamma1_dexpected_phi_phi_phi(s, d7::psi1_rest(s),
+                                                d7::psi2_rest(s));
     });
     return List::create(
         Named("mu_mu_mu") = mmm, Named("mu_mu_phi") = mmp,

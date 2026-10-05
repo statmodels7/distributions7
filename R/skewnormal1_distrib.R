@@ -325,6 +325,9 @@ S7::method(distrib_rng, SkewNormal1Distrib) <- function(distrib, n, theta, ...) 
 #'   applied in the generic's body, so this method always returns the parameter
 #'   scale and the argument is here to match the generic's signature.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu`, `sigma` and `alpha`,
 #'   each of the length of the recycled inputs.
@@ -358,17 +361,8 @@ S7::method(distrib_rng, SkewNormal1Distrib) <- function(distrib, n, theta, ...) 
 #' # which is where this parametrization loses rank.
 #' g0 <- distrib_gradient(d, y, list(mu = 0, sigma = 1.4, alpha = 0))
 #' c(ratio = unique(round(g0$alpha / g0$mu, 12)), sigma_root_2_pi = 1.4 * sqrt(2 / pi))
-S7::method(distrib_gradient, SkewNormal1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  mu <- theta[[1]]
-  sigma <- theta[[2]]
-  alpha <- theta[[3]]
-  z <- (y - mu) / sigma
-  m <- numericals7::mills_ratio(alpha * z)
-  list(
-    mu = (z - alpha * m$r) / sigma,
-    sigma = (z^2 - 1 - alpha * z * m$r) / sigma,
-    alpha = z * m$r
-  )
+S7::method(distrib_gradient, SkewNormal1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  skewnormal1_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Skew Normal Observed Hessian
@@ -421,6 +415,9 @@ S7::method(distrib_gradient, SkewNormal1Distrib) <- function(distrib, y, theta, 
 #'   transformation to the link scale is applied in the generic's body, so this
 #'   method always returns the parameter scale.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of six numeric vectors, in the order `mu_mu`,
 #'   `sigma_sigma`, `alpha_alpha`, `mu_sigma`, `mu_alpha`, `sigma_alpha`, each
@@ -461,23 +458,8 @@ S7::method(distrib_gradient, SkewNormal1Distrib) <- function(distrib, y, theta, 
 #'   min(abs(eigen(-M, only.values = TRUE)$values))
 #' }
 #' vapply(c(0, 0.01, 0.5), rank_gap, 0)
-S7::method(distrib_hessian, SkewNormal1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  mu <- theta[[1]]
-  sigma <- theta[[2]]
-  alpha <- theta[[3]]
-  z <- (y - mu) / sigma
-  m <- numericals7::mills_ratio(alpha * z)
-  r <- m$r
-  dr <- m$dr
-  s2 <- sigma^2
-  list(
-    mu_mu = (alpha^2 * dr - 1) / s2,
-    sigma_sigma = (1 - 3 * z^2 + 2 * alpha * z * r + alpha^2 * z^2 * dr) / s2,
-    alpha_alpha = z^2 * dr,
-    mu_sigma = (alpha^2 * z * dr - 2 * z + alpha * r) / s2,
-    mu_alpha = -(r + alpha * z * dr) / sigma,
-    sigma_alpha = -(z * r + alpha * z^2 * dr) / sigma
-  )
+S7::method(distrib_hessian, SkewNormal1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  skewnormal1_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Skew Normal Expected Hessian and Its Derivatives

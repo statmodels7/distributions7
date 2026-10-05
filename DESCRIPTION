@@ -17,7 +17,7 @@ LinkingTo:
     RcppParallel
 Imports:
     graphics,
-    numericals7 (>= 0.18.0),
+    numericals7 (>= 0.21.0),
     parameters7 (>= 0.21.0),
     linkfunctions7 (>= 0.4.0),
     optimizers7,
@@ -38,6 +38,7 @@ Collate:
     'generics.R'
     'distrib.R'
     'bernoulli_distrib.R'
+    'cdf_compiled.R'
     'numerical_functions.R'
     'utility_functions.R'
     'numerical_derivatives.R'
@@ -107,6 +108,7 @@ Collate:
     'cross_derivatives_families.R'
     'cross_derivatives_simple.R'
     'cross_theta2_derivatives.R'
+    'd34expected_hessian.R'
     'dexpected_families.R'
     'dexpected_reparam.R'
     'dexpected_support.R'
@@ -124,6 +126,8 @@ Collate:
     'mv_summary.R'
     'fixed.R'
     'folded.R'
+    'scalar_route.R'
+    'folded_expected.R'
     'gengamma1_higher.R'
     'gengamma2_distrib.R'
     'gpd_higher.R'
@@ -144,8 +148,13 @@ Collate:
     'theta2_mapped.R'
     'theta2_more.R'
     'transformations.R'
-    'weibull3_distrib.R'
+    'transformed_route.R'
     'wrapper_derivatives.R'
+    'truncated_dexpected.R'
+    'truncated_route.R'
+    'weibull3_distrib.R'
+    'wrapper_deriv5.R'
+    'zero_wrapper_dexpected.R'
 Suggests:
     testthat (>= 3.0.0),
     knitr,

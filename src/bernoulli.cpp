@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_bernoulli.h"
 using namespace Rcpp;
 
 // [[Rcpp::export]]
@@ -13,7 +14,7 @@ List bernoulli_gradient_cpp(NumericVector y, NumericVector mu,
     d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         
-        grad_mu[i] = (y[i] - m) / (m * (1.0 - m));
+        grad_mu[i] = d7::bernoulli_score_mu(y[i], m);
     });
     
     return List::create(
@@ -32,7 +33,7 @@ List bernoulli_hessian_cpp(NumericVector y, NumericVector mu,
     d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         
-        hess_mu_mu[i] = -(y[i] / (m * m)) - ((1.0 - y[i]) / ((1.0 - m) * (1.0 - m)));
+        hess_mu_mu[i] = d7::bernoulli_hess_mu_mu(y[i], m);
     });
     return List::create(
         Named("mu_mu") = hess_mu_mu
@@ -49,7 +50,7 @@ List bernoulli_expected_hessian_cpp(NumericVector y, NumericVector mu,
 
     d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
-        hess_mu_mu[i] = -1.0 / (m * (1.0 - m));
+        hess_mu_mu[i] = d7::bernoulli_expected_mu_mu(m);
     });
     return List::create(
         Named("mu_mu") = hess_mu_mu

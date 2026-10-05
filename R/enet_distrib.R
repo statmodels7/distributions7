@@ -434,6 +434,9 @@ S7::method(distrib_rng, EnetDistrib) <- function(distrib, n, theta, ...) {
 #'   transformation to the link scale is applied in the generic's body, so this
 #'   method always returns the parameter scale.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu`, `lambda` and `alpha`,
 #'   each of the length of the recycled inputs.
@@ -470,20 +473,9 @@ S7::method(distrib_rng, EnetDistrib) <- function(distrib, n, theta, ...) {
 #'   just_above = distrib_gradient(d, 1e-9, th)$mu)
 S7::method(distrib_gradient, EnetDistrib) <- function(distrib, y, theta,
                                                       scale = c("parameter",
-                                                                "link"), ...) {
-  p <- .enet_parts(theta)
-  zz <- .enet_logz_derivs(p)
-  z <- y - p$mu
-  s <- sign(z)
-  al <- p$al
-  lam <- p$lam
-  d_a <- -abs(z) - zz$za
-  d_c <- -z^2 / 2 - zz$zc
-  list(
-    mu = p$a * s + p$c * z,
-    lambda = d_a * al + d_c * (1 - al),
-    alpha = lam * (d_a - d_c)
-  )
+                                                                "link"), ...,
+                                                      threads = 1L) {
+  enet_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Elastic-Net Observed Hessian
@@ -510,6 +502,9 @@ S7::method(distrib_gradient, EnetDistrib) <- function(distrib, y, theta,
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of six numeric vectors in [hess_names()]'s order:
 #'   `mu_mu`, `lambda_lambda`, `alpha_alpha`, `mu_lambda`, `mu_alpha`,
@@ -551,25 +546,9 @@ S7::method(distrib_gradient, EnetDistrib) <- function(distrib, y, theta,
 #'                 (2 * eps))
 S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
                                                      scale = c("parameter",
-                                                               "link"), ...) {
-  p <- .enet_parts(theta)
-  zz <- .enet_logz_derivs(p)
-  z <- y - p$mu
-  s <- sign(z)
-  al <- p$al
-  lam <- p$lam
-  one <- rep(1, length(z))
-  list(
-    mu_mu = -p$c * one,
-    lambda_lambda = -(zz$zaa * al^2 + 2 * zz$zac * al * (1 - al) +
-                      zz$zcc * (1 - al)^2) * one,
-    alpha_alpha = -lam^2 * (zz$zaa - 2 * zz$zac + zz$zcc) * one,
-    mu_lambda = al * s + (1 - al) * z,
-    mu_alpha = lam * (s - z),
-    lambda_alpha = (-abs(z) + z^2 / 2) -
-      (lam * (zz$zaa * al + zz$zac * (1 - 2 * al) - zz$zcc * (1 - al)) +
-       zz$za - zz$zc)
-  )
+                                                               "link"), ...,
+                                                     threads = 1L) {
+  enet_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Elastic-Net Expected Information
@@ -629,6 +608,9 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #'   matches the generic's.
 #' @param nsim Ignored, for the same reason.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Below the measured internal threshold the kernel stays sequential
+#'   whatever the count says. Defaults to `1L`.
 #'
 #' @return A named list of six numeric vectors in [hess_names()]'s order:
 #'   `mu_mu`, `lambda_lambda`, `alpha_alpha`, `mu_lambda`, `mu_alpha`,
@@ -670,22 +652,9 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #' identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
 S7::method(distrib_expected_hessian, EnetDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
-  p <- .enet_parts(theta)
-  zz <- .enet_logz_derivs(p)
-  al <- p$al
-  lam <- p$lam
-  one <- rep(1, length(y))
-  list(
-    mu_mu = -(p$a^2 - 2 * p$a * p$c * zz$za - 2 * p$c^2 * zz$zc) * one,
-    lambda_lambda = -(zz$zaa * al^2 + 2 * zz$zac * al * (1 - al) +
-                      zz$zcc * (1 - al)^2) * one,
-    alpha_alpha = -lam^2 * (zz$zaa - 2 * zz$zac + zz$zcc) * one,
-    mu_lambda = 0 * one,
-    mu_alpha = 0 * one,
-    lambda_alpha = -lam * (zz$zaa * al + zz$zac * (1 - 2 * al) -
-                           zz$zcc * (1 - al)) * one
-  )
+    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    threads = 1L) {
+  enet_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Elastic-Net Response Derivative

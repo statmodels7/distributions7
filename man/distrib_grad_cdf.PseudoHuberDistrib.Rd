@@ -23,14 +23,10 @@ the length of \code{q} recycled against \code{theta}.
 }
 \description{
 Closed form in the location and the scale, \eqn{-f(q)} and \eqn{-z f(q)}
-with \eqn{z = (q-\mu)/\sigma}; the shape \eqn{\nu} is differenced. The
-method is \code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}} itself, shared with the Student t.
-}
-\details{
-This family's distribution function is itself a quadrature, so an evaluation
-of it is dear and the split is worth more here than elsewhere: a gradient at
-500 quantiles costs 0.08 s against 0.18 s when all three components are
-differenced, since the closed pair needs the density alone.
+with \eqn{z = (q-\mu)/\sigma}; the component in the shape \eqn{\nu} is the integral of
+the density's own derivative, taken by the compiled rule. The method is
+\code{\link[=compiled_grad_cdf]{compiled_grad_cdf()}} itself, shared with the other families whose
+distribution function has no closed derivative in a shape parameter.
 }
 \section{Notation}{
 
@@ -47,12 +43,11 @@ q <- c(-1, 0.5, 2)
 all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th))
 
-# Differencing the quadrature agrees, and costs more.
-fd <- numerical_cdf_deriv(d, q, th, order = 1)
-max(abs(fd$mu / distrib_grad_cdf(d, q, th, log = FALSE)$mu - 1))
+# The shape component, on the log scale of the lower tail.
+distrib_grad_cdf(d, q, th)$nu
 }
 \seealso{
-\code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}} for the shared body;
+\code{\link[=compiled_grad_cdf]{compiled_grad_cdf()}} for the shared body;
 \code{\link[=distrib_hess_cdf.PseudoHuberDistrib]{distrib_hess_cdf.PseudoHuberDistrib()}} for the second order;
 \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.
 }

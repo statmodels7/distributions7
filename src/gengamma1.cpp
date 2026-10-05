@@ -2,6 +2,7 @@
 #include <cmath>
 #include <cfloat>
 #include "d7_par.h"
+#include "pt_gengamma1.h"
 using namespace Rcpp;
 
 // The generalized gamma in Stacy's form, scale a, shape d and power p. With
@@ -15,24 +16,7 @@ using namespace Rcpp;
 // combine have cancelled symbolically. Checked numerically in the tests and
 // against exact values in stabilita/gengamma1_measure.R.
 
-// log(y/a), also where y/a overflows or underflows
-static inline double gg1_logratio(double y, double a) {
-  const double r = y / a;
-  if (r > DBL_MIN && r < DBL_MAX) return std::log(r);
-  return std::log(y) - std::log(a);
-}
-
-// a^-m (a/y)^l from ia = 1/a and Yi = a/y, and through their logarithms
-// where the direct product overflows or underflows although the factor
-// itself need not
-static inline double gg1_scale(double ia, double Yi, int m, int l,
-                               double lia, double lYi) {
-  double r = 1.0;
-  for (int j = 0; j < m; j++) r *= ia;
-  for (int j = 0; j < l; j++) r *= Yi;
-  if (std::isfinite(r) && r != 0.0) return r;
-  return std::exp(m * lia + l * lYi);
-}
+// gg1_logratio() and gg1_scale() are in pt_gengamma1.h.
 
 // order 1 of log f in (a, d, p)
 // [[Rcpp::export]]
@@ -42,22 +26,12 @@ List gengamma1_gradient_cpp(NumericVector y, NumericVector a_, NumericVector d_,
   NumericVector o_a(n);
   NumericVector o_d(n);
   NumericVector o_p(n);
-  // the coefficients depend on (d, p) alone: once when they are scalars
-  struct Prm { double K[6]; };
+  // the polygamma depends on (d, p) alone: once when they are scalars
+  struct Prm { double PB0; };
   auto make = [&](std::size_t i, Prm& P) {
     const double d = d_[i % n_d], p = p_[i % n_p];
     const double k1 = d / p + 1.0;
-    (void) k1; (void) d; (void) p;
-    const double PB0 = R::digamma(k1);
-    double* K = P.K;
-    const double c0 = 1.0/p;
-    const double c1 = PB0*d;
-    K[0] = p;
-    K[1] = -d;
-    K[2] = c0;
-    K[3] = -c0*(c1 - p)/d;
-    K[4] = -c0;
-    K[5] = c1/std::pow(p, 2);
+    P.PB0 = R::digamma(k1);
   };
   const bool scalar = n_d == 1 && n_p == 1;
   Prm P0;
@@ -65,18 +39,16 @@ List gengamma1_gradient_cpp(NumericVector y, NumericVector a_, NumericVector d_,
   d7::par_for(n, threads, scalar ? d7::kMinMid : d7::kMinCostly, [&](std::size_t i) {
     Prm Pi;
     if (!scalar) make(i, Pi);
-    const double* K = scalar ? P0.K : Pi.K;
-    (void) K;
-    const double av = a_[i % n_a], pv = p_[i % n_p];
-    (void) pv;
+    const double PB0 = scalar ? P0.PB0 : Pi.PB0;
+    const double av = a_[i % n_a], dv = d_[i % n_d], pv = p_[i % n_p];
     const double UU = pv * gg1_logratio(y[i], av);
     const double TT = std::exp(UU);
     const double lia = -std::log(av);
     const double ia = 1.0 / av;
     const double S_1_0 = gg1_scale(ia, 1.0, 1, 0, lia, 0.0);
-    o_a[i] = S_1_0*(K[0]*TT + K[1]);
-    o_d[i] = K[2]*UU + K[3];
-    o_p[i] = K[4]*TT*UU + K[5];
+    o_a[i] = d7::gengamma1_score_a(dv, pv, TT, S_1_0);
+    o_d[i] = d7::gengamma1_score_d(dv, pv, PB0, UU);
+    o_p[i] = d7::gengamma1_score_p(dv, pv, PB0, UU, TT);
   });
   return List::create(Named("a") = o_a, Named("d") = o_d, Named("p") = o_p);
 }
@@ -93,24 +65,19 @@ List gengamma1_hessian_cpp(NumericVector y, NumericVector a_, NumericVector d_, 
   NumericVector o_a_p(n);
   NumericVector o_d_p(n);
   // the coefficients depend on (d, p) alone: once when they are scalars
-  struct Prm { double K[9]; };
+  struct Prm { double K[9]; double PB0, PB1, Hdd; };
   auto make = [&](std::size_t i, Prm& P) {
     const double d = d_[i % n_d], p = p_[i % n_p];
     const double k1 = d / p + 1.0;
     (void) k1; (void) d; (void) p;
     const double PB0 = R::digamma(k1);
     const double PB1 = R::trigamma(k1);
+    P.PB0 = PB0;
+    P.PB1 = PB1;
+    P.Hdd = d7::gengamma1_hess_d_d(d, p, PB1);
     double* K = P.K;
-    const double c0 = std::pow(d, 2);
-    const double c1 = std::pow(p, 2);
-    const double c2 = 1.0/c1;
     const double c3 = PB1*d;
     const double c4 = PB0*p;
-    K[0] = -p*(p + 1);
-    K[1] = d;
-    K[2] = -c2*(PB1*c0 + c1)/c0;
-    K[3] = -c2;
-    K[4] = -d*(c3 + 2*c4)/std::pow(p, 4);
     K[5] = -1;
     K[6] = 1;
     K[7] = 1;
@@ -123,18 +90,18 @@ List gengamma1_hessian_cpp(NumericVector y, NumericVector a_, NumericVector d_, 
     Prm Pi;
     if (!scalar) make(i, Pi);
     const double* K = scalar ? P0.K : Pi.K;
-    (void) K;
-    const double av = a_[i % n_a], pv = p_[i % n_p];
-    (void) pv;
+    const double PB0 = scalar ? P0.PB0 : Pi.PB0;
+    const double PB1 = scalar ? P0.PB1 : Pi.PB1;
+    const double av = a_[i % n_a], dv = d_[i % n_d], pv = p_[i % n_p];
     const double UU = pv * gg1_logratio(y[i], av);
     const double TT = std::exp(UU);
     const double lia = -std::log(av);
     const double ia = 1.0 / av;
     const double S_1_0 = gg1_scale(ia, 1.0, 1, 0, lia, 0.0);
     const double S_2_0 = gg1_scale(ia, 1.0, 2, 0, lia, 0.0);
-    o_a_a[i] = S_2_0*(K[0]*TT + K[1]);
-    o_d_d[i] = K[2];
-    o_p_p[i] = K[3]*TT*std::pow(UU, 2) + K[4];
+    o_a_a[i] = d7::gengamma1_hess_a_a(dv, pv, TT, S_2_0);
+    o_d_d[i] = scalar ? P0.Hdd : Pi.Hdd;
+    o_p_p[i] = d7::gengamma1_hess_p_p(dv, pv, PB0, PB1, UU, TT);
     o_a_d[i] = K[5]*S_1_0;
     o_a_p[i] = S_1_0*TT*(K[6]*UU + K[7]);
     o_d_p[i] = K[8];
@@ -154,21 +121,18 @@ List gengamma1_expected_hessian_cpp(NumericVector y, NumericVector a_, NumericVe
   NumericVector o_a_p(n);
   NumericVector o_d_p(n);
   // the coefficients depend on (d, p) alone: once when they are scalars
-  struct Prm { double K[6]; };
+  struct Prm { double K[6]; double Edd, Epp; };
   auto make = [&](std::size_t i, Prm& P) {
     const double d = d_[i % n_d], p = p_[i % n_p];
     const double k1 = d / p + 1.0;
     (void) k1; (void) d; (void) p;
     const double PB0 = R::digamma(k1);
     const double PB1 = R::trigamma(k1);
+    P.Edd = d7::gengamma1_expected_d_d(d, p, PB1);
+    P.Epp = d7::gengamma1_expected_p_p(d, p, PB0, PB1);
     double* K = P.K;
-    const double c0 = std::pow(d, 2);
-    const double c1 = std::pow(p, 2);
     const double c2 = PB1*d;
     const double c3 = PB0*p;
-    K[0] = -d*p;
-    K[1] = -(PB1*c0 + c1)/(c0*c1);
-    K[2] = -d*(std::pow(PB0, 2)*p + PB1*p + c2 + 2*c3)/std::pow(p, 4);
     K[3] = -1;
     K[4] = d*(PB0 + 1)/p;
     K[5] = (c2 + c3)/std::pow(p, 3);
@@ -180,16 +144,14 @@ List gengamma1_expected_hessian_cpp(NumericVector y, NumericVector a_, NumericVe
     Prm Pi;
     if (!scalar) make(i, Pi);
     const double* K = scalar ? P0.K : Pi.K;
-    (void) K;
-    const double av = a_[i % n_a], pv = p_[i % n_p];
-    (void) pv;
+    const double av = a_[i % n_a], dv = d_[i % n_d], pv = p_[i % n_p];
     const double lia = -std::log(av);
     const double ia = 1.0 / av;
     const double S_1_0 = gg1_scale(ia, 1.0, 1, 0, lia, 0.0);
     const double S_2_0 = gg1_scale(ia, 1.0, 2, 0, lia, 0.0);
-    o_a_a[i] = K[0]*S_2_0;
-    o_d_d[i] = K[1];
-    o_p_p[i] = K[2];
+    o_a_a[i] = d7::gengamma1_expected_a_a(dv, pv, S_2_0);
+    o_d_d[i] = scalar ? P0.Edd : Pi.Edd;
+    o_p_p[i] = scalar ? P0.Epp : Pi.Epp;
     o_a_d[i] = K[3]*S_1_0;
     o_a_p[i] = K[4]*S_1_0;
     o_d_p[i] = K[5];
@@ -691,7 +653,7 @@ List gengamma1_dexpected1_cpp(NumericVector y, NumericVector a_, NumericVector d
   NumericVector o_d_p_d(n);
   NumericVector o_d_p_p(n);
   // the coefficients depend on (d, p) alone: once when they are scalars
-  struct Prm { double K[13]; };
+  struct Prm { double K[13]; double Dddd, Dppp; };
   auto make = [&](std::size_t i, Prm& P) {
     const double d = d_[i % n_d], p = p_[i % n_p];
     const double k1 = d / p + 1.0;
@@ -699,9 +661,10 @@ List gengamma1_dexpected1_cpp(NumericVector y, NumericVector a_, NumericVector d
     const double PB0 = R::digamma(k1);
     const double PB1 = R::trigamma(k1);
     const double PB2 = R::psigamma(k1, 2.0);
+    P.Dddd = d7::gengamma1_dexpected_d_d_d(d, p, PB2);
+    P.Dppp = d7::gengamma1_dexpected_p_p_p(d, p, PB0, PB1, PB2);
     double* K = P.K;
     const double c0 = 2*p;
-    const double c1 = std::pow(d, 3);
     const double c2 = std::pow(p, 3);
     const double c3 = 1.0/c2;
     const double c4 = PB2*d;
@@ -718,13 +681,10 @@ List gengamma1_dexpected1_cpp(NumericVector y, NumericVector a_, NumericVector d
     const double c15 = PB0*p;
     const double c16 = 2*c11*c15 + c4*p;
     const double c17 = c11 + c15 + p;
-    K[0] = c0*d;
     K[1] = -p;
     K[2] = -d;
-    K[3] = -c3*(PB2*c1 - 2*c2)/c1;
     K[4] = c5;
     K[5] = -c6*(c14 + c16 + c8 + c9);
-    K[6] = d*(c10 + 6*c12 + 6*c13 + c16 + 3*c8 + 3*c9)/std::pow(p, 6);
     K[7] = 1;
     K[8] = -d*(PB0 + 1)/p;
     K[9] = c17/c7;
@@ -739,23 +699,21 @@ List gengamma1_dexpected1_cpp(NumericVector y, NumericVector a_, NumericVector d
     Prm Pi;
     if (!scalar) make(i, Pi);
     const double* K = scalar ? P0.K : Pi.K;
-    (void) K;
-    const double av = a_[i % n_a], pv = p_[i % n_p];
-    (void) pv;
+    const double av = a_[i % n_a], dv = d_[i % n_d], pv = p_[i % n_p];
     const double lia = -std::log(av);
     const double ia = 1.0 / av;
     const double S_1_0 = gg1_scale(ia, 1.0, 1, 0, lia, 0.0);
     const double S_2_0 = gg1_scale(ia, 1.0, 2, 0, lia, 0.0);
     const double S_3_0 = gg1_scale(ia, 1.0, 3, 0, lia, 0.0);
-    o_a_a_a[i] = K[0]*S_3_0;
+    o_a_a_a[i] = d7::gengamma1_dexpected_a_a_a(dv, pv, S_3_0);
     o_a_a_d[i] = K[1]*S_2_0;
     o_a_a_p[i] = K[2]*S_2_0;
     o_d_d_a[i] = 0.0;
-    o_d_d_d[i] = K[3];
+    o_d_d_d[i] = scalar ? P0.Dddd : Pi.Dddd;
     o_d_d_p[i] = K[4];
     o_p_p_a[i] = 0.0;
     o_p_p_d[i] = K[5];
-    o_p_p_p[i] = K[6];
+    o_p_p_p[i] = scalar ? P0.Dppp : Pi.Dppp;
     o_a_d_a[i] = K[7]*S_2_0;
     o_a_d_d[i] = 0.0;
     o_a_d_p[i] = 0.0;

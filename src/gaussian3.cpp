@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_gaussian3.h"
 using namespace Rcpp;
 
 // Gaussian in the mean and the PRECISION, l = log(t)/2 - log(2 pi)/2 - t r^2/2,
@@ -18,8 +19,8 @@ List gaussian3_gradient_cpp(NumericVector y, NumericVector mu, NumericVector tau
         double m = m_s ? mu[0] : mu[i];
         double t = t_s ? tau[0] : tau[i];
         double r = y[i] - m;
-        g_mu[i] = t * r;
-        g_t[i] = 0.5 / t - 0.5 * r * r;
+        g_mu[i] = d7::gaussian3_score_mu(r, t);
+        g_t[i] = d7::gaussian3_score_tau(r, t);
     });
     return List::create(Named("mu") = g_mu, Named("tau") = g_t);
 }
@@ -34,9 +35,9 @@ List gaussian3_hessian_cpp(NumericVector y, NumericVector mu, NumericVector tau,
     d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
         double m = m_s ? mu[0] : mu[i];
         double t = t_s ? tau[0] : tau[i];
-        h_mm[i] = -t;
+        h_mm[i] = d7::gaussian3_hess_mu_mu(t);
         h_mt[i] = y[i] - m;
-        h_tt[i] = -0.5 / (t * t);
+        h_tt[i] = d7::gaussian3_hess_tau_tau(t);
     });
     return List::create(Named("mu_mu") = h_mm, Named("mu_tau") = h_mt,
                         Named("tau_tau") = h_tt);
@@ -51,9 +52,9 @@ List gaussian3_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVe
 
     d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
         double t = t_s ? tau[0] : tau[i];
-        h_mm[i] = -t;
+        h_mm[i] = d7::gaussian3_expected_mu_mu(t);
         h_mt[i] = 0.0;
-        h_tt[i] = -0.5 / (t * t);
+        h_tt[i] = d7::gaussian3_expected_tau_tau(t);
     });
     return List::create(Named("mu_mu") = h_mm, Named("mu_tau") = h_mt,
                         Named("tau_tau") = h_tt);

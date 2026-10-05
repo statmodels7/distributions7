@@ -279,3 +279,34 @@ test_that("the gpd series kernel is count-free and matches the other branch", {
   # is eps (xi z)^-b, so an overlap reaching down to a small xi z would be
   # testing that form's cancellation and not this kernel
 })
+
+test_that("the skew normal and skew t kernels agree at 1 and 2 threads", {
+  set.seed(11)
+  n <- 3000                       # above kMinCostly
+  y <- rt(n, 4) * 1.5 + 0.3
+  mu <- runif(n, -0.5, 0.5); sg <- runif(n, 0.5, 2)
+  al <- runif(n, -3, 3); nu <- exp(runif(n, -1, 4))
+  both <- function(fn, ...) expect_identical(fn(..., threads = 1L),
+                                             fn(..., threads = 2L))
+  for (fn in list(skewnormal1_gradient_cpp, skewnormal1_hessian_cpp)) {
+    both(fn, y, mu, sg, al)
+  }
+  for (fn in list(skewt_gradient_cpp, skewt_hessian_cpp)) {
+    both(fn, y, mu, sg, al, nu)
+    both(fn, y, 0.2, 1.3, -1.5, 4)
+  }
+})
+
+test_that("the beta-binomial log-mass runs on worker threads", {
+  # R's lchoose() checks the C stack on every call and aborts from a worker
+  # whatever its arguments; the log-mass uses a copy without the check,
+  # which returns lchoose()'s values
+  set.seed(9)
+  n <- 40000
+  y <- as.numeric(sample(0:12, n, replace = TRUE))
+  mu <- runif(n, 0.2, 0.8); sg <- runif(n, 0.05, 2)
+  one <- betabinom_logpmf_cpp(y, mu, sg, 12, 1L)
+  for (r in 1:5) {
+    expect_identical(betabinom_logpmf_cpp(y, mu, sg, 12, 4L), one)
+  }
+})

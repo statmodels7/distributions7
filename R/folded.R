@@ -135,8 +135,10 @@ FoldedDistrib <- S7::new_class("FoldedDistrib",
 #'
 #' @keywords internal
 fold_parts <- function(parent, x, theta) {
-  fp <- distrib_pdf(parent, x, theta)
-  fm <- distrib_pdf(parent, -x, theta)
+  # each density as the exponential of the log-density, the form the
+  # scalar registry reads (d7_logpdf)
+  fp <- exp(distrib_pdf(parent, x, theta, log = TRUE))
+  fm <- exp(distrib_pdf(parent, -x, theta, log = TRUE))
   fp[!is.finite(fp)] <- 0
   fm[!is.finite(fm)] <- 0
   L <- fp + fm
@@ -205,8 +207,15 @@ fold_parts <- function(parent, x, theta) {
 fold_ratio <- function(parent, x, theta, order, params, w) {
   ell_p <- parent_ell(parent, x, theta, order, params)
   ell_m <- parent_ell(parent, -x, theta, order, params)
+  # a preimage whose weight is zero contributes zero, also where its ratio
+  # overflows (the density underflowing faster than the ratio grows)
+  wm <- 1 - w
   memo_ratio(function(block) {
-    w * bell_f_ratio(block, ell_p) + (1 - w) * bell_f_ratio(block, ell_m)
+    rp <- w * bell_f_ratio(block, ell_p)
+    rm <- wm * bell_f_ratio(block, ell_m)
+    rp[w == 0] <- 0
+    rm[wm == 0] <- 0
+    rp + rm
   }, params)
 }
 
@@ -227,7 +236,7 @@ fold_ratio <- function(parent, x, theta, order, params, w) {
 #' or fourth order; the same two functions serve every order the parent
 #' supplies.
 #'
-#' @param order The derivative order, `3L` or `4L`.
+#' @param order The derivative order, `3L`, `4L` or `5L`.
 #'
 #' @return A function with the signature of `distrib_deriv3()`, suitable for
 #'   `S7::method(...) <- `.
@@ -827,6 +836,12 @@ S7::method(distrib_hess_y, FoldedDistrib) <- function(distrib, y, theta, ...) {
 #' setting, and a value taken at one setting could be empty by accident.
 #'
 #' @details
+#' The wrappers [fixed()], [reparametrize()] and [truncated()] register
+#' [distrib_atoms()] on their continuous classes only to report the parent's
+#' atoms, so their registration says nothing about the wrapped family. For
+#' these classes the function is applied to `parent@parent_distrib` instead,
+#' and a wrapper of a family without atoms declares none.
+#'
 #' The argument is named `parent` deliberately. The base class of this package
 #' is called `distrib`, and an argument of that name would shadow it: the
 #' comparison meant for the base class would then be against the object. That
@@ -835,8 +850,9 @@ S7::method(distrib_hess_y, FoldedDistrib) <- function(distrib, y, theta, ...) {
 #' @param parent A `distrib` object.
 #'
 #' @return `TRUE` when [distrib_atoms()] is registered on a class strictly
-#'   below `distrib`, `FALSE` when the method comes from the base class or is
-#'   absent.
+#'   below `distrib` other than the three passing wrappers, or when one of
+#'   those wraps a distribution for which the function returns `TRUE`;
+#'   `FALSE` when the method comes from the base class or is absent.
 #'
 #' @seealso [distrib_atoms()] for the generic, [folded()], which consults this,
 #'   and [zero_adjusted()], which produces a parent it rejects.
@@ -851,13 +867,26 @@ S7::method(distrib_hess_y, FoldedDistrib) <- function(distrib, y, theta, ...) {
 #' # Which is why folded() rejects the second by name.
 #' try(folded(zero_adjusted(gaussian1_distrib())))
 #'
+#' # A wrapper declares atoms exactly when the family it wraps does.
+#' distributions7:::declares_atoms(fixed(gaussian1_distrib(), sigma = 1.2))
+#' distributions7:::declares_atoms(fixed(zero_adjusted(gaussian1_distrib()),
+#'                                       sigma = 1.2))
+#'
 #' @keywords internal
 declares_atoms <- function(parent) {
   m <- tryCatch(S7::method(distrib_atoms, S7::S7_class(parent)),
                 error = function(e) NULL)
   if (is.null(m)) return(FALSE)
   reg <- tryCatch(attr(m, "signature")[[1]], error = function(e) NULL)
-  !is.null(reg) && !is_class(reg, distrib)
+  if (is.null(reg) || is_class(reg, distrib)) return(FALSE)
+  # these wrappers register distrib_atoms only to pass the parent's atoms on,
+  # so they carry one exactly when the parent does
+  passes_on <- list(FixedContinuousDistrib, ReparamContinuousDistrib,
+                    TruncatedContinuousDistrib)
+  if (any(vapply(passes_on, function(cl) is_class(reg, cl), logical(1)))) {
+    return(declares_atoms(parent@parent_distrib))
+  }
+  TRUE
 }
 
 # --- CONSTRUCTOR WRAPPER ---

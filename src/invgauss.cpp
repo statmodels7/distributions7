@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_invgauss1.h"
 using namespace Rcpp;
 
 // [[Rcpp::export]]
@@ -16,14 +17,8 @@ List invgauss_gradient_cpp(NumericVector y, NumericVector mu, NumericVector phi,
         double m = mu_is_scalar ? mu[0] : mu[i];
         double p = phi_is_scalar ? phi[0] : phi[i];
         
-        double m2 = m * m;
-        double m3 = m2 * m;
-        double p2 = p * p;
-        
-        double res = y[i] - m;
-        
-        grad_mu[i] = res / (p * m3);
-        grad_phi[i] = (res * res - y[i] * m2 * p) / (2.0 * y[i] * p2 * m2);
+        grad_mu[i] = d7::invgauss1_score_mu(y[i], m, p);
+        grad_phi[i] = d7::invgauss1_score_phi(y[i], m, p);
     });
     
     return List::create(Named("mu") = grad_mu, Named("phi") = grad_phi);
@@ -44,17 +39,11 @@ List invgauss_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi,
         double m = mu_is_scalar ? mu[0] : mu[i];
         double p = phi_is_scalar ? phi[0] : phi[i];
         
-        double m2 = m * m;
-        double m3 = m2 * m;
-        double m4 = m2 * m2;
+        double m3 = m * m * m;
         double p2 = p * p;
-        double p3 = p2 * p;
-        
         double res = y[i] - m;
-        double res2 = res * res;
-        
-        hess_mu_mu[i] = -(3.0 * y[i] - 2.0 * m) / (p * m4);
-        hess_phi_phi[i] = (p - 2.0 * res2 / (m2 * y[i])) / (2.0 * p3);
+        hess_mu_mu[i] = d7::invgauss1_hess_mu_mu(y[i], m, p);
+        hess_phi_phi[i] = d7::invgauss1_hess_phi_phi(y[i], m, p);
         hess_mu_phi[i] = -res / (p2 * m3);
     });
     
@@ -78,11 +67,8 @@ List invgauss_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVec
     if (both_scalar) {
         double m = mu[0];
         double p = phi[0];
-        double m3 = m * m * m;
-        double p2 = p * p;
-        
-        hmm0 = -1.0 / (p * m3);
-        hpp0 = -0.5 / p2;
+        hmm0 = d7::invgauss1_expected_mu_mu(m, p);
+        hpp0 = d7::invgauss1_expected_phi_phi(p);
     }
 
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
@@ -90,11 +76,8 @@ List invgauss_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVec
         if (!both_scalar) {
             double m = mu_is_scalar ? mu[0] : mu[i];
             double p = phi_is_scalar ? phi[0] : phi[i];
-            double m3 = m * m * m;
-            double p2 = p * p;
-            
-            hmm = -1.0 / (p * m3);
-            hpp = -0.5 / p2;
+            hmm = d7::invgauss1_expected_mu_mu(m, p);
+            hpp = d7::invgauss1_expected_phi_phi(p);
         }
         
         hess_mu_mu[i] = hmm;

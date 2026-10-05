@@ -22,11 +22,11 @@ A named list of six numeric vectors keyed as \code{\link[=hess_names]{hess_names
 the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form in the location-scale block, \code{mu_mu}, \code{sigma_sigma} and
-\code{mu_sigma}; the three components touching the degrees of freedom are
-differenced, that derivative having no elementary form. The method is
-\code{\link[=partial_loc_scale_hess_cdf]{partial_loc_scale_hess_cdf()}} itself, shared with the pseudo-Huber and the
-skew t.
+Closed form in the location-scale block, and in the mixed components
+with a shape \eqn{k}, \eqn{-f s_k} and \eqn{-z f s_k} at \eqn{q}; the
+components in the shape parameters alone are integrals of the density's
+own derivatives, taken by the compiled rule. The method is
+\code{\link[=compiled_hess_cdf]{compiled_hess_cdf()}} itself.
 }
 \section{Notation}{
 
@@ -39,12 +39,12 @@ d <- student_t1_distrib()
 th <- list(mu = 0.3, sigma = 1.2, nu = 6)
 q <- c(-1, 0.5, 2)
 
-# Six components: three closed, three differenced.
+# Six components, keyed as hess_names().
 names(distrib_hess_cdf(d, q, th))
 
 }
 \seealso{
-\code{\link[=partial_loc_scale_hess_cdf]{partial_loc_scale_hess_cdf()}} for the shared body;
+\code{\link[=compiled_hess_cdf]{compiled_hess_cdf()}} for the shared body;
 \code{\link[=distrib_grad_cdf.StudentT1Distrib]{distrib_grad_cdf.StudentT1Distrib()}} for the first order;
 \code{\link[=student_t1_distrib]{student_t1_distrib()}}.
 }

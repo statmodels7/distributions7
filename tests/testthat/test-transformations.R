@@ -172,3 +172,48 @@ test_that("the inverse gamma really is the inverse gamma", {
   expect_equal(distrib_pdf(ig, y, list(mu = a / b, sigma2 = a / b^2)),
                b^a / gamma(a) * y^(-a - 1) * exp(-b / y))
 })
+
+
+test_that("every transformer's functions are the derivatives of its inverse", {
+  # log|dx/dy| and the derivatives of x(y) and of log|dx/dy| against
+  # numDeriv; the Yeo-Johnson cases include lambda = 0 and 2, where one
+  # branch of the inverse is expm1(y) or -expm1(-y)
+  trs <- list(
+    list(log_transform(), c(-1, 0.5, 2)),
+    list(exp_transform(), c(0.3, 1.5, 4)),
+    list(inverse_transform(), c(0.3, 2, -1.5)),
+    list(sqrt_transform(), c(0.3, 2)),
+    list(power_transform(3), c(0.5, 2, -1.2)),
+    list(power_transform(-0.5), c(0.5, 2)),
+    list(asinh_transform(), c(-2, 0.3, 3)),
+    list(bc_transform(0.5), c(-1, 0.3, 3)),
+    list(bc_transform(-0.7), c(-1, 0.3, 1)),
+    list(yj_transform(0.3), c(-1.3, -0.2, 0.4, 2)),
+    list(yj_transform(0), c(-1.3, -0.2, 0.4, 2)),
+    list(yj_transform(2), c(-1.3, -0.2, 0.4, 2)),
+    list(yj_transform(1.5), c(-1.3, -0.2, 0.4, 2)),
+    list(affine_transform(1, -2), c(-1, 3)),
+    list(logit_transform(), c(-2, 0.5, 3)),
+    list(expit_transform(), c(0.2, 0.7)),
+    list(softplus_transform(2), c(-1, 0.4, 3))
+  )
+  for (tc in trs) {
+    tr <- tc[[1]]
+    y <- tc[[2]]
+    lj <- function(u) log(abs(numDeriv::grad(tr@trans_inv, u)))
+    expect_equal(tr@trans_fun(tr@trans_inv(y)), y, tolerance = 1e-13,
+                 label = paste(tr@name, "inverse"))
+    expect_equal(tr@trans_abs_jac(y), lj(y), tolerance = 1e-8,
+                 label = paste(tr@name, "log-Jacobian"))
+    expect_equal(tr@trans_inv_hessian(y),
+                 vapply(y, function(u) numDeriv::hessian(tr@trans_inv, u)[1], 0),
+                 tolerance = 1e-6, label = paste(tr@name, "inverse hessian"))
+    expect_equal(tr@grad_log_jac(y), numDeriv::grad(lj, y), tolerance = 1e-4,
+                 label = paste(tr@name, "log-Jacobian gradient"))
+    expect_equal(tr@hess_log_jac(y),
+                 vapply(y, function(u) numDeriv::hessian(lj, u)[1], 0),
+                 tolerance = 1e-4, label = paste(tr@name, "log-Jacobian hessian"))
+  }
+  d <- transformation(gaussian1_distrib(), yj_transform(0))
+  expect_true(all(is.finite(distrib_pdf(d, c(-1, 1), list(mu = 0, sigma = 1)))))
+})

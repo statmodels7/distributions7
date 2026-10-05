@@ -1,81 +1,11 @@
 #include <Rcpp.h>
 #include <cmath>
 #include "d7_par.h"
+#include "pt_gpd.h"
 using namespace Rcpp;
 
-// The generalized Pareto in (sigma, xi). With z = y/sigma, t = 1 + xi z and
-// u = xi z,
-//   log f = -log sigma - log t - W,  W = log(t)/xi = z phi(u),
-//   phi(u) = log(1 + u)/u,           S(y) = exp(-W).
-// Every component below is a closed form derived offline with sympy
-// (stabilita/gen_gpd.py), one exported function per order and per surface,
-// and checked numerically in the tests and against exact values in
-// stabilita/gpd_measure.R. The forms contain no division by xi: the
-// derivatives of W that name z are elementary in 1/t, and the pure xi
-// derivatives are z^(j+1) phi^(j)(u), computed by gpd_phi without
-// cancellation at xi = 0.
-
-// a*b = p + e exactly (Dekker's split, no fused multiply-add)
-static inline double gpd_two_prod_err(double a, double b, double p) {
-  const double sp = 134217729.0;
-  double c = sp * a, ah = c - (c - a), al = a - ah;
-  c = sp * b;
-  double bh = c - (c - b), bl = b - bh;
-  return ((ah * bh - p) + ah * bl + al * bh) + al * bl;
-}
-
-// t = 1 + xi y/sigma = (sigma + xi y)/sigma, with sigma + xi y formed from
-// the exact product: near the upper end of the support, where t is a small
-// difference, it keeps its relative accuracy
-static inline double gpd_t(double y, double sigma, double xi) {
-  const double p = xi * y;
-  if (!(std::fabs(p) < 1e290)) return 1.0 + p / sigma;
-  const double e = gpd_two_prod_err(xi, y, p);
-  const double s = sigma + p, bb = s - sigma;
-  const double err = (sigma - (s - bb)) + (p - bb);
-  return (s + (err + e)) / sigma;
-}
-
-// log t: from u where u is small, from t (exact to rounding) elsewhere
-static inline double gpd_logt(double u, double t) {
-  return std::fabs(u) < 0.5 ? std::log1p(u) : std::log(t);
-}
-
-// phi^(j)(u) = (-1)^j j! u^-(j+1) sum_{i>j} v^i/i, v = u/t. Where |v| <= 0.75
-// the tail is summed as v^(j+1) sum_m v^m/(m + j + 1), so that
-// phi^(j) = (-1)^j j! t^-(j+1) sum_m v^m/(m + j + 1), with no division by u;
-// elsewhere it is log t minus the head of the series.
-static inline double gpd_phi(int j, double u, double v, double t, double lt) {
-  double fact = 1.0;
-  for (int i = 2; i <= j; i++) fact *= i;
-  const double sg = (j % 2) ? -fact : fact;
-  if (std::fabs(v) <= 0.75) {
-    double s = 0.0, vm = 1.0;
-    for (int m = 0; m < 400; m++) {
-      const double term = vm / (m + j + 1.0);
-      s += term;
-      if (std::fabs(term) < 1e-17 * std::fabs(s)) break;
-      vm *= v;
-    }
-    double tp = t;
-    for (int i = 0; i < j; i++) tp *= t;
-    return sg * s / tp;
-  }
-  double head = 0.0, vi = 1.0;
-  for (int i = 1; i <= j; i++) {
-    vi *= v;
-    head += vi / i;
-  }
-  double up = u;
-  for (int i = 0; i < j; i++) up *= u;
-  return sg * (lt - head) / up;
-}
-
-static inline double gpd_ipow(double x, int n) {
-  double r = 1.0;
-  for (int j = 0; j < n; j++) r *= x;
-  return r;
-}
+// The family, its helpers and the components the registry reads are in
+// pt_gpd.h.
 
 // [[Rcpp::export]]
 NumericVector gpd_logpdf_cpp(NumericVector y, NumericVector sigma,
@@ -117,9 +47,8 @@ List gpd_gradient_cpp(NumericVector y, NumericVector sigma, NumericVector xi, in
     const double F1 = gpd_phi(1, u, v, t, LT);
     const double is = 1.0 / sv;
     (void) is;
-    const double w0 = T1*z;
-    o_sigma[i] = (w0*x + w0 - 1) * gpd_ipow(is, 1);
-    o_xi[i] = (-z*(F1*z + T1));
+    o_sigma[i] = d7::gpd_score_sigma(z, x, T1, is);
+    o_xi[i] = d7::gpd_score_xi(z, T1, F1);
   });
   return List::create(Named("sigma") = o_sigma, Named("xi") = o_xi);
 }
@@ -150,12 +79,8 @@ List gpd_hessian_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int
     const double is = 1.0 / sv;
     (void) is;
     const double w0 = T1*z;
-    const double w1 = 2*w0;
-    const double w2 = std::pow(z, 2);
-    const double w3 = std::pow(T1, 2);
-    const double w4 = w2*w3;
-    o_sigma_sigma[i] = (-w1*x - w1 + w4*std::pow(x, 2) + w4*x + 1) * gpd_ipow(is, 2);
-    o_xi_xi[i] = (w2*(-F2*z + w3));
+    o_sigma_sigma[i] = d7::gpd_hess_sigma_sigma(z, x, T1, is);
+    o_xi_xi[i] = d7::gpd_hess_xi_xi(z, T1, F2);
     o_sigma_xi[i] = (w0*(-w0*x - w0 + 1)) * gpd_ipow(is, 1);
   });
   return List::create(Named("sigma_sigma") = o_sigma_sigma, Named("xi_xi") = o_xi_xi, Named("sigma_xi") = o_sigma_xi);
@@ -175,8 +100,8 @@ List gpd_expected_hessian_cpp(NumericVector y, NumericVector sigma, NumericVecto
     (void) is;
     const double w0 = 1.0/(2*x + 1);
     const double w1 = w0/(x + 1);
-    o_sigma_sigma[i] = x > -1.0/2.0 ? (-w0) * gpd_ipow(is, 2) : NA_REAL;
-    o_xi_xi[i] = x > -1.0/2.0 ? (-2*w1) : NA_REAL;
+    o_sigma_sigma[i] = d7::gpd_expected_sigma_sigma(sv, x);
+    o_xi_xi[i] = d7::gpd_expected_xi_xi(x);
     o_sigma_xi[i] = x > -1.0/2.0 ? (-w1) * gpd_ipow(is, 1) : NA_REAL;
   });
   return List::create(Named("sigma_sigma") = o_sigma_sigma, Named("xi_xi") = o_xi_xi, Named("sigma_xi") = o_sigma_xi);

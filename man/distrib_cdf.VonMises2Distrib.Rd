@@ -13,9 +13,14 @@ or above \eqn{\pi} it is 1.}
 vector of length 1 or of the length of \code{q}. \code{mu} must lie in
 \eqn{(-\pi, \pi)} and \code{rho} in \eqn{(0, 1)}.}
 
-\item{...}{Unused, and accepted so that the signature matches the generic's.
-This method takes \strong{no} \code{lower.tail} or \code{log.p}: the upper tail is
-\code{1 - F(q)} and the logarithm is \code{log(F(q))}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are
+\eqn{P(Y > q)}, formed as \eqn{1 - F(q)}.}
+
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of probabilities in \eqn{[0, 1]}, of length

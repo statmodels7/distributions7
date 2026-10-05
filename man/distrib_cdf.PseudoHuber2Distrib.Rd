@@ -18,14 +18,12 @@ Parametrization}
 \item{...}{Unused.}
 }
 \value{
-A numeric vector of probabilities. An error is signalled where the
-quadrature does not reach its accuracy.
+A numeric vector of probabilities.
 }
 \description{
-Computes \eqn{P(Y \le q)} by batched quadrature of the density over the
-lower tail. By symmetry about \eqn{\mu}, \eqn{F(q) = 1 - F(2\mu - q)}, so
-every quantile is integrated from \eqn{-\infty} to a point at or below
-\eqn{\mu}.
+Computes \eqn{P(Y \le q)} by numerical integration of the density, taken
+by the compiled rule of \code{\link[=compiled_cdf]{compiled_cdf()}} over the tail on the side of
+\eqn{q} away from \eqn{\mu}.
 }
 \examples{
 d <- pseudohuber2_distrib()

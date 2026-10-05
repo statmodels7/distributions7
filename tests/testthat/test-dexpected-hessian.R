@@ -438,3 +438,97 @@ test_that("the PIG's expected information keeps its digits near the Poisson limi
     }
   }
 })
+
+test_that("the zero wrappers' second derivatives agree with Richardson on the first", {
+  skip_if_not_installed("numDeriv")
+  cases <- list(
+    list(d = zero_inflated(poisson_distrib()), th = list(mu = 2.3, zi = 0.3)),
+    list(d = zero_inflated(negbin2_distrib()), th = list(mu = 1.7, theta = 0.8, zi = 0.3)),
+    list(d = zero_inflated(betabinom2_distrib(size = 6)),
+         th = list(alpha = 0.35, beta = 0.4, zi = 0.2)),
+    list(d = zero_adjusted(negbin2_distrib()), th = list(mu = 1.7, theta = 0.8, za = 0.3)),
+    list(d = zero_adjusted(gamma1_distrib()), th = list(mu = 1.7, phi = 0.8, za = 0.3))
+  )
+  for (cs in cases) {
+    expect_true(has_d2expected_hessian(cs$d))
+    r <- dexpected_richardson(cs$d, cs$th)
+    expect_close_list(distrib_d2expected_hessian(cs$d, 0, cs$th), r$r2, 1e-8)
+  }
+})
+
+test_that("a transformed family's derivatives are its parent's", {
+  d <- transformation(gamma1_distrib(), log_transform())
+  th <- list(mu = 1.7, phi = 0.8)
+  expect_identical(distrib_d2expected_hessian(d, 1, th),
+                   distrib_d2expected_hessian(gamma1_distrib(), 1, th))
+  expect_identical(distrib_dexpected_hessian(d, 1, th, scale = "link"),
+                   distrib_dexpected_hessian(gamma1_distrib(), 1, th, scale = "link"))
+})
+
+test_that("the folded derivatives agree with Richardson, across a kink as well", {
+  # A Laplace parent's folded score jumps at |mu|, a point that moves with
+  # mu, and the derivatives carry its boundary terms
+  skip_if_not_installed("numDeriv")
+  cases <- list(
+    list(d = folded(gaussian1_distrib()), th = list(mu = 0.7, sigma = 1.2)),
+    list(d = folded(laplace_distrib()), th = list(mu = 0.8, sigma = 1.1)),
+    list(d = folded(laplace_distrib()), th = list(mu = -0.5, sigma = 0.7)),
+    list(d = folded(student_t2_distrib()), th = list(mu = 0.5, sigma = 1.3, nu = 3.5))
+  )
+  for (cs in cases) {
+    r <- dexpected_richardson(cs$d, cs$th)
+    expect_close_list(distrib_dexpected_hessian(cs$d, 0, cs$th), r$r1, 1e-8)
+    expect_close_list(distrib_d2expected_hessian(cs$d, 0, cs$th), r$r2, 1e-8)
+  }
+})
+
+test_that("a folded parent with zero weight at a preimage gives finite derivatives", {
+  # the gumbel's left tail at -y overflows its log-derivatives where the
+  # preimage's weight is zero
+  d <- folded(gumbel_distrib())
+  y <- c(432, 524, 639, 785)
+  th <- list(mu = rep(0.7, 4), sigma = rep(1.2, 4))
+  expect_true(all(is.finite(unlist(distrib_deriv3(d, y, th)))))
+})
+
+test_that("the Student t third derivatives hold their limit far in the tails", {
+  # the kernels switch to the form in u = q t past q = 1e100; on both sides of
+  # the switch the components sit at the same limit
+  for (f in list(student_t1_distrib(), student_t2_distrib())) {
+    th <- list(mu = rep(0.3, 2), sigma = rep(1.2, 2), nu = rep(3, 2))
+    ik <- if (identical(f@distrib_name, student_t1_distrib()@distrib_name)) 1 / 3 else 1
+    q <- c(1e99, 1e101)
+    y <- 0.3 + 1.2 * sqrt(q / ik)
+    o <- distrib_deriv3(f, y, th)
+    expect_true(all(is.finite(unlist(o))))
+    for (k in c("sigma_sigma_sigma", "sigma_sigma_nu", "nu_nu_nu")) {
+      expect_equal(o[[k]][1], o[[k]][2], tolerance = 1e-12, label = k)
+    }
+    far <- distrib_deriv3(f, 1e60, lapply(th, `[`, 1))
+    expect_true(all(is.finite(unlist(far))))
+  }
+})
+
+test_that("the truncated derivatives agree with Richardson on the analytic order below", {
+  skip_if_not_installed("numDeriv")
+  cases <- list(
+    list(d = truncated(poisson_distrib(), lower = 1), th = list(mu = 2.3)),
+    list(d = truncated(negbin2_distrib(), lower = 1), th = list(mu = 1.7, theta = 0.8)),
+    list(d = truncated(gaussian1_distrib(), lower = -1, upper = 2),
+         th = list(mu = 0.3, sigma = 1.2))
+  )
+  for (cs in cases) {
+    expect_true(has_d2expected_hessian(cs$d))
+    r <- dexpected_richardson(cs$d, cs$th)
+    expect_close_list(distrib_dexpected_hessian(cs$d, 0, cs$th), r$r1, 1e-8)
+    expect_close_list(distrib_d2expected_hessian(cs$d, 0, cs$th), r$r2, 1e-8)
+  }
+})
+
+test_that("the truncated derivatives follow parameters that vary by observation", {
+  d <- truncated(poisson_distrib(), lower = 1)
+  mu <- c(0.4, 2.3, 5)
+  all <- distrib_d2expected_hessian(d, rep(1, 3), list(mu = mu))
+  one <- vapply(mu, function(m) distrib_d2expected_hessian(d, 1, list(mu = m))[[1]], 0)
+  expect_equal(all[[1]], one, tolerance = 1e-14)
+})

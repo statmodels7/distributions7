@@ -109,3 +109,30 @@ test_that("the expected derivatives go through the approximation", {
   expect_type(e, "list")
   expect_named(e, deriv_names(c("mu", "lambda", "alpha"), 3L))
 })
+
+test_that("the derivatives of the expected information are the y-free third derivatives", {
+  # E[l_ab] for (a, b) in the two rates is l_ab itself, free of y, so its
+  # derivative is l_abc; E_mm and E_la are checked against one difference,
+  # at points where x = a/sqrt(c) is moderate: past x of about 10, E_la is
+  # a cancellation the difference cannot resolve
+  d <- enet_distrib()
+  for (th in list(list(mu = 0, lambda = 2.3, alpha = 0.7),
+                  list(mu = 1, lambda = 0.6, alpha = 0.2),
+                  list(mu = -1, lambda = 4, alpha = 0.8))) {
+    de <- distrib_dexpected_hessian(d, 5, th)
+    d3 <- distrib_deriv3(d, 5, th)
+    expect_equal(de$lambda_lambda_lambda, d3$lambda_lambda_lambda, tolerance = 1e-10)
+    expect_equal(de$lambda_lambda_alpha, d3$lambda_lambda_alpha, tolerance = 1e-10)
+    expect_equal(de$alpha_alpha_lambda, d3$lambda_alpha_alpha, tolerance = 1e-10)
+    expect_equal(de$alpha_alpha_alpha, d3$alpha_alpha_alpha, tolerance = 1e-10)
+    for (key in c("mu_mu", "lambda_alpha")) for (p in c("lambda", "alpha")) {
+      h <- 1e-5 * th[[p]]
+      up <- th; up[[p]] <- th[[p]] + h
+      dn <- th; dn[[p]] <- th[[p]] - h
+      num <- (distrib_expected_hessian(d, 5, up)[[key]] -
+                distrib_expected_hessian(d, 5, dn)[[key]]) / (2 * h)
+      expect_equal(de[[paste(key, p, sep = "_")]], num, tolerance = 1e-6)
+    }
+    expect_identical(de$mu_mu_mu, 0)
+  }
+})

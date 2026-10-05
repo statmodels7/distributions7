@@ -1,19 +1,27 @@
 #include <Rcpp.h>
+#include <R_ext/Rdynload.h>
+#include "pt_pseudohuber.h"
+#include "pt_sqrt.h"
 using namespace Rcpp;
 
-// Ratios of Bessel K derivatives to K_1, computed with exponentially scaled
-// Bessel functions so the e^{-x} factors cancel and large arguments do not
-// underflow.
-//   r1 = K_1'(x) / K_1(x) = -(K_0 + K_2) / (2 K_1)
-//   r2 = K_1''(x) / K_1(x) = (3 K_1 + K_3) / (4 K_1)
-static void bessel_ratios(double x, double &r1, double &r2) {
-    double k0 = R::bessel_k(x, 0.0, 2.0);
-    double k1 = R::bessel_k(x, 1.0, 2.0);
-    double k2 = R::bessel_k(x, 2.0, 2.0);
-    double k3 = R::bessel_k(x, 3.0, 2.0);
-    r1 = -(k0 + k2) / (2.0 * k1);
-    r2 = (3.0 * k1 + k3) / (4.0 * k1);
+// The pseudo-Huber score and Hessian in (mu, sigma, nu), one kernel each,
+// from the component functions of pt_pseudohuber.h; the off-diagonal
+// components are written here. The Bessel ratios depend on nu alone, so they
+// are computed once when every parameter is a scalar.
+
+namespace d7 {
+
+// Resolved on first use, on the calling thread. Not a guarded static, for
+// the reason vm_bessel() gives in vonmises.cpp.
+static N7BesselK n7bk_ptr = nullptr;
+
+N7BesselK bessel_k_fn() {
+    if (n7bk_ptr == nullptr)
+        n7bk_ptr = (N7BesselK) R_GetCCallable("numericals7", "n7_bessel_k");
+    return n7bk_ptr;
 }
+
+}  // namespace d7
 
 // [[Rcpp::export]]
 List pseudohuber_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu) {
@@ -25,13 +33,13 @@ List pseudohuber_gradient_cpp(NumericVector y, NumericVector mu, NumericVector s
     bool nu_is_scalar = (nu.size() == 1);
     bool all_scalar = mu_is_scalar && sigma_is_scalar && nu_is_scalar;
 
-    double m = 0, s = 0, v = 0, s2 = 0, sq_v = 0, r1 = 0, r2 = 0;
+    double m = 0, s = 0, v = 0, s2 = 0;
+    d7::PhNu P = {0, 0, 0, 0, 0, 0, 0, 0};
 
     if (all_scalar) {
         m = mu[0]; s = sigma[0]; v = nu[0];
         s2 = s * s;
-        sq_v = std::sqrt(v);
-        bessel_ratios(sq_v, r1, r2);
+        P = d7::ph_nu(v);
     }
 
     for(int i = 0; i < n; i++) {
@@ -40,17 +48,16 @@ List pseudohuber_gradient_cpp(NumericVector y, NumericVector mu, NumericVector s
             s = sigma_is_scalar ? sigma[0] : sigma[i];
             v = nu_is_scalar ? nu[0] : nu[i];
             s2 = s * s;
-            sq_v = std::sqrt(v);
-            bessel_ratios(sq_v, r1, r2);
+            P = d7::ph_nu(v);
         }
 
         double res = y[i] - m;
         double res2 = res * res;
-        double D = std::sqrt(v + res2 / s2);
+        double D = d7::sqrt_cr(v + res2 / s2);
 
-        grad_mu[i] = res / (s2 * D);
-        grad_sigma[i] = (res2 / (s2 * D) - 1.0) / s;
-        grad_nu[i] = -0.5 * (1.0 / v + 1.0 / D + r1 / sq_v);
+        grad_mu[i] = d7::pseudohuber_score_mu(res, s2, D);
+        grad_sigma[i] = d7::pseudohuber_score_sigma(res2, s, s2, D);
+        grad_nu[i] = d7::pseudohuber_score_nu(v, D, P);
     }
 
     return List::create(Named("mu") = grad_mu, Named("sigma") = grad_sigma, Named("nu") = grad_nu);
@@ -67,14 +74,13 @@ List pseudohuber_hessian_cpp(NumericVector y, NumericVector mu, NumericVector si
     bool nu_is_scalar = (nu.size() == 1);
     bool all_scalar = mu_is_scalar && sigma_is_scalar && nu_is_scalar;
 
-    double m = 0, s = 0, v = 0, s2 = 0, s4 = 0, sq_v = 0, r1 = 0, r2 = 0, nu_const = 0;
+    double m = 0, s = 0, v = 0, s2 = 0, s4 = 0;
+    d7::PhNu P = {0, 0, 0, 0, 0, 0, 0, 0};
 
     if (all_scalar) {
         m = mu[0]; s = sigma[0]; v = nu[0];
         s2 = s * s; s4 = s2 * s2;
-        sq_v = std::sqrt(v);
-        bessel_ratios(sq_v, r1, r2);
-        nu_const = 0.5 / (v * v) + 0.25 * (r1 / (v * sq_v) + r1 * r1 / v - r2 / v);
+        P = d7::ph_nu(v);
     }
 
     for(int i = 0; i < n; i++) {
@@ -83,19 +89,17 @@ List pseudohuber_hessian_cpp(NumericVector y, NumericVector mu, NumericVector si
             s = sigma_is_scalar ? sigma[0] : sigma[i];
             v = nu_is_scalar ? nu[0] : nu[i];
             s2 = s * s; s4 = s2 * s2;
-            sq_v = std::sqrt(v);
-            bessel_ratios(sq_v, r1, r2);
-            nu_const = 0.5 / (v * v) + 0.25 * (r1 / (v * sq_v) + r1 * r1 / v - r2 / v);
+            P = d7::ph_nu(v);
         }
 
         double res = y[i] - m;
         double res2 = res * res;
-        double D = std::sqrt(v + res2 / s2);
+        double D = d7::sqrt_cr(v + res2 / s2);
         double D3 = D * D * D;
 
-        hess_mu_mu[i] = -v / (s2 * D3);
-        hess_sigma_sigma[i] = (s4 - 3.0 * s2 * res2 / D + res2 * res2 / D3) / (s4 * s2);
-        hess_nu_nu[i] = 0.25 / D3 + nu_const;
+        hess_mu_mu[i] = d7::pseudohuber_hess_mu_mu(v, s2, D3);
+        hess_sigma_sigma[i] = d7::pseudohuber_hess_sigma_sigma(res2, s2, s4, D, D3);
+        hess_nu_nu[i] = d7::pseudohuber_hess_nu_nu(D3, P);
 
         hess_mu_sigma[i] = (-2.0 * v * s2 * res - res2 * res) / (s2 * std::pow(v * s2 + res2, 1.5));
         hess_mu_nu[i] = -res / (2.0 * s2 * D3);

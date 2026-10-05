@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R dexpected_hessian.R
+#' @include distrib.R generics.R dexpected_hessian.R cdf_compiled.R
 NULL
 
 #' @title Gamma Distribution Class, Mean and Dispersion
@@ -1004,3 +1004,8 @@ gamma1_distrib <- function(link_mu = log_link(), link_phi = log_link()) {
     link_params = list(mu = link_mu, phi = link_phi)
   )
 }
+
+# the distribution function's derivatives from the compiled kernels
+# (compiled_cdf())
+S7::method(distrib_grad_cdf, Gamma1Distrib) <- compiled_grad_cdf
+S7::method(distrib_hess_cdf, Gamma1Distrib) <- compiled_hess_cdf

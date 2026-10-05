@@ -10,9 +10,8 @@
 expectation not depending on the data; the values are ignored.}
 
 \item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
-vector of length 1. Both must be strictly positive. One weighted sum is
-built for the whole call, so a parameter varying by observation is not
-supported here.}
+vector of length 1 or of the length of \code{y}. Both must be strictly
+positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
@@ -24,6 +23,9 @@ that the signature matches the generic's, where it selects between
 \item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, the number of threads the
+compiled kernel may use. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{alpha_alpha}, \code{beta_beta}
@@ -48,7 +50,7 @@ eh <- distrib_expected_hessian(d, 0:10, th)
 vapply(eh, function(v) v[1], numeric(1))
 
 # It is the mass-weighted sum of the observed Hessian over the support,
-# written out here by hand and agreeing exactly.
+# written out here by hand and agreeing to rounding.
 w <- distrib_pdf(d, 0:10, th)
 vapply(distrib_hessian(d, 0:10, th), function(v) sum(w * v), numeric(1))
 
