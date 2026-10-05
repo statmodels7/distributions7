@@ -139,54 +139,72 @@ static inline double t2_V9(double nu) {
 
 namespace d7 {
 
+// q = z^2 ik, t = 1/(1 + q), u = q/(1 + q) and zt = z t. Every observed
+// component is a sum of terms u^p t^c, u^p zt t^c and u^p z zt t^c, which
+// are bounded where q^p and t^c taken apart overflow and underflow (the
+// fourth derivatives were NaN from |z| of about 1e40); u is formed as
+// 1/(1 + 1/q) above q = 1 and zt as 1/(1/z + z ik) above |z| = 1, where q
+// itself may overflow and t underflow.
+struct student_t2_TQ { double q, t, u, zt; };
+
+inline student_t2_TQ student_t2_tq(double z, double ik) {
+  student_t2_TQ T;
+  T.q = z * z * ik;
+  T.t = 1.0 / (1.0 + T.q);
+  T.u = (T.q < 1.0) ? T.q * T.t : 1.0 / (1.0 + 1.0 / T.q);
+  T.zt = (std::fabs(z) <= 1.0) ? z * T.t : 1.0 / (1.0 / z + z * ik);
+  return T;
+}
+
+// D(q) = q/(1 + q) - log1p(q), with log q = 2 log|z| + log ik where q
+// overflows
+inline double student_t2_DQ(double z, double ik) {
+  const student_t2_TQ T = student_t2_tq(z, ik);
+  return std::isfinite(T.q) ? t2_D(T.q) :
+    T.u - (2.0 * std::log(std::fabs(z)) + std::log(ik));
+}
+
 inline double student_t2_score_mu(double z, double s, double ik) {
-  const double q = z * z * ik;
-  const double t = 1.0 / (1.0 + q);
-  const double w0 = t/s;
-  return w0*z*(3*ik + 1);
+  const student_t2_TQ T = student_t2_tq(z, ik);
+  const double w0 = 1.0/s;
+  return T.zt*w0*(3*ik + 1);
 }
 
 inline double student_t2_score_sigma(double z, double s, double ik) {
-  const double q = z * z * ik;
-  const double t = 1.0 / (1.0 + q);
-  const double w0 = t/s;
-  return w0*(2*q + std::pow(z, 2) - 1);
+  const student_t2_TQ T = student_t2_tq(z, ik);
+  const double w0 = 1.0/s;
+  return w0*(-T.t + 2*T.u + z*T.zt);
 }
 
 inline double student_t2_score_nu(double z, double ik, double V0, double DQ) {
-  const double q = z * z * ik;
-  const double t = 1.0 / (1.0 + q);
-  return (1.0/2.0)*DQ + V0 + (3.0/2.0)*ik*q*t;
+  const student_t2_TQ T = student_t2_tq(z, ik);
+  return (1.0/2.0)*DQ + V0 + (3.0/2.0)*ik*T.u;
 }
 
 inline double student_t2_hess_mu_mu(double z, double s, double ik) {
-  const double w0 = 3*ik;
-  const double q = z * z * ik;
-  const double t = 1.0 / (1.0 + q);
-  const double w1 = std::pow(t, 2);
-  const double w2 = w1/std::pow(s, 2);
-  return w2*(q*w0 + q - w0 - 1);
+  const student_t2_TQ T = student_t2_tq(z, ik);
+  const double w0 = std::pow(s, -2);
+  const double w1 = 3*ik;
+  const double w2 = T.t*w1 - T.u;
+  return T.t*w0*(3*ik*T.u - T.t - w2);
 }
 
 inline double student_t2_hess_sigma_sigma(double z, double s, double ik) {
-  const double q = z * z * ik;
-  const double t = 1.0 / (1.0 + q);
-  const double w1 = std::pow(t, 2);
-  const double w2 = w1/std::pow(s, 2);
-  const double w3 = std::pow(q, 2);
-  const double w4 = std::pow(z, 2);
-  return w2*(-q*w4 - 7*q - 2*w3 - 3*w4 + 1);
+  const student_t2_TQ T = student_t2_tq(z, ik);
+  const double w0 = std::pow(s, -2);
+  const double w3 = T.t*T.u;
+  const double w4 = z*T.zt;
+  const double w5 = std::pow(T.t, 2);
+  const double w6 = std::pow(T.u, 2);
+  return w0*(-3*T.t*w4 - T.u*w4 - 7*w3 + w5 - 2*w6);
 }
 
 inline double student_t2_hess_nu_nu(double z, double ik, double V1) {
-  const double w6 = std::pow(ik, 2);
-  const double q = z * z * ik;
-  const double t = 1.0 / (1.0 + q);
-  const double w1 = std::pow(t, 2);
-  const double w3 = std::pow(q, 2);
-  const double w5 = w1*w3;
-  const double w7 = q*w1;
-  return V1 + (1.0/2.0)*ik*w5 - 3.0/2.0*w5*w6 - 3*w6*w7;
+  const student_t2_TQ T = student_t2_tq(z, ik);
+  const double w3 = T.t*T.u;
+  const double w6 = std::pow(T.u, 2);
+  const double w7 = std::pow(ik, 2);
+  return V1 + (1.0/2.0)*ik*w6 - 3*w3*w7 - 3.0/2.0*w6*w7;
 }
 
 inline double student_t2_expected_mu_mu(double s, double ik) {
@@ -233,8 +251,7 @@ inline void student_t2_score_curv(int k, double y, const double* th,
     out[0] = student_t2_score_sigma(z, s, ik);
     out[1] = student_t2_hess_sigma_sigma(z, s, ik);
   } else {
-    const double q = z * z * ik;
-    out[0] = student_t2_score_nu(z, ik, t2_V0(v), t2_D(q));
+    out[0] = student_t2_score_nu(z, ik, t2_V0(v), student_t2_DQ(z, ik));
     out[1] = student_t2_hess_nu_nu(z, ik, t2_V1(v));
   }
 }
