@@ -40,17 +40,18 @@ The default method returns the class name when the registry covers the
 class and no constants; the binomial and the two beta-binomials carry
 their size as a constant.
 
-A wrapped family is named \code{"<wrapper class>[:aux]|<inner class>"}, \code{aux}
-being what the wrapper needs besides its constants, and its constants are
-the inner family's followed by the wrapper's. For \code{\link[=fixed]{fixed()}}, \code{aux} is the
+A wrapped family is named \code{"<wrapper class>[:aux]|<inner name>"}, \code{aux}
+being what the wrapper needs besides its constants and the inner name
+being the route's name of the wrapped family, which may itself be a
+wrapper; its constants are the inner family's followed by the wrapper's. For \code{\link[=fixed]{fixed()}}, \code{aux} is the
 mask of the fixed parameters (bit \code{j - 1} for the \code{j}-th parameter of the
 inner family) and the wrapper's constants are the fixed values in the
 inner family's order. For \code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} there is
 no \code{aux} and no constant of the wrapper's own, the probability being the
 last parameter. For \code{\link[=transformation]{transformation()}}, \code{aux} is the code of the
 transformer, which must be one of the twelve ready-made ones, and the
-wrapper's constants are the transformer's parameters. A wrapper of a
-wrapper, or a transformer built with \code{\link[=transformer]{transformer()}}, has no route.
+wrapper's constants are the transformer's parameters; a transformer built
+with \code{\link[=transformer]{transformer()}} has no route.
 }
 \examples{
 distrib_scalar_route(gaussian1_distrib())
