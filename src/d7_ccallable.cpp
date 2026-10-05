@@ -240,6 +240,17 @@ bool cont_has_cdf(int id) {
     }
 }
 
+// whether a continuous truncation can be routed over `inner`: a family with
+// a compiled distribution function and at most four parameters, or a chain
+// of fixed() nodes over one
+bool cont_trunc_ok(int inner) {
+    while (inner >= kWrapBase) {
+        if (node_of(inner).code != 1) return false;
+        inner = node_of(inner).inner;
+    }
+    return d7_n_params[inner] <= 4 && cont_has_cdf(inner);
+}
+
 int wrap_id(const char* cls, const char* bar) {
     std::string head(cls, bar - cls);
     int aux = 0;
@@ -271,8 +282,7 @@ int wrap_id(const char* cls, const char* bar) {
         ncw = nc + 2;
     }
     if (P + nc > kMaxVec || np + ncw > kMaxVec) return -1;
-    if (code == 8 && (inner >= kWrapBase || P > 4 || !cont_has_cdf(inner)))
-        return -1;
+    if (code == 8 && !cont_trunc_ok(inner)) return -1;
     for (int i = 0; i < d7_n_nodes; ++i) {
         const WrapNode& w = d7_nodes[i];
         if (w.code == code && w.aux == aux && w.inner == inner) return kWrapBase + i;
@@ -639,8 +649,43 @@ double trunc_logpdf(int inner, double y, const double* th) {
 // contributes nothing. trunc_cont_ends_cpp() and trunc_cont_rule_cpp() hand
 // R the same ends and the same nodes.
 
+// A continuous family seen through a chain of fixed() nodes (cont_trunc_ok):
+// the family at the bottom, its full vector, and the position in that vector
+// of each free parameter. The distribution function, its support, center,
+// scale and kinks are the bottom family's at the full vector, and a
+// derivative in free parameter k is the bottom family's in parameter at[k].
+struct ContView { int base, np; int at[4]; double full[kMaxVec]; };
+
+void cont_view(int id, const double* th, ContView& v) {
+    if (id < kWrapBase) {
+        v.base = id;
+        v.np = d7_n_params[id];
+        const int n = v.np + d7_n_constants[id];
+        for (int j = 0; j < n; ++j) v.full[j] = th[j];
+        for (int k = 0; k < v.np; ++k) v.at[k] = k;
+        return;
+    }
+    const WrapNode& w = node_of(id);
+    double full[kMaxVec];
+    int jk[4] = {0, 0, 0, 0};
+    fixed_inner(w.inner, w.aux, 0, th, full);
+    for (int k = 0; k < w.np && k < 4; ++k)
+        jk[k] = fixed_inner(w.inner, w.aux, k, th, full);
+    ContView in;
+    cont_view(w.inner, full, in);
+    v = in;
+    v.np = w.np;
+    for (int k = 0; k < w.np && k < 4; ++k) v.at[k] = in.at[jk[k]];
+}
+
 // the support of a continuous family at its parameters
 void cont_support(int id, const double* th, double* lo, double* hi) {
+    if (id >= kWrapBase) {
+        ContView v;
+        cont_view(id, th, v);
+        cont_support(v.base, v.full, lo, hi);
+        return;
+    }
     *lo = R_NegInf;
     *hi = R_PosInf;
     switch (id) {
@@ -661,6 +706,11 @@ void cont_support(int id, const double* th, double* lo, double* hi) {
 
 // a center and a scale for the rule, for every continuous family
 bool cont_center_scale(int id, const double* th, double* c, double* s) {
+    if (id >= kWrapBase) {
+        ContView v;
+        cont_view(id, th, v);
+        return cont_center_scale(v.base, v.full, c, s);
+    }
     if (center_scale(id, th, c, s)) return true;
     switch (id) {
     case 1: *c = th[0]; *s = th[0] * d7::sqrt_cr(th[1]); return true;
@@ -699,6 +749,11 @@ bool cont_center_scale(int id, const double* th, double* c, double* s) {
 
 // the kinks of the density in the response
 int cont_kinks(int id, const double* th, double* kk) {
+    if (id >= kWrapBase) {
+        ContView v;
+        cont_view(id, th, v);
+        return cont_kinks(v.base, v.full, kk);
+    }
     if (id == 28 || id == 29 || id == 32) { kk[0] = th[0]; return 1; }
     return 0;
 }
@@ -965,7 +1020,7 @@ void quad_cdf_derivs(int id, double q, const double* th, bool want_h,
 // the scale go over as v(c) and the scale's relative size, kept within
 // [0.05, 20].
 int cont_map(int id) {
-    switch (id) {
+    switch (base_of(id)) {
     case 1: case 7: case 9: case 14: case 15: case 16: case 17: case 18:
     case 21: case 22: case 25: case 26: case 30:
         return 1;
@@ -1025,6 +1080,11 @@ void mapped_rule(int id, const double* th, double a, double b,
 // the compiled distribution function and its derivatives, by family; false
 // where the family has none
 bool cont_cdf(int id, double q, const double* th, bool lower, double* F) {
+    if (id >= kWrapBase) {
+        ContView v;
+        cont_view(id, th, v);
+        return cont_cdf(v.base, q, v.full, lower, F);
+    }
     switch (id) {
     case 0: *F = d7::gaussian1_cdf(q, th, lower); return true;
     case 32: *F = d7::enet_cdf(q, th, lower); return true;
@@ -1050,6 +1110,14 @@ bool cont_cdf(int id, double q, const double* th, bool lower, double* F) {
     }
 }
 bool cont_cdf_grad(int id, double q, const double* th, double* g) {
+    if (id >= kWrapBase) {
+        ContView v;
+        cont_view(id, th, v);
+        double gf[4];
+        if (!cont_cdf_grad(v.base, q, v.full, gf)) return false;
+        for (int k = 0; k < v.np; ++k) g[k] = gf[v.at[k]];
+        return true;
+    }
     switch (id) {
     case 0: d7::gaussian1_cdf_grad(q, th, g); return true;
     case 32: d7::enet_cdf_grad(q, th, g); return true;
@@ -1075,6 +1143,17 @@ bool cont_cdf_grad(int id, double q, const double* th, double* g) {
     }
 }
 bool cont_cdf_hess(int id, double q, const double* th, double* h) {
+    if (id >= kWrapBase) {
+        ContView v;
+        cont_view(id, th, v);
+        double hf[10];
+        if (!cont_cdf_hess(v.base, q, v.full, hf)) return false;
+        const int P = d7_n_params[v.base];
+        for (int i = 0; i < v.np; ++i)
+            for (int j = i; j < v.np; ++j)
+                h[hess_pos(v.np, i, j)] = hf[hess_pos(P, v.at[i], v.at[j])];
+        return true;
+    }
     switch (id) {
     case 0: d7::gaussian1_cdf_hess(q, th, h); return true;
     case 32: d7::enet_cdf_hess(q, th, h); return true;
@@ -1113,12 +1192,12 @@ struct TruncEnds { double z; double g[4]; double h[10]; bool ok; };
 
 // the retained mass and, as `level` asks (0, 1 or 2), its first and
 // second derivatives in every parameter, at one observation; inner a base
-// family. The density needs the mass alone, and for a family whose
+// family or a chain of fixed() nodes over one. The density needs the mass alone, and for a family whose
 // derivatives are quadratures the derivatives cost far more than the mass.
 TruncEnds trunc_cont_ends(int inner, const double* th, double lo, double up,
                           int level) {
     TruncEnds e;
-    const int P = d7_n_params[inner], np2 = P * (P + 1) / 2;
+    const int P = id_np(inner), np2 = P * (P + 1) / 2;
     double slo, shi;
     cont_support(inner, th, &slo, &shi);
     const bool lo_in = lo > slo, up_in = up < shi;
@@ -1165,7 +1244,7 @@ void trunc_cont_score_curv(int inner, int k, double y, const double* th,
     const double* tp = trunc_points(inner, th);
     const TruncEnds e = trunc_cont_ends(inner, th, tp[0], tp[1], 2);
     if (!e.ok) { out[0] = out[1] = R_NaN; return; }
-    const int P = d7_n_params[inner];
+    const int P = id_np(inner);
     double sc[2];
     d7_score_curv(inner, k, y, th, sc);
     const double m = e.g[k] / e.z, M = e.h[hess_pos(P, k, k)] / e.z;
@@ -1178,7 +1257,7 @@ void trunc_cont_info_dinfo(int inner, int k, double y, const double* th,
     const double* tp = trunc_points(inner, th);
     const TruncEnds e = trunc_cont_ends(inner, th, tp[0], tp[1], 2);
     if (!e.ok) { out[0] = out[1] = R_NaN; return; }
-    const int P = d7_n_params[inner];
+    const int P = id_np(inner);
     std::vector<double> ys, ws;
     trunc_cont_nodes(inner, th, tp[0], tp[1], ys, ws);
     long double S = 0.0L, D = 0.0L;
@@ -1706,7 +1785,7 @@ Rcpp::List trunc_cont_ends_cpp(std::string cls, Rcpp::NumericMatrix theta,
     const int id = d7_scalar_id(cls.c_str());
     if (!node_valid(id) || node_of(id).code != 8)
         Rcpp::stop("'%s' is not the route of a truncated continuous family.", cls);
-    const int inner = node_of(id).inner, P = d7_n_params[inner];
+    const int inner = node_of(id).inner, P = id_np(inner);
     const int n = theta.nrow(), np = theta.ncol(), np2 = P * (P + 1) / 2;
     Rcpp::NumericVector z(n);
     Rcpp::NumericMatrix g(n, P), h(n, np2);

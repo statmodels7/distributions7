@@ -411,3 +411,35 @@ test_that("every continuous family truncated has entries equal to its methods", 
     }
   }
 })
+
+test_that("a continuous family truncated over fixed() has entries equal to its methods", {
+  for (mk in list(
+    function() truncated(fixed(student_t1_distrib(), nu = 5), lower = 0),
+    function() truncated(fixed(gamma1_distrib(), phi = 0.5), lower = 0.5),
+    function() truncated(fixed(beta2_distrib(), alpha = 2), upper = 0.8),
+    function() truncated(fixed(laplace_distrib(), sigma = 1), lower = -1, upper = 1.5),
+    # distrib is named: d alone would partially match it
+    function() truncated(fixed(distrib = gengamma1_distrib(), d = 2), lower = 0.5),
+    function() truncated(fixed(skewt_distrib(), nu = 6), lower = -0.2),
+    function() truncated(fixed(fixed(student_t1_distrib(), nu = 5), sigma = 1.5),
+                         upper = 1.2)
+  )) {
+    d <- mk()
+    expect_false(is.null(distrib_scalar_route(d)))
+    ccallable_twin(NULL, c(-0.5, 0.5), 8, d = d)
+  }
+})
+
+test_that("truncating over fixed() is truncating the family at the fixed value", {
+  # the information of the free parameters equals the corresponding block of
+  # the family truncated at the same point with the parameter held there
+  th <- list(mu = c(0.3, -0.4), sigma = c(1.2, 0.7))
+  a <- truncated(fixed(student_t1_distrib(), nu = 5), lower = 0)
+  b <- truncated(student_t1_distrib(), lower = 0)
+  ea <- distrib_expected_hessian(a, c(0.5, 1), th)
+  eb <- distrib_expected_hessian(b, c(0.5, 1), c(th, list(nu = 5)))
+  for (nm in names(ea)) expect_equal(ea[[nm]], eb[[nm]], tolerance = 1e-14)
+  expect_equal(distrib_pdf(a, c(0.5, 1), th, log = TRUE),
+               distrib_pdf(b, c(0.5, 1), c(th, list(nu = 5)), log = TRUE),
+               tolerance = 1e-15)
+})

@@ -20,7 +20,7 @@ Returns the route of a \code{\link[=truncated]{truncated()}} family,
 \code{"TruncatedContinuousDistrib|<inner name>"}, with the inner family's
 constants followed by the truncation points \code{lower} and \code{upper}, as
 \code{\link[=distrib_scalar_route]{distrib_scalar_route()}} describes, or \code{NULL} when the parent has no
-route. A continuous parent needs a compiled distribution function and no
-wrapper of its own.
+route. A continuous parent needs a compiled distribution function, and
+the only wrapper it may carry is \code{\link[=fixed]{fixed()}}.
 }
 \keyword{internal}

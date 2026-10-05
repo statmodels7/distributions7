@@ -9,8 +9,8 @@ NULL
 #' `"TruncatedContinuousDistrib|<inner name>"`, with the inner family's
 #' constants followed by the truncation points `lower` and `upper`, as
 #' [distrib_scalar_route()] describes, or `NULL` when the parent has no
-#' route. A continuous parent needs a compiled distribution function and no
-#' wrapper of its own.
+#' route. A continuous parent needs a compiled distribution function, and
+#' the only wrapper it may carry is [fixed()].
 #'
 #' @param distrib A truncated family.
 #' @param ... Unused.
