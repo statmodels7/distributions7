@@ -70,7 +70,6 @@ test_that("the route names every covered class and answers NULL elsewhere", {
   expect_identical(distrib_scalar_route(binomial_distrib(size = 7))$constants,
                    list(size = 7))
   expect_null(distrib_scalar_route(mvgaussian1_distrib(n_dim = 2)))
-  expect_null(distrib_scalar_route(truncated(poisson_distrib(), lower = 1)))
   expect_identical(d7_scalar_thread_safe_probe("NoSuchDistrib"), -1L)
 })
 
@@ -268,7 +267,29 @@ ccallable_wrappers <- list(
   function() fixed(transformation(gaussian1_distrib(), exp_transform()), sigma = 0.8),
   function() fixed(folded(gaussian1_distrib()), mu = 0.5),
   function() fixed(fixed(skewt_distrib(), nu = 6), alpha = 1.5),
-  function() fixed(zero_adjusted(folded(gaussian1_distrib())), sigma = 0.9)
+  function() fixed(zero_adjusted(folded(gaussian1_distrib())), sigma = 0.9),
+  # truncated() over the discrete families: below only (the removed points,
+  # or the retained series when the removed mass is most of the total),
+  # above only, and on both sides
+  function() truncated(poisson_distrib(), lower = 1),
+  function() truncated(poisson_distrib(), lower = 4),
+  function() truncated(poisson_distrib(), upper = 6),
+  function() truncated(poisson_distrib(), lower = 1, upper = 5),
+  function() truncated(negbin2_distrib(), lower = 1),
+  function() truncated(negbin2_distrib(), lower = 3),
+  function() truncated(negbin2_distrib(), upper = 8),
+  function() truncated(negbin1_distrib(), lower = 1),
+  function() truncated(negbin1_distrib(), lower = 2, upper = 12),
+  function() truncated(geometric_distrib(), lower = 1),
+  function() truncated(geometric_distrib(), upper = 9),
+  function() truncated(binomial_distrib(size = 7), lower = 1),
+  function() truncated(binomial_distrib(size = 7), upper = 5),
+  function() truncated(betabinom1_distrib(size = 9), lower = 1),
+  function() truncated(betabinom2_distrib(size = 9), lower = 1, upper = 7),
+  function() truncated(pig1_distrib(), lower = 1),
+  function() truncated(pig2_distrib(), upper = 10),
+  function() truncated(fixed(negbin2_distrib(), theta = 3), lower = 1),
+  function() zero_inflated(truncated(poisson_distrib(), upper = 50))
 )
 
 test_that("a wrapped family's entries are the wrapper's methods, bit for bit", {
@@ -285,7 +306,6 @@ test_that("a route the registry cannot read is rejected", {
   expect_identical(d7_scalar_thread_safe_probe("NoWrapper|Gaussian1Distrib"), -1L)
   expect_identical(d7_scalar_thread_safe_probe("ZeroInflatedDistrib:1|PoissonDistrib"), -1L)
   expect_null(distrib_scalar_route(folded(vonmises1_distrib())))
-  expect_null(distrib_scalar_route(zero_inflated(truncated(poisson_distrib(), upper = 50))))
   # a transformer built by hand, or a ready-made one with a function
   # replaced, has no code; a Box-Cox at lambda = 0 is the log transformer
   tr <- log_transform()
@@ -336,4 +356,24 @@ test_that("folded()'s expected information meets 30-digit values", {
     distrib_expected_hessian(l, 1, list(mu = p[1], sigma = p[2]))$mu_mu, 0)
   expect_equal(m, c(-0.273693449951955, -3.99995084660318, -0.115529289315002),
                tolerance = 1e-11)
+})
+
+test_that("a truncated discrete family meets 50-digit values", {
+  # mpmath, y = 5 under a Poisson truncated below 4 at mu = 0.05, where
+  # 1 - F(3) has lost nine digits to the difference of the cdf
+  d <- truncated(poisson_distrib(), lower = 4)
+  th <- list(mu = 0.05)
+  expect_equal(distrib_pdf(d, 5, th, log = TRUE), -4.6152036146879817761,
+               tolerance = 1e-15)
+  expect_equal(distrib_gradient(d, 5, th)$mu, 19.798660942114209393,
+               tolerance = 1e-14)
+  expect_equal(distrib_hessian(d, 5, th)$mu_mu, -400.02689585307639218,
+               tolerance = 1e-14)
+  # the information of a negative binomial truncated below 1, by exact sums
+  d <- truncated(negbin2_distrib(), lower = 1)
+  th <- list(mu = 2, theta = 0.5)
+  expect_equal(distrib_expected_hessian(d, 1, th)$theta_theta,
+               -0.58159342305398457498, tolerance = 1e-14)
+  expect_equal(distrib_dexpected_hessian(d, 1, th)$theta_theta_mu,
+               -0.0063572261128758559268, tolerance = 1e-13)
 })

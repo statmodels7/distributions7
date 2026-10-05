@@ -181,6 +181,14 @@ d7_center_scale_probe <- function(cls, theta) {
     .Call(`_distributions7_d7_center_scale_probe`, cls, theta)
 }
 
+trunc_rule_cpp <- function(cls, theta, info) {
+    .Call(`_distributions7_trunc_rule_cpp`, cls, theta, info)
+}
+
+ld_group_sum <- function(x, g, n) {
+    .Call(`_distributions7_ld_group_sum`, x, g, n)
+}
+
 fold_rule_cpp <- function(c, s) {
     .Call(`_distributions7_fold_rule_cpp`, c, s)
 }

@@ -632,6 +632,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// trunc_rule_cpp
+Rcpp::List trunc_rule_cpp(std::string cls, Rcpp::NumericMatrix theta, bool info);
+RcppExport SEXP _distributions7_trunc_rule_cpp(SEXP clsSEXP, SEXP thetaSEXP, SEXP infoSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type cls(clsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< bool >::type info(infoSEXP);
+    rcpp_result_gen = Rcpp::wrap(trunc_rule_cpp(cls, theta, info));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ld_group_sum
+Rcpp::NumericVector ld_group_sum(Rcpp::NumericVector x, Rcpp::IntegerVector g, int n);
+RcppExport SEXP _distributions7_ld_group_sum(SEXP xSEXP, SEXP gSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type g(gSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(ld_group_sum(x, g, n));
+    return rcpp_result_gen;
+END_RCPP
+}
 // fold_rule_cpp
 Rcpp::List fold_rule_cpp(double c, double s);
 RcppExport SEXP _distributions7_fold_rule_cpp(SEXP cSEXP, SEXP sSEXP) {
@@ -6143,6 +6169,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_d7_info_probe", (DL_FUNC) &_distributions7_d7_info_probe, 4},
     {"_distributions7_d7_logpdf_probe", (DL_FUNC) &_distributions7_d7_logpdf_probe, 3},
     {"_distributions7_d7_center_scale_probe", (DL_FUNC) &_distributions7_d7_center_scale_probe, 2},
+    {"_distributions7_trunc_rule_cpp", (DL_FUNC) &_distributions7_trunc_rule_cpp, 3},
+    {"_distributions7_ld_group_sum", (DL_FUNC) &_distributions7_ld_group_sum, 3},
     {"_distributions7_fold_rule_cpp", (DL_FUNC) &_distributions7_fold_rule_cpp, 2},
     {"_distributions7_d7_scalar_thread_safe_probe", (DL_FUNC) &_distributions7_d7_scalar_thread_safe_probe, 1},
     {"_distributions7_d7_scalar_classes_covered", (DL_FUNC) &_distributions7_d7_scalar_classes_covered, 0},

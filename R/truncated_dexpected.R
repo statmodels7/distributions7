@@ -44,6 +44,27 @@ trunc_dexpected <- function(d, y, th, k, t = 1L) {
   P <- d@params
   p <- length(P)
   pairs <- which(upper.tri(diag(p), diag = TRUE), arr.ind = TRUE)
+  if (k == 1L) {
+    parts <- trunc_route_parts(d, y, th, "dinfo")
+    if (!is.null(parts)) {
+      # d_c of -(S_ab / Z - m_a m_b), with d_c m_a = M_ac - m_a m_c
+      Z <- parts$Z
+      m <- lapply(parts$Zi, function(v) v / Z)
+      M <- function(a, c) parts$Zij[[hess_pair_name(P, a, c)]] / Z
+      dm <- function(a, c) M(a, c) - m[[P[a]]] * m[[P[c]]]
+      out <- list()
+      for (r in seq_len(nrow(pairs))) {
+        a <- pairs[r, 1L]; b <- pairs[r, 2L]
+        S <- parts$S[[hess_pair_name(P, a, b)]]
+        for (c in seq_len(p)) {
+          key <- dexpected_key(P, a, b, c)
+          out[[key]] <- rep_len(-(parts$D[[key]] / Z - S * parts$Zi[[P[c]]] / (Z * Z) -
+                                    (dm(a, c) * m[[P[b]]] + m[[P[a]]] * dm(b, c))), n)
+        }
+      }
+      return(out[dexpected_names(P)])
+    }
+  }
   hk <- function(a, b) hess_pair_name(P, a, b)
   tk <- function(a, b, c) paste(P[sort(c(a, b, c))], collapse = "_")
   # the derivatives of log Z, passed to the integrand through expectation()'s

@@ -5,6 +5,8 @@
 #include <string>
 #include <cmath>
 #include <cfloat>
+#include <algorithm>
+#include <vector>
 #include "pt_gaussian1.h"
 #include "pt_gamma1.h"
 #include "pt_poisson.h"
@@ -174,7 +176,8 @@ const WrapName d7_wrappers[] = {
     {"ZeroAdjustedDiscreteDistrib", 3},
     {"ZeroAdjustedContinuousDistrib", 4},
     {"FoldedDistrib", 5},
-    {"TransformedDistrib", 6}
+    {"TransformedDistrib", 6},
+    {"TruncatedDiscreteDistrib", 7}
 };
 const int d7_n_wrappers = sizeof(d7_wrappers) / sizeof(d7_wrappers[0]);
 
@@ -250,6 +253,8 @@ int wrap_id(const char* cls, const char* bar) {
         return -1;
     } else if (code >= 2 && code <= 4) {
         np = P + 1;
+    } else if (code == 7) {
+        ncw = nc + 2;
     }
     if (P + nc > kMaxVec || np + ncw > kMaxVec) return -1;
     for (int i = 0; i < d7_n_nodes; ++i) {
@@ -437,6 +442,174 @@ double zero_inner(int inner, const double* th, double* full) {
     return th[P];
 }
 
+// ---- truncated(), discrete parents ------------------------------------------
+//
+// th is the parent's vector followed by the truncation points lower and
+// upper, both included in the support. The retained mass and its
+// derivatives, and the truncated expectations the information reads, are
+// finite sums of the parent's own entries over support points:
+//   Z = sum f,  Z_k = sum f s_k,  Z_kk = sum f (l_kk + s_k^2),
+//   S = sum f s_k^2,  D = sum f (s_k^3 + l_kk s_k + s_k l_kk),
+// with f = exp(log f). When the retained set is finite the sums run over it.
+// When it is not (no upper point on an unbounded support), Z, Z_k and Z_kk
+// for the density, the score and the curvature run over the points removed
+// below `lower`, as the complements Z = 1 - sum f, Z_k = -sum f s_k and
+// Z_kk = -sum f (...); a complement loses digits when the removed mass is
+// most of the total, so above a removed mass of one half, and always for
+// the information, the sums run over the retained points as a series,
+// stopped beyond the mode once a term weighted by (1 + y)^6 falls below
+// 1e-20 of the sum. (The information's complement would read the parent's
+// E[s_k^2] and its derivative, whose error the subtraction amplifies.) The
+// sums accumulate in long double in increasing y, as trunc_route_parts() in
+// R accumulates them over the same points, which trunc_rule_cpp() hands it.
+
+const double kTruncSeriesTol = 1e-20;
+const double kTruncSeriesMax = 1e7;
+
+// the largest support point of a discrete family or chain: the size of the
+// binomial and the beta-binomials, one for the Bernoulli, infinite
+// otherwise
+double support_max(int id, const double* th) {
+    if (id >= kWrapBase) {
+        const WrapNode& w = node_of(id);
+        double full[kMaxVec];
+        if (w.code == 1) {
+            fixed_inner(w.inner, w.aux, 0, th, full);
+            return support_max(w.inner, full);
+        }
+        if (w.code == 2 || w.code == 3) {
+            zero_inner(w.inner, th, full);
+            return support_max(w.inner, full);
+        }
+        if (w.code == 7) {
+            const double up = th[id_np(w.inner) + id_nc(w.inner) + 1];
+            return std::min(up, support_max(w.inner, th));
+        }
+        return R_PosInf;
+    }
+    switch (id) {
+    case 5: return 1.0;
+    case 6: return th[1];
+    case 41: case 42: return th[2];
+    default: return R_PosInf;
+    }
+}
+
+struct TruncRule { int branch; double y0, y1; };
+
+// which points a truncated family's sums run over: branch 0 the finite
+// retained set [y0, y1], branch 1 the removed points [y0, y1] below lower,
+// branch 2 the retained points from y0 to the series' stop y1; y1 < y0 for
+// an empty set and NaN when the series does not stop; `info` excludes
+// branch 1
+TruncRule trunc_disc_rule(int inner, const double* thi, double lo, double up,
+                          bool info) {
+    TruncRule r;
+    const double a = (lo > 0) ? std::ceil(lo) : 0.0;
+    const double b = std::min(std::floor(up), support_max(inner, thi));
+    if (R_FINITE(b)) {
+        r.branch = 0; r.y0 = a; r.y1 = b;
+        return r;
+    }
+    if (!info) {
+        long double removed = 0.0L;
+        for (double y = 0; y < a; ++y)
+            removed += std::exp(d7_logpdf(inner, y, thi));
+        if ((double) removed <= 0.5) {
+            r.branch = 1; r.y0 = 0; r.y1 = a - 1;
+            return r;
+        }
+    }
+    r.branch = 2; r.y0 = a;
+    long double z = 0.0L;
+    double fprev = -1.0;
+    for (double y = a;; ++y) {
+        const double f = std::exp(d7_logpdf(inner, y, thi));
+        z += f;
+        if (y > a && f <= fprev &&
+            f * std::pow(1 + y, 6.0) <= kTruncSeriesTol * (double) z) {
+            r.y1 = y;
+            return r;
+        }
+        fprev = f;
+        if (y - a > kTruncSeriesMax) {
+            r.y1 = R_NaN;
+            return r;
+        }
+    }
+}
+
+struct TruncSums { double z, zk, zkk, s, d; };
+
+// the retained mass and the sums of parameter k, over the rule's points;
+// `info` asks for S and D as well
+TruncSums trunc_disc_sums(int inner, int k, const double* thi,
+                          double lo, double up, bool info) {
+    TruncSums t;
+    const TruncRule r = trunc_disc_rule(inner, thi, lo, up, info);
+    if (ISNAN(r.y1)) {
+        t.z = t.zk = t.zkk = t.s = t.d = R_NaN;
+        return t;
+    }
+    long double F = 0.0L, G = 0.0L, H = 0.0L, S = 0.0L, D = 0.0L;
+    for (double x = r.y0; x <= r.y1; ++x) {
+        const double f = std::exp(d7_logpdf(inner, x, thi));
+        double sc[2];
+        d7_score_curv(inner, k, x, thi, sc);
+        const double g = sc[0], l = sc[1];
+        F += f;
+        G += f * g;
+        H += f * (l + g * g);
+        if (info) {
+            S += f * (g * g);
+            D += f * (g * g * g + l * g + g * l);
+        }
+    }
+    if (r.branch == 1) {
+        t.z = 1 - (double) F;
+        t.zk = -(double) G;
+        t.zkk = -(double) H;
+        t.s = t.d = R_NaN;
+    } else {
+        t.z = (double) F;
+        t.zk = (double) G;
+        t.zkk = (double) H;
+        t.s = (double) S;
+        t.d = (double) D;
+    }
+    return t;
+}
+
+const double* trunc_points(int inner, const double* th) {
+    return th + id_np(inner) + id_nc(inner);
+}
+
+void trunc_score_curv(int inner, int k, double y, const double* th, double* out) {
+    const double* tp = trunc_points(inner, th);
+    const TruncSums t = trunc_disc_sums(inner, k, th, tp[0], tp[1], false);
+    double sc[2];
+    d7_score_curv(inner, k, y, th, sc);
+    const double m = t.zk / t.z, M = t.zkk / t.z;
+    out[0] = sc[0] - m;
+    out[1] = sc[1] - M + m * m;
+}
+
+void trunc_info_dinfo(int inner, int k, double y, const double* th, double* out) {
+    const double* tp = trunc_points(inner, th);
+    const TruncSums t = trunc_disc_sums(inner, k, th, tp[0], tp[1], true);
+    const double m = t.zk / t.z, M = t.zkk / t.z;
+    const double dm = M - m * m;
+    out[0] = -(t.s / t.z - m * m);
+    out[1] = -(t.d / t.z - t.s * t.zk / (t.z * t.z) - (dm * m + m * dm));
+}
+
+double trunc_logpdf(int inner, double y, const double* th) {
+    const double* tp = trunc_points(inner, th);
+    const TruncSums t = trunc_disc_sums(inner, 0, th, tp[0], tp[1], false);
+    const double ld = d7_logpdf(inner, y, th) - std::log(t.z);
+    return (y < tp[0] || y > tp[1]) ? R_NegInf : ld;
+}
+
 void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
     const WrapNode& w = node_of(id);
     const int code = w.code, aux = w.aux, inner = w.inner;
@@ -453,6 +626,10 @@ void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
     if (code == 6) {
         d7_score_curv(inner, k, d7::transform_inv(aux, y, transform_par(inner, th)),
                       th, out);
+        return;
+    }
+    if (code == 7) {
+        trunc_score_curv(inner, k, y, th, out);
         return;
     }
     if (code >= 2 && code <= 4) {
@@ -503,6 +680,10 @@ void wrap_info_dinfo(int id, int k, double y, const double* th, double* out) {
     if (code == 6) {
         d7_info_dinfo(inner, k, d7::transform_inv(aux, y, transform_par(inner, th)),
                       th, out);
+        return;
+    }
+    if (code == 7) {
+        trunc_info_dinfo(inner, k, y, th, out);
         return;
     }
     if (code >= 2 && code <= 4) {
@@ -556,6 +737,7 @@ double wrap_logpdf(int id, double y, const double* th) {
             d7_logpdf(inner, d7::transform_inv(aux, y, tp), th),
             d7::transform_log_jac(aux, y, tp));
     }
+    if (code == 7) return trunc_logpdf(inner, y, th);
     if (code >= 2 && code <= 4) {
         const double z = zero_inner(inner, th, full);
         const double lf = d7_logpdf(inner, y, full);
@@ -859,6 +1041,43 @@ Rcpp::NumericMatrix d7_center_scale_probe(std::string cls,
         out(i, 0) = c;
         out(i, 1) = s;
     }
+    return out;
+}
+
+// trunc_disc_rule() for trunc_route_parts() in R, one row of theta per
+// observation (the truncated family's parameters, the parent's constants,
+// lower and upper), as the route of the truncated family names them; `info`
+// as for trunc_disc_rule()
+// [[Rcpp::export]]
+Rcpp::List trunc_rule_cpp(std::string cls, Rcpp::NumericMatrix theta,
+                          bool info) {
+    const int id = d7_scalar_id(cls.c_str());
+    const int n = theta.nrow(), np = theta.ncol();
+    Rcpp::IntegerVector branch(n);
+    Rcpp::NumericVector y0(n), y1(n);
+    if (!node_valid(id) || node_of(id).code != 7)
+        Rcpp::stop("'%s' is not the route of a truncated family.", cls);
+    const int inner = node_of(id).inner;
+    std::vector<double> th(np);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        const double* tp = trunc_points(inner, th.data());
+        const TruncRule r = trunc_disc_rule(inner, th.data(), tp[0], tp[1], info);
+        branch[i] = r.branch; y0[i] = r.y0; y1[i] = r.y1;
+    }
+    return Rcpp::List::create(Rcpp::_["branch"] = branch, Rcpp::_["y0"] = y0,
+                              Rcpp::_["y1"] = y1);
+}
+
+// sums of x by group in index order, accumulated in long double as the
+// registry's loops accumulate them; g counts groups from one
+// [[Rcpp::export]]
+Rcpp::NumericVector ld_group_sum(Rcpp::NumericVector x, Rcpp::IntegerVector g,
+                                 int n) {
+    std::vector<long double> acc(n, 0.0L);
+    for (R_xlen_t i = 0; i < x.size(); ++i) acc[g[i] - 1] += x[i];
+    Rcpp::NumericVector out(n);
+    for (int i = 0; i < n; ++i) out[i] = (double) acc[i];
     return out;
 }
 
