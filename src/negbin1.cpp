@@ -147,7 +147,7 @@ List negbin1_expected_hessian_cpp(NumericVector y, NumericVector mu,
 // 3 by their exact recurrences, T = -sum 1/(r+j)^2, U = sum 2/(r+j)^3,
 // V = -sum 6/(r+j)^4, accumulated beside the mass as nb1_E_Pr accumulates T.
 // The mass is the one nb1_E_Pr sums, seeded and switched out of log scale by
-// the same rule, and the loop stops on the same accumulated mass.
+// the same rule, and the loop stops by the same rule on its terms.
 // The first order reads G, G_r and G_t, which need T and U beside the mass;
 // the second all six, which need V as well.
 // nb1_G_derivs1() is in pt_negbin1.h; the second order follows it.
@@ -157,8 +157,9 @@ static void nb1_G_derivs2(double mu, double th, double* G) {
     double lratio = std::log(th) - std::log1p(th);
     double L = std::log1p(th), op = 1.0 + th, iop2 = 1.0 / (op * op);
     double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + th))
-                 + 40.0 / (-std::log(ratio));
+                 + 80.0 / (-std::log(ratio));
     int kmax = (int) std::min(cap, 2.0e9);
+    const double mode = negbin1_series_mode(r, th);
     double lpk = -r * std::log1p(th);
     bool logscale = (lpk <= -640.0);
     double pk = std::exp(lpk);
@@ -176,7 +177,7 @@ static void nb1_G_derivs2(double mu, double th, double* G) {
         s[4] += pk * (b * (a * T + U) - T / op);
         s[5] += pk * (b * b + bt) * T;
         cum += pk;
-        if (cum >= 1.0 - 1e-12) break;
+        if (negbin1_series_done(kd, pk, mode)) break;
         double v = 1.0 / (r + kd), v2 = v * v;
         S += v;
         T -= v2;

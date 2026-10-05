@@ -72,9 +72,8 @@ inline NB1parts nb1_parts(double y, double mu, double th, int order) {
 //
 // The mass comes from the recurrence p_{k+1} = p_k (k + r)/(k + 1) *
 // theta/(1 + theta), carried in log scale until it is representable, and the
-// loop stops once the accumulated mass reaches 1 - 1e-12. That is the point
-// the far-tail quantile an earlier version called would have located, and
-// the call was R::qnbinom, which is off limits here for the reason
+// loop stops by negbin1_series_done(). An earlier version located the tail
+// by a far quantile, and the call was R::qnbinom, which is off limits here for the reason
 // nb_E_trigamma states one family over: this helper runs inside d7::par_for
 // workers, and qnbinom's search reaches pbeta, whose warning path calls into
 // the R API and killed the process from a worker thread on four of five CI
@@ -88,13 +87,29 @@ inline NB1parts nb1_parts(double y, double mu, double th, int order) {
 //
 // The hard cap covers the geometric tail, whose decay ratio is
 // theta/(1 + theta); the loop almost always breaks on the mass long before.
+// THE STOPPING RULE OF THE SERIES BELOW (nb1_E_Pr, nb1_G_derivs1 and
+// nb1_G_derivs2 in negbin1.cpp), negbin2's (pt_negbin2.h): past the mode,
+// and not before k = 100, once p_k (1 + k)^2 falls below 1e-17. The rule it
+// replaces stopped at 1 - 1e-12 of the accumulated mass; against 50-digit
+// sums on 16 cells (mu 0.5 to 100, theta 0.05 to 20) that left up to 1.5e-2
+// on d_mu E[l_theta,theta] at mu = 100, theta = 0.05, and 7.8e-5 at mu = 10.
+// The mode of the mass is (r - 1) theta for r = mu/theta above one.
+inline bool negbin1_series_done(double kd, double pk, double mode) {
+    return kd >= 100.0 && kd > mode && pk * (1.0 + kd) * (1.0 + kd) <= 1e-17;
+}
+
+inline double negbin1_series_mode(double r, double th) {
+    return (r > 1.0) ? (r - 1.0) * th : 0.0;
+}
+
 inline double nb1_E_Pr(double mu, double th) {
     double r = mu / th;
     double ratio = th / (1.0 + th);
     double lratio = std::log(th) - std::log1p(th);
     double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + th))
-                 + 40.0 / (-std::log(ratio));
+                 + 80.0 / (-std::log(ratio));
     int kmax = (int) std::min(cap, 2.0e9);
+    const double mode = negbin1_series_mode(r, th);
 
     double lpk = -r * std::log1p(th);      // log P(Y = 0), which is r log(1 - ratio)
     // The log scale is left on the SAME threshold the loop switches at, and
@@ -109,7 +124,7 @@ inline double nb1_E_Pr(double mu, double th) {
         double kd = (double) k;
         s += T * pk;
         cum += pk;
-        if (cum >= 1.0 - 1e-12) break;
+        if (negbin1_series_done(kd, pk, mode)) break;
         double v = 1.0 / (r + kd);
         T -= v * v;                       // T is now the difference at k + 1
         if (logscale) {
@@ -133,8 +148,9 @@ inline void nb1_G_derivs1(double mu, double th, double* G) {
     double lratio = std::log(th) - std::log1p(th);
     double L = std::log1p(th), op = 1.0 + th;
     double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + th))
-                 + 40.0 / (-std::log(ratio));
+                 + 80.0 / (-std::log(ratio));
     int kmax = (int) std::min(cap, 2.0e9);
+    const double mode = negbin1_series_mode(r, th);
     double lpk = -r * std::log1p(th);
     bool logscale = (lpk <= -640.0);
     double pk = std::exp(lpk);
@@ -148,7 +164,7 @@ inline void nb1_G_derivs1(double mu, double th, double* G) {
         s[1] += pk * (a * T + U);
         s[2] += pk * b * T;
         cum += pk;
-        if (cum >= 1.0 - 1e-12) break;
+        if (negbin1_series_done(kd, pk, mode)) break;
         double v = 1.0 / (r + kd), v2 = v * v;
         S += v;
         T -= v2;
