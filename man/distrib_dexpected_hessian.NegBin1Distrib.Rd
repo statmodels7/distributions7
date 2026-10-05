@@ -32,17 +32,20 @@ parameters for three families whose expected information is itself a sum
 over the support.
 }
 \details{
-\strong{NB1.} Every component is \eqn{c_0 + c_1 G} with \eqn{c_0, c_1} rational
-in \eqn{(\mu, \theta)} and \eqn{G = \mathbb{E}[\psi'(Y + r) - \psi'(r)]},
-\eqn{r = \mu/\theta}. The derivatives of \eqn{G} are sums over the same mass
-with the score of the mass beside the summand, the differences
-\eqn{\psi^{(n)}(r + y) - \psi^{(n)}(r)} taken by their exact recurrences,
-from a compiled kernel. Toward the Poisson limit \eqn{\theta \to 0} the
-composition \eqn{c_0 + c_1 G} cancels, which the expected information
-itself already does (7.7e-07 relative at \eqn{\theta = 0.005} against an
-exact sum over the support, 1.6e-05 at \eqn{10^{-3}}), and each derivative
-loses about one further factor of \eqn{1/\theta}: measured against the
-exact sums, 1e-09 at \eqn{\theta = 0.7}, 1e-07 at 0.2, 1e-05 at 0.05.
+\strong{NB1.} The expected information is \eqn{-A}, \eqn{W/\theta^2} and
+\eqn{-W/(\mu\theta)}, with \eqn{A} and \eqn{W} the two sums over the support
+of \code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}}. Their derivatives are sums
+over the same mass with the score of the mass beside the summand,
+\eqn{\partial_c F = \mathbb{E}[f_c + f s_c]} and
+\eqn{\partial_{ce} F = \mathbb{E}[f_{ce} + f_c s_e + f_e s_c + f(s_c s_e +
+h_{ce})]}, taken in \eqn{(\mu, \theta)} by a compiled kernel, with the
+scores \eqn{s} and second derivatives \eqn{h} of the log-mass written so
+that no term of order \eqn{\mu/\theta^2} is formed. Measured against exact
+sums at 50 digits, the error relative to the largest component of each
+order is about 2e-10 at \eqn{\mu = 100}, \eqn{\theta = 0.05}, and grows
+toward the Poisson limit, to 4e-08 at \eqn{\theta = 0.005} and 5e-06 at
+\eqn{\theta = 0.001} (\eqn{\mu = 10}), the fourth derivative in \eqn{\theta}
+being the worst component.
 
 \strong{Beta-binomial.} The support \eqn{\{0, \dots, n\}} is finite, so the
 identities

@@ -214,3 +214,25 @@ test_that("negbin2's expected information and its derivatives meet 50-digit sums
     expect_equal(de$theta_theta_theta, ref[i, 5], tolerance = 1e-12)
   }
 })
+
+test_that("negbin1's expected information and its derivatives hold at small theta", {
+  # values from sums over the support at 50 digits with symbolic derivatives;
+  # the composition through the size r = mu/theta read d_mu E[l_theta,theta]
+  # 4.5e-6 out of itself and d_theta^2 E[l_theta,theta] 7.4e-7 out here
+  d <- negbin1_distrib()
+  th <- list(mu = 100, theta = 0.05)
+  expect_equal(distrib_expected_hessian(d, 0, th)$theta_theta,
+               -0.4533024716730044257, tolerance = 1e-12)
+  expect_equal(distrib_dexpected_hessian(d, 0, th)$theta_theta_mu,
+               -2.121750694727636100e-06, tolerance = 1e-8)
+  d2 <- distrib_d2expected_hessian(d, 0, th)
+  expect_equal(d2$theta_theta_theta_theta, -2.492566450997503659, tolerance = 1e-9)
+  expect_equal(d2$mu_theta_theta_theta, -0.016101775338152735036, tolerance = 1e-9)
+  # toward the Poisson limit the dispersion entry tends to -1/2 and stays
+  # negative; the composition read +65536 at theta = 1e-10
+  e <- distrib_expected_hessian(d, 0, list(mu = 4, theta = c(1e-6, 1e-8, 1e-10)))
+  expect_equal(e$theta_theta, rep(-0.5, 3), tolerance = 1e-5)
+  expect_true(all(e$mu_mu * e$theta_theta - e$mu_theta^2 > 0))
+  expect_equal(distrib_d2expected_hessian(d, 0, list(mu = 10, theta = 0.005))$theta_theta_theta_theta,
+               -3.272866790290974243, tolerance = 1e-6)
+})

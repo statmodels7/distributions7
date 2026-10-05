@@ -71,8 +71,8 @@ function, the score is
         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta},}
 and the Hessian is the same chain rule at second order. In the expected
 information every term carrying \eqn{P} drops out, its expectation vanishing
-by the first Bartlett identity, and only \eqn{\mathbb{E}[\psi'(Y+r)]}
-remains, which is summed against the exact mass out to a far-tail quantile.
+by the first Bartlett identity, and what remains is two sums over the
+support against the exact mass (\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}}).
 
 \strong{The mean and the dispersion are not orthogonal here.} The mixed entry of
 the expected information is small but non-zero at every setting measured,
@@ -86,16 +86,13 @@ to a finite limit while the pieces it is assembled from run away: the size
 powers of \eqn{\theta}. The score's digamma difference is computed in a form
 that performs its own cancellation symbolically, and the value converges
 onto \eqn{\{(y-\mu)^2 - y\}/(2\mu)}, holding to about five significant
-figures at \eqn{\theta = 10^{-8}}. Two quantities are \strong{not} rewritten, and
-both pages say so:
-\itemize{
-\item the expected information in \eqn{\theta}, which turns positive from about
-\eqn{\theta = 10^{-6}} and leaves the matrix indefinite
-(\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}});
-\item the third and fourth derivatives in \eqn{\theta}, whose own cancellation
-in the powers of \eqn{r} is untouched
-(\code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3.NegBin1Distrib()}}, \code{\link[=distrib_deriv4.NegBin1Distrib]{distrib_deriv4.NegBin1Distrib()}}).
-}
+figures at \eqn{\theta = 10^{-8}}. The expected information is written in
+sums whose summands are rational in \eqn{(\mu, \theta)} and stays negative
+definite to \eqn{\theta = 10^{-10}}
+(\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}}). The third and fourth
+derivatives in \eqn{\theta} are \strong{not} rewritten, and their cancellation in
+the powers of \eqn{r} is untouched (\code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3.NegBin1Distrib()}},
+\code{\link[=distrib_deriv4.NegBin1Distrib]{distrib_deriv4.NegBin1Distrib()}}).
 
 A fit reaches that regime routinely: on 2,000 Poisson counts with mean 4 the
 dispersion is estimated at about \eqn{1.7\times 10^{-8}} and the run reports

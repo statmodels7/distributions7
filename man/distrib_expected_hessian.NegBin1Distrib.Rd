@@ -35,11 +35,16 @@ when the parameters are.
 \description{
 Returns the expectation of the observed Hessian under the model. Every term
 carrying \eqn{P = \psi(y+r) - \psi(r) - \log(1+\theta)} drops out, its
-expectation vanishing by the first Bartlett identity, and what remains needs
-only \eqn{\mathbb{E}[\psi'(Y+r)]}. That has no closed form: it is summed
-against the exact mass out to a far-tail quantile, so this is a truncated
-exact sum and not a quadrature or a simulation. \code{approx} and \code{nsim} are
-ignored, and \code{y} is read only for its length.
+expectation vanishing by the first Bartlett identity. With
+\eqn{u_j = \mu + \theta j}, the entries are \eqn{-A},
+\eqn{W/\theta^2} and \eqn{-W/(\mu\theta)}, where
+\deqn{A = \mathbb{E}\Big[\sum_{j<Y} u_j^{-2}\Big], \qquad
+  W = \mathbb{E}\Big[\sum_{j<Y} \Big(\frac{1}{1+\theta} -
+  \frac{\mu^2}{u_j^2}\Big)\Big].}
+Neither has a closed form. Each is summed against the exact mass until the
+terms fall below a tolerance, so this is a truncated exact sum and not a
+quadrature or a simulation. \code{approx} and \code{nsim} are ignored, and \code{y} is
+read only for its length.
 
 \strong{The mixed entry does not vanish}, so the mean and the dispersion are not
 orthogonal in this family. Measured at four settings it is 0.0172, 0.0364,
@@ -47,17 +52,16 @@ orthogonal in this family. Measured at four settings it is 0.0172, 0.0364,
 That is a difference between the two negative binomials rather than a
 difference of parametrization.
 }
-\section{A caveat at small theta}{
-The dispersion entry inherits the cancellation of
-\code{\link[=distrib_gradient.NegBin1Distrib]{distrib_gradient.NegBin1Distrib()}} and \strong{is not rewritten to remove it}.
-The chain rule through \eqn{r = \mu/\theta} divides by \eqn{\theta^2} and
-\eqn{\theta^4}, so what is left of the digits runs out early. Measured at
-\eqn{\mu = 4}: the entry reads \eqn{-0.489} at \eqn{\theta = 10^{-2}} and
-\eqn{-0.500} at \eqn{10^{-4}}, then \eqn{+2.1\times 10^{2}} at \eqn{10^{-6}}
-and \eqn{+2.9\times 10^{8}} at \eqn{10^{-8}}. The sign is impossible for an
-expected second derivative, and the matrix is indefinite there, its
-determinant turning negative. A Fisher scoring step taken in that regime is
-not reliable, and a nearly equidispersed sample drives a fit into it.
+\section{Accuracy at small theta}{
+The summand of \eqn{W} is a rational function of \eqn{(\mu, \theta)},
+\eqn{\theta(2\mu j + \theta j^2 - \mu^2)/((1+\theta) u_j^2)}, so the terms
+of order \eqn{\mu/\theta^2} that a composition through the size
+\eqn{r = \mu/\theta} forms are never formed. The dispersion entry still
+loses digits as \eqn{\theta \to 0}, where the summands change sign and
+their sum tends to a finite limit. Measured at \eqn{\mu = 4}, it reads
+\eqn{-0.49999887} at \eqn{\theta = 10^{-6}}, \eqn{-0.49999994} at
+\eqn{10^{-8}} and \eqn{-0.5000013} at \eqn{10^{-10}}, against the limit
+\eqn{-1/2}, and the matrix stays negative definite.
 }
 
 \section{Notation}{

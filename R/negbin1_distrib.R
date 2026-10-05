@@ -501,11 +501,16 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #' @description
 #' Returns the expectation of the observed Hessian under the model. Every term
 #' carrying \eqn{P = \psi(y+r) - \psi(r) - \log(1+\theta)} drops out, its
-#' expectation vanishing by the first Bartlett identity, and what remains needs
-#' only \eqn{\mathbb{E}[\psi'(Y+r)]}. That has no closed form: it is summed
-#' against the exact mass out to a far-tail quantile, so this is a truncated
-#' exact sum and not a quadrature or a simulation. `approx` and `nsim` are
-#' ignored, and `y` is read only for its length.
+#' expectation vanishing by the first Bartlett identity. With
+#' \eqn{u_j = \mu + \theta j}, the entries are \eqn{-A},
+#' \eqn{W/\theta^2} and \eqn{-W/(\mu\theta)}, where
+#' \deqn{A = \mathbb{E}\Big[\sum_{j<Y} u_j^{-2}\Big], \qquad
+#'   W = \mathbb{E}\Big[\sum_{j<Y} \Big(\frac{1}{1+\theta} -
+#'   \frac{\mu^2}{u_j^2}\Big)\Big].}
+#' Neither has a closed form. Each is summed against the exact mass until the
+#' terms fall below a tolerance, so this is a truncated exact sum and not a
+#' quadrature or a simulation. `approx` and `nsim` are ignored, and `y` is
+#' read only for its length.
 #'
 #' **The mixed entry does not vanish**, so the mean and the dispersion are not
 #' orthogonal in this family. Measured at four settings it is 0.0172, 0.0364,
@@ -513,18 +518,17 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #' That is a difference between the two negative binomials rather than a
 #' difference of parametrization.
 #'
-#' # A caveat at small theta
+#' # Accuracy at small theta
 #'
-#' The dispersion entry inherits the cancellation of
-#' [distrib_gradient.NegBin1Distrib()] and **is not rewritten to remove it**.
-#' The chain rule through \eqn{r = \mu/\theta} divides by \eqn{\theta^2} and
-#' \eqn{\theta^4}, so what is left of the digits runs out early. Measured at
-#' \eqn{\mu = 4}: the entry reads \eqn{-0.489} at \eqn{\theta = 10^{-2}} and
-#' \eqn{-0.500} at \eqn{10^{-4}}, then \eqn{+2.1\times 10^{2}} at \eqn{10^{-6}}
-#' and \eqn{+2.9\times 10^{8}} at \eqn{10^{-8}}. The sign is impossible for an
-#' expected second derivative, and the matrix is indefinite there, its
-#' determinant turning negative. A Fisher scoring step taken in that regime is
-#' not reliable, and a nearly equidispersed sample drives a fit into it.
+#' The summand of \eqn{W} is a rational function of \eqn{(\mu, \theta)},
+#' \eqn{\theta(2\mu j + \theta j^2 - \mu^2)/((1+\theta) u_j^2)}, so the terms
+#' of order \eqn{\mu/\theta^2} that a composition through the size
+#' \eqn{r = \mu/\theta} forms are never formed. The dispersion entry still
+#' loses digits as \eqn{\theta \to 0}, where the summands change sign and
+#' their sum tends to a finite limit. Measured at \eqn{\mu = 4}, it reads
+#' \eqn{-0.49999887} at \eqn{\theta = 10^{-6}}, \eqn{-0.49999994} at
+#' \eqn{10^{-8}} and \eqn{-0.5000013} at \eqn{10^{-10}}, against the limit
+#' \eqn{-1/2}, and the matrix stays negative definite.
 #'
 #' @param distrib A `NegBin1Distrib` object, from [negbin1_distrib()].
 #' @param y A numeric vector of counts. Only its length is used.
@@ -649,8 +653,8 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #'         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta},}
 #' and the Hessian is the same chain rule at second order. In the expected
 #' information every term carrying \eqn{P} drops out, its expectation vanishing
-#' by the first Bartlett identity, and only \eqn{\mathbb{E}[\psi'(Y+r)]}
-#' remains, which is summed against the exact mass out to a far-tail quantile.
+#' by the first Bartlett identity, and what remains is two sums over the
+#' support against the exact mass ([distrib_expected_hessian.NegBin1Distrib()]).
 #'
 #' **The mean and the dispersion are not orthogonal here.** The mixed entry of
 #' the expected information is small but non-zero at every setting measured,
@@ -664,15 +668,13 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #' powers of \eqn{\theta}. The score's digamma difference is computed in a form
 #' that performs its own cancellation symbolically, and the value converges
 #' onto \eqn{\{(y-\mu)^2 - y\}/(2\mu)}, holding to about five significant
-#' figures at \eqn{\theta = 10^{-8}}. Two quantities are **not** rewritten, and
-#' both pages say so:
-#'
-#' - the expected information in \eqn{\theta}, which turns positive from about
-#'   \eqn{\theta = 10^{-6}} and leaves the matrix indefinite
-#'   ([distrib_expected_hessian.NegBin1Distrib()]);
-#' - the third and fourth derivatives in \eqn{\theta}, whose own cancellation
-#'   in the powers of \eqn{r} is untouched
-#'   ([distrib_deriv3.NegBin1Distrib()], [distrib_deriv4.NegBin1Distrib()]).
+#' figures at \eqn{\theta = 10^{-8}}. The expected information is written in
+#' sums whose summands are rational in \eqn{(\mu, \theta)} and stays negative
+#' definite to \eqn{\theta = 10^{-10}}
+#' ([distrib_expected_hessian.NegBin1Distrib()]). The third and fourth
+#' derivatives in \eqn{\theta} are **not** rewritten, and their cancellation in
+#' the powers of \eqn{r} is untouched ([distrib_deriv3.NegBin1Distrib()],
+#' [distrib_deriv4.NegBin1Distrib()]).
 #'
 #' A fit reaches that regime routinely: on 2,000 Poisson counts with mean 4 the
 #' dispersion is estimated at about \eqn{1.7\times 10^{-8}} and the run reports
