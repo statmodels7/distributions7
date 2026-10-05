@@ -1,3 +1,70 @@
+# distributions7 0.70.0
+
+* Every univariate family has compiled scalar entries, registered with
+  `R_RegisterCCallable()`: `d7_scalar_id()`, `d7_score_curv()`,
+  `d7_info_dinfo()` and `d7_logpdf()` return, for one observation, the
+  score and the diagonal of the Hessian, the diagonal of the expected
+  information and its derivative, and the log-density, identical to the R
+  methods. `distrib_scalar_route()` gives the name and the constants by which
+  the registry knows a distribution, or `NULL`, and `d7_scalar_thread_safe()`
+  says whether its entries may run on worker threads. The registry covers
+  the wrappers too, nested in any order the constructors accept: `fixed()`,
+  `zero_inflated()`, `zero_adjusted()`, `folded()`, `transformation()` with
+  any of the twelve ready-made transformers, and `truncated()`.
+* The families are compiled kernels, one per order and surface, whose
+  components are written once in per-family headers shared with the
+  registry. The gumbel, both Laplace, the first Weibull, the second beta, the
+  elastic net, the first skew normal and the skew t were ported to Rcpp; the
+  skew t's distribution function is numericals7's `student_t_cdf()`, so its
+  kernels run on threads.
+* The distribution function and its gradient and Hessian in the parameters
+  are compiled for every continuous family. Nineteen families have closed
+  forms; the other fourteen (both gammas, the chi-square, both generalized
+  gammas, both betas, both von Mises, both Student t, both pseudo-Huber and
+  the skew t) take their shape derivatives as integrals of the density times
+  its own derivatives, where finite differences of the distribution function
+  were off by up to 3e-6. The third and fourth derivatives are the same
+  integrals with the complete Bell polynomials of the log-density's
+  derivatives (6e-15 and 5e-14 against 50-digit values, from 2e-5 and 9e-4),
+  so no shipped continuous family differences its distribution function any
+  longer. The von Mises distribution functions honour `lower.tail` and
+  `log.p`, and those of the pseudo-Huber and the skew t read the compiled
+  kernels.
+* `truncated()` reads its retained mass and the derivatives of the mass from
+  finite sums of the parent's own entries (a discrete parent) or from the
+  compiled distribution function (a continuous one, over a family, `fixed()`,
+  `folded()` or `transformation()`), and its expected information from sums
+  over a quadrature rule fixed by the interval and the parent's center, scale
+  and kinks. A Poisson truncated below 4 at a mean of 0.05 is exact to 6e-15
+  where the difference of the distribution function lost 5e-9, a gaussian
+  truncated below 6 no longer reports an empty interval, and the information
+  of a beta truncated up to 1 with a second shape below one is exact to 1e-15
+  where it was off by 1.5e-2 (b = 0.24) and 0.48 (b = 0.1).
+* `distrib_d3expected_hessian()` and `distrib_d4expected_hessian()` give the
+  third and fourth derivatives of the expected information, by one stencil
+  on its analytic second order where no closed form exists. The wrappers
+  carry the second derivative of their expected information and their fifth
+  observed derivative, `truncated()` the derivatives of its expected
+  information, and `folded()` its exact expected information; `folded()`
+  accepts a fixed, reparametrized or truncated parent.
+* The `"integrate"` route of an expected information takes the Bartlett form
+  `-E[l_i l_j]` at a parameter with a kink and puts a knot at each kink
+  (`kink_knots()`): the observed second derivative carries a point mass there
+  that no average of pointwise values sees.
+* The expected information of `negbin2_distrib()` and its derivatives stop
+  their series on the terms rather than on 1 - 1e-12 of the mass, and agree
+  with 50-digit sums to 3e-14, 6e-13 and 2e-11 where they were off by up to
+  5e-11, 1.5e-7 and 3.7e-9.
+* The derivatives of both Student t, both pseudo-Huber and the skew t are
+  written in bounded variables and stay finite out to |y| of 1e300; the
+  fourth and fifth derivatives were `NaN` from about 1e40.
+* `yj_transform()` gives a finite density at `lambda` 0 and 2, and its
+  inverse Hessian and the derivatives of its log-Jacobian are corrected.
+* `fixed()` signals an error when a value named by a prefix of `distrib`
+  (the shape `d` of the generalized gammas) was taken as the distribution by
+  partial matching; `fixed(distrib = gengamma1_distrib(), d = 2)` fixes it.
+* Requires numericals7 0.21.0.
+
 # distributions7 0.69.2
 
 * `distrib_deriv3_y()`, `distrib_deriv4_y()`, `distrib_deriv3_cdf()` and
