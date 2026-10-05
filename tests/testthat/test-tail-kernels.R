@@ -26,6 +26,19 @@ test_that("the pseudo-Huber derivatives stay finite and exact far in the tail", 
                -1.7340851354151265766e+200, tolerance = 1e-14)
 })
 
+test_that("pseudohuber2's third to fifth derivatives keep their digits far in the tail", {
+  # the partition sum over the partials of Q cancelled from |z| near 1e6:
+  # l_mu,mu,mu,sigma read -1.5e-95 at y = -1e40 where it is 1.3e-160
+  d <- pseudohuber2_distrib()
+  th <- function(v) list(mu = 0.2, sigma = 1.3, nu = v)
+  expect_equal(distrib_deriv3(d, 1e10, th(0.7))$mu_mu_sigma,
+               -4.3781331123165457861e-31, tolerance = 1e-13)
+  expect_equal(distrib_deriv4(d, -1e40, th(0.7))$mu_mu_mu_sigma,
+               1.3134399336161573398e-160, tolerance = 1e-13)
+  expect_equal(distrib_deriv5(d, -1e40, th(4))$mu_mu_mu_sigma_sigma,
+               -1.3541426553502347308e-238, tolerance = 1e-13)
+})
+
 test_that("the skew t's derivatives stay finite and exact far in the tail", {
   d <- skewt_distrib()
   th <- list(mu = 0.2, sigma = 1.3, alpha = 0.7, nu = 4)
