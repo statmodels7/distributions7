@@ -76,6 +76,44 @@ inline double transform_inv(int code, double y, const double* tp) {
     }
 }
 
+// the forward map y = g(x) of each transformer, as its R closure trans_fun
+// writes it, and whether g decreases: what a truncation of a transformed
+// family reads for its support, its center and its distribution function
+inline double transform_fwd(int code, double x, const double* tp) {
+    switch (code) {
+    case 1: return std::log(x);
+    case 2: return std::exp(x);
+    case 3: return 1 / x;
+    case 4: return std::sqrt(x);
+    case 5: return R_pow(x, tp[0]);
+    case 6: return std::asinh(x);
+    case 7: return (R_pow(x, tp[0]) - 1) / tp[0];
+    case 8: {
+        const double lambda = tp[0], lam2 = 2 - lambda;
+        if (x >= 0) {
+            if (std::fabs(lambda) < 1e-10) return std::log1p(x);
+            return (R_pow(x + 1, lambda) - 1) / lambda;
+        }
+        if (std::fabs(lam2) < 1e-10) return -std::log1p(-x);
+        return -(R_pow(-x + 1, lam2) - 1) / lam2;
+    }
+    case 9: return tp[0] + tp[1] * x;
+    case 10: return R::qlogis(x, 0.0, 1.0, 1, 0);
+    case 11: return R::plogis(x, 0.0, 1.0, 1, 0);
+    case 12: return (x == 0) ? R_NegInf : std::log(std::expm1(tp[0] * x)) / tp[0];
+    default: return R_NaN;
+    }
+}
+
+inline bool transform_decreasing(int code, const double* tp) {
+    switch (code) {
+    case 3: return true;
+    case 5: case 7: return tp[0] < 0;
+    case 9: return tp[1] < 0;
+    default: return false;
+    }
+}
+
 inline double transform_log_jac(int code, double y, const double* tp) {
     switch (code) {
     case 1: return y;

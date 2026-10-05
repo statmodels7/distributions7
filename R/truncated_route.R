@@ -137,10 +137,17 @@ trunc_route_parts <- function(distrib, y, theta, what) {
     idx <- rule$idx
     ys <- rule$y
     fw <- function(lp) exp(lp) * rule$w
+    # a row where the rule could not be placed has no nodes, and its sums
+    # are not available, as the registry reports them
+    unplaced <- tabulate(idx, n) == 0L
   }
 
   thp <- lapply(th, `[`, idx)
-  sumg <- function(v) ld_group_sum(as.numeric(v), idx, n)
+  sumg <- function(v) {
+    r <- ld_group_sum(as.numeric(v), idx, n)
+    if (!disc) r[unplaced] <- NaN
+    r
+  }
   any_pts <- length(ys) > 0L
   # a beta parent is evaluated from log y and log(1 - y), which the rule
   # hands over where y itself rounds to 1

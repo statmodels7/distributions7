@@ -467,3 +467,37 @@ test_that("a beta truncated up to 1 with a second shape below one keeps its mass
     ccallable_twin(NULL, c(-2, -0.5), 9, d = tr)
   }
 })
+
+test_that("a continuous family truncated over folded() or transformation() has entries equal to its methods", {
+  for (mk in list(
+    function() truncated(folded(gaussian1_distrib()), upper = 2),
+    function() truncated(folded(laplace_distrib()), lower = 0.5),
+    function() truncated(folded(fixed(student_t1_distrib(), nu = 4)), lower = 0.2, upper = 3),
+    function() truncated(transformation(gaussian1_distrib(), exp_transform()), lower = 0.5),
+    function() truncated(transformation(gamma1_distrib(), log_transform()), upper = 1),
+    function() truncated(transformation(gaussian1_distrib(), affine_transform(1, -2)), lower = 0),
+    function() truncated(transformation(gaussian1_distrib(), expit_transform()), upper = 0.8),
+    function() truncated(transformation(beta2_distrib(), logit_transform()), lower = -0.5),
+    function() truncated(transformation(gamma1_distrib(), inverse_transform()), lower = 0.4)
+  )) {
+    d <- mk()
+    expect_false(is.null(distrib_scalar_route(d)), label = d@distrib_name)
+    ccallable_twin(NULL, c(-0.5, 0.5), 10, d = d)
+  }
+})
+
+test_that("a truncated transformation is the parent truncated at the mapped points", {
+  # exp of a gaussian truncated below 0.5 is the gaussian truncated below
+  # log(0.5); a decreasing affine map swaps the ends
+  th <- list(mu = c(0.2, -0.3), sigma = c(0.8, 1.3))
+  a <- truncated(transformation(gaussian1_distrib(), exp_transform()), lower = 0.5)
+  b <- truncated(gaussian1_distrib(), lower = log(0.5))
+  ea <- distrib_expected_hessian(a, c(1, 2), th)
+  eb <- distrib_expected_hessian(b, log(c(1, 2)), th)
+  for (nm in names(ea)) expect_equal(ea[[nm]], eb[[nm]], tolerance = 1e-12)
+  a <- truncated(transformation(gaussian1_distrib(), affine_transform(1, -2)), lower = 0)
+  b <- truncated(gaussian1_distrib(), upper = 0.5)
+  ea <- distrib_expected_hessian(a, c(-1, 0.5), th)
+  eb <- distrib_expected_hessian(b, c(1, 0.25), th)
+  for (nm in names(ea)) expect_equal(ea[[nm]], eb[[nm]], tolerance = 1e-12)
+})

@@ -242,10 +242,11 @@ bool cont_has_cdf(int id) {
 
 // whether a continuous truncation can be routed over `inner`: a family with
 // a compiled distribution function and at most four parameters, or a chain
-// of fixed() nodes over one
+// of fixed(), folded() and transformation() nodes over one
 bool cont_trunc_ok(int inner) {
     while (inner >= kWrapBase) {
-        if (node_of(inner).code != 1) return false;
+        const int code = node_of(inner).code;
+        if (code != 1 && code != 5 && code != 6) return false;
         inner = node_of(inner).inner;
     }
     return d7_n_params[inner] <= 4 && cont_has_cdf(inner);
@@ -700,10 +701,21 @@ void logit_logs(double v, double* ly, double* l1y) {
     }
 }
 
-// whether a family, or a fixed() chain over one, is a beta
+// one fixed() node: the inner family's vector, and the inner index of each
+// free parameter; returns the inner id
+int fixed_level(int id, const double* th, double* full, int* at) {
+    const WrapNode& w = node_of(id);
+    fixed_inner(w.inner, w.aux, 0, th, full);
+    for (int k = 0; k < w.np && k < 4; ++k)
+        at[k] = fixed_inner(w.inner, w.aux, k, th, full);
+    return w.inner;
+}
+
+// whether a family, or a fixed() chain over one, is a beta (a folded or
+// transformed beta is not: its response is not the beta variable)
 bool logs_family(int id) {
-    const int b = base_of(id);
-    return b == 4 || b == 31;
+    while (id >= kWrapBase && node_of(id).code == 1) id = node_of(id).inner;
+    return id == 4 || id == 31;
 }
 
 // the log-density of a beta or a fixed() chain over one, its score in each
@@ -748,9 +760,26 @@ double beta_logs_parts(int id, double ly, double l1y, const double* th,
 // the support of a continuous family at its parameters
 void cont_support(int id, const double* th, double* lo, double* hi) {
     if (id >= kWrapBase) {
-        ContView v;
-        cont_view(id, th, v);
-        cont_support(v.base, v.full, lo, hi);
+        const WrapNode& w = node_of(id);
+        if (w.code == 1) {
+            double full[kMaxVec];
+            int at[4];
+            cont_support(fixed_level(id, th, full, at), full, lo, hi);
+            return;
+        }
+        double a, b;
+        cont_support(w.inner, th, &a, &b);
+        if (w.code == 5) {
+            *lo = 0.0;
+            *hi = std::max(std::fabs(a), std::fabs(b));
+            return;
+        }
+        // transformation(): the image of the parent's support
+        const double* tp = transform_par(w.inner, th);
+        const double ga = d7::transform_fwd(w.aux, a, tp);
+        const double gb = d7::transform_fwd(w.aux, b, tp);
+        *lo = std::min(ga, gb);
+        *hi = std::max(ga, gb);
         return;
     }
     *lo = R_NegInf;
@@ -774,9 +803,25 @@ void cont_support(int id, const double* th, double* lo, double* hi) {
 // a center and a scale for the rule, for every continuous family
 bool cont_center_scale(int id, const double* th, double* c, double* s) {
     if (id >= kWrapBase) {
-        ContView v;
-        cont_view(id, th, v);
-        return cont_center_scale(v.base, v.full, c, s);
+        const WrapNode& w = node_of(id);
+        if (w.code == 1) {
+            double full[kMaxVec];
+            int at[4];
+            return cont_center_scale(fixed_level(id, th, full, at), full, c, s);
+        }
+        double c0, s0;
+        if (!cont_center_scale(w.inner, th, &c0, &s0)) return false;
+        if (w.code == 5) {
+            *c = std::fabs(c0);
+            *s = s0;
+            return true;
+        }
+        // transformation(): the parent's center carried forward, and its
+        // scale times |dy/dx| there
+        const double* tp = transform_par(w.inner, th);
+        *c = d7::transform_fwd(w.aux, c0, tp);
+        *s = s0 * std::exp(-d7::transform_log_jac(w.aux, *c, tp));
+        return R_FINITE(*c) && R_FINITE(*s) && *s > 0;
     }
     if (center_scale(id, th, c, s)) return true;
     switch (id) {
@@ -817,9 +862,17 @@ bool cont_center_scale(int id, const double* th, double* c, double* s) {
 // the kinks of the density in the response
 int cont_kinks(int id, const double* th, double* kk) {
     if (id >= kWrapBase) {
-        ContView v;
-        cont_view(id, th, v);
-        return cont_kinks(v.base, v.full, kk);
+        const WrapNode& w = node_of(id);
+        if (w.code == 1) {
+            double full[kMaxVec];
+            int at[4];
+            return cont_kinks(fixed_level(id, th, full, at), full, kk);
+        }
+        const int nk = cont_kinks(w.inner, th, kk);
+        const double* tp = transform_par(w.inner, th);
+        for (int i = 0; i < nk; ++i)
+            kk[i] = (w.code == 5) ? std::fabs(kk[i]) : d7::transform_fwd(w.aux, kk[i], tp);
+        return nk;
     }
     if (id == 28 || id == 29 || id == 32) { kk[0] = th[0]; return 1; }
     return 0;
@@ -1110,8 +1163,23 @@ void quad_cdf_derivs(int id, double q, const double* th, bool want_h,
 // are mapped back to y and the weights multiplied by dy/dv; the center and
 // the scale go over as v(c) and the scale's relative size, kept within
 // [0.05, 20].
-int cont_map(int id) {
-    switch (base_of(id)) {
+int cont_map(int id, const double* th) {
+    if (id >= kWrapBase) {
+        const WrapNode& w = node_of(id);
+        if (w.code == 1) {
+            double full[kMaxVec];
+            int at[4];
+            return cont_map(fixed_level(id, th, full, at), full);
+        }
+        // a folded or transformed variable: by its support, (0, Inf) in
+        // log y and (0, 1) in logit y
+        double lo, hi;
+        cont_support(id, th, &lo, &hi);
+        if (lo == 0.0 && hi == R_PosInf) return 1;
+        if (lo == 0.0 && hi == 1.0) return 2;
+        return 0;
+    }
+    switch (id) {
     case 1: case 7: case 9: case 14: case 15: case 16: case 17: case 18:
     case 21: case 22: case 25: case 26: case 30:
         return 1;
@@ -1130,7 +1198,7 @@ void mapped_rule(int id, const double* th, double a, double b,
     if (l1y != nullptr) l1y->clear();
     double c, s;
     cont_center_scale(id, th, &c, &s);
-    const int mp = cont_map(id);
+    const int mp = cont_map(id, th);
     if (mp == 0) {
         d7::trunc_rule(a, b, c, s, kk, nk, y, w);
         return;
@@ -1188,9 +1256,28 @@ void mapped_rule(int id, const double* th, double a, double b,
 // where the family has none
 bool cont_cdf(int id, double q, const double* th, bool lower, double* F) {
     if (id >= kWrapBase) {
-        ContView v;
-        cont_view(id, th, v);
-        return cont_cdf(v.base, q, v.full, lower, F);
+        const WrapNode& w = node_of(id);
+        if (w.code == 1) {
+            double full[kMaxVec];
+            int at[4];
+            return cont_cdf(fixed_level(id, th, full, at), q, full, lower, F);
+        }
+        if (w.code == 5) {
+            // F(q) - F(-q) below, S(q) + F(-q) above
+            if (!(q > 0)) {
+                *F = lower ? 0.0 : 1.0;
+                return true;
+            }
+            double a, b;
+            if (!cont_cdf(w.inner, q, th, lower, &a)) return false;
+            if (!cont_cdf(w.inner, -q, th, true, &b)) return false;
+            *F = lower ? a - b : a + b;
+            return true;
+        }
+        const double* tp = transform_par(w.inner, th);
+        const bool dec = d7::transform_decreasing(w.aux, tp);
+        return cont_cdf(w.inner, d7::transform_inv(w.aux, q, tp), th,
+                        dec ? !lower : lower, F);
     }
     switch (id) {
     case 0: *F = d7::gaussian1_cdf(q, th, lower); return true;
@@ -1218,11 +1305,33 @@ bool cont_cdf(int id, double q, const double* th, bool lower, double* F) {
 }
 bool cont_cdf_grad(int id, double q, const double* th, double* g) {
     if (id >= kWrapBase) {
-        ContView v;
-        cont_view(id, th, v);
-        double gf[4];
-        if (!cont_cdf_grad(v.base, q, v.full, gf)) return false;
-        for (int k = 0; k < v.np; ++k) g[k] = gf[v.at[k]];
+        const WrapNode& w = node_of(id);
+        const int np = w.np;
+        if (w.code == 1) {
+            double full[kMaxVec], gf[4];
+            int at[4];
+            const int inner = fixed_level(id, th, full, at);
+            if (!cont_cdf_grad(inner, q, full, gf)) return false;
+            for (int k = 0; k < np; ++k) g[k] = gf[at[k]];
+            return true;
+        }
+        if (w.code == 5) {
+            if (!(q > 0)) {
+                for (int k = 0; k < np; ++k) g[k] = 0.0;
+                return true;
+            }
+            double gp[4], gm[4];
+            if (!cont_cdf_grad(w.inner, q, th, gp)) return false;
+            if (!cont_cdf_grad(w.inner, -q, th, gm)) return false;
+            for (int k = 0; k < np; ++k) g[k] = gp[k] - gm[k];
+            return true;
+        }
+        const double* tp = transform_par(w.inner, th);
+        const double sg = d7::transform_decreasing(w.aux, tp) ? -1.0 : 1.0;
+        double gi[4];
+        if (!cont_cdf_grad(w.inner, d7::transform_inv(w.aux, q, tp), th, gi))
+            return false;
+        for (int k = 0; k < np; ++k) g[k] = sg * gi[k];
         return true;
     }
     switch (id) {
@@ -1251,14 +1360,36 @@ bool cont_cdf_grad(int id, double q, const double* th, double* g) {
 }
 bool cont_cdf_hess(int id, double q, const double* th, double* h) {
     if (id >= kWrapBase) {
-        ContView v;
-        cont_view(id, th, v);
-        double hf[10];
-        if (!cont_cdf_hess(v.base, q, v.full, hf)) return false;
-        const int P = d7_n_params[v.base];
-        for (int i = 0; i < v.np; ++i)
-            for (int j = i; j < v.np; ++j)
-                h[hess_pos(v.np, i, j)] = hf[hess_pos(P, v.at[i], v.at[j])];
+        const WrapNode& w = node_of(id);
+        const int np = w.np, np2 = np * (np + 1) / 2;
+        if (w.code == 1) {
+            double full[kMaxVec], hf[10];
+            int at[4];
+            const int inner = fixed_level(id, th, full, at);
+            if (!cont_cdf_hess(inner, q, full, hf)) return false;
+            const int P = id_np(inner);
+            for (int i = 0; i < np; ++i)
+                for (int j = i; j < np; ++j)
+                    h[hess_pos(np, i, j)] = hf[hess_pos(P, at[i], at[j])];
+            return true;
+        }
+        if (w.code == 5) {
+            if (!(q > 0)) {
+                for (int k = 0; k < np2; ++k) h[k] = 0.0;
+                return true;
+            }
+            double hp[10], hm[10];
+            if (!cont_cdf_hess(w.inner, q, th, hp)) return false;
+            if (!cont_cdf_hess(w.inner, -q, th, hm)) return false;
+            for (int k = 0; k < np2; ++k) h[k] = hp[k] - hm[k];
+            return true;
+        }
+        const double* tp = transform_par(w.inner, th);
+        const double sg = d7::transform_decreasing(w.aux, tp) ? -1.0 : 1.0;
+        double hi[10];
+        if (!cont_cdf_hess(w.inner, d7::transform_inv(w.aux, q, tp), th, hi))
+            return false;
+        for (int k = 0; k < np2; ++k) h[k] = sg * hi[k];
         return true;
     }
     switch (id) {
@@ -1379,6 +1510,7 @@ void trunc_cont_info_dinfo(int inner, int k, double y, const double* th,
     std::vector<double> ys, ws, lys, l1ys;
     trunc_cont_nodes(inner, th, tp[0], tp[1], ys, ws, logs ? &lys : nullptr,
                      logs ? &l1ys : nullptr);
+    if (ys.empty()) { out[0] = out[1] = R_NaN; return; }
     long double S = 0.0L, D = 0.0L;
     for (std::size_t j = 0; j < ys.size(); ++j) {
         double sc[2], lf;
