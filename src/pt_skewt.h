@@ -39,19 +39,33 @@ inline SkewtPieces skewt_pieces(double y, double mu, double sigma,
     SkewtPieces P;
     double z = (y - mu) / sigma;
     double m = nu + 1.0;
-    double s = nu + z * z;
-    double cc = d7::sqrt_cr(m / s);
-    double w = alpha * z * cc;
+    if (std::fabs(z) > 1e100) {
+        // s = nu + z^2 overflows near |z| = 1e154, so far out the pieces are
+        // written in rs = sqrt(s), a = z/rs and nu/s, which stay finite;
+        // skewt_pieces() in R takes the same branch
+        const double rs = std::fabs(z) * d7::sqrt_cr(1.0 + nu / (z * z));
+        const double a = z / rs, irs = 1.0 / rs, b2 = nu * irs * irs;
+        const double rm = d7::sqrt_cr(m);
+        P.c = rm * irs;
+        P.w = alpha * rm * a;
+        P.a = -m * a * irs;
+        P.da = -m * (b2 - a * a) * irs * irs;
+        P.e = rm * b2 * irs;
+        P.db = -3.0 * alpha * rm * b2 * a * irs * irs;
+    } else {
+        double s = nu + z * z;
+        double cc = d7::sqrt_cr(m / s);
+        P.c = cc;
+        P.w = alpha * z * cc;
+        P.a = -m * z / s;
+        P.da = -m * (nu - z * z) / (s * s);
+        P.e = nu * d7::sqrt_cr(m) / std::pow(s, 1.5);
+        P.db = -3.0 * alpha * nu * d7::sqrt_cr(m) * z / std::pow(s, 2.5);
+    }
+    const double w = P.w;
     double q = std::exp(R::dt(w, m, 1) - skewt_pt()(w, m, 1, 1));
-    double e = nu * d7::sqrt_cr(m) / std::pow(s, 1.5);
     P.z = z;
-    P.w = w;
-    P.c = cc;
-    P.a = -m * z / s;
-    P.da = -m * (nu - z * z) / (s * s);
-    P.e = e;
-    P.b = alpha * e;
-    P.db = -3.0 * alpha * nu * d7::sqrt_cr(m) * z / std::pow(s, 2.5);
+    P.b = alpha * P.e;
     P.q = q;
     P.dq = q * (-(m + 1.0) * w / (m + w * w) - q);
     return P;
@@ -61,6 +75,11 @@ inline double skewt_logpdf(double y, double mu, double sigma, double alpha,
                            double nu) {
     double z = (y - mu) / sigma;
     double w = alpha * z * d7::sqrt_cr((nu + 1.0) / (nu + z * z));
+    if (std::fabs(z) > 1e100) {
+        // as skewt_pieces(), and as distrib_pdf() in R
+        const double rs = std::fabs(z) * d7::sqrt_cr(1.0 + nu / (z * z));
+        w = alpha * d7::sqrt_cr(nu + 1.0) * (z / rs);
+    }
     return std::log(2.0) - std::log(sigma) + R::dt(z, nu, 1) +
         skewt_pt()(w, nu + 1.0, 1, 1);
 }
@@ -109,7 +128,10 @@ inline double skewt_hess_mu_mu(const SkewtPieces& P, double sigma) {
 inline double skewt_hess_sigma_sigma(const SkewtPieces& P, double sigma) {
     double d = P.a + P.q * P.b;
     double dd = P.da + P.dq * P.b * P.b + P.q * P.db;
-    return (1.0 + 2.0 * P.z * d + P.z * P.z * dd) / (sigma * sigma);
+    // z^2 overflows past |z| of 1e154 where z (z dd) does not
+    const double zzdd = (std::fabs(P.z) > 1e100) ? P.z * (P.z * dd) :
+        P.z * P.z * dd;
+    return (1.0 + 2.0 * P.z * d + zzdd) / (sigma * sigma);
 }
 
 inline double skewt_hess_alpha_alpha(const SkewtPieces& P) {

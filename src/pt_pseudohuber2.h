@@ -123,41 +123,71 @@ inline Ph2Terms pseudohuber2_terms(double v) {
     return T;
 }
 
-inline double pseudohuber2_score_mu(double r, double s, double D,
+// D = sqrt(nu + R z^2) and zD = z/D, with z = (y - mu)/sigma, formed as
+// |z| sqrt(R + nu/z^2) above |z| = 1 so that z^2 never overflows. The
+// components of orders one and two are written in z, D and zD: each
+// Q_x/D is then of the order of |z| at most and each Q_x/D^2 bounded,
+// where Q_x Q_y/(4 D^3) taken apart overflowed from |y| of about 1e80.
+struct Ph2Z { double D, zD; };
+
+inline Ph2Z ph2_z(double z, double v, double R0) {
+    Ph2Z P;
+    if (std::fabs(z) > 1.0) {
+        const double a = d7::sqrt_cr(R0 + v / (z * z));
+        P.D = std::fabs(z) * a;
+        P.zD = (z > 0 ? 1.0 : -1.0) / a;
+    } else {
+        P.D = d7::sqrt_cr(v + R0 * (z * z));
+        P.zD = z / P.D;
+    }
+    return P;
+}
+
+inline double pseudohuber2_score_mu(double s, const Ph2Z& P,
                                     const NuPart& np) {
-    return np.R[0] * r / (s * s * D);
+    return np.R[0] * P.zD / s;
 }
 
-inline double pseudohuber2_score_sigma(double s, double w, double D,
+inline double pseudohuber2_score_sigma(double z, double s, const Ph2Z& P,
                                        const NuPart& np) {
-    return (np.R[0] * w / D - 1.0) / s;
+    return (np.R[0] * z * P.zD - 1.0) / s;
 }
 
-inline double pseudohuber2_score_nu(double w, double D, const NuPart& np) {
-    return -(1.0 + np.R[1] * w) / (2.0 * D) + np.h[1];
+inline double pseudohuber2_score_nu(double z, const Ph2Z& P,
+                                    const NuPart& np) {
+    return -0.5 * (1.0 / P.D + np.R[1] * z * P.zD) + np.h[1];
 }
 
-// l_xx = -(Q_xx / (2 D) - Q_x^2 / (4 D^3)) + the terms free of Q
-inline double pseudohuber2_hess_mu_mu(double r, double s2, double D,
+// l_xx = -(Q_xx / (2 D) - (Q_x / D)^2 / (4 D)) + the terms free of Q
+// 1 - R zD^2 is nu/D^2 exactly (D^2 = nu + R z^2), and is written so: as a
+// difference it cancels as |z| grows, and l_mu,mu read 2.7e-26 for -5.7e-31
+// at |z| of 1e10
+inline double pseudohuber2_hess_mu_mu(double s, const Ph2Z& P,
+                                      const NuPart& np, double v) {
+    const double R0 = np.R[0], iD = 1.0 / P.D;
+    return -(R0 / (s * s * P.D)) * (v * iD * iD);
+}
+
+inline double pseudohuber2_hess_sigma_sigma(double z, double s,
+                                            const Ph2Z& P, const NuPart& np,
+                                            double v) {
+    const double R0 = np.R[0], x = R0 * z * P.zD, iD = 1.0 / P.D;
+    return (1.0 - 2.0 * x - x * (v * iD * iD)) / (s * s);
+}
+
+// Q_nu / D and Q_nu / D^2
+inline void ph2_qn(double z, const Ph2Z& P, const NuPart& np, double* qn,
+                   double* qnD) {
+    const double iD = 1.0 / P.D;
+    *qn = iD + np.R[1] * z * P.zD;
+    *qnD = iD * iD + np.R[1] * P.zD * P.zD;
+}
+
+inline double pseudohuber2_hess_nu_nu(double z, const Ph2Z& P,
                                       const NuPart& np) {
-    const double R0 = np.R[0];
-    const double i2D = 0.5 / D, i4D3 = 0.25 / (D * D * D);
-    const double Qm = -2.0 * R0 * r / s2, Qmm = 2.0 * R0 / s2;
-    return -(Qmm * i2D - Qm * Qm * i4D3);
-}
-
-inline double pseudohuber2_hess_sigma_sigma(double s, double s2, double w,
-                                            double D, const NuPart& np) {
-    const double R0 = np.R[0];
-    const double i2D = 0.5 / D, i4D3 = 0.25 / (D * D * D);
-    const double Qs = -2.0 * R0 * w / s, Qss = 6.0 * R0 * w / s2;
-    return -(Qss * i2D - Qs * Qs * i4D3) + 1.0 / s2;
-}
-
-inline double pseudohuber2_hess_nu_nu(double w, double D, const NuPart& np) {
-    const double i2D = 0.5 / D, i4D3 = 0.25 / (D * D * D);
-    const double Qn = 1.0 + np.R[1] * w, Qnn = np.R[2] * w;
-    return -(Qnn * i2D - Qn * Qn * i4D3) + np.h[2];
+    double qn, qnD;
+    ph2_qn(z, P, np, &qn, &qnD);
+    return -(0.5 * np.R[2] * z * P.zD - 0.25 * qn * qnD) + np.h[2];
 }
 
 // the third derivatives on the diagonal: with (d/dQ)^m sqrt(Q) = c_m D/Q^m,
@@ -207,18 +237,17 @@ inline void pseudohuber2_score_curv(int k, double y, const double* th,
     const double m = th[0], s = th[1], v = th[2];
     NuPart np = {{0}, {0}};
     nu_part(v, k == 2 ? 2 : 0, np);
-    const double r = y - m, s2 = s * s;
-    const double w = r * r / s2;
-    const double D = d7::sqrt_cr(v + np.R[0] * w);
+    const double z = (y - m) / s;
+    const Ph2Z P = ph2_z(z, v, np.R[0]);
     if (k == 0) {
-        out[0] = pseudohuber2_score_mu(r, s, D, np);
-        out[1] = pseudohuber2_hess_mu_mu(r, s2, D, np);
+        out[0] = pseudohuber2_score_mu(s, P, np);
+        out[1] = pseudohuber2_hess_mu_mu(s, P, np, v);
     } else if (k == 1) {
-        out[0] = pseudohuber2_score_sigma(s, w, D, np);
-        out[1] = pseudohuber2_hess_sigma_sigma(s, s2, w, D, np);
+        out[0] = pseudohuber2_score_sigma(z, s, P, np);
+        out[1] = pseudohuber2_hess_sigma_sigma(z, s, P, np, v);
     } else {
-        out[0] = pseudohuber2_score_nu(w, D, np);
-        out[1] = pseudohuber2_hess_nu_nu(w, D, np);
+        out[0] = pseudohuber2_score_nu(z, P, np);
+        out[1] = pseudohuber2_hess_nu_nu(z, P, np);
     }
 }
 
@@ -237,20 +266,21 @@ inline void pseudohuber2_quad_diag(int k, const double* shape, double* out,
         const double fw = std::exp(pseudohuber2_logpdf(z, 0.0, 1.0, v, T)) * R.w[j];
         const double r = z, w = r * r / 1.0;
         const double Q = v + np.R[0] * w, D = d7::sqrt_cr(Q);
+        const Ph2Z P = ph2_z(z, v, np.R[0]);
         double H;
-        if (k == 0) H = pseudohuber2_hess_mu_mu(r, 1.0, D, np);
-        else if (k == 1) H = pseudohuber2_hess_sigma_sigma(1.0, 1.0, w, D, np);
-        else H = pseudohuber2_hess_nu_nu(w, D, np);
+        if (k == 0) H = pseudohuber2_hess_mu_mu(1.0, P, np, v);
+        else if (k == 1) H = pseudohuber2_hess_sigma_sigma(z, 1.0, P, np, v);
+        else H = pseudohuber2_hess_nu_nu(z, P, np);
         if (!want_d) { S.add0(fw, H); continue; }
         double g, T3;
         if (k == 0) {
-            g = pseudohuber2_score_mu(r, 1.0, D, np);
+            g = pseudohuber2_score_mu(1.0, P, np);
             T3 = pseudohuber2_d3_mu_mu_mu(r, 1.0, Q, D, np);
         } else if (k == 1) {
-            g = pseudohuber2_score_sigma(1.0, w, D, np);
+            g = pseudohuber2_score_sigma(z, 1.0, P, np);
             T3 = pseudohuber2_d3_sigma_sigma_sigma(1.0, 1.0, w, Q, D, np);
         } else {
-            g = pseudohuber2_score_nu(w, D, np);
+            g = pseudohuber2_score_nu(z, P, np);
             T3 = pseudohuber2_d3_nu_nu_nu(w, Q, D, np);
         }
         S.add(fw, g, H, T3);

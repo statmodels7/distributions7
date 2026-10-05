@@ -158,28 +158,36 @@ List high_order(int m, NumericVector y, NumericVector mu, NumericVector sigma,
     const double s = sg_s ? sigma[0] : sigma[i];
     const double v = nu_s ? nu[0] : nu[i];
     if (!(v == last_nu)) { nu_part(v, m, np); last_nu = v; }
-    const double r = y[i] - m_i;
-    const double B[3] = {r * r, -2.0 * r, 2.0};
+    // every partial of Q enters divided by Q, so that a product of up to
+    // five partials, each of the order of z^2, never forms: with
+    // z = (y - mu)/sigma, B_a C_j / Q is z^2/Q sigma^-j, -2 z/Q sigma^-(j+1)
+    // and 2/Q sigma^-(j+2), and z^2/Q = 1/(R + nu/z^2) is bounded. D is
+    // ph2_z()'s, and the product is D times the ratios.
+    const double z = (y[i] - m_i) / s;
+    const d7::Ph2Z P = d7::ph2_z(z, v, np.R[0]);
+    double zq2, iQ;   // z^2/Q and 1/Q
+    if (std::fabs(z) > 1.0) {
+      zq2 = 1.0 / (np.R[0] + v / (z * z));
+      iQ = zq2 / (z * z);
+    } else {
+      iQ = 1.0 / (v + np.R[0] * (z * z));
+      zq2 = z * z * iQ;
+    }
+    const double Bq[3] = {zq2, -2.0 * z * iQ, 2.0 * iQ};
     double Cj[6];
     const double is = 1.0 / s;
-    double sp = is * is;
-    for (int j = 0; j <= m; j++) { Cj[j] = cj_num[j] * sp; sp *= is; }
+    for (int j = 0; j <= m; j++) Cj[j] = cj_num[j] * std::pow(is, j);
     for (int a = 0; a < 3; a++)
       for (int j = 0; j <= m; j++)
         for (int k = 0; k <= m; k++)
-          qt[a * 36 + j * 6 + k] = np.R[k] * B[a] * Cj[j];
-    qt[1] += 1.0;   // the nu in Q
-    const double Q = qt[0] + v;
-    const double D = d7::sqrt_cr(Q);
-    double dq[6];   // D / Q^b
-    dq[0] = D;
-    for (int b = 1; b <= m; b++) dq[b] = dq[b - 1] / Q;
+          qt[a * 36 + j * 6 + k] = np.R[k] * Bq[a] * Cj[j] * std::pow(is, a);
+    qt[1] += iQ;   // the nu in Q
     for (int c = 0; c < nc; c++) {
       const Component &cp = C[c];
       double dD = 0.0;
       for (size_t t = 0; t < cp.terms.size(); t++) {
         const Term &tm = cp.terms[t];
-        double prod = tm.coef * dq[tm.nb];
+        double prod = tm.coef * P.D;
         for (int b = 0; b < tm.nb; b++) prod *= qt[tm.code[b]];
         dD += prod;
       }
@@ -222,12 +230,11 @@ List pseudohuber2_gradient_cpp(NumericVector y, NumericVector mu,
     const double s = sg_s ? sigma[0] : sigma[i];
     const double v = nu_s ? nu[0] : nu[i];
     if (!(v == last_nu)) { nu_part(v, 1, np); last_nu = v; }
-    const double r = y[i] - m_i;
-    const double w = r * r / (s * s);
-    const double D = d7::sqrt_cr(v + np.R[0] * w);
-    g_mu[i] = d7::pseudohuber2_score_mu(r, s, D, np);
-    g_sigma[i] = d7::pseudohuber2_score_sigma(s, w, D, np);
-    g_nu[i] = d7::pseudohuber2_score_nu(w, D, np);
+    const double z = (y[i] - m_i) / s;
+    const d7::Ph2Z P = d7::ph2_z(z, v, np.R[0]);
+    g_mu[i] = d7::pseudohuber2_score_mu(s, P, np);
+    g_sigma[i] = d7::pseudohuber2_score_sigma(z, s, P, np);
+    g_nu[i] = d7::pseudohuber2_score_nu(z, P, np);
   }
   return List::create(Named("mu") = g_mu, Named("sigma") = g_sigma,
                       Named("nu") = g_nu);
@@ -247,24 +254,22 @@ List pseudohuber2_hessian_cpp(NumericVector y, NumericVector mu,
     const double s = sg_s ? sigma[0] : sigma[i];
     const double v = nu_s ? nu[0] : nu[i];
     if (!(v == last_nu)) { nu_part(v, 2, np); last_nu = v; }
-    const double r = y[i] - m_i;
-    const double s2 = s * s, s3 = s2 * s;
+    const double z = (y[i] - m_i) / s;
     const double R0 = np.R[0], R1 = np.R[1];
-    const double w = r * r / s2;
-    const double D = d7::sqrt_cr(v + R0 * w);
-    const double i2D = 0.5 / D, i4D3 = 0.25 / (D * D * D);
-    // partials of Q
-    const double Qm = -2.0 * R0 * r / s2, Qs = -2.0 * R0 * w / s,
-                 Qn = 1.0 + R1 * w;
-    const double Qms = 4.0 * R0 * r / s3, Qmn = -2.0 * R1 * r / s2,
-                 Qsn = -2.0 * R1 * w / s;
-    // l_xy = -(Q_xy / (2 D) - Q_x Q_y / (4 D^3)) + pure terms
-    h_mm[i] = d7::pseudohuber2_hess_mu_mu(r, s2, D, np);
-    h_ss[i] = d7::pseudohuber2_hess_sigma_sigma(s, s2, w, D, np);
-    h_nn[i] = d7::pseudohuber2_hess_nu_nu(w, D, np);
-    h_ms[i] = -(Qms * i2D - Qm * Qs * i4D3);
-    h_mn[i] = -(Qmn * i2D - Qm * Qn * i4D3);
-    h_sn[i] = -(Qsn * i2D - Qs * Qn * i4D3);
+    const d7::Ph2Z P = d7::ph2_z(z, v, R0);
+    const double zD = P.zD, zz = z * zD, s2 = s * s;
+    double qn, qnD;
+    d7::ph2_qn(z, P, np, &qn, &qnD);
+    // l_xy = -(Q_xy / (2 D) - (Q_x / D)(Q_y / D) / (4 D)) + pure terms,
+    // with Q_mu / D = -2 R zD / sigma and Q_sigma / D = -2 R z zD / sigma
+    h_mm[i] = d7::pseudohuber2_hess_mu_mu(s, P, np, v);
+    h_ss[i] = d7::pseudohuber2_hess_sigma_sigma(z, s, P, np, v);
+    h_nn[i] = d7::pseudohuber2_hess_nu_nu(z, P, np);
+    const double vD2 = v / (P.D * P.D);
+    // 2 - R zD^2 = 1 + nu/D^2 and 1 - R zD^2 / 2 = (1 + nu/D^2)/2 exactly
+    h_ms[i] = -R0 * zD * (1.0 + vD2) / s2;
+    h_mn[i] = zD * (0.5 * R1 * (1.0 + vD2) - 0.5 * R0 / (P.D * P.D)) / s;
+    h_sn[i] = zz * (0.5 * R1 * (1.0 + vD2) - 0.5 * R0 / (P.D * P.D)) / s;
   }
   return List::create(Named("mu_mu") = h_mm, Named("sigma_sigma") = h_ss,
                       Named("nu_nu") = h_nn, Named("mu_sigma") = h_ms,

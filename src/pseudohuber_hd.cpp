@@ -33,9 +33,9 @@ List pseudohuber_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sig
         double v = nu_s ? nu[0] : nu[i];
 
         double s2 = s * s, s3 = s2 * s;
-        double r = m - y[i], r2 = r * r, r4 = r2 * r2;
-        double S = v * s2 + r2;
-        double S12 = d7::sqrt_cr(S), S52 = S * S * S12;
+        double r = m - y[i];
+        const d7::PhA PA = d7::ph_a(r, s, v);
+        const double A = PA.A, p = PA.rho, p2 = p * p, k = PA.kap2, q = s / A;
         double sv = d7::sqrt_cr(v);
 
         double k0 = d7::bessel_k_scaled(sv, 0.0);
@@ -44,18 +44,17 @@ List pseudohuber_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sig
         double k3 = d7::bessel_k_scaled(sv, 3.0);
         double k4 = d7::bessel_k_scaled(sv, 4.0);
 
-        mu_mu_mu[i] = d7::pseudohuber_d3_mu_mu_mu(v, s, r, S);
-        mu_mu_sigma[i] = v * (2.0 * v * s2 - r2) / S52;
-        mu_mu_nu[i] = s * (v * s2 - 2.0 * r2) / (2.0 * S52);
-        mu_sigma_sigma[i] = (6.0 * S * S - 7.0 * v * s2 * r2 - 4.0 * r4) * (-r) / (s3 * S52);
-        mu_sigma_nu[i] = (-2.0 * v * s2 + r2) * r / (2.0 * S52);
-        mu_nu_nu[i] = -3.0 * s3 * r / (4.0 * S52);
-        sigma_sigma_sigma[i] = d7::pseudohuber_d3_sigma_sigma_sigma(s, r2, S);
-        sigma_sigma_nu[i] = 3.0 * v * s * r2 / (2.0 * S52);
-        sigma_nu_nu[i] = 3.0 * s2 * r2 / (4.0 * S52);
-
+        mu_mu_mu[i] = d7::pseudohuber_d3_mu_mu_mu(s, PA);
+        mu_mu_sigma[i] = k * (2.0 * k - p2) / (s2 * A);
+        mu_mu_nu[i] = q * (k - 2.0 * p2) / (2.0 * A * A);
+        mu_sigma_sigma[i] = -p * (6.0 - 7.0 * k * p2 - 4.0 * p2 * p2) / s3;
+        mu_sigma_nu[i] = p * (p2 - 2.0 * k) / (2.0 * A * A);
+        mu_nu_nu[i] = -3.0 * q * q * q * p / (4.0 * A);
+        sigma_sigma_sigma[i] = d7::pseudohuber_d3_sigma_sigma_sigma(r, s, PA);
+        sigma_sigma_nu[i] = 3.0 * k * p2 / (2.0 * s * A);
+        sigma_nu_nu[i] = 3.0 * q * q * p2 / (4.0 * A);
         const d7::PhNu P = {sv, k0, k1, k2, k3, 0.0, 0.0, 0.0};
-        nu_nu_nu[i] = d7::pseudohuber_d3_nu_nu_nu(v, s, S, P, k4);
+        nu_nu_nu[i] = d7::pseudohuber_d3_nu_nu_nu(v, s, PA, P, k4);
     }
 
     return List::create(
@@ -81,10 +80,11 @@ List pseudohuber_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sig
         double s = sig_s ? sigma[0] : sigma[i];
         double v = nu_s ? nu[0] : nu[i];
 
-        double s2 = s * s, s3 = s2 * s, s4 = s2 * s2, s5 = s4 * s, s7 = s5 * s2;
-        double r = m - y[i], r2 = r * r, r4 = r2 * r2, r6 = r4 * r2, r8 = r4 * r4;
-        double S = v * s2 + r2;
-        double S12 = d7::sqrt_cr(S), S32 = S * S12, S52 = S * S * S12, S72 = S * S * S * S12;
+        double s2 = s * s, s3 = s2 * s, s4 = s2 * s2, s5 = s4 * s;
+        double r = m - y[i];
+        const d7::PhA PA = d7::ph_a(r, s, v);
+        const double A = PA.A, p = PA.rho, p2 = p * p, p4 = p2 * p2,
+                     k = PA.kap2, q = s / A, A2 = A * A;
         double sv = d7::sqrt_cr(v), v2 = v * v, v3 = v2 * v, v4 = v2 * v2, v32 = v * sv;
 
         double k0 = d7::bessel_k_scaled(sv, 0.0);
@@ -97,26 +97,26 @@ List pseudohuber_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sig
         double k0_2 = k0 * k0, k0_3 = k0_2 * k0, k0_4 = k0_2 * k0_2;
         double k2_2 = k2 * k2, k2_3 = k2_2 * k2, k2_4 = k2_2 * k2_2;
 
-        mu_mu_mu_mu[i] = 3.0 * v * s * (v * s2 - 4.0 * r2) / S72;
-        mu_mu_mu_sigma[i] = 3.0 * v * (-4.0 * v * s2 + r2) * r / S72;
-        mu_mu_mu_nu[i] = 3.0 * s * (-3.0 * v * s2 + 2.0 * r2) * r / (2.0 * S72);
-        mu_mu_sigma_sigma[i] = 3.0 * v2 * s * (-2.0 * v * s2 + 3.0 * r2) / S72;
+        mu_mu_mu_mu[i] = 3.0 * k * (k - 4.0 * p2) / (s * A * A2);
+        mu_mu_mu_sigma[i] = 3.0 * k * p * (p2 - 4.0 * k) / (s2 * A2);
+        mu_mu_mu_nu[i] = 3.0 * q * p * (2.0 * p2 - 3.0 * k) / (2.0 * A * A2);
+        mu_mu_sigma_sigma[i] = 3.0 * k * k * (3.0 * p2 - 2.0 * k) / (s3 * A);
         // numerator collapses to -2 r^4 + 11 nu sigma^2 r^2 - 2 nu^2 sigma^4
-        mu_mu_sigma_nu[i] = (-2.0 * r4 + 11.0 * v * s2 * r2 - 2.0 * v2 * s4) / (2.0 * S72);
-        mu_mu_nu_nu[i] = -3.0 * s3 * (v * s2 - 4.0 * r2) / (4.0 * S72);
-        mu_sigma_sigma_sigma[i] = 3.0 * (-8.0 * S * S * S + 16.0 * S * S * r2
-            - 15.0 * v * s2 * r4 - 10.0 * r6) * (-r) / (s4 * S72);
-        mu_sigma_sigma_nu[i] = 3.0 * v * s * (2.0 * v * s2 - 3.0 * r2) * r / (2.0 * S72);
-        mu_sigma_nu_nu[i] = 3.0 * s2 * (2.0 * v * s2 - 3.0 * r2) * r / (4.0 * S72);
-        mu_nu_nu_nu[i] = 15.0 * s5 * r / (8.0 * S72);
-        sigma_sigma_sigma_sigma[i] = 6.0 / s4 - 60.0 * r2 / (s5 * S12) + 75.0 * r4 / (s5 * S32)
-            - 54.0 * r6 / (s5 * S52) + 15.0 * r8 / (s5 * S72);
-        sigma_sigma_sigma_nu[i] = 3.0 * v * (-4.0 * v * s2 + r2) * r2 / (2.0 * S72);
-        sigma_sigma_nu_nu[i] = 3.0 * s * (-3.0 * v * s2 + 2.0 * r2) * r2 / (4.0 * S72);
-        sigma_nu_nu_nu[i] = -15.0 * s4 * r2 / (8.0 * S72);
+        mu_mu_sigma_nu[i] = (-2.0 * p4 + 11.0 * k * p2 - 2.0 * k * k) / (2.0 * A * A2);
+        mu_mu_nu_nu[i] = -3.0 * q * q * q * (k - 4.0 * p2) / (4.0 * A2);
+        mu_sigma_sigma_sigma[i] = -3.0 * p * (-8.0 + 16.0 * p2 - 15.0 * k * p4
+            - 10.0 * p4 * p2) / s4;
+        mu_sigma_sigma_nu[i] = 3.0 * k * p * (2.0 * k - 3.0 * p2) / (2.0 * s * A2);
+        mu_sigma_nu_nu[i] = 3.0 * q * q * p * (2.0 * k - 3.0 * p2) / (4.0 * A2);
+        mu_nu_nu_nu[i] = 15.0 * q * q * q * q * q * p / (8.0 * A);
+        sigma_sigma_sigma_sigma[i] = 6.0 / s4 + (r / s5) * p *
+            (-60.0 + 75.0 * p2 - 54.0 * p4 + 15.0 * p4 * p2);
+        sigma_sigma_sigma_nu[i] = 3.0 * k * p2 * (p2 - 4.0 * k) / (2.0 * s2 * A);
+        sigma_sigma_nu_nu[i] = 3.0 * q * p2 * (2.0 * p2 - 3.0 * k) / (4.0 * A2);
+        sigma_nu_nu_nu[i] = -15.0 * q * q * q * q * p2 / (8.0 * A);
 
         double N = 6.0 * v2 * k0_4
-            + (768.0 + v * (-180.0 + 17.0 * v + 240.0 * v3 * s7 / S72)) * k1_4
+            + (768.0 + v * (-180.0 + 17.0 * v + 240.0 * v3 * q * q * q * q * q * q * q)) * k1_4
             + 6.0 * v2 * k2_4
             + 24.0 * k0_3 * (-(v32 * k1) + v2 * k2)
             - 12.0 * k1 * (2.0 * v32 * k2_3 + v2 * k2_2 * k3)

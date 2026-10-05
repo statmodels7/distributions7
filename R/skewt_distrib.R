@@ -163,18 +163,39 @@ skewt_pieces <- function(y, mu, sigma, alpha, nu) {
   s <- nu + z^2
   cc <- sqrt(m / s)
   w <- alpha * z * cc
+  e <- nu * sqrt(m) / s^1.5
+  a <- -m * z / s
+  da <- -m * (nu - z^2) / s^2
+  db <- -3 * alpha * nu * sqrt(m) * z / s^2.5
+  # s overflows near |z| = 1e154; far out the pieces are written in
+  # rs = sqrt(s), z/rs and nu/s, as the registry's skewt_pieces() writes them
+  big <- abs(z) > 1e100
+  if (any(big)) {
+    n <- length(z)
+    rs <- abs(z) * sqrt(1 + nu / (z * z))
+    az <- z / rs
+    irs <- 1 / rs
+    b2 <- nu * irs * irs
+    rm <- sqrt(m)
+    pick <- function(old, new) { old <- rep_len(old, n); old[big] <- rep_len(new, n)[big]; old }
+    cc <- pick(cc, rm * irs)
+    w <- pick(w, alpha * rm * az)
+    a <- pick(a, -m * az * irs)
+    da <- pick(da, -m * (b2 - az * az) * irs * irs)
+    e <- pick(e, rm * b2 * irs)
+    db <- pick(db, -3 * alpha * rm * b2 * az * irs * irs)
+  }
   # Q is formed on the log scale for the same reason numericals7::mills_ratio() is: both the
   # density and the distribution function underflow in the far left tail while
   # their ratio stays finite.
   q <- exp(stats::dt(w, df = m, log = TRUE) - stats::pt(w, df = m, log.p = TRUE))
-  e <- nu * sqrt(m) / s^1.5
   list(
     z = z, w = w, c = cc,
-    a = -m * z / s,
-    da = -m * (nu - z^2) / s^2,
+    a = a,
+    da = da,
     e = e,
     b = alpha * e,
-    db = -3 * alpha * nu * sqrt(m) * z / s^2.5,
+    db = db,
     q = q,
     dq = q * (-(m + 1) * w / (m + w^2) - q)
   )
@@ -444,6 +465,14 @@ S7::method(distrib_pdf, SkewTDistrib) <- function(distrib, y, theta, log = FALSE
   nu <- theta[[4]]
   z <- (y - mu) / sigma
   w <- alpha * z * sqrt((nu + 1) / (nu + z^2))
+  # z^2 overflows near |z| = 1e154; far out w is formed from rs = sqrt(nu + z^2)
+  # without it, as the registry's skewt_logpdf() forms it
+  big <- abs(z) > 1e100
+  if (any(big)) {
+    rs <- abs(z) * sqrt(1 + nu / (z * z))
+    wb <- alpha * sqrt(nu + 1) * (z / rs)
+    w[big] <- rep_len(wb, length(w))[big]
+  }
   log_d <- log(2) - log(sigma) + stats::dt(z, df = nu, log = TRUE) +
     stats::pt(w, df = nu + 1, log.p = TRUE)
   if (log) log_d else exp(log_d)
@@ -733,9 +762,11 @@ S7::method(distrib_hessian, SkewTDistrib) <- function(distrib, y, theta, scale =
 #' @param mu,sigma,alpha,nu The four parameters, each of length 1 or of the
 #'   length of `y`.
 #'
-#' @return A named list. `z` is the standardized residual; the remaining
-#'   fifteen elements are named `"c_i"` and hold
-#'   \eqn{\partial_z^i \Phi_c(z)} for every \eqn{c + i \le 4}, with
+#' @return A named list. `z` is the standardized residual, `rs` is
+#'   \eqn{\sqrt{\nu + z^2}} and `a` is `z / rs`; the remaining fifteen
+#'   elements are named `"c_i"` and hold
+#'   \eqn{\partial_z^i \Phi_c(z)} times `rs^i`, which bounds them, for every
+#'   \eqn{c + i \le 4}, with
 #'   \eqn{\Phi_0 = \ell} up to the terms free of \eqn{z}, so that `"0_0"` is
 #'   `NA_real_` and is never read.
 #'
@@ -751,22 +782,32 @@ S7::method(distrib_hessian, SkewTDistrib) <- function(distrib, y, theta, scale =
 skewt_msa_tower <- function(y, mu, sigma, alpha, nu) {
   z <- (y - mu) / sigma
   m <- nu + 1
-  s <- nu + z^2
   rm <- sqrt(m)
+  # s = nu + z^2 through rs = sqrt(s), formed so that z^2 never overflows,
+  # with a = z/rs and b2 = nu/s, both bounded (a^2 + b2 = 1). Every
+  # z-derivative of order j below is held times rs^j, which bounds it: the
+  # Bell polynomials are homogeneous of weight j, so the table is the
+  # derivatives times rs^i, and skewt_msa_component() divides the power
+  # back out. Written in z and s, the fourth derivatives were NaN from |y|
+  # of about 1e80.
+  az <- abs(z)
+  rs <- ifelse(az > 1, az * sqrt(1 + nu / (z * z)), sqrt(nu + z * z))
+  a <- z / rs
+  b2 <- nu / (rs * rs)
 
   # u = z sqrt((nu+1)/(nu+z^2)) and its four z-derivatives, written out.
-  u <- z * rm / sqrt(s)
-  u1 <- nu * rm * s^(-1.5)
-  u2 <- -3 * nu * rm * z * s^(-2.5)
-  u3 <- -3 * nu * rm * (nu - 4 * z^2) * s^(-3.5)
-  u4 <- 15 * nu * rm * z * (3 * nu - 4 * z^2) * s^(-4.5)
+  u <- rm * a
+  u1 <- rm * b2
+  u2 <- -3 * rm * b2 * a
+  u3 <- -3 * rm * b2 * (b2 - 4 * a^2)
+  u4 <- 15 * rm * b2 * a * (3 * b2 - 4 * a^2)
 
   # g = log t_nu and its four z-derivatives.
   gz <- list(
-    -m * z / s,
-    -m * (nu - z^2) / s^2,
-    2 * m * z * (3 * nu - z^2) / s^3,
-    6 * m * (nu^2 - 6 * nu * z^2 + z^4) / s^4
+    -m * a,
+    -m * (b2 - a^2),
+    2 * m * a * (3 * b2 - a^2),
+    6 * m * (b2^2 - 6 * b2 * a^2 + a^4)
   )
 
   # Lam^(k)(w) = Q^(k-1)(w) by the Riccati recursion, Q formed on the log scale
@@ -828,7 +869,7 @@ skewt_msa_tower <- function(y, mu, sigma, alpha, nu) {
     }
   }
   names(out) <- nms
-  c(list(z = z), out)
+  c(list(z = z, a = a, rs = rs), out)
 }
 
 #' @title One Skew t Derivative in the Location, Scale and Shape
@@ -861,14 +902,16 @@ skewt_msa_tower <- function(y, mu, sigma, alpha, nu) {
 #'
 #' @keywords internal
 skewt_msa_component <- function(tw, sigma, a, b, c) {
-  z <- tw$z
+  # the table holds the z-derivatives times rs^j, so z^i times the entry of
+  # order a + i is (z/rs)^i times it, over rs^a
+  za <- tw[["a"]]
   acc <- 0
   for (i in 0:b) {
     ris <- if (i > b - 1L) 1 else prod(a + (i:(b - 1L)))
     if (ris == 0) next
-    acc <- acc + choose(b, i) * ris * z^i * tw[[paste0(c, "_", a + i)]]
+    acc <- acc + choose(b, i) * ris * za^i * tw[[paste0(c, "_", a + i)]]
   }
-  val <- (-1)^(a + b) * acc / sigma^(a + b)
+  val <- (-1)^(a + b) * acc / (tw[["rs"]]^a * sigma^(a + b))
   # The explicit -log(sigma) survives only where nothing differentiates z.
   if (a == 0L && c == 0L && b >= 1L) {
     val <- val + (-1)^b * factorial(b - 1L) / sigma^b

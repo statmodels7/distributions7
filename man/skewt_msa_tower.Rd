@@ -13,9 +13,11 @@ skewt_msa_tower(y, mu, sigma, alpha, nu)
 length of \code{y}.}
 }
 \value{
-A named list. \code{z} is the standardized residual; the remaining
-fifteen elements are named \code{"c_i"} and hold
-\eqn{\partial_z^i \Phi_c(z)} for every \eqn{c + i \le 4}, with
+A named list. \code{z} is the standardized residual, \code{rs} is
+\eqn{\sqrt{\nu + z^2}} and \code{a} is \code{z / rs}; the remaining fifteen
+elements are named \code{"c_i"} and hold
+\eqn{\partial_z^i \Phi_c(z)} times \code{rs^i}, which bounds them, for every
+\eqn{c + i \le 4}, with
 \eqn{\Phi_0 = \ell} up to the terms free of \eqn{z}, so that \code{"0_0"} is
 \code{NA_real_} and is never read.
 }

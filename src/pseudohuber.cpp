@@ -51,13 +51,11 @@ List pseudohuber_gradient_cpp(NumericVector y, NumericVector mu, NumericVector s
             P = d7::ph_nu(v);
         }
 
-        double res = y[i] - m;
-        double res2 = res * res;
-        double D = d7::sqrt_cr(v + res2 / s2);
-
-        grad_mu[i] = d7::pseudohuber_score_mu(res, s2, D);
-        grad_sigma[i] = d7::pseudohuber_score_sigma(res2, s, s2, D);
-        grad_nu[i] = d7::pseudohuber_score_nu(v, D, P);
+        const double r = m - y[i];
+        const d7::PhA A = d7::ph_a(r, s, v);
+        grad_mu[i] = d7::pseudohuber_score_mu(s, A);
+        grad_sigma[i] = d7::pseudohuber_score_sigma(r, s, A);
+        grad_nu[i] = d7::pseudohuber_score_nu(v, s, A, P);
     }
 
     return List::create(Named("mu") = grad_mu, Named("sigma") = grad_sigma, Named("nu") = grad_nu);
@@ -92,18 +90,14 @@ List pseudohuber_hessian_cpp(NumericVector y, NumericVector mu, NumericVector si
             P = d7::ph_nu(v);
         }
 
-        double res = y[i] - m;
-        double res2 = res * res;
-        double D = d7::sqrt_cr(v + res2 / s2);
-        double D3 = D * D * D;
-
-        hess_mu_mu[i] = d7::pseudohuber_hess_mu_mu(v, s2, D3);
-        hess_sigma_sigma[i] = d7::pseudohuber_hess_sigma_sigma(res2, s2, s4, D, D3);
-        hess_nu_nu[i] = d7::pseudohuber_hess_nu_nu(D3, P);
-
-        hess_mu_sigma[i] = (-2.0 * v * s2 * res - res2 * res) / (s2 * std::pow(v * s2 + res2, 1.5));
-        hess_mu_nu[i] = -res / (2.0 * s2 * D3);
-        hess_sigma_nu[i] = -res2 / (2.0 * s2 * s * D3);
+        const double r = m - y[i];
+        const d7::PhA A = d7::ph_a(r, s, v);
+        hess_mu_mu[i] = d7::pseudohuber_hess_mu_mu(s, A);
+        hess_sigma_sigma[i] = d7::pseudohuber_hess_sigma_sigma(r, s, A);
+        hess_nu_nu[i] = d7::pseudohuber_hess_nu_nu(s, A, P);
+        hess_mu_sigma[i] = A.rho * (2.0 * A.kap2 + A.rho * A.rho) / s2;
+        hess_mu_nu[i] = A.rho * (s / A.A) / (2.0 * A.A);
+        hess_sigma_nu[i] = -A.rho * A.rho / (2.0 * A.A);
     }
 
     return List::create(
