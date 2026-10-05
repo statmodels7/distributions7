@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R numerical_functions.R expected_loc_scale.R expected_derivatives.R y_higher.R theta2_families.R cdf_derivatives.R cdf_derivatives_families.R cross_derivatives_families.R moments.R cdf_mapped_higher.R
+#' @include distrib.R generics.R numerical_functions.R expected_loc_scale.R expected_derivatives.R y_higher.R theta2_families.R cdf_derivatives.R cdf_derivatives_families.R cross_derivatives_families.R moments.R cdf_mapped_higher.R cdf_compiled.R
 NULL
 
 #' @title Pseudo-Huber Distribution Class, Standard-Deviation Parametrization
@@ -108,10 +108,9 @@ S7::method(distrib_pdf, PseudoHuber2Distrib) <- function(distrib, y, theta,
 #' @name distrib_cdf.PseudoHuber2Distrib
 #'
 #' @description
-#' Computes \eqn{P(Y \le q)} by batched quadrature of the density over the
-#' lower tail. By symmetry about \eqn{\mu}, \eqn{F(q) = 1 - F(2\mu - q)}, so
-#' every quantile is integrated from \eqn{-\infty} to a point at or below
-#' \eqn{\mu}.
+#' Computes \eqn{P(Y \le q)} by numerical integration of the density, taken
+#' by the compiled rule of [compiled_cdf()] over the tail on the side of
+#' \eqn{q} away from \eqn{\mu}.
 #'
 #' @param distrib A `PseudoHuber2Distrib` object.
 #' @param q A numeric vector of quantiles.
@@ -120,40 +119,14 @@ S7::method(distrib_pdf, PseudoHuber2Distrib) <- function(distrib, y, theta,
 #' @param log.p Logical; if `TRUE`, the logarithm is returned.
 #' @param ... Unused.
 #'
-#' @return A numeric vector of probabilities. An error is signalled where the
-#'   quadrature does not reach its accuracy.
+#' @return A numeric vector of probabilities.
 #'
 #' @seealso [distrib_quantile.PseudoHuber2Distrib()], which inverts it.
 #'
 #' @examples
 #' d <- pseudohuber2_distrib()
 #' distrib_cdf(d, c(-1, 0.4, 2), list(mu = 0.4, sigma = 1.5, nu = 2))
-S7::method(distrib_cdf, PseudoHuber2Distrib) <- function(distrib, q, theta,
-                                                         lower.tail = TRUE,
-                                                         log.p = FALSE, ...) {
-  all_params <- expand_params(c(list(.q = q), theta))
-  qv <- all_params$.q
-  th_cols <- all_params[distrib@params]
-  mu <- th_cols[[1L]]
-  left <- qv <= mu
-  up <- ifelse(left, qv, 2 * mu - qv)
-  integrand <- function(x, i) {
-    xv <- as.numeric(x)
-    idx <- rep(i, times = ncol(x))
-    distrib_pdf(distrib, xv, lapply(th_cols, function(v) v[idx]))
-  }
-  vals <- quad_rows(integrand, -Inf, up)
-  if (anyNA(vals)) {
-    stop(sprintf(
-      "The cdf quadrature did not reach the requested accuracy at quantile(s) %s.",
-      paste(which(is.na(vals)), collapse = ", ")
-    ), call. = FALSE)
-  }
-  res <- ifelse(left, vals, 1 - vals)
-  res <- pmin(pmax(res, 0), 1)
-  if (!lower.tail) res <- 1 - res
-  if (log.p) log(res) else res
-}
+S7::method(distrib_cdf, PseudoHuber2Distrib) <- compiled_cdf
 
 
 #' @title Pseudo-Huber Quantile Function, Standard-Deviation Parametrization
@@ -453,8 +426,8 @@ S7::method(distrib_hess_y_hess, PseudoHuber2Distrib) <-
 #' th <- list(mu = 0.4, sigma = 1.5, nu = 2)
 #' all.equal(distrib_grad_cdf(d, 1, th, log = FALSE)$mu,
 #'           -distrib_pdf(d, 1, th))
-S7::method(distrib_grad_cdf, PseudoHuber2Distrib) <- partial_loc_scale_grad_cdf
-S7::method(distrib_hess_cdf, PseudoHuber2Distrib) <- partial_loc_scale_hess_cdf
+S7::method(distrib_grad_cdf, PseudoHuber2Distrib) <- compiled_grad_cdf
+S7::method(distrib_hess_cdf, PseudoHuber2Distrib) <- compiled_hess_cdf
 S7::method(distrib_deriv3_cdf, PseudoHuber2Distrib) <-
   partial_loc_scale_deriv_cdf_k(3L)
 S7::method(distrib_deriv4_cdf, PseudoHuber2Distrib) <-

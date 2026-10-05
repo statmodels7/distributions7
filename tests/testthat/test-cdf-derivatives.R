@@ -262,10 +262,15 @@ test_that("truncation takes the cdf route only where it is at least as accurate"
   expect_false(is.null(distributions7:::trunc_mass_derivs(
     truncated(poisson_distrib(), lower = 1), list(mu = 2.5), 1L)))
 
-  # A parent whose cdf derivative is differenced: quadrature is kept, because
-  # the noise would otherwise reach the reference of the fourth-order check.
+  # A parent whose cdf derivatives are the compiled integrals of its own
+  # derivatives (the gamma in its shape): the route is taken at orders one
+  # and two, and quadrature is kept at three, where the cdf is differenced
+  # and the noise would otherwise reach the reference of the fourth-order
+  # check.
+  expect_false(is.null(distributions7:::trunc_mass_derivs(
+    truncated(gamma2_distrib(), 0.5, 8), list(mu = 3, sigma2 = 2), 2L)))
   expect_null(distributions7:::trunc_mass_derivs(
-    truncated(gamma2_distrib(), 0.5, 8), list(mu = 3, sigma2 = 2), 2L))
+    truncated(gamma2_distrib(), 0.5, 8), list(mu = 3, sigma2 = 2), 3L))
 
   # A mixed parent with an atom on the lower endpoint: refused for correctness.
   tz <- truncated(zero_adjusted(gamma2_distrib()), upper = 5)

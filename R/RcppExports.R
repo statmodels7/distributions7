@@ -193,8 +193,8 @@ trunc_cont_rule_raw_cpp <- function(a, b, c, s, kinks, h = 0.0625, nd = 6L) {
     .Call(`_distributions7_trunc_cont_rule_raw_cpp`, a, b, c, s, kinks, h, nd)
 }
 
-trunc_cont_ends_cpp <- function(cls, theta) {
-    .Call(`_distributions7_trunc_cont_ends_cpp`, cls, theta)
+trunc_cont_ends_cpp <- function(cls, theta, level = 2L) {
+    .Call(`_distributions7_trunc_cont_ends_cpp`, cls, theta, level)
 }
 
 trunc_cont_rule_cpp <- function(cls, theta) {

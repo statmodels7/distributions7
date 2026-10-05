@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R skewnormal1_distrib.R expected_loc_scale.R
+#' @include distrib.R generics.R skewnormal1_distrib.R expected_loc_scale.R cdf_compiled.R
 NULL
 
 #' @title Skew t Distribution Class
@@ -1641,3 +1641,30 @@ skewt_distrib <- function(link_mu = identity_link(),
     )
   )
 }
+
+#' @title Skew t Distribution Function
+#' @name distrib_cdf.SkewTDistrib
+#'
+#' @description
+#' Computes \eqn{P(Y \le q)} by numerical integration of the density, taken
+#' by the compiled rule of [compiled_cdf()] over the tail on the side of
+#' \eqn{q} away from \eqn{\mu}.
+#'
+#' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
+#' @param q A numeric vector of quantiles.
+#' @param theta A named list with components `mu`, `sigma`, `alpha` and `nu`.
+#' @param lower.tail Logical; if `FALSE`, \eqn{P(Y > q)} is returned.
+#' @param log.p Logical; if `TRUE`, the logarithm is returned.
+#' @param ... Unused.
+#'
+#' @return A numeric vector of probabilities.
+#'
+#' @examples
+#' d <- skewt_distrib()
+#' th <- list(mu = 0.3, sigma = 1.2, alpha = 2, nu = 6)
+#' distrib_cdf(d, c(-1, 0.5, 2), th)
+#' c(method = distrib_cdf(d, 2, th),
+#'   integral = integrate(function(v) distrib_pdf(d, v, th), -Inf, 2)$value)
+#'
+#' @keywords internal
+S7::method(distrib_cdf, SkewTDistrib) <- compiled_cdf

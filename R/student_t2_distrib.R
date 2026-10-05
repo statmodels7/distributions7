@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R numerical_functions.R cdf_derivatives.R cdf_derivatives_families.R cdf_mapped_higher.R dexpected_families.R moments.R y_higher.R
+#' @include distrib.R generics.R numerical_functions.R cdf_derivatives.R cdf_derivatives_families.R cdf_mapped_higher.R dexpected_families.R moments.R y_higher.R cdf_compiled.R
 NULL
 
 #' @title Student t Distribution Class, Standard Deviation
@@ -297,8 +297,8 @@ S7::method(distrib_hess_y_hess, StudentT2Distrib) <- function(
 #' @examples
 #' d <- student_t2_distrib()
 #' distrib_grad_cdf(d, c(-2, 0.5), list(mu = 1, sigma = 2, nu = 6), log = FALSE)
-S7::method(distrib_grad_cdf, StudentT2Distrib) <- partial_loc_scale_grad_cdf
-S7::method(distrib_hess_cdf, StudentT2Distrib) <- partial_loc_scale_hess_cdf
+S7::method(distrib_grad_cdf, StudentT2Distrib) <- compiled_grad_cdf
+S7::method(distrib_hess_cdf, StudentT2Distrib) <- compiled_hess_cdf
 S7::method(distrib_deriv3_cdf, StudentT2Distrib) <- partial_loc_scale_deriv_cdf_k(3L)
 S7::method(distrib_deriv4_cdf, StudentT2Distrib) <- partial_loc_scale_deriv_cdf_k(4L)
 

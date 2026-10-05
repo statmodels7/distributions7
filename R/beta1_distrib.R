@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R dexpected_hessian.R
+#' @include distrib.R generics.R dexpected_hessian.R cdf_compiled.R
 NULL
 
 #' @title Beta Distribution Class, Mean and Precision
@@ -992,3 +992,8 @@ beta1_distrib <- function(link_mu = logit_link(), link_phi = log_link()) {
   )
   
 }
+
+# the distribution function's derivatives from the compiled kernels
+# (compiled_cdf())
+S7::method(distrib_grad_cdf, Beta1Distrib) <- compiled_grad_cdf
+S7::method(distrib_hess_cdf, Beta1Distrib) <- compiled_hess_cdf

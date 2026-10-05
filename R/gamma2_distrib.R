@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R
+#' @include distrib.R generics.R cdf_compiled.R
 NULL
 
 #' @title Gamma Distribution Class, Mean and Variance
@@ -930,3 +930,8 @@ gamma2_distrib <- function(link_mu = log_link(), link_sigma2 = log_link()) {
   )
   
 }
+
+# the distribution function's derivatives from the compiled kernels
+# (compiled_cdf())
+S7::method(distrib_grad_cdf, Gamma2Distrib) <- compiled_grad_cdf
+S7::method(distrib_hess_cdf, Gamma2Distrib) <- compiled_hess_cdf

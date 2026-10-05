@@ -1,4 +1,4 @@
-#' @include cdf_derivatives.R reparametrize.R reparam_maps.R
+#' @include cdf_derivatives.R reparametrize.R reparam_maps.R cdf_compiled.R
 #' @include gaussian2_distrib.R gaussian3_distrib.R invgauss2_distrib.R
 #' @include gumbel_distrib.R skewnormal1_distrib.R skewt_distrib.R
 #' @include exponential_distrib.R weibull1_distrib.R gpd_distrib.R
@@ -714,11 +714,11 @@ partial_loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE,
 #' @name distrib_hess_cdf.StudentT1Distrib
 #'
 #' @description
-#' Closed form in the location-scale block, `mu_mu`, `sigma_sigma` and
-#' `mu_sigma`; the three components touching the degrees of freedom are
-#' differenced, that derivative having no elementary form. The method is
-#' [partial_loc_scale_hess_cdf()] itself, shared with the pseudo-Huber and the
-#' skew t.
+#' Closed form in the location-scale block, and in the mixed components
+#' with a shape \eqn{k}, \eqn{-f s_k} and \eqn{-z f s_k} at \eqn{q}; the
+#' components in the shape parameters alone are integrals of the density's
+#' own derivatives, taken by the compiled rule. The method is
+#' [compiled_hess_cdf()] itself.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\nu > 0} the
@@ -736,7 +736,7 @@ partial_loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE,
 #' @return A named list of six numeric vectors keyed as [hess_names()], each
 #'   the length of `q` recycled against `theta`.
 #'
-#' @seealso [partial_loc_scale_hess_cdf()] for the shared body;
+#' @seealso [compiled_hess_cdf()] for the shared body;
 #'   [distrib_grad_cdf.StudentT1Distrib()] for the first order;
 #'   [student_t1_distrib()].
 #'
@@ -745,25 +745,21 @@ partial_loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE,
 #' th <- list(mu = 0.3, sigma = 1.2, nu = 6)
 #' q <- c(-1, 0.5, 2)
 #'
-#' # Six components: three closed, three differenced.
+#' # Six components, keyed as hess_names().
 #' names(distrib_hess_cdf(d, q, th))
 #'
 #' @keywords internal
-S7::method(distrib_hess_cdf, StudentT1Distrib) <- partial_loc_scale_hess_cdf
+S7::method(distrib_hess_cdf, StudentT1Distrib) <- compiled_hess_cdf
 
 #' @title Pseudo-Huber Log-CDF Hessian
 #' @name distrib_hess_cdf.PseudoHuberDistrib
 #'
 #' @description
-#' Closed form in the location-scale block; the three components touching the
-#' shape are differenced. The method is [partial_loc_scale_hess_cdf()] itself,
-#' shared with the Student t and the skew t.
-#'
-#' @details
-#' The saving is larger here than for the Student t, this family's distribution
-#' function being a quadrature: the closed block reads the density and its
-#' response derivative, where differencing it would run the quadrature four
-#' times per component.
+#' Closed form in the location-scale block, and in the mixed components
+#' with a shape \eqn{k}, \eqn{-f s_k} and \eqn{-z f s_k} at \eqn{q}; the
+#' components in the shape parameters alone are integrals of the density's
+#' own derivatives, taken by the compiled rule. The method is
+#' [compiled_hess_cdf()] itself.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\nu > 0} the
@@ -781,7 +777,7 @@ S7::method(distrib_hess_cdf, StudentT1Distrib) <- partial_loc_scale_hess_cdf
 #' @return A named list of six numeric vectors keyed as [hess_names()], each
 #'   the length of `q` recycled against `theta`.
 #'
-#' @seealso [partial_loc_scale_hess_cdf()] for the shared body;
+#' @seealso [compiled_hess_cdf()] for the shared body;
 #'   [distrib_grad_cdf.PseudoHuberDistrib()] for the first order;
 #'   [pseudohuber_distrib()].
 #'
@@ -792,22 +788,17 @@ S7::method(distrib_hess_cdf, StudentT1Distrib) <- partial_loc_scale_hess_cdf
 #' distrib_hess_cdf(d, c(-1, 2), th)$mu_mu
 #'
 #' @keywords internal
-S7::method(distrib_hess_cdf, PseudoHuberDistrib) <- partial_loc_scale_hess_cdf
+S7::method(distrib_hess_cdf, PseudoHuberDistrib) <- compiled_hess_cdf
 
 #' @title Skew t Log-CDF Gradient
 #' @name distrib_grad_cdf.SkewTDistrib
 #'
 #' @description
 #' Closed form in the location and the scale, \eqn{-f(q)} and \eqn{-z f(q)}
-#' with \eqn{z = (q-\mu)/\sigma}; the shape and the degrees of freedom are
-#' differenced. The method is [partial_loc_scale_grad_cdf()] itself, shared
-#' with the Student t and the pseudo-Huber.
-#'
-#' @details
-#' Two of the four components are closed. The shape and the degrees of freedom
-#' enter the distribution function through a Student t distribution function at
-#' \eqn{\nu+1} degrees of freedom, whose derivatives in either have no
-#' elementary form, so both are differenced.
+#' with \eqn{z = (q-\mu)/\sigma}; the component in the shape and in the degrees of freedom are integrals, each is the integral of
+#' the density's own derivative, taken by the compiled rule. The method is
+#' [compiled_grad_cdf()] itself, shared with the other families whose
+#' distribution function has no closed derivative in a shape parameter.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\alpha} the
@@ -826,7 +817,7 @@ S7::method(distrib_hess_cdf, PseudoHuberDistrib) <- partial_loc_scale_hess_cdf
 #' @return A named list of four numeric vectors, `mu`, `sigma`, `alpha` and
 #'   `nu`, each the length of `q` recycled against `theta`.
 #'
-#' @seealso [partial_loc_scale_grad_cdf()] for the shared body;
+#' @seealso [compiled_grad_cdf()] for the shared body;
 #'   [distrib_hess_cdf.SkewTDistrib()] for the second order;
 #'   [skewt_distrib()].
 #'
@@ -840,16 +831,17 @@ S7::method(distrib_hess_cdf, PseudoHuberDistrib) <- partial_loc_scale_hess_cdf
 #'           -distrib_pdf(d, q, th))
 #'
 #' @keywords internal
-S7::method(distrib_grad_cdf, SkewTDistrib) <- partial_loc_scale_grad_cdf
+S7::method(distrib_grad_cdf, SkewTDistrib) <- compiled_grad_cdf
 
 #' @title Skew t Log-CDF Hessian
 #' @name distrib_hess_cdf.SkewTDistrib
 #'
 #' @description
-#' Closed form in the location-scale block, three of the ten components; the
-#' seven touching the shape or the degrees of freedom are differenced. The
-#' method is [partial_loc_scale_hess_cdf()] itself, shared with the Student t
-#' and the pseudo-Huber.
+#' Closed form in the location-scale block, and in the mixed components
+#' with a shape \eqn{k}, \eqn{-f s_k} and \eqn{-z f s_k} at \eqn{q}; the
+#' components in the shape parameters alone are integrals of the density's
+#' own derivatives, taken by the compiled rule. The method is
+#' [compiled_hess_cdf()] itself.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\alpha} the
@@ -868,7 +860,7 @@ S7::method(distrib_grad_cdf, SkewTDistrib) <- partial_loc_scale_grad_cdf
 #' @return A named list of ten numeric vectors keyed as [hess_names()], each
 #'   the length of `q` recycled against `theta`.
 #'
-#' @seealso [partial_loc_scale_hess_cdf()] for the shared body;
+#' @seealso [compiled_hess_cdf()] for the shared body;
 #'   [distrib_grad_cdf.SkewTDistrib()] for the first order;
 #'   [skewt_distrib()].
 #'
@@ -876,11 +868,11 @@ S7::method(distrib_grad_cdf, SkewTDistrib) <- partial_loc_scale_grad_cdf
 #' d <- skewt_distrib()
 #' th <- list(mu = 0.3, sigma = 1.2, alpha = 2, nu = 6)
 #'
-#' # Ten components, of which mu_mu, sigma_sigma and mu_sigma are closed.
+#' # Ten components, keyed as hess_names().
 #' names(distrib_hess_cdf(d, c(-1, 2), th))
 #'
 #' @keywords internal
-S7::method(distrib_hess_cdf, SkewTDistrib) <- partial_loc_scale_hess_cdf
+S7::method(distrib_hess_cdf, SkewTDistrib) <- compiled_hess_cdf
 
 
 # --- positive families with an elementary distribution function -------------

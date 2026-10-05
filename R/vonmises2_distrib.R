@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R vonmises1_distrib.R moments.R
+#' @include distrib.R generics.R vonmises1_distrib.R moments.R cdf_compiled.R
 NULL
 
 # The von Mises in its mean resultant length. The concentration and the
@@ -750,9 +750,12 @@ S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
 #' @param theta A named list with components `mu` and `rho`, each a numeric
 #'   vector of length 1 or of the length of `q`. `mu` must lie in
 #'   \eqn{(-\pi, \pi)} and `rho` in \eqn{(0, 1)}.
+#' @param lower.tail Logical of length 1. When `TRUE`, the default,
+#'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are
+#'   \eqn{P(Y > q)}, formed as \eqn{1 - F(q)}.
+#' @param log.p Logical of length 1. When `TRUE` the logarithm of the
+#'   probability is returned. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
-#'   This method takes **no** `lower.tail` or `log.p`: the upper tail is
-#'   `1 - F(q)` and the logarithm is `log(F(q))`.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(rho))`.
@@ -778,6 +781,14 @@ S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
 #'           distrib_cdf(vonmises1_distrib(), y, list(mu = 0.5, kappa = k)))
 #' @keywords internal
 S7::method(distrib_cdf, VonMises2Distrib) <- function(distrib, q, theta,
-                                                      ...) {
-  vm_cdf(q, theta[[1]], numericals7::bessel_i_ratio_inverse(theta[[2]]))
+                                                      lower.tail = TRUE,
+                                                      log.p = FALSE, ...) {
+  out <- vm_cdf(q, theta[[1]], numericals7::bessel_i_ratio_inverse(theta[[2]]))
+  if (!lower.tail) out <- 1 - out
+  if (log.p) log(out) else out
 }
+
+# the distribution function's derivatives from the compiled kernels
+# (compiled_cdf())
+S7::method(distrib_grad_cdf, VonMises2Distrib) <- compiled_grad_cdf
+S7::method(distrib_hess_cdf, VonMises2Distrib) <- compiled_hess_cdf

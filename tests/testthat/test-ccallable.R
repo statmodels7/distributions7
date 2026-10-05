@@ -390,3 +390,24 @@ test_that("a truncated continuous family's entries are its methods, bit for bit"
     ccallable_twin(NULL, c(-0.5, 0.5), 6, d = d)
   }
 })
+
+test_that("every continuous family truncated has entries equal to its methods", {
+  cont <- Filter(function(cls) S7::S7_inherits(ccallable_families[[cls]](),
+                                               continuous_distrib),
+                 names(ccallable_families))
+  cut <- function(d) {
+    b <- d@bounds
+    if (b[1] == 0 && b[2] == 1) c(0.3, 0.8)
+    else if (b[1] == 0) c(0.5, 3)
+    else if (b[1] < -3 && b[2] < 4) c(-1, 1.5)
+    else c(-0.2, 1.2)
+  }
+  for (cls in cont) {
+    d <- ccallable_families[[cls]]()
+    pts <- cut(d)
+    for (tr in list(truncated(d, lower = pts[1]), truncated(d, upper = pts[2]))) {
+      expect_false(is.null(distrib_scalar_route(tr)), label = cls)
+      ccallable_twin(NULL, c(-0.5, 0.5), 7, d = tr)
+    }
+  }
+})

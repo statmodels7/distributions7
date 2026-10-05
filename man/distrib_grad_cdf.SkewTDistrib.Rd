@@ -23,15 +23,10 @@ A named list of four numeric vectors, \code{mu}, \code{sigma}, \code{alpha} and
 }
 \description{
 Closed form in the location and the scale, \eqn{-f(q)} and \eqn{-z f(q)}
-with \eqn{z = (q-\mu)/\sigma}; the shape and the degrees of freedom are
-differenced. The method is \code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}} itself, shared
-with the Student t and the pseudo-Huber.
-}
-\details{
-Two of the four components are closed. The shape and the degrees of freedom
-enter the distribution function through a Student t distribution function at
-\eqn{\nu+1} degrees of freedom, whose derivatives in either have no
-elementary form, so both are differenced.
+with \eqn{z = (q-\mu)/\sigma}; the component in the shape and in the degrees of freedom are integrals, each is the integral of
+the density's own derivative, taken by the compiled rule. The method is
+\code{\link[=compiled_grad_cdf]{compiled_grad_cdf()}} itself, shared with the other families whose
+distribution function has no closed derivative in a shape parameter.
 }
 \section{Notation}{
 
@@ -51,7 +46,7 @@ all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
 
 }
 \seealso{
-\code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}} for the shared body;
+\code{\link[=compiled_grad_cdf]{compiled_grad_cdf()}} for the shared body;
 \code{\link[=distrib_hess_cdf.SkewTDistrib]{distrib_hess_cdf.SkewTDistrib()}} for the second order;
 \code{\link[=skewt_distrib]{skewt_distrib()}}.
 }

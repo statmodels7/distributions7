@@ -166,7 +166,11 @@ test_that("the gate refuses a stencil dressed as a closed form", {
     distributions7:::has_exact_cdf_deriv(gaussian1_distrib(), k), logical(1))))
   expect_true(all(vapply(1:4, function(k)
     distributions7:::has_exact_cdf_deriv(poisson_distrib(), k), logical(1))))
-  expect_false(any(vapply(1:4, function(k)
+  # the gamma's first two orders are compiled integrals, its last two
+  # stencils
+  expect_true(all(vapply(1:2, function(k)
+    distributions7:::has_exact_cdf_deriv(gamma1_distrib(), k), logical(1))))
+  expect_false(any(vapply(3:4, function(k)
     distributions7:::has_exact_cdf_deriv(gamma1_distrib(), k), logical(1))))
 })
 
@@ -238,10 +242,10 @@ test_that("the new routes agree with the partial expectation", {
 })
 
 test_that("the gate refuses to carry a differenced parent", {
-  # the gamma differences its own cdf at every order, the derivative of the
-  # incomplete gamma in its shape having no elementary form, so a chain rule
-  # over it must not report a closed form
-  expect_false(any(vapply(1:4, function(k)
+  # the gamma differences its own cdf at orders three and four, the
+  # derivative of the incomplete gamma in its shape having no elementary
+  # form, so a chain rule over it must not report a closed form there
+  expect_false(any(vapply(3:4, function(k)
     distributions7:::has_exact_cdf_deriv(gamma1_distrib(), k), logical(1))))
   # while the gaussian and the Laplace are exact at every order, which is what
   # lets the mapped route close the lognormal and the second Laplace

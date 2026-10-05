@@ -38,6 +38,7 @@ Collate:
     'generics.R'
     'distrib.R'
     'bernoulli_distrib.R'
+    'cdf_compiled.R'
     'numerical_functions.R'
     'utility_functions.R'
     'numerical_derivatives.R'

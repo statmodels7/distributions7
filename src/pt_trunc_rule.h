@@ -59,7 +59,10 @@ inline void ts_doubling(double u, double v, bool from_u, double s,
     double width = s, at = from_u ? u : v;
     for (;;) {
         const double next = from_u ? at + width : at - width;
-        const bool last = from_u ? !(next < v) : !(next > u);
+        // a panel that would not advance (a zero or non-finite scale, or a
+        // width below the spacing of doubles at `at`) closes the piece
+        const bool stuck = !(width > 0) || !R_FINITE(width) || next == at;
+        const bool last = stuck || (from_u ? !(next < v) : !(next > u));
         if (last) {
             if (from_u) ts_panel(at, v, y, w, h); else ts_panel(u, at, y, w, h);
             return;

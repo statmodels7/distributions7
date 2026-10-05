@@ -676,14 +676,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // trunc_cont_ends_cpp
-Rcpp::List trunc_cont_ends_cpp(std::string cls, Rcpp::NumericMatrix theta);
-RcppExport SEXP _distributions7_trunc_cont_ends_cpp(SEXP clsSEXP, SEXP thetaSEXP) {
+Rcpp::List trunc_cont_ends_cpp(std::string cls, Rcpp::NumericMatrix theta, int level);
+RcppExport SEXP _distributions7_trunc_cont_ends_cpp(SEXP clsSEXP, SEXP thetaSEXP, SEXP levelSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string >::type cls(clsSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type theta(thetaSEXP);
-    rcpp_result_gen = Rcpp::wrap(trunc_cont_ends_cpp(cls, theta));
+    Rcpp::traits::input_parameter< int >::type level(levelSEXP);
+    rcpp_result_gen = Rcpp::wrap(trunc_cont_ends_cpp(cls, theta, level));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -6253,7 +6254,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_trunc_rule_cpp", (DL_FUNC) &_distributions7_trunc_rule_cpp, 3},
     {"_distributions7_ld_group_sum", (DL_FUNC) &_distributions7_ld_group_sum, 3},
     {"_distributions7_trunc_cont_rule_raw_cpp", (DL_FUNC) &_distributions7_trunc_cont_rule_raw_cpp, 7},
-    {"_distributions7_trunc_cont_ends_cpp", (DL_FUNC) &_distributions7_trunc_cont_ends_cpp, 2},
+    {"_distributions7_trunc_cont_ends_cpp", (DL_FUNC) &_distributions7_trunc_cont_ends_cpp, 3},
     {"_distributions7_trunc_cont_rule_cpp", (DL_FUNC) &_distributions7_trunc_cont_rule_cpp, 2},
     {"_distributions7_d7_cdf_cpp", (DL_FUNC) &_distributions7_d7_cdf_cpp, 4},
     {"_distributions7_d7_cdf_grad_cpp", (DL_FUNC) &_distributions7_d7_cdf_grad_cpp, 3},

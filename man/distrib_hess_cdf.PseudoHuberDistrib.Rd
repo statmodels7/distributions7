@@ -22,15 +22,11 @@ A named list of six numeric vectors keyed as \code{\link[=hess_names]{hess_names
 the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form in the location-scale block; the three components touching the
-shape are differenced. The method is \code{\link[=partial_loc_scale_hess_cdf]{partial_loc_scale_hess_cdf()}} itself,
-shared with the Student t and the skew t.
-}
-\details{
-The saving is larger here than for the Student t, this family's distribution
-function being a quadrature: the closed block reads the density and its
-response derivative, where differencing it would run the quadrature four
-times per component.
+Closed form in the location-scale block, and in the mixed components
+with a shape \eqn{k}, \eqn{-f s_k} and \eqn{-z f s_k} at \eqn{q}; the
+components in the shape parameters alone are integrals of the density's
+own derivatives, taken by the compiled rule. The method is
+\code{\link[=compiled_hess_cdf]{compiled_hess_cdf()}} itself.
 }
 \section{Notation}{
 
@@ -46,7 +42,7 @@ distrib_hess_cdf(d, c(-1, 2), th)$mu_mu
 
 }
 \seealso{
-\code{\link[=partial_loc_scale_hess_cdf]{partial_loc_scale_hess_cdf()}} for the shared body;
+\code{\link[=compiled_hess_cdf]{compiled_hess_cdf()}} for the shared body;
 \code{\link[=distrib_grad_cdf.PseudoHuberDistrib]{distrib_grad_cdf.PseudoHuberDistrib()}} for the first order;
 \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.
 }

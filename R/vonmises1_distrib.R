@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R
+#' @include distrib.R generics.R cdf_compiled.R
 NULL
 
 #' @title von Mises Distribution Class
@@ -986,9 +986,12 @@ vm_cdf <- function(y, mu, kappa) {
 #'   vector of length 1 or of the length of `q`. A component of length 1 is
 #'   recycled. `mu` must lie in \eqn{(-\pi, \pi)} and `kappa` be strictly
 #'   positive; a non-positive `kappa` gives `NA`.
+#' @param lower.tail Logical of length 1. When `TRUE`, the default,
+#'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are
+#'   \eqn{P(Y > q)}, formed as \eqn{1 - F(q)}.
+#' @param log.p Logical of length 1. When `TRUE` the logarithm of the
+#'   probability is returned. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
-#'   This method takes **no** `lower.tail` or `log.p`: the upper tail is
-#'   `1 - F(q)` and the logarithm is `log(F(q))`.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(kappa))`.
@@ -1016,7 +1019,15 @@ vm_cdf <- function(y, mu, kappa) {
 #' # on this, inverts it.
 #' q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 #' all.equal(distrib_cdf(d, q, th), c(0.25, 0.5, 0.75), tolerance = 1e-6)
-S7::method(distrib_cdf, VonMises1Distrib) <- function(distrib, q,
-                                                      theta, ...) {
-  vm_cdf(q, theta[[1]], theta[[2]])
+S7::method(distrib_cdf, VonMises1Distrib) <- function(distrib, q, theta,
+                                                      lower.tail = TRUE,
+                                                      log.p = FALSE, ...) {
+  out <- vm_cdf(q, theta[[1]], theta[[2]])
+  if (!lower.tail) out <- 1 - out
+  if (log.p) log(out) else out
 }
+
+# the distribution function's derivatives from the compiled kernels
+# (compiled_cdf())
+S7::method(distrib_grad_cdf, VonMises1Distrib) <- compiled_grad_cdf
+S7::method(distrib_hess_cdf, VonMises1Distrib) <- compiled_hess_cdf

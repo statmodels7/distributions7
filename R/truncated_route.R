@@ -126,7 +126,7 @@ trunc_route_parts <- function(distrib, y, theta, what) {
     comp <- rule$branch == 1L
     fw <- function(lp) exp(lp)
   } else {
-    ends <- trunc_cont_ends_cpp(route$name, tm)
+    ends <- trunc_cont_ends_cpp(route$name, tm, min(lev - 1L, 2L))
     no_mass(ends$z)
     out <- list(Z = ends$z)
     if (lev >= 2L) out$Zi <- stats::setNames(lapply(seq_len(p), function(i) ends$g[, i]), P)

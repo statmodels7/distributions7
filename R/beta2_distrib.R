@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R
+#' @include distrib.R generics.R cdf_compiled.R
 NULL
 
 #' @title Beta Distribution Class, the Two Shapes
@@ -933,3 +933,8 @@ beta2_distrib <- function(link_alpha = log_link(), link_beta = log_link()) {
     link_params = list(alpha = link_alpha, beta = link_beta)
   )
 }
+
+# the distribution function's derivatives from the compiled kernels
+# (compiled_cdf())
+S7::method(distrib_grad_cdf, Beta2Distrib) <- compiled_grad_cdf
+S7::method(distrib_hess_cdf, Beta2Distrib) <- compiled_hess_cdf

@@ -230,9 +230,12 @@ double d7_logpdf(int id, double y, const double* th);
 namespace {
 
 // the families with a compiled distribution function (pt_cdf.h)
+bool quad_cdf_family(int id);
+
 bool cont_has_cdf(int id) {
+    if (quad_cdf_family(id)) return true;
     switch (id) {
-    case 0: return true;
+    case 0: case 10: case 11: case 27: case 28: case 12: case 13: case 29: case 14: case 7: case 30: case 18: case 21: case 22: case 15: case 16: case 32: return true;
     default: return false;
     }
 }
@@ -700,24 +703,400 @@ int cont_kinks(int id, const double* th, double* kk) {
     return 0;
 }
 
+int hess_pos(int P, int i, int j);
+void mapped_rule(int id, const double* th, double a, double b,
+                 const double* kk, int nk, std::vector<double>& y,
+                 std::vector<double>& w);
+
+// ---- distribution functions by quadrature ----------------------------------
+//
+// For the families whose distribution function has no closed derivative in
+// a shape parameter, the derivatives are integrals of the density's own:
+//   F_k(q) = int_{lo}^{q} f s_k,  F_kl(q) = int_{lo}^{q} f (l_kl + s_k s_l),
+// taken by the rule of pt_trunc_rule.h, or as minus the same integrals over
+// [q, hi) when q lies above the family's center, so that neither side is a
+// difference of two numbers near one. A location-scale family integrates
+// only its shape parameters: with z = (q - mu)/sigma and l_y = -s_mu,
+// F_mu = -f, F_sigma = -z f, F_mumu = -f s_mu, F_sigmasigma =
+// f (-z^2 s_mu + 2z/sigma), F_musigma = f (-z s_mu + 1/sigma), and for a
+// shape k, F_muk = -f s_k and F_sigmak = -z f s_k, all at q. The
+// distribution function itself is R's where it has one (pt, pgamma, pchisq,
+// pbeta) and the integral of f otherwise.
+
+// the off-diagonal second derivative of the log-density in (k, l), k < l
+double hess_off(int id, int k, int l, double y, const double* th) {
+    switch (id) {
+    case 1: {  // gamma1 (mu, phi)
+        const double mu = th[0], ph = th[1];
+        return -(y - mu) / (ph * ph * mu * mu);
+    }
+    case 17: {  // gamma2 (mu, v)
+        const double mu = th[0], v = th[1], kk = mu * mu / v;
+        return (-2 * mu * (std::log(mu / v) + std::log(y) - R::digamma(kk)) -
+                3 * mu + y) / (v * v) + 2 * mu * mu * mu * R::trigamma(kk) / (v * v * v);
+    }
+    case 4: {  // beta1 (mu, phi)
+        const double mu = th[0], ph = th[1], a = mu * ph, b = (1 - mu) * ph;
+        return -R::digamma(a) + R::digamma(b) + std::log(y) - std::log1p(-y) +
+            ph * (-R::trigamma(a) * mu + R::trigamma(b) * (1 - mu));
+    }
+    case 31:  // beta2 (alpha, beta)
+        return R::trigamma(th[0] + th[1]);
+    case 19:  // vonmises1 (mu, kappa)
+        return std::sin(y - th[0]);
+    case 20: {  // vonmises2 (mu, rho)
+        double kk[2];
+        d7::vm2_kappa(d7::vm_bessel(), th[1], 1, kk);
+        return std::sin(y - th[0]) * kk[1];
+    }
+    case 25: case 26: {  // gengamma1 (a, d, p), gengamma2 (m, d, p)
+        const double d = th[1], p = th[2], u = d / p, w = (d + 1) / p;
+        double a = th[0];
+        if (id == 26) a = std::exp(std::log(th[0]) + R::lgammafn(u) - R::lgammafn(w));
+        const double lya = std::log(y / a), t = std::exp(p * lya);
+        const double La = -d / a + p * t / a;
+        const double Laa = (d - p * (p + 1) * t) / (a * a);
+        const double Lad = -1 / a, Lap = t * (1 + p * lya) / a;
+        const double Ldp = R::trigamma(u) * d / (p * p * p) + R::digamma(u) / (p * p);
+        if (id == 25) {
+            if (k == 0 && l == 1) return Lad;
+            if (k == 0 && l == 2) return Lap;
+            return Ldp;
+        }
+        // a = m e^g, g = lgamma(u) - lgamma(w): A = log a
+        const double pu = R::digamma(u), pw = R::digamma(w);
+        const double qu = R::trigamma(u), qw = R::trigamma(w);
+        const double A1[3] = {1 / th[0], (pu - pw) / p,
+                              (-d * pu + (d + 1) * pw) / (p * p)};
+        double A2;  // A_kl
+        if (k == 0) A2 = 0.0;
+        else A2 = (-qu * d / (p * p) + qw * (d + 1) / (p * p)) / p - (pu - pw) / (p * p);
+        const double ak = a * A1[k], al = a * A1[l];
+        const double akl = a * (A2 + A1[k] * A1[l]);
+        // direct mixed partials L_a(theta) for theta in (d, p)
+        const double Lak = (k == 1) ? Lad : (k == 2 ? Lap : 0.0);
+        const double Lal = (l == 1) ? Lad : (l == 2 ? Lap : 0.0);
+        const double Lkl = (k == 1 && l == 2) ? Ldp : 0.0;
+        return Laa * ak * al + La * akl + Lak * al + Lal * ak + Lkl;
+    }
+    case 35: {  // skewt (mu, sigma, alpha, nu): alpha-nu by the family's own
+        // stencil in nu on the alpha score
+        if (!(k == 2 && l == 3)) return R_NaN;
+        const double h = d7::skewt_nu_step(th[3]);
+        double acc = 0.0;
+        for (int j = 0; j < 5; ++j) {
+            if (d7::kSkewtW1[j] == 0.0) continue;
+            const d7::SkewtPieces P =
+                d7::skewt_pieces(y, th[0], th[1], th[2], th[3] + (j - 2) * h);
+            acc = acc + d7::kSkewtW1[j] * d7::skewt_score_alpha(P);
+        }
+        return acc / h;
+    }
+    default: return R_NaN;
+    }
+}
+
+// the integrated parameters of a family (bit j for parameter j) and whether
+// it is location-scale in its first two
+int quad_cdf_mask(int id, bool* ls) {
+    *ls = false;
+    switch (id) {
+    case 23: case 24: case 34: case 36: case 37: case 38:
+        *ls = true; return 4;
+    case 35: *ls = true; return 12;
+    case 9: return 1;
+    case 1: case 17: case 4: case 31: case 19: case 20: return 3;
+    case 25: case 26: return 7;
+    default: return 0;
+    }
+}
+
+bool quad_cdf_family(int id) { bool ls; return quad_cdf_mask(id, &ls) != 0; }
+
+// R's closed distribution function where the family has one
+bool closed_cdf(int id, double q, const double* th, bool lower, double* F) {
+    switch (id) {
+    case 23: *F = R::pt((q - th[0]) / th[1], th[2], lower, 0); return true;
+    case 24: *F = R::pt((q - th[0]) / (th[1] * std::sqrt(1 - 2 / th[2])), th[2],
+                        lower, 0); return true;
+    case 1: *F = R::pgamma(q, 1 / th[1], th[1] * th[0], lower, 0); return true;
+    case 17: *F = R::pgamma(q, th[0] * th[0] / th[1], th[1] / th[0], lower, 0);
+        return true;
+    case 9: *F = R::pchisq(q, th[0], lower, 0); return true;
+    case 4: *F = R::pbeta(q, th[0] * th[1], (1 - th[0]) * th[1], lower, 0);
+        return true;
+    case 31: *F = R::pbeta(q, th[0], th[1], lower, 0); return true;
+    case 25: case 26: {
+        const double d = th[1], p = th[2];
+        double a = th[0];
+        if (id == 26) a = std::exp(std::log(th[0]) + R::lgammafn(d / p) -
+                                   R::lgammafn((d + 1) / p));
+        *F = R::pgamma(std::pow(std::max(q, 0.0) / a, p), d / p, 1.0, lower, 0);
+        return true;
+    }
+    default: return false;
+    }
+}
+
+// the integrals over the side of q: I0 = int f, Ik = int f s_k and
+// Ikl = int f (l_kl + s_k s_l) over the parameters of `mask`, with
+// `upper` true for [q, hi)
+void quad_cdf_sums(int id, double q, const double* th, int mask, bool upper,
+                   bool want_h, double* I0, double* Ik, double* Ikl) {
+    const int P = d7_n_params[id];
+    double slo, shi, c, s;
+    cont_support(id, th, &slo, &shi);
+    cont_center_scale(id, th, &c, &s);
+    std::vector<double> ys, ws;
+    const double a = upper ? std::max(q, slo) : slo;
+    const double b = upper ? shi : std::min(q, shi);
+    mapped_rule(id, th, a, b, nullptr, 0, ys, ws);
+    long double S0 = 0.0L, S1[4] = {0, 0, 0, 0}, S2[16] = {0};
+    for (std::size_t j = 0; j < ys.size(); ++j) {
+        const double y = ys[j];
+        const double fw = std::exp(d7_logpdf(id, y, th)) * ws[j];
+        if (fw == 0.0) continue;
+        S0 += fw;
+        double g[4], l[4];
+        for (int k = 0; k < P; ++k) {
+            if (!((mask >> k) & 1)) continue;
+            double sc[2];
+            d7_score_curv(id, k, y, th, sc);
+            g[k] = sc[0]; l[k] = sc[1];
+            S1[k] += fw * g[k];
+        }
+        if (!want_h) continue;
+        for (int k = 0; k < P; ++k) {
+            if (!((mask >> k) & 1)) continue;
+            S2[k * 4 + k] += fw * (l[k] + g[k] * g[k]);
+            for (int m = k + 1; m < P; ++m) {
+                if (!((mask >> m) & 1)) continue;
+                S2[k * 4 + m] += fw * (hess_off(id, k, m, y, th) + g[k] * g[m]);
+            }
+        }
+    }
+    *I0 = (double) S0;
+    for (int k = 0; k < 4; ++k) Ik[k] = (double) S1[k];
+    for (int k = 0; k < 16; ++k) Ikl[k] = (double) S2[k];
+}
+
+// the side of q to integrate over: above the center, the upper side,
+// except on (0, 1) when the second shape is below one, where the mass
+// within one unit in the last place of 1 is not representable in y (it is
+// eps^b of the total) and the lower side is used instead
+bool quad_side_upper(int id, double q, const double* th) {
+    double c, s;
+    cont_center_scale(id, th, &c, &s);
+    if (id == 4 && (1 - th[0]) * th[1] < 1) return false;
+    if (id == 31 && th[1] < 1) return false;
+    return q > c;
+}
+
+double quad_cdf(int id, double q, const double* th, bool lower) {
+    double F;
+    if (closed_cdf(id, q, th, lower, &F)) return F;
+    const bool up = quad_side_upper(id, q, th);
+    double I0, Ik[4], Ikl[16];
+    quad_cdf_sums(id, q, th, 0, up, false, &I0, Ik, Ikl);
+    // I0 is F on the lower side and S on the upper
+    if (up) return lower ? 1 - I0 : I0;
+    return lower ? I0 : 1 - I0;
+}
+
+// the gradient (want_h false) or the Hessian, in hess_names() order
+void quad_cdf_derivs(int id, double q, const double* th, bool want_h,
+                     double* out) {
+    const int P = d7_n_params[id];
+    bool ls;
+    const int mask = quad_cdf_mask(id, &ls);
+    const bool up = quad_side_upper(id, q, th);
+    double I0, Ik[4], Ikl[16];
+    quad_cdf_sums(id, q, th, mask, up, want_h, &I0, Ik, Ikl);
+    const double sgn = up ? -1.0 : 1.0;
+    // the point quantities a location-scale family reads at q
+    double f = 0.0, z = 0.0, sq[4] = {0, 0, 0, 0};
+    if (ls) {
+        f = std::exp(d7_logpdf(id, q, th));
+        z = (q - th[0]) / th[1];
+        for (int k = 0; k < P; ++k) {
+            if (k != 0 && !((mask >> k) & 1)) continue;
+            double sc[2];
+            d7_score_curv(id, k, q, th, sc);
+            sq[k] = sc[0];
+        }
+    }
+    if (!want_h) {
+        for (int k = 0; k < P; ++k) {
+            if ((mask >> k) & 1) out[k] = sgn * Ik[k];
+            else if (k == 0) out[k] = -f;
+            else out[k] = -z * f;
+        }
+        return;
+    }
+    const double sg = ls ? th[1] : 1.0;
+    for (int i = 0; i < P; ++i) {
+        for (int j = i; j < P; ++j) {
+            const bool mi = (mask >> i) & 1, mj = (mask >> j) & 1;
+            double v;
+            if (mi && mj) {
+                v = sgn * Ikl[i * 4 + j];
+            } else if (mi || mj) {
+                // a location or scale with a shape: -f s_k or -z f s_k
+                const int sh = mi ? i : j, lsj = mi ? j : i;
+                v = (lsj == 0) ? -f * sq[sh] : -z * f * sq[sh];
+            } else if (i == 0 && j == 0) {
+                v = -f * sq[0];
+            } else if (i == 1 && j == 1) {
+                v = f * (-z * z * sq[0] + 2 * z / sg);
+            } else {
+                v = f * (-z * sq[0] + 1 / sg);
+            }
+            out[hess_pos(P, i, j)] = v;
+        }
+    }
+}
+
+// The rule over [a, b] in the variable where the family's density is
+// regular. On (0, Inf) a density may behave like y^(k-1) at zero, whose
+// mass a tanh-sinh rule truncated at |t| = 3.2 misses for a small k; in
+// v = log y it is a tail decaying like e^(k v), which the exp-sinh half
+// reaches. On (0, 1) the same holds at both ends in v = logit(y). The nodes
+// are mapped back to y and the weights multiplied by dy/dv; the center and
+// the scale go over as v(c) and the scale's relative size, kept within
+// [0.05, 20].
+int cont_map(int id) {
+    switch (id) {
+    case 1: case 7: case 9: case 14: case 15: case 16: case 17: case 18:
+    case 21: case 22: case 25: case 26: case 30:
+        return 1;
+    case 4: case 31:
+        return 2;
+    default:
+        return 0;
+    }
+}
+
+void mapped_rule(int id, const double* th, double a, double b,
+                 const double* kk, int nk, std::vector<double>& y,
+                 std::vector<double>& w) {
+    double c, s;
+    cont_center_scale(id, th, &c, &s);
+    const int mp = cont_map(id);
+    if (mp == 0) {
+        d7::trunc_rule(a, b, c, s, kk, nk, y, w);
+        return;
+    }
+    auto fwd = [mp](double x) {
+        if (mp == 1) return (x > 0) ? std::log(x) : R_NegInf;
+        if (!(x > 0)) return R_NegInf;
+        if (!(x < 1)) return R_PosInf;
+        return std::log(x) - std::log1p(-x);
+    };
+    const double cv = fwd(c);
+    double sv = (mp == 1) ? s / c : s / (c * (1 - c));
+    sv = std::min(20.0, std::max(0.05, sv));
+    double kv[4];
+    for (int i = 0; i < nk && i < 4; ++i) kv[i] = fwd(kk[i]);
+    d7::trunc_rule(fwd(a), fwd(b), cv, sv, kv, nk, y, w);
+    // a node whose image leaves the open support, or whose weight is not
+    // finite, is dropped: the density's tail has no mass there
+    std::size_t k = 0;
+    for (std::size_t j = 0; j < y.size(); ++j) {
+        const double v = y[j];
+        double yy, ww;
+        if (mp == 1) {
+            yy = std::exp(v);
+            ww = w[j] * yy;
+            if (!(yy > 0) || !R_FINITE(yy)) continue;
+        } else {
+            yy = 1 / (1 + std::exp(-v));
+            ww = w[j] * (yy * (1 - yy));
+            if (!(yy > 0) || !(yy < 1)) continue;
+        }
+        if (!R_FINITE(ww) || !(ww > 0)) continue;
+        y[k] = yy;
+        w[k] = ww;
+        ++k;
+    }
+    y.resize(k);
+    w.resize(k);
+}
+
 // the compiled distribution function and its derivatives, by family; false
 // where the family has none
 bool cont_cdf(int id, double q, const double* th, bool lower, double* F) {
     switch (id) {
     case 0: *F = d7::gaussian1_cdf(q, th, lower); return true;
-    default: return false;
+    case 32: *F = d7::enet_cdf(q, th, lower); return true;
+    case 18: *F = d7::gpd_cdf(q, th, lower); return true;
+    case 21: *F = d7::weibull3_cdf(q, th, lower); return true;
+    case 22: *F = d7::lognormal2_cdf(q, th, lower); return true;
+    case 15: *F = d7::invgauss1_cdf(q, th, lower); return true;
+    case 16: *F = d7::invgauss2_cdf(q, th, lower); return true;
+    case 10: *F = d7::cauchy_cdf(q, th, lower); return true;
+    case 11: *F = d7::logistic_cdf(q, th, lower); return true;
+    case 27: *F = d7::gumbel_cdf(q, th, lower); return true;
+    case 28: *F = d7::laplace_cdf(q, th, lower); return true;
+    case 12: *F = d7::gaussian2_cdf(q, th, lower); return true;
+    case 13: *F = d7::gaussian3_cdf(q, th, lower); return true;
+    case 29: *F = d7::laplace2_cdf(q, th, lower); return true;
+    case 14: *F = d7::lognormal1_cdf(q, th, lower); return true;
+    case 7: *F = d7::exponential_cdf(q, th, lower); return true;
+    case 30: *F = d7::weibull1_cdf(q, th, lower); return true;
+    default:
+        if (!quad_cdf_family(id)) return false;
+        *F = quad_cdf(id, q, th, lower);
+        return true;
     }
 }
 bool cont_cdf_grad(int id, double q, const double* th, double* g) {
     switch (id) {
     case 0: d7::gaussian1_cdf_grad(q, th, g); return true;
-    default: return false;
+    case 32: d7::enet_cdf_grad(q, th, g); return true;
+    case 18: d7::gpd_cdf_grad(q, th, g); return true;
+    case 21: d7::weibull3_cdf_grad(q, th, g); return true;
+    case 22: d7::lognormal2_cdf_grad(q, th, g); return true;
+    case 15: d7::invgauss1_cdf_grad(q, th, g); return true;
+    case 16: d7::invgauss2_cdf_grad(q, th, g); return true;
+    case 10: d7::cauchy_cdf_grad(q, th, g); return true;
+    case 11: d7::logistic_cdf_grad(q, th, g); return true;
+    case 27: d7::gumbel_cdf_grad(q, th, g); return true;
+    case 28: d7::laplace_cdf_grad(q, th, g); return true;
+    case 12: d7::gaussian2_cdf_grad(q, th, g); return true;
+    case 13: d7::gaussian3_cdf_grad(q, th, g); return true;
+    case 29: d7::laplace2_cdf_grad(q, th, g); return true;
+    case 14: d7::lognormal1_cdf_grad(q, th, g); return true;
+    case 7: d7::exponential_cdf_grad(q, th, g); return true;
+    case 30: d7::weibull1_cdf_grad(q, th, g); return true;
+    default:
+        if (!quad_cdf_family(id)) return false;
+        quad_cdf_derivs(id, q, th, false, g);
+        return true;
     }
 }
 bool cont_cdf_hess(int id, double q, const double* th, double* h) {
     switch (id) {
     case 0: d7::gaussian1_cdf_hess(q, th, h); return true;
-    default: return false;
+    case 32: d7::enet_cdf_hess(q, th, h); return true;
+    case 18: d7::gpd_cdf_hess(q, th, h); return true;
+    case 21: d7::weibull3_cdf_hess(q, th, h); return true;
+    case 22: d7::lognormal2_cdf_hess(q, th, h); return true;
+    case 15: d7::invgauss1_cdf_hess(q, th, h); return true;
+    case 16: d7::invgauss2_cdf_hess(q, th, h); return true;
+    case 10: d7::cauchy_cdf_hess(q, th, h); return true;
+    case 11: d7::logistic_cdf_hess(q, th, h); return true;
+    case 27: d7::gumbel_cdf_hess(q, th, h); return true;
+    case 28: d7::laplace_cdf_hess(q, th, h); return true;
+    case 12: d7::gaussian2_cdf_hess(q, th, h); return true;
+    case 13: d7::gaussian3_cdf_hess(q, th, h); return true;
+    case 29: d7::laplace2_cdf_hess(q, th, h); return true;
+    case 14: d7::lognormal1_cdf_hess(q, th, h); return true;
+    case 7: d7::exponential_cdf_hess(q, th, h); return true;
+    case 30: d7::weibull1_cdf_hess(q, th, h); return true;
+    default:
+        if (!quad_cdf_family(id)) return false;
+        quad_cdf_derivs(id, q, th, true, h);
+        return true;
     }
 }
 
@@ -732,9 +1111,12 @@ int hess_pos(int P, int i, int j) {
 
 struct TruncEnds { double z; double g[4]; double h[10]; bool ok; };
 
-// the retained mass and its first and second derivatives in every
-// parameter, at one observation; inner a base family
-TruncEnds trunc_cont_ends(int inner, const double* th, double lo, double up) {
+// the retained mass and, as `level` asks (0, 1 or 2), its first and
+// second derivatives in every parameter, at one observation; inner a base
+// family. The density needs the mass alone, and for a family whose
+// derivatives are quadratures the derivatives cost far more than the mass.
+TruncEnds trunc_cont_ends(int inner, const double* th, double lo, double up,
+                          int level) {
     TruncEnds e;
     const int P = d7_n_params[inner], np2 = P * (P + 1) / 2;
     double slo, shi;
@@ -743,10 +1125,15 @@ TruncEnds trunc_cont_ends(int inner, const double* th, double lo, double up) {
     double Fa = 0.0, gl[4] = {0, 0, 0, 0}, gu[4] = {0, 0, 0, 0};
     double hl[10] = {0}, hu[10] = {0};
     e.ok = true;
-    if (lo_in) e.ok = e.ok && cont_cdf(inner, lo, th, true, &Fa) &&
-                   cont_cdf_grad(inner, lo, th, gl) && cont_cdf_hess(inner, lo, th, hl);
-    if (up_in) e.ok = e.ok && cont_cdf_grad(inner, up, th, gu) &&
-                   cont_cdf_hess(inner, up, th, hu);
+    if (lo_in) {
+        e.ok = e.ok && cont_cdf(inner, lo, th, true, &Fa);
+        if (level >= 1) e.ok = e.ok && cont_cdf_grad(inner, lo, th, gl);
+        if (level >= 2) e.ok = e.ok && cont_cdf_hess(inner, lo, th, hl);
+    }
+    if (up_in) {
+        if (level >= 1) e.ok = e.ok && cont_cdf_grad(inner, up, th, gu);
+        if (level >= 2) e.ok = e.ok && cont_cdf_hess(inner, up, th, hu);
+    }
     if (!e.ok) return e;
     if (Fa > 0.5) {
         double Sa = 1.0, Sb = 0.0;
@@ -770,13 +1157,13 @@ void trunc_cont_nodes(int inner, const double* th, double lo, double up,
     cont_support(inner, th, &slo, &shi);
     if (!cont_center_scale(inner, th, &c, &s)) { y.clear(); w.clear(); return; }
     const int nk = cont_kinks(inner, th, kk);
-    d7::trunc_rule(std::max(lo, slo), std::min(up, shi), c, s, kk, nk, y, w);
+    mapped_rule(inner, th, std::max(lo, slo), std::min(up, shi), kk, nk, y, w);
 }
 
 void trunc_cont_score_curv(int inner, int k, double y, const double* th,
                            double* out) {
     const double* tp = trunc_points(inner, th);
-    const TruncEnds e = trunc_cont_ends(inner, th, tp[0], tp[1]);
+    const TruncEnds e = trunc_cont_ends(inner, th, tp[0], tp[1], 2);
     if (!e.ok) { out[0] = out[1] = R_NaN; return; }
     const int P = d7_n_params[inner];
     double sc[2];
@@ -789,7 +1176,7 @@ void trunc_cont_score_curv(int inner, int k, double y, const double* th,
 void trunc_cont_info_dinfo(int inner, int k, double y, const double* th,
                            double* out) {
     const double* tp = trunc_points(inner, th);
-    const TruncEnds e = trunc_cont_ends(inner, th, tp[0], tp[1]);
+    const TruncEnds e = trunc_cont_ends(inner, th, tp[0], tp[1], 2);
     if (!e.ok) { out[0] = out[1] = R_NaN; return; }
     const int P = d7_n_params[inner];
     std::vector<double> ys, ws;
@@ -813,7 +1200,7 @@ void trunc_cont_info_dinfo(int inner, int k, double y, const double* th,
 
 double trunc_cont_logpdf(int inner, double y, const double* th) {
     const double* tp = trunc_points(inner, th);
-    const TruncEnds e = trunc_cont_ends(inner, th, tp[0], tp[1]);
+    const TruncEnds e = trunc_cont_ends(inner, th, tp[0], tp[1], 0);
     if (!e.ok) return R_NaN;
     const double ld = d7_logpdf(inner, y, th) - std::log(e.z);
     return (y < tp[0] || y > tp[1]) ? R_NegInf : ld;
@@ -1314,7 +1701,8 @@ Rcpp::List trunc_cont_rule_raw_cpp(double a, double b, double c, double s,
 // trunc_rule_cpp(): the retained mass, its gradient (one column per
 // parameter) and its Hessian (one column per pair, in hess_names() order)
 // [[Rcpp::export]]
-Rcpp::List trunc_cont_ends_cpp(std::string cls, Rcpp::NumericMatrix theta) {
+Rcpp::List trunc_cont_ends_cpp(std::string cls, Rcpp::NumericMatrix theta,
+                               int level = 2) {
     const int id = d7_scalar_id(cls.c_str());
     if (!node_valid(id) || node_of(id).code != 8)
         Rcpp::stop("'%s' is not the route of a truncated continuous family.", cls);
@@ -1326,7 +1714,7 @@ Rcpp::List trunc_cont_ends_cpp(std::string cls, Rcpp::NumericMatrix theta) {
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < np; ++j) th[j] = theta(i, j);
         const double* tp = trunc_points(inner, th.data());
-        const TruncEnds e = trunc_cont_ends(inner, th.data(), tp[0], tp[1]);
+        const TruncEnds e = trunc_cont_ends(inner, th.data(), tp[0], tp[1], level);
         z[i] = e.ok ? e.z : NA_REAL;
         for (int j = 0; j < P; ++j) g(i, j) = e.g[j];
         for (int j = 0; j < np2; ++j) h(i, j) = e.h[j];
