@@ -29,17 +29,18 @@ NULL
 #' class and no constants; the binomial and the two beta-binomials carry
 #' their size as a constant.
 #'
-#' A wrapped family is named `"<wrapper class>[:aux]|<inner class>"`, `aux`
-#' being what the wrapper needs besides its constants, and its constants are
-#' the inner family's followed by the wrapper's. For [fixed()], `aux` is the
+#' A wrapped family is named `"<wrapper class>[:aux]|<inner name>"`, `aux`
+#' being what the wrapper needs besides its constants and the inner name
+#' being the route's name of the wrapped family, which may itself be a
+#' wrapper; its constants are the inner family's followed by the wrapper's. For [fixed()], `aux` is the
 #' mask of the fixed parameters (bit `j - 1` for the `j`-th parameter of the
 #' inner family) and the wrapper's constants are the fixed values in the
 #' inner family's order. For [zero_inflated()] and [zero_adjusted()] there is
 #' no `aux` and no constant of the wrapper's own, the probability being the
 #' last parameter. For [transformation()], `aux` is the code of the
 #' transformer, which must be one of the twelve ready-made ones, and the
-#' wrapper's constants are the transformer's parameters. A wrapper of a
-#' wrapper, or a transformer built with [transformer()], has no route.
+#' wrapper's constants are the transformer's parameters; a transformer built
+#' with [transformer()] has no route.
 #'
 #' @param distrib A distribution object inheriting from `distrib`.
 #' @param ... Passed to methods.
@@ -95,7 +96,7 @@ S7::method(distrib_scalar_route, BetaBinom2Distrib) <- function(distrib, ...) {
 #' @keywords internal
 fixed_scalar_route <- function(distrib, ...) {
   inner <- distrib_scalar_route(distrib@parent_distrib)
-  if (is.null(inner) || grepl("|", inner$name, fixed = TRUE)) return(NULL)
+  if (is.null(inner)) return(NULL)
   fp <- distrib@fixed_params
   if (any(lengths(fp) != 1L)) return(NULL)
   P <- distrib@parent_distrib@params
@@ -124,7 +125,7 @@ S7::method(distrib_scalar_route, FixedDiscreteDistrib) <- fixed_scalar_route
 #' @keywords internal
 zero_scalar_route <- function(distrib, ...) {
   inner <- distrib_scalar_route(distrib@parent_distrib)
-  if (is.null(inner) || grepl("|", inner$name, fixed = TRUE)) return(NULL)
+  if (is.null(inner)) return(NULL)
   cls <- attr(S7::S7_class(distrib), "name")
   list(name = paste0(cls, "|", inner$name), constants = inner$constants)
 }

@@ -249,7 +249,26 @@ ccallable_wrappers <- list(
   function() transformation(logistic_distrib(), affine_transform(1, -2)),
   function() transformation(beta1_distrib(), logit_transform()),
   function() transformation(gaussian1_distrib(), expit_transform()),
-  function() transformation(gamma1_distrib(), softplus_transform(2))
+  function() transformation(gamma1_distrib(), softplus_transform(2)),
+  # wrappers of wrappers, as far as the constructors allow them
+  function() fixed(zero_inflated(poisson_distrib()), mu = 2),
+  function() fixed(zero_inflated(negbin2_distrib()), theta = 3),
+  function() zero_inflated(fixed(negbin2_distrib(), theta = 3)),
+  function() zero_adjusted(fixed(negbin2_distrib(), theta = 3)),
+  function() zero_adjusted(fixed(gamma1_distrib(), phi = 0.5)),
+  function() zero_adjusted(folded(gaussian1_distrib())),
+  function() zero_adjusted(transformation(gaussian1_distrib(), exp_transform())),
+  function() folded(fixed(gaussian1_distrib(), sigma = 1.2)),
+  function() folded(fixed(laplace_distrib(), sigma = 1.2)),
+  function() folded(fixed(student_t1_distrib(), nu = 5)),
+  function() transformation(fixed(gaussian1_distrib(), mu = 0), exp_transform()),
+  function() transformation(folded(gaussian1_distrib()), log_transform()),
+  function() transformation(transformation(gaussian1_distrib(), exp_transform()),
+                            log_transform()),
+  function() fixed(transformation(gaussian1_distrib(), exp_transform()), sigma = 0.8),
+  function() fixed(folded(gaussian1_distrib()), mu = 0.5),
+  function() fixed(fixed(skewt_distrib(), nu = 6), alpha = 1.5),
+  function() fixed(zero_adjusted(folded(gaussian1_distrib())), sigma = 0.9)
 )
 
 test_that("a wrapped family's entries are the wrapper's methods, bit for bit", {
@@ -264,7 +283,6 @@ test_that("a route the registry cannot read is rejected", {
   expect_identical(d7_scalar_thread_safe_probe("FixedContinuousDistrib:0|Gaussian1Distrib"), -1L)
   expect_identical(d7_scalar_thread_safe_probe("FixedContinuousDistrib:4|Gaussian1Distrib"), -1L)
   expect_identical(d7_scalar_thread_safe_probe("NoWrapper|Gaussian1Distrib"), -1L)
-  expect_null(distrib_scalar_route(fixed(zero_inflated(poisson_distrib()), mu = 2)))
   expect_identical(d7_scalar_thread_safe_probe("ZeroInflatedDistrib:1|PoissonDistrib"), -1L)
   expect_null(distrib_scalar_route(folded(vonmises1_distrib())))
   expect_null(distrib_scalar_route(zero_inflated(truncated(poisson_distrib(), upper = 50))))
@@ -286,8 +304,19 @@ test_that("a route the registry cannot read is rejected", {
   expect_identical(
     distrib_scalar_route(transformation(gaussian1_distrib(), affine_transform(1, -2)))$constants,
     list(loc = 1, scale = -2))
+  # a chain is entered once: the same name returns the same id
+  nm <- distrib_scalar_route(fixed(zero_inflated(poisson_distrib()), mu = 2))$name
+  expect_identical(nm, "FixedDiscreteDistrib:1|ZeroInflatedDistrib|PoissonDistrib")
+  id1 <- d7_scalar_probe(nm, 1L, 0, cbind(0.3, 2))$id
+  expect_identical(d7_scalar_probe(nm, 1L, 0, cbind(0.3, 2))$id, id1)
+  expect_identical(d7_scalar_thread_safe_probe(nm), 1L)
+  expect_identical(d7_scalar_thread_safe_probe(
+    "FixedContinuousDistrib:2|FixedContinuousDistrib:1|Gaussian1Distrib"), -1L)
+  expect_identical(d7_scalar_thread_safe_probe(
+    "FoldedDistrib|NoWrapper|Gaussian1Distrib"), -1L)
+  # folded() over a parent whose center or scale the registry cannot read
   expect_null(distrib_scalar_route(
-    transformation(fixed(gaussian1_distrib(), mu = 0), exp_transform())))
+    folded(transformation(gaussian1_distrib(), affine_transform(1, 2)))))
   expect_identical(d7_scalar_thread_safe_probe("TransformedDistrib:0|Gaussian1Distrib"), -1L)
   expect_identical(d7_scalar_thread_safe_probe("TransformedDistrib:13|Gaussian1Distrib"), -1L)
 })

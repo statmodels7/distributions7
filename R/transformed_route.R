@@ -75,7 +75,7 @@ transformer_scalar_code <- function(tr) {
 #' @keywords internal
 transformed_scalar_route <- function(distrib, ...) {
   inner <- distrib_scalar_route(distrib@parent_distrib)
-  if (is.null(inner) || grepl("|", inner$name, fixed = TRUE)) return(NULL)
+  if (is.null(inner)) return(NULL)
   tc <- transformer_scalar_code(distrib@transformer)
   if (is.null(tc)) return(NULL)
   list(name = paste0("TransformedDistrib:", tc$code, "|", inner$name),

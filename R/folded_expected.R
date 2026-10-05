@@ -58,7 +58,7 @@ folded_expected <- function(distrib, y, theta, order) {
   p <- length(P)
   inner <- distrib_scalar_route(parent)
   cs <- NULL
-  if (!is.null(inner) && !grepl("|", inner$name, fixed = TRUE)) {
+  if (!is.null(inner)) {
     th <- lapply(align_theta(distrib, theta)[P], rep_len, length.out = n)
     M <- do.call(cbind, c(th, lapply(inner$constants, rep_len, length.out = n)))
     if (!is.matrix(M)) M <- matrix(M, nrow = n)
@@ -232,8 +232,9 @@ S7::method(expected_hessian_costly, FoldedDistrib) <- function(x, ...) TRUE
 #' @description
 #' Returns the route of a [folded()] family, `"FoldedDistrib|<inner name>"`
 #' with the inner family's constants, or `NULL` when the parent has no route
-#' or is not a location-scale family on the real line, the expected
-#' information's quadrature reading the parent's center and scale.
+#' or is not a location-scale family on the real line (possibly with some
+#' parameters fixed by [fixed()]), the expected information's quadrature
+#' reading the parent's center and scale.
 #'
 #' @param distrib A folded family.
 #' @param ... Unused.
@@ -243,7 +244,7 @@ S7::method(expected_hessian_costly, FoldedDistrib) <- function(x, ...) TRUE
 #' @keywords internal
 folded_scalar_route <- function(distrib, ...) {
   inner <- distrib_scalar_route(distrib@parent_distrib)
-  if (is.null(inner) || grepl("|", inner$name, fixed = TRUE)) return(NULL)
+  if (is.null(inner)) return(NULL)
   np <- length(distrib@params) + length(inner$constants)
   if (anyNA(d7_center_scale_probe(inner$name, matrix(1, 1, np)))) return(NULL)
   list(name = paste0("FoldedDistrib|", inner$name), constants = inner$constants)

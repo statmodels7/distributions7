@@ -150,15 +150,19 @@ namespace {
 
 // ---- the wrappers ------------------------------------------------------------
 //
-// A wrapped family is named "<WrapperClass>[:aux]|<InnerClass>" by
-// distrib_scalar_route() and identified by kWrapBase * w + 1000 * aux + inner,
-// w the wrapper's code below and aux what the wrapper needs besides its
-// constants (for fixed() the mask of the fixed parameters, for
-// transformation() the code of the transformer in pt_transform.h). th is the
-// wrapper's parameters, then the inner family's constants, then the
-// wrapper's own; k counts the wrapper's parameters from zero. Each entry
-// rebuilds the inner family's vector and reads the inner family's entries;
-// the composition formulas are in pt_wrappers.h.
+// A wrapped family is named "<WrapperClass>[:aux]|<inner name>" by
+// distrib_scalar_route(), the inner name being a family's class or, for a
+// wrapper of a wrapper, another such name. aux is what the wrapper needs
+// besides its constants (for fixed() the mask of the fixed parameters, for
+// transformation() the code of the transformer in pt_transform.h). The
+// first d7_scalar_id() call on a name enters a node {wrapper, aux, inner id}
+// in a fixed table and the id is kWrapBase plus the node's position; a
+// later call on the same name returns the same id. th is the wrapper's
+// parameters, then the inner family's constants, then the wrapper's own; k
+// counts the wrapper's parameters from zero. Each entry rebuilds the inner
+// family's vector and reads the inner family's entries, which for a wrapped
+// inner family are a node's entries in turn; the composition formulas are
+// in pt_wrappers.h.
 
 const int kWrapBase = 100000;
 
@@ -173,6 +177,40 @@ const WrapName d7_wrappers[] = {
     {"TransformedDistrib", 6}
 };
 const int d7_n_wrappers = sizeof(d7_wrappers) / sizeof(d7_wrappers[0]);
+
+// The node table. It is written only by d7_scalar_id(), which a consumer
+// calls on its own thread before any loop, and a slot is complete before
+// its id is returned; the entries only read it. Nodes are never removed, so
+// the table bounds the number of distinct wrapped names in a session.
+struct WrapNode { int code, aux, inner, np, nc; };
+const int kMaxNodes = 1024;
+WrapNode d7_nodes[kMaxNodes];
+int d7_n_nodes = 0;
+
+// the length of the vector one observation's entries read, bounded by the
+// rebuilding buffers below
+const int kMaxVec = 16;
+
+bool node_valid(int id) {
+    return id >= kWrapBase && id - kWrapBase < d7_n_nodes;
+}
+const WrapNode& node_of(int id) { return d7_nodes[id - kWrapBase]; }
+
+// the number of parameters and of constants of a family or a node
+int id_np(int id) { return id >= kWrapBase ? node_of(id).np : d7_n_params[id]; }
+int id_nc(int id) { return id >= kWrapBase ? node_of(id).nc : d7_n_constants[id]; }
+
+// the family at the bottom of a chain of wrappers
+int base_of(int id) {
+    while (id >= kWrapBase) id = node_of(id).inner;
+    return id;
+}
+
+int popcount(int m) {
+    int c = 0;
+    for (; m; m >>= 1) c += m & 1;
+    return c;
+}
 
 }  // namespace
 
@@ -196,24 +234,37 @@ int wrap_id(const char* cls, const char* bar) {
     int code = -1;
     for (int i = 0; i < d7_n_wrappers; ++i)
         if (head == d7_wrappers[i].name) code = d7_wrappers[i].code;
-    if (code < 0 || std::strchr(bar + 1, '|') != nullptr) return -1;
-    int inner = d7_scalar_id(bar + 1);
-    if (inner < 0 || aux < 0 || aux >= 100) return -1;
+    if (code < 0) return -1;
+    const int inner = d7_scalar_id(bar + 1);
+    if (inner < 0 || aux < 0) return -1;
+    const int P = id_np(inner), nc = id_nc(inner);
+    int np = P, ncw = nc;
     if (code == 1) {
-        const int P = d7_n_params[inner];
-        if (aux == 0 || aux >= (1 << P)) return -1;
+        if (aux == 0 || P > 30 || aux >= (1 << P)) return -1;
+        np = P - popcount(aux);
+        ncw = nc + popcount(aux);
     } else if (code == 6) {
         if (aux < 1 || aux > d7::kTransformN) return -1;
+        ncw = nc + d7::transform_n_par(aux);
     } else if (aux != 0) {
         return -1;
+    } else if (code >= 2 && code <= 4) {
+        np = P + 1;
     }
-    return kWrapBase * code + 1000 * aux + inner;
+    if (P + nc > kMaxVec || np + ncw > kMaxVec) return -1;
+    for (int i = 0; i < d7_n_nodes; ++i) {
+        const WrapNode& w = d7_nodes[i];
+        if (w.code == code && w.aux == aux && w.inner == inner) return kWrapBase + i;
+    }
+    if (d7_n_nodes >= kMaxNodes) return -1;
+    d7_nodes[d7_n_nodes] = WrapNode{code, aux, inner, np, ncw};
+    return kWrapBase + d7_n_nodes++;
 }
 
 // fixed(): the inner vector from the free values, the inner constants and
 // the fixed values, and the inner index of free parameter k
 int fixed_inner(int inner, int mask, int k, const double* th, double* full) {
-    const int P = d7_n_params[inner], nc = d7_n_constants[inner];
+    const int P = id_np(inner), nc = id_nc(inner);
     int nf = 0;
     for (int j = 0; j < P; ++j) nf += !((mask >> j) & 1);
     int fi = 0, xi = 0, jk = -1;
@@ -233,8 +284,16 @@ int fixed_inner(int inner, int mask, int k, const double* th, double* full) {
 // constants) and the wrapper's probability, which follows the parameters
 // a center and a scale of the parent, from its parameters, where the
 // parent is a location-scale family on the real line: what folded()'s
-// quadrature centers and scales its rule by; false elsewhere
+// quadrature centers and scales its rule by; false elsewhere. Through
+// fixed() the parent's vector is rebuilt first.
 bool center_scale(int inner, const double* th, double* c, double* s) {
+    if (inner >= kWrapBase) {
+        const WrapNode& w = node_of(inner);
+        if (w.code != 1) return false;
+        double full[kMaxVec];
+        fixed_inner(w.inner, w.aux, 0, th, full);
+        return center_scale(w.inner, full, c, s);
+    }
     switch (inner) {
     case 0: case 10: case 11: case 23: case 24: case 27: case 28:
     case 34: case 35: case 36: case 37: case 38:
@@ -299,6 +358,23 @@ void fold_rule(double c, double s, std::vector<double>& y,
     }
 }
 
+// whether parameter k of a parent is the center of a family with a kink
+// there (laplace, laplace2, enet), through fixed()
+bool kink_center(int inner, int k) {
+    while (inner >= kWrapBase) {
+        const WrapNode& w = node_of(inner);
+        if (w.code != 1) return false;
+        const int P = id_np(w.inner);
+        int fi = 0, j = -1;
+        for (int i = 0; i < P && j < 0; ++i)
+            if (!((w.aux >> i) & 1) && fi++ == k) j = i;
+        if (j < 0) return false;
+        k = j;
+        inner = w.inner;
+    }
+    return k == 0 && (inner == 28 || inner == 29 || inner == 32);
+}
+
 // folded()'s (k, k) expected second derivative and its derivative in k, as
 // integrals over y of the folded density by fold_rule(); by the second
 // Bartlett identity E[l_kk] = -E[l_k^2] and d_k E[l_kk] =
@@ -334,13 +410,13 @@ void fold_info_dinfo(int inner, int k, const double* full, double* out) {
     // c, and d_c E[l_cc] carries the boundary term L(y*) [G(y*-) - G(y*+)]
     // sign(c), G = l_c^2, the one-sided scores read four units in the last
     // place either side of y*
-    if (k == 0 && (inner == 28 || inner == 29 || inner == 32) && c != 0) {
+    if (kink_center(inner, k) && c != 0) {
         const double a = std::fabs(c);
         const d7::FoldW W0 = d7::fold_w(d7_logpdf(inner, a, full),
                                         d7_logpdf(inner, -a, full));
         double lo[2], hi[2];
-        fold_score_curv(inner, 0, a * (1 + (-4) * DBL_EPSILON), full, lo);
-        fold_score_curv(inner, 0, a * (1 + 4 * DBL_EPSILON), full, hi);
+        fold_score_curv(inner, k, a * (1 + (-4) * DBL_EPSILON), full, lo);
+        fold_score_curv(inner, k, a * (1 + 4 * DBL_EPSILON), full, hi);
         r1 = r1 + W0.L * (lo[0] * lo[0] - hi[0] * hi[0]) * (c > 0 ? 1.0 : -1.0);
     }
     out[0] = R_FINITE(r0) ? -r0 : NA_REAL;
@@ -351,20 +427,20 @@ void fold_info_dinfo(int inner, int k, const double* full, double* out) {
 // parameters and the parent's constants), and the transformer's parameters
 // follow it
 const double* transform_par(int inner, const double* th) {
-    return th + d7_n_params[inner] + d7_n_constants[inner];
+    return th + id_np(inner) + id_nc(inner);
 }
 
 double zero_inner(int inner, const double* th, double* full) {
-    const int P = d7_n_params[inner], nc = d7_n_constants[inner];
+    const int P = id_np(inner), nc = id_nc(inner);
     for (int j = 0; j < P; ++j) full[j] = th[j];
     for (int c = 0; c < nc; ++c) full[P + c] = th[P + 1 + c];
     return th[P];
 }
 
 void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
-    const int code = id / kWrapBase, aux = (id % kWrapBase) / 1000,
-        inner = id % 1000;
-    double full[16];
+    const WrapNode& w = node_of(id);
+    const int code = w.code, aux = w.aux, inner = w.inner;
+    double full[kMaxVec];
     if (code == 1) {
         const int j = fixed_inner(inner, aux, k, th, full);
         d7_score_curv(inner, j, y, full, out);
@@ -380,7 +456,7 @@ void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
         return;
     }
     if (code >= 2 && code <= 4) {
-        const int P = d7_n_params[inner];
+        const int P = id_np(inner);
         const double z = zero_inner(inner, th, full);
         const double f0 = (code == 4) ? 0.0 : std::exp(d7_logpdf(inner, 0.0, full));
         if (k == P) {
@@ -412,9 +488,9 @@ void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
 }
 
 void wrap_info_dinfo(int id, int k, double y, const double* th, double* out) {
-    const int code = id / kWrapBase, aux = (id % kWrapBase) / 1000,
-        inner = id % 1000;
-    double full[16];
+    const WrapNode& w = node_of(id);
+    const int code = w.code, aux = w.aux, inner = w.inner;
+    double full[kMaxVec];
     if (code == 1) {
         const int j = fixed_inner(inner, aux, k, th, full);
         d7_info_dinfo(inner, j, y, full, out);
@@ -430,7 +506,7 @@ void wrap_info_dinfo(int id, int k, double y, const double* th, double* out) {
         return;
     }
     if (code >= 2 && code <= 4) {
-        const int P = d7_n_params[inner];
+        const int P = id_np(inner);
         const double z = zero_inner(inner, th, full);
         const double f0 = (code == 4) ? 0.0 : std::exp(d7_logpdf(inner, 0.0, full));
         if (k == P) {
@@ -462,9 +538,9 @@ void wrap_info_dinfo(int id, int k, double y, const double* th, double* out) {
 }
 
 double wrap_logpdf(int id, double y, const double* th) {
-    const int code = id / kWrapBase, aux = (id % kWrapBase) / 1000,
-        inner = id % 1000;
-    double full[16];
+    const WrapNode& w = node_of(id);
+    const int code = w.code, aux = w.aux, inner = w.inner;
+    double full[kMaxVec];
     if (code == 1) {
         fixed_inner(inner, aux, 0, th, full);
         return d7_logpdf(inner, y, full);
@@ -522,7 +598,8 @@ int d7_scalar_id(const char* cls) {
 // out[1] the (k, k) second derivative, both on the parameter scale
 void d7_score_curv(int id, int k, double y, const double* th, double* out) {
     if (id >= kWrapBase) {
-        wrap_score_curv(id, k, y, th, out);
+        if (node_valid(id)) wrap_score_curv(id, k, y, th, out);
+        else { out[0] = R_NaN; out[1] = R_NaN; }
         return;
     }
     switch (id) {
@@ -589,7 +666,10 @@ void d7_score_curv(int id, int k, double y, const double* th, double* out) {
 // pt, pbeta, lchoose, R's Bessel K) answers 0. A transformed family adds
 // R_pow and nmath's plogis, qlogis and dlogis, which never warn.
 int d7_scalar_thread_safe(int id) {
-    if (id >= kWrapBase) id = id % 1000;
+    if (id >= kWrapBase) {
+        if (!node_valid(id)) return -1;
+        id = base_of(id);
+    }
     if (id < 0 || id >= d7_n_scalar_classes) return -1;
     return 1;
 }
@@ -598,7 +678,8 @@ int d7_scalar_thread_safe(int id) {
 // derivative in the same parameter, both on the parameter scale
 void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
     if (id >= kWrapBase) {
-        wrap_info_dinfo(id, k, y, th, out);
+        if (node_valid(id)) wrap_info_dinfo(id, k, y, th, out);
+        else { out[0] = R_NaN; out[1] = R_NaN; }
         return;
     }
     switch (id) {
@@ -654,7 +735,7 @@ void d7_info_dinfo(int id, int k, double y, const double* th, double* out) {
 // the log-density of one observation, th as for d7_score_curv(); NaN for an
 // unknown id
 double d7_logpdf(int id, double y, const double* th) {
-    if (id >= kWrapBase) return wrap_logpdf(id, y, th);
+    if (id >= kWrapBase) return node_valid(id) ? wrap_logpdf(id, y, th) : R_NaN;
     switch (id) {
     case 0: return d7::gaussian1_logpdf(y, th);
     case 1: return d7::gamma1_logpdf(y, th);
@@ -770,7 +851,8 @@ Rcpp::NumericMatrix d7_center_scale_probe(std::string cls,
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < np; ++j) th[j] = theta(i, j);
         double c = NA_REAL, s = NA_REAL;
-        if (id < 0 || id >= kWrapBase || !center_scale(id, th.data(), &c, &s)) {
+        if (id < 0 || (id >= kWrapBase && !node_valid(id)) ||
+            !center_scale(id, th.data(), &c, &s)) {
             c = NA_REAL;
             s = NA_REAL;
         }
