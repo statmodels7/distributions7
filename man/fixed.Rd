@@ -8,7 +8,12 @@ fixed(distrib, ...)
 }
 \arguments{
 \item{distrib}{The distribution whose parameters are to be fixed, inheriting
-from \code{continuous_distrib}, \code{discrete_distrib} or \code{multivariate_distrib}.}
+from \code{continuous_distrib}, \code{discrete_distrib} or \code{multivariate_distrib}.
+A parameter whose name is a prefix of \code{distrib} (the shape \code{d} of
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}} and \code{\link[=gengamma2_distrib]{gengamma2_distrib()}}) is fixed only when
+\code{distrib} is named, as in \code{fixed(distrib = gengamma1_distrib(), d = 2)};
+otherwise partial matching assigns the value to \code{distrib} and an error is
+signalled.}
 
 \item{...}{The fixed values, named after the parameters they fix, as in
 \code{fixed(gaussian1_distrib(), mu = 0)}. Each must be a single finite number

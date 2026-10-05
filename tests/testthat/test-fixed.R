@@ -435,3 +435,10 @@ test_that("a compound symmetry reports its standard deviation and correlation", 
   expect_equal(unname(der$jacobian),
                unname(numDeriv::jacobian(f, unlist(th))), tolerance = 1e-8)
 })
+
+test_that("a parameter named by a prefix of 'distrib' is caught, and named distrib works", {
+  expect_error(fixed(gengamma1_distrib(), d = 2), "partial matching")
+  d <- fixed(distrib = gengamma1_distrib(), d = 2)
+  expect_identical(d@params, c("a", "p"))
+  expect_identical(d@fixed_params$d, 2)
+})

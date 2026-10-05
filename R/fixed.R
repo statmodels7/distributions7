@@ -1006,6 +1006,11 @@ S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
 #'
 #' @param distrib The distribution whose parameters are to be fixed, inheriting
 #'   from `continuous_distrib`, `discrete_distrib` or `multivariate_distrib`.
+#'   A parameter whose name is a prefix of `distrib` (the shape `d` of
+#'   [gengamma1_distrib()] and [gengamma2_distrib()]) is fixed only when
+#'   `distrib` is named, as in `fixed(distrib = gengamma1_distrib(), d = 2)`;
+#'   otherwise partial matching assigns the value to `distrib` and an error is
+#'   signalled.
 #' @param ... The fixed values, named after the parameters they fix, as in
 #'   `fixed(gaussian1_distrib(), mu = 0)`. Each must be a single finite number
 #'   strictly inside its parameter's domain, and each name must be a parameter
@@ -1062,9 +1067,24 @@ S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
 #'
 #' @export
 fixed <- function(distrib, ...) {
-  if (!S7::S7_inherits(distrib, continuous_distrib) &&
-    !S7::S7_inherits(distrib, discrete_distrib) &&
-    !S7::S7_inherits(distrib, multivariate_distrib)) {
+  is_distrib <- function(x) {
+    S7::S7_inherits(x, continuous_distrib) ||
+      S7::S7_inherits(x, discrete_distrib) ||
+      S7::S7_inherits(x, multivariate_distrib)
+  }
+  # a value named by a prefix of `distrib` (the shape d of gengamma1 and
+  # gengamma2) is matched to `distrib` by partial matching, and the
+  # distribution itself lands in `...`
+  if (!is_distrib(distrib) && any(vapply(list(...), is_distrib, logical(1)))) {
+    stop(paste0(
+      "fixed() received a distribution in '...' and a value in place of ",
+      "'distrib'.\n  A value named by a prefix of 'distrib', such as d = 2 for ",
+      "the shape d of gengamma1\n  and gengamma2, is matched to 'distrib' by ",
+      "partial matching. Name the distribution,\n  as in ",
+      "fixed(distrib = gengamma1_distrib(), d = 2)."),
+      call. = FALSE)
+  }
+  if (!is_distrib(distrib)) {
     stop(paste0("Input must inherit from 'discrete_distrib', ",
                 "'continuous_distrib' or 'multivariate_distrib'."),
       call. = FALSE
