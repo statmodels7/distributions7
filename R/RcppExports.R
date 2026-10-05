@@ -201,6 +201,10 @@ trunc_cont_rule_cpp <- function(cls, theta) {
     .Call(`_distributions7_trunc_cont_rule_cpp`, cls, theta)
 }
 
+beta_logs_parts_cpp <- function(cls, ly, l1y, theta) {
+    .Call(`_distributions7_beta_logs_parts_cpp`, cls, ly, l1y, theta)
+}
+
 d7_cdf_cpp <- function(cls, q, theta, lower) {
     .Call(`_distributions7_d7_cdf_cpp`, cls, q, theta, lower)
 }

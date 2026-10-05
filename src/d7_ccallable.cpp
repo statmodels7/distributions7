@@ -678,6 +678,73 @@ void cont_view(int id, const double* th, ContView& v) {
     for (int k = 0; k < w.np && k < 4; ++k) v.at[k] = in.at[jk[k]];
 }
 
+int hess_pos(int P, int i, int j);
+
+// The two beta families read the response only through log y and
+// log(1 - y). On the rule's logit variable v both are exact, -log1p(e^-v)
+// and -log1p(e^v) (written so that the exponential never overflows), where
+// y itself rounds to 1 once v passes about 37 and the mass beyond it, of
+// order eps^b, was lost with the node: measured on a beta2 truncated below
+// 0.3, the information was off by up to 1.5e-2 at b = 0.24 and by 0.48 at
+// b = 0.1. The rule hands these families the two logarithms
+// (mapped_rule()), and they are evaluated from them here.
+void logit_logs(double v, double* ly, double* l1y) {
+    if (v > 0) {
+        const double t = std::log1p(std::exp(-v));
+        *ly = -t;
+        *l1y = -v - t;
+    } else {
+        const double t = std::log1p(std::exp(v));
+        *ly = v - t;
+        *l1y = -t;
+    }
+}
+
+// whether a family, or a fixed() chain over one, is a beta
+bool logs_family(int id) {
+    const int b = base_of(id);
+    return b == 4 || b == 31;
+}
+
+// the log-density of a beta or a fixed() chain over one, its score in each
+// free parameter (g) and its Hessian in hess_names() order (h), from log y
+// and log(1 - y)
+double beta_logs_parts(int id, double ly, double l1y, const double* th,
+                       double* g, double* h) {
+    ContView v;
+    cont_view(id, th, v);
+    const double* f = v.full;
+    double a, b, G[2], H[3];
+    if (v.base == 4) {
+        const double m = f[0], p = f[1];
+        a = m * p;
+        b = (1.0 - m) * p;
+        const double a0 = R::digamma(a), b0 = R::digamma(b);
+        const double a1 = R::trigamma(a), b1 = R::trigamma(b);
+        G[0] = d7::beta1_score_mu(p, ly, l1y, a0, b0);
+        G[1] = d7::beta1_score_phi(m, ly, l1y, R::digamma(p), a0, b0);
+        H[0] = d7::beta1_hess_mu_mu(p, a1, b1);
+        H[1] = d7::beta1_hess_phi_phi(m, R::trigamma(p), a1, b1);
+        H[2] = -a0 + b0 + ly - l1y + p * (-a1 * m + b1 * (1 - m));
+    } else {
+        a = f[0];
+        b = f[1];
+        const double s0 = R::digamma(a + b), s1 = R::trigamma(a + b);
+        G[0] = d7::beta2_score_alpha(ly, R::digamma(a), s0);
+        G[1] = d7::beta2_score_beta(l1y, R::digamma(b), s0);
+        H[0] = d7::beta2_hess_alpha_alpha(R::trigamma(a), s1);
+        H[1] = d7::beta2_hess_beta_beta(R::trigamma(b), s1);
+        H[2] = s1;
+    }
+    if (g != nullptr)
+        for (int k = 0; k < v.np; ++k) g[k] = G[v.at[k]];
+    if (h != nullptr)
+        for (int i = 0; i < v.np; ++i)
+            for (int j = i; j < v.np; ++j)
+                h[hess_pos(v.np, i, j)] = H[hess_pos(2, v.at[i], v.at[j])];
+    return (a - 1.0) * ly + (b - 1.0) * l1y - R::lbeta(a, b);
+}
+
 // the support of a continuous family at its parameters
 void cont_support(int id, const double* th, double* lo, double* hi) {
     if (id >= kWrapBase) {
@@ -758,10 +825,10 @@ int cont_kinks(int id, const double* th, double* kk) {
     return 0;
 }
 
-int hess_pos(int P, int i, int j);
 void mapped_rule(int id, const double* th, double a, double b,
                  const double* kk, int nk, std::vector<double>& y,
-                 std::vector<double>& w);
+                 std::vector<double>& w, std::vector<double>* ly = nullptr,
+                 std::vector<double>* l1y = nullptr);
 
 // ---- distribution functions by quadrature ----------------------------------
 //
@@ -905,10 +972,34 @@ void quad_cdf_sums(int id, double q, const double* th, int mask, bool upper,
     std::vector<double> ys, ws;
     const double a = upper ? std::max(q, slo) : slo;
     const double b = upper ? shi : std::min(q, shi);
-    mapped_rule(id, th, a, b, nullptr, 0, ys, ws);
+    const bool logs = logs_family(id);
+    std::vector<double> lys, l1ys;
+    mapped_rule(id, th, a, b, nullptr, 0, ys, ws, logs ? &lys : nullptr,
+                logs ? &l1ys : nullptr);
     long double S0 = 0.0L, S1[4] = {0, 0, 0, 0}, S2[16] = {0};
     for (std::size_t j = 0; j < ys.size(); ++j) {
         const double y = ys[j];
+        if (logs) {
+            double g[2], h[3];
+            const double fw = std::exp(beta_logs_parts(id, lys[j], l1ys[j], th,
+                                                       g, h)) * ws[j];
+            if (fw == 0.0) continue;
+            S0 += fw;
+            for (int k = 0; k < 2; ++k) {
+                if (!((mask >> k) & 1)) continue;
+                S1[k] += fw * g[k];
+            }
+            if (!want_h) continue;
+            for (int k = 0; k < 2; ++k) {
+                if (!((mask >> k) & 1)) continue;
+                S2[k * 4 + k] += fw * (h[k] + g[k] * g[k]);
+                for (int m = k + 1; m < 2; ++m) {
+                    if (!((mask >> m) & 1)) continue;
+                    S2[k * 4 + m] += fw * (h[hess_pos(2, k, m)] + g[k] * g[m]);
+                }
+            }
+            continue;
+        }
         const double fw = std::exp(d7_logpdf(id, y, th)) * ws[j];
         if (fw == 0.0) continue;
         S0 += fw;
@@ -1033,7 +1124,10 @@ int cont_map(int id) {
 
 void mapped_rule(int id, const double* th, double a, double b,
                  const double* kk, int nk, std::vector<double>& y,
-                 std::vector<double>& w) {
+                 std::vector<double>& w, std::vector<double>* ly,
+                 std::vector<double>* l1y) {
+    if (ly != nullptr) ly->clear();
+    if (l1y != nullptr) l1y->clear();
     double c, s;
     cont_center_scale(id, th, &c, &s);
     const int mp = cont_map(id);
@@ -1054,7 +1148,11 @@ void mapped_rule(int id, const double* th, double a, double b,
     for (int i = 0; i < nk && i < 4; ++i) kv[i] = fwd(kk[i]);
     d7::trunc_rule(fwd(a), fwd(b), cv, sv, kv, nk, y, w);
     // a node whose image leaves the open support, or whose weight is not
-    // finite, is dropped: the density's tail has no mass there
+    // finite, is dropped: the density's tail has no mass there. On (0, 1),
+    // when the caller takes the logarithms, a node whose y rounds to 0 or 1
+    // is kept, since log y and log(1 - y) still place it, and dy/dv =
+    // y (1 - y) is formed from them
+    const bool logs = (mp == 2 && ly != nullptr && l1y != nullptr);
     std::size_t k = 0;
     for (std::size_t j = 0; j < y.size(); ++j) {
         const double v = y[j];
@@ -1063,6 +1161,15 @@ void mapped_rule(int id, const double* th, double a, double b,
             yy = std::exp(v);
             ww = w[j] * yy;
             if (!(yy > 0) || !R_FINITE(yy)) continue;
+        } else if (logs) {
+            double a1, b1;
+            logit_logs(v, &a1, &b1);
+            yy = std::exp(a1);
+            ww = w[j] * std::exp(a1 + b1);
+            if (!R_FINITE(a1) || !R_FINITE(b1)) continue;
+            if (!R_FINITE(ww) || !(ww > 0)) continue;
+            ly->push_back(a1);
+            l1y->push_back(b1);
         } else {
             yy = 1 / (1 + std::exp(-v));
             ww = w[j] * (yy * (1 - yy));
@@ -1230,13 +1337,23 @@ TruncEnds trunc_cont_ends(int inner, const double* th, double lo, double up,
 }
 
 // the nodes and weights of the information's rule at one observation
+// at one observation, and for a beta the logarithms its entries read
 void trunc_cont_nodes(int inner, const double* th, double lo, double up,
-                      std::vector<double>& y, std::vector<double>& w) {
+                      std::vector<double>& y, std::vector<double>& w,
+                      std::vector<double>* ly = nullptr,
+                      std::vector<double>* l1y = nullptr) {
     double slo, shi, c, s, kk[4];
     cont_support(inner, th, &slo, &shi);
-    if (!cont_center_scale(inner, th, &c, &s)) { y.clear(); w.clear(); return; }
+    if (!cont_center_scale(inner, th, &c, &s)) {
+        y.clear();
+        w.clear();
+        if (ly != nullptr) ly->clear();
+        if (l1y != nullptr) l1y->clear();
+        return;
+    }
     const int nk = cont_kinks(inner, th, kk);
-    mapped_rule(inner, th, std::max(lo, slo), std::min(up, shi), kk, nk, y, w);
+    mapped_rule(inner, th, std::max(lo, slo), std::min(up, shi), kk, nk, y, w,
+                ly, l1y);
 }
 
 void trunc_cont_score_curv(int inner, int k, double y, const double* th,
@@ -1258,14 +1375,24 @@ void trunc_cont_info_dinfo(int inner, int k, double y, const double* th,
     const TruncEnds e = trunc_cont_ends(inner, th, tp[0], tp[1], 2);
     if (!e.ok) { out[0] = out[1] = R_NaN; return; }
     const int P = id_np(inner);
-    std::vector<double> ys, ws;
-    trunc_cont_nodes(inner, th, tp[0], tp[1], ys, ws);
+    const bool logs = logs_family(inner);
+    std::vector<double> ys, ws, lys, l1ys;
+    trunc_cont_nodes(inner, th, tp[0], tp[1], ys, ws, logs ? &lys : nullptr,
+                     logs ? &l1ys : nullptr);
     long double S = 0.0L, D = 0.0L;
     for (std::size_t j = 0; j < ys.size(); ++j) {
-        const double fw = std::exp(d7_logpdf(inner, ys[j], th)) * ws[j];
+        double sc[2], lf;
+        if (logs) {
+            double gg[2], hh[3];
+            lf = beta_logs_parts(inner, lys[j], l1ys[j], th, gg, hh);
+            sc[0] = gg[k];
+            sc[1] = hh[k];
+        } else {
+            lf = d7_logpdf(inner, ys[j], th);
+        }
+        const double fw = std::exp(lf) * ws[j];
         if (fw == 0.0) continue;
-        double sc[2];
-        d7_score_curv(inner, k, ys[j], th, sc);
+        if (!logs) d7_score_curv(inner, k, ys[j], th, sc);
         const double g = sc[0], l = sc[1];
         S += fw * (g * g);
         D += fw * (g * g * g + l * g + g * l);
@@ -1810,21 +1937,58 @@ Rcpp::List trunc_cont_rule_cpp(std::string cls, Rcpp::NumericMatrix theta) {
         Rcpp::stop("'%s' is not the route of a truncated continuous family.", cls);
     const int inner = node_of(id).inner;
     const int n = theta.nrow(), np = theta.ncol();
+    const bool logs = logs_family(inner);
     std::vector<int> idx;
-    std::vector<double> yy, ww, ys, ws, th(np);
+    std::vector<double> yy, ww, ys, ws, th(np), la, lb, las, lbs;
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < np; ++j) th[j] = theta(i, j);
         const double* tp = trunc_points(inner, th.data());
-        trunc_cont_nodes(inner, th.data(), tp[0], tp[1], ys, ws);
+        trunc_cont_nodes(inner, th.data(), tp[0], tp[1], ys, ws,
+                         logs ? &las : nullptr, logs ? &lbs : nullptr);
         for (std::size_t j = 0; j < ys.size(); ++j) {
             idx.push_back(i + 1);
             yy.push_back(ys[j]);
             ww.push_back(ws[j]);
+            if (logs) {
+                la.push_back(las[j]);
+                lb.push_back(lbs[j]);
+            }
         }
     }
-    return Rcpp::List::create(Rcpp::_["idx"] = Rcpp::wrap(idx),
-                              Rcpp::_["y"] = Rcpp::wrap(yy),
-                              Rcpp::_["w"] = Rcpp::wrap(ww));
+    Rcpp::List out = Rcpp::List::create(Rcpp::_["idx"] = Rcpp::wrap(idx),
+                                        Rcpp::_["y"] = Rcpp::wrap(yy),
+                                        Rcpp::_["w"] = Rcpp::wrap(ww));
+    if (logs) {
+        out["ly"] = Rcpp::wrap(la);
+        out["l1y"] = Rcpp::wrap(lb);
+    }
+    return out;
+}
+
+// beta_logs_parts() for R at the rule's nodes, one row of theta per node:
+// the log-density, the score (one column per free parameter) and the
+// Hessian (one column per pair, in hess_names() order)
+// [[Rcpp::export]]
+Rcpp::List beta_logs_parts_cpp(std::string cls, Rcpp::NumericVector ly,
+                               Rcpp::NumericVector l1y,
+                               Rcpp::NumericMatrix theta) {
+    const int id = d7_scalar_id(cls.c_str());
+    if (id < 0 || !logs_family(id))
+        Rcpp::stop("'%s' is not the route of a beta family.", cls);
+    const int P = id_np(id), np2 = P * (P + 1) / 2;
+    const int n = ly.size(), np = theta.ncol();
+    Rcpp::NumericVector lf(n);
+    Rcpp::NumericMatrix g(n, P), h(n, np2);
+    std::vector<double> th(np);
+    double gg[2], hh[3];
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        lf[i] = beta_logs_parts(id, ly[i], l1y[i], th.data(), gg, hh);
+        for (int j = 0; j < P; ++j) g(i, j) = gg[j];
+        for (int j = 0; j < np2; ++j) h(i, j) = hh[j];
+    }
+    return Rcpp::List::create(Rcpp::_["logpdf"] = lf, Rcpp::_["g"] = g,
+                              Rcpp::_["h"] = h);
 }
 
 // the compiled distribution function and its derivatives, by class name,

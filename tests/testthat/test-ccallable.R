@@ -443,3 +443,27 @@ test_that("truncating over fixed() is truncating the family at the fixed value",
                distrib_pdf(b, c(0.5, 1), c(th, list(nu = 5)), log = TRUE),
                tolerance = 1e-15)
 })
+
+test_that("a beta truncated up to 1 with a second shape below one keeps its mass at 1", {
+  # mpmath at 40 digits in v = -log(1 - y), where the (1 - y)^(b - 1)
+  # singularity is a tail; the rule's nodes at y = 1 in double precision were
+  # dropped and the information was off by 1.5e-2 at b = 0.24, 0.48 at 0.1
+  d <- truncated(beta2_distrib(), lower = 0.3)
+  e <- distrib_expected_hessian(d, 0.9, list(alpha = 2, beta = 0.24))
+  expect_equal(-e$alpha_alpha, 0.04363137083140498541, tolerance = 1e-14)
+  expect_equal(-e$beta_beta, 17.93315887487820139007, tolerance = 1e-14)
+  expect_equal(-e$alpha_beta, -0.4494034163784670764, tolerance = 1e-14)
+  d <- truncated(beta2_distrib(), lower = 0.5)
+  e <- distrib_expected_hessian(d, 0.9, list(alpha = 0.7, beta = 0.1))
+  expect_equal(-e$beta_beta, 99.72952477407535529800, tolerance = 1e-14)
+  d <- truncated(beta1_distrib(), lower = 0.5)
+  e <- distrib_expected_hessian(d, 0.9, list(mu = 0.875, phi = 0.8))
+  expect_equal(-e$mu_mu, 64.51204880532808960035, tolerance = 1e-14)
+  expect_equal(-e$phi_phi, 1.456160382975719921717, tolerance = 1e-14)
+  expect_equal(-e$mu_phi, -9.644939888374605743253, tolerance = 1e-14)
+  # and the twins stay identical, over fixed() too
+  for (tr in list(truncated(beta2_distrib(), lower = 0.5),
+                  truncated(fixed(beta1_distrib(), phi = 0.8), lower = 0.5))) {
+    ccallable_twin(NULL, c(-2, -0.5), 9, d = tr)
+  }
+})

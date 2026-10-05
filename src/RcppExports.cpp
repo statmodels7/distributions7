@@ -700,6 +700,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// beta_logs_parts_cpp
+Rcpp::List beta_logs_parts_cpp(std::string cls, Rcpp::NumericVector ly, Rcpp::NumericVector l1y, Rcpp::NumericMatrix theta);
+RcppExport SEXP _distributions7_beta_logs_parts_cpp(SEXP clsSEXP, SEXP lySEXP, SEXP l1ySEXP, SEXP thetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type cls(clsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type ly(lySEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type l1y(l1ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type theta(thetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(beta_logs_parts_cpp(cls, ly, l1y, theta));
+    return rcpp_result_gen;
+END_RCPP
+}
 // d7_cdf_cpp
 Rcpp::NumericVector d7_cdf_cpp(std::string cls, Rcpp::NumericVector q, Rcpp::NumericMatrix theta, bool lower);
 RcppExport SEXP _distributions7_d7_cdf_cpp(SEXP clsSEXP, SEXP qSEXP, SEXP thetaSEXP, SEXP lowerSEXP) {
@@ -6256,6 +6270,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_trunc_cont_rule_raw_cpp", (DL_FUNC) &_distributions7_trunc_cont_rule_raw_cpp, 7},
     {"_distributions7_trunc_cont_ends_cpp", (DL_FUNC) &_distributions7_trunc_cont_ends_cpp, 3},
     {"_distributions7_trunc_cont_rule_cpp", (DL_FUNC) &_distributions7_trunc_cont_rule_cpp, 2},
+    {"_distributions7_beta_logs_parts_cpp", (DL_FUNC) &_distributions7_beta_logs_parts_cpp, 4},
     {"_distributions7_d7_cdf_cpp", (DL_FUNC) &_distributions7_d7_cdf_cpp, 4},
     {"_distributions7_d7_cdf_grad_cpp", (DL_FUNC) &_distributions7_d7_cdf_grad_cpp, 3},
     {"_distributions7_d7_cdf_hess_cpp", (DL_FUNC) &_distributions7_d7_cdf_hess_cpp, 3},

@@ -142,12 +142,26 @@ trunc_route_parts <- function(distrib, y, theta, what) {
   thp <- lapply(th, `[`, idx)
   sumg <- function(v) ld_group_sum(as.numeric(v), idx, n)
   any_pts <- length(ys) > 0L
-  f <- if (any_pts) fw(distrib_pdf(parent, ys, thp, log = TRUE)) else numeric(0)
+  # a beta parent is evaluated from log y and log(1 - y), which the rule
+  # hands over where y itself rounds to 1
+  logs <- if (!disc && any_pts && !is.null(rule$ly)) {
+    beta_logs_parts_cpp(sub("^[^|]*[|]", "", route$name), rule$ly, rule$l1y,
+                        tm[idx, , drop = FALSE])
+  }
+  f <- if (!any_pts) numeric(0) else if (!is.null(logs)) fw(logs$logpdf) else
+    fw(distrib_pdf(parent, ys, thp, log = TRUE))
   live <- f != 0
   # a node whose weight is zero contributes nothing, whatever its integrand
   sumf <- if (disc) sumg else function(v) { v[!live] <- 0; sumg(v) }
-  g <- if (any_pts && lev >= 2L) distrib_gradient(parent, ys, thp)
-  h <- if (any_pts && lev >= 3L) distrib_hessian(parent, ys, thp)
+  g <- if (any_pts && lev >= 2L) {
+    if (!is.null(logs)) stats::setNames(lapply(seq_len(p), function(i) logs$g[, i]), P)
+    else distrib_gradient(parent, ys, thp)
+  }
+  h <- if (any_pts && lev >= 3L) {
+    if (!is.null(logs)) stats::setNames(lapply(seq_len(nrow(pairs)),
+                                               function(r) logs$h[, r]), hn)
+    else distrib_hessian(parent, ys, thp)
+  }
   hp <- function(a, b) h[[hess_pair_name(P, a, b)]]
 
   if (disc) {
