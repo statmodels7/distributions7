@@ -102,3 +102,20 @@ pig_bare_distrib <- function() {
           params_smooth = c(mu = TRUE, sigma = TRUE),
           params_interpretation = p@params_interpretation)
 }
+
+# A continuous family with its density alone: every cdf derivative it has is
+# the generic stencil, which the gates of the cdf route must refuse.
+DensityOnly <- S7::new_class("DensityOnly", parent = continuous_distrib,
+                             package = NULL)
+S7::method(distrib_pdf, DensityOnly) <- function(distrib, y, theta, log = FALSE) {
+  stats::dnorm(y, theta[[1]], theta[[2]], log = log)
+}
+density_only_distrib <- function() {
+  DensityOnly(
+    distrib_name = "density only", dimension = "univariate",
+    bounds = c(-Inf, Inf), params = c("mu", "sigma"),
+    params_interpretation = c(mu = "mean", sigma = "sd"), n_params = 2,
+    params_bounds = list(mu = c(-Inf, Inf), sigma = c(0, Inf)),
+    link_params = list(mu = linkfunctions7::identity_link(),
+                       sigma = linkfunctions7::log_link()))
+}

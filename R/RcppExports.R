@@ -217,6 +217,10 @@ d7_cdf_hess_cpp <- function(cls, q, theta) {
     .Call(`_distributions7_d7_cdf_hess_cpp`, cls, q, theta)
 }
 
+cdf_rule_cpp <- function(cls, q, theta) {
+    .Call(`_distributions7_cdf_rule_cpp`, cls, q, theta)
+}
+
 fold_rule_cpp <- function(c, s) {
     .Call(`_distributions7_fold_rule_cpp`, c, s)
 }

@@ -307,7 +307,7 @@ S7::method(distrib_deriv4_cdf, GumbelDistrib) <- loc_scale_deriv_cdf_k(4L)
 #' Builds the [distrib_deriv3_cdf()] or [distrib_deriv4_cdf()] body the Student
 #' t, the pseudo-Huber and the skew t register: the components over the
 #' location and the scale from [loc_scale_cdf_deriv_k()], and every component
-#' naming a shape parameter from [numerical_cdf_deriv_k()].
+#' naming a shape parameter from [continuous_cdf_deriv_k()].
 #'
 #' @details
 #' # Why the stencil is taken over everything
@@ -349,12 +349,12 @@ partial_loc_scale_deriv_cdf_k <- function(order) {
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
     params <- distrib@params
     tabs <- lapply(seq_len(order), function(k) {
-      # the stencil is taken over every component and the closed ones then
-      # replace it. Computing the location and scale twice is waste, and it is
-      # immaterial here: the whole cdf surface costs milliseconds at a thousand
-      # quantiles, so the alternative -- widening the stencil's signature to
-      # take a subset -- would buy nothing and touch a shared function.
-      out <- numerical_cdf_deriv_k(distrib, q, theta, k)
+      # every component is computed and the closed ones then replace it:
+      # the first two orders from the compiled gradient and Hessian of the
+      # distribution function, the third and fourth by
+      # continuous_cdf_deriv_k(), exact for the five families registered here
+      out <- if (k <= 2L) numerical_cdf_deriv(distrib, q, theta, order = k) else
+        continuous_cdf_deriv_k(distrib, q, theta, k)
       closed <- loc_scale_cdf_deriv_k(distrib, q, theta, k)
       out[names(closed)] <- closed
       out[deriv_names(params, k)]

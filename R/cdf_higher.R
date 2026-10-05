@@ -270,7 +270,7 @@ cdf_tables <- function(distrib, q, theta, order) {
     } else if (k <= 2L) {
       numerical_cdf_deriv(distrib, q, theta, order = k)
     } else {
-      numerical_cdf_deriv_k(distrib, q, theta, k)
+      continuous_cdf_deriv_k(distrib, q, theta, k)
     }
   })
 }
@@ -288,12 +288,13 @@ cdf_tables <- function(distrib, q, theta, order) {
 #' @details
 #' # The two routes
 #'
-#' A discrete family uses the exact finite sum of [discrete_cdf_deriv_k()], and
-#' a continuous one takes a single product stencil on its analytic distribution
-#' function through [numerical_cdf_deriv_k()]. 24 of the 42 univariate families
-#' register a closed form of their own; of the 18 that do not, the discrete
-#' ones sum exactly and the continuous ones (beta1, beta2, chisq, gamma1,
-#' gamma2, gengamma1 and the two von Mises) difference.
+#' A discrete family uses the exact finite sum of [discrete_cdf_deriv_k()]. A
+#' continuous family whose compiled distribution function integrates its shape
+#' derivatives (gamma1, gamma2, chisq, both generalized gammas, both betas,
+#' both von Mises, both Student t, both pseudo-Huber and the skew t) takes the
+#' exact integrals of [compiled_cdf_deriv_k()]; any other continuous family
+#' without a closed form of its own takes a single product stencil on its
+#' distribution function through [numerical_cdf_deriv_k()].
 #'
 #' # What consumes them
 #'

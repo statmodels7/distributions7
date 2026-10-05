@@ -144,11 +144,13 @@ test_that("reparametrize() carries the parent's cdf derivatives by the chain rul
 
 
 test_that("the chain refuses to pretend when the parent has no closed form", {
-  # gengamma1's first two orders are the compiled integrals of its own
-  # derivatives, which the chain carries; its third differences the cdf, so
-  # a chain at that order must fall back rather than call it exact
+  # gengamma1's derivatives of every order are integrals of its own
+  # derivatives, which the chain carries; a parent with the density alone
+  # differences its cdf, and a chain over it must fall back rather than call
+  # it exact
   expect_true(distributions7:::has_exact_cdf_deriv(gengamma1_distrib(), 1L))
-  expect_false(distributions7:::has_exact_cdf_deriv(gengamma1_distrib(), 3L))
+  expect_true(distributions7:::has_exact_cdf_deriv(gengamma1_distrib(), 3L))
+  expect_false(distributions7:::has_exact_cdf_deriv(density_only_distrib(), 3L))
   d <- gengamma2_by_reparam()
   th <- list(mean = 1.2, d = 2, p = 1.5)
   q <- c(0.5, 1.4)

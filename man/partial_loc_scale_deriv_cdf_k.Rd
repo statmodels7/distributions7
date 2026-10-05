@@ -24,7 +24,7 @@ of numeric vectors of that order.
 Builds the \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} or \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}} body the Student
 t, the pseudo-Huber and the skew t register: the components over the
 location and the scale from \code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}}, and every component
-naming a shape parameter from \code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}}.
+naming a shape parameter from \code{\link[=continuous_cdf_deriv_k]{continuous_cdf_deriv_k()}}.
 }
 \section{Why the stencil is taken over everything}{
 The stencil runs over every component and the closed ones then overwrite it,

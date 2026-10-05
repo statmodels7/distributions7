@@ -2177,6 +2177,41 @@ Rcpp::NumericMatrix d7_cdf_hess_cpp(std::string cls, Rcpp::NumericVector q,
     return out;
 }
 
+// the rule of quad_cdf_sums() for R, by class name, one row of theta per
+// point: the side each point's integrals run over (TRUE for [q, hi)), and
+// the nodes and weights with the point's index (from one); what the third
+// and fourth derivatives of the distribution function integrate over
+// [[Rcpp::export]]
+Rcpp::List cdf_rule_cpp(std::string cls, Rcpp::NumericVector q,
+                        Rcpp::NumericMatrix theta) {
+    const int id = d7_scalar_id(cls.c_str());
+    if (id < 0 || id >= kWrapBase || !quad_cdf_family(id))
+        Rcpp::stop("no compiled cdf quadrature for '%s'", cls);
+    const int n = q.size(), np = theta.ncol();
+    Rcpp::LogicalVector upper(n);
+    std::vector<int> idx;
+    std::vector<double> yy, ww, ys, ws, th(np);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        const bool up = quad_side_upper(id, q[i], th.data());
+        upper[i] = up;
+        double slo, shi;
+        cont_support(id, th.data(), &slo, &shi);
+        const double a = up ? std::max(q[i], slo) : slo;
+        const double b = up ? shi : std::min(q[i], shi);
+        mapped_rule(id, th.data(), a, b, nullptr, 0, ys, ws);
+        for (std::size_t j = 0; j < ys.size(); ++j) {
+            idx.push_back(i + 1);
+            yy.push_back(ys[j]);
+            ww.push_back(ws[j]);
+        }
+    }
+    return Rcpp::List::create(Rcpp::_["idx"] = Rcpp::wrap(idx),
+                              Rcpp::_["y"] = Rcpp::wrap(yy),
+                              Rcpp::_["w"] = Rcpp::wrap(ww),
+                              Rcpp::_["upper"] = upper);
+}
+
 // fold_rule() for folded_expected() in R, which reads the same nodes
 // [[Rcpp::export]]
 Rcpp::List fold_rule_cpp(double c, double s) {

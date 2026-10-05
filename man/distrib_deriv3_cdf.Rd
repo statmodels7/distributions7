@@ -42,12 +42,13 @@ the natural or the logarithmic scale. Together with \code{\link[=distrib_grad_cd
 order.
 }
 \section{The two routes}{
-A discrete family uses the exact finite sum of \code{\link[=discrete_cdf_deriv_k]{discrete_cdf_deriv_k()}}, and
-a continuous one takes a single product stencil on its analytic distribution
-function through \code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}}. 24 of the 42 univariate families
-register a closed form of their own; of the 18 that do not, the discrete
-ones sum exactly and the continuous ones (beta1, beta2, chisq, gamma1,
-gamma2, gengamma1 and the two von Mises) difference.
+A discrete family uses the exact finite sum of \code{\link[=discrete_cdf_deriv_k]{discrete_cdf_deriv_k()}}. A
+continuous family whose compiled distribution function integrates its shape
+derivatives (gamma1, gamma2, chisq, both generalized gammas, both betas,
+both von Mises, both Student t, both pseudo-Huber and the skew t) takes the
+exact integrals of \code{\link[=compiled_cdf_deriv_k]{compiled_cdf_deriv_k()}}; any other continuous family
+without a closed form of its own takes a single product stencil on its
+distribution function through \code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}}.
 }
 
 \section{What consumes them}{

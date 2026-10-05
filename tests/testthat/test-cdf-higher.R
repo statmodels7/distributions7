@@ -166,12 +166,12 @@ test_that("the gate refuses a stencil dressed as a closed form", {
     distributions7:::has_exact_cdf_deriv(gaussian1_distrib(), k), logical(1))))
   expect_true(all(vapply(1:4, function(k)
     distributions7:::has_exact_cdf_deriv(poisson_distrib(), k), logical(1))))
-  # the gamma's first two orders are compiled integrals, its last two
-  # stencils
-  expect_true(all(vapply(1:2, function(k)
+  # the gamma's four orders are integrals of its own derivatives; a family
+  # with the density alone differences its cdf at every order
+  expect_true(all(vapply(1:4, function(k)
     distributions7:::has_exact_cdf_deriv(gamma1_distrib(), k), logical(1))))
-  expect_false(any(vapply(3:4, function(k)
-    distributions7:::has_exact_cdf_deriv(gamma1_distrib(), k), logical(1))))
+  expect_false(any(vapply(1:4, function(k)
+    distributions7:::has_exact_cdf_deriv(density_only_distrib(), k), logical(1))))
 })
 
 test_that("the location-scale closed form reproduces the written-out orders", {
@@ -242,11 +242,10 @@ test_that("the new routes agree with the partial expectation", {
 })
 
 test_that("the gate refuses to carry a differenced parent", {
-  # the gamma differences its own cdf at orders three and four, the
-  # derivative of the incomplete gamma in its shape having no elementary
-  # form, so a chain rule over it must not report a closed form there
+  # a family with the density alone differences its cdf at orders three and
+  # four, so a chain rule over it must not report a closed form there
   expect_false(any(vapply(3:4, function(k)
-    distributions7:::has_exact_cdf_deriv(gamma1_distrib(), k), logical(1))))
+    distributions7:::has_exact_cdf_deriv(density_only_distrib(), k), logical(1))))
   # while the gaussian and the Laplace are exact at every order, which is what
   # lets the mapped route close the lognormal and the second Laplace
   for (d in list(gaussian1_distrib(), laplace_distrib())) {
@@ -655,11 +654,12 @@ test_that("the first derivative in the quantile is the density", {
                distrib_pdf(d, q, th), tolerance = 1e-14)
 })
 
-test_that("only the mathematical obstructions are left on the cdf stencil", {
-  # every one of these differences its cdf because the derivative of an
-  # incomplete gamma or beta in its shape is hypergeometric, or because the
-  # distribution function is itself a quadrature. The test fails if a family
-  # joins them, which is what would happen to a new one added without a route.
+test_that("no shipped continuous family is left on the cdf stencil", {
+  # the families whose shape derivative of the distribution function has no
+  # elementary form (an incomplete gamma or beta, or a distribution function
+  # that is itself a quadrature) integrate their own derivatives
+  # (compiled_cdf_deriv_k()). The test fails if a family is added without a
+  # route.
   exported <- grep("_distrib$", getNamespaceExports("distributions7"), value = TRUE)
   skip_these <- c("check_distrib", "fit_distrib", "continuous_distrib",
                   "discrete_distrib", "multivariate_distrib")
@@ -672,6 +672,72 @@ test_that("only the mathematical obstructions are left on the cdf stencil", {
       open <- c(open, sub("_distrib$", "", ctor))
     }
   }
-  expect_setequal(open, c("beta1", "beta2", "chisq", "gamma1", "gamma2",
-                          "gengamma1", "gengamma2", "vonmises1", "vonmises2"))
+  expect_setequal(open, character())
+})
+
+test_that("orders three and four of a compiled cdf meet 50-digit values", {
+  # mpmath.diff on the incomplete gamma and beta functions; the stencil these
+  # integrals replace was off by up to 2e-5 at order three and 9e-4 at four
+  ns <- asNamespace("distributions7")
+  d <- gamma1_distrib()
+  th <- list(mu = 2, phi = 0.3)
+  got <- unlist(ns$continuous_cdf_deriv_k(d, 1.7, th, 3L))
+  ref <- c(mu_mu_mu = -0.07807685421000103555653973,
+           mu_mu_phi = -0.6953559451903645065666762,
+           mu_phi_phi = -2.461730820156939604106686,
+           phi_phi_phi = 8.487894424641899458674808)
+  expect_equal(got[names(ref)], ref, tolerance = 1e-12)
+  got <- unlist(ns$continuous_cdf_deriv_k(d, 1.7, th, 4L))
+  ref <- c(mu_mu_mu_mu = -0.4666866513006880079856806,
+           mu_mu_mu_phi = -0.110878716000928265197367,
+           mu_mu_phi_phi = 4.653381697722571857980341,
+           mu_phi_phi_phi = 18.50146805685720904386026,
+           phi_phi_phi_phi = -93.06246264793553272521386)
+  expect_equal(got[names(ref)], ref, tolerance = 1e-12)
+  d <- beta2_distrib()
+  th <- list(alpha = 2, beta = 3)
+  got <- unlist(ns$continuous_cdf_deriv_k(d, 0.35, th, 3L))
+  ref <- c(alpha_alpha_alpha = 0.02243363860829935060734526,
+           alpha_alpha_beta = -0.05814653551814005667947148,
+           alpha_beta_beta = 0.03804955454203007609695324,
+           beta_beta_beta = -0.008505510727552619991277783)
+  expect_equal(got[names(ref)], ref, tolerance = 1e-12)
+  got <- unlist(ns$continuous_cdf_deriv_k(d, 0.35, th, 4L))
+  ref <- c(alpha_alpha_alpha_alpha = -0.09426429219584894523442168,
+           alpha_alpha_alpha_beta = 0.06461938199109138060607086,
+           alpha_alpha_beta_beta = -0.005592277815488504504686594,
+           alpha_beta_beta_beta = -0.01916807378053266812428542,
+           beta_beta_beta_beta = 0.01134796101161004645709808)
+  expect_equal(got[names(ref)], ref, tolerance = 1e-12)
+  d <- student_t1_distrib()
+  th <- list(mu = 0.2, sigma = 1.3, nu = 4)
+  got <- unlist(ns$continuous_cdf_deriv_k(d, 0.9, th, 3L))
+  ref <- c(mu_mu_mu = 0.08799682302105622788015034,
+           mu_mu_sigma = 0.2272394801494210765878067,
+           mu_mu_nu = 0.001246834780931100629926326,
+           mu_sigma_sigma = -0.0673790847854154629414107,
+           mu_sigma_nu = 0.004851168971664105886179967,
+           mu_nu_nu = 0.002518749847810168309346051,
+           sigma_sigma_sigma = -0.2927629076799093623921136,
+           sigma_sigma_nu = 0.004862827506374220949221088,
+           sigma_nu_nu = 0.001356249918051629089647874,
+           nu_nu_nu = 0.001108858626787246583541383)
+  expect_equal(got[names(ref)], ref, tolerance = 1e-12)
+  got <- unlist(ns$continuous_cdf_deriv_k(d, 0.9, th, 4L))
+  ref <- c(mu_mu_mu_mu = 0.2699670722082348242666494,
+           mu_mu_mu_sigma = -0.05770270655184946665676652,
+           mu_mu_mu_nu = 0.006192113960716946214835399,
+           mu_mu_sigma_sigma = -0.5554694884881214280178128,
+           mu_mu_sigma_nu = 0.001416007854338200838870867,
+           mu_mu_nu_nu = -0.0004146077979762379506151093,
+           mu_sigma_sigma_sigma = -0.1436087596811066236832591,
+           mu_sigma_sigma_nu = -0.006700871111762670142423328,
+           mu_sigma_nu_nu = -0.002160750235687334519058945,
+           mu_nu_nu_nu = -0.001741364411270465899830253,
+           sigma_sigma_sigma_sigma = 0.5982789163561180389215842,
+           sigma_sigma_sigma_nu = -0.01108943445460177769087577,
+           sigma_sigma_nu_nu = -0.002206750063871356348453181,
+           sigma_nu_nu_nu = -0.0009376577599148662537547516,
+           nu_nu_nu_nu = -0.001028018227078602683375835)
+  expect_equal(got[names(ref)], ref, tolerance = 1e-12)
 })

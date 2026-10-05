@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R numerical_functions.R dexpected_families.R moments.R gengamma1_distrib.R cdf_compiled.R
+#' @include distrib.R generics.R numerical_functions.R dexpected_families.R moments.R gengamma1_distrib.R cdf_compiled.R y_higher.R cross_derivatives.R cross2_derivatives.R cross_theta2_derivatives.R
 NULL
 
 #' @title Generalized Gamma Distribution Class, Mean
