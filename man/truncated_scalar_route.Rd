@@ -15,10 +15,12 @@ truncated_scalar_route(distrib, ...)
 A list with components \code{name} and \code{constants}, or \code{NULL}.
 }
 \description{
-Returns the route of a \code{\link[=truncated]{truncated()}} family with a discrete parent,
-\code{"TruncatedDiscreteDistrib|<inner name>"}, with the inner family's
+Returns the route of a \code{\link[=truncated]{truncated()}} family,
+\code{"TruncatedDiscreteDistrib|<inner name>"} or
+\code{"TruncatedContinuousDistrib|<inner name>"}, with the inner family's
 constants followed by the truncation points \code{lower} and \code{upper}, as
 \code{\link[=distrib_scalar_route]{distrib_scalar_route()}} describes, or \code{NULL} when the parent has no
-route.
+route. A continuous parent needs a compiled distribution function and no
+wrapper of its own.
 }
 \keyword{internal}

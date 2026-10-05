@@ -377,3 +377,16 @@ test_that("a truncated discrete family meets 50-digit values", {
   expect_equal(distrib_dexpected_hessian(d, 1, th)$theta_theta_mu,
                -0.0063572261128758559268, tolerance = 1e-13)
 })
+
+test_that("a truncated continuous family's entries are its methods, bit for bit", {
+  for (mk in list(
+    function() truncated(gaussian1_distrib(), lower = 0),
+    function() truncated(gaussian1_distrib(), upper = 0.5),
+    function() truncated(gaussian1_distrib(), lower = -1, upper = 2),
+    function() truncated(gaussian1_distrib(), lower = 1.5)
+  )) {
+    d <- mk()
+    expect_false(is.null(distrib_scalar_route(d)))
+    ccallable_twin(NULL, c(-0.5, 0.5), 6, d = d)
+  }
+})

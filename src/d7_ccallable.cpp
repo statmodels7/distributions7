@@ -50,6 +50,8 @@
 #include "pt_logpdf.h"
 #include "pt_wrappers.h"
 #include "pt_transform.h"
+#include "pt_trunc_rule.h"
+#include "pt_cdf.h"
 #include "pt_loc_scale.h"
 #include "pt_sqrt.h"
 
@@ -177,7 +179,8 @@ const WrapName d7_wrappers[] = {
     {"ZeroAdjustedContinuousDistrib", 4},
     {"FoldedDistrib", 5},
     {"TransformedDistrib", 6},
-    {"TruncatedDiscreteDistrib", 7}
+    {"TruncatedDiscreteDistrib", 7},
+    {"TruncatedContinuousDistrib", 8}
 };
 const int d7_n_wrappers = sizeof(d7_wrappers) / sizeof(d7_wrappers[0]);
 
@@ -226,6 +229,14 @@ double d7_logpdf(int id, double y, const double* th);
 
 namespace {
 
+// the families with a compiled distribution function (pt_cdf.h)
+bool cont_has_cdf(int id) {
+    switch (id) {
+    case 0: return true;
+    default: return false;
+    }
+}
+
 int wrap_id(const char* cls, const char* bar) {
     std::string head(cls, bar - cls);
     int aux = 0;
@@ -253,10 +264,12 @@ int wrap_id(const char* cls, const char* bar) {
         return -1;
     } else if (code >= 2 && code <= 4) {
         np = P + 1;
-    } else if (code == 7) {
+    } else if (code == 7 || code == 8) {
         ncw = nc + 2;
     }
     if (P + nc > kMaxVec || np + ncw > kMaxVec) return -1;
+    if (code == 8 && (inner >= kWrapBase || P > 4 || !cont_has_cdf(inner)))
+        return -1;
     for (int i = 0; i < d7_n_nodes; ++i) {
         const WrapNode& w = d7_nodes[i];
         if (w.code == code && w.aux == aux && w.inner == inner) return kWrapBase + i;
@@ -610,6 +623,202 @@ double trunc_logpdf(int inner, double y, const double* th) {
     return (y < tp[0] || y > tp[1]) ? R_NegInf : ld;
 }
 
+// ---- truncated(), continuous parents ----------------------------------------
+//
+// The retained mass is Z = F(b) - F(a), or S(a) - S(b) in the survival
+// function when F(a) > 1/2, so that a lower point in the upper tail keeps
+// its digits; an end at or beyond the parent's support contributes 0 (or 1).
+// Its derivatives are those of F at the two ends, from the compiled
+// distribution functions of pt_cdf.h. The information's sums
+//   S = int f s_k^2,  D = int f (s_k^3 + l_kk s_k + s_k l_kk)
+// over [a, b] are taken by the rule of pt_trunc_rule.h, at the parent's
+// center and scale and with its kinks as cuts; a node where f w is zero
+// contributes nothing. trunc_cont_ends_cpp() and trunc_cont_rule_cpp() hand
+// R the same ends and the same nodes.
+
+// the support of a continuous family at its parameters
+void cont_support(int id, const double* th, double* lo, double* hi) {
+    *lo = R_NegInf;
+    *hi = R_PosInf;
+    switch (id) {
+    case 1: case 7: case 9: case 14: case 15: case 16: case 17: case 21:
+    case 22: case 25: case 26: case 30:
+        *lo = 0.0; return;
+    case 18:
+        *lo = 0.0;
+        if (th[1] < 0) *hi = th[0] / -th[1];
+        return;
+    case 4: case 31:
+        *lo = 0.0; *hi = 1.0; return;
+    case 19: case 20:
+        *lo = -M_PI; *hi = M_PI; return;
+    default: return;
+    }
+}
+
+// a center and a scale for the rule, for every continuous family
+bool cont_center_scale(int id, const double* th, double* c, double* s) {
+    if (center_scale(id, th, c, s)) return true;
+    switch (id) {
+    case 1: *c = th[0]; *s = th[0] * d7::sqrt_cr(th[1]); return true;
+    case 7: *c = th[0]; *s = th[0]; return true;
+    case 9: *c = th[0]; *s = d7::sqrt_cr(2 * th[0]); return true;
+    case 14: *c = std::exp(th[0]); *s = *c * d7::sqrt_cr(th[1]); return true;
+    case 15: *c = th[0]; *s = d7::sqrt_cr(th[1] * th[0]) * th[0]; return true;
+    case 16: *c = th[0]; *s = d7::sqrt_cr(th[0] / th[1]) * th[0]; return true;
+    case 17: *c = th[0]; *s = d7::sqrt_cr(th[1]); return true;
+    case 18: *c = 0.0; *s = th[0]; return true;
+    case 19: *c = th[0]; *s = std::min(M_PI, 1 / d7::sqrt_cr(th[1])); return true;
+    case 20: *c = th[0];
+        *s = std::min(M_PI, d7::sqrt_cr(-2 * std::log(th[1]))); return true;
+    case 21: case 26: *c = th[0]; *s = th[0]; return true;
+    case 22: {
+        const double r = th[1] / (th[0] * th[0]);
+        *c = th[0] / d7::sqrt_cr(1 + r);
+        *s = *c * d7::sqrt_cr(std::log1p(r));
+        return true;
+    }
+    case 25: case 30: *c = th[0]; *s = th[0]; return true;
+    case 4: {
+        *c = th[0];
+        *s = d7::sqrt_cr(th[0] * (1 - th[0]) / (1 + th[1]));
+        return true;
+    }
+    case 31: {
+        const double ab = th[0] + th[1];
+        *c = th[0] / ab;
+        *s = d7::sqrt_cr(th[0] * th[1] / (ab * ab * (ab + 1)));
+        return true;
+    }
+    default: return false;
+    }
+}
+
+// the kinks of the density in the response
+int cont_kinks(int id, const double* th, double* kk) {
+    if (id == 28 || id == 29 || id == 32) { kk[0] = th[0]; return 1; }
+    return 0;
+}
+
+// the compiled distribution function and its derivatives, by family; false
+// where the family has none
+bool cont_cdf(int id, double q, const double* th, bool lower, double* F) {
+    switch (id) {
+    case 0: *F = d7::gaussian1_cdf(q, th, lower); return true;
+    default: return false;
+    }
+}
+bool cont_cdf_grad(int id, double q, const double* th, double* g) {
+    switch (id) {
+    case 0: d7::gaussian1_cdf_grad(q, th, g); return true;
+    default: return false;
+    }
+}
+bool cont_cdf_hess(int id, double q, const double* th, double* h) {
+    switch (id) {
+    case 0: d7::gaussian1_cdf_hess(q, th, h); return true;
+    default: return false;
+    }
+}
+
+// the position of pair (i, j) in hess_names() order
+int hess_pos(int P, int i, int j) {
+    if (i == j) return i;
+    if (i > j) std::swap(i, j);
+    int pos = P;
+    for (int r = 0; r < i; ++r) pos += P - 1 - r;
+    return pos + (j - i - 1);
+}
+
+struct TruncEnds { double z; double g[4]; double h[10]; bool ok; };
+
+// the retained mass and its first and second derivatives in every
+// parameter, at one observation; inner a base family
+TruncEnds trunc_cont_ends(int inner, const double* th, double lo, double up) {
+    TruncEnds e;
+    const int P = d7_n_params[inner], np2 = P * (P + 1) / 2;
+    double slo, shi;
+    cont_support(inner, th, &slo, &shi);
+    const bool lo_in = lo > slo, up_in = up < shi;
+    double Fa = 0.0, gl[4] = {0, 0, 0, 0}, gu[4] = {0, 0, 0, 0};
+    double hl[10] = {0}, hu[10] = {0};
+    e.ok = true;
+    if (lo_in) e.ok = e.ok && cont_cdf(inner, lo, th, true, &Fa) &&
+                   cont_cdf_grad(inner, lo, th, gl) && cont_cdf_hess(inner, lo, th, hl);
+    if (up_in) e.ok = e.ok && cont_cdf_grad(inner, up, th, gu) &&
+                   cont_cdf_hess(inner, up, th, hu);
+    if (!e.ok) return e;
+    if (Fa > 0.5) {
+        double Sa = 1.0, Sb = 0.0;
+        if (lo_in) cont_cdf(inner, lo, th, false, &Sa);
+        if (up_in) cont_cdf(inner, up, th, false, &Sb);
+        e.z = Sa - Sb;
+    } else {
+        double Fb = 1.0;
+        if (up_in) cont_cdf(inner, up, th, true, &Fb);
+        e.z = Fb - Fa;
+    }
+    for (int i = 0; i < P; ++i) e.g[i] = gu[i] - gl[i];
+    for (int i = 0; i < np2; ++i) e.h[i] = hu[i] - hl[i];
+    return e;
+}
+
+// the nodes and weights of the information's rule at one observation
+void trunc_cont_nodes(int inner, const double* th, double lo, double up,
+                      std::vector<double>& y, std::vector<double>& w) {
+    double slo, shi, c, s, kk[4];
+    cont_support(inner, th, &slo, &shi);
+    if (!cont_center_scale(inner, th, &c, &s)) { y.clear(); w.clear(); return; }
+    const int nk = cont_kinks(inner, th, kk);
+    d7::trunc_rule(std::max(lo, slo), std::min(up, shi), c, s, kk, nk, y, w);
+}
+
+void trunc_cont_score_curv(int inner, int k, double y, const double* th,
+                           double* out) {
+    const double* tp = trunc_points(inner, th);
+    const TruncEnds e = trunc_cont_ends(inner, th, tp[0], tp[1]);
+    if (!e.ok) { out[0] = out[1] = R_NaN; return; }
+    const int P = d7_n_params[inner];
+    double sc[2];
+    d7_score_curv(inner, k, y, th, sc);
+    const double m = e.g[k] / e.z, M = e.h[hess_pos(P, k, k)] / e.z;
+    out[0] = sc[0] - m;
+    out[1] = sc[1] - M + m * m;
+}
+
+void trunc_cont_info_dinfo(int inner, int k, double y, const double* th,
+                           double* out) {
+    const double* tp = trunc_points(inner, th);
+    const TruncEnds e = trunc_cont_ends(inner, th, tp[0], tp[1]);
+    if (!e.ok) { out[0] = out[1] = R_NaN; return; }
+    const int P = d7_n_params[inner];
+    std::vector<double> ys, ws;
+    trunc_cont_nodes(inner, th, tp[0], tp[1], ys, ws);
+    long double S = 0.0L, D = 0.0L;
+    for (std::size_t j = 0; j < ys.size(); ++j) {
+        const double fw = std::exp(d7_logpdf(inner, ys[j], th)) * ws[j];
+        if (fw == 0.0) continue;
+        double sc[2];
+        d7_score_curv(inner, k, ys[j], th, sc);
+        const double g = sc[0], l = sc[1];
+        S += fw * (g * g);
+        D += fw * (g * g * g + l * g + g * l);
+    }
+    const double z = e.z, zk = e.g[k], zkk = e.h[hess_pos(P, k, k)];
+    const double m = zk / z, M = zkk / z, dm = M - m * m;
+    const double Sd = (double) S, Dd = (double) D;
+    out[0] = -(Sd / z - m * m);
+    out[1] = -(Dd / z - Sd * zk / (z * z) - (dm * m + m * dm));
+}
+
+double trunc_cont_logpdf(int inner, double y, const double* th) {
+    const double* tp = trunc_points(inner, th);
+    const TruncEnds e = trunc_cont_ends(inner, th, tp[0], tp[1]);
+    if (!e.ok) return R_NaN;
+    const double ld = d7_logpdf(inner, y, th) - std::log(e.z);
+    return (y < tp[0] || y > tp[1]) ? R_NegInf : ld;
+}
+
 void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
     const WrapNode& w = node_of(id);
     const int code = w.code, aux = w.aux, inner = w.inner;
@@ -630,6 +839,10 @@ void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
     }
     if (code == 7) {
         trunc_score_curv(inner, k, y, th, out);
+        return;
+    }
+    if (code == 8) {
+        trunc_cont_score_curv(inner, k, y, th, out);
         return;
     }
     if (code >= 2 && code <= 4) {
@@ -686,6 +899,10 @@ void wrap_info_dinfo(int id, int k, double y, const double* th, double* out) {
         trunc_info_dinfo(inner, k, y, th, out);
         return;
     }
+    if (code == 8) {
+        trunc_cont_info_dinfo(inner, k, y, th, out);
+        return;
+    }
     if (code >= 2 && code <= 4) {
         const int P = id_np(inner);
         const double z = zero_inner(inner, th, full);
@@ -738,6 +955,7 @@ double wrap_logpdf(int id, double y, const double* th) {
             d7::transform_log_jac(aux, y, tp));
     }
     if (code == 7) return trunc_logpdf(inner, y, th);
+    if (code == 8) return trunc_cont_logpdf(inner, y, th);
     if (code >= 2 && code <= 4) {
         const double z = zero_inner(inner, th, full);
         const double lf = d7_logpdf(inner, y, full);
@@ -1078,6 +1296,121 @@ Rcpp::NumericVector ld_group_sum(Rcpp::NumericVector x, Rcpp::IntegerVector g,
     for (R_xlen_t i = 0; i < x.size(); ++i) acc[g[i] - 1] += x[i];
     Rcpp::NumericVector out(n);
     for (int i = 0; i < n; ++i) out[i] = (double) acc[i];
+    return out;
+}
+
+// the rule of pt_trunc_rule.h, for the tests
+// [[Rcpp::export]]
+Rcpp::List trunc_cont_rule_raw_cpp(double a, double b, double c, double s,
+                                   Rcpp::NumericVector kinks,
+                                   double h = 0.0625, int nd = 6) {
+    std::vector<double> y, w;
+    d7::trunc_rule(a, b, c, s, kinks.begin(), kinks.size(), y, w, h, nd);
+    return Rcpp::List::create(Rcpp::_["y"] = Rcpp::wrap(y),
+                              Rcpp::_["w"] = Rcpp::wrap(w));
+}
+
+// trunc_cont_ends() for R, one row of theta per observation as for
+// trunc_rule_cpp(): the retained mass, its gradient (one column per
+// parameter) and its Hessian (one column per pair, in hess_names() order)
+// [[Rcpp::export]]
+Rcpp::List trunc_cont_ends_cpp(std::string cls, Rcpp::NumericMatrix theta) {
+    const int id = d7_scalar_id(cls.c_str());
+    if (!node_valid(id) || node_of(id).code != 8)
+        Rcpp::stop("'%s' is not the route of a truncated continuous family.", cls);
+    const int inner = node_of(id).inner, P = d7_n_params[inner];
+    const int n = theta.nrow(), np = theta.ncol(), np2 = P * (P + 1) / 2;
+    Rcpp::NumericVector z(n);
+    Rcpp::NumericMatrix g(n, P), h(n, np2);
+    std::vector<double> th(np);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        const double* tp = trunc_points(inner, th.data());
+        const TruncEnds e = trunc_cont_ends(inner, th.data(), tp[0], tp[1]);
+        z[i] = e.ok ? e.z : NA_REAL;
+        for (int j = 0; j < P; ++j) g(i, j) = e.g[j];
+        for (int j = 0; j < np2; ++j) h(i, j) = e.h[j];
+    }
+    return Rcpp::List::create(Rcpp::_["z"] = z, Rcpp::_["g"] = g,
+                              Rcpp::_["h"] = h);
+}
+
+// the rule's nodes for R: observation index (from one), node and weight
+// [[Rcpp::export]]
+Rcpp::List trunc_cont_rule_cpp(std::string cls, Rcpp::NumericMatrix theta) {
+    const int id = d7_scalar_id(cls.c_str());
+    if (!node_valid(id) || node_of(id).code != 8)
+        Rcpp::stop("'%s' is not the route of a truncated continuous family.", cls);
+    const int inner = node_of(id).inner;
+    const int n = theta.nrow(), np = theta.ncol();
+    std::vector<int> idx;
+    std::vector<double> yy, ww, ys, ws, th(np);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        const double* tp = trunc_points(inner, th.data());
+        trunc_cont_nodes(inner, th.data(), tp[0], tp[1], ys, ws);
+        for (std::size_t j = 0; j < ys.size(); ++j) {
+            idx.push_back(i + 1);
+            yy.push_back(ys[j]);
+            ww.push_back(ws[j]);
+        }
+    }
+    return Rcpp::List::create(Rcpp::_["idx"] = Rcpp::wrap(idx),
+                              Rcpp::_["y"] = Rcpp::wrap(yy),
+                              Rcpp::_["w"] = Rcpp::wrap(ww));
+}
+
+// the compiled distribution function and its derivatives, by class name,
+// one row of theta per point: what the R methods of the families without
+// closed forms in R read
+// [[Rcpp::export]]
+Rcpp::NumericVector d7_cdf_cpp(std::string cls, Rcpp::NumericVector q,
+                               Rcpp::NumericMatrix theta, bool lower) {
+    const int id = d7_scalar_id(cls.c_str());
+    const int n = q.size(), np = theta.ncol();
+    Rcpp::NumericVector out(n);
+    std::vector<double> th(np);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        double F;
+        out[i] = (id >= 0 && id < kWrapBase &&
+                  cont_cdf(id, q[i], th.data(), lower, &F)) ? F : NA_REAL;
+    }
+    return out;
+}
+
+// [[Rcpp::export]]
+Rcpp::NumericMatrix d7_cdf_grad_cpp(std::string cls, Rcpp::NumericVector q,
+                                    Rcpp::NumericMatrix theta) {
+    const int id = d7_scalar_id(cls.c_str());
+    if (id < 0 || id >= kWrapBase) Rcpp::stop("no compiled cdf for '%s'", cls);
+    const int n = q.size(), np = theta.ncol(), P = d7_n_params[id];
+    Rcpp::NumericMatrix out(n, P);
+    std::vector<double> th(np);
+    double g[4];
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        if (!cont_cdf_grad(id, q[i], th.data(), g)) Rcpp::stop("no compiled cdf");
+        for (int j = 0; j < P; ++j) out(i, j) = g[j];
+    }
+    return out;
+}
+
+// [[Rcpp::export]]
+Rcpp::NumericMatrix d7_cdf_hess_cpp(std::string cls, Rcpp::NumericVector q,
+                                    Rcpp::NumericMatrix theta) {
+    const int id = d7_scalar_id(cls.c_str());
+    if (id < 0 || id >= kWrapBase) Rcpp::stop("no compiled cdf for '%s'", cls);
+    const int n = q.size(), np = theta.ncol(), P = d7_n_params[id];
+    const int np2 = P * (P + 1) / 2;
+    Rcpp::NumericMatrix out(n, np2);
+    std::vector<double> th(np);
+    double h[10];
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        if (!cont_cdf_hess(id, q[i], th.data(), h)) Rcpp::stop("no compiled cdf");
+        for (int j = 0; j < np2; ++j) out(i, j) = h[j];
+    }
     return out;
 }
 

@@ -189,6 +189,30 @@ ld_group_sum <- function(x, g, n) {
     .Call(`_distributions7_ld_group_sum`, x, g, n)
 }
 
+trunc_cont_rule_raw_cpp <- function(a, b, c, s, kinks, h = 0.0625, nd = 6L) {
+    .Call(`_distributions7_trunc_cont_rule_raw_cpp`, a, b, c, s, kinks, h, nd)
+}
+
+trunc_cont_ends_cpp <- function(cls, theta) {
+    .Call(`_distributions7_trunc_cont_ends_cpp`, cls, theta)
+}
+
+trunc_cont_rule_cpp <- function(cls, theta) {
+    .Call(`_distributions7_trunc_cont_rule_cpp`, cls, theta)
+}
+
+d7_cdf_cpp <- function(cls, q, theta, lower) {
+    .Call(`_distributions7_d7_cdf_cpp`, cls, q, theta, lower)
+}
+
+d7_cdf_grad_cpp <- function(cls, q, theta) {
+    .Call(`_distributions7_d7_cdf_grad_cpp`, cls, q, theta)
+}
+
+d7_cdf_hess_cpp <- function(cls, q, theta) {
+    .Call(`_distributions7_d7_cdf_hess_cpp`, cls, q, theta)
+}
+
 fold_rule_cpp <- function(c, s) {
     .Call(`_distributions7_fold_rule_cpp`, c, s)
 }
