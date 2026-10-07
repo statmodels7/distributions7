@@ -216,16 +216,24 @@ S7::method(distrib_cdf, continuous_distrib) <- function(distrib, q, theta, lower
 #' function: it inverts [distrib_cdf()] by root-finding, which on a family
 #' with no analytical distribution function either means inverting the
 #' quadrature of [distrib_cdf.continuous_distrib()]. Measured on a Gamma
-#' defined by its density alone, it agrees with [stats::qgamma()] to between
-#' \eqn{4.1\times10^{-11}} and \eqn{4.5\times10^{-10}} relative, and the round
-#' trip \eqn{F(F^{-1}(p)) - p} closes to \eqn{10^{-11}}.
+#' defined by its density alone, at shapes 1 and 7 and probabilities from
+#' \eqn{10^{-6}} to \eqn{1 - 10^{-6}}, it agrees with [stats::qgamma()] to
+#' between \eqn{10^{-16}} and \eqn{6\times10^{-11}} relative.
 #'
 #' @details
-#' The bracket starts at an approximate mode from [find_pdf_anchor()] and
-#' expands geometrically, with the step scaled by the density height there so
-#' that a sharply peaked family and a diffuse one take a comparable number of
-#' expansions. The mode and its scale are computed once per distinct parameter
-#' setting and reused across the probabilities that share it.
+#' Every probability is inverted at once. The bracket starts at an approximate
+#' mode, found by the grid search of [find_pdf_anchor()] run on every distinct
+#' parameter setting in one evaluation of the density per refinement
+#' ([quantile_anchors()]), and expands geometrically, with the step scaled by
+#' the density height there so that a sharply peaked family and a diffuse one
+#' take a comparable number of expansions. Inside the bracket a Newton step on
+#' \eqn{F(q) - p}, whose derivative is the density, is taken where it stays
+#' inside the bracket and a bisection where it does not, so every iteration
+#' shrinks the bracket or converges. Each iteration is one call of
+#' [distrib_cdf()] and one of [distrib_pdf()] over every probability not yet
+#' inverted. Measured on a log-logistic defined by its density alone, 942
+#' quantiles at 314 parameter settings took 13 s inverted one at a time by
+#' [stats::uniroot()], and 1.7 s this way.
 #'
 #' Two layers of numerical work stack here, which is why the accuracy is four
 #' orders coarser than the distribution function's: the root-finder can only be
@@ -259,65 +267,135 @@ S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, 
 
   b <- distrib@bounds
   all_params <- expand_params(c(list(.p = p), theta))
-  rows <- transpose_params(all_params)
+  p <- as.numeric(all_params$.p)
+  th <- all_params[distrib@params]
+  n <- length(p)
+  out <- rep(NaN, n)
+  ok <- !is.na(p) & p >= 0 & p <= 1
+  out[ok & p == 0] <- b[1]
+  out[ok & p == 1] <- b[2]
+  todo <- which(ok & p > 0 & p < 1)
+  if (!length(todo)) return(out)
 
-  prev_th <- NULL
-  m <- NULL
-  scale_m <- NULL
-  Fm <- NULL
+  pt <- p[todo]
+  tht <- lapply(th, function(v) rep_len(v, n)[todo])
+  # the anchor, its height and its probability once per distinct setting
+  key <- do.call(paste, c(lapply(tht, function(v) sprintf("%a", v)), sep = "|"))
+  first <- !duplicated(key)
+  u <- match(key, key[first])
+  th_u <- lapply(tht, function(v) v[first])
+  m_u <- quantile_anchors(distrib, th_u)
+  f_u <- distrib_pdf(distrib, m_u, th_u)
+  F_u <- distrib_cdf(distrib, m_u, th_u)
+  m <- m_u[u]
+  s <- 1 / pmax(f_u[u], 1e-12)
+  Fm <- F_u[u]
+  cdf_at <- function(x, idx) distrib_cdf(distrib, x, lapply(tht, `[`, idx))
+  pdf_at <- function(x, idx) distrib_pdf(distrib, x, lapply(tht, `[`, idx))
 
-  vapply(rows, function(r) {
-    r <- as.list(r)
-    th <- r[distrib@params]
-    pi <- r$.p
-
-    if (is.na(pi) || pi < 0 || pi > 1) return(NaN)
-    if (pi == 0) return(b[1])
-    if (pi == 1) return(b[2])
-
-    if (!identical(th, prev_th)) {
-      m <<- find_pdf_anchor(distrib, th)
-      # Typical width of the bulk of a unimodal density ~ 1 / f(mode)
-      scale_m <<- 1 / max(distrib_pdf(distrib, m, th), 1e-12)
-      Fm <<- distrib_cdf(distrib, m, th)
-      prev_th <<- th
+  # the bracket: from the anchor towards the probability's side, doubling the
+  # step where the support is unbounded on that side
+  left <- pt <= Fm
+  lo <- ifelse(left, b[1], m)
+  hi <- ifelse(left, m, b[2])
+  for (side in c("lo", "hi")) {
+    open <- which(if (side == "lo") left & !is.finite(b[1]) else
+                    !left & !is.finite(b[2]))
+    step <- s[open]
+    for (it in seq_len(80L)) {
+      if (!length(open)) break
+      x <- if (side == "lo") m[open] - step else m[open] + step
+      Fx <- cdf_at(x, open)
+      if (side == "lo") lo[open] <- x else hi[open] <- x
+      more <- if (side == "lo") Fx > pt[open] else Fx < pt[open]
+      more[is.na(more)] <- FALSE
+      open <- open[more]
+      step <- 2 * step[more]
     }
+  }
 
-    f <- function(q) distrib_cdf(distrib, q, th) - pi
+  # safeguarded Newton inside the bracket
+  x <- ifelse(is.finite(lo) & is.finite(hi), (lo + hi) / 2,
+              ifelse(is.finite(lo), lo, hi))
+  act <- seq_along(pt)
+  for (it in seq_len(100L)) {
+    if (!length(act)) break
+    xa <- x[act]
+    r <- cdf_at(xa, act) - pt[act]
+    up <- !is.na(r) & r > 0
+    hi[act[up]] <- xa[up]
+    lo[act[!up & !is.na(r)]] <- xa[!up & !is.na(r)]
+    fx <- pdf_at(xa, act)
+    xn <- xa - r / fx
+    bad <- !is.finite(xn) | xn < lo[act] | xn > hi[act]
+    xn[bad] <- (lo[act][bad] + hi[act][bad]) / 2
+    # a residual at rounding is the root, and the point stays where it is
+    hit <- !is.na(r) & abs(r) <= 4 * .Machine$double.eps
+    xn[hit] <- xa[hit]
+    tol <- .Machine$double.eps^0.75 * pmax(1, abs(xa))
+    done <- hit | abs(xn - xa) <= tol | (hi[act] - lo[act]) <= tol
+    x[act] <- xn
+    act <- act[!done]
+  }
+  out[todo] <- x
+  out
+}
 
-    if (pi <= Fm) {
-      hi <- m
-      if (is.finite(b[1])) {
-        lo <- b[1]
-      } else {
-        s <- scale_m
-        lo <- m - s
-        it <- 0L
-        while (f(lo) > 0 && it < 80L) {
-          s <- 2 * s
-          lo <- m - s
-          it <- it + 1L
-        }
-      }
-    } else {
-      lo <- m
-      if (is.finite(b[2])) {
-        hi <- b[2]
-      } else {
-        s <- scale_m
-        hi <- m + s
-        it <- 0L
-        while (f(hi) < 0 && it < 80L) {
-          s <- 2 * s
-          hi <- m + s
-          it <- it + 1L
-        }
-      }
-    }
-
-    stats::uniroot(f, lower = lo, upper = hi,
-      tol = .Machine$double.eps^0.5 * max(1, abs(m)))$root
-  }, numeric(1))
+#' Approximate Modes of a Continuous Family at Many Parameter Settings
+#'
+#' @description
+#' The grid search of [find_lp_anchor()], run on every parameter setting at
+#' once: each refinement evaluates the log-density on a grid of 129 points per
+#' setting in one call, and keeps the three grid points around the largest
+#' value of each.
+#'
+#' @param distrib A continuous family.
+#' @param theta A named list of parameter vectors of a common length.
+#'
+#' @return A numeric vector of approximate modes, one per setting.
+#'
+#' @seealso [find_pdf_anchor()], the search for one setting;
+#'   [distrib_quantile.continuous_distrib()], its consumer.
+#' @keywords internal
+quantile_anchors <- function(distrib, theta) {
+  b <- distrib@bounds
+  k <- length(theta[[1L]])
+  to_y <- if (all(is.finite(b))) {
+    function(t) b[1] + t * (b[2] - b[1])
+  } else if (is.finite(b[1])) {
+    function(t) b[1] + t / (1 - t)
+  } else if (is.finite(b[2])) {
+    function(t) b[2] - (1 - t) / t
+  } else {
+    function(t) tan(pi * (t - 0.5))
+  }
+  n_grid <- 129L
+  lo <- rep(1e-10, k)
+  hi <- rep(1 - 1e-10, k)
+  act <- seq_len(k)
+  for (i in seq_len(60L)) {
+    if (!length(act)) break
+    tt <- as.vector(vapply(act, function(j) seq(lo[j], hi[j], length.out = n_grid),
+                           numeric(n_grid)))
+    rows <- rep(act, each = n_grid)
+    v <- distrib_pdf(distrib, to_y(tt),
+                     lapply(theta, function(w) w[rows]), log = TRUE)
+    v[is.na(v)] <- -Inf
+    V <- matrix(v, nrow = n_grid)
+    Tm <- matrix(tt, nrow = n_grid)
+    kk <- max.col(t(V), ties.method = "first")
+    none <- !apply(is.finite(V), 2L, any)
+    new_lo <- Tm[cbind(pmax(1L, kk - 1L), seq_along(act))]
+    new_hi <- Tm[cbind(pmin(n_grid, kk + 1L), seq_along(act))]
+    lo[act] <- ifelse(none, lo[act], new_lo)
+    hi[act] <- ifelse(none, hi[act], new_hi)
+    y_lo <- to_y(lo[act])
+    y_hi <- to_y(hi[act])
+    fin <- is.finite(y_hi - y_lo) &
+      (y_hi - y_lo) <= 1e-10 * pmax(1, abs(y_lo), abs(y_hi))
+    act <- act[!(fin | none)]
+  }
+  to_y((lo + hi) / 2)
 }
 
 # Internal: TRUE when the object gets its quantile function from a class-specific

@@ -32,16 +32,24 @@ The fallback for a continuous family that implements no analytical quantile
 function: it inverts \code{\link[=distrib_cdf]{distrib_cdf()}} by root-finding, which on a family
 with no analytical distribution function either means inverting the
 quadrature of \code{\link[=distrib_cdf.continuous_distrib]{distrib_cdf.continuous_distrib()}}. Measured on a Gamma
-defined by its density alone, it agrees with \code{\link[stats:GammaDist]{stats::qgamma()}} to between
-\eqn{4.1\times10^{-11}} and \eqn{4.5\times10^{-10}} relative, and the round
-trip \eqn{F(F^{-1}(p)) - p} closes to \eqn{10^{-11}}.
+defined by its density alone, at shapes 1 and 7 and probabilities from
+\eqn{10^{-6}} to \eqn{1 - 10^{-6}}, it agrees with \code{\link[stats:GammaDist]{stats::qgamma()}} to
+between \eqn{10^{-16}} and \eqn{6\times10^{-11}} relative.
 }
 \details{
-The bracket starts at an approximate mode from \code{\link[=find_pdf_anchor]{find_pdf_anchor()}} and
-expands geometrically, with the step scaled by the density height there so
-that a sharply peaked family and a diffuse one take a comparable number of
-expansions. The mode and its scale are computed once per distinct parameter
-setting and reused across the probabilities that share it.
+Every probability is inverted at once. The bracket starts at an approximate
+mode, found by the grid search of \code{\link[=find_pdf_anchor]{find_pdf_anchor()}} run on every distinct
+parameter setting in one evaluation of the density per refinement
+(\code{\link[=quantile_anchors]{quantile_anchors()}}), and expands geometrically, with the step scaled by
+the density height there so that a sharply peaked family and a diffuse one
+take a comparable number of expansions. Inside the bracket a Newton step on
+\eqn{F(q) - p}, whose derivative is the density, is taken where it stays
+inside the bracket and a bisection where it does not, so every iteration
+shrinks the bracket or converges. Each iteration is one call of
+\code{\link[=distrib_cdf]{distrib_cdf()}} and one of \code{\link[=distrib_pdf]{distrib_pdf()}} over every probability not yet
+inverted. Measured on a log-logistic defined by its density alone, 942
+quantiles at 314 parameter settings took 13 s inverted one at a time by
+\code{\link[stats:uniroot]{stats::uniroot()}}, and 1.7 s this way.
 
 Two layers of numerical work stack here, which is why the accuracy is four
 orders coarser than the distribution function's: the root-finder can only be

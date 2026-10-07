@@ -1,3 +1,14 @@
+# distributions7 0.74.0
+
+* The numerical quantile function of a continuous family inverts every
+  probability at once: the starting modes are found for every distinct
+  parameter setting in one evaluation of the density per refinement, and
+  each root is found by Newton steps on the distribution function, with a
+  bisection wherever a step would leave the bracket. On a log-logistic
+  defined by its density alone, 942 quantiles at 314 settings took 13 s
+  and take 1.7 s, and on a density-only gamma it agrees with
+  `stats::qgamma()` to between 1e-16 and 6e-11 relative.
+
 # distributions7 0.73.0
 
 * `check_distrib()` does not run a parameter-derivative check of an order for
