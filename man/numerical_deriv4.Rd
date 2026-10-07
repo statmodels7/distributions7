@@ -20,7 +20,9 @@ numerical_deriv4(
 \item{theta}{A named list of parameters (each of length 1 or \code{length(y)}).}
 
 \item{h_rel}{Numeric. Relative finite-difference step. Defaults to
-\code{.Machine$double.eps^(1/4)}.}
+\code{.Machine$double.eps^(1/4)} for a family with its own Hessian, and to the
+step \code{\link[=tensor_derivatives]{tensor_derivatives()}} chooses for the order of its difference
+otherwise; a value given explicitly is used on either route.}
 
 \item{skip}{Character vector of component names, or \code{NULL}, the default.
 A named component is left \code{NULL} in the result rather than computed, for
@@ -32,17 +34,22 @@ A named list of fourth-derivative component vectors, keyed as in
 \code{\link[=deriv_names]{deriv_names(distrib@params, 4)}}.
 }
 \description{
-Computes the unique fourth-order partial derivatives of the log-density by second
-central differences of \code{\link[=distrib_hessian]{distrib_hessian()}}. This powers the default
-\code{\link[=distrib_deriv4]{distrib_deriv4()}} method for distributions without a closed-form
-implementation.
+Computes the unique fourth-order partial derivatives of the log-density by
+central finite differences of the highest order the family implements
+itself, up to the Hessian. This powers the default \code{\link[=distrib_deriv4]{distrib_deriv4()}}
+method for distributions without a closed-form implementation.
 }
 \details{
-Each component
+For a family with its own Hessian, each component
 \eqn{\partial^4 \ell / \partial\theta_i\partial\theta_j\partial\theta_k\partial\theta_l}
 (with \eqn{i \le j \le k \le l}) is obtained as the second derivative of the
 Hessian entry \eqn{(i, j)} along \eqn{(\theta_k, \theta_l)}: a three-point stencil
 when \eqn{k = l}, a four-point cross stencil otherwise.
+
+For a family without its own Hessian, each component is one tensor-product
+central stencil of order three on the score, or of order four on the
+log-density when the family has no score either; see
+\code{\link[=tensor_derivatives]{tensor_derivatives()}} and the same paragraph of \code{\link[=numerical_deriv3]{numerical_deriv3()}}.
 }
 \examples{
 numerical_deriv4(gaussian1_distrib(), 0, list(mu = 0, sigma = 1))

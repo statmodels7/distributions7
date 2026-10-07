@@ -20,7 +20,9 @@ numerical_deriv3(
 \item{theta}{A named list of parameters (each of length 1 or \code{length(y)}).}
 
 \item{h_rel}{Numeric. Relative finite-difference step. Defaults to
-\code{.Machine$double.eps^(1/3)}.}
+\code{.Machine$double.eps^(1/3)} for a family with its own Hessian, and to the
+step \code{\link[=tensor_derivatives]{tensor_derivatives()}} chooses for the order of its difference
+otherwise; a value given explicitly is used on either route.}
 
 \item{skip}{Character vector of component names, or \code{NULL}, the default.
 A named component is left \code{NULL} in the result rather than computed, for
@@ -32,16 +34,29 @@ A named list of third-derivative component vectors, keyed as in
 \code{\link[=deriv_names]{deriv_names(distrib@params, 3)}}.
 }
 \description{
-Computes the unique third-order partial derivatives of the log-density by central
-finite differences of \code{\link[=distrib_hessian]{distrib_hessian()}}. This powers the default
-\code{\link[=distrib_deriv3]{distrib_deriv3()}} method for distributions without a closed-form
-implementation, and is the reference used to validate the analytical kernels.
+Computes the unique third-order partial derivatives of the log-density by
+central finite differences of the highest order the family implements
+itself. This powers the default \code{\link[=distrib_deriv3]{distrib_deriv3()}} method for distributions
+without a closed-form implementation, and is the reference used to validate
+the analytical kernels.
 }
 \details{
-Each component \eqn{\partial^3 \ell / \partial\theta_i\partial\theta_j\partial\theta_k}
+The route depends on what the family implements, as \code{\link[=analytic_order]{analytic_order()}}
+reports it.
+
+For a family with its own Hessian, each component
+\eqn{\partial^3 \ell / \partial\theta_i\partial\theta_j\partial\theta_k}
 (with \eqn{i \le j \le k}) is obtained by differentiating the Hessian entry
-\eqn{(i, j)} along \eqn{\theta_k}. Steps are scaled by \verb{max(1, |theta|)} and
-shrunk near parameter-domain boundaries.
+\eqn{(i, j)} along \eqn{\theta_k}, one central difference of an analytical
+quantity. Steps are scaled by \verb{max(1, |theta|)} and shrunk near
+parameter-domain boundaries.
+
+For a family without its own Hessian, that Hessian is itself a difference,
+and differencing it would nest one difference in another: on a diagonal
+component the same parameter would be differenced twice in succession. Each
+component is then one tensor-product central stencil of order two on the
+score, or of order three on the log-density when the family has no score
+either; see \code{\link[=tensor_derivatives]{tensor_derivatives()}}.
 }
 \examples{
 numerical_deriv3(gaussian1_distrib(), 0, list(mu = 0, sigma = 1))

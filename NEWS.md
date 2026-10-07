@@ -1,3 +1,21 @@
+# distributions7 0.75.0
+
+* For a family without its own Hessian, the observed third and fourth
+  derivatives are one tensor-product central stencil on the family's score,
+  or on its log-density when it has no score, through the new internal
+  `tensor_derivatives()`. They were a difference of the numerical Hessian,
+  which differenced the same parameter twice in succession; on a generalized
+  Poisson defined by its probability function alone the third derivatives
+  were 1 to 6 per cent from the exact values and the fourth missed them by
+  factors of 3 to 71, against 2e-5 and 3e-4 now (5e-8 and 5e-6 from a
+  score). Families with their own Hessian, which include every family in
+  the package, keep the previous route.
+* For a family with its own score and no Hessian, the default
+  `distrib_hessian()` is one central difference of the score.
+* `approx = "integrate"` now succeeds on the expected third derivatives of a
+  family with a density alone, which the noise of the nested differences
+  made fail.
+
 # distributions7 0.74.0
 
 * The numerical quantile function of a continuous family inverts every

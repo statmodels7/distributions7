@@ -481,7 +481,8 @@ distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib
 #' Computes the unique third-order partial derivatives of the log-likelihood with
 #' respect to the distribution's parameters. Distributions with a closed-form
 #' implementation provide it directly (in C++); the others fall back to finite
-#' differences of the Hessian (see [numerical_deriv3()]).
+#' differences of the highest order the family implements itself (see
+#' [numerical_deriv3()]).
 #' @param distrib A distribution object inheriting from the `distrib` class.
 #' @param y A numeric vector of observations.
 #' @param theta A named list (or named numeric vector) of distribution parameters.
@@ -521,7 +522,8 @@ distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib,
 #' Computes the unique fourth-order partial derivatives of the log-likelihood with
 #' respect to the distribution's parameters. Distributions with a closed-form
 #' implementation provide it directly (in C++); the others fall back to finite
-#' differences of the Hessian (see [numerical_deriv4()]).
+#' differences of the highest order the family implements itself, up to the
+#' Hessian (see [numerical_deriv4()]).
 #' @param distrib A distribution object inheriting from the `distrib` class.
 #' @param y A numeric vector of observations.
 #' @param theta A named list (or named numeric vector) of distribution parameters.

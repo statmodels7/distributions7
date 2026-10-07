@@ -49,7 +49,8 @@ A named list of derivative-component vectors, keyed as in
 Computes the unique fourth-order partial derivatives of the log-likelihood with
 respect to the distribution's parameters. Distributions with a closed-form
 implementation provide it directly (in C++); the others fall back to finite
-differences of the Hessian (see \code{\link[=numerical_deriv4]{numerical_deriv4()}}).
+differences of the highest order the family implements itself, up to the
+Hessian (see \code{\link[=numerical_deriv4]{numerical_deriv4()}}).
 }
 \examples{
 distrib_deriv4(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))

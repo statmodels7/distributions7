@@ -4,24 +4,29 @@ NULL
 # Higher-order (3rd/4th) derivatives of the log-density.
 #
 # The generics distrib_deriv3 / distrib_deriv4 dispatch to closed-form C++ kernels
-# for the distributions that have them; every other distribution (and every
-# wrapper / transformed / user-defined one) is served by the finite-difference
-# fallbacks below, which differentiate the Hessian returned by distrib_hessian
-# (analytical when available, itself a finite-difference fallback otherwise).
+# for the distributions that have them; every other distribution is served by
+# the finite-difference fallbacks below. A family with its own Hessian has that
+# Hessian differenced; a family without one has its score or its log-density
+# differenced by one tensor-product stencil (tensor_derivatives()), because
+# differencing a Hessian that is itself a difference nests one difference in
+# another.
 
 #' Numerical Third-Order Derivatives of the Log-Density
 #'
 #' @description
-#' Computes the unique third-order partial derivatives of the log-density by central
-#' finite differences of [distrib_hessian()]. This powers the default
-#' [distrib_deriv3()] method for distributions without a closed-form
-#' implementation, and is the reference used to validate the analytical kernels.
+#' Computes the unique third-order partial derivatives of the log-density by
+#' central finite differences of the highest order the family implements
+#' itself. This powers the default [distrib_deriv3()] method for distributions
+#' without a closed-form implementation, and is the reference used to validate
+#' the analytical kernels.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters (each of length 1 or `length(y)`).
 #' @param h_rel Numeric. Relative finite-difference step. Defaults to
-#'   `.Machine$double.eps^(1/3)`.
+#'   `.Machine$double.eps^(1/3)` for a family with its own Hessian, and to the
+#'   step [tensor_derivatives()] chooses for the order of its difference
+#'   otherwise; a value given explicitly is used on either route.
 #' @param skip Character vector of component names, or `NULL`, the default.
 #'   A named component is left `NULL` in the result rather than computed, for
 #'   a caller that supplies it in closed form. The names and their order are
@@ -31,10 +36,22 @@ NULL
 #'   [`deriv_names(distrib@params, 3)`][deriv_names].
 #'
 #' @details
-#' Each component \eqn{\partial^3 \ell / \partial\theta_i\partial\theta_j\partial\theta_k}
+#' The route depends on what the family implements, as [analytic_order()]
+#' reports it.
+#'
+#' For a family with its own Hessian, each component
+#' \eqn{\partial^3 \ell / \partial\theta_i\partial\theta_j\partial\theta_k}
 #' (with \eqn{i \le j \le k}) is obtained by differentiating the Hessian entry
-#' \eqn{(i, j)} along \eqn{\theta_k}. Steps are scaled by `max(1, |theta|)` and
-#' shrunk near parameter-domain boundaries.
+#' \eqn{(i, j)} along \eqn{\theta_k}, one central difference of an analytical
+#' quantity. Steps are scaled by `max(1, |theta|)` and shrunk near
+#' parameter-domain boundaries.
+#'
+#' For a family without its own Hessian, that Hessian is itself a difference,
+#' and differencing it would nest one difference in another: on a diagonal
+#' component the same parameter would be differenced twice in succession. Each
+#' component is then one tensor-product central stencil of order two on the
+#' score, or of order three on the log-density when the family has no score
+#' either; see [tensor_derivatives()].
 #'
 #' @seealso [numerical_deriv4()], [distrib_deriv3()]
 #' @examples
@@ -42,6 +59,12 @@ NULL
 #'
 #' @export
 numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3), skip = NULL) {
+  base <- analytic_order(distrib, 2L)
+  if (base < 2L) {
+    return(tensor_derivatives(distrib, y, theta, order = 3L, base = base,
+                              h_rel = if (missing(h_rel)) NULL else h_rel,
+                              skip = skip))
+  }
   params <- distrib@params
   bounds <- distrib@params_bounds
   nms <- deriv_names(params, 3)
@@ -96,16 +119,18 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' Numerical Fourth-Order Derivatives of the Log-Density
 #'
 #' @description
-#' Computes the unique fourth-order partial derivatives of the log-density by second
-#' central differences of [distrib_hessian()]. This powers the default
-#' [distrib_deriv4()] method for distributions without a closed-form
-#' implementation.
+#' Computes the unique fourth-order partial derivatives of the log-density by
+#' central finite differences of the highest order the family implements
+#' itself, up to the Hessian. This powers the default [distrib_deriv4()]
+#' method for distributions without a closed-form implementation.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters (each of length 1 or `length(y)`).
 #' @param h_rel Numeric. Relative finite-difference step. Defaults to
-#'   `.Machine$double.eps^(1/4)`.
+#'   `.Machine$double.eps^(1/4)` for a family with its own Hessian, and to the
+#'   step [tensor_derivatives()] chooses for the order of its difference
+#'   otherwise; a value given explicitly is used on either route.
 #' @param skip Character vector of component names, or `NULL`, the default.
 #'   A named component is left `NULL` in the result rather than computed, for
 #'   a caller that supplies it in closed form. The names and their order are
@@ -115,11 +140,16 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #'   [`deriv_names(distrib@params, 4)`][deriv_names].
 #'
 #' @details
-#' Each component
+#' For a family with its own Hessian, each component
 #' \eqn{\partial^4 \ell / \partial\theta_i\partial\theta_j\partial\theta_k\partial\theta_l}
 #' (with \eqn{i \le j \le k \le l}) is obtained as the second derivative of the
 #' Hessian entry \eqn{(i, j)} along \eqn{(\theta_k, \theta_l)}: a three-point stencil
 #' when \eqn{k = l}, a four-point cross stencil otherwise.
+#'
+#' For a family without its own Hessian, each component is one tensor-product
+#' central stencil of order three on the score, or of order four on the
+#' log-density when the family has no score either; see
+#' [tensor_derivatives()] and the same paragraph of [numerical_deriv3()].
 #'
 #' @seealso [numerical_deriv3()], [distrib_deriv4()]
 #' @examples
@@ -127,6 +157,12 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #'
 #' @export
 numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 4), skip = NULL) {
+  base <- analytic_order(distrib, 2L)
+  if (base < 2L) {
+    return(tensor_derivatives(distrib, y, theta, order = 4L, base = base,
+                              h_rel = if (missing(h_rel)) NULL else h_rel,
+                              skip = skip))
+  }
   params <- distrib@params
   bounds <- distrib@params_bounds
   nms <- deriv_names(params, 4)
@@ -197,9 +233,11 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #'
 #' @description
 #' The fallback for a family that registers no third-order method. Observed
-#' derivatives come from [numerical_deriv3()], one central difference of
-#' [distrib_hessian()] along each parameter; expected ones from
-#' [expected_derivative()] at the strategy `approx` names.
+#' derivatives come from [numerical_deriv3()]: one central difference of the
+#' family's own [distrib_hessian()] along each parameter, or, for a family
+#' without its own Hessian, one tensor-product stencil on its score or its
+#' log-density. Expected ones come from [expected_derivative()] at the
+#' strategy `approx` names.
 #'
 #' **No family shipped in this package reaches this method for its observed
 #' derivatives.** All 46 write the third order out, 24 of them in compiled
@@ -245,10 +283,13 @@ S7::method(distrib_deriv3, distrib) <- function(distrib, y, theta, expected = FA
 #'
 #' @description
 #' The fallback for a family that registers no fourth-order method. Observed
-#' derivatives come from [numerical_deriv4()], a **second** difference of
-#' [distrib_hessian()] rather than a difference of the third order, so the
-#' package's rule against nesting one difference inside another holds here;
-#' expected ones from [expected_derivative()] at the strategy `approx` names.
+#' derivatives come from [numerical_deriv4()]: a **second** difference of the
+#' family's own [distrib_hessian()] rather than a difference of the third
+#' order, or, for a family without its own Hessian, one tensor-product stencil
+#' on its score or its log-density. On both routes each parameter is
+#' differenced once, so the package's rule against nesting one difference
+#' inside another holds. Expected ones come from [expected_derivative()] at
+#' the strategy `approx` names.
 #'
 #' As at the order below, no family shipped in this package reaches it. Being a
 #' second difference it is the least accurate route the package offers, and its

@@ -34,9 +34,11 @@ A named list of third-derivative component vectors, each of length
 }
 \description{
 The fallback for a family that registers no third-order method. Observed
-derivatives come from \code{\link[=numerical_deriv3]{numerical_deriv3()}}, one central difference of
-\code{\link[=distrib_hessian]{distrib_hessian()}} along each parameter; expected ones from
-\code{\link[=expected_derivative]{expected_derivative()}} at the strategy \code{approx} names.
+derivatives come from \code{\link[=numerical_deriv3]{numerical_deriv3()}}: one central difference of the
+family's own \code{\link[=distrib_hessian]{distrib_hessian()}} along each parameter, or, for a family
+without its own Hessian, one tensor-product stencil on its score or its
+log-density. Expected ones come from \code{\link[=expected_derivative]{expected_derivative()}} at the
+strategy \code{approx} names.
 
 \strong{No family shipped in this package reaches this method for its observed
 derivatives.} All 46 write the third order out, 24 of them in compiled

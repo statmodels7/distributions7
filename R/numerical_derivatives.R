@@ -339,6 +339,160 @@ numerical_hessian <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 
   out[hess_names(params)]
 }
 
+
+#' Derivatives by One Stencil on the Highest Analytical Order
+#'
+#' @description
+#' Computes the derivative components of order `order` of the log-density
+#' from the highest order the family implements itself: the log-density
+#' (`base = 0`), the score (`base = 1`), the Hessian (`base = 2`) or the third
+#' order (`base = 3`). Each component is a single central difference of order
+#' `order - base`, never a difference of a difference.
+#'
+#' @details
+#' A component is a multiset of parameters: \eqn{(\mu, \mu, \phi)} is
+#' \eqn{\partial^3\ell / \partial\mu^2\partial\phi}. `base` of its indices
+#' select the analytical component that is differenced, taken from the
+#' parameters that occur most often so that no direction carries a high-order
+#' stencil while another carries none; the remaining multiplicities
+#' \eqn{r_1, \dots, r_p} are the orders of the difference in each direction.
+#' The stencil is the tensor product of one-dimensional central stencils, the
+#' one for direction \eqn{j} being [numericals7::fd_weights()] of order
+#' \eqn{r_j} at second-order accuracy, so the component is
+#' \deqn{\sum_{k_1, \dots, k_p} \Bigl(\prod_j w^{(r_j)}_{k_j} / h_j^{r_j}\Bigr)
+#'   f(\theta_1 + k_1 h_1, \dots, \theta_p + k_p h_p),}
+#' a single linear combination of values of the base component \eqn{f}. It
+#' differentiates each parameter only once, however many times that parameter
+#' occurs, which is what separates it from differencing a Hessian that is
+#' itself a difference.
+#'
+#' The step is \eqn{h_j = \varepsilon^{1/(r+2)}\max(1, |\theta_j|)}, with
+#' \eqn{r = \sum_j r_j} the total order of the difference: rounding grows as
+#' \eqn{\varepsilon/h^r} and the truncation of a second-order stencil as
+#' \eqn{h^2}, and the two balance there. The step is clamped so that the
+#' widest stencil of that order stays inside the parameter's bounds. Every
+#' component of one order uses the same steps, so a point shared by several
+#' components is evaluated once.
+#'
+#' @param distrib An object inheriting from `distrib`.
+#' @param y A numeric vector of observations.
+#' @param theta A named list of parameters, aligned by the generic.
+#' @param order The order of the derivatives, a whole number above `base`.
+#' @param base The highest order the family implements itself, 0 to 3.
+#' @param h_rel `NULL`, the default, for the step above, or a relative step
+#'   that replaces \eqn{\varepsilon^{1/(r+2)}}.
+#' @param skip Character vector of component names left `NULL`, or `NULL`.
+#'
+#' @return A named list of component vectors, keyed as
+#'   [`deriv_names(distrib@params, order)`][deriv_names] gives them.
+#'
+#' @seealso [analytic_order()] for how `base` is found; [numerical_deriv3()]
+#'   and [numerical_deriv4()], which call this for a family without its own
+#'   Hessian.
+#' @keywords internal
+tensor_derivatives <- function(distrib, y, theta, order, base, h_rel = NULL,
+                               skip = NULL) {
+  params <- distrib@params
+  p <- length(params)
+  nms <- deriv_names(params, order)
+  idx_of <- deriv_indices(params, order)
+  r_tot <- order - base
+  if (r_tot < 1L) stop("'order' must exceed 'base'.", call. = FALSE)
+  if (is.null(h_rel)) h_rel <- .Machine$double.eps^(1 / (r_tot + 2))
+
+  # one step per parameter, clamped for the widest stencil of this order
+  reach <- numericals7::fd_offsets(r_tot, 2L)$reach
+  h <- lapply(seq_len(p), function(j) {
+    x <- theta[[params[j]]]
+    hj <- h_rel * pmax(1, abs(x))
+    b <- distrib@params_bounds[[params[j]]]
+    if (!is.null(b)) {
+      if (is.finite(b[1])) hj <- pmin(hj, 0.49 * (x - b[1]) / reach)
+      if (is.finite(b[2])) hj <- pmin(hj, 0.49 * (b[2] - x) / reach)
+    }
+    hj
+  })
+
+  gen <- switch(as.character(base), "1" = distrib_gradient,
+                "2" = distrib_hessian, "3" = distrib_deriv3, NULL)
+  cache <- list()
+  value_at <- function(off) {
+    key <- paste(off, collapse = ",")
+    v <- cache[[key]]
+    if (is.null(v)) {
+      th <- theta
+      for (j in which(off != 0L)) {
+        th[[params[j]]] <- theta[[params[j]]] + off[j] * h[[j]]
+      }
+      v <- if (base == 0L) list(distrib_pdf(distrib, y, th, log = TRUE)) else
+        gen(distrib, y, th)
+      cache[[key]] <<- v
+    }
+    v
+  }
+
+  out <- vector("list", length(nms))
+  names(out) <- nms
+  for (t in seq_along(nms)) {
+    if (nms[t] %in% skip) next
+    cnt <- tabulate(idx_of[[t]], p)
+    b <- integer(p)
+    for (s in seq_len(base)) {
+      j <- which.max(cnt - b)
+      b[j] <- b[j] + 1L
+    }
+    rem <- cnt - b
+    comp <- if (base == 0L) 1L else
+      paste(params[rep(seq_len(p), b)], collapse = "_")
+    dirs <- which(rem > 0L)
+    st <- lapply(dirs, function(j) {
+      off <- numericals7::fd_offsets(rem[j], 2L)$central
+      w <- numericals7::fd_weights(off, rem[j])
+      keep <- w != 0
+      list(off = off[keep], w = w[keep])
+    })
+    grid <- as.matrix(expand.grid(lapply(st, function(s) seq_along(s$off))))
+    acc <- 0
+    for (g in seq_len(nrow(grid))) {
+      off <- integer(p)
+      wt <- 1
+      for (q in seq_along(dirs)) {
+        off[dirs[q]] <- st[[q]]$off[grid[g, q]]
+        wt <- wt * st[[q]]$w[grid[g, q]]
+      }
+      acc <- acc + wt * value_at(off)[[comp]]
+    }
+    den <- 1
+    for (j in dirs) den <- den * h[[j]]^rem[j]
+    out[[nms[t]]] <- acc / den
+  }
+  out
+}
+
+
+#' The Highest Derivative Order a Family Implements Itself
+#'
+#' @description
+#' Returns the highest order, up to `upto`, at which the family registers its
+#' own method: 0 for a family with a density alone, 1 with a score, 2 with a
+#' Hessian, 3 with third derivatives. A method inherited from one of the
+#' package's base classes is a numerical fallback and does not count; one
+#' inherited from a family class does.
+#'
+#' @param distrib An object inheriting from `distrib`.
+#' @param upto The highest order to look for, 1 to 3.
+#'
+#' @return An integer from 0 to `upto`.
+#'
+#' @seealso [tensor_derivatives()], which differences that order.
+#' @keywords internal
+analytic_order <- function(distrib, upto) {
+  gens <- list(distrib_gradient, distrib_hessian, distrib_deriv3)
+  m <- 0L
+  for (o in seq_len(upto)) if (owns_method(distrib, gens[[o]])) m <- o
+  m
+}
+
 # --- DEFAULT (FALLBACK) METHODS ---
 # Registered on the base `distrib` class: any subclass that implements only
 # distrib_pdf automatically gets a score function, an observed Hessian and an
@@ -401,16 +555,22 @@ S7::method(distrib_gradient, distrib) <- function(distrib, y, theta, scale = c("
 #' @name distrib_hessian.distrib
 #'
 #' @description
-#' The fallback for a family that implements no analytical Hessian: second
-#' differences of `distrib_pdf(..., log = TRUE)` through
-#' [numerical_hessian()]. A diagonal component takes the three-point stencil
+#' The fallback for a family that implements no analytical Hessian. For a
+#' family with a density alone it takes second differences of
+#' `distrib_pdf(..., log = TRUE)` through [numerical_hessian()]: a diagonal
+#' component takes the three-point stencil
 #' \eqn{[\ell(\theta_i+h) - 2\ell(\theta_i) + \ell(\theta_i-h)]/h^2} and an
 #' off-diagonal one the four-point mixed stencil, so both are a **single**
-#' difference of the log-density and neither is a difference of the gradient.
+#' difference of the log-density. For a family with its own score it takes
+#' one central difference of that score instead, through
+#' [tensor_derivatives()] with `base = 1`: the component \eqn{(i, j)} is the
+#' score in \eqn{\theta_i} differenced along \eqn{\theta_j}, a first
+#' difference of an analytical quantity, with the step
+#' \eqn{\varepsilon^{1/3}\max(1, |\theta_j|)}.
 #'
 #' @details
 #' # The step and the cost
-#' The step is \eqn{h = \varepsilon^{1/4}\max(1, |\theta_i|) \approx
+#' For a family with a density alone, the step is \eqn{h = \varepsilon^{1/4}\max(1, |\theta_i|) \approx
 #' 1.22\times10^{-4}}, twenty times the gradient's: a second difference divides
 #' by \eqn{h^2}, so rounding grows as \eqn{1/h^2} and the optimum moves out.
 #' [fd_steps()] applies the same boundary clamp. One Hessian costs
@@ -436,12 +596,16 @@ S7::method(distrib_gradient, distrib) <- function(distrib, y, theta, scale = c("
 #'   `length(y)`, keyed by [hess_names()], which puts the diagonal first and is
 #'   **not** the lexicographic keying [deriv_names()] uses above order 2.
 #'
-#' @seealso [numerical_hessian()], which does the differencing;
-#'   [fd_steps()] for the boundary rule;
+#' @seealso [numerical_hessian()] and [tensor_derivatives()], which do the
+#'   differencing; [fd_steps()] for the boundary rule;
 #'   [distrib_gradient.distrib()] for the order below;
 #'   [distrib_expected_hessian()] for the expectation of this.
 #' @keywords internal
 S7::method(distrib_hessian, distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+  if (analytic_order(distrib, 1L) == 1L) {
+    out <- tensor_derivatives(distrib, y, theta, order = 2L, base = 1L)
+    return(out[hess_names(distrib@params)])
+  }
   numerical_hessian(distrib, y, theta)
 }
 

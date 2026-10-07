@@ -147,18 +147,19 @@ test_that("the order-3 Bartlett identity is exact for the Poisson", {
   expect_equal(bart, analytic, tolerance = 1e-8)
 })
 
-test_that("integrate fails informatively on a purely numerical high-order derivative", {
+test_that("integrate and bartlett agree on a purely numerical high-order derivative", {
+  # The observed third derivatives of a family with a density alone are one
+  # stencil on the log-density. When they were a difference of the numerical
+  # Hessian, their noise made the quadrature fail, and this test asserted the
+  # failure.
   bg <- bare_gauss_rng()
   th <- list(mu = 1.5, sigma = 2)
-  expect_error(
-    distrib_deriv3(bg, 0, th, expected = TRUE, approx = "integrate"),
-    "bartlett"
-  )
-  # and the suggested alternative works
   ref <- distrib_deriv3(gaussian1_distrib(), 0, th, expected = TRUE)
+  int <- distrib_deriv3(bg, 0, th, expected = TRUE, approx = "integrate")
   alt <- distrib_deriv3(bg, 0, th, expected = TRUE, approx = "bartlett")
   for (k in names(ref)) {
-    expect_equal(alt[[k]][1], ref[[k]][1], tolerance = 1e-5, label = paste("d3", k))
+    expect_equal(int[[k]][1], ref[[k]][1], tolerance = 1e-5, label = paste("d3 integrate", k))
+    expect_equal(alt[[k]][1], ref[[k]][1], tolerance = 1e-5, label = paste("d3 bartlett", k))
   }
 })
 

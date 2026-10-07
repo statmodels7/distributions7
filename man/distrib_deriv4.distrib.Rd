@@ -33,10 +33,13 @@ A named list of fourth-derivative component vectors, each of length
 }
 \description{
 The fallback for a family that registers no fourth-order method. Observed
-derivatives come from \code{\link[=numerical_deriv4]{numerical_deriv4()}}, a \strong{second} difference of
-\code{\link[=distrib_hessian]{distrib_hessian()}} rather than a difference of the third order, so the
-package's rule against nesting one difference inside another holds here;
-expected ones from \code{\link[=expected_derivative]{expected_derivative()}} at the strategy \code{approx} names.
+derivatives come from \code{\link[=numerical_deriv4]{numerical_deriv4()}}: a \strong{second} difference of the
+family's own \code{\link[=distrib_hessian]{distrib_hessian()}} rather than a difference of the third
+order, or, for a family without its own Hessian, one tensor-product stencil
+on its score or its log-density. On both routes each parameter is
+differenced once, so the package's rule against nesting one difference
+inside another holds. Expected ones come from \code{\link[=expected_derivative]{expected_derivative()}} at
+the strategy \code{approx} names.
 
 As at the order below, no family shipped in this package reaches it. Being a
 second difference it is the least accurate route the package offers, and its

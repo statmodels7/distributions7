@@ -22,15 +22,21 @@ A named list of Hessian component vectors, each of length
 \strong{not} the lexicographic keying \code{\link[=deriv_names]{deriv_names()}} uses above order 2.
 }
 \description{
-The fallback for a family that implements no analytical Hessian: second
-differences of \code{distrib_pdf(..., log = TRUE)} through
-\code{\link[=numerical_hessian]{numerical_hessian()}}. A diagonal component takes the three-point stencil
+The fallback for a family that implements no analytical Hessian. For a
+family with a density alone it takes second differences of
+\code{distrib_pdf(..., log = TRUE)} through \code{\link[=numerical_hessian]{numerical_hessian()}}: a diagonal
+component takes the three-point stencil
 \eqn{[\ell(\theta_i+h) - 2\ell(\theta_i) + \ell(\theta_i-h)]/h^2} and an
 off-diagonal one the four-point mixed stencil, so both are a \strong{single}
-difference of the log-density and neither is a difference of the gradient.
+difference of the log-density. For a family with its own score it takes
+one central difference of that score instead, through
+\code{\link[=tensor_derivatives]{tensor_derivatives()}} with \code{base = 1}: the component \eqn{(i, j)} is the
+score in \eqn{\theta_i} differenced along \eqn{\theta_j}, a first
+difference of an analytical quantity, with the step
+\eqn{\varepsilon^{1/3}\max(1, |\theta_j|)}.
 }
 \section{The step and the cost}{
-The step is \eqn{h = \varepsilon^{1/4}\max(1, |\theta_i|) \approx
+For a family with a density alone, the step is \eqn{h = \varepsilon^{1/4}\max(1, |\theta_i|) \approx
 1.22\times10^{-4}}, twenty times the gradient's: a second difference divides
 by \eqn{h^2}, so rounding grows as \eqn{1/h^2} and the optimum moves out.
 \code{\link[=fd_steps]{fd_steps()}} applies the same boundary clamp. One Hessian costs
@@ -47,8 +53,8 @@ digits worse than the gradient's. That is the price of a second difference.
 }
 
 \seealso{
-\code{\link[=numerical_hessian]{numerical_hessian()}}, which does the differencing;
-\code{\link[=fd_steps]{fd_steps()}} for the boundary rule;
+\code{\link[=numerical_hessian]{numerical_hessian()}} and \code{\link[=tensor_derivatives]{tensor_derivatives()}}, which do the
+differencing; \code{\link[=fd_steps]{fd_steps()}} for the boundary rule;
 \code{\link[=distrib_gradient.distrib]{distrib_gradient.distrib()}} for the order below;
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the expectation of this.
 }
