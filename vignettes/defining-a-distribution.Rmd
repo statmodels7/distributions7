@@ -92,11 +92,14 @@ Laplace <- S7::new_class("Laplace", parent = continuous_distrib)
 ```
 
 **Step 2 --- the density.** A method for `distrib_pdf`. The signature is always
-`(distrib, y, theta, log = FALSE)`, where `theta` is a named list of parameters
-(each element a scalar or a vector aligned with `y`):
+`(distrib, y, theta, log = FALSE, ...)`, where `theta` is a named list of
+parameters (each element a scalar or a vector aligned with `y`). The `...` is
+required: a modelling function such as `statmodels7::statmod()` passes further
+arguments to the density, the number of threads among them, and a method
+without `...` stops on the first call.
 
 ```{r}
-S7::method(distrib_pdf, Laplace) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, Laplace) <- function(distrib, y, theta, log = FALSE, ...) {
   mu <- theta[[1]]
   b  <- theta[[2]]
   log_d <- -log(2 * b) - abs(y - mu) / b
@@ -192,7 +195,7 @@ table from that lower bound, growing it geometrically as needed.
 ```{r}
 # A shifted-geometric example: P(Y = k) = (1-p) p^k for k = 0, 1, 2, ...
 Geom <- S7::new_class("Geom", parent = discrete_distrib)
-S7::method(distrib_pdf, Geom) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, Geom) <- function(distrib, y, theta, log = FALSE, ...) {
   p <- theta[[1]]
   log_d <- log(1 - p) + y * log(p)
   if (log) log_d else exp(log_d)
@@ -256,9 +259,10 @@ carries a `scale` argument (and `...`). **A method always returns
 parameter-scale derivatives**; the chain rule is never implemented by hand.
 The generic applies the link-scale transformation afterwards when the caller
 asks for `scale = "link"`. The same applies to `distrib_hessian`,
-`distrib_expected_hessian`, `distrib_deriv3` and `distrib_deriv4`; the
-probability-function methods (`distrib_pdf`, `distrib_cdf`, `distrib_quantile`,
-`distrib_rng`) keep their plain signatures.
+`distrib_expected_hessian`, `distrib_deriv3` and `distrib_deriv4`. Of the
+probability-function methods, `distrib_pdf` takes `...` as Step 2 explains, and
+`distrib_cdf`, `distrib_quantile` and `distrib_rng` keep the signatures shown
+here.
 
 The results are identical to what the fallbacks produced, only faster and exact:
 
