@@ -105,6 +105,9 @@ series_rows <- function(term, from, n_rows) {
 #' @param theta A named list of parameters. Vectors are supported and are
 #'   recycled against any vectors in `...`, so several parameter values can
 #'   be handled in one call; all combinations share one batched evaluation.
+#'   A constant of the family that varies by observation (a binomial's
+#'   `size`) is recycled in the same way, so a scalar `theta` gives one
+#'   expected value per observation.
 #' @param ... Further arguments passed to `f`; their names must not clash
 #'   with those of `theta`.
 #'
@@ -126,23 +129,53 @@ expectation <- S7::new_generic("expectation", "distrib", fun = function(distrib,
 #' Shared preparation for the [expectation()] methods: checks that
 #' the names in `...` do not collide with those of `theta`, then
 #' expands every component to one aligned column per parameter combination.
+#' A constant of the family that varies by observation (a binomial's `size`)
+#' counts as a column too, so that a scalar `theta` gives one combination per
+#' observation; the methods take the constant at each combination through
+#' [distrib_at_rows()].
 #'
+#' @param distrib The family.
 #' @param f_env_theta The named list of parameters.
 #' @param dots The list of further arguments destined for `f`.
 #' @return A list with the theta columns `th`, the dot columns
-#'   `dots` and the number of combinations `n`.
+#'   `dots`, the number of combinations `n` and `rows`, which is `TRUE` when
+#'   the family carries a constant that varies by observation.
 #' @keywords internal
-expectation_columns <- function(f_env_theta, dots) {
+expectation_columns <- function(distrib, f_env_theta, dots) {
   if (any(names(dots) %in% names(f_env_theta))) {
     stop("Arguments in '...' cannot have the same names as parameters in 'theta'.")
   }
-  all_params <- expand_params(c(f_env_theta, dots))
+  n_const <- distrib_const_rows(distrib)
+  cols <- c(f_env_theta, dots)
+  n <- max(lengths(cols), n_const)
+  check_params_dim(c(cols, list(size = numeric(n_const))), n = n)
+  all_params <- expand_params(cols, n)
   n_theta <- length(f_env_theta)
   list(
     th = all_params[seq_len(n_theta)],
     dots = all_params[-seq_len(n_theta)],
-    n = length(all_params[[1L]])
+    n = n,
+    rows = n_const > 1L
   )
+}
+
+#' Number of Observations a Family's Constants Vary Over
+#'
+#' @description
+#' Returns the length of the longest constant of `distrib` that varies by
+#' observation (a binomial's `size`), its parents' included, and 1 when
+#' there is none.
+#'
+#' @param distrib A univariate family.
+#' @return A single positive integer.
+#' @keywords internal
+distrib_const_rows <- function(distrib) {
+  n <- 1L
+  if (S7::prop_exists(distrib, "parent_distrib")) {
+    n <- distrib_const_rows(distrib@parent_distrib)
+  }
+  if (S7::prop_exists(distrib, "size")) n <- max(n, length(distrib@size))
+  n
 }
 
 #' @title Expectation of a Continuous Distribution
@@ -166,13 +199,16 @@ expectation_columns <- function(f_env_theta, dots) {
 #' @return A numeric vector of expected values.
 #' @keywords internal
 S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) {
-  cols <- expectation_columns(theta, list(...))
+  cols <- expectation_columns(distrib, theta, list(...))
   b <- distrib@bounds
+  # the family with its per-observation constants taken at combinations idx
+  at <- function(idx) if (cols$rows) distrib_at_rows(distrib, idx, cols$n) else distrib
 
   # quantile knots for every combination in one elementwise call
   pr <- c(0.1, 0.5, 0.9)
   th_rep <- lapply(cols$th, function(v) rep(v, each = length(pr)))
-  qs <- suppressWarnings(distrib_quantile(distrib, rep(pr, times = cols$n), th_rep))
+  qs <- suppressWarnings(distrib_quantile(at(rep(seq_len(cols$n), each = length(pr))),
+                                          rep(pr, times = cols$n), th_rep))
   qm <- matrix(qs, nrow = length(pr))
 
   # A kink of the log-density is a jump of the score, and a panel that
@@ -190,7 +226,7 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
       sp <- if (length(qj) > 1L && diff(range(qj)) > 0) diff(range(qj)) else 1
       lo <- if (is.finite(b[1L])) b[1L] else min(c(qj, 0)) - 30 * sp
       hi <- if (is.finite(b[2L])) b[2L] else max(c(qj, 0)) + 30 * sp
-      kj <- c(kj, kink_knots(distrib, lapply(cols$th, `[`, j), lo, hi))
+      kj <- c(kj, kink_knots(at(j), lapply(cols$th, `[`, j), lo, hi))
     }
     kj <- unique(kj[is.finite(kj) & kj > b[1L] & kj < b[2L]])
     knots <- sort(c(b[1L], kj, b[2L]))
@@ -205,7 +241,7 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
     th_e <- lapply(cols$th, function(v) v[idx])
     dt_e <- lapply(cols$dots, function(v) v[idx])
     val_f <- do.call(f, c(list(y = xv, theta = th_e), dt_e))
-    val_f * distrib_pdf(distrib, xv, th_e, log = FALSE)
+    val_f * distrib_pdf(at(idx), xv, th_e, log = FALSE)
   }
 
   panels <- quad_rows(integrand, lower, upper)
@@ -226,7 +262,7 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
       one <- function(y) {
         val_f <- do.call(f, c(list(y = y, theta = lapply(th_j, rep_len, length(y))),
                               lapply(dt_j, rep_len, length(y))))
-        val_f * distrib_pdf(distrib, y, th_j, log = FALSE)
+        val_f * distrib_pdf(at(j), y, th_j, log = FALSE)
       }
       ks <- sort(unique(c(b, lower[comb == j], upper[comb == j])))
       ks <- ks[!is.na(ks)]
@@ -260,14 +296,15 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
 #' @return A numeric vector of expected values.
 #' @keywords internal
 S7::method(expectation, discrete_distrib) <- function(distrib, f, theta, ...) {
-  cols <- expectation_columns(theta, list(...))
+  cols <- expectation_columns(distrib, theta, list(...))
   b <- distrib@bounds
 
   term <- function(k, i) {
     th_e <- lapply(cols$th, function(v) v[i])
     dt_e <- lapply(cols$dots, function(v) v[i])
     val_f <- do.call(f, c(list(y = k, theta = th_e), dt_e))
-    val_f * distrib_pdf(distrib, k, th_e, log = FALSE)
+    d_i <- if (cols$rows) distrib_at_rows(distrib, i, cols$n) else distrib
+    val_f * distrib_pdf(d_i, k, th_e, log = FALSE)
   }
 
   unname(discrete_support_sum(term, b[1L], b[2L], cols$n))

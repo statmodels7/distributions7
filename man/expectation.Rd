@@ -18,7 +18,10 @@ from arithmetic and the \verb{distrib_*} generics already is.}
 
 \item{theta}{A named list of parameters. Vectors are supported and are
 recycled against any vectors in \code{...}, so several parameter values can
-be handled in one call; all combinations share one batched evaluation.}
+be handled in one call; all combinations share one batched evaluation.
+A constant of the family that varies by observation (a binomial's
+\code{size}) is recycled in the same way, so a scalar \code{theta} gives one
+expected value per observation.}
 
 \item{...}{Further arguments passed to \code{f}; their names must not clash
 with those of \code{theta}.}

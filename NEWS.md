@@ -1,3 +1,10 @@
+# distributions7 0.72.1
+
+* `expectation()` of a family whose constant varies by observation (a
+  binomial's `size`, also inside a wrapper) returns one value per
+  observation. With a scalar `theta` it returned one number, the size being
+  recycled against the support points.
+
 # distributions7 0.72.0
 
 * The derivatives of `skewt_distrib()` in the degrees of freedom are exact at

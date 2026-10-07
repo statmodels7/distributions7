@@ -4,20 +4,27 @@
 \alias{expectation_columns}
 \title{Aligned Parameter Columns for an Expectation}
 \usage{
-expectation_columns(f_env_theta, dots)
+expectation_columns(distrib, f_env_theta, dots)
 }
 \arguments{
+\item{distrib}{The family.}
+
 \item{f_env_theta}{The named list of parameters.}
 
 \item{dots}{The list of further arguments destined for \code{f}.}
 }
 \value{
 A list with the theta columns \code{th}, the dot columns
-\code{dots} and the number of combinations \code{n}.
+\code{dots}, the number of combinations \code{n} and \code{rows}, which is \code{TRUE} when
+the family carries a constant that varies by observation.
 }
 \description{
 Shared preparation for the \code{\link[=expectation]{expectation()}} methods: checks that
 the names in \code{...} do not collide with those of \code{theta}, then
 expands every component to one aligned column per parameter combination.
+A constant of the family that varies by observation (a binomial's \code{size})
+counts as a column too, so that a scalar \code{theta} gives one combination per
+observation; the methods take the constant at each combination through
+\code{\link[=distrib_at_rows]{distrib_at_rows()}}.
 }
 \keyword{internal}

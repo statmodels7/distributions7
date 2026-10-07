@@ -106,3 +106,28 @@ test_that("a combination the batch refuses is rescued by one scalar integrate", 
     distrib_hessian(d, y, theta)[["mu_mu"]], th)
   expect_equal(got, eh[["mu_mu"]], tolerance = 1e-6)
 })
+
+test_that("a size that varies by observation gives one expectation per observation", {
+  # with a scalar theta the sum used to run to max(size) with the size
+  # recycled against the support points, and returned one number (3.38
+  # for the means 1.5, 3, 6)
+  sz <- c(5, 10, 20)
+  d <- binomial_distrib(size = sz)
+  expect_equal(expectation(d, function(y, theta) y, list(mu = 0.3)), sz * 0.3,
+               tolerance = 1e-14)
+  expect_equal(expectation(d, function(y, theta) y^2, list(mu = 0.3)),
+               sz * 0.21 + (sz * 0.3)^2, tolerance = 1e-14)
+  expect_equal(expectation(d, function(y, theta) y, list(mu = c(0.3, 0.4, 0.5))),
+               sz * c(0.3, 0.4, 0.5), tolerance = 1e-14)
+  # through a wrapper, the parent's size is taken at each observation
+  z <- zero_inflated(binomial_distrib(size = sz))
+  expect_equal(expectation(z, function(y, theta) y, list(mu = 0.3, zi = 0.2)),
+               0.8 * sz * 0.3, tolerance = 1e-14)
+  tr <- truncated(binomial_distrib(size = sz), lower = 1)
+  one <- vapply(sz, function(s) expectation(truncated(binomial_distrib(size = s),
+    lower = 1), function(y, theta) y, list(mu = 0.3)), numeric(1))
+  expect_equal(expectation(tr, function(y, theta) y, list(mu = 0.3)), one,
+               tolerance = 1e-14)
+  expect_error(expectation(d, function(y, theta) y, list(mu = c(0.1, 0.2))),
+               "dimension mismatch")
+})
