@@ -482,3 +482,42 @@ test_that("a draw in the last places of a non-zero bound is left out of the resp
   an <- distrib_grad_y(d, yy, th)
   expect_gt(abs(ref - an) / abs(an), 1e-3)
 })
+
+test_that("a family written from its density alone has no derivative row run", {
+  # with no method of its own the value is the numerical fallback, which the
+  # reference also computes, and the row would hold by construction
+  LL <- S7::new_class("LogLogisticCheck", parent = continuous_distrib, package = NULL)
+  S7::method(distrib_pdf, LL) <- function(distrib, y, theta, log = FALSE, ...) {
+    a <- theta[[1]]; b <- theta[[2]]; z <- y / a
+    ld <- log(b) - log(a) + (b - 1) * log(z) - 2 * log1p(z^b)
+    if (log) ld else exp(ld)
+  }
+  d <- LL(distrib_name = "log-logistic", dimension = "univariate",
+          bounds = c(0, Inf), params = c("mu", "shape"),
+          params_interpretation = c(mu = "scale", shape = "shape"), n_params = 2,
+          params_bounds = list(mu = c(0, Inf), shape = c(0, Inf)),
+          link_params = list(mu = linkfunctions7::log_link(),
+                             shape = linkfunctions7::log_link()))
+  set.seed(3)
+  res <- check_distrib(d, theta = list(mu = 10, shape = 2.5), n = 40,
+                       nsim = 2e4, verbose = FALSE)
+  rows <- c("gradient vs finite differences", "hessian vs finite differences",
+            "deriv3 vs finite differences", "deriv4 vs finite differences")
+  expect_false(any(rows %in% res$check))
+  sk <- attr(res, "skipped")
+  expect_setequal(sk$check, rows)
+  expect_true(all(grepl("numerical fallback", sk$reason)))
+  expect_true(all(res$status == "OK"))
+
+  # a gradient written by hand is run, and only the orders above it are not
+  S7::method(distrib_gradient, LL) <- function(distrib, y, theta,
+                                               scale = c("parameter", "link"), ...) {
+    a <- theta[[1]]; b <- theta[[2]]; z <- y / a; r <- z^b / (1 + z^b)
+    list(mu = (b / a) * (2 * r - 1), shape = 1 / b + log(z) * (1 - 2 * r))
+  }
+  res2 <- check_distrib(d, theta = list(mu = 10, shape = 2.5), n = 40,
+                        nsim = 2e4, verbose = FALSE)
+  expect_true("gradient vs finite differences" %in% res2$check)
+  expect_setequal(attr(res2, "skipped")$check, rows[-1])
+  expect_lt(res2$statistic[res2$check == "gradient vs finite differences"], 1e-6)
+})

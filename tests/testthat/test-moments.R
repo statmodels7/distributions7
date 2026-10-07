@@ -86,3 +86,14 @@ test_that("hess_names produces diagonal-first ordering", {
     c("a_a", "b_b", "c_c", "a_b", "a_c", "b_c")
   )
 })
+
+test_that("the numerical expectation integrates each distinct combination once", {
+  # a family with no closed-form moments reaches the quadrature; repeated
+  # parameter values give the values of the distinct ones, in place
+  d <- vonmises1_distrib()
+  th <- list(mu = c(0, 0.5, 0, 0.5, 1), kappa = c(2, 3, 2, 3, 2))
+  all_v <- variance(d, th)
+  one <- vapply(1:5, function(i) variance(d, lapply(th, `[`, i)), numeric(1))
+  expect_equal(all_v, one, tolerance = 1e-12)
+  expect_identical(all_v[1], all_v[3])
+})

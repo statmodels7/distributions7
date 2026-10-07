@@ -403,3 +403,21 @@ test_that("an optimizer passed positionally is named, not coerced", {
   expect_true(S7::S7_inherits(f, distrib_fit))
   expect_identical(f@method, optimizers7::lbfgs()@name)
 })
+
+test_that("an optimizer with no minimize() method and a non-numeric response are named", {
+  set.seed(42)
+  d <- gaussian1_distrib()
+  y <- distrib_rng(d, 100, list(mu = 0, sigma = 1))
+  Lazy <- S7::new_class("LazyOptimizer", parent = optimizers7::optimizer,
+                        package = NULL)
+  lazy <- Lazy(name = "lazy", criterion = optimizers7::crit_grad(), maxit = 10,
+               max_eval = 10, verbose = FALSE, refresh = 1, keep_trace = FALSE)
+  expect_error(fit_distrib(d, y, method = lazy), "no minimize() method", fixed = TRUE)
+  expect_error(fit_distrib(d, y, method = lazy), "LazyOptimizer")
+
+  Cens <- S7::new_class("censored_like", package = NULL,
+                        properties = list(y = S7::class_numeric))
+  expect_error(fit_distrib(d, Cens(y = y)), "'y' must be a numeric vector")
+  expect_error(fit_distrib(d, Cens(y = y)), "censored response")
+  expect_error(fit_distrib(d, list(y)), "'y' must be a numeric vector")
+})
