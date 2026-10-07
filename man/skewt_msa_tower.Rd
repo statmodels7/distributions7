@@ -22,10 +22,11 @@ elements are named \code{"c_i"} and hold
 \code{NA_real_} and is never read.
 }
 \description{
-Builds the table of \eqn{\partial^i_z\,\partial^c_\alpha \ell} that the
-third and fourth derivatives of a skew t read, for every pair with
-\eqn{c + i \le 4}. Together with \code{\link[=skewt_msa_component]{skewt_msa_component()}} it gives in closed
-form every derivative of the log-density that does not involve \eqn{\nu}.
+Builds the table of \eqn{\partial^i_z\,\partial^c_\alpha \ell}, for every
+pair with \eqn{c + i \le 4}. Together with \code{\link[=skewt_msa_component]{skewt_msa_component()}} it gives
+in closed form every derivative of the log-density that does not involve
+\eqn{\nu}, by a derivation in \eqn{z} independent of the compiled kernels
+of \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}, which are tested against it.
 }
 \section{Why the block closes}{
 With \eqn{z = (y-\mu)/\sigma} and \eqn{u(z) = z\sqrt{(\nu+1)/(\nu+z^2)}},

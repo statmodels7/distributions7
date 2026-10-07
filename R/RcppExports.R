@@ -1477,6 +1477,22 @@ skewt_hessian_cpp <- function(y, mu, sigma, alpha, nu, threads = 1L) {
     .Call(`_distributions7_skewt_hessian_cpp`, y, mu, sigma, alpha, nu, threads)
 }
 
+skewt_deriv3_cpp <- function(y, mu, sigma, alpha, nu, threads = 1L) {
+    .Call(`_distributions7_skewt_deriv3_cpp`, y, mu, sigma, alpha, nu, threads)
+}
+
+skewt_deriv4_cpp <- function(y, mu, sigma, alpha, nu, threads = 1L) {
+    .Call(`_distributions7_skewt_deriv4_cpp`, y, mu, sigma, alpha, nu, threads)
+}
+
+skewt_deriv5_cpp <- function(y, mu, sigma, alpha, nu, threads = 1L) {
+    .Call(`_distributions7_skewt_deriv5_cpp`, y, mu, sigma, alpha, nu, threads)
+}
+
+skewt_tdf_ratio_cpp <- function(w, m) {
+    .Call(`_distributions7_skewt_tdf_ratio_cpp`, w, m)
+}
+
 student_t1_gradient_cpp <- function(y, mu, sigma, nu, threads = 1L) {
     .Call(`_distributions7_student_t1_gradient_cpp`, y, mu, sigma, nu, threads)
 }

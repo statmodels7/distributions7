@@ -17,20 +17,17 @@
 }
 \value{
 A named list with components \code{mu}, \code{sigma}, \code{alpha} and \code{nu}, each a
-numeric vector of length \code{length(y)}. The first two are exact and the
-last two carry one stencil's error, measured at
-\eqn{9.2\times10^{-10}} relative against Richardson.
+numeric vector of length \code{length(y)}.
 }
 \description{
 Closed form in the location and the scale, from the location-scale
-identity. The two shape components come from one central difference of
-\code{\link[=distrib_grad_y]{distrib_grad_y()}}: the density carries \eqn{T_{\nu+1}}, whose
-derivative in the degrees of freedom has no elementary form, the same
-obstruction that the family's parameter derivatives meet.
+identity. The two shape components are minus the mixed entries of
+\code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}}, since the response and the location
+enter the density only through their difference, so that
+\eqn{\partial_y\partial_\theta\ell = -\partial_\mu\partial_\theta\ell}.
 }
 \seealso{
-\code{\link[=partial_loc_scale_cross_y]{partial_loc_scale_cross_y()}}, the shared body;
-\code{\link[=distrib_cross_y.SkewNormal1Distrib]{distrib_cross_y.SkewNormal1Distrib()}}, where every component is
-exact; \code{\link[=numerical_cross_y]{numerical_cross_y()}} for the differenced half.
+\code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} for the location-scale identity and
+\code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}} for the mixed entries.
 }
 \keyword{internal}

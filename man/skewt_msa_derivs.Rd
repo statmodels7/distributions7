@@ -38,6 +38,7 @@ names(m)
 }
 \seealso{
 \code{\link[=skewt_msa_tower]{skewt_msa_tower()}} for the derivation and
-\code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}} for the method that reads this.
+\code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}} for the compiled kernel tested against
+this.
 }
 \keyword{internal}

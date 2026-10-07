@@ -18,9 +18,8 @@ returns the parameter scale.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{A single positive integer. Accepted for the signature
-the generic shares; the kernel runs on the calling thread, since the
-t distribution function it evaluates may signal a warning.}
+\item{threads}{A single positive integer, how many threads the kernel may
+use.}
 }
 \value{
 A named list of ten numeric vectors in \code{\link[=hess_names]{hess_names()}}'s order:
@@ -28,10 +27,11 @@ A named list of ten numeric vectors in \code{\link[=hess_names]{hess_names()}}'s
 \code{mu_alpha}, \code{mu_nu}, \code{sigma_alpha}, \code{sigma_nu}, \code{alpha_nu}.
 }
 \description{
-Computes the ten second derivatives of the log-density. The block in
-\eqn{(\mu, \sigma, \alpha)} is closed form; every component involving
-\eqn{\nu} comes from one stencil applied to an analytic quantity, for the
-reason \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}} gives.
+Computes the ten second derivatives of the log-density with the compiled
+kernel described on \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}. The block in
+\eqn{(\mu, \sigma, \alpha)} has the closed forms below; the components
+involving \eqn{\nu} carry the derivatives of \eqn{\log T_{\nu+1}(w)} in the
+degrees of freedom, which are integrals.
 }
 \section{The closed-form block}{
 With \eqn{D = A + QB} and \eqn{D' = A' + Q'B^2 + QB'} in the notation of
@@ -50,20 +50,6 @@ With \eqn{D = A + QB} and \eqn{D' = A' + Q'B^2 + QB'} in the notation of
       \qquad
       \dfrac{\partial^2 \ell}{\partial \sigma \, \partial \alpha}
         = -\dfrac{z(Q' B z c + Q E)}{\sigma}.}
-}
-
-\section{The four components in the degrees of freedom}{
-\eqn{\partial^2\ell/\partial\nu^2} is one five-point second difference of
-the log-density, \code{\link[=fd5_second]{fd5_second()}}. The three mixed ones step the
-\strong{closed-form score} in \eqn{\nu} with \code{\link[=fd5_first]{fd5_first()}}, so only one
-difference is taken and it is taken of an analytic quantity. Stepping the
-log-density in both variables instead would be a difference of a difference
-in \eqn{\nu}, which this family never does.
-
-Measured at \eqn{\mu = 0}, \eqn{\sigma = 1}, \eqn{\alpha = 3},
-\eqn{\nu = 6}, the summed \code{nu_nu} agrees with \code{numDeriv::hessian} on the
-log-likelihood to \eqn{2\times10^{-9}} relative and \code{mu_nu} to the printed
-digit.
 }
 
 \section{Notation}{
@@ -94,6 +80,6 @@ range(distrib_hess_y(d, seq(-20, 20, by = 0.5), th))
 }
 \seealso{
 \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}} for the order below,
-\code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}} for the order above,
-\code{\link[=fd5_second]{fd5_second()}} for the stencil, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
+\code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

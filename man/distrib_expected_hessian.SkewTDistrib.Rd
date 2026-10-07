@@ -42,15 +42,9 @@ so every component equals its value at \eqn{\mu = 0}, \eqn{\sigma = 1} times
 integral over \eqn{z} of the observed derivatives against the density, taken
 once per distinct pair by the exp-sinh rule of \code{\link[=loc_scale_expected]{loc_scale_expected()}}.
 
-The integral is exact to the rule's accuracy, and what it integrates carries
-the family's own accuracy: every derivative in \eqn{(\mu, \sigma, \alpha)}
-is closed form, and every one involving \eqn{\nu} comes from a single
-stencil on an analytic quantity, as documented on
-\code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}}. Against an adaptive quadrature the
-expected information agrees to \eqn{9\times10^{-12}}; the second derivative
-agrees with a difference of the first to \eqn{10^{-3}} relative at
-\eqn{\nu = 5}, the components carrying \eqn{\nu} several times being
-differenced ones.
+The integral is exact to the rule's accuracy, and what it integrates are the
+observed derivatives of \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}, exact in every
+parameter.
 
 The tail is integrated to \eqn{|z| = 10^{60}}, which leaves a relative
 \eqn{10^{-60\nu}/\nu} and is negligible for \eqn{\nu \ge 0.3}.

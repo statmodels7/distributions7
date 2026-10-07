@@ -47,8 +47,9 @@ approaches the Gaussian's: measured at \eqn{w = -60} with
 \eqn{m = 2000}, the log route returns 21.4345 and \code{dt(w, m)/pt(w, m)}
 returns \code{NaN}.
 
-Nothing here involves \eqn{\nu} by differentiation; the components in
-\eqn{\nu} are obtained separately, by a stencil.
+Nothing here differentiates in \eqn{\nu}. The derivative kernels evaluate
+the same quantities in bounded variables; see
+\code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}.
 }
 \section{Notation}{
 

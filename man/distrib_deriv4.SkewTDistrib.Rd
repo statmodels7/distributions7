@@ -24,67 +24,22 @@ only when \code{expected = TRUE}.}
 \code{approx = "mc"}. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use.}
 }
 \value{
 A named list of thirty-five numeric vectors, one per distinct
 fourth-order component, from \code{mu_mu_mu_mu} to \code{nu_nu_nu_nu}.
 }
 \description{
-Computes the thirty-five fourth derivatives of the log-density, with the
-discipline of \code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}}. Fifteen are closed form, ten
-more are one difference in \eqn{\nu} of a closed-form third derivative, and
-each of the remaining ten costs one stencil on an analytic quantity. Twenty
-of the thirty-five involve \eqn{\nu}.
+Computes the thirty-five fourth derivatives of the log-density with the
+compiled kernel described on \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}.
 }
-\section{How the thirty-five are obtained}{
-The fifteen free of \eqn{\nu} come from \code{\link[=skewt_msa_derivs]{skewt_msa_derivs()}} and difference
-nothing.
-
-The ten carrying exactly one \eqn{\nu} come from \code{\link[=skewt_msa_nu1]{skewt_msa_nu1()}}, one
-five-point difference along \eqn{\nu} of the \strong{closed-form} third
-derivative beside them. This is the rule
-\code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}}'s mixed components already follow, read one
-order up. The generic construction would instead take a mixed second
-difference of the Hessian, and a second difference amplifies rounding by
-\eqn{h^{-2}}: measured over fifteen settings of \eqn{(\nu, \alpha)}, the
-route it replaces sits between 20 and 203 times further from Richardson on
-the analytic third derivative.
-
-The six carrying \eqn{\nu} twice go through \code{\link[=numerical_deriv4]{numerical_deriv4()}}, which for
-them is one second difference along \eqn{\nu} of a closed-form Hessian
-entry.
-
-The four the generic construction would nest are replaced:
-\eqn{(i, \nu, \nu, \nu)} is a third difference of the closed-form score
-component \eqn{i}, and \eqn{(\nu, \nu, \nu, \nu)} a fourth difference of the
-log-density.
+\details{
+With \code{expected = TRUE} the whole order is an expectation and comes from
+\code{expected_derivative()}; \code{approx} and \code{nsim} are then read.
 }
-
-\section{The step for the pure-nu component}{
-A fourth difference amplifies rounding by \eqn{h^{-4}}, so
-\code{\link[=fd5_fourth]{fd5_fourth()}} is called at \strong{ten times} \code{\link[=skewt_nu_step]{skewt_nu_step()}}'s step rather
-than at it. The choice is measured: at the family's base step the
-per-observation noise is near \eqn{10^{-2}} relative, and at ten times that
-it is negligible while the \eqn{O(h^2)} truncation, about
-\eqn{6\times10^{-4}}, is what remains.
-
-\code{nu_nu_nu_nu} is the least accurate quantity this family reports, and it is
-also the smallest: measured on four observations at \eqn{\nu = 6} it is
-\eqn{-4.5\times10^{-6}} while \code{sigma_sigma_sigma_sigma} is 127. A
-\strong{relative} comparison on a component that small is not informative, which
-is why the package's battery scales its order-4 check by the size of the
-whole array and reports \eqn{3.5\times10^{-4}} here.
-}
-
-\section{Cost}{
-This is the dearest method in the family: the ten components carrying
-\eqn{\nu} more than once each cost four or five evaluations of an analytic
-quantity over the whole vector. Measured at \eqn{n = 20{,}000} it takes
-about five seconds, against eighty milliseconds for the score and about
-eighteen seconds for the generic construction alone, which is what it cost
-before fifteen of its components stopped being differenced at all.
-}
-
 \examples{
 d <- skewt_distrib()
 y <- c(-1.5, -0.3, 0.4, 2.1)
@@ -108,6 +63,6 @@ rbind(analytic = d4$mu_mu_alpha_alpha,
 }
 \seealso{
 \code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}} for the order below,
-\code{\link[=fd5_fourth]{fd5_fourth()}} for the stencil and its \eqn{h^{-4}} behavior, and
+\code{\link[=distrib_deriv5.SkewTDistrib]{distrib_deriv5.SkewTDistrib()}} for the order above, and
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

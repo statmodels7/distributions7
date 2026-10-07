@@ -118,7 +118,11 @@ test_that("the Richardson check catches a corrupted component", {
   expect_gt(rel(1.05 * good, ref), 1e-3)
 })
 
-test_that("deriv3 and deriv4 return the closed forms themselves", {
+test_that("the compiled kernels agree with the tower on the closed block", {
+  # The kernels are generated closed forms in bounded variables
+  # (pt_skewt_table.h); the tower is an independent derivation of the block
+  # free of nu, in z and the Riccati recursion. Agreement to rounding between
+  # two derivations that share no arithmetic is what the block is held to.
   d3 <- distrib_deriv3(d, y, th)
   d4 <- distrib_deriv4(d, y, th)
   m3 <- skewt_msa_derivs(d, y, th, 3L)
@@ -126,9 +130,8 @@ test_that("deriv3 and deriv4 return the closed forms themselves", {
 
   expect_identical(length(m3), 10L)
   expect_identical(length(m4), 15L)
-  # Identity, not a tolerance: an accurate stencil would pass a tolerance.
-  for (nm in names(m3)) expect_identical(d3[[nm]], m3[[nm]])
-  for (nm in names(m4)) expect_identical(d4[[nm]], m4[[nm]])
+  for (nm in names(m3)) expect_lt(rel(d3[[nm]], m3[[nm]]), 1e-13)
+  for (nm in names(m4)) expect_lt(rel(d4[[nm]], m4[[nm]]), 1e-13)
 
   # No component is lost to the skipping, at either order.
   expect_identical(names(d3), deriv_names(P, 3L))

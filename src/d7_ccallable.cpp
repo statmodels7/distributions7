@@ -954,18 +954,13 @@ double hess_off(int id, int k, int l, double y, const double* th) {
         const double Lkl = (k == 1 && l == 2) ? Ldp : 0.0;
         return Laa * ak * al + La * akl + Lak * al + Lal * ak + Lkl;
     }
-    case 35: {  // skewt (mu, sigma, alpha, nu): alpha-nu by the family's own
-        // stencil in nu on the alpha score
+    case 35: {  // skewt (mu, sigma, alpha, nu): alpha-nu, exact
         if (!(k == 2 && l == 3)) return R_NaN;
-        const double h = d7::skewt_nu_step(th[3]);
-        double acc = 0.0;
-        for (int j = 0; j < 5; ++j) {
-            if (d7::kSkewtW1[j] == 0.0) continue;
-            const d7::SkewtPieces P =
-                d7::skewt_pieces(y, th[0], th[1], th[2], th[3] + (j - 2) * h);
-            acc = acc + d7::kSkewtW1[j] * d7::skewt_score_alpha(P);
-        }
-        return acc / h;
+        thread_local d7::SkewtConst cc;
+        cc.at(th[3], 2);
+        double d2[10];
+        d7::skewt_obs<2>(y, th[0], th[1], th[2], th[3], cc, d2);
+        return d2[8];   // alpha_nu in the order of pt_skewt_table.h
     }
     default: return R_NaN;
     }

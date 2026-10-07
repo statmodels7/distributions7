@@ -54,7 +54,7 @@ test_that("the location-scale block closes for the shape families too", {
 })
 
 
-test_that("the shape component of two of them is closed rather than differenced", {
+test_that("the shape components of three of them are closed rather than differenced", {
   # The values agree with Richardson either way, so a tolerance cannot tell a
   # closed form from the difference it replaced. What separates them is
   # whether the body reaches numerical_cross_y at all.
@@ -64,9 +64,9 @@ test_that("the shape component of two of them is closed rather than differenced"
   }
   expect_false(differences(distributions7:::SkewNormal1Distrib))
   expect_false(differences(distributions7:::PseudoHuberDistrib))
-  # and the skew t is not claimed to be closed: its nu direction carries the
-  # derivative of a Student t distribution function in its degrees of freedom
-  expect_true(differences(distributions7:::SkewTDistrib))
+  # the skew t reads its mixed Hessian, exact in nu since its derivatives in
+  # the degrees of freedom are integrals rather than stencils
+  expect_false(differences(distributions7:::SkewTDistrib))
 })
 
 

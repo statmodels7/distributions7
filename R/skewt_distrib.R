@@ -39,6 +39,7 @@ NULL
 #'   [`distrib_hessian()`][distrib_hessian.SkewTDistrib],
 #'   [`distrib_deriv3()`][distrib_deriv3.SkewTDistrib],
 #'   [`distrib_deriv4()`][distrib_deriv4.SkewTDistrib],
+#'   [`distrib_deriv5()`][distrib_deriv5.SkewTDistrib],
 #'   [`distrib_grad_y()`][distrib_grad_y.SkewTDistrib],
 #'   [`distrib_hess_y()`][distrib_hess_y.SkewTDistrib], and the expected
 #'   information with its two derivatives,
@@ -58,13 +59,12 @@ NULL
 #' quadrature per distinct \eqn{(\alpha, \nu)}; see
 #' [distrib_expected_hessian.SkewTDistrib()].
 #'
-#' @section What is closed form and what is not:
-#' Every derivative in \eqn{\mu}, \eqn{\sigma} and \eqn{\alpha} is closed form.
-#' Every derivative involving \eqn{\nu} is not, and the obstruction is
-#' mathematical: the density carries \eqn{T_{\nu+1}}, and the derivative of a
-#' Student \eqn{t} distribution function in its degrees of freedom has no
-#' elementary expression. Those components come from **one** stencil applied to
-#' an analytic quantity, never from a difference of a difference.
+#' @section How the derivatives are computed:
+#' Every derivative, to order five, comes from a compiled kernel in closed
+#' form. The density carries \eqn{T_{\nu+1}}, and the derivatives of a Student
+#' \eqn{t} distribution function in its degrees of freedom have no elementary
+#' expression; they are integrals of the derivatives of the \eqn{t} density and
+#' are taken by quadrature. See [distrib_gradient.SkewTDistrib()].
 #'
 #' @seealso [skewt_distrib()] to build one;
 #'   [skewnormal1_distrib()] for the \eqn{\nu \to \infty} limit;
@@ -118,8 +118,9 @@ SkewTDistrib <- S7::new_class("SkewTDistrib", parent = continuous_distrib)
 #' \eqn{m = 2000}, the log route returns 21.4345 and `dt(w, m)/pt(w, m)`
 #' returns `NaN`.
 #'
-#' Nothing here involves \eqn{\nu} by differentiation; the components in
-#' \eqn{\nu} are obtained separately, by a stencil.
+#' Nothing here differentiates in \eqn{\nu}. The derivative kernels evaluate
+#' the same quantities in bounded variables; see
+#' [distrib_gradient.SkewTDistrib()].
 #'
 #' @param y A numeric vector of observations.
 #' @param mu,sigma,alpha,nu The four parameters, numeric vectors of length 1 or
@@ -199,203 +200,6 @@ skewt_pieces <- function(y, mu, sigma, alpha, nu) {
     q = q,
     dq = q * (-(m + 1) * w / (m + w^2) - q)
   )
-}
-
-#' @title The Step a Skew t Differences the Degrees of Freedom With
-#'
-#' @description
-#' Returns the finite-difference step used for the derivatives in \eqn{\nu},
-#' `pmax(1e-3 * abs(nu), 1e-6)`: relative to \eqn{\nu} itself, so that the same
-#' number of significant digits is differenced at every scale, and floored so
-#' that it stays a number for a degrees of freedom near zero.
-#'
-#' @details
-#' The relative step \eqn{10^{-3}} is measured rather than assumed. Swept over
-#' \eqn{\nu} from 2 to 30 and sample sizes from 500 to 4000, it is where the
-#' truncation error of [fd5_first()]'s five-point stencil has fallen to the
-#' level of the rounding error and the two are balanced. A smaller step is
-#' dominated by rounding, which the stencil amplifies by \eqn{18/(12h)}, and a
-#' larger one by truncation, which grows as \eqn{h^4}.
-#'
-#' The choice shows up in the stopping rule of a fit. [fit_distrib()] takes
-#' its rule from the method it is given, and `optimizers7::crit_grad()` tests
-#' the score **per observation** at a default tolerance of \eqn{10^{-6}}.
-#' Measured on samples of 500 to 4000 the run converges at between
-#' \eqn{3\times10^{-10}} and \eqn{9\times10^{-9}} per observation, so this
-#' step leaves two orders of room. A three-point stencil would not: its bias
-#' does not cancel over the sum, and a run would spend its whole budget
-#' reporting failure at the maximum.
-#'
-#' @param nu A numeric vector of degrees of freedom.
-#'
-#' @return A numeric vector of steps, of the length of `nu`.
-#'
-#' @seealso [fd5_first()] and its siblings, which consume the step, and
-#'   [distrib_gradient.SkewTDistrib()], the first method that needs it.
-#'
-#' @examples
-#' distributions7:::skewt_nu_step(c(2, 6, 30, 1e-5))
-#'
-#' # Relative above the floor, absolute below it.
-#' nu <- c(1e-4, 1e-3, 1e-2, 1, 100)
-#' rbind(nu = nu, step = distributions7:::skewt_nu_step(nu))
-#'
-#' @keywords internal
-skewt_nu_step <- function(nu) {
-  pmax(1e-3 * abs(nu), 1e-6)
-}
-
-#' @title A Five-Point First Derivative
-#'
-#' @description
-#' Returns \eqn{\{f(x-2h) - 8f(x-h) + 8f(x+h) - f(x+2h)\}/(12h)}, the central
-#' stencil on five nodes that is exact on polynomials up to degree four, so its
-#' truncation error is \eqn{O(h^4)}. The weights come from
-#' [numericals7::fd_derivative()] at `accuracy = 4`, which builds them from the
-#' Vandermonde system on the offsets \eqn{-2, -1, 0, 1, 2}.
-#'
-#' @details
-#' The three-point stencil is not accurate enough for the derivative in
-#' \eqn{\nu} of a fitted likelihood. Its truncation error is \eqn{O(h^2)} per
-#' observation and does **not** cancel when the observations are summed,
-#' because it is a bias: on a sample of a few thousand it leaves
-#' the summed score at about \eqn{10^{-8}}, an order of magnitude worse than
-#' the five-point stencil, which reaches the level of rounding at the cost of
-#' two more evaluations of `f`.
-#'
-#' This is one stencil applied to an analytic quantity. Nothing in this family
-#' differences a differenced value.
-#'
-#' @param f A function of one scalar, returning a numeric vector. It is called
-#'   four times, at \eqn{x \pm h} and \eqn{x \pm 2h}.
-#' @param x A single number, the point to differentiate at.
-#' @param h A single positive number, the step. For this family it comes from
-#'   [skewt_nu_step()].
-#'
-#' @return A numeric vector, of whatever length `f` returns.
-#'
-#' @seealso [fd5_second()], [fd5_third()] and [fd5_fourth()] for the other
-#'   orders, [skewt_nu_step()] for the step, and
-#'   [numericals7::fd_derivative()] for the stencil library.
-#'
-#' @examples
-#' f <- function(x) exp(x) * sin(x)
-#' truth <- exp(0.7) * (sin(0.7) + cos(0.7))
-#' c(stencil = distributions7:::fd5_first(f, 0.7, 1e-3), truth = truth)
-#'
-#' # The error falls as h^4 until rounding takes over.
-#' vapply(c(0.1, 0.05, 0.025),
-#'        function(h) abs(distributions7:::fd5_first(f, 0.7, h) - truth), 0)
-#'
-#' @keywords internal
-fd5_first <- function(f, x, h) {
-  # numericals7's shared weights at accuracy four: the displayed formula is
-  # exactly what the Vandermonde construction produces on five nodes.
-  numericals7::fd_derivative(f, x, 1L, h = h, accuracy = 4L)
-}
-
-#' @title A Five-Point Second Derivative
-#'
-#' @description
-#' Returns \eqn{\{-f(x-2h) + 16f(x-h) - 30f(x) + 16f(x+h) - f(x+2h)\}/(12h^2)},
-#' the central stencil on five nodes for the second derivative, with truncation
-#' error \eqn{O(h^4)}. Like [fd5_first()] it comes from
-#' [numericals7::fd_derivative()] at `accuracy = 4`.
-#'
-#' Rounding is amplified by \eqn{h^{-2}} here, one power more than in the first
-#' derivative, so the attainable accuracy at the same step is one or two digits
-#' lower.
-#'
-#' @param f A function of one scalar, returning a numeric vector. It is called
-#'   five times, at \eqn{x}, \eqn{x \pm h} and \eqn{x \pm 2h}.
-#' @param x A single number, the point to differentiate at.
-#' @param h A single positive number, the step.
-#'
-#' @return A numeric vector, of whatever length `f` returns.
-#'
-#' @seealso [fd5_first()] for the order below, [fd5_third()] for the order
-#'   above, and [distrib_hessian.SkewTDistrib()], which uses this for the
-#'   \eqn{\nu} components.
-#'
-#' @examples
-#' f <- function(x) exp(x) * sin(x)
-#' c(stencil = distributions7:::fd5_second(f, 0.7, 1e-3),
-#'   truth = 2 * exp(0.7) * cos(0.7))
-#'
-#' @keywords internal
-fd5_second <- function(f, x, h) {
-  numericals7::fd_derivative(f, x, 2L, h = h, accuracy = 4L)
-}
-
-#' @title A Five-Point Third Derivative
-#'
-#' @description
-#' Returns \eqn{\{-f(x-2h)/2 + f(x-h) - f(x+h) + f(x+2h)/2\}/h^3}, the central
-#' stencil on five nodes for the third derivative. Five nodes is the smallest
-#' number that carries a third derivative at all, so the accuracy here is
-#' \eqn{O(h^2)} where the first two orders get \eqn{O(h^4)} from the same
-#' offsets.
-#'
-#' One stencil applied to an analytic quantity, never a difference of
-#' differences.
-#'
-#' @param f A function of one scalar, returning a numeric vector. It is called
-#'   four times, at \eqn{x \pm h} and \eqn{x \pm 2h}.
-#' @param x A single number, the point to differentiate at.
-#' @param h A single positive number, the step.
-#'
-#' @return A numeric vector, of whatever length `f` returns.
-#'
-#' @seealso [fd5_second()] for the order below, [fd5_fourth()] for the order
-#'   above, and [distrib_deriv3.SkewTDistrib()], which uses this.
-#'
-#' @examples
-#' f <- function(x) exp(x) * sin(x)
-#' c(stencil = distributions7:::fd5_third(f, 0.7, 1e-2),
-#'   truth = 2 * exp(0.7) * (cos(0.7) - sin(0.7)))
-#'
-#' @keywords internal
-fd5_third <- function(f, x, h) {
-  numericals7::fd_derivative(f, x, 3L, h = h)
-}
-
-#' @title A Five-Point Fourth Derivative
-#'
-#' @description
-#' Returns \eqn{\{f(x-2h) - 4f(x-h) + 6f(x) - 4f(x+h) + f(x+2h)\}/h^4}, the
-#' central stencil on five nodes for the fourth derivative, accurate to
-#' \eqn{O(h^2)}.
-#'
-#' Rounding is amplified by \eqn{h^{-4}}, which sets what this can deliver:
-#' measured on \eqn{e^x\sin x} at \eqn{x = 0.7} with \eqn{h = 10^{-2}} it
-#' returns \eqn{-5.18939} against a true \eqn{-5.18918}, four significant
-#' digits. On a component whose value is itself small the surviving digits are
-#' fewer, and [distrib_deriv4.SkewTDistrib()] says so where a reader meets one.
-#'
-#' @param f A function of one scalar, returning a numeric vector. It is called
-#'   five times, at \eqn{x}, \eqn{x \pm h} and \eqn{x \pm 2h}.
-#' @param x A single number, the point to differentiate at.
-#' @param h A single positive number, the step. A step too small is worse than
-#'   one too large here, the rounding growing four times faster than the
-#'   truncation falls.
-#'
-#' @return A numeric vector, of whatever length `f` returns.
-#'
-#' @seealso [fd5_third()] for the order below and
-#'   [distrib_deriv4.SkewTDistrib()] for the method that uses this.
-#'
-#' @examples
-#' f <- function(x) exp(x) * sin(x)
-#' truth <- -4 * exp(0.7) * sin(0.7)
-#' c(stencil = distributions7:::fd5_fourth(f, 0.7, 1e-2), truth = truth)
-#'
-#' # Too small a step is worse than too large: rounding grows as h^-4.
-#' vapply(c(1e-1, 1e-2, 1e-3, 1e-4),
-#'        function(h) abs(distributions7:::fd5_fourth(f, 0.7, h) - truth), 0)
-#'
-#' @keywords internal
-fd5_fourth <- function(f, x, h) {
-  numericals7::fd_derivative(f, x, 4L, h = h)
 }
 
 #' @title Skew t Density
@@ -549,24 +353,47 @@ S7::method(distrib_rng, SkewTDistrib) <- function(distrib, n, theta, ...) {
 #'       \qquad
 #'       \dfrac{\partial \ell}{\partial \alpha} = Q z c.}
 #'
-#' The fourth is not. \eqn{\partial\log T_{\nu+1}(w)/\partial\nu} is a
-#' derivative of a Student \eqn{t} distribution function with respect to its
-#' degrees of freedom, which has no elementary expression, the same obstruction
-#' the gamma and beta distribution functions meet in their shape. That one
-#' component is a single central difference of the **log-density**, taken with
-#' [fd5_first()] at the step of [skewt_nu_step()].
+#' The fourth contains \eqn{\partial_m \log T_m(w)}, \eqn{m = \nu + 1}, the
+#' derivative of a Student \eqn{t} distribution function in its degrees of
+#' freedom, which has no elementary expression and is taken as an integral.
 #'
 #' @details
-#' # Accuracy
+#' # The compiled kernel
 #'
-#' Measured at \eqn{\mu = 0}, \eqn{\sigma = 1}, \eqn{\alpha = 3},
-#' \eqn{\nu = 6} on four observations, the summed score agrees with
-#' `numDeriv::grad` on the log-likelihood to \eqn{6\times10^{-12}} in
-#' \eqn{\mu}, \eqn{2\times10^{-11}} in \eqn{\sigma},
-#' \eqn{3\times10^{-12}} in \eqn{\alpha} and \eqn{5\times10^{-11}} in
-#' \eqn{\nu}. The \eqn{\nu} component is therefore the loosest of the four,
-#' and it is what sets the accuracy a fit of this family can stop at; see
-#' [skewt_nu_step()].
+#' Every order of this family, from the score to the fifth derivatives, comes
+#' from one construction in compiled code. With \eqn{r = \sqrt{\nu + z^2}},
+#' \eqn{a = z/r} and \eqn{m = \nu + 1},
+#' \deqn{\ell = \log 2 - \log\sigma + C(\nu) - \frac{\nu + 1}{2}
+#'   \log\Big(1 + \frac{z^2}{\nu}\Big) + \log T_m(w), \qquad
+#'   w = \alpha\sqrt{m}\,a,}
+#' with \eqn{C(m) = \log\Gamma((m+1)/2) - \log\Gamma(m/2) - \log(m\pi)/2}.
+#' Every derivative in \eqn{(\mu, \sigma, \alpha, \nu)} is written out by the
+#' chain rule in the bounded variables \eqn{a}, \eqn{1/r}, \eqn{1/\sigma},
+#' \eqn{\alpha}, \eqn{\nu} and \eqn{\sqrt m}, never in \eqn{z} itself, and
+#' reduced with \eqn{a^2 = 1 - \nu/r^2}, so that the terms which cancel as
+#' \eqn{|z|} grows cancel in the algebra. The expressions are generated by a
+#' script kept with the package sources.
+#'
+#' The derivatives of \eqn{C} are \eqn{2^{-k} D^{(k)}(m/2)}, with
+#' \eqn{D(x) = \log\Gamma(x + 1/2) - \log\Gamma(x) - \log(x)/2}, shifted to
+#' \eqn{x \ge 20} by its recurrence and summed there by its asymptotic series.
+#' The derivatives of \eqn{\log T_m(w)} are polynomials in
+#' \eqn{q = t_m(w)/T_m(w)}, in \eqn{\Delta = \partial_w \log t_m(w) - q}, in the
+#' partial derivatives of \eqn{\log t_m(w)} and in
+#' \eqn{\delta_j = \partial_m^j T_m(w)/T_m(w) - \partial_m^j t_m(w)/t_m(w)}.
+#' Since \eqn{T_m(0) = 1/2} for every \eqn{m},
+#' \eqn{\partial_m^j T_m(w) = \int_0^w \partial_m^j t_m(u)\,du}. The integral is
+#' taken by 20-point Gauss-Legendre for \eqn{|w| \le 2}; beyond, it is minus the
+#' integral over the tail on the far side of \eqn{w}, taken by 12-point
+#' Gauss-Legendre on panels of a variable in which the tail of the density
+#' decays exponentially. On the left the integrand is
+#' \eqn{t_m(u)\{P_j(u) - P_j(w)\}}, \eqn{P_j = \partial_m^j t_m/t_m}, whose
+#' integral is \eqn{T_m(w)\,\delta_j}.
+#'
+#' Against `mpmath.diff` at 50 digits, on the closed form through the
+#' incomplete beta function, every order from one to five agrees to
+#' \eqn{2\times10^{-13}} relative to its largest component at five points
+#' with \eqn{\nu} from 0.8 to 60.
 #'
 #' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
 #' @param y A numeric vector of observations.
@@ -577,9 +404,8 @@ S7::method(distrib_rng, SkewTDistrib) <- function(distrib, n, theta, ...) {
 #'   transformation to the link scale is applied in the generic's body, so this
 #'   method always returns the parameter scale.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
-#' @param threads A single positive integer. Accepted for the signature
-#'   the generic shares; the kernel runs on the calling thread, since the
-#'   t distribution function it evaluates may signal a warning.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use.
 #'
 #' @return A named list of four numeric vectors, `mu`, `sigma`, `alpha` and
 #'   `nu`, each of the length of the recycled inputs.
@@ -590,8 +416,8 @@ S7::method(distrib_rng, SkewTDistrib) <- function(distrib, n, theta, ...) {
 #' [skewt_pieces()] defines them.
 #'
 #' @seealso [skewt_pieces()] for the scalar functions,
-#'   [distrib_hessian.SkewTDistrib()] for the second derivatives,
-#'   [fd5_first()] for the stencil, and [distrib_gradient()] for the generic.
+#'   [distrib_hessian.SkewTDistrib()] for the second derivatives, and
+#'   [distrib_gradient()] for the generic.
 #'
 #' @examples
 #' d <- skewt_distrib()
@@ -621,10 +447,11 @@ S7::method(distrib_gradient, SkewTDistrib) <- function(distrib, y, theta, scale 
 #' @name distrib_hessian.SkewTDistrib
 #'
 #' @description
-#' Computes the ten second derivatives of the log-density. The block in
-#' \eqn{(\mu, \sigma, \alpha)} is closed form; every component involving
-#' \eqn{\nu} comes from one stencil applied to an analytic quantity, for the
-#' reason [distrib_gradient.SkewTDistrib()] gives.
+#' Computes the ten second derivatives of the log-density with the compiled
+#' kernel described on [distrib_gradient.SkewTDistrib()]. The block in
+#' \eqn{(\mu, \sigma, \alpha)} has the closed forms below; the components
+#' involving \eqn{\nu} carry the derivatives of \eqn{\log T_{\nu+1}(w)} in the
+#' degrees of freedom, which are integrals.
 #'
 #' @details
 #' # The closed-form block
@@ -646,20 +473,6 @@ S7::method(distrib_gradient, SkewTDistrib) <- function(distrib, y, theta, scale 
 #'       \dfrac{\partial^2 \ell}{\partial \sigma \, \partial \alpha}
 #'         = -\dfrac{z(Q' B z c + Q E)}{\sigma}.}
 #'
-#' # The four components in the degrees of freedom
-#'
-#' \eqn{\partial^2\ell/\partial\nu^2} is one five-point second difference of
-#' the log-density, [fd5_second()]. The three mixed ones step the
-#' **closed-form score** in \eqn{\nu} with [fd5_first()], so only one
-#' difference is taken and it is taken of an analytic quantity. Stepping the
-#' log-density in both variables instead would be a difference of a difference
-#' in \eqn{\nu}, which this family never does.
-#'
-#' Measured at \eqn{\mu = 0}, \eqn{\sigma = 1}, \eqn{\alpha = 3},
-#' \eqn{\nu = 6}, the summed `nu_nu` agrees with `numDeriv::hessian` on the
-#' log-likelihood to \eqn{2\times10^{-9}} relative and `mu_nu` to the printed
-#' digit.
-#'
 #' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
 #' @param y A numeric vector of observations.
 #' @param theta A named list with components `mu`, `sigma`, `alpha` and `nu`,
@@ -669,9 +482,8 @@ S7::method(distrib_gradient, SkewTDistrib) <- function(distrib, y, theta, scale 
 #'   transformation is applied in the generic's body, so this method always
 #'   returns the parameter scale.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
-#' @param threads A single positive integer. Accepted for the signature
-#'   the generic shares; the kernel runs on the calling thread, since the
-#'   t distribution function it evaluates may signal a warning.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use.
 #'
 #' @return A named list of ten numeric vectors in [hess_names()]'s order:
 #'   `mu_mu`, `sigma_sigma`, `alpha_alpha`, `nu_nu`, then `mu_sigma`,
@@ -682,8 +494,8 @@ S7::method(distrib_gradient, SkewTDistrib) <- function(distrib, y, theta, scale 
 #' \eqn{A}, \eqn{B}, \eqn{E}, \eqn{Q} are as [skewt_pieces()] defines them.
 #'
 #' @seealso [distrib_gradient.SkewTDistrib()] for the order below,
-#'   [distrib_deriv3.SkewTDistrib()] for the order above,
-#'   [fd5_second()] for the stencil, and [distrib_hessian()] for the generic.
+#'   [distrib_deriv3.SkewTDistrib()] for the order above, and
+#'   [distrib_hessian()] for the generic.
 #'
 #' @examples
 #' d <- skewt_distrib()
@@ -712,10 +524,11 @@ S7::method(distrib_hessian, SkewTDistrib) <- function(distrib, y, theta, scale =
 #' @name skewt_msa_tower
 #'
 #' @description
-#' Builds the table of \eqn{\partial^i_z\,\partial^c_\alpha \ell} that the
-#' third and fourth derivatives of a skew t read, for every pair with
-#' \eqn{c + i \le 4}. Together with [skewt_msa_component()] it gives in closed
-#' form every derivative of the log-density that does not involve \eqn{\nu}.
+#' Builds the table of \eqn{\partial^i_z\,\partial^c_\alpha \ell}, for every
+#' pair with \eqn{c + i \le 4}. Together with [skewt_msa_component()] it gives
+#' in closed form every derivative of the log-density that does not involve
+#' \eqn{\nu}, by a derivation in \eqn{z} independent of the compiled kernels
+#' of [distrib_gradient.SkewTDistrib()], which are tested against it.
 #'
 #' @details
 #' # Why the block closes
@@ -941,7 +754,8 @@ skewt_msa_component <- function(tw, sigma, a, b, c) {
 #'   order, holding every component free of \eqn{\nu}.
 #'
 #' @seealso [skewt_msa_tower()] for the derivation and
-#'   [distrib_deriv3.SkewTDistrib()] for the method that reads this.
+#'   [distrib_deriv3.SkewTDistrib()] for the compiled kernel tested against
+#'   this.
 #'
 #' @examples
 #' d <- skewt_distrib()
@@ -963,69 +777,6 @@ skewt_msa_derivs <- function(distrib, y, theta, order) {
   out
 }
 
-#' @title Skew t Fourth Derivatives Carrying Exactly One Degree-of-Freedom Index
-#' @name skewt_msa_nu1
-#'
-#' @description
-#' Returns the ten fourth-order components with exactly one index equal to
-#' \eqn{\nu}, each as one five-point difference in \eqn{\nu} of the
-#' **closed-form** third derivative beside it.
-#'
-#' @details
-#' This is the rule [distrib_hessian.SkewTDistrib()]'s mixed components already
-#' follow, read one order up: one difference, taken of an analytic quantity.
-#' The generic construction of [numerical_deriv4()] would instead take a mixed
-#' second difference of the Hessian, which is licensed but loses the digits a
-#' second difference costs.
-#'
-#' The third-order component each one differentiates is found by dropping the
-#' \eqn{\nu} from the multi-index and looking the result up among the
-#' third-order indices, so no name is parsed.
-#'
-#' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
-#' @param y A numeric vector of observations.
-#' @param theta A named list with components `mu`, `sigma`, `alpha` and `nu`.
-#' @param nu The degrees of freedom, of length 1.
-#' @param h The step, from [skewt_nu_step()].
-#'
-#' @return A named list of ten numeric vectors.
-#'
-#' @seealso [skewt_msa_derivs()] for the quantity being differenced and
-#'   [fd5_first()] for the stencil.
-#'
-#' @examples
-#' d <- skewt_distrib()
-#' th <- list(mu = 0, sigma = 1, alpha = 0.7, nu = 8)
-#' n1 <- distributions7:::skewt_msa_nu1(
-#'   d, c(-0.4, 1.2), th, 8, distributions7:::skewt_nu_step(8))
-#' names(n1)
-#'
-#' @keywords internal
-skewt_msa_nu1 <- function(distrib, y, theta, nu, h) {
-  params <- distrib@params
-  i4 <- deriv_indices(params, 4L)
-  n4 <- deriv_names(params, 4L)
-  one <- vapply(i4, function(i) sum(i == 4L) == 1L, logical(1))
-  if (!any(one)) {
-    return(list())
-  }
-  key <- vapply(i4[one], function(i) paste(i[i != 4L], collapse = ","), character(1))
-  i3 <- deriv_indices(params, 3L)
-  lut <- stats::setNames(deriv_names(params, 3L),
-                         vapply(i3, paste, character(1), collapse = ","))
-  need <- unname(lut[key])
-
-  d3_at <- function(v) {
-    th <- theta
-    th[[4]] <- v
-    do.call(cbind, skewt_msa_derivs(distrib, y, th, 3L)[need])
-  }
-  g <- fd5_first(d3_at, nu, h)
-  out <- lapply(seq_along(need), function(k) g[, k])
-  names(out) <- n4[one]
-  out
-}
-
 #' @title Skew t Expected Hessian and Its Derivatives
 #' @name distrib_expected_hessian.SkewTDistrib
 #' @aliases distrib_dexpected_hessian.SkewTDistrib
@@ -1043,15 +794,9 @@ skewt_msa_nu1 <- function(distrib, y, theta, nu, h) {
 #' integral over \eqn{z} of the observed derivatives against the density, taken
 #' once per distinct pair by the exp-sinh rule of [loc_scale_expected()].
 #'
-#' The integral is exact to the rule's accuracy, and what it integrates carries
-#' the family's own accuracy: every derivative in \eqn{(\mu, \sigma, \alpha)}
-#' is closed form, and every one involving \eqn{\nu} comes from a single
-#' stencil on an analytic quantity, as documented on
-#' [distrib_hessian.SkewTDistrib()]. Against an adaptive quadrature the
-#' expected information agrees to \eqn{9\times10^{-12}}; the second derivative
-#' agrees with a difference of the first to \eqn{10^{-3}} relative at
-#' \eqn{\nu = 5}, the components carrying \eqn{\nu} several times being
-#' differenced ones.
+#' The integral is exact to the rule's accuracy, and what it integrates are the
+#' observed derivatives of [distrib_gradient.SkewTDistrib()], exact in every
+#' parameter.
 #'
 #' The tail is integrated to \eqn{|z| = 10^{60}}, which leaves a relative
 #' \eqn{10^{-60\nu}/\nu} and is negligible for \eqn{\nu \ge 0.3}.
@@ -1096,48 +841,10 @@ register_loc_scale_expected(SkewTDistrib)
 #' @name distrib_deriv3.SkewTDistrib
 #'
 #' @description
-#' Computes the twenty third derivatives of the log-density. The ten free of
-#' \eqn{\nu} are closed form; each of the other ten costs one stencil applied
-#' to an analytic quantity, so no stencil is ever applied to another stencil's
-#' output.
+#' Computes the twenty third derivatives of the log-density with the compiled
+#' kernel described on [distrib_gradient.SkewTDistrib()].
 #'
 #' @details
-#' # How the twenty are obtained
-#'
-#' The ten whose indices are all drawn from \eqn{(\mu, \sigma, \alpha)} come
-#' from [skewt_msa_derivs()] and difference nothing. That page derives the
-#' block: the location and the scale reach the log-density only through
-#' \eqn{z}, the shape only through \eqn{\alpha u(z)}, and the ratio
-#' \eqn{Q = t_{\nu+1}/T_{\nu+1}} obeys a Riccati recursion, so every piece is
-#' elementary.
-#'
-#' The six carrying exactly one \eqn{\nu} go through the generic construction
-#' of [numerical_deriv3()], which steps a closed-form Hessian entry once along
-#' \eqn{\nu}: one stencil, on an analytic quantity.
-#'
-#' The four the generic construction would nest are replaced:
-#' \eqn{(i, \nu, \nu)} for \eqn{i} in \eqn{(\mu, \sigma, \alpha)} is one
-#' five-point second difference of the **closed-form** score component
-#' \eqn{i}, through [fd5_second()]; and \eqn{(\nu, \nu, \nu)} is one
-#' five-point third difference of the log-density itself, through
-#' [fd5_third()].
-#'
-#' # Accuracy
-#'
-#' The ten closed-form components are exact. Against Richardson extrapolation
-#' applied to an independently written transcription of the same algebra, over
-#' fifteen settings of \eqn{(\nu, \alpha)} with \eqn{\nu} from 3 to 50, they
-#' agree to \eqn{3.6\times10^{-8}}, which is the reference's own floor rather
-#' than theirs.
-#'
-#' The pure-\eqn{\nu} component is the loosest at this order. Measured at
-#' \eqn{\mu = 0}, \eqn{\sigma = 1}, \eqn{\alpha = 3}, \eqn{\nu = 6} on four
-#' observations, `nu_nu_nu` is \eqn{-0.0061280} against \eqn{-0.0061270} from
-#' an independent single stencil on the log-density at \eqn{h = 0.05}, so
-#' about four significant digits. The package's own thirteen-check battery
-#' reports order 3 against finite differences at \eqn{2\times10^{-6}} for this
-#' family.
-#'
 #' With `expected = TRUE` the whole order is an expectation and comes from
 #' `expected_derivative()`; the family has no closed-form expected
 #' information, so `approx` and `nsim` are read.
@@ -1155,13 +862,15 @@ register_loc_scale_expected(SkewTDistrib)
 #' @param nsim A single positive integer, the Monte Carlo sample size used when
 #'   `approx = "mc"`. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use.
 #'
 #' @return A named list of twenty numeric vectors, one per distinct third-order
 #'   component, from `mu_mu_mu` to `nu_nu_nu` as [deriv_names()] names them.
 #'
 #' @seealso [distrib_hessian.SkewTDistrib()] for the order below,
-#'   [distrib_deriv4.SkewTDistrib()] for the order above,
-#'   [fd5_third()] for the stencil, and [distrib_deriv3()] for the generic.
+#'   [distrib_deriv4.SkewTDistrib()] for the order above, and
+#'   [distrib_deriv3()] for the generic.
 #'
 #' @examples
 #' d <- skewt_distrib()
@@ -1179,98 +888,30 @@ register_loc_scale_expected(SkewTDistrib)
 #'                                             alpha = 3 - eps, nu = 6))$mu_mu) /
 #'                 (2 * eps))
 #'
-#' # The pure-nu component against an independent single stencil on the
-#' # log-density, which shares no arithmetic with the route above.
+#' # The pure-nu component against a single stencil on the log-density.
 #' ld <- function(v) sum(distrib_pdf(d, y, list(mu = 0, sigma = 1,
 #'                                              alpha = 3, nu = v), log = TRUE))
 #' c(ours = sum(d3$nu_nu_nu),
 #'   stencil = numericals7::fd_derivative(ld, 6, 3L, h = 0.05))
-S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+                                                  threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 3L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  # The block in (mu, sigma, alpha) is closed form; nothing is differenced for
-  # it, and numerical_deriv3() is not asked for the components it supplies.
-  msa <- skewt_msa_derivs(distrib, y, theta, 3L)
-  out <- numerical_deriv3(distrib, y, theta, skip = names(msa))
-  out[names(msa)] <- msa
-  nu <- theta[[4]]
-  h <- skewt_nu_step(nu)
-  grad_at <- function(v, comp) {
-    th <- theta; th[[4]] <- v
-    distrib_gradient(distrib, y, th)[[comp]]
-  }
-  for (p in c("mu", "sigma", "alpha")) {
-    out[[paste0(p, "_nu_nu")]] <- fd5_second(function(v) grad_at(v, p), nu, h)
-  }
-  ll_at <- function(v) {
-    th <- theta; th[[4]] <- v
-    distrib_pdf(distrib, y, th, log = TRUE)
-  }
-  out[["nu_nu_nu"]] <- fd5_third(ll_at, nu, h)
-  out
+  skewt_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]], theta[[4]], threads)
 }
 
 #' @title Skew t Fourth Derivatives
 #' @name distrib_deriv4.SkewTDistrib
 #'
 #' @description
-#' Computes the thirty-five fourth derivatives of the log-density, with the
-#' discipline of [distrib_deriv3.SkewTDistrib()]. Fifteen are closed form, ten
-#' more are one difference in \eqn{\nu} of a closed-form third derivative, and
-#' each of the remaining ten costs one stencil on an analytic quantity. Twenty
-#' of the thirty-five involve \eqn{\nu}.
+#' Computes the thirty-five fourth derivatives of the log-density with the
+#' compiled kernel described on [distrib_gradient.SkewTDistrib()].
 #'
 #' @details
-#' # How the thirty-five are obtained
-#'
-#' The fifteen free of \eqn{\nu} come from [skewt_msa_derivs()] and difference
-#' nothing.
-#'
-#' The ten carrying exactly one \eqn{\nu} come from [skewt_msa_nu1()], one
-#' five-point difference along \eqn{\nu} of the **closed-form** third
-#' derivative beside them. This is the rule
-#' [distrib_hessian.SkewTDistrib()]'s mixed components already follow, read one
-#' order up. The generic construction would instead take a mixed second
-#' difference of the Hessian, and a second difference amplifies rounding by
-#' \eqn{h^{-2}}: measured over fifteen settings of \eqn{(\nu, \alpha)}, the
-#' route it replaces sits between 20 and 203 times further from Richardson on
-#' the analytic third derivative.
-#'
-#' The six carrying \eqn{\nu} twice go through [numerical_deriv4()], which for
-#' them is one second difference along \eqn{\nu} of a closed-form Hessian
-#' entry.
-#'
-#' The four the generic construction would nest are replaced:
-#' \eqn{(i, \nu, \nu, \nu)} is a third difference of the closed-form score
-#' component \eqn{i}, and \eqn{(\nu, \nu, \nu, \nu)} a fourth difference of the
-#' log-density.
-#'
-#' # The step for the pure-nu component
-#'
-#' A fourth difference amplifies rounding by \eqn{h^{-4}}, so
-#' [fd5_fourth()] is called at **ten times** [skewt_nu_step()]'s step rather
-#' than at it. The choice is measured: at the family's base step the
-#' per-observation noise is near \eqn{10^{-2}} relative, and at ten times that
-#' it is negligible while the \eqn{O(h^2)} truncation, about
-#' \eqn{6\times10^{-4}}, is what remains.
-#'
-#' `nu_nu_nu_nu` is the least accurate quantity this family reports, and it is
-#' also the smallest: measured on four observations at \eqn{\nu = 6} it is
-#' \eqn{-4.5\times10^{-6}} while `sigma_sigma_sigma_sigma` is 127. A
-#' **relative** comparison on a component that small is not informative, which
-#' is why the package's battery scales its order-4 check by the size of the
-#' whole array and reports \eqn{3.5\times10^{-4}} here.
-#'
-#' # Cost
-#'
-#' This is the dearest method in the family: the ten components carrying
-#' \eqn{\nu} more than once each cost four or five evaluations of an analytic
-#' quantity over the whole vector. Measured at \eqn{n = 20{,}000} it takes
-#' about five seconds, against eighty milliseconds for the score and about
-#' eighteen seconds for the generic construction alone, which is what it cost
-#' before fifteen of its components stopped being differenced at all.
+#' With `expected = TRUE` the whole order is an expectation and comes from
+#' `expected_derivative()`; `approx` and `nsim` are then read.
 #'
 #' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -1285,12 +926,14 @@ S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected
 #' @param nsim A single positive integer, the Monte Carlo sample size used when
 #'   `approx = "mc"`. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use.
 #'
 #' @return A named list of thirty-five numeric vectors, one per distinct
 #'   fourth-order component, from `mu_mu_mu_mu` to `nu_nu_nu_nu`.
 #'
 #' @seealso [distrib_deriv3.SkewTDistrib()] for the order below,
-#'   [fd5_fourth()] for the stencil and its \eqn{h^{-4}} behavior, and
+#'   [distrib_deriv5.SkewTDistrib()] for the order above, and
 #'   [distrib_deriv4()] for the generic.
 #'
 #' @examples
@@ -1313,71 +956,46 @@ S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected
 #'                  distrib_deriv3(d, y, list(mu = 0, sigma = 1,
 #'                                            alpha = 3 - eps, nu = 6))$mu_mu_alpha) /
 #'                 (2 * eps))
-# The family owns the fourth-order method registered below, so
-# has_exact_deriv4() answers TRUE by its default owner reading and no override
-# is registered here. That is deliberate (Giovanni, 2026-09-09) and it is a
-# statement about the family rather than about every one of its components:
-# fifteen of the thirty-five are closed form (see skewt_msa_derivs) and the
-# twenty carrying nu are single stencils on analytic quantities, the density
-# carrying T_{nu+1}, whose derivative in the degrees of freedom has no
-# elementary expression. A model needing a fourth derivative of this family
-# gets one, which is what the predicate is read for.
-#
-# WHAT IT COSTS, measured rather than asserted. check_distrib(orders = 1:5)
-# emits an order-5 row for this family and whether that row passes depends on
-# nu: the fifth order is one difference of the fourth, a difference amplifies
-# whatever noise the fourth carries by 1/h, and the twenty components carrying
-# nu are stencils. check_distrib reads that noise as an ABSOLUTE error, its
-# rel() flooring the denominator at 1, and it falls as nu grows. Swept over nu
-# in 3, 5, 8, 20, 50 and alpha in -2, 0.5, 3, at n of 20 and 40:
-#
-#     nu =  3   3.7e-03 .. 4.6e-03   FAILS against the default tol of 1e-3
-#     nu =  5   3.0e-04 .. 2.4e-03   marginal, 4 of 6 draws pass
-#     nu =  8   4.4e-05 .. 4.3e-04   passes
-#     nu = 20   5.1e-06 .. 3.7e-05   passes
-#     nu = 50   1.9e-07 .. 3.0e-06   passes
-#
-# `orders` defaults to 1:4, so no existing caller meets that row at all.
-#
-# IN RELATIVE TERMS the fifth order is not trustworthy at any nu, and that is
-# the statement to carry rather than the row's verdict: read per component
-# against its own scale the same two rules disagree by 5e-02 to 1.1 over that
-# whole grid, where the 21 components free of nu agree to 2.5e-10 -- the range
-# every family whose fourth order is genuinely analytic sits in, 1.3e-10 to
-# 1.2e-07.
-S7::method(distrib_deriv4, SkewTDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv4, SkewTDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+                                                  threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  nu <- theta[[4]]
-  h <- skewt_nu_step(nu)
-  # Fifteen components are closed form and ten more are one difference in nu of
-  # a closed-form third derivative, so the generic construction is asked only
-  # for the six that carry nu twice, where it is one second difference of an
-  # analytic Hessian entry.
-  msa <- skewt_msa_derivs(distrib, y, theta, 4L)
-  nu1 <- skewt_msa_nu1(distrib, y, theta, nu, h)
-  out <- numerical_deriv4(distrib, y, theta, skip = c(names(msa), names(nu1)))
-  out[names(msa)] <- msa
-  out[names(nu1)] <- nu1
-  grad_at <- function(v, comp) {
-    th <- theta; th[[4]] <- v
-    distrib_gradient(distrib, y, th)[[comp]]
-  }
-  for (p in c("mu", "sigma", "alpha")) {
-    out[[paste0(p, "_nu_nu_nu")]] <- fd5_third(function(v) grad_at(v, p), nu, h)
-  }
-  ll_at <- function(v) {
-    th <- theta; th[[4]] <- v
-    distrib_pdf(distrib, y, th, log = TRUE)
-  }
-  # The fourth difference amplifies rounding by h^-4, so its step is measured
-  # separately: at the family's base step the per-observation noise is near
-  # 1e-2 relative, at ten times that it is negligible and the h^2 truncation,
-  # about 6e-4, is what remains.
-  out[["nu_nu_nu_nu"]] <- fd5_fourth(ll_at, nu, 10 * h)
-  out
+  skewt_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]], theta[[4]], threads)
+}
+
+#' @title Skew t Fifth Derivatives
+#' @name distrib_deriv5.SkewTDistrib
+#'
+#' @description
+#' Computes the fifty-six fifth derivatives of the log-density with the
+#' compiled kernel described on [distrib_gradient.SkewTDistrib()].
+#'
+#' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list with components `mu`, `sigma`, `alpha` and `nu`.
+#' @param scale Either `"parameter"`, the default, or `"link"`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use.
+#'
+#' @return A named list of fifty-six numeric vectors, one per distinct
+#'   fifth-order component, as [deriv_names()] names them.
+#'
+#' @seealso [distrib_deriv4.SkewTDistrib()] for the order below and
+#'   [distrib_deriv5()] for the generic.
+#'
+#' @examples
+#' d <- skewt_distrib()
+#' d5 <- distrib_deriv5(d, c(-1.5, 0.4, 2.1),
+#'                      list(mu = 0, sigma = 1, alpha = 3, nu = 6))
+#' length(d5)
+S7::method(distrib_deriv5, SkewTDistrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  deriv5_scale(distrib, y, theta,
+               skewt_deriv5_cpp(y, theta[[1]], theta[[2]], theta[[3]], theta[[4]], threads),
+               match.arg(scale))
 }
 
 #' @title Skew t Response Derivative
@@ -1518,47 +1136,13 @@ S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta, ...) {
 #' at \eqn{\alpha = 50}, the skewness is 1.190 at \eqn{\nu = 30}, 2.050 at
 #' \eqn{\nu = 6} and 3.998 at \eqn{\nu = 4}.
 #'
-#' # What is closed form and what is not
+#' # How the derivatives are computed
 #'
-#' Every derivative in \eqn{(\mu, \sigma, \alpha)} is closed form. Everything
-#' involving \eqn{\nu} is not, because the density contains \eqn{T_{\nu+1}} and
-#' the derivative of a Student \eqn{t} distribution function with respect to
-#' its degrees of freedom has no elementary expression. It is the same
-#' obstruction that stops the gamma and beta distribution functions from having
-#' closed-form shape derivatives.
-#'
-#' Those components come from a single stencil applied to an analytic quantity,
-#' never from a difference of a difference:
-#'
-#' \tabular{lll}{
-#'   **component** \tab **route** \tab **agreement with an independent route**
-#'     \cr
-#'   \eqn{\mu, \sigma, \alpha} (score) \tab closed form \tab \eqn{10^{-12}}
-#'     \cr
-#'   \eqn{\nu} (score) \tab [fd5_first()] on \eqn{\ell} \tab \eqn{5\times10^{-11}}
-#'     \cr
-#'   \eqn{(\mu,\sigma,\alpha)} block (Hessian) \tab closed form \tab
-#'     \eqn{10^{-12}} \cr
-#'   \eqn{\nu} with another parameter \tab [fd5_first()] on the analytic score
-#'     \tab to the printed digit \cr
-#'   \eqn{\nu} twice \tab [fd5_second()] on \eqn{\ell} \tab \eqn{2\times10^{-9}}
-#'     \cr
-#'   \eqn{\nu} three times \tab [fd5_third()] on \eqn{\ell} \tab
-#'     \eqn{10^{-4}} \cr
-#'   \eqn{\nu} four times \tab [fd5_fourth()] on \eqn{\ell} \tab about one
-#'     figure
-#' }
-#'
-#' # The tolerance a fit can ask for
-#'
-#' The score in \eqn{\nu} cannot be computed more accurately than that table,
-#' so no stopping rule on the gradient can be satisfied below it however good
-#' the optimizer is. [fit_distrib()] takes its rule from the method it is
-#' given, and `crit_grad()`'s default tolerance of \eqn{10^{-6}} is tested on
-#' the score **per observation**, which leaves room: measured on samples of
-#' 500 to 4000, the run converges with a summed score between
-#' \eqn{1.5\times10^{-7}} and \eqn{2.4\times10^{-5}}, i.e. between
-#' \eqn{3\times10^{-10}} and \eqn{9\times10^{-9}} per observation.
+#' The density contains \eqn{T_{\nu+1}}, and the derivatives of a Student
+#' \eqn{t} distribution function in its degrees of freedom have no elementary
+#' expression. They are integrals of the derivatives of the \eqn{t} density and
+#' are taken by quadrature, so that every derivative this family reports, to
+#' order five, is exact to rounding; see [distrib_gradient.SkewTDistrib()].
 #'
 #' # Fitting
 #'

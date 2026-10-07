@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "pt_loc_scale.h"
 #include "pt_sqrt.h"
+#include "pt_skewt_exact.h"
 
 // Azzalini's skew t in (mu, sigma, alpha, nu): one function per component
 // and order for the score and the diagonal of the Hessian, called by the
@@ -14,10 +15,8 @@
 //   l = log 2 - log sigma + log t_nu(z) + log T_{nu+1}(w).
 // The components in (mu, sigma, alpha) are closed forms in the quantities
 // skewt_pieces() returns (skewt_distrib.R's skewt_pieces(), written in C);
-// those in nu are one five-point stencil on the log-density, at the step
-// max(1e-3 |nu|, 1e-6) and with numericals7's weights at accuracy four, as
-// the R methods take them. The caller evaluates the log-density at the
-// stencil's nodes (skewt_logpdf) and passes the values.
+// those in nu are the exact derivatives of pt_skewt_exact.h, which the
+// vector kernels (skewt.cpp) read at every order.
 //
 // The t distribution function is numericals7's n7_pt(), R's pt() compiled
 // without its warnings, resolved once through R_GetCCallable on the calling
@@ -84,18 +83,6 @@ inline double skewt_logpdf(double y, double mu, double sigma, double alpha,
         skewt_pt()(w, nu + 1.0, 1, 1);
 }
 
-// the step in nu, and the stencil weights on the offsets -2, -1, 0, 1, 2,
-// exactly as numericals7::fd_weights() returns them
-inline double skewt_nu_step(double nu) {
-    return std::max(1e-3 * std::fabs(nu), 1e-6);
-}
-
-const double kSkewtW1[5] = {0x1.5555555555555p-4, -0x1.5555555555555p-1, 0.0,
-                            0x1.5555555555555p-1, -0x1.5555555555555p-4};
-const double kSkewtW2[5] = {-0x1.5555555555553p-4, 0x1.5555555555553p+0,
-                            -0x1.3ffffffffffffp+1, 0x1.5555555555555p+0,
-                            -0x1.5555555555555p-4};
-
 inline double skewt_score_mu(const SkewtPieces& P, double sigma) {
     double d = P.a + P.q * P.b;
     return -d / sigma;
@@ -108,16 +95,6 @@ inline double skewt_score_sigma(const SkewtPieces& P, double sigma) {
 
 inline double skewt_score_alpha(const SkewtPieces& P) {
     return P.q * P.z * P.c;
-}
-
-// lp[k] the log-density at nu + (k - 2) h, k = 0..4; lp[2] is not read
-inline double skewt_score_nu(const double* lp, double h) {
-    double acc = 0.0;
-    for (int k = 0; k < 5; ++k) {
-        if (kSkewtW1[k] == 0.0) continue;
-        acc = acc + kSkewtW1[k] * lp[k];
-    }
-    return acc / h;
 }
 
 inline double skewt_hess_mu_mu(const SkewtPieces& P, double sigma) {
@@ -137,12 +114,6 @@ inline double skewt_hess_sigma_sigma(const SkewtPieces& P, double sigma) {
 inline double skewt_hess_alpha_alpha(const SkewtPieces& P) {
     double zc = P.z * P.c;
     return P.dq * zc * zc;
-}
-
-inline double skewt_hess_nu_nu(const double* lp, double h) {
-    double acc = 0.0;
-    for (int k = 0; k < 5; ++k) acc = acc + kSkewtW2[k] * lp[k];
-    return acc / (h * h);
 }
 
 // The third derivatives on the diagonal. Those in (mu, sigma, alpha) are
@@ -200,39 +171,38 @@ inline double skewt_d3_alpha_alpha_alpha(const SkewtD3& D) {
     return R_pow(D.u, 3.0) * D.q2;
 }
 
-// lp[k] the log-density at nu + (k - 2) h, k = 0..4; lp[2] is not read
-inline double skewt_d3_nu_nu_nu(const double* lp, double h) {
-    const double w3[5] = {-0.5, 1.0, 0.0, -1.0, 0.5};
-    double acc = 0.0;
-    for (int k = 0; k < 5; ++k) {
-        if (w3[k] == 0.0) continue;
-        acc = acc + w3[k] * lp[k];
-    }
-    return acc / R_pow(h, 3.0);
-}
-
 // the routers of the scalar registry: th = (mu, sigma, alpha, nu)
 inline void skewt_score_curv(int k, double y, const double* th, double* out) {
     const double m = th[0], s = th[1], a = th[2], v = th[3];
     if (k < 3) {
-        const SkewtPieces P = skewt_pieces(y, m, s, a, v);
-        if (k == 0) {
-            out[0] = skewt_score_mu(P, s);
-            out[1] = skewt_hess_mu_mu(P, s);
-        } else if (k == 1) {
-            out[0] = skewt_score_sigma(P, s);
-            out[1] = skewt_hess_sigma_sigma(P, s);
-        } else {
-            out[0] = skewt_score_alpha(P);
-            out[1] = skewt_hess_alpha_alpha(P);
-        }
+        // the generated closed forms the vector kernels read, without the
+        // integrals in nu, which these components do not read: the same
+        // numbers to the bit
+        static const double C0[7] = {0, 0, 0, 0, 0, 0, 0};
+        const SkewtObs o = skewt_obs_vars(y, m, s, a, v);
+        double B[6][6] = {{0}};
+        skewt_btab<2>(o, C0, B, false);
+        double g[4], h2[10];
+        skewt_d_1(o.a, o.irs, o.isg, a, v, o.rm, o.L, C0, B, g);
+        skewt_d_2(o.a, o.irs, o.isg, a, v, o.rm, o.L, C0, B, h2);
+        static const int diag[3] = {0, 4, 7};
+        out[0] = g[k];
+        out[1] = h2[diag[k]];
         return;
     }
-    const double h = skewt_nu_step(v);
-    double lp[5];
-    for (int j = 0; j < 5; ++j) lp[j] = skewt_logpdf(y, m, s, a, v + (j - 2) * h);
-    out[0] = skewt_score_nu(lp, h);
-    out[1] = skewt_hess_nu_nu(lp, h);
+    // the derivatives in nu, exact (pt_skewt_exact.h), from the same
+    // generated expressions as the vector kernels, so that the two agree to
+    // the bit; the constants of one nu are kept per thread
+    thread_local SkewtConst cc;
+    cc.at(v, 2);
+    const SkewtObs o = skewt_obs_vars(y, m, s, a, v);
+    double B[6][6] = {{0}};
+    skewt_btab<2>(o, cc.Cm, B);
+    double g[4], h2[10];
+    skewt_d_1(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, g);
+    skewt_d_2(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, h2);
+    out[0] = g[3];
+    out[1] = h2[9];
 }
 
 // the standardized diagonal pair of parameter k at shape = (alpha, nu), by
@@ -241,7 +211,8 @@ inline void skewt_quad_diag(int k, const double* shape, double* out,
                             bool want_d) {
     const double a = shape[0], v = shape[1];
     const LocScaleRule R = loc_scale_rule();
-    const double h = skewt_nu_step(v);
+    SkewtConst cc;
+    if (k == 3) cc.at(v, want_d ? 3 : 2);
     LocScaleSum S;
     for (int j = 0; j < R.n; ++j) {
         const double z = R.x[j];
@@ -267,18 +238,26 @@ inline void skewt_quad_diag(int k, const double* shape, double* out,
             }
             S.add(fw, g, H, T3);
         } else {
-            double lp[5];
-            lp[2] = skewt_logpdf(z, 0.0, 1.0, a, v);
-            const double fw = std::exp(lp[2]) * R.w[j];
+            const double fw = std::exp(skewt_logpdf(z, 0.0, 1.0, a, v)) * R.w[j];
             if (fw == 0.0) continue;
-            for (int i = 0; i < 5; ++i) {
-                if (i != 2) lp[i] = skewt_logpdf(z, 0.0, 1.0, a, v + (i - 2) * h);
+            // the expressions the vector kernels read, to the bit
+            const SkewtObs o = skewt_obs_vars(z, 0.0, 1.0, a, v);
+            double B[6][6] = {{0}};
+            double d1[4], d2[10], d3[20], dn[3];
+            if (!want_d) {
+                skewt_btab<2>(o, cc.Cm, B);
+                skewt_d_2(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d2);
+                S.add0(fw, d2[9]);
+                continue;
             }
-            H = skewt_hess_nu_nu(lp, h);
-            if (!want_d) { S.add0(fw, H); continue; }
-            g = skewt_score_nu(lp, h);
-            T3 = skewt_d3_nu_nu_nu(lp, h);
-            S.add(fw, g, H, T3);
+            skewt_btab<3>(o, cc.Cm, B);
+            skewt_d_1(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d1);
+            skewt_d_2(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d2);
+            skewt_d_3(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d3);
+            dn[0] = d1[3];
+            dn[1] = d2[9];
+            dn[2] = d3[19];
+            S.add(fw, dn[0], dn[1], dn[2]);
         }
     }
     S.result(out);

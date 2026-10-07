@@ -69,6 +69,7 @@ Registered in this file:
 \code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian()}},
 \code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.SkewTDistrib]{distrib_deriv4()}},
+\code{\link[=distrib_deriv5.SkewTDistrib]{distrib_deriv5()}},
 \code{\link[=distrib_grad_y.SkewTDistrib]{distrib_grad_y()}},
 \code{\link[=distrib_hess_y.SkewTDistrib]{distrib_hess_y()}}, and the expected
 information with its two derivatives,
@@ -89,14 +90,13 @@ quadrature per distinct \eqn{(\alpha, \nu)}; see
 \code{\link[=distrib_expected_hessian.SkewTDistrib]{distrib_expected_hessian.SkewTDistrib()}}.
 }
 
-\section{What is closed form and what is not}{
+\section{How the derivatives are computed}{
 
-Every derivative in \eqn{\mu}, \eqn{\sigma} and \eqn{\alpha} is closed form.
-Every derivative involving \eqn{\nu} is not, and the obstruction is
-mathematical: the density carries \eqn{T_{\nu+1}}, and the derivative of a
-Student \eqn{t} distribution function in its degrees of freedom has no
-elementary expression. Those components come from \strong{one} stencil applied to
-an analytic quantity, never from a difference of a difference.
+Every derivative, to order five, comes from a compiled kernel in closed
+form. The density carries \eqn{T_{\nu+1}}, and the derivatives of a Student
+\eqn{t} distribution function in its degrees of freedom have no elementary
+expression; they are integrals of the derivatives of the \eqn{t} density and
+are taken by quadrature. See \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}.
 }
 
 \examples{

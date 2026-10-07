@@ -49,46 +49,12 @@ at \eqn{\alpha = 50}, the skewness is 1.190 at \eqn{\nu = 30}, 2.050 at
 \eqn{\nu = 6} and 3.998 at \eqn{\nu = 4}.
 }
 
-\section{What is closed form and what is not}{
-Every derivative in \eqn{(\mu, \sigma, \alpha)} is closed form. Everything
-involving \eqn{\nu} is not, because the density contains \eqn{T_{\nu+1}} and
-the derivative of a Student \eqn{t} distribution function with respect to
-its degrees of freedom has no elementary expression. It is the same
-obstruction that stops the gamma and beta distribution functions from having
-closed-form shape derivatives.
-
-Those components come from a single stencil applied to an analytic quantity,
-never from a difference of a difference:
-
-\tabular{lll}{
-\strong{component} \tab \strong{route} \tab \strong{agreement with an independent route}
-\cr
-\eqn{\mu, \sigma, \alpha} (score) \tab closed form \tab \eqn{10^{-12}}
-\cr
-\eqn{\nu} (score) \tab \code{\link[=fd5_first]{fd5_first()}} on \eqn{\ell} \tab \eqn{5\times10^{-11}}
-\cr
-\eqn{(\mu,\sigma,\alpha)} block (Hessian) \tab closed form \tab
-\eqn{10^{-12}} \cr
-\eqn{\nu} with another parameter \tab \code{\link[=fd5_first]{fd5_first()}} on the analytic score
-\tab to the printed digit \cr
-\eqn{\nu} twice \tab \code{\link[=fd5_second]{fd5_second()}} on \eqn{\ell} \tab \eqn{2\times10^{-9}}
-\cr
-\eqn{\nu} three times \tab \code{\link[=fd5_third]{fd5_third()}} on \eqn{\ell} \tab
-\eqn{10^{-4}} \cr
-\eqn{\nu} four times \tab \code{\link[=fd5_fourth]{fd5_fourth()}} on \eqn{\ell} \tab about one
-figure
-}
-}
-
-\section{The tolerance a fit can ask for}{
-The score in \eqn{\nu} cannot be computed more accurately than that table,
-so no stopping rule on the gradient can be satisfied below it however good
-the optimizer is. \code{\link[=fit_distrib]{fit_distrib()}} takes its rule from the method it is
-given, and \code{crit_grad()}'s default tolerance of \eqn{10^{-6}} is tested on
-the score \strong{per observation}, which leaves room: measured on samples of
-500 to 4000, the run converges with a summed score between
-\eqn{1.5\times10^{-7}} and \eqn{2.4\times10^{-5}}, i.e. between
-\eqn{3\times10^{-10}} and \eqn{9\times10^{-9}} per observation.
+\section{How the derivatives are computed}{
+The density contains \eqn{T_{\nu+1}}, and the derivatives of a Student
+\eqn{t} distribution function in its degrees of freedom have no elementary
+expression. They are integrals of the derivatives of the \eqn{t} density and
+are taken by quadrature, so that every derivative this family reports, to
+order five, is exact to rounding; see \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}.
 }
 
 \section{Fitting}{

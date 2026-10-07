@@ -24,57 +24,23 @@ only when \code{expected = TRUE}.}
 \code{approx = "mc"}. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use.}
 }
 \value{
 A named list of twenty numeric vectors, one per distinct third-order
 component, from \code{mu_mu_mu} to \code{nu_nu_nu} as \code{\link[=deriv_names]{deriv_names()}} names them.
 }
 \description{
-Computes the twenty third derivatives of the log-density. The ten free of
-\eqn{\nu} are closed form; each of the other ten costs one stencil applied
-to an analytic quantity, so no stencil is ever applied to another stencil's
-output.
+Computes the twenty third derivatives of the log-density with the compiled
+kernel described on \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}.
 }
-\section{How the twenty are obtained}{
-The ten whose indices are all drawn from \eqn{(\mu, \sigma, \alpha)} come
-from \code{\link[=skewt_msa_derivs]{skewt_msa_derivs()}} and difference nothing. That page derives the
-block: the location and the scale reach the log-density only through
-\eqn{z}, the shape only through \eqn{\alpha u(z)}, and the ratio
-\eqn{Q = t_{\nu+1}/T_{\nu+1}} obeys a Riccati recursion, so every piece is
-elementary.
-
-The six carrying exactly one \eqn{\nu} go through the generic construction
-of \code{\link[=numerical_deriv3]{numerical_deriv3()}}, which steps a closed-form Hessian entry once along
-\eqn{\nu}: one stencil, on an analytic quantity.
-
-The four the generic construction would nest are replaced:
-\eqn{(i, \nu, \nu)} for \eqn{i} in \eqn{(\mu, \sigma, \alpha)} is one
-five-point second difference of the \strong{closed-form} score component
-\eqn{i}, through \code{\link[=fd5_second]{fd5_second()}}; and \eqn{(\nu, \nu, \nu)} is one
-five-point third difference of the log-density itself, through
-\code{\link[=fd5_third]{fd5_third()}}.
-}
-
-\section{Accuracy}{
-The ten closed-form components are exact. Against Richardson extrapolation
-applied to an independently written transcription of the same algebra, over
-fifteen settings of \eqn{(\nu, \alpha)} with \eqn{\nu} from 3 to 50, they
-agree to \eqn{3.6\times10^{-8}}, which is the reference's own floor rather
-than theirs.
-
-The pure-\eqn{\nu} component is the loosest at this order. Measured at
-\eqn{\mu = 0}, \eqn{\sigma = 1}, \eqn{\alpha = 3}, \eqn{\nu = 6} on four
-observations, \code{nu_nu_nu} is \eqn{-0.0061280} against \eqn{-0.0061270} from
-an independent single stencil on the log-density at \eqn{h = 0.05}, so
-about four significant digits. The package's own thirteen-check battery
-reports order 3 against finite differences at \eqn{2\times10^{-6}} for this
-family.
-
+\details{
 With \code{expected = TRUE} the whole order is an expectation and comes from
 \code{expected_derivative()}; the family has no closed-form expected
 information, so \code{approx} and \code{nsim} are read.
 }
-
 \examples{
 d <- skewt_distrib()
 y <- c(-1.5, -0.3, 0.4, 2.1)
@@ -91,8 +57,7 @@ rbind(analytic = d3$mu_mu_alpha,
                                             alpha = 3 - eps, nu = 6))$mu_mu) /
                 (2 * eps))
 
-# The pure-nu component against an independent single stencil on the
-# log-density, which shares no arithmetic with the route above.
+# The pure-nu component against a single stencil on the log-density.
 ld <- function(v) sum(distrib_pdf(d, y, list(mu = 0, sigma = 1,
                                              alpha = 3, nu = v), log = TRUE))
 c(ours = sum(d3$nu_nu_nu),
@@ -100,6 +65,6 @@ c(ours = sum(d3$nu_nu_nu),
 }
 \seealso{
 \code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}} for the order below,
-\code{\link[=distrib_deriv4.SkewTDistrib]{distrib_deriv4.SkewTDistrib()}} for the order above,
-\code{\link[=fd5_third]{fd5_third()}} for the stencil, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
+\code{\link[=distrib_deriv4.SkewTDistrib]{distrib_deriv4.SkewTDistrib()}} for the order above, and
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

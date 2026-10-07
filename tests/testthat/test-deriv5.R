@@ -182,25 +182,18 @@ test_that("has_exact_deriv4 reads the owner, and a wrapper asks its parent", {
 })
 
 
-test_that("a family that owns its method answers TRUE, exact in part or not", {
-  # The skew t's density carries T_{nu+1}, whose derivative in the degrees of
-  # freedom has no elementary form, so twenty of its thirty-five fourth-order
-  # components are single stencils on analytic quantities and fifteen are
-  # closed form. The predicate is one logical for the whole family and answers
-  # what the owner reading gives: the family supplies the method, so a model
-  # needing a fourth derivative of it gets one.
+test_that("a family that owns its method answers TRUE", {
+  # The skew t's derivatives in the degrees of freedom are integrals of the t
+  # density's own, taken by quadrature, and its fifth order is a compiled
+  # kernel: it agrees with a difference of its fourth as an analytic family's
+  # does (3e-11 here; it read 1e-3 and more while the components in nu were
+  # stencils).
   expect_true(has_exact_deriv4(skewt_distrib()))
-
-  # What that costs is measured rather than assumed: two rules of different
-  # accuracy, sharing only their centre node, disagree far past what a smooth
-  # quantity gives, so nothing should read this family's fifth order as
-  # accurate. Whether the order-5 row check_distrib() emits for it PASSES is a
-  # separate question and depends on nu -- see the block below.
   y <- c(-1.4, -0.3, 0.6, 1.5)
   th <- list(mu = 0, sigma = 1, alpha = 0.5, nu = 8)
   a2 <- distrib_deriv5(skewt_distrib(), y, th)
   a4 <- numerical_deriv5(skewt_distrib(), y, th, accuracy = 4L)
-  expect_gt(rel5(a2, a4), 1e-3)
+  expect_lt(rel5(a2, a4), 1e-8)
 
   # the control: a family whose fourth IS analytic agrees on the same probe
   a2g <- distrib_deriv5(student_t1_distrib(), y, list(mu = 0, sigma = 1, nu = 8))
@@ -250,14 +243,9 @@ test_that("check_distrib emits the order-5 row only where it means something", {
   expect_identical(nrow(row), 1L)
   expect_identical(row$status, "OK")
 
-  # The skew t owns its method, so the row IS emitted. Whether it passes is a
-  # measured fact about the family and not a promise: twenty of its thirty-five
-  # components are single stencils in nu, rel() above floors its denominator at
-  # 1 and so reads their noise as an ABSOLUTE error, and that noise falls as nu
-  # grows. Swept over nu in 3, 5, 8, 20, 50 and alpha in -2, 0.5, 3 the row
-  # reads 3.7e-03 to 4.6e-03 at nu = 3, 4.4e-05 to 4.3e-04 at nu = 8 and
-  # 5.1e-06 to 3.7e-05 at nu = 20, against a tolerance of 1e-3. Both ends are
-  # asserted, so neither the pass nor the failure can surprise a later reader.
+  # The skew t owns its method, so the row IS emitted, and it passes at every
+  # nu: the row failed at nu = 3 (3.7e-03 to 4.6e-03) while the components in
+  # nu were stencils.
   set.seed(9)
   rs <- check_distrib(skewt_distrib(),
                       theta = list(mu = 0, sigma = 1, alpha = 0.5, nu = 8),
@@ -266,16 +254,13 @@ test_that("check_distrib emits the order-5 row only where it means something", {
   expect_identical(nrow(rows), 1L)
   expect_identical(rows$status, "OK")
 
-  # and at nu = 3, where the stencil noise is largest, the same row fails --
-  # the declared cost of the predicate answering TRUE for a family exact in
-  # part, and the reason `orders` defaults to 1:4
   set.seed(9)
   r3 <- check_distrib(skewt_distrib(),
                       theta = list(mu = 0, sigma = 1, alpha = 0.5, nu = 3),
                       n = 40, nsim = 1e4, orders = 1:5, verbose = FALSE)
   row3 <- r3[grepl("deriv5", r3$check), ]
   expect_identical(nrow(row3), 1L)
-  expect_identical(row3$status, "FAIL")
+  expect_identical(row3$status, "OK")
 
   # and the default `orders` does not reach it, so the row count of every
   # existing caller is unchanged
