@@ -1,3 +1,20 @@
+# distributions7 0.72.0
+
+* The derivatives of `skewt_distrib()` in the degrees of freedom are exact at
+  every order. The derivatives of the Student t distribution function in its
+  degrees of freedom are integrals of the t density's own, taken by
+  Gauss-Legendre quadrature, and every derivative of the family to order
+  five is a compiled kernel, written in closed form in bounded variables.
+  Against mpmath at 50 digits every order agrees to 2e-13 relative to its
+  largest component; the stencils they replace read the score in `nu`
+  1e-13 to 1.6e-10 out and the fourth derivative in `nu` 2e-4 out.
+  `distrib_deriv3()` and `distrib_deriv4()` are about 50 times faster (4.6 s
+  to 0.09 s for the third order at n = 20000), `distrib_deriv5()` has a
+  method of its own, and the score costs what it did. Far in the tail the
+  second derivative in `sigma` reads its limit `-nu/sigma^2`, where it read
+  about twice that, and the mixed response derivatives in the two shapes
+  are closed.
+
 # distributions7 0.71.0
 
 * The expected information of `negbin1_distrib()` and its first and second
