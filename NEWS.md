@@ -1,3 +1,21 @@
+# distributions7 0.73.0
+
+* `check_distrib()` does not run a parameter-derivative check of an order for
+  which the family registers no method of its own. The value would be the
+  numerical fallback, the same finite difference as the reference, and the
+  check held by construction: a family written from its density alone
+  reported all thirteen checks passed while four of them had compared
+  nothing. Such a row is listed in the attribute `"skipped"` with its reason
+  and printed as not run.
+* `fit_distrib()` rejects an optimizer whose class has no `minimize()`
+  method, naming the class, where every start failed and the message read
+  "Optimization failed from every starting value". A response that is not a
+  numeric vector is rejected with its class; for the object `cens()` returns,
+  the message says that a censored response has no likelihood here.
+* The numerical `expectation()` of a continuous family integrates once per
+  distinct parameter combination, and its error lists at most ten of the
+  combinations it could not integrate.
+
 # distributions7 0.72.1
 
 * `expectation()` of a family whose constant varies by observation (a

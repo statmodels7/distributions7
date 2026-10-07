@@ -139,11 +139,12 @@ safe_check <- function(name, expr) {
 #' - **link scale**: `scale = "link"` derivatives against finite
 #'   differences of the log-likelihood in \eqn{\eta}.
 #'
-#' Distributions that rely on the numerical fallbacks pass the corresponding
-#' parameter-derivative checks trivially, since analytical and numerical values
-#' then coincide by construction. The response fallbacks take the cut step
-#' alone, so near a bound they can differ from the reference, which is what the
-#' row then reports.
+#' A parameter-derivative check of an order for which the family registers no
+#' method of its own is not run: the value would be the numerical fallback,
+#' the same finite difference as the reference, and the comparison would hold
+#' by construction. The row is listed in the attribute `"skipped"` with that
+#' reason. The response fallbacks take the cut step alone, so near a bound they
+#' can differ from the reference, which is what the row then reports.
 #'
 #' A check whose statistic comes out `NaN` or `NA` has nothing to judge, as the
 #' expected information of a family where it does not exist, and is not a row
@@ -370,41 +371,66 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   # --- parameter-scale derivatives ----------------------------------------
   y <- distrib_rng(distrib, n, theta)
 
+  # A ROW THAT WOULD COMPARE A FALLBACK WITH ITSELF IS NOT RUN. Where the
+  # family registers no method of its own for an order, the generic reaches
+  # the numerical fallback, which is the same finite difference the reference
+  # computes, and the statistic is 0 by construction: a family written from its
+  # density alone reported all thirteen checks passed while four of them had
+  # compared nothing. Such a row is listed in the attribute "skipped" with that
+  # reason, as check_link() leaves an order it cannot check NA.
+  fallback_row <- function(name, generic) {
+    if (owns_method(distrib, generic)) return(NULL)
+    r <- new_check(name, FALSE, NA_real_,
+                   paste0("no method of the family's own: the value is the ",
+                          "numerical fallback, which this check would compare ",
+                          "with itself"))
+    attr(r, "fallback") <- TRUE
+    r
+  }
+  order_check <- function(name, generic, expr) {
+    fb <- fallback_row(name, generic)
+    if (!is.null(fb)) fb else safe_check(name, expr)
+  }
+
   if (1 %in% orders) {
-    res[[length(res) + 1L]] <- safe_check("gradient vs finite differences", {
-      a <- distrib_gradient(distrib, y, theta)
-      e <- numerical_gradient(distrib, y, theta)
-      keep <- fd_is_reliable(function(h) numerical_gradient(distrib, y, theta, h_rel = h),
-                             e, .Machine$double.eps^(1 / 3), smooth_all)
-      err <- max(vapply(names(a), function(k) rel(a[[k]][keep], e[[k]][keep]), numeric(1)))
-      new_check("gradient vs finite differences", err < tol, err)
-    })
+    res[[length(res) + 1L]] <-
+      order_check("gradient vs finite differences", distrib_gradient, {
+        a <- distrib_gradient(distrib, y, theta)
+        e <- numerical_gradient(distrib, y, theta)
+        keep <- fd_is_reliable(function(h) numerical_gradient(distrib, y, theta, h_rel = h),
+                               e, .Machine$double.eps^(1 / 3), smooth_all)
+        err <- max(vapply(names(a), function(k) rel(a[[k]][keep], e[[k]][keep]), numeric(1)))
+        new_check("gradient vs finite differences", err < tol, err)
+      })
   }
   if (2 %in% orders) {
-    res[[length(res) + 1L]] <- safe_check("hessian vs finite differences", {
-      a <- distrib_hessian(distrib, y, theta)
-      e <- numerical_hessian(distrib, y, theta)
-      keep <- fd_is_reliable(function(h) numerical_hessian(distrib, y, theta, h_rel = h),
-                             e, .Machine$double.eps^(1 / 4), smooth_all)
-      err <- max(vapply(names(a), function(k) rel(a[[k]][keep], e[[k]][keep]), numeric(1)))
-      new_check("hessian vs finite differences", err < tol, err)
-    })
+    res[[length(res) + 1L]] <-
+      order_check("hessian vs finite differences", distrib_hessian, {
+        a <- distrib_hessian(distrib, y, theta)
+        e <- numerical_hessian(distrib, y, theta)
+        keep <- fd_is_reliable(function(h) numerical_hessian(distrib, y, theta, h_rel = h),
+                               e, .Machine$double.eps^(1 / 4), smooth_all)
+        err <- max(vapply(names(a), function(k) rel(a[[k]][keep], e[[k]][keep]), numeric(1)))
+        new_check("hessian vs finite differences", err < tol, err)
+      })
   }
   if (3 %in% orders) {
-    res[[length(res) + 1L]] <- safe_check("deriv3 vs finite differences", {
-      a <- distrib_deriv3(distrib, y, theta)
-      e <- numerical_deriv3(distrib, y, theta)
-      err <- max(vapply(names(a), function(k) rel(a[[k]], e[[k]]), numeric(1)))
-      new_check("deriv3 vs finite differences", err < tol, err)
-    })
+    res[[length(res) + 1L]] <-
+      order_check("deriv3 vs finite differences", distrib_deriv3, {
+        a <- distrib_deriv3(distrib, y, theta)
+        e <- numerical_deriv3(distrib, y, theta)
+        err <- max(vapply(names(a), function(k) rel(a[[k]], e[[k]]), numeric(1)))
+        new_check("deriv3 vs finite differences", err < tol, err)
+      })
   }
   if (4 %in% orders) {
-    res[[length(res) + 1L]] <- safe_check("deriv4 vs finite differences", {
-      a <- distrib_deriv4(distrib, y, theta)
-      e <- numerical_deriv4(distrib, y, theta)
-      err <- max(vapply(names(a), function(k) rel(a[[k]], e[[k]]), numeric(1)))
-      new_check("deriv4 vs finite differences", err < tol, err)
-    })
+    res[[length(res) + 1L]] <-
+      order_check("deriv4 vs finite differences", distrib_deriv4, {
+        a <- distrib_deriv4(distrib, y, theta)
+        e <- numerical_deriv4(distrib, y, theta)
+        err <- max(vapply(names(a), function(k) rel(a[[k]], e[[k]]), numeric(1)))
+        new_check("deriv4 vs finite differences", err < tol, err)
+      })
   }
   # The fifth order has no analytic implementation to compare against: every
   # family reaches numerical_deriv5(), one central difference of the fourth.
@@ -637,6 +663,11 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
                  if (!is_cont) "quantile/cdf round-trip")
   skipped <- list()
   kept <- vapply(res, function(r) {
+    if (isTRUE(attr(r, "fallback"))) {
+      skipped[[length(skipped) + 1L]] <<- data.frame(
+        check = r$check, reason = r$detail, stringsAsFactors = FALSE)
+      return(FALSE)
+    }
     if (isTRUE(attr(r, "from_error")) || r$check %in% on_values ||
         !is.na(r$statistic)) {
       return(TRUE)
@@ -705,8 +736,9 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
     sprintf("%d of %d checks FAILED.\n", n_fail, nrow(out))
   }, sep = "")
   if (n_skip) {
-    cat(sprintf("%d check%s not run, the statistic having no value to judge.\n",
-                n_skip, if (n_skip == 1L) "" else "s"))
+    cat(sprintf("%d check%s not run, for the reason%s given above.\n",
+                n_skip, if (n_skip == 1L) "" else "s",
+                if (n_skip == 1L) "" else "s"))
   }
   invisible(NULL)
 }

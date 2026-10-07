@@ -200,6 +200,24 @@ distrib_const_rows <- function(distrib) {
 #' @keywords internal
 S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) {
   cols <- expectation_columns(distrib, theta, list(...))
+  # ONE QUADRATURE PER DISTINCT PARAMETER COMBINATION. The fitted parameters
+  # of a model repeat wherever its covariates do, and for a family with no
+  # quantile function of its own each combination pays a numerical quantile
+  # for its knots: the variance of a log-logistic at 314 combinations took
+  # 28 s, 98 per cent of it in distrib_quantile(). The combinations are keyed
+  # on their exact binary values, so two that differ in the last bit are
+  # two combinations.
+  if (!cols$rows && cols$n > 1L) {
+    key_of <- function(v) if (is.numeric(v)) sprintf("%a", v) else as.character(v)
+    key <- do.call(paste, c(lapply(c(cols$th, cols$dots), key_of), sep = "|"))
+    first <- !duplicated(key)
+    if (!all(first)) {
+      sub <- do.call(S7::method(expectation, continuous_distrib),
+                     c(list(distrib, f, lapply(cols$th, `[`, first)),
+                       lapply(cols$dots, `[`, first)))
+      return(sub[match(key, key[first])])
+    }
+  }
   b <- distrib@bounds
   # the family with its per-observation constants taken at combinations idx
   at <- function(idx) if (cols$rows) distrib_at_rows(distrib, idx, cols$n) else distrib
@@ -274,9 +292,12 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
     }
   }
   if (anyNA(out)) {
+    bad <- which(is.na(out))
+    shown <- paste(utils::head(bad, 10L), collapse = ", ")
+    if (length(bad) > 10L) shown <- sprintf("%s, ... (%d in all)", shown, length(bad))
     stop(sprintf(
       "The quadrature did not reach the requested accuracy for parameter combination(s) %s.",
-      paste(which(is.na(out)), collapse = ", ")
+      shown
     ), call. = FALSE)
   }
   unname(out)

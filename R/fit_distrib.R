@@ -539,6 +539,19 @@ fit_distrib <- function(distrib, y, start = NULL,
   # threads = 1 neither call touches anything.
   tc <- numericals7::thread_count(threads)
   numericals7::local_threads(threads)
+  # The response is a numeric vector, or a numeric matrix for a multivariate
+  # family. Anything else -- the object cens() returns is the case met in
+  # practice -- reached the first coercion and stopped with "cannot coerce
+  # type 'object' to vector of type 'double'".
+  if (!is.numeric(y) && !is.logical(y)) {
+    cens_hint <- if (any(grepl("censor", tolower(class(y))))) {
+      "\n  A censored response has no likelihood in fit_distrib(): fit the observed values."
+    } else {
+      ""
+    }
+    stop(sprintf("'y' must be a numeric vector, and it is '%s'.%s",
+                 paste(class(y), collapse = "/"), cens_hint), call. = FALSE)
+  }
   # 'start' comes before 'method' in the signature, so an optimizer passed
   # positionally lands in it. What the caller then sees, several frames down,
   # is align_theta() refusing to coerce an S7 object to a list -- an error
@@ -581,6 +594,17 @@ fit_distrib <- function(distrib, y, start = NULL,
     # caller with its own explanation rather than being caught by the restart
     # loop below and reported as a fit that never converged.
     optimizers7::check_criterion(optimizer)
+    # An optimizer class with no minimize() method of its own fails at every
+    # start, and the restart loop below reported that as "Optimization failed
+    # from every starting value", which names neither the class nor the
+    # missing method.
+    if (is.null(tryCatch(S7::method(optimizers7::minimize, S7::S7_class(optimizer)),
+                         error = function(e) NULL))) {
+      stop(sprintf(paste0(
+        "'method' is an optimizer of class '%s', which has no minimize() ",
+        "method.\n  Register one with S7::method(optimizers7::minimize, ",
+        "<class>) before fitting."), class(optimizer)[[1L]]), call. = FALSE)
+    }
   } else {
     method <- match.arg(method, c("fisher", "newton", "bfgs"))
   }

@@ -1277,10 +1277,26 @@ S7::method(expected_hessian_exact, distrib) <- function(x, ...) {
 #'   which answers the same shape of question about the expected information.
 #' @keywords internal
 S7::method(has_exact_deriv4, distrib) <- function(x, ...) {
-  m <- tryCatch(
-    S7::method(distrib_deriv4, S7::S7_class(x)),
-    error = function(e) NULL
-  )
+  owns_method(x, distrib_deriv4)
+}
+
+#' Does a Family Register a Method of Its Own for a Generic?
+#'
+#' @description
+#' `TRUE` where the method of `generic` that dispatches on `x` is registered
+#' on a class other than the four base classes, whose methods are the
+#' numerical fallbacks.
+#'
+#' @param x A distribution object.
+#' @param generic An S7 generic dispatching on the distribution.
+#'
+#' @return A single logical.
+#'
+#' @seealso [has_exact_deriv4()], [check_distrib()]
+#' @keywords internal
+owns_method <- function(x, generic) {
+  m <- tryCatch(S7::method(generic, S7::S7_class(x)),
+                error = function(e) NULL)
   if (is.null(m)) return(FALSE)
   owner <- attr(m, "signature")[[1]]
   !is_class(owner, distrib) &&
