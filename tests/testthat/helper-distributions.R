@@ -1,6 +1,34 @@
 # Shared helpers for the test suite.
 
 # List of all implemented distributions with a valid interior theta.
+# Two floating-point routes to one quantity (a compiled scalar entry against
+# a vector kernel or an R method) agree to the last bit on gcc x86_64 and not
+# on arm64 macOS, where clang contracts multiply-adds into FMAs differently in
+# each context a component is inlined into. The distance is read on the scale
+# of the expected values, because a pointwise relative comparison divides by
+# nothing where the quantity passes through zero; the attributes, the pattern
+# of non-finite entries and their values must match exactly. Inf is returned
+# for any mismatch of structure.
+scale_gap <- function(object, expected) {
+  if (length(object) != length(expected) ||
+      !identical(attributes(object), attributes(expected))) return(Inf)
+  fe <- is.finite(expected)
+  if (!identical(is.finite(object), fe) ||
+      !identical(object[!fe], expected[!fe])) return(Inf)
+  if (!any(fe)) return(0)
+  scale <- max(abs(expected[fe]))
+  gap <- max(abs(object[fe] - expected[fe]))
+  if (scale == 0) return(if (gap == 0) 0 else Inf)
+  gap / scale
+}
+
+expect_agrees_on_scale <- function(object, expected, tolerance = 1e-10,
+                                   label = NULL) {
+  lab <- if (is.null(label)) deparse(substitute(object)) else label
+  expect_lte(scale_gap(object, expected), tolerance,
+             label = paste(lab, "(gap on the scale of the expected values)"))
+}
+
 all_distrib_cases <- function() {
   list(
     gaussian  = list(d = gaussian1_distrib(),  theta = list(mu = 1.5, sigma = 2.0)),
