@@ -32,7 +32,7 @@ With \eqn{f = e^{\ell}}, the derivative of \eqn{f} in a multi-index
 \eqn{I} is \eqn{f B_I}, where \eqn{B_I} is the complete Bell polynomial
 in the derivatives of \eqn{\ell} (\code{\link[=bell_f_ratio]{bell_f_ratio()}}), so
 \eqn{\partial_I F(q) = \int_{lo}^{q} f B_I}, taken as
-\eqn{-\int_{q}^{hi} f B_I} on the side \code{\link[=cdf_rule_cpp]{cdf_rule_cpp()}} chooses, by the
+\eqn{-\int_{q}^{hi} f B_I} on the side \code{cdf_rule_cpp()} chooses, by the
 nodes and weights of the rule of the first two orders. The family's own
 third and fourth derivatives of \eqn{\ell} supply \eqn{B_I}.
 

@@ -587,8 +587,8 @@ S7::method(distrib_expected_hessian, NegBin2Distrib) <- function(distrib, y, the
 #' @param x A numeric vector.
 #' @return A numeric vector, of length one when `x` is constant.
 #' @examples
-#' constant_to_scalar(rep(2, 5))
-#' constant_to_scalar(c(2, 3))
+#' distributions7:::constant_to_scalar(rep(2, 5))
+#' distributions7:::constant_to_scalar(c(2, 3))
 #' @keywords internal
 constant_to_scalar <- function(x) {
   if (length(x) > 1L && !anyNA(x) && all(x == x[1L])) x[1L] else x

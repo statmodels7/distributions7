@@ -1,3 +1,12 @@
+# distributions7 0.75.1
+
+* Documentation repairs found by `R CMD check --as-cran`: the example of the
+  internal `constant_to_scalar()` calls it with `:::`; the page of the
+  compiled cdf derivatives no longer links to the unexported
+  `cdf_rule_cpp()`; the pages of the wrappers' fifth derivatives and of the
+  generalized Pareto cdf derivatives have no `\usage` section, as the other
+  method pages, instead of the usage of an internal helper.
+
 # distributions7 0.75.0
 
 * For a family without its own Hessian, the observed third and fourth

@@ -426,6 +426,7 @@ S7::method(distrib_hess_y_hess, GPDDistrib) <- function(
 #' @seealso [distrib_grad_cdf.ExponentialDistrib()], the \eqn{\xi = 0} case;
 #'   [gpd_distrib()].
 #'
+#' @usage NULL
 #' @examples
 #' d <- gpd_distrib()
 #' q <- c(0.5, 2, 5)

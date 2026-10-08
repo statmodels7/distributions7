@@ -7,9 +7,6 @@
 \alias{distrib_deriv3_cdf.GPDDistrib}
 \alias{distrib_deriv4_cdf.GPDDistrib}
 \title{Generalized Pareto Log-CDF Derivatives}
-\usage{
-gpd_cdf_method(lower_log, upper_log, surv)
-}
 \arguments{
 \item{distrib}{A \code{GPDDistrib} object, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 

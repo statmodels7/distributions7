@@ -23,7 +23,7 @@ information runs to millions of terms. The values returned by the kernel are
 the same either way.
 }
 \examples{
-constant_to_scalar(rep(2, 5))
-constant_to_scalar(c(2, 3))
+distributions7:::constant_to_scalar(rep(2, 5))
+distributions7:::constant_to_scalar(c(2, 3))
 }
 \keyword{internal}

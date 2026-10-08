@@ -13,9 +13,6 @@
 \alias{distrib_deriv5.FixedDiscreteDistrib}
 \alias{wrapper_deriv5_method}
 \title{The Wrappers' Fifth Derivatives}
-\usage{
-wrapper_deriv5_method(builder)
-}
 \arguments{
 \item{builder}{One of the order-generic builders of
 \code{R/wrapper_derivatives.R} or \code{\link[=fold_deriv_k]{fold_deriv_k()}}.}

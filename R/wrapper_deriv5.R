@@ -55,6 +55,7 @@ NULL
 #' derivative is instead one stencil on its own analytic fourth.
 #' @param builder One of the order-generic builders of
 #'   `R/wrapper_derivatives.R` or [fold_deriv_k()].
+#' @usage NULL
 wrapper_deriv5_method <- function(builder) {
   kern <- builder(5L)
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
