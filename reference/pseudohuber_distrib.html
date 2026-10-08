@@ -29,7 +29,7 @@ information are numerical; that is the price of the family."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -175,9 +175,9 @@ are the derivatives in the response and the mixed derivative
     <h2 id="what-is-numerical-and-what-it-costs">What is numerical, and what it costs<a class="anchor" aria-label="anchor" href="#what-is-numerical-and-what-it-costs"></a></h2>
     <p>The distribution function has no elementary form and is a quadrature,
 batched over the quantiles and reflected about \(\mu\) so that only the
-lower tail is integrated. The quantile inverts it by root-finding, and the
-generator inverts it at uniform variates, so a sample costs one root-find
-per draw.</p>
+lower tail is integrated. The quantile inverts it by root-finding. The
+generator does not use either: it draws the family as a normal variance
+mixture with a generalized inverse Gaussian mixing variable.</p>
 <p>The <strong>expected information has no elementary form either</strong>, but it depends
 on \(\nu\) alone once the location and the scale are factored out, so it
 is one integral over \(z\) per distinct \(\nu\), taken by the rule of
@@ -269,9 +269,7 @@ family of your own against the same battery this one passes;
 <span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="expected_hessian_exact.html">expected_hessian_exact</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The quantile inverts the distribution function, and the generator</span></span></span>
-<span class="r-in"><span><span class="co"># inverts it at uniform variates, so a draw costs a root-find over a</span></span></span>
-<span class="r-in"><span><span class="co"># quadrature. That is what makes fitting this family dear.</span></span></span>
+<span class="r-in"><span><span class="co"># The quantile inverts the distribution function by root-finding.</span></span></span>
 <span class="r-in"><span><span class="va">q</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>quantile <span class="op">=</span> <span class="va">q</span>, back <span class="op">=</span> <span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                [,1] [,2]     [,3]</span>

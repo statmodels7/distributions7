@@ -88,5 +88,5 @@ ref <- vapply(distributions7:::hess_pairs(d@params),
               function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
               numeric(1))
 max(abs(vapply(H, sum, numeric(1)) - ref))
-#> [1] 5.593428e-10
+#> [1] 5.178435e-10
 ```

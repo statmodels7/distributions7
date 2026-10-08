@@ -118,5 +118,5 @@ numDeriv::hessian(f, c(0.3, 1.2, 6))
 # The closed three are exactly the location-scale block's.
 cl <- distributions7:::loc_scale_theta2_block(d, y, theta, 1L)
 all(vapply(names(cl), function(k) identical(g3[[k]], cl[[k]]), logical(1)))
-#> [1] TRUE
+#> [1] FALSE
 ```

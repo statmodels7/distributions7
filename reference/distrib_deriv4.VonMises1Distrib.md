@@ -60,6 +60,12 @@ which is the one place on this page where `approx` and `nsim` are read.
 
   Unused, and accepted so that the signature matches the generic's.
 
+- threads:
+
+  A single positive integer, how many threads the kernel may use. Below
+  the measured internal threshold the kernel stays sequential whatever
+  the count says. Defaults to `1L`.
+
 ## Value
 
 A named list of five numeric vectors, `mu_mu_mu_mu`, `mu_mu_mu_kappa`,
@@ -77,7 +83,7 @@ I_1(\kappa)/I_0(\kappa)\\.
 
 [`distrib_deriv3.VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises1Distrib.md)
 for the order below and the construction,
-[`numericals7::bessel_i_ratio_derivs()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_derivs.html)
+[`numericals7::bessel_i_ratio_d1()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html)
 for the derivatives of \\A\\, and
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 for the generic.

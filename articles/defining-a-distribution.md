@@ -95,12 +95,16 @@ Laplace <- S7::new_class("Laplace", parent = continuous_distrib)
 ```
 
 **Step 2 — the density.** A method for `distrib_pdf`. The signature is
-always `(distrib, y, theta, log = FALSE)`, where `theta` is a named list
-of parameters (each element a scalar or a vector aligned with `y`):
+always `(distrib, y, theta, log = FALSE, ...)`, where `theta` is a named
+list of parameters (each element a scalar or a vector aligned with `y`).
+The `...` is required: a modelling function such as
+`statmodels7::statmod()` passes further arguments to the density, the
+number of threads among them, and a method without `...` stops on the
+first call.
 
 ``` r
 
-S7::method(distrib_pdf, Laplace) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, Laplace) <- function(distrib, y, theta, log = FALSE, ...) {
   mu <- theta[[1]]
   b  <- theta[[2]]
   log_d <- -log(2 * b) - abs(y - mu) / b
@@ -230,7 +234,7 @@ growing it geometrically as needed.
 
 # A shifted-geometric example: P(Y = k) = (1-p) p^k for k = 0, 1, 2, ...
 Geom <- S7::new_class("Geom", parent = discrete_distrib)
-S7::method(distrib_pdf, Geom) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, Geom) <- function(distrib, y, theta, log = FALSE, ...) {
   p <- theta[[1]]
   log_d <- log(1 - p) + y * log(p)
   if (log) log_d else exp(log_d)
@@ -300,9 +304,9 @@ parameter-scale derivatives**; the chain rule is never implemented by
 hand. The generic applies the link-scale transformation afterwards when
 the caller asks for `scale = "link"`. The same applies to
 `distrib_hessian`, `distrib_expected_hessian`, `distrib_deriv3` and
-`distrib_deriv4`; the probability-function methods (`distrib_pdf`,
-`distrib_cdf`, `distrib_quantile`, `distrib_rng`) keep their plain
-signatures.
+`distrib_deriv4`. Of the probability-function methods, `distrib_pdf`
+takes `...` as Step 2 explains, and `distrib_cdf`, `distrib_quantile`
+and `distrib_rng` keep the signatures shown here.
 
 The results are identical to what the fallbacks produced, only faster
 and exact:
@@ -380,12 +384,14 @@ check_distrib(laplace_distrib(), theta = list(mu = 1, b = 2),
 #>   [OK  ] quantile/cdf round-trip                     1.39e-17
 #>   [OK  ] rng matches the cdf                         1.70e+00
 #>   [OK  ] gradient vs finite differences              6.37e-11
-#>   [OK  ] hessian vs finite differences               0.00e+00
 #>   [OK  ] expected information vs Monte Carlo         9.33e-01
 #>   [OK  ] response derivatives vs finite differences  8.06e-12
 #>   [OK  ] link-scale gradient vs finite differences   3.20e-09
+#>   [ -- ] hessian vs finite differences               not run
+#>          no method of the family's own: the value is the numerical fallback, which this check would compare with itself
 #> 
-#> All 11 checks passed.
+#> All 10 checks passed.
+#> 1 check not run, for the reason given above.
 ```
 
 This is the fastest way to catch a mistake in a hand-derived score or
@@ -441,7 +447,7 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit_distrib(d, y)
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 22 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 17 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -466,7 +472,7 @@ set.seed(2)
 fit_distrib(bernoulli_distrib(), rbinom(50, 1, 0.9))
 #> Maximum-likelihood fit: bernoulli
 #> Observations: 50   Log-likelihood: -20.25   AIC: 42.5   BIC: 44.41
-#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 2   time: 5 ms
+#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 2   time: 4 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:

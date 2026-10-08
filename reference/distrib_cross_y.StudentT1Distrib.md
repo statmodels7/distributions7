@@ -74,5 +74,5 @@ distrib_cross_y(d, c(-1, 0, 2), th)
 # which is where the score of a t stops growing and starts to redescend.
 r0 <- 1.1 * sqrt(6)
 distrib_cross_y(d, 0.2 + c(0.5, 1, 1.5) * r0, th)$mu
-#> [1]  4.628099e-01  5.897868e-17 -1.141050e-01
+#> [1]  4.628099e-01  6.881548e-17 -1.141050e-01
 ```

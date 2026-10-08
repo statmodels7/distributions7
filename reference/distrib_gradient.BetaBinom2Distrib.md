@@ -6,7 +6,11 @@ respect to the two shapes, one value per observation, in closed form:
 \psi(\alpha) - \psi(n+\alpha+\beta) + \psi(\alpha+\beta),\$\$ and the
 same with \\n-y\\ and \\\beta\\ in place of \\y\\ and \\\alpha\\. The
 two share the term in \\\alpha+\beta\\, which is the only part a mixed
-second derivative keeps.
+second derivative keeps. The compiled kernel evaluates each difference
+of digammas as a series remainder plus one
+[`log1p()`](https://rdrr.io/r/base/Log.html), the form
+[`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
+uses, so that the score keeps its digits as the shapes grow.
 
 With `scale = "link"` the generic applies the chain rule for the links
 the family carries before returning. This method always returns the
@@ -38,6 +42,11 @@ parameter scale; the transformation happens in the generic.
 - ...:
 
   Unused, and accepted so that the signature matches the generic's.
+
+- threads:
+
+  A single positive integer, the number of threads the compiled kernel
+  may use. Defaults to `1L`.
 
 ## Value
 
@@ -96,6 +105,6 @@ all.equal((distrib_pdf(d, 0:10, list(alpha = 2 + eps, beta = 3), log = TRUE) -
 # The score has mean zero over the support: the first Bartlett identity.
 w <- distrib_pdf(d, 0:10, th)
 vapply(g, function(v) sum(w * v), numeric(1))
-#>        alpha         beta 
-#> 1.491862e-16 2.107689e-16 
+#>         alpha          beta 
+#> -6.418477e-17  1.032160e-16 
 ```

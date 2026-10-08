@@ -42,15 +42,13 @@ keys that order.
 ## Details
 
 What this estimates is \\\mathbb{E}\[\partial^k \ell\]\\ literally. For
-a regular model that is the quantity wanted. For a non-regular one it is
-not the information, and the difference is total rather than small: on a
-Laplace with no closed-form expected method, at \\\sigma = 1\\ over 200
-observations, this returns **exactly 0** for the location component
-while
-[`expected_by_bartlett()`](https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.md)
-returns \\-200 = -n/\sigma^2\\, which is the information. The observed
-\\\ell\_{\mu\mu}\\ is zero almost everywhere, so its integral against
-the density is zero and the point mass at the kink is invisible to it.
+a regular model that is the quantity wanted. For a family with a
+non-smooth parameter it is not: the observed \\\ell\_{ij}\\ has a point
+mass at the kink, which an integral of its pointwise values does not
+contain (on a Laplace the location component would be 0 instead of
+\\-1/\sigma^2\\). At order 2 such a family is therefore passed to
+[`expected_by_bartlett()`](https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.md),
+which needs only the score.
 
 Quadrature is also unreliable where the observed derivative is itself a
 finite difference, since it then integrates numerical noise. That error

@@ -6,9 +6,12 @@ one \\\mu\\ collapses to a **single term** \\D_a \kappa^{(b)}(\rho)\\,
 with \\D_a\\ the \\a\\-th \\\mu\\-derivative of \\\cos(y-\mu)\\ and
 \\\kappa^{(b)}\\ the \\b\\-th derivative of \\A^{-1}\\: the
 concentration parametrization's \\\mu\\-derivatives are linear in
-\\\kappa\\, so the composition has nothing to expand. The pure-\\\rho\\
-component carries the full one-variable Faa di Bruno on \\\log I_0\\,
-written out.
+\\\kappa\\, so the composition has nothing to expand. Since
+\\\partial\log I_0(\kappa(\rho))/\partial\rho = \rho\\\kappa'(\rho)\\,
+the pure-\\\rho\\ component is \\\\\cos(y-\mu) - \rho\\\kappa'''(\rho) -
+2\kappa''(\rho)\\. The components are computed by a compiled kernel,
+which reads \\\kappa'\\, \\\kappa''\\ and \\\kappa'''\\ from \\A'\\,
+\\A''\\ and \\A'''\\ by the inverse function rule.
 
 With `expected = TRUE` the method calls
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
@@ -58,6 +61,12 @@ which is the one place on this page where `approx` and `nsim` are read.
 
   Unused, and accepted so that the signature matches the generic's.
 
+- threads:
+
+  A single positive integer, how many threads the kernel may use. Below
+  the measured internal threshold the kernel stays sequential whatever
+  the count says. Defaults to `1L`.
+
 ## Value
 
 A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_rho`,
@@ -75,7 +84,7 @@ concentration and \\A(\kappa) = I_1(\kappa)/I_0(\kappa)\\.
 for the order below,
 [`distrib_deriv4.VonMises2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.VonMises2Distrib.md)
 for the order above,
-[`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md)
+[`numericals7::bessel_i_ratio_inverse_d1()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_inverse_d1.html)
 for the map's derivatives, and
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
 for the generic.

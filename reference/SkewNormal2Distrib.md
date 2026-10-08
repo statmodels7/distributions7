@@ -109,18 +109,18 @@ at the implied direct parameters:
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewNormal2Distrib.md),
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.SkewNormal2Distrib.md),
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.SkewNormal2Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.SkewNormal2Distrib.md),
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewNormal2Distrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewNormal2Distrib.md).
+[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.SkewNormal2Distrib.md).
 
-The parameter derivatives carry the parent's through the map by the
-partition sum of
-[`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md):
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal2Distrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewNormal2Distrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal2Distrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewNormal2Distrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewNormal2Distrib.md).
+The derivatives in the parameters and in the response come from compiled
+kernels of the family's own, one per order and surface:
+[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal2Distrib.md)
+to
+[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal2Distrib.md),
+[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewNormal2Distrib.md)
+and the mixed derivatives. The expected information and its derivatives
+are series in \\\gamma_1^{1/3}\\ near zero skewness and quadratures
+elsewhere:
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal2Distrib.md).
 
 Three of the four moments are a parameter read back:
 [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.SkewNormal2Distrib.md),
@@ -133,13 +133,13 @@ parameters.
 
 ## The point at zero skewness
 
-The parameter derivatives are **rejected** at \\\gamma_1 = 0\\ exactly.
 The map runs through a cube root, so \\\partial\alpha/\partial\gamma_1\\
-is unbounded there; the first derivatives of the log-density have a
-finite limit but the second ones grow like \\\gamma_1^{-2/3}\\, so the
-point is excluded with a message rather than approximated. The
-**density** and the distribution function are fine there and equal the
-Gaussian's.
+is unbounded at \\\gamma_1 = 0\\. The score has a finite limit there and
+is returned, and so is the expected information; the observed
+derivatives of order two and more in \\\gamma_1\\ grow like
+\\\gamma_1^{-2/3}\\, and they and the derivatives of the expected
+information are rejected at \\\gamma_1 = 0\\ exactly. The density and
+the distribution function equal the Gaussian's there.
 
 ## See also
 

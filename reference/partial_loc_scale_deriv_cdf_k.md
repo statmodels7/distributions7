@@ -8,7 +8,7 @@ body the Student t, the pseudo-Huber and the skew t register: the
 components over the location and the scale from
 [`loc_scale_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv_k.md),
 and every component naming a shape parameter from
-[`numerical_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv_k.md).
+[`continuous_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/continuous_cdf_deriv_k.md).
 
 ## Usage
 

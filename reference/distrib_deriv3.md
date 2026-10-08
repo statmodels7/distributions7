@@ -3,7 +3,8 @@
 Computes the unique third-order partial derivatives of the
 log-likelihood with respect to the distribution's parameters.
 Distributions with a closed-form implementation provide it directly (in
-C++); the others fall back to finite differences of the Hessian (see
+C++); the others fall back to finite differences of the highest order
+the family implements itself (see
 [`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md)).
 
 ## Usage

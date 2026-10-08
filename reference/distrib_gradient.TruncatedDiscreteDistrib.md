@@ -77,5 +77,5 @@ ll <- function(v) {
   sum(distrib_pdf(ztp, y, t2, log = TRUE))
 }
 abs(sum(g$mu) - numDeriv::grad(ll, unlist(theta)))
-#> [1] 2.370032e-11
+#> [1] 1.963596e-12
 ```

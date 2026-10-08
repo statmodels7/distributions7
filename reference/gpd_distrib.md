@@ -157,10 +157,10 @@ distrib_expected_hessian(d, 0, list(sigma = 1.5, xi = -0.7))
 #> $sigma_sigma
 #> [1] NA
 #> 
-#> $sigma_xi
+#> $xi_xi
 #> [1] NA
 #> 
-#> $xi_xi
+#> $sigma_xi
 #> [1] NA
 #> 
 

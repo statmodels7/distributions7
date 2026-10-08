@@ -11,7 +11,7 @@ parameters."><meta property="og:image" content="https://statmodels7.github.io/di
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,15 +100,9 @@ so every component equals its value at \(\mu = 0\), \(\sigma = 1\) times
 \(\sigma\). The value there depends on \((\alpha, \nu)\) alone and is one
 integral over \(z\) of the observed derivatives against the density, taken
 once per distinct pair by the exp-sinh rule of <code><a href="loc_scale_expected.html">loc_scale_expected()</a></code>.</p>
-<p>The integral is exact to the rule's accuracy, and what it integrates carries
-the family's own accuracy: every derivative in \((\mu, \sigma, \alpha)\)
-is closed form, and every one involving \(\nu\) comes from a single
-stencil on an analytic quantity, as documented on
-<code><a href="distrib_hessian.SkewTDistrib.html">distrib_hessian.SkewTDistrib()</a></code>. Against an adaptive quadrature the
-expected information agrees to \(9\times10^{-12}\); the second derivative
-agrees with a difference of the first to \(10^{-3}\) relative at
-\(\nu = 5\), the components carrying \(\nu\) several times being
-differenced ones.</p>
+<p>The integral is exact to the rule's accuracy, and what it integrates are the
+observed derivatives of <code><a href="distrib_gradient.SkewTDistrib.html">distrib_gradient.SkewTDistrib()</a></code>, exact in every
+parameter.</p>
 <p>The tail is integrated to \(|z| = 10^{60}\), which leaves a relative
 \(10^{-60\nu}/\nu\) and is negligible for \(\nu \ge 0.3\).</p>
 <p><code>approx</code> and <code>nsim</code> are accepted for the generic's sake and ignored.</p>

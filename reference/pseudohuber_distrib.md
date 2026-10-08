@@ -118,9 +118,9 @@ whose \\\nu\\ component is \\r/(2\sigma^2 D^3)\\.
 
 The distribution function has no elementary form and is a quadrature,
 batched over the quantiles and reflected about \\\mu\\ so that only the
-lower tail is integrated. The quantile inverts it by root-finding, and
-the generator inverts it at uniform variates, so a sample costs one
-root-find per draw.
+lower tail is integrated. The quantile inverts it by root-finding. The
+generator does not use either: it draws the family as a normal variance
+mixture with a generalized inverse Gaussian mixing variable.
 
 The **expected information has no elementary form either**, but it
 depends on \\\nu\\ alone once the location and the scale are factored
@@ -224,9 +224,7 @@ rbind(residual = rr,
 distributions7:::expected_hessian_exact(d)
 #> [1] TRUE
 
-# The quantile inverts the distribution function, and the generator
-# inverts it at uniform variates, so a draw costs a root-find over a
-# quadrature. That is what makes fitting this family dear.
+# The quantile inverts the distribution function by root-finding.
 q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 rbind(quantile = q, back = distrib_cdf(d, q, th))
 #>                [,1] [,2]     [,3]

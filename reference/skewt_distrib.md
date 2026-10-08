@@ -66,41 +66,14 @@ reaches a skewness of at most 0.99527 and an excess kurtosis of at most
 \\\nu\\ removes both ceilings: measured at \\\alpha = 50\\, the skewness
 is 1.190 at \\\nu = 30\\, 2.050 at \\\nu = 6\\ and 3.998 at \\\nu = 4\\.
 
-## What is closed form and what is not
+## How the derivatives are computed
 
-Every derivative in \\(\mu, \sigma, \alpha)\\ is closed form. Everything
-involving \\\nu\\ is not, because the density contains \\T\_{\nu+1}\\
-and the derivative of a Student \\t\\ distribution function with respect
-to its degrees of freedom has no elementary expression. It is the same
-obstruction that stops the gamma and beta distribution functions from
-having closed-form shape derivatives.
-
-Those components come from a single stencil applied to an analytic
-quantity, never from a difference of a difference:
-
-|  |  |  |
-|----|----|----|
-| **component** | **route** | **agreement with an independent route** |
-| \\\mu, \sigma, \alpha\\ (score) | closed form | \\10^{-12}\\ |
-| \\\nu\\ (score) | [`fd5_first()`](https://statmodels7.github.io/distributions7/reference/fd5_first.md) on \\\ell\\ | \\5\times10^{-11}\\ |
-| \\(\mu,\sigma,\alpha)\\ block (Hessian) | closed form | \\10^{-12}\\ |
-| \\\nu\\ with another parameter | [`fd5_first()`](https://statmodels7.github.io/distributions7/reference/fd5_first.md) on the analytic score | to the printed digit |
-| \\\nu\\ twice | [`fd5_second()`](https://statmodels7.github.io/distributions7/reference/fd5_second.md) on \\\ell\\ | \\2\times10^{-9}\\ |
-| \\\nu\\ three times | [`fd5_third()`](https://statmodels7.github.io/distributions7/reference/fd5_third.md) on \\\ell\\ | \\10^{-4}\\ |
-| \\\nu\\ four times | [`fd5_fourth()`](https://statmodels7.github.io/distributions7/reference/fd5_fourth.md) on \\\ell\\ | about one figure |
-
-## The tolerance a fit can ask for
-
-The score in \\\nu\\ cannot be computed more accurately than that table,
-so no stopping rule on the gradient can be satisfied below it however
-good the optimizer is.
-[`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-takes its rule from the method it is given, and `crit_grad()`'s default
-tolerance of \\10^{-6}\\ is tested on the score **per observation**,
-which leaves room: measured on samples of 500 to 4000, the run converges
-with a summed score between \\1.5\times10^{-7}\\ and
-\\2.4\times10^{-5}\\, i.e. between \\3\times10^{-10}\\ and
-\\9\times10^{-9}\\ per observation.
+The density contains \\T\_{\nu+1}\\, and the derivatives of a Student
+\\t\\ distribution function in its degrees of freedom have no elementary
+expression. They are integrals of the derivatives of the \\t\\ density
+and are taken by quadrature, so that every derivative this family
+reports, to order five, is exact to rounding; see
+[`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md).
 
 ## Fitting
 

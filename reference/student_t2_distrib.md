@@ -30,21 +30,22 @@ student_t2_distrib(
 
 ## Value
 
-A reparametrized distribution object.
+An S7 object of class `StudentT2Distrib`, inheriting from
+`continuous_distrib`, with `params` `c("mu", "sigma", "nu")` and
+`link_params` the three links given here.
 
 ## Details
 
 The scale of
 [`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md)
 is not the standard deviation: the two differ by \\\sqrt{\nu/(\nu-2)}\\.
-Here the map is \$\$\sigma\_{\text{scale}} =
-\sigma\sqrt{\dfrac{\nu-2}{\nu}},\$\$ which exists only for \\\nu \> 2\\,
-and the constructor bounds \\\nu\\ there rather than letting the map
-return a complex number several frames down. This is `TF2` in gamlss.
-
-The restriction is the point rather than a limitation: a family
-parametrized by a standard deviation is a family whose standard
-deviation exists.
+Here the scale is \$\$s_0 = \sigma\sqrt{\dfrac{\nu-2}{\nu}},\$\$ which
+exists only for \\\nu \> 2\\, so the degrees of freedom are bounded
+below at two. Every derivative in \\(\mu, \sigma, \nu)\\ to order five,
+the expected information and its derivatives, and the derivatives in the
+response are closed forms, each order in its own compiled kernel (see
+[`distrib_gradient.StudentT2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT2Distrib.md)).
+This is `TF2` in gamlss.
 
 ## The distribution
 
@@ -53,10 +54,17 @@ deviation exists.
 
 \$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}\$\$
 
+## References
+
+Rigby, R. A. and Stasinopoulos, D. M. (2005). Generalized additive
+models for location, scale and shape. *Journal of the Royal Statistical
+Society, Series C* 54, 507-554.
+
 ## See also
 
-[`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md),
-[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+[`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md);
+[StudentT2Distrib](https://statmodels7.github.io/distributions7/reference/StudentT2Distrib.md)
+for the class.
 
 ## Examples
 

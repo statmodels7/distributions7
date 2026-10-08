@@ -7,7 +7,7 @@ every univariate family in the package uses.
 
 The data-based value comes from
 [`moment_estimates()`](https://statmodels7.github.io/distributions7/reference/moment_estimates.md)
-where the family has an entry there, which 37 of the 42 univariate
+where the family has an entry there, which 38 of the 43 univariate
 families do. The other five fall back to reading
 `params_interpretation`: a parameter meaning a location is started at
 the sample median, one meaning a spread at the sample standard deviation

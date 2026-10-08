@@ -9,7 +9,8 @@ function in its place: \$\$\dfrac{\partial^2\ell}{\partial\alpha^2} =
 component keeps only the shared term, \\-\psi_1(n+S) + \psi_1(S)\\, the
 two shapes entering the log-mass separately otherwise, so it does not
 depend on the data at all and equals its own expectation at every
-observation.
+observation. The compiled kernel evaluates the differences of trigammas
+as series remainders, as for the score.
 
 ## Arguments
 
@@ -37,6 +38,11 @@ observation.
 - ...:
 
   Unused, and accepted so that the signature matches the generic's.
+
+- threads:
+
+  A single positive integer, the number of threads the compiled kernel
+  may use. Defaults to `1L`.
 
 ## Value
 

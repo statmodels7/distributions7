@@ -21,7 +21,9 @@ lognormal2_distrib(link_mean = log_link(), link_var = log_link())
 
 ## Value
 
-A reparametrized distribution object.
+An S7 object of class `Lognormal2Distrib`, inheriting from
+`continuous_distrib`, with `params` `c("mean", "var")` and `link_params`
+the two links given here.
 
 ## Details
 
@@ -29,26 +31,25 @@ The parameters of
 [`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md)
 describe \\\log Y\\, so neither of them is a moment of \\Y\\. Here they
 are, through \$\$\mu\_{\log} = \log\dfrac{m^2}{\sqrt{v + m^2}}, \qquad
-\sigma^2\_{\log} = \log\left(1 + \dfrac{v}{m^2}\right)\$\$ which is the
-parametrization a regression on the mean wants.
-
-Built with
-[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md),
-so every derivative to fourth order, observed and expected, is exact.
+\sigma^2\_{\log} = \log\left(1 + \dfrac{v}{m^2}\right).\$\$ Every
+derivative of the log-density in \\(m, v)\\ to order five, the expected
+information and its derivatives, the derivatives in the response and the
+derivatives of the distribution function are closed forms, each order in
+its own compiled kernel (see
+[`distrib_gradient.Lognormal2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal2Distrib.md)).
 
 ## The distribution
 
 \$\$f(y) = \frac{1}{y\sqrt{2\pi s^{2}}}\exp\\\left\\-\frac{(\log y -
-m)^{2}}{2s^{2}}\right\\, \quad s^{2} =
-\log\\\left(1+\frac{v}{\mu^{2}}\right)\\, \\ m = \log\mu -
-\frac{s^{2}}{2}\$\$ on \\y \in (0, \infty)\\.
-
-\$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) = v\$\$
+\mu_l)^{2}}{2s^{2}}\right\\, \quad s^{2} = \log\\\left(1+\frac{v}{m^{2}}
+\right)\\, \\ \mu_l = \log m - \frac{s^{2}}{2}\$\$ on \\y \in (0,
+\infty)\\, with \\E\[Y\] = m\\ and \\\operatorname{Var}(Y) = v\\.
 
 ## See also
 
-[`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md),
-[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+[`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md);
+[Lognormal2Distrib](https://statmodels7.github.io/distributions7/reference/Lognormal2Distrib.md)
+for the class.
 
 ## Examples
 

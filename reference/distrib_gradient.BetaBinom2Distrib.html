@@ -6,7 +6,10 @@ $$\dfrac{\partial\ell}{\partial\alpha}
           - \psi(n+\alpha+\beta) + \psi(\alpha+\beta),$$
 and the same with \(n-y\) and \(\beta\) in place of \(y\) and
 \(\alpha\). The two share the term in \(\alpha+\beta\), which is the
-only part a mixed second derivative keeps.
+only part a mixed second derivative keeps. The compiled kernel evaluates
+each difference of digammas as a series remainder plus one log1p(), the
+form betabinom1_distrib() uses, so that the score keeps its digits as the
+shapes grow.
 With scale = "link" the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter
 scale; the transformation happens in the generic.'><meta property="og:description" content='Computes the first derivatives of the beta-binomial log-mass with respect to
@@ -16,7 +19,10 @@ $$\dfrac{\partial\ell}{\partial\alpha}
           - \psi(n+\alpha+\beta) + \psi(\alpha+\beta),$$
 and the same with \(n-y\) and \(\beta\) in place of \(y\) and
 \(\alpha\). The two share the term in \(\alpha+\beta\), which is the
-only part a mixed second derivative keeps.
+only part a mixed second derivative keeps. The compiled kernel evaluates
+each difference of digammas as a series remainder plus one log1p(), the
+form betabinom1_distrib() uses, so that the score keeps its digits as the
+shapes grow.
 With scale = "link" the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter
 scale; the transformation happens in the generic.'><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -27,7 +33,7 @@ scale; the transformation happens in the generic.'><meta property="og:image" con
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +73,10 @@ $$\dfrac{\partial\ell}{\partial\alpha}
           - \psi(n+\alpha+\beta) + \psi(\alpha+\beta),$$
 and the same with \(n-y\) and \(\beta\) in place of \(y\) and
 \(\alpha\). The two share the term in \(\alpha+\beta\), which is the
-only part a mixed second derivative keeps.</p>
+only part a mixed second derivative keeps. The compiled kernel evaluates
+each difference of digammas as a series remainder plus one <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p()</a></code>, the
+form <code><a href="betabinom1_distrib.html">betabinom1_distrib()</a></code> uses, so that the score keeps its digits as the
+shapes grow.</p>
 <p>With <code>scale = "link"</code> the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter
 scale; the transformation happens in the generic.</p>
@@ -99,6 +108,11 @@ recycled. Both must be strictly positive.</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Unused, and accepted so that the signature matches the generic's.</p></dd>
+
+
+<dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
+<dd><p>A single positive integer, the number of threads the
+compiled kernel may use. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -158,8 +172,8 @@ and dispersion, and <code><a href="distrib_gradient.html">distrib_gradient()</a>
 <span class="r-in"><span><span class="co"># The score has mean zero over the support: the first Bartlett identity.</span></span></span>
 <span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">10</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">g</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">w</span> <span class="op">*</span> <span class="va">v</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        alpha         beta </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1.491862e-16 2.107689e-16 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         alpha          beta </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -6.418477e-17  1.032160e-16 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

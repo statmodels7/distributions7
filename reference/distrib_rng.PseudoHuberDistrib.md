@@ -1,13 +1,13 @@
 # Pseudo-Huber Random Number Generator
 
-Draws `n` independent variates by inverse transform: uniform variates
-from [`stats::runif()`](https://rdrr.io/r/stats/Uniform.html) passed
-through
-[`distrib_quantile.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.PseudoHuberDistrib.md).
-Each draw therefore costs a root-find over a quadrature, which makes
-this the slowest generator in the package; a sample of a few thousand is
-comfortable, a sample of a million is not. The draws depend on
-`.Random.seed` in the usual way.
+Draws `n` independent variates as a normal variance mixture, \\Y = \mu +
+\sqrt{W} Z\\ with \\Z\\ standard normal and \\W = \sigma^2 \sqrt{\nu}\\
+X\\, where \\X\\ follows the generalized inverse Gaussian law with
+density proportional to \\\exp\\-\sqrt{\nu}\\(x + 1/x)/2\\\\. \\X\\ is
+drawn by the ratio-of-uniforms method with the mode shifted to the
+origin (Hormann and Leydold, 2014), whose bounding box is set once per
+distinct \\\nu\\; below \\\nu = 10^{-16}\\ the mixing law is its
+exponential limit. The draws depend on `.Random.seed` in the usual way.
 
 ## Arguments
 
@@ -35,10 +35,16 @@ comfortable, a sample of a million is not. The draws depend on
 
 A numeric vector of `n` draws.
 
+## References
+
+Hormann, W. and Leydold, J. (2014). Generating generalized inverse
+Gaussian random variates. *Statistics and Computing*, **24**(4),
+547-557.
+
 ## See also
 
 [`distrib_quantile.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.PseudoHuberDistrib.md)
-for the inversion,
+for the quantile function,
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters back from a sample, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
@@ -50,21 +56,12 @@ for the generic.
 d <- pseudohuber_distrib()
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 
-# The draws are the quantile function at uniform variates, which is the
-# whole mechanism and the whole cost.
+# The moments of a sample sit where the sampling error puts them.
 set.seed(6)
-a <- distrib_rng(d, 5, th)
-set.seed(6)
-identical(a, distrib_quantile(d, runif(5), th))
-#> [1] TRUE
-
-# A sample of a few hundred is comfortable, and its moments sit where the
-# sampling error of that size puts them.
-set.seed(6)
-z <- distrib_rng(d, 300, th)
+z <- distrib_rng(d, 1e5, th)
 rbind(sample = c(mean(z), var(z)),
       theoretical = c(mean(d, th), variance(d, th)))
 #>                  [,1]     [,2]
-#> sample      0.6215911 5.079847
+#> sample      0.3954567 4.463978
 #> theoretical 0.4000000 4.429997
 ```

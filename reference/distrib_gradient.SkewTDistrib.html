@@ -6,24 +6,18 @@ $$\dfrac{\partial \ell}{\partial \mu} = -\dfrac{D}{\sigma},
       \dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1 + zD}{\sigma},
       \qquad
       \dfrac{\partial \ell}{\partial \alpha} = Q z c.$$
-The fourth is not. \(\partial\log T_{\nu+1}(w)/\partial\nu\) is a
-derivative of a Student \(t\) distribution function with respect to its
-degrees of freedom, which has no elementary expression, the same obstruction
-the gamma and beta distribution functions meet in their shape. That one
-component is a single central difference of the log-density, taken with
-fd5_first() at the step of skewt_nu_step()."><meta property="og:description" content="Computes the four first derivatives of the log-density. Three are closed
+The fourth contains \(\partial_m \log T_m(w)\), \(m = \nu + 1\), the
+derivative of a Student \(t\) distribution function in its degrees of
+freedom, which has no elementary expression and is taken as an integral."><meta property="og:description" content="Computes the four first derivatives of the log-density. Three are closed
 form: with \(D = A + QB\) in the notation of skewt_pieces(),
 $$\dfrac{\partial \ell}{\partial \mu} = -\dfrac{D}{\sigma},
       \qquad
       \dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1 + zD}{\sigma},
       \qquad
       \dfrac{\partial \ell}{\partial \alpha} = Q z c.$$
-The fourth is not. \(\partial\log T_{\nu+1}(w)/\partial\nu\) is a
-derivative of a Student \(t\) distribution function with respect to its
-degrees of freedom, which has no elementary expression, the same obstruction
-the gamma and beta distribution functions meet in their shape. That one
-component is a single central difference of the log-density, taken with
-fd5_first() at the step of skewt_nu_step()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The fourth contains \(\partial_m \log T_m(w)\), \(m = \nu + 1\), the
+derivative of a Student \(t\) distribution function in its degrees of
+freedom, which has no elementary expression and is taken as an integral."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +25,7 @@ fd5_first() at the step of skewt_nu_step()."><meta property="og:image" content="
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,12 +65,9 @@ $$\dfrac{\partial \ell}{\partial \mu} = -\dfrac{D}{\sigma},
       \dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1 + zD}{\sigma},
       \qquad
       \dfrac{\partial \ell}{\partial \alpha} = Q z c.$$</p>
-<p>The fourth is not. \(\partial\log T_{\nu+1}(w)/\partial\nu\) is a
-derivative of a Student \(t\) distribution function with respect to its
-degrees of freedom, which has no elementary expression, the same obstruction
-the gamma and beta distribution functions meet in their shape. That one
-component is a single central difference of the <strong>log-density</strong>, taken with
-<code><a href="fd5_first.html">fd5_first()</a></code> at the step of <code><a href="skewt_nu_step.html">skewt_nu_step()</a></code>.</p>
+<p>The fourth contains \(\partial_m \log T_m(w)\), \(m = \nu + 1\), the
+derivative of a Student \(t\) distribution function in its degrees of
+freedom, which has no elementary expression and is taken as an integral.</p>
     </div>
 
 
@@ -107,6 +98,11 @@ method always returns the parameter scale.</p></dd>
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Unused, and accepted so that the signature matches the generic's.</p></dd>
 
+
+<dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
+<dd><p>A single positive integer, how many threads the kernel may
+use.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -114,15 +110,39 @@ method always returns the parameter scale.</p></dd>
 <code>nu</code>, each of the length of the recycled inputs.</p>
     </div>
     <div class="section level2">
-    <h2 id="accuracy">Accuracy<a class="anchor" aria-label="anchor" href="#accuracy"></a></h2>
-    <p>Measured at \(\mu = 0\), \(\sigma = 1\), \(\alpha = 3\),
-\(\nu = 6\) on four observations, the summed score agrees with
-<code><a href="https://rdrr.io/pkg/numDeriv/man/grad.html" class="external-link">numDeriv::grad</a></code> on the log-likelihood to \(6\times10^{-12}\) in
-\(\mu\), \(2\times10^{-11}\) in \(\sigma\),
-\(3\times10^{-12}\) in \(\alpha\) and \(5\times10^{-11}\) in
-\(\nu\). The \(\nu\) component is therefore the loosest of the four,
-and it is what sets the accuracy a fit of this family can stop at; see
-<code><a href="skewt_nu_step.html">skewt_nu_step()</a></code>.</p>
+    <h2 id="the-compiled-kernel">The compiled kernel<a class="anchor" aria-label="anchor" href="#the-compiled-kernel"></a></h2>
+    <p>Every order of this family, from the score to the fifth derivatives, comes
+from one construction in compiled code. With \(r = \sqrt{\nu + z^2}\),
+\(a = z/r\) and \(m = \nu + 1\),
+$$\ell = \log 2 - \log\sigma + C(\nu) - \frac{\nu + 1}{2}
+  \log\Big(1 + \frac{z^2}{\nu}\Big) + \log T_m(w), \qquad
+  w = \alpha\sqrt{m}\,a,$$
+with \(C(m) = \log\Gamma((m+1)/2) - \log\Gamma(m/2) - \log(m\pi)/2\).
+Every derivative in \((\mu, \sigma, \alpha, \nu)\) is written out by the
+chain rule in the bounded variables \(a\), \(1/r\), \(1/\sigma\),
+\(\alpha\), \(\nu\) and \(\sqrt m\), never in \(z\) itself, and
+reduced with \(a^2 = 1 - \nu/r^2\), so that the terms which cancel as
+\(|z|\) grows cancel in the algebra. The expressions are generated by a
+script kept with the package sources.</p>
+<p>The derivatives of \(C\) are \(2^{-k} D^{(k)}(m/2)\), with
+\(D(x) = \log\Gamma(x + 1/2) - \log\Gamma(x) - \log(x)/2\), shifted to
+\(x \ge 20\) by its recurrence and summed there by its asymptotic series.
+The derivatives of \(\log T_m(w)\) are polynomials in
+\(q = t_m(w)/T_m(w)\), in \(\Delta = \partial_w \log t_m(w) - q\), in the
+partial derivatives of \(\log t_m(w)\) and in
+\(\delta_j = \partial_m^j T_m(w)/T_m(w) - \partial_m^j t_m(w)/t_m(w)\).
+Since \(T_m(0) = 1/2\) for every \(m\),
+\(\partial_m^j T_m(w) = \int_0^w \partial_m^j t_m(u)\,du\). The integral is
+taken by 20-point Gauss-Legendre for \(|w| \le 2\); beyond, it is minus the
+integral over the tail on the far side of \(w\), taken by 12-point
+Gauss-Legendre on panels of a variable in which the tail of the density
+decays exponentially. On the left the integrand is
+\(t_m(u)\{P_j(u) - P_j(w)\}\), \(P_j = \partial_m^j t_m/t_m\), whose
+integral is \(T_m(w)\,\delta_j\).</p>
+<p>Against <code>mpmath.diff</code> at 50 digits, on the closed form through the
+incomplete beta function, every order from one to five agrees to
+\(2\times10^{-13}\) relative to its largest component at five points
+with \(\nu\) from 0.8 to 60.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -135,8 +155,8 @@ and it is what sets the accuracy a fit of this family can stop at; see
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="skewt_pieces.html">skewt_pieces()</a></code> for the scalar functions,
-<code><a href="distrib_hessian.SkewTDistrib.html">distrib_hessian.SkewTDistrib()</a></code> for the second derivatives,
-<code><a href="fd5_first.html">fd5_first()</a></code> for the stencil, and <code><a href="distrib_gradient.html">distrib_gradient()</a></code> for the generic.</p></div>
+<code><a href="distrib_hessian.SkewTDistrib.html">distrib_hessian.SkewTDistrib()</a></code> for the second derivatives, and
+<code><a href="distrib_gradient.html">distrib_gradient()</a></code> for the generic.</p></div>
     </div>
 
     <div class="section level2">

@@ -107,6 +107,7 @@ Registered in this file:
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewTDistrib.md),
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewTDistrib.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewTDistrib.md),
+[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.SkewTDistrib.md),
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewTDistrib.md),
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewTDistrib.md),
 and the expected information with its two derivatives,
@@ -130,15 +131,14 @@ has no elementary form and is computed by one quadrature per distinct
 \\(\alpha, \nu)\\; see
 [`distrib_expected_hessian.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md).
 
-## What is closed form and what is not
+## How the derivatives are computed
 
-Every derivative in \\\mu\\, \\\sigma\\ and \\\alpha\\ is closed form.
-Every derivative involving \\\nu\\ is not, and the obstruction is
-mathematical: the density carries \\T\_{\nu+1}\\, and the derivative of
-a Student \\t\\ distribution function in its degrees of freedom has no
-elementary expression. Those components come from **one** stencil
-applied to an analytic quantity, never from a difference of a
-difference.
+Every derivative, to order five, comes from a compiled kernel in closed
+form. The density carries \\T\_{\nu+1}\\, and the derivatives of a
+Student \\t\\ distribution function in its degrees of freedom have no
+elementary expression; they are integrals of the derivatives of the
+\\t\\ density and are taken by quadrature. See
+[`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md).
 
 ## See also
 

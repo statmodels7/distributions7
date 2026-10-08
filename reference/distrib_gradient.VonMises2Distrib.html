@@ -4,28 +4,30 @@ direction \(\mu\) and the mean resultant length \(\rho\), one value per
 observation, in closed form:
 $$\dfrac{\partial\ell}{\partial\mu} = \kappa\sin(y-\mu), \qquad
       \dfrac{\partial\ell}{\partial\rho}
-        = \left\{\cos(y-\mu) - A(\kappa)\right\}\kappa'(\rho),$$
+        = \left\{\cos(y-\mu) - \rho\right\}\kappa'(\rho),$$
 with \(\kappa = A^{-1}(\rho)\) and
 \(\kappa'(\rho) = 1/A'(\kappa)\) from the inverse function rule.
-The map touches the second parameter only, so the chain rule is the
-one-variable one: the direction's component is unchanged from the
-concentration parametrization, and the second is that family's multiplied by
-a single factor. No multivariate expansion and no cancellation are involved
-at any order.
+The map touches the second parameter only, so the direction's component
+is unchanged from the concentration parametrization. In the second,
+\(\partial \log I_0(\kappa(\rho))/\partial\rho = A(\kappa)\kappa'(\rho)
+= \rho\,\kappa'(\rho)\), so the difference \(\cos(y-\mu) - \rho\) is
+formed from \(\rho\) itself. The components are computed by a compiled
+kernel.
 With scale = &quot;link&quot; the generic applies the chain rule for the links the
 family carries. This method always returns the parameter scale."><meta property="og:description" content="Computes the first derivatives of the log-density with respect to the mean
 direction \(\mu\) and the mean resultant length \(\rho\), one value per
 observation, in closed form:
 $$\dfrac{\partial\ell}{\partial\mu} = \kappa\sin(y-\mu), \qquad
       \dfrac{\partial\ell}{\partial\rho}
-        = \left\{\cos(y-\mu) - A(\kappa)\right\}\kappa'(\rho),$$
+        = \left\{\cos(y-\mu) - \rho\right\}\kappa'(\rho),$$
 with \(\kappa = A^{-1}(\rho)\) and
 \(\kappa'(\rho) = 1/A'(\kappa)\) from the inverse function rule.
-The map touches the second parameter only, so the chain rule is the
-one-variable one: the direction's component is unchanged from the
-concentration parametrization, and the second is that family's multiplied by
-a single factor. No multivariate expansion and no cancellation are involved
-at any order.
+The map touches the second parameter only, so the direction's component
+is unchanged from the concentration parametrization. In the second,
+\(\partial \log I_0(\kappa(\rho))/\partial\rho = A(\kappa)\kappa'(\rho)
+= \rho\,\kappa'(\rho)\), so the difference \(\cos(y-\mu) - \rho\) is
+formed from \(\rho\) itself. The components are computed by a compiled
+kernel.
 With scale = &quot;link&quot; the generic applies the chain rule for the links the
 family carries. This method always returns the parameter scale."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -35,7 +37,7 @@ family carries. This method always returns the parameter scale."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,14 +75,15 @@ direction \(\mu\) and the mean resultant length \(\rho\), one value per
 observation, in closed form:
 $$\dfrac{\partial\ell}{\partial\mu} = \kappa\sin(y-\mu), \qquad
       \dfrac{\partial\ell}{\partial\rho}
-        = \left\{\cos(y-\mu) - A(\kappa)\right\}\kappa'(\rho),$$
+        = \left\{\cos(y-\mu) - \rho\right\}\kappa'(\rho),$$
 with \(\kappa = A^{-1}(\rho)\) and
 \(\kappa'(\rho) = 1/A'(\kappa)\) from the inverse function rule.</p>
-<p>The map touches the <strong>second parameter only</strong>, so the chain rule is the
-one-variable one: the direction's component is unchanged from the
-concentration parametrization, and the second is that family's multiplied by
-a single factor. No multivariate expansion and no cancellation are involved
-at any order.</p>
+<p>The map touches the <strong>second parameter only</strong>, so the direction's component
+is unchanged from the concentration parametrization. In the second,
+\(\partial \log I_0(\kappa(\rho))/\partial\rho = A(\kappa)\kappa'(\rho)
+= \rho\,\kappa'(\rho)\), so the difference \(\cos(y-\mu) - \rho\) is
+formed from \(\rho\) itself. The components are computed by a compiled
+kernel.</p>
 <p>With <code>scale = "link"</code> the generic applies the chain rule for the links the
 family carries. This method always returns the parameter scale.</p>
     </div>
@@ -111,6 +114,12 @@ vector of length 1 or of the length of <code>y</code>. <code>mu</code> must lie 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Unused, and accepted so that the signature matches the generic's.</p></dd>
+
+
+<dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
+<dd><p>A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -153,7 +162,7 @@ concentration, and <code><a href="distrib_gradient.html">distrib_gradient()</a><
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The direction component is unchanged from the concentration</span></span></span>
 <span class="r-in"><span><span class="co"># parametrization, the map touching the second parameter only.</span></span></span>
-<span class="r-in"><span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fu">numericals7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_inverse.html" class="external-link">bessel_i_ratio_inverse</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span><span class="op">$</span><span class="va">kappa</span></span></span>
+<span class="r-in"><span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fu">numericals7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_inverse.html" class="external-link">bessel_i_ratio_inverse</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">mu</span>,</span></span>
 <span class="r-in"><span>          <span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="fu"><a href="vonmises1_distrib.html">vonmises1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">y</span>,</span></span>
 <span class="r-in"><span>                           <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.5</span>, kappa <span class="op">=</span> <span class="va">k</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu</span><span class="op">)</span></span></span>

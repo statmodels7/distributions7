@@ -49,8 +49,9 @@ finite. It matters as the degrees of freedom grow and the \\t\\ tail
 approaches the Gaussian's: measured at \\w = -60\\ with \\m = 2000\\,
 the log route returns 21.4345 and `dt(w, m)/pt(w, m)` returns `NaN`.
 
-Nothing here involves \\\nu\\ by differentiation; the components in
-\\\nu\\ are obtained separately, by a stencil.
+Nothing here differentiates in \\\nu\\. The derivative kernels evaluate
+the same quantities in bounded variables; see
+[`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md).
 
 ## Notation
 

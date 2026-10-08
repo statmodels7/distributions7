@@ -45,6 +45,12 @@ elementary form and is computed by
 
   Unused, and accepted so that the signature matches the generic's.
 
+- threads:
+
+  A single positive integer, how many threads the kernel may use. Below
+  the measured internal threshold the kernel stays sequential whatever
+  the count says. Defaults to `1L`.
+
 ## Value
 
 A named list of six numeric vectors, in the order `mu_mu`,
@@ -116,5 +122,5 @@ rank_gap <- function(a) {
   min(abs(eigen(-M, only.values = TRUE)$values))
 }
 vapply(c(0, 0.01, 0.5), rank_gap, 0)
-#> [1] 1.110223e-16 4.355684e-10 1.947533e-03
+#> [1] 2.550320e-27 4.355684e-10 1.947533e-03
 ```

@@ -25,7 +25,7 @@ fold_deriv_k(order)
 
 - order:
 
-  The derivative order, `3L` or `4L`.
+  The derivative order, `3L`, `4L` or `5L`.
 
 ## Value
 

@@ -3,15 +3,17 @@
 \(\mu\) and \(\rho\), in closed form, by the construction
 distrib_deriv3.VonMises2Distrib() describes carried one order further: a
 single term \(D_a \kappa^{(b)}(\rho)\) for every component carrying a
-\(\mu\), and the fourth-order one-variable Faa di Bruno on
-\(\log I_0\) for the pure-\(\rho\) one.
+\(\mu\), and
+\(\{\cos(y-\mu) - \rho\}\kappa^{(4)}(\rho) - 3\kappa'''(\rho)\) for
+the pure-\(\rho\) one.
 With expected = TRUE the method calls expected_derivative(), which is
 the one place on this page where approx and nsim are read."><meta property="og:description" content="Computes the five distinct fourth derivatives of the log-density in
 \(\mu\) and \(\rho\), in closed form, by the construction
 distrib_deriv3.VonMises2Distrib() describes carried one order further: a
 single term \(D_a \kappa^{(b)}(\rho)\) for every component carrying a
-\(\mu\), and the fourth-order one-variable Faa di Bruno on
-\(\log I_0\) for the pure-\(\rho\) one.
+\(\mu\), and
+\(\{\cos(y-\mu) - \rho\}\kappa^{(4)}(\rho) - 3\kappa'''(\rho)\) for
+the pure-\(\rho\) one.
 With expected = TRUE the method calls expected_derivative(), which is
 the one place on this page where approx and nsim are read."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -21,7 +23,7 @@ the one place on this page where approx and nsim are read."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,8 +60,9 @@ the one place on this page where approx and nsim are read."><meta property="og:i
 \(\mu\) and \(\rho\), in closed form, by the construction
 <code><a href="distrib_deriv3.VonMises2Distrib.html">distrib_deriv3.VonMises2Distrib()</a></code> describes carried one order further: a
 single term \(D_a \kappa^{(b)}(\rho)\) for every component carrying a
-\(\mu\), and the fourth-order one-variable Faa di Bruno on
-\(\log I_0\) for the pure-\(\rho\) one.</p>
+\(\mu\), and
+\(\{\cos(y-\mu) - \rho\}\kappa^{(4)}(\rho) - 3\kappa'''(\rho)\) for
+the pure-\(\rho\) one.</p>
 <p>With <code>expected = TRUE</code> the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code>, which is
 the one place on this page where <code>approx</code> and <code>nsim</code> are read.</p>
     </div>
@@ -110,6 +113,12 @@ or <code>"opg"</code>. Read only when <code>expected = TRUE</code>.</p></dd>
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Unused, and accepted so that the signature matches the generic's.</p></dd>
 
+
+<dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
+<dd><p>A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to <code>1L</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -128,8 +137,8 @@ concentration and \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\).</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_deriv3.VonMises2Distrib.html">distrib_deriv3.VonMises2Distrib()</a></code> for the order below and the
-construction, <code><a href="vm2_parts.html">vm2_parts()</a></code> for the map's derivatives, and
-<code><a href="distrib_deriv4.html">distrib_deriv4()</a></code> for the generic.</p></div>
+construction, <code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_inverse_d1.html" class="external-link">numericals7::bessel_i_ratio_inverse_d1()</a></code> for the map's
+derivatives, and <code><a href="distrib_deriv4.html">distrib_deriv4()</a></code> for the generic.</p></div>
     </div>
 
     <div class="section level2">

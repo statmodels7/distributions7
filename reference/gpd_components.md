@@ -92,9 +92,7 @@ full.
 ## See also
 
 [`distrib_deriv3.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md)
-and
-[`distrib_deriv4.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GPDDistrib.md),
-which call this;
+for the compiled kernels this assembly is checked against;
 [`fdb2()`](https://statmodels7.github.io/distributions7/reference/fdb2.md)
 for the two-variable composition template; and
 [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md)

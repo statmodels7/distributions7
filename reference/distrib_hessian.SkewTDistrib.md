@@ -1,11 +1,11 @@
 # Skew t Observed Hessian
 
-Computes the ten second derivatives of the log-density. The block in
-\\(\mu, \sigma, \alpha)\\ is closed form; every component involving
-\\\nu\\ comes from one stencil applied to an analytic quantity, for the
-reason
-[`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md)
-gives.
+Computes the ten second derivatives of the log-density with the compiled
+kernel described on
+[`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md).
+The block in \\(\mu, \sigma, \alpha)\\ has the closed forms below; the
+components involving \\\nu\\ carry the derivatives of \\\log
+T\_{\nu+1}(w)\\ in the degrees of freedom, which are integrals.
 
 ## Arguments
 
@@ -34,6 +34,10 @@ gives.
 
   Unused, and accepted so that the signature matches the generic's.
 
+- threads:
+
+  A single positive integer, how many threads the kernel may use.
+
 ## Value
 
 A named list of ten numeric vectors in
@@ -54,23 +58,6 @@ With \\D = A + QB\\ and \\D' = A' + Q'B^2 + QB'\\ in the notation of
 z c + Q E}{\sigma}, \qquad \dfrac{\partial^2 \ell}{\partial \sigma \\
 \partial \alpha} = -\dfrac{z(Q' B z c + Q E)}{\sigma}.\$\$
 
-## The four components in the degrees of freedom
-
-\\\partial^2\ell/\partial\nu^2\\ is one five-point second difference of
-the log-density,
-[`fd5_second()`](https://statmodels7.github.io/distributions7/reference/fd5_second.md).
-The three mixed ones step the **closed-form score** in \\\nu\\ with
-[`fd5_first()`](https://statmodels7.github.io/distributions7/reference/fd5_first.md),
-so only one difference is taken and it is taken of an analytic quantity.
-Stepping the log-density in both variables instead would be a difference
-of a difference in \\\nu\\, which this family never does.
-
-Measured at \\\mu = 0\\, \\\sigma = 1\\, \\\alpha = 3\\, \\\nu = 6\\,
-the summed `nu_nu` agrees with
-[`numDeriv::hessian`](https://rdrr.io/pkg/numDeriv/man/hessian.html) on
-the log-likelihood to \\2\times10^{-9}\\ relative and `mu_nu` to the
-printed digit.
-
 ## Notation
 
 \\z = (y-\mu)/\sigma\\, \\c = \sqrt{(\nu+1)/(\nu+z^2)}\\, and \\A\\,
@@ -83,9 +70,7 @@ defines them.
 [`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md)
 for the order below,
 [`distrib_deriv3.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewTDistrib.md)
-for the order above,
-[`fd5_second()`](https://statmodels7.github.io/distributions7/reference/fd5_second.md)
-for the stencil, and
+for the order above, and
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 for the generic.
 

@@ -80,8 +80,8 @@ function, the score is \$\$\dfrac{\partial \ell}{\partial \mu} =
 \dfrac{y}{1+\theta},\$\$ and the Hessian is the same chain rule at
 second order. In the expected information every term carrying \\P\\
 drops out, its expectation vanishing by the first Bartlett identity, and
-only \\\mathbb{E}\[\psi'(Y+r)\]\\ remains, which is summed against the
-exact mass out to a far-tail quantile.
+what remains is two sums over the support against the exact mass
+([`distrib_expected_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md)).
 
 **The mean and the dispersion are not orthogonal here.** The mixed entry
 of the expected information is small but non-zero at every setting
@@ -97,17 +97,14 @@ size \\r = \mu/\theta\\ grows without bound and the chain rule divides
 by powers of \\\theta\\. The score's digamma difference is computed in a
 form that performs its own cancellation symbolically, and the value
 converges onto \\\\(y-\mu)^2 - y\\/(2\mu)\\, holding to about five
-significant figures at \\\theta = 10^{-8}\\. Two quantities are **not**
-rewritten, and both pages say so:
-
-- the expected information in \\\theta\\, which turns positive from
-  about \\\theta = 10^{-6}\\ and leaves the matrix indefinite
-  ([`distrib_expected_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md));
-
-- the third and fourth derivatives in \\\theta\\, whose own cancellation
-  in the powers of \\r\\ is untouched
-  ([`distrib_deriv3.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.md),
-  [`distrib_deriv4.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.NegBin1Distrib.md)).
+significant figures at \\\theta = 10^{-8}\\. The expected information is
+written in sums whose summands are rational in \\(\mu, \theta)\\ and
+stays negative definite to \\\theta = 10^{-10}\\
+([`distrib_expected_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md)).
+The third and fourth derivatives in \\\theta\\ are **not** rewritten,
+and their cancellation in the powers of \\r\\ is untouched
+([`distrib_deriv3.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.md),
+[`distrib_deriv4.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.NegBin1Distrib.md)).
 
 A fit reaches that regime routinely: on 2,000 Poisson counts with mean 4
 the dispersion is estimated at about \\1.7\times 10^{-8}\\ and the run
@@ -207,6 +204,6 @@ rbind(fitted  = coef(fit),
 # the regime the expected information page warns about.
 set.seed(4)
 coef(fit_distrib(d, rpois(2000, 4)))
-#>           mu        theta 
-#> 3.941000e+00 1.666262e-08 
+#>          mu       theta 
+#> 3.94100e+00 1.66641e-08 
 ```

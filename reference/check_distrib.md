@@ -144,11 +144,13 @@ The checks performed are:
 - **link scale**: `scale = "link"` derivatives against finite
   differences of the log-likelihood in \\\eta\\.
 
-Distributions that rely on the numerical fallbacks pass the
-corresponding parameter-derivative checks trivially, since analytical
-and numerical values then coincide by construction. The response
-fallbacks take the cut step alone, so near a bound they can differ from
-the reference, which is what the row then reports.
+A parameter-derivative check of an order for which the family registers
+no method of its own is not run: the value would be the numerical
+fallback, the same finite difference as the reference, and the
+comparison would hold by construction. The row is listed in the
+attribute `"skipped"` with that reason. The response fallbacks take the
+cut step alone, so near a bound they can differ from the reference,
+which is what the row then reports.
 
 A check whose statistic comes out `NaN` or `NA` has nothing to judge, as
 the expected information of a family where it does not exist, and is not

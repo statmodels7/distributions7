@@ -23,7 +23,7 @@ their estimates are asymptotically correlated."><meta property="og:image" conten
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,9 +83,8 @@ expectation not depending on the data; the values are ignored.</p></dd>
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>alpha</code> and <code>beta</code>, each a numeric
-vector of length 1. Both must be strictly positive. One weighted sum is
-built for the whole call, so a parameter varying by observation is not
-supported here.</p></dd>
+vector of length 1 or of the length of <code>y</code>. Both must be strictly
+positive.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -105,6 +104,11 @@ that the signature matches the generic's, where it selects between
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Unused, and accepted so that the signature matches the generic's.</p></dd>
+
+
+<dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
+<dd><p>A single positive integer, the number of threads the
+compiled kernel may use. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -129,7 +133,7 @@ expectation of, and <code><a href="distrib_expected_hessian.html">distrib_expect
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -0.2589858  -0.1111875   0.1523847 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># It is the mass-weighted sum of the observed Hessian over the support,</span></span></span>
-<span class="r-in"><span><span class="co"># written out here by hand and agreeing exactly.</span></span></span>
+<span class="r-in"><span><span class="co"># written out here by hand and agreeing to rounding.</span></span></span>
 <span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">10</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">10</span>, <span class="va">th</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">w</span> <span class="op">*</span> <span class="va">v</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> alpha_alpha   beta_beta  alpha_beta </span>

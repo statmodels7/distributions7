@@ -8,8 +8,8 @@ cycles: the pure-\(\mu\) components run through
 \(\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)\) with the order, the
 \(\mu\mu\kappa\) component is \(-\cos(y-\mu)\), and the
 pure-\(\kappa\) one is \(-A''(\kappa)\), which
-numericals7::bessel_i_ratio_derivs() supplies from the Riccati recursion
-\(A' = 1 - A/\kappa - A^2\) differentiated.
+numericals7::bessel_i_ratio_d2() supplies. The components are computed
+by a compiled kernel.
 With expected = TRUE the method calls expected_derivative(), which is
 the one place on this page where approx and nsim are read."><meta property="og:description" content="Computes the four distinct third derivatives of the von Mises log-density in
 \(\mu\) and \(\kappa\), in closed form. The log-density is
@@ -20,8 +20,8 @@ cycles: the pure-\(\mu\) components run through
 \(\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)\) with the order, the
 \(\mu\mu\kappa\) component is \(-\cos(y-\mu)\), and the
 pure-\(\kappa\) one is \(-A''(\kappa)\), which
-numericals7::bessel_i_ratio_derivs() supplies from the Riccati recursion
-\(A' = 1 - A/\kappa - A^2\) differentiated.
+numericals7::bessel_i_ratio_d2() supplies. The components are computed
+by a compiled kernel.
 With expected = TRUE the method calls expected_derivative(), which is
 the one place on this page where approx and nsim are read."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -31,7 +31,7 @@ the one place on this page where approx and nsim are read."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,8 +73,8 @@ cycles: the pure-\(\mu\) components run through
 \(\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)\) with the order, the
 \(\mu\mu\kappa\) component is \(-\cos(y-\mu)\), and the
 pure-\(\kappa\) one is \(-A''(\kappa)\), which
-<code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_derivs.html" class="external-link">numericals7::bessel_i_ratio_derivs()</a></code> supplies from the Riccati recursion
-\(A' = 1 - A/\kappa - A^2\) differentiated.</p>
+<code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html" class="external-link">numericals7::bessel_i_ratio_d2()</a></code> supplies. The components are computed
+by a compiled kernel.</p>
 <p>With <code>expected = TRUE</code> the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code>, which is
 the one place on this page where <code>approx</code> and <code>nsim</code> are read.</p>
     </div>
@@ -125,6 +125,12 @@ or <code>"opg"</code>. Read only when <code>expected = TRUE</code>.</p></dd>
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Unused, and accepted so that the signature matches the generic's.</p></dd>
 
+
+<dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
+<dd><p>A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to <code>1L</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -145,7 +151,7 @@ function of the first kind of order \(m\), and
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_hessian.VonMises1Distrib.html">distrib_hessian.VonMises1Distrib()</a></code> for the order below,
 <code><a href="distrib_deriv4.VonMises1Distrib.html">distrib_deriv4.VonMises1Distrib()</a></code> for the order above,
-<code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_derivs.html" class="external-link">numericals7::bessel_i_ratio_derivs()</a></code> for the derivatives of \(A\), and
+<code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html" class="external-link">numericals7::bessel_i_ratio_d1()</a></code> for the derivatives of \(A\), and
 <code><a href="distrib_deriv3.html">distrib_deriv3()</a></code> for the generic.</p></div>
     </div>
 

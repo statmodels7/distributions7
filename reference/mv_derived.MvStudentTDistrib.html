@@ -5,13 +5,23 @@ supplies. The correlations are the response's as well: the covariance is
 \(\nu\Sigma/(\nu-2)\) where it exists, and a positive multiple of a matrix
 leaves its correlations alone. The diagonal quantities are NOT standard
 deviations of the response, and are named scale_sd_v1, ..., scale_sd_vp
-and blocked as &quot;Scale standard deviations&quot; to say so."><meta property="og:description" content="Returns the square roots of the diagonal of the SCALE matrix and the
+and blocked as &quot;Scale standard deviations&quot; to say so.
+The rule of mv_derived.MvGaussianDistrib() holds here as well: a
+structured parametrization reports its own block alone, its scale as the
+square root scale_sd on the scale-matrix side, and the inverse
+parametrization reports the conditional scales \(1/M_{jj}\) and the
+partial correlations and nothing of the scale matrix."><meta property="og:description" content="Returns the square roots of the diagonal of the SCALE matrix and the
 correlations it implies, with the closed-form Jacobian mv_sd_cor()
 supplies. The correlations are the response's as well: the covariance is
 \(\nu\Sigma/(\nu-2)\) where it exists, and a positive multiple of a matrix
 leaves its correlations alone. The diagonal quantities are NOT standard
 deviations of the response, and are named scale_sd_v1, ..., scale_sd_vp
-and blocked as &quot;Scale standard deviations&quot; to say so."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+and blocked as &quot;Scale standard deviations&quot; to say so.
+The rule of mv_derived.MvGaussianDistrib() holds here as well: a
+structured parametrization reports its own block alone, its scale as the
+square root scale_sd on the scale-matrix side, and the inverse
+parametrization reports the conditional scales \(1/M_{jj}\) and the
+partial correlations and nothing of the scale matrix."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +29,7 @@ and blocked as &quot;Scale standard deviations&quot; to say so."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +69,11 @@ supplies. The correlations are the response's as well: the covariance is
 leaves its correlations alone. The diagonal quantities are NOT standard
 deviations of the response, and are named <code>scale_sd_v1</code>, ..., <code>scale_sd_vp</code>
 and blocked as <code>"Scale standard deviations"</code> to say so.</p>
+<p>The rule of <code><a href="mv_derived.MvGaussianDistrib.html">mv_derived.MvGaussianDistrib()</a></code> holds here as well: a
+structured parametrization reports its own block alone, its <code>scale</code> as the
+square root <code>scale_sd</code> on the scale-matrix side, and the inverse
+parametrization reports the conditional scales \(1/M_{jj}\) and the
+partial correlations and nothing of the scale matrix.</p>
     </div>
 
 
@@ -82,9 +97,11 @@ and blocked as <code>"Scale standard deviations"</code> to say so.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list with <code>value</code>, <code>jacobian</code>, <code>transform</code> and <code>block</code>, as
-<code><a href="mv_derived.html">mv_derived()</a></code> documents: \(p\) scale standard deviations on the log
-scale and \(p(p-1)/2\) correlations on Fisher's \(z\), plus whatever
-the matrix parametrization declares.</p>
+<code><a href="mv_derived.html">mv_derived()</a></code> documents: the structure's own block where it declares
+one; otherwise \(p\) scale standard deviations on the log scale and
+\(p(p-1)/2\) correlations on Fisher's \(z\), or for the inverse
+parametrization \(p\) conditional scales and \(p(p-1)/2\) partial
+correlations.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

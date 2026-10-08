@@ -27,6 +27,13 @@ which is part of what the second shape parameter buys.
 A numeric vector, of length equal to the longest of the three
 components.
 
+## Details
+
+The numerator and the denominator are the central moments \\\mu_3\\ and
+\\\mu_2\\ of \\Y/m_1\\, computed as
+[`variance.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.GenGamma1Distrib.md)
+describes, so that \\\gamma_1 = \mu_3/\mu_2^{3/2}\\.
+
 ## Notation
 
 \\d \> 0\\ and \\p \> 0\\ are the two shapes and \\m_k\\ the \\k\\-th
@@ -35,8 +42,6 @@ raw moment. The scale does not enter a standardized moment.
 ## See also
 
 [`kurtosis.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.GenGamma1Distrib.md),
-from the same raw moments;
-[`gengamma_raw_moments()`](https://statmodels7.github.io/distributions7/reference/gengamma_raw_moments.md),
 [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md).
 
 ## Examples

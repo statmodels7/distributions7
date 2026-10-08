@@ -15,7 +15,7 @@ work here is the single inversion of \(A\)."><meta property="og:image" content="
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,8 +70,9 @@ work here is the single inversion of \(A\).</p>
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>mu</code> and <code>rho</code>, each a numeric
-vector of length 1. <code>mu</code> must lie in \((-\pi, \pi)\) and <code>rho</code> in
-\((0, 1)\).</p></dd>
+vector of length 1 or <code>n</code>, recycled to <code>n</code> otherwise as by the generic.
+<code>mu</code> must lie in \((-\pi, \pi)\) and <code>rho</code> in \((0, 1)\). Draw <code>i</code> is
+generated at <code>mu[i]</code> and <code>rho[i]</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

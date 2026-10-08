@@ -15,7 +15,7 @@ gamma ties them by \(\gamma_2 = 3\gamma_1^2/2\)."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@ gamma ties them by \(\gamma_2 = 3\gamma_1^2/2\).</p>
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>a</code>, <code>d</code> and <code>p</code>, all positive,
 each a numeric vector of length 1 or <code>n</code>. Only <code>d</code> and <code>p</code> enter the
-value; the fourth-order combination cancels heavily at small dispersions.</p></dd>
+value.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -80,6 +80,17 @@ value; the fourth-order combination cancels heavily at small dispersions.</p></d
 of the three components.</p>
     </div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The excess is the fourth cumulant over the squared variance,
+\(\gamma_2 = (\mu_4 - 3\mu_2^2)/\mu_2^2\), with the central moments of
+\(Y/m_1\) computed as <code><a href="variance.GenGamma1Distrib.html">variance.GenGamma1Distrib()</a></code> describes and the
+difference \(\mu_4 - 3\mu_2^2\) formed in the same double-double
+arithmetic. Towards the lognormal the excess is of order \(1/k\),
+\(k = d/p\), with coefficient \(2(4h - 1)(2h - 1)\), \(h = 1/p\); at
+\(p = 2\) and \(p = 4\) that coefficient vanishes and the excess is of
+order \(1/k^2\).</p>
+    </div>
+    <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
@@ -88,8 +99,7 @@ raw moment.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="skewness.GenGamma1Distrib.html">skewness.GenGamma1Distrib()</a></code>, from the same raw moments;
-<code><a href="gengamma_raw_moments.html">gengamma_raw_moments()</a></code>, <code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code>.</p></div>
+    <div class="dont-index"><p><code><a href="skewness.GenGamma1Distrib.html">skewness.GenGamma1Distrib()</a></code>, <code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code>.</p></div>
     </div>
 
     <div class="section level2">

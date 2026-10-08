@@ -8,12 +8,12 @@ value per observation, in closed form: \$\$\dfrac{\partial
 = I_1(\kappa)/I_0(\kappa)\\ the derivative of \\\log I_0\\ and also the
 **mean resultant length** of the family.
 
-The ratio comes from
+The components are computed by a compiled kernel. The ratio comes from
+numericals7's compiled
 [`numericals7::bessel_i_ratio()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio.html),
-which switches to an asymptotic expansion past \\\kappa = 10^4\\. R's
-own scaled `besselI` underflows to an exact zero between \\10^5\\ and
-\\10^6\\, so forming the ratio from two calls gives `NaN` over part of
-that band.
+which is finite and accurate at any concentration. R's own scaled
+`besselI` underflows to an exact zero between \\10^5\\ and \\10^6\\, so
+forming the ratio from two calls gives `NaN` over part of that band.
 
 With `scale = "link"` the generic applies the chain rule for the links
 the family carries. This method always returns the parameter scale.
@@ -45,6 +45,12 @@ the family carries. This method always returns the parameter scale.
 - ...:
 
   Unused, and accepted so that the signature matches the generic's.
+
+- threads:
+
+  A single positive integer, how many threads the kernel may use. Below
+  the measured internal threshold the kernel stays sequential whatever
+  the count says. Defaults to `1L`.
 
 ## Value
 

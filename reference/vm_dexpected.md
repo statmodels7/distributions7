@@ -7,7 +7,7 @@ g(c)\\ and \\E\_{12} = 0\\ in the second parameter \\c\\.
 ## Usage
 
 ``` r
-vm_dexpected(P, n, order, f1, f2, g1, g2)
+vm_dexpected(P, n, order, f, g)
 ```
 
 ## Arguments
@@ -24,13 +24,13 @@ vm_dexpected(P, n, order, f1, f2, g1, g2)
 
   `1L` or `2L`.
 
-- f1, f2:
+- f:
 
-  The first and second derivatives of \\f\\.
+  The derivative of order `order` of \\f\\.
 
-- g1, g2:
+- g:
 
-  The first and second derivatives of \\g\\.
+  The derivative of order `order` of \\g\\.
 
 ## Value
 

@@ -1,17 +1,8 @@
-# Generalized Pareto Third-Order Derivatives
+# Generalized Pareto Derivatives of Orders Three to Five
 
-Computes the four distinct third derivatives of the generalized Pareto
-log-density in \\\sigma\\ and \\\xi\\, **in closed form**, through
-[`gpd_components()`](https://statmodels7.github.io/distributions7/reference/gpd_components.md).
-The log-density splits as \\-\log\sigma - \log t - \log(t)/\xi\\ with
-\\t = 1 + \xi y/\sigma\\, and the last piece is taken from its own
-series wherever the Leibniz form's terms of size \\\xi^{-(b+1)}\\ cancel
-against each other.
-
-With `expected = TRUE` the method calls
-[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-instead: the expected third derivatives have no closed form. That is the
-one place on this page where `approx` and `nsim` are read.
+Return the third, fourth and fifth derivatives of the log-density in
+\\(\sigma, \xi)\\, and for orders three and four their expectations,
+each from its own compiled kernel.
 
 ## Arguments
 
@@ -22,65 +13,78 @@ one place on this page where `approx` and `nsim` are read.
 
 - y:
 
-  A numeric vector of observations on the support. With
-  `expected = TRUE` only its length is read.
+  A numeric vector of observations. With `expected = TRUE` only its
+  length is read.
 
 - theta:
 
-  A named list with components `sigma` and `xi`, each a numeric vector
-  of length 1 or of the length of `y`. `sigma` must be strictly
-  positive; `xi` may be of either sign, including zero.
+  A named list with components `sigma` (positive) and `xi` (any real
+  value), each a numeric vector of length 1 or of the length of `y`.
 
 - expected:
 
-  Logical of length 1. When `TRUE` the expectation under the model is
-  returned in place of the value at the data, computed numerically.
-  Defaults to `FALSE`.
+  Logical of length 1; for orders three and four, whether the
+  expectation under the model is returned. Defaults to `FALSE`.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  `"parameter"` or `"link"`; the link scale is applied by the generic
+  for orders three and four and by
+  [`deriv5_scale()`](https://statmodels7.github.io/distributions7/reference/deriv5_scale.md)
+  for order five.
 
-- approx:
+- approx, nsim:
 
-  One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`. Read only when `expected = TRUE`.
-
-- nsim:
-
-  A single positive integer, the sample size when `approx = "mc"`. Read
-  only when `expected = TRUE`. Defaults to `10000`.
+  Accepted for the generic's signature; the expectations are closed
+  forms.
 
 - ...:
 
-  Unused, and accepted so that the signature matches the generic's.
+  Unused.
 
 - threads:
 
-  A single positive integer, how many threads the polynomial kernel of
-  the series branch may use. Defaults to `1L`.
+  A single positive integer, how many threads the compiled kernel may
+  use. Defaults to `1L`. The result does not depend on the count.
 
 ## Value
 
-A named list of four numeric vectors, `sigma_sigma_sigma`,
-`sigma_sigma_xi`, `sigma_xi_xi` and `xi_xi_xi`, each of length
-`max(length(y), lengths(theta))`.
+A named list with one numeric vector per component, keyed as
+[`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
+keys them: 4, 5 and 6 components at orders three, four and five.
 
-## Notation
+## Details
 
-\\\ell\\ is the log-density of one observation, \\\sigma \> 0\\ the
-scale, \\\xi\\ the shape, \\z = y/\sigma\\ and \\t = 1 + \xi z\\.
+With \\z = y/\sigma\\, \\t = 1 + \xi z\\ and \\u = \xi z\\, the
+log-density is \\-\log\sigma - \log t - W\\ with \\W = \log(t)/\xi =
+z\\\phi(u)\\ and \\\phi(u) = \log(1+u)/u\\. Every component is a closed
+form derived offline and written out, \\\sigma^{-r}\\ times a form in
+\\z\\, \\\xi\\ and \\1/t\\ for \\r\\ derivatives in \\\sigma\\. Since
+\\\partial W/\partial z = 1/t\\, only the pure \\\xi\\ component
+contains \\\phi\\, through \\\partial^j W/\partial\xi^j =
+z^{j+1}\phi^{(j)}(u)\\ with \$\$\phi^{(j)}(u) = \frac{(-1)^j
+j!}{u^{j+1}} \sum\_{i \> j} \frac{v^i}{i}, \qquad v = \frac{u}{1+u},\$\$
+summed as a series in \\v\\ for \\\|v\| \le 3/4\\ and as \\\log t\\
+minus the first \\j\\ terms elsewhere, so that no form divides by
+\\\xi\\ and \\\xi = 0\\ is an ordinary point. \\t\\ is formed from the
+exact product \\\xi y\\, which keeps its relative accuracy near the
+upper end of the support when \\\xi \< 0\\.
+
+The expected derivatives follow from \\V = (1 + \xi
+Y/\sigma)^{-1/\xi}\\, uniform on \\(0, 1)\\: each is a rational function
+of \\\xi\\ over \\\sigma^r\\. They exist for \\\xi \> -1/3\\ at order
+three and \\\xi \> -1/4\\ at order four, and are `NA` below; `approx`
+and `nsim` are not read.
+
+Outside the support, \\y \< 0\\ or \\1 + \xi y/\sigma \le 0\\, every
+component is `NaN`.
 
 ## See also
 
 [`distrib_hessian.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GPDDistrib.md)
 for the order below,
-[`distrib_deriv4.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GPDDistrib.md)
-for the order above,
 [`gpd_components()`](https://statmodels7.github.io/distributions7/reference/gpd_components.md)
-for the two routes and the measured threshold, and
+for an independent assembly of orders one to four, and
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
 for the generic.
 
@@ -88,25 +92,26 @@ for the generic.
 
 ``` r
 d <- gpd_distrib()
-y <- c(0.5, 2, 8)
+y <- c(0.3, 1.5, 6)
 th <- list(sigma = 1.5, xi = 0.3)
 d3 <- distrib_deriv3(d, y, th)
 names(d3)
 #> [1] "sigma_sigma_sigma" "sigma_sigma_xi"    "sigma_xi_xi"      
 #> [4] "xi_xi_xi"         
 
-# A central difference of the Hessian reproduces the pure-scale component.
+# A central difference of the Hessian reproduces the pure shape component.
 eps <- 1e-5
-up <- distrib_hessian(d, y, list(sigma = 1.5 + eps, xi = 0.3))$sigma_sigma
-dn <- distrib_hessian(d, y, list(sigma = 1.5 - eps, xi = 0.3))$sigma_sigma
-all.equal((up - dn) / (2 * eps), d3$sigma_sigma_sigma, tolerance = 1e-6)
+up <- distrib_hessian(d, y, list(sigma = 1.5, xi = 0.3 + eps))$xi_xi
+dn <- distrib_hessian(d, y, list(sigma = 1.5, xi = 0.3 - eps))$xi_xi
+all.equal((up - dn) / (2 * eps), d3$xi_xi_xi, tolerance = 1e-6)
 #> [1] TRUE
 
-# At a shape near zero the family is the exponential, and the scale
-# components converge onto that family's at rate O(xi).
-de <- exponential_distrib()
-vapply(c(1e-6, 1e-9), function(x)
-  max(abs(distrib_deriv3(d, y, list(sigma = 1.5, xi = x))$sigma_sigma_sigma -
-          distrib_deriv3(de, y, list(mu = 1.5))$mu_mu_mu)), numeric(1))
-#> [1] 9.165352e-05 9.165432e-08
+# The shape zero is an ordinary point.
+distrib_deriv4(d, y, list(sigma = 1.5, xi = 0))$xi_xi_xi_xi
+#> [1]  8.0640e-03  1.2000e+00 -3.3792e+03
+
+# The expected third derivatives, NA where they do not exist.
+distrib_deriv3(d, 1, list(sigma = 1.5, xi = c(0.2, -0.4)),
+               expected = TRUE)$xi_xi_xi
+#> [1] 8.928571       NA
 ```

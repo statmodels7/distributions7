@@ -9,7 +9,7 @@ mean."><meta property="og:image" content="https://statmodels7.github.io/distribu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,7 @@ mean."><meta property="og:image" content="https://statmodels7.github.io/distribu
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Generalized Gamma Distribution in the Mean</h1>
-      <small class="dont-index">Source: <a href="https://github.com/statmodels7/distributions7/blob/master/R/reparametrized_families.R" class="external-link"><code>R/reparametrized_families.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/statmodels7/distributions7/blob/master/R/gengamma2_distrib.R" class="external-link"><code>R/gengamma2_distrib.R</code></a></small>
       <div class="d-none name"><code>gengamma2_distrib.Rd</code></div>
     </div>
 
@@ -73,27 +73,32 @@ mean.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A reparametrized distribution object.</p>
+    <p>An S7 object of class <code>GenGamma2Distrib</code>, inheriting from
+<code>continuous_distrib</code>, with <code>params</code> <code>c("mean", "d", "p")</code> and
+<code>link_params</code> the three links given here.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The Stacy parametrization of <code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code> carries a
-scale, a shape and a power, and exposes no mean at all, which is awkward for
-a family a regression would put a linear predictor on. Since
-\(\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)\), the map is
-$$a = m\,\dfrac{\Gamma(d/p)}{\Gamma((d+1)/p)}.$$</p>
+    <p>The Stacy parametrization of <code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code> carries a scale, a shape
+and a power, and exposes no mean at all, which is awkward for a family a
+regression would put a linear predictor on. Since
+\(\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)\), the scale here is
+$$a = m\,\dfrac{\Gamma(d/p)}{\Gamma((d+1)/p)},$$
+and every derivative in \((m, d, p)\) to order five, the expected
+information and its derivatives, and the derivatives in the response are
+closed forms, each order in its own compiled kernel (see
+<code><a href="distrib_gradient.GenGamma2Distrib.html">distrib_gradient.GenGamma2Distrib()</a></code>).</p>
     </div>
     <div class="section level2">
     <h2 id="the-distribution">The distribution<a class="anchor" aria-label="anchor" href="#the-distribution"></a></h2>
 
 
-<p>$$f(y) = \frac{p\,y^{d-1}}{a^{d}\,\Gamma(d/p)}\,e^{-(y/a)^{p}}, \qquad a = \mu\,\frac{\Gamma(d/p)}{\Gamma((d+1)/p)}$$
-on \(y \in (0, \infty)\).</p>
-<p>$$\mathbb{E}[Y] = \mu$$</p>
+<p>$$f(y) = \frac{p\,y^{d-1}}{a^{d}\,\Gamma(d/p)}\,e^{-(y/a)^{p}}, \qquad a = m\,\frac{\Gamma(d/p)}{\Gamma((d+1)/p)}$$
+on \(y \in (0, \infty)\), with \(E[Y] = m\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code>, <code><a href="reparametrize.html">reparametrize()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code>; <a href="GenGamma2Distrib.html">GenGamma2Distrib</a> for the class.</p></div>
     </div>
 
     <div class="section level2">

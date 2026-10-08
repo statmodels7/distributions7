@@ -141,8 +141,6 @@ der$jacobian[, c("mu1", "mu2")]
 # A structured matrix reports its own quantities as a further block.
 a <- mvgaussian1_distrib(3, parameters7::ar1(3))
 mv_derived(a, as.list(stats::setNames(c(0, 0, 0, 0.1, 0.3), a@params)))$value
-#>      sd_v1      sd_v2      sd_v3  cor_v1_v2  cor_v1_v3  cor_v2_v3      scale 
-#> 1.05127110 1.05127110 1.05127110 0.29131261 0.08486304 0.29131261 1.10517092 
-#>        rho 
-#> 0.29131261 
+#>        sd       rho 
+#> 1.0512711 0.2913126 
 ```

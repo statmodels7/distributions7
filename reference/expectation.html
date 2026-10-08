@@ -11,7 +11,7 @@ methods described on their own pages."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,10 @@ from arithmetic and the <code>distrib_*</code> generics already is.</p></dd>
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list of parameters. Vectors are supported and are
 recycled against any vectors in <code>...</code>, so several parameter values can
-be handled in one call; all combinations share one batched evaluation.</p></dd>
+be handled in one call; all combinations share one batched evaluation.
+A constant of the family that varies by observation (a binomial's
+<code>size</code>) is recycled in the same way, so a scalar <code>theta</code> gives one
+expected value per observation.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

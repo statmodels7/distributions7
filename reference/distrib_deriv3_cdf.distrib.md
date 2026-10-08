@@ -69,16 +69,16 @@ the closed route four families take instead.
 # A gamma reaches this method and differences its cdf.
 distrib_deriv3_cdf(gamma2_distrib(), 2, list(mu = 2, sigma2 = 1))
 #> $mu_mu_mu
-#> [1] -0.7286459
+#> [1] -0.7286449
 #> 
 #> $mu_mu_sigma2
-#> [1] 0.7727148
+#> [1] 0.772715
 #> 
 #> $mu_sigma2_sigma2
-#> [1] -0.5826829
+#> [1] -0.5826834
 #> 
 #> $sigma2_sigma2_sigma2
-#> [1] 0.04939443
+#> [1] 0.04939316
 #> 
 
 # A beta-binomial reaches it too, and its sum is exact.

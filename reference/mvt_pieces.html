@@ -17,7 +17,7 @@ once per call instead of once per component."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,7 +126,7 @@ twin.</p></div>
 <span class="r-in"><span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">mvt_pieces</span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span>, derivs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pc</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "mu"        "eta"       "nu"        "p"         "s"         "sigma"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "sigma_inv" "logdet"    "a"         "dlogdet"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "sigma_inv" "logdet"    "ai"        "a"         "dlogdet"  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># sigma_inv is the inverse of the scale matrix, and logdet its determinant.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sigma</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">pc</span><span class="op">$</span><span class="va">sigma_inv</span>, <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, check.attributes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>

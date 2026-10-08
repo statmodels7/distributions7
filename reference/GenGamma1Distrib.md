@@ -105,10 +105,10 @@ Registered in this file, the last three compiled:
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GenGamma1Distrib.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GenGamma1Distrib.md).
 
-Registered elsewhere: the third and fourth orders in
-`gengamma1_higher.R`; the response derivatives in
-`cross_derivatives_families.R`; the mixed one in
-`cross_derivatives_simple.R`; and the four moments in `moments.R`.
+Registered elsewhere: the orders three to five and the derivatives in
+the response, compiled, in `gengamma1_higher.R`; the derivatives of the
+expected information in `dexpected_reparam.R`; and the four moments in
+`moments.R`. The derivatives of the distribution function are numerical.
 
 ## The one representation everything rests on
 

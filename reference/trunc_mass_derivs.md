@@ -94,5 +94,5 @@ unlist(distributions7:::trunc_score_mean_quad(tn, theta))
 # and the caller integrates instead.
 tg <- truncated(gamma2_distrib(), lower = 0.5, upper = 5)
 is.null(distributions7:::trunc_mass_derivs(tg, list(mu = 2, sigma2 = 1), 1L))
-#> [1] TRUE
+#> [1] FALSE
 ```

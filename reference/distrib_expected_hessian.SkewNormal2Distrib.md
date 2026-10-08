@@ -1,132 +1,94 @@
 # Skew Normal Expected Information in the Centered Parametrization
 
-Computes the expected second derivatives by carrying the parent's
-expected information through the same congruence the observed Hessian
-uses, \\J^\top E\[\ell''\] J\\ with \\J\\ the Jacobian of
-[`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md),
-and through
-[`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
-and
-[`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
-its first and second derivatives in the parameters. The first-order term
-of the chain rule drops out under expectation, the score having mean
-zero.
-
-The matrix is **non-singular at zero skewness**, which the direct
-parametrization's is not: there the score for \\\alpha\\ is exactly
-proportional to the score for the location and the information loses a
-rank. Measured at \\\mu = 0\\, \\\sigma = 1\\, the eigenvalues here tend
-to 2, 1 and \\1/6\\ as \\\gamma_1 \to 0\\. Removing that singularity is
-what the centered parametrization is for.
+The expected information and its first two derivatives in the
+parameters. For \\\|\gamma_1\| \<\\
+[`sn2_ge()`](https://statmodels7.github.io/distributions7/reference/sn2_ge.md)
+they come from their series in \\r = (\gamma_1/c)^{1/3}\\; elsewhere
+from the quadrature of
+[`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md)
+over the family's own observed derivatives, the family being
+location-scale in \\(\mu, \sigma)\\ at fixed \\\gamma_1\\.
 
 ## Arguments
 
 - distrib:
 
-  A `SkewNormal2Distrib` object, from
-  [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md).
+  A `SkewNormal2Distrib` object.
 
 - y:
 
-  A numeric vector. Its values do not enter the result, which is an
-  expectation; only its length does, through recycling.
+  A numeric vector of observations, read for its length.
 
 - theta:
 
-  A named list with components `mu`, `sigma` and `gamma1`. The skewness
-  must not be exactly zero.
+  A named list with components `mu`, `sigma` and `gamma1`.
 
 - scale:
 
-  Either `"parameter"`, the default, or `"link"`.
+  `"parameter"` or `"link"`.
 
 - approx, nsim:
 
-  Ignored.
+  Accepted for the generics' signatures and unused.
 
 - ...:
 
-  Unused, and accepted so that the signature matches the generic's.
+  Unused.
 
 - threads:
 
-  The thread count passed to the parent's kernels.
+  A single positive integer, passed to the kernels behind the
+  quadrature.
 
 ## Value
 
-A named list of numeric vectors: for
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-six, in
-[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)'s
-order, and for the two derivatives those keyed as
+A named list keyed as
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
 [`dexpected_names()`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md)
-and
+or
 [`d2expected_names()`](https://statmodels7.github.io/distributions7/reference/d2expected_names.md).
-Every entry is an expectation, so it does not depend on `y`.
 
-## Where the parent's quantities come from
+## Details
 
-The parent is
-[`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md),
-whose expected information and its two derivatives are one quadrature
-over \\z\\ per distinct shape; see
-[`distrib_expected_hessian.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal1Distrib.md).
-The derivatives here are the parent's carried through the map by
-[`dexpected_chain()`](https://statmodels7.github.io/distributions7/reference/dexpected_chain.md),
-which needs the map's partials to third order and reads them from
-[`md_skewnormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md).
-
-## Where the digits run out
-
-The congruence is a difference of terms of size \\\gamma_1^{-2/3}\\, so
-the limit is approached and then lost. Measured, the \\\gamma_1\\
-component is 0.16666782 against \\1/6 = 0.16666667\\ at \\\gamma_1 =
-10^{-8}\\, 0.1655 at \\10^{-10}\\, and **negative** at \\10^{-12}\\. A
-fit does not visit those values, and a genuinely symmetric problem is
-better posed in
-[`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md).
-
-`approx` and `nsim` are accepted for the generic's sake and ignored.
-
-## Errors
-
-Signals an error when any element of `gamma1` is exactly zero.
+The series is the series in \\r\\ of the observed components integrated
+term by term against the series of the density, with gaussian moments,
+computed offline at 60 digits. It is asymptotic rather than convergent,
+and below the bound its terms fall under \\10^{-20}\\ before they turn.
+The information is finite at \\\gamma_1 = 0\\, where it is
+\\\mathrm{diag}(1, 2, 1/6)/\sigma^2\\ with the sign of a Hessian, but it
+is not analytic in \\\gamma_1\\ there: \\E\[\ell\_{\gamma_1\gamma_1}\]\\
+carries a term in \\\gamma_1^{2/3}\\ and \\E\[\ell\_{\mu\gamma_1}\]\\
+one in \\\gamma_1^{4/3}\\. Its derivatives in \\\gamma_1\\ are therefore
+infinite at zero skewness, where the two derivative methods signal an
+error.
 
 ## See also
 
-[`distrib_hessian.SkewNormal2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewNormal2Distrib.md)
-for the observed curvature, and
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-for the generic.
+[`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md),
+[`sn2_ge()`](https://statmodels7.github.io/distributions7/reference/sn2_ge.md).
 
 ## Examples
 
 ``` r
 d <- skewnormal2_distrib()
-th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
-e <- distrib_expected_hessian(d, 0, th)
-names(e)
-#> [1] "mu_mu"         "sigma_sigma"   "gamma1_gamma1" "mu_sigma"     
-#> [5] "mu_gamma1"     "sigma_gamma1" 
-
-# The information is positive definite, and stays so into symmetry, where
-# the direct parametrization loses a rank.
-info <- function(g) {
-  e <- distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, gamma1 = g))
-  M <- matrix(c(e$mu_mu, e$mu_sigma, e$mu_gamma1,
-                e$mu_sigma, e$sigma_sigma, e$sigma_gamma1,
-                e$mu_gamma1, e$sigma_gamma1, e$gamma1_gamma1), 3, 3)
-  eigen(-M, only.values = TRUE)$values
-}
-rbind(gamma1_0.5 = info(0.5), gamma1_1e_6 = info(1e-6))
-#>                 [,1]      [,2]      [,3]
-#> gamma1_0.5  2.404241 0.9128588 0.2181565
-#> gamma1_1e_6 2.000000 1.0000000 0.1666723
-
-# Its own component tends to 1/6.
-c(limit = 1 / 6,
-  at_1e_6 = -distrib_expected_hessian(d, 0,
-              list(mu = 0, sigma = 1, gamma1 = 1e-6))$gamma1_gamma1)
-#>     limit   at_1e_6 
-#> 0.1666667 0.1666723 
+# finite at zero skewness, where the direct parametrization's is singular
+distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, gamma1 = 0))
+#> $mu_mu
+#> [1] -1
+#> 
+#> $sigma_sigma
+#> [1] -2
+#> 
+#> $gamma1_gamma1
+#> [1] -0.1666667
+#> 
+#> $mu_sigma
+#> [1] 0
+#> 
+#> $mu_gamma1
+#> [1] 1.166815e-61
+#> 
+#> $sigma_gamma1
+#> [1] 0
+#> 
 ```

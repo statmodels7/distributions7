@@ -45,8 +45,8 @@ surv_cdf_deriv_k(distrib, q, theta, order, Lval, Lderiv, inside = NULL)
 
   A logical vector saying which quantiles lie inside the support, or
   `NULL` (the default), which reads `q > distrib@bounds[1]`. A family
-  whose support depends on a parameter, as the generalized Pareto's does
-  at a negative shape, supplies its own; the fixed bounds cannot see it.
+  whose support depends on a parameter supplies its own; the fixed
+  bounds cannot see it.
 
 ## Value
 
@@ -84,6 +84,4 @@ is what suppresses that.
 [`register_surv_cdf()`](https://statmodels7.github.io/distributions7/reference/register_surv_cdf.md),
 which turns a pieces function into the four methods;
 [`bell_f_ratio()`](https://statmodels7.github.io/distributions7/reference/bell_f_ratio.md)
-for the partition sum;
-[`gpd_surv_pieces()`](https://statmodels7.github.io/distributions7/reference/gpd_surv_pieces.md)
-for the most involved of the three families.
+for the partition sum.

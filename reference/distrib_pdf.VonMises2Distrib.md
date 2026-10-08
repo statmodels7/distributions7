@@ -72,7 +72,7 @@ distrib_pdf(d2, y, th)
 
 # It is the same law as the concentration parametrization, at the
 # concentration this resultant length implies.
-k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+k <- numericals7::bessel_i_ratio_inverse(0.7)
 k
 #> [1] 2.013628
 all.equal(distrib_pdf(d2, y, th),

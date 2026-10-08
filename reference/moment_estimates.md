@@ -2,7 +2,7 @@
 
 Returns the parameters a family's own first two moments imply for a
 sample, in closed form where the inversion has one, and `NULL` where
-this family has no entry. **37 of the 42 univariate families have one.**
+this family has no entry. **38 of the 43 univariate families have one.**
 
 A starting value should be an estimate. For most families the moment
 estimate is one line: the sample mean and variance are set equal to the

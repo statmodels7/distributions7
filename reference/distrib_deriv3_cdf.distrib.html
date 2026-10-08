@@ -15,7 +15,7 @@ requested tail and scale."><meta property="og:image" content="https://statmodels
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,16 +113,16 @@ stencil's error, about \(1.5\times10^{-5}\) at order 3 and
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A gamma reaches this method and differences its cdf.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_deriv3_cdf.html">distrib_deriv3_cdf</a></span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma2 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu_mu</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.7286459</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.7286449</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu_sigma2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.7727148</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.772715</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_sigma2_sigma2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5826829</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5826834</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $sigma2_sigma2_sigma2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.04939443</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.04939316</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A beta-binomial reaches it too, and its sum is exact.</span></span></span>

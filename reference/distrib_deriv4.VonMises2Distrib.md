@@ -4,8 +4,8 @@ Computes the five distinct fourth derivatives of the log-density in
 \\\mu\\ and \\\rho\\, in closed form, by the construction
 [`distrib_deriv3.VonMises2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises2Distrib.md)
 describes carried one order further: a single term \\D_a
-\kappa^{(b)}(\rho)\\ for every component carrying a \\\mu\\, and the
-fourth-order one-variable Faa di Bruno on \\\log I_0\\ for the
+\kappa^{(b)}(\rho)\\ for every component carrying a \\\mu\\, and
+\\\\\cos(y-\mu) - \rho\\\kappa^{(4)}(\rho) - 3\kappa'''(\rho)\\ for the
 pure-\\\rho\\ one.
 
 With `expected = TRUE` the method calls
@@ -56,6 +56,12 @@ which is the one place on this page where `approx` and `nsim` are read.
 
   Unused, and accepted so that the signature matches the generic's.
 
+- threads:
+
+  A single positive integer, how many threads the kernel may use. Below
+  the measured internal threshold the kernel stays sequential whatever
+  the count says. Defaults to `1L`.
+
 ## Value
 
 A named list of five numeric vectors, `mu_mu_mu_mu`, `mu_mu_mu_rho`,
@@ -72,7 +78,7 @@ concentration and \\A(\kappa) = I_1(\kappa)/I_0(\kappa)\\.
 
 [`distrib_deriv3.VonMises2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises2Distrib.md)
 for the order below and the construction,
-[`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md)
+[`numericals7::bessel_i_ratio_inverse_d1()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_inverse_d1.html)
 for the map's derivatives, and
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 for the generic.

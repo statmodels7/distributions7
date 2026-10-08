@@ -8,8 +8,13 @@ expensive part of the density, never enters.
 
 The accepted angles are drawn about zero and then shifted by \\\mu\\ and
 wrapped back into \\\[-\pi, \pi)\\, so every draw lies in the declared
-support. The loop over-proposes and repeats until `n` draws have been
-accepted, so it consumes an unpredictable number of R's uniform streams.
+support. With a scalar `kappa` the envelope's constants are built once
+and the loop over-proposes and repeats until `n` draws have been
+accepted. With a `kappa` that varies by observation each draw has its
+own envelope, and the loop proposes once for every draw not yet
+accepted, so that draw `i` is generated at `kappa[i]` and shifted by
+`mu[i]`. Either way the loop consumes an unpredictable number of R's
+uniform streams.
 
 ## Arguments
 
@@ -25,9 +30,8 @@ accepted, so it consumes an unpredictable number of R's uniform streams.
 - theta:
 
   A named list with components `mu` and `kappa`, each a numeric vector
-  of length 1. `mu` must lie in \\(-\pi, \pi)\\ and `kappa` be strictly
-  positive. The envelope's constants are built once per call, so a
-  parameter varying by observation is not supported here.
+  of length 1 or `n`, recycled to `n` otherwise as by the generic. `mu`
+  must lie in \\(-\pi, \pi)\\ and `kappa` be strictly positive.
 
 - ...:
 

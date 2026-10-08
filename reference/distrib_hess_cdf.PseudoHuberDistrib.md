@@ -1,9 +1,11 @@
 # Pseudo-Huber Log-CDF Hessian
 
-Closed form in the location-scale block; the three components touching
-the shape are differenced. The method is
-[`partial_loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_hess_cdf.md)
-itself, shared with the Student t and the skew t.
+Closed form in the location-scale block, and in the mixed components
+with a shape \\k\\, \\-f s_k\\ and \\-z f s_k\\ at \\q\\; the components
+in the shape parameters alone are integrals of the density's own
+derivatives, taken by the compiled rule. The method is
+[`compiled_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
+itself.
 
 ## Arguments
 
@@ -36,13 +38,6 @@ A named list of six numeric vectors keyed as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
 each the length of `q` recycled against `theta`.
 
-## Details
-
-The saving is larger here than for the Student t, this family's
-distribution function being a quadrature: the closed block reads the
-density and its response derivative, where differencing it would run the
-quadrature four times per component.
-
 ## Notation
 
 \\\mu\\ is the location, \\\sigma \> 0\\ the scale, \\\nu \> 0\\ the
@@ -50,7 +45,7 @@ shape, \\z = (q-\mu)/\sigma\\ and \\f\\ the density.
 
 ## See also
 
-[`partial_loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_hess_cdf.md)
+[`compiled_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
 for the shared body;
 [`distrib_grad_cdf.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.PseudoHuberDistrib.md)
 for the first order;

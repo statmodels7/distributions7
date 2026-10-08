@@ -1,19 +1,12 @@
 # Pseudo-Huber Cumulative Distribution Function
 
-Computes \\F(q) = P(Y \le q)\\ by numerical integration of the density.
-The family has no elementary distribution function, so there is nothing
-closed form to call.
-
-Two devices keep the quadrature honest. The law is symmetric about
-\\\mu\\, so a quantile above the location is **reflected**, \\F(q) = 1 -
-F(2\mu - q)\\, and only the lower tail is ever integrated, where the
-integrand decays away from a finite endpoint. And every quantile is one
-**row** of a single batched quadrature through
-[`quad_rows()`](https://statmodels7.github.io/distributions7/reference/quad_rows.md),
-so a vector of `q` is integrated in a single call.
-
-A row that fails to reach the requested accuracy signals an error naming
-the positions, instead of returning a plausible number.
+Computes \\F(q) = P(Y \le q)\\ by numerical integration of the density,
+the family having no elementary distribution function. The integral is
+taken by the compiled rule of
+[`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md),
+over the tail on the side of \\q\\ away from \\\mu\\: below the location
+it is \\F\\, above it the survival function, so that neither tail is a
+difference of two numbers near one.
 
 ## Arguments
 
@@ -36,14 +29,12 @@ the positions, instead of returning a plausible number.
 - lower.tail:
 
   Logical of length 1. When `TRUE`, the default, probabilities are \\P(Y
-  \le q)\\; when `FALSE` they are \\P(Y \> q)\\, formed as \\1 - F\\.
+  \le q)\\; when `FALSE` they are \\P(Y \> q)\\.
 
 - log.p:
 
   Logical of length 1. When `TRUE` the logarithm of the probability is
-  returned, taken after the quadrature, so it carries the quadrature's
-  own accuracy rather than improving on it in the far tail. Defaults to
-  `FALSE`.
+  returned, taken after the quadrature. Defaults to `FALSE`.
 
 - ...:
 
@@ -52,8 +43,7 @@ the positions, instead of returning a plausible number.
 ## Value
 
 A numeric vector of probabilities in \\\[0, 1\]\\, of length
-`max(length(q), length(mu), length(sigma), length(nu))`, clamped to that
-range.
+`max(length(q), length(mu), length(sigma), length(nu))`.
 
 ## See also
 
@@ -73,7 +63,7 @@ for the generic.
 d <- pseudohuber_distrib()
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 
-# The quadrature, and the symmetry the method exploits.
+# The quadrature, and the symmetry of the law about its location.
 distrib_cdf(d, c(-1, 0.4, 2), th)
 #> [1] 0.2223070 0.5000000 0.8061021
 distrib_cdf(d, 0.4 - 1.5, th) + distrib_cdf(d, 0.4 + 1.5, th)

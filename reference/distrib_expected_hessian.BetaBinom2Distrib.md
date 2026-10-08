@@ -26,9 +26,7 @@ and their estimates are asymptotically correlated.
 - theta:
 
   A named list with components `alpha` and `beta`, each a numeric vector
-  of length 1. Both must be strictly positive. One weighted sum is built
-  for the whole call, so a parameter varying by observation is not
-  supported here.
+  of length 1 or of the length of `y`. Both must be strictly positive.
 
 - scale:
 
@@ -49,6 +47,11 @@ and their estimates are asymptotically correlated.
 - ...:
 
   Unused, and accepted so that the signature matches the generic's.
+
+- threads:
+
+  A single positive integer, the number of threads the compiled kernel
+  may use. Defaults to `1L`.
 
 ## Value
 
@@ -75,7 +78,7 @@ vapply(eh, function(v) v[1], numeric(1))
 #>  -0.2589858  -0.1111875   0.1523847 
 
 # It is the mass-weighted sum of the observed Hessian over the support,
-# written out here by hand and agreeing exactly.
+# written out here by hand and agreeing to rounding.
 w <- distrib_pdf(d, 0:10, th)
 vapply(distrib_hessian(d, 0:10, th), function(v) sum(w * v), numeric(1))
 #> alpha_alpha   beta_beta  alpha_beta 

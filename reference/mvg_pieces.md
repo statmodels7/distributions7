@@ -88,8 +88,8 @@ theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 pc <- distributions7:::mvg_pieces(d, theta, derivs = TRUE)
 names(pc)
-#> [1] "mu"        "eta"       "p"         "s"         "sigma"     "sigma_inv"
-#> [7] "logdet"    "a"         "dlogdet"  
+#>  [1] "mu"        "eta"       "p"         "s"         "sigma"     "sigma_inv"
+#>  [7] "logdet"    "ai"        "a"         "dlogdet"  
 
 # sigma_inv really is the inverse, and logdet its log-determinant.
 all.equal(pc$sigma %*% pc$sigma_inv, diag(2), check.attributes = FALSE)

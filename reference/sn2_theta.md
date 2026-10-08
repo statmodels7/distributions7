@@ -33,9 +33,7 @@ methods.
 ## See also
 
 [`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md)
-for the map itself and
-[`sn2_chain()`](https://statmodels7.github.io/distributions7/reference/sn2_chain.md)
-for the derivative route that uses the same map.
+for the map itself.
 
 ## Examples
 

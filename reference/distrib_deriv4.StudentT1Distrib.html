@@ -3,17 +3,15 @@
 Student t log-density in \(\mu\), \(\sigma\) and \(\nu\). The observed
 values are closed form and run in a compiled kernel decomposed over the
 elements of the output, so they do not depend on the thread count.
-The expected values have no closed form. With expected = TRUE the
-method calls expected_derivative(), which integrates the observed
-derivatives against the density by the strategy approx names. That is the
-one place on this page where approx and nsim are read."><meta property="og:description" content="Computes the fifteen distinct fourth derivatives of the location-scale
+The expected values are closed forms, as for the third order (see
+distrib_deriv3.StudentT1Distrib()). approx and nsim are accepted for
+the generic's signature and ignored."><meta property="og:description" content="Computes the fifteen distinct fourth derivatives of the location-scale
 Student t log-density in \(\mu\), \(\sigma\) and \(\nu\). The observed
 values are closed form and run in a compiled kernel decomposed over the
 elements of the output, so they do not depend on the thread count.
-The expected values have no closed form. With expected = TRUE the
-method calls expected_derivative(), which integrates the observed
-derivatives against the density by the strategy approx names. That is the
-one place on this page where approx and nsim are read."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The expected values are closed forms, as for the third order (see
+distrib_deriv3.StudentT1Distrib()). approx and nsim are accepted for
+the generic's signature and ignored."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +19,7 @@ one place on this page where approx and nsim are read."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,10 +56,9 @@ one place on this page where approx and nsim are read."><meta property="og:image
 Student t log-density in \(\mu\), \(\sigma\) and \(\nu\). The observed
 values are closed form and run in a compiled kernel decomposed over the
 elements of the output, so they do not depend on the thread count.</p>
-<p><strong>The expected values have no closed form.</strong> With <code>expected = TRUE</code> the
-method calls <code><a href="expected_derivative.html">expected_derivative()</a></code>, which integrates the observed
-derivatives against the density by the strategy <code>approx</code> names. That is the
-one place on this page where <code>approx</code> and <code>nsim</code> are read.</p>
+<p>The expected values are closed forms, as for the third order (see
+<code><a href="distrib_deriv3.StudentT1Distrib.html">distrib_deriv3.StudentT1Distrib()</a></code>). <code>approx</code> and <code>nsim</code> are accepted for
+the generic's signature and ignored.</p>
     </div>
 
 
@@ -86,8 +83,7 @@ numeric vector of length 1 or of the length of <code>y</code>. A component of le
 
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
 <dd><p>Logical of length 1. When <code>TRUE</code> the expectation under the
-model is returned in place of the value at the data, computed numerically.
-Defaults to <code>FALSE</code>.</p></dd>
+model is returned in place of the value at the data. Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -95,15 +91,9 @@ Defaults to <code>FALSE</code>.</p></dd>
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>One of <code>"integrate"</code> (the default here), <code>"bartlett"</code>, <code>"mc"</code>
-or <code>"opg"</code>, the strategy <code><a href="expected_derivative.html">expected_derivative()</a></code> uses. Read only when
-<code>expected = TRUE</code>.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>A single positive integer, the sample size when
-<code>approx = "mc"</code>. Read only when <code>expected = TRUE</code>. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-approx-nsim">approx, nsim<a class="anchor" aria-label="anchor" href="#arg-approx-nsim"></a></dt>
+<dd><p>Accepted for the generic's signature; the expectations
+are closed forms.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -112,7 +102,7 @@ or <code>"opg"</code>, the strategy <code><a href="expected_derivative.html">exp
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Read only on the observed branch. Defaults to <code>1L</code>.</p></dd>
+use. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -125,21 +115,15 @@ they carry, from <code>mu_mu_mu_mu</code> to <code>nu_nu_nu_nu</code>, each of l
     <h2 id="large-degrees-of-freedom">Large degrees of freedom<a class="anchor" aria-label="anchor" href="#large-degrees-of-freedom"></a></h2>
 
 
-<p>Unlike the third order, the fourth is <strong>not</strong> rewritten in the ratio
-variables and ceases to be finite at a large \(\nu\): measured at
-\(\sigma = 1.2\), eight of the fifteen components are finite at
-\(\nu = 10^{150}\), five at \(10^{300}\) and two at
-<code>.Machine$double.xmax</code>. A <code>NaN</code> there is a loud failure and is preferable to
-a plausible wrong number, and the regime is one in which the family is a
-Gaussian in all but name. An outer criterion that reads this order at a
-\(\nu\) run to its clamp is reported as having no finite gradient rather
-than being given one.</p>
+<p>Written like the third order, in \(z\), \(q = z^2/\nu\) and
+\(t = 1/(1+q)\), with the quantities of \(\nu\) alone on their
+asymptotic series above \(\nu = 20\): all fifteen components keep their
+digits and stay finite to <code>.Machine$double.xmax</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_deriv3.StudentT1Distrib.html">distrib_deriv3.StudentT1Distrib()</a></code> for the order below,
-<code><a href="distrib_hessian.StudentT1Distrib.html">distrib_hessian.StudentT1Distrib()</a></code> for the second order,
-<code><a href="expected_derivative.html">expected_derivative()</a></code> for the numerical expectation, and
+<code><a href="distrib_hessian.StudentT1Distrib.html">distrib_hessian.StudentT1Distrib()</a></code> for the second order, and
 <code><a href="distrib_deriv4.html">distrib_deriv4()</a></code> for the generic.</p></div>
     </div>
 
@@ -163,11 +147,11 @@ than being given one.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="op">(</span><span class="va">up</span> <span class="op">-</span> <span class="va">dn</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">eps</span><span class="op">)</span>, <span class="va">d4</span><span class="op">$</span><span class="va">mu_mu_mu_mu</span>, tolerance <span class="op">=</span> <span class="fl">1e-5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># At a degrees of freedom the log link can produce, part of the order is</span></span></span>
-<span class="r-in"><span><span class="co"># not representable and says so.</span></span></span>
+<span class="r-in"><span><span class="co"># At a degrees of freedom the log link can produce, every component is</span></span></span>
+<span class="r-in"><span><span class="co"># finite.</span></span></span>
 <span class="r-in"><span><span class="va">big</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_deriv4.html">distrib_deriv4</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span>, sigma <span class="op">=</span> <span class="fl">1.2</span>, nu <span class="op">=</span> <span class="fl">1e300</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">big</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/is.finite.html" class="external-link">is.finite</a></span><span class="op">(</span><span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">big</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/is.finite.html" class="external-link">is.finite</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

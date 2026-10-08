@@ -13,7 +13,7 @@ family calls it once and then writes its own formula in terms of the result."><m
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,8 +99,9 @@ finite. It matters as the degrees of freedom grow and the \(t\) tail
 approaches the Gaussian's: measured at \(w = -60\) with
 \(m = 2000\), the log route returns 21.4345 and <code>dt(w, m)/pt(w, m)</code>
 returns <code>NaN</code>.</p>
-<p>Nothing here involves \(\nu\) by differentiation; the components in
-\(\nu\) are obtained separately, by a stencil.</p>
+<p>Nothing here differentiates in \(\nu\). The derivative kernels evaluate
+the same quantities in bounded variables; see
+<code><a href="distrib_gradient.SkewTDistrib.html">distrib_gradient.SkewTDistrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

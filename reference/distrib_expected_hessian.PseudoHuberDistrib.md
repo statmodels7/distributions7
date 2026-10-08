@@ -90,13 +90,13 @@ th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 eh <- distrib_expected_hessian(d, y, th)
 vapply(eh, function(v) v[1], numeric(1))
 #>         mu_mu   sigma_sigma         nu_nu      mu_sigma         mu_nu 
-#> -2.620828e-01 -9.177697e-01 -5.412069e-03 -1.616963e-20  1.769121e-21 
+#> -2.620828e-01 -9.177697e-01 -5.412069e-03 -8.956503e-21 -2.035240e-21 
 #>      sigma_nu 
 #> -6.699758e-02 
 
 # The entries odd in the residual vanish by symmetry.
 c(eh$mu_sigma[1], eh$mu_nu[1])
-#> [1] -1.616963e-20  1.769121e-21
+#> [1] -8.956503e-21 -2.035240e-21
 
 # The information does not depend on the observations, and scales with
 # sigma^-2 in the location and scale block.

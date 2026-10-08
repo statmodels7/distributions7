@@ -52,6 +52,12 @@ exact.
 
   Unused, and accepted so that the signature matches the generic's.
 
+- threads:
+
+  A single positive integer, how many threads the kernel may use. Below
+  the measured internal threshold the kernel stays sequential whatever
+  the count says. Defaults to `1L`.
+
 ## Value
 
 A named list of three numeric vectors, `mu_mu`, `mu_kappa` and
@@ -87,7 +93,7 @@ vapply(eh, function(v) v[1], numeric(1))
 # two parameters are orthogonal.
 A <- numericals7::bessel_i_ratio(2)
 c(mu_mu = -2 * A, mu_kappa = 0,
-  kappa_kappa = -numericals7::bessel_i_ratio_derivs(2)$d1)
+  kappa_kappa = -numericals7::bessel_i_ratio_d1(2))
 #>       mu_mu    mu_kappa kappa_kappa 
 #>  -1.3955493   0.0000000  -0.1642232 
 

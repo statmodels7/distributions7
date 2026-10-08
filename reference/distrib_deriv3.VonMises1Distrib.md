@@ -8,9 +8,8 @@ one \\\mu\\ and two or more \\\kappa\\ is **exactly zero**. What remains
 cycles: the pure-\\\mu\\ components run through \\\kappa\\\sin, -\cos,
 -\sin, \cos\\(y-\mu)\\ with the order, the \\\mu\mu\kappa\\ component is
 \\-\cos(y-\mu)\\, and the pure-\\\kappa\\ one is \\-A''(\kappa)\\, which
-[`numericals7::bessel_i_ratio_derivs()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_derivs.html)
-supplies from the Riccati recursion \\A' = 1 - A/\kappa - A^2\\
-differentiated.
+[`numericals7::bessel_i_ratio_d2()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html)
+supplies. The components are computed by a compiled kernel.
 
 With `expected = TRUE` the method calls
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
@@ -62,6 +61,12 @@ which is the one place on this page where `approx` and `nsim` are read.
 
   Unused, and accepted so that the signature matches the generic's.
 
+- threads:
+
+  A single positive integer, how many threads the kernel may use. Below
+  the measured internal threshold the kernel stays sequential whatever
+  the count says. Defaults to `1L`.
+
 ## Value
 
 A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_kappa`,
@@ -81,7 +86,7 @@ I_1(\kappa)/I_0(\kappa)\\.
 for the order below,
 [`distrib_deriv4.VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.VonMises1Distrib.md)
 for the order above,
-[`numericals7::bessel_i_ratio_derivs()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_derivs.html)
+[`numericals7::bessel_i_ratio_d1()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html)
 for the derivatives of \\A\\, and
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
 for the generic.

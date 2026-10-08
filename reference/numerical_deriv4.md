@@ -1,9 +1,8 @@
 # Numerical Fourth-Order Derivatives of the Log-Density
 
 Computes the unique fourth-order partial derivatives of the log-density
-by second central differences of
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md).
-This powers the default
+by central finite differences of the highest order the family implements
+itself, up to the Hessian. This powers the default
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 method for distributions without a closed-form implementation.
 
@@ -36,7 +35,11 @@ numerical_deriv4(
 - h_rel:
 
   Numeric. Relative finite-difference step. Defaults to
-  `.Machine$double.eps^(1/4)`.
+  `.Machine$double.eps^(1/4)` for a family with its own Hessian, and to
+  the step
+  [`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md)
+  chooses for the order of its difference otherwise; a value given
+  explicitly is used on either route.
 
 - skip:
 
@@ -52,11 +55,18 @@ A named list of fourth-derivative component vectors, keyed as in
 
 ## Details
 
-Each component \\\partial^4 \ell /
+For a family with its own Hessian, each component \\\partial^4 \ell /
 \partial\theta_i\partial\theta_j\partial\theta_k\partial\theta_l\\ (with
 \\i \le j \le k \le l\\) is obtained as the second derivative of the
 Hessian entry \\(i, j)\\ along \\(\theta_k, \theta_l)\\: a three-point
 stencil when \\k = l\\, a four-point cross stencil otherwise.
+
+For a family without its own Hessian, each component is one
+tensor-product central stencil of order three on the score, or of order
+four on the log-density when the family has no score either; see
+[`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md)
+and the same paragraph of
+[`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md).
 
 ## See also
 

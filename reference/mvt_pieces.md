@@ -81,7 +81,7 @@ theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 pc <- distributions7:::mvt_pieces(d, theta, derivs = TRUE)
 names(pc)
 #>  [1] "mu"        "eta"       "nu"        "p"         "s"         "sigma"    
-#>  [7] "sigma_inv" "logdet"    "a"         "dlogdet"  
+#>  [7] "sigma_inv" "logdet"    "ai"        "a"         "dlogdet"  
 
 # sigma_inv is the inverse of the scale matrix, and logdet its determinant.
 all.equal(pc$sigma %*% pc$sigma_inv, diag(2), check.attributes = FALSE)

@@ -75,7 +75,7 @@ y <- c(0.2, 1, 4)
 th <- list(sigma = 1.5, xi = 0.3)
 h <- distrib_hessian(d, y, th)
 names(h)
-#> [1] "sigma_sigma" "sigma_xi"    "xi_xi"      
+#> [1] "sigma_sigma" "xi_xi"       "sigma_xi"   
 
 # Against a central difference of the score.
 eps <- 1e-5

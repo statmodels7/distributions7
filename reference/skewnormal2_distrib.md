@@ -62,12 +62,11 @@ reads that off the plain value and hands it to
 [`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md)
 as an argument, leaving a body with no
 [`abs()`](https://rdrr.io/r/base/MathFun.html) in it to differentiate.
-And its derivatives are written out by hand in
-[`md_skewnormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md),
-as a keyed table of the map's partials, which
-[`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md)
-consumes. The toolkit assembles higher-order derivatives from
-written-out tables throughout.
+And the derivatives of the log-density in the centered parameters are
+written out per order in compiled kernels (see
+[`distrib_gradient.SkewNormal2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal2Distrib.md));
+near \\\gamma_1 = 0\\, where their closed forms cancel, they come from
+the series of the log-density in \\\gamma_1^{1/3}\\.
 
 ## What the map costs, and what it buys
 
@@ -79,8 +78,9 @@ whole matrix stays positive definite at symmetry.
 
 The **observed** curvature does diverge, at the rate the cube root sets:
 \\\gamma_1^{-2/3}\\, measured at 4.642 per decade against \\10^{2/3} =
-4.6416\\. The parameter derivatives are therefore rejected at \\\gamma_1
-= 0\\ exactly, with a message naming the cause. The density, the
+4.6416\\. The derivatives of order two and more are therefore rejected
+at \\\gamma_1 = 0\\ exactly, with a message naming the cause; the score
+and the expected information are returned there. The density, the
 distribution function, the quantile function, the generator and both
 response derivatives are fine there and equal the Gaussian's.
 
@@ -165,8 +165,8 @@ smallest_eigenvalue <- function(dd, p) {
 c(centered = smallest_eigenvalue(d, list(mu = 0, sigma = 1, gamma1 = 1e-6)),
   direct = smallest_eigenvalue(skewnormal1_distrib(),
                                list(mu = 0, sigma = 1, alpha = 0)))
-#>     centered       direct 
-#> 1.666723e-01 1.110223e-16 
+#>      centered        direct 
+#>  1.666723e-01 -2.550320e-27 
 
 # A fit recovers all three moments.
 set.seed(11)

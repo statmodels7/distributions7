@@ -23,7 +23,7 @@ both parameters being positive."><meta property="og:image" content="https://stat
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -133,8 +133,8 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{P}{\theta}, \qquad
         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta},$$
 and the Hessian is the same chain rule at second order. In the expected
 information every term carrying \(P\) drops out, its expectation vanishing
-by the first Bartlett identity, and only \(\mathbb{E}[\psi'(Y+r)]\)
-remains, which is summed against the exact mass out to a far-tail quantile.</p>
+by the first Bartlett identity, and what remains is two sums over the
+support against the exact mass (<code><a href="distrib_expected_hessian.NegBin1Distrib.html">distrib_expected_hessian.NegBin1Distrib()</a></code>).</p>
 <p><strong>The mean and the dispersion are not orthogonal here.</strong> The mixed entry of
 the expected information is small but non-zero at every setting measured,
 where <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> has exactly zero there.</p>
@@ -147,14 +147,14 @@ to a finite limit while the pieces it is assembled from run away: the size
 powers of \(\theta\). The score's digamma difference is computed in a form
 that performs its own cancellation symbolically, and the value converges
 onto \(\{(y-\mu)^2 - y\}/(2\mu)\), holding to about five significant
-figures at \(\theta = 10^{-8}\). Two quantities are <strong>not</strong> rewritten, and
-both pages say so:</p><ul><li><p>the expected information in \(\theta\), which turns positive from about
-\(\theta = 10^{-6}\) and leaves the matrix indefinite
-(<code><a href="distrib_expected_hessian.NegBin1Distrib.html">distrib_expected_hessian.NegBin1Distrib()</a></code>);</p></li>
-<li><p>the third and fourth derivatives in \(\theta\), whose own cancellation
-in the powers of \(r\) is untouched
-(<code><a href="distrib_deriv3.NegBin1Distrib.html">distrib_deriv3.NegBin1Distrib()</a></code>, <code><a href="distrib_deriv4.NegBin1Distrib.html">distrib_deriv4.NegBin1Distrib()</a></code>).</p></li>
-</ul><p>A fit reaches that regime routinely: on 2,000 Poisson counts with mean 4 the
+figures at \(\theta = 10^{-8}\). The expected information is written in
+sums whose summands are rational in \((\mu, \theta)\) and stays negative
+definite to \(\theta = 10^{-10}\)
+(<code><a href="distrib_expected_hessian.NegBin1Distrib.html">distrib_expected_hessian.NegBin1Distrib()</a></code>). The third and fourth
+derivatives in \(\theta\) are <strong>not</strong> rewritten, and their cancellation in
+the powers of \(r\) is untouched (<code><a href="distrib_deriv3.NegBin1Distrib.html">distrib_deriv3.NegBin1Distrib()</a></code>,
+<code><a href="distrib_deriv4.NegBin1Distrib.html">distrib_deriv4.NegBin1Distrib()</a></code>).</p>
+<p>A fit reaches that regime routinely: on 2,000 Poisson counts with mean 4 the
 dispersion is estimated at about \(1.7\times 10^{-8}\) and the run reports
 convergence.</p>
     </div>
@@ -240,8 +240,8 @@ to validate a family of your own against the same battery this one passes;
 <span class="r-in"><span><span class="co"># the regime the expected information page warns about.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">2000</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           mu        theta </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3.941000e+00 1.666262e-08 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          mu       theta </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3.94100e+00 1.66641e-08 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

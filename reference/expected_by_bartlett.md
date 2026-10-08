@@ -43,13 +43,13 @@ which is why
 [`numericals7::set_partitions()`](https://statmodels7.github.io/numericals7/reference/set_partitions.html)
 is the whole algorithm and why the top-order derivative is never needed.
 
-At order 2 this reduces to the outer product of gradients,
-\\\mathbb{E}\[\ell\_{ij}\] = -\mathbb{E}\[\ell_i \ell_j\]\\, which is
-both the cheapest route and the only one that survives a model where the
-log-likelihood has a kink: there \\\mathbb{E}\[\partial^2 \ell\]\\
-genuinely is not the information, while the score variance still is.
-That is why it is the default at order 2 and why `"opg"` is accepted as
-a spelling of it.
+At order 2 this reduces to \\\mathbb{E}\[\ell\_{ij}\] =
+-\mathbb{E}\[\ell_i \ell_j\]\\, which needs only the score and remains
+the information where the log-likelihood has a kink: there the pointwise
+average of \\\partial^2 \ell\\ is not the information, while the score
+variance still is.
+[`expected_by_integrate()`](https://statmodels7.github.io/distributions7/reference/expected_by_integrate.md)
+calls this function at order 2 for such a family.
 
 ## See also
 

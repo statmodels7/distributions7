@@ -15,7 +15,7 @@ derivatives are the parent's components among the free indices."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,14 +66,21 @@ derivatives are the parent's components among the free indices.</p>
 
 <dl><dt id="arg-distrib">distrib<a class="anchor" aria-label="anchor" href="#arg-distrib"></a></dt>
 <dd><p>The distribution whose parameters are to be fixed, inheriting
-from <code>continuous_distrib</code>, <code>discrete_distrib</code> or <code>multivariate_distrib</code>.</p></dd>
+from <code>continuous_distrib</code>, <code>discrete_distrib</code> or <code>multivariate_distrib</code>.
+A parameter whose name is a prefix of <code>distrib</code> (the shape <code>d</code> of
+<code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code> and <code><a href="gengamma2_distrib.html">gengamma2_distrib()</a></code>) is fixed only when
+<code>distrib</code> is named, as in <code>fixed(distrib = gengamma1_distrib(), d = 2)</code>;
+otherwise partial matching assigns the value to <code>distrib</code> and an error is
+signalled.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>The fixed values, named after the parameters they fix, as in
 <code>fixed(gaussian1_distrib(), mu = 0)</code>. Each must be a single finite number
 strictly inside its parameter's domain, and each name must be a parameter
-of <code>distrib</code>. A name that is not, a value outside the domain, a value that
+of <code>distrib</code>, or the stem of a vector parameter such as a multivariate
+mean, whose value is then one number for every coordinate or one number
+per coordinate. A name that is not, a value outside the domain, a value that
 is not a single number, and an empty <code>...</code> are each rejected with an error
 saying which condition failed.</p></dd>
 
@@ -104,7 +111,11 @@ standard errors and intervals for them alone.</p>
     <div class="section level2">
     <h2 id="what-is-accepted">What is accepted<a class="anchor" aria-label="anchor" href="#what-is-accepted"></a></h2>
     <p>Fixed values are single finite numbers, strictly inside the OPEN domain of
-their parameter. Fixing a parameter of a distribution that is already a
+their parameter. A multivariate family's mean is the vector parameter
+<code>mu1, ..., mup</code>, and the name <code>mu</code> fixes all of it: <code>mu = 0</code> holds every
+coordinate at zero, and <code>mu = c(0, 1, 2)</code> holds each at its own value. The
+same holds for any parameter named as a stem followed by the indices
+<code>1, ..., k</code>. Fixing a parameter of a distribution that is already a
 fixed-parameter wrapper collapses the two into one wrapper around the
 original parent. Fixing a WRAPPER's own parameter is allowed and useful:
 <code>fixed(zero_inflated(d), zi = 0.3)</code> is a zero-inflated model with a known
@@ -117,7 +128,7 @@ silently would hide a missing argument.</p>
     <h2 id="what-it-is-for">What it is for<a class="anchor" aria-label="anchor" href="#what-it-is-for"></a></h2>
     <p>A prior. <code>fixed(gaussian1_distrib(), mu = 0)</code> is the ridge penalty with its
 scale free, <code>fixed(laplace2_distrib(), mu = 0)</code> is the lasso, and
-<code>fixed(mvgaussian1_distrib(p), mu1 = 0, ...)</code> is what a random effect is
+<code>fixed(mvgaussian1_distrib(p), mu = 0)</code> is what a random effect is
 distributed by. <code>fixed(folded(gaussian1_distrib()), mu = 0)</code> is the
 half-normal.</p>
 <p>The per-parameter smoothness declaration travels with the free parameters,
@@ -142,7 +153,12 @@ the methods do.</p></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A gaussian with a known mean: only sigma remains.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A multivariate gaussian with its whole mean held at zero.</span></span></span>
+<span class="r-in"><span><span class="fu">fixed</span><span class="op">(</span><span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, mu <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">@</span><span class="va">params</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "sigma_log_L1" "sigma_log_L2" "sigma_log_L3" "sigma_L2.1"   "sigma_L3.1"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "sigma_L3.2"  </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># A gaussian with a known mean: only sigma remains.</span></span></span>
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">fixed</span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, mu <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">d</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "sigma"</span>

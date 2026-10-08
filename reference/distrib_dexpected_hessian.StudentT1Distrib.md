@@ -49,16 +49,16 @@ For the Student t, with \\w_1 = 1 + 1/\nu\\ and \\w_3 = 1 + 3/\nu\\,
 \$\$\mathbb{E}\[\ell\_{\nu\nu}\] = \tfrac14\\\psi'((\nu+1)/2) -
 \psi'(\nu/2)\\ + \frac{\nu+5}{2\nu(\nu+1)(\nu+3)} = -\frac{7}{2\nu^4} +
 \frac{13}{\nu^5} - \dots,\$\$ whose terms cancel from order
-\\\nu^{-2}\\; its derivatives in \\\nu\\ are taken from the asymptotic
-series above \\\nu = 30\\, the series' coefficients being exact integers
-from the duplication identity \\\psi'((\nu+1)/2) - \psi'(\nu/2) =
-4\psi'(\nu) - 2\psi'(\nu/2)\\.
+\\\nu^{-2}\\; it and its derivatives in \\\nu\\ are taken from their
+asymptotic series in \\1/\nu\\ above \\\nu = 20\\, derived from
+Stirling's series, and the first and second derivatives come from one
+kernel each.
 
 For the generalized gamma by scale \\a\\ and shapes \\d, p\\, each
-component is \\a^{\alpha} p^{\beta} F(k)\\ with \\k = d/p\\ and \\F\\ a
-combination of \\\psi(k)\\, \\\psi(k+1)\\ and their derivatives,
-differentiated through \\\partial k/\partial d = 1/p\\ and \\\partial
-k/\partial p = -k/p\\.
+component is a power of \\1/a\\ times a closed form in \\(d, p)\\ and
+the polygamma functions at \\k + 1\\, \\k = d/p\\, derived offline as
+[`distrib_deriv3.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
+describes.
 
 ## See also
 

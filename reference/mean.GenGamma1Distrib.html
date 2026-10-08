@@ -13,7 +13,7 @@ shapes into the mean."><meta property="og:image" content="https://statmodels7.gi
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,11 @@ three components.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The family nests four the toolkit ships separately, and each is a check on
+    <p>The logarithm of the gamma ratio is formed in Stirling's form,
+\((k - 1/2)\log(1 + h/k) + h\log(k + h) - h\) plus the difference of the
+two remainders, for \(k = d/p \ge 10\) and \(h = 1/p\), where the
+difference of the two log-gamma values would lose digits.</p>
+<p>The family nests four the toolkit ships separately, and each is a check on
 this formula: the gamma at \(p = 1\), the Weibull at \(d = p\), the
 exponential at \(d = p = 1\) and the half-normal at
 \(a = \sqrt2, d = 1, p = 2\).</p>
@@ -90,8 +94,7 @@ exponential at \(d = p = 1\) and the half-normal at
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="variance.GenGamma1Distrib.html">variance.GenGamma1Distrib()</a></code>, <code><a href="gengamma_raw_moments.html">gengamma_raw_moments()</a></code> for the
-shared quantities, <code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code>.</p></div>
+    <div class="dont-index"><p><code><a href="variance.GenGamma1Distrib.html">variance.GenGamma1Distrib()</a></code>, <code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code>.</p></div>
     </div>
 
     <div class="section level2">

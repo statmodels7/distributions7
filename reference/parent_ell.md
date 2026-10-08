@@ -25,7 +25,7 @@ parent_ell(parent, y, theta, max_order, params)
 
 - max_order:
 
-  The highest order needed, 1 to 4.
+  The highest order needed, 1 to 5.
 
 - params:
 

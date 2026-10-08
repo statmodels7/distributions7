@@ -82,5 +82,5 @@ vapply(1:4, function(k)
 # having no elementary form, so truncation falls back to quadrature there.
 vapply(1:4, function(k)
   distributions7:::has_exact_cdf_deriv(gamma2_distrib(), k), logical(1))
-#> [1] FALSE FALSE FALSE FALSE
+#> [1] TRUE TRUE TRUE TRUE
 ```

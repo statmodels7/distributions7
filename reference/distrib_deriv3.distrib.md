@@ -2,10 +2,12 @@
 
 The fallback for a family that registers no third-order method. Observed
 derivatives come from
-[`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md),
-one central difference of
+[`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md):
+one central difference of the family's own
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
-along each parameter; expected ones from
+along each parameter, or, for a family without its own Hessian, one
+tensor-product stencil on its score or its log-density. Expected ones
+come from
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
 at the strategy `approx` names.
 

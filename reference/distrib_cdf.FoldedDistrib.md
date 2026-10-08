@@ -84,5 +84,5 @@ distrib_cdf(d, 1, theta, log.p = TRUE)
 # The inherited quantile inverts it, so the round trip closes.
 p <- c(0.1, 0.5, 0.9)
 max(abs(distrib_cdf(d, distrib_quantile(d, p, theta), theta) - p))
-#> [1] 5.364487e-12
+#> [1] 1.110223e-16
 ```

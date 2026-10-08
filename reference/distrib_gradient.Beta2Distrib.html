@@ -9,9 +9,8 @@ with \(\psi\) the digamma function. The beta is an exponential family in
 the shapes with sufficient statistics \(\log y\) and \(\log(1-y)\), so
 each component is the corresponding statistic minus its expectation. That
 is also why every derivative beyond this one is free of the response.
-The value is computed in plain R, this family carrying no compiled kernel,
-and \(\log(1-y)\) is formed with base::log1p() so that it stays accurate
-at y near zero.
+The value is computed by a compiled kernel, and \(\log(1-y)\) is formed
+with log1p() so that it stays accurate at y near zero.
 With scale = "link" the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter
 scale.'><meta property="og:description" content='Computes the first derivatives of the beta log-density with respect to
@@ -24,9 +23,8 @@ with \(\psi\) the digamma function. The beta is an exponential family in
 the shapes with sufficient statistics \(\log y\) and \(\log(1-y)\), so
 each component is the corresponding statistic minus its expectation. That
 is also why every derivative beyond this one is free of the response.
-The value is computed in plain R, this family carrying no compiled kernel,
-and \(\log(1-y)\) is formed with base::log1p() so that it stays accurate
-at y near zero.
+The value is computed by a compiled kernel, and \(\log(1-y)\) is formed
+with log1p() so that it stays accurate at y near zero.
 With scale = "link" the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter
 scale.'><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -37,7 +35,7 @@ scale.'><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,9 +78,8 @@ with \(\psi\) the digamma function. The beta is an exponential family in
 the shapes with sufficient statistics \(\log y\) and \(\log(1-y)\), so
 each component is the corresponding statistic minus its expectation. That
 is also why every derivative beyond this one is free of the response.</p>
-<p>The value is computed in plain R, this family carrying no compiled kernel,
-and \(\log(1-y)\) is formed with <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">base::log1p()</a></code> so that it stays accurate
-at <code>y</code> near zero.</p>
+<p>The value is computed by a compiled kernel, and \(\log(1-y)\) is formed
+with <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p()</a></code> so that it stays accurate at <code>y</code> near zero.</p>
 <p>With <code>scale = "link"</code> the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter
 scale.</p>
@@ -115,6 +112,12 @@ recycled. Both must be strictly positive.</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Unused, and accepted so that the signature matches the generic's.</p></dd>
+
+
+<dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
+<dd><p>A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

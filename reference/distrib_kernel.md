@@ -21,10 +21,24 @@ distrib_kernel(distrib, param)
   The name of the parameter whose unconstrained scale the derivatives
   are taken with respect to.
 
+  The kernel also carries the expected information of the same
+  coordinate and its derivative in that coordinate, which a filter whose
+  score is scaled by a power of the information reads at each step. On
+  the link scale the information is \\I_p =
+  -\mathbb{E}\[\ell\_{pp}\]\\h'(\eta_p)^2\\, with no term in \\h''\\
+  because the score has mean zero, and
+
+  \$\$\frac{\partial I_p}{\partial \eta_p} =
+  -\frac{\partial\mathbb{E}\[\ell\_{pp}\]}{\partial\theta_p}\\h'^3 -
+  2\\\mathbb{E}\[\ell\_{pp}\]\\h'\\h''.\$\$
+
+  The two methods are looked up when first called, so a family without
+  an expected information still yields the other three functions.
+
 ## Value
 
-A list of three functions of `(y, theta, eta)`: `logdens`, `score` and
-`curvature`.
+A list of five functions of `(y, theta, eta)`: `logdens`, `score`,
+`curvature`, `information` and `dinformation`.
 
 ## Details
 

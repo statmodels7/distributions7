@@ -15,7 +15,7 @@ counterpart."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -162,11 +162,12 @@ central difference compares a derivative, is left out and counted in the
 row's <code>detail</code>.</p></li>
 <li><p><strong>link scale</strong>: <code>scale = "link"</code> derivatives against finite
 differences of the log-likelihood in \(\eta\).</p></li>
-</ul><p>Distributions that rely on the numerical fallbacks pass the corresponding
-parameter-derivative checks trivially, since analytical and numerical values
-then coincide by construction. The response fallbacks take the cut step
-alone, so near a bound they can differ from the reference, which is what the
-row then reports.</p>
+</ul><p>A parameter-derivative check of an order for which the family registers no
+method of its own is not run: the value would be the numerical fallback,
+the same finite difference as the reference, and the comparison would hold
+by construction. The row is listed in the attribute <code>"skipped"</code> with that
+reason. The response fallbacks take the cut step alone, so near a bound they
+can differ from the reference, which is what the row then reports.</p>
 <p>A check whose statistic comes out <code>NaN</code> or <code>NA</code> has nothing to judge, as the
 expected information of a family where it does not exist, and is not a row
 of the table: it is listed with its reason in the attribute <code>"skipped"</code>, and

@@ -11,7 +11,7 @@ support for each observation."><meta property="og:image" content="https://statmo
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,12 +114,22 @@ accumulated.</p>
 \(\log S_y\) and its derivatives in \(w\): all of them are finite as
 \(\sigma \to 0\), where those in \(\alpha\) carry
 \(\sigma^{-k}\) and cancel.</p>
+<p>Near the Poisson limit even the forms in the score sum terms of size one to
+results of size \(\sigma^2\) or \(\alpha^{-3}\). There, for
+\((1 + \mu)x \le 0.06\) with \(x = \sigma\) (pig1) or \(x = 1/\alpha\)
+(pig2), the three quantities are taken from their series in \(x\), to
+order 20, derived offline: the log-mass is the Poisson's plus a power series
+in \(\sigma\) whose coefficients are polynomials in \(y\), so every
+expectation is a combination of Poisson moments and its coefficients are
+polynomials in \(\mu\) and \(1/\mu\). The mixed entry of pig2 is zero at
+every order of that series, the parametrization being orthogonal.</p>
 <p>The <code>approx</code> and <code>nsim</code> arguments are accepted and ignored.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>; <code>pig1_expected_cpp()</code> and
-<code>pig2_expected_cpp()</code> for the kernels.</p></div>
+<code>pig2_expected_cpp()</code> for the kernels, with <code>pig1_dexpected1_cpp()</code> and
+the like for its derivatives.</p></div>
     </div>
 
     <div class="section level2">

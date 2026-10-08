@@ -6,10 +6,11 @@ $$\dfrac{\partial \ell}{\partial \mu} = \kappa \sin(y - \mu), \qquad
       \dfrac{\partial \ell}{\partial \kappa} = \cos(y - \mu) - A(\kappa),$$
 with \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\) the derivative of
 \(\log I_0\) and also the mean resultant length of the family.
-The ratio comes from numericals7::bessel_i_ratio(), which switches to an
-asymptotic expansion past \(\kappa = 10^4\). R's own scaled besselI
-underflows to an exact zero between \(10^5\) and \(10^6\), so forming
-the ratio from two calls gives NaN over part of that band.
+The components are computed by a compiled kernel. The ratio comes from
+numericals7's compiled numericals7::bessel_i_ratio(), which is finite and
+accurate at any concentration. R's own scaled besselI underflows to an
+exact zero between \(10^5\) and \(10^6\), so forming the ratio from two
+calls gives NaN over part of that band.
 With scale = &quot;link&quot; the generic applies the chain rule for the links the
 family carries. This method always returns the parameter scale."><meta property="og:description" content="Computes the first derivatives of the von Mises log-density with respect to
 the mean direction \(\mu\) and the concentration \(\kappa\), one value
@@ -18,10 +19,11 @@ $$\dfrac{\partial \ell}{\partial \mu} = \kappa \sin(y - \mu), \qquad
       \dfrac{\partial \ell}{\partial \kappa} = \cos(y - \mu) - A(\kappa),$$
 with \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\) the derivative of
 \(\log I_0\) and also the mean resultant length of the family.
-The ratio comes from numericals7::bessel_i_ratio(), which switches to an
-asymptotic expansion past \(\kappa = 10^4\). R's own scaled besselI
-underflows to an exact zero between \(10^5\) and \(10^6\), so forming
-the ratio from two calls gives NaN over part of that band.
+The components are computed by a compiled kernel. The ratio comes from
+numericals7's compiled numericals7::bessel_i_ratio(), which is finite and
+accurate at any concentration. R's own scaled besselI underflows to an
+exact zero between \(10^5\) and \(10^6\), so forming the ratio from two
+calls gives NaN over part of that band.
 With scale = &quot;link&quot; the generic applies the chain rule for the links the
 family carries. This method always returns the parameter scale."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -31,7 +33,7 @@ family carries. This method always returns the parameter scale."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,10 +73,11 @@ $$\dfrac{\partial \ell}{\partial \mu} = \kappa \sin(y - \mu), \qquad
       \dfrac{\partial \ell}{\partial \kappa} = \cos(y - \mu) - A(\kappa),$$
 with \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\) the derivative of
 \(\log I_0\) and also the <strong>mean resultant length</strong> of the family.</p>
-<p>The ratio comes from <code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio.html" class="external-link">numericals7::bessel_i_ratio()</a></code>, which switches to an
-asymptotic expansion past \(\kappa = 10^4\). R's own scaled <code>besselI</code>
-underflows to an exact zero between \(10^5\) and \(10^6\), so forming
-the ratio from two calls gives <code>NaN</code> over part of that band.</p>
+<p>The components are computed by a compiled kernel. The ratio comes from
+numericals7's compiled <code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio.html" class="external-link">numericals7::bessel_i_ratio()</a></code>, which is finite and
+accurate at any concentration. R's own scaled <code>besselI</code> underflows to an
+exact zero between \(10^5\) and \(10^6\), so forming the ratio from two
+calls gives <code>NaN</code> over part of that band.</p>
 <p>With <code>scale = "link"</code> the generic applies the chain rule for the links the
 family carries. This method always returns the parameter scale.</p>
     </div>
@@ -106,6 +109,12 @@ positive.</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Unused, and accepted so that the signature matches the generic's.</p></dd>
+
+
+<dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
+<dd><p>A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

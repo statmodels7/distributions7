@@ -9,7 +9,7 @@ partials costs nothing for them.
 ## Usage
 
 ``` r
-reparam_tables(distrib, theta)
+reparam_tables(distrib, theta, order)
 ```
 
 ## Arguments
@@ -24,10 +24,17 @@ reparam_tables(distrib, theta)
   [`reparam_theta()`](https://statmodels7.github.io/distributions7/reference/reparam_theta.md)'s
   caller. Only the first `n_params` components are read.
 
+- order:
+
+  The highest order of partial the caller reads, an integer from 1 to 4:
+  one for a gradient, a distribution function's gradient or a mixed
+  response derivative, two for a Hessian or an expected information, and
+  so on. No partial of higher order is formed.
+
 ## Value
 
 A list over the parent's parameters, each element a keyed list of that
-component's partial derivatives.
+component's partial derivatives up to order `order`.
 
 ## Where the tables come from
 

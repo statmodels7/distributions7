@@ -2,11 +2,15 @@
 
 Returns the expectation of the observed Hessian under the model. Every
 term carrying \\P = \psi(y+r) - \psi(r) - \log(1+\theta)\\ drops out,
-its expectation vanishing by the first Bartlett identity, and what
-remains needs only \\\mathbb{E}\[\psi'(Y+r)\]\\. That has no closed
-form: it is summed against the exact mass out to a far-tail quantile, so
-this is a truncated exact sum and not a quadrature or a simulation.
-`approx` and `nsim` are ignored, and `y` is read only for its length.
+its expectation vanishing by the first Bartlett identity. With \\u_j =
+\mu + \theta j\\, the entries are \\-A\\, \\W/\theta^2\\ and
+\\-W/(\mu\theta)\\, where \$\$A = \mathbb{E}\Big\[\sum\_{j\<Y}
+u_j^{-2}\Big\], \qquad W = \mathbb{E}\Big\[\sum\_{j\<Y}
+\Big(\frac{1}{1+\theta} - \frac{\mu^2}{u_j^2}\Big)\Big\].\$\$ Neither
+has a closed form. Each is summed against the exact mass until the terms
+fall below a tolerance, so this is a truncated exact sum and not a
+quadrature or a simulation. `approx` and `nsim` are ignored, and `y` is
+read only for its length.
 
 **The mixed entry does not vanish**, so the mean and the dispersion are
 not orthogonal in this family. Measured at four settings it is 0.0172,
@@ -64,19 +68,17 @@ A named list of three numeric vectors, `mu_mu`, `mu_theta` and
 `max(length(y), length(mu), length(theta))` and constant within itself
 when the parameters are.
 
-## A caveat at small theta
+## Accuracy at small theta
 
-The dispersion entry inherits the cancellation of
-[`distrib_gradient.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin1Distrib.md)
-and **is not rewritten to remove it**. The chain rule through \\r =
-\mu/\theta\\ divides by \\\theta^2\\ and \\\theta^4\\, so what is left
-of the digits runs out early. Measured at \\\mu = 4\\: the entry reads
-\\-0.489\\ at \\\theta = 10^{-2}\\ and \\-0.500\\ at \\10^{-4}\\, then
-\\+2.1\times 10^{2}\\ at \\10^{-6}\\ and \\+2.9\times 10^{8}\\ at
-\\10^{-8}\\. The sign is impossible for an expected second derivative,
-and the matrix is indefinite there, its determinant turning negative. A
-Fisher scoring step taken in that regime is not reliable, and a nearly
-equidispersed sample drives a fit into it.
+The summand of \\W\\ is a rational function of \\(\mu, \theta)\\,
+\\\theta(2\mu j + \theta j^2 - \mu^2)/((1+\theta) u_j^2)\\, so the terms
+of order \\\mu/\theta^2\\ that a composition through the size \\r =
+\mu/\theta\\ forms are never formed. The dispersion entry still loses
+digits as \\\theta \to 0\\, where the summands change sign and their sum
+tends to a finite limit. Measured at \\\mu = 4\\, it reads
+\\-0.49999887\\ at \\\theta = 10^{-6}\\, \\-0.49999994\\ at \\10^{-8}\\
+and \\-0.5000013\\ at \\10^{-10}\\, against the limit \\-1/2\\, and the
+matrix stays negative definite.
 
 ## Notation
 
@@ -132,5 +134,5 @@ vapply(c(1e-2, 1e-4, 1e-6, 1e-8),
        function(t) distrib_expected_hessian(d, 0,
                      list(mu = 4, theta = t))$theta_theta,
        numeric(1))
-#> [1]    -0.4889417    -0.4993531     4.8173828 53176.0000000
+#> [1] -0.4889418 -0.4998875 -0.4999989 -0.4999999
 ```

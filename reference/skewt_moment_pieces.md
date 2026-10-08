@@ -26,8 +26,8 @@ skewt_moment_pieces(alpha, nu)
 
 ## Value
 
-A named list with `delta`, `bnu`, `mz` and `vz`, each a numeric vector
-recycled to the longer of `alpha` and `nu`.
+A named list with `nu`, `delta`, `bnu`, `mz` and `vz`, each a numeric
+vector recycled to the longer of `alpha` and `nu`.
 
 ## Details
 

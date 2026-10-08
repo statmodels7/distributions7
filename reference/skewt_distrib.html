@@ -21,7 +21,7 @@ skewnormal1_distrib(), and both together give the Gaussian."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,27 +114,12 @@ at \(\alpha = 50\), the skewness is 1.190 at \(\nu = 30\), 2.050 at
 \(\nu = 6\) and 3.998 at \(\nu = 4\).</p>
     </div>
     <div class="section level2">
-    <h2 id="what-is-closed-form-and-what-is-not">What is closed form and what is not<a class="anchor" aria-label="anchor" href="#what-is-closed-form-and-what-is-not"></a></h2>
-    <p>Every derivative in \((\mu, \sigma, \alpha)\) is closed form. Everything
-involving \(\nu\) is not, because the density contains \(T_{\nu+1}\) and
-the derivative of a Student \(t\) distribution function with respect to
-its degrees of freedom has no elementary expression. It is the same
-obstruction that stops the gamma and beta distribution functions from having
-closed-form shape derivatives.</p>
-<p>Those components come from a single stencil applied to an analytic quantity,
-never from a difference of a difference:</p>
-<table class="table table"><tr><td><strong>component</strong></td><td><strong>route</strong></td><td><strong>agreement with an independent route</strong></td></tr><tr><td>\(\mu, \sigma, \alpha\) (score)</td><td>closed form</td><td>\(10^{-12}\)</td></tr><tr><td>\(\nu\) (score)</td><td><code><a href="fd5_first.html">fd5_first()</a></code> on \(\ell\)</td><td>\(5\times10^{-11}\)</td></tr><tr><td>\((\mu,\sigma,\alpha)\) block (Hessian)</td><td>closed form</td><td>\(10^{-12}\)</td></tr><tr><td>\(\nu\) with another parameter</td><td><code><a href="fd5_first.html">fd5_first()</a></code> on the analytic score</td><td>to the printed digit</td></tr><tr><td>\(\nu\) twice</td><td><code><a href="fd5_second.html">fd5_second()</a></code> on \(\ell\)</td><td>\(2\times10^{-9}\)</td></tr><tr><td>\(\nu\) three times</td><td><code><a href="fd5_third.html">fd5_third()</a></code> on \(\ell\)</td><td>\(10^{-4}\)</td></tr><tr><td>\(\nu\) four times</td><td><code><a href="fd5_fourth.html">fd5_fourth()</a></code> on \(\ell\)</td><td>about one
-figure</td></tr></table></div>
-    <div class="section level2">
-    <h2 id="the-tolerance-a-fit-can-ask-for">The tolerance a fit can ask for<a class="anchor" aria-label="anchor" href="#the-tolerance-a-fit-can-ask-for"></a></h2>
-    <p>The score in \(\nu\) cannot be computed more accurately than that table,
-so no stopping rule on the gradient can be satisfied below it however good
-the optimizer is. <code><a href="fit_distrib.html">fit_distrib()</a></code> takes its rule from the method it is
-given, and <code>crit_grad()</code>'s default tolerance of \(10^{-6}\) is tested on
-the score <strong>per observation</strong>, which leaves room: measured on samples of
-500 to 4000, the run converges with a summed score between
-\(1.5\times10^{-7}\) and \(2.4\times10^{-5}\), i.e. between
-\(3\times10^{-10}\) and \(9\times10^{-9}\) per observation.</p>
+    <h2 id="how-the-derivatives-are-computed">How the derivatives are computed<a class="anchor" aria-label="anchor" href="#how-the-derivatives-are-computed"></a></h2>
+    <p>The density contains \(T_{\nu+1}\), and the derivatives of a Student
+\(t\) distribution function in its degrees of freedom have no elementary
+expression. They are integrals of the derivatives of the \(t\) density and
+are taken by quadrature, so that every derivative this family reports, to
+order five, is exact to rounding; see <code><a href="distrib_gradient.SkewTDistrib.html">distrib_gradient.SkewTDistrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="fitting">Fitting<a class="anchor" aria-label="anchor" href="#fitting"></a></h2>

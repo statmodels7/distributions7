@@ -15,7 +15,7 @@ component with two calls on the parent."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -134,7 +134,7 @@ and \(H_{ij}\) are the parent's score and observed Hessian; and
 <span class="r-in"><span><span class="co"># and the caller integrates instead.</span></span></span>
 <span class="r-in"><span><span class="va">tg</span> <span class="op">&lt;-</span> <span class="fu"><a href="truncated.html">truncated</a></span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, lower <span class="op">=</span> <span class="fl">0.5</span>, upper <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">trunc_mass_derivs</span><span class="op">(</span><span class="va">tg</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma2 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="fl">1L</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

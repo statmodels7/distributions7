@@ -31,7 +31,7 @@ relationships between its properties."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -154,6 +154,7 @@ relationships between its properties.</p>
 <code><a href="distrib_hessian.SkewTDistrib.html">distrib_hessian()</a></code>,
 <code><a href="distrib_deriv3.SkewTDistrib.html">distrib_deriv3()</a></code>,
 <code><a href="distrib_deriv4.SkewTDistrib.html">distrib_deriv4()</a></code>,
+<code><a href="distrib_deriv5.SkewTDistrib.html">distrib_deriv5()</a></code>,
 <code><a href="distrib_grad_y.SkewTDistrib.html">distrib_grad_y()</a></code>,
 <code><a href="distrib_hess_y.SkewTDistrib.html">distrib_hess_y()</a></code>, and the expected
 information with its two derivatives,
@@ -172,15 +173,14 @@ quadrature per distinct \((\alpha, \nu)\); see
 <code><a href="distrib_expected_hessian.SkewTDistrib.html">distrib_expected_hessian.SkewTDistrib()</a></code>.</p>
     </div>
     <div class="section level2">
-    <h2 id="what-is-closed-form-and-what-is-not">What is closed form and what is not<a class="anchor" aria-label="anchor" href="#what-is-closed-form-and-what-is-not"></a></h2>
+    <h2 id="how-the-derivatives-are-computed">How the derivatives are computed<a class="anchor" aria-label="anchor" href="#how-the-derivatives-are-computed"></a></h2>
 
 
-<p>Every derivative in \(\mu\), \(\sigma\) and \(\alpha\) is closed form.
-Every derivative involving \(\nu\) is not, and the obstruction is
-mathematical: the density carries \(T_{\nu+1}\), and the derivative of a
-Student \(t\) distribution function in its degrees of freedom has no
-elementary expression. Those components come from <strong>one</strong> stencil applied to
-an analytic quantity, never from a difference of a difference.</p>
+<p>Every derivative, to order five, comes from a compiled kernel in closed
+form. The density carries \(T_{\nu+1}\), and the derivatives of a Student
+\(t\) distribution function in its degrees of freedom have no elementary
+expression; they are integrals of the derivatives of the \(t\) density and
+are taken by quadrature. See <code><a href="distrib_gradient.SkewTDistrib.html">distrib_gradient.SkewTDistrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

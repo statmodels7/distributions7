@@ -27,6 +27,8 @@ used for each of its parameters.
   : Elastic-Net Distribution Object
 - [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
   : Pseudo-Huber Distribution, Location, Scale and Shape
+- [`pseudohuber2_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber2_distrib.md)
+  : Pseudo-Huber Distribution, Standard-Deviation Parametrization
 - [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
   : Skew Normal Distribution Object
 - [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
@@ -124,6 +126,10 @@ respect to the unconstrained parameters.
   : The Derivative of the Expected Information
 - [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
   : The Second Derivative of the Expected Information
+- [`distrib_d3expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d3expected_hessian.md)
+  : The Third Derivative of the Expected Information
+- [`distrib_d4expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.md)
+  : The Fourth Derivative of the Expected Information
 - [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
   : Analytical Third-Order Derivatives
 - [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
@@ -158,6 +164,8 @@ respect to the unconstrained parameters.
   : Derivatives on the Link (Real) Scale
 - [`distrib_kernel()`](https://statmodels7.github.io/distributions7/reference/distrib_kernel.md)
   : A Resolved Kernel for One Parameter's Link-Scale Derivatives
+- [`distrib_scalar_route()`](https://statmodels7.github.io/distributions7/reference/distrib_scalar_route.md)
+  : The Scalar Route of a Distribution
 - [`expected_derivative_methods`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
   : Strategies for Expected Derivatives
 - [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
@@ -202,8 +210,6 @@ respect to the unconstrained parameters.
   : Excess Kurtosis of a Distribution or Sample
 - [`moment_const()`](https://statmodels7.github.io/distributions7/reference/moment_const.md)
   : Recycle a Constant Moment to the Length of the Parameters
-- [`gengamma_raw_moments()`](https://statmodels7.github.io/distributions7/reference/gengamma_raw_moments.md)
-  : Raw Moments of a Generalized Gamma
 - [`betabinom_factorial_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_factorial_moments.md)
   : Falling Factorial Moments of a Beta-Binomial
 - [`central_from_factorial()`](https://statmodels7.github.io/distributions7/reference/central_from_factorial.md)
@@ -371,6 +377,16 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`d2expected_key()`](https://statmodels7.github.io/distributions7/reference/d2expected_key.md)
   : The Key of One Component of the Expected Information's Second
   Derivative
+- [`d3expected_names()`](https://statmodels7.github.io/distributions7/reference/d3expected_names.md)
+  : The Names of the Expected Information's Third Derivative
+- [`d3expected_key()`](https://statmodels7.github.io/distributions7/reference/d3expected_key.md)
+  : The Key of One Component of the Expected Information's Third
+  Derivative
+- [`d4expected_names()`](https://statmodels7.github.io/distributions7/reference/d4expected_names.md)
+  : The Names of the Expected Information's Fourth Derivative
+- [`d4expected_key()`](https://statmodels7.github.io/distributions7/reference/d4expected_key.md)
+  : The Key of One Component of the Expected Information's Fourth
+  Derivative
 - [`param_smoothness()`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md)
   : Per-Parameter Smoothness of the Log-Likelihood
 - [`params_order()`](https://statmodels7.github.io/distributions7/reference/params_order.md)
@@ -401,6 +417,31 @@ Rarely called directly, but useful as a reference for what is happening.
   : Print Method for Maximum-Likelihood Fits
 - [`plot.distrib_fit`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md)
   : Plot a Fitted Distribution Against the Data
+- [`mean.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
+  [`variance.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
+  [`skewness.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
+  [`kurtosis.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
+  : Generalized Gamma Moments, Mean
+- [`mean.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Lognormal2Distrib.md)
+  [`variance.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Lognormal2Distrib.md)
+  [`skewness.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Lognormal2Distrib.md)
+  [`kurtosis.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Lognormal2Distrib.md)
+  : Lognormal Moments, Mean and Variance of Y
+- [`mean.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.PseudoHuber2Distrib.md)
+  [`variance.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.PseudoHuber2Distrib.md)
+  [`skewness.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.PseudoHuber2Distrib.md)
+  [`kurtosis.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.PseudoHuber2Distrib.md)
+  : Pseudo-Huber Moments, Standard-Deviation Parametrization
+- [`mean.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.StudentT2Distrib.md)
+  [`variance.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.StudentT2Distrib.md)
+  [`skewness.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.StudentT2Distrib.md)
+  [`kurtosis.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.StudentT2Distrib.md)
+  : Student t Moments, Standard Deviation
+- [`mean.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Weibull3Distrib.md)
+  [`variance.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Weibull3Distrib.md)
+  [`skewness.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Weibull3Distrib.md)
+  [`kurtosis.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Weibull3Distrib.md)
+  : Weibull Moments, Mean and Shape
 - [`expectation.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/expectation.TruncatedContinuousDistrib.md)
   : Expectation for Truncated Continuous Distributions
 - [`expectation.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/expectation.ZeroAdjustedContinuousDistrib.md)
@@ -572,6 +613,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Student t Third-Order Derivatives
 - [`distrib_deriv4.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.StudentT1Distrib.md)
   : Student t Fourth-Order Derivatives
+- [`distrib_deriv5.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.StudentT1Distrib.md)
+  : Student t Fifth-Order Derivatives
 - [`distrib_expected_hessian.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.StudentT1Distrib.md)
   : Student t Expected Hessian
 - [`distrib_grad_cdf.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.StudentT1Distrib.md)
@@ -590,6 +633,48 @@ Rarely called directly, but useful as a reference for what is happening.
   : Student t Quantile Function
 - [`distrib_rng.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.StudentT1Distrib.md)
   : Student t Random Number Generator
+
+## Student’s t, standard deviation
+
+- [`StudentT2Distrib()`](https://statmodels7.github.io/distributions7/reference/StudentT2Distrib.md)
+  : Student t Distribution Class, Standard Deviation
+- [`MvStudentT1Distrib()`](https://statmodels7.github.io/distributions7/reference/MvStudentT1Distrib.md)
+  [`MvStudentT2Distrib()`](https://statmodels7.github.io/distributions7/reference/MvStudentT1Distrib.md)
+  : S7 Classes for the Two Multivariate Student t Parametrizations
+- [`distrib_grad_cdf.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.StudentT2Distrib.md)
+  [`distrib_hess_cdf.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.StudentT2Distrib.md)
+  [`distrib_deriv3_cdf.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.StudentT2Distrib.md)
+  [`distrib_deriv4_cdf.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.StudentT2Distrib.md)
+  : Student t Distribution-Function Derivatives, Standard Deviation
+- [`distrib_grad_y.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.StudentT2Distrib.md)
+  [`distrib_hess_y.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.StudentT2Distrib.md)
+  [`distrib_deriv3_y.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.StudentT2Distrib.md)
+  [`distrib_deriv4_y.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.StudentT2Distrib.md)
+  [`distrib_cross_y.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.StudentT2Distrib.md)
+  [`distrib_cross2_y.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.StudentT2Distrib.md)
+  [`distrib_grad_y_hess.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.StudentT2Distrib.md)
+  [`distrib_hess_y_hess.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.StudentT2Distrib.md)
+  : Student t Derivatives in the Response, Standard Deviation
+- [`distrib_gradient.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT2Distrib.md)
+  [`distrib_hessian.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT2Distrib.md)
+  [`distrib_deriv3.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT2Distrib.md)
+  [`distrib_deriv4.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT2Distrib.md)
+  [`distrib_deriv5.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT2Distrib.md)
+  [`distrib_expected_hessian.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT2Distrib.md)
+  [`distrib_dexpected_hessian.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT2Distrib.md)
+  [`distrib_d2expected_hessian.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT2Distrib.md)
+  : Student t Derivatives in the Standard Deviation
+- [`distrib_pdf.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.StudentT2Distrib.md)
+  [`distrib_cdf.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.StudentT2Distrib.md)
+  [`distrib_quantile.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.StudentT2Distrib.md)
+  [`distrib_rng.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.StudentT2Distrib.md)
+  : Student t Density, Distribution and Generator in the Standard
+  Deviation
+- [`mean.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.StudentT2Distrib.md)
+  [`variance.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.StudentT2Distrib.md)
+  [`skewness.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.StudentT2Distrib.md)
+  [`kurtosis.StudentT2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.StudentT2Distrib.md)
+  : Student t Moments, Standard Deviation
 
 ## Laplace
 
@@ -713,6 +798,48 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_rng.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.PseudoHuberDistrib.md)
   : Pseudo-Huber Random Number Generator
 
+## Pseudo-Huber, standard deviation
+
+- [`PseudoHuber2Distrib()`](https://statmodels7.github.io/distributions7/reference/PseudoHuber2Distrib.md)
+  : Pseudo-Huber Distribution Class, Standard-Deviation Parametrization
+- [`distrib_cdf.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.PseudoHuber2Distrib.md)
+  : Pseudo-Huber Distribution Function, Standard-Deviation
+  Parametrization
+- [`distrib_grad_cdf.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.PseudoHuber2Distrib.md)
+  [`distrib_hess_cdf.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.PseudoHuber2Distrib.md)
+  [`distrib_deriv3_cdf.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.PseudoHuber2Distrib.md)
+  [`distrib_deriv4_cdf.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.PseudoHuber2Distrib.md)
+  : Pseudo-Huber Distribution-Function Derivatives, Standard-Deviation
+  Parametrization
+- [`distrib_grad_y.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.PseudoHuber2Distrib.md)
+  [`distrib_hess_y.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.PseudoHuber2Distrib.md)
+  [`distrib_cross_y.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.PseudoHuber2Distrib.md)
+  [`distrib_deriv3_y.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.PseudoHuber2Distrib.md)
+  [`distrib_deriv4_y.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.PseudoHuber2Distrib.md)
+  [`distrib_cross2_y.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.PseudoHuber2Distrib.md)
+  [`distrib_grad_y_hess.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.PseudoHuber2Distrib.md)
+  [`distrib_hess_y_hess.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.PseudoHuber2Distrib.md)
+  : Pseudo-Huber Derivatives in the Response, Standard-Deviation
+  Parametrization
+- [`distrib_gradient.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.PseudoHuber2Distrib.md)
+  [`distrib_hessian.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.PseudoHuber2Distrib.md)
+  [`distrib_deriv3.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.PseudoHuber2Distrib.md)
+  [`distrib_deriv4.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.PseudoHuber2Distrib.md)
+  [`distrib_deriv5.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.PseudoHuber2Distrib.md)
+  : Pseudo-Huber Derivatives in the Parameters, Standard-Deviation
+  Parametrization
+- [`distrib_pdf.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.PseudoHuber2Distrib.md)
+  : Pseudo-Huber Density, Standard-Deviation Parametrization
+- [`distrib_quantile.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.PseudoHuber2Distrib.md)
+  : Pseudo-Huber Quantile Function, Standard-Deviation Parametrization
+- [`distrib_rng.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.PseudoHuber2Distrib.md)
+  : Pseudo-Huber Random Generation, Standard-Deviation Parametrization
+- [`mean.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.PseudoHuber2Distrib.md)
+  [`variance.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.PseudoHuber2Distrib.md)
+  [`skewness.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.PseudoHuber2Distrib.md)
+  [`kurtosis.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.PseudoHuber2Distrib.md)
+  : Pseudo-Huber Moments, Standard-Deviation Parametrization
+
 ## Skew normal
 
 - [`SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/SkewNormal1Distrib.md)
@@ -746,23 +873,22 @@ Rarely called directly, but useful as a reference for what is happening.
   : Skew Normal Distribution Class, Centered Parametrization
 - [`distrib_cdf.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.SkewNormal2Distrib.md)
   : Skew Normal Distribution Function in the Centered Parametrization
-- [`distrib_deriv3.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewNormal2Distrib.md)
-  : Skew Normal Third Derivatives in the Centered Parametrization
-- [`distrib_deriv4.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewNormal2Distrib.md)
-  : Skew Normal Fourth Derivatives in the Centered Parametrization
 - [`distrib_expected_hessian.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal2Distrib.md)
   [`distrib_dexpected_hessian.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal2Distrib.md)
   [`distrib_d2expected_hessian.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal2Distrib.md)
   : Skew Normal Expected Information in the Centered Parametrization
 - [`distrib_grad_y.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewNormal2Distrib.md)
-  : Skew Normal Response Derivative in the Centered Parametrization
+  [`distrib_hess_y.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewNormal2Distrib.md)
+  [`distrib_cross2_y.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewNormal2Distrib.md)
+  [`distrib_grad_y_hess.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewNormal2Distrib.md)
+  [`distrib_hess_y_hess.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewNormal2Distrib.md)
+  : Skew Normal Derivatives in the Response, Centered Parametrization
 - [`distrib_gradient.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal2Distrib.md)
-  : Skew Normal Score in the Centered Parametrization
-- [`distrib_hess_y.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewNormal2Distrib.md)
-  : Skew Normal Second Response Derivative in the Centered
-  Parametrization
-- [`distrib_hessian.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewNormal2Distrib.md)
-  : Skew Normal Observed Hessian in the Centered Parametrization
+  [`distrib_hessian.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal2Distrib.md)
+  [`distrib_deriv3.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal2Distrib.md)
+  [`distrib_deriv4.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal2Distrib.md)
+  [`distrib_deriv5.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal2Distrib.md)
+  : Skew Normal Derivatives in the Centered Parametrization
 - [`distrib_pdf.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewNormal2Distrib.md)
   : Skew Normal Density in the Centered Parametrization
 - [`distrib_quantile.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.SkewNormal2Distrib.md)
@@ -777,8 +903,6 @@ Rarely called directly, but useful as a reference for what is happening.
   : From the Centered Parameters to the Direct Ones
 - [`sn2_theta()`](https://statmodels7.github.io/distributions7/reference/sn2_theta.md)
   : The Direct Parameters a Centered Triple Implies
-- [`sn2_chain()`](https://statmodels7.github.io/distributions7/reference/sn2_chain.md)
-  : Derivatives of the Skew Normal in Its Centered Parametrization
 
 ## Skew t
 
@@ -788,6 +912,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Skew t Third Derivatives
 - [`distrib_deriv4.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewTDistrib.md)
   : Skew t Fourth Derivatives
+- [`distrib_deriv5.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.SkewTDistrib.md)
+  : Skew t Fifth Derivatives
 - [`distrib_expected_hessian.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md)
   [`distrib_dexpected_hessian.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md)
   [`distrib_d2expected_hessian.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md)
@@ -859,6 +985,44 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_rng.Weibull1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Weibull1Distrib.md)
   : Weibull Random Number Generator
 
+## Weibull in the mean
+
+- [`Weibull3Distrib()`](https://statmodels7.github.io/distributions7/reference/Weibull3Distrib.md)
+  : Weibull Distribution Class, Mean and Shape
+- [`distrib_grad_cdf.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull3Distrib.md)
+  [`distrib_hess_cdf.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull3Distrib.md)
+  [`distrib_deriv3_cdf.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull3Distrib.md)
+  [`distrib_deriv4_cdf.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull3Distrib.md)
+  : Weibull Distribution-Function Derivatives, Mean and Shape
+- [`distrib_grad_y.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Weibull3Distrib.md)
+  [`distrib_hess_y.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Weibull3Distrib.md)
+  [`distrib_deriv3_y.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Weibull3Distrib.md)
+  [`distrib_deriv4_y.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Weibull3Distrib.md)
+  [`distrib_cross_y.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Weibull3Distrib.md)
+  [`distrib_cross2_y.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Weibull3Distrib.md)
+  [`distrib_grad_y_hess.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Weibull3Distrib.md)
+  [`distrib_hess_y_hess.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Weibull3Distrib.md)
+  : Weibull Derivatives in the Response, Mean and Shape
+- [`distrib_gradient.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Weibull3Distrib.md)
+  [`distrib_hessian.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Weibull3Distrib.md)
+  [`distrib_deriv3.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Weibull3Distrib.md)
+  [`distrib_deriv4.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Weibull3Distrib.md)
+  [`distrib_deriv5.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Weibull3Distrib.md)
+  [`distrib_expected_hessian.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Weibull3Distrib.md)
+  [`distrib_dexpected_hessian.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Weibull3Distrib.md)
+  [`distrib_d2expected_hessian.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Weibull3Distrib.md)
+  : Weibull Derivatives in the Mean and Shape
+- [`distrib_pdf.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Weibull3Distrib.md)
+  [`distrib_cdf.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Weibull3Distrib.md)
+  [`distrib_quantile.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Weibull3Distrib.md)
+  [`distrib_rng.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Weibull3Distrib.md)
+  : Weibull Density, Distribution and Generator in the Mean and Shape
+- [`mean.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Weibull3Distrib.md)
+  [`variance.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Weibull3Distrib.md)
+  [`skewness.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Weibull3Distrib.md)
+  [`kurtosis.Weibull3Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Weibull3Distrib.md)
+  : Weibull Moments, Mean and Shape
+
 ## Exponential
 
 - [`ExponentialDistrib()`](https://statmodels7.github.io/distributions7/reference/ExponentialDistrib.md)
@@ -917,6 +1081,8 @@ Rarely called directly, but useful as a reference for what is happening.
 
 - [`Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/Gamma2Distrib.md)
   : Gamma Distribution Class, Mean and Variance
+- [`GenGamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/GenGamma2Distrib.md)
+  : Generalized Gamma Distribution Class, Mean
 - [`distrib_cdf.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Gamma2Distrib.md)
   : Gamma Cumulative Distribution Function in Mean and Variance
 - [`distrib_deriv3.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gamma2Distrib.md)
@@ -927,18 +1093,46 @@ Rarely called directly, but useful as a reference for what is happening.
   : Gamma Expected Hessian in Mean and Variance
 - [`distrib_grad_y.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Gamma2Distrib.md)
   : Gamma First Derivative in the Response, Mean and Variance
+- [`distrib_grad_y.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_hess_y.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_deriv3_y.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_deriv4_y.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_cross_y.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_cross2_y.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_grad_y_hess.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_hess_y_hess.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  : Generalized Gamma Derivatives in the Response, Mean
 - [`distrib_gradient.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gamma2Distrib.md)
   : Gamma Score in Mean and Variance
+- [`distrib_gradient.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_hessian.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_deriv3.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_deriv4.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_deriv5.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_expected_hessian.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_dexpected_hessian.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_d2expected_hessian.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  : Generalized Gamma Derivatives in the Mean
 - [`distrib_hess_y.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Gamma2Distrib.md)
   : Gamma Second Derivative in the Response, Mean and Variance
 - [`distrib_hessian.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Gamma2Distrib.md)
   : Gamma Observed Hessian in Mean and Variance
 - [`distrib_pdf.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gamma2Distrib.md)
   : Gamma Probability Density Function in Mean and Variance
+- [`distrib_pdf.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma2Distrib.md)
+  [`distrib_cdf.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma2Distrib.md)
+  [`distrib_quantile.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma2Distrib.md)
+  [`distrib_rng.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma2Distrib.md)
+  : Generalized Gamma Density, Distribution and Generator in the Mean
 - [`distrib_quantile.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Gamma2Distrib.md)
   : Gamma Quantile Function in Mean and Variance
 - [`distrib_rng.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Gamma2Distrib.md)
   : Gamma Random Number Generator in Mean and Variance
+- [`mean.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
+  [`variance.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
+  [`skewness.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
+  [`kurtosis.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
+  : Generalized Gamma Moments, Mean
 
 ## Gamma in mean and dispersion
 
@@ -953,17 +1147,26 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_deriv3.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gamma1Distrib.md)
   : Gamma Third-Order Derivatives in Mean and Dispersion
 - [`distrib_deriv3.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
-  : Generalized Gamma Third-Order Derivatives
+  [`distrib_deriv4.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
+  [`distrib_deriv5.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
+  : Generalized Gamma Derivatives of Orders Three to Five
 - [`distrib_deriv4.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Gamma1Distrib.md)
   : Gamma Fourth-Order Derivatives in Mean and Dispersion
-- [`distrib_deriv4.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GenGamma1Distrib.md)
-  : Generalized Gamma Fourth-Order Derivatives
 - [`distrib_expected_hessian.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gamma1Distrib.md)
   : Gamma Expected Hessian in Mean and Dispersion
 - [`distrib_expected_hessian.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GenGamma1Distrib.md)
   : Generalized Gamma Expected Information
 - [`distrib_grad_y.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Gamma1Distrib.md)
   : Gamma First Derivative in the Response, Mean and Dispersion
+- [`distrib_grad_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_hess_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_deriv3_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_deriv4_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_cross_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_cross2_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_grad_y_hess.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_hess_y_hess.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  : Generalized Gamma Derivatives in the Response
 - [`distrib_gradient.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gamma1Distrib.md)
   : Gamma Score in Mean and Dispersion
 - [`distrib_gradient.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma1Distrib.md)
@@ -1068,6 +1271,45 @@ Rarely called directly, but useful as a reference for what is happening.
   : Lognormal Quantile Function
 - [`distrib_rng.Lognormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Lognormal1Distrib.md)
   : Lognormal Random Number Generator
+
+## Lognormal, mean and variance
+
+- [`Lognormal2Distrib()`](https://statmodels7.github.io/distributions7/reference/Lognormal2Distrib.md)
+  : Lognormal Distribution Class, Mean and Variance of Y
+- [`distrib_grad_cdf.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Lognormal2Distrib.md)
+  [`distrib_hess_cdf.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Lognormal2Distrib.md)
+  [`distrib_deriv3_cdf.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Lognormal2Distrib.md)
+  [`distrib_deriv4_cdf.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Lognormal2Distrib.md)
+  : Lognormal Distribution-Function Derivatives, Mean and Variance of Y
+- [`distrib_grad_y.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Lognormal2Distrib.md)
+  [`distrib_hess_y.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Lognormal2Distrib.md)
+  [`distrib_deriv3_y.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Lognormal2Distrib.md)
+  [`distrib_deriv4_y.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Lognormal2Distrib.md)
+  [`distrib_cross_y.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Lognormal2Distrib.md)
+  [`distrib_cross2_y.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Lognormal2Distrib.md)
+  [`distrib_grad_y_hess.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Lognormal2Distrib.md)
+  [`distrib_hess_y_hess.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Lognormal2Distrib.md)
+  : Lognormal Derivatives in the Response, Mean and Variance of Y
+- [`distrib_gradient.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal2Distrib.md)
+  [`distrib_hessian.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal2Distrib.md)
+  [`distrib_deriv3.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal2Distrib.md)
+  [`distrib_deriv4.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal2Distrib.md)
+  [`distrib_deriv5.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal2Distrib.md)
+  [`distrib_expected_hessian.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal2Distrib.md)
+  [`distrib_dexpected_hessian.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal2Distrib.md)
+  [`distrib_d2expected_hessian.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal2Distrib.md)
+  : Lognormal Derivatives in the Mean and Variance of Y
+- [`distrib_pdf.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Lognormal2Distrib.md)
+  [`distrib_cdf.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Lognormal2Distrib.md)
+  [`distrib_quantile.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Lognormal2Distrib.md)
+  [`distrib_rng.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Lognormal2Distrib.md)
+  : Lognormal Density, Distribution and Generator in the Mean and
+  Variance of Y
+- [`mean.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Lognormal2Distrib.md)
+  [`variance.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Lognormal2Distrib.md)
+  [`skewness.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Lognormal2Distrib.md)
+  [`kurtosis.Lognormal2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Lognormal2Distrib.md)
+  : Lognormal Moments, Mean and Variance of Y
 
 ## Beta
 
@@ -1232,11 +1474,20 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_cdf.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GenGamma1Distrib.md)
   : Generalized Gamma Distribution Function
 - [`distrib_deriv3.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
-  : Generalized Gamma Third-Order Derivatives
-- [`distrib_deriv4.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GenGamma1Distrib.md)
-  : Generalized Gamma Fourth-Order Derivatives
+  [`distrib_deriv4.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
+  [`distrib_deriv5.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
+  : Generalized Gamma Derivatives of Orders Three to Five
 - [`distrib_expected_hessian.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GenGamma1Distrib.md)
   : Generalized Gamma Expected Information
+- [`distrib_grad_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_hess_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_deriv3_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_deriv4_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_cross_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_cross2_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_grad_y_hess.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  [`distrib_hess_y_hess.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  : Generalized Gamma Derivatives in the Response
 - [`distrib_gradient.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma1Distrib.md)
   : Generalized Gamma Score
 - [`distrib_hessian.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GenGamma1Distrib.md)
@@ -1247,6 +1498,39 @@ Rarely called directly, but useful as a reference for what is happening.
   : Generalized Gamma Quantile Function
 - [`distrib_rng.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GenGamma1Distrib.md)
   : Generalized Gamma Random Generation
+
+## Generalized gamma in the mean
+
+- [`GenGamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/GenGamma2Distrib.md)
+  : Generalized Gamma Distribution Class, Mean
+- [`distrib_grad_y.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_hess_y.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_deriv3_y.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_deriv4_y.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_cross_y.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_cross2_y.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_grad_y_hess.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  [`distrib_hess_y_hess.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma2Distrib.md)
+  : Generalized Gamma Derivatives in the Response, Mean
+- [`distrib_gradient.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_hessian.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_deriv3.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_deriv4.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_deriv5.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_expected_hessian.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_dexpected_hessian.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  [`distrib_d2expected_hessian.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)
+  : Generalized Gamma Derivatives in the Mean
+- [`distrib_pdf.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma2Distrib.md)
+  [`distrib_cdf.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma2Distrib.md)
+  [`distrib_quantile.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma2Distrib.md)
+  [`distrib_rng.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma2Distrib.md)
+  : Generalized Gamma Density, Distribution and Generator in the Mean
+- [`mean.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
+  [`variance.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
+  [`skewness.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
+  [`kurtosis.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
+  : Generalized Gamma Moments, Mean
 
 ## von Mises
 
@@ -1291,8 +1575,6 @@ Rarely called directly, but useful as a reference for what is happening.
   : von Mises Density in the Resultant Length
 - [`distrib_rng.VonMises2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.VonMises2Distrib.md)
   : von Mises Random Generation in the Resultant Length
-- [`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md)
-  : The Pieces a von Mises Derivative in the Resultant Length Needs
 
 ## Generalized Pareto
 
@@ -1301,11 +1583,20 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_cdf.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GPDDistrib.md)
   : Generalized Pareto Distribution Function
 - [`distrib_deriv3.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md)
-  : Generalized Pareto Third-Order Derivatives
-- [`distrib_deriv4.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GPDDistrib.md)
-  : Generalized Pareto Fourth-Order Derivatives
+  [`distrib_deriv4.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md)
+  [`distrib_deriv5.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md)
+  : Generalized Pareto Derivatives of Orders Three to Five
 - [`distrib_expected_hessian.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GPDDistrib.md)
   : Generalized Pareto Expected Information
+- [`distrib_grad_y.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md)
+  [`distrib_hess_y.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md)
+  [`distrib_deriv3_y.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md)
+  [`distrib_deriv4_y.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md)
+  [`distrib_cross_y.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md)
+  [`distrib_cross2_y.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md)
+  [`distrib_grad_y_hess.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md)
+  [`distrib_hess_y_hess.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md)
+  : Generalized Pareto Derivatives in the Response
 - [`distrib_gradient.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GPDDistrib.md)
   : Generalized Pareto Score
 - [`distrib_hessian.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GPDDistrib.md)
@@ -1782,6 +2073,8 @@ inherits unless it registers something more specific.
   Parametrization
 - [`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md)
   : Poisson Distribution
+- [`pseudohuber2_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber2_distrib.md)
+  : Pseudo-Huber Distribution, Standard-Deviation Parametrization
 - [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
   : Pseudo-Huber Distribution, Location, Scale and Shape
 - [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
@@ -1815,6 +2108,9 @@ divergent density.
 
 - [`align_theta()`](https://statmodels7.github.io/distributions7/reference/align_theta.md)
   : Align Parameters to the Distribution's Parameter Order
+
+- [`analytic_order()`](https://statmodels7.github.io/distributions7/reference/analytic_order.md)
+  : The Highest Derivative Order a Family Implements Itself
 
 - [`as_mv_matrix()`](https://statmodels7.github.io/distributions7/reference/as_mv_matrix.md)
   : Coerce a Multivariate Response to a Matrix
@@ -1910,8 +2206,33 @@ divergent density.
 - [`clamp_to_bounds()`](https://statmodels7.github.io/distributions7/reference/clamp_to_bounds.md)
   : Move a Starting Value Strictly Inside the Parameter Bounds
 
+- [`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
+  [`compiled_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
+  [`compiled_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
+  [`compiled_cdf_args()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
+  : Distribution Function and Its Derivatives from the Compiled Kernels
+
+- [`compiled_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf_deriv_k.md)
+  : Third and Fourth Derivatives of a Compiled Distribution Function
+
+- [`compiled_deriv_cdf_k()`](https://statmodels7.github.io/distributions7/reference/compiled_deriv_cdf_k.md)
+  : Higher Log-CDF Derivatives by the Compiled Quadrature
+
+- [`compiled_quad_classes`](https://statmodels7.github.io/distributions7/reference/compiled_quad_classes.md)
+  [`compiled_ls_classes`](https://statmodels7.github.io/distributions7/reference/compiled_quad_classes.md)
+  : Families With a Compiled CDF Quadrature
+
+- [`constant_to_scalar()`](https://statmodels7.github.io/distributions7/reference/constant_to_scalar.md)
+  : A Constant Parameter Vector as One Number
+
+- [`continuous_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/continuous_cdf_deriv_k.md)
+  : Third and Fourth CDF Derivatives of a Continuous Family
+
 - [`declares_atoms()`](https://statmodels7.github.io/distributions7/reference/declares_atoms.md)
   : Does a Distribution Declare Atoms
+
+- [`deriv5_scale()`](https://statmodels7.github.io/distributions7/reference/deriv5_scale.md)
+  : Carry an Analytic Fifth Order to the Link Scale
 
 - [`deriv_index_list()`](https://statmodels7.github.io/distributions7/reference/deriv_index_list.md)
   : Index Tuples Matching the Package's Component Naming
@@ -1953,6 +2274,9 @@ divergent density.
 - [`discrete_support_sum()`](https://statmodels7.github.io/distributions7/reference/discrete_support_sum.md)
   : Summation over an Integer Support
 
+- [`distrib_at_rows()`](https://statmodels7.github.io/distributions7/reference/distrib_at_rows.md)
+  : A Family at Selected Observations
+
 - [`reparam_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.ReparamContinuousDistrib.md)
   : Atoms of a Reparametrized Distribution
 
@@ -1961,6 +2285,9 @@ divergent density.
 
 - [`reparam_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ReparamContinuousDistrib.md)
   : Distribution Function of a Reparametrized Distribution
+
+- [`distrib_cdf.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.SkewTDistrib.md)
+  : Skew t Distribution Function
 
 - [`distrib_cdf.VonMises2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.VonMises2Distrib.md)
   : von Mises Distribution Function in the Resultant Length
@@ -1973,6 +2300,9 @@ divergent density.
 
 - [`distrib_cdf.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.multivariate_distrib.md)
   : No Distribution Function in Several Dimensions
+
+- [`distrib_const_rows()`](https://statmodels7.github.io/distributions7/reference/distrib_const_rows.md)
+  : Number of Observations a Family's Constants Vary Over
 
 - [`distrib_cross2_y.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Gaussian1Distrib.md)
   : Gaussian Mixed Second-Response Derivatives
@@ -2000,6 +2330,9 @@ divergent density.
   : Default Mixed Second-Response Derivatives for Continuous
   Distributions
 
+- [`distrib_cross3_y.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.MvStudentTDistrib.md)
+  : Multivariate Student t Third Response Derivative in a Parameter
+
 - [`distrib_cross3_y.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.continuous_distrib.md)
   : Default Mixed Third-Response Derivatives for Continuous
   Distributions
@@ -2016,9 +2349,6 @@ divergent density.
 - [`distrib_cross_y.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.ExponentialDistrib.md)
   : Exponential Mixed Derivatives
 
-- [`distrib_cross_y.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.GPDDistrib.md)
-  : Generalized Pareto Mixed Derivatives
-
 - [`distrib_cross_y.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Gamma1Distrib.md)
   : Gamma Mixed Derivatives in Mean and Dispersion
 
@@ -2033,9 +2363,6 @@ divergent density.
 
 - [`distrib_cross_y.Gaussian3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Gaussian3Distrib.md)
   : Gaussian Mixed Derivatives in Mean and Precision
-
-- [`distrib_cross_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.GenGamma1Distrib.md)
-  : Generalized Gamma Mixed Derivatives
 
 - [`distrib_cross_y.InvGauss1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.InvGauss1Distrib.md)
   : Inverse Gaussian Mixed Derivatives
@@ -2096,6 +2423,12 @@ divergent density.
 - [`distrib_d2expected_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.distrib.md)
   : Default Second Derivative of the Expected Information
 
+- [`distrib_d3expected_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_d3expected_hessian.distrib.md)
+  : Default Third Derivative of the Expected Information
+
+- [`distrib_d4expected_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.distrib.md)
+  : Default Fourth Derivative of the Expected Information
+
 - [`distrib_deriv3.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvGaussianDistrib.md)
   : Multivariate Gaussian Third Derivatives
 
@@ -2115,6 +2448,10 @@ divergent density.
 - [`distrib_deriv3_cdf.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.distrib.md)
   [`distrib_deriv4_cdf.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.distrib.md)
   : Default Third and Fourth Log-CDF Derivatives
+
+- [`distrib_deriv3_y.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.MvStudentTDistrib.md)
+  [`distrib_deriv4_y.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.MvStudentTDistrib.md)
+  : Multivariate Student t Third and Fourth Response Derivatives
 
 - [`distrib_deriv3_y.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.ReparamContinuousDistrib.md)
   [`distrib_deriv4_y.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.ReparamContinuousDistrib.md)
@@ -2139,6 +2476,19 @@ divergent density.
   :
 
   Default Fifth-Order Derivatives for `distrib` Objects
+
+- [`distrib_deriv5.wrappers`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md)
+  [`distrib_deriv5.ZeroInflatedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md)
+  [`distrib_deriv5.ZeroAdjustedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md)
+  [`distrib_deriv5.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md)
+  [`distrib_deriv5.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md)
+  [`distrib_deriv5.TruncatedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md)
+  [`distrib_deriv5.FoldedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md)
+  [`distrib_deriv5.TransformedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md)
+  [`distrib_deriv5.FixedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md)
+  [`distrib_deriv5.FixedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md)
+  [`wrapper_deriv5_method`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md)
+  : The Wrappers' Fifth Derivatives
 
 - [`distrib_deriv_component()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv_component.md)
   : One Component of the Parent's Derivative
@@ -2228,6 +2578,11 @@ divergent density.
   [`distrib_d2expected_hessian.Weibull1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
   [`distrib_dexpected_hessian.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
   [`distrib_d2expected_hessian.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_dexpected_hessian.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
   : Derivatives of the Expected Information, Elementary Families
 
 - [`distrib_expected_hessian.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvGaussianDistrib.md)
@@ -2268,6 +2623,7 @@ divergent density.
   : Exponential Log-CDF Derivatives
 
 - [`distrib_grad_cdf.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md)
+  [`gpd_cdf_method`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md)
   [`distrib_hess_cdf.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md)
   [`distrib_deriv3_cdf.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md)
   [`distrib_deriv4_cdf.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md)
@@ -2314,14 +2670,6 @@ divergent density.
 
 - [`distrib_grad_cdf.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.discrete_distrib.md)
   : Log-CDF Gradient for Discrete Distributions
-
-- [`distrib_grad_y.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md)
-  [`distrib_hess_y.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md)
-  : Generalized Pareto Response Derivatives
-
-- [`distrib_grad_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
-  [`distrib_hess_y.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
-  : Generalized Gamma Response Derivatives
 
 - [`distrib_grad_y.InvGauss2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.InvGauss2Distrib.md)
   [`distrib_hess_y.InvGauss2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.InvGauss2Distrib.md)
@@ -2453,6 +2801,13 @@ divergent density.
 
   Default Numerical Hessian for `distrib` Objects
 
+- [`distrib_intercept_start.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.PseudoHuberDistrib.md)
+  [`distrib_intercept_start.PseudoHuber2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.PseudoHuberDistrib.md)
+  : The Pseudo-Huber Starts at a Finite Shape Below Gaussian Kurtosis
+
+- [`distrib_intercept_start.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.SkewNormal1Distrib.md)
+  : The Direct Skew Normal Starts at Its Moment Estimate
+
 - [`distrib_intercept_start.ZeroInflatedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.ZeroInflatedDistrib.md)
   : The Mixing Weight Starts at the Proportion of Zeros
 
@@ -2538,6 +2893,9 @@ divergent density.
 - [`.kink_report()`](https://statmodels7.github.io/distributions7/reference/dot-kink_report.md)
   : Print the Table of check_kink
 
+- [`.kink_roots()`](https://statmodels7.github.io/distributions7/reference/dot-kink_roots.md)
+  : The Roots of a Kink's Argument in a Range
+
 - [`.kink_touched()`](https://statmodels7.github.io/distributions7/reference/dot-kink_touched.md)
   : Which Parameters a Kink Moves With
 
@@ -2587,23 +2945,8 @@ divergent density.
 - [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
   : Is a Family's Expected Information Written Out?
 
-- [`expected_hessian_exact.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.SkewNormal2Distrib.md)
-  : The Centered Skew Normal Answers for Its Parent
-
 - [`expected_hessian_exact.distrib`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.distrib.md)
   : Whether the Owner of the Method Settles the Question
-
-- [`fd5_first()`](https://statmodels7.github.io/distributions7/reference/fd5_first.md)
-  : A Five-Point First Derivative
-
-- [`fd5_fourth()`](https://statmodels7.github.io/distributions7/reference/fd5_fourth.md)
-  : A Five-Point Fourth Derivative
-
-- [`fd5_second()`](https://statmodels7.github.io/distributions7/reference/fd5_second.md)
-  : A Five-Point Second Derivative
-
-- [`fd5_third()`](https://statmodels7.github.io/distributions7/reference/fd5_third.md)
-  : A Five-Point Third Derivative
 
 - [`fd_is_reliable()`](https://statmodels7.github.io/distributions7/reference/fd_is_reliable.md)
   : Which Observations the Finite-Difference Reference Can Be Trusted At
@@ -2631,10 +2974,10 @@ divergent density.
   : Central Differences on the Steps Actually Taken
 
 - [`fdb1()`](https://statmodels7.github.io/distributions7/reference/fdb1.md)
-  : Univariate Composition to Fourth Order
+  : Univariate Composition, One Order
 
 - [`fdb2()`](https://statmodels7.github.io/distributions7/reference/fdb2.md)
-  : Bivariate Composition to Fourth Order
+  : Bivariate Composition, One Order
 
 - [`find_lp_anchor()`](https://statmodels7.github.io/distributions7/reference/find_lp_anchor.md)
   : Locate a High-Density Point of a Bare Log-Density
@@ -2663,8 +3006,17 @@ divergent density.
 - [`fit_theta_from_eta()`](https://statmodels7.github.io/distributions7/reference/fit_theta_from_eta.md)
   : The Link Scale Carried Back to Parameters
 
+- [`fixed_dexpected()`](https://statmodels7.github.io/distributions7/reference/fixed_dexpected.md)
+  : The Derivatives of a Fixed Family's Expected Information
+
+- [`fixed_expand_stems()`](https://statmodels7.github.io/distributions7/reference/fixed_expand_stems.md)
+  : Expand the Stem of a Vector Parameter in fixed()
+
 - [`fixed_full_theta()`](https://statmodels7.github.io/distributions7/reference/fixed_full_theta.md)
   : Splice the Fixed Values Back Into a Full Parameter List
+
+- [`fixed_scalar_route()`](https://statmodels7.github.io/distributions7/reference/fixed_scalar_route.md)
+  : The Scalar Route of a Fixed Family
 
 - [`fold_deriv_k()`](https://statmodels7.github.io/distributions7/reference/fold_deriv_k.md)
   : Build a Folded Derivative Method of a Given Order
@@ -2674,6 +3026,13 @@ divergent density.
 
 - [`fold_ratio()`](https://statmodels7.github.io/distributions7/reference/fold_ratio.md)
   : The Block Ratios of a Folded Density
+
+- [`folded_expected()`](https://statmodels7.github.io/distributions7/reference/folded_expected.md)
+  [`fold_kink_parts()`](https://statmodels7.github.io/distributions7/reference/folded_expected.md)
+  : The Expected Information of a Folded Family
+
+- [`folded_scalar_route()`](https://statmodels7.github.io/distributions7/reference/folded_scalar_route.md)
+  : The Scalar Route of a Folded Family
 
 - [`gamma1_shape_rate()`](https://statmodels7.github.io/distributions7/reference/gamma1_shape_rate.md)
   : The Shape and Rate a Mean and Dispersion Imply
@@ -2687,11 +3046,14 @@ divergent density.
 - [`generate_random_theta.distrib`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.distrib.md)
   : Random Parameters Inside a Family's Own Domain
 
+- [`gengamma2_by_reparam()`](https://statmodels7.github.io/distributions7/reference/gengamma2_by_reparam.md)
+  : Generalized Gamma Distribution in the Mean, Obtained
+
+- [`gengamma2_scale()`](https://statmodels7.github.io/distributions7/reference/gengamma2_scale.md)
+  : The Scale of a Generalized Gamma with a Given Mean
+
 - [`gengamma_components()`](https://statmodels7.github.io/distributions7/reference/gengamma_components.md)
   : Derivative Components of the Generalized Gamma
-
-- [`gengamma_raw_moments()`](https://statmodels7.github.io/distributions7/reference/gengamma_raw_moments.md)
-  : Raw Moments of a Generalized Gamma
 
 - [`geom_prob()`](https://statmodels7.github.io/distributions7/reference/geom_prob.md)
   : The Success Probability Behind a Geometric Mean
@@ -2702,12 +3064,6 @@ divergent density.
 - [`gpd_endpoint()`](https://statmodels7.github.io/distributions7/reference/gpd_endpoint.md)
   : The Upper Endpoint of a Generalized Pareto
 
-- [`gpd_lambda_derivs()`](https://statmodels7.github.io/distributions7/reference/gpd_lambda_derivs.md)
-  : Derivatives of log1p(u)/u
-
-- [`gpd_surv_pieces()`](https://statmodels7.github.io/distributions7/reference/gpd_surv_pieces.md)
-  : The Exponential Survival Pieces of a Generalized Pareto
-
 - [`grou_core()`](https://statmodels7.github.io/distributions7/reference/grou_core.md)
   : The Generalized Ratio-of-Uniforms Sampler
 
@@ -2717,11 +3073,18 @@ divergent density.
 - [`has_analytic_quantile()`](https://statmodels7.github.io/distributions7/reference/has_analytic_quantile.md)
   : Does This Distribution Have a Real Quantile Method?
 
+- [`has_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_d2expected_hessian.md)
+  : Does a Family Register an Analytic Second Derivative of Its Expected
+  Information?
+
 - [`has_exact_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md)
   : Can the Parent Supply Exact CDF Derivatives?
 
 - [`has_exact_deriv4.distrib`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.distrib.md)
   : Whether a Family's Fourth Derivative Is Analytic
+
+- [`has_exact_deriv5()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv5.md)
+  : Is a Family's Fifth Derivative Analytic?
 
 - [`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md)
   : Does This Distribution Compute Its Expected Information Exactly?
@@ -2773,6 +3136,9 @@ divergent density.
 
 - [`kink_decomposition.distrib`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.distrib.md)
   : The Base Method: No Kink
+
+- [`kink_knots()`](https://statmodels7.github.io/distributions7/reference/kink_knots.md)
+  : Where a Family's Kinks Sit on the Response Scale
 
 - [`kurtosis.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.BernoulliDistrib.md)
   : Excess Kurtosis of the Bernoulli Distribution
@@ -2911,6 +3277,9 @@ divergent density.
 - [`loc_scale_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv_k.md)
   : Location-Scale CDF Derivatives at Any Order
 
+- [`loc_scale_compiled()`](https://statmodels7.github.io/distributions7/reference/loc_scale_compiled.md)
+  : The Families Whose Location-Scale Diagonal Is Compiled
+
 - [`loc_scale_cross2_block()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cross2_block.md)
   : The Location and Scale Parts of the Response Curvature's Derivative
 
@@ -2951,6 +3320,12 @@ divergent density.
 
 - [`log_pow_deriv()`](https://statmodels7.github.io/distributions7/reference/log_pow_deriv.md)
   : Derivatives of log(p) and log(1 - p)
+
+- [`lognormal2_by_reparam()`](https://statmodels7.github.io/distributions7/reference/lognormal2_by_reparam.md)
+  : Lognormal Distribution in the Mean and Variance of Y, Obtained
+
+- [`lognormal2_log_params()`](https://statmodels7.github.io/distributions7/reference/lognormal2_log_params.md)
+  : The Log-Scale Parameters of a Mean and a Variance
 
 - [`lognormal_theta_chain()`](https://statmodels7.github.io/distributions7/reference/lognormal_theta_chain.md)
   : The Mixed Grid of the Lognormal
@@ -3124,11 +3499,14 @@ divergent density.
 - [`multinomial_higher()`](https://statmodels7.github.io/distributions7/reference/multinomial_higher.md)
   : Assemble a Multinomial's Higher Derivatives
 
+- [`mv_ai2()`](https://statmodels7.github.io/distributions7/reference/mv_ai2.md)
+  : The Second Derivative of the Inverse, by Position
+
 - [`mv_append_block()`](https://statmodels7.github.io/distributions7/reference/mv_append_block.md)
   : Append One Block of Derived Quantities to Another
 
 - [`mv_derived.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvGaussianDistrib.md)
-  : Standard Deviations and Correlations of a Multivariate Gaussian
+  : Interpretable Quantities of a Multivariate Gaussian
 
 - [`mv_derived.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvStudentTDistrib.md)
   : Scale Standard Deviations and Correlations of a Multivariate t
@@ -3180,6 +3558,9 @@ divergent density.
 
 - [`mv_outer_rows()`](https://statmodels7.github.io/distributions7/reference/mv_outer_rows.md)
   : An Outer Product Per Observation
+
+- [`mv_own_block()`](https://statmodels7.github.io/distributions7/reference/mv_own_block.md)
+  : The Quantities a Structured Parametrization Is About
 
 - [`mv_pairs_panels()`](https://statmodels7.github.io/distributions7/reference/mv_pairs_panels.md)
   : Draw the Panel Matrix of a Multivariate Density
@@ -3269,6 +3650,10 @@ divergent density.
 - [`mvt_weights()`](https://statmodels7.github.io/distributions7/reference/mvt_weights.md)
   : The Weight a Multivariate t Gives Each Observation
 
+- [`mvt_y_tensor()`](https://statmodels7.github.io/distributions7/reference/mvt_y_tensor.md)
+  [`mvt_y_tensor3_d()`](https://statmodels7.github.io/distributions7/reference/mvt_y_tensor.md)
+  : Response Tensors of the Multivariate Student t
+
 - [`n_support_points()`](https://statmodels7.github.io/distributions7/reference/n_support_points.md)
   : Number of Points in a Discrete Support
 
@@ -3296,11 +3681,18 @@ divergent density.
 - [`numerical_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_dexpected_hessian.md)
   : Differencing the Expected Information Once
 
+- [`numerical_dexpected_higher()`](https://statmodels7.github.io/distributions7/reference/numerical_dexpected_higher.md)
+  : The Third or Fourth Derivative of the Expected Information by One
+  Stencil
+
 - [`observed_deriv()`](https://statmodels7.github.io/distributions7/reference/observed_deriv.md)
   : Observed Derivatives of a Given Order
 
 - [`order_indices()`](https://statmodels7.github.io/distributions7/reference/order_indices.md)
   : Multi-Indices of a Given Order, as Parameter Names
+
+- [`owns_method()`](https://statmodels7.github.io/distributions7/reference/owns_method.md)
+  : Does a Family Register a Method of Its Own for a Generic?
 
 - [`param_free_or_fit()`](https://statmodels7.github.io/distributions7/reference/param_free_or_fit.md)
   : A Free Vector Representing a Matrix, Exactly or Approximately
@@ -3381,6 +3773,9 @@ divergent density.
 
 - [`quad_rows()`](https://statmodels7.github.io/distributions7/reference/quad_rows.md)
   : Batched Quadrature with Rejection
+
+- [`quantile_anchors()`](https://statmodels7.github.io/distributions7/reference/quantile_anchors.md)
+  : Approximate Modes of a Continuous Family at Many Parameter Settings
 
 - [`recip_1p_sq()`](https://statmodels7.github.io/distributions7/reference/recip_1p_sq.md)
   : Derivatives of the Reciprocal of One Plus a Square
@@ -3589,27 +3984,26 @@ divergent density.
   : Every Skew t Derivative of an Order That Avoids the Degrees of
   Freedom
 
-- [`skewt_msa_nu1()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_nu1.md)
-  : Skew t Fourth Derivatives Carrying Exactly One Degree-of-Freedom
-  Index
-
 - [`skewt_msa_tower()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_tower.md)
   : The Skew t Tower in the Location, Scale and Shape
-
-- [`skewt_nu_step()`](https://statmodels7.github.io/distributions7/reference/skewt_nu_step.md)
-  : The Step a Skew t Differences the Degrees of Freedom With
 
 - [`skewt_pieces()`](https://statmodels7.github.io/distributions7/reference/skewt_pieces.md)
   : The Pieces a Skew t Evaluates From
 
-- [`sn2_chain()`](https://statmodels7.github.io/distributions7/reference/sn2_chain.md)
-  : Derivatives of the Skew Normal in Its Centered Parametrization
+- [`sn2_expected_parts()`](https://statmodels7.github.io/distributions7/reference/sn2_expected_parts.md)
+  : The Expected Information of the Centered Skew Normal, by Region
 
-- [`sn2_dexpected()`](https://statmodels7.github.io/distributions7/reference/sn2_dexpected.md)
-  : The Centered Skew Normal's Expected Information Derivatives
+- [`sn2_ge()`](https://statmodels7.github.io/distributions7/reference/sn2_ge.md)
+  : The Skewness Below Which the Expected Information Is a Series
+
+- [`sn2_grad_cdf_zero()`](https://statmodels7.github.io/distributions7/reference/sn2_grad_cdf_zero.md)
+  : The Skew Normal's CDF Gradient at Zero Skewness
 
 - [`sn2_reject_unmappable()`](https://statmodels7.github.io/distributions7/reference/sn2_reject_unmappable.md)
   : Reject Centered Parameters the Map Cannot Carry
+
+- [`sn2_reject_zero()`](https://statmodels7.github.io/distributions7/reference/sn2_reject_zero.md)
+  : Reject the Zero Skewness Where a Derivative Diverges
 
 - [`sn2_theta()`](https://statmodels7.github.io/distributions7/reference/sn2_theta.md)
   : The Direct Parameters a Centered Triple Implies
@@ -3647,12 +4041,21 @@ divergent density.
 - [`std_dev.numeric`](https://statmodels7.github.io/distributions7/reference/std_dev.numeric.md)
   : Sample Standard Deviation
 
+- [`student_t2_by_reparam()`](https://statmodels7.github.io/distributions7/reference/student_t2_by_reparam.md)
+  : Student t Distribution in the Standard Deviation, Obtained
+
+- [`student_t2_scale()`](https://statmodels7.github.io/distributions7/reference/student_t2_scale.md)
+  : The Scale of a Student t with a Given Standard Deviation
+
 - [`support_dexpected()`](https://statmodels7.github.io/distributions7/reference/support_dexpected.md)
   : Derivatives of the Expected Information as Exact Sums Over a Finite
   Support
 
 - [`surv_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/surv_cdf_deriv_k.md)
   : CDF Derivatives From an Exponential Survival Function
+
+- [`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md)
+  : Derivatives by One Stencil on the Highest Analytical Order
 
 - [`theta2_link_scale()`](https://statmodels7.github.io/distributions7/reference/theta2_link_scale.md)
   : The Link Scale of a Second-Order Parameter Derivative
@@ -3662,6 +4065,15 @@ divergent density.
 
 - [`trans_deriv_k()`](https://statmodels7.github.io/distributions7/reference/trans_deriv_k.md)
   : Derivatives of a Transformed Distribution
+
+- [`transformed_dexpected()`](https://statmodels7.github.io/distributions7/reference/transformed_dexpected.md)
+  : The Derivatives of a Transformed Family's Expected Information
+
+- [`transformed_scalar_route()`](https://statmodels7.github.io/distributions7/reference/transformed_scalar_route.md)
+  : The Scalar Route of a Transformed Family
+
+- [`transformer_scalar_code()`](https://statmodels7.github.io/distributions7/reference/transformer_scalar_code.md)
+  : The Scalar Code of a Ready-Made Transformer
 
 - [`trunc_M()`](https://statmodels7.github.io/distributions7/reference/trunc_M.md)
   : Second-Order Truncated Moment of the Parent's Derivatives
@@ -3674,6 +4086,10 @@ divergent density.
 
 - [`trunc_deriv_k()`](https://statmodels7.github.io/distributions7/reference/trunc_deriv_k.md)
   : Derivatives of a Truncated Distribution
+
+- [`trunc_dexpected()`](https://statmodels7.github.io/distributions7/reference/trunc_dexpected.md)
+  [`trunc_logz_derivs()`](https://statmodels7.github.io/distributions7/reference/trunc_dexpected.md)
+  : The Derivatives of a Truncated Family's Expected Information
 
 - [`trunc_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/trunc_expected_hessian.md)
   : Expected Hessian of a Truncated Distribution
@@ -3702,6 +4118,10 @@ divergent density.
 - [`trunc_rng()`](https://statmodels7.github.io/distributions7/reference/trunc_rng.md)
   : Random Generation From a Truncated Distribution
 
+- [`trunc_route_parts()`](https://statmodels7.github.io/distributions7/reference/trunc_route_parts.md)
+  : The Retained Mass of a Truncated Family and the Sums of Its
+  Information
+
 - [`trunc_score_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_score_mean.md)
   : Mean of the Parent's Score Under the Truncated Law
 
@@ -3713,6 +4133,9 @@ divergent density.
 
 - [`trunc_y_deriv()`](https://statmodels7.github.io/distributions7/reference/trunc_y_deriv.md)
   : Response Derivative of a Truncated Distribution
+
+- [`truncated_scalar_route()`](https://statmodels7.github.io/distributions7/reference/truncated_scalar_route.md)
+  : The Scalar Route of a Truncated Family
 
 - [`tuple_indices_upto()`](https://statmodels7.github.io/distributions7/reference/tuple_indices_upto.md)
   : Index Tuples of a Given Width Over a Number of Variables
@@ -3844,14 +4267,20 @@ divergent density.
 - [`variance.numeric`](https://statmodels7.github.io/distributions7/reference/variance.numeric.md)
   : Sample Variance
 
-- [`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md)
-  : The Pieces a von Mises Derivative in the Resultant Length Needs
-
 - [`vm_cdf()`](https://statmodels7.github.io/distributions7/reference/vm_cdf.md)
   : The Distribution Function of a von Mises by Its Bessel Series
 
 - [`vm_dexpected()`](https://statmodels7.github.io/distributions7/reference/vm_dexpected.md)
   : The von Mises Families' Derivative Tables
+
+- [`weibull3_by_reparam()`](https://statmodels7.github.io/distributions7/reference/weibull3_by_reparam.md)
+  : Weibull Distribution in the Mean, Obtained
+
+- [`weibull3_scale()`](https://statmodels7.github.io/distributions7/reference/weibull3_scale.md)
+  : The Scale of a Weibull with a Given Mean
+
+- [`weibull3_shape_moments()`](https://statmodels7.github.io/distributions7/reference/weibull3_shape_moments.md)
+  : The Skewness and Excess Kurtosis of a Weibull Shape
 
 - [`weibull_gamma_factors()`](https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.md)
   : Gamma Factors of a Weibull's Moments
@@ -3867,6 +4296,23 @@ divergent density.
 
 - [`za_y_deriv()`](https://statmodels7.github.io/distributions7/reference/za_y_deriv.md)
   : Response Derivative of a Zero-Adjusted Distribution
+
+- [`zero_scalar_route()`](https://statmodels7.github.io/distributions7/reference/zero_scalar_route.md)
+  : The Scalar Route of a Zero Wrapper
+
+- [`zero_wrapper_d2expected()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_d2expected.md)
+  [`d2_quotient()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_d2expected.md)
+  [`zw_disc_parts()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_d2expected.md)
+  [`zi_d2expected_entry()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_d2expected.md)
+  [`za_disc_d2expected_entry()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_d2expected.md)
+  [`za_cont_d2expected_entry()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_d2expected.md)
+  : The Second Derivatives of the Zero Wrappers' Expected Information
+
+- [`zero_wrapper_dexpected()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_dexpected.md)
+  [`zi_dexpected_entry()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_dexpected.md)
+  [`za_disc_dexpected_entry()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_dexpected.md)
+  [`za_cont_dexpected_entry()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_dexpected.md)
+  : The Derivatives of the Zero Wrappers' Expected Information
 
 - [`zi_deriv_k()`](https://statmodels7.github.io/distributions7/reference/zi_deriv_k.md)
   : Derivatives of a Zero-Inflated Distribution

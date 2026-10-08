@@ -74,7 +74,7 @@ theta <- list(mu = 0.4, sigma = 1.3, nu = 6)
 # Against the identity the location family uses.
 max(abs(unlist(numerical_cross3_y(d, y, theta)) -
         unlist(distrib_cross3_y(d, y, theta))))
-#> [1] 8.227036e-11
+#> [1] 8.227025e-11
 
 numerical_cross3_y(d, y, theta, which = "nu")
 #> $nu

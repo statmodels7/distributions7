@@ -30,7 +30,10 @@ expectation(distrib, f, theta, ...)
 
   A named list of parameters. Vectors are supported and are recycled
   against any vectors in `...`, so several parameter values can be
-  handled in one call; all combinations share one batched evaluation.
+  handled in one call; all combinations share one batched evaluation. A
+  constant of the family that varies by observation (a binomial's
+  `size`) is recycled in the same way, so a scalar `theta` gives one
+  expected value per observation.
 
 - ...:
 

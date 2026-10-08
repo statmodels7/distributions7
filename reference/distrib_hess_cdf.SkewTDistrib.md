@@ -1,10 +1,11 @@
 # Skew t Log-CDF Hessian
 
-Closed form in the location-scale block, three of the ten components;
-the seven touching the shape or the degrees of freedom are differenced.
-The method is
-[`partial_loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_hess_cdf.md)
-itself, shared with the Student t and the pseudo-Huber.
+Closed form in the location-scale block, and in the mixed components
+with a shape \\k\\, \\-f s_k\\ and \\-z f s_k\\ at \\q\\; the components
+in the shape parameters alone are integrals of the density's own
+derivatives, taken by the compiled rule. The method is
+[`compiled_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
+itself.
 
 ## Arguments
 
@@ -45,7 +46,7 @@ shape, \\\nu \> 0\\ the degrees of freedom, \\z = (q-\mu)/\sigma\\ and
 
 ## See also
 
-[`partial_loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_hess_cdf.md)
+[`compiled_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
 for the shared body;
 [`distrib_grad_cdf.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewTDistrib.md)
 for the first order;
@@ -57,7 +58,7 @@ for the first order;
 d <- skewt_distrib()
 th <- list(mu = 0.3, sigma = 1.2, alpha = 2, nu = 6)
 
-# Ten components, of which mu_mu, sigma_sigma and mu_sigma are closed.
+# Ten components, keyed as hess_names().
 names(distrib_hess_cdf(d, c(-1, 2), th))
 #>  [1] "mu_mu"       "sigma_sigma" "alpha_alpha" "nu_nu"       "mu_sigma"   
 #>  [6] "mu_alpha"    "mu_nu"       "sigma_alpha" "sigma_nu"    "alpha_nu"   

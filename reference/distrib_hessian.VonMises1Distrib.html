@@ -10,11 +10,10 @@ pure-concentration entry is free of the data: the log-density is
 apart from the normalizing constant, so \(\kappa\) appears twice only
 inside \(\log I_0\). It therefore equals its own expectation at every
 observation.
-\(A'\) comes from the Riccati recurrence
-\(A' = 1 - A/\kappa - A^2\), which numericals7::bessel_i_ratio_derivs()
-runs, so no second Bessel evaluation is needed. It is the variance of
+\(A'\) comes from numericals7::bessel_i_ratio_d1(), accurate to the
+last bits at any concentration. It is the variance of
 \(\cos(Y-\mu)\) and is positive, so the information is positive
-definite."><meta property="og:description" content="Computes the three distinct second derivatives of the von Mises log-density,
+definite. The components are computed by a compiled kernel."><meta property="og:description" content="Computes the three distinct second derivatives of the von Mises log-density,
 one value per observation, in closed form:
 $$\ell^{(\mu\mu)} = -\kappa\cos(y-\mu), \qquad
       \ell^{(\mu\kappa)} = \sin(y-\mu), \qquad
@@ -25,11 +24,10 @@ pure-concentration entry is free of the data: the log-density is
 apart from the normalizing constant, so \(\kappa\) appears twice only
 inside \(\log I_0\). It therefore equals its own expectation at every
 observation.
-\(A'\) comes from the Riccati recurrence
-\(A' = 1 - A/\kappa - A^2\), which numericals7::bessel_i_ratio_derivs()
-runs, so no second Bessel evaluation is needed. It is the variance of
+\(A'\) comes from numericals7::bessel_i_ratio_d1(), accurate to the
+last bits at any concentration. It is the variance of
 \(\cos(Y-\mu)\) and is positive, so the information is positive
-definite."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+definite. The components are computed by a compiled kernel."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -37,7 +35,7 @@ definite."><meta property="og:image" content="https://statmodels7.github.io/dist
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,11 +79,10 @@ pure-concentration entry is <strong>free of the data</strong>: the log-density i
 apart from the normalizing constant, so \(\kappa\) appears twice only
 inside \(\log I_0\). It therefore equals its own expectation at every
 observation.</p>
-<p>\(A'\) comes from the Riccati recurrence
-\(A' = 1 - A/\kappa - A^2\), which <code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_derivs.html" class="external-link">numericals7::bessel_i_ratio_derivs()</a></code>
-runs, so no second Bessel evaluation is needed. It is the variance of
+<p>\(A'\) comes from <code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html" class="external-link">numericals7::bessel_i_ratio_d1()</a></code>, accurate to the
+last bits at any concentration. It is the variance of
 \(\cos(Y-\mu)\) and is positive, so the information is positive
-definite.</p>
+definite. The components are computed by a compiled kernel.</p>
     </div>
 
 
@@ -116,6 +113,12 @@ positive.</p></dd>
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Unused, and accepted so that the signature matches the generic's.</p></dd>
 
+
+<dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
+<dd><p>A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to <code>1L</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -136,7 +139,7 @@ function of the first kind of order \(m\), and
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_gradient.VonMises1Distrib.html">distrib_gradient.VonMises1Distrib()</a></code> for the score,
 <code><a href="distrib_expected_hessian.VonMises1Distrib.html">distrib_expected_hessian.VonMises1Distrib()</a></code> for the expectation of this
-quantity, <code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_derivs.html" class="external-link">numericals7::bessel_i_ratio_derivs()</a></code> for \(A'\), and
+quantity, <code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html" class="external-link">numericals7::bessel_i_ratio_d1()</a></code> for \(A'\), and
 <code><a href="distrib_hessian.html">distrib_hessian()</a></code> for the generic.</p></div>
     </div>
 
@@ -153,10 +156,10 @@ quantity, <code><a href="https://statmodels7.github.io/numericals7/reference/bes
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">h</span><span class="op">$</span><span class="va">kappa_kappa</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.1642232</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># And it is minus A', which the Riccati recurrence gives.</span></span></span>
+<span class="r-in"><span><span class="co"># And it is minus A', which satisfies the Riccati identity.</span></span></span>
 <span class="r-in"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu">numericals7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio.html" class="external-link">bessel_i_ratio</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>riccati <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">A</span> <span class="op">/</span> <span class="fl">2</span> <span class="op">-</span> <span class="va">A</span><span class="op">^</span><span class="fl">2</span>,</span></span>
-<span class="r-in"><span>  supplied <span class="op">=</span> <span class="fu">numericals7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_derivs.html" class="external-link">bessel_i_ratio_derivs</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">$</span><span class="va">d1</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  supplied <span class="op">=</span> <span class="fu">numericals7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html" class="external-link">bessel_i_ratio_d1</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   riccati  supplied </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.1642232 0.1642232 </span>
 <span class="r-in"><span></span></span>

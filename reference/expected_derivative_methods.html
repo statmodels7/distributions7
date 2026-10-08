@@ -17,7 +17,7 @@ when the distribution provides an analytical method (which is always preferred).
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,8 +96,11 @@ available in closed form.</p></dd>
 directly against the density (numerical quadrature for continuous
 distributions, series summation for discrete ones). Deterministic and
 normally the most accurate when the observed derivative is available in
-closed form. Estimates \(\mathbb{E}[\partial^k \ell]\) literally, which
-for a non-regular model is <em>not</em> the information.</p></dd>
+closed form. Estimates \(\mathbb{E}[\partial^k \ell]\) literally,
+with one exception: at order 2, for a family with a non-smooth
+parameter (see <code><a href="param_smoothness.html">param_smoothness()</a></code>), it evaluates
+\(-\mathbb{E}[\ell_i \ell_j]\) as <code>"bartlett"</code> does, because the
+observed \(\ell_{ij}\) then lacks the point mass at the kink.</p></dd>
 
 
 <dt><code>"mc"</code></dt>
@@ -115,22 +118,22 @@ quantile function slow enough to make inverse transform sampling the
 bottleneck; prefer <code>"bartlett"</code> or <code>"integrate"</code> in that case.</p></dd>
 
 
-</dl><p><strong>Defaults.</strong> <code>distrib_expected_hessian</code> defaults to
-<code>"bartlett"</code>, because at order 2 it is both the cheapest (only first
-derivatives) and the most broadly valid. <code>distrib_deriv3</code> and
+</dl><p><strong>Defaults.</strong> <code>distrib_expected_hessian</code> defaults to <code>"opg"</code>, which needs
+one score evaluation per observation and no expectation. <code>distrib_deriv3</code> and
 <code>distrib_deriv4</code> default to <code>"integrate"</code>, since at those orders
 direct integration of the available derivative is usually cheaper and more
 accurate.</p>
-<p><strong>What the kink costs, measured.</strong> On a Laplace carrying a density, a score
-and a Hessian but no expected method, at \(\sigma = 1\) over 200
-observations: <code>"bartlett"</code> returns \(-200\), which is \(-n/\sigma^2\)
-and agrees with the shipped family's closed form to the digit, while
-<code>"integrate"</code> and <code>"mc"</code> both return <strong>exactly 0</strong>. Neither is wrong about
-what it computes. The observed \(\ell_{\mu\mu}\) really is zero almost
-everywhere, so its expectation is zero; what fails is the identification of
-that expectation with \(-\mathcal{I}(\theta)\), which is the second
-Bartlett identity. Only the score-based route survives, and the information
-of a non-regular family is <em>defined</em> as the variance of the score.</p>
+<p><strong>Non-smooth parameters.</strong> Where the log-density has a kink in a
+parameter, the observed second derivative has a point mass at the kink, and
+an average of its pointwise values does not contain that mass. For the
+Laplace location, \(\ell_{\mu\mu}\) is zero almost everywhere, so its
+pointwise average is zero, while the information is \(1/\sigma^2\). The
+information of such a family is the variance of the score, which is what
+the second Bartlett identity evaluates. <code>"bartlett"</code>, <code>"opg"</code> and, at
+order 2, <code>"integrate"</code> therefore return \(-1/\sigma^2\) per observation;
+<code>"mc"</code> averages the observed \(\ell_{\mu\mu}\) and returns 0. When the
+family declares where its kink is, through <code><a href="kink_decomposition.html">kink_decomposition()</a></code>, the
+quadrature of <code><a href="expectation.html">expectation()</a></code> places a knot there.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -17,7 +17,7 @@ order."><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,12 +107,13 @@ fourth-order components; a one-parameter family has one of each.</p>
     </div>
     <div class="section level2">
     <h2 id="the-two-routes">The two routes<a class="anchor" aria-label="anchor" href="#the-two-routes"></a></h2>
-    <p>A discrete family uses the exact finite sum of <code><a href="discrete_cdf_deriv_k.html">discrete_cdf_deriv_k()</a></code>, and
-a continuous one takes a single product stencil on its analytic distribution
-function through <code><a href="numerical_cdf_deriv_k.html">numerical_cdf_deriv_k()</a></code>. 24 of the 42 univariate families
-register a closed form of their own; of the 18 that do not, the discrete
-ones sum exactly and the continuous ones (beta1, beta2, chisq, gamma1,
-gamma2, gengamma1 and the two von Mises) difference.</p>
+    <p>A discrete family uses the exact finite sum of <code><a href="discrete_cdf_deriv_k.html">discrete_cdf_deriv_k()</a></code>. A
+continuous family whose compiled distribution function integrates its shape
+derivatives (gamma1, gamma2, chisq, both generalized gammas, both betas,
+both von Mises, both Student t, both pseudo-Huber and the skew t) takes the
+exact integrals of <code><a href="compiled_cdf_deriv_k.html">compiled_cdf_deriv_k()</a></code>; any other continuous family
+without a closed form of its own takes a single product stencil on its
+distribution function through <code><a href="numerical_cdf_deriv_k.html">numerical_cdf_deriv_k()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="what-consumes-them">What consumes them<a class="anchor" aria-label="anchor" href="#what-consumes-them"></a></h2>

@@ -11,7 +11,7 @@ depend on the data already resolved."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,13 +64,23 @@ depend on the data already resolved.</p>
 
 <dt id="arg-param">param<a class="anchor" aria-label="anchor" href="#arg-param"></a></dt>
 <dd><p>The name of the parameter whose unconstrained scale the
-derivatives are taken with respect to.</p></dd>
+derivatives are taken with respect to.</p>
+<p>The kernel also carries the expected information of the same coordinate and
+its derivative in that coordinate, which a filter whose score is scaled by a
+power of the information reads at each step. On the link scale the
+information is \(I_p = -\mathbb{E}[\ell_{pp}]\,h'(\eta_p)^2\), with no
+term in \(h''\) because the score has mean zero, and</p>
+<p>$$\frac{\partial I_p}{\partial \eta_p}
+  = -\frac{\partial\mathbb{E}[\ell_{pp}]}{\partial\theta_p}\,h'^3
+    - 2\,\mathbb{E}[\ell_{pp}]\,h'\,h''.$$</p>
+<p>The two methods are looked up when first called, so a family without an
+expected information still yields the other three functions.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list of three functions of <code>(y, theta, eta)</code>:
-<code>logdens</code>, <code>score</code> and <code>curvature</code>.</p>
+    <p>A list of five functions of <code>(y, theta, eta)</code>:
+<code>logdens</code>, <code>score</code>, <code>curvature</code>, <code>information</code> and <code>dinformation</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

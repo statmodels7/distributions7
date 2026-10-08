@@ -50,8 +50,12 @@ derivatives with respect to the parameters. The three strategies are:
   density (numerical quadrature for continuous distributions, series
   summation for discrete ones). Deterministic and normally the most
   accurate when the observed derivative is available in closed form.
-  Estimates \\\mathbb{E}\[\partial^k \ell\]\\ literally, which for a
-  non-regular model is *not* the information.
+  Estimates \\\mathbb{E}\[\partial^k \ell\]\\ literally, with one
+  exception: at order 2, for a family with a non-smooth parameter (see
+  [`param_smoothness()`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md)),
+  it evaluates \\-\mathbb{E}\[\ell_i \ell_j\]\\ as `"bartlett"` does,
+  because the observed \\\ell\_{ij}\\ then lacks the point mass at the
+  kink.
 
 - `"mc"`:
 
@@ -70,23 +74,26 @@ derivatives with respect to the parameters. The three strategies are:
   inverse transform sampling the bottleneck; prefer `"bartlett"` or
   `"integrate"` in that case.
 
-**Defaults.** `distrib_expected_hessian` defaults to `"bartlett"`,
-because at order 2 it is both the cheapest (only first derivatives) and
-the most broadly valid. `distrib_deriv3` and `distrib_deriv4` default to
-`"integrate"`, since at those orders direct integration of the available
-derivative is usually cheaper and more accurate.
+**Defaults.** `distrib_expected_hessian` defaults to `"opg"`, which
+needs one score evaluation per observation and no expectation.
+`distrib_deriv3` and `distrib_deriv4` default to `"integrate"`, since at
+those orders direct integration of the available derivative is usually
+cheaper and more accurate.
 
-**What the kink costs, measured.** On a Laplace carrying a density, a
-score and a Hessian but no expected method, at \\\sigma = 1\\ over 200
-observations: `"bartlett"` returns \\-200\\, which is \\-n/\sigma^2\\
-and agrees with the shipped family's closed form to the digit, while
-`"integrate"` and `"mc"` both return **exactly 0**. Neither is wrong
-about what it computes. The observed \\\ell\_{\mu\mu}\\ really is zero
-almost everywhere, so its expectation is zero; what fails is the
-identification of that expectation with \\-\mathcal{I}(\theta)\\, which
-is the second Bartlett identity. Only the score-based route survives,
-and the information of a non-regular family is *defined* as the variance
-of the score.
+**Non-smooth parameters.** Where the log-density has a kink in a
+parameter, the observed second derivative has a point mass at the kink,
+and an average of its pointwise values does not contain that mass. For
+the Laplace location, \\\ell\_{\mu\mu}\\ is zero almost everywhere, so
+its pointwise average is zero, while the information is \\1/\sigma^2\\.
+The information of such a family is the variance of the score, which is
+what the second Bartlett identity evaluates. `"bartlett"`, `"opg"` and,
+at order 2, `"integrate"` therefore return \\-1/\sigma^2\\ per
+observation; `"mc"` averages the observed \\\ell\_{\mu\mu}\\ and returns
+0. When the family declares where its kink is, through
+[`kink_decomposition()`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.md),
+the quadrature of
+[`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
+places a knot there.
 
 ## See also
 

@@ -10,12 +10,11 @@ log-density, one value per observation, in closed form:
 normalizing constant, so \\\kappa\\ appears twice only inside \\\log
 I_0\\. It therefore equals its own expectation at every observation.
 
-\\A'\\ comes from the Riccati recurrence \\A' = 1 - A/\kappa - A^2\\,
-which
-[`numericals7::bessel_i_ratio_derivs()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_derivs.html)
-runs, so no second Bessel evaluation is needed. It is the variance of
+\\A'\\ comes from
+[`numericals7::bessel_i_ratio_d1()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html),
+accurate to the last bits at any concentration. It is the variance of
 \\\cos(Y-\mu)\\ and is positive, so the information is positive
-definite.
+definite. The components are computed by a compiled kernel.
 
 ## Arguments
 
@@ -45,6 +44,12 @@ definite.
 
   Unused, and accepted so that the signature matches the generic's.
 
+- threads:
+
+  A single positive integer, how many threads the kernel may use. Below
+  the measured internal threshold the kernel stays sequential whatever
+  the count says. Defaults to `1L`.
+
 ## Value
 
 A named list of three numeric vectors, `mu_mu`, `mu_kappa` and
@@ -64,7 +69,7 @@ I_1(\kappa)/I_0(\kappa)\\.
 for the score,
 [`distrib_expected_hessian.VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.VonMises1Distrib.md)
 for the expectation of this quantity,
-[`numericals7::bessel_i_ratio_derivs()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_derivs.html)
+[`numericals7::bessel_i_ratio_d1()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html)
 for \\A'\\, and
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 for the generic.
@@ -83,10 +88,10 @@ names(h)
 unique(h$kappa_kappa)
 #> [1] -0.1642232
 
-# And it is minus A', which the Riccati recurrence gives.
+# And it is minus A', which satisfies the Riccati identity.
 A <- numericals7::bessel_i_ratio(2)
 c(riccati = 1 - A / 2 - A^2,
-  supplied = numericals7::bessel_i_ratio_derivs(2)$d1)
+  supplied = numericals7::bessel_i_ratio_d1(2))
 #>   riccati  supplied 
 #> 0.1642232 0.1642232 
 

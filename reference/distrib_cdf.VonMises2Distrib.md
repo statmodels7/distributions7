@@ -30,11 +30,19 @@ intermediate small.
   length 1 or of the length of `q`. `mu` must lie in \\(-\pi, \pi)\\ and
   `rho` in \\(0, 1)\\.
 
+- lower.tail:
+
+  Logical of length 1. When `TRUE`, the default, probabilities are \\P(Y
+  \le q)\\; when `FALSE` they are \\P(Y \> q)\\, formed as \\1 - F(q)\\.
+
+- log.p:
+
+  Logical of length 1. When `TRUE` the logarithm of the probability is
+  returned. Defaults to `FALSE`.
+
 - ...:
 
-  Unused, and accepted so that the signature matches the generic's. This
-  method takes **no** `lower.tail` or `log.p`: the upper tail is
-  `1 - F(q)` and the logarithm is `log(F(q))`.
+  Unused, and accepted so that the signature matches the generic's.
 
 ## Value
 
@@ -67,7 +75,7 @@ rbind(series = distrib_cdf(d2, y, th),
 #> quadrature 0.04723942 0.2659828 0.5050289 0.9628184
 
 # And with the concentration parametrization at the implied concentration.
-k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+k <- numericals7::bessel_i_ratio_inverse(0.7)
 all.equal(distrib_cdf(d2, y, th),
           distrib_cdf(vonmises1_distrib(), y, list(mu = 0.5, kappa = k)))
 #> [1] TRUE

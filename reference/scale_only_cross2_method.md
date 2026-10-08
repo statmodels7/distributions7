@@ -54,17 +54,17 @@ for the generic.
 ``` r
 y <- c(0.4, 1.1, 2.3)
 
-# The generalized Pareto: a scale and a shape.
-d <- gpd_distrib()
-theta <- list(sigma = 1.5, xi = 0.3)
+# The Weibull: a scale and a shape.
+d <- weibull1_distrib()
+theta <- list(mu = 1.5, sigma = 1.3)
 vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
-#>      sigma         xi 
-#> -0.1834635  0.5362778 
+#>         mu      sigma 
+#>  0.3789275 -7.4658361 
 
 # Against a numerical derivative of the response Hessian.
-f <- function(v) distrib_hess_y(d, y[1], list(sigma = v[1], xi = v[2]))
-numDeriv::grad(f, c(1.5, 0.3))
-#> [1] -0.1834635  0.5362778
+f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
+numDeriv::grad(f, c(1.5, 1.3))
+#> [1]  0.3789275 -7.4658361
 
 # The exponential has one parameter, so nothing is differenced.
 distrib_cross2_y(exponential_distrib(), y, list(mu = 1.5))

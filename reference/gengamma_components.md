@@ -59,9 +59,7 @@ a hand-written form rest on the orders that can.
 ## See also
 
 [`distrib_deriv3.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
-and
-[`distrib_deriv4.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GenGamma1Distrib.md),
-which call this;
+for the compiled kernels this assembly is checked against;
 [`fdb2()`](https://statmodels7.github.io/distributions7/reference/fdb2.md)
 for the two-variable composition template; and
 [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md)

@@ -26,13 +26,12 @@ Invisibly `NULL`. Called for the two registrations it makes.
 ## Registered on
 
 This body serves both third- and fourth-order response derivatives on
-the fourteen families whose response is not a pure location, so
-`?distrib_deriv3_y.Gamma1Distrib` and its twenty-seven siblings open
+the twelve families whose response is not a pure location, so
+`?distrib_deriv3_y.Gamma1Distrib` and its twenty-three siblings open
 this page: `Gamma1Distrib`, `Gamma2Distrib`, `ChisqDistrib`,
 `ExponentialDistrib`, `Beta1Distrib`, `Beta2Distrib`, `Weibull1Distrib`,
-`GenGamma1Distrib`, `InvGauss1Distrib`, `InvGauss2Distrib`,
-`Lognormal1Distrib`, `GPDDistrib`, `VonMises1Distrib`,
-`VonMises2Distrib`.
+`InvGauss1Distrib`, `InvGauss2Distrib`, `Lognormal1Distrib`,
+`VonMises1Distrib`, `VonMises2Distrib`.
 
 ## See also
 

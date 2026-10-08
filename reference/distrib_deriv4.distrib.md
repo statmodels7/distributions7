@@ -2,12 +2,14 @@
 
 The fallback for a family that registers no fourth-order method.
 Observed derivatives come from
-[`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md),
-a **second** difference of
+[`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md):
+a **second** difference of the family's own
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
-rather than a difference of the third order, so the package's rule
-against nesting one difference inside another holds here; expected ones
-from
+rather than a difference of the third order, or, for a family without
+its own Hessian, one tensor-product stencil on its score or its
+log-density. On both routes each parameter is differenced once, so the
+package's rule against nesting one difference inside another holds.
+Expected ones come from
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
 at the strategy `approx` names.
 

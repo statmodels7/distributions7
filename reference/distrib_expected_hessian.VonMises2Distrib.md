@@ -4,9 +4,10 @@ Returns the expectation of the observed Hessian under the model, in
 closed form and with no quadrature or simulation. Since
 \\\mathbb{E}\[\cos(Y-\mu)\] = A(\kappa)\\ and
 \\\mathbb{E}\[\sin(Y-\mu)\] = 0\\, the term carrying the map's second
-derivative drops out and \$\$\mathbb{E}\[\ell^{(\mu\mu)}\] = -\kappa
-A(\kappa), \qquad \mathbb{E}\[\ell^{(\mu\rho)}\] = 0, \qquad
-\mathbb{E}\[\ell^{(\rho\rho)}\] = -\dfrac{1}{A'(\kappa)}.\$\$
+derivative drops out and \$\$\mathbb{E}\[\ell^{(\mu\mu)}\] =
+-\kappa\rho, \qquad \mathbb{E}\[\ell^{(\mu\rho)}\] = 0, \qquad
+\mathbb{E}\[\ell^{(\rho\rho)}\] = -\kappa'(\rho) =
+-\dfrac{1}{A'(\kappa)}.\$\$
 
 The last equality is the reparametrization identity: the information in
 \\\kappa\\ is \\A'(\kappa)\\ and \\\kappa'(\rho) = 1/A'(\kappa)\\, so
@@ -55,6 +56,12 @@ orthogonal.
 
   Unused, and accepted so that the signature matches the generic's.
 
+- threads:
+
+  A single positive integer, how many threads the kernel may use. Below
+  the measured internal threshold the kernel stays sequential whatever
+  the count says. Defaults to `1L`.
+
 ## Value
 
 A named list of three numeric vectors, `mu_mu`, `rho_rho` and `mu_rho`,
@@ -88,8 +95,8 @@ vapply(eh, function(v) v[1], numeric(1))
 
 # The reparametrization identity: the information in rho is the reciprocal
 # of the information in kappa.
-k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
-Ap <- numericals7::bessel_i_ratio_derivs(k)$d1
+k <- numericals7::bessel_i_ratio_inverse(0.7)
+Ap <- numericals7::bessel_i_ratio_d1(k)
 c(supplied = eh$rho_rho[1], reciprocal = -1 / Ap)
 #>   supplied reciprocal 
 #>  -6.158821  -6.158821 

@@ -21,7 +21,9 @@ Bessel function; the only Bessel work here is the single inversion of
 - theta:
 
   A named list with components `mu` and `rho`, each a numeric vector of
-  length 1. `mu` must lie in \\(-\pi, \pi)\\ and `rho` in \\(0, 1)\\.
+  length 1 or `n`, recycled to `n` otherwise as by the generic. `mu`
+  must lie in \\(-\pi, \pi)\\ and `rho` in \\(0, 1)\\. Draw `i` is
+  generated at `mu[i]` and `rho[i]`.
 
 - ...:
 

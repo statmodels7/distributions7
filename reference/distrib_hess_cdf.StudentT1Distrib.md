@@ -1,10 +1,11 @@
 # Student t Log-CDF Hessian
 
-Closed form in the location-scale block, `mu_mu`, `sigma_sigma` and
-`mu_sigma`; the three components touching the degrees of freedom are
-differenced, that derivative having no elementary form. The method is
-[`partial_loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_hess_cdf.md)
-itself, shared with the pseudo-Huber and the skew t.
+Closed form in the location-scale block, and in the mixed components
+with a shape \\k\\, \\-f s_k\\ and \\-z f s_k\\ at \\q\\; the components
+in the shape parameters alone are integrals of the density's own
+derivatives, taken by the compiled rule. The method is
+[`compiled_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
+itself.
 
 ## Arguments
 
@@ -44,7 +45,7 @@ degrees of freedom, \\z = (q-\mu)/\sigma\\ and \\f\\ the density.
 
 ## See also
 
-[`partial_loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_hess_cdf.md)
+[`compiled_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
 for the shared body;
 [`distrib_grad_cdf.StudentT1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.StudentT1Distrib.md)
 for the first order;
@@ -57,7 +58,7 @@ d <- student_t1_distrib()
 th <- list(mu = 0.3, sigma = 1.2, nu = 6)
 q <- c(-1, 0.5, 2)
 
-# Six components: three closed, three differenced.
+# Six components, keyed as hess_names().
 names(distrib_hess_cdf(d, q, th))
 #> [1] "mu_mu"       "sigma_sigma" "nu_nu"       "mu_sigma"    "mu_nu"      
 #> [6] "sigma_nu"   

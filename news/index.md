@@ -1,5 +1,719 @@
 # Changelog
 
+## distributions7 0.75.1
+
+- Documentation repairs found by `R CMD check --as-cran`: the example of
+  the internal
+  [`constant_to_scalar()`](https://statmodels7.github.io/distributions7/reference/constant_to_scalar.md)
+  calls it with `:::`; the page of the compiled cdf derivatives no
+  longer links to the unexported `cdf_rule_cpp()`; the pages of the
+  wrappers’ fifth derivatives and of the generalized Pareto cdf
+  derivatives have no `\usage` section, as the other method pages,
+  instead of the usage of an internal helper.
+
+## distributions7 0.75.0
+
+- For a family without its own Hessian, the observed third and fourth
+  derivatives are one tensor-product central stencil on the family’s
+  score, or on its log-density when it has no score, through the new
+  internal
+  [`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md).
+  They were a difference of the numerical Hessian, which differenced the
+  same parameter twice in succession; on a generalized Poisson defined
+  by its probability function alone the third derivatives were 1 to 6
+  per cent from the exact values and the fourth missed them by factors
+  of 3 to 71, against 2e-5 and 3e-4 now (5e-8 and 5e-6 from a score).
+  Families with their own Hessian, which include every family in the
+  package, keep the previous route.
+- For a family with its own score and no Hessian, the default
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
+  is one central difference of the score.
+- `approx = "integrate"` now succeeds on the expected third derivatives
+  of a family with a density alone, which the noise of the nested
+  differences made fail.
+
+## distributions7 0.74.0
+
+- The numerical quantile function of a continuous family inverts every
+  probability at once: the starting modes are found for every distinct
+  parameter setting in one evaluation of the density per refinement, and
+  each root is found by Newton steps on the distribution function, with
+  a bisection wherever a step would leave the bracket. On a log-logistic
+  defined by its density alone, 942 quantiles at 314 settings took 13 s
+  and take 1.7 s, and on a density-only gamma it agrees with
+  [`stats::qgamma()`](https://rdrr.io/r/stats/GammaDist.html) to between
+  1e-16 and 6e-11 relative.
+
+## distributions7 0.73.0
+
+- [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+  does not run a parameter-derivative check of an order for which the
+  family registers no method of its own. The value would be the
+  numerical fallback, the same finite difference as the reference, and
+  the check held by construction: a family written from its density
+  alone reported all thirteen checks passed while four of them had
+  compared nothing. Such a row is listed in the attribute `"skipped"`
+  with its reason and printed as not run.
+- [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+  rejects an optimizer whose class has no
+  [`minimize()`](https://statmodels7.github.io/optimizers7/reference/minimize.html)
+  method, naming the class, where every start failed and the message
+  read “Optimization failed from every starting value”. A response that
+  is not a numeric vector is rejected with its class; for the object
+  `cens()` returns, the message says that a censored response has no
+  likelihood here.
+- The numerical
+  [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
+  of a continuous family integrates once per distinct parameter
+  combination, and its error lists at most ten of the combinations it
+  could not integrate.
+
+## distributions7 0.72.1
+
+- [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
+  of a family whose constant varies by observation (a binomial’s `size`,
+  also inside a wrapper) returns one value per observation. With a
+  scalar `theta` it returned one number, the size being recycled against
+  the support points.
+
+## distributions7 0.72.0
+
+- The derivatives of
+  [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
+  in the degrees of freedom are exact at every order. The derivatives of
+  the Student t distribution function in its degrees of freedom are
+  integrals of the t density’s own, taken by Gauss-Legendre quadrature,
+  and every derivative of the family to order five is a compiled kernel,
+  written in closed form in bounded variables. Against mpmath at 50
+  digits every order agrees to 2e-13 relative to its largest component;
+  the stencils they replace read the score in `nu` 1e-13 to 1.6e-10 out
+  and the fourth derivative in `nu` 2e-4 out.
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+  are about 50 times faster (4.6 s to 0.09 s for the third order at n =
+  20000),
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
+  has a method of its own, and the score costs what it did. Far in the
+  tail the second derivative in `sigma` reads its limit `-nu/sigma^2`,
+  where it read about twice that, and the mixed response derivatives in
+  the two shapes are closed.
+
+## distributions7 0.71.0
+
+- The expected information of
+  [`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)
+  and its first and second derivatives are sums over the support whose
+  summands are rational in `(mu, theta)`, differentiated in
+  `(mu, theta)` inside the sums. Against sums at 50 digits the largest
+  error relative to the largest component of its order goes from 7.4e-7
+  to 1.6e-10 at `mu = 100`, `theta = 0.05`, and from 5e-2 to 4.5e-6 at
+  `theta = 0.001`; the dispersion entry stays negative toward the
+  Poisson limit, where it turned positive from `theta = 1e-8`. The
+  series over the support of
+  [`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)
+  stops on its terms, as that of
+  [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
+  does, and no longer at a fixed fraction of the accumulated mass.
+- The third to fifth derivatives of
+  [`pseudohuber2_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber2_distrib.md)
+  are closed forms in `u = r/A` and powers of `1/A`,
+  `A = sqrt(nu sigma^2 + R(nu) r^2)`; the sum over the partial
+  derivatives of `Q` lost every digit from `|z|` near 1e6.
+- [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+  computes its retained mass, its derivatives and its information sums
+  once for each distinct parameter vector, and a `gas()` fit over a
+  truncated gaussian runs in 3.9 s where it took 26.6 s. A truncated
+  binomial with a `size` that varies by observation evaluates its parent
+  at each support point with the size of that point’s observation; the
+  size was recycled against the support points, and the density, the
+  score and the expected information were wrong.
+
+## distributions7 0.70.0
+
+- Every univariate family has compiled scalar entries, registered with
+  `R_RegisterCCallable()`: `d7_scalar_id()`, `d7_score_curv()`,
+  `d7_info_dinfo()` and `d7_logpdf()` return, for one observation, the
+  score and the diagonal of the Hessian, the diagonal of the expected
+  information and its derivative, and the log-density, identical to the
+  R methods.
+  [`distrib_scalar_route()`](https://statmodels7.github.io/distributions7/reference/distrib_scalar_route.md)
+  gives the name and the constants by which the registry knows a
+  distribution, or `NULL`, and `d7_scalar_thread_safe()` says whether
+  its entries may run on worker threads. The registry covers the
+  wrappers too, nested in any order the constructors accept:
+  [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md),
+  [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md),
+  [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md),
+  [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md),
+  [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
+  with any of the twelve ready-made transformers, and
+  [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md).
+- The families are compiled kernels, one per order and surface, whose
+  components are written once in per-family headers shared with the
+  registry. The gumbel, both Laplace, the first Weibull, the second
+  beta, the elastic net, the first skew normal and the skew t were
+  ported to Rcpp; the skew t’s distribution function is numericals7’s
+  `student_t_cdf()`, so its kernels run on threads.
+- The distribution function and its gradient and Hessian in the
+  parameters are compiled for every continuous family. Nineteen families
+  have closed forms; the other fourteen (both gammas, the chi-square,
+  both generalized gammas, both betas, both von Mises, both Student t,
+  both pseudo-Huber and the skew t) take their shape derivatives as
+  integrals of the density times its own derivatives, where finite
+  differences of the distribution function were off by up to 3e-6. The
+  third and fourth derivatives are the same integrals with the complete
+  Bell polynomials of the log-density’s derivatives (6e-15 and 5e-14
+  against 50-digit values, from 2e-5 and 9e-4), so no shipped continuous
+  family differences its distribution function any longer. The von Mises
+  distribution functions honour `lower.tail` and `log.p`, and those of
+  the pseudo-Huber and the skew t read the compiled kernels.
+- [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+  reads its retained mass and the derivatives of the mass from finite
+  sums of the parent’s own entries (a discrete parent) or from the
+  compiled distribution function (a continuous one, over a family,
+  [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md),
+  [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
+  or
+  [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)),
+  and its expected information from sums over a quadrature rule fixed by
+  the interval and the parent’s center, scale and kinks. A Poisson
+  truncated below 4 at a mean of 0.05 is exact to 6e-15 where the
+  difference of the distribution function lost 5e-9, a gaussian
+  truncated below 6 no longer reports an empty interval, and the
+  information of a beta truncated up to 1 with a second shape below one
+  is exact to 1e-15 where it was off by 1.5e-2 (b = 0.24) and 0.48 (b =
+  0.1).
+- [`distrib_d3expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d3expected_hessian.md)
+  and
+  [`distrib_d4expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.md)
+  give the third and fourth derivatives of the expected information, by
+  one stencil on its analytic second order where no closed form exists.
+  The wrappers carry the second derivative of their expected information
+  and their fifth observed derivative,
+  [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+  the derivatives of its expected information, and
+  [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
+  its exact expected information;
+  [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
+  accepts a fixed, reparametrized or truncated parent.
+- The `"integrate"` route of an expected information takes the Bartlett
+  form `-E[l_i l_j]` at a parameter with a kink and puts a knot at each
+  kink
+  ([`kink_knots()`](https://statmodels7.github.io/distributions7/reference/kink_knots.md)):
+  the observed second derivative carries a point mass there that no
+  average of pointwise values sees.
+- The expected information of
+  [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
+  and its derivatives stop their series on the terms rather than on 1 -
+  1e-12 of the mass, and agree with 50-digit sums to 3e-14, 6e-13 and
+  2e-11 where they were off by up to 5e-11, 1.5e-7 and 3.7e-9.
+- The derivatives of both Student t, both pseudo-Huber and the skew t
+  are written in bounded variables and stay finite out to \|y\| of
+  1e300; the fourth and fifth derivatives were `NaN` from about 1e40.
+- [`yj_transform()`](https://statmodels7.github.io/distributions7/reference/yj_transform.md)
+  gives a finite density at `lambda` 0 and 2, and its inverse Hessian
+  and the derivatives of its log-Jacobian are corrected.
+- [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+  signals an error when a value named by a prefix of `distrib` (the
+  shape `d` of the generalized gammas) was taken as the distribution by
+  partial matching; `fixed(distrib = gengamma1_distrib(), d = 2)` fixes
+  it.
+- Requires numericals7 0.21.0.
+
+## distributions7 0.69.2
+
+- [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md),
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.md)
+  recycle a single point against parameters that vary by observation, as
+  the orders below them do. The response derivatives returned one value,
+  read at the first observation’s parameters, and the cdf derivatives
+  returned one value per observation computed at the wrong point.
+  [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+  of a discrete family reads the cdf derivatives at its lower end in
+  that way, so its third to fifth parameter derivatives were wrong with
+  parameters by observation.
+
+- [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
+  and
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+  for
+  [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md)
+  return one value per observation with parameters by observation, where
+  they returned the square of that number of values; the numerical
+  orders built on them
+  ([`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md),
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md))
+  follow.
+
+- The variance, skewness and kurtosis of
+  [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
+  vary with `alpha` when `alpha` varies by observation and `nu` does
+  not; they repeated the value at the first `alpha`. The skewness of
+  [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md)
+  no longer warns when `xi` takes values on both sides of 1/3.
+
+## distributions7 0.69.1
+
+- [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
+  for the two von Mises families draws each angle at its own parameters
+  when `kappa` (or `rho`) varies by observation. The envelope’s
+  constants were recycled against the proposals, with a warning, and the
+  accepted draws were not matched to their observations. A scalar
+  concentration takes the previous path and gives the same draws.
+
+## distributions7 0.69.0
+
+- Every derivative surface forms only the orders it reads.
+  [`fdb1()`](https://statmodels7.github.io/distributions7/reference/fdb1.md)
+  and
+  [`fdb2()`](https://statmodels7.github.io/distributions7/reference/fdb2.md),
+  the written-out Faa di Bruno compositions, return the partials of one
+  order per call, where they returned every order to the fourth;
+  `fdb1_upto()` is removed. The map tables of the second
+  parametrizations
+  ([`md_lognormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  and the rest) take the highest order to form, and each caller passes
+  the one it reads: one for a gradient, a distribution function’s
+  gradient or a mixed response derivative, two for a Hessian or an
+  expected information, the order plus one for a derivative of the
+  expected information. ⚠️ A `map_derivs` passed to
+  [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+  is now a function of two arguments, `function(psi, order)`, returning
+  the partials up to `order`; a function of one argument is rejected.
+  The numerical fallback forms its stencils to the same order.
+  [`gengamma_components()`](https://statmodels7.github.io/distributions7/reference/gengamma_components.md)
+  forms the two compositions at the order asked for alone and
+  [`gpd_components()`](https://statmodels7.github.io/distributions7/reference/gpd_components.md)
+  up to it; the skew normal’s third derivative no longer forms the
+  fourth derivative of log Phi.
+
+- The derivatives of the expected information are one compiled kernel
+  per order for every family that has them, where 25 kernels took the
+  order as an argument: `bernoulli_dexpected1_cpp()` and
+  `bernoulli_dexpected2_cpp()` and so on, and for the Poisson-inverse
+  Gaussians `pig1_expected_cpp()` (the information),
+  `pig1_dexpected1_cpp()` and `pig1_dexpected2_cpp()`. The generalized
+  gamma’s first-order kernel no longer evaluates polygammas of order
+  three, the negative binomials’ first-order sums over the support no
+  longer accumulate the terms only the second order reads, and the
+  beta-binomial’s first-order kernel forms its power sums to the third
+  order where it formed them to the fourth. Of 336 surfaces (28
+  families, both orders, both scales, scalar and per-observation
+  parameters) 318 are bit-identical and the beta-binomials agree to
+  1.2e-12. The second derivative of pig2’s information on the link scale
+  reads the first derivatives from the first-order kernel; against exact
+  sums both are within 2e-13 of their scale (the 6.5e-10 first reported
+  here was a relative difference on entries that are zero by
+  orthogonality). The second derivative of the beta-binomial in mean and
+  dispersion now runs two passes over the support, one per order, where
+  it ran one: 20 ms against 14 at n = 2000 and size 20.
+
+- The von Mises families compute their derivatives with compiled
+  kernels, one per order, and read the Bessel ratio from numericals7
+  0.18.0’s per-order functions, where every method computed the ratio’s
+  derivatives to order four whatever it needed.
+  [`vonmises2_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.md)
+  no longer passes through the chain rule on
+  [`vonmises1_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md):
+  since d log I0(kappa(rho)) / d rho = rho kappa’(rho), its derivatives
+  of order n in rho are (cos(y - mu) - rho) kappa^(n) - (n - 1)
+  kappa^(n-1), and only the derivatives of the inverse are needed.
+  Against 150-digit values the largest relative error over orders one to
+  four is 4.7e-15 for vonmises1 and 1.5e-14 for vonmises2, from a
+  concentration of 1e-8 to 1e5. Before, vonmises1’s third and fourth
+  derivatives in kappa had no correct digit below kappa = 1e-7 and were
+  out by 8e-11 and 5e-10 at 1e-3, and vonmises2’s fourth derivative in
+  rho was out by 6.8e8 at rho = 8.9e-9 and by 2e-6 at 5e-4. The gradient
+  of vonmises2 takes 1.8 us per observation (3.4 before), its fourth
+  derivative 2.2 (3.0). The internal `vm2_parts()` is removed.
+
+- [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)’s
+  derivatives come from kernels of its own, one per order and surface,
+  rather than from the chain rule through
+  [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
+  with the map’s partials tabulated to order four. A derivative in the
+  skewness is `(3 c r^2)^-1 d/dr` with `r` its cube root, and the closed
+  forms cancel terms of order `r^(-2k)` as the skewness goes to zero;
+  there the kernels use the series of the log-density in `r`, computed
+  offline at 60 digits. Against exact values every component is within
+  4e-11 from a skewness of 1e-8 to the ceiling, where the chain lost
+  1.3e-5 at the fourth order at 1e-8 and its numerical fifth order every
+  digit below 1e-4. The score is now returned at zero skewness, where it
+  is finite; the observed derivatives of order two and more diverge
+  there like `gamma1^(-2/3)` and are still rejected, with the reason.
+  The expected information comes from its series in `r` below a skewness
+  of 3e-3 and from quadrature of the family’s own derivatives above it;
+  it is exact at zero skewness, `diag(1, 2, 1/6)/sigma^2`, and within
+  5e-12 everywhere measured, where the former route lost 1.7e-5 at 1e-8
+  and returned zero for `E[l_mu_gamma1]`. The derivatives of the
+  distribution function still go through the map, whose partials are now
+  formed to the order asked for.
+
+- [`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md)’s
+  kernels are generated like those of
+  [`student_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t2_distrib.md),
+  one per order and surface. New: the fifth order, the expected third
+  and fourth orders in closed form (they were quadratures), the third
+  and fourth derivatives in the response, and the first and second
+  derivatives of the expected information each from its own kernel (they
+  shared one kernel with the order as an argument). Against exact values
+  at 250 digits every component is within 4e-13 from `nu = 0.3` to
+  `1e10`; the former fourth order was 1.3e-3 out at `nu = 1e6` and wrong
+  in every digit by `1e10`, and the quadrature behind the expected third
+  and fourth orders was 9 per cent out at `nu = 1e3`. The kernels of
+  both Student t families take a thread count.
+
+- A fifth order written analytically is carried to the link scale.
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md),
+  unlike the generics of orders one to four, leaves the link scale to
+  its methods, and the analytic methods of this version had returned the
+  parameter scale for `scale = "link"`; they now compose it with orders
+  one to four through
+  [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md).
+
+- [`gengamma2_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma2_distrib.md)
+  is a family of its own (class `GenGamma2Distrib`) rather than a
+  [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+  of
+  [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md).
+  Every derivative in the mean, the shape and the power to order five,
+  the expected information, its expected third and fourth derivatives
+  and its first two derivatives, and the derivatives in the response are
+  closed forms, each in its own compiled kernel. Towards the lognormal,
+  as `d/p` and `d` grow, the terms of every derivative in `d` and `p`
+  agree to several orders: the data enter through two variables that are
+  small there, and the coefficients, functions of `(d, p)` alone, are
+  formed in double-double arithmetic above `d/p = 10` or `d = 10` and in
+  double below. Against exact values at 1200 bits, the gradient, the
+  Hessian and the expected information agree to 3e-14 or better
+  everywhere measured, `d/p` from 0.5 to 1e7; orders three to five to
+  1e-10 below the threshold, 7e-13 from it to `d/p = 2e5`, and 3e-5 at
+  `d/p = 1e7`. The former construction lost 1e-3 at `d/p = 1e4`, was
+  wrong in every digit from `d/p = 2e5`, and could not be evaluated from
+  `d/p` about 170, `gamma(d/p)` overflowing in its map. The derivatives
+  of the distribution function are numerical, as for
+  [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md).
+  Measured at 1000 observations, the fifth order costs 0.4 microseconds
+  an observation when only the mean varies and 9.5 to 86 when `d` varies
+  too, against 600 to 780 for the former construction. The former
+  construction is the internal reference
+  [`gengamma2_by_reparam()`](https://statmodels7.github.io/distributions7/reference/gengamma2_by_reparam.md).
+
+- [`student_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t2_distrib.md)
+  is a family of its own (class `StudentT2Distrib`) rather than a
+  [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+  of
+  [`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md).
+  Every derivative in the location, the standard deviation and the
+  degrees of freedom to order five, the expected information, its
+  expected third and fourth derivatives and its first two derivatives,
+  and the derivatives in the response are closed forms, each in its own
+  compiled kernel. The part in the data is reduced symbolically and
+  written in `q = z^2/(nu - 2)`, `1/(nu - 2)` and `1/(1 + q)`; the
+  quantities of `nu` alone are evaluated from the polygamma functions
+  below `nu = 20` and from their asymptotic series above it. Against
+  exact values at 250 digits, every component is within 8e-13 relative
+  from `nu = 2.5` to `1e10`, where the direct forms lose all their
+  digits by `nu = 1e8`, and every surface is finite at
+  `nu = .Machine$double.xmax`. The expectations are closed forms,
+  `1/(1 + q)` being beta distributed under the model. The derivatives of
+  the distribution function in `nu` are differenced, as for
+  [`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md).
+  Measured at 1000 observations, the third to fifth orders cost 0.3 ms
+  against 9, 60 and 300 ms. The former construction is the internal
+  reference
+  [`student_t2_by_reparam()`](https://statmodels7.github.io/distributions7/reference/student_t2_by_reparam.md).
+
+- [`weibull3_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull3_distrib.md)
+  is a family of its own (class `Weibull3Distrib`) rather than a
+  [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+  of
+  [`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md),
+  written like
+  [`lognormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal2_distrib.md):
+  every surface a closed form in its own compiled kernel, in
+  `log(y / m)`, `lgamma(1 + 1/sigma)` and the polygamma functions at
+  `1 + 1/sigma`; the expectations use that `(y/b)^sigma` is a standard
+  exponential. The former construction is the internal reference
+  [`weibull3_by_reparam()`](https://statmodels7.github.io/distributions7/reference/weibull3_by_reparam.md).
+
+- [`lognormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal2_distrib.md)
+  is a family of its own (class `Lognormal2Distrib`) rather than a
+  [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+  of
+  [`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md).
+  Every surface is a closed form in its own compiled kernel, one per
+  order: the derivatives in the mean and the variance to order five, the
+  expected information, its expected third and fourth derivatives and
+  its first two derivatives, the derivatives in the response, the mixed
+  derivatives and the derivatives of the distribution function to order
+  four. The forms are written in `log(y / m)` and `log1p(v / m^2)`, so
+  the logarithm of the mean cancels. They agree with the former
+  construction, kept as the internal reference
+  [`lognormal2_by_reparam()`](https://statmodels7.github.io/distributions7/reference/lognormal2_by_reparam.md),
+  on every surface. Measured at 1e5 observations, the gradient costs the
+  same and the second to fourth orders cost 0.013, 0.013 and 0.020 s
+  against 0.023, 0.043 and 0.157 s.
+
+- New family
+  [`pseudohuber2_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber2_distrib.md):
+  the pseudo-Huber parametrized by its location, its standard deviation
+  and its shape, so that the gaussian limit is reached along `nu` alone
+  at a fixed `sigma`. Every derivative of the log-density in the
+  parameters to order five is in closed form, each order in its own
+  compiled kernel; it is the first family with an analytic fifth order.
+  The correlation of the scale and the log shape in the inverse expected
+  information is -0.37 at `nu = 1` and -0.05 at `nu = 1000`, against
+  -0.93 and -0.9997 for
+  [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md).
+  Measured at 1e5 observations, each order costs less than the same
+  order of
+  [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
+  (0.002 against 0.004 s for the gradient, 0.28 s against 1.11 s for the
+  numerical fifth order).
+
+- The generator of
+  [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
+  and
+  [`pseudohuber2_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber2_distrib.md)
+  draws the family as a normal variance mixture with a generalized
+  inverse Gaussian mixing variable, sampled by the ratio-of-uniforms
+  method with the mode shifted (Hormann and Leydold, 2014), instead of
+  inverting the quadrature cdf: about 0.1 microseconds a draw against 9
+  milliseconds. Over seven shapes from 1e-6 to 1e6, the empirical cdf of
+  1e6 draws at nine quantiles gave 63 binomial z-scores with standard
+  deviation 0.95. The draws for a given seed differ from those of
+  0.68.0.
+
+- [`distrib_intercept_start()`](https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.md)
+  has a method for
+  [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md).
+  When the absolute sample skewness is at least 0.9 it returns the
+  moment estimate of `mu`, `sigma` and `alpha` with the skewness held at
+  0.9, so that a regression does not start from the half-normal limit of
+  the intercept-only fit. On
+  [`MASS::Cars93`](https://rdrr.io/pkg/MASS/man/Cars93.html), price on
+  horse power, that limit was `alpha = 1.4e6`, and a
+  `statmodels7::statmod()` fit could not leave it.
+
+- [`distrib_intercept_start()`](https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.md)
+  has a method for
+  [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md).
+  When the sample excess kurtosis is below 0.05 it returns `nu = 10`,
+  the mean, and the `sigma` that matches the sample variance, so that a
+  regression does not start from the gaussian limit of the
+  intercept-only fit, where `sigma` and `nu` run to zero and infinity
+  together. On ten simulated regressions with a strong covariate, the
+  regression started from that limit stopped 7.3 to 15.8 log-likelihood
+  units below its maximum in four.
+
+- [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md)’s
+  derivatives come from compiled kernels of its own, one per order and
+  surface, generated from the closed form in `U = p log(y/a)` and `e^U`:
+  orders one to five, the expected third and fourth orders in closed
+  form (they were quadratures, which failed on 395 of 1100 values
+  measured and erred by up to 60% elsewhere), the derivatives in the
+  response and the mixed ones (stencils before), and the derivatives of
+  the expected information. The polygamma functions are taken at
+  `k + 1`, `k = d/p`, so that the poles in `1/k` the derivatives combine
+  cancel in the closed form: at `k = 2e-5` the former derivative of the
+  information lost 7e-7. Against exact values every surface is within
+  5e-15 of its scale from `k = 2e-5` to `1e8` (the score 2.4e-11 at
+  `k = 1e8`, the conditioning of `(U - psi(k))/p`), and an extreme scale
+  no longer gives `NaN`. Every surface is faster: the fifth order 0.15
+  us per observation against 17, the expected third order 250 us against
+  nothing measurable. `gengamma_gradient_cpp()`,
+  `gengamma_hessian_cpp()` and `gengamma_expected_hessian_cpp()` are
+  removed;
+  [`gengamma_components()`](https://statmodels7.github.io/distributions7/reference/gengamma_components.md)
+  stays as an independent reference for the tests.
+
+- [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md)’s
+  derivatives come from compiled kernels of its own, one per order and
+  surface, the log-density included. Writing
+  `W = log(t)/xi = z phi(xi z)`, only the pure shape components carry
+  `phi^(j)`, summed as a series where it would cancel, so no form
+  divides by the shape and `xi = 0` is an ordinary point;
+  `t = 1 + xi y/sigma` is formed from the exact product `xi y`, which
+  near the upper end of the support (`xi < 0`) kept 1e-4 of every
+  surface from being lost. The expected third and fourth orders are
+  closed forms, `NA` where they do not exist (`xi <= -1/3` and `-1/4`;
+  the quadrature returned numbers there), and the derivatives of the
+  distribution function and its logarithm, both tails, are compiled:
+  0.15 to 0.5 us per observation against 46 to 51. Every surface is
+  within 5e-14 of its scale over the measured domain; the derivatives of
+  the log-density outside the support are `NaN`. `gpd_surv_pieces()` and
+  `gpd_lambda_derivs()` are removed.
+
+- The variance, skewness and kurtosis of
+  [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md)
+  and
+  [`gengamma2_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma2_distrib.md)
+  no longer cancel towards the lognormal: the central moments of
+  `Y/E[Y]` come from the series of the cumulant generating function of
+  `log Y` through Stirling numbers, in double-double arithmetic. The
+  variance at `d/p = 1e6` was out by 2.4e-4 and is within 1e-15; the
+  kurtosis lost every digit and is within 1e-11 except at `p = 2` and
+  `p = 4` (and the skewness at `p = 3`) with `d/p` past 1e5, where the
+  leading coefficient vanishes and the value is ill conditioned in `p`
+  itself. `gengamma_raw_moments()` and `gengamma2_ratios()` are removed.
+
+- The expected information of
+  [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
+  and
+  [`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md)
+  and its two derivatives come from their series in `sigma` or
+  `1/alpha`, to order 20, where `(1 + mu) sigma` or `(1 + mu)/alpha` is
+  at most 0.06. Near the Poisson limit the sums over the support add
+  terms of size one to results of size `sigma^2` or `alpha^-3`: pig2’s
+  second derivative was out by 2.2e-5 at `alpha = 1e4` and by fifteen
+  times its value at `1e6`, pig1’s information by 1.6e-4 at
+  `sigma = 1e-6`. Every component is within 4e-16 there, against sums
+  exact to 60 digits.
+
+- [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)’s
+  derivatives of the distribution function at zero skewness: the first
+  order is its limit, from
+  `F = Phi(z) - gamma1 (z^2 - 1) phi(z)/6 + O(gamma1^(4/3))`, and the
+  higher orders, which diverge in the skewness, are rejected as the
+  log-density’s are, where an internal error was signalled.
+
+- The third and fourth derivatives in the response of
+  [`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md)
+  were wrong when its shape varied by observation
+  ([`dy_pow()`](https://statmodels7.github.io/distributions7/reference/dy_log.md)
+  reduced the exponent to one number).
+
+## distributions7 0.68.0
+
+- A multivariate family reports the quantities of the parametrization it
+  was given and no others.
+  [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md),
+  and through it
+  [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
+  and the summaries built on it, return for a structured matrix that
+  declares its own block (`compound_symmetry()`, `ar1()`,
+  `autoregressive()`) that block alone, with the common variance `scale`
+  reported as its square root `sd` (`scale_sd` for the multivariate t)
+  on the covariance side; the standard deviation of every coordinate and
+  the correlation of every pair, which repeated it, are gone. A
+  precision parametrization
+  ([`mvgaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md),
+  [`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md))
+  reports its conditional variances (scales) and partial correlations
+  and no longer the marginal standard deviations and correlations, which
+  [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
+  and
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
+  still give; at two dimensions the partial correlation is now reported.
+  The new internal
+  [`mv_own_block()`](https://statmodels7.github.io/distributions7/reference/mv_own_block.md)
+  carries the conversion, its Jacobian checked against a difference of
+  the value at 1e-8.
+- [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+  reads the stem of a vector parameter:
+  `fixed(mvgaussian1_distrib(3), mu = 0)` holds the whole mean at zero,
+  and `mu = c(0, 1, 2)` holds each coordinate at its own value. A length
+  that is neither one nor the dimension is rejected.
+
+## distributions7 0.67.0
+
+- The multivariate Student t
+  ([`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md),
+  [`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md))
+  has its third and fourth response derivatives,
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md),
+  as one and one array per observation, and the derivative of the third
+  in each parameter,
+  [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md),
+  all in closed form. With , and they are polynomials in and over powers
+  of . Against one central difference of the order below they agree to
+  2e-11 (third), 1.9e-10 (fourth) and 4.7e-10 (mixed) on arrays of order
+  one.
+  [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+  of a multivariate family passes the three on. A multivariate t prior
+  over a block of random effects reads them through , which is what
+  gives the marginal criterion of such a model its exact derivatives.
+
+## distributions7 0.66.1
+
+- The negative binomial expected information
+  ([`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md))
+  passes a parameter that is the same number at every observation to its
+  kernel as one number
+  ([`constant_to_scalar()`](https://statmodels7.github.io/distributions7/reference/constant_to_scalar.md)).
+  The kernel sums its series once for a scalar pair and copies the
+  result, and it repeated the same sum for each of `n` equal values. A
+  fit with no covariates on the mean and the dispersion is this case,
+  and it is what the starting values of `statmod()` use. The values
+  returned are identical.
+
+- The series of the negative binomial expected information and of its
+  derivatives (`negbin.cpp`, `negbin_hd.cpp`) stop after 1e6 terms,
+  where the cap was 2e9. Below `theta/mu` of about 3e-5 the tail needs
+  1e7 to 1e9 terms and one series costs 0.2 s or more; above that
+  nothing changes, because the loop breaks on the accumulated mass long
+  before 1e6. The region below is the edge of the parameter space, and
+  its information is not read for an estimate.
+
+  Where it mattered:
+  [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+  and the starting values of `statmod()` fit `zero_adjusted(negbin2)` to
+  the 900 counts of
+  [`rpart::solder`](https://rdrr.io/pkg/rpart/man/solder.balance.html)
+  from ten starts, and one of them creeps along `theta -> 0` with one
+  0.2 s series per iteration. Measured with the same optimum
+  (log-likelihood -2395.102): the ten starts cost 33 s before and 0.1 s
+  now, with one start 0.2 s either way. `statmod()` of the hurdle model
+  on the same data went from 37 s to the figure given in the book’s
+  chapter 5.
+
+## distributions7 0.66.0
+
+- The multivariate gaussian and Student t read the derivatives of
+  `Sigma^-1` from
+  [`parameters7::param_inv_d1()`](https://statmodels7.github.io/parameters7/reference/param_inv_d1.html)
+  and `param_inv_d2()` rather than forming them as
+  `-Sigma^-1 A_k Sigma^-1` and its second-order twin. The two are the
+  same quantity, and they separate near a singular covariance: at a
+  log-Cholesky free value `log L22 = -11.5` the sandwich read the first
+  derivative with a relative error of order 1e-7 and the second one
+  entirely wrong.
+  [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
+  carries them as `ai` and `ai2`; on the precision side they are the
+  chart’s own derivatives. The sites are the gaussian’s
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md),
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
+  and
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md),
+  and the t’s
+  [`mvt_dpieces()`](https://statmodels7.github.io/distributions7/reference/mvt_dpieces.md).
+
+  For the gaussian, the second derivative in the response and two matrix
+  coordinates now agrees with a Richardson difference of the order below
+  to 1e-11 at that point, where the sandwich was out by an amount a new
+  test (`test-mv-near-singular.R`) catches. This is what the exact outer
+  gradient of statmodels7 reads for a correlated random effect: there
+  the trace of the penalty’s derivative against the inverse of the
+  penalized information was off by O(1), and it now agrees with a
+  difference of the log-determinant to the reference’s own accuracy.
+
+  The Student t’s second-order response derivatives near a singular
+  scale matrix are NOT settled by this. Its response Hessian carries
+  `w w' / (nu + q)` with `q` of order 1e10 there, which cancels in its
+  own right, and no Richardson reference is stable at that point; the
+  version before this one was no better against it.
+
+- Requires parameters7 0.21.0.
+
 ## distributions7 0.65.0
 
 - **The two Poisson-inverse Gaussians compute their expected information
@@ -280,7 +994,7 @@
     parent is covered is covered with no kernel of its own;
   - the von Mises, whose information is -kappa A(kappa) and -A’(kappa)
     in the Bessel ratio A = I1/I0, read from
-    [`numericals7::bessel_i_ratio_derivs()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_derivs.html);
+    `numericals7::bessel_i_ratio_derivs()`;
   - a sum over the support: the NB1 through the exact recurrences of its
     polygamma differences, compiled beside its mass, and the
     beta-binomial through a kernel where every derivative of the
@@ -1053,9 +1767,7 @@
 
 - The ten fourth-order components carrying **exactly one** `nu` are one
   five-point difference along `nu` of the closed-form third derivative
-  beside them
-  ([`skewt_msa_nu1()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_nu1.md)),
-  which is the rule
+  beside them (`skewt_msa_nu1()`), which is the rule
   [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)’s
   mixed components already follow, read one order up. The generic
   construction took a mixed **second** difference of the Hessian
@@ -1899,8 +2611,7 @@
 
 - The four are `mean`, `variance` and `skewness` of the elastic net,
   which reach `theta` through `.enet_parts()`, and `mean` of
-  `vonmises2`, which reads `theta[[1]]` and calls
-  [`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md).
+  `vonmises2`, which reads `theta[[1]]` and calls `vm2_parts()`.
   `std_dev` of the elastic net is `sqrt(variance(...))` and is fixed by
   `variance`: it read 0.68749872 in the family’s order and 0.69481641
   reversed.
@@ -1915,10 +2626,8 @@
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),
   whose generic aligns before it dispatches.
 
-- `.enet_parts()` and
-  [`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md)
-  are not the place for the fix: they receive `theta` and not the
-  distribution, and
+- `.enet_parts()` and `vm2_parts()` are not the place for the fix: they
+  receive `theta` and not the distribution, and
   [`align_theta()`](https://statmodels7.github.io/distributions7/reference/align_theta.md)
   needs both.
 

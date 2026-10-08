@@ -92,7 +92,7 @@ d <- gengamma1_distrib()
 th <- list(a = 2, d = 3, p = 1.5)
 e <- distrib_expected_hessian(d, 0, th)
 names(e)
-#> [1] "a_a" "a_d" "a_p" "d_d" "d_p" "p_p"
+#> [1] "a_a" "d_d" "p_p" "a_d" "a_p" "d_p"
 
 # The scale-shape entry is the observed one, -1/a, the term being bilinear.
 c(expected = e$a_d, observed = -1 / 2)

@@ -1,12 +1,12 @@
 # Derivatives of the Expected Information, Elementary Families
 
 The first and second derivatives of the expected information in the
-parameters, from compiled kernels, for seventeen families whose expected
-information is an elementary function of the parameters. Each component
-is an ordinary derivative of the family's written-out
-\\\mathbb{E}\[\ell\_{ab}\]\\; on the link scale the result is carried
-across by
+parameters, from compiled kernels, for the families whose expected
+information is a written-out function of the parameters. Each component
+is an ordinary derivative of the family's \\\mathbb{E}\[\ell\_{ab}\]\\;
+on the link scale the result is carried across by
 [`dexpected_link()`](https://statmodels7.github.io/distributions7/reference/dexpected_link.md).
+The elastic net has the first derivatives only.
 
 ## Arguments
 
@@ -83,7 +83,16 @@ The expected informations differentiated, on the parameter scale:
 
 - generalized Pareto by its scale and shape: with \\d = 1 + 2\xi\\,
   \\-1/(d\sigma^2)\\, \\-1/(d\sigma(1+\xi))\\ and \\-2/(d(1+\xi))\\, and
-  `NA` for \\\xi \le -1/2\\, where the information does not exist.
+  `NA` for \\\xi \le -1/2\\, where the information does not exist;
+
+- Laplace by its scale \\b\\: \\-1/b^2\\ for both parameters; by its
+  rate: \\-\lambda^2\\ and \\-1/\lambda^2\\;
+
+- elastic net, with \\a = \lambda\alpha\\, \\c = \lambda(1-\alpha)\\ and
+  \\Z\\ the normalizing constant: \\-(a^2 - 2acZ_a - 2c^2Z_c)\\ in the
+  location and the second derivatives of \\-\log Z\\ in the two rates,
+  whose derivatives are the third derivatives of \\\log Z\\, written
+  through the Mills ratio.
 
 ## See also
 

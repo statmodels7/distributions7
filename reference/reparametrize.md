@@ -3,6 +3,14 @@
 Returns the same law as `distrib`, parametrized by quantities of the
 caller's choosing.
 
+The function is meant for trying a parametrization the package does not
+ship. Every derivative it returns is assembled from the parent's
+derivatives through the map, one order at a time, so it costs more than
+a family written for that parametrization; a parametrization used in a
+real analysis is better written as a distribution of its own, with its
+derivatives in compiled code, which is how the families of this package
+are written.
+
 ## Usage
 
 ``` r
@@ -44,12 +52,15 @@ reparametrize(
 
 - map_derivs:
 
-  An optional function returning, for each parent parameter, the
-  non-zero partial derivatives of the map with respect to the new
-  parameters to fourth order, keyed by the sorted tuple of new-parameter
-  positions ("1", "1,2", "2,2,3,3", ...); a missing key is an exact
-  zero. The shipped second parametrizations supply hand-written tables
-  (see
+  An optional function of two arguments, the named list of new
+  parameters and `order`, an integer from 1 to 4, returning for each
+  parent parameter the non-zero partial derivatives of the map with
+  respect to the new parameters up to order `order`, keyed by the sorted
+  tuple of new-parameter positions ("1", "1,2", "2,2,3,3", ...); a
+  missing key is an exact zero. Each caller passes the highest order it
+  reads, so a gradient asks for order one and a fourth derivative for
+  order four. The shipped second parametrizations supply hand-written
+  tables (see
   [`reparam_map_derivs()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md));
   when `NULL`, each needed partial comes from one finite-difference
   stencil on the map.

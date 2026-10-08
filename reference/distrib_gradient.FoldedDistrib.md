@@ -78,7 +78,7 @@ ll <- function(v) {
   sum(distrib_pdf(d, y, t2, log = TRUE))
 }
 max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
-#> [1] 2.725598e-10
+#> [1] 2.683729e-10
 
 # It is the mixture score, written out from the parent's own.
 p <- distributions7:::fold_parts(gaussian1_distrib(), y, theta)

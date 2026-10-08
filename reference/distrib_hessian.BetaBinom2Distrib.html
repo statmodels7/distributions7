@@ -10,7 +10,8 @@ and the same with \(n-y\) and \(\beta\). The mixed component keeps
 only the shared term,
 \(-\psi_1(n+S) + \psi_1(S)\), the two shapes entering the log-mass
 separately otherwise, so it does not depend on the data at all and equals
-its own expectation at every observation."><meta property="og:description" content="Computes the three distinct second derivatives of the beta-binomial log-mass
+its own expectation at every observation. The compiled kernel evaluates the
+differences of trigammas as series remainders, as for the score."><meta property="og:description" content="Computes the three distinct second derivatives of the beta-binomial log-mass
 with respect to the two shapes, one value per observation, in closed form.
 They are the score's digamma differences with the trigamma function in its
 place:
@@ -21,7 +22,8 @@ and the same with \(n-y\) and \(\beta\). The mixed component keeps
 only the shared term,
 \(-\psi_1(n+S) + \psi_1(S)\), the two shapes entering the log-mass
 separately otherwise, so it does not depend on the data at all and equals
-its own expectation at every observation."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+its own expectation at every observation. The compiled kernel evaluates the
+differences of trigammas as series remainders, as for the score."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +31,7 @@ its own expectation at every observation."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +75,8 @@ and the same with \(n-y\) and \(\beta\). The <strong>mixed</strong> component ke
 only the shared term,
 \(-\psi_1(n+S) + \psi_1(S)\), the two shapes entering the log-mass
 separately otherwise, so it does not depend on the data at all and equals
-its own expectation at every observation.</p>
+its own expectation at every observation. The compiled kernel evaluates the
+differences of trigammas as series remainders, as for the score.</p>
     </div>
 
 
@@ -102,6 +105,11 @@ recycled. Both must be strictly positive.</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Unused, and accepted so that the signature matches the generic's.</p></dd>
+
+
+<dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
+<dd><p>A single positive integer, the number of threads the
+compiled kernel may use. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -146,7 +146,7 @@ d@params_bounds$rho
 
 # The same law as the concentration parametrization at the implied kappa.
 th <- list(mu = 0.5, rho = 0.7)
-k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+k <- numericals7::bessel_i_ratio_inverse(0.7)
 all.equal(distrib_pdf(d, c(-1, 0, 1), th),
           distrib_pdf(vonmises1_distrib(), c(-1, 0, 1),
                       list(mu = 0.5, kappa = k)))
@@ -162,7 +162,8 @@ c(resultant = sqrt(mean(cos(z))^2 + mean(sin(z))^2), rho = 0.7)
 # The map is steep near one, so a nearly deterministic direction is better
 # conditioned in kappa than in rho.
 vapply(c(0.01, 0.5, 0.95, 0.999),
-       function(r) numericals7::bessel_i_ratio_inverse(r)$d1, numeric(1))
+       function(r) numericals7::bessel_i_ratio_inverse_d1(
+         numericals7::bessel_i_ratio_inverse(r)), numeric(1))
 #> [1] 2.000300e+00 3.137622e+00 1.994903e+02 4.999996e+05
 
 # Fitting recovers both parameters.

@@ -102,5 +102,5 @@ tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
 tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h
 max(abs(cy$sigma_L2.1 -
         (distrib_grad_y(d, y, tp) - distrib_grad_y(d, y, tm)) / (2 * h)))
-#> [1] 1.055278e-11
+#> [1] 1.055289e-11
 ```

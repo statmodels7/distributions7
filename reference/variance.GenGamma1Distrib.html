@@ -13,7 +13,7 @@ square and the two shapes through the gamma ratios."><meta property="og:image" c
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,8 +63,7 @@ square and the two shapes through the gamma ratios.</p>
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>a</code>, <code>d</code> and <code>p</code>, all positive,
-each a numeric vector of length 1 or <code>n</code>. Cancellation between the two
-raw moments costs digits where the coefficient of variation is small.</p></dd>
+each a numeric vector of length 1 or <code>n</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -77,6 +76,19 @@ raw moments costs digits where the coefficient of variation is small.</p></dd>
 three components.</p>
     </div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The difference is not formed. With \(k = d/p\) and \(h = 1/p\), the
+cumulant generating function of \(\log(Y/m_1)\) is
+\(K(s) = \sum_{n \ge 2} \psi^{(n-1)}(k)\,h^n (s^n - s)/n!\), and with
+\(e^{K(s)} = \sum_n a_n s^n\) the central moments of \(Y/m_1\) are
+$$\mu_r = r!\sum_{n \ge r} S(n, r)\,a_n,$$
+\(S\) the Stirling numbers of the second kind, a sum in which the leading
+orders that cancel in \(m_2 - m_1^2\) are absent. It is evaluated in
+double-double arithmetic where \(8h \le k\), and as
+\(\exp(\log m_2 - 2\log m_1) - 1\) from Stirling's form of the log-gamma
+differences elsewhere. Then \(\operatorname{Var}(Y) = m_1^2\mu_2\).</p>
+    </div>
+    <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
@@ -86,7 +98,7 @@ three components.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="mean.GenGamma1Distrib.html">mean.GenGamma1Distrib()</a></code>, <code><a href="skewness.GenGamma1Distrib.html">skewness.GenGamma1Distrib()</a></code>,
-<code><a href="gengamma_raw_moments.html">gengamma_raw_moments()</a></code>, <code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code>.</p></div>
+<code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code>.</p></div>
     </div>
 
     <div class="section level2">
@@ -101,6 +113,10 @@ three components.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2</span>, d <span class="op">=</span> <span class="fl">3</span>, p <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="fu"><a href="weibull1_distrib.html">weibull1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Towards the lognormal the coefficient of variation is about sqrt(1/d).</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, d <span class="op">=</span> <span class="fl">1e6</span>, p <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, d <span class="op">=</span> <span class="fl">1e6</span>, p <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1e-06</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

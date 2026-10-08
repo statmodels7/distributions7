@@ -1,13 +1,18 @@
 # Default Numerical Hessian for `distrib` Objects
 
-The fallback for a family that implements no analytical Hessian: second
-differences of `distrib_pdf(..., log = TRUE)` through
-[`numerical_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md).
-A diagonal component takes the three-point stencil
+The fallback for a family that implements no analytical Hessian. For a
+family with a density alone it takes second differences of
+`distrib_pdf(..., log = TRUE)` through
+[`numerical_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md):
+a diagonal component takes the three-point stencil
 \\\[\ell(\theta_i+h) - 2\ell(\theta_i) + \ell(\theta_i-h)\]/h^2\\ and an
 off-diagonal one the four-point mixed stencil, so both are a **single**
-difference of the log-density and neither is a difference of the
-gradient.
+difference of the log-density. For a family with its own score it takes
+one central difference of that score instead, through
+[`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md)
+with `base = 1`: the component \\(i, j)\\ is the score in \\\theta_i\\
+differenced along \\\theta_j\\, a first difference of an analytical
+quantity, with the step \\\varepsilon^{1/3}\max(1, \|\theta_j\|)\\.
 
 ## Arguments
 
@@ -44,10 +49,10 @@ uses above order 2.
 
 ## The step and the cost
 
-The step is \\h = \varepsilon^{1/4}\max(1, \|\theta_i\|) \approx
-1.22\times10^{-4}\\, twenty times the gradient's: a second difference
-divides by \\h^2\\, so rounding grows as \\1/h^2\\ and the optimum moves
-out.
+For a family with a density alone, the step is \\h =
+\varepsilon^{1/4}\max(1, \|\theta_i\|) \approx 1.22\times10^{-4}\\,
+twenty times the gradient's: a second difference divides by \\h^2\\, so
+rounding grows as \\1/h^2\\ and the optimum moves out.
 [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
 applies the same boundary clamp. One Hessian costs \\2p\\ evaluations
 for the diagonal and \\4\\ per distinct pair, which is 6 in all for a
@@ -63,8 +68,10 @@ gradient's. That is the price of a second difference.
 
 ## See also
 
-[`numerical_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md),
-which does the differencing;
+[`numerical_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md)
+and
+[`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md),
+which do the differencing;
 [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
 for the boundary rule;
 [`distrib_gradient.distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.distrib.md)

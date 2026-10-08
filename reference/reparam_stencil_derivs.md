@@ -33,8 +33,8 @@ reparam_stencil_derivs(map, params, parent_params)
 
 ## Value
 
-A function of the new parameters, usable as an object's
-`reparam_derivs`, returning the keyed tables
+A function of the new parameters and the highest order to form, usable
+as an object's `reparam_derivs`, returning the keyed tables
 [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
 describes.
 

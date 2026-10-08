@@ -1,16 +1,17 @@
-# Standard Deviations and Correlations of a Multivariate Gaussian
+# Interpretable Quantities of a Multivariate Gaussian
 
-Returns the standard deviations and correlations of the response,
-whichever side the parametrization carries, with the closed-form
-Jacobian
-[`mv_sd_cor()`](https://statmodels7.github.io/distributions7/reference/mv_sd_cor.md)
-supplies. A PRECISION parametrization reports two further blocks, which
-are what it describes directly: the conditional variances
-\\1/\Omega\_{jj} = \operatorname{Var}(Y_j \mid Y\_{-j})\\, and above two
-dimensions the partial correlations
+Returns the quantities the chosen parametrization describes, with their
+Jacobian. Where the matrix parametrization declares its own block
+through
+[`parameters7::param_readable()`](https://statmodels7.github.io/parameters7/reference/param_readable.html)
+(a compound symmetry, an AR(1), an AR(p)), that block alone is returned,
+with the common variance `scale` reported as its square root `sd` on the
+covariance side. Otherwise a COVARIANCE parametrization reports the
+standard deviations and the correlations, and a PRECISION
+parametrization reports the conditional variances \\1/\Omega\_{jj} =
+\operatorname{Var}(Y_j \mid Y\_{-j})\\ and the partial correlations
 \\-\Omega\_{jk}/\sqrt{\Omega\_{jj}\Omega\_{kk}}\\, the correlation of
-two coordinates given all the others, which is zero exactly where the
-precision has a zero.
+two coordinates given all the others.
 
 ## Arguments
 
@@ -19,7 +20,9 @@ precision has a zero.
   An
   [MvGaussianDistrib](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
   object, from
-  [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md).
+  [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
+  or
+  [`mvgaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md).
 
 - theta:
 
@@ -33,30 +36,30 @@ precision has a zero.
 
 A named list with `value`, `jacobian`, `transform` and `block`, as
 [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md)
-documents. A covariance parametrization gives \\p(p+1)/2\\ quantities; a
-precision one adds \\p\\ conditional variances and, above \\p = 2\\,
-\\p(p-1)/2\\ partial correlations.
+documents: the structure's own block where it declares one; otherwise
+\\p\\ standard deviations and \\p(p-1)/2\\ correlations for a
+covariance, or \\p\\ conditional variances and \\p(p-1)/2\\ partial
+correlations for a precision.
+
+## One parametrization, one set of quantities
+
+A user who writes the model on the precision asks to read the precision,
+so the marginal standard deviations and correlations are not reported
+beside its own quantities; they remain available from
+[`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
+and
+[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md).
+In the same way a structured matrix is fixed by its few parameters, and
+the standard deviation of every coordinate and the correlation of every
+pair would repeat them.
 
 ## What a precision's diagonal means
 
-The quantity with a reading is the conditional VARIANCE, so the diagonal
-quantities
-[`mv_sd_cor()`](https://statmodels7.github.io/distributions7/reference/mv_sd_cor.md)
-produces from \\\Omega\\ are square roots of the wrong thing; they are
-dropped and \\1/\Omega\_{jj}\\ is reported instead. Its ratio to the
-marginal variance is \\1 - R_j^2\\ for the regression of that coordinate
-on all the others.
-
-At \\p = 2\\ there is nothing to condition on, so the partial
-correlation IS the correlation and is not printed twice.
-
-## The parametrization's own quantities
-
-Whatever the matrix parametrization declares through
-[`parameters7::param_readable()`](https://statmodels7.github.io/parameters7/reference/param_readable.html)
-is appended as a further block. An AR(1) covariance is about a scale and
-a correlation; a log-Cholesky one declares nothing and the summary stops
-at the standard deviations.
+The quantity with a reading is the conditional VARIANCE, so
+\\1/\Omega\_{jj}\\ is reported rather than a square root of
+\\\Omega\_{jj}\\. Its ratio to the marginal variance is \\1 - R_j^2\\
+for the regression of that coordinate on all the others. At \\p = 2\\
+the partial correlation equals the correlation.
 
 ## Notation
 
@@ -69,8 +72,8 @@ response with that coordinate removed.
 
 [`mv_sd_cor()`](https://statmodels7.github.io/distributions7/reference/mv_sd_cor.md)
 for the closed-form Jacobian,
-[`mv_param_block()`](https://statmodels7.github.io/distributions7/reference/mv_param_block.md)
-for the appended block,
+[`mv_own_block()`](https://statmodels7.github.io/distributions7/reference/mv_own_block.md)
+for the structure's own block,
 [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
 for the printed result, and
 [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md)
@@ -86,20 +89,15 @@ mv_derived(d, theta)$value
 #>     sd_v1     sd_v2 cor_v1_v2 
 #> 1.0000000 1.1180340 0.4472136 
 
-# The precision side reports the same law's standard deviations and
-# correlation, and adds the conditional variances.
+# The precision side reports the conditional variances and the partial
+# correlation, and nothing of the covariance.
 o <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 th_o <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0, omega_log_L2 = 0,
              omega_L2.1 = 0.5)
 od <- mv_derived(o, th_o)
 od$value
-#>      sd_v1      sd_v2  cor_v1_v2    cvar_v1    cvar_v2 
-#>  1.1180340  1.0000000 -0.4472136  1.0000000  0.8000000 
-od$block
-#>                   sd_v1                   sd_v2               cor_v1_v2 
-#>   "Standard deviations"   "Standard deviations"          "Correlations" 
-#>                 cvar_v1                 cvar_v2 
-#> "Conditional variances" "Conditional variances" 
+#>    cvar_v1    cvar_v2 pcor_v1_v2 
+#>  1.0000000  0.8000000 -0.4472136 
 
 # A conditional variance is 1 / Omega_jj, and is at most the marginal one.
 Om <- parameters7::param_value(o@param, unlist(th_o)[3:5])
@@ -107,12 +105,10 @@ c(conditional = 1 / Om[1, 1], marginal = mv_sigma(o, th_o)[1, 1])
 #> conditional    marginal 
 #>        1.00        1.25 
 
-# At three dimensions the partial correlations appear as a block of their
-# own, the partial and the marginal no longer coinciding.
-o3 <- mvgaussian2_distrib(3, parameters7::log_cholesky(3))
-th3 <- as.list(stats::setNames(
-  c(0, 0, 0, 0, 0, 0, 0.5, -0.4, 0.3), o3@params))
-unique(mv_derived(o3, th3)$block)
-#> [1] "Standard deviations"   "Correlations"          "Conditional variances"
-#> [4] "Partial correlations" 
+# A compound symmetry reports its standard deviation and its correlation.
+cs <- mvgaussian1_distrib(3, parameters7::compound_symmetry(3))
+mv_derived(cs, list(mu1 = 0, mu2 = 0, mu3 = 0, sigma_log_scale = log(4),
+                    sigma_logit_rho = 0))$value
+#>   sd  rho 
+#> 2.00 0.25 
 ```

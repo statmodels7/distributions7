@@ -54,8 +54,8 @@ A numeric vector of quantiles on \\\[-\infty, \infty\]\\, of length
 
 [`distrib_cdf.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.PseudoHuberDistrib.md)
 for the function inverted here,
-[`distrib_rng.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.PseudoHuberDistrib.md),
-which draws by inverting it at uniform variates, and
+[`distrib_rng.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.PseudoHuberDistrib.md)
+for the generator, and
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md)
 for the generic.
 

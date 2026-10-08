@@ -1,7 +1,9 @@
 # Skew Normal Mixed Derivatives in the Centered Parametrization
 
-The direct parametrization's mixed block carried by the first-order
-chain rule on the centered-to-direct map.
+The derivatives of the log-density in the response and once in each
+parameter, from a compiled kernel written as the parameter derivatives
+are (see
+[`distrib_gradient.SkewNormal2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal2Distrib.md)).
 
 ## Arguments
 

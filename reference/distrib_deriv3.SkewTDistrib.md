@@ -1,9 +1,8 @@
 # Skew t Third Derivatives
 
-Computes the twenty third derivatives of the log-density. The ten free
-of \\\nu\\ are closed form; each of the other ten costs one stencil
-applied to an analytic quantity, so no stencil is ever applied to
-another stencil's output.
+Computes the twenty third derivatives of the log-density with the
+compiled kernel described on
+[`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md).
 
 ## Arguments
 
@@ -45,6 +44,10 @@ another stencil's output.
 
   Unused, and accepted so that the signature matches the generic's.
 
+- threads:
+
+  A single positive integer, how many threads the kernel may use.
+
 ## Value
 
 A named list of twenty numeric vectors, one per distinct third-order
@@ -52,45 +55,7 @@ component, from `mu_mu_mu` to `nu_nu_nu` as
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
 names them.
 
-## How the twenty are obtained
-
-The ten whose indices are all drawn from \\(\mu, \sigma, \alpha)\\ come
-from
-[`skewt_msa_derivs()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_derivs.md)
-and difference nothing. That page derives the block: the location and
-the scale reach the log-density only through \\z\\, the shape only
-through \\\alpha u(z)\\, and the ratio \\Q = t\_{\nu+1}/T\_{\nu+1}\\
-obeys a Riccati recursion, so every piece is elementary.
-
-The six carrying exactly one \\\nu\\ go through the generic construction
-of
-[`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md),
-which steps a closed-form Hessian entry once along \\\nu\\: one stencil,
-on an analytic quantity.
-
-The four the generic construction would nest are replaced: \\(i, \nu,
-\nu)\\ for \\i\\ in \\(\mu, \sigma, \alpha)\\ is one five-point second
-difference of the **closed-form** score component \\i\\, through
-[`fd5_second()`](https://statmodels7.github.io/distributions7/reference/fd5_second.md);
-and \\(\nu, \nu, \nu)\\ is one five-point third difference of the
-log-density itself, through
-[`fd5_third()`](https://statmodels7.github.io/distributions7/reference/fd5_third.md).
-
-## Accuracy
-
-The ten closed-form components are exact. Against Richardson
-extrapolation applied to an independently written transcription of the
-same algebra, over fifteen settings of \\(\nu, \alpha)\\ with \\\nu\\
-from 3 to 50, they agree to \\3.6\times10^{-8}\\, which is the
-reference's own floor rather than theirs.
-
-The pure-\\\nu\\ component is the loosest at this order. Measured at
-\\\mu = 0\\, \\\sigma = 1\\, \\\alpha = 3\\, \\\nu = 6\\ on four
-observations, `nu_nu_nu` is \\-0.0061280\\ against \\-0.0061270\\ from
-an independent single stencil on the log-density at \\h = 0.05\\, so
-about four significant digits. The package's own thirteen-check battery
-reports order 3 against finite differences at \\2\times10^{-6}\\ for
-this family.
+## Details
 
 With `expected = TRUE` the whole order is an expectation and comes from
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md);
@@ -102,9 +67,7 @@ the family has no closed-form expected information, so `approx` and
 [`distrib_hessian.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewTDistrib.md)
 for the order below,
 [`distrib_deriv4.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewTDistrib.md)
-for the order above,
-[`fd5_third()`](https://statmodels7.github.io/distributions7/reference/fd5_third.md)
-for the stencil, and
+for the order above, and
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
 for the generic.
 
@@ -131,12 +94,11 @@ rbind(analytic = d3$mu_mu_alpha,
 #> analytic 0.6111686 -1.082016 -0.4214539 0.004008904
 #> numeric  0.6111686 -1.082016 -0.4214539 0.004008904
 
-# The pure-nu component against an independent single stencil on the
-# log-density, which shares no arithmetic with the route above.
+# The pure-nu component against a single stencil on the log-density.
 ld <- function(v) sum(distrib_pdf(d, y, list(mu = 0, sigma = 1,
                                              alpha = 3, nu = v), log = TRUE))
 c(ours = sum(d3$nu_nu_nu),
   stencil = numericals7::fd_derivative(ld, 6, 3L, h = 0.05))
 #>         ours      stencil 
-#> -0.006128010 -0.006127044 
+#> -0.006128039 -0.006127044 
 ```

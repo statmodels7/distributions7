@@ -28,6 +28,11 @@ components.
 
 ## Details
 
+The logarithm of the gamma ratio is formed in Stirling's form, \\(k -
+1/2)\log(1 + h/k) + h\log(k + h) - h\\ plus the difference of the two
+remainders, for \\k = d/p \ge 10\\ and \\h = 1/p\\, where the difference
+of the two log-gamma values would lose digits.
+
 The family nests four the toolkit ships separately, and each is a check
 on this formula: the gamma at \\p = 1\\, the Weibull at \\d = p\\, the
 exponential at \\d = p = 1\\ and the half-normal at \\a = \sqrt2, d = 1,
@@ -40,8 +45,6 @@ p = 2\\.
 ## See also
 
 [`variance.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.GenGamma1Distrib.md),
-[`gengamma_raw_moments()`](https://statmodels7.github.io/distributions7/reference/gengamma_raw_moments.md)
-for the shared quantities,
 [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md).
 
 ## Examples

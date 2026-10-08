@@ -107,16 +107,15 @@ Registered in this file, all compiled apart from the first four:
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GPDDistrib.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GPDDistrib.md).
 
-Registered elsewhere: the third and fourth orders in `gpd_higher.R`
-([`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GPDDistrib.md));
-the response derivatives and the mixed one in
-`cross_derivatives_families.R`
-([`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md),
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md));
-the four moments in `moments.R`; and the second-order response
-derivatives in `theta2_more.R`.
+Registered elsewhere, compiled, in `gpd_higher.R`: the orders three to
+five
+([`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md)),
+the derivatives in the response
+([`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md))
+and those of the distribution function
+([`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md));
+the derivatives of the expected information in `dexpected_families.R`;
+and the four moments in `moments.R`.
 
 ## What the moving endpoint costs
 

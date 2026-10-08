@@ -1,11 +1,13 @@
 # The Skew t Tower in the Location, Scale and Shape
 
-Builds the table of \\\partial^i_z\\\partial^c\_\alpha \ell\\ that the
-third and fourth derivatives of a skew t read, for every pair with \\c +
-i \le 4\\. Together with
+Builds the table of \\\partial^i_z\\\partial^c\_\alpha \ell\\, for every
+pair with \\c + i \le 4\\. Together with
 [`skewt_msa_component()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_component.md)
 it gives in closed form every derivative of the log-density that does
-not involve \\\nu\\.
+not involve \\\nu\\, by a derivation in \\z\\ independent of the
+compiled kernels of
+[`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md),
+which are tested against it.
 
 ## Usage
 
@@ -25,10 +27,11 @@ skewt_msa_tower(y, mu, sigma, alpha, nu)
 
 ## Value
 
-A named list. `z` is the standardized residual; the remaining fifteen
-elements are named `"c_i"` and hold \\\partial_z^i \Phi_c(z)\\ for every
-\\c + i \le 4\\, with \\\Phi_0 = \ell\\ up to the terms free of \\z\\,
-so that `"0_0"` is `NA_real_` and is never read.
+A named list. `z` is the standardized residual, `rs` is \\\sqrt{\nu +
+z^2}\\ and `a` is `z / rs`; the remaining fifteen elements are named
+`"c_i"` and hold \\\partial_z^i \Phi_c(z)\\ times `rs^i`, which bounds
+them, for every \\c + i \le 4\\, with \\\Phi_0 = \ell\\ up to the terms
+free of \\z\\, so that `"0_0"` is `NA_real_` and is never read.
 
 ## Why the block closes
 
@@ -81,6 +84,6 @@ whose `a`, `e` and `q` are this function's \\g'\\, \\u'\\ and \\Q\\.
 ``` r
 tw <- distributions7:::skewt_msa_tower(c(-0.4, 1.2), 0, 1, 0.7, 8)
 names(tw)
-#>  [1] "z"   "0_0" "0_1" "0_2" "0_3" "0_4" "1_0" "1_1" "1_2" "1_3" "2_0" "2_1"
-#> [13] "2_2" "3_0" "3_1" "4_0"
+#>  [1] "z"   "a"   "rs"  "0_0" "0_1" "0_2" "0_3" "0_4" "1_0" "1_1" "1_2" "1_3"
+#> [13] "2_0" "2_1" "2_2" "3_0" "3_1" "4_0"
 ```

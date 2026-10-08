@@ -6,10 +6,10 @@ quantile function: it inverts
 by root-finding, which on a family with no analytical distribution
 function either means inverting the quadrature of
 [`distrib_cdf.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.continuous_distrib.md).
-Measured on a Gamma defined by its density alone, it agrees with
+Measured on a Gamma defined by its density alone, at shapes 1 and 7 and
+probabilities from \\10^{-6}\\ to \\1 - 10^{-6}\\, it agrees with
 [`stats::qgamma()`](https://rdrr.io/r/stats/GammaDist.html) to between
-\\4.1\times10^{-11}\\ and \\4.5\times10^{-10}\\ relative, and the round
-trip \\F(F^{-1}(p)) - p\\ closes to \\10^{-11}\\.
+\\10^{-16}\\ and \\6\times10^{-11}\\ relative.
 
 ## Arguments
 
@@ -49,13 +49,26 @@ A numeric vector of quantiles, the length of the recycled `p` and
 
 ## Details
 
-The bracket starts at an approximate mode from
+Every probability is inverted at once. The bracket starts at an
+approximate mode, found by the grid search of
 [`find_pdf_anchor()`](https://statmodels7.github.io/distributions7/reference/find_pdf_anchor.md)
+run on every distinct parameter setting in one evaluation of the density
+per refinement
+([`quantile_anchors()`](https://statmodels7.github.io/distributions7/reference/quantile_anchors.md)),
 and expands geometrically, with the step scaled by the density height
 there so that a sharply peaked family and a diffuse one take a
-comparable number of expansions. The mode and its scale are computed
-once per distinct parameter setting and reused across the probabilities
-that share it.
+comparable number of expansions. Inside the bracket a Newton step on
+\\F(q) - p\\, whose derivative is the density, is taken where it stays
+inside the bracket and a bisection where it does not, so every iteration
+shrinks the bracket or converges. Each iteration is one call of
+[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
+and one of
+[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
+over every probability not yet inverted. Measured on a log-logistic
+defined by its density alone, 942 quantiles at 314 parameter settings
+took 13 s inverted one at a time by
+[`stats::uniroot()`](https://rdrr.io/r/stats/uniroot.html), and 1.7 s
+this way.
 
 Two layers of numerical work stack here, which is why the accuracy is
 four orders coarser than the distribution function's: the root-finder

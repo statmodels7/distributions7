@@ -71,11 +71,17 @@ length `max(length(y), length(mu), length(sigma), length(nu))`.
 
 ## Large degrees of freedom
 
-Every component is written as a ratio in \\z = r/\sigma\\ and \\u =
-z^2/\nu\\ instead of as a quotient by powers of \\D\\, because
-\\\nu\sigma^2\\ overflows well before the log link's own clamp is
-reached. All three components stay finite at every \\\nu\\ the chart can
-produce, up to `.Machine$double.xmax`.
+Every derivative in \\\nu\\ vanishes as \\\nu\\ grows and is a
+difference of terms agreeing to leading order. The part in the data is
+reduced symbolically and written in \\z = r/\sigma\\, \\q = z^2/\nu\\,
+\\1/\nu\\ and \\t = 1/(1+q)\\, never as a quotient by powers of \\D\\,
+whose \\\nu\sigma^2\\ overflows well before the log link's clamp; the
+score in \\\nu\\ carries the logarithm through \\q/(1+q) - \log(1+q)\\.
+The derivatives of \\\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2) -
+\tfrac12\log\nu\\ come from the polygamma functions below \\\nu = 20\\
+and from their asymptotic series in \\1/\nu\\ above it. All three
+components keep their digits and stay finite at every \\\nu\\ the chart
+can produce, up to `.Machine$double.xmax`.
 
 ## See also
 

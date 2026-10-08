@@ -2,8 +2,8 @@
 
 Turns a function returning \\L = \log(1-F)\\ and its partial-derivative
 evaluator into the four S7 methods, so that a family states its survival
-function once instead of four times. Three families are registered
-through it: the exponential, the Weibull and the generalized Pareto.
+function once instead of four times. Two families are registered through
+it: the exponential and the Weibull.
 
 ## Usage
 
@@ -45,8 +45,7 @@ sharing one order.
 
 [`surv_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/surv_cdf_deriv_k.md),
 the body it registers;
-[`distrib_grad_cdf.ExponentialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.md),
-[`distrib_grad_cdf.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull1Distrib.md)
+[`distrib_grad_cdf.ExponentialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.md)
 and
-[`distrib_grad_cdf.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md),
-the three families.
+[`distrib_grad_cdf.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull1Distrib.md),
+the two families.

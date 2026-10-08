@@ -74,12 +74,23 @@ because the row of that parametrization reads \\\log S_y\\ and its
 derivatives in \\w\\: all of them are finite as \\\sigma \to 0\\, where
 those in \\\alpha\\ carry \\\sigma^{-k}\\ and cancel.
 
+Near the Poisson limit even the forms in the score sum terms of size one
+to results of size \\\sigma^2\\ or \\\alpha^{-3}\\. There, for \\(1 +
+\mu)x \le 0.06\\ with \\x = \sigma\\ (pig1) or \\x = 1/\alpha\\ (pig2),
+the three quantities are taken from their series in \\x\\, to order 20,
+derived offline: the log-mass is the Poisson's plus a power series in
+\\\sigma\\ whose coefficients are polynomials in \\y\\, so every
+expectation is a combination of Poisson moments and its coefficients are
+polynomials in \\\mu\\ and \\1/\mu\\. The mixed entry of pig2 is zero at
+every order of that series, the parametrization being orthogonal.
+
 The `approx` and `nsim` arguments are accepted and ignored.
 
 ## See also
 
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md);
-`pig1_expected_cpp()` and `pig2_expected_cpp()` for the kernels.
+`pig1_expected_cpp()` and `pig2_expected_cpp()` for the kernels, with
+`pig1_dexpected1_cpp()` and the like for its derivatives.
 
 ## Examples
 

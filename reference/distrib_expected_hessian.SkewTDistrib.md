@@ -61,15 +61,10 @@ one integral over \\z\\ of the observed derivatives against the density,
 taken once per distinct pair by the exp-sinh rule of
 [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md).
 
-The integral is exact to the rule's accuracy, and what it integrates
-carries the family's own accuracy: every derivative in \\(\mu, \sigma,
-\alpha)\\ is closed form, and every one involving \\\nu\\ comes from a
-single stencil on an analytic quantity, as documented on
-[`distrib_hessian.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewTDistrib.md).
-Against an adaptive quadrature the expected information agrees to
-\\9\times10^{-12}\\; the second derivative agrees with a difference of
-the first to \\10^{-3}\\ relative at \\\nu = 5\\, the components
-carrying \\\nu\\ several times being differenced ones.
+The integral is exact to the rule's accuracy, and what it integrates are
+the observed derivatives of
+[`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md),
+exact in every parameter.
 
 The tail is integrated to \\\|z\| = 10^{60}\\, which leaves a relative
 \\10^{-60\nu}/\nu\\ and is negligible for \\\nu \ge 0.3\\.

@@ -11,7 +11,7 @@ and second derivatives in the parameters."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,13 +126,13 @@ expectation of, and <code><a href="distrib_expected_hessian.html">distrib_expect
 <span class="r-in"><span><span class="va">eh</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">eh</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mu_mu   sigma_sigma         nu_nu      mu_sigma         mu_nu </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -2.620828e-01 -9.177697e-01 -5.412069e-03 -1.616963e-20  1.769121e-21 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -2.620828e-01 -9.177697e-01 -5.412069e-03 -8.956503e-21 -2.035240e-21 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      sigma_nu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -6.699758e-02 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The entries odd in the residual vanish by symmetry.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">eh</span><span class="op">$</span><span class="va">mu_sigma</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">eh</span><span class="op">$</span><span class="va">mu_nu</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.616963e-20  1.769121e-21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -8.956503e-21 -2.035240e-21</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The information does not depend on the observations, and scales with</span></span></span>
 <span class="r-in"><span><span class="co"># sigma^-2 in the location and scale block.</span></span></span>

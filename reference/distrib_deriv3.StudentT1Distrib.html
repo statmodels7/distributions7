@@ -3,19 +3,21 @@
 log-density in \(\mu\), \(\sigma\) and \(\nu\). The observed values
 are closed form and run in a compiled kernel decomposed over the elements of
 the output, so they do not depend on the thread count.
-The expected values have no closed form. With expected = TRUE the
-method calls expected_derivative(), which integrates the observed
-derivatives against the density by the strategy approx names. That is the
-one place on this page where approx and nsim are read; on the observed
-branch both are ignored."><meta property="og:description" content="Computes the ten distinct third derivatives of the location-scale Student t
+The expected values are closed forms too: under the model
+\(1/(1 + z^2/\nu)\) follows a beta distribution with parameters
+\(\nu/2\) and \(1/2\), so the expectation of every component is a
+rational function of \(\nu\) plus the derivatives of
+\(\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2)\). approx and nsim
+are accepted for the generic's signature and ignored."><meta property="og:description" content="Computes the ten distinct third derivatives of the location-scale Student t
 log-density in \(\mu\), \(\sigma\) and \(\nu\). The observed values
 are closed form and run in a compiled kernel decomposed over the elements of
 the output, so they do not depend on the thread count.
-The expected values have no closed form. With expected = TRUE the
-method calls expected_derivative(), which integrates the observed
-derivatives against the density by the strategy approx names. That is the
-one place on this page where approx and nsim are read; on the observed
-branch both are ignored."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The expected values are closed forms too: under the model
+\(1/(1 + z^2/\nu)\) follows a beta distribution with parameters
+\(\nu/2\) and \(1/2\), so the expectation of every component is a
+rational function of \(\nu\) plus the derivatives of
+\(\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2)\). approx and nsim
+are accepted for the generic's signature and ignored."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +25,7 @@ branch both are ignored."><meta property="og:image" content="https://statmodels7
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,11 +62,12 @@ branch both are ignored."><meta property="og:image" content="https://statmodels7
 log-density in \(\mu\), \(\sigma\) and \(\nu\). The observed values
 are closed form and run in a compiled kernel decomposed over the elements of
 the output, so they do not depend on the thread count.</p>
-<p><strong>The expected values have no closed form.</strong> With <code>expected = TRUE</code> the
-method calls <code><a href="expected_derivative.html">expected_derivative()</a></code>, which integrates the observed
-derivatives against the density by the strategy <code>approx</code> names. That is the
-one place on this page where <code>approx</code> and <code>nsim</code> are read; on the observed
-branch both are ignored.</p>
+<p>The expected values are closed forms too: under the model
+\(1/(1 + z^2/\nu)\) follows a beta distribution with parameters
+\(\nu/2\) and \(1/2\), so the expectation of every component is a
+rational function of \(\nu\) plus the derivatives of
+\(\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2)\). <code>approx</code> and <code>nsim</code>
+are accepted for the generic's signature and ignored.</p>
     </div>
 
 
@@ -89,8 +92,7 @@ numeric vector of length 1 or of the length of <code>y</code>. A component of le
 
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
 <dd><p>Logical of length 1. When <code>TRUE</code> the expectation under the
-model is returned in place of the value at the data, computed numerically.
-Defaults to <code>FALSE</code>.</p></dd>
+model is returned in place of the value at the data. Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -98,15 +100,9 @@ Defaults to <code>FALSE</code>.</p></dd>
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>One of <code>"integrate"</code> (the default here), <code>"bartlett"</code>, <code>"mc"</code>
-or <code>"opg"</code>, the strategy <code><a href="expected_derivative.html">expected_derivative()</a></code> uses. Read only when
-<code>expected = TRUE</code>.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>A single positive integer, the sample size when
-<code>approx = "mc"</code>. Read only when <code>expected = TRUE</code>. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-approx-nsim">approx, nsim<a class="anchor" aria-label="anchor" href="#arg-approx-nsim"></a></dt>
+<dd><p>Accepted for the generic's signature; the expectations
+are closed forms.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -115,7 +111,7 @@ or <code>"opg"</code>, the strategy <code><a href="expected_derivative.html">exp
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Read only on the observed branch. Defaults to <code>1L</code>.</p></dd>
+use. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -129,21 +125,18 @@ of length <code>max(length(y), length(mu), length(sigma), length(nu))</code>.</p
     <h2 id="large-degrees-of-freedom">Large degrees of freedom<a class="anchor" aria-label="anchor" href="#large-degrees-of-freedom"></a></h2>
 
 
-<p>Every component is divided by \(D^3\) with \(D = \nu\sigma^2 + r^2\),
-and \(D^3\) overflows at \(5.6\times10^{102}\) where the log link
-reaches \(1.8\times10^{308}\). The shipped kernel is written in
-\(z = r/\sigma\), \(u = z^2/\nu\) and \(t = 1/(1+u)\) instead, so all
-ten stay finite to <code>.Machine$double.xmax</code>. <strong>On the link scale they do
-not</strong>: the chain rule forms \((h')^k\) against a component of order
-\(\nu^{-k}\), and one of the ten ceases to be finite at
-\(\nu = 10^{150}\). That regime is where the family is a Gaussian in all
-but name.</p>
+<p>See <code><a href="distrib_gradient.StudentT1Distrib.html">distrib_gradient.StudentT1Distrib()</a></code>: every order is written in
+\(z = r/\sigma\), \(q = z^2/\nu\) and \(t = 1/(1+q)\), and the
+quantities of \(\nu\) alone switch to their asymptotic series above
+\(\nu = 20\), so all ten components keep their digits and stay finite to
+<code>.Machine$double.xmax</code>. On the link scale the chain rule forms
+\((h')^k\) against a component of order \(\nu^{-k}\), and one of the
+ten ceases to be finite at \(\nu = 10^{150}\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_hessian.StudentT1Distrib.html">distrib_hessian.StudentT1Distrib()</a></code> for the order below,
-<code><a href="distrib_deriv4.StudentT1Distrib.html">distrib_deriv4.StudentT1Distrib()</a></code> for the order above,
-<code><a href="expected_derivative.html">expected_derivative()</a></code> for the numerical expectation, and
+<code><a href="distrib_deriv4.StudentT1Distrib.html">distrib_deriv4.StudentT1Distrib()</a></code> for the order above, and
 <code><a href="distrib_deriv3.html">distrib_deriv3()</a></code> for the generic.</p></div>
     </div>
 
@@ -167,16 +160,16 @@ but name.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="op">(</span><span class="va">up</span> <span class="op">-</span> <span class="va">dn</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">eps</span><span class="op">)</span>, <span class="va">d3</span><span class="op">$</span><span class="va">mu_mu_mu</span>, tolerance <span class="op">=</span> <span class="fl">1e-6</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The expected branch is a quadrature, and averaging the observed one over</span></span></span>
-<span class="r-in"><span><span class="co"># draws reaches it; the components odd in the residual go to zero.</span></span></span>
+<span class="r-in"><span><span class="co"># Averaging the observed branch over draws reaches the expected one; the</span></span></span>
+<span class="r-in"><span><span class="co"># components odd in the residual go to zero.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">2e5</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>expected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                        <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      averaged <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">mean</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              mu_mu_mu mu_mu_sigma    mu_mu_nu mu_sigma_sigma   mu_sigma_nu</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> expected 2.775558e-17   0.6076389 -0.01388889  -1.110223e-16 -3.469447e-18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> averaged 7.771678e-04   0.6061054 -0.01396171  -3.885839e-03  1.479138e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              mu_mu_mu mu_mu_sigma    mu_mu_nu mu_sigma_sigma  mu_sigma_nu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> expected 0.0000000000   0.6076389 -0.01388889    0.000000000 0.0000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> averaged 0.0007771678   0.6061054 -0.01396171   -0.003885839 0.0001479138</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              mu_nu_nu sigma_sigma_sigma sigma_sigma_nu  sigma_nu_nu    nu_nu_nu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expected 0.000000e+00          2.748843     -0.1041667 -0.005555556 0.002511281</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> averaged 8.536436e-06          2.756510     -0.1044698 -0.005578214 0.002510767</span>

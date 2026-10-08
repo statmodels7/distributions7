@@ -9,7 +9,7 @@ standard deviation rather than the scale."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,7 @@ standard deviation rather than the scale."><meta property="og:image" content="ht
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Student t Distribution in the Standard Deviation</h1>
-      <small class="dont-index">Source: <a href="https://github.com/statmodels7/distributions7/blob/master/R/reparametrized_families.R" class="external-link"><code>R/reparametrized_families.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/statmodels7/distributions7/blob/master/R/student_t2_distrib.R" class="external-link"><code>R/student_t2_distrib.R</code></a></small>
       <div class="d-none name"><code>student_t2_distrib.Rd</code></div>
     </div>
 
@@ -75,19 +75,20 @@ bounded below at two.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A reparametrized distribution object.</p>
+    <p>An S7 object of class <code>StudentT2Distrib</code>, inheriting from
+<code>continuous_distrib</code>, with <code>params</code> <code>c("mu", "sigma", "nu")</code> and
+<code>link_params</code> the three links given here.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The scale of <code><a href="student_t1_distrib.html">student_t1_distrib()</a></code> is not the standard
-deviation: the two differ by \(\sqrt{\nu/(\nu-2)}\). Here the map is
-$$\sigma_{\text{scale}} = \sigma\sqrt{\dfrac{\nu-2}{\nu}},$$
-which exists only for \(\nu &gt; 2\), and the constructor bounds \(\nu\)
-there rather than letting the map return a complex number several frames
-down. This is <code>TF2</code> in gamlss.</p>
-<p>The restriction is the point rather than a limitation: a family
-parametrized by a standard deviation is a family whose standard deviation
-exists.</p>
+    <p>The scale of <code><a href="student_t1_distrib.html">student_t1_distrib()</a></code> is not the standard deviation: the two
+differ by \(\sqrt{\nu/(\nu-2)}\). Here the scale is
+$$s_0 = \sigma\sqrt{\dfrac{\nu-2}{\nu}},$$
+which exists only for \(\nu &gt; 2\), so the degrees of freedom are bounded
+below at two. Every derivative in \((\mu, \sigma, \nu)\) to order five,
+the expected information and its derivatives, and the derivatives in the
+response are closed forms, each order in its own compiled kernel (see
+<code><a href="distrib_gradient.StudentT2Distrib.html">distrib_gradient.StudentT2Distrib()</a></code>). This is <code>TF2</code> in gamlss.</p>
     </div>
     <div class="section level2">
     <h2 id="the-distribution">The distribution<a class="anchor" aria-label="anchor" href="#the-distribution"></a></h2>
@@ -98,8 +99,14 @@ on \(y \in \mathbb{R}\).</p>
 <p>$$\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}$$</p>
     </div>
     <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Rigby, R. A. and Stasinopoulos, D. M. (2005). Generalized additive models
+for location, scale and shape. <em>Journal of the Royal Statistical
+Society, Series C</em> 54, 507-554.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="student_t1_distrib.html">student_t1_distrib()</a></code>, <code><a href="reparametrize.html">reparametrize()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="student_t1_distrib.html">student_t1_distrib()</a></code>; <a href="StudentT2Distrib.html">StudentT2Distrib</a> for the class.</p></div>
     </div>
 
     <div class="section level2">

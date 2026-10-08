@@ -8,12 +8,11 @@ t}{\xi^2} - \left(1 + \dfrac{1}{\xi}\right)u.\$\$
 
 The shape component is written this way only away from zero. Both of its
 terms blow up as \\\xi \to 0\\ and their difference has the finite limit
-\\z^2/2 - z\\, so the kernel evaluates it through the analytic function
-\\\Lambda(u) = \log(1+u)/u\\ instead, whose derivatives come from a
-recursion above \\\|u\| = 1/2\\ and from a Taylor series below it.
-Measured at \\z = 1\\, the component reads \\-0.4967\\, \\-0.49997\\,
-\\-0.5000000\\ at \\\xi = 10^{-2}, 10^{-4}, 10^{-8}\\ against the limit
-\\-1/2\\.
+\\z^2/2 - z\\, so the kernel evaluates it as \\-z/t - z^2\phi'(u)\\, \\u
+= \xi z\\, with \\\phi(u) = \log(1+u)/u\\ computed as
+[`distrib_deriv3.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md)
+describes; \\\xi = 0\\ is an ordinary point of that form. \\t\\ is
+formed from the exact product \\\xi y\\.
 
 ## Arguments
 

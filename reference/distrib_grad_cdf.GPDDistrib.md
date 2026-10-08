@@ -1,10 +1,8 @@
 # Generalized Pareto Log-CDF Derivatives
 
-Closed form at every order from one to four, from the survival function
-\\S = (1 + \xi q/\sigma)^{-1/\xi}\\. Its logarithm is written \\L =
--(q/\sigma)\\\Lambda(\xi q/\sigma)\\ with \\\Lambda(u) = \log(1+u)/u\\,
-which carries no division by the shape, so the exponential limit \\\xi
-\to 0\\ is an ordinary point of the formula and not a branch.
+Return the derivatives in \\(\sigma, \xi)\\ of the distribution function
+or of the survival function, or of their logarithms, at orders one to
+four, each from its own compiled kernel.
 
 ## Arguments
 
@@ -15,66 +13,53 @@ which carries no division by the shape, so the exponential limit \\\xi
 
 - q:
 
-  A numeric vector of quantiles. Values outside the support give
-  derivatives of exactly zero.
+  A numeric vector of quantiles.
 
 - theta:
 
   A named list with components `sigma` (positive) and `xi` (any real
-  value), each a numeric vector of length 1 or `n`.
+  value), each a numeric vector of length 1 or of the length of `q`.
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical, `TRUE` by default.
+  Logical; if `TRUE` (the default) the derivatives of \\F\\, otherwise
+  those of \\S = 1 - F\\.
 
 - log:
 
-  Are derivatives of the log probability wanted? A single logical,
-  `TRUE` by default.
+  Logical; if `TRUE` (the default) the derivatives of the logarithm.
 
 - ...:
 
-  Unused, and accepted so that the signature matches the generic's.
+  Unused.
 
 ## Value
 
-A named list of numeric vectors of the order the generic asked for,
-keyed as
+A named list of numeric vectors keyed as
 [`deriv_names(distrib@params, order)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md):
-two components for the gradient, three for the Hessian, four at order 3
-and five at order 4.
+two components for the gradient, three for the Hessian, four at order
+three and five at order four.
 
-## The support moves with the shape
+## Details
+
+The survival function is \\S = e^{-W}\\ with \\W = z\\\phi(\xi z)\\ as
+[`distrib_deriv3.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md)
+writes it, so \\\log S = -W\\ and its derivatives are those of \\W\\,
+free of any division by \\\xi\\. The derivatives of \\\log F = \log(1 -
+e^{-W})\\ follow by Faa di Bruno with \\G(w) = \log(1 - e^{-w})\\, whose
+derivatives are polynomials in \\q = 1/(e^{W} - 1)\\: \\G' = q\\ and
+\\dq/dw = -q(1+q)\\. Those of \\S\\ itself are \\S\\ times the
+corresponding polynomial in the derivatives of \\-W\\, and \\\partial F
+= -\partial S\\.
 
 At \\\xi \ge 0\\ the support is \\(0, \infty)\\; at \\\xi \< 0\\ it is
-bounded above at \\\sigma/\|\xi\|\\, and past that endpoint every
-derivative is exactly zero. The mask is computed in
-[`gpd_surv_pieces()`](https://statmodels7.github.io/distributions7/reference/gpd_surv_pieces.md),
-the family's fixed bounds being unable to record a support that moves
-with a parameter.
-
-## What it is worth, and the limit as a check
-
-Against a product stencil on the same cdf at \\\sigma = 1\\, \\\xi =
-0.3\\: \\5.2\times10^{-11}\\ at order 1, \\2.7\times10^{-7}\\ at order
-2, \\1.7\times10^{-5}\\ at order 3 and \\8.4\times10^{-4}\\ at order 4.
-At \\\xi = 0\\ the scale component equals the exponential family's to
-the last bit, and the fourth derivative reads the same value at \\\xi =
-10^{-7}\\ and at \\10^{-9}\\, which is what a removable singularity
-handled properly looks like.
-
-## Notation
-
-\\\sigma \> 0\\ is the scale, \\\xi\\ the shape of either sign, \\u =
-\xi q/\sigma\\, \\\Lambda(u) = \log(1+u)/u\\, \\F\\ the distribution
-function and \\S = 1 - F\\ the survival function.
+bounded above at \\\sigma/\|\xi\|\\. Past the upper end, and below zero,
+\\F\\ is constant and every derivative is zero, except the derivatives
+of \\\log F\\ at \\q \le 0\\, where \\\log F = -\infty\\ and they are
+`NaN`.
 
 ## See also
 
-[`gpd_surv_pieces()`](https://statmodels7.github.io/distributions7/reference/gpd_surv_pieces.md)
-and
-[`gpd_lambda_derivs()`](https://statmodels7.github.io/distributions7/reference/gpd_lambda_derivs.md)
-for the construction;
 [`distrib_grad_cdf.ExponentialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.md),
 the \\\xi = 0\\ case;
 [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md).

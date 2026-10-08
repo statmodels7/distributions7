@@ -18,14 +18,23 @@ fixed(distrib, ...)
 - distrib:
 
   The distribution whose parameters are to be fixed, inheriting from
-  `continuous_distrib`, `discrete_distrib` or `multivariate_distrib`.
+  `continuous_distrib`, `discrete_distrib` or `multivariate_distrib`. A
+  parameter whose name is a prefix of `distrib` (the shape `d` of
+  [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md)
+  and
+  [`gengamma2_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma2_distrib.md))
+  is fixed only when `distrib` is named, as in
+  `fixed(distrib = gengamma1_distrib(), d = 2)`; otherwise partial
+  matching assigns the value to `distrib` and an error is signalled.
 
 - ...:
 
   The fixed values, named after the parameters they fix, as in
   `fixed(gaussian1_distrib(), mu = 0)`. Each must be a single finite
   number strictly inside its parameter's domain, and each name must be a
-  parameter of `distrib`. A name that is not, a value outside the
+  parameter of `distrib`, or the stem of a vector parameter such as a
+  multivariate mean, whose value is then one number for every coordinate
+  or one number per coordinate. A name that is not, a value outside the
   domain, a value that is not a single number, and an empty `...` are
   each rejected with an error saying which condition failed.
 
@@ -59,8 +68,12 @@ them alone.
 ## What is accepted
 
 Fixed values are single finite numbers, strictly inside the OPEN domain
-of their parameter. Fixing a parameter of a distribution that is already
-a fixed-parameter wrapper collapses the two into one wrapper around the
+of their parameter. A multivariate family's mean is the vector parameter
+`mu1, ..., mup`, and the name `mu` fixes all of it: `mu = 0` holds every
+coordinate at zero, and `mu = c(0, 1, 2)` holds each at its own value.
+The same holds for any parameter named as a stem followed by the indices
+`1, ..., k`. Fixing a parameter of a distribution that is already a
+fixed-parameter wrapper collapses the two into one wrapper around the
 original parent. Fixing a WRAPPER's own parameter is allowed and useful:
 `fixed(zero_inflated(d), zi = 0.3)` is a zero-inflated model with a
 known inflation rate. Fixing every parameter is allowed too and gives a
@@ -72,7 +85,7 @@ returning it silently would hide a missing argument.
 
 A prior. `fixed(gaussian1_distrib(), mu = 0)` is the ridge penalty with
 its scale free, `fixed(laplace2_distrib(), mu = 0)` is the lasso, and
-`fixed(mvgaussian1_distrib(p), mu1 = 0, ...)` is what a random effect is
+`fixed(mvgaussian1_distrib(p), mu = 0)` is what a random effect is
 distributed by. `fixed(folded(gaussian1_distrib()), mu = 0)` is the
 half-normal.
 
@@ -100,6 +113,11 @@ for what the methods do.
 ## Examples
 
 ``` r
+# A multivariate gaussian with its whole mean held at zero.
+fixed(mvgaussian1_distrib(3), mu = 0)@params
+#> [1] "sigma_log_L1" "sigma_log_L2" "sigma_log_L3" "sigma_L2.1"   "sigma_L3.1"  
+#> [6] "sigma_L3.2"  
+
 # A gaussian with a known mean: only sigma remains.
 d <- fixed(gaussian1_distrib(), mu = 0)
 d@params

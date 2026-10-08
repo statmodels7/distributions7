@@ -30,11 +30,19 @@ support being the declared interval. The result is clamped to \\\[0,
   recycled. `mu` must lie in \\(-\pi, \pi)\\ and `kappa` be strictly
   positive; a non-positive `kappa` gives `NA`.
 
+- lower.tail:
+
+  Logical of length 1. When `TRUE`, the default, probabilities are \\P(Y
+  \le q)\\; when `FALSE` they are \\P(Y \> q)\\, formed as \\1 - F(q)\\.
+
+- log.p:
+
+  Logical of length 1. When `TRUE` the logarithm of the probability is
+  returned. Defaults to `FALSE`.
+
 - ...:
 
-  Unused, and accepted so that the signature matches the generic's. This
-  method takes **no** `lower.tail` or `log.p`: the upper tail is
-  `1 - F(q)` and the logarithm is `log(F(q))`.
+  Unused, and accepted so that the signature matches the generic's.
 
 ## Value
 

@@ -16,8 +16,7 @@ gamma ties them by \\\gamma_2 = 3\gamma_1^2/2\\.
 - theta:
 
   A named list with components `a`, `d` and `p`, all positive, each a
-  numeric vector of length 1 or `n`. Only `d` and `p` enter the value;
-  the fourth-order combination cancels heavily at small dispersions.
+  numeric vector of length 1 or `n`. Only `d` and `p` enter the value.
 
 - ...:
 
@@ -28,6 +27,18 @@ gamma ties them by \\\gamma_2 = 3\gamma_1^2/2\\.
 A numeric vector of excess kurtoses, of length equal to the longest of
 the three components.
 
+## Details
+
+The excess is the fourth cumulant over the squared variance, \\\gamma_2
+= (\mu_4 - 3\mu_2^2)/\mu_2^2\\, with the central moments of \\Y/m_1\\
+computed as
+[`variance.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.GenGamma1Distrib.md)
+describes and the difference \\\mu_4 - 3\mu_2^2\\ formed in the same
+double-double arithmetic. Towards the lognormal the excess is of order
+\\1/k\\, \\k = d/p\\, with coefficient \\2(4h - 1)(2h - 1)\\, \\h =
+1/p\\; at \\p = 2\\ and \\p = 4\\ that coefficient vanishes and the
+excess is of order \\1/k^2\\.
+
 ## Notation
 
 \\d \> 0\\ and \\p \> 0\\ are the two shapes and \\m_k\\ the \\k\\-th
@@ -36,8 +47,6 @@ raw moment.
 ## See also
 
 [`skewness.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.GenGamma1Distrib.md),
-from the same raw moments;
-[`gengamma_raw_moments()`](https://statmodels7.github.io/distributions7/reference/gengamma_raw_moments.md),
 [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md).
 
 ## Examples

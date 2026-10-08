@@ -6,16 +6,24 @@ cheap at any concentration: the normalizing constant, the expensive part of
 the density, never enters.
 The accepted angles are drawn about zero and then shifted by \(\mu\) and
 wrapped back into \([-\pi, \pi)\), so every draw lies in the declared
-support. The loop over-proposes and repeats until n draws have been
-accepted, so it consumes an unpredictable number of R's uniform streams."><meta property="og:description" content="Draws n independent angles by the rejection algorithm of Best and Fisher
+support. With a scalar kappa the envelope's constants are built once and
+the loop over-proposes and repeats until n draws have been accepted. With
+a kappa that varies by observation each draw has its own envelope, and the
+loop proposes once for every draw not yet accepted, so that draw i is
+generated at kappa[i] and shifted by mu[i]. Either way the loop consumes
+an unpredictable number of R's uniform streams."><meta property="og:description" content="Draws n independent angles by the rejection algorithm of Best and Fisher
 (1979), which proposes from a wrapped Cauchy envelope and accepts with a
 probability that involves no Bessel function at all, so the generator is
 cheap at any concentration: the normalizing constant, the expensive part of
 the density, never enters.
 The accepted angles are drawn about zero and then shifted by \(\mu\) and
 wrapped back into \([-\pi, \pi)\), so every draw lies in the declared
-support. The loop over-proposes and repeats until n draws have been
-accepted, so it consumes an unpredictable number of R's uniform streams."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+support. With a scalar kappa the envelope's constants are built once and
+the loop over-proposes and repeats until n draws have been accepted. With
+a kappa that varies by observation each draw has its own envelope, and the
+loop proposes once for every draw not yet accepted, so that draw i is
+generated at kappa[i] and shifted by mu[i]. Either way the loop consumes
+an unpredictable number of R's uniform streams."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +31,7 @@ accepted, so it consumes an unpredictable number of R's uniform streams."><meta 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,8 +71,12 @@ cheap at any concentration: the normalizing constant, the expensive part of
 the density, never enters.</p>
 <p>The accepted angles are drawn about zero and then shifted by \(\mu\) and
 wrapped back into \([-\pi, \pi)\), so every draw lies in the declared
-support. The loop over-proposes and repeats until <code>n</code> draws have been
-accepted, so it consumes an unpredictable number of R's uniform streams.</p>
+support. With a scalar <code>kappa</code> the envelope's constants are built once and
+the loop over-proposes and repeats until <code>n</code> draws have been accepted. With
+a <code>kappa</code> that varies by observation each draw has its own envelope, and the
+loop proposes once for every draw not yet accepted, so that draw <code>i</code> is
+generated at <code>kappa[i]</code> and shifted by <code>mu[i]</code>. Either way the loop consumes
+an unpredictable number of R's uniform streams.</p>
     </div>
 
 
@@ -82,9 +94,8 @@ accepted, so it consumes an unpredictable number of R's uniform streams.</p>
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>mu</code> and <code>kappa</code>, each a numeric
-vector of length 1. <code>mu</code> must lie in \((-\pi, \pi)\) and <code>kappa</code> be
-strictly positive. The envelope's constants are built once per call, so a
-parameter varying by observation is not supported here.</p></dd>
+vector of length 1 or <code>n</code>, recycled to <code>n</code> otherwise as by the generic.
+<code>mu</code> must lie in \((-\pi, \pi)\) and <code>kappa</code> be strictly positive.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

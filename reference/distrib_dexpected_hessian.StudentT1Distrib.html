@@ -9,7 +9,7 @@ parameters, from compiled kernels."><meta property="og:image" content="https://s
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,15 +91,14 @@ parameters, from compiled kernels.</p>
 \(\mathbb{E}[\ell_{\sigma\nu}] = 2\nu^{-2}/(w_1 w_3 \sigma)\) and
 $$\mathbb{E}[\ell_{\nu\nu}] = \tfrac14\{\psi'((\nu+1)/2) - \psi'(\nu/2)\}
   + \frac{\nu+5}{2\nu(\nu+1)(\nu+3)} = -\frac{7}{2\nu^4} + \frac{13}{\nu^5} - \dots,$$
-whose terms cancel from order \(\nu^{-2}\); its derivatives in \(\nu\)
-are taken from the asymptotic series above \(\nu = 30\), the series'
-coefficients being exact integers from the duplication identity
-\(\psi'((\nu+1)/2) - \psi'(\nu/2) = 4\psi'(\nu) - 2\psi'(\nu/2)\).</p>
+whose terms cancel from order \(\nu^{-2}\); it and its derivatives in
+\(\nu\) are taken from their asymptotic series in \(1/\nu\) above
+\(\nu = 20\), derived from Stirling's series, and the first and second
+derivatives come from one kernel each.</p>
 <p>For the generalized gamma by scale \(a\) and shapes \(d, p\), each
-component is \(a^{\alpha} p^{\beta} F(k)\) with \(k = d/p\) and
-\(F\) a combination of \(\psi(k)\), \(\psi(k+1)\) and their
-derivatives, differentiated through \(\partial k/\partial d = 1/p\) and
-\(\partial k/\partial p = -k/p\).</p>
+component is a power of \(1/a\) times a closed form in \((d, p)\) and
+the polygamma functions at \(k + 1\), \(k = d/p\), derived offline as
+<code><a href="distrib_deriv3.GenGamma1Distrib.html">distrib_deriv3.GenGamma1Distrib()</a></code> describes.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

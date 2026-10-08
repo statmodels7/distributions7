@@ -1,10 +1,12 @@
 # Skew t Log-CDF Gradient
 
 Closed form in the location and the scale, \\-f(q)\\ and \\-z f(q)\\
-with \\z = (q-\mu)/\sigma\\; the shape and the degrees of freedom are
-differenced. The method is
-[`partial_loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_cdf.md)
-itself, shared with the Student t and the pseudo-Huber.
+with \\z = (q-\mu)/\sigma\\; the component in the shape and in the
+degrees of freedom are integrals, each is the integral of the density's
+own derivative, taken by the compiled rule. The method is
+[`compiled_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
+itself, shared with the other families whose distribution function has
+no closed derivative in a shape parameter.
 
 ## Arguments
 
@@ -36,13 +38,6 @@ itself, shared with the Student t and the pseudo-Huber.
 A named list of four numeric vectors, `mu`, `sigma`, `alpha` and `nu`,
 each the length of `q` recycled against `theta`.
 
-## Details
-
-Two of the four components are closed. The shape and the degrees of
-freedom enter the distribution function through a Student t distribution
-function at \\\nu+1\\ degrees of freedom, whose derivatives in either
-have no elementary form, so both are differenced.
-
 ## Notation
 
 \\\mu\\ is the location, \\\sigma \> 0\\ the scale, \\\alpha\\ the
@@ -51,7 +46,7 @@ shape, \\\nu \> 0\\ the degrees of freedom, \\z = (q-\mu)/\sigma\\ and
 
 ## See also
 
-[`partial_loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_cdf.md)
+[`compiled_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
 for the shared body;
 [`distrib_hess_cdf.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.SkewTDistrib.md)
 for the second order;

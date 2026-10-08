@@ -58,14 +58,15 @@ fourth-order components; a one-parameter family has one of each.
 ## The two routes
 
 A discrete family uses the exact finite sum of
-[`discrete_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv_k.md),
-and a continuous one takes a single product stencil on its analytic
-distribution function through
+[`discrete_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv_k.md).
+A continuous family whose compiled distribution function integrates its
+shape derivatives (gamma1, gamma2, chisq, both generalized gammas, both
+betas, both von Mises, both Student t, both pseudo-Huber and the skew t)
+takes the exact integrals of
+[`compiled_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf_deriv_k.md);
+any other continuous family without a closed form of its own takes a
+single product stencil on its distribution function through
 [`numerical_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv_k.md).
-24 of the 42 univariate families register a closed form of their own; of
-the 18 that do not, the discrete ones sum exactly and the continuous
-ones (beta1, beta2, chisq, gamma1, gamma2, gengamma1 and the two von
-Mises) difference.
 
 ## What consumes them
 

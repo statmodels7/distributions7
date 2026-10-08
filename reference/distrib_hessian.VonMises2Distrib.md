@@ -1,14 +1,12 @@
 # von Mises Observed Hessian in the Resultant Length
 
 Computes the three distinct second derivatives of the log-density in
-\\\mu\\ and \\\rho\\, one value per observation, in closed form. The
-concentration parametrization's second derivatives are carried through
-the one-variable chain rule, \$\$\ell^{(\rho\rho)} =
-\ell^{(\kappa\kappa)}\\\kappa'(\rho)\\^2 +
-\ell^{(\kappa)}\kappa''(\rho), \qquad \ell^{(\mu\rho)} =
-\ell^{(\mu\kappa)}\kappa'(\rho),\$\$ with \\\ell^{(\kappa\kappa)} =
--A'(\kappa)\\, \\\ell^{(\mu\kappa)} = \sin(y-\mu)\\ and
-\\\ell^{(\mu\mu)} = -\kappa\cos(y-\mu)\\ unchanged.
+\\\mu\\ and \\\rho\\, one value per observation, in closed form:
+\$\$\ell^{(\mu\mu)} = -\kappa\cos(y-\mu), \qquad \ell^{(\mu\rho)} =
+\sin(y-\mu)\\\kappa'(\rho), \qquad \ell^{(\rho\rho)} = \\\cos(y-\mu) -
+\rho\\\kappa''(\rho) - \kappa'(\rho),\$\$ the last from differentiating
+the score's \\\\\cos(y-\mu) - \rho\\\kappa'(\rho)\\. The components are
+computed by a compiled kernel.
 
 Unlike in the concentration parametrization, the pure second derivative
 is **not** free of the data: the term in \\\kappa''\\ carries
@@ -40,6 +38,12 @@ is **not** free of the data: the term in \\\kappa''\\ carries
 - ...:
 
   Unused, and accepted so that the signature matches the generic's.
+
+- threads:
+
+  A single positive integer, how many threads the kernel may use. Below
+  the measured internal threshold the kernel stays sequential whatever
+  the count says. Defaults to `1L`.
 
 ## Value
 

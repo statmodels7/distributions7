@@ -49,7 +49,7 @@ string.
 [`skewt_msa_tower()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_tower.md)
 for the derivation and
 [`distrib_deriv3.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewTDistrib.md)
-for the method that reads this.
+for the compiled kernel tested against this.
 
 ## Examples
 

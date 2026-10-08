@@ -71,7 +71,7 @@ y <- c(0.5, 1.5, 4)
 th <- list(a = 2, d = 3, p = 1.5)
 h <- distrib_hessian(d, y, th)
 names(h)
-#> [1] "a_a" "a_d" "a_p" "d_d" "d_p" "p_p"
+#> [1] "a_a" "d_d" "p_p" "a_d" "a_p" "d_p"
 
 # The scale-shape entry is -1/a at every observation.
 h$a_d

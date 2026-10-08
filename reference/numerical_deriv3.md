@@ -1,9 +1,8 @@
 # Numerical Third-Order Derivatives of the Log-Density
 
 Computes the unique third-order partial derivatives of the log-density
-by central finite differences of
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md).
-This powers the default
+by central finite differences of the highest order the family implements
+itself. This powers the default
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
 method for distributions without a closed-form implementation, and is
 the reference used to validate the analytical kernels.
@@ -37,7 +36,11 @@ numerical_deriv3(
 - h_rel:
 
   Numeric. Relative finite-difference step. Defaults to
-  `.Machine$double.eps^(1/3)`.
+  `.Machine$double.eps^(1/3)` for a family with its own Hessian, and to
+  the step
+  [`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md)
+  chooses for the order of its difference otherwise; a value given
+  explicitly is used on either route.
 
 - skip:
 
@@ -53,11 +56,24 @@ A named list of third-derivative component vectors, keyed as in
 
 ## Details
 
-Each component \\\partial^3 \ell /
+The route depends on what the family implements, as
+[`analytic_order()`](https://statmodels7.github.io/distributions7/reference/analytic_order.md)
+reports it.
+
+For a family with its own Hessian, each component \\\partial^3 \ell /
 \partial\theta_i\partial\theta_j\partial\theta_k\\ (with \\i \le j \le
 k\\) is obtained by differentiating the Hessian entry \\(i, j)\\ along
-\\\theta_k\\. Steps are scaled by `max(1, |theta|)` and shrunk near
-parameter-domain boundaries.
+\\\theta_k\\, one central difference of an analytical quantity. Steps
+are scaled by `max(1, |theta|)` and shrunk near parameter-domain
+boundaries.
+
+For a family without its own Hessian, that Hessian is itself a
+difference, and differencing it would nest one difference in another: on
+a diagonal component the same parameter would be differenced twice in
+succession. Each component is then one tensor-product central stencil of
+order two on the score, or of order three on the log-density when the
+family has no score either; see
+[`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md).
 
 ## See also
 

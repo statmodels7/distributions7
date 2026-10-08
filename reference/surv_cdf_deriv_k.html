@@ -13,7 +13,7 @@ all four orders follow at once, so a family has only to say what \(L\) is."><met
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,9 +91,8 @@ zeroth order and is never asked for.</p></dd>
 <dt id="arg-inside">inside<a class="anchor" aria-label="anchor" href="#arg-inside"></a></dt>
 <dd><p>A logical vector saying which quantiles lie inside the
 support, or <code>NULL</code> (the default), which reads <code>q &gt; distrib@bounds[1]</code>. A
-family whose support depends on a parameter, as the generalized Pareto's
-does at a negative shape, supplies its own; the fixed bounds cannot see
-it.</p></dd>
+family whose support depends on a parameter supplies its own; the fixed
+bounds cannot see it.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -130,8 +129,7 @@ what suppresses that.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="register_surv_cdf.html">register_surv_cdf()</a></code>, which turns a pieces function into the four
-methods; <code><a href="bell_f_ratio.html">bell_f_ratio()</a></code> for the partition sum;
-<code><a href="gpd_surv_pieces.html">gpd_surv_pieces()</a></code> for the most involved of the three families.</p></div>
+methods; <code><a href="bell_f_ratio.html">bell_f_ratio()</a></code> for the partition sum.</p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

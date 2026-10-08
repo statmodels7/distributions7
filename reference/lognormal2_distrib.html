@@ -9,7 +9,7 @@ variance of \(Y\) itself, rather than of \(\log Y\)."><meta property="og:image" 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.65.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,7 @@ variance of \(Y\) itself, rather than of \(\log Y\)."><meta property="og:image" 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Lognormal Distribution in the Mean and Variance of Y</h1>
-      <small class="dont-index">Source: <a href="https://github.com/statmodels7/distributions7/blob/master/R/reparametrized_families.R" class="external-link"><code>R/reparametrized_families.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/statmodels7/distributions7/blob/master/R/lognormal2_distrib.R" class="external-link"><code>R/lognormal2_distrib.R</code></a></small>
       <div class="d-none name"><code>lognormal2_distrib.Rd</code></div>
     </div>
 
@@ -65,29 +65,35 @@ variance of \(Y\) itself, rather than of \(\log Y\).</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A reparametrized distribution object.</p>
+    <p>An S7 object of class <code>Lognormal2Distrib</code>, inheriting from
+<code>continuous_distrib</code>, with <code>params</code> <code>c("mean", "var")</code> and <code>link_params</code>
+the two links given here.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The parameters of <code><a href="lognormal1_distrib.html">lognormal1_distrib()</a></code> describe \(\log Y\), so
-neither of them is a moment of \(Y\). Here they are, through
+    <p>The parameters of <code><a href="lognormal1_distrib.html">lognormal1_distrib()</a></code> describe \(\log Y\), so neither
+of them is a moment of \(Y\). Here they are, through
 $$\mu_{\log} = \log\dfrac{m^2}{\sqrt{v + m^2}}, \qquad
-      \sigma^2_{\log} = \log\left(1 + \dfrac{v}{m^2}\right)$$
-which is the parametrization a regression on the mean wants.</p>
-<p>Built with <code><a href="reparametrize.html">reparametrize()</a></code>, so every derivative to fourth order,
-observed and expected, is exact.</p>
+      \sigma^2_{\log} = \log\left(1 + \dfrac{v}{m^2}\right).$$
+Every derivative of the log-density in \((m, v)\) to order five, the
+expected information and its derivatives, the derivatives in the response
+and the derivatives of the distribution function are closed forms, each
+order in its own compiled kernel (see
+<code><a href="distrib_gradient.Lognormal2Distrib.html">distrib_gradient.Lognormal2Distrib()</a></code>).</p>
     </div>
     <div class="section level2">
     <h2 id="the-distribution">The distribution<a class="anchor" aria-label="anchor" href="#the-distribution"></a></h2>
 
 
-<p>$$f(y) = \frac{1}{y\sqrt{2\pi s^{2}}}\exp\!\left\{-\frac{(\log y - m)^{2}}{2s^{2}}\right\}, \quad s^{2} = \log\!\left(1+\frac{v}{\mu^{2}}\right)\!, \; m = \log\mu - \frac{s^{2}}{2}$$
-on \(y \in (0, \infty)\).</p>
-<p>$$\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = v$$</p>
+<p>$$f(y) = \frac{1}{y\sqrt{2\pi s^{2}}}\exp\!\left\{-\frac{(\log y -
+  \mu_l)^{2}}{2s^{2}}\right\}, \quad s^{2} = \log\!\left(1+\frac{v}{m^{2}}
+  \right)\!, \; \mu_l = \log m - \frac{s^{2}}{2}$$
+on \(y \in (0, \infty)\), with \(E[Y] = m\) and
+\(\operatorname{Var}(Y) = v\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="lognormal1_distrib.html">lognormal1_distrib()</a></code>, <code><a href="reparametrize.html">reparametrize()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="lognormal1_distrib.html">lognormal1_distrib()</a></code>; <a href="Lognormal2Distrib.html">Lognormal2Distrib</a> for the class.</p></div>
     </div>
 
     <div class="section level2">

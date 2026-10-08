@@ -2,11 +2,8 @@
 
 The first and second derivatives of the expected information in the
 parameters, from the derivatives of the Bessel ratio \\A(\kappa) =
-I_1(\kappa)/I_0(\kappa)\\ that
-[`numericals7::bessel_i_ratio_derivs()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_derivs.html)
-and
-[`numericals7::bessel_i_ratio_inverse()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_inverse.html)
-return.
+I_1(\kappa)/I_0(\kappa)\\ and of its inverse, computed by one compiled
+kernel per order from numericals7's compiled Bessel ratio.
 
 ## Arguments
 
@@ -36,7 +33,7 @@ return.
 
 - threads:
 
-  Unused; accepted for the shared signature.
+  A single positive integer, how many threads the kernel may use.
 
 ## Value
 
@@ -54,9 +51,9 @@ mean resultant length \\\rho = A(\kappa)\\,
 \\\mathbb{E}\[\ell\_{\mu\mu}\] = -\rho\\\kappa(\rho)\\ and
 \\\mathbb{E}\[\ell\_{\rho\rho}\] = -\kappa'(\rho)\\, so they read the
 inverse's derivatives \\\kappa'\\, \\\kappa''\\ and \\\kappa'''\\.
-Nothing moves with the direction \\\mu\\. The expected information of
-either family is itself computed in R from the same functions, which is
-why these are too.
+Nothing moves with the direction \\\mu\\. The first-order kernel reads
+\\A\\ to \\A''\\ (or \\\kappa\\ to \\\kappa''\\), the second-order one
+\\A'\\ to \\A'''\\ (or \\\kappa'\\ to \\\kappa'''\\).
 
 ## See also
 

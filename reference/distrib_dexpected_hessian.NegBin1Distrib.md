@@ -43,17 +43,21 @@ or
 
 ## Details
 
-**NB1.** Every component is \\c_0 + c_1 G\\ with \\c_0, c_1\\ rational
-in \\(\mu, \theta)\\ and \\G = \mathbb{E}\[\psi'(Y + r) - \psi'(r)\]\\,
-\\r = \mu/\theta\\. The derivatives of \\G\\ are sums over the same mass
-with the score of the mass beside the summand, the differences
-\\\psi^{(n)}(r + y) - \psi^{(n)}(r)\\ taken by their exact recurrences,
-from a compiled kernel. Toward the Poisson limit \\\theta \to 0\\ the
-composition \\c_0 + c_1 G\\ cancels, which the expected information
-itself already does (7.7e-07 relative at \\\theta = 0.005\\ against an
-exact sum over the support, 1.6e-05 at \\10^{-3}\\), and each derivative
-loses about one further factor of \\1/\theta\\: measured against the
-exact sums, 1e-09 at \\\theta = 0.7\\, 1e-07 at 0.2, 1e-05 at 0.05.
+**NB1.** The expected information is \\-A\\, \\W/\theta^2\\ and
+\\-W/(\mu\theta)\\, with \\A\\ and \\W\\ the two sums over the support
+of
+[`distrib_expected_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md).
+Their derivatives are sums over the same mass with the score of the mass
+beside the summand, \\\partial_c F = \mathbb{E}\[f_c + f s_c\]\\ and
+\\\partial\_{ce} F = \mathbb{E}\[f\_{ce} + f_c s_e + f_e s_c + f(s_c
+s_e + h\_{ce})\]\\, taken in \\(\mu, \theta)\\ by a compiled kernel,
+with the scores \\s\\ and second derivatives \\h\\ of the log-mass
+written so that no term of order \\\mu/\theta^2\\ is formed. Measured
+against exact sums at 50 digits, the error relative to the largest
+component of each order is about 2e-10 at \\\mu = 100\\, \\\theta =
+0.05\\, and grows toward the Poisson limit, to 4e-08 at \\\theta =
+0.005\\ and 5e-06 at \\\theta = 0.001\\ (\\\mu = 10\\), the fourth
+derivative in \\\theta\\ being the worst component.
 
 **Beta-binomial.** The support \\\\0, \dots, n\\\\ is finite, so the
 identities \$\$\partial_c \mathbb{E}\[\ell\_{ab}\] =

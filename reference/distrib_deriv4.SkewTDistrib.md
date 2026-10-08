@@ -1,12 +1,8 @@
 # Skew t Fourth Derivatives
 
-Computes the thirty-five fourth derivatives of the log-density, with the
-discipline of
-[`distrib_deriv3.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewTDistrib.md).
-Fifteen are closed form, ten more are one difference in \\\nu\\ of a
-closed-form third derivative, and each of the remaining ten costs one
-stencil on an analytic quantity. Twenty of the thirty-five involve
-\\\nu\\.
+Computes the thirty-five fourth derivatives of the log-density with the
+compiled kernel described on
+[`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md).
 
 ## Arguments
 
@@ -48,72 +44,27 @@ stencil on an analytic quantity. Twenty of the thirty-five involve
 
   Unused, and accepted so that the signature matches the generic's.
 
+- threads:
+
+  A single positive integer, how many threads the kernel may use.
+
 ## Value
 
 A named list of thirty-five numeric vectors, one per distinct
 fourth-order component, from `mu_mu_mu_mu` to `nu_nu_nu_nu`.
 
-## How the thirty-five are obtained
+## Details
 
-The fifteen free of \\\nu\\ come from
-[`skewt_msa_derivs()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_derivs.md)
-and difference nothing.
-
-The ten carrying exactly one \\\nu\\ come from
-[`skewt_msa_nu1()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_nu1.md),
-one five-point difference along \\\nu\\ of the **closed-form** third
-derivative beside them. This is the rule
-[`distrib_hessian.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewTDistrib.md)'s
-mixed components already follow, read one order up. The generic
-construction would instead take a mixed second difference of the
-Hessian, and a second difference amplifies rounding by \\h^{-2}\\:
-measured over fifteen settings of \\(\nu, \alpha)\\, the route it
-replaces sits between 20 and 203 times further from Richardson on the
-analytic third derivative.
-
-The six carrying \\\nu\\ twice go through
-[`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md),
-which for them is one second difference along \\\nu\\ of a closed-form
-Hessian entry.
-
-The four the generic construction would nest are replaced: \\(i, \nu,
-\nu, \nu)\\ is a third difference of the closed-form score component
-\\i\\, and \\(\nu, \nu, \nu, \nu)\\ a fourth difference of the
-log-density.
-
-## The step for the pure-nu component
-
-A fourth difference amplifies rounding by \\h^{-4}\\, so
-[`fd5_fourth()`](https://statmodels7.github.io/distributions7/reference/fd5_fourth.md)
-is called at **ten times**
-[`skewt_nu_step()`](https://statmodels7.github.io/distributions7/reference/skewt_nu_step.md)'s
-step rather than at it. The choice is measured: at the family's base
-step the per-observation noise is near \\10^{-2}\\ relative, and at ten
-times that it is negligible while the \\O(h^2)\\ truncation, about
-\\6\times10^{-4}\\, is what remains.
-
-`nu_nu_nu_nu` is the least accurate quantity this family reports, and it
-is also the smallest: measured on four observations at \\\nu = 6\\ it is
-\\-4.5\times10^{-6}\\ while `sigma_sigma_sigma_sigma` is 127. A
-**relative** comparison on a component that small is not informative,
-which is why the package's battery scales its order-4 check by the size
-of the whole array and reports \\3.5\times10^{-4}\\ here.
-
-## Cost
-
-This is the dearest method in the family: the ten components carrying
-\\\nu\\ more than once each cost four or five evaluations of an analytic
-quantity over the whole vector. Measured at \\n = 20{,}000\\ it takes
-about five seconds, against eighty milliseconds for the score and about
-eighteen seconds for the generic construction alone, which is what it
-cost before fifteen of its components stopped being differenced at all.
+With `expected = TRUE` the whole order is an expectation and comes from
+[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md);
+`approx` and `nsim` are then read.
 
 ## See also
 
 [`distrib_deriv3.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewTDistrib.md)
 for the order below,
-[`fd5_fourth()`](https://statmodels7.github.io/distributions7/reference/fd5_fourth.md)
-for the stencil and its \\h^{-4}\\ behavior, and
+[`distrib_deriv5.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.SkewTDistrib.md)
+for the order above, and
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 for the generic.
 
@@ -133,9 +84,9 @@ c(components = length(d4), involving_nu = sum(grepl("nu", names(d4))))
 s <- sort(vapply(d4, function(v) sum(abs(v)), 0), decreasing = TRUE)
 s[c(1, 2, length(s) - 1, length(s))]
 #> sigma_sigma_sigma_sigma          mu_mu_mu_sigma             nu_nu_nu_nu 
-#>            1.268203e+02            7.633429e+01            4.736387e-03 
+#>            1.268203e+02            7.633429e+01            4.734965e-03 
 #>          alpha_nu_nu_nu 
-#>            2.024177e-03 
+#>            2.024170e-03 
 
 # A closed-form-block component against a difference of the third order.
 eps <- 1e-5

@@ -5,12 +5,10 @@ Student t log-density in \\\mu\\, \\\sigma\\ and \\\nu\\. The observed
 values are closed form and run in a compiled kernel decomposed over the
 elements of the output, so they do not depend on the thread count.
 
-**The expected values have no closed form.** With `expected = TRUE` the
-method calls
-[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
-which integrates the observed derivatives against the density by the
-strategy `approx` names. That is the one place on this page where
-`approx` and `nsim` are read.
+The expected values are closed forms, as for the third order (see
+[`distrib_deriv3.StudentT1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.StudentT1Distrib.md)).
+`approx` and `nsim` are accepted for the generic's signature and
+ignored.
 
 ## Arguments
 
@@ -33,8 +31,7 @@ strategy `approx` names. That is the one place on this page where
 - expected:
 
   Logical of length 1. When `TRUE` the expectation under the model is
-  returned in place of the value at the data, computed numerically.
-  Defaults to `FALSE`.
+  returned in place of the value at the data. Defaults to `FALSE`.
 
 - scale:
 
@@ -42,17 +39,10 @@ strategy `approx` names. That is the one place on this page where
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
   the generic, not by this method.
 
-- approx:
+- approx, nsim:
 
-  One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`, the strategy
-  [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-  uses. Read only when `expected = TRUE`.
-
-- nsim:
-
-  A single positive integer, the sample size when `approx = "mc"`. Read
-  only when `expected = TRUE`. Defaults to `10000`.
+  Accepted for the generic's signature; the expectations are closed
+  forms.
 
 - ...:
 
@@ -60,8 +50,8 @@ strategy `approx` names. That is the one place on this page where
 
 - threads:
 
-  A single positive integer, how many threads the kernel may use. Read
-  only on the observed branch. Defaults to `1L`.
+  A single positive integer, how many threads the kernel may use.
+  Defaults to `1L`.
 
 ## Value
 
@@ -71,24 +61,17 @@ carry, from `mu_mu_mu_mu` to `nu_nu_nu_nu`, each of length
 
 ## Large degrees of freedom
 
-Unlike the third order, the fourth is **not** rewritten in the ratio
-variables and ceases to be finite at a large \\\nu\\: measured at
-\\\sigma = 1.2\\, eight of the fifteen components are finite at \\\nu =
-10^{150}\\, five at \\10^{300}\\ and two at `.Machine$double.xmax`. A
-`NaN` there is a loud failure and is preferable to a plausible wrong
-number, and the regime is one in which the family is a Gaussian in all
-but name. An outer criterion that reads this order at a \\\nu\\ run to
-its clamp is reported as having no finite gradient rather than being
-given one.
+Written like the third order, in \\z\\, \\q = z^2/\nu\\ and \\t =
+1/(1+q)\\, with the quantities of \\\nu\\ alone on their asymptotic
+series above \\\nu = 20\\: all fifteen components keep their digits and
+stay finite to `.Machine$double.xmax`.
 
 ## See also
 
 [`distrib_deriv3.StudentT1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.StudentT1Distrib.md)
 for the order below,
 [`distrib_hessian.StudentT1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.StudentT1Distrib.md)
-for the second order,
-[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-for the numerical expectation, and
+for the second order, and
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 for the generic.
 
@@ -113,9 +96,9 @@ dn <- distrib_deriv3(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 5))$mu_mu_mu
 all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-5)
 #> [1] TRUE
 
-# At a degrees of freedom the log link can produce, part of the order is
-# not representable and says so.
+# At a degrees of freedom the log link can produce, every component is
+# finite.
 big <- distrib_deriv4(d, y, list(mu = 0.4, sigma = 1.2, nu = 1e300))
-sum(vapply(big, function(v) is.finite(v[1]), logical(1)))
-#> [1] 5
+all(vapply(big, function(v) all(is.finite(v)), logical(1)))
+#> [1] TRUE
 ```

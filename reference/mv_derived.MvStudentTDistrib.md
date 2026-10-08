@@ -9,6 +9,14 @@ matrix leaves its correlations alone. The diagonal quantities are NOT
 standard deviations of the response, and are named `scale_sd_v1`, ...,
 `scale_sd_vp` and blocked as `"Scale standard deviations"` to say so.
 
+The rule of
+[`mv_derived.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvGaussianDistrib.md)
+holds here as well: a structured parametrization reports its own block
+alone, its `scale` as the square root `scale_sd` on the scale-matrix
+side, and the inverse parametrization reports the conditional scales
+\\1/M\_{jj}\\ and the partial correlations and nothing of the scale
+matrix.
+
 ## Arguments
 
 - distrib:
@@ -30,9 +38,10 @@ standard deviations of the response, and are named `scale_sd_v1`, ...,
 
 A named list with `value`, `jacobian`, `transform` and `block`, as
 [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md)
-documents: \\p\\ scale standard deviations on the log scale and
-\\p(p-1)/2\\ correlations on Fisher's \\z\\, plus whatever the matrix
-parametrization declares.
+documents: the structure's own block where it declares one; otherwise
+\\p\\ scale standard deviations on the log scale and \\p(p-1)/2\\
+correlations on Fisher's \\z\\, or for the inverse parametrization \\p\\
+conditional scales and \\p(p-1)/2\\ partial correlations.
 
 ## Details
 

@@ -10,9 +10,8 @@ sufficient statistics \\\log y\\ and \\\log(1-y)\\, so each component is
 the corresponding statistic minus its expectation. That is also why
 every derivative beyond this one is free of the response.
 
-The value is computed in plain R, this family carrying no compiled
-kernel, and \\\log(1-y)\\ is formed with
-[`base::log1p()`](https://rdrr.io/r/base/Log.html) so that it stays
+The value is computed by a compiled kernel, and \\\log(1-y)\\ is formed
+with [`log1p()`](https://rdrr.io/r/base/Log.html) so that it stays
 accurate at `y` near zero.
 
 With `scale = "link"` the generic applies the chain rule for the links
@@ -46,6 +45,12 @@ parameter scale.
 - ...:
 
   Unused, and accepted so that the signature matches the generic's.
+
+- threads:
+
+  A single positive integer, how many threads the kernel may use. Below
+  the measured internal threshold the kernel stays sequential whatever
+  the count says. Defaults to `1L`.
 
 ## Value
 
