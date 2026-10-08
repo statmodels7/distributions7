@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,10 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.75.2" id="distributions7-0752">distributions7 0.75.2<a class="anchor" aria-label="anchor" href="#distributions7-0752"></a></h2>
+<ul><li>The tests of the scalar C entries compare them with the vector kernels and the R methods on the scale of the expected values, at 1e-10, through the new test helpers <code>scale_gap()</code> and <code>expect_agrees_on_scale()</code>. They asserted <code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical()</a></code>, which held on gcc x86_64 and failed on arm64 macOS by one to a few units in the last place (worst 1.1e-13 on a curvature of 0.0076), where clang contracts multiply-adds into FMAs differently in each context. A positive control passes that gap and a negative one fails a value off by one per cent. Two bounds against reference values move with the same platform: 1e-13 for a truncated Poisson’s Hessian against mpmath (1.25e-14 on arm64) and 1e-11 for the elastic net’s assembled Hessian (1.85e-12).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.75.1" id="distributions7-0751">distributions7 0.75.1<a class="anchor" aria-label="anchor" href="#distributions7-0751"></a></h2>
 <ul><li>Documentation repairs found by <code>R CMD check --as-cran</code>: the example of the internal <code><a href="../reference/constant_to_scalar.html">constant_to_scalar()</a></code> calls it with <code>:::</code>; the page of the compiled cdf derivatives no longer links to the unexported <code>cdf_rule_cpp()</code>; the pages of the wrappers’ fifth derivatives and of the generalized Pareto cdf derivatives have no <code>\usage</code> section, as the other method pages, instead of the usage of an internal helper.</li>

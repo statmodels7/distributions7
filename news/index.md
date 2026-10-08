@@ -1,5 +1,21 @@
 # Changelog
 
+## distributions7 0.75.2
+
+- The tests of the scalar C entries compare them with the vector kernels
+  and the R methods on the scale of the expected values, at 1e-10,
+  through the new test helpers `scale_gap()` and
+  `expect_agrees_on_scale()`. They asserted
+  [`identical()`](https://rdrr.io/r/base/identical.html), which held on
+  gcc x86_64 and failed on arm64 macOS by one to a few units in the last
+  place (worst 1.1e-13 on a curvature of 0.0076), where clang contracts
+  multiply-adds into FMAs differently in each context. A positive
+  control passes that gap and a negative one fails a value off by one
+  per cent. Two bounds against reference values move with the same
+  platform: 1e-13 for a truncated Poisson’s Hessian against mpmath
+  (1.25e-14 on arm64) and 1e-11 for the elastic net’s assembled Hessian
+  (1.85e-12).
+
 ## distributions7 0.75.1
 
 - Documentation repairs found by `R CMD check --as-cran`: the example of
