@@ -20,8 +20,11 @@ A named list with one numeric vector per parameter, keyed by
 \code{distrib@params}.
 }
 \description{
-Falls back to one central difference of \code{\link[=distrib_hess_y]{distrib_hess_y()}} in each
-parameter, through \code{\link[=numerical_cross2_y]{numerical_cross2_y()}}. Registering it on
+Falls back to one tensor stencil on the highest quantity the family
+implements itself, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}: a central
+difference of an analytic \code{\link[=distrib_hess_y]{distrib_hess_y()}} in each parameter, a second
+difference in the response of an analytic score, or one mixed stencil of
+the log-density, whichever leaves the smallest order. Registering it on
 \code{continuous_distrib} gives the quantity to every continuous family, whether
 or not it writes one out.
 }

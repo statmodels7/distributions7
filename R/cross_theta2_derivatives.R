@@ -389,17 +389,19 @@ numerical_theta2_y <- function(distrib, y, theta, inner,
 #' @name distrib_grad_y_hess.continuous_distrib
 #'
 #' @description
-#' Falls back to one central difference of the analytic [distrib_cross_y()] in
-#' each parameter, through [numerical_theta2_y()]. Registering the fallback on
-#' `continuous_distrib` gives the third-order mixed derivative to every
-#' continuous family, whether or not it writes one out.
+#' Falls back to one tensor stencil on the highest quantity the family
+#' implements itself, through [mixed_tensor_derivatives()]: a central
+#' difference of an analytic [distrib_cross_y()] in each parameter, a
+#' difference in the response of an analytic Hessian, or one mixed stencil of
+#' the log-density, whichever leaves the smallest order. Registering the
+#' fallback on `continuous_distrib` gives the third-order mixed derivative to
+#' every continuous family, whether or not it writes one out.
 #'
 #' @details
-#' The difference lands on an ANALYTIC quantity wherever the family provides
-#' [distrib_cross_y()] in closed form, so the answer carries the error of one
-#' stencil rather than two. Where that first-order quantity is itself a
-#' fallback the two differences act on different variables and still compose
-#' into a single mixed stencil.
+#' The stencil is never applied to a quantity that is itself a fallback.
+#' Before 0.76.0 the fallback differenced [distrib_cross_y()] in the
+#' parameters whether or not that was analytic, and where it was a fallback
+#' that differenced a difference in the same parameter.
 #'
 #' @param distrib A `continuous_distrib` object with no closed form of its own.
 #' @param y A numeric vector of observations.
@@ -433,19 +435,22 @@ numerical_theta2_y <- function(distrib, y, theta, inner,
 S7::method(distrib_grad_y_hess, continuous_distrib) <- function(distrib, y, theta,
                                                                 scale = c("parameter", "link"),
                                                                 ...) {
-  numerical_theta2_y(distrib, y, theta,
-                     function(th) distrib_cross_y(distrib, y, th))
+  mixed_tensor_derivatives(distrib, y, theta, 1L, 2L)
 }
 
 #' @title Default Hyperparameter Hessian of the Response Curvature
 #' @name distrib_hess_y_hess.continuous_distrib
 #'
 #' @description
-#' Falls back to one central difference of the analytic [distrib_cross2_y()] in
-#' each parameter, through [numerical_theta2_y()]. It is
+#' Falls back to one tensor stencil on the highest quantity the family
+#' implements itself, through [mixed_tensor_derivatives()]. It is
 #' [distrib_grad_y_hess.continuous_distrib()] read one order higher in the
-#' response, and it makes the fourth-order mixed derivative available for every
-#' continuous family.
+#' response, and it makes the fourth-order mixed derivative available for
+#' every continuous family. For [transformation()], which has an analytic
+#' Hessian in the parameters and no response derivative, it is a second
+#' difference in the response of that Hessian; before 0.76.0 it differenced
+#' a difference in the same parameter, and on a log-gamma it was wrong by a
+#' factor of seven.
 #'
 #' @param distrib A `continuous_distrib` object with no closed form of its own.
 #' @param y A numeric vector of observations.
@@ -476,8 +481,7 @@ S7::method(distrib_grad_y_hess, continuous_distrib) <- function(distrib, y, thet
 S7::method(distrib_hess_y_hess, continuous_distrib) <- function(distrib, y, theta,
                                                                 scale = c("parameter", "link"),
                                                                 ...) {
-  numerical_theta2_y(distrib, y, theta,
-                     function(th) distrib_cross2_y(distrib, y, th))
+  mixed_tensor_derivatives(distrib, y, theta, 2L, 2L)
 }
 
 

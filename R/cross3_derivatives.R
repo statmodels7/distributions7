@@ -159,8 +159,11 @@ numerical_cross3_y <- function(distrib, y, theta,
 #' @name distrib_cross3_y.continuous_distrib
 #'
 #' @description
-#' Falls back to one central difference of [distrib_deriv3_y()] in each
-#' parameter, through [numerical_cross3_y()].
+#' Falls back to one tensor stencil on the highest quantity the family
+#' implements itself, through [mixed_tensor_derivatives()]: a central
+#' difference of an analytic [distrib_deriv3_y()] in each parameter, a third
+#' difference in the response of an analytic score, or one mixed stencil of
+#' the log-density, whichever leaves the smallest order.
 #'
 #' @param distrib A `continuous_distrib` object.
 #' @param y A numeric vector of observations.
@@ -179,7 +182,7 @@ numerical_cross3_y <- function(distrib, y, theta,
 S7::method(distrib_cross3_y, continuous_distrib) <- function(distrib, y, theta,
                                                              scale = c("parameter", "link"),
                                                              ...) {
-  numerical_cross3_y(distrib, y, theta)
+  mixed_tensor_derivatives(distrib, y, theta, 3L, 1L)
 }
 
 

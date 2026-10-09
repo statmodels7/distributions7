@@ -1,3 +1,23 @@
+# distributions7 0.76.0
+
+* The mixed derivatives in the response and the parameters of a continuous
+  family without methods of its own (`distrib_cross_y()`,
+  `distrib_cross2_y()`, `distrib_cross3_y()`, `distrib_grad_y_hess()` and
+  `distrib_hess_y_hess()`) are one tensor stencil on the highest quantity the
+  family implements itself, through the new internal
+  `mixed_tensor_derivatives()`, never a difference of a difference. The
+  previous fallbacks differenced the lower mixed fallback in the
+  parameters, which for `grad_y_hess` and `hess_y_hess` meant a difference
+  of a difference in the same parameter. On a log-gamma built from
+  `transformation()`, whose closed forms are elementary, the relative errors
+  go from 3.7e-7, 1.6e-4, 3.3e-3, 3.7e-3 and 7.2 (`hess_y_hess`) to
+  1.7e-11, 8.6e-9, 1.5e-7, 4.2e-11 and 1.5e-8; on a gaussian defined by its
+  density alone `hess_y_hess` was off by more than 100 and is now within
+  1e-5 of `gaussian1_distrib()`. These derivatives enter the outer curvature
+  of a random effect with such a prior in statmodels7, where the standard
+  error of its variance was 5 to 17 per cent off and depended on the
+  platform.
+
 # distributions7 0.75.3
 
 * `scale_gap()` floors the scale of the expected values at 1e-4, so that an

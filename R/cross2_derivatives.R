@@ -190,8 +190,11 @@ numerical_cross2_y <- function(distrib, y, theta,
 #' @name distrib_cross2_y.continuous_distrib
 #'
 #' @description
-#' Falls back to one central difference of [distrib_hess_y()] in each
-#' parameter, through [numerical_cross2_y()]. Registering it on
+#' Falls back to one tensor stencil on the highest quantity the family
+#' implements itself, through [mixed_tensor_derivatives()]: a central
+#' difference of an analytic [distrib_hess_y()] in each parameter, a second
+#' difference in the response of an analytic score, or one mixed stencil of
+#' the log-density, whichever leaves the smallest order. Registering it on
 #' `continuous_distrib` gives the quantity to every continuous family, whether
 #' or not it writes one out.
 #'
@@ -226,7 +229,7 @@ numerical_cross2_y <- function(distrib, y, theta,
 S7::method(distrib_cross2_y, continuous_distrib) <- function(distrib, y, theta,
                                                              scale = c("parameter", "link"),
                                                              ...) {
-  numerical_cross2_y(distrib, y, theta)
+  mixed_tensor_derivatives(distrib, y, theta, 2L, 1L)
 }
 
 

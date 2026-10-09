@@ -20,17 +20,19 @@ A named list with one numeric vector per unordered pair of
 parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-Falls back to one central difference of the analytic \code{\link[=distrib_cross_y]{distrib_cross_y()}} in
-each parameter, through \code{\link[=numerical_theta2_y]{numerical_theta2_y()}}. Registering the fallback on
-\code{continuous_distrib} gives the third-order mixed derivative to every
-continuous family, whether or not it writes one out.
+Falls back to one tensor stencil on the highest quantity the family
+implements itself, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}: a central
+difference of an analytic \code{\link[=distrib_cross_y]{distrib_cross_y()}} in each parameter, a
+difference in the response of an analytic Hessian, or one mixed stencil of
+the log-density, whichever leaves the smallest order. Registering the
+fallback on \code{continuous_distrib} gives the third-order mixed derivative to
+every continuous family, whether or not it writes one out.
 }
 \details{
-The difference lands on an ANALYTIC quantity wherever the family provides
-\code{\link[=distrib_cross_y]{distrib_cross_y()}} in closed form, so the answer carries the error of one
-stencil rather than two. Where that first-order quantity is itself a
-fallback the two differences act on different variables and still compose
-into a single mixed stencil.
+The stencil is never applied to a quantity that is itself a fallback.
+Before 0.76.0 the fallback differenced \code{\link[=distrib_cross_y]{distrib_cross_y()}} in the
+parameters whether or not that was analytic, and where it was a fallback
+that differenced a difference in the same parameter.
 }
 \examples{
 # The gamma writes no closed form, so this method answers for it.

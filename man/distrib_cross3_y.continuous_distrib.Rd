@@ -20,8 +20,11 @@ A named list with one numeric vector per parameter, keyed by
 \code{distrib@params}.
 }
 \description{
-Falls back to one central difference of \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} in each
-parameter, through \code{\link[=numerical_cross3_y]{numerical_cross3_y()}}.
+Falls back to one tensor stencil on the highest quantity the family
+implements itself, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}: a central
+difference of an analytic \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} in each parameter, a third
+difference in the response of an analytic score, or one mixed stencil of
+the log-density, whichever leaves the smallest order.
 }
 \seealso{
 \code{\link[=distrib_cross3_y]{distrib_cross3_y()}} for the generic, \code{\link[=numerical_cross3_y]{numerical_cross3_y()}}, which

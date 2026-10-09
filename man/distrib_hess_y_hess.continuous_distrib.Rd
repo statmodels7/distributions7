@@ -20,11 +20,15 @@ A named list with one numeric vector per unordered pair of
 parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-Falls back to one central difference of the analytic \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} in
-each parameter, through \code{\link[=numerical_theta2_y]{numerical_theta2_y()}}. It is
+Falls back to one tensor stencil on the highest quantity the family
+implements itself, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}. It is
 \code{\link[=distrib_grad_y_hess.continuous_distrib]{distrib_grad_y_hess.continuous_distrib()}} read one order higher in the
-response, and it makes the fourth-order mixed derivative available for every
-continuous family.
+response, and it makes the fourth-order mixed derivative available for
+every continuous family. For \code{\link[=transformation]{transformation()}}, which has an analytic
+Hessian in the parameters and no response derivative, it is a second
+difference in the response of that Hessian; before 0.76.0 it differenced
+a difference in the same parameter, and on a log-gamma it was wrong by a
+factor of seven.
 }
 \examples{
 d <- gamma2_distrib()
