@@ -204,7 +204,7 @@ fit <- fit_distrib(d, y)
 fit
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 7 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 6 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:

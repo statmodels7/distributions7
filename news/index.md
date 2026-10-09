@@ -1,5 +1,15 @@
 # Changelog
 
+## distributions7 0.75.3
+
+- `scale_gap()` floors the scale of the expected values at 1e-4, so that
+  an absolute gap of 1e-14 is admitted at the tolerance of 1e-10. Where
+  a component is zero analytically (the location score of a truncated
+  folded Laplace, a truncated Gumbel’s derivative of the information),
+  both routes return rounding noise up to 4e-15, and on arm64 macOS the
+  gap read against that noise as a scale was 0.24. Controls: noise of
+  that size passes, and a value of 1e-12 against zeros fails.
+
 ## distributions7 0.75.2
 
 - The tests of the scalar C entries compare them with the vector kernels

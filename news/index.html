@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,11 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.75.3" id="distributions7-0753">distributions7 0.75.3<a class="anchor" aria-label="anchor" href="#distributions7-0753"></a></h2>
+<ul><li>
+<code>scale_gap()</code> floors the scale of the expected values at 1e-4, so that an absolute gap of 1e-14 is admitted at the tolerance of 1e-10. Where a component is zero analytically (the location score of a truncated folded Laplace, a truncated Gumbel’s derivative of the information), both routes return rounding noise up to 4e-15, and on arm64 macOS the gap read against that noise as a scale was 0.24. Controls: noise of that size passes, and a value of 1e-12 against zeros fails.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.75.2" id="distributions7-0752">distributions7 0.75.2<a class="anchor" aria-label="anchor" href="#distributions7-0752"></a></h2>
 <ul><li>The tests of the scalar C entries compare them with the vector kernels and the R methods on the scale of the expected values, at 1e-10, through the new test helpers <code>scale_gap()</code> and <code>expect_agrees_on_scale()</code>. They asserted <code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical()</a></code>, which held on gcc x86_64 and failed on arm64 macOS by one to a few units in the last place (worst 1.1e-13 on a curvature of 0.0076), where clang contracts multiply-adds into FMAs differently in each context. A positive control passes that gap and a negative one fails a value off by one per cent. Two bounds against reference values move with the same platform: 1e-13 for a truncated Poisson’s Hessian against mpmath (1.25e-14 on arm64) and 1e-11 for the elastic net’s assembled Hessian (1.85e-12).</li>
