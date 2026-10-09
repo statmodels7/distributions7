@@ -137,6 +137,12 @@ test_that("the twin comparison passes the platform's last bits and fails a wrong
   expect_identical(scale_gap(c(NaN, -Inf, 1), c(NaN, -Inf, 1)), 0)
   expect_identical(scale_gap(c(-Inf, 1), c(-1e300, 1)), Inf)
   expect_gt(scale_gap(c(-0.1524 * 1.01, 0.3), c(-0.1524, 0.3)), 1e-3)
+  # a component that is zero analytically: rounding noise on both routes
+  # passes (the arm64 runner's worst, 4.2e-15 against 3.7e-15), and a value
+  # of 1e-12 against zeros fails
+  expect_lte(scale_gap(c(4.163e-15, -1.67e-16, 4.72e-16),
+                       c(3.719e-15, -1.39e-16, -1.11e-16)), 1e-10)
+  expect_gt(scale_gap(c(1e-12, 0), c(0, 0)), 1e-10)
 })
 
 test_that("the scalar entries are the vector kernels", {
