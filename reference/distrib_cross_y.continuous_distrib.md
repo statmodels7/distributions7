@@ -1,15 +1,11 @@
 # Default Mixed Derivatives for Continuous Distributions
 
-The fallback: one central difference of
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
-in each parameter, through
-[`numerical_cross_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross_y.md)
-at its default step of \\\varepsilon^{1/3} \approx 6.1\times10^{-6}\\.
-The quantity differenced is the response gradient, so a family with an
-analytic one pays for a single difference layer and reaches about
-\\10^{-10}\\ relative accuracy; where the response gradient is itself a
-difference, the two act on different variables and commute into one
-four-point mixed stencil.
+The fallback: one tensor stencil on the highest quantity the family
+implements itself, through
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md).
+A family with an analytic response gradient or score differences it
+once, in the parameter or in the response; a family with a density alone
+takes one four-point mixed stencil of the log-density.
 
 **No family shipped in this package reaches this method.** All 32
 continuous families register a closed form, so this exists for a family

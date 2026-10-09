@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.75.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,10 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.76.0" id="distributions7-0760">distributions7 0.76.0<a class="anchor" aria-label="anchor" href="#distributions7-0760"></a></h2>
+<ul><li>The mixed derivatives in the response and the parameters of a continuous family without methods of its own (<code><a href="../reference/distrib_cross_y.html">distrib_cross_y()</a></code>, <code><a href="../reference/distrib_cross2_y.html">distrib_cross2_y()</a></code>, <code><a href="../reference/distrib_cross3_y.html">distrib_cross3_y()</a></code>, <code><a href="../reference/distrib_grad_y_hess.html">distrib_grad_y_hess()</a></code> and <code><a href="../reference/distrib_hess_y_hess.html">distrib_hess_y_hess()</a></code>) are one tensor stencil on the highest quantity the family implements itself, through the new internal <code><a href="../reference/mixed_tensor_derivatives.html">mixed_tensor_derivatives()</a></code>, never a difference of a difference. The previous fallbacks differenced the lower mixed fallback in the parameters, which for <code>grad_y_hess</code> and <code>hess_y_hess</code> meant a difference of a difference in the same parameter. On a log-gamma built from <code><a href="../reference/transformation.html">transformation()</a></code>, whose closed forms are elementary, the relative errors go from 3.7e-7, 1.6e-4, 3.3e-3, 3.7e-3 and 7.2 (<code>hess_y_hess</code>) to 1.7e-11, 8.6e-9, 1.5e-7, 4.2e-11 and 1.5e-8; on a gaussian defined by its density alone <code>hess_y_hess</code> was off by more than 100 and is now within 1e-5 of <code><a href="../reference/gaussian1_distrib.html">gaussian1_distrib()</a></code>. These derivatives enter the outer curvature of a random effect with such a prior in statmodels7, where the standard error of its variance was 5 to 17 per cent off and depended on the platform.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.75.3" id="distributions7-0753">distributions7 0.75.3<a class="anchor" aria-label="anchor" href="#distributions7-0753"></a></h2>
 <ul><li>

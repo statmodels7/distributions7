@@ -1,12 +1,15 @@
 # Default Hyperparameter Hessian of the Response Gradient
 
-Falls back to one central difference of the analytic
+Falls back to one tensor stencil on the highest quantity the family
+implements itself, through
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md):
+a central difference of an analytic
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-in each parameter, through
-[`numerical_theta2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.md).
-Registering the fallback on `continuous_distrib` gives the third-order
-mixed derivative to every continuous family, whether or not it writes
-one out.
+in each parameter, a difference in the response of an analytic Hessian,
+or one mixed stencil of the log-density, whichever leaves the smallest
+order. Registering the fallback on `continuous_distrib` gives the
+third-order mixed derivative to every continuous family, whether or not
+it writes one out.
 
 ## Arguments
 
@@ -39,13 +42,11 @@ keyed as
 
 ## Details
 
-The difference lands on an ANALYTIC quantity wherever the family
-provides
+The stencil is never applied to a quantity that is itself a fallback.
+Before 0.76.0 the fallback differenced
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-in closed form, so the answer carries the error of one stencil rather
-than two. Where that first-order quantity is itself a fallback the two
-differences act on different variables and still compose into a single
-mixed stencil.
+in the parameters whether or not that was analytic, and where it was a
+fallback that differenced a difference in the same parameter.
 
 ## See also
 

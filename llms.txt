@@ -3895,6 +3895,9 @@ divergent density.
 - [`memo_ratio()`](https://statmodels7.github.io/distributions7/reference/memo_ratio.md)
   : Memoize a Ratio Function on Its Block
 
+- [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md)
+  : Mixed Derivatives by One Stencil on the Highest Analytical Quantity
+
 - [`mn_parts()`](https://statmodels7.github.io/distributions7/reference/mn_parts.md)
   : The Pieces a Multinomial Derivative Needs
 

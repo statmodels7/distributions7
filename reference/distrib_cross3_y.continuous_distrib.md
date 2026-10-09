@@ -1,9 +1,13 @@
 # Default Mixed Third-Response Derivatives for Continuous Distributions
 
-Falls back to one central difference of
+Falls back to one tensor stencil on the highest quantity the family
+implements itself, through
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md):
+a central difference of an analytic
 [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
-in each parameter, through
-[`numerical_cross3_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross3_y.md).
+in each parameter, a third difference in the response of an analytic
+score, or one mixed stencil of the log-density, whichever leaves the
+smallest order.
 
 ## Arguments
 

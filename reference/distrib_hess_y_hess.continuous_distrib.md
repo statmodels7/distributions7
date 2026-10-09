@@ -1,13 +1,17 @@
 # Default Hyperparameter Hessian of the Response Curvature
 
-Falls back to one central difference of the analytic
-[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
-in each parameter, through
-[`numerical_theta2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.md).
+Falls back to one tensor stencil on the highest quantity the family
+implements itself, through
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md).
 It is
 [`distrib_grad_y_hess.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.continuous_distrib.md)
 read one order higher in the response, and it makes the fourth-order
-mixed derivative available for every continuous family.
+mixed derivative available for every continuous family. For
+[`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md),
+which has an analytic Hessian in the parameters and no response
+derivative, it is a second difference in the response of that Hessian;
+before 0.76.0 it differenced a difference in the same parameter, and on
+a log-gamma it was wrong by a factor of seven.
 
 ## Arguments
 
@@ -55,7 +59,7 @@ y <- c(0.5, 1, 2)
 theta <- list(mu = 2, sigma2 = 1)
 h <- distrib_hess_y_hess(d, y, theta)
 c(h$mu_mu[1], h$mu_sigma2[1], h$sigma2_sigma2[1])
-#> [1]  -7.999997  16.000000 -31.999976
+#> [1]  -8  16 -32
 
 # Against a numerical Hessian of the response curvature.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))

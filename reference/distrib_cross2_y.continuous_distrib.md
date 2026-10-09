@@ -1,11 +1,14 @@
 # Default Mixed Second-Response Derivatives for Continuous Distributions
 
-Falls back to one central difference of
+Falls back to one tensor stencil on the highest quantity the family
+implements itself, through
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md):
+a central difference of an analytic
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
-in each parameter, through
-[`numerical_cross2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross2_y.md).
-Registering it on `continuous_distrib` gives the quantity to every
-continuous family, whether or not it writes one out.
+in each parameter, a second difference in the response of an analytic
+score, or one mixed stencil of the log-density, whichever leaves the
+smallest order. Registering it on `continuous_distrib` gives the
+quantity to every continuous family, whether or not it writes one out.
 
 ## Arguments
 

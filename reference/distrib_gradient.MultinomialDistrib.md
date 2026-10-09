@@ -89,5 +89,5 @@ supp <- mv_support(d, th)
 w <- distrib_pdf(d, supp, th)
 vapply(distrib_gradient(d, supp, th), function(v) sum(w * v), numeric(1))
 #>   probs_alr1   probs_alr2 
-#> 8.283305e-17 2.831936e-16 
+#> 6.722053e-17 2.762547e-16 
 ```
