@@ -1,3 +1,8 @@
+# distributions7 0.76.1
+
+* `mixed_tensor_derivatives()` accepts the orders as doubles: its example
+  passed `2, 2` and stopped in `vapply()` under `R CMD check`.
+
 # distributions7 0.76.0
 
 * The mixed derivatives in the response and the parameters of a continuous

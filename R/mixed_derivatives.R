@@ -61,6 +61,8 @@
 #' got <- distributions7:::mixed_tensor_derivatives(d, b, list(sigma2 = 0.26), 2, 2)
 #' rbind(got$sigma2_sigma2, -2 * k^3 * exp(b))
 mixed_tensor_derivatives <- function(distrib, y, theta, ay, ctheta) {
+  ay <- as.integer(ay)
+  ctheta <- as.integer(ctheta)
   params <- distrib@params
   p <- length(params)
   prs <- hess_pairs(params)
