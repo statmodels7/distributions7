@@ -97,8 +97,8 @@ d <- fixed(transformation(gamma2_distrib(), log_transform()), mu = 1)
 b <- c(-0.4, 0.3)
 k <- 1 / 0.26
 got <- distributions7:::mixed_tensor_derivatives(d, b, list(sigma2 = 0.26), 2, 2)
-#> Error in vapply(usable, function(b) (ay - b$a) + (ctheta - b$c), integer(1)): values must be type 'integer',
-#>  but FUN(X[[1]]) result is type 'double'
 rbind(got$sigma2_sigma2, -2 * k^3 * exp(b))
-#> Error: object 'got' not found
+#>           [,1]      [,2]
+#> [1,] -76.27673 -153.6023
+#> [2,] -76.27675 -153.6025
 ```

@@ -1,5 +1,12 @@
 # Changelog
 
+## distributions7 0.76.1
+
+- [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md)
+  accepts the orders as doubles: its example passed `2, 2` and stopped
+  in [`vapply()`](https://rdrr.io/r/base/lapply.html) under
+  `R CMD check`.
+
 ## distributions7 0.76.0
 
 - The mixed derivatives in the response and the parameters of a

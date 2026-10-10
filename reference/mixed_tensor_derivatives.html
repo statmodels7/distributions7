@@ -21,7 +21,7 @@ difference."><meta property="og:image" content="https://statmodels7.github.io/di
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -140,10 +140,10 @@ fallbacks call this.</p></div>
 <span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.4</span>, <span class="fl">0.3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">0.26</span></span></span>
 <span class="r-in"><span><span class="va">got</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">mixed_tensor_derivatives</span><span class="op">(</span><span class="va">d</span>, <span class="va">b</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sigma2 <span class="op">=</span> <span class="fl">0.26</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in vapply(usable, function(b) (ay - b$a) + (ctheta - b$c), integer(1)):</span> values must be type 'integer',</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>  but FUN(X[[1]]) result is type 'double'</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">got</span><span class="op">$</span><span class="va">sigma2_sigma2</span>, <span class="op">-</span><span class="fl">2</span> <span class="op">*</span> <span class="va">k</span><span class="op">^</span><span class="fl">3</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'got' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -76.27673 -153.6023</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -76.27675 -153.6025</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
