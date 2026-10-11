@@ -22,8 +22,8 @@ the notation of \code{\link[=skewt_pieces]{skewt_pieces()}}. It is minus the der
 exactly, because the response and the location enter the density only
 through their difference; the identity holds for every location family.
 
-It is closed form at every parameter value, \eqn{\nu} included: nothing here
-differentiates the degrees of freedom.
+It is closed form at every parameter value, \eqn{\nu} included, because the
+formula does not differentiate in the degrees of freedom.
 }
 \section{Notation}{
 

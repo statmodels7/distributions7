@@ -10,7 +10,8 @@ cdf_tail_scale(distrib, Fq, dF1, dF2 = NULL, lower.tail, log)
 \item{distrib}{An object inheriting from \code{distrib}. Only its \code{params} are
 read, to name and pair the components.}
 
-\item{Fq}{The distribution function at the quantile, a numeric vector.}
+\item{Fq}{The distribution function at the quantile, a numeric vector,
+possibly with the attribute \code{"upper"} that \code{\link[=tail_cdf]{tail_cdf()}} attaches.}
 
 \item{dF1}{A named list of first derivatives of \eqn{F}, one component per
 parameter, in the parameter order.}
@@ -39,7 +40,9 @@ here, and no method has to implement four cases.
 }
 \section{The two conversions}{
 Switching to the upper tail flips the sign, \eqn{S = 1 - F} giving
-\eqn{\partial^I S = -\partial^I F} at every order. Switching to the log
+\eqn{\partial^I S = -\partial^I F} at every order. The probability \eqn{S}
+by which the log scale divides is the family's own upper tail when \code{Fq}
+comes from \code{\link[=tail_cdf]{tail_cdf()}}, and \eqn{1 - F} otherwise (\code{\link[=tail_probability]{tail_probability()}}). Switching to the log
 scale divides by the probability, which at second order brings in the
 familiar correction
 \deqn{\partial^2 \log P = \frac{\partial^2 P}{P}

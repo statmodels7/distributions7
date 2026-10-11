@@ -23,7 +23,7 @@ logarithms of probabilities. Defaults to \code{FALSE}.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of quantiles in \eqn{[0, \infty)}, of length
+A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 \code{max(length(p), length(mu))}.
 }
 \description{

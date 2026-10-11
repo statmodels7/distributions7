@@ -4,11 +4,11 @@
 \alias{distrib_deriv5.ExponentialDistrib}
 \title{Exponential Fifth-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
+\item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list with components \code{mu}, each a numeric vector
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
 of length 1 or of the length of \code{y}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}.}

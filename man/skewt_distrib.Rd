@@ -32,29 +32,30 @@ An S7 object of class \link{SkewTDistrib}, inheriting from
 }
 \description{
 Builds a skew \eqn{t} distribution object with location \eqn{\mu}, scale
-\eqn{\sigma}, shape \eqn{\alpha} and degrees of freedom \eqn{\nu}. It is
-the four-parameter family a location-scale-shape framework wants: the
+\eqn{\sigma}, shape \eqn{\alpha} and degrees of freedom \eqn{\nu}. The
 scale, the asymmetry and the tail weight are three separate parameters,
-each of which can carry its own linear predictor.
+and each of them can carry its own linear predictor.
 
 Three families sit inside it. \eqn{\alpha = 0} is
 \code{\link[=student_t1_distrib]{student_t1_distrib()}}, large \eqn{\nu} approaches
 \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, and both together give the Gaussian.
 }
-\section{Why the fourth parameter}{
+\section{Range of the skewness and the kurtosis}{
 The skew normal of \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} reaches a skewness of at most
 0.99527 and an excess kurtosis of at most 0.86918, both approached only as
-\eqn{|\alpha| \to \infty}. Adding \eqn{\nu} removes both ceilings: measured
-at \eqn{\alpha = 50}, the skewness is 1.190 at \eqn{\nu = 30}, 2.050 at
-\eqn{\nu = 6} and 3.998 at \eqn{\nu = 4}.
+\eqn{|\alpha| \to \infty}. Adding \eqn{\nu} removes both ceilings: at
+\eqn{\alpha = 50} the skewness is 1.12 at \eqn{\nu = 30}, 2.05 at
+\eqn{\nu = 6} and 4.00 at \eqn{\nu = 4}, and it grows without bound as
+\eqn{\nu} decreases to 3.
 }
 
 \section{How the derivatives are computed}{
 The density contains \eqn{T_{\nu+1}}, and the derivatives of a Student
 \eqn{t} distribution function in its degrees of freedom have no elementary
 expression. They are integrals of the derivatives of the \eqn{t} density and
-are taken by quadrature, so that every derivative this family reports, to
-order five, is exact to rounding; see \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}.
+are taken by quadrature. The derivatives to order five are closed form in
+\eqn{\mu}, \eqn{\sigma} and \eqn{\alpha}, and those in \eqn{\nu} come from
+that quadrature; see \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}.
 }
 
 \section{Fitting}{
@@ -63,8 +64,9 @@ quadrature over \eqn{z} per distinct \eqn{(\alpha, \nu)}, so Fisher scoring
 on an intercept-only fit pays for one integral per iteration.
 
 The distribution function and the quantile function likewise have no
-elementary form; the base class integrates the density and inverts the
-result by root finding.
+elementary form. The distribution function integrates the density by the
+compiled rule of \code{\link[=compiled_cdf]{compiled_cdf()}}, and the quantile function inverts it by
+root finding in \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \section{Moments}{
@@ -78,19 +80,18 @@ parameters are kept apart.
 \section{Identification near symmetry}{
 The skew normal's expected information loses a rank at \eqn{\alpha = 0},
 because its shape score is a fixed multiple of its location score there.
-\strong{The skew \eqn{t} does not inherit that at finite \eqn{\nu.}} The tilting
-argument carries \eqn{c = \sqrt{(\nu+1)/(\nu+z^2)}}, which depends on the
-observation, so the two scores are not proportional: measured at
-\eqn{\alpha = 0}, \eqn{\nu = 6}, their ratio spreads over 0.76 across
-observations, where the skew normal's is constant to the last digit. The
-spread falls as \eqn{O(1/\nu)}, so the singularity is inherited only in the
-limit: 0.068 at \eqn{\nu = 100}, \eqn{7\times10^{-4}} at \eqn{10^4}.
+For the skew \eqn{t} at a finite \eqn{\nu} the ratio of the score in
+\eqn{\alpha} to the score in \eqn{\mu} at \eqn{\alpha = 0} is proportional
+to \eqn{\sqrt{(\nu+z^2)/(\nu+1)}}, which depends on the observation through
+\eqn{z}, whereas the skew normal's ratio is a constant. The relative
+variation of the ratio over \eqn{z} is of order \eqn{z^2/\nu}, so the
+information becomes singular only as \eqn{\nu \to \infty}.
 
-What is weakly identified here is \eqn{\nu} itself. The smallest eigenvalue
-of the information belongs to that direction and falls with \eqn{\nu}:
-measured at \eqn{\alpha = 0}, it is \eqn{3.6\times10^{-3}} at \eqn{\nu = 4},
-\eqn{8.4\times10^{-4}} at 6 and \eqn{1.7\times10^{-6}} at 30. A nearly
-Gaussian tail carries little information about how heavy it is.
+The parameter that is weakly identified is \eqn{\nu}. At
+\eqn{\alpha = 0} the smallest eigenvalue of the expected information
+corresponds to the direction of \eqn{\nu} and decreases as \eqn{\nu} grows,
+because a tail close to the Gaussian one carries little information about
+its weight.
 }
 
 \section{Parameter domains}{

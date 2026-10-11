@@ -39,8 +39,9 @@ zero, and the only surviving component comes from \eqn{\log\lambda}:
 \deqn{\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},}
 with \code{mu_mu_mu}, \code{mu_mu_lambda} and \code{mu_lambda_lambda} all zero.
 
-None of these depends on the data, so the observed and expected values
-coincide: \code{expected}, \code{approx} and \code{nsim} are accepted and have no effect.
+These derivatives do not depend on the data, so the observed and expected
+values coincide: \code{expected}, \code{approx} and \code{nsim} are accepted and have no
+effect.
 }
 \section{Notation}{
 
@@ -64,6 +65,6 @@ identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
 }
 \seealso{
 \code{\link[=distrib_deriv3.LaplaceDistrib]{distrib_deriv3.LaplaceDistrib()}} for the scale parametrization,
-where the picture is less sparse; \code{\link[=distrib_deriv4.Laplace2Distrib]{distrib_deriv4.Laplace2Distrib()}} for
+where more components are nonzero; \code{\link[=distrib_deriv4.Laplace2Distrib]{distrib_deriv4.Laplace2Distrib()}} for
 the order above; \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

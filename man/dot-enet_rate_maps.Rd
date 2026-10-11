@@ -23,7 +23,7 @@ consumes.
 }
 \details{
 The map is bilinear, so its second partials are the constants \eqn{\pm 1}
-and its third and higher vanish; the table says so by leaving them out.
+and its third and higher vanish, so the table leaves them out.
 
 Those second partials are what carries a low-order derivative in the rates
 up to a high-order one in the parameters. That is why the third derivatives

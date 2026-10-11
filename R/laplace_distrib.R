@@ -20,8 +20,8 @@ NULL
 #' and the finite-difference guards consult.
 #'
 #' Build one with [laplace_distrib()]. This page documents the raw S7
-#' constructor, which takes the parent's properties and validates none of the
-#' relationships between them.
+#' constructor, which takes the parent's properties; the validator of
+#' `distrib` checks them, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -42,20 +42,46 @@ NULL
 #'   kink; [pseudohuber_distrib()] for a smooth relative.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.LaplaceDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.LaplaceDistrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.LaplaceDistrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.LaplaceDistrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.LaplaceDistrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.LaplaceDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.LaplaceDistrib] and
+#'   [`distrib_rng()`][distrib_rng.LaplaceDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.LaplaceDistrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.LaplaceDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.LaplaceDistrib],
-#'   [`distrib_pdf()`][distrib_pdf.LaplaceDistrib],
-#'   [`distrib_quantile()`][distrib_quantile.LaplaceDistrib],
-#'   [`distrib_rng()`][distrib_rng.LaplaceDistrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.LaplaceDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.LaplaceDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.LaplaceDistrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.LaplaceDistrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.LaplaceDistrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.LaplaceDistrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.LaplaceDistrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.LaplaceDistrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.LaplaceDistrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.LaplaceDistrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.LaplaceDistrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.LaplaceDistrib],
+#'   [`distrib_cross3_y()`][distrib_cross3_y.LaplaceDistrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.LaplaceDistrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.LaplaceDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.LaplaceDistrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.LaplaceDistrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.LaplaceDistrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.LaplaceDistrib];
+#' - the moments: [`mean()`][mean.LaplaceDistrib],
+#'   [`variance()`][variance.LaplaceDistrib],
+#'   [`skewness()`][skewness.LaplaceDistrib] and
+#'   [`kurtosis()`][kurtosis.LaplaceDistrib];
+#' - the decomposition at the kink:
+#'   [`kink_decomposition()`][kink_decomposition.LaplaceDistrib].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- laplace_distrib()
@@ -79,8 +105,10 @@ LaplaceDistrib <- S7::new_class("LaplaceDistrib", parent = continuous_distrib)
 #' @description
 #' Computes the Laplace density
 #' \deqn{f(y; \mu, \sigma) = \dfrac{1}{2\sigma} \exp\left(-\dfrac{|y - \mu|}{\sigma}\right)}
-#' from the log-density \eqn{-\log(2\sigma) - |y-\mu|/\sigma}, which is formed
-#' first and exponentiated only when `log = FALSE`. The density is continuous
+#' from the log-density \eqn{-\log 2 - \log\sigma - |y-\mu|/\sigma}, which is
+#' formed first and exponentiated only when `log = FALSE`. The two logarithms
+#' are taken separately, so the value stays finite where \eqn{2\sigma}
+#' overflows. The density is continuous
 #' everywhere and has a corner at \eqn{y = \mu}, where the two exponential arms
 #' meet. That corner makes the family non-regular in its location.
 #'
@@ -89,9 +117,8 @@ LaplaceDistrib <- S7::new_class("LaplaceDistrib", parent = continuous_distrib)
 #'   support, so no value is rejected.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
-#'   recycled. `sigma` must be strictly positive; the arithmetic is performed
-#'   as written, so a non-positive value gives `NaN` or `Inf` without a
-#'   warning of its own.
+#'   recycled. `sigma` must be strictly positive; the generic signals an
+#'   error for a zero or negative value before the method is called.
 #' @param log Logical of length 1. When `TRUE` the log-density is returned,
 #'   which is exact and finite at every real `y`. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -135,12 +162,15 @@ S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FAL
 #'   \tfrac{1}{2}\exp\!\left(\dfrac{q-\mu}{\sigma}\right), & q < \mu,\\[4pt]
 #'   1 - \tfrac{1}{2}\exp\!\left(-\dfrac{q-\mu}{\sigma}\right), & q \ge \mu.
 #' \end{cases}}
-#' The branch is selected per observation, and both arms are continuous at
-#' \eqn{q = \mu}, where the value is \eqn{1/2}. With `lower.tail = FALSE` the
-#' complement is taken after the branch, and with `log.p = TRUE` the logarithm
-#' of the result is taken; neither is computed in a way that avoids
-#' cancellation, so a probability that has already underflowed is not
-#' recovered.
+#' Both arms are continuous at \eqn{q = \mu}, where the value is \eqn{1/2}.
+#' The method computes the logarithm of each tail at the standardized
+#' residual \eqn{r = (q-\mu)/\sigma}: the tail on the far side of the
+#' location is \eqn{\log(1/2) - |r|}, and the tail on the near side is
+#' \eqn{\log(1 - e^{-|r|}/2)}, computed with `log1p()`. The requested tail is
+#' returned on the log scale or exponentiated, so neither `lower.tail = FALSE`
+#' nor `log.p = TRUE` subtracts from one, and a tail probability far below
+#' machine epsilon, or its logarithm, is returned accurately. The helper is
+#' [laplace_cdf_tails()].
 #'
 #' @param distrib A `LaplaceDistrib` object, from [laplace_distrib()].
 #' @param q A numeric vector of quantiles.
@@ -148,11 +178,10 @@ S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FAL
 #'   vector of length 1 or of the length of `q`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default,
-#'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)},
-#'   computed as \eqn{1 - F}.
+#'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are
+#'   \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
-#'   probability is returned, taken after the probability itself is formed.
-#'   Defaults to `FALSE`.
+#'   probability is returned. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
@@ -178,6 +207,11 @@ S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FAL
 #'
 #' # Symmetric: F(mu - a) + F(mu + a) = 1.
 #' distrib_cdf(d, 0.4 - 2, th) + distrib_cdf(d, 0.4 + 2, th)
+#'
+#' # Fifty scale units out, the upper tail is exp(-50)/2, and its logarithm
+#' # is exact as well.
+#' distrib_cdf(d, 0.4 + 50 * 1.5, th, lower.tail = FALSE)
+#' distrib_cdf(d, 0.4 + 50 * 1.5, th, lower.tail = FALSE, log.p = TRUE)
 S7::method(distrib_cdf, LaplaceDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   mu <- theta[[1]]
   b <- theta[[2]]
@@ -211,29 +245,39 @@ laplace_cdf_tails <- function(r, lower.tail, log.p) {
 #' @rdname laplace_cdf_tails
 laplace_std_quantile <- function(p, lower.tail, log.p) {
   lt <- quantile_log_tails(p, lower.tail, log.p)
-  ifelse(lt$lower <= lt$upper, lt$lower + log(2), -(lt$upper + log(2)))
+  # by indexing, so that a NaN tail gives NaN and not NA
+  out <- -(lt$upper + log(2))
+  lo <- !is.na(lt$lower) & lt$lower <= lt$upper
+  out[lo] <- lt$lower[lo] + log(2)
+  out
 }
 
 #' @title Laplace Quantile Function
 #' @name distrib_quantile.LaplaceDistrib
 #' @description
 #' Computes the Laplace quantile function
-#' \deqn{Q(p; \mu, \sigma) = \mu - \sigma\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right),}
-#' one expression covering both arms. The median is \eqn{\mu}, and the two
-#' quartiles are \eqn{\mu \pm \sigma \log 2}.
+#' \deqn{Q(p; \mu, \sigma) = \mu - \sigma\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right).}
+#' The median is \eqn{\mu}, and the two quartiles are
+#' \eqn{\mu \pm \sigma \log 2}. The method works from the logarithm of the
+#' smaller tail, \eqn{\log P}: the quantile is \eqn{\mu + \sigma(\log P + \log 2)}
+#' when \eqn{P} is the lower tail and \eqn{\mu - \sigma(\log P + \log 2)} when
+#' it is the upper one. The other tail's logarithm is taken as
+#' \eqn{\log(1 - e^{\log P})} with `expm1()` or `log1p()`, so a probability
+#' far below machine epsilon, given directly, through `lower.tail = FALSE` or
+#' through `log.p = TRUE`, gives an accurate quantile. The helper is
+#' [laplace_std_quantile()].
 #'
 #' @param distrib A `LaplaceDistrib` object, from [laplace_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or of their
 #'   logarithms when `log.p = TRUE`. The endpoints give `-Inf` and `Inf`; a
-#'   value outside the range gives `NaN`.
+#'   value outside the range gives `NaN` with a warning.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `p`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default, `p` is
-#'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)} and `p` is replaced by
-#'   `1 - p` before the formula is applied.
-#' @param log.p Logical of length 1. When `TRUE` the values in `p` are
-#'   exponentiated first. Defaults to `FALSE`.
+#'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
+#' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
+#'   logarithms of probabilities. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of length
@@ -254,6 +298,10 @@ laplace_std_quantile <- function(p, lower.tail, log.p) {
 #' # Exact inverse: the round trip returns the probabilities it was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
+#'
+#' # A far tail, given as a logarithm, against mu + sigma (log p + log 2).
+#' distrib_quantile(d, -800, th, log.p = TRUE)
+#' 0.4 + 1.5 * (-800 + log(2))
 S7::method(distrib_quantile, LaplaceDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   mu <- theta[[1]]
   b <- theta[[2]]
@@ -265,10 +313,9 @@ S7::method(distrib_quantile, LaplaceDistrib) <- function(distrib, p, theta, lowe
 #' @description
 #' Draws `n` independent Laplace variates by **inverse transform**: `n` uniform
 #' variates from [stats::runif()] are passed through
-#' [distrib_quantile.LaplaceDistrib()]. The quantile function is elementary and
-#' exact, so this is both cheaper and more accurate than the generalized
-#' ratio-of-uniforms fallback the base class supplies, which would have to
-#' reject draws around the kink.
+#' [distrib_quantile.LaplaceDistrib()]. The base class draws the same way for
+#' a family with its own quantile method, so the method gives the draws that
+#' the base class would give.
 #'
 #' @param distrib A `LaplaceDistrib` object, from [laplace_distrib()].
 #' @param n A single positive integer, the number of draws. One uniform variate
@@ -381,8 +428,9 @@ S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scal
 #' correct value: the log-density is piecewise linear in \eqn{\mu}, so away
 #' from \eqn{r = 0} its second derivative vanishes, and at \eqn{r = 0} the
 #' derivative does not exist. The curvature of the log-likelihood in the
-#' location is concentrated in a set of measure zero, and no expectation of
-#' this quantity sees it.
+#' location is concentrated at the single point \eqn{r = 0}, so the
+#' expectation of this second derivative is 0 although the information is
+#' positive.
 #'
 #' The consequence is that the observed information here is **not** the
 #' information. [distrib_expected_hessian.LaplaceDistrib()] returns
@@ -462,10 +510,12 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's. This matters more here than elsewhere:
-#'   the strategies that average the observed second derivative would return 0
-#'   for the location, and only the score-based one recovers
-#'   \eqn{1/\sigma^2}.
+#'   signature matches the generic's. Of the strategies of the generic,
+#'   `"mc"` averages the observed second derivative over simulated draws
+#'   and would give 0 for the location; `"opg"`, `"bartlett"` and
+#'   `"integrate"` (which uses the Bartlett identity for a family with a
+#'   non-smooth parameter) read the product of scores and give
+#'   \eqn{-1/\sigma^2}.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -508,8 +558,8 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #'   information = -distrib_expected_hessian(d, 0, th)$mu_mu,
 #'   mean_observed = mean(distrib_hessian(d, z, th)$mu_mu))
 #'
-#' # Fisher scoring can fit the family because this matrix is nonsingular;
-#' # a Newton step on the observed Hessian would divide by zero in mu.
+#' # Fisher scoring fits the family because this matrix is nonsingular; the
+#' # observed Hessian has a zero mu_mu entry.
 #' coef(fit_distrib(d, z))
 S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
   laplace_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
@@ -786,8 +836,9 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #' @description
 #' Builds the distribution object for the Laplace (double exponential) family
 #' with location \eqn{\mu} and scale \eqn{\sigma > 0}. The returned object
-#' carries closed-form derivatives of the log-density to fourth order and
-#' closed-form moments.
+#' carries closed-form derivatives of the log-density to fifth order in the
+#' parameters and to fourth order in the response, and closed-form
+#' moments.
 #'
 #' The family is symmetric about \eqn{\mu} with variance \eqn{2\sigma^2} and
 #' excess kurtosis 3, so it is heavier tailed than a Gaussian. Its maximum
@@ -817,7 +868,7 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #'
 #' The mean and the median are \eqn{\mu}, the variance is \eqn{2\sigma^2}, the
 #' skewness is 0 and the excess kurtosis is 3. [laplace2_distrib()] is the same
-#' law written by its rate \eqn{\lambda = 1/\sigma}, which is the form a
+#' law written by its rate \eqn{\lambda = 1/\sigma}, which is the form that a
 #' lasso penalty uses.
 #'
 #' # The kink, and what it costs
@@ -834,10 +885,11 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #'   the variance of the score, \eqn{1/\sigma^2}. That is what
 #'   [distrib_expected_hessian.LaplaceDistrib()] returns.
 #'
-#' `params_smooth` is `c(mu = FALSE, sigma = TRUE)`, and [check_distrib()]
-#' reads it to skip the finite-difference comparison in \eqn{\mu}, where a
-#' central difference straddling the corner returns a number that is not a
-#' derivative of anything.
+#' `params_smooth` is `c(mu = FALSE, sigma = TRUE)`. When an entry is `FALSE`,
+#' [check_distrib()] recomputes each finite-difference reference with half
+#' the step and drops the observations at which the two disagree, because a
+#' central difference that straddles the corner is not a derivative there;
+#' the comparison still covers every parameter, \eqn{\mu} included.
 #'
 #' # Estimation
 #'
@@ -868,7 +920,8 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #' [gaussian1_distrib()] for the light-tailed comparison;
 #' [cauchy_distrib()] and [pseudohuber_distrib()] for the other robust location
 #' families, the second of which smooths this one's corner away;
-#' [enet_distrib()], which contains this family as its pure-\eqn{\ell_1} case;
+#' [enet_distrib()], whose density tends to that of [laplace2_distrib()] as
+#' its mixing weight \eqn{\alpha} tends to 1;
 #' [fit_distrib()] and [fisher_scoring()] to estimate the parameters;
 #' [LaplaceDistrib] for the class.
 #'
@@ -940,13 +993,13 @@ laplace_distrib <- function(link_mu = identity_link(), link_sigma = log_link()) 
 #' @details
 #' Only the location moves the kink: \eqn{\partial v/\partial \mu = -1} and
 #' \eqn{\partial v/\partial \sigma = 0}, so [params_order()] reports
-#' \eqn{m_\mu = 0} and \eqn{m_\sigma = \infty}, which is what `params_smooth`
-#' has recorded as `c(mu = FALSE, sigma = TRUE)` all along.
+#' \eqn{m_\mu = 0} and \eqn{m_\sigma = \infty}, which agrees with
+#' `params_smooth` being `c(mu = FALSE, sigma = TRUE)`.
 #'
-#' The scale is smooth even though it stands in front of the absolute value,
-#' because a coefficient multiplying \eqn{\phi} is differentiable wherever
-#' \eqn{\phi} is bounded; what breaks a derivative is the argument crossing the
-#' origin, not the factor.
+#' The scale is smooth although it multiplies the absolute value: the
+#' derivative in \eqn{\sigma} of \eqn{c(\theta)\phi(v)} is
+#' \eqn{c'(\theta)\phi(v)}, which exists at every \eqn{y}. A derivative fails
+#' only where the argument \eqn{v} crosses the origin.
 #'
 #' @param distrib A `LaplaceDistrib` object.
 #'

@@ -20,8 +20,9 @@ A numeric vector of \code{n} non-negative draws.
 \description{
 Draws \code{n} independent exponential variates by calling \code{\link[stats:Exponential]{stats::rexp()}} at
 \code{rate = 1/mu}, so the draws come from R's own generator and depend on
-\code{.Random.seed} in the usual way. The generalized ratio-of-uniforms fallback
-the base class supplies is bypassed.
+\code{.Random.seed} in the usual way. The base class would draw by inversion
+through \code{\link[=distrib_quantile.ExponentialDistrib]{distrib_quantile.ExponentialDistrib()}}, which gives a different
+sequence for the same seed.
 }
 \examples{
 d <- exponential_distrib()

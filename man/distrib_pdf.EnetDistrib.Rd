@@ -10,8 +10,8 @@
 
 \item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}, each a
 numeric vector of length 1 or of the length of \code{y}. \code{lambda} must be
-strictly positive and \code{alpha} strictly inside \eqn{(0, 1)}; at either
-endpoint the constant's argument is not defined and the value is \code{NaN}.}
+strictly positive and \code{alpha} strictly inside \eqn{(0, 1)}; the generic
+signals an error for a value outside these domains.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
 Defaults to \code{FALSE}.}
@@ -34,7 +34,7 @@ The constant goes through \eqn{\log M}. Written directly, \eqn{\log M(x)}
 adds \eqn{x^2/2} to a log-probability of the same size and opposite sign,
 so it loses a digit for every factor of ten in \eqn{x}; past \eqn{x = 30}
 the asymptotic series is used instead. At \eqn{\alpha = 1 - 10^{-12}} the
-argument reaches \eqn{10^6}, which an ordinary elastic net does.
+argument reaches \eqn{10^6}.
 }
 \section{Notation}{
 

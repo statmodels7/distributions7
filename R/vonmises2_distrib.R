@@ -13,10 +13,11 @@ NULL
 #'
 #' @description
 #' The S7 class of the von Mises family written in its mean direction
-#' \eqn{\mu} and its **mean resultant length** \eqn{\rho \in (0, 1)}, the
-#' quantity circular statistics reports and one minus the circular variance.
-#' It inherits from `continuous_distrib`; the nine methods listed below are
-#' registered on it directly.
+#' \eqn{\mu} and its **mean resultant length** \eqn{\rho \in (0, 1)}, which is
+#' the quantity that is conventionally reported in circular statistics and
+#' equals one minus the circular variance. It inherits from
+#' `continuous_distrib`; the methods listed below are registered on it
+#' directly.
 #'
 #' The concentration of [vonmises1_distrib()] is recovered as
 #' \eqn{\kappa = A^{-1}(\rho)} with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)},
@@ -26,8 +27,8 @@ NULL
 #'
 #' Build one with [vonmises2_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
-#' which takes the parent's properties and validates none of the relationships
-#' between them.
+#' which takes the parent's properties; the validator of `distrib` checks
+#' them, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -46,21 +47,34 @@ NULL
 #'   [distrib_expected_hessian.VonMises2Distrib()] for the information.
 #'
 #' @section Methods:
-#' Registered on this class:
-#'   [`distrib_cdf()`][distrib_cdf.VonMises2Distrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.VonMises2Distrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.VonMises2Distrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.VonMises2Distrib],
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.VonMises2Distrib],
+#'   [`distrib_cdf()`][distrib_cdf.VonMises2Distrib] and
+#'   [`distrib_rng()`][distrib_rng.VonMises2Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.VonMises2Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.VonMises2Distrib],
-#'   [`distrib_pdf()`][distrib_pdf.VonMises2Distrib],
-#'   [`distrib_rng()`][distrib_rng.VonMises2Distrib],
-#'   [`mean()`][mean.VonMises2Distrib].
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.VonMises2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.VonMises2Distrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.VonMises2Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.VonMises2Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.VonMises2Distrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.VonMises2Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.VonMises2Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.VonMises2Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.VonMises2Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.VonMises2Distrib];
+#' - the derivatives of the distribution function: [distrib_grad_cdf()],
+#'   [distrib_hess_cdf()],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.VonMises2Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.VonMises2Distrib];
+#' - the moments: [`mean()`][mean.VonMises2Distrib].
 #'
-#' The **quantile** and the response derivatives come from
-#' [continuous_distrib()], the quantile by root finding on this class's own
-#' distribution function. The remaining moments come from [variance()] and its
-#' siblings, numerically, and are the ordinary moments of \eqn{Y} as a number.
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- vonmises2_distrib()
@@ -167,8 +181,9 @@ S7::method(distrib_pdf, VonMises2Distrib) <- function(distrib, y, theta,
 #' set.seed(1)
 #' z <- distrib_rng(d2, 3e5, th)
 #'
-#' # This parametrization is the one a sample reads back directly: the mean
-#' # resultant length of the draws is rho, and the circular mean is mu.
+#' # In this parametrization both parameters are computed directly from a
+#' # sample: the mean resultant length of the draws estimates rho, and the
+#' # circular mean estimates mu.
 #' c(resultant = sqrt(mean(cos(z))^2 + mean(sin(z))^2), rho = 0.7)
 #' c(circular_mean = atan2(mean(sin(z)), mean(cos(z))), mu = 0.5)
 S7::method(distrib_rng, VonMises2Distrib) <- function(distrib, n, theta, ...) {
@@ -263,8 +278,8 @@ S7::method(distrib_gradient, VonMises2Distrib) <- function(distrib, y, theta,
 #' by a compiled kernel.
 #'
 #' Unlike in the concentration parametrization, the pure second derivative is
-#' **not** free of the data: the term in \eqn{\kappa''} carries
-#' \eqn{\cos(y-\mu)}, which the map's curvature brings in.
+#' **not** free of the data: the term in \eqn{\kappa''}, the curvature of
+#' the map, multiplies \eqn{\cos(y-\mu)}.
 #'
 #' @param distrib A `VonMises2Distrib` object, from [vonmises2_distrib()].
 #' @param y A numeric vector of angles in \eqn{[-\pi, \pi)}.
@@ -326,13 +341,11 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #'       \mathbb{E}[\ell^{(\mu\rho)}] = 0, \qquad
 #'       \mathbb{E}[\ell^{(\rho\rho)}] = -\kappa'(\rho) = -\dfrac{1}{A'(\kappa)}.}
 #'
-#' The last equality is the reparametrization identity: the information in
-#' \eqn{\kappa} is \eqn{A'(\kappa)} and \eqn{\kappa'(\rho) = 1/A'(\kappa)}, so
-#' \eqn{A'(\kappa)\{\kappa'(\rho)\}^2 = 1/A'(\kappa)}. The information in
-#' \eqn{\rho} is therefore the **reciprocal** of the information in
-#' \eqn{\kappa}, which a one-to-one reparametrization of a single parameter
-#' whose Jacobian is that reciprocal must give. The two parameters stay
-#' orthogonal.
+#' The last equality follows from the transformation rule for the information.
+#' The information in \eqn{\kappa} is \eqn{A'(\kappa)} and
+#' \eqn{\kappa'(\rho) = 1/A'(\kappa)}, so the information in \eqn{\rho} is
+#' \eqn{A'(\kappa)\{\kappa'(\rho)\}^2 = 1/A'(\kappa)}, the **reciprocal** of the
+#' information in \eqn{\kappa}. The two parameters remain orthogonal.
 #'
 #' `approx` and `nsim` are ignored, the expectation being exact.
 #'
@@ -438,9 +451,9 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' parametrization uses.
 #'
 #' The concentration \eqn{\kappa} of [vonmises1_distrib()] is unbounded and
-#' hard to read. The resultant length is bounded, is the quantity circular
-#' statistics reports, and is one minus the circular variance; a sample reads
-#' it back directly as
+#' hard to interpret. The resultant length is bounded, is the quantity that is
+#' conventionally reported in circular statistics, and equals one minus the
+#' circular variance; it is computed from a sample as
 #' `sqrt(mean(cos(z))^2 + mean(sin(z))^2)`.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean direction
@@ -462,12 +475,13 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' strictly increasing bijection from \eqn{(0, \infty)} onto \eqn{(0, 1)}.
 #'
 #' **Its inverse has no closed form**, which is why this is a family of its own
-#' and not a [reparametrize()] of the other. \eqn{\kappa} is obtained by root
-#' finding on \eqn{\log\kappa}, and its four derivatives come from the inverse
-#' function rule applied to \eqn{A'} through \eqn{A^{(4)}}, which the Bessel
-#' recurrences give from the same two evaluations \eqn{A} already needs.
+#' and not a [reparametrize()] of the other. numericals7 obtains \eqn{\kappa}
+#' by Newton's method on \eqn{\kappa}, and its four derivatives come from the
+#' inverse function rule applied to \eqn{A'} through \eqn{A^{(4)}}, which
+#' numericals7 evaluates from a power series at small \eqn{\kappa}, from the
+#' Bessel identities in extended precision, or from an asymptotic series.
 #'
-#' The map is steep near \eqn{\rho = 1}: measured,
+#' The map is steep near \eqn{\rho = 1}:
 #' \eqn{\mathrm{d}\kappa/\mathrm{d}\rho} is 2.00 at \eqn{\rho = 0.01}, 3.14 at
 #' 0.5, 199 at 0.95 and \eqn{5.0\times10^{5}} at 0.999. A fit whose data are
 #' nearly all in one direction is therefore far better conditioned in
@@ -494,8 +508,8 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' [mean.VonMises2Distrib()] returns the ordinary expectation of \eqn{Y} on
 #' \eqn{[-\pi, \pi)}, which differs from \eqn{\mu} whenever \eqn{\mu \ne 0};
 #' [vonmises1_distrib()] discusses the same distinction. What this
-#' parametrization buys is that the **second** parameter is a quantity a sample
-#' reads back directly, which the concentration is not.
+#' parametrization offers is that the **second** parameter can be computed
+#' directly from a sample, which is not the case for the concentration.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean
@@ -598,9 +612,7 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #'   vector of length 1 or of the length of `y`. `rho` must lie in
 #'   \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method. **Note the
-#'   argument order**: `scale` precedes `expected` here, so both are best given
-#'   by name.
+#'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
@@ -640,8 +652,8 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' dn <- distrib_hessian(d2, y, list(mu = 0.5, rho = 0.7 - eps))$rho_rho
 #' all.equal((up - dn) / (2 * eps), d3$rho_rho_rho, tolerance = 1e-5)
 #'
-#' # Unlike the concentration parametrization, no component is exactly zero:
-#' # the map's higher derivatives bring the data into all four.
+#' # Unlike the concentration parametrization, no component is exactly zero,
+#' # because kappa is a nonlinear function of rho.
 #' vapply(d3, function(v) v[1], numeric(1))
 S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
@@ -677,9 +689,7 @@ S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. `rho` must lie in
 #'   \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method. **Note the
-#'   argument order**: `scale` precedes `expected` here, so both are best given
-#'   by name.
+#'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
@@ -742,8 +752,10 @@ S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
 #' at that concentration.
 #'
 #' What it replaces is the base class's quadrature, one integration per
-#' observation. See [vm_cdf()] for the series, its measured term count and the
-#' blocking that keeps the intermediate small.
+#' observation. See [vm_cdf()] for the series, its number of terms and the
+#' blocking that keeps the intermediate small. Where the requested tail is
+#' below \eqn{10^{-10}}, the resolution of the series, it comes from a
+#' quadrature of the tail on the log scale ([vm_cdf_tail()]).
 #'
 #' @param distrib A `VonMises2Distrib` object, from [vonmises2_distrib()].
 #' @param q A numeric vector of angles. Below \eqn{-\pi} the value is 0 and at
@@ -753,7 +765,7 @@ S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
 #'   \eqn{(-\pi, \pi)} and `rho` in \eqn{(0, 1)}.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default,
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are
-#'   \eqn{P(Y > q)}, formed as \eqn{1 - F(q)}.
+#'   \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.

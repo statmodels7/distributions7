@@ -50,51 +50,71 @@ The S7 class of the skew normal written in its first three moments: the mean
 the map of \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}, and the only thing that differs is which three
 numbers name a member of it.
 
-The parametrization is worth having for one property: its expected
-information is non-singular at \eqn{\gamma_1 = 0}, where the direct
-parametrization's loses a rank. Measured at \eqn{\mu = 0}, \eqn{\sigma = 1},
-the information's eigenvalues tend to 2, 1 and \eqn{1/6} as the skewness
+The expected information of this parametrization is non-singular at
+\eqn{\gamma_1 = 0}, where the direct parametrization's loses a rank; at
+\eqn{\sigma = 1} its eigenvalues tend to 2, 1 and \eqn{1/6} as the skewness
 goes to zero.
 
 Build one with \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}, which supplies the three link
 functions and bounds the skewness at \eqn{\pm 0.9952717}. This page
-documents the raw S7 constructor, which validates none of the relationships
-between its properties.
+documents the raw S7 constructor, which takes the parent's properties; the
+validator of \code{distrib} checks them, and the constructor adds no check of
+its own.
 }
 \section{Methods}{
 
-The probability functions delegate to \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} at the implied
-direct parameters:
-\code{\link[=distrib_pdf.SkewNormal2Distrib]{distrib_pdf()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.SkewNormal2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.SkewNormal2Distrib]{distrib_cdf()}},
-\code{\link[=distrib_quantile.SkewNormal2Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.SkewNormal2Distrib]{distrib_rng()}}.
-
-The derivatives in the parameters and in the response come from compiled
-kernels of the family's own, one per order and surface:
-\code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient()}} to
-\code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_deriv5()}},
-\code{\link[=distrib_grad_y.SkewNormal2Distrib]{distrib_grad_y()}} and the mixed
-derivatives. The expected information and its derivatives are series in
-\eqn{\gamma_1^{1/3}} near zero skewness and quadratures elsewhere:
-\code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian()}}.
-
-Three of the four moments are a parameter read back:
-\code{\link[=mean.SkewNormal2Distrib]{mean()}},
+\code{\link[=distrib_quantile.SkewNormal2Distrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.SkewNormal2Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
+\code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.SkewNormal2Distrib]{distrib_hessian()}},
+\code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.SkewNormal2Distrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.SkewNormal2Distrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.SkewNormal2Distrib]{distrib_deriv5()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.SkewNormal2Distrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.SkewNormal2Distrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.SkewNormal2Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.SkewNormal2Distrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.SkewNormal2Distrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.SkewNormal2Distrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.SkewNormal2Distrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.SkewNormal2Distrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross3_y.SkewNormal2Distrib]{distrib_cross3_y()}},
+\code{\link[=distrib_grad_y_hess.SkewNormal2Distrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.SkewNormal2Distrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.SkewNormal2Distrib]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf.SkewNormal2Distrib]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.SkewNormal2Distrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.SkewNormal2Distrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.SkewNormal2Distrib]{mean()}},
 \code{\link[=variance.SkewNormal2Distrib]{variance()}},
-\code{\link[=skewness.SkewNormal2Distrib]{skewness()}}. The fourth,
-\code{\link[=kurtosis.SkewNormal2Distrib]{kurtosis()}}, follows from the other three
-and is the parent's at the implied direct parameters.
+\code{\link[=skewness.SkewNormal2Distrib]{skewness()}} and
+\code{\link[=kurtosis.SkewNormal2Distrib]{kurtosis()}};
+\item the fitting helpers: \code{\link[=expected_hessian_costly]{expected_hessian_costly()}}.
+}
+
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \section{The point at zero skewness}{
 
 The map runs through a cube root, so \eqn{\partial\alpha/\partial\gamma_1}
 is unbounded at \eqn{\gamma_1 = 0}. The score has a finite limit there and
-is returned, and so is the expected information; the observed derivatives
-of order two and more in \eqn{\gamma_1} grow like \eqn{\gamma_1^{-2/3}}, and
-they and the derivatives of the expected information are rejected at
-\eqn{\gamma_1 = 0} exactly. The density and the distribution function equal
+is returned, and so is the expected information. A derivative of the
+log-density with \eqn{k \ge 2} differentiations in \eqn{\gamma_1} diverges
+like \eqn{\gamma_1^{4/3-k}} (\eqn{\gamma_1^{-2/3}} for \eqn{k = 2}). The
+methods of order two and more, and the derivatives of the expected
+information, signal an error at \eqn{\gamma_1 = 0} exactly. The density and the distribution function equal
 the Gaussian's there.
 }
 

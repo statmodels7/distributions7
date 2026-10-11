@@ -47,10 +47,11 @@ domains \eqn{(-\pi, \pi)} and \eqn{(0, 1)}.
 }
 \description{
 The S7 class of the von Mises family written in its mean direction
-\eqn{\mu} and its \strong{mean resultant length} \eqn{\rho \in (0, 1)}, the
-quantity circular statistics reports and one minus the circular variance.
-It inherits from \code{continuous_distrib}; the nine methods listed below are
-registered on it directly.
+\eqn{\mu} and its \strong{mean resultant length} \eqn{\rho \in (0, 1)}, which is
+the quantity that is conventionally reported in circular statistics and
+equals one minus the circular variance. It inherits from
+\code{continuous_distrib}; the methods listed below are registered on it
+directly.
 
 The concentration of \code{\link[=vonmises1_distrib]{vonmises1_distrib()}} is recovered as
 \eqn{\kappa = A^{-1}(\rho)} with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)},
@@ -60,26 +61,41 @@ here instead of through \code{\link[=reparametrize]{reparametrize()}}.
 
 Build one with \code{\link[=vonmises2_distrib]{vonmises2_distrib()}}, which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,
-which takes the parent's properties and validates none of the relationships
-between them.
+which takes the parent's properties; the validator of \code{distrib} checks
+them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class:
-\code{\link[=distrib_cdf.VonMises2Distrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.VonMises2Distrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.VonMises2Distrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.VonMises2Distrib]{distrib_expected_hessian()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.VonMises2Distrib]{distrib_pdf()}},
+\code{\link[=distrib_cdf.VonMises2Distrib]{distrib_cdf()}} and
+\code{\link[=distrib_rng.VonMises2Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.VonMises2Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.VonMises2Distrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.VonMises2Distrib]{distrib_pdf()}},
-\code{\link[=distrib_rng.VonMises2Distrib]{distrib_rng()}},
-\code{\link[=mean.VonMises2Distrib]{mean()}}.
+\code{\link[=distrib_expected_hessian.VonMises2Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.VonMises2Distrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.VonMises2Distrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.VonMises2Distrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.VonMises2Distrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.VonMises2Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.VonMises2Distrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.VonMises2Distrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.VonMises2Distrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.VonMises2Distrib]{distrib_cross_y()}};
+\item the derivatives of the distribution function: \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.VonMises2Distrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.VonMises2Distrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.VonMises2Distrib]{mean()}}.
+}
 
-The \strong{quantile} and the response derivatives come from
-\code{\link[=continuous_distrib]{continuous_distrib()}}, the quantile by root finding on this class's own
-distribution function. The remaining moments come from \code{\link[=variance]{variance()}} and its
-siblings, numerically, and are the ordinary moments of \eqn{Y} as a number.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{

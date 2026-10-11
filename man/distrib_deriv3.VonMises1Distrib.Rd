@@ -14,9 +14,7 @@ vector of length 1 or of the length of \code{y}. \code{kappa} must be strictly
 positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method. \strong{Note the
-argument order}: \code{scale} precedes \code{expected} here, unlike on most
-families, so both are best given by name.}
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
 model is returned in place of the value at the data, computed numerically.

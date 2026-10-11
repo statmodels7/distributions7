@@ -42,8 +42,8 @@ With \eqn{\ell_y = \partial \log f/\partial y},
       \frac{\partial^2 F}{\partial \sigma^2}
         = f\left(z^2 \ell_y + \frac{2z}{\sigma}\right).}
 
-The Gaussian, the logistic, the Cauchy, the Laplace and the Gumbel
-register these bodies unchanged, and they are the families most used in
+The Gaussian, the logistic, the Laplace and the Gumbel register these
+bodies unchanged, and they are the families most used in
 censored regression. The Student t, pseudo-Huber and skew t families
 compute their location and scale components by the same formulas inside
 the compiled quadrature of \code{\link[=compiled_cdf]{compiled_cdf()}}.

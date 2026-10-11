@@ -13,12 +13,11 @@ vector of length 1 or of the length of \code{q}. A component of length 1 is
 recycled. \code{sigma} must be strictly positive.}
 
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
-probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)},
-computed as \eqn{1 - F}.}
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are
+\eqn{P(Y > q)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
-probability is returned, taken after the probability itself is formed.
-Defaults to \code{FALSE}.}
+probability is returned. Defaults to \code{FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -34,12 +33,15 @@ side of the location:
   \tfrac{1}{2}\exp\!\left(\dfrac{q-\mu}{\sigma}\right), & q < \mu,\\[4pt]
   1 - \tfrac{1}{2}\exp\!\left(-\dfrac{q-\mu}{\sigma}\right), & q \ge \mu.
 \end{cases}}
-The branch is selected per observation, and both arms are continuous at
-\eqn{q = \mu}, where the value is \eqn{1/2}. With \code{lower.tail = FALSE} the
-complement is taken after the branch, and with \code{log.p = TRUE} the logarithm
-of the result is taken; neither is computed in a way that avoids
-cancellation, so a probability that has already underflowed is not
-recovered.
+Both arms are continuous at \eqn{q = \mu}, where the value is \eqn{1/2}.
+The method computes the logarithm of each tail at the standardized
+residual \eqn{r = (q-\mu)/\sigma}: the tail on the far side of the
+location is \eqn{\log(1/2) - |r|}, and the tail on the near side is
+\eqn{\log(1 - e^{-|r|}/2)}, computed with \code{log1p()}. The requested tail is
+returned on the log scale or exponentiated, so neither \code{lower.tail = FALSE}
+nor \code{log.p = TRUE} subtracts from one, and a tail probability far below
+machine epsilon, or its logarithm, is returned accurately. The helper is
+\code{\link[=laplace_cdf_tails]{laplace_cdf_tails()}}.
 }
 \examples{
 d <- laplace_distrib()
@@ -56,6 +58,11 @@ all.equal(distrib_cdf(d, q, th),
 
 # Symmetric: F(mu - a) + F(mu + a) = 1.
 distrib_cdf(d, 0.4 - 2, th) + distrib_cdf(d, 0.4 + 2, th)
+
+# Fifty scale units out, the upper tail is exp(-50)/2, and its logarithm
+# is exact as well.
+distrib_cdf(d, 0.4 + 50 * 1.5, th, lower.tail = FALSE)
+distrib_cdf(d, 0.4 + 50 * 1.5, th, lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
 \code{\link[=distrib_quantile.LaplaceDistrib]{distrib_quantile.LaplaceDistrib()}} for the inverse,

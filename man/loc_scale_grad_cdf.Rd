@@ -29,9 +29,9 @@ length of \code{q} recycled against \code{theta}.
 }
 \description{
 The \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} body the location-scale families share:
-\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} at order 1, put on the requested tail and scale by
-\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}. The Gaussian, the logistic, the Cauchy, the Laplace and
-the Gumbel register this function itself, so their pages document one piece
+the factors of \code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} at order 1, put on the requested
+tail and scale by \code{\link[=loc_scale_cdf_route]{loc_scale_cdf_route()}}. The Gaussian, the logistic, the
+Laplace and the Gumbel register this function itself, so their pages document one piece
 of arithmetic.
 }
 \seealso{

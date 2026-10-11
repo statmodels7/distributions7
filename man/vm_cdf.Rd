@@ -8,13 +8,15 @@ vm_cdf(y, mu, kappa)
 }
 \arguments{
 \item{y}{A numeric vector of quantiles. Below \eqn{-\pi} the value is 0 and
-at or above \eqn{\pi} it is 1. \code{NA} and non-finite values give \code{NA}.}
+at or above \eqn{\pi} it is 1, so that \code{-Inf} gives 0 and \code{Inf} gives 1.
+\code{NA} and \code{NaN} give \code{NA}.}
 
 \item{mu}{A numeric vector of mean directions, recycled to the length of
 \code{y}.}
 
 \item{kappa}{A numeric vector of concentrations, recycled to the length of
-\code{y}. A value at or below zero gives \code{NA}.}
+\code{y}. A value at or below zero gives \code{NA} for an angle inside the
+support.}
 }
 \value{
 A numeric vector of probabilities in \eqn{[0, 1]}, of the recycled
@@ -26,9 +28,8 @@ density, integrated term by term, in place of a quadrature.
 }
 \section{Why a series}{
 The density has no elementary antiderivative, and the base class integrates
-it numerically: one quadrature per observation, which measured 4.5 seconds
-at ten thousand points and made this family a thousand times dearer than any
-other. The series is rapidly convergent. From
+it numerically, with one quadrature per observation. The series converges
+rapidly. From
 \eqn{e^{\kappa\cos\theta} = I_0(\kappa) + 2\sum_{j\ge1} I_j(\kappa)
 \cos(j\theta)}, integrating from \eqn{-\pi} to \eqn{x},
 \deqn{F(x) = \frac{x + \pi}{2\pi} + \frac{1}{\pi I_0(\kappa)}
@@ -45,17 +46,18 @@ loop runs over the series index and not over the data. The series is cheap
 for that reason: \eqn{n} quadratures become a few dozen vectorized steps.
 }
 
-\section{How many terms, measured}{
-Compared against the same series at four times the length, machine precision
-is reached at 10 terms at \eqn{\kappa = 0.5}, 26 at 10, 90 at 100, 242 at
-1000 and 404 at 3000, always under \eqn{8.5\sqrt{\kappa} + 10}, which is the
-rule used, with a floor of 20.
+\section{Number of terms}{
+The series is truncated at
+\eqn{\max\{20, \lceil 8.5\sqrt{\kappa}\rceil + 10\}} terms, with \eqn{\kappa}
+the largest concentration among the observations evaluated, which exceeds
+the number of terms at which the partial sums agree to double precision.
 
 The sum is accumulated over blocks of observations, because the natural
 expression forms an \eqn{n \times m} matrix, which at a hundred thousand
 points and a concentration of a hundred is already hundreds of megabytes.
-The result is clamped to \eqn{[0, 1]}: the series is exact and its rounding
-is not, and a distribution function cannot leave its own interval.
+The result is clamped to \eqn{[0, 1]} to remove the rounding error of the
+partial sums, whose absolute error is about \eqn{10^{-16}}; \code{\link[=vm_cdf_tail]{vm_cdf_tail()}}
+handles the tails below that resolution.
 }
 
 \seealso{

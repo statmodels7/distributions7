@@ -44,7 +44,7 @@ all.equal(distrib_cdf(d, c(1, 4, 9), th), pchisq(c(1, 4, 9), df = 4))
 # The two tails sum to one.
 distrib_cdf(d, 9, th) + distrib_cdf(d, 9, th, lower.tail = FALSE)
 
-# Right skewed, so less than half the mass lies below the mean.
+# Right skewed, so more than half the mass lies below the mean.
 distrib_cdf(d, 4, th)
 
 # Far in the upper tail the probability underflows and its log does not.
@@ -54,7 +54,8 @@ distrib_cdf(d, 2000, th, lower.tail = FALSE, log.p = TRUE)
 \seealso{
 \code{\link[=distrib_quantile.ChisqDistrib]{distrib_quantile.ChisqDistrib()}} for the inverse,
 \code{\link[=distrib_pdf.ChisqDistrib]{distrib_pdf.ChisqDistrib()}} for the density, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the
-derivatives of this function in the parameter, which the chi-squared takes
-by finite difference because the derivative of an incomplete gamma in its
-shape is hypergeometric, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
+derivatives of this function in the parameter, which the chi-squared
+computes by a compiled quadrature of the derivatives of the density
+(\code{\link[=compiled_cdf]{compiled_cdf()}}), the derivative of an incomplete gamma in its shape
+being hypergeometric; and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

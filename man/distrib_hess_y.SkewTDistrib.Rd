@@ -19,9 +19,10 @@ one sign.
 }
 \description{
 Computes \eqn{\partial^2\ell/\partial y^2 = D'/\sigma^2}, with
-\eqn{D' = A' + Q'B^2 + QB'} in the notation of \code{\link[=skewt_pieces]{skewt_pieces()}}. It is the
-same expression as \eqn{\partial^2\ell/\partial\mu^2}: two signs cancel
-where one did not at first order.
+\eqn{D' = A' + Q'B^2 + QB'} in the notation of \code{\link[=skewt_pieces]{skewt_pieces()}}. It equals
+\eqn{\partial^2\ell/\partial\mu^2}, because the response and the location
+enter the density through \eqn{y - \mu} and the sign of the first
+derivative disappears in the second.
 
 Unlike the skew normal's, the value \strong{changes sign}. The Student
 \eqn{t}'s curvature is positive wherever \eqn{|z| > \sqrt{\nu}}, so the

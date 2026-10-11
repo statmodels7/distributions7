@@ -51,43 +51,65 @@ high threshold, parametrized by a scale \eqn{\sigma > 0} and a shape
 \eqn{\xi = 0} it is the exponential, reached by a series, so a fit may move
 the shape through zero.
 
-It is the first family in the package whose \strong{support moves with its
-parameters}: for \eqn{\xi < 0} it ends at \eqn{-\sigma/\xi}. That is what
-makes it non-regular, and it is why its expected information exists only
+For \eqn{\xi < 0} the support ends at \eqn{-\sigma/\xi}, so it \strong{moves with
+the parameters}. That is what makes the family non-regular, and it is why its expected information exists only
 above \eqn{\xi = -1/2}.
 
 Build one with \code{\link[=gpd_distrib]{gpd_distrib()}}, which supplies the two link functions. This
-page documents the raw S7 constructor, which validates none of the
-relationships between its properties.
+page documents the raw S7 constructor, which takes the parent's
+properties; the validator of \code{distrib} checks them, and the constructor
+adds no check of its own.
 }
 \section{Methods}{
 
-Registered in this file, all compiled apart from the first four:
-\code{\link[=distrib_pdf.GPDDistrib]{distrib_pdf()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.GPDDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.GPDDistrib]{distrib_cdf()}},
-\code{\link[=distrib_quantile.GPDDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.GPDDistrib]{distrib_rng()}},
+\code{\link[=distrib_quantile.GPDDistrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.GPDDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.GPDDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.GPDDistrib]{distrib_hessian()}},
-\code{\link[=distrib_expected_hessian.GPDDistrib]{distrib_expected_hessian()}}.
-
-Registered elsewhere, compiled, in \code{gpd_higher.R}: the orders three to five
-(\code{\link[=distrib_deriv3.GPDDistrib]{distrib_deriv3()}}), the derivatives in the
-response (\code{\link[=distrib_grad_y.GPDDistrib]{distrib_grad_y()}}) and those of the
-distribution function (\code{\link[=distrib_grad_cdf.GPDDistrib]{distrib_grad_cdf()}});
-the derivatives of the expected information in \code{dexpected_families.R}; and
-the four moments in \code{moments.R}.
+\code{\link[=distrib_expected_hessian.GPDDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.GPDDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.GPDDistrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.GPDDistrib]{distrib_deriv5()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.GPDDistrib]{distrib_dexpected_hessian()}} and
+\code{\link[=distrib_d2expected_hessian.GPDDistrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.GPDDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.GPDDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.GPDDistrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.GPDDistrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.GPDDistrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.GPDDistrib]{distrib_cross2_y()}},
+\code{\link[=distrib_grad_y_hess.GPDDistrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.GPDDistrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.GPDDistrib]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf.GPDDistrib]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.GPDDistrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.GPDDistrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.GPDDistrib]{mean()}},
+\code{\link[=variance.GPDDistrib]{variance()}}, \code{\link[=skewness.GPDDistrib]{skewness()}}
+and \code{\link[=kurtosis.GPDDistrib]{kurtosis()}}.
 }
 
-\section{What the moving endpoint costs}{
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+}
+
+\section{Support depending on the parameters}{
 
 The derivatives are correct as derivatives of the log-density at every
 admissible point, whatever the sign of \eqn{\xi}. What is not automatic is
 the license to differentiate under the integral sign, which the Bartlett
 identities rest on. The expected information exists for \eqn{\xi > -1/2}
-and is Smith's closed form; at or below that it does not exist and
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} returns \code{NA}, along with the classical
-asymptotics of the maximum likelihood estimator.
+and is Smith's closed form. At or below that value it does not exist, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} returns \code{NA}; the classical asymptotics of the
+maximum likelihood estimator do not hold either.
 }
 
 \examples{

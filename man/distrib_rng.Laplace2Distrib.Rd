@@ -21,9 +21,9 @@ A numeric vector of \code{n} draws.
 \description{
 Draws \code{n} independent Laplace variates by \strong{inverse transform}: \code{n} uniform
 variates from \code{\link[stats:Uniform]{stats::runif()}} are passed through
-\code{\link[=distrib_quantile.Laplace2Distrib]{distrib_quantile.Laplace2Distrib()}}. The quantile function is elementary
-and exact, so this is cheaper and more accurate than the generalized
-ratio-of-uniforms fallback the base class supplies.
+\code{\link[=distrib_quantile.Laplace2Distrib]{distrib_quantile.Laplace2Distrib()}}. The base class draws the same way for
+a family with its own quantile method, so the method gives the draws that
+the base class would give.
 }
 \examples{
 d <- laplace2_distrib()

@@ -15,8 +15,8 @@ numeric vector of length 1 or of the length of \code{p}.}
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
 \eqn{P(Y \le q)}; when \code{FALSE} it is the survival probability.}
 
-\item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is given as a logarithm
-and is exponentiated first. Defaults to \code{FALSE}.}
+\item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is given as a logarithm.
+Defaults to \code{FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -31,9 +31,12 @@ being a truncated Gaussian. Below the median the quantile is
 reflection. Nothing is inverted by root finding, so
 \code{\link[=distrib_rng.EnetDistrib]{distrib_rng.EnetDistrib()}} can use the inverse transform.
 
-The \code{qnorm} call is made on the \strong{log} scale, its argument being
-\eqn{\log(2p) + \log\Phi(-x)}, because \eqn{\Phi(-x)} underflows to zero
-past \eqn{x = 38}.
+The probability is first turned into the logarithms of both tails, without
+forming \eqn{1 - p} or exponentiating a logarithm, and each half is
+inverted from the logarithm of its own tail. The \code{qnorm} call is made on
+the \strong{log} scale, its argument being \eqn{\log P + \log 2 + \log\Phi(-x)},
+because \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \approx 38.5}. A
+probability outside \eqn{[0, 1]} gives \code{NaN}.
 }
 \examples{
 d <- enet_distrib()

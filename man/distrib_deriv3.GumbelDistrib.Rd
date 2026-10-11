@@ -45,8 +45,9 @@ polynomial in \eqn{z} and in \eqn{z^j w} divided by a power of \eqn{\sigma}.
 With \code{expected = TRUE} the expectations are returned, also in closed form.
 They rest on \eqn{w} being standard exponential under the model, which makes
 \eqn{\mathbb{E}[z^k w] = (-1)^k \Gamma^{(k)}(2)} and
-\eqn{\mathbb{E}[z] = \gamma}: every expectation the family needs is a
-derivative of \eqn{\Gamma} at 2, assembled from polygamma functions there.
+\eqn{\mathbb{E}[z] = \gamma}: every expectation of the family is a
+derivative of \eqn{\Gamma} at 1 or at 2, assembled from polygamma
+functions there.
 Since both routes are closed form, \code{approx} and \code{nsim} are ignored.
 }
 \section{Notation}{

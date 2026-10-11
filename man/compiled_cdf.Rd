@@ -108,8 +108,9 @@ components are \eqn{-f}, \eqn{-z f} and, at second order, \eqn{-f s_\mu},
 mixed components with a shape \eqn{k} are \eqn{-f s_k} and
 \eqn{-z f s_k}, all at \eqn{q}. The distribution function itself is
 \code{pt()}, \code{pgamma()}, \code{pchisq()} or \code{pbeta()} where the family has one, and
-the same integral of the density otherwise. The tail and the log scale
-are applied as for every family, by the conversion of the lower-tail
-derivatives.
+the same integral of the density otherwise; with \code{log.p = TRUE} its
+logarithm is formed by \code{compiled_log_cdf()}, so that it stays finite in
+either tail. The tail and the log scale of the derivatives are applied as
+for every family, by the conversion of the lower-tail derivatives.
 }
 \keyword{internal}

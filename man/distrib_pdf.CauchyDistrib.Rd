@@ -11,8 +11,8 @@ support, so no value is rejected.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is
-recycled. \code{sigma} must be strictly positive; a zero or negative value
-gives \code{NaN} with a warning from \code{\link[stats:Cauchy]{stats::dcauchy()}}.}
+recycled. \code{sigma} must be strictly positive; the generic signals an
+error for a zero or negative value before the method is called.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
 Defaults to \code{FALSE}.}
@@ -26,15 +26,18 @@ A numeric vector of densities, of length
 \description{
 Computes the Cauchy density
 \deqn{f(y; \mu, \sigma) = \dfrac{1}{\pi \sigma \left[1 + \left(\dfrac{y-\mu}{\sigma}\right)^2\right]}}
-by calling \code{\link[stats:Cauchy]{stats::dcauchy()}} at \code{location = mu} and \code{scale = sigma}. The
-density decays like \eqn{y^{-2}}, so it stays representable far out where a
-Gaussian of the same scale has underflowed to zero.
+on the log scale, as \eqn{-\log\pi - \log\sigma - \log(1 + z^2)} with
+\eqn{z = (y-\mu)/\sigma}. Where \eqn{|z| > 10^{150}} the last term is
+written as \eqn{2\log|z| + \log(1 + z^{-2})}, so the log-density stays
+finite where \eqn{z^2} overflows. The density decays like \eqn{y^{-2}}, so
+it stays representable far out where a Gaussian of the same scale has
+underflowed to zero.
 }
 \examples{
 d <- cauchy_distrib()
 y <- c(-1.2, 0.3, 2.5)
 
-# The method is stats::dcauchy at this parametrization.
+# The same values as stats::dcauchy at this parametrization.
 all.equal(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5)),
           dcauchy(y, location = 0.4, scale = 1.5))
 
@@ -45,6 +48,9 @@ distrib_pdf(d, y, list(mu = c(0, 1, 2), sigma = c(1, 1.5, 2)))
 # where the Gaussian of the same scale has underflowed.
 distrib_pdf(d, 40, list(mu = 0, sigma = 1))
 distrib_pdf(gaussian1_distrib(), 40, list(mu = 0, sigma = 1))
+
+# The log-density is finite at a residual whose square overflows.
+distrib_pdf(d, 1e160, list(mu = 0, sigma = 1), log = TRUE)
 }
 \seealso{
 \code{\link[=distrib_cdf.CauchyDistrib]{distrib_cdf.CauchyDistrib()}} for the distribution function,

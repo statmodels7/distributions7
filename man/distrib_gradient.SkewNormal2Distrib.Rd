@@ -14,8 +14,9 @@
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}.}
 
-\item{scale}{\code{"parameter"} or \code{"link"}; the link scale is applied by the
-generic (by \code{\link[=deriv5_scale]{deriv5_scale()}} at the fifth order).}
+\item{scale}{\code{"parameter"} or \code{"link"}. At orders one to four the generic
+applies the link scale after dispatch; the fifth-order method applies it
+itself, through \code{\link[=deriv5_scale]{deriv5_scale()}}.}
 
 \item{expected}{Logical; for orders three and four, whether the expected
 derivative is returned, by \code{\link[=expected_derivative]{expected_derivative()}}.}
@@ -39,7 +40,7 @@ of orders one to five, each from its own compiled kernel.
 \details{
 With \eqn{w = (y - \mu)/\sigma}, \eqn{c = (4 - \pi)/2} and
 \eqn{r = \mathrm{sign}(\gamma_1)(|\gamma_1|/c)^{1/3}}, the log-density is
-\deqn{\ell = -\log\sigma - \tfrac12\log(1 + r^2) - \tfrac12 z^2 + \log\Phi(x),
+\deqn{\ell = \tfrac12\log\frac{2}{\pi} - \log\sigma - \tfrac12\log(1 + r^2) - \tfrac12 z^2 + \log\Phi(x),
   \quad z = \frac{w + r}{\sqrt{1 + r^2}}, \quad
   x = \frac{r\,z}{\sqrt{b^2 - (1 - b^2) r^2}},}
 with \eqn{b = \sqrt{2/\pi}}, and a derivative in \eqn{\gamma_1} is
@@ -50,7 +51,15 @@ derived offline. Their closed forms in \eqn{x}, \eqn{w}, \eqn{r} and
 \eqn{\gamma_1 \to 0}, so where \eqn{|x| < 0.4} and \eqn{|r| < 0.4} the
 kernels take the derivatives in \eqn{\gamma_1} from the series
 \eqn{F = \sum_{n \ge 3} F_n(w) r^n}, whose coefficients are polynomials in
-\eqn{w} computed offline at 60 digits.
+\eqn{w} computed offline at 60 digits. Far below the step of the skewing
+function, where \eqn{x < -1} and outside the region of the series, the
+closed forms in \eqn{\phi(x)/\Phi(x)} cancel as well, and the kernels
+compose the derivatives instead: those of \eqn{1/\sqrt{b^2 - (1-b^2)r^2}},
+\eqn{(1+r^2)^{-1/2}} and \eqn{\log(1+r^2)} by Faa di Bruno in \eqn{r}, then
+in \eqn{\gamma_1} through \eqn{r(\gamma_1)}, and the outer functions
+\eqn{-u^2/2} and \eqn{\log\Phi} with \eqn{z} and \eqn{x}, which are linear
+in \eqn{w}; the derivatives of \eqn{\log\Phi} come from the cumulant route
+of \code{\link[=distrib_deriv3.SkewNormal1Distrib]{distrib_deriv3.SkewNormal1Distrib()}}, which does not cancel there.
 
 The series has no \eqn{r} and no \eqn{r^2} term, so the score is finite at
 \eqn{\gamma_1 = 0}; its \eqn{r^4} and \eqn{r^5} terms do not vanish, so the

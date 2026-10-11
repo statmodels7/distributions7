@@ -39,8 +39,16 @@ Computes the ten distinct third derivatives of the pseudo-Huber log-density
 in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, \strong{in closed form}, in a compiled
 kernel. Every component but the pure-\eqn{\nu} one is a rational function of
 \eqn{r = y - \mu}, \eqn{\sigma} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}};
-Bessel functions enter through \eqn{\nu} alone, and the exponentially scaled
-forms are used so that a large \eqn{\nu} does not overflow.
+Bessel functions enter through \eqn{\nu} alone. The derivatives in
+\eqn{\nu} of \eqn{B(\nu) = \log\{\sqrt\nu K_1(\sqrt\nu)\}} come from
+three routes, each where it keeps its digits: below \eqn{\nu = 1} the
+series of \eqn{K_1} and \eqn{K_2} at the origin; for
+\eqn{1 \le \nu < 400} the cumulants of \eqn{1/(4T)} under the generalized
+inverse Gaussian law of the integral representation of \eqn{K_1}, by the
+trapezoidal rule in \eqn{\log t}; and from \eqn{\nu = 400} the asymptotic
+series of \eqn{K_1}, differentiated term by term in powers of
+\eqn{\nu^{-1/2}}. The same routes serve the score, the Hessian and the
+fourth order.
 
 \strong{The expected third derivatives have no closed form.} With
 \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which integrates

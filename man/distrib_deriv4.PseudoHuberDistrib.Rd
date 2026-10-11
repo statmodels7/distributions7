@@ -37,9 +37,9 @@ they carry, from \code{mu_mu_mu_mu} to \code{nu_nu_nu_nu}, each of length
 \description{
 Computes the fifteen distinct fourth derivatives of the pseudo-Huber
 log-density in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, \strong{in closed form}, in
-a compiled kernel. The Bessel handling is
-\code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3.PseudoHuberDistrib()}}'s: the functions enter through
-\eqn{\nu} alone, in their exponentially scaled forms.
+a compiled kernel. The Bessel functions enter through \eqn{\nu} alone, and
+their derivatives come from the three routes described in
+\code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3.PseudoHuberDistrib()}}.
 
 \strong{The expected fourth derivatives have no closed form.} With
 \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which is the one

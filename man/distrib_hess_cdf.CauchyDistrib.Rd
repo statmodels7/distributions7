@@ -23,8 +23,9 @@ the length of \code{q} recycled against \code{theta}.
 }
 \description{
 Closed form, from the same location-scale structure, through
-\code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}}. With \eqn{\ell_y = \partial\log f/\partial y},
-which for a Cauchy is \eqn{-2z/\{\sigma(1+z^2)\}},
+\code{\link[=cauchy_cdf_method]{cauchy_cdf_method()}}, which computes each component as one term in
+\eqn{Y^{-2}}, \eqn{Y = q - \mu + \mathrm{i}\sigma}. With
+\eqn{\ell_y = \partial\log f/\partial y}, which for a Cauchy is \eqn{-2z/\{\sigma(1+z^2)\}},
 \deqn{\frac{\partial^2 F}{\partial\mu^2} = f\,\ell_y, \qquad
       \frac{\partial^2 F}{\partial\mu\,\partial\sigma}
         = f\left(z\ell_y + \frac{1}{\sigma}\right), \qquad

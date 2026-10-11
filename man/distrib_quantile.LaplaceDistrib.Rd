@@ -8,18 +8,17 @@
 
 \item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
 logarithms when \code{log.p = TRUE}. The endpoints give \code{-Inf} and \code{Inf}; a
-value outside the range gives \code{NaN}.}
+value outside the range gives \code{NaN} with a warning.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{p}. A component of length 1 is
 recycled. \code{sigma} must be strictly positive.}
 
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
-\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)} and \code{p} is replaced by
-\code{1 - p} before the formula is applied.}
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are
-exponentiated first. Defaults to \code{FALSE}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -29,9 +28,16 @@ A numeric vector of quantiles, of length
 }
 \description{
 Computes the Laplace quantile function
-\deqn{Q(p; \mu, \sigma) = \mu - \sigma\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right),}
-one expression covering both arms. The median is \eqn{\mu}, and the two
-quartiles are \eqn{\mu \pm \sigma \log 2}.
+\deqn{Q(p; \mu, \sigma) = \mu - \sigma\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right).}
+The median is \eqn{\mu}, and the two quartiles are
+\eqn{\mu \pm \sigma \log 2}. The method works from the logarithm of the
+smaller tail, \eqn{\log P}: the quantile is \eqn{\mu + \sigma(\log P + \log 2)}
+when \eqn{P} is the lower tail and \eqn{\mu - \sigma(\log P + \log 2)} when
+it is the upper one. The other tail's logarithm is taken as
+\eqn{\log(1 - e^{\log P})} with \code{expm1()} or \code{log1p()}, so a probability
+far below machine epsilon, given directly, through \code{lower.tail = FALSE} or
+through \code{log.p = TRUE}, gives an accurate quantile. The helper is
+\code{\link[=laplace_std_quantile]{laplace_std_quantile()}}.
 }
 \examples{
 d <- laplace_distrib()
@@ -44,6 +50,10 @@ distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 # Exact inverse: the round trip returns the probabilities it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
+
+# A far tail, given as a logarithm, against mu + sigma (log p + log 2).
+distrib_quantile(d, -800, th, log.p = TRUE)
+0.4 + 1.5 * (-800 + log(2))
 }
 \seealso{
 \code{\link[=distrib_cdf.LaplaceDistrib]{distrib_cdf.LaplaceDistrib()}}, which this inverts;

@@ -35,10 +35,10 @@ Computes the first derivatives of the Gumbel log-density with respect to
         \dfrac{z(1 - w) - 1}{\sigma}.}
 
 The whole family is written in \eqn{w}, and under the model \eqn{w} is
-\strong{standard exponential} whatever the parameters. Every expectation this
-family needs is therefore a derivative of \eqn{\Gamma} at 2, and the same
-fact bounds the score above in \eqn{\mu} and leaves it unbounded below: a
-value far to the left makes \eqn{w} enormous.
+\strong{standard exponential} whatever the parameters. Every expectation of
+this family is therefore a derivative of \eqn{\Gamma} at 1 or at 2. The
+score in \eqn{\mu} is bounded above by \eqn{1/\sigma} and unbounded below,
+because a value far to the left makes \eqn{w} large.
 
 With \code{scale = "link"} the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter

@@ -37,10 +37,13 @@ A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma},
 }
 \description{
 Computes the four distinct third derivatives of the Cauchy log-density with
-respect to \eqn{\mu} and \eqn{\sigma}, in closed form. Every component is a
-rational function of \eqn{r = y - \mu} and \eqn{\sigma} over a power of
-\eqn{d = \sigma^2 + r^2}, so all of them are bounded in \eqn{y} and decay as
-\eqn{|r|} grows.
+respect to \eqn{\mu} and \eqn{\sigma}, in closed form from a compiled
+kernel. Every component is a rational function of \eqn{r = y - \mu} and
+\eqn{\sigma} with a power of \eqn{d = \sigma^2 + r^2} in the denominator,
+so all of them are bounded in \eqn{y}. Three of the four tend to zero as
+\eqn{|r|} grows; the component in \eqn{\sigma} alone tends to
+\eqn{2/\sigma^3}. The kernel evaluates them as described in
+\code{\link[=distrib_deriv5.CauchyDistrib]{distrib_deriv5.CauchyDistrib()}}, without forming \eqn{r^2}.
 
 With \code{expected = TRUE} the expectations under the model are returned, also
 in closed form: the two components odd in \eqn{r} vanish by symmetry, and

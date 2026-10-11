@@ -35,9 +35,9 @@ the same Bessel-series distribution function the concentration
 parametrization uses.
 
 The concentration \eqn{\kappa} of \code{\link[=vonmises1_distrib]{vonmises1_distrib()}} is unbounded and
-hard to read. The resultant length is bounded, is the quantity circular
-statistics reports, and is one minus the circular variance; a sample reads
-it back directly as
+hard to interpret. The resultant length is bounded, is the quantity that is
+conventionally reported in circular statistics, and equals one minus the
+circular variance; it is computed from a sample as
 \code{sqrt(mean(cos(z))^2 + mean(sin(z))^2)}.
 }
 \section{The parametrization, and why it is a family of its own}{
@@ -49,12 +49,13 @@ with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}, and
 strictly increasing bijection from \eqn{(0, \infty)} onto \eqn{(0, 1)}.
 
 \strong{Its inverse has no closed form}, which is why this is a family of its own
-and not a \code{\link[=reparametrize]{reparametrize()}} of the other. \eqn{\kappa} is obtained by root
-finding on \eqn{\log\kappa}, and its four derivatives come from the inverse
-function rule applied to \eqn{A'} through \eqn{A^{(4)}}, which the Bessel
-recurrences give from the same two evaluations \eqn{A} already needs.
+and not a \code{\link[=reparametrize]{reparametrize()}} of the other. numericals7 obtains \eqn{\kappa}
+by Newton's method on \eqn{\kappa}, and its four derivatives come from the
+inverse function rule applied to \eqn{A'} through \eqn{A^{(4)}}, which
+numericals7 evaluates from a power series at small \eqn{\kappa}, from the
+Bessel identities in extended precision, or from an asymptotic series.
 
-The map is steep near \eqn{\rho = 1}: measured,
+The map is steep near \eqn{\rho = 1}:
 \eqn{\mathrm{d}\kappa/\mathrm{d}\rho} is 2.00 at \eqn{\rho = 0.01}, 3.14 at
 0.5, 199 at 0.95 and \eqn{5.0\times10^{5}} at 0.999. A fit whose data are
 nearly all in one direction is therefore far better conditioned in
@@ -81,8 +82,8 @@ Jacobian of the map is that reciprocal.
 \code{\link[=mean.VonMises2Distrib]{mean.VonMises2Distrib()}} returns the ordinary expectation of \eqn{Y} on
 \eqn{[-\pi, \pi)}, which differs from \eqn{\mu} whenever \eqn{\mu \ne 0};
 \code{\link[=vonmises1_distrib]{vonmises1_distrib()}} discusses the same distinction. What this
-parametrization buys is that the \strong{second} parameter is a quantity a sample
-reads back directly, which the concentration is not.
+parametrization offers is that the \strong{second} parameter can be computed
+directly from a sample, which is not the case for the concentration.
 }
 
 \section{Notation}{

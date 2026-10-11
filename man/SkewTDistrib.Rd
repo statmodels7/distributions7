@@ -52,51 +52,69 @@ modeled by two parameters instead of one. With \eqn{z = (y-\mu)/\sigma} and
 
 It contains three families as limits. At \eqn{\alpha = 0} it is the Student
 \eqn{t}; as \eqn{\nu \to \infty} it is the skew normal, approached at
-\eqn{O(1/\nu)}; and with both it is the Gaussian. Its reason to exist is the
-skewness: the skew normal cannot pass 0.9953, and this family reaches 2.05
-at \eqn{\nu = 6} and 4.00 at \eqn{\nu = 4}.
+\eqn{O(1/\nu)}; and with both it is the Gaussian. The skewness of the skew
+normal is bounded by 0.9953 in absolute value, whereas the skewness of this
+family reaches 2.05 at \eqn{\nu = 6} and 4.00 at \eqn{\nu = 4} for a large
+\eqn{\alpha}.
 
 Build one with \code{\link[=skewt_distrib]{skewt_distrib()}}, which supplies the four link functions.
-This page documents the raw S7 constructor, which validates none of the
-relationships between its properties.
+This page documents the raw S7 constructor, which takes the parent's
+properties; the validator of \code{distrib} checks them, and the constructor
+adds no check of its own.
 }
 \section{Methods}{
 
-Registered in this file:
-\code{\link[=distrib_pdf.SkewTDistrib]{distrib_pdf()}},
-\code{\link[=distrib_rng.SkewTDistrib]{distrib_rng()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.SkewTDistrib]{distrib_pdf()}},
+\code{\link[=distrib_cdf.SkewTDistrib]{distrib_cdf()}} and
+\code{\link[=distrib_rng.SkewTDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian()}},
+\code{\link[=distrib_expected_hessian.SkewTDistrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.SkewTDistrib]{distrib_deriv4()}},
-\code{\link[=distrib_deriv5.SkewTDistrib]{distrib_deriv5()}},
+\code{\link[=distrib_deriv4.SkewTDistrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.SkewTDistrib]{distrib_deriv5()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.SkewTDistrib]{distrib_dexpected_hessian()}} and
+\code{\link[=distrib_d2expected_hessian.SkewTDistrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
 \code{\link[=distrib_grad_y.SkewTDistrib]{distrib_grad_y()}},
-\code{\link[=distrib_hess_y.SkewTDistrib]{distrib_hess_y()}}, and the expected
-information with its two derivatives,
-\code{\link[=distrib_expected_hessian.SkewTDistrib]{distrib_expected_hessian()}}.
+\code{\link[=distrib_hess_y.SkewTDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.SkewTDistrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.SkewTDistrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.SkewTDistrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.SkewTDistrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross3_y.SkewTDistrib]{distrib_cross3_y()}},
+\code{\link[=distrib_grad_y_hess.SkewTDistrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.SkewTDistrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.SkewTDistrib]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf.SkewTDistrib]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.SkewTDistrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.SkewTDistrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.SkewTDistrib]{mean()}},
+\code{\link[=variance.SkewTDistrib]{variance()}},
+\code{\link[=skewness.SkewTDistrib]{skewness()}} and
+\code{\link[=kurtosis.SkewTDistrib]{kurtosis()}};
+\item the fitting helpers: \code{\link[=expected_hessian_costly]{expected_hessian_costly()}}.
+}
 
-Registered elsewhere: all four moments in \code{moments.R}
-(\code{\link[=mean.SkewTDistrib]{mean()}}, \code{\link[=variance.SkewTDistrib]{variance()}},
-\code{\link[=skewness.SkewTDistrib]{skewness()}},
-\code{\link[=kurtosis.SkewTDistrib]{kurtosis()}}); the mixed response-parameter
-derivative \code{\link[=distrib_cross_y]{distrib_cross_y()}} in
-\code{cross_derivatives_families.R}; and
-\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} in \code{cdf_derivatives_families.R}.
-
-The \strong{distribution function} and the \strong{quantile function} come from
-\code{\link[=continuous_distrib]{continuous_distrib()}}, by quadrature and by root finding on it. The
-\strong{expected information} has no elementary form and is computed by one
-quadrature per distinct \eqn{(\alpha, \nu)}; see
-\code{\link[=distrib_expected_hessian.SkewTDistrib]{distrib_expected_hessian.SkewTDistrib()}}.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \section{How the derivatives are computed}{
 
-Every derivative, to order five, comes from a compiled kernel in closed
-form. The density carries \eqn{T_{\nu+1}}, and the derivatives of a Student
-\eqn{t} distribution function in its degrees of freedom have no elementary
-expression; they are integrals of the derivatives of the \eqn{t} density and
-are taken by quadrature. See \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}.
+The derivatives of the log-density in the parameters, to order five, come
+from compiled kernels. Those in \eqn{\mu}, \eqn{\sigma} and \eqn{\alpha}
+are closed form. The density carries \eqn{T_{\nu+1}}, and the derivatives
+of a Student \eqn{t} distribution function in its degrees of freedom have no
+elementary expression; they are integrals of the derivatives of the
+\eqn{t} density and are taken by quadrature. The derivatives in the
+response are evaluated in R from \code{\link[=skewt_pieces]{skewt_pieces()}}. See
+\code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}.
 }
 
 \examples{
@@ -118,5 +136,6 @@ vapply(c(4, 6, 20, 1e6),
 \code{\link[=skewt_distrib]{skewt_distrib()}} to build one;
 \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} for the \eqn{\nu \to \infty} limit;
 \code{\link[=student_t1_distrib]{student_t1_distrib()}} for the \eqn{\alpha = 0} case;
-\code{\link[=skewt_pieces]{skewt_pieces()}} for the scalar functions the derivatives are built from.
+\code{\link[=skewt_pieces]{skewt_pieces()}} for the scalar functions from which the response
+derivatives are built.
 }

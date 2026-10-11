@@ -26,9 +26,10 @@ It is \strong{undefined at the location}, where the sign jumps. \code{sign(0)} i
 R, so the value returned there is \eqn{-c(y-\mu) = 0}, one point of the
 subdifferential.
 
-The score is bounded below by \eqn{-a - c(y-\mu)} on either side, so the
-Laplace part contributes a jump of \eqn{2a} across the location and the
-Gaussian part the slope.
+Away from the location the derivative equals \eqn{-a - c(y-\mu)} for
+\eqn{y > \mu} and \eqn{a - c(y-\mu)} for \eqn{y < \mu}, so the Laplace
+part contributes a jump of \eqn{-2a} across the location and the Gaussian
+part the slope \eqn{-c}.
 }
 \section{Notation}{
 

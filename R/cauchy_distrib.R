@@ -12,13 +12,13 @@ NULL
 #' class applies to it; the methods listed below are registered on it directly
 #' and everything else comes from the parent.
 #'
-#' No moment of this family exists, so `mean()`, `variance()`, `skewness()` and
+#' The family has no moments, so `mean()`, `variance()`, `skewness()` and
 #' `kurtosis()` return `NaN`. Its location and scale are the median and the
 #' half-interquartile range, both available from [distrib_quantile()].
 #'
 #' Build one with [cauchy_distrib()]. This page documents the raw S7
-#' constructor, which takes the parent's properties and validates none of the
-#' relationships between them.
+#' constructor, which takes the parent's properties; the validator of
+#' `distrib` checks them, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -37,20 +37,44 @@ NULL
 #'   [distrib_gradient.CauchyDistrib()] for the redescending score.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.CauchyDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.CauchyDistrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.CauchyDistrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.CauchyDistrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.CauchyDistrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.CauchyDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.CauchyDistrib] and
+#'   [`distrib_rng()`][distrib_rng.CauchyDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.CauchyDistrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.CauchyDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.CauchyDistrib],
-#'   [`distrib_pdf()`][distrib_pdf.CauchyDistrib],
-#'   [`distrib_quantile()`][distrib_quantile.CauchyDistrib],
-#'   [`distrib_rng()`][distrib_rng.CauchyDistrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.CauchyDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.CauchyDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.CauchyDistrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.CauchyDistrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.CauchyDistrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.CauchyDistrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.CauchyDistrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.CauchyDistrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.CauchyDistrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.CauchyDistrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.CauchyDistrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.CauchyDistrib],
+#'   [`distrib_cross3_y()`][distrib_cross3_y.CauchyDistrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.CauchyDistrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.CauchyDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.CauchyDistrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.CauchyDistrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.CauchyDistrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.CauchyDistrib];
+#' - the moments: [`mean()`][mean.CauchyDistrib],
+#'   [`variance()`][variance.CauchyDistrib],
+#'   [`skewness()`][skewness.CauchyDistrib] and
+#'   [`kurtosis()`][kurtosis.CauchyDistrib].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- cauchy_distrib()
@@ -58,8 +82,8 @@ NULL
 #' d@params
 #' d@params_interpretation
 #'
-#' # The interpretations say "location" and "scale", not "mean" and "standard
-#' # deviation": no moment of this family exists.
+#' # The interpretations are "location" and "scale", not "mean" and "standard
+#' # deviation", because the family has no moments.
 #' th <- list(mu = 0.4, sigma = 1.5)
 #' c(mean(d, th), variance(d, th))
 #'
@@ -75,17 +99,20 @@ CauchyDistrib <- S7::new_class("CauchyDistrib", parent = continuous_distrib)
 #' @description
 #' Computes the Cauchy density
 #' \deqn{f(y; \mu, \sigma) = \dfrac{1}{\pi \sigma \left[1 + \left(\dfrac{y-\mu}{\sigma}\right)^2\right]}}
-#' by calling [stats::dcauchy()] at `location = mu` and `scale = sigma`. The
-#' density decays like \eqn{y^{-2}}, so it stays representable far out where a
-#' Gaussian of the same scale has underflowed to zero.
+#' on the log scale, as \eqn{-\log\pi - \log\sigma - \log(1 + z^2)} with
+#' \eqn{z = (y-\mu)/\sigma}. Where \eqn{|z| > 10^{150}} the last term is
+#' written as \eqn{2\log|z| + \log(1 + z^{-2})}, so the log-density stays
+#' finite where \eqn{z^2} overflows. The density decays like \eqn{y^{-2}}, so
+#' it stays representable far out where a Gaussian of the same scale has
+#' underflowed to zero.
 #'
 #' @param distrib A `CauchyDistrib` object, from [cauchy_distrib()].
 #' @param y A numeric vector of observations. Every real value is in the
 #'   support, so no value is rejected.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
-#'   recycled. `sigma` must be strictly positive; a zero or negative value
-#'   gives `NaN` with a warning from [stats::dcauchy()].
+#'   recycled. `sigma` must be strictly positive; the generic signals an
+#'   error for a zero or negative value before the method is called.
 #' @param log Logical of length 1. When `TRUE` the log-density is returned.
 #'   Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -102,7 +129,7 @@ CauchyDistrib <- S7::new_class("CauchyDistrib", parent = continuous_distrib)
 #' d <- cauchy_distrib()
 #' y <- c(-1.2, 0.3, 2.5)
 #'
-#' # The method is stats::dcauchy at this parametrization.
+#' # The same values as stats::dcauchy at this parametrization.
 #' all.equal(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5)),
 #'           dcauchy(y, location = 0.4, scale = 1.5))
 #'
@@ -113,6 +140,9 @@ CauchyDistrib <- S7::new_class("CauchyDistrib", parent = continuous_distrib)
 #' # where the Gaussian of the same scale has underflowed.
 #' distrib_pdf(d, 40, list(mu = 0, sigma = 1))
 #' distrib_pdf(gaussian1_distrib(), 40, list(mu = 0, sigma = 1))
+#'
+#' # The log-density is finite at a residual whose square overflows.
+#' distrib_pdf(d, 1e160, list(mu = 0, sigma = 1), log = TRUE)
 S7::method(distrib_pdf, CauchyDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   # log1p(z^2), written as 2 log|z| + log1p(1/z^2) where z^2 would overflow
   z <- (y - theta[[1]]) / theta[[2]]
@@ -235,8 +265,9 @@ S7::method(distrib_quantile, CauchyDistrib) <- function(distrib, p, theta, lower
 #' @description
 #' Draws `n` independent Cauchy variates by calling [stats::rcauchy()], so the
 #' draws come from R's own generator and depend on `.Random.seed` in the usual
-#' way. The generalized ratio-of-uniforms fallback the base class supplies is
-#' bypassed.
+#' way. The base class would draw by inversion through
+#' [distrib_quantile.CauchyDistrib()], which gives a different sequence for
+#' the same seed.
 #'
 #' A sample from this family carries extreme values at a rate that does not
 #' diminish with `n`, and its running mean does not settle: the sample mean of
@@ -313,8 +344,8 @@ S7::method(distrib_rng, CauchyDistrib) <- function(distrib, n, theta, ...) {
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
-#' \eqn{\sigma > 0} the scale. Neither is a moment: no moment of this family
-#' exists.
+#' \eqn{\sigma > 0} the scale. Neither is a moment, because the family has no
+#' moments.
 #'
 #' @seealso [distrib_hessian.CauchyDistrib()] for the second derivatives,
 #'   [distrib_expected_hessian.CauchyDistrib()] for their expectation,
@@ -417,10 +448,10 @@ S7::method(distrib_hessian, CauchyDistrib) <- function(distrib, y, theta, scale 
 #'       \qquad
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right] = 0.}
 #' The information in the location is \eqn{1/(2\sigma^2)}, half of a Gaussian's
-#' \eqn{1/\sigma^2} at the same scale, which is the price the heavy tails
-#' charge. The zero off-diagonal says the location and the scale are
-#' orthogonal. The expectations exist even though no moment of the family does:
-#' they are expectations of bounded functions of \eqn{y}, not of \eqn{y}.
+#' \eqn{1/\sigma^2} at the same scale. The zero off-diagonal entry means that
+#' the location and the scale are orthogonal. The expectations exist although
+#' the family has no moments, because the second derivatives of the
+#' log-density are bounded functions of \eqn{y}.
 #'
 #' Because the values do not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -450,8 +481,8 @@ S7::method(distrib_hessian, CauchyDistrib) <- function(distrib, y, theta, scale 
 #' regular family in both parameters, so the second Bartlett identity holds and
 #' this equals the variance of the score.
 #'
-#' @seealso [distrib_hessian.CauchyDistrib()] for the observed quantity this is
-#'   the expectation of, [distrib_expected_hessian.Gaussian1Distrib()] for the
+#' @seealso [distrib_hessian.CauchyDistrib()] for the observed Hessian, of which
+#'   this is the expectation, [distrib_expected_hessian.Gaussian1Distrib()] for the
 #'   light-tailed comparison, [fisher_scoring()], which inverts it at each step,
 #'   and [distrib_expected_hessian()] for the generic.
 #'
@@ -466,8 +497,8 @@ S7::method(distrib_hessian, CauchyDistrib) <- function(distrib, y, theta, scale 
 #' # Half the information a Gaussian of the same scale carries in its location.
 #' distrib_expected_hessian(gaussian1_distrib(), 0, th)$mu_mu
 #'
-#' # The observed Hessian averages onto it over a large sample, even though
-#' # the sample mean of the same draws does not converge at all.
+#' # The observed Hessian averages onto it over a large sample, although the
+#' # sample mean of the same draws does not converge.
 #' set.seed(3)
 #' z <- distrib_rng(d, 2e5, th)
 #' vapply(distrib_hessian(d, z, th), mean, numeric(1))
@@ -479,10 +510,13 @@ S7::method(distrib_expected_hessian, CauchyDistrib) <- function(distrib, y, thet
 #' @name distrib_deriv3.CauchyDistrib
 #' @description
 #' Computes the four distinct third derivatives of the Cauchy log-density with
-#' respect to \eqn{\mu} and \eqn{\sigma}, in closed form. Every component is a
-#' rational function of \eqn{r = y - \mu} and \eqn{\sigma} over a power of
-#' \eqn{d = \sigma^2 + r^2}, so all of them are bounded in \eqn{y} and decay as
-#' \eqn{|r|} grows.
+#' respect to \eqn{\mu} and \eqn{\sigma}, in closed form from a compiled
+#' kernel. Every component is a rational function of \eqn{r = y - \mu} and
+#' \eqn{\sigma} with a power of \eqn{d = \sigma^2 + r^2} in the denominator,
+#' so all of them are bounded in \eqn{y}. Three of the four tend to zero as
+#' \eqn{|r|} grows; the component in \eqn{\sigma} alone tends to
+#' \eqn{2/\sigma^3}. The kernel evaluates them as described in
+#' [distrib_deriv5.CauchyDistrib()], without forming \eqn{r^2}.
 #'
 #' With `expected = TRUE` the expectations under the model are returned, also
 #' in closed form: the two components odd in \eqn{r} vanish by symmetry, and
@@ -545,9 +579,12 @@ S7::method(distrib_deriv3, CauchyDistrib) <- function(distrib, y, theta, expecte
 #' @name distrib_deriv4.CauchyDistrib
 #' @description
 #' Computes the five distinct fourth derivatives of the Cauchy log-density with
-#' respect to \eqn{\mu} and \eqn{\sigma}, in closed form. As at third order,
-#' every component is a rational function of \eqn{r = y - \mu} and \eqn{\sigma}
-#' over a power of \eqn{d = \sigma^2 + r^2} and so is bounded in \eqn{y}.
+#' respect to \eqn{\mu} and \eqn{\sigma}, in closed form from the compiled
+#' kernel of the third order. As at third order, every component is a
+#' rational function of \eqn{r = y - \mu} and \eqn{\sigma} with a power of
+#' \eqn{d = \sigma^2 + r^2} in the denominator, and so is bounded in
+#' \eqn{y}; the component in \eqn{\sigma} alone tends to \eqn{-6/\sigma^4}
+#' as \eqn{|r|} grows, and the others to zero.
 #'
 #' With `expected = TRUE` the expectations under the model are returned, also
 #' in closed form; the two components odd in \eqn{r} vanish by symmetry. Both
@@ -609,19 +646,20 @@ S7::method(distrib_deriv4, CauchyDistrib) <- function(distrib, y, theta, expecte
 #' @description
 #' Computes the six distinct fifth derivatives of the Cauchy log-density with
 #' respect to \eqn{\mu} and \eqn{\sigma}, in closed form from a compiled
-#' kernel.
-#' Writing the log-density as \eqn{\ell = -\log\sigma + g(z)} with
-#' \eqn{z = (y - \mu)/\sigma}, each component is \eqn{\sigma^{-5}} times a
-#' sum of terms \eqn{c\, z^p g^{(i)}(z)} with integer coefficients, plus
-#' \eqn{-24\sigma^{-5}} in the pure \eqn{\sigma} component; the kernel
-#' evaluates the sum from \eqn{g^{(i)}(z) = 2(-1)^i (i-1)!\,\mathrm{Re}\,w^i}
-#' with \eqn{w = 1/(z + \mathrm{i})}, taking \eqn{z^p w^i} as
-#' \eqn{(zw)^p w^{i-p}}; the factor \eqn{zw} is bounded, so the components
-#' stay finite for any residual. The observed orders one to four are
-#' computed the same way.
-#' With `scale = "link"` the components are composed with the link
-#' derivatives by the routine that every family with a fifth-order kernel
-#' uses.
+#' kernel. With \eqn{Y = y - \mu + \mathrm{i}\sigma} the log-density is
+#' \eqn{\ell = \log\sigma - 2\,\mathrm{Re}\log Y - \log\pi}, and the
+#' derivative of \eqn{\log Y} of order \eqn{n}, with \eqn{j} derivatives in
+#' \eqn{\mu} and \eqn{k = n - j} in \eqn{\sigma}, is
+#' \eqn{(-1)^j \mathrm{i}^k (-1)^{n-1}(n-1)!\,Y^{-n}}. Each component is
+#' therefore the single term
+#' \deqn{-2(-1)^{j+n-1}(n-1)!\,\mathrm{Re}(\mathrm{i}^k Y^{-n}),}
+#' plus \eqn{(-1)^{n-1}(n-1)!/\sigma^n} from \eqn{\log\sigma} in the
+#' component that is pure in \eqn{\sigma}. The kernel forms \eqn{1/Y} by
+#' Smith's division and never forms \eqn{(y - \mu)^2} or \eqn{\sigma^2}, so
+#' no two terms cancel and the components stay finite at any residual. The
+#' observed orders one to four are computed by the same formula. With
+#' `scale = "link"` the components are composed with the link derivatives
+#' by the routine that every family with a fifth-order kernel uses.
 #'
 #' @param distrib A `CauchyDistrib` object, from [cauchy_distrib()].
 #' @param y A numeric vector of observations.
@@ -643,7 +681,8 @@ S7::method(distrib_deriv4, CauchyDistrib) <- function(distrib, y, theta, expecte
 #' @examples
 #' d <- cauchy_distrib()
 #' d5 <- distrib_deriv5(d, c(-1.2, 0.3, 1e200), list(mu = 0.4, sigma = 1.5))
-#' # Finite far in the tail, where the pure sigma component tends to 24/sigma^5.
+#' # Finite far in the tail, where the component pure in sigma tends to
+#' # 24/sigma^5.
 #' c(d5$sigma_sigma_sigma_sigma_sigma[3], 24 / 1.5^5)
 S7::method(distrib_deriv5, CauchyDistrib) <- function(distrib, y, theta,
     scale = c("parameter", "link"), ..., threads = 1L) {
@@ -747,6 +786,7 @@ S7::method(distrib_hess_y, CauchyDistrib) <- function(distrib, y, theta, ...) {
 
 #' @title Cauchy Distribution Function Derivatives
 #' @name cauchy_cdf_method
+#' @aliases distrib_deriv3_cdf.CauchyDistrib distrib_deriv4_cdf.CauchyDistrib
 #'
 #' @description
 #' Returns the method body that [distrib_grad_cdf()], [distrib_hess_cdf()],
@@ -797,11 +837,13 @@ cauchy_cdf_method <- function(order) {
 #' Builds the distribution object for the Cauchy family with location
 #' \eqn{\mu} and scale \eqn{\sigma > 0}, the Student's t on one degree of
 #' freedom. The returned object carries closed-form derivatives of the
-#' log-density to fourth order, in the parameters and in the response, so every
-#' generic of the toolkit answers without a numerical fallback.
+#' log-density to fifth order in the parameters and to fourth order in the
+#' response, closed-form mixed derivatives in the response and the
+#' parameters, and closed-form derivatives of the distribution function to
+#' fourth order.
 #'
-#' No moment of this family exists, so the two parameters are the median and
-#' the half-interquartile range. Its tails decay like \eqn{y^{-2}}, and the
+#' The family has no moments, so the two parameters are the median and the
+#' half-interquartile range. Its tails decay like \eqn{y^{-2}}, and the
 #' resulting score is bounded, which makes a Cauchy likelihood a standard
 #' choice when the data carry gross outliers.
 #'
@@ -846,12 +888,14 @@ cauchy_cdf_method <- function(order) {
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{1}{2\sigma^2}, \qquad
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0.}
 #' The information in the location is half a Gaussian's at the same scale. Every
-#' derivative is bounded in \eqn{y}, so an expectation of any of them exists
-#' even though no moment of \eqn{Y} does.
+#' derivative of the log-density is bounded in \eqn{y}, so its expectation
+#' exists although \eqn{Y} has no moments.
 #'
 #' Third and fourth orders are closed form as well, observed and expected, in
-#' [distrib_deriv3.CauchyDistrib()] and [distrib_deriv4.CauchyDistrib()], as are
-#' the derivatives in the response.
+#' [distrib_deriv3.CauchyDistrib()] and [distrib_deriv4.CauchyDistrib()], and
+#' the observed fifth order in [distrib_deriv5.CauchyDistrib()]; so are the
+#' derivatives in the response and those of the distribution function
+#' ([cauchy_cdf_method()]).
 #'
 #' # Estimation
 #'
@@ -892,12 +936,12 @@ cauchy_cdf_method <- function(order) {
 #' d <- cauchy_distrib()
 #' d
 #'
-#' # The density and the distribution function are R's own.
+#' # The density agrees with R's own.
 #' y <- c(-1.2, 0.3, 2.5)
 #' th <- list(mu = 0.4, sigma = 1.5)
 #' all.equal(distrib_pdf(d, y, th), dcauchy(y, 0.4, 1.5))
 #'
-#' # No moment exists; the median and the half-interquartile range do.
+#' # The moments do not exist; the median and the half-interquartile range do.
 #' c(mean = mean(d, th), variance = variance(d, th))
 #' distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 #'

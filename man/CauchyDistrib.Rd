@@ -53,30 +53,56 @@ It inherits from \code{continuous_distrib}, so every generic of the \code{distri
 class applies to it; the methods listed below are registered on it directly
 and everything else comes from the parent.
 
-No moment of this family exists, so \code{mean()}, \code{variance()}, \code{skewness()} and
+The family has no moments, so \code{mean()}, \code{variance()}, \code{skewness()} and
 \code{kurtosis()} return \code{NaN}. Its location and scale are the median and the
 half-interquartile range, both available from \code{\link[=distrib_quantile]{distrib_quantile()}}.
 
 Build one with \code{\link[=cauchy_distrib]{cauchy_distrib()}}. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.
+constructor, which takes the parent's properties; the validator of
+\code{distrib} checks them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.CauchyDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.CauchyDistrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.CauchyDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.CauchyDistrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.CauchyDistrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_grad_y.CauchyDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_quantile.CauchyDistrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.CauchyDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.CauchyDistrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.CauchyDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.CauchyDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.CauchyDistrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.CauchyDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.CauchyDistrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.CauchyDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.CauchyDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.CauchyDistrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.CauchyDistrib]{distrib_deriv5()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.CauchyDistrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.CauchyDistrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.CauchyDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.CauchyDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.CauchyDistrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.CauchyDistrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.CauchyDistrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.CauchyDistrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross3_y.CauchyDistrib]{distrib_cross3_y()}},
+\code{\link[=distrib_grad_y_hess.CauchyDistrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.CauchyDistrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.CauchyDistrib]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf.CauchyDistrib]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.CauchyDistrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.CauchyDistrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.CauchyDistrib]{mean()}},
+\code{\link[=variance.CauchyDistrib]{variance()}},
+\code{\link[=skewness.CauchyDistrib]{skewness()}} and
+\code{\link[=kurtosis.CauchyDistrib]{kurtosis()}}.
+}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{
@@ -85,8 +111,8 @@ S7::S7_inherits(d, continuous_distrib)
 d@params
 d@params_interpretation
 
-# The interpretations say "location" and "scale", not "mean" and "standard
-# deviation": no moment of this family exists.
+# The interpretations are "location" and "scale", not "mean" and "standard
+# deviation", because the family has no moments.
 th <- list(mu = 0.4, sigma = 1.5)
 c(mean(d, th), variance(d, th))
 

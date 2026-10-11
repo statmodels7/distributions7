@@ -60,32 +60,47 @@ Like the Laplace, its log-likelihood is \strong{not differentiable in
 \code{params_smooth} records \code{mu = FALSE}.
 
 Build one with \code{\link[=enet_distrib]{enet_distrib()}}, which supplies the three link functions.
-This page documents the raw S7 constructor, which validates none of the
-relationships between its properties.
+This page documents the raw S7 constructor, which takes the parent's
+properties; the validator of \code{distrib} checks them, and the constructor
+adds no check of its own.
 }
 \section{Methods}{
 
-Registered in this file:
-\code{\link[=distrib_pdf.EnetDistrib]{distrib_pdf()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.EnetDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.EnetDistrib]{distrib_cdf()}},
-\code{\link[=distrib_quantile.EnetDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.EnetDistrib]{distrib_rng()}},
+\code{\link[=distrib_quantile.EnetDistrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.EnetDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.EnetDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian()}},
 \code{\link[=distrib_expected_hessian.EnetDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.EnetDistrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.EnetDistrib]{distrib_dexpected_hessian()}};
+\item the derivatives in the response:
 \code{\link[=distrib_grad_y.EnetDistrib]{distrib_grad_y()}},
 \code{\link[=distrib_hess_y.EnetDistrib]{distrib_hess_y()}},
-\code{\link[=distrib_cross_y.EnetDistrib]{distrib_cross_y()}},
-\code{\link[=mean.EnetDistrib]{mean()}}, \code{\link[=variance.EnetDistrib]{variance()}},
-\code{\link[=skewness.EnetDistrib]{skewness()}}.
+\code{\link[=distrib_deriv3_y.EnetDistrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.EnetDistrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.EnetDistrib]{distrib_cross_y()}} and
+\code{\link[=distrib_cross3_y.EnetDistrib]{distrib_cross3_y()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.EnetDistrib]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf.EnetDistrib]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.EnetDistrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.EnetDistrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.EnetDistrib]{mean()}},
+\code{\link[=variance.EnetDistrib]{variance()}} and
+\code{\link[=skewness.EnetDistrib]{skewness()}};
+\item the decomposition at the kink:
+\code{\link[=kink_decomposition.EnetDistrib]{kink_decomposition()}}.
+}
 
-Registered in \code{enet_higher.R}, both closed form:
-\code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.EnetDistrib]{distrib_deriv4()}}.
-
-The \strong{kurtosis} has no closed form here and comes from the base class by
-quadrature. So does the fourth response derivative and beyond, which are
-zero: the log-density is quadratic in \eqn{y} away from the location.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \section{The two quantities everything is written in}{
@@ -93,8 +108,12 @@ zero: the log-density is quadratic in \eqn{y} away from the location.
 With \eqn{a = \lambda\alpha}, \eqn{c = \lambda(1-\alpha)} and
 \eqn{x = a/\sqrt c}, every derivative in the two rates is a polynomial in
 \eqn{x} and \eqn{G = \mathrm{d}\log M/\mathrm{d}x}, where \eqn{M} is the
-Mills ratio. The map \eqn{(\lambda, \alpha) \mapsto (a, c)} is bilinear, so
-the chain onto the reported parameters adds one cross term and nothing else.
+Mills ratio. \eqn{G} and its derivatives are the cumulants, with alternating
+signs, of the density proportional to \eqn{e^{-xs - s^2/2}} on
+\eqn{s > 0}, computed in a compiled kernel from the ratios of its moments
+without forming the difference \eqn{x - 1/M}. The map
+\eqn{(\lambda, \alpha) \mapsto (a, c)} is bilinear, so the chain onto the
+reported parameters adds one cross term and nothing else.
 }
 
 \examples{

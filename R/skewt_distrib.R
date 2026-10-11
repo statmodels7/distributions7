@@ -13,13 +13,15 @@ NULL
 #'
 #' It contains three families as limits. At \eqn{\alpha = 0} it is the Student
 #' \eqn{t}; as \eqn{\nu \to \infty} it is the skew normal, approached at
-#' \eqn{O(1/\nu)}; and with both it is the Gaussian. Its reason to exist is the
-#' skewness: the skew normal cannot pass 0.9953, and this family reaches 2.05
-#' at \eqn{\nu = 6} and 4.00 at \eqn{\nu = 4}.
+#' \eqn{O(1/\nu)}; and with both it is the Gaussian. The skewness of the skew
+#' normal is bounded by 0.9953 in absolute value, whereas the skewness of this
+#' family reaches 2.05 at \eqn{\nu = 6} and 4.00 at \eqn{\nu = 4} for a large
+#' \eqn{\alpha}.
 #'
 #' Build one with [skewt_distrib()], which supplies the four link functions.
-#' This page documents the raw S7 constructor, which validates none of the
-#' relationships between its properties.
+#' This page documents the raw S7 constructor, which takes the parent's
+#' properties; the validator of `distrib` checks them, and the constructor
+#' adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -32,44 +34,59 @@ NULL
 #'   \eqn{(0,\infty)}, \eqn{(-\infty,\infty)} and \eqn{(0,\infty)}.
 #'
 #' @section Methods:
-#' Registered in this file:
-#'   [`distrib_pdf()`][distrib_pdf.SkewTDistrib],
-#'   [`distrib_rng()`][distrib_rng.SkewTDistrib],
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.SkewTDistrib],
+#'   [`distrib_cdf()`][distrib_cdf.SkewTDistrib] and
+#'   [`distrib_rng()`][distrib_rng.SkewTDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.SkewTDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.SkewTDistrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.SkewTDistrib],
 #'   [`distrib_deriv3()`][distrib_deriv3.SkewTDistrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.SkewTDistrib],
-#'   [`distrib_deriv5()`][distrib_deriv5.SkewTDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.SkewTDistrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.SkewTDistrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.SkewTDistrib] and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.SkewTDistrib];
+#' - the derivatives in the response:
 #'   [`distrib_grad_y()`][distrib_grad_y.SkewTDistrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.SkewTDistrib], and the expected
-#'   information with its two derivatives,
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.SkewTDistrib].
+#'   [`distrib_hess_y()`][distrib_hess_y.SkewTDistrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.SkewTDistrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.SkewTDistrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.SkewTDistrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.SkewTDistrib],
+#'   [`distrib_cross3_y()`][distrib_cross3_y.SkewTDistrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.SkewTDistrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.SkewTDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.SkewTDistrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.SkewTDistrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.SkewTDistrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.SkewTDistrib];
+#' - the moments: [`mean()`][mean.SkewTDistrib],
+#'   [`variance()`][variance.SkewTDistrib],
+#'   [`skewness()`][skewness.SkewTDistrib] and
+#'   [`kurtosis()`][kurtosis.SkewTDistrib];
+#' - the fitting helpers: [expected_hessian_costly()].
 #'
-#' Registered elsewhere: all four moments in `moments.R`
-#' ([`mean()`][mean.SkewTDistrib], [`variance()`][variance.SkewTDistrib],
-#' [`skewness()`][skewness.SkewTDistrib],
-#' [`kurtosis()`][kurtosis.SkewTDistrib]); the mixed response-parameter
-#' derivative [`distrib_cross_y()`][distrib_cross_y] in
-#' `cross_derivatives_families.R`; and
-#' [`distrib_grad_cdf()`][distrib_grad_cdf] in `cdf_derivatives_families.R`.
-#'
-#' The **distribution function** and the **quantile function** come from
-#' [continuous_distrib()], by quadrature and by root finding on it. The
-#' **expected information** has no elementary form and is computed by one
-#' quadrature per distinct \eqn{(\alpha, \nu)}; see
-#' [distrib_expected_hessian.SkewTDistrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @section How the derivatives are computed:
-#' Every derivative, to order five, comes from a compiled kernel in closed
-#' form. The density carries \eqn{T_{\nu+1}}, and the derivatives of a Student
-#' \eqn{t} distribution function in its degrees of freedom have no elementary
-#' expression; they are integrals of the derivatives of the \eqn{t} density and
-#' are taken by quadrature. See [distrib_gradient.SkewTDistrib()].
+#' The derivatives of the log-density in the parameters, to order five, come
+#' from compiled kernels. Those in \eqn{\mu}, \eqn{\sigma} and \eqn{\alpha}
+#' are closed form. The density carries \eqn{T_{\nu+1}}, and the derivatives
+#' of a Student \eqn{t} distribution function in its degrees of freedom have no
+#' elementary expression; they are integrals of the derivatives of the
+#' \eqn{t} density and are taken by quadrature. The derivatives in the
+#' response are evaluated in R from [skewt_pieces()]. See
+#' [distrib_gradient.SkewTDistrib()].
 #'
 #' @seealso [skewt_distrib()] to build one;
 #'   [skewnormal1_distrib()] for the \eqn{\nu \to \infty} limit;
 #'   [student_t1_distrib()] for the \eqn{\alpha = 0} case;
-#'   [skewt_pieces()] for the scalar functions the derivatives are built from.
+#'   [skewt_pieces()] for the scalar functions from which the response
+#'   derivatives are built.
 #'
 #' @examples
 #' d <- skewt_distrib()
@@ -93,9 +110,12 @@ SkewTDistrib <- S7::new_class("SkewTDistrib", parent = continuous_distrib)
 #'
 #' @description
 #' Assembles the standardized variable, the argument of the tilting
-#' distribution function and the six scalar functions every closed-form
-#' derivative of the log-density is a combination of. Every method in this
-#' family calls it once and then writes its own formula in terms of the result.
+#' distribution function and the seven scalar functions \eqn{A}, \eqn{A'},
+#' \eqn{E}, \eqn{B}, \eqn{B'}, \eqn{Q} and \eqn{Q'}, of which the closed-form
+#' derivatives of the log-density in \eqn{(\mu, \sigma, \alpha)} are
+#' combinations. [distrib_grad_y.SkewTDistrib()] and
+#' [distrib_hess_y.SkewTDistrib()] evaluate their formulas from the result;
+#' the derivatives in the parameters come from the compiled kernels.
 #'
 #' @details
 #' With \eqn{z = (y-\mu)/\sigma}, \eqn{m = \nu + 1}, \eqn{s = \nu + z^2} and
@@ -111,24 +131,26 @@ SkewTDistrib <- S7::new_class("SkewTDistrib", parent = continuous_distrib)
 #' \eqn{Q' = Q\{-(m+1)w/(m + w^2) - Q\}}, the last from differentiating the
 #' quotient.
 #'
-#' \eqn{Q} is formed as `exp(dt(log = TRUE) - pt(log.p = TRUE))` because both
-#' factors underflow together in the far left tail while the ratio stays
-#' finite. It matters as the degrees of freedom grow and the \eqn{t} tail
-#' approaches the Gaussian's: measured at \eqn{w = -60} with
-#' \eqn{m = 2000}, the log route returns 21.4345 and `dt(w, m)/pt(w, m)`
-#' returns `NaN`.
+#' \eqn{Q} is formed as `exp(dt(log = TRUE) - pt(log.p = TRUE))`, because
+#' \eqn{t_m(w)} and \eqn{T_m(w)} underflow together in the far left tail while
+#' their ratio stays finite. The direct quotient is `NaN` there, in particular
+#' when the degrees of freedom are large and the \eqn{t} tail is close to the
+#' Gaussian one. Where \eqn{|z| > 10^{20}} the functions are written in
+#' \eqn{\sqrt{s}}, \eqn{z/\sqrt{s}} and \eqn{\nu/s}, so that no power of
+#' \eqn{s} overflows.
 #'
-#' Nothing here differentiates in \eqn{\nu}. The derivative kernels evaluate
+#' This function does not differentiate in \eqn{\nu}. The derivative kernels evaluate
 #' the same quantities in bounded variables; see
 #' [distrib_gradient.SkewTDistrib()].
 #'
 #' @param y A numeric vector of observations.
 #' @param mu,sigma,alpha,nu The four parameters, numeric vectors of length 1 or
-#'   of the length of `y`. Nothing is validated: `sigma` and `nu` must be
-#'   strictly positive.
+#'   of the length of `y`. The arguments are not validated; `sigma` and `nu`
+#'   must be strictly positive.
 #'
-#' @return A named list of ten numeric vectors, each of the length of the
-#'   recycled inputs: `z` the standardized variable, `w` the tilting argument,
+#' @return A named list of ten numeric vectors, each of the length implied by
+#'   the arguments on which it depends: `z` the standardized variable, `w` the
+#'   tilting argument,
 #'   `c` the factor relating them, `a` and `da` for \eqn{A} and \eqn{A'}, `e`
 #'   for \eqn{E}, `b` and `db` for \eqn{B} and \eqn{B'}, and `q` and `dq` for
 #'   \eqn{Q} and \eqn{Q'}.
@@ -372,10 +394,15 @@ S7::method(distrib_rng, SkewTDistrib) <- function(distrib, n, theta, ...) {
 #' chain rule in the bounded variables \eqn{a}, \eqn{1/r}, \eqn{1/\sigma},
 #' \eqn{\alpha}, \eqn{\nu} and \eqn{\sqrt m}, never in \eqn{z} itself, and
 #' reduced with \eqn{a^2 = 1 - \nu/r^2}, so that the terms which cancel as
-#' \eqn{|z|} grows cancel in the algebra. The expressions are generated by a
-#' script kept with the package sources.
+#' \eqn{|z|} grows cancel in the algebra. That form cancels in turn when
+#' \eqn{\nu} is large and \eqn{z^2 < \nu}, where \eqn{\nu/r^2} tends to one, so a
+#' second form, used where \eqn{a^2 < 1/2}, writes \eqn{\nu^k/r^{2k}} as
+#' \eqn{(1 - a^2)^k} and expands in \eqn{a}. The expressions of both forms are
+#' tabulated in `src/pt_skewt_table.h`, generated by a script that records
+#' the derivation.
 #'
-#' The derivatives of \eqn{C} are \eqn{2^{-k} D^{(k)}(m/2)}, with
+#' The \eqn{k}th derivative of \eqn{C} at \eqn{x} is
+#' \eqn{2^{-k} D^{(k)}(x/2)}, with
 #' \eqn{D(x) = \log\Gamma(x + 1/2) - \log\Gamma(x) - \log(x)/2}, shifted to
 #' \eqn{x \ge 20} by its recurrence and summed there by its asymptotic series.
 #' The derivatives of \eqn{\log T_m(w)} are polynomials in
@@ -386,15 +413,21 @@ S7::method(distrib_rng, SkewTDistrib) <- function(distrib, n, theta, ...) {
 #' \eqn{\partial_m^j T_m(w) = \int_0^w \partial_m^j t_m(u)\,du}. The integral is
 #' taken by 20-point Gauss-Legendre for \eqn{|w| \le 2}; beyond, it is minus the
 #' integral over the tail on the far side of \eqn{w}, taken by 12-point
-#' Gauss-Legendre on panels of a variable in which the tail of the density
-#' decays exponentially. On the left the integrand is
+#' Gauss-Legendre on panels of the variable \eqn{\tau}, with
+#' \eqn{u = w \mp |w|\,\mathrm{expm1}(\tau/s)} and
+#' \eqn{s = (m+1)w^2/(m + w^2)}, in which the integrand decays like
+#' \eqn{e^{-\tau}} from the start of the tail. For \eqn{m > 50} the derivatives
+#' in \eqn{m} of \eqn{(m+1)\log(1 + u^2/m)} are taken from its series in
+#' \eqn{1/m}, differentiated term by term, because the closed form cancels
+#' against the derivatives of \eqn{C} there. On the left the integrand is
 #' \eqn{t_m(u)\{P_j(u) - P_j(w)\}}, \eqn{P_j = \partial_m^j t_m/t_m}, whose
 #' integral is \eqn{T_m(w)\,\delta_j}.
 #'
 #' Against `mpmath.diff` at 50 digits, on the closed form through the
-#' incomplete beta function, every order from one to five agrees to
-#' \eqn{2\times10^{-13}} relative to its largest component at five points
-#' with \eqn{\nu} from 0.8 to 60.
+#' incomplete beta function, every order from one to five agrees to about
+#' \eqn{10^{-13}} relative to its largest component for \eqn{\nu} from 0.8 to
+#' 60, and the components in \eqn{\nu} to about \eqn{10^{-9}} at
+#' \eqn{\nu = 3000}.
 #'
 #' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
 #' @param y A numeric vector of observations.
@@ -527,20 +560,22 @@ S7::method(distrib_hessian, SkewTDistrib) <- function(distrib, y, theta, scale =
 #' @description
 #' Builds the table of \eqn{\partial^i_z\,\partial^c_\alpha \ell}, for every
 #' pair with \eqn{c + i \le 4}. Together with [skewt_msa_component()] it gives
-#' in closed form every derivative of the log-density that does not involve
-#' \eqn{\nu}, by a derivation in \eqn{z} independent of the compiled kernels
+#' in closed form every derivative of the log-density up to order four that
+#' does not involve \eqn{\nu}, by a derivation in \eqn{z} independent of the
+#' compiled kernels
 #' of [distrib_gradient.SkewTDistrib()], which are tested against it.
 #'
 #' @details
-#' # Why the block closes
+#' # Derivatives in the location, scale and shape
 #'
 #' With \eqn{z = (y-\mu)/\sigma} and \eqn{u(z) = z\sqrt{(\nu+1)/(\nu+z^2)}},
 #' the log-density is
 #' \deqn{\ell = \log 2 - \log\sigma + g(z) + \Lambda(\alpha\,u(z)),}
 #' where \eqn{g = \log t_\nu} and \eqn{\Lambda = \log T_{\nu+1}}. Neither
 #' \eqn{\mu} nor \eqn{\sigma} appears anywhere but inside \eqn{z}, and
-#' \eqn{\alpha} nowhere but inside \eqn{w = \alpha u}, so two observations
-#' settle the whole block.
+#' \eqn{\alpha} nowhere but inside \eqn{w = \alpha u}, so every derivative in
+#' \eqn{(\mu, \sigma, \alpha)} reduces to derivatives in \eqn{z} and in the
+#' argument \eqn{w} of \eqn{\Lambda}.
 #'
 #' The shape enters the argument of \eqn{\Lambda} linearly, so differentiating
 #' in it never leaves the table:
@@ -558,7 +593,7 @@ S7::method(distrib_hessian, SkewTDistrib) <- function(distrib, y, theta, scale =
 #' \eqn{-\log\sigma} contributes only to the pure-\eqn{\sigma} components,
 #' where it adds \eqn{(-1)^b (b-1)!\,\sigma^{-b}}.
 #'
-#' # Nothing in it needs a difference
+#' # Closed-form ingredients
 #'
 #' \eqn{u} and \eqn{g} are rational in \eqn{z} up to one square root, so their
 #' four derivatives are written out. \eqn{\Lambda^{(k)}} follows from the
@@ -696,7 +731,7 @@ skewt_msa_tower <- function(y, mu, sigma, alpha, nu) {
 #'
 #' @details
 #' A term whose coefficient \eqn{\prod_{k=i}^{b-1}(a+k)} vanishes is dropped
-#' rather than multiplied, because the factor it would multiply is the entry
+#' rather than multiplied, because the factor that it would multiply is the entry
 #' `"0_0"`, which the table does not hold: in R `0 * NA` is `NA`.
 #'
 #' @param tw A list from [skewt_msa_tower()].
@@ -783,12 +818,13 @@ skewt_msa_derivs <- function(distrib, y, theta, order) {
 #' @aliases distrib_dexpected_hessian.SkewTDistrib
 #'   distrib_d2expected_hessian.SkewTDistrib
 #' @description
-#' Returns the expected information, and through [distrib_dexpected_hessian()]
-#' and [distrib_d2expected_hessian()] its first and second derivatives in the
+#' Returns the expected Hessian of the log-density, that is minus the expected
+#' information, and through [distrib_dexpected_hessian()] and
+#' [distrib_d2expected_hessian()] its first and second derivatives in the
 #' parameters.
 #'
 #' @details
-#' No component has an elementary form. The family is a location-scale family,
+#' The components have no elementary form. The family is a location-scale family,
 #' so every component equals its value at \eqn{\mu = 0}, \eqn{\sigma = 1} times
 #' \eqn{\sigma^{-k}}, with \eqn{k} the number of indices on \eqn{\mu} or
 #' \eqn{\sigma}. The value there depends on \eqn{(\alpha, \nu)} alone and is one
@@ -1008,8 +1044,8 @@ S7::method(distrib_deriv5, SkewTDistrib) <- function(
 #' exactly, because the response and the location enter the density only
 #' through their difference; the identity holds for every location family.
 #'
-#' It is closed form at every parameter value, \eqn{\nu} included: nothing here
-#' differentiates the degrees of freedom.
+#' It is closed form at every parameter value, \eqn{\nu} included, because the
+#' formula does not differentiate in the degrees of freedom.
 #'
 #' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
 #' @param y A numeric vector of observations.
@@ -1053,9 +1089,10 @@ S7::method(distrib_grad_y, SkewTDistrib) <- function(distrib, y, theta, ...) {
 #'
 #' @description
 #' Computes \eqn{\partial^2\ell/\partial y^2 = D'/\sigma^2}, with
-#' \eqn{D' = A' + Q'B^2 + QB'} in the notation of [skewt_pieces()]. It is the
-#' same expression as \eqn{\partial^2\ell/\partial\mu^2}: two signs cancel
-#' where one did not at first order.
+#' \eqn{D' = A' + Q'B^2 + QB'} in the notation of [skewt_pieces()]. It equals
+#' \eqn{\partial^2\ell/\partial\mu^2}, because the response and the location
+#' enter the density through \eqn{y - \mu} and the sign of the first
+#' derivative disappears in the second.
 #'
 #' Unlike the skew normal's, the value **changes sign**. The Student
 #' \eqn{t}'s curvature is positive wherever \eqn{|z| > \sqrt{\nu}}, so the
@@ -1110,10 +1147,9 @@ S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta, ...) {
 #'
 #' @description
 #' Builds a skew \eqn{t} distribution object with location \eqn{\mu}, scale
-#' \eqn{\sigma}, shape \eqn{\alpha} and degrees of freedom \eqn{\nu}. It is
-#' the four-parameter family a location-scale-shape framework wants: the
+#' \eqn{\sigma}, shape \eqn{\alpha} and degrees of freedom \eqn{\nu}. The
 #' scale, the asymmetry and the tail weight are three separate parameters,
-#' each of which can carry its own linear predictor.
+#' and each of them can carry its own linear predictor.
 #'
 #' Three families sit inside it. \eqn{\alpha = 0} is
 #' [student_t1_distrib()], large \eqn{\nu} approaches
@@ -1129,21 +1165,23 @@ S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta, ...) {
 #'   must be strictly positive. Defaults to [linkfunctions7::log_link()].
 #'
 #' @details
-#' # Why the fourth parameter
+#' # Range of the skewness and the kurtosis
 #'
 #' The skew normal of [skewnormal1_distrib()] reaches a skewness of at most
 #' 0.99527 and an excess kurtosis of at most 0.86918, both approached only as
-#' \eqn{|\alpha| \to \infty}. Adding \eqn{\nu} removes both ceilings: measured
-#' at \eqn{\alpha = 50}, the skewness is 1.190 at \eqn{\nu = 30}, 2.050 at
-#' \eqn{\nu = 6} and 3.998 at \eqn{\nu = 4}.
+#' \eqn{|\alpha| \to \infty}. Adding \eqn{\nu} removes both ceilings: at
+#' \eqn{\alpha = 50} the skewness is 1.12 at \eqn{\nu = 30}, 2.05 at
+#' \eqn{\nu = 6} and 4.00 at \eqn{\nu = 4}, and it grows without bound as
+#' \eqn{\nu} decreases to 3.
 #'
 #' # How the derivatives are computed
 #'
 #' The density contains \eqn{T_{\nu+1}}, and the derivatives of a Student
 #' \eqn{t} distribution function in its degrees of freedom have no elementary
 #' expression. They are integrals of the derivatives of the \eqn{t} density and
-#' are taken by quadrature, so that every derivative this family reports, to
-#' order five, is exact to rounding; see [distrib_gradient.SkewTDistrib()].
+#' are taken by quadrature. The derivatives to order five are closed form in
+#' \eqn{\mu}, \eqn{\sigma} and \eqn{\alpha}, and those in \eqn{\nu} come from
+#' that quadrature; see [distrib_gradient.SkewTDistrib()].
 #'
 #' # Fitting
 #'
@@ -1152,8 +1190,9 @@ S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta, ...) {
 #' on an intercept-only fit pays for one integral per iteration.
 #'
 #' The distribution function and the quantile function likewise have no
-#' elementary form; the base class integrates the density and inverts the
-#' result by root finding.
+#' elementary form. The distribution function integrates the density by the
+#' compiled rule of [compiled_cdf()], and the quantile function inverts it by
+#' root finding in [continuous_distrib()].
 #'
 #' # Moments
 #'
@@ -1167,19 +1206,18 @@ S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta, ...) {
 #'
 #' The skew normal's expected information loses a rank at \eqn{\alpha = 0},
 #' because its shape score is a fixed multiple of its location score there.
-#' **The skew \eqn{t} does not inherit that at finite \eqn{\nu.}** The tilting
-#' argument carries \eqn{c = \sqrt{(\nu+1)/(\nu+z^2)}}, which depends on the
-#' observation, so the two scores are not proportional: measured at
-#' \eqn{\alpha = 0}, \eqn{\nu = 6}, their ratio spreads over 0.76 across
-#' observations, where the skew normal's is constant to the last digit. The
-#' spread falls as \eqn{O(1/\nu)}, so the singularity is inherited only in the
-#' limit: 0.068 at \eqn{\nu = 100}, \eqn{7\times10^{-4}} at \eqn{10^4}.
+#' For the skew \eqn{t} at a finite \eqn{\nu} the ratio of the score in
+#' \eqn{\alpha} to the score in \eqn{\mu} at \eqn{\alpha = 0} is proportional
+#' to \eqn{\sqrt{(\nu+z^2)/(\nu+1)}}, which depends on the observation through
+#' \eqn{z}, whereas the skew normal's ratio is a constant. The relative
+#' variation of the ratio over \eqn{z} is of order \eqn{z^2/\nu}, so the
+#' information becomes singular only as \eqn{\nu \to \infty}.
 #'
-#' What is weakly identified here is \eqn{\nu} itself. The smallest eigenvalue
-#' of the information belongs to that direction and falls with \eqn{\nu}:
-#' measured at \eqn{\alpha = 0}, it is \eqn{3.6\times10^{-3}} at \eqn{\nu = 4},
-#' \eqn{8.4\times10^{-4}} at 6 and \eqn{1.7\times10^{-6}} at 30. A nearly
-#' Gaussian tail carries little information about how heavy it is.
+#' The parameter that is weakly identified is \eqn{\nu}. At
+#' \eqn{\alpha = 0} the smallest eigenvalue of the expected information
+#' corresponds to the direction of \eqn{\nu} and decreases as \eqn{\nu} grows,
+#' because a tail close to the Gaussian one carries little information about
+#' its weight.
 #'
 #' # Parameter domains
 #'

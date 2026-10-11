@@ -10,21 +10,25 @@ skewt_pieces(y, mu, sigma, alpha, nu)
 \item{y}{A numeric vector of observations.}
 
 \item{mu, sigma, alpha, nu}{The four parameters, numeric vectors of length 1 or
-of the length of \code{y}. Nothing is validated: \code{sigma} and \code{nu} must be
-strictly positive.}
+of the length of \code{y}. The arguments are not validated; \code{sigma} and \code{nu}
+must be strictly positive.}
 }
 \value{
-A named list of ten numeric vectors, each of the length of the
-recycled inputs: \code{z} the standardized variable, \code{w} the tilting argument,
+A named list of ten numeric vectors, each of the length implied by
+the arguments on which it depends: \code{z} the standardized variable, \code{w} the
+tilting argument,
 \code{c} the factor relating them, \code{a} and \code{da} for \eqn{A} and \eqn{A'}, \code{e}
 for \eqn{E}, \code{b} and \code{db} for \eqn{B} and \eqn{B'}, and \code{q} and \code{dq} for
 \eqn{Q} and \eqn{Q'}.
 }
 \description{
 Assembles the standardized variable, the argument of the tilting
-distribution function and the six scalar functions every closed-form
-derivative of the log-density is a combination of. Every method in this
-family calls it once and then writes its own formula in terms of the result.
+distribution function and the seven scalar functions \eqn{A}, \eqn{A'},
+\eqn{E}, \eqn{B}, \eqn{B'}, \eqn{Q} and \eqn{Q'}, of which the closed-form
+derivatives of the log-density in \eqn{(\mu, \sigma, \alpha)} are
+combinations. \code{\link[=distrib_grad_y.SkewTDistrib]{distrib_grad_y.SkewTDistrib()}} and
+\code{\link[=distrib_hess_y.SkewTDistrib]{distrib_hess_y.SkewTDistrib()}} evaluate their formulas from the result;
+the derivatives in the parameters come from the compiled kernels.
 }
 \details{
 With \eqn{z = (y-\mu)/\sigma}, \eqn{m = \nu + 1}, \eqn{s = \nu + z^2} and
@@ -40,14 +44,15 @@ and \eqn{Q = t_m(w)/T_m(w)} with
 \eqn{Q' = Q\{-(m+1)w/(m + w^2) - Q\}}, the last from differentiating the
 quotient.
 
-\eqn{Q} is formed as \code{exp(dt(log = TRUE) - pt(log.p = TRUE))} because both
-factors underflow together in the far left tail while the ratio stays
-finite. It matters as the degrees of freedom grow and the \eqn{t} tail
-approaches the Gaussian's: measured at \eqn{w = -60} with
-\eqn{m = 2000}, the log route returns 21.4345 and \code{dt(w, m)/pt(w, m)}
-returns \code{NaN}.
+\eqn{Q} is formed as \code{exp(dt(log = TRUE) - pt(log.p = TRUE))}, because
+\eqn{t_m(w)} and \eqn{T_m(w)} underflow together in the far left tail while
+their ratio stays finite. The direct quotient is \code{NaN} there, in particular
+when the degrees of freedom are large and the \eqn{t} tail is close to the
+Gaussian one. Where \eqn{|z| > 10^{20}} the functions are written in
+\eqn{\sqrt{s}}, \eqn{z/\sqrt{s}} and \eqn{\nu/s}, so that no power of
+\eqn{s} overflows.
 
-Nothing here differentiates in \eqn{\nu}. The derivative kernels evaluate
+This function does not differentiate in \eqn{\nu}. The derivative kernels evaluate
 the same quantities in bounded variables; see
 \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}.
 }

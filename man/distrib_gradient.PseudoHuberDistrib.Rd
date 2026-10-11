@@ -34,11 +34,11 @@ closed form. With \eqn{r = y - \mu} and
   \dfrac{1}{\nu} + \dfrac{1}{D}
   + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\, K_1(\sqrt{\nu})}\right].}
 
-The location component \strong{redescends}: it grows like \eqn{r/\sigma^2} near
-the location and tends to \eqn{\pm 1/\sigma} far from it, so a gross outlier
-contributes a bounded amount to the estimating equation. That bounded
-influence is the whole reason the pseudo-Huber loss exists, and here it is
-the score of a genuine likelihood.
+The location component is bounded: it grows like
+\eqn{r/(\sigma^2\sqrt{\nu})} near the location and tends to
+\eqn{\pm 1/\sigma} far from it, so a gross outlier contributes a bounded
+amount to the estimating equation. Unlike the score of a Student t, it does
+not return to zero.
 
 With \code{scale = "link"} the generic applies the chain rule for the links the
 family carries. This method always returns the parameter scale. The

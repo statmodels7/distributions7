@@ -28,9 +28,9 @@ differentiating an expectation under the integral sign is not automatically
 licensed. The consequence a user meets is that the expected information
 exists only for \eqn{\xi > -1/2}; see \code{\link[=gpd_distrib]{gpd_distrib()}}.
 
-\code{ifelse()} is correct here and is deliberate: both arguments are of the
-length of the test after recycling, so a vector of shapes gives a vector of
-endpoints.
+The two arguments are recycled to a common length before the branch on
+the sign of the shape, so a vector of scales beside a scalar shape gives a
+vector of endpoints.
 }
 \examples{
 # Finite only for a negative shape.

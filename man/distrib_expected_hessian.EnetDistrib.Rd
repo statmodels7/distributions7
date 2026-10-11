@@ -31,12 +31,11 @@ A named list of six numeric vectors in \code{\link[=hess_names]{hess_names()}}'s
 \code{lambda_alpha}. The two mixed location entries are exactly zero.
 }
 \description{
-Returns the expected Hessian in closed form. The family already carries
-every piece of it: in the two rates the density is an exponential family, so
-the information is the Hessian of its own log normalizing constant, and
-\code{.enet_logz_derivs()} computes that for the observed Hessian already.
+Returns the expected Hessian in closed form. In the two rates the density is
+an exponential family, so the information in those rates is the Hessian of
+the log normalizing constant, which the observed Hessian also uses.
 
-\code{expected}, \code{approx} and \code{nsim} are all ignored, the answer being exact.
+\code{approx} and \code{nsim} are accepted and ignored, the answer being exact.
 }
 \section{The rate block}{
 With sufficient statistics \eqn{-|z|} and \eqn{-z^2/2}, \eqn{\log Z} is the

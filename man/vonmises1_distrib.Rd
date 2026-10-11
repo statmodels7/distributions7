@@ -38,16 +38,14 @@ from a Bessel series} in place of the quadrature the base class would use.
 \section{The parametrization}{
 The density on \eqn{y \in [-\pi, \pi)} is
 \deqn{f(y; \mu, \kappa) = \dfrac{e^{\kappa\cos(y-\mu)}}{2\pi I_0(\kappa)},}
-with \eqn{I_0} the modified Bessel function of the first kind. This is the
-first family in the package whose support has the topology of a circle: the
-two ends of the interval are the same point, so the density need not vanish
-at either. \code{\link[=vonmises2_distrib]{vonmises2_distrib()}} is the same law parametrized by the mean
+with \eqn{I_0} the modified Bessel function of the first kind. The support
+has the topology of a circle: the two ends of the interval are the same
+point, so the density need not vanish at either. \code{\link[=vonmises2_distrib]{vonmises2_distrib()}} is the same law parametrized by the mean
 resultant length in place of the concentration.
 
-The normalizing constant goes through \code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}}. R's
-exponentially scaled \code{besselI} underflows to an exact zero between
-\eqn{\kappa = 10^5} and \eqn{10^6}, where the logarithm returns \code{-Inf};
-measured at \eqn{\kappa = 10^6} the toolkit's routine returns 999992.17.
+The normalizing constant goes through \code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}}, which
+stays finite where R's exponentially scaled \code{besselI} returns an exact zero
+(from about \eqn{\kappa = 2 \times 10^5}).
 }
 
 \section{Score, information, and orthogonality}{
@@ -56,8 +54,10 @@ Writing \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} for the derivative of
 \deqn{\dfrac{\partial\ell}{\partial\mu} = \kappa\sin(y-\mu), \qquad
       \dfrac{\partial\ell}{\partial\kappa} = \cos(y-\mu) - A(\kappa),}
 and every second derivative is closed form, with
-\eqn{A'(\kappa) = 1 - A(\kappa)/\kappa - A(\kappa)^2} from the Bessel
-recurrences and no further evaluation. Since
+\eqn{A'(\kappa) = 1 - A(\kappa)/\kappa - A(\kappa)^2}. numericals7 evaluates
+\eqn{A'} and the higher derivatives of \eqn{A} from a power series for
+small \eqn{\kappa}, where that identity cancels, and from the identity in
+extended precision or an asymptotic series above. Since
 \eqn{\mathbb{E}[\sin(Y-\mu)] = 0} by symmetry, \strong{the two parameters are
 orthogonal}: the expected information is diagonal, and Fisher scoring
 updates the direction and the concentration independently.
@@ -98,12 +98,13 @@ infinitely many.
 }
 
 \section{The distribution function}{
-The density has no elementary antiderivative. The base class would
-integrate it once per observation, which measured 4.5 seconds at ten
-thousand points; this class supplies \code{\link[=distrib_cdf.VonMises1Distrib]{distrib_cdf.VonMises1Distrib()}}
-instead, a Fourier series integrated term by term whose term count is
-\eqn{8.5\sqrt{\kappa} + 10}, measured. The \strong{quantile} does come from
-\code{\link[=continuous_distrib]{continuous_distrib()}}, by root finding on that series.
+The density has no elementary antiderivative. The base class integrates it
+numerically, once per observation; this class supplies
+\code{\link[=distrib_cdf.VonMises1Distrib]{distrib_cdf.VonMises1Distrib()}} instead, a Fourier series integrated term
+by term with \eqn{\max\{20, \lceil 8.5\sqrt{\kappa}\rceil + 10\}} terms,
+and a quadrature of the tail where the requested tail is below
+\eqn{10^{-10}}. The \strong{quantile} comes from \code{\link[=continuous_distrib]{continuous_distrib()}}, by
+root finding on the logarithm of the smaller tail.
 }
 
 \section{Notation}{

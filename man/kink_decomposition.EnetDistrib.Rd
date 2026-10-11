@@ -12,21 +12,20 @@ A \code{\link[=kink_spec]{kink_spec()}} with \code{phi = "abs"}.
 \description{
 The log-density is \eqn{-a\lvert y-\mu\rvert - c(y-\mu)^2/2 - \log Z} with
 \eqn{a = \lambda\alpha} and \eqn{c = \lambda(1-\alpha)}, so the composition
-is the absolute value at \eqn{v = y - \mu} with
-\eqn{c(\theta) = -\lambda\alpha}.
+is the absolute value at \eqn{v = y - \mu} with coefficient
+\eqn{-\lambda\alpha = -a}.
 }
 \details{
 The quadratic half and the normalizing constant are smooth, so the location
 is again the only non-smooth parameter, and \eqn{m_\mu = 0} for every
 \eqn{\alpha > 0}.
 
-The SIZE of the kink is \eqn{2\lambda\alpha} and goes to zero with
-\eqn{\alpha}, which is why a detector reading the second Bartlett identity
-finds this family in one sweep and not in another: at a small \eqn{\alpha}
-the family is nearly Gaussian and the missing curvature disappears into the
-scale of the rest of the matrix. The kink is there at every \eqn{\alpha > 0}
-all the same, and the declaration says so where a measurement of the
-curvature cannot.
+The size of the kink is \eqn{2\lambda\alpha} and goes to zero with
+\eqn{\alpha}. A detector based on the second Bartlett identity therefore
+sees the missing curvature less clearly at small \eqn{\alpha}, where the
+family is nearly Gaussian. The kink exists at every \eqn{\alpha > 0}, and
+the declaration records it independently of any measurement of the
+curvature.
 }
 \examples{
 kink_decomposition(enet_distrib())

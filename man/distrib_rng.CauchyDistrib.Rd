@@ -20,8 +20,9 @@ A numeric vector of \code{n} draws.
 \description{
 Draws \code{n} independent Cauchy variates by calling \code{\link[stats:Cauchy]{stats::rcauchy()}}, so the
 draws come from R's own generator and depend on \code{.Random.seed} in the usual
-way. The generalized ratio-of-uniforms fallback the base class supplies is
-bypassed.
+way. The base class would draw by inversion through
+\code{\link[=distrib_quantile.CauchyDistrib]{distrib_quantile.CauchyDistrib()}}, which gives a different sequence for
+the same seed.
 
 A sample from this family carries extreme values at a rate that does not
 diminish with \code{n}, and its running mean does not settle: the sample mean of

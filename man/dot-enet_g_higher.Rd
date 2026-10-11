@@ -15,18 +15,17 @@
 \eqn{G'''}, each of the length \code{g} has.
 }
 \description{
-Adds \eqn{G''} and \eqn{G'''} to the list of pieces, obtained by
-differentiating the identity \eqn{G' = 1 + xG - G^2} instead of the ratio
-itself:
-\deqn{G'' = G + xG' - 2GG', \qquad
-  G''' = 2G' + xG'' - 2(G')^{2} - 2GG''.}
+Adds \eqn{G''} and \eqn{G'''} to the list of pieces, the second and third
+derivatives of \eqn{G = \mathrm{d}\log M/\mathrm{d}x}.
 }
 \details{
-Written this way each order is a polynomial in \eqn{x}, \eqn{G} and the
-orders below, so the cancellation that afflicts \eqn{G = x - 1/M} for large
-\eqn{x} is confined to \eqn{G} itself, where \code{.enet_G()} already switches to
-an asymptotic series past \eqn{|x| = 10^3}. Nothing above first order
-introduces a new cancellation.
+The derivatives of \eqn{\log M} are, with alternating signs, the cumulants
+of the density proportional to \eqn{e^{-xs - s^2/2}} on \eqn{s > 0}, and a
+compiled kernel computes them from the ratios of its moments, which follow
+a recursion run downward for \eqn{x \ge 1}. The identities
+\eqn{G' = 1 + xG - G^2} and \eqn{G'' = G + xG' - 2GG'} hold, but they
+cancel for large \eqn{x} (\eqn{1 + xG} is of order \eqn{x^{-2}} while its
+terms are of order one), so they are not used.
 }
 \section{Notation}{
 
@@ -39,8 +38,11 @@ p <- distributions7:::.enet_g_higher(
   distributions7:::.enet_parts(list(mu = 0, lambda = 2, alpha = 0.5)))
 c(x = p$x, G = p$g, dG = p$dg, d2G = p$d2g, d3G = p$d3g)
 
-# G'' against a central difference of the identity for G'.
-gp <- function(x) { g <- distributions7:::.enet_G(x); 1 + x * g - g^2 }
+# G'' against a central difference of G'.
+gp <- function(x) {
+  distributions7:::.enet_parts(list(mu = 0, lambda = 2 * x^2,
+                                    alpha = 0.5))$dg
+}
 eps <- 1e-5
 c(analytic = p$d2g, numeric = (gp(p$x + eps) - gp(p$x - eps)) / (2 * eps))
 

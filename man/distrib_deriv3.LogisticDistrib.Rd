@@ -20,8 +20,10 @@ model are returned, by the numerical route described above. Defaults to
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{approx}{One of \code{"integrate"} (the default), \code{"bartlett"}, \code{"mc"} or
-\code{"opg"}, matched by \code{\link[base:match.arg]{base::match.arg()}}. Read \strong{only} when
-\code{expected = TRUE}, where it selects how the expectation is approximated.}
+\code{"opg"}, matched by \code{\link[base:match.arg]{base::match.arg()}}. Read only when
+\code{expected = TRUE}, where it selects how the expectation is approximated.
+At this order \code{"opg"} is evaluated as \code{"bartlett"}, the outer product
+of scores being an identity of order two.}
 
 \item{nsim}{A single positive integer, the sample size used when
 \code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
@@ -50,12 +52,13 @@ polynomial in \eqn{z} with the \eqn{g_j} as coefficients:
 \deqn{\dfrac{\partial^3 \ell}{\partial \mu \partial \sigma^2} = -\dfrac{2g_1 + 4z g_2 + z^2 g_3}{\sigma^3}, \qquad
       \dfrac{\partial^3 \ell}{\partial \sigma^3} = -\dfrac{2 + 6z g_1 + 6z^2 g_2 + z^3 g_3}{\sigma^3}.}
 
-With \code{expected = TRUE} the values are \strong{numerical}, unlike the orders below
-them. Two of the nine expectations at this order and the next require
-\eqn{\int w^k \mathrm{sech}^4 w \tanh^2 w \, dw}, which has no elementary
-form, so the method routes to \code{\link[=expected_derivative]{expected_derivative()}} and \code{approx} and
-\code{nsim} are read. The default there is \code{"integrate"}, one quadrature per
-component.
+With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, so the
+values are computed numerically according to \code{approx} (by default
+\code{"integrate"}, one quadrature per component), and \code{approx} and \code{nsim}
+are read. The expectations at this order are elementary
+(\eqn{1/(2\sigma^3)} for \code{mu_mu_sigma}, \eqn{(2+\pi^2)/(2\sigma^3)} for
+\code{sigma_sigma_sigma}, and zero for the two components odd in \eqn{z}), but
+the method does not use these closed forms.
 }
 \section{Notation}{
 

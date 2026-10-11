@@ -24,18 +24,20 @@ elements are named \code{"c_i"} and hold
 \description{
 Builds the table of \eqn{\partial^i_z\,\partial^c_\alpha \ell}, for every
 pair with \eqn{c + i \le 4}. Together with \code{\link[=skewt_msa_component]{skewt_msa_component()}} it gives
-in closed form every derivative of the log-density that does not involve
-\eqn{\nu}, by a derivation in \eqn{z} independent of the compiled kernels
+in closed form every derivative of the log-density up to order four that
+does not involve \eqn{\nu}, by a derivation in \eqn{z} independent of the
+compiled kernels
 of \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}, which are tested against it.
 }
-\section{Why the block closes}{
+\section{Derivatives in the location, scale and shape}{
 With \eqn{z = (y-\mu)/\sigma} and \eqn{u(z) = z\sqrt{(\nu+1)/(\nu+z^2)}},
 the log-density is
 \deqn{\ell = \log 2 - \log\sigma + g(z) + \Lambda(\alpha\,u(z)),}
 where \eqn{g = \log t_\nu} and \eqn{\Lambda = \log T_{\nu+1}}. Neither
 \eqn{\mu} nor \eqn{\sigma} appears anywhere but inside \eqn{z}, and
-\eqn{\alpha} nowhere but inside \eqn{w = \alpha u}, so two observations
-settle the whole block.
+\eqn{\alpha} nowhere but inside \eqn{w = \alpha u}, so every derivative in
+\eqn{(\mu, \sigma, \alpha)} reduces to derivatives in \eqn{z} and in the
+argument \eqn{w} of \eqn{\Lambda}.
 
 The shape enters the argument of \eqn{\Lambda} linearly, so differentiating
 in it never leaves the table:
@@ -54,7 +56,7 @@ which follows by induction from \eqn{P_{a,0} = F^{(a)}} and
 where it adds \eqn{(-1)^b (b-1)!\,\sigma^{-b}}.
 }
 
-\section{Nothing in it needs a difference}{
+\section{Closed-form ingredients}{
 \eqn{u} and \eqn{g} are rational in \eqn{z} up to one square root, so their
 four derivatives are written out. \eqn{\Lambda^{(k)}} follows from the
 Riccati recursion \eqn{Q' = Q(G-Q)} for \eqn{Q = t_{\nu+1}/T_{\nu+1}} and

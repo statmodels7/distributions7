@@ -39,7 +39,8 @@ Computes the fifteen fourth derivatives of the log-density in closed form,
 in a compiled kernel, in the notation of
 \code{\link[=distrib_deriv3.SkewNormal1Distrib]{distrib_deriv3.SkewNormal1Distrib()}}. The recursion
 \eqn{R' = -R(t+R)} keeps every one of them a polynomial in \eqn{t} and the
-inverse Mills ratio, so the fourth order needs nothing the third did not.
+inverse Mills ratio, so the fourth order uses the same two functions as
+the third, and the same cumulant route below \eqn{t = -1}.
 
 With \code{expected = TRUE} the value is a numerical expectation, for the reason
 it is at third order: the integrals are the ones that block the expected
@@ -65,7 +66,7 @@ rbind(analytic = d4$mu_mu_alpha_alpha,
                  distrib_deriv3(d, y, list(mu = 0, sigma = 1, alpha = 3 - eps))$mu_mu_alpha) /
                 (2 * eps))
 
-# The count is bit for bit independent of the thread count.
+# The result is bit for bit independent of the thread count.
 identical(distrib_deriv4(d, y, th, threads = 1L),
           distrib_deriv4(d, y, th, threads = 2L))
 }

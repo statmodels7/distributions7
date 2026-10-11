@@ -37,8 +37,8 @@ bilinear.
 The location component is \strong{undefined at \eqn{y = \mu}}, where
 \eqn{\mathrm{sgn}} jumps; \code{sign(0)} is 0 in R, so the value returned there
 is \eqn{cz = 0}, one point of the subdifferential. \code{params_smooth}
-records \code{mu = FALSE} so that
-\code{\link[=check_distrib]{check_distrib()}}'s finite-difference guard knows.
+records \code{mu = FALSE}, which \code{\link[=check_distrib]{check_distrib()}} reads to discard the
+finite-difference references that straddle the location.
 }
 \section{Notation}{
 

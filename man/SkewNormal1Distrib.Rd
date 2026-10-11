@@ -61,41 +61,52 @@ The class inherits from \code{continuous_distrib}. Its parametrization is
 
 Build one with \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, which supplies the three link
 functions and fills the properties in. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.
+constructor, which takes the parent's properties; the validator of
+\code{distrib} checks them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered in this file:
-\code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf()}},
-\code{\link[=distrib_cdf.SkewNormal1Distrib]{distrib_cdf()}},
-\code{\link[=distrib_rng.SkewNormal1Distrib]{distrib_rng()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf()}},
+\code{\link[=distrib_cdf.SkewNormal1Distrib]{distrib_cdf()}} and
+\code{\link[=distrib_rng.SkewNormal1Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.SkewNormal1Distrib]{distrib_hessian()}},
-\code{\link[=distrib_deriv3.SkewNormal1Distrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.SkewNormal1Distrib]{distrib_deriv4()}},
+\code{\link[=distrib_expected_hessian.SkewNormal1Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.SkewNormal1Distrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.SkewNormal1Distrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.SkewNormal1Distrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.SkewNormal1Distrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
 \code{\link[=distrib_grad_y.SkewNormal1Distrib]{distrib_grad_y()}},
-\code{\link[=distrib_hess_y.SkewNormal1Distrib]{distrib_hess_y()}}, and the expected
-information with its two derivatives,
-\code{\link[=distrib_expected_hessian.SkewNormal1Distrib]{distrib_expected_hessian()}}.
-
-Registered elsewhere in the package, all closed form: the four moments
-\code{\link[=mean.SkewNormal1Distrib]{mean()}}, \code{\link[=variance.SkewNormal1Distrib]{variance()}},
+\code{\link[=distrib_hess_y.SkewNormal1Distrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.SkewNormal1Distrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.SkewNormal1Distrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.SkewNormal1Distrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.SkewNormal1Distrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross3_y.SkewNormal1Distrib]{distrib_cross3_y()}},
+\code{\link[=distrib_grad_y_hess.SkewNormal1Distrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.SkewNormal1Distrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.SkewNormal1Distrib]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf.SkewNormal1Distrib]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.SkewNormal1Distrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.SkewNormal1Distrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.SkewNormal1Distrib]{mean()}},
+\code{\link[=variance.SkewNormal1Distrib]{variance()}},
 \code{\link[=skewness.SkewNormal1Distrib]{skewness()}} and
-\code{\link[=kurtosis.SkewNormal1Distrib]{kurtosis()}} in \code{moments.R}; the mixed
-response-parameter derivative \code{\link[=distrib_cross_y]{distrib_cross_y()}} in
-\code{cross_derivatives_families.R}; the four orders of the distribution
-function's parameter derivatives, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}
-through \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}}, in
-\code{cdf_skewnormal_higher.R}; and the second-order response derivatives
-\code{\link[=distrib_cross2_y]{distrib_cross2_y()}},
-\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and
-\code{\link[=distrib_grad_y_hess]{distrib_hess_y_hess()}} in \code{theta2_families.R}.
+\code{\link[=kurtosis.SkewNormal1Distrib]{kurtosis()}};
+\item the fitting helpers:
+\code{\link[=distrib_intercept_start.SkewNormal1Distrib]{distrib_intercept_start()}}
+and \code{\link[=expected_hessian_costly]{expected_hessian_costly()}}.
+}
 
-The \strong{quantile} comes from \code{\link[=continuous_distrib]{continuous_distrib()}}, by root finding on the
-distribution function. The \strong{expected information} has no elementary form
-and is computed by one quadrature per distinct \eqn{\alpha}; see
-\code{\link[=distrib_expected_hessian.SkewNormal1Distrib]{distrib_expected_hessian.SkewNormal1Distrib()}}.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{

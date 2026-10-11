@@ -37,7 +37,10 @@ closed form. Writing \eqn{z = (y - \mu)/\sigma},
 
 The curvature in \eqn{\mu} is negative everywhere and vanishes as
 \eqn{|z|} grows, so a distant observation carries almost no information
-about the location. The expectations are
+about the location. The kernel computes
+\eqn{\mathrm{sech}^2(z/2)} as \eqn{4e/(1+e)^2} with \eqn{e = e^{-|z|}},
+so the value keeps its relative accuracy far into the tails, where
+\eqn{1 - \tanh^2(z/2)} would cancel to zero. The expectations are
 \code{\link[=distrib_expected_hessian.LogisticDistrib]{distrib_expected_hessian.LogisticDistrib()}}.
 }
 \examples{

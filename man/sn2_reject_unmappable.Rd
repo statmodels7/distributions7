@@ -28,12 +28,12 @@ reads an error about \code{alpha}, a parameter the model does not have, and
 about \code{"skew normal1"}, a family the call does not name. The message here
 reports the centered parameter responsible and the value it holds.
 
-The check states a property of the delegation rather than guarding a value
-the public surface can reach. \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} bounds \code{gamma1} and
-every generic validates it before dispatch, so a skewness outside its
-domain is reported before the map runs; what remains reachable is a \code{sigma}
-and a \code{gamma1} each inside its own domain whose implied scale or
-location leaves the doubles.
+The check covers the failures of the delegation itself.
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} bounds \code{gamma1}, and every generic checks the
+parameters against their domains before it calls the method, so a
+skewness outside its domain is reported before the map runs. The remaining
+case is a \code{sigma} and a \code{gamma1}, each inside its own domain, whose implied
+scale or location is not finite.
 }
 \examples{
 # A skewness at the ceiling is reported in the centered family's own terms.

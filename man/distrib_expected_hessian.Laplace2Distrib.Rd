@@ -16,8 +16,10 @@ recycled. \code{lambda} must be strictly positive.}
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's. As for \code{\link[=laplace_distrib]{laplace_distrib()}}, a strategy
-averaging the observed second derivative would answer 0 in the location.}
+signature matches the generic's. As for \code{\link[=laplace_distrib]{laplace_distrib()}}, the
+strategy \code{"mc"} of the generic, which averages the observed second
+derivative over simulated draws, would give 0 in the location, while
+\code{"opg"}, \code{"bartlett"} and \code{"integrate"} read the product of scores.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 

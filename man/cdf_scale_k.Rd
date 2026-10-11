@@ -10,7 +10,8 @@ cdf_scale_k(distrib, Fq, dF, order, lower.tail, log)
 \item{distrib}{An object inheriting from \code{distrib}. Only its \code{params} are
 read, to name and enumerate the components.}
 
-\item{Fq}{The distribution function at the quantile, a numeric vector.}
+\item{Fq}{The distribution function at the quantile, a numeric vector,
+possibly with the attribute \code{"upper"} that \code{\link[=tail_cdf]{tail_cdf()}} attaches.}
 
 \item{dF}{A list of length \code{order}. Element \eqn{k} is the table of
 \eqn{k}-th derivatives of \eqn{F}, keyed as
@@ -34,7 +35,9 @@ derivatives of whichever tail was requested, on the natural or the
 logarithmic scale, at any order from 1 to 4.
 }
 \section{The two conversions}{
-Switching to the upper tail flips the sign at every order, \eqn{S = 1 - F}.
+Switching to the upper tail flips the sign at every order, \eqn{S = 1 - F};
+the probability \eqn{S} by which the log scale divides is the family's own
+upper tail when \code{Fq} comes from \code{\link[=tail_cdf]{tail_cdf()}}.
 Switching to the log scale is the moment-to-cumulant relation
 \deqn{\partial^I \log P = \sum_\pi (-1)^{|\pi|-1}(|\pi|-1)!
       \prod_{B \in \pi} \frac{\partial^B P}{P},}

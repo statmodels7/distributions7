@@ -31,7 +31,9 @@ For \eqn{|\gamma_1| <} \code{\link[=sn2_ge]{sn2_ge()}} they come from their seri
 \eqn{r = (\gamma_1/c)^{1/3}}; elsewhere from the quadrature of
 \code{\link[=loc_scale_expected]{loc_scale_expected()}} over the family's own observed derivatives, the
 family being location-scale in \eqn{(\mu, \sigma)} at fixed
-\eqn{\gamma_1}.
+\eqn{\gamma_1}. The quadrature is centered at the step of the skewing
+function, \eqn{w = -r} (\code{\link[=loc_scale_center]{loc_scale_center()}}), which at a skewness near the
+ceiling is too sharp for nodes clustered at zero.
 }
 \details{
 The series is the series in \eqn{r} of the observed components integrated
@@ -39,7 +41,8 @@ term by term against the series of the density, with gaussian moments,
 computed offline at 60 digits. It is asymptotic rather than convergent,
 and below the bound its terms fall under \eqn{10^{-20}} before they turn.
 The information is finite at \eqn{\gamma_1 = 0}, where it is
-\eqn{\mathrm{diag}(1, 2, 1/6)/\sigma^2} with the sign of a Hessian, but it is
+\eqn{\mathrm{diag}(1/\sigma^2, 2/\sigma^2, 1/6)} with the sign of a Hessian,
+but it is
 not analytic in \eqn{\gamma_1} there: \eqn{E[\ell_{\gamma_1\gamma_1}]}
 carries a term in \eqn{\gamma_1^{2/3}} and \eqn{E[\ell_{\mu\gamma_1}]} one
 in \eqn{\gamma_1^{4/3}}. Its derivatives in \eqn{\gamma_1} are therefore

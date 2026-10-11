@@ -50,37 +50,48 @@ The S7 class of the von Mises family, the natural distribution for an angle,
 parametrized by a mean direction \eqn{\mu} and a concentration
 \eqn{\kappa > 0}, with density
 \eqn{f(y) = e^{\kappa\cos(y-\mu)}/\{2\pi I_0(\kappa)\}} on
-\eqn{[-\pi, \pi)}. It inherits from \code{continuous_distrib}; the nine methods
+\eqn{[-\pi, \pi)}. It inherits from \code{continuous_distrib}; the methods
 listed below are registered on it directly.
 
-This is the first family in the package whose support has the topology of a
-circle: the two ends of the interval are the same point, so the density need
-not vanish at either.
+The support of this family has the topology of a circle: the two ends of
+the interval are the same point, so the density need not vanish at either.
 
 Build one with \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}, which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,
-which takes the parent's properties and validates none of the relationships
-between them.
+which takes the parent's properties; the validator of \code{distrib} checks
+them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class:
-\code{\link[=distrib_cdf.VonMises1Distrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.VonMises1Distrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.VonMises1Distrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.VonMises1Distrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_grad_y.VonMises1Distrib]{distrib_grad_y()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.VonMises1Distrib]{distrib_pdf()}},
+\code{\link[=distrib_cdf.VonMises1Distrib]{distrib_cdf()}} and
+\code{\link[=distrib_rng.VonMises1Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.VonMises1Distrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.VonMises1Distrib]{distrib_pdf()}},
-\code{\link[=distrib_rng.VonMises1Distrib]{distrib_rng()}}.
+\code{\link[=distrib_expected_hessian.VonMises1Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.VonMises1Distrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.VonMises1Distrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.VonMises1Distrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.VonMises1Distrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.VonMises1Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.VonMises1Distrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.VonMises1Distrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.VonMises1Distrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.VonMises1Distrib]{distrib_cross_y()}};
+\item the derivatives of the distribution function: \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.VonMises1Distrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.VonMises1Distrib]{distrib_deriv4_cdf()}}.
+}
 
-The \strong{quantile} comes from \code{\link[=continuous_distrib]{continuous_distrib()}}, by root finding on the
-distribution function; the distribution function itself is this class's own
-and is a Bessel series, not the parent's quadrature. The four moments come
-from \code{\link[=mean.distrib]{mean.distrib()}} and its siblings, numerically, and are the ordinary
-moments of \eqn{Y} as a number rather than the circular ones.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{

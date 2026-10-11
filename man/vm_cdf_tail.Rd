@@ -3,9 +3,12 @@
 \name{vm_cdf_tail}
 \alias{vm_cdf_tail}
 \alias{vm_log_tail}
+\alias{vm_log_piece}
 \title{The von Mises Tails Below the Series' Resolution}
 \usage{
 vm_log_tail(q, mu, kappa, lower)
+
+vm_log_piece(e, dir, L, mu, kappa)
 
 vm_cdf_tail(q, mu, kappa, lower.tail, log.p)
 }
@@ -15,19 +18,31 @@ vm_cdf_tail(q, mu, kappa, lower.tail, log.p)
 \item{mu, kappa}{Numeric vectors, the mean direction and the concentration.}
 
 \item{lower, lower.tail, log.p}{Logical of length 1.}
+
+\item{e, dir, L}{For \code{vm_log_piece()}, which integrates one piece: the end
+\eqn{e} at which the integrand is largest, the direction (1 or -1) in
+which it decreases, and the length of the piece.}
 }
 \value{
-A numeric vector for \code{vm_cdf_tail()}, a number for \code{vm_log_tail()}.
+A numeric vector for \code{vm_cdf_tail()}; for \code{vm_log_tail()} and
+\code{vm_log_piece()}, a number, the logarithm of the tail probability and of
+the integral of \eqn{e^{\kappa\cos(y - \mu)}} over the piece.
 }
 \description{
 \code{vm_cdf_tail()} returns \eqn{P(Y \le q)} or \eqn{P(Y > q)}, or their
 logarithms, from the series of \code{\link[=vm_cdf]{vm_cdf()}} where the requested tail is
 above \eqn{10^{-10}}, and from \code{vm_log_tail()} below, where the series'
 absolute error of about \eqn{10^{-16}} would dominate. \code{vm_log_tail()}
-integrates \eqn{\exp\{\kappa\cos(y - \mu) - M\}} over the tail from the end
-where it is largest, \eqn{M} its value there, on the scale
-\eqn{1/|\kappa\sin(y - \mu)|} at that end; the interval then excludes the
-mode, so no factor underflows.
+integrates \eqn{e^{\kappa\cos(y - \mu)}} over the tail, which excludes the
+mode, so the integrand decreases from each end of the interval to the
+antimode. The interval is split at the antimode when it contains it, and
+each piece is integrated from its end on the scale
+\eqn{1/\max\{\kappa|\sin(e - \mu)|, \sqrt\kappa\}} at that end \eqn{e},
+relative to the value there and with the difference of the cosines written
+as a product of sines, over panels of growing width until the remainder is
+below \eqn{10^{-17}} of the sum. The pieces are added on the log scale, and
+the normalizing constant comes from \code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}}, so no
+factor underflows at any concentration.
 }
 \examples{
 distributions7:::vm_cdf_tail(-1, 0, 100, TRUE, FALSE)

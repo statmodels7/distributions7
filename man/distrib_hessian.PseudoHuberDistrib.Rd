@@ -49,7 +49,7 @@ observation, in closed form. With \eqn{r = y - \mu},
 
 The curvature in \eqn{\mu} is negative at every observation, unlike a
 Student t's, so the log-density is concave in the location however far out
-the residual is. What redescends is the score, not the curvature's sign.
+the residual is.
 }
 \section{Notation}{
 

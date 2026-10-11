@@ -495,7 +495,8 @@ transpose_params <- function(theta) {
 #' `log.p` select from the logarithms of the two tails, both computed by the
 #' caller. `quantile_log_tails()` converts a probability given with
 #' `lower.tail` and `log.p` into the logarithms of the lower and the upper
-#' tail, without forming \eqn{1 - p} or exponentiating a logarithm.
+#' tail, without forming \eqn{1 - p} or exponentiating a logarithm; a
+#' probability outside \eqn{[0, 1]} gives `NaN` for both.
 #'
 #' @param a A numeric vector of non-positive numbers.
 #' @param log_lower,log_upper Numeric vectors, the logarithms of
@@ -523,7 +524,11 @@ transpose_params <- function(theta) {
 #'
 #' @keywords internal
 log1mexp_neg <- function(a) {
-  ifelse(a > -log(2), log(-expm1(a)), log1p(-exp(a)))
+  # by indexing, so that a NaN argument gives NaN and not NA
+  out <- log1p(-exp(a))
+  big <- !is.na(a) & a > -log(2)
+  out[big] <- log(-expm1(a[big]))
+  out
 }
 
 #' @rdname tail_helpers
@@ -535,6 +540,8 @@ cdf_from_log_tails <- function(log_lower, log_upper, lower.tail, log.p) {
 #' @rdname tail_helpers
 quantile_log_tails <- function(p, lower.tail, log.p) {
   lp <- if (log.p) p else log(p)
+  # a probability above one: both tails NaN
+  lp[!is.na(lp) & lp > 0] <- NaN
   lq <- log1mexp_neg(lp)
   if (lower.tail) list(lower = lp, upper = lq) else list(lower = lq, upper = lp)
 }

@@ -22,8 +22,9 @@ Computes \eqn{\partial^2\ell/\partial y^2}, the curvature of the log-density
 in the response. With \eqn{R' = -R(t+R)} at \eqn{t = \alpha z},
 \deqn{\dfrac{\partial^2 \ell}{\partial y^2}
       = \dfrac{\alpha^2 R' - 1}{\sigma^2},}
-which is the same expression as \eqn{\partial^2\ell/\partial\mu^2}: two
-signs cancel where one did not at first order, so the response curvature
+which is the same expression as \eqn{\partial^2\ell/\partial\mu^2}. The
+first derivative in \eqn{y} is minus the first derivative in \eqn{\mu}, and
+a second differentiation changes the sign again, so the response curvature
 equals the location curvature instead of being its negative.
 
 Since \eqn{R'} is negative for every \eqn{t}, the value is strictly negative

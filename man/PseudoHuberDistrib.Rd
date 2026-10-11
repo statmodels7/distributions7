@@ -57,38 +57,53 @@ below are registered on it in this file.
 
 Build one with \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}, which supplies the three link
 functions and fills the properties in. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.
+constructor, which takes the parent's properties; the validator of
+\code{distrib} checks them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class in this file:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.PseudoHuberDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.PseudoHuberDistrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.PseudoHuberDistrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.PseudoHuberDistrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_grad_y.PseudoHuberDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.PseudoHuberDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.PseudoHuberDistrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.PseudoHuberDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.PseudoHuberDistrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.PseudoHuberDistrib]{distrib_rng()}}, and the expected
-information with its two derivatives,
 \code{\link[=distrib_expected_hessian.PseudoHuberDistrib]{distrib_expected_hessian()}},
-registered through \code{\link[=register_loc_scale_expected]{register_loc_scale_expected()}}.
-
-Registered from other files: the mixed derivative
-\code{\link[=distrib_cross_y.PseudoHuberDistrib]{distrib_cross_y()}} and the
-distribution-function derivatives
-\code{\link[=distrib_grad_cdf.PseudoHuberDistrib]{distrib_grad_cdf()}} and
-\code{\link[=distrib_hess_cdf.PseudoHuberDistrib]{distrib_hess_cdf()}}, plus the four
-moments \code{\link[=mean.PseudoHuberDistrib]{mean()}},
+\code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.PseudoHuberDistrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.PseudoHuberDistrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.PseudoHuberDistrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.PseudoHuberDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.PseudoHuberDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.PseudoHuberDistrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.PseudoHuberDistrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.PseudoHuberDistrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.PseudoHuberDistrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross3_y.PseudoHuberDistrib]{distrib_cross3_y()}},
+\code{\link[=distrib_grad_y_hess.PseudoHuberDistrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.PseudoHuberDistrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.PseudoHuberDistrib]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf.PseudoHuberDistrib]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.PseudoHuberDistrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.PseudoHuberDistrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.PseudoHuberDistrib]{mean()}},
 \code{\link[=variance.PseudoHuberDistrib]{variance()}},
 \code{\link[=skewness.PseudoHuberDistrib]{skewness()}} and
-\code{\link[=kurtosis.PseudoHuberDistrib]{kurtosis()}} in \code{moments.R}.
+\code{\link[=kurtosis.PseudoHuberDistrib]{kurtosis()}};
+\item the fitting helpers:
+\code{\link[=distrib_intercept_start.PseudoHuberDistrib]{distrib_intercept_start()}}
+and \code{\link[=expected_hessian_costly]{expected_hessian_costly()}}.
+}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{

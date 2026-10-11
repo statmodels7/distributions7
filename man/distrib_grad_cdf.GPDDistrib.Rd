@@ -49,7 +49,8 @@ At \eqn{\xi \ge 0} the support is \eqn{(0, \infty)}; at \eqn{\xi < 0} it is
 bounded above at \eqn{\sigma/|\xi|}. Past the upper end, and below zero,
 \eqn{F} is constant and every derivative is zero, except the derivatives of
 \eqn{\log F} at \eqn{q \le 0}, where \eqn{\log F = -\infty} and they are
-\code{NaN}.
+\code{NaN}. The derivatives of \eqn{\log S} at and past the upper end, where
+\eqn{\log S = -\infty}, are returned as zero.
 }
 \examples{
 d <- gpd_distrib()

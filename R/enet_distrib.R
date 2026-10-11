@@ -80,8 +80,9 @@ NULL
 #' `params_smooth` records `mu = FALSE`.
 #'
 #' Build one with [enet_distrib()], which supplies the three link functions.
-#' This page documents the raw S7 constructor, which validates none of the
-#' relationships between its properties.
+#' This page documents the raw S7 constructor, which takes the parent's
+#' properties; the validator of `distrib` checks them, and the constructor
+#' adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -94,34 +95,50 @@ NULL
 #'   `params_smooth = c(mu = FALSE, lambda = TRUE, alpha = TRUE)`.
 #'
 #' @section Methods:
-#' Registered in this file:
-#'   [`distrib_pdf()`][distrib_pdf.EnetDistrib],
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.EnetDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.EnetDistrib],
-#'   [`distrib_quantile()`][distrib_quantile.EnetDistrib],
-#'   [`distrib_rng()`][distrib_rng.EnetDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.EnetDistrib] and
+#'   [`distrib_rng()`][distrib_rng.EnetDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.EnetDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.EnetDistrib],
 #'   [`distrib_expected_hessian()`][distrib_expected_hessian.EnetDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.EnetDistrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.EnetDistrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.EnetDistrib];
+#' - the derivatives in the response:
 #'   [`distrib_grad_y()`][distrib_grad_y.EnetDistrib],
 #'   [`distrib_hess_y()`][distrib_hess_y.EnetDistrib],
-#'   [`distrib_cross_y()`][distrib_cross_y.EnetDistrib],
-#'   [`mean()`][mean.EnetDistrib], [`variance()`][variance.EnetDistrib],
-#'   [`skewness()`][skewness.EnetDistrib].
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.EnetDistrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.EnetDistrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.EnetDistrib] and
+#'   [`distrib_cross3_y()`][distrib_cross3_y.EnetDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.EnetDistrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.EnetDistrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.EnetDistrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.EnetDistrib];
+#' - the moments: [`mean()`][mean.EnetDistrib],
+#'   [`variance()`][variance.EnetDistrib] and
+#'   [`skewness()`][skewness.EnetDistrib];
+#' - the decomposition at the kink:
+#'   [`kink_decomposition()`][kink_decomposition.EnetDistrib].
 #'
-#' Registered in `enet_higher.R`, both closed form:
-#'   [`distrib_deriv3()`][distrib_deriv3.EnetDistrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.EnetDistrib].
-#'
-#' The **kurtosis** has no closed form here and comes from the base class by
-#' quadrature. So does the fourth response derivative and beyond, which are
-#' zero: the log-density is quadratic in \eqn{y} away from the location.
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @section The two quantities everything is written in:
 #' With \eqn{a = \lambda\alpha}, \eqn{c = \lambda(1-\alpha)} and
 #' \eqn{x = a/\sqrt c}, every derivative in the two rates is a polynomial in
 #' \eqn{x} and \eqn{G = \mathrm{d}\log M/\mathrm{d}x}, where \eqn{M} is the
-#' Mills ratio. The map \eqn{(\lambda, \alpha) \mapsto (a, c)} is bilinear, so
-#' the chain onto the reported parameters adds one cross term and nothing else.
+#' Mills ratio. \eqn{G} and its derivatives are the cumulants, with alternating
+#' signs, of the density proportional to \eqn{e^{-xs - s^2/2}} on
+#' \eqn{s > 0}, computed in a compiled kernel from the ratios of its moments
+#' without forming the difference \eqn{x - 1/M}. The map
+#' \eqn{(\lambda, \alpha) \mapsto (a, c)} is bilinear, so the chain onto the
+#' reported parameters adds one cross term and nothing else.
 #'
 #' @seealso [enet_distrib()] to build one;
 #'   [laplace2_distrib()] and [gaussian1_distrib()] for the two ends;
@@ -165,14 +182,14 @@ EnetDistrib <- S7::new_class("EnetDistrib", parent = continuous_distrib)
 #' adds \eqn{x^2/2} to a log-probability of the same size and opposite sign,
 #' so it loses a digit for every factor of ten in \eqn{x}; past \eqn{x = 30}
 #' the asymptotic series is used instead. At \eqn{\alpha = 1 - 10^{-12}} the
-#' argument reaches \eqn{10^6}, which an ordinary elastic net does.
+#' argument reaches \eqn{10^6}.
 #'
 #' @param distrib An `EnetDistrib` object, from [enet_distrib()].
 #' @param y A numeric vector of observations, anywhere on the real line.
 #' @param theta A named list with components `mu`, `lambda` and `alpha`, each a
 #'   numeric vector of length 1 or of the length of `y`. `lambda` must be
-#'   strictly positive and `alpha` strictly inside \eqn{(0, 1)}; at either
-#'   endpoint the constant's argument is not defined and the value is `NaN`.
+#'   strictly positive and `alpha` strictly inside \eqn{(0, 1)}; the generic
+#'   signals an error for a value outside these domains.
 #' @param log Logical of length 1. When `TRUE` the log-density is returned.
 #'   Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -230,10 +247,15 @@ S7::method(distrib_pdf, EnetDistrib) <- function(distrib, y, theta,
 #'       \qquad
 #'       F(q) = 1 - \dfrac{\Phi(-\sqrt{c}\,z - x)}{2\Phi(-x)} \quad (z > 0).}
 #'
-#' Both ratios are taken on the log scale and exponentiated. The denominator
-#' \eqn{\Phi(-x)} is exactly zero past \eqn{x = 38} in double precision, and
-#' \eqn{x} reaches that at ordinary values of \eqn{\alpha}: at
-#' \eqn{\lambda = 20}, \eqn{\alpha = 0.995} it is 63.
+#' The method computes the logarithm of the tail beyond \eqn{|z|},
+#' \eqn{\log\Phi(-\sqrt c|z| - x) - \log\Phi(-x) - \log 2}, and the other
+#' tail from it as \eqn{\log(1 - e^{\cdot})} with `expm1()` or `log1p()`; the
+#' requested tail is returned on the log scale or exponentiated, so neither
+#' `lower.tail = FALSE` nor `log.p = TRUE` subtracts from one. The
+#' denominator \eqn{\Phi(-x)} is subnormal from \eqn{x \approx 37.5} and zero
+#' beyond \eqn{x \approx 38.5} in double precision, and \eqn{x} reaches that
+#' at ordinary values of \eqn{\alpha}: at \eqn{\lambda = 20},
+#' \eqn{\alpha = 0.995} it is 63.
 #'
 #' @param distrib An `EnetDistrib` object, from [enet_distrib()].
 #' @param q A numeric vector of quantiles.
@@ -304,9 +326,12 @@ S7::method(distrib_cdf, EnetDistrib) <- function(distrib, q, theta,
 #' reflection. Nothing is inverted by root finding, so
 #' [distrib_rng.EnetDistrib()] can use the inverse transform.
 #'
-#' The `qnorm` call is made on the **log** scale, its argument being
-#' \eqn{\log(2p) + \log\Phi(-x)}, because \eqn{\Phi(-x)} underflows to zero
-#' past \eqn{x = 38}.
+#' The probability is first turned into the logarithms of both tails, without
+#' forming \eqn{1 - p} or exponentiating a logarithm, and each half is
+#' inverted from the logarithm of its own tail. The `qnorm` call is made on
+#' the **log** scale, its argument being \eqn{\log P + \log 2 + \log\Phi(-x)},
+#' because \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \approx 38.5}. A
+#' probability outside \eqn{[0, 1]} gives `NaN`.
 #'
 #' @param distrib An `EnetDistrib` object, from [enet_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or their
@@ -315,8 +340,8 @@ S7::method(distrib_cdf, EnetDistrib) <- function(distrib, q, theta,
 #'   numeric vector of length 1 or of the length of `p`.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default, `p` is
 #'   \eqn{P(Y \le q)}; when `FALSE` it is the survival probability.
-#' @param log.p Logical of length 1. When `TRUE`, `p` is given as a logarithm
-#'   and is exponentiated first. Defaults to `FALSE`.
+#' @param log.p Logical of length 1. When `TRUE`, `p` is given as a logarithm.
+#'   Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of the length of the recycled
@@ -352,7 +377,9 @@ S7::method(distrib_quantile, EnetDistrib) <- function(distrib, p, theta,
   lq <- .enet_logQ(pa$x)
   lo <- (pa$x + stats::qnorm(lt$lower + base::log(2) + lq, log.p = TRUE)) / s
   hi <- -(pa$x + stats::qnorm(lt$upper + base::log(2) + lq, log.p = TRUE)) / s
-  pa$mu + ifelse(lt$lower <= lt$upper, lo, hi)
+  pick <- !is.na(lt$lower) & lt$lower <= lt$upper
+  hi[pick] <- lo[pick]
+  pa$mu + hi
 }
 
 #' @title Elastic-Net Random Generation
@@ -361,8 +388,8 @@ S7::method(distrib_quantile, EnetDistrib) <- function(distrib, p, theta,
 #' @description
 #' Draws by the inverse transform, `distrib_quantile(distrib, runif(n),
 #' theta)`. The quantile function of this family is closed form, so the
-#' transform is exact and costs one uniform per draw; the base class's
-#' ratio-of-uniforms fallback is not needed.
+#' transform is exact and costs one uniform per draw. The base class draws
+#' the same way for a family with its own quantile method.
 #'
 #' @param distrib An `EnetDistrib` object, from [enet_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -427,8 +454,8 @@ S7::method(distrib_rng, EnetDistrib) <- function(distrib, n, theta, ...) {
 #' The location component is **undefined at \eqn{y = \mu}**, where
 #' \eqn{\mathrm{sgn}} jumps; `sign(0)` is 0 in R, so the value returned there
 #' is \eqn{cz = 0}, one point of the subdifferential. `params_smooth`
-#' records `mu = FALSE` so that
-#' [check_distrib()]'s finite-difference guard knows.
+#' records `mu = FALSE`, which [check_distrib()] reads to discard the
+#' finite-difference references that straddle the location.
 #'
 #' @param distrib An `EnetDistrib` object, from [enet_distrib()].
 #' @param y A numeric vector of observations.
@@ -559,12 +586,11 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #' @name distrib_expected_hessian.EnetDistrib
 #'
 #' @description
-#' Returns the expected Hessian in closed form. The family already carries
-#' every piece of it: in the two rates the density is an exponential family, so
-#' the information is the Hessian of its own log normalizing constant, and
-#' `.enet_logz_derivs()` computes that for the observed Hessian already.
+#' Returns the expected Hessian in closed form. In the two rates the density is
+#' an exponential family, so the information in those rates is the Hessian of
+#' the log normalizing constant, which the observed Hessian also uses.
 #'
-#' `expected`, `approx` and `nsim` are all ignored, the answer being exact.
+#' `approx` and `nsim` are accepted and ignored, the answer being exact.
 #'
 #' @details
 #' # The rate block
@@ -674,9 +700,10 @@ S7::method(distrib_expected_hessian, EnetDistrib) <- function(
 #' R, so the value returned there is \eqn{-c(y-\mu) = 0}, one point of the
 #' subdifferential.
 #'
-#' The score is bounded below by \eqn{-a - c(y-\mu)} on either side, so the
-#' Laplace part contributes a jump of \eqn{2a} across the location and the
-#' Gaussian part the slope.
+#' Away from the location the derivative equals \eqn{-a - c(y-\mu)} for
+#' \eqn{y > \mu} and \eqn{a - c(y-\mu)} for \eqn{y < \mu}, so the Laplace
+#' part contributes a jump of \eqn{-2a} across the location and the Gaussian
+#' part the slope \eqn{-c}.
 #'
 #' @param distrib An `EnetDistrib` object, from [enet_distrib()].
 #' @param y A numeric vector of observations.
@@ -955,8 +982,9 @@ S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
 #' @description
 #' Returns 0. The density is symmetric about \eqn{\mu} at every parameter
 #' value, so every odd central moment vanishes and the standardized third one
-#' with them. The result is multiplied by a length-carrying quantity, so a
-#' `theta` whose components vary by observation gets one zero per observation.
+#' with them. The zero is recycled to the length of the longest component of
+#' `theta`, so a `theta` whose components vary by observation gets one zero
+#' per observation.
 #'
 #' The **fourth** moment is not zero and is not closed form here: [kurtosis()]
 #' falls to the base class and integrates. Measured at \eqn{\mu = 0},
@@ -1032,10 +1060,10 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #' skewness. The **kurtosis** is not, and comes from the base class by
 #' quadrature.
 #'
-#' The expected information is closed form for a reason worth naming: in the
-#' two rates the density is an exponential family with sufficient statistics
-#' \eqn{-|z|} and \eqn{-z^2/2}, so the information there is the Hessian of
-#' \eqn{\log Z}, which the observed Hessian already computes. See
+#' The expected information is closed form because, in the two rates, the
+#' density is an exponential family with sufficient statistics \eqn{-|z|} and
+#' \eqn{-z^2/2}, so the information in those rates is the Hessian of
+#' \eqn{\log Z}, which the observed Hessian also uses. See
 #' [distrib_expected_hessian.EnetDistrib()].
 #'
 #' # The kink
@@ -1046,20 +1074,24 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #' defined as the variance of the score instead. The two agree at every other
 #' entry.
 #'
-#' # Two numerical cautions
+#' # Numerical points
 #'
-#' Both were found by sweeping the parameters, and both bite at ordinary
-#' settings.
+#' Three points concern the normalizing constant, its derivatives and the
+#' tails.
 #'
 #' - \eqn{\log M(x)} written directly adds \eqn{x^2/2} to a log-probability of
-#'   the same size and opposite sign, losing a digit per factor of ten in
-#'   \eqn{x}. At \eqn{\alpha = 1 - 10^{-12}} the argument reaches \eqn{10^6}
-#'   and the density was wrong in the fourth digit; past \eqn{x = 30} the
-#'   asymptotic series of the Mills ratio is used instead.
-#' - \eqn{\Phi(-x)} is exactly zero past \eqn{x = 38}, and the distribution
-#'   function and the quantile divide by it. At \eqn{\lambda = 20},
-#'   \eqn{\alpha = 0.995} the argument is 63, so both work through `log.p` and
-#'   `qnorm(..., log.p = TRUE)`.
+#'   the same size and opposite sign, and loses a digit per factor of ten in
+#'   \eqn{x}. Beyond \eqn{x = 30} the density therefore uses the asymptotic
+#'   series of the Mills ratio.
+#' - The derivatives of \eqn{\log M}, and those of \eqn{\log Z} in the two
+#'   rates, are cumulants of the density proportional to
+#'   \eqn{e^{-xs - s^2/2}} on \eqn{s > 0}, computed from its moment ratios in
+#'   a compiled kernel; the form \eqn{G = x - 1/M} would cancel for large
+#'   \eqn{x}, and each derivative built on it would lose more.
+#' - \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \approx 38.5}, and the
+#'   distribution function and the quantile divide by it. At
+#'   \eqn{\lambda = 20}, \eqn{\alpha = 0.995} the argument is 63, so both work
+#'   on the log scale, through `log.p` and `qnorm(..., log.p = TRUE)`.
 #'
 #' # Comparison with glmnet
 #'
@@ -1068,8 +1100,8 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #' \eqn{\ell_1} part, homogeneous of degree one, and cannot be for the
 #' \eqn{\ell_2} part, homogeneous of degree two. So a nominal
 #' \eqn{(\lambda, \alpha)} names two different objectives in the two packages
-#' whenever \eqn{\alpha < 1}. At \eqn{\alpha = 1} the two agree to
-#' \eqn{1.4\times10^{-4}} whatever the scale of the response.
+#' whenever \eqn{\alpha < 1}. At \eqn{\alpha = 1} the two objectives coincide
+#' and the fits agree up to the convergence tolerances of the two solvers.
 #'
 #' # Parameter domains
 #'
@@ -1166,21 +1198,20 @@ enet_distrib <- function(link_mu = identity_link(),
 #' @description
 #' The log-density is \eqn{-a\lvert y-\mu\rvert - c(y-\mu)^2/2 - \log Z} with
 #' \eqn{a = \lambda\alpha} and \eqn{c = \lambda(1-\alpha)}, so the composition
-#' is the absolute value at \eqn{v = y - \mu} with
-#' \eqn{c(\theta) = -\lambda\alpha}.
+#' is the absolute value at \eqn{v = y - \mu} with coefficient
+#' \eqn{-\lambda\alpha = -a}.
 #'
 #' @details
 #' The quadratic half and the normalizing constant are smooth, so the location
 #' is again the only non-smooth parameter, and \eqn{m_\mu = 0} for every
 #' \eqn{\alpha > 0}.
 #'
-#' The SIZE of the kink is \eqn{2\lambda\alpha} and goes to zero with
-#' \eqn{\alpha}, which is why a detector reading the second Bartlett identity
-#' finds this family in one sweep and not in another: at a small \eqn{\alpha}
-#' the family is nearly Gaussian and the missing curvature disappears into the
-#' scale of the rest of the matrix. The kink is there at every \eqn{\alpha > 0}
-#' all the same, and the declaration says so where a measurement of the
-#' curvature cannot.
+#' The size of the kink is \eqn{2\lambda\alpha} and goes to zero with
+#' \eqn{\alpha}. A detector based on the second Bartlett identity therefore
+#' sees the missing curvature less clearly at small \eqn{\alpha}, where the
+#' family is nearly Gaussian. The kink exists at every \eqn{\alpha > 0}, and
+#' the declaration records it independently of any measurement of the
+#' curvature.
 #'
 #' @param distrib An `EnetDistrib` object.
 #'

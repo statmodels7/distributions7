@@ -39,8 +39,9 @@ within a parameter setting, is recycled to the length of \code{y}, and equals
 
 The coincidence is on the \strong{parameter} scale. On the link scale the two
 differ, the second-order chain rule adding a term
-\eqn{h''(\eta)\,\partial\ell/\partial\mu} that the expected version drops
-and a sample does not; the example below measures it.
+\eqn{h''(\eta)\,\partial\ell/\partial\mu}, which the expected version
+drops because the score has expectation zero; the score of a sample is not
+zero away from the optimum, and the example below measures the term.
 }
 \section{Notation}{
 

@@ -20,8 +20,8 @@ with \eqn{b = \sqrt{2/\pi}}. The bound is attained only in the limit
 A skewness beyond it belongs to no skew normal, so
 \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} bounds \code{gamma1} there and gives it a
 \code{\link[linkfunctions7:bounded_link]{linkfunctions7::bounded_link()}} over the open interval. Without the bound
-the centered-to-direct map would return a \code{NaN} several frames down, where
-the reason for it is no longer visible.
+the centered-to-direct map would return \code{NaN} without any indication of the
+cause.
 
 The ceiling is approached slowly: measured, the skewness is 0.9556 at
 \eqn{\alpha = 10} and 0.99527 at \eqn{\alpha = 10^4}. Data skewer than this

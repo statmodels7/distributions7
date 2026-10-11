@@ -7,7 +7,8 @@
 \item{distrib}{A \code{ChisqDistrib} object, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
 \item{y}{A numeric vector of strictly positive observations. At \code{y = 0} the
-value is infinite unless \eqn{\mu} is exactly 2.}
+value is \code{Inf} for \eqn{\mu < 2}, \code{-Inf} for \eqn{\mu > 2} and 0 for
+\eqn{\mu = 2}, where the coefficient is zero.}
 
 \item{theta}{A named list with one component \code{mu}, a numeric vector of
 length 1 or of the length of \code{y}, recycled if of length 1. It must be

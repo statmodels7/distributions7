@@ -18,8 +18,8 @@ NULL
 #' slightly heavier than a Gaussian's.
 #'
 #' Build one with [logistic_distrib()]. This page documents the raw S7
-#' constructor, which takes the parent's properties and validates none of the
-#' relationships between them.
+#' constructor, which takes the parent's properties; the validator of
+#' `distrib` checks them, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -37,20 +37,44 @@ NULL
 #'   [distrib_expected_hessian.LogisticDistrib()] for the information.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.LogisticDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.LogisticDistrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.LogisticDistrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.LogisticDistrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.LogisticDistrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.LogisticDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.LogisticDistrib] and
+#'   [`distrib_rng()`][distrib_rng.LogisticDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.LogisticDistrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.LogisticDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.LogisticDistrib],
-#'   [`distrib_pdf()`][distrib_pdf.LogisticDistrib],
-#'   [`distrib_quantile()`][distrib_quantile.LogisticDistrib],
-#'   [`distrib_rng()`][distrib_rng.LogisticDistrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.LogisticDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.LogisticDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.LogisticDistrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.LogisticDistrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.LogisticDistrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.LogisticDistrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.LogisticDistrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.LogisticDistrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.LogisticDistrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.LogisticDistrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.LogisticDistrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.LogisticDistrib],
+#'   [`distrib_cross3_y()`][distrib_cross3_y.LogisticDistrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.LogisticDistrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.LogisticDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.LogisticDistrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.LogisticDistrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.LogisticDistrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.LogisticDistrib];
+#' - the moments: [`mean()`][mean.LogisticDistrib],
+#'   [`variance()`][variance.LogisticDistrib],
+#'   [`skewness()`][skewness.LogisticDistrib] and
+#'   [`kurtosis()`][kurtosis.LogisticDistrib].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- logistic_distrib()
@@ -82,8 +106,8 @@ LogisticDistrib <- S7::new_class("LogisticDistrib", parent = continuous_distrib)
 #'   support, so no value is rejected.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
-#'   recycled. `sigma` must be strictly positive; a zero or negative value
-#'   gives `NaN` with a warning from [stats::dlogis()].
+#'   recycled. `sigma` must be strictly positive; the generic signals an
+#'   error for a zero or negative value before the method is called.
 #' @param log Logical of length 1. When `TRUE` the log-density is returned.
 #'   Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -231,8 +255,9 @@ S7::method(distrib_quantile, LogisticDistrib) <- function(distrib, p, theta, low
 #' @description
 #' Draws `n` independent logistic variates by calling [stats::rlogis()], so the
 #' draws come from R's own generator and depend on `.Random.seed` in the usual
-#' way. The generalized ratio-of-uniforms fallback the base class supplies is
-#' bypassed.
+#' way. The base class would draw by inversion through
+#' [distrib_quantile.LogisticDistrib()], which gives a different sequence
+#' for the same seed.
 #'
 #' @param distrib A `LogisticDistrib` object, from [logistic_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -278,10 +303,10 @@ S7::method(distrib_rng, LogisticDistrib) <- function(distrib, n, theta, ...) {
 #'       \qquad
 #'       \dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1}{\sigma}\left[1 - z \tanh\left(\dfrac{z}{2}\right)\right].}
 #'
-#' The score in \eqn{\mu} is bounded by \eqn{1/\sigma} and saturates rather
-#' than redescending: a distant observation contributes a fixed amount instead
-#' of an unbounded one, as it would under a Gaussian, or a vanishing one, as it
-#' would under a Cauchy.
+#' The score in \eqn{\mu} is bounded by \eqn{1/\sigma} and tends to
+#' \eqn{\pm 1/\sigma} as \eqn{|z|} grows, so a distant observation contributes
+#' a fixed amount. Under a Gaussian the contribution grows without bound, and
+#' under a Cauchy it tends to zero.
 #'
 #' @param distrib A `LogisticDistrib` object, from [logistic_distrib()].
 #' @param y A numeric vector of observations.
@@ -325,7 +350,8 @@ S7::method(distrib_rng, LogisticDistrib) <- function(distrib, n, theta, ...) {
 #' round(distrib_gradient(d, 0.4 + c(0, 1.5, 3, 6, 12, 60), th)$mu, 4)
 #' 1 / 1.5
 #'
-#' # The summed score vanishes at the maximum likelihood estimate.
+#' # The summed score is close to zero at the maximum likelihood estimate,
+#' # within the tolerance at which the fit stops.
 #' set.seed(9)
 #' zz <- distrib_rng(d, 3000, list(mu = 2, sigma = 1))
 #' fit <- fit_distrib(d, zz)
@@ -346,7 +372,10 @@ S7::method(distrib_gradient, LogisticDistrib) <- function(distrib, y, theta, sca
 #'
 #' The curvature in \eqn{\mu} is negative everywhere and vanishes as
 #' \eqn{|z|} grows, so a distant observation carries almost no information
-#' about the location. The expectations are
+#' about the location. The kernel computes
+#' \eqn{\mathrm{sech}^2(z/2)} as \eqn{4e/(1+e)^2} with \eqn{e = e^{-|z|}},
+#' so the value keeps its relative accuracy far into the tails, where
+#' \eqn{1 - \tanh^2(z/2)} would cancel to zero. The expectations are
 #' [distrib_expected_hessian.LogisticDistrib()].
 #'
 #' @param distrib A `LogisticDistrib` object, from [logistic_distrib()].
@@ -475,12 +504,13 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #' \deqn{\dfrac{\partial^3 \ell}{\partial \mu \partial \sigma^2} = -\dfrac{2g_1 + 4z g_2 + z^2 g_3}{\sigma^3}, \qquad
 #'       \dfrac{\partial^3 \ell}{\partial \sigma^3} = -\dfrac{2 + 6z g_1 + 6z^2 g_2 + z^3 g_3}{\sigma^3}.}
 #'
-#' With `expected = TRUE` the values are **numerical**, unlike the orders below
-#' them. Two of the nine expectations at this order and the next require
-#' \eqn{\int w^k \mathrm{sech}^4 w \tanh^2 w \, dw}, which has no elementary
-#' form, so the method routes to [expected_derivative()] and `approx` and
-#' `nsim` are read. The default there is `"integrate"`, one quadrature per
-#' component.
+#' With `expected = TRUE` the method calls [expected_derivative()], so the
+#' values are computed numerically according to `approx` (by default
+#' `"integrate"`, one quadrature per component), and `approx` and `nsim`
+#' are read. The expectations at this order are elementary
+#' (\eqn{1/(2\sigma^3)} for `mu_mu_sigma`, \eqn{(2+\pi^2)/(2\sigma^3)} for
+#' `sigma_sigma_sigma`, and zero for the two components odd in \eqn{z}), but
+#' the method does not use these closed forms.
 #'
 #' @param distrib A `LogisticDistrib` object, from [logistic_distrib()].
 #' @param y A numeric vector of observations.
@@ -493,8 +523,10 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param approx One of `"integrate"` (the default), `"bartlett"`, `"mc"` or
-#'   `"opg"`, matched by [base::match.arg()]. Read **only** when
+#'   `"opg"`, matched by [base::match.arg()]. Read only when
 #'   `expected = TRUE`, where it selects how the expectation is approximated.
+#'   At this order `"opg"` is evaluated as `"bartlett"`, the outer product
+#'   of scores being an identity of order two.
 #' @param nsim A single positive integer, the sample size used when
 #'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -553,10 +585,14 @@ S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expec
 #' \deqn{\dfrac{\partial^4 \ell}{\partial \mu \partial \sigma^3} = \dfrac{6g_1 + 18z g_2 + 9z^2 g_3 + z^3 g_4}{\sigma^4}, \qquad
 #'       \dfrac{\partial^4 \ell}{\partial \sigma^4} = \dfrac{6 + 24z g_1 + 36z^2 g_2 + 12z^3 g_3 + z^4 g_4}{\sigma^4}.}
 #'
-#' With `expected = TRUE` the values are **numerical**, for the reason given on
-#' [distrib_deriv3.LogisticDistrib()]: two of the nine expectations at these
-#' two orders have no elementary form. The method routes to
-#' [expected_derivative()], so `approx` and `nsim` are read.
+#' With `expected = TRUE` the method calls [expected_derivative()], as at
+#' third order, so the values are computed numerically according to
+#' `approx`, and `approx` and `nsim` are read. The expectations are
+#' elementary here too (\eqn{1/(15\sigma^4)} for `mu_mu_mu_mu`,
+#' \eqn{(\pi^2-60)/(45\sigma^4)} for `mu_mu_sigma_sigma`,
+#' \eqn{(7\pi^4-600\pi^2-810)/(225\sigma^4)} for `sigma_sigma_sigma_sigma`,
+#' and zero for the two components odd in \eqn{z}), but the method does not
+#' use these closed forms.
 #'
 #' @param distrib A `LogisticDistrib` object, from [logistic_distrib()].
 #' @param y A numeric vector of observations.
@@ -568,7 +604,8 @@ S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expec
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param approx One of `"integrate"` (the default), `"bartlett"`, `"mc"` or
-#'   `"opg"`, matched by [base::match.arg()]. Read only when `expected = TRUE`.
+#'   `"opg"`, matched by [base::match.arg()]. Read only when `expected = TRUE`;
+#'   `"opg"` is evaluated as `"bartlett"` at this order.
 #' @param nsim A single positive integer, the sample size used when
 #'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -619,10 +656,11 @@ S7::method(distrib_deriv4, LogisticDistrib) <- function(distrib, y, theta, expec
 #' Writing the log-density as \eqn{\ell = -\log\sigma + g(z)} with
 #' \eqn{z = (y - \mu)/\sigma}, each component is \eqn{\sigma^{-5}} times a
 #' sum of terms \eqn{c\, z^p g^{(i)}(z)} with integer coefficients, plus
-#' \eqn{-24\sigma^{-5}} in the pure \eqn{\sigma} component; the kernel
-#' evaluates the sum from the derivatives of
-#' \eqn{g(z) = -z - 2\log(1 + e^{-z})}, written in the logistic sigmoid so
-#' that every intermediate quantity lies in \eqn{[-1, 1]}.
+#' \eqn{-24\sigma^{-5}} in the component that is pure in \eqn{\sigma}. The
+#' kernel evaluates the sum from the derivatives of
+#' \eqn{g(z) = -z - 2\log(1 + e^{-z})}, written in the sigmoid
+#' \eqn{t = 1/(1 + e^{-z})} and \eqn{u = 1 - t}, so that every factor
+#' \eqn{g^{(i)}} lies in \eqn{[-1, 1]}.
 #' With `scale = "link"` the components are composed with the link
 #' derivatives by the routine that every family with a fifth-order kernel
 #' uses.
@@ -753,8 +791,8 @@ S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta, ...) 
 #' @description
 #' Builds the distribution object for the logistic family with mean \eqn{\mu}
 #' and scale \eqn{\sigma > 0}. The returned object carries closed-form
-#' derivatives of the log-density to fourth order in the parameters and in the
-#' response, and closed-form moments.
+#' derivatives of the log-density to fifth order in the parameters and to
+#' fourth order in the response, and closed-form moments.
 #'
 #' The family is symmetric about \eqn{\mu} with variance
 #' \eqn{\pi^2\sigma^2/3}, so \eqn{\sigma} is a scale, not a standard
@@ -780,8 +818,8 @@ S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta, ...) 
 #' The mean and the median are \eqn{\mu}, the variance is
 #' \eqn{\pi^2 \sigma^2/3}, the skewness is 0 and the excess kurtosis is
 #' \eqn{6/5}. A logistic and a Gaussian matched on their variance are close in
-#' the body and differ in the tails, the logistic's decaying exponentially and
-#' the Gaussian's as a square exponential.
+#' the body and differ in the tails: the logistic density decays like
+#' \eqn{e^{-|z|}} and the Gaussian density like \eqn{e^{-z^2/2}}.
 #'
 #' # Derivatives
 #'
@@ -793,13 +831,11 @@ S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta, ...) 
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{3+\pi^2}{9\sigma^2}, \quad
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0.}
 #'
-#' Third and fourth orders are closed form **observed** and numerical
-#' **expected**: two of the nine expectations at those orders require
-#' \eqn{\int w^k \mathrm{sech}^4 w \tanh^2 w \, dw}, which has no elementary
-#' form, so [distrib_deriv3.LogisticDistrib()] and
-#' [distrib_deriv4.LogisticDistrib()] route their `expected = TRUE` branch to
-#' [expected_derivative()]. This is the only place in this family where a
-#' numerical route is taken.
+#' The observed derivatives of orders three to five are closed form, in
+#' [distrib_deriv3.LogisticDistrib()], [distrib_deriv4.LogisticDistrib()] and
+#' [distrib_deriv5.LogisticDistrib()]. The `expected = TRUE` branch of the
+#' third and fourth orders calls [expected_derivative()] and computes the
+#' expectations numerically, although they are elementary.
 #'
 #' # Estimation
 #'
@@ -837,7 +873,7 @@ S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta, ...) 
 #' d <- logistic_distrib()
 #' d
 #'
-#' # The density and the distribution function are R's own.
+#' # The density is R's own.
 #' y <- c(-1.2, 0.3, 2.5)
 #' th <- list(mu = 0.4, sigma = 1.5)
 #' all.equal(distrib_pdf(d, y, th), dlogis(y, 0.4, 1.5))

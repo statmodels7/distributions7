@@ -7,8 +7,8 @@
 \item{distrib}{A \code{GumbelDistrib} object, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
 \item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
-logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN};
-the endpoints give \code{-Inf} and \code{Inf}.}
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN}
+with a warning; the endpoints give \code{-Inf} and \code{Inf}.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{p}. A component of length 1 is

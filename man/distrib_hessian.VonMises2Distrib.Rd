@@ -37,8 +37,8 @@ the last from differentiating the score's
 by a compiled kernel.
 
 Unlike in the concentration parametrization, the pure second derivative is
-\strong{not} free of the data: the term in \eqn{\kappa''} carries
-\eqn{\cos(y-\mu)}, which the map's curvature brings in.
+\strong{not} free of the data: the term in \eqn{\kappa''}, the curvature of
+the map, multiplies \eqn{\cos(y-\mu)}.
 }
 \section{Notation}{
 

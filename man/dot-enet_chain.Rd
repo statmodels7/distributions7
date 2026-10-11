@@ -27,21 +27,16 @@ It is what \code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()
 \code{\link[=distrib_deriv4.EnetDistrib]{distrib_deriv4.EnetDistrib()}} return.
 }
 \details{
-The license for orders three and four is that the \strong{same assembly} run at
-orders one and two reproduces the hand-written score and observed Hessian:
-measured, exactly 0 at order one and \eqn{1.1\times10^{-16}} at order two.
-Against an independent route, one product stencil on the analytic
-log-density, the pure-\eqn{\lambda} components agree to
-\eqn{2\times10^{-4}} at order three and \eqn{2\times10^{-3}} at order four,
-which is the stencil's own accuracy at those orders.
+The same assembly run at orders one and two reproduces the score and the
+observed Hessian of \code{\link[=distrib_gradient.EnetDistrib]{distrib_gradient.EnetDistrib()}} and
+\code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian.EnetDistrib()}}.
 }
 \examples{
 d <- enet_distrib()
 y <- c(-1.5, -0.3, 0.4, 2.1)
 th <- list(mu = 0, lambda = 2, alpha = 0.5)
 
-# At order one it reproduces the hand-written score exactly, which is what
-# licenses the orders where there is nothing to compare against.
+# At order one it reproduces the score of distrib_gradient().
 g <- distrib_gradient(d, y, th)
 a1 <- distributions7:::.enet_chain(y, th, 1L)
 max(abs(unlist(a1[names(g)]) - unlist(g)))

@@ -15,8 +15,8 @@ NULL
 #'
 #' Build one with [pseudohuber_distrib()], which supplies the three link
 #' functions and fills the properties in. This page documents the raw S7
-#' constructor, which takes the parent's properties and validates none of the
-#' relationships between them.
+#' constructor, which takes the parent's properties; the validator of
+#' `distrib` checks them, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -36,33 +36,46 @@ NULL
 #'   [distrib_pdf.PseudoHuberDistrib()] for the density.
 #'
 #' @section Methods:
-#' Registered on this class in this file:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.PseudoHuberDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.PseudoHuberDistrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.PseudoHuberDistrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.PseudoHuberDistrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.PseudoHuberDistrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.PseudoHuberDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.PseudoHuberDistrib] and
+#'   [`distrib_rng()`][distrib_rng.PseudoHuberDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.PseudoHuberDistrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.PseudoHuberDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.PseudoHuberDistrib],
-#'   [`distrib_pdf()`][distrib_pdf.PseudoHuberDistrib],
-#'   [`distrib_quantile()`][distrib_quantile.PseudoHuberDistrib],
-#'   [`distrib_rng()`][distrib_rng.PseudoHuberDistrib], and the expected
-#'   information with its two derivatives,
 #'   [`distrib_expected_hessian()`][distrib_expected_hessian.PseudoHuberDistrib],
-#'   registered through [register_loc_scale_expected()].
-#'
-#' Registered from other files: the mixed derivative
-#'   [`distrib_cross_y()`][distrib_cross_y.PseudoHuberDistrib] and the
-#'   distribution-function derivatives
-#'   [`distrib_grad_cdf()`][distrib_grad_cdf.PseudoHuberDistrib] and
-#'   [`distrib_hess_cdf()`][distrib_hess_cdf.PseudoHuberDistrib], plus the four
-#'   moments [`mean()`][mean.PseudoHuberDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.PseudoHuberDistrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.PseudoHuberDistrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.PseudoHuberDistrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.PseudoHuberDistrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.PseudoHuberDistrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.PseudoHuberDistrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.PseudoHuberDistrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.PseudoHuberDistrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.PseudoHuberDistrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.PseudoHuberDistrib],
+#'   [`distrib_cross3_y()`][distrib_cross3_y.PseudoHuberDistrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.PseudoHuberDistrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.PseudoHuberDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.PseudoHuberDistrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.PseudoHuberDistrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.PseudoHuberDistrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.PseudoHuberDistrib];
+#' - the moments: [`mean()`][mean.PseudoHuberDistrib],
 #'   [`variance()`][variance.PseudoHuberDistrib],
 #'   [`skewness()`][skewness.PseudoHuberDistrib] and
-#'   [`kurtosis()`][kurtosis.PseudoHuberDistrib] in `moments.R`.
+#'   [`kurtosis()`][kurtosis.PseudoHuberDistrib];
+#' - the fitting helpers:
+#'   [`distrib_intercept_start()`][distrib_intercept_start.PseudoHuberDistrib]
+#'   and [expected_hessian_costly()].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- pseudohuber_distrib()
@@ -87,14 +100,16 @@ PseudoHuberDistrib <- S7::new_class("PseudoHuberDistrib", parent = continuous_di
 #'       \exp\left(-\sqrt{\nu + \left(\dfrac{y-\mu}{\sigma}\right)^2}\right),}
 #' with \eqn{K_1} the modified Bessel function of the second kind. The
 #' exponent is the negative pseudo-Huber loss, quadratic in the residual near
-#' the location and linear far from it. That exponent is the pseudo-Huber
-#' loss, and this density is its exponential.
+#' the location and linear far from it, so the density is the exponential of
+#' that loss. The square root is formed as a hypotenuse,
+#' \eqn{\max(|z|, \sqrt\nu)\sqrt{1 + (\min/\max)^2}}, so the log-density stays
+#' finite where \eqn{z^2} overflows.
 #'
 #' The normalizing constant is formed on the log scale through the
 #' **exponentially scaled** Bessel function,
-#' \eqn{\log K_1(x) = \log\{e^x K_1(x)\} - x}. The Bessel terms are
-#' degree-homogeneous, so the scaled form is exact and stays finite where
-#' \eqn{K_1(\sqrt{\nu})} itself underflows, verified to \eqn{\nu = 2000}.
+#' \eqn{\log K_1(x) = \log\{e^x K_1(x)\} - x}. The identity is exact, and the
+#' scaled function stays finite where \eqn{K_1(\sqrt{\nu})} itself
+#' underflows, which happens beyond \eqn{\sqrt{\nu} \approx 700}.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -179,7 +194,8 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
 #' @param lower.tail Logical of length 1. When `TRUE`, the default,
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
-#'   probability is returned, taken after the quadrature. Defaults to `FALSE`.
+#'   probability is returned, computed on the log scale by [compiled_cdf()]
+#'   so that it stays finite far in either tail. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
@@ -211,15 +227,18 @@ S7::method(distrib_cdf, PseudoHuberDistrib) <- compiled_cdf
 #' @name distrib_quantile.PseudoHuberDistrib
 #' @description
 #' Computes \eqn{Q(p)} by root-finding on the numerical distribution function,
-#' the family having no elementary quantile. Symmetry about \eqn{\mu} does most
-#' of the work: \eqn{Q(1/2) = \mu} exactly and without a search, and a
-#' probability above one half is reflected through
-#' \eqn{Q(p) = 2\mu - Q(1-p)}, so the search always runs in the lower half.
+#' the family having no elementary quantile, through
+#' [symmetric_log_quantile()]. The probability is turned into the logarithms
+#' of both tails without forming \eqn{1 - p} or exponentiating a logarithm,
+#' and the root of \eqn{\log F(q) = \log P}, with \eqn{P} the smaller tail, is
+#' found below the location and reflected through \eqn{Q = 2\mu - Q'} when the
+#' upper tail is the smaller one. \eqn{Q(1/2) = \mu} exactly and without a
+#' search.
 #'
-#' The bracket starts at ten standard deviations below the location and doubles
-#' its width until it contains the root, at most 100 times.
+#' The bracket starts at ten standard deviations below the location and
+#' doubles its width until it contains the root, at most 2000 times.
 #' [stats::uniroot()] then closes it to `sqrt(.Machine$double.eps)`. Each
-#' evaluation of the objective is a quadrature, so this is by far the dearest
+#' evaluation of the objective is a quadrature, so this is the most expensive
 #' method of the family.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
@@ -291,6 +310,7 @@ symmetric_log_quantile <- function(distrib, p, theta, lower.tail, log.p,
   vapply(rows, function(r) {
     r <- as.list(r)
     th <- r[distrib@params]
+    if (is.na(r$.lo) || is.na(r$.up)) return(NaN)
     reflect <- r$.up < r$.lo
     ls <- if (reflect) r$.up else r$.lo
     m <- th[[1]]
@@ -319,8 +339,9 @@ symmetric_log_quantile <- function(distrib, p, theta, lower.tail, log.p,
 #' inverse Gaussian law with density proportional to
 #' \eqn{\exp\{-\sqrt{\nu}\,(x + 1/x)/2\}}. \eqn{X} is drawn by the
 #' ratio-of-uniforms method with the mode shifted to the origin (Hormann and
-#' Leydold, 2014), whose bounding box is set once per distinct \eqn{\nu};
-#' below \eqn{\nu = 10^{-16}} the mixing law is its exponential limit. The
+#' Leydold, 2014), whose bounding box is recomputed whenever \eqn{\nu} differs
+#' from that of the previous draw; below \eqn{\nu = 10^{-16}} the mixing law
+#' is its exponential limit. The
 #' draws depend on `.Random.seed` in the usual way.
 #'
 #' @references
@@ -370,11 +391,11 @@ S7::method(distrib_rng, PseudoHuberDistrib) <- function(distrib, n, theta, ...) 
 #'   \dfrac{1}{\nu} + \dfrac{1}{D}
 #'   + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\, K_1(\sqrt{\nu})}\right].}
 #'
-#' The location component **redescends**: it grows like \eqn{r/\sigma^2} near
-#' the location and tends to \eqn{\pm 1/\sigma} far from it, so a gross outlier
-#' contributes a bounded amount to the estimating equation. That bounded
-#' influence is the whole reason the pseudo-Huber loss exists, and here it is
-#' the score of a genuine likelihood.
+#' The location component is bounded: it grows like
+#' \eqn{r/(\sigma^2\sqrt{\nu})} near the location and tends to
+#' \eqn{\pm 1/\sigma} far from it, so a gross outlier contributes a bounded
+#' amount to the estimating equation. Unlike the score of a Student t, it does
+#' not return to zero.
 #'
 #' With `scale = "link"` the generic applies the chain rule for the links the
 #' family carries. This method always returns the parameter scale. The
@@ -459,7 +480,7 @@ S7::method(distrib_gradient, PseudoHuberDistrib) <- function(distrib, y, theta, 
 #'
 #' The curvature in \eqn{\mu} is negative at every observation, unlike a
 #' Student t's, so the log-density is concave in the location however far out
-#' the residual is. What redescends is the score, not the curvature's sign.
+#' the residual is.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -532,8 +553,8 @@ S7::method(distrib_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, s
 #'
 #' The law is symmetric about \eqn{\mu}, so every component carrying \eqn{\mu}
 #' an odd number of times vanishes. The rule's nodes are symmetric about zero,
-#' so the two halves of such an integral cancel and the entry comes back as
-#' zero.
+#' so the two halves of such an integral cancel up to rounding, and the entry
+#' comes back as zero to about \eqn{10^{-20}}.
 #'
 #' `approx` and `nsim` are accepted for the generic's sake and ignored.
 #'
@@ -584,8 +605,16 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #' in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, **in closed form**, in a compiled
 #' kernel. Every component but the pure-\eqn{\nu} one is a rational function of
 #' \eqn{r = y - \mu}, \eqn{\sigma} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}};
-#' Bessel functions enter through \eqn{\nu} alone, and the exponentially scaled
-#' forms are used so that a large \eqn{\nu} does not overflow.
+#' Bessel functions enter through \eqn{\nu} alone. The derivatives in
+#' \eqn{\nu} of \eqn{B(\nu) = \log\{\sqrt\nu K_1(\sqrt\nu)\}} come from
+#' three routes, each where it keeps its digits: below \eqn{\nu = 1} the
+#' series of \eqn{K_1} and \eqn{K_2} at the origin; for
+#' \eqn{1 \le \nu < 400} the cumulants of \eqn{1/(4T)} under the generalized
+#' inverse Gaussian law of the integral representation of \eqn{K_1}, by the
+#' trapezoidal rule in \eqn{\log t}; and from \eqn{\nu = 400} the asymptotic
+#' series of \eqn{K_1}, differentiated term by term in powers of
+#' \eqn{\nu^{-1/2}}. The same routes serve the score, the Hessian and the
+#' fourth order.
 #'
 #' **The expected third derivatives have no closed form.** With
 #' `expected = TRUE` the method calls [expected_derivative()], which integrates
@@ -651,9 +680,9 @@ S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #' @description
 #' Computes the fifteen distinct fourth derivatives of the pseudo-Huber
 #' log-density in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, **in closed form**, in
-#' a compiled kernel. The Bessel handling is
-#' [distrib_deriv3.PseudoHuberDistrib()]'s: the functions enter through
-#' \eqn{\nu} alone, in their exponentially scaled forms.
+#' a compiled kernel. The Bessel functions enter through \eqn{\nu} alone, and
+#' their derivatives come from the three routes described in
+#' [distrib_deriv3.PseudoHuberDistrib()].
 #'
 #' **The expected fourth derivatives have no closed form.** With
 #' `expected = TRUE` the method calls [expected_derivative()], which is the one
@@ -838,9 +867,9 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' generalized hyperbolic.
 #'
 #' The returned object carries closed-form derivatives of the log-density to
-#' fourth order in the parameters and closed first and second derivatives in
-#' the response. The distribution function, the quantile and the expected
-#' information are numerical; that is the price of the family.
+#' fourth order in the parameters and in the response. The distribution
+#' function and the quantile are computed numerically, as is the expected
+#' information.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the location
 #'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], the location
@@ -863,17 +892,16 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' far from it, where it is \eqn{|z|}. That is the pseudo-Huber loss, and this
 #' family is its exponential.
 #'
-#' The Bessel terms are degree-homogeneous, so the exponentially scaled
-#' `besselK(x, nu, expon.scaled = TRUE)` is exact and avoids the overflow the
-#' unscaled form meets; the constant stays finite to \eqn{\nu = 2000}.
+#' The normalizing constant uses the exponentially scaled
+#' `besselK(x, 1, expon.scaled = TRUE)`, which equals \eqn{e^x K_1(x)} and
+#' avoids the underflow of the unscaled function at large arguments.
 #'
 #' # The two limits, with their rates
 #'
 #' At \eqn{\nu \to 0} the exponent is \eqn{|y-\mu|/\sigma} and the family is
-#' the **Laplace** with scale \eqn{\sigma}: measured at \eqn{\mu = 0},
-#' \eqn{\sigma = 1}, the largest gap over \eqn{y \in \{0.5, 1, 2, 4\}} is
-#' `4.9e-05` at \eqn{\nu = 10^{-4}} and `1.9e-12` at \eqn{10^{-12}}, so the
-#' approach is \eqn{O(\nu)}.
+#' the **Laplace** with scale \eqn{\sigma}. The normalizing constant satisfies
+#' \eqn{\sqrt{\nu} K_1(\sqrt{\nu}) = 1 + (\nu/4)\log\nu + O(\nu)}, so the
+#' density approaches the Laplace density at rate \eqn{O(\nu\log(1/\nu))}.
 #'
 #' At \eqn{\nu \to \infty} the exponent is
 #' \eqn{\sqrt{\nu} + (y-\mu)^2/(2\sqrt{\nu}\sigma^2)} and the family is the
@@ -902,9 +930,9 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' \deqn{\dfrac{\partial \ell}{\partial \nu} = -\dfrac{1}{2}\left[
 #'   \dfrac{1}{\nu} + \dfrac{1}{D}
 #'   + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\, K_1(\sqrt{\nu})}\right].}
-#' The location component is **bounded by** \eqn{1/\sigma}, which is the
-#' family's whole point; the curvature in \eqn{\mu}, unlike a Student t's, is
-#' negative at every observation, so the log-density stays concave in the
+#' The location component is bounded by \eqn{1/\sigma}; the curvature in
+#' \eqn{\mu}, unlike a Student t's, is negative at every observation, so the
+#' log-density stays concave in the
 #' location. Orders three and four are closed form too, in compiled kernels, as
 #' are the derivatives in the response and the mixed derivative
 #' [distrib_cross_y.PseudoHuberDistrib()], whose \eqn{\nu} component is
@@ -914,7 +942,9 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #'
 #' The distribution function has no elementary form and is a quadrature,
 #' batched over the quantiles and reflected about \eqn{\mu} so that only the
-#' lower tail is integrated. The quantile inverts it by root-finding. The
+#' lower tail is integrated, and computed on the log scale when the logarithm
+#' is requested. The quantile inverts it by root-finding on the logarithm of
+#' the smaller tail. The
 #' generator does not use either: it draws the family as a normal variance
 #' mixture with a generalized inverse Gaussian mixing variable.
 #'

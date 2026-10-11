@@ -12,9 +12,10 @@
 length 1 or of the length of \code{y}, recycled if of length 1. It must be
 strictly positive.}
 
-\item{expected}{Logical of length 1, and without effect here, the observed
-and expected fourth derivatives being the same number. Defaults to
-\code{FALSE}.}
+\item{expected}{Logical of length 1. On the parameter scale it has no
+effect, the observed and expected fourth derivatives being the same
+number; on the link scale it selects the expected composition. Defaults
+to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
@@ -41,9 +42,10 @@ respect to \eqn{\mu}, in closed form:
 with \eqn{\psi'''} the third derivative of the digamma function, one case of
 \eqn{\ell^{(k)} = -\psi^{(k-2)}(\mu/2)/2^{k}}.
 
-The value is free of the response, so \code{expected}, \code{approx} and \code{nsim} are
-all without effect and the result is identical to the bit whichever is asked
-for.
+On the parameter scale the value is free of the response, so \code{expected},
+\code{approx} and \code{nsim} have no effect and the result is identical to the bit
+in either case. With \code{scale = "link"} the observed and the expected
+results differ.
 }
 \section{Notation}{
 
@@ -61,7 +63,8 @@ th <- list(mu = 4)
 unique(distrib_deriv4(d, y, th)$mu_mu_mu_mu)
 -psigamma(2, deriv = 3) / 16
 
-# Free of the response, so asking for the expectation changes nothing.
+# Free of the response, so on the parameter scale the expectation is the
+# same.
 identical(distrib_deriv4(d, y, th),
           distrib_deriv4(d, y, th, expected = TRUE))
 

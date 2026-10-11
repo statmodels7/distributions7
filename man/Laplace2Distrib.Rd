@@ -54,7 +54,7 @@ the same law as \code{\link[=laplace_distrib]{laplace_distrib()}} at \eqn{\lambd
 parametrization differs and the derivatives with it. It inherits from
 \code{continuous_distrib}, so every generic of the \code{distrib} class applies to it.
 
-The rate form is the one a lasso penalty is written in: with \eqn{\mu = 0}
+The rate form is the one in which a lasso penalty is written: with \eqn{\mu = 0}
 the negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so
 \eqn{\lambda} is the penalty's own tuning parameter and larger values shrink
 harder. \code{penalties7::lasso_penalty()} is this family with the location held
@@ -64,25 +64,53 @@ Like \code{\link[=laplace_distrib]{laplace_distrib()}}, this family has a \stron
 non-regular in its location; \code{params_smooth} is \code{c(mu = FALSE, lambda = TRUE)}.
 
 Build one with \code{\link[=laplace2_distrib]{laplace2_distrib()}}. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.
+constructor, which takes the parent's properties; the validator of
+\code{distrib} checks them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.Laplace2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.Laplace2Distrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.Laplace2Distrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.Laplace2Distrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.Laplace2Distrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_grad_y.Laplace2Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_quantile.Laplace2Distrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.Laplace2Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.Laplace2Distrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.Laplace2Distrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.Laplace2Distrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.Laplace2Distrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.Laplace2Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.Laplace2Distrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.Laplace2Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.Laplace2Distrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.Laplace2Distrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.Laplace2Distrib]{distrib_deriv5()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.Laplace2Distrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.Laplace2Distrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.Laplace2Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.Laplace2Distrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.Laplace2Distrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.Laplace2Distrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.Laplace2Distrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.Laplace2Distrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross3_y.Laplace2Distrib]{distrib_cross3_y()}},
+\code{\link[=distrib_grad_y_hess.Laplace2Distrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.Laplace2Distrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.Laplace2Distrib]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf.Laplace2Distrib]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.Laplace2Distrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.Laplace2Distrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.Laplace2Distrib]{mean()}},
+\code{\link[=variance.Laplace2Distrib]{variance()}},
+\code{\link[=skewness.Laplace2Distrib]{skewness()}} and
+\code{\link[=kurtosis.Laplace2Distrib]{kurtosis()}};
+\item the decomposition at the kink:
+\code{\link[=kink_decomposition.Laplace2Distrib]{kink_decomposition()}}.
+}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{

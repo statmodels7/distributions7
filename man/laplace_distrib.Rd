@@ -26,8 +26,9 @@ An S7 object of class \code{LaplaceDistrib}, inheriting from
 \description{
 Builds the distribution object for the Laplace (double exponential) family
 with location \eqn{\mu} and scale \eqn{\sigma > 0}. The returned object
-carries closed-form derivatives of the log-density to fourth order and
-closed-form moments.
+carries closed-form derivatives of the log-density to fifth order in the
+parameters and to fourth order in the response, and closed-form
+moments.
 
 The family is symmetric about \eqn{\mu} with variance \eqn{2\sigma^2} and
 excess kurtosis 3, so it is heavier tailed than a Gaussian. Its maximum
@@ -48,7 +49,7 @@ quantile function inverts it in closed form.
 
 The mean and the median are \eqn{\mu}, the variance is \eqn{2\sigma^2}, the
 skewness is 0 and the excess kurtosis is 3. \code{\link[=laplace2_distrib]{laplace2_distrib()}} is the same
-law written by its rate \eqn{\lambda = 1/\sigma}, which is the form a
+law written by its rate \eqn{\lambda = 1/\sigma}, which is the form that a
 lasso penalty uses.
 }
 
@@ -66,10 +67,11 @@ the variance of the score, \eqn{1/\sigma^2}. That is what
 \code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}} returns.
 }
 
-\code{params_smooth} is \code{c(mu = FALSE, sigma = TRUE)}, and \code{\link[=check_distrib]{check_distrib()}}
-reads it to skip the finite-difference comparison in \eqn{\mu}, where a
-central difference straddling the corner returns a number that is not a
-derivative of anything.
+\code{params_smooth} is \code{c(mu = FALSE, sigma = TRUE)}. When an entry is \code{FALSE},
+\code{\link[=check_distrib]{check_distrib()}} recomputes each finite-difference reference with half
+the step and drops the observations at which the two disagree, because a
+central difference that straddles the corner is not a derivative there;
+the comparison still covers every parameter, \eqn{\mu} included.
 }
 
 \section{Estimation}{
@@ -126,7 +128,8 @@ Kotz, S., Kozubowski, T. J. and Podgorski, K. (2001).
 \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the light-tailed comparison;
 \code{\link[=cauchy_distrib]{cauchy_distrib()}} and \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} for the other robust location
 families, the second of which smooths this one's corner away;
-\code{\link[=enet_distrib]{enet_distrib()}}, which contains this family as its pure-\eqn{\ell_1} case;
+\code{\link[=enet_distrib]{enet_distrib()}}, whose density tends to that of \code{\link[=laplace2_distrib]{laplace2_distrib()}} as
+its mixing weight \eqn{\alpha} tends to 1;
 \code{\link[=fit_distrib]{fit_distrib()}} and \code{\link[=fisher_scoring]{fisher_scoring()}} to estimate the parameters;
 \link{LaplaceDistrib} for the class.
 }

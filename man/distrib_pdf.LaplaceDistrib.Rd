@@ -11,9 +11,8 @@ support, so no value is rejected.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is
-recycled. \code{sigma} must be strictly positive; the arithmetic is performed
-as written, so a non-positive value gives \code{NaN} or \code{Inf} without a
-warning of its own.}
+recycled. \code{sigma} must be strictly positive; the generic signals an
+error for a zero or negative value before the method is called.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned,
 which is exact and finite at every real \code{y}. Defaults to \code{FALSE}.}
@@ -27,8 +26,10 @@ A numeric vector of densities, of length
 \description{
 Computes the Laplace density
 \deqn{f(y; \mu, \sigma) = \dfrac{1}{2\sigma} \exp\left(-\dfrac{|y - \mu|}{\sigma}\right)}
-from the log-density \eqn{-\log(2\sigma) - |y-\mu|/\sigma}, which is formed
-first and exponentiated only when \code{log = FALSE}. The density is continuous
+from the log-density \eqn{-\log 2 - \log\sigma - |y-\mu|/\sigma}, which is
+formed first and exponentiated only when \code{log = FALSE}. The two logarithms
+are taken separately, so the value stays finite where \eqn{2\sigma}
+overflows. The density is continuous
 everywhere and has a corner at \eqn{y = \mu}, where the two exponential arms
 meet. That corner makes the family non-regular in its location.
 }

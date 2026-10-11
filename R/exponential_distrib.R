@@ -11,7 +11,7 @@ NULL
 #' the `distrib` class applies to it; the methods listed below are registered on
 #' it directly.
 #'
-#' This is the only single-parameter continuous family in the package, so every
+#' The family has a single parameter, as does the chi-squared family, so every
 #' derivative array it returns has one component per order and its information
 #' is a number.
 #'
@@ -20,8 +20,8 @@ NULL
 #' distribution, so \eqn{\mu} is also its standard deviation.
 #'
 #' Build one with [exponential_distrib()]. This page documents the raw S7
-#' constructor, which takes the parent's properties and validates none of the
-#' relationships between them.
+#' constructor, which takes the parent's properties; the validator of
+#' `distrib` checks them, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -38,20 +38,43 @@ NULL
 #'   family at a unit shape; [geometric_distrib()] for its discrete analogue.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.ExponentialDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.ExponentialDistrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.ExponentialDistrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.ExponentialDistrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.ExponentialDistrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.ExponentialDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.ExponentialDistrib] and
+#'   [`distrib_rng()`][distrib_rng.ExponentialDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.ExponentialDistrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.ExponentialDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.ExponentialDistrib],
-#'   [`distrib_pdf()`][distrib_pdf.ExponentialDistrib],
-#'   [`distrib_quantile()`][distrib_quantile.ExponentialDistrib],
-#'   [`distrib_rng()`][distrib_rng.ExponentialDistrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.ExponentialDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.ExponentialDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.ExponentialDistrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.ExponentialDistrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.ExponentialDistrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.ExponentialDistrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.ExponentialDistrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.ExponentialDistrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.ExponentialDistrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.ExponentialDistrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.ExponentialDistrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.ExponentialDistrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.ExponentialDistrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.ExponentialDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.ExponentialDistrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.ExponentialDistrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.ExponentialDistrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.ExponentialDistrib];
+#' - the moments: [`mean()`][mean.ExponentialDistrib],
+#'   [`variance()`][variance.ExponentialDistrib],
+#'   [`skewness()`][skewness.ExponentialDistrib] and
+#'   [`kurtosis()`][kurtosis.ExponentialDistrib].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- exponential_distrib()
@@ -85,8 +108,8 @@ ExponentialDistrib <- S7::new_class("ExponentialDistrib", parent = continuous_di
 #'   [stats::dexp()] returns 0 for a negative value.
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. A value of length 1 is recycled.
-#'   `mu` must be strictly positive; a non-positive value gives `NaN` with a
-#'   warning from [stats::dexp()].
+#'   `mu` must be strictly positive; the generic signals an error for a zero
+#'   or negative value before the method is called.
 #' @param log Logical of length 1. When `TRUE` the log-density is returned.
 #'   Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -126,7 +149,8 @@ S7::method(distrib_pdf, ExponentialDistrib) <- function(distrib, y, theta, log =
 #' `log.p = TRUE` it is simply \eqn{-q/\mu}.
 #'
 #' @param distrib An `ExponentialDistrib` object, from [exponential_distrib()].
-#' @param q A numeric vector of quantiles. A negative value gives 0.
+#' @param q A numeric vector of quantiles. A negative value gives a lower-tail
+#'   probability of 0 and an upper-tail probability of 1.
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `q`. `mu` must be strictly positive.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default,
@@ -188,7 +212,7 @@ S7::method(distrib_cdf, ExponentialDistrib) <- function(distrib, q, theta,
 #'   logarithms of probabilities. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of quantiles in \eqn{[0, \infty)}, of length
+#' @return A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 #'   `max(length(p), length(mu))`.
 #'
 #' @seealso [distrib_cdf.ExponentialDistrib()], which this inverts, and
@@ -219,8 +243,9 @@ S7::method(distrib_quantile, ExponentialDistrib) <- function(distrib, p, theta,
 #' @description
 #' Draws `n` independent exponential variates by calling [stats::rexp()] at
 #' `rate = 1/mu`, so the draws come from R's own generator and depend on
-#' `.Random.seed` in the usual way. The generalized ratio-of-uniforms fallback
-#' the base class supplies is bypassed.
+#' `.Random.seed` in the usual way. The base class would draw by inversion
+#' through [distrib_quantile.ExponentialDistrib()], which gives a different
+#' sequence for the same seed.
 #'
 #' @param distrib An `ExponentialDistrib` object, from [exponential_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -565,9 +590,9 @@ S7::method(distrib_deriv4, ExponentialDistrib) <- function(distrib, y, theta, ex
 #' derivatives by the routine that every family with a fifth-order kernel
 #' uses.
 #'
-#' @param distrib A `ExponentialDistrib` object, from [exponential_distrib()].
+#' @param distrib An `ExponentialDistrib` object, from [exponential_distrib()].
 #' @param y A numeric vector of observations.
-#' @param theta A named list with components `mu`, each a numeric vector
+#' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`.
 #' @param scale One of `"parameter"` (the default) or `"link"`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -677,7 +702,8 @@ S7::method(distrib_hess_y, ExponentialDistrib) <- function(distrib, y, theta, ..
 #' Builds the distribution object for the exponential family parametrized by
 #' its **mean** \eqn{\mu > 0}, with density \eqn{\mu^{-1}e^{-y/\mu}} on
 #' \eqn{[0, \infty)}. The returned object carries closed-form derivatives of
-#' the log-density to fourth order and closed-form moments.
+#' the log-density to fifth order in the mean and to fourth order in the
+#' response, and closed-form moments.
 #'
 #' The family has one parameter and a fixed shape: the standard deviation
 #' equals the mean, the skewness is 2 and the excess kurtosis is 6 whatever
@@ -715,10 +741,10 @@ S7::method(distrib_hess_y, ExponentialDistrib) <- function(distrib, y, theta, ..
 #' in \eqn{y}, which is why [distrib_grad_y.ExponentialDistrib()] is a constant
 #' and [distrib_hess_y.ExponentialDistrib()] is zero.
 #'
-#' The exponential is the only continuous law with this property, so a fitted
-#' exponential is also the statement that the process has no memory. When it
-#' does, [weibull1_distrib()] and [gamma1_distrib()] both contain this family
-#' at a unit shape and let the hazard rise or fall.
+#' The exponential is the only continuous law with this property, so fitting an
+#' exponential assumes that the process has no memory. If the process has a
+#' memory, [weibull1_distrib()] and [gamma1_distrib()], which both contain this
+#' family at a unit shape, let the hazard rise or fall.
 #'
 #' # Derivatives
 #'
@@ -730,7 +756,8 @@ S7::method(distrib_hess_y, ExponentialDistrib) <- function(distrib, y, theta, ..
 #' and their expectations follow by substituting \eqn{\mathbb{E}[Y] = \mu}:
 #' \eqn{0}, \eqn{-1/\mu^2}, \eqn{4/\mu^3} and \eqn{-18/\mu^4}. The information
 #' is \eqn{1/\mu^2}, so the asymptotic standard error of \eqn{\hat\mu} is
-#' \eqn{\mu/\sqrt n}.
+#' \eqn{\mu/\sqrt n}. The fifth order,
+#' \eqn{(120y - 24\mu)/\mu^6}, is in [distrib_deriv5.ExponentialDistrib()].
 #'
 #' # Estimation
 #'

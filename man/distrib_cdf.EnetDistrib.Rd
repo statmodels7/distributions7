@@ -31,10 +31,15 @@ is a truncated Gaussian, so with \eqn{z = q-\mu} and \eqn{x = a/\sqrt c},
       \qquad
       F(q) = 1 - \dfrac{\Phi(-\sqrt{c}\,z - x)}{2\Phi(-x)} \quad (z > 0).}
 
-Both ratios are taken on the log scale and exponentiated. The denominator
-\eqn{\Phi(-x)} is exactly zero past \eqn{x = 38} in double precision, and
-\eqn{x} reaches that at ordinary values of \eqn{\alpha}: at
-\eqn{\lambda = 20}, \eqn{\alpha = 0.995} it is 63.
+The method computes the logarithm of the tail beyond \eqn{|z|},
+\eqn{\log\Phi(-\sqrt c|z| - x) - \log\Phi(-x) - \log 2}, and the other
+tail from it as \eqn{\log(1 - e^{\cdot})} with \code{expm1()} or \code{log1p()}; the
+requested tail is returned on the log scale or exponentiated, so neither
+\code{lower.tail = FALSE} nor \code{log.p = TRUE} subtracts from one. The
+denominator \eqn{\Phi(-x)} is subnormal from \eqn{x \approx 37.5} and zero
+beyond \eqn{x \approx 38.5} in double precision, and \eqn{x} reaches that
+at ordinary values of \eqn{\alpha}: at \eqn{\lambda = 20},
+\eqn{\alpha = 0.995} it is 63.
 }
 \section{Notation}{
 

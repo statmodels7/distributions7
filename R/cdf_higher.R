@@ -31,7 +31,9 @@ NULL
 #' @details
 #' # The two conversions
 #'
-#' Switching to the upper tail flips the sign at every order, \eqn{S = 1 - F}.
+#' Switching to the upper tail flips the sign at every order, \eqn{S = 1 - F};
+#' the probability \eqn{S} by which the log scale divides is the family's own
+#' upper tail when `Fq` comes from [tail_cdf()].
 #' Switching to the log scale is the moment-to-cumulant relation
 #' \deqn{\partial^I \log P = \sum_\pi (-1)^{|\pi|-1}(|\pi|-1)!
 #'       \prod_{B \in \pi} \frac{\partial^B P}{P},}
@@ -54,7 +56,8 @@ NULL
 #'
 #' @param distrib An object inheriting from `distrib`. Only its `params` are
 #'   read, to name and enumerate the components.
-#' @param Fq The distribution function at the quantile, a numeric vector.
+#' @param Fq The distribution function at the quantile, a numeric vector,
+#'   possibly with the attribute `"upper"` that [tail_cdf()] attaches.
 #' @param dF A list of length `order`. Element \eqn{k} is the table of
 #'   \eqn{k}-th derivatives of \eqn{F}, keyed as
 #'   [`deriv_names(distrib@params, k)`][deriv_names], on the natural scale and
@@ -611,8 +614,9 @@ loc_scale_cdf_deriv_k <- function(distrib, q, theta, order, over_f = FALSE) {
 #' Builds the [distrib_deriv3_cdf()] or [distrib_deriv4_cdf()] body that the
 #' location-scale families register: [loc_scale_cdf_deriv_k()] at every order
 #' up to the one wanted, put on the requested tail and scale by
-#' [cdf_scale_k()]. Five families use it, the Gaussian, the logistic, the
-#' Cauchy and the Laplace here and the Gumbel in `cdf_mapped_higher.R`.
+#' [loc_scale_cdf_route()]. Four families use it, the Gaussian, the logistic
+#' and the Laplace here and the Gumbel in `cdf_mapped_higher.R`; the Cauchy
+#' has its own closed form, [cauchy_cdf_method()].
 #'
 #' @details
 #' Every lower order is computed because the log-scale conversion reads them
@@ -630,10 +634,10 @@ loc_scale_cdf_deriv_k <- function(distrib, q, theta, order, over_f = FALSE) {
 #'   [loc_scale_grad_cdf()] and [loc_scale_hess_cdf()] for the orders below.
 #'
 #' @aliases distrib_deriv3_cdf.Gaussian1Distrib
-#'   distrib_deriv3_cdf.LogisticDistrib distrib_deriv3_cdf.CauchyDistrib
+#'   distrib_deriv3_cdf.LogisticDistrib
 #'   distrib_deriv3_cdf.LaplaceDistrib distrib_deriv3_cdf.GumbelDistrib
 #'   distrib_deriv4_cdf.Gaussian1Distrib
-#'   distrib_deriv4_cdf.LogisticDistrib distrib_deriv4_cdf.CauchyDistrib
+#'   distrib_deriv4_cdf.LogisticDistrib
 #'   distrib_deriv4_cdf.LaplaceDistrib distrib_deriv4_cdf.GumbelDistrib
 #'
 #' @keywords internal

@@ -4,12 +4,10 @@
 \alias{loc_scale_deriv_cdf_k}
 \alias{distrib_deriv3_cdf.Gaussian1Distrib}
 \alias{distrib_deriv3_cdf.LogisticDistrib}
-\alias{distrib_deriv3_cdf.CauchyDistrib}
 \alias{distrib_deriv3_cdf.LaplaceDistrib}
 \alias{distrib_deriv3_cdf.GumbelDistrib}
 \alias{distrib_deriv4_cdf.Gaussian1Distrib}
 \alias{distrib_deriv4_cdf.LogisticDistrib}
-\alias{distrib_deriv4_cdf.CauchyDistrib}
 \alias{distrib_deriv4_cdf.LaplaceDistrib}
 \alias{distrib_deriv4_cdf.GumbelDistrib}
 \title{Location-Scale Third and Fourth Log-CDF Derivatives}
@@ -28,8 +26,9 @@ of numeric vectors of that order.
 Builds the \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} or \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}} body that the
 location-scale families register: \code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}} at every order
 up to the one wanted, put on the requested tail and scale by
-\code{\link[=cdf_scale_k]{cdf_scale_k()}}. Five families use it, the Gaussian, the logistic, the
-Cauchy and the Laplace here and the Gumbel in \code{cdf_mapped_higher.R}.
+\code{\link[=loc_scale_cdf_route]{loc_scale_cdf_route()}}. Four families use it, the Gaussian, the logistic
+and the Laplace here and the Gumbel in \code{cdf_mapped_higher.R}; the Cauchy
+has its own closed form, \code{\link[=cauchy_cdf_method]{cauchy_cdf_method()}}.
 }
 \details{
 Every lower order is computed because the log-scale conversion reads them

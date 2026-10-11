@@ -31,8 +31,8 @@ kernel.
 Writing the log-density as \eqn{\ell = -\log\sigma + g(z)} with
 \eqn{z = (y - \mu)/\sigma}, each component is \eqn{\sigma^{-5}} times a
 sum of terms \eqn{c\, z^p g^{(i)}(z)} with integer coefficients, plus
-\eqn{-24\sigma^{-5}} in the pure \eqn{\sigma} component; the kernel
-evaluates the sum from \eqn{g(z) = -z - e^{-z}}, whose derivatives are
+\eqn{-24\sigma^{-5}} in the component that is pure in \eqn{\sigma}. The
+kernel evaluates the sum from \eqn{g(z) = -z - e^{-z}}, whose derivatives are
 \eqn{g' = e^{-z} - 1} and \eqn{(-1)^{i+1} e^{-z}} from the second on.
 With \code{scale = "link"} the components are composed with the link
 derivatives by the routine that every family with a fifth-order kernel
@@ -41,7 +41,7 @@ uses.
 \examples{
 d <- gumbel_distrib()
 d5 <- distrib_deriv5(d, c(-1.2, 0.3, 2.5), list(mu = 0.4, sigma = 1.5))
-# The pure mu component is -exp(-z)/sigma^5.
+# The component pure in mu is -exp(-z)/sigma^5.
 all.equal(d5$mu_mu_mu_mu_mu, -exp(-(c(-1.2, 0.3, 2.5) - 0.4) / 1.5) / 1.5^5)
 }
 \seealso{

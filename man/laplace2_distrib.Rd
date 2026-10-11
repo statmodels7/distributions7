@@ -30,7 +30,7 @@ written by its \strong{rate} \eqn{\lambda > 0}, with density
 \code{\link[=laplace_distrib]{laplace_distrib()}} at \eqn{\lambda = 1/\sigma}, and every quantity that
 does not involve the second parameter is identical between them.
 
-The rate form is the one penalized regression uses: with \eqn{\mu = 0} the
+The rate form is the one that penalized regression uses: with \eqn{\mu = 0} the
 negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so \eqn{\lambda}
 is a shrinkage parameter and larger values penalize harder.
 \code{penalties7::lasso_penalty()} is this family with the location held at zero.
@@ -62,8 +62,10 @@ A second consequence is visible at the higher orders. The log-density is
 \eqn{\log(\lambda/2) - \lambda|r|}, linear in \eqn{\lambda} apart from
 \eqn{\log\lambda} and piecewise linear in \eqn{\mu}, so \strong{every} third and
 fourth derivative except the pure-\eqn{\lambda} ones is exactly zero, and
-none of them depends on the data. \code{expected = TRUE} therefore returns the
-same values at those orders.
+the pure-\eqn{\lambda} ones do not depend on the data. Hence
+\code{expected = TRUE} returns the same values at those orders. The observed
+fifth order, in \code{\link[=distrib_deriv5.Laplace2Distrib]{distrib_deriv5.Laplace2Distrib()}}, has the same
+structure.
 }
 
 \section{Estimation}{
@@ -77,9 +79,9 @@ information above.
 
 \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
 \eqn{\lambda > 0} the rate, with variance \eqn{2/\lambda^2}. Here
-\eqn{\lambda} is a distribution parameter; the same letter names a smoothing
-parameter in \code{penalties7} and above, and the two meet in the lasso, which is
-this family with \eqn{\mu} held at zero.
+\eqn{\lambda} is a distribution parameter; the same letter names the
+tuning parameter of a penalty in \code{penalties7}, and the two coincide in the
+lasso, which is this family with \eqn{\mu} held at zero.
 }
 
 \examples{
@@ -120,8 +122,8 @@ Tibshirani, R. (1996). Regression shrinkage and selection via the lasso.
 }
 \seealso{
 \code{\link[=laplace_distrib]{laplace_distrib()}} for the scale parametrization;
-\code{\link[=enet_distrib]{enet_distrib()}}, which mixes this family with a Gaussian and contains it as
-the pure-\eqn{\ell_1} case; \code{\link[=fixed]{fixed()}}, which holds the location at zero to
-produce a prior; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters;
+\code{\link[=enet_distrib]{enet_distrib()}}, which mixes this family with a Gaussian and tends to it as
+its mixing weight \eqn{\alpha} tends to 1; \code{\link[=fixed]{fixed()}}, which holds the
+location at zero to produce a prior; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters;
 \link{Laplace2Distrib} for the class.
 }

@@ -4,18 +4,17 @@ NULL
 #' @title Higher Derivatives of the Elastic Net's Log Mills Ratio
 #'
 #' @description
-#' Adds \eqn{G''} and \eqn{G'''} to the list of pieces, obtained by
-#' differentiating the identity \eqn{G' = 1 + xG - G^2} instead of the ratio
-#' itself:
-#' \deqn{G'' = G + xG' - 2GG', \qquad
-#'   G''' = 2G' + xG'' - 2(G')^{2} - 2GG''.}
+#' Adds \eqn{G''} and \eqn{G'''} to the list of pieces, the second and third
+#' derivatives of \eqn{G = \mathrm{d}\log M/\mathrm{d}x}.
 #'
 #' @details
-#' Written this way each order is a polynomial in \eqn{x}, \eqn{G} and the
-#' orders below, so the cancellation that afflicts \eqn{G = x - 1/M} for large
-#' \eqn{x} is confined to \eqn{G} itself, where `.enet_G()` already switches to
-#' an asymptotic series past \eqn{|x| = 10^3}. Nothing above first order
-#' introduces a new cancellation.
+#' The derivatives of \eqn{\log M} are, with alternating signs, the cumulants
+#' of the density proportional to \eqn{e^{-xs - s^2/2}} on \eqn{s > 0}, and a
+#' compiled kernel computes them from the ratios of its moments, which follow
+#' a recursion run downward for \eqn{x \ge 1}. The identities
+#' \eqn{G' = 1 + xG - G^2} and \eqn{G'' = G + xG' - 2GG'} hold, but they
+#' cancel for large \eqn{x} (\eqn{1 + xG} is of order \eqn{x^{-2}} while its
+#' terms are of order one), so they are not used.
 #'
 #' @param p The value of `.enet_parts()`: a list carrying `mu`, `lam`, `al`,
 #'   `a`, `c`, `x`, `g` and `dg`.
@@ -35,8 +34,11 @@ NULL
 #'   distributions7:::.enet_parts(list(mu = 0, lambda = 2, alpha = 0.5)))
 #' c(x = p$x, G = p$g, dG = p$dg, d2G = p$d2g, d3G = p$d3g)
 #'
-#' # G'' against a central difference of the identity for G'.
-#' gp <- function(x) { g <- distributions7:::.enet_G(x); 1 + x * g - g^2 }
+#' # G'' against a central difference of G'.
+#' gp <- function(x) {
+#'   distributions7:::.enet_parts(list(mu = 0, lambda = 2 * x^2,
+#'                                     alpha = 0.5))$dg
+#' }
 #' eps <- 1e-5
 #' c(analytic = p$d2g, numeric = (gp(p$x + eps) - gp(p$x - eps)) / (2 * eps))
 #'
@@ -159,7 +161,7 @@ NULL
 #'
 #' @details
 #' The map is bilinear, so its second partials are the constants \eqn{\pm 1}
-#' and its third and higher vanish; the table says so by leaving them out.
+#' and its third and higher vanish, so the table leaves them out.
 #'
 #' Those second partials are what carries a low-order derivative in the rates
 #' up to a high-order one in the parameters. That is why the third derivatives
@@ -209,13 +211,9 @@ NULL
 #' [distrib_deriv4.EnetDistrib()] return.
 #'
 #' @details
-#' The license for orders three and four is that the **same assembly** run at
-#' orders one and two reproduces the hand-written score and observed Hessian:
-#' measured, exactly 0 at order one and \eqn{1.1\times10^{-16}} at order two.
-#' Against an independent route, one product stencil on the analytic
-#' log-density, the pure-\eqn{\lambda} components agree to
-#' \eqn{2\times10^{-4}} at order three and \eqn{2\times10^{-3}} at order four,
-#' which is the stencil's own accuracy at those orders.
+#' The same assembly run at orders one and two reproduces the score and the
+#' observed Hessian of [distrib_gradient.EnetDistrib()] and
+#' [distrib_hessian.EnetDistrib()].
 #'
 #' @param y A numeric vector of observations.
 #' @param theta A named list with components `mu`, `lambda` and `alpha`, read
@@ -235,8 +233,7 @@ NULL
 #' y <- c(-1.5, -0.3, 0.4, 2.1)
 #' th <- list(mu = 0, lambda = 2, alpha = 0.5)
 #'
-#' # At order one it reproduces the hand-written score exactly, which is what
-#' # licenses the orders where there is nothing to compare against.
+#' # At order one it reproduces the score of distrib_gradient().
 #' g <- distrib_gradient(d, y, th)
 #' a1 <- distributions7:::.enet_chain(y, th, 1L)
 #' max(abs(unlist(a1[names(g)]) - unlist(g)))
@@ -263,13 +260,14 @@ NULL
 #' quadratic in \eqn{z = y-\mu} and linear in each rate, so at this order only
 #' the normalizing constant contributes, apart from
 #' \eqn{\partial^{3}\ell/\partial\mu^{2}\partial c = -1}. The bilinear map to
-#' \eqn{(\lambda, \alpha)} then puts the data back in: `mu_mu_lambda` and
-#' `mu_mu_alpha` are not constant across observations even though their
-#' preimages are.
+#' \eqn{(\lambda, \alpha)} through the second partials of the bilinear map
+#' puts the data back into one component: `mu_lambda_alpha`, equal to
+#' \eqn{\mathrm{sgn}(z) - z}, varies across observations although every third
+#' derivative in the rates is free of the data. `mu_mu_lambda`
+#' (\eqn{-(1-\alpha)}) and `mu_mu_alpha` (\eqn{\lambda}) are constants.
 #'
-#' The license for this order is that the same assembly at orders one and two
-#' reproduces the hand-written score and Hessian, measured at exactly 0 and
-#' \eqn{1.1\times10^{-16}}.
+#' The same assembly at orders one and two reproduces the score and the
+#' observed Hessian.
 #'
 #' With `expected = TRUE` the value is an expectation, and there it is **not**
 #' closed form: the call routes to [expected_derivative()], so `approx` and
@@ -344,10 +342,12 @@ S7::method(distrib_deriv3, EnetDistrib) <- function(distrib, y, theta,
 #' @description
 #' Computes the fifteen fourth derivatives of the log-density in closed form,
 #' through [.enet_chain()], in the notation of
-#' [distrib_deriv3.EnetDistrib()]. At this order **nothing touches the
-#' location**: the data term is quadratic in \eqn{z} and linear in each rate,
-#' so every component naming \eqn{\mu} more than twice is exactly zero, and
-#' what remains is a derivative of the normalizing constant carried through the
+#' [distrib_deriv3.EnetDistrib()]. In the rates \eqn{(\mu, a, c)} no fourth
+#' derivative involves \eqn{\mu}, the data term being quadratic in \eqn{z} and
+#' linear in each rate. After the bilinear map every component naming
+#' \eqn{\mu} more than twice is exactly zero, the only nonzero component with
+#' \eqn{\mu} is `mu_mu_lambda_alpha`, the constant 1, and the others are
+#' derivatives of the normalizing constant carried through the
 #' bilinear map.
 #'
 #' With `expected = TRUE` the value is an expectation and is not closed form,
@@ -381,8 +381,10 @@ S7::method(distrib_deriv3, EnetDistrib) <- function(distrib, y, theta,
 #' d4 <- distrib_deriv4(d, y, th)
 #' length(d4)
 #'
-#' # Nothing at this order touches the location.
+#' # The components that name the location more than twice are zero, and
+#' # mu_mu_lambda_alpha is the constant 1.
 #' d4$mu_mu_mu_mu
+#' d4$mu_mu_lambda_alpha
 #'
 #' # Against a central difference of the third order.
 #' eps <- 1e-5

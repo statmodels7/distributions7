@@ -11,11 +11,11 @@
 \item{theta}{A named list with components \code{mu} and \code{kappa}, each a numeric
 vector of length 1 or of the length of \code{q}. A component of length 1 is
 recycled. \code{mu} must lie in \eqn{(-\pi, \pi)} and \code{kappa} be strictly
-positive; a non-positive \code{kappa} gives \code{NA}.}
+positive; otherwise the generic signals an error.}
 
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
 probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are
-\eqn{P(Y > q)}, formed as \eqn{1 - F(q)}.}
+\eqn{P(Y > q)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
 probability is returned. Defaults to \code{FALSE}.}
@@ -35,8 +35,10 @@ would use costs one integration per observation; the series replaces
 \strong{ratios} \eqn{I_j/I_0} from a backward recurrence.
 
 Below \eqn{-\pi} the value is 0 and at or above \eqn{\pi} it is 1, the
-support being the declared interval. The result is clamped to
-\eqn{[0, 1]}: the series is exact and its rounding is not.
+support being the declared interval. Where the requested tail is below
+\eqn{10^{-10}}, the resolution of the series, it comes from a quadrature
+of the tail instead, on the log scale (\code{\link[=vm_cdf_tail]{vm_cdf_tail()}}), so that a small
+tail probability and its logarithm keep their digits.
 }
 \examples{
 d <- vonmises1_distrib()

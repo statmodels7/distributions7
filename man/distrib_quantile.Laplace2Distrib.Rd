@@ -7,18 +7,18 @@
 \item{distrib}{A \code{Laplace2Distrib} object, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
 \item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
-logarithms when \code{log.p = TRUE}. The endpoints give \code{-Inf} and \code{Inf}.}
+logarithms when \code{log.p = TRUE}. The endpoints give \code{-Inf} and \code{Inf}; a
+value outside the range gives \code{NaN} with a warning.}
 
 \item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
 vector of length 1 or of the length of \code{p}. A component of length 1 is
 recycled. \code{lambda} must be strictly positive.}
 
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
-\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)} and \code{p} is replaced by
-\code{1 - p} before the formula is applied.}
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are
-exponentiated first. Defaults to \code{FALSE}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -28,9 +28,13 @@ A numeric vector of quantiles, of length
 }
 \description{
 Computes the Laplace quantile function in the rate parametrization,
-\deqn{Q(p; \mu, \lambda) = \mu - \dfrac{\mathrm{sign}(p - \tfrac{1}{2})}{\lambda}\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right),}
-one expression covering both arms. The median is \eqn{\mu} and the quartiles
-are \eqn{\mu \pm \log(2)/\lambda}.
+\deqn{Q(p; \mu, \lambda) = \mu - \dfrac{\mathrm{sign}(p - \tfrac{1}{2})}{\lambda}\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right).}
+The median is \eqn{\mu} and the quartiles are \eqn{\mu \pm \log(2)/\lambda}.
+As for \code{\link[=distrib_quantile.LaplaceDistrib]{distrib_quantile.LaplaceDistrib()}}, the method works from the
+logarithm of the smaller tail through \code{\link[=laplace_std_quantile]{laplace_std_quantile()}} and divides
+the standard quantile by \eqn{\lambda}, so a probability far below
+machine epsilon, given directly, through \code{lower.tail = FALSE} or through
+\code{log.p = TRUE}, gives an accurate quantile.
 }
 \examples{
 d <- laplace2_distrib()

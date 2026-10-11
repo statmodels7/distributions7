@@ -20,9 +20,13 @@ A numeric vector of \code{n} angles in \eqn{[-\pi, \pi)}.
 \description{
 Draws \code{n} independent angles by the rejection algorithm of Best and Fisher
 (1979), which proposes from a wrapped Cauchy envelope and accepts with a
-probability that \strong{involves no Bessel function at all}, so the generator is
-cheap at any concentration: the normalizing constant, the expensive part of
-the density, never enters.
+probability that involves no Bessel function, so that the normalizing
+constant, the costly part of the density, is never evaluated. The
+constant \eqn{b} of the envelope is computed as
+\eqn{2a\kappa/\{(s+1)(a+\sqrt{2a})\}} with \eqn{s = \sqrt{1+4\kappa^2}}
+and \eqn{a = 1 + s}, which keeps its digits at a small concentration;
+below \eqn{\kappa = 10^{-300}} the envelope overflows, the law is uniform to
+double precision, and the draws are uniform on \eqn{[-\pi, \pi)}.
 
 The accepted angles are drawn about zero and then shifted by \eqn{\mu} and
 wrapped back into \eqn{[-\pi, \pi)}, so every draw lies in the declared
@@ -30,8 +34,8 @@ support. With a scalar \code{kappa} the envelope's constants are built once and
 the loop over-proposes and repeats until \code{n} draws have been accepted. With
 a \code{kappa} that varies by observation each draw has its own envelope, and the
 loop proposes once for every draw not yet accepted, so that draw \code{i} is
-generated at \code{kappa[i]} and shifted by \code{mu[i]}. Either way the loop consumes
-an unpredictable number of R's uniform streams.
+generated at \code{kappa[i]} and shifted by \code{mu[i]}. Either way the number of
+uniform variates consumed depends on the draws.
 }
 \examples{
 d <- vonmises1_distrib()

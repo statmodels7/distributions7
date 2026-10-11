@@ -40,9 +40,9 @@ and then \eqn{\omega = \sigma/\sqrt{1-\mu_z^2}} and
 
 The caller supplies the sign, so the body reads
 \eqn{s\,(2s\gamma_1/(4-\pi))^{1/3}} with no \code{abs()} in it. Away from zero
-the sign is locally constant, so the expression is exact and differentiable
-as written, and the derivative tables of \code{\link[=md_skewnormal2]{md_skewnormal2()}} differentiate it
-directly.
+the sign is locally constant, so the expression equals the cube-root term
+of the map. The derivatives of the map are computed in closed form by
+\code{\link[=md_skewnormal2]{md_skewnormal2()}}.
 }
 \examples{
 # The mean and the standard deviation are not the location and the scale.

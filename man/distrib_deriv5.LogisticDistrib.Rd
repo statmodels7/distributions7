@@ -31,10 +31,11 @@ compiled kernel.
 Writing the log-density as \eqn{\ell = -\log\sigma + g(z)} with
 \eqn{z = (y - \mu)/\sigma}, each component is \eqn{\sigma^{-5}} times a
 sum of terms \eqn{c\, z^p g^{(i)}(z)} with integer coefficients, plus
-\eqn{-24\sigma^{-5}} in the pure \eqn{\sigma} component; the kernel
-evaluates the sum from the derivatives of
-\eqn{g(z) = -z - 2\log(1 + e^{-z})}, written in the logistic sigmoid so
-that every intermediate quantity lies in \eqn{[-1, 1]}.
+\eqn{-24\sigma^{-5}} in the component that is pure in \eqn{\sigma}. The
+kernel evaluates the sum from the derivatives of
+\eqn{g(z) = -z - 2\log(1 + e^{-z})}, written in the sigmoid
+\eqn{t = 1/(1 + e^{-z})} and \eqn{u = 1 - t}, so that every factor
+\eqn{g^{(i)}} lies in \eqn{[-1, 1]}.
 With \code{scale = "link"} the components are composed with the link
 derivatives by the routine that every family with a fifth-order kernel
 uses.

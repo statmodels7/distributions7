@@ -9,17 +9,16 @@ NULL
 #' parametrized by a mean direction \eqn{\mu} and a concentration
 #' \eqn{\kappa > 0}, with density
 #' \eqn{f(y) = e^{\kappa\cos(y-\mu)}/\{2\pi I_0(\kappa)\}} on
-#' \eqn{[-\pi, \pi)}. It inherits from `continuous_distrib`; the nine methods
+#' \eqn{[-\pi, \pi)}. It inherits from `continuous_distrib`; the methods
 #' listed below are registered on it directly.
 #'
-#' This is the first family in the package whose support has the topology of a
-#' circle: the two ends of the interval are the same point, so the density need
-#' not vanish at either.
+#' The support of this family has the topology of a circle: the two ends of
+#' the interval are the same point, so the density need not vanish at either.
 #'
 #' Build one with [vonmises1_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
-#' which takes the parent's properties and validates none of the relationships
-#' between them.
+#' which takes the parent's properties; the validator of `distrib` checks
+#' them, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -38,23 +37,33 @@ NULL
 #'   [distrib_cdf.VonMises1Distrib()] for the Bessel series.
 #'
 #' @section Methods:
-#' Registered on this class:
-#'   [`distrib_cdf()`][distrib_cdf.VonMises1Distrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.VonMises1Distrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.VonMises1Distrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.VonMises1Distrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.VonMises1Distrib],
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.VonMises1Distrib],
+#'   [`distrib_cdf()`][distrib_cdf.VonMises1Distrib] and
+#'   [`distrib_rng()`][distrib_rng.VonMises1Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.VonMises1Distrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.VonMises1Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.VonMises1Distrib],
-#'   [`distrib_pdf()`][distrib_pdf.VonMises1Distrib],
-#'   [`distrib_rng()`][distrib_rng.VonMises1Distrib].
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.VonMises1Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.VonMises1Distrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.VonMises1Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.VonMises1Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.VonMises1Distrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.VonMises1Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.VonMises1Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.VonMises1Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.VonMises1Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.VonMises1Distrib];
+#' - the derivatives of the distribution function: [distrib_grad_cdf()],
+#'   [distrib_hess_cdf()],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.VonMises1Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.VonMises1Distrib].
 #'
-#' The **quantile** comes from [continuous_distrib()], by root finding on the
-#' distribution function; the distribution function itself is this class's own
-#' and is a Bessel series, not the parent's quadrature. The four moments come
-#' from [mean.distrib()] and its siblings, numerically, and are the ordinary
-#' moments of \eqn{Y} as a number rather than the circular ones.
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- vonmises1_distrib()
@@ -81,12 +90,11 @@ VonMises1Distrib <- S7::new_class("VonMises1Distrib", parent = continuous_distri
 #' \eqn{[-\pi, \pi)} the density is 0: the support is the declared interval,
 #' and an angle is not wrapped into it.
 #'
-#' The normalizing constant goes through [numericals7::log_bessel_i()].
-#' R's exponentially scaled `besselI` **underflows
-#' to an exact zero** between \eqn{\kappa = 10^5} and \eqn{10^6}, where the
-#' logarithm then returns `-Inf`; `log_bessel_i` stays finite wherever the
-#' logarithm itself is representable. Measured at \eqn{\kappa = 10^6} it
-#' returns 999992.17 where the base route returns `-Inf`.
+#' The normalizing constant goes through [numericals7::log_bessel_i()]. R's
+#' exponentially scaled `besselI` returns an exact zero from about
+#' \eqn{\kappa = 2 \times 10^5}, so that its logarithm is `-Inf`;
+#' `log_bessel_i` stays finite wherever the logarithm itself is
+#' representable.
 #'
 #' @param distrib A `VonMises1Distrib` object, from [vonmises1_distrib()].
 #' @param y A numeric vector of angles. A value outside \eqn{[-\pi, \pi)} is
@@ -99,9 +107,8 @@ VonMises1Distrib <- S7::new_class("VonMises1Distrib", parent = continuous_distri
 #'   Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads
-#'   [numericals7::log_bessel_i()] may use. It is carried down because this is
-#'   where the family spends its time: profiled at 80.8 per cent of a fit whose
-#'   concentration is modeled, so that `kappa` is a vector. Defaults to `1L`.
+#'   [numericals7::log_bessel_i()] may use. The Bessel evaluation is the
+#'   dominant cost when `kappa` is a vector. Defaults to `1L`.
 #'
 #' @return A numeric vector of densities, of length
 #'   `max(length(y), length(mu), length(kappa))`, one value per observation.
@@ -156,9 +163,13 @@ S7::method(distrib_pdf, VonMises1Distrib) <- function(distrib, y, theta,
 #' @description
 #' Draws `n` independent angles by the rejection algorithm of Best and Fisher
 #' (1979), which proposes from a wrapped Cauchy envelope and accepts with a
-#' probability that **involves no Bessel function at all**, so the generator is
-#' cheap at any concentration: the normalizing constant, the expensive part of
-#' the density, never enters.
+#' probability that involves no Bessel function, so that the normalizing
+#' constant, the costly part of the density, is never evaluated. The
+#' constant \eqn{b} of the envelope is computed as
+#' \eqn{2a\kappa/\{(s+1)(a+\sqrt{2a})\}} with \eqn{s = \sqrt{1+4\kappa^2}}
+#' and \eqn{a = 1 + s}, which keeps its digits at a small concentration;
+#' below \eqn{\kappa = 10^{-300}} the envelope overflows, the law is uniform to
+#' double precision, and the draws are uniform on \eqn{[-\pi, \pi)}.
 #'
 #' The accepted angles are drawn about zero and then shifted by \eqn{\mu} and
 #' wrapped back into \eqn{[-\pi, \pi)}, so every draw lies in the declared
@@ -166,8 +177,8 @@ S7::method(distrib_pdf, VonMises1Distrib) <- function(distrib, y, theta,
 #' the loop over-proposes and repeats until `n` draws have been accepted. With
 #' a `kappa` that varies by observation each draw has its own envelope, and the
 #' loop proposes once for every draw not yet accepted, so that draw `i` is
-#' generated at `kappa[i]` and shifted by `mu[i]`. Either way the loop consumes
-#' an unpredictable number of R's uniform streams.
+#' generated at `kappa[i]` and shifted by `mu[i]`. Either way the number of
+#' uniform variates consumed depends on the draws.
 #'
 #' @param distrib A `VonMises1Distrib` object, from [vonmises1_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -338,9 +349,9 @@ S7::method(distrib_gradient, VonMises1Distrib) <- function(distrib, y, theta,
 #' with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}. The
 #' pure-concentration entry is **free of the data**: the log-density is
 #' \eqn{\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}}, linear in \eqn{\kappa}
-#' apart from the normalizing constant, so \eqn{\kappa} appears twice only
-#' inside \eqn{\log I_0}. It therefore equals its own expectation at every
-#' observation.
+#' apart from the normalizing constant, so its second derivative in
+#' \eqn{\kappa} comes from \eqn{\log I_0} alone. It therefore equals its own
+#' expectation at every observation.
 #'
 #' \eqn{A'} comes from [numericals7::bessel_i_ratio_d1()], accurate to the
 #' last bits at any concentration. It is the variance of
@@ -360,8 +371,8 @@ S7::method(distrib_gradient, VonMises1Distrib) <- function(distrib, y, theta,
 #'   use. Below the measured internal threshold the kernel stays sequential
 #'   whatever the count says. Defaults to `1L`.
 #'
-#' @return A named list of three numeric vectors, `mu_mu`, `mu_kappa` and
-#'   `kappa_kappa`, each of length
+#' @return A named list of three numeric vectors, `mu_mu`, `kappa_kappa` and
+#'   `mu_kappa`, in the order of [hess_names()], each of length
 #'   `max(length(y), length(mu), length(kappa))`.
 #'
 #' @section Notation:
@@ -435,8 +446,9 @@ S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
 #'   use. Below the measured internal threshold the kernel stays sequential
 #'   whatever the count says. Defaults to `1L`.
 #'
-#' @return A named list of three numeric vectors, `mu_mu`, `mu_kappa` and
-#'   `kappa_kappa`, each of length `length(y)` and constant along it.
+#' @return A named list of three numeric vectors, `mu_mu`, `kappa_kappa` and
+#'   `mu_kappa`, in the order of [hess_names()], each of length `length(y)`
+#'   and constant along it.
 #'   `mu_kappa` is exactly zero.
 #'
 #' @section Notation:
@@ -486,8 +498,8 @@ S7::method(distrib_expected_hessian, VonMises1Distrib) <- function(distrib, y, t
 #' The family is a location family on the circle, so this is exactly the
 #' negative of the direction score
 #' [distrib_gradient.VonMises1Distrib()]`$mu`. It is **bounded by** \eqn{\kappa}
-#' and vanishes at both the mode \eqn{y = \mu} and the antimode
-#' \eqn{y = \mu \pm \pi}, as a periodic density must.
+#' in absolute value and vanishes at the mode \eqn{y = \mu} and at the
+#' antimode \eqn{y = \mu \pm \pi}, the stationary points of the density.
 #'
 #' @param distrib A `VonMises1Distrib` object, from [vonmises1_distrib()].
 #' @param y A numeric vector of angles. The expression is evaluated wherever it
@@ -536,9 +548,9 @@ S7::method(distrib_grad_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\kappa \cos(y - \mu).}
 #' The family is a location family on the circle, so this equals the
 #' pure-direction entry of [distrib_hessian.VonMises1Distrib()], with no sign
-#' change. It is negative near the mode and **positive** on the half of the
-#' circle further than a quarter turn from it, the density having a minimum at
-#' the antimode; a periodic density cannot be concave everywhere.
+#' change. It is negative within a quarter turn of the mode and **positive**
+#' on the other half of the circle, where the density has its minimum at the
+#' antimode.
 #'
 #' @param distrib A `VonMises1Distrib` object, from [vonmises1_distrib()].
 #' @param y A numeric vector of angles. The expression is evaluated wherever it
@@ -606,16 +618,14 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #'
 #' The density on \eqn{y \in [-\pi, \pi)} is
 #' \deqn{f(y; \mu, \kappa) = \dfrac{e^{\kappa\cos(y-\mu)}}{2\pi I_0(\kappa)},}
-#' with \eqn{I_0} the modified Bessel function of the first kind. This is the
-#' first family in the package whose support has the topology of a circle: the
-#' two ends of the interval are the same point, so the density need not vanish
-#' at either. [vonmises2_distrib()] is the same law parametrized by the mean
+#' with \eqn{I_0} the modified Bessel function of the first kind. The support
+#' has the topology of a circle: the two ends of the interval are the same
+#' point, so the density need not vanish at either. [vonmises2_distrib()] is the same law parametrized by the mean
 #' resultant length in place of the concentration.
 #'
-#' The normalizing constant goes through [numericals7::log_bessel_i()]. R's
-#' exponentially scaled `besselI` underflows to an exact zero between
-#' \eqn{\kappa = 10^5} and \eqn{10^6}, where the logarithm returns `-Inf`;
-#' measured at \eqn{\kappa = 10^6} the toolkit's routine returns 999992.17.
+#' The normalizing constant goes through [numericals7::log_bessel_i()], which
+#' stays finite where R's exponentially scaled `besselI` returns an exact zero
+#' (from about \eqn{\kappa = 2 \times 10^5}).
 #'
 #' # Score, information, and orthogonality
 #'
@@ -624,8 +634,10 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' \deqn{\dfrac{\partial\ell}{\partial\mu} = \kappa\sin(y-\mu), \qquad
 #'       \dfrac{\partial\ell}{\partial\kappa} = \cos(y-\mu) - A(\kappa),}
 #' and every second derivative is closed form, with
-#' \eqn{A'(\kappa) = 1 - A(\kappa)/\kappa - A(\kappa)^2} from the Bessel
-#' recurrences and no further evaluation. Since
+#' \eqn{A'(\kappa) = 1 - A(\kappa)/\kappa - A(\kappa)^2}. numericals7 evaluates
+#' \eqn{A'} and the higher derivatives of \eqn{A} from a power series for
+#' small \eqn{\kappa}, where that identity cancels, and from the identity in
+#' extended precision or an asymptotic series above. Since
 #' \eqn{\mathbb{E}[\sin(Y-\mu)] = 0} by symmetry, **the two parameters are
 #' orthogonal**: the expected information is diagonal, and Fisher scoring
 #' updates the direction and the concentration independently.
@@ -666,12 +678,13 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #'
 #' # The distribution function
 #'
-#' The density has no elementary antiderivative. The base class would
-#' integrate it once per observation, which measured 4.5 seconds at ten
-#' thousand points; this class supplies [distrib_cdf.VonMises1Distrib()]
-#' instead, a Fourier series integrated term by term whose term count is
-#' \eqn{8.5\sqrt{\kappa} + 10}, measured. The **quantile** does come from
-#' [continuous_distrib()], by root finding on that series.
+#' The density has no elementary antiderivative. The base class integrates it
+#' numerically, once per observation; this class supplies
+#' [distrib_cdf.VonMises1Distrib()] instead, a Fourier series integrated term
+#' by term with \eqn{\max\{20, \lceil 8.5\sqrt{\kappa}\rceil + 10\}} terms,
+#' and a quadrature of the tail where the requested tail is below
+#' \eqn{10^{-10}}. The **quantile** comes from [continuous_distrib()], by
+#' root finding on the logarithm of the smaller tail.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean
@@ -773,9 +786,7 @@ vonmises1_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #'   vector of length 1 or of the length of `y`. `kappa` must be strictly
 #'   positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method. **Note the
-#'   argument order**: `scale` precedes `expected` here, unlike on most
-#'   families, so both are best given by name.
+#'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
@@ -854,9 +865,7 @@ S7::method(distrib_deriv3, VonMises1Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. `kappa` must be strictly
 #'   positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method. **Note the
-#'   argument order**: `scale` precedes `expected` here, so both are best given
-#'   by name.
+#'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
@@ -923,9 +932,8 @@ S7::method(distrib_deriv4, VonMises1Distrib) <- function(distrib, y, theta,
 #' # Why a series
 #'
 #' The density has no elementary antiderivative, and the base class integrates
-#' it numerically: one quadrature per observation, which measured 4.5 seconds
-#' at ten thousand points and made this family a thousand times dearer than any
-#' other. The series is rapidly convergent. From
+#' it numerically, with one quadrature per observation. The series converges
+#' rapidly. From
 #' \eqn{e^{\kappa\cos\theta} = I_0(\kappa) + 2\sum_{j\ge1} I_j(\kappa)
 #' \cos(j\theta)}, integrating from \eqn{-\pi} to \eqn{x},
 #' \deqn{F(x) = \frac{x + \pi}{2\pi} + \frac{1}{\pi I_0(\kappa)}
@@ -941,25 +949,28 @@ S7::method(distrib_deriv4, VonMises1Distrib) <- function(distrib, y, theta,
 #' loop runs over the series index and not over the data. The series is cheap
 #' for that reason: \eqn{n} quadratures become a few dozen vectorized steps.
 #'
-#' # How many terms, measured
+#' # Number of terms
 #'
-#' Compared against the same series at four times the length, machine precision
-#' is reached at 10 terms at \eqn{\kappa = 0.5}, 26 at 10, 90 at 100, 242 at
-#' 1000 and 404 at 3000, always under \eqn{8.5\sqrt{\kappa} + 10}, which is the
-#' rule used, with a floor of 20.
+#' The series is truncated at
+#' \eqn{\max\{20, \lceil 8.5\sqrt{\kappa}\rceil + 10\}} terms, with \eqn{\kappa}
+#' the largest concentration among the observations evaluated, which exceeds
+#' the number of terms at which the partial sums agree to double precision.
 #'
 #' The sum is accumulated over blocks of observations, because the natural
 #' expression forms an \eqn{n \times m} matrix, which at a hundred thousand
 #' points and a concentration of a hundred is already hundreds of megabytes.
-#' The result is clamped to \eqn{[0, 1]}: the series is exact and its rounding
-#' is not, and a distribution function cannot leave its own interval.
+#' The result is clamped to \eqn{[0, 1]} to remove the rounding error of the
+#' partial sums, whose absolute error is about \eqn{10^{-16}}; [vm_cdf_tail()]
+#' handles the tails below that resolution.
 #'
 #' @param y A numeric vector of quantiles. Below \eqn{-\pi} the value is 0 and
-#'   at or above \eqn{\pi} it is 1. `NA` and non-finite values give `NA`.
+#'   at or above \eqn{\pi} it is 1, so that `-Inf` gives 0 and `Inf` gives 1.
+#'   `NA` and `NaN` give `NA`.
 #' @param mu A numeric vector of mean directions, recycled to the length of
 #'   `y`.
 #' @param kappa A numeric vector of concentrations, recycled to the length of
-#'   `y`. A value at or below zero gives `NA`.
+#'   `y`. A value at or below zero gives `NA` for an angle inside the
+#'   support.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of the recycled
 #'   length of the inputs.
@@ -1006,14 +1017,25 @@ vm_cdf <- function(y, mu, kappa) {
 #' logarithms, from the series of [vm_cdf()] where the requested tail is
 #' above \eqn{10^{-10}}, and from `vm_log_tail()` below, where the series'
 #' absolute error of about \eqn{10^{-16}} would dominate. `vm_log_tail()`
-#' integrates \eqn{\exp\{\kappa\cos(y - \mu) - M\}} over the tail from the end
-#' where it is largest, \eqn{M} its value there, on the scale
-#' \eqn{1/|\kappa\sin(y - \mu)|} at that end; the interval then excludes the
-#' mode, so no factor underflows.
+#' integrates \eqn{e^{\kappa\cos(y - \mu)}} over the tail, which excludes the
+#' mode, so the integrand decreases from each end of the interval to the
+#' antimode. The interval is split at the antimode when it contains it, and
+#' each piece is integrated from its end on the scale
+#' \eqn{1/\max\{\kappa|\sin(e - \mu)|, \sqrt\kappa\}} at that end \eqn{e},
+#' relative to the value there and with the difference of the cosines written
+#' as a product of sines, over panels of growing width until the remainder is
+#' below \eqn{10^{-17}} of the sum. The pieces are added on the log scale, and
+#' the normalizing constant comes from [numericals7::log_bessel_i()], so no
+#' factor underflows at any concentration.
 #' @param q A numeric vector of angles in \eqn{[-\pi, \pi)}.
 #' @param mu,kappa Numeric vectors, the mean direction and the concentration.
 #' @param lower,lower.tail,log.p Logical of length 1.
-#' @return A numeric vector for `vm_cdf_tail()`, a number for `vm_log_tail()`.
+#' @param e,dir,L For `vm_log_piece()`, which integrates one piece: the end
+#'   \eqn{e} at which the integrand is largest, the direction (1 or -1) in
+#'   which it decreases, and the length of the piece.
+#' @return A numeric vector for `vm_cdf_tail()`; for `vm_log_tail()` and
+#'   `vm_log_piece()`, a number, the logarithm of the tail probability and of
+#'   the integral of \eqn{e^{\kappa\cos(y - \mu)}} over the piece.
 #' @examples
 #' distributions7:::vm_cdf_tail(-1, 0, 100, TRUE, FALSE)
 #' @keywords internal
@@ -1021,17 +1043,47 @@ vm_log_tail <- function(q, mu, kappa, lower) {
   a <- if (lower) -pi else q
   b <- if (lower) q else pi
   if (b <= a) return(-Inf)
-  # from the end where the integrand is largest, on the scale 1/|l'| there
-  top <- if (cos(a - mu) >= cos(b - mu)) a else b
-  dir <- if (top == a) 1 else -1
-  M <- kappa * cos(top - mu)
-  h <- 1 / max(kappa * abs(sin(top - mu)), 1e-300)
-  h <- min(h, b - a)
-  val <- h * stats::integrate(function(t) exp(kappa * cos(top + dir * h * t - mu) - M),
-                              0, (b - a) / h, rel.tol = 1e-13,
-                              subdivisions = 2000L)$value
-  log_i0 <- log(besselI(kappa, 0, expon.scaled = TRUE)) + kappa
-  M - log_i0 - log(2 * pi) + log(val)
+  # the integrand decreases from each end of [a, b] to the antimode, so the
+  # interval is split there and each piece integrated from its peak end
+  anti <- if (mu > 0) mu - pi else mu + pi
+  if (anti > a && anti < b) {
+    lp <- c(vm_log_piece(a, 1, anti - a, mu, kappa),
+            vm_log_piece(b, -1, b - anti, mu, kappa))
+  } else if (cos(a - mu) >= cos(b - mu)) {
+    lp <- vm_log_piece(a, 1, b - a, mu, kappa)
+  } else {
+    lp <- vm_log_piece(b, -1, b - a, mu, kappa)
+  }
+  m <- max(lp)
+  m + log(sum(exp(lp - m))) - numericals7::log_bessel_i(kappa, 0) - log(2 * pi)
+}
+
+#' @rdname vm_cdf_tail
+# log of the integral of exp(kappa cos(y - mu)) over a length L from the end
+# e in the direction dir, along which the integrand decreases: on the scale
+# 1/|l'| at e, over panels of growing width until the integrand times the
+# length left is below 1e-17 of the sum, which bounds what is left
+vm_log_piece <- function(e, dir, L, mu, kappa) {
+  c0 <- cos(e - mu)
+  h <- 1 / max(kappa * abs(sin(e - mu)), sqrt(kappa), 1e-300)
+  # cos(x + d) - cos(x) = -2 sin(x + d/2) sin(d/2), without the difference
+  f <- function(t) {
+    dl <- dir * h * t
+    exp(-2 * kappa * sin(e - mu + dl / 2) * sin(dl / 2))
+  }
+  len <- L / h
+  tot <- 0
+  lo <- 0
+  hi <- min(1, len)
+  repeat {
+    tot <- tot + stats::integrate(f, lo, hi, rel.tol = 1e-13,
+                                  abs.tol = 1e-17 * tot,
+                                  subdivisions = 2000L)$value
+    if (hi >= len || f(hi) * (len - hi) < 1e-17 * tot) break
+    lo <- hi
+    hi <- min(4 * hi, len)
+  }
+  kappa * c0 + log(h * tot)
 }
 
 #' @rdname vm_cdf_tail
@@ -1062,18 +1114,20 @@ vm_cdf_tail <- function(q, mu, kappa, lower.tail, log.p) {
 #' **ratios** \eqn{I_j/I_0} from a backward recurrence.
 #'
 #' Below \eqn{-\pi} the value is 0 and at or above \eqn{\pi} it is 1, the
-#' support being the declared interval. The result is clamped to
-#' \eqn{[0, 1]}: the series is exact and its rounding is not.
+#' support being the declared interval. Where the requested tail is below
+#' \eqn{10^{-10}}, the resolution of the series, it comes from a quadrature
+#' of the tail instead, on the log scale ([vm_cdf_tail()]), so that a small
+#' tail probability and its logarithm keep their digits.
 #'
 #' @param distrib A `VonMises1Distrib` object, from [vonmises1_distrib()].
 #' @param q A numeric vector of angles.
 #' @param theta A named list with components `mu` and `kappa`, each a numeric
 #'   vector of length 1 or of the length of `q`. A component of length 1 is
 #'   recycled. `mu` must lie in \eqn{(-\pi, \pi)} and `kappa` be strictly
-#'   positive; a non-positive `kappa` gives `NA`.
+#'   positive; otherwise the generic signals an error.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default,
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are
-#'   \eqn{P(Y > q)}, formed as \eqn{1 - F(q)}.
+#'   \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.

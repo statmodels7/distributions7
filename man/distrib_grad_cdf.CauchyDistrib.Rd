@@ -23,13 +23,13 @@ A named list of two numeric vectors, \code{mu} and \code{sigma}, each the
 length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, from the location-scale structure:
-\eqn{\partial F/\partial\mu = -f(q)} and
-\eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
-method is \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} itself.
+Closed form: \eqn{\partial F/\partial\mu = -f(q)} and
+\eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma},
+computed by \code{\link[=cauchy_cdf_method]{cauchy_cdf_method()}} as \eqn{-\mathrm{Im}(\mathrm{i}^k Y^{-1})/\pi}
+with \eqn{Y = q - \mu + \mathrm{i}\sigma}, without squaring the residual.
 }
 \details{
-No moment of the Cauchy exists, and none is needed here: the distribution
+The family has no moments, and none is needed here: the distribution
 function is elementary, \eqn{F(q) = 1/2 + \arctan(z)/\pi}, and the identity
 \eqn{\partial F/\partial\mu = -f} holds for every location-scale family
 whether or not its moments converge. The quantities this page returns are
@@ -48,7 +48,7 @@ d <- cauchy_distrib()
 th <- list(mu = 0.3, sigma = 1.2)
 q <- c(-1, 0.5, 2)
 
-# Exact, even though no moment of this family exists.
+# Exact, although the family has no moments.
 all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th))
 
@@ -56,7 +56,7 @@ all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
 distrib_grad_cdf(d, -1000, th)$mu
 }
 \seealso{
-\code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} for the shared body;
+\code{\link[=cauchy_cdf_method]{cauchy_cdf_method()}} for the body;
 \code{\link[=distrib_hess_cdf.CauchyDistrib]{distrib_hess_cdf.CauchyDistrib()}} for the second order;
 \code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}} for the moments, which do not exist;
 \code{\link[=cauchy_distrib]{cauchy_distrib()}}.

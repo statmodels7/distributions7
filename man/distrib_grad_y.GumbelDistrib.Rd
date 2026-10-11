@@ -26,8 +26,6 @@ response, in closed form:
 The Gumbel is a location family in \eqn{\mu}, so the response enters the
 log-density only through \eqn{y - \mu} and this derivative is the negative
 of the score in \eqn{\mu}. It vanishes at \eqn{y = \mu}, which is the mode.
-
-Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
 }
 \examples{
 d <- gumbel_distrib()

@@ -43,8 +43,8 @@ maxima.
 \section{Notation}{
 
 \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
-\eqn{\sigma > 0} the scale. Neither is a moment: no moment of this family
-exists.
+\eqn{\sigma > 0} the scale. Neither is a moment, because the family has no
+moments.
 }
 
 \examples{

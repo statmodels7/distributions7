@@ -16,10 +16,12 @@ recycled. \code{sigma} must be strictly positive.}
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's. This matters more here than elsewhere:
-the strategies that average the observed second derivative would return 0
-for the location, and only the score-based one recovers
-\eqn{1/\sigma^2}.}
+signature matches the generic's. Of the strategies of the generic,
+\code{"mc"} averages the observed second derivative over simulated draws
+and would give 0 for the location; \code{"opg"}, \code{"bartlett"} and
+\code{"integrate"} (which uses the Bartlett identity for a family with a
+non-smooth parameter) read the product of scores and give
+\eqn{-1/\sigma^2}.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -79,8 +81,8 @@ c(var_of_score = mean(s^2),
   information = -distrib_expected_hessian(d, 0, th)$mu_mu,
   mean_observed = mean(distrib_hessian(d, z, th)$mu_mu))
 
-# Fisher scoring can fit the family because this matrix is nonsingular;
-# a Newton step on the observed Hessian would divide by zero in mu.
+# Fisher scoring fits the family because this matrix is nonsingular; the
+# observed Hessian has a zero mu_mu entry.
 coef(fit_distrib(d, z))
 }
 \seealso{

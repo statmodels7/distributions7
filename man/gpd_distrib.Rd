@@ -27,31 +27,32 @@ and the natural companion of \code{\link[=gumbel_distrib]{gumbel_distrib()}} in 
 
 At \eqn{\xi = 0} it is the exponential, at \eqn{\xi > 0} it has a
 polynomial tail, and at \eqn{\xi < 0} it has a \strong{finite upper endpoint} at
-\eqn{-\sigma/\xi}. That last case makes the family non-regular, and it is
-the one thing to know before using it.
+\eqn{-\sigma/\xi}. The last case makes the family non-regular, so the
+expected information exists only for \eqn{\xi > -1/2}.
 }
 \section{Density and distribution function}{
 \deqn{f(y) = \dfrac{1}{\sigma}\left(1 + \dfrac{\xi y}{\sigma}\right)^{-1/\xi-1},
       \qquad
       F(q) = 1 - \left(1 + \dfrac{\xi q}{\sigma}\right)^{-1/\xi}.}
-At \eqn{\xi = 0} both reduce to the exponential. The implementation reaches
-that limit through a series, so the parameter may pass through zero during
-a fit. The quantile function is elementary,
+At \eqn{\xi = 0} both reduce to the exponential. The density, the
+distribution function and the derivatives are evaluated through the
+analytic function \eqn{\log(1+u)/u} of \eqn{u = \xi y/\sigma}, so the shape
+may pass through zero during a fit. The quantile function is elementary,
 \eqn{Q(p) = \sigma\{(1-p)^{-\xi}-1\}/\xi}, so the generator is an exact
 inverse transform.
 }
 
-\section{It is not parametrized by its mean}{
-The mean is \eqn{\sigma/(1-\xi)} and exists only for \eqn{\xi < 1}, so a
-mean parametrization would leave the family undescribable exactly where it
-is most used, in the heavy-tailed regime. The same argument keeps
-\code{\link[=mv_sigma]{mv_sigma()}} and \code{\link[=variance]{variance()}} apart for the multivariate \eqn{t}: a
-parametrization must not depend on a moment that need not exist.
+\section{Parametrization}{
+The family is parametrized by the scale \eqn{\sigma} and the shape
+\eqn{\xi}. The mean is \eqn{\sigma/(1-\xi)} and exists only for
+\eqn{\xi < 1}, so a mean parametrization would not describe the
+heavy-tailed members of the family. For the same reason \code{\link[=mv_sigma]{mv_sigma()}} and
+\code{\link[=variance]{variance()}} are distinct for the multivariate \eqn{t}.
 }
 
 \section{The support depends on the parameters}{
-For \eqn{\xi < 0} the support is \eqn{[0, -\sigma/\xi]}, and this is the
-first family here of which that is true. What it costs is the automatic
+For \eqn{\xi < 0} the support is \eqn{[0, -\sigma/\xi]}, so it depends on
+the parameters. What this costs is the automatic
 license to differentiate under the integral sign, on which the Bartlett
 identities rest. Two things survive and one does not:
 \itemize{
@@ -69,16 +70,17 @@ of the maximum likelihood estimator do not hold (Smith, 1985).
 
 The object's \code{bounds} are \code{c(0, Inf)} because they are fixed at
 construction while the true endpoint moves with the parameters. The density
-is zero beyond it, so nothing computes a wrong number, and a caller reading
-\code{bounds} should ask \code{\link[=gpd_endpoint]{gpd_endpoint()}} instead.
+is zero beyond the endpoint and the distribution function is one, and a
+caller that needs the upper limit of the support should use
+\code{\link[=gpd_endpoint]{gpd_endpoint()}} in place of \code{bounds}.
 }
 
 \section{Moments}{
-The mean is \eqn{\sigma/(1-\xi)} for \eqn{\xi < 1}, the variance
-\eqn{\sigma^2/\{(1-\xi)^2(1-2\xi)\}} for \eqn{\xi < 1/2}, the skewness needs
-\eqn{\xi < 1/3} and the kurtosis \eqn{\xi < 1/4. } Each returns \code{Inf} above
-its threshold, so a fitted object can report a mean where it has no
-variance.
+The mean is \eqn{\sigma/(1-\xi)} for \eqn{\xi < 1} and the variance
+\eqn{\sigma^2/\{(1-\xi)^2(1-2\xi)\}} for \eqn{\xi < 1/2}. The skewness
+requires \eqn{\xi < 1/3} and the kurtosis \eqn{\xi < 1/4}. Each of the four
+moments is returned as \code{Inf} at and above its threshold, so a fitted
+object can report a mean where the variance is infinite.
 }
 
 \section{Parameter domains}{

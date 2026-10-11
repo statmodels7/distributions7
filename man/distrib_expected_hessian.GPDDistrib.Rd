@@ -50,16 +50,16 @@ only if \eqn{|\xi| < 1/2}. Below that point the classical asymptotics of the
 maximum likelihood estimator do not hold either, so the \code{NA} reports a
 quantity that does not exist.
 
-Approaching the boundary the information diverges: measured at
-\eqn{\sigma = 1.5}, the \eqn{\xi} component is \eqn{-2.00} at
-\eqn{\xi = 0}, \eqn{-7.14} at \eqn{-0.3} and \eqn{-196.1} at \eqn{-0.49}.
+Approaching the boundary the information diverges: the \eqn{\xi}
+component \eqn{-2/\{(1+2\xi)(1+\xi)\}}, which does not depend on
+\eqn{\sigma}, equals \eqn{-2} at \eqn{\xi = 0}, about \eqn{-7.14} at
+\eqn{-0.3} and about \eqn{-196.1} at \eqn{-0.49}.
 }
 
 \section{Checking it}{
-A Monte Carlo average of the observed Hessian is the weaker reference here,
-and disagreed with this formula by 9 per cent at \eqn{\xi = -0.3} while the
-formula was right: the second derivative blows up at the upper endpoint, so
-the sample mean converges slowly. Integrating on the \strong{probability} scale
+A Monte Carlo average of the observed Hessian converges slowly here,
+because the second derivative is unbounded at the upper endpoint when
+\eqn{\xi < 0}. Integrating on the \strong{probability} scale
 instead, \eqn{E[h] = \int_0^1 h(Q(u))\,du}, turns the endpoint into an
 ordinary point and agrees to \eqn{10^{-11}}.
 }

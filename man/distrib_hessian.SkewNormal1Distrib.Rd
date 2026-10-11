@@ -60,9 +60,9 @@ exactly proportional there, so no data can separate them. Measured at
 \eqn{\alpha^4} as the shape moves off zero: \eqn{4.4\times10^{-10}} at
 \eqn{\alpha = 0.01} and \eqn{1.9\times10^{-3}} at \eqn{\alpha = 0.5}.
 
-The singularity belongs to the family as parametrized, not to the
-implementation. Azzalini's centered parametrization removes it, and lives in
-the separate object \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.
+The singularity is a property of this parametrization. Azzalini's centered
+parametrization does not have it and is implemented by
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.
 }
 
 \section{Notation}{

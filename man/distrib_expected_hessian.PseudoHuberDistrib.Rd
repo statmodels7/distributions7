@@ -49,8 +49,8 @@ the Bessel functions of the normalizing constant.
 
 The law is symmetric about \eqn{\mu}, so every component carrying \eqn{\mu}
 an odd number of times vanishes. The rule's nodes are symmetric about zero,
-so the two halves of such an integral cancel and the entry comes back as
-zero.
+so the two halves of such an integral cancel up to rounding, and the entry
+comes back as zero to about \eqn{10^{-20}}.
 
 \code{approx} and \code{nsim} are accepted for the generic's sake and ignored.
 }

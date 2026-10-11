@@ -39,7 +39,9 @@ NULL
 #' # The two conversions
 #'
 #' Switching to the upper tail flips the sign, \eqn{S = 1 - F} giving
-#' \eqn{\partial^I S = -\partial^I F} at every order. Switching to the log
+#' \eqn{\partial^I S = -\partial^I F} at every order. The probability \eqn{S}
+#' by which the log scale divides is the family's own upper tail when `Fq`
+#' comes from [tail_cdf()], and \eqn{1 - F} otherwise ([tail_probability()]). Switching to the log
 #' scale divides by the probability, which at second order brings in the
 #' familiar correction
 #' \deqn{\partial^2 \log P = \frac{\partial^2 P}{P}
@@ -60,7 +62,8 @@ NULL
 #'
 #' @param distrib An object inheriting from `distrib`. Only its `params` are
 #'   read, to name and pair the components.
-#' @param Fq The distribution function at the quantile, a numeric vector.
+#' @param Fq The distribution function at the quantile, a numeric vector,
+#'   possibly with the attribute `"upper"` that [tail_cdf()] attaches.
 #' @param dF1 A named list of first derivatives of \eqn{F}, one component per
 #'   parameter, in the parameter order.
 #' @param dF2 A named list of second derivatives of \eqn{F}, keyed as
@@ -552,8 +555,8 @@ S7::method(distrib_hess_cdf, discrete_distrib) <- function(distrib, q, theta,
 #'       \frac{\partial^2 F}{\partial \sigma^2}
 #'         = f\left(z^2 \ell_y + \frac{2z}{\sigma}\right).}
 #'
-#' The Gaussian, the logistic, the Cauchy, the Laplace and the Gumbel
-#' register these bodies unchanged, and they are the families most used in
+#' The Gaussian, the logistic, the Laplace and the Gumbel register these
+#' bodies unchanged, and they are the families most used in
 #' censored regression. The Student t, pseudo-Huber and skew t families
 #' compute their location and scale components by the same formulas inside
 #' the compiled quadrature of [compiled_cdf()].
@@ -597,9 +600,9 @@ loc_scale_cdf_deriv <- function(distrib, q, theta, order) {
 #'
 #' @description
 #' The [distrib_grad_cdf()] body the location-scale families share:
-#' [loc_scale_cdf_deriv()] at order 1, put on the requested tail and scale by
-#' [cdf_tail_scale()]. The Gaussian, the logistic, the Cauchy, the Laplace and
-#' the Gumbel register this function itself, so their pages document one piece
+#' the factors of [loc_scale_cdf_deriv()] at order 1, put on the requested
+#' tail and scale by [loc_scale_cdf_route()]. The Gaussian, the logistic, the
+#' Laplace and the Gumbel register this function itself, so their pages document one piece
 #' of arithmetic.
 #'
 #' @param distrib An object inheriting from `distrib` whose first two
@@ -629,9 +632,10 @@ loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE,
 #'
 #' @description
 #' The [distrib_hess_cdf()] body the location-scale families share:
-#' [loc_scale_cdf_deriv()] at both orders, put on the requested tail and scale
-#' by [cdf_tail_scale()]. Both orders are needed even when only the Hessian was
-#' requested, the log-scale correction reading the first derivatives.
+#' the factors of [loc_scale_cdf_deriv()] at both orders, put on the
+#' requested tail and scale by [loc_scale_cdf_route()]. Both orders are needed
+#' even when only the Hessian was requested, the log-scale correction
+#' reading the first derivatives.
 #'
 #' @param distrib An object inheriting from `distrib` whose first two
 #'   parameters are a location and a scale.
@@ -665,8 +669,8 @@ loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE,
 #' \eqn{\partial F/\partial\mu = -f(q)} and
 #' \eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
 #' method is [loc_scale_grad_cdf()] itself, shared with the logistic, the
-#' Cauchy, the Laplace and the Gumbel, so nothing here is particular to the
-#' Gaussian beyond its density.
+#' Laplace and the Gumbel, so nothing here is particular to the Gaussian
+#' beyond its density.
 #'
 #' @details
 #' A censored Gaussian likelihood is cheap for this reason: a right-censored
@@ -689,9 +693,9 @@ loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE,
 #'   with `log = TRUE` it returns the derivatives of \eqn{\log S}, where
 #'   \eqn{S = 1 - F}, which are not the negatives of the lower-tail ones.
 #' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default. Far into a tail the probability underflows to zero and
-#'   the result is `-Inf` or `NaN`, although the derivative of the logarithm
-#'   is finite there.
+#'   `TRUE` by default. The ratio \eqn{f/P} is formed as
+#'   \eqn{\exp(\log f - \log P)}, so the result stays finite far into either
+#'   tail, where \eqn{f} and \eqn{P} underflow.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma`, each the
 #'   length of `q` recycled against `theta`.
@@ -727,7 +731,7 @@ S7::method(distrib_grad_cdf, Gaussian1Distrib) <- loc_scale_grad_cdf
 #'       \frac{\partial^2 F}{\partial\sigma^2}
 #'         = f\left(z^2\ell_y + \frac{2z}{\sigma}\right).}
 #' The method is [loc_scale_hess_cdf()] itself, shared with the logistic, the
-#' Cauchy, the Laplace and the Gumbel.
+#' Laplace and the Gumbel.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the mean, \eqn{\sigma > 0} the standard deviation,
@@ -857,13 +861,13 @@ S7::method(distrib_hess_cdf, LogisticDistrib) <- loc_scale_hess_cdf
 #' @name distrib_grad_cdf.CauchyDistrib
 #'
 #' @description
-#' Closed form, from the location-scale structure:
-#' \eqn{\partial F/\partial\mu = -f(q)} and
-#' \eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
-#' method is [loc_scale_grad_cdf()] itself.
+#' Closed form: \eqn{\partial F/\partial\mu = -f(q)} and
+#' \eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma},
+#' computed by [cauchy_cdf_method()] as \eqn{-\mathrm{Im}(\mathrm{i}^k Y^{-1})/\pi}
+#' with \eqn{Y = q - \mu + \mathrm{i}\sigma}, without squaring the residual.
 #'
 #' @details
-#' No moment of the Cauchy exists, and none is needed here: the distribution
+#' The family has no moments, and none is needed here: the distribution
 #' function is elementary, \eqn{F(q) = 1/2 + \arctan(z)/\pi}, and the identity
 #' \eqn{\partial F/\partial\mu = -f} holds for every location-scale family
 #' whether or not its moments converge. The quantities this page returns are
@@ -888,7 +892,7 @@ S7::method(distrib_hess_cdf, LogisticDistrib) <- loc_scale_hess_cdf
 #' @return A named list of two numeric vectors, `mu` and `sigma`, each the
 #'   length of `q` recycled against `theta`.
 #'
-#' @seealso [loc_scale_grad_cdf()] for the shared body;
+#' @seealso [cauchy_cdf_method()] for the body;
 #'   [distrib_hess_cdf.CauchyDistrib()] for the second order;
 #'   [mean.CauchyDistrib()] for the moments, which do not exist;
 #'   [cauchy_distrib()].
@@ -898,7 +902,7 @@ S7::method(distrib_hess_cdf, LogisticDistrib) <- loc_scale_hess_cdf
 #' th <- list(mu = 0.3, sigma = 1.2)
 #' q <- c(-1, 0.5, 2)
 #'
-#' # Exact, even though no moment of this family exists.
+#' # Exact, although the family has no moments.
 #' all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
 #'           -distrib_pdf(d, q, th))
 #'
@@ -911,8 +915,9 @@ S7::method(distrib_grad_cdf, CauchyDistrib) <- cauchy_cdf_method(1L)
 #'
 #' @description
 #' Closed form, from the same location-scale structure, through
-#' [loc_scale_hess_cdf()]. With \eqn{\ell_y = \partial\log f/\partial y},
-#' which for a Cauchy is \eqn{-2z/\{\sigma(1+z^2)\}},
+#' [cauchy_cdf_method()], which computes each component as one term in
+#' \eqn{Y^{-2}}, \eqn{Y = q - \mu + \mathrm{i}\sigma}. With
+#' \eqn{\ell_y = \partial\log f/\partial y}, which for a Cauchy is \eqn{-2z/\{\sigma(1+z^2)\}},
 #' \deqn{\frac{\partial^2 F}{\partial\mu^2} = f\,\ell_y, \qquad
 #'       \frac{\partial^2 F}{\partial\mu\,\partial\sigma}
 #'         = f\left(z\ell_y + \frac{1}{\sigma}\right), \qquad

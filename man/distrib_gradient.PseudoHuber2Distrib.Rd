@@ -15,8 +15,9 @@ Parametrization}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}.}
 
-\item{scale}{\code{"parameter"} or \code{"link"}; the link scale is applied by the
-generic.}
+\item{scale}{\code{"parameter"} or \code{"link"}. The generic applies the link
+scale at orders one to four; \code{distrib_deriv5()} applies it in the
+method, through \code{\link[=deriv5_scale]{deriv5_scale()}}.}
 
 \item{expected}{Logical; for orders three and four, whether the expected
 derivative is returned.}
@@ -46,14 +47,18 @@ functions, so each of its partial derivatives is closed:
       [i = j = 0,\, k = 1] + R^{(k)}(\nu)\, B_i\, C_j,}
 with \eqn{B_0 = r^2}, \eqn{B_1 = -2r}, \eqn{B_2 = 2}, \eqn{B_i = 0} for
 \eqn{i \ge 3}, and \eqn{C_j = (-1)^j (j+1)!\, \sigma^{-(j+2)}}. A component
-of \eqn{D} is Faa di Bruno's sum over the set partitions of its indices,
-with \eqn{(d/dQ)^m \sqrt{Q} = c_m Q^{1/2 - m}}. The derivatives of
-\eqn{R} and \eqn{h} are read off \eqn{\log K_n(\sqrt\nu)}, whose
-derivatives in \eqn{t = \sqrt\nu} follow from the ratios
-\eqn{K_n^{(j)}(t)/K_n(t) = (-1/2)^j \sum_i \binom{j}{i} K_{|n-j+2i|}(t)/
-K_n(t)}, formed with exponentially scaled Bessel functions. A kernel of
-order \eqn{m} computes \eqn{R} and \eqn{h} to order \eqn{m} and the
-partitions of order \eqn{m} only.
+of \eqn{D} of order one and two is written out per component. For orders
+three to five the data part \eqn{-A/\sigma}, with
+\eqn{A = \sqrt{\nu\sigma^2 + R(\nu) r^2}}, is differentiated in closed
+form, in expressions written in \eqn{u = r/A} and powers of \eqn{1/A}
+that are tabulated in the C++ sources. The derivatives of \eqn{R} and
+\eqn{h = \log(R)/2 - B} come from those of
+\eqn{B(\nu) = \log\{\sqrt\nu K_1(\sqrt\nu)\}} and \eqn{\log R}, computed
+by three routes: the series of \eqn{K_1} and \eqn{K_2} at the origin
+below \eqn{\nu = 1}, the cumulants of the generalized inverse Gaussian
+law of their integral representation for \eqn{1 \le \nu < 400}, and the
+asymptotic series from \eqn{\nu = 400}. A kernel of order \eqn{m}
+computes \eqn{R} and \eqn{h} to order \eqn{m} and nothing above it.
 
 The expected derivatives of orders three and four are those of
 \code{\link[=expected_derivative]{expected_derivative()}}; the expected information is registered through

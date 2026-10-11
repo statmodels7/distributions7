@@ -12,8 +12,10 @@
 length 1 or of the length of \code{y}, recycled if of length 1. It must be
 strictly positive.}
 
-\item{expected}{Logical of length 1, and without effect here, the observed
-and expected third derivatives being the same number. Defaults to \code{FALSE}.}
+\item{expected}{Logical of length 1. On the parameter scale it has no
+effect, the observed and expected third derivatives being the same
+number; on the link scale it selects the expected composition. Defaults
+to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
@@ -43,9 +45,11 @@ case of the general pattern
 because the family is a one-parameter exponential family in \eqn{\log y} and
 the response leaves the derivatives after the first order.
 
-The value is free of the response, so \code{expected} selects nothing: the same
-kernel runs either way and the two results are identical to the bit.
-\code{approx} and \code{nsim} are ignored for the same reason.
+On the parameter scale the value is free of the response, so \code{expected}
+selects nothing: the same kernel runs either way and the two results are
+identical to the bit. With \code{scale = "link"} the generic composes the
+observed and the expected derivative differently, and the two results
+differ. \code{approx} and \code{nsim} are ignored.
 }
 \section{Notation}{
 
@@ -63,7 +67,8 @@ th <- list(mu = 4)
 unique(distrib_deriv3(d, y, th)$mu_mu_mu)
 -psigamma(2, deriv = 2) / 8
 
-# Free of the response, so asking for the expectation changes nothing.
+# Free of the response, so on the parameter scale the expectation is the
+# same.
 identical(distrib_deriv3(d, y, th), distrib_deriv3(d, y, th, expected = TRUE))
 
 # A central difference of the Hessian reproduces it.

@@ -40,8 +40,9 @@ The first entry is \strong{exactly zero for every observation}, and that is the
 correct value: the log-density is piecewise linear in \eqn{\mu}, so away
 from \eqn{r = 0} its second derivative vanishes, and at \eqn{r = 0} the
 derivative does not exist. The curvature of the log-likelihood in the
-location is concentrated in a set of measure zero, and no expectation of
-this quantity sees it.
+location is concentrated at the single point \eqn{r = 0}, so the
+expectation of this second derivative is 0 although the information is
+positive.
 
 The consequence is that the observed information here is \strong{not} the
 information. \code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}} returns

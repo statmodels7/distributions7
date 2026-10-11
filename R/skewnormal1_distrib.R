@@ -19,8 +19,8 @@ NULL
 #'
 #' Build one with [skewnormal1_distrib()], which supplies the three link
 #' functions and fills the properties in. This page documents the raw S7
-#' constructor, which takes the parent's properties and validates none of the
-#' relationships between them.
+#' constructor, which takes the parent's properties; the validator of
+#' `distrib` checks them, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -35,36 +35,45 @@ NULL
 #'   \eqn{(-\infty,\infty)}.
 #'
 #' @section Methods:
-#' Registered in this file:
-#'   [`distrib_pdf()`][distrib_pdf.SkewNormal1Distrib],
-#'   [`distrib_cdf()`][distrib_cdf.SkewNormal1Distrib],
-#'   [`distrib_rng()`][distrib_rng.SkewNormal1Distrib],
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.SkewNormal1Distrib],
+#'   [`distrib_cdf()`][distrib_cdf.SkewNormal1Distrib] and
+#'   [`distrib_rng()`][distrib_rng.SkewNormal1Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.SkewNormal1Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.SkewNormal1Distrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.SkewNormal1Distrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.SkewNormal1Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.SkewNormal1Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.SkewNormal1Distrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.SkewNormal1Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.SkewNormal1Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.SkewNormal1Distrib];
+#' - the derivatives in the response:
 #'   [`distrib_grad_y()`][distrib_grad_y.SkewNormal1Distrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.SkewNormal1Distrib], and the expected
-#'   information with its two derivatives,
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.SkewNormal1Distrib].
+#'   [`distrib_hess_y()`][distrib_hess_y.SkewNormal1Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.SkewNormal1Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.SkewNormal1Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.SkewNormal1Distrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.SkewNormal1Distrib],
+#'   [`distrib_cross3_y()`][distrib_cross3_y.SkewNormal1Distrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.SkewNormal1Distrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.SkewNormal1Distrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.SkewNormal1Distrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.SkewNormal1Distrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.SkewNormal1Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.SkewNormal1Distrib];
+#' - the moments: [`mean()`][mean.SkewNormal1Distrib],
+#'   [`variance()`][variance.SkewNormal1Distrib],
+#'   [`skewness()`][skewness.SkewNormal1Distrib] and
+#'   [`kurtosis()`][kurtosis.SkewNormal1Distrib];
+#' - the fitting helpers:
+#'   [`distrib_intercept_start()`][distrib_intercept_start.SkewNormal1Distrib]
+#'   and [expected_hessian_costly()].
 #'
-#' Registered elsewhere in the package, all closed form: the four moments
-#' [`mean()`][mean.SkewNormal1Distrib], [`variance()`][variance.SkewNormal1Distrib],
-#' [`skewness()`][skewness.SkewNormal1Distrib] and
-#' [`kurtosis()`][kurtosis.SkewNormal1Distrib] in `moments.R`; the mixed
-#' response-parameter derivative [`distrib_cross_y()`][distrib_cross_y] in
-#' `cross_derivatives_families.R`; the four orders of the distribution
-#' function's parameter derivatives, [`distrib_grad_cdf()`][distrib_grad_cdf]
-#' through [`distrib_deriv4_cdf()`][distrib_deriv4_cdf], in
-#' `cdf_skewnormal_higher.R`; and the second-order response derivatives
-#' [`distrib_cross2_y()`][distrib_cross2_y],
-#' [`distrib_grad_y_hess()`][distrib_grad_y_hess] and
-#' [`distrib_hess_y_hess()`][distrib_grad_y_hess] in `theta2_families.R`.
-#'
-#' The **quantile** comes from [continuous_distrib()], by root finding on the
-#' distribution function. The **expected information** has no elementary form
-#' and is computed by one quadrature per distinct \eqn{\alpha}; see
-#' [distrib_expected_hessian.SkewNormal1Distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @seealso [skewnormal1_distrib()] to build one;
 #'   [skewnormal2_distrib()] for the same law in Azzalini's centered
@@ -171,13 +180,18 @@ S7::method(distrib_pdf, SkewNormal1Distrib) <- function(distrib, y, theta, log =
 #' \deqn{F(q; \mu, \sigma, \alpha) = \Phi(z) - 2\,T(z, \alpha).}
 #' The identity is Azzalini's. Each evaluation costs one bounded
 #' one-dimensional quadrature, through [numericals7::owen_t()], where the base
-#' class would integrate the density over a semi-infinite range; the bounded
-#' integrand is both cheaper and more accurate. A thousand quantiles cost about
-#' 20 milliseconds.
+#' class would integrate the density over a semi-infinite range. The shape is
+#' clamped to \eqn{10^{50}} in absolute value in the call, past which
+#' \eqn{T(z, \alpha)} equals its limit \eqn{\Phi(-|z|)/2} to double
+#' precision.
 #'
-#' The result is clamped to \eqn{[0, 1]} before the tail and the logarithm are
-#' applied, so rounding in the quadrature cannot return a probability outside
-#' the unit interval.
+#' The method works on the log scale ([sn_log_lower()]). The upper tail is
+#' computed as the lower tail of \eqn{-Y}, a skew normal of shape
+#' \eqn{-\alpha}, so neither tail is a complement. Where the difference
+#' \eqn{\Phi(z) - 2T(z, \alpha)} cancels, that is where the requested tail is
+#' below \eqn{10^{-3}\Phi(\pm z)}, the tail is integrated instead by
+#' [log_tail_integral()], so that a small tail probability and its logarithm
+#' keep their digits on the light side of the family.
 #'
 #' @param distrib A `SkewNormal1Distrib` object, from [skewnormal1_distrib()].
 #' @param q A numeric vector of quantiles, anywhere on the real line.
@@ -185,11 +199,9 @@ S7::method(distrib_pdf, SkewNormal1Distrib) <- function(distrib, y, theta, log =
 #'   numeric vector of length 1 or of the length of `q`. `sigma` must be
 #'   strictly positive.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default, the value is
-#'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}, formed as the
-#'   complement.
+#'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
-#'   probability is returned. Defaults to `FALSE`. The logarithm is taken after
-#'   the clamp, so a quantile far into the light tail returns `-Inf`.
+#'   probability is returned, computed on the log scale. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, or their
@@ -288,8 +300,12 @@ sn_log_lower <- function(z, alpha) {
 #' @return A numeric vector of `n` draws.
 #'
 #' @section Notation:
-#' \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} is the correlation between \eqn{Z}
-#' and the half-normal component; \eqn{\mu} is the location and \eqn{\sigma} the
+#' \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} is the correlation of the Gaussian
+#' pair \eqn{(U_0, V)}, \eqn{V = \delta U_0 + \sqrt{1-\delta^2}\,U_1}, whose
+#' second component conditioned on \eqn{U_0 > 0} is \eqn{Z}. The method forms
+#' \eqn{\delta} and \eqn{\sqrt{1-\delta^2} = 1/\sqrt{1+\alpha^2}} in
+#' \eqn{1/\alpha} where \eqn{|\alpha| > 1}, so they keep their digits where
+#' \eqn{\alpha^2} overflows. \eqn{\mu} is the location and \eqn{\sigma} the
 #' scale.
 #'
 #' @seealso [distrib_pdf.SkewNormal1Distrib()] for the density the draws follow,
@@ -338,13 +354,18 @@ S7::method(distrib_rng, SkewNormal1Distrib) <- function(distrib, n, theta, ...) 
 #'       \qquad
 #'       \dfrac{\partial \ell}{\partial \alpha} = z R.}
 #' Every derivative of \eqn{\log\Phi(t)} is a polynomial in \eqn{t} and
-#' \eqn{R}, because \eqn{R' = -R(t+R)} closes the recursion, so the whole
-#' derivative surface of this family stays elementary.
+#' \eqn{R}, because \eqn{R' = -R(t+R)} closes the recursion, so the
+#' derivatives of the log-density are elementary at every order. The kernels
+#' take them from [distrib_deriv3.SkewNormal1Distrib()]'s routine, which uses
+#' that recursion for \eqn{t \ge -1} and the cumulants of the logarithm of
+#' the Mills ratio below, where the recursion cancels.
 #'
-#' The ratio comes from [numericals7::mills_ratio()], which forms it on the log
-#' scale. Below about \eqn{t = -38} both \eqn{\phi(t)} and \eqn{\Phi(t)}
-#' underflow while their ratio is finite and close to \eqn{-t}: measured at
-#' \eqn{t = -400} the ratio is 400.0025 where `dnorm(t)/pnorm(t)` is `NaN`.
+#' The ratio is formed on the log scale, as
+#' \eqn{\exp\{\log\phi(t) - \log\Phi(t)\}}, for \eqn{t \ge -1}, and from the
+#' logarithm of the Mills ratio below. Below about \eqn{t = -38} both \eqn{\phi(t)} and \eqn{\Phi(t)}
+#' underflow while their ratio is finite and close to \eqn{-t}: at
+#' \eqn{t = -400} the ratio is about 400.0025, where `dnorm(t)/pnorm(t)` is
+#' `NaN`.
 #'
 #' At \eqn{\alpha = 0} the shape score is \eqn{z\sqrt{2/\pi}} and the location
 #' score is \eqn{z/\sigma}, so the two are exactly proportional. The expected
@@ -438,9 +459,9 @@ S7::method(distrib_gradient, SkewNormal1Distrib) <- function(distrib, y, theta, 
 #' \eqn{\alpha^4} as the shape moves off zero: \eqn{4.4\times10^{-10}} at
 #' \eqn{\alpha = 0.01} and \eqn{1.9\times10^{-3}} at \eqn{\alpha = 0.5}.
 #'
-#' The singularity belongs to the family as parametrized, not to the
-#' implementation. Azzalini's centered parametrization removes it, and lives in
-#' the separate object [skewnormal2_distrib()].
+#' The singularity is a property of this parametrization. Azzalini's centered
+#' parametrization does not have it and is implemented by
+#' [skewnormal2_distrib()].
 #'
 #' @param distrib A `SkewNormal1Distrib` object, from [skewnormal1_distrib()].
 #' @param y A numeric vector of observations.
@@ -508,7 +529,8 @@ S7::method(distrib_hessian, SkewNormal1Distrib) <- function(distrib, y, theta, s
 #' parameters.
 #'
 #' @details
-#' No component has an elementary form. In Azzalini's notation, with
+#' The components are integrals without an elementary form. In Azzalini's
+#' notation, with
 #' \eqn{b = \sqrt{2/\pi}} and
 #' \eqn{a_k = \mathbb{E}\!\left[Z^k \{\phi(\alpha Z)/\Phi(\alpha Z)\}^2\right]}
 #' for \eqn{Z} a standard skew normal of shape \eqn{\alpha},
@@ -573,16 +595,21 @@ register_loc_scale_expected(SkewNormal1Distrib)
 #'
 #' @description
 #' Computes the ten third derivatives of the log-density in closed form, in a
-#' compiled kernel. The family's whole derivative surface stays elementary for
-#' one reason: with \eqn{t = \alpha z} and \eqn{R(t) = \phi(t)/\Phi(t)} the
-#' inverse Mills ratio, \eqn{R' = -R(t+R)} closes the recursion, so every
-#' derivative of \eqn{\log\Phi(t)} is a polynomial in \eqn{t} and \eqn{R} and
-#' no new special function appears at any order.
+#' compiled kernel. With \eqn{t = \alpha z} and \eqn{R(t) = \phi(t)/\Phi(t)}
+#' the inverse Mills ratio, \eqn{R' = -R(t+R)}, so every derivative of
+#' \eqn{\log\Phi(t)} is a polynomial in \eqn{t} and \eqn{R}. For
+#' \eqn{t \ge -1} the kernel evaluates these polynomials. Below
+#' \eqn{t = -1} they cancel (\eqn{t + R} is of size \eqn{1/|t|} while \eqn{t}
+#' and \eqn{R} are of size \eqn{|t|}), and the derivatives of
+#' \eqn{\log\Phi(t)} are taken instead from
+#' \eqn{\log\Phi(t) = -t^2/2 - \log(2\pi)/2 + L(-t)}, with \eqn{L} the
+#' logarithm of the Mills ratio, whose derivatives are, with alternating
+#' signs, the cumulants of the density proportional to \eqn{e^{ts - s^2/2}}
+#' on \eqn{s > 0}; no difference of large numbers is formed.
 #'
-#' With `expected = TRUE` the value is an expectation instead, and there it is
-#' **numerical**: the integrals are the ones that block the expected
-#' information, so the call routes to `expected_derivative()` and `approx` and
-#' `nsim` are read.
+#' With `expected = TRUE` the value is an expectation, computed numerically by
+#' [expected_derivative()] from the same kind of integrals as the expected
+#' information. The arguments `approx` and `nsim` are used only in this case.
 #'
 #' @param distrib A `SkewNormal1Distrib` object, from [skewnormal1_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` its values
@@ -659,7 +686,8 @@ S7::method(distrib_deriv3, SkewNormal1Distrib) <- function(distrib, y, theta, ex
 #' in a compiled kernel, in the notation of
 #' [distrib_deriv3.SkewNormal1Distrib()]. The recursion
 #' \eqn{R' = -R(t+R)} keeps every one of them a polynomial in \eqn{t} and the
-#' inverse Mills ratio, so the fourth order needs nothing the third did not.
+#' inverse Mills ratio, so the fourth order uses the same two functions as
+#' the third, and the same cumulant route below \eqn{t = -1}.
 #'
 #' With `expected = TRUE` the value is a numerical expectation, for the reason
 #' it is at third order: the integrals are the ones that block the expected
@@ -708,7 +736,7 @@ S7::method(distrib_deriv3, SkewNormal1Distrib) <- function(distrib, y, theta, ex
 #'                  distrib_deriv3(d, y, list(mu = 0, sigma = 1, alpha = 3 - eps))$mu_mu_alpha) /
 #'                 (2 * eps))
 #'
-#' # The count is bit for bit independent of the thread count.
+#' # The result is bit for bit independent of the thread count.
 #' identical(distrib_deriv4(d, y, th, threads = 1L),
 #'           distrib_deriv4(d, y, th, threads = 2L))
 S7::method(distrib_deriv4, SkewNormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
@@ -733,8 +761,8 @@ S7::method(distrib_deriv4, SkewNormal1Distrib) <- function(distrib, y, theta, ex
 #' holds for every location family, so this method is one sign away from
 #' [distrib_gradient.SkewNormal1Distrib()].
 #'
-#' The quantity is what a censored likelihood and a quantile residual need, and
-#' it is the first ingredient of [distrib_cross_y()].
+#' The derivatives in the response of this family, and the mixed derivatives
+#' of [distrib_cross_y()], are computed in closed form from the Mills ratio.
 #'
 #' @param distrib A `SkewNormal1Distrib` object, from [skewnormal1_distrib()].
 #' @param y A numeric vector of observations.
@@ -782,8 +810,9 @@ S7::method(distrib_grad_y, SkewNormal1Distrib) <- function(distrib, y, theta, ..
 #' in the response. With \eqn{R' = -R(t+R)} at \eqn{t = \alpha z},
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2}
 #'       = \dfrac{\alpha^2 R' - 1}{\sigma^2},}
-#' which is the same expression as \eqn{\partial^2\ell/\partial\mu^2}: two
-#' signs cancel where one did not at first order, so the response curvature
+#' which is the same expression as \eqn{\partial^2\ell/\partial\mu^2}. The
+#' first derivative in \eqn{y} is minus the first derivative in \eqn{\mu}, and
+#' a second differentiation changes the sign again, so the response curvature
 #' equals the location curvature instead of being its negative.
 #'
 #' Since \eqn{R'} is negative for every \eqn{t}, the value is strictly negative
@@ -865,16 +894,20 @@ S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta, ..
 #' falls below it where \eqn{\alpha z < 0}, so a positive \eqn{\alpha} moves
 #' mass to the right. The distribution function is Azzalini's identity
 #' \eqn{F(q) = \Phi(z) - 2T(z, \alpha)} with \eqn{T} Owen's T, one bounded
-#' quadrature per observation through [numericals7::owen_t()]. The quantile
-#' function has no closed form and comes from the base class by root finding.
+#' quadrature per observation through [numericals7::owen_t()], with an
+#' integral of the tail on the light side where that difference cancels. The
+#' quantile function has no closed form and comes from the base class by root
+#' finding on the logarithm of the smaller tail.
 #'
 #' # Derivatives
 #'
 #' The score and the observed Hessian are closed form, written in the inverse
 #' Mills ratio \eqn{R(t) = \phi(t)/\Phi(t)} at \eqn{t = \alpha z}, and so are
-#' the third and fourth orders, in compiled kernels. One identity does all of
-#' it: \eqn{R' = -R(t+R)}, so every derivative of \eqn{\log\Phi(t)} is a
-#' polynomial in \eqn{t} and \eqn{R}.
+#' the third and fourth orders, in compiled kernels. Since
+#' \eqn{R' = -R(t+R)}, every derivative of \eqn{\log\Phi(t)} is a polynomial
+#' in \eqn{t} and \eqn{R}; below \eqn{t = -1}, where these polynomials cancel,
+#' the kernels use the cumulants of the logarithm of the Mills ratio
+#' instead.
 #'
 #' The **expected** information has no elementary form. It depends on
 #' \eqn{\alpha} alone once the location and the scale are factored out, so it

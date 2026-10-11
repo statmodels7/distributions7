@@ -13,8 +13,8 @@ vector of length 1 or of the length of \code{q}. A component of length 1 is
 recycled. \code{lambda} must be strictly positive.}
 
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
-probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)},
-computed as \eqn{1 - F}.}
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are
+\eqn{P(Y > q)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
 probability is returned. Defaults to \code{FALSE}.}
@@ -33,10 +33,12 @@ one exponential on each side of the location:
   1 - \tfrac{1}{2}\exp(-\lambda(q-\mu)), & q \ge \mu.
 \end{cases}}
 Both arms are continuous at \eqn{q = \mu}, where the value is \eqn{1/2}.
-With \code{lower.tail = FALSE} the complement is taken after the branch, and with
-\code{log.p = TRUE} the logarithm is taken afterwards; neither avoids
-cancellation, so a probability that has already underflowed is not
-recovered.
+Each tail is computed on the log scale at \eqn{r = \lambda(q - \mu)} by
+\code{\link[=laplace_cdf_tails]{laplace_cdf_tails()}}, as for \code{\link[=distrib_cdf.LaplaceDistrib]{distrib_cdf.LaplaceDistrib()}}: the far tail
+is \eqn{\log(1/2) - |r|} and the near one \eqn{\log(1 - e^{-|r|}/2)}, so
+\code{lower.tail = FALSE} and \code{log.p = TRUE} subtract from nothing, and a tail
+probability far below machine epsilon, or its logarithm, is returned
+accurately.
 }
 \examples{
 d <- laplace2_distrib()

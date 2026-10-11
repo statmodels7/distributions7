@@ -33,51 +33,52 @@ Builds a skew normal distribution object parametrized by its mean
 \eqn{\gamma_1}. It is the same family as \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, named by
 three moments instead of by a location, a scale and a shape.
 
-The parametrization is Azzalini's, and the property it exists for is that
-its expected information stays non-singular at \eqn{\gamma_1 = 0}, where the
-direct parametrization's loses a rank. The price is that the map between the
-two runs through a cube root, so no parameter derivative exists at exactly
-zero skewness.
+The parametrization is Azzalini's. Its expected information stays
+non-singular at \eqn{\gamma_1 = 0}, where the direct parametrization's
+loses a rank. The map between the two runs through a cube root, so the
+derivative of the shape in \eqn{\gamma_1} is unbounded at zero skewness and
+the log-density has no derivative of order two or more in \eqn{\gamma_1}
+there.
 }
-\section{This is a family, not a reparametrize()}{
+\section{Relation to reparametrize()}{
 The map passes through
 \eqn{c = \mathrm{sign}(\gamma_1)(2|\gamma_1|/(4-\pi))^{1/3}}, and two things
-follow from it. It carries a sign, so \code{\link[=sn2_theta]{sn2_theta()}} reads that off the plain
-value and hands it to \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} as an argument, leaving a body with no
-\code{abs()} in it to differentiate. And the derivatives of the log-density in
+follow from it. It carries a sign, so \code{\link[=sn2_theta]{sn2_theta()}} takes the sign from the
+plain value of \code{gamma1} and passes it to \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} as an argument,
+and the body of the map contains no \code{abs()}. The derivatives of the
+log-density in
 the centered parameters are written out per order in compiled kernels (see
 \code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient.SkewNormal2Distrib()}}); near \eqn{\gamma_1 = 0}, where
 their closed forms cancel, they come from the series of the log-density in
-\eqn{\gamma_1^{1/3}}.
+\eqn{\gamma_1^{1/3}}, and far below the step of the skewing function from a
+composition that does not cancel.
 }
 
-\section{What the map costs, and what it buys}{
+\section{Behavior near zero skewness}{
 \eqn{\partial\alpha/\partial\gamma_1} grows without bound as
-\eqn{\gamma_1 \to 0}: measured, 3.9 at \eqn{\gamma_1 = 0.5}, 12.8 at 0.01
-and 258 at \eqn{10^{-4}}. The score does not follow it: the divergent
+\eqn{\gamma_1 \to 0}, like \eqn{\gamma_1^{-2/3}}. The score does not follow
+it: the divergent
 contributions cancel, so the information in \eqn{\gamma_1} tends to
 \eqn{1/6} and the whole matrix stays positive definite at symmetry.
 
 The \strong{observed} curvature does diverge, at the rate the cube root sets:
-\eqn{\gamma_1^{-2/3}}, measured at 4.642 per decade against
-\eqn{10^{2/3} = 4.6416}. The derivatives of order two and more are
+\eqn{\gamma_1^{-2/3}}. The derivatives of order two and more are
 therefore rejected at \eqn{\gamma_1 = 0} exactly, with a message naming the
 cause; the score and the expected information are returned there. The density,
 the distribution function, the quantile function, the generator and both
 response derivatives are fine there and equal the Gaussian's.
 
-The cancellation is between terms of size \eqn{\gamma_1^{-2/3}}, so it
-eventually runs out of digits. Measured, the expected information's
-\eqn{\gamma_1} component holds seven figures at \eqn{\gamma_1 = 10^{-8}},
-loses three by \eqn{10^{-10}} and is negative at \eqn{10^{-12}}. Those are
-values no fit visits, and a genuinely symmetric problem is better posed in
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.
+For \eqn{|\gamma_1|} below \code{\link[=sn2_ge]{sn2_ge()}} the expected information is computed
+from series in \eqn{\gamma_1^{1/3}}, which contain no cancellation. A
+problem that is symmetric by construction is better posed in
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, since the observed derivatives of order two and
+more in the centered parametrization are rejected at \eqn{\gamma_1 = 0}.
 }
 
 \section{The bound on the skewness}{
 A skew normal cannot reach \eqn{|\gamma_1| > 0.9952717} whatever its shape,
-so \code{gamma1} is bounded there and carries a bounded link by default. That
-ceiling is why \code{\link[=skewt_distrib]{skewt_distrib()}} exists.
+so \code{gamma1} is bounded there and carries a bounded link by default. A model
+that needs a larger skewness can use \code{\link[=skewt_distrib]{skewt_distrib()}}.
 }
 
 \section{Parameter domains}{

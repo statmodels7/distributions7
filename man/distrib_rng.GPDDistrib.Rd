@@ -21,8 +21,8 @@ A numeric vector of \code{n} draws, non-negative and bounded above by
 }
 \description{
 Draws by the inverse transform, \code{distrib_quantile(distrib, runif(n), theta)}. The quantile function of this family is elementary, so the
-transform is exact and costs one uniform per draw; the base class's
-ratio-of-uniforms fallback is not needed.
+transform is exact and costs one uniform per draw. The base class draws
+the same way for a family with its own quantile method.
 }
 \examples{
 d <- gpd_distrib()

@@ -59,10 +59,9 @@ The threshold is on \eqn{\lvert\xi z\rvert} and \strong{not} on \eqn{\xi}. At
 order \eqn{b} the Leibniz terms are of size \eqn{z\xi^{-b}} against an answer
 of size \eqn{z^{b+1}}, so the relative cancellation is
 \eqn{(\xi z)^{-b}} and the accuracy is \eqn{\varepsilon(\xi z)^{-b}}, which
-at order four reaches 0.3 by \eqn{\xi z = 1.7\times10^{-4}}. That prediction
-was measured, and matching it is what fixed the switch. The series needs
-\eqn{\lvert\xi z\rvert < 1} to converge and is cut at 0.2, where forty terms
-leave \eqn{10^{-28}} while the Leibniz form still carries \eqn{10^{-13}}, so
+at order four reaches 0.3 by \eqn{\xi z = 1.7\times10^{-4}}. The series
+needs \eqn{\lvert\xi z\rvert < 1} to converge and is cut at 0.2, where
+forty terms leave \eqn{10^{-28}} while the Leibniz form still carries \eqn{10^{-13}}, so
 the two overlap.
 }
 

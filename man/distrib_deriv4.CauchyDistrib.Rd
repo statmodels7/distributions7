@@ -38,9 +38,12 @@ A named list of five numeric vectors, \code{mu_mu_mu_mu},
 }
 \description{
 Computes the five distinct fourth derivatives of the Cauchy log-density with
-respect to \eqn{\mu} and \eqn{\sigma}, in closed form. As at third order,
-every component is a rational function of \eqn{r = y - \mu} and \eqn{\sigma}
-over a power of \eqn{d = \sigma^2 + r^2} and so is bounded in \eqn{y}.
+respect to \eqn{\mu} and \eqn{\sigma}, in closed form from the compiled
+kernel of the third order. As at third order, every component is a
+rational function of \eqn{r = y - \mu} and \eqn{\sigma} with a power of
+\eqn{d = \sigma^2 + r^2} in the denominator, and so is bounded in
+\eqn{y}; the component in \eqn{\sigma} alone tends to \eqn{-6/\sigma^4}
+as \eqn{|r|} grows, and the others to zero.
 
 With \code{expected = TRUE} the expectations under the model are returned, also
 in closed form; the two components odd in \eqn{r} vanish by symmetry. Both

@@ -8,8 +8,8 @@
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list with components \code{mu}, each a numeric vector
-of length 1 or of the length of \code{y}.}
+\item{theta}{A named list with one component \code{mu}, a numeric vector of
+length 1 or of the length of \code{y}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}.}
 

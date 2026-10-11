@@ -29,10 +29,12 @@ a compiled kernel. In the notation of \code{\link[=distrib_gradient.GPDDistrib]{
 expressions stay short because \eqn{t - \xi z = 1}, which makes
 \eqn{\partial u/\partial\sigma} equal to \eqn{-z/(\sigma t^2)}.
 
-The pure-\eqn{\xi} component carries the same removable singularity the
-score does, one order worse, and goes through the same analytic function
-\eqn{\Lambda(u) = \log(1+u)/u}. The two terms that individually diverge as
-\eqn{\xi \to 0} cancel, and the limit is an ordinary point of the formula.
+The pure-\eqn{\xi} component has the same removable singularity as the
+score, to one order higher, and is computed from the second derivative of
+the analytic function \eqn{\Lambda(u) = \log(1+u)/u} (written
+\eqn{\phi} on the pages of the score and of the higher orders). The two
+terms that individually diverge as \eqn{\xi \to 0} cancel, and the limit
+is an ordinary point of the formula.
 
 This is the \strong{observed} curvature at the data. The expected one is closed
 form as well, but only above \eqn{\xi = -1/2}; see

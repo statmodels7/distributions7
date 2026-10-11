@@ -36,13 +36,14 @@ through \code{\link[=.enet_chain]{.enet_chain()}}. Written in \eqn{(\mu, a, c)} 
 quadratic in \eqn{z = y-\mu} and linear in each rate, so at this order only
 the normalizing constant contributes, apart from
 \eqn{\partial^{3}\ell/\partial\mu^{2}\partial c = -1}. The bilinear map to
-\eqn{(\lambda, \alpha)} then puts the data back in: \code{mu_mu_lambda} and
-\code{mu_mu_alpha} are not constant across observations even though their
-preimages are.
+\eqn{(\lambda, \alpha)} through the second partials of the bilinear map
+puts the data back into one component: \code{mu_lambda_alpha}, equal to
+\eqn{\mathrm{sgn}(z) - z}, varies across observations although every third
+derivative in the rates is free of the data. \code{mu_mu_lambda}
+(\eqn{-(1-\alpha)}) and \code{mu_mu_alpha} (\eqn{\lambda}) are constants.
 
-The license for this order is that the same assembly at orders one and two
-reproduces the hand-written score and Hessian, measured at exactly 0 and
-\eqn{1.1\times10^{-16}}.
+The same assembly at orders one and two reproduces the score and the
+observed Hessian.
 
 With \code{expected = TRUE} the value is an expectation, and there it is \strong{not}
 closed form: the call routes to \code{\link[=expected_derivative]{expected_derivative()}}, so \code{approx} and

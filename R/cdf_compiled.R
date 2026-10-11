@@ -45,9 +45,10 @@
 #' mixed components with a shape \eqn{k} are \eqn{-f s_k} and
 #' \eqn{-z f s_k}, all at \eqn{q}. The distribution function itself is
 #' `pt()`, `pgamma()`, `pchisq()` or `pbeta()` where the family has one, and
-#' the same integral of the density otherwise. The tail and the log scale
-#' are applied as for every family, by the conversion of the lower-tail
-#' derivatives.
+#' the same integral of the density otherwise; with `log.p = TRUE` its
+#' logarithm is formed by `compiled_log_cdf()`, so that it stays finite in
+#' either tail. The tail and the log scale of the derivatives are applied as
+#' for every family, by the conversion of the lower-tail derivatives.
 #'
 #' @param distrib A distribution object of one of the families above.
 #' @param q A numeric vector of quantiles.

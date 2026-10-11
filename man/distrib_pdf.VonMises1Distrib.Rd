@@ -20,9 +20,8 @@ Defaults to \code{FALSE}.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads
-\code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}} may use. It is carried down because this is
-where the family spends its time: profiled at 80.8 per cent of a fit whose
-concentration is modeled, so that \code{kappa} is a vector. Defaults to \code{1L}.}
+\code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}} may use. The Bessel evaluation is the
+dominant cost when \code{kappa} is a vector. Defaults to \code{1L}.}
 }
 \value{
 A numeric vector of densities, of length
@@ -36,12 +35,11 @@ with \eqn{I_0} the modified Bessel function of the first kind. Outside
 \eqn{[-\pi, \pi)} the density is 0: the support is the declared interval,
 and an angle is not wrapped into it.
 
-The normalizing constant goes through \code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}}.
-R's exponentially scaled \code{besselI} \strong{underflows
-to an exact zero} between \eqn{\kappa = 10^5} and \eqn{10^6}, where the
-logarithm then returns \code{-Inf}; \code{log_bessel_i} stays finite wherever the
-logarithm itself is representable. Measured at \eqn{\kappa = 10^6} it
-returns 999992.17 where the base route returns \code{-Inf}.
+The normalizing constant goes through \code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}}. R's
+exponentially scaled \code{besselI} returns an exact zero from about
+\eqn{\kappa = 2 \times 10^5}, so that its logarithm is \code{-Inf};
+\code{log_bessel_i} stays finite wherever the logarithm itself is
+representable.
 }
 \section{Notation}{
 

@@ -12,7 +12,7 @@ NULL
 #' parametrization differs and the derivatives with it. It inherits from
 #' `continuous_distrib`, so every generic of the `distrib` class applies to it.
 #'
-#' The rate form is the one a lasso penalty is written in: with \eqn{\mu = 0}
+#' The rate form is the one in which a lasso penalty is written: with \eqn{\mu = 0}
 #' the negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so
 #' \eqn{\lambda} is the penalty's own tuning parameter and larger values shrink
 #' harder. `penalties7::lasso_penalty()` is this family with the location held
@@ -23,8 +23,8 @@ NULL
 #' lambda = TRUE)`.
 #'
 #' Build one with [laplace2_distrib()]. This page documents the raw S7
-#' constructor, which takes the parent's properties and validates none of the
-#' relationships between them.
+#' constructor, which takes the parent's properties; the validator of
+#' `distrib` checks them, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -43,20 +43,46 @@ NULL
 #'   [enet_distrib()], which mixes this family with a Gaussian.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.Laplace2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Laplace2Distrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.Laplace2Distrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.Laplace2Distrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Laplace2Distrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.Laplace2Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.Laplace2Distrib] and
+#'   [`distrib_rng()`][distrib_rng.Laplace2Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.Laplace2Distrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.Laplace2Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.Laplace2Distrib],
-#'   [`distrib_pdf()`][distrib_pdf.Laplace2Distrib],
-#'   [`distrib_quantile()`][distrib_quantile.Laplace2Distrib],
-#'   [`distrib_rng()`][distrib_rng.Laplace2Distrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Laplace2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Laplace2Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.Laplace2Distrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.Laplace2Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.Laplace2Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.Laplace2Distrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.Laplace2Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.Laplace2Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.Laplace2Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.Laplace2Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.Laplace2Distrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.Laplace2Distrib],
+#'   [`distrib_cross3_y()`][distrib_cross3_y.Laplace2Distrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.Laplace2Distrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.Laplace2Distrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.Laplace2Distrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.Laplace2Distrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.Laplace2Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.Laplace2Distrib];
+#' - the moments: [`mean()`][mean.Laplace2Distrib],
+#'   [`variance()`][variance.Laplace2Distrib],
+#'   [`skewness()`][skewness.Laplace2Distrib] and
+#'   [`kurtosis()`][kurtosis.Laplace2Distrib];
+#' - the decomposition at the kink:
+#'   [`kink_decomposition()`][kink_decomposition.Laplace2Distrib].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- laplace2_distrib()
@@ -90,9 +116,8 @@ Laplace2Distrib <- S7::new_class("Laplace2Distrib", parent = continuous_distrib)
 #'   support.
 #' @param theta A named list with components `mu` and `lambda`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
-#'   recycled. `lambda` must be strictly positive; the arithmetic is performed
-#'   as written, so a non-positive value gives `NaN` without a warning of its
-#'   own.
+#'   recycled. `lambda` must be strictly positive; the generic signals an
+#'   error for a zero or negative value before the method is called.
 #' @param log Logical of length 1. When `TRUE` the log-density is returned.
 #'   Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -137,10 +162,12 @@ S7::method(distrib_pdf, Laplace2Distrib) <- function(distrib, y, theta, log = FA
 #'   1 - \tfrac{1}{2}\exp(-\lambda(q-\mu)), & q \ge \mu.
 #' \end{cases}}
 #' Both arms are continuous at \eqn{q = \mu}, where the value is \eqn{1/2}.
-#' With `lower.tail = FALSE` the complement is taken after the branch, and with
-#' `log.p = TRUE` the logarithm is taken afterwards; neither avoids
-#' cancellation, so a probability that has already underflowed is not
-#' recovered.
+#' Each tail is computed on the log scale at \eqn{r = \lambda(q - \mu)} by
+#' [laplace_cdf_tails()], as for [distrib_cdf.LaplaceDistrib()]: the far tail
+#' is \eqn{\log(1/2) - |r|} and the near one \eqn{\log(1 - e^{-|r|}/2)}, so
+#' `lower.tail = FALSE` and `log.p = TRUE` subtract from nothing, and a tail
+#' probability far below machine epsilon, or its logarithm, is returned
+#' accurately.
 #'
 #' @param distrib A `Laplace2Distrib` object, from [laplace2_distrib()].
 #' @param q A numeric vector of quantiles.
@@ -148,8 +175,8 @@ S7::method(distrib_pdf, Laplace2Distrib) <- function(distrib, y, theta, log = FA
 #'   vector of length 1 or of the length of `q`. A component of length 1 is
 #'   recycled. `lambda` must be strictly positive.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default,
-#'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)},
-#'   computed as \eqn{1 - F}.
+#'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are
+#'   \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -187,21 +214,25 @@ S7::method(distrib_cdf, Laplace2Distrib) <- function(distrib, q, theta, lower.ta
 #' @name distrib_quantile.Laplace2Distrib
 #' @description
 #' Computes the Laplace quantile function in the rate parametrization,
-#' \deqn{Q(p; \mu, \lambda) = \mu - \dfrac{\mathrm{sign}(p - \tfrac{1}{2})}{\lambda}\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right),}
-#' one expression covering both arms. The median is \eqn{\mu} and the quartiles
-#' are \eqn{\mu \pm \log(2)/\lambda}.
+#' \deqn{Q(p; \mu, \lambda) = \mu - \dfrac{\mathrm{sign}(p - \tfrac{1}{2})}{\lambda}\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right).}
+#' The median is \eqn{\mu} and the quartiles are \eqn{\mu \pm \log(2)/\lambda}.
+#' As for [distrib_quantile.LaplaceDistrib()], the method works from the
+#' logarithm of the smaller tail through [laplace_std_quantile()] and divides
+#' the standard quantile by \eqn{\lambda}, so a probability far below
+#' machine epsilon, given directly, through `lower.tail = FALSE` or through
+#' `log.p = TRUE`, gives an accurate quantile.
 #'
 #' @param distrib A `Laplace2Distrib` object, from [laplace2_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or of their
-#'   logarithms when `log.p = TRUE`. The endpoints give `-Inf` and `Inf`.
+#'   logarithms when `log.p = TRUE`. The endpoints give `-Inf` and `Inf`; a
+#'   value outside the range gives `NaN` with a warning.
 #' @param theta A named list with components `mu` and `lambda`, each a numeric
 #'   vector of length 1 or of the length of `p`. A component of length 1 is
 #'   recycled. `lambda` must be strictly positive.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default, `p` is
-#'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)} and `p` is replaced by
-#'   `1 - p` before the formula is applied.
-#' @param log.p Logical of length 1. When `TRUE` the values in `p` are
-#'   exponentiated first. Defaults to `FALSE`.
+#'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
+#' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
+#'   logarithms of probabilities. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of length
@@ -233,9 +264,9 @@ S7::method(distrib_quantile, Laplace2Distrib) <- function(distrib, p, theta, low
 #' @description
 #' Draws `n` independent Laplace variates by **inverse transform**: `n` uniform
 #' variates from [stats::runif()] are passed through
-#' [distrib_quantile.Laplace2Distrib()]. The quantile function is elementary
-#' and exact, so this is cheaper and more accurate than the generalized
-#' ratio-of-uniforms fallback the base class supplies.
+#' [distrib_quantile.Laplace2Distrib()]. The base class draws the same way for
+#' a family with its own quantile method, so the method gives the draws that
+#' the base class would give.
 #'
 #' @param distrib A `Laplace2Distrib` object, from [laplace2_distrib()].
 #' @param n A single positive integer, the number of draws. One uniform variate
@@ -302,9 +333,9 @@ S7::method(distrib_rng, Laplace2Distrib) <- function(distrib, n, theta, ...) {
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
 #' \eqn{\lambda > 0} the rate, with variance \eqn{2/\lambda^2}. \eqn{r = y-\mu}
-#' is the residual. Here \eqn{\lambda} is a rate; the same letter names a
-#' penalty parameter above, and the two meet in the lasso, which is this
-#' family with \eqn{\mu} held at zero.
+#' is the residual. Here \eqn{\lambda} is a rate; the same letter names the
+#' tuning parameter of a lasso penalty, and the two coincide because the
+#' lasso is this family with \eqn{\mu} held at zero.
 #'
 #' @seealso [distrib_gradient.LaplaceDistrib()] for the scale parametrization,
 #'   [distrib_expected_hessian.Laplace2Distrib()] for the information, and
@@ -419,8 +450,10 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's. As for [laplace_distrib()], a strategy
-#'   averaging the observed second derivative would answer 0 in the location.
+#'   signature matches the generic's. As for [laplace_distrib()], the
+#'   strategy `"mc"` of the generic, which averages the observed second
+#'   derivative over simulated draws, would give 0 in the location, while
+#'   `"opg"`, `"bartlett"` and `"integrate"` read the product of scores.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -475,8 +508,9 @@ S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, th
 #' \deqn{\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},}
 #' with `mu_mu_mu`, `mu_mu_lambda` and `mu_lambda_lambda` all zero.
 #'
-#' None of these depends on the data, so the observed and expected values
-#' coincide: `expected`, `approx` and `nsim` are accepted and have no effect.
+#' These derivatives do not depend on the data, so the observed and expected
+#' values coincide: `expected`, `approx` and `nsim` are accepted and have no
+#' effect.
 #'
 #' @param distrib A `Laplace2Distrib` object, from [laplace2_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -501,7 +535,7 @@ S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, th
 #' derivatives.
 #'
 #' @seealso [distrib_deriv3.LaplaceDistrib()] for the scale parametrization,
-#'   where the picture is less sparse; [distrib_deriv4.Laplace2Distrib()] for
+#'   where more components are nonzero; [distrib_deriv4.Laplace2Distrib()] for
 #'   the order above; [distrib_deriv3()] for the generic.
 #'
 #' @examples
@@ -537,8 +571,9 @@ S7::method(distrib_deriv3, Laplace2Distrib) <- function(distrib, y, theta, expec
 #' \eqn{\log\lambda}:
 #' \deqn{\dfrac{\partial^4 \ell}{\partial \lambda^4} = -\dfrac{6}{\lambda^4}.}
 #'
-#' None of these depends on the data, so the observed and expected values
-#' coincide: `expected`, `approx` and `nsim` are accepted and have no effect.
+#' These derivatives do not depend on the data, so the observed and expected
+#' values coincide: `expected`, `approx` and `nsim` are accepted and have no
+#' effect.
 #'
 #' @param distrib A `Laplace2Distrib` object, from [laplace2_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -726,7 +761,7 @@ S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta, ...) 
 #' [laplace_distrib()] at \eqn{\lambda = 1/\sigma}, and every quantity that
 #' does not involve the second parameter is identical between them.
 #'
-#' The rate form is the one penalized regression uses: with \eqn{\mu = 0} the
+#' The rate form is the one that penalized regression uses: with \eqn{\mu = 0} the
 #' negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so \eqn{\lambda}
 #' is a shrinkage parameter and larger values penalize harder.
 #' `penalties7::lasso_penalty()` is this family with the location held at zero.
@@ -767,8 +802,10 @@ S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta, ...) 
 #' \eqn{\log(\lambda/2) - \lambda|r|}, linear in \eqn{\lambda} apart from
 #' \eqn{\log\lambda} and piecewise linear in \eqn{\mu}, so **every** third and
 #' fourth derivative except the pure-\eqn{\lambda} ones is exactly zero, and
-#' none of them depends on the data. `expected = TRUE` therefore returns the
-#' same values at those orders.
+#' the pure-\eqn{\lambda} ones do not depend on the data. Hence
+#' `expected = TRUE` returns the same values at those orders. The observed
+#' fifth order, in [distrib_deriv5.Laplace2Distrib()], has the same
+#' structure.
 #'
 #' # Estimation
 #'
@@ -780,9 +817,9 @@ S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta, ...) 
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
 #' \eqn{\lambda > 0} the rate, with variance \eqn{2/\lambda^2}. Here
-#' \eqn{\lambda} is a distribution parameter; the same letter names a smoothing
-#' parameter in `penalties7` and above, and the two meet in the lasso, which is
-#' this family with \eqn{\mu} held at zero.
+#' \eqn{\lambda} is a distribution parameter; the same letter names the
+#' tuning parameter of a penalty in `penalties7`, and the two coincide in the
+#' lasso, which is this family with \eqn{\mu} held at zero.
 #'
 #' @return An S7 object of class `Laplace2Distrib`, inheriting from
 #'   `continuous_distrib`, with `distrib_name` `"laplace2"`, `dimension`
@@ -793,9 +830,9 @@ S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta, ...) 
 #'
 #' @seealso
 #' [laplace_distrib()] for the scale parametrization;
-#' [enet_distrib()], which mixes this family with a Gaussian and contains it as
-#' the pure-\eqn{\ell_1} case; [fixed()], which holds the location at zero to
-#' produce a prior; [fit_distrib()] to estimate the parameters;
+#' [enet_distrib()], which mixes this family with a Gaussian and tends to it as
+#' its mixing weight \eqn{\alpha} tends to 1; [fixed()], which holds the
+#' location at zero to produce a prior; [fit_distrib()] to estimate the parameters;
 #' [Laplace2Distrib] for the class.
 #'
 #' @references

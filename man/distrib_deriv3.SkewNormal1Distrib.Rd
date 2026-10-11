@@ -42,16 +42,21 @@ component, named as \code{\link[=deriv_names]{deriv_names()}} names them: \code{
 }
 \description{
 Computes the ten third derivatives of the log-density in closed form, in a
-compiled kernel. The family's whole derivative surface stays elementary for
-one reason: with \eqn{t = \alpha z} and \eqn{R(t) = \phi(t)/\Phi(t)} the
-inverse Mills ratio, \eqn{R' = -R(t+R)} closes the recursion, so every
-derivative of \eqn{\log\Phi(t)} is a polynomial in \eqn{t} and \eqn{R} and
-no new special function appears at any order.
+compiled kernel. With \eqn{t = \alpha z} and \eqn{R(t) = \phi(t)/\Phi(t)}
+the inverse Mills ratio, \eqn{R' = -R(t+R)}, so every derivative of
+\eqn{\log\Phi(t)} is a polynomial in \eqn{t} and \eqn{R}. For
+\eqn{t \ge -1} the kernel evaluates these polynomials. Below
+\eqn{t = -1} they cancel (\eqn{t + R} is of size \eqn{1/|t|} while \eqn{t}
+and \eqn{R} are of size \eqn{|t|}), and the derivatives of
+\eqn{\log\Phi(t)} are taken instead from
+\eqn{\log\Phi(t) = -t^2/2 - \log(2\pi)/2 + L(-t)}, with \eqn{L} the
+logarithm of the Mills ratio, whose derivatives are, with alternating
+signs, the cumulants of the density proportional to \eqn{e^{ts - s^2/2}}
+on \eqn{s > 0}; no difference of large numbers is formed.
 
-With \code{expected = TRUE} the value is an expectation instead, and there it is
-\strong{numerical}: the integrals are the ones that block the expected
-information, so the call routes to \code{expected_derivative()} and \code{approx} and
-\code{nsim} are read.
+With \code{expected = TRUE} the value is an expectation, computed numerically by
+\code{\link[=expected_derivative]{expected_derivative()}} from the same kind of integrals as the expected
+information. The arguments \code{approx} and \code{nsim} are used only in this case.
 }
 \section{Notation}{
 

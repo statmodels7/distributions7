@@ -62,25 +62,53 @@ information is \eqn{1/\sigma^2}. The class records that by setting
 and the finite-difference guards consult.
 
 Build one with \code{\link[=laplace_distrib]{laplace_distrib()}}. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.
+constructor, which takes the parent's properties; the validator of
+\code{distrib} checks them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.LaplaceDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.LaplaceDistrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.LaplaceDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.LaplaceDistrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_grad_y.LaplaceDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_quantile.LaplaceDistrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.LaplaceDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.LaplaceDistrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.LaplaceDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.LaplaceDistrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.LaplaceDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.LaplaceDistrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.LaplaceDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.LaplaceDistrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.LaplaceDistrib]{distrib_deriv5()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.LaplaceDistrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.LaplaceDistrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.LaplaceDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.LaplaceDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.LaplaceDistrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.LaplaceDistrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.LaplaceDistrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.LaplaceDistrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross3_y.LaplaceDistrib]{distrib_cross3_y()}},
+\code{\link[=distrib_grad_y_hess.LaplaceDistrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.LaplaceDistrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.LaplaceDistrib]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf.LaplaceDistrib]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.LaplaceDistrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.LaplaceDistrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.LaplaceDistrib]{mean()}},
+\code{\link[=variance.LaplaceDistrib]{variance()}},
+\code{\link[=skewness.LaplaceDistrib]{skewness()}} and
+\code{\link[=kurtosis.LaplaceDistrib]{kurtosis()}};
+\item the decomposition at the kink:
+\code{\link[=kink_decomposition.LaplaceDistrib]{kink_decomposition()}}.
+}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{

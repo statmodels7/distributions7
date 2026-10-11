@@ -23,8 +23,8 @@ use. Below the measured internal threshold the kernel stays sequential
 whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of three numeric vectors, \code{mu_mu}, \code{mu_kappa} and
-\code{kappa_kappa}, each of length
+A named list of three numeric vectors, \code{mu_mu}, \code{kappa_kappa} and
+\code{mu_kappa}, in the order of \code{\link[=hess_names]{hess_names()}}, each of length
 \code{max(length(y), length(mu), length(kappa))}.
 }
 \description{
@@ -36,9 +36,9 @@ one value per observation, in closed form:
 with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}. The
 pure-concentration entry is \strong{free of the data}: the log-density is
 \eqn{\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}}, linear in \eqn{\kappa}
-apart from the normalizing constant, so \eqn{\kappa} appears twice only
-inside \eqn{\log I_0}. It therefore equals its own expectation at every
-observation.
+apart from the normalizing constant, so its second derivative in
+\eqn{\kappa} comes from \eqn{\log I_0} alone. It therefore equals its own
+expectation at every observation.
 
 \eqn{A'} comes from \code{\link[numericals7:bessel_i_ratio_d1]{numericals7::bessel_i_ratio_d1()}}, accurate to the
 last bits at any concentration. It is the variance of

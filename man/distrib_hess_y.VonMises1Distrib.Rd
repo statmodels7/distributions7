@@ -25,9 +25,9 @@ Computes \eqn{\partial^2 \ell / \partial y^2} in closed form:
 \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\kappa \cos(y - \mu).}
 The family is a location family on the circle, so this equals the
 pure-direction entry of \code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian.VonMises1Distrib()}}, with no sign
-change. It is negative near the mode and \strong{positive} on the half of the
-circle further than a quarter turn from it, the density having a minimum at
-the antimode; a periodic density cannot be concave everywhere.
+change. It is negative within a quarter turn of the mode and \strong{positive}
+on the other half of the circle, where the density has its minimum at the
+antimode.
 }
 \examples{
 d <- vonmises1_distrib()

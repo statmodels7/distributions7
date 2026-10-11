@@ -12,8 +12,7 @@
 vector of length 1 or of the length of \code{q}.}
 
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, the value
-is \eqn{P(Y \le q)}; when \code{FALSE} it is the survival function, which is
-the quantity actually computed.}
+is \eqn{P(Y \le q)}; when \code{FALSE} it is the survival function.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
 probability is returned. Defaults to \code{FALSE}.}
@@ -27,19 +26,17 @@ logarithms with \code{log.p = TRUE}, of the length of the recycled inputs.
 \description{
 Computes the generalized Pareto distribution function
 \deqn{F(q; \sigma, \xi) = 1 - \left(1 + \dfrac{\xi q}{\sigma}\right)^{-1/\xi},}
-with \eqn{1 - e^{-q/\sigma}} at \eqn{\xi = 0}. The survival function is
-formed first and the tail and the logarithm applied to it, so the far tail
-keeps its digits.
+with \eqn{1 - e^{-q/\sigma}} at \eqn{\xi = 0}. A compiled kernel computes
+the logarithm of the survival function,
+\eqn{\log S = -(q/\sigma)\Lambda(u)} with \eqn{u = \xi q/\sigma} and
+\eqn{\Lambda(u) = \log(1+u)/u}, as the density does, so there is no branch
+at \eqn{\xi = 0}. The upper tail is \eqn{e^{\log S}}, the lower tail
+\eqn{-\mathrm{expm1}(\log S)}, and their logarithms are \eqn{\log S} and
+\eqn{\log(1 - e^{\log S})} taken with \code{expm1()} or \code{log1p()}, so both
+tails and their logarithms keep their digits far from the median.
 
-The value is 0 below \eqn{q = 0} and 1 at and beyond \code{\link[=gpd_endpoint]{gpd_endpoint()}}, and
-is clamped to \eqn{[0, 1]} so that rounding cannot return a probability
-outside the unit interval.
-}
-\details{
-The branch on \eqn{|\xi| < 10^{-8}} is taken by indexing, and that is not a
-stylistic choice. \code{ifelse()} returns a result the length of its \strong{test}, so
-with it a scalar shape beside a vector of quantiles would collapse the
-answer to one number. The test is recycled to the answer's length first.
+The value is 0 at and below \eqn{q = 0} and 1 at and beyond
+\code{\link[=gpd_endpoint]{gpd_endpoint()}}.
 }
 \section{Notation}{
 
@@ -55,8 +52,14 @@ th <- list(sigma = 1.5, xi = 0.3)
 all.equal(distrib_cdf(d, q, th), 1 - (1 + 0.3 * q / 1.5)^(-1 / 0.3))
 
 # A scalar shape with a vector of quantiles returns one value per
-# quantile, which an ifelse() branch would not.
+# quantile.
 length(distrib_cdf(d, seq(0, 5, by = 1), th))
+
+# Both tails keep their digits: a tiny lower tail and the logarithm of a
+# far upper tail.
+distrib_cdf(d, 1e-12, list(sigma = 1, xi = 0))
+distrib_cdf(d, 1000, list(sigma = 1, xi = 0), lower.tail = FALSE,
+            log.p = TRUE)
 
 # Shape zero is the exponential.
 all.equal(distrib_cdf(d, q, list(sigma = 1.5, xi = 0)),

@@ -12,14 +12,14 @@ NULL
 #' \eqn{\xi = 0} it is the exponential, reached by a series, so a fit may move
 #' the shape through zero.
 #'
-#' It is the first family in the package whose **support moves with its
-#' parameters**: for \eqn{\xi < 0} it ends at \eqn{-\sigma/\xi}. That is what
-#' makes it non-regular, and it is why its expected information exists only
+#' For \eqn{\xi < 0} the support ends at \eqn{-\sigma/\xi}, so it **moves with
+#' the parameters**. That is what makes the family non-regular, and it is why its expected information exists only
 #' above \eqn{\xi = -1/2}.
 #'
 #' Build one with [gpd_distrib()], which supplies the two link functions. This
-#' page documents the raw S7 constructor, which validates none of the
-#' relationships between its properties.
+#' page documents the raw S7 constructor, which takes the parent's
+#' properties; the validator of `distrib` checks them, and the constructor
+#' adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -31,30 +31,50 @@ NULL
 #'   \eqn{(0,\infty)} and \eqn{(-\infty,\infty)}.
 #'
 #' @section Methods:
-#' Registered in this file, all compiled apart from the first four:
-#'   [`distrib_pdf()`][distrib_pdf.GPDDistrib],
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.GPDDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.GPDDistrib],
-#'   [`distrib_quantile()`][distrib_quantile.GPDDistrib],
-#'   [`distrib_rng()`][distrib_rng.GPDDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.GPDDistrib] and
+#'   [`distrib_rng()`][distrib_rng.GPDDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.GPDDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.GPDDistrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.GPDDistrib].
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.GPDDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.GPDDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.GPDDistrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.GPDDistrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.GPDDistrib] and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.GPDDistrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.GPDDistrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.GPDDistrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.GPDDistrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.GPDDistrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.GPDDistrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.GPDDistrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.GPDDistrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.GPDDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.GPDDistrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.GPDDistrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.GPDDistrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.GPDDistrib];
+#' - the moments: [`mean()`][mean.GPDDistrib],
+#'   [`variance()`][variance.GPDDistrib], [`skewness()`][skewness.GPDDistrib]
+#'   and [`kurtosis()`][kurtosis.GPDDistrib].
 #'
-#' Registered elsewhere, compiled, in `gpd_higher.R`: the orders three to five
-#' ([`distrib_deriv3()`][distrib_deriv3.GPDDistrib]), the derivatives in the
-#' response ([`distrib_grad_y()`][distrib_grad_y.GPDDistrib]) and those of the
-#' distribution function ([`distrib_grad_cdf()`][distrib_grad_cdf.GPDDistrib]);
-#' the derivatives of the expected information in `dexpected_families.R`; and
-#' the four moments in `moments.R`.
+#' Every other generic is inherited from [continuous_distrib()].
 #'
-#' @section What the moving endpoint costs:
+#' @section Support depending on the parameters:
 #' The derivatives are correct as derivatives of the log-density at every
 #' admissible point, whatever the sign of \eqn{\xi}. What is not automatic is
 #' the license to differentiate under the integral sign, which the Bartlett
 #' identities rest on. The expected information exists for \eqn{\xi > -1/2}
-#' and is Smith's closed form; at or below that it does not exist and
-#' [distrib_expected_hessian()] returns `NA`, along with the classical
-#' asymptotics of the maximum likelihood estimator.
+#' and is Smith's closed form. At or below that value it does not exist, and
+#' [distrib_expected_hessian()] returns `NA`; the classical asymptotics of the
+#' maximum likelihood estimator do not hold either.
 #'
 #' @seealso [gpd_distrib()] to build one;
 #'   [exponential_distrib()] for the \eqn{\xi = 0} case;
@@ -91,9 +111,9 @@ GPDDistrib <- S7::new_class("GPDDistrib", parent = continuous_distrib)
 #' licensed. The consequence a user meets is that the expected information
 #' exists only for \eqn{\xi > -1/2}; see [gpd_distrib()].
 #'
-#' `ifelse()` is correct here and is deliberate: both arguments are of the
-#' length of the test after recycling, so a vector of shapes gives a vector of
-#' endpoints.
+#' The two arguments are recycled to a common length before the branch on
+#' the sign of the shape, so a vector of scales beside a scalar shape gives a
+#' vector of endpoints.
 #'
 #' @param sigma A numeric vector of scales, strictly positive. Nothing is
 #'   validated.
@@ -138,8 +158,8 @@ gpd_endpoint <- function(sigma, xi) {
 #' log-survival as \eqn{-(y/\sigma)\Lambda(u)} with \eqn{u = \xi y/\sigma} and
 #' \eqn{\Lambda(u) = \log(1+u)/u}, which is analytic with \eqn{\Lambda(0) = 1},
 #' so every division by the shape disappears and the exponential limit is an
-#' ordinary point of the formula. Measured, the density agrees with `dexp` to
-#' \eqn{1.4\times10^{-17}} at \eqn{\xi = 0} exactly.
+#' ordinary point of the formula. At \eqn{\xi = 0} the density agrees with
+#' `dexp` to rounding error.
 #'
 #' @param distrib A `GPDDistrib` object, from [gpd_distrib()].
 #' @param y A numeric vector of observations. A negative value, or one beyond
@@ -194,27 +214,24 @@ S7::method(distrib_pdf, GPDDistrib) <- function(distrib, y, theta, log = FALSE, 
 #' @description
 #' Computes the generalized Pareto distribution function
 #' \deqn{F(q; \sigma, \xi) = 1 - \left(1 + \dfrac{\xi q}{\sigma}\right)^{-1/\xi},}
-#' with \eqn{1 - e^{-q/\sigma}} at \eqn{\xi = 0}. The survival function is
-#' formed first and the tail and the logarithm applied to it, so the far tail
-#' keeps its digits.
+#' with \eqn{1 - e^{-q/\sigma}} at \eqn{\xi = 0}. A compiled kernel computes
+#' the logarithm of the survival function,
+#' \eqn{\log S = -(q/\sigma)\Lambda(u)} with \eqn{u = \xi q/\sigma} and
+#' \eqn{\Lambda(u) = \log(1+u)/u}, as the density does, so there is no branch
+#' at \eqn{\xi = 0}. The upper tail is \eqn{e^{\log S}}, the lower tail
+#' \eqn{-\mathrm{expm1}(\log S)}, and their logarithms are \eqn{\log S} and
+#' \eqn{\log(1 - e^{\log S})} taken with `expm1()` or `log1p()`, so both
+#' tails and their logarithms keep their digits far from the median.
 #'
-#' The value is 0 below \eqn{q = 0} and 1 at and beyond [gpd_endpoint()], and
-#' is clamped to \eqn{[0, 1]} so that rounding cannot return a probability
-#' outside the unit interval.
-#'
-#' @details
-#' The branch on \eqn{|\xi| < 10^{-8}} is taken by indexing, and that is not a
-#' stylistic choice. `ifelse()` returns a result the length of its **test**, so
-#' with it a scalar shape beside a vector of quantiles would collapse the
-#' answer to one number. The test is recycled to the answer's length first.
+#' The value is 0 at and below \eqn{q = 0} and 1 at and beyond
+#' [gpd_endpoint()].
 #'
 #' @param distrib A `GPDDistrib` object, from [gpd_distrib()].
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `sigma` and `xi`, each a numeric
 #'   vector of length 1 or of the length of `q`.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default, the value
-#'   is \eqn{P(Y \le q)}; when `FALSE` it is the survival function, which is
-#'   the quantity actually computed.
+#'   is \eqn{P(Y \le q)}; when `FALSE` it is the survival function.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -238,8 +255,14 @@ S7::method(distrib_pdf, GPDDistrib) <- function(distrib, y, theta, log = FALSE, 
 #' all.equal(distrib_cdf(d, q, th), 1 - (1 + 0.3 * q / 1.5)^(-1 / 0.3))
 #'
 #' # A scalar shape with a vector of quantiles returns one value per
-#' # quantile, which an ifelse() branch would not.
+#' # quantile.
 #' length(distrib_cdf(d, seq(0, 5, by = 1), th))
+#'
+#' # Both tails keep their digits: a tiny lower tail and the logarithm of a
+#' # far upper tail.
+#' distrib_cdf(d, 1e-12, list(sigma = 1, xi = 0))
+#' distrib_cdf(d, 1000, list(sigma = 1, xi = 0), lower.tail = FALSE,
+#'             log.p = TRUE)
 #'
 #' # Shape zero is the exponential.
 #' all.equal(distrib_cdf(d, q, list(sigma = 1.5, xi = 0)),
@@ -265,25 +288,29 @@ S7::method(distrib_cdf, GPDDistrib) <- function(distrib, q, theta,
 #' @description
 #' Computes the quantiles in closed form,
 #' \deqn{Q(p; \sigma, \xi) = \dfrac{\sigma}{\xi}\left\{(1-p)^{-\xi} - 1\right\},}
-#' with \eqn{-\sigma\log(1-p)} at \eqn{\xi = 0}. The generalized Pareto is one
-#' of the few families here whose quantile function is elementary, so nothing
-#' is inverted numerically and [distrib_rng.GPDDistrib()] can use the inverse
-#' transform.
+#' with \eqn{-\sigma\log(1-p)} at \eqn{\xi = 0}. The quantile function is
+#' elementary, so nothing is inverted numerically and
+#' [distrib_rng.GPDDistrib()] uses the inverse transform.
 #'
-#' Near zero the shape branch is taken on \eqn{|\xi| < 10^{-8}} and the value
-#' comes from `log1p(-p)`, which keeps its digits for a probability close to
-#' zero where `log(1 - p)` would not.
+#' The method first forms the logarithm of the survival probability,
+#' \eqn{\log S}, from `p` without computing \eqn{1 - p} or exponentiating:
+#' `log1p(-p)` for a lower-tail probability, \eqn{\log p} for an upper-tail
+#' one, and the corresponding forms when `log.p = TRUE`. The quantile is then
+#' \eqn{\sigma\,\mathrm{expm1}(-\xi\log S)/\xi}, and \eqn{-\sigma\log S} at
+#' \eqn{\xi = 0}, so a probability close to zero or close to one keeps its
+#' digits whichever tail it is given in.
 #'
 #' @param distrib A `GPDDistrib` object, from [gpd_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or their
 #'   logarithms when `log.p = TRUE`. At `p = 1` the value is the endpoint,
-#'   which is `Inf` for a non-negative shape.
+#'   which is `Inf` for a non-negative shape; a value outside the range gives
+#'   `NaN`.
 #' @param theta A named list with components `sigma` and `xi`, each a numeric
 #'   vector of length 1 or of the length of `p`.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default, `p` is
 #'   \eqn{P(Y \le q)}; when `FALSE` it is the survival probability.
-#' @param log.p Logical of length 1. When `TRUE`, `p` is given as a logarithm
-#'   and is exponentiated first. Defaults to `FALSE`.
+#' @param log.p Logical of length 1. When `TRUE`, `p` is given as a logarithm.
+#'   Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of the length of the recycled
@@ -306,8 +333,10 @@ S7::method(distrib_cdf, GPDDistrib) <- function(distrib, q, theta,
 #' all.equal(distrib_quantile(d, p, list(sigma = 1.5, xi = 0)),
 #'           qexp(p, rate = 1 / 1.5))
 #'
-#' # A negative shape has a finite upper quantile: the endpoint itself.
+#' # A negative shape bounds the quantiles by the endpoint, which p = 1
+#' # reaches.
 #' c(q999 = distrib_quantile(d, 0.999, list(sigma = 2, xi = -0.4)),
+#'   q1 = distrib_quantile(d, 1, list(sigma = 2, xi = -0.4)),
 #'   endpoint = distributions7:::gpd_endpoint(2, -0.4))
 S7::method(distrib_quantile, GPDDistrib) <- function(distrib, p, theta,
                                                       lower.tail = TRUE,
@@ -321,6 +350,8 @@ S7::method(distrib_quantile, GPDDistrib) <- function(distrib, p, theta,
   } else {
     if (log.p) p else log(p)
   }
+  # a log-survival above zero comes from a probability outside [0, 1]
+  ls[!is.na(ls) & ls > 0] <- NaN
   sv <- rep_len(theta[[1]], n)
   xv <- rep_len(theta[[2]], n)
   out <- -sv * ls
@@ -335,8 +366,8 @@ S7::method(distrib_quantile, GPDDistrib) <- function(distrib, p, theta,
 #' @description
 #' Draws by the inverse transform, `distrib_quantile(distrib, runif(n),
 #' theta)`. The quantile function of this family is elementary, so the
-#' transform is exact and costs one uniform per draw; the base class's
-#' ratio-of-uniforms fallback is not needed.
+#' transform is exact and costs one uniform per draw. The base class draws
+#' the same way for a family with its own quantile method.
 #'
 #' @param distrib A `GPDDistrib` object, from [gpd_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -453,10 +484,12 @@ S7::method(distrib_gradient, GPDDistrib) <- function(distrib, y, theta,
 #' expressions stay short because \eqn{t - \xi z = 1}, which makes
 #' \eqn{\partial u/\partial\sigma} equal to \eqn{-z/(\sigma t^2)}.
 #'
-#' The pure-\eqn{\xi} component carries the same removable singularity the
-#' score does, one order worse, and goes through the same analytic function
-#' \eqn{\Lambda(u) = \log(1+u)/u}. The two terms that individually diverge as
-#' \eqn{\xi \to 0} cancel, and the limit is an ordinary point of the formula.
+#' The pure-\eqn{\xi} component has the same removable singularity as the
+#' score, to one order higher, and is computed from the second derivative of
+#' the analytic function \eqn{\Lambda(u) = \log(1+u)/u} (written
+#' \eqn{\phi} on the pages of the score and of the higher orders). The two
+#' terms that individually diverge as \eqn{\xi \to 0} cancel, and the limit
+#' is an ordinary point of the formula.
 #'
 #' This is the **observed** curvature at the data. The expected one is closed
 #' form as well, but only above \eqn{\xi = -1/2}; see
@@ -533,16 +566,16 @@ S7::method(distrib_hessian, GPDDistrib) <- function(distrib, y, theta,
 #' maximum likelihood estimator do not hold either, so the `NA` reports a
 #' quantity that does not exist.
 #'
-#' Approaching the boundary the information diverges: measured at
-#' \eqn{\sigma = 1.5}, the \eqn{\xi} component is \eqn{-2.00} at
-#' \eqn{\xi = 0}, \eqn{-7.14} at \eqn{-0.3} and \eqn{-196.1} at \eqn{-0.49}.
+#' Approaching the boundary the information diverges: the \eqn{\xi}
+#' component \eqn{-2/\{(1+2\xi)(1+\xi)\}}, which does not depend on
+#' \eqn{\sigma}, equals \eqn{-2} at \eqn{\xi = 0}, about \eqn{-7.14} at
+#' \eqn{-0.3} and about \eqn{-196.1} at \eqn{-0.49}.
 #'
 #' # Checking it
 #'
-#' A Monte Carlo average of the observed Hessian is the weaker reference here,
-#' and disagreed with this formula by 9 per cent at \eqn{\xi = -0.3} while the
-#' formula was right: the second derivative blows up at the upper endpoint, so
-#' the sample mean converges slowly. Integrating on the **probability** scale
+#' A Monte Carlo average of the observed Hessian converges slowly here,
+#' because the second derivative is unbounded at the upper endpoint when
+#' \eqn{\xi < 0}. Integrating on the **probability** scale
 #' instead, \eqn{E[h] = \int_0^1 h(Q(u))\,du}, turns the endpoint into an
 #' ordinary point and agrees to \eqn{10^{-11}}.
 #'
@@ -610,8 +643,8 @@ S7::method(distrib_expected_hessian, GPDDistrib) <- function(distrib, y, theta,
 #'
 #' At \eqn{\xi = 0} it is the exponential, at \eqn{\xi > 0} it has a
 #' polynomial tail, and at \eqn{\xi < 0} it has a **finite upper endpoint** at
-#' \eqn{-\sigma/\xi}. That last case makes the family non-regular, and it is
-#' the one thing to know before using it.
+#' \eqn{-\sigma/\xi}. The last case makes the family non-regular, so the
+#' expected information exists only for \eqn{\xi > -1/2}.
 #'
 #' @param link_sigma A `linkfunctions7` link object for the scale
 #'   \eqn{\sigma}, which must be strictly positive. Defaults to
@@ -626,24 +659,25 @@ S7::method(distrib_expected_hessian, GPDDistrib) <- function(distrib, y, theta,
 #' \deqn{f(y) = \dfrac{1}{\sigma}\left(1 + \dfrac{\xi y}{\sigma}\right)^{-1/\xi-1},
 #'       \qquad
 #'       F(q) = 1 - \left(1 + \dfrac{\xi q}{\sigma}\right)^{-1/\xi}.}
-#' At \eqn{\xi = 0} both reduce to the exponential. The implementation reaches
-#' that limit through a series, so the parameter may pass through zero during
-#' a fit. The quantile function is elementary,
+#' At \eqn{\xi = 0} both reduce to the exponential. The density, the
+#' distribution function and the derivatives are evaluated through the
+#' analytic function \eqn{\log(1+u)/u} of \eqn{u = \xi y/\sigma}, so the shape
+#' may pass through zero during a fit. The quantile function is elementary,
 #' \eqn{Q(p) = \sigma\{(1-p)^{-\xi}-1\}/\xi}, so the generator is an exact
 #' inverse transform.
 #'
-#' # It is not parametrized by its mean
+#' # Parametrization
 #'
-#' The mean is \eqn{\sigma/(1-\xi)} and exists only for \eqn{\xi < 1}, so a
-#' mean parametrization would leave the family undescribable exactly where it
-#' is most used, in the heavy-tailed regime. The same argument keeps
-#' [mv_sigma()] and [variance()] apart for the multivariate \eqn{t}: a
-#' parametrization must not depend on a moment that need not exist.
+#' The family is parametrized by the scale \eqn{\sigma} and the shape
+#' \eqn{\xi}. The mean is \eqn{\sigma/(1-\xi)} and exists only for
+#' \eqn{\xi < 1}, so a mean parametrization would not describe the
+#' heavy-tailed members of the family. For the same reason [mv_sigma()] and
+#' [variance()] are distinct for the multivariate \eqn{t}.
 #'
 #' # The support depends on the parameters
 #'
-#' For \eqn{\xi < 0} the support is \eqn{[0, -\sigma/\xi]}, and this is the
-#' first family here of which that is true. What it costs is the automatic
+#' For \eqn{\xi < 0} the support is \eqn{[0, -\sigma/\xi]}, so it depends on
+#' the parameters. What this costs is the automatic
 #' license to differentiate under the integral sign, on which the Bartlett
 #' identities rest. Two things survive and one does not:
 #'
@@ -660,16 +694,17 @@ S7::method(distrib_expected_hessian, GPDDistrib) <- function(distrib, y, theta,
 #'
 #' The object's `bounds` are `c(0, Inf)` because they are fixed at
 #' construction while the true endpoint moves with the parameters. The density
-#' is zero beyond it, so nothing computes a wrong number, and a caller reading
-#' `bounds` should ask [gpd_endpoint()] instead.
+#' is zero beyond the endpoint and the distribution function is one, and a
+#' caller that needs the upper limit of the support should use
+#' [gpd_endpoint()] in place of `bounds`.
 #'
 #' # Moments
 #'
-#' The mean is \eqn{\sigma/(1-\xi)} for \eqn{\xi < 1}, the variance
-#' \eqn{\sigma^2/\{(1-\xi)^2(1-2\xi)\}} for \eqn{\xi < 1/2}, the skewness needs
-#' \eqn{\xi < 1/3} and the kurtosis \eqn{\xi < 1/4. } Each returns `Inf` above
-#' its threshold, so a fitted object can report a mean where it has no
-#' variance.
+#' The mean is \eqn{\sigma/(1-\xi)} for \eqn{\xi < 1} and the variance
+#' \eqn{\sigma^2/\{(1-\xi)^2(1-2\xi)\}} for \eqn{\xi < 1/2}. The skewness
+#' requires \eqn{\xi < 1/3} and the kurtosis \eqn{\xi < 1/4}. Each of the four
+#' moments is returned as `Inf` at and above its threshold, so a fitted
+#' object can report a mean where the variance is infinite.
 #'
 #' # Parameter domains
 #'

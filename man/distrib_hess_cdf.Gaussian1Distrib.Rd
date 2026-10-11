@@ -32,7 +32,7 @@ Closed form, from the same location-scale structure. With
       \frac{\partial^2 F}{\partial\sigma^2}
         = f\left(z^2\ell_y + \frac{2z}{\sigma}\right).}
 The method is \code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}} itself, shared with the logistic, the
-Cauchy, the Laplace and the Gumbel.
+Laplace and the Gumbel.
 }
 \section{Notation}{
 

@@ -20,8 +20,9 @@ every setting of the two rates, so no parameter enters the value.
 \description{
 Returns 0. The density is symmetric about \eqn{\mu} at every parameter
 value, so every odd central moment vanishes and the standardized third one
-with them. The result is multiplied by a length-carrying quantity, so a
-\code{theta} whose components vary by observation gets one zero per observation.
+with them. The zero is recycled to the length of the longest component of
+\code{theta}, so a \code{theta} whose components vary by observation gets one zero
+per observation.
 
 The \strong{fourth} moment is not zero and is not closed form here: \code{\link[=kurtosis]{kurtosis()}}
 falls to the base class and integrates. Measured at \eqn{\mu = 0},

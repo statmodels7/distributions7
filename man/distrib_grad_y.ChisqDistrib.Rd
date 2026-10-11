@@ -7,7 +7,9 @@
 \item{distrib}{A \code{ChisqDistrib} object, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
 \item{y}{A numeric vector of strictly positive observations. At \code{y = 0} the
-value is infinite unless \eqn{\mu} is exactly 2.}
+value is \code{-Inf} for \eqn{\mu < 2}, \code{Inf} for \eqn{\mu > 2} and \eqn{-1/2}
+for \eqn{\mu = 2}, where the term in \eqn{1/y} has a zero coefficient
+and is dropped.}
 
 \item{theta}{A named list with one component \code{mu}, a numeric vector of
 length 1 or of the length of \code{y}, recycled if of length 1. It must be
@@ -29,8 +31,6 @@ It changes sign at \eqn{y = \mu - 2}, which is the mode of the density for
 is the constant \eqn{-1/2} of an exponential with mean 2; below \eqn{\mu =
 2} the density has no interior mode and the derivative is negative
 throughout.
-
-Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
 }
 \examples{
 d <- chisq_distrib()

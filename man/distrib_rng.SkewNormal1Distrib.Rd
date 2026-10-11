@@ -34,8 +34,12 @@ itself.
 }
 \section{Notation}{
 
-\eqn{\delta = \alpha/\sqrt{1+\alpha^2}} is the correlation between \eqn{Z}
-and the half-normal component; \eqn{\mu} is the location and \eqn{\sigma} the
+\eqn{\delta = \alpha/\sqrt{1+\alpha^2}} is the correlation of the Gaussian
+pair \eqn{(U_0, V)}, \eqn{V = \delta U_0 + \sqrt{1-\delta^2}\,U_1}, whose
+second component conditioned on \eqn{U_0 > 0} is \eqn{Z}. The method forms
+\eqn{\delta} and \eqn{\sqrt{1-\delta^2} = 1/\sqrt{1+\alpha^2}} in
+\eqn{1/\alpha} where \eqn{|\alpha| > 1}, so they keep their digits where
+\eqn{\alpha^2} overflows. \eqn{\mu} is the location and \eqn{\sigma} the
 scale.
 }
 

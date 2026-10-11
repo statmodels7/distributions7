@@ -51,7 +51,7 @@ The S7 class of the exponential family parametrized by its \strong{mean}
 the \code{distrib} class applies to it; the methods listed below are registered on
 it directly.
 
-This is the only single-parameter continuous family in the package, so every
+The family has a single parameter, as does the chi-squared family, so every
 derivative array it returns has one component per order and its information
 is a number.
 
@@ -60,25 +60,50 @@ The parametrization is by the mean, not by the rate: R's own \code{dexp} takes
 distribution, so \eqn{\mu} is also its standard deviation.
 
 Build one with \code{\link[=exponential_distrib]{exponential_distrib()}}. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.
+constructor, which takes the parent's properties; the validator of
+\code{distrib} checks them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.ExponentialDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.ExponentialDistrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.ExponentialDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.ExponentialDistrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.ExponentialDistrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_grad_y.ExponentialDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_quantile.ExponentialDistrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.ExponentialDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.ExponentialDistrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.ExponentialDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.ExponentialDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.ExponentialDistrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.ExponentialDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.ExponentialDistrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.ExponentialDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.ExponentialDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.ExponentialDistrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.ExponentialDistrib]{distrib_deriv5()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.ExponentialDistrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.ExponentialDistrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.ExponentialDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.ExponentialDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.ExponentialDistrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.ExponentialDistrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.ExponentialDistrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.ExponentialDistrib]{distrib_cross2_y()}},
+\code{\link[=distrib_grad_y_hess.ExponentialDistrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.ExponentialDistrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.ExponentialDistrib]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf.ExponentialDistrib]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.ExponentialDistrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.ExponentialDistrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.ExponentialDistrib]{mean()}},
+\code{\link[=variance.ExponentialDistrib]{variance()}},
+\code{\link[=skewness.ExponentialDistrib]{skewness()}} and
+\code{\link[=kurtosis.ExponentialDistrib]{kurtosis()}}.
+}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{

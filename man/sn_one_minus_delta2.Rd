@@ -19,12 +19,14 @@ plain value.}
 A numeric vector of the length of \code{gamma1}.
 }
 \description{
-Returns \eqn{1 - \delta^2}, the quantity the shape of the direct
-parametrization divides by. Written in the skewness alone it is
-\deqn{1 - \delta^2 = 1 -
-      \left(\dfrac{\lvert\gamma_1\rvert}{\gamma_{\max}}\right)^{2/3},}
-with \eqn{\gamma_{\max}} the ceiling of \code{\link[=sn_max_skew]{sn_max_skew()}}, and it is
-evaluated through \code{log} and \code{expm1}, which leaves no cancellation in it.
+Returns \eqn{1 - q}, with
+\eqn{q = (\lvert\gamma_1\rvert/\gamma_{\max})^{2/3}} and \eqn{\gamma_{\max}}
+the ceiling of \code{\link[=sn_max_skew]{sn_max_skew()}}. With \eqn{c} and \eqn{\delta} as in
+\code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}, \eqn{1 - q = (1 + c^2)(1 - \delta^2)}, and the shape of the
+direct parametrization is \eqn{\alpha = c/(b\sqrt{1-q})}, so this is the
+quantity by which it divides. It is evaluated as
+\eqn{-\mathrm{expm1}\{(2/3)\log(\lvert\gamma_1\rvert/\gamma_{\max})\}}, which
+involves no cancellation.
 }
 \details{
 The identity is exact rather than an expansion near the ceiling. With
@@ -36,10 +38,10 @@ ratio to the ceiling carries the whole of the degeneracy.
 The two forms this replaces differ from it only at the top of the range,
 and both subtract two nearly equal numbers there. \code{1 - (mu_z/b)^2} reaches
 exactly zero at the largest skewness \code{\link[linkfunctions7:bounded_link]{linkfunctions7::bounded_link()}} can
-produce, and the \eqn{b^2 + (b^2-1)c^2} of \code{\link[=md_skewnormal2]{md_skewnormal2()}} reaches
+produce, and the difference \eqn{b^2 + (b^2-1)c^2} reaches
 \eqn{-1.11\times 10^{-16}}. At that skewness, one unit in the last place
-inside the bound, this returns \eqn{9.42\times 10^{-17}}, and the shape
-that follows from it is \eqn{1.36\times 10^{8}} and finite.
+inside the bound, this function returns \eqn{1.48\times 10^{-16}}, and the
+shape that follows from it is \eqn{1.36\times 10^{8}} and finite.
 }
 \examples{
 g <- distributions7:::sn_max_skew() * c(0.5, 0.9, 0.999, 1 - 1e-15)

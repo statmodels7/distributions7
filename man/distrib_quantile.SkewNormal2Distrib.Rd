@@ -18,8 +18,8 @@ numeric vector of length 1 or of the length of \code{p}.}
 \item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is given as a logarithm.
 Defaults to \code{FALSE}.}
 
-\item{...}{Passed to \code{\link[=distrib_quantile.continuous_distrib]{distrib_quantile.continuous_distrib()}}, including the
-root finder's tolerance.}
+\item{...}{Passed to \code{\link[=distrib_quantile.continuous_distrib]{distrib_quantile.continuous_distrib()}}, which does not
+use them.}
 }
 \value{
 A numeric vector of quantiles, of the length of the recycled inputs.

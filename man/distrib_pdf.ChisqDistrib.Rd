@@ -7,8 +7,8 @@
 \item{distrib}{A \code{ChisqDistrib} object, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
 \item{y}{A numeric vector of observations. The support is
-\eqn{(0, \infty)}; a value at or below zero gives 0, \code{Inf} or a finite
-value according to \eqn{\mu}.}
+\eqn{(0, \infty)}; a negative value gives 0, and the value 0 gives \code{Inf},
+1/2 or 0 according as \eqn{\mu} is below, equal to or above 2.}
 
 \item{theta}{A named list with one component \code{mu}, a numeric vector of
 length 1 or of the length of \code{y}, recycled if of length 1. It must be
@@ -31,9 +31,9 @@ by calling \code{\link[stats:Chisquare]{stats::dchisq()}} at \code{df = mu}. Wit
 is formed inside \code{dchisq()} and stays finite where the density itself
 underflows.
 
-The density is unbounded at the origin for \eqn{\mu < 2}, flat there at
-\eqn{\mu = 2}, where the family is the exponential with mean 2, and vanishes
-at the origin for \eqn{\mu > 2}.
+The density is unbounded at the origin for \eqn{\mu < 2}, equals 1/2 there
+at \eqn{\mu = 2}, where the family is the exponential with mean 2, and
+vanishes at the origin for \eqn{\mu > 2}.
 }
 \examples{
 d <- chisq_distrib()

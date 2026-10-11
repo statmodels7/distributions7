@@ -33,10 +33,10 @@ Writing \eqn{z = (y - \mu)/\sigma},
       \qquad
       \dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1}{\sigma}\left[1 - z \tanh\left(\dfrac{z}{2}\right)\right].}
 
-The score in \eqn{\mu} is bounded by \eqn{1/\sigma} and saturates rather
-than redescending: a distant observation contributes a fixed amount instead
-of an unbounded one, as it would under a Gaussian, or a vanishing one, as it
-would under a Cauchy.
+The score in \eqn{\mu} is bounded by \eqn{1/\sigma} and tends to
+\eqn{\pm 1/\sigma} as \eqn{|z|} grows, so a distant observation contributes
+a fixed amount. Under a Gaussian the contribution grows without bound, and
+under a Cauchy it tends to zero.
 }
 \section{Notation}{
 
@@ -61,7 +61,8 @@ all.equal(g$sigma, -(1 - z * tanh(z / 2)) / 1.5)
 round(distrib_gradient(d, 0.4 + c(0, 1.5, 3, 6, 12, 60), th)$mu, 4)
 1 / 1.5
 
-# The summed score vanishes at the maximum likelihood estimate.
+# The summed score is close to zero at the maximum likelihood estimate,
+# within the tolerance at which the fit stops.
 set.seed(9)
 zz <- distrib_rng(d, 3000, list(mu = 2, sigma = 1))
 fit <- fit_distrib(d, zz)

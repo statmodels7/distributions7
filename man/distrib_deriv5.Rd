@@ -44,12 +44,15 @@ derivative the fourth, and the outer Hessian of a model with such a term the
 fifth. The fifth order is therefore provided by the family, like the lower
 orders.
 
-The families that register their own method (\code{\link[=gaussian1_distrib]{gaussian1_distrib()}},
+The families that register their own method (\code{\link[=cauchy_distrib]{cauchy_distrib()}},
+\code{\link[=chisq_distrib]{chisq_distrib()}}, \code{\link[=exponential_distrib]{exponential_distrib()}}, \code{\link[=gaussian1_distrib]{gaussian1_distrib()}},
 \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}, \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}, \code{\link[=gengamma1_distrib]{gengamma1_distrib()}},
-\code{\link[=gengamma2_distrib]{gengamma2_distrib()}}, \code{\link[=gpd_distrib]{gpd_distrib()}}, \code{\link[=lognormal2_distrib]{lognormal2_distrib()}},
-\code{\link[=pseudohuber2_distrib]{pseudohuber2_distrib()}}, \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}, \code{\link[=skewt_distrib]{skewt_distrib()}},
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}, \code{\link[=student_t2_distrib]{student_t2_distrib()}} and \code{\link[=weibull3_distrib]{weibull3_distrib()}})
-compute the fifth order in closed form with compiled kernels. Every other
+\code{\link[=gengamma2_distrib]{gengamma2_distrib()}}, \code{\link[=gpd_distrib]{gpd_distrib()}}, \code{\link[=gumbel_distrib]{gumbel_distrib()}},
+\code{\link[=laplace_distrib]{laplace_distrib()}}, \code{\link[=laplace2_distrib]{laplace2_distrib()}}, \code{\link[=logistic_distrib]{logistic_distrib()}},
+\code{\link[=lognormal2_distrib]{lognormal2_distrib()}}, \code{\link[=pseudohuber2_distrib]{pseudohuber2_distrib()}},
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}, \code{\link[=skewt_distrib]{skewt_distrib()}}, \code{\link[=student_t1_distrib]{student_t1_distrib()}},
+\code{\link[=student_t2_distrib]{student_t2_distrib()}} and \code{\link[=weibull3_distrib]{weibull3_distrib()}}) compute the fifth order
+in closed form with compiled kernels. Every other
 family reaches \code{\link[=numerical_deriv5]{numerical_deriv5()}}, which applies \strong{one} central
 difference to the fourth order. Where the fourth order is analytic this is
 an ordinary numerical derivative; where the fourth order is itself a

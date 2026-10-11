@@ -21,8 +21,9 @@ A numeric vector of \code{n} strictly positive draws.
 \description{
 Draws \code{n} independent chi-squared variates by calling \code{\link[stats:Chisquare]{stats::rchisq()}} at
 \code{df = mu}, so the draws come from R's own generator and depend on
-\code{.Random.seed} in the usual way. The ratio-of-uniforms fallback the base
-class supplies is bypassed.
+\code{.Random.seed} in the usual way. The base class would draw by inversion
+through \code{\link[=distrib_quantile.ChisqDistrib]{distrib_quantile.ChisqDistrib()}}, which gives a different
+sequence for the same seed.
 }
 \examples{
 d <- chisq_distrib()

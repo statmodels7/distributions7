@@ -35,7 +35,8 @@ and \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} its 
 parameters.
 }
 \details{
-No component has an elementary form. In Azzalini's notation, with
+The components are integrals without an elementary form. In Azzalini's
+notation, with
 \eqn{b = \sqrt{2/\pi}} and
 \eqn{a_k = \mathbb{E}\!\left[Z^k \{\phi(\alpha Z)/\Phi(\alpha Z)\}^2\right]}
 for \eqn{Z} a standard skew normal of shape \eqn{\alpha},

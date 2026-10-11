@@ -20,8 +20,9 @@ A numeric vector of \code{n} draws.
 \description{
 Draws \code{n} independent logistic variates by calling \code{\link[stats:Logistic]{stats::rlogis()}}, so the
 draws come from R's own generator and depend on \code{.Random.seed} in the usual
-way. The generalized ratio-of-uniforms fallback the base class supplies is
-bypassed.
+way. The base class would draw by inversion through
+\code{\link[=distrib_quantile.LogisticDistrib]{distrib_quantile.LogisticDistrib()}}, which gives a different sequence
+for the same seed.
 }
 \examples{
 d <- logistic_distrib()

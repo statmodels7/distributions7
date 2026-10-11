@@ -11,9 +11,8 @@ support.}
 
 \item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is
-recycled. \code{lambda} must be strictly positive; the arithmetic is performed
-as written, so a non-positive value gives \code{NaN} without a warning of its
-own.}
+recycled. \code{lambda} must be strictly positive; the generic signals an
+error for a zero or negative value before the method is called.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
 Defaults to \code{FALSE}.}

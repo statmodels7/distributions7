@@ -28,8 +28,9 @@ use. Below the measured internal threshold the kernel stays sequential
 whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of three numeric vectors, \code{mu_mu}, \code{mu_kappa} and
-\code{kappa_kappa}, each of length \code{length(y)} and constant along it.
+A named list of three numeric vectors, \code{mu_mu}, \code{kappa_kappa} and
+\code{mu_kappa}, in the order of \code{\link[=hess_names]{hess_names()}}, each of length \code{length(y)}
+and constant along it.
 \code{mu_kappa} is exactly zero.
 }
 \description{

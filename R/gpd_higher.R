@@ -66,10 +66,9 @@ NULL
 #' order \eqn{b} the Leibniz terms are of size \eqn{z\xi^{-b}} against an answer
 #' of size \eqn{z^{b+1}}, so the relative cancellation is
 #' \eqn{(\xi z)^{-b}} and the accuracy is \eqn{\varepsilon(\xi z)^{-b}}, which
-#' at order four reaches 0.3 by \eqn{\xi z = 1.7\times10^{-4}}. That prediction
-#' was measured, and matching it is what fixed the switch. The series needs
-#' \eqn{\lvert\xi z\rvert < 1} to converge and is cut at 0.2, where forty terms
-#' leave \eqn{10^{-28}} while the Leibniz form still carries \eqn{10^{-13}}, so
+#' at order four reaches 0.3 by \eqn{\xi z = 1.7\times10^{-4}}. The series
+#' needs \eqn{\lvert\xi z\rvert < 1} to converge and is cut at 0.2, where
+#' forty terms leave \eqn{10^{-28}} while the Leibniz form still carries \eqn{10^{-13}}, so
 #' the two overlap.
 #'
 #' # What the series branch evaluates
@@ -406,7 +405,8 @@ S7::method(distrib_hess_y_hess, GPDDistrib) <- function(
 #' bounded above at \eqn{\sigma/|\xi|}. Past the upper end, and below zero,
 #' \eqn{F} is constant and every derivative is zero, except the derivatives of
 #' \eqn{\log F} at \eqn{q \le 0}, where \eqn{\log F = -\infty} and they are
-#' `NaN`.
+#' `NaN`. The derivatives of \eqn{\log S} at and past the upper end, where
+#' \eqn{\log S = -\infty}, are returned as zero.
 #'
 #' @param distrib A `GPDDistrib` object, from [gpd_distrib()].
 #' @param q A numeric vector of quantiles.

@@ -26,10 +26,9 @@ An S7 object of class \code{GumbelDistrib}, inheriting from
 Builds the distribution object for the Gumbel (type I extreme value) family
 in the form for \strong{maxima}: a location-scale family on the whole real line
 with location \eqn{\mu} and scale \eqn{\sigma > 0}. The returned object
-carries closed-form derivatives of the log-density to fourth order, in the
-parameters and in the response, observed and expected, and closed-form
-moments, so every generic of the toolkit answers without a numerical
-fallback.
+carries closed-form derivatives of the log-density to fifth order in the
+parameters and to fourth order in the response, closed-form expectations
+to fourth order, and closed-form moments.
 
 The two arguments choose the links that carry each parameter to the
 unconstrained scale an optimizer works on. The defaults are the identity for
@@ -55,7 +54,7 @@ is max-stable: raising its distribution function to the \eqn{n}th power
 gives the same law with the location shifted by \eqn{\sigma\log n}.
 }
 
-\section{Everything rests on w being standard exponential}{
+\section{Derivatives and expectations}{
 Write \eqn{w = e^{-z}}. Under the model \eqn{w} is standard exponential
 whatever \eqn{\mu} and \eqn{\sigma} are, and the whole family is written in
 it. The score is
@@ -67,8 +66,8 @@ the observed Hessian is
 \deqn{\ell^{(\mu\mu)} = -\dfrac{w}{\sigma^2}, \quad
       \ell^{(\mu\sigma)} = -\dfrac{1 - w + zw}{\sigma^2}, \quad
       \ell^{(\sigma\sigma)} = \dfrac{1 - 2z + 2zw - z^2 w}{\sigma^2},}
-and every expectation the family needs is a derivative of \eqn{\Gamma} at 2:
-\eqn{\mathbb{E}[w] = 1}, \eqn{\mathbb{E}[w\log w] = 1-\gamma},
+and the expectations are derivatives of \eqn{\Gamma} at 2 (and, for
+\eqn{\mathbb{E}[z] = \gamma}, at 1): \eqn{\mathbb{E}[w] = 1}, \eqn{\mathbb{E}[w\log w] = 1-\gamma},
 \eqn{\mathbb{E}[w(\log w)^2] = (1-\gamma)^2 + \pi^2/6 - 1}. The expected
 Hessian follows in one line, and so do the third and fourth orders, through
 \eqn{\mathbb{E}[z^k w] = (-1)^k\Gamma^{(k)}(2)}.

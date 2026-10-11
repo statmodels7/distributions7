@@ -6,7 +6,8 @@
 \arguments{
 \item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles. A negative value gives 0.}
+\item{q}{A numeric vector of quantiles. A negative value gives a lower-tail
+probability of 0 and an upper-tail probability of 1.}
 
 \item{theta}{A named list with the single component \code{mu}, a numeric vector
 of length 1 or of the length of \code{q}. \code{mu} must be strictly positive.}

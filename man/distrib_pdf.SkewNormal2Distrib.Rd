@@ -10,9 +10,9 @@
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}, each a
 numeric vector of length 1 or of the length of \code{y}. \code{sigma} must be
-strictly positive and \code{gamma1} must lie in
-\eqn{(-0.9952717, 0.9952717)}; a skewness outside that range belongs to no
-skew normal and the map returns \code{NaN}.}
+strictly positive and \code{gamma1} must lie in the open interval
+\eqn{(-0.9952717, 0.9952717)}; the generic signals an error for a value
+outside it before the map is evaluated.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
 Defaults to \code{FALSE}.}

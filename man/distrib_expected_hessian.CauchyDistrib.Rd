@@ -38,10 +38,10 @@ form and with no quadrature or simulation:
       \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right] = 0.}
 The information in the location is \eqn{1/(2\sigma^2)}, half of a Gaussian's
-\eqn{1/\sigma^2} at the same scale, which is the price the heavy tails
-charge. The zero off-diagonal says the location and the scale are
-orthogonal. The expectations exist even though no moment of the family does:
-they are expectations of bounded functions of \eqn{y}, not of \eqn{y}.
+\eqn{1/\sigma^2} at the same scale. The zero off-diagonal entry means that
+the location and the scale are orthogonal. The expectations exist although
+the family has no moments, because the second derivatives of the
+log-density are bounded functions of \eqn{y}.
 
 Because the values do not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.
@@ -66,15 +66,15 @@ lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 # Half the information a Gaussian of the same scale carries in its location.
 distrib_expected_hessian(gaussian1_distrib(), 0, th)$mu_mu
 
-# The observed Hessian averages onto it over a large sample, even though
-# the sample mean of the same draws does not converge at all.
+# The observed Hessian averages onto it over a large sample, although the
+# sample mean of the same draws does not converge.
 set.seed(3)
 z <- distrib_rng(d, 2e5, th)
 vapply(distrib_hessian(d, z, th), mean, numeric(1))
 }
 \seealso{
-\code{\link[=distrib_hessian.CauchyDistrib]{distrib_hessian.CauchyDistrib()}} for the observed quantity this is
-the expectation of, \code{\link[=distrib_expected_hessian.Gaussian1Distrib]{distrib_expected_hessian.Gaussian1Distrib()}} for the
+\code{\link[=distrib_hessian.CauchyDistrib]{distrib_hessian.CauchyDistrib()}} for the observed Hessian, of which
+this is the expectation, \code{\link[=distrib_expected_hessian.Gaussian1Distrib]{distrib_expected_hessian.Gaussian1Distrib()}} for the
 light-tailed comparison, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step,
 and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

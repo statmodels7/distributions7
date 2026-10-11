@@ -28,15 +28,18 @@ values are logarithms and are non-positive.
 \description{
 Computes the Gumbel distribution function, with \eqn{z = (q - \mu)/\sigma},
 \deqn{F(q; \mu, \sigma) = \exp\left\{-e^{-z}\right\}.}
-This is the defining property of the family: a maximum of \eqn{n}
-independent light-tailed variables has, after centering and scaling, a
-distribution function that is the \eqn{n}th power of one distribution
-function, and \eqn{\exp\{-e^{-z}\}} is the fixed point of that operation.
+This function is the limit distribution of the maximum of \eqn{n}
+independent light-tailed variables, after centering and scaling. It is
+max-stable: its \eqn{n}th power is the same function with the location
+shifted by \eqn{\sigma\log n}.
 }
 \details{
 Both tails are computed on the scale that keeps them accurate. The lower
 tail is exact on the log scale, \eqn{\log F = -e^{-z}}, and the upper tail
 goes through \code{\link[base:Log]{base::expm1()}}, so neither loses precision where it is small.
+Where \eqn{w = e^{-z}} is below \eqn{10^{-10}} the logarithm of the upper
+tail is taken as \eqn{-z - w/2}, which stays finite where \eqn{w}
+underflows.
 }
 \examples{
 d <- gumbel_distrib()
@@ -58,6 +61,9 @@ all.equal(distrib_cdf(d, q, th)^n,
 # Deep in the lower tail the probability underflows and its log does not.
 distrib_cdf(d, -700, th)
 distrib_cdf(d, -700, th, log.p = TRUE)
+
+# Far in the upper tail the logarithm of the survival is -z.
+distrib_cdf(d, 800, th, lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
 \code{\link[=distrib_quantile.GumbelDistrib]{distrib_quantile.GumbelDistrib()}} for the inverse,

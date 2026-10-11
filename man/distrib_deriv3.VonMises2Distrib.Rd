@@ -14,9 +14,7 @@ vector of length 1 or of the length of \code{y}. \code{rho} must lie in
 \eqn{(0, 1)}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method. \strong{Note the
-argument order}: \code{scale} precedes \code{expected} here, so both are best given
-by name.}
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
 model is returned in place of the value at the data, computed numerically.
@@ -77,8 +75,8 @@ up <- distrib_hessian(d2, y, list(mu = 0.5, rho = 0.7 + eps))$rho_rho
 dn <- distrib_hessian(d2, y, list(mu = 0.5, rho = 0.7 - eps))$rho_rho
 all.equal((up - dn) / (2 * eps), d3$rho_rho_rho, tolerance = 1e-5)
 
-# Unlike the concentration parametrization, no component is exactly zero:
-# the map's higher derivatives bring the data into all four.
+# Unlike the concentration parametrization, no component is exactly zero,
+# because kappa is a nonlinear function of rho.
 vapply(d3, function(v) v[1], numeric(1))
 }
 \seealso{

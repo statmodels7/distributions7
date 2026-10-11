@@ -55,10 +55,10 @@ distribution function, the quantile function, the mean, the variance and the
 skewness. The \strong{kurtosis} is not, and comes from the base class by
 quadrature.
 
-The expected information is closed form for a reason worth naming: in the
-two rates the density is an exponential family with sufficient statistics
-\eqn{-|z|} and \eqn{-z^2/2}, so the information there is the Hessian of
-\eqn{\log Z}, which the observed Hessian already computes. See
+The expected information is closed form because, in the two rates, the
+density is an exponential family with sufficient statistics \eqn{-|z|} and
+\eqn{-z^2/2}, so the information in those rates is the Hessian of
+\eqn{\log Z}, which the observed Hessian also uses. See
 \code{\link[=distrib_expected_hessian.EnetDistrib]{distrib_expected_hessian.EnetDistrib()}}.
 }
 
@@ -70,19 +70,23 @@ defined as the variance of the score instead. The two agree at every other
 entry.
 }
 
-\section{Two numerical cautions}{
-Both were found by sweeping the parameters, and both bite at ordinary
-settings.
+\section{Numerical points}{
+Three points concern the normalizing constant, its derivatives and the
+tails.
 \itemize{
 \item \eqn{\log M(x)} written directly adds \eqn{x^2/2} to a log-probability of
-the same size and opposite sign, losing a digit per factor of ten in
-\eqn{x}. At \eqn{\alpha = 1 - 10^{-12}} the argument reaches \eqn{10^6}
-and the density was wrong in the fourth digit; past \eqn{x = 30} the
-asymptotic series of the Mills ratio is used instead.
-\item \eqn{\Phi(-x)} is exactly zero past \eqn{x = 38}, and the distribution
-function and the quantile divide by it. At \eqn{\lambda = 20},
-\eqn{\alpha = 0.995} the argument is 63, so both work through \code{log.p} and
-\code{qnorm(..., log.p = TRUE)}.
+the same size and opposite sign, and loses a digit per factor of ten in
+\eqn{x}. Beyond \eqn{x = 30} the density therefore uses the asymptotic
+series of the Mills ratio.
+\item The derivatives of \eqn{\log M}, and those of \eqn{\log Z} in the two
+rates, are cumulants of the density proportional to
+\eqn{e^{-xs - s^2/2}} on \eqn{s > 0}, computed from its moment ratios in
+a compiled kernel; the form \eqn{G = x - 1/M} would cancel for large
+\eqn{x}, and each derivative built on it would lose more.
+\item \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \approx 38.5}, and the
+distribution function and the quantile divide by it. At
+\eqn{\lambda = 20}, \eqn{\alpha = 0.995} the argument is 63, so both work
+on the log scale, through \code{log.p} and \code{qnorm(..., log.p = TRUE)}.
 }
 }
 
@@ -92,8 +96,8 @@ corrects \code{lambda} by a single factor. That correction is exact for the
 \eqn{\ell_1} part, homogeneous of degree one, and cannot be for the
 \eqn{\ell_2} part, homogeneous of degree two. So a nominal
 \eqn{(\lambda, \alpha)} names two different objectives in the two packages
-whenever \eqn{\alpha < 1}. At \eqn{\alpha = 1} the two agree to
-\eqn{1.4\times10^{-4}} whatever the scale of the response.
+whenever \eqn{\alpha < 1}. At \eqn{\alpha = 1} the two objectives coincide
+and the fits agree up to the convergence tolerances of the two solvers.
 }
 
 \section{Parameter domains}{

@@ -22,7 +22,8 @@ the list of \eqn{(0, \infty)}, and \code{link_params} the one link given here.
 Builds the distribution object for the exponential family parametrized by
 its \strong{mean} \eqn{\mu > 0}, with density \eqn{\mu^{-1}e^{-y/\mu}} on
 \eqn{[0, \infty)}. The returned object carries closed-form derivatives of
-the log-density to fourth order and closed-form moments.
+the log-density to fifth order in the mean and to fourth order in the
+response, and closed-form moments.
 
 The family has one parameter and a fixed shape: the standard deviation
 equals the mean, the skewness is 2 and the excess kurtosis is 6 whatever
@@ -54,10 +55,10 @@ the statement that both \eqn{\log f} and \eqn{\log(1-F)} are straight lines
 in \eqn{y}, which is why \code{\link[=distrib_grad_y.ExponentialDistrib]{distrib_grad_y.ExponentialDistrib()}} is a constant
 and \code{\link[=distrib_hess_y.ExponentialDistrib]{distrib_hess_y.ExponentialDistrib()}} is zero.
 
-The exponential is the only continuous law with this property, so a fitted
-exponential is also the statement that the process has no memory. When it
-does, \code{\link[=weibull1_distrib]{weibull1_distrib()}} and \code{\link[=gamma1_distrib]{gamma1_distrib()}} both contain this family
-at a unit shape and let the hazard rise or fall.
+The exponential is the only continuous law with this property, so fitting an
+exponential assumes that the process has no memory. If the process has a
+memory, \code{\link[=weibull1_distrib]{weibull1_distrib()}} and \code{\link[=gamma1_distrib]{gamma1_distrib()}}, which both contain this
+family at a unit shape, let the hazard rise or fall.
 }
 
 \section{Derivatives}{
@@ -69,7 +70,8 @@ Writing \eqn{\ell = -\log\mu - y/\mu}, the four orders are
 and their expectations follow by substituting \eqn{\mathbb{E}[Y] = \mu}:
 \eqn{0}, \eqn{-1/\mu^2}, \eqn{4/\mu^3} and \eqn{-18/\mu^4}. The information
 is \eqn{1/\mu^2}, so the asymptotic standard error of \eqn{\hat\mu} is
-\eqn{\mu/\sqrt n}.
+\eqn{\mu/\sqrt n}. The fifth order,
+\eqn{(120y - 24\mu)/\mu^6}, is in \code{\link[=distrib_deriv5.ExponentialDistrib]{distrib_deriv5.ExponentialDistrib()}}.
 }
 
 \section{Estimation}{

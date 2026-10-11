@@ -40,7 +40,8 @@ result keeps its relative accuracy at both ends (Maechler, 2012).
 \code{log.p} select from the logarithms of the two tails, both computed by the
 caller. \code{quantile_log_tails()} converts a probability given with
 \code{lower.tail} and \code{log.p} into the logarithms of the lower and the upper
-tail, without forming \eqn{1 - p} or exponentiating a logarithm.
+tail, without forming \eqn{1 - p} or exponentiating a logarithm; a
+probability outside \eqn{[0, 1]} gives \code{NaN} for both.
 }
 \examples{
 # The helper keeps the digits that the direct formula loses (it gives -Inf).

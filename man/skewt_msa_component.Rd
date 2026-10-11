@@ -25,7 +25,7 @@ page derives.
 }
 \details{
 A term whose coefficient \eqn{\prod_{k=i}^{b-1}(a+k)} vanishes is dropped
-rather than multiplied, because the factor it would multiply is the entry
+rather than multiplied, because the factor that it would multiply is the entry
 \code{"0_0"}, which the table does not hold: in R \code{0 * NA} is \code{NA}.
 }
 \examples{

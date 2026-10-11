@@ -599,12 +599,15 @@ distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib,
 #' fifth. The fifth order is therefore provided by the family, like the lower
 #' orders.
 #'
-#' The families that register their own method ([gaussian1_distrib()],
+#' The families that register their own method ([cauchy_distrib()],
+#' [chisq_distrib()], [exponential_distrib()], [gaussian1_distrib()],
 #' [gaussian2_distrib()], [gaussian3_distrib()], [gengamma1_distrib()],
-#' [gengamma2_distrib()], [gpd_distrib()], [lognormal2_distrib()],
-#' [pseudohuber2_distrib()], [skewnormal2_distrib()], [skewt_distrib()],
-#' [student_t1_distrib()], [student_t2_distrib()] and [weibull3_distrib()])
-#' compute the fifth order in closed form with compiled kernels. Every other
+#' [gengamma2_distrib()], [gpd_distrib()], [gumbel_distrib()],
+#' [laplace_distrib()], [laplace2_distrib()], [logistic_distrib()],
+#' [lognormal2_distrib()], [pseudohuber2_distrib()],
+#' [skewnormal2_distrib()], [skewt_distrib()], [student_t1_distrib()],
+#' [student_t2_distrib()] and [weibull3_distrib()]) compute the fifth order
+#' in closed form with compiled kernels. Every other
 #' family reaches [numerical_deriv5()], which applies **one** central
 #' difference to the fourth order. Where the fourth order is analytic this is
 #' an ordinary numerical derivative; where the fourth order is itself a

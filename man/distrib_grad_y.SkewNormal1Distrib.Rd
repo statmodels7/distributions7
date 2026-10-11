@@ -27,8 +27,8 @@ the location enter the density only through their difference. The identity
 holds for every location family, so this method is one sign away from
 \code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradient.SkewNormal1Distrib()}}.
 
-The quantity is what a censored likelihood and a quantile residual need, and
-it is the first ingredient of \code{\link[=distrib_cross_y]{distrib_cross_y()}}.
+The derivatives in the response of this family, and the mixed derivatives
+of \code{\link[=distrib_cross_y]{distrib_cross_y()}}, are computed in closed form from the Mills ratio.
 }
 \section{Notation}{
 

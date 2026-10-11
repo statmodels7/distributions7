@@ -598,3 +598,35 @@ test_that("the pseudo-Huber nu-only derivatives in the middle of nu's range", {
   expect_equal(o$B[5, 1], -1.2840692384019815e-10, tolerance = 1e-13)
   expect_equal(o$logR[5, 1], 2.9029818456005618e-11, tolerance = 1e-12)
 })
+
+test_that("a probability outside the unit interval gives NaN in every T2b quantile", {
+  fams <- list(
+    list(laplace_distrib(), list(mu = 0, sigma = 1)),
+    list(laplace2_distrib(), list(mu = 0, lambda = 1)),
+    list(gpd_distrib(), list(sigma = 1, xi = 0.3)),
+    list(gpd_distrib(), list(sigma = 1, xi = 0)),
+    list(enet_distrib(), list(mu = 0, lambda = 2, alpha = 0.5)),
+    list(pseudohuber_distrib(), list(mu = 0, sigma = 1, nu = 2)),
+    list(pseudohuber2_distrib(), list(mu = 0, sigma = 1, nu = 2)))
+  for (f in fams) {
+    d <- f[[1]]
+    th <- f[[2]]
+    q <- suppressWarnings(c(
+      distrib_quantile(d, c(-0.1, 1.2), th),
+      distrib_quantile(d, c(-0.1, 1.2), th, lower.tail = FALSE),
+      distrib_quantile(d, 0.1, th, log.p = TRUE),
+      distrib_quantile(d, 0.1, th, log.p = TRUE, lower.tail = FALSE)))
+    expect_true(all(is.nan(q)), label = d@distrib_name)
+  }
+})
+
+test_that("the von Mises tails at a large concentration and across the antimode", {
+  # mpmath, 40 digits (vm_tail_ref.py); +Inf and -5329.67 before
+  d <- vonmises1_distrib()
+  expect_equal(distrib_cdf(d, -0.1, list(mu = 0, kappa = 1e6), log.p = TRUE),
+               -5001.357263403596, tolerance = 1e-12)
+  # the upper tail [-2.5, pi) holds both ends of the antimode's arc
+  expect_equal(distrib_cdf(d, -2.5, list(mu = -3, kappa = 1e6), lower.tail = FALSE,
+                           log.p = TRUE),
+               -10013.371998567147, tolerance = 1e-12)
+})

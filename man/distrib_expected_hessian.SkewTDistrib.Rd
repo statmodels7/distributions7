@@ -30,12 +30,13 @@ the two derivatives those keyed as \code{\link[=dexpected_names]{dexpected_names
 \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-Returns the expected information, and through \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}
-and \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} its first and second derivatives in the
+Returns the expected Hessian of the log-density, that is minus the expected
+information, and through \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} and
+\code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} its first and second derivatives in the
 parameters.
 }
 \details{
-No component has an elementary form. The family is a location-scale family,
+The components have no elementary form. The family is a location-scale family,
 so every component equals its value at \eqn{\mu = 0}, \eqn{\sigma = 1} times
 \eqn{\sigma^{-k}}, with \eqn{k} the number of indices on \eqn{\mu} or
 \eqn{\sigma}. The value there depends on \eqn{(\alpha, \nu)} alone and is one

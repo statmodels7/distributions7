@@ -44,8 +44,9 @@ so the information is positive throughout.
 
 The identity holds on the \strong{parameter} scale. On the link scale the
 second-order chain rule adds \eqn{h''(\eta)\,\partial\ell/\partial\mu} to
-the observed Hessian; the expected version drops that term because the score
-has mean zero, and a finite sample does not. Fisher scoring and Newton's
+the observed Hessian. The expected version drops that term because the score
+has expectation zero, whereas the score of a finite sample is not zero away
+from the optimum. Fisher scoring and Newton's
 method therefore take different steps here and agree at the optimum, where
 the summed score vanishes.
 }

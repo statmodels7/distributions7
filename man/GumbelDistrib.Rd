@@ -56,25 +56,51 @@ directly and everything else comes from the parent.
 
 Build one with \code{\link[=gumbel_distrib]{gumbel_distrib()}}, which supplies the two link functions and
 fills the properties in. This page documents the raw S7 constructor, which
-takes the parent's properties and validates none of the relationships
-between them.
+takes the parent's properties; the validator of \code{distrib} checks them, and
+the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.GumbelDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.GumbelDistrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.GumbelDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.GumbelDistrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.GumbelDistrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_grad_y.GumbelDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_quantile.GumbelDistrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.GumbelDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.GumbelDistrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.GumbelDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.GumbelDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.GumbelDistrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.GumbelDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.GumbelDistrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.GumbelDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.GumbelDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.GumbelDistrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.GumbelDistrib]{distrib_deriv5()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.GumbelDistrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.GumbelDistrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.GumbelDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.GumbelDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.GumbelDistrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.GumbelDistrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.GumbelDistrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.GumbelDistrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross3_y.GumbelDistrib]{distrib_cross3_y()}},
+\code{\link[=distrib_grad_y_hess.GumbelDistrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.GumbelDistrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.GumbelDistrib]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf.GumbelDistrib]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.GumbelDistrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.GumbelDistrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.GumbelDistrib]{mean()}},
+\code{\link[=variance.GumbelDistrib]{variance()}},
+\code{\link[=skewness.GumbelDistrib]{skewness()}} and
+\code{\link[=kurtosis.GumbelDistrib]{kurtosis()}}.
+}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{

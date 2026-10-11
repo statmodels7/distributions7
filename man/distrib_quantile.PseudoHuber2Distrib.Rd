@@ -21,10 +21,14 @@ A numeric vector of quantiles; \code{NaN} for a probability outside
 \eqn{[0, 1]}.
 }
 \description{
-Inverts \code{\link[=distrib_cdf.PseudoHuber2Distrib]{distrib_cdf.PseudoHuber2Distrib()}} by root finding on the lower
-half, in a bracket that starts ten standard deviations below \eqn{\mu} and
-is doubled until it contains the quantile; an upper quantile is the
-reflection of the lower one about \eqn{\mu}.
+Inverts \code{\link[=distrib_cdf.PseudoHuber2Distrib]{distrib_cdf.PseudoHuber2Distrib()}} through
+\code{\link[=symmetric_log_quantile]{symmetric_log_quantile()}}: the root of \eqn{\log F(q) = \log P}, with
+\eqn{P} the smaller tail, is found below \eqn{\mu} in a bracket that starts
+ten standard deviations below it and is doubled until it contains the
+quantile, and an upper quantile is the reflection of the lower one about
+\eqn{\mu}. Neither \eqn{1 - p} nor the exponential of a logarithm is
+formed, so a probability far below machine epsilon gives an accurate
+quantile.
 }
 \examples{
 d <- pseudohuber2_distrib()

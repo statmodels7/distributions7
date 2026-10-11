@@ -23,7 +23,8 @@ A numeric vector of probabilities.
 \description{
 Computes \eqn{P(Y \le q)} by numerical integration of the density, taken
 by the compiled rule of \code{\link[=compiled_cdf]{compiled_cdf()}} over the tail on the side of
-\eqn{q} away from \eqn{\mu}.
+\eqn{q} away from \eqn{\mu}. With \code{log.p = TRUE} the logarithm is
+computed on the log scale, so it stays finite far in either tail.
 }
 \examples{
 d <- pseudohuber2_distrib()

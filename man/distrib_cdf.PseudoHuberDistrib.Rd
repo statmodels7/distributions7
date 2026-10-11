@@ -18,7 +18,8 @@ numeric vector of length 1 or of the length of \code{q}. A component of length
 probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
-probability is returned, taken after the quadrature. Defaults to \code{FALSE}.}
+probability is returned, computed on the log scale by \code{\link[=compiled_cdf]{compiled_cdf()}}
+so that it stays finite far in either tail. Defaults to \code{FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

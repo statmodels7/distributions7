@@ -17,13 +17,13 @@ the composition is the absolute value at \eqn{v = y - \mu} with
 \details{
 Only the location moves the kink: \eqn{\partial v/\partial \mu = -1} and
 \eqn{\partial v/\partial \sigma = 0}, so \code{\link[=params_order]{params_order()}} reports
-\eqn{m_\mu = 0} and \eqn{m_\sigma = \infty}, which is what \code{params_smooth}
-has recorded as \code{c(mu = FALSE, sigma = TRUE)} all along.
+\eqn{m_\mu = 0} and \eqn{m_\sigma = \infty}, which agrees with
+\code{params_smooth} being \code{c(mu = FALSE, sigma = TRUE)}.
 
-The scale is smooth even though it stands in front of the absolute value,
-because a coefficient multiplying \eqn{\phi} is differentiable wherever
-\eqn{\phi} is bounded; what breaks a derivative is the argument crossing the
-origin, not the factor.
+The scale is smooth although it multiplies the absolute value: the
+derivative in \eqn{\sigma} of \eqn{c(\theta)\phi(v)} is
+\eqn{c'(\theta)\phi(v)}, which exists at every \eqn{y}. A derivative fails
+only where the argument \eqn{v} crosses the origin.
 }
 \examples{
 kink_decomposition(laplace_distrib())

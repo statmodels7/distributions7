@@ -36,8 +36,9 @@ component involving \eqn{\mu} is zero and the only survivor comes from
 \eqn{\log\lambda}:
 \deqn{\dfrac{\partial^4 \ell}{\partial \lambda^4} = -\dfrac{6}{\lambda^4}.}
 
-None of these depends on the data, so the observed and expected values
-coincide: \code{expected}, \code{approx} and \code{nsim} are accepted and have no effect.
+These derivatives do not depend on the data, so the observed and expected
+values coincide: \code{expected}, \code{approx} and \code{nsim} are accepted and have no
+effect.
 }
 \section{Notation}{
 

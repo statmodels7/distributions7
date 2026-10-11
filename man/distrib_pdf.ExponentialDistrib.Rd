@@ -11,8 +11,8 @@
 
 \item{theta}{A named list with the single component \code{mu}, a numeric vector
 of length 1 or of the length of \code{y}. A value of length 1 is recycled.
-\code{mu} must be strictly positive; a non-positive value gives \code{NaN} with a
-warning from \code{\link[stats:Exponential]{stats::dexp()}}.}
+\code{mu} must be strictly positive; the generic signals an error for a zero
+or negative value before the method is called.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
 Defaults to \code{FALSE}.}

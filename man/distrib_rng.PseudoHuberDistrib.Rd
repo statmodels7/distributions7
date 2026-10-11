@@ -26,8 +26,9 @@ Draws \code{n} independent variates as a normal variance mixture,
 inverse Gaussian law with density proportional to
 \eqn{\exp\{-\sqrt{\nu}\,(x + 1/x)/2\}}. \eqn{X} is drawn by the
 ratio-of-uniforms method with the mode shifted to the origin (Hormann and
-Leydold, 2014), whose bounding box is set once per distinct \eqn{\nu};
-below \eqn{\nu = 10^{-16}} the mixing law is its exponential limit. The
+Leydold, 2014), whose bounding box is recomputed whenever \eqn{\nu} differs
+from that of the previous draw; below \eqn{\nu = 10^{-16}} the mixing law
+is its exponential limit. The
 draws depend on \code{.Random.seed} in the usual way.
 }
 \examples{

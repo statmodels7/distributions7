@@ -31,7 +31,9 @@ whose variance is \eqn{\sigma^2}. The log-density is
 \eqn{h(\nu) = -\tfrac14 \log\nu + \tfrac12 \log K_2(\sqrt\nu) -
 \tfrac32 \log K_1(\sqrt\nu)}. \eqn{R} and \eqn{h} are formed with the
 exponentially scaled Bessel functions, so they stay finite where
-\eqn{K_1(\sqrt\nu)} underflows.
+\eqn{K_1(\sqrt\nu)} underflows. \eqn{D} is formed as a hypotenuse of
+\eqn{\sqrt{R}\,|y - \mu|/\sigma} and \eqn{\sqrt\nu}, so the log-density
+stays finite where the squared residual overflows.
 }
 \examples{
 d <- pseudohuber2_distrib()

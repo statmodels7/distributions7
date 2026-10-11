@@ -33,10 +33,12 @@ A named list of fifteen numeric vectors, from \code{mu_mu_mu_mu} to
 \description{
 Computes the fifteen fourth derivatives of the log-density in closed form,
 through \code{\link[=.enet_chain]{.enet_chain()}}, in the notation of
-\code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()}}. At this order \strong{nothing touches the
-location}: the data term is quadratic in \eqn{z} and linear in each rate,
-so every component naming \eqn{\mu} more than twice is exactly zero, and
-what remains is a derivative of the normalizing constant carried through the
+\code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()}}. In the rates \eqn{(\mu, a, c)} no fourth
+derivative involves \eqn{\mu}, the data term being quadratic in \eqn{z} and
+linear in each rate. After the bilinear map every component naming
+\eqn{\mu} more than twice is exactly zero, the only nonzero component with
+\eqn{\mu} is \code{mu_mu_lambda_alpha}, the constant 1, and the others are
+derivatives of the normalizing constant carried through the
 bilinear map.
 
 With \code{expected = TRUE} the value is an expectation and is not closed form,
@@ -49,8 +51,10 @@ th <- list(mu = 0, lambda = 2, alpha = 0.5)
 d4 <- distrib_deriv4(d, y, th)
 length(d4)
 
-# Nothing at this order touches the location.
+# The components that name the location more than twice are zero, and
+# mu_mu_lambda_alpha is the constant 1.
 d4$mu_mu_mu_mu
+d4$mu_mu_lambda_alpha
 
 # Against a central difference of the third order.
 eps <- 1e-5

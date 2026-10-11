@@ -2,6 +2,8 @@
 % Please edit documentation in R/cauchy_distrib.R
 \name{cauchy_cdf_method}
 \alias{cauchy_cdf_method}
+\alias{distrib_deriv3_cdf.CauchyDistrib}
+\alias{distrib_deriv4_cdf.CauchyDistrib}
 \title{Cauchy Distribution Function Derivatives}
 \usage{
 cauchy_cdf_method(order)

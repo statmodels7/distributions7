@@ -13,12 +13,10 @@ numeric vector of length 1 or of the length of \code{q}. \code{sigma} must be
 strictly positive.}
 
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, the value is
-\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}, formed as the
-complement.}
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
-probability is returned. Defaults to \code{FALSE}. The logarithm is taken after
-the clamp, so a quantile far into the light tail returns \code{-Inf}.}
+probability is returned, computed on the log scale. Defaults to \code{FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -33,13 +31,18 @@ with \eqn{z = (q-\mu)/\sigma}:
 \deqn{F(q; \mu, \sigma, \alpha) = \Phi(z) - 2\,T(z, \alpha).}
 The identity is Azzalini's. Each evaluation costs one bounded
 one-dimensional quadrature, through \code{\link[numericals7:owen_t]{numericals7::owen_t()}}, where the base
-class would integrate the density over a semi-infinite range; the bounded
-integrand is both cheaper and more accurate. A thousand quantiles cost about
-20 milliseconds.
+class would integrate the density over a semi-infinite range. The shape is
+clamped to \eqn{10^{50}} in absolute value in the call, past which
+\eqn{T(z, \alpha)} equals its limit \eqn{\Phi(-|z|)/2} to double
+precision.
 
-The result is clamped to \eqn{[0, 1]} before the tail and the logarithm are
-applied, so rounding in the quadrature cannot return a probability outside
-the unit interval.
+The method works on the log scale (\code{\link[=sn_log_lower]{sn_log_lower()}}). The upper tail is
+computed as the lower tail of \eqn{-Y}, a skew normal of shape
+\eqn{-\alpha}, so neither tail is a complement. Where the difference
+\eqn{\Phi(z) - 2T(z, \alpha)} cancels, that is where the requested tail is
+below \eqn{10^{-3}\Phi(\pm z)}, the tail is integrated instead by
+\code{\link[=log_tail_integral]{log_tail_integral()}}, so that a small tail probability and its logarithm
+keep their digits on the light side of the family.
 }
 \section{Notation}{
 

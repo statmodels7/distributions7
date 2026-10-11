@@ -9,17 +9,14 @@ no method of its own.}
 
 \item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or their
 logarithms under \code{log.p}. The bounds of the support are returned at 0 and
-1.}
+1, and \code{NaN} for a value outside \eqn{[0, 1]}.}
 
 \item{theta}{A named list of parameters, each of length 1 or \code{length(p)}.}
 
 \item{lower.tail}{Logical of length 1. \code{TRUE}, the default, treats \code{p} as
-\eqn{P(Y \le q)}; \code{FALSE} treats it as the upper tail and inverts
-\eqn{1 - p}.}
+\eqn{P(Y \le q)}; \code{FALSE} treats it as the upper-tail probability.}
 
-\item{log.p}{Logical of length 1. \code{TRUE} treats \code{p} as a logarithm and
-exponentiates it first, so a probability that has underflowed is not
-recovered.}
+\item{log.p}{Logical of length 1. \code{TRUE} treats \code{p} as a logarithm.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -40,12 +37,21 @@ parameter setting in one evaluation of the density per refinement
 (\code{\link[=quantile_anchors]{quantile_anchors()}}), and expands geometrically, with a first step equal
 to the reciprocal of the density there, so that a sharply peaked family and a
 diffuse one
-take a comparable number of expansions. Inside the bracket a Newton step on
-\eqn{F(q) - p}, whose derivative is the density, is taken where it stays
-inside the bracket and a bisection where it does not, so every iteration
-shrinks the bracket or converges. Each iteration is one call of
-\code{\link[=distrib_cdf]{distrib_cdf()}} and one of \code{\link[=distrib_pdf]{distrib_pdf()}} over every probability not yet
-inverted.
+take a comparable number of expansions; after thirty doublings the step is
+multiplied by a thousand, so that a quantile far in a tail is reached.
+
+The probability is first turned into the logarithms of both tails by
+\code{\link[=quantile_log_tails]{quantile_log_tails()}}, without forming \eqn{1 - p} or exponentiating a
+logarithm, and each root is solved on the tail with the smaller
+probability: \eqn{\log F(q) = \log P} below the median and
+\eqn{\log S(q) = \log P} above it, with \eqn{S} the upper tail that the
+family's \code{\link[=distrib_cdf]{distrib_cdf()}} returns. Inside the bracket a Newton step on that
+equation, whose derivative is \eqn{\pm f/P}, is taken where it stays inside
+the bracket and a bisection where it does not, so every iteration shrinks
+the bracket or converges; the tolerance is relative on the log scale, so a
+probability far below machine epsilon is inverted to full relative
+accuracy. Each iteration is one call of \code{\link[=distrib_cdf]{distrib_cdf()}} and one of
+\code{\link[=distrib_pdf]{distrib_pdf()}} over every probability not yet inverted.
 
 The root finding is applied to a distribution function that is itself
 computed by quadrature, so the quantile is less accurate than the

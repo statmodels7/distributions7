@@ -29,15 +29,18 @@ A numeric vector of quantiles on \eqn{[-\infty, \infty]}, of length
 }
 \description{
 Computes \eqn{Q(p)} by root-finding on the numerical distribution function,
-the family having no elementary quantile. Symmetry about \eqn{\mu} does most
-of the work: \eqn{Q(1/2) = \mu} exactly and without a search, and a
-probability above one half is reflected through
-\eqn{Q(p) = 2\mu - Q(1-p)}, so the search always runs in the lower half.
+the family having no elementary quantile, through
+\code{\link[=symmetric_log_quantile]{symmetric_log_quantile()}}. The probability is turned into the logarithms
+of both tails without forming \eqn{1 - p} or exponentiating a logarithm,
+and the root of \eqn{\log F(q) = \log P}, with \eqn{P} the smaller tail, is
+found below the location and reflected through \eqn{Q = 2\mu - Q'} when the
+upper tail is the smaller one. \eqn{Q(1/2) = \mu} exactly and without a
+search.
 
-The bracket starts at ten standard deviations below the location and doubles
-its width until it contains the root, at most 100 times.
+The bracket starts at ten standard deviations below the location and
+doubles its width until it contains the root, at most 2000 times.
 \code{\link[stats:uniroot]{stats::uniroot()}} then closes it to \code{sqrt(.Machine$double.eps)}. Each
-evaluation of the objective is a quadrature, so this is by far the dearest
+evaluation of the objective is a quadrature, so this is the most expensive
 method of the family.
 }
 \examples{

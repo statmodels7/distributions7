@@ -25,8 +25,8 @@ An S7 object of class \code{LogisticDistrib}, inheriting from
 \description{
 Builds the distribution object for the logistic family with mean \eqn{\mu}
 and scale \eqn{\sigma > 0}. The returned object carries closed-form
-derivatives of the log-density to fourth order in the parameters and in the
-response, and closed-form moments.
+derivatives of the log-density to fifth order in the parameters and to
+fourth order in the response, and closed-form moments.
 
 The family is symmetric about \eqn{\mu} with variance
 \eqn{\pi^2\sigma^2/3}, so \eqn{\sigma} is a scale, not a standard
@@ -43,8 +43,8 @@ quantile function \eqn{Q(p) = \mu + \sigma \log(p/(1-p))}.
 The mean and the median are \eqn{\mu}, the variance is
 \eqn{\pi^2 \sigma^2/3}, the skewness is 0 and the excess kurtosis is
 \eqn{6/5}. A logistic and a Gaussian matched on their variance are close in
-the body and differ in the tails, the logistic's decaying exponentially and
-the Gaussian's as a square exponential.
+the body and differ in the tails: the logistic density decays like
+\eqn{e^{-|z|}} and the Gaussian density like \eqn{e^{-z^2/2}}.
 }
 
 \section{Derivatives}{
@@ -56,13 +56,11 @@ and the expected Hessian is
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{3+\pi^2}{9\sigma^2}, \quad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0.}
 
-Third and fourth orders are closed form \strong{observed} and numerical
-\strong{expected}: two of the nine expectations at those orders require
-\eqn{\int w^k \mathrm{sech}^4 w \tanh^2 w \, dw}, which has no elementary
-form, so \code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3.LogisticDistrib()}} and
-\code{\link[=distrib_deriv4.LogisticDistrib]{distrib_deriv4.LogisticDistrib()}} route their \code{expected = TRUE} branch to
-\code{\link[=expected_derivative]{expected_derivative()}}. This is the only place in this family where a
-numerical route is taken.
+The observed derivatives of orders three to five are closed form, in
+\code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3.LogisticDistrib()}}, \code{\link[=distrib_deriv4.LogisticDistrib]{distrib_deriv4.LogisticDistrib()}} and
+\code{\link[=distrib_deriv5.LogisticDistrib]{distrib_deriv5.LogisticDistrib()}}. The \code{expected = TRUE} branch of the
+third and fourth orders calls \code{\link[=expected_derivative]{expected_derivative()}} and computes the
+expectations numerically, although they are elementary.
 }
 
 \section{Estimation}{
@@ -83,7 +81,7 @@ parameter on the unconstrained scale of its link.
 d <- logistic_distrib()
 d
 
-# The density and the distribution function are R's own.
+# The density is R's own.
 y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, sigma = 1.5)
 all.equal(distrib_pdf(d, y, th), dlogis(y, 0.4, 1.5))

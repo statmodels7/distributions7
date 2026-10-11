@@ -42,13 +42,11 @@ derivative drops out and
       \mathbb{E}[\ell^{(\mu\rho)}] = 0, \qquad
       \mathbb{E}[\ell^{(\rho\rho)}] = -\kappa'(\rho) = -\dfrac{1}{A'(\kappa)}.}
 
-The last equality is the reparametrization identity: the information in
-\eqn{\kappa} is \eqn{A'(\kappa)} and \eqn{\kappa'(\rho) = 1/A'(\kappa)}, so
-\eqn{A'(\kappa)\{\kappa'(\rho)\}^2 = 1/A'(\kappa)}. The information in
-\eqn{\rho} is therefore the \strong{reciprocal} of the information in
-\eqn{\kappa}, which a one-to-one reparametrization of a single parameter
-whose Jacobian is that reciprocal must give. The two parameters stay
-orthogonal.
+The last equality follows from the transformation rule for the information.
+The information in \eqn{\kappa} is \eqn{A'(\kappa)} and
+\eqn{\kappa'(\rho) = 1/A'(\kappa)}, so the information in \eqn{\rho} is
+\eqn{A'(\kappa)\{\kappa'(\rho)\}^2 = 1/A'(\kappa)}, the \strong{reciprocal} of the
+information in \eqn{\kappa}. The two parameters remain orthogonal.
 
 \code{approx} and \code{nsim} are ignored, the expectation being exact.
 }

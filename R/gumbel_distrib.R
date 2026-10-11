@@ -16,8 +16,8 @@ NULL
 #'
 #' Build one with [gumbel_distrib()], which supplies the two link functions and
 #' fills the properties in. This page documents the raw S7 constructor, which
-#' takes the parent's properties and validates none of the relationships
-#' between them.
+#' takes the parent's properties; the validator of `distrib` checks them, and
+#' the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -36,20 +36,44 @@ NULL
 #'   the closed forms this class supplies.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.GumbelDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.GumbelDistrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.GumbelDistrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.GumbelDistrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.GumbelDistrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.GumbelDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.GumbelDistrib] and
+#'   [`distrib_rng()`][distrib_rng.GumbelDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.GumbelDistrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.GumbelDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.GumbelDistrib],
-#'   [`distrib_pdf()`][distrib_pdf.GumbelDistrib],
-#'   [`distrib_quantile()`][distrib_quantile.GumbelDistrib],
-#'   [`distrib_rng()`][distrib_rng.GumbelDistrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.GumbelDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.GumbelDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.GumbelDistrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.GumbelDistrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.GumbelDistrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.GumbelDistrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.GumbelDistrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.GumbelDistrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.GumbelDistrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.GumbelDistrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.GumbelDistrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.GumbelDistrib],
+#'   [`distrib_cross3_y()`][distrib_cross3_y.GumbelDistrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.GumbelDistrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.GumbelDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.GumbelDistrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.GumbelDistrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.GumbelDistrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.GumbelDistrib];
+#' - the moments: [`mean()`][mean.GumbelDistrib],
+#'   [`variance()`][variance.GumbelDistrib],
+#'   [`skewness()`][skewness.GumbelDistrib] and
+#'   [`kurtosis()`][kurtosis.GumbelDistrib].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- gumbel_distrib()
@@ -78,8 +102,8 @@ GumbelDistrib <- S7::new_class("GumbelDistrib", parent = continuous_distrib)
 #'       \exp\left\{-z - e^{-z}\right\},}
 #' written out rather than delegated, base R carrying no Gumbel. The two tails
 #' are of very different weight: the density falls like \eqn{e^{-z}} to the
-#' right and like \eqn{e^{-e^{-z}}} to the left, so the left one is doubly
-#' exponential and dies far faster.
+#' right and like \eqn{e^{-e^{-z}}} to the left, so the left tail is doubly
+#' exponential and decays much faster.
 #'
 #' With `log = TRUE` the exponent is returned directly and stays finite where
 #' the density itself underflows.
@@ -118,8 +142,8 @@ GumbelDistrib <- S7::new_class("GumbelDistrib", parent = continuous_distrib)
 #' distrib_pdf(d, c(-5, 5), th)
 #'
 #' # Far to the left the density underflows and its logarithm does not.
-#' distrib_pdf(d, -6, th)
-#' distrib_pdf(d, -6, th, log = TRUE)
+#' distrib_pdf(d, -8, th)
+#' distrib_pdf(d, -8, th, log = TRUE)
 S7::method(distrib_pdf, GumbelDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   mu <- theta[[1]]
   sigma <- theta[[2]]
@@ -133,15 +157,18 @@ S7::method(distrib_pdf, GumbelDistrib) <- function(distrib, y, theta, log = FALS
 #' @description
 #' Computes the Gumbel distribution function, with \eqn{z = (q - \mu)/\sigma},
 #' \deqn{F(q; \mu, \sigma) = \exp\left\{-e^{-z}\right\}.}
-#' This is the defining property of the family: a maximum of \eqn{n}
-#' independent light-tailed variables has, after centering and scaling, a
-#' distribution function that is the \eqn{n}th power of one distribution
-#' function, and \eqn{\exp\{-e^{-z}\}} is the fixed point of that operation.
+#' This function is the limit distribution of the maximum of \eqn{n}
+#' independent light-tailed variables, after centering and scaling. It is
+#' max-stable: its \eqn{n}th power is the same function with the location
+#' shifted by \eqn{\sigma\log n}.
 #'
 #' @details
 #' Both tails are computed on the scale that keeps them accurate. The lower
 #' tail is exact on the log scale, \eqn{\log F = -e^{-z}}, and the upper tail
 #' goes through [base::expm1()], so neither loses precision where it is small.
+#' Where \eqn{w = e^{-z}} is below \eqn{10^{-10}} the logarithm of the upper
+#' tail is taken as \eqn{-z - w/2}, which stays finite where \eqn{w}
+#' underflows.
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
 #' @param q A numeric vector of quantiles.
@@ -182,6 +209,9 @@ S7::method(distrib_pdf, GumbelDistrib) <- function(distrib, y, theta, log = FALS
 #' # Deep in the lower tail the probability underflows and its log does not.
 #' distrib_cdf(d, -700, th)
 #' distrib_cdf(d, -700, th, log.p = TRUE)
+#'
+#' # Far in the upper tail the logarithm of the survival is -z.
+#' distrib_cdf(d, 800, th, lower.tail = FALSE, log.p = TRUE)
 S7::method(distrib_cdf, GumbelDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   z <- (q - theta[[1]]) / theta[[2]]
   w <- exp(-z)
@@ -207,8 +237,8 @@ S7::method(distrib_cdf, GumbelDistrib) <- function(distrib, q, theta, lower.tail
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or of their
-#'   logarithms when `log.p = TRUE`. A value outside the range gives `NaN`;
-#'   the endpoints give `-Inf` and `Inf`.
+#'   logarithms when `log.p = TRUE`. A value outside the range gives `NaN`
+#'   with a warning; the endpoints give `-Inf` and `Inf`.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `p`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
@@ -306,10 +336,10 @@ S7::method(distrib_rng, GumbelDistrib) <- function(distrib, n, theta, ...) {
 #'         \dfrac{z(1 - w) - 1}{\sigma}.}
 #'
 #' The whole family is written in \eqn{w}, and under the model \eqn{w} is
-#' **standard exponential** whatever the parameters. Every expectation this
-#' family needs is therefore a derivative of \eqn{\Gamma} at 2, and the same
-#' fact bounds the score above in \eqn{\mu} and leaves it unbounded below: a
-#' value far to the left makes \eqn{w} enormous.
+#' **standard exponential** whatever the parameters. Every expectation of
+#' this family is therefore a derivative of \eqn{\Gamma} at 1 or at 2. The
+#' score in \eqn{\mu} is bounded above by \eqn{1/\sigma} and unbounded below,
+#' because a value far to the left makes \eqn{w} large.
 #'
 #' With `scale = "link"` the generic applies the chain rule for the links the
 #' family carries before returning. This method always returns the parameter
@@ -537,8 +567,9 @@ S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, thet
 #' With `expected = TRUE` the expectations are returned, also in closed form.
 #' They rest on \eqn{w} being standard exponential under the model, which makes
 #' \eqn{\mathbb{E}[z^k w] = (-1)^k \Gamma^{(k)}(2)} and
-#' \eqn{\mathbb{E}[z] = \gamma}: every expectation the family needs is a
-#' derivative of \eqn{\Gamma} at 2, assembled from polygamma functions there.
+#' \eqn{\mathbb{E}[z] = \gamma}: every expectation of the family is a
+#' derivative of \eqn{\Gamma} at 1 or at 2, assembled from polygamma
+#' functions there.
 #' Since both routes are closed form, `approx` and `nsim` are ignored.
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
@@ -675,8 +706,8 @@ S7::method(distrib_deriv4, GumbelDistrib) <- function(distrib, y, theta, expecte
 #' Writing the log-density as \eqn{\ell = -\log\sigma + g(z)} with
 #' \eqn{z = (y - \mu)/\sigma}, each component is \eqn{\sigma^{-5}} times a
 #' sum of terms \eqn{c\, z^p g^{(i)}(z)} with integer coefficients, plus
-#' \eqn{-24\sigma^{-5}} in the pure \eqn{\sigma} component; the kernel
-#' evaluates the sum from \eqn{g(z) = -z - e^{-z}}, whose derivatives are
+#' \eqn{-24\sigma^{-5}} in the component that is pure in \eqn{\sigma}. The
+#' kernel evaluates the sum from \eqn{g(z) = -z - e^{-z}}, whose derivatives are
 #' \eqn{g' = e^{-z} - 1} and \eqn{(-1)^{i+1} e^{-z}} from the second on.
 #' With `scale = "link"` the components are composed with the link
 #' derivatives by the routine that every family with a fifth-order kernel
@@ -702,7 +733,7 @@ S7::method(distrib_deriv4, GumbelDistrib) <- function(distrib, y, theta, expecte
 #' @examples
 #' d <- gumbel_distrib()
 #' d5 <- distrib_deriv5(d, c(-1.2, 0.3, 2.5), list(mu = 0.4, sigma = 1.5))
-#' # The pure mu component is -exp(-z)/sigma^5.
+#' # The component pure in mu is -exp(-z)/sigma^5.
 #' all.equal(d5$mu_mu_mu_mu_mu, -exp(-(c(-1.2, 0.3, 2.5) - 0.4) / 1.5) / 1.5^5)
 S7::method(distrib_deriv5, GumbelDistrib) <- function(distrib, y, theta,
     scale = c("parameter", "link"), ..., threads = 1L) {
@@ -720,8 +751,6 @@ S7::method(distrib_deriv5, GumbelDistrib) <- function(distrib, y, theta,
 #' The Gumbel is a location family in \eqn{\mu}, so the response enters the
 #' log-density only through \eqn{y - \mu} and this derivative is the negative
 #' of the score in \eqn{\mu}. It vanishes at \eqn{y = \mu}, which is the mode.
-#'
-#' Quantile residuals and the mixed derivatives of [distrib_cross_y()] read it.
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
 #' @param y A numeric vector of observations.
@@ -814,10 +843,9 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #' Builds the distribution object for the Gumbel (type I extreme value) family
 #' in the form for **maxima**: a location-scale family on the whole real line
 #' with location \eqn{\mu} and scale \eqn{\sigma > 0}. The returned object
-#' carries closed-form derivatives of the log-density to fourth order, in the
-#' parameters and in the response, observed and expected, and closed-form
-#' moments, so every generic of the toolkit answers without a numerical
-#' fallback.
+#' carries closed-form derivatives of the log-density to fifth order in the
+#' parameters and to fourth order in the response, closed-form expectations
+#' to fourth order, and closed-form moments.
 #'
 #' The two arguments choose the links that carry each parameter to the
 #' unconstrained scale an optimizer works on. The defaults are the identity for
@@ -851,7 +879,7 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #' is max-stable: raising its distribution function to the \eqn{n}th power
 #' gives the same law with the location shifted by \eqn{\sigma\log n}.
 #'
-#' # Everything rests on w being standard exponential
+#' # Derivatives and expectations
 #'
 #' Write \eqn{w = e^{-z}}. Under the model \eqn{w} is standard exponential
 #' whatever \eqn{\mu} and \eqn{\sigma} are, and the whole family is written in
@@ -864,8 +892,8 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #' \deqn{\ell^{(\mu\mu)} = -\dfrac{w}{\sigma^2}, \quad
 #'       \ell^{(\mu\sigma)} = -\dfrac{1 - w + zw}{\sigma^2}, \quad
 #'       \ell^{(\sigma\sigma)} = \dfrac{1 - 2z + 2zw - z^2 w}{\sigma^2},}
-#' and every expectation the family needs is a derivative of \eqn{\Gamma} at 2:
-#' \eqn{\mathbb{E}[w] = 1}, \eqn{\mathbb{E}[w\log w] = 1-\gamma},
+#' and the expectations are derivatives of \eqn{\Gamma} at 2 (and, for
+#' \eqn{\mathbb{E}[z] = \gamma}, at 1): \eqn{\mathbb{E}[w] = 1}, \eqn{\mathbb{E}[w\log w] = 1-\gamma},
 #' \eqn{\mathbb{E}[w(\log w)^2] = (1-\gamma)^2 + \pi^2/6 - 1}. The expected
 #' Hessian follows in one line, and so do the third and fourth orders, through
 #' \eqn{\mathbb{E}[z^k w] = (-1)^k\Gamma^{(k)}(2)}.

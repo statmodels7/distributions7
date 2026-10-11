@@ -45,16 +45,20 @@ The factor \eqn{2\Phi(\alpha z)} exceeds one where \eqn{\alpha z > 0} and
 falls below it where \eqn{\alpha z < 0}, so a positive \eqn{\alpha} moves
 mass to the right. The distribution function is Azzalini's identity
 \eqn{F(q) = \Phi(z) - 2T(z, \alpha)} with \eqn{T} Owen's T, one bounded
-quadrature per observation through \code{\link[numericals7:owen_t]{numericals7::owen_t()}}. The quantile
-function has no closed form and comes from the base class by root finding.
+quadrature per observation through \code{\link[numericals7:owen_t]{numericals7::owen_t()}}, with an
+integral of the tail on the light side where that difference cancels. The
+quantile function has no closed form and comes from the base class by root
+finding on the logarithm of the smaller tail.
 }
 
 \section{Derivatives}{
 The score and the observed Hessian are closed form, written in the inverse
 Mills ratio \eqn{R(t) = \phi(t)/\Phi(t)} at \eqn{t = \alpha z}, and so are
-the third and fourth orders, in compiled kernels. One identity does all of
-it: \eqn{R' = -R(t+R)}, so every derivative of \eqn{\log\Phi(t)} is a
-polynomial in \eqn{t} and \eqn{R}.
+the third and fourth orders, in compiled kernels. Since
+\eqn{R' = -R(t+R)}, every derivative of \eqn{\log\Phi(t)} is a polynomial
+in \eqn{t} and \eqn{R}; below \eqn{t = -1}, where these polynomials cancel,
+the kernels use the cumulants of the logarithm of the Mills ratio
+instead.
 
 The \strong{expected} information has no elementary form. It depends on
 \eqn{\alpha} alone once the location and the scale are factored out, so it

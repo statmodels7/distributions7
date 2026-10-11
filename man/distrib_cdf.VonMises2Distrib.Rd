@@ -15,7 +15,7 @@ vector of length 1 or of the length of \code{q}. \code{mu} must lie in
 
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
 probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are
-\eqn{P(Y > q)}, formed as \eqn{1 - F(q)}.}
+\eqn{P(Y > q)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
 probability is returned. Defaults to \code{FALSE}.}
@@ -34,8 +34,10 @@ the response not at all, so the distribution function is the other family's
 at that concentration.
 
 What it replaces is the base class's quadrature, one integration per
-observation. See \code{\link[=vm_cdf]{vm_cdf()}} for the series, its measured term count and the
-blocking that keeps the intermediate small.
+observation. See \code{\link[=vm_cdf]{vm_cdf()}} for the series, its number of terms and the
+blocking that keeps the intermediate small. Where the requested tail is
+below \eqn{10^{-10}}, the resolution of the series, it comes from a
+quadrature of the tail on the log scale (\code{\link[=vm_cdf_tail]{vm_cdf_tail()}}).
 }
 \examples{
 d2 <- vonmises2_distrib()

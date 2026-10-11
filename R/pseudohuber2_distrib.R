@@ -14,8 +14,8 @@ NULL
 #'
 #' Build one with [pseudohuber2_distrib()], which supplies the three link
 #' functions and fills the properties in. This page documents the raw S7
-#' constructor, which takes the parent's properties and validates none of the
-#' relationships between them.
+#' constructor, which takes the parent's properties; the validator of
+#' `distrib` checks them, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -28,16 +28,44 @@ NULL
 #'   \eqn{(0, \infty)}, \eqn{(0, \infty)}.
 #'
 #' @section Methods:
-#' Registered on this class in this file: [distrib_pdf()], [distrib_cdf()],
-#' [distrib_quantile()], [distrib_rng()], [distrib_gradient()],
-#' [distrib_hessian()], [distrib_deriv3()], [distrib_deriv4()],
-#' [distrib_deriv5()], [distrib_grad_y()], [distrib_hess_y()],
-#' [distrib_deriv3_y()], [distrib_deriv4_y()], [distrib_cross_y()],
-#' [distrib_cross2_y()], [distrib_grad_y_hess()], [distrib_hess_y_hess()],
-#' [distrib_grad_cdf()], [distrib_hess_cdf()], [distrib_deriv3_cdf()],
-#' [distrib_deriv4_cdf()], the expected information with
-#' its two derivatives through [register_loc_scale_expected()], and the four
-#' moments [mean()], [variance()], [skewness()] and [kurtosis()].
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.PseudoHuber2Distrib],
+#'   [`distrib_cdf()`][distrib_cdf.PseudoHuber2Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.PseudoHuber2Distrib] and
+#'   [`distrib_rng()`][distrib_rng.PseudoHuber2Distrib];
+#' - the derivatives in the parameters:
+#'   [`distrib_gradient()`][distrib_gradient.PseudoHuber2Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.PseudoHuber2Distrib],
+#'   [distrib_expected_hessian()],
+#'   [`distrib_deriv3()`][distrib_deriv3.PseudoHuber2Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.PseudoHuber2Distrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.PseudoHuber2Distrib];
+#' - the derivatives of the expected information: [distrib_dexpected_hessian()]
+#'   and [distrib_d2expected_hessian()];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.PseudoHuber2Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.PseudoHuber2Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.PseudoHuber2Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.PseudoHuber2Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.PseudoHuber2Distrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.PseudoHuber2Distrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.PseudoHuber2Distrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.PseudoHuber2Distrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.PseudoHuber2Distrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.PseudoHuber2Distrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.PseudoHuber2Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.PseudoHuber2Distrib];
+#' - the moments: [`mean()`][mean.PseudoHuber2Distrib],
+#'   [`variance()`][variance.PseudoHuber2Distrib],
+#'   [`skewness()`][skewness.PseudoHuber2Distrib] and
+#'   [`kurtosis()`][kurtosis.PseudoHuber2Distrib];
+#' - the fitting helpers:
+#'   [`distrib_intercept_start()`][distrib_intercept_start.PseudoHuber2Distrib]
+#'   and [expected_hessian_costly()].
+#'
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @seealso [pseudohuber2_distrib()] to build one; [PseudoHuberDistrib] for
 #'   the scale parametrization.
@@ -65,7 +93,9 @@ PseudoHuber2Distrib <- S7::new_class("PseudoHuber2Distrib",
 #' \eqn{h(\nu) = -\tfrac14 \log\nu + \tfrac12 \log K_2(\sqrt\nu) -
 #' \tfrac32 \log K_1(\sqrt\nu)}. \eqn{R} and \eqn{h} are formed with the
 #' exponentially scaled Bessel functions, so they stay finite where
-#' \eqn{K_1(\sqrt\nu)} underflows.
+#' \eqn{K_1(\sqrt\nu)} underflows. \eqn{D} is formed as a hypotenuse of
+#' \eqn{\sqrt{R}\,|y - \mu|/\sigma} and \eqn{\sqrt\nu}, so the log-density
+#' stays finite where the squared residual overflows.
 #'
 #' @param distrib A `PseudoHuber2Distrib` object, from
 #'   [pseudohuber2_distrib()].
@@ -114,7 +144,8 @@ S7::method(distrib_pdf, PseudoHuber2Distrib) <- function(distrib, y, theta,
 #' @description
 #' Computes \eqn{P(Y \le q)} by numerical integration of the density, taken
 #' by the compiled rule of [compiled_cdf()] over the tail on the side of
-#' \eqn{q} away from \eqn{\mu}.
+#' \eqn{q} away from \eqn{\mu}. With `log.p = TRUE` the logarithm is
+#' computed on the log scale, so it stays finite far in either tail.
 #'
 #' @param distrib A `PseudoHuber2Distrib` object.
 #' @param q A numeric vector of quantiles.
@@ -137,10 +168,14 @@ S7::method(distrib_cdf, PseudoHuber2Distrib) <- compiled_cdf
 #' @name distrib_quantile.PseudoHuber2Distrib
 #'
 #' @description
-#' Inverts [distrib_cdf.PseudoHuber2Distrib()] by root finding on the lower
-#' half, in a bracket that starts ten standard deviations below \eqn{\mu} and
-#' is doubled until it contains the quantile; an upper quantile is the
-#' reflection of the lower one about \eqn{\mu}.
+#' Inverts [distrib_cdf.PseudoHuber2Distrib()] through
+#' [symmetric_log_quantile()]: the root of \eqn{\log F(q) = \log P}, with
+#' \eqn{P} the smaller tail, is found below \eqn{\mu} in a bracket that starts
+#' ten standard deviations below it and is doubled until it contains the
+#' quantile, and an upper quantile is the reflection of the lower one about
+#' \eqn{\mu}. Neither \eqn{1 - p} nor the exponential of a logarithm is
+#' formed, so a probability far below machine epsilon gives an accurate
+#' quantile.
 #'
 #' @param distrib A `PseudoHuber2Distrib` object.
 #' @param p A numeric vector of probabilities.
@@ -219,14 +254,18 @@ S7::method(distrib_rng, PseudoHuber2Distrib) <- function(distrib, n, theta,
 #'       [i = j = 0,\, k = 1] + R^{(k)}(\nu)\, B_i\, C_j,}
 #' with \eqn{B_0 = r^2}, \eqn{B_1 = -2r}, \eqn{B_2 = 2}, \eqn{B_i = 0} for
 #' \eqn{i \ge 3}, and \eqn{C_j = (-1)^j (j+1)!\, \sigma^{-(j+2)}}. A component
-#' of \eqn{D} is Faa di Bruno's sum over the set partitions of its indices,
-#' with \eqn{(d/dQ)^m \sqrt{Q} = c_m Q^{1/2 - m}}. The derivatives of
-#' \eqn{R} and \eqn{h} are read off \eqn{\log K_n(\sqrt\nu)}, whose
-#' derivatives in \eqn{t = \sqrt\nu} follow from the ratios
-#' \eqn{K_n^{(j)}(t)/K_n(t) = (-1/2)^j \sum_i \binom{j}{i} K_{|n-j+2i|}(t)/
-#' K_n(t)}, formed with exponentially scaled Bessel functions. A kernel of
-#' order \eqn{m} computes \eqn{R} and \eqn{h} to order \eqn{m} and the
-#' partitions of order \eqn{m} only.
+#' of \eqn{D} of order one and two is written out per component. For orders
+#' three to five the data part \eqn{-A/\sigma}, with
+#' \eqn{A = \sqrt{\nu\sigma^2 + R(\nu) r^2}}, is differentiated in closed
+#' form, in expressions written in \eqn{u = r/A} and powers of \eqn{1/A}
+#' that are tabulated in the C++ sources. The derivatives of \eqn{R} and
+#' \eqn{h = \log(R)/2 - B} come from those of
+#' \eqn{B(\nu) = \log\{\sqrt\nu K_1(\sqrt\nu)\}} and \eqn{\log R}, computed
+#' by three routes: the series of \eqn{K_1} and \eqn{K_2} at the origin
+#' below \eqn{\nu = 1}, the cumulants of the generalized inverse Gaussian
+#' law of their integral representation for \eqn{1 \le \nu < 400}, and the
+#' asymptotic series from \eqn{\nu = 400}. A kernel of order \eqn{m}
+#' computes \eqn{R} and \eqn{h} to order \eqn{m} and nothing above it.
 #'
 #' The expected derivatives of orders three and four are those of
 #' [expected_derivative()]; the expected information is registered through
@@ -235,8 +274,9 @@ S7::method(distrib_rng, PseudoHuber2Distrib) <- function(distrib, n, theta,
 #' @param distrib A `PseudoHuber2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list with components `mu`, `sigma` and `nu`.
-#' @param scale `"parameter"` or `"link"`; the link scale is applied by the
-#'   generic.
+#' @param scale `"parameter"` or `"link"`. The generic applies the link
+#'   scale at orders one to four; `distrib_deriv5()` applies it in the
+#'   method, through [deriv5_scale()].
 #' @param expected Logical; for orders three and four, whether the expected
 #'   derivative is returned.
 #' @param approx,nsim The approximation and Monte Carlo size of

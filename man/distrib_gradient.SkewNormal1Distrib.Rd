@@ -39,13 +39,18 @@ Computes the three first derivatives of the log-density in closed form. With
       \qquad
       \dfrac{\partial \ell}{\partial \alpha} = z R.}
 Every derivative of \eqn{\log\Phi(t)} is a polynomial in \eqn{t} and
-\eqn{R}, because \eqn{R' = -R(t+R)} closes the recursion, so the whole
-derivative surface of this family stays elementary.
+\eqn{R}, because \eqn{R' = -R(t+R)} closes the recursion, so the
+derivatives of the log-density are elementary at every order. The kernels
+take them from \code{\link[=distrib_deriv3.SkewNormal1Distrib]{distrib_deriv3.SkewNormal1Distrib()}}'s routine, which uses
+that recursion for \eqn{t \ge -1} and the cumulants of the logarithm of
+the Mills ratio below, where the recursion cancels.
 
-The ratio comes from \code{\link[numericals7:mills_ratio]{numericals7::mills_ratio()}}, which forms it on the log
-scale. Below about \eqn{t = -38} both \eqn{\phi(t)} and \eqn{\Phi(t)}
-underflow while their ratio is finite and close to \eqn{-t}: measured at
-\eqn{t = -400} the ratio is 400.0025 where \code{dnorm(t)/pnorm(t)} is \code{NaN}.
+The ratio is formed on the log scale, as
+\eqn{\exp\{\log\phi(t) - \log\Phi(t)\}}, for \eqn{t \ge -1}, and from the
+logarithm of the Mills ratio below. Below about \eqn{t = -38} both \eqn{\phi(t)} and \eqn{\Phi(t)}
+underflow while their ratio is finite and close to \eqn{-t}: at
+\eqn{t = -400} the ratio is about 400.0025, where \code{dnorm(t)/pnorm(t)} is
+\code{NaN}.
 
 At \eqn{\alpha = 0} the shape score is \eqn{z\sqrt{2/\pi}} and the location
 score is \eqn{z/\sigma}, so the two are exactly proportional. The expected
