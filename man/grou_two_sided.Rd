@@ -19,7 +19,8 @@ grou_two_sided(lp, b, div, n, r)
 \item{r}{The ratio-of-uniforms tuning parameter.}
 }
 \value{
-A numeric vector of draws, or \code{NULL} if the sampler gives up.
+A numeric vector of draws. \code{\link[=grou_core]{grou_core()}} signals an error when it
+cannot draw.
 }
 \description{
 Samples a density unbounded at \emph{both} ends of a finite support, by
@@ -36,8 +37,8 @@ like \eqn{1 - (1-u)^q} on the right, and has a closed-form derivative.
 The density of \eqn{U} therefore carries the exponents \eqn{p\alpha - 1} and
 \eqn{q\beta - 1} at the two ends and is bounded as soon as \eqn{p\alpha > 1}
 and \eqn{q\beta > 1}. It vanishes there, in fact, turning the original
-U-shaped density into a single-peaked one, which is exactly what the sampler
-wants. Both exponents come from the same probe that detected the divergence,
+U-shaped density into a single-peaked one, the shape that the sampler
+requires. Both exponents come from the same probe that detected the divergence,
 so nothing has to be searched for.
 }
 \seealso{

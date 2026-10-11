@@ -9,8 +9,8 @@
 \item{theta}{A named list of parameters with components \code{mu} and \code{sigma},
 each a numeric vector of length 1 or \code{n}. The values are not read, only
 their lengths, but they are still aligned and validated, so a missing or
-out-of-bounds component throws exactly as it would for a family whose
-moments exist.}
+out-of-bounds component signals an error exactly as it would for a family
+whose moments exist.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.
 Arguments meaningful to \code{\link[=moment]{moment()}} have no effect here, no quadrature

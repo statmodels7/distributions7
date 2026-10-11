@@ -44,19 +44,18 @@ moves the measure a second time,
   = \mathbb{E}[\ell_{abcd}] + \mathbb{E}[\ell_{abd}\ell_{c}]
   + \mathbb{E}[\ell_{abc}\ell_{d}] + \mathbb{E}[\ell_{ab}\ell_{cd}]
   + \mathbb{E}[\ell_{ab}\ell_{c}\ell_{d}],}
-and no Bartlett identity isolates those moments. A family supplies the
+and the Bartlett identities do not isolate those moments. A family supplies the
 components as ordinary derivatives of its own written-out expected
 information; the components are symmetric in \eqn{(a,b)} and in \eqn{(c,d)}
 separately, and are keyed by \code{\link[=d2expected_names]{d2expected_names()}}.
 
 \strong{There is no numerical default.} A difference of
 \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}, whose own default is already a difference,
-would be the nested differencing the package forbids, so the base method
-signals an error and a family that does not register one has no second
-derivative. The families that do are \code{gaussian1_distrib()},
-\code{poisson_distrib()}, \code{gamma1_distrib()}, \code{negbin2_distrib()},
-\code{beta1_distrib()} and the seventeen listed on
-\link{distrib_dexpected_hessian.elementary}, each from a compiled kernel.
+would be the nested differencing that the package does not use, so the base
+method signals an error and a family that does not register one has no
+second derivative. Every univariate family of the package except
+\code{\link[=enet_distrib]{enet_distrib()}} registers one; the elementary families are listed on
+\link{distrib_dexpected_hessian.elementary}.
 
 On \code{scale = "link"} the expected information is
 \eqn{F_{ab} = \mathbb{E}[\ell_{ab}]\,h_a' h_b'}, with no term in \eqn{h''}

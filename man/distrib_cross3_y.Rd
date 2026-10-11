@@ -46,10 +46,11 @@ For a family whose response enters only as \eqn{y - \mu} the response
 derivative of order three is \eqn{-\partial^3\ell/\partial\mu^3}, so
 \deqn{\frac{\partial^4\ell}{\partial y^3\,\partial\theta_i} =
   -\frac{\partial^4\ell}{\partial\mu^3\,\partial\theta_i},}
-a component of \code{\link[=distrib_deriv4]{distrib_deriv4()}} with a sign. The fourteen location
-families \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} serves by the same identity are served this
-way. Every other continuous family takes one central difference of
-\code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} in each parameter, through \code{\link[=numerical_cross3_y]{numerical_cross3_y()}}.
+a component of \code{\link[=distrib_deriv4]{distrib_deriv4()}} with a sign. The location families
+listed on the page of \code{\link[=loc_cross3_y]{loc_cross3_y()}} are served this way. Every other
+continuous family goes through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}, which takes one
+central difference of \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} in each parameter where the
+family has a method for it.
 }
 
 \section{The link scale}{

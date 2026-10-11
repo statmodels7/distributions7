@@ -48,10 +48,10 @@ object built by \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} they hold 
 \description{
 The S7 class of the Gaussian (normal) family parametrized by its mean
 \eqn{\mu} and its variance \eqn{\sigma^2 > 0}, with density
-\eqn{f(y) = (2\pi\sigma^2)^{-1/2}\exp\{-(y-\mu)^2/(2\sigma^2)\}} on the
-whole real line. It inherits from \code{continuous_distrib}, so it answers every
-generic of the \code{distrib} contract; the eleven methods listed below are
-registered on it directly and everything else comes from the parent.
+\eqn{f(y) = (2\pi\sigma^2)^{-1/2}\exp\{-(y-\mu)^2/(2\sigma^2)\}} on the whole
+real line. It inherits from \code{continuous_distrib}, so every generic of the
+\code{distrib} class applies to it; the methods listed below are registered on it
+directly and everything else comes from the parent.
 
 Build one with \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}, which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,

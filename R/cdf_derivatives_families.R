@@ -41,12 +41,13 @@ NULL
 #'       \frac{\partial^2 F}{\partial\psi_a \partial\psi_b}
 #'         = \sum_{k,l} F_{kl}\,h^k_a h^l_b + \sum_k F_k\,h^k_{ab}.}
 #'
-#' # When it is worth taking
+#' # Accuracy of the result
 #'
-#' The result is exact whenever the parent's own cdf derivatives are, and no
-#' better than they are otherwise: applied to a parent that differences its own
-#' cdf, the chain adds an exact transformation to an approximate quantity and
-#' buys nothing over differencing the new cdf directly. Checking that is the
+#' The result is exact whenever the cdf derivatives of the parent and the
+#' partials of the map are, and no better than they are otherwise: applied to
+#' a parent that differences its own cdf, the chain adds an exact
+#' transformation to an approximate quantity and gains nothing over
+#' differencing the new cdf directly. Checking that is the
 #' caller's business, and [mapped_cdf_deriv()] is where it is done.
 #'
 #' @section Notation:
@@ -122,21 +123,20 @@ chain_cdf_deriv <- function(parent, q, th_par, maps, new_params, order) {
 #' CDF Derivatives of a Family Written as a Map of Another
 #'
 #' @description
-#' The [distrib_grad_cdf()] and [distrib_hess_cdf()] body every mapped family
-#' shares. It asks whether the parent's cdf derivatives are exact at every
+#' The [distrib_grad_cdf()] and [distrib_hess_cdf()] body that every mapped
+#' family shares. It tests whether the parent's cdf derivatives are exact at every
 #' order up to the one wanted, takes [chain_cdf_deriv()] if they are, and falls
 #' back to [numerical_cdf_deriv()] on the new family's own cdf if they are not.
 #'
 #' @details
-#' # The gate, and why it is a gate
+#' # The exactness test
 #'
-#' [has_exact_cdf_deriv()] is asked of the parent at order 1 and, for a
+#' [has_exact_cdf_deriv()] is applied to the parent at order 1 and, for a
 #' Hessian, at order 2 as well. The chain is exact only if what it carries is
 #' exact; taken over a differenced parent it would add rounding to rounding and
-#' cost more than differencing the child's cdf once. The gate is also what
-#' keeps a family's page honest as the parent improves: when the inverse
-#' Gaussian gained a closed second order, its second parametrization stopped
-#' differencing without any edit here.
+#' cost more than differencing the child's cdf once. The test is made at each
+#' call, so a parent that gains a closed order moves its mapped families onto
+#' the chain without any edit here.
 #'
 #' @param distrib The mapped family, whose cdf and parameter names are read.
 #' @param parent The distribution it maps onto.
@@ -184,15 +184,17 @@ mapped_cdf_deriv <- function(distrib, parent, th_par, maps, q, theta, order,
 #'
 #' @description
 #' The chain rule on the parent's cdf derivatives, through
-#' [mapped_cdf_deriv()]. It is exact whenever the parent's are; where the
-#' parent differences its own cdf, so does this, the chain having nothing
-#' closed to carry.
+#' [mapped_cdf_deriv()]. It is exact whenever the derivatives of the parent
+#' and the partials of the map are; where the parent differences its own cdf,
+#' so does this, the chain having nothing closed to carry.
 #'
 #' @details
-#' The map's partials come from the object itself, `reparam_tables()` reading
-#' the keyed tables the reparametrization was built with, so a family created
-#' by [reparametrize()] gets closed cdf derivatives for free as soon as its
-#' parent has them.
+#' The partials of the map come from the object itself, `reparam_tables()`
+#' reading the keyed tables that the reparametrization was built with. They
+#' are exact when [reparametrize()] was given `map_derivs`, and single
+#' stencils on the map otherwise, so a family created by [reparametrize()]
+#' carries the closed cdf derivatives of its parent through the map to the
+#' accuracy of those partials.
 #'
 #' @param distrib A `ReparamContinuousDistrib`, from [reparametrize()].
 #' @param q A numeric vector of quantiles.
@@ -211,7 +213,7 @@ mapped_cdf_deriv <- function(distrib, parent, th_par, maps, q, theta, order,
 #'
 #' @examples
 #' # A Gaussian reparametrized in the variance. Its parent has closed cdf
-#' # derivatives, so the chain is exact.
+#' # derivatives, and the map's partials here come from a stencil.
 #' d <- reparametrize(
 #'   gaussian1_distrib(),
 #'   map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
@@ -239,11 +241,11 @@ S7::method(distrib_grad_cdf, ReparamContinuousDistrib) <-
 #' [mapped_cdf_deriv()]:
 #' \eqn{\partial^2 F/\partial\psi_a\partial\psi_b
 #'      = \sum_{k,l} F_{kl} h^k_a h^l_b + \sum_k F_k h^k_{ab}}. The second sum
-#' is the one a first-order chain does not have, and it is why the map's second
+#' is the one that a first-order chain does not have, and it is why the map's second
 #' partials are needed as well as its first.
 #'
 #' @details
-#' The gate asks the parent for exactness at **both** orders. A parent with a
+#' The test requires the parent to be exact at **both** orders. A parent with a
 #' closed gradient and a differenced Hessian sends this whole method to
 #' [numerical_cdf_deriv()], because carrying an exact first order onto an
 #' approximate second would not make the second exact.
@@ -498,16 +500,13 @@ S7::method(distrib_hess_cdf, Gaussian3Distrib) <-
 #' component is the dispersion one times \eqn{-1/\lambda^2}.
 #'
 #' @details
-#' The inverse Gaussian is unusual among positive families in having an
-#' elementary distribution function,
+#' The inverse Gaussian has an elementary distribution function,
 #' \eqn{F(y) = \Phi(a) + e^{2/(\phi\mu)}\,\Phi(b)}, so the parent's derivatives
 #' are closed and the chain carries them.
 #'
-#' The second and higher orders are registered elsewhere, by
-#' `register_mapped_cdf_k()` in `cdf_mapped_higher.R`, at orders 2 to 4. That
-#' file's registration supersedes anything this one would give: the Hessian was
-#' left on the fallback while the parent differenced its own second order, and
-#' moved onto the chain when the parent stopped.
+#' The second and higher orders are registered by `register_mapped_cdf_k()` in
+#' `cdf_mapped_higher.R`, at orders 2 to 4, by the chain rule on the closed
+#' derivatives of the parent.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean, \eqn{\lambda > 0} the rate, \eqn{\phi = 1/\lambda}
@@ -560,15 +559,17 @@ S7::method(distrib_grad_cdf, InvGauss2Distrib) <-
 #' method is [loc_scale_grad_cdf()] itself.
 #'
 #' @details
-#' The family's distribution function is \eqn{F(q) = \exp(-e^{-z})}, so nothing
-#' here needs a quadrature or a series, which is why a Gumbel is usable for
-#' censored extreme-value data: the score of a right-censored observation is
-#' \eqn{f(q)/S(q)} and comes from the density alone.
+#' The family's distribution function is \eqn{F(q) = \exp(-e^{-z})}, so its
+#' derivatives need neither a quadrature nor a series, which makes a Gumbel
+#' usable for censored extreme-value data: the score of a right-censored
+#' observation is the derivative of \eqn{\log S(q)}, which is \eqn{f(q)/S(q)}
+#' in \eqn{\mu} and \eqn{z f(q)/S(q)} in \eqn{\sigma}.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
 #' \eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and \eqn{F} the distribution
-#' function. The mean is \eqn{\mu + \gamma\sigma} and not \eqn{\mu}.
+#' function. The mean is \eqn{\mu + \gamma\sigma}, with \eqn{\gamma} Euler's
+#' constant, and not \eqn{\mu}.
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
 #' @param q A numeric vector of quantiles.
@@ -602,7 +603,7 @@ S7::method(distrib_grad_cdf, GumbelDistrib) <- loc_scale_grad_cdf
 #'
 #' @description
 #' Closed form from the same location-scale structure, through
-#' [loc_scale_hess_cdf()]. The response derivative it reads is
+#' [loc_scale_hess_cdf()]. The response derivative that it reads is
 #' \eqn{\ell_y = (e^{-z} - 1)/\sigma}, which is smooth everywhere, so all three
 #' components are continuous on the whole line.
 #'
@@ -643,72 +644,76 @@ S7::method(distrib_hess_cdf, GumbelDistrib) <- loc_scale_hess_cdf
 
 # --- families location-scale in their first two parameters ------------------
 
-#' CDF Hessian When Only Some Parameters Are Location-Scale
-#'
-#' @description
-#' The second-order companion of [partial_loc_scale_grad_cdf()], and the
-#' [distrib_hess_cdf()] body the Student t, the pseudo-Huber and the skew t
-#' share. The three components in the location and the scale come from
-#' [loc_scale_cdf_deriv()]'s formulas, and every component touching a shape
-#' parameter is differenced.
-#'
-#' @details
-#' The gradient is assembled here as well, on the same split, because the
-#' log-scale conversion in [cdf_tail_scale()] reads it. Both differencing calls
-#' pass a `which` argument, so no component that has a closed form costs a cdf
-#' evaluation.
-#'
-#' For a family with \eqn{p} parameters of which two are the location and the
-#' scale, the closed block is 3 components of the \eqn{p(p+1)/2}: 3 of 6 for
-#' the Student t and the pseudo-Huber, 3 of 10 for the skew t.
-#'
-#' @section Notation:
-#' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
-#' \eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and
-#' \eqn{\ell_y = \partial\log f/\partial y}.
-#'
-#' @param distrib An object inheriting from `distrib` whose first two
-#'   parameters are a location and a scale, and which has at least one more.
-#' @param q A numeric vector of quantiles.
-#' @param theta A named list of parameters, the location first and the scale
-#'   second.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
-#' @param ... Unused, and accepted so that the signature matches the generic's.
-#'
-#' @return A named list of numeric vectors keyed as [hess_names()], in that
-#'   enumeration's order.
-#'
-#' @seealso [partial_loc_scale_grad_cdf()] for the first order;
-#'   [loc_scale_cdf_deriv()] for the closed formulas;
-#'   [numerical_cdf_deriv()] for the differenced components.
-#'
-#' @keywords internal
-partial_loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE,
-                                       log = TRUE, ...) {
-  params <- distrib@params
-  s <- theta[[2]]
-  z <- (q - theta[[1]]) / s
-  f <- distrib_pdf(distrib, q, theta)
-  ly <- distrib_grad_y(distrib, q, theta)
-
-  closed <- stats::setNames(
-    list(f * ly, f * (z^2 * ly + 2 * z / s), f * (z * ly + 1 / s)),
-    hess_names(params[1:2])
-  )
-  nms <- hess_names(params)
-  rest <- setdiff(nms, names(closed))
-  d2 <- c(closed, numerical_cdf_deriv(distrib, q, theta, 2L, which = rest))[nms]
-
-  rest1 <- params[-(1:2)]
-  d1 <- c(list(-f, -z * f),
-          numerical_cdf_deriv(distrib, q, theta, 1L, which = rest1))
-  names(d1) <- params
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, d2,
-                 lower.tail, log)
-}
+# Not registered by any family: the Student t, the pseudo-Huber and the
+# skew t take these components from the compiled routes. Kept commented out
+# (2026-10-11) rather than deleted.
+# CDF Hessian When Only Some Parameters Are Location-Scale
+#
+# @description
+# The second-order companion of [partial_loc_scale_grad_cdf()], for a family
+# whose first two parameters are a location and a scale. No shipped family
+# registers it: the Student t, the pseudo-Huber and the skew t register
+# [compiled_hess_cdf()]. The three components in the location and the scale come from
+# [loc_scale_cdf_deriv()]'s formulas, and every component touching a shape
+# parameter is differenced.
+#
+# @details
+# The gradient is assembled here as well, on the same split, because the
+# log-scale conversion in [cdf_tail_scale()] reads it. Both differencing calls
+# pass a `which` argument, so no component that has a closed form costs a cdf
+# evaluation.
+#
+# For a family with \eqn{p} parameters of which two are the location and the
+# scale, the closed block is 3 components of the \eqn{p(p+1)/2}: 3 of 6 for
+# the Student t and the pseudo-Huber, 3 of 10 for the skew t.
+#
+# @section Notation:
+# \eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
+# \eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and
+# \eqn{\ell_y = \partial\log f/\partial y}.
+#
+# @param distrib An object inheriting from `distrib` whose first two
+#   parameters are a location and a scale, and which has at least one more.
+# @param q A numeric vector of quantiles.
+# @param theta A named list of parameters, the location first and the scale
+#   second.
+# @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
+#   default.
+# @param log Are derivatives of the log probability wanted? A single logical,
+#   `TRUE` by default.
+# @param ... Unused, and accepted so that the signature matches the generic's.
+#
+# @return A named list of numeric vectors keyed as [hess_names()], in that
+#   enumeration's order.
+#
+# @seealso [partial_loc_scale_grad_cdf()] for the first order;
+#   [loc_scale_cdf_deriv()] for the closed formulas;
+#   [numerical_cdf_deriv()] for the differenced components.
+#
+# @keywords internal
+# partial_loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE,
+#                                        log = TRUE, ...) {
+#   params <- distrib@params
+#   s <- theta[[2]]
+#   z <- (q - theta[[1]]) / s
+#   f <- distrib_pdf(distrib, q, theta)
+#   ly <- distrib_grad_y(distrib, q, theta)
+#
+#   closed <- stats::setNames(
+#     list(f * ly, f * (z^2 * ly + 2 * z / s), f * (z * ly + 1 / s)),
+#     hess_names(params[1:2])
+#   )
+#   nms <- hess_names(params)
+#   rest <- setdiff(nms, names(closed))
+#   d2 <- c(closed, numerical_cdf_deriv(distrib, q, theta, 2L, which = rest))[nms]
+#
+#   rest1 <- params[-(1:2)]
+#   d1 <- c(list(-f, -z * f),
+#           numerical_cdf_deriv(distrib, q, theta, 1L, which = rest1))
+#   names(d1) <- params
+#   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, d2,
+#                  lower.tail, log)
+# }
 
 #' @title Student t Log-CDF Hessian
 #' @name distrib_hess_cdf.StudentT1Distrib
@@ -795,8 +800,9 @@ S7::method(distrib_hess_cdf, PseudoHuberDistrib) <- compiled_hess_cdf
 #'
 #' @description
 #' Closed form in the location and the scale, \eqn{-f(q)} and \eqn{-z f(q)}
-#' with \eqn{z = (q-\mu)/\sigma}; the component in the shape and in the degrees of freedom are integrals, each is the integral of
-#' the density's own derivative, taken by the compiled rule. The method is
+#' with \eqn{z = (q-\mu)/\sigma}; the components in the shape and in the
+#' degrees of freedom are integrals of the density's own derivatives, taken by
+#' the compiled rule. The method is
 #' [compiled_grad_cdf()] itself, shared with the other families whose
 #' distribution function has no closed derivative in a shape parameter.
 #'

@@ -580,7 +580,7 @@ S7::method(distrib_deriv4, TransformedDistrib) <- trans_deriv_k(4L)
 #' @param theta A named list with the parent's parameters followed by `zi`, the
 #'   inflation probability in \eqn{(0, 1)}.
 #' @param expected Logical of length 1. `TRUE` takes the expectation, which for
-#'   a lattice parent is an exact sum over the support.
+#'   a discrete parent is an exact sum over the support.
 #' @param ... Passed on, `approx` and `nsim` among them.
 #'
 #' @return A named list of third-derivative components, keyed
@@ -666,7 +666,7 @@ S7::method(distrib_deriv4, ZeroInflatedDistrib) <- zi_deriv_k(4L)
 #' @param theta A named list with the parent's parameters followed by `za`, the
 #'   probability of a zero, in \eqn{(0, 1)}.
 #' @param expected Logical of length 1. `TRUE` takes the expectation, an exact
-#'   sum over the support for a lattice parent.
+#'   sum over the support for a discrete parent.
 #' @param ... Passed on, `approx` and `nsim` among them.
 #'
 #' @return A named list of third-derivative components, keyed
@@ -838,7 +838,7 @@ S7::method(distrib_deriv4, ZeroAdjustedContinuousDistrib) <- za_cont_deriv_k(4L)
 #'
 #' Each **distinct block** costs one quadrature, memoized across the partition
 #' sum, which is why a truncated derivative is far dearer than its parent's.
-#' Where the parent has genuinely closed cdf derivatives, or is a lattice
+#' Where the parent has genuinely closed cdf derivatives, or is a discrete
 #' family whose cdf derivatives are an exact sum, that route replaces the
 #' quadrature and is about three and a half times faster.
 #'
@@ -917,7 +917,7 @@ S7::method(distrib_deriv4, TruncatedContinuousDistrib) <- trunc_deriv_k(4L)
 #' set partitions, with every expectation taken by **summation over the
 #' retained support** in place of a quadrature.
 #'
-#' That makes it both exact and cheap. The support of a truncated lattice
+#' That makes it both exact and cheap. The support of a truncated discrete
 #' family is finite whenever both endpoints are, so each block is a finite sum
 #' of terms the parent already computes, and the memoization across the
 #' partition sum applies as before.
@@ -984,7 +984,7 @@ S7::method(distrib_deriv3, TruncatedDiscreteDistrib) <- trunc_deriv_k(3L)
 #'
 #' distrib_deriv4(tr, c(2, 4, 6), th)
 #'
-#' # A truncated lattice family with both endpoints finite has a finite
+#' # A truncated discrete family with both endpoints finite has a finite
 #' # support, so every expectation behind this is an exact sum.
 #' sum(distrib_pdf(tr, 1:8, th))
 #'

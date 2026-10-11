@@ -25,10 +25,11 @@ Returns \eqn{\partial^k u^p/\partial\theta^k} where \eqn{u} is affine in
 \eqn{\theta} with slope \code{inner}, which is
 \eqn{(\mathrm{inner})^k\,p(p-1)\cdots(p-k+1)\,u^{p-k}}. The elastic net's
 tail arguments are powers of affine functions of its two hyperparameters, so
-this supplies their one-variable derivatives to \code{\link[=separable_deriv]{separable_deriv()}}.
+this supplies their one-variable derivatives to the term function of the
+elastic net.
 }
 \examples{
-# The second derivative of (2 theta)^3 at theta = 1 is 8 * 3 * 2 * 2 = 24.
+# The second derivative of (2 theta)^3 = 8 theta^3 at theta = 1 is 48.
 distributions7:::dpow_affine(u = 2, p = 3, k = 2, inner = 2)
 
 }

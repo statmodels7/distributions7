@@ -28,7 +28,7 @@ difference
 evaluated on \code{distrib_pdf(..., log = TRUE)}. It is what the default
 \code{\link[=distrib_grad_y]{distrib_grad_y()}} method runs for a continuous family with no closed form.
 }
-\section{The step and the accuracy it buys}{
+\section{Step length and accuracy}{
 The stencil's truncation error is \eqn{O(h^2)} and its rounding error
 \eqn{O(\varepsilon/h)}, so the total is smallest at
 \eqn{h \sim \varepsilon^{1/3}}, which is the default. Measured against the
@@ -67,8 +67,8 @@ numerical_grad_y(d, y, theta)
 distrib_grad_y(d, y, theta)
 max(abs(numerical_grad_y(d, y, theta) - distrib_grad_y(d, y, theta)))
 
-# Too short a step is worse than too long. The error falls as h^2 and then
-# rises as eps / h, and the default sits at the turn.
+# The error falls as h^2 and then rises as eps / h, and the default sits
+# near the turn.
 err <- function(p) max(abs(numerical_grad_y(d, y, theta, h_rel = 10^(-p)) -
                            distrib_grad_y(d, y, theta)))
 setNames(vapply(1:8, err, numeric(1)), paste0("1e-", 1:8))

@@ -24,7 +24,7 @@ default.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of numeric vectors of the order the generic asked for,
+A named list of numeric vectors of the requested order,
 keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, order)}}: three
 components for the gradient, six for the Hessian, ten at order 3 and
 fifteen at order 4.
@@ -35,29 +35,23 @@ function is a truncated Gaussian: with \eqn{z = q - \mu}, \eqn{s = \sqrt c}
 and \eqn{x = a/\sqrt c} it is \eqn{e^{w}\Phi(X)} below the location and
 \eqn{1 - e^{w}\Phi(X)} above it, for \eqn{X = \pm sz - x} and a weight
 \eqn{w = -\log M(x) + x^2/2 + \mathrm{const}} written through the Mills
-ratio the family already carries. The four registrations are made together
+ratio that the family already carries. The four registrations are made together
 by \code{\link[=register_phi_terms_cdf]{register_phi_terms_cdf()}}.
 }
-\section{Why four orders are cheap here}{
+\section{Separable partial derivatives}{
 Both \eqn{s} and \eqn{x} are a function of \eqn{\lambda} times a function of
-\eqn{\alpha}, so their mixed partials are products of one-variable ones
-through \code{\link[=separable_deriv]{separable_deriv()}}, and the one-variable ones are powers of affine
-functions through \code{\link[=dpow_affine]{dpow_affine()}}. No multivariate expansion is formed at
-any order.
+\eqn{\alpha}, so their mixed partials are products of one-variable ones,
+formed in the term function with a product rule in \eqn{\alpha} for
+\eqn{x}, and the one-variable ones are powers of affine functions through
+\code{\link[=dpow_affine]{dpow_affine()}}.
 }
 
 \section{The kink at the location}{
-The location is the non-regular direction, as it is in the Laplace this
-family contains: the second derivative in \eqn{\mu} carries a point mass at
-\eqn{q = \mu}, and the formulas hold on either side of it. A numerical check
-that straddles the location is checking the arithmetic against a reference
-that is not valid there.
-}
-
-\section{What the closed route is worth}{
-Against a product stencil on the same cdf: \eqn{1.6\times10^{-9}} at order
-1, \eqn{3.5\times10^{-7}} at order 2, \eqn{3.0\times10^{-5}} at order 3 and
-\eqn{3.9\times10^{-4}} at order 4.
+The location is the non-regular direction, as it is in the Laplace that
+this family contains: the second derivative of \eqn{F} in \eqn{\mu} jumps at
+\eqn{q = \mu}, and the third carries a point mass there. The formulas hold
+on either side of the location, so a numerical check that straddles it
+compares the arithmetic with a reference that is not valid there.
 }
 
 \section{Notation}{

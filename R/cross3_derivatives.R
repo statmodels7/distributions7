@@ -35,10 +35,11 @@ NULL
 #' derivative of order three is \eqn{-\partial^3\ell/\partial\mu^3}, so
 #' \deqn{\frac{\partial^4\ell}{\partial y^3\,\partial\theta_i} =
 #'   -\frac{\partial^4\ell}{\partial\mu^3\,\partial\theta_i},}
-#' a component of [distrib_deriv4()] with a sign. The fourteen location
-#' families [distrib_deriv3_y()] serves by the same identity are served this
-#' way. Every other continuous family takes one central difference of
-#' [distrib_deriv3_y()] in each parameter, through [numerical_cross3_y()].
+#' a component of [distrib_deriv4()] with a sign. The location families
+#' listed on the page of [loc_cross3_y()] are served this way. Every other
+#' continuous family goes through [mixed_tensor_derivatives()], which takes one
+#' central difference of [distrib_deriv3_y()] in each parameter where the
+#' family has a method for it.
 #'
 #' # The link scale
 #'
@@ -95,16 +96,17 @@ distrib_cross3_y <- S7::new_generic("distrib_cross3_y", "distrib", function(dist
 #'
 #' @description
 #' Computes \eqn{\partial^4 \ell / \partial y^3\, \partial \theta_i} by one
-#' central difference of [distrib_deriv3_y()] in each parameter. It is what the
-#' default [distrib_cross3_y()] method runs for a continuous family that is not
-#' a location family.
+#' central difference of [distrib_deriv3_y()] in each parameter. The default
+#' [distrib_cross3_y()] method reaches the same quantity through
+#' [mixed_tensor_derivatives()].
 #'
 #' @details
 #' A family carrying an analytic `distrib_deriv3_y` pays for exactly one
 #' difference. Where that derivative is itself the base class's stencil on the
 #' log-density, the two differences act on different variables and compose
-#' into one mixed stencil. The step is chosen by [fd_stable_step()], so a
-#' parameter near a bound is differenced on the side the bound allows.
+#' into one mixed stencil. The step is chosen by [fd_stable_step()], so that
+#' both evaluation points of a parameter near a bound stay inside its
+#' domain.
 #'
 #' @param distrib A distribution object inheriting from `continuous_distrib`.
 #' @param y A numeric vector of observations.
@@ -175,8 +177,9 @@ numerical_cross3_y <- function(distrib, y, theta,
 #' @return A named list with one numeric vector per parameter, keyed by
 #'   `distrib@params`.
 #'
-#' @seealso [distrib_cross3_y()] for the generic, [numerical_cross3_y()], which
-#'   does the work, and [loc_cross3_y()] for the location families.
+#' @seealso [distrib_cross3_y()] for the generic, [mixed_tensor_derivatives()],
+#'   which does the work, [numerical_cross3_y()] for the differenced quantity,
+#'   and [loc_cross3_y()] for the location families.
 #'
 #' @keywords internal
 S7::method(distrib_cross3_y, continuous_distrib) <- function(distrib, y, theta,
@@ -212,8 +215,8 @@ S7::method(distrib_cross3_y, continuous_distrib) <- function(distrib, y, theta,
 #'   `y`.
 #'
 #' @section Registered on:
-#' The fourteen families [distrib_deriv3_y()] serves through
-#' [loc_deriv_y_k()]: `Gaussian1Distrib`, `Gaussian2Distrib`,
+#' The fourteen location families on which this function is registered:
+#' `Gaussian1Distrib`, `Gaussian2Distrib`,
 #' `Gaussian3Distrib`, `CauchyDistrib`, `LogisticDistrib`, `LaplaceDistrib`,
 #' `Laplace2Distrib`, `EnetDistrib`, `PseudoHuberDistrib`, `StudentT1Distrib`,
 #' `SkewNormal1Distrib`, `SkewNormal2Distrib`, `SkewTDistrib`,

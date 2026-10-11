@@ -75,7 +75,7 @@ An S7 object of class \code{FixedMultivariateDistrib}, inheriting from
 \description{
 The S7 class of a MULTIVARIATE distribution in which some parameters of the
 wrapped distribution are held at known values. It behaves exactly as
-\link{FixedContinuousDistrib} does and adds the multivariate contract:
+\link{FixedContinuousDistrib} does and adds the multivariate generics:
 \code{\link[=mv_location]{mv_location()}}, \code{\link[=mv_sigma]{mv_sigma()}}, \code{\link[=mv_marginal]{mv_marginal()}}, \code{\link[=mv_support]{mv_support()}},
 \code{\link[=mv_reference_draw]{mv_reference_draw()}} and \code{\link[=mv_derived]{mv_derived()}} all delegate to the parent at the
 spliced \code{theta}, and \code{\link[=mv_derived]{mv_derived()}} reports the parent's quantities with the
@@ -146,7 +146,7 @@ all.equal(distrib_pdf(d, y, theta, log = TRUE),
           distrib_pdf(mvgaussian1_distrib(2), y,
                       c(list(mu1 = 0, mu2 = 0), theta), log = TRUE))
 
-# The multivariate contract survives the wrapper.
+# The multivariate generics work through the wrapper.
 mv_sigma(d, theta)
 names(mv_derived(d, theta)$value)
 mv_marginal(d, theta, 1)$distrib@n_dim

@@ -2,7 +2,7 @@
 % Please edit documentation in R/starting_values.R
 \name{distrib_intercept_start.distrib}
 \alias{distrib_intercept_start.distrib}
-\title{No Intercept Needs a Start of Its Own}
+\title{Default Intercept Starting Values}
 \arguments{
 \item{distrib}{A \code{\link[=distrib]{distrib()}} object.}
 

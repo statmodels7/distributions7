@@ -13,7 +13,7 @@
 probability of a zero, in \eqn{(0, 1)}.}
 
 \item{expected}{Logical of length 1. \code{TRUE} takes the expectation, an exact
-sum over the support for a lattice parent.}
+sum over the support for a discrete parent.}
 
 \item{...}{Passed on, \code{approx} and \code{nsim} among them.}
 }

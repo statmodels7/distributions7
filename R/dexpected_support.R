@@ -23,12 +23,9 @@ NULL
 #' \eqn{\partial_{ce} F = \mathbb{E}[f_{ce} + f_c s_e + f_e s_c + f(s_c s_e +
 #' h_{ce})]}, taken in \eqn{(\mu, \theta)} by a compiled kernel, with the
 #' scores \eqn{s} and second derivatives \eqn{h} of the log-mass written so
-#' that no term of order \eqn{\mu/\theta^2} is formed. Measured against exact
-#' sums at 50 digits, the error relative to the largest component of each
-#' order is about 2e-10 at \eqn{\mu = 100}, \eqn{\theta = 0.05}, and grows
-#' toward the Poisson limit, to 4e-08 at \eqn{\theta = 0.005} and 5e-06 at
-#' \eqn{\theta = 0.001} (\eqn{\mu = 10}), the fourth derivative in \eqn{\theta}
-#' being the worst component.
+#' that no term of order \eqn{\mu/\theta^2} is formed. The accuracy decreases
+#' toward the Poisson limit \eqn{\theta \to 0}, where the fourth derivative in
+#' \eqn{\theta} is the least accurate component.
 #'
 #' **Beta-binomial.** The support \eqn{\{0, \dots, n\}} is finite, so the
 #' identities
@@ -43,8 +40,8 @@ NULL
 #' [betabinom1_distrib()] reads the same sums through its map to the shapes
 #' ([betabinom1_dexpected()]). [support_dexpected()] computes the same
 #' identities from the family's own observed derivatives, sharing no
-#' arithmetic with the kernel, and the two agree to about \eqn{10^{-12}}
-#' relative; the kernel is 5 to 15 times faster at \eqn{n = 4000}.
+#' arithmetic with the kernel, and the compiled kernel is the faster of the
+#' two.
 #'
 #' @param distrib A distribution object of one of the classes above.
 #' @param y A numeric vector of observations, read for its length.

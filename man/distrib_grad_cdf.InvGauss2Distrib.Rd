@@ -29,16 +29,13 @@ through \eqn{\phi = 1/\lambda}. The mean component is unchanged; the rate
 component is the dispersion one times \eqn{-1/\lambda^2}.
 }
 \details{
-The inverse Gaussian is unusual among positive families in having an
-elementary distribution function,
+The inverse Gaussian has an elementary distribution function,
 \eqn{F(y) = \Phi(a) + e^{2/(\phi\mu)}\,\Phi(b)}, so the parent's derivatives
 are closed and the chain carries them.
 
-The second and higher orders are registered elsewhere, by
-\code{register_mapped_cdf_k()} in \code{cdf_mapped_higher.R}, at orders 2 to 4. That
-file's registration supersedes anything this one would give: the Hessian was
-left on the fallback while the parent differenced its own second order, and
-moved onto the chain when the parent stopped.
+The second and higher orders are registered by \code{register_mapped_cdf_k()} in
+\code{cdf_mapped_higher.R}, at orders 2 to 4, by the chain rule on the closed
+derivatives of the parent.
 }
 \section{Notation}{
 

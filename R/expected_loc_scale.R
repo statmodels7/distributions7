@@ -34,7 +34,7 @@ NULL
 #'
 #' The integrals are taken by an exp-sinh rule on each half-line, from
 #' [loc_scale_rule()]. Its nodes cluster double-exponentially at \eqn{z = 0},
-#' which is where the three families that use it put their one sharp feature
+#' which is where the location-scale families that use it put their one sharp feature
 #' (the step of the skewing function at a large shape, and the core of the
 #' pseudo-Huber at a small one), and the same transformation turns an algebraic
 #' tail into an exponential one, which is what the Student t's heavy tail
@@ -185,15 +185,9 @@ loc_scale_compiled <- function() {
 #' decays double-exponentially at both ends, which the trapezoidal rule then
 #' integrates with an error falling like \eqn{\exp(-c/h)}; the negative half is
 #' its mirror image. The step is \eqn{h = 1/32} and the nodes run from
-#' \eqn{10^{-16}} to \eqn{10^{60}} in \eqn{|z|}, about 580 in all. Against the
-#' same rule at \eqn{h = 1/64}, it reproduces the expected information to
-#' \eqn{3\times10^{-14}} and its second derivative to \eqn{7\times10^{-9}} on the
-#' skew normal up to \eqn{|\alpha| = 500}, the hardest case measured; at
-#' \eqn{h = 1/24} that second derivative is \eqn{2\times10^{-4}} out. Past the
+#' \eqn{10^{-16}} to \eqn{10^{60}} in \eqn{|z|}, about 580 in all. Past the
 #' upper end a tail decaying as \eqn{|z|^{-1-\nu}} leaves a relative
-#' \eqn{10^{-60\nu}/\nu}, negligible for \eqn{\nu \ge 0.3}. The end is not taken
-#' further because the Student t's derivatives in \eqn{\nu} are not finite at
-#' \eqn{|z| = 10^{130}}, where its density is still positive.
+#' \eqn{10^{-60\nu}/\nu}, negligible for \eqn{\nu \ge 0.3}.
 #'
 #' @return A list with the nodes `x` and the weights `w`.
 #'
@@ -227,27 +221,26 @@ loc_scale_rule <- local({
 #'
 #' @details
 #' The answer is a statement about cost, and it is read beside
-#' [expected_hessian_exact()], which states accuracy. Two kinds of family
-#' answer `TRUE`.
+#' [expected_hessian_exact()], which concerns accuracy. Three kinds of family
+#' return `TRUE`.
 #'
 #' The location-scale families [skewnormal1_distrib()],
-#' [skewnormal2_distrib()], [skewt_distrib()] and [pseudohuber_distrib()]
-#' take one integral over the standardized response per distinct shape, from
-#' [loc_scale_expected()]: nothing where the shape is the same for every
-#' observation, one integral per observation where it is modelled. Measured
-#' on smooth regressions at 1000 observations with the shape developed over a
-#' covariate, a fit that takes the scoring step on this information costs 7
-#' to 21 times one that takes it on the observed information, at the same
-#' estimate.
+#' [skewnormal2_distrib()], [skewt_distrib()], [pseudohuber_distrib()] and
+#' [pseudohuber2_distrib()] take one integral over the standardized response
+#' per distinct shape, from [loc_scale_expected()]: one integral where the
+#' shape is the same for every observation, and one per observation where it
+#' is modeled. A fit that takes the scoring step on this information then
+#' costs several times one that takes it on the observed information, at the
+#' same estimate.
 #'
 #' The Poisson-inverse Gaussians [pig1_distrib()] and [pig2_distrib()] sum
 #' over the support for each observation, over a number of terms that grows
-#' as \eqn{\sigma\mu}: about 25 microseconds an observation at
-#' \eqn{\mu = 3}, \eqn{\sigma = 0.3} and 2 milliseconds at \eqn{\mu = 30},
-#' \eqn{\sigma = 3}, against a few microseconds for the observed information.
-#' Measured at 1000 observations, a fit on it costs 1 to 6 times one on the
-#' observed information at the same estimate, and far more where the fit
-#' passes through a large \eqn{\sigma\mu}.
+#' as \eqn{\sigma\mu}, whereas their observed information is a closed form.
+#' A fit on it costs more than one on the observed information at the same
+#' estimate, and far more where the fit passes through a large
+#' \eqn{\sigma\mu}.
+#'
+#' A [folded()] distribution also returns `TRUE`.
 #'
 #' \pkg{statmodels7}'s `iwls(hessian = "auto")` therefore settles on the
 #' observed information for these families. The default answers for a

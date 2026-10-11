@@ -78,10 +78,10 @@ the standard errors that reveal it.
 }
 
 \section{What the result supports}{
-The whole \code{distrib} contract: the mass function, the distribution function,
-the quantile function, the generator, the analytic score, the observed and
-the expected Hessian, and the third and fourth derivatives from the shared
-wrapper machinery. The moments come from \code{\link[=moment]{moment()}} numerically.
+Every generic of the \code{distrib} class: the mass function, the distribution
+function, the quantile function, the generator, the analytic score, the
+observed and the expected Hessian, and the third and fourth derivatives
+from the shared wrapper machinery. The moments come from \code{\link[=moment]{moment()}} numerically.
 }
 
 \section{Notation}{

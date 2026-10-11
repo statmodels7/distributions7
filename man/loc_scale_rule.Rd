@@ -19,15 +19,9 @@ turns the integral into one over the whole \eqn{t} line whose integrand
 decays double-exponentially at both ends, which the trapezoidal rule then
 integrates with an error falling like \eqn{\exp(-c/h)}; the negative half is
 its mirror image. The step is \eqn{h = 1/32} and the nodes run from
-\eqn{10^{-16}} to \eqn{10^{60}} in \eqn{|z|}, about 580 in all. Against the
-same rule at \eqn{h = 1/64}, it reproduces the expected information to
-\eqn{3\times10^{-14}} and its second derivative to \eqn{7\times10^{-9}} on the
-skew normal up to \eqn{|\alpha| = 500}, the hardest case measured; at
-\eqn{h = 1/24} that second derivative is \eqn{2\times10^{-4}} out. Past the
+\eqn{10^{-16}} to \eqn{10^{60}} in \eqn{|z|}, about 580 in all. Past the
 upper end a tail decaying as \eqn{|z|^{-1-\nu}} leaves a relative
-\eqn{10^{-60\nu}/\nu}, negligible for \eqn{\nu \ge 0.3}. The end is not taken
-further because the Student t's derivatives in \eqn{\nu} are not finite at
-\eqn{|z| = 10^{130}}, where its density is still positive.
+\eqn{10^{-60\nu}/\nu}, negligible for \eqn{\nu \ge 0.3}.
 }
 \seealso{
 \code{\link[=loc_scale_expected]{loc_scale_expected()}}

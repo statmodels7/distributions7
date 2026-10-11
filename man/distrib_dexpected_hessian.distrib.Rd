@@ -21,6 +21,6 @@ A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}}.
 }
 \description{
 One central difference of \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} per
-parameter, refused where that quantity is itself approximated.
+parameter; an error where that quantity is itself approximated.
 }
 \keyword{internal}

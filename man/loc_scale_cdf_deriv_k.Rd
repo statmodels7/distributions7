@@ -9,7 +9,7 @@ loc_scale_cdf_deriv_k(distrib, q, theta, order)
 \arguments{
 \item{distrib}{An object inheriting from \code{distrib} whose first two
 parameters are a location and a scale, and which supplies response
-derivatives to the order asked for.}
+derivatives to the requested order.}
 
 \item{q}{A numeric vector of quantiles.}
 
@@ -46,8 +46,8 @@ partials are exact zeros.
 The response derivatives of orders 3 and 4 are what make this reach past
 second order: with only \code{\link[=distrib_grad_y]{distrib_grad_y()}} and \code{\link[=distrib_hess_y]{distrib_hess_y()}} the
 construction stops where \code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} stops. At orders 1 and 2
-the two agree to the last bit, which is the check that licenses the orders
-above.
+the two agree to rounding error, which is the check that supports the
+orders above.
 }
 
 \section{Notation}{

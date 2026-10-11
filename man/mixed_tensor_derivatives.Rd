@@ -55,8 +55,7 @@ are computed once.
 For \code{\link[=transformation]{transformation()}}, which carries the parent's score and Hessian in
 the parameters and no response derivative, the fourth-order
 \eqn{\partial^4\ell/\partial y^2\,\partial\theta^2} is a second difference
-in the response of the analytical Hessian: \eqn{r = 2}, where the previous
-fallback differenced a difference in the same parameter.
+in the response of the analytical Hessian, so \eqn{r = 2}.
 }
 \examples{
 # transformation() has no response derivative of its own: the mixed

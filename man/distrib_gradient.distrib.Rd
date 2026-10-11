@@ -25,11 +25,12 @@ The fallback for a family that implements no analytical score: the gradient
 of \code{distrib_pdf(..., log = TRUE)} by one \strong{central difference} per
 parameter, through \code{\link[=numerical_gradient]{numerical_gradient()}}. This is why \code{\link[=distrib_pdf]{distrib_pdf()}} is
 the only compulsory method of the package: a family that defines the density
-alone gets a score, an information, four orders of derivative and a fit.
+alone gets a score, an information, five orders of derivative and a fit.
 }
 \section{The stencil, the step and the cost}{
 Each component is \eqn{[\ell(\theta_i + h) - \ell(\theta_i - h)]/(2h)}, so
-one gradient costs \eqn{2p} evaluations of the log-density. The step is
+one gradient costs \eqn{2p} evaluations of the log-density when the two
+candidate steps coincide. The step is
 \eqn{h = \varepsilon^{1/3}\max(1, |\theta_i|) \approx 6.06\times10^{-6}}
 at a parameter of order one, which balances the \eqn{O(h^2)} truncation of a
 central difference against a rounding term growing as \eqn{1/h}. Parameter
@@ -37,17 +38,8 @@ domains here are open and a step through zero returns \code{NaN} from the densit
 for reasons that look like a defect in the family, so near a finite boundary
 the step is kept inside: \code{\link[=fd_steps]{fd_steps()}} offers it cut to 49\\% of the distance
 or scaled on that distance, and \code{\link[=fd_stable_step]{fd_stable_step()}} keeps whichever agrees
-better with itself at half its own step. On a gamma at a dispersion of
-\eqn{10^{-6}} that choice is worth five orders, the relative error going
-from 3.5e-01 to 1.1e-06.
-}
-
-\section{What it delivers}{
-Measured on a Gamma in its mean and dispersion at
-\eqn{(\mu, \sigma^2) = (2, 0.7)}, against the family's own closed form: the
-two components agree to \eqn{1.3\times10^{-11}} and
-\eqn{9.7\times10^{-11}} relative, which is the \eqn{O(h^2)} the step
-promises.
+better with itself at half its own step, which removes most of the error of
+the clamped step close to a boundary.
 }
 
 \seealso{

@@ -30,7 +30,7 @@ lower orders are consumed on the way and do not appear in the result.
 }
 \description{
 The general form of \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}: converts derivatives of \eqn{F} into
-derivatives of whichever tail was asked for, on the natural or the
+derivatives of whichever tail was requested, on the natural or the
 logarithmic scale, at any order from 1 to 4.
 }
 \section{The two conversions}{
@@ -40,8 +40,8 @@ Switching to the log scale is the moment-to-cumulant relation
       \prod_{B \in \pi} \frac{\partial^B P}{P},}
 summed over the set partitions of the multi-index by \code{\link[=log_deriv]{log_deriv()}}. At
 second order it is the familiar
-\eqn{\partial^2 P/P - (\partial P/P)^2}, and at third and fourth it has 4
-and 15 terms.
+\eqn{\partial^2 P/P - (\partial P/P)^2}, and at third and fourth order it
+has 5 and 15 terms.
 }
 
 \section{Why every lower order is needed}{
@@ -54,7 +54,7 @@ assembles the first three.
 \section{Notation}{
 
 \eqn{F} is the distribution function, \eqn{S = 1 - F} the survival function,
-\eqn{P} whichever was asked for, \eqn{\pi} a set partition of the
+\eqn{P} whichever was requested, \eqn{\pi} a set partition of the
 multi-index and \eqn{B} one of its blocks.
 }
 

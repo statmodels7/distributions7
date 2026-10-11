@@ -21,31 +21,30 @@ for registering as an S7 method on either generic, returning a named list
 of numeric vectors of that order.
 }
 \description{
-Builds the \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} or \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}} body the Student
-t, the pseudo-Huber and the skew t register: the components over the
-location and the scale from \code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}}, and every component
-naming a shape parameter from \code{\link[=continuous_cdf_deriv_k]{continuous_cdf_deriv_k()}}.
+Builds the \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} or \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}} body that the
+two Student t, the two pseudo-Huber and the skew t families register: the
+components over the location and the scale from \code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}},
+and every component naming a shape parameter from
+\code{\link[=continuous_cdf_deriv_k]{continuous_cdf_deriv_k()}}.
 }
-\section{Why the stencil is taken over everything}{
-The stencil runs over every component and the closed ones then overwrite it,
-so the location and the scale are computed twice. That is deliberate: the
-whole cdf surface costs milliseconds at a thousand quantiles, and the
-alternative, widening the stencil's signature to take a subset at these
-orders, would touch a shared function for no measurable gain. The orders
-below do use \code{which}, where the same components are asked for far more
-often.
+\section{The tables of lower order}{
+At orders one and two every component comes from the family's own
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}, and at orders three and four
+from \code{\link[=continuous_cdf_deriv_k]{continuous_cdf_deriv_k()}}, which is the compiled quadrature for these
+families. The closed location and scale components then replace the
+corresponding entries, so those components are computed twice.
 }
 
-\section{Who is not here}{
-The skew normal was among these families and is not any more. Owen's T has
-elementary partial derivatives in both of its arguments, so its shape
-components close too and it has a route of its own in
+\section{The skew normal}{
+The skew normal is not registered here. Owen's T has elementary partial
+derivatives in both of its arguments, so the shape components of its
+distribution function are closed, and it has a route of its own in
 \code{cdf_skewnormal_higher.R}.
 }
 
 \seealso{
 \code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}} for the closed components;
 \code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}} for the rest;
-\code{\link[=partial_loc_scale_hess_cdf]{partial_loc_scale_hess_cdf()}} for the second order.
+\code{\link[=compiled_hess_cdf]{compiled_hess_cdf()}} for the second order.
 }
 \keyword{internal}

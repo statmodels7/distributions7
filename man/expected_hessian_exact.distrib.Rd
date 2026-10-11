@@ -2,15 +2,16 @@
 % Please edit documentation in R/numerical_fallbacks.R
 \name{expected_hessian_exact.distrib}
 \alias{expected_hessian_exact.distrib}
-\title{Whether the Owner of the Method Settles the Question}
+\title{Expected Information Read from the Class of Its Method}
 \arguments{
 \item{x}{A distribution object.}
 
 \item{...}{Unused.}
 }
 \value{
-A single logical: \code{TRUE} where the family's expected information is
-a closed-form expression, \code{FALSE} where it is a quadrature or a simulation.
+A single logical: \code{TRUE} where the family computes its expected
+information itself, in closed form or by a quadrature of its own, \code{FALSE}
+where it reaches one of the approximations of the package.
 }
 \description{
 The default: a method owned by one of the base classes is one of the
@@ -19,12 +20,13 @@ expected information out. It answers \code{FALSE} for a family that registers
 nothing and \code{TRUE} for one that registers its own method.
 
 A family whose registered method chains onto a parent overrides this
-generic and answers for the parent, which is why the test is a generic at
-all; \code{skewnormal2_distrib()} is one.
+generic and returns the answer of the parent, which is why the test is a
+generic at all; the wrappers do so.
 }
 \seealso{
 \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}}, the predicate consumers call;
 \code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for what the approximations are;
-\code{\link[=fisher_scoring]{fisher_scoring()}}, which rejects an \code{approx} where this is \code{TRUE}.
+\code{\link[=fit_distrib]{fit_distrib()}}, which rejects an \code{approx} given to \code{\link[=fisher_scoring]{fisher_scoring()}}
+where this is \code{TRUE}.
 }
 \keyword{internal}

@@ -7,7 +7,7 @@
 quad_rows(integrand, lower, upper)
 }
 \arguments{
-\item{integrand}{The integrand, in \code{quad_vec}'s matrix contract.}
+\item{integrand}{The integrand, in the matrix convention of \code{quad_vec}.}
 
 \item{lower, upper}{Numeric vectors of panel endpoints.}
 }

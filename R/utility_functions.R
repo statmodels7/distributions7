@@ -104,9 +104,8 @@ check_theta_bounds <- function(distrib, theta) {
 #'
 #' @details
 #' `align_theta()` calls this on every generic invocation, so its fixed cost
-#' is the package's fixed cost. Reading an S7 property costs a couple of
-#' microseconds, which is material against a budget of a few tens, and the caller
-#' has already read the properties it needs.
+#' is the package's fixed cost. Each read of an S7 property has a cost of its
+#' own, so the caller reads the properties it needs once and passes them on.
 #'
 #' Every offending parameter is collected before anything is raised, so a call
 #' with two bad values reports both rather than one at a time. At most three
@@ -173,7 +172,7 @@ check_bounds_fast <- function(params, param_bounds, theta, distrib_name) {
 #' @return Returns `NULL` invisibly if the check passes.
 #'
 #' @section Errors:
-#' The function throws an error (`stop`) if it detects any parameter with a length
+#' The function signals an error (`stop`) if any parameter has a length
 #' that is neither 1 nor `n`. The error message lists the specific parameters
 #' causing the mismatch.
 #'
@@ -299,26 +298,25 @@ hess_names <- function(params) {
 }
 
 
-#' Is an S7 Class the Given Base Class?
+#' Whether an S7 Class Is the Given Base Class
 #'
 #' @description
 #' Compares two S7 class objects, treating a class re-created from the same
 #' definition as the same class.
 #'
 #' @details
-#' Several places here ask "did this method come from the base class, or did the
-#' subclass register its own?", and answer it with the documented S7 trick of
-#' reading `attr(m, "signature")[[1]]`. The comparison that follows must not
-#' be `identical()`: on S7 class objects that is object identity, so it
-#' returns `FALSE` for a class re-created from the same definition. That
-#' happens whenever the package's code is re-evaluated in place of being
-#' loaded, as it is under coverage instrumentation.
+#' Several functions here decide whether a method comes from the base class or
+#' from a subclass that registered its own, by reading
+#' `attr(m, "signature")[[1]]`, the documented S7 route. The comparison that
+#' follows must not use `identical()`: on S7 class objects that tests object
+#' identity, so it returns `FALSE` for a class re-created from the same
+#' definition. A class is re-created whenever the code of the package is
+#' re-evaluated instead of being loaded, as under coverage instrumentation.
 #'
-#' The failure is silent and can be severe. In \pkg{linkfunctions7} the same
-#' mistake made a numerical fallback look like an analytic method and sent the
-#' fourth derivative of the log link wrong by a factor of 900, under coverage
-#' only, while every other check stayed green. Identity is kept as a fast path
-#' and name-with-package as the answer.
+#' When `identical()` fails in this way the comparison is silent, and a
+#' numerical fallback is taken for an analytic method. The function therefore
+#' returns `TRUE` for identical objects as a fast path, and otherwise compares
+#' the class name together with the package name.
 #'
 #' @param cls The S7 class recorded on a method.
 #' @param base The base class to compare against.
@@ -347,8 +345,8 @@ is_class <- function(cls, base) {
 #' wrong: a parameter whose own name contains an underscore
 #' (`"log_scale"`) makes `"log_scale_log_scale"` split into four
 #' pieces, and taking the first and the last silently yields
-#' `c("log", "scale")`. Building the map from the parameter vector cannot
-#' be fooled.
+#' `c("log", "scale")`. The map is built from the parameter vector, so it does
+#' not depend on the characters in the names.
 #'
 #' [deriv_indices()] is the same idea for orders above two.
 #'
@@ -405,13 +403,13 @@ deriv_names <- function(params, order) {
 #' Index Tuples Behind the Higher-Order Derivative Names
 #'
 #' @description
-#' The multi-indices [deriv_names()] names, in exactly the same order:
+#' The multi-indices that [deriv_names()] names, in exactly the same order:
 #' non-decreasing tuples of length `order` over `seq_along(params)`,
 #' enumerated lexicographically.
 #'
 #' @details
-#' This exists so that nothing has to recover an index tuple by splitting a
-#' component name back apart. Splitting fails for a parameter whose own name
+#' This function exists so that no caller needs to recover an index tuple by
+#' splitting a component name. Splitting fails for a parameter whose own name
 #' contains an underscore: `"mu_log_scale_log_scale"` splits into five
 #' pieces, and matching those against `params` yields `NA`s. The
 #' multivariate families carry such names by construction

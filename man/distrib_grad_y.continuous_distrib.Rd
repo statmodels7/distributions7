@@ -30,10 +30,10 @@ error \eqn{O(\varepsilon/h)}, so that exponent minimizes their sum;
 measured against the gamma's closed form it delivers about
 \eqn{3\times 10^{-10}}. The cost is two vectorized \code{distrib_pdf()} calls.
 
-EVERY family the package ships writes its own response gradient, so this
-method answers for user-defined families alone. A DISCRETE family has no
-derivative in the response, so no default is registered there and the call
-raises with the class named.
+Every continuous family that the package ships writes its own response
+gradient, so this method serves user-defined families only. A discrete
+family has no derivative in the response, so no default is registered there
+and the call signals an error that names the class.
 }
 \section{Notation}{
 

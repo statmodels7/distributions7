@@ -35,6 +35,7 @@ all.equal(distributions7:::phi_hermite(0.5, 1) * dnorm(0.5), dnorm(0.5))
 
 }
 \seealso{
-\code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}}, the one consumer.
+\code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} and \code{\link[=sn_cdf_std_derivs]{sn_cdf_std_derivs()}}, the two
+consumers.
 }
 \keyword{internal}

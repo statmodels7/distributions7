@@ -4,22 +4,18 @@ NULL
 #' @title A Starting Value Drawn From the Data
 #'
 #' @description
-#' Returns the starting values [fit_distrib()] begins from, computed from the
-#' response wherever the family knows how. The result is a list of named
-#' parameter lists on the **parameter** scale; the fit tries them in order and
-#' stops at the first that converges, so the first element is the one the
-#' family prefers.
+#' Returns the starting values that [fit_distrib()] begins from, computed
+#' from the response where the family has a method for it. The result is a
+#' list of named parameter lists on the **parameter** scale. The fit tries
+#' them in order until two converged runs agree on the best objective, so the
+#' first element is the one tried first.
 #'
 #' @details
 #' A starting value that ignores the data can be arbitrarily far from the
-#' answer, and how far decides whether the fit takes one step or never
-#' arrives. A four-dimensional Gaussian fitted to the iris measurements is the
-#' plain case: started at the origin of the unconstrained scale, which is a
-#' unit covariance and a zero mean, Newton with the expected information spends
-#' five hundred iterations and stops at a log-likelihood of \eqn{-836};
-#' started at the sample mean and the sample covariance it converges in one
-#' iteration to \eqn{-379.9146}, the exact maximum. Nothing about the
-#' arithmetic changed.
+#' answer, and the distance decides how much work the fit does. For a
+#' multivariate Gaussian the sample mean and the sample covariance are the
+#' maximum likelihood estimate, so a fit that starts there converges in one
+#' iteration.
 #'
 #' The base method draws each parameter from its own domain and never reads
 #' `y`, so a family that registers nothing loses nothing. A family with a
@@ -37,7 +33,7 @@ NULL
 #'   integer. Defaults to 5. A method that returns its own estimate returns one
 #'   and ignores this, which the two multivariate methods and the two
 #'   Poisson-inverse Gaussian ones do.
-#' @param ... Passed to methods. No shipped method reads it.
+#' @param ... Passed to methods. The shipped methods do not use it.
 #'
 #' @return A list of named parameter lists on the parameter scale, each
 #'   complete: one component per entry of `distrib@params`, named and ordered
@@ -55,8 +51,8 @@ NULL
 #' start <- distrib_start(d, y)[[1]]
 #' rbind(start = mv_location(d, start), sample = colMeans(y))
 #'
-#' # A univariate family asked for several starts gets one from the data and
-#' # the rest at random, so a caller asking for more still explores.
+#' # A univariate family gives one start from the data and the rest at
+#' # random, so a caller requesting several still explores.
 #' set.seed(2)
 #' s <- distrib_start(gaussian1_distrib(), rnorm(200, 900, 170), n_start = 3)
 #' length(s)
@@ -107,7 +103,7 @@ S7::method(distrib_start, distrib) <- function(distrib, y, n_start = 5L, ...) {
 #' @description
 #' Returns, on the **parameter** scale, a starting value for each parameter
 #' whose intercept a regression should not take from the intercept-only
-#' maximum likelihood fit. A modelling layer carries each value onto the
+#' maximum likelihood fit. A modeling layer carries each value onto the
 #' parameter's own link and writes it to that equation's intercept. The base
 #' method returns an empty list: for most families the intercept-only fit is
 #' the right start.
@@ -115,17 +111,15 @@ S7::method(distrib_start, distrib) <- function(distrib, y, n_start = 5L, ...) {
 #' @details
 #' The case this exists for is [zero_inflated()]. Without covariates the
 #' parent's overdispersion can absorb the excess zeros, so the intercept-only
-#' maximum puts the mixing weight at the edge of its domain -- measured,
-#' \eqn{\pi = 2.2 \times 10^{-308}} on a negative binomial with a true
-#' \eqn{\pi = 0.25} -- which is right for that model and a trap as a start for
-#' a model with covariates: the link is flat there, the score on the
-#' unconstrained scale vanishes, and the fit stays at the edge reporting
-#' convergence while an interior maximum 7.6 log-likelihood units higher
-#' exists. See [distrib_intercept_start.ZeroInflatedDistrib()].
+#' maximum puts the mixing weight at the edge of its domain. That is the
+#' maximum of the model without covariates, but it is a poor start for a model
+#' with covariates: the link is flat there, the score on the unconstrained
+#' scale vanishes, and the fit can stop at the edge, reporting convergence,
+#' although an interior maximum exists. See [distrib_intercept_start.ZeroInflatedDistrib()].
 #'
 #' @param distrib An object inheriting from `distrib`.
 #' @param y The response, a numeric vector.
-#' @param ... Passed to methods. No shipped method reads it.
+#' @param ... Passed to methods. The shipped methods do not use it.
 #'
 #' @return A named list of single numbers on the parameter scale, possibly
 #'   empty, each strictly inside its parameter's bounds and named after an
@@ -143,7 +137,7 @@ distrib_intercept_start <- S7::new_generic("distrib_intercept_start", "distrib",
   }
 )
 
-#' @title No Intercept Needs a Start of Its Own
+#' @title Default Intercept Starting Values
 #' @name distrib_intercept_start.distrib
 #' @description The base method: an empty list, the intercept-only fit being
 #'   the start for every parameter.
@@ -167,15 +161,7 @@ S7::method(distrib_intercept_start, distrib) <- function(distrib, y, ...) {
 #' @details
 #' Under the model \eqn{P(Y = 0) = \pi + (1 - \pi) f(0) \ge \pi}, so
 #' \eqn{\hat p_0} over-estimates \eqn{\pi} and does so from the side away from
-#' the flat end of the chart, which is what makes it a safe start. Measured
-#' against the intercept-only start over three parents (negative binomial,
-#' Poisson-inverse Gaussian, Poisson), with and without inflation, three samples
-#' each: never worse in log-likelihood, better in three of the nine samples
-#' WITHOUT inflation (by 0.43, 0.05 and 3.03, where the default stopped at the
-#' edge and an interior maximum was higher), and converging in all eighteen. On
-#' the sample where the default stopped at \eqn{\pi = 0} with an inflated
-#' negative binomial, every start with a linear predictor between -5 and -1.1
-#' reached the interior maximum and every start at -7 or below did not.
+#' the flat end of the chart, which makes it a safe start.
 #'
 #' The value is on the parameter scale; the layer that uses it carries it onto
 #' the parameter's own link, whichever it is.
@@ -214,11 +200,7 @@ S7::method(distrib_intercept_start, ZeroInflatedDistrib) <- function(distrib, y,
 #' \eqn{\mu} there grows as \eqn{\alpha^2}, so a regression started from that
 #' point takes steps of order \eqn{1/\alpha^2} and does not reach its maximum.
 #' The moment estimate with the skewness held at 0.9 gives \eqn{\alpha = 6.3}
-#' and the matching location and scale. Measured on `MASS::Cars93`, price on
-#' horse power (marginal skewness 1.48): the intercept-only start was at
-#' \eqn{\alpha = 1.4 \times 10^6} and the REML criterion was unavailable at
-#' the starting point, and from the moment estimate the fit converged to the
-#' marginal log-likelihood of [skewnormal2_distrib()] on the same model.
+#' and the matching location and scale.
 #'
 #' @param distrib A `SkewNormal1Distrib` object, from [skewnormal1_distrib()].
 #' @param y The response, a numeric vector.
@@ -255,13 +237,9 @@ S7::method(distrib_intercept_start, SkewNormal1Distrib) <- function(distrib, y, 
 #' if \eqn{\sigma \to 0}. When the sample excess kurtosis of the response is
 #' zero or negative, the intercept-only maximum likelihood fit reaches that
 #' limit, and a regression started there stays on the ridge
-#' \eqn{\sigma \propto \nu^{-1/4}}. Measured on ten simulated regressions with
-#' a strong covariate: the intercept-only fit ended at \eqn{\log\nu} between 27
-#' and 40 in the six samples with a non-positive excess kurtosis and at most
-#' 6.0 in the others, and the regression started there stopped 7.3 to 15.8
-#' log-likelihood units below its maximum in four of the six. From
-#' \eqn{\nu = 1}, 3 or 10 every one of the ten reached its maximum.
-#' \eqn{\nu = 10} gives an excess kurtosis of 0.85.
+#' \eqn{\sigma \propto \nu^{-1/4}}, where it can stop below its maximum. A
+#' start at a finite \eqn{\nu} avoids the ridge; \eqn{\nu = 10} gives an
+#' excess kurtosis of 0.85.
 #'
 #' The same method is registered on [pseudohuber2_distrib()], where the
 #' returned `sigma` is the sample standard deviation.
@@ -310,12 +288,11 @@ S7::method(distrib_intercept_start, PseudoHuber2Distrib) <-
 #' parent also produces zeros.
 #'
 #' @details
-#' Without these methods the wrappers took the univariate fallback, which reads
-#' the location off the median of the whole sample: on data with half their
-#' values at zero that is zero, and a start at a mean of zero is the edge of a
-#' log link. On a zero-adjusted Poisson-inverse Gaussian sample the first
-#' start then converged to a degenerate point (\eqn{\mu \to 0},
-#' \eqn{\sigma \to \infty}) 97 log-likelihood units below the maximum.
+#' The univariate method reads the location from the median of the whole
+#' sample, which is zero when at least half of the observations are zero, and
+#' a start at a mean of zero lies on the edge of a log link. These methods
+#' read the starting values of the parent from the observations described
+#' above instead.
 #'
 #' For a zero-adjusted family \eqn{\hat p_0} is the maximum likelihood estimate
 #' of the mixing probability, the likelihood factorizing into a binomial part
@@ -401,9 +378,9 @@ S7::method(distrib_start, ZeroInflatedDistrib) <- function(distrib, y, n_start =
 #' A sample covariance is singular when there are fewer observations than
 #' coordinates, and nearly singular when two coordinates almost coincide.
 #' Either way a `parameters7` structure cannot be inverted onto it, so the
-#' eigenvalues are floored at a small multiple of the largest before the matrix
-#' is handed on. The floor moves a starting value, which is allowed to be
-#' approximate; it would not be allowed anywhere the answer is reported.
+#' eigenvalues are floored at \eqn{10^{-6}} times the larger of the largest
+#' eigenvalue and 1 before the matrix is handed on. The floor changes the
+#' starting value only.
 #'
 #' A response with one row has no covariance at all, and the identity is
 #' returned in its place.
@@ -443,11 +420,11 @@ mv_moment_start <- function(y, p) {
 #' represent the matrix, which for an unstructured covariance is always. Where
 #' it cannot, that call signals an error and this falls back to least squares
 #' on the entries, started from the zero vector. A compound-symmetric
-#' structure asked for an arbitrary covariance is the ordinary case.
+#' structure given an arbitrary covariance is the ordinary case.
 #'
-#' The fallback is a starting value for a starting value and its accuracy does
-#' not matter. It is capped at 200 BFGS iterations and returns the zero vector
-#' if even that fails, so the caller always receives a usable vector.
+#' The fallback is approximate, which a starting value may be. It is capped at
+#' 200 BFGS iterations and returns the zero vector if the optimization fails,
+#' so the caller always receives a usable vector.
 #'
 #' @param s A \pkg{parameters7} structure, supplying `n_free`, `param_free()`
 #'   and `param_value()`.
@@ -485,12 +462,13 @@ param_free_or_fit <- function(s, m) {
 #' Returns the sample mean and the sample covariance, carried onto the
 #' distribution's matrix parametrization. For an unstructured covariance those
 #' **are** the maximum likelihood estimate, so the fit begins at the answer
-#' and confirms it in one step; for a structured one they are the closest
-#' matrix the parametrization can represent, which is a great deal nearer than
-#' the origin.
+#' and confirms it in one step. For a structured one the matrix is carried
+#' onto the structure exactly where the structure can represent it, and
+#' otherwise approximated by least squares on the entries (see
+#' [param_free_or_fit()]).
 #'
-#' One starting value is returned whatever `n_start` asks for. There is nothing
-#' to explore when the first point is the estimate.
+#' One starting value is returned for any value of `n_start`, because the
+#' first point is already the estimate.
 #'
 #' @details
 #' Where the object parametrizes the **precision**, the sample covariance is
@@ -532,12 +510,11 @@ S7::method(distrib_start, MvGaussianDistrib) <- function(distrib, y, n_start = 5
 #'
 #' @description
 #' Returns the sample mean and the sample covariance with the degrees of
-#' freedom set at 8, which is heavy-tailed enough to be worth fitting and light
-#' enough for the second moment to exist. The Gaussian estimate is this
-#' family's limit as \eqn{\nu} grows, so it is where a finite \eqn{\nu} is
-#' looked for from.
+#' freedom set at 8, which gives tails clearly heavier than the Gaussian's and
+#' a finite second moment. The Gaussian estimate is the limit of this family
+#' as \eqn{\nu} grows, so the search for a finite \eqn{\nu} starts from it.
 #'
-#' One starting value is returned whatever `n_start` asks for.
+#' One starting value is returned for any value of `n_start`.
 #'
 #' @details
 #' The scale matrix is not the covariance. For a \eqn{t} with \eqn{\nu}
@@ -668,47 +645,44 @@ S7::method(distrib_start, Pig2Distrib) <- function(distrib, y, n_start = 5L, ...
 #'
 #' @description
 #' Returns `n_start` starting values whose first is computed from the response
-#' and whose rest are random draws. It is the method both
-#' `continuous_distrib` and `discrete_distrib` register, so it is what every
-#' univariate family in the package uses.
+#' and whose rest are random draws. It is the method that both
+#' `continuous_distrib` and `discrete_distrib` register, so a univariate
+#' family uses it unless the family registers a method of its own, as
+#' [pig1_distrib()], [pig2_distrib()], [zero_adjusted()] and
+#' [zero_inflated()] do.
 #'
 #' The data-based value comes from [moment_estimates()] where the family has an
-#' entry there, which 38 of the 43 univariate families do. The other five fall
-#' back to reading `params_interpretation`: a parameter meaning a location is
+#' entry there. The other families fall back to reading
+#' `params_interpretation`: a parameter meaning a location is
 #' started at the sample median, one meaning a spread at the sample standard
 #' deviation or its square, one meaning degrees of freedom at what the sample
 #' kurtosis implies, and a shape, a dispersion or a probability keeps its
 #' draw, those being of order one whatever the data.
 #'
 #' @details
-#' # What this replaced, and why it was necessary
-#' The base method draws each parameter from its own domain and never reads
-#' `y`. That is adequate while the response is of order one and fails
-#' completely when it is not: on a response of mean 919 and standard deviation
-#' 169 the draws are of order one, the first Newton step is taken where the
-#' residuals are hundreds of standard deviations wide, and the scale runs to
-#' the largest representable double. Measured on a Gaussian, [fit_distrib()]
-#' recovers \eqn{N(5, 2)} and \eqn{N(50, 20)} and fails on \eqn{N(500, 200)}:
-#' the defect was a threshold in the scale of the data, not in the family.
+#' # Why the base method is not used for univariate families
+#' The base method draws each parameter from its own domain and does not read
+#' `y`. That is adequate while the response is of order one and fails when it
+#' is not: on a response of mean 919 and standard deviation 169 the draws are
+#' of order one, the first Newton step is taken where the residuals are
+#' hundreds of standard deviations wide, and the scale can run to the largest
+#' representable double. A start computed from the data is on the scale of
+#' the data.
 #'
 #' # Degrees of freedom from the kurtosis
 #' A \eqn{t} of \eqn{\nu} degrees has excess kurtosis \eqn{6/(\nu-4)}, so a
 #' sample kurtosis above 0.05 inverts to \eqn{\nu = 6/\hat\gamma_2 + 4}, capped
-#' at 100; a sample no heavier-tailed than a Gaussian starts at 30. Starting
-#' large matters. A `student_t2`, whose scale parameter is the standard
-#' deviation, has a degenerate ridge at its lower bound of \eqn{\nu = 2} where
-#' the scale runs to infinity as \eqn{\nu} falls, and a run started small
-#' slides down it: measured on 610 abdominal circumferences, whose excess
-#' kurtosis is \eqn{-1.09}, the random draws put \eqn{\nu} between 2.8 and 8
-#' and the fit reached the boundary at a log-likelihood of \eqn{-3688.28},
-#' while any start of 2.5 or more with the location and scale at their sample
-#' values reaches \eqn{-3600.71}, the Gaussian limit and the true maximum.
+#' at 100; a sample no heavier-tailed than a Gaussian starts at 30. A large
+#' start keeps a `student_t2`, whose scale parameter is the standard
+#' deviation, away from the degenerate ridge at its lower bound of
+#' \eqn{\nu = 2}, where the scale tends to infinity as \eqn{\nu} falls; a run
+#' started at a small \eqn{\nu} can follow the ridge down to the bound.
 #'
-#' # The clamp, and why only the first start
+#' # Bounds and the remaining starts
 #' Every value is moved strictly inside its parameter's bounds before it is
 #' returned, because a sample median can land exactly on the boundary of a
 #' support and the validator treats bounds as open. Only the first start is
-#' data-based; the rest stay random, so a caller asking for several still
+#' data-based; the rest stay random, so a caller requesting several still
 #' explores, and [fit_distrib()] reaches them when the first fails.
 #'
 #' @param distrib A univariate distribution, supplying `params`,
@@ -724,7 +698,7 @@ S7::method(distrib_start, Pig2Distrib) <- function(distrib, y, n_start = 5L, ...
 #'
 #' @seealso [moment_estimates()] for the family-by-family inversions;
 #'   [distrib_start()] for the generic;
-#'   [clamp_to_bounds()] for the boundary rule;
+#'   [clamp_to_bounds()] for the boundary rule of the moment estimates;
 #'   [fit_distrib()], which consumes the list.
 #' @keywords internal
 start_from_moments <- function(distrib, y, n_start = 5L, ...) {
@@ -815,7 +789,7 @@ S7::method(distrib_start, discrete_distrib) <- start_from_moments
 #' @description
 #' Returns the parameters a family's own first two moments imply for a sample,
 #' in closed form where the inversion has one, and `NULL` where this family has
-#' no entry. **38 of the 43 univariate families have one.**
+#' no entry.
 #'
 #' A starting value should be an estimate. For most families the moment
 #' estimate is one line: the sample mean and variance are set equal to the
@@ -825,8 +799,8 @@ S7::method(distrib_start, discrete_distrib) <- start_from_moments
 #'
 #' @details
 #' # How the inversions are written and checked
-#' Each is written against the family's own [mean()] and [variance()], not from
-#' memory, and the tests check it the same way: a family's moment estimate
+#' Each is written against the family's own [mean()] and [variance()], and
+#' the tests check it the same way: a family's moment estimate
 #' applied to a large sample drawn from a known parameter must return that
 #' parameter.
 #'
@@ -848,8 +822,9 @@ S7::method(distrib_start, discrete_distrib) <- start_from_moments
 #' # A fixed constant in the name
 #' A family carrying one announces it there, as in `"beta-binomial [size=10]"`,
 #' so the bracketed part is stripped before the name is used as a lookup key.
-#' Without that no beta-binomial of any size would match its own entry, and
-#' silently: a missing key is a legal fallback.
+#' If the bracketed part were kept, the lookup would find no entry for a
+#' beta-binomial of any size, and the fit would fall back to the default
+#' without a message, because a missing key is a valid result.
 #'
 #' @param distrib A univariate distribution, read for its `distrib_name` and
 #'   its parameter names.
@@ -859,7 +834,8 @@ S7::method(distrib_start, discrete_distrib) <- start_from_moments
 #' @return A named list of parameters on the parameter scale, one component per
 #'   entry of `distrib@params`, or `NULL` where this family has no entry.
 #'
-#' @seealso [start_from_moments()], the only caller and the fallback;
+#' @seealso [start_from_moments()], the main caller and the fallback, and
+#'   [distrib_intercept_start.SkewNormal1Distrib()], which also calls it;
 #'   [distrib_start()] for the generic; [mean()] and [variance()], which the
 #'   inversions are written against.
 #' @keywords internal

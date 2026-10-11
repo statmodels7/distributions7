@@ -25,7 +25,7 @@ it: the exponential and the Weibull.
 \details{
 All four orders are registered, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} included, so these
 families take the closed route from the first order up. Where the upper tail
-is asked for on the natural scale the derivatives of \eqn{S} are returned
+is requested on the natural scale the derivatives of \eqn{S} are returned
 directly, \eqn{\partial^I S = -\partial^I F}, which is the one case where
 the survival function is the quantity the construction produces first.
 

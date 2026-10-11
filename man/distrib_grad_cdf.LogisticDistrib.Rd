@@ -26,8 +26,10 @@ Closed form, from the location-scale structure:
 \eqn{\partial F/\partial\mu = -f(q)} and
 \eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
 method is \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} itself. For this family the density is
-\eqn{F(1-F)/\sigma}, so the log-scale gradient is elementary in \eqn{F}
-alone and no special evaluation is needed anywhere on the line.
+\eqn{F(1-F)/\sigma}, so the log-scale gradient in the mean is
+\eqn{-(1-F)/\sigma}. The method divides \eqn{f} by \eqn{F}, so it returns
+\code{NaN} or \code{Inf} in a tail where \eqn{F} has underflowed to zero or rounded to
+one.
 }
 \section{Notation}{
 

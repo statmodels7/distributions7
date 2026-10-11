@@ -32,7 +32,7 @@ alongside.
 The \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} body the location-scale families share:
 \code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} at both orders, put on the requested tail and scale
 by \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}. Both orders are needed even when only the Hessian was
-asked for, the log-scale correction reading the first derivatives.
+requested, the log-scale correction reading the first derivatives.
 }
 \seealso{
 \code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} for the formulas;

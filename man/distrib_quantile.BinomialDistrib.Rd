@@ -39,7 +39,7 @@ th <- list(mu = 0.3)
 # Integers, bounded by size.
 distrib_quantile(d, c(0.025, 0.5, 0.975, 1), th)
 
-# The round trip overshoots, the support being a lattice.
+# The round trip overshoots, the support being discrete.
 p <- c(0.025, 0.5, 0.975)
 rbind(asked = p, reached = distrib_cdf(d, distrib_quantile(d, p, th), th))
 }

@@ -59,7 +59,7 @@ recip_1p_sq <- function(a, j) {
 #' location and the scale are chained on afterwards by [sn_cdf_deriv_k()].
 #'
 #' @details
-#' # Why the integral never has to be differentiated
+#' # The integral in Owen's T
 #'
 #' Owen's T is defined by an integral, and both of its partial derivatives are
 #' elementary:
@@ -67,8 +67,7 @@ recip_1p_sq <- function(a, j) {
 #'       \tfrac12\right\}, \qquad
 #'       \frac{\partial T}{\partial a} = \frac{\varphi(h)\,\varphi(ah)}{1+a^2}.}
 #' The integral is therefore differentiated away at the first order and never
-#' has to be differentiated again. A quantity defined by an integral is not
-#' thereby a quantity whose derivatives need one.
+#' has to be differentiated again.
 #'
 #' # The first derivatives, and the check on them
 #'
@@ -169,7 +168,7 @@ sn_cdf_std_derivs <- function(z, al, order) {
 #' derivatives at all four orders in all three parameters.
 #'
 #' @details
-#' The map is the one the other location-scale families are chained through:
+#' The map is the one through which the other location-scale families are chained:
 #' \eqn{z} is linear in the location and a reciprocal in the scale, so a block
 #' naming the location twice contributes an exact zero and only eight partials
 #' of the map are non-zero up to order four. The shape does not enter \eqn{z}
@@ -251,20 +250,19 @@ sn_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' same chain rule the other location-scale families use.
 #'
 #' @details
-#' # What it is worth
+#' # Accuracy
 #'
-#' Against a product stencil on the same cdf, at \eqn{\mu = 0.3},
-#' \eqn{\sigma = 1.2}, \eqn{\alpha = 2}: \eqn{3.6\times10^{-9}} at order 1,
-#' \eqn{2.1\times10^{-6}} at order 2, \eqn{9.5\times10^{-5}} at order 3 and
-#' \eqn{3.8\times10^{-4}} at order 4.
+#' The derivatives are closed forms. A product stencil on the same
+#' distribution function loses accuracy as the order grows, by one or two
+#' digits per order.
 #'
-#' # The family this leaves behind
+#' # Relation to the Student t and the pseudo-Huber
 #'
-#' The skew normal used to be grouped with the Student t and the pseudo-Huber,
-#' whose shape components are differenced. It is not any more, and the reason
-#' is the elementary partials above: only the skew t still differences a shape
-#' here, its degrees of freedom entering through a Student t distribution
-#' function.
+#' The shape components of the skew normal are closed through the elementary
+#' partial derivatives of Owen's T given above. The Student t, the
+#' pseudo-Huber and the skew t have no closed derivative in a shape parameter;
+#' their shape components are integrals of the density's own derivatives,
+#' taken by the compiled rule.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\alpha} the
@@ -281,13 +279,14 @@ sn_cdf_deriv_k <- function(distrib, q, theta, order) {
 #'   `TRUE` by default.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list of numeric vectors of the order the generic asked for,
+#' @return A named list of numeric vectors of the requested order,
 #'   keyed as [`deriv_names(distrib@params, order)`][deriv_names]: three
 #'   components for the gradient, six for the Hessian, ten at order 3 and
 #'   fifteen at order 4.
 #'
 #' @seealso [sn_cdf_std_derivs()] and [sn_cdf_deriv_k()] for the construction;
-#'   [distrib_grad_cdf.SkewTDistrib()], which does difference its shape;
+#'   [distrib_grad_cdf.SkewTDistrib()], which integrates its shape
+#'   derivatives by the compiled rule;
 #'   [skewnormal1_distrib()].
 #'
 #' @examples
@@ -299,7 +298,8 @@ sn_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
 #'           -distrib_pdf(d, q, th))
 #'
-#' # At shape zero the family is Gaussian, and so are its cdf derivatives.
+#' # At shape zero the family is Gaussian, and its location and scale
+#' # derivatives agree with the Gaussian's.
 #' g0 <- distrib_grad_cdf(d, q, list(mu = 0.3, sigma = 1.2, alpha = 0),
 #'                        log = FALSE)
 #' gg <- distrib_grad_cdf(gaussian1_distrib(), q, list(mu = 0.3, sigma = 1.2),

@@ -26,8 +26,8 @@ NULL
 #' complete Bell polynomial in the partials of \eqn{L}, and \eqn{F = 1 - S}
 #' turns that into \eqn{\partial^I F = -S\,B_I}. It is the same identity the
 #' distribution wrappers use, read on the survival function instead of on the
-#' density, and [bell_f_ratio()] runs the partition sum, so nothing here is
-#' transcribed from an expansion.
+#' density, and [bell_f_ratio()] runs the partition sum, so the derivatives
+#' come from that sum and not from a transcribed expansion.
 #'
 #' # Two things the arithmetic needs
 #'
@@ -49,7 +49,7 @@ NULL
 #' @param Lval The value of \eqn{L} at `q`, a numeric vector.
 #' @param Lderiv A function of a character vector of parameter names returning
 #'   the corresponding partial derivative of \eqn{L}. An empty block is the
-#'   zeroth order and is never asked for.
+#'   zeroth order and is never requested.
 #' @param inside A logical vector saying which quantiles lie inside the
 #'   support, or `NULL` (the default), which reads `q > distrib@bounds[1]`. A
 #'   family whose support depends on a parameter supplies its own; the fixed
@@ -74,7 +74,10 @@ surv_cdf_deriv_k <- function(distrib, q, theta, order, Lval, Lderiv,
   if (is.null(inside)) inside <- q > distrib@bounds[1L]
   S <- exp(Lval)
   idx <- deriv_indices(params, order)
-  out <- lapply(idx, function(I) -S * bell_f_ratio(params[I], Lderiv) * inside)
+  # ifelse() and not a product with the mask: outside the support a factor
+  # can be NaN, and NaN * FALSE is NaN
+  out <- lapply(idx, function(I)
+    ifelse(inside, -S * bell_f_ratio(params[I], Lderiv), 0))
   stats::setNames(out, deriv_names(params, order))
 }
 
@@ -89,7 +92,7 @@ surv_cdf_deriv_k <- function(distrib, q, theta, order, Lval, Lderiv,
 #' @details
 #' All four orders are registered, [distrib_grad_cdf()] included, so these
 #' families take the closed route from the first order up. Where the upper tail
-#' is asked for on the natural scale the derivatives of \eqn{S} are returned
+#' is requested on the natural scale the derivatives of \eqn{S} are returned
 #' directly, \eqn{\partial^I S = -\partial^I F}, which is the one case where
 #' the survival function is the quantity the construction produces first.
 #'
@@ -121,7 +124,9 @@ register_surv_cdf <- function(cls, pieces) {
         # natural scale, which is exactly zero past q/mu = 37 for an
         # exponential while L is finite to the end of the range.
         out <- lapply(deriv_indices(params, o),
-                      function(I) rep_len(p$Lderiv(params[I]), length(q)) * inside)
+                      function(I) ifelse(inside,
+                                         rep_len(p$Lderiv(params[I]), length(q)),
+                                         0))
         return(stats::setNames(out, deriv_names(params, o)))
       }
       tabs <- lapply(seq_len(o), function(k)
@@ -154,10 +159,9 @@ register_surv_cdf <- function(cls, pieces) {
 #' and [surv_cdf_deriv_k()] turns those into the derivatives of \eqn{F}.
 #'
 #' @details
-#' Against a product stencil on the same cdf: \eqn{2.7\times10^{-11}} at order
-#' 1 and \eqn{2.7\times10^{-5}} at order 4. Below the support every derivative
-#' is exactly zero, the mask in [surv_cdf_deriv_k()] suppressing the finite
-#' value \eqn{L} would otherwise give there.
+#' Below the support every derivative of \eqn{F} is exactly zero, the mask in
+#' [surv_cdf_deriv_k()] suppressing the finite value that \eqn{L} would
+#' otherwise give there.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean, \eqn{F} the distribution function and
@@ -165,7 +169,8 @@ register_surv_cdf <- function(cls, pieces) {
 #'
 #' @param distrib An `ExponentialDistrib` object, from [exponential_distrib()].
 #' @param q A numeric vector of quantiles. Values at or below zero give
-#'   derivatives of exactly zero.
+#'   derivatives of exactly zero on the natural scale; on the log scale of the
+#'   lower tail they are `NaN`, \eqn{\log F} being infinite there.
 #' @param theta A named list with one component, `mu` (positive), a numeric
 #'   vector of length 1 or `n`.
 #' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
@@ -174,8 +179,8 @@ register_surv_cdf <- function(cls, pieces) {
 #'   `TRUE` by default.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list with one numeric vector per component of the order the
-#'   generic asked for, which for a one-parameter family is one at every order.
+#' @return A named list with one numeric vector per component of the requested
+#'   order, which for a one-parameter family is one at every order.
 #'
 #' @seealso [surv_cdf_deriv_k()] for the identity;
 #'   [distrib_grad_cdf.Weibull1Distrib()] and [distrib_grad_cdf.GPDDistrib()],
@@ -225,14 +230,13 @@ register_surv_cdf(ExponentialDistrib, function(distrib, q, theta) {
 #' zero when two do: \eqn{h} is linear in the shape. That is what keeps the
 #' expansion short at the higher orders.
 #'
-#' # An exact zero worth knowing about
+#' # The shape component at q equal to mu
 #'
 #' At \eqn{q = \mu} the exponent \eqn{h} vanishes and so does
 #' \eqn{\partial h/\partial\sigma = \log q - \log\mu}, so the shape component
 #' of the gradient is exactly zero there. A relative comparison against a
-#' numerical derivative at that point measures nothing; an absolute one is what
-#' to use, and it puts the closed route within \eqn{2.3\times10^{-11}} of a
-#' central difference of the cdf.
+#' numerical derivative at that point has no meaning, and an absolute one is
+#' the comparison to use.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the scale, \eqn{\sigma > 0} the shape,
@@ -242,7 +246,8 @@ register_surv_cdf(ExponentialDistrib, function(distrib, q, theta) {
 #'
 #' @param distrib A `Weibull1Distrib` object, from [weibull1_distrib()].
 #' @param q A numeric vector of quantiles. Values at or below zero give
-#'   derivatives of exactly zero.
+#'   derivatives of exactly zero on the natural scale; on the log scale of the
+#'   lower tail they are `NaN`, \eqn{\log F} being infinite there.
 #' @param theta A named list with components `mu` (the scale, positive) and
 #'   `sigma` (the shape, positive), each a numeric vector of length 1 or `n`.
 #' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
@@ -251,7 +256,7 @@ register_surv_cdf(ExponentialDistrib, function(distrib, q, theta) {
 #'   `TRUE` by default.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list of numeric vectors of the order the generic asked for,
+#' @return A named list of numeric vectors of the requested order,
 #'   keyed as [`deriv_names(distrib@params, order)`][deriv_names]: two
 #'   components for the gradient, three for the Hessian, four at order 3 and
 #'   five at order 4.
@@ -277,7 +282,10 @@ register_surv_cdf(Weibull1Distrib, function(distrib, q, theta) {
   mu <- theta[[1]]
   sigma <- theta[[2]]
   nm <- distrib@params
-  h <- sigma * (log(q) - log(mu))
+  # at or below zero every derivative is masked to zero by the caller; the
+  # logarithm is taken at 1 there so that it produces no NaN and no warning
+  lq <- log(ifelse(q > 0, q, 1))
+  h <- sigma * (lq - log(mu))
   # h is linear in the shape and a logarithm in the scale, so a block naming
   # the shape twice is zero and one naming it once drops the factor sigma
   hderiv <- function(block) {
@@ -287,7 +295,7 @@ register_surv_cdf(Weibull1Distrib, function(distrib, q, theta) {
     base <- if (j == 0L) rep_len(1, length(q)) else
       (-1)^j * factorial(j - 1L) / mu^j
     if (ns == 1L) {
-      if (j == 0L) log(q) - log(mu) else base
+      if (j == 0L) lq - log(mu) else base
     } else {
       sigma * base
     }

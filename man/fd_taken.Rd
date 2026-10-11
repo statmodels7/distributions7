@@ -24,11 +24,11 @@ A numeric vector as long as \code{x}.
 }
 \description{
 \code{fd_first_taken()} and \code{fd_second_taken()} form the central differences of
-first and second order, dividing by the distances their evaluation points
-actually lie at rather than by the nominal step.
+first and second order, dividing by the distances at which their
+evaluation points actually lie rather than by the nominal step.
 }
 \details{
-The point \eqn{x + h} is a double, so the step it lies at is
+The point \eqn{x + h} is a double, so the step at which it lies is
 \eqn{h_+ = (x + h) - x}, a subtraction that is exact, and the step on the
 other side is \eqn{h_- = x - (x - h)}. Both may differ from \eqn{h}, and
 from each other, by the rounding of the evaluation points, at most one unit

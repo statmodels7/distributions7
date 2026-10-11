@@ -23,17 +23,19 @@ the length of \code{q} recycled against \code{theta}.
 }
 \description{
 Closed form, from the same location-scale structure, through
-\code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}}. The response derivative it reads is
-\eqn{\ell_y = -\mathrm{sign}(z)/\sigma}, which jumps at \eqn{q = \mu}, so
-the second derivatives of \eqn{F} jump there too. That is a property of the
-law and not a defect: the Laplace is the toolkit's non-regular family, and
-its location has no second derivative at the kink.
+\code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}}. The response derivative that it reads is
+\eqn{\ell_y = -\mathrm{sign}(z)/\sigma}, which jumps at \eqn{q = \mu}. The
+component \code{mu_mu} therefore jumps there, and the location has no second
+derivative at the kink, which is a property of the law. The components
+\code{sigma_sigma} and \code{mu_sigma} are continuous, because
+\eqn{z\,\ell_y = -|z|/\sigma} and \eqn{z^2\ell_y = -z|z|/\sigma} are
+continuous in \eqn{z}.
 }
 \details{
 Away from \eqn{q = \mu} the three components are the ordinary
 location-scale ones. At \eqn{q = \mu} exactly, \code{sign(0)} is 0 and the
 returned \code{mu_mu} is the average of the two one-sided limits, which is the
-value the sign convention gives and is reported as it stands.
+value that the sign convention gives, and it is reported as it stands.
 }
 \section{Notation}{
 

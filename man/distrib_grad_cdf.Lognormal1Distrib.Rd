@@ -39,9 +39,8 @@ nothing on the log scale has to be evaluated. The extra \eqn{1/(2\sigma)} in
 the second component is the chain rule onto the variance, this
 parametrization carrying \eqn{\sigma^2} rather than \eqn{\sigma}.
 
-Only the gradient is registered; the second derivatives fall to
-\code{\link[=distrib_hess_cdf.continuous_distrib]{distrib_hess_cdf.continuous_distrib()}}, which differences the cdf and
-reuses this closed gradient for its first-order part.
+The second derivatives are registered separately, in closed form, by
+\code{\link[=distrib_hess_cdf.Lognormal1Distrib]{distrib_hess_cdf.Lognormal1Distrib()}}.
 }
 \section{Notation}{
 
@@ -64,7 +63,7 @@ fd <- numerical_cdf_deriv(d, q, th, order = 1)
 max(abs(distrib_grad_cdf(d, q, th, log = FALSE)$sigma2 / fd$sigma2 - 1))
 }
 \seealso{
-\code{\link[=distrib_hess_cdf.continuous_distrib]{distrib_hess_cdf.continuous_distrib()}}, the second order;
+\code{\link[=distrib_hess_cdf.Lognormal1Distrib]{distrib_hess_cdf.Lognormal1Distrib()}}, the second order;
 \code{\link[=distrib_grad_cdf.Gaussian1Distrib]{distrib_grad_cdf.Gaussian1Distrib()}}, the family on the log scale;
 \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.
 }

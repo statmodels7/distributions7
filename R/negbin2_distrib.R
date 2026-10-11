@@ -9,9 +9,9 @@ NULL
 #' the NB2 parametrization: the mean \eqn{\mu > 0} and a dispersion
 #' \eqn{\theta > 0}, so that \eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}
 #' and the variance is quadratic in the mean. It inherits from
-#' `discrete_distrib`, so it answers every generic of the `distrib` contract;
-#' the nine methods listed below are registered on it directly and everything
-#' else comes from the parent.
+#' `discrete_distrib`, so every generic of the `distrib` class applies to it;
+#' the methods listed below are registered on it directly and everything else
+#' comes from the parent.
 #'
 #' Build one with [negbin2_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
@@ -200,7 +200,7 @@ S7::method(distrib_cdf, NegBin2Distrib) <- function(distrib, q, theta, lower.tai
 #' \deqn{Q(p; \mu, \theta) =
 #'       \min\left\{y \in \mathbb{N}_0 : F(y; \mu, \theta) \ge p\right\},}
 #' by calling [stats::qnbinom()] at `size = theta` and `mu = mu`. The support
-#' is a lattice, so the round trip through
+#' is discrete, so the round trip through
 #' [distrib_cdf.NegBin2Distrib()] does **not** return `p`: it returns the mass
 #' up to the smallest integer whose cumulative probability reaches `p`, which
 #' overshoots.
@@ -234,8 +234,9 @@ S7::method(distrib_cdf, NegBin2Distrib) <- function(distrib, q, theta, lower.tai
 #' q <- distrib_quantile(d, p, th)
 #' q
 #'
-#' # On a lattice the round trip overshoots: the cumulative probability at the
-#' # returned integer is at or above the one asked for, not equal to it.
+#' # On a discrete support the round trip overshoots: the cumulative
+#' # probability at the returned integer is at or above the one asked for, not
+#' # equal to it.
 #' rbind(asked = p, reached = distrib_cdf(d, q, th))
 #'
 #' # The generalized inverse is a step function of p.

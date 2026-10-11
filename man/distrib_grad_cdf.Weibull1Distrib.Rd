@@ -10,7 +10,8 @@
 \item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles. Values at or below zero give
-derivatives of exactly zero.}
+derivatives of exactly zero on the natural scale; on the log scale of the
+lower tail they are \code{NaN}, \eqn{\log F} being infinite there.}
 
 \item{theta}{A named list with components \code{mu} (the scale, positive) and
 \code{sigma} (the shape, positive), each a numeric vector of length 1 or \code{n}.}
@@ -24,7 +25,7 @@ default.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of numeric vectors of the order the generic asked for,
+A named list of numeric vectors of the requested order,
 keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, order)}}: two
 components for the gradient, three for the Hessian, four at order 3 and
 five at order 4.
@@ -43,13 +44,12 @@ zero when two do: \eqn{h} is linear in the shape. That is what keeps the
 expansion short at the higher orders.
 }
 
-\section{An exact zero worth knowing about}{
+\section{The shape component at q equal to mu}{
 At \eqn{q = \mu} the exponent \eqn{h} vanishes and so does
 \eqn{\partial h/\partial\sigma = \log q - \log\mu}, so the shape component
 of the gradient is exactly zero there. A relative comparison against a
-numerical derivative at that point measures nothing; an absolute one is what
-to use, and it puts the closed route within \eqn{2.3\times10^{-11}} of a
-central difference of the cdf.
+numerical derivative at that point has no meaning, and an absolute one is
+the comparison to use.
 }
 
 \section{Notation}{

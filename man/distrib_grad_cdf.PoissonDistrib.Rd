@@ -52,7 +52,7 @@ distrib_grad_cdf(d, q, list(mu = 3))$mu
 distrib_grad_cdf(d, q, list(mu = 3), lower.tail = FALSE)$mu
 }
 \seealso{
-\code{\link[=distrib_grad_cdf.discrete_distrib]{distrib_grad_cdf.discrete_distrib()}}, the general sum this
+\code{\link[=distrib_grad_cdf.discrete_distrib]{distrib_grad_cdf.discrete_distrib()}}, the general sum that this
 replaces; \code{\link[=distrib_grad_cdf.NegBin2Distrib]{distrib_grad_cdf.NegBin2Distrib()}}, whose mean component tends
 to this one; \code{\link[=poisson_distrib]{poisson_distrib()}}.
 }

@@ -957,7 +957,10 @@ mv_summary <- function(object, level = object@level) {
 
   der <- mv_derived(d, as.list(object@coefficients))
   v <- object@vcov
-  se <- sqrt(pmax(diag(der$jacobian %*% v %*% t(der$jacobian)), 0))
+  # a negative variance gives NaN, not a standard error of zero
+  var_d <- diag(der$jacobian %*% v %*% t(der$jacobian))
+  var_d[!is.na(var_d) & var_d < 0] <- NaN
+  se <- sqrt(var_d)
 
   z <- stats::qnorm(1 - (1 - level) / 2)
   est <- der$value

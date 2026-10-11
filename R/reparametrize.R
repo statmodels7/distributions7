@@ -121,7 +121,7 @@ is_reparam <- function(distrib) {
 #' Runs the map on plain numbers and returns the parent's parameters in the
 #' parent's own order, which is the form every probability function needs
 #' before delegating. The new parameters are aligned and validated first, so a missing
-#' or out-of-bounds component throws here and not several frames down.
+#' or out-of-bounds component signals an error here and not several frames down.
 #'
 #' @details
 #' A map that fails to return some parent parameter is caught with a message

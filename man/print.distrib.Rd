@@ -12,15 +12,14 @@
 \code{x}, invisibly. Called for the output it writes.
 }
 \description{
-Writes what a distribution object is: its name and dimension, the support,
-and one row per parameter giving the parameter's name, what it means, the
-interval it lives in and the link that carries it to the unconstrained
-scale. A wrapper prints its parent's line first, so
-\code{truncated(gamma2_distrib(), upper = 5)} shows both the truncation and the
-family under it.
-
-What it does \strong{not} show is a value: a \code{distrib} carries a parametrization,
-not an estimate. For estimates see \code{\link[=print.distrib_fit]{print.distrib_fit()}}.
+Prints the name of the distribution, its type (continuous or discrete) and
+its dimension, followed by one row per parameter giving the name of the
+parameter, its interpretation, the interval in which it lies and the link
+that maps it to the unconstrained scale. The name of a wrapper combines the
+wrapper and its parent, so \code{truncated(gamma2_distrib(), upper = 5)} prints
+as \verb{Truncated Gamma2 [upper=5]}, followed by the parameter rows of the
+parent. No parameter value is shown, because a \code{distrib} carries a
+parametrization and no estimate; for estimates see \code{\link[=print.distrib_fit]{print.distrib_fit()}}.
 }
 \examples{
 gaussian1_distrib()

@@ -280,8 +280,8 @@ S7::method(distrib_hess_y_hess, StudentT2Distrib) <- function(
 #' The family is location-scale in \eqn{(\mu, \sigma)} at fixed \eqn{\nu}, so
 #' those components are closed forms in the density and its derivatives; the
 #' components in \eqn{\nu}, derivatives of an incomplete beta function in its
-#' parameter, have no elementary form and are differenced, as for
-#' [student_t1_distrib()].
+#' parameter, have no elementary form and are integrals of the density's own
+#' derivatives, taken by the compiled rule, as for [student_t1_distrib()].
 #'
 #' @param distrib A `StudentT2Distrib` object.
 #' @param q A numeric vector of quantiles.
@@ -291,8 +291,8 @@ S7::method(distrib_hess_y_hess, StudentT2Distrib) <- function(
 #'
 #' @return A named list, one component per parameter or per multi-index.
 #'
-#' @seealso [partial_loc_scale_grad_cdf()], [partial_loc_scale_hess_cdf()]
-#'   and [partial_loc_scale_deriv_cdf_k()], the bodies registered here.
+#' @seealso [compiled_grad_cdf()], [compiled_hess_cdf()] and
+#'   [partial_loc_scale_deriv_cdf_k()], the bodies registered here.
 #'
 #' @examples
 #' d <- student_t2_distrib()

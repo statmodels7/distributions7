@@ -23,7 +23,7 @@ default.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of numeric vectors of the order the generic asked for,
+A named list of numeric vectors of the requested order,
 keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, order)}}: three
 components for the gradient, six for the Hessian, ten at order 3 and
 fifteen at order 4.
@@ -37,19 +37,18 @@ differentiated away at the first order and never has to be differentiated
 again. The location and the scale then enter only through \eqn{z}, by the
 same chain rule the other location-scale families use.
 }
-\section{What it is worth}{
-Against a product stencil on the same cdf, at \eqn{\mu = 0.3},
-\eqn{\sigma = 1.2}, \eqn{\alpha = 2}: \eqn{3.6\times10^{-9}} at order 1,
-\eqn{2.1\times10^{-6}} at order 2, \eqn{9.5\times10^{-5}} at order 3 and
-\eqn{3.8\times10^{-4}} at order 4.
+\section{Accuracy}{
+The derivatives are closed forms. A product stencil on the same
+distribution function loses accuracy as the order grows, by one or two
+digits per order.
 }
 
-\section{The family this leaves behind}{
-The skew normal used to be grouped with the Student t and the pseudo-Huber,
-whose shape components are differenced. It is not any more, and the reason
-is the elementary partials above: only the skew t still differences a shape
-here, its degrees of freedom entering through a Student t distribution
-function.
+\section{Relation to the Student t and the pseudo-Huber}{
+The shape components of the skew normal are closed through the elementary
+partial derivatives of Owen's T given above. The Student t, the
+pseudo-Huber and the skew t have no closed derivative in a shape parameter;
+their shape components are integrals of the density's own derivatives,
+taken by the compiled rule.
 }
 
 \section{Notation}{
@@ -68,7 +67,8 @@ th <- list(mu = 0.3, sigma = 1.2, alpha = 2)
 all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th))
 
-# At shape zero the family is Gaussian, and so are its cdf derivatives.
+# At shape zero the family is Gaussian, and its location and scale
+# derivatives agree with the Gaussian's.
 g0 <- distrib_grad_cdf(d, q, list(mu = 0.3, sigma = 1.2, alpha = 0),
                        log = FALSE)
 gg <- distrib_grad_cdf(gaussian1_distrib(), q, list(mu = 0.3, sigma = 1.2),
@@ -84,7 +84,8 @@ lengths(list(distrib_grad_cdf(d, q, th),
 }
 \seealso{
 \code{\link[=sn_cdf_std_derivs]{sn_cdf_std_derivs()}} and \code{\link[=sn_cdf_deriv_k]{sn_cdf_deriv_k()}} for the construction;
-\code{\link[=distrib_grad_cdf.SkewTDistrib]{distrib_grad_cdf.SkewTDistrib()}}, which does difference its shape;
+\code{\link[=distrib_grad_cdf.SkewTDistrib]{distrib_grad_cdf.SkewTDistrib()}}, which integrates its shape
+derivatives by the compiled rule;
 \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.
 }
 \keyword{internal}

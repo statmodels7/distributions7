@@ -31,7 +31,7 @@ Computes the generalized inverse of the distribution function,
 \deqn{Q(p; \mu, \theta) =
       \min\left\{y \in \mathbb{N}_0 : F(y; \mu, \theta) \ge p\right\},}
 by calling \code{\link[stats:NegBinomial]{stats::qnbinom()}} at \code{size = theta} and \code{mu = mu}. The support
-is a lattice, so the round trip through
+is discrete, so the round trip through
 \code{\link[=distrib_cdf.NegBin2Distrib]{distrib_cdf.NegBin2Distrib()}} does \strong{not} return \code{p}: it returns the mass
 up to the smallest integer whose cumulative probability reaches \code{p}, which
 overshoots.
@@ -45,8 +45,9 @@ p <- c(0.025, 0.5, 0.975)
 q <- distrib_quantile(d, p, th)
 q
 
-# On a lattice the round trip overshoots: the cumulative probability at the
-# returned integer is at or above the one asked for, not equal to it.
+# On a discrete support the round trip overshoots: the cumulative
+# probability at the returned integer is at or above the one asked for, not
+# equal to it.
 rbind(asked = p, reached = distrib_cdf(d, q, th))
 
 # The generalized inverse is a step function of p.

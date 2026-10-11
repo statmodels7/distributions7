@@ -259,7 +259,7 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #' @description
 #' The S7 class of a MULTIVARIATE distribution in which some parameters of the
 #' wrapped distribution are held at known values. It behaves exactly as
-#' [FixedContinuousDistrib] does and adds the multivariate contract:
+#' [FixedContinuousDistrib] does and adds the multivariate generics:
 #' [mv_location()], [mv_sigma()], [mv_marginal()], [mv_support()],
 #' [mv_reference_draw()] and [mv_derived()] all delegate to the parent at the
 #' spliced `theta`, and [mv_derived()] reports the parent's quantities with the
@@ -334,7 +334,7 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #'           distrib_pdf(mvgaussian1_distrib(2), y,
 #'                       c(list(mu1 = 0, mu2 = 0), theta), log = TRUE))
 #'
-#' # The multivariate contract survives the wrapper.
+#' # The multivariate generics work through the wrapper.
 #' mv_sigma(d, theta)
 #' names(mv_derived(d, theta)$value)
 #' mv_marginal(d, theta, 1)$distrib@n_dim

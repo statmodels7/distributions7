@@ -17,14 +17,17 @@
 #' @import S7
 #' @section Methods:
 #' Registered on the base class, so every distribution inherits them unless it
-#' registers something more specific. Those that compute derivatives do so by
-#' finite differences, which is why a subclass that implements nothing but
-#' [distrib_pdf()] is already fully functional. Note that
-#' `distrib_pdf` itself has no default: the density is the one thing a
-#' distribution must supply.
+#' registers something more specific. The derivatives of the log-density in the
+#' parameters are computed by finite differences and the expected derivatives
+#' by the strategy named in `approx`, which is why a subclass that implements
+#' nothing but [distrib_pdf()] has every parameter derivative. [distrib_pdf()]
+#' itself has no default: the density is the one quantity that a distribution
+#' must supply. The list below is partial; the base class also registers
+#' [distrib_atoms()] and the derivatives of the cdf of orders 3 and 4.
 #'
 #'   [`distrib_deriv3()`][distrib_deriv3.distrib],
 #'   [`distrib_deriv4()`][distrib_deriv4.distrib],
+#'   [`distrib_deriv5()`][distrib_deriv5.distrib],
 #'   [`distrib_expected_hessian()`][distrib_expected_hessian.distrib],
 #'   [`distrib_gradient()`][distrib_gradient.distrib],
 #'   [`distrib_hessian()`][distrib_hessian.distrib],
@@ -165,9 +168,11 @@ param_smoothness <- function(distrib) {
 #'
 #' @section Methods:
 #' Defaults for continuous distributions, built from the density alone: the cdf by
-#' quadrature, the quantile function by root finding, and the generator by
-#' Generalized Ratio-of-Uniforms ([rng_grou()]) or inverse transform when
-#' an analytical quantile is available.
+#' quadrature, the quantile function by root finding, the generator by
+#' Generalized Ratio-of-Uniforms ([rng_grou()]) or inverse transform when an
+#' analytical quantile is available, the derivatives in the response and the
+#' mixed derivatives by finite differences, and the derivatives of the cdf by
+#' differencing it. The list below is partial.
 #'
 #'   [`distrib_cdf()`][distrib_cdf.continuous_distrib],
 #'   [`distrib_grad_y()`][distrib_grad_y.continuous_distrib],
@@ -198,8 +203,10 @@ continuous_distrib <- S7::new_class("continuous_distrib",
 #'
 #' @section Methods:
 #' Defaults for discrete distributions, built from the probability mass function
-#' alone by accumulating it over the support; they require a finite lower bound,
-#' which every standard count distribution has.
+#' alone by accumulating it over the support, and for the derivatives of the cdf
+#' by exact summation; they require a finite lower bound, which every standard
+#' count distribution has. A discrete distribution has no derivatives in the
+#' response.
 #'
 #'   [`distrib_cdf()`][distrib_cdf.discrete_distrib],
 #'   [`distrib_quantile()`][distrib_quantile.discrete_distrib],

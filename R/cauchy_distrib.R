@@ -7,10 +7,10 @@ NULL
 #' @description
 #' The S7 class of the Cauchy family with location \eqn{\mu} and scale
 #' \eqn{\sigma > 0}, the Student's t on one degree of freedom, with density
-#' \eqn{f(y) = [\pi\sigma(1 + ((y-\mu)/\sigma)^2)]^{-1}} on the whole real
-#' line. It inherits from `continuous_distrib`, so it answers every generic of
-#' the `distrib` contract; the eleven methods listed below are registered on it
-#' directly and everything else comes from the parent.
+#' \eqn{f(y) = [\pi\sigma(1 + ((y-\mu)/\sigma)^2)]^{-1}} on the whole real line.
+#' It inherits from `continuous_distrib`, so every generic of the `distrib`
+#' class applies to it; the methods listed below are registered on it directly
+#' and everything else comes from the parent.
 #'
 #' No moment of this family exists, so `mean()`, `variance()`, `skewness()` and
 #' `kurtosis()` return `NaN`. Its location and scale are the median and the

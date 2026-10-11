@@ -62,7 +62,7 @@ NULL
 #'   component per parameter of `distrib`. Components may be vectors and are
 #'   recycled against one another and against `p`, so several settings are
 #'   evaluated in one call. The list is aligned and validated by name, so a
-#'   missing or out-of-bounds component throws.
+#'   missing or out-of-bounds component signals an error.
 #' @param p The order of the moment. A numeric vector of length 1 or of the
 #'   number of settings, recycled against the components of `theta`. Defaults
 #'   to 1, the mean. Non-integer orders are accepted; a negative order is
@@ -740,7 +740,7 @@ S7::method(kurtosis, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' @param theta A named list with components `mu` (the mean, positive) and
 #'   `theta` (the dispersion, positive), each a numeric vector of length 1 or
 #'   `n`. Aligned and validated by name, so a missing or out-of-bounds
-#'   component throws.
+#'   component signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -2287,7 +2287,7 @@ moment_const <- function(theta, k, value) {
 #' @param theta A named list with components `mu` (the mean, any real value)
 #'   and `sigma` (the standard deviation, positive), each a numeric vector of
 #'   length 1 or `n`. Aligned and validated by name, so a missing or
-#'   out-of-bounds component throws.
+#'   out-of-bounds component signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -2437,8 +2437,8 @@ S7::method(kurtosis, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @param theta A named list with components `mu` and `sigma` (positive), each
 #'   a numeric vector of length 1 or `n`. The values are not read, only their
 #'   lengths, and the list is still aligned and validated, so a missing or
-#'   out-of-bounds component throws as it would for a family whose moments
-#'   exist.
+#'   out-of-bounds component signals an error as it would for a family whose
+#'   moments exist.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `NaN`, of length
@@ -2552,8 +2552,8 @@ S7::method(variance, CauchyDistrib) <- function(x, theta, ...) {
 #' @param theta A named list of parameters with components `mu` and `sigma`,
 #'   each a numeric vector of length 1 or `n`. The values are not read, only
 #'   their lengths, but they are still aligned and validated, so a missing or
-#'   out-of-bounds component throws exactly as it would for a family whose
-#'   moments exist.
+#'   out-of-bounds component signals an error exactly as it would for a family
+#'   whose moments exist.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'   Arguments meaningful to [moment()] have no effect here, no quadrature
 #'   being run.
@@ -3737,7 +3737,7 @@ S7::method(kurtosis, InvGauss1Distrib) <- function(x, theta, ...) {
 #' @param theta A named list with components `mu` (the mean, strictly between
 #'   0 and 1) and `phi` (the precision, positive), each a numeric vector of
 #'   length 1 or `n`. Aligned and validated by name, so a mean at or outside
-#'   the unit interval throws.
+#'   the unit interval signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -4320,7 +4320,7 @@ S7::method(kurtosis, GenGamma1Distrib) <- function(x, theta, ...) {
 #' @param x A `PoissonDistrib`, from [poisson_distrib()].
 #' @param theta A named list with one component, `mu` (the mean, positive), a
 #'   numeric vector of length 1 or `n`. Aligned and validated by name, so a
-#'   non-positive value throws.
+#'   non-positive value signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, the length of `theta$mu`.
@@ -4455,7 +4455,7 @@ S7::method(kurtosis, PoissonDistrib) <- function(x, theta, ...) {
 #' @param theta A named list with one component, `mu` (the success
 #'   probability, strictly between 0 and 1), a numeric vector of length 1 or
 #'   `n`. Aligned and validated by name, so a value at or outside the unit
-#'   interval throws.
+#'   interval signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, the length of `theta$mu`, strictly inside

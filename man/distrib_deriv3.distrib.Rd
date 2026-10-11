@@ -40,11 +40,10 @@ without its own Hessian, one tensor-product stencil on its score or its
 log-density. Expected ones come from \code{\link[=expected_derivative]{expected_derivative()}} at the
 strategy \code{approx} names.
 
-\strong{No family shipped in this package reaches this method for its observed
-derivatives.} All 46 write the third order out, 24 of them in compiled
-kernels. It exists for a family defined outside the package, which gets four
-orders from a density alone, and it is the reference the analytical kernels
-are validated against.
+Every family shipped in this package writes the observed third order out,
+so this method serves a family defined outside the package, which gets five
+orders from a density alone. It is also the reference against which the
+analytical kernels are validated.
 }
 \seealso{
 \code{\link[=numerical_deriv3]{numerical_deriv3()}}, which does the differencing;

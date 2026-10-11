@@ -11,7 +11,7 @@ distrib_intercept_start(distrib, y, ...)
 
 \item{y}{The response, a numeric vector.}
 
-\item{...}{Passed to methods. No shipped method reads it.}
+\item{...}{Passed to methods. The shipped methods do not use it.}
 }
 \value{
 A named list of single numbers on the parameter scale, possibly
@@ -21,7 +21,7 @@ entry of \code{distrib@params}.
 \description{
 Returns, on the \strong{parameter} scale, a starting value for each parameter
 whose intercept a regression should not take from the intercept-only
-maximum likelihood fit. A modelling layer carries each value onto the
+maximum likelihood fit. A modeling layer carries each value onto the
 parameter's own link and writes it to that equation's intercept. The base
 method returns an empty list: for most families the intercept-only fit is
 the right start.
@@ -29,13 +29,11 @@ the right start.
 \details{
 The case this exists for is \code{\link[=zero_inflated]{zero_inflated()}}. Without covariates the
 parent's overdispersion can absorb the excess zeros, so the intercept-only
-maximum puts the mixing weight at the edge of its domain -- measured,
-\eqn{\pi = 2.2 \times 10^{-308}} on a negative binomial with a true
-\eqn{\pi = 0.25} -- which is right for that model and a trap as a start for
-a model with covariates: the link is flat there, the score on the
-unconstrained scale vanishes, and the fit stays at the edge reporting
-convergence while an interior maximum 7.6 log-likelihood units higher
-exists. See \code{\link[=distrib_intercept_start.ZeroInflatedDistrib]{distrib_intercept_start.ZeroInflatedDistrib()}}.
+maximum puts the mixing weight at the edge of its domain. That is the
+maximum of the model without covariates, but it is a poor start for a model
+with covariates: the link is flat there, the score on the unconstrained
+scale vanishes, and the fit can stop at the edge, reporting convergence,
+although an interior maximum exists. See \code{\link[=distrib_intercept_start.ZeroInflatedDistrib]{distrib_intercept_start.ZeroInflatedDistrib()}}.
 }
 \examples{
 distrib_intercept_start(poisson_distrib(), c(0, 1, 3))

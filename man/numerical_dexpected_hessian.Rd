@@ -37,15 +37,18 @@ The default route behind \code{\link[=distrib_dexpected_hessian]{distrib_dexpect
 difference in each parameter of the family's own expected information.
 }
 \details{
-The step is \code{\link[=fd_steps]{fd_steps()}}', which shrinks near a finite boundary so
-that both evaluation points stay strictly inside the parameter's open
-domain. On the link scale the domain is the whole line and no clamp is
-needed, so the step is the plain relative one.
+On the parameter scale the step is chosen by \code{\link[=fd_stable_step]{fd_stable_step()}} from the
+candidates of \code{\link[=fd_steps]{fd_steps()}}, which shrink near a finite boundary so that
+both evaluation points stay strictly inside the parameter's open domain;
+with \code{approx = "mc"} the step of \code{\link[=fd_steps]{fd_steps()}} is used directly. On the link
+scale the domain is the whole line and no clamp is needed, so the step is
+the plain relative one.
 
-\strong{It refuses rather than approximating an approximation.} Where the
-expected information is obtained by quadrature or by simulation, this would
-be a difference of a difference, which the package forbids everywhere, and
-it would cost 2p of the dearest call the family has.
+\strong{The method signals an error where the expected information is itself an
+approximation.} Where the expected information is obtained by quadrature
+or by simulation, the result would be a difference of a difference, which
+the package does not compute anywhere, and it would cost 2p of the most
+expensive call that the family has.
 }
 \seealso{
 \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}, \code{\link[=fd_steps]{fd_steps()}}

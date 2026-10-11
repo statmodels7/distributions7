@@ -10,12 +10,13 @@
 
 \item{theta}{A list containing \code{mu} and \code{sigma2}.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{Handled by the generic after dispatch; this method returns
+the parameter scale.}
 
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu} and \code{sigma}, each a numeric vector of
+A named list with components \code{mu} and \code{sigma2}, each a numeric vector of
 length \code{length(y)}.
 }
 \description{

@@ -24,8 +24,8 @@ Hessian. Splitting the string on \code{"_"} is the obvious way and it is
 wrong: a parameter whose own name contains an underscore
 (\code{"log_scale"}) makes \code{"log_scale_log_scale"} split into four
 pieces, and taking the first and the last silently yields
-\code{c("log", "scale")}. Building the map from the parameter vector cannot
-be fooled.
+\code{c("log", "scale")}. The map is built from the parameter vector, so it does
+not depend on the characters in the names.
 
 \code{\link[=deriv_indices]{deriv_indices()}} is the same idea for orders above two.
 }

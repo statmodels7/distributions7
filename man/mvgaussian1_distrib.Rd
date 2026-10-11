@@ -11,7 +11,7 @@ mvgaussian2_distrib(n_dim, omega = NULL)
 }
 \arguments{
 \item{n_dim}{The dimension \eqn{p} of one observation. A single positive
-whole number, finite and at least 1. Anything else throws an error.}
+whole number, finite and at least 1. Anything else signals an error.}
 
 \item{sigma}{A \pkg{parameters7} parametrization of the covariance, of
 dimension \code{n_dim} and of full rank. Defaults to
@@ -34,8 +34,8 @@ their parametrization describes: \code{mvgaussian1_distrib()} parametrizes the
 \strong{covariance} \eqn{\Sigma} and \code{mvgaussian2_distrib()} the \strong{precision}
 \eqn{\Omega = \Sigma^{-1}}. The mean is a vector of \eqn{p} free parameters
 and the matrix is carried by a \pkg{parameters7} parametrization whose free
-values become ordinary scalar parameters, so the object answers every
-generic of the \code{distrib} contract with \code{theta} a flat named list of
+values become ordinary scalar parameters, so every generic of the
+\code{distrib} class applies to the object, with \code{theta} a flat named list of
 numbers. Both default to an unstructured matrix in the log-Cholesky
 parametrization, which is \code{p * (p + 1) / 2} free values.
 }

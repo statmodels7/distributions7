@@ -2,7 +2,7 @@
 % Please edit documentation in R/y_derivatives.R
 \name{fd_steps_y}
 \alias{fd_steps_y}
-\title{Finite-Difference Steps That Respect the Support}
+\title{Finite-Difference Steps Within the Support}
 \usage{
 fd_steps_y(
   y,
@@ -28,13 +28,16 @@ the same step wherever \eqn{d \ge \max(1, |y|)}, which is every
 observation of a family with no finite bound.}
 
 \item{order, accuracy}{The stencil the step is for, which fix its reach
-through \code{\link[numericals7:fd_offsets]{numericals7::fd_offsets()}}: the clamp is on the OUTERMOST node,
+through \code{\link[numericals7:fd_offsets]{numericals7::fd_offsets()}}: the clamp is on the outermost node,
 so a rule evaluating two steps out is cut to half of what a central
 difference is. The defaults are the central difference, whose reach is
-one, which is every caller but \code{\link[=numerical_deriv_y]{numerical_deriv_y()}}.}
+one. \code{\link[=numerical_deriv_y]{numerical_deriv_y()}} and \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}} pass the
+order of their own stencils.}
 }
 \value{
-A numeric vector of steps, as long as \code{y}, every entry positive.
+A numeric vector of steps, as long as \code{y}. An observation strictly
+inside the support gets a positive step, and one on a finite bound gets
+zero.
 }
 \description{
 Returns the step for a central difference in the RESPONSE: \code{h_rel} scaled by
@@ -52,8 +55,8 @@ differenced with a step below the resolution of a double.
 \code{to_bound = "clamp"} is what the support requires and no more. A gamma
 observation at \eqn{y = 10^{-3}} differenced with the default step of
 \eqn{6 \times 10^{-6}} needs no help, but one at \eqn{y = 10^{-8}} would be
-evaluated at a negative point, where the density is not defined and
-\code{distrib_pdf()} returns \code{-Inf}. The factor 0.49 leaves the step under half
+evaluated at a negative point, where the log-density is not defined and
+\code{distrib_pdf(..., log = TRUE)} returns \code{-Inf}. The factor 0.49 leaves the step under half
 the distance to the bound, so both evaluation points stay inside with room
 to spare: at \eqn{y = 10^{-8}} the step becomes \eqn{4.9\times 10^{-9}} and
 the left point \eqn{5.1\times 10^{-9}}.
@@ -62,13 +65,14 @@ the left point \eqn{5.1\times 10^{-9}}.
 \eqn{d} the distance to the nearest finite bound, so the step shrinks in
 proportion as the response approaches the bound rather than sitting at
 \eqn{0.49\,d}. Where the log-density is singular at the bound, as a gamma's
-with a shape other than one or a beta's, the clamped step's relative error
-is \eqn{(h/d)^2/3} and stops falling once the clamp binds: a plateau of
-9.4e-02 on the first derivative and 1.4e-01 on the second, which the scaled
-step removes. Where the log-density is smooth at the bound the scaled step
-is the worse of the two at the smallest distances, its shorter step letting
-the rounding dominate, and \code{\link[=fd_stable_quotient]{fd_stable_quotient()}} is what chooses between
-them.
+with a shape other than one or a beta's, the relative error of the clamped
+step stops falling once the clamp binds. At \eqn{h = 0.49\,d} the central
+difference of \eqn{\log y} has a relative error of 9.4e-02 on the first
+derivative and 1.4e-01 on the second (to leading order \eqn{(h/d)^2/3} and
+\eqn{(h/d)^2/2}), a plateau that the scaled step removes. Where the
+log-density is smooth at the bound, the scaled step is the less accurate of
+the two at the smallest distances, because its shorter step lets the
+rounding dominate, and \code{\link[=fd_stable_quotient]{fd_stable_quotient()}} selects between them.
 }
 \section{Notation}{
 

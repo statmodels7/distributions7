@@ -11,7 +11,7 @@ discrete_cdf_deriv(distrib, q, theta, order)
 
 \item{q}{A numeric vector of quantiles. Each is handled separately, the
 support being walked from the lower bound up to it, so the cost grows with
-the largest quantile asked for.}
+the largest requested quantile.}
 
 \item{theta}{A named list of parameters on the parameter scale.}
 
@@ -33,16 +33,16 @@ The region of integration does not depend on \eqn{\theta}, so derivative and
 integral exchange and
 \deqn{\frac{\partial^I F(q)}{F(q)}
       = \mathbb{E}\!\left[\frac{\partial^I f}{f} \;\middle|\; Y \le q\right],}
-a partial expectation of exactly the quantity the Bartlett lemma expands: the
+a partial expectation of exactly the quantity that the Bartlett lemma expands: the
 score at first order, and \eqn{\ell^{(ij)} + \ell^{(i)}\ell^{(j)}} at second.
 For a discrete family that conditional expectation is a finite sum whenever
 the support has a finite lower bound, which the discrete class requires, so
 the identity is used as it stands.
 }
 
-\section{A trap for whoever writes a test}{
-Checking this against the partial-expectation sum proves nothing: it is the
-same sum computed twice. A discrete implementation has to be checked against
+\section{Testing an implementation}{
+A comparison with the partial-expectation sum repeats the same computation
+and therefore does not test it. A discrete implementation has to be checked against
 finite differences of the cdf, and a continuous one against the partial
 expectation, so that the two sides of the comparison share no arithmetic.
 }

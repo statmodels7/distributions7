@@ -22,14 +22,13 @@ A list holding the support points and their cumulative probabilities.
 }
 \description{
 Builds the cumulative pmf from the support lower bound, growing the table
-geometrically until it covers the probability and the support point asked for.
+geometrically until it covers the requested probability and support point.
 }
 \details{
 This is the whole of the discrete fallback: the cdf, the quantile function and
-the random generator are all lookups into it. No new algorithm was needed for
-discrete distributions, because the cdf of a discrete variable is a step
-function and inverting it is exact. The cost was one R-level call per draw,
-and the lookup is vectorized.
+the random generator are all lookups into it. The cdf of a discrete variable
+is a step function, so it is inverted exactly by a search in the table, and
+the search is vectorized.
 
 Requires a finite lower bound, which every standard count distribution has.
 }

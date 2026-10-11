@@ -31,12 +31,12 @@ Three checks, at probe parameters inside every interval:
 
 \describe{
 \item{\code{dv}}{each \eqn{\partial v/\partial \theta_p} against a central
-difference of \eqn{v} itself. This isolates \code{dv}, which nothing else
-reads.}
+difference of \eqn{v} itself. This checks \code{dv} on its own, although
+the jump check below reads it as well.}
 \item{\code{jump}}{the jump of the score across the kink against the one the
 declaration predicts. Writing \eqn{\Delta\phi'} for the jump of
-\eqn{\phi'} at the origin -- 2 for \eqn{\lvert v \rvert} and 1 for
-\eqn{(v)_+} -- the score of \eqn{c(\theta)\phi(v)} jumps by
+\eqn{\phi'} at the origin (2 for \eqn{\lvert v \rvert} and 1 for
+\eqn{(v)_+}), the score of \eqn{c(\theta)\phi(v)} jumps by
 \deqn{c(\theta)\, \Delta\phi' \, \partial v/\partial \theta_p}
 as \eqn{y} crosses the surface \eqn{v = 0}. This is the check that
 matters: it reads \code{phi}, \code{v}, \code{dv} and \code{coef} at once, and a wrong \code{v}
@@ -46,8 +46,8 @@ really is continuous across the same surface. Without this the check
 would pass a declaration that named too few parameters.}
 }
 
-A composition whose \eqn{\Delta\phi'} is zero -- \eqn{(v)_+^2} and
-\eqn{(v)_+^3}, where the second and third derivative jump instead -- is
+A composition whose \eqn{\Delta\phi'} is zero (\eqn{(v)_+^2} and
+\eqn{(v)_+^3}, where the second and third derivative jump instead) is
 reported as not checked rather than checked against zero, which any
 declaration would satisfy.
 }

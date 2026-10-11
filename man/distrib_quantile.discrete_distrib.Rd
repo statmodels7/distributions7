@@ -27,13 +27,16 @@ and \code{theta}.
 \description{
 The fallback for a discrete family that implements no analytical quantile
 function: the smallest support point \eqn{k} with \eqn{F(k) \ge p}, read off
-the cumulative table \code{\link[=disc_cum_table]{disc_cum_table()}} builds. It is \strong{exact}. The
-distribution function of a lattice variable is a step function, so
-inverting it is a lookup and there is nothing to solve; on a Poisson defined
-by its mass alone it returns \code{\link[stats:Poisson]{stats::qpois()}}'s answer at every probability.
+the cumulative table that \code{\link[=disc_cum_table]{disc_cum_table()}} builds. It is \strong{exact}. The
+distribution function of a discrete variable is a step function, so
+inverting it is a lookup and there is nothing to solve. The probability is
+compared with the running sum after a relative reduction of
+\eqn{64\varepsilon}, as \code{\link[stats:Poisson]{stats::qpois()}} does, so that a probability equal
+to \eqn{F(k)} returns \eqn{k}; on a Poisson defined by its mass alone the
+result agrees with \code{\link[stats:Poisson]{stats::qpois()}}.
 
-Note the consequence a reader coming from the continuous case needs: the
-round trip does not close. Asking for 0.025, 0.5 and 0.975 returns points
+Because the distribution function is a step function, the round trip does
+not close. Asking for 0.025, 0.5 and 0.975 returns points
 whose cumulative probabilities are larger, because no support point sits
 exactly at those values.
 }

@@ -20,7 +20,7 @@ entry of \code{distrib@params}, or \code{NULL} where this family has no entry.
 \description{
 Returns the parameters a family's own first two moments imply for a sample,
 in closed form where the inversion has one, and \code{NULL} where this family has
-no entry. \strong{38 of the 43 univariate families have one.}
+no entry.
 
 A starting value should be an estimate. For most families the moment
 estimate is one line: the sample mean and variance are set equal to the
@@ -29,8 +29,8 @@ maximum likelihood, and \pkg{statmodels7} takes the result as the intercept
 of each equation.
 }
 \section{How the inversions are written and checked}{
-Each is written against the family's own \code{\link[=mean]{mean()}} and \code{\link[=variance]{variance()}}, not from
-memory, and the tests check it the same way: a family's moment estimate
+Each is written against the family's own \code{\link[=mean]{mean()}} and \code{\link[=variance]{variance()}}, and
+the tests check it the same way: a family's moment estimate
 applied to a large sample drawn from a known parameter must return that
 parameter.
 }
@@ -54,12 +54,14 @@ generalized gamma, a moment that does not identify the pair for the skew
 \section{A fixed constant in the name}{
 A family carrying one announces it there, as in \code{"beta-binomial [size=10]"},
 so the bracketed part is stripped before the name is used as a lookup key.
-Without that no beta-binomial of any size would match its own entry, and
-silently: a missing key is a legal fallback.
+If the bracketed part were kept, the lookup would find no entry for a
+beta-binomial of any size, and the fit would fall back to the default
+without a message, because a missing key is a valid result.
 }
 
 \seealso{
-\code{\link[=start_from_moments]{start_from_moments()}}, the only caller and the fallback;
+\code{\link[=start_from_moments]{start_from_moments()}}, the main caller and the fallback, and
+\code{\link[=distrib_intercept_start.SkewNormal1Distrib]{distrib_intercept_start.SkewNormal1Distrib()}}, which also calls it;
 \code{\link[=distrib_start]{distrib_start()}} for the generic; \code{\link[=mean]{mean()}} and \code{\link[=variance]{variance()}}, which the
 inversions are written against.
 }

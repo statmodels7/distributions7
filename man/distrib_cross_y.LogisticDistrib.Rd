@@ -12,7 +12,8 @@
 
 \item{theta}{A list containing \code{mu} and \code{sigma}.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{Handled by the generic after dispatch; this method returns
+the parameter scale.}
 
 \item{...}{Unused.}
 }

@@ -41,19 +41,18 @@ per new parameter at order 1, and one per \code{\link[=hess_names]{hess_names()}
 order 2.
 }
 \description{
-The \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} body every mapped family
-shares. It asks whether the parent's cdf derivatives are exact at every
+The \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} body that every mapped
+family shares. It tests whether the parent's cdf derivatives are exact at every
 order up to the one wanted, takes \code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}} if they are, and falls
 back to \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} on the new family's own cdf if they are not.
 }
-\section{The gate, and why it is a gate}{
-\code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}} is asked of the parent at order 1 and, for a
+\section{The exactness test}{
+\code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}} is applied to the parent at order 1 and, for a
 Hessian, at order 2 as well. The chain is exact only if what it carries is
 exact; taken over a differenced parent it would add rounding to rounding and
-cost more than differencing the child's cdf once. The gate is also what
-keeps a family's page honest as the parent improves: when the inverse
-Gaussian gained a closed second order, its second parametrization stopped
-differencing without any edit here.
+cost more than differencing the child's cdf once. The test is made at each
+call, so a parent that gains a closed order moves its mapped families onto
+the chain without any edit here.
 }
 
 \seealso{

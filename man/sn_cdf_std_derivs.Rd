@@ -25,15 +25,14 @@ Returns \eqn{\partial^i_z \partial^j_\alpha G} for
 the skew normal's cdf derivative surface in standard coordinates; the
 location and the scale are chained on afterwards by \code{\link[=sn_cdf_deriv_k]{sn_cdf_deriv_k()}}.
 }
-\section{Why the integral never has to be differentiated}{
+\section{The integral in Owen's T}{
 Owen's T is defined by an integral, and both of its partial derivatives are
 elementary:
 \deqn{\frac{\partial T}{\partial h} = -\varphi(h)\left\{\Phi(ah) -
       \tfrac12\right\}, \qquad
       \frac{\partial T}{\partial a} = \frac{\varphi(h)\,\varphi(ah)}{1+a^2}.}
 The integral is therefore differentiated away at the first order and never
-has to be differentiated again. A quantity defined by an integral is not
-thereby a quantity whose derivatives need one.
+has to be differentiated again.
 }
 
 \section{The first derivatives, and the check on them}{

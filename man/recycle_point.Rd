@@ -22,18 +22,13 @@ length one and some parameter is longer, and \code{x} unchanged otherwise.
 }
 \details{
 \code{\link[=distrib_pdf]{distrib_pdf()}}, \code{\link[=distrib_cdf]{distrib_cdf()}} and \code{\link[=distrib_quantile]{distrib_quantile()}} call it before
-dispatch, as \code{\link[=check_derivative_args]{check_derivative_args()}} recycles the response for the
-derivative generics. A compiled kernel sizes its output by the length of
-the response, so without it a single point evaluated at parameters of
-length \eqn{n} returned ONE value, read at the first observation's
-parameters. Measured on eight families -- \code{negbin1_distrib()},
-\code{pig1_distrib()}, \code{pig2_distrib()}, \code{betabinom1_distrib()},
-\code{betabinom2_distrib()}, \code{gengamma1_distrib()}, \code{gengamma2_distrib()} and
-\code{gpd_distrib()} -- and reachable wherever a wrapper evaluates its parent at
-a fixed point: \code{\link[=zero_inflated]{zero_inflated()}} reads \eqn{f(0)} that way, and with
-parameters varying by observation its derivatives were out by a relative
-0.5 to 38 on those parents while its density, evaluated at the full
-response, was right. A multivariate response is a matrix and is left alone.
+dispatch, in the way that \code{\link[=check_derivative_args]{check_derivative_args()}} recycles the response
+for the derivative generics. A compiled kernel sizes its output by the
+length of the response, so a single point evaluated at parameters of length
+\eqn{n} has to be repeated \eqn{n} times to give one value per observation.
+This matters wherever a wrapper evaluates its parent at a fixed point, as
+\code{\link[=zero_inflated]{zero_inflated()}} does for \eqn{f(0)}. A multivariate response is a matrix
+and is left alone.
 }
 \seealso{
 \code{\link[=check_derivative_args]{check_derivative_args()}}, the derivative generics' counterpart.

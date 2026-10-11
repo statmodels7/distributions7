@@ -58,7 +58,7 @@ the integral moves the measure as well as the integrand:
 
 The integrals are taken by an exp-sinh rule on each half-line, from
 \code{\link[=loc_scale_rule]{loc_scale_rule()}}. Its nodes cluster double-exponentially at \eqn{z = 0},
-which is where the three families that use it put their one sharp feature
+which is where the location-scale families that use it put their one sharp feature
 (the step of the skewing function at a large shape, and the core of the
 pseudo-Huber at a small one), and the same transformation turns an algebraic
 tail into an exponential one, which is what the Student t's heavy tail

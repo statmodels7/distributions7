@@ -17,10 +17,14 @@ when the distribution provides an analytical method (which is always preferred).
 }
 \details{
 Let \eqn{\ell} be the log-density and \eqn{\ell_{i}, \ell_{ij}, \dots} its
-derivatives with respect to the parameters. The three strategies are:
+derivatives with respect to the parameters. The strategies are:
 
 \describe{
-\item{\code{"bartlett"} (also spelled \code{"opg"})}{Uses the Bartlett
+\item{\code{"opg"}}{At order 2, reads \eqn{-\ell_i \ell_j} at each observation
+and takes no expectation, at the cost of one score evaluation; see
+\code{\link[=expected_by_opg]{expected_by_opg()}}. Above order 2 it is routed to \code{"bartlett"}.}
+
+\item{\code{"bartlett"}}{Uses the Bartlett
 identity of the corresponding order, which expresses the expected
 derivative through expectations of \emph{products of lower-order}
 derivatives. Writing the identity as a sum over set partitions of the
@@ -32,10 +36,11 @@ gradients}, \eqn{\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]};
 at order 3, \eqn{\mathbb{E}[\ell_{ijk}] = -\left(\mathbb{E}[\ell_{ij}\ell_k] +
     \mathbb{E}[\ell_{ik}\ell_j] + \mathbb{E}[\ell_{jk}\ell_i] +
     \mathbb{E}[\ell_i\ell_j\ell_k]\right)}, and so on.
-\emph{Fastest at order 2} (only the score is needed) and the only variant
-that stays valid when the log-likelihood is not differentiable in a
-parameter, where \eqn{\mathbb{E}[H]} degenerates but the score variance
-still gives the information (see \code{\link[=laplace_distrib]{laplace_distrib()}}).
+At order 2 it needs only the score, whose product it integrates or
+sums, so it is slower than \code{"opg"}. It stays valid when the
+log-likelihood is not differentiable in a parameter, where
+\eqn{\mathbb{E}[H]} degenerates but the score variance still gives the
+information (see \code{\link[=laplace_distrib]{laplace_distrib()}}).
 Deterministic. At higher orders it needs several integrals, so it is
 usually slower than \code{"integrate"}. It never requires the top-order
 derivative itself, which is useful where only the lower orders are
@@ -58,9 +63,10 @@ but stochastic: the error decreases only as \eqn{1/\sqrt{n_{sim}}}, so
 results are not exactly reproducible unless the seed is fixed. Estimates
 the same quantity as \code{"integrate"}.
 \strong{Note:} the cost of this option is the cost of simulating from the
-distribution. A native \code{\link[=distrib_rng]{distrib_rng()}} is best, and failing that
-the default RNG falls back to \code{\link[=rng_grou]{rng_grou()}}, which only needs the
-density. It becomes expensive only for a distribution that supplies a
+distribution. A native \code{\link[=distrib_rng]{distrib_rng()}} is best; failing that, the
+default generator uses inverse transform when the family has a quantile
+method of its own and \code{\link[=rng_grou]{rng_grou()}}, which only needs the density,
+otherwise. It becomes expensive only for a distribution that supplies a
 quantile function slow enough to make inverse transform sampling the
 bottleneck; prefer \code{"bartlett"} or \code{"integrate"} in that case.}
 }
@@ -84,20 +90,30 @@ family declares where its kink is, through \code{\link[=kink_decomposition]{kink
 quadrature of \code{\link[=expectation]{expectation()}} places a knot there.
 }
 \examples{
-# A family with no closed-form expected information reads 'approx'. The two
-# deterministic strategies agree; Monte Carlo is the same quantity with
-# sampling error on it.
-sn <- skewnormal1_distrib()
-th <- list(mu = 0, sigma = 1, alpha = 3)
-set.seed(2)
-y <- distrib_rng(sn, 40, th)
+# A family defined by its density alone reads 'approx'. The two
+# deterministic strategies agree on the exact -2 / sigma^2; "opg" reads one
+# observation's score product, and Monte Carlo carries sampling error.
+Dens <- S7::new_class("Dens", parent = continuous_distrib)
+S7::method(distrib_pdf, Dens) <- function(distrib, y, theta, log = FALSE, ...) {
+  stats::dnorm(y, theta[[1]], theta[[2]], log = log)
+}
+d <- Dens(distrib_name = "dens", dimension = "univariate",
+          bounds = c(-Inf, Inf), params = c("mu", "sigma"),
+          params_interpretation = c(mu = "location", sigma = "scale"),
+          n_params = 2L,
+          params_bounds = list(mu = c(-Inf, Inf), sigma = c(0, Inf)),
+          link_params = list(mu = linkfunctions7::identity_link(),
+                             sigma = linkfunctions7::log_link()),
+          params_smooth = c(mu = TRUE, sigma = TRUE))
+th <- list(mu = 0, sigma = 2)
+y <- c(-1, 0.5, 2)
 
-vapply(c("bartlett", "integrate"), function(a) {
-  sum(distrib_expected_hessian(sn, y, th, approx = a)$alpha_alpha)
+vapply(c("opg", "bartlett", "integrate"), function(a) {
+  distrib_expected_hessian(d, y, th, approx = a)$sigma_sigma[1]
 }, numeric(1))
 
 set.seed(3)
-sum(distrib_expected_hessian(sn, y, th, approx = "mc", nsim = 500)$alpha_alpha)
+distrib_expected_hessian(d, y, th, approx = "mc", nsim = 2000)$sigma_sigma[1]
 
 # A family that writes its expected information out ignores the argument,
 # and fit_distrib() rejects one given there rather than dropping it.

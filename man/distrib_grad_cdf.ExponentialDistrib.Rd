@@ -10,7 +10,8 @@
 \item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles. Values at or below zero give
-derivatives of exactly zero.}
+derivatives of exactly zero on the natural scale; on the log scale of the
+lower tail they are \code{NaN}, \eqn{\log F} being infinite there.}
 
 \item{theta}{A named list with one component, \code{mu} (positive), a numeric
 vector of length 1 or \code{n}.}
@@ -24,8 +25,8 @@ default.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list with one numeric vector per component of the order the
-generic asked for, which for a one-parameter family is one at every order.
+A named list with one numeric vector per component of the requested
+order, which for a one-parameter family is one at every order.
 }
 \description{
 Closed form at every order from one to four, from the survival function
@@ -34,10 +35,9 @@ derivatives are \eqn{\partial^j L/\partial\mu^j = -q(-1)^j j!/\mu^{j+1}},
 and \code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} turns those into the derivatives of \eqn{F}.
 }
 \details{
-Against a product stencil on the same cdf: \eqn{2.7\times10^{-11}} at order
-1 and \eqn{2.7\times10^{-5}} at order 4. Below the support every derivative
-is exactly zero, the mask in \code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} suppressing the finite
-value \eqn{L} would otherwise give there.
+Below the support every derivative of \eqn{F} is exactly zero, the mask in
+\code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} suppressing the finite value that \eqn{L} would
+otherwise give there.
 }
 \section{Notation}{
 

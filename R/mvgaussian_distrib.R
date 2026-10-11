@@ -150,8 +150,8 @@ MvGaussian2Distrib <- S7::new_class("MvGaussian2Distrib",
 #' **covariance** \eqn{\Sigma} and `mvgaussian2_distrib()` the **precision**
 #' \eqn{\Omega = \Sigma^{-1}}. The mean is a vector of \eqn{p} free parameters
 #' and the matrix is carried by a \pkg{parameters7} parametrization whose free
-#' values become ordinary scalar parameters, so the object answers every
-#' generic of the `distrib` contract with `theta` a flat named list of
+#' values become ordinary scalar parameters, so every generic of the
+#' `distrib` class applies to the object, with `theta` a flat named list of
 #' numbers. Both default to an unstructured matrix in the log-Cholesky
 #' parametrization, which is `p * (p + 1) / 2` free values.
 #'
@@ -256,7 +256,7 @@ MvGaussian2Distrib <- S7::new_class("MvGaussian2Distrib",
 #' \eqn{A_k = \partial\Sigma/\partial\eta_k}.
 #'
 #' @param n_dim The dimension \eqn{p} of one observation. A single positive
-#'   whole number, finite and at least 1. Anything else throws an error.
+#'   whole number, finite and at least 1. Anything else signals an error.
 #' @param sigma A \pkg{parameters7} parametrization of the covariance, of
 #'   dimension `n_dim` and of full rank. Defaults to
 #'   `parameters7::log_cholesky(n_dim)`.

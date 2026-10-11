@@ -46,12 +46,12 @@ object built by \code{\link[=gamma1_distrib]{gamma1_distrib()}} they hold \code{
 for both parameters, and the two links.
 }
 \description{
-The S7 class of the gamma family parametrized by its mean \eqn{\mu > 0} and
-a dispersion \eqn{\phi > 0}, so that \eqn{\operatorname{Var}(Y) = \phi\mu^2}.
+The S7 class of the gamma family parametrized by its mean \eqn{\mu > 0} and a
+dispersion \eqn{\phi > 0}, so that \eqn{\operatorname{Var}(Y) = \phi\mu^2}.
 The shape is \eqn{1/\phi} and the rate \eqn{1/(\phi\mu)}. It inherits from
-\code{continuous_distrib}, so it answers every generic of the \code{distrib}
-contract; the eleven methods listed below are registered on it directly and
-everything else comes from the parent.
+\code{continuous_distrib}, so every generic of the \code{distrib} class applies to it;
+the methods listed below are registered on it directly and everything else
+comes from the parent.
 
 Build one with \code{\link[=gamma1_distrib]{gamma1_distrib()}}, which supplies the two link functions and
 fills the properties in. This page documents the raw S7 constructor, which

@@ -25,26 +25,26 @@ takes no expectation: nothing is integrated and nothing is summed over the
 support, so it costs one call to \code{\link[=distrib_gradient]{distrib_gradient()}}.
 }
 \details{
-The name is worth keeping apart from the identity it comes from. The second
+This route differs from the identity that it comes from. The second
 Bartlett identity states that
 \eqn{\mathbb{E}[\ell^{(ij)}] = -\mathbb{E}[\ell^{(i)}\ell^{(j)}]}, and
 \code{\link[=expected_by_bartlett]{expected_by_bartlett()}} evaluates the right-hand side as written, which
 for a discrete family is a sum over the whole support and for a continuous
 one a quadrature. This function drops the expectation and reads the
-integrand at the observation in hand. The two agree in expectation and not
-in cost: measured on \code{pig1_distrib()} with \eqn{\mu} varying by
-observation, one call to the identity at \eqn{n = 1000} evaluated 1.67
-million rows of the family's derivative kernel and took 18.4 seconds, where
-this route evaluates \eqn{n} rows.
+integrand at the observation in hand. The two agree in expectation and
+differ in cost: for a discrete family the identity evaluates the derivative
+kernel over the whole support for every observation, whereas this route
+evaluates it once per observation.
 
-What is given up is variance, not consistency.
+The estimate has more variance than the exact expectation and remains
+consistent.
 \eqn{-\ell^{(i)}\ell^{(j)}} is an unbiased estimate of the corresponding
 component of \eqn{\mathbb{E}[\ell^{(ij)}]} at that observation, so the sum
 over observations, which is what a scoring step aggregates into
 \eqn{X^\top W X}, estimates the information consistently. Component by
 component it is a rank-one matrix and correlates poorly with the exact
-expectation; summed it agreed with the exact route to within 10 per cent on
-the same measurement, and a fit driven by it reached the same maximum.
+expectation; summed over the observations it approximates the exact
+information, and a fit driven by it reaches the same maximum.
 
 Two properties make it the right default for a scoring step. It is positive
 semidefinite by construction, being a sum of outer products, where the

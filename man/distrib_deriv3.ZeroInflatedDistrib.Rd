@@ -12,7 +12,7 @@
 inflation probability in \eqn{(0, 1)}.}
 
 \item{expected}{Logical of length 1. \code{TRUE} takes the expectation, which for
-a lattice parent is an exact sum over the support.}
+a discrete parent is an exact sum over the support.}
 
 \item{...}{Passed on, \code{approx} and \code{nsim} among them.}
 }

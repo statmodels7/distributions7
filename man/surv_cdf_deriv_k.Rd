@@ -20,7 +20,7 @@ order the components, and its lower bound supplies the default mask.}
 
 \item{Lderiv}{A function of a character vector of parameter names returning
 the corresponding partial derivative of \eqn{L}. An empty block is the
-zeroth order and is never asked for.}
+zeroth order and is never requested.}
 
 \item{inside}{A logical vector saying which quantiles lie inside the
 support, or \code{NULL} (the default), which reads \code{q > distrib@bounds[1]}. A
@@ -44,8 +44,8 @@ all four orders follow at once, so a family has only to say what \eqn{L} is.
 complete Bell polynomial in the partials of \eqn{L}, and \eqn{F = 1 - S}
 turns that into \eqn{\partial^I F = -S\,B_I}. It is the same identity the
 distribution wrappers use, read on the survival function instead of on the
-density, and \code{\link[=bell_f_ratio]{bell_f_ratio()}} runs the partition sum, so nothing here is
-transcribed from an expansion.
+density, and \code{\link[=bell_f_ratio]{bell_f_ratio()}} runs the partition sum, so the derivatives
+come from that sum and not from a transcribed expansion.
 }
 
 \section{Two things the arithmetic needs}{

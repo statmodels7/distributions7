@@ -49,8 +49,8 @@ object built by \code{\link[=gaussian3_distrib]{gaussian3_distrib()}} they hold 
 The S7 class of the Gaussian (normal) family parametrized by its mean
 \eqn{\mu} and its precision \eqn{\tau = 1/\sigma^2 > 0}, with density
 \eqn{f(y) = (\tau/2\pi)^{1/2}\exp\{-\tau(y-\mu)^2/2\}} on the whole real
-line. It inherits from \code{continuous_distrib}, so it answers every generic of
-the \code{distrib} contract; the eleven methods listed below are registered on it
+line. It inherits from \code{continuous_distrib}, so every generic of the
+\code{distrib} class applies to it; the methods listed below are registered on it
 directly and everything else comes from the parent.
 
 Build one with \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}, which supplies the two link functions

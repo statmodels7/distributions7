@@ -43,8 +43,8 @@ body, so a family whose second response derivative is constant still
 returns a vector.
 }
 \seealso{
-\code{\link[=loc_scale_cross_y]{loc_scale_cross_y()}} and \code{\link[=partial_loc_scale_cross_y]{partial_loc_scale_cross_y()}}, the two
-bodies built on this; \code{\link[=distrib_grad_y]{distrib_grad_y()}} and \code{\link[=distrib_hess_y]{distrib_hess_y()}}, the two
-quantities it reads; \code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
+\code{\link[=loc_scale_cross_y]{loc_scale_cross_y()}}, the body built on this; \code{\link[=distrib_grad_y]{distrib_grad_y()}}
+and \code{\link[=distrib_hess_y]{distrib_hess_y()}}, the two quantities that it reads;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

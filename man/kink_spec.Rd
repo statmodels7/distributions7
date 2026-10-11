@@ -36,8 +36,9 @@ origin and everything else is. A family declares one through
 differentiability off it.
 }
 \details{
-The five compositions and the order each one leaves, measured as the first
-derivative that jumps across \eqn{v = 0}:
+The five compositions and the order each one leaves, which is the number
+of continuous derivatives at \eqn{v = 0}, one less than the order of the
+first derivative that jumps there:
 
 \tabular{lll}{
 \code{phi}      \tab \eqn{\phi(v)}          \tab order \cr

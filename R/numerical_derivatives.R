@@ -120,46 +120,41 @@ fd_self_consistency <- function(x_half, x_full) {
   max(abs(x_half - x_full)) / m
 }
 
-#' @title A Parameter Step That Chooses Itself
+#' @title Selecting the Finite-Difference Step in One Parameter
 #'
 #' @description
 #' Evaluates a difference quotient in one parameter at both steps of
 #' [fd_steps()] and returns the one that agrees better with itself at half its
-#' own step, together with the quotient there. Every numerical derivative in
-#' the parameter direction takes its step from it.
+#' own step, together with the quotient there. The numerical gradient and
+#' Hessian, the third and fourth orders that difference a Hessian, and the
+#' mixed response derivatives take their step from it;
+#' [tensor_derivatives()] and [numerical_deriv5()] use rules of their own.
 #'
 #' @details
 #' For each of the two steps the quotient \eqn{q(h)} is also taken at
 #' \eqn{h/2}, and the step kept is the one whose
-#' [fd_self_consistency()] reading is strictly the smaller. Ties, and readings
-#' that are not usable, keep the clamped step, so the answer is the clamped one
-#' unless the scaled step is measurably better.
+#' [fd_self_consistency()] reading is strictly the smaller. Ties and missing
+#' readings keep the clamped step, and an infinite reading on the clamped side
+#' gives way to a finite one on the scaled side, so the answer is the clamped
+#' step unless the scaled step is measurably better.
 #'
 #' The choice is made once for the whole vector rather than observation by
 #' observation, which is the opposite of what [fd_stable_quotient()] does in
-#' the response direction, and the difference is not an oversight. There each
+#' the response direction. There each
 #' observation carries its own \eqn{y} and therefore its own step, so a
 #' per-observation choice is a choice between two quantities that genuinely
 #' differ; here the parameter is usually one number for the whole sample, the
 #' two candidate quotients estimate the same thing, and the variation of the
 #' self-consistency reading across observations is the rounding rather than a
-#' signal. Measured over a census of 324 cells at distances from 1 to
-#' \eqn{10^{-8}} from a bound, the whole-vector choice puts 307 gradients and
-#' 238 diagonal Hessian components within \eqn{10^{-6}} of the analytic value
-#' against 285 and 229 for the per-observation choice, and on the 46 cells
-#' where the two differ the whole-vector one is the better on 44.
+#' signal.
 #'
 #' It costs four quotients where one would do, except where the two steps
 #' coincide at every entry, which is every call on a parameter with no finite
 #' bound and every positive parameter at or above one: there the clamped step
-#' is returned at once and nothing is evaluated twice. Measured on the same
-#' census, 61 cells of 324 take that path and their result is `identical()` to
-#' what the clamped step alone produced.
+#' is returned at once and nothing is evaluated twice.
 #'
-#' Each order chooses its own step, with its own `h_rel` and its own stencil.
-#' A single choice made at first order and reused would cost 2 cells of 324 on
-#' the Hessian; the two tests agree on 244 of the 263 cells where the steps
-#' differ at all.
+#' Each order selects its own step, with its own `h_rel` and its own stencil;
+#' a choice made at first order is not reused at higher orders.
 #'
 #' @param quotient A function of one step, returning the difference quotient at
 #'   that step: a numeric vector, or a list of them where the caller
@@ -225,16 +220,18 @@ fd_stable_step <- function(quotient, theta_j, bounds_j, h_rel, need_value = TRUE
 #'   \approx \frac{\log f(y; \theta + h_i e_i)
 #'     - \log f(y; \theta - h_i e_i)}{2 h_i},}
 #'
-#' so the cost is two density evaluations per parameter. Truncation is of
+#' so the cost is two density evaluations per parameter when the two candidate
+#' steps of [fd_steps()] coincide, and more when [fd_stable_step()] compares
+#' them. Truncation is of
 #' order \eqn{h^{2}} and rounding of order \eqn{\varepsilon / h}, which the
 #' default \eqn{h \propto \varepsilon^{1/3}} balances.
 #'
 #' Steps are scaled by `max(1, |theta|)` and kept inside the boundaries of
 #' `distrib@params_bounds`, by [fd_stable_step()], which reads both of
 #' [fd_steps()]'s candidates and keeps the one that agrees better with itself
-#' at half its own step. Accuracy is roughly `eps^(2/3)` (about 8 significant
-#' digits): sufficient for optimization, but slower and less precise than an
-#' analytical implementation.
+#' at half its own step. Accuracy is roughly `eps^(2/3)` (about 10 significant
+#' digits at best): sufficient for optimization, but slower and less precise
+#' than an analytical implementation.
 #'
 #' @seealso [numerical_hessian()], [distrib_gradient()]
 #' @examples
@@ -265,9 +262,10 @@ numerical_gradient <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1
 #'
 #' @description
 #' Computes the observed Hessian of the log-density with respect to the parameters
-#' by central finite differences of `distrib_pdf(..., log = TRUE)`. This powers
-#' the default [distrib_hessian()] method for distributions that do not
-#' implement an analytical Hessian.
+#' by central finite differences of `distrib_pdf(..., log = TRUE)`. The
+#' default [distrib_hessian()] method calls it for a family that has neither an
+#' analytical Hessian nor an analytical score; a family with an analytical
+#' score has it differenced instead.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
@@ -507,12 +505,13 @@ analytic_order <- function(distrib, upto) {
 #' of `distrib_pdf(..., log = TRUE)` by one **central difference** per
 #' parameter, through [numerical_gradient()]. This is why [distrib_pdf()] is
 #' the only compulsory method of the package: a family that defines the density
-#' alone gets a score, an information, four orders of derivative and a fit.
+#' alone gets a score, an information, five orders of derivative and a fit.
 #'
 #' @details
 #' # The stencil, the step and the cost
 #' Each component is \eqn{[\ell(\theta_i + h) - \ell(\theta_i - h)]/(2h)}, so
-#' one gradient costs \eqn{2p} evaluations of the log-density. The step is
+#' one gradient costs \eqn{2p} evaluations of the log-density when the two
+#' candidate steps coincide. The step is
 #' \eqn{h = \varepsilon^{1/3}\max(1, |\theta_i|) \approx 6.06\times10^{-6}}
 #' at a parameter of order one, which balances the \eqn{O(h^2)} truncation of a
 #' central difference against a rounding term growing as \eqn{1/h}. Parameter
@@ -520,16 +519,8 @@ analytic_order <- function(distrib, upto) {
 #' for reasons that look like a defect in the family, so near a finite boundary
 #' the step is kept inside: [fd_steps()] offers it cut to 49\% of the distance
 #' or scaled on that distance, and [fd_stable_step()] keeps whichever agrees
-#' better with itself at half its own step. On a gamma at a dispersion of
-#' \eqn{10^{-6}} that choice is worth five orders, the relative error going
-#' from 3.5e-01 to 1.1e-06.
-#'
-#' # What it delivers
-#' Measured on a Gamma in its mean and dispersion at
-#' \eqn{(\mu, \sigma^2) = (2, 0.7)}, against the family's own closed form: the
-#' two components agree to \eqn{1.3\times10^{-11}} and
-#' \eqn{9.7\times10^{-11}} relative, which is the \eqn{O(h^2)} the step
-#' promises.
+#' better with itself at half its own step, which removes most of the error of
+#' the clamped step close to a boundary.
 #'
 #' @param distrib An object inheriting from `distrib` that registers no method
 #'   of its own.
@@ -574,15 +565,10 @@ S7::method(distrib_gradient, distrib) <- function(distrib, y, theta, scale = c("
 #' 1.22\times10^{-4}}, twenty times the gradient's: a second difference divides
 #' by \eqn{h^2}, so rounding grows as \eqn{1/h^2} and the optimum moves out.
 #' [fd_steps()] applies the same boundary clamp. One Hessian costs
-#' \eqn{2p} evaluations for the diagonal and \eqn{4} per distinct pair,
-#' which is 6 in all for a two-parameter family.
-#'
-#' # What it delivers
-#' Measured on a Gamma in its mean and dispersion at
-#' \eqn{(\mu, \sigma^2) = (2, 0.7)}, against the family's own closed form: the
-#' three components agree to \eqn{2.3\times10^{-9}},
-#' \eqn{2.7\times10^{-8}} and \eqn{3.6\times10^{-8}} relative, two to three
-#' digits worse than the gradient's. That is the price of a second difference.
+#' \eqn{2p} evaluations for the diagonal, \eqn{4} per distinct pair and one at
+#' the center, which is 9 in all for a two-parameter family, and more when
+#' [fd_stable_step()] compares two candidate steps. A second difference is
+#' about two digits less accurate than the first difference of the gradient.
 #'
 #' @param distrib An object inheriting from `distrib` that registers no method
 #'   of its own.
@@ -617,12 +603,12 @@ S7::method(distrib_hessian, distrib) <- function(distrib, y, theta, scale = c("p
 #' \eqn{\mathbb{E}[\ell^{(ij)}] = -\mathbb{E}[\ell^{(i)}\ell^{(j)}]}, which
 #' holds for a regular model and, unlike \eqn{\mathbb{E}[\ell^{(ij)}]} read
 #' directly, survives a log-likelihood that is not differentiable in a
-#' parameter -- the location of a Laplace, where the observed Hessian is
-#' degenerate while the score variance is still the information.
+#' parameter (the location of a Laplace, where the observed Hessian is
+#' degenerate while the score variance is still the information).
 #'
 #' @details
-#' `approx` says how the right-hand side is obtained, and the choice is a
-#' choice of cost. The default `"opg"` reads
+#' The argument `approx` selects how the right-hand side is obtained, and the
+#' strategies differ in cost. The default `"opg"` reads
 #' \eqn{-\ell^{(i)}\ell^{(j)}} at each observation and takes no expectation,
 #' so it costs one call to [distrib_gradient()]; `"bartlett"` evaluates the
 #' expectation itself, which is a sum over the support for a discrete family
@@ -635,8 +621,8 @@ S7::method(distrib_hessian, distrib) <- function(distrib, y, theta, scale = c("p
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param scale `"parameter"` or `"link"`, the scale the components are
-#'   reported on. The transformation is applied in the generic's body, so this
+#' @param scale `"parameter"` or `"link"`, the scale on which the components
+#'   are reported. The transformation is applied in the generic's body, so this
 #'   method always returns the parameter scale.
 #' @param approx One of `"opg"`, `"bartlett"`, `"integrate"` or `"mc"`, the
 #'   strategy [expected_derivative()] uses. Defaults to `"opg"`.

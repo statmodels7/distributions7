@@ -27,7 +27,8 @@ multivariate family.}
 expected Hessian and \code{FALSE} the observed one.}
 
 \item{approx}{How the expectation is approximated for a family with no
-closed form for it: \code{"bartlett"} (the default), \code{"integrate"} or \code{"mc"}.
+closed form for it: \code{"opg"} (the default), \code{"bartlett"}, \code{"integrate"} or
+\code{"mc"}.
 Read only when \code{expected} is \code{TRUE} and the family has no exact
 expression; ignored otherwise.}
 

@@ -9,7 +9,7 @@
 \item{theta}{A named list with components \code{mu} (the mean, strictly between
 0 and 1) and \code{phi} (the precision, positive), each a numeric vector of
 length 1 or \code{n}. Aligned and validated by name, so a mean at or outside
-the unit interval throws.}
+the unit interval signals an error.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

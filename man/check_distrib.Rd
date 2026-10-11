@@ -28,13 +28,15 @@ Defaults to 100.}
 expected-information checks. Defaults to 200000.}
 
 \item{orders}{Integer vector. Which parameter-derivative orders to check.
-Defaults to \code{1:4}, the orders every family implements analytically; use
-e.g. \code{1:2} for a faster run. Add \code{5} to check the numerical fifth as
-well; see the bullet below for what that row compares and when it is
-emitted.}
+Defaults to \code{1:4}, the orders that every shipped family implements
+analytically; use e.g. \code{1:2} for a faster run. Add \code{5} to check the fifth
+order as well; see the bullet below for what that row compares and when
+it is emitted.}
 
-\item{tol}{Numeric. Relative tolerance for the finite-difference comparisons.
-Defaults to \code{1e-3}.}
+\item{tol}{Numeric. Tolerance for the finite-difference comparisons, applied
+to the absolute difference divided by the larger of one and the magnitude
+of the reference, so that it is relative for large components and absolute
+for small ones. Defaults to \code{1e-3}.}
 
 \item{verbose}{Logical. If \code{TRUE} (default) a readable report is printed.}
 }
@@ -47,10 +49,12 @@ it is listed in the attribute \code{"skipped"}, a data frame with columns
 }
 \description{
 Runs a battery of numerical self-consistency checks on a \code{distrib} object.
-Validates a user-defined distribution: it verifies that the density integrates (or sums) to one, that the
-CDF, quantile function and random generator agree with each other and with the
-density, and that every analytical derivative matches its finite-difference
-counterpart.
+For a univariate distribution, user-defined or shipped, it verifies that
+the density integrates (or sums) to one, that the CDF, quantile function and
+random generator agree with each other and with the density, and that every
+analytical derivative matches its finite-difference counterpart. A
+multivariate distribution is validated by the separate battery of
+\code{\link[=check_distrib_mv]{check_distrib_mv()}}, which has no CDF or quantile rows.
 }
 \details{
 The checks performed are:
@@ -63,22 +67,24 @@ derivatives use, and for a discrete one \eqn{F(k) - F(k-1)} against the
 mass.
 \item \strong{quantile}: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
 distributions, and the generalized-inverse inequalities for discrete ones).
-\item \strong{rng}: the sample mean and variance of a large draw agree with
-\code{\link[=mean]{mean()}} and \code{\link[=variance]{variance()}} within Monte Carlo error.
+\item \strong{rng}: the empirical distribution function of a large draw, at the
+quantiles for the probabilities 0.05, 0.10, ..., 0.95, agrees with
+\code{\link[=distrib_cdf]{distrib_cdf()}} within Monte Carlo error (the largest standardized
+difference stays below 6).
 \item \strong{gradient, hessian, deriv3, deriv4}: analytical values against
 \code{\link[=numerical_gradient]{numerical_gradient()}}, \code{\link[=numerical_hessian]{numerical_hessian()}},
 \code{\link[=numerical_deriv3]{numerical_deriv3()}} and \code{\link[=numerical_deriv4]{numerical_deriv4()}}.
 \item \strong{deriv5}, when \code{5} is among \code{orders}: \code{\link[=distrib_deriv5]{distrib_deriv5()}} against
 \code{\link[=numerical_deriv5]{numerical_deriv5()}} at a higher accuracy, five stencil nodes instead of
-three. No family writes the fifth order out, so there is no analytic value
-to compare against and this checks the differencing rather than a family's
-algebra. It is emitted only where \code{\link[=has_exact_deriv4]{has_exact_deriv4()}} is \code{TRUE}: where the
-fourth order is itself a fallback the fifth is a difference of a difference
-and no verdict on it would mean anything. A family that owns its
-fourth-order method while building part of it from stencils passes that
-test and may still fail this row: \code{\link[=skewt_distrib]{skewt_distrib()}} fails it at \code{nu = 3}
-and passes from \code{nu = 8} upward, the noise read here being absolute and
-falling as \code{nu} grows. It is why \code{orders} defaults to \code{1:4}.
+three. For a family that reaches the numerical fifth order the row checks
+the differencing; for a family that registers its own \code{\link[=distrib_deriv5]{distrib_deriv5()}}
+it checks that method. It is emitted only where \code{\link[=has_exact_deriv4]{has_exact_deriv4()}} is
+\code{TRUE}: where the fourth order is itself a fallback the fifth is a
+difference of a difference and a verdict on it would carry no meaning. A
+family that owns its fourth-order method while building part of it from
+stencils passes that test and may still fail this row, whose statistic is
+an absolute error for a small component. The row appears only when \code{5} is
+among \code{orders}, which default to \code{1:4}.
 \item \strong{expected information}: \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} against a
 Monte Carlo estimate of \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}. The outer
 product of the score is used as reference because it remains valid when the
@@ -113,8 +119,10 @@ of the table: it is listed with its reason in the attribute \code{"skipped"}, an
 every row that is in the table reads \code{"OK"} or \code{"FAIL"}. An infinite
 statistic is a failure, being a component that overflows where its reference
 does not; so is a check whose computation raised an error, and so is a
-density or a distribution function that is not finite, those three checks
-being defined on the values themselves.
+density or a distribution function that is not finite. The checks defined on
+the values themselves (the non-negativity of the density, the range of the
+distribution function and, for a discrete family, the quantile round trip)
+are kept even when their statistic is missing.
 
 Mixed distributions --- a density with point masses on top of it, as produced by
 \code{\link[=zero_adjusted]{zero_adjusted()}} on a continuous parent --- are handled as long as they

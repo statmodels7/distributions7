@@ -36,7 +36,7 @@ NULL
 #' pair \eqn{(a,b)} and differentiating parameter \eqn{c}.
 #'
 #' @details
-#' The components are symmetric in \eqn{(a,b)} and NOT in \eqn{c}: writing
+#' The components are symmetric in \eqn{(a,b)} and not in \eqn{c}: writing
 #' \deqn{\frac{\partial}{\partial\theta_c}\mathbb{E}[\ell_{ab}]
 #'   = \mathbb{E}[\ell_{abc}] + \mathbb{E}[\ell_{ab}\ell_{c}],}
 #' the first term is fully symmetric and the second is not, so the result is
@@ -46,7 +46,7 @@ NULL
 #' **The default method differences the family's own expected
 #' information**, one central stencil per parameter, which is a single
 #' difference of an analytic quantity wherever that quantity is a written-out
-#' formula. It is refused where it is not: see
+#' formula. Where it is not, the method signals an error: see
 #' [has_exact_expected_hessian()].
 #'
 #' On `scale = "link"` the difference is taken along the free scale of the
@@ -92,7 +92,7 @@ distrib_dexpected_hessian <- S7::new_generic(
 #' @name distrib_dexpected_hessian.distrib
 #' @description
 #' One central difference of [distrib_expected_hessian()] per
-#' parameter, refused where that quantity is itself approximated.
+#' parameter; an error where that quantity is itself approximated.
 #' @param distrib A distribution object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
@@ -116,7 +116,7 @@ S7::method(distrib_dexpected_hessian, distrib) <- function(
 #' joining [hess_names()] with the parameter differentiated in.
 #'
 #' @details
-#' The keys are BUILT and never parsed, which is the package's rule wherever a
+#' The keys are built and never parsed, which is the package's rule wherever a
 #' component name is a concatenation of parameter names: a parameter whose own
 #' name contains an underscore makes the string ambiguous to read back, and
 #' [dexpected_key()] exists so that a consumer composes the same
@@ -180,15 +180,18 @@ dexpected_key <- function(params, a, b, k) {
 #' difference in each parameter of the family's own expected information.
 #'
 #' @details
-#' The step is [fd_steps()]', which shrinks near a finite boundary so
-#' that both evaluation points stay strictly inside the parameter's open
-#' domain. On the link scale the domain is the whole line and no clamp is
-#' needed, so the step is the plain relative one.
+#' On the parameter scale the step is chosen by [fd_stable_step()] from the
+#' candidates of [fd_steps()], which shrink near a finite boundary so that
+#' both evaluation points stay strictly inside the parameter's open domain;
+#' with `approx = "mc"` the step of [fd_steps()] is used directly. On the link
+#' scale the domain is the whole line and no clamp is needed, so the step is
+#' the plain relative one.
 #'
-#' **It refuses rather than approximating an approximation.** Where the
-#' expected information is obtained by quadrature or by simulation, this would
-#' be a difference of a difference, which the package forbids everywhere, and
-#' it would cost 2p of the dearest call the family has.
+#' **The method signals an error where the expected information is itself an
+#' approximation.** Where the expected information is obtained by quadrature
+#' or by simulation, the result would be a difference of a difference, which
+#' the package does not compute anywhere, and it would cost 2p of the most
+#' expensive call that the family has.
 #'
 #' @param distrib A distribution object.
 #' @param y A numeric vector of observations.
@@ -290,19 +293,18 @@ numerical_dexpected_hessian <- function(distrib, y, theta,
 #'   = \mathbb{E}[\ell_{abcd}] + \mathbb{E}[\ell_{abd}\ell_{c}]
 #'   + \mathbb{E}[\ell_{abc}\ell_{d}] + \mathbb{E}[\ell_{ab}\ell_{cd}]
 #'   + \mathbb{E}[\ell_{ab}\ell_{c}\ell_{d}],}
-#' and no Bartlett identity isolates those moments. A family supplies the
+#' and the Bartlett identities do not isolate those moments. A family supplies the
 #' components as ordinary derivatives of its own written-out expected
 #' information; the components are symmetric in \eqn{(a,b)} and in \eqn{(c,d)}
 #' separately, and are keyed by [d2expected_names()].
 #'
 #' **There is no numerical default.** A difference of
 #' [distrib_dexpected_hessian()], whose own default is already a difference,
-#' would be the nested differencing the package forbids, so the base method
-#' signals an error and a family that does not register one has no second
-#' derivative. The families that do are `gaussian1_distrib()`,
-#' `poisson_distrib()`, `gamma1_distrib()`, `negbin2_distrib()`,
-#' `beta1_distrib()` and the seventeen listed on
-#' [distrib_dexpected_hessian.elementary], each from a compiled kernel.
+#' would be the nested differencing that the package does not use, so the base
+#' method signals an error and a family that does not register one has no
+#' second derivative. Every univariate family of the package except
+#' [enet_distrib()] registers one; the elementary families are listed on
+#' [distrib_dexpected_hessian.elementary].
 #'
 #' On `scale = "link"` the expected information is
 #' \eqn{F_{ab} = \mathbb{E}[\ell_{ab}]\,h_a' h_b'}, with no term in \eqn{h''}
@@ -344,7 +346,8 @@ distrib_d2expected_hessian <- S7::new_generic(
 #' @name distrib_d2expected_hessian.distrib
 #' @description
 #' Signals an error: a family without its own method has no second derivative
-#' of the expected information, a difference of a difference being refused.
+#' of the expected information, because differencing the first derivative
+#' would be a difference of a difference.
 #' @param distrib A distribution object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
@@ -436,7 +439,7 @@ hess_pair_name <- function(params, a, b) {
 #'
 #' @description
 #' Reads a family's compiled kernel at order 1 or 2 on the parameter scale and
-#' carries the result onto the link scale where it is asked for.
+#' carries the result onto the link scale where it is requested.
 #'
 #' @param distrib A distribution object.
 #' @param y,theta As the generic takes them.
@@ -446,7 +449,7 @@ hess_pair_name <- function(params, a, b) {
 #' @param threads The thread count passed to the kernel and to the family's
 #'   expected information.
 #' @param kern A function of the order returning the kernel's named list on the
-#'   parameter scale. A kernel asked for order 2 may return the order-1
+#'   parameter scale. A kernel called for order 2 may return the order-1
 #'   components beside the order-2 ones, and where it does they are read from
 #'   that one call rather than from a second: a route that sums over the
 #'   support pays for the family's derivatives once.

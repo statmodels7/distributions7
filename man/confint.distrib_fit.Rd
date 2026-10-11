@@ -16,7 +16,7 @@ the level the fit was computed at, \code{object@level}.}
 \item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}; anything else signals an error. It is the fourth
 argument, so name it: \code{confint(fit, "sigma", "link")} passes \code{"link"}
-as \code{level} and fails inside the quantile.}
+as \code{level}, which then signals an error.}
 
 \item{...}{Unused, accepted for compatibility with \code{\link[stats:confint]{stats::confint()}}.}
 }
@@ -30,7 +30,7 @@ parameter names. Both entries are \code{NA} where the standard error is.
 Returns Wald intervals for the estimated parameters. They are built
 symmetrically on the link scale, \eqn{\hat\eta \pm z_{1-\alpha/2}\,
 \mathrm{se}(\hat\eta)}, and mapped through \eqn{g^{-1}} when the parameter
-scale is asked for, so a limit cannot leave the parameter's domain: a scale
+scale is requested, so a limit cannot leave the parameter's domain: a scale
 has a positive lower limit and a probability stays inside \eqn{(0,1)}. The
 two ends are sorted after mapping, because a link need not be increasing.
 

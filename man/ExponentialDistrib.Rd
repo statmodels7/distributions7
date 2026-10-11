@@ -47,9 +47,9 @@ object built by \code{\link[=exponential_distrib]{exponential_distrib()}} they h
 \description{
 The S7 class of the exponential family parametrized by its \strong{mean}
 \eqn{\mu > 0}, with density \eqn{f(y) = \mu^{-1}e^{-y/\mu}} on
-\eqn{[0, \infty)}. It inherits from \code{continuous_distrib}, so it answers
-every generic of the \code{distrib} contract; the eleven methods listed below are
-registered on it directly.
+\eqn{[0, \infty)}. It inherits from \code{continuous_distrib}, so every generic of
+the \code{distrib} class applies to it; the methods listed below are registered on
+it directly.
 
 This is the only single-parameter continuous family in the package, so every
 derivative array it returns has one component per order and its information

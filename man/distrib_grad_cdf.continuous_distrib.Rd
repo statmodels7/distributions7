@@ -29,21 +29,19 @@ The fallback for a continuous family that registers no closed form: one
 central difference of \code{\link[=distrib_cdf]{distrib_cdf()}} per parameter, through
 \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}}, put on the requested tail and scale by
 \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}. The step is \eqn{\varepsilon^{1/3}} relative, about
-\eqn{6.1\times10^{-6}}, and the accuracy measured against a family's own
-closed form is \eqn{6.1\times10^{-11}} relative.
+\eqn{6.1\times10^{-6}}.
 }
 \details{
-Eight of the 42 univariate families reach this method: beta1, beta2, chisq,
-gamma1, gamma2, gengamma1 and the two von Mises. In the first six the
-derivative wanted is that of an incomplete gamma or beta function with
-respect to its shape, which is hypergeometric and has no elementary form; in
-the last two the distribution function is itself a quadrature. Every other
-continuous family registers a formula.
+No shipped univariate family reaches this method. Every one registers its
+own gradient: a closed form or, for the families whose derivative in a
+shape parameter has no elementary form, the compiled quadrature of
+\code{\link[=compiled_cdf]{compiled_cdf()}}. The method serves continuous families defined by the user
+and the wrappers of continuous families.
 }
 \examples{
-# A gamma reaches this method: its cdf derivative in the shape has no
-# elementary form, so the cdf is differenced instead.
-d <- gamma2_distrib()
+# A truncated gamma registers no gradient of its own, so it reaches this
+# method and the cdf is differenced.
+d <- truncated(gamma2_distrib(), upper = 6)
 distrib_grad_cdf(d, c(1, 2, 4), list(mu = 2, sigma2 = 1))
 
 }

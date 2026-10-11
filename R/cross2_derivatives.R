@@ -38,10 +38,11 @@ NULL
 #'
 #' # Where the numbers come from
 #'
-#' A distribution with a closed form provides it. The rest take one central
-#' difference of [distrib_hess_y()] in each parameter, through
-#' [numerical_cross2_y()]. The reference is the analytic response Hessian, so a
-#' family carrying one pays for exactly one difference.
+#' A distribution with a closed form provides it. The rest apply one tensor
+#' stencil to the highest quantity that the family implements itself, through
+#' [mixed_tensor_derivatives()]: a central difference of the analytic response
+#' Hessian in each parameter where the family has one, so that such a family
+#' pays for exactly one difference.
 #'
 #' Continuous distributions only, as with every response derivative: a discrete
 #' family has no method and the call raises with its class named.
@@ -104,20 +105,22 @@ distrib_cross2_y <- S7::new_generic("distrib_cross2_y", "distrib", function(dist
 #'
 #' @description
 #' Computes \eqn{\partial^3 \ell / \partial y^2\, \partial \theta_i} by one
-#' central difference of [distrib_hess_y()] in each parameter. It is what the
-#' default [distrib_cross2_y()] method runs for a continuous family with no
-#' closed form of its own.
+#' central difference of [distrib_hess_y()] in each parameter. A family with a
+#' closed form for some components calls it for the rest. The default
+#' [distrib_cross2_y()] method for a continuous family uses
+#' [mixed_tensor_derivatives()] instead.
 #'
 #' @details
 #' The reference is the response HESSIAN, one order up from the log-density, so
 #' a distribution carrying an analytic `distrib_hess_y` pays for exactly one
 #' finite-difference layer. Where that Hessian is itself a fallback the two
 #' differences act on different variables and compose into a single mixed
-#' stencil, rather than into the nested differencing of one variable the
-#' package forbids.
+#' stencil, rather than into the nested differencing of one variable that the
+#' package does not use.
 #'
-#' The step is [fd_steps()]'s, so a parameter near a bound is differenced
-#' inward instead of across it.
+#' The step is chosen by [fd_stable_step()] from the two candidates of
+#' [fd_steps()], so that both evaluation points of a parameter near a bound
+#' stay inside its domain.
 #'
 #' @param distrib A distribution object inheriting from `continuous_distrib`.
 #' @param y A numeric vector of observations.
@@ -201,16 +204,17 @@ numerical_cross2_y <- function(distrib, y, theta,
 #' @param distrib A `continuous_distrib` object with no closed form of its own.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
+#' @param scale One of `"parameter"` or `"link"`, applied by the generic after
 #'   dispatch.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per parameter, keyed by
 #'   `distrib@params`.
 #'
-#' @seealso [distrib_cross2_y()] for the generic, [numerical_cross2_y()], which
-#'   does the work, and [distrib_cross2_y.Gaussian1Distrib()] for a family that
-#'   overrides it.
+#' @seealso [distrib_cross2_y()] for the generic, [mixed_tensor_derivatives()],
+#'   which does the work, [numerical_cross2_y()] for the differenced part of a
+#'   family's own method, and [distrib_cross2_y.Gaussian1Distrib()] for a
+#'   family that overrides it.
 #'
 #' @keywords internal
 #'
@@ -237,7 +241,7 @@ S7::method(distrib_cross2_y, continuous_distrib) <- function(distrib, y, theta,
 #' @name distrib_cross2_y.Gaussian1Distrib
 #'
 #' @description
-#' Closed form, and half of it zero. The gaussian's response curvature is
+#' Closed form. The gaussian's response curvature is
 #' \eqn{\ell^{(yy)} = -1/\sigma^2}, which carries no location, so
 #' \deqn{\frac{\partial^3\ell}{\partial y^2\,\partial\mu} = 0, \qquad
 #'   \frac{\partial^3\ell}{\partial y^2\,\partial\sigma} = \frac{2}{\sigma^3}.}
@@ -246,7 +250,7 @@ S7::method(distrib_cross2_y, continuous_distrib) <- function(distrib, y, theta,
 #' @param distrib A `Gaussian1Distrib` object.
 #' @param y A numeric vector of observations. Only its length is used.
 #' @param theta A named list with `mu` and `sigma`.
-#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
+#' @param scale One of `"parameter"` or `"link"`, applied by the generic after
 #'   dispatch.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -304,16 +308,15 @@ S7::method(distrib_cross2_y, Gaussian1Distrib) <- function(distrib, y, theta,
 #'     = -\frac{Q + (\nu+1)\partial_\nu Q}{\sigma^2}.}
 #'
 #' @details
-#' Nothing vanishes here, unlike the gaussian's, and every component varies
-#' with the data: the t's response curvature is a function of \eqn{z} rather
-#' than a constant, and it is that dependence which makes the family
-#' redescending. The three formulas share \eqn{Q}, \eqn{Q'} and
-#' \eqn{\partial_\nu Q}, so each is evaluated once per observation.
+#' Unlike the gaussian's, every component varies with the data, because the
+#' t's response curvature is a function of \eqn{z} rather than a constant. The
+#' three formulas share \eqn{Q}, \eqn{Q'} and \eqn{\partial_\nu Q}, so each is
+#' evaluated once per observation.
 #'
 #' @param distrib A `StudentT1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list with `mu`, `sigma` and `nu`.
-#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
+#' @param scale One of `"parameter"` or `"link"`, applied by the generic after
 #'   dispatch.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'

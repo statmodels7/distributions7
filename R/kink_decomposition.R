@@ -28,8 +28,9 @@ NULL
 #' differentiability off it.
 #'
 #' @details
-#' The five compositions and the order each one leaves, measured as the first
-#' derivative that jumps across \eqn{v = 0}:
+#' The five compositions and the order each one leaves, which is the number
+#' of continuous derivatives at \eqn{v = 0}, one less than the order of the
+#' first derivative that jumps there:
 #'
 #' \tabular{lll}{
 #'   `phi`      \tab \eqn{\phi(v)}          \tab order \cr
@@ -149,15 +150,17 @@ kink_order <- function(phi) {
 #'
 #' @description
 #' One integer per parameter: the largest `k` such that the log-density has `k`
-#' continuous derivatives in that parameter everywhere in `y`. `Inf` says the
-#' parameter is smooth, which is the answer for every family that declares no
-#' [kink_decomposition()].
+#' continuous derivatives in that parameter everywhere in `y`. `Inf` marks a
+#' smooth parameter, which is the value for a family that declares no
+#' [kink_decomposition()] and records every parameter as smooth in
+#' `params_smooth`.
 #'
 #' @details
-#' The order is DEDUCED and not declared. Where a family declares a
-#' decomposition \eqn{c(\theta)\phi(v(y,\theta))}, a parameter the kink moves
-#' with -- one whose \eqn{\partial v/\partial \theta_p} is not identically zero
-#' -- inherits the order of \eqn{\phi}, and every other parameter stays `Inf`.
+#' The order is deduced and not declared. Where a family declares a
+#' decomposition \eqn{c(\theta)\phi(v(y,\theta))}, a parameter with which the
+#' kink moves (one whose \eqn{\partial v/\partial \theta_p} is not identically
+#' zero) inherits the order of \eqn{\phi}, and every other parameter stays
+#' `Inf`.
 #' Whether \eqn{\partial v/\partial \theta_p} vanishes is measured at probe
 #' values rather than assumed, so a Huber cut-off held at zero reports the
 #' scale as smooth, which it then is.
@@ -283,7 +286,8 @@ params_order <- function(distrib, ...) {
 #'
 #' @description
 #' Three quantiles of the family at the probe parameters, falling back on the
-#' interior of its bounds where the quantile function refuses.
+#' interior of its bounds where the quantile function signals an error or
+#' returns a value that is not finite.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param theta A named list of parameter values.
@@ -337,12 +341,12 @@ S7::method(kink_decomposition, distrib) <- function(distrib) NULL
 #'
 #' \describe{
 #'   \item{`dv`}{each \eqn{\partial v/\partial \theta_p} against a central
-#'     difference of \eqn{v} itself. This isolates `dv`, which nothing else
-#'     reads.}
+#'     difference of \eqn{v} itself. This checks `dv` on its own, although
+#'     the jump check below reads it as well.}
 #'   \item{`jump`}{the jump of the score across the kink against the one the
 #'     declaration predicts. Writing \eqn{\Delta\phi'} for the jump of
-#'     \eqn{\phi'} at the origin -- 2 for \eqn{\lvert v \rvert} and 1 for
-#'     \eqn{(v)_+} -- the score of \eqn{c(\theta)\phi(v)} jumps by
+#'     \eqn{\phi'} at the origin (2 for \eqn{\lvert v \rvert} and 1 for
+#'     \eqn{(v)_+}), the score of \eqn{c(\theta)\phi(v)} jumps by
 #'     \deqn{c(\theta)\, \Delta\phi' \, \partial v/\partial \theta_p}
 #'     as \eqn{y} crosses the surface \eqn{v = 0}. This is the check that
 #'     matters: it reads `phi`, `v`, `dv` and `coef` at once, and a wrong `v`
@@ -352,8 +356,8 @@ S7::method(kink_decomposition, distrib) <- function(distrib) NULL
 #'     would pass a declaration that named too few parameters.}
 #' }
 #'
-#' A composition whose \eqn{\Delta\phi'} is zero -- \eqn{(v)_+^2} and
-#' \eqn{(v)_+^3}, where the second and third derivative jump instead -- is
+#' A composition whose \eqn{\Delta\phi'} is zero (\eqn{(v)_+^2} and
+#' \eqn{(v)_+^3}, where the second and third derivative jump instead) is
 #' reported as not checked rather than checked against zero, which any
 #' declaration would satisfy.
 #'
@@ -430,7 +434,9 @@ check_kink <- function(distrib, theta = NULL, tol = 1e-6, verbose = TRUE) {
 #'
 #' @description
 #' Solves \eqn{v(y, \theta) = 0} for `y`, which is where the log-density is not
-#' smooth. Returns `NA` when no sign change is bracketed inside the support.
+#' smooth. The search runs over the support, cut to \eqn{[-1000, 1000]} on a
+#' side whose bound is infinite, and returns `NA` when no sign change is
+#' bracketed there.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param kd A [kink_spec()].

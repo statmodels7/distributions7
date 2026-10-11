@@ -8,7 +8,7 @@
 
 \item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}.
 Aligned and validated by name, so a missing or out-of-bounds
-component throws.}
+component signals an error.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

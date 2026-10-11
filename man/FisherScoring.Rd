@@ -13,18 +13,19 @@ FisherScoring(
 }
 \arguments{
 \item{approx}{How the expectation is approximated when the family has no
-closed-form expected information: one of \code{"bartlett"}, \code{"integrate"},
-\code{"mc"} or \code{"opg"}. Ignored by a family that has one, and \code{\link[=fit_distrib]{fit_distrib()}}
-rejects the call in that case.}
+closed-form expected information: one of \code{"opg"}, \code{"bartlett"},
+\code{"integrate"} or \code{"mc"}. Ignored by a family that has one, and
+\code{\link[=fit_distrib]{fit_distrib()}} rejects any value other than the default \code{"opg"} in that
+case.}
 
 \item{nsim}{Monte Carlo sample size, a single positive number, read only
 when \code{approx = "mc"} is in force.}
 
 \item{criterion}{A stopping rule from \pkg{optimizers7}, or \code{NULL} to take
-the default of \code{\link[optimizers7:newton]{optimizers7::newton()}}.}
+\code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}} at its default tolerance.}
 
 \item{maxit}{An iteration limit, a single positive number, or \code{NULL} for the
-same default.}
+default of \code{\link[optimizers7:newton]{optimizers7::newton()}}.}
 }
 \value{
 An S7 object of class \code{FisherScoring} with those four properties.

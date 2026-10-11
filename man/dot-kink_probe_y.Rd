@@ -16,7 +16,8 @@ A numeric vector.
 }
 \description{
 Three quantiles of the family at the probe parameters, falling back on the
-interior of its bounds where the quantile function refuses.
+interior of its bounds where the quantile function signals an error or
+returns a value that is not finite.
 }
 \examples{
 d <- laplace_distrib()

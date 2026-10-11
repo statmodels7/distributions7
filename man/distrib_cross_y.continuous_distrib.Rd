@@ -27,13 +27,13 @@ analytic response gradient or score differences it once, in the parameter
 or in the response; a family with a density alone takes one four-point
 mixed stencil of the log-density.
 
-\strong{No family shipped in this package reaches this method.} All 32 continuous
-families register a closed form, so this exists for a family defined
-outside the package, which gets the mixed block for free from its density
-alone.
+Every continuous family shipped in this package registers a closed form,
+so this method serves a family defined outside the package, which obtains
+the mixed block from its density alone.
 }
 \seealso{
-\code{\link[=numerical_cross_y]{numerical_cross_y()}}, which does the work;
+\code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}, which does the work;
+\code{\link[=numerical_cross_y]{numerical_cross_y()}} for the differenced part of a family's own method;
 \code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic;
 \code{\link[=distrib_cross_y.Gaussian1Distrib]{distrib_cross_y.Gaussian1Distrib()}} for a closed form to compare against.
 }

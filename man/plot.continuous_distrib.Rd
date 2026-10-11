@@ -8,14 +8,15 @@
 
 \item{theta}{A named list or numeric vector holding one entry per parameter
 of \code{x}. A component of length \eqn{k > 1} draws \eqn{k} curves, and every
-component must have length 1 or that same \eqn{k}. Missing, a random
-parameter is drawn by \code{\link[=generate_random_theta]{generate_random_theta()}}.}
+component must have length 1 or that same \eqn{k}. When \code{theta} is
+missing, random values for all parameters are drawn by
+\code{\link[=generate_random_theta]{generate_random_theta()}}.}
 
 \item{xlim}{A numeric vector of length 2, or \code{NULL} (the default) to compute
 the range from the quantiles as above.}
 
 \item{legend}{Logical of length 1: draw the key when several settings are
-plotted. Defaults to \code{TRUE}. Nothing is drawn when only one is.}
+plotted. Defaults to \code{TRUE}. A single setting is drawn without a key.}
 
 \item{...}{Passed to \code{\link[graphics:plot.default]{graphics::plot()}}, for instance \code{main}, \code{xlab} or
 \code{ylim}. A \code{col} or \code{lty} given here wins over the palette and is recycled
@@ -26,8 +27,8 @@ over the curves.}
 }
 \description{
 Draws the density of a continuous family over a grid of 1000 points, one
-curve per parameter setting. A component of \code{theta} given as a vector asks
-for one curve per element, so \code{plot(d, list(mu = 0, sigma = c(1, 2, 4)))}
+curve per parameter setting. A component of \code{theta} given as a vector gives
+one curve per element, so \code{plot(d, list(mu = 0, sigma = c(1, 2, 4)))}
 draws three densities that share a mean and differ in scale.
 }
 \section{The two keys}{
@@ -42,7 +43,7 @@ whichever top corner the mass leaves emptier. See
 \section{The horizontal range}{
 It covers every setting, not the first: from the smallest 0.5\% quantile to
 the largest 99.5\% quantile over them, widened by a tenth and clamped to the
-support. Give \code{xlim} to override it, which is worth doing for a heavy-tailed
+support. Give \code{xlim} to override it, which is useful for a heavy-tailed
 family, whose 99.5\% quantile can sit orders of magnitude past anything worth
 drawing.
 }
@@ -51,13 +52,13 @@ drawing.
 # One curve per value of the scale, at a shared mean.
 plot(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
 
-# A heavy-tailed family wants its own window: the 99.5\% quantile of a
-# Cauchy is two orders of magnitude past the interesting part.
+# A heavy-tailed family needs its own window: the 99.5\% quantile of a
+# standard Cauchy is about ten times as far out as the window drawn here.
 plot(cauchy_distrib(), list(mu = 0, sigma = 1), xlim = c(-6, 6))
 
 }
 \seealso{
-\code{\link[=plot.discrete_distrib]{plot.discrete_distrib()}} for a lattice family;
+\code{\link[=plot.discrete_distrib]{plot.discrete_distrib()}} for a discrete family;
 \code{\link[=plot.distrib_fit]{plot.distrib_fit()}} to compare a fit with data;
 \code{\link[=plot_settings]{plot_settings()}}, \code{\link[=plot_keys]{plot_keys()}} and \code{\link[=plot_labels]{plot_labels()}} for the pieces.
 }

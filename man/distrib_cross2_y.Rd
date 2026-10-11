@@ -50,10 +50,11 @@ rule enters, exactly as for \code{\link[=distrib_cross_y]{distrib_cross_y()}}.
 }
 
 \section{Where the numbers come from}{
-A distribution with a closed form provides it. The rest take one central
-difference of \code{\link[=distrib_hess_y]{distrib_hess_y()}} in each parameter, through
-\code{\link[=numerical_cross2_y]{numerical_cross2_y()}}. The reference is the analytic response Hessian, so a
-family carrying one pays for exactly one difference.
+A distribution with a closed form provides it. The rest apply one tensor
+stencil to the highest quantity that the family implements itself, through
+\code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}: a central difference of the analytic response
+Hessian in each parameter where the family has one, so that such a family
+pays for exactly one difference.
 
 Continuous distributions only, as with every response derivative: a discrete
 family has no method and the call raises with its class named.

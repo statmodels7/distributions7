@@ -9,7 +9,7 @@
 \item{theta}{A named list with components \code{mu} (the mean, any real value)
 and \code{sigma} (the standard deviation, positive), each a numeric vector of
 length 1 or \code{n}. Aligned and validated by name, so a missing or
-out-of-bounds component throws.}
+out-of-bounds component signals an error.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

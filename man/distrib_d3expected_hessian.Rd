@@ -49,9 +49,9 @@ and signals an error otherwise. The step is the cube root of machine epsilon
 relative to the coordinate, kept inside a finite bound on the parameter
 scale by \code{\link[=fd_steps]{fd_steps()}}.
 
-On \code{scale = "link"} the difference is taken along the free scale of the
-parameter, of the link-scale second derivative, so the chain rule is the
-one \code{\link[=dexpected_link]{dexpected_link()}} already applies.
+On \code{scale = "link"} the difference of the link-scale second derivative is
+taken along the free coordinate of the parameter, so the chain rule is the
+one that \code{\link[=dexpected_link]{dexpected_link()}} already applies.
 }
 \examples{
 d <- gaussian1_distrib()

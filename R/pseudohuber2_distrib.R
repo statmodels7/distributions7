@@ -403,12 +403,11 @@ S7::method(distrib_hess_y_hess, PseudoHuber2Distrib) <-
 #'   distrib_deriv4_cdf.PseudoHuber2Distrib
 #'
 #' @description
-#' The derivatives of the distribution function in the parameters, by the
-#' location-scale identities of [partial_loc_scale_grad_cdf()],
-#' [partial_loc_scale_hess_cdf()] and, at orders three and four,
-#' [partial_loc_scale_deriv_cdf_k()]: the location and scale components are
-#' closed in the density, and the components in \eqn{\nu} are differences of
-#' the quadrature.
+#' The derivatives of the distribution function in the parameters, by
+#' [compiled_grad_cdf()] and [compiled_hess_cdf()] and, at orders three and
+#' four, [partial_loc_scale_deriv_cdf_k()]: the location and scale components
+#' are closed in the density, and the components in \eqn{\nu} are integrals
+#' of the density's own derivatives, taken by the compiled rule.
 #'
 #' @param distrib A `PseudoHuber2Distrib` object.
 #' @param q A numeric vector of quantiles.

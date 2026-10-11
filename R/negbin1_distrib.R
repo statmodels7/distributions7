@@ -9,9 +9,9 @@ NULL
 #' whose variance is **linear** in the mean: with a mean \eqn{\mu > 0} and a
 #' dispersion \eqn{\theta > 0}, \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}, so
 #' the variance-to-mean ratio is \eqn{1+\theta} at every mean. It inherits from
-#' `discrete_distrib`, so it answers every generic of the `distrib` contract;
-#' the seven methods listed below are registered on it in this file and
-#' everything else comes from the parent.
+#' `discrete_distrib`, so every generic of the `distrib` class applies to it;
+#' the methods listed below are registered on it in this file and everything
+#' else comes from the parent.
 #'
 #' Build one with [negbin1_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
@@ -238,7 +238,7 @@ S7::method(distrib_cdf, NegBin1Distrib) <- function(distrib, q, theta,
 #' \deqn{Q(p; \mu, \theta) =
 #'       \min\left\{y \in \mathbb{N}_0 : F(y; \mu, \theta) \ge p\right\},}
 #' by calling [stats::qnbinom()] at size \eqn{r = \mu/\theta} and success
-#' probability \eqn{1/(1+\theta)}. The support is a lattice, so the round trip
+#' probability \eqn{1/(1+\theta)}. The support is discrete, so the round trip
 #' through [distrib_cdf.NegBin1Distrib()] does **not** return `p`: it returns
 #' the mass up to the smallest integer whose cumulative probability reaches
 #' `p`, which overshoots.
@@ -272,8 +272,9 @@ S7::method(distrib_cdf, NegBin1Distrib) <- function(distrib, q, theta,
 #' q <- distrib_quantile(d, p, th)
 #' q
 #'
-#' # On a lattice the round trip overshoots: the cumulative probability at the
-#' # returned integer is at or above the one asked for, not equal to it.
+#' # On a discrete support the round trip overshoots: the cumulative
+#' # probability at the returned integer is at or above the one asked for, not
+#' # equal to it.
 #' rbind(asked = p, reached = distrib_cdf(d, q, th))
 #'
 #' # The overdispersion shows in the width: the same mean under a Poisson

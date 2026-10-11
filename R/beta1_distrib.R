@@ -8,10 +8,9 @@ NULL
 #' The S7 class of the beta family on \eqn{(0, 1)} parametrized by its mean
 #' \eqn{\mu \in (0, 1)} and a precision \eqn{\phi > 0}, so that the shapes are
 #' \eqn{\alpha = \mu\phi} and \eqn{\beta = (1-\mu)\phi} and the variance is
-#' \eqn{\mu(1-\mu)/(\phi+1)}. It inherits from `continuous_distrib`, so it
-#' answers every generic of the `distrib` contract; the eleven methods listed
-#' below are registered on it directly and everything else comes from the
-#' parent.
+#' \eqn{\mu(1-\mu)/(\phi+1)}. It inherits from `continuous_distrib`, so every
+#' generic of the `distrib` class applies to it; the methods listed below are
+#' registered on it directly and everything else comes from the parent.
 #'
 #' Build one with [beta1_distrib()], which supplies the two link functions and
 #' fills the properties in. This page documents the raw S7 constructor, which

@@ -32,20 +32,22 @@ as long as \code{y}.
 }
 \description{
 Computes \eqn{\partial^3 \ell / \partial y^2\, \partial \theta_i} by one
-central difference of \code{\link[=distrib_hess_y]{distrib_hess_y()}} in each parameter. It is what the
-default \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} method runs for a continuous family with no
-closed form of its own.
+central difference of \code{\link[=distrib_hess_y]{distrib_hess_y()}} in each parameter. A family with a
+closed form for some components calls it for the rest. The default
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} method for a continuous family uses
+\code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}} instead.
 }
 \details{
 The reference is the response HESSIAN, one order up from the log-density, so
 a distribution carrying an analytic \code{distrib_hess_y} pays for exactly one
 finite-difference layer. Where that Hessian is itself a fallback the two
 differences act on different variables and compose into a single mixed
-stencil, rather than into the nested differencing of one variable the
-package forbids.
+stencil, rather than into the nested differencing of one variable that the
+package does not use.
 
-The step is \code{\link[=fd_steps]{fd_steps()}}'s, so a parameter near a bound is differenced
-inward instead of across it.
+The step is chosen by \code{\link[=fd_stable_step]{fd_stable_step()}} from the two candidates of
+\code{\link[=fd_steps]{fd_steps()}}, so that both evaluation points of a parameter near a bound
+stay inside its domain.
 }
 \section{Notation}{
 

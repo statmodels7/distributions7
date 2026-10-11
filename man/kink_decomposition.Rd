@@ -2,7 +2,7 @@
 % Please edit documentation in R/generics.R
 \name{kink_decomposition}
 \alias{kink_decomposition}
-\title{The Kink a Family Carries}
+\title{The Kink of a Family}
 \usage{
 kink_decomposition(distrib)
 }
@@ -19,9 +19,10 @@ that is smooth in every parameter. \code{\link[=params_order]{params_order()}} r
 differentiability off the answer.
 }
 \details{
-Three families declare one, all for the same reason -- an absolute value of
-the residual in the log-density -- and every other family inherits the base
-method, which returns \code{NULL}.
+Three families declare one (\code{\link[=laplace_distrib]{laplace_distrib()}}, \code{\link[=laplace2_distrib]{laplace2_distrib()}} and
+\code{\link[=enet_distrib]{enet_distrib()}}), all for the same reason: an absolute value of the
+residual in the log-density. Every other family inherits the base method,
+which returns \code{NULL}.
 
 A wrapper does not propagate the declaration today, so a wrapper of a kinked
 family returns \code{NULL} here while \code{params_smooth} still records the kink;
@@ -36,5 +37,5 @@ kink_decomposition(laplace_distrib())
 \seealso{
 \code{\link[=kink_spec]{kink_spec()}} for the object, \code{\link[=params_order]{params_order()}} for the order
 deduced from it, \code{\link[=check_kink]{check_kink()}} for the validator, and
-\code{\link[=param_smoothness]{param_smoothness()}} for the logical this generalises.
+\code{\link[=param_smoothness]{param_smoothness()}} for the logical that this generalizes.
 }

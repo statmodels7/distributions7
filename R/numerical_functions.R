@@ -10,7 +10,7 @@
 #' returns the per-row integrals, `NA` where the accuracy was not
 #' reached; the caller decides what a failed row means and names it.
 #'
-#' @param integrand The integrand, in `quad_vec`'s matrix contract.
+#' @param integrand The integrand, in the matrix convention of `quad_vec`.
 #' @param lower,upper Numeric vectors of panel endpoints.
 #' @return A numeric vector of integrals, `NA` for failed rows.
 #' @keywords internal
@@ -62,10 +62,9 @@ discrete_support_sum <- function(term, from, to, n_rows) {
 #'
 #' @description
 #' Calls [numericals7::series_vec()] with its warning muffled and
-#' promotes a row that did not converge to an error naming it: a series that
-#' does not converge is a failure of the request, not a number.
+#' promotes a row that did not converge to an error that names the row.
 #'
-#' @param term A function `term(k, i)` in `series_vec`'s contract.
+#' @param term A function `term(k, i)` in the convention of `series_vec`.
 #' @param from The first summation index.
 #' @param n_rows The number of parameter rows.
 #' @return A numeric vector of sums, one per row.
@@ -188,8 +187,8 @@ distrib_const_rows <- function(distrib) {
 #' quantiles, which anchors the quadrature on the probability mass wherever it
 #' sits. For a family with a non-smooth parameter, the points that
 #' [kink_knots()] returns are knots as well, so that no panel contains a jump
-#' of the score. A combination the batched quadrature rejects -- an integrable
-#' endpoint singularity too harsh for bisection -- is rescued by one scalar
+#' of the score. A combination that the batched quadrature rejects (an
+#' integrable endpoint singularity too harsh for bisection) is rescued by one scalar
 #' [stats::integrate()] run, whose extrapolation reaches it; an
 #' error naming the combination is raised only when both routes fail.
 #' @param distrib A `continuous_distrib`.

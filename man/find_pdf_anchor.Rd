@@ -15,8 +15,8 @@ find_pdf_anchor(distrib, theta)
 A single number, an interior point of high density.
 }
 \description{
-Finds an approximate mode, used to split integrals, to scale root-finding
-brackets and to recenter the ratio-of-uniforms kernel.
+Finds an approximate mode, at which \code{\link[=distrib_cdf.continuous_distrib]{distrib_cdf.continuous_distrib()}}
+splits its integral.
 }
 \details{
 The support is compactified to \eqn{(0, 1)} and the maximum found by

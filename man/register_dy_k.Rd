@@ -45,9 +45,8 @@ that a family writes its rule once instead of twice.
 \section{Registered on}{
 
 This body serves both third- and fourth-order response derivatives on the
-twelve families whose response is not a pure location, so
-\code{?distrib_deriv3_y.Gamma1Distrib} and its twenty-three siblings open this
-page:
+families listed below, which write a rule in the response of their own, so
+\code{?distrib_deriv3_y.Gamma1Distrib} and the other aliases open this page:
 \code{Gamma1Distrib}, \code{Gamma2Distrib}, \code{ChisqDistrib}, \code{ExponentialDistrib}, \code{Beta1Distrib}, \code{Beta2Distrib}, \code{Weibull1Distrib}, \code{InvGauss1Distrib}, \code{InvGauss2Distrib}, \code{Lognormal1Distrib}, \code{VonMises1Distrib}, \code{VonMises2Distrib}.
 }
 

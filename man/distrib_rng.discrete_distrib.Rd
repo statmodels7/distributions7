@@ -10,8 +10,9 @@ no method of its own.}
 \item{n}{The number of draws, a single non-negative integer.}
 
 \item{theta}{A named list of parameters, each of length 1 or \code{n}. A
-component of length \code{n} gives one draw per parameter setting, and the
-draws are grouped by distinct setting so that each builds one table.}
+component of length \code{n} gives one draw per parameter setting, taken in
+order, and the table is rebuilt whenever the setting changes from one draw
+to the next.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -23,13 +24,11 @@ The fallback for a discrete family that implements no generator of its own:
 inverse transform sampling against the cumulative table
 \code{\link[=disc_cum_table]{disc_cum_table()}} builds.
 
-No rejection scheme is needed here and none would help. Inverting the
-cumulative mass function is exact, the distribution function of a lattice
-variable being a step function, so there is nothing to solve. The table is
-built once per distinct parameter setting and the whole sample is located in
-it by one binary search, which costs a fraction of a microsecond per draw:
-measured on a Poisson defined by its mass alone, 3000 draws take 0.01 s and
-return a sample mean of 3.034 at a true 3.
+This method uses no rejection scheme. Inverting the cumulative mass
+function is exact, the distribution function of a discrete variable being a
+step function, so there is nothing to solve. With scalar parameters the
+table is built once and the whole sample is located in it by one binary
+search.
 }
 \seealso{
 \code{\link[=disc_cum_table]{disc_cum_table()}}, which builds the table;

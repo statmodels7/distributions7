@@ -12,11 +12,14 @@
 a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
-default; \code{FALSE} flips the sign of every component.}
+default. With \code{log = FALSE}, \code{FALSE} flips the sign of every component;
+with \code{log = TRUE} it returns the derivatives of \eqn{\log S}, where
+\eqn{S = 1 - F}, which are not the negatives of the lower-tail ones.}
 
 \item{log}{Are derivatives of the log probability wanted? A single logical,
 \code{TRUE} by default. Far into a tail the probability underflows to zero and
-the result is \code{-Inf} or \code{NaN}.}
+the result is \code{-Inf} or \code{NaN}, although the derivative of the logarithm
+is finite there.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{sigma}, each the
@@ -27,14 +30,15 @@ Closed form, from the location-scale structure:
 \eqn{\partial F/\partial\mu = -f(q)} and
 \eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
 method is \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} itself, shared with the logistic, the
-Cauchy and the Laplace, so nothing here is particular to the Gaussian beyond
-its density.
+Cauchy, the Laplace and the Gumbel, so nothing here is particular to the
+Gaussian beyond its density.
 }
 \details{
 A censored Gaussian likelihood is cheap for this reason: a right-censored
 observation contributes \eqn{\log S(q)}, whose score in \eqn{\mu} is
-\eqn{f(q)/S(q)}, the inverse Mills ratio, and the whole of it comes from the
-density the family already computes.
+\eqn{f(q)/S(q)}, the inverse Mills ratio of \eqn{z} divided by \eqn{\sigma},
+and the whole of it comes from the density that the family already
+computes.
 }
 \section{Notation}{
 

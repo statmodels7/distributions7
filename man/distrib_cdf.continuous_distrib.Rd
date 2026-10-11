@@ -25,25 +25,23 @@ matters should write its own method.}
 }
 \value{
 A numeric vector of cumulative probabilities, the length of the
-recycled \code{q} and \code{theta}. \code{NA} for a row whose quadrature did not reach
-its accuracy target.
+recycled \code{q} and \code{theta}, with \code{NA} where \code{q} is \code{NA}. A quantile whose
+quadrature does not reach its accuracy target signals an error that names
+it.
 }
 \description{
 The fallback for a continuous family that implements no analytical
-distribution function: it integrates \code{distrib_pdf} numerically. Measured on
-a Gamma defined by its density alone, it agrees with \code{\link[stats:GammaDist]{stats::pgamma()}} to
-between \eqn{1.2\times10^{-16}} and \eqn{2.6\times10^{-15}} relative.
+distribution function: it integrates \code{distrib_pdf} numerically.
 }
 \section{Where the nodes go}{
 An approximate mode is located first by \code{\link[=find_pdf_anchor]{find_pdf_anchor()}}, and the
 integral is taken over whichever side of the mode holds \eqn{q}, the other
 side being reached through the complement. The quadrature nodes then
-concentrate where the probability mass is, and that placement is what buys
-the accuracy above at a density whose shape the integrator knows nothing
-about.
+concentrate where the probability mass is, which gives the integral its
+accuracy without any information about the shape of the density.
 }
 
-\section{One call, not one per quantile}{
+\section{Batched quadrature}{
 Every quantile is integrated in a single batched
 \code{\link[numericals7:quad_vec]{numericals7::quad_vec()}} call, one row per quantile, so a vector of
 \eqn{n} quantiles costs matrix evaluations of the density in place of

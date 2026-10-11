@@ -23,14 +23,14 @@ default.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of numeric vectors of the order the generic asked for,
+A named list of numeric vectors of the requested order,
 keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, order)}}: two
 components for the gradient, three for the Hessian, four at order 3 and
 five at order 4.
 }
 \description{
-Closed form at every order from one to four. Unusually for a positive
-family, the inverse Gaussian's distribution function is elementary,
+Closed form at every order from one to four. The inverse Gaussian's
+distribution function is elementary,
 \deqn{F(q) = \Phi(a) + e^{c}\,\Phi(b), \qquad
       a = \frac{q/\mu - 1}{\sqrt{\phi q}}, \quad
       b = -\frac{q/\mu + 1}{\sqrt{\phi q}}, \quad
@@ -38,28 +38,25 @@ family, the inverse Gaussian's distribution function is elementary,
 so it can simply be differentiated. This page's four registrations are made
 together by \code{\link[=register_phi_terms_cdf]{register_phi_terms_cdf()}}.
 }
-\section{Why four orders are cheap here}{
+\section{Separable partial derivatives}{
 Each of \eqn{a}, \eqn{b} and \eqn{c} is a product of a function of the mean
 and a function of the dispersion, so every mixed partial is a product of two
-one-variable derivatives and no multivariate expansion is formed. The two
+one-variable derivatives. The two
 terms are then a Leibniz split between the weight and the tail, which
 \code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} runs on the package's own partition enumeration.
 }
 
-\section{The overflow, and how it is avoided}{
-\eqn{e^{c}} is \code{Inf} at ordinary settings: the exponent is 2000 at
-\eqn{\mu = 0.01}, \eqn{\phi = 0.1}. That is exactly where \eqn{\Phi(b)}
-underflows, so the product is finite and neither factor is. The weight and
-the tail are combined as \code{exp(c + pnorm(b, log.p = TRUE))}, and at that
-setting the gradient comes back at \eqn{3\times10^{-106}} and the fourth
-derivative at \eqn{3\times10^{-91}}.
+\section{Overflow of the weight}{
+\eqn{e^{c}} overflows to \code{Inf} once \eqn{c = 2/(\phi\mu)} exceeds about
+709; the exponent is 2000 at \eqn{\mu = 0.01}, \eqn{\phi = 0.1}. Where it
+overflows, \eqn{\Phi(b)} underflows, and the product is finite. The weight
+and the tail are therefore combined as \code{exp(c + pnorm(b, log.p = TRUE))}.
 }
 
-\section{What the closed route is worth}{
-Against a product stencil on the same cdf: \eqn{1.0\times10^{-10}} at order
-1, \eqn{8.8\times10^{-7}} at order 2, \eqn{1.8\times10^{-5}} at order 3 and
-\eqn{3.7\times10^{-4}} at order 4. The gap is the stencil's error, and it is
-the reason the family registers all four.
+\section{Accuracy}{
+The derivatives are closed forms. A product stencil on the same
+distribution function loses accuracy as the order grows, which is why the
+family registers all four orders.
 }
 
 \section{Notation}{

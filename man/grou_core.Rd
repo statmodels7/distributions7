@@ -16,7 +16,9 @@ grou_core(lp, b, n, r)
 \item{r}{The ratio-of-uniforms tuning parameter.}
 }
 \value{
-A numeric vector of draws, or \code{NULL} if no bounding box is found.
+A numeric vector of draws. An error is signaled if the log-density
+at the mode is not finite, if no bounding rectangle can be built, or if no
+draw is accepted in 1000 rounds.
 }
 \description{
 The sampler itself, on a bare log-density over an interval.
@@ -28,10 +30,10 @@ reparametrized density, which is how the divergence transforms reuse it.
 Two devices make it safe. The kernel is \strong{recentered at the mode},
 without which a density located at \eqn{\mu = 1000} produces a degenerate
 bounding box; and it is \strong{normalized to a maximum of one}. With those it
-rejects far less often than expected: bimodal densities, a Student t with half
-a degree of freedom and a Pareto with infinite mean are all fine. The only
-genuine rejection is a density that diverges at an edge, which is handled by
-transforming it away.
+accepts a Student t with half a degree of freedom and a Pareto with infinite
+mean. A density that diverges at an edge is handled by transforming it away.
+The kernel must be unimodal: with two well-separated modes the search for
+the bounding rectangle stops at the valley next to the first mode.
 }
 \seealso{
 \code{\link[=rng_grou]{rng_grou()}}, \code{\link[=find_lp_anchor]{find_lp_anchor()}}

@@ -2,9 +2,10 @@
 #' @name psi_shift_diff
 #' @description
 #' Returns \eqn{\psi^{(n)}(x+k) - \psi^{(n)}(x)} without the cancellation the
-#' direct difference carries. It is the R twin of the `psi_A_rest()` and
-#' `psi_T_rest()` of `src/psi_diff.h`, written for any order rather
-#' than for the two the compiled kernels need.
+#' direct difference carries. It is the R counterpart of `psi_A_rest()` and
+#' `psi_T_rest()` of `src/psi_diff.h`, which return the same difference with
+#' its leading behavior subtracted, and it is written for any order and not
+#' only for the two orders that the compiled kernels need.
 #'
 #' @details
 #' Several families here carry a boundary limit at which a shape runs to
@@ -26,8 +27,8 @@
 #' \deqn{\frac{1}{(x+k)^{p}} - \frac{1}{x^{p}}
 #'   = \frac{1}{x^{p}}\,\big(e^{-p\log(1+k/x)} - 1\big),}
 #' which `expm1` and `log1p` evaluate to the last bit however small
-#' \eqn{k/x} is. Below the crossover the direct difference has all its digits
-#' and is used as it stands.
+#' \eqn{k/x} is. Below the crossover the direct difference loses at most about
+#' two digits and is used as it stands.
 #'
 #' @param n The order of the polygamma: `0` for `digamma`,
 #'   `1` for `trigamma`, and so on.

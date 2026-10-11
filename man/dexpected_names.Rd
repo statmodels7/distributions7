@@ -17,7 +17,7 @@ One key per pair \eqn{(a,b)} and differentiating parameter \eqn{c}, built by
 joining \code{\link[=hess_names]{hess_names()}} with the parameter differentiated in.
 }
 \details{
-The keys are BUILT and never parsed, which is the package's rule wherever a
+The keys are built and never parsed, which is the package's rule wherever a
 component name is a concatenation of parameter names: a parameter whose own
 name contains an underscore makes the string ambiguous to read back, and
 \code{\link[=dexpected_key]{dexpected_key()}} exists so that a consumer composes the same

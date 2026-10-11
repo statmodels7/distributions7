@@ -10,7 +10,7 @@
 
 \item{theta}{A named list with \code{mu} and \code{sigma}.}
 
-\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic after
 dispatch.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -20,7 +20,7 @@ A named list of two numeric vectors of length \code{length(y)}, keyed
 \code{mu} and \code{sigma}, the first exactly zero.
 }
 \description{
-Closed form, and half of it zero. The gaussian's response curvature is
+Closed form. The gaussian's response curvature is
 \eqn{\ell^{(yy)} = -1/\sigma^2}, which carries no location, so
 \deqn{\frac{\partial^3\ell}{\partial y^2\,\partial\mu} = 0, \qquad
   \frac{\partial^3\ell}{\partial y^2\,\partial\sigma} = \frac{2}{\sigma^3}.}

@@ -49,9 +49,9 @@ for both parameters, and the two links.
 The S7 class of the gamma family parametrized by its mean \eqn{\mu > 0} and
 its variance \eqn{\sigma^2 > 0}, so that the shape is
 \eqn{\alpha = \mu^2/\sigma^2} and the rate \eqn{\lambda = \mu/\sigma^2}. It
-inherits from \code{continuous_distrib}, so it answers every generic of the
-\code{distrib} contract; the eleven methods listed below are registered on it
-directly and everything else comes from the parent.
+inherits from \code{continuous_distrib}, so every generic of the \code{distrib} class
+applies to it; the methods listed below are registered on it directly and
+everything else comes from the parent.
 
 Build one with \code{\link[=gamma2_distrib]{gamma2_distrib()}}, which supplies the two link functions and
 fills the properties in. This page documents the raw S7 constructor, which

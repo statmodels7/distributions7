@@ -42,10 +42,11 @@ With \eqn{\ell_y = \partial \log f/\partial y},
       \frac{\partial^2 F}{\partial \sigma^2}
         = f\left(z^2 \ell_y + \frac{2z}{\sigma}\right).}
 
-This covers the censored-regression workhorses: the Gaussian, the logistic,
-the Cauchy and the Laplace all register these bodies unchanged, and the
-Student t and the pseudo-Huber use them for their first two components and
-difference the shape.
+The Gaussian, the logistic, the Cauchy, the Laplace and the Gumbel
+register these bodies unchanged, and they are the families most used in
+censored regression. The Student t, pseudo-Huber and skew t families
+compute their location and scale components by the same formulas inside
+the compiled quadrature of \code{\link[=compiled_cdf]{compiled_cdf()}}.
 }
 \section{Notation}{
 
@@ -56,7 +57,6 @@ difference the shape.
 
 \seealso{
 \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} and \code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}}, the two bodies
-families register; \code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}}, the variant for a
-family with a shape parameter as well; \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}.
+that families register; \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}.
 }
 \keyword{internal}

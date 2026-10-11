@@ -50,9 +50,9 @@ The S7 class of the Gumbel (type I extreme value) family in the form for
 \eqn{\mu} and scale \eqn{\sigma > 0} and density
 \eqn{\sigma^{-1}\exp\{-z - e^{-z}\}} at \eqn{z = (y-\mu)/\sigma}. Its shape
 is fixed: the skewness and the excess kurtosis are constants and cannot be
-fitted. It inherits from \code{continuous_distrib}, so it answers every generic
-of the \code{distrib} contract; the eleven methods listed below are registered on
-it directly and everything else comes from the parent.
+fitted. It inherits from \code{continuous_distrib}, so every generic of the
+\code{distrib} class applies to it; the methods listed below are registered on it
+directly and everything else comes from the parent.
 
 Build one with \code{\link[=gumbel_distrib]{gumbel_distrib()}}, which supplies the two link functions and
 fills the properties in. This page documents the raw S7 constructor, which

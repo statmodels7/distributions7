@@ -25,7 +25,7 @@ Each parameter must have a length of either 1 (scalar) or exactly equal to
 }
 \section{Errors}{
 
-The function throws an error (\code{stop}) if it detects any parameter with a length
+The function signals an error (\code{stop}) if any parameter has a length
 that is neither 1 nor \code{n}. The error message lists the specific parameters
 causing the mismatch.
 }

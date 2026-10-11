@@ -10,15 +10,14 @@
 
 \item{theta}{A list containing \code{mu}, \code{sigma} and \code{alpha}.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{Handled by the generic after dispatch; this method returns
+the parameter scale.}
 
 \item{...}{Unused.}
 }
 \value{
 A named list with components \code{mu}, \code{sigma} and \code{alpha}, each a numeric
-vector of length \code{length(y)}. All three are exact; measured against
-Richardson on the analytic response gradient the worst is
-\eqn{3.6\times10^{-11}} relative.
+vector of length \code{length(y)}. All three are exact.
 }
 \description{
 Closed form throughout, written in the inverse Mills ratio \eqn{R} at
@@ -34,6 +33,7 @@ evaluate it twice more.
 \seealso{
 \code{\link[numericals7:mills_ratio]{numericals7::mills_ratio()}}, evaluated once for all three;
 \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} for the family;
-\code{\link[=distrib_cross_y.SkewTDistrib]{distrib_cross_y.SkewTDistrib()}}, where the shape is differenced.
+\code{\link[=distrib_cross_y.SkewTDistrib]{distrib_cross_y.SkewTDistrib()}}, where the shape components are taken
+from the Hessian.
 }
 \keyword{internal}

@@ -45,14 +45,17 @@ It carries the name, the parameters with their domains and links, and the suppor
 \section{Methods}{
 
 Registered on the base class, so every distribution inherits them unless it
-registers something more specific. Those that compute derivatives do so by
-finite differences, which is why a subclass that implements nothing but
-\code{\link[=distrib_pdf]{distrib_pdf()}} is already fully functional. Note that
-\code{distrib_pdf} itself has no default: the density is the one thing a
-distribution must supply.
+registers something more specific. The derivatives of the log-density in the
+parameters are computed by finite differences and the expected derivatives
+by the strategy named in \code{approx}, which is why a subclass that implements
+nothing but \code{\link[=distrib_pdf]{distrib_pdf()}} has every parameter derivative. \code{\link[=distrib_pdf]{distrib_pdf()}}
+itself has no default: the density is the one quantity that a distribution
+must supply. The list below is partial; the base class also registers
+\code{\link[=distrib_atoms]{distrib_atoms()}} and the derivatives of the cdf of orders 3 and 4.
 
 \code{\link[=distrib_deriv3.distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.distrib]{distrib_deriv4()}},
+\code{\link[=distrib_deriv5.distrib]{distrib_deriv5()}},
 \code{\link[=distrib_expected_hessian.distrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_gradient.distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.distrib]{distrib_hessian()}},

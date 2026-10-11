@@ -409,7 +409,7 @@ S7::method(distrib_expected_hessian, VonMises2Distrib) <- function(distrib, y, t
 #'   argument is named `x` because the generic is [base::mean()].
 #' @param theta A named list with components `mu` and `rho`, each a numeric
 #'   vector of length 1. `rho` must lie in \eqn{(0, 1)}. Aligned and
-#'   validated by name, so a missing or out-of-bounds component throws.
+#'   validated by name, so a missing or out-of-bounds component signals an error.
 #' @param ... Passed on to [mean.distrib()], which reads the quadrature's
 #'   settings.
 #'

@@ -26,14 +26,11 @@ These are the coefficients Faa di Bruno's formula needs. Because each
 parameter carries its own link, the Jacobian of \eqn{\theta \mapsto \eta} is
 diagonal and the multivariate formula factorizes into a product of univariate
 ones, so only \eqn{B_{m,j}} for a single variable is required. They are
-written out rather than generated: there are fifteen of them at or below order
-five, and a table cannot be slower or wrong in a way a recursion could.
+written out as a table of the fifteen polynomials with \eqn{m \le 5}.
 
-The order-5 row was checked before it was written, against a construction of
-the same polynomials as the coefficient of \eqn{t^5/5!} in
-\eqn{(\sum_m x_m t^m/m!)^j/j!}, which shares no arithmetic with the table:
-the two agree to 1.8e-15, and the coefficients sum to the Bell number
-\eqn{B_5 = 52}.
+The polynomial \eqn{B_{m,j}} is the coefficient of \eqn{t^m/m!} in
+\eqn{(\sum_k x_k t^k/k!)^j/j!}. The coefficients of the order-5 row sum to
+the Bell number \eqn{B_5 = 52}.
 }
 \seealso{
 \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}, \code{\link[=to_link_scale]{to_link_scale()}}

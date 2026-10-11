@@ -33,8 +33,9 @@ Closed form. Writing \eqn{r = q - \mu} and \eqn{a = |r|},
       \qquad
       \frac{\partial^2 F}{\partial\mu\,\partial\lambda}
         = -\left(\frac{1}{\lambda} - a\right) f.}
-The sign function is what carries the kink: all three jump at
-\eqn{q = \mu}, as they do in the scale parametrization.
+The sign function carries the kink: \code{mu_mu} jumps at \eqn{q = \mu}, as it
+does in the scale parametrization, while \code{lambda_lambda} and \code{mu_lambda}
+are continuous there.
 }
 \section{Notation}{
 
@@ -46,7 +47,7 @@ The sign function is what carries the kink: all three jump at
 d <- laplace2_distrib()
 th <- list(mu = 0.3, lambda = 1 / 1.2)
 
-# All three components jump across q = mu.
+# Only mu_mu jumps across q = mu; the other two components are continuous.
 distrib_hess_cdf(d, 0.3 + c(-1e-6, 1e-6), th, log = FALSE)
 
 # Away from the kink they agree with a central difference of the cdf.

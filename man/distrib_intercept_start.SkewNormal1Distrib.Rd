@@ -27,11 +27,7 @@ is the half-normal limit. In the direct parametrization the curvature in
 \eqn{\mu} there grows as \eqn{\alpha^2}, so a regression started from that
 point takes steps of order \eqn{1/\alpha^2} and does not reach its maximum.
 The moment estimate with the skewness held at 0.9 gives \eqn{\alpha = 6.3}
-and the matching location and scale. Measured on \code{MASS::Cars93}, price on
-horse power (marginal skewness 1.48): the intercept-only start was at
-\eqn{\alpha = 1.4 \times 10^6} and the REML criterion was unavailable at
-the starting point, and from the moment estimate the fit converged to the
-marginal log-likelihood of \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} on the same model.
+and the matching location and scale.
 }
 \seealso{
 \code{\link[=distrib_intercept_start]{distrib_intercept_start()}} for the generic,

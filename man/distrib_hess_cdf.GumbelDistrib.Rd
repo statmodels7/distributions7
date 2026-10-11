@@ -23,7 +23,7 @@ the length of \code{q} recycled against \code{theta}.
 }
 \description{
 Closed form from the same location-scale structure, through
-\code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}}. The response derivative it reads is
+\code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}}. The response derivative that it reads is
 \eqn{\ell_y = (e^{-z} - 1)/\sigma}, which is smooth everywhere, so all three
 components are continuous on the whole line.
 }

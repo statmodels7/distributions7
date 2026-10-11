@@ -49,9 +49,9 @@ both parameters, and the two links.
 The S7 class of the inverse Gaussian family on \eqn{(0, \infty)} in its
 classical parametrization, the mean \eqn{\mu > 0} and the shape
 \eqn{\lambda > 0}, so that \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}. It
-inherits from \code{continuous_distrib}, so it answers every generic of the
-\code{distrib} contract; the nine methods listed below are registered on it in
-this file and everything else comes from the parent.
+inherits from \code{continuous_distrib}, so every generic of the \code{distrib} class
+applies to it; the methods listed below are registered on it in this file and
+everything else comes from the parent.
 
 Build one with \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}, which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,

@@ -34,16 +34,18 @@ parameter,
   \approx \frac{\log f(y; \theta + h_i e_i)
     - \log f(y; \theta - h_i e_i)}{2 h_i},}
 
-so the cost is two density evaluations per parameter. Truncation is of
+so the cost is two density evaluations per parameter when the two candidate
+steps of \code{\link[=fd_steps]{fd_steps()}} coincide, and more when \code{\link[=fd_stable_step]{fd_stable_step()}} compares
+them. Truncation is of
 order \eqn{h^{2}} and rounding of order \eqn{\varepsilon / h}, which the
 default \eqn{h \propto \varepsilon^{1/3}} balances.
 
 Steps are scaled by \verb{max(1, |theta|)} and kept inside the boundaries of
 \code{distrib@params_bounds}, by \code{\link[=fd_stable_step]{fd_stable_step()}}, which reads both of
 \code{\link[=fd_steps]{fd_steps()}}'s candidates and keeps the one that agrees better with itself
-at half its own step. Accuracy is roughly \code{eps^(2/3)} (about 8 significant
-digits): sufficient for optimization, but slower and less precise than an
-analytical implementation.
+at half its own step. Accuracy is roughly \code{eps^(2/3)} (about 10 significant
+digits at best): sufficient for optimization, but slower and less precise
+than an analytical implementation.
 }
 \examples{
 numerical_gradient(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))

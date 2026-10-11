@@ -48,20 +48,23 @@ enters only as \eqn{y - \mu}, as \eqn{(-1)^{k}} times the pure derivative
 in the location.
 }
 \details{
-The identity is exact and needs no formula of its own, which is the point:
-the location derivative is already written, often as a compiled kernel, and
-the response derivative is the same number with a sign. It also fixes the
-two orders below, where \eqn{\partial\ell/\partial y = -\partial\ell/
+The identity is exact and needs no formula of its own. The location
+derivative is already written, often as a compiled kernel, and the response
+derivative equals it up to the sign \eqn{(-1)^{k}}. The same identity holds
+at the lower orders, where \eqn{\partial\ell/\partial y = -\partial\ell/
 \partial\mu} and \eqn{\partial^{2}\ell/\partial y^{2} =
-\partial^{2}\ell/\partial\mu^{2}}, and the tests check the new orders
-against exactly that.
+\partial^{2}\ell/\partial\mu^{2}}.
 }
 \section{Registered on}{
 
-This body serves both third- and fourth-order response derivatives on all
-fourteen location families, so \code{?distrib_deriv3_y.Gaussian1Distrib} and its
-twenty-seven siblings open this page:
-\code{Gaussian1Distrib}, \code{Gaussian2Distrib}, \code{Gaussian3Distrib}, \code{CauchyDistrib}, \code{LogisticDistrib}, \code{LaplaceDistrib}, \code{Laplace2Distrib}, \code{EnetDistrib}, \code{PseudoHuberDistrib}, \code{StudentT1Distrib}, \code{SkewNormal1Distrib}, \code{SkewNormal2Distrib}, \code{SkewTDistrib}, \code{GumbelDistrib}.
+This body serves both third- and fourth-order response derivatives on the
+location families \code{Gaussian1Distrib}, \code{Gaussian2Distrib},
+\code{Gaussian3Distrib}, \code{CauchyDistrib}, \code{LogisticDistrib}, \code{LaplaceDistrib},
+\code{Laplace2Distrib}, \code{EnetDistrib}, \code{PseudoHuberDistrib},
+\code{StudentT1Distrib}, \code{SkewNormal1Distrib}, \code{SkewTDistrib} and
+\code{GumbelDistrib}, and on \code{PseudoHuber2Distrib}, whose page documents it.
+\code{SkewNormal2Distrib} has compiled kernels of its own in the response; its
+two methods are listed here as aliases.
 }
 
 \seealso{

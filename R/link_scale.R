@@ -8,7 +8,7 @@ NULL
 #' @description
 #' The derivative generics of the package ([distrib_gradient()],
 #' [distrib_hessian()], [distrib_expected_hessian()],
-#' [distrib_deriv3()], [distrib_deriv4()]) accept a
+#' [distrib_deriv3()], [distrib_deriv4()], [distrib_deriv5()]) accept a
 #' `scale` argument selecting the parametrization the derivatives are taken
 #' with respect to:
 #'
@@ -42,9 +42,11 @@ NULL
 #' score has zero expectation, so the information transforms as the congruence
 #' \eqn{\mathrm{diag}(h')\,\mathbb{E}[H]\,\mathrm{diag}(h')}.
 #'
-#' The inverse-link derivatives \eqn{h', h'', h''', h''''} are obtained from
-#' [linkfunctions7::linkinvderiv()], so link-scale derivatives are
-#' available up to order 4 for every link in \pkg{linkfunctions7}.
+#' The inverse-link derivatives \eqn{h', h'', \dots, h^{(5)}} are obtained
+#' from the order-specific generics [linkfunctions7::dlinkinv()] to
+#' [linkfunctions7::d5linkinv()], so link-scale derivatives are available up
+#' to order 5 for every link in \pkg{linkfunctions7}. [distrib_deriv5()]
+#' composes its fifth order through [deriv5_scale()].
 #'
 #' @return Nothing. This page documents the `scale` argument shared by the
 #'   derivative generics named above; the value returned is theirs.
@@ -60,7 +62,7 @@ NULL
 #'       link = distrib_gradient(d, y, th, scale = "link")$sigma)
 #'
 #' # At second order the term in h'' appears, so the link-scale component is
-#' # NOT the parameter-scale one times h' squared.
+#' # not the parameter-scale one times h' squared.
 #' g <- distrib_gradient(d, y, th)$sigma
 #' h <- distrib_hessian(d, y, th)$sigma_sigma
 #' all.equal(distrib_hessian(d, y, th, scale = "link")$sigma_sigma,
@@ -77,8 +79,8 @@ NULL
 #'           distrib_deriv4(d, y, th, scale = "link")$mu_mu_mu_mu)
 #'
 #' @seealso [distrib_gradient()], [distrib_hessian()],
-#'   [distrib_expected_hessian()], [distrib_deriv3()] and [distrib_deriv4()],
-#'   the five generics that take `scale`;
+#'   [distrib_expected_hessian()], [distrib_deriv3()], [distrib_deriv4()] and
+#'   [distrib_deriv5()], the six generics that take `scale`;
 #'   [bell_partial()] for the polynomials this assembles;
 #'   [linkfunctions7::linkinvderiv()], which supplies the five inverse-link
 #'   derivatives;
@@ -110,14 +112,11 @@ NULL
 #' parameter carries its own link, the Jacobian of \eqn{\theta \mapsto \eta} is
 #' diagonal and the multivariate formula factorizes into a product of univariate
 #' ones, so only \eqn{B_{m,j}} for a single variable is required. They are
-#' written out rather than generated: there are fifteen of them at or below order
-#' five, and a table cannot be slower or wrong in a way a recursion could.
+#' written out as a table of the fifteen polynomials with \eqn{m \le 5}.
 #'
-#' The order-5 row was checked before it was written, against a construction of
-#' the same polynomials as the coefficient of \eqn{t^5/5!} in
-#' \eqn{(\sum_m x_m t^m/m!)^j/j!}, which shares no arithmetic with the table:
-#' the two agree to 1.8e-15, and the coefficients sum to the Bell number
-#' \eqn{B_5 = 52}.
+#' The polynomial \eqn{B_{m,j}} is the coefficient of \eqn{t^m/m!} in
+#' \eqn{(\sum_k x_k t^k/k!)^j/j!}. The coefficients of the order-5 row sum to
+#' the Bell number \eqn{B_5 = 52}.
 #'
 #' @param m The total order, 1 to 5.
 #' @param j The number of blocks, 1 to `m`.
@@ -183,7 +182,8 @@ bell_partial <- function(m, j, h) {
 #' when they come from `hess_names()`.
 #'
 #' @param p The number of parameters.
-#' @param order The derivative order, 1 to 4.
+#' @param order The derivative order, a positive integer; the link-scale
+#'   assembly uses 1 to 5.
 #'
 #' @return A list of integer vectors, each of length `order`.
 #'
@@ -211,7 +211,7 @@ deriv_index_list <- function(p, order) {
 #' Inverse-Link Derivatives for Every Parameter
 #'
 #' @description
-#' The derivatives \eqn{h', h'', h''', h''''} of each parameter's inverse link,
+#' The derivatives \eqn{h', h'', \dots, h^{(5)}} of each parameter's inverse link,
 #' evaluated at \eqn{\eta = g(\theta)}, up to `order`.
 #'
 #' @details
@@ -222,7 +222,7 @@ deriv_index_list <- function(p, order) {
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param theta A named list of parameters, on the natural scale.
-#' @param order The highest derivative order needed, 1 to 4.
+#' @param order The highest derivative order needed, 1 to 5.
 #'
 #' @return A list with one element per parameter, each a list whose \eqn{k}-th
 #'   element is \eqn{h^{(k)}} evaluated at that parameter's \eqn{\eta}.
@@ -273,15 +273,15 @@ inverse_link_derivs <- function(distrib, theta, order) {
 #' Faa di Bruno mixes all lower orders into each link-scale component, so they
 #' must all be to hand before the assembly starts. For **expected**
 #' derivatives the first-order slot is filled with zeros rather than with the
-#' score, because \eqn{\mathbb{E}[\ell_i] = 0}: the term is genuinely absent, not
-#' merely unavailable, which is also why the expected information transforms as a
-#' plain congruence.
+#' score, because \eqn{\mathbb{E}[\ell_i] = 0}. The term is absent from the
+#' expected derivatives, which is also why the expected information transforms
+#' as a plain congruence.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param expected Logical; whether the derivatives wanted are expected ones.
-#' @param order The order being assembled, 1 to 4.
+#' @param order The order being assembled, 1 to 5.
 #'
 #' @return A list of length `order - 1`, its \eqn{m}-th element the named
 #'   list of order-\eqn{m} parameter-scale derivatives.
@@ -329,21 +329,20 @@ link_scale_lower_orders <- function(distrib, y, theta, expected, order) {
 #'
 #' First order is special-cased. It is a diagonal rescaling,
 #' \eqn{\partial \ell/\partial \eta_i = (\partial \ell/\partial \theta_i) h_i'},
-#' and it is the order evaluated most often -- once per scoring iteration -- so
-#' sending it through the general assembly would spend a few hundred microseconds
-#' performing a multiplication.
+#' and it is the order evaluated most often (once per scoring iteration), so it
+#' bypasses the general assembly.
 #'
-#' The nested sum over \eqn{j_t = 1, \dots, m_t} is enumerated by decoding a
-#' counter in mixed radix rather than by building the combinations with
-#' `expand.grid`, which on its own costs more than the rest of the loop
-#' together and is paid once per component on every call.
+#' The index structure of the nested sum over \eqn{j_t = 1, \dots, m_t}
+#' depends only on the parameter names and the order. It is computed once by
+#' [link_scale_layout()] and cached, and the loop of this function performs
+#' only the arithmetic on the vectors.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param theta A named list of parameters, on the natural scale.
 #' @param nat A list with `nat[[m]]` the named list of parameter-scale
 #'   derivatives of order `m`. Its first element may be a list of zeros,
 #'   as it is for expected derivatives.
-#' @param order The derivative order to assemble, 1 to 4.
+#' @param order The derivative order to assemble, 1 to 5.
 #'
 #' @return A named list of link-scale derivative component vectors.
 #'
@@ -404,19 +403,15 @@ to_link_scale <- function(distrib, theta, nat, order) {
 #' of parameter names.
 #'
 #' @details
-#' [to_link_scale()] used to rebuild this on every call: the
-#' multi-index list, a `unique` and a `tabulate` per component,
-#' and a `sort` and a `paste` per combination to spell the key of
-#' the parameter-scale component to look up. None of it depends on the
-#' values, only on the names and the order, and a profile of a fitted
-#' score-driven model put `paste`, `sort` and `unique` among
-#' the leaders of its self time -- a filter reaches this once per
-#' observation per iteration, so the names were being respelled millions of
-#' times per fit.
+#' The multi-index list, the multiplicities and the keys of the
+#' parameter-scale components depend only on the parameter names and the
+#' order, not on the values. [to_link_scale()] reads them from this cache
+#' instead of rebuilding them on every call, which matters because a
+#' score-driven filter reaches it once per observation and iteration.
 #'
 #' The combinations are enumerated by decoding a counter in mixed radix
-#' rather than with `expand.grid`, which is the same device the loop
-#' used before and is now paid once.
+#' rather than with `expand.grid`, and the enumeration is paid once per
+#' family and order.
 #'
 #' The cache is keyed by the parameter names and the order, so it holds one
 #' entry per family per order actually used. It lives in the function's own
@@ -463,18 +458,17 @@ link_scale_layout <- local({
 #' @title A Resolved Kernel for One Parameter's Link-Scale Derivatives
 #'
 #' @description
-#' The log-density, the score and the curvature in ONE parameter's
-#' unconstrained scale, as three functions with everything that does not
-#' depend on the data already resolved.
+#' The log-density, the score, the curvature, the expected information and
+#' its derivative for one parameter on its unconstrained scale, as five
+#' functions with everything that does not depend on the data already
+#' resolved.
 #'
 #' @details
-#' The generic route is the right one almost everywhere: it validates its
-#' arguments, aligns `theta` by name, dispatches, and assembles every
-#' component of the requested order. A recursion that calls back once per
-#' observation cannot afford any of that. A score-driven filter evaluates
-#' the score at a predictor it has just produced, so the call cannot be
-#' vectorized away, and profiling a fitted model put S7 dispatch, the
-#' argument checking and the name arithmetic at the whole of its cost.
+#' The generic route validates its arguments, aligns `theta` by name,
+#' dispatches, and assembles every component of the requested order. A
+#' score-driven filter evaluates the score once per observation, at a
+#' predictor that it has just produced, so these steps cannot be vectorized
+#' away and their cost dominates.
 #'
 #' This resolves the family's methods and the link's once, and applies the
 #' chain rule for the single component wanted rather than for all of them.
@@ -489,17 +483,14 @@ link_scale_layout <- local({
 #' which is what [to_link_scale()] computes for those two
 #' components and nothing else.
 #'
-#' The bargain is that the caller takes on what the generic was doing.
-#' `theta` must already be a list in the family's own order, its values
-#' unnamed and of a length the family accepts against `y`; nothing is
-#' checked. The entry for `param` is replaced, so its value on the way
-#' in is immaterial. The inverse link is clamped strictly inside its bounds
-#' exactly as [linkfunctions7::linkinv()] does, because that is a
-#' correctness property and not an optimization.
-#'
-#' @param distrib A univariate distribution object.
-#' @param param The name of the parameter whose unconstrained scale the
-#'   derivatives are taken with respect to.
+#' The caller takes on the checks that the generic would have made. `theta`
+#' must already be a list named by the parameters of the family, in the
+#' family's own order, with values of a length that the family accepts against
+#' `y`; nothing is checked. The entry named `param` is replaced, so its value
+#' on the way in is immaterial. A list without names is not replaced at that
+#' entry, and a list whose names are out of order is read by position. The
+#' inverse link is clamped strictly inside its bounds exactly as
+#' [linkfunctions7::linkinv()] does, which correctness requires.
 #'
 #' The kernel also carries the expected information of the same coordinate and
 #' its derivative in that coordinate, which a filter whose score is scaled by a
@@ -513,6 +504,10 @@ link_scale_layout <- local({
 #'
 #' The two methods are looked up when first called, so a family without an
 #' expected information still yields the other three functions.
+#'
+#' @param distrib A univariate distribution object.
+#' @param param The name of the parameter with respect to whose unconstrained
+#'   scale the derivatives are taken.
 #'
 #' @return A list of five functions of `(y, theta, eta)`:
 #'   `logdens`, `score`, `curvature`, `information` and `dinformation`.

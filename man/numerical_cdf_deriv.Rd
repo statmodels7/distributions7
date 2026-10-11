@@ -36,8 +36,9 @@ evaluations.}
 }
 \value{
 A named list of numeric vectors, derivatives of \eqn{F} itself and
-not of its logarithm, in the order \code{which} gives or in the enumeration
-order when it is \code{NULL}.
+not of its logarithm. At order 1 the components follow \code{which}, or the
+parameter order when \code{which} is \code{NULL}. At order 2 they are always in the
+order of \code{\link[=hess_names]{hess_names()}}, restricted to the names in \code{which}.
 }
 \description{
 Differentiates the distribution function with respect to the parameters by
@@ -60,22 +61,21 @@ composes two first differences in the same variable.
 
 \section{The step}{
 The relative step is \eqn{\varepsilon^{1/(k+2)}}, which is
-\eqn{6.1\times10^{-6}} at order 1 and \eqn{1.2\times10^{-4}} at order 2, and
-it is scaled per component by \code{pmax(1, abs(theta[[j]]))}. \strong{One step is
-chosen per observation and not per parameter}: \code{theta} may be vectorized,
-and a step read off its first element would be the wrong size everywhere
-else.
+\eqn{6.1\times10^{-6}} at order 1 and \eqn{1.2\times10^{-4}} at order 2. It
+is multiplied, for each parameter \eqn{j}, by \code{pmax(1, abs(theta[[j]]))}.
+Because \code{theta} may be vectorized, this product is a vector with one step
+per observation, so that every element of a vectorized parameter receives a
+step of the right size.
 }
 
-\section{What it costs and what it delivers}{
-Measured on a Gaussian at 1000 quantiles, against the closed form the family
-registers: the relative error is \eqn{6.1\times10^{-11}} at order 1 and
-\eqn{1.7\times10^{-7}} at order 2, and the calls take 0.29 ms and 0.71 ms
-against the closed form's 0.16 ms. Of the 42 univariate families, 8 reach
-this function for their gradient (beta1, beta2, chisq, gamma1, gamma2,
-gengamma1 and the two von Mises), where the derivative of an incomplete
-gamma or beta in its shape is hypergeometric or the cdf is itself a
-quadrature.
+\section{Where it is used}{
+No shipped univariate family calls this function for its gradient or
+Hessian: the families whose derivative in a shape parameter has no
+elementary form (the gamma, chi-squared, generalized gamma, beta, von Mises,
+Student t, pseudo-Huber and skew t families) register the compiled
+quadrature of \code{\link[=compiled_cdf]{compiled_cdf()}}. The function serves continuous families
+defined by the user, the wrappers of continuous families, and the first two
+tables of \code{\link[=cdf_tables]{cdf_tables()}} where a family has no method of its own.
 }
 
 \section{Notation}{
@@ -96,7 +96,7 @@ numerical_cdf_deriv(d, q, th, order = 1)
 exact <- distrib_grad_cdf(d, q, th, log = FALSE)
 max(abs(numerical_cdf_deriv(d, q, th, 1)$mu / exact$mu - 1))
 
-# Only the components asked for are differenced.
+# Only the requested components are differenced.
 names(numerical_cdf_deriv(d, q, th, order = 2, which = "mu_mu"))
 
 }

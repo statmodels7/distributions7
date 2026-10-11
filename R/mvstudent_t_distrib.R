@@ -141,8 +141,8 @@ MvStudentT2Distrib <- S7::new_class("MvStudentT2Distrib",
 #' \eqn{\Sigma^{-1}}. Each carries a location vector of \eqn{p} free
 #' parameters, the matrix through a \pkg{parameters7} parametrization, and a
 #' positive degrees-of-freedom parameter. The free values become ordinary
-#' scalar parameters, so the object answers every generic of the `distrib`
-#' contract with `theta` a flat named list of numbers. Both default to an
+#' scalar parameters, so every generic of the `distrib` class applies to the
+#' object, with `theta` a flat named list of numbers. Both default to an
 #' unstructured matrix in the log-Cholesky parametrization, which is
 #' `p * (p + 1) / 2` free values, and to a log link on `nu`.
 #'
@@ -257,7 +257,7 @@ MvStudentT2Distrib <- S7::new_class("MvStudentT2Distrib",
 #' is the free vector of the matrix parametrization.
 #'
 #' @param n_dim The dimension \eqn{p} of one observation. A single positive
-#'   whole number, finite and at least 1. Anything else throws an error.
+#'   whole number, finite and at least 1. Anything else signals an error.
 #' @param sigma A \pkg{parameters7} parametrization of the scale matrix, of
 #'   dimension `n_dim` and of full rank. Defaults to
 #'   `parameters7::log_cholesky(n_dim)`. A rank-deficient parametrization is

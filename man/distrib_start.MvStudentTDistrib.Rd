@@ -19,12 +19,11 @@ and ordered as \code{distrib@params}.
 }
 \description{
 Returns the sample mean and the sample covariance with the degrees of
-freedom set at 8, which is heavy-tailed enough to be worth fitting and light
-enough for the second moment to exist. The Gaussian estimate is this
-family's limit as \eqn{\nu} grows, so it is where a finite \eqn{\nu} is
-looked for from.
+freedom set at 8, which gives tails clearly heavier than the Gaussian's and
+a finite second moment. The Gaussian estimate is the limit of this family
+as \eqn{\nu} grows, so the search for a finite \eqn{\nu} starts from it.
 
-One starting value is returned whatever \code{n_start} asks for.
+One starting value is returned for any value of \code{n_start}.
 }
 \details{
 The scale matrix is not the covariance. For a \eqn{t} with \eqn{\nu}

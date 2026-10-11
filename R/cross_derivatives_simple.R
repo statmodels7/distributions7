@@ -19,7 +19,8 @@ NULL
 #' @param distrib A `VonMises1Distrib` object.
 #' @param y A numeric vector of angles.
 #' @param theta A list containing `mu` and `kappa`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `mu` and `kappa`, each a numeric vector of
 #'   length `length(y)`.
@@ -43,7 +44,8 @@ S7::method(distrib_cross_y, VonMises1Distrib) <- function(distrib, y, theta,
 #' @param distrib A `Gaussian2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `sigma2`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `mu` and `sigma2`, each a numeric vector
 #'   of length `length(y)`.
@@ -67,7 +69,8 @@ S7::method(distrib_cross_y, Gaussian2Distrib) <- function(distrib, y, theta,
 #' @param distrib A `Gaussian3Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `tau`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `mu` and `tau`, each a numeric vector of
 #'   length `length(y)`.
@@ -91,9 +94,10 @@ S7::method(distrib_cross_y, Gaussian3Distrib) <- function(distrib, y, theta,
 #' @param distrib A `Lognormal1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `sigma2`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `sigma`, each a numeric vector of
+#' @return A named list with components `mu` and `sigma2`, each a numeric vector of
 #'   length `length(y)`.
 #'
 #' @seealso [lognormal1_distrib()] for the family;
@@ -117,9 +121,10 @@ S7::method(distrib_cross_y, Lognormal1Distrib) <- function(distrib, y, theta,
 #' @param distrib An `InvGauss1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `phi`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `sigma2`, each a numeric vector
+#' @return A named list with components `mu` and `phi`, each a numeric vector
 #'   of length `length(y)`.
 #'
 #' @seealso [invgauss1_distrib()] for the family;
@@ -144,7 +149,8 @@ S7::method(distrib_cross_y, InvGauss1Distrib) <- function(distrib, y, theta,
 #' @param distrib A `Beta1Distrib` object.
 #' @param y A numeric vector in the unit interval.
 #' @param theta A list containing `mu` and `phi`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `mu` and `phi`, each a numeric vector of
 #'   length `length(y)`.
@@ -170,7 +176,8 @@ S7::method(distrib_cross_y, Beta1Distrib) <- function(distrib, y, theta,
 #' @param distrib A `Beta2Distrib` object.
 #' @param y A numeric vector in the unit interval.
 #' @param theta A list containing `alpha` and `beta`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `alpha` and `beta`, each a numeric vector
 #'   of length `length(y)`.
@@ -193,7 +200,8 @@ S7::method(distrib_cross_y, Beta2Distrib) <- function(distrib, y, theta,
 #' @param distrib A `ChisqDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with the single component `mu`, a numeric vector of length
 #'   `length(y)`.
@@ -217,9 +225,10 @@ S7::method(distrib_cross_y, ChisqDistrib) <- function(distrib, y, theta,
 #' @param distrib A `Gamma1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `phi`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `sigma2`, each a numeric vector
+#' @return A named list with components `mu` and `phi`, each a numeric vector
 #'   of length `length(y)`.
 #'
 #' @seealso [gamma1_distrib()] for the family;
@@ -244,7 +253,8 @@ S7::method(distrib_cross_y, Gamma1Distrib) <- function(distrib, y, theta,
 #' @param distrib A `Gamma2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `sigma2`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `mu` and `sigma2`, each a numeric vector
 #'   of length `length(y)`.
@@ -271,7 +281,8 @@ S7::method(distrib_cross_y, Gamma2Distrib) <- function(distrib, y, theta,
 #' @param distrib A `SkewNormal2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu`, `sigma` and `gamma1`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with one numeric vector per parameter of the centered
 #'   parametrization, keyed by `distrib@params`, each of length

@@ -14,7 +14,8 @@ mapped_cdf_deriv_k(
   order,
   lower.tail,
   log,
-  q_par = q
+  q_par = q,
+  zero = NULL
 )
 }
 \arguments{
@@ -30,7 +31,7 @@ mapped_cdf_deriv_k(
 
 \item{theta}{A named list of the new parameters.}
 
-\item{order}{The derivative order, 2 to 4.}
+\item{order}{The derivative order, 1 to 4.}
 
 \item{lower.tail}{Is the lower tail wanted? A single logical.}
 
@@ -38,20 +39,25 @@ mapped_cdf_deriv_k(
 
 \item{q_par}{The quantiles on the parent's scale. \code{q} by default, and
 \code{log(q)} for a lognormal.}
+
+\item{zero}{\code{NULL}, the default, or a logical vector along \code{q} marking the
+points where the distribution function is identically zero; there every
+derivative of the distribution function is set to zero.}
 }
 \value{
 A named list of numeric vectors of the requested order, on the
 requested tail and scale.
 }
 \description{
-The body every mapped family registers at orders 3 and 4, and at 2 where its
-written-out route stops there. It asks whether the parent's cdf derivatives
+The body that every mapped family registers at orders 3 and 4, at 2 as well
+where its written-out route stops at the gradient, and at every order for
+the centered skew normal. It tests whether the parent's cdf derivatives
 are exact at \strong{every} order up to the one wanted, takes
 \code{\link[=chain_cdf_deriv_k]{chain_cdf_deriv_k()}} if they are, and falls back to \code{\link[=cdf_tables]{cdf_tables()}} on the
 new family's own cdf if they are not.
 }
 \section{The gate}{
-The chain is exact only if everything it carries is exact, and the higher
+The chain is exact only if everything that it carries is exact, and the higher
 orders read the lower ones, so the test is over all of them. It is what
 stops a family from adding an exact transformation to a differenced parent
 and reporting the result as closed.

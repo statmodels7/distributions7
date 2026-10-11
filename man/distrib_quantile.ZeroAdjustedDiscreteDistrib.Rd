@@ -53,7 +53,7 @@ distrib_quantile(d, c(0.2, 0.5, 0.95), theta)
 # Everything at or below the mass at zero maps to zero.
 distrib_quantile(d, c(0.1, 0.4), theta)
 
-# The round trip overshoots, as on any lattice.
+# The round trip overshoots, as on any discrete support.
 p <- c(0.5, 0.95)
 rbind(asked = p,
       reached = distrib_cdf(d, distrib_quantile(d, p, theta), theta))

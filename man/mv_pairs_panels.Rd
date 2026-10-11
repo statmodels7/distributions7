@@ -12,6 +12,7 @@ mv_pairs_panels(
   col_fit,
   data,
   col_data = "#4682B4",
+  which_arg = "which",
   ...
 )
 }
@@ -28,11 +29,16 @@ More than three is an error.}
 \item{col_fit}{Color of the fitted density, the contours and the printed
 correlations.}
 
-\item{data}{An \eqn{n \times p} matrix of observations, or \code{NULL} for a
-distribution with no data behind it.}
+\item{data}{An \eqn{n \times p} matrix of observations with one column
+per coordinate of the distribution, whichever coordinates \code{which}
+selects, or \code{NULL} for a distribution with no data behind it.}
 
 \item{col_data}{Color of the observed summary, used only when \code{data} is
 given. Defaults to \code{"#4682B4"}.}
+
+\item{which_arg}{The name of the caller's argument that carries \code{which},
+used in the error message for more than three coordinates. Defaults to
+\code{"which"}; \code{\link[=plot.distrib_fit]{plot.distrib_fit()}} passes \code{"mv_which"}.}
 
 \item{...}{Unused.}
 }

@@ -30,7 +30,7 @@ NULL
 #'
 #' @description
 #' Converts derivatives of the distribution function \eqn{F} into derivatives
-#' of whichever tail was asked for, on the natural or the logarithmic scale.
+#' of whichever tail was requested, on the natural or the logarithmic scale.
 #' Every route to a cdf derivative in this package produces derivatives of
 #' \eqn{F} itself, so the `lower.tail` and `log` arguments are handled once,
 #' here, and no method has to implement four cases.
@@ -49,13 +49,13 @@ NULL
 #' # What the caller must supply
 #'
 #' `dF1` is always read, at second order as well: the correction above needs
-#' the first derivatives of the same tail. A caller asking for a Hessian
+#' the first derivatives of the same tail. A caller requesting a Hessian
 #' therefore passes both lists, and passes them as derivatives of \eqn{F} on
 #' the natural scale, whichever tail the result is wanted on.
 #'
 #' @section Notation:
 #' \eqn{F} is the distribution function, \eqn{S = 1 - F} the survival
-#' function, \eqn{P} whichever of the two was asked for, and \eqn{\partial^I}
+#' function, \eqn{P} whichever of the two was requested, and \eqn{\partial^I}
 #' a derivative with respect to a multi-index of parameters.
 #'
 #' @param distrib An object inheriting from `distrib`. Only its `params` are
@@ -124,16 +124,16 @@ cdf_tail_scale <- function(distrib, Fq, dF1, dF2 = NULL, lower.tail, log) {
 #' integral exchange and
 #' \deqn{\frac{\partial^I F(q)}{F(q)}
 #'       = \mathbb{E}\!\left[\frac{\partial^I f}{f} \;\middle|\; Y \le q\right],}
-#' a partial expectation of exactly the quantity the Bartlett lemma expands: the
+#' a partial expectation of exactly the quantity that the Bartlett lemma expands: the
 #' score at first order, and \eqn{\ell^{(ij)} + \ell^{(i)}\ell^{(j)}} at second.
 #' For a discrete family that conditional expectation is a finite sum whenever
 #' the support has a finite lower bound, which the discrete class requires, so
 #' the identity is used as it stands.
 #'
-#' # A trap for whoever writes a test
+#' # Testing an implementation
 #'
-#' Checking this against the partial-expectation sum proves nothing: it is the
-#' same sum computed twice. A discrete implementation has to be checked against
+#' A comparison with the partial-expectation sum repeats the same computation
+#' and therefore does not test it. A discrete implementation has to be checked against
 #' finite differences of the cdf, and a continuous one against the partial
 #' expectation, so that the two sides of the comparison share no arithmetic.
 #'
@@ -145,7 +145,7 @@ cdf_tail_scale <- function(distrib, Fq, dF1, dF2 = NULL, lower.tail, log) {
 #' @param distrib An object inheriting from `discrete_distrib`.
 #' @param q A numeric vector of quantiles. Each is handled separately, the
 #'   support being walked from the lower bound up to it, so the cost grows with
-#'   the largest quantile asked for.
+#'   the largest requested quantile.
 #' @param theta A named list of parameters on the parameter scale.
 #' @param order The derivative order, 1 or 2. At order 1 the components are the
 #'   parameters and at order 2 they are [hess_names()].
@@ -215,22 +215,21 @@ discrete_cdf_deriv <- function(distrib, q, theta, order) {
 #' # The step
 #'
 #' The relative step is \eqn{\varepsilon^{1/(k+2)}}, which is
-#' \eqn{6.1\times10^{-6}} at order 1 and \eqn{1.2\times10^{-4}} at order 2, and
-#' it is scaled per component by `pmax(1, abs(theta[[j]]))`. **One step is
-#' chosen per observation and not per parameter**: `theta` may be vectorized,
-#' and a step read off its first element would be the wrong size everywhere
-#' else.
+#' \eqn{6.1\times10^{-6}} at order 1 and \eqn{1.2\times10^{-4}} at order 2. It
+#' is multiplied, for each parameter \eqn{j}, by `pmax(1, abs(theta[[j]]))`.
+#' Because `theta` may be vectorized, this product is a vector with one step
+#' per observation, so that every element of a vectorized parameter receives a
+#' step of the right size.
 #'
-#' # What it costs and what it delivers
+#' # Where it is used
 #'
-#' Measured on a Gaussian at 1000 quantiles, against the closed form the family
-#' registers: the relative error is \eqn{6.1\times10^{-11}} at order 1 and
-#' \eqn{1.7\times10^{-7}} at order 2, and the calls take 0.29 ms and 0.71 ms
-#' against the closed form's 0.16 ms. Of the 42 univariate families, 8 reach
-#' this function for their gradient (beta1, beta2, chisq, gamma1, gamma2,
-#' gengamma1 and the two von Mises), where the derivative of an incomplete
-#' gamma or beta in its shape is hypergeometric or the cdf is itself a
-#' quadrature.
+#' No shipped univariate family calls this function for its gradient or
+#' Hessian: the families whose derivative in a shape parameter has no
+#' elementary form (the gamma, chi-squared, generalized gamma, beta, von Mises,
+#' Student t, pseudo-Huber and skew t families) register the compiled
+#' quadrature of [compiled_cdf()]. The function serves continuous families
+#' defined by the user, the wrappers of continuous families, and the first two
+#' tables of [cdf_tables()] where a family has no method of its own.
 #'
 #' @section Notation:
 #' \eqn{F} is the distribution function, \eqn{\theta} the parameter on its own
@@ -252,8 +251,9 @@ discrete_cdf_deriv <- function(distrib, q, theta, order) {
 #'   evaluations.
 #'
 #' @return A named list of numeric vectors, derivatives of \eqn{F} itself and
-#'   not of its logarithm, in the order `which` gives or in the enumeration
-#'   order when it is `NULL`.
+#'   not of its logarithm. At order 1 the components follow `which`, or the
+#'   parameter order when `which` is `NULL`. At order 2 they are always in the
+#'   order of [hess_names()], restricted to the names in `which`.
 #'
 #' @seealso [discrete_cdf_deriv()], the exact route for a discrete family;
 #'   [cdf_tail_scale()], which puts the result on the requested tail;
@@ -271,7 +271,7 @@ discrete_cdf_deriv <- function(distrib, q, theta, order) {
 #' exact <- distrib_grad_cdf(d, q, th, log = FALSE)
 #' max(abs(numerical_cdf_deriv(d, q, th, 1)$mu / exact$mu - 1))
 #'
-#' # Only the components asked for are differenced.
+#' # Only the requested components are differenced.
 #' names(numerical_cdf_deriv(d, q, th, order = 2, which = "mu_mu"))
 #'
 #' @export
@@ -333,16 +333,14 @@ numerical_cdf_deriv <- function(distrib, q, theta, order = 1L,
 #' central difference of [distrib_cdf()] per parameter, through
 #' [numerical_cdf_deriv()], put on the requested tail and scale by
 #' [cdf_tail_scale()]. The step is \eqn{\varepsilon^{1/3}} relative, about
-#' \eqn{6.1\times10^{-6}}, and the accuracy measured against a family's own
-#' closed form is \eqn{6.1\times10^{-11}} relative.
+#' \eqn{6.1\times10^{-6}}.
 #'
 #' @details
-#' Eight of the 42 univariate families reach this method: beta1, beta2, chisq,
-#' gamma1, gamma2, gengamma1 and the two von Mises. In the first six the
-#' derivative wanted is that of an incomplete gamma or beta function with
-#' respect to its shape, which is hypergeometric and has no elementary form; in
-#' the last two the distribution function is itself a quadrature. Every other
-#' continuous family registers a formula.
+#' No shipped univariate family reaches this method. Every one registers its
+#' own gradient: a closed form or, for the families whose derivative in a
+#' shape parameter has no elementary form, the compiled quadrature of
+#' [compiled_cdf()]. The method serves continuous families defined by the user
+#' and the wrappers of continuous families.
 #'
 #' @param distrib A `continuous_distrib` object.
 #' @param q A numeric vector of quantiles.
@@ -363,9 +361,9 @@ numerical_cdf_deriv <- function(distrib, q, theta, order = 1L,
 #'   [distrib_hess_cdf.continuous_distrib()] for the second order.
 #'
 #' @examples
-#' # A gamma reaches this method: its cdf derivative in the shape has no
-#' # elementary form, so the cdf is differenced instead.
-#' d <- gamma2_distrib()
+#' # A truncated gamma registers no gradient of its own, so it reaches this
+#' # method and the cdf is differenced.
+#' d <- truncated(gamma2_distrib(), upper = 6)
 #' distrib_grad_cdf(d, c(1, 2, 4), list(mu = 2, sigma2 = 1))
 #'
 #' @keywords internal
@@ -384,9 +382,7 @@ S7::method(distrib_grad_cdf, continuous_distrib) <- function(distrib, q, theta,
 #' derivative: [numerical_cdf_deriv()] at order 2, with the first-order part
 #' taken from [distrib_grad_cdf()], so a closed gradient the family does
 #' register is used here too. The step is
-#' \eqn{\varepsilon^{1/4}} relative, about \eqn{1.2\times10^{-4}}, and the
-#' accuracy measured against a family's own closed form is
-#' \eqn{1.7\times10^{-7}} relative.
+#' \eqn{\varepsilon^{1/4}} relative, about \eqn{1.2\times10^{-4}}.
 #'
 #' @details
 #' A diagonal component is the three-point second difference and an
@@ -394,7 +390,7 @@ S7::method(distrib_grad_cdf, continuous_distrib) <- function(distrib, q, theta,
 #' different variables and is therefore a single stencil. The log-scale
 #' correction \eqn{\partial^2 P/P - (\partial P/P)^2} is applied afterwards by
 #' [cdf_tail_scale()], which is why the gradient is fetched even when only the
-#' Hessian was asked for.
+#' Hessian was requested.
 #'
 #' @param distrib A `continuous_distrib` object.
 #' @param q A numeric vector of quantiles.
@@ -413,8 +409,8 @@ S7::method(distrib_grad_cdf, continuous_distrib) <- function(distrib, q, theta,
 #'   [numerical_cdf_deriv()] for the stencils; [cdf_tail_scale()].
 #'
 #' @examples
-#' # A gamma reaches this method at both orders.
-#' d <- gamma2_distrib()
+#' # A truncated gamma reaches this method at both orders.
+#' d <- truncated(gamma2_distrib(), upper = 6)
 #' distrib_hess_cdf(d, c(1, 2), list(mu = 2, sigma2 = 1))
 #'
 #' @keywords internal
@@ -440,9 +436,9 @@ S7::method(distrib_hess_cdf, continuous_distrib) <- function(distrib, q, theta,
 #'
 #' @details
 #' The sum is finite because the discrete class requires a finite lower bound
-#' on the support. The cost therefore grows with the largest quantile asked
-#' for and not with the number of parameters: on a Poisson of mean 30 at 200
-#' quantiles the whole gradient takes 0.14 ms.
+#' on the support. The cost therefore grows with the largest requested
+#' quantile and not with the number of parameters, and each quantile is summed
+#' separately.
 #'
 #' Six of the shipped discrete families use this method; the rest register a
 #' formula, several of which are exact simplifications of this same sum. A
@@ -556,10 +552,11 @@ S7::method(distrib_hess_cdf, discrete_distrib) <- function(distrib, q, theta,
 #'       \frac{\partial^2 F}{\partial \sigma^2}
 #'         = f\left(z^2 \ell_y + \frac{2z}{\sigma}\right).}
 #'
-#' This covers the censored-regression workhorses: the Gaussian, the logistic,
-#' the Cauchy and the Laplace all register these bodies unchanged, and the
-#' Student t and the pseudo-Huber use them for their first two components and
-#' difference the shape.
+#' The Gaussian, the logistic, the Cauchy, the Laplace and the Gumbel
+#' register these bodies unchanged, and they are the families most used in
+#' censored regression. The Student t, pseudo-Huber and skew t families
+#' compute their location and scale components by the same formulas inside
+#' the compiled quadrature of [compiled_cdf()].
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
@@ -580,8 +577,7 @@ S7::method(distrib_hess_cdf, discrete_distrib) <- function(distrib, q, theta,
 #'   [hess_names()] at order 2.
 #'
 #' @seealso [loc_scale_grad_cdf()] and [loc_scale_hess_cdf()], the two bodies
-#'   families register; [partial_loc_scale_grad_cdf()], the variant for a
-#'   family with a shape parameter as well; [cdf_tail_scale()].
+#'   that families register; [cdf_tail_scale()].
 #'
 #' @keywords internal
 loc_scale_cdf_deriv <- function(distrib, q, theta, order) {
@@ -602,9 +598,9 @@ loc_scale_cdf_deriv <- function(distrib, q, theta, order) {
 #' @description
 #' The [distrib_grad_cdf()] body the location-scale families share:
 #' [loc_scale_cdf_deriv()] at order 1, put on the requested tail and scale by
-#' [cdf_tail_scale()]. The Gaussian, the logistic, the Cauchy and the Laplace
-#' register this function itself, so their four pages document one piece of
-#' arithmetic.
+#' [cdf_tail_scale()]. The Gaussian, the logistic, the Cauchy, the Laplace and
+#' the Gumbel register this function itself, so their pages document one piece
+#' of arithmetic.
 #'
 #' @param distrib An object inheriting from `distrib` whose first two
 #'   parameters are a location and a scale.
@@ -636,7 +632,7 @@ loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE,
 #' The [distrib_hess_cdf()] body the location-scale families share:
 #' [loc_scale_cdf_deriv()] at both orders, put on the requested tail and scale
 #' by [cdf_tail_scale()]. Both orders are needed even when only the Hessian was
-#' asked for, the log-scale correction reading the first derivatives.
+#' requested, the log-scale correction reading the first derivatives.
 #'
 #' @param distrib An object inheriting from `distrib` whose first two
 #'   parameters are a location and a scale.
@@ -672,14 +668,15 @@ loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE,
 #' \eqn{\partial F/\partial\mu = -f(q)} and
 #' \eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
 #' method is [loc_scale_grad_cdf()] itself, shared with the logistic, the
-#' Cauchy and the Laplace, so nothing here is particular to the Gaussian beyond
-#' its density.
+#' Cauchy, the Laplace and the Gumbel, so nothing here is particular to the
+#' Gaussian beyond its density.
 #'
 #' @details
 #' A censored Gaussian likelihood is cheap for this reason: a right-censored
 #' observation contributes \eqn{\log S(q)}, whose score in \eqn{\mu} is
-#' \eqn{f(q)/S(q)}, the inverse Mills ratio, and the whole of it comes from the
-#' density the family already computes.
+#' \eqn{f(q)/S(q)}, the inverse Mills ratio of \eqn{z} divided by \eqn{\sigma},
+#' and the whole of it comes from the density that the family already
+#' computes.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the mean, \eqn{\sigma > 0} the standard deviation,
@@ -691,10 +688,13 @@ loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE,
 #' @param theta A named list with components `mu` and `sigma` (positive), each
 #'   a numeric vector of length 1 or `n`.
 #' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default; `FALSE` flips the sign of every component.
+#'   default. With `log = FALSE`, `FALSE` flips the sign of every component;
+#'   with `log = TRUE` it returns the derivatives of \eqn{\log S}, where
+#'   \eqn{S = 1 - F}, which are not the negatives of the lower-tail ones.
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default. Far into a tail the probability underflows to zero and
-#'   the result is `-Inf` or `NaN`.
+#'   the result is `-Inf` or `NaN`, although the derivative of the logarithm
+#'   is finite there.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma`, each the
 #'   length of `q` recycled against `theta`.
@@ -730,7 +730,7 @@ S7::method(distrib_grad_cdf, Gaussian1Distrib) <- loc_scale_grad_cdf
 #'       \frac{\partial^2 F}{\partial\sigma^2}
 #'         = f\left(z^2\ell_y + \frac{2z}{\sigma}\right).}
 #' The method is [loc_scale_hess_cdf()] itself, shared with the logistic, the
-#' Cauchy and the Laplace.
+#' Cauchy, the Laplace and the Gumbel.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the mean, \eqn{\sigma > 0} the standard deviation,
@@ -775,8 +775,10 @@ S7::method(distrib_hess_cdf, Gaussian1Distrib) <- loc_scale_hess_cdf
 #' \eqn{\partial F/\partial\mu = -f(q)} and
 #' \eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
 #' method is [loc_scale_grad_cdf()] itself. For this family the density is
-#' \eqn{F(1-F)/\sigma}, so the log-scale gradient is elementary in \eqn{F}
-#' alone and no special evaluation is needed anywhere on the line.
+#' \eqn{F(1-F)/\sigma}, so the log-scale gradient in the mean is
+#' \eqn{-(1-F)/\sigma}. The method divides \eqn{f} by \eqn{F}, so it returns
+#' `NaN` or `Inf` in a tail where \eqn{F} has underflowed to zero or rounded to
+#' one.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
@@ -1004,17 +1006,19 @@ S7::method(distrib_grad_cdf, LaplaceDistrib) <- loc_scale_grad_cdf
 #'
 #' @description
 #' Closed form, from the same location-scale structure, through
-#' [loc_scale_hess_cdf()]. The response derivative it reads is
-#' \eqn{\ell_y = -\mathrm{sign}(z)/\sigma}, which jumps at \eqn{q = \mu}, so
-#' the second derivatives of \eqn{F} jump there too. That is a property of the
-#' law and not a defect: the Laplace is the toolkit's non-regular family, and
-#' its location has no second derivative at the kink.
+#' [loc_scale_hess_cdf()]. The response derivative that it reads is
+#' \eqn{\ell_y = -\mathrm{sign}(z)/\sigma}, which jumps at \eqn{q = \mu}. The
+#' component `mu_mu` therefore jumps there, and the location has no second
+#' derivative at the kink, which is a property of the law. The components
+#' `sigma_sigma` and `mu_sigma` are continuous, because
+#' \eqn{z\,\ell_y = -|z|/\sigma} and \eqn{z^2\ell_y = -z|z|/\sigma} are
+#' continuous in \eqn{z}.
 #'
 #' @details
 #' Away from \eqn{q = \mu} the three components are the ordinary
 #' location-scale ones. At \eqn{q = \mu} exactly, `sign(0)` is 0 and the
 #' returned `mu_mu` is the average of the two one-sided limits, which is the
-#' value the sign convention gives and is reported as it stands.
+#' value that the sign convention gives, and it is reported as it stands.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
@@ -1108,8 +1112,9 @@ S7::method(distrib_grad_cdf, Laplace2Distrib) <- function(distrib, q, theta,
 #'       \qquad
 #'       \frac{\partial^2 F}{\partial\mu\,\partial\lambda}
 #'         = -\left(\frac{1}{\lambda} - a\right) f.}
-#' The sign function is what carries the kink: all three jump at
-#' \eqn{q = \mu}, as they do in the scale parametrization.
+#' The sign function carries the kink: `mu_mu` jumps at \eqn{q = \mu}, as it
+#' does in the scale parametrization, while `lambda_lambda` and `mu_lambda`
+#' are continuous there.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\lambda > 0} the rate, \eqn{r = q - \mu},
@@ -1137,7 +1142,7 @@ S7::method(distrib_grad_cdf, Laplace2Distrib) <- function(distrib, q, theta,
 #' d <- laplace2_distrib()
 #' th <- list(mu = 0.3, lambda = 1 / 1.2)
 #'
-#' # All three components jump across q = mu.
+#' # Only mu_mu jumps across q = mu; the other two components are continuous.
 #' distrib_hess_cdf(d, 0.3 + c(-1e-6, 1e-6), th, log = FALSE)
 #'
 #' # Away from the kink they agree with a central difference of the cdf.
@@ -1189,9 +1194,8 @@ S7::method(distrib_hess_cdf, Laplace2Distrib) <- function(distrib, q, theta,
 #' the second component is the chain rule onto the variance, this
 #' parametrization carrying \eqn{\sigma^2} rather than \eqn{\sigma}.
 #'
-#' Only the gradient is registered; the second derivatives fall to
-#' [distrib_hess_cdf.continuous_distrib()], which differences the cdf and
-#' reuses this closed gradient for its first-order part.
+#' The second derivatives are registered separately, in closed form, by
+#' [distrib_hess_cdf.Lognormal1Distrib()].
 #'
 #' @section Notation:
 #' \eqn{\mu} is the mean of \eqn{\log Y}, \eqn{\sigma^2 > 0} its variance,
@@ -1212,7 +1216,7 @@ S7::method(distrib_hess_cdf, Laplace2Distrib) <- function(distrib, q, theta,
 #' @return A named list of two numeric vectors, `mu` and `sigma2`, each the
 #'   length of `q` recycled against `theta`.
 #'
-#' @seealso [distrib_hess_cdf.continuous_distrib()], the second order;
+#' @seealso [distrib_hess_cdf.Lognormal1Distrib()], the second order;
 #'   [distrib_grad_cdf.Gaussian1Distrib()], the family on the log scale;
 #'   [lognormal1_distrib()].
 #'
@@ -1231,7 +1235,10 @@ S7::method(distrib_hess_cdf, Laplace2Distrib) <- function(distrib, q, theta,
 S7::method(distrib_grad_cdf, Lognormal1Distrib) <- function(distrib, q, theta,
                                                            lower.tail = TRUE, log = TRUE, ...) {
   s <- sqrt(theta[[2]])
-  z <- (base::log(q) - theta[[1]]) / s
+  # at or below zero F is identically 0, and so is every derivative; the mask
+  # keeps log(q) from turning the product with f = 0 into NaN
+  pos <- q > 0
+  z <- ifelse(pos, (base::log(ifelse(pos, q, 1)) - theta[[1]]) / s, 0)
   f <- distrib_pdf(distrib, q, theta)
   d1 <- list(mu = -q * f, sigma2 = -q * f * z / (2 * s))
   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
@@ -1291,7 +1298,7 @@ S7::method(distrib_grad_cdf, Lognormal1Distrib) <- function(distrib, q, theta,
 #' @return A named list with one numeric vector, `mu`, the length of `q`
 #'   recycled against `theta`.
 #'
-#' @seealso [distrib_grad_cdf.discrete_distrib()], the general sum this
+#' @seealso [distrib_grad_cdf.discrete_distrib()], the general sum that this
 #'   replaces; [distrib_grad_cdf.NegBin2Distrib()], whose mean component tends
 #'   to this one; [poisson_distrib()].
 #'
@@ -1472,67 +1479,60 @@ S7::method(distrib_grad_cdf, NegBin2Distrib) <- function(distrib, q, theta,
 # further shape parameter nu. The two location-scale derivatives are closed
 # form; nu is a derivative of a hypergeometric-type integral and is differenced.
 
-#' CDF Gradient When Only Some Parameters Are Location-Scale
-#'
-#' @description
-#' The [distrib_grad_cdf()] body for a family that is location-scale in
-#' \eqn{(\mu, \sigma)} and carries a further shape parameter: the two
-#' location-scale directions in closed form, \eqn{-f} and \eqn{-z f}, and the
-#' shape directions from [numerical_cdf_deriv()]. The Student t and the
-#' pseudo-Huber are the two families that register it.
-#'
-#' @details
-#' # Why the shape is differenced
-#'
-#' In both families the shape direction is the derivative of a
-#' hypergeometric-type integral with respect to its parameter, and has no
-#' elementary form. Only those components are passed to the numerical route,
-#' through its `which` argument, so the differencing costs cdf evaluations for
-#' the shape alone.
-#'
-#' # What the split is worth
-#'
-#' It is a speed gain, and the size of it depends on how dear the family's cdf
-#' is. On a pseudo-Huber, whose distribution function is itself a quadrature,
-#' a gradient at 500 quantiles costs 0.08 s here against 0.18 s when every
-#' component is differenced. On accuracy the two agree closely: measured over
-#' shapes from 0.1 to 100 and quantiles out to eight scales, the differenced
-#' mean component is within \eqn{2\times10^{-11}} to \eqn{3\times10^{-8}}
-#' relative of the closed one.
-#'
-#' @section Notation:
-#' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
-#' \eqn{z = (q-\mu)/\sigma} and \eqn{f} the density.
-#'
-#' @param distrib An object inheriting from `distrib` whose first two
-#'   parameters are a location and a scale, and which has at least one more.
-#' @param q A numeric vector of quantiles.
-#' @param theta A named list of parameters, the location first and the scale
-#'   second.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
-#' @param ... Unused, and accepted so that the signature matches the generic's.
-#'
-#' @return A named list of numeric vectors, one per parameter, in the parameter
-#'   order.
-#'
-#' @seealso [loc_scale_grad_cdf()], the body for a family with no shape;
-#'   [numerical_cdf_deriv()] for the shape components;
-#'   [distrib_grad_cdf.StudentT1Distrib()] and
-#'   [distrib_grad_cdf.PseudoHuberDistrib()], the two registrations.
-#'
-#' @keywords internal
-partial_loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
-  params <- distrib@params
-  z <- (q - theta[[1]]) / theta[[2]]
-  f <- distrib_pdf(distrib, q, theta)
-  rest <- params[-(1:2)]
-  d1 <- c(list(-f, -z * f), numerical_cdf_deriv(distrib, q, theta, 1L, which = rest))
-  names(d1) <- params
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
-}
+# Not registered by any family: the Student t, the pseudo-Huber and the
+# skew t take these components from the compiled routes. Kept commented out
+# (2026-10-11) rather than deleted.
+# CDF Gradient When Only Some Parameters Are Location-Scale
+#
+# @description
+# The [distrib_grad_cdf()] body for a family that is location-scale in
+# \eqn{(\mu, \sigma)} and carries a further shape parameter: the two
+# location-scale directions in closed form, \eqn{-f} and \eqn{-z f}, and the
+# shape directions from [numerical_cdf_deriv()]. No shipped family registers
+# it: the Student t and the pseudo-Huber register [compiled_grad_cdf()].
+#
+# @details
+# # Why the shape is differenced
+#
+# The shape direction is the derivative of a hypergeometric-type integral
+# with respect to its parameter, and has no elementary form. Only those
+# components are passed to the numerical route, through its `which` argument,
+# so the differencing costs cdf evaluations for the shape alone.
+#
+# @section Notation:
+# \eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
+# \eqn{z = (q-\mu)/\sigma} and \eqn{f} the density.
+#
+# @param distrib An object inheriting from `distrib` whose first two
+#   parameters are a location and a scale, and which has at least one more.
+# @param q A numeric vector of quantiles.
+# @param theta A named list of parameters, the location first and the scale
+#   second.
+# @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
+#   default.
+# @param log Are derivatives of the log probability wanted? A single logical,
+#   `TRUE` by default.
+# @param ... Unused, and accepted so that the signature matches the generic's.
+#
+# @return A named list of numeric vectors, one per parameter, in the parameter
+#   order.
+#
+# @seealso [loc_scale_grad_cdf()], the body for a family with no shape;
+#   [numerical_cdf_deriv()] for the shape components;
+#   [distrib_grad_cdf.StudentT1Distrib()] and
+#   [distrib_grad_cdf.PseudoHuberDistrib()], the compiled methods of the two
+#   families that this body was written for.
+#
+# @keywords internal
+# partial_loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
+#   params <- distrib@params
+#   z <- (q - theta[[1]]) / theta[[2]]
+#   f <- distrib_pdf(distrib, q, theta)
+#   rest <- params[-(1:2)]
+#   d1 <- c(list(-f, -z * f), numerical_cdf_deriv(distrib, q, theta, 1L, which = rest))
+#   names(d1) <- params
+#   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
+# }
 
 #' @title Student t Log-CDF Gradient
 #' @name distrib_grad_cdf.StudentT1Distrib

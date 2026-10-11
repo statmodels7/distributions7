@@ -28,7 +28,7 @@ The same construction as for a continuous parent, \eqn{\ell_T = \ell -
 set partitions, with every expectation taken by \strong{summation over the
 retained support} in place of a quadrature.
 
-That makes it both exact and cheap. The support of a truncated lattice
+That makes it both exact and cheap. The support of a truncated discrete
 family is finite whenever both endpoints are, so each block is a finite sum
 of terms the parent already computes, and the memoization across the
 partition sum applies as before.

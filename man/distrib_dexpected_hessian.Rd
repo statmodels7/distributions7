@@ -39,7 +39,7 @@ A named list of numeric vectors, keyed as
 pair \eqn{(a,b)} and differentiating parameter \eqn{c}.
 }
 \details{
-The components are symmetric in \eqn{(a,b)} and NOT in \eqn{c}: writing
+The components are symmetric in \eqn{(a,b)} and not in \eqn{c}: writing
 \deqn{\frac{\partial}{\partial\theta_c}\mathbb{E}[\ell_{ab}]
   = \mathbb{E}[\ell_{abc}] + \mathbb{E}[\ell_{ab}\ell_{c}],}
 the first term is fully symmetric and the second is not, so the result is
@@ -49,7 +49,7 @@ keyed by \code{\link[=dexpected_names]{dexpected_names()}} rather than by the so
 \strong{The default method differences the family's own expected
 information}, one central stencil per parameter, which is a single
 difference of an analytic quantity wherever that quantity is a written-out
-formula. It is refused where it is not: see
+formula. Where it is not, the method signals an error: see
 \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}}.
 
 On \code{scale = "link"} the difference is taken along the free scale of the

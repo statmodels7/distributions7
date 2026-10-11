@@ -11,9 +11,8 @@ fit_dtheta_deta(distrib, eta)
 \code{link_params}.}
 
 \item{eta}{A numeric vector of linear predictors, one per parameter, in the
-order \code{distrib@params} gives. Only the first element of each link's answer
-is kept, so an \code{eta} longer than the parameter count is silently truncated
-by the same rule \code{\link[=fit_eta_from_theta]{fit_eta_from_theta()}} applies.}
+order \code{distrib@params} gives. Only \code{eta[i]} is read for the i-th
+parameter, so entries beyond the parameter count are ignored.}
 }
 \value{
 An unnamed numeric vector of length \code{length(distrib@params)}, in the

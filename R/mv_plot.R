@@ -146,10 +146,14 @@ S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
 #' @param n_grid Points per axis, a single positive whole number.
 #' @param col_fit Color of the fitted density, the contours and the printed
 #'   correlations.
-#' @param data An \eqn{n \times p} matrix of observations, or `NULL` for a
-#'   distribution with no data behind it.
+#' @param data An \eqn{n \times p} matrix of observations with one column
+#'   per coordinate of the distribution, whichever coordinates `which`
+#'   selects, or `NULL` for a distribution with no data behind it.
 #' @param col_data Color of the observed summary, used only when `data` is
 #'   given. Defaults to `"#4682B4"`.
+#' @param which_arg The name of the caller's argument that carries `which`,
+#'   used in the error message for more than three coordinates. Defaults to
+#'   `"which"`; [plot.distrib_fit()] passes `"mv_which"`.
 #' @param ... Unused.
 #'
 #' @return `NULL`, invisibly. Called for the plot it draws, and it changes
@@ -178,7 +182,7 @@ S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
 #'
 #' @keywords internal
 mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
-                            col_data = "#4682B4", ...) {
+                            col_data = "#4682B4", which_arg = "which", ...) {
   p <- d@n_dim
   if (is.null(which)) which <- seq_len(p)
   which <- as.integer(which)
@@ -187,8 +191,8 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
   if (k > 3L) {
     stop(sprintf(paste0(
       "A panel matrix of %d coordinates has %d panels and is not readable.\n",
-      "  Choose at most three with 'which', for instance which = c(1, 2, 3)."
-    ), k, k * k), call. = FALSE)
+      "  Choose at most three with '%s', for instance %s = c(1, 2, 3)."
+    ), k, k * k, which_arg, which_arg), call. = FALSE)
   }
 
   # The range each coordinate is drawn over, from its own marginal: two and a
@@ -204,9 +208,8 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
     lo <- center[j] - 3 * spread[j]
     hi <- center[j] + 3 * spread[j]
     if (!is.null(data)) {
-      col <- match(j, which)
-      lo <- min(lo, min(data[, col]))
-      hi <- max(hi, max(data[, col]))
+      lo <- min(lo, min(data[, j]))
+      hi <- max(hi, max(data[, j]))
     }
     c(lo, hi)
   })
@@ -231,7 +234,7 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
         ymax <- max(dens)
         kd <- NULL
         if (!is.null(data)) {
-          kd <- stats::density(data[, a])
+          kd <- stats::density(data[, ja])
           ymax <- max(ymax, max(kd$y))
         }
         graphics::plot(xs, dens,
@@ -263,7 +266,7 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
           xlab = lab[b], ylab = lab[a], main = ""
         )
         if (!is.null(data)) {
-          graphics::points(data[, b], data[, a],
+          graphics::points(data[, jb], data[, ja],
             pch = 16, cex = 0.35,
             col = grDevices::adjustcolor(col_data, alpha.f = 0.35)
           )

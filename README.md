@@ -16,18 +16,20 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 # distributions7 <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 Almost every R package that fits statistical models writes its own
-distributions, privately: a `switch` on a character string, a list of
-closures nothing outside can reach. The same Gamma is therefore
-re-implemented again and again, each time only as far as that package
-happened to need it: the density and the score, sometimes the Hessian,
-rarely anything beyond.
+distributions, privately: a `switch` on a character string, or a list of
+closures that only the package itself can reach. The same Gamma is
+therefore re-implemented again and again, each time only as far as that
+package happened to need it: the density and the score, sometimes the
+Hessian, rarely anything beyond.
 
 `{distributions7}` writes them once, as objects. Each carries the usual
 density, distribution and quantile functions, together with the **exact
-derivatives of the log-likelihood up to fourth order**. The derivatives
-are available with respect to the parameters, with respect to the
-response, and with respect to the unconstrained parameters behind a link
-function, which is the scale an optimizer works on.
+derivatives of the log-likelihood up to fourth order**, and a fifth
+order that is closed form for some families and one central difference
+of the analytic fourth order for the others. The derivatives are
+available with respect to the parameters, with respect to the response,
+and with respect to the unconstrained parameters behind a link function,
+which is the scale an optimizer works on.
 
 It is the distribution layer of
 [statmodels7](https://statmodels7.github.io), an S7 toolkit for
@@ -45,8 +47,8 @@ book](https://statmodels7.github.io/book/).
 pak::pak("statmodels7/distributions7")
 ```
 
-Or the whole toolkit at once, which also installs the six sibling
-packages:
+Or the whole toolkit at once, which installs `{distributions7}` together
+with the other packages of the toolkit:
 
 ``` r
 pak::pak("statmodels7/statmodels7")
@@ -54,11 +56,11 @@ pak::pak("statmodels7/statmodels7")
 
 ## The usual functions
 
-The package carries 42 univariate distributions and 6 multivariate ones,
-one name per parametrization where a family has several –
-`gaussian1_distrib()` in mean and scale, `gaussian2_distrib()` in mean
+The package carries 43 univariate distributions and 6 multivariate ones,
+one name per parametrization where a family has several
+(`gaussian1_distrib()` in mean and scale, `gaussian2_distrib()` in mean
 and variance, `gaussian3_distrib()` in mean and precision, and likewise
-for 14 other families. Each constructor takes the link functions used
+for 14 other families). Each constructor takes the link functions used
 for its parameters, and parameters travel as a named list.
 
 ``` r
@@ -75,34 +77,33 @@ distrib_quantile(d, c(0.025, 0.5, 0.975), theta)
 
 ## Moments
 
-A distribution is asked for its moments rather than having them looked
-up: the mean, the variance, the standard deviation, the skewness and the
-excess kurtosis, in closed form where one exists and by quadrature
-against the density where it does not. `moment()` answers for an
-arbitrary order, raw or central.
+The moments of a distribution are computed on request: the mean, the
+variance, the standard deviation, the skewness and the excess kurtosis,
+from a closed form where the family has one and by quadrature against
+the density otherwise. `moment()` computes a moment of any order, raw or
+central.
 
 ``` r
 # sigma^2 and 3 sigma^4 at the even orders; the odd ones vanish, and they
 # vanish to the accuracy of the quadrature that produced them rather than
 # because a table said so
 moment(d, theta, p = 1:4, central = TRUE)
-#> [1] 5.884182e-15 9.000000e+00 1.456613e-13 2.430000e+02
+#> [1]   0   9   0 243
 c(skewness = skewness(d, theta), kurtosis = kurtosis(d, theta))
 #> skewness kurtosis 
 #>        0        0
 ```
 
 Every moment returns **one value per parameter setting**, so a component
-given as a vector asks for one moment per element and the answer can be
-bound to the rows it came from. That holds whether or not the parameter
-being varied happens to enter the formula: the variance of a Weibull
-below does not read its scale as a separate quantity, and still comes
-back three long.
+given as a vector gives one moment per element, and the result can be
+bound to the rows of that vector. This holds also when the varied
+parameter does not enter the formula: the skewness of a Weibull depends
+only on its shape, and three scales still give three values.
 
 ``` r
 w <- weibull1_distrib()
-variance(w, list(mu = c(0.1, 1, 100), sigma = 2))
-#> [1] 2.146018e-03 2.146018e-01 2.146018e+03
+skewness(w, list(mu = c(0.1, 1, 100), sigma = 2))
+#> [1] 0.6311107 0.6311107 0.6311107
 ```
 
 `theta` is read by name and not by position here as everywhere else, so
@@ -165,7 +166,7 @@ fit <- fit_distrib(gamma2_distrib(), y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 0 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 40 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -179,8 +180,8 @@ fit
 #> sigma2   0.6875     0.0744 0.5416 0.8334
 ```
 
-The fit carries the data it was estimated from, so it can be checked
-against the data and simulated from:
+The fit carries the data from which it was estimated, so it can be
+checked against the data and simulated from:
 
 ``` r
 plot(fit)
@@ -196,11 +197,12 @@ quantile(vapply(sims, median, numeric(1)), c(0.025, 0.975))
 ```
 
 The optimization itself is delegated to
-[optimizers7](https://statmodels7.github.io/optimizers7/). One argument
-says how to optimize, and it takes either an optimizer of that package,
-which brings its own stopping rule, or `fisher_scoring()`, which is
-Newton’s method with the expected information and carries how that
-information is to be obtained when the family has no closed form for it.
+[optimizers7](https://statmodels7.github.io/optimizers7/). The argument
+`method` selects the optimization. It accepts an optimizer of that
+package, which brings its own stopping rule; `fisher_scoring()`, which
+is Newton’s method with the expected information and records how that
+information is approximated when the family has no closed form for it;
+or one of the names `"fisher"`, `"newton"` and `"bfgs"`.
 
 ``` r
 fit2 <- fit_distrib(gamma2_distrib(), y,
@@ -211,10 +213,10 @@ c(fisher = as.numeric(logLik(fit)), lbfgs = as.numeric(logLik(fit2)))
 #> -841.2326 -841.2326
 ```
 
-Where a fit starts matters more than it looks, so a family is asked for
-its own starting value through `distrib_start()`. A family with a known
-estimator returns it and the fit begins there; one that says nothing
-gets random draws.
+The starting values of a fit come from `distrib_start()`. A family with
+a known estimator returns it, and the fit begins there; a univariate
+family takes its first start from the moments of the data and its other
+starts at random.
 
 ``` r
 d4 <- mvgaussian1_distrib(4)
@@ -250,15 +252,15 @@ mv_sigma(dm, coef(fitm))
 #> v2 0.7273189 1.5380692
 ```
 
-Those free values are coordinates an optimizer moves in, not quantities
-anybody reads, and they are not what the fit prints. `mv_summary()`
-carries the fit’s variance matrix onto the ones that are, by the delta
-method, and builds each interval on the scale that keeps it in its own
-set: a standard deviation on the log scale, a correlation on Fisher’s
-*z*. A precision parametrization reports the same standard deviations
-and correlations — they are properties of the law — and adds the
-conditional variances and partial correlations, which are what it
-describes directly.
+Those free values are the coordinates in which an optimizer moves, and
+they are not the quantities that the fit reports. `mv_summary()` carries
+the fit’s variance matrix onto the standard deviations and the
+correlations, by the delta method, and builds each interval on the scale
+that keeps it in its own set: a standard deviation on the log scale, a
+correlation on Fisher’s *z*. A precision parametrization reports the
+conditional variances and the partial correlations instead, which are
+what it describes directly; the marginal matrix remains available from
+`mv_sigma()`.
 
 ``` r
 mv_summary(fitm)
@@ -281,12 +283,12 @@ plot(fitm)
 `mvstudent_t1_distrib()` is the heavy-tailed alternative, with the
 degrees of freedom estimated alongside everything else. Its `mv_sigma()`
 is the **scale** matrix and its `variance()` the covariance, which
-differ by $\nu/(\nu-2)$ and which the family keeps apart so that it
-remains usable below two degrees of freedom, where the covariance does
-not exist.
+differ by the factor $\nu/(\nu-2)$. The two are reported separately, so
+that the family remains usable at two degrees of freedom or fewer, where
+the covariance does not exist.
 
 Two families are not elliptical. `dirichlet_distrib()` lives on the
-simplex, written in a mean vector — a `parameters7` simplex — and a
+simplex, written in a mean vector (a `parameters7` simplex) and a
 concentration, and its marginals are beta with that same concentration.
 `multinomial_distrib()` is discrete, and being discrete it can enumerate
 its support: `mv_support()` returns every vector of counts summing to
@@ -311,7 +313,7 @@ subclass and one method.
 ``` r
 MyLaplace <- S7::new_class("MyLaplace", parent = continuous_distrib)
 
-S7::method(distrib_pdf, MyLaplace) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, MyLaplace) <- function(distrib, y, theta, log = FALSE, ...) {
   ld <- -log(2 * theta$b) - abs(y - theta$mu) / theta$b
   if (log) ld else exp(ld)
 }
@@ -342,11 +344,14 @@ including what to do when a parameter is not differentiable.
 
 ## Validating a distribution
 
-`check_distrib()` puts a distribution through thirteen numerical checks.
-It verifies that the density integrates to one, that the distribution
-function agrees with it, that the quantile function inverts it, and that
-the generator follows it. It also checks every derivative order against
-finite differences, on both scales.
+`check_distrib()` puts a univariate distribution through a battery of
+numerical checks. It verifies that the density integrates to one, that
+the distribution function agrees with it, that the quantile function
+inverts it, and that the generator follows it. It also compares every
+derivative that the family implements with finite differences, on the
+parameter and the link scale; a derivative order that the family leaves
+to the fallbacks is listed as not run, since both sides of the
+comparison would be the same arithmetic.
 
 ``` r
 invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
@@ -357,26 +362,31 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 #>   [OK  ] density integrates to 1                     1.81e-10
 #>   [OK  ] density is non-negative                     5.00e-03
 #>   [OK  ] cdf in [0,1] and non-decreasing             2.46e-02
-#>   [OK  ] cdf agrees with the density                 6.25e-07
-#>   [OK  ] quantile/cdf round-trip                     3.31e-10
+#>   [OK  ] cdf agrees with the density                 3.78e-07
+#>   [OK  ] quantile/cdf round-trip                     1.11e-16
 #>   [OK  ] rng matches the cdf                         1.68e+00
-#>   [OK  ] gradient vs finite differences              0.00e+00
-#>   [OK  ] hessian vs finite differences               0.00e+00
-#>   [OK  ] deriv3 vs finite differences                0.00e+00
-#>   [OK  ] deriv4 vs finite differences                0.00e+00
 #>   [OK  ] expected information vs Monte Carlo         2.30e+00
-#>   [OK  ] response derivatives vs finite differences  0.00e+00
+#>   [OK  ] response derivatives vs finite differences  5.52e-09
 #>   [OK  ] link-scale gradient vs finite differences   3.24e-09
+#>   [ -- ] gradient vs finite differences              not run
+#>          no method of the family's own: the value is the numerical fallback, which this check would compare with itself
+#>   [ -- ] hessian vs finite differences               not run
+#>          no method of the family's own: the value is the numerical fallback, which this check would compare with itself
+#>   [ -- ] deriv3 vs finite differences                not run
+#>          no method of the family's own: the value is the numerical fallback, which this check would compare with itself
+#>   [ -- ] deriv4 vs finite differences                not run
+#>          no method of the family's own: the value is the numerical fallback, which this check would compare with itself
 #> 
-#> All 13 checks passed.
+#> All 9 checks passed.
+#> 4 checks not run, for the reasons given above.
 ```
 
 ## What is in the box
 
 |  |  |
 |----|----|
-| continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, generalized gamma, inverse gaussian, lognormal, exponential, chi-squared, Weibull, Gumbel, generalized Pareto, beta, von Mises |
-| discrete | bernoulli, binomial, beta-binomial, poisson, geometric, negative binomial in both the quadratic and the linear variance parametrization |
+| continuous | gaussian, cauchy, logistic, Student’s t, Laplace, elastic net, pseudo-Huber, skew normal, skew t, gamma, generalized gamma, inverse gaussian, lognormal, exponential, chi-squared, Weibull, Gumbel, generalized Pareto, beta, von Mises |
+| discrete | bernoulli, binomial, beta-binomial, poisson, geometric, negative binomial in both the quadratic and the linear variance parametrization, Poisson-inverse Gaussian |
 | multivariate | `mvgaussian1_distrib()` and `mvgaussian2_distrib()`, parametrized by a covariance and by a precision structure respectively from [parameters7](https://statmodels7.github.io/parameters7/); `mvstudent_t1_distrib()` and `mvstudent_t2_distrib()` on the scale matrix and on its inverse, which keep the scale matrix and the covariance apart so that the family is usable where the second moment does not exist; `dirichlet_distrib()` on the simplex, whose marginals are beta; and `multinomial_distrib()`, whose support is enumerated by `mv_support()` so that every expectation is an exact sum |
-| wrappers | `zero_inflated()`, `zero_adjusted()`, `truncated()`, `folded()`, `fixed()`, `transformation()` with twelve transformers |
+| wrappers | `zero_inflated()`, `zero_adjusted()`, `truncated()`, `folded()`, `fixed()`, `transformation()` with twelve transformers, `reparametrize()` |
 | tools | `fit_distrib()`, `check_distrib()`, `expectation()`, moments, `rng_grou()` |

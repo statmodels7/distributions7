@@ -22,7 +22,7 @@ library(distributions7)
 Most of what **distributions7** offers beyond densities is derivatives: the
 score, the information, and the third and fourth derivatives of the
 log-likelihood. This vignette explains what they are, the two scales they are
-available on, and why the second scale --- the link scale --- is the one an
+available on, and why the second scale (the link scale) is the one that an
 optimizer needs.
 
 ## The derivatives of the log-likelihood
@@ -43,7 +43,7 @@ distrib_gradient(d, y, theta)          # score: d ell / d theta
 distrib_hessian(d, y, theta)           # observed: d^2 ell / d theta^2
 ```
 
-The **expected** Hessian --- the negative Fisher information --- is a separate
+The **expected** Hessian (the negative Fisher information) is a separate
 generic, because for a correct model it does not depend on $y$:
 
 ```{r}
@@ -63,7 +63,8 @@ respect to the response $y$ instead of the parameters.
 
 ## Two scales
 
-Every derivative generic takes a `scale` argument. The default,
+Every generic for the parameter derivatives of the log-likelihood, from
+`distrib_gradient()` to `distrib_deriv5()`, takes a `scale` argument. The default,
 `scale = "parameter"`, is what the examples above used: derivatives with
 respect to $\theta$ on its natural, constrained scale.
 
@@ -75,8 +76,8 @@ on $\sigma$ is the log, so $\eta_\sigma = \log\sigma$:
 distrib_gradient(d, y, theta, scale = "link")
 ```
 
-Nothing was differentiated numerically to get this. The chain rule was applied
-to the parameter-scale derivatives, exactly. For a single parameter with link
+These values come from applying the chain rule exactly to the parameter-scale
+derivatives, with no numerical differentiation. For a single parameter with link
 $g$, $\partial\ell/\partial\eta = (\partial\ell/\partial\theta)\,/\,g'(\theta)$;
 with the log link on $\sigma$ that factor is simply $\sigma$:
 
@@ -101,7 +102,7 @@ all.equal(
 ```
 
 The transformation works at every order. The general rule is Faà di Bruno's
-formula --- the chain rule for higher derivatives --- applied with a diagonal
+formula (the chain rule for higher derivatives) applied with a diagonal
 Jacobian, since each parameter has its own link. It is written once, in the body
 of each generic, so `scale = "link"` is available uniformly:
 
@@ -118,12 +119,12 @@ through the link and the problem becomes unconstrained: $\eta$ ranges over the
 whole real line, and a Newton or Fisher-scoring step needs exactly the
 link-scale score and information this package computes in closed form.
 
-That is precisely what `fit_distrib()` does --- it optimizes on the link scale
-and maps back --- and it is why its confidence intervals cannot leave a
+That is what `fit_distrib()` does: it optimizes on the link scale and maps
+back, which is why its confidence intervals cannot leave a
 parameter's domain. See `vignette("fitting-a-model")` for that side of the story.
 
 The information transforms consistently. Write $h = g^{-1}$, so that
-$h'(\eta) = 1/g'(\theta)$ is the derivative of the inverse link — the same
+$h'(\eta) = 1/g'(\theta)$ is the derivative of the inverse link, the same
 factor that already appeared in the first-order rule above. Because the score
 has zero expectation, the expected information on the link scale is the
 sandwich $\operatorname{diag}(h') \, \mathcal{I} \, \operatorname{diag}(h')$;
@@ -149,12 +150,15 @@ value is approximated, and `approx` chooses how:
 distrib_deriv3(gamma2_distrib(), 0, list(mu = 3, sigma2 = 2), expected = TRUE)
 ```
 
-The strategies are `"bartlett"`, `"integrate"` and `"mc"`, trading speed against
-robustness. They rest on one idea: the outer product of gradients is the
-order-two case of the Bartlett identities, and the general identity expresses an
-expected derivative of any order through products of lower-order ones. `?distrib_deriv3`
-has the details; the default is chosen to be both cheap and valid, including for
-models where the usual regularity assumptions fail.
+The strategies are `"opg"`, `"bartlett"`, `"integrate"` and `"mc"`, trading
+speed against robustness. `"bartlett"` rests on the Bartlett identities: the
+outer product of gradients is their order-two case, and the general identity
+expresses an expected derivative of any order through products of lower-order
+ones. `"opg"` reads that outer product at each observation without taking an
+expectation, and `"integrate"` and `"mc"` average the observed derivative
+itself, by quadrature or by simulation. The default is `"opg"` for
+`distrib_expected_hessian()` and `"integrate"` for `distrib_deriv3()` and
+`distrib_deriv4()`; `?expected_derivative_methods` has the details.
 
 ## A note for authors of derivative methods
 
@@ -176,7 +180,7 @@ built-in methods already follow this pattern.
 
 ## Where to go next
 
-- `vignette("fitting-a-model")` --- the link scale put to work in estimation.
-- `vignette("defining-a-distribution")` --- adding a distribution that inherits
+- `vignette("fitting-a-model")`: the link scale put to work in estimation.
+- `vignette("defining-a-distribution")`: adding a distribution that inherits
   all of this.
-- `?distrib_gradient`, `?distrib_deriv3` --- the full reference.
+- `?distrib_gradient`, `?distrib_deriv3`: the full reference.

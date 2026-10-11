@@ -32,16 +32,15 @@ new_check <- function(name, ok, stat, detail = NA_character_) {
 #' than letting it abort the report.
 #'
 #' @details
-#' A distribution under validation is by assumption possibly broken, so a check
-#' that throws is itself a result. Without this, the first component to raise
-#' would end the run and hide every check after it, which is the least useful
-#' moment to
-#' stop being informative.
+#' A distribution under validation may be defective, so an error raised by a
+#' check is a result of that check. Without this conversion, the first
+#' component that raised an error would end the run and the checks after it
+#' would not be reported.
 #'
 #' The failed row is marked with the attribute `from_error`, which
 #' [check_distrib()] reads before assembling the table: a check whose
-#' computation raised has failed, and it is never mistaken for one whose
-#' statistic merely came out non-finite, which is reported as not run.
+#' computation raised an error has failed, and it is not treated as a check
+#' whose statistic came out `NaN` or `NA`, which is reported as not run.
 #'
 #' @param name The check's name, used for the row built on failure.
 #' @param expr The expression to evaluate; normally returns a row from
@@ -64,10 +63,12 @@ safe_check <- function(name, expr) {
 #'
 #' @description
 #' Runs a battery of numerical self-consistency checks on a `distrib` object.
-#' Validates a user-defined distribution: it verifies that the density integrates (or sums) to one, that the
-#' CDF, quantile function and random generator agree with each other and with the
-#' density, and that every analytical derivative matches its finite-difference
-#' counterpart.
+#' For a univariate distribution, user-defined or shipped, it verifies that
+#' the density integrates (or sums) to one, that the CDF, quantile function and
+#' random generator agree with each other and with the density, and that every
+#' analytical derivative matches its finite-difference counterpart. A
+#' multivariate distribution is validated by the separate battery of
+#' [check_distrib_mv()], which has no CDF or quantile rows.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param theta A named list of parameter values at which to run the checks. If
@@ -78,12 +79,14 @@ safe_check <- function(name, expr) {
 #' @param nsim Integer. Monte Carlo sample size used for the random generator and
 #'   expected-information checks. Defaults to 200000.
 #' @param orders Integer vector. Which parameter-derivative orders to check.
-#'   Defaults to `1:4`, the orders every family implements analytically; use
-#'   e.g. `1:2` for a faster run. Add `5` to check the numerical fifth as
-#'   well; see the bullet below for what that row compares and when it is
-#'   emitted.
-#' @param tol Numeric. Relative tolerance for the finite-difference comparisons.
-#'   Defaults to `1e-3`.
+#'   Defaults to `1:4`, the orders that every shipped family implements
+#'   analytically; use e.g. `1:2` for a faster run. Add `5` to check the fifth
+#'   order as well; see the bullet below for what that row compares and when
+#'   it is emitted.
+#' @param tol Numeric. Tolerance for the finite-difference comparisons, applied
+#'   to the absolute difference divided by the larger of one and the magnitude
+#'   of the reference, so that it is relative for large components and absolute
+#'   for small ones. Defaults to `1e-3`.
 #' @param verbose Logical. If `TRUE` (default) a readable report is printed.
 #'
 #' @return Invisibly, a `data.frame` with one row per check and columns
@@ -103,22 +106,24 @@ safe_check <- function(name, expr) {
 #'   mass.
 #' - **quantile**: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
 #'   distributions, and the generalized-inverse inequalities for discrete ones).
-#' - **rng**: the sample mean and variance of a large draw agree with
-#'   [mean()] and [variance()] within Monte Carlo error.
+#' - **rng**: the empirical distribution function of a large draw, at the
+#'   quantiles for the probabilities 0.05, 0.10, ..., 0.95, agrees with
+#'   [distrib_cdf()] within Monte Carlo error (the largest standardized
+#'   difference stays below 6).
 #' - **gradient, hessian, deriv3, deriv4**: analytical values against
 #'   [numerical_gradient()], [numerical_hessian()],
 #'   [numerical_deriv3()] and [numerical_deriv4()].
 #' - **deriv5**, when `5` is among `orders`: [distrib_deriv5()] against
 #'   [numerical_deriv5()] at a higher accuracy, five stencil nodes instead of
-#'   three. No family writes the fifth order out, so there is no analytic value
-#'   to compare against and this checks the differencing rather than a family's
-#'   algebra. It is emitted only where [has_exact_deriv4()] is `TRUE`: where the
-#'   fourth order is itself a fallback the fifth is a difference of a difference
-#'   and no verdict on it would mean anything. A family that owns its
-#'   fourth-order method while building part of it from stencils passes that
-#'   test and may still fail this row: [skewt_distrib()] fails it at `nu = 3`
-#'   and passes from `nu = 8` upward, the noise read here being absolute and
-#'   falling as `nu` grows. It is why `orders` defaults to `1:4`.
+#'   three. For a family that reaches the numerical fifth order the row checks
+#'   the differencing; for a family that registers its own [distrib_deriv5()]
+#'   it checks that method. It is emitted only where [has_exact_deriv4()] is
+#'   `TRUE`: where the fourth order is itself a fallback the fifth is a
+#'   difference of a difference and a verdict on it would carry no meaning. A
+#'   family that owns its fourth-order method while building part of it from
+#'   stencils passes that test and may still fail this row, whose statistic is
+#'   an absolute error for a small component. The row appears only when `5` is
+#'   among `orders`, which default to `1:4`.
 #' - **expected information**: [distrib_expected_hessian()] against a
 #'   Monte Carlo estimate of \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}. The outer
 #'   product of the score is used as reference because it remains valid when the
@@ -152,8 +157,10 @@ safe_check <- function(name, expr) {
 #' every row that is in the table reads `"OK"` or `"FAIL"`. An infinite
 #' statistic is a failure, being a component that overflows where its reference
 #' does not; so is a check whose computation raised an error, and so is a
-#' density or a distribution function that is not finite, those three checks
-#' being defined on the values themselves.
+#' density or a distribution function that is not finite. The checks defined on
+#' the values themselves (the non-negativity of the density, the range of the
+#' distribution function and, for a discrete family, the quantile round trip)
+#' are kept even when their statistic is missing.
 #'
 #' Mixed distributions --- a density with point masses on top of it, as produced by
 #' [zero_adjusted()] on a continuous parent --- are handled as long as they
@@ -756,8 +763,8 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
 #' difference straddling it returns a number that is simply wrong. An observation
 #' landing within a step of that point therefore makes the *reference*
 #' invalid, not the analytical value being tested, and comparing against it
-#' reports a failure for code that is right. Because the draws are random, that
-#' happened rarely and unpredictably.
+#' reports a failure for code that is right. Because the draws are random, such
+#' a failure cannot be predicted.
 #'
 #' Rather than hard-code where a kink is, the reference is recomputed with the
 #' step halved: where the two disagree, finite differencing has not converged and
@@ -765,18 +772,12 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
 #' dropped, so the check keeps its full strength: a gradient made 5\% wrong is
 #' still caught.
 #'
-#' Two details are load-bearing. The two estimates are compared **relative
-#' to their own magnitude** rather than against a denominator floored at one: near
-#' a kink both are tiny yet differ by a factor of two, which a floor of one
-#' flattens into apparent agreement. And if no observation survives, all are kept:
-#' a systematic disagreement is a real failure and should be reported, not hidden
-#' by the guard meant to protect against a local one.
-#'
-#' Note the placement. This is defined *after* `check_distrib()`, not
-#' before it: a roxygen block attaches to whatever object follows it, so a helper
-#' slipped in between silently steals the documentation of the function it
-#' belongs to. That had already happened once here, leaving the package with a
-#' `fd_is_reliable.Rd` and no `check_distrib.Rd`.
+#' The two estimates are compared **relative to their own magnitude** rather
+#' than against a denominator floored at one: near a kink both are tiny yet
+#' differ by a factor of two, which a floor of one would hide. If no
+#' observation survives, all are kept, because a systematic disagreement is a
+#' real failure and is reported; the guard is meant for a local disagreement
+#' only.
 #'
 #' @param fd_at A function of one argument, the relative step, returning the
 #'   finite-difference reference computed with that step.
@@ -792,6 +793,8 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
 #' @seealso [check_distrib()]
 #' @keywords internal
 fd_is_reliable <- function(fd_at, ref, h_rel, smooth_all) {
+  # defined after check_distrib(): a roxygen block attaches to the object that
+  # follows it, so a helper placed between them takes its documentation
   n <- length(ref[[1L]])
   if (isTRUE(smooth_all)) return(rep(TRUE, n))
 

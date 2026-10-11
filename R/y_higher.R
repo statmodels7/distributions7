@@ -59,6 +59,11 @@ NULL
 #' @export
 numerical_deriv_y <- function(distrib, y, theta, order,
                               h_rel = .Machine$double.eps^(1 / (order + 2))) {
+  # any other order used to fall through to the fourth-order stencil
+  if (length(order) != 1L || is.na(order) || !(order %in% c(3, 4))) {
+    stop("'order' must be 3 or 4; numerical_hess_y() gives the second order.",
+         call. = FALSE)
+  }
   h <- fd_steps_y(y, distrib@bounds, h_rel, "clamp", order = order)
   ld <- function(s) distrib_pdf(distrib, y + s * h, theta, log = TRUE)
   if (order == 3L) {
@@ -79,11 +84,13 @@ numerical_deriv_y <- function(distrib, y, theta, order,
 #' A family whose response enters only as \eqn{y - \mu} gets these from the
 #' derivatives it already has in the location, since
 #' \eqn{\partial^{k}\ell/\partial y^{k} = (-1)^{k}\,
-#' \partial^{k}\ell/\partial\mu^{k}}; the others take one stencil of the
-#' requested order on the log-density.
+#' \partial^{k}\ell/\partial\mu^{k}}. The other shipped families take them from
+#' closed forms of their own, and a family defined by its density alone takes
+#' one stencil of the requested order on the log-density.
 #'
-#' As with the orders below, a discrete family has no such derivative and the
-#' generic rejects rather than returning a difference across the lattice.
+#' As with the lower orders, a discrete family has no such derivative, and the
+#' call signals an error instead of returning a difference between support
+#' points.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
@@ -124,7 +131,7 @@ distrib_deriv4_y <- S7::new_generic(
 
 #' @title Default Third and Fourth Response Derivatives
 #' @name distrib_deriv3_y.continuous_distrib
-#' @description One stencil of the order asked for, on the log-density.
+#' @description One stencil of the requested order, on the log-density.
 #' @param distrib A `continuous_distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
@@ -151,13 +158,12 @@ S7::method(distrib_deriv4_y, continuous_distrib) <- function(distrib, y, theta,
 #' in the location.
 #'
 #' @details
-#' The identity is exact and needs no formula of its own, which is the point:
-#' the location derivative is already written, often as a compiled kernel, and
-#' the response derivative is the same number with a sign. It also fixes the
-#' two orders below, where \eqn{\partial\ell/\partial y = -\partial\ell/
+#' The identity is exact and needs no formula of its own. The location
+#' derivative is already written, often as a compiled kernel, and the response
+#' derivative equals it up to the sign \eqn{(-1)^{k}}. The same identity holds
+#' at the lower orders, where \eqn{\partial\ell/\partial y = -\partial\ell/
 #' \partial\mu} and \eqn{\partial^{2}\ell/\partial y^{2} =
-#' \partial^{2}\ell/\partial\mu^{2}}, and the tests check the new orders
-#' against exactly that.
+#' \partial^{2}\ell/\partial\mu^{2}}.
 #'
 #' @param order The derivative order, 3 or 4.
 #'
@@ -166,10 +172,14 @@ S7::method(distrib_deriv4_y, continuous_distrib) <- function(distrib, y, theta,
 #'   `length(y)`.
 #'
 #' @section Registered on:
-#' This body serves both third- and fourth-order response derivatives on all
-#' fourteen location families, so `?distrib_deriv3_y.Gaussian1Distrib` and its
-#' twenty-seven siblings open this page:
-#' `Gaussian1Distrib`, `Gaussian2Distrib`, `Gaussian3Distrib`, `CauchyDistrib`, `LogisticDistrib`, `LaplaceDistrib`, `Laplace2Distrib`, `EnetDistrib`, `PseudoHuberDistrib`, `StudentT1Distrib`, `SkewNormal1Distrib`, `SkewNormal2Distrib`, `SkewTDistrib`, `GumbelDistrib`.
+#' This body serves both third- and fourth-order response derivatives on the
+#' location families `Gaussian1Distrib`, `Gaussian2Distrib`,
+#' `Gaussian3Distrib`, `CauchyDistrib`, `LogisticDistrib`, `LaplaceDistrib`,
+#' `Laplace2Distrib`, `EnetDistrib`, `PseudoHuberDistrib`,
+#' `StudentT1Distrib`, `SkewNormal1Distrib`, `SkewTDistrib` and
+#' `GumbelDistrib`, and on `PseudoHuber2Distrib`, whose page documents it.
+#' `SkewNormal2Distrib` has compiled kernels of its own in the response; its
+#' two methods are listed here as aliases.
 #'
 #' @seealso [distrib_deriv3_y.continuous_distrib()] for the stencil a family
 #'   outside this list falls back to; [register_dy_k()], the companion for
@@ -316,9 +326,8 @@ dy_of_log <- function(gd, y, k) {
 #'
 #' @section Registered on:
 #' This body serves both third- and fourth-order response derivatives on the
-#' twelve families whose response is not a pure location, so
-#' `?distrib_deriv3_y.Gamma1Distrib` and its twenty-three siblings open this
-#' page:
+#' families listed below, which write a rule in the response of their own, so
+#' `?distrib_deriv3_y.Gamma1Distrib` and the other aliases open this page:
 #' `Gamma1Distrib`, `Gamma2Distrib`, `ChisqDistrib`, `ExponentialDistrib`, `Beta1Distrib`, `Beta2Distrib`, `Weibull1Distrib`, `InvGauss1Distrib`, `InvGauss2Distrib`, `Lognormal1Distrib`, `VonMises1Distrib`, `VonMises2Distrib`.
 #'
 #' @seealso [loc_deriv_y_k()], the companion for the location families;
@@ -417,12 +426,12 @@ register_dy_k(VonMises2Distrib, function(distrib, y, theta, k) {
 #' @description
 #' The parent's third and fourth response derivatives, read at the parent's
 #' parameters. A reparametrization acts on \eqn{\theta} and these derivatives
-#' are taken in \eqn{y}, so the two do not interact: no chain rule enters and
-#' the parent's answer is the answer, exactly.
+#' are taken in \eqn{y}, so the two do not interact: the chain rule does not
+#' enter, and the result of the parent is returned exactly.
 #'
-#' The same is true at the first and second orders, and for the mixed block
-#' [distrib_cross_y()] it is **not**: that one takes one derivative in each,
-#' so the map's first-order Jacobian does enter.
+#' The same holds at the first and second orders. It does not hold for the
+#' mixed block [distrib_cross_y()], which takes one derivative in each, so
+#' that the first-order Jacobian of the map enters.
 #'
 #' @param distrib A `ReparamContinuousDistrib` object, from [reparametrize()].
 #' @param y A numeric vector of observations.

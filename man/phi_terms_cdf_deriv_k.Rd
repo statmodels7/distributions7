@@ -37,18 +37,17 @@ The Leibniz rule splits the positions of the multi-index \eqn{I} between the
 weight and the tail. The weight side is
 \eqn{\partial^{S} e^{w} = e^{w} B_{S}(w)}, the complete Bell polynomial in
 the partials of the \strong{log} weight; the tail side is one Faa di Bruno pass
-over \eqn{x}, whose inner derivatives are the Hermite factors of
-\code{\link[=phi_hermite]{phi_hermite()}} times \eqn{\varphi(x)}. Nothing is transcribed: both sums
-run on the package's own partition enumeration.
+over \eqn{x}, whose outer derivatives (those of \eqn{\Phi}) are the Hermite
+factors of \code{\link[=phi_hermite]{phi_hermite()}} times \eqn{\varphi(x)}. Both sums run on the
+partition enumeration of the package, not on a transcribed expansion.
 }
 
-\section{Why the log weight}{
+\section{The log weight}{
 The weight is never formed on its own. It is combined with the tail as
 \code{exp(w + pnorm(x, log.p = TRUE))}, because for the inverse Gaussian
-\eqn{e^{2/(\phi\mu)}} overflows exactly where \eqn{\Phi(b)} underflows: at
+\eqn{e^{2/(\phi\mu)}} overflows where \eqn{\Phi(b)} underflows: at
 \eqn{\mu = 0.01}, \eqn{\phi = 0.1} the weight is \code{Inf} while the product is
-about \eqn{3\times10^{-106}}, and the fourth derivative there comes back at
-\eqn{3\times10^{-91}}.
+finite.
 }
 
 \section{Notation}{

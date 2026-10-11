@@ -8,9 +8,9 @@ NULL
 #' The S7 class of the logistic family with mean \eqn{\mu} and scale
 #' \eqn{\sigma > 0}, whose distribution function is the logistic sigmoid
 #' \eqn{F(q) = [1 + e^{-(q-\mu)/\sigma}]^{-1}} on the whole real line. It
-#' inherits from `continuous_distrib`, so it answers every generic of the
-#' `distrib` contract; the eleven methods listed below are registered on it
-#' directly and everything else comes from the parent.
+#' inherits from `continuous_distrib`, so every generic of the `distrib` class
+#' applies to it; the methods listed below are registered on it directly and
+#' everything else comes from the parent.
 #'
 #' The family is symmetric about \eqn{\mu}, which is therefore both the mean
 #' and the median. Its variance is \eqn{\pi^2\sigma^2/3}, so \eqn{\sigma} is

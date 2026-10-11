@@ -10,7 +10,7 @@ derivative generics named above; the value returned is theirs.
 \description{
 The derivative generics of the package (\code{\link[=distrib_gradient]{distrib_gradient()}},
 \code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}},
-\code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}) accept a
+\code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}, \code{\link[=distrib_deriv5]{distrib_deriv5()}}) accept a
 \code{scale} argument selecting the parametrization the derivatives are taken
 with respect to:
 \itemize{
@@ -45,9 +45,11 @@ For the \strong{expected} Hessian the first-order term vanishes because the
 score has zero expectation, so the information transforms as the congruence
 \eqn{\mathrm{diag}(h')\,\mathbb{E}[H]\,\mathrm{diag}(h')}.
 
-The inverse-link derivatives \eqn{h', h'', h''', h''''} are obtained from
-\code{\link[linkfunctions7:linkinvderiv]{linkfunctions7::linkinvderiv()}}, so link-scale derivatives are
-available up to order 4 for every link in \pkg{linkfunctions7}.
+The inverse-link derivatives \eqn{h', h'', \dots, h^{(5)}} are obtained
+from the order-specific generics \code{\link[linkfunctions7:dlinkinv]{linkfunctions7::dlinkinv()}} to
+\code{\link[linkfunctions7:d5linkinv]{linkfunctions7::d5linkinv()}}, so link-scale derivatives are available up
+to order 5 for every link in \pkg{linkfunctions7}. \code{\link[=distrib_deriv5]{distrib_deriv5()}}
+composes its fifth order through \code{\link[=deriv5_scale]{deriv5_scale()}}.
 }
 \examples{
 d <- gaussian1_distrib()
@@ -60,7 +62,7 @@ rbind(parameter = distrib_gradient(d, y, th)$sigma,
       link = distrib_gradient(d, y, th, scale = "link")$sigma)
 
 # At second order the term in h'' appears, so the link-scale component is
-# NOT the parameter-scale one times h' squared.
+# not the parameter-scale one times h' squared.
 g <- distrib_gradient(d, y, th)$sigma
 h <- distrib_hessian(d, y, th)$sigma_sigma
 all.equal(distrib_hessian(d, y, th, scale = "link")$sigma_sigma,
@@ -79,8 +81,8 @@ all.equal(distrib_deriv4(d, y, th)$mu_mu_mu_mu,
 }
 \seealso{
 \code{\link[=distrib_gradient]{distrib_gradient()}}, \code{\link[=distrib_hessian]{distrib_hessian()}},
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}} and \code{\link[=distrib_deriv4]{distrib_deriv4()}},
-the five generics that take \code{scale};
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5]{distrib_deriv5()}}, the six generics that take \code{scale};
 \code{\link[=bell_partial]{bell_partial()}} for the polynomials this assembles;
 \code{\link[linkfunctions7:linkinvderiv]{linkfunctions7::linkinvderiv()}}, which supplies the five inverse-link
 derivatives;

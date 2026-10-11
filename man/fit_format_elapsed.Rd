@@ -13,8 +13,10 @@ otherwise validated, and a negative number is formatted as it stands.}
 }
 \value{
 A character string of length 1: \code{"0.4 ms"}, \code{"40 ms"}, \code{"1.5 s"},
-\code{"59.4 s"}, \code{"1 min 01 s"}. Seconds are rounded to one decimal below a
-minute and to the nearest second above it.
+\code{"59.4 s"}, \code{"1 min 01 s"}. Milliseconds, and seconds below a minute, are
+given to three significant digits; above a minute the seconds are rounded
+to the nearest second. The unit is chosen on the rounded value, so that
+no field reaches its carry.
 }
 \description{
 Formats a time in seconds for the line \code{\link[=print.distrib_fit]{print.distrib_fit()}} shows,

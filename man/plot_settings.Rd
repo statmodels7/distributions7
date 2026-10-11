@@ -20,15 +20,15 @@ parameter lists each holding scalars; \code{k}, the number of curves; and
 settings, which may be empty.
 }
 \description{
-Turns the \code{theta} a plot method was given into the list of scalar settings
-it draws, one per curve. A component of length \eqn{k > 1} asks for \eqn{k}
-curves, so \code{list(mu = 0, sigma = c(1, 2, 4))} becomes three settings sharing
-a mean and differing in scale.
+Turns the \code{theta} that a plot method receives into the list of scalar
+settings that the method draws, one per curve. A component of length
+\eqn{k > 1} gives \eqn{k} curves, so \code{list(mu = 0, sigma = c(1, 2, 4))}
+becomes three settings that share a mean and differ in scale.
 }
 \details{
-Every component must have length 1 or the same \eqn{k}. A length that merely
-\strong{divides} \eqn{k} signals an error: R would recycle it without a word, and
-a partial setting is far likelier to be a mistake than a request.
+Every component must have length 1 or the same \eqn{k}. A length that only
+\strong{divides} \eqn{k} signals an error, because R would recycle such a
+component without a warning.
 
 The meaning is available only because a plot has no data to recycle a
 parameter against. \code{\link[=distrib_pdf]{distrib_pdf()}} and every derivative generic read a

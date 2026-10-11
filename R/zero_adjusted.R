@@ -267,7 +267,7 @@ S7::method(distrib_pdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, the
 #' # At zero it is the parameter itself, the whole mass there.
 #' c(cdf_at_zero = distrib_cdf(d, 0, theta), parameter = 0.4)
 #'
-#' # It agrees with the mass function summed, as it must on a lattice.
+#' # It agrees with the mass function summed, as it must on a discrete support.
 #' c(cdf = distrib_cdf(d, 5, theta), summed = sum(distrib_pdf(d, 0:5, theta)))
 #'
 #' # Both tails and the logarithm.
@@ -337,7 +337,7 @@ S7::method(distrib_cdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, q, the
 #' # Everything at or below the mass at zero maps to zero.
 #' distrib_quantile(d, c(0.1, 0.4), theta)
 #'
-#' # The round trip overshoots, as on any lattice.
+#' # The round trip overshoots, as on any discrete support.
 #' p <- c(0.5, 0.95)
 #' rbind(asked = p,
 #'       reached = distrib_cdf(d, distrib_quantile(d, p, theta), theta))

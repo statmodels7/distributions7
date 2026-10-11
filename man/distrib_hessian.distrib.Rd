@@ -40,16 +40,10 @@ For a family with a density alone, the step is \eqn{h = \varepsilon^{1/4}\max(1,
 1.22\times10^{-4}}, twenty times the gradient's: a second difference divides
 by \eqn{h^2}, so rounding grows as \eqn{1/h^2} and the optimum moves out.
 \code{\link[=fd_steps]{fd_steps()}} applies the same boundary clamp. One Hessian costs
-\eqn{2p} evaluations for the diagonal and \eqn{4} per distinct pair,
-which is 6 in all for a two-parameter family.
-}
-
-\section{What it delivers}{
-Measured on a Gamma in its mean and dispersion at
-\eqn{(\mu, \sigma^2) = (2, 0.7)}, against the family's own closed form: the
-three components agree to \eqn{2.3\times10^{-9}},
-\eqn{2.7\times10^{-8}} and \eqn{3.6\times10^{-8}} relative, two to three
-digits worse than the gradient's. That is the price of a second difference.
+\eqn{2p} evaluations for the diagonal, \eqn{4} per distinct pair and one at
+the center, which is 9 in all for a two-parameter family, and more when
+\code{\link[=fd_stable_step]{fd_stable_step()}} compares two candidate steps. A second difference is
+about two digits less accurate than the first difference of the gradient.
 }
 
 \seealso{

@@ -43,11 +43,12 @@ parametrizations, so the ordinary chain rule applies to the composition
         = \sum_{k,l} F_{kl}\,h^k_a h^l_b + \sum_k F_k\,h^k_{ab}.}
 }
 
-\section{When it is worth taking}{
-The result is exact whenever the parent's own cdf derivatives are, and no
-better than they are otherwise: applied to a parent that differences its own
-cdf, the chain adds an exact transformation to an approximate quantity and
-buys nothing over differencing the new cdf directly. Checking that is the
+\section{Accuracy of the result}{
+The result is exact whenever the cdf derivatives of the parent and the
+partials of the map are, and no better than they are otherwise: applied to
+a parent that differences its own cdf, the chain adds an exact
+transformation to an approximate quantity and gains nothing over
+differencing the new cdf directly. Checking that is the
 caller's business, and \code{\link[=mapped_cdf_deriv]{mapped_cdf_deriv()}} is where it is done.
 }
 

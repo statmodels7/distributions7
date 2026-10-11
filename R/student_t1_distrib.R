@@ -8,10 +8,10 @@ NULL
 #' The S7 class of the location-scale Student t family, parametrized by a
 #' location \eqn{\mu}, a scale \eqn{\sigma > 0} and degrees of freedom
 #' \eqn{\nu > 0}, with density proportional to
-#' \eqn{\{1 + (y-\mu)^2/(\nu\sigma^2)\}^{-(\nu+1)/2}} on the whole real line.
-#' It inherits from `continuous_distrib`, so it answers every generic of the
-#' `distrib` contract; the eleven methods listed below are registered on it
-#' directly and everything else comes from the parent.
+#' \eqn{\{1 + (y-\mu)^2/(\nu\sigma^2)\}^{-(\nu+1)/2}} on the whole real line. It
+#' inherits from `continuous_distrib`, so every generic of the `distrib` class
+#' applies to it; the methods listed below are registered on it directly and
+#' everything else comes from the parent.
 #'
 #' Build one with [student_t1_distrib()], which supplies the three link
 #' functions and fills the properties in. This page documents the raw S7

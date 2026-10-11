@@ -417,7 +417,7 @@ S7::method(distrib_pdf, ZeroInflatedDistrib) <- function(distrib, y, theta, log 
 #' # Which is the parent's, shrunk and shifted.
 #' all.equal(distrib_cdf(d, q, theta), 0.75 * ppois(q, 3) + 0.25)
 #'
-#' # It agrees with the mass function summed, as it must on a lattice.
+#' # It agrees with the mass function summed, as it must on a discrete support.
 #' c(cdf = distrib_cdf(d, 5, theta), summed = sum(distrib_pdf(d, 0:5, theta)))
 #'
 #' # Both tails and the logarithm.
@@ -483,7 +483,7 @@ S7::method(distrib_cdf, ZeroInflatedDistrib) <- function(distrib, q, theta, lowe
 #' c(mass_at_zero = distrib_pdf(d, 0, theta),
 #'   q_below = distrib_quantile(d, 0.2, theta))
 #'
-#' # The round trip overshoots, as on any lattice: asked for 0.3, the
+#' # The round trip overshoots, as on any discrete support: for 0.3, the
 #' # attainable probability at the returned point is higher.
 #' p <- c(0.1, 0.3, 0.9)
 #' rbind(asked = p,
@@ -949,10 +949,10 @@ S7::method(expected_hessian_exact, ZeroInflatedDistrib) <- function(x, ...) {
 #'
 #' # What the result supports
 #'
-#' The whole `distrib` contract: the mass function, the distribution function,
-#' the quantile function, the generator, the analytic score, the observed and
-#' the expected Hessian, and the third and fourth derivatives from the shared
-#' wrapper machinery. The moments come from [moment()] numerically.
+#' Every generic of the `distrib` class: the mass function, the distribution
+#' function, the quantile function, the generator, the analytic score, the
+#' observed and the expected Hessian, and the third and fourth derivatives
+#' from the shared wrapper machinery. The moments come from [moment()] numerically.
 #'
 #' @section Notation:
 #' \eqn{f} is the parent's mass function, \eqn{\theta} its parameters,

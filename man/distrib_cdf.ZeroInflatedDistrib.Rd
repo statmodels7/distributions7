@@ -48,7 +48,7 @@ distrib_cdf(d, q, theta)
 # Which is the parent's, shrunk and shifted.
 all.equal(distrib_cdf(d, q, theta), 0.75 * ppois(q, 3) + 0.25)
 
-# It agrees with the mass function summed, as it must on a lattice.
+# It agrees with the mass function summed, as it must on a discrete support.
 c(cdf = distrib_cdf(d, 5, theta), summed = sum(distrib_pdf(d, 0:5, theta)))
 
 # Both tails and the logarithm.

@@ -8,8 +8,9 @@
 
 \item{theta}{A named list or numeric vector holding one entry per parameter
 of \code{x}. A component of length \eqn{k > 1} draws \eqn{k} sets of stems, and
-every component must have length 1 or that same \eqn{k}. Missing, a random
-parameter is drawn by \code{\link[=generate_random_theta]{generate_random_theta()}}.}
+every component must have length 1 or that same \eqn{k}. When \code{theta} is
+missing, random values for all parameters are drawn by
+\code{\link[=generate_random_theta]{generate_random_theta()}}.}
 
 \item{xlim}{A numeric vector of length 2, or \code{NULL} (the default) to compute
 the range from the quantiles over every setting.}
@@ -27,7 +28,7 @@ over the settings; an \code{lty} is accepted and has no effect on the stems.}
 \description{
 Draws the probability mass of a discrete family as stems over the integers
 in range, one set per parameter setting. A component of \code{theta} given as a
-vector asks for one setting per element, exactly as in
+vector gives one setting per element, exactly as in
 \code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}}.
 }
 \section{The two keys, and why they are not the continuous ones}{

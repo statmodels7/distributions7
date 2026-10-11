@@ -8,16 +8,19 @@ Nothing. This page is the index of the generics documented on their
 own pages; the value returned is theirs.
 }
 \description{
-The S7 generics every \code{distrib} object answers, grouped by what they
+The S7 generics that apply to every \code{distrib} object, grouped by what they
 compute. This page is the index; each generic is documented on its own page,
-and each family's method for it on a third.
+and the method of each family for it on a third.
 
-\strong{Only \code{\link[=distrib_pdf]{distrib_pdf()}} is compulsory.} Everything else has a fallback: the
-distribution function by quadrature or by summation, the quantile by
-root-finding or by a table lookup, random draws by the ratio-of-uniforms
-method, and every derivative by finite differences. A family defined by its
-density alone therefore arrives complete, and a family that writes a
-quantity out overrides the fallback by ordinary S7 dispatch.
+The only compulsory method is \code{\link[=distrib_pdf]{distrib_pdf()}}. Every other quantity has a
+fallback: the distribution function by quadrature (continuous) or by
+summation (discrete), the quantile by root finding or by a lookup in the
+cumulative table, random draws by inverse transform or by the
+ratio-of-uniforms method, the derivatives of the log-density by finite
+differences, and the expected derivatives by the strategies of
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}. A family defined by its density alone
+therefore has every quantity, and a family that writes a quantity out
+overrides the fallback by ordinary S7 dispatch.
 }
 \section{The surface}{
 \describe{
@@ -25,13 +28,18 @@ quantity out overrides the fallback by ordinary S7 dispatch.
 \code{\link[=distrib_quantile]{distrib_quantile()}}, \code{\link[=distrib_rng]{distrib_rng()}}, \code{\link[=distrib_atoms]{distrib_atoms()}}.}
 \item{derivatives in the parameters}{\code{\link[=distrib_gradient]{distrib_gradient()}},
 \code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}, and \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}.}
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}, \code{\link[=distrib_deriv5]{distrib_deriv5()}}, and the derivatives of the
+expected information \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}},
+\code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}}, \code{\link[=distrib_d3expected_hessian]{distrib_d3expected_hessian()}} and
+\code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}}.}
 \item{derivatives in the response}{\code{\link[=distrib_grad_y]{distrib_grad_y()}},
 \code{\link[=distrib_hess_y]{distrib_hess_y()}}, \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}}, \code{\link[=distrib_deriv4_y]{distrib_deriv4_y()}}.
-Refused for a discrete family: a lattice has nothing to differentiate
-along.}
+A discrete family has no method for them, its support having no
+continuous direction to differentiate along, so a call signals an
+error.}
 \item{mixed}{\code{\link[=distrib_cross_y]{distrib_cross_y()}}, \code{\link[=distrib_cross2_y]{distrib_cross2_y()}},
-\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}}, \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}.}
+\code{\link[=distrib_cross3_y]{distrib_cross3_y()}}, \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}},
+\code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}.}
 \item{of the distribution function}{\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}},
 \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}, \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}}, \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}},
 which a censored likelihood needs.}
@@ -44,17 +52,19 @@ rather than a generic.}
 }
 }
 
-\section{Two arguments every derivative generic takes}{
+\section{The arguments theta and scale}{
 \code{theta} is normalized before dispatch by \code{align_theta()}, which reorders it
-by name, strips stray names off the values and validates against
-\code{params_bounds} treated as \strong{open} intervals. \code{scale} is applied by the
-generic \strong{after} dispatch, so a method always returns the parameter scale
-and never reads it; see \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.
+by name, removes the names carried by the values and validates it against
+\code{params_bounds}, treated as \strong{open} intervals. The derivative generics in
+the parameters of orders one to four also take \code{scale}, which the generic
+applies \strong{after} dispatch, so a method returns the parameter scale and
+never reads it; see \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}. \code{\link[=distrib_deriv5]{distrib_deriv5()}} is the
+exception: its methods read \code{scale} and apply it themselves.
 }
 
 \examples{
-# A family arrives complete from its density alone. Everything below the
-# first line is a fallback the package supplies.
+# The Gaussian writes these quantities out; a family defined by its
+# density alone would reach the fallbacks for the same calls.
 d <- gaussian1_distrib()
 th <- list(mu = 0, sigma = 1)
 
@@ -72,7 +82,7 @@ identical(distrib_pdf(d, 1, list(mu = 0, sigma = 2)),
 # returning an infinite density.
 try(distrib_pdf(d, 1, list(mu = 0, sigma = 0)))
 
-# A discrete family refuses the response derivatives by design.
+# A discrete family has no response derivatives, so this signals an error.
 try(distrib_grad_y(poisson_distrib(), 2, list(mu = 3)))
 
 }

@@ -13,7 +13,7 @@
 \item{scale}{Passed through to \code{\link[=numerical_deriv5]{numerical_deriv5()}}, which reads the fourth
 order on that scale and perturbs on it.}
 
-\item{...}{Unused.}
+\item{...}{Passed to \code{\link[=numerical_deriv5]{numerical_deriv5()}}, which accepts \code{accuracy}.}
 }
 \value{
 A named list of fifth-derivative component vectors, each of length
@@ -21,15 +21,16 @@ A named list of fifth-derivative component vectors, each of length
 \code{\link[=deriv_names]{deriv_names(distrib@params, 5)}} gives them.
 }
 \description{
-The route every family takes at the fifth order: one central difference of
-the fourth, through \code{\link[=numerical_deriv5]{numerical_deriv5()}}.
+The route that a family takes at the fifth order when it registers no
+method of its own: one central difference of the fourth, through
+\code{\link[=numerical_deriv5]{numerical_deriv5()}}.
 }
 \details{
-This is registered on the base class and nothing overrides it, so it is not
-a fallback in the usual sense -- no family writes the fifth order out yet.
-What differs between families is the quantity being differenced.
-\code{\link[=has_exact_deriv4]{has_exact_deriv4()}} answers whether that quantity is analytic, and
-\code{\link[=check_distrib]{check_distrib()}} reports the order-5 row as unchecked where it is not.
+This is registered on the base class. Ten families write the fifth order
+out themselves (see \code{\link[=distrib_deriv5]{distrib_deriv5()}}), and the wrappers override it.
+Among the families that reach it, what differs is the quantity being
+differenced: \code{\link[=has_exact_deriv4]{has_exact_deriv4()}} reports whether that quantity is
+analytic, and \code{\link[=check_distrib]{check_distrib()}} emits no order-5 row where it is not.
 }
 \seealso{
 \code{\link[=numerical_deriv5]{numerical_deriv5()}}, which does the differencing;

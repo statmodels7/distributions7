@@ -14,9 +14,10 @@ rng_grou(distrib, n, theta, r = 2)
 \item{theta}{A named list of parameters, each of length one.}
 
 \item{r}{Numeric tuning parameter of the transformation power, default \code{2}.
-\code{r=1} is the classical Ratio-of-Uniforms; larger values enclose
-heavier tails (\code{r=2} keeps the acceptance region bounded for tails as
-heavy as the Cauchy's, which is why it is the default).}
+\code{r=1} is the classical ratio-of-uniforms method, whose acceptance region
+is bounded for tails decaying as fast as \eqn{|y|^{-2}} (the Cauchy);
+\code{r=2}, the default, keeps it bounded for tails as heavy as
+\eqn{|y|^{-3/2}}.}
 }
 \value{
 A numeric vector of length \code{n}.
@@ -99,11 +100,13 @@ is also what \code{\link[stats:Beta]{stats::rbeta()}} does.
 
 The kernel must be unimodal and the parameters in \code{theta} must be scalars.
 Densities that diverge at one or at both edges of their support are handled by
-the reparametrizations described below.
+the reparametrizations described in the section on unbounded densities.
 
 Heavy tails are not an obstacle: with the default \code{r=2} the sampler
 handles a Student's t with half a degree of freedom and a Pareto with infinite
-mean, and multimodal densities are usually accepted as well.
+mean. A density with two well-separated modes is not handled: the bounding
+rectangle is built around the mode found first, and the draws then come
+from one mode only, without a warning.
 }
 
 \examples{

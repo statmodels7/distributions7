@@ -36,17 +36,17 @@ Shared entry point for the fallback expected-derivative methods: validates
 }
 \details{
 \code{"opg"} and \code{"bartlett"} are two readings of the second Bartlett identity
-and are NOT the same computation. The identity equates
+and are not the same computation. The identity equates
 \eqn{\mathbb{E}[\ell^{(ij)}]} with \eqn{-\mathbb{E}[\ell^{(i)}\ell^{(j)}]};
 \code{"bartlett"} evaluates the expectation, which is a sum over the support or a
 quadrature, while \code{"opg"} reads the integrand at the observation and takes
 no expectation at all. They agree in expectation and differ by orders of
 magnitude in cost, which is why \code{"opg"} is the default at order 2.
 
-Above order 2 the outer product of scores is not an identity for anything,
-so \code{"opg"} there is routed to \code{"bartlett"} rather than refused: the
-argument is one setting for a whole call and an order-4 method may ask for
-the same strategy an order-2 one was given.
+Above order 2 the outer product of scores is not an identity, so \code{"opg"} is
+routed to \code{"bartlett"} and no error is signaled. The argument is one
+setting for a whole call, and a method of order 4 can receive the value that
+a method of order 2 received.
 }
 \seealso{
 \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}

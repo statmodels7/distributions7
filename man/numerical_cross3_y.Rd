@@ -31,16 +31,17 @@ as long as \code{y}.
 }
 \description{
 Computes \eqn{\partial^4 \ell / \partial y^3\, \partial \theta_i} by one
-central difference of \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} in each parameter. It is what the
-default \code{\link[=distrib_cross3_y]{distrib_cross3_y()}} method runs for a continuous family that is not
-a location family.
+central difference of \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} in each parameter. The default
+\code{\link[=distrib_cross3_y]{distrib_cross3_y()}} method reaches the same quantity through
+\code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}.
 }
 \details{
 A family carrying an analytic \code{distrib_deriv3_y} pays for exactly one
 difference. Where that derivative is itself the base class's stencil on the
 log-density, the two differences act on different variables and compose
-into one mixed stencil. The step is chosen by \code{\link[=fd_stable_step]{fd_stable_step()}}, so a
-parameter near a bound is differenced on the side the bound allows.
+into one mixed stencil. The step is chosen by \code{\link[=fd_stable_step]{fd_stable_step()}}, so that
+both evaluation points of a parameter near a bound stay inside its
+domain.
 }
 \examples{
 d <- student_t1_distrib()

@@ -55,7 +55,7 @@ distrib_quantile(d, c(0.1, 0.3, 0.9), theta)
 c(mass_at_zero = distrib_pdf(d, 0, theta),
   q_below = distrib_quantile(d, 0.2, theta))
 
-# The round trip overshoots, as on any lattice: asked for 0.3, the
+# The round trip overshoots, as on any discrete support: for 0.3, the
 # attainable probability at the returned point is higher.
 p <- c(0.1, 0.3, 0.9)
 rbind(asked = p,

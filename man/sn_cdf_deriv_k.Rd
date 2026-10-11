@@ -29,7 +29,7 @@ index of that table. Together the two functions give the family closed cdf
 derivatives at all four orders in all three parameters.
 }
 \details{
-The map is the one the other location-scale families are chained through:
+The map is the one through which the other location-scale families are chained:
 \eqn{z} is linear in the location and a reciprocal in the scale, so a block
 naming the location twice contributes an exact zero and only eight partials
 of the map are non-zero up to order four. The shape does not enter \eqn{z}

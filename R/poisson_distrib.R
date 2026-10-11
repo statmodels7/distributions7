@@ -50,8 +50,8 @@ NULL
 #'   [`distrib_rng()`][distrib_rng.PoissonDistrib]
 #'
 #' Everything else is inherited from [discrete_distrib()]. Derivatives with
-#' respect to the response are refused by that parent: the support is a
-#' lattice, so there is nothing to differentiate along.
+#' respect to the response signal an error on that parent: the support is
+#' discrete, so there is nothing to differentiate along.
 #'
 #' @examples
 #' d <- poisson_distrib()
@@ -211,7 +211,7 @@ S7::method(distrib_cdf, PoissonDistrib) <- function(distrib, q, theta, lower.tai
 #' # Integers, being the smallest count whose cumulative mass reaches p.
 #' distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #'
-#' # The round trip overshoots, the support being a lattice.
+#' # The round trip overshoots, the support being discrete.
 #' p <- c(0.025, 0.5, 0.975)
 #' rbind(asked = p, reached = distrib_cdf(d, distrib_quantile(d, p, th), th))
 #'

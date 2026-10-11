@@ -23,9 +23,9 @@ parameter is sampled around zero.
 The draws ignore the response entirely, so they are a fallback and never an
 estimate: being of order one whatever the data, they suit a shape or a
 probability and are the wrong order for a location or a scale on a response
-of any size. \code{\link[=distrib_start]{distrib_start()}} uses them for the starting values
-after the first, and \code{\link[=check_distrib]{check_distrib()}} uses them to probe a family at a
-parameter nobody chose.
+of any size. The univariate methods of \code{\link[=distrib_start]{distrib_start()}} use them for the
+starting values after the first, and the base method for all of them;
+\code{\link[=check_distrib]{check_distrib()}} uses them to probe a family at an arbitrary parameter.
 }
 \examples{
 set.seed(1)

@@ -16,7 +16,7 @@ terms \code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} documents.}
 Invisibly \code{NULL}. Called for the registration.
 }
 \description{
-Turns one term function into the four S7 methods a family of the shape
+Turns one term function into the four S7 methods that a family of the shape
 \eqn{F = c_0 + \sum_k s_k e^{w_k}\Phi(x_k)} needs, so that the family states
 its terms once instead of four times. The inverse Gaussian and the elastic
 net are the two families registered through it.

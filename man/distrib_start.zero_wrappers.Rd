@@ -35,12 +35,11 @@ away from zero, and on every observation for a zero-inflated one, whose
 parent also produces zeros.
 }
 \details{
-Without these methods the wrappers took the univariate fallback, which reads
-the location off the median of the whole sample: on data with half their
-values at zero that is zero, and a start at a mean of zero is the edge of a
-log link. On a zero-adjusted Poisson-inverse Gaussian sample the first
-start then converged to a degenerate point (\eqn{\mu \to 0},
-\eqn{\sigma \to \infty}) 97 log-likelihood units below the maximum.
+The univariate method reads the location from the median of the whole
+sample, which is zero when at least half of the observations are zero, and
+a start at a mean of zero lies on the edge of a log link. These methods
+read the starting values of the parent from the observations described
+above instead.
 
 For a zero-adjusted family \eqn{\hat p_0} is the maximum likelihood estimate
 of the mixing probability, the likelihood factorizing into a binomial part

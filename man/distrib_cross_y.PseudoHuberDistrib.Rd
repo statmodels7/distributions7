@@ -10,15 +10,14 @@
 
 \item{theta}{A list containing \code{mu}, \code{sigma} and \code{nu}.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{Handled by the generic after dispatch; this method returns
+the parameter scale.}
 
 \item{...}{Unused.}
 }
 \value{
 A named list with components \code{mu}, \code{sigma} and \code{nu}, each a numeric
-vector of length \code{length(y)}. All three are exact; measured against
-Richardson on the analytic response gradient the worst is
-\eqn{1.3\times10^{-11}} relative.
+vector of length \code{length(y)}. All three are exact.
 }
 \description{
 Closed form throughout. The location and scale components come from the

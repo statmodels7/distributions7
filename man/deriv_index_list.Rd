@@ -9,7 +9,8 @@ deriv_index_list(p, order)
 \arguments{
 \item{p}{The number of parameters.}
 
-\item{order}{The derivative order, 1 to 4.}
+\item{order}{The derivative order, a positive integer; the link-scale
+assembly uses 1 to 5.}
 }
 \value{
 A list of integer vectors, each of length \code{order}.

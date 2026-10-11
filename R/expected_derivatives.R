@@ -15,10 +15,14 @@ NULL
 #'
 #' @details
 #' Let \eqn{\ell} be the log-density and \eqn{\ell_{i}, \ell_{ij}, \dots} its
-#' derivatives with respect to the parameters. The three strategies are:
+#' derivatives with respect to the parameters. The strategies are:
 #'
 #' \describe{
-#'   \item{`"bartlett"` (also spelled `"opg"`)}{Uses the Bartlett
+#'   \item{`"opg"`}{At order 2, reads \eqn{-\ell_i \ell_j} at each observation
+#'     and takes no expectation, at the cost of one score evaluation; see
+#'     [expected_by_opg()]. Above order 2 it is routed to `"bartlett"`.}
+#'
+#'   \item{`"bartlett"`}{Uses the Bartlett
 #'     identity of the corresponding order, which expresses the expected
 #'     derivative through expectations of *products of lower-order*
 #'     derivatives. Writing the identity as a sum over set partitions of the
@@ -30,10 +34,11 @@ NULL
 #'     at order 3, \eqn{\mathbb{E}[\ell_{ijk}] = -\left(\mathbb{E}[\ell_{ij}\ell_k] +
 #'     \mathbb{E}[\ell_{ik}\ell_j] + \mathbb{E}[\ell_{jk}\ell_i] +
 #'     \mathbb{E}[\ell_i\ell_j\ell_k]\right)}, and so on.
-#'     *Fastest at order 2* (only the score is needed) and the only variant
-#'     that stays valid when the log-likelihood is not differentiable in a
-#'     parameter, where \eqn{\mathbb{E}[H]} degenerates but the score variance
-#'     still gives the information (see [laplace_distrib()]).
+#'     At order 2 it needs only the score, whose product it integrates or
+#'     sums, so it is slower than `"opg"`. It stays valid when the
+#'     log-likelihood is not differentiable in a parameter, where
+#'     \eqn{\mathbb{E}[H]} degenerates but the score variance still gives the
+#'     information (see [laplace_distrib()]).
 #'     Deterministic. At higher orders it needs several integrals, so it is
 #'     usually slower than `"integrate"`. It never requires the top-order
 #'     derivative itself, which is useful where only the lower orders are
@@ -56,9 +61,10 @@ NULL
 #'     results are not exactly reproducible unless the seed is fixed. Estimates
 #'     the same quantity as `"integrate"`.
 #'     **Note:** the cost of this option is the cost of simulating from the
-#'     distribution. A native [distrib_rng()] is best, and failing that
-#'     the default RNG falls back to [rng_grou()], which only needs the
-#'     density. It becomes expensive only for a distribution that supplies a
+#'     distribution. A native [distrib_rng()] is best; failing that, the
+#'     default generator uses inverse transform when the family has a quantile
+#'     method of its own and [rng_grou()], which only needs the density,
+#'     otherwise. It becomes expensive only for a distribution that supplies a
 #'     quantile function slow enough to make inverse transform sampling the
 #'     bottleneck; prefer `"bartlett"` or `"integrate"` in that case.}
 #' }
@@ -85,20 +91,30 @@ NULL
 #'   three generics named above; the value returned is theirs.
 #'
 #' @examples
-#' # A family with no closed-form expected information reads 'approx'. The two
-#' # deterministic strategies agree; Monte Carlo is the same quantity with
-#' # sampling error on it.
-#' sn <- skewnormal1_distrib()
-#' th <- list(mu = 0, sigma = 1, alpha = 3)
-#' set.seed(2)
-#' y <- distrib_rng(sn, 40, th)
+#' # A family defined by its density alone reads 'approx'. The two
+#' # deterministic strategies agree on the exact -2 / sigma^2; "opg" reads one
+#' # observation's score product, and Monte Carlo carries sampling error.
+#' Dens <- S7::new_class("Dens", parent = continuous_distrib)
+#' S7::method(distrib_pdf, Dens) <- function(distrib, y, theta, log = FALSE, ...) {
+#'   stats::dnorm(y, theta[[1]], theta[[2]], log = log)
+#' }
+#' d <- Dens(distrib_name = "dens", dimension = "univariate",
+#'           bounds = c(-Inf, Inf), params = c("mu", "sigma"),
+#'           params_interpretation = c(mu = "location", sigma = "scale"),
+#'           n_params = 2L,
+#'           params_bounds = list(mu = c(-Inf, Inf), sigma = c(0, Inf)),
+#'           link_params = list(mu = linkfunctions7::identity_link(),
+#'                              sigma = linkfunctions7::log_link()),
+#'           params_smooth = c(mu = TRUE, sigma = TRUE))
+#' th <- list(mu = 0, sigma = 2)
+#' y <- c(-1, 0.5, 2)
 #'
-#' vapply(c("bartlett", "integrate"), function(a) {
-#'   sum(distrib_expected_hessian(sn, y, th, approx = a)$alpha_alpha)
+#' vapply(c("opg", "bartlett", "integrate"), function(a) {
+#'   distrib_expected_hessian(d, y, th, approx = a)$sigma_sigma[1]
 #' }, numeric(1))
 #'
 #' set.seed(3)
-#' sum(distrib_expected_hessian(sn, y, th, approx = "mc", nsim = 500)$alpha_alpha)
+#' distrib_expected_hessian(d, y, th, approx = "mc", nsim = 2000)$sigma_sigma[1]
 #'
 #' # A family that writes its expected information out ignores the argument,
 #' # and fit_distrib() rejects one given there rather than dropping it.
@@ -119,10 +135,10 @@ NULL
 #' @description
 #' Routes to [distrib_gradient()], [distrib_hessian()], [distrib_deriv3()] or
 #' [distrib_deriv4()] according to `order`, so that code working at an order
-#' fixed only at run time does not have to branch. Every strategy in
-#' [expected_derivative_methods()] reads it, `"integrate"` and `"mc"` for the
-#' quantity they average and `"bartlett"` for the lower orders its identity
-#' multiplies together.
+#' fixed only at run time does not have to branch. The strategies of
+#' [expected_derivative_methods()] other than `"opg"` read it: `"integrate"`
+#' and `"mc"` for the quantity that they average, and `"bartlett"` for the
+#' lower orders that its identity multiplies together.
 #'
 #' @param distrib An object inheriting from `distrib`.
 #' @param y A numeric vector of observations.
@@ -225,15 +241,15 @@ expected_by_integrate <- function(distrib, y, theta, order) {
 #' Simulates `nsim` draws and averages the observed derivative over them.
 #'
 #' @details
-#' One simulation is run per *distinct* parameter configuration rather than
-#' per observation: the expectation depends on \eqn{\theta} alone, so observations
-#' sharing a \eqn{\theta} share an answer, and a model with a scalar \eqn{\theta}
-#' costs one simulation however long `y` is.
+#' One simulation is run for each row of `theta` after recycling.
+#' Observations whose parameters coincide are not merged, so a `theta` that
+#' varies over the observations costs one simulation per observation, and a
+#' scalar `theta` costs one simulation however long `y` is.
 #'
 #' Estimates the same quantity as [expected_by_integrate()], with an
 #' error falling as \eqn{1/\sqrt{n_{sim}}}, and is stochastic unless the seed is
-#' fixed. Its cost is the cost of sampling, so it is the wrong choice for a
-#' distribution whose RNG falls back to inverse transform on a numerical quantile.
+#' fixed. Its cost is the cost of [distrib_rng()], so it is expensive for a
+#' distribution whose generator inverts a slow quantile function.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations; only its length is used.
@@ -276,26 +292,26 @@ expected_by_mc <- function(distrib, y, theta, order, nsim) {
 #' support, so it costs one call to [distrib_gradient()].
 #'
 #' @details
-#' The name is worth keeping apart from the identity it comes from. The second
+#' This route differs from the identity that it comes from. The second
 #' Bartlett identity states that
 #' \eqn{\mathbb{E}[\ell^{(ij)}] = -\mathbb{E}[\ell^{(i)}\ell^{(j)}]}, and
 #' [expected_by_bartlett()] evaluates the right-hand side as written, which
 #' for a discrete family is a sum over the whole support and for a continuous
 #' one a quadrature. This function drops the expectation and reads the
-#' integrand at the observation in hand. The two agree in expectation and not
-#' in cost: measured on `pig1_distrib()` with \eqn{\mu} varying by
-#' observation, one call to the identity at \eqn{n = 1000} evaluated 1.67
-#' million rows of the family's derivative kernel and took 18.4 seconds, where
-#' this route evaluates \eqn{n} rows.
+#' integrand at the observation in hand. The two agree in expectation and
+#' differ in cost: for a discrete family the identity evaluates the derivative
+#' kernel over the whole support for every observation, whereas this route
+#' evaluates it once per observation.
 #'
-#' What is given up is variance, not consistency.
+#' The estimate has more variance than the exact expectation and remains
+#' consistent.
 #' \eqn{-\ell^{(i)}\ell^{(j)}} is an unbiased estimate of the corresponding
 #' component of \eqn{\mathbb{E}[\ell^{(ij)}]} at that observation, so the sum
 #' over observations, which is what a scoring step aggregates into
 #' \eqn{X^\top W X}, estimates the information consistently. Component by
 #' component it is a rank-one matrix and correlates poorly with the exact
-#' expectation; summed it agreed with the exact route to within 10 per cent on
-#' the same measurement, and a fit driven by it reached the same maximum.
+#' expectation; summed over the observations it approximates the exact
+#' information, and a fit driven by it reaches the same maximum.
 #'
 #' Two properties make it the right default for a scoring step. It is positive
 #' semidefinite by construction, being a sum of outer products, where the
@@ -413,17 +429,17 @@ expected_by_bartlett <- function(distrib, y, theta, order) {
 #'
 #' @details
 #' `"opg"` and `"bartlett"` are two readings of the second Bartlett identity
-#' and are NOT the same computation. The identity equates
+#' and are not the same computation. The identity equates
 #' \eqn{\mathbb{E}[\ell^{(ij)}]} with \eqn{-\mathbb{E}[\ell^{(i)}\ell^{(j)}]};
 #' `"bartlett"` evaluates the expectation, which is a sum over the support or a
 #' quadrature, while `"opg"` reads the integrand at the observation and takes
 #' no expectation at all. They agree in expectation and differ by orders of
 #' magnitude in cost, which is why `"opg"` is the default at order 2.
 #'
-#' Above order 2 the outer product of scores is not an identity for anything,
-#' so `"opg"` there is routed to `"bartlett"` rather than refused: the
-#' argument is one setting for a whole call and an order-4 method may ask for
-#' the same strategy an order-2 one was given.
+#' Above order 2 the outer product of scores is not an identity, so `"opg"` is
+#' routed to `"bartlett"` and no error is signaled. The argument is one
+#' setting for a whole call, and a method of order 4 can receive the value that
+#' a method of order 2 received.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.

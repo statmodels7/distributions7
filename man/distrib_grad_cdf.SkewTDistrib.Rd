@@ -23,8 +23,9 @@ A named list of four numeric vectors, \code{mu}, \code{sigma}, \code{alpha} and
 }
 \description{
 Closed form in the location and the scale, \eqn{-f(q)} and \eqn{-z f(q)}
-with \eqn{z = (q-\mu)/\sigma}; the component in the shape and in the degrees of freedom are integrals, each is the integral of
-the density's own derivative, taken by the compiled rule. The method is
+with \eqn{z = (q-\mu)/\sigma}; the components in the shape and in the
+degrees of freedom are integrals of the density's own derivatives, taken by
+the compiled rule. The method is
 \code{\link[=compiled_grad_cdf]{compiled_grad_cdf()}} itself, shared with the other families whose
 distribution function has no closed derivative in a shape parameter.
 }

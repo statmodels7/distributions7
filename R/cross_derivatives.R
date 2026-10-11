@@ -22,7 +22,8 @@ NULL
 #' off-diagonal one.
 #'
 #' Defined for continuous families only. A discrete family has no derivative
-#' in \eqn{y} to cross, and its base class refuses the call.
+#' in \eqn{y} to cross, so no method is registered for it and the call signals
+#' an error.
 #'
 #' @details
 #' # What consumes it
@@ -40,10 +41,10 @@ NULL
 #' by \eqn{\sigma} and the `mu` component by 1.
 #'
 #' # Where the closed forms are
-#' All 32 continuous families in the package register one. The fallback in
-#' [distrib_cross_y.continuous_distrib()] therefore exists for families
-#' defined outside the package, and it is one central difference of
-#' [distrib_grad_y()] in each parameter.
+#' Every continuous family in the package registers one. The fallback in
+#' [distrib_cross_y.continuous_distrib()] therefore serves families defined
+#' outside the package. It applies one tensor stencil to the highest quantity
+#' that the family implements itself, through [mixed_tensor_derivatives()].
 #'
 #' @param distrib An object inheriting from `continuous_distrib`.
 #' @param y A numeric vector of observations.
@@ -54,7 +55,7 @@ NULL
 #' @param scale Either `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Applied by the generic after dispatch, so a method
 #'   always returns the parameter scale and never reads this.
-#' @param ... Passed to the method. No shipped method reads it.
+#' @param ... Passed to the method. The shipped methods do not read it.
 #'
 #' @return A named list with one numeric vector per parameter, keyed and
 #'   ordered by `distrib@params`, each of length `length(y)`.
@@ -92,15 +93,13 @@ distrib_cross_y <- S7::new_generic("distrib_cross_y", "distrib", function(distri
 #' @description
 #' Computes \eqn{\partial^2 \ell / \partial y\, \partial \theta_i} by one
 #' central difference of [distrib_grad_y()] in each parameter, at a step of
-#' `h_rel` relative to the parameter's own magnitude. It powers the default
-#' [distrib_cross_y()] method for a continuous family with no closed form.
-#'
-#' Measured on a Gaussian against Richardson extrapolation of the same analytic
-#' response gradient, the two components agree to \eqn{1.2\times10^{-11}} and
-#' \eqn{9.0\times10^{-11}} relative.
+#' `h_rel` relative to the parameter's own magnitude. A family with a closed
+#' form for some of its parameters calls it for the remaining ones through
+#' `which`. The default [distrib_cross_y()] method for a continuous family
+#' uses [mixed_tensor_derivatives()] instead.
 #'
 #' @details
-#' # One difference layer, not two
+#' # The quantity that is differenced
 #' The quantity differenced is the **response gradient**, not the log-density,
 #' so a family with an analytical `distrib_grad_y` pays for exactly one
 #' finite-difference layer. Where the response gradient is itself the
@@ -118,9 +117,9 @@ distrib_cross_y <- S7::new_generic("distrib_cross_y", "distrib", function(distri
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, aligned to `distrib@params`.
 #' @param h_rel The relative finite-difference step, a single positive number.
-#'   Defaults to `.Machine$double.eps^(1/3)`. A step near a parameter's bound
-#'   can push an evaluation outside the domain, where the density returns
-#'   `NaN`.
+#'   Defaults to `.Machine$double.eps^(1/3)`. The step is taken by
+#'   [fd_stable_step()], which keeps both evaluation points inside the bounds
+#'   of the parameter.
 #' @param which A character vector of parameter names to differentiate, or
 #'   `NULL` (the default) for all of them. Used by a family with a closed form
 #'   for some of its parameters, so that only the remaining ones cost a pair of
@@ -178,10 +177,9 @@ numerical_cross_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 
 #' or in the response; a family with a density alone takes one four-point
 #' mixed stencil of the log-density.
 #'
-#' **No family shipped in this package reaches this method.** All 32 continuous
-#' families register a closed form, so this exists for a family defined
-#' outside the package, which gets the mixed block for free from its density
-#' alone.
+#' Every continuous family shipped in this package registers a closed form,
+#' so this method serves a family defined outside the package, which obtains
+#' the mixed block from its density alone.
 #'
 #' @param distrib An object inheriting from `continuous_distrib` that
 #'   registers no method of its own.
@@ -194,7 +192,8 @@ numerical_cross_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 
 #' @return A named list with one numeric vector per parameter, keyed by
 #'   `distrib@params`, each of length `length(y)`.
 #'
-#' @seealso [numerical_cross_y()], which does the work;
+#' @seealso [mixed_tensor_derivatives()], which does the work;
+#'   [numerical_cross_y()] for the differenced part of a family's own method;
 #'   [distrib_cross_y()] for the generic;
 #'   [distrib_cross_y.Gaussian1Distrib()] for a closed form to compare against.
 #' @keywords internal
@@ -214,9 +213,9 @@ S7::method(distrib_cross_y, continuous_distrib) <- function(distrib, y, theta,
 #'       \frac{\partial^2 \ell}{\partial y\, \partial \sigma} =
 #'       \frac{2r}{\sigma^3}.}
 #'
-#' The first is constant along `y`, a quadratic log-density in a location
-#' parameter giving nothing else; the second changes sign with the residual,
-#' being zero at the mean and growing linearly away from it.
+#' The first component is constant in `y`, because the log-density is
+#' quadratic in the response and in the location. The second is zero at the
+#' mean and grows linearly with the residual, so it changes sign there.
 #'
 #' @param distrib A `Gaussian1Distrib` object.
 #' @param y A numeric vector of observations.
@@ -271,9 +270,9 @@ S7::method(distrib_cross_y, Gaussian1Distrib) <- function(distrib, y, theta,
 #' \eqn{D}, both differentiable in \eqn{\nu} in closed form, and no
 #' distribution function appears.
 #'
-#' Note that the \eqn{\mu} component changes sign at \eqn{|r| = \sigma\sqrt\nu}
-#' and decays as \eqn{r^{-2}}, where the Gaussian's is constant. That is the
-#' redescending score seen one derivative along.
+#' The \eqn{\mu} component changes sign at \eqn{|r| = \sigma\sqrt\nu} and
+#' decays as \eqn{r^{-2}}, where the Gaussian's is constant. It is the
+#' derivative in \eqn{\mu} of the response score, which redescends.
 #'
 #' @param distrib A `StudentT1Distrib` object.
 #' @param y A numeric vector of observations.
@@ -316,13 +315,15 @@ S7::method(distrib_cross_y, StudentT1Distrib) <- function(distrib, y, theta,
 #' taking one derivative in the response. The equality is exact, not
 #' approximate, and holds at every observation inside the support.
 #'
-#' This is the one derivative of a truncated family that costs nothing. The
-#' gradient and the Hessian both need \eqn{\log Z} and its derivatives, which
-#' is one quadrature or one pair of cdf evaluations per component.
+#' Like the response gradient and the response Hessian of a truncated family,
+#' this block costs nothing beyond the parent's. The gradient and the Hessian
+#' in the parameters both need \eqn{\log Z} and its derivatives, which is one
+#' quadrature or one pair of cdf evaluations per component.
 #'
 #' @param distrib A `TruncatedContinuousDistrib` object.
 #' @param y A numeric vector of observations inside the truncation interval.
-#'   Outside it the parent's value is returned, the method testing nothing.
+#'   Outside it the parent's value is returned, because the method performs
+#'   no test.
 #' @param theta A named list of parameters of the **parent**, aligned by the
 #'   generic. Truncation adds no parameter, the endpoints being constants.
 #' @param scale Handled by the generic after dispatch; this method always

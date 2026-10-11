@@ -19,9 +19,12 @@ be reproduced after the fact.}
 \item{...}{Unused, accepted for compatibility with \code{\link[stats:simulate]{stats::simulate()}}.}
 }
 \value{
-A data frame of \code{object@n} rows and \code{nsim} columns named \code{sim_1} to
-\code{sim_nsim}, each column one replicate. The \code{"seed"} attribute carries the
-generator state described above.
+For a univariate fit, a data frame of \code{object@n} rows and \code{nsim}
+columns named \code{sim_1} to \code{sim_nsim}, each column one replicate. For a
+multivariate fit each replicate is a matrix, and the data frame has
+\code{object@n} rows and \code{nsim * p} columns named \code{sim_1.v1}, \code{sim_1.v2}, and
+so on. The \code{"seed"} attribute carries the generator state described
+above.
 }
 \description{
 Draws new samples from the fitted distribution, evaluated at the maximum

@@ -7,7 +7,7 @@
 series_rows(term, from, n_rows)
 }
 \arguments{
-\item{term}{A function \code{term(k, i)} in \code{series_vec}'s contract.}
+\item{term}{A function \code{term(k, i)} in the convention of \code{series_vec}.}
 
 \item{from}{The first summation index.}
 
@@ -18,7 +18,6 @@ A numeric vector of sums, one per row.
 }
 \description{
 Calls \code{\link[numericals7:series_vec]{numericals7::series_vec()}} with its warning muffled and
-promotes a row that did not converge to an error naming it: a series that
-does not converge is a failure of the request, not a number.
+promotes a row that did not converge to an error that names the row.
 }
 \keyword{internal}

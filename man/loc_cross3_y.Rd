@@ -51,8 +51,8 @@ parameter indices, as \code{\link[=deriv_names]{deriv_names()}} generates them, 
 }
 \section{Registered on}{
 
-The fourteen families \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} serves through
-\code{\link[=loc_deriv_y_k]{loc_deriv_y_k()}}: \code{Gaussian1Distrib}, \code{Gaussian2Distrib},
+The fourteen location families on which this function is registered:
+\code{Gaussian1Distrib}, \code{Gaussian2Distrib},
 \code{Gaussian3Distrib}, \code{CauchyDistrib}, \code{LogisticDistrib}, \code{LaplaceDistrib},
 \code{Laplace2Distrib}, \code{EnetDistrib}, \code{PseudoHuberDistrib}, \code{StudentT1Distrib},
 \code{SkewNormal1Distrib}, \code{SkewNormal2Distrib}, \code{SkewTDistrib},

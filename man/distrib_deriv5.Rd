@@ -16,10 +16,12 @@ parameters. Each parameter must have length 1 or \code{length(y)}.}
 
 \item{scale}{\code{"parameter"} (the default) for derivatives with respect to
 the parameters, \code{"link"} for derivatives with respect to the
-unconstrained predictors. The link scale is obtained by differentiating
-the order-4 component \strong{already on the link scale}, so it needs neither
-the fifth derivative of a link nor an order-5 entry in
-\code{\link[=bell_partial]{bell_partial()}}.}
+unconstrained predictors. In the numerical default the link scale is
+obtained by differentiating the order-4 component \strong{already on the link
+scale}, which needs neither the fifth derivative of a link nor an
+order-5 entry in \code{\link[=bell_partial]{bell_partial()}}. A family with a closed-form fifth
+order composes it with the lower orders through \code{\link[=to_link_scale]{to_link_scale()}}, which
+uses both.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }
@@ -35,27 +37,30 @@ respect to the distribution's parameters, on the parameter scale or on the
 link scale.
 }
 \details{
-The order exists because each order of differentiating a score-driven
-filter's predictor through its own recursion draws in one more order of the
-family: the curvature reaches the third, the directional third derivative
-the fourth, and the outer Hessian of a model carrying such a term the
-fifth. Writing it inside the term that needs it would be the private helper
-this package exists to abolish, so it is a family quantity like any other.
+The order is needed because each order of differentiating the predictor of
+a score-driven filter through its own recursion requires one more order of
+the family: the curvature reaches the third order, the directional third
+derivative the fourth, and the outer Hessian of a model with such a term the
+fifth. The fifth order is therefore provided by the family, like the lower
+orders.
 
-No family computes it in closed form yet. Every one reaches
-\code{\link[=numerical_deriv5]{numerical_deriv5()}}, which applies \strong{one} central difference to the
-analytic fourth order -- not a difference of a difference, which is the
-rule the whole derivative surface obeys. Against Richardson extrapolation
-on the same analytic fourth that is worth about 1e-10, so the numerical
-fifth is accurate enough to build on rather than a placeholder for the
-architecture.
+The families that register their own method (\code{\link[=gengamma1_distrib]{gengamma1_distrib()}},
+\code{\link[=gengamma2_distrib]{gengamma2_distrib()}}, \code{\link[=gpd_distrib]{gpd_distrib()}}, \code{\link[=lognormal2_distrib]{lognormal2_distrib()}},
+\code{\link[=pseudohuber2_distrib]{pseudohuber2_distrib()}}, \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}, \code{\link[=skewt_distrib]{skewt_distrib()}},
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}, \code{\link[=student_t2_distrib]{student_t2_distrib()}} and \code{\link[=weibull3_distrib]{weibull3_distrib()}})
+compute the fifth order in closed form with compiled kernels. Every other
+family reaches \code{\link[=numerical_deriv5]{numerical_deriv5()}}, which applies \strong{one} central
+difference to the fourth order. Where the fourth order is analytic this is
+an ordinary numerical derivative; where the fourth order is itself a
+fallback the result is a difference of a difference, with the accuracy
+described on \code{\link[=has_exact_deriv4]{has_exact_deriv4()}}.
 
-Unlike its siblings this generic carries no \code{expected} argument. The
-criterion of a model with a filter reads the observed information -- a
-filter has no expected one -- and an expectation of the fifth order would
-sit on top of a numerical quantity, which is two approximations deep.
-\code{\link[=expected_derivative]{expected_derivative()}} is generic in the order, so the expected fifth can
-be added the day something asks for it.
+Unlike the generics of lower order this one carries no \code{expected} argument.
+The criterion of a model with a filter reads the observed information (a
+filter has no expected one), and an expectation of the fifth order would
+sit on top of a numerical quantity. \code{\link[=expected_derivative]{expected_derivative()}} is generic in
+the order, so the expected fifth order can be added when a caller needs
+it.
 }
 \examples{
 distrib_deriv5(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))

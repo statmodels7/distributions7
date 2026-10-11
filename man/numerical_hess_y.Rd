@@ -29,7 +29,7 @@ stencil
 evaluated on \code{distrib_pdf(..., log = TRUE)}. It is what the default
 \code{\link[=distrib_hess_y]{distrib_hess_y()}} method runs for a continuous family with no closed form.
 }
-\section{Why the step is longer and the answer coarser}{
+\section{Step length of the second difference}{
 The truncation error is again \eqn{O(h^2)}, but the rounding error is
 \eqn{O(\varepsilon/h^2)} where the first order's is
 \eqn{O(\varepsilon/h)}, the numerator being a difference of quantities of

@@ -8,7 +8,7 @@
 no method of its own.}
 
 \item{q}{A numeric vector of quantiles; a non-integer is floored, as a
-distribution function on a lattice requires.}
+distribution function of a discrete variable requires.}
 
 \item{theta}{A named list of parameters, each of length 1 or \code{length(q)}.}
 
@@ -33,11 +33,11 @@ approximate, so on a Poisson defined by its mass alone it agrees with
 addition itself.
 }
 \details{
-The cumulative table is built once per distinct parameter setting by
-\code{\link[=disc_cum_table]{disc_cum_table()}} and every quantile sharing that setting is read from it,
-so a vector of quantiles costs one table between them. A support unbounded
-above is extended until the remaining mass falls below what the request
-needs.
+The cumulative table is built by \code{\link[=disc_cum_table]{disc_cum_table()}} and rebuilt whenever
+the parameter setting of a row differs from that of the row before, so a
+vector of quantiles at one setting costs one table. A support unbounded
+above is extended, by doubling, until the table reaches the largest
+requested support point.
 }
 \seealso{
 \code{\link[=disc_cum_table]{disc_cum_table()}}, which builds the table;

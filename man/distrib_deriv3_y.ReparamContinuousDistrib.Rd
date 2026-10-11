@@ -21,12 +21,12 @@ that order at the mapped parameters.
 \description{
 The parent's third and fourth response derivatives, read at the parent's
 parameters. A reparametrization acts on \eqn{\theta} and these derivatives
-are taken in \eqn{y}, so the two do not interact: no chain rule enters and
-the parent's answer is the answer, exactly.
+are taken in \eqn{y}, so the two do not interact: the chain rule does not
+enter, and the result of the parent is returned exactly.
 
-The same is true at the first and second orders, and for the mixed block
-\code{\link[=distrib_cross_y]{distrib_cross_y()}} it is \strong{not}: that one takes one derivative in each,
-so the map's first-order Jacobian does enter.
+The same holds at the first and second orders. It does not hold for the
+mixed block \code{\link[=distrib_cross_y]{distrib_cross_y()}}, which takes one derivative in each, so
+that the first-order Jacobian of the map enters.
 }
 \seealso{
 \code{\link[=reparametrize]{reparametrize()}} for the wrapper;

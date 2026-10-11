@@ -21,7 +21,9 @@
 #' \eqn{(0, \infty)} and in \eqn{\mathrm{logit}(y)} on \eqn{(0, 1)}, so that
 #' a density that behaves like \eqn{y^{k-1}} at an end of its support is
 #' integrated as an exponential tail. Above the family's center the integral
-#' runs over \eqn{[q, \infty)} with the opposite sign. For the families that
+#' runs over the upper part of the support with the opposite sign, except for
+#' the two beta families when their second shape is below one, which always
+#' integrate the lower part. For the families that
 #' are location-scale in \eqn{(\mu, \sigma)} only the shape parameters are
 #' integrated: with \eqn{z = (q - \mu)/\sigma} the location and scale
 #' components are \eqn{-f}, \eqn{-z f} and, at second order, \eqn{-f s_\mu},

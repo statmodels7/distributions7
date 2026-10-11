@@ -30,10 +30,12 @@ See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
 \item{approx}{How the expectation is approximated \strong{when the distribution
 has no closed-form expected Hessian}; ignored otherwise. One of
-\code{"bartlett"} (default, equivalently \code{"opg"}: the outer product of
-the score), \code{"integrate"} (quadrature/summation of the observed Hessian)
-or \code{"mc"} (Monte Carlo). See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}
-for the accuracy/speed trade-offs.}
+\code{"opg"} (the default: the outer product of the score, read at each
+observation without taking an expectation), \code{"bartlett"} (the second
+Bartlett identity, with the expectation taken by summation or
+quadrature), \code{"integrate"} (quadrature or summation of the observed
+Hessian) or \code{"mc"} (Monte Carlo). See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for
+the accuracy and speed of each.}
 
 \item{nsim}{Monte Carlo sample size used when \code{approx = "mc"}. Defaults to 10000.}
 
@@ -57,7 +59,9 @@ congruence \eqn{\mathrm{diag}(h')\, \mathbb{E}[H]\, \mathrm{diag}(h')} with
 d <- gaussian1_distrib()
 distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1))
 
-# a family with no closed form uses the strategy named by 'approx'
+# the pseudo-Huber computes its expected information itself, so 'approx'
+# has no effect here; it applies to a family without a closed form, such as
+# one defined by its density alone
 distrib_expected_hessian(
   pseudohuber_distrib(), 0, list(mu = 0, sigma = 1, nu = 1),
   approx = "integrate"

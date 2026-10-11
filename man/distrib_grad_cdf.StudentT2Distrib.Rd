@@ -25,14 +25,14 @@ The derivatives of \eqn{F(q)} in \eqn{(\mu, \sigma, \nu)} to order four.
 The family is location-scale in \eqn{(\mu, \sigma)} at fixed \eqn{\nu}, so
 those components are closed forms in the density and its derivatives; the
 components in \eqn{\nu}, derivatives of an incomplete beta function in its
-parameter, have no elementary form and are differenced, as for
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}.
+parameter, have no elementary form and are integrals of the density's own
+derivatives, taken by the compiled rule, as for \code{\link[=student_t1_distrib]{student_t1_distrib()}}.
 }
 \examples{
 d <- student_t2_distrib()
 distrib_grad_cdf(d, c(-2, 0.5), list(mu = 1, sigma = 2, nu = 6), log = FALSE)
 }
 \seealso{
-\code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}}, \code{\link[=partial_loc_scale_hess_cdf]{partial_loc_scale_hess_cdf()}}
-and \code{\link[=partial_loc_scale_deriv_cdf_k]{partial_loc_scale_deriv_cdf_k()}}, the bodies registered here.
+\code{\link[=compiled_grad_cdf]{compiled_grad_cdf()}}, \code{\link[=compiled_hess_cdf]{compiled_hess_cdf()}} and
+\code{\link[=partial_loc_scale_deriv_cdf_k]{partial_loc_scale_deriv_cdf_k()}}, the bodies registered here.
 }

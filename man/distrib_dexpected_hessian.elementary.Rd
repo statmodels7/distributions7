@@ -103,7 +103,8 @@ information does not exist;
 by its rate: \eqn{-\lambda^2} and \eqn{-1/\lambda^2};
 \item elastic net, with \eqn{a = \lambda\alpha},
 \eqn{c = \lambda(1-\alpha)} and \eqn{Z} the normalizing constant:
-\eqn{-(a^2 - 2acZ_a - 2c^2Z_c)} in the location and the second
+\eqn{-(a^2 - 2ac\,\partial_a\log Z - 2c^2\,\partial_c\log Z)} in the
+location and the second
 derivatives of \eqn{-\log Z} in the two rates, whose derivatives are the
 third derivatives of \eqn{\log Z}, written through the Mills ratio.
 }

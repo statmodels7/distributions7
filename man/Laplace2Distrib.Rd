@@ -52,7 +52,7 @@ The S7 class of the Laplace (double exponential) family written by its
 \eqn{f(y) = (\lambda/2)\exp(-\lambda|y-\mu|)} on the whole real line. It is
 the same law as \code{\link[=laplace_distrib]{laplace_distrib()}} at \eqn{\lambda = 1/\sigma}; the
 parametrization differs and the derivatives with it. It inherits from
-\code{continuous_distrib}, so it answers every generic of the \code{distrib} contract.
+\code{continuous_distrib}, so every generic of the \code{distrib} class applies to it.
 
 The rate form is the one a lasso penalty is written in: with \eqn{\mu = 0}
 the negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so

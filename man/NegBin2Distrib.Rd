@@ -50,9 +50,9 @@ The S7 class of the negative binomial family on the non-negative integers in
 the NB2 parametrization: the mean \eqn{\mu > 0} and a dispersion
 \eqn{\theta > 0}, so that \eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}
 and the variance is quadratic in the mean. It inherits from
-\code{discrete_distrib}, so it answers every generic of the \code{distrib} contract;
-the nine methods listed below are registered on it directly and everything
-else comes from the parent.
+\code{discrete_distrib}, so every generic of the \code{distrib} class applies to it;
+the methods listed below are registered on it directly and everything else
+comes from the parent.
 
 Build one with \code{\link[=negbin2_distrib]{negbin2_distrib()}}, which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,

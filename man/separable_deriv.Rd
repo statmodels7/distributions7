@@ -17,9 +17,9 @@ separable_deriv(nm, uderiv, vderiv)
 }
 \value{
 A function of a block, a character vector of parameter names, that
-returns the corresponding mixed partial. A block naming a parameter
-outside \code{nm} gives the order-zero factor for both, which is the value
-itself; no caller does that.
+returns the corresponding mixed partial. Names outside \code{nm} are not
+counted, so a block made only of such names gives the order-zero factor
+for both, which is the value itself.
 }
 \description{
 Builds the \code{wderiv} or \code{xderiv} callback \code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} wants,
@@ -29,12 +29,12 @@ so a block of parameter names is answered by counting how many of each it
 holds.
 }
 \details{
-Both families this file serves are separable in exactly this way. The
+The inverse Gaussian, which uses this function, is separable in this way. The
 inverse Gaussian's \eqn{a}, \eqn{b} and \eqn{c} are each a function of the
 mean times a function of the dispersion; the elastic net's \eqn{s} and
 \eqn{x} are each a function of \eqn{\lambda} times a function of
-\eqn{\alpha}. Separability is why four orders are cheap here: no
-multivariate expansion is ever formed.
+\eqn{\alpha}. Each mixed partial is therefore a product of two
+one-variable derivatives, which is why four orders are cheap here.
 }
 \seealso{
 \code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}}, whose \code{wderiv} and \code{xderiv} this builds;

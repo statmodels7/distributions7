@@ -9,8 +9,8 @@
 \item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
 a numeric vector of length 1 or \code{n}. The values are not read, only their
 lengths, and the list is still aligned and validated, so a missing or
-out-of-bounds component throws as it would for a family whose moments
-exist.}
+out-of-bounds component signals an error as it would for a family whose
+moments exist.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

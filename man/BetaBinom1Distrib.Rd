@@ -53,11 +53,11 @@ the parent's: \code{distrib_name}, \code{dimension}, \code{bounds}, \code{params
 }
 \description{
 The S7 class of the beta-binomial family parametrized by a mean proportion
-\eqn{\mu \in (0, 1)} and a dispersion \eqn{\sigma > 0}, on the finite
-support \eqn{\{0, 1, \dots, n\}}. It inherits from \code{discrete_distrib}, so it
-answers every generic of the \code{distrib} contract; the seven methods listed
-below are registered on it in this file, two more in \code{betabinom1_higher.R},
-and everything else comes from the parent.
+\eqn{\mu \in (0, 1)} and a dispersion \eqn{\sigma > 0}, on the finite support
+\eqn{\{0, 1, \dots, n\}}. It inherits from \code{discrete_distrib}, so every
+generic of the \code{distrib} class applies to it; the methods listed below are
+registered on it in this file, two more in \code{betabinom1_higher.R}, and
+everything else comes from the parent.
 
 The class carries an extra property beyond the parent's, \code{size}: the number
 of trials \eqn{n}, fixed at construction as it is for

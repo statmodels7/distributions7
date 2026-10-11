@@ -16,13 +16,13 @@ A list of integer vectors, each of length \code{order}, parallel to
 \code{deriv_names(params, order)}.
 }
 \description{
-The multi-indices \code{\link[=deriv_names]{deriv_names()}} names, in exactly the same order:
+The multi-indices that \code{\link[=deriv_names]{deriv_names()}} names, in exactly the same order:
 non-decreasing tuples of length \code{order} over \code{seq_along(params)},
 enumerated lexicographically.
 }
 \details{
-This exists so that nothing has to recover an index tuple by splitting a
-component name back apart. Splitting fails for a parameter whose own name
+This function exists so that no caller needs to recover an index tuple by
+splitting a component name. Splitting fails for a parameter whose own name
 contains an underscore: \code{"mu_log_scale_log_scale"} splits into five
 pieces, and matching those against \code{params} yields \code{NA}s. The
 multivariate families carry such names by construction

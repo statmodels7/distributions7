@@ -17,6 +17,6 @@
 A numeric vector.
 }
 \description{
-One stencil of the order asked for, on the log-density.
+One stencil of the requested order, on the log-density.
 }
 \keyword{internal}

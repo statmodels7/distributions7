@@ -19,7 +19,7 @@ NULL
 #' Collects \eqn{\partial^{S}\mu_j} for every multiset \eqn{S} of free indices
 #' up to the requested order, keyed by the sorted tuple, as a list of numeric
 #' vectors over the coordinates \eqn{j}. The arrays come from
-#' \pkg{parameters7}, whose contract carries orders three and four for a
+#' \pkg{parameters7}, which supplies orders three and four for a
 #' `simplex`, so nothing is derived here; what the function adds is the keying,
 #' which lets the chain rule in [chain_univariate()] look a block up by its
 #' index multiset.

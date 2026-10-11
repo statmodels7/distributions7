@@ -10,8 +10,8 @@
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{\code{"parameter"} or \code{"link"}, the scale the components are
-reported on. The transformation is applied in the generic's body, so this
+\item{scale}{\code{"parameter"} or \code{"link"}, the scale on which the components
+are reported. The transformation is applied in the generic's body, so this
 method always returns the parameter scale.}
 
 \item{approx}{One of \code{"opg"}, \code{"bartlett"}, \code{"integrate"} or \code{"mc"}, the
@@ -31,12 +31,12 @@ out. It rests on the second Bartlett identity,
 \eqn{\mathbb{E}[\ell^{(ij)}] = -\mathbb{E}[\ell^{(i)}\ell^{(j)}]}, which
 holds for a regular model and, unlike \eqn{\mathbb{E}[\ell^{(ij)}]} read
 directly, survives a log-likelihood that is not differentiable in a
-parameter -- the location of a Laplace, where the observed Hessian is
-degenerate while the score variance is still the information.
+parameter (the location of a Laplace, where the observed Hessian is
+degenerate while the score variance is still the information).
 }
 \details{
-\code{approx} says how the right-hand side is obtained, and the choice is a
-choice of cost. The default \code{"opg"} reads
+The argument \code{approx} selects how the right-hand side is obtained, and the
+strategies differ in cost. The default \code{"opg"} reads
 \eqn{-\ell^{(i)}\ell^{(j)}} at each observation and takes no expectation,
 so it costs one call to \code{\link[=distrib_gradient]{distrib_gradient()}}; \code{"bartlett"} evaluates the
 expectation itself, which is a sum over the support for a discrete family

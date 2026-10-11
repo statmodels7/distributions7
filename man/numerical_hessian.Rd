@@ -22,9 +22,10 @@ A named list of Hessian component vectors, in \code{\link[=hess_names]{hess_name
 }
 \description{
 Computes the observed Hessian of the log-density with respect to the parameters
-by central finite differences of \code{distrib_pdf(..., log = TRUE)}. This powers
-the default \code{\link[=distrib_hessian]{distrib_hessian()}} method for distributions that do not
-implement an analytical Hessian.
+by central finite differences of \code{distrib_pdf(..., log = TRUE)}. The
+default \code{\link[=distrib_hessian]{distrib_hessian()}} method calls it for a family that has neither an
+analytical Hessian nor an analytical score; a family with an analytical
+score has it differenced instead.
 }
 \details{
 Diagonal components use the three-point stencil

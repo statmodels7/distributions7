@@ -59,9 +59,9 @@ NULL
 #'   `length(y)`: the location component then the scale one. The caller names
 #'   them.
 #'
-#' @seealso [loc_scale_cross_y()] and [partial_loc_scale_cross_y()], the two
-#'   bodies built on this; [distrib_grad_y()] and [distrib_hess_y()], the two
-#'   quantities it reads; [distrib_cross_y()] for the generic.
+#' @seealso [loc_scale_cross_y()], the body built on this; [distrib_grad_y()]
+#'   and [distrib_hess_y()], the two quantities that it reads;
+#'   [distrib_cross_y()] for the generic.
 #' @keywords internal
 loc_scale_cross_block <- function(distrib, y, theta) {
   s <- theta[[2]]
@@ -79,10 +79,6 @@ loc_scale_cross_block <- function(distrib, y, theta) {
 #' [loc_scale_cross_block()] and names them after the family's own parameters.
 #' Registered on the logistic, the Cauchy, the Gumbel and the Laplace.
 #'
-#' Measured against Richardson extrapolation of the analytic response
-#' gradient, the four agree to between \eqn{1.7\times10^{-12}} and
-#' \eqn{1.5\times10^{-11}} relative.
-#'
 #' @param distrib An object inheriting from `distrib` with exactly two
 #'   parameters, a location and a scale, in that order.
 #' @param y A numeric vector of observations.
@@ -95,7 +91,6 @@ loc_scale_cross_block <- function(distrib, y, theta) {
 #'   of length `length(y)`.
 #'
 #' @seealso [loc_scale_cross_block()] for the identity;
-#'   [partial_loc_scale_cross_y()] for a family with shape parameters as well;
 #'   [distrib_cross_y()] for the generic.
 #' @keywords internal
 loc_scale_cross_y <- function(distrib, y, theta,
@@ -103,47 +98,47 @@ loc_scale_cross_y <- function(distrib, y, theta,
   stats::setNames(loc_scale_cross_block(distrib, y, theta), distrib@params)
 }
 
-#' @title Mixed Derivatives When Only Two Parameters Are Location-Scale
-#'
-#' @description
-#' The [distrib_cross_y()] body for a family whose first two parameters are a
-#' location and a scale and whose remaining ones are shapes: the first two
-#' components come from [loc_scale_cross_block()] in closed form, and the rest
-#' from one central difference of [distrib_grad_y()] through
-#' [numerical_cross_y()], which is asked for those parameters alone.
-#'
-#' Registered on the skew \eqn{t}, whose `alpha` and `nu` components are
-#' differenced because its density carries \eqn{T_{\nu+1}}, a Student \eqn{t}
-#' distribution function whose derivative in the degrees of freedom has no
-#' elementary form. Measured against Richardson on the analytic response
-#' gradient, the worst of its four components is \eqn{9.2\times10^{-10}}
-#' relative, which is one stencil's accuracy.
-#'
-#' @param distrib An object inheriting from `distrib` with at least three
-#'   parameters, a location and a scale first.
-#' @param y A numeric vector of observations.
-#' @param theta A named list of parameters, aligned by the generic.
-#' @param scale Handled by the generic after dispatch; this body always returns
-#'   the parameter scale.
-#' @param ... Unused. Not forwarded to [numerical_cross_y()], so a step given
-#'   here does not reach the difference.
-#'
-#' @return A named list with one numeric vector per parameter, keyed by
-#'   `distrib@params`, each of length `length(y)`. The first two components are
-#'   exact and the rest carry one stencil's error.
-#'
-#' @seealso [loc_scale_cross_block()] for the exact half;
-#'   [numerical_cross_y()] for the differenced half;
-#'   [loc_scale_cross_y()] where every parameter is covered exactly.
-#' @keywords internal
-partial_loc_scale_cross_y <- function(distrib, y, theta,
-                                      scale = c("parameter", "link"), ...) {
-  params <- distrib@params
-  rest <- params[-(1:2)]
-  out <- c(loc_scale_cross_block(distrib, y, theta),
-           numerical_cross_y(distrib, y, theta, which = rest))
-  stats::setNames(out, params)
-}
+# Not registered by any family: the Student t, the pseudo-Huber and the
+# skew t take these components from the compiled routes. Kept commented out
+# (2026-10-11) rather than deleted.
+# @title Mixed Derivatives When Only Two Parameters Are Location-Scale
+#
+# @description
+# The [distrib_cross_y()] body for a family whose first two parameters are a
+# location and a scale and whose remaining ones are shapes: the first two
+# components come from [loc_scale_cross_block()] in closed form, and the rest
+# from one central difference of [distrib_grad_y()] through
+# [numerical_cross_y()], called for those parameters alone.
+#
+# No shipped family registers this body. The skew \eqn{t} has its own
+# method, which takes the `alpha` and `nu` components from the mixed entries
+# of its Hessian.
+#
+# @param distrib An object inheriting from `distrib` with at least three
+#   parameters, a location and a scale first.
+# @param y A numeric vector of observations.
+# @param theta A named list of parameters, aligned by the generic.
+# @param scale Handled by the generic after dispatch; this body always returns
+#   the parameter scale.
+# @param ... Unused. Not forwarded to [numerical_cross_y()], so a step given
+#   here does not reach the difference.
+#
+# @return A named list with one numeric vector per parameter, keyed by
+#   `distrib@params`, each of length `length(y)`. The first two components are
+#   exact and the rest carry one stencil's error.
+#
+# @seealso [loc_scale_cross_block()] for the exact half;
+#   [numerical_cross_y()] for the differenced half;
+#   [loc_scale_cross_y()] where every parameter is covered exactly.
+# @keywords internal
+# partial_loc_scale_cross_y <- function(distrib, y, theta,
+#                                       scale = c("parameter", "link"), ...) {
+#   params <- distrib@params
+#   rest <- params[-(1:2)]
+#   out <- c(loc_scale_cross_block(distrib, y, theta),
+#            numerical_cross_y(distrib, y, theta, which = rest))
+#   stats::setNames(out, params)
+# }
 
 
 # --- the location-scale families -------------------------------------------
@@ -156,7 +151,8 @@ partial_loc_scale_cross_y <- function(distrib, y, theta,
 #' @param distrib A `LogisticDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `sigma`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `mu` and `sigma`, each a numeric vector
 #'   of length `length(y)`.
@@ -186,7 +182,8 @@ S7::method(distrib_cross_y, GumbelDistrib) <- loc_scale_cross_y
 #' @param distrib A `LaplaceDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `sigma`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `mu` and `sigma`, each a numeric vector
 #'   of length `length(y)`. The `mu` component is **exactly zero**
@@ -209,7 +206,8 @@ S7::method(distrib_cross_y, LaplaceDistrib) <- loc_scale_cross_y
 #' @param distrib A `Laplace2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `lambda`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `mu` and `lambda`, each a numeric vector
 #'   of length `length(y)`. The `mu` component is exactly zero almost
@@ -235,12 +233,11 @@ S7::method(distrib_cross_y, Laplace2Distrib) <- function(distrib, y, theta,
 #' @param distrib A `PseudoHuberDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu`, `sigma` and `nu`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `mu`, `sigma` and `nu`, each a numeric
-#'   vector of length `length(y)`. All three are exact; measured against
-#'   Richardson on the analytic response gradient the worst is
-#'   \eqn{1.3\times10^{-11}} relative.
+#'   vector of length `length(y)`. All three are exact.
 #'
 #' @seealso [loc_scale_cross_block()] for the first two components;
 #'   [pseudohuber_distrib()] for the family;
@@ -273,16 +270,16 @@ S7::method(distrib_cross_y, PseudoHuberDistrib) <- function(distrib, y, theta,
 #' @param distrib A `SkewNormal1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu`, `sigma` and `alpha`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `mu`, `sigma` and `alpha`, each a numeric
-#'   vector of length `length(y)`. All three are exact; measured against
-#'   Richardson on the analytic response gradient the worst is
-#'   \eqn{3.6\times10^{-11}} relative.
+#'   vector of length `length(y)`. All three are exact.
 #'
 #' @seealso [numericals7::mills_ratio()], evaluated once for all three;
 #'   [skewnormal1_distrib()] for the family;
-#'   [distrib_cross_y.SkewTDistrib()], where the shape is differenced.
+#'   [distrib_cross_y.SkewTDistrib()], where the shape components are taken
+#'   from the Hessian.
 #' @keywords internal
 S7::method(distrib_cross_y, SkewNormal1Distrib) <- function(distrib, y, theta,
                                                             scale = c("parameter",
@@ -314,7 +311,8 @@ S7::method(distrib_cross_y, SkewNormal1Distrib) <- function(distrib, y, theta,
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu`, `sigma`, `alpha` and
 #'   `nu`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `mu`, `sigma`, `alpha` and `nu`, each a
 #'   numeric vector of length `length(y)`.
@@ -344,7 +342,8 @@ S7::method(distrib_cross_y, SkewTDistrib) <- function(distrib, y, theta,
 #' @param distrib An `ExponentialDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with the single component `mu`, a numeric vector of length
 #'   `length(y)` holding \eqn{1/\mu^2} at every observation.
@@ -370,7 +369,8 @@ S7::method(distrib_cross_y, ExponentialDistrib) <- function(distrib, y, theta,
 #' @param distrib A `Weibull1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `sigma`.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `mu` and `sigma`, each a numeric vector of
 #'   length `length(y)`.
@@ -439,7 +439,8 @@ mapped_cross_y <- function(distrib, parent, th_par, maps, y) {
 #' @param distrib A reparametrized distribution.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the new parameters.
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with one numeric vector per parameter of the **new**
 #'   parametrization, keyed by `distrib@params`, each of length
@@ -483,7 +484,8 @@ S7::method(distrib_hess_y, InvGauss2Distrib) <- function(distrib, y, theta, ...)
 
 #' @rdname distrib_grad_y.InvGauss2Distrib
 #' @name distrib_cross_y.InvGauss2Distrib
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @keywords internal
 S7::method(distrib_cross_y, InvGauss2Distrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
@@ -521,7 +523,8 @@ S7::method(distrib_hess_y, VonMises2Distrib) <- function(distrib, y, theta, ...)
 
 #' @rdname distrib_grad_y.VonMises2Distrib
 #' @name distrib_cross_y.VonMises2Distrib
-#' @param scale Handled by the generic before dispatch.
+#' @param scale Handled by the generic after dispatch; this method returns
+#'   the parameter scale.
 #' @keywords internal
 S7::method(distrib_cross_y, VonMises2Distrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {

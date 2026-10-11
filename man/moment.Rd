@@ -14,7 +14,7 @@ constructors such as \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} or \c
 component per parameter of \code{distrib}. Components may be vectors and are
 recycled against one another and against \code{p}, so several settings are
 evaluated in one call. The list is aligned and validated by name, so a
-missing or out-of-bounds component throws.}
+missing or out-of-bounds component signals an error.}
 
 \item{p}{The order of the moment. A numeric vector of length 1 or of the
 number of settings, recycled against the components of \code{theta}. Defaults

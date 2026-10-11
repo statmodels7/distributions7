@@ -30,7 +30,8 @@ NULL
 #' @param skip Character vector of component names, or `NULL`, the default.
 #'   A named component is left `NULL` in the result rather than computed, for
 #'   a caller that supplies it in closed form. The names and their order are
-#'   unchanged, so nothing downstream has to know which were skipped.
+#'   unchanged, so a downstream caller does not need to know which were
+#'   skipped.
 #'
 #' @return A named list of third-derivative component vectors, keyed as in
 #'   [`deriv_names(distrib@params, 3)`][deriv_names].
@@ -134,7 +135,8 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' @param skip Character vector of component names, or `NULL`, the default.
 #'   A named component is left `NULL` in the result rather than computed, for
 #'   a caller that supplies it in closed form. The names and their order are
-#'   unchanged, so nothing downstream has to know which were skipped.
+#'   unchanged, so a downstream caller does not need to know which were
+#'   skipped.
 #'
 #' @return A named list of fourth-derivative component vectors, keyed as in
 #'   [`deriv_names(distrib@params, 4)`][deriv_names].
@@ -239,11 +241,10 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' log-density. Expected ones come from [expected_derivative()] at the
 #' strategy `approx` names.
 #'
-#' **No family shipped in this package reaches this method for its observed
-#' derivatives.** All 46 write the third order out, 24 of them in compiled
-#' kernels. It exists for a family defined outside the package, which gets four
-#' orders from a density alone, and it is the reference the analytical kernels
-#' are validated against.
+#' Every family shipped in this package writes the observed third order out,
+#' so this method serves a family defined outside the package, which gets five
+#' orders from a density alone. It is also the reference against which the
+#' analytical kernels are validated.
 #'
 #' @param distrib An object inheriting from `distrib` that registers no method
 #'   of its own.
@@ -286,14 +287,15 @@ S7::method(distrib_deriv3, distrib) <- function(distrib, y, theta, expected = FA
 #' derivatives come from [numerical_deriv4()]: a **second** difference of the
 #' family's own [distrib_hessian()] rather than a difference of the third
 #' order, or, for a family without its own Hessian, one tensor-product stencil
-#' on its score or its log-density. On both routes each parameter is
-#' differenced once, so the package's rule against nesting one difference
-#' inside another holds. Expected ones come from [expected_derivative()] at
-#' the strategy `approx` names.
+#' on its score or its log-density. On both routes each component is a single
+#' stencil, so the package's rule against nesting one difference inside
+#' another holds. Expected ones come from [expected_derivative()] at the
+#' strategy that `approx` names.
 #'
-#' As at the order below, no family shipped in this package reaches it. Being a
-#' second difference it is the least accurate route the package offers, and its
-#' step is chosen accordingly.
+#' As at the order below, the families shipped in this package write the
+#' fourth order out themselves. A second difference of the Hessian is less
+#' accurate than the first difference of the third order, and its step is
+#' chosen accordingly.
 #'
 #' @param distrib An object inheriting from `distrib` that registers no method
 #'   of its own.
@@ -335,13 +337,11 @@ S7::method(distrib_deriv4, distrib) <- function(distrib, y, theta, expected = FA
 #' fourth-order ones once in each parameter.
 #'
 #' @details
-#' One central difference of the analytic fourth order, and never a difference
-#' of a difference. That is the rule the rest of this package's numerical
-#' surface obeys and it is worth restating here, because the sibling
-#' [numerical_deriv4()] does **not** obey it: it differences the analytic
-#' Hessian twice, which it can afford because a second difference of an exact
-#' quantity is still only two orders removed from one. A fifth order built the
-#' same way -- differencing the analytic third three times -- would not be.
+#' The fifth order is one central difference of the fourth order, a single
+#' stencil in each parameter, and never a difference of a difference.
+#' [numerical_deriv4()] also uses a single stencil, a second difference of the
+#' analytic Hessian. A fifth order obtained by differencing the analytic third
+#' order three times would be less accurate.
 #'
 #' The component of a non-decreasing five-tuple is the four-tuple that remains
 #' when its last index is dropped, differentiated in the parameter that index
@@ -364,23 +364,22 @@ S7::method(distrib_deriv4, distrib) <- function(distrib, y, theta, expected = FA
 #' [numericals7::fd_step()] at order 1 is \eqn{\epsilon^{1/3}} scaled by the
 #' magnitude of the evaluation point and shrunk to keep the stencil inside the
 #' parameter's domain. It is the right rule here because the quantity being
-#' differenced is evaluated to machine precision. The same rule would be a
-#' thousand times too small in statmodels7's outer stencil, where what limits
-#' the step is the reproducibility of refitting the mode rather than the
-#' rounding of an arithmetic expression. The two cases look alike and take
-#' opposite answers.
+#' differenced is evaluated to machine precision. The same rule would be too
+#' small for a quantity that is itself a fitted optimum, whose accuracy is
+#' limited by the reproducibility of the fit rather than by the rounding of an
+#' arithmetic expression.
 #'
 #' On the link scale the perturbation is applied to \eqn{\eta} and the
-#' fourth order is asked for on the link scale as well, so the result is the
-#' derivative of an analytic link-scale quantity. Nothing here needs the fifth
-#' derivative of a link, nor an order-5 entry in [bell_partial()], both of
-#' which the chain rule route would have required.
+#' fourth order is evaluated on the link scale as well, so the result is the
+#' derivative of an analytic link-scale quantity. This route requires neither
+#' the fifth derivative of a link nor an order-5 entry in [bell_partial()],
+#' both of which the chain rule route uses.
 #'
 #' @param distrib A distribution object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, aligned by the generic.
-#' @param scale `"parameter"` or `"link"`; the scale the fourth order is read
-#'   on and the scale the perturbation is applied on.
+#' @param scale `"parameter"` or `"link"`; the scale on which the fourth
+#'   order is read and on which the perturbation is applied.
 #' @param accuracy The order of accuracy of the central rule, passed to
 #'   [numericals7::fd_offsets()] and [numericals7::fd_step()]. The default 2
 #'   is the three-point rule; 4 costs four evaluations of the fourth order per
@@ -394,7 +393,7 @@ S7::method(distrib_deriv4, distrib) <- function(distrib, y, theta, expected = FA
 #' numerical_deriv5(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
 #' @seealso [distrib_deriv5()], the generic; [numerical_deriv4()], the order
-#'   below and the one shape not to copy.
+#'   below.
 #' @export
 numerical_deriv5 <- function(distrib, y, theta, scale = c("parameter", "link"),
                              accuracy = 2L) {
@@ -479,22 +478,23 @@ numerical_deriv5 <- function(distrib, y, theta, scale = c("parameter", "link"),
 #' @name distrib_deriv5.distrib
 #'
 #' @description
-#' The route every family takes at the fifth order: one central difference of
-#' the fourth, through [numerical_deriv5()].
+#' The route that a family takes at the fifth order when it registers no
+#' method of its own: one central difference of the fourth, through
+#' [numerical_deriv5()].
 #'
 #' @details
-#' This is registered on the base class and nothing overrides it, so it is not
-#' a fallback in the usual sense -- no family writes the fifth order out yet.
-#' What differs between families is the quantity being differenced.
-#' [has_exact_deriv4()] answers whether that quantity is analytic, and
-#' [check_distrib()] reports the order-5 row as unchecked where it is not.
+#' This is registered on the base class. Ten families write the fifth order
+#' out themselves (see [distrib_deriv5()]), and the wrappers override it.
+#' Among the families that reach it, what differs is the quantity being
+#' differenced: [has_exact_deriv4()] reports whether that quantity is
+#' analytic, and [check_distrib()] emits no order-5 row where it is not.
 #'
 #' @param distrib An object inheriting from `distrib`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, aligned by the generic.
 #' @param scale Passed through to [numerical_deriv5()], which reads the fourth
 #'   order on that scale and perturbs on it.
-#' @param ... Unused.
+#' @param ... Passed to [numerical_deriv5()], which accepts `accuracy`.
 #'
 #' @return A named list of fifth-derivative component vectors, each of length
 #'   `length(y)`, keyed lexicographically as

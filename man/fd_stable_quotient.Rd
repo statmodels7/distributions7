@@ -2,14 +2,14 @@
 % Please edit documentation in R/y_derivatives.R
 \name{fd_stable_quotient}
 \alias{fd_stable_quotient}
-\title{A Response Difference That Chooses Its Step}
+\title{A Response Difference with a Selected Step}
 \usage{
 fd_stable_quotient(quotient, y, bounds, h_rel)
 }
 \arguments{
 \item{quotient}{A function of a vector of steps as long as \code{y}, returning
-the difference quotient at those steps. It should divide by the steps its
-evaluation points actually lie at, as \code{\link[=fd_first_taken]{fd_first_taken()}} does.}
+the difference quotient at those steps. It should divide by the steps at
+which its evaluation points actually lie, as \code{\link[=fd_first_taken]{fd_first_taken()}} does.}
 
 \item{y}{The points, a numeric vector.}
 
@@ -36,25 +36,18 @@ where both readings are defined and its own is strictly the smaller;
 everywhere else, ties included, the clamped step is kept. The value
 returned is the quotient at the full step.
 
-Neither step is right everywhere, which is why both are read. Where the
-log-density is singular at a bound the clamped step has an error that stops
-falling once the clamp binds, and where it is smooth at the bound the
-scaled step is the worse one at the smallest distances. Measured over
-\code{\link[=check_distrib]{check_distrib()}}'s response row for 32 continuous families, three
-parameter values and five seeds, the clamped reference failed 35 rows of
-480, all of families singular at a bound, and this one fails none, its
-worst at 5.0e-05. On a sweep to within \eqn{10^{-8}} of a bound it has no
-failure among 264 points of the singular families, where the clamped step
-fails 165 on the first derivative and 198 on the second, and it fails 1 and
-47 of 144 on the families smooth at the bound, where the clamped step fails
-0 and 43. On the distribution function the same choice took the check's
-grid from 3 failed rows to none.
+Neither step is accurate for every family, which is why both are read.
+Where the log-density is singular at a bound, the error of the clamped step
+stops falling once the clamp binds; where it is smooth at the bound, the
+scaled step is the less accurate one at the smallest distances. Where both
+readings are defined, the clamped step is kept unless the scaled one agrees
+strictly better with itself at half the step.
 
-Where it keeps the scaled step and the clamped one would have passed, which
-is 6 points of that sweep's 816, the scaled numerator is a whole number of
-units in the last place of the log-density that scales exactly with the
-step, so the quotient agrees with itself to the bit at half the step and
-the test reads it as perfectly stable.
+In a few cases the scaled step is kept although the clamped step would have
+been accurate. The scaled numerator is then a whole number of units in the
+last place of the log-density, which scales exactly with the step, so the
+quotient agrees with itself at half the step to the last bit and the test
+reads it as stable.
 
 It costs four quotients where one would do, except where the two steps
 coincide at every observation, which is every call on a family with no
@@ -62,24 +55,21 @@ finite bound: there the clamped quotient is returned at once.
 }
 \section{Near a bound that is not zero}{
 Near zero the spacing of doubles is relative, so a step scaled on the
-distance can be as small as the distance asks. Near any other bound the
+distance can be as small as the distance requires. Near any other bound the
 spacing is absolute, one unit of the last place at the bound, and within
 about \eqn{10^{-10}} of it two things go wrong. A step that is not a whole
-number of units is not the step the evaluation points lie at, so a quotient
-dividing by the nominal step is out by their rounding; and the scaled step
-falls below one unit and rounds to zero. The choice cannot see either,
-reading the same arithmetic at both steps. So no candidate step is shorter
-than \eqn{2\lvert y\rvert\varepsilon}, which leaves its half step at least
-one unit long, and the quotient a caller passes divides by the steps
-actually taken, as \code{\link[=fd_first_taken]{fd_first_taken()}} and \code{\link[=fd_second_taken]{fd_second_taken()}} do. Measured
-on \code{\link[=beta1_distrib]{beta1_distrib()}} at \verb{mu = 0.5, phi = 0.5}, singular at 1, the response
-row of 100 draws failed in 486 samples of 2000 with the nominal quotient
-and fails in 10 with both repairs; over the census above no verdict moves
-and the worst statistic goes from 3.0e-05 to 5.0e-05, and on the
-distribution function's grid no statistic moves by more than 1.4e-10. What
-neither repair reaches is a point within a few units of such a bound, where
-the relative error of the reference falls as about \eqn{5.4/d^2} in the
-distance \eqn{d} counted in units; \code{\link[=check_distrib]{check_distrib()}} leaves those draws out.
+number of units is not the step at which the evaluation points lie, so a
+quotient that divides by the nominal step is out by their rounding; and the
+scaled step falls below one unit and rounds to zero. The selection rule
+cannot tell these cases apart, because both candidates come from the same
+arithmetic. Every candidate step is therefore at least
+\eqn{2\lvert y\rvert\varepsilon}, which leaves its half step at least one
+unit long, and the quotient that a caller passes divides by the steps
+actually taken, as \code{\link[=fd_first_taken]{fd_first_taken()}} and \code{\link[=fd_second_taken]{fd_second_taken()}} do. Neither
+repair reaches a point within a few units of such a bound, where the
+relative error of the reference decreases as about \eqn{5.4/d^2} in the
+distance \eqn{d} counted in units; \code{\link[=check_distrib]{check_distrib()}} leaves those draws
+out.
 }
 
 \seealso{

@@ -28,16 +28,18 @@ Closed form from the location-scale structure, as for the Gaussian:
 method is \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} itself.
 }
 \details{
-The family's distribution function is \eqn{F(q) = \exp(-e^{-z})}, so nothing
-here needs a quadrature or a series, which is why a Gumbel is usable for
-censored extreme-value data: the score of a right-censored observation is
-\eqn{f(q)/S(q)} and comes from the density alone.
+The family's distribution function is \eqn{F(q) = \exp(-e^{-z})}, so its
+derivatives need neither a quadrature nor a series, which makes a Gumbel
+usable for censored extreme-value data: the score of a right-censored
+observation is the derivative of \eqn{\log S(q)}, which is \eqn{f(q)/S(q)}
+in \eqn{\mu} and \eqn{z f(q)/S(q)} in \eqn{\sigma}.
 }
 \section{Notation}{
 
 \eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
 \eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and \eqn{F} the distribution
-function. The mean is \eqn{\mu + \gamma\sigma} and not \eqn{\mu}.
+function. The mean is \eqn{\mu + \gamma\sigma}, with \eqn{\gamma} Euler's
+constant, and not \eqn{\mu}.
 }
 
 \examples{

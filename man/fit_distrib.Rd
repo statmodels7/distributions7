@@ -22,9 +22,10 @@ multivariate one, or any wrapper of either.}
 a multivariate family. Every observation is read at the same \eqn{\theta}.}
 
 \item{start}{Optional named list of starting values \strong{on the parameter
-scale}. \code{NULL}, the default, asks \code{\link[=distrib_start]{distrib_start()}}, which lets a family
-compute a start from the data; a family that says nothing falls back to
-draws from the parameter domains and the restarts below. A value that is
+scale}. \code{NULL}, the default, takes the starting values from
+\code{\link[=distrib_start]{distrib_start()}}, which computes them from the data for a family that
+registers a method and otherwise draws them from the parameter domains,
+with the restarts below. A value that is
 neither \code{NULL} nor a list signals an error naming the argument, because
 \code{start} sits before \code{method} in the signature and an optimizer passed
 positionally lands here.}
@@ -48,14 +49,17 @@ fail to converge; an optimizer the caller chose is never replaced.
 
 The iteration limit and the stopping rule belong to the method and are set
 there, on an optimizer through its own \code{maxit} and \code{criterion} and on
-\code{\link[=fisher_scoring]{fisher_scoring()}} through the same two arguments. Where the caller sets
-neither, the rule is \code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}} at its own tolerance.}
+\code{\link[=fisher_scoring]{fisher_scoring()}} through the same two arguments. For
+\code{\link[=fisher_scoring]{fisher_scoring()}} and the three strings the rule is
+\code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}} at its default tolerance when none is set; an
+optimizer object keeps its own default.}
 
 \item{level}{Confidence level for \code{ci} and \code{ci_eta}, a single number in
-\eqn{(0, 1)}. Defaults to 0.95. Any other level is available afterwards
-from \code{\link[=confint.distrib_fit]{confint.distrib_fit()}} without refitting.}
+\eqn{(0, 1)}; any other value signals an error. Defaults to 0.95. Any
+other level is available afterwards from \code{\link[=confint.distrib_fit]{confint.distrib_fit()}} without
+refitting.}
 
-\item{n_start}{How many starting values to ask \code{\link[=distrib_start]{distrib_start()}} for when
+\item{n_start}{How many starting values to request from \code{\link[=distrib_start]{distrib_start()}} when
 \code{start} is \code{NULL}. Defaults to 5. A family that returns its own estimate
 returns one and ignores this. Ignored entirely when \code{start} is given.}
 
@@ -97,11 +101,12 @@ Optimizing \eqn{\eta \in \mathbb{R}^p} in place of the constrained
 \eqn{\theta} removes the need for box constraints: a scale cannot become
 negative and a probability cannot leave \eqn{(0,1)}, because every link maps
 onto the interior of its parameter's domain. The score and the information
-on that scale are exact, not numerical, through the chain rule of
-\code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.
+on that scale follow from those on the parameter scale through the chain
+rule of \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}, and they are exact wherever the
+family's own derivatives are.
 }
 
-\section{The objective is the mean, not the sum}{
+\section{Scaling of the objective}{
 What the optimizer receives is \eqn{-\ell(\eta)/n}, with the gradient and
 the Hessian divided by \eqn{n} with it. Scaling by a positive constant moves
 neither the maximum nor any Newton step, since \eqn{H^{-1}g} is unchanged
@@ -114,9 +119,9 @@ information and every standard error are recomputed unscaled at the optimum.
 
 \section{Standard errors and intervals}{
 The variance matrix on the link scale is the inverse information at
-\eqn{\hat\eta}. The expected information is used when the fit itself used it
-or when the family writes it out; otherwise the observed Hessian, which
-every family has. The delta method carries it to the parameter scale,
+\eqn{\hat\eta}. The expected information is used when the family writes it
+out, unless \code{method = "newton"} is requested; otherwise the observed
+Hessian, which every family has, is used. The delta method carries it to the parameter scale,
 \deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
       \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right).}
 Intervals are built symmetrically on the link scale, \eqn{\hat\eta \pm
@@ -128,11 +133,10 @@ would not.
 
 \section{Restarts, the fallback and the tie-break}{
 Each starting value is tried in turn, and the search stops once two runs
-that converged have reached the best objective found so far, to a relative
-\eqn{10^{-8}} of the mean negative log-likelihood. A single converged run is
-not taken as the answer because it may be a degenerate stationary point:
-on \code{\link[=zero_adjusted]{zero_adjusted()}} of \code{\link[=pig1_distrib]{pig1_distrib()}} the first start converges at a
-log-likelihood about 97 units below the maximum the other starts reach.
+that converged have reached the best objective found so far, to within
+\eqn{10^{-8}} times the larger of 1 and the absolute value of the mean
+negative log-likelihood. A single converged run is not taken as the answer
+because it may be a degenerate stationary point.
 Where fewer than two runs converge every start is tried and the best is
 kept. Fisher scoring and Newton's method fall back to BFGS from
 the same starting value when they fail; an optimizer the caller named does

@@ -8,7 +8,7 @@
 
 \item{theta}{A named list with one component, \code{mu} (the mean, positive), a
 numeric vector of length 1 or \code{n}. Aligned and validated by name, so a
-non-positive value throws.}
+non-positive value signals an error.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

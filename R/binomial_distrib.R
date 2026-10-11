@@ -222,7 +222,7 @@ S7::method(distrib_cdf, BinomialDistrib) <- function(distrib, q, theta, lower.ta
 #' # Integers, bounded by size.
 #' distrib_quantile(d, c(0.025, 0.5, 0.975, 1), th)
 #'
-#' # The round trip overshoots, the support being a lattice.
+#' # The round trip overshoots, the support being discrete.
 #' p <- c(0.025, 0.5, 0.975)
 #' rbind(asked = p, reached = distrib_cdf(d, distrib_quantile(d, p, th), th))
 S7::method(distrib_quantile, BinomialDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {

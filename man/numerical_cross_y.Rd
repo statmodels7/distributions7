@@ -20,9 +20,9 @@ numerical_cross_y(
 \item{theta}{A named list of parameters, aligned to \code{distrib@params}.}
 
 \item{h_rel}{The relative finite-difference step, a single positive number.
-Defaults to \code{.Machine$double.eps^(1/3)}. A step near a parameter's bound
-can push an evaluation outside the domain, where the density returns
-\code{NaN}.}
+Defaults to \code{.Machine$double.eps^(1/3)}. The step is taken by
+\code{\link[=fd_stable_step]{fd_stable_step()}}, which keeps both evaluation points inside the bounds
+of the parameter.}
 
 \item{which}{A character vector of parameter names to differentiate, or
 \code{NULL} (the default) for all of them. Used by a family with a closed form
@@ -37,14 +37,12 @@ where it is \code{NULL}.
 \description{
 Computes \eqn{\partial^2 \ell / \partial y\, \partial \theta_i} by one
 central difference of \code{\link[=distrib_grad_y]{distrib_grad_y()}} in each parameter, at a step of
-\code{h_rel} relative to the parameter's own magnitude. It powers the default
-\code{\link[=distrib_cross_y]{distrib_cross_y()}} method for a continuous family with no closed form.
-
-Measured on a Gaussian against Richardson extrapolation of the same analytic
-response gradient, the two components agree to \eqn{1.2\times10^{-11}} and
-\eqn{9.0\times10^{-11}} relative.
+\code{h_rel} relative to the parameter's own magnitude. A family with a closed
+form for some of its parameters calls it for the remaining ones through
+\code{which}. The default \code{\link[=distrib_cross_y]{distrib_cross_y()}} method for a continuous family
+uses \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}} instead.
 }
-\section{One difference layer, not two}{
+\section{The quantity that is differenced}{
 The quantity differenced is the \strong{response gradient}, not the log-density,
 so a family with an analytical \code{distrib_grad_y} pays for exactly one
 finite-difference layer. Where the response gradient is itself the

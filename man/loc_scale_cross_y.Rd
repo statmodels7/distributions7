@@ -28,14 +28,9 @@ The \code{\link[=distrib_cross_y]{distrib_cross_y()}} body shared by every famil
 in \strong{both} its parameters: it takes the two components of
 \code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} and names them after the family's own parameters.
 Registered on the logistic, the Cauchy, the Gumbel and the Laplace.
-
-Measured against Richardson extrapolation of the analytic response
-gradient, the four agree to between \eqn{1.7\times10^{-12}} and
-\eqn{1.5\times10^{-11}} relative.
 }
 \seealso{
 \code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} for the identity;
-\code{\link[=partial_loc_scale_cross_y]{partial_loc_scale_cross_y()}} for a family with shape parameters as well;
 \code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

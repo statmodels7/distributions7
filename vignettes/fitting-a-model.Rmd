@@ -46,13 +46,13 @@ fit <- fit_distrib(d, y)
 fit
 ```
 
-The estimates recover the values the sample was generated from, and the print
+The estimates recover the values from which the sample was generated, and the print
 method shows them twice: on the **parameter scale**, and on the **link
 scale** where the fitting actually happened. More on that split below.
 
 ## Reading the fit
 
-`fit_distrib()` returns an object that answers the familiar extractors:
+`fit_distrib()` returns an object that supports the familiar extractors:
 
 ```{r}
 coef(fit)
@@ -86,8 +86,8 @@ the method that was actually used, all visible in the print above.
 A gamma's mean and variance are positive; a beta's probability lives in
 $(0, 1)$; a Gaussian's standard deviation is positive. Optimizing those
 constrained parameters directly means fighting the boundary. Instead
-`fit_distrib()` optimizes the **unconstrained** parameters behind each link ---
-$\log\mu$ and $\log\sigma^2$ for the gamma --- where there is no boundary to hit,
+`fit_distrib()` optimizes the **unconstrained** parameters behind each link
+($\log\mu$ and $\log\sigma^2$ for the gamma), where there is no boundary to hit,
 using the exact score and information the package provides on that scale.
 
 The estimates are then mapped back, and so are the intervals. Because a
@@ -100,8 +100,8 @@ fit_distrib(b, rbinom(40, 1, 0.9))
 ```
 
 Even with a probability estimate close to one and only forty observations, the
-interval stays inside $(0, 1)$ --- a symmetric interval on the probability scale
-would have spilled past it.
+interval stays inside $(0, 1)$, where a symmetric interval on the probability
+scale would have spilled past it.
 
 ## Choosing how it is optimized
 
@@ -140,13 +140,15 @@ c(lbfgs = as.numeric(logLik(fit_lbfgs)),
 c(fit_lbfgs@method, fit_nm@method)
 ```
 
-The three named strategies fall back to BFGS when they fail to converge; an
-optimizer supplied explicitly is never replaced, so the method reported is
-always the method that produced the estimates.
+The two second-order strategies, `"fisher"` and `"newton"`, fall back to BFGS
+when they fail to converge; `"bfgs"` and an optimizer supplied explicitly are
+never replaced, so the method reported is always the method that produced the
+estimates.
 
 ## Checking the fit against the data
 
-A fit remembers the data it came from, so it can be drawn over it. For a
+A fit stores the data from which it was estimated, so it can be drawn over
+them. For a
 continuous distribution `plot()` shows a kernel density of the sample with the
 fitted density on top:
 
@@ -178,18 +180,18 @@ boot_median <- vapply(sims, median, numeric(1))
 quantile(boot_median, c(0.025, 0.975))
 ```
 
-It follows the `stats::simulate()` contract: a supplied `seed` makes the draw
+It follows the convention of `stats::simulate()`: a supplied `seed` makes the draw
 reproducible and is reported back on the result, and the caller's random stream
 is left untouched.
 
 ## Validating a distribution numerically
 
 Before a fit is trusted, and especially before a user-written distribution
-is, `check_distrib()` puts it through thirteen numerical checks.
+is, `check_distrib()` puts it through a battery of numerical checks.
 It confirms that the density integrates to one, that the distribution function
 agrees with the density, that the quantile inverts it, that the generator
-follows it, and that every analytical derivative matches finite differences, on
-both the parameter and the link scale:
+follows it, that the analytical derivatives match finite differences on the
+parameter scale, and that the score matches them on the link scale:
 
 ```{r}
 invisible(check_distrib(d, list(mu = 3, sigma2 = 2)))
@@ -201,7 +203,7 @@ fastest way to catch a wrong formula.
 
 ## Further reading
 
-- `vignette("defining-a-distribution")` --- defining a new distribution, which
+- `vignette("defining-a-distribution")`: defining a new distribution, which
   then works with everything shown here.
-- `?fit_distrib`, `?check_distrib` --- the full argument lists.
-- `?distrib_gradient` --- the derivatives, including what `scale = "link"` does.
+- `?fit_distrib`, `?check_distrib`: the full argument lists.
+- `?distrib_gradient`: the derivatives, including what `scale = "link"` does.

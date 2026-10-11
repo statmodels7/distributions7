@@ -8,9 +8,9 @@ NULL
 #' The S7 class of the beta family on \eqn{(0, 1)} in its canonical
 #' parametrization, the two shapes \eqn{\alpha > 0} and \eqn{\beta > 0}, with
 #' density \eqn{y^{\alpha-1}(1-y)^{\beta-1}/B(\alpha, \beta)}. It inherits from
-#' `continuous_distrib`, so it answers every generic of the `distrib` contract;
-#' the eleven methods listed below are registered on it directly and everything
-#' else comes from the parent.
+#' `continuous_distrib`, so every generic of the `distrib` class applies to it;
+#' the methods listed below are registered on it directly and everything else
+#' comes from the parent.
 #'
 #' Build one with [beta2_distrib()], which supplies the two link functions and
 #' fills the properties in. This page documents the raw S7 constructor, which

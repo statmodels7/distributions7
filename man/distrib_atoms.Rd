@@ -20,9 +20,10 @@ probabilities), both numeric vectors of the same length, possibly of length
 zero.
 }
 \description{
-Returns the locations and probabilities of the point masses a distribution
-places on individual values --- the discrete part of a \emph{mixed}
-distribution, one that is neither purely continuous nor purely discrete.
+Returns the locations and probabilities of the point masses that a
+distribution places on individual values. These form the discrete part of a
+\emph{mixed} distribution, one that is neither purely continuous nor purely
+discrete.
 \code{\link[=zero_adjusted]{zero_adjusted()}} applied to a continuous distribution builds exactly
 such an object: a point mass at zero next to a density.
 }

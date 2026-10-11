@@ -35,9 +35,9 @@ of the cdf derivatives: the log-density carries \code{lgamma} and a logarithm of
 \eqn{D}, both differentiable in \eqn{\nu} in closed form, and no
 distribution function appears.
 
-Note that the \eqn{\mu} component changes sign at \eqn{|r| = \sigma\sqrt\nu}
-and decays as \eqn{r^{-2}}, where the Gaussian's is constant. That is the
-redescending score seen one derivative along.
+The \eqn{\mu} component changes sign at \eqn{|r| = \sigma\sqrt\nu} and
+decays as \eqn{r^{-2}}, where the Gaussian's is constant. It is the
+derivative in \eqn{\mu} of the response score, which redescends.
 }
 \examples{
 d <- student_t1_distrib()

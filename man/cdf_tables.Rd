@@ -2,9 +2,9 @@
 % Please edit documentation in R/cdf_higher.R
 \name{cdf_tables}
 \alias{cdf_tables}
-\title{CDF Derivative Tables of Every Order Up To One}
+\title{CDF Derivative Tables up to a Given Order}
 \usage{
-cdf_tables(distrib, q, theta, order)
+cdf_tables(distrib, q, theta, order, closed = TRUE)
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{distrib}.}
@@ -14,6 +14,12 @@ cdf_tables(distrib, q, theta, order)
 \item{theta}{A named list of parameters on the parameter scale.}
 
 \item{order}{The highest order wanted, 1 to 4.}
+
+\item{closed}{Logical of length 1. \code{TRUE}, the default, takes orders 1 and
+2 from the family's own \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}
+where \code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}} finds them; \code{FALSE} takes them from
+\code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}}. A caller that is itself registered as one of
+those two methods passes \code{FALSE}, which keeps it from calling itself.}
 }
 \value{
 A list of length \code{order}. Element \eqn{k} is a named list of
@@ -21,11 +27,13 @@ A list of length \code{order}. Element \eqn{k} is a named list of
 tail, keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, k)}}.
 }
 \description{
-Assembles the derivatives of \eqn{F} of orders 1 to \code{order} by whichever
-route the class uses: the exact finite sum for a discrete family, one
-product stencil on the analytic distribution function for a continuous one.
-Keeping the choice of route in a single statement is the point of the
-function.
+Assembles the derivatives of \eqn{F} of orders 1 to \code{order}. A discrete
+family uses the exact finite sum at every order. A continuous family uses
+its own \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} at orders 1 and 2
+where it registers them, and \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} otherwise; at orders
+3 and 4 it uses \code{\link[=continuous_cdf_deriv_k]{continuous_cdf_deriv_k()}}, which is the compiled
+quadrature for some families and one product stencil on the distribution
+function for the others.
 }
 \details{
 Every order below the one wanted is collected, and not just the one wanted,
@@ -33,9 +41,10 @@ because the moment-to-cumulant relation \code{\link[=cdf_scale_k]{cdf_scale_k()}
 over partitions of the multi-index: a partition into \eqn{k} blocks reads
 \eqn{k} lower-order ratios.
 
-At orders 1 and 2 the tables come from \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and
-\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}, so a family's own closed forms are used where it has
-them; only orders 3 and 4 reach the routes named above.
+Taking orders 1 and 2 from the family's own methods matters on the log
+scale, where \code{\link[=cdf_scale_k]{cdf_scale_k()}} combines them with the higher orders: a
+differenced table at order 1 or 2 would limit the accuracy of an exact one
+at order 3 or 4.
 }
 \seealso{
 \code{\link[=cdf_scale_k]{cdf_scale_k()}}, the consumer;

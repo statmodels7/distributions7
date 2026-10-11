@@ -28,11 +28,11 @@ The second-order chain rule on the parent's cdf derivatives, through
 \code{\link[=mapped_cdf_deriv]{mapped_cdf_deriv()}}:
 \eqn{\partial^2 F/\partial\psi_a\partial\psi_b
      = \sum_{k,l} F_{kl} h^k_a h^l_b + \sum_k F_k h^k_{ab}}. The second sum
-is the one a first-order chain does not have, and it is why the map's second
+is the one that a first-order chain does not have, and it is why the map's second
 partials are needed as well as its first.
 }
 \details{
-The gate asks the parent for exactness at \strong{both} orders. A parent with a
+The test requires the parent to be exact at \strong{both} orders. A parent with a
 closed gradient and a differenced Hessian sends this whole method to
 \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}}, because carrying an exact first order onto an
 approximate second would not make the second exact.

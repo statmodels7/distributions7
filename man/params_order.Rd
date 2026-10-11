@@ -16,15 +16,17 @@ A named numeric vector, one entry per element of \code{distrib@params}.
 }
 \description{
 One integer per parameter: the largest \code{k} such that the log-density has \code{k}
-continuous derivatives in that parameter everywhere in \code{y}. \code{Inf} says the
-parameter is smooth, which is the answer for every family that declares no
-\code{\link[=kink_decomposition]{kink_decomposition()}}.
+continuous derivatives in that parameter everywhere in \code{y}. \code{Inf} marks a
+smooth parameter, which is the value for a family that declares no
+\code{\link[=kink_decomposition]{kink_decomposition()}} and records every parameter as smooth in
+\code{params_smooth}.
 }
 \details{
-The order is DEDUCED and not declared. Where a family declares a
-decomposition \eqn{c(\theta)\phi(v(y,\theta))}, a parameter the kink moves
-with -- one whose \eqn{\partial v/\partial \theta_p} is not identically zero
--- inherits the order of \eqn{\phi}, and every other parameter stays \code{Inf}.
+The order is deduced and not declared. Where a family declares a
+decomposition \eqn{c(\theta)\phi(v(y,\theta))}, a parameter with which the
+kink moves (one whose \eqn{\partial v/\partial \theta_p} is not identically
+zero) inherits the order of \eqn{\phi}, and every other parameter stays
+\code{Inf}.
 Whether \eqn{\partial v/\partial \theta_p} vanishes is measured at probe
 values rather than assumed, so a Huber cut-off held at zero reports the
 scale as smooth, which it then is.

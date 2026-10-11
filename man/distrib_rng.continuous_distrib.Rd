@@ -19,8 +19,8 @@ A numeric vector of \code{n} draws.
 }
 \description{
 The fallback for a continuous family that implements no generator of its
-own. It picks between two routes by asking whether the family has a real
-quantile method:
+own. It chooses between two routes according to whether the family has a
+quantile method of its own:
 \itemize{
 \item \strong{inverse transform} where \code{\link[=has_analytic_quantile]{has_analytic_quantile()}} is \code{TRUE}, which
 costs one quantile evaluation per draw;
@@ -28,13 +28,11 @@ costs one quantile evaluation per draw;
 evaluates only the density.
 }
 
-The choice is what keeps simulation-based tools usable at all. Inverting a
-purely numerical distribution function costs one root-finding step per draw,
-and
-each of those is itself a quadrature, so \code{approx = "mc"} and
+The choice keeps simulation-based tools usable. Inverting a purely
+numerical distribution function costs several root-finding iterations per
+draw, and each of those is itself a quadrature, so \code{approx = "mc"} and
 \code{\link[=check_distrib]{check_distrib()}} would be impractical on a family defined by its density
-alone. Measured on such a family, 2000 draws take under a millisecond by
-this route and pass a Kolmogorov-Smirnov test against the truth.
+alone.
 }
 \details{
 The ratio-of-uniforms scheme needs a bounded unimodal density. Where its

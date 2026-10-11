@@ -35,7 +35,8 @@ NULL
 #' @return A numeric vector the length of `x`, the polynomial factor alone.
 #'   Multiply by `dnorm(x)` for the derivative itself.
 #'
-#' @seealso [phi_terms_cdf_deriv_k()], the one consumer.
+#' @seealso [phi_terms_cdf_deriv_k()] and [sn_cdf_std_derivs()], the two
+#'   consumers.
 #'
 #' @examples
 #' # The first derivative of Phi is the density itself, so h1 is 1.
@@ -67,18 +68,17 @@ phi_hermite <- function(x, m) {
 #' weight and the tail. The weight side is
 #' \eqn{\partial^{S} e^{w} = e^{w} B_{S}(w)}, the complete Bell polynomial in
 #' the partials of the **log** weight; the tail side is one Faa di Bruno pass
-#' over \eqn{x}, whose inner derivatives are the Hermite factors of
-#' [phi_hermite()] times \eqn{\varphi(x)}. Nothing is transcribed: both sums
-#' run on the package's own partition enumeration.
+#' over \eqn{x}, whose outer derivatives (those of \eqn{\Phi}) are the Hermite
+#' factors of [phi_hermite()] times \eqn{\varphi(x)}. Both sums run on the
+#' partition enumeration of the package, not on a transcribed expansion.
 #'
-#' # Why the log weight
+#' # The log weight
 #'
 #' The weight is never formed on its own. It is combined with the tail as
 #' `exp(w + pnorm(x, log.p = TRUE))`, because for the inverse Gaussian
-#' \eqn{e^{2/(\phi\mu)}} overflows exactly where \eqn{\Phi(b)} underflows: at
+#' \eqn{e^{2/(\phi\mu)}} overflows where \eqn{\Phi(b)} underflows: at
 #' \eqn{\mu = 0.01}, \eqn{\phi = 0.1} the weight is `Inf` while the product is
-#' about \eqn{3\times10^{-106}}, and the fourth derivative there comes back at
-#' \eqn{3\times10^{-91}}.
+#' finite.
 #'
 #' @section Notation:
 #' \eqn{F} is the distribution function, \eqn{\Phi} and \eqn{\varphi} the
@@ -148,7 +148,7 @@ phi_terms_cdf_deriv_k <- function(distrib, q, order, terms) {
 #' Register All Four CDF Orders on a Sum of Normal Tails
 #'
 #' @description
-#' Turns one term function into the four S7 methods a family of the shape
+#' Turns one term function into the four S7 methods that a family of the shape
 #' \eqn{F = c_0 + \sum_k s_k e^{w_k}\Phi(x_k)} needs, so that the family states
 #' its terms once instead of four times. The inverse Gaussian and the elastic
 #' net are the two families registered through it.
@@ -198,12 +198,12 @@ register_phi_terms_cdf <- function(cls, term_fn) {
 #' holds.
 #'
 #' @details
-#' Both families this file serves are separable in exactly this way. The
+#' The inverse Gaussian, which uses this function, is separable in this way. The
 #' inverse Gaussian's \eqn{a}, \eqn{b} and \eqn{c} are each a function of the
 #' mean times a function of the dispersion; the elastic net's \eqn{s} and
 #' \eqn{x} are each a function of \eqn{\lambda} times a function of
-#' \eqn{\alpha}. Separability is why four orders are cheap here: no
-#' multivariate expansion is ever formed.
+#' \eqn{\alpha}. Each mixed partial is therefore a product of two
+#' one-variable derivatives, which is why four orders are cheap here.
 #'
 #' @param nm A character vector of length 2, the two parameter names, the one
 #'   `uderiv` differentiates first.
@@ -212,9 +212,9 @@ register_phi_terms_cdf <- function(cls, term_fn) {
 #' @param vderiv The same for \eqn{v} in the second parameter.
 #'
 #' @return A function of a block, a character vector of parameter names, that
-#'   returns the corresponding mixed partial. A block naming a parameter
-#'   outside `nm` gives the order-zero factor for both, which is the value
-#'   itself; no caller does that.
+#'   returns the corresponding mixed partial. Names outside `nm` are not
+#'   counted, so a block made only of such names gives the order-zero factor
+#'   for both, which is the value itself.
 #'
 #' @seealso [phi_terms_cdf_deriv_k()], whose `wderiv` and `xderiv` this builds;
 #'   [dpow_affine()] for the other shape.
@@ -233,8 +233,8 @@ separable_deriv <- function(nm, uderiv, vderiv) {
 #'   distrib_deriv4_cdf.InvGauss1Distrib
 #'
 #' @description
-#' Closed form at every order from one to four. Unusually for a positive
-#' family, the inverse Gaussian's distribution function is elementary,
+#' Closed form at every order from one to four. The inverse Gaussian's
+#' distribution function is elementary,
 #' \deqn{F(q) = \Phi(a) + e^{c}\,\Phi(b), \qquad
 #'       a = \frac{q/\mu - 1}{\sqrt{\phi q}}, \quad
 #'       b = -\frac{q/\mu + 1}{\sqrt{\phi q}}, \quad
@@ -243,29 +243,26 @@ separable_deriv <- function(nm, uderiv, vderiv) {
 #' together by [register_phi_terms_cdf()].
 #'
 #' @details
-#' # Why four orders are cheap here
+#' # Separable partial derivatives
 #'
 #' Each of \eqn{a}, \eqn{b} and \eqn{c} is a product of a function of the mean
 #' and a function of the dispersion, so every mixed partial is a product of two
-#' one-variable derivatives and no multivariate expansion is formed. The two
+#' one-variable derivatives. The two
 #' terms are then a Leibniz split between the weight and the tail, which
 #' [phi_terms_cdf_deriv_k()] runs on the package's own partition enumeration.
 #'
-#' # The overflow, and how it is avoided
+#' # Overflow of the weight
 #'
-#' \eqn{e^{c}} is `Inf` at ordinary settings: the exponent is 2000 at
-#' \eqn{\mu = 0.01}, \eqn{\phi = 0.1}. That is exactly where \eqn{\Phi(b)}
-#' underflows, so the product is finite and neither factor is. The weight and
-#' the tail are combined as `exp(c + pnorm(b, log.p = TRUE))`, and at that
-#' setting the gradient comes back at \eqn{3\times10^{-106}} and the fourth
-#' derivative at \eqn{3\times10^{-91}}.
+#' \eqn{e^{c}} overflows to `Inf` once \eqn{c = 2/(\phi\mu)} exceeds about
+#' 709; the exponent is 2000 at \eqn{\mu = 0.01}, \eqn{\phi = 0.1}. Where it
+#' overflows, \eqn{\Phi(b)} underflows, and the product is finite. The weight
+#' and the tail are therefore combined as `exp(c + pnorm(b, log.p = TRUE))`.
 #'
-#' # What the closed route is worth
+#' # Accuracy
 #'
-#' Against a product stencil on the same cdf: \eqn{1.0\times10^{-10}} at order
-#' 1, \eqn{8.8\times10^{-7}} at order 2, \eqn{1.8\times10^{-5}} at order 3 and
-#' \eqn{3.7\times10^{-4}} at order 4. The gap is the stencil's error, and it is
-#' the reason the family registers all four.
+#' The derivatives are closed forms. A product stencil on the same
+#' distribution function loses accuracy as the order grows, which is why the
+#' family registers all four orders.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean, \eqn{\phi > 0} the dispersion, \eqn{\Phi} the
@@ -281,7 +278,7 @@ separable_deriv <- function(nm, uderiv, vderiv) {
 #'   `TRUE` by default.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list of numeric vectors of the order the generic asked for,
+#' @return A named list of numeric vectors of the requested order,
 #'   keyed as [`deriv_names(distrib@params, order)`][deriv_names]: two
 #'   components for the gradient, three for the Hessian, four at order 3 and
 #'   five at order 4.
@@ -345,7 +342,8 @@ register_phi_terms_cdf(InvGauss1Distrib, function(distrib, q, theta) {
 #' \eqn{\theta} with slope `inner`, which is
 #' \eqn{(\mathrm{inner})^k\,p(p-1)\cdots(p-k+1)\,u^{p-k}}. The elastic net's
 #' tail arguments are powers of affine functions of its two hyperparameters, so
-#' this supplies their one-variable derivatives to [separable_deriv()].
+#' this supplies their one-variable derivatives to the term function of the
+#' elastic net.
 #'
 #' @param u A numeric vector, the affine function evaluated at the parameter.
 #' @param p The power, a single number, not necessarily a whole one.
@@ -360,7 +358,7 @@ register_phi_terms_cdf(InvGauss1Distrib, function(distrib, q, theta) {
 #'   [distrib_grad_cdf.EnetDistrib()], the consumer.
 #'
 #' @examples
-#' # The second derivative of (2 theta)^3 at theta = 1 is 8 * 3 * 2 * 2 = 24.
+#' # The second derivative of (2 theta)^3 = 8 theta^3 at theta = 1 is 48.
 #' distributions7:::dpow_affine(u = 2, p = 3, k = 2, inner = 2)
 #'
 #' @keywords internal
@@ -380,31 +378,25 @@ dpow_affine <- function(u, p, k, inner) {
 #' and \eqn{x = a/\sqrt c} it is \eqn{e^{w}\Phi(X)} below the location and
 #' \eqn{1 - e^{w}\Phi(X)} above it, for \eqn{X = \pm sz - x} and a weight
 #' \eqn{w = -\log M(x) + x^2/2 + \mathrm{const}} written through the Mills
-#' ratio the family already carries. The four registrations are made together
+#' ratio that the family already carries. The four registrations are made together
 #' by [register_phi_terms_cdf()].
 #'
 #' @details
-#' # Why four orders are cheap here
+#' # Separable partial derivatives
 #'
 #' Both \eqn{s} and \eqn{x} are a function of \eqn{\lambda} times a function of
-#' \eqn{\alpha}, so their mixed partials are products of one-variable ones
-#' through [separable_deriv()], and the one-variable ones are powers of affine
-#' functions through [dpow_affine()]. No multivariate expansion is formed at
-#' any order.
+#' \eqn{\alpha}, so their mixed partials are products of one-variable ones,
+#' formed in the term function with a product rule in \eqn{\alpha} for
+#' \eqn{x}, and the one-variable ones are powers of affine functions through
+#' [dpow_affine()].
 #'
 #' # The kink at the location
 #'
-#' The location is the non-regular direction, as it is in the Laplace this
-#' family contains: the second derivative in \eqn{\mu} carries a point mass at
-#' \eqn{q = \mu}, and the formulas hold on either side of it. A numerical check
-#' that straddles the location is checking the arithmetic against a reference
-#' that is not valid there.
-#'
-#' # What the closed route is worth
-#'
-#' Against a product stencil on the same cdf: \eqn{1.6\times10^{-9}} at order
-#' 1, \eqn{3.5\times10^{-7}} at order 2, \eqn{3.0\times10^{-5}} at order 3 and
-#' \eqn{3.9\times10^{-4}} at order 4.
+#' The location is the non-regular direction, as it is in the Laplace that
+#' this family contains: the second derivative of \eqn{F} in \eqn{\mu} jumps at
+#' \eqn{q = \mu}, and the third carries a point mass there. The formulas hold
+#' on either side of the location, so a numerical check that straddles it
+#' compares the arithmetic with a reference that is not valid there.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\lambda > 0} and \eqn{\alpha \in (0,1)} the
@@ -423,7 +415,7 @@ dpow_affine <- function(u, p, k, inner) {
 #'   `TRUE` by default.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list of numeric vectors of the order the generic asked for,
+#' @return A named list of numeric vectors of the requested order,
 #'   keyed as [`deriv_names(distrib@params, order)`][deriv_names]: three
 #'   components for the gradient, six for the Hessian, ten at order 3 and
 #'   fifteen at order 4.

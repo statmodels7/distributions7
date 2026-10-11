@@ -10,7 +10,7 @@
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic after
 dispatch.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -42,8 +42,9 @@ f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 numDeriv::grad(f, c(2, 1))
 }
 \seealso{
-\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the generic, \code{\link[=numerical_cross2_y]{numerical_cross2_y()}}, which
-does the work, and \code{\link[=distrib_cross2_y.Gaussian1Distrib]{distrib_cross2_y.Gaussian1Distrib()}} for a family that
-overrides it.
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the generic, \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}},
+which does the work, \code{\link[=numerical_cross2_y]{numerical_cross2_y()}} for the differenced part of a
+family's own method, and \code{\link[=distrib_cross2_y.Gaussian1Distrib]{distrib_cross2_y.Gaussian1Distrib()}} for a
+family that overrides it.
 }
 \keyword{internal}

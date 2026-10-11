@@ -861,7 +861,7 @@ S7::method(distrib_cross_y, EnetDistrib) <- function(distrib, y, theta,
 #' @param x An `EnetDistrib` object, from [enet_distrib()].
 #' @param theta A named list with components `mu`, `lambda` and `alpha`.
 #'   Aligned and validated by name, so a missing or out-of-bounds
-#'   component throws.
+#'   component signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of the length the recycled
@@ -905,7 +905,7 @@ S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
 #' @param x An `EnetDistrib` object, from [enet_distrib()].
 #' @param theta A named list with components `mu`, `lambda` and `alpha`.
 #'   Aligned and validated by name, so a missing or out-of-bounds
-#'   component throws.
+#'   component signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, strictly positive, of the
@@ -959,7 +959,7 @@ S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
 #' @param x An `EnetDistrib` object, from [enet_distrib()].
 #' @param theta A named list with components `mu`, `lambda` and `alpha`.
 #'   Aligned and validated by name, so a missing or out-of-bounds
-#'   component throws.
+#'   component signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of zeros, of the length the recycled

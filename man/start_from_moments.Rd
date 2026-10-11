@@ -26,55 +26,52 @@ the first from the data where one could be computed.
 }
 \description{
 Returns \code{n_start} starting values whose first is computed from the response
-and whose rest are random draws. It is the method both
-\code{continuous_distrib} and \code{discrete_distrib} register, so it is what every
-univariate family in the package uses.
+and whose rest are random draws. It is the method that both
+\code{continuous_distrib} and \code{discrete_distrib} register, so a univariate
+family uses it unless the family registers a method of its own, as
+\code{\link[=pig1_distrib]{pig1_distrib()}}, \code{\link[=pig2_distrib]{pig2_distrib()}}, \code{\link[=zero_adjusted]{zero_adjusted()}} and
+\code{\link[=zero_inflated]{zero_inflated()}} do.
 
 The data-based value comes from \code{\link[=moment_estimates]{moment_estimates()}} where the family has an
-entry there, which 38 of the 43 univariate families do. The other five fall
-back to reading \code{params_interpretation}: a parameter meaning a location is
+entry there. The other families fall back to reading
+\code{params_interpretation}: a parameter meaning a location is
 started at the sample median, one meaning a spread at the sample standard
 deviation or its square, one meaning degrees of freedom at what the sample
 kurtosis implies, and a shape, a dispersion or a probability keeps its
 draw, those being of order one whatever the data.
 }
-\section{What this replaced, and why it was necessary}{
-The base method draws each parameter from its own domain and never reads
-\code{y}. That is adequate while the response is of order one and fails
-completely when it is not: on a response of mean 919 and standard deviation
-169 the draws are of order one, the first Newton step is taken where the
-residuals are hundreds of standard deviations wide, and the scale runs to
-the largest representable double. Measured on a Gaussian, \code{\link[=fit_distrib]{fit_distrib()}}
-recovers \eqn{N(5, 2)} and \eqn{N(50, 20)} and fails on \eqn{N(500, 200)}:
-the defect was a threshold in the scale of the data, not in the family.
+\section{Why the base method is not used for univariate families}{
+The base method draws each parameter from its own domain and does not read
+\code{y}. That is adequate while the response is of order one and fails when it
+is not: on a response of mean 919 and standard deviation 169 the draws are
+of order one, the first Newton step is taken where the residuals are
+hundreds of standard deviations wide, and the scale can run to the largest
+representable double. A start computed from the data is on the scale of
+the data.
 }
 
 \section{Degrees of freedom from the kurtosis}{
 A \eqn{t} of \eqn{\nu} degrees has excess kurtosis \eqn{6/(\nu-4)}, so a
 sample kurtosis above 0.05 inverts to \eqn{\nu = 6/\hat\gamma_2 + 4}, capped
-at 100; a sample no heavier-tailed than a Gaussian starts at 30. Starting
-large matters. A \code{student_t2}, whose scale parameter is the standard
-deviation, has a degenerate ridge at its lower bound of \eqn{\nu = 2} where
-the scale runs to infinity as \eqn{\nu} falls, and a run started small
-slides down it: measured on 610 abdominal circumferences, whose excess
-kurtosis is \eqn{-1.09}, the random draws put \eqn{\nu} between 2.8 and 8
-and the fit reached the boundary at a log-likelihood of \eqn{-3688.28},
-while any start of 2.5 or more with the location and scale at their sample
-values reaches \eqn{-3600.71}, the Gaussian limit and the true maximum.
+at 100; a sample no heavier-tailed than a Gaussian starts at 30. A large
+start keeps a \code{student_t2}, whose scale parameter is the standard
+deviation, away from the degenerate ridge at its lower bound of
+\eqn{\nu = 2}, where the scale tends to infinity as \eqn{\nu} falls; a run
+started at a small \eqn{\nu} can follow the ridge down to the bound.
 }
 
-\section{The clamp, and why only the first start}{
+\section{Bounds and the remaining starts}{
 Every value is moved strictly inside its parameter's bounds before it is
 returned, because a sample median can land exactly on the boundary of a
 support and the validator treats bounds as open. Only the first start is
-data-based; the rest stay random, so a caller asking for several still
+data-based; the rest stay random, so a caller requesting several still
 explores, and \code{\link[=fit_distrib]{fit_distrib()}} reaches them when the first fails.
 }
 
 \seealso{
 \code{\link[=moment_estimates]{moment_estimates()}} for the family-by-family inversions;
 \code{\link[=distrib_start]{distrib_start()}} for the generic;
-\code{\link[=clamp_to_bounds]{clamp_to_bounds()}} for the boundary rule;
+\code{\link[=clamp_to_bounds]{clamp_to_bounds()}} for the boundary rule of the moment estimates;
 \code{\link[=fit_distrib]{fit_distrib()}}, which consumes the list.
 }
 \keyword{internal}

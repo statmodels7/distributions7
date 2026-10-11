@@ -28,9 +28,7 @@ The fallback for a continuous family that registers no closed second
 derivative: \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} at order 2, with the first-order part
 taken from \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, so a closed gradient the family does
 register is used here too. The step is
-\eqn{\varepsilon^{1/4}} relative, about \eqn{1.2\times10^{-4}}, and the
-accuracy measured against a family's own closed form is
-\eqn{1.7\times10^{-7}} relative.
+\eqn{\varepsilon^{1/4}} relative, about \eqn{1.2\times10^{-4}}.
 }
 \details{
 A diagonal component is the three-point second difference and an
@@ -38,11 +36,11 @@ off-diagonal one the four-point mixed stencil, which differences two
 different variables and is therefore a single stencil. The log-scale
 correction \eqn{\partial^2 P/P - (\partial P/P)^2} is applied afterwards by
 \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}, which is why the gradient is fetched even when only the
-Hessian was asked for.
+Hessian was requested.
 }
 \examples{
-# A gamma reaches this method at both orders.
-d <- gamma2_distrib()
+# A truncated gamma reaches this method at both orders.
+d <- truncated(gamma2_distrib(), upper = 6)
 distrib_hess_cdf(d, c(1, 2), list(mu = 2, sigma2 = 1))
 
 }

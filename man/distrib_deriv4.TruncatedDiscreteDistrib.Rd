@@ -38,7 +38,7 @@ th <- list(mu = 3)
 
 distrib_deriv4(tr, c(2, 4, 6), th)
 
-# A truncated lattice family with both endpoints finite has a finite
+# A truncated discrete family with both endpoints finite has a finite
 # support, so every expectation behind this is an exact sum.
 sum(distrib_pdf(tr, 1:8, th))
 

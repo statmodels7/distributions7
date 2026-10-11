@@ -32,7 +32,7 @@ expectations \eqn{\mathbb{E}_T[\partial^B f / f]}:
 
 Each \strong{distinct block} costs one quadrature, memoized across the partition
 sum, which is why a truncated derivative is far dearer than its parent's.
-Where the parent has genuinely closed cdf derivatives, or is a lattice
+Where the parent has genuinely closed cdf derivatives, or is a discrete
 family whose cdf derivatives are an exact sum, that route replaces the
 quadrature and is about three and a half times faster.
 }

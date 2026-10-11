@@ -8,10 +8,9 @@ NULL
 #' The S7 class of the chi-squared family on \eqn{(0, \infty)}, parametrized by
 #' its mean \eqn{\mu > 0}, which is the degrees of freedom. They are treated as
 #' a continuous positive parameter, so the one-parameter family is estimable;
-#' the variance is then \eqn{2\mu}. It
-#' inherits from `continuous_distrib`, so it answers every generic of the
-#' `distrib` contract; the eleven methods listed below are registered on it
-#' directly and everything else comes from the parent.
+#' the variance is then \eqn{2\mu}. It inherits from `continuous_distrib`, so
+#' every generic of the `distrib` class applies to it; the methods listed below
+#' are registered on it directly and everything else comes from the parent.
 #'
 #' Build one with [chisq_distrib()], which supplies the link function and fills
 #' the properties in. This page documents the raw S7 constructor, which takes

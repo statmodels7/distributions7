@@ -37,7 +37,7 @@ the links the estimates are expressed in.}
 
 \item{y}{The observations the fit was computed from, kept so that the fitted
 distribution can be compared with the data by \code{\link[=plot.distrib_fit]{plot.distrib_fit()}} and
-resampled by \code{\link[=simulate.distrib_fit]{simulate.distrib_fit()}}.}
+so that the information can be recomputed by \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}.}
 
 \item{n}{The number of observations: the row count for a multivariate
 response and the length otherwise. \code{bic} and the printed header both
@@ -47,8 +47,8 @@ read it.}
 parameter, in the order \code{distrib@params} gives.}
 
 \item{se}{Named standard errors on the parameter scale, from the delta
-method. \code{NaN} where the corresponding variance came back negative or
-missing.}
+method. \code{NaN} where the corresponding variance came back negative, \code{NA}
+where it is missing.}
 
 \item{ci}{A two-column numeric matrix of confidence limits on the parameter
 scale, one row per parameter, columns \code{lower} and \code{upper}.}
@@ -56,7 +56,8 @@ scale, one row per parameter, columns \code{lower} and \code{upper}.}
 \item{eta}{Named estimates on the link scale, \eqn{\hat\eta = g(\hat\theta)}.}
 
 \item{se_eta}{Named standard errors on the link scale, the square roots of
-the diagonal of \code{vcov_eta}. These are the ones the fit computes; \code{se} is
+the diagonal of \code{vcov_eta}. These are the standard errors that the fit
+computes; \code{se} is
 derived from them.}
 
 \item{ci_eta}{A two-column numeric matrix of confidence limits on the link
@@ -73,9 +74,9 @@ in that case and only the uncertainty is missing.}
 \item{loglik}{The maximized log-likelihood, summed over observations and
 \strong{not} divided by \eqn{n}.}
 
-\item{bic, aic}{Information criteria built on the unscaled log-likelihood,
-\eqn{-2\ell + 2p} and \eqn{-2\ell + p\log n} with \eqn{p} the number of
-estimated parameters.}
+\item{aic, bic}{Information criteria built on the unscaled log-likelihood,
+\eqn{-2\ell + 2p} and \eqn{-2\ell + p\log n} respectively, with \eqn{p}
+the number of estimated parameters.}
 
 \item{iterations}{How many iterations the run that was kept took.}
 
@@ -84,7 +85,7 @@ convergence. A run that exhausted its iteration budget is not converged
 whatever point it reached.}
 
 \item{method}{The optimization method actually used, which is not always the
-one asked for: \code{"Fisher scoring"} and \code{"Newton-Raphson"} fall back to
+one requested: \code{"Fisher scoring"} and \code{"Newton-Raphson"} fall back to
 \code{"BFGS"} when they fail, and this records which one produced the estimates.}
 
 \item{criterion}{Which stopping rule ended the run, in the words
@@ -99,9 +100,9 @@ one asked for: \code{"Fisher scoring"} and \code{"Newton-Raphson"} fall back to
 evaluated in the run that was kept.}
 
 \item{score}{The max-norm of the score \strong{per observation} at the reported
-optimum. This is the quantity the stopping rule tested, so it says how
-close to stationary a run ended and is the one number a non-converged fit
-is worth reading for.}
+optimum. This is the quantity that the stopping rule tested, so it
+measures how close to stationary a run ended, and it is the number to read
+on a fit that did not converge.}
 
 \item{elapsed}{Seconds spent optimizing, summed over every starting value
 and every fallback attempted, not just the run that was kept.}

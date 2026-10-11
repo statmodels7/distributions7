@@ -19,8 +19,8 @@ numerical_deriv5(
 
 \item{theta}{A named list of parameters, aligned by the generic.}
 
-\item{scale}{\code{"parameter"} or \code{"link"}; the scale the fourth order is read
-on and the scale the perturbation is applied on.}
+\item{scale}{\code{"parameter"} or \code{"link"}; the scale on which the fourth
+order is read and on which the perturbation is applied.}
 
 \item{accuracy}{The order of accuracy of the central rule, passed to
 \code{\link[numericals7:fd_offsets]{numericals7::fd_offsets()}} and \code{\link[numericals7:fd_step]{numericals7::fd_step()}}. The default 2
@@ -37,13 +37,11 @@ The fifth-order derivative components, obtained by differentiating the
 fourth-order ones once in each parameter.
 }
 \details{
-One central difference of the analytic fourth order, and never a difference
-of a difference. That is the rule the rest of this package's numerical
-surface obeys and it is worth restating here, because the sibling
-\code{\link[=numerical_deriv4]{numerical_deriv4()}} does \strong{not} obey it: it differences the analytic
-Hessian twice, which it can afford because a second difference of an exact
-quantity is still only two orders removed from one. A fifth order built the
-same way -- differencing the analytic third three times -- would not be.
+The fifth order is one central difference of the fourth order, a single
+stencil in each parameter, and never a difference of a difference.
+\code{\link[=numerical_deriv4]{numerical_deriv4()}} also uses a single stencil, a second difference of the
+analytic Hessian. A fifth order obtained by differencing the analytic third
+order three times would be less accurate.
 
 The component of a non-decreasing five-tuple is the four-tuple that remains
 when its last index is dropped, differentiated in the parameter that index
@@ -65,17 +63,16 @@ two evaluations of the fourth order per parameter and not three.
 \code{\link[numericals7:fd_step]{numericals7::fd_step()}} at order 1 is \eqn{\epsilon^{1/3}} scaled by the
 magnitude of the evaluation point and shrunk to keep the stencil inside the
 parameter's domain. It is the right rule here because the quantity being
-differenced is evaluated to machine precision. The same rule would be a
-thousand times too small in statmodels7's outer stencil, where what limits
-the step is the reproducibility of refitting the mode rather than the
-rounding of an arithmetic expression. The two cases look alike and take
-opposite answers.
+differenced is evaluated to machine precision. The same rule would be too
+small for a quantity that is itself a fitted optimum, whose accuracy is
+limited by the reproducibility of the fit rather than by the rounding of an
+arithmetic expression.
 
 On the link scale the perturbation is applied to \eqn{\eta} and the
-fourth order is asked for on the link scale as well, so the result is the
-derivative of an analytic link-scale quantity. Nothing here needs the fifth
-derivative of a link, nor an order-5 entry in \code{\link[=bell_partial]{bell_partial()}}, both of
-which the chain rule route would have required.
+fourth order is evaluated on the link scale as well, so the result is the
+derivative of an analytic link-scale quantity. This route requires neither
+the fifth derivative of a link nor an order-5 entry in \code{\link[=bell_partial]{bell_partial()}},
+both of which the chain rule route uses.
 }
 
 \examples{
@@ -84,5 +81,5 @@ numerical_deriv5(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 }
 \seealso{
 \code{\link[=distrib_deriv5]{distrib_deriv5()}}, the generic; \code{\link[=numerical_deriv4]{numerical_deriv4()}}, the order
-below and the one shape not to copy.
+below.
 }

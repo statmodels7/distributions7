@@ -30,7 +30,8 @@ sum of the mass over the support points at or below \eqn{q} for a discrete
 one. \code{lower.tail = FALSE} returns \eqn{1 - F(q; \theta)} and
 \code{log.p = TRUE} its logarithm, both computed on the log scale where a
 family provides one. Without a method the value comes from quadrature of
-the density.
+the density for a continuous family and from summation of the mass for a
+discrete one.
 }
 \examples{
 distrib_cdf(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))

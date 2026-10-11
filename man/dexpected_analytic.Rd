@@ -20,7 +20,7 @@ dexpected_analytic(distrib, y, theta, scale, order, threads, kern)
 expected information.}
 
 \item{kern}{A function of the order returning the kernel's named list on the
-parameter scale. A kernel asked for order 2 may return the order-1
+parameter scale. A kernel called for order 2 may return the order-1
 components beside the order-2 ones, and where it does they are read from
 that one call rather than from a second: a route that sums over the
 support pays for the family's derivatives once.}
@@ -30,7 +30,7 @@ A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code
 }
 \description{
 Reads a family's compiled kernel at order 1 or 2 on the parameter scale and
-carries the result onto the link scale where it is asked for.
+carries the result onto the link scale where it is requested.
 }
 \seealso{
 \code{\link[=dexpected_link]{dexpected_link()}}

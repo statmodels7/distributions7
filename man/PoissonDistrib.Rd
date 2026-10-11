@@ -76,8 +76,8 @@ Registered on this class:
 \code{\link[=distrib_rng.PoissonDistrib]{distrib_rng()}}
 
 Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}. Derivatives with
-respect to the response are refused by that parent: the support is a
-lattice, so there is nothing to differentiate along.
+respect to the response signal an error on that parent: the support is
+discrete, so there is nothing to differentiate along.
 }
 
 \examples{

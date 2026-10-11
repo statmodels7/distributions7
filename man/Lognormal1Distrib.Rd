@@ -49,9 +49,9 @@ The S7 class of the lognormal family on \eqn{(0, \infty)}: the law of a
 variable whose logarithm is Gaussian with mean \eqn{\mu} and variance
 \eqn{\sigma^2 > 0}. Both parameters live \strong{on the log scale}, so neither is
 the mean or the variance of \eqn{Y} itself. It inherits from
-\code{continuous_distrib}, so it answers every generic of the \code{distrib}
-contract; the eleven methods listed below are registered on it directly and
-everything else comes from the parent.
+\code{continuous_distrib}, so every generic of the \code{distrib} class applies to it;
+the methods listed below are registered on it directly and everything else
+comes from the parent.
 
 Build one with \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}, which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,

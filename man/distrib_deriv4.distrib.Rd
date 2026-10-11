@@ -36,14 +36,15 @@ The fallback for a family that registers no fourth-order method. Observed
 derivatives come from \code{\link[=numerical_deriv4]{numerical_deriv4()}}: a \strong{second} difference of the
 family's own \code{\link[=distrib_hessian]{distrib_hessian()}} rather than a difference of the third
 order, or, for a family without its own Hessian, one tensor-product stencil
-on its score or its log-density. On both routes each parameter is
-differenced once, so the package's rule against nesting one difference
-inside another holds. Expected ones come from \code{\link[=expected_derivative]{expected_derivative()}} at
-the strategy \code{approx} names.
+on its score or its log-density. On both routes each component is a single
+stencil, so the package's rule against nesting one difference inside
+another holds. Expected ones come from \code{\link[=expected_derivative]{expected_derivative()}} at the
+strategy that \code{approx} names.
 
-As at the order below, no family shipped in this package reaches it. Being a
-second difference it is the least accurate route the package offers, and its
-step is chosen accordingly.
+As at the order below, the families shipped in this package write the
+fourth order out themselves. A second difference of the Hessian is less
+accurate than the first difference of the third order, and its step is
+chosen accordingly.
 }
 \seealso{
 \code{\link[=numerical_deriv4]{numerical_deriv4()}}, which does the differencing;

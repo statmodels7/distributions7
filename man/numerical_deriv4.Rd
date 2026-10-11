@@ -27,7 +27,8 @@ otherwise; a value given explicitly is used on either route.}
 \item{skip}{Character vector of component names, or \code{NULL}, the default.
 A named component is left \code{NULL} in the result rather than computed, for
 a caller that supplies it in closed form. The names and their order are
-unchanged, so nothing downstream has to know which were skipped.}
+unchanged, so a downstream caller does not need to know which were
+skipped.}
 }
 \value{
 A named list of fourth-derivative component vectors, keyed as in

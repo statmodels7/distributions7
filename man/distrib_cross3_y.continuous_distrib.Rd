@@ -27,7 +27,8 @@ difference in the response of an analytic score, or one mixed stencil of
 the log-density, whichever leaves the smallest order.
 }
 \seealso{
-\code{\link[=distrib_cross3_y]{distrib_cross3_y()}} for the generic, \code{\link[=numerical_cross3_y]{numerical_cross3_y()}}, which
-does the work, and \code{\link[=loc_cross3_y]{loc_cross3_y()}} for the location families.
+\code{\link[=distrib_cross3_y]{distrib_cross3_y()}} for the generic, \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}},
+which does the work, \code{\link[=numerical_cross3_y]{numerical_cross3_y()}} for the differenced quantity,
+and \code{\link[=loc_cross3_y]{loc_cross3_y()}} for the location families.
 }
 \keyword{internal}

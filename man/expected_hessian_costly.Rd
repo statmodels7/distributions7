@@ -21,27 +21,26 @@ sum for each observation or each distinct shape; \code{FALSE} otherwise.
 }
 \details{
 The answer is a statement about cost, and it is read beside
-\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}, which states accuracy. Two kinds of family
-answer \code{TRUE}.
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}, which concerns accuracy. Three kinds of family
+return \code{TRUE}.
 
 The location-scale families \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}},
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}, \code{\link[=skewt_distrib]{skewt_distrib()}} and \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
-take one integral over the standardized response per distinct shape, from
-\code{\link[=loc_scale_expected]{loc_scale_expected()}}: nothing where the shape is the same for every
-observation, one integral per observation where it is modelled. Measured
-on smooth regressions at 1000 observations with the shape developed over a
-covariate, a fit that takes the scoring step on this information costs 7
-to 21 times one that takes it on the observed information, at the same
-estimate.
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}, \code{\link[=skewt_distrib]{skewt_distrib()}}, \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} and
+\code{\link[=pseudohuber2_distrib]{pseudohuber2_distrib()}} take one integral over the standardized response
+per distinct shape, from \code{\link[=loc_scale_expected]{loc_scale_expected()}}: one integral where the
+shape is the same for every observation, and one per observation where it
+is modeled. A fit that takes the scoring step on this information then
+costs several times one that takes it on the observed information, at the
+same estimate.
 
 The Poisson-inverse Gaussians \code{\link[=pig1_distrib]{pig1_distrib()}} and \code{\link[=pig2_distrib]{pig2_distrib()}} sum
 over the support for each observation, over a number of terms that grows
-as \eqn{\sigma\mu}: about 25 microseconds an observation at
-\eqn{\mu = 3}, \eqn{\sigma = 0.3} and 2 milliseconds at \eqn{\mu = 30},
-\eqn{\sigma = 3}, against a few microseconds for the observed information.
-Measured at 1000 observations, a fit on it costs 1 to 6 times one on the
-observed information at the same estimate, and far more where the fit
-passes through a large \eqn{\sigma\mu}.
+as \eqn{\sigma\mu}, whereas their observed information is a closed form.
+A fit on it costs more than one on the observed information at the same
+estimate, and far more where the fit passes through a large
+\eqn{\sigma\mu}.
+
+A \code{\link[=folded]{folded()}} distribution also returns \code{TRUE}.
 
 \pkg{statmodels7}'s \code{iwls(hessian = "auto")} therefore settles on the
 observed information for these families. The default answers for a

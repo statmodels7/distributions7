@@ -10,7 +10,7 @@ NULL
 #' \eqn{f(y) = (\lambda/2)\exp(-\lambda|y-\mu|)} on the whole real line. It is
 #' the same law as [laplace_distrib()] at \eqn{\lambda = 1/\sigma}; the
 #' parametrization differs and the derivatives with it. It inherits from
-#' `continuous_distrib`, so it answers every generic of the `distrib` contract.
+#' `continuous_distrib`, so every generic of the `distrib` class applies to it.
 #'
 #' The rate form is the one a lasso penalty is written in: with \eqn{\mu = 0}
 #' the negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so

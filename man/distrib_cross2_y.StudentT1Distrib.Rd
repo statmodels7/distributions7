@@ -10,7 +10,7 @@
 
 \item{theta}{A named list with \code{mu}, \code{sigma} and \code{nu}.}
 
-\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic after
 dispatch.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -32,11 +32,10 @@ Closed form in all three parameters. With \eqn{z = (y-\mu)/\sigma} and
     = -\frac{Q + (\nu+1)\partial_\nu Q}{\sigma^2}.}
 }
 \details{
-Nothing vanishes here, unlike the gaussian's, and every component varies
-with the data: the t's response curvature is a function of \eqn{z} rather
-than a constant, and it is that dependence which makes the family
-redescending. The three formulas share \eqn{Q}, \eqn{Q'} and
-\eqn{\partial_\nu Q}, so each is evaluated once per observation.
+Unlike the gaussian's, every component varies with the data, because the
+t's response curvature is a function of \eqn{z} rather than a constant. The
+three formulas share \eqn{Q}, \eqn{Q'} and \eqn{\partial_\nu Q}, so each is
+evaluated once per observation.
 }
 \section{Notation}{
 

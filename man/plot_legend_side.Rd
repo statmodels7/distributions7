@@ -2,7 +2,7 @@
 % Please edit documentation in R/methods.R
 \name{plot_legend_side}
 \alias{plot_legend_side}
-\title{Where to Put the Key}
+\title{Placing the Legend}
 \usage{
 plot_legend_side(y, dens)
 }
@@ -17,10 +17,10 @@ Non-finite and negative entries are treated as zero.}
 \code{"topright"} where no setting has any positive mass.
 }
 \description{
-Returns the corner of the panel a legend goes in: the one the curves leave
-emptier. A right-skewed family puts its mass on the left, so a key fixed at
-the top right never meets it, while a left-skewed one is covered by exactly
-that choice.
+Returns the corner of the panel in which the legend is drawn, the one that
+the curves leave emptier. A right-skewed family puts its mass on the left,
+so a key at the top right does not meet it; a left-skewed family puts its
+mass on the right, where a key at the top right would cover it.
 
 The side is read off the drawing. The density's center of mass across all
 the settings is compared with the middle of the horizontal range, and the

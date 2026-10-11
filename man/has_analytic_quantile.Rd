@@ -19,7 +19,8 @@ method rather than from the numerical fallback.
 \details{
 Used to decide whether inverse transform sampling is cheap enough to prefer
 over the ratio-of-uniforms sampler: inverting a \emph{numerical} quantile costs
-a call to \code{uniroot} per draw.
+several evaluations of the distribution function per draw, each of them a
+quadrature.
 
 The test uses the documented S7 trick. S7 records the class a method was
 registered on in the method's \code{signature} attribute, so an inherited

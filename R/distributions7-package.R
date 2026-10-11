@@ -22,9 +22,10 @@ NULL
 #' generics owned by other packages take effect.
 #'
 #' @details
-#' It matters here for the S3 generics the package extends -- `print`,
-#' `plot`, `mean`, `simulate` -- whose owners are \pkg{base} and
-#' \pkg{stats}. Standard R load hook; not called directly.
+#' It matters here for the S3 generics that the package extends, among them
+#' `print`, `plot`, `mean`, `simulate`, `coef`, `vcov`, `confint` and
+#' `logLik`, whose owners are \pkg{base} and \pkg{stats}. It is the standard R
+#' load hook and is not called directly.
 #'
 #' @param ... Ignored; R calls the hook with the library path and package name.
 #'

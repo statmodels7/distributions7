@@ -5,12 +5,12 @@ NULL
 #' @name Gamma1Distrib
 #'
 #' @description
-#' The S7 class of the gamma family parametrized by its mean \eqn{\mu > 0} and
-#' a dispersion \eqn{\phi > 0}, so that \eqn{\operatorname{Var}(Y) = \phi\mu^2}.
+#' The S7 class of the gamma family parametrized by its mean \eqn{\mu > 0} and a
+#' dispersion \eqn{\phi > 0}, so that \eqn{\operatorname{Var}(Y) = \phi\mu^2}.
 #' The shape is \eqn{1/\phi} and the rate \eqn{1/(\phi\mu)}. It inherits from
-#' `continuous_distrib`, so it answers every generic of the `distrib`
-#' contract; the eleven methods listed below are registered on it directly and
-#' everything else comes from the parent.
+#' `continuous_distrib`, so every generic of the `distrib` class applies to it;
+#' the methods listed below are registered on it directly and everything else
+#' comes from the parent.
 #'
 #' Build one with [gamma1_distrib()], which supplies the two link functions and
 #' fills the properties in. This page documents the raw S7 constructor, which

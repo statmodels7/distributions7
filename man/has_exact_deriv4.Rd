@@ -2,7 +2,7 @@
 % Please edit documentation in R/generics.R
 \name{has_exact_deriv4}
 \alias{has_exact_deriv4}
-\title{Is a Family's Fourth Derivative Its Own}
+\title{Whether a Family Supplies Its Own Fourth Derivative}
 \usage{
 has_exact_deriv4(x, ...)
 }
@@ -19,38 +19,30 @@ Whether the family supplies its own fourth-order derivatives, rather than
 reaching one of the base classes' numerical fallbacks.
 }
 \details{
-The fifth order is one central difference of the fourth, so what it is
-worth depends entirely on what it differences. Where the fourth is the
-family's own the result is an ordinary numerical derivative of a quantity
-the family computes directly; where the fourth is the package's own
-fallback the fifth is a difference of a difference, which this package
-forbids everywhere else and which no tolerance can rescue.
+The numerical fifth order is one central difference of the fourth, so its
+accuracy depends on the quantity that it differences. Where the fourth order
+is the family's own, the result is an ordinary numerical derivative of a
+quantity that the family computes directly. Where the fourth order is the
+numerical fallback of the package, the fifth order is a difference of a
+difference, and no choice of tolerance makes it reliable.
 
-A family reached that way still gets an answer -- a distribution needs only
-\code{\link[=distrib_pdf]{distrib_pdf()}}, and that promise is not withdrawn at the fifth order --
-but \code{\link[=check_distrib]{check_distrib()}} emits no order-5 row for it, a check that does not
-apply being absent rather than reported with a status every consumer would
-misread.
+A family in the second case still receives a value, since a distribution
+needs only \code{\link[=distrib_pdf]{distrib_pdf()}}, and the value comes back without a warning. Its
+error can reach the first significant digit, so it is not suitable for
+building on. \code{\link[=check_distrib]{check_distrib()}} emits no order-5 row for such a family,
+because the check does not apply to it.
 
-The default reads the class that owns the registered
+The default method reads the class that owns the registered
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} method, the documented S7 route. A wrapper overrides it
-and asks its parent instead: a wrapper's fourth derivative is a partition
-sum over the parent's first four, so it is its own exactly when the
-parent's are.
+and returns the answer of its parent instead: the fourth derivative of a
+wrapper is a partition sum over the first four derivatives of the parent,
+so it is the wrapper's own exactly when those of the parent are.
 
-A family may own its fourth-order method and still build part of it from
-single stencils on analytic quantities, and the predicate is one logical
-for the whole family. \code{\link[=skewt_distrib]{skewt_distrib()}} is that case: fifteen of its
-thirty-five fourth-order components are closed form and the twenty carrying
-\code{nu} are not, and it answers \code{TRUE}, a model needing a fourth derivative of
-that family getting one. What that costs is measured rather than asserted.
-\code{check_distrib(skewt_distrib(), orders = 1:5)} emits an order-5 row whose
-verdict depends on \code{nu}, \code{\link[=check_distrib]{check_distrib()}} reading an absolute error and the
-stencil noise falling as \code{nu} grows: swept over \code{nu} from 3 to 50 the row
-fails at \code{nu = 3} (3.7e-03 to 4.6e-03 against a tolerance of 1e-3), is
-marginal at 5, and passes from 8 upward with orders of margin. Read per
-component against its own scale the fifth order of that family is
-untrustworthy at every \code{nu}, which is why \code{orders} defaults to \code{1:4}.
+The predicate is one logical for the whole family. A family may own its
+fourth-order method and still build part of it from single stencils on
+analytic quantities; it returns \code{TRUE}, and the order-5 row of
+\code{\link[=check_distrib]{check_distrib()}} is then emitted for it. That row appears only when \code{5} is
+among the requested \code{orders}, which default to \code{1:4}.
 }
 \examples{
 has_exact_deriv4(gaussian1_distrib())
@@ -59,5 +51,5 @@ has_exact_deriv4(truncated(gaussian1_distrib(), lower = 0))
 }
 \seealso{
 \code{\link[=distrib_deriv5]{distrib_deriv5()}}, the consumer; \code{\link[=expected_hessian_exact]{expected_hessian_exact()}},
-the predicate this is modelled on.
+the predicate this is modeled on.
 }

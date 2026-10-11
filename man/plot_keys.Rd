@@ -16,8 +16,8 @@ there wins and is recycled over the settings; anything else is ignored.}
 A list with components \code{col}, \code{lty} and \code{pch}, each of length \code{k}.
 }
 \description{
-Returns the three visual keys a plot method distinguishes its settings by,
-each recycled to length \eqn{k}. A single curve is black, solid and a filled
+Returns the three visual keys by which a plot method distinguishes its
+settings, each recycled to length \eqn{k}. A single curve is black, solid and a filled
 circle. Several take a qualitative palette, the six base line types and six
 distinguishable symbols, so that a printed copy with no color is still
 readable.

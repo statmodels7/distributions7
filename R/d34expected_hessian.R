@@ -38,9 +38,9 @@ NULL
 #' relative to the coordinate, kept inside a finite bound on the parameter
 #' scale by [fd_steps()].
 #'
-#' On `scale = "link"` the difference is taken along the free scale of the
-#' parameter, of the link-scale second derivative, so the chain rule is the
-#' one [dexpected_link()] already applies.
+#' On `scale = "link"` the difference of the link-scale second derivative is
+#' taken along the free coordinate of the parameter, so the chain rule is the
+#' one that [dexpected_link()] already applies.
 #'
 #' @param distrib A distribution object inheriting from `distrib`.
 #' @param y A numeric vector of observations.

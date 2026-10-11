@@ -32,7 +32,7 @@ returned alongside the Hessian.
 }
 \description{
 Converts derivatives of the distribution function \eqn{F} into derivatives
-of whichever tail was asked for, on the natural or the logarithmic scale.
+of whichever tail was requested, on the natural or the logarithmic scale.
 Every route to a cdf derivative in this package produces derivatives of
 \eqn{F} itself, so the \code{lower.tail} and \code{log} arguments are handled once,
 here, and no method has to implement four cases.
@@ -49,7 +49,7 @@ The two commute, and both are applied to whatever was handed in.
 
 \section{What the caller must supply}{
 \code{dF1} is always read, at second order as well: the correction above needs
-the first derivatives of the same tail. A caller asking for a Hessian
+the first derivatives of the same tail. A caller requesting a Hessian
 therefore passes both lists, and passes them as derivatives of \eqn{F} on
 the natural scale, whichever tail the result is wanted on.
 }
@@ -57,7 +57,7 @@ the natural scale, whichever tail the result is wanted on.
 \section{Notation}{
 
 \eqn{F} is the distribution function, \eqn{S = 1 - F} the survival
-function, \eqn{P} whichever of the two was asked for, and \eqn{\partial^I}
+function, \eqn{P} whichever of the two was requested, and \eqn{\partial^I}
 a derivative with respect to a multi-index of parameters.
 }
 

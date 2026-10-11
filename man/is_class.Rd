@@ -2,7 +2,7 @@
 % Please edit documentation in R/utility_functions.R
 \name{is_class}
 \alias{is_class}
-\title{Is an S7 Class the Given Base Class?}
+\title{Whether an S7 Class Is the Given Base Class}
 \usage{
 is_class(cls, base)
 }
@@ -19,19 +19,18 @@ Compares two S7 class objects, treating a class re-created from the same
 definition as the same class.
 }
 \details{
-Several places here ask "did this method come from the base class, or did the
-subclass register its own?", and answer it with the documented S7 trick of
-reading \code{attr(m, "signature")[[1]]}. The comparison that follows must not
-be \code{identical()}: on S7 class objects that is object identity, so it
-returns \code{FALSE} for a class re-created from the same definition. That
-happens whenever the package's code is re-evaluated in place of being
-loaded, as it is under coverage instrumentation.
+Several functions here decide whether a method comes from the base class or
+from a subclass that registered its own, by reading
+\code{attr(m, "signature")[[1]]}, the documented S7 route. The comparison that
+follows must not use \code{identical()}: on S7 class objects that tests object
+identity, so it returns \code{FALSE} for a class re-created from the same
+definition. A class is re-created whenever the code of the package is
+re-evaluated instead of being loaded, as under coverage instrumentation.
 
-The failure is silent and can be severe. In \pkg{linkfunctions7} the same
-mistake made a numerical fallback look like an analytic method and sent the
-fourth derivative of the log link wrong by a factor of 900, under coverage
-only, while every other check stayed green. Identity is kept as a fast path
-and name-with-package as the answer.
+When \code{identical()} fails in this way the comparison is silent, and a
+numerical fallback is taken for an analytic method. The function therefore
+returns \code{TRUE} for identical objects as a fast path, and otherwise compares
+the class name together with the package name.
 }
 \seealso{
 \code{\link[=has_analytic_quantile]{has_analytic_quantile()}}, \code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}}

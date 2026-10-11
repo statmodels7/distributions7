@@ -20,7 +20,7 @@ are treated as open, before dispatch.}
 \code{\link[base:match.arg]{base::match.arg()}}. Applied by the generic after dispatch, so a method
 always returns the parameter scale and never reads this.}
 
-\item{...}{Passed to the method. No shipped method reads it.}
+\item{...}{Passed to the method. The shipped methods do not read it.}
 }
 \value{
 A named list with one numeric vector per parameter, keyed and
@@ -35,7 +35,8 @@ parameter and each a vector along \code{y}. Together with \code{\link[=distrib_h
 off-diagonal one.
 
 Defined for continuous families only. A discrete family has no derivative
-in \eqn{y} to cross, and its base class refuses the call.
+in \eqn{y} to cross, so no method is registered for it and the call signals
+an error.
 }
 \section{What consumes it}{
 A penalty in \pkg{penalties7} is a negative log-density read at the
@@ -54,10 +55,10 @@ by \eqn{\sigma} and the \code{mu} component by 1.
 }
 
 \section{Where the closed forms are}{
-All 32 continuous families in the package register one. The fallback in
-\code{\link[=distrib_cross_y.continuous_distrib]{distrib_cross_y.continuous_distrib()}} therefore exists for families
-defined outside the package, and it is one central difference of
-\code{\link[=distrib_grad_y]{distrib_grad_y()}} in each parameter.
+Every continuous family in the package registers one. The fallback in
+\code{\link[=distrib_cross_y.continuous_distrib]{distrib_cross_y.continuous_distrib()}} therefore serves families defined
+outside the package. It applies one tensor stencil to the highest quantity
+that the family implements itself, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}.
 }
 
 \examples{
