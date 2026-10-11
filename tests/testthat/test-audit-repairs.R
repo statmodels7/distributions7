@@ -630,3 +630,28 @@ test_that("the von Mises tails at a large concentration and across the antimode"
                            log.p = TRUE),
                -10013.371998567147, tolerance = 1e-12)
 })
+
+test_that("the von Mises tail between 1e-10 and 1e-6 comes from the quadrature", {
+  # mpmath, 40 digits (vm_band_ref.py); the series left up to 3e-5 here
+  d <- vonmises1_distrib()
+  expect_equal(distrib_cdf(d, 2.895, list(mu = 2.9, kappa = 1e6), log.p = TRUE),
+               -15.064968139398426, tolerance = 1e-10)
+})
+
+test_that("the logistic expected third and fourth derivatives are closed form", {
+  # mpmath, 40 digits (logis_exp_ref.py), at sigma = 1 and scaled by sigma^-k
+  d <- logistic_distrib()
+  s <- c(0.7, 1.4)
+  th <- list(mu = c(0.5, -2), sigma = s)
+  e3 <- distrib_deriv3(d, c(0, 0), th, expected = TRUE)
+  e4 <- distrib_deriv4(d, c(0, 0), th, expected = TRUE)
+  expect_identical(e3$mu_mu_mu, c(0, 0))
+  expect_equal(e3$sigma_sigma_sigma, 5.9348022005446793094 / s^3, tolerance = 1e-14)
+  expect_equal(e4$mu_mu_sigma_sigma, -1.1140087910869031418 / s^4, tolerance = 1e-14)
+  expect_equal(e4$sigma_sigma_sigma_sigma, -26.888440015180436047 / s^4,
+               tolerance = 1e-14)
+  # and the numerical route agrees
+  num <- distributions7:::expected_derivative(d, 0, list(mu = 0.5, sigma = 0.7),
+                                              order = 4L, approx = "integrate")
+  expect_equal(unlist(lapply(e4, `[`, 1)), unlist(num)[names(e4)], tolerance = 1e-8)
+})

@@ -58,9 +58,8 @@ and the expected Hessian is
 
 The observed derivatives of orders three to five are closed form, in
 \code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3.LogisticDistrib()}}, \code{\link[=distrib_deriv4.LogisticDistrib]{distrib_deriv4.LogisticDistrib()}} and
-\code{\link[=distrib_deriv5.LogisticDistrib]{distrib_deriv5.LogisticDistrib()}}. The \code{expected = TRUE} branch of the
-third and fourth orders calls \code{\link[=expected_derivative]{expected_derivative()}} and computes the
-expectations numerically, although they are elementary.
+\code{\link[=distrib_deriv5.LogisticDistrib]{distrib_deriv5.LogisticDistrib()}}, and the expectations of orders three
+and four are closed form as well.
 }
 
 \section{Estimation}{

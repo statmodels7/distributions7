@@ -36,7 +36,8 @@ would use costs one integration per observation; the series replaces
 
 Below \eqn{-\pi} the value is 0 and at or above \eqn{\pi} it is 1, the
 support being the declared interval. Where the requested tail is below
-\eqn{10^{-10}}, the resolution of the series, it comes from a quadrature
+\eqn{10^{-6}}, where the absolute error of the series would cost relative
+accuracy, it comes from a quadrature
 of the tail instead, on the log scale (\code{\link[=vm_cdf_tail]{vm_cdf_tail()}}), so that a small
 tail probability and its logarithm keep their digits.
 }

@@ -13,17 +13,16 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{sigma} must be strictly positive.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
-model are returned, by the numerical route. Defaults to \code{FALSE}.}
+model are returned, in closed form. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{approx}{One of \code{"integrate"} (the default), \code{"bartlett"}, \code{"mc"} or
-\code{"opg"}, matched by \code{\link[base:match.arg]{base::match.arg()}}. Read only when \code{expected = TRUE};
-\code{"opg"} is evaluated as \code{"bartlett"} at this order.}
+\code{"opg"}. Ignored, a closed form being available for the expected
+values; accepted so that the signature matches the generic's.}
 
-\item{nsim}{A single positive integer, the sample size used when
-\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -47,14 +46,12 @@ form, as polynomials in \eqn{z = (y-\mu)/\sigma} with the \eqn{g_j} of
 \deqn{\dfrac{\partial^4 \ell}{\partial \mu \partial \sigma^3} = \dfrac{6g_1 + 18z g_2 + 9z^2 g_3 + z^3 g_4}{\sigma^4}, \qquad
       \dfrac{\partial^4 \ell}{\partial \sigma^4} = \dfrac{6 + 24z g_1 + 36z^2 g_2 + 12z^3 g_3 + z^4 g_4}{\sigma^4}.}
 
-With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, as at
-third order, so the values are computed numerically according to
-\code{approx}, and \code{approx} and \code{nsim} are read. The expectations are
-elementary here too (\eqn{1/(15\sigma^4)} for \code{mu_mu_mu_mu},
+With \code{expected = TRUE} the expectations under the model are returned in
+closed form, as at third order: \eqn{1/(15\sigma^4)} for \code{mu_mu_mu_mu},
 \eqn{(\pi^2-60)/(45\sigma^4)} for \code{mu_mu_sigma_sigma},
 \eqn{(7\pi^4-600\pi^2-810)/(225\sigma^4)} for \code{sigma_sigma_sigma_sigma},
-and zero for the two components odd in \eqn{z}), but the method does not
-use these closed forms.
+and zero for the two components odd in \eqn{z}. \code{approx} and \code{nsim} are
+ignored.
 }
 \section{Notation}{
 
@@ -78,6 +75,6 @@ all.equal((up - dn) / (2 * eps), distrib_deriv4(d, y, th)$mu_mu_mu_mu,
 }
 \seealso{
 \code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3.LogisticDistrib()}} for the order below and for the
-\eqn{g_j} used here; \code{\link[=expected_derivative]{expected_derivative()}} for the numerical route;
+\eqn{g_j} used here;
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

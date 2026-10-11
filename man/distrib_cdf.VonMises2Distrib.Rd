@@ -36,8 +36,9 @@ at that concentration.
 What it replaces is the base class's quadrature, one integration per
 observation. See \code{\link[=vm_cdf]{vm_cdf()}} for the series, its number of terms and the
 blocking that keeps the intermediate small. Where the requested tail is
-below \eqn{10^{-10}}, the resolution of the series, it comes from a
-quadrature of the tail on the log scale (\code{\link[=vm_cdf_tail]{vm_cdf_tail()}}).
+below \eqn{10^{-6}}, where the absolute error of the series would cost
+relative accuracy, it comes from a quadrature of the tail on the log
+scale (\code{\link[=vm_cdf_tail]{vm_cdf_tail()}}).
 }
 \examples{
 d2 <- vonmises2_distrib()

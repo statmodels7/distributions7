@@ -31,8 +31,10 @@ the integral of \eqn{e^{\kappa\cos(y - \mu)}} over the piece.
 \description{
 \code{vm_cdf_tail()} returns \eqn{P(Y \le q)} or \eqn{P(Y > q)}, or their
 logarithms, from the series of \code{\link[=vm_cdf]{vm_cdf()}} where the requested tail is
-above \eqn{10^{-10}}, and from \code{vm_log_tail()} below, where the series'
-absolute error of about \eqn{10^{-16}} would dominate. \code{vm_log_tail()}
+above \eqn{10^{-6}}, and from \code{vm_log_tail()} below. The series has an
+absolute error of about \eqn{10^{-16}}, which grows slowly with
+\eqn{\kappa}, so below that threshold its relative error would exceed
+about \eqn{10^{-9}}. \code{vm_log_tail()}
 integrates \eqn{e^{\kappa\cos(y - \mu)}} over the tail, which excludes the
 mode, so the integrand decreases from each end of the interval to the
 antimode. The interval is split at the antimode when it contains it, and

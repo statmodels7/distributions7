@@ -504,13 +504,12 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #' \deqn{\dfrac{\partial^3 \ell}{\partial \mu \partial \sigma^2} = -\dfrac{2g_1 + 4z g_2 + z^2 g_3}{\sigma^3}, \qquad
 #'       \dfrac{\partial^3 \ell}{\partial \sigma^3} = -\dfrac{2 + 6z g_1 + 6z^2 g_2 + z^3 g_3}{\sigma^3}.}
 #'
-#' With `expected = TRUE` the method calls [expected_derivative()], so the
-#' values are computed numerically according to `approx` (by default
-#' `"integrate"`, one quadrature per component), and `approx` and `nsim`
-#' are read. The expectations at this order are elementary
-#' (\eqn{1/(2\sigma^3)} for `mu_mu_sigma`, \eqn{(2+\pi^2)/(2\sigma^3)} for
-#' `sigma_sigma_sigma`, and zero for the two components odd in \eqn{z}), but
-#' the method does not use these closed forms.
+#' With `expected = TRUE` the expectations under the model are returned in
+#' closed form: \eqn{1/(2\sigma^3)} for `mu_mu_sigma`,
+#' \eqn{(2+\pi^2)/(2\sigma^3)} for `sigma_sigma_sigma`, and zero for the two
+#' components odd in \eqn{z}. They are integrals of the polynomials above
+#' against the logistic density, which reduce to values of the zeta function
+#' at even arguments. `approx` and `nsim` are ignored.
 #'
 #' @param distrib A `LogisticDistrib` object, from [logistic_distrib()].
 #' @param y A numeric vector of observations.
@@ -518,17 +517,13 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
-#'   model are returned, by the numerical route described above. Defaults to
-#'   `FALSE`.
+#'   model are returned, in closed form. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param approx One of `"integrate"` (the default), `"bartlett"`, `"mc"` or
-#'   `"opg"`, matched by [base::match.arg()]. Read only when
-#'   `expected = TRUE`, where it selects how the expectation is approximated.
-#'   At this order `"opg"` is evaluated as `"bartlett"`, the outer product
-#'   of scores being an identity of order two.
-#' @param nsim A single positive integer, the sample size used when
-#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#'   `"opg"`. Ignored, a closed form being available for the expected
+#'   values; accepted so that the signature matches the generic's.
+#' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use for the observed values. Defaults to `1L`.
@@ -544,7 +539,6 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #'
 #' @seealso [distrib_hessian.LogisticDistrib()] for the order below and
 #'   [distrib_deriv4.LogisticDistrib()] for the order above;
-#'   [expected_derivative()] for the numerical route the expected values take;
 #'   [distrib_deriv3()] for the generic.
 #'
 #' @examples
@@ -560,13 +554,17 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #' dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu_mu
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 #'
-#' # The expected values are numerical here: the pure-mu component is zero by
-#' # symmetry and comes back at the quadrature's own accuracy, not at zero.
+#' # The expected values, in closed form; the components odd in z are zero.
 #' lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
+#' c(1 / (2 * 1.5^3), (2 + pi^2) / (2 * 1.5^3))
 S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
   if (expected) {
-    expected_derivative(distrib, y, theta, order = 3L,
-                        approx = match.arg(approx), nsim = nsim)
+    # E over the standard logistic: 1/2 and (2 + pi^2)/2 at sigma = 1, the
+    # components odd in z zero
+    s <- rep_len(theta[[2]], max(length(y), lengths(theta)))
+    s3 <- s^3
+    list(mu_mu_mu = 0 * s, mu_mu_sigma = 1 / (2 * s3),
+         mu_sigma_sigma = 0 * s, sigma_sigma_sigma = (2 + pi^2) / (2 * s3))
   } else {
     logistic_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
   }
@@ -585,14 +583,12 @@ S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expec
 #' \deqn{\dfrac{\partial^4 \ell}{\partial \mu \partial \sigma^3} = \dfrac{6g_1 + 18z g_2 + 9z^2 g_3 + z^3 g_4}{\sigma^4}, \qquad
 #'       \dfrac{\partial^4 \ell}{\partial \sigma^4} = \dfrac{6 + 24z g_1 + 36z^2 g_2 + 12z^3 g_3 + z^4 g_4}{\sigma^4}.}
 #'
-#' With `expected = TRUE` the method calls [expected_derivative()], as at
-#' third order, so the values are computed numerically according to
-#' `approx`, and `approx` and `nsim` are read. The expectations are
-#' elementary here too (\eqn{1/(15\sigma^4)} for `mu_mu_mu_mu`,
+#' With `expected = TRUE` the expectations under the model are returned in
+#' closed form, as at third order: \eqn{1/(15\sigma^4)} for `mu_mu_mu_mu`,
 #' \eqn{(\pi^2-60)/(45\sigma^4)} for `mu_mu_sigma_sigma`,
 #' \eqn{(7\pi^4-600\pi^2-810)/(225\sigma^4)} for `sigma_sigma_sigma_sigma`,
-#' and zero for the two components odd in \eqn{z}), but the method does not
-#' use these closed forms.
+#' and zero for the two components odd in \eqn{z}. `approx` and `nsim` are
+#' ignored.
 #'
 #' @param distrib A `LogisticDistrib` object, from [logistic_distrib()].
 #' @param y A numeric vector of observations.
@@ -600,14 +596,13 @@ S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expec
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
-#'   model are returned, by the numerical route. Defaults to `FALSE`.
+#'   model are returned, in closed form. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param approx One of `"integrate"` (the default), `"bartlett"`, `"mc"` or
-#'   `"opg"`, matched by [base::match.arg()]. Read only when `expected = TRUE`;
-#'   `"opg"` is evaluated as `"bartlett"` at this order.
-#' @param nsim A single positive integer, the sample size used when
-#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#'   `"opg"`. Ignored, a closed form being available for the expected
+#'   values; accepted so that the signature matches the generic's.
+#' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use for the observed values. Defaults to `1L`.
@@ -623,7 +618,7 @@ S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expec
 #' superscripts name derivatives.
 #'
 #' @seealso [distrib_deriv3.LogisticDistrib()] for the order below and for the
-#'   \eqn{g_j} used here; [expected_derivative()] for the numerical route;
+#'   \eqn{g_j} used here;
 #'   [distrib_deriv4()] for the generic.
 #'
 #' @examples
@@ -640,8 +635,14 @@ S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expec
 #'           tolerance = 1e-5)
 S7::method(distrib_deriv4, LogisticDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
   if (expected) {
-    expected_derivative(distrib, y, theta, order = 4L,
-                        approx = match.arg(approx), nsim = nsim)
+    # E over the standard logistic at sigma = 1: 1/15, (pi^2 - 60)/45 and
+    # (7 pi^4 - 600 pi^2 - 810)/225, the components odd in z zero
+    s <- rep_len(theta[[2]], max(length(y), lengths(theta)))
+    s4 <- s^4
+    list(mu_mu_mu_mu = 1 / (15 * s4), mu_mu_mu_sigma = 0 * s,
+         mu_mu_sigma_sigma = (pi^2 - 60) / (45 * s4),
+         mu_sigma_sigma_sigma = 0 * s,
+         sigma_sigma_sigma_sigma = (7 * pi^4 - 600 * pi^2 - 810) / (225 * s4))
   } else {
     logistic_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
   }
@@ -833,9 +834,8 @@ S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta, ...) 
 #'
 #' The observed derivatives of orders three to five are closed form, in
 #' [distrib_deriv3.LogisticDistrib()], [distrib_deriv4.LogisticDistrib()] and
-#' [distrib_deriv5.LogisticDistrib()]. The `expected = TRUE` branch of the
-#' third and fourth orders calls [expected_derivative()] and computes the
-#' expectations numerically, although they are elementary.
+#' [distrib_deriv5.LogisticDistrib()], and the expectations of orders three
+#' and four are closed form as well.
 #'
 #' # Estimation
 #'

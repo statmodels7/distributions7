@@ -103,7 +103,7 @@ numerically, once per observation; this class supplies
 \code{\link[=distrib_cdf.VonMises1Distrib]{distrib_cdf.VonMises1Distrib()}} instead, a Fourier series integrated term
 by term with \eqn{\max\{20, \lceil 8.5\sqrt{\kappa}\rceil + 10\}} terms,
 and a quadrature of the tail where the requested tail is below
-\eqn{10^{-10}}. The \strong{quantile} comes from \code{\link[=continuous_distrib]{continuous_distrib()}}, by
+\eqn{10^{-6}}. The \strong{quantile} comes from \code{\link[=continuous_distrib]{continuous_distrib()}}, by
 root finding on the logarithm of the smaller tail.
 }
 

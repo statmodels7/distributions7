@@ -754,8 +754,9 @@ S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
 #' What it replaces is the base class's quadrature, one integration per
 #' observation. See [vm_cdf()] for the series, its number of terms and the
 #' blocking that keeps the intermediate small. Where the requested tail is
-#' below \eqn{10^{-10}}, the resolution of the series, it comes from a
-#' quadrature of the tail on the log scale ([vm_cdf_tail()]).
+#' below \eqn{10^{-6}}, where the absolute error of the series would cost
+#' relative accuracy, it comes from a quadrature of the tail on the log
+#' scale ([vm_cdf_tail()]).
 #'
 #' @param distrib A `VonMises2Distrib` object, from [vonmises2_distrib()].
 #' @param q A numeric vector of angles. Below \eqn{-\pi} the value is 0 and at

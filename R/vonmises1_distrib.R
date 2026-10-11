@@ -683,7 +683,7 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' [distrib_cdf.VonMises1Distrib()] instead, a Fourier series integrated term
 #' by term with \eqn{\max\{20, \lceil 8.5\sqrt{\kappa}\rceil + 10\}} terms,
 #' and a quadrature of the tail where the requested tail is below
-#' \eqn{10^{-10}}. The **quantile** comes from [continuous_distrib()], by
+#' \eqn{10^{-6}}. The **quantile** comes from [continuous_distrib()], by
 #' root finding on the logarithm of the smaller tail.
 #'
 #' @section Notation:
@@ -1015,8 +1015,10 @@ vm_cdf <- function(y, mu, kappa) {
 #' @description
 #' `vm_cdf_tail()` returns \eqn{P(Y \le q)} or \eqn{P(Y > q)}, or their
 #' logarithms, from the series of [vm_cdf()] where the requested tail is
-#' above \eqn{10^{-10}}, and from `vm_log_tail()` below, where the series'
-#' absolute error of about \eqn{10^{-16}} would dominate. `vm_log_tail()`
+#' above \eqn{10^{-6}}, and from `vm_log_tail()` below. The series has an
+#' absolute error of about \eqn{10^{-16}}, which grows slowly with
+#' \eqn{\kappa}, so below that threshold its relative error would exceed
+#' about \eqn{10^{-9}}. `vm_log_tail()`
 #' integrates \eqn{e^{\kappa\cos(y - \mu)}} over the tail, which excludes the
 #' mode, so the integrand decreases from each end of the interval to the
 #' antimode. The interval is split at the antimode when it contains it, and
@@ -1095,7 +1097,7 @@ vm_cdf_tail <- function(q, mu, kappa, lower.tail, log.p) {
   Fl <- vm_cdf(q, mu, kappa)
   P <- if (lower.tail) Fl else 1 - Fl
   lP <- if (lower.tail) log(Fl) else log1p(-Fl)
-  small <- which(!is.na(P) & P < 1e-10 & q > -pi & q < pi & kappa > 0)
+  small <- which(!is.na(P) & P < 1e-6 & q > -pi & q < pi & kappa > 0)
   for (i in small) lP[i] <- vm_log_tail(q[i], mu[i], kappa[i], lower.tail)
   if (log.p) lP else {
     P[small] <- exp(lP[small])
@@ -1115,7 +1117,8 @@ vm_cdf_tail <- function(q, mu, kappa, lower.tail, log.p) {
 #'
 #' Below \eqn{-\pi} the value is 0 and at or above \eqn{\pi} it is 1, the
 #' support being the declared interval. Where the requested tail is below
-#' \eqn{10^{-10}}, the resolution of the series, it comes from a quadrature
+#' \eqn{10^{-6}}, where the absolute error of the series would cost relative
+#' accuracy, it comes from a quadrature
 #' of the tail instead, on the log scale ([vm_cdf_tail()]), so that a small
 #' tail probability and its logarithm keep their digits.
 #'

@@ -13,20 +13,16 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{sigma} must be strictly positive.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
-model are returned, by the numerical route described above. Defaults to
-\code{FALSE}.}
+model are returned, in closed form. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
 \item{approx}{One of \code{"integrate"} (the default), \code{"bartlett"}, \code{"mc"} or
-\code{"opg"}, matched by \code{\link[base:match.arg]{base::match.arg()}}. Read only when
-\code{expected = TRUE}, where it selects how the expectation is approximated.
-At this order \code{"opg"} is evaluated as \code{"bartlett"}, the outer product
-of scores being an identity of order two.}
+\code{"opg"}. Ignored, a closed form being available for the expected
+values; accepted so that the signature matches the generic's.}
 
-\item{nsim}{A single positive integer, the sample size used when
-\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -52,13 +48,12 @@ polynomial in \eqn{z} with the \eqn{g_j} as coefficients:
 \deqn{\dfrac{\partial^3 \ell}{\partial \mu \partial \sigma^2} = -\dfrac{2g_1 + 4z g_2 + z^2 g_3}{\sigma^3}, \qquad
       \dfrac{\partial^3 \ell}{\partial \sigma^3} = -\dfrac{2 + 6z g_1 + 6z^2 g_2 + z^3 g_3}{\sigma^3}.}
 
-With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, so the
-values are computed numerically according to \code{approx} (by default
-\code{"integrate"}, one quadrature per component), and \code{approx} and \code{nsim}
-are read. The expectations at this order are elementary
-(\eqn{1/(2\sigma^3)} for \code{mu_mu_sigma}, \eqn{(2+\pi^2)/(2\sigma^3)} for
-\code{sigma_sigma_sigma}, and zero for the two components odd in \eqn{z}), but
-the method does not use these closed forms.
+With \code{expected = TRUE} the expectations under the model are returned in
+closed form: \eqn{1/(2\sigma^3)} for \code{mu_mu_sigma},
+\eqn{(2+\pi^2)/(2\sigma^3)} for \code{sigma_sigma_sigma}, and zero for the two
+components odd in \eqn{z}. They are integrals of the polynomials above
+against the logistic density, which reduce to values of the zeta function
+at even arguments. \code{approx} and \code{nsim} are ignored.
 }
 \section{Notation}{
 
@@ -80,13 +75,12 @@ up <- distrib_hessian(d, y, list(mu = 0.4 + eps, sigma = 1.5))$mu_mu
 dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu_mu
 all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 
-# The expected values are numerical here: the pure-mu component is zero by
-# symmetry and comes back at the quadrature's own accuracy, not at zero.
+# The expected values, in closed form; the components odd in z are zero.
 lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
+c(1 / (2 * 1.5^3), (2 + pi^2) / (2 * 1.5^3))
 }
 \seealso{
 \code{\link[=distrib_hessian.LogisticDistrib]{distrib_hessian.LogisticDistrib()}} for the order below and
 \code{\link[=distrib_deriv4.LogisticDistrib]{distrib_deriv4.LogisticDistrib()}} for the order above;
-\code{\link[=expected_derivative]{expected_derivative()}} for the numerical route the expected values take;
 \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }
