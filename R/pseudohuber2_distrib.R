@@ -97,7 +97,11 @@ S7::method(distrib_pdf, PseudoHuber2Distrib) <- function(distrib, y, theta,
   sigma <- theta[[2]]
   nu <- theta[[3]]
   nt <- pseudohuber2_nu_terms_cpp(as.numeric(nu))
-  D <- sqrt(nu + nt$R * ((y - mu) / sigma)^2)
+  # sqrt(nu + R z^2) as a hypot, so that z^2 does not overflow
+  az <- sqrt(nt$R) * abs((y - mu) / sigma)
+  sq_nu <- sqrt(nu)
+  big <- pmax(az, sq_nu)
+  D <- big * sqrt(1 + (pmin(az, sq_nu) / big)^2)
   log_val <- -D - log(2) - log(sigma) + nt$h
   if (log) log_val else exp(log_val)
 }
@@ -159,33 +163,8 @@ S7::method(distrib_quantile, PseudoHuber2Distrib) <- function(distrib, p, theta,
                                                               lower.tail = TRUE,
                                                               log.p = FALSE,
                                                               ...) {
-  if (log.p) p <- exp(p)
-  if (!lower.tail) p <- 1 - p
-  all_params <- expand_params(c(list(.p = p), theta))
-  rows <- transpose_params(all_params)
-  vapply(rows, function(r) {
-    r <- as.list(r)
-    th <- r[distrib@params]
-    pi <- r$.p
-    if (is.na(pi) || pi < 0 || pi > 1) return(NaN)
-    if (pi == 0) return(-Inf)
-    if (pi == 1) return(Inf)
-    m <- th[[1]]
-    if (pi == 0.5) return(m)
-    reflect <- pi > 0.5
-    p_low <- if (reflect) 1 - pi else pi
-    lo <- m - 10 * th[[2]]
-    it <- 0L
-    while (distrib_cdf(distrib, lo, th) > p_low && it < 100L) {
-      lo <- m - 2 * (m - lo)
-      it <- it + 1L
-    }
-    q_low <- stats::uniroot(
-      function(q) distrib_cdf(distrib, q, th) - p_low,
-      lower = lo, upper = m, tol = .Machine$double.eps^0.5
-    )$root
-    if (reflect) 2 * m - q_low else q_low
-  }, numeric(1))
+  symmetric_log_quantile(distrib, p, theta, lower.tail, log.p,
+                         function(th) th[[2]])
 }
 
 

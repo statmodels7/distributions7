@@ -149,6 +149,14 @@ cauchy_deriv4_expected_cpp <- function(y, mu, sigma, threads = 1L) {
     .Call(`_distributions7_cauchy_deriv4_expected_cpp`, y, mu, sigma, threads)
 }
 
+cauchy_deriv5_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_cauchy_deriv5_cpp`, y, mu, sigma, threads)
+}
+
+cauchy_cdf_deriv_cpp <- function(q, mu, sigma, order, threads = 1L) {
+    .Call(`_distributions7_cauchy_cdf_deriv_cpp`, q, mu, sigma, order, threads)
+}
+
 chisq_gradient_cpp <- function(y, mu, threads = 1L) {
     .Call(`_distributions7_chisq_gradient_cpp`, y, mu, threads)
 }
@@ -163,6 +171,10 @@ chisq_deriv3_cpp <- function(y, mu, threads = 1L) {
 
 chisq_deriv4_cpp <- function(y, mu, threads = 1L) {
     .Call(`_distributions7_chisq_deriv4_cpp`, y, mu, threads)
+}
+
+chisq_deriv5_cpp <- function(y, mu, threads = 1L) {
+    .Call(`_distributions7_chisq_deriv5_cpp`, y, mu, threads)
 }
 
 d7_scalar_probe <- function(cls, k, y, theta) {
@@ -393,6 +405,14 @@ enet_dexpected1_cpp <- function(y, mu, lambda, alpha, threads = 1L) {
     .Call(`_distributions7_enet_dexpected1_cpp`, y, mu, lambda, alpha, threads)
 }
 
+enet_logM_derivs_cpp <- function(x, order) {
+    .Call(`_distributions7_enet_logM_derivs_cpp`, x, order)
+}
+
+enet_logz_ac_cpp <- function(a, c, order) {
+    .Call(`_distributions7_enet_logz_ac_cpp`, a, c, order)
+}
+
 exponential_gradient_cpp <- function(y, mu, threads = 1L) {
     .Call(`_distributions7_exponential_gradient_cpp`, y, mu, threads)
 }
@@ -419,6 +439,10 @@ exponential_deriv4_cpp <- function(y, mu, threads = 1L) {
 
 exponential_deriv4_expected_cpp <- function(y, mu, threads = 1L) {
     .Call(`_distributions7_exponential_deriv4_expected_cpp`, y, mu, threads)
+}
+
+exponential_deriv5_cpp <- function(y, mu, threads = 1L) {
+    .Call(`_distributions7_exponential_deriv5_cpp`, y, mu, threads)
 }
 
 gamma_gradient_cpp <- function(y, mu, sigma2, threads = 1L) {
@@ -777,6 +801,10 @@ gpd_logpdf_cpp <- function(y, sigma, xi, threads = 1L) {
     .Call(`_distributions7_gpd_logpdf_cpp`, y, sigma, xi, threads)
 }
 
+gpd_logsurv_cpp <- function(q, sigma, xi, threads = 1L) {
+    .Call(`_distributions7_gpd_logsurv_cpp`, q, sigma, xi, threads)
+}
+
 gpd_gradient_cpp <- function(y, sigma, xi, threads = 1L) {
     .Call(`_distributions7_gpd_gradient_cpp`, y, sigma, xi, threads)
 }
@@ -921,6 +949,10 @@ gumbel_deriv4_expected_cpp <- function(y, mu, sigma, threads = 1L) {
     .Call(`_distributions7_gumbel_deriv4_expected_cpp`, y, mu, sigma, threads)
 }
 
+gumbel_deriv5_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_gumbel_deriv5_cpp`, y, mu, sigma, threads)
+}
+
 invgauss_gradient_cpp <- function(y, mu, phi, threads = 1L) {
     .Call(`_distributions7_invgauss_gradient_cpp`, y, mu, phi, threads)
 }
@@ -1025,6 +1057,14 @@ laplace_deriv4_expected_cpp <- function(y, mu, b, threads = 1L) {
     .Call(`_distributions7_laplace_deriv4_expected_cpp`, y, mu, b, threads)
 }
 
+laplace_deriv5_cpp <- function(y, mu, b, threads = 1L) {
+    .Call(`_distributions7_laplace_deriv5_cpp`, y, mu, b, threads)
+}
+
+laplace2_deriv5_cpp <- function(y, mu, lambda, threads = 1L) {
+    .Call(`_distributions7_laplace2_deriv5_cpp`, y, mu, lambda, threads)
+}
+
 loc_scale_rule_cpp <- function() {
     .Call(`_distributions7_loc_scale_rule_cpp`)
 }
@@ -1051,6 +1091,10 @@ logistic_deriv3_cpp <- function(y, mu, sigma, threads = 1L) {
 
 logistic_deriv4_cpp <- function(y, mu, sigma, threads = 1L) {
     .Call(`_distributions7_logistic_deriv4_cpp`, y, mu, sigma, threads)
+}
+
+logistic_deriv5_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_logistic_deriv5_cpp`, y, mu, sigma, threads)
 }
 
 lognormal_gradient_cpp <- function(y, mu, sigma2, threads = 1L) {
@@ -1379,6 +1423,10 @@ pseudohuber2_deriv5_cpp <- function(y, mu, sigma, nu) {
 
 pseudohuber2_nu_terms_cpp <- function(nu) {
     .Call(`_distributions7_pseudohuber2_nu_terms_cpp`, nu)
+}
+
+ph_nu_derivs_cpp <- function(v, K) {
+    .Call(`_distributions7_ph_nu_derivs_cpp`, v, K)
 }
 
 pseudohuber_deriv3_cpp <- function(y, mu, sigma, nu) {

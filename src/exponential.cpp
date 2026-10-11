@@ -128,3 +128,19 @@ List exponential_deriv4_expected_cpp(NumericVector y, NumericVector mu,
     });
     return List::create(Named("mu_mu_mu_mu") = d);
 }
+
+// order 5 of l = -log(mu) - y/mu: (120 y - 24 mu)/mu^6
+// [[Rcpp::export]]
+List exponential_deriv5_cpp(NumericVector y, NumericVector mu,
+                            int threads = 1) {
+    int n = y.size();
+    NumericVector d(n);
+    bool mu_is_scalar = (mu.size() == 1);
+
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
+        const double m = mu_is_scalar ? mu[0] : mu[i];
+        const double im = 1.0 / m, im2 = im * im, im5 = im2 * im2 * im;
+        d[i] = (120.0 * y[i] * im - 24.0) * im5;
+    });
+    return List::create(Named("mu_mu_mu_mu_mu") = d);
+}

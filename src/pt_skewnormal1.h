@@ -5,6 +5,7 @@
 #include <cmath>
 #include "pt_mills.h"
 #include "pt_loc_scale.h"
+#include "pt_logphi.h"
 
 // The skew normal in its direct parametrization (mu, sigma, alpha),
 // l = log 2 - log sigma + log phi(z) + log Phi(alpha z), z = (y - mu)/sigma:
@@ -12,8 +13,9 @@
 // Hessian and the diagonal of the third derivatives, called by the vector
 // kernels (skewnormal1.cpp, skewnormal_hd.cpp), by the quadrature of the
 // expected information and by the scalar registry. The caller
-// passes z, the Mills ratio r at t = alpha z (mills_ratio) and its
-// derivative dr = -r (t + r).
+// passes z, the Mills ratio r = phi/Phi at t = alpha z and its derivative
+// dr, both from logphi_derivs() (pt_logphi.h), which forms them without the
+// cancellation of dr = -r (t + r) far below t = 0.
 
 namespace d7 {
 
@@ -83,7 +85,9 @@ inline void skewnormal1_score_curv(int k, double y, const double* th,
                                    double* out) {
     const double m = th[0], s = th[1], a = th[2];
     const double z = (y - m) / s, t = a * z;
-    const double r = mills_ratio(t), dr = -r * (t + r);
+    double gg[6];
+    logphi_derivs(t, 2, gg);
+    const double r = gg[1], dr = gg[2];
     if (k == 0) {
         out[0] = skewnormal1_score_mu(z, s, a, r);
         out[1] = skewnormal1_hess_mu_mu(s, a, dr);
@@ -106,13 +110,15 @@ inline void skewnormal1_quad_diag(int k, const double* shape, double* out,
     for (int j = 0; j < R.n; ++j) {
         const double z = R.x[j], t = a * z;
         const double fw = std::exp(skewnormal1_logpdf(z, 0.0, 1.0, a)) * R.w[j];
-        const double r = mills_ratio(t), dr = -r * (t + r);
+        double gg[6];
+        logphi_derivs(t, want_d ? 3 : 2, gg);
+        const double r = gg[1], dr = gg[2];
         double H;
         if (k == 0) H = skewnormal1_hess_mu_mu(1.0, a, dr);
         else if (k == 1) H = skewnormal1_hess_sigma_sigma(z, 1.0, a, r, dr);
         else H = skewnormal1_hess_alpha_alpha(z, dr);
         if (!want_d) { S.add0(fw, H); continue; }
-        const double g3 = skewnormal1_g3(t, r, dr);
+        const double g3 = gg[3];
         double g, T3;
         if (k == 0) {
             g = skewnormal1_score_mu(z, 1.0, a, r);

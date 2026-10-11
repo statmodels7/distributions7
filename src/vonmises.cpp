@@ -90,8 +90,8 @@ List vonmises1_hessian_cpp(NumericVector y, NumericVector mu,
     o_mk[i] = std::sin(d);
     o_kk[i] = d7::vonmises1_hess_kappa_kappa(ks ? D0 : B.d1(k));
   });
-  return List::create(Named("mu_mu") = o_mm, Named("mu_kappa") = o_mk,
-                      Named("kappa_kappa") = o_kk);
+  return List::create(Named("mu_mu") = o_mm, Named("kappa_kappa") = o_kk,
+                      Named("mu_kappa") = o_mk);
 }
 
 // The expected information needs A and A', both used, so one evaluation
@@ -112,8 +112,8 @@ List vonmises1_expected_hessian_cpp(int n, NumericVector kappa, int threads = 1)
     o_mk[i] = 0.0;
     o_kk[i] = d7::vonmises1_expected_kappa_kappa(a[1]);
   });
-  return List::create(Named("mu_mu") = o_mm, Named("mu_kappa") = o_mk,
-                      Named("kappa_kappa") = o_kk);
+  return List::create(Named("mu_mu") = o_mm, Named("kappa_kappa") = o_kk,
+                      Named("mu_kappa") = o_mk);
 }
 
 // [[Rcpp::export]]

@@ -20,16 +20,22 @@ inline double logistic_score_sigma(double res, double t, double s) {
     return (res * t - s) / (s * s);
 }
 
-inline double logistic_hess_mu_mu(double t, double s) {
+// sech^2(z/2) = 4e/(1 + e)^2 with e = exp(-|z|): 1 - tanh^2(z/2) cancels
+// in the tails, where the value is about 4 exp(-|z|)
+inline double logistic_sech2_half(double res, double s) {
+    double e = std::exp(-std::fabs(res / s));
+    return 4.0 * e / ((1.0 + e) * (1.0 + e));
+}
+
+inline double logistic_hess_mu_mu(double res, double s) {
     double s2 = s * s;
-    double sech2_z = 1.0 - t * t;
-    return -sech2_z / (2.0 * s2);
+    return -logistic_sech2_half(res, s) / (2.0 * s2);
 }
 
 inline double logistic_hess_sigma_sigma(double res, double t, double s) {
     double s2 = s * s;
     double z_half = 0.5 * res / s;
-    double sech2_z = 1.0 - t * t;
+    double sech2_z = logistic_sech2_half(res, s);
     return (1.0 - 4.0 * z_half * t - 2.0 * z_half * z_half * sech2_z) / s2;
 }
 
@@ -60,7 +66,7 @@ inline void logistic_score_curv(int k, double y, const double* th,
     double t = std::tanh(0.5 * res / s);
     if (k == 0) {
         out[0] = logistic_score_mu(t, s);
-        out[1] = logistic_hess_mu_mu(t, s);
+        out[1] = logistic_hess_mu_mu(res, s);
     } else {
         out[0] = logistic_score_sigma(res, t, s);
         out[1] = logistic_hess_sigma_sigma(res, t, s);

@@ -4,7 +4,7 @@
 \alias{loc_scale_cdf_deriv_k}
 \title{Location-Scale CDF Derivatives at Any Order}
 \usage{
-loc_scale_cdf_deriv_k(distrib, q, theta, order)
+loc_scale_cdf_deriv_k(distrib, q, theta, order, over_f = FALSE)
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{distrib} whose first two

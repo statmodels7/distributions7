@@ -137,7 +137,7 @@ register_surv_cdf <- function(cls, pieces) {
         # d^I S = -d^I F, with S itself taken as exp(L)
         return(ord(lapply(tabs[[o]], function(v) -v), params))
       }
-      ord(cdf_scale_k(distrib, distrib_cdf(distrib, q, theta), tabs, o,
+      ord(cdf_scale_k(distrib, tail_cdf(distrib, q, theta, lower.tail), tabs, o,
                       lower.tail, log), params)
     }
   }

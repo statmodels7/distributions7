@@ -46,7 +46,7 @@ List laplace_hessian_cpp(NumericVector y, NumericVector mu, NumericVector b,
         double r = yp[i] - m;
         o1[i] = d7::laplace_hess_mu_mu();
         o2[i] = d7::laplace_hess_sigma_sigma(std::fabs(r), bb);
-        o3[i] = -d7::laplace_sign(r) / (bb * bb);
+        o3[i] = -d7::laplace_sign(r) * (1.0 / bb) * (1.0 / bb);
     });
     return List::create(Named("mu_mu") = h_mm, Named("sigma_sigma") = h_bb,
                         Named("mu_sigma") = h_mb);

@@ -1,29 +1,29 @@
 #' @include distrib.R generics.R cross_derivatives.R
 NULL
 
-# The two quantities every derivative of this family is written in.
-#
-#   x = a / sqrt(c),   M(x) = Phi(-x) / phi(x),   G = d log M / dx
-#
-# M is the Mills ratio proper and G = x - 1/M, where 1/M is what
-# numericals7::mills_ratio() computes stably at -x. The difference cancels
-# for large x -- both terms are of size x while G is of size 1/x -- so
-# above a threshold the asymptotic series is used instead; the crossover
-# is where the two agree to about 1e-11.
-.enet_G <- function(x) {
-  out <- numeric(length(x))
-  big <- abs(x) > 1e3
-  if (any(!big)) {
-    xb <- x[!big]
-    out[!big] <- xb - numericals7::mills_ratio(-xb)$r
-  }
-  if (any(big)) {
-    xb <- x[big]
-    u <- 1 / xb
-    out[big] <- -u + 2 * u^3 - 10 * u^5 + 74 * u^7
-  }
-  out
-}
+# x = a / sqrt(c) and the Mills ratio M(x) = Phi(-x) / phi(x). G = d log M / dx
+# and its derivatives come from enet_logM_derivs_cpp() (pt_enet_logz.h), as
+# the cumulants of the density proportional to exp(-x s - s^2/2) on s > 0;
+# the form x - 1/M cancelled for large x, and the derivatives built on it
+# compounded the cancellation.
+
+# Superseded by enet_logM_derivs_cpp() in T2b (2026-10-11): G = x - 1/M
+# cancelled for 20 < x < 1e3 (relative 5e-5 at x = 1e3), and G' and the
+# higher derivatives built on it lost all accuracy there.
+# .enet_G <- function(x) {
+#   out <- numeric(length(x))
+#   big <- abs(x) > 1e3
+#   if (any(!big)) {
+#     xb <- x[!big]
+#     out[!big] <- xb - numericals7::mills_ratio(-xb)$r
+#   }
+#   if (any(big)) {
+#     xb <- x[big]
+#     u <- 1 / xb
+#     out[big] <- -u + 2 * u^3 - 10 * u^5 + 74 * u^7
+#   }
+#   out
+# }
 
 # log M(x). The direct form adds x^2/2 to a log-probability of the same
 # size and opposite sign, so it loses a digit for every factor of ten in
@@ -56,9 +56,9 @@ NULL
   a <- lam * al
   cc <- lam * (1 - al)
   x <- a / sqrt(cc)
-  g <- .enet_G(x)
+  L <- enet_logM_derivs_cpp(as.numeric(x), 2L)
   list(mu = theta[[1]], lam = lam, al = al, a = a, c = cc, x = x,
-       g = g, dg = 1 + x * g - g^2)
+       g = L[[1]], dg = L[[2]])
 }
 
 #' @title Elastic-Net Distribution Class
@@ -285,12 +285,13 @@ S7::method(distrib_cdf, EnetDistrib) <- function(distrib, q, theta,
   # each half is a ratio of normal tails, taken on the log scale: the
   # denominator Phi(-x) underflows past x = 38 and the mixing weight
   # reaches that at ordinary values of alpha
+  # the tail beyond |z| on the side of z, log Phi(-s|z| - x) - log Phi(-x) -
+  # log 2, and the other tail from it by log1mexp_neg()
   lq <- .enet_logQ(p$x)
-  half_lo <- exp(stats::pnorm(s * z - p$x, log.p = TRUE) - lq) / 2
-  half_hi <- exp(stats::pnorm(-s * z - p$x, log.p = TRUE) - lq) / 2
-  lower <- ifelse(z <= 0, half_lo, 1 - half_hi)
-  out <- if (lower.tail) lower else 1 - lower
-  if (log.p) base::log(out) else out
+  far <- stats::pnorm(-s * abs(z) - p$x, log.p = TRUE) - lq - base::log(2)
+  near <- log1mexp_neg(far)
+  cdf_from_log_tails(ifelse(z <= 0, far, near), ifelse(z <= 0, near, far),
+                     lower.tail, log.p)
 }
 
 #' @title Elastic-Net Quantile Function
@@ -343,14 +344,15 @@ S7::method(distrib_cdf, EnetDistrib) <- function(distrib, q, theta,
 S7::method(distrib_quantile, EnetDistrib) <- function(distrib, p, theta,
                                                       lower.tail = TRUE,
                                                       log.p = FALSE, ...) {
-  pr <- if (log.p) exp(p) else p
-  if (!lower.tail) pr <- 1 - pr
+  # each half inverted from the logarithm of its own tail probability, so
+  # that neither 1 - p nor exp(log p) is formed
+  lt <- quantile_log_tails(p, lower.tail, log.p)
   pa <- .enet_parts(theta)
   s <- sqrt(pa$c)
   lq <- .enet_logQ(pa$x)
-  lo <- (pa$x + stats::qnorm(base::log(2 * pr) + lq, log.p = TRUE)) / s
-  hi <- -(pa$x + stats::qnorm(base::log(2 * (1 - pr)) + lq, log.p = TRUE)) / s
-  pa$mu + ifelse(pr <= 0.5, lo, hi)
+  lo <- (pa$x + stats::qnorm(lt$lower + base::log(2) + lq, log.p = TRUE)) / s
+  hi <- -(pa$x + stats::qnorm(lt$upper + base::log(2) + lq, log.p = TRUE)) / s
+  pa$mu + ifelse(lt$lower <= lt$upper, lo, hi)
 }
 
 #' @title Elastic-Net Random Generation
@@ -394,19 +396,21 @@ S7::method(distrib_rng, EnetDistrib) <- function(distrib, n, theta, ...) {
   distrib_quantile(distrib, stats::runif(n), theta)
 }
 
-# the derivatives of log Z with respect to the two rates
-.enet_logz_derivs <- function(p) {
-  g <- p$g
-  dg <- p$dg
-  x <- p$x
-  cc <- p$c
-  za <- g / sqrt(cc)
-  zc <- -(1 + x * g) / (2 * cc)
-  zaa <- dg / cc
-  zac <- -(x * dg + g) / (2 * cc^1.5)
-  zcc <- (2 * (1 + x * g) + x * (g + x * dg)) / (4 * cc^2)
-  list(za = za, zc = zc, zaa = zaa, zac = zac, zcc = zcc)
-}
+# Commented out in T2b (2026-10-11): no caller in the package; the
+# compiled enet_par() computes these partials, through enet_logz_ac().
+# # the derivatives of log Z with respect to the two rates
+# .enet_logz_derivs <- function(p) {
+#   g <- p$g
+#   dg <- p$dg
+#   x <- p$x
+#   cc <- p$c
+#   za <- g / sqrt(cc)
+#   zc <- -(1 + x * g) / (2 * cc)
+#   zaa <- dg / cc
+#   zac <- -(x * dg + g) / (2 * cc^1.5)
+#   zcc <- (2 * (1 + x * g) + x * (g + x * dg)) / (4 * cc^2)
+#   list(za = za, zc = zc, zaa = zaa, zac = zac, zcc = zcc)
+# }
 
 #' @title Elastic-Net Score
 #' @name distrib_gradient.EnetDistrib
@@ -938,8 +942,11 @@ S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
+  # E[z^2] = -2 d log Z / dc, the density being proportional to
+  # exp(-a|z| - c z^2/2)
   p <- .enet_parts(theta)
-  (1 + p$x * p$g) / p$c + moment_const(theta, 3L, 0)
+  -2 * enet_logz_ac_cpp(as.numeric(p$a), as.numeric(p$c), 1L)[[1]][["c"]] +
+    moment_const(theta, 3L, 0)
 }
 
 #' @title Skewness of the Elastic-Net Distribution

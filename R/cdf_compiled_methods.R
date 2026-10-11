@@ -32,7 +32,7 @@ NULL
 #' @keywords internal
 compiled_deriv_cdf_k <- function(order) {
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
-    cdf_scale_k(distrib, distrib_cdf(distrib, q, theta),
+    cdf_scale_k(distrib, tail_cdf(distrib, q, theta, lower.tail),
                 cdf_tables(distrib, q, theta, order), order, lower.tail, log)
   }
 }

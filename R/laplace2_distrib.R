@@ -180,9 +180,7 @@ S7::method(distrib_pdf, Laplace2Distrib) <- function(distrib, y, theta, log = FA
 S7::method(distrib_cdf, Laplace2Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   mu <- theta[[1]]
   lam <- theta[[2]]
-  res <- ifelse(q < mu, 0.5 * exp(lam * (q - mu)), 1 - 0.5 * exp(-lam * (q - mu)))
-  if (!lower.tail) res <- 1 - res
-  if (log.p) base::log(res) else res
+  laplace_cdf_tails(lam * (q - mu), lower.tail, log.p)
 }
 
 #' @title Laplace Quantile Function, Rate Parametrization
@@ -227,9 +225,7 @@ S7::method(distrib_cdf, Laplace2Distrib) <- function(distrib, q, theta, lower.ta
 S7::method(distrib_quantile, Laplace2Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   mu <- theta[[1]]
   lam <- theta[[2]]
-  if (log.p) p <- exp(p)
-  if (!lower.tail) p <- 1 - p
-  mu - sign(p - 0.5) * base::log(1 - 2 * abs(p - 0.5)) / lam
+  mu + laplace_std_quantile(p, lower.tail, log.p) / lam
 }
 
 #' @title Laplace Random Number Generator, Rate Parametrization
@@ -597,6 +593,45 @@ S7::method(distrib_deriv4, Laplace2Distrib) <- function(distrib, y, theta, expec
     mu_lambda_lambda_lambda = zero,
     lambda_lambda_lambda_lambda = rep(-6 / lam^4, length.out = n)
   )
+}
+
+#' @title Laplace, Rate Parametrization Fifth-Order Derivatives
+#' @name distrib_deriv5.Laplace2Distrib
+#' @description
+#' Computes the six distinct fifth derivatives of the Laplace log-density in
+#' the rate parametrization, \eqn{\ell = \log(\lambda/2) - \lambda|y - \mu|},
+#' in closed form from a compiled kernel. Away from the kink at
+#' \eqn{y = \mu} only the pure \eqn{\lambda} component is nonzero,
+#' \deqn{\ell^{(\lambda\lambda\lambda\lambda\lambda)} = \dfrac{24}{\lambda^5}.}
+#' With `scale = "link"` the components are composed with the link
+#' derivatives by the routine that every family with a fifth-order kernel
+#' uses.
+#'
+#' @param distrib A `Laplace2Distrib` object, from [laplace2_distrib()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list with components `mu` and `lambda`, each a numeric vector
+#'   of length 1 or of the length of `y`.
+#' @param scale One of `"parameter"` (the default) or `"link"`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Defaults to `1L`.
+#'
+#' @return A named list of six numeric vectors, `mu_mu_mu_mu_mu`,
+#'   `mu_mu_mu_mu_lambda`, `mu_mu_mu_lambda_lambda`, `mu_mu_lambda_lambda_lambda`,
+#'   `mu_lambda_lambda_lambda_lambda` and `lambda_lambda_lambda_lambda_lambda`, each of length
+#'   `max(length(y), length(mu), length(lambda))`.
+#'
+#' @seealso [distrib_deriv4()] for the order below and [distrib_deriv5()]
+#'   for the generic.
+#'
+#' @examples
+#' d <- laplace2_distrib()
+#' d5 <- distrib_deriv5(d, c(-1.2, 0.3, 2.5), list(mu = 0.4, lambda = 2))
+#' all.equal(d5$lambda_lambda_lambda_lambda_lambda, rep(24 / 2^5, 3))
+S7::method(distrib_deriv5, Laplace2Distrib) <- function(distrib, y, theta,
+    scale = c("parameter", "link"), ..., threads = 1L) {
+  deriv5_scale(distrib, y, theta, laplace2_deriv5_cpp(y, theta[[1]], theta[[2]], threads),
+               match.arg(scale))
 }
 
 #' @title Laplace First Derivative in the Response, Rate Parametrization

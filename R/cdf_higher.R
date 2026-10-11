@@ -73,18 +73,64 @@ NULL
 #' @keywords internal
 cdf_scale_k <- function(distrib, Fq, dF, order, lower.tail, log) {
   params <- distrib@params
-  P <- if (lower.tail) Fq else 1 - Fq
   sgn <- if (lower.tail) 1 else -1
+  # order two in the order of hess_names(), as every Hessian of the package
+  hnames <- function(out) if (order == 2L) out[hess_names(params)] else out
 
   dP <- lapply(dF, function(tab) lapply(tab, function(v) sgn * v))
-  if (!log) return(dP[[order]])
+  if (!log) return(hnames(dP[[order]][deriv_names(params, order)]))
 
+  P <- tail_probability(Fq, lower.tail)
   ratio <- function(block) {
     dP[[length(block)]][[canon_key(block, params)]] / P
   }
   nm <- deriv_names(params, order)
   idx <- deriv_indices(params, order)
-  stats::setNames(lapply(idx, function(I) log_deriv(params[I], ratio)), nm)
+  hnames(stats::setNames(lapply(idx, function(I) log_deriv(params[I], ratio)), nm))
+}
+
+#' @title The Probability of the Requested Tail
+#' @name tail_probability
+#'
+#' @description
+#' Internal helpers of [cdf_tail_scale()] and [cdf_scale_k()].
+#' `tail_cdf()` returns the distribution function at `q` and, when the upper
+#' tail is wanted, attaches the family's own upper-tail probability as the
+#' attribute `"upper"`, so that the upper tail is not formed as
+#' \eqn{1 - F}, which loses its digits once \eqn{F} is close to one.
+#' `tail_probability()` returns the lower tail, or the upper tail from that
+#' attribute when it is present and from \eqn{1 - F} otherwise.
+#'
+#' @param distrib A distribution object.
+#' @param q A numeric vector of quantiles.
+#' @param theta A named list of parameter values.
+#' @param lower.tail Is the lower tail wanted? A single logical.
+#' @param Fq The value of `tail_cdf()`, or a plain numeric vector of
+#'   distribution function values.
+#'
+#' @return A numeric vector of probabilities; for `tail_cdf()`, the
+#'   distribution function with the attribute `"upper"` when `lower.tail` is
+#'   `FALSE`.
+#'
+#' @examples
+#' d <- logistic_distrib()
+#' Fq <- distributions7:::tail_cdf(d, 40, list(mu = 0, sigma = 1), FALSE)
+#' # The upper tail survives where 1 - F is zero.
+#' c(from_family = distributions7:::tail_probability(Fq, FALSE),
+#'   one_minus_F = 1 - as.numeric(Fq))
+#'
+#' @keywords internal
+tail_cdf <- function(distrib, q, theta, lower.tail) {
+  Fq <- distrib_cdf(distrib, q, theta)
+  if (!lower.tail) attr(Fq, "upper") <- distrib_cdf(distrib, q, theta, lower.tail = FALSE)
+  Fq
+}
+
+#' @rdname tail_probability
+tail_probability <- function(Fq, lower.tail) {
+  if (lower.tail) return(as.numeric(Fq))
+  up <- attr(Fq, "upper")
+  if (is.null(up)) 1 - as.numeric(Fq) else up
 }
 
 #' CDF Derivatives of a Discrete Distribution at Any Order
@@ -466,7 +512,7 @@ distrib_deriv4_cdf <- S7::new_generic(
 S7::method(distrib_deriv3_cdf, distrib) <- function(distrib, q, theta,
                                                     lower.tail = TRUE,
                                                     log = TRUE, ...) {
-  cdf_scale_k(distrib, distrib_cdf(distrib, q, theta),
+  cdf_scale_k(distrib, tail_cdf(distrib, q, theta, lower.tail),
               cdf_tables(distrib, q, theta, 3L), 3L, lower.tail, log)
 }
 
@@ -476,7 +522,7 @@ S7::method(distrib_deriv3_cdf, distrib) <- function(distrib, q, theta,
 S7::method(distrib_deriv4_cdf, distrib) <- function(distrib, q, theta,
                                                     lower.tail = TRUE,
                                                     log = TRUE, ...) {
-  cdf_scale_k(distrib, distrib_cdf(distrib, q, theta),
+  cdf_scale_k(distrib, tail_cdf(distrib, q, theta, lower.tail),
               cdf_tables(distrib, q, theta, 4L), 4L, lower.tail, log)
 }
 
@@ -532,10 +578,10 @@ S7::method(distrib_deriv4_cdf, distrib) <- function(distrib, q, theta,
 #'   [chain_assemble()] for the partition sum; [bell_f_ratio()].
 #'
 #' @keywords internal
-loc_scale_cdf_deriv_k <- function(distrib, q, theta, order) {
+loc_scale_cdf_deriv_k <- function(distrib, q, theta, order, over_f = FALSE) {
   s <- theta[[2]]
   z <- (q - theta[[1]]) / s
-  f <- distrib_pdf(distrib, q, theta)
+  f <- if (over_f) 1 else distrib_pdf(distrib, q, theta)
 
   # the response derivatives of log f, as many as the order needs
   ly <- list(distrib_grad_y(distrib, q, theta),
@@ -593,16 +639,57 @@ loc_scale_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' @keywords internal
 loc_scale_deriv_cdf_k <- function(order) {
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
-    dF <- lapply(seq_len(order),
-                 function(k) loc_scale_cdf_deriv_k(distrib, q, theta, k))
-    cdf_scale_k(distrib, distrib_cdf(distrib, q, theta), dF, order,
-                lower.tail, log)
+    loc_scale_cdf_route(distrib, q, theta, order, lower.tail, log)
   }
 }
 
+#' @title Location-Scale Distribution Function Derivatives on Either Tail
+#' @name loc_scale_cdf_route
+#' @description
+#' The body shared by the location-scale families' [distrib_grad_cdf()],
+#' [distrib_hess_cdf()], [distrib_deriv3_cdf()] and [distrib_deriv4_cdf()].
+#' Every table of [loc_scale_cdf_deriv_k()] is the density times a factor, so
+#' on the log scale the factors are multiplied by
+#' \eqn{f/P = \exp(\log f - \log P)}, from the family's log-density and the
+#' log probability of the requested tail: neither \eqn{f} nor \eqn{P} is
+#' formed where it underflows, and the upper tail is the family's own.
+#' @param distrib A location-scale distribution object.
+#' @param q A numeric vector of quantiles.
+#' @param theta A named list of parameter values.
+#' @param order The derivative order, 1 to 4.
+#' @param lower.tail,log Logical of length 1.
+#' @return A named list of numeric vectors, keyed as [deriv_names()] at the
+#'   order, or as [hess_names()] at order 2.
+#' @examples
+#' d <- logistic_distrib()
+#' distributions7:::loc_scale_cdf_route(d, 40, list(mu = 0, sigma = 1), 1L,
+#'                                      FALSE, TRUE)
+#' @keywords internal
+loc_scale_cdf_route <- function(distrib, q, theta, order, lower.tail, log) {
+  tabs <- lapply(seq_len(order), function(k) {
+    loc_scale_cdf_deriv_k(distrib, q, theta, k, over_f = TRUE)
+  })
+  lf <- distrib_pdf(distrib, q, theta, log = TRUE)
+  if (!log) {
+    f <- exp(lf)
+    return(cdf_scale_k(distrib, NULL,
+                       lapply(tabs, function(t) lapply(t, function(v) v * f)),
+                       order, lower.tail, FALSE))
+  }
+  sgn <- if (lower.tail) 1 else -1
+  rho <- sgn * exp(lf - distrib_cdf(distrib, q, theta, lower.tail = lower.tail,
+                                    log.p = TRUE))
+  cdf_scale_k(distrib, rep(1, length(rho)),
+              lapply(tabs, function(t) lapply(t, function(v) v * rho)),
+              order, TRUE, TRUE)
+}
+
 # the location-scale families, the same four the orders below cover
-for (.cls in list(Gaussian1Distrib, LogisticDistrib, CauchyDistrib,
-                  LaplaceDistrib)) {
+# the Cauchy has its own closed form, cauchy_cdf_method()
+S7::method(distrib_deriv3_cdf, CauchyDistrib) <- cauchy_cdf_method(3L)
+S7::method(distrib_deriv4_cdf, CauchyDistrib) <- cauchy_cdf_method(4L)
+
+for (.cls in list(Gaussian1Distrib, LogisticDistrib, LaplaceDistrib)) {
   S7::method(distrib_deriv3_cdf, .cls) <- loc_scale_deriv_cdf_k(3L)
   S7::method(distrib_deriv4_cdf, .cls) <- loc_scale_deriv_cdf_k(4L)
 }

@@ -6,38 +6,85 @@
 // (cauchy.cpp, dexpected_kernels.cpp) and by the registry
 // (d7_ccallable.cpp). res = y - mu.
 
+#include <cmath>
+#include <complex>
+
 namespace d7 {
 
+// The Cauchy through Y = res + i s, res = y - mu: log f = log s - 2 Re log Y
+// - log pi and F = 1 - Im(log Y)/pi, with
+//   d^n log Y / dmu^j ds^k = (-1)^j i^k (-1)^(n - 1) (n - 1)! Y^(-n),
+// so every derivative of order n is one term in Y^(-n) (plus (-1)^(n-1)
+// (n-1)!/s^n from log s when it is pure in s). Neither res^2 nor s^2 is
+// formed, and no two terms cancel at any residual.
+
+// 1/Y by Smith's division
+inline std::complex<double> cauchy_yinv(double res, double s) {
+    if (std::fabs(res) >= std::fabs(s)) {
+        const double r = s / res, d = res + s * r;
+        return std::complex<double>(1.0 / d, -r / d);
+    }
+    const double r = res / s, d = res * r + s;
+    return std::complex<double>(r / d, -1.0 / d);
+}
+
+// i^k X: its real part (re = true) or imaginary part
+inline double cauchy_ik_part(int k, std::complex<double> X, bool re) {
+    switch (k % 4) {
+    case 0: return re ? X.real() : X.imag();
+    case 1: return re ? -X.imag() : X.real();
+    case 2: return re ? -X.real() : -X.imag();
+    default: return re ? X.imag() : -X.real();
+    }
+}
+
+// the order-n derivative of log f with j derivatives in mu, n - j in s
+inline double cauchy_logdens_d(int n, int j, double res, double s) {
+    const std::complex<double> w = cauchy_yinv(res, s);
+    std::complex<double> X(1.0, 0.0);
+    double f = 1.0;
+    for (int m = 0; m < n; m++) X *= w;
+    for (int m = 2; m < n; m++) f *= m;
+    const int k = n - j;
+    const double sg = ((j + n - 1) % 2) ? -1.0 : 1.0;
+    double v = -2.0 * sg * f * cauchy_ik_part(k, X, true);
+    if (j == 0) {
+        double is = 1.0;
+        for (int m = 0; m < n; m++) is /= s;
+        v += ((n - 1) % 2 ? -f : f) * is;
+    }
+    return v;
+}
+
+// the order-n derivative of F with j derivatives in mu, n - j in s
+inline double cauchy_cdf_d(int n, int j, double res, double s) {
+    const std::complex<double> w = cauchy_yinv(res, s);
+    std::complex<double> X(1.0, 0.0);
+    double f = 1.0;
+    for (int m = 0; m < n; m++) X *= w;
+    for (int m = 2; m < n; m++) f *= m;
+    const double sg = ((j + n - 1) % 2) ? -1.0 : 1.0;
+    return -sg * f * cauchy_ik_part(n - j, X, false) / 3.141592653589793238462643383280;
+}
+
 inline double cauchy_score_mu(double res, double s) {
-    double res2 = res * res;
-    double s2 = s * s;
-    double den = s2 + res2;
-    return (2.0 * res) / den;
+    return cauchy_logdens_d(1, 1, res, s);
 }
 
 inline double cauchy_score_sigma(double res, double s) {
-    double res2 = res * res;
-    double s2 = s * s;
-    double den = s2 + res2;
-    return (res2 - s2) / (s * den);
+    return cauchy_logdens_d(1, 0, res, s);
 }
 
 inline double cauchy_hess_mu_mu(double res, double s) {
-    double res2 = res * res;
-    double s2 = s * s;
-    double den = s2 + res2;
-    double den2 = den * den;
-    return (2.0 * res2 - 2.0 * s2) / den2;
+    return cauchy_logdens_d(2, 2, res, s);
+}
+
+inline double cauchy_hess_mu_sigma(double res, double s) {
+    return cauchy_logdens_d(2, 1, res, s);
 }
 
 inline double cauchy_hess_sigma_sigma(double res, double s) {
-    double res2 = res * res;
-    double res4 = res2 * res2;
-    double s2 = s * s;
-    double s4 = s2 * s2;
-    double den = s2 + res2;
-    double den2 = den * den;
-    return (s4 - 4.0 * s2 * res2 - res4) / (s2 * den2);
+    return cauchy_logdens_d(2, 0, res, s);
 }
 
 inline double cauchy_expected_mu_mu(double s) {

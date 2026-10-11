@@ -5,6 +5,7 @@
 #include <cmath>
 #include "pt_loc_scale.h"
 #include "pt_sqrt.h"
+#include "pt_sn2_fdb.h"
 
 // The skew normal in its centered parametrization (mu, sigma, gamma1); see
 // skewnormal2.cpp for the construction. With w = (y - mu)/sigma,
@@ -229,6 +230,12 @@ inline Sn2ShapeAll sn2_shape_all(double g) {
 
 template <class P_t>
 inline double sn2_grad_G1_0(double w, double X, double Z1, const P_t& P) {
+  // far left of the step the forms below cancel; there by composition
+  if (X < -1.0 && !sn2_series_region(X, P.r)) {
+    double GG[6][6];
+    sn2_G_fdb(w, P.r, P.Dq, 1, GG);
+    return GG[1][0];
+  }
   (void) w; (void) X; (void) Z1;
   if (sn2_series_region(X, P.r)) {
     return -(P.r + w)/P.p0 + Z1*P.r/(P.Dq*d7::sqrt_cr(P.p0));
@@ -240,6 +247,12 @@ inline double sn2_grad_G1_0(double w, double X, double Z1, const P_t& P) {
 
 template <class P_t>
 inline double sn2_G1_0(double w, double X, double Z1, const P_t& P) {
+  // far left of the step the forms below cancel; there by composition
+  if (X < -1.0 && !sn2_series_region(X, P.r)) {
+    double GG[6][6];
+    sn2_G_fdb(w, P.r, P.Dq, 1, GG);
+    return GG[1][0];
+  }
   (void) w; (void) X; (void) Z1;
   if (sn2_series_region(X, P.r)) {
     return -P.p3*(P.r + w) + Z1*P.r/(P.Dq*d7::sqrt_cr(P.p2));
@@ -251,6 +264,12 @@ inline double sn2_G1_0(double w, double X, double Z1, const P_t& P) {
 
 template <class P_t>
 inline double sn2_G2_0(double w, double X, double Z1, const P_t& P) {
+  // far left of the step the forms below cancel; there by composition
+  if (X < -1.0 && !sn2_series_region(X, P.r)) {
+    double GG[6][6];
+    sn2_G_fdb(w, P.r, P.Dq, 2, GG);
+    return GG[2][0];
+  }
   (void) w; (void) X; (void) Z1;
   if (sn2_series_region(X, P.r)) {
     return -P.p3*(1 + Z1*P.p1*(X + Z1)/std::pow(P.Dq, 2));
@@ -262,6 +281,12 @@ inline double sn2_G2_0(double w, double X, double Z1, const P_t& P) {
 
 template <class P_t>
 inline double sn2_G3_0(double w, double X, double Z1, const P_t& P) {
+  // far left of the step the forms below cancel; there by composition
+  if (X < -1.0 && !sn2_series_region(X, P.r)) {
+    double GG[6][6];
+    sn2_G_fdb(w, P.r, P.Dq, 3, GG);
+    return GG[3][0];
+  }
   (void) w; (void) X; (void) Z1;
   if (sn2_series_region(X, P.r)) {
     return Z1*std::pow(P.r, 3)*(std::pow(X, 2) + 3*X*Z1 + 2*std::pow(Z1, 2) - 1)/(std::pow(P.Dq, 3)*std::pow(P.p2, 3.0/2.0));
@@ -275,6 +300,12 @@ inline double sn2_G3_0(double w, double X, double Z1, const P_t& P) {
 template <class P_t>
 inline double sn2_G0_1(double w, double X, double Z1, const P_t& P,
                         double gs) {
+  // far left of the step the forms below cancel; there by composition
+  if (X < -1.0 && !sn2_series_region(X, P.r)) {
+    double GG[6][6];
+    sn2_G_fdb(w, P.r, P.Dq, 1, GG);
+    return GG[0][1];
+  }
   (void) w; (void) X; (void) Z1;
   if (sn2_series_region(X, P.r)) return gs;
   const double f0 = P.r + w;
@@ -286,6 +317,12 @@ inline double sn2_G0_1(double w, double X, double Z1, const P_t& P,
 template <class P_t>
 inline double sn2_G0_2(double w, double X, double Z1, const P_t& P,
                         double gs) {
+  // far left of the step the forms below cancel; there by composition
+  if (X < -1.0 && !sn2_series_region(X, P.r)) {
+    double GG[6][6];
+    sn2_G_fdb(w, P.r, P.Dq, 2, GG);
+    return GG[0][2];
+  }
   (void) w; (void) X; (void) Z1;
   if (sn2_series_region(X, P.r)) return gs;
   const double f0 = P.r + w;
@@ -306,6 +343,12 @@ inline double sn2_G0_2(double w, double X, double Z1, const P_t& P,
 template <class P_t>
 inline double sn2_G0_3(double w, double X, double Z1, const P_t& P,
                         double gs) {
+  // far left of the step the forms below cancel; there by composition
+  if (X < -1.0 && !sn2_series_region(X, P.r)) {
+    double GG[6][6];
+    sn2_G_fdb(w, P.r, P.Dq, 3, GG);
+    return GG[0][3];
+  }
   (void) w; (void) X; (void) Z1;
   if (sn2_series_region(X, P.r)) return gs;
   const double f0 = P.r + w;
@@ -352,6 +395,12 @@ inline double sn2_G0_3(double w, double X, double Z1, const P_t& P,
 template <class P_t>
 inline double sn2_hess_G1_1(double w, double X, double Z1, const P_t& P,
                              double gs) {
+  // far left of the step the forms below cancel; there by composition
+  if (X < -1.0 && !sn2_series_region(X, P.r)) {
+    double GG[6][6];
+    sn2_G_fdb(w, P.r, P.Dq, 2, GG);
+    return GG[1][1];
+  }
   (void) w; (void) X; (void) Z1;
   if (sn2_series_region(X, P.r)) return gs;
   const double f0 = P.r + w;
@@ -368,6 +417,12 @@ inline double sn2_hess_G1_1(double w, double X, double Z1, const P_t& P,
 template <class P_t>
 inline double sn2_G1_1(double w, double X, double Z1, const P_t& P,
                         double gs) {
+  // far left of the step the forms below cancel; there by composition
+  if (X < -1.0 && !sn2_series_region(X, P.r)) {
+    double GG[6][6];
+    sn2_G_fdb(w, P.r, P.Dq, 2, GG);
+    return GG[1][1];
+  }
   (void) w; (void) X; (void) Z1;
   if (sn2_series_region(X, P.r)) return gs;
   const double f0 = P.r + w;
@@ -386,6 +441,12 @@ inline double sn2_G1_1(double w, double X, double Z1, const P_t& P,
 template <class P_t>
 inline double sn2_G2_1(double w, double X, double Z1, const P_t& P,
                         double gs) {
+  // far left of the step the forms below cancel; there by composition
+  if (X < -1.0 && !sn2_series_region(X, P.r)) {
+    double GG[6][6];
+    sn2_G_fdb(w, P.r, P.Dq, 3, GG);
+    return GG[2][1];
+  }
   (void) w; (void) X; (void) Z1;
   if (sn2_series_region(X, P.r)) return gs;
   const double f0 = P.r + w;
@@ -406,6 +467,12 @@ inline double sn2_G2_1(double w, double X, double Z1, const P_t& P,
 template <class P_t>
 inline double sn2_G1_2(double w, double X, double Z1, const P_t& P,
                         double gs) {
+  // far left of the step the forms below cancel; there by composition
+  if (X < -1.0 && !sn2_series_region(X, P.r)) {
+    double GG[6][6];
+    sn2_G_fdb(w, P.r, P.Dq, 3, GG);
+    return GG[1][2];
+  }
   (void) w; (void) X; (void) Z1;
   if (sn2_series_region(X, P.r)) return gs;
   const double f0 = P.r + w;
@@ -556,8 +623,11 @@ inline void skewnormal2_quad_diag(int k, const double* shape, double* out,
   const double r = P.r, Dq = P.Dq;
   const LocScaleRule R = loc_scale_rule();
   LocScaleSum S;
+  // the rule is centered at the step of the density, w = -r, where its
+  // nodes cluster; at a skewness near the ceiling the step is too sharp for
+  // nodes clustered at w = 0
   for (int j = 0; j < R.n; ++j) {
-    const double w = R.x[j];
+    const double w = R.x[j] - r;
     const double fw = std::exp(skewnormal2_logpdf(w, 0.0, 1.0, gv)) * R.w[j];
     if (fw == 0.0) continue;
     const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);

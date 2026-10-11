@@ -177,7 +177,7 @@ register_phi_terms_cdf <- function(cls, term_fn) {
       tms <- term_fn(distrib, q, theta)
       tabs <- lapply(seq_len(o),
                      function(k) phi_terms_cdf_deriv_k(distrib, q, k, tms))
-      out <- cdf_scale_k(distrib, distrib_cdf(distrib, q, theta), tabs, o,
+      out <- cdf_scale_k(distrib, tail_cdf(distrib, q, theta, lower.tail), tabs, o,
                          lower.tail, log)
       # order two in the order of hess_names(), as every other route returns it
       if (o == 2L) out[hess_names(distrib@params)] else out

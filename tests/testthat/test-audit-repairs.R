@@ -364,3 +364,237 @@ test_that("the compiled cdf derivatives of a small shape reach the mass below th
                  a_d_d_p = 0.20176308876144255, p_p_p_p = 0.026773836482916757),
                tolerance = 1e-10)
 })
+# --- T2b: skewnormal, skewt, laplace, logistic, cauchy, gumbel, gpd, chisq,
+# exponential, vonmises, pseudohuber, enet (2026-10-11). References are
+# closed forms or mpmath at 40 to 80 digits.
+
+test_that("the generalized Pareto distribution and quantile functions keep both tails", {
+  d <- gpd_distrib()
+  # below zero the lower tail is 0 whatever the sign of the shape
+  expect_equal(distrib_cdf(d, c(-10, -5.1, -1), list(sigma = 1.5, xi = 0.3)), c(0, 0, 0))
+  expect_equal(distrib_cdf(d, -10, list(sigma = 1.5, xi = 0.3), lower.tail = FALSE), 1)
+  expect_equal(distrib_cdf(d, 1e-10, list(sigma = 1, xi = 0)), pexp(1e-10), tolerance = 1e-14)
+  expect_equal(distrib_cdf(d, 1e-16, list(sigma = 1, xi = 0.3)), 1e-16, tolerance = 1e-14)
+  expect_equal(distrib_cdf(d, 1000, list(sigma = 1, xi = 0), lower.tail = FALSE, log.p = TRUE),
+               -1000)
+  expect_equal(distrib_quantile(d, 1e-10, list(sigma = 1, xi = 0.3)),
+               expm1(-0.3 * log1p(-1e-10)) / 0.3, tolerance = 1e-14)
+  expect_equal(distrib_quantile(d, 1e-20, list(sigma = 1, xi = 0), lower.tail = FALSE),
+               -log(1e-20), tolerance = 1e-14)
+  expect_equal(distributions7:::gpd_endpoint(c(1, 2, 3), -0.5), c(2, 4, 6))
+  expect_named(distrib_hess_cdf(d, 0.3, list(sigma = 1, xi = 0.2)),
+               c("sigma_sigma", "xi_xi", "sigma_xi"))
+})
+
+test_that("the Laplace distribution and quantile functions keep both tails", {
+  d <- laplace_distrib()
+  th <- list(mu = 0.4, sigma = 1.5)
+  expect_equal(distrib_cdf(d, 0.4 + 75, th, lower.tail = FALSE), 0.5 * exp(-50), tolerance = 1e-13)
+  expect_equal(distrib_cdf(d, 0.4 - 1500, th, log.p = TRUE), log(0.5) - 1000, tolerance = 1e-14)
+  expect_equal(distrib_quantile(d, c(1e-16, 1e-20), th), 0.4 + 1.5 * log(2 * c(1e-16, 1e-20)),
+               tolerance = 1e-14)
+  expect_equal(distrib_quantile(d, 1e-20, th, lower.tail = FALSE), 0.4 - 1.5 * log(2e-20),
+               tolerance = 1e-14)
+  expect_equal(distrib_quantile(d, -50, th, log.p = TRUE), 0.4 + 1.5 * (log(2) - 50),
+               tolerance = 1e-14)
+  expect_equal(distrib_pdf(d, 0, list(mu = 0, sigma = 1e308), log = TRUE),
+               -(log(2) + log(1e308)))
+  d2 <- laplace2_distrib()
+  expect_equal(distrib_cdf(d2, 25.4, list(mu = 0.4, lambda = 2), lower.tail = FALSE),
+               0.5 * exp(-50), tolerance = 1e-13)
+  # a tiny scale no longer underflows an intermediate power of it
+  expect_equal(distrib_hessian(d, 2e-120, list(mu = 0, sigma = 1e-120))$sigma_sigma, -3e240,
+               tolerance = 1e-14)
+  expect_equal(distrib_deriv4(d, 2e-65, list(mu = 0, sigma = 1e-65))$sigma_sigma_sigma_sigma,
+               -4.2e261, tolerance = 1e-14)
+})
+
+test_that("seven families compute their fifth derivatives in closed form", {
+  # at a fixed standardized residual, sigma^5 times each component does not
+  # depend on sigma; the numerical fallback gave a relative error of 5 at 1e-6
+  for (fam in c("laplace", "logistic", "cauchy", "gumbel")) {
+    d <- get(paste0(fam, "_distrib"))()
+    a <- unlist(distrib_deriv5(d, 0.4 + 3e-6, list(mu = 0.4, sigma = 1e-6))) * 1e-30
+    b <- unlist(distrib_deriv5(d, 3.4, list(mu = 0.4, sigma = 1)))
+    expect_lt(max(abs(a - b)) / max(abs(b)), 1e-10, label = fam)
+  }
+  expect_equal(distrib_deriv5(laplace2_distrib(), 1, list(mu = 0.4, lambda = 1e-3))[[6]],
+               24 / 1e-15, tolerance = 1e-14)
+  expect_equal(distrib_deriv5(exponential_distrib(), 3e-4, list(mu = 1e-4))[[1]],
+               (120 * 3e-4 - 24e-4) / 1e-24, tolerance = 1e-13)
+  expect_equal(distrib_deriv5(chisq_distrib(), 3, list(mu = 1e-4))[[1]],
+               -psigamma(5e-5, 4) / 32, tolerance = 1e-14)
+})
+
+test_that("the Cauchy derivatives are finite and exact far in the tail", {
+  d <- cauchy_distrib()
+  th <- list(mu = 0, sigma = 1)
+  expect_equal(distrib_pdf(d, 1e160, th, log = TRUE), -log(pi) - 2 * log(1e160))
+  h <- distrib_hessian(d, c(1e80, 1e160), th)
+  expect_equal(h$sigma_sigma, c(-1, -1))
+  expect_equal(distrib_gradient(d, 1e160, th)$sigma, 1)
+  # the fourth derivative of F in mu is f''' at z = 1e5, -24 z (z^2 - 1)/(pi (1 + z^2)^4)
+  F4 <- distrib_deriv4_cdf(d, 1e5, th, log = FALSE)
+  expect_equal(F4$mu_mu_mu_mu, 24 * 1e5 * (1 - 1e10) / (pi * (1 + 1e10)^4), tolerance = 1e-13)
+  S3 <- distrib_deriv3_cdf(d, 1e5, th, lower.tail = FALSE)
+  expect_true(all(is.finite(unlist(S3))))
+  expect_equal(distrib_grad_cdf(d, 1e8, th, lower.tail = FALSE)$mu, 1e-8, tolerance = 1e-7)
+})
+
+test_that("the log-scale cdf derivatives read the family's own tails", {
+  th <- list(mu = 0, sigma = 1)
+  d <- logistic_distrib()
+  # d log S/dmu = F for the logistic
+  expect_equal(distrib_grad_cdf(d, 40, th, lower.tail = FALSE)$mu, plogis(40))
+  expect_equal(distrib_grad_cdf(d, 30, th, lower.tail = FALSE)$mu, plogis(30), tolerance = 1e-14)
+  expect_true(all(is.finite(unlist(distrib_deriv4_cdf(d, 300, th, lower.tail = FALSE)))))
+  g <- gumbel_distrib()
+  # d log F/dmu = -exp(-y) for the Gumbel
+  expect_equal(distrib_grad_cdf(g, -10, th)$mu, -exp(10), tolerance = 1e-14)
+  expect_equal(distrib_grad_cdf(g, 50, th, lower.tail = FALSE)$mu, 1, tolerance = 1e-14)
+  expect_equal(distrib_cdf(g, 800, th, lower.tail = FALSE, log.p = TRUE), -800)
+})
+
+test_that("order-two names follow hess_names() in five more places", {
+  expect_named(distrib_hessian(vonmises1_distrib(), 0.3, list(mu = 0, kappa = 2)),
+               c("mu_mu", "kappa_kappa", "mu_kappa"))
+  expect_named(distrib_expected_hessian(vonmises1_distrib(), 0.3, list(mu = 0, kappa = 2)),
+               c("mu_mu", "kappa_kappa", "mu_kappa"))
+  expect_named(distrib_hess_cdf(skewnormal1_distrib(), 0.3, list(mu = 0, sigma = 1, alpha = 2)),
+               hess_names(c("mu", "sigma", "alpha")))
+  expect_named(distrib_hess_cdf(skewnormal2_distrib(), 0.3, list(mu = 0, sigma = 1, gamma1 = 0.3)),
+               hess_names(c("mu", "sigma", "gamma1")))
+})
+
+test_that("small defects: logistic tails, chi-squared at y = 0, overflowing log-densities", {
+  d <- logistic_distrib()
+  expect_equal(distrib_hess_y(d, 40, list(mu = 0, sigma = 1))[[1]],
+               -2 * exp(-40) / (1 + exp(-40))^2, tolerance = 1e-14)
+  expect_equal(distrib_hessian(d, 40, list(mu = 0, sigma = 1))$mu_mu,
+               -2 * exp(-40) / (1 + exp(-40))^2, tolerance = 1e-14)
+  expect_equal(distrib_grad_y(chisq_distrib(), 0, list(mu = 2))[[1]], -0.5)
+  expect_equal(distrib_hess_y(chisq_distrib(), 0, list(mu = 2))[[1]], 0)
+  expect_true(is.finite(distrib_pdf(pseudohuber_distrib(), 1e160,
+                                    list(mu = 0.4, sigma = 1.2, nu = 2), log = TRUE)))
+  expect_true(is.finite(distrib_pdf(pseudohuber2_distrib(), 1e300,
+                                    list(mu = 0, sigma = 1, nu = 2), log = TRUE)))
+  st <- skewt_distrib()
+  th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
+  expect_equal(distrib_hess_y(st, 1e90, th)[[1]], distrib_hessian(st, 1e90, th)$mu_mu)
+})
+
+test_that("the skew normal and von Mises draws cover their whole parameter domain", {
+  set.seed(1)
+  x <- distrib_rng(skewnormal1_distrib(), 5000, list(mu = 0, sigma = 1, alpha = 1e200))
+  expect_true(all(x >= 0))
+  set.seed(1)
+  expect_false(anyNA(distrib_rng(vonmises1_distrib(), 50, list(mu = 0.5, kappa = 1e-8))))
+  set.seed(1)
+  expect_false(anyNA(distrib_rng(vonmises1_distrib(), 3, list(mu = 0.5, kappa = c(1e-9, 1, 1e-310)))))
+  set.seed(1)
+  expect_false(anyNA(distrib_rng(vonmises2_distrib(), 5, list(mu = 0.5, rho = 1e-9))))
+})
+
+test_that("the elastic net's derivatives keep their digits as alpha approaches one", {
+  d <- enet_distrib()
+  # mpmath, 60 digits
+  expect_equal(distrib_gradient(d, 0.4, list(mu = 0, lambda = 1, alpha = 1 - 1e-6))$alpha,
+               -0.3199980000149999, tolerance = 1e-12)
+  expect_equal(distrib_hessian(d, 3, list(mu = 0, lambda = 3, alpha = 0.999))$alpha_alpha,
+               -0.22214866375342673, tolerance = 1e-12)
+  expect_equal(variance(d, list(mu = 0, lambda = 2, alpha = 0.9999)), 0.49997501124519006,
+               tolerance = 1e-13)
+  th <- list(mu = 0, lambda = 2, alpha = 0.5)
+  expect_equal(distrib_cdf(d, 12, th, lower.tail = FALSE), distrib_cdf(d, -12, th), tolerance = 1e-14)
+  expect_equal(distrib_quantile(d, 1e-30, th, lower.tail = FALSE), -distrib_quantile(d, 1e-30, th),
+               tolerance = 1e-14)
+  expect_true(is.finite(distrib_cdf(d, -40, th, log.p = TRUE)))
+})
+
+test_that("the skew normal's kernels, distribution function and centered information", {
+  d <- skewnormal1_distrib()
+  # mpmath, 80 digits: d^4/dalpha^4 log f at y = 1, alpha = -38, and at y = -30, alpha = 5
+  expect_equal(distrib_deriv4(d, 1, list(mu = 0, sigma = 1, alpha = -38))$alpha_alpha_alpha_alpha,
+               2.8381325760967472e-06, tolerance = 1e-12)
+  expect_equal(distrib_deriv4(d, -30, list(mu = 0, sigma = 1, alpha = 5))$alpha_alpha_alpha_alpha,
+               0.009591473298469228, tolerance = 1e-12)
+  th <- list(mu = 0, sigma = 1, alpha = 3)
+  # mpmath, 40 digits
+  expect_equal(distrib_cdf(d, c(-2, -3), th), c(5.0891259751793012e-12, 3.2642743096552352e-23),
+               tolerance = 1e-12)
+  expect_equal(distrib_cdf(d, 8, th, lower.tail = FALSE), 1.2441921148543568e-15, tolerance = 1e-12)
+  expect_equal(distrib_cdf(d, 10, th, lower.tail = FALSE, log.p = TRUE), -52.538137969952525,
+               tolerance = 1e-13)
+  expect_equal(distrib_cdf(d, c(-0.1, 1), list(mu = 0, sigma = 1, alpha = 1e200)),
+               c(0, 2 * pnorm(1) - 1), tolerance = 1e-14)
+  # near the skewness ceiling the centered information is negative definite
+  e <- distrib_expected_hessian(skewnormal2_distrib(), 0, list(mu = 0, sigma = 1, gamma1 = 0.99527))
+  expect_lt(e$gamma1_gamma1, 0)
+})
+
+test_that("tails below double precision resolution: compiled cdf, quantiles, von Mises", {
+  expect_true(is.finite(distrib_cdf(pseudohuber_distrib(), -2000, list(mu = 0.4, sigma = 1.2, nu = 2),
+                                    log.p = TRUE)))
+  expect_true(is.finite(distrib_cdf(skewt_distrib(), -1e50,
+                                    list(mu = 0.3, sigma = 1.2, alpha = 2, nu = 6), log.p = TRUE)))
+  d <- skewt_distrib()
+  th <- list(mu = 0.3, sigma = 1.2, alpha = 2, nu = 6)
+  q <- distrib_quantile(d, 1e-100, th)
+  expect_equal(distrib_cdf(d, q, th, log.p = TRUE), log(1e-100), tolerance = 1e-12)
+  expect_equal(distrib_quantile(d, distrib_cdf(d, c(-2, 0.5, 3), th), th), c(-2, 0.5, 3),
+               tolerance = 1e-10)
+  ph <- pseudohuber_distrib()
+  thp <- list(mu = 0.4, sigma = 1.2, nu = 2)
+  expect_equal(distrib_quantile(ph, 1e-30, thp, lower.tail = FALSE),
+               0.8 - distrib_quantile(ph, 1e-30, thp), tolerance = 1e-12)
+  vm <- vonmises1_distrib()
+  # mpmath, 40 digits
+  expect_equal(distrib_cdf(vm, -1, list(mu = 0, kappa = 100)), 5.1016782326113297e-22,
+               tolerance = 1e-11)
+  expect_equal(distrib_cdf(vm, -1.5, list(mu = 0, kappa = 100), log.p = TRUE),
+               -96.147161269784047, tolerance = 1e-12)
+})
+
+test_that("the pseudo-Huber derivatives in nu at both ends of its domain", {
+  # mpmath, 60 to 80 digits
+  expect_equal(distrib_hessian(pseudohuber_distrib(), 3, list(mu = 0, sigma = 1, nu = 1e-14))$nu_nu,
+               -24999999999934.105, tolerance = 1e-12)
+  th <- list(mu = 2, sigma = 2, nu = 1e8)
+  expect_equal(distrib_hessian(pseudohuber2_distrib(), 3, th)$nu_nu, 1.4644199203098685e-21,
+               tolerance = 1e-10)
+  expect_equal(distrib_deriv3(pseudohuber2_distrib(), 3, th)$nu_nu_nu, -3.660837885159833e-29,
+               tolerance = 1e-10)
+})
+
+test_that("the skew t's derivatives in nu at large nu", {
+  d <- skewt_distrib()
+  # mpmath, 80 digits
+  h <- distrib_hessian(d, 200, list(mu = 0, sigma = 1, alpha = -5, nu = 1000))
+  expect_equal(h$nu_nu, 0.0004990377703385572, tolerance = 1e-8)
+  expect_equal(h$alpha_nu, 0.19193841843404105, tolerance = 1e-8)
+})
+
+test_that("the skew t's components free of nu at large nu, the second table", {
+  # mpmath, 60 digits; the reduced table lost 7e-5 in sigma^4 at nu = 1e6
+  d4 <- distrib_deriv4(skewt_distrib(), 1, list(mu = 0, sigma = 1, alpha = 3, nu = 1e6))
+  expect_equal(d4$sigma_sigma_sigma_sigma, -53.00466070727036, tolerance = 1e-13)
+  expect_equal(d4$mu_mu_sigma_sigma, -7.504473645143255, tolerance = 1e-13)
+})
+
+test_that("the centered skew normal's kernels far below the step", {
+  # mpmath, 50 digits, at y = -9, gamma1 = 0.8 (4e-7 normwise at order 5 before)
+  d <- skewnormal2_distrib()
+  th <- list(mu = 0, sigma = 1, gamma1 = 0.8)
+  d5 <- distrib_deriv5(d, -9, th)
+  expect_equal(d5$gamma1_gamma1_gamma1_gamma1_gamma1, -95247826.17814274, tolerance = 1e-12)
+  expect_equal(d5$mu_mu_mu_mu_mu, -0.0007906296480186424, tolerance = 1e-9)
+  expect_equal(distrib_deriv3(d, -9, th)$gamma1_gamma1_gamma1, -181653.25348333703,
+               tolerance = 1e-12)
+})
+
+test_that("the pseudo-Huber nu-only derivatives in the middle of nu's range", {
+  # mpmath, 60 digits, at nu = 200 (1e-10 at order five by the Bessel ratios)
+  o <- distributions7:::ph_nu_derivs_cpp(200, 5L)
+  expect_equal(o$B[5, 1], -1.2840692384019815e-10, tolerance = 1e-13)
+  expect_equal(o$logR[5, 1], 2.9029818456005618e-11, tolerance = 1e-12)
+})

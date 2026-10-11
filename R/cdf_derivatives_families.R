@@ -161,7 +161,7 @@ mapped_cdf_deriv <- function(distrib, parent, th_par, maps, q, theta, order,
                              lower.tail, log) {
   exact <- has_exact_cdf_deriv(parent, 1L) &&
     (order == 1L || has_exact_cdf_deriv(parent, 2L))
-  Fq <- distrib_cdf(distrib, q, theta)
+  Fq <- tail_cdf(distrib, q, theta, lower.tail)
   if (!exact) {
     d1 <- numerical_cdf_deriv(distrib, q, theta, 1L)
     d2 <- if (order == 1L) NULL else numerical_cdf_deriv(distrib, q, theta, 2L)
@@ -711,7 +711,7 @@ S7::method(distrib_hess_cdf, GumbelDistrib) <- loc_scale_hess_cdf
 #   d1 <- c(list(-f, -z * f),
 #           numerical_cdf_deriv(distrib, q, theta, 1L, which = rest1))
 #   names(d1) <- params
-#   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, d2,
+#   cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, d2,
 #                  lower.tail, log)
 # }
 
@@ -955,6 +955,6 @@ S7::method(distrib_hess_cdf, Lognormal1Distrib) <-
                sigma2_sigma2 = ph * z * (3 - z^2) / (4 * v^2),
                mu_sigma2 = ph * (1 - z^2) / (2 * s^3))
     names(d2) <- hess_names(distrib@params)
-    cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, d2,
+    cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, d2,
                    lower.tail, log)
   }

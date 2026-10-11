@@ -28,16 +28,21 @@ inline double laplace_hess_mu_mu() {
     return 0.0;
 }
 
+// (b - 2|r|)/b^3 written as (1 - 2|r|/b)/b^2 with 1/b formed once, so that
+// a tiny scale does not underflow b^3 where the value is finite
 inline double laplace_hess_sigma_sigma(double ar, double b) {
-    return (b - 2.0 * ar) / (b * b * b);
+    const double ib = 1.0 / b;
+    return (1.0 - 2.0 * ar * ib) * ib * ib;
 }
 
 inline double laplace_expected_mu_mu(double b) {
-    return -1.0 / (b * b);
+    const double ib = 1.0 / b;
+    return -ib * ib;
 }
 
 inline double laplace_expected_sigma_sigma(double b) {
-    return -1.0 / (b * b);
+    const double ib = 1.0 / b;
+    return -ib * ib;
 }
 
 // E_mm = E_bb = -1/b^2 do not depend on mu
@@ -46,7 +51,8 @@ inline double laplace_dexpected_mu_mu_mu() {
 }
 
 inline double laplace_dexpected_sigma_sigma_sigma(double b) {
-    return 2.0 / (b * b * b);
+    const double ib = 1.0 / b;
+    return 2.0 * ib * ib * ib;
 }
 
 inline void laplace_score_curv(int k, double y, const double* th,

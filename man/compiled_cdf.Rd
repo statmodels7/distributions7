@@ -2,12 +2,18 @@
 % Please edit documentation in R/cdf_compiled.R
 \name{compiled_cdf}
 \alias{compiled_cdf}
+\alias{compiled_log_cdf}
+\alias{log_tail_integral}
 \alias{compiled_grad_cdf}
 \alias{compiled_hess_cdf}
 \alias{compiled_cdf_args}
 \title{Distribution Function and Its Derivatives from the Compiled Kernels}
 \usage{
 compiled_cdf(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...)
+
+compiled_log_cdf(distrib, a, out, lower.tail)
+
+log_tail_integral(distrib, q, th, lower.tail)
 
 compiled_grad_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 
@@ -26,6 +32,13 @@ compiled_cdf_args(distrib, q, theta)
 
 \item{...}{Unused.}
 
+\item{a}{The value of \code{compiled_cdf_args()}.}
+
+\item{out}{The probabilities of the requested tail, from the compiled
+kernel.}
+
+\item{th}{A named list of scalar parameter values.}
+
 \item{log, log.p}{Are derivatives of (or values of) the log probability
 wanted? A single logical.}
 }
@@ -33,6 +46,20 @@ wanted? A single logical.}
 For \code{compiled_cdf()}, a numeric vector; for the two derivative
 bodies, a named list of numeric vectors as \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and
 \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} return.
+
+\code{compiled_log_cdf()} returns the logarithm of \code{out}, formed as
+\eqn{\log(1 - P_{\mathrm{other}})} through \code{log1p()} where \code{out} is
+above one half, and as
+\eqn{\ell(q) + \log\int_0^{\infty} e^{\ell(q \mp u) - \ell(q)}\,du}
+where \code{out} is below \eqn{10^{-290}}, the integral taken by
+\code{\link[stats:integrate]{stats::integrate()}} on the scale \eqn{1/|\partial_y \ell(q)|} and cut
+at the end of the support.
+
+\code{log_tail_integral()} returns the logarithm of the probability of
+the tail beyond \code{q}, \eqn{\ell(q) + \log\int_0^\infty
+  e^{\ell(q \mp u) - \ell(q)}\,du}, by \code{\link[stats:integrate]{stats::integrate()}} on a scale
+adjusted until one step changes \eqn{\ell} by between 1/2 and 50, and
+\eqn{\ell(q) - \log|\ell'(q)|} where no such step is resolved.
 
 \code{compiled_cdf_args()} returns the class name, the recycled
 quantiles and the parameter matrix the kernels read.

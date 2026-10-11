@@ -13,9 +13,9 @@ using namespace Rcpp;
 //   g2 = -R (t + R)
 //   g3 = -g2 (t + R) - R (1 + g2)
 //   g4 = -g3 (t + 2R) - 2 g2 (1 + g2)
-// R is formed on the log scale, because below about t = -38 both phi and Phi
-// underflow while the ratio stays finite and close to -t (same device as
-// mills_ratio() on the R side).
+// They come from logphi_derivs() (pt_logphi.h), which uses these recursions
+// for t >= -1 and the cumulants of the Mills ratio below, where the
+// recursions cancel.
 //
 // The (mu, sigma) ladder uses h_k, the k-th z-derivative of
 // h(z) = -z^2/2 + log Phi(alpha z), with the location-scale generating rules
@@ -25,16 +25,12 @@ using namespace Rcpp;
 
 // g1 to g3, what the third order reads, and g1 to g4 for the fourth; the
 // third-order kernel does not form g4
-static inline void sn_g3(double t, double g[5]) {
-    double R = std::exp(R::dnorm4(t, 0.0, 1.0, 1) - R::pnorm5(t, 0.0, 1.0, 1, 1));
-    double g2 = -R * (t + R);
-    double g3 = -g2 * (t + R) - R * (1.0 + g2);
-    g[1] = R; g[2] = g2; g[3] = g3;
+static inline void sn_g3(double t, double g[6]) {
+    d7::logphi_derivs(t, 3, g);
 }
 
-static inline void sn_g4(double t, double g[5]) {
-    sn_g3(t, g);
-    g[4] = -g[3] * (t + 2.0 * g[1]) - 2.0 * g[2] * (1.0 + g[2]);
+static inline void sn_g4(double t, double g[6]) {
+    d7::logphi_derivs(t, 4, g);
 }
 
 // [[Rcpp::export]]
@@ -59,7 +55,7 @@ List skewnormal_deriv3_cpp(NumericVector y, NumericVector mu,
         double t = a * z;
         double z2 = z * z, t2 = t * t;
 
-        double g[5];
+        double g[6];
         sn_g3(t, g);
         double h1 = -z + a * g[1];
         double h2 = -1.0 + a * a * g[2];
@@ -117,7 +113,7 @@ List skewnormal_deriv4_cpp(NumericVector y, NumericVector mu,
         double z2 = z * z, z3 = z2 * z, z4 = z2 * z2;
         double t2 = t * t, t3 = t2 * t;
 
-        double g[5];
+        double g[6];
         sn_g4(t, g);
         double h1 = -z + a * g[1];
         double h2 = -1.0 + a * a * g[2];

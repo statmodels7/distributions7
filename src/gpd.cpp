@@ -24,6 +24,28 @@ NumericVector gpd_logpdf_cpp(NumericVector y, NumericVector sigma,
   return out;
 }
 
+// log S(q) = -log(t)/xi = -z phi(u), with t from the exact product; 0 below
+// zero and -Inf past the upper endpoint
+// [[Rcpp::export]]
+NumericVector gpd_logsurv_cpp(NumericVector q, NumericVector sigma,
+                              NumericVector xi, int threads = 1) {
+  const int n = q.size();
+  const int n_s = sigma.size(), n_x = xi.size();
+  NumericVector out(n);
+  d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
+    const double sv = sigma[i % n_s], x = xi[i % n_x], qv = q[i];
+    if (std::isnan(qv) || std::isnan(sv) || std::isnan(x)) { out[i] = NA_REAL; return; }
+    if (qv <= 0.0) { out[i] = 0.0; return; }
+    if (qv == R_PosInf) { out[i] = R_NegInf; return; }
+    const double t = gpd_t(qv, sv, x);
+    if (!(t > 0.0)) { out[i] = R_NegInf; return; }
+    const double z = qv / sv, u = x * z;
+    const double lt = gpd_logt(u, t);
+    out[i] = -z * gpd_phi(0, u, u / t, t, lt);
+  });
+  return out;
+}
+
 // order 1 of log f in (sigma, xi)
 // [[Rcpp::export]]
 List gpd_gradient_cpp(NumericVector y, NumericVector sigma, NumericVector xi, int threads = 1) {

@@ -168,9 +168,10 @@ skewt_pieces <- function(y, mu, sigma, alpha, nu) {
   a <- -m * z / s
   da <- -m * (nu - z^2) / s^2
   db <- -3 * alpha * nu * sqrt(m) * z / s^2.5
-  # s overflows near |z| = 1e154; far out the pieces are written in
-  # rs = sqrt(s), z/rs and nu/s, as the registry's skewt_pieces() writes them
-  big <- abs(z) > 1e100
+  # s^2.5 overflows near |z| = 1e61 and s itself near 1e154; far out the
+  # pieces are written in rs = sqrt(s), z/rs and nu/s, as the registry's
+  # skewt_pieces() writes them
+  big <- abs(z) > 1e20
   if (any(big)) {
     n <- length(z)
     rs <- abs(z) * sqrt(1 + nu / (z * z))
@@ -271,7 +272,7 @@ S7::method(distrib_pdf, SkewTDistrib) <- function(distrib, y, theta, log = FALSE
   w <- alpha * z * sqrt((nu + 1) / (nu + z^2))
   # z^2 overflows near |z| = 1e154; far out w is formed from rs = sqrt(nu + z^2)
   # without it, as the registry's skewt_logpdf() forms it
-  big <- abs(z) > 1e100
+  big <- abs(z) > 1e20
   if (any(big)) {
     rs <- abs(z) * sqrt(1 + nu / (z * z))
     wb <- alpha * sqrt(nu + 1) * (z / rs)

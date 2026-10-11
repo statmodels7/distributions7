@@ -114,7 +114,12 @@ GPDDistrib <- S7::new_class("GPDDistrib", parent = continuous_distrib)
 #' distrib_pdf(d, c(4, 5, 6), list(sigma = 2, xi = -0.4))
 #'
 #' @keywords internal
-gpd_endpoint <- function(sigma, xi) ifelse(xi < 0, -sigma / xi, Inf)
+gpd_endpoint <- function(sigma, xi) {
+  n <- max(length(sigma), length(xi))
+  sigma <- rep_len(sigma, n)
+  xi <- rep_len(xi, n)
+  ifelse(xi < 0, -sigma / xi, Inf)
+}
 
 # --- S7 METHODS IMPLEMENTATION ---
 
@@ -245,23 +250,13 @@ S7::method(distrib_pdf, GPDDistrib) <- function(distrib, y, theta, log = FALSE, 
 S7::method(distrib_cdf, GPDDistrib) <- function(distrib, q, theta,
                                                  lower.tail = TRUE,
                                                  log.p = FALSE, ...) {
-  # ifelse() returns a result the length of its TEST, so a scalar shape would
-  # collapse a vector of quantiles to one number. The branch is taken with a
-  # test recycled to the answer's length instead.
-  s <- theta[[1]]
-  x <- theta[[2]]
-  z <- q / s
-  n <- length(z)
-  small <- rep_len(abs(x) < 1e-8, n)
-  t <- 1 + rep_len(x, n) * z
-  surv <- numeric(n)
-  surv[small] <- exp(-z[small])
-  surv[!small] <- t[!small]^(-1 / rep_len(x, n)[!small])
-  surv[q < 0] <- 1
-  surv[t <= 0] <- 0
-  surv <- pmin(pmax(surv, 0), 1)
-  p <- if (lower.tail) 1 - surv else surv
-  if (log.p) log(p) else p
+  # log S = -log(t)/xi from the compiled kernel, which forms t from the
+  # exact product; each tail and its logarithm are taken from log S.
+  n <- max(length(q), length(theta[[1]]), length(theta[[2]]))
+  ls <- gpd_logsurv_cpp(rep_len(as.numeric(q), n), as.numeric(theta[[1]]),
+                        as.numeric(theta[[2]]))
+  if (!lower.tail) return(if (log.p) ls else exp(ls))
+  if (log.p) log1mexp_neg(ls) else -expm1(ls)
 }
 
 #' @title Generalized Pareto Quantile Function
@@ -317,17 +312,20 @@ S7::method(distrib_cdf, GPDDistrib) <- function(distrib, q, theta,
 S7::method(distrib_quantile, GPDDistrib) <- function(distrib, p, theta,
                                                       lower.tail = TRUE,
                                                       log.p = FALSE, ...) {
-  if (log.p) p <- exp(p)
-  if (!lower.tail) p <- 1 - p
-  s <- theta[[1]]
-  x <- theta[[2]]
-  n <- length(p)
-  sv <- rep_len(s, n)
-  xv <- rep_len(x, n)
-  small <- abs(xv) < 1e-8
-  out <- numeric(n)
-  out[small] <- -sv[small] * log1p(-p[small])
-  out[!small] <- sv[!small] * ((1 - p[!small])^(-xv[!small]) - 1) / xv[!small]
+  # ls is the logarithm of the survival probability, formed from the input
+  # without 1 - p or exp(); Q = sigma expm1(-xi ls)/xi, and -sigma ls at 0.
+  n <- max(length(p), length(theta[[1]]), length(theta[[2]]))
+  p <- rep_len(as.numeric(p), n)
+  ls <- if (lower.tail) {
+    if (log.p) log1mexp_neg(p) else log1p(-p)
+  } else {
+    if (log.p) p else log(p)
+  }
+  sv <- rep_len(theta[[1]], n)
+  xv <- rep_len(theta[[2]], n)
+  out <- -sv * ls
+  nz <- !is.na(xv) & xv != 0
+  out[nz] <- sv[nz] * expm1(-xv[nz] * ls[nz]) / xv[nz]
   out
 }
 

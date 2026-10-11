@@ -237,6 +237,13 @@ List skewnormal2_gradient_cpp(NumericVector y, NumericVector mu, NumericVector s
     G1_0 = d7::sn2_grad_G1_0(w, X, Z1, P);
     const double gs01 = d7::sn2_series_region(X, r) ? d7::sn2_G_series(0, 1, w, r) : 0.0;
     G0_1 = d7::sn2_G0_1(w, X, Z1, P, gs01);
+    // far left of the step the forms above cancel; there by composition
+    if (X < -1.0 && !d7::sn2_series_region(X, r)) {
+      double GG[6][6];
+      d7::sn2_G_fdb(w, r, Dq, 1, GG);
+      G1_0 = GG[1][0];
+      G0_1 = GG[0][1];
+    }
     o_mu[i] = d7::skewnormal2_score_mu(G1_0, s);
     o_sigma[i] = d7::skewnormal2_score_sigma(G1_0, w, s);
     o_gamma1[i] = d7::skewnormal2_score_gamma1(G0_1);
@@ -277,6 +284,15 @@ List skewnormal2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector si
     G1_0 = d7::sn2_G1_0(w, X, Z1, P);
     G2_0 = d7::sn2_G2_0(w, X, Z1, P);
     G0_2 = d7::sn2_G0_2(w, X, Z1, P, GS[0][2]);
+    // far left of the step the forms above cancel; there by composition
+    if (X < -1.0 && !d7::sn2_series_region(X, r)) {
+      double GG[6][6];
+      d7::sn2_G_fdb(w, r, Dq, 2, GG);
+      G1_0 = GG[1][0];
+      G2_0 = GG[2][0];
+      G1_1 = GG[1][1];
+      G0_2 = GG[0][2];
+    }
     const double u0 = std::pow(s, -2);
     const double u1 = G1_1/s;
     o_mu_mu[i] = d7::skewnormal2_hess_mu_mu(G2_0, s);
@@ -332,6 +348,18 @@ List skewnormal2_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sig
     G2_0 = d7::sn2_G2_0(w, X, Z1, P);
     G3_0 = d7::sn2_G3_0(w, X, Z1, P);
     G0_3 = d7::sn2_G0_3(w, X, Z1, P, GS[0][3]);
+    // far left of the step the forms above cancel; there by composition
+    if (X < -1.0 && !d7::sn2_series_region(X, r)) {
+      double GG[6][6];
+      d7::sn2_G_fdb(w, r, Dq, 3, GG);
+      G1_0 = GG[1][0];
+      G2_0 = GG[2][0];
+      G3_0 = GG[3][0];
+      G1_1 = GG[1][1];
+      G2_1 = GG[2][1];
+      G1_2 = GG[1][2];
+      G0_3 = GG[0][3];
+    }
     const double u0 = std::pow(s, -3);
     const double u1 = std::pow(s, -2);
     const double u2 = std::pow(w, 2);
@@ -593,6 +621,22 @@ List skewnormal2_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sig
       G2_2 = f27*f90*(2*Z1*f12*f16*f18*f33*f47*f55 + Z1*f12*f16*f18*(2*f33*f47*f55 - f72) - f49*f91*(f3*(4*f35 - 1) + std::pow(f38, 2)*f50 + f49) - f57*f92 - f94*f95);
       G1_3 = (8.0/27.0)*f91*f96*(f125*f73 + f20*f97*(f100*(-f97 - f99) - f33*f58 - f59*f84 + f72) + f27*(3*Z1*f127*f18*f28*f6 + 2*Z1*f27*f3*f33*f7*f87*f9 + Z1*f27*f3*f33*f7*f9*f94 + 4*Z1*f3*f33*f47*f7*f9*f91 - 6*f126*f41 - 3*f128*f47*f56 - f137*(-f127*f134 - f136*f48*f59 - f136*f76*f97 + 2*f28*f6*f7*(-6*f29 - f46) + 2*f55*f6*f76 - f6*f93) + f47*f51*f55*f99 - f48*f74 - f55*f76*f77 + 2*f55*f89 - f55*(-f129 + f130 + 24*f131 - 48*f133 + f40*(f114 - f115 + f117 + f121 - 5*f35*f63 + f82)) - 4*f88*f91) + std::pow(f33, 3)*f55*f92);
       G0_4 = -8.0/81.0*f96*(f125*f73*f78 + f137*(-f101*f161*f60 + f108*f160*f78 - f146*f58 + f146*f61 + 3*f154*f17*f60*f7 + f168*f27 - f84*(-f103*f136*f78 + 2*f103*f55*f6 - f134*f61*(-10*f30 - f32) - f145 - f161*std::pow(f60, 2) - f162*f27)) + f141*(f100*(2*f0*f36*f7*r + f1*f36*f7 - f64 - f78 - f98) - f139*f54 + 3*f62 + f71) - f27*(-f101*f164*f51 + f101*f71*f73 + f109*f153 + f124*f54*f73 - f137*f168 - f139*f159 - 3*f141*f70 + f142*f17*f18*f24*f91 + f147*f27 + f27*(2*Z1*f106*f18*f27*f28*f6 + 8*Z1*f3*f54*f55*f7*f70*f9 - f102*f77 - f109*f149 - f123*f155 - 24*f126*f151 - f137*f167 + 18*f152*f91 - 6*f158*f55 + 3*f27*(48*f1*f132*f150 + f129 - 32*f131 + 16*f132*f22 + 64*f133 - 64*f150*f22/std::pow(f2, 5) - 4*f157 + f40*(f0*f112*f61 - 50*f0*f156 + 15*f0*f79 - 20*f116 + 35*f132*f169 - f163 - f165*f4 + f166 - 5*f169*f61*f80 + 24*f83 + f84 - 5*f85) - 32*f81) - std::pow(f70, 2)*f95)) + std::pow(f54, 4)*f91*f92 + f58*(Z1*f101*f27*f3*f54*f7*f9 - f128*f142 - f147 - f153*f58 + f159*f27))/(f138*(2 - 1.0/2.0*M_PI));
+    }
+    // far left of the step the forms above cancel; there by composition
+    if (X < -1.0 && !d7::sn2_series_region(X, r)) {
+      double GG[6][6];
+      d7::sn2_G_fdb(w, r, Dq, 4, GG);
+      G1_0 = GG[1][0];
+      G2_0 = GG[2][0];
+      G3_0 = GG[3][0];
+      G4_0 = GG[4][0];
+      G1_1 = GG[1][1];
+      G2_1 = GG[2][1];
+      G3_1 = GG[3][1];
+      G1_2 = GG[1][2];
+      G2_2 = GG[2][2];
+      G1_3 = GG[1][3];
+      G0_4 = GG[0][4];
     }
     const double u0 = std::pow(s, -4);
     const double u1 = std::pow(s, -3);
@@ -1094,6 +1138,27 @@ List skewnormal2_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sig
       G1_4 = (16.0/81.0)*f165*f216*(Z1*f114*f32*f33*f34*std::pow(f43, 4) + Z1*f271*f3*f7*f9 - f239*f71 - f30*f68*(2*f127*f68 - f132*f69 + f219*f221 + 3*f38*f69*f7*f74) - f37*(f110*f133*f280 - f110*f277 + f158*f273*f87 - f161*f205*f68 - f166*f281 + f187*f292 + f191*f273*f289 - f193*f279*f68 + f203*f282 + f204*f282 - f205*f222*f37 + f208*f278 + f209*f278 - f214*f293 + f24*f276*f28*f49 - 12*f272*f273 - f288*f68 - f304*f92 - f68*(4*Z1*f110*f3*f7*f87*f9 + 8*Z1*f3*f49*f68*f7*f87*f9 - f100*f156 - 8*f110*f282 + 18*f111*f114 - f181*f306 - f183*f299*f92 - f201*f295*f92 - f212*f305*f90 - f257*f97 - f284*f92 - 6*f291 + 3*f37*(Z1*f12*f5*r*(-50*f105 + 9*f108 + 35*f149 - f179*f262 - f246 + 15*f3) + 96*f0*f1*f176 - f0*f308 + 64*f11*f176 - f153*f310 - f307)) + f72*(f208*f280 + f209*f280 - f234*f273 - f281*f72 - f288 + f292) + f92*(-f107*(-f139*f285*f49 - f197*f313 + 2*f197*f6*f68 - f286 + 3*f294*f6 - f303*f95 - f312*(-f311 - f57)) + 3*f12*f16*f220*f68*f7*f95 + 6*f12*f16*f49*f66*f68*f7*f75 - f133*f314*f95 + f142*f3*f37*f49*f5*f9 - f193*f315 + f199*f3*f37*f5*f66*f9 + f287*f38*f7 - f287*f72 - f304)));
       G0_5 = -16.0/243.0*f216*(f165*f36*std::pow(f66, 5) - f239*f293 + f271*f282 - f274*f318*(-f190 + f219*f37 - f317 + 6*f66*f68) - f37*(f124*f20*f320 + f157*f337 + f165*f173*f26*f29*f319 - f172*f223 - f187*f359 - f191*f293*f87 + f222*f88*f90 - f24*f276*f28*f87 + f270*f282 - f293*(10*f114*f220 + 2*f136*f38*f66*f7 - f187*f66*f87 - f188*f189 - f238 - f317*f98 + 2*f38*f7*f75*f87) + f353*f37 + f37*(24*Z1*f114*f12*f16*f18*f220*f87 + 6*Z1*f114*f133*f3*f66*f7*f9 + Z1*f133*f155*f3*f37*f7*f9 + 2*Z1*f161*f3*f37*f7*f87*f9 + 2*Z1*f18*f342*f37*f38 + Z1*f269*f3*f37*f66*f7*f9 + 18*f114*f336 - f155*f277 - 20*f165*f20*f274 - f20*f235*f366 - f232*f374 - f233*f374 - f257*f332 - f259*f358 - f343*f92 + 3*f37*(f124*f327 - f136*f365*f92 - f155*f62*f88 - 32*f165*f331 - f211*f357 + f235*f374 + f237*f374 + f268*f306 + 8*f272*f90 - f279*f369 + f305*f335 + f339*f92 + f37*(480*f1*f266 - 640*f11*f356 + f12*f50*(39*f0*f1*f3*f38*f7 + 525*f0*f102*f21 + 35*f0*f102*f316*f38*f7 - 225*f0*f105 - f0*f246 + 15*f0*f3 + 175*f102*f31 + 36*f11*f3*f38*f7 - 16*f134 - 70*f153*f375 - 315*f266*f316 + 75*f3*r - 20*f31*f375 - 250*f82) - 640*f153*f309 - 120*f175 + 320*f177 - 40*f263 - f31*f310 + 120*f355*r + 640*f31*f328/std::pow(f2, 6)) + f371*f6*f92 + 40*f329/f31) - f372*f92) - f373*f92) + f72*(Z1*f222*f3*f37*f66*f7*f9 - f215*f320 - f318*f319 - f337*f72 - f353 + f359*f37) + f92*(-f107*(f133*f139*f3*f37*f5*f9 - f139*f345 - f142*f314*f75 - f169*f226*f344*f66 - f202*(f139*f303 + f243*f313 - f243*f365 + f246*f6*(15*f64 + f65) + f333*f363 + f348) + f244*f3*f37*f5*f66*f9 - f349*f72 - f351 + f364*f37) + f191*f360*f75 - f222*f315 + f256*f301 - f352*f72 + f352*f76 + f354*f67*f75 - f360*(-f107*f226 + f133*f75 - f139*f246*f66 - f225 - f228 + 2*f231*f37 + 4*f66*f68*f75) + f37*f373))/(f316*(2 - 1.0/2.0*M_PI));
     }
+    // far left of the step the forms above cancel; there by composition
+    if (X < -1.0 && !d7::sn2_series_region(X, r)) {
+      double GG[6][6];
+      d7::sn2_G_fdb(w, r, Dq, 5, GG);
+      G1_0 = GG[1][0];
+      G2_0 = GG[2][0];
+      G3_0 = GG[3][0];
+      G4_0 = GG[4][0];
+      G5_0 = GG[5][0];
+      G1_1 = GG[1][1];
+      G2_1 = GG[2][1];
+      G3_1 = GG[3][1];
+      G4_1 = GG[4][1];
+      G1_2 = GG[1][2];
+      G2_2 = GG[2][2];
+      G3_2 = GG[3][2];
+      G1_3 = GG[1][3];
+      G2_3 = GG[2][3];
+      G1_4 = GG[1][4];
+      G0_5 = GG[0][5];
+    }
     const double u0 = std::pow(s, -5);
     const double u1 = std::pow(s, -4);
     const double u2 = std::pow(w, 2);
@@ -1179,6 +1244,14 @@ List skewnormal2_cross_y_cpp(NumericVector y, NumericVector mu, NumericVector si
       G2_0 = -f3*(Z1*f7*f8 + 1);
       G1_1 = (2.0/3.0)*f9*(Z1*f3*f6*f8*(f0*f1*f3 - f0*f11*f7 - f10 - w) - f9*(Z1*f4*f5*(f1*f3 - f11*f7 - 1) - f0*f10/std::pow(f2, 2) + f3))/(4 - M_PI);
     }
+    // far left of the step the forms above cancel; there by composition
+    if (X < -1.0 && !d7::sn2_series_region(X, r)) {
+      double GG[6][6];
+      d7::sn2_G_fdb(w, r, Dq, 2, GG);
+      G1_0 = GG[1][0];
+      G2_0 = GG[2][0];
+      G1_1 = GG[1][1];
+    }
     const double u0 = std::pow(s, -2);
     o_mu[i] = -G2_0*u0;
     o_sigma[i] = -u0*(G1_0 + G2_0*w);
@@ -1229,6 +1302,14 @@ List skewnormal2_cross2_y_cpp(NumericVector y, NumericVector mu, NumericVector s
       G2_0 = -f2*(f4*f5 + 1);
       G3_0 = f6*std::pow(r, 3);
       G2_1 = (2.0/3.0)*(f2*f3*f5*f7*(f0*f2 - f8 - 1) - f6*(f0*f2*f9 - f8*f9 - 2*r - w) + f7/std::pow(f1, 2))/(4 - M_PI);
+    }
+    // far left of the step the forms above cancel; there by composition
+    if (X < -1.0 && !d7::sn2_series_region(X, r)) {
+      double GG[6][6];
+      d7::sn2_G_fdb(w, r, Dq, 3, GG);
+      G2_0 = GG[2][0];
+      G3_0 = GG[3][0];
+      G2_1 = GG[2][1];
     }
     const double u0 = std::pow(s, -3);
     o_mu[i] = -G3_0*u0;
@@ -1325,6 +1406,17 @@ List skewnormal2_grad_y_hess_cpp(NumericVector y, NumericVector mu, NumericVecto
       G1_1 = f14*f31*(Z1*f20*f3*f7*f9 - f14*f29);
       G2_1 = f31*(-f13*f20 + f14*f32 + f35*(-f16 - f33));
       G1_2 = (4.0/9.0)*f36*(f13*f14*std::pow(f20, 2) - f14*(f12*f15*f27*(-3*f16 - f33) - f14*(-8*f0*f1/std::pow(f2, 3) + f0*f32 + 4*f21*r + f28*r*(f1*f40 - f23*f39 - 3*f3 + 2*f39)) + f26*f35*f37 - f29*f38) + f34*(f14*(-f0*f11*f40 - f11*f4*f41 + f22*f41 + 2*f23 + f25 + 3*f4*r - 2) - f37*f38 + f39*(-3*f17 - f19)))/std::pow(f30, 2);
+    }
+    // far left of the step the forms above cancel; there by composition
+    if (X < -1.0 && !d7::sn2_series_region(X, r)) {
+      double GG[6][6];
+      d7::sn2_G_fdb(w, r, Dq, 3, GG);
+      G1_0 = GG[1][0];
+      G2_0 = GG[2][0];
+      G3_0 = GG[3][0];
+      G1_1 = GG[1][1];
+      G2_1 = GG[2][1];
+      G1_2 = GG[1][2];
     }
     const double u0 = std::pow(s, -3);
     const double u1 = std::pow(s, -2);
@@ -1432,6 +1524,17 @@ List skewnormal2_hess_y_hess_cpp(NumericVector y, NumericVector mu, NumericVecto
       G3_1 = 2*f14*f20*(-f12*f38 + (1.0/3.0)*f16*f17*f39*r/Dq);
       G2_2 = (4.0/9.0)*f21*(2*Z1*f11*f13*f27*f35*f40*f7 + Z1*f11*f13*f7*(-f21*(-f2*f44*f45 + 2*f25 + f31*f33*f45 + f31*f41*r + f37 - f43*f44 - 2) + 2*f27*f35*f40 + 2*f39*f40 - f42*(-3*f32 - f34)) - f17*f18*f22*std::pow(f35, 2) - f28*(f2*(4*f25 - 1) + f28 + f29*std::pow(f38, 2))/f6 - f30*(f0*f43 - f25*f42 + 2*f27*f40 - f41 + f42*(3*f24 + f26) + 2*f42))/std::pow(f19, 2);
     }
+    // far left of the step the forms above cancel; there by composition
+    if (X < -1.0 && !d7::sn2_series_region(X, r)) {
+      double GG[6][6];
+      d7::sn2_G_fdb(w, r, Dq, 4, GG);
+      G2_0 = GG[2][0];
+      G3_0 = GG[3][0];
+      G4_0 = GG[4][0];
+      G2_1 = GG[2][1];
+      G3_1 = GG[3][1];
+      G2_2 = GG[2][2];
+    }
     const double u0 = std::pow(s, -4);
     const double u1 = std::pow(s, -3);
     o_mu_mu[i] = G4_0*u0;
@@ -1462,6 +1565,12 @@ List skewnormal2_dy1_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
     double G1_0 = 0.0;
     const double e0 = std::pow(r, 2) + 1;
     G1_0 = -(r + w)/e0 + Z1*r/(Dq*d7::sqrt_cr(e0));
+    // far left of the step the forms above cancel; there by composition
+    if (X < -1.0 && !d7::sn2_series_region(X, r)) {
+      double GG[6][6];
+      d7::sn2_G_fdb(w, r, Dq, 1, GG);
+      G1_0 = GG[1][0];
+    }
     o_y[i] = G1_0/s;
   });
   return List::create(Named("y") = o_y);
@@ -1485,6 +1594,12 @@ List skewnormal2_dy2_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
     double G2_0 = 0.0;
     const double e0 = std::pow(r, 2);
     G2_0 = -(1 + Z1*e0*(X + Z1)/std::pow(Dq, 2))/(e0 + 1);
+    // far left of the step the forms above cancel; there by composition
+    if (X < -1.0 && !d7::sn2_series_region(X, r)) {
+      double GG[6][6];
+      d7::sn2_G_fdb(w, r, Dq, 2, GG);
+      G2_0 = GG[2][0];
+    }
     o_y[i] = G2_0/std::pow(s, 2);
   });
   return List::create(Named("y") = o_y);
@@ -1507,6 +1622,12 @@ List skewnormal2_dy3_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
     (void) Z1; (void) s;
     double G3_0 = 0.0;
     G3_0 = Z1*std::pow(r, 3)*(std::pow(X, 2) + 3*X*Z1 + 2*std::pow(Z1, 2) - 1)/(std::pow(Dq, 3)*std::pow(std::pow(r, 2) + 1, 3.0/2.0));
+    // far left of the step the forms above cancel; there by composition
+    if (X < -1.0 && !d7::sn2_series_region(X, r)) {
+      double GG[6][6];
+      d7::sn2_G_fdb(w, r, Dq, 3, GG);
+      G3_0 = GG[3][0];
+    }
     o_y[i] = G3_0/std::pow(s, 3);
   });
   return List::create(Named("y") = o_y);
@@ -1529,6 +1650,12 @@ List skewnormal2_dy4_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
     (void) Z1; (void) s;
     double G4_0 = 0.0;
     G4_0 = -Z1*std::pow(r, 4)*(std::pow(X, 3) + 7*std::pow(X, 2)*Z1 + 12*X*std::pow(Z1, 2) - 3*X + 6*std::pow(Z1, 3) - 4*Z1)/(std::pow(Dq, 4)*std::pow(std::pow(r, 2) + 1, 2));
+    // far left of the step the forms above cancel; there by composition
+    if (X < -1.0 && !d7::sn2_series_region(X, r)) {
+      double GG[6][6];
+      d7::sn2_G_fdb(w, r, Dq, 4, GG);
+      G4_0 = GG[4][0];
+    }
     o_y[i] = G4_0/std::pow(s, 4);
   });
   return List::create(Named("y") = o_y);

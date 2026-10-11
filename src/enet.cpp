@@ -164,3 +164,53 @@ List enet_dexpected1_cpp(NumericVector y, NumericVector mu,
     out.attr("names") = nm;
     return out;
 }
+
+// L^(k)(x), k = 1..order, of the logarithm of the Mills ratio
+// [[Rcpp::export]]
+List enet_logM_derivs_cpp(NumericVector x, int order) {
+    const int n = x.size();
+    List out(order);
+    std::vector<NumericVector> cols;
+    for (int k = 0; k < order; k++) cols.push_back(NumericVector(n));
+    for (int i = 0; i < n; i++) {
+        double L[6];
+        d7::enet_logM_derivs(x[i], order, L);
+        for (int k = 0; k < order; k++) cols[k][i] = L[k + 1];
+    }
+    for (int k = 0; k < order; k++) out[k] = cols[k];
+    return out;
+}
+
+// the partial derivatives of log Z in (a, c) to the given order, as a list
+// of orders, each keyed as deriv_names(c("a", "c"), k)
+// [[Rcpp::export]]
+List enet_logz_ac_cpp(NumericVector a, NumericVector c, int order) {
+    const int n = std::max(a.size(), c.size());
+    const int na = a.size(), nc = c.size();
+    List out(order);
+    std::vector<std::vector<NumericVector>> cols(order + 1);
+    for (int k = 1; k <= order; k++)
+        for (int j = 0; j <= k; j++) cols[k].push_back(NumericVector(n));
+    for (int i = 0; i < n; i++) {
+        double d[5][5];
+        d7::enet_logz_ac(a[i % na], c[i % nc], order, d);
+        for (int k = 1; k <= order; k++)
+            for (int j = 0; j <= k; j++) cols[k][j][i] = d[k - j][j];
+    }
+    for (int k = 1; k <= order; k++) {
+        List ok(k + 1);
+        CharacterVector nm(k + 1);
+        for (int j = 0; j <= k; j++) {
+            std::string s;
+            for (int m = 0; m < k; m++) {
+                if (m) s += "_";
+                s += (m < k - j) ? "a" : "c";
+            }
+            ok[j] = cols[k][j];
+            nm[j] = s;
+        }
+        ok.attr("names") = nm;
+        out[k - 1] = ok;
+    }
+    return out;
+}

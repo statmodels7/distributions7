@@ -66,7 +66,79 @@ compiled_cdf <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE,
                          ...) {
   a <- compiled_cdf_args(distrib, q, theta)
   out <- d7_cdf_cpp(a$cls, a$q, a$tm, lower.tail)
-  if (log.p) log(out) else out
+  if (log.p) return(compiled_log_cdf(distrib, a, out, lower.tail))
+  # below 1e-290 the value is taken from the logarithm, which the kernel's
+  # sum does not resolve there
+  tiny <- !is.na(out) & out < 1e-290 & is.finite(a$q)
+  if (any(tiny)) out[tiny] <- exp(compiled_log_cdf(distrib, a, out, lower.tail)[tiny])
+  out
+}
+
+#' @rdname compiled_cdf
+#' @param a The value of `compiled_cdf_args()`.
+#' @param out The probabilities of the requested tail, from the compiled
+#'   kernel.
+#' @return `compiled_log_cdf()` returns the logarithm of `out`, formed as
+#'   \eqn{\log(1 - P_{\mathrm{other}})} through `log1p()` where `out` is
+#'   above one half, and as
+#'   \eqn{\ell(q) + \log\int_0^{\infty} e^{\ell(q \mp u) - \ell(q)}\,du}
+#'   where `out` is below \eqn{10^{-290}}, the integral taken by
+#'   [stats::integrate()] on the scale \eqn{1/|\partial_y \ell(q)|} and cut
+#'   at the end of the support.
+compiled_log_cdf <- function(distrib, a, out, lower.tail) {
+  lo <- log(out)
+  big <- !is.na(out) & out > 0.5
+  if (any(big)) {
+    other <- d7_cdf_cpp(a$cls, a$q[big], a$tm[big, , drop = FALSE], !lower.tail)
+    lo[big] <- log1p(-other)
+  }
+  tiny <- which(!is.na(out) & out < 1e-290 & is.finite(a$q))
+  for (i in tiny) {
+    th <- stats::setNames(as.list(a$tm[i, ]), distrib@params)
+    lo[i] <- log_tail_integral(distrib, a$q[i], th, lower.tail)
+  }
+  lo
+}
+
+#' @rdname compiled_cdf
+#' @param th A named list of scalar parameter values.
+#' @return `log_tail_integral()` returns the logarithm of the probability of
+#'   the tail beyond `q`, \eqn{\ell(q) + \log\int_0^\infty
+#'   e^{\ell(q \mp u) - \ell(q)}\,du}, by [stats::integrate()] on a scale
+#'   adjusted until one step changes \eqn{\ell} by between 1/2 and 50, and
+#'   \eqn{\ell(q) - \log|\ell'(q)|} where no such step is resolved.
+log_tail_integral <- function(distrib, q, th, lower.tail) {
+  lq <- distrib_pdf(distrib, q, th, log = TRUE)
+  if (!is.finite(lq)) return(-Inf)
+  dir <- if (lower.tail) -1 else 1
+  room <- if (lower.tail) q - distrib@bounds[1] else distrib@bounds[2] - q
+  gy <- abs(distrib_grad_y(distrib, q, th))
+  h <- if (is.finite(gy) && gy > 0) 1 / gy else 1
+  # the scale is adjusted until one step of h changes l by between 1/2 and
+  # 50, so that the integrand neither vanishes at once nor stays flat
+  for (it in seq_len(200L)) {
+    if (is.finite(room) && h > room) h <- room
+    drop <- lq - distrib_pdf(distrib, q + dir * h, th, log = TRUE)
+    if (is.na(drop)) break
+    if (drop > 50) h <- h * 50 / drop
+    else if (drop < 0.5 && !(is.finite(room) && h >= room)) h <- h * 2
+    else break
+  }
+  g <- function(t) {
+    v <- exp(distrib_pdf(distrib, q + dir * h * t, th, log = TRUE) - lq)
+    v[!is.finite(v)] <- 0
+    v
+  }
+  upper <- if (is.finite(room)) room / h else Inf
+  val <- tryCatch(stats::integrate(g, 0, upper, rel.tol = 1e-12,
+                                   subdivisions = 1000L)$value,
+                  error = function(e) NA_real_)
+  # where no step that double precision resolves keeps the integrand away
+  # from 0 or 1, the tail is exponential on that scale: log P = l(q) - log|l'(q)|
+  if (!is.finite(val) || val <= 0) {
+    return(if (is.finite(gy) && gy > 0) lq - log(gy) else -Inf)
+  }
+  lq + log(h) + log(val)
 }
 
 #' @rdname compiled_cdf
@@ -76,7 +148,7 @@ compiled_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE,
   G <- d7_cdf_grad_cpp(a$cls, a$q, a$tm)
   d1 <- stats::setNames(lapply(seq_len(ncol(G)), function(j) G[, j]),
                         distrib@params)
-  cdf_tail_scale(distrib, distrib_cdf(distrib, a$q, theta), d1, NULL,
+  cdf_tail_scale(distrib, tail_cdf(distrib, a$q, theta, lower.tail), d1, NULL,
                  lower.tail, log)
 }
 
@@ -90,7 +162,7 @@ compiled_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE,
                         distrib@params)
   d2 <- stats::setNames(lapply(seq_len(ncol(H)), function(j) H[, j]),
                         hess_names(distrib@params))
-  cdf_tail_scale(distrib, distrib_cdf(distrib, a$q, theta), d1, d2,
+  cdf_tail_scale(distrib, tail_cdf(distrib, a$q, theta, lower.tail), d1, d2,
                  lower.tail, log)
 }
 

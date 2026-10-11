@@ -7,6 +7,7 @@
 #include "pt_bessel_k.h"
 #include "pt_loc_scale.h"
 #include "pt_sqrt.h"
+#include "pt_ph_nu.h"
 
 // The pseudo-Huber family in its standard-deviation parametrization
 // (mu, sigma, nu): with R(nu) = sqrt(nu) K_2(sqrt(nu)) / K_1(sqrt(nu)),
@@ -17,7 +18,8 @@
 // derivatives, called by the vector kernels (pseudohuber2.cpp), by the
 // quadrature of the expected information and by the scalar registry. The
 // nu-only quantities R^(k) and h^(k) come from nu_part(), which the
-// higher-order kernels of pseudohuber2.cpp read as well.
+// higher-order kernels of pseudohuber2.cpp read as well, and which takes them
+// from ph_nu_derivs() (pt_ph_nu.h).
 
 namespace d7 {
 
@@ -28,70 +30,12 @@ struct NuPart {
 };
 
 inline void nu_part(double v, int K, NuPart &o) {
-  const double t = d7::sqrt_cr(v);
-  double km[8] = {0};
-  for (int m = 0; m <= K + 2; m++) km[m] = bessel_k_scaled(t, (double) m);
-  o.R[0] = t * km[2] / km[1];
+  // B^(k) and (log R)^(k) from ph_nu_derivs() (pt_ph_nu.h); R^(k) is R times
+  // the complete Bell polynomial of the (log R)^(k), and h = log(R)/2 - B
+  double dB[6] = {0}, lam[6] = {0}, R0;
+  ph_nu_derivs(v, K > 0 ? K : 1, dB, lam, R0);
+  o.R[0] = R0;
   if (K == 0) return;
-  // derivatives of t(nu) = nu^(1/2)
-  double tk[6] = {0};
-  {
-    double c = 1.0;
-    for (int k = 1; k <= K; k++) {
-      c *= (0.5 - (k - 1));
-      tk[k] = c * std::pow(v, 0.5 - k);
-    }
-  }
-  double L[3][6] = {{0}};
-  for (int n = 1; n <= 2; n++) {
-    // rho_j = K_n^(j)(t) / K_n(t)
-    double rho[6] = {0};
-    for (int j = 1; j <= K; j++) {
-      double s = 0.0, binom = 1.0;
-      for (int i = 0; i <= j; i++) {
-        if (i > 0) binom = binom * (j - i + 1) / i;
-        s += binom * km[std::abs(n - j + 2 * i)];
-      }
-      rho[j] = std::pow(-0.5, j) * s / km[n];
-    }
-    // g_k = (d/dt)^k log K_n(t)
-    double g[6] = {0};
-    const double r1 = rho[1];
-    g[1] = r1;
-    if (K >= 2) g[2] = rho[2] - r1 * r1;
-    if (K >= 3) g[3] = rho[3] - 3.0 * r1 * rho[2] + 2.0 * r1 * r1 * r1;
-    if (K >= 4) g[4] = rho[4] - 4.0 * r1 * rho[3] - 3.0 * rho[2] * rho[2] +
-                       12.0 * r1 * r1 * rho[2] - 6.0 * std::pow(r1, 4);
-    if (K >= 5) g[5] = rho[5] - 5.0 * r1 * rho[4] - 10.0 * rho[2] * rho[3] +
-                       20.0 * r1 * r1 * rho[3] + 30.0 * r1 * rho[2] * rho[2] -
-                       60.0 * std::pow(r1, 3) * rho[2] + 24.0 * std::pow(r1, 5);
-    L[n][1] = g[1] * tk[1];
-    if (K >= 2) L[n][2] = g[2] * tk[1] * tk[1] + g[1] * tk[2];
-    if (K >= 3) L[n][3] = g[3] * std::pow(tk[1], 3) + 3.0 * g[2] * tk[1] * tk[2] +
-                          g[1] * tk[3];
-    if (K >= 4) L[n][4] = g[4] * std::pow(tk[1], 4) +
-                          6.0 * g[3] * tk[1] * tk[1] * tk[2] +
-                          g[2] * (3.0 * tk[2] * tk[2] + 4.0 * tk[1] * tk[3]) +
-                          g[1] * tk[4];
-    if (K >= 5) L[n][5] = g[5] * std::pow(tk[1], 5) +
-                          10.0 * g[4] * std::pow(tk[1], 3) * tk[2] +
-                          g[3] * (15.0 * tk[1] * tk[2] * tk[2] +
-                                  10.0 * tk[1] * tk[1] * tk[3]) +
-                          g[2] * (10.0 * tk[2] * tk[3] + 5.0 * tk[1] * tk[4]) +
-                          g[1] * tk[5];
-  }
-  // (d/dnu)^k log nu = (-1)^(k-1) (k-1)! / nu^k
-  double lg[6] = {0};
-  {
-    double f = 1.0;
-    for (int k = 1; k <= K; k++) {
-      if (k > 1) f *= -(k - 1);
-      lg[k] = f / std::pow(v, k);
-    }
-  }
-  double lam[6] = {0};
-  for (int k = 1; k <= K; k++) lam[k] = 0.5 * lg[k] + L[2][k] - L[1][k];
-  // R^(k) = R Y_k(lambda), Y_k the complete Bell polynomial
   o.R[1] = o.R[0] * lam[1];
   if (K >= 2) o.R[2] = o.R[0] * (lam[1] * lam[1] + lam[2]);
   if (K >= 3) o.R[3] = o.R[0] * (std::pow(lam[1], 3) + 3.0 * lam[1] * lam[2] +
@@ -106,8 +50,7 @@ inline void nu_part(double v, int K, NuPart &o) {
                                  10.0 * lam[1] * lam[1] * lam[3] +
                                  10.0 * lam[2] * lam[3] + 5.0 * lam[1] * lam[4] +
                                  lam[5]);
-  for (int k = 1; k <= K; k++)
-    o.h[k] = -0.25 * lg[k] + 0.5 * L[2][k] - 1.5 * L[1][k];
+  for (int k = 1; k <= K; k++) o.h[k] = 0.5 * lam[k] - dB[k];
 }
 
 // R(nu) and h(nu) themselves, as the density reads them

@@ -610,6 +610,50 @@ S7::method(distrib_deriv4, LogisticDistrib) <- function(distrib, y, theta, expec
   }
 }
 
+#' @title Logistic Fifth-Order Derivatives
+#' @name distrib_deriv5.LogisticDistrib
+#' @description
+#' Computes the six distinct fifth derivatives of the logistic log-density
+#' with respect to \eqn{\mu} and \eqn{\sigma}, in closed form from a
+#' compiled kernel.
+#' Writing the log-density as \eqn{\ell = -\log\sigma + g(z)} with
+#' \eqn{z = (y - \mu)/\sigma}, each component is \eqn{\sigma^{-5}} times a
+#' sum of terms \eqn{c\, z^p g^{(i)}(z)} with integer coefficients, plus
+#' \eqn{-24\sigma^{-5}} in the pure \eqn{\sigma} component; the kernel
+#' evaluates the sum from the derivatives of
+#' \eqn{g(z) = -z - 2\log(1 + e^{-z})}, written in the logistic sigmoid so
+#' that every intermediate quantity lies in \eqn{[-1, 1]}.
+#' With `scale = "link"` the components are composed with the link
+#' derivatives by the routine that every family with a fifth-order kernel
+#' uses.
+#'
+#' @param distrib A `LogisticDistrib` object, from [logistic_distrib()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list with components `mu` and `sigma`, each a numeric vector
+#'   of length 1 or of the length of `y`.
+#' @param scale One of `"parameter"` (the default) or `"link"`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Defaults to `1L`.
+#'
+#' @return A named list of six numeric vectors, `mu_mu_mu_mu_mu`,
+#'   `mu_mu_mu_mu_sigma`, `mu_mu_mu_sigma_sigma`, `mu_mu_sigma_sigma_sigma`,
+#'   `mu_sigma_sigma_sigma_sigma` and `sigma_sigma_sigma_sigma_sigma`, each of length
+#'   `max(length(y), length(mu), length(sigma))`.
+#'
+#' @seealso [distrib_deriv4()] for the order below and [distrib_deriv5()]
+#'   for the generic.
+#'
+#' @examples
+#' d <- logistic_distrib()
+#' d5 <- distrib_deriv5(d, c(-1.2, 0.3, 2.5), list(mu = 0.4, sigma = 1.5))
+#' names(d5)
+S7::method(distrib_deriv5, LogisticDistrib) <- function(distrib, y, theta,
+    scale = c("parameter", "link"), ..., threads = 1L) {
+  deriv5_scale(distrib, y, theta, logistic_deriv5_cpp(y, theta[[1]], theta[[2]], threads),
+               match.arg(scale))
+}
+
 #' @title Logistic First Derivative in the Response
 #' @name distrib_grad_y.LogisticDistrib
 #' @description
@@ -697,8 +741,9 @@ S7::method(distrib_grad_y, LogisticDistrib) <- function(distrib, y, theta, ...) 
 #' any(distrib_hess_y(cauchy_distrib(), seq(-50, 50, length.out = 1e3), th) > 0)
 S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta, ...) {
   s <- theta[[2]]
-  th <- tanh(0.5 * (y - theta[[1]]) / s)
-  -(1 - th^2) / (2 * s^2)
+  # sech^2(z/2) = 4e/(1 + e)^2 with e = exp(-|z|), without 1 - tanh^2
+  e <- exp(-abs(y - theta[[1]]) / s)
+  -2 * e / ((1 + e)^2 * s^2)
 }
 
 # --- CONSTRUCTOR WRAPPER ---

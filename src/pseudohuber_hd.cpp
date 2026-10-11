@@ -53,7 +53,7 @@ List pseudohuber_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sig
         sigma_sigma_sigma[i] = d7::pseudohuber_d3_sigma_sigma_sigma(r, s, PA);
         sigma_sigma_nu[i] = 3.0 * k * p2 / (2.0 * s * A);
         sigma_nu_nu[i] = 3.0 * q * q * p2 / (4.0 * A);
-        const d7::PhNu P = {sv, k0, k1, k2, k3, 0.0, 0.0, 0.0};
+        const d7::PhNu P = d7::ph_nu(v);
         nu_nu_nu[i] = d7::pseudohuber_d3_nu_nu_nu(v, s, PA, P, k4);
     }
 
@@ -115,22 +115,10 @@ List pseudohuber_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sig
         sigma_sigma_nu_nu[i] = 3.0 * q * p2 * (2.0 * p2 - 3.0 * k) / (4.0 * A2);
         sigma_nu_nu_nu[i] = -15.0 * q * q * q * q * p2 / (8.0 * A);
 
-        double N = 6.0 * v2 * k0_4
-            + (768.0 + v * (-180.0 + 17.0 * v + 240.0 * v3 * q * q * q * q * q * q * q)) * k1_4
-            + 6.0 * v2 * k2_4
-            + 24.0 * k0_3 * (-(v32 * k1) + v2 * k2)
-            - 12.0 * k1 * (2.0 * v32 * k2_3 + v2 * k2_2 * k3)
-            - 12.0 * v * k0_2 * ((-5.0 + 2.0 * v) * k1_2 - 3.0 * v * k2_2
-                                 + k1 * (6.0 * sv * k2 + v * k3))
-            - 4.0 * k0 * (6.0 * (5.0 - 3.0 * v) * sv * k1_3 - 6.0 * v2 * k2_3
-                          + 6.0 * k1 * (3.0 * v32 * k2_2 + v2 * k2 * k3)
-                          + v * k1_2 * ((-30.0 + 11.0 * v) * k2 - 9.0 * sv * k3 - v * k4))
-            + v * k1_2 * (-20.0 * (-3.0 + v) * k2_2 + 3.0 * v * k3 * k3
-                          + 4.0 * k2 * (9.0 * sv * k3 + v * k4))
-            + k1_3 * (60.0 * (-2.0 + v) * sv * k2
-                      + v * ((-60.0 + 13.0 * v) * k3 - 12.0 * sv * k4 - v * k5));
-
-        nu_nu_nu_nu[i] = N / (256.0 * v4 * k1_4);
+        // d^4 l/dnu^4 = (15/16) D^-7 - B''''(nu), with q = 1/D
+        const d7::PhNu P = d7::ph_nu(v);
+        const double q2 = q * q;
+        nu_nu_nu_nu[i] = 0.9375 * q2 * q2 * q2 * q - P.dB[4];
     }
 
     return List::create(

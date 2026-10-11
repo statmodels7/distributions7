@@ -80,8 +80,9 @@ loc_scale_expected <- function(distrib, theta, order, n, threads = 1L) {
   idx <- match(key, key[first])
   m <- nrow(U)
 
-  # every node against every distinct shape, at location 0 and scale 1
-  yy <- rep(rule$x, m)
+  # every node against every distinct shape, at location 0 and scale 1, the
+  # rule centered where the family's density has its sharp feature
+  yy <- rep(rule$x, m) + rep(loc_scale_center(distrib, U), each = N)
   th <- c(list(rep(0, N * m), rep(1, N * m)),
           lapply(seq_along(shp), function(j) rep(U[, j], each = N)))
   names(th) <- params
@@ -155,6 +156,29 @@ loc_scale_expected <- function(distrib, theta, order, n, threads = 1L) {
   out
 }
 
+
+#' The Center of the Location-Scale Rule
+#'
+#' @description
+#' Returns, for each distinct shape, the standardized point at which
+#' [loc_scale_expected()] centers its rule, the point where the nodes cluster.
+#' It is zero except for the centered skew normal, whose density has its step
+#' at \eqn{w = -r} with \eqn{r = \{2|\gamma_1|/(4-\pi)\}^{1/3}\,
+#' \mathrm{sign}(\gamma_1)}; at a skewness near the ceiling the step is too
+#' sharp for nodes clustered at zero. The compiled diagonal of that family
+#' uses the same center.
+#'
+#' @param distrib A distribution object.
+#' @param U The matrix of distinct shapes, one row per shape.
+#'
+#' @return A numeric vector with one entry per row of `U`.
+#'
+#' @keywords internal
+loc_scale_center <- function(distrib, U) {
+  if (!S7::S7_inherits(distrib, SkewNormal2Distrib)) return(rep(0, nrow(U)))
+  g <- U[, 1L]
+  -sign(g) * (2 * abs(g) / (4 - pi))^(1 / 3)
+}
 
 #' The Families Whose Location-Scale Diagonal Is Compiled
 #'

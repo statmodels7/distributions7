@@ -204,11 +204,19 @@ S7::method(distrib_pdf, VonMises1Distrib) <- function(distrib, y, theta,
 S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta, ...) {
   mu <- theta[[1]]
   k <- theta[[2]]
-  a <- 1 + sqrt(1 + 4 * k * k)
-  b <- (a - sqrt(2 * a)) / (2 * k)
+  # b = (a - sqrt(2a))/(2k) written without the difference, which is zero in
+  # double precision for k below about 1e-8: a - 2 = 4k^2/(s + 1)
+  s <- sqrt(1 + 4 * k * k)
+  a <- 1 + s
+  b <- 2 * a * k / ((s + 1) * (a + sqrt(2 * a)))
   r <- (1 + b * b) / (2 * b)
+  # below k = 1e-300 the envelope overflows; the law is uniform there to
+  # double precision, and the draw is taken as such
+  flat <- !is.finite(r)
 
-  if (length(k) == 1L) {
+  if (length(k) == 1L && flat) {
+    out <- stats::runif(n, -pi, pi)
+  } else if (length(k) == 1L) {
     # one envelope for every draw: over-propose and keep the accepted ones
     out <- numeric(0)
     while (length(out) < n) {
@@ -226,7 +234,9 @@ S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta, ...) {
     # one envelope per draw: propose once for each pending index and keep
     # the indices whose proposal was rejected for the next round
     out <- numeric(n)
-    todo <- seq_len(n)
+    flat <- rep_len(flat, n)
+    out[flat] <- stats::runif(sum(flat), -pi, pi)
+    todo <- which(!flat)
     while (length(todo)) {
       m <- length(todo)
       u1 <- stats::runif(m); u2 <- stats::runif(m); u3 <- stats::runif(m)
@@ -989,6 +999,58 @@ vm_cdf <- function(y, mu, kappa) {
   pmin(pmax(out, 0), 1)
 }
 
+#' @title The von Mises Tails Below the Series' Resolution
+#' @name vm_cdf_tail
+#' @description
+#' `vm_cdf_tail()` returns \eqn{P(Y \le q)} or \eqn{P(Y > q)}, or their
+#' logarithms, from the series of [vm_cdf()] where the requested tail is
+#' above \eqn{10^{-10}}, and from `vm_log_tail()` below, where the series'
+#' absolute error of about \eqn{10^{-16}} would dominate. `vm_log_tail()`
+#' integrates \eqn{\exp\{\kappa\cos(y - \mu) - M\}} over the tail from the end
+#' where it is largest, \eqn{M} its value there, on the scale
+#' \eqn{1/|\kappa\sin(y - \mu)|} at that end; the interval then excludes the
+#' mode, so no factor underflows.
+#' @param q A numeric vector of angles in \eqn{[-\pi, \pi)}.
+#' @param mu,kappa Numeric vectors, the mean direction and the concentration.
+#' @param lower,lower.tail,log.p Logical of length 1.
+#' @return A numeric vector for `vm_cdf_tail()`, a number for `vm_log_tail()`.
+#' @examples
+#' distributions7:::vm_cdf_tail(-1, 0, 100, TRUE, FALSE)
+#' @keywords internal
+vm_log_tail <- function(q, mu, kappa, lower) {
+  a <- if (lower) -pi else q
+  b <- if (lower) q else pi
+  if (b <= a) return(-Inf)
+  # from the end where the integrand is largest, on the scale 1/|l'| there
+  top <- if (cos(a - mu) >= cos(b - mu)) a else b
+  dir <- if (top == a) 1 else -1
+  M <- kappa * cos(top - mu)
+  h <- 1 / max(kappa * abs(sin(top - mu)), 1e-300)
+  h <- min(h, b - a)
+  val <- h * stats::integrate(function(t) exp(kappa * cos(top + dir * h * t - mu) - M),
+                              0, (b - a) / h, rel.tol = 1e-13,
+                              subdivisions = 2000L)$value
+  log_i0 <- log(besselI(kappa, 0, expon.scaled = TRUE)) + kappa
+  M - log_i0 - log(2 * pi) + log(val)
+}
+
+#' @rdname vm_cdf_tail
+vm_cdf_tail <- function(q, mu, kappa, lower.tail, log.p) {
+  n <- max(length(q), length(mu), length(kappa))
+  q <- rep_len(as.numeric(q), n)
+  mu <- rep_len(as.numeric(mu), n)
+  kappa <- rep_len(as.numeric(kappa), n)
+  Fl <- vm_cdf(q, mu, kappa)
+  P <- if (lower.tail) Fl else 1 - Fl
+  lP <- if (lower.tail) log(Fl) else log1p(-Fl)
+  small <- which(!is.na(P) & P < 1e-10 & q > -pi & q < pi & kappa > 0)
+  for (i in small) lP[i] <- vm_log_tail(q[i], mu[i], kappa[i], lower.tail)
+  if (log.p) lP else {
+    P[small] <- exp(lP[small])
+    P
+  }
+}
+
 #' @title von Mises Cumulative Distribution Function
 #' @name distrib_cdf.VonMises1Distrib
 #' @description
@@ -1045,9 +1107,7 @@ vm_cdf <- function(y, mu, kappa) {
 S7::method(distrib_cdf, VonMises1Distrib) <- function(distrib, q, theta,
                                                       lower.tail = TRUE,
                                                       log.p = FALSE, ...) {
-  out <- vm_cdf(q, theta[[1]], theta[[2]])
-  if (!lower.tail) out <- 1 - out
-  if (log.p) log(out) else out
+  vm_cdf_tail(q, theta[[1]], theta[[2]], lower.tail, log.p)
 }
 
 # the distribution function's derivatives from the compiled kernels

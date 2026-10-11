@@ -624,6 +624,42 @@ S7::method(distrib_deriv4, ChisqDistrib) <- function(distrib, y, theta, expected
   chisq_deriv4_cpp(y, theta[[1]], threads)
 }
 
+#' @title Chi-Squared Fifth-Order Derivatives
+#' @name distrib_deriv5.ChisqDistrib
+#' @description
+#' Computes the fifth derivative of the chi-squared log-density with respect
+#' to its degrees of freedom, in closed form from a compiled kernel,
+#' \deqn{\ell^{(\mu\mu\mu\mu\mu)} = -\tfrac{1}{32}\,\psi^{(4)}(\mu/2),}
+#' which does not depend on the response.
+#' With `scale = "link"` the components are composed with the link
+#' derivatives by the routine that every family with a fifth-order kernel
+#' uses.
+#'
+#' @param distrib A `ChisqDistrib` object, from [chisq_distrib()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list with components `mu`, each a numeric vector
+#'   of length 1 or of the length of `y`.
+#' @param scale One of `"parameter"` (the default) or `"link"`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Defaults to `1L`.
+#'
+#' @return A named list with one numeric vector, `mu_mu_mu_mu_mu`, of length
+#'   `max(length(y), length(mu))`.
+#'
+#' @seealso [distrib_deriv4()] for the order below and [distrib_deriv5()]
+#'   for the generic.
+#'
+#' @examples
+#' d <- chisq_distrib()
+#' all.equal(distrib_deriv5(d, c(0.5, 2, 6), list(mu = 3))$mu_mu_mu_mu_mu,
+#'           rep(-psigamma(1.5, 4) / 32, 3))
+S7::method(distrib_deriv5, ChisqDistrib) <- function(distrib, y, theta,
+    scale = c("parameter", "link"), ..., threads = 1L) {
+  deriv5_scale(distrib, y, theta, chisq_deriv5_cpp(y, theta[[1]], threads),
+               match.arg(scale))
+}
+
 #' @title Chi-Squared First Derivative in the Response
 #' @name distrib_grad_y.ChisqDistrib
 #' @description
@@ -675,7 +711,7 @@ S7::method(distrib_deriv4, ChisqDistrib) <- function(distrib, y, theta, expected
 #' (distrib_pdf(d, y + eps, th, log = TRUE) -
 #'   distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
 S7::method(distrib_grad_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
-  (theta[[1]] / 2 - 1) / y - 0.5
+  dy_log(theta[[1]] / 2 - 1, y, 1L) - 0.5
 }
 
 #' @title Chi-Squared Second Derivative in the Response
@@ -719,7 +755,7 @@ S7::method(distrib_grad_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
 #' # Negative everywhere at four degrees of freedom.
 #' all(distrib_hess_y(d, y, th) < 0)
 S7::method(distrib_hess_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
-  -(theta[[1]] / 2 - 1) / (y * y)
+  dy_log(theta[[1]] / 2 - 1, y, 2L)
 }
 
 # --- CONSTRUCTOR WRAPPER ---

@@ -41,14 +41,9 @@ List cauchy_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         
         double res = y[i] - m;
-        double res2 = res * res;
-        double s2 = s * s;
-        double den = s2 + res2;
-        double den2 = den * den;
-        
         hess_mu_mu[i] = d7::cauchy_hess_mu_mu(res, s);
         hess_sigma_sigma[i] = d7::cauchy_hess_sigma_sigma(res, s);
-        hess_mu_sigma[i] = -4.0 * s * res / den2;
+        hess_mu_sigma[i] = d7::cauchy_hess_mu_sigma(res, s);
     });
     
     return List::create(Named("mu_mu") = hess_mu_mu, Named("sigma_sigma") = hess_sigma_sigma, Named("mu_sigma") = hess_mu_sigma);

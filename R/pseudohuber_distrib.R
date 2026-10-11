@@ -147,7 +147,10 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
   nu <- theta[[3]]
 
   sq_nu <- sqrt(nu)
-  D <- sqrt(nu + ((y - mu) / sigma)^2)
+  # sqrt(nu + z^2) as a hypot, so that z^2 does not overflow
+  az <- abs((y - mu) / sigma)
+  big <- pmax(az, sq_nu)
+  D <- big * sqrt(1 + (pmin(az, sq_nu) / big)^2)
 
   # log K_1(x) = log(besselK(x, 1, scaled)) - x  (scaled version avoids underflow)
   log_norm <- log(2) + log(sigma) + 0.5 * log(nu) + log(besselK(sq_nu, 1, expon.scaled = TRUE)) - sq_nu
@@ -255,42 +258,54 @@ S7::method(distrib_cdf, PseudoHuberDistrib) <- compiled_cdf
 #' # Symmetry: the two quartiles are equidistant from the location.
 #' q - 0.4
 S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
-  if (log.p) p <- exp(p)
-  if (!lower.tail) p <- 1 - p
+  symmetric_log_quantile(distrib, p, theta, lower.tail, log.p,
+                         function(th) sqrt(variance(distrib, th)))
+}
 
-  all_params <- expand_params(c(list(.p = p), theta))
+#' @title The Quantile of a Symmetric Family on the Log Scale
+#' @name symmetric_log_quantile
+#' @description
+#' Returns the quantile of a law symmetric about its first parameter, solved
+#' on the logarithm of the smaller tail: the root of
+#' \eqn{\log F(q) = \log p} is found below the location by [stats::uniroot()]
+#' and reflected about it when the upper tail is the smaller one, so that
+#' neither \eqn{1 - p} nor \eqn{\exp(\log p)} is formed. The two pseudo-Huber
+#' families use it.
+#' @param distrib A distribution object symmetric about its first parameter.
+#' @param p A numeric vector of probabilities, or their logarithms.
+#' @param theta A named list of parameter values.
+#' @param lower.tail,log.p Logical of length 1.
+#' @param spread A function of the parameter list that sets the width of the
+#'   first bracket, which is doubled until it contains the root.
+#' @return A numeric vector of quantiles.
+#' @examples
+#' d <- pseudohuber_distrib()
+#' distributions7:::symmetric_log_quantile(d, 1e-30, list(mu = 0, sigma = 1, nu = 2),
+#'                                         FALSE, FALSE, function(th) th[[2]])
+#' @keywords internal
+symmetric_log_quantile <- function(distrib, p, theta, lower.tail, log.p,
+                                   spread) {
+  lt <- quantile_log_tails(p, lower.tail, log.p)
+  all_params <- expand_params(c(list(.lo = lt$lower, .up = lt$upper), theta))
   rows <- transpose_params(all_params)
-
   vapply(rows, function(r) {
     r <- as.list(r)
     th <- r[distrib@params]
-    pi <- r$.p
-
-    if (is.na(pi) || pi < 0 || pi > 1) return(NaN)
-    if (pi == 0) return(-Inf)
-    if (pi == 1) return(Inf)
-
+    reflect <- r$.up < r$.lo
+    ls <- if (reflect) r$.up else r$.lo
     m <- th[[1]]
-    if (pi == 0.5) return(m)
-
-    # Reflect to the lower half where the CDF is computed directly
-    reflect <- pi > 0.5
-    p_low <- if (reflect) 1 - pi else pi
-
-    # Bracket [lo, m] expanding by multiples of the standard deviation
-    sd_th <- sqrt(variance(distrib, th))
-    lo <- m - 10 * sd_th
+    if (is.na(ls) || ls > 0) return(NaN)
+    if (ls == -Inf) return(if (reflect) Inf else -Inf)
+    if (ls >= log(0.5)) return(m)
+    f <- function(q) distrib_cdf(distrib, q, th, log.p = TRUE) - ls
+    lo <- m - 10 * spread(th)
     it <- 0L
-    while (distrib_cdf(distrib, lo, th) > p_low && it < 100L) {
+    while (f(lo) > 0 && it < 2000L) {
       lo <- m - 2 * (m - lo)
       it <- it + 1L
     }
-
-    q_low <- stats::uniroot(
-      function(q) distrib_cdf(distrib, q, th) - p_low,
-      lower = lo, upper = m, tol = .Machine$double.eps^0.5
-    )$root
-
+    q_low <- stats::uniroot(f, lower = lo, upper = m,
+                            tol = .Machine$double.eps^0.5)$root
     if (reflect) 2 * m - q_low else q_low
   }, numeric(1))
 }

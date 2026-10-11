@@ -222,11 +222,42 @@ S7::method(distrib_pdf, SkewNormal1Distrib) <- function(distrib, y, theta, log =
 #' # The two tails sum to one.
 #' distrib_cdf(d, q, th) + distrib_cdf(d, q, th, lower.tail = FALSE)
 S7::method(distrib_cdf, SkewNormal1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
-  z <- (q - theta[[1]]) / theta[[2]]
-  res <- stats::pnorm(z) - 2 * numericals7::owen_t(z, theta[[3]])
-  res <- pmin(pmax(res, 0), 1)
-  if (!lower.tail) res <- 1 - res
-  if (log.p) log(res) else res
+  n <- max(length(q), lengths(theta))
+  q <- rep_len(as.numeric(q), n)
+  th <- lapply(theta, rep_len, length.out = n)
+  z <- (q - th[[1]]) / th[[2]]
+  # the upper tail is the lower tail of -Y, a skew normal of shape -alpha
+  sg <- if (lower.tail) 1 else -1
+  lp <- sn_log_lower(sg * z, sg * th[[3]])
+  # where Phi(z) - 2T(z, alpha) cancelled, the tail is integrated instead
+  redo <- which(is.na(lp) | lp < log(1e-3) + stats::pnorm(sg * z, log.p = TRUE))
+  for (i in redo[is.finite(q[redo])]) {
+    th_i <- stats::setNames(lapply(th, `[`, i), distrib@params)
+    lp[i] <- log_tail_integral(distrib, q[i], th_i, lower.tail)
+  }
+  if (log.p) lp else exp(lp)
+}
+
+#' @title The Skew Normal's Lower Tail on the Log Scale
+#' @name sn_log_lower
+#' @description
+#' Returns \eqn{\log\{\Phi(z) - 2T(z, \alpha)\}} with \eqn{T} Owen's
+#' function, the shape clamped to \eqn{10^{50}} in absolute value, past which
+#' \eqn{T(z, \alpha)} equals its limit \eqn{\Phi(-|z|)/2} to double
+#' precision. A value above one half is formed through `log1p()` of the
+#' other tail.
+#' @param z A numeric vector of standardized quantiles.
+#' @param alpha A numeric vector of shapes.
+#' @return A numeric vector of log probabilities.
+#' @examples
+#' distributions7:::sn_log_lower(c(-1, 0, 1), 3)
+#' @keywords internal
+sn_log_lower <- function(z, alpha) {
+  a <- pmin(pmax(alpha, -1e50), 1e50)
+  p <- stats::pnorm(z) - 2 * numericals7::owen_t(z, a)
+  p <- pmin(pmax(p, 0), 1)
+  up <- stats::pnorm(-z) + 2 * numericals7::owen_t(z, a)
+  ifelse(p > 0.5, log1p(-pmin(pmax(up, 0), 1)), log(p))
 }
 
 #' @title Skew Normal Random Generation
@@ -282,9 +313,14 @@ S7::method(distrib_cdf, SkewNormal1Distrib) <- function(distrib, q, theta, lower
 #' z <- delta * abs(rnorm(2e5)) + sqrt(1 - delta^2) * rnorm(2e5)
 #' all.equal(x, z)
 S7::method(distrib_rng, SkewNormal1Distrib) <- function(distrib, n, theta, ...) {
+  # delta = alpha/sqrt(1 + alpha^2) and sqrt(1 - delta^2) = 1/sqrt(1 + alpha^2),
+  # written in 1/alpha where alpha^2 would overflow
   alpha <- theta[[3]]
-  delta <- alpha / sqrt(1 + alpha^2)
-  z <- delta * abs(stats::rnorm(n)) + sqrt(1 - delta^2) * stats::rnorm(n)
+  big <- abs(alpha) > 1
+  ia <- 1 / abs(alpha)
+  delta <- ifelse(big, sign(alpha) / sqrt(1 + ia^2), alpha / sqrt(1 + alpha^2))
+  cdelta <- ifelse(big, ia / sqrt(1 + ia^2), 1 / sqrt(1 + alpha^2))
+  z <- delta * abs(stats::rnorm(n)) + cdelta * stats::rnorm(n)
   theta[[1]] + theta[[2]] * z
 }
 

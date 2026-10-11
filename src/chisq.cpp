@@ -78,3 +78,19 @@ List chisq_deriv4_cpp(NumericVector y, NumericVector mu,
     });
     return List::create(Named("mu_mu_mu_mu") = d);
 }
+
+// order 5 of the chi-squared log-density in its degrees of freedom:
+// -psi^(4)(mu/2)/32, free of the response
+// [[Rcpp::export]]
+List chisq_deriv5_cpp(NumericVector y, NumericVector mu,
+                      int threads = 1) {
+    int n = y.size();
+    NumericVector d(n);
+    bool mu_is_scalar = (mu.size() == 1);
+
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        const double m = mu_is_scalar ? mu[0] : mu[i];
+        d[i] = -R::psigamma(0.5 * m, 4) / 32.0;
+    });
+    return List::create(Named("mu_mu_mu_mu_mu") = d);
+}

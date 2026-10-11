@@ -784,9 +784,8 @@ S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
 S7::method(distrib_cdf, VonMises2Distrib) <- function(distrib, q, theta,
                                                       lower.tail = TRUE,
                                                       log.p = FALSE, ...) {
-  out <- vm_cdf(q, theta[[1]], numericals7::bessel_i_ratio_inverse(theta[[2]]))
-  if (!lower.tail) out <- 1 - out
-  if (log.p) log(out) else out
+  vm_cdf_tail(q, theta[[1]], numericals7::bessel_i_ratio_inverse(theta[[2]]),
+              lower.tail, log.p)
 }
 
 # the distribution function's derivatives from the compiled kernels

@@ -254,7 +254,8 @@ test_that("the term count is a safe upper bound wherever it is used", {
   }
   for (kap in c(0.5, 5, 50, 300)) {
     m <- max(20L, as.integer(ceiling(8.5 * sqrt(kap))) + 10L)
-    expect_equal(distrib_cdf(d, x, list(mu = 0.7, kappa = kap)),
+    # the series itself: distrib_cdf() integrates the tails below 1e-10
+    expect_equal(distributions7:::vm_cdf(x, 0.7, kap),
                  long(0.7, kap, 4L * m), tolerance = 1e-13,
                  info = sprintf("kappa %g", kap))
   }

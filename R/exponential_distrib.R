@@ -554,6 +554,43 @@ S7::method(distrib_deriv4, ExponentialDistrib) <- function(distrib, y, theta, ex
   else exponential_deriv4_cpp(y, theta[[1]], threads)
 }
 
+#' @title Exponential Fifth-Order Derivatives
+#' @name distrib_deriv5.ExponentialDistrib
+#' @description
+#' Computes the fifth derivative of the exponential log-density
+#' \eqn{\ell = -\log\mu - y/\mu} with respect to its mean, in closed form
+#' from a compiled kernel,
+#' \deqn{\ell^{(\mu\mu\mu\mu\mu)} = \dfrac{120 y}{\mu^6} - \dfrac{24}{\mu^5}.}
+#' With `scale = "link"` the components are composed with the link
+#' derivatives by the routine that every family with a fifth-order kernel
+#' uses.
+#'
+#' @param distrib A `ExponentialDistrib` object, from [exponential_distrib()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list with components `mu`, each a numeric vector
+#'   of length 1 or of the length of `y`.
+#' @param scale One of `"parameter"` (the default) or `"link"`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Defaults to `1L`.
+#'
+#' @return A named list with one numeric vector, `mu_mu_mu_mu_mu`, of length
+#'   `max(length(y), length(mu))`.
+#'
+#' @seealso [distrib_deriv4()] for the order below and [distrib_deriv5()]
+#'   for the generic.
+#'
+#' @examples
+#' d <- exponential_distrib()
+#' y <- c(0.2, 1, 4)
+#' all.equal(distrib_deriv5(d, y, list(mu = 1.5))$mu_mu_mu_mu_mu,
+#'           120 * y / 1.5^6 - 24 / 1.5^5)
+S7::method(distrib_deriv5, ExponentialDistrib) <- function(distrib, y, theta,
+    scale = c("parameter", "link"), ..., threads = 1L) {
+  deriv5_scale(distrib, y, theta, exponential_deriv5_cpp(y, theta[[1]], threads),
+               match.arg(scale))
+}
+
 #' @title Exponential First Derivative in the Response
 #' @name distrib_grad_y.ExponentialDistrib
 #' @description

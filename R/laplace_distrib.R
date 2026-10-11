@@ -122,7 +122,7 @@ LaplaceDistrib <- S7::new_class("LaplaceDistrib", parent = continuous_distrib)
 S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   mu <- theta[[1]]
   b <- theta[[2]]
-  log_d <- -log(2 * b) - abs(y - mu) / b
+  log_d <- -log(2) - log(b) - abs(y - mu) / b
   if (log) log_d else exp(log_d)
 }
 
@@ -181,9 +181,37 @@ S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FAL
 S7::method(distrib_cdf, LaplaceDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   mu <- theta[[1]]
   b <- theta[[2]]
-  res <- ifelse(q < mu, 0.5 * exp((q - mu) / b), 1 - 0.5 * exp(-(q - mu) / b))
-  if (!lower.tail) res <- 1 - res
-  if (log.p) log(res) else res
+  laplace_cdf_tails((q - mu) / b, lower.tail, log.p)
+}
+
+#' @title The Laplace Tails on the Log Scale
+#' @name laplace_cdf_tails
+#' @description
+#' Internal helpers of the two Laplace families. `laplace_cdf_tails()`
+#' returns the probability that `lower.tail` and `log.p` select at the
+#' standardized residual `r`, each tail from its own arm: \eqn{\log(1/2) - |r|}
+#' for the far tail and `log1p(-exp(-|r|)/2)` for the near one.
+#' `laplace_std_quantile()` returns the standard Laplace quantile from the
+#' logarithm of the smaller tail, \eqn{\pm(\log P + \log 2)}.
+#' @param r A numeric vector of standardized residuals.
+#' @param p A numeric vector of probabilities, or their logarithms.
+#' @param lower.tail,log.p Logical of length 1.
+#' @return A numeric vector.
+#' @examples
+#' distributions7:::laplace_cdf_tails(c(-50, 0, 50), TRUE, TRUE)
+#' distributions7:::laplace_std_quantile(1e-20, TRUE, FALSE)
+#' @keywords internal
+laplace_cdf_tails <- function(r, lower.tail, log.p) {
+  far <- -log(2) - abs(r)
+  near <- log1p(-0.5 * exp(-abs(r)))
+  cdf_from_log_tails(ifelse(r < 0, far, near), ifelse(r < 0, near, far),
+                     lower.tail, log.p)
+}
+
+#' @rdname laplace_cdf_tails
+laplace_std_quantile <- function(p, lower.tail, log.p) {
+  lt <- quantile_log_tails(p, lower.tail, log.p)
+  ifelse(lt$lower <= lt$upper, lt$lower + log(2), -(lt$upper + log(2)))
 }
 
 #' @title Laplace Quantile Function
@@ -229,9 +257,7 @@ S7::method(distrib_cdf, LaplaceDistrib) <- function(distrib, q, theta, lower.tai
 S7::method(distrib_quantile, LaplaceDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   mu <- theta[[1]]
   b <- theta[[2]]
-  if (log.p) p <- exp(p)
-  if (!lower.tail) p <- 1 - p
-  mu - b * sign(p - 0.5) * log(1 - 2 * abs(p - 0.5))
+  mu + b * laplace_std_quantile(p, lower.tail, log.p)
 }
 
 #' @title Laplace Random Number Generator
@@ -620,6 +646,52 @@ S7::method(distrib_deriv3, LaplaceDistrib) <- function(distrib, y, theta, expect
 S7::method(distrib_deriv4, LaplaceDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   if (expected) laplace_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
   else laplace_deriv4_cpp(y, theta[[1]], theta[[2]])
+}
+
+#' @title Laplace Fifth-Order Derivatives
+#' @name distrib_deriv5.LaplaceDistrib
+#' @description
+#' Computes the six distinct fifth derivatives of the Laplace log-density
+#' with respect to \eqn{\mu} and \eqn{\sigma}, in closed form from a
+#' compiled kernel. Away from the kink at \eqn{y = \mu}, with
+#' \eqn{r = y - \mu}, the four components with two or more derivatives in
+#' \eqn{\mu} are zero and
+#' \deqn{\ell^{(\mu\sigma\sigma\sigma\sigma)} = \dfrac{24\,\mathrm{sign}(r)}{\sigma^5},
+#'       \qquad \ell^{(\sigma\sigma\sigma\sigma\sigma)} =
+#'       \dfrac{120 |r|}{\sigma^6} - \dfrac{24}{\sigma^5}.}
+#' The kernel forms the powers of \eqn{1/\sigma}, so that a small scale does
+#' not underflow an intermediate power where the value is finite.
+#' With `scale = "link"` the components are composed with the link
+#' derivatives by the routine that every family with a fifth-order kernel
+#' uses.
+#'
+#' @param distrib A `LaplaceDistrib` object, from [laplace_distrib()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list with components `mu` and `sigma`, each a numeric vector
+#'   of length 1 or of the length of `y`.
+#' @param scale One of `"parameter"` (the default) or `"link"`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Defaults to `1L`.
+#'
+#' @return A named list of six numeric vectors, `mu_mu_mu_mu_mu`,
+#'   `mu_mu_mu_mu_sigma`, `mu_mu_mu_sigma_sigma`, `mu_mu_sigma_sigma_sigma`,
+#'   `mu_sigma_sigma_sigma_sigma` and `sigma_sigma_sigma_sigma_sigma`, each of length
+#'   `max(length(y), length(mu), length(sigma))`.
+#'
+#' @seealso [distrib_deriv4()] for the order below and [distrib_deriv5()]
+#'   for the generic.
+#'
+#' @examples
+#' d <- laplace_distrib()
+#' y <- c(-1.2, 0.3, 2.5)
+#' d5 <- distrib_deriv5(d, y, list(mu = 0.4, sigma = 1.5))
+#' all.equal(d5$sigma_sigma_sigma_sigma_sigma,
+#'           120 * abs(y - 0.4) / 1.5^6 - 24 / 1.5^5)
+S7::method(distrib_deriv5, LaplaceDistrib) <- function(distrib, y, theta,
+    scale = c("parameter", "link"), ..., threads = 1L) {
+  deriv5_scale(distrib, y, theta, laplace_deriv5_cpp(y, theta[[1]], theta[[2]], threads),
+               match.arg(scale))
 }
 
 #' @title Laplace First Derivative in the Response

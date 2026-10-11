@@ -256,22 +256,25 @@ S7::method(distrib_cdf, continuous_distrib) <- function(distrib, q, theta, lower
 #'   would reach; [distrib_quantile()] for the generic.
 #' @keywords internal
 S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
-  if (log.p) p <- exp(p)
-  if (!lower.tail) p <- 1 - p
-
+  # the logarithms of both tails, formed without 1 - p or exp(log p)
+  lt <- quantile_log_tails(p, lower.tail, log.p)
   b <- distrib@bounds
-  all_params <- expand_params(c(list(.p = p), theta))
-  p <- as.numeric(all_params$.p)
+  all_params <- expand_params(c(list(.lo = lt$lower, .up = lt$upper), theta))
+  llo <- as.numeric(all_params$.lo)
+  lup <- as.numeric(all_params$.up)
   th <- all_params[distrib@params]
-  n <- length(p)
+  n <- length(llo)
   out <- rep(NaN, n)
-  ok <- !is.na(p) & p >= 0 & p <= 1
-  out[ok & p == 0] <- b[1]
-  out[ok & p == 1] <- b[2]
-  todo <- which(ok & p > 0 & p < 1)
+  ok <- !is.na(llo) & !is.na(lup) & llo <= 0 & lup <= 0
+  out[ok & llo == -Inf] <- b[1]
+  out[ok & lup == -Inf] <- b[2]
+  todo <- which(ok & llo > -Inf & lup > -Inf)
   if (!length(todo)) return(out)
 
-  pt <- p[todo]
+  # each root is solved on the tail with the smaller probability:
+  # log F(x) = llo below the median, log S(x) = lup above it
+  low <- llo[todo] <= lup[todo]
+  target <- ifelse(low, llo[todo], lup[todo])
   tht <- lapply(th, function(v) rep_len(v, n)[todo])
   # the anchor, its height and its probability once per distinct setting
   key <- do.call(paste, c(lapply(tht, function(v) sprintf("%a", v)), sep = "|"))
@@ -284,47 +287,71 @@ S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, 
   m <- m_u[u]
   s <- 1 / pmax(f_u[u], 1e-12)
   Fm <- F_u[u]
-  cdf_at <- function(x, idx) distrib_cdf(distrib, x, lapply(tht, `[`, idx))
-  pdf_at <- function(x, idx) distrib_pdf(distrib, x, lapply(tht, `[`, idx))
+  # log P(x) of the tail on which each root is solved, and log f(x)
+  lcdf_at <- function(x, idx) {
+    th_i <- lapply(tht, `[`, idx)
+    out <- numeric(length(idx))
+    lo_i <- low[idx]
+    if (any(lo_i)) {
+      out[lo_i] <- distrib_cdf(distrib, x[lo_i], lapply(th_i, `[`, lo_i),
+                               log.p = TRUE)
+    }
+    if (any(!lo_i)) {
+      out[!lo_i] <- distrib_cdf(distrib, x[!lo_i], lapply(th_i, `[`, !lo_i),
+                                lower.tail = FALSE, log.p = TRUE)
+    }
+    out
+  }
+  lpdf_at <- function(x, idx) {
+    distrib_pdf(distrib, x, lapply(tht, `[`, idx), log = TRUE)
+  }
 
   # the bracket: from the anchor towards the probability's side, doubling the
-  # step where the support is unbounded on that side
-  left <- pt <= Fm
+  # step where the support is unbounded on that side, and multiplying it by a
+  # thousand after thirty doublings, so that a root near 1e300 is reached
+  left <- ifelse(low, target <= log(Fm), target > log1p(-Fm))
   lo <- ifelse(left, b[1], m)
   hi <- ifelse(left, m, b[2])
   for (side in c("lo", "hi")) {
     open <- which(if (side == "lo") left & !is.finite(b[1]) else
                     !left & !is.finite(b[2]))
     step <- s[open]
-    for (it in seq_len(80L)) {
+    for (it in seq_len(150L)) {
       if (!length(open)) break
       x <- if (side == "lo") m[open] - step else m[open] + step
-      Fx <- cdf_at(x, open)
+      # the residual of the solved tail: positive while x is short of the
+      # root on the lower side, or beyond it on the upper side
+      r <- lcdf_at(x, open) - target[open]
       if (side == "lo") lo[open] <- x else hi[open] <- x
-      more <- if (side == "lo") Fx > pt[open] else Fx < pt[open]
+      more <- if (side == "lo") r > 0 & low[open] | r < 0 & !low[open]
+              else r < 0 & low[open] | r > 0 & !low[open]
       more[is.na(more)] <- FALSE
       open <- open[more]
-      step <- 2 * step[more]
+      step <- (if (it > 30L) 1e3 else 2) * step[more]
     }
   }
 
   # safeguarded Newton inside the bracket
   x <- ifelse(is.finite(lo) & is.finite(hi), (lo + hi) / 2,
               ifelse(is.finite(lo), lo, hi))
-  act <- seq_along(pt)
+  act <- seq_along(target)
   for (it in seq_len(100L)) {
     if (!length(act)) break
     xa <- x[act]
-    r <- cdf_at(xa, act) - pt[act]
-    up <- !is.na(r) & r > 0
+    lP <- lcdf_at(xa, act)
+    r <- lP - target[act]
+    # log F rises with x and log S falls: the sign says which end moves
+    up <- !is.na(r) & ((r > 0) == low[act])
     hi[act[up]] <- xa[up]
     lo[act[!up & !is.na(r)]] <- xa[!up & !is.na(r)]
-    fx <- pdf_at(xa, act)
-    xn <- xa - r / fx
+    # d log F/dx = f/F and d log S/dx = -f/S
+    slope <- exp(lpdf_at(xa, act) - lP) * ifelse(low[act], 1, -1)
+    xn <- xa - r / slope
     bad <- !is.finite(xn) | xn < lo[act] | xn > hi[act]
     xn[bad] <- (lo[act][bad] + hi[act][bad]) / 2
-    # a residual at rounding is the root, and the point stays where it is
-    hit <- !is.na(r) & abs(r) <= 4 * .Machine$double.eps
+    # a residual at rounding is the root, and the point stays where it is;
+    # on the log scale this is a relative tolerance on the probability
+    hit <- !is.na(r) & abs(r) <= 4 * .Machine$double.eps * pmax(1, abs(target[act]))
     xn[hit] <- xa[hit]
     tol <- .Machine$double.eps^0.75 * pmax(1, abs(xa))
     done <- hit | abs(xn - xa) <= tol | (hi[act] - lo[act]) <= tol

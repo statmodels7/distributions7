@@ -132,7 +132,7 @@ mapped_cdf_deriv_k <- function(distrib, parent, th_par, maps, q, theta, order,
       v
     }))
   }
-  cdf_scale_k(distrib, distrib_cdf(distrib, q, theta), tabs, order,
+  cdf_scale_k(distrib, tail_cdf(distrib, q, theta, lower.tail), tabs, order,
               lower.tail, log)
 }
 
@@ -384,7 +384,7 @@ partial_loc_scale_deriv_cdf_k <- function(order) {
       out[names(closed)] <- closed
       out[deriv_names(params, k)]
     })
-    cdf_scale_k(distrib, distrib_cdf(distrib, q, theta), tabs, order,
+    cdf_scale_k(distrib, tail_cdf(distrib, q, theta, lower.tail), tabs, order,
                 lower.tail, log)
   }
 }

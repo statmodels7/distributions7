@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "ls_order_list.h"
 using namespace Rcpp;
 
 // Third/fourth-order observed derivatives of the Logistic log-density.
@@ -119,4 +120,34 @@ List logistic_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
         Named("mu_sigma_sigma_sigma") = mu_sigma_sigma_sigma,
         Named("sigma_sigma_sigma_sigma") = sigma_sigma_sigma_sigma
     );
+}
+
+// z^p g_i of the logistic, g(z) = -z - 2 log(1 + exp(-z)): with t the
+// sigmoid and u = 1 - t, g1 = u - t, g2 = -2tu, g3 = g2 g1,
+// g4 = -2tu(1 - 6tu), g5 = -2tu g1 (1 - 12tu)
+struct LogisticTerm {
+    double z, g[6];
+    explicit LogisticTerm(double zz) : z(zz) {
+        double t, u;
+        sigmoid_pair(z, t, u);
+        const double tu = t * u, g1 = u - t;
+        g[0] = 0.0;
+        g[1] = g1;
+        g[2] = -2.0 * tu;
+        g[3] = g[2] * g1;
+        g[4] = -2.0 * tu * (1.0 - 6.0 * tu);
+        g[5] = -2.0 * tu * g1 * (1.0 - 12.0 * tu);
+    }
+    double operator()(int p, int i) const {
+        double a = g[i];
+        for (int m = 0; m < p; m++) a *= z;
+        return a;
+    }
+};
+
+// [[Rcpp::export]]
+List logistic_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                         int threads = 1) {
+    return d7::ls_order_list(5, y, mu, sigma, threads,
+        [](double z) { return LogisticTerm(z); });
 }

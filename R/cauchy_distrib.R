@@ -114,12 +114,12 @@ CauchyDistrib <- S7::new_class("CauchyDistrib", parent = continuous_distrib)
 #' distrib_pdf(d, 40, list(mu = 0, sigma = 1))
 #' distrib_pdf(gaussian1_distrib(), 40, list(mu = 0, sigma = 1))
 S7::method(distrib_pdf, CauchyDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
-  stats::dcauchy(
-    x = y,
-    location = theta[[1]],
-    scale = theta[[2]],
-    log = log
-  )
+  # log1p(z^2), written as 2 log|z| + log1p(1/z^2) where z^2 would overflow
+  z <- (y - theta[[1]]) / theta[[2]]
+  az <- abs(z)
+  l1 <- ifelse(az > 1e150, 2 * log(az) + log1p(1 / az^2), log1p(az^2))
+  log_d <- -log(pi) - log(theta[[2]]) - l1
+  if (log) log_d else exp(log_d)
 }
 
 #' @title Cauchy Cumulative Distribution Function
@@ -604,6 +604,53 @@ S7::method(distrib_deriv4, CauchyDistrib) <- function(distrib, y, theta, expecte
   else cauchy_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
+#' @title Cauchy Fifth-Order Derivatives
+#' @name distrib_deriv5.CauchyDistrib
+#' @description
+#' Computes the six distinct fifth derivatives of the Cauchy log-density with
+#' respect to \eqn{\mu} and \eqn{\sigma}, in closed form from a compiled
+#' kernel.
+#' Writing the log-density as \eqn{\ell = -\log\sigma + g(z)} with
+#' \eqn{z = (y - \mu)/\sigma}, each component is \eqn{\sigma^{-5}} times a
+#' sum of terms \eqn{c\, z^p g^{(i)}(z)} with integer coefficients, plus
+#' \eqn{-24\sigma^{-5}} in the pure \eqn{\sigma} component; the kernel
+#' evaluates the sum from \eqn{g^{(i)}(z) = 2(-1)^i (i-1)!\,\mathrm{Re}\,w^i}
+#' with \eqn{w = 1/(z + \mathrm{i})}, taking \eqn{z^p w^i} as
+#' \eqn{(zw)^p w^{i-p}}; the factor \eqn{zw} is bounded, so the components
+#' stay finite for any residual. The observed orders one to four are
+#' computed the same way.
+#' With `scale = "link"` the components are composed with the link
+#' derivatives by the routine that every family with a fifth-order kernel
+#' uses.
+#'
+#' @param distrib A `CauchyDistrib` object, from [cauchy_distrib()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list with components `mu` and `sigma`, each a numeric vector
+#'   of length 1 or of the length of `y`.
+#' @param scale One of `"parameter"` (the default) or `"link"`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Defaults to `1L`.
+#'
+#' @return A named list of six numeric vectors, `mu_mu_mu_mu_mu`,
+#'   `mu_mu_mu_mu_sigma`, `mu_mu_mu_sigma_sigma`, `mu_mu_sigma_sigma_sigma`,
+#'   `mu_sigma_sigma_sigma_sigma` and `sigma_sigma_sigma_sigma_sigma`, each of length
+#'   `max(length(y), length(mu), length(sigma))`.
+#'
+#' @seealso [distrib_deriv4()] for the order below and [distrib_deriv5()]
+#'   for the generic.
+#'
+#' @examples
+#' d <- cauchy_distrib()
+#' d5 <- distrib_deriv5(d, c(-1.2, 0.3, 1e200), list(mu = 0.4, sigma = 1.5))
+#' # Finite far in the tail, where the pure sigma component tends to 24/sigma^5.
+#' c(d5$sigma_sigma_sigma_sigma_sigma[3], 24 / 1.5^5)
+S7::method(distrib_deriv5, CauchyDistrib) <- function(distrib, y, theta,
+    scale = c("parameter", "link"), ..., threads = 1L) {
+  deriv5_scale(distrib, y, theta, cauchy_deriv5_cpp(y, theta[[1]], theta[[2]], threads),
+               match.arg(scale))
+}
+
 #' @title Cauchy First Derivative in the Response
 #' @name distrib_grad_y.CauchyDistrib
 #' @description
@@ -696,6 +743,50 @@ S7::method(distrib_hess_y, CauchyDistrib) <- function(distrib, y, theta, ...) {
   r <- y - theta[[1]]
   s2 <- theta[[2]]^2
   2 * (r^2 - s2) / (s2 + r^2)^2
+}
+
+#' @title Cauchy Distribution Function Derivatives
+#' @name cauchy_cdf_method
+#'
+#' @description
+#' Returns the method body that [distrib_grad_cdf()], [distrib_hess_cdf()],
+#' [distrib_deriv3_cdf()] and [distrib_deriv4_cdf()] use for the Cauchy, at
+#' one order. With \eqn{Y = q - \mu + i\sigma},
+#' \eqn{F = 1 - \mathrm{Im}(\log Y)/\pi}, so every derivative of order
+#' \eqn{n} with \eqn{j} derivatives in \eqn{\mu} and \eqn{k} in
+#' \eqn{\sigma} is one term,
+#' \deqn{-\tfrac{1}{\pi}(-1)^{j+n-1}(n-1)!\,\mathrm{Im}(i^k Y^{-n}),}
+#' computed by a compiled kernel without squaring the residual. The log scale
+#' divides by the probability of the requested tail, which [stats::pcauchy()]
+#' returns for either tail.
+#'
+#' @param order The derivative order, 1 to 4.
+#'
+#' @return A function with the signature of the four generics, returning a
+#'   named list keyed as [`deriv_names(distrib@params, order)`][deriv_names],
+#'   or as [hess_names()] at order 2.
+#'
+#' @examples
+#' d <- cauchy_distrib()
+#' th <- list(mu = 0, sigma = 1)
+#' # Far in the tail the log-scale derivatives in mu tend to those of
+#' # log(1/(pi q)).
+#' distrib_grad_cdf(d, 1e8, th, lower.tail = FALSE)$mu
+#'
+#' @keywords internal
+cauchy_cdf_method <- function(order) {
+  force(order)
+  function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
+    tabs <- lapply(seq_len(order), function(k) {
+      cauchy_cdf_deriv_cpp(as.numeric(q), theta[[1]], theta[[2]], k)
+    })
+    if (!log) return(cdf_scale_k(distrib, NULL, tabs, order, lower.tail, FALSE))
+    sgn <- if (lower.tail) 1 else -1
+    P <- distrib_cdf(distrib, q, theta, lower.tail = lower.tail)
+    cdf_scale_k(distrib, rep(1, length(P)),
+                lapply(tabs, function(t) lapply(t, function(v) sgn * v / P)),
+                order, TRUE, TRUE)
+  }
 }
 
 # --- CONSTRUCTOR WRAPPER ---

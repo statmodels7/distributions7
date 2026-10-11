@@ -335,7 +335,7 @@ S7::method(distrib_hess_y_hess, Lognormal2Distrib) <- function(
 S7::method(distrib_grad_cdf, Lognormal2Distrib) <- function(
     distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
   d1 <- lognormal2_dcdf1_cpp(q, theta[[1]], theta[[2]])
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL,
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, NULL,
                  lower.tail, log)
 }
 
@@ -343,7 +343,7 @@ S7::method(distrib_hess_cdf, Lognormal2Distrib) <- function(
     distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
   d1 <- lognormal2_dcdf1_cpp(q, theta[[1]], theta[[2]])
   d2 <- lognormal2_dcdf2_cpp(q, theta[[1]], theta[[2]])
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, d2,
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, d2,
                  lower.tail, log)
 }
 
@@ -352,7 +352,7 @@ S7::method(distrib_deriv3_cdf, Lognormal2Distrib) <- function(
   dF <- list(lognormal2_dcdf1_cpp(q, theta[[1]], theta[[2]]),
              lognormal2_dcdf2_cpp(q, theta[[1]], theta[[2]]),
              lognormal2_dcdf3_cpp(q, theta[[1]], theta[[2]]))
-  cdf_scale_k(distrib, distrib_cdf(distrib, q, theta), dF, 3L, lower.tail, log)
+  cdf_scale_k(distrib, tail_cdf(distrib, q, theta, lower.tail), dF, 3L, lower.tail, log)
 }
 
 S7::method(distrib_deriv4_cdf, Lognormal2Distrib) <- function(
@@ -361,7 +361,7 @@ S7::method(distrib_deriv4_cdf, Lognormal2Distrib) <- function(
              lognormal2_dcdf2_cpp(q, theta[[1]], theta[[2]]),
              lognormal2_dcdf3_cpp(q, theta[[1]], theta[[2]]),
              lognormal2_dcdf4_cpp(q, theta[[1]], theta[[2]]))
-  cdf_scale_k(distrib, distrib_cdf(distrib, q, theta), dF, 4L, lower.tail, log)
+  cdf_scale_k(distrib, tail_cdf(distrib, q, theta, lower.tail), dF, 4L, lower.tail, log)
 }
 
 

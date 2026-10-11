@@ -49,7 +49,7 @@ List logistic_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma
         double tanh_z = std::tanh(z_half);
         double sech2_z = 1.0 - tanh_z * tanh_z;
         
-        hess_mu_mu[i] = d7::logistic_hess_mu_mu(tanh_z, s);
+        hess_mu_mu[i] = d7::logistic_hess_mu_mu(res, s);
         hess_sigma_sigma[i] = d7::logistic_hess_sigma_sigma(res, tanh_z, s);
         hess_mu_sigma[i] = -(tanh_z + z_half * sech2_z) / s2;
     });

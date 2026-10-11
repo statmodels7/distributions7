@@ -459,9 +459,15 @@ gpd_cdf_method <- function(lower_log, upper_log, surv) {
 S7::method(distrib_grad_cdf, GPDDistrib) <- gpd_cdf_method(
   function(...) gpd_grad_cdf_lower_cpp(...), function(...) gpd_grad_cdf_upper_cpp(...),
   function(...) gpd_grad_surv_cpp(...))
-S7::method(distrib_hess_cdf, GPDDistrib) <- gpd_cdf_method(
-  function(...) gpd_hess_cdf_lower_cpp(...), function(...) gpd_hess_cdf_upper_cpp(...),
-  function(...) gpd_hess_surv_cpp(...))
+S7::method(distrib_hess_cdf, GPDDistrib) <- local({
+  inner <- gpd_cdf_method(
+    function(...) gpd_hess_cdf_lower_cpp(...), function(...) gpd_hess_cdf_upper_cpp(...),
+    function(...) gpd_hess_surv_cpp(...))
+  # order two in the order of hess_names()
+  function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
+    inner(distrib, q, theta, lower.tail, log)[hess_names(distrib@params)]
+  }
+})
 S7::method(distrib_deriv3_cdf, GPDDistrib) <- gpd_cdf_method(
   function(...) gpd_deriv3_cdf_lower_cpp(...), function(...) gpd_deriv3_cdf_upper_cpp(...),
   function(...) gpd_deriv3_surv_cpp(...))

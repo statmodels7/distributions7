@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "ls_order_list.h"
 using namespace Rcpp;
 
 // Third/fourth-order derivatives of the Gumbel (maxima) log-density. With
@@ -151,4 +152,23 @@ List gumbel_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector
         Named("mu_sigma_sigma_sigma") = mu_sigma_sigma_sigma,
         Named("sigma_sigma_sigma_sigma") = sigma_sigma_sigma_sigma
     );
+}
+
+// z^p g_i of the Gumbel, g(z) = -z - w with w = exp(-z): g1 = w - 1 and
+// g_i = (-1)^(i + 1) w from the second order on
+struct GumbelTerm {
+    double z, w;
+    explicit GumbelTerm(double zz) : z(zz), w(std::exp(-zz)) {}
+    double operator()(int p, int i) const {
+        double a = (i == 1) ? w - 1.0 : ((i % 2) ? w : -w);
+        for (int m = 0; m < p; m++) a *= z;
+        return a;
+    }
+};
+
+// [[Rcpp::export]]
+List gumbel_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                       int threads = 1) {
+    return d7::ls_order_list(5, y, mu, sigma, threads,
+        [](double z) { return GumbelTerm(z); });
 }

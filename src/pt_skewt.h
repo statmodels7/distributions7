@@ -183,8 +183,8 @@ inline void skewt_score_curv(int k, double y, const double* th, double* out) {
         double B[6][6] = {{0}};
         skewt_btab<2>(o, C0, B, false);
         double g[4], h2[10];
-        skewt_d_1(o.a, o.irs, o.isg, a, v, o.rm, o.L, C0, B, g);
-        skewt_d_2(o.a, o.irs, o.isg, a, v, o.rm, o.L, C0, B, h2);
+        skewt_dd_1(o.a, o.irs, o.isg, a, v, o.rm, o.L, C0, B, g);
+        skewt_dd_2(o.a, o.irs, o.isg, a, v, o.rm, o.L, C0, B, h2);
         static const int diag[3] = {0, 4, 7};
         out[0] = g[k];
         out[1] = h2[diag[k]];
@@ -199,8 +199,8 @@ inline void skewt_score_curv(int k, double y, const double* th, double* out) {
     double B[6][6] = {{0}};
     skewt_btab<2>(o, cc.Cm, B);
     double g[4], h2[10];
-    skewt_d_1(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, g);
-    skewt_d_2(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, h2);
+    skewt_dd_1(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, g);
+    skewt_dd_2(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, h2);
     out[0] = g[3];
     out[1] = h2[9];
 }
@@ -246,14 +246,14 @@ inline void skewt_quad_diag(int k, const double* shape, double* out,
             double d1[4], d2[10], d3[20], dn[3];
             if (!want_d) {
                 skewt_btab<2>(o, cc.Cm, B);
-                skewt_d_2(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d2);
+                skewt_dd_2(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d2);
                 S.add0(fw, d2[9]);
                 continue;
             }
             skewt_btab<3>(o, cc.Cm, B);
-            skewt_d_1(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d1);
-            skewt_d_2(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d2);
-            skewt_d_3(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d3);
+            skewt_dd_1(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d1);
+            skewt_dd_2(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d2);
+            skewt_dd_3(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d3);
             dn[0] = d1[3];
             dn[1] = d2[9];
             dn[2] = d3[19];

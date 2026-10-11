@@ -6,6 +6,7 @@
 #include "pt_bessel_k.h"
 #include "pt_loc_scale.h"
 #include "pt_sqrt.h"
+#include "pt_ph_nu.h"
 
 // The pseudo-Huber family (mu, sigma, nu): with res = y - mu and
 // D = sqrt(nu + res^2/sigma^2),
@@ -21,8 +22,12 @@ namespace d7 {
 
 // the nu-only quantities: K_0 to K_3 scaled at sqrt(nu),
 // r1 = K_1'/K_1 = -(K_0 + K_2)/(2 K_1), r2 = K_1''/K_1 = (3 K_1 + K_3)/(4 K_1),
-// and the nu-only part of l_nu,nu
-struct PhNu { double sv, k0, k1, k2, k3, r1, r2, nu_const; };
+// the nu-only part of l_nu,nu, and dB[k] = B^(k)(nu), k = 1..4, with
+// B = log(sqrt(nu) K_1(sqrt(nu))) from ph_nu_derivs() (pt_ph_nu.h): the
+// log-density carries -B, and its pure nu derivatives are
+// -c_k D^(1 - 2k) - B^(k), c_k the k-th derivative of nu^(1/2) times
+// nu^(k - 1/2)
+struct PhNu { double sv, k0, k1, k2, k3, r1, r2, nu_const; double dB[6]; };
 
 inline PhNu ph_nu(double v) {
     PhNu P;
@@ -33,8 +38,9 @@ inline PhNu ph_nu(double v) {
     P.k3 = bessel_k_scaled(P.sv, 3.0);
     P.r1 = -(P.k0 + P.k2) / (2.0 * P.k1);
     P.r2 = (3.0 * P.k1 + P.k3) / (4.0 * P.k1);
-    P.nu_const = 0.5 / (v * v) +
-        0.25 * (P.r1 / (v * P.sv) + P.r1 * P.r1 / v - P.r2 / v);
+    double dlR[6], R0;
+    ph_nu_derivs(v, 4, P.dB, dlR, R0);
+    P.nu_const = -P.dB[2];
     return P;
 }
 
@@ -65,7 +71,8 @@ inline double pseudohuber_score_sigma(double r, double s, const PhA& P) {
 
 inline double pseudohuber_score_nu(double v, double s, const PhA& P,
                                    const PhNu& N) {
-    return -0.5 * (1.0 / v + s / P.A + N.r1 / N.sv);
+    (void) v;
+    return -0.5 * s / P.A - N.dB[1];
 }
 
 inline double pseudohuber_hess_mu_mu(double s, const PhA& P) {
@@ -93,23 +100,13 @@ inline double pseudohuber_d3_sigma_sigma_sigma(double r, double s,
         (r / (s * s * s * s)) * p * (12.0 - 9.0 * p2 + 3.0 * p2 * p2);
 }
 
-// k4 the scaled K_4(sqrt(nu))
+// d^3 l/dnu^3 = -(3/8) D^-5 - B'''(nu), with q = s/A = 1/D; k4 is no
+// longer read
 inline double pseudohuber_d3_nu_nu_nu(double v, double s, const PhA& PA,
                                       const PhNu& P, double k4) {
+    (void) v; (void) k4;
     const double q = s / PA.A, q2 = q * q;
-    double sv = P.sv, v2 = v * v, v32 = v * sv;
-    double k0 = P.k0, k1 = P.k1, k2 = P.k2, k3 = P.k3;
-    double A = k0 + k2;
-    return (
-        -32.0 / (v2 * v)
-        - 12.0 * q2 * q2 * q
-        + 6.0 * A / (v2 * sv * k1)
-        - 3.0 * A * A / (v2 * k1 * k1)
-        + A * A * A / (v32 * k1 * k1 * k1)
-        - 3.0 * A * (3.0 * k1 + k3) / (2.0 * v32 * k1 * k1)
-        + 2.0 * (3.0 + k3 / k1) / v2
-        + (2.0 * (3.0 * k1 + k3) + sv * (3.0 * k0 + 4.0 * k2 + k4)) / (2.0 * v2 * k1)
-    ) / 32.0;
+    return -0.375 * q2 * q2 * q - P.dB[3];
 }
 
 // log f, as distrib_pdf() forms it

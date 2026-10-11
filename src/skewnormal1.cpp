@@ -26,7 +26,9 @@ List skewnormal1_gradient_cpp(NumericVector y, NumericVector mu,
         double m = m_s ? mp[0] : mp[i], s = s_s ? sp[0] : sp[i],
                a = a_s ? ap[0] : ap[i];
         double z = (yp[i] - m) / s;
-        double r = d7::mills_ratio(a * z);
+        double gg[6];
+        d7::logphi_derivs(a * z, 1, gg);
+        double r = gg[1];
         o1[i] = d7::skewnormal1_score_mu(z, s, a, r);
         o2[i] = d7::skewnormal1_score_sigma(z, s, a, r);
         o3[i] = d7::skewnormal1_score_alpha(z, r);
@@ -52,8 +54,10 @@ List skewnormal1_hessian_cpp(NumericVector y, NumericVector mu,
                a = a_s ? ap[0] : ap[i];
         double z = (yp[i] - m) / s;
         double t = a * z;
-        double r = d7::mills_ratio(t);
-        double dr = -r * (t + r);
+        double gg[6];
+        d7::logphi_derivs(t, 2, gg);
+        double r = gg[1];
+        double dr = gg[2];
         double s2 = s * s;
         o1[i] = d7::skewnormal1_hess_mu_mu(s, a, dr);
         o2[i] = d7::skewnormal1_hess_sigma_sigma(z, s, a, r, dr);

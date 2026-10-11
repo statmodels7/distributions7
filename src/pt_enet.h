@@ -5,6 +5,7 @@
 #include <cmath>
 #include "pt_mills.h"
 #include "pt_sqrt.h"
+#include "pt_enet_logz.h"
 
 
 // The elastic-net density in (mu, lambda, alpha),
@@ -16,30 +17,21 @@
 // (enet.cpp) and by the registry (d7_ccallable.cpp).
 //
 // The data enter only through |z| and z^2, so every derivative beyond the
-// first in (lambda, alpha) is a derivative of log Z. Its derivatives in
-// (a, c) come from G = L'(x), G' = 1 + xG - G^2, G'' = G + xG' - 2GG' and
-// those of x: x_a = c^-1/2, x_c = -x/(2c), x_ac = -c^-3/2/2,
-// x_cc = 3x/(4c^2), x_acc = 3 c^-5/2/4, x_ccc = -15x/(8c^3), with x_aa,
-// x_aaa and x_aac zero; the term -log(c)/2 adds 1/(2c^2) at second order in
-// c and -1/c^3 at third. The parameter quantities are formed once per
-// parameter value by enet_par() and passed as a struct.
+// first in (lambda, alpha) is a derivative of log Z. Its partial derivatives
+// in (a, c) come from enet_logz_ac() (pt_enet_logz.h), which forms them
+// without the cancellation that the expressions in G = L'(x) carry for large
+// x. The parameter quantities are formed once per parameter value by
+// enet_par() and passed as a struct.
 
 namespace d7 {
 
-// G(x) = d log M/dx = x - m(-x), m the Mills ratio phi/Phi (pt_mills.h);
-// past |x| = 1e3 its asymptotic series
-inline double enet_G(double x) {
-    if (std::fabs(x) > 1e3) {
-        double u = 1.0 / x, u2 = u * u, u3 = u2 * u, u5 = u3 * u2,
-               u7 = u5 * u2;
-        return -u + 2.0 * u3 - 10.0 * u5 + 74.0 * u7;
-    }
-    return x - mills_ratio(-x);
-}
+// the third derivatives of log Z in (a, c)
+struct EnetT3 { double aaa, aac, acc, ccc; };
 
 struct EnetPar {
-    double lam, al, a, c, x, g, dg;
+    double lam, al, a, c, x;
     double za, zc, zaa, zac, zcc;
+    EnetT3 t3;
 };
 
 inline EnetPar enet_par(double lam, double al) {
@@ -49,33 +41,22 @@ inline EnetPar enet_par(double lam, double al) {
     P.a = lam * al;
     P.c = lam * (1.0 - al);
     P.x = P.a / d7::sqrt_cr(P.c);
-    P.g = enet_G(P.x);
-    P.dg = 1.0 + P.x * P.g - P.g * P.g;
-    double cc = P.c, x = P.x, g = P.g, dg = P.dg;
-    P.za = g / d7::sqrt_cr(cc);
-    P.zc = -(1.0 + x * g) / (2.0 * cc);
-    P.zaa = dg / cc;
-    P.zac = -(x * dg + g) / (2.0 * std::pow(cc, 1.5));
-    P.zcc = (2.0 * (1.0 + x * g) + x * (g + x * dg)) / (4.0 * cc * cc);
+    double d[5][5];
+    enet_logz_ac(P.a, P.c, 3, d);
+    P.za = d[1][0];
+    P.zc = d[0][1];
+    P.zaa = d[2][0];
+    P.zac = d[1][1];
+    P.zcc = d[0][2];
+    P.t3.aaa = d[3][0];
+    P.t3.aac = d[2][1];
+    P.t3.acc = d[1][2];
+    P.t3.ccc = d[0][3];
     return P;
 }
 
-// the third derivatives of log Z in (a, c)
-struct EnetT3 { double aaa, aac, acc, ccc; };
-
 inline EnetT3 enet_t3(const EnetPar& P) {
-    double c = P.c, x = P.x, g = P.g, dg = P.dg;
-    double d2g = g + x * dg - 2.0 * g * dg;
-    double rc = d7::sqrt_cr(c);
-    double xa = 1.0 / rc, xc = -x / (2.0 * c);
-    double xac = -0.5 / (c * rc), xcc = 3.0 * x / (4.0 * c * c);
-    double xacc = 0.75 / (c * c * rc), xccc = -15.0 * x / (8.0 * c * c * c);
-    EnetT3 T;
-    T.aaa = d2g * xa * xa * xa;
-    T.aac = d2g * xa * xa * xc + 2.0 * dg * xa * xac;
-    T.acc = d2g * xa * xc * xc + dg * (2.0 * xac * xc + xcc * xa) + g * xacc;
-    T.ccc = d2g * xc * xc * xc + 3.0 * dg * xcc * xc + g * xccc - 1.0 / (c * c * c);
-    return T;
+    return P.t3;
 }
 
 inline double enet_sign(double z) {

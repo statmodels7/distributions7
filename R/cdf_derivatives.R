@@ -82,7 +82,7 @@ NULL
 #' @keywords internal
 cdf_tail_scale <- function(distrib, Fq, dF1, dF2 = NULL, lower.tail, log) {
   params <- distrib@params
-  P <- if (lower.tail) Fq else 1 - Fq
+  P <- tail_probability(Fq, lower.tail)
   sgn <- if (lower.tail) 1 else -1
 
   d1 <- lapply(dF1, function(v) sgn * v)
@@ -369,7 +369,7 @@ numerical_cdf_deriv <- function(distrib, q, theta, order = 1L,
 #' @keywords internal
 S7::method(distrib_grad_cdf, continuous_distrib) <- function(distrib, q, theta,
                                                              lower.tail = TRUE, log = TRUE, ...) {
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail),
                  numerical_cdf_deriv(distrib, q, theta, 1L),
                  NULL, lower.tail, log)
 }
@@ -418,7 +418,7 @@ S7::method(distrib_hess_cdf, continuous_distrib) <- function(distrib, q, theta,
                                                              lower.tail = TRUE, log = TRUE, ...) {
   # the first-order part comes from distrib_grad_cdf, so a closed form registered
   # for this family is used here too rather than differenced a second time
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail),
                  distrib_grad_cdf(distrib, q, theta, lower.tail = TRUE, log = FALSE),
                  numerical_cdf_deriv(distrib, q, theta, 2L),
                  lower.tail, log)
@@ -470,7 +470,7 @@ S7::method(distrib_hess_cdf, continuous_distrib) <- function(distrib, q, theta,
 #' @keywords internal
 S7::method(distrib_grad_cdf, discrete_distrib) <- function(distrib, q, theta,
                                                            lower.tail = TRUE, log = TRUE, ...) {
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail),
                  discrete_cdf_deriv(distrib, q, theta, 1L),
                  NULL, lower.tail, log)
 }
@@ -509,7 +509,7 @@ S7::method(distrib_grad_cdf, discrete_distrib) <- function(distrib, q, theta,
 #' @keywords internal
 S7::method(distrib_hess_cdf, discrete_distrib) <- function(distrib, q, theta,
                                                            lower.tail = TRUE, log = TRUE, ...) {
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail),
                  distrib_grad_cdf(distrib, q, theta, lower.tail = TRUE, log = FALSE),
                  discrete_cdf_deriv(distrib, q, theta, 2L),
                  lower.tail, log)
@@ -622,8 +622,7 @@ loc_scale_cdf_deriv <- function(distrib, q, theta, order) {
 #'
 #' @keywords internal
 loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
-                 loc_scale_cdf_deriv(distrib, q, theta, 1L), NULL, lower.tail, log)
+  loc_scale_cdf_route(distrib, q, theta, 1L, lower.tail, log)
 }
 
 #' Location-Scale CDF Hessian
@@ -655,9 +654,7 @@ loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE,
 #'
 #' @keywords internal
 loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
-                 loc_scale_cdf_deriv(distrib, q, theta, 1L),
-                 loc_scale_cdf_deriv(distrib, q, theta, 2L), lower.tail, log)
+  loc_scale_cdf_route(distrib, q, theta, 2L, lower.tail, log)
 }
 
 #' @title Gaussian Log-CDF Gradient
@@ -907,7 +904,7 @@ S7::method(distrib_hess_cdf, LogisticDistrib) <- loc_scale_hess_cdf
 #'
 #' # The heavy tail keeps the log-scale gradient finite far out.
 #' distrib_grad_cdf(d, -1000, th)$mu
-S7::method(distrib_grad_cdf, CauchyDistrib) <- loc_scale_grad_cdf
+S7::method(distrib_grad_cdf, CauchyDistrib) <- cauchy_cdf_method(1L)
 
 #' @title Cauchy Log-CDF Hessian
 #' @name distrib_hess_cdf.CauchyDistrib
@@ -953,7 +950,7 @@ S7::method(distrib_grad_cdf, CauchyDistrib) <- loc_scale_grad_cdf
 #' exact <- distrib_hess_cdf(d, q, th, log = FALSE)
 #' fd <- numerical_cdf_deriv(d, q, th, order = 2)
 #' max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))
-S7::method(distrib_hess_cdf, CauchyDistrib) <- loc_scale_hess_cdf
+S7::method(distrib_hess_cdf, CauchyDistrib) <- cauchy_cdf_method(2L)
 
 #' @title Laplace Log-CDF Gradient
 #' @name distrib_grad_cdf.LaplaceDistrib
@@ -1097,7 +1094,7 @@ S7::method(distrib_grad_cdf, Laplace2Distrib) <- function(distrib, q, theta,
                                                           lower.tail = TRUE, log = TRUE, ...) {
   f <- distrib_pdf(distrib, q, theta)
   d1 <- stats::setNames(list(-f, (q - theta[[1]]) * f / theta[[2]]), distrib@params)
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, NULL, lower.tail, log)
 }
 
 #' @title Laplace Log-CDF Hessian in Location and Rate
@@ -1160,7 +1157,7 @@ S7::method(distrib_hess_cdf, Laplace2Distrib) <- function(distrib, q, theta,
   d1 <- stats::setNames(list(-f, r * f / lam), distrib@params)
   d2 <- stats::setNames(list(-lam * s * f, -s * a^2 * f / lam, -(1 / lam - a) * f),
                         hess_names(distrib@params))
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, d2, lower.tail, log)
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, d2, lower.tail, log)
 }
 
 
@@ -1241,7 +1238,7 @@ S7::method(distrib_grad_cdf, Lognormal1Distrib) <- function(distrib, q, theta,
   z <- ifelse(pos, (base::log(ifelse(pos, q, 1)) - theta[[1]]) / s, 0)
   f <- distrib_pdf(distrib, q, theta)
   d1 <- list(mu = -q * f, sigma2 = -q * f * z / (2 * s))
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, NULL, lower.tail, log)
 }
 
 # --- inverse Gaussian ------------------------------------------------------
@@ -1316,7 +1313,7 @@ S7::method(distrib_grad_cdf, Lognormal1Distrib) <- function(distrib, q, theta,
 S7::method(distrib_grad_cdf, PoissonDistrib) <- function(distrib, q, theta,
                                                          lower.tail = TRUE, log = TRUE, ...) {
   d1 <- list(mu = -distrib_pdf(distrib, floor(q), theta) * (q >= 0))
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, NULL, lower.tail, log)
 }
 
 #' @title Binomial Log-CDF Gradient
@@ -1363,7 +1360,7 @@ S7::method(distrib_grad_cdf, BinomialDistrib) <- function(distrib, q, theta,
                                                           lower.tail = TRUE, log = TRUE, ...) {
   n <- distrib@size
   d1 <- list(mu = -n * stats::dbinom(floor(q), n - 1, theta[[1]]) * (q >= 0))
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, NULL, lower.tail, log)
 }
 
 #' @title Bernoulli Log-CDF Gradient
@@ -1410,7 +1407,7 @@ S7::method(distrib_grad_cdf, BinomialDistrib) <- function(distrib, q, theta,
 S7::method(distrib_grad_cdf, BernoulliDistrib) <- function(distrib, q, theta,
                                                            lower.tail = TRUE, log = TRUE, ...) {
   d1 <- list(mu = -stats::dbinom(floor(q), 0, theta[[1]]) * (q >= 0))
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, NULL, lower.tail, log)
 }
 
 #' @title Negative Binomial Log-CDF Gradient
@@ -1470,7 +1467,7 @@ S7::method(distrib_grad_cdf, NegBin2Distrib) <- function(distrib, q, theta,
   f <- distrib_pdf(distrib, k, theta)
   d1 <- list(mu = -f * (k + theta[[2]]) / (theta[[2]] + theta[[1]]) * (q >= 0),
              theta = discrete_cdf_deriv(distrib, q, theta, 1L)[["theta"]])
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, NULL, lower.tail, log)
 }
 
 # --- families that are location-scale in only some of their parameters -----
@@ -1531,7 +1528,7 @@ S7::method(distrib_grad_cdf, NegBin2Distrib) <- function(distrib, q, theta,
 #   rest <- params[-(1:2)]
 #   d1 <- c(list(-f, -z * f), numerical_cdf_deriv(distrib, q, theta, 1L, which = rest))
 #   names(d1) <- params
-#   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
+#   cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, NULL, lower.tail, log)
 # }
 
 #' @title Student t Log-CDF Gradient

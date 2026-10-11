@@ -56,8 +56,11 @@ test_that("weibull3 is the reparametrized weibull1 on every surface", {
                        distrib_hess_cdf(r, y, th, lower.tail = lt, log = lg), 1e-8, "hess_cdf")
       expect_same_list(distrib_deriv3_cdf(d, y, th, lower.tail = lt, log = lg),
                        distrib_deriv3_cdf(r, y, th, lower.tail = lt, log = lg), 1e-7, "d3_cdf")
+      # at mean 60, y = 162, upper tail, log scale (NaN before the upper tail
+      # was read from the family) the reference is 2.4e-6 from the exact
+      # -0.0576313794, the family 3.7e-7
       expect_same_list(distrib_deriv4_cdf(d, y, th, lower.tail = lt, log = lg),
-                       distrib_deriv4_cdf(r, y, th, lower.tail = lt, log = lg), 1e-6, "d4_cdf")
+                       distrib_deriv4_cdf(r, y, th, lower.tail = lt, log = lg), 5e-6, "d4_cdf")
     }
   }
 })

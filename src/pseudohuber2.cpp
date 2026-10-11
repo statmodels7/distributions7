@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "pt_ph_nu.h"
 #include <cmath>
 #include <algorithm>
 #include <string>
@@ -226,4 +227,23 @@ List pseudohuber2_nu_terms_cpp(NumericVector nu) {
     h[i] = T.h;
   }
   return List::create(Named("R") = R, Named("h") = h);
+}
+
+// the nu-only derivatives of pt_ph_nu.h, for the tests: a K by length(v)
+// matrix of B^(k), one of (log R)^(k), and R itself
+// [[Rcpp::export]]
+List ph_nu_derivs_cpp(NumericVector v, int K) {
+  const int n = v.size();
+  NumericMatrix B(K, n), LR(K, n);
+  NumericVector R(n);
+  for (int i = 0; i < n; i++) {
+    double dB[6], dlR[6], R0;
+    d7::ph_nu_derivs(v[i], K, dB, dlR, R0);
+    for (int k = 1; k <= K; k++) {
+      B(k - 1, i) = dB[k];
+      LR(k - 1, i) = dlR[k];
+    }
+    R[i] = R0;
+  }
+  return List::create(Named("B") = B, Named("logR") = LR, Named("R") = R);
 }

@@ -319,7 +319,7 @@ local({
     function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
       tabs <- lapply(seq_len(o),
                      function(k) sn_cdf_deriv_k(distrib, q, theta, k))
-      cdf_scale_k(distrib, distrib_cdf(distrib, q, theta), tabs, o,
+      cdf_scale_k(distrib, tail_cdf(distrib, q, theta, lower.tail), tabs, o,
                   lower.tail, log)
     }
   }

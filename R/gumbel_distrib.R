@@ -189,7 +189,8 @@ S7::method(distrib_cdf, GumbelDistrib) <- function(distrib, q, theta, lower.tail
     # log F = -w exactly, so the lower tail never underflows to log(0).
     if (log.p) -w else exp(-w)
   } else {
-    if (log.p) log(-expm1(-w)) else -expm1(-w)
+    # log(1 - exp(-w)) = -z + log1p(-w/2 + ...) where w is tiny
+    if (log.p) ifelse(w < 1e-10, -z - w / 2, log(-expm1(-w))) else -expm1(-w)
   }
 }
 
@@ -663,6 +664,50 @@ S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expecte
 S7::method(distrib_deriv4, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
   if (expected) gumbel_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else gumbel_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
+}
+
+#' @title Gumbel Fifth-Order Derivatives
+#' @name distrib_deriv5.GumbelDistrib
+#' @description
+#' Computes the six distinct fifth derivatives of the Gumbel log-density with
+#' respect to \eqn{\mu} and \eqn{\sigma}, in closed form from a compiled
+#' kernel.
+#' Writing the log-density as \eqn{\ell = -\log\sigma + g(z)} with
+#' \eqn{z = (y - \mu)/\sigma}, each component is \eqn{\sigma^{-5}} times a
+#' sum of terms \eqn{c\, z^p g^{(i)}(z)} with integer coefficients, plus
+#' \eqn{-24\sigma^{-5}} in the pure \eqn{\sigma} component; the kernel
+#' evaluates the sum from \eqn{g(z) = -z - e^{-z}}, whose derivatives are
+#' \eqn{g' = e^{-z} - 1} and \eqn{(-1)^{i+1} e^{-z}} from the second on.
+#' With `scale = "link"` the components are composed with the link
+#' derivatives by the routine that every family with a fifth-order kernel
+#' uses.
+#'
+#' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list with components `mu` and `sigma`, each a numeric vector
+#'   of length 1 or of the length of `y`.
+#' @param scale One of `"parameter"` (the default) or `"link"`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Defaults to `1L`.
+#'
+#' @return A named list of six numeric vectors, `mu_mu_mu_mu_mu`,
+#'   `mu_mu_mu_mu_sigma`, `mu_mu_mu_sigma_sigma`, `mu_mu_sigma_sigma_sigma`,
+#'   `mu_sigma_sigma_sigma_sigma` and `sigma_sigma_sigma_sigma_sigma`, each of length
+#'   `max(length(y), length(mu), length(sigma))`.
+#'
+#' @seealso [distrib_deriv4()] for the order below and [distrib_deriv5()]
+#'   for the generic.
+#'
+#' @examples
+#' d <- gumbel_distrib()
+#' d5 <- distrib_deriv5(d, c(-1.2, 0.3, 2.5), list(mu = 0.4, sigma = 1.5))
+#' # The pure mu component is -exp(-z)/sigma^5.
+#' all.equal(d5$mu_mu_mu_mu_mu, -exp(-(c(-1.2, 0.3, 2.5) - 0.4) / 1.5) / 1.5^5)
+S7::method(distrib_deriv5, GumbelDistrib) <- function(distrib, y, theta,
+    scale = c("parameter", "link"), ..., threads = 1L) {
+  deriv5_scale(distrib, y, theta, gumbel_deriv5_cpp(y, theta[[1]], theta[[2]], threads),
+               match.arg(scale))
 }
 
 #' @title Gumbel First Derivative in the Response

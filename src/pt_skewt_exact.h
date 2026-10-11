@@ -101,6 +101,39 @@ inline void skewt_ell(double u2, double m, double im, double hm1,
         if (j > 1) f *= -(j - 1);
         g[j] = -f * mj * v * geo;
     }
+    // hm1 g_k + k g_(k-1)/2 is f^(k)(m)/2 with f = (m + 1) log1p(u^2/m); for
+    // large m and u^2 < m/2 its terms nearly cancel each other and C^(k), and
+    // the series f - u^2 = u^2/m + sum_(j>=2) (-1)^(j+1) (u^2)^j/j
+    // (m^(1-j) + m^(-j)) is differentiated term by term instead
+    if (m > 50.0 && u2 < 0.5 * m) {
+        double fs[KM + 1];
+        for (int k = 1; k <= KM; ++k) fs[k] = 0.0;
+        double sj = u2, mj1 = 1.0;   // u2^j, m^(1-j)
+        for (int j = 1; j <= 200; ++j) {
+            if (j > 1) { sj *= u2; mj1 *= im; }
+            const double cj = ((j % 2) ? 1.0 : -1.0) * sj / j;
+            double big = 0.0;
+            for (int k = 1; k <= KM; ++k) {
+                // d^k m^(-p) = (-1)^k p (p+1) ... (p+k-1) m^(-p-k)
+                double r1 = 0.0, r2 = 1.0;
+                const int p1 = j - 1, p2 = j;
+                if (p1 > 0) {
+                    r1 = 1.0;
+                    for (int i = 0; i < k; ++i) r1 *= (p1 + i);
+                }
+                for (int i = 0; i < k; ++i) r2 *= (p2 + i);
+                double mk = 1.0;
+                for (int i = 0; i < k; ++i) mk *= im;
+                const double sg = (k % 2) ? -1.0 : 1.0;
+                const double add = cj * sg * mk * (r1 * mj1 + r2 * mj1 * im);
+                fs[k] += add;
+                big = std::max(big, std::fabs(add) / (std::fabs(fs[k]) + 1e-300));
+            }
+            if (j > 2 && big < 1e-18) break;
+        }
+        for (int k = 1; k <= KM; ++k) ell[k] = Cm[k] - 0.5 * fs[k];
+        return;
+    }
     for (int k = 1; k <= KM; ++k) ell[k] = Cm[k] - (hm1 * g[k] + 0.5 * k * g[k - 1]);
 }
 
@@ -164,8 +197,7 @@ const double kSkewtGL20w[20] = {
     0.04060142980038694133104, 0.01761400713915211831186};
 
 // The tail's nodes in tau, their weights and the factors exp(tau/s) at them
-// depend on s = min(m, 8) alone, so they are computed once per s and kept
-// per thread: 96 exponentials an observation fewer.
+// depend on s alone, so they are computed once per s and kept per thread.
 struct SkewtTailNodes {
     double sc = -1.0;
     double hw[96], es[96];   // weight times panel half-width; exp(tau/s)/s
@@ -194,8 +226,8 @@ struct SkewtTailNodes {
 // short interval for |w| <= 2, taken by 20-point Gauss-Legendre, where the
 // integral over the tail would be a difference of two halves of a vanishing
 // total (3e-9 at m = 31, w = 0.3). Beyond, it is minus the integral over the
-// tail on the far side of w, in u = w -/+ |w| expm1(tau/s), s = min(m, 8),
-// where the density's algebraic tail decays like exp(-tau): 12-point
+// tail on the far side of w, in u = w -/+ |w| expm1(tau/s),
+// s = (m + 1) w^2/(m + w^2), where the density decays like exp(-tau): 12-point
 // Gauss-Legendre on the panels 0, 0.5, 1, 2, ..., 64 in tau, stopped once a
 // panel adds less than 1e-20 of the tail's mass, which does not depend on
 // KM, so that the sum for one j is the same number at every order. On the
@@ -227,7 +259,12 @@ inline void skewt_R0(double w, double m, double q, const double* Cm,
         return;
     }
     thread_local SkewtTailNodes nodes;
-    nodes.at(std::min(m, 8.0));
+    // s = m up to m = 8, as validated; above, s follows the decay of the
+    // integrand at the start of the tail, whose log falls at the rate
+    // (m + 1) w^2/(m + w^2) in log|u|, so that the integrand is exp(-tau)
+    // there (s = 8 left it falling by exp(-62) across the first panel at
+    // m = 1001)
+    nodes.at(m <= 8.0 ? m : std::max(8.0, (m + 1.0) * w * w / (m + w * w)));
     const double side = (w < 0.0) ? -1.0 : 1.0;
     const double c0 = std::fabs(w), sc0 = side * c0;
     double mass = 0.0;
@@ -351,11 +388,11 @@ inline void skewt_obs(double y, double mu, double sigma, double al, double nu,
     double B[6][6] = {{0}};
     skewt_btab<K>(o, cc.Cm, B, with_nu);
     switch (K) {
-    case 1: skewt_d_1(o.a, o.irs, o.isg, al, nu, o.rm, o.L, cc.Cnu, B, out); break;
-    case 2: skewt_d_2(o.a, o.irs, o.isg, al, nu, o.rm, o.L, cc.Cnu, B, out); break;
-    case 3: skewt_d_3(o.a, o.irs, o.isg, al, nu, o.rm, o.L, cc.Cnu, B, out); break;
-    case 4: skewt_d_4(o.a, o.irs, o.isg, al, nu, o.rm, o.L, cc.Cnu, B, out); break;
-    default: skewt_d_5(o.a, o.irs, o.isg, al, nu, o.rm, o.L, cc.Cnu, B, out); break;
+    case 1: skewt_dd_1(o.a, o.irs, o.isg, al, nu, o.rm, o.L, cc.Cnu, B, out); break;
+    case 2: skewt_dd_2(o.a, o.irs, o.isg, al, nu, o.rm, o.L, cc.Cnu, B, out); break;
+    case 3: skewt_dd_3(o.a, o.irs, o.isg, al, nu, o.rm, o.L, cc.Cnu, B, out); break;
+    case 4: skewt_dd_4(o.a, o.irs, o.isg, al, nu, o.rm, o.L, cc.Cnu, B, out); break;
+    default: skewt_dd_5(o.a, o.irs, o.isg, al, nu, o.rm, o.L, cc.Cnu, B, out); break;
     }
 }
 
