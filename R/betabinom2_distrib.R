@@ -146,11 +146,81 @@ betabinom2_component <- function(y, a, b, n, k, i, j) {
 betabinom2_derivs <- function(y, a, b, n, order, params) {
   idx <- deriv_indices(params, order)
   nm <- deriv_names(params, order)
-  stats::setNames(lapply(seq_along(nm), function(m) {
+  len <- max(length(y), length(a), length(b))
+  big <- rep_len(a + b > 1 / bb_direct_cut(), len)
+  out <- stats::setNames(lapply(seq_along(nm), function(m) {
     id <- idx[[m]]
-    betabinom2_component(y, a, b, n, order - 1L, sum(id == 1L), sum(id == 2L))
+    v <- betabinom2_component(y, a, b, n, order - 1L, sum(id == 1L), sum(id == 2L))
+    rep_len(v, len)
   }), nm)
+  if (any(big)) {
+    sub <- function(v) if (length(v) > 1L) rep_len(v, len)[big] else v
+    dir <- betabinom_direct(sub(y), sub(a), sub(b), n, order, params, shapes = TRUE)
+    for (k in nm) out[[k]][big] <- dir[[k]]
+  }
+  out
 }
+
+#' The Beta-Binomial Derivatives From the Direct Sums
+#'
+#' @description
+#' Returns the derivatives of one order of the beta-binomial log-mass from the
+#' finite sums over the integer shifts that the compiled kernel
+#' `betabinom_direct_cpp` forms, keyed as [deriv_names()] keys them. In the
+#' shapes \eqn{(\alpha, \beta)} a pure derivative of order \eqn{K} in
+#' \eqn{\alpha} is \eqn{c_K[\sum_{i<y}(\alpha+i)^{-K} -
+#' \sum_{i<n}(\alpha+\beta+i)^{-K}]} with \eqn{c_K = (-1)^{K-1}(K-1)!}, the
+#' pure one in \eqn{\beta} the same with \eqn{n - y}, and a mixed one
+#' \eqn{-c_K\sum_{i<n}(\alpha+\beta+i)^{-K}}. In the mean and dispersion
+#' \eqn{(\mu, \sigma)} the sums run over \eqn{\mu + i\sigma},
+#' \eqn{1 - \mu + i\sigma} and \eqn{1 + i\sigma}, with the power
+#' \eqn{i^b} for \eqn{b} derivatives in \eqn{\sigma}. Every sum has terms
+#' of one sign, so the values keep their accuracy at any concentration; the
+#' cost is \eqn{O(n)} an observation.
+#'
+#' @param y A numeric vector of counts in \eqn{\{0, \dots, n\}}.
+#' @param p1,p2 The two parameters, `mu` and `sigma` or `alpha` and `beta`,
+#'   each a numeric vector of length 1 or of the length of `y`.
+#' @param n The size, a single positive integer.
+#' @param order The derivative order, an integer from 1 to 4.
+#' @param params The names of the two parameters.
+#' @param shapes Logical of length 1: `TRUE` for the shapes, `FALSE` for the
+#'   mean and dispersion.
+#'
+#' @return A named list of numeric vectors, one per distinct multi-index of the
+#'   order, each of the length of the recycled inputs.
+#'
+#' @seealso [bb_direct_cut()] for where the families take this route;
+#'   [betabinom2_derivs()] and [betabinom1_components()], which call it.
+#' @keywords internal
+betabinom_direct <- function(y, p1, p2, n, order, params, shapes) {
+  len <- max(length(y), length(p1), length(p2))
+  M <- betabinom_direct_cpp(rep_len(as.numeric(y), len), p1, p2, n,
+                            as.integer(order), shapes)
+  nm <- deriv_names(params, order)
+  b <- vapply(strsplit(nm, "_"), function(p) sum(p == params[2]), numeric(1))
+  stats::setNames(lapply(seq_along(nm), function(j) M[, b[j] + 1L]), nm)
+}
+
+#' The Concentration Above Which the Beta-Binomial Uses the Direct Sums
+#'
+#' @description
+#' Returns 0.1, the dispersion \eqn{\sigma} of [betabinom1_distrib()] below
+#' which the derivatives are computed from the direct sums of
+#' [betabinom_direct()] rather than through the shapes, and whose reciprocal
+#' 10 is the total shape \eqn{\alpha + \beta} of [betabinom2_distrib()]
+#' above which the third and fourth derivatives take the same route. The
+#' value equals `bb1_direct_cut()` in the compiled kernels, which apply it to
+#' the first and second derivatives. Through the shapes the polygamma
+#' differences pass through map derivatives of order \eqn{\sigma^{-(K+1)}}
+#' (betabinom1) or cancel among themselves (betabinom2) as the concentration
+#' grows; above 0.1 that route is within \eqn{10^{-13}} at every order.
+#'
+#' @return A single number.
+#'
+#' @seealso [betabinom_direct()].
+#' @keywords internal
+bb_direct_cut <- function() 0.1
 
 # --- S7 METHODS IMPLEMENTATION ---
 
@@ -211,8 +281,9 @@ S7::method(distrib_pdf, BetaBinom2Distrib) <- function(distrib, y, theta, log = 
   # The support is tested BEFORE lchoose(), which warns on a non-integer count
   # rather than returning nothing: a mass function evaluated off its support is
   # zero, not a numerical complaint.
-  ok <- y >= 0 & y <= n & y == round(y)
+  ok <- !is.na(y) & y >= 0 & y <= n & y == round(y)
   out <- rep(-Inf, length(y))
+  out[is.na(y)] <- y[is.na(y)]
   if (any(ok)) {
     # the shapes are subset with the response: a parameter per observation
     # read without it is misaligned wherever a response is off the support
@@ -539,16 +610,21 @@ S7::method(distrib_expected_hessian, BetaBinom2Distrib) <- function(distrib, y, 
 #' finite, the average is the expectation exactly, with no quadrature error and
 #' no sampling error.
 #'
-#' @param distrib A [BetaBinom2Distrib()] object, read for its `size` and
-#'   `params`.
-#' @param y A numeric vector, used only for its length: the result is one
-#'   constant per component, repeated to that length.
-#' @param theta A named list with components `alpha` and `beta`, each a numeric
-#'   vector of length 1, strictly positive.
+#' @param distrib A [BetaBinom2Distrib()] or [BetaBinom1Distrib()] object,
+#'   read for its `size` and `params`.
+#' @param y A numeric vector, used only for its length.
+#' @param theta A named list of the two parameters, each a numeric vector of
+#'   length 1 or of the length of `y`. Parameters of length 1 give one
+#'   constant per component, repeated to the length of `y`; longer ones give
+#'   one sum per observation.
 #' @param order The derivative order, an integer from 2 to 4.
+#' @param derivs A function of the counts and the two parameters, in that
+#'   order, that returns the components being averaged. The default is
+#'   [betabinom2_derivs()] at `order`; [betabinom1_expected()] passes
+#'   [betabinom1_components()].
 #'
-#' @return A named list of component vectors, each of length `length(y)` and
-#'   constant along it. At order 2 the names and their order are
+#' @return A named list of component vectors, each of the recycled length of
+#'   `y` and the parameters. At order 2 the names and their order are
 #'   [hess_names()]'s; above it they are [deriv_names()]'s.
 #'
 #' @seealso [distrib_expected_hessian.BetaBinom2Distrib()],
@@ -557,7 +633,10 @@ S7::method(distrib_expected_hessian, BetaBinom2Distrib) <- function(distrib, y, 
 #'   [betabinom2_derivs()] for the components being averaged.
 #'
 #' @keywords internal
-betabinom2_expected <- function(distrib, y, theta, order) {
+betabinom2_expected <- function(distrib, y, theta, order,
+                                derivs = function(yy, aa, bb) {
+                                  betabinom2_derivs(yy, aa, bb, distrib@size, order, distrib@params)
+                                }) {
   a <- theta[[1]]
   b <- theta[[2]]
   n <- distrib@size
@@ -574,14 +653,14 @@ betabinom2_expected <- function(distrib, y, theta, order) {
     bb <- rep(rep_len(b, nn), times = m)
     th <- stats::setNames(list(aa, bb), distrib@params)
     w <- distrib_pdf(distrib, yy, th)
-    d <- betabinom2_derivs(yy, aa, bb, n, order, distrib@params)
+    d <- derivs(yy, aa, bb)
     nm <- if (order == 2L) hess_names(distrib@params) else names(d)
     return(stats::setNames(lapply(nm, function(k) {
       rowSums(matrix(w * d[[k]], nn, m))
     }), nm))
   }
   w <- distrib_pdf(distrib, supp, theta)
-  d <- betabinom2_derivs(supp, a, b, n, order, distrib@params)
+  d <- derivs(supp, a, b)
   nm <- if (order == 2L) hess_names(distrib@params) else names(d)
   stats::setNames(lapply(nm, function(k) {
     rep(sum(w * d[[k]]), length.out = length(y))

@@ -339,7 +339,8 @@ S7::method(distrib_rng, BinomialDistrib) <- function(distrib, n, theta, ...) {
 #' z <- distrib_rng(d, 500, list(mu = 0.3))
 #' sum(distrib_gradient(d, z, list(mu = sum(z) / (500 * 10)))$mu)
 S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
-  binomial_gradient_cpp(y, theta[[1]], distrib@size, threads)
+  a <- binomial_recycle(y, theta[[1]], distrib@size)
+  binomial_gradient_cpp(a$y, a$mu, a$size, threads)
 }
 
 #' @title Binomial Observed Hessian
@@ -396,7 +397,8 @@ S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta, sca
 #' all.equal((up - dn) / (2 * eps), distrib_hessian(d, y, th)$mu_mu,
 #'           tolerance = 1e-6)
 S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
-  binomial_hessian_cpp(y, theta[[1]], distrib@size, threads)
+  a <- binomial_recycle(y, theta[[1]], distrib@size)
+  binomial_hessian_cpp(a$y, a$mu, a$size, threads)
 }
 
 #' @title Binomial Expected Hessian
@@ -466,7 +468,8 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #'       expected = distrib_expected_hessian(d, c(0, 4, 10), th,
 #'                                           scale = "link")$mu_mu)
 S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
-  binomial_expected_hessian_cpp(y, theta[[1]], distrib@size, threads)
+  a <- binomial_recycle(y, theta[[1]], distrib@size)
+  binomial_expected_hessian_cpp(a$y, a$mu, a$size, threads)
 }
 
 #' @title Binomial Third-Order Derivative
@@ -528,8 +531,9 @@ S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, th
 #' all.equal((up - dn) / (2 * eps), distrib_deriv3(d, y, th)$mu_mu_mu,
 #'           tolerance = 1e-5)
 S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
-  if (expected) binomial_deriv3_expected_cpp(y, theta[[1]], distrib@size, threads)
-  else binomial_deriv3_cpp(y, theta[[1]], distrib@size, threads)
+  a <- binomial_recycle(y, theta[[1]], distrib@size)
+  if (expected) binomial_deriv3_expected_cpp(a$y, a$mu, a$size, threads)
+  else binomial_deriv3_cpp(a$y, a$mu, a$size, threads)
 }
 
 #' @title Binomial Fourth-Order Derivative
@@ -588,8 +592,36 @@ S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expec
 #' all.equal((up - dn) / (2 * eps), distrib_deriv4(d, y, th)$mu_mu_mu_mu,
 #'           tolerance = 1e-5)
 S7::method(distrib_deriv4, BinomialDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
-  if (expected) binomial_deriv4_expected_cpp(y, theta[[1]], distrib@size, threads)
-  else binomial_deriv4_cpp(y, theta[[1]], distrib@size, threads)
+  a <- binomial_recycle(y, theta[[1]], distrib@size)
+  if (expected) binomial_deriv4_expected_cpp(a$y, a$mu, a$size, threads)
+  else binomial_deriv4_cpp(a$y, a$mu, a$size, threads)
+}
+
+#' Recycle the Arguments of the Binomial Kernels
+#'
+#' @description
+#' Recycles the response, the success probability and the number of trials
+#' to their common length before they reach the compiled kernels, which read
+#' each argument either as a scalar or at the observation's index. Each
+#' argument must have length 1 or the common length.
+#'
+#' @param y The response, a numeric vector.
+#' @param mu The success probability, a numeric vector.
+#' @param size The number of trials, a numeric vector.
+#'
+#' @return A list with components `y`, `mu` and `size`, each of the common
+#'   length.
+#'
+#' @keywords internal
+binomial_recycle <- function(y, mu, size) {
+  n <- max(length(y), length(mu), length(size))
+  lens <- c(y = length(y), mu = length(mu), size = length(size))
+  bad <- !(lens %in% c(1L, n))
+  if (any(bad)) {
+    stop(sprintf("'%s' has length %d; the response, 'mu' and 'size' must have length 1 or %d.",
+                 names(lens)[bad][1], lens[bad][1], n), call. = FALSE)
+  }
+  list(y = rep_len(y, n), mu = rep_len(mu, n), size = rep_len(size, n))
 }
 
 # --- CONSTRUCTOR WRAPPER ---
@@ -718,6 +750,10 @@ S7::method(distrib_deriv4, BinomialDistrib) <- function(distrib, y, theta, expec
 #'
 #' @export
 binomial_distrib <- function(link_mu = logit_link(), size = 1) {
+  if (!is.numeric(size) || length(size) == 0L || anyNA(size) ||
+      any(!is.finite(size)) || any(size < 1) || any(size != floor(size))) {
+    stop("'size' must be a vector of positive integers.", call. = FALSE)
+  }
   
   BinomialDistrib(
     distrib_name = "binomial",

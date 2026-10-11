@@ -6,6 +6,7 @@
 #include <cmath>
 #include "psi_diff.h"
 #include "pt_sqrt.h"
+#include "pt_discrete_pow.h"
 
 // Negative binomial in the mean and the size, Var = mu + mu^2/theta: one
 // function per component and order for the quantities the scalar registry
@@ -38,9 +39,10 @@ inline double negbin2_Ew(double y, double m, double th) {
 }
 
 inline double negbin2_hess_mu_mu(double y, double m, double th) {
-    double th_plus_mu = th + m;
-    double th_plus_mu2 = th_plus_mu * th_plus_mu;
-    return (y + th) / th_plus_mu2 - y / (m * m);
+    // -T_2 of count_bracket() (pt_discrete_pow.h): written directly, the two
+    // quotients agree to a relative theta/mu and the value, of order theta,
+    // loses that many digits at a small size
+    return -count_bracket(y, m, th, 2);
 }
 
 // -y/(ab) + mu/(ac) + (y-mu)/c^2 collapses EXACTLY into the first quotient,

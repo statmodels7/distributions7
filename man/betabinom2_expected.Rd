@@ -4,23 +4,38 @@
 \alias{betabinom2_expected}
 \title{Expected Derivatives of the Beta-Binomial by Exact Summation}
 \usage{
-betabinom2_expected(distrib, y, theta, order)
+betabinom2_expected(
+  distrib,
+  y,
+  theta,
+  order,
+  derivs = function(yy, aa, bb) {
+     betabinom2_derivs(yy, aa, bb, distrib@size, order,
+    distrib@params)
+ }
+)
 }
 \arguments{
-\item{distrib}{A \code{\link[=BetaBinom2Distrib]{BetaBinom2Distrib()}} object, read for its \code{size} and
-\code{params}.}
+\item{distrib}{A \code{\link[=BetaBinom2Distrib]{BetaBinom2Distrib()}} or \code{\link[=BetaBinom1Distrib]{BetaBinom1Distrib()}} object,
+read for its \code{size} and \code{params}.}
 
-\item{y}{A numeric vector, used only for its length: the result is one
-constant per component, repeated to that length.}
+\item{y}{A numeric vector, used only for its length.}
 
-\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
-vector of length 1, strictly positive.}
+\item{theta}{A named list of the two parameters, each a numeric vector of
+length 1 or of the length of \code{y}. Parameters of length 1 give one
+constant per component, repeated to the length of \code{y}; longer ones give
+one sum per observation.}
 
 \item{order}{The derivative order, an integer from 2 to 4.}
+
+\item{derivs}{A function of the counts and the two parameters, in that
+order, that returns the components being averaged. The default is
+\code{\link[=betabinom2_derivs]{betabinom2_derivs()}} at \code{order}; \code{\link[=betabinom1_expected]{betabinom1_expected()}} passes
+\code{\link[=betabinom1_components]{betabinom1_components()}}.}
 }
 \value{
-A named list of component vectors, each of length \code{length(y)} and
-constant along it. At order 2 the names and their order are
+A named list of component vectors, each of the recycled length of
+\code{y} and the parameters. At order 2 the names and their order are
 \code{\link[=hess_names]{hess_names()}}'s; above it they are \code{\link[=deriv_names]{deriv_names()}}'s.
 }
 \description{

@@ -161,6 +161,25 @@ register_dexpected(BetaBinom1Distrib, function(d, y, th, k, t)
 #'
 #' @keywords internal
 betabinom1_dexpected <- function(y, mu, sigma, size, order, threads = 1L) {
+  n <- length(y)
+  small <- rep_len(sigma < bb_direct_cut(), n)
+  if (any(small)) {
+    # below the cut the map's partials cancel; the direct sums replace those rows
+    if (all(small)) {
+      return(betabinom1_dexpected_direct_cpp(y, mu, sigma, size, order, threads))
+    }
+    sub <- function(v) if (length(v) > 1L) rep_len(v, n)[small] else v
+    big <- betabinom1_dexpected(y[!small], if (length(mu) > 1L) rep_len(mu, n)[!small] else mu,
+                                if (length(sigma) > 1L) rep_len(sigma, n)[!small] else sigma,
+                                size, order, threads)
+    dir <- betabinom1_dexpected_direct_cpp(y[small], sub(mu), sub(sigma), size, order, threads)
+    return(stats::setNames(lapply(names(big), function(k) {
+      v <- numeric(n)
+      v[!small] <- big[[k]]
+      v[small] <- dir[[k]]
+      v
+    }), names(big)))
+  }
   if (order == 1L) {
     return(betabinom1_dexpected1_cpp(y, mu, sigma, size, threads))
   }

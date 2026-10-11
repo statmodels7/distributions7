@@ -655,3 +655,228 @@ test_that("the logistic expected third and fourth derivatives are closed form", 
                                               order = 4L, approx = "integrate")
   expect_equal(unlist(lapply(e4, `[`, 1)), unlist(num)[names(e4)], tolerance = 1e-8)
 })
+
+# relative error against a reference, whatever the reference's magnitude:
+# expect_equal() compares absolutely where the expected value is below the
+# tolerance, which passes any value of order 1e-28 against any other
+expect_rel <- function(object, expected, tolerance) {
+  expect_lt(max(abs(object - expected) / abs(expected)), tolerance)
+}
+
+test_that("the binomial recycles a vector size in every derivative", {
+  d <- binomial_distrib(size = c(5, 10, 20))
+  th <- list(mu = 0.3)
+  expect_rel(distrib_gradient(d, 2, th)$mu, (2 - c(5, 10, 20) * 0.3) / 0.21,
+               tolerance = 1e-14)
+  expect_rel(distrib_expected_hessian(d, 2, th)$mu_mu, -c(5, 10, 20) / 0.21,
+               tolerance = 1e-14)
+  expect_length(distrib_deriv4(d, 2, th)$mu_mu_mu_mu, 3L)
+  # a size of length 2 against three responses was read out of bounds
+  expect_error(distrib_gradient(binomial_distrib(size = c(5, 10)), 1:3, th),
+               "must have length 1 or 3")
+})
+
+test_that("the binomial size is validated", {
+  for (s in list(2.5, 0, -3, c(5, NA), Inf)) {
+    expect_error(binomial_distrib(size = s), "positive integers")
+  }
+  expect_no_error(binomial_distrib(size = c(3, 7)))
+})
+
+test_that("the count families' derivatives at a tiny mean and a zero count", {
+  expect_equal(distrib_hessian(geometric_distrib(), 0, list(mu = 1e-170))$mu_mu, 1)
+  expect_equal(distrib_deriv3(geometric_distrib(), 0, list(mu = 1e-160))[[1]], -2)
+  expect_equal(distrib_hessian(bernoulli_distrib(), 0, list(mu = 1e-170))$mu_mu, -1)
+  expect_equal(distrib_deriv3(bernoulli_distrib(), 0, list(mu = 1e-110))[[1]], -2)
+  expect_equal(distrib_hessian(binomial_distrib(size = 10), 0,
+                               list(mu = 1e-170))$mu_mu, -10)
+  expect_identical(distrib_hessian(poisson_distrib(), 0, list(mu = 1e-170))$mu_mu, 0)
+})
+
+test_that("the geometric derivatives at a count near a large mean", {
+  m <- 1e14
+  q <- m * (1 + m)
+  d <- geometric_distrib()
+  expect_rel(distrib_hessian(d, m, list(mu = m))$mu_mu, -1 / q, tolerance = 1e-14)
+  expect_rel(distrib_deriv3(d, m, list(mu = m))[[1]], 2 * (1 + 2 * m) / q^2,
+               tolerance = 1e-14)
+  expect_rel(distrib_deriv3(d, 0, list(mu = m), expected = TRUE)[[1]],
+               2 * (1 + 2 * m) / q^2, tolerance = 1e-14)
+})
+
+test_that("a missing count has a missing mass in every discrete family", {
+  fams <- list(list(betabinom1_distrib(size = 10), list(mu = 0.3, sigma = 0.2)),
+               list(betabinom2_distrib(size = 10), list(alpha = 2, beta = 3)),
+               list(pig1_distrib(), list(mu = 3, sigma = 0.8)),
+               list(pig2_distrib(), list(mu = 3, alpha = 1)))
+  for (f in fams) {
+    p <- distrib_pdf(f[[1]], c(NA, 1), f[[2]])
+    expect_true(is.na(p[1]), label = f[[1]]@distrib_name)
+    expect_true(p[2] > 0)
+  }
+})
+
+test_that("the betabinom1 quantile gives NaN outside the unit interval", {
+  d <- betabinom1_distrib(size = 10)
+  th <- list(mu = 0.3, sigma = 0.2)
+  expect_identical(distrib_quantile(d, c(-0.5, 0, 1, 1.5), th), c(NaN, 0, 10, NaN))
+  expect_identical(distrib_quantile(d, c(-1, 2), th, lower.tail = FALSE), c(NaN, NaN))
+  expect_identical(distrib_quantile(d, 0.5, th, log.p = TRUE), NaN)
+})
+
+test_that("the upper tails of the PIG and the beta-binomials are summed", {
+  # mpmath, 40 digits, the sum of the mass over 201:1199
+  d <- pig1_distrib()
+  th <- list(mu = 3, sigma = 0.8)
+  expect_rel(distrib_cdf(d, 200, th, lower.tail = FALSE), 1.7461679759672038e-19,
+               tolerance = 1e-12)
+  expect_rel(distrib_cdf(d, 200, th, lower.tail = FALSE, log.p = TRUE),
+               log(1.7461679759672038e-19), tolerance = 1e-14)
+  q <- distrib_quantile(d, 1e-17, th, lower.tail = FALSE)
+  expect_true(is.finite(q))
+  expect_lte(distrib_cdf(d, q, th, lower.tail = FALSE), 1e-17)
+  expect_gt(distrib_cdf(d, q - 1, th, lower.tail = FALSE), 1e-17)
+  d <- pig2_distrib()
+  th <- list(mu = 3, alpha = 10)
+  expect_rel(distrib_cdf(d, 60, th, lower.tail = FALSE),
+               sum(distrib_pdf(d, 61:5000, th)), tolerance = 1e-12)
+  for (d in list(betabinom1_distrib(size = 200), betabinom2_distrib(size = 200))) {
+    th <- if (d@params[1] == "mu") list(mu = 0.01, sigma = 1e-4) else list(alpha = 100, beta = 9900)
+    up <- sum(distrib_pdf(d, 151:200, th))
+    expect_rel(distrib_cdf(d, 150, th, lower.tail = FALSE), up, tolerance = 1e-12)
+    q <- distrib_quantile(d, 1e-20, th, lower.tail = FALSE)
+    expect_lt(q, 150)
+    expect_lte(distrib_cdf(d, q, th, lower.tail = FALSE), 1e-20)
+  }
+})
+
+test_that("the NB1 mass and derivatives at the Poisson boundary", {
+  # mpmath, 80 digits (vd_T3_ref.py)
+  d <- negbin1_distrib()
+  expect_rel(distrib_pdf(d, 1, list(mu = 500, theta = 1e-17), log = TRUE),
+               -493.78539190157780577, tolerance = 1e-14)
+  expect_rel(distrib_pdf(d, 0, list(mu = 500, theta = 1e-15), log = TRUE),
+               -499.99999999999975, tolerance = 1e-14)
+  th <- list(mu = 4, theta = 1e-8)
+  expect_rel(distrib_hessian(d, 3, th)$theta_theta, 0.020833336145833253411,
+               tolerance = 1e-12)
+  expect_rel(distrib_hessian(d, 0, th)$theta_theta, -2.6666666066666676267,
+               tolerance = 1e-13)
+  expect_rel(distrib_gradient(d, 3, th)$theta, -0.2499999997916666526,
+               tolerance = 1e-14)
+  expect_rel(distrib_hessian(d, 3, th)$mu_theta, 0.31249999489583339779,
+               tolerance = 1e-14)
+})
+
+test_that("the NB1 distribution function, quantile and draws at a tiny dispersion", {
+  d <- negbin1_distrib()
+  th <- list(mu = 3, theta = 1e-16)
+  expect_rel(distrib_cdf(d, 3, th), 0.64723188878223125873, tolerance = 1e-13)
+  expect_identical(distrib_quantile(d, 0.5, th), 3)
+  set.seed(1)
+  expect_rel(mean(distrib_rng(d, 1e4, list(mu = 3, theta = 1e-17))), 3, tolerance = 0.05)
+})
+
+test_that("the NB2 derivatives in the mean at a small size", {
+  # mpmath, 80 digits
+  d <- negbin2_distrib()
+  th <- list(mu = 5, theta = 1e-8)
+  expect_rel(distrib_hessian(d, 3, th)$mu_mu, -8.000000015999999904e-11, tolerance = 1e-14)
+  expect_rel(distrib_deriv3(d, 3, th)$mu_mu_mu, 1.27999999808e-10, tolerance = 1e-14)
+  expect_rel(distrib_deriv4(d, 3, th)$mu_mu_mu_mu, -1.3439999961600000077e-10,
+               tolerance = 1e-14)
+})
+
+test_that("the beta-binomial derivatives at a large concentration", {
+  # mpmath, 80 digits (vd_T3_ref.py, vd_T3_bbref.py); the betabinom2 value is
+  # the closed form in mpmath's polygammas at 60 digits
+  d <- betabinom1_distrib(size = 10)
+  th <- list(mu = 0.3, sigma = 1e-4)
+  expect_rel(distrib_hessian(d, 3, th)$sigma_sigma, 43.649080886004494728, tolerance = 1e-13)
+  expect_rel(distrib_deriv3(d, 3, th)$sigma_sigma_sigma, -809.65350400224666619,
+               tolerance = 1e-13)
+  expect_rel(distrib_deriv4(d, 3, th)$sigma_sigma_sigma_sigma, 22471.126081180217613,
+               tolerance = 1e-13)
+  expect_rel(distrib_gradient(d, 3, list(mu = 0.4, sigma = 1e-15))$sigma,
+               -2.4999999999999990278, tolerance = 1e-14)
+  expect_rel(distrib_expected_hessian(d, 3, list(mu = 0.3, sigma = 1e-8))$sigma_sigma,
+               -44.999990657144356683, tolerance = 1e-12)
+  d100 <- betabinom1_distrib(size = 100)
+  expect_rel(distrib_deriv4(d100, 37, list(mu = 0.4, sigma = 1e-3))$sigma_sigma_sigma_sigma,
+               -83637651.88739765558899421, tolerance = 1e-12)
+  d2 <- betabinom2_distrib(size = 10)
+  expect_rel(distrib_deriv4(d2, 3, list(alpha = 4e11, beta = 6e11))$alpha_alpha_alpha_alpha,
+               -6.4312499999404875e-46, tolerance = 1e-13)
+})
+
+test_that("the betabinom1 expected-information derivatives at a large concentration", {
+  # mpmath, 60 digits (vd_T3_bbexp.py)
+  d <- betabinom1_distrib(size = 10)
+  th <- list(mu = 0.3, sigma = 1e-6)
+  e1 <- distrib_dexpected_hessian(d, 1, th)
+  e2 <- distrib_d2expected_hessian(d, 1, th)
+  expect_rel(e1$sigma_sigma_sigma, 934.25572412801040184, tolerance = 1e-10)
+  expect_rel(e1$mu_mu_mu, 90.702131529692123424, tolerance = 1e-10)
+  expect_rel(e2$sigma_sigma_sigma_sigma, -29989.499093604765334, tolerance = 1e-9)
+})
+
+test_that("the betabinom1 expected higher derivatives are exact sums", {
+  d <- betabinom1_distrib(size = 10)
+  th <- list(mu = 0.3, sigma = 0.2)
+  w <- distrib_pdf(d, 0:10, th)
+  o3 <- distrib_deriv3(d, 0:10, th)
+  e3 <- distrib_deriv3(d, 0, th, expected = TRUE, approx = "mc", nsim = 10)
+  for (k in names(o3)) expect_rel(e3[[k]], sum(w * o3[[k]]), tolerance = 1e-13)
+})
+
+test_that("the beta-binomial moments at a small dispersion and a large size", {
+  # mpmath, 120 digits (vd_T3_ref.py)
+  d <- betabinom1_distrib(size = 1e6)
+  th <- list(mu = 0.3, sigma = 1e-6)
+  expect_rel(kurtosis(d, th), -2.0476192380843810055e-6, tolerance = 1e-13)
+  expect_rel(skewness(betabinom1_distrib(size = 1e8), list(mu = 0.3, sigma = 1e-8)),
+               0.00018516401717705004623, tolerance = 1e-13)
+  d2 <- betabinom2_distrib(size = 1e6)
+  expect_rel(kurtosis(d2, list(alpha = 3e5, beta = 7e5)), -2.0476192380843810055e-6,
+               tolerance = 1e-12)
+})
+
+test_that("the skew normal and skew t moments at a huge alpha and a huge nu", {
+  sn <- skewnormal1_distrib()
+  expect_rel(mean(sn, list(mu = 0, sigma = 1, alpha = c(1e160, -1e200))),
+               c(1, -1) * sqrt(2 / pi), tolerance = 1e-15)
+  # mpmath, 80 digits
+  expect_rel(variance(skewt_distrib(), list(mu = 0, sigma = 1, alpha = 3, nu = 1e14)),
+               0.42704220486918819687, tolerance = 1e-14)
+  expect_equal(mean(skewt_distrib(), list(mu = 0, sigma = 1, alpha = 1e160, nu = 5)),
+               mean(skewt_distrib(), list(mu = 0, sigma = 1, alpha = 1e100, nu = 5)))
+})
+
+test_that("the skew t's divergent moments are infinite, as the Student t's", {
+  d <- skewt_distrib()
+  expect_identical(variance(d, list(mu = 0, sigma = 1, alpha = 2, nu = c(0.5, 1.5, 2))),
+                   c(NaN, Inf, Inf))
+  expect_identical(kurtosis(d, list(mu = 0, sigma = 1, alpha = 2, nu = c(1.5, 3, 4))),
+                   c(NaN, Inf, Inf))
+})
+
+test_that("the Weibull moments at a large and a small shape", {
+  # mpmath, 150 digits
+  d <- weibull1_distrib()
+  expect_rel(kurtosis(d, list(mu = 1, sigma = 1e5)), 2.3997108383775288848, tolerance = 1e-13)
+  expect_rel(skewness(d, list(mu = 1, sigma = 1e5)), -1.1394874345084644293, tolerance = 1e-13)
+  expect_rel(kurtosis(d, list(mu = 1, sigma = 0.02)), 9.0548514656103281165e+58,
+               tolerance = 1e-12)
+})
+
+test_that("the beta moments at extreme precisions", {
+  expect_rel(skewness(beta1_distrib(), list(mu = 0.3, phi = 1e-170)),
+               0.87287156094396953, tolerance = 1e-15)
+  expect_rel(kurtosis(beta1_distrib(), list(mu = 0.3, phi = 1e-170)),
+               -26 / 21, tolerance = 1e-15)
+  expect_equal(variance(beta2_distrib(), list(alpha = 1e-300, beta = 1e-300)), 0.25)
+  expect_rel(variance(beta2_distrib(), list(alpha = 1e200, beta = 1e200)), 1.25e-201,
+               tolerance = 1e-14)
+  expect_rel(skewness(beta2_distrib(), list(alpha = 1e-200, beta = 2e-200)),
+               1 / sqrt(2), tolerance = 1e-15)
+})

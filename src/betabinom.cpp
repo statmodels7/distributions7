@@ -35,6 +35,13 @@ List betabinom_gradient_cpp(NumericVector y, NumericVector mu,
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double s = si_s ? sigma[0] : sigma[i];
+        if (s < d7::bb1_direct_cut() && d7::bb_on_support(y[i], size)) {
+            double v[2];
+            d7::bb1_direct(y[i], size, m, s, 1, v);
+            g_mu[i] = v[0];
+            g_sigma[i] = v[1];
+            return;
+        }
         BBmap mp = bb_map(m, s);
         d7::BBd1 d = d7::bb_shape_d1(y[i], size, mp.A, mp.B);
         g_mu[i]    = d7::betabinom1_score_mu(d, mp);
@@ -54,6 +61,14 @@ List betabinom_hessian_cpp(NumericVector y, NumericVector mu,
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double s = si_s ? sigma[0] : sigma[i];
+        if (s < d7::bb1_direct_cut() && d7::bb_on_support(y[i], size)) {
+            double v[3];
+            d7::bb1_direct(y[i], size, m, s, 2, v);
+            h_mm[i] = v[0];
+            h_ms[i] = v[1];
+            h_ss[i] = v[2];
+            return;
+        }
         BBmap mp = bb_map(m, s);
         BBderiv d = bb_shape_derivs(y[i], size, mp.A, mp.B);
 
@@ -93,8 +108,17 @@ List betabinom_expected_hessian_cpp(NumericVector y, NumericVector mu,
         if (m != last_m || s != last_s) {
             BBmap mp = bb_map(m, s);
             e_mm = 0; e_ms = 0; e_ss = 0;
+            const bool direct = s < d7::bb1_direct_cut();
             for (int k = 0; k <= N; k++) {
                 double p = std::exp(bb_log_mass(k, mp.A, mp.B, size));
+                if (direct) {
+                    double v[3];
+                    d7::bb1_direct(k, size, m, s, 2, v);
+                    e_mm += p * v[0];
+                    e_ms += p * v[1];
+                    e_ss += p * v[2];
+                    continue;
+                }
                 BBderiv d = bb_shape_derivs(k, size, mp.A, mp.B);
                 e_mm += p * d7::betabinom1_hess_mu_mu(d, mp);
                 e_ms += p * d7::betabinom1_hess_mu_sigma(d, mp);
@@ -121,7 +145,10 @@ NumericVector betabinom_logpmf_cpp(NumericVector y, NumericVector mu,
         double m = mu_s ? mu[0] : mu[i];
         double s = si_s ? sigma[0] : sigma[i];
         double A = m / s, B = (1.0 - m) / s;
-        if (y[i] < 0 || y[i] > size || y[i] != std::floor(y[i])) {
+        if (ISNAN(y[i])) {
+            // a missing response propagates, as it does through dbinom()
+            out[i] = y[i];
+        } else if (y[i] < 0 || y[i] > size || y[i] != std::floor(y[i])) {
             out[i] = R_NegInf;
         } else {
             out[i] = bb_log_mass(y[i], A, B, size);
@@ -164,4 +191,27 @@ List betabinom2_hessian_cpp(NumericVector y, NumericVector alpha,
     });
     return List::create(Named("alpha_alpha") = h_aa, Named("beta_beta") = h_bb,
                         Named("alpha_beta") = h_ab);
+}
+
+// The direct sums of pt_betabinom.h (bb1_direct, bb2_direct) at every
+// observation, order K from 1 to 4: an n x (K + 1) matrix whose column b
+// holds the component with K - b derivatives in the first parameter and b in
+// the second.
+// [[Rcpp::export]]
+NumericMatrix betabinom_direct_cpp(NumericVector y, NumericVector p1,
+                                   NumericVector p2, double size, int order,
+                                   bool shapes, int threads = 1) {
+    const int n = y.size();
+    NumericMatrix out(n, order + 1);
+    const bool s1 = (p1.size() == 1), s2 = (p2.size() == 1);
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t idx) {
+        const int i = (int) idx;
+        const double a = s1 ? p1[0] : p1[i];
+        const double b = s2 ? p2[0] : p2[i];
+        double v[5];
+        if (shapes) d7::bb2_direct(y[i], size, a, b, order, v);
+        else d7::bb1_direct(y[i], size, a, b, order, v);
+        for (int j = 0; j <= order; ++j) out(i, j) = v[j];
+    });
+    return out;
 }

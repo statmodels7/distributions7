@@ -181,6 +181,45 @@ inline void nb1_q(double t, double* q, double* qp) {
     }
 }
 
+// The dispersion below which the scores and second derivatives are read
+// from the sums in mu + i theta (nb1_low_exact) rather than from
+// nb1_parts(): the cut of the higher orders, nb1_exact_cut() in
+// R/negbin1_higher.R. Above it the two agree to 1e-11 or better.
+inline double nb1_low_cut() { return 1.0; }
+
+// The scores and second derivatives from the form in mu + i theta, by the
+// formulas for s_mu, s_theta, h_mu,mu, h_mu,theta and h_theta,theta above
+// nb1_q(). No term of order mu/theta^2 is formed, so every component keeps
+// its accuracy down to the Poisson limit; the cost is y terms an
+// observation. out holds s_mu, s_theta and, at order 2, h_mu,mu,
+// h_mu,theta, h_theta,theta.
+inline void nb1_low_exact(double y, double mu, double th, int order,
+                          double* out) {
+    double B = 0.0, a = 0.0, C = 0.0, D = 0.0;
+    const long k = (long) y;
+    if (k >= 1) a = 1.0 / (mu * mu);
+    for (long i = 1; i < k; ++i) {
+        const double di = (double) i;
+        const double iu = 1.0 / (mu + di * th);
+        B += di * iu;
+        if (order >= 2) {
+            const double iu2 = iu * iu;
+            a += iu2;
+            C += di * iu2;
+            D += di * di * iu2;
+        }
+    }
+    double q, qp;
+    nb1_q(th, &q, &qp);
+    const double om = 1.0 + th, km = y - mu;
+    out[0] = km / mu - (th / mu) * B + th * q;
+    out[1] = -km / om + B - mu * q;
+    if (order < 2) return;
+    out[2] = -a;
+    out[3] = 1.0 / om - C - q;
+    out[4] = km / (om * om) - D - mu * qp;
+}
+
 // A and W at one (mu, theta)
 inline void nb1_sums0(double mu, double th, double* A, double* W) {
     NB1mass w = nb1_mass(mu, th);
@@ -357,15 +396,35 @@ inline double negbin1_dexpected_mu_theta_theta(double m, double t,
     return -W[2] / (m * t) + W[0] / (m * t * t);
 }
 
+// The scores and second derivatives at one observation, by the route that
+// is accurate at the dispersion given: below nb1_low_cut() the sums in
+// mu + i theta, above it nb1_parts(). A response that is not a count goes
+// to nb1_parts(), as before.
+inline void negbin1_low_orders(double y, double m, double t, int order,
+                               double* out) {
+    if (t < nb1_low_cut() && y >= 0.0 && y == std::floor(y)) {
+        nb1_low_exact(y, m, t, order, out);
+        return;
+    }
+    const NB1parts z = nb1_parts(y, m, t, order);
+    out[0] = negbin1_score_mu(z);
+    out[1] = negbin1_score_theta(z);
+    if (order < 2) return;
+    out[2] = negbin1_hess_mu_mu(z);
+    out[3] = (z.Pr * z.rt + z.Pth) * z.rm + z.P * z.rmt;
+    out[4] = negbin1_hess_theta_theta(z);
+}
+
 inline void negbin1_score_curv(int k, double y, const double* th,
                                double* out) {
-    const NB1parts z = nb1_parts(y, th[0], th[1], 2);
+    double v[5];
+    negbin1_low_orders(y, th[0], th[1], 2, v);
     if (k == 0) {
-        out[0] = negbin1_score_mu(z);
-        out[1] = negbin1_hess_mu_mu(z);
+        out[0] = v[0];
+        out[1] = v[2];
     } else {
-        out[0] = negbin1_score_theta(z);
-        out[1] = negbin1_hess_theta_theta(z);
+        out[0] = v[1];
+        out[1] = v[4];
     }
 }
 

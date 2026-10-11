@@ -1058,6 +1058,73 @@ disc_cum_table <- function(distrib, theta, need_p = -Inf, need_k = -Inf, kmax = 
   list(ks = ks, cs = cs)
 }
 
+#' Upper-Tail Table for a Discrete Distribution
+#'
+#' @description
+#' Builds \eqn{S(k) = P(Y > k)} over the support from its lower bound by
+#' summing the mass from the top of the table downward, so that each value is
+#' a sum of the terms above \eqn{k} and keeps its relative accuracy however
+#' small it is. The table grows by doubling until it reaches the upper bound of
+#' the support or until the mass beyond its last point is negligible, below
+#' \eqn{10^{-17}} of the probability that the caller needs.
+#'
+#' @details
+#' The mass beyond the last point \eqn{K} is bounded by the geometric series
+#' \eqn{f(K)\,r/(1-r)} with \eqn{r = f(K)/f(K-1)}, which holds where the
+#' ratio of consecutive masses decreases, as it does in the tail of every
+#' shipped count family, and is added to every entry. A ratio that has not
+#' fallen below one keeps the table growing up to `kmax` points, after which
+#' the function warns.
+#'
+#' @param distrib An object inheriting from class `"discrete_distrib"`.
+#' @param theta A named list of parameters, each of length 1.
+#' @param need_p The probability that the caller compares with the table: the
+#'   table grows until the neglected mass is below \eqn{10^{-17}} of it.
+#' @param need_k A support point whose upper tail the caller reads: the table
+#'   grows until it passes this point and the neglected mass is below
+#'   \eqn{10^{-17}} of the mass above it.
+#' @param kmax A ceiling on the table size.
+#'
+#' @return A list with the support points `ks` and the upper-tail
+#'   probabilities `S`, of the same length.
+#'
+#' @seealso [disc_cum_table()], the table of the lower tail;
+#'   [distrib_cdf.discrete_distrib()] and
+#'   [distrib_quantile.discrete_distrib()], which read it.
+#' @keywords internal
+disc_upper_table <- function(distrib, theta, need_p = NULL, need_k = NULL, kmax = 1e6) {
+  b <- distrib@bounds
+  if (!is.finite(b[1])) {
+    stop("The numerical fallback for discrete distributions requires a finite lower bound.", call. = FALSE)
+  }
+  size <- 256L
+  repeat {
+    upper_k <- min(b[1] + size - 1, b[2])
+    ks <- seq(b[1], upper_k)
+    f <- distrib_pdf(distrib, ks, theta)
+    m <- length(f)
+    if (upper_k >= b[2]) {
+      tail <- 0
+      break
+    }
+    fk <- f[m]
+    r <- if (m > 1L) fk / f[m - 1L] else Inf
+    tail <- if (fk == 0) 0 else if (is.finite(r) && r < 1) fk * r / (1 - r) else Inf
+    target <- if (!is.null(need_k)) {
+      if (upper_k > need_k) sum(f[ks > need_k]) else Inf
+    } else need_p
+    if (is.finite(target) && tail <= 1e-17 * target) break
+    if (size >= kmax) {
+      warning("Discrete upper-tail table reached its size limit (", kmax,
+              " points) before the remaining mass became negligible.", call. = FALSE)
+      break
+    }
+    size <- size * 2L
+  }
+  S <- c(rev(cumsum(rev(f)))[-1L], 0) + tail
+  list(ks = ks, S = S)
+}
+
 #' @title Default Numerical CDF for Discrete Distributions
 #' @name distrib_cdf.discrete_distrib
 #'
@@ -1109,19 +1176,23 @@ S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.t
     qi <- floor(r$.q)
 
     if (is.na(qi)) return(NA_real_)
-    if (qi < b[1]) return(0)
-    if (qi >= b[2]) return(1)
+    if (qi < b[1]) return(if (lower.tail) 0 else 1)
+    if (qi >= b[2]) return(if (lower.tail) 1 else 0)
 
     if (!identical(th, prev_th) || tab$ks[length(tab$ks)] < qi) {
       tab <<- disc_cum_table(distrib, th, need_k = qi)
       prev_th <<- th
     }
 
-    tab$cs[qi - b[1] + 1]
+    f_q <- min(max(tab$cs[qi - b[1] + 1], 0), 1)
+    if (lower.tail) return(f_q)
+    # past the median 1 - F(q) loses the digits of the upper tail, which is
+    # then summed term by term above q
+    if (f_q <= 0.5) return(1 - f_q)
+    up <- disc_upper_table(distrib, th, need_k = qi)
+    up$S[qi - b[1] + 1]
   }, numeric(1))
 
-  res <- pmin(pmax(res, 0), 1)
-  if (!lower.tail) res <- 1 - res
   if (log.p) log(res) else res
 }
 
@@ -1164,10 +1235,20 @@ S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.t
 #'   [distrib_quantile()] for the generic.
 #' @keywords internal
 S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
-  if (log.p) p <- exp(p)
-  if (!lower.tail) p <- 1 - p
-
   b <- distrib@bounds
+  fuzz <- 64 * .Machine$double.eps
+  # the probability of the lower tail, used by the table of F; an upper-tail
+  # probability below 1/2 is kept as it is and inverted against the table of
+  # P(Y > k), where 1 - p would have lost its digits
+  pr <- if (log.p) exp(p) else p
+  bad <- is.na(pr) | pr < 0 | pr > 1
+  up <- !lower.tail & !bad & pr > 0 & pr < 0.5
+  pl <- if (lower.tail) pr else 1 - pr
+  inv_upper <- function(th, i) {
+    tab <- disc_upper_table(distrib, th, need_p = pr[i])
+    hit <- if (log.p) log(tab$S) <= p[i] + fuzz else tab$S <= pr[i] * (1 + fuzz)
+    tab$ks[which(hit)[1L]]
+  }
 
   # Scalar parameters, which is the case that matters for simulation: build the
   # cumulative table once and invert it for the whole vector in a single call.
@@ -1175,33 +1256,37 @@ S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lo
   # it used to cost one R-level call per draw, which dominated everything else.
   if (all(lengths(theta) <= 1L)) {
     out <- rep(NaN, length(p))
-    ok <- !is.na(p) & p >= 0 & p <= 1
+    out[is.na(p) & !is.nan(p)] <- NA_real_
+    ok <- !bad & !up
     if (any(ok)) {
-      tab <- disc_cum_table(distrib, theta, need_p = max(p[ok]))
+      tab <- disc_cum_table(distrib, theta, need_p = max(pl[ok]))
       # the table is a running sum, a few ulps off an exact F(k); the fuzz
       # keeps a p equal to F(k) at k, as stats::qpois() does
-      idx <- findInterval(p[ok] * (1 - 64 * .Machine$double.eps), tab$cs,
-                          left.open = TRUE) + 1L
+      idx <- findInterval(pl[ok] * (1 - fuzz), tab$cs, left.open = TRUE) + 1L
       idx <- pmin(idx, length(tab$ks))
       out[ok] <- tab$ks[idx]
-      out[ok & p == 0] <- b[1]
-      out[ok & p == 1] <- b[2]
+      out[ok & pl == 0] <- b[1]
+      out[ok & pl == 1] <- b[2]
     }
+    for (i in which(up)) out[i] <- inv_upper(theta, i)
     return(out)
   }
 
-  all_params <- expand_params(c(list(.p = p), theta))
+  all_params <- expand_params(c(list(.p = pl), theta))
   rows <- transpose_params(all_params)
+  nr <- length(rows)
+  pr <- rep_len(pr, nr); p <- rep_len(p, nr); up <- rep_len(up, nr); bad <- rep_len(bad, nr)
 
   prev_th <- NULL
   tab <- NULL
 
-  vapply(rows, function(r) {
-    r <- as.list(r)
+  vapply(seq_len(nr), function(i) {
+    r <- as.list(rows[[i]])
     th <- r[distrib@params]
     pi <- r$.p
 
-    if (is.na(pi) || pi < 0 || pi > 1) return(NaN)
+    if (bad[i]) return(if (is.na(p[i]) && !is.nan(p[i])) NA_real_ else NaN)
+    if (up[i]) return(inv_upper(th, i))
     if (pi == 0) return(b[1])
     if (pi == 1) return(b[2])
 
@@ -1211,8 +1296,7 @@ S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lo
     }
 
     # Smallest k with F(k) >= p
-    idx <- findInterval(pi * (1 - 64 * .Machine$double.eps), tab$cs,
-                        left.open = TRUE) + 1L
+    idx <- findInterval(pi * (1 - fuzz), tab$cs, left.open = TRUE) + 1L
     if (idx > length(tab$ks)) idx <- length(tab$ks)
     tab$ks[idx]
   }, numeric(1))

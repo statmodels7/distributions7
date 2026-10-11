@@ -4,7 +4,7 @@
 \alias{betabinom1_cum}
 \title{The Beta-Binomial's Cumulative Mass Over Its Support}
 \usage{
-betabinom1_cum(n, theta, len)
+betabinom1_cum(n, theta, len, upper = FALSE)
 }
 \arguments{
 \item{n}{The size.}

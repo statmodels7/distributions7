@@ -5,6 +5,8 @@
 // per component and order for the quantities the scalar registry reads,
 // called by the vector kernels (binomial.cpp, dexpected_kernels.cpp).
 
+#include "pt_discrete_pow.h"
+
 namespace d7 {
 
 inline double binomial_score_mu(double y, double m, double sz) {
@@ -12,10 +14,7 @@ inline double binomial_score_mu(double y, double m, double sz) {
 }
 
 inline double binomial_hess_mu_mu(double y, double m, double sz) {
-    double m2 = m * m;
-    double one_m = 1.0 - m;
-    double one_m2 = one_m * one_m;
-    return -(y / m2) - ((sz - y) / one_m2);
+    return -coef_over_pow(y, m, 2) - coef_over_pow(sz - y, 1.0 - m, 2);
 }
 
 inline double binomial_expected_mu_mu(double m, double sz) {

@@ -93,6 +93,10 @@ betabinom2_hessian_cpp <- function(y, alpha, beta, size, threads = 1L) {
     .Call(`_distributions7_betabinom2_hessian_cpp`, y, alpha, beta, size, threads)
 }
 
+betabinom_direct_cpp <- function(y, p1, p2, size, order, shapes, threads = 1L) {
+    .Call(`_distributions7_betabinom_direct_cpp`, y, p1, p2, size, order, shapes, threads)
+}
+
 binomial_gradient_cpp <- function(y, mu, size, threads = 1L) {
     .Call(`_distributions7_binomial_gradient_cpp`, y, mu, size, threads)
 }
@@ -387,6 +391,10 @@ betabinom1_dexpected1_cpp <- function(y, mu, sigma, size, threads = 1L) {
 
 betabinom_shapes_dexpected2_cpp <- function(y, alpha, beta, size, threads = 1L) {
     .Call(`_distributions7_betabinom_shapes_dexpected2_cpp`, y, alpha, beta, size, threads)
+}
+
+betabinom1_dexpected_direct_cpp <- function(y, mu, sigma, size, order, threads = 1L) {
+    .Call(`_distributions7_betabinom1_dexpected_direct_cpp`, y, mu, sigma, size, order, threads)
 }
 
 enet_gradient_cpp <- function(y, mu, lambda, alpha, threads = 1L) {

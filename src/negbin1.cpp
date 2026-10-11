@@ -45,7 +45,7 @@ NumericVector negbin1_logpmf_cpp(NumericVector y, NumericVector mu,
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double t = th_s ? theta[0] : theta[i];
-        out[i] = R::dnbinom(y[i], m / t, 1.0 / (1.0 + t), 1);
+        out[i] = R::dnbinom_mu(y[i], m / t, m, 1);
     });
     return out;
 }
@@ -59,9 +59,10 @@ List negbin1_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double t = th_s ? theta[0] : theta[i];
-        NB1parts z = nb1_parts(y[i], m, t, 1);
-        g_mu[i] = d7::negbin1_score_mu(z);
-        g_th[i] = d7::negbin1_score_theta(z);
+        double v[5];
+        d7::negbin1_low_orders(y[i], m, t, 1, v);
+        g_mu[i] = v[0];
+        g_th[i] = v[1];
     });
     return List::create(Named("mu") = g_mu, Named("theta") = g_th);
 }
@@ -75,10 +76,11 @@ List negbin1_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta,
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double t = th_s ? theta[0] : theta[i];
-        NB1parts z = nb1_parts(y[i], m, t, 2);
-        h_mm[i] = d7::negbin1_hess_mu_mu(z);
-        h_mt[i] = (z.Pr * z.rt + z.Pth) * z.rm + z.P * z.rmt;
-        h_tt[i] = d7::negbin1_hess_theta_theta(z);
+        double v[5];
+        d7::negbin1_low_orders(y[i], m, t, 2, v);
+        h_mm[i] = v[2];
+        h_mt[i] = v[3];
+        h_tt[i] = v[4];
     });
     return List::create(Named("mu_mu") = h_mm,
                         Named("mu_theta") = h_mt,

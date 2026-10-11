@@ -6,6 +6,8 @@
 // (bernoulli.cpp, dexpected_kernels.cpp) and by the registry
 // (d7_ccallable.cpp).
 
+#include "pt_discrete_pow.h"
+
 namespace d7 {
 
 inline double bernoulli_score_mu(double y, double m) {
@@ -13,7 +15,7 @@ inline double bernoulli_score_mu(double y, double m) {
 }
 
 inline double bernoulli_hess_mu_mu(double y, double m) {
-    return -(y / (m * m)) - ((1.0 - y) / ((1.0 - m) * (1.0 - m)));
+    return -coef_over_pow(y, m, 2) - coef_over_pow(1.0 - y, 1.0 - m, 2);
 }
 
 inline double bernoulli_expected_mu_mu(double m) {

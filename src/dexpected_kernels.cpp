@@ -719,3 +719,19 @@ List betabinom_shapes_dexpected2_cpp(NumericVector y, NumericVector alpha,
         for (int k = 0; k < 9; ++k) o[k] = acc[k];
     });
 }
+
+// betabinom1's first or second derivatives of the expected information in
+// (mu, sigma) from the direct sums (bb1_dexpected_direct, pt_betabinom.h),
+// the route below bb1_direct_cut(), where the map from the shapes cancels.
+// [[Rcpp::export]]
+List betabinom1_dexpected_direct_cpp(NumericVector y, NumericVector mu,
+                                     NumericVector sigma, double size,
+                                     int order, int threads = 1) {
+    Par M(mu), Sg(sigma);
+    const int N = static_cast<int>(size);
+    return dexp_run(y.size(), threads, d7::kMinCostly,
+                    dexp_keys2("mu", "sigma", order),
+                    [&](std::size_t i, double* o) {
+        d7::bb1_dexpected_direct(M[i], Sg[i], N, order, o);
+    });
+}

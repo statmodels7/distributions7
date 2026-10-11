@@ -78,7 +78,12 @@ md_betabinom1 <- function(psi, order) {
 betabinom1_components <- function(distrib, y, theta, order) {
   m <- theta[[1]]
   s <- theta[[2]]
-  chain_derivatives(
+  len <- max(length(y), length(m), length(s))
+  small <- rep_len(s < bb_direct_cut(), len)
+  if (all(small)) {
+    return(betabinom_direct(y, m, s, distrib@size, order, distrib@params, shapes = FALSE))
+  }
+  out <- chain_derivatives(
     parent = betabinom2_distrib(size = distrib@size),
     y = y,
     th_par = list(alpha = m / s, beta = (1 - m) / s),
@@ -86,8 +91,45 @@ betabinom1_components <- function(distrib, y, theta, order) {
     new_params = distrib@params,
     order = order
   )
+  out <- lapply(out, rep_len, length.out = len)
+  if (any(small)) {
+    # below the cut the map's derivatives of order sigma^-(order+1) cancel
+    # among themselves, and the direct sums replace those rows
+    sub <- function(v) if (length(v) > 1L) rep_len(v, len)[small] else v
+    dir <- betabinom_direct(sub(y), sub(m), sub(s), distrib@size, order,
+                            distrib@params, shapes = FALSE)
+    for (k in names(out)) out[[k]][small] <- dir[[k]]
+  }
+  out
 }
 
+
+#' The Beta-Binomial's Expected Higher Derivatives in Mean and Dispersion
+#'
+#' @description
+#' Returns the expectation of every derivative of one order of the
+#' beta-binomial log-mass in \eqn{(\mu, \sigma)} as an exact finite sum over
+#' the support \eqn{\{0, \dots, n\}}, the mass times the derivative at each
+#' count, through the same summation as [betabinom2_expected()]. Parameters
+#' that vary by observation give one sum per observation.
+#'
+#' @param distrib A [BetaBinom1Distrib()] object.
+#' @param y A numeric vector; only its length is read.
+#' @param theta A named list with components `mu` and `sigma`.
+#' @param order The derivative order, 3 or 4.
+#'
+#' @return A named list of numeric vectors keyed as [deriv_names()] keys them,
+#'   each of the recycled length of `y` and the parameters.
+#'
+#' @seealso [betabinom1_components()] for the summand,
+#'   [distrib_deriv3.BetaBinom1Distrib()] and
+#'   [distrib_deriv4.BetaBinom1Distrib()], which call this.
+#' @keywords internal
+betabinom1_expected <- function(distrib, y, theta, order) {
+  betabinom2_expected(distrib, y, theta, order, derivs = function(yy, mm, ss) {
+    betabinom1_components(distrib, yy, stats::setNames(list(mm, ss), distrib@params), order)
+  })
+}
 
 #' @title Beta-Binomial Third-Order Derivatives in Mean and Dispersion
 #' @name distrib_deriv3.BetaBinom1Distrib
@@ -162,10 +204,7 @@ S7::method(distrib_deriv3, BetaBinom1Distrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"),
                                                            approx = c("integrate", "bartlett", "mc", "opg"),
                                                            nsim = 10000, ...) {
-  if (expected) {
-    return(expected_derivative(distrib, y, theta, order = 3L,
-                               approx = match.arg(approx), nsim = nsim))
-  }
+  if (expected) return(betabinom1_expected(distrib, y, theta, 3L))
   betabinom1_components(distrib, y, theta, 3L)
 }
 
@@ -239,9 +278,6 @@ S7::method(distrib_deriv4, BetaBinom1Distrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"),
                                                            approx = c("integrate", "bartlett", "mc", "opg"),
                                                            nsim = 10000, ...) {
-  if (expected) {
-    return(expected_derivative(distrib, y, theta, order = 4L,
-                               approx = match.arg(approx), nsim = nsim))
-  }
+  if (expected) return(betabinom1_expected(distrib, y, theta, 4L))
   betabinom1_components(distrib, y, theta, 4L)
 }

@@ -274,7 +274,204 @@ inline double bb_next_lp(double lp, int j, int N, double a, double b) {
 }
 
 
+// ---- the direct sums: derivatives without the map --------------------------
+//
+// The shifts of the beta functions are integers, so with u_i = mu + i sigma,
+// v_i = 1 - mu + i sigma and w_i = 1 + i sigma the log-mass of betabinom1 is
+//   l = lchoose(n, y) + sum_{i<y} log u_i + sum_{i<n-y} log v_i
+//                     - sum_{i<n} log w_i,
+// and a derivative with a differentiations in mu and b in sigma, of order
+// K = a + b, is
+//   c_K [ sum_{i<y} i^b/u_i^K + (-1)^a sum_{i<n-y} i^b/v_i^K
+//         - [a = 0] sum_{i<n} i^b/w_i^K ],   c_K = (-1)^(K-1) (K-1)!.
+// Each sum has terms of one sign, so nothing cancels inside it. The route
+// through the shapes A = mu/sigma, B = (1 - mu)/sigma carries polygamma
+// differences of order one through map derivatives of order sigma^-(K+1),
+// which cancel among themselves as sigma goes to zero (the binomial limit):
+// the fourth derivative in sigma is off by a factor 54 at sigma = 1e-4. The
+// direct sums cost O(n) an observation against O(1), and lose about
+// log10(n) digits at a large sigma, where the three sums of order n/sigma
+// meet in a value of order 1/sigma; the kernels take them below
+// bb1_direct_cut() and the shape route above it.
+inline double bb1_direct_cut() { return 0.1; }
+
+const double kBBcK[5] = {0.0, 1.0, -1.0, 2.0, -6.0};
+
+// the components of order K at one observation of betabinom1: out[b], b = 0..K,
+// has K - b derivatives in mu and b in sigma
+inline void bb1_direct(double y, double n, double mu, double s, int K,
+                       double* out) {
+    double SU[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
+    double SV[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
+    double SW[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
+    const long ky = (long) y, kv = (long) (n - y), kn = (long) n;
+    const double nu = 1.0 - mu;
+    for (long i = 0; i < kn; ++i) {
+        const double di = (double) i;
+        double base, pw;
+        if (i < ky) {
+            const double iu = 1.0 / (mu + di * s);
+            base = 1.0;
+            for (int k = 0; k < K; ++k) base *= iu;
+            pw = 1.0;
+            for (int b = 0; b <= K; ++b) { SU[b] += pw * base; pw *= di; }
+        }
+        if (i < kv) {
+            const double iv = 1.0 / (nu + di * s);
+            base = 1.0;
+            for (int k = 0; k < K; ++k) base *= iv;
+            pw = 1.0;
+            for (int b = 0; b <= K; ++b) { SV[b] += pw * base; pw *= di; }
+        }
+        // the w sum enters only the component with every derivative in sigma
+        const double iw = 1.0 / (1.0 + di * s);
+        base = 1.0;
+        for (int k = 0; k < K; ++k) base *= iw;
+        pw = 1.0;
+        for (int k = 0; k < K; ++k) pw *= di;
+        SW[K] += pw * base;
+    }
+    for (int b = 0; b <= K; ++b) {
+        const int a = K - b;
+        double v = SU[b] + ((a % 2 == 0) ? SV[b] : -SV[b]);
+        if (a == 0) v -= SW[K];
+        out[b] = kBBcK[K] * v;
+    }
+}
+
+// the components of order K at one observation of betabinom2: out[b], b = 0..K,
+// has K - b derivatives in alpha and b in beta. With t_i = alpha + beta + i,
+// a pure derivative in alpha is c_K [sum_{i<y} 1/(alpha+i)^K
+// - sum_{i<n} 1/t_i^K], in beta the same with n - y, and a mixed one
+// -c_K sum_{i<n} 1/t_i^K: positive terms in every sum, where the polygamma
+// differences of the shape route cancel at large shapes.
+inline void bb2_direct(double y, double n, double al, double be, int K,
+                       double* out) {
+    double SA = 0.0, SB = 0.0, ST = 0.0;
+    const long ky = (long) y, kv = (long) (n - y), kn = (long) n;
+    for (long i = 0; i < kn; ++i) {
+        const double di = (double) i;
+        double base = 1.0;
+        const double it = 1.0 / (al + be + di);
+        for (int k = 0; k < K; ++k) base *= it;
+        ST += base;
+        if (i < ky) {
+            const double ia = 1.0 / (al + di);
+            base = 1.0;
+            for (int k = 0; k < K; ++k) base *= ia;
+            SA += base;
+        }
+        if (i < kv) {
+            const double ib = 1.0 / (be + di);
+            base = 1.0;
+            for (int k = 0; k < K; ++k) base *= ib;
+            SB += base;
+        }
+    }
+    for (int b = 0; b <= K; ++b) {
+        double v = -ST;
+        if (b == 0) v += SA;
+        if (b == K) v += SB;
+        out[b] = kBBcK[K] * v;
+    }
+}
+
+// The direct sums of betabinom1 accumulated over the support, for the
+// expectations: U and V hold sum_{i<j} i^b/u_i^k and sum_{i<j} i^b/v_i^k for
+// j = 0..N, W the full sum_{i<N} i^b/w_i^k, for k = 1..K and b = 0..k, so
+// that every derivative at every count is read in O(1), as BBSums does in the
+// shapes.
+struct BB1Sums {
+    int N, K;
+    std::vector<double> U, V;
+    double W[5][5];
+    int off(int k, int b) const { return (k * 5 + b) * (N + 1); }
+    BB1Sums(double mu, double s, int N_, int K_)
+        : N(N_), K(K_), U(25 * (N_ + 1), 0.0), V(25 * (N_ + 1), 0.0) {
+        for (int k = 0; k < 5; ++k) for (int b = 0; b < 5; ++b) W[k][b] = 0.0;
+        const double nu = 1.0 - mu;
+        for (int i = 0; i < N; ++i) {
+            const double di = (double) i;
+            const double iu = 1.0 / (mu + di * s), iv = 1.0 / (nu + di * s),
+                iw = 1.0 / (1.0 + di * s);
+            double pu = 1.0, pv = 1.0, pw = 1.0;
+            for (int k = 1; k <= K; ++k) {
+                pu *= iu; pv *= iv; pw *= iw;
+                double pb = 1.0;
+                for (int b = 0; b <= k; ++b) {
+                    U[off(k, b) + i + 1] = U[off(k, b) + i] + pb * pu;
+                    V[off(k, b) + i + 1] = V[off(k, b) + i] + pb * pv;
+                    W[k][b] += pb * pw;
+                    pb *= di;
+                }
+            }
+        }
+    }
+    // D[a][b], a derivatives in mu and b in sigma, a + b <= K, at y = j
+    void at(int j, double D[5][5]) const {
+        for (int a = 0; a <= K; ++a) {
+            for (int b = 0; a + b <= K; ++b) {
+                const int k = a + b;
+                if (k == 0) { D[a][b] = 0.0; continue; }
+                double v = U[off(k, b) + j] +
+                    ((a % 2 == 0) ? 1.0 : -1.0) * V[off(k, b) + N - j];
+                if (a == 0) v -= W[k][b];
+                D[a][b] = kBBcK[k] * v;
+            }
+        }
+    }
+};
+
+// The first (order 1) or second (order 2) derivatives of the expected
+// information of betabinom1 in (mu, sigma), from the direct sums at every
+// count: d_c E[l_ab] = E[l_abc + l_ab s_c] and
+// d_cd E[l_ab] = E[l_abcd + l_abc s_d + l_abd s_c + l_ab (h_cd + s_c s_d)],
+// in the order of dexp_keys2("mu", "sigma", order).
+inline void bb1_dexpected_direct(double m, double s, int N, int order,
+                                 double* o) {
+    const BB1Sums S(m, s, N, order + 2);
+    const double A = m / s, B = (1.0 - m) / s;
+    const int pu[3] = {0, 1, 0}, pv[3] = {0, 1, 1};
+    double acc[9];
+    for (int k = 0; k < 9; ++k) acc[k] = 0.0;
+    for (int j = 0; j <= N; ++j) {
+        double D[5][5];
+        S.at(j, D);
+        const double p = std::exp(bb_log_mass(j, A, B, N));
+        int w = 0;
+        for (int r = 0; r < 3; ++r) {
+            const int n0 = (pu[r] == 0) + (pv[r] == 0), n1 = 2 - n0;
+            const double lab = D[n0][n1];
+            if (order == 1) {
+                for (int c = 0; c < 2; ++c) {
+                    const double lc = D[c == 0][c == 1];
+                    acc[w++] += p * (D[n0 + (c == 0)][n1 + (c == 1)] + lab * lc);
+                }
+            } else {
+                for (int t = 0; t < 3; ++t) {
+                    const int c = pu[t], d = pv[t];
+                    const double lc = D[c == 0][c == 1], ld = D[d == 0][d == 1];
+                    const double lcd = D[(c == 0) + (d == 0)][(c == 1) + (d == 1)];
+                    const double labc = D[n0 + (c == 0)][n1 + (c == 1)];
+                    const double labd = D[n0 + (d == 0)][n1 + (d == 1)];
+                    const double labcd = D[n0 + (c == 0) + (d == 0)]
+                                          [n1 + (c == 1) + (d == 1)];
+                    acc[w++] += p * (labcd + labd * lc + labc * ld +
+                                     lab * lcd + lab * lc * ld);
+                }
+            }
+        }
+    }
+    const int nout = order == 1 ? 6 : 9;
+    for (int k = 0; k < nout; ++k) o[k] = acc[k];
+}
+
 // ---- betabinom1 (mu, sigma): the components ---------------------------------
+
+// a count on the support, where the direct sums apply
+inline bool bb_on_support(double y, double n) {
+    return y >= 0.0 && y <= n && y == std::floor(y);
+}
 
 // D carries lA and lB: a BBd1 or a BBderiv
 template <class D>
@@ -312,12 +509,19 @@ inline double betabinom1_hess_sigma_sigma(const BBderiv& d, const BBmap& mp) {
 inline double betabinom1_expected_kk(int k, double m, double s, double size) {
     BBmap mp = bb_map(m, s);
     int N = (int) size;
+    const bool direct = s < bb1_direct_cut();
     double e = 0.0;
     for (int j = 0; j <= N; j++) {
         double p = std::exp(bb_log_mass(j, mp.A, mp.B, size));
-        BBderiv d = bb_shape_derivs(j, size, mp.A, mp.B);
-        e += p * (k == 0 ? betabinom1_hess_mu_mu(d, mp)
-                         : betabinom1_hess_sigma_sigma(d, mp));
+        if (direct) {
+            double v[3];
+            bb1_direct(j, size, m, s, 2, v);
+            e += p * (k == 0 ? v[0] : v[2]);
+        } else {
+            BBderiv d = bb_shape_derivs(j, size, mp.A, mp.B);
+            e += p * (k == 0 ? betabinom1_hess_mu_mu(d, mp)
+                             : betabinom1_hess_sigma_sigma(d, mp));
+        }
     }
     return e;
 }
@@ -419,6 +623,14 @@ inline double betabinom1_dexpected_entry(int pa, int pb, int pc, double m,
 inline void betabinom1_score_curv(int k, double y, const double* th,
                                   double* out) {
     const double m = th[0], s = th[1], size = th[2];
+    if (s < bb1_direct_cut() && bb_on_support(y, size)) {
+        double g[2], h[3];
+        bb1_direct(y, size, m, s, 1, g);
+        bb1_direct(y, size, m, s, 2, h);
+        out[0] = g[k];
+        out[1] = h[2 * k];
+        return;
+    }
     const BBmap mp = bb_map(m, s);
     const BBderiv d = bb_shape_derivs(y, size, mp.A, mp.B);
     if (k == 0) {
@@ -436,6 +648,12 @@ inline void betabinom1_info_dinfo(int k, double y, const double* th,
     const double m = th[0], s = th[1], size = th[2];
     out[0] = betabinom1_expected_kk(k, m, s, size);
     double o[9];
+    if (s < bb1_direct_cut()) {
+        // d_k E[l_kk]: entries 0 (mu_mu_mu) and 3 (sigma_sigma_sigma)
+        bb1_dexpected_direct(m, s, (int) size, 1, o);
+        out[1] = o[3 * k];
+        return;
+    }
     bb_shapes_dexp1(m / s, (1.0 - m) / s, (int) size, o);
     out[1] = betabinom1_dexpected_entry(k, k, k, m, s, o);
 }

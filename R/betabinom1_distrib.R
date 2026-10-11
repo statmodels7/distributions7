@@ -194,13 +194,13 @@ S7::method(distrib_cdf, BetaBinom1Distrib) <- function(distrib, q, theta,
                                                       log.p = FALSE, ...) {
   n <- distrib@size
   k <- floor(q)
-  cum <- betabinom1_cum(n, theta, length(q))
+  cum <- betabinom1_cum(n, theta, length(q), upper = !lower.tail)
   if (is.matrix(cum)) k <- rep_len(k, nrow(cum))
   kk <- pmin(pmax(k, 0), n) + 1L
   at <- if (is.matrix(cum)) cum[cbind(seq_along(k), kk)] else cum[kk]
-  p <- ifelse(k < 0, 0, ifelse(k >= n, 1, at))
+  below <- if (lower.tail) 0 else 1
+  p <- ifelse(k < 0, below, ifelse(k >= n, 1 - below, at))
   p <- pmin(pmax(p, 0), 1)
-  if (!lower.tail) p <- 1 - p
   if (log.p) log(p) else p
 }
 
@@ -251,18 +251,27 @@ S7::method(distrib_cdf, BetaBinom1Distrib) <- function(distrib, q, theta,
 S7::method(distrib_quantile, BetaBinom1Distrib) <- function(distrib, p, theta,
                                                             lower.tail = TRUE,
                                                             log.p = FALSE, ...) {
-  if (log.p) p <- exp(p)
-  if (!lower.tail) p <- 1 - p
   n <- distrib@size
-  cum <- betabinom1_cum(n, theta, length(p))
+  fuzz <- 64 * .Machine$double.eps
+  # the lower tail is inverted against F(k), the upper tail against
+  # P(Y > k) summed from the top, so that neither probability is formed as
+  # one minus the other
+  cum <- betabinom1_cum(n, theta, length(p), upper = !lower.tail)
   if (is.matrix(cum)) p <- rep_len(p, nrow(cum))
   vapply(seq_along(p), function(i) {
     pp <- p[i]
-    if (is.na(pp)) return(NA_real_)
-    if (pp <= 0) return(0)
-    if (pp >= 1) return(n)
+    if (is.na(pp)) return(pp)
+    pr <- if (log.p) exp(pp) else pp
+    if (pr < 0 || pr > 1) return(NaN)
     ci <- if (is.matrix(cum)) cum[i, ] else cum
-    (0:n)[which(ci >= pp - 1e-12)[1L]]
+    if (lower.tail) {
+      if (pr == 0) return(0)
+      hit <- if (log.p) log(ci) >= pp - fuzz else ci >= pr * (1 - fuzz)
+    } else {
+      if (pr == 1) return(0)
+      hit <- if (log.p) log(ci) <= pp + fuzz else ci <= pr * (1 + fuzz)
+    }
+    (0:n)[which(hit)[1L]]
   }, numeric(1))
 }
 
@@ -286,11 +295,13 @@ S7::method(distrib_quantile, BetaBinom1Distrib) <- function(distrib, p, theta,
 #'   columns.
 #'
 #' @keywords internal
-betabinom1_cum <- function(n, theta, len) {
+betabinom1_cum <- function(n, theta, len, upper = FALSE) {
   a <- theta[[1]]
   b <- theta[[2]]
   if (length(a) == 1L && length(b) == 1L) {
-    return(cumsum(exp(betabinom_logpmf_cpp(0:n, a, b, n))))
+    f <- exp(betabinom_logpmf_cpp(0:n, a, b, n))
+    if (!upper) return(cumsum(f))
+    return(c(rev(cumsum(rev(f)))[-1L], 0))
   }
   nn <- max(len, length(a), length(b))
   m <- n + 1L
@@ -298,8 +309,14 @@ betabinom1_cum <- function(n, theta, len) {
                                    rep(rep_len(a, nn), times = m),
                                    rep(rep_len(b, nn), times = m), n))
   mass <- matrix(mass, nn, m)
-  if (m > 1L) for (j in 2:m) mass[, j] <- mass[, j] + mass[, j - 1L]
-  mass
+  if (!upper) {
+    if (m > 1L) for (j in 2:m) mass[, j] <- mass[, j] + mass[, j - 1L]
+    return(mass)
+  }
+  # P(Y > k): the mass above k, accumulated from the top of the support
+  out <- matrix(0, nn, m)
+  if (m > 1L) for (j in (m - 1L):1L) out[, j] <- out[, j + 1L] + mass[, j + 1L]
+  out
 }
 
 #' @title Beta-Binomial Random Generation

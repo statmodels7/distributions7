@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "pt_discrete_pow.h"
 using namespace Rcpp;
 
 // Third/fourth-order derivatives of the Binomial log-mass, transcribed from the
@@ -16,7 +17,7 @@ List binomial_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector size,
         double m = mu_is_scalar ? mu[0] : mu[i];
         double sz = size_is_scalar ? size[0] : size[i];
         double om = m - 1.0;
-        mu_mu_mu[i] = 2.0 * (sz - y[i]) / (om * om * om) + 2.0 * y[i] / (m * m * m);
+        mu_mu_mu[i] = 2.0 * d7::coef_over_pow(sz - y[i], om, 3) + 2.0 * d7::coef_over_pow(y[i], m, 3);
     });
     return List::create(Named("mu_mu_mu") = mu_mu_mu);
 }
@@ -48,7 +49,7 @@ List binomial_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector size,
         double m = mu_is_scalar ? mu[0] : mu[i];
         double sz = size_is_scalar ? size[0] : size[i];
         double om = m - 1.0;
-        mu_mu_mu_mu[i] = -6.0 * (sz - y[i]) / (om * om * om * om) - 6.0 * y[i] / (m * m * m * m);
+        mu_mu_mu_mu[i] = -6.0 * d7::coef_over_pow(sz - y[i], om, 4) - 6.0 * d7::coef_over_pow(y[i], m, 4);
     });
     return List::create(Named("mu_mu_mu_mu") = mu_mu_mu_mu);
 }

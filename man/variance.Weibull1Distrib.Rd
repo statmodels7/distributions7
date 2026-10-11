@@ -42,6 +42,6 @@ variance(d, list(mu = 2, sigma = 1))
 }
 \seealso{
 \code{\link[=mean.Weibull1Distrib]{mean.Weibull1Distrib()}}, \code{\link[=skewness.Weibull1Distrib]{skewness.Weibull1Distrib()}},
-\code{\link[=weibull_gamma_factors]{weibull_gamma_factors()}}, \code{\link[=weibull1_distrib]{weibull1_distrib()}}.
+\code{\link[=weibull_moment_terms]{weibull_moment_terms()}}, \code{\link[=weibull1_distrib]{weibull1_distrib()}}.
 }
 \keyword{internal}

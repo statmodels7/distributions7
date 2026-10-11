@@ -223,6 +223,12 @@ static inline void pig1_row(double yy, double m, double sg,
     // rather than leaving a caller to mask afterwards. The value
     // reads -Inf, which is the log-mass there; a derivative reads
     // NaN, there being no derivative to report.
+    if (ISNAN(yy)) {
+        // a missing response propagates, as it does through dpois()
+        int k = only ? PIG_LEN[order] : PIG_OFF[order] + PIG_LEN[order];
+        for (int j = 0; j < k; ++j) v[j] = yy;
+        return;
+    }
     if (!R_finite(yy) || yy < 0.0 || yy != std::floor(yy)) {
         int lo = only ? PIG_OFF[order] : 0;
         int k = only ? PIG_LEN[order] : PIG_OFF[order] + PIG_LEN[order];
@@ -453,6 +459,12 @@ static inline void pig2_row(double yy, double m, double aa,
     // rather than leaving a caller to mask afterwards. The value
     // reads -Inf, which is the log-mass there; a derivative reads
     // NaN, there being no derivative to report.
+    if (ISNAN(yy)) {
+        // a missing response propagates, as it does through dpois()
+        int k = only ? PIG_LEN[order] : PIG_OFF[order] + PIG_LEN[order];
+        for (int j = 0; j < k; ++j) v[j] = yy;
+        return;
+    }
     if (!R_finite(yy) || yy < 0.0 || yy != std::floor(yy)) {
         int lo = only ? PIG_OFF[order] : 0;
         int k = only ? PIG_LEN[order] : PIG_OFF[order] + PIG_LEN[order];

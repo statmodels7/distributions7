@@ -47,6 +47,6 @@ round(skewness(d, list(mu = 1, sigma = c(2, 3.60235, 10))), 6)
 \seealso{
 \code{\link[=kurtosis.Weibull1Distrib]{kurtosis.Weibull1Distrib()}}, also free of the scale;
 \code{\link[=variance.Weibull1Distrib]{variance.Weibull1Distrib()}}, which is not;
-\code{\link[=weibull_gamma_factors]{weibull_gamma_factors()}}, \code{\link[=weibull1_distrib]{weibull1_distrib()}}.
+\code{\link[=weibull_moment_terms]{weibull_moment_terms()}}, \code{\link[=weibull1_distrib]{weibull1_distrib()}}.
 }
 \keyword{internal}

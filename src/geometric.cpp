@@ -13,10 +13,9 @@ using namespace Rcpp;
 //   E[l^(j)] = (-1)^(j-1) (j-1)! [ mu^(1-j) - (1 + mu)^(1-j) ],
 // zero at j = 1 and -1/(mu(1+mu)) at j = 2.
 
-static inline void geom_terms(double y, double m, double &a, double &b) {
-    a = y;
-    b = y + 1.0;
-}
+// The brackets are formed by count_bracket() and count_bracket_expected()
+// (pt_discrete_pow.h), which carry the difference of the two terms without
+// cancelling where y is near mu or mu is large.
 
 // [[Rcpp::export]]
 List geometric_gradient_cpp(NumericVector y, NumericVector mu,
@@ -77,10 +76,7 @@ List geometric_deriv3_cpp(NumericVector y, NumericVector mu,
         // LOCAL to the region: a scalar hoisted out of the loop and
         // written inside it is shared once the iterations are split
         const double m = mu_is_scalar ? mu[0] : mu[i];
-        double a, b;
-        geom_terms(y[i], m, a, b);
-        double om = 1.0 + m;
-        d[i] = 2.0 * (a / (m * m * m) - b / (om * om * om));
+        d[i] = 2.0 * d7::count_bracket(y[i], m, 1.0, 3);
     });
     return List::create(Named("mu_mu_mu") = d);
 }
@@ -96,8 +92,7 @@ List geometric_deriv3_expected_cpp(NumericVector y, NumericVector mu,
         // LOCAL to the region: a scalar hoisted out of the loop and
         // written inside it is shared once the iterations are split
         const double m = mu_is_scalar ? mu[0] : mu[i];
-        double om = 1.0 + m;
-        d[i] = 2.0 * (1.0 / (m * m) - 1.0 / (om * om));
+        d[i] = 2.0 * d7::count_bracket_expected(m, 1.0, 2);
     });
     return List::create(Named("mu_mu_mu") = d);
 }
@@ -113,10 +108,7 @@ List geometric_deriv4_cpp(NumericVector y, NumericVector mu,
         // LOCAL to the region: a scalar hoisted out of the loop and
         // written inside it is shared once the iterations are split
         const double m = mu_is_scalar ? mu[0] : mu[i];
-        double a, b;
-        geom_terms(y[i], m, a, b);
-        double m2 = m * m, om = 1.0 + m, om2 = om * om;
-        d[i] = -6.0 * (a / (m2 * m2) - b / (om2 * om2));
+        d[i] = -6.0 * d7::count_bracket(y[i], m, 1.0, 4);
     });
     return List::create(Named("mu_mu_mu_mu") = d);
 }
@@ -132,8 +124,7 @@ List geometric_deriv4_expected_cpp(NumericVector y, NumericVector mu,
         // LOCAL to the region: a scalar hoisted out of the loop and
         // written inside it is shared once the iterations are split
         const double m = mu_is_scalar ? mu[0] : mu[i];
-        double om = 1.0 + m;
-        d[i] = -6.0 * (1.0 / (m * m * m) - 1.0 / (om * om * om));
+        d[i] = -6.0 * d7::count_bracket_expected(m, 1.0, 3);
     });
     return List::create(Named("mu_mu_mu_mu") = d);
 }

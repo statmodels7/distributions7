@@ -197,7 +197,7 @@ inline double enet_logpdf(double y, const double* th) {
 }
 inline double negbin1_logpdf(double y, const double* th) {
     if (!lp_count(y)) return R_NegInf;
-    return R::dnbinom(y, th[0] / th[1], 1.0 / (1.0 + th[1]), 1);
+    return R::dnbinom_mu(y, th[0] / th[1], th[0], 1);
 }
 inline double skewnormal1_logpdf_th(double y, const double* th) {
     return skewnormal1_logpdf(y, th[0], th[1], th[2]);

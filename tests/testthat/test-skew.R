@@ -193,13 +193,17 @@ test_that("the skew t moments exist only up to nu", {
   expect_equal(skewness(d, th),
     mean((big - mean(big))^3) / stats::sd(big)^3, tolerance = 0.1)
 
-  # each moment is NaN below its own threshold, while the density is finite
+  # below its own threshold each moment is NaN where the moment below it does
+  # not exist either, and Inf where that one exists (as for the Student t),
+  # while the density is finite
   expect_true(is.finite(distrib_pdf(d, 0, list(mu = 0, sigma = 1, alpha = 3, nu = 0.5))))
   expect_true(is.nan(mean(d, list(mu = 0, sigma = 1, alpha = 3, nu = 0.5))))
   expect_true(is.finite(mean(d, list(mu = 0, sigma = 1, alpha = 3, nu = 1.5))))
-  expect_true(is.nan(variance(d, list(mu = 0, sigma = 1, alpha = 3, nu = 1.5))))
+  expect_identical(variance(d, list(mu = 0, sigma = 1, alpha = 3, nu = 1.5)), Inf)
+  expect_true(is.nan(variance(d, list(mu = 0, sigma = 1, alpha = 3, nu = 0.5))))
   expect_true(is.nan(skewness(d, list(mu = 0, sigma = 1, alpha = 3, nu = 2.5))))
-  expect_true(is.nan(kurtosis(d, list(mu = 0, sigma = 1, alpha = 3, nu = 3.5))))
+  expect_identical(kurtosis(d, list(mu = 0, sigma = 1, alpha = 3, nu = 3.5)), Inf)
+  expect_true(is.nan(kurtosis(d, list(mu = 0, sigma = 1, alpha = 3, nu = 1.5))))
 
   # and it reaches skewness the skew normal cannot
   expect_gt(skewness(d, list(mu = 0, sigma = 1, alpha = 8, nu = 5)), 0.9953)

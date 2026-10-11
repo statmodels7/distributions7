@@ -1345,37 +1345,128 @@ S7::method(kurtosis, Laplace2Distrib) <- function(x, theta, ...) {
 # quantities below are the standardized combinations of those, so only the
 # first depends on mu at all.
 
-#' Gamma Factors of a Weibull's Moments
+# Commented out on 2026-10-12 (T3): the Weibull moments are now formed by
+# weibull_moment_terms(); the combinations of these factors cancelled at a
+# large shape and the factors overflowed at a small one. Kept rather than
+# deleted.
+# Gamma Factors of a Weibull's Moments
+#
+# @description
+# Returns \eqn{g_k = \Gamma(1 + k/\sigma)} for \eqn{k = 1, \ldots, K}. Every
+# raw moment of a Weibull is one of these times a power of the scale,
+# \eqn{E[Y^k] = \mu^k g_k}, so the four moment methods of the family share
+# this one helper and differ only in which combination of the factors they
+# assemble.
+#
+# @param sigma The shape parameter, a positive numeric vector. Each factor
+#   diverges as the shape approaches zero, the corresponding moment not
+#   existing there.
+# @param k How many factors to return. A single whole number, 4 by default,
+#   the number the excess kurtosis needs; the variance needs 2 and the skewness
+#   3, and each caller asks for only what it uses.
+#
+# @return A named list of `k` numeric vectors, `g1` to `gk`, each the length
+#   of `sigma`.
+#
+# @seealso [variance.Weibull1Distrib()], [skewness.Weibull1Distrib()] and
+#   [kurtosis.Weibull1Distrib()] for the three consumers.
+#
+# @examples
+# # At shape 1 the family is exponential and g_k is k factorial.
+# distributions7:::weibull_gamma_factors(1, 4)
+#
+# @keywords internal
+# weibull_gamma_factors <- function(sigma, k = 4L) {
+#   out <- lapply(seq_len(k), function(j) gamma(1 + j / sigma))
+#   names(out) <- paste0("g", seq_len(k))
+#   out
+# }
+
+#' Standardized Moments of a Weibull by Shape
 #'
 #' @description
-#' Returns \eqn{g_k = \Gamma(1 + k/\sigma)} for \eqn{k = 1, \ldots, K}. Every
-#' raw moment of a Weibull is one of these times a power of the scale,
-#' \eqn{E[Y^k] = \mu^k g_k}, so the four moment methods of the family share
-#' this one helper and differ only in which combination of the factors they
-#' assemble.
+#' Returns the pieces of the variance, the skewness and the excess kurtosis of
+#' a Weibull with shape \eqn{k}, which depend on the shape alone. With
+#' \eqn{t = 1/k}, \eqn{L(x) = \log\Gamma(1 + x)} and
+#' \eqn{D_j = L(jt) - jL(t)}, the raw moments divided by
+#' \eqn{\Gamma(1+t)^j} are \eqn{e^{D_j}}, so
+#' \deqn{\frac{\mathrm{Var}(Y)}{\mu^2\Gamma(1+t)^2} = e^{D_2} - 1,\qquad
+#'   \gamma_1 = \frac{e^{D_3} - 3e^{D_2} + 2}{(e^{D_2} - 1)^{3/2}},\qquad
+#'   \gamma_2 = \frac{e^{D_4} - 4e^{D_3} + 6e^{D_2} - 3}{(e^{D_2} - 1)^2} - 3.}
+#' For \eqn{k \ge 5} the two numerators are formed from the series
+#' \eqn{L(x) = -\gamma x + \sum_{m \ge 2} (-1)^m \zeta(m) x^m/m}: the terms
+#' linear in the \eqn{D_j} are combined coefficient by coefficient, so that the
+#' leading powers of \eqn{t}, which cancel exactly (to \eqn{t^2} in the
+#' skewness and \eqn{t^3} in the kurtosis), are never formed; the rest are
+#' \eqn{e^{D} - 1 - D} by its own series. Otherwise the quotients are taken in
+#' log scale, so that \eqn{\Gamma(1 + 4/k)} is never formed where it
+#' overflows.
 #'
-#' @param sigma The shape parameter, a positive numeric vector. Each factor
-#'   diverges as the shape approaches zero, the corresponding moment not
-#'   existing there.
-#' @param k How many factors to return. A single whole number, 4 by default,
-#'   the number the excess kurtosis needs; the variance needs 2 and the skewness
-#'   3, and each caller asks for only what it uses.
+#' @param sigma The shape, a positive numeric vector.
 #'
-#' @return A named list of `k` numeric vectors, `g1` to `gk`, each the length
-#'   of `sigma`.
+#' @return A list with `L1` (\eqn{L(t)}), `lV` (\eqn{\log(e^{D_2} - 1)}),
+#'   `skew` and `kurt`, each a numeric vector of the length of `sigma`.
 #'
 #' @seealso [variance.Weibull1Distrib()], [skewness.Weibull1Distrib()] and
-#'   [kurtosis.Weibull1Distrib()] for the three consumers.
+#'   [kurtosis.Weibull1Distrib()], which read it.
 #'
 #' @examples
-#' # At shape 1 the family is exponential and g_k is k factorial.
-#' distributions7:::weibull_gamma_factors(1, 4)
+#' # At a large shape the skewness tends to that of a minimum-Gumbel law.
+#' distributions7:::weibull_moment_terms(c(1, 1e6))$skew
 #'
 #' @keywords internal
-weibull_gamma_factors <- function(sigma, k = 4L) {
-  out <- lapply(seq_len(k), function(j) gamma(1 + j / sigma))
-  names(out) <- paste0("g", seq_len(k))
-  out
+weibull_moment_terms <- function(sigma) {
+  t <- 1 / sigma
+  L1 <- lgamma(1 + t)
+  dj <- function(j) lgamma(1 + j * t) - j * L1
+  d2 <- dj(2)
+  d3 <- dj(3)
+  d4 <- dj(4)
+  lV <- ifelse(d2 > 1, d2 + log1p(-exp(-d2)), log(expm1(d2)))
+  skew <- exp(d3 - 1.5 * lV) - 3 * exp(d2 - 1.5 * lV) + 2 * exp(-1.5 * lV)
+  kurt <- exp(d4 - 2 * lV) - 4 * exp(d3 - 2 * lV) + 6 * exp(d2 - 2 * lV) -
+    3 * exp(-2 * lV) - 3
+  # the series of L(jt) converges for 4t < 1; at t = 0.2 its terms fall as
+  # 0.8^m, and 250 of them reach the rounding
+  small <- t <= 0.2
+  if (any(small)) {
+    m <- 2:250
+    # zeta(m) = (-1)^m psi^(m-1)(1)/(m-1)! while the factorial is
+    # representable, and its defining sum above that
+    mm <- pmin(m, 30L)
+    z <- ifelse(m <= 30L, (-1)^mm * psigamma(1, deriv = mm - 1) / gamma(mm),
+                vapply(m, function(k) sum((1:40)^(-k)), 0))
+    cf <- (-1)^m * z / m
+    pw <- outer(t[small], m, `^`)
+    lin <- function(w) drop(pw %*% (cf * w))
+    e1x <- function(x) {
+      # e^x - 1 - x, by its series where expm1(x) - x would cancel
+      out <- expm1(x) - x
+      sm <- abs(x) < 0.1
+      if (any(sm)) {
+        xs <- x[sm]
+        term <- xs^2 / 2
+        acc <- term
+        for (k in 3:20) {
+          term <- term * xs / k
+          acc <- acc + term
+        }
+        out[sm] <- acc
+      }
+      out
+    }
+    s2 <- lin(2^m - 2)
+    s3 <- lin(3^m - 3)
+    s4 <- lin(4^m - 4)
+    V <- expm1(s2)
+    n3 <- lin((3^m - 3) - 3 * (2^m - 2)) + e1x(s3) - 3 * e1x(s2)
+    n4 <- lin((4^m - 4) - 4 * (3^m - 3) + 6 * (2^m - 2)) +
+      e1x(s4) - 4 * e1x(s3) + 6 * e1x(s2)
+    lV[small] <- log(V)
+    skew[small] <- n3 / V^1.5
+    kurt[small] <- n4 / V^2 - 3
+  }
+  list(L1 = L1, lV = lV, skew = skew, kurt = kurt)
 }
 
 #' @title Mean of the Weibull Distribution
@@ -1407,7 +1498,7 @@ weibull_gamma_factors <- function(sigma, k = 4L) {
 #'   `max(length(theta$mu), length(theta$sigma))`.
 #'
 #' @seealso [variance.Weibull1Distrib()], [skewness.Weibull1Distrib()],
-#'   [weibull_gamma_factors()] for the shared factors, [weibull1_distrib()].
+#'   [weibull_moment_terms()] for the terms in the shape, [weibull1_distrib()].
 #'
 #' @examples
 #' d <- weibull1_distrib()
@@ -1448,7 +1539,7 @@ S7::method(mean, Weibull1Distrib) <- function(x, theta, ...) {
 #'   `max(length(theta$mu), length(theta$sigma))`.
 #'
 #' @seealso [mean.Weibull1Distrib()], [skewness.Weibull1Distrib()],
-#'   [weibull_gamma_factors()], [weibull1_distrib()].
+#'   [weibull_moment_terms()], [weibull1_distrib()].
 #'
 #' @examples
 #' d <- weibull1_distrib()
@@ -1463,8 +1554,8 @@ S7::method(mean, Weibull1Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(variance, Weibull1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  g <- weibull_gamma_factors(theta[[2]], 2L)
-  theta[[1]]^2 * (g$g2 - g$g1^2)
+  w <- weibull_moment_terms(theta[[2]])
+  theta[[1]]^2 * exp(2 * w$L1 + w$lV)
 }
 
 #' @title Skewness of the Weibull Distribution
@@ -1494,7 +1585,7 @@ S7::method(variance, Weibull1Distrib) <- function(x, theta, ...) {
 #'
 #' @seealso [kurtosis.Weibull1Distrib()], also free of the scale;
 #'   [variance.Weibull1Distrib()], which is not;
-#'   [weibull_gamma_factors()], [weibull1_distrib()].
+#'   [weibull_moment_terms()], [weibull1_distrib()].
 #'
 #' @examples
 #' d <- weibull1_distrib()
@@ -1511,10 +1602,7 @@ S7::method(variance, Weibull1Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(skewness, Weibull1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  g <- weibull_gamma_factors(theta[[2]], 3L)
-  v <- g$g2 - g$g1^2
-  (g$g3 - 3 * g$g1 * g$g2 + 2 * g$g1^3) / v^1.5 +
-    moment_const(theta, 2L, 0)
+  weibull_moment_terms(theta[[2]])$skew + moment_const(theta, 2L, 0)
 }
 
 #' @title Excess Kurtosis of the Weibull Distribution
@@ -1543,7 +1631,7 @@ S7::method(skewness, Weibull1Distrib) <- function(x, theta, ...) {
 #'   value, so a setting that varies the scale alone repeats one number.
 #'
 #' @seealso [skewness.Weibull1Distrib()], [variance.Weibull1Distrib()],
-#'   [weibull_gamma_factors()], [weibull1_distrib()].
+#'   [weibull_moment_terms()], [weibull1_distrib()].
 #'
 #' @examples
 #' d <- weibull1_distrib()
@@ -1557,10 +1645,7 @@ S7::method(skewness, Weibull1Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(kurtosis, Weibull1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  g <- weibull_gamma_factors(theta[[2]], 4L)
-  v <- g$g2 - g$g1^2
-  (g$g4 - 4 * g$g1 * g$g3 + 6 * g$g1^2 * g$g2 - 3 * g$g1^4) / v^2 - 3 +
-    moment_const(theta, 2L, 0)
+  weibull_moment_terms(theta[[2]])$kurt + moment_const(theta, 2L, 0)
 }
 
 
@@ -1764,7 +1849,9 @@ S7::method(kurtosis, GumbelDistrib) <- function(x, theta, ...) {
 #'
 #' @keywords internal
 skewnormal_delta <- function(alpha) {
-  delta <- alpha / sqrt(1 + alpha^2)
+  # alpha^2 overflows above |alpha| ~ 1.3e154, where the first form gives 0
+  delta <- ifelse(abs(alpha) > 1, sign(alpha) / sqrt(1 + alpha^-2),
+                  alpha / sqrt(1 + alpha^2))
   list(delta = delta, bd = sqrt(2 / pi) * delta)
 }
 
@@ -1997,8 +2084,13 @@ skewt_moment_pieces <- function(alpha, nu) {
   n <- max(length(alpha), length(nu))
   alpha <- rep_len(alpha, n)
   nu <- rep_len(nu, n)
-  delta <- alpha / sqrt(1 + alpha^2)
-  bnu <- ifelse(nu > 1, sqrt(nu / pi) * exp(lgamma((nu - 1) / 2) - lgamma(nu / 2)), NaN)
+  delta <- skewnormal_delta(alpha)$delta
+  # Gamma((nu - 1)/2)/Gamma(nu/2) = B((nu - 1)/2, 1/2)/sqrt(pi); lbeta()
+  # carries the Stirling corrections of both arguments, where the difference
+  # of two lgamma() values of order nu log(nu) loses a digit a decade of nu
+  bnu <- rep(NaN, n)
+  ok <- !is.na(nu) & nu > 1
+  bnu[ok] <- sqrt(nu[ok]) * exp(lbeta((nu[ok] - 1) / 2, 0.5)) / pi
   mz <- delta * bnu
   vz <- ifelse(nu > 2, nu / (nu - 2) - mz^2, NaN)
   list(nu = nu, delta = delta, bnu = bnu, mz = mz, vz = vz)
@@ -2106,8 +2198,12 @@ S7::method(mean, SkewTDistrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(variance, SkewTDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  theta[[2]]^2 * skewt_moment_pieces(theta[[3]], theta[[4]])$vz +
-    moment_const(theta, 4L, 0)
+  p <- skewt_moment_pieces(theta[[3]], theta[[4]])
+  out <- theta[[2]]^2 * p$vz + moment_const(theta, 4L, 0)
+  # the second moment diverges on 1 < nu <= 2, where the mean exists, as the
+  # Student t's does
+  out[p$nu > 1 & p$nu <= 2] <- Inf
+  out
 }
 
 #' @title Skewness of the Skew t Distribution
@@ -2226,7 +2322,11 @@ S7::method(kurtosis, SkewTDistrib) <- function(x, theta, ...) {
   val <- (3 * nu^2 / ((nu - 2) * (nu - 4)) -
     4 * p$mz^2 * nu * (3 - p$delta^2) / (nu - 3) +
     6 * p$mz^2 * nu / (nu - 2) - 3 * p$mz^4) / p$vz^2 - 3
-  ifelse(nu > 4, val, NaN) + moment_const(theta, 4L, 0)
+  out <- ifelse(nu > 4, val, NaN) + moment_const(theta, 4L, 0)
+  # the fourth moment diverges on 2 < nu <= 4, where the variance exists, as
+  # the Student t's does
+  out[nu > 2 & nu <= 4] <- Inf
+  out
 }
 
 # ---------------------------------------------------------------------------
@@ -3803,6 +3903,44 @@ S7::method(variance, Beta1Distrib) <- function(x, theta, ...) {
   theta[[1]] * (1 - theta[[1]]) / (theta[[2]] + 1)
 }
 
+#' Moments of the Beta in Its Mean and Precision
+#'
+#' @description
+#' Returns the variance, the skewness or the excess kurtosis of the beta law
+#' with mean \eqn{\mu} and precision \eqn{\phi = \alpha + \beta}, with the
+#' shapes divided out of every quotient:
+#' \deqn{\mathrm{Var}(Y) = \frac{\mu(1-\mu)}{1+\phi},\qquad
+#'   \gamma_1 = \frac{2(1-2\mu)\sqrt{1+\phi}}{(2+\phi)\sqrt{\mu(1-\mu)}},}
+#' \deqn{\gamma_2 = \frac{6[(1-2\mu)^2(1+\phi)/(2+\phi) - \mu(1-\mu)]}
+#'   {\mu(1-\mu)(3+\phi)}.}
+#' Written in the shapes the same quotients carry \eqn{\alpha\beta}, which
+#' underflows below \eqn{\phi \approx 10^{-154}} and overflows above
+#' \eqn{10^{154}}; here \eqn{\phi} enters only through \eqn{1 + \phi},
+#' \eqn{2 + \phi} and \eqn{3 + \phi}, and never in a product of two of them.
+#'
+#' @param mu The mean, a numeric vector in \eqn{(0, 1)}.
+#' @param phi The precision, a positive numeric vector.
+#' @param what One of `"variance"`, `"skewness"` or `"kurtosis"`.
+#'
+#' @return A numeric vector of the recycled length of `mu` and `phi`.
+#'
+#' @seealso [skewness.Beta1Distrib()], [kurtosis.Beta1Distrib()] and the
+#'   moments of [Beta2Distrib], which call it.
+#'
+#' @examples
+#' distributions7:::beta_shape_moments(0.3, 1e-200, "kurtosis")
+#'
+#' @keywords internal
+beta_shape_moments <- function(mu, phi, what) {
+  g <- mu * (1 - mu)
+  switch(what,
+    variance = g / (1 + phi),
+    skewness = 2 * (1 - 2 * mu) * sqrt(1 + phi) / ((2 + phi) * sqrt(g)),
+    kurtosis = 6 * ((1 - 2 * mu)^2 * (1 + phi) / (2 + phi) - g) /
+      (g * (3 + phi))
+  )
+}
+
 #' @title Skewness of the Beta Distribution
 #' @name skewness.Beta1Distrib
 #'
@@ -3843,9 +3981,7 @@ S7::method(variance, Beta1Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(skewness, Beta1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  a <- theta[[1]] * theta[[2]]
-  b <- (1 - theta[[1]]) * theta[[2]]
-  2 * (b - a) * sqrt(a + b + 1) / ((a + b + 2) * sqrt(a * b))
+  beta_shape_moments(theta[[1]], theta[[2]], "skewness")
 }
 
 #' @title Excess Kurtosis of the Beta Distribution
@@ -3887,10 +4023,7 @@ S7::method(skewness, Beta1Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(kurtosis, Beta1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  a <- theta[[1]] * theta[[2]]
-  b <- (1 - theta[[1]]) * theta[[2]]
-  6 * ((a - b)^2 * (a + b + 1) - a * b * (a + b + 2)) /
-    (a * b * (a + b + 2) * (a + b + 3))
+  beta_shape_moments(theta[[1]], theta[[2]], "kurtosis")
 }
 
 # --- gpd -------------------------------------------------------------------
@@ -5048,128 +5181,202 @@ S7::method(kurtosis, NegBin1Distrib) <- function(x, theta, ...) {
 #   E[Y (Y-1) ... (Y-k+1)] = n^(k) prod_{j<k} (a+j)/(a+b+j),
 # which are one product each, rather than from a transcribed quartic.
 
-#' Falling Factorial Moments of a Beta-Binomial
+# Commented out on 2026-10-12 (T3): the beta-binomial moments are now the
+# closed forms of betabinom_moments(); the route through the raw moments
+# cancelled at a small dispersion and a large size. Kept rather than deleted.
+# Falling Factorial Moments of a Beta-Binomial
+#
+# @description
+# Returns the first four falling factorial moments
+# \deqn{E[Y^{(k)}] = n^{(k)} \prod_{j=0}^{k-1} \frac{a+j}{a+b+j},
+#       \qquad k = 1, \ldots, 4,}
+# with \eqn{x^{(k)} = x(x-1)\cdots(x-k+1)}. These are the quantities a
+# beta-binomial has in closed form; the raw and central moments follow from
+# them through [central_from_factorial()].
+#
+# @section Notation:
+# \eqn{a > 0} and \eqn{b > 0} are the two shapes of the mixing beta,
+# \eqn{n} the number of trials, and \eqn{x^{(k)}} the falling factorial.
+#
+# @param a The first shape of the mixing beta, a single positive number.
+# @param b The second shape, a single positive number.
+# @param n The number of trials, a single non-negative whole number. Factorial
+#   moments of order above `n` are zero, the falling factorial \eqn{n^{(k)}}
+#   vanishing there.
+#
+# @return An **unnamed** list of four numbers, the falling factorial moments of
+#   order 1 to 4 in that order, reached by position.
+#
+# @seealso [central_from_factorial()], which converts these;
+#   [betabinom_central()], the wrapper the moment methods call.
+#
+# @examples
+# # At a = b the mixing beta is symmetric, so the mean is half the trials.
+# distributions7:::betabinom_factorial_moments(2, 2, 10)[[1]]
+#
+# @keywords internal
+# betabinom_factorial_moments <- function(a, b, n) {
+#   lapply(1:4, function(k) {
+#     j <- seq_len(k) - 1L
+#     nf <- prod(n - j)
+#     r <- 1
+#     for (i in j) r <- r * (a + i) / (a + b + i)
+#     nf * r
+#   })
+# }
+
+# Commented out on 2026-10-12 (T3): the beta-binomial moments are now the
+# closed forms of betabinom_moments(); the route through the raw moments
+# cancelled at a small dispersion and a large size. Kept rather than deleted.
+# Central Moments From Falling Factorial Moments
+#
+# @description
+# Converts the first four falling factorial moments into the mean and the
+# second, third and fourth central moments. The raw moments come first,
+# through the Stirling numbers of the second kind written out:
+# \deqn{m_1 = f_1,\quad m_2 = f_2 + f_1,\quad m_3 = f_3 + 3f_2 + f_1,\quad
+#       m_4 = f_4 + 6f_3 + 7f_2 + f_1,}
+# and the central moments follow by the usual binomial expansion about
+# \eqn{m_1}.
+#
+# @param f An unnamed list of four, the falling factorial moments of order 1
+#   to 4 in that order, as [betabinom_factorial_moments()] returns. They are
+#   read by position.
+#
+# @return A named list with `mean` and the central moments `c2`, `c3` and
+#   `c4`, each a numeric vector the length of the inputs.
+#
+# @seealso [betabinom_factorial_moments()] for the input;
+#   [betabinom_central()], which chains the two.
+#
+# @examples
+# f <- distributions7:::betabinom_factorial_moments(2, 2, 10)
+# distributions7:::central_from_factorial(f)$mean
+#
+# @keywords internal
+# central_from_factorial <- function(f) {
+#   m1 <- f[[1]]
+#   m2 <- f[[2]] + f[[1]]
+#   m3 <- f[[3]] + 3 * f[[2]] + f[[1]]
+#   m4 <- f[[4]] + 6 * f[[3]] + 7 * f[[2]] + f[[1]]
+#   list(mean = m1,
+#        c2 = m2 - m1^2,
+#        c3 = m3 - 3 * m1 * m2 + 2 * m1^3,
+#        c4 = m4 - 4 * m1 * m3 + 6 * m1^2 * m2 - 3 * m1^4)
+# }
+
+# Commented out on 2026-10-12 (T3): the beta-binomial moments are now the
+# closed forms of betabinom_moments(); the route through the raw moments
+# cancelled at a small dispersion and a large size. Kept rather than deleted.
+# Mean and Central Moments of a Beta-Binomial
+#
+# @description
+# The mean and the second, third and fourth central moments of a
+# beta-binomial, one value per parameter setting. It maps the mean-dispersion
+# parametrization onto the two shapes, \eqn{a = \mu/\sigma} and
+# \eqn{b = (1-\mu)/\sigma}, then chains [betabinom_factorial_moments()] into
+# [central_from_factorial()] once per setting and stacks the results. The four
+# moment methods of the family share it.
+#
+# @section Notation:
+# \eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
+# dispersion and \eqn{n} the number of trials.
+#
+# @param mu The success probability, a numeric vector strictly inside
+#   \eqn{(0,1)}.
+# @param sigma The dispersion, a positive numeric vector. As it goes to zero
+#   the mixing beta concentrates and the family tends to a binomial.
+# @param n The number of trials, a non-negative whole number.
+#
+# @return A named list with `mean` and the central moments `c2`, `c3` and
+#   `c4`, each a numeric vector as long as the longer of `mu` and `sigma`.
+#
+# @seealso [variance.BetaBinom1Distrib()], [skewness.BetaBinom1Distrib()] and
+#   [kurtosis.BetaBinom1Distrib()] for the consumers.
+#
+# @examples
+# # The mean is n mu, whatever the dispersion.
+# distributions7:::betabinom_central(0.3, 0.5, 10)$mean
+#
+# @keywords internal
+# betabinom_central <- function(mu, sigma, n) {
+#   len <- max(length(mu), length(sigma))
+#   mu <- rep(mu, length.out = len)
+#   sigma <- rep(sigma, length.out = len)
+#   out <- lapply(seq_len(len), function(i) {
+#     central_from_factorial(
+#       betabinom_factorial_moments(mu[i] / sigma[i], (1 - mu[i]) / sigma[i], n)
+#     )
+#   })
+#   list(mean = vapply(out, function(z) z$mean, numeric(1)),
+#        c2 = vapply(out, function(z) z$c2, numeric(1)),
+#        c3 = vapply(out, function(z) z$c3, numeric(1)),
+#        c4 = vapply(out, function(z) z$c4, numeric(1)))
+# }
+
+#' Moments of the Beta-Binomial in Closed Form
 #'
 #' @description
-#' Returns the first four falling factorial moments
-#' \deqn{E[Y^{(k)}] = n^{(k)} \prod_{j=0}^{k-1} \frac{a+j}{a+b+j},
-#'       \qquad k = 1, \ldots, 4,}
-#' with \eqn{x^{(k)} = x(x-1)\cdots(x-k+1)}. These are the quantities a
-#' beta-binomial has in closed form; the raw and central moments follow from
-#' them through [central_from_factorial()].
+#' Returns the mean, the variance, the skewness or the excess kurtosis of the
+#' beta-binomial with \eqn{n} trials, mean proportion \eqn{\mu} and
+#' dispersion \eqn{\sigma = 1/(\alpha + \beta)}, each in a closed form that
+#' forms no difference of large raw moments. With \eqn{g = \mu(1-\mu)},
+#' \deqn{E[Y] = n\mu,\qquad \mathrm{Var}(Y) = ng\,\frac{1 + n\sigma}{1 + \sigma},}
+#' \deqn{\gamma_1 = (1 - 2\mu)\,\frac{1 + 2n\sigma}{1 + 2\sigma}
+#'   \sqrt{\frac{1 + \sigma}{gn(1 + n\sigma)}},}
+#' \deqn{\gamma_2 = \frac{6n\sigma(1 + n\sigma)\,[(1 - 6g)(1 + \sigma) + g]
+#'   + (1 + \sigma)(1 - 6g - \sigma)}{gn(1 + 2\sigma)(1 + 3\sigma)(1 + n\sigma)}.}
+#' At \eqn{\sigma = 0} these are the binomial's, \eqn{\gamma_2} reducing to
+#' \eqn{(1 - 6g)/(gn)}. The excess kurtosis is written as one quotient, so that
+#' it is not formed as a kurtosis near 3 minus 3, which loses the digits of a
+#' value of order \eqn{1/n}.
 #'
-#' @section Notation:
-#' \eqn{a > 0} and \eqn{b > 0} are the two shapes of the mixing beta,
-#' \eqn{n} the number of trials, and \eqn{x^{(k)}} the falling factorial.
+#' @param mu The mean proportion, a numeric vector in \eqn{(0, 1)}.
+#' @param sigma The dispersion, a positive numeric vector.
+#' @param n The number of trials, a single positive whole number.
+#' @param what One of `"mean"`, `"variance"`, `"skewness"` or `"kurtosis"`.
 #'
-#' @param a The first shape of the mixing beta, a single positive number.
-#' @param b The second shape, a single positive number.
-#' @param n The number of trials, a single non-negative whole number. Factorial
-#'   moments of order above `n` are zero, the falling factorial \eqn{n^{(k)}}
-#'   vanishing there.
+#' @return A numeric vector of the recycled length of `mu` and `sigma`.
 #'
-#' @return An **unnamed** list of four numbers, the falling factorial moments of
-#'   order 1 to 4 in that order, reached by position.
-#'
-#' @seealso [central_from_factorial()], which converts these;
-#'   [betabinom_central()], the wrapper the moment methods call.
+#' @seealso [mean.BetaBinom1Distrib()], [variance.BetaBinom1Distrib()],
+#'   [skewness.BetaBinom1Distrib()] and [kurtosis.BetaBinom1Distrib()], and the
+#'   methods of [BetaBinom2Distrib], which call it.
 #'
 #' @examples
-#' # At a = b the mixing beta is symmetric, so the mean is half the trials.
-#' distributions7:::betabinom_factorial_moments(2, 2, 10)[[1]]
+#' # At a small dispersion the excess kurtosis tends to the binomial's.
+#' distributions7:::betabinom_moments(0.3, 1e-12, 1e6, "kurtosis")
+#' (1 - 6 * 0.21) / (0.21 * 1e6)
 #'
 #' @keywords internal
-betabinom_factorial_moments <- function(a, b, n) {
-  lapply(1:4, function(k) {
-    j <- seq_len(k) - 1L
-    nf <- prod(n - j)
-    r <- 1
-    for (i in j) r <- r * (a + i) / (a + b + i)
-    nf * r
-  })
+betabinom_moments <- function(mu, sigma, n, what) {
+  g <- mu * (1 - mu)
+  ns <- n * sigma
+  switch(what,
+    mean = n * mu + 0 * sigma,
+    variance = n * g * (1 + ns) / (1 + sigma),
+    skewness = (1 - 2 * mu) * (1 + 2 * ns) / (1 + 2 * sigma) *
+      sqrt((1 + sigma) / (g * n * (1 + ns))),
+    kurtosis = (6 * ns * (1 + ns) * ((1 - 6 * g) * (1 + sigma) + g) +
+                  (1 + sigma) * (1 - 6 * g - sigma)) /
+      (g * n * (1 + 2 * sigma) * (1 + 3 * sigma) * (1 + ns))
+  )
 }
 
-#' Central Moments From Falling Factorial Moments
+#' The Mean Proportion and Dispersion of a Beta in Its Shapes
 #'
 #' @description
-#' Converts the first four falling factorial moments into the mean and the
-#' second, third and fourth central moments. The raw moments come first,
-#' through the Stirling numbers of the second kind written out:
-#' \deqn{m_1 = f_1,\quad m_2 = f_2 + f_1,\quad m_3 = f_3 + 3f_2 + f_1,\quad
-#'       m_4 = f_4 + 6f_3 + 7f_2 + f_1,}
-#' and the central moments follow by the usual binomial expansion about
-#' \eqn{m_1}.
+#' Returns \eqn{\mu = \alpha/(\alpha + \beta)} as
+#' \eqn{1/(1 + \beta/\alpha)}, so that it is finite where the sum of the
+#' shapes overflows, and \eqn{\sigma = 1/(\alpha + \beta)}.
 #'
-#' @param f An unnamed list of four, the falling factorial moments of order 1
-#'   to 4 in that order, as [betabinom_factorial_moments()] returns. They are
-#'   read by position.
+#' @param a,b The two shapes, positive numeric vectors.
 #'
-#' @return A named list with `mean` and the central moments `c2`, `c3` and
-#'   `c4`, each a numeric vector the length of the inputs.
+#' @return A list with components `mu` and `sigma`.
 #'
-#' @seealso [betabinom_factorial_moments()] for the input;
-#'   [betabinom_central()], which chains the two.
-#'
-#' @examples
-#' f <- distributions7:::betabinom_factorial_moments(2, 2, 10)
-#' distributions7:::central_from_factorial(f)$mean
-#'
+#' @seealso [betabinom_moments()], which takes them.
 #' @keywords internal
-central_from_factorial <- function(f) {
-  m1 <- f[[1]]
-  m2 <- f[[2]] + f[[1]]
-  m3 <- f[[3]] + 3 * f[[2]] + f[[1]]
-  m4 <- f[[4]] + 6 * f[[3]] + 7 * f[[2]] + f[[1]]
-  list(mean = m1,
-       c2 = m2 - m1^2,
-       c3 = m3 - 3 * m1 * m2 + 2 * m1^3,
-       c4 = m4 - 4 * m1 * m3 + 6 * m1^2 * m2 - 3 * m1^4)
-}
-
-#' Mean and Central Moments of a Beta-Binomial
-#'
-#' @description
-#' The mean and the second, third and fourth central moments of a
-#' beta-binomial, one value per parameter setting. It maps the mean-dispersion
-#' parametrization onto the two shapes, \eqn{a = \mu/\sigma} and
-#' \eqn{b = (1-\mu)/\sigma}, then chains [betabinom_factorial_moments()] into
-#' [central_from_factorial()] once per setting and stacks the results. The four
-#' moment methods of the family share it.
-#'
-#' @section Notation:
-#' \eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
-#' dispersion and \eqn{n} the number of trials.
-#'
-#' @param mu The success probability, a numeric vector strictly inside
-#'   \eqn{(0,1)}.
-#' @param sigma The dispersion, a positive numeric vector. As it goes to zero
-#'   the mixing beta concentrates and the family tends to a binomial.
-#' @param n The number of trials, a non-negative whole number.
-#'
-#' @return A named list with `mean` and the central moments `c2`, `c3` and
-#'   `c4`, each a numeric vector as long as the longer of `mu` and `sigma`.
-#'
-#' @seealso [variance.BetaBinom1Distrib()], [skewness.BetaBinom1Distrib()] and
-#'   [kurtosis.BetaBinom1Distrib()] for the consumers.
-#'
-#' @examples
-#' # The mean is n mu, whatever the dispersion.
-#' distributions7:::betabinom_central(0.3, 0.5, 10)$mean
-#'
-#' @keywords internal
-betabinom_central <- function(mu, sigma, n) {
-  len <- max(length(mu), length(sigma))
-  mu <- rep(mu, length.out = len)
-  sigma <- rep(sigma, length.out = len)
-  out <- lapply(seq_len(len), function(i) {
-    central_from_factorial(
-      betabinom_factorial_moments(mu[i] / sigma[i], (1 - mu[i]) / sigma[i], n)
-    )
-  })
-  list(mean = vapply(out, function(z) z$mean, numeric(1)),
-       c2 = vapply(out, function(z) z$c2, numeric(1)),
-       c3 = vapply(out, function(z) z$c3, numeric(1)),
-       c4 = vapply(out, function(z) z$c4, numeric(1)))
+beta_mu_sigma <- function(a, b) {
+  list(mu = 1 / (1 + b / a), sigma = 1 / (a + b))
 }
 
 #' @title Mean of the Beta-Binomial Distribution
@@ -5206,7 +5413,7 @@ betabinom_central <- function(mu, sigma, n) {
 #' @keywords internal
 S7::method(mean, BetaBinom1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  betabinom_central(theta[[1]], theta[[2]], x@size)$mean
+  betabinom_moments(theta[[1]], theta[[2]], x@size, "mean")
 }
 
 #' @title Variance of the Beta-Binomial Distribution
@@ -5254,7 +5461,7 @@ S7::method(mean, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(variance, BetaBinom1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  betabinom_central(theta[[1]], theta[[2]], x@size)$c2
+  betabinom_moments(theta[[1]], theta[[2]], x@size, "variance")
 }
 
 #' @title Skewness of the Beta-Binomial Distribution
@@ -5303,8 +5510,7 @@ S7::method(variance, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(skewness, BetaBinom1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  m <- betabinom_central(theta[[1]], theta[[2]], x@size)
-  m$c3 / m$c2^1.5
+  betabinom_moments(theta[[1]], theta[[2]], x@size, "skewness")
 }
 
 #' @title Excess Kurtosis of the Beta-Binomial Distribution
@@ -5353,8 +5559,7 @@ S7::method(skewness, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(kurtosis, BetaBinom1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  m <- betabinom_central(theta[[1]], theta[[2]], x@size)
-  m$c4 / m$c2^2 - 3
+  betabinom_moments(theta[[1]], theta[[2]], x@size, "kurtosis")
 }
 
 # --- gaussian2, gaussian3, gamma1 ------------------------------------------
@@ -6017,9 +6222,8 @@ S7::method(mean, Beta2Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(variance, Beta2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  a <- theta[[1]]
-  b <- theta[[2]]
-  a * b / ((a + b)^2 * (a + b + 1))
+  ms <- beta_mu_sigma(theta[[1]], theta[[2]])
+  beta_shape_moments(ms$mu, 1 / ms$sigma, "variance")
 }
 
 #' @title Skewness of the Beta Distribution in Two Shapes
@@ -6059,9 +6263,8 @@ S7::method(variance, Beta2Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(skewness, Beta2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  a <- theta[[1]]
-  b <- theta[[2]]
-  2 * (b - a) * sqrt(a + b + 1) / ((a + b + 2) * sqrt(a * b))
+  ms <- beta_mu_sigma(theta[[1]], theta[[2]])
+  beta_shape_moments(ms$mu, theta[[1]] + theta[[2]], "skewness")
 }
 
 #' @title Excess Kurtosis of the Beta Distribution in Two Shapes
@@ -6103,10 +6306,8 @@ S7::method(skewness, Beta2Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(kurtosis, Beta2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  a <- theta[[1]]
-  b <- theta[[2]]
-  6 * ((a - b)^2 * (a + b + 1) - a * b * (a + b + 2)) /
-    (a * b * (a + b + 2) * (a + b + 3))
+  ms <- beta_mu_sigma(theta[[1]], theta[[2]])
+  beta_shape_moments(ms$mu, theta[[1]] + theta[[2]], "kurtosis")
 }
 
 #' @title Mean of the Beta-Binomial Distribution in Two Shapes
@@ -6144,8 +6345,8 @@ S7::method(kurtosis, Beta2Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(mean, BetaBinom2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  betabinom_central(theta[[1]] / (theta[[1]] + theta[[2]]),
-                    1 / (theta[[1]] + theta[[2]]), x@size)$mean
+  ms <- beta_mu_sigma(theta[[1]], theta[[2]])
+  betabinom_moments(ms$mu, ms$sigma, x@size, "mean")
 }
 
 #' @title Variance of the Beta-Binomial Distribution in Two Shapes
@@ -6191,8 +6392,8 @@ S7::method(mean, BetaBinom2Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(variance, BetaBinom2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  betabinom_central(theta[[1]] / (theta[[1]] + theta[[2]]),
-                    1 / (theta[[1]] + theta[[2]]), x@size)$c2
+  ms <- beta_mu_sigma(theta[[1]], theta[[2]])
+  betabinom_moments(ms$mu, ms$sigma, x@size, "variance")
 }
 
 #' @title Skewness of the Beta-Binomial Distribution in Two Shapes
@@ -6235,9 +6436,8 @@ S7::method(variance, BetaBinom2Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(skewness, BetaBinom2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  m <- betabinom_central(theta[[1]] / (theta[[1]] + theta[[2]]),
-                         1 / (theta[[1]] + theta[[2]]), x@size)
-  m$c3 / m$c2^1.5
+  ms <- beta_mu_sigma(theta[[1]], theta[[2]])
+  betabinom_moments(ms$mu, ms$sigma, x@size, "skewness")
 }
 
 #' @title Excess Kurtosis of the Beta-Binomial Distribution in Two Shapes
@@ -6282,9 +6482,8 @@ S7::method(skewness, BetaBinom2Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(kurtosis, BetaBinom2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  m <- betabinom_central(theta[[1]] / (theta[[1]] + theta[[2]]),
-                         1 / (theta[[1]] + theta[[2]]), x@size)
-  m$c4 / m$c2^2 - 3
+  ms <- beta_mu_sigma(theta[[1]], theta[[2]])
+  betabinom_moments(ms$mu, ms$sigma, x@size, "kurtosis")
 }
 
 

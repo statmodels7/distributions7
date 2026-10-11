@@ -94,27 +94,31 @@ NegBin1Distrib <- S7::new_class("NegBin1Distrib", parent = discrete_distrib)
 #' @keywords internal
 nb1_size <- function(mu, theta) mu / theta
 
-#' The Success Probability Behind an NB1 Dispersion
-#'
-#' @description
-#' Returns \eqn{1/(1+\theta)}, the success probability the base R negative
-#' binomial functions take as `prob`. It is the value that makes the
-#' variance-to-mean ratio \eqn{1+\theta} at every mean, so the dispersion
-#' relative to a Poisson does not change with the level of the counts.
-#'
-#' Nothing is validated; a `theta` at or below \eqn{-1} gives a value outside
-#' \eqn{(0, 1)} and the caller sees the failure at the base R function.
-#'
-#' @param theta The dispersion, a positive numeric vector.
-#'
-#' @return A numeric vector in \eqn{(0, 1)}, of the length of `theta`, falling
-#'   towards 0 as the dispersion grows and to 1 as it goes to zero.
-#'
-#' @seealso [negbin1_distrib()] for the family, [nb1_size()] for the size that
-#'   goes with it, and [distrib_pdf.NegBin1Distrib()] for the mass they feed.
-#'
-#' @keywords internal
-nb1_prob <- function(theta) 1 / (1 + theta)
+# nb1_prob() lost its callers on 2026-10-11 (T3): the cdf, the quantile and
+# the generator now call the base R functions in the mean parametrization,
+# where 1/(1 + theta) is never formed (it rounds to 1 below theta ~ 1e-16).
+# Kept commented out rather than deleted.
+# The Success Probability Behind an NB1 Dispersion
+#
+# @description
+# Returns \eqn{1/(1+\theta)}, the success probability the base R negative
+# binomial functions take as `prob`. It is the value that makes the
+# variance-to-mean ratio \eqn{1+\theta} at every mean, so the dispersion
+# relative to a Poisson does not change with the level of the counts.
+#
+# Nothing is validated; a `theta` at or below \eqn{-1} gives a value outside
+# \eqn{(0, 1)} and the caller sees the failure at the base R function.
+#
+# @param theta The dispersion, a positive numeric vector.
+#
+# @return A numeric vector in \eqn{(0, 1)}, of the length of `theta`, falling
+# towards 0 as the dispersion grows and to 1 as it goes to zero.
+#
+# @seealso [negbin1_distrib()] for the family, [nb1_size()] for the size that
+# goes with it, and [distrib_pdf.NegBin1Distrib()] for the mass they feed.
+#
+# @keywords internal
+# nb1_prob <- function(theta) 1 / (1 + theta)
 
 # --- S7 METHODS IMPLEMENTATION ---
 
@@ -227,7 +231,7 @@ S7::method(distrib_cdf, NegBin1Distrib) <- function(distrib, q, theta,
                                                      lower.tail = TRUE,
                                                      log.p = FALSE, ...) {
   stats::pnbinom(q, size = nb1_size(theta[[1]], theta[[2]]),
-                 prob = nb1_prob(theta[[2]]),
+                 mu = theta[[1]],
                  lower.tail = lower.tail, log.p = log.p)
 }
 
@@ -285,7 +289,7 @@ S7::method(distrib_quantile, NegBin1Distrib) <- function(distrib, p, theta,
                                                           lower.tail = TRUE,
                                                           log.p = FALSE, ...) {
   stats::qnbinom(p, size = nb1_size(theta[[1]], theta[[2]]),
-                 prob = nb1_prob(theta[[2]]),
+                 mu = theta[[1]],
                  lower.tail = lower.tail, log.p = log.p)
 }
 
@@ -328,7 +332,7 @@ S7::method(distrib_quantile, NegBin1Distrib) <- function(distrib, p, theta,
 #' c(mu = mean(z), theta = var(z) / mean(z) - 1)
 S7::method(distrib_rng, NegBin1Distrib) <- function(distrib, n, theta, ...) {
   stats::rnbinom(n, size = nb1_size(theta[[1]], theta[[2]]),
-                 prob = nb1_prob(theta[[2]]))
+                 mu = theta[[1]])
 }
 
 #' @title NB1 Score

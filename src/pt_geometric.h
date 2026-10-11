@@ -6,6 +6,8 @@
 // registry reads, called by the vector kernels (geometric.cpp,
 // dexpected_kernels.cpp) and by the registry (d7_ccallable.cpp).
 
+#include "pt_discrete_pow.h"
+
 namespace d7 {
 
 inline double geometric_score_mu(double y, double m) {
@@ -13,8 +15,7 @@ inline double geometric_score_mu(double y, double m) {
 }
 
 inline double geometric_hess_mu_mu(double y, double m) {
-    double om = 1.0 + m;
-    return -(y / (m * m) - (y + 1.0) / (om * om));
+    return -count_bracket(y, m, 1.0, 2);
 }
 
 inline double geometric_expected_mu_mu(double m) {

@@ -8,6 +8,8 @@
 // by the vector kernels in poisson.cpp and by the registry in
 // d7_ccallable.cpp.
 
+#include "pt_discrete_pow.h"
+
 namespace d7 {
 
 inline double poisson_score_mu(double y, double m) {
@@ -15,8 +17,7 @@ inline double poisson_score_mu(double y, double m) {
 }
 
 inline double poisson_hess_mu_mu(double y, double m) {
-    double m2 = m * m;
-    return -y / m2;
+    return -coef_over_pow(y, m, 2);
 }
 
 inline double poisson_expected_mu_mu(double m) {

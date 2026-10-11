@@ -46,6 +46,6 @@ mean(d, list(mu = 2, sigma = 1))
 }
 \seealso{
 \code{\link[=variance.Weibull1Distrib]{variance.Weibull1Distrib()}}, \code{\link[=skewness.Weibull1Distrib]{skewness.Weibull1Distrib()}},
-\code{\link[=weibull_gamma_factors]{weibull_gamma_factors()}} for the shared factors, \code{\link[=weibull1_distrib]{weibull1_distrib()}}.
+\code{\link[=weibull_moment_terms]{weibull_moment_terms()}} for the terms in the shape, \code{\link[=weibull1_distrib]{weibull1_distrib()}}.
 }
 \keyword{internal}

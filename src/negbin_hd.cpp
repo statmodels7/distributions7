@@ -155,9 +155,8 @@ List negbin_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector theta,
         double th = th_s ? theta[0] : theta[i];
         double yi = y[i];
         double s = th + m, s2 = s * s, s3 = s2 * s;
-        double m2 = m * m, m3 = m2 * m;
 
-        mu_mu_mu[i] = -2.0 * (yi + th) / s3 + 2.0 * yi / m3;
+        mu_mu_mu[i] = 2.0 * d7::count_bracket(yi, m, th, 3);
         mu_mu_theta[i] = 1.0 / s2 - 2.0 * (yi + th) / s3;
         mu_theta_theta[i] = -2.0 * (yi - m) / s3;
         theta_theta_theta[i] = nb_d3_theta(yi, m, th);
@@ -195,7 +194,7 @@ List negbin_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector
         if (!both_scalar) {
             ttt = nb_E_dtheta(m, th, 2);
         }
-        mu_mu_mu[i] = -2.0 / s2 + 2.0 / (m * m);
+        mu_mu_mu[i] = 2.0 * d7::count_bracket_expected(m, th, 2);
         mu_mu_theta[i] = -1.0 / s2;
         mu_theta_theta[i] = 0.0;
         theta_theta_theta[i] = ttt;
@@ -222,9 +221,8 @@ List negbin_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector theta,
         double th = th_s ? theta[0] : theta[i];
         double yi = y[i];
         double s = th + m, s2 = s * s, s3 = s2 * s, s4 = s2 * s2;
-        double m2 = m * m, m4 = m2 * m2;
 
-        mu_mu_mu_mu[i] = 6.0 * (yi + th) / s4 - 6.0 * yi / m4;
+        mu_mu_mu_mu[i] = -6.0 * d7::count_bracket(yi, m, th, 4);
         mu_mu_mu_theta[i] = -2.0 / s3 + 6.0 * (yi + th) / s4;
         mu_mu_theta_theta[i] = -4.0 / s3 + 6.0 * (yi + th) / s4;
         mu_theta_theta_theta[i] = 6.0 * (yi - m) / s4;
@@ -263,7 +261,7 @@ List negbin_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector
         if (!both_scalar) {
             tttt = nb_E_dtheta(m, th, 3);
         }
-        mu_mu_mu_mu[i] = 6.0 / s3 - 6.0 / (m * m * m);
+        mu_mu_mu_mu[i] = -6.0 * d7::count_bracket_expected(m, th, 3);
         mu_mu_mu_theta[i] = 4.0 / s3;
         mu_mu_theta_theta[i] = 2.0 / s3;
         mu_theta_theta_theta[i] = 0.0;
