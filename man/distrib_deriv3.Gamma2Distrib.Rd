@@ -27,8 +27,8 @@ and the expected values.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma2},
@@ -38,17 +38,25 @@ distinct multi-indices of order three in two parameters.
 }
 \description{
 Computes the four distinct third derivatives of the gamma log-density with
-respect to \eqn{\mu} and \eqn{\sigma^2}, in closed form. They come from
-differentiating the log-density in the shape \eqn{\alpha = \mu^2/\sigma^2}
-and the rate \eqn{\lambda = \mu/\sigma^2} and carrying the result across by
-the chain rule, so each polygamma function of \eqn{\alpha} is evaluated
-once. Every component of this order carries \eqn{\psi_2}, the second
-derivative of the digamma function.
+respect to \eqn{\mu} and \eqn{\sigma^2}, in closed form. With
+\eqn{\alpha = \mu^2/\sigma^2} and \eqn{z = y/\mu} the log-density is
+\eqn{\ell = G(\alpha) + \alpha e(\mu) - \log y}, with
+\eqn{G(\alpha) = \alpha\log\alpha - \log\Gamma(\alpha) - \alpha} and
+\eqn{e(\mu) = \log z - (z - 1)}. The derivatives of
+\eqn{G(\alpha(\mu, \sigma^2))} come from the formula of Faa di Bruno over
+the set partitions of the differentiation indices, and those of
+\eqn{\alpha e(\mu)} from the product rule. The derivatives of \eqn{G} are
+\eqn{\log\alpha - \psi(\alpha)}, \eqn{1/\alpha - \psi_1(\alpha)},
+\eqn{-1/\alpha^2 - \psi_2(\alpha)} and \eqn{2/\alpha^3 - \psi_3(\alpha)},
+each evaluated from its asymptotic series at a large shape, and \eqn{e}
+from a series near \eqn{z = 1}, so the components keep their digits when
+\eqn{\alpha} is large. Every component of this order carries
+\eqn{\psi_2}, the second derivative of the digamma function.
 
 With \code{expected = TRUE} the expectations are returned, obtained by replacing
 \eqn{Y} with \eqn{\mu} and \eqn{\log Y} with \eqn{\psi(\alpha) -
-\log\lambda}. Both routes are closed form, so no quadrature is run and
-\code{approx} and \code{nsim} are ignored.
+\log\lambda}. Both routes are closed form, so the method uses no quadrature
+and ignores \code{approx} and \code{nsim}.
 }
 \section{Notation}{
 
@@ -79,6 +87,6 @@ all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-4)
 \seealso{
 \code{\link[=distrib_hessian.Gamma2Distrib]{distrib_hessian.Gamma2Distrib()}} for the order below and
 \code{\link[=distrib_deriv4.Gamma2Distrib]{distrib_deriv4.Gamma2Distrib()}} for the order above;
-\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic and for the numerical route a family
-without a closed form takes.
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic and for the numerical route that a
+family without a closed form uses.
 }

@@ -27,8 +27,8 @@ and the expected values.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_phi},
@@ -39,14 +39,16 @@ distinct multi-indices of order three in two parameters.
 \description{
 Computes the four distinct third derivatives of the inverse Gaussian
 log-density with respect to \eqn{\mu} and \eqn{\phi}, in closed form. The
-log-density is a linear combination of \eqn{y}, \eqn{1/y} and \eqn{\log y}
-with coefficients rational in the parameters, so every derivative is a
-rational function of \eqn{(\mu, \phi)} times one of those three statistics.
+log-density is
+\eqn{-\tfrac12\log(2\pi\phi) - \tfrac32\log y - y/(2\phi\mu^2) +
+1/(\phi\mu) - 1/(2\phi y)}, so every derivative in the parameters is a
+rational function of \eqn{(\mu, \phi)} multiplied by \eqn{y}, by
+\eqn{1/y} or by 1.
 
 With \code{expected = TRUE} the expectations are returned, obtained by replacing
 \eqn{Y} with \eqn{\mu} and \eqn{1/Y} with \eqn{1/\mu + \phi}. Both routes
-are closed form, so no quadrature is run and \code{approx} and \code{nsim} are
-ignored.
+are closed form, so the method uses no quadrature and ignores \code{approx} and
+\code{nsim}.
 }
 \section{Notation}{
 
@@ -75,6 +77,6 @@ all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-4)
 \seealso{
 \code{\link[=distrib_hessian.InvGauss1Distrib]{distrib_hessian.InvGauss1Distrib()}} for the order below and
 \code{\link[=distrib_deriv4.InvGauss1Distrib]{distrib_deriv4.InvGauss1Distrib()}} for the order above;
-\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic and for the numerical route a family
-without a closed form takes.
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic and for the numerical route that a
+family without a closed form uses.
 }

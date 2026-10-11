@@ -24,8 +24,8 @@ quadrature, Monte Carlo and outer-product routes.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{mu_tau} and
@@ -76,8 +76,9 @@ distrib_expected_hessian(gaussian1_distrib(), 0,
                          list(mu = 1, sigma = 2))$sigma_sigma
 }
 \seealso{
-\code{\link[=distrib_hessian.Gaussian3Distrib]{distrib_hessian.Gaussian3Distrib()}} for the observed quantity this
-is the expectation of, \code{\link[=distrib_expected_hessian.Gaussian1Distrib]{distrib_expected_hessian.Gaussian1Distrib()}} for
+\code{\link[=distrib_hessian.Gaussian3Distrib]{distrib_hessian.Gaussian3Distrib()}} for the observed Hessian, of
+which this is the expectation,
+\code{\link[=distrib_expected_hessian.Gaussian1Distrib]{distrib_expected_hessian.Gaussian1Distrib()}} for
 the same information in the standard deviation, \code{\link[=fisher_scoring]{fisher_scoring()}}, which
 inverts it at each step, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

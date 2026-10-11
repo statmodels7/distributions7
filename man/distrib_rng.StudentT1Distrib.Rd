@@ -22,7 +22,7 @@ A numeric vector of \code{n} draws.
 Draws \code{n} independent location-scale Student t variates as
 \eqn{\mu + \sigma T} with \eqn{T} from \code{\link[stats:TDist]{stats::rt()}}, so the draws come from
 R's own generator and depend on \code{.Random.seed} in the usual way. The
-generalized ratio-of-uniforms fallback the base class supplies is bypassed.
+inverse-transform fallback of the base class is not used.
 }
 \examples{
 d <- student_t1_distrib()

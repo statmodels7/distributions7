@@ -7,13 +7,12 @@
 \item{distrib}{A \code{Gaussian3Distrib} object, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
 \item{y}{A numeric vector of observations. Every real value is in the
-support, so no value is rejected.}
+support, so every value of \code{y} is valid.}
 
 \item{theta}{A named list with components \code{mu} and \code{tau}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is
-recycled. \code{tau} must be strictly positive; a zero gives \code{sd = Inf} and a
-density of 0, and a negative value gives \code{NaN} with a warning from
-\code{\link[stats:Normal]{stats::dnorm()}}.}
+recycled. \code{tau} must be strictly positive; the generic signals an error
+for a zero or negative value before the method is called.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
 Defaults to \code{FALSE}.}

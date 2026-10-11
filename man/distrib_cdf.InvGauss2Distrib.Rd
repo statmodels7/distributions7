@@ -37,8 +37,9 @@ the standard normal distribution function \eqn{\Phi}:
 by calling \code{\link[statmod:invgauss]{statmod::pinvgauss()}} at \code{mean = mu} and
 \code{dispersion = 1/lambda}. Both tails are available exactly, and
 \code{log.p = TRUE} returns a logarithm that stays finite where the probability
-itself underflows. The exponential factor overflows at ordinary settings, so
-that function evaluates the expression on the log scale.
+itself underflows. The factor \eqn{e^{2\lambda/\mu}} overflows in double
+precision when \eqn{2\lambda/\mu} exceeds about 709, so that function
+evaluates the expression on the log scale.
 }
 \examples{
 d <- invgauss2_distrib()

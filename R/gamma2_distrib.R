@@ -14,8 +14,9 @@ NULL
 #'
 #' Build one with [gamma2_distrib()], which supplies the two link functions and
 #' fills the properties in. This page documents the raw S7 constructor, which
-#' takes the parent's properties and validates none of the relationships
-#' between them.
+#' takes the parent's properties; the validator of `distrib` checks that they
+#' are consistent (the parameter count, a bound and a link for every
+#' parameter, ordered support bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -35,20 +36,38 @@ NULL
 #'   the closed forms this class supplies.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.Gamma2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Gamma2Distrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.Gamma2Distrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.Gamma2Distrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Gamma2Distrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.Gamma2Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.Gamma2Distrib] and
+#'   [`distrib_rng()`][distrib_rng.Gamma2Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.Gamma2Distrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.Gamma2Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.Gamma2Distrib],
-#'   [`distrib_pdf()`][distrib_pdf.Gamma2Distrib],
-#'   [`distrib_quantile()`][distrib_quantile.Gamma2Distrib],
-#'   [`distrib_rng()`][distrib_rng.Gamma2Distrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Gamma2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Gamma2Distrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.Gamma2Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.Gamma2Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.Gamma2Distrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.Gamma2Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.Gamma2Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.Gamma2Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.Gamma2Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.Gamma2Distrib];
+#' - the derivatives of the distribution function: [distrib_grad_cdf()],
+#'   [distrib_hess_cdf()],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.Gamma2Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.Gamma2Distrib];
+#' - the moments: [`mean()`][mean.Gamma2Distrib],
+#'   [`variance()`][variance.Gamma2Distrib],
+#'   [`skewness()`][skewness.Gamma2Distrib] and
+#'   [`kurtosis()`][kurtosis.Gamma2Distrib].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- gamma2_distrib()
@@ -79,9 +98,9 @@ Gamma2Distrib <- S7::new_class("Gamma2Distrib", parent = continuous_distrib)
 #' itself underflows.
 #'
 #' The density is unbounded at the origin when \eqn{\sigma^2 > \mu^2}, where
-#' the shape falls below one; it is flat there when \eqn{\sigma^2 = \mu^2},
-#' the exponential case, and vanishes at the origin when
-#' \eqn{\sigma^2 < \mu^2}.
+#' the shape falls below one. When \eqn{\sigma^2 = \mu^2}, the exponential
+#' case, it equals the rate \eqn{1/\mu} there, and it vanishes at the origin
+#' when \eqn{\sigma^2 < \mu^2}.
 #'
 #' @param distrib A `Gamma2Distrib` object, from [gamma2_distrib()].
 #' @param y A numeric vector of observations. The support is \eqn{(0, \infty)};
@@ -161,9 +180,9 @@ S7::method(distrib_pdf, Gamma2Distrib) <- function(distrib, y, theta, log = FALS
 #'
 #' @seealso [distrib_quantile.Gamma2Distrib()] for the inverse,
 #'   [distrib_pdf.Gamma2Distrib()] for the density, [distrib_grad_cdf()] for
-#'   the derivatives of this function in the parameters, which the gamma takes
-#'   by finite difference because the derivative of an incomplete gamma in its
-#'   shape is hypergeometric, and [distrib_cdf()] for the generic.
+#'   the derivatives of this function in the parameters, which the gamma
+#'   computes by a compiled quadrature because the derivative of an incomplete
+#'   gamma in its shape is hypergeometric, and [distrib_cdf()] for the generic.
 #'
 #' @examples
 #' d <- gamma2_distrib()
@@ -176,7 +195,7 @@ S7::method(distrib_pdf, Gamma2Distrib) <- function(distrib, y, theta, log = FALS
 #' # The two tails sum to one.
 #' distrib_cdf(d, 5, th) + distrib_cdf(d, 5, th, lower.tail = FALSE)
 #'
-#' # The gamma is right skewed, so less than half the mass lies below the mean.
+#' # The gamma is right skewed, so more than half the mass lies below the mean.
 #' distrib_cdf(d, 3, th)
 #'
 #' # Far in the upper tail the probability underflows and its log does not.
@@ -231,7 +250,7 @@ S7::method(distrib_cdf, Gamma2Distrib) <- function(distrib, q, theta, lower.tail
 #' # A central 95 percent interval, visibly asymmetric about the mean of 3.
 #' distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #'
-#' # Exact inverse: the round trip returns the probabilities it was given.
+#' # Exact inverse: the round trip returns the probabilities that it was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
@@ -253,8 +272,7 @@ S7::method(distrib_quantile, Gamma2Distrib) <- function(distrib, p, theta, lower
 #' Draws `n` independent gamma variates by calling [stats::rgamma()] at shape
 #' \eqn{\alpha = \mu^2/\sigma^2} and rate \eqn{\lambda = \mu/\sigma^2}, so the
 #' draws come from R's own gamma generator and depend on `.Random.seed` in the
-#' usual way. The ratio-of-uniforms fallback the base class supplies is
-#' bypassed.
+#' usual way. The inverse-transform fallback of the base class is not used.
 #'
 #' @param distrib A `Gamma2Distrib` object, from [gamma2_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -264,7 +282,8 @@ S7::method(distrib_quantile, Gamma2Distrib) <- function(distrib, p, theta, lower
 #'   must be strictly positive.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of `n` strictly positive draws.
+#' @return A numeric vector of `n` non-negative draws. At a very small shape
+#'   \eqn{\mu^2/\sigma^2} a draw can underflow to exactly 0.
 #'
 #' @seealso [distrib_quantile.Gamma2Distrib()] for the inverse-transform route,
 #'   [fit_distrib()] to estimate the parameters back from a sample, and
@@ -305,10 +324,15 @@ S7::method(distrib_rng, Gamma2Distrib) <- function(distrib, n, theta, ...) {
 #'         + \mu(\log\lambda + \log y) - y\right\}}{(\sigma^2)^2},}
 #' with \eqn{\psi} the digamma function. Both components carry the digamma,
 #' because both parameters move the shape; in [gamma1_distrib()], where the
-#' second parameter is a dispersion, only the second component does.
+#' second parameter is a dispersion, only the second component does. With
+#' \eqn{z = y/\mu} they equal
+#' \eqn{\{2\mu(g + e) + y - \mu\}/\sigma^2} and \eqn{-\alpha(g + e)/\sigma^2},
+#' where \eqn{g = \log\alpha - \psi(\alpha)} and \eqn{e = \log z - (z - 1)},
+#' and the kernel computes them in that form, each of \eqn{g} and \eqn{e}
+#' without cancellation.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries before returning. This method always returns the parameter
+#' With `scale = "link"` the generic applies the chain rule for the links of the
+#' family before returning. This method always returns the parameter
 #' scale.
 #'
 #' @param distrib A `Gamma2Distrib` object, from [gamma2_distrib()].
@@ -320,8 +344,8 @@ S7::method(distrib_rng, Gamma2Distrib) <- function(distrib, n, theta, ...) {
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma2`, each of
 #'   length `max(length(y), length(mu), length(sigma2))`.
@@ -376,6 +400,9 @@ S7::method(distrib_gradient, Gamma2Distrib) <- function(distrib, y, theta, scale
 #' not positive definite everywhere. Its expectation is; see
 #' [distrib_expected_hessian.Gamma2Distrib()].
 #'
+#' The kernel evaluates them through the decomposition described on
+#' [distrib_deriv3.Gamma2Distrib()], which keeps the digits at a large shape.
+#'
 #' @param distrib A `Gamma2Distrib` object, from [gamma2_distrib()].
 #' @param y A numeric vector of strictly positive observations.
 #' @param theta A named list with components `mu` and `sigma2`, each a numeric
@@ -385,8 +412,8 @@ S7::method(distrib_gradient, Gamma2Distrib) <- function(distrib, y, theta, scale
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma2_sigma2` and
 #'   `mu_sigma2`, in that order, each of length
@@ -446,8 +473,11 @@ S7::method(distrib_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale 
 #' orthogonal in this parametrization; their maximum likelihood estimates are
 #' asymptotically correlated. [gamma1_distrib()] carries the same law with a
 #' dispersion in place of the variance, and there the mixed entry is exactly
-#' zero. The matrix is negative definite throughout, so the information it
-#' negates is positive definite.
+#' zero. The matrix is negative definite throughout, so the information is
+#' positive definite.
+#'
+#' The kernel evaluates them through the decomposition described on
+#' [distrib_deriv3.Gamma2Distrib()], which keeps the digits at a large shape.
 #'
 #' Because the values do not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -465,8 +495,8 @@ S7::method(distrib_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale 
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma2_sigma2` and
 #'   `mu_sigma2`, in that order, each of length
@@ -524,17 +554,25 @@ S7::method(distrib_expected_hessian, Gamma2Distrib) <- function(distrib, y, thet
 #' @name distrib_deriv3.Gamma2Distrib
 #' @description
 #' Computes the four distinct third derivatives of the gamma log-density with
-#' respect to \eqn{\mu} and \eqn{\sigma^2}, in closed form. They come from
-#' differentiating the log-density in the shape \eqn{\alpha = \mu^2/\sigma^2}
-#' and the rate \eqn{\lambda = \mu/\sigma^2} and carrying the result across by
-#' the chain rule, so each polygamma function of \eqn{\alpha} is evaluated
-#' once. Every component of this order carries \eqn{\psi_2}, the second
-#' derivative of the digamma function.
+#' respect to \eqn{\mu} and \eqn{\sigma^2}, in closed form. With
+#' \eqn{\alpha = \mu^2/\sigma^2} and \eqn{z = y/\mu} the log-density is
+#' \eqn{\ell = G(\alpha) + \alpha e(\mu) - \log y}, with
+#' \eqn{G(\alpha) = \alpha\log\alpha - \log\Gamma(\alpha) - \alpha} and
+#' \eqn{e(\mu) = \log z - (z - 1)}. The derivatives of
+#' \eqn{G(\alpha(\mu, \sigma^2))} come from the formula of Faa di Bruno over
+#' the set partitions of the differentiation indices, and those of
+#' \eqn{\alpha e(\mu)} from the product rule. The derivatives of \eqn{G} are
+#' \eqn{\log\alpha - \psi(\alpha)}, \eqn{1/\alpha - \psi_1(\alpha)},
+#' \eqn{-1/\alpha^2 - \psi_2(\alpha)} and \eqn{2/\alpha^3 - \psi_3(\alpha)},
+#' each evaluated from its asymptotic series at a large shape, and \eqn{e}
+#' from a series near \eqn{z = 1}, so the components keep their digits when
+#' \eqn{\alpha} is large. Every component of this order carries
+#' \eqn{\psi_2}, the second derivative of the digamma function.
 #'
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
 #' \eqn{Y} with \eqn{\mu} and \eqn{\log Y} with \eqn{\psi(\alpha) -
-#' \log\lambda}. Both routes are closed form, so no quadrature is run and
-#' `approx` and `nsim` are ignored.
+#' \log\lambda}. Both routes are closed form, so the method uses no quadrature
+#' and ignores `approx` and `nsim`.
 #'
 #' @param distrib A `Gamma2Distrib` object, from [gamma2_distrib()].
 #' @param y A numeric vector of strictly positive observations. With
@@ -551,8 +589,8 @@ S7::method(distrib_expected_hessian, Gamma2Distrib) <- function(distrib, y, thet
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_sigma2`,
 #'   `mu_sigma2_sigma2` and `sigma2_sigma2_sigma2`, each of length
@@ -566,8 +604,8 @@ S7::method(distrib_expected_hessian, Gamma2Distrib) <- function(distrib, y, thet
 #'
 #' @seealso [distrib_hessian.Gamma2Distrib()] for the order below and
 #'   [distrib_deriv4.Gamma2Distrib()] for the order above;
-#'   [distrib_deriv3()] for the generic and for the numerical route a family
-#'   without a closed form takes.
+#'   [distrib_deriv3()] for the generic and for the numerical route that a
+#'   family without a closed form uses.
 #'
 #' @examples
 #' d <- gamma2_distrib()
@@ -597,10 +635,10 @@ S7::method(distrib_deriv3, Gamma2Distrib) <- function(distrib, y, theta, expecte
 #' @name distrib_deriv4.Gamma2Distrib
 #' @description
 #' Computes the five distinct fourth derivatives of the gamma log-density with
-#' respect to \eqn{\mu} and \eqn{\sigma^2}, in closed form, by the same chain
-#' rule from the shape \eqn{\alpha = \mu^2/\sigma^2} and the rate
-#' \eqn{\lambda = \mu/\sigma^2} that the lower orders use. Every component
-#' carries \eqn{\psi_3}, the third derivative of the digamma function.
+#' respect to \eqn{\mu} and \eqn{\sigma^2}, in closed form, by the
+#' decomposition described on [distrib_deriv3.Gamma2Distrib()]. Every
+#' component carries \eqn{\psi_3}, the third derivative of the digamma
+#' function.
 #'
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
 #' \eqn{Y} with \eqn{\mu} and \eqn{\log Y} with \eqn{\psi(\alpha) -
@@ -622,8 +660,8 @@ S7::method(distrib_deriv3, Gamma2Distrib) <- function(distrib, y, theta, expecte
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
 #'   `mu_mu_mu_sigma2`, `mu_mu_sigma2_sigma2`, `mu_sigma2_sigma2_sigma2` and
@@ -674,7 +712,6 @@ S7::method(distrib_deriv4, Gamma2Distrib) <- function(distrib, y, theta, expecte
 #' \eqn{-1/\mu} of an exponential; when \eqn{\sigma^2 > \mu^2} the density has
 #' no interior mode and the derivative is negative throughout.
 #'
-#' Quantile residuals and the mixed derivatives of [distrib_cross_y()] read it.
 #'
 #' @param distrib A `Gamma2Distrib` object, from [gamma2_distrib()].
 #' @param y A numeric vector of strictly positive observations. At `y = 0` the
@@ -713,7 +750,7 @@ S7::method(distrib_deriv4, Gamma2Distrib) <- function(distrib, y, theta, expecte
 #'   distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
 S7::method(distrib_grad_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
   mu <- theta[[1]]; s2 <- theta[[2]]
-  (mu^2 / s2 - 1) / y - mu / s2
+  dy_log(mu^2 / s2 - 1, y, 1L) - mu / s2
 }
 
 #' @title Gamma Second Derivative in the Response, Mean and Variance
@@ -760,7 +797,7 @@ S7::method(distrib_grad_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
 #'        numeric(1))
 S7::method(distrib_hess_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
   mu <- theta[[1]]; s2 <- theta[[2]]
-  -(mu^2 / s2 - 1) / y^2
+  dy_log(mu^2 / s2 - 1, y, 2L)
 }
 
 # --- CONSTRUCTOR WRAPPER ---
@@ -772,11 +809,14 @@ S7::method(distrib_hess_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
 #' \eqn{\mu > 0} and its variance \eqn{\sigma^2 > 0}, so that the shape is
 #' \eqn{\alpha = \mu^2/\sigma^2} and the rate \eqn{\lambda = \mu/\sigma^2}. The
 #' returned object carries closed-form derivatives of the log-density to fourth
-#' order, in the parameters and in the response, and closed-form moments, so
-#' every generic of the toolkit answers without a numerical fallback.
+#' order, in the parameters and in the response, and closed-form moments. The
+#' fifth order and the mixed derivatives of order three and four in the
+#' response and the parameters come from the numerical fallbacks of the base
+#' class.
 #'
 #' The two arguments choose the links that carry each parameter to the
-#' unconstrained scale an optimizer works on. Both default to the logarithm,
+#' unconstrained scale on which an optimizer works. Both default to the
+#' logarithm,
 #' both parameters being positive.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean
@@ -830,16 +870,16 @@ S7::method(distrib_hess_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
 #' orthogonal here, so their estimates are asymptotically correlated and a
 #' mean equation fitted with the variance held at a wrong value is biased. In
 #' [gamma1_distrib()], where the second parameter is the dispersion
-#' \eqn{\phi = \sigma^2/\mu^2}, the same entry is exactly zero. That is the
-#' reason a generalized linear model uses the dispersion.
+#' \eqn{\phi = \sigma^2/\mu^2}, the same entry is exactly zero.
 #'
 #' Third and fourth orders are closed form as well, observed and expected, in
 #' [distrib_deriv3.Gamma2Distrib()] and [distrib_deriv4.Gamma2Distrib()], as
 #' are the derivatives in the response, [distrib_grad_y.Gamma2Distrib()] and
 #' [distrib_hess_y.Gamma2Distrib()]. The derivatives of the *distribution*
 #' function in the parameters have no elementary form, the derivative of an
-#' incomplete gamma in its shape being hypergeometric, and are taken by finite
-#' difference on the analytic cdf.
+#' incomplete gamma in its shape being hypergeometric, and are computed by a
+#' compiled quadrature of the density times the derivatives of the
+#' log-density.
 #'
 #' # Estimation
 #'
@@ -867,7 +907,8 @@ S7::method(distrib_hess_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
 #' \eqn{\sigma^2 = \mu^2}; [invgauss2_distrib()] and [lognormal2_distrib()] for
 #' other positive families written in the mean and the variance;
 #' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery this one passes;
+#' family of your own against the same battery of checks that this family
+#' passes;
 #' [Gamma2Distrib] for the class.
 #'
 #' @references

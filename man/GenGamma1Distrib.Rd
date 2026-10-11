@@ -51,38 +51,65 @@ scale \eqn{a > 0} and two shapes \eqn{d > 0} and \eqn{p > 0}, with density
 It is the flexible family for a positive response, and it nests four others
 exactly: the gamma at \eqn{p = 1}, the Weibull at \eqn{d = p}, the
 exponential at \eqn{d = p = 1} and the half-normal at
-\eqn{a = \sqrt2, d = 1, p = 2}. Choosing between them becomes something to
-estimate.
+\eqn{a = \sqrt2, d = 1, p = 2}. The choice among these special cases can
+therefore be made by estimating \eqn{d} and \eqn{p}.
 
 Build one with \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}, which supplies the three link
-functions. This page documents the raw S7 constructor, which validates none
-of the relationships between its properties.
+functions. This page documents the raw S7 constructor; the validator of
+\code{distrib} checks that
+the properties are consistent (the parameter count, a bound and a link
+for every parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered in this file, the last three compiled:
-\code{\link[=distrib_pdf.GenGamma1Distrib]{distrib_pdf()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.GenGamma1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.GenGamma1Distrib]{distrib_cdf()}},
-\code{\link[=distrib_quantile.GenGamma1Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.GenGamma1Distrib]{distrib_rng()}},
+\code{\link[=distrib_quantile.GenGamma1Distrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.GenGamma1Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.GenGamma1Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.GenGamma1Distrib]{distrib_hessian()}},
-\code{\link[=distrib_expected_hessian.GenGamma1Distrib]{distrib_expected_hessian()}}.
-
-Registered elsewhere: the orders three to five and the derivatives in the
-response, compiled, in \code{gengamma1_higher.R}; the derivatives of the expected
-information in \code{dexpected_reparam.R}; and the four moments in \code{moments.R}.
-The derivatives of the distribution function are numerical.
+\code{\link[=distrib_expected_hessian.GenGamma1Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.GenGamma1Distrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.GenGamma1Distrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.GenGamma1Distrib]{distrib_deriv5()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.GenGamma1Distrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.GenGamma1Distrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.GenGamma1Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.GenGamma1Distrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.GenGamma1Distrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.GenGamma1Distrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.GenGamma1Distrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.GenGamma1Distrib]{distrib_cross2_y()}},
+\code{\link[=distrib_grad_y_hess.GenGamma1Distrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.GenGamma1Distrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function: \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.GenGamma1Distrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.GenGamma1Distrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.GenGamma1Distrib]{mean()}},
+\code{\link[=variance.GenGamma1Distrib]{variance()}},
+\code{\link[=skewness.GenGamma1Distrib]{skewness()}} and
+\code{\link[=kurtosis.GenGamma1Distrib]{kurtosis()}}.
 }
 
-\section{The one representation everything rests on}{
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+}
+
+\section{Representation as a gamma variable}{
 
 \eqn{u = (Y/a)^p} is Gamma with shape \eqn{k = d/p} and unit rate, exactly.
 The distribution function is that Gamma's, the quantile function inverts it,
 the generator raises a Gamma draw to the power \eqn{1/p}, and every
-expectation the information needs is a moment of \eqn{u}. It is the same
-device the Weibull and the Gumbel use, where the corresponding variable is
-standard exponential.
+expectation that the information requires is a moment of \eqn{u}. The
+Weibull and the Gumbel use the same device, with a standard exponential
+variable in place of the gamma.
 }
 
 \examples{
@@ -107,5 +134,5 @@ rbind(gamma = distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
 \seealso{
 \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} to build one;
 \code{\link[=gamma2_distrib]{gamma2_distrib()}}, \code{\link[=weibull1_distrib]{weibull1_distrib()}} and \code{\link[=exponential_distrib]{exponential_distrib()}} for
-the families it nests; \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for the limit it approaches.
+the families that it nests; \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for a limiting case.
 }

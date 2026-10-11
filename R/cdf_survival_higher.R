@@ -114,6 +114,8 @@ surv_cdf_deriv_k <- function(distrib, q, theta, order, Lval, Lderiv,
 register_surv_cdf <- function(cls, pieces) {
   make <- function(o) {
     force(o)
+    # order two in the order of hess_names(), as every other route returns it
+    ord <- function(out, params) if (o == 2L) out[hess_names(params)] else out
     function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
       p <- pieces(distrib, q, theta)
       params <- distrib@params
@@ -127,16 +129,16 @@ register_surv_cdf <- function(cls, pieces) {
                       function(I) ifelse(inside,
                                          rep_len(p$Lderiv(params[I]), length(q)),
                                          0))
-        return(stats::setNames(out, deriv_names(params, o)))
+        return(ord(stats::setNames(out, deriv_names(params, o)), params))
       }
       tabs <- lapply(seq_len(o), function(k)
         surv_cdf_deriv_k(distrib, q, theta, k, p$Lval, p$Lderiv, inside))
       if (!lower.tail) {
         # d^I S = -d^I F, with S itself taken as exp(L)
-        return(lapply(tabs[[o]], function(v) -v))
+        return(ord(lapply(tabs[[o]], function(v) -v), params))
       }
-      cdf_scale_k(distrib, distrib_cdf(distrib, q, theta), tabs, o,
-                  lower.tail, log)
+      ord(cdf_scale_k(distrib, distrib_cdf(distrib, q, theta), tabs, o,
+                      lower.tail, log), params)
     }
   }
   S7::method(distrib_grad_cdf, cls) <- make(1L)

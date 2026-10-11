@@ -12,12 +12,14 @@ NULL
 #' It is the flexible family for a positive response, and it nests four others
 #' exactly: the gamma at \eqn{p = 1}, the Weibull at \eqn{d = p}, the
 #' exponential at \eqn{d = p = 1} and the half-normal at
-#' \eqn{a = \sqrt2, d = 1, p = 2}. Choosing between them becomes something to
-#' estimate.
+#' \eqn{a = \sqrt2, d = 1, p = 2}. The choice among these special cases can
+#' therefore be made by estimating \eqn{d} and \eqn{p}.
 #'
 #' Build one with [gengamma1_distrib()], which supplies the three link
-#' functions. This page documents the raw S7 constructor, which validates none
-#' of the relationships between its properties.
+#' functions. This page documents the raw S7 constructor; the validator of
+#' `distrib` checks that
+#' the properties are consistent (the parameter count, a bound and a link
+#' for every parameter, ordered support bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -29,31 +31,54 @@ NULL
 #'   \eqn{(0, \infty)}.
 #'
 #' @section Methods:
-#' Registered in this file, the last three compiled:
-#'   [`distrib_pdf()`][distrib_pdf.GenGamma1Distrib],
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.GenGamma1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.GenGamma1Distrib],
-#'   [`distrib_quantile()`][distrib_quantile.GenGamma1Distrib],
-#'   [`distrib_rng()`][distrib_rng.GenGamma1Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.GenGamma1Distrib] and
+#'   [`distrib_rng()`][distrib_rng.GenGamma1Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.GenGamma1Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.GenGamma1Distrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.GenGamma1Distrib].
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.GenGamma1Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.GenGamma1Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.GenGamma1Distrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.GenGamma1Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.GenGamma1Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.GenGamma1Distrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.GenGamma1Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.GenGamma1Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.GenGamma1Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.GenGamma1Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.GenGamma1Distrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.GenGamma1Distrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.GenGamma1Distrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.GenGamma1Distrib];
+#' - the derivatives of the distribution function: [distrib_grad_cdf()],
+#'   [distrib_hess_cdf()],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.GenGamma1Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.GenGamma1Distrib];
+#' - the moments: [`mean()`][mean.GenGamma1Distrib],
+#'   [`variance()`][variance.GenGamma1Distrib],
+#'   [`skewness()`][skewness.GenGamma1Distrib] and
+#'   [`kurtosis()`][kurtosis.GenGamma1Distrib].
 #'
-#' Registered elsewhere: the orders three to five and the derivatives in the
-#' response, compiled, in `gengamma1_higher.R`; the derivatives of the expected
-#' information in `dexpected_reparam.R`; and the four moments in `moments.R`.
-#' The derivatives of the distribution function are numerical.
+#' Every other generic is inherited from [continuous_distrib()].
 #'
-#' @section The one representation everything rests on:
+#' @section Representation as a gamma variable:
 #' \eqn{u = (Y/a)^p} is Gamma with shape \eqn{k = d/p} and unit rate, exactly.
 #' The distribution function is that Gamma's, the quantile function inverts it,
 #' the generator raises a Gamma draw to the power \eqn{1/p}, and every
-#' expectation the information needs is a moment of \eqn{u}. It is the same
-#' device the Weibull and the Gumbel use, where the corresponding variable is
-#' standard exponential.
+#' expectation that the information requires is a moment of \eqn{u}. The
+#' Weibull and the Gumbel use the same device, with a standard exponential
+#' variable in place of the gamma.
 #'
 #' @seealso [gengamma1_distrib()] to build one;
 #'   [gamma2_distrib()], [weibull1_distrib()] and [exponential_distrib()] for
-#'   the families it nests; [lognormal1_distrib()] for the limit it approaches.
+#'   the families that it nests; [lognormal1_distrib()] for a limiting case.
 #'
 #' @examples
 #' d <- gengamma1_distrib()
@@ -155,9 +180,8 @@ S7::method(distrib_pdf, GenGamma1Distrib) <- function(distrib, y, theta, log = F
 #' distribution function is that Gamma's evaluated at \eqn{(q/a)^p} and the
 #' whole computation is one `pgamma` call.
 #'
-#' `lower.tail` and `log.p` are passed straight to `pgamma`, so the survival
-#' function and the log-probability keep the accuracy R's own routine gives
-#' them in the far tail.
+#' `lower.tail` and `log.p` are passed to `pgamma`, so the survival function
+#' and the log-probability have the accuracy of `pgamma` in the far tail.
 #'
 #' @param distrib A `GenGamma1Distrib` object, from [gengamma1_distrib()].
 #' @param q A numeric vector of quantiles. A negative value is clamped to zero
@@ -214,10 +238,10 @@ S7::method(distrib_cdf, GenGamma1Distrib) <- function(distrib, q, theta,
 #'
 #' @description
 #' Computes \eqn{Q(u) = a\,\{Q_\Gamma(u;\, d/p)\}^{1/p}}, inverting the same
-#' representation the distribution function uses: \eqn{(Y/a)^p} is Gamma with
+#' representation as the distribution function: \eqn{(Y/a)^p} is Gamma with
 #' shape \eqn{d/p}, so its quantile raised to the power \eqn{1/p} and scaled by
 #' \eqn{a} is the generalized gamma's. The whole computation is one `qgamma`
-#' call, and nothing is inverted by root finding.
+#' call, without root finding.
 #'
 #' @param distrib A `GenGamma1Distrib` object, from [gengamma1_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or their
@@ -271,8 +295,8 @@ S7::method(distrib_quantile, GenGamma1Distrib) <- function(distrib, p, theta,
 #' @description
 #' Draws by the family's own defining representation: a Gamma variate with
 #' shape \eqn{d/p} and unit rate, raised to the power \eqn{1/p} and multiplied
-#' by \eqn{a}. It is exact and costs one `rgamma` call, so neither inversion
-#' nor the base class's ratio-of-uniforms fallback is involved.
+#' by \eqn{a}. It is exact and costs one `rgamma` call; the inverse-transform
+#' fallback of the base class is not used.
 #'
 #' @param distrib A `GenGamma1Distrib` object, from [gengamma1_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -378,7 +402,7 @@ S7::method(distrib_gradient, GenGamma1Distrib) <- function(distrib, y, theta,
 #' compiled kernel, by differentiating the expressions of
 #' [distrib_gradient.GenGamma1Distrib()] again.
 #'
-#' One component is worth naming: the mixed \eqn{a}-\eqn{d} entry is
+#' The mixed \eqn{a}-\eqn{d} entry is
 #' \eqn{-1/a}, free of the data. The scale and the first shape meet in the
 #' log-density only through the term \eqn{-d\log a}, which is bilinear, so
 #' its second derivative carries no observation.
@@ -433,7 +457,8 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #'
 #' @description
 #' Returns the expected second derivatives in closed form. Every expectation
-#' the observed Hessian needs is a moment of \eqn{u = (Y/a)^{p}}, which is
+#' that the observed Hessian requires is a moment of \eqn{u = (Y/a)^{p}}, which
+#' is
 #' Gamma with shape \eqn{k = d/p} and unit rate:
 #' \deqn{E[u] = k, \qquad E[u\log u] = k\,\psi(k+1), \qquad
 #'       E[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}.}
@@ -458,8 +483,9 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #'   kernel may use. Defaults to `1L`.
 #'
 #' @return A named list of six numeric vectors in [hess_names()]'s order:
-#'   `a_a`, `d_d`, `p_p`, `a_d`, `a_p`, `d_p`. Every entry is negative
-#'   definite as a matrix and free of the data.
+#'   `a_a`, `d_d`, `p_p`, `a_d`, `a_p`, `d_p`. The vectors depend on `y` only
+#'   through its length, and the matrix that they form at each observation is
+#'   negative definite.
 #'
 #' @section Identification:
 #' The three parameters are weakly identified together. \eqn{d} and \eqn{p}
@@ -467,8 +493,9 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #' information reflects that: measured at \eqn{a = 2, d = 3, p = 1.5} its
 #' eigenvalues are 4.72, 0.138 and 0.00321, a condition number of 1470, and the
 #' flat direction is \eqn{(0.79, -0.52, 0.33)} in \eqn{(a, d, p)}. A fit of all
-#' three wants several hundred observations; holding one with [fixed()] is
-#' often the better model.
+#' three parameters needs several hundred observations for usable standard
+#' errors; holding one parameter fixed with [fixed()] removes the flat
+#' direction.
 #'
 #' @section Notation:
 #' \eqn{k = d/p}, \eqn{\psi} and \eqn{\psi'} the digamma and trigamma
@@ -512,9 +539,9 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #'
 #' @description
 #' Builds a generalized gamma distribution object in Stacy's form, with a scale
-#' \eqn{a > 0} and two shapes \eqn{d > 0} and \eqn{p > 0}. It is the flexible
-#' family for a positive response, and it makes the choice between the gamma,
-#' the Weibull and the exponential something to estimate.
+#' \eqn{a > 0} and two shapes \eqn{d > 0} and \eqn{p > 0}. The family contains
+#' the gamma, the Weibull and the exponential as special cases, so the choice
+#' among them can be made by estimating \eqn{d} and \eqn{p}.
 #'
 #' @param link_a A `linkfunctions7` link object for the scale \eqn{a}, which
 #'   must be strictly positive. Defaults to [linkfunctions7::log_link()].
@@ -555,8 +582,8 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #'       \dfrac{\partial\ell}{\partial d} = L - \dfrac{\psi(k)}{p}, \qquad
 #'       \dfrac{\partial\ell}{\partial p} = \dfrac{1}{p}
 #'         + \dfrac{d\psi(k)}{p^{2}} - wL,}
-#' and the expected information is **closed form**. The reason is the one
-#' representation the whole family rests on: \eqn{u = (Y/a)^p} is Gamma with
+#' and the expected information is **closed form**, because
+#' \eqn{u = (Y/a)^p} is Gamma with
 #' shape \eqn{k} and unit rate, so every expectation the Hessian needs is one
 #' of \eqn{E[u] = k}, \eqn{E[u\log u] = k\psi(k+1)} and
 #' \eqn{E[u(\log u)^2] = k\{\psi(k+1)^2 + \psi'(k+1)\}}. The same
@@ -573,12 +600,12 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #'
 #' The three parameters are **weakly identified together**: \eqn{d} and \eqn{p}
 #' enter the density largely through their ratio, and the profile likelihood in
-#' that direction is flat. Measured at \eqn{a = 2, d = 3, p = 1.5}, the
-#' information's eigenvalues are 4.72, 0.138 and 0.00321, a condition number of
-#' 1470, with the flat direction \eqn{(0.79, -0.52, 0.33)}. A fit of all three
-#' wants several hundred observations: on 200 the standard errors are 0.88,
-#' 0.59 and 0.44 against estimates of 2.20, 2.89 and 1.68, and on 2000 they are
-#' 0.31, 0.21 and 0.14. Holding one with [fixed()] is often the better model.
+#' that direction is flat (at \eqn{a = 2, d = 3, p = 1.5} the eigenvalues of
+#' the information are 4.72, 0.138 and 0.00321, with the flat direction
+#' \eqn{(0.79, -0.52, 0.33)}). A fit of all three parameters needs several
+#' hundred observations for usable standard errors, as the two fits of the
+#' examples show; holding one parameter fixed with [fixed()] removes the flat
+#' direction.
 #'
 #' # Parameter domains
 #'

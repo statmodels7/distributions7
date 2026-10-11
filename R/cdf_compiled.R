@@ -33,7 +33,11 @@
 #' `pt()`, `pgamma()`, `pchisq()` or `pbeta()` where the family has one, and
 #' the same integral of the density otherwise. The tail and the log scale
 #' are applied as for every family, by the conversion of the lower-tail
-#' derivatives.
+#' derivatives. The quadrature has an absolute accuracy of about
+#' \eqn{10^{-15}} on the natural scale; on the log scale it is divided by
+#' \eqn{F(q)}, so far in the lower tail the relative accuracy falls (about
+#' \eqn{3 \times 10^{-7}} for the generalized gamma at
+#' \eqn{F \approx 5 \times 10^{-10}}).
 #'
 #' @param distrib A distribution object of one of the families above.
 #' @param q A numeric vector of quantiles.

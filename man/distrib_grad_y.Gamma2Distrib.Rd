@@ -29,8 +29,6 @@ below the mode and negative above it. When \eqn{\sigma^2 = \mu^2} the shape
 is 1, the first term drops out and the derivative is the constant
 \eqn{-1/\mu} of an exponential; when \eqn{\sigma^2 > \mu^2} the density has
 no interior mode and the derivative is negative throughout.
-
-Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
 }
 \examples{
 d <- gamma2_distrib()

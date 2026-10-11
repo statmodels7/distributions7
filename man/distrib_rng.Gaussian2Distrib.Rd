@@ -21,8 +21,8 @@ A numeric vector of \code{n} draws.
 \description{
 Draws \code{n} independent Gaussian variates by calling \code{\link[stats:Normal]{stats::rnorm()}} at
 \code{sd = sqrt(sigma2)}, so the draws come from R's own normal generator and
-depend on \code{.Random.seed} in the usual way. The inverse-transform fallback
-the base class supplies is bypassed.
+depend on \code{.Random.seed} in the usual way. The inverse-transform fallback of
+the base class is not used.
 }
 \examples{
 d <- gaussian2_distrib()

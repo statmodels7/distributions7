@@ -20,7 +20,9 @@ A numeric vector of excess kurtoses, of length
 \description{
 Closed form:
 \deqn{\gamma_2 = e^{4\sigma^2} + 2e^{3\sigma^2} + 3e^{2\sigma^2} - 6,}
-free of \eqn{\mu}. The leading term grows like \eqn{e^{4\sigma^2}}, so the
+free of \eqn{\mu}. It is evaluated as \eqn{w(16 + 15w + 6w^2 + w^3)} with
+\eqn{w = e^{\sigma^2} - 1} formed by \code{expm1()}, which keeps its digits at a
+small \eqn{\sigma^2}. The leading term grows like \eqn{e^{4\sigma^2}}, so the
 tail weight explodes with the spread of the logarithm: at
 \eqn{\sigma^2 = 1} it is 110.9, and the numerical route would need a
 quadrature far into the tail to see it at all.

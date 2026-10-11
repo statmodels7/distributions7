@@ -27,28 +27,32 @@ and expected third derivatives being the same numbers. Defaults to
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_phi},
-\code{mu_phi_phi} and \code{phi_phi_phi}, each of length \code{length(y)} and constant
-within itself when the parameters are. The names enumerate the distinct
+\code{mu_phi_phi} and \code{phi_phi_phi}, each of length
+\code{max(length(y), length(mu), length(phi))} and constant within itself
+when the parameters are. The names enumerate the distinct
 multi-indices of order three in two parameters.
 }
 \description{
 Computes the four distinct third derivatives of the beta log-density with
 respect to \eqn{\mu} and \eqn{\phi}, in closed form as combinations of
-\eqn{\psi_2}, the second derivative of the digamma function, at
+\eqn{\psi_1} and \eqn{\psi_2}, the first and second derivatives of the
+digamma function, at
 \eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\phi} and \eqn{\phi}.
 
-\strong{Every component of this order is free of the response.} The data enter
-the log-density only through \eqn{(\alpha-1)\log y + (\beta-1)\log(1-y)},
+Every component of this order is free of the response. The data enter the
+log-density only through \eqn{(\alpha-1)\log y + (\beta-1)\log(1-y)},
 which is linear in the shapes and so at most quadratic in \eqn{(\mu, \phi)}
-through the bilinear map \eqn{\alpha = \mu\phi}; three derivatives kill it.
-The observed and expected values therefore coincide exactly, and \code{expected}
-selects nothing: the same kernel runs either way and the two results are
-identical to the bit. \code{approx} and \code{nsim} are ignored for the same reason.
+through the bilinear map \eqn{\alpha = \mu\phi}, and its third
+derivatives are zero. On the parameter scale the observed and expected
+values therefore coincide, and the method runs the same kernel for either
+value of \code{expected}. On the link scale the generic adds terms in the score
+and the Hessian, which depend on the response, so the two differ there.
+\code{approx} and \code{nsim} are ignored.
 }
 \section{Notation}{
 
@@ -66,7 +70,7 @@ d3 <- distrib_deriv3(d, y, th)
 # Four constants: nothing at this order depends on the observation.
 lapply(d3, unique)
 
-# So asking for the expectation changes nothing.
+# So on the parameter scale expected = TRUE changes nothing.
 identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
 
 # A central difference of the Hessian reproduces the same component.

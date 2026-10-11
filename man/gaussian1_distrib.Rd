@@ -27,11 +27,12 @@ An S7 object of class \code{Gaussian1Distrib}, inheriting from
 Builds the distribution object for the Gaussian (normal) family parametrized
 by its mean \eqn{\mu} and its standard deviation \eqn{\sigma > 0}. The
 returned object carries closed-form derivatives of the log-density to fourth
-order, in the parameters and in the response, and closed-form moments, so
-every generic of the toolkit answers without a numerical fallback.
+order in the response and to fifth order in the parameters, and closed-form
+moments.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the identity for
+unconstrained scale on which an optimizer works. The defaults are the
+identity for
 the mean, which is already free, and the logarithm for the standard
 deviation, which keeps it positive at every predictor.
 }
@@ -121,6 +122,7 @@ Wiley, New York.
 variance and in the precision; \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for the Gaussian on a
 log scale; \code{\link[=student_t1_distrib]{student_t1_distrib()}} and \code{\link[=laplace_distrib]{laplace_distrib()}} for heavier tails;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery this one passes;
+family of your own against the same battery of checks that this family
+passes;
 \link{Gaussian1Distrib} for the class.
 }

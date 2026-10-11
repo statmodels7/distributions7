@@ -17,8 +17,9 @@
 
 \item{theta}{A named list with components \code{mean} and \code{var}.}
 
-\item{scale}{\code{"parameter"} or \code{"link"}; the link scale is applied by the
-generic.}
+\item{scale}{\code{"parameter"} or \code{"link"}. For orders one to four the
+generic applies the link scale after dispatch; the method for
+\code{\link[=distrib_deriv5]{distrib_deriv5()}} applies it itself.}
 
 \item{expected}{Logical; for orders three and four, whether the expected
 derivative is returned.}
@@ -44,10 +45,21 @@ With \eqn{L = \log y}, \eqn{S = \log(1 + v/m^2)} and
 \eqn{\mu_l = \log m - S/2} the log-density is
 \deqn{\ell = -L - \tfrac12 \log 2\pi - \tfrac12 \log S -
       \frac{(L - \mu_l)^2}{2S}.}
-Every component is a closed form in \eqn{(L, S, m, v)}, derived offline
-and written out per component, one kernel per order. \eqn{\ell} is a
+The observed derivatives of orders one and two, and every expected
+derivative, are closed forms in \eqn{(L, S, m, v)}, derived offline and
+written out per component, one kernel per order. \eqn{\ell} is a
 polynomial of degree two in \eqn{L}, so each expected derivative replaces
 \eqn{L} and \eqn{L^2} by \eqn{E[L] = \mu_l} and \eqn{E[L^2] = \mu_l^2 + S}.
+
+The observed derivatives of orders three to five are computed from
+\eqn{\ell = h_1(S) + h_2(S)\,C^2 - C/2 - L - \tfrac12\log 2\pi}, with
+\eqn{C = \log(y/m)}, \eqn{h_1(S) = -\tfrac12\log S - S/8} and
+\eqn{h_2(S) = -1/(2S)}: the derivatives of \eqn{S = \log(1 + v/m^2)} in
+\eqn{(m, v)} and of \eqn{h_1} and \eqn{h_2} of \eqn{S} by the formula of
+Faa di Bruno over the set partitions of the differentiation indices, and
+those of \eqn{C^2} by the Leibniz rule. Each factor keeps the size of the
+quantity that it represents when \eqn{v/m^2} is small, where the expanded
+closed forms cancel.
 }
 \examples{
 d <- lognormal2_distrib()

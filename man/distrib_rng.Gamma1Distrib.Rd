@@ -22,7 +22,7 @@ A numeric vector of \code{n} strictly positive draws.
 Draws \code{n} independent gamma variates by calling \code{\link[stats:GammaDist]{stats::rgamma()}} at shape
 \eqn{a = 1/\phi} and rate \eqn{b = 1/(\phi\mu)}, so the draws come from R's
 own gamma generator and depend on \code{.Random.seed} in the usual way. The
-ratio-of-uniforms fallback the base class supplies is bypassed.
+inverse-transform fallback of the base class is not used.
 }
 \examples{
 d <- gamma1_distrib()

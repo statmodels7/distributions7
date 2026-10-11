@@ -27,11 +27,13 @@ Builds the distribution object for the beta family on \eqn{(0, 1)} in its
 canonical parametrization, the two shapes \eqn{\alpha > 0} and
 \eqn{\beta > 0}. The returned object carries closed-form derivatives of the
 log-density to fourth order, in the parameters and in the response, and
-closed-form moments, so every generic of the toolkit answers without a
-numerical fallback.
+closed-form moments. The fifth order and the mixed derivatives of order
+three and four in the response and the parameters come from the numerical
+fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both shapes being positive.
 }
 \section{The parametrization}{
@@ -48,7 +50,7 @@ falls below one the density is unbounded at the corresponding endpoint.
 
 This is the same law as \code{\link[=beta1_distrib]{beta1_distrib()}}, which carries the mean and a
 precision, with \eqn{\alpha = \mu\varphi} and \eqn{\beta = (1-\mu)\varphi}.
-The mean parametrization is the one a regression wants; this one is how the
+The mean parametrization is the one used in regression; this one is how the
 family is usually written, and it is what a conjugate analysis produces, the
 beta being conjugate for a binomial probability.
 }
@@ -69,20 +71,22 @@ parameters, so the second derivative already kills it:
 
 Three consequences follow. The observed and expected Hessians are the same
 matrix, so Fisher scoring and Newton's method take the same step on the
-parameter scale, and asking any method for \code{expected = TRUE} returns the
-same numbers. Every third and fourth derivative is likewise a difference of
+parameter scale, and every method returns the same numbers with
+\code{expected = TRUE}. Every third and fourth derivative is likewise a difference
+of
 polygamma functions and free of the data. And the mixed entry
 \eqn{\psi'(\alpha+\beta)} is positive at every setting, so the two shapes
 are never orthogonal.
 
 The derivatives of the \emph{distribution} function in the parameters have no
 elementary form, the derivative of an incomplete beta in its shapes being
-hypergeometric, and are taken by finite difference on the analytic cdf.
+hypergeometric, and are computed by a compiled quadrature of the density
+times the derivatives of the log-density.
 }
 
 \section{Estimation}{
-\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
-estimate is closed form, both estimating equations involving digamma
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. The
+estimates have no closed form, both estimating equations involving digamma
 functions. The method of moments supplies the starting values through the
 concentration \eqn{k = \bar y(1-\bar y)/s^2 - 1}, with
 \eqn{\hat\alpha = k\bar y} and \eqn{\hat\beta = k(1-\bar y)}, and the
@@ -106,7 +110,7 @@ y <- c(0.1, 0.3, 0.7)
 th <- list(alpha = 2, beta = 5)
 all.equal(distrib_pdf(d, y, th), dbeta(y, 2, 5))
 
-# Moments: the mean is the ratio, and neither parameter is a mean.
+# Moments: the mean is alpha / (alpha + beta); neither parameter is a mean.
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))
 c(2 / 7, 2 * 5 / (7^2 * 8))
@@ -138,8 +142,9 @@ Wiley, New York.
 \seealso{
 \code{\link[=beta1_distrib]{beta1_distrib()}} for the same law in the mean and a precision, which is the
 parametrization a regression uses; \code{\link[=betabinom2_distrib]{betabinom2_distrib()}} for the beta as a
-mixing law over a binomial probability; \code{\link[=gamma1_distrib]{gamma1_distrib()}} for the family a
-ratio of gammas turns into this one; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
+mixing law over a binomial probability; \code{\link[=gamma1_distrib]{gamma1_distrib()}} for the gamma,
+from which the beta arises as \eqn{X/(X+Y)} for independent gamma
+variables with a common scale; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
 parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the
-same battery this one passes; \link{Beta2Distrib} for the class.
+same battery of checks that this family passes; \link{Beta2Distrib} for the class.
 }

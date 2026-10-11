@@ -18,8 +18,8 @@ recycled. Both must be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{sigma2_sigma2} and
@@ -39,6 +39,9 @@ The curvature in \eqn{\mu} is not negative at every data point, and neither
 is the curvature in \eqn{\sigma^2}: the observed information of a gamma is
 not positive definite everywhere. Its expectation is; see
 \code{\link[=distrib_expected_hessian.Gamma2Distrib]{distrib_expected_hessian.Gamma2Distrib()}}.
+
+The kernel evaluates them through the decomposition described on
+\code{\link[=distrib_deriv3.Gamma2Distrib]{distrib_deriv3.Gamma2Distrib()}}, which keeps the digits at a large shape.
 }
 \section{Notation}{
 

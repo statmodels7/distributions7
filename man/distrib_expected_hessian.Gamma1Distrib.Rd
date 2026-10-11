@@ -24,8 +24,8 @@ quadrature, Monte Carlo and outer-product routes.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{mu_phi} and
@@ -48,10 +48,9 @@ exactly what makes the score in \eqn{\phi} have mean zero. The quantity
 dispersion entry is negative and the information is positive definite
 everywhere, where the observed Hessian is not.
 
-The zero off-diagonal says the mean and the dispersion are orthogonal. That
-orthogonality is the reason this parametrization is the one a generalized
-linear model uses: the mean equation can be fitted with the dispersion held
-at any value without biasing it.
+The off-diagonal entry is zero, so the mean and the dispersion are
+orthogonal. The score in \eqn{\mu} has the dispersion as a common factor,
+so the mean equation can be solved with the dispersion held at any value.
 
 Because the values do not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.

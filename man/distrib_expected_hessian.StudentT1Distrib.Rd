@@ -25,13 +25,14 @@ the signature matches the generic's, where it selects between
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of six numeric vectors, \code{mu_mu}, \code{sigma_sigma},
-\code{nu_nu}, \code{mu_sigma}, \code{mu_nu} and \code{sigma_nu}, each of length \code{length(y)}
-and each constant along it. \code{mu_sigma} and \code{mu_nu} are exactly zero.
+\code{nu_nu}, \code{mu_sigma}, \code{mu_nu} and \code{sigma_nu}, each of length
+\code{max(length(y), length(mu), length(sigma), length(nu))}. The values do not
+depend on \code{y}. \code{mu_sigma} and \code{mu_nu} are exactly zero.
 }
 \description{
 Returns the expectation of the observed Hessian under the model, in closed
@@ -62,11 +63,12 @@ kernel, so the result does not depend on the thread count.
 \section{Large degrees of freedom}{
 
 The \eqn{\nu\nu} entry is a difference of two trigammas half a unit apart
-plus a term that cancels it to leading order, so writing it directly loses
-every digit at a large \eqn{\nu}: before the asymptotic branches were added
-it changed sign at \eqn{\nu \approx 3\times10^5} and read \eqn{-n/2} on the
-link scale. The shipped kernel switches to a series at measured crossovers
-and stays correctly signed to \code{.Machine$double.xmax}.
+plus a term that cancels it to leading order, so the direct form loses every
+digit at a large \eqn{\nu}. The kernel evaluates it from an asymptotic
+series in \eqn{1/\nu} above a crossover. The entry is negative and of order
+\eqn{\nu^{-4}}, so on the parameter scale it underflows to zero from about
+\eqn{\nu = 10^{85}}; on the link scale the factor \eqn{\nu^2} of the chain
+rule makes it \code{NaN} from about \eqn{\nu = 10^{155}}.
 }
 
 \examples{
@@ -92,7 +94,8 @@ vapply(distrib_hessian(d, z, th), mean, numeric(1))
 identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
 }
 \seealso{
-\code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}} for the quantity this is the
-expectation of, \code{\link[=distrib_gradient.StudentT1Distrib]{distrib_gradient.StudentT1Distrib()}} for the score, and
+\code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}} for the observed Hessian, of
+which this is the expectation, \code{\link[=distrib_gradient.StudentT1Distrib]{distrib_gradient.StudentT1Distrib()}} for
+the score, and
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

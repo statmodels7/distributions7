@@ -15,7 +15,8 @@ be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of length \code{length(y)}, every entry \eqn{-\tau}.
+A numeric vector of length
+\code{max(length(y), length(mu), length(tau))}, every entry \eqn{-\tau}.
 }
 \description{
 Computes the second derivative of the Gaussian log-density with respect to
@@ -26,8 +27,8 @@ is constant within a parameter setting and is recycled to the length of \code{y}
 Being a location family, the Gaussian has the same curvature in the response
 as in its location, and this equals the \code{mu_mu} component of
 \code{\link[=distrib_hessian.Gaussian3Distrib]{distrib_hessian.Gaussian3Distrib()}}. In this parametrization that curvature
-is the parameter itself, which is the sense in which the precision measures
-how sharply the log-density peaks.
+is minus the precision, so a larger precision gives a sharper peak of the
+log-density.
 }
 \examples{
 d <- gaussian3_distrib()

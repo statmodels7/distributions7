@@ -24,8 +24,8 @@ quadrature, Monte Carlo and outer-product routes.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{sigma2_sigma2} and
@@ -52,8 +52,11 @@ They follow from \eqn{\mathbb{E}[Y] = \mu} and
 orthogonal in this parametrization; their maximum likelihood estimates are
 asymptotically correlated. \code{\link[=gamma1_distrib]{gamma1_distrib()}} carries the same law with a
 dispersion in place of the variance, and there the mixed entry is exactly
-zero. The matrix is negative definite throughout, so the information it
-negates is positive definite.
+zero. The matrix is negative definite throughout, so the information is
+positive definite.
+
+The kernel evaluates them through the decomposition described on
+\code{\link[=distrib_deriv3.Gamma2Distrib]{distrib_deriv3.Gamma2Distrib()}}, which keeps the digits at a large shape.
 
 Because the values do not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.

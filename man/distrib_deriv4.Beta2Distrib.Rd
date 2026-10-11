@@ -29,8 +29,8 @@ and expected fourth derivatives being the same numbers. Defaults to
 A named list of five numeric vectors,
 \code{alpha_alpha_alpha_alpha}, \code{alpha_alpha_alpha_beta},
 \code{alpha_alpha_beta_beta}, \code{alpha_beta_beta_beta} and \code{beta_beta_beta_beta},
-each of length \code{length(y)} and constant within itself when the parameters
-are.
+each of length \code{max(length(y), length(alpha), length(beta))} and constant
+within itself when the parameters are.
 }
 \description{
 Computes the five distinct fourth derivatives of the beta log-density with
@@ -42,8 +42,8 @@ and every one of the three mixed components equal to
 digamma function.
 
 As at third order the values are free of the response, so \code{expected},
-\code{approx} and \code{nsim} are all without effect and the result is identical to
-the bit whichever is asked for.
+\code{approx} and \code{nsim} are all without effect and the result is the same for
+every value of them.
 }
 \section{Notation}{
 
@@ -62,7 +62,7 @@ d4 <- distrib_deriv4(d, y, th)
 lapply(d4, unique)
 psigamma(7, deriv = 3)
 
-# Free of the response, so asking for the expectation changes nothing.
+# Free of the response, so expected = TRUE changes nothing.
 identical(d4, distrib_deriv4(d, y, th, expected = TRUE))
 
 # A central difference of the third order reproduces it.

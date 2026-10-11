@@ -16,8 +16,8 @@ having canceled. \code{phi} must be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of length \code{max(length(y), length(phi))}, one value
-per observation.
+A numeric vector of length
+\code{max(length(y), length(mu), length(phi))}, one value per observation.
 }
 \description{
 Computes the second derivative of the gamma log-density with respect to the

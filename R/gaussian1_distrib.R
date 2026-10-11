@@ -14,8 +14,9 @@ NULL
 #'
 #' Build one with [gaussian1_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
-#' which takes the parent's properties and validates none of the relationships
-#' between them.
+#' which takes the parent's properties; the validator of `distrib` checks that
+#' they are consistent (the parameter count, a bound and a link for every
+#' parameter, ordered support bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -35,20 +36,44 @@ NULL
 #'   for the closed forms this class supplies.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.Gaussian1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Gaussian1Distrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.Gaussian1Distrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.Gaussian1Distrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Gaussian1Distrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.Gaussian1Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.Gaussian1Distrib] and
+#'   [`distrib_rng()`][distrib_rng.Gaussian1Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.Gaussian1Distrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.Gaussian1Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.Gaussian1Distrib],
-#'   [`distrib_pdf()`][distrib_pdf.Gaussian1Distrib],
-#'   [`distrib_quantile()`][distrib_quantile.Gaussian1Distrib],
-#'   [`distrib_rng()`][distrib_rng.Gaussian1Distrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Gaussian1Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Gaussian1Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.Gaussian1Distrib] and
+#'   [distrib_deriv5()];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.Gaussian1Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.Gaussian1Distrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.Gaussian1Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.Gaussian1Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.Gaussian1Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.Gaussian1Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.Gaussian1Distrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.Gaussian1Distrib],
+#'   [`distrib_cross3_y()`][distrib_cross3_y.Gaussian1Distrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.Gaussian1Distrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.Gaussian1Distrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.Gaussian1Distrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.Gaussian1Distrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.Gaussian1Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.Gaussian1Distrib];
+#' - the moments: [`mean()`][mean.Gaussian1Distrib],
+#'   [`variance()`][variance.Gaussian1Distrib],
+#'   [`skewness()`][skewness.Gaussian1Distrib] and
+#'   [`kurtosis()`][kurtosis.Gaussian1Distrib].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- gaussian1_distrib()
@@ -78,11 +103,11 @@ Gaussian1Distrib <- S7::new_class("Gaussian1Distrib", parent = continuous_distri
 #'
 #' @param distrib A `Gaussian1Distrib` object, from [gaussian1_distrib()].
 #' @param y A numeric vector of observations. Every real value is in the
-#'   support, so no value is rejected.
+#'   support, so every value of `y` is valid.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
-#'   recycled. `sigma` must be strictly positive; a zero or negative value
-#'   gives `NaN` with a warning from [stats::dnorm()].
+#'   recycled. `sigma` must be strictly positive; the generic signals an
+#'   error for a zero or negative value before the method is called.
 #' @param log Logical of length 1. When `TRUE` the log-density is returned.
 #'   Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -210,11 +235,11 @@ S7::method(distrib_cdf, Gaussian1Distrib) <- function(distrib, q, theta, lower.t
 #' # The median is mu and the quartiles are symmetric about it.
 #' distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 #'
-#' # Exact inverse: the round trip returns the probabilities it was given.
+#' # Exact inverse: the round trip returns the probabilities that it was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
-#' # A quantile 40 standard deviations out, asked for on the log scale
+#' # A quantile 40 standard deviations out, computed on the log scale
 #' # because the probability itself is zero in double precision.
 #' distrib_quantile(d, pnorm(-40, log.p = TRUE), list(mu = 0, sigma = 1),
 #'                  log.p = TRUE)
@@ -233,8 +258,7 @@ S7::method(distrib_quantile, Gaussian1Distrib) <- function(distrib, p, theta, lo
 #' @description
 #' Draws `n` independent Gaussian variates by calling [stats::rnorm()], so the
 #' draws come from R's own normal generator and depend on `.Random.seed` in the
-#' usual way. The inverse-transform fallback the base class supplies is
-#' bypassed.
+#' usual way. The inverse-transform fallback of the base class is not used.
 #'
 #' @param distrib A `Gaussian1Distrib` object, from [gaussian1_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -282,8 +306,8 @@ S7::method(distrib_rng, Gaussian1Distrib) <- function(distrib, n, theta, ...) {
 #' The arithmetic runs in a compiled kernel decomposed over the elements of the
 #' output, so the result does not depend on the thread count.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries before returning, giving \eqn{\partial \ell / \partial \eta_j
+#' With `scale = "link"` the generic applies the chain rule for the links of
+#' the family before returning, giving \eqn{\partial \ell / \partial \eta_j
 #' = h_j'(\eta_j)\, \partial \ell / \partial \theta_j}. This method always
 #' returns the parameter scale; the transformation happens in the generic.
 #'
@@ -296,8 +320,8 @@ S7::method(distrib_rng, Gaussian1Distrib) <- function(distrib, n, theta, ...) {
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma`, each of
 #'   length `max(length(y), length(mu), length(sigma))`.
@@ -361,8 +385,8 @@ S7::method(distrib_gradient, Gaussian1Distrib) <- function(distrib, y, theta, sc
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, each of length
@@ -407,9 +431,9 @@ S7::method(distrib_hessian, Gaussian1Distrib) <- function(distrib, y, theta, sca
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right] = 0.}
 #' They follow from \eqn{\mathbb{E}[(Y-\mu)^2] = \sigma^2} and
 #' \eqn{\mathbb{E}[Y-\mu] = 0}. The negative of this matrix is the Fisher
-#' information for one observation; the zero off-diagonal says the mean and the
-#' standard deviation are orthogonal, so their estimates are asymptotically
-#' independent.
+#' information for one observation. Its off-diagonal entry is zero, so the
+#' mean and the standard deviation are orthogonal and their estimates are
+#' asymptotically independent.
 #'
 #' Because the values do not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -427,8 +451,8 @@ S7::method(distrib_hessian, Gaussian1Distrib) <- function(distrib, y, theta, sca
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, each of length
@@ -511,10 +535,12 @@ S7::method(distrib_d2expected_hessian, Gaussian1Distrib) <- function(distrib, y,
 #'       \ell^{(\mu\sigma\sigma)} = \dfrac{6r}{\sigma^4}, \qquad
 #'       \ell^{(\sigma\sigma\sigma)} = -\dfrac{2}{\sigma^3} + \dfrac{12 r^2}{\sigma^5}.}
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
-#' \eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}: the two components carrying
-#' an odd power of \eqn{r} vanish and \eqn{\ell^{(\sigma\sigma\sigma)}} becomes
-#' \eqn{10/\sigma^3}. Both routes are closed form, so no quadrature is run and
-#' `approx` and `nsim` are ignored.
+#' \eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}:
+#' \eqn{\ell^{(\mu\sigma\sigma)}},
+#' the one component odd in \eqn{r}, has expectation 0, the two constant
+#' components keep their values and \eqn{\ell^{(\sigma\sigma\sigma)}} becomes
+#' \eqn{10/\sigma^3}. Both routes are closed form, so the method uses no
+#' quadrature and ignores `approx` and `nsim`.
 #'
 #' @param distrib A `Gaussian1Distrib` object, from [gaussian1_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -531,8 +557,8 @@ S7::method(distrib_d2expected_hessian, Gaussian1Distrib) <- function(distrib, y,
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_sigma`,
 #'   `mu_sigma_sigma` and `sigma_sigma_sigma`, each of length
@@ -546,8 +572,8 @@ S7::method(distrib_d2expected_hessian, Gaussian1Distrib) <- function(distrib, y,
 #'
 #' @seealso [distrib_hessian.Gaussian1Distrib()] for the order below and
 #'   [distrib_deriv4.Gaussian1Distrib()] for the order above;
-#'   [distrib_deriv3()] for the generic and for the numerical route a family
-#'   without a closed form takes.
+#'   [distrib_deriv3()] for the generic and for the numerical route that a
+#'   family without a closed form uses.
 #'
 #' @examples
 #' d <- gaussian1_distrib()
@@ -590,7 +616,8 @@ S7::method(distrib_deriv3, Gaussian1Distrib) <- function(distrib, y, theta, expe
 #'       \ell^{(\sigma\sigma\sigma\sigma)} = \dfrac{6}{\sigma^4} - \dfrac{60 r^2}{\sigma^6}.}
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
 #' \eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}, which leaves
-#' \eqn{-54/\sigma^4} in the last component and zero in the two odd ones. Both
+#' \eqn{-6/\sigma^4} in \eqn{\ell^{(\mu\mu\sigma\sigma)}}, \eqn{-54/\sigma^4} in
+#' \eqn{\ell^{(\sigma\sigma\sigma\sigma)}} and zero in the other three. Both
 #' routes are closed form, so `approx` and `nsim` are ignored.
 #'
 #' @param distrib A `Gaussian1Distrib` object, from [gaussian1_distrib()].
@@ -608,8 +635,8 @@ S7::method(distrib_deriv3, Gaussian1Distrib) <- function(distrib, y, theta, expe
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
 #'   `mu_mu_mu_sigma`, `mu_mu_sigma_sigma`, `mu_sigma_sigma_sigma` and
@@ -650,6 +677,56 @@ S7::method(distrib_deriv4, Gaussian1Distrib) <- function(distrib, y, theta, expe
   }
 }
 
+#' @title Gaussian Fifth-Order Derivatives
+#' @name distrib_deriv5.Gaussian1Distrib
+#' @description
+#' Computes the six distinct fifth derivatives of the Gaussian log-density
+#' with respect to \eqn{\mu} and \eqn{\sigma}, in closed form from a
+#' compiled kernel. Writing \eqn{r = y - \mu}, the three components with three
+#' or more
+#' derivatives in \eqn{\mu} are zero and
+#' \deqn{\ell^{(\mu\mu\sigma\sigma\sigma)} = \dfrac{24}{\sigma^5}, \qquad
+#'       \ell^{(\mu\sigma\sigma\sigma\sigma)} = \dfrac{120 r}{\sigma^6}, \qquad
+#'       \ell^{(\sigma\sigma\sigma\sigma\sigma)} = -\dfrac{24}{\sigma^5} +
+#'   \dfrac{360 r^2}{\sigma^7}.}
+#' With `scale = "link"` the components are composed with the link
+#' derivatives of both parameters by the same routine that the families with
+#' a fifth-order kernel use.
+#'
+#' @param distrib A `Gaussian1Distrib` object, from [gaussian1_distrib()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list with components `mu` and `sigma`, each a numeric
+#'   vector of length 1 or of the length of `y`. A component of length 1 is
+#'   recycled.
+#' @param scale One of `"parameter"` (the default) or `"link"`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Defaults to `1L`.
+#'
+#' @return A named list of six numeric vectors, `mu_mu_mu_mu_mu`,
+#'   `mu_mu_mu_mu_sigma`, `mu_mu_mu_sigma_sigma`, `mu_mu_sigma_sigma_sigma`,
+#'   `mu_sigma_sigma_sigma_sigma` and `sigma_sigma_sigma_sigma_sigma`, each of
+#'   length
+#'   `max(length(y), length(mu), length(sigma))`.
+#'
+#' @seealso [distrib_deriv4.Gaussian1Distrib()] for the order below and
+#'   [distrib_deriv5()] for the generic.
+#'
+#' @examples
+#' d <- gaussian1_distrib()
+#' y <- c(-1.2, 0.3, 2.5)
+#' th <- list(mu = 0.4, sigma = 1.5)
+#' d5 <- distrib_deriv5(d, y, th)
+#' names(d5)
+#' all.equal(d5$sigma_sigma_sigma_sigma_sigma,
+#'           -24 / 1.5^5 + 360 * (y - 0.4)^2 / 1.5^7)
+S7::method(distrib_deriv5, Gaussian1Distrib) <- function(distrib, y, theta,
+                                                       scale = c("parameter", "link"),
+                                                       ..., threads = 1L) {
+  deriv5_scale(distrib, y, theta, gaussian_deriv5_cpp(y, theta[[1]], theta[[2]], threads),
+               match.arg(scale))
+}
+
 #' @title Gaussian First Derivative in the Response
 #' @name distrib_grad_y.Gaussian1Distrib
 #' @description
@@ -658,8 +735,8 @@ S7::method(distrib_deriv4, Gaussian1Distrib) <- function(distrib, y, theta, expe
 #' \deqn{\dfrac{\partial \ell}{\partial y} = -\dfrac{y - \mu}{\sigma^2},}
 #' in closed form. The Gaussian is a location family in \eqn{\mu}, so the
 #' response enters the log-density only through \eqn{y - \mu} and this
-#' derivative is the negative of the score in \eqn{\mu}. Quantile residuals and
-#' the mixed derivatives of [distrib_cross_y()] read it.
+#' derivative is the negative of the score in \eqn{\mu}. The second derivatives
+#' of the distribution function, [distrib_hess_cdf()], read it.
 #'
 #' @param distrib A `Gaussian1Distrib` object, from [gaussian1_distrib()].
 #' @param y A numeric vector of observations.
@@ -674,7 +751,7 @@ S7::method(distrib_deriv4, Gaussian1Distrib) <- function(distrib, y, theta, expe
 #' @seealso [distrib_hess_y.Gaussian1Distrib()] for the second derivative in
 #'   the response, [distrib_gradient.Gaussian1Distrib()] for the score in the
 #'   parameters, and [distrib_grad_y()] for the generic and the finite-difference
-#'   fallback a family without a closed form takes.
+#'   fallback that a family without a closed form uses.
 #'
 #' @examples
 #' d <- gaussian1_distrib()
@@ -746,11 +823,12 @@ S7::method(distrib_hess_y, Gaussian1Distrib) <- function(distrib, y, theta, ...)
 #' Builds the distribution object for the Gaussian (normal) family parametrized
 #' by its mean \eqn{\mu} and its standard deviation \eqn{\sigma > 0}. The
 #' returned object carries closed-form derivatives of the log-density to fourth
-#' order, in the parameters and in the response, and closed-form moments, so
-#' every generic of the toolkit answers without a numerical fallback.
+#' order in the response and to fifth order in the parameters, and closed-form
+#' moments.
 #'
 #' The two arguments choose the links that carry each parameter to the
-#' unconstrained scale an optimizer works on. The defaults are the identity for
+#' unconstrained scale on which an optimizer works. The defaults are the
+#' identity for
 #' the mean, which is already free, and the logarithm for the standard
 #' deviation, which keeps it positive at every predictor.
 #'
@@ -822,7 +900,8 @@ S7::method(distrib_hess_y, Gaussian1Distrib) <- function(distrib, y, theta, ...)
 #' variance and in the precision; [lognormal1_distrib()] for the Gaussian on a
 #' log scale; [student_t1_distrib()] and [laplace_distrib()] for heavier tails;
 #' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery this one passes;
+#' family of your own against the same battery of checks that this family
+#' passes;
 #' [Gaussian1Distrib] for the class.
 #'
 #' @references

@@ -16,13 +16,14 @@ so a vector of length \code{n} draws one variate per parameter setting.
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of \code{n} strictly positive draws.
+A numeric vector of \code{n} non-negative draws. When \eqn{\mu} is very
+negative a draw can underflow to 0.
 }
 \description{
 Draws \code{n} independent lognormal variates by calling \code{\link[stats:Lognormal]{stats::rlnorm()}} at
 \code{meanlog = mu} and \code{sdlog = sqrt(sigma2)}, so the draws come from R's own
 generator and depend on \code{.Random.seed} in the usual way. The
-ratio-of-uniforms fallback the base class supplies is bypassed.
+inverse-transform fallback of the base class is not used.
 }
 \examples{
 d <- lognormal1_distrib()

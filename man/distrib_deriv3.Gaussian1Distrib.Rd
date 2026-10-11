@@ -27,8 +27,8 @@ and the expected values.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma},
@@ -45,10 +45,12 @@ with respect to \eqn{\mu} and \eqn{\sigma}, in closed form. Writing
       \ell^{(\mu\sigma\sigma)} = \dfrac{6r}{\sigma^4}, \qquad
       \ell^{(\sigma\sigma\sigma)} = -\dfrac{2}{\sigma^3} + \dfrac{12 r^2}{\sigma^5}.}
 With \code{expected = TRUE} the expectations are returned, obtained by replacing
-\eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}: the two components carrying
-an odd power of \eqn{r} vanish and \eqn{\ell^{(\sigma\sigma\sigma)}} becomes
-\eqn{10/\sigma^3}. Both routes are closed form, so no quadrature is run and
-\code{approx} and \code{nsim} are ignored.
+\eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}:
+\eqn{\ell^{(\mu\sigma\sigma)}},
+the one component odd in \eqn{r}, has expectation 0, the two constant
+components keep their values and \eqn{\ell^{(\sigma\sigma\sigma)}} becomes
+\eqn{10/\sigma^3}. Both routes are closed form, so the method uses no
+quadrature and ignores \code{approx} and \code{nsim}.
 }
 \section{Notation}{
 
@@ -82,6 +84,6 @@ all.equal((up - dn) / (2 * eps), d3$mu_mu_sigma, tolerance = 1e-6)
 \seealso{
 \code{\link[=distrib_hessian.Gaussian1Distrib]{distrib_hessian.Gaussian1Distrib()}} for the order below and
 \code{\link[=distrib_deriv4.Gaussian1Distrib]{distrib_deriv4.Gaussian1Distrib()}} for the order above;
-\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic and for the numerical route a family
-without a closed form takes.
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic and for the numerical route that a
+family without a closed form uses.
 }

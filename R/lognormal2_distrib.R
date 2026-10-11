@@ -8,8 +8,9 @@ NULL
 #' The S7 class of the lognormal family parametrized by the mean \eqn{m} and
 #' the variance \eqn{v} of \eqn{Y}. It inherits from `continuous_distrib`.
 #' Build one with [lognormal2_distrib()]; this page documents the raw S7
-#' constructor, which validates none of the relationships between the
-#' properties.
+#' constructor; the validator of `distrib` checks that
+#' the properties are consistent (the parameter count, a bound and a link
+#' for every parameter, ordered support bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -20,16 +21,43 @@ NULL
 #'   var = "variance")`, `2` and the domains \eqn{(0, \infty)} for both.
 #'
 #' @section Methods:
-#' Registered on this class in this file: [distrib_pdf()], [distrib_cdf()],
-#' [distrib_quantile()], [distrib_rng()], [distrib_gradient()],
-#' [distrib_hessian()], [distrib_deriv3()], [distrib_deriv4()],
-#' [distrib_deriv5()], [distrib_expected_hessian()], the derivatives of the
-#' expected information through [register_dexpected()], [distrib_grad_y()],
-#' [distrib_hess_y()], [distrib_deriv3_y()], [distrib_deriv4_y()],
-#' [distrib_cross_y()], [distrib_cross2_y()], [distrib_grad_y_hess()],
-#' [distrib_hess_y_hess()], [distrib_grad_cdf()], [distrib_hess_cdf()],
-#' [distrib_deriv3_cdf()], [distrib_deriv4_cdf()], and the four moments
-#' [mean()], [variance()], [skewness()] and [kurtosis()].
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.Lognormal2Distrib],
+#'   [`distrib_cdf()`][distrib_cdf.Lognormal2Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.Lognormal2Distrib] and
+#'   [`distrib_rng()`][distrib_rng.Lognormal2Distrib];
+#' - the derivatives in the parameters:
+#'   [`distrib_gradient()`][distrib_gradient.Lognormal2Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.Lognormal2Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Lognormal2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Lognormal2Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.Lognormal2Distrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.Lognormal2Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.Lognormal2Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.Lognormal2Distrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.Lognormal2Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.Lognormal2Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.Lognormal2Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.Lognormal2Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.Lognormal2Distrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.Lognormal2Distrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.Lognormal2Distrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.Lognormal2Distrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.Lognormal2Distrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.Lognormal2Distrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.Lognormal2Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.Lognormal2Distrib];
+#' - the moments: [`mean()`][mean.Lognormal2Distrib],
+#'   [`variance()`][variance.Lognormal2Distrib],
+#'   [`skewness()`][skewness.Lognormal2Distrib] and
+#'   [`kurtosis()`][kurtosis.Lognormal2Distrib].
+#'
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @seealso [lognormal2_distrib()] to build one; [Lognormal1Distrib] for the
 #'   parametrization on the log scale.
@@ -137,16 +165,28 @@ S7::method(distrib_rng, Lognormal2Distrib) <- function(distrib, n, theta, ...) {
 #' \eqn{\mu_l = \log m - S/2} the log-density is
 #' \deqn{\ell = -L - \tfrac12 \log 2\pi - \tfrac12 \log S -
 #'       \frac{(L - \mu_l)^2}{2S}.}
-#' Every component is a closed form in \eqn{(L, S, m, v)}, derived offline
-#' and written out per component, one kernel per order. \eqn{\ell} is a
+#' The observed derivatives of orders one and two, and every expected
+#' derivative, are closed forms in \eqn{(L, S, m, v)}, derived offline and
+#' written out per component, one kernel per order. \eqn{\ell} is a
 #' polynomial of degree two in \eqn{L}, so each expected derivative replaces
 #' \eqn{L} and \eqn{L^2} by \eqn{E[L] = \mu_l} and \eqn{E[L^2] = \mu_l^2 + S}.
+#'
+#' The observed derivatives of orders three to five are computed from
+#' \eqn{\ell = h_1(S) + h_2(S)\,C^2 - C/2 - L - \tfrac12\log 2\pi}, with
+#' \eqn{C = \log(y/m)}, \eqn{h_1(S) = -\tfrac12\log S - S/8} and
+#' \eqn{h_2(S) = -1/(2S)}: the derivatives of \eqn{S = \log(1 + v/m^2)} in
+#' \eqn{(m, v)} and of \eqn{h_1} and \eqn{h_2} of \eqn{S} by the formula of
+#' Faa di Bruno over the set partitions of the differentiation indices, and
+#' those of \eqn{C^2} by the Leibniz rule. Each factor keeps the size of the
+#' quantity that it represents when \eqn{v/m^2} is small, where the expanded
+#' closed forms cancel.
 #'
 #' @param distrib A `Lognormal2Distrib` object.
 #' @param y A numeric vector of strictly positive observations.
 #' @param theta A named list with components `mean` and `var`.
-#' @param scale `"parameter"` or `"link"`; the link scale is applied by the
-#'   generic.
+#' @param scale `"parameter"` or `"link"`. For orders one to four the
+#'   generic applies the link scale after dispatch; the method for
+#'   [distrib_deriv5()] applies it itself.
 #' @param expected Logical; for orders three and four, whether the expected
 #'   derivative is returned.
 #' @param approx,nsim Accepted for the generic's signature; the expectations
@@ -331,9 +371,11 @@ S7::method(distrib_deriv4_cdf, Lognormal2Distrib) <- function(
 #'   kurtosis.Lognormal2Distrib
 #'
 #' @description
-#' The mean is \eqn{m} and the variance \eqn{v}. With \eqn{w = 1 + v/m^2} the
-#' skewness is \eqn{(w + 2)\sqrt{w - 1}} and the excess kurtosis
-#' \eqn{w^4 + 2w^3 + 3w^2 - 6}.
+#' The mean is \eqn{m} and the variance \eqn{v}. With \eqn{e = v/m^2} the
+#' skewness is \eqn{(e + 3)\sqrt{e}} and the excess kurtosis
+#' \eqn{e(16 + 15e + 6e^2 + e^3)}, which are \eqn{(w + 2)\sqrt{w - 1}} and
+#' \eqn{w^4 + 2w^3 + 3w^2 - 6} at \eqn{w = 1 + e} written without the
+#' subtraction that loses digits when \eqn{e} is small.
 #'
 #' @param x A `Lognormal2Distrib` object.
 #' @param theta A named list with components `mean` and `var`.
@@ -359,14 +401,14 @@ S7::method(variance, Lognormal2Distrib) <- function(x, theta, ...) {
 
 S7::method(skewness, Lognormal2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  w <- 1 + theta[[2]] / theta[[1]]^2
-  (w + 2) * sqrt(w - 1) + moment_const(theta, 2L, 0)
+  e <- theta[[2]] / theta[[1]]^2
+  (e + 3) * sqrt(e) + moment_const(theta, 2L, 0)
 }
 
 S7::method(kurtosis, Lognormal2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  w <- 1 + theta[[2]] / theta[[1]]^2
-  w^4 + 2 * w^3 + 3 * w^2 - 6 + moment_const(theta, 2L, 0)
+  e <- theta[[2]] / theta[[1]]^2
+  e * (16 + e * (15 + e * (6 + e))) + moment_const(theta, 2L, 0)
 }
 
 

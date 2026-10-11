@@ -6,13 +6,15 @@
 \arguments{
 \item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{y}{A numeric vector of observations. A value at or below zero is
-outside the support and gives a density of 0.}
+\item{y}{A numeric vector of observations. A negative value gives a density
+of 0. At zero the density is the limit of the formula: \code{Inf} for
+\eqn{\sigma < 1}, \eqn{1/\mu} for \eqn{\sigma = 1} and 0 for
+\eqn{\sigma > 1}.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is
-recycled. Both must be strictly positive; a zero or negative value gives
-\code{NaN} with a warning from \code{\link[stats:Weibull]{stats::dweibull()}}.}
+recycled. Both must be strictly positive; the generic signals an error
+for a zero or negative value before the method is called.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
 Defaults to \code{FALSE}.}
@@ -29,8 +31,8 @@ Computes the Weibull density
   \left(\dfrac{y}{\mu}\right)^{\sigma - 1}
   \exp\left\{-\left(\dfrac{y}{\mu}\right)^{\sigma}\right\}, \qquad y > 0,}
 by calling \code{\link[stats:Weibull]{stats::dweibull()}} at \code{shape = sigma} and \code{scale = mu}, so the
-accuracy and the underflow behavior are R's own. Outside the support the
-density is 0. With \code{log = TRUE} the logarithm is formed inside \code{dweibull()}
+accuracy and the underflow behavior are R's own. Below zero the density is
+0. With \code{log = TRUE} the logarithm is formed inside \code{dweibull()}
 and stays finite far into the upper tail, where the density itself
 underflows.
 }

@@ -27,8 +27,8 @@ and the expected values.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of five numeric vectors, \code{mu_mu_mu_mu},
@@ -38,10 +38,10 @@ A named list of five numeric vectors, \code{mu_mu_mu_mu},
 }
 \description{
 Computes the five distinct fourth derivatives of the gamma log-density with
-respect to \eqn{\mu} and \eqn{\sigma^2}, in closed form, by the same chain
-rule from the shape \eqn{\alpha = \mu^2/\sigma^2} and the rate
-\eqn{\lambda = \mu/\sigma^2} that the lower orders use. Every component
-carries \eqn{\psi_3}, the third derivative of the digamma function.
+respect to \eqn{\mu} and \eqn{\sigma^2}, in closed form, by the
+decomposition described on \code{\link[=distrib_deriv3.Gamma2Distrib]{distrib_deriv3.Gamma2Distrib()}}. Every
+component carries \eqn{\psi_3}, the third derivative of the digamma
+function.
 
 With \code{expected = TRUE} the expectations are returned, obtained by replacing
 \eqn{Y} with \eqn{\mu} and \eqn{\log Y} with \eqn{\psi(\alpha) -

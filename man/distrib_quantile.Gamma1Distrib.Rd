@@ -41,7 +41,7 @@ th <- list(mu = 3, phi = 0.5)
 # A central 95 percent interval, visibly asymmetric about the mean of 3.
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# Exact inverse: the round trip returns the probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 

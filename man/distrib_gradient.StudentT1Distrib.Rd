@@ -18,8 +18,8 @@ numeric vector of length 1 or of the length of \code{y}. A component of length
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu}, \code{sigma} and \code{nu}, each
@@ -41,11 +41,10 @@ observation, in closed form. Writing \eqn{r = y - \mu} and
 The location component \strong{redescends}: it rises to \eqn{(\nu+1)/(2\sigma\sqrt{\nu})}
 at \eqn{|r| = \sigma\sqrt{\nu}} and falls back towards zero beyond it, so a
 gross outlier contributes almost nothing to the estimating equation. A
-Gaussian's location score grows without bound instead, which is the whole
-reason this family is used for robust location estimation.
+Gaussian's location score \eqn{r/\sigma^2} grows linearly in \eqn{r}.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+With \code{scale = "link"} the generic applies the chain rule for the links of the
+family before returning. This method always returns the parameter
 scale; the transformation happens in the generic. The arithmetic runs in a
 compiled kernel decomposed over the elements of the output, so the result
 does not depend on the thread count.

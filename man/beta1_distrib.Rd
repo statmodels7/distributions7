@@ -29,11 +29,13 @@ parametrized by its mean \eqn{\mu \in (0, 1)} and a precision \eqn{\phi > 0},
 so that the shapes are \eqn{\alpha = \mu\phi} and \eqn{\beta = (1-\mu)\phi}.
 This is the parametrization beta regression uses. The returned object carries
 closed-form derivatives of the log-density to fourth order, in the parameters
-and in the response, and closed-form moments, so every generic of the toolkit
-answers without a numerical fallback.
+and in the response, and closed-form moments. The fifth order and the mixed
+derivatives of order three and four in the response and the parameters come
+from the numerical fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the logit for
+unconstrained scale on which an optimizer works. The defaults are the logit
+for
 the mean, which lives in \eqn{(0, 1)}, and the logarithm for the precision,
 which is positive.
 }
@@ -48,12 +50,12 @@ numerical inverse. The mean is \eqn{\mu}, the variance
 \eqn{\mu(1-\mu)/(\phi+1)} and the skewness
 \eqn{2(1-2\mu)\sqrt{\phi+1}/\{(\phi+2)\sqrt{\mu(1-\mu)}\}}.
 
-The name \emph{precision} is earned: at a fixed mean the variance falls as
-\eqn{1/(\phi+1)}, so \eqn{\phi} says how tightly the mass concentrates. Two
-settings are worth recognizing. At \eqn{\mu = 1/2} and \eqn{\phi = 2} both
-shapes are 1 and the density is the uniform. Where a shape falls below one,
-which happens when \eqn{\phi} is small, the density is unbounded at the
-corresponding endpoint.
+\eqn{\phi} is called a precision because at a fixed mean the variance is
+proportional to \eqn{1/(\phi+1)}, so a larger \eqn{\phi} concentrates the
+mass more tightly. At \eqn{\mu = 1/2} and \eqn{\phi = 2} both shapes are 1
+and the density is the uniform. A shape falls below one when
+\eqn{\mu\phi < 1} or \eqn{(1-\mu)\phi < 1}, and the density is then
+unbounded at the corresponding endpoint.
 
 This is the same law as \code{\link[=beta2_distrib]{beta2_distrib()}}, which carries the mean and the
 \emph{variance}, the two being related by \eqn{\sigma^2 = \mu(1-\mu)/(\phi+1)}.
@@ -90,14 +92,16 @@ methods:
 differs in \code{mu_phi} by the log-odds residual
 \eqn{\log\{y/(1-y)\} - \psi(\alpha) + \psi(\beta)}, whose expectation is
 zero;
-\item \strong{every} third and fourth derivative is free of the response, so
-\code{\link[=distrib_deriv3.Beta1Distrib]{distrib_deriv3.Beta1Distrib()}} and \code{\link[=distrib_deriv4.Beta1Distrib]{distrib_deriv4.Beta1Distrib()}} return
-the same numbers whether or not \code{expected = TRUE} is asked for.
+\item every third and fourth derivative is free of the response, so on the
+parameter scale \code{\link[=distrib_deriv3.Beta1Distrib]{distrib_deriv3.Beta1Distrib()}} and
+\code{\link[=distrib_deriv4.Beta1Distrib]{distrib_deriv4.Beta1Distrib()}} return the same numbers for either value
+of \code{expected}.
 }
 
 The derivatives of the \emph{distribution} function in the parameters have no
 elementary form, the derivative of an incomplete beta in its shapes being
-hypergeometric, and are taken by finite difference on the analytic cdf.
+hypergeometric, and are computed by a compiled quadrature of the density
+times the derivatives of the log-density.
 }
 
 \section{Estimation}{
@@ -151,11 +155,11 @@ Ferrari, S. and Cribari-Neto, F. (2004). Beta regression for modelling
 rates and proportions. \emph{Journal of Applied Statistics} \strong{31}, 799-815.
 }
 \seealso{
-\code{\link[=beta2_distrib]{beta2_distrib()}} for the same law in the mean and the variance;
+\code{\link[=beta2_distrib]{beta2_distrib()}} for the same law in its two shapes;
 \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} for the beta as a mixing law over a binomial
-probability; \code{\link[=bernoulli_distrib]{bernoulli_distrib()}} for a response at the endpoints rather
-than between them; \code{\link[=zero_adjusted]{zero_adjusted()}} and \code{\link[=truncated]{truncated()}} for the wrappers a
-response with mass at 0 or 1 needs; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
+probability; \code{\link[=bernoulli_distrib]{bernoulli_distrib()}} for a response that takes only the
+values 0 and 1; \code{\link[=zero_adjusted]{zero_adjusted()}} for a response with a point mass at 0;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the
 parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the
-same battery this one passes; \link{Beta1Distrib} for the class.
+same battery of checks that this family passes; \link{Beta1Distrib} for the class.
 }

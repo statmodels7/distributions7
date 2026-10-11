@@ -55,5 +55,5 @@ distrib_pdf(d, 1e4, th, log = TRUE)
 \code{\link[=distrib_cdf.InvGauss1Distrib]{distrib_cdf.InvGauss1Distrib()}} for the distribution function,
 \code{\link[=distrib_gradient.InvGauss1Distrib]{distrib_gradient.InvGauss1Distrib()}} for the derivatives of the
 log-density, \code{\link[=distrib_pdf.InvGauss2Distrib]{distrib_pdf.InvGauss2Distrib()}} for the same density in the
-variance, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
+shape \eqn{\lambda = 1/\phi}, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

@@ -33,9 +33,9 @@ logarithm is formed inside \code{dgamma()} and stays finite where the density
 itself underflows.
 
 The density is unbounded at the origin when \eqn{\sigma^2 > \mu^2}, where
-the shape falls below one; it is flat there when \eqn{\sigma^2 = \mu^2},
-the exponential case, and vanishes at the origin when
-\eqn{\sigma^2 < \mu^2}.
+the shape falls below one. When \eqn{\sigma^2 = \mu^2}, the exponential
+case, it equals the rate \eqn{1/\mu} there, and it vanishes at the origin
+when \eqn{\sigma^2 < \mu^2}.
 }
 \examples{
 d <- gamma2_distrib()

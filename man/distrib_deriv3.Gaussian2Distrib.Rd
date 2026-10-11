@@ -27,8 +27,8 @@ and the expected values.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma2},
@@ -47,7 +47,7 @@ with respect to \eqn{\mu} and \eqn{v = \sigma^2}, in closed form. Writing
 With \code{expected = TRUE} the expectations are returned, obtained by replacing
 \eqn{r} with 0 and \eqn{r^2} with \eqn{v}: the component odd in \eqn{r}
 vanishes and \eqn{\ell^{(vvv)}} becomes \eqn{2/v^3}. Both routes are closed
-form, so no quadrature is run and \code{approx} and \code{nsim} are ignored.
+form, so the method uses no quadrature and ignores \code{approx} and \code{nsim}.
 }
 \section{Notation}{
 
@@ -85,6 +85,6 @@ all.equal((up - dn) / (2 * eps), d3$mu_mu_sigma2, tolerance = 1e-6)
 \seealso{
 \code{\link[=distrib_hessian.Gaussian2Distrib]{distrib_hessian.Gaussian2Distrib()}} for the order below and
 \code{\link[=distrib_deriv4.Gaussian2Distrib]{distrib_deriv4.Gaussian2Distrib()}} for the order above;
-\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic and for the numerical route a family
-without a closed form takes.
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic and for the numerical route that a
+family without a closed form uses.
 }

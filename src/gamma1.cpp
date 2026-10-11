@@ -30,20 +30,20 @@ struct Fs {
 
 inline Fs gamma1_parts(double y, double m, double phi) {
     double s = 1.0 / phi;
-    double z = y / m;
+    double z = y / m, w = (y - m) / m;   // w = z - 1 without the rounding of z
     double m2 = m * m, m3 = m2 * m, m4 = m2 * m2;
     Fs o;
     // [log s - psi(s)] + [log z - (z-1)]: two cancelling pairs, each
     // written out.  See psi_diff.h.
-    o.f1 = d7::psi_log_rest(s) + d7::psi_Ew2(z, z - 1.0);
+    o.f1 = d7::psi_log_rest(s) + d7::psi_Ew2(z, w);
     o.f2 = d7::psi1_rest(s);
     o.f3 = d7::psi2_rest(s);
     o.f4 = d7::psi3_rest(s);
-    o.m1 = s * (z - 1.0) / m;
+    o.m1 = s * w / m;
     o.m2 = s * (1.0 - 2.0 * z) / m2;
     o.m3 = s * (6.0 * z - 2.0) / m3;
     o.m4 = s * (6.0 - 24.0 * z) / m4;
-    o.ms1 = (z - 1.0) / m;
+    o.ms1 = w / m;
     o.mms1 = (1.0 - 2.0 * z) / m2;
     o.mmms1 = (6.0 * z - 2.0) / m3;
     return o;
@@ -103,14 +103,13 @@ List gamma1_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi,
         double m = m_s ? mp[0] : mp[i];
         double p = p_s ? pp[0] : pp[i];
         double s = 1.0 / p, s1 = -s * s;
-        double z = yp[i] / m;
         hmm[i] = d7::gamma1_hess_mu_mu(yp[i], m, s);
-        hmp[i] = (z - 1.0) / m * s1;
+        hmp[i] = (yp[i] - m) / m / m * s1;
         hpp[i] = d7::gamma1_hess_phi_phi(s, d7::gamma1_f1(yp[i], m, s),
                                          d7::psi1_rest(s));
     });
-    return List::create(Named("mu_mu") = h_mm, Named("mu_phi") = h_mp,
-                        Named("phi_phi") = h_pp);
+    return List::create(Named("mu_mu") = h_mm, Named("phi_phi") = h_pp,
+                        Named("mu_phi") = h_mp);
 }
 
 // [[Rcpp::export]]
@@ -130,8 +129,8 @@ List gamma1_expected_hessian_cpp(NumericVector y, NumericVector mu,
         hmp[i] = 0.0;
         hpp[i] = d7::gamma1_expected_phi_phi(s, d7::psi1_rest(s));
     });
-    return List::create(Named("mu_mu") = h_mm, Named("mu_phi") = h_mp,
-                        Named("phi_phi") = h_pp);
+    return List::create(Named("mu_mu") = h_mm, Named("phi_phi") = h_pp,
+                        Named("mu_phi") = h_mp);
 }
 
 namespace {

@@ -26,12 +26,11 @@ response, in closed form:
       - \dfrac{\beta - 1}{1 - y}.}
 Where both shapes exceed one it changes sign at the mode
 \eqn{(\alpha-1)/(\alpha+\beta-2)}, so it is positive below the mode and
-negative above it. Where a shape falls below one the density is unbounded at
-the corresponding endpoint and the derivative does not change sign there. At
+negative above it. Where both shapes are below one it changes sign at the
+same point, the antimode, from negative to positive. Where exactly one shape
+is below one it has one sign on all of \eqn{(0, 1)}. At
 \eqn{\alpha = \beta = 1} it is identically zero, the density being the
 uniform.
-
-Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
 }
 \examples{
 d <- beta2_distrib()

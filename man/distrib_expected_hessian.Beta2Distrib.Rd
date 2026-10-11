@@ -24,12 +24,13 @@ quadrature, Monte Carlo and outer-product routes.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{alpha_alpha}, \code{beta_beta}
-and \code{alpha_beta}, in that order, each of length \code{length(y)}.
+and \code{alpha_beta}, in that order, each of length
+\code{max(length(y), length(alpha), length(beta))}.
 }
 \description{
 Returns the same three numbers as \code{\link[=distrib_hessian.Beta2Distrib]{distrib_hessian.Beta2Distrib()}}, the
@@ -41,8 +42,8 @@ expectation:
       \qquad
       \mathbb{E}\left[\ell^{(\beta\beta)}\right] = \psi'(\alpha+\beta)
         - \psi'(\beta).}
-Nothing is averaged, integrated or simulated, so \code{approx} and \code{nsim} are
-ignored and \code{y} is read only for its length.
+The expectation is exact, so the method does not average, integrate or
+simulate; it ignores \code{approx} and \code{nsim} and reads \code{y} only for its length.
 
 The consequence for fitting is that Fisher scoring and Newton's method take
 the same step on the parameter scale, both inverting the same matrix. On the

@@ -33,9 +33,8 @@ gamma function. The identity is exact:
 distribution function is that Gamma's evaluated at \eqn{(q/a)^p} and the
 whole computation is one \code{pgamma} call.
 
-\code{lower.tail} and \code{log.p} are passed straight to \code{pgamma}, so the survival
-function and the log-probability keep the accuracy R's own routine gives
-them in the far tail.
+\code{lower.tail} and \code{log.p} are passed to \code{pgamma}, so the survival function
+and the log-probability have the accuracy of \code{pgamma} in the far tail.
 }
 \section{Notation}{
 

@@ -28,11 +28,13 @@ Builds the distribution object for the lognormal family on
 mean \eqn{\mu} and variance \eqn{\sigma^2 > 0}. Both parameters are moments
 \strong{of the logarithm}, so neither is the mean or the variance of \eqn{Y}. The
 returned object carries closed-form derivatives of the log-density to fourth
-order, in the parameters and in the response, and closed-form moments, so
-every generic of the toolkit answers without a numerical fallback.
+order, in the parameters and in the response, closed-form derivatives of the
+distribution function, and closed-form moments. The fifth order and
+\code{\link[=distrib_cross3_y]{distrib_cross3_y()}} come from the numerical fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the identity for
+unconstrained scale on which an optimizer works. The defaults are the
+identity for
 \eqn{\mu}, which ranges over the whole line, and the logarithm for
 \eqn{\sigma^2}, which keeps it positive at every predictor.
 }
@@ -47,9 +49,9 @@ form because the log transformation is monotone.
 On the original scale the mean is \eqn{e^{\mu + \sigma^2/2}}, the variance
 \eqn{(e^{\sigma^2}-1)e^{2\mu+\sigma^2}}, the skewness
 \eqn{(e^{\sigma^2}+2)\sqrt{e^{\sigma^2}-1}} and the excess kurtosis
-\eqn{e^{4\sigma^2}+2e^{3\sigma^2}+3e^{2\sigma^2}-6}. Three quantities are
-worth keeping apart: the mode is \eqn{e^{\mu-\sigma^2}}, the median
-\eqn{e^{\mu}} and the mean \eqn{e^{\mu+\sigma^2/2}}, in that order.
+\eqn{e^{4\sigma^2}+2e^{3\sigma^2}+3e^{2\sigma^2}-6}. The mode is
+\eqn{e^{\mu-\sigma^2}}, the median \eqn{e^{\mu}} and the mean
+\eqn{e^{\mu+\sigma^2/2}}, in increasing order.
 
 \code{\link[=lognormal2_distrib]{lognormal2_distrib()}} carries the same law parametrized by the mean and the
 variance of \eqn{Y} itself.
@@ -70,8 +72,8 @@ and the expected Hessian is
       \mathbb{E}\left[\ell^{(\mu\sigma^2)}\right] = 0.}
 Every one of these agrees with \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} at \eqn{\log y},
 component for component and at all four orders, observed and expected. The
-two parameters are orthogonal and the information does not move with the
-mean of \eqn{Y}.
+two parameters are orthogonal and the information does not depend on
+\eqn{\mu}.
 
 The derivatives \strong{in the response} are where the two families differ, the
 Jacobian being a function of \eqn{y}. They are still closed form; see
@@ -140,5 +142,6 @@ Wiley, New York.
 with a multiplicative variance function; \code{\link[=transformation]{transformation()}} for the general
 wrapper this family is a named instance of; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
 parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the
-same battery this one passes; \link{Lognormal1Distrib} for the class.
+same battery of checks that this family passes; \link{Lognormal1Distrib} for the
+class.
 }

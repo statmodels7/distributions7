@@ -27,19 +27,20 @@ and expected fourth derivatives being the same numbers. Defaults to
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of five numeric vectors, \code{mu_mu_mu_mu},
 \code{mu_mu_mu_phi}, \code{mu_mu_phi_phi}, \code{mu_phi_phi_phi} and \code{phi_phi_phi_phi},
-each of length \code{length(y)} and constant within itself when the parameters
-are.
+each of length \code{max(length(y), length(mu), length(phi))} and constant
+within itself when the parameters are.
 }
 \description{
 Computes the five distinct fourth derivatives of the beta log-density with
 respect to \eqn{\mu} and \eqn{\phi}, in closed form as combinations of
-\eqn{\psi_3}, the third derivative of the digamma function, at
+\eqn{\psi_1}, \eqn{\psi_2} and \eqn{\psi_3}, the first three derivatives
+of the digamma function, at
 \eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\phi} and \eqn{\phi}.
 
 As at third order, every component is free of the response, so the observed
@@ -62,7 +63,7 @@ d4 <- distrib_deriv4(d, y, th)
 # Five constants: nothing at this order depends on the observation.
 lapply(d4, unique)
 
-# So asking for the expectation changes nothing.
+# So on the parameter scale expected = TRUE changes nothing.
 identical(d4, distrib_deriv4(d, y, th, expected = TRUE))
 
 # A central difference of the third order reproduces it.

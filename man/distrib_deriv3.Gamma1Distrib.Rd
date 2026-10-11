@@ -27,8 +27,8 @@ and the expected values.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_phi},
@@ -51,8 +51,9 @@ with \eqn{s' = -s^2}, \eqn{s'' = 2s^3}, \eqn{s''' = -6s^4} and \eqn{f_k} the
 
 With \code{expected = TRUE} the expectations are returned, obtained by replacing
 \eqn{z} with 1 and \eqn{\log z} with \eqn{\psi(s) - \log s}: \eqn{f_1} and
-the two components odd in \eqn{z - 1} vanish. Both routes are closed form,
-so no quadrature is run and \code{approx} and \code{nsim} are ignored.
+\eqn{\ell^{(\mu\phi\phi)}}, the component odd in \eqn{z - 1}, vanish. Both
+routes are closed form,
+so the method uses no quadrature and ignores \code{approx} and \code{nsim}.
 }
 \section{Notation}{
 
@@ -73,7 +74,7 @@ all.equal(d3$mu_mu_mu, s * (6 * z - 2) / 3^3)
 all.equal(d3$mu_mu_phi, -s^2 * (1 - 2 * z) / 3^2)
 all.equal(d3$mu_phi_phi, 2 * s^3 * (z - 1) / 3)
 
-# Expected values: the components odd in z - 1 vanish.
+# Expected values: mu_phi_phi, the component odd in z - 1, vanishes.
 lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 
 # A central difference of the Hessian reproduces the same component.
@@ -85,6 +86,6 @@ all.equal((up - dn) / (2 * eps), d3$mu_mu_phi, tolerance = 1e-5)
 \seealso{
 \code{\link[=distrib_hessian.Gamma1Distrib]{distrib_hessian.Gamma1Distrib()}} for the order below and
 \code{\link[=distrib_deriv4.Gamma1Distrib]{distrib_deriv4.Gamma1Distrib()}} for the order above;
-\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic and for the numerical route a family
-without a closed form takes.
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic and for the numerical route that a
+family without a closed form uses.
 }

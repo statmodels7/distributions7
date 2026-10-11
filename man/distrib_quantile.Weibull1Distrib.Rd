@@ -31,7 +31,7 @@ Computes the Weibull quantile function
 \deqn{Q(p; \mu, \sigma) = \mu \left\{-\log(1 - p)\right\}^{1/\sigma}}
 by calling \code{\link[stats:Weibull]{stats::qweibull()}}. The distribution function is strictly
 increasing on \eqn{(0, \infty)}, so the inverse is exact and unique; the
-root-finding fallback the base class supplies is bypassed. \code{Q(0)} is 0 and
+root-finding fallback of the base class is not used. \code{Q(0)} is 0 and
 \code{Q(1)} is \code{Inf}.
 }
 \examples{

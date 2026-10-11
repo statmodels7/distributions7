@@ -26,13 +26,14 @@ be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of five numeric vectors, \code{mu_mu_mu_mu},
 \code{mu_mu_mu_tau}, \code{mu_mu_tau_tau}, \code{mu_tau_tau_tau} and \code{tau_tau_tau_tau},
-each of length \code{length(y)}. Only the last is non-zero.
+each of length \code{max(length(y), length(mu), length(tau))}. Only the last
+is non-zero.
 }
 \description{
 Computes the five distinct fourth derivatives of the Gaussian log-density
@@ -63,7 +64,7 @@ d4 <- distrib_deriv4(d, y, th)
 lapply(d4, unique)
 -3 / 0.25^4
 
-# Free of the response, so asking for the expectation changes nothing.
+# Free of the response, so expected = TRUE changes nothing.
 identical(d4, distrib_deriv4(d, y, th, expected = TRUE))
 
 # A central difference of the third order reproduces it.

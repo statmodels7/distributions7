@@ -7,12 +7,12 @@
 \item{distrib}{A \code{Gaussian1Distrib} object, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
 \item{y}{A numeric vector of observations. Every real value is in the
-support, so no value is rejected.}
+support, so every value of \code{y} is valid.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is
-recycled. \code{sigma} must be strictly positive; a zero or negative value
-gives \code{NaN} with a warning from \code{\link[stats:Normal]{stats::dnorm()}}.}
+recycled. \code{sigma} must be strictly positive; the generic signals an
+error for a zero or negative value before the method is called.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
 Defaults to \code{FALSE}.}

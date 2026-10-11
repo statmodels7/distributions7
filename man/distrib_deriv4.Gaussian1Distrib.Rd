@@ -27,8 +27,8 @@ and the expected values.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of five numeric vectors, \code{mu_mu_mu_mu},
@@ -46,7 +46,8 @@ with respect to \eqn{\mu} and \eqn{\sigma}, in closed form. Writing
       \ell^{(\sigma\sigma\sigma\sigma)} = \dfrac{6}{\sigma^4} - \dfrac{60 r^2}{\sigma^6}.}
 With \code{expected = TRUE} the expectations are returned, obtained by replacing
 \eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}, which leaves
-\eqn{-54/\sigma^4} in the last component and zero in the two odd ones. Both
+\eqn{-6/\sigma^4} in \eqn{\ell^{(\mu\mu\sigma\sigma)}}, \eqn{-54/\sigma^4} in
+\eqn{\ell^{(\sigma\sigma\sigma\sigma)}} and zero in the other three. Both
 routes are closed form, so \code{approx} and \code{nsim} are ignored.
 }
 \section{Notation}{

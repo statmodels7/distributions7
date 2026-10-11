@@ -26,11 +26,12 @@ An S7 object of class \code{Gaussian3Distrib}, inheriting from
 Builds the distribution object for the Gaussian (normal) family parametrized
 by its mean \eqn{\mu} and its precision \eqn{\tau = 1/\sigma^2 > 0}. The
 returned object carries closed-form derivatives of the log-density to fourth
-order, in the parameters and in the response, and closed-form moments, so
-every generic of the toolkit answers without a numerical fallback.
+order in the response and to fifth order in the parameters, and
+closed-form moments.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the identity for
+unconstrained scale on which an optimizer works. The defaults are the
+identity for
 the mean, which is already free, and the logarithm for the precision, which
 keeps it positive at every predictor.
 }
@@ -70,8 +71,8 @@ quadratic in \eqn{\mu} and, in \eqn{\tau}, is \eqn{\tfrac{1}{2}\log\tau}
 plus a term linear in \eqn{\tau}, so every third and fourth derivative is
 free of the response: at third order only \eqn{\ell^{(\mu\mu\tau)} = -1} and
 \eqn{\ell^{(\tau\tau\tau)} = 1/\tau^3} survive, and at fourth order only
-\eqn{\ell^{(\tau\tau\tau\tau)} = -3/\tau^4}. Asking those methods for the
-expectation returns the same numbers.
+\eqn{\ell^{(\tau\tau\tau\tau)} = -3/\tau^4}. With \code{expected = TRUE} those
+methods return the same numbers.
 }
 
 \section{Estimation}{
@@ -112,7 +113,7 @@ fit <- fit_distrib(d, z)
 rbind(fitted = coef(fit),
       closed = c(mu = mean(z), tau = 1 / mean((z - mean(z))^2)))
 
-# The estimate is a precision, so the interval it reports is an interval for
+# The estimate is a precision, so its interval is an interval for
 # the precision and stays positive.
 confint(fit)
 
@@ -128,5 +129,6 @@ standard deviation and in the variance; \code{\link[=gamma1_distrib]{gamma1_dist
 prior of \eqn{\tau} at known \eqn{\mu}; \code{\link[=student_t1_distrib]{student_t1_distrib()}} and
 \code{\link[=laplace_distrib]{laplace_distrib()}} for heavier tails; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
 parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the
-same battery this one passes; \link{Gaussian3Distrib} for the class.
+same battery of checks that this family passes; \link{Gaussian3Distrib} for the
+class.
 }

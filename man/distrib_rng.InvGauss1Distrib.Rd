@@ -22,7 +22,7 @@ A numeric vector of \code{n} strictly positive draws.
 Draws \code{n} independent inverse Gaussian variates by calling
 \code{\link[statmod:invgauss]{statmod::rinvgauss()}} at \code{mean = mu} and \code{dispersion = phi}, so the draws
 come from that package's generator and depend on \code{.Random.seed} in the usual
-way. The ratio-of-uniforms fallback the base class supplies is bypassed.
+way. The inverse-transform fallback of the base class is not used.
 }
 \examples{
 d <- invgauss1_distrib()

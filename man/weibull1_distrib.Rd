@@ -28,11 +28,12 @@ scale \eqn{\mu > 0} and a shape \eqn{\sigma > 0}, with density
 \eqn{f(y) = (\sigma/\mu)(y/\mu)^{\sigma-1}\exp\{-(y/\mu)^{\sigma}\}} on
 \eqn{y > 0}. The returned object carries closed-form derivatives of the
 log-density to fourth order, observed and expected, in the parameters and in
-the response, and closed-form moments, so every generic of the toolkit
-answers without a numerical fallback.
+the response, and closed-form moments. The fifth order and
+\code{\link[=distrib_cross3_y]{distrib_cross3_y()}} come from the numerical fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both parameters being positive.
 }
 \section{The parametrization}{
@@ -44,13 +45,12 @@ the distribution function \eqn{F(q) = 1 - \exp\{-(q/\mu)^{\sigma}\}} and the
 quantile function \eqn{Q(p) = \mu\{-\log(1-p)\}^{1/\sigma}}. This is \code{WEI} in
 \pkg{gamlss}.
 
-\strong{\eqn{\mu} is the scale and not the mean.} The mean is
-\eqn{\mu\,\Gamma(1 + 1/\sigma)}, which involves the shape, so a mean
-parametrization would make every derivative a derivative of the gamma
-function and of its inverse. The scale-shape form keeps the whole family
-elementary; \code{\link[=mean.Weibull1Distrib]{mean.Weibull1Distrib()}} reports the mean, and
-\code{\link[=weibull3_distrib]{weibull3_distrib()}} is the parametrization by a quantile for a reader who
-wants a location that is one.
+The parameter \eqn{\mu} is the scale. The mean is
+\eqn{\mu\,\Gamma(1 + 1/\sigma)} and involves the shape;
+\code{\link[=mean.Weibull1Distrib]{mean.Weibull1Distrib()}} returns it. In the scale and the shape every
+derivative is elementary; \code{\link[=weibull3_distrib]{weibull3_distrib()}} is the parametrization by
+the mean and the shape, in which the scale is \eqn{m/\Gamma(1 + 1/\sigma)}
+and the derivatives contain the gamma function and its derivatives.
 }
 
 \section{Derivatives}{
@@ -104,14 +104,14 @@ scale being a multiplier. The hazard \eqn{f/(1-F)} is
 decreasing for \eqn{\sigma < 1}. That monotone hazard is why the family is
 used in survival work.
 
-Two shapes are named families: \eqn{\sigma = 1} is the exponential with mean
-\eqn{\mu}, and \eqn{\sigma = 2} the Rayleigh. Both are exact, not limiting,
-and the example checks the first.
+Two shapes give named families: \eqn{\sigma = 1} is the exponential with
+mean \eqn{\mu}, and \eqn{\sigma = 2} is the Rayleigh distribution with
+scale \eqn{\mu/\sqrt{2}}. The example checks the first.
 }
 
 \section{Estimation}{
-\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
-estimate is closed form: the shape solves
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. The
+estimates have no closed form: the shape solves
 \eqn{1/\hat\sigma + \overline{\log y} = \sum y_i^{\hat\sigma}\log y_i /
 \sum y_i^{\hat\sigma}} by iteration, and the scale follows from it as
 \eqn{\hat\mu = (n^{-1}\sum y_i^{\hat\sigma})^{1/\hat\sigma}}. The example
@@ -169,11 +169,12 @@ Generalized additive models for location, scale and shape.
 \emph{Journal of the Royal Statistical Society, Series C}, \strong{54}(3), 507-554.
 }
 \seealso{
-\code{\link[=weibull3_distrib]{weibull3_distrib()}} for the same law parametrized by a quantile;
+\code{\link[=weibull3_distrib]{weibull3_distrib()}} for the same law in the mean and the shape;
 \code{\link[=gumbel_distrib]{gumbel_distrib()}}, which is this family after a negative logarithm;
 \code{\link[=exponential_distrib]{exponential_distrib()}} and \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} for the special case and
 the generalization; \code{\link[=gpd_distrib]{gpd_distrib()}} for another extreme-value family;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery this one passes;
+family of your own against the same battery of checks that this family
+passes;
 \link{Weibull1Distrib} for the class.
 }

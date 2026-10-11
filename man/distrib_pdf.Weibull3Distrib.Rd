@@ -29,7 +29,9 @@ The Weibull with shape \eqn{\sigma} and scale
 \eqn{b = m / \Gamma(1 + 1/\sigma)}, so that \eqn{E[Y] = m}. The density,
 the distribution function, the quantile function and the generator are
 \code{\link[stats:Weibull]{stats::dweibull()}}, \code{\link[stats:Weibull]{stats::pweibull()}}, \code{\link[stats:Weibull]{stats::qweibull()}} and
-\code{\link[stats:Weibull]{stats::rweibull()}} at that scale.
+\code{\link[stats:Weibull]{stats::rweibull()}} at that scale. At a small shape \eqn{b} underflows to
+0; there the four methods evaluate the same formulas through
+\eqn{\log b} and \eqn{\log(y/b)}.
 }
 \examples{
 d <- weibull3_distrib()

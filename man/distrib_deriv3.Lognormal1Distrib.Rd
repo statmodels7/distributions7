@@ -27,8 +27,8 @@ and the expected values.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma2},
@@ -51,8 +51,8 @@ zero. As at the lower orders these are the Gaussian's read at \eqn{\log y}.
 With \code{expected = TRUE} the expectations are returned, obtained by replacing
 \eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}: the component odd in
 \eqn{r} vanishes and the pure variance one becomes \eqn{2/\sigma^6}. Both
-routes are closed form, so no quadrature is run and \code{approx} and \code{nsim} are
-ignored.
+routes are closed form, so the method uses no quadrature and ignores \code{approx}
+and \code{nsim}.
 }
 \section{Notation}{
 

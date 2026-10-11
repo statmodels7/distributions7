@@ -28,11 +28,12 @@ Builds the distribution object for the inverse Gaussian family on
 and the shape \eqn{\lambda > 0}, so that
 \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}. The returned object carries
 closed-form derivatives of the log-density to fourth order, in the
-parameters and in the response, and closed-form moments, so every generic of
-the toolkit answers without a numerical fallback.
+parameters and in the response, and closed-form moments. The fifth order and
+\code{\link[=distrib_cross3_y]{distrib_cross3_y()}} come from the numerical fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both parameters being positive.
 }
 \section{The parametrization}{
@@ -47,9 +48,10 @@ quantile function is its numerical inverse.
 This is the same law as \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}, which carries a dispersion
 \eqn{\phi = 1/\lambda}. The map between the two moves one coordinate at a
 time, the mean being untouched, so both sets of derivatives stay elementary.
-The shape is the parametrization the family is usually written in, and it is
-the one in which the law is the first-passage time of a Brownian motion with
-drift \eqn{\mu} and variance parameter \eqn{\lambda}.
+The family is usually written in the shape parametrization. In it the law is
+the distribution of the first-passage time to a level \eqn{a > 0} of a
+Brownian motion with drift \eqn{\nu > 0} and variance parameter
+\eqn{s^2}, with \eqn{\mu = a/\nu} and \eqn{\lambda = a^2/s^2}.
 }
 
 \section{Derivatives}{
@@ -138,8 +140,9 @@ New York.
 \code{\link[=invgauss1_distrib]{invgauss1_distrib()}} for the same law in the mean and a dispersion, which
 is the generalized linear model parametrization; \code{\link[=gamma1_distrib]{gamma1_distrib()}} and
 \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for other positive families;
-\code{\link[=pig1_distrib]{pig1_distrib()}} for the counts this law mixes a Poisson into;
+\code{\link[=pig1_distrib]{pig1_distrib()}} for the Poisson mixed over this law;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery this one passes;
+family of your own against the same battery of checks that this family
+passes;
 \link{InvGauss2Distrib} for the class.
 }

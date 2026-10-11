@@ -45,21 +45,51 @@ properties hold \code{"lognormal2"}, \code{"univariate"}, \code{c(0, Inf)},
 The S7 class of the lognormal family parametrized by the mean \eqn{m} and
 the variance \eqn{v} of \eqn{Y}. It inherits from \code{continuous_distrib}.
 Build one with \code{\link[=lognormal2_distrib]{lognormal2_distrib()}}; this page documents the raw S7
-constructor, which validates none of the relationships between the
-properties.
+constructor; the validator of \code{distrib} checks that
+the properties are consistent (the parameter count, a bound and a link
+for every parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class in this file: \code{\link[=distrib_pdf]{distrib_pdf()}}, \code{\link[=distrib_cdf]{distrib_cdf()}},
-\code{\link[=distrib_quantile]{distrib_quantile()}}, \code{\link[=distrib_rng]{distrib_rng()}}, \code{\link[=distrib_gradient]{distrib_gradient()}},
-\code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}},
-\code{\link[=distrib_deriv5]{distrib_deriv5()}}, \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, the derivatives of the
-expected information through \code{\link[=register_dexpected]{register_dexpected()}}, \code{\link[=distrib_grad_y]{distrib_grad_y()}},
-\code{\link[=distrib_hess_y]{distrib_hess_y()}}, \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}}, \code{\link[=distrib_deriv4_y]{distrib_deriv4_y()}},
-\code{\link[=distrib_cross_y]{distrib_cross_y()}}, \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}},
-\code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}},
-\code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}}, \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}}, and the four moments
-\code{\link[=mean]{mean()}}, \code{\link[=variance]{variance()}}, \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}}.
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.Lognormal2Distrib]{distrib_pdf()}},
+\code{\link[=distrib_cdf.Lognormal2Distrib]{distrib_cdf()}},
+\code{\link[=distrib_quantile.Lognormal2Distrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.Lognormal2Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
+\code{\link[=distrib_gradient.Lognormal2Distrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.Lognormal2Distrib]{distrib_hessian()}},
+\code{\link[=distrib_expected_hessian.Lognormal2Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.Lognormal2Distrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.Lognormal2Distrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.Lognormal2Distrib]{distrib_deriv5()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.Lognormal2Distrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.Lognormal2Distrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.Lognormal2Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.Lognormal2Distrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.Lognormal2Distrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.Lognormal2Distrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.Lognormal2Distrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.Lognormal2Distrib]{distrib_cross2_y()}},
+\code{\link[=distrib_grad_y_hess.Lognormal2Distrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.Lognormal2Distrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.Lognormal2Distrib]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf.Lognormal2Distrib]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.Lognormal2Distrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.Lognormal2Distrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.Lognormal2Distrib]{mean()}},
+\code{\link[=variance.Lognormal2Distrib]{variance()}},
+\code{\link[=skewness.Lognormal2Distrib]{skewness()}} and
+\code{\link[=kurtosis.Lognormal2Distrib]{kurtosis()}}.
+}
+
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{

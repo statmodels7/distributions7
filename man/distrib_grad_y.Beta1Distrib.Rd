@@ -30,8 +30,6 @@ Where both shapes exceed one it changes sign at the mode
 \eqn{(\alpha-1)/(\alpha+\beta-2)}, so it is positive below the mode and
 negative above it. Where a shape falls below one the density is unbounded at
 the corresponding endpoint and the derivative does not change sign there.
-
-Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
 }
 \examples{
 d <- beta1_distrib()

@@ -19,13 +19,12 @@ namespace d7 {
 
 // the score's two cancelling pairs, each written out (psi_diff.h)
 inline double gamma1_f1(double y, double m, double s) {
-    double z = y / m;
-    return d7::psi_log_rest(s) + d7::psi_Ew2(z, z - 1.0);
+    double z = y / m, w = (y - m) / m;   // w = z - 1 without the rounding of z
+    return d7::psi_log_rest(s) + d7::psi_Ew2(z, w);
 }
 
 inline double gamma1_score_mu(double y, double m, double s) {
-    double z = y / m;
-    return s * (z - 1.0) / m;
+    return s * ((y - m) / m) / m;
 }
 
 inline double gamma1_score_phi(double s, double f1) {

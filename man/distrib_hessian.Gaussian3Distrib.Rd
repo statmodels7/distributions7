@@ -18,8 +18,8 @@ recycled. \code{tau} must be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{mu_tau} and
@@ -36,10 +36,9 @@ closed form. With \eqn{r = y - \mu},
       \ell^{(\tau\tau)} = -\dfrac{1}{2\tau^2}.}
 Two of the three are free of the data, so the observed and the expected
 Hessians differ in the mixed entry alone. That entry sums to
-\eqn{\sum_i (y_i - \mu)}, which vanishes at \eqn{\hat\mu = \bar y}: the two
-matrices agree exactly once the mean equation is solved and differ before
-that, so Fisher scoring and Newton's method take the same step at the
-maximum and different steps on the way there.
+\eqn{\sum_i (y_i - \mu)}, which vanishes at \eqn{\hat\mu = \bar y}. The
+summed observed and expected Hessians therefore coincide whenever the mean
+equation is solved, whatever the value of \eqn{\tau}, and differ otherwise.
 }
 \section{Notation}{
 

@@ -8,8 +8,10 @@ NULL
 #' The S7 class of the Student t family parametrized by its location
 #' \eqn{\mu}, its standard deviation \eqn{\sigma} and its degrees of freedom
 #' \eqn{\nu > 2}. It inherits from `continuous_distrib`. Build one with
-#' [student_t2_distrib()]; this page documents the raw S7 constructor, which
-#' validates none of the relationships between the properties.
+#' [student_t2_distrib()]; this page documents the raw S7 constructor;
+#' the validator of `distrib` checks that
+#' the properties are consistent (the parameter count, a bound and a link
+#' for every parameter, ordered support bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -21,16 +23,43 @@ NULL
 #'   domains \eqn{\mathbb{R}}, \eqn{(0, \infty)} and \eqn{(2, \infty)}.
 #'
 #' @section Methods:
-#' Registered on this class in this file: [distrib_pdf()], [distrib_cdf()],
-#' [distrib_quantile()], [distrib_rng()], [distrib_gradient()],
-#' [distrib_hessian()], [distrib_deriv3()], [distrib_deriv4()],
-#' [distrib_deriv5()], [distrib_expected_hessian()], the derivatives of the
-#' expected information through [register_dexpected()], [distrib_grad_y()],
-#' [distrib_hess_y()], [distrib_deriv3_y()], [distrib_deriv4_y()],
-#' [distrib_cross_y()], [distrib_cross2_y()], [distrib_grad_y_hess()],
-#' [distrib_hess_y_hess()], [distrib_grad_cdf()], [distrib_hess_cdf()],
-#' [distrib_deriv3_cdf()], [distrib_deriv4_cdf()], and the four moments
-#' [mean()], [variance()], [skewness()] and [kurtosis()].
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.StudentT2Distrib],
+#'   [`distrib_cdf()`][distrib_cdf.StudentT2Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.StudentT2Distrib] and
+#'   [`distrib_rng()`][distrib_rng.StudentT2Distrib];
+#' - the derivatives in the parameters:
+#'   [`distrib_gradient()`][distrib_gradient.StudentT2Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.StudentT2Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.StudentT2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.StudentT2Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.StudentT2Distrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.StudentT2Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.StudentT2Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.StudentT2Distrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.StudentT2Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.StudentT2Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.StudentT2Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.StudentT2Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.StudentT2Distrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.StudentT2Distrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.StudentT2Distrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.StudentT2Distrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.StudentT2Distrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.StudentT2Distrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.StudentT2Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.StudentT2Distrib];
+#' - the moments: [`mean()`][mean.StudentT2Distrib],
+#'   [`variance()`][variance.StudentT2Distrib],
+#'   [`skewness()`][skewness.StudentT2Distrib] and
+#'   [`kurtosis()`][kurtosis.StudentT2Distrib].
+#'
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @seealso [student_t2_distrib()] to build one; [StudentT1Distrib] for the
 #'   parametrization by the scale.
@@ -156,7 +185,10 @@ S7::method(distrib_rng, StudentT2Distrib) <- function(distrib, n, theta, ...) {
 #'
 #' @return A named list with one numeric vector per component: 3, 6, 10, 15
 #'   and 21 components at orders one to five, the second order keyed
-#'   `mu_mu`, `sigma_sigma`, `nu_nu`, `mu_sigma`, `mu_nu`, `sigma_nu`.
+#'   `mu_mu`, `sigma_sigma`, `nu_nu`, `mu_sigma`, `mu_nu`, `sigma_nu`. The
+#'   expected information has the same six components, the expected third
+#'   and fourth derivatives 10 and 15, [distrib_dexpected_hessian()] 18 and
+#'   [distrib_d2expected_hessian()] 36.
 #'
 #' @seealso [distrib_pdf.StudentT2Distrib()].
 #'

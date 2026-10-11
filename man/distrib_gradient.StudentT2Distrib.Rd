@@ -34,7 +34,10 @@ use. Defaults to \code{1L}.}
 \value{
 A named list with one numeric vector per component: 3, 6, 10, 15
 and 21 components at orders one to five, the second order keyed
-\code{mu_mu}, \code{sigma_sigma}, \code{nu_nu}, \code{mu_sigma}, \code{mu_nu}, \code{sigma_nu}.
+\code{mu_mu}, \code{sigma_sigma}, \code{nu_nu}, \code{mu_sigma}, \code{mu_nu}, \code{sigma_nu}. The
+expected information has the same six components, the expected third
+and fourth derivatives 10 and 15, \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} 18 and
+\code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} 36.
 }
 \description{
 Return the derivatives of the log-density in \eqn{(\mu, \sigma, \nu)} of

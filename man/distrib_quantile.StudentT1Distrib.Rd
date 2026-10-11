@@ -32,7 +32,7 @@ Computes the location-scale Student t quantile function
 with \eqn{T_\nu^{-1}} the standard Student t quantile function on \eqn{\nu}
 degrees of freedom, by calling \code{\link[stats:TDist]{stats::qt()}}. The distribution function is
 strictly increasing on the whole line, so the inverse is exact and unique
-and the root-finding fallback the base class supplies is bypassed. \code{Q(0)} is
+and the root-finding fallback of the base class is not used. \code{Q(0)} is
 \code{-Inf} and \code{Q(1)} is \code{Inf}.
 }
 \examples{

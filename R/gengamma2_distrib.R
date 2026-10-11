@@ -8,8 +8,9 @@ NULL
 #' The S7 class of the generalized gamma family parametrized by its mean
 #' \eqn{m}, its shape \eqn{d} and its power \eqn{p}. It inherits from
 #' `continuous_distrib`. Build one with [gengamma2_distrib()]; this page
-#' documents the raw S7 constructor, which validates none of the relationships
-#' between the properties.
+#' documents the raw S7 constructor; the validator of `distrib` checks that
+#' the properties are consistent (the parameter count, a bound and a link
+#' for every parameter, ordered support bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -21,16 +22,42 @@ NULL
 #'   each parameter.
 #'
 #' @section Methods:
-#' Registered on this class in this file: [distrib_pdf()], [distrib_cdf()],
-#' [distrib_quantile()], [distrib_rng()], [distrib_gradient()],
-#' [distrib_hessian()], [distrib_deriv3()], [distrib_deriv4()],
-#' [distrib_deriv5()], [distrib_expected_hessian()], the derivatives of the
-#' expected information through [register_dexpected()], [distrib_grad_y()],
-#' [distrib_hess_y()], [distrib_deriv3_y()], [distrib_deriv4_y()],
-#' [distrib_cross_y()], [distrib_cross2_y()], [distrib_grad_y_hess()],
-#' [distrib_hess_y_hess()], and the four moments [mean()], [variance()],
-#' [skewness()] and [kurtosis()]. The derivatives of the distribution function
-#' are the numerical ones of the base class, as for [gengamma1_distrib()].
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.GenGamma2Distrib],
+#'   [`distrib_cdf()`][distrib_cdf.GenGamma2Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.GenGamma2Distrib] and
+#'   [`distrib_rng()`][distrib_rng.GenGamma2Distrib];
+#' - the derivatives in the parameters:
+#'   [`distrib_gradient()`][distrib_gradient.GenGamma2Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.GenGamma2Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.GenGamma2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.GenGamma2Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.GenGamma2Distrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.GenGamma2Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.GenGamma2Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.GenGamma2Distrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.GenGamma2Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.GenGamma2Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.GenGamma2Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.GenGamma2Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.GenGamma2Distrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.GenGamma2Distrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.GenGamma2Distrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.GenGamma2Distrib];
+#' - the derivatives of the distribution function: [distrib_grad_cdf()],
+#'   [distrib_hess_cdf()],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.GenGamma2Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.GenGamma2Distrib];
+#' - the moments: [`mean()`][mean.GenGamma2Distrib],
+#'   [`variance()`][variance.GenGamma2Distrib],
+#'   [`skewness()`][skewness.GenGamma2Distrib] and
+#'   [`kurtosis()`][kurtosis.GenGamma2Distrib].
+#'
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @seealso [gengamma2_distrib()] to build one; [GenGamma1Distrib] for the
 #'   parametrization by the scale.
@@ -150,8 +177,9 @@ S7::method(distrib_rng, GenGamma2Distrib) <- function(distrib, n, theta, ...) {
 #' @param distrib A `GenGamma2Distrib` object.
 #' @param y A numeric vector of strictly positive observations.
 #' @param theta A named list with components `mean`, `d` and `p`.
-#' @param scale `"parameter"` or `"link"`; the link scale is applied by the
-#'   generic.
+#' @param scale `"parameter"` or `"link"`. For orders one to four the
+#'   generic applies the link scale after dispatch; the method for
+#'   [distrib_deriv5()] applies it itself.
 #' @param expected Logical; for orders three and four, whether the expected
 #'   derivative is returned.
 #' @param approx,nsim Accepted for the generic's signature; the expectations
@@ -338,9 +366,8 @@ S7::method(kurtosis, GenGamma2Distrib) <- function(x, theta, ...) {
 #' mean.
 #'
 #' @details
-#' The Stacy parametrization of [gengamma1_distrib()] carries a scale, a shape
-#' and a power, and exposes no mean at all, which is awkward for a family a
-#' regression would put a linear predictor on. Since
+#' The Stacy parametrization of [gengamma1_distrib()] has a scale, a shape and
+#' a power, and none of them is the mean. Since
 #' \eqn{\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)}, the scale here is
 #' \deqn{a = m\,\dfrac{\Gamma(d/p)}{\Gamma((d+1)/p)},}
 #' and every derivative in \eqn{(m, d, p)} to order five, the expected

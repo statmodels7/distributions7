@@ -27,9 +27,8 @@ Creates a generalized gamma distribution object whose first parameter is the
 mean.
 }
 \details{
-The Stacy parametrization of \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} carries a scale, a shape
-and a power, and exposes no mean at all, which is awkward for a family a
-regression would put a linear predictor on. Since
+The Stacy parametrization of \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} has a scale, a shape and
+a power, and none of them is the mean. Since
 \eqn{\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)}, the scale here is
 \deqn{a = m\,\dfrac{\Gamma(d/p)}{\Gamma((d+1)/p)},}
 and every derivative in \eqn{(m, d, p)} to order five, the expected

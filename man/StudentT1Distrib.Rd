@@ -57,37 +57,53 @@ everything else comes from the parent.
 
 Build one with \code{\link[=student_t1_distrib]{student_t1_distrib()}}, which supplies the three link
 functions and fills the properties in. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.
+constructor, which takes the parent's properties; the validator of \code{distrib}
+checks that
+the properties are consistent (the parameter count, a bound and a link
+for every parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class in this file:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.StudentT1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.StudentT1Distrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.StudentT1Distrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.StudentT1Distrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.StudentT1Distrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_grad_y.StudentT1Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_quantile.StudentT1Distrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.StudentT1Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.StudentT1Distrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.StudentT1Distrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.StudentT1Distrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.StudentT1Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.StudentT1Distrib]{distrib_rng()}}.
-
-Nine more are registered on the class from other files: the mixed
-derivatives \code{\link[=distrib_cross_y.StudentT1Distrib]{distrib_cross_y()}} and
-\code{\link[=distrib_cross2_y.StudentT1Distrib]{distrib_cross2_y()}}, the
-distribution-function derivatives
-\code{\link[=distrib_grad_cdf.StudentT1Distrib]{distrib_grad_cdf()}} and
+\code{\link[=distrib_expected_hessian.StudentT1Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.StudentT1Distrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.StudentT1Distrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.StudentT1Distrib]{distrib_deriv5()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.StudentT1Distrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.StudentT1Distrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.StudentT1Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.StudentT1Distrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.StudentT1Distrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.StudentT1Distrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.StudentT1Distrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.StudentT1Distrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross3_y.StudentT1Distrib]{distrib_cross3_y()}},
+\code{\link[=distrib_grad_y_hess.StudentT1Distrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.StudentT1Distrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.StudentT1Distrib]{distrib_grad_cdf()}},
 \code{\link[=distrib_hess_cdf.StudentT1Distrib]{distrib_hess_cdf()}},
-\code{distrib_grad_y_hess()} and \code{distrib_hess_y_hess()} in
-\code{theta2_families.R}, and the four moments
-\code{\link[=mean.StudentT1Distrib]{mean()}}, \code{\link[=variance.StudentT1Distrib]{variance()}},
+\code{\link[=distrib_deriv3_cdf.StudentT1Distrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.StudentT1Distrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.StudentT1Distrib]{mean()}},
+\code{\link[=variance.StudentT1Distrib]{variance()}},
 \code{\link[=skewness.StudentT1Distrib]{skewness()}} and
-\code{\link[=kurtosis.StudentT1Distrib]{kurtosis()}} in \code{moments.R}.
+\code{\link[=kurtosis.StudentT1Distrib]{kurtosis()}}.
+}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{

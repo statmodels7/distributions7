@@ -25,8 +25,8 @@ quadrature, Monte Carlo and outer-product routes.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{phi_phi} and
@@ -50,10 +50,10 @@ The third drops the log-odds residual the observed mixed entry carries,
 whose expectation is zero because
 \eqn{\mathbb{E}[\log\{Y/(1-Y)\}] = \psi(\alpha) - \psi(\beta)}.
 
-The mixed entry does not vanish, so the mean and the precision are not
-orthogonal; their maximum likelihood estimates are asymptotically
-correlated. It does vanish at \eqn{\mu = 1/2}, where the two shapes are
-equal and the density is symmetric.
+The mixed entry is non-zero except at \eqn{\mu = 1/2}, where the two
+shapes are equal and the density is symmetric. Elsewhere the mean and the
+precision are not orthogonal, and their maximum likelihood estimates are
+asymptotically correlated.
 
 Because the values do not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.

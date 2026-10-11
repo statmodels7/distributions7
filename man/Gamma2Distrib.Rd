@@ -55,25 +55,46 @@ everything else comes from the parent.
 
 Build one with \code{\link[=gamma2_distrib]{gamma2_distrib()}}, which supplies the two link functions and
 fills the properties in. This page documents the raw S7 constructor, which
-takes the parent's properties and validates none of the relationships
-between them.
+takes the parent's properties; the validator of \code{distrib} checks that they
+are consistent (the parameter count, a bound and a link for every
+parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.Gamma2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.Gamma2Distrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.Gamma2Distrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.Gamma2Distrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.Gamma2Distrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_grad_y.Gamma2Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_quantile.Gamma2Distrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.Gamma2Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.Gamma2Distrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.Gamma2Distrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.Gamma2Distrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.Gamma2Distrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.Gamma2Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.Gamma2Distrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.Gamma2Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.Gamma2Distrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.Gamma2Distrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.Gamma2Distrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.Gamma2Distrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.Gamma2Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.Gamma2Distrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.Gamma2Distrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.Gamma2Distrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.Gamma2Distrib]{distrib_cross_y()}};
+\item the derivatives of the distribution function: \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.Gamma2Distrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.Gamma2Distrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.Gamma2Distrib]{mean()}},
+\code{\link[=variance.Gamma2Distrib]{variance()}},
+\code{\link[=skewness.Gamma2Distrib]{skewness()}} and
+\code{\link[=kurtosis.Gamma2Distrib]{kurtosis()}}.
+}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{

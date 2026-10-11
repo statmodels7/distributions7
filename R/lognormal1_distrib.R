@@ -15,8 +15,9 @@ NULL
 #'
 #' Build one with [lognormal1_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
-#' which takes the parent's properties and validates none of the relationships
-#' between them.
+#' which takes the parent's properties; the validator of `distrib` checks that
+#' they are consistent (the parameter count, a bound and a link for every
+#' parameter, ordered support bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -32,24 +33,45 @@ NULL
 #'   [lognormal2_distrib()] for the same law parametrized by the mean and the
 #'   variance of \eqn{Y}; [gaussian2_distrib()], which this becomes at
 #'   \eqn{\log y}; [distrib_pdf.Lognormal1Distrib()] and
-#'   [distrib_gradient.Lognormal1Distrib()] for the closed forms this class
-#'   supplies.
+#'   [distrib_gradient.Lognormal1Distrib()] for the closed forms of this class.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.Lognormal1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Lognormal1Distrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.Lognormal1Distrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.Lognormal1Distrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Lognormal1Distrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.Lognormal1Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.Lognormal1Distrib] and
+#'   [`distrib_rng()`][distrib_rng.Lognormal1Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.Lognormal1Distrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.Lognormal1Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.Lognormal1Distrib],
-#'   [`distrib_pdf()`][distrib_pdf.Lognormal1Distrib],
-#'   [`distrib_quantile()`][distrib_quantile.Lognormal1Distrib],
-#'   [`distrib_rng()`][distrib_rng.Lognormal1Distrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Lognormal1Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Lognormal1Distrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.Lognormal1Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.Lognormal1Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.Lognormal1Distrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.Lognormal1Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.Lognormal1Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.Lognormal1Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.Lognormal1Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.Lognormal1Distrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.Lognormal1Distrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.Lognormal1Distrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.Lognormal1Distrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.Lognormal1Distrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.Lognormal1Distrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.Lognormal1Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.Lognormal1Distrib];
+#' - the moments: [`mean()`][mean.Lognormal1Distrib],
+#'   [`variance()`][variance.Lognormal1Distrib],
+#'   [`skewness()`][skewness.Lognormal1Distrib] and
+#'   [`kurtosis()`][kurtosis.Lognormal1Distrib].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- lognormal1_distrib()
@@ -99,8 +121,8 @@ Lognormal1Distrib <- S7::new_class("Lognormal1Distrib", parent = continuous_dist
 #'
 #' @seealso [distrib_cdf.Lognormal1Distrib()] for the distribution function,
 #'   [distrib_gradient.Lognormal1Distrib()] for the derivatives of the
-#'   log-density, [distrib_pdf.Gaussian2Distrib()] for the law this is the
-#'   exponential of, and [distrib_pdf()] for the generic.
+#'   log-density, [distrib_pdf.Gaussian2Distrib()] for the law of \eqn{\log Y},
+#'   and [distrib_pdf()] for the generic.
 #'
 #' @examples
 #' d <- lognormal1_distrib()
@@ -232,7 +254,7 @@ S7::method(distrib_cdf, Lognormal1Distrib) <- function(distrib, q, theta, lower.
 #' q
 #' c(q[2] / q[1], q[3] / q[2])
 #'
-#' # Exact inverse: the round trip returns the probabilities it was given.
+#' # Exact inverse: the round trip returns the probabilities that it was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
@@ -255,7 +277,7 @@ S7::method(distrib_quantile, Lognormal1Distrib) <- function(distrib, p, theta, l
 #' Draws `n` independent lognormal variates by calling [stats::rlnorm()] at
 #' `meanlog = mu` and `sdlog = sqrt(sigma2)`, so the draws come from R's own
 #' generator and depend on `.Random.seed` in the usual way. The
-#' ratio-of-uniforms fallback the base class supplies is bypassed.
+#' inverse-transform fallback of the base class is not used.
 #'
 #' @param distrib A `Lognormal1Distrib` object, from [lognormal1_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -265,7 +287,8 @@ S7::method(distrib_quantile, Lognormal1Distrib) <- function(distrib, p, theta, l
 #'   `sigma2` must be strictly positive.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of `n` strictly positive draws.
+#' @return A numeric vector of `n` non-negative draws. When \eqn{\mu} is very
+#'   negative a draw can underflow to 0.
 #'
 #' @seealso [distrib_quantile.Lognormal1Distrib()] for the inverse-transform
 #'   route, [fit_distrib()] to estimate the parameters back from a sample, and
@@ -316,8 +339,8 @@ S7::method(distrib_rng, Lognormal1Distrib) <- function(distrib, n, theta, ...) {
 #' The arithmetic runs in a compiled kernel decomposed over the elements of the
 #' output, so the result does not depend on the thread count.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries before returning. This method always returns the parameter
+#' With `scale = "link"` the generic applies the chain rule for the links of the
+#' family before returning. This method always returns the parameter
 #' scale.
 #'
 #' @param distrib A `Lognormal1Distrib` object, from [lognormal1_distrib()].
@@ -329,8 +352,8 @@ S7::method(distrib_rng, Lognormal1Distrib) <- function(distrib, n, theta, ...) {
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma2`, each of
 #'   length `max(length(y), length(mu), length(sigma2))`.
@@ -395,8 +418,8 @@ S7::method(distrib_gradient, Lognormal1Distrib) <- function(distrib, y, theta, s
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma2_sigma2` and
 #'   `mu_sigma2`, in that order, each of length
@@ -452,8 +475,8 @@ S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, sc
 #' by construction. The zero off-diagonal says the two parameters are
 #' orthogonal, so their estimates are asymptotically independent.
 #'
-#' The information does not depend on the mean of \eqn{Y} at all, only on the
-#' variance of its logarithm. Because the values do not depend on the data,
+#' The information does not depend on \eqn{\mu}, only on \eqn{\sigma^2}, the
+#' variance of \eqn{\log Y}. Because the values do not depend on the data,
 #' `approx` and `nsim` are ignored and `y` is read only for its length.
 #'
 #' @param distrib A `Lognormal1Distrib` object, from [lognormal1_distrib()].
@@ -469,8 +492,8 @@ S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, sc
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma2_sigma2` and
 #'   `mu_sigma2`, in that order, each of length
@@ -505,7 +528,7 @@ S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, sc
 #'       expected = vapply(distrib_expected_hessian(d, z, th),
 #'                         function(v) v[1], numeric(1)))
 #'
-#' # The information does not move with the mean of Y, only with sigma2.
+#' # The information does not depend on mu, only on sigma2.
 #' vapply(c(-2, 0, 5),
 #'        function(m) distrib_expected_hessian(d, 0,
 #'                      list(mu = m, sigma2 = 0.36))$sigma2_sigma2,
@@ -531,8 +554,8 @@ S7::method(distrib_expected_hessian, Lognormal1Distrib) <- function(distrib, y, 
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
 #' \eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}: the component odd in
 #' \eqn{r} vanishes and the pure variance one becomes \eqn{2/\sigma^6}. Both
-#' routes are closed form, so no quadrature is run and `approx` and `nsim` are
-#' ignored.
+#' routes are closed form, so the method uses no quadrature and ignores `approx`
+#' and `nsim`.
 #'
 #' @param distrib A `Lognormal1Distrib` object, from [lognormal1_distrib()].
 #' @param y A numeric vector of strictly positive observations. With
@@ -549,8 +572,8 @@ S7::method(distrib_expected_hessian, Lognormal1Distrib) <- function(distrib, y, 
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_sigma2`,
 #'   `mu_sigma2_sigma2` and `sigma2_sigma2_sigma2`, each of length
@@ -624,8 +647,8 @@ S7::method(distrib_deriv3, Lognormal1Distrib) <- function(distrib, y, theta, exp
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
 #'   `mu_mu_mu_sigma2`, `mu_mu_sigma2_sigma2`, `mu_sigma2_sigma2_sigma2` and
@@ -669,7 +692,7 @@ S7::method(distrib_deriv4, Lognormal1Distrib) <- function(distrib, y, theta, exp
 #' the response, in closed form. With \eqn{r = \log y - \mu},
 #' \deqn{\dfrac{\partial \ell}{\partial y} =
 #'       -\dfrac{1}{y}\left(1 + \dfrac{r}{\sigma^2}\right).}
-#' This is where the family parts company with the Gaussian: the Jacobian
+#' This is where the family differs from the Gaussian: the Jacobian
 #' \eqn{1/y} of the log transformation carries no parameter and so leaves every
 #' derivative in \eqn{\mu} and \eqn{\sigma^2} alone, but it is a function of
 #' the response and does enter here.
@@ -679,7 +702,6 @@ S7::method(distrib_deriv4, Lognormal1Distrib) <- function(distrib, y, theta, exp
 #' below both the median \eqn{e^{\mu}} and the mean
 #' \eqn{e^{\mu + \sigma^2/2}}.
 #'
-#' Quantile residuals and the mixed derivatives of [distrib_cross_y()] read it.
 #'
 #' @param distrib A `Lognormal1Distrib` object, from [lognormal1_distrib()].
 #' @param y A numeric vector of strictly positive observations. The value
@@ -778,11 +800,13 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #' mean \eqn{\mu} and variance \eqn{\sigma^2 > 0}. Both parameters are moments
 #' **of the logarithm**, so neither is the mean or the variance of \eqn{Y}. The
 #' returned object carries closed-form derivatives of the log-density to fourth
-#' order, in the parameters and in the response, and closed-form moments, so
-#' every generic of the toolkit answers without a numerical fallback.
+#' order, in the parameters and in the response, closed-form derivatives of the
+#' distribution function, and closed-form moments. The fifth order and
+#' [distrib_cross3_y()] come from the numerical fallbacks of the base class.
 #'
 #' The two arguments choose the links that carry each parameter to the
-#' unconstrained scale an optimizer works on. The defaults are the identity for
+#' unconstrained scale on which an optimizer works. The defaults are the
+#' identity for
 #' \eqn{\mu}, which ranges over the whole line, and the logarithm for
 #' \eqn{\sigma^2}, which keeps it positive at every predictor.
 #'
@@ -806,9 +830,9 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #' On the original scale the mean is \eqn{e^{\mu + \sigma^2/2}}, the variance
 #' \eqn{(e^{\sigma^2}-1)e^{2\mu+\sigma^2}}, the skewness
 #' \eqn{(e^{\sigma^2}+2)\sqrt{e^{\sigma^2}-1}} and the excess kurtosis
-#' \eqn{e^{4\sigma^2}+2e^{3\sigma^2}+3e^{2\sigma^2}-6}. Three quantities are
-#' worth keeping apart: the mode is \eqn{e^{\mu-\sigma^2}}, the median
-#' \eqn{e^{\mu}} and the mean \eqn{e^{\mu+\sigma^2/2}}, in that order.
+#' \eqn{e^{4\sigma^2}+2e^{3\sigma^2}+3e^{2\sigma^2}-6}. The mode is
+#' \eqn{e^{\mu-\sigma^2}}, the median \eqn{e^{\mu}} and the mean
+#' \eqn{e^{\mu+\sigma^2/2}}, in increasing order.
 #'
 #' [lognormal2_distrib()] carries the same law parametrized by the mean and the
 #' variance of \eqn{Y} itself.
@@ -829,8 +853,8 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #'       \mathbb{E}\left[\ell^{(\mu\sigma^2)}\right] = 0.}
 #' Every one of these agrees with [gaussian2_distrib()] at \eqn{\log y},
 #' component for component and at all four orders, observed and expected. The
-#' two parameters are orthogonal and the information does not move with the
-#' mean of \eqn{Y}.
+#' two parameters are orthogonal and the information does not depend on
+#' \eqn{\mu}.
 #'
 #' The derivatives **in the response** are where the two families differ, the
 #' Jacobian being a function of \eqn{y}. They are still closed form; see
@@ -867,7 +891,8 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #' with a multiplicative variance function; [transformation()] for the general
 #' wrapper this family is a named instance of; [fit_distrib()] to estimate the
 #' parameters; [check_distrib()] to validate a family of your own against the
-#' same battery this one passes; [Lognormal1Distrib] for the class.
+#' same battery of checks that this family passes; [Lognormal1Distrib] for the
+#' class.
 #'
 #' @references
 #' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994).

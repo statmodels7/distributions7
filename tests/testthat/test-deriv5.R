@@ -147,7 +147,8 @@ test_that("a higher-accuracy rule agrees, which is what check_distrib asks", {
 test_that("the stencil comes from numericals7 and not from a written-out quotient", {
   # The nodes, the weights and the step are the library's, so raising the
   # accuracy is an argument rather than new arithmetic. Reconstructing the
-  # default rule from numericals7 by hand must reproduce the method exactly.
+  # default rule from numericals7 by hand must reproduce numerical_deriv5()
+  # exactly (the gaussian has a closed fifth order of its own since 0.77.0).
   d <- gaussian1_distrib()
   th <- list(mu = 0.3, sigma = 1.2)
   y <- c(-1.3, -0.2, 0.4, 1.1)
@@ -162,7 +163,7 @@ test_that("the stencil comes from numericals7 and not from a written-out quotien
     th2$sigma <- th$sigma + s[j] * h
     acc <- acc + w[j] * distrib_deriv4(d, y, th2)[["sigma_sigma_sigma_sigma"]]
   }
-  expect_equal(distrib_deriv5(d, y, th)[["sigma_sigma_sigma_sigma_sigma"]],
+  expect_equal(numerical_deriv5(d, y, th)[["sigma_sigma_sigma_sigma_sigma"]],
                acc / h, tolerance = 1e-14)
 })
 

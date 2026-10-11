@@ -26,12 +26,13 @@ be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_tau},
-\code{mu_tau_tau} and \code{tau_tau_tau}, each of length \code{length(y)}. The names
+\code{mu_tau_tau} and \code{tau_tau_tau}, each of length
+\code{max(length(y), length(mu), length(tau))}. The names
 enumerate the distinct multi-indices of order three in two parameters.
 }
 \description{
@@ -63,7 +64,7 @@ d3 <- distrib_deriv3(d, y, th)
 lapply(d3, unique)
 1 / 0.25^3
 
-# Free of the response, so asking for the expectation changes nothing.
+# Free of the response, so expected = TRUE changes nothing.
 identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
 
 # A central difference of the Hessian reproduces the same component.

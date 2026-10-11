@@ -16,14 +16,14 @@ must be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of \code{n} strictly positive draws.
+A numeric vector of \code{n} non-negative draws. At a very small shape
+\eqn{\mu^2/\sigma^2} a draw can underflow to exactly 0.
 }
 \description{
 Draws \code{n} independent gamma variates by calling \code{\link[stats:GammaDist]{stats::rgamma()}} at shape
 \eqn{\alpha = \mu^2/\sigma^2} and rate \eqn{\lambda = \mu/\sigma^2}, so the
 draws come from R's own gamma generator and depend on \code{.Random.seed} in the
-usual way. The ratio-of-uniforms fallback the base class supplies is
-bypassed.
+usual way. The inverse-transform fallback of the base class is not used.
 }
 \examples{
 d <- gamma2_distrib()

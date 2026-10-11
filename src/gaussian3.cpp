@@ -39,8 +39,8 @@ List gaussian3_hessian_cpp(NumericVector y, NumericVector mu, NumericVector tau,
         h_mt[i] = y[i] - m;
         h_tt[i] = d7::gaussian3_hess_tau_tau(t);
     });
-    return List::create(Named("mu_mu") = h_mm, Named("mu_tau") = h_mt,
-                        Named("tau_tau") = h_tt);
+    return List::create(Named("mu_mu") = h_mm, Named("tau_tau") = h_tt,
+                        Named("mu_tau") = h_mt);
 }
 
 // [[Rcpp::export]]
@@ -56,8 +56,8 @@ List gaussian3_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVe
         h_mt[i] = 0.0;
         h_tt[i] = d7::gaussian3_expected_tau_tau(t);
     });
-    return List::create(Named("mu_mu") = h_mm, Named("mu_tau") = h_mt,
-                        Named("tau_tau") = h_tt);
+    return List::create(Named("mu_mu") = h_mm, Named("tau_tau") = h_tt,
+                        Named("mu_tau") = h_mt);
 }
 
 // Every third derivative is free of y, so the observed and the expected ones

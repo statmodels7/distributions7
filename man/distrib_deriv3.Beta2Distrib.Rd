@@ -28,7 +28,9 @@ and expected third derivatives being the same numbers. Defaults to
 \value{
 A named list of four numeric vectors, \code{alpha_alpha_alpha},
 \code{alpha_alpha_beta}, \code{alpha_beta_beta} and \code{beta_beta_beta}, each of length
-\code{length(y)} and constant within itself when the parameters are.
+\code{max(length(y), length(alpha), length(beta))} and constant within itself
+when the
+parameters are.
 }
 \description{
 Computes the four distinct third derivatives of the beta log-density with
@@ -63,7 +65,7 @@ d3 <- distrib_deriv3(d, y, th)
 lapply(d3, unique)
 psigamma(7, deriv = 2)
 
-# Free of the response, so asking for the expectation changes nothing.
+# Free of the response, so expected = TRUE changes nothing.
 identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
 
 # A central difference of the Hessian reproduces the same component.

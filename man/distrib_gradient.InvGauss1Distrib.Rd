@@ -18,8 +18,8 @@ recycled. Both must be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{phi}, each of length
@@ -38,8 +38,8 @@ model, the residual divided by the variance function \eqn{\phi\mu^3}. The
 arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+With \code{scale = "link"} the generic applies the chain rule for the links of the
+family before returning. This method always returns the parameter
 scale.
 }
 \section{Notation}{

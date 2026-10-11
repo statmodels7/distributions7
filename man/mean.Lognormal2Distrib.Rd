@@ -17,9 +17,11 @@
 A numeric vector, one value per parameter row.
 }
 \description{
-The mean is \eqn{m} and the variance \eqn{v}. With \eqn{w = 1 + v/m^2} the
-skewness is \eqn{(w + 2)\sqrt{w - 1}} and the excess kurtosis
-\eqn{w^4 + 2w^3 + 3w^2 - 6}.
+The mean is \eqn{m} and the variance \eqn{v}. With \eqn{e = v/m^2} the
+skewness is \eqn{(e + 3)\sqrt{e}} and the excess kurtosis
+\eqn{e(16 + 15e + 6e^2 + e^3)}, which are \eqn{(w + 2)\sqrt{w - 1}} and
+\eqn{w^4 + 2w^3 + 3w^2 - 6} at \eqn{w = 1 + e} written without the
+subtraction that loses digits when \eqn{e} is small.
 }
 \examples{
 d <- lognormal2_distrib()

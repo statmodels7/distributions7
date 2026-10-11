@@ -28,8 +28,6 @@ The first term comes from the \eqn{y^{-3/2}} factor of the density and the
 second from the exponent. It changes sign at the mode, which for this family
 is \eqn{\mu\{(1 + 9\phi^2\mu^2/4)^{1/2} - 3\phi\mu/2\}}, always strictly
 below the mean.
-
-Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
 }
 \examples{
 d <- invgauss1_distrib()

@@ -38,8 +38,9 @@ of freedom \eqn{\nu > 0}. The returned object carries closed-form
 derivatives of the log-density to fifth order in the parameters and to
 fourth order in the response, the mixed derivatives, and the expected
 information with its expected third and fourth orders and its first two
-derivatives, all closed forms; the derivatives of the distribution function
-in \eqn{\nu} are differenced.
+derivatives, all closed forms. The derivatives of the distribution function
+in \eqn{\mu} and \eqn{\sigma} are closed forms, and those in \eqn{\nu}
+come from a compiled quadrature of the derivatives of the density.
 
 The family is the standard heavy-tailed alternative to a Gaussian. Its
 location score redescends, so a gross outlier contributes almost nothing to
@@ -47,7 +48,7 @@ the estimating equation, and \eqn{\nu} is estimated from the data rather
 than set: a large fitted \eqn{\nu} reports that the sample looks Gaussian.
 
 The three arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on.
+unconstrained scale on which an optimizer works.
 }
 \section{The parametrization}{
 The density on \eqn{y \in (-\infty, \infty)} is
@@ -60,12 +61,12 @@ the standard Student t distribution function.
 \eqn{\sigma\sqrt{\nu/(\nu-2)}} and exists only above \eqn{\nu = 2}. Keeping
 the two apart lets the family be fitted where the second moment does not
 exist; \code{\link[=student_t2_distrib]{student_t2_distrib()}} is the parametrization by the standard
-deviation, for a reader who wants one.
+deviation.
 
 Two shapes are named families: \eqn{\nu = 1} is the Cauchy, and
 \eqn{\nu \to \infty} the Gaussian with standard deviation \eqn{\sigma}. The
 approach to the limit is \eqn{O(1/\nu)}, so at \eqn{\nu = 10^5} the density
-already agrees with a Gaussian's to seven figures.
+differs from a Gaussian's by a relative amount of order \eqn{10^{-5}}.
 }
 
 \section{Derivatives}{
@@ -87,7 +88,7 @@ therefore orthogonal to the other two, whose estimates are asymptotically
 correlated with each other.
 }
 
-\section{Redescent, and where it costs}{
+\section{Redescending score}{
 The location score \eqn{(\nu+1)r/D} rises to
 \eqn{(\nu+1)/(2\sigma\sqrt{\nu})} at \eqn{|r| = \sigma\sqrt{\nu}} and falls
 back towards zero, so an observation far from the location is downweighted
@@ -99,8 +100,8 @@ default in \code{\link[=fit_distrib]{fit_distrib()}}.
 }
 
 \section{Moments}{
-Each exists only above its own threshold, and the family reports \code{NaN} or
-\code{Inf} where it does not: the mean is \eqn{\mu} for \eqn{\nu > 1}, the
+Each exists only above its own threshold, and the method returns \code{NaN} or
+\code{Inf} below it: the mean is \eqn{\mu} for \eqn{\nu > 1}, the
 variance \eqn{\sigma^2\nu/(\nu-2)} for \eqn{\nu > 2}, the skewness 0 for
 \eqn{\nu > 3} and the excess kurtosis \eqn{6/(\nu-4)} for \eqn{\nu > 4}. At
 \eqn{\nu = 1.5}, for instance, the mean is \eqn{\mu} and the variance is
@@ -110,9 +111,9 @@ variance \eqn{\sigma^2\nu/(\nu-2)} for \eqn{\nu > 2}, the skewness 0 for
 \section{Estimation}{
 \code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale by Fisher
 scoring. No estimate is closed form, the three estimating equations being
-coupled through \eqn{D}. On Gaussian data \eqn{\hat\nu} runs towards its
-upper boundary, which is the correct answer and is reported as a value near
-the clamp of its log link rather than as \code{Inf}.
+coupled through \eqn{D}. On Gaussian data the likelihood has no finite
+maximizer in \eqn{\nu}: \eqn{\hat\nu} diverges, and the fit returns a large
+finite value.
 }
 
 \section{Notation}{
@@ -173,6 +174,7 @@ limit; \code{\link[=skewt_distrib]{skewt_distrib()}} to add a shape parameter;
 \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} and \code{\link[=laplace_distrib]{laplace_distrib()}} for other robust families;
 \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} for the multivariate version;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery this one passes;
+family of your own against the same battery of checks that this family
+passes;
 \link{StudentT1Distrib} for the class.
 }

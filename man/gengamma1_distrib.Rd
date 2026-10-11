@@ -27,9 +27,9 @@ An S7 object of class \link{GenGamma1Distrib}, inheriting from
 }
 \description{
 Builds a generalized gamma distribution object in Stacy's form, with a scale
-\eqn{a > 0} and two shapes \eqn{d > 0} and \eqn{p > 0}. It is the flexible
-family for a positive response, and it makes the choice between the gamma,
-the Weibull and the exponential something to estimate.
+\eqn{a > 0} and two shapes \eqn{d > 0} and \eqn{p > 0}. The family contains
+the gamma, the Weibull and the exponential as special cases, so the choice
+among them can be made by estimating \eqn{d} and \eqn{p}.
 }
 \section{Density}{
 \deqn{f(y) = \dfrac{p}{a^{d}\,\Gamma(d/p)}\,y^{d-1}e^{-(y/a)^{p}},
@@ -62,8 +62,8 @@ With \eqn{w = (y/a)^{p}}, \eqn{L = \log(y/a)} and \eqn{k = d/p},
       \dfrac{\partial\ell}{\partial d} = L - \dfrac{\psi(k)}{p}, \qquad
       \dfrac{\partial\ell}{\partial p} = \dfrac{1}{p}
         + \dfrac{d\psi(k)}{p^{2}} - wL,}
-and the expected information is \strong{closed form}. The reason is the one
-representation the whole family rests on: \eqn{u = (Y/a)^p} is Gamma with
+and the expected information is \strong{closed form}, because
+\eqn{u = (Y/a)^p} is Gamma with
 shape \eqn{k} and unit rate, so every expectation the Hessian needs is one
 of \eqn{E[u] = k}, \eqn{E[u\log u] = k\psi(k+1)} and
 \eqn{E[u(\log u)^2] = k\{\psi(k+1)^2 + \psi'(k+1)\}}. The same
@@ -80,12 +80,12 @@ value.
 \section{Identification}{
 The three parameters are \strong{weakly identified together}: \eqn{d} and \eqn{p}
 enter the density largely through their ratio, and the profile likelihood in
-that direction is flat. Measured at \eqn{a = 2, d = 3, p = 1.5}, the
-information's eigenvalues are 4.72, 0.138 and 0.00321, a condition number of
-1470, with the flat direction \eqn{(0.79, -0.52, 0.33)}. A fit of all three
-wants several hundred observations: on 200 the standard errors are 0.88,
-0.59 and 0.44 against estimates of 2.20, 2.89 and 1.68, and on 2000 they are
-0.31, 0.21 and 0.14. Holding one with \code{\link[=fixed]{fixed()}} is often the better model.
+that direction is flat (at \eqn{a = 2, d = 3, p = 1.5} the eigenvalues of
+the information are 4.72, 0.138 and 0.00321, with the flat direction
+\eqn{(0.79, -0.52, 0.33)}). A fit of all three parameters needs several
+hundred observations for usable standard errors, as the two fits of the
+examples show; holding one parameter fixed with \code{\link[=fixed]{fixed()}} removes the flat
+direction.
 }
 
 \section{Parameter domains}{

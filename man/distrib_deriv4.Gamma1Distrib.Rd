@@ -27,8 +27,8 @@ and the expected values.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of five numeric vectors, \code{mu_mu_mu_mu},
@@ -49,9 +49,10 @@ Faa di Bruno on \eqn{s(\phi) = 1/\phi},
       + 4 f_2 s' s''' + f_1 s'''',}
 with \eqn{s' = -s^2}, \eqn{s'' = 2s^3}, \eqn{s''' = -6s^4},
 \eqn{s'''' = 24s^5} and \eqn{f_k} the \eqn{k}th derivative of \eqn{\ell} in
-\eqn{s}. The four \eqn{f_k} are polygamma functions of \eqn{s}, each
-computed as a polygamma minus its own leading asymptote so that the digits
-survive at large shape.
+\eqn{s}. \eqn{f_2}, \eqn{f_3} and \eqn{f_4} are polygamma functions of
+\eqn{s}, each computed as a polygamma minus its own leading asymptote, and
+\eqn{f_1} also contains \eqn{\log z - (z - 1)}, so the digits survive at
+large shape.
 
 With \code{expected = TRUE} the expectations are returned, obtained by replacing
 \eqn{z} with 1 and \eqn{\log z} with \eqn{\psi(s) - \log s}. Both routes are
@@ -77,7 +78,7 @@ z <- y / 3
 all.equal(d4$mu_mu_mu_mu, s * (6 - 24 * z) / 3^4)
 all.equal(d4$mu_phi_phi_phi, -6 * s^4 * (z - 1) / 3)
 
-# Expected values: the components odd in z - 1 vanish.
+# Expected values: mu_phi_phi_phi, the component odd in z - 1, vanishes.
 lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 
 # A central difference of the third order reproduces it.

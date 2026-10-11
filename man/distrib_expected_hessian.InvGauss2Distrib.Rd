@@ -24,8 +24,8 @@ quadrature, Monte Carlo and outer-product routes.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{mu_lambda} and
@@ -83,7 +83,8 @@ rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
                         function(v) v[1], numeric(1)))
 }
 \seealso{
-\code{\link[=distrib_hessian.InvGauss2Distrib]{distrib_hessian.InvGauss2Distrib()}} for the observed quantity this
-is the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step,
+\code{\link[=distrib_hessian.InvGauss2Distrib]{distrib_hessian.InvGauss2Distrib()}} for the observed Hessian, of
+which this is the expectation, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at
+each step,
 and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

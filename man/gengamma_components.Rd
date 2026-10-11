@@ -27,7 +27,7 @@ Returns the components of
 \partial p^\gamma} at any order from one to four, assembled term by term
 from the five pieces of the log-density.
 }
-\section{Why the assembly is short}{
+\section{Structure of the assembly}{
 With \eqn{L = \log(y/a)} the log-density splits into
 \deqn{\ell = \log p - d\log a - \log\Gamma(d/p) + (d-1)\log y - e^{pL},}
 and each piece is either elementary or a univariate function composed with a
@@ -42,9 +42,11 @@ pieces, and no genuinely three-variable expansion is ever formed. A
 component naming both \eqn{a} and \eqn{d} comes from the elementary
 \eqn{-d\log a} alone.
 
-The assembly is checked at order two against the compiled Hessian, which was
-written independently, so the orders that cannot be checked against a
-hand-written form rest on the orders that can.
+The tests compare the assembly at orders one to four with the compiled
+kernels of \code{\link[=distrib_gradient.GenGamma1Distrib]{distrib_gradient.GenGamma1Distrib()}},
+\code{\link[=distrib_hessian.GenGamma1Distrib]{distrib_hessian.GenGamma1Distrib()}} and the orders three and four, which
+were written independently. Below \eqn{k = d/p} of about 0.01 the assembly
+loses accuracy, since it evaluates \eqn{\psi^{(n)}(k)} near its pole.
 }
 
 \seealso{

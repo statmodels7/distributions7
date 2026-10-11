@@ -16,13 +16,14 @@ must lie strictly in \eqn{(0, 1)} and \code{phi} must be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of \code{n} draws in \eqn{(0, 1)}.
+A numeric vector of \code{n} draws in \eqn{[0, 1]}. At a very small
+shape a draw can round to exactly 0 or 1.
 }
 \description{
 Draws \code{n} independent beta variates by calling \code{\link[stats:Beta]{stats::rbeta()}} at shapes
 \eqn{\alpha = \mu\phi} and \eqn{\beta = (1-\mu)\phi}, so the draws come from
 R's own beta generator and depend on \code{.Random.seed} in the usual way. The
-ratio-of-uniforms fallback the base class supplies is bypassed.
+inverse-transform fallback of the base class is not used.
 }
 \examples{
 d <- beta1_distrib()

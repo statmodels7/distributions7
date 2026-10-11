@@ -28,12 +28,14 @@ kernel may use. Defaults to \code{1L}.}
 }
 \value{
 A named list of six numeric vectors in \code{\link[=hess_names]{hess_names()}}'s order:
-\code{a_a}, \code{d_d}, \code{p_p}, \code{a_d}, \code{a_p}, \code{d_p}. Every entry is negative
-definite as a matrix and free of the data.
+\code{a_a}, \code{d_d}, \code{p_p}, \code{a_d}, \code{a_p}, \code{d_p}. The vectors depend on \code{y} only
+through its length, and the matrix that they form at each observation is
+negative definite.
 }
 \description{
 Returns the expected second derivatives in closed form. Every expectation
-the observed Hessian needs is a moment of \eqn{u = (Y/a)^{p}}, which is
+that the observed Hessian requires is a moment of \eqn{u = (Y/a)^{p}}, which
+is
 Gamma with shape \eqn{k = d/p} and unit rate:
 \deqn{E[u] = k, \qquad E[u\log u] = k\,\psi(k+1), \qquad
       E[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}.}
@@ -49,8 +51,9 @@ enter the density largely through their ratio \eqn{k = d/p}, and the
 information reflects that: measured at \eqn{a = 2, d = 3, p = 1.5} its
 eigenvalues are 4.72, 0.138 and 0.00321, a condition number of 1470, and the
 flat direction is \eqn{(0.79, -0.52, 0.33)} in \eqn{(a, d, p)}. A fit of all
-three wants several hundred observations; holding one with \code{\link[=fixed]{fixed()}} is
-often the better model.
+three parameters needs several hundred observations for usable standard
+errors; holding one parameter fixed with \code{\link[=fixed]{fixed()}} removes the flat
+direction.
 }
 
 \section{Notation}{

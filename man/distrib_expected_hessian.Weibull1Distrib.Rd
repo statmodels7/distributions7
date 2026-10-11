@@ -25,12 +25,13 @@ the signature matches the generic's, where it selects between
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
-\code{mu_sigma}, each of length \code{length(y)} and each constant along it.
+\code{mu_sigma}, each of length \code{max(length(y), length(mu), length(sigma))}
+and constant when \code{mu} and \code{sigma} have length 1.
 }
 \description{
 Returns the expectation of the observed Hessian under the model, in closed
@@ -93,7 +94,8 @@ vapply(distrib_hessian(d, z, th), mean, numeric(1))
 identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
 }
 \seealso{
-\code{\link[=distrib_hessian.Weibull1Distrib]{distrib_hessian.Weibull1Distrib()}} for the quantity this is the
-expectation of, \code{\link[=distrib_gradient.Weibull1Distrib]{distrib_gradient.Weibull1Distrib()}} for the score, and
+\code{\link[=distrib_hessian.Weibull1Distrib]{distrib_hessian.Weibull1Distrib()}} for the observed Hessian, of
+which this is the expectation, \code{\link[=distrib_gradient.Weibull1Distrib]{distrib_gradient.Weibull1Distrib()}} for
+the score, and
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

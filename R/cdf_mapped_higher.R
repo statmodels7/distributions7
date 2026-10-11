@@ -201,9 +201,11 @@ register_mapped_cdf_k <- function(cls, parent_fn, th_fn, md_fn,
     force(o)
     function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
       ok <- if (is.null(q_ok)) rep(TRUE, length(q)) else q_ok(q)
-      mapped_cdf_deriv_k(distrib, parent_fn(), th_fn(theta), md_fn(theta, o),
-                         q, theta, o, lower.tail, log,
-                         q_par = q_fn(ifelse(ok, q, 1)), zero = !ok)
+      out <- mapped_cdf_deriv_k(distrib, parent_fn(), th_fn(theta),
+                                md_fn(theta, o), q, theta, o, lower.tail, log,
+                                q_par = q_fn(ifelse(ok, q, 1)), zero = !ok)
+      # order two in the order of hess_names(), as every other route returns it
+      if (o == 2L) out[hess_names(distrib@params)] else out
     }
   }
   gens <- list(distrib_grad_cdf, distrib_hess_cdf,

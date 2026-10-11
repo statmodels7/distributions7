@@ -46,8 +46,8 @@ List gaussian2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigm
         h_mv[i] = -r * u2;
         h_vv[i] = d7::gaussian2_hess_sigma2_sigma2(r, v, u);
     });
-    return List::create(Named("mu_mu") = h_mm, Named("mu_sigma2") = h_mv,
-                        Named("sigma2_sigma2") = h_vv);
+    return List::create(Named("mu_mu") = h_mm, Named("sigma2_sigma2") = h_vv,
+                        Named("mu_sigma2") = h_mv);
 }
 
 // [[Rcpp::export]]
@@ -64,8 +64,8 @@ List gaussian2_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVe
         h_mv[i] = 0.0;
         h_vv[i] = d7::gaussian2_expected_sigma2_sigma2(u);
     });
-    return List::create(Named("mu_mu") = h_mm, Named("mu_sigma2") = h_mv,
-                        Named("sigma2_sigma2") = h_vv);
+    return List::create(Named("mu_mu") = h_mm, Named("sigma2_sigma2") = h_vv,
+                        Named("mu_sigma2") = h_mv);
 }
 
 // [[Rcpp::export]]

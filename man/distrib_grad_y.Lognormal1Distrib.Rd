@@ -24,7 +24,7 @@ Computes the first derivative of the lognormal log-density with respect to
 the response, in closed form. With \eqn{r = \log y - \mu},
 \deqn{\dfrac{\partial \ell}{\partial y} =
       -\dfrac{1}{y}\left(1 + \dfrac{r}{\sigma^2}\right).}
-This is where the family parts company with the Gaussian: the Jacobian
+This is where the family differs from the Gaussian: the Jacobian
 \eqn{1/y} of the log transformation carries no parameter and so leaves every
 derivative in \eqn{\mu} and \eqn{\sigma^2} alone, but it is a function of
 the response and does enter here.
@@ -33,8 +33,6 @@ The derivative vanishes at \eqn{r = -\sigma^2}, that is at
 \eqn{y = e^{\mu - \sigma^2}}, which is the mode of the density and lies
 below both the median \eqn{e^{\mu}} and the mean
 \eqn{e^{\mu + \sigma^2/2}}.
-
-Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
 }
 \examples{
 d <- lognormal1_distrib()

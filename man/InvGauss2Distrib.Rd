@@ -55,31 +55,50 @@ everything else comes from the parent.
 
 Build one with \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}, which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,
-which takes the parent's properties and validates none of the relationships
-between them.
+which takes the parent's properties; the validator of \code{distrib} checks that
+they are consistent (the parameter count, a bound and a link for every
+parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class in this file:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.InvGauss2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.InvGauss2Distrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.InvGauss2Distrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.InvGauss2Distrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.InvGauss2Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_quantile.InvGauss2Distrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.InvGauss2Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.InvGauss2Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.InvGauss2Distrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.InvGauss2Distrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.InvGauss2Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.InvGauss2Distrib]{distrib_rng()}}
-
-Three more are registered elsewhere in the package and are closed form too:
+\code{\link[=distrib_expected_hessian.InvGauss2Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.InvGauss2Distrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.InvGauss2Distrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.InvGauss2Distrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.InvGauss2Distrib]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
 \code{\link[=distrib_grad_y.InvGauss2Distrib]{distrib_grad_y()}},
-\code{\link[=distrib_hess_y.InvGauss2Distrib]{distrib_hess_y()}} and
-\code{\link[=distrib_cross_y.InvGauss2Distrib]{distrib_cross_y()}}, the derivatives
-in the response and the mixed block, and
-\code{\link[=distrib_grad_cdf.InvGauss2Distrib]{distrib_grad_cdf()}} for the
-derivatives of the distribution function.
+\code{\link[=distrib_hess_y.InvGauss2Distrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.InvGauss2Distrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.InvGauss2Distrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.InvGauss2Distrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.InvGauss2Distrib]{distrib_cross2_y()}},
+\code{\link[=distrib_grad_y_hess.InvGauss2Distrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.InvGauss2Distrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.InvGauss2Distrib]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf.InvGauss2Distrib]{distrib_hess_cdf()}},
+\code{\link[=distrib_deriv3_cdf.InvGauss2Distrib]{distrib_deriv3_cdf()}} and
+\code{\link[=distrib_deriv4_cdf.InvGauss2Distrib]{distrib_deriv4_cdf()}};
+\item the moments: \code{\link[=mean.InvGauss2Distrib]{mean()}},
+\code{\link[=variance.InvGauss2Distrib]{variance()}},
+\code{\link[=skewness.InvGauss2Distrib]{skewness()}} and
+\code{\link[=kurtosis.InvGauss2Distrib]{kurtosis()}}.
+}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{
@@ -100,6 +119,5 @@ vapply(c(1, 3, 30), function(l) variance(d, list(mu = 2, lambda = l)),
 \code{\link[=invgauss1_distrib]{invgauss1_distrib()}} for the same law in mean and dispersion
 \eqn{\phi = 1/\lambda};
 \code{\link[=distrib_pdf.InvGauss2Distrib]{distrib_pdf.InvGauss2Distrib()}} and
-\code{\link[=distrib_gradient.InvGauss2Distrib]{distrib_gradient.InvGauss2Distrib()}} for the closed forms this class
-supplies.
+\code{\link[=distrib_gradient.InvGauss2Distrib]{distrib_gradient.InvGauss2Distrib()}} for the closed forms of this class.
 }

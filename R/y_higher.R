@@ -254,7 +254,10 @@ S7::method(distrib_deriv4_y, SkewNormal2Distrib) <- function(distrib, y, theta, 
 #'
 #' @details
 #' A term linear in \eqn{y} is `dy_pow` at \eqn{p = 1} and vanishes from
-#' the second order, so it needs no case of its own.
+#' the second order, so it needs no case of its own. Where the coefficient of
+#' the derivative is zero (a shape equal to 1 in `dy_log` and `dy_log1m`, an
+#' integer exponent below the order in `dy_pow`) the result is 0 at every
+#' `y`, including the boundary where the power of `y` is infinite.
 #'
 #' @param c The coefficient.
 #' @param y The response.
@@ -266,11 +269,13 @@ S7::method(distrib_deriv4_y, SkewNormal2Distrib) <- function(distrib, y, theta, 
 #' @return A numeric vector the length of `y`.
 #'
 #' @keywords internal
-dy_log <- function(c, y, k) c * (-1)^(k - 1L) * factorial(k - 1L) / y^k
+dy_log <- function(c, y, k) {
+  dy_zero(c, c * (-1)^(k - 1L) * factorial(k - 1L) / y^k)
+}
 
 #' @rdname dy_log
 #' @keywords internal
-dy_log1m <- function(c, y, k) -c * factorial(k - 1L) / (1 - y)^k
+dy_log1m <- function(c, y, k) dy_zero(c, -c * factorial(k - 1L) / (1 - y)^k)
 
 #' @rdname dy_log
 #' @keywords internal
@@ -278,7 +283,16 @@ dy_pow <- function(c, p, y, k) {
   # the falling factorial elementwise: p may vary by observation
   ff <- 1
   for (j in seq_len(k)) ff <- ff * (p - j + 1)
-  c * ff * y^(p - k)
+  dy_zero(c * ff, c * ff * y^(p - k))
+}
+
+#' @rdname dy_log
+#' @param r The derivative before the masking, for `dy_zero`, which sets it
+#'   to 0 wherever the coefficient `c` (recycled to its length) is 0.
+#' @keywords internal
+dy_zero <- function(c, r) {
+  r[rep_len(c, length(r)) == 0] <- 0
+  r
 }
 
 #' @rdname dy_log

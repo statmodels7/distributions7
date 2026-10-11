@@ -25,13 +25,14 @@ A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code
 \description{
 The first and second derivatives of the expected information in
 \eqn{(\mu, \phi)}, from a compiled kernel. With \eqn{s = 1/\phi},
-\eqn{\mathbb{E}[\ell_{\mu\mu}] = -s/\mu^2}, \eqn{\mathbb{E}[\ell_{\mu\phi}]
-= 0} and \eqn{\mathbb{E}[\ell_{\phi\phi}] = q(s) = s^4(1/s - \psi'(s))};
+\eqn{\mathbb{E}[\ell^{(\mu\mu)}] = -s/\mu^2},
+\eqn{\mathbb{E}[\ell^{(\mu\phi)}] = 0} and
+\eqn{\mathbb{E}[\ell^{(\phi\phi)}] = q(s) = s^4(1/s - \psi'(s))};
 writing \eqn{f_2 = 1/s - \psi'(s)} and \eqn{f_3}, \eqn{f_4} its derivatives,
 \deqn{\partial_\phi \mathbb{E}[\ell_{\phi\phi}] = -s^2 q'(s),\qquad
   \partial_{\phi\phi} \mathbb{E}[\ell_{\phi\phi}] = s^4 q''(s) + 2 s^3 q'(s),}
 with \eqn{q' = f_3 s^4 + 4 f_2 s^3} and \eqn{q'' = f_4 s^4 + 8 f_3 s^3 +
-12 f_2 s^2}, each \eqn{f_k} read in the form that forms no cancellation at
+12 f_2 s^2}, each \eqn{f_k} computed in a form free of cancellation at
 large \eqn{s}. The derivatives of \eqn{-\mu^{-2}\phi^{-1}} are monomials. On
 the link scale the result is carried across by \code{\link[=dexpected_link]{dexpected_link()}}.
 }

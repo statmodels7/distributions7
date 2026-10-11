@@ -30,10 +30,10 @@ inputs, strictly positive for a probability in \eqn{(0, 1)}.
 }
 \description{
 Computes \eqn{Q(u) = a\,\{Q_\Gamma(u;\, d/p)\}^{1/p}}, inverting the same
-representation the distribution function uses: \eqn{(Y/a)^p} is Gamma with
+representation as the distribution function: \eqn{(Y/a)^p} is Gamma with
 shape \eqn{d/p}, so its quantile raised to the power \eqn{1/p} and scaled by
 \eqn{a} is the generalized gamma's. The whole computation is one \code{qgamma}
-call, and nothing is inverted by root finding.
+call, without root finding.
 }
 \examples{
 d <- gengamma1_distrib()

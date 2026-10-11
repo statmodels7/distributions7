@@ -29,7 +29,7 @@ Computes the six second derivatives of the log-density in closed form, in a
 compiled kernel, by differentiating the expressions of
 \code{\link[=distrib_gradient.GenGamma1Distrib]{distrib_gradient.GenGamma1Distrib()}} again.
 
-One component is worth naming: the mixed \eqn{a}-\eqn{d} entry is
+The mixed \eqn{a}-\eqn{d} entry is
 \eqn{-1/a}, free of the data. The scale and the first shape meet in the
 log-density only through the term \eqn{-d\log a}, which is bilinear, so
 its second derivative carries no observation.

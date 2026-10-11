@@ -29,8 +29,6 @@ mode and negative above it. At \eqn{\phi = 1} the shape is 1, the first term
 drops out and the derivative is the constant \eqn{-1/\mu} of an exponential.
 At \eqn{\phi > 1} the shape falls below 1, the density has no interior mode
 and the derivative is negative throughout.
-
-Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
 }
 \examples{
 d <- gamma1_distrib()
@@ -57,6 +55,7 @@ eps <- 1e-6
 \seealso{
 \code{\link[=distrib_hess_y.Gamma1Distrib]{distrib_hess_y.Gamma1Distrib()}} for the second derivative in the
 response, \code{\link[=distrib_gradient.Gamma1Distrib]{distrib_gradient.Gamma1Distrib()}} for the score in the
-parameters, \code{\link[=gamma1_shape_rate]{gamma1_shape_rate()}} for the conversion this uses, and
+parameters, \code{\link[=gamma1_shape_rate]{gamma1_shape_rate()}} for the conversion that this method uses,
+and
 \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

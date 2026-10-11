@@ -25,12 +25,13 @@ An S7 object of class \code{Gaussian2Distrib}, inheriting from
 \description{
 Builds the distribution object for the Gaussian (normal) family parametrized
 by its mean \eqn{\mu} and its variance \eqn{\sigma^2 > 0}. The returned
-object carries closed-form derivatives of the log-density to fourth order,
-in the parameters and in the response, and closed-form moments, so every
-generic of the toolkit answers without a numerical fallback.
+object carries closed-form derivatives of the log-density to fourth order
+in the response and to fifth order in the parameters, and closed-form
+moments.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the identity for
+unconstrained scale on which an optimizer works. The defaults are the
+identity for
 the mean, which is already free, and the logarithm for the variance, which
 keeps it positive at every predictor.
 }
@@ -45,10 +46,10 @@ one: this parametrization is \code{NO2} in the gamlss family catalog.
 
 This is the same law as \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} in different coordinates,
 \eqn{\sigma^2} here being the square of the \eqn{\sigma} there. The two are
-separate families and not one family under a link, because a link changes
-the scale a parameter is \emph{modeled} on and leaves the parameter what it was,
-while here the parameter, its interpretation, its standard error and its
-confidence interval are all about the variance.
+separate families and not one family under a link. A link changes the
+scale on which a parameter is modeled and leaves the parameter unchanged,
+whereas here the parameter, its interpretation, its standard error and its
+confidence interval refer to the variance.
 }
 
 \section{Derivatives}{
@@ -112,7 +113,7 @@ fit <- fit_distrib(d, z)
 rbind(fitted = coef(fit),
       closed = c(mu = mean(z), sigma2 = mean((z - mean(z))^2)))
 
-# The estimate is a variance, so the interval it reports is an interval for
+# The estimate is a variance, so its interval is an interval for
 # the variance and stays positive.
 confint(fit)
 
@@ -128,5 +129,5 @@ standard deviation and in the precision; \code{\link[=lognormal1_distrib]{lognor
 Gaussian on a log scale; \code{\link[=student_t1_distrib]{student_t1_distrib()}} and \code{\link[=laplace_distrib]{laplace_distrib()}} for
 heavier tails; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters;
 \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the same battery
-this one passes; \link{Gaussian2Distrib} for the class.
+of checks that this family passes; \link{Gaussian2Distrib} for the class.
 }

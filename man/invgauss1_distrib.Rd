@@ -28,11 +28,13 @@ Builds the distribution object for the inverse Gaussian family on
 generalized linear model parametrization, with variance function
 \eqn{V(\mu) = \mu^3}. The returned object carries closed-form derivatives of
 the log-density to fourth order, in the parameters and in the response, and
-closed-form moments, so every generic of the toolkit answers without a
-numerical fallback.
+closed-form moments. The fifth order and the mixed derivatives of order
+three and four in the response and the parameters come from the numerical
+fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both parameters being positive.
 }
 \section{The parametrization}{
@@ -48,15 +50,17 @@ distribution function is elementary in the standard normal one,
         \left(\dfrac{q}{\mu} + 1\right)\right\},}
 and the quantile function is its numerical inverse.
 
-The law is the first-passage time of a Brownian motion with drift, which is
-why it is skewed however small the dispersion and why its variance grows
-with the cube of the mean. Beside the gamma, whose variance function is
-\eqn{\mu^2}, it puts more mass both near zero and far out.
+The law is the distribution of the first-passage time of a Brownian motion
+with drift to a fixed level. Its skewness \eqn{3\sqrt{\phi\mu}} tends to
+zero with \eqn{\phi\mu}. Compared with a gamma of the same mean and
+variance it has less mass near zero, its density vanishing like
+\eqn{\exp\{-1/(2\phi y)\}} at the origin, and a right tail that decays at
+the rate \eqn{1/(2\phi\mu^2)}, half the gamma's.
 
 This is the same law as \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}, which carries the mean and
-the \emph{variance}, the two being related by \eqn{\sigma^2 = \phi\mu^3}. They
-are separate families because the second parameter is a different quantity
-in each, with its own interpretation, standard error and interval.
+the shape \eqn{\lambda = 1/\phi}. They are separate families because the
+second parameter is a different quantity in each, with its own
+interpretation, standard error and interval.
 }
 
 \section{Derivatives}{
@@ -73,13 +77,14 @@ and the expected Hessian is
       \mathbb{E}\left[\ell^{(\mu\phi)}\right] = 0.}
 The zero off-diagonal makes the mean and the dispersion orthogonal, so the
 mean equation can be fitted with the dispersion held at any value without
-biasing it. Note that the expected curvature in \eqn{\phi} is
-\eqn{-1/(2\phi^2)} whatever the mean, so the dispersion is estimated with
-the same precision at every scale of the response.
+biasing it. The expected curvature in \eqn{\phi} is \eqn{-1/(2\phi^2)}
+for every value of the mean, so the asymptotic variance of the estimated
+dispersion, \eqn{2\phi^2/n}, does not depend on the mean.
 
-The observed Hessian is a different matter, and the method page says so at
-length: neither diagonal entry is negative at every observation. That is the
-practical reason to fit this family by \code{\link[=fisher_scoring]{fisher_scoring()}}.
+The diagonal entries of the observed Hessian,
+\code{\link[=distrib_hessian.InvGauss1Distrib]{distrib_hessian.InvGauss1Distrib()}}, are not negative at every
+observation, which is the practical reason to fit this family by
+\code{\link[=fisher_scoring]{fisher_scoring()}}.
 
 Third and fourth orders are closed form as well, observed and expected, in
 \code{\link[=distrib_deriv3.InvGauss1Distrib]{distrib_deriv3.InvGauss1Distrib()}} and \code{\link[=distrib_deriv4.InvGauss1Distrib]{distrib_deriv4.InvGauss1Distrib()}},
@@ -90,8 +95,7 @@ form too, the expression above being elementary.
 }
 
 \section{Estimation}{
-Both maximum likelihood estimates are available in closed form, which few
-two-parameter families offer:
+The maximum likelihood estimates of both parameters have a closed form:
 \deqn{\hat\mu = \bar y, \qquad
       \hat\phi = \dfrac{1}{n}\sum_i \dfrac{1}{y_i} - \dfrac{1}{\bar y}.}
 \code{\link[=fit_distrib]{fit_distrib()}} reaches them numerically on the link scale, and the example
@@ -139,11 +143,12 @@ Distribution: Theory, Methodology, and Applications}. Marcel Dekker,
 New York.
 }
 \seealso{
-\code{\link[=invgauss2_distrib]{invgauss2_distrib()}} for the same law in the mean and the variance;
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}} for the same law in the mean and the shape;
 \code{\link[=gamma1_distrib]{gamma1_distrib()}} for the other positive generalized linear model family,
 with variance function \eqn{\mu^2}; \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for a third;
-\code{\link[=pig1_distrib]{pig1_distrib()}} for the counts this law mixes a Poisson into;
+\code{\link[=pig1_distrib]{pig1_distrib()}} for the Poisson mixed over this law;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery this one passes;
+family of your own against the same battery of checks that this family
+passes;
 \link{InvGauss1Distrib} for the class.
 }

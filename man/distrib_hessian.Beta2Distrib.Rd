@@ -18,12 +18,13 @@ positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{alpha_alpha}, \code{beta_beta}
-and \code{alpha_beta}, in that order, each of length \code{length(y)}. The three
+and \code{alpha_beta}, in that order, each of length
+\code{max(length(y), length(alpha), length(beta))}. The three
 name the distinct entries of a symmetric \eqn{2 \times 2} matrix per
 observation.
 }
@@ -70,6 +71,5 @@ all.equal((up - dn) / (2 * eps), h$alpha_alpha, tolerance = 1e-5)
 \code{\link[=distrib_gradient.Beta2Distrib]{distrib_gradient.Beta2Distrib()}} for the score, which is the one
 quantity here that does read the data;
 \code{\link[=distrib_expected_hessian.Beta2Distrib]{distrib_expected_hessian.Beta2Distrib()}}, which returns the same numbers;
-\code{\link[=beta2_higher]{beta2_higher()}}, which computes this; and \code{\link[=distrib_hessian]{distrib_hessian()}} for the
-generic.
+and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

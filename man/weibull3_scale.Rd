@@ -2,19 +2,31 @@
 % Please edit documentation in R/weibull3_distrib.R
 \name{weibull3_scale}
 \alias{weibull3_scale}
+\alias{weibull3_log_scale}
+\alias{weibull3_scale_ok}
 \title{The Scale of a Weibull with a Given Mean}
 \usage{
 weibull3_scale(theta)
+
+weibull3_log_scale(theta)
+
+weibull3_scale_ok(lb)
 }
 \arguments{
 \item{theta}{A list with the mean and the shape, in that order.}
+
+\item{lb}{A numeric vector of log-scales, for \code{weibull3_scale_ok()}.}
 }
 \value{
-A numeric vector of scales.
+A numeric vector of scales, of log-scales, or of logicals.
 }
 \description{
-Returns \eqn{b = m / \Gamma(1 + 1/\sigma)}, formed on the log
-scale with \code{lgamma()}.
+\code{weibull3_scale()} returns \eqn{b = m / \Gamma(1 + 1/\sigma)},
+formed on the log scale with \code{lgamma()}, and \code{weibull3_log_scale()}
+returns \eqn{\log b}. \code{weibull3_scale_ok()} reports where \eqn{b} itself
+is a finite positive number; at a small shape it underflows to 0, and
+the density, distribution, quantile and generator methods then work with
+\eqn{\log b}.
 }
 \seealso{
 \code{\link[=distrib_pdf.Weibull3Distrib]{distrib_pdf.Weibull3Distrib()}}

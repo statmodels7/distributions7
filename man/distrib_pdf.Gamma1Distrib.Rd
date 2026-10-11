@@ -32,8 +32,8 @@ by calling \code{\link[stats:GammaDist]{stats::dgamma()}} at shape \eqn{a = 1/\p
 \code{dgamma()} and stays finite where the density itself underflows.
 
 The density is unbounded at the origin when \eqn{\phi > 1}, where the shape
-falls below one; it is flat there at \eqn{\phi = 1}, the exponential case,
-and vanishes at the origin for \eqn{\phi < 1}.
+falls below one; at \eqn{\phi = 1}, the exponential case, it equals the
+rate \eqn{1/\mu} there, and it vanishes at the origin for \eqn{\phi < 1}.
 }
 \examples{
 d <- gamma1_distrib()
@@ -58,6 +58,7 @@ distrib_pdf(d, 1e4, th, log = TRUE)
 \seealso{
 \code{\link[=distrib_cdf.Gamma1Distrib]{distrib_cdf.Gamma1Distrib()}} for the distribution function,
 \code{\link[=distrib_gradient.Gamma1Distrib]{distrib_gradient.Gamma1Distrib()}} for the derivatives of the log-density,
-\code{\link[=gamma1_shape_rate]{gamma1_shape_rate()}} for the conversion this uses, and \code{\link[=distrib_pdf]{distrib_pdf()}}
+\code{\link[=gamma1_shape_rate]{gamma1_shape_rate()}} for the conversion that this method uses, and
+\code{\link[=distrib_pdf]{distrib_pdf()}}
 for the generic.
 }

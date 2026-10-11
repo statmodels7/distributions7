@@ -44,8 +44,8 @@ List invgauss2_hessian_cpp(NumericVector y, NumericVector mu, NumericVector lamb
         h_ml[i] = (y[i] - m) / m3;
         h_ll[i] = d7::invgauss2_hess_lambda_lambda(L);
     });
-    return List::create(Named("mu_mu") = h_mm, Named("mu_lambda") = h_ml,
-                        Named("lambda_lambda") = h_ll);
+    return List::create(Named("mu_mu") = h_mm, Named("lambda_lambda") = h_ll,
+                        Named("mu_lambda") = h_ml);
 }
 
 // [[Rcpp::export]]
@@ -62,8 +62,8 @@ List invgauss2_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVe
         h_ml[i] = 0.0;
         h_ll[i] = d7::invgauss2_expected_lambda_lambda(L);
     });
-    return List::create(Named("mu_mu") = h_mm, Named("mu_lambda") = h_ml,
-                        Named("lambda_lambda") = h_ll);
+    return List::create(Named("mu_mu") = h_mm, Named("lambda_lambda") = h_ll,
+                        Named("mu_lambda") = h_ml);
 }
 
 // [[Rcpp::export]]

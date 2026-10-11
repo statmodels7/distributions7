@@ -2,7 +2,7 @@
 % Please edit documentation in R/gamma1_distrib.R
 \name{gamma1_shape_rate}
 \alias{gamma1_shape_rate}
-\title{The Shape and Rate a Mean and Dispersion Imply}
+\title{Shape and Rate of the Gamma from Its Mean and Dispersion}
 \usage{
 gamma1_shape_rate(theta)
 }
@@ -24,6 +24,6 @@ or negative value to the caller.
 }
 \seealso{
 \code{\link[=gamma1_distrib]{gamma1_distrib()}} for the family and
-\code{\link[=distrib_pdf.Gamma1Distrib]{distrib_pdf.Gamma1Distrib()}} for the density this feeds.
+\code{\link[=distrib_pdf.Gamma1Distrib]{distrib_pdf.Gamma1Distrib()}} for the density that uses it.
 }
 \keyword{internal}

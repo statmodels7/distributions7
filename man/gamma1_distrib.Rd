@@ -27,11 +27,13 @@ Builds the distribution object for the gamma family parametrized by its mean
 \eqn{\operatorname{Var}(Y) = \phi\mu^2}. This is the parametrization a
 generalized linear model uses. The returned object carries closed-form
 derivatives of the log-density to fourth order, in the parameters and in the
-response, and closed-form moments, so every generic of the toolkit answers
-without a numerical fallback.
+response, and closed-form moments. The fifth order and the mixed
+derivatives of order three and four in the response and the parameters
+come from the numerical fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both parameters being positive.
 }
 \section{The parametrization}{
@@ -83,8 +85,9 @@ Third and fourth orders are closed form as well, observed and expected, in
 are the derivatives in the response, \code{\link[=distrib_grad_y.Gamma1Distrib]{distrib_grad_y.Gamma1Distrib()}} and
 \code{\link[=distrib_hess_y.Gamma1Distrib]{distrib_hess_y.Gamma1Distrib()}}. The derivatives of the \emph{distribution}
 function in the parameters have no elementary form here, the derivative of
-an incomplete gamma in its shape being hypergeometric, and are taken by
-finite difference on the analytic cdf.
+an incomplete gamma in its shape being hypergeometric, and are computed by
+a compiled quadrature of the density times the derivatives of the
+log-density.
 }
 
 \section{Estimation}{
@@ -143,5 +146,6 @@ edition, Chapter 8. Chapman and Hall, London.
 \code{\link[=invgauss1_distrib]{invgauss1_distrib()}} and \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for other positive
 families with a multiplicative variance function; \code{\link[=fit_distrib]{fit_distrib()}} to
 estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own
-against the same battery this one passes; \link{Gamma1Distrib} for the class.
+against the same battery of checks that this family passes; \link{Gamma1Distrib}
+for the class.
 }

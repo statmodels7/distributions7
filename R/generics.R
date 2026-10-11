@@ -122,7 +122,7 @@ NULL
 #' @export
 distrib_pdf <- S7::new_generic("distrib_pdf", "distrib", function(distrib, y, theta, ...) {
   theta <- align_theta(distrib, theta)
-  y <- recycle_point(distrib, y, theta)
+  y <- recycle_point(distrib, y, theta, "y")
   S7::S7_dispatch()
 })
 
@@ -154,7 +154,7 @@ distrib_pdf <- S7::new_generic("distrib_pdf", "distrib", function(distrib, y, th
 #' @export
 distrib_cdf <- S7::new_generic("distrib_cdf", "distrib", function(distrib, q, theta, ...) {
   theta <- align_theta(distrib, theta)
-  q <- recycle_point(distrib, q, theta)
+  q <- recycle_point(distrib, q, theta, "q")
   S7::S7_dispatch()
 })
 
@@ -186,7 +186,7 @@ distrib_cdf <- S7::new_generic("distrib_cdf", "distrib", function(distrib, q, th
 #' @export
 distrib_quantile <- S7::new_generic("distrib_quantile", "distrib", function(distrib, p, theta, ...) {
   theta <- align_theta(distrib, theta)
-  p <- recycle_point(distrib, p, theta)
+  p <- recycle_point(distrib, p, theta, "p")
   S7::S7_dispatch()
 })
 
@@ -317,31 +317,46 @@ check_derivative_args <- function(distrib, y, theta) {
 #' Recycle a Single Point Against Parameters That Vary by Observation
 #'
 #' @description
-#' Returns `x` repeated to the common length of the parameters when `x` has
-#' length one and some parameter is longer, and `x` unchanged otherwise.
+#' Checks that `x` and the parameters are conformable and returns `x` repeated
+#' to the common length when it has length one and some parameter is longer.
 #'
 #' @details
 #' [distrib_pdf()], [distrib_cdf()] and [distrib_quantile()] call it before
-#' dispatch, in the way that [check_derivative_args()] recycles the response
-#' for the derivative generics. A compiled kernel sizes its output by the
-#' length of the response, so a single point evaluated at parameters of length
-#' \eqn{n} has to be repeated \eqn{n} times to give one value per observation.
-#' This matters wherever a wrapper evaluates its parent at a fixed point, as
-#' [zero_inflated()] does for \eqn{f(0)}. A multivariate response is a matrix
-#' and is left alone.
+#' dispatch, as the derivative generics call [check_derivative_args()], and the
+#' rule is the same: with \eqn{n} the largest of the lengths of `x` and of the
+#' parameters, every parameter must have length 1 or \eqn{n} and `x` must have
+#' length 1 or \eqn{n}; otherwise the function signals an error. A compiled
+#' kernel sizes its output by the length of the response, so a single point
+#' evaluated at parameters of length \eqn{n} has to be repeated \eqn{n} times
+#' to give one value per observation. This matters wherever a wrapper
+#' evaluates its parent at a fixed point, as [zero_inflated()] does for
+#' \eqn{f(0)}. An empty `x` with parameters of length at most one is returned
+#' as it is. A multivariate response is a matrix and is left alone.
 #'
 #' @param distrib A `distrib` object.
 #' @param x The response, quantile or probability, a numeric vector.
 #' @param theta The aligned parameter list.
+#' @param arg The name of `x` in the calling generic, used in the error
+#'   message. Defaults to `"y"`.
 #'
 #' @return A numeric vector.
 #'
 #' @seealso [check_derivative_args()], the derivative generics' counterpart.
 #' @keywords internal
-recycle_point <- function(distrib, x, theta) {
-  if (length(x) != 1L || S7::S7_inherits(distrib, multivariate_distrib)) return(x)
-  n <- max(lengths(theta[seq_len(distrib@n_params)]), 1L)
-  if (n > 1L) rep(x, n) else x
+recycle_point <- function(distrib, x, theta, arg = "y") {
+  if (S7::S7_inherits(distrib, multivariate_distrib)) return(x)
+  pars <- theta[seq_len(distrib@n_params)]
+  if (length(x) == 0L && all(lengths(pars) <= 1L)) return(x)
+  n <- max(length(x), lengths(pars), 1L)
+  check_params_dim(pars, n = n)
+  if (length(x) != n) {
+    if (length(x) != 1L) {
+      stop(sprintf("'%s' must have length 1 or %d, not %d.", arg, n, length(x)),
+           call. = FALSE)
+    }
+    x <- rep(x, n)
+  }
+  x
 }
 
 #' Analytical Gradient
@@ -584,7 +599,8 @@ distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib,
 #' fifth. The fifth order is therefore provided by the family, like the lower
 #' orders.
 #'
-#' The families that register their own method ([gengamma1_distrib()],
+#' The families that register their own method ([gaussian1_distrib()],
+#' [gaussian2_distrib()], [gaussian3_distrib()], [gengamma1_distrib()],
 #' [gengamma2_distrib()], [gpd_distrib()], [lognormal2_distrib()],
 #' [pseudohuber2_distrib()], [skewnormal2_distrib()], [skewt_distrib()],
 #' [student_t1_distrib()], [student_t2_distrib()] and [weibull3_distrib()])

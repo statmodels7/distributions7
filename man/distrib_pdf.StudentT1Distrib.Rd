@@ -7,12 +7,12 @@
 \item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
 \item{y}{A numeric vector of observations. Every real value is in the
-support, so no value is rejected.}
+support, so every value of \code{y} is valid.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
 numeric vector of length 1 or of the length of \code{y}. A component of length
-1 is recycled. \code{sigma} and \code{nu} must be strictly positive; a zero or
-negative value gives \code{NaN} with a warning from \code{\link[stats:TDist]{stats::dt()}}.}
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive; the generic
+signals an error for a zero or negative value.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
 Defaults to \code{FALSE}.}
@@ -33,8 +33,9 @@ dividing by \eqn{\sigma}, the Jacobian of the standardization. With
 logarithm stays finite far into the tails.
 
 The tails are polynomial, of order \eqn{|y|^{-(\nu+1)}}, so the density
-decays far more slowly than a Gaussian's and no value of \eqn{y} underflows
-at an ordinary \eqn{\nu}.
+decays far more slowly than a Gaussian's; it still underflows to zero at a
+very large \eqn{|y|} (at \eqn{\nu = 5} and \eqn{\sigma = 1.2}, by
+\eqn{|y| = 10^{60}}).
 }
 \examples{
 d <- student_t1_distrib()

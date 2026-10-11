@@ -7,8 +7,8 @@
 \item{distrib}{An \code{InvGauss1Distrib} object, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
 \item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
-logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN}
-with a warning; \code{p = 0} gives 0 and \code{p = 1} gives \code{Inf}.}
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NA}
+without a warning; \code{p = 0} gives 0 and \code{p = 1} gives \code{Inf}.}
 
 \item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
 vector of length 1 or of the length of \code{p}. A component of length 1 is
@@ -42,7 +42,7 @@ th <- list(mu = 1, phi = 2)
 # A central 95 percent interval, extremely asymmetric about the mean of 1.
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# Exact inverse: the round trip returns the probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 

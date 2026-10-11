@@ -25,8 +25,7 @@ the response,
       \qquad v = \sigma^2,}
 in closed form. The Gaussian is a location family in \eqn{\mu}, so the
 response enters the log-density only through \eqn{y - \mu} and this
-derivative is the negative of the score in \eqn{\mu}. Quantile residuals and
-the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
+derivative is the negative of the score in \eqn{\mu}.
 }
 \examples{
 d <- gaussian2_distrib()
@@ -49,5 +48,5 @@ eps <- 1e-5
 \code{\link[=distrib_hess_y.Gaussian2Distrib]{distrib_hess_y.Gaussian2Distrib()}} for the second derivative in
 the response, \code{\link[=distrib_gradient.Gaussian2Distrib]{distrib_gradient.Gaussian2Distrib()}} for the score in the
 parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic and the
-finite-difference fallback a family without a closed form takes.
+finite-difference fallback that a family without a closed form uses.
 }

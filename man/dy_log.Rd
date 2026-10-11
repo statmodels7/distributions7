@@ -4,6 +4,7 @@
 \alias{dy_log}
 \alias{dy_log1m}
 \alias{dy_pow}
+\alias{dy_zero}
 \alias{dy_logaff}
 \alias{dy_cos}
 \title{The k-th Response Derivative of an Elementary Term}
@@ -13,6 +14,8 @@ dy_log(c, y, k)
 dy_log1m(c, y, k)
 
 dy_pow(c, p, y, k)
+
+dy_zero(c, r)
 
 dy_logaff(c, a, b, y, k)
 
@@ -26,6 +29,9 @@ dy_cos(c, m, y, k)
 \item{k}{The derivative order.}
 
 \item{p}{The exponent, for \code{dy_pow}.}
+
+\item{r}{The derivative before the masking, for \code{dy_zero}, which sets it
+to 0 wherever the coefficient \code{c} (recycled to its length) is 0.}
 
 \item{a, b}{The affine coefficients, for \code{dy_logaff}.}
 
@@ -42,6 +48,9 @@ differentiates \eqn{c\cos(y-m)}.
 }
 \details{
 A term linear in \eqn{y} is \code{dy_pow} at \eqn{p = 1} and vanishes from
-the second order, so it needs no case of its own.
+the second order, so it needs no case of its own. Where the coefficient of
+the derivative is zero (a shape equal to 1 in \code{dy_log} and \code{dy_log1m}, an
+integer exponent below the order in \code{dy_pow}) the result is 0 at every
+\code{y}, including the boundary where the power of \code{y} is infinite.
 }
 \keyword{internal}

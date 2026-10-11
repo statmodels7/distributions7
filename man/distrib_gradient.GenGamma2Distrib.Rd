@@ -17,8 +17,9 @@
 
 \item{theta}{A named list with components \code{mean}, \code{d} and \code{p}.}
 
-\item{scale}{\code{"parameter"} or \code{"link"}; the link scale is applied by the
-generic.}
+\item{scale}{\code{"parameter"} or \code{"link"}. For orders one to four the
+generic applies the link scale after dispatch; the method for
+\code{\link[=distrib_deriv5]{distrib_deriv5()}} applies it itself.}
 
 \item{expected}{Logical; for orders three and four, whether the expected
 derivative is returned.}

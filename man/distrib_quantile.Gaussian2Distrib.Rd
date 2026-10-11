@@ -41,11 +41,11 @@ th <- list(mu = 1, sigma2 = 4)
 # The median is mu and the quartiles are symmetric about it.
 distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# Exact inverse: the round trip returns the probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 
-# A quantile 40 standard deviations out, asked for on the log scale
+# A quantile 40 standard deviations out, computed on the log scale
 # because the probability itself is zero in double precision.
 distrib_quantile(d, pnorm(-40, log.p = TRUE), list(mu = 0, sigma2 = 1),
                  log.p = TRUE)

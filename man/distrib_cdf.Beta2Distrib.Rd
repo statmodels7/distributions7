@@ -55,7 +55,7 @@ distrib_cdf(d, 1e-30, list(alpha = 20, beta = 5), log.p = TRUE)
 \seealso{
 \code{\link[=distrib_quantile.Beta2Distrib]{distrib_quantile.Beta2Distrib()}} for the inverse,
 \code{\link[=distrib_pdf.Beta2Distrib]{distrib_pdf.Beta2Distrib()}} for the density, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the
-derivatives of this function in the parameters, which the beta takes by
-finite difference because the derivative of an incomplete beta in its
-shapes is hypergeometric, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
+derivatives of this function in the parameters, which the beta computes
+by a compiled quadrature because the derivative of an incomplete beta in
+its shapes is hypergeometric, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

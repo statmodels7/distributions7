@@ -120,7 +120,10 @@ test_that("an identity link leaves every order alone", {
 
   P <- distrib_deriv5(d, y, th, scale = "parameter")
   expect_lt(rel5(distrib_deriv5(d, y, th, scale = "link"), P), 1e-12)
-  expect_lt(rel5(route_B(d, y, th), P), 1e-12)
+  # route B is the numerical fifth order by construction, and the gaussian
+  # has a closed one of its own since 0.77.0
+  expect_lt(rel5(route_B(d, y, th),
+                 numerical_deriv5(d, y, th, scale = "parameter")), 1e-12)
 })
 
 

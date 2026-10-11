@@ -124,3 +124,104 @@ List gaussian_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVect
         Named("sigma_sigma_sigma_sigma") = sigma_sigma_sigma_sigma
     );
 }
+
+// order 5 of log f in (mu, sigma): -log sigma - r^2 / (2 sigma^2), r = y - mu
+// [[Rcpp::export]]
+List gaussian_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                          int threads = 1) {
+    int n = y.size();
+    NumericVector o0(n), o1(n), o2(n), o3(n), o4(n), o5(n);
+
+    bool mu_is_scalar = (mu.size() == 1);
+    bool p_is_scalar = (sigma.size() == 1);
+
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
+        double m = mu_is_scalar ? mu[0] : mu[i];
+        double s = p_is_scalar ? sigma[0] : sigma[i];
+        double r = y[i] - m;
+        double inv = 1.0 / s, inv2 = inv * inv, inv5 = inv2 * inv2 * inv;
+        double z = r * inv;
+        o0[i] = 0.0;
+        o1[i] = 0.0;
+        o2[i] = 0.0;
+        o3[i] = 24.0 * inv5;
+        o4[i] = 120.0 * z * inv5;
+        o5[i] = (360.0 * z * z - 24.0) * inv5;
+    });
+
+    return List::create(
+        Named("mu_mu_mu_mu_mu") = o0,
+        Named("mu_mu_mu_mu_sigma") = o1,
+        Named("mu_mu_mu_sigma_sigma") = o2,
+        Named("mu_mu_sigma_sigma_sigma") = o3,
+        Named("mu_sigma_sigma_sigma_sigma") = o4,
+        Named("sigma_sigma_sigma_sigma_sigma") = o5
+    );
+}
+
+// order 5 of log f in (mu, sigma2): -log(sigma2) / 2 - r^2 / (2 sigma2)
+// [[Rcpp::export]]
+List gaussian2_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector sigma2,
+                          int threads = 1) {
+    int n = y.size();
+    NumericVector o0(n), o1(n), o2(n), o3(n), o4(n), o5(n);
+
+    bool mu_is_scalar = (mu.size() == 1);
+    bool p_is_scalar = (sigma2.size() == 1);
+
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
+        double m = mu_is_scalar ? mu[0] : mu[i];
+        double s = p_is_scalar ? sigma2[0] : sigma2[i];
+        double r = y[i] - m;
+        double inv = 1.0 / s, inv2 = inv * inv, inv4 = inv2 * inv2, inv5 = inv4 * inv;
+        o0[i] = 0.0;
+        o1[i] = 0.0;
+        o2[i] = 0.0;
+        o3[i] = 6.0 * inv4;
+        o4[i] = 24.0 * r * inv5;
+        o5[i] = (60.0 * r * r * inv - 12.0) * inv5;
+    });
+
+    return List::create(
+        Named("mu_mu_mu_mu_mu") = o0,
+        Named("mu_mu_mu_mu_sigma2") = o1,
+        Named("mu_mu_mu_sigma2_sigma2") = o2,
+        Named("mu_mu_sigma2_sigma2_sigma2") = o3,
+        Named("mu_sigma2_sigma2_sigma2_sigma2") = o4,
+        Named("sigma2_sigma2_sigma2_sigma2_sigma2") = o5
+    );
+}
+
+// order 5 of log f in (mu, tau): log(tau) / 2 - tau r^2 / 2
+// [[Rcpp::export]]
+List gaussian3_deriv5_cpp(NumericVector y, NumericVector mu, NumericVector tau,
+                          int threads = 1) {
+    int n = y.size();
+    NumericVector o0(n), o1(n), o2(n), o3(n), o4(n), o5(n);
+
+    bool mu_is_scalar = (mu.size() == 1);
+    bool p_is_scalar = (tau.size() == 1);
+
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
+        double m = mu_is_scalar ? mu[0] : mu[i];
+        double s = p_is_scalar ? tau[0] : tau[i];
+        double r = y[i] - m;
+        double inv = 1.0 / s, inv2 = inv * inv, inv5 = inv2 * inv2 * inv;
+        (void) r;
+        o0[i] = 0.0;
+        o1[i] = 0.0;
+        o2[i] = 0.0;
+        o3[i] = 0.0;
+        o4[i] = 0.0;
+        o5[i] = 12.0 * inv5;
+    });
+
+    return List::create(
+        Named("mu_mu_mu_mu_mu") = o0,
+        Named("mu_mu_mu_mu_tau") = o1,
+        Named("mu_mu_mu_tau_tau") = o2,
+        Named("mu_mu_tau_tau_tau") = o3,
+        Named("mu_tau_tau_tau_tau") = o4,
+        Named("tau_tau_tau_tau_tau") = o5
+    );
+}

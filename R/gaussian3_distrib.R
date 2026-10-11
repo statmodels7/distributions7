@@ -14,8 +14,9 @@ NULL
 #'
 #' Build one with [gaussian3_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
-#' which takes the parent's properties and validates none of the relationships
-#' between them.
+#' which takes the parent's properties; the validator of `distrib` checks that
+#' they are consistent (the parameter count, a bound and a link for every
+#' parameter, ordered support bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -32,23 +33,47 @@ NULL
 #'   [gaussian1_distrib()] for the same law in mean and standard deviation and
 #'   [gaussian2_distrib()] for mean and variance;
 #'   [distrib_pdf.Gaussian3Distrib()] and [distrib_gradient.Gaussian3Distrib()]
-#'   for the closed forms this class supplies.
+#'   for the closed forms of this class.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.Gaussian3Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Gaussian3Distrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.Gaussian3Distrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.Gaussian3Distrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Gaussian3Distrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.Gaussian3Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.Gaussian3Distrib] and
+#'   [`distrib_rng()`][distrib_rng.Gaussian3Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.Gaussian3Distrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.Gaussian3Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.Gaussian3Distrib],
-#'   [`distrib_pdf()`][distrib_pdf.Gaussian3Distrib],
-#'   [`distrib_quantile()`][distrib_quantile.Gaussian3Distrib],
-#'   [`distrib_rng()`][distrib_rng.Gaussian3Distrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Gaussian3Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Gaussian3Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.Gaussian3Distrib] and
+#'   [distrib_deriv5()];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.Gaussian3Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.Gaussian3Distrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.Gaussian3Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.Gaussian3Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.Gaussian3Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.Gaussian3Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.Gaussian3Distrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.Gaussian3Distrib],
+#'   [`distrib_cross3_y()`][distrib_cross3_y.Gaussian3Distrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.Gaussian3Distrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.Gaussian3Distrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.Gaussian3Distrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.Gaussian3Distrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.Gaussian3Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.Gaussian3Distrib];
+#' - the moments: [`mean()`][mean.Gaussian3Distrib],
+#'   [`variance()`][variance.Gaussian3Distrib],
+#'   [`skewness()`][skewness.Gaussian3Distrib] and
+#'   [`kurtosis()`][kurtosis.Gaussian3Distrib].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- gaussian3_distrib()
@@ -79,12 +104,11 @@ Gaussian3Distrib <- S7::new_class("Gaussian3Distrib", parent = continuous_distri
 #'
 #' @param distrib A `Gaussian3Distrib` object, from [gaussian3_distrib()].
 #' @param y A numeric vector of observations. Every real value is in the
-#'   support, so no value is rejected.
+#'   support, so every value of `y` is valid.
 #' @param theta A named list with components `mu` and `tau`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
-#'   recycled. `tau` must be strictly positive; a zero gives `sd = Inf` and a
-#'   density of 0, and a negative value gives `NaN` with a warning from
-#'   [stats::dnorm()].
+#'   recycled. `tau` must be strictly positive; the generic signals an error
+#'   for a zero or negative value before the method is called.
 #' @param log Logical of length 1. When `TRUE` the log-density is returned.
 #'   Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -209,7 +233,7 @@ S7::method(distrib_cdf, Gaussian3Distrib) <- function(distrib, q, theta,
 #' # The median is mu and the quartiles are symmetric about it.
 #' distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 #'
-#' # Exact inverse: the round trip returns the probabilities it was given.
+#' # Exact inverse: the round trip returns the probabilities that it was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
@@ -228,8 +252,8 @@ S7::method(distrib_quantile, Gaussian3Distrib) <- function(distrib, p, theta,
 #' @description
 #' Draws `n` independent Gaussian variates by calling [stats::rnorm()] at
 #' `sd = 1/sqrt(tau)`, so the draws come from R's own normal generator and
-#' depend on `.Random.seed` in the usual way. The inverse-transform fallback
-#' the base class supplies is bypassed.
+#' depend on `.Random.seed` in the usual way. The inverse-transform fallback of
+#' the base class is not used.
 #'
 #' @param distrib A `Gaussian3Distrib` object, from [gaussian3_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -276,8 +300,8 @@ S7::method(distrib_rng, Gaussian3Distrib) <- function(distrib, n, theta, ...) {
 #' The arithmetic runs in a compiled kernel decomposed over the elements of the
 #' output, so the result does not depend on the thread count.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries before returning, giving \eqn{\partial \ell / \partial \eta_j
+#' With `scale = "link"` the generic applies the chain rule for the links of the
+#' family before returning, giving \eqn{\partial \ell / \partial \eta_j
 #' = h_j'(\eta_j)\, \partial \ell / \partial \theta_j}. This method always
 #' returns the parameter scale; the transformation happens in the generic.
 #'
@@ -290,8 +314,8 @@ S7::method(distrib_rng, Gaussian3Distrib) <- function(distrib, n, theta, ...) {
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `tau`, each of length
 #'   `max(length(y), length(mu), length(tau))`.
@@ -346,10 +370,9 @@ S7::method(distrib_gradient, Gaussian3Distrib) <- function(distrib, y, theta,
 #'       \ell^{(\tau\tau)} = -\dfrac{1}{2\tau^2}.}
 #' Two of the three are free of the data, so the observed and the expected
 #' Hessians differ in the mixed entry alone. That entry sums to
-#' \eqn{\sum_i (y_i - \mu)}, which vanishes at \eqn{\hat\mu = \bar y}: the two
-#' matrices agree exactly once the mean equation is solved and differ before
-#' that, so Fisher scoring and Newton's method take the same step at the
-#' maximum and different steps on the way there.
+#' \eqn{\sum_i (y_i - \mu)}, which vanishes at \eqn{\hat\mu = \bar y}. The
+#' summed observed and expected Hessians therefore coincide whenever the mean
+#' equation is solved, whatever the value of \eqn{\tau}, and differ otherwise.
 #'
 #' @param distrib A `Gaussian3Distrib` object, from [gaussian3_distrib()].
 #' @param y A numeric vector of observations.
@@ -360,8 +383,8 @@ S7::method(distrib_gradient, Gaussian3Distrib) <- function(distrib, y, theta,
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `mu_tau` and
 #'   `tau_tau`, each of length `max(length(y), length(mu), length(tau))`. The
@@ -435,8 +458,8 @@ S7::method(distrib_hessian, Gaussian3Distrib) <- function(distrib, y, theta,
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `mu_tau` and
 #'   `tau_tau`, each of length `max(length(y), length(mu), length(tau))` and
@@ -449,8 +472,9 @@ S7::method(distrib_hessian, Gaussian3Distrib) <- function(distrib, y, theta,
 #' a regular family, so the second Bartlett identity holds and this equals the
 #' variance of the score.
 #'
-#' @seealso [distrib_hessian.Gaussian3Distrib()] for the observed quantity this
-#'   is the expectation of, [distrib_expected_hessian.Gaussian1Distrib()] for
+#' @seealso [distrib_hessian.Gaussian3Distrib()] for the observed Hessian, of
+#'   which this is the expectation,
+#'   [distrib_expected_hessian.Gaussian1Distrib()] for
 #'   the same information in the standard deviation, [fisher_scoring()], which
 #'   inverts it at each step, and [distrib_expected_hessian()] for the generic.
 #'
@@ -508,11 +532,12 @@ S7::method(distrib_expected_hessian, Gaussian3Distrib) <- function(distrib, y, t
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_tau`,
-#'   `mu_tau_tau` and `tau_tau_tau`, each of length `length(y)`. The names
+#'   `mu_tau_tau` and `tau_tau_tau`, each of length
+#'   `max(length(y), length(mu), length(tau))`. The names
 #'   enumerate the distinct multi-indices of order three in two parameters.
 #'
 #' @section Notation:
@@ -536,7 +561,7 @@ S7::method(distrib_expected_hessian, Gaussian3Distrib) <- function(distrib, y, t
 #' lapply(d3, unique)
 #' 1 / 0.25^3
 #'
-#' # Free of the response, so asking for the expectation changes nothing.
+#' # Free of the response, so expected = TRUE changes nothing.
 #' identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
 #'
 #' # A central difference of the Hessian reproduces the same component.
@@ -579,12 +604,13 @@ S7::method(distrib_deriv3, Gaussian3Distrib) <- function(distrib, y, theta, expe
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
 #'   `mu_mu_mu_tau`, `mu_mu_tau_tau`, `mu_tau_tau_tau` and `tau_tau_tau_tau`,
-#'   each of length `length(y)`. Only the last is non-zero.
+#'   each of length `max(length(y), length(mu), length(tau))`. Only the last
+#'   is non-zero.
 #'
 #' @section Notation:
 #' \eqn{\ell^{(ijkl)}} is the fourth derivative of the log-density with respect
@@ -606,7 +632,7 @@ S7::method(distrib_deriv3, Gaussian3Distrib) <- function(distrib, y, theta, expe
 #' lapply(d4, unique)
 #' -3 / 0.25^4
 #'
-#' # Free of the response, so asking for the expectation changes nothing.
+#' # Free of the response, so expected = TRUE changes nothing.
 #' identical(d4, distrib_deriv4(d, y, th, expected = TRUE))
 #'
 #' # A central difference of the third order reproduces it.
@@ -621,6 +647,51 @@ S7::method(distrib_deriv4, Gaussian3Distrib) <- function(distrib, y, theta, expe
   gaussian3_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
+#' @title Gaussian Fifth-Order Derivatives, Mean and Precision
+#' @name distrib_deriv5.Gaussian3Distrib
+#' @description
+#' Computes the six distinct fifth derivatives of the Gaussian log-density
+#' with respect to \eqn{\mu} and \eqn{\tau}, in closed form from a
+#' compiled kernel. The log-density is quadratic in \eqn{\mu} and linear in
+#' \eqn{\tau}
+#' apart from \eqn{\tfrac12\log\tau}, so every component is zero except
+#' \deqn{\ell^{(\tau\tau\tau\tau\tau)} = \dfrac{12}{\tau^5}.}
+#' With `scale = "link"` the components are composed with the link
+#' derivatives of both parameters by the same routine that the families with
+#' a fifth-order kernel use.
+#'
+#' @param distrib A `Gaussian3Distrib` object, from [gaussian3_distrib()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list with components `mu` and `tau`, each a numeric
+#'   vector of length 1 or of the length of `y`. A component of length 1 is
+#'   recycled.
+#' @param scale One of `"parameter"` (the default) or `"link"`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#' @param threads A single positive integer, how many threads the kernel may
+#'   use. Defaults to `1L`.
+#'
+#' @return A named list of six numeric vectors, `mu_mu_mu_mu_mu`,
+#'   `mu_mu_mu_mu_tau`, `mu_mu_mu_tau_tau`, `mu_mu_tau_tau_tau`,
+#'   `mu_tau_tau_tau_tau` and `tau_tau_tau_tau_tau`, each of length
+#'   `max(length(y), length(mu), length(tau))`.
+#'
+#' @seealso [distrib_deriv4.Gaussian3Distrib()] for the order below and
+#'   [distrib_deriv5()] for the generic.
+#'
+#' @examples
+#' d <- gaussian3_distrib()
+#' y <- c(-1.2, 0.3, 2.5)
+#' th <- list(mu = 0.4, tau = 1.5)
+#' d5 <- distrib_deriv5(d, y, th)
+#' names(d5)
+#' all.equal(d5$tau_tau_tau_tau_tau, rep(12 / 1.5^5, 3))
+S7::method(distrib_deriv5, Gaussian3Distrib) <- function(distrib, y, theta,
+                                                       scale = c("parameter", "link"),
+                                                       ..., threads = 1L) {
+  deriv5_scale(distrib, y, theta, gaussian3_deriv5_cpp(y, theta[[1]], theta[[2]], threads),
+               match.arg(scale))
+}
+
 #' @title Gaussian First Derivative in the Response, Mean and Precision
 #' @name distrib_grad_y.Gaussian3Distrib
 #' @description
@@ -629,8 +700,7 @@ S7::method(distrib_deriv4, Gaussian3Distrib) <- function(distrib, y, theta, expe
 #' \deqn{\dfrac{\partial \ell}{\partial y} = -\tau(y - \mu),}
 #' in closed form. The Gaussian is a location family in \eqn{\mu}, so the
 #' response enters the log-density only through \eqn{y - \mu} and this
-#' derivative is the negative of the score in \eqn{\mu}. Quantile residuals and
-#' the mixed derivatives of [distrib_cross_y()] read it.
+#' derivative is the negative of the score in \eqn{\mu}.
 #'
 #' @param distrib A `Gaussian3Distrib` object, from [gaussian3_distrib()].
 #' @param y A numeric vector of observations.
@@ -645,7 +715,7 @@ S7::method(distrib_deriv4, Gaussian3Distrib) <- function(distrib, y, theta, expe
 #' @seealso [distrib_hess_y.Gaussian3Distrib()] for the second derivative in
 #'   the response, [distrib_gradient.Gaussian3Distrib()] for the score in the
 #'   parameters, and [distrib_grad_y()] for the generic and the
-#'   finite-difference fallback a family without a closed form takes.
+#'   finite-difference fallback that a family without a closed form uses.
 #'
 #' @examples
 #' d <- gaussian3_distrib()
@@ -678,8 +748,8 @@ S7::method(distrib_grad_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #' Being a location family, the Gaussian has the same curvature in the response
 #' as in its location, and this equals the `mu_mu` component of
 #' [distrib_hessian.Gaussian3Distrib()]. In this parametrization that curvature
-#' is the parameter itself, which is the sense in which the precision measures
-#' how sharply the log-density peaks.
+#' is minus the precision, so a larger precision gives a sharper peak of the
+#' log-density.
 #'
 #' @param distrib A `Gaussian3Distrib` object, from [gaussian3_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -688,7 +758,8 @@ S7::method(distrib_grad_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #'   be strictly positive.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of length `length(y)`, every entry \eqn{-\tau}.
+#' @return A numeric vector of length
+#'   `max(length(y), length(mu), length(tau))`, every entry \eqn{-\tau}.
 #'
 #' @seealso [distrib_grad_y.Gaussian3Distrib()] for the first derivative in the
 #'   response, [distrib_hessian.Gaussian3Distrib()] for the curvature in the
@@ -718,11 +789,12 @@ S7::method(distrib_hess_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #' Builds the distribution object for the Gaussian (normal) family parametrized
 #' by its mean \eqn{\mu} and its precision \eqn{\tau = 1/\sigma^2 > 0}. The
 #' returned object carries closed-form derivatives of the log-density to fourth
-#' order, in the parameters and in the response, and closed-form moments, so
-#' every generic of the toolkit answers without a numerical fallback.
+#' order in the response and to fifth order in the parameters, and
+#' closed-form moments.
 #'
 #' The two arguments choose the links that carry each parameter to the
-#' unconstrained scale an optimizer works on. The defaults are the identity for
+#' unconstrained scale on which an optimizer works. The defaults are the
+#' identity for
 #' the mean, which is already free, and the logarithm for the precision, which
 #' keeps it positive at every predictor.
 #'
@@ -771,8 +843,8 @@ S7::method(distrib_hess_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #' plus a term linear in \eqn{\tau}, so every third and fourth derivative is
 #' free of the response: at third order only \eqn{\ell^{(\mu\mu\tau)} = -1} and
 #' \eqn{\ell^{(\tau\tau\tau)} = 1/\tau^3} survive, and at fourth order only
-#' \eqn{\ell^{(\tau\tau\tau\tau)} = -3/\tau^4}. Asking those methods for the
-#' expectation returns the same numbers.
+#' \eqn{\ell^{(\tau\tau\tau\tau)} = -3/\tau^4}. With `expected = TRUE` those
+#' methods return the same numbers.
 #'
 #' # Estimation
 #'
@@ -801,7 +873,8 @@ S7::method(distrib_hess_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #' prior of \eqn{\tau} at known \eqn{\mu}; [student_t1_distrib()] and
 #' [laplace_distrib()] for heavier tails; [fit_distrib()] to estimate the
 #' parameters; [check_distrib()] to validate a family of your own against the
-#' same battery this one passes; [Gaussian3Distrib] for the class.
+#' same battery of checks that this family passes; [Gaussian3Distrib] for the
+#' class.
 #'
 #' @references
 #' Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A. and
@@ -829,7 +902,7 @@ S7::method(distrib_hess_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #' rbind(fitted = coef(fit),
 #'       closed = c(mu = mean(z), tau = 1 / mean((z - mean(z))^2)))
 #'
-#' # The estimate is a precision, so the interval it reports is an interval for
+#' # The estimate is a precision, so its interval is an interval for
 #' # the precision and stays positive.
 #' confint(fit)
 #'

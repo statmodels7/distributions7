@@ -18,8 +18,8 @@ recycled. Both must be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{sigma}, each of
@@ -33,11 +33,11 @@ in closed form. Writing \eqn{z = y/\mu} and \eqn{u = z^{\sigma}},
       \qquad
       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}
         + (1 - u)\log z.}
-Both components are polynomials in \eqn{u} and \eqn{u \log z}, so every
-higher order is elementary as well.
+Both components are affine in \eqn{u} with coefficients polynomial in
+\eqn{\log z}, so every higher order is elementary as well.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries before returning, giving \eqn{\partial \ell / \partial \eta_j
+With \code{scale = "link"} the generic applies the chain rule for the links of the
+family before returning, giving \eqn{\partial \ell / \partial \eta_j
 = h_j'(\eta_j)\, \partial \ell / \partial \theta_j}. This method always
 returns the parameter scale; the transformation happens in the generic.
 }

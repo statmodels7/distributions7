@@ -28,7 +28,7 @@ NULL
 #' from the five pieces of the log-density.
 #'
 #' @details
-#' # Why the assembly is short
+#' # Structure of the assembly
 #'
 #' With \eqn{L = \log(y/a)} the log-density splits into
 #' \deqn{\ell = \log p - d\log a - \log\Gamma(d/p) + (d-1)\log y - e^{pL},}
@@ -44,9 +44,11 @@ NULL
 #' component naming both \eqn{a} and \eqn{d} comes from the elementary
 #' \eqn{-d\log a} alone.
 #'
-#' The assembly is checked at order two against the compiled Hessian, which was
-#' written independently, so the orders that cannot be checked against a
-#' hand-written form rest on the orders that can.
+#' The tests compare the assembly at orders one to four with the compiled
+#' kernels of [distrib_gradient.GenGamma1Distrib()],
+#' [distrib_hessian.GenGamma1Distrib()] and the orders three and four, which
+#' were written independently. Below \eqn{k = d/p} of about 0.01 the assembly
+#' loses accuracy, since it evaluates \eqn{\psi^{(n)}(k)} near its pole.
 #'
 #' @param y A numeric vector of positive observations.
 #' @param theta A named list with components `a`, `d` and `p`, each a numeric
@@ -65,6 +67,10 @@ NULL
 #'   [gengamma1_distrib()] for the family.
 #' @keywords internal
 gengamma_components <- function(y, theta, order) {
+  if (!(length(order) == 1L && order %in% 1:4)) {
+    stop("'order' must be 1, 2, 3 or 4.", call. = FALSE)
+  }
+  order <- as.integer(order)
   a <- theta[[1]]
   d <- theta[[2]]
   p <- theta[[3]]
@@ -150,7 +156,7 @@ gengamma_components <- function(y, theta, order) {
 #' \deqn{\ell = \log p - \log y + kU - e^{U} - \log\Gamma(k),}
 #' and \eqn{e^{U} = (y/a)^p} is a gamma variable with shape \eqn{k} and unit
 #' rate. Every component is a closed form derived offline and written out: a
-#' polynomial in \eqn{U}, \eqn{e^{U}} and \eqn{a/y} whose coefficients depend
+#' polynomial in \eqn{U} and \eqn{e^{U}} whose coefficients depend
 #' on \eqn{(d, p)} alone, multiplied by \eqn{a^{-r}} for \eqn{r} derivatives
 #' in \eqn{a}. The coefficients contain the polygamma functions at
 #' \eqn{k + 1}, through

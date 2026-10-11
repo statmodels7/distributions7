@@ -57,6 +57,6 @@ distrib_pdf(d, 1e12, th, log = TRUE)
 \seealso{
 \code{\link[=distrib_cdf.Lognormal1Distrib]{distrib_cdf.Lognormal1Distrib()}} for the distribution function,
 \code{\link[=distrib_gradient.Lognormal1Distrib]{distrib_gradient.Lognormal1Distrib()}} for the derivatives of the
-log-density, \code{\link[=distrib_pdf.Gaussian2Distrib]{distrib_pdf.Gaussian2Distrib()}} for the law this is the
-exponential of, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
+log-density, \code{\link[=distrib_pdf.Gaussian2Distrib]{distrib_pdf.Gaussian2Distrib()}} for the law of \eqn{\log Y},
+and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

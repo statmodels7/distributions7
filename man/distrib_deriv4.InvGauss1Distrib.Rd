@@ -27,8 +27,8 @@ and the expected values.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of five numeric vectors, \code{mu_mu_mu_mu},
@@ -38,9 +38,9 @@ each of length \code{max(length(y), length(mu), length(phi))}.
 \description{
 Computes the five distinct fourth derivatives of the inverse Gaussian
 log-density with respect to \eqn{\mu} and \eqn{\phi}, in closed form, by the
-same route the lower orders take: the log-density is a linear combination of
-\eqn{y}, \eqn{1/y} and \eqn{\log y} with coefficients rational in the
-parameters.
+same route as the lower orders: every derivative in the parameters is a
+rational function of \eqn{(\mu, \phi)} multiplied by \eqn{y}, by
+\eqn{1/y} or by 1.
 
 With \code{expected = TRUE} the expectations are returned, obtained by replacing
 \eqn{Y} with \eqn{\mu} and \eqn{1/Y} with \eqn{1/\mu + \phi}. Both routes
@@ -72,6 +72,6 @@ all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-3)
 \seealso{
 \code{\link[=distrib_deriv3.InvGauss1Distrib]{distrib_deriv3.InvGauss1Distrib()}} for the order below,
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic, and
-\code{\link[=distrib_expected_hessian.InvGauss1Distrib]{distrib_expected_hessian.InvGauss1Distrib()}} for the second-order
-expectation these extend.
+\code{\link[=distrib_expected_hessian.InvGauss1Distrib]{distrib_expected_hessian.InvGauss1Distrib()}} for the expectation of
+order two.
 }

@@ -24,8 +24,8 @@ quadrature, Monte Carlo and outer-product routes.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{sigma2_sigma2} and
@@ -45,8 +45,8 @@ They follow from \eqn{\mathbb{E}[\log Y] = \mu} and
 by construction. The zero off-diagonal says the two parameters are
 orthogonal, so their estimates are asymptotically independent.
 
-The information does not depend on the mean of \eqn{Y} at all, only on the
-variance of its logarithm. Because the values do not depend on the data,
+The information does not depend on \eqn{\mu}, only on \eqn{\sigma^2}, the
+variance of \eqn{\log Y}. Because the values do not depend on the data,
 \code{approx} and \code{nsim} are ignored and \code{y} is read only for its length.
 }
 \section{Notation}{
@@ -73,7 +73,7 @@ rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
       expected = vapply(distrib_expected_hessian(d, z, th),
                         function(v) v[1], numeric(1)))
 
-# The information does not move with the mean of Y, only with sigma2.
+# The information does not depend on mu, only on sigma2.
 vapply(c(-2, 0, 5),
        function(m) distrib_expected_hessian(d, 0,
                      list(mu = m, sigma2 = 0.36))$sigma2_sigma2,

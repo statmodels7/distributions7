@@ -18,8 +18,8 @@ recycled. Both must be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{phi}, each of length
@@ -34,18 +34,18 @@ Computes the first derivatives of the gamma log-density with respect to
       \dfrac{\partial \ell}{\partial \phi} =
       -s^2\left\{\log s + 1 - \psi(s) + \log z - z\right\},}
 with \eqn{\psi} the digamma function. The first is the score of a gamma
-generalized linear model, the residual divided by the variance function
+generalized linear model, the residual divided by the variance
 \eqn{\phi\mu^2}.
 
-The dispersion component is a difference of two quantities that agree to
-leading order as \eqn{s} grows: \eqn{\log s - \psi(s)} and
-\eqn{\log z - (z - 1)} each go to zero at the boundary this family tends
-towards. The kernel computes each of them as a polygamma minus its own
-asymptote, so the digits survive at large shape where the direct difference
-loses them.
+The dispersion component is the sum of \eqn{\log s - \psi(s)} and
+\eqn{\log z - (z - 1)}, which tend to zero when the shape is large and
+\eqn{z} is near 1. The kernel evaluates the first by its asymptotic series
+for \eqn{s \ge 50} and the second by a series near \eqn{z = 1}, and
+computes \eqn{z - 1} as \eqn{(y - \mu)/\mu}, so the digits survive where
+the direct differences lose them.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+With \code{scale = "link"} the generic applies the chain rule for the links of the
+family before returning. This method always returns the parameter
 scale.
 }
 \section{Notation}{

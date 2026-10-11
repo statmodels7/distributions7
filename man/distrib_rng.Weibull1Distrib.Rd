@@ -21,8 +21,8 @@ A numeric vector of \code{n} positive draws.
 \description{
 Draws \code{n} independent Weibull variates by calling \code{\link[stats:Weibull]{stats::rweibull()}}, which
 inverts the distribution function at a uniform draw. The inversion is exact
-because the quantile function is elementary, so the generalized
-ratio-of-uniforms fallback the base class supplies is bypassed. The draws
+because the quantile function is elementary, so the inverse-transform
+fallback of the base class is not used. The draws
 depend on \code{.Random.seed} in the usual way.
 }
 \examples{

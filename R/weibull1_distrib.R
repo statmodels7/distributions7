@@ -14,8 +14,9 @@ NULL
 #'
 #' Build one with [weibull1_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
-#' which takes the parent's properties and validates none of the relationships
-#' between them.
+#' which takes the parent's properties; the validator of `distrib` checks that
+#' they are consistent (the parameter count, a bound and a link for every
+#' parameter, ordered support bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -29,35 +30,48 @@ NULL
 #'   both parameters, and the two links.
 #'
 #' @seealso [weibull1_distrib()] to build one;
-#'   [weibull3_distrib()] for the same law parametrized by a quantile;
+#'   [weibull3_distrib()] for the same law in the mean and the shape;
 #'   [gumbel_distrib()], which is this family on a negative log scale;
 #'   [distrib_pdf.Weibull1Distrib()] and
-#'   [distrib_gradient.Weibull1Distrib()] for the closed forms it supplies.
+#'   [distrib_gradient.Weibull1Distrib()] for the closed forms of this class.
 #'
 #' @section Methods:
-#' Registered on this class in this file:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.Weibull1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Weibull1Distrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.Weibull1Distrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.Weibull1Distrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Weibull1Distrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.Weibull1Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.Weibull1Distrib] and
+#'   [`distrib_rng()`][distrib_rng.Weibull1Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.Weibull1Distrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.Weibull1Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.Weibull1Distrib],
-#'   [`distrib_pdf()`][distrib_pdf.Weibull1Distrib],
-#'   [`distrib_quantile()`][distrib_quantile.Weibull1Distrib],
-#'   [`distrib_rng()`][distrib_rng.Weibull1Distrib].
-#'
-#' Four more are registered on the class from other files:
-#'   [`distrib_cross_y()`][distrib_cross_y.Weibull1Distrib] in
-#'   `cross_derivatives_families.R`,
-#'   [`distrib_grad_cdf()`][distrib_grad_cdf.Weibull1Distrib] in
-#'   `cdf_survival_higher.R`, and the four moments
-#'   [`mean()`][mean.Weibull1Distrib], [`variance()`][variance.Weibull1Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Weibull1Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Weibull1Distrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.Weibull1Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.Weibull1Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.Weibull1Distrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.Weibull1Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.Weibull1Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.Weibull1Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.Weibull1Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.Weibull1Distrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.Weibull1Distrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.Weibull1Distrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.Weibull1Distrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.Weibull1Distrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.Weibull1Distrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.Weibull1Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.Weibull1Distrib];
+#' - the moments: [`mean()`][mean.Weibull1Distrib],
+#'   [`variance()`][variance.Weibull1Distrib],
 #'   [`skewness()`][skewness.Weibull1Distrib] and
-#'   [`kurtosis()`][kurtosis.Weibull1Distrib] in `moments.R`.
+#'   [`kurtosis()`][kurtosis.Weibull1Distrib].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- weibull1_distrib()
@@ -74,40 +88,43 @@ Weibull1Distrib <- S7::new_class("Weibull1Distrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---
 
-#' The Pieces a Weibull Evaluates From
-#'
-#' @description
-#' Returns the standardized variable \eqn{z = y/\mu}, its logarithm and the
-#' quantity \eqn{u = z^{\sigma}}. Every derivative of the Weibull log-density,
-#' in the parameters and in the response, is a polynomial in \eqn{u} and
-#' \eqn{u \log z}, so the three are computed once and shared.
-#'
-#' @details
-#' \eqn{u} is the substitution that makes the family tractable. Under the model
-#' \eqn{u \sim \mathrm{Exp}(1)} whatever the parameters are, so an expectation
-#' of any polynomial in \eqn{u} and \eqn{\log u} is a derivative of the gamma
-#' function at 2, and [distrib_expected_hessian.Weibull1Distrib()] rests on
-#' that. The logarithm is formed before the power so that \eqn{u} is computed
-#' as \eqn{\exp(\sigma \log z)}, which stays representable for a large shape at
-#' a moderate \eqn{z}.
-#'
-#' @param y A numeric vector of observations, each positive. A non-positive
-#'   value gives `NaN` for `lz` and propagates.
-#' @param mu The scale parameter, a numeric vector of length 1 or of the length
-#'   of `y`, strictly positive.
-#' @param sigma The shape parameter, a numeric vector of length 1 or of the
-#'   length of `y`, strictly positive.
-#'
-#' @return A named list of three numeric vectors: `z`, the ratio \eqn{y/\mu};
-#'   `lz`, its logarithm; and `u`, the power \eqn{z^{\sigma}}. Each has the
-#'   recycled length of the inputs.
-#'
-#' @keywords internal
-weibull_pieces <- function(y, mu, sigma) {
-  z <- y / mu
-  lz <- log(z)
-  list(z = z, lz = lz, u = exp(sigma * lz))
-}
+# Not called since 0.77.0: the response derivatives of the Weibull use the
+# elementary terms of y_higher.R, which give the limit at y = 0 when the
+# shape is 1. Kept commented out (2026-10-11) rather than deleted.
+# The Pieces a Weibull Evaluates From
+#
+# @description
+# Returns the standardized variable \eqn{z = y/\mu}, its logarithm and the
+# quantity \eqn{u = z^{\sigma}}. Every derivative of the Weibull log-density,
+# in the parameters and in the response, is a polynomial in \eqn{u} and
+# \eqn{u \log z}, so the three are computed once and shared.
+#
+# @details
+# \eqn{u} is the substitution that makes the family tractable. Under the model
+# \eqn{u \sim \mathrm{Exp}(1)} whatever the parameters are, so an expectation
+# of any polynomial in \eqn{u} and \eqn{\log u} is a derivative of the gamma
+# function at 2, and [distrib_expected_hessian.Weibull1Distrib()] rests on
+# that. The logarithm is formed before the power so that \eqn{u} is computed
+# as \eqn{\exp(\sigma \log z)}, which stays representable for a large shape at
+# a moderate \eqn{z}.
+#
+# @param y A numeric vector of observations, each positive. A non-positive
+#   value gives `NaN` for `lz` and propagates.
+# @param mu The scale parameter, a numeric vector of length 1 or of the length
+#   of `y`, strictly positive.
+# @param sigma The shape parameter, a numeric vector of length 1 or of the
+#   length of `y`, strictly positive.
+#
+# @return A named list of three numeric vectors: `z`, the ratio \eqn{y/\mu};
+#   `lz`, its logarithm; and `u`, the power \eqn{z^{\sigma}}. Each has the
+#   recycled length of the inputs.
+#
+# @keywords internal
+# weibull_pieces <- function(y, mu, sigma) {
+#   z <- y / mu
+#   lz <- log(z)
+#   list(z = z, lz = lz, u = exp(sigma * lz))
+# }
 
 #' @title Weibull Probability Density Function
 #' @name distrib_pdf.Weibull1Distrib
@@ -117,18 +134,20 @@ weibull_pieces <- function(y, mu, sigma) {
 #'   \left(\dfrac{y}{\mu}\right)^{\sigma - 1}
 #'   \exp\left\{-\left(\dfrac{y}{\mu}\right)^{\sigma}\right\}, \qquad y > 0,}
 #' by calling [stats::dweibull()] at `shape = sigma` and `scale = mu`, so the
-#' accuracy and the underflow behavior are R's own. Outside the support the
-#' density is 0. With `log = TRUE` the logarithm is formed inside `dweibull()`
+#' accuracy and the underflow behavior are R's own. Below zero the density is
+#' 0. With `log = TRUE` the logarithm is formed inside `dweibull()`
 #' and stays finite far into the upper tail, where the density itself
 #' underflows.
 #'
 #' @param distrib A `Weibull1Distrib` object, from [weibull1_distrib()].
-#' @param y A numeric vector of observations. A value at or below zero is
-#'   outside the support and gives a density of 0.
+#' @param y A numeric vector of observations. A negative value gives a density
+#'   of 0. At zero the density is the limit of the formula: `Inf` for
+#'   \eqn{\sigma < 1}, \eqn{1/\mu} for \eqn{\sigma = 1} and 0 for
+#'   \eqn{\sigma > 1}.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
-#'   recycled. Both must be strictly positive; a zero or negative value gives
-#'   `NaN` with a warning from [stats::dweibull()].
+#'   recycled. Both must be strictly positive; the generic signals an error
+#'   for a zero or negative value before the method is called.
 #' @param log Logical of length 1. When `TRUE` the log-density is returned.
 #'   Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -222,7 +241,7 @@ S7::method(distrib_cdf, Weibull1Distrib) <- function(distrib, q, theta, lower.ta
 #' \deqn{Q(p; \mu, \sigma) = \mu \left\{-\log(1 - p)\right\}^{1/\sigma}}
 #' by calling [stats::qweibull()]. The distribution function is strictly
 #' increasing on \eqn{(0, \infty)}, so the inverse is exact and unique; the
-#' root-finding fallback the base class supplies is bypassed. `Q(0)` is 0 and
+#' root-finding fallback of the base class is not used. `Q(0)` is 0 and
 #' `Q(1)` is `Inf`.
 #'
 #' @param distrib A `Weibull1Distrib` object, from [weibull1_distrib()].
@@ -268,8 +287,8 @@ S7::method(distrib_quantile, Weibull1Distrib) <- function(distrib, p, theta, low
 #' @description
 #' Draws `n` independent Weibull variates by calling [stats::rweibull()], which
 #' inverts the distribution function at a uniform draw. The inversion is exact
-#' because the quantile function is elementary, so the generalized
-#' ratio-of-uniforms fallback the base class supplies is bypassed. The draws
+#' because the quantile function is elementary, so the inverse-transform
+#' fallback of the base class is not used. The draws
 #' depend on `.Random.seed` in the usual way.
 #'
 #' @param distrib A `Weibull1Distrib` object, from [weibull1_distrib()].
@@ -313,11 +332,11 @@ S7::method(distrib_rng, Weibull1Distrib) <- function(distrib, n, theta, ...) {
 #'       \qquad
 #'       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}
 #'         + (1 - u)\log z.}
-#' Both components are polynomials in \eqn{u} and \eqn{u \log z}, so every
-#' higher order is elementary as well.
+#' Both components are affine in \eqn{u} with coefficients polynomial in
+#' \eqn{\log z}, so every higher order is elementary as well.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries before returning, giving \eqn{\partial \ell / \partial \eta_j
+#' With `scale = "link"` the generic applies the chain rule for the links of the
+#' family before returning, giving \eqn{\partial \ell / \partial \eta_j
 #' = h_j'(\eta_j)\, \partial \ell / \partial \theta_j}. This method always
 #' returns the parameter scale; the transformation happens in the generic.
 #'
@@ -330,8 +349,8 @@ S7::method(distrib_rng, Weibull1Distrib) <- function(distrib, n, theta, ...) {
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma`, each of
 #'   length `max(length(y), length(mu), length(sigma))`.
@@ -397,8 +416,8 @@ S7::method(distrib_gradient, Weibull1Distrib) <- function(distrib, y, theta, sca
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, each of length `max(length(y), length(mu), length(sigma))`.
@@ -486,19 +505,21 @@ S7::method(distrib_hessian, Weibull1Distrib) <- function(distrib, y, theta, scal
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
-#'   `mu_sigma`, each of length `length(y)` and each constant along it.
+#'   `mu_sigma`, each of length `max(length(y), length(mu), length(sigma))`
+#'   and constant when `mu` and `sigma` have length 1.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu > 0} the scale,
 #' \eqn{\sigma > 0} the shape and \eqn{\gamma} the Euler-Mascheroni constant,
 #' `-digamma(1)`.
 #'
-#' @seealso [distrib_hessian.Weibull1Distrib()] for the quantity this is the
-#'   expectation of, [distrib_gradient.Weibull1Distrib()] for the score, and
+#' @seealso [distrib_hessian.Weibull1Distrib()] for the observed Hessian, of
+#'   which this is the expectation, [distrib_gradient.Weibull1Distrib()] for
+#'   the score, and
 #'   [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
@@ -556,8 +577,8 @@ S7::method(distrib_expected_hessian, Weibull1Distrib) <- function(distrib, y, th
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_sigma`,
 #'   `mu_sigma_sigma` and `sigma_sigma_sigma`, each of length
@@ -629,8 +650,8 @@ S7::method(distrib_deriv3, Weibull1Distrib) <- function(distrib, y, theta, expec
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
 #'   `mu_mu_mu_sigma`, `mu_mu_sigma_sigma`, `mu_sigma_sigma_sigma` and
@@ -721,8 +742,7 @@ S7::method(distrib_deriv4, Weibull1Distrib) <- function(distrib, y, theta, expec
 #' c(mode = mode, deriv = distrib_grad_y(d, mode, th))
 S7::method(distrib_grad_y, Weibull1Distrib) <- function(distrib, y, theta, ...) {
   sigma <- theta[[2]]
-  p <- weibull_pieces(y, theta[[1]], sigma)
-  (sigma - 1 - sigma * p$u) / y
+  dy_log(sigma - 1, y, 1L) + dy_pow(-theta[[1]]^-sigma, sigma, y, 1L)
 }
 
 #' @title Weibull Second Derivative in the Response
@@ -774,8 +794,7 @@ S7::method(distrib_grad_y, Weibull1Distrib) <- function(distrib, y, theta, ...) 
 #'       shape_0.6 = distrib_hess_y(d, y, list(mu = 2, sigma = 0.6)))
 S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta, ...) {
   sigma <- theta[[2]]
-  p <- weibull_pieces(y, theta[[1]], sigma)
-  -(sigma - 1) * (1 + sigma * p$u) / y^2
+  dy_log(sigma - 1, y, 2L) + dy_pow(-theta[[1]]^-sigma, sigma, y, 2L)
 }
 
 # --- CONSTRUCTOR WRAPPER ---
@@ -788,11 +807,12 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta, ...) 
 #' \eqn{f(y) = (\sigma/\mu)(y/\mu)^{\sigma-1}\exp\{-(y/\mu)^{\sigma}\}} on
 #' \eqn{y > 0}. The returned object carries closed-form derivatives of the
 #' log-density to fourth order, observed and expected, in the parameters and in
-#' the response, and closed-form moments, so every generic of the toolkit
-#' answers without a numerical fallback.
+#' the response, and closed-form moments. The fifth order and
+#' [distrib_cross3_y()] come from the numerical fallbacks of the base class.
 #'
 #' The two arguments choose the links that carry each parameter to the
-#' unconstrained scale an optimizer works on. Both default to the logarithm,
+#' unconstrained scale on which an optimizer works. Both default to the
+#' logarithm,
 #' both parameters being positive.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the scale
@@ -813,13 +833,12 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta, ...) 
 #' quantile function \eqn{Q(p) = \mu\{-\log(1-p)\}^{1/\sigma}}. This is `WEI` in
 #' \pkg{gamlss}.
 #'
-#' **\eqn{\mu} is the scale and not the mean.** The mean is
-#' \eqn{\mu\,\Gamma(1 + 1/\sigma)}, which involves the shape, so a mean
-#' parametrization would make every derivative a derivative of the gamma
-#' function and of its inverse. The scale-shape form keeps the whole family
-#' elementary; [mean.Weibull1Distrib()] reports the mean, and
-#' [weibull3_distrib()] is the parametrization by a quantile for a reader who
-#' wants a location that is one.
+#' The parameter \eqn{\mu} is the scale. The mean is
+#' \eqn{\mu\,\Gamma(1 + 1/\sigma)} and involves the shape;
+#' [mean.Weibull1Distrib()] returns it. In the scale and the shape every
+#' derivative is elementary; [weibull3_distrib()] is the parametrization by
+#' the mean and the shape, in which the scale is \eqn{m/\Gamma(1 + 1/\sigma)}
+#' and the derivatives contain the gamma function and its derivatives.
 #'
 #' # Derivatives
 #'
@@ -873,14 +892,14 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta, ...) 
 #' decreasing for \eqn{\sigma < 1}. That monotone hazard is why the family is
 #' used in survival work.
 #'
-#' Two shapes are named families: \eqn{\sigma = 1} is the exponential with mean
-#' \eqn{\mu}, and \eqn{\sigma = 2} the Rayleigh. Both are exact, not limiting,
-#' and the example checks the first.
+#' Two shapes give named families: \eqn{\sigma = 1} is the exponential with
+#' mean \eqn{\mu}, and \eqn{\sigma = 2} is the Rayleigh distribution with
+#' scale \eqn{\mu/\sqrt{2}}. The example checks the first.
 #'
 #' # Estimation
 #'
-#' [fit_distrib()] maximizes the log-likelihood on the link scale. Neither
-#' estimate is closed form: the shape solves
+#' [fit_distrib()] maximizes the log-likelihood on the link scale. The
+#' estimates have no closed form: the shape solves
 #' \eqn{1/\hat\sigma + \overline{\log y} = \sum y_i^{\hat\sigma}\log y_i /
 #' \sum y_i^{\hat\sigma}} by iteration, and the scale follows from it as
 #' \eqn{\hat\mu = (n^{-1}\sum y_i^{\hat\sigma})^{1/\hat\sigma}}. The example
@@ -943,12 +962,13 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta, ...) 
 #' c(cf, profile_mu = mean(z^cf[["sigma"]])^(1 / cf[["sigma"]]))
 #'
 #' @seealso
-#' [weibull3_distrib()] for the same law parametrized by a quantile;
+#' [weibull3_distrib()] for the same law in the mean and the shape;
 #' [gumbel_distrib()], which is this family after a negative logarithm;
 #' [exponential_distrib()] and [gengamma1_distrib()] for the special case and
 #' the generalization; [gpd_distrib()] for another extreme-value family;
 #' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery this one passes;
+#' family of your own against the same battery of checks that this family
+#' passes;
 #' [Weibull1Distrib] for the class.
 #' @export
 weibull1_distrib <- function(link_mu = log_link(), link_sigma = log_link()) {

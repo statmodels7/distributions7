@@ -4,7 +4,7 @@
 \alias{recycle_point}
 \title{Recycle a Single Point Against Parameters That Vary by Observation}
 \usage{
-recycle_point(distrib, x, theta)
+recycle_point(distrib, x, theta, arg = "y")
 }
 \arguments{
 \item{distrib}{A \code{distrib} object.}
@@ -12,23 +12,29 @@ recycle_point(distrib, x, theta)
 \item{x}{The response, quantile or probability, a numeric vector.}
 
 \item{theta}{The aligned parameter list.}
+
+\item{arg}{The name of \code{x} in the calling generic, used in the error
+message. Defaults to \code{"y"}.}
 }
 \value{
 A numeric vector.
 }
 \description{
-Returns \code{x} repeated to the common length of the parameters when \code{x} has
-length one and some parameter is longer, and \code{x} unchanged otherwise.
+Checks that \code{x} and the parameters are conformable and returns \code{x} repeated
+to the common length when it has length one and some parameter is longer.
 }
 \details{
 \code{\link[=distrib_pdf]{distrib_pdf()}}, \code{\link[=distrib_cdf]{distrib_cdf()}} and \code{\link[=distrib_quantile]{distrib_quantile()}} call it before
-dispatch, in the way that \code{\link[=check_derivative_args]{check_derivative_args()}} recycles the response
-for the derivative generics. A compiled kernel sizes its output by the
-length of the response, so a single point evaluated at parameters of length
-\eqn{n} has to be repeated \eqn{n} times to give one value per observation.
-This matters wherever a wrapper evaluates its parent at a fixed point, as
-\code{\link[=zero_inflated]{zero_inflated()}} does for \eqn{f(0)}. A multivariate response is a matrix
-and is left alone.
+dispatch, as the derivative generics call \code{\link[=check_derivative_args]{check_derivative_args()}}, and the
+rule is the same: with \eqn{n} the largest of the lengths of \code{x} and of the
+parameters, every parameter must have length 1 or \eqn{n} and \code{x} must have
+length 1 or \eqn{n}; otherwise the function signals an error. A compiled
+kernel sizes its output by the length of the response, so a single point
+evaluated at parameters of length \eqn{n} has to be repeated \eqn{n} times
+to give one value per observation. This matters wherever a wrapper
+evaluates its parent at a fixed point, as \code{\link[=zero_inflated]{zero_inflated()}} does for
+\eqn{f(0)}. An empty \code{x} with parameters of length at most one is returned
+as it is. A multivariate response is a matrix and is left alone.
 }
 \seealso{
 \code{\link[=check_derivative_args]{check_derivative_args()}}, the derivative generics' counterpart.

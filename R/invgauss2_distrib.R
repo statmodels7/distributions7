@@ -14,8 +14,9 @@ NULL
 #'
 #' Build one with [invgauss2_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
-#' which takes the parent's properties and validates none of the relationships
-#' between them.
+#' which takes the parent's properties; the validator of `distrib` checks that
+#' they are consistent (the parameter count, a bound and a link for every
+#' parameter, ordered support bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -32,30 +33,45 @@ NULL
 #'   [invgauss1_distrib()] for the same law in mean and dispersion
 #'   \eqn{\phi = 1/\lambda};
 #'   [distrib_pdf.InvGauss2Distrib()] and
-#'   [distrib_gradient.InvGauss2Distrib()] for the closed forms this class
-#'   supplies.
+#'   [distrib_gradient.InvGauss2Distrib()] for the closed forms of this class.
 #'
 #' @section Methods:
-#' Registered on this class in this file:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.InvGauss2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.InvGauss2Distrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.InvGauss2Distrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.InvGauss2Distrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.InvGauss2Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.InvGauss2Distrib] and
+#'   [`distrib_rng()`][distrib_rng.InvGauss2Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.InvGauss2Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.InvGauss2Distrib],
-#'   [`distrib_pdf()`][distrib_pdf.InvGauss2Distrib],
-#'   [`distrib_quantile()`][distrib_quantile.InvGauss2Distrib],
-#'   [`distrib_rng()`][distrib_rng.InvGauss2Distrib]
-#'
-#' Three more are registered elsewhere in the package and are closed form too:
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.InvGauss2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.InvGauss2Distrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.InvGauss2Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.InvGauss2Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.InvGauss2Distrib];
+#' - the derivatives in the response:
 #'   [`distrib_grad_y()`][distrib_grad_y.InvGauss2Distrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.InvGauss2Distrib] and
-#'   [`distrib_cross_y()`][distrib_cross_y.InvGauss2Distrib], the derivatives
-#'   in the response and the mixed block, and
-#'   [`distrib_grad_cdf()`][distrib_grad_cdf.InvGauss2Distrib] for the
-#'   derivatives of the distribution function.
+#'   [`distrib_hess_y()`][distrib_hess_y.InvGauss2Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.InvGauss2Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.InvGauss2Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.InvGauss2Distrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.InvGauss2Distrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.InvGauss2Distrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.InvGauss2Distrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.InvGauss2Distrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.InvGauss2Distrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.InvGauss2Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.InvGauss2Distrib];
+#' - the moments: [`mean()`][mean.InvGauss2Distrib],
+#'   [`variance()`][variance.InvGauss2Distrib],
+#'   [`skewness()`][skewness.InvGauss2Distrib] and
+#'   [`kurtosis()`][kurtosis.InvGauss2Distrib].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @examples
 #' d <- invgauss2_distrib()
@@ -139,8 +155,9 @@ S7::method(distrib_pdf, InvGauss2Distrib) <- function(distrib, y, theta, log = F
 #' by calling [statmod::pinvgauss()] at `mean = mu` and
 #' `dispersion = 1/lambda`. Both tails are available exactly, and
 #' `log.p = TRUE` returns a logarithm that stays finite where the probability
-#' itself underflows. The exponential factor overflows at ordinary settings, so
-#' that function evaluates the expression on the log scale.
+#' itself underflows. The factor \eqn{e^{2\lambda/\mu}} overflows in double
+#' precision when \eqn{2\lambda/\mu} exceeds about 709, so that function
+#' evaluates the expression on the log scale.
 #'
 #' @param distrib An `InvGauss2Distrib` object, from [invgauss2_distrib()].
 #' @param q A numeric vector of quantiles. A value at or below zero gives a
@@ -200,8 +217,10 @@ S7::method(distrib_cdf, InvGauss2Distrib) <- function(distrib, q, theta,
 #'
 #' @param distrib An `InvGauss2Distrib` object, from [invgauss2_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or of their
-#'   logarithms when `log.p = TRUE`. A value outside the range gives `NaN`
-#'   with a warning; `p = 0` gives 0 and `p = 1` gives `Inf`.
+#'   logarithms when `log.p = TRUE`. A probability outside \eqn{[0, 1]} gives
+#'   `NA` without a warning; `p = 0` gives 0 and `p = 1` gives `Inf`. With
+#'   `log.p = TRUE` a positive value is passed to [statmod::qinvgauss()],
+#'   which signals an error when `p` has more than one element.
 #' @param theta A named list with components `mu` and `lambda`, each a numeric
 #'   vector of length 1 or of the length of `p`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
@@ -225,7 +244,7 @@ S7::method(distrib_cdf, InvGauss2Distrib) <- function(distrib, q, theta,
 #' # A central 95 percent interval, strongly asymmetric about the mean of 2.
 #' distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #'
-#' # Exact inverse: the round trip returns the probabilities it was given.
+#' # Exact inverse: the round trip returns the probabilities that it was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
@@ -244,8 +263,7 @@ S7::method(distrib_quantile, InvGauss2Distrib) <- function(distrib, p, theta,
 #' Draws `n` independent inverse Gaussian variates by calling
 #' [statmod::rinvgauss()] at `mean = mu` and `dispersion = 1/lambda`, so the
 #' draws come from that package's generator and depend on `.Random.seed` in the
-#' usual way. The ratio-of-uniforms fallback the base class supplies is
-#' bypassed.
+#' usual way. The inverse-transform fallback of the base class is not used.
 #'
 #' @param distrib An `InvGauss2Distrib` object, from [invgauss2_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -296,8 +314,8 @@ S7::method(distrib_rng, InvGauss2Distrib) <- function(distrib, n, theta, ...) {
 #' The arithmetic runs in a compiled kernel decomposed over the elements of the
 #' output, so the result does not depend on the thread count.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries before returning. This method always returns the parameter
+#' With `scale = "link"` the generic applies the chain rule for the links of the
+#' family before returning. This method always returns the parameter
 #' scale.
 #'
 #' @param distrib An `InvGauss2Distrib` object, from [invgauss2_distrib()].
@@ -309,8 +327,8 @@ S7::method(distrib_rng, InvGauss2Distrib) <- function(distrib, n, theta, ...) {
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `lambda`, each of
 #'   length `max(length(y), length(mu), length(lambda))`.
@@ -375,8 +393,8 @@ S7::method(distrib_gradient, InvGauss2Distrib) <- function(distrib, y, theta,
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `mu_lambda` and
 #'   `lambda_lambda`, in that order, each of length
@@ -455,8 +473,8 @@ S7::method(distrib_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `mu_lambda` and
 #'   `lambda_lambda`, in that order, each of length
@@ -471,8 +489,9 @@ S7::method(distrib_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
 #' equals the variance of the score. \eqn{\lambda} names this family's shape
 #' parameter.
 #'
-#' @seealso [distrib_hessian.InvGauss2Distrib()] for the observed quantity this
-#'   is the expectation of, [fisher_scoring()], which inverts it at each step,
+#' @seealso [distrib_hessian.InvGauss2Distrib()] for the observed Hessian, of
+#'   which this is the expectation, [fisher_scoring()], which inverts it at
+#'   each step,
 #'   and [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
@@ -531,8 +550,8 @@ S7::method(distrib_expected_hessian, InvGauss2Distrib) <- function(distrib, y, t
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_lambda`,
 #'   `mu_lambda_lambda` and `lambda_lambda_lambda`, each of length
@@ -605,8 +624,8 @@ S7::method(distrib_deriv3, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. Below a fixed number of observations, set per kernel, the kernel
+#'   runs sequentially. Defaults to `1L`.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
 #'   `mu_mu_mu_lambda`, `mu_mu_lambda_lambda`, `mu_lambda_lambda_lambda` and
@@ -660,11 +679,12 @@ S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #' and the shape \eqn{\lambda > 0}, so that
 #' \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}. The returned object carries
 #' closed-form derivatives of the log-density to fourth order, in the
-#' parameters and in the response, and closed-form moments, so every generic of
-#' the toolkit answers without a numerical fallback.
+#' parameters and in the response, and closed-form moments. The fifth order and
+#' [distrib_cross3_y()] come from the numerical fallbacks of the base class.
 #'
 #' The two arguments choose the links that carry each parameter to the
-#' unconstrained scale an optimizer works on. Both default to the logarithm,
+#' unconstrained scale on which an optimizer works. Both default to the
+#' logarithm,
 #' both parameters being positive.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean
@@ -688,9 +708,10 @@ S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #' This is the same law as [invgauss1_distrib()], which carries a dispersion
 #' \eqn{\phi = 1/\lambda}. The map between the two moves one coordinate at a
 #' time, the mean being untouched, so both sets of derivatives stay elementary.
-#' The shape is the parametrization the family is usually written in, and it is
-#' the one in which the law is the first-passage time of a Brownian motion with
-#' drift \eqn{\mu} and variance parameter \eqn{\lambda}.
+#' The family is usually written in the shape parametrization. In it the law is
+#' the distribution of the first-passage time to a level \eqn{a > 0} of a
+#' Brownian motion with drift \eqn{\nu > 0} and variance parameter
+#' \eqn{s^2}, with \eqn{\mu = a/\nu} and \eqn{\lambda = a^2/s^2}.
 #'
 #' # Derivatives
 #'
@@ -750,9 +771,10 @@ S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #' [invgauss1_distrib()] for the same law in the mean and a dispersion, which
 #' is the generalized linear model parametrization; [gamma1_distrib()] and
 #' [lognormal1_distrib()] for other positive families;
-#' [pig1_distrib()] for the counts this law mixes a Poisson into;
+#' [pig1_distrib()] for the Poisson mixed over this law;
 #' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery this one passes;
+#' family of your own against the same battery of checks that this family
+#' passes;
 #' [InvGauss2Distrib] for the class.
 #'
 #' @references

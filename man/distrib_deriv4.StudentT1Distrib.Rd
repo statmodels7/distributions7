@@ -46,8 +46,10 @@ the generic's signature and ignored.
 
 Written like the third order, in \eqn{z}, \eqn{q = z^2/\nu} and
 \eqn{t = 1/(1+q)}, with the quantities of \eqn{\nu} alone on their
-asymptotic series above \eqn{\nu = 20}: all fifteen components keep their
-digits and stay finite to \code{.Machine$double.xmax}.
+asymptotic series above \eqn{\nu = 20}: on the parameter scale all fifteen
+components stay finite to \code{.Machine$double.xmax}. On the link scale the
+factors \eqn{(h')^k} of the chain rule make some components non-finite from
+\eqn{\nu = 10^{150}}.
 }
 
 \examples{

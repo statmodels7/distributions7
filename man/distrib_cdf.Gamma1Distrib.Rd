@@ -47,7 +47,7 @@ all.equal(distrib_cdf(d, c(1, 3, 5), th),
 # The two tails sum to one.
 distrib_cdf(d, 5, th) + distrib_cdf(d, 5, th, lower.tail = FALSE)
 
-# The gamma is right skewed, so less than half the mass lies below the mean.
+# The gamma is right skewed, so more than half the mass lies below the mean.
 distrib_cdf(d, 3, th)
 
 # Far in the upper tail the probability underflows and its log does not.
@@ -58,7 +58,7 @@ distrib_cdf(d, 3000, th, lower.tail = FALSE, log.p = TRUE)
 \code{\link[=distrib_quantile.Gamma1Distrib]{distrib_quantile.Gamma1Distrib()}} for the inverse,
 \code{\link[=distrib_pdf.Gamma1Distrib]{distrib_pdf.Gamma1Distrib()}} for the density,
 \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the derivatives of this function in the
-parameters, which the gamma takes by finite difference because the
-derivative of an incomplete gamma in its shape is hypergeometric, and
+parameters, which the gamma computes by a compiled quadrature because
+the derivative of an incomplete gamma in its shape is hypergeometric, and
 \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

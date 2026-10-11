@@ -24,8 +24,8 @@ quadrature, Monte Carlo and outer-product routes.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
@@ -43,9 +43,9 @@ form and with no quadrature or simulation:
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right] = 0.}
 They follow from \eqn{\mathbb{E}[(Y-\mu)^2] = \sigma^2} and
 \eqn{\mathbb{E}[Y-\mu] = 0}. The negative of this matrix is the Fisher
-information for one observation; the zero off-diagonal says the mean and the
-standard deviation are orthogonal, so their estimates are asymptotically
-independent.
+information for one observation. Its off-diagonal entry is zero, so the
+mean and the standard deviation are orthogonal and their estimates are
+asymptotically independent.
 
 Because the values do not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.

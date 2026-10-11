@@ -7,8 +7,10 @@ NULL
 #' @description
 #' The S7 class of the Weibull family parametrized by its mean \eqn{m} and its
 #' shape \eqn{\sigma}. It inherits from `continuous_distrib`. Build one with
-#' [weibull3_distrib()]; this page documents the raw S7 constructor, which
-#' validates none of the relationships between the properties.
+#' [weibull3_distrib()]; this page documents the raw S7 constructor;
+#' the validator of `distrib` checks that
+#' the properties are consistent (the parameter count, a bound and a link
+#' for every parameter, ordered support bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -19,16 +21,43 @@ NULL
 #'   sigma = "shape")`, `2` and the domains \eqn{(0, \infty)} for both.
 #'
 #' @section Methods:
-#' Registered on this class in this file: [distrib_pdf()], [distrib_cdf()],
-#' [distrib_quantile()], [distrib_rng()], [distrib_gradient()],
-#' [distrib_hessian()], [distrib_deriv3()], [distrib_deriv4()],
-#' [distrib_deriv5()], [distrib_expected_hessian()], the derivatives of the
-#' expected information through [register_dexpected()], [distrib_grad_y()],
-#' [distrib_hess_y()], [distrib_deriv3_y()], [distrib_deriv4_y()],
-#' [distrib_cross_y()], [distrib_cross2_y()], [distrib_grad_y_hess()],
-#' [distrib_hess_y_hess()], [distrib_grad_cdf()], [distrib_hess_cdf()],
-#' [distrib_deriv3_cdf()], [distrib_deriv4_cdf()], and the four moments
-#' [mean()], [variance()], [skewness()] and [kurtosis()].
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.Weibull3Distrib],
+#'   [`distrib_cdf()`][distrib_cdf.Weibull3Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.Weibull3Distrib] and
+#'   [`distrib_rng()`][distrib_rng.Weibull3Distrib];
+#' - the derivatives in the parameters:
+#'   [`distrib_gradient()`][distrib_gradient.Weibull3Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.Weibull3Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Weibull3Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Weibull3Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.Weibull3Distrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.Weibull3Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.Weibull3Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.Weibull3Distrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.Weibull3Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.Weibull3Distrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.Weibull3Distrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.Weibull3Distrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.Weibull3Distrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.Weibull3Distrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.Weibull3Distrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.Weibull3Distrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.Weibull3Distrib],
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.Weibull3Distrib],
+#'   [`distrib_deriv3_cdf()`][distrib_deriv3_cdf.Weibull3Distrib] and
+#'   [`distrib_deriv4_cdf()`][distrib_deriv4_cdf.Weibull3Distrib];
+#' - the moments: [`mean()`][mean.Weibull3Distrib],
+#'   [`variance()`][variance.Weibull3Distrib],
+#'   [`skewness()`][skewness.Weibull3Distrib] and
+#'   [`kurtosis()`][kurtosis.Weibull3Distrib].
+#'
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @seealso [weibull3_distrib()] to build one; [Weibull1Distrib] for the
 #'   parametrization by the scale.
@@ -41,14 +70,32 @@ Weibull3Distrib <- S7::new_class("Weibull3Distrib", parent = continuous_distrib)
 
 #' @title The Scale of a Weibull with a Given Mean
 #' @name weibull3_scale
-#' @description Returns \eqn{b = m / \Gamma(1 + 1/\sigma)}, formed on the log
-#'   scale with `lgamma()`.
+#' @description `weibull3_scale()` returns \eqn{b = m / \Gamma(1 + 1/\sigma)},
+#'   formed on the log scale with `lgamma()`, and `weibull3_log_scale()`
+#'   returns \eqn{\log b}. `weibull3_scale_ok()` reports where \eqn{b} itself
+#'   is a finite positive number; at a small shape it underflows to 0, and
+#'   the density, distribution, quantile and generator methods then work with
+#'   \eqn{\log b}.
 #' @param theta A list with the mean and the shape, in that order.
-#' @return A numeric vector of scales.
+#' @param lb A numeric vector of log-scales, for `weibull3_scale_ok()`.
+#' @return A numeric vector of scales, of log-scales, or of logicals.
 #' @seealso [distrib_pdf.Weibull3Distrib()]
 #' @keywords internal
 weibull3_scale <- function(theta) {
-  exp(log(theta[[1]]) - lgamma(1 + 1 / theta[[2]]))
+  exp(weibull3_log_scale(theta))
+}
+
+#' @rdname weibull3_scale
+#' @keywords internal
+weibull3_log_scale <- function(theta) {
+  log(theta[[1]]) - lgamma(1 + 1 / theta[[2]])
+}
+
+#' @rdname weibull3_scale
+#' @keywords internal
+weibull3_scale_ok <- function(lb) {
+  b <- exp(lb)
+  is.finite(b) & b > 0
 }
 
 
@@ -62,7 +109,9 @@ weibull3_scale <- function(theta) {
 #' \eqn{b = m / \Gamma(1 + 1/\sigma)}, so that \eqn{E[Y] = m}. The density,
 #' the distribution function, the quantile function and the generator are
 #' [stats::dweibull()], [stats::pweibull()], [stats::qweibull()] and
-#' [stats::rweibull()] at that scale.
+#' [stats::rweibull()] at that scale. At a small shape \eqn{b} underflows to
+#' 0; there the four methods evaluate the same formulas through
+#' \eqn{\log b} and \eqn{\log(y/b)}.
 #'
 #' @param distrib A `Weibull3Distrib` object, from [weibull3_distrib()].
 #' @param y,q A numeric vector of observations or quantiles.
@@ -82,25 +131,62 @@ weibull3_scale <- function(theta) {
 #' integrate(function(t) t * distrib_pdf(d, t, th), 0, Inf)$value
 S7::method(distrib_pdf, Weibull3Distrib) <- function(distrib, y, theta,
                                                      log = FALSE, ...) {
-  stats::dweibull(y, shape = theta[[2]], scale = weibull3_scale(theta), log = log)
+  lb <- weibull3_log_scale(theta)
+  if (all(weibull3_scale_ok(lb))) {
+    return(stats::dweibull(y, shape = theta[[2]], scale = exp(lb), log = log))
+  }
+  n <- max(length(y), length(lb))
+  y <- rep_len(y, n); s <- rep_len(theta[[2]], n); lb <- rep_len(lb, n)
+  lz <- suppressWarnings(log(y)) - lb
+  out <- log(s) - lb + (s - 1) * lz - exp(s * lz)
+  out[y < 0 | y == Inf] <- -Inf
+  z <- y == 0
+  out[z] <- ifelse(s[z] < 1, Inf, ifelse(s[z] > 1, -Inf, -lb[z]))
+  if (log) out else exp(out)
 }
 
 S7::method(distrib_cdf, Weibull3Distrib) <- function(distrib, q, theta,
                                                      lower.tail = TRUE,
                                                      log.p = FALSE, ...) {
-  stats::pweibull(q, shape = theta[[2]], scale = weibull3_scale(theta),
-                  lower.tail = lower.tail, log.p = log.p)
+  lb <- weibull3_log_scale(theta)
+  if (all(weibull3_scale_ok(lb))) {
+    return(stats::pweibull(q, shape = theta[[2]], scale = exp(lb),
+                           lower.tail = lower.tail, log.p = log.p))
+  }
+  # H = (q / b)^sigma is the cumulative hazard; F = 1 - exp(-H)
+  H <- exp(theta[[2]] * (suppressWarnings(log(pmax(q, 0))) - lb))
+  if (lower.tail) {
+    if (log.p) log(-expm1(-H)) else -expm1(-H)
+  } else {
+    if (log.p) -H else exp(-H)
+  }
 }
 
 S7::method(distrib_quantile, Weibull3Distrib) <- function(distrib, p, theta,
                                                           lower.tail = TRUE,
                                                           log.p = FALSE, ...) {
-  stats::qweibull(p, shape = theta[[2]], scale = weibull3_scale(theta),
-                  lower.tail = lower.tail, log.p = log.p)
+  lb <- weibull3_log_scale(theta)
+  if (all(weibull3_scale_ok(lb))) {
+    return(stats::qweibull(p, shape = theta[[2]], scale = exp(lb),
+                           lower.tail = lower.tail, log.p = log.p))
+  }
+  # the cumulative hazard at the quantile, then q = b H^(1/sigma)
+  H <- if (lower.tail) {
+    if (log.p) -log(-expm1(p)) else -log1p(-p)
+  } else {
+    if (log.p) -p else -log(p)
+  }
+  exp(lb + log(H) / theta[[2]])
 }
 
 S7::method(distrib_rng, Weibull3Distrib) <- function(distrib, n, theta, ...) {
-  stats::rweibull(n, shape = theta[[2]], scale = weibull3_scale(theta))
+  lb <- weibull3_log_scale(theta)
+  if (all(weibull3_scale_ok(lb))) {
+    return(stats::rweibull(n, shape = theta[[2]], scale = exp(lb)))
+  }
+  # the inversion stats::rweibull() performs, b (-log U)^(1/sigma), on the log
+  # scale
+  exp(lb + log(-log(stats::runif(n))) / theta[[2]])
 }
 
 
@@ -132,8 +218,9 @@ S7::method(distrib_rng, Weibull3Distrib) <- function(distrib, n, theta, ...) {
 #' @param distrib A `Weibull3Distrib` object.
 #' @param y A numeric vector of strictly positive observations.
 #' @param theta A named list with components `mean` and `sigma`.
-#' @param scale `"parameter"` or `"link"`; the link scale is applied by the
-#'   generic.
+#' @param scale `"parameter"` or `"link"`. For orders one to four the
+#'   generic applies the link scale after dispatch; the method for
+#'   [distrib_deriv5()] applies it itself.
 #' @param expected Logical; for orders three and four, whether the expected
 #'   derivative is returned.
 #' @param approx,nsim Accepted for the generic's signature; the expectations
@@ -224,17 +311,43 @@ register_dexpected(Weibull3Distrib, function(d, y, th, k, t) {
 #' @examples
 #' d <- weibull3_distrib()
 #' distrib_grad_y(d, c(0.7, 2.5), list(mean = 4, sigma = 1.7))
+#' Response Derivatives of the Weibull at Zero
+#'
+#' @description
+#' Replaces the entries of `out` at `y = 0` by the derivative of order `k` of
+#' \eqn{(\sigma - 1)\log y - b^{-\sigma} y^{\sigma}} there, from [dy_log()] and
+#' [dy_pow()]. The compiled response kernels of [weibull3_distrib()] divide by
+#' \eqn{y} and give `NaN` at zero, where the derivative exists when
+#' \eqn{\sigma = 1} and is infinite otherwise.
+#'
+#' @param out The kernel's result, a numeric vector.
+#' @param y The response, of the length of `out`.
+#' @param theta A list with the mean and the shape, in that order.
+#' @param k The derivative order, 1 to 4.
+#'
+#' @return `out` with its entries at `y = 0` replaced.
+#'
+#' @keywords internal
+weibull3_dy_at_zero <- function(out, y, theta, k) {
+  z <- which(y == 0)
+  if (length(z) == 0L) return(out)
+  n <- length(out)
+  s <- rep_len(theta[[2]], n)[z]
+  lb <- rep_len(weibull3_log_scale(theta), n)[z]
+  out[z] <- dy_log(s - 1, 0, k) + dy_pow(-exp(-s * lb), s, 0, k)
+  out
+}
 S7::method(distrib_grad_y, Weibull3Distrib) <- function(distrib, y, theta, ...) {
-  weibull3_dy1_cpp(y, theta[[1]], theta[[2]])$y
+  weibull3_dy_at_zero(weibull3_dy1_cpp(y, theta[[1]], theta[[2]])$y, y, theta, 1L)
 }
 S7::method(distrib_hess_y, Weibull3Distrib) <- function(distrib, y, theta, ...) {
-  weibull3_dy2_cpp(y, theta[[1]], theta[[2]])$y
+  weibull3_dy_at_zero(weibull3_dy2_cpp(y, theta[[1]], theta[[2]])$y, y, theta, 2L)
 }
 S7::method(distrib_deriv3_y, Weibull3Distrib) <- function(distrib, y, theta, ...) {
-  weibull3_dy3_cpp(y, theta[[1]], theta[[2]])$y
+  weibull3_dy_at_zero(weibull3_dy3_cpp(y, theta[[1]], theta[[2]])$y, y, theta, 3L)
 }
 S7::method(distrib_deriv4_y, Weibull3Distrib) <- function(distrib, y, theta, ...) {
-  weibull3_dy4_cpp(y, theta[[1]], theta[[2]])$y
+  weibull3_dy_at_zero(weibull3_dy4_cpp(y, theta[[1]], theta[[2]])$y, y, theta, 4L)
 }
 S7::method(distrib_cross_y, Weibull3Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"), ...) {

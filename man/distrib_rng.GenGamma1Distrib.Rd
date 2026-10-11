@@ -21,8 +21,8 @@ A numeric vector of \code{n} strictly positive draws.
 \description{
 Draws by the family's own defining representation: a Gamma variate with
 shape \eqn{d/p} and unit rate, raised to the power \eqn{1/p} and multiplied
-by \eqn{a}. It is exact and costs one \code{rgamma} call, so neither inversion
-nor the base class's ratio-of-uniforms fallback is involved.
+by \eqn{a}. It is exact and costs one \code{rgamma} call; the inverse-transform
+fallback of the base class is not used.
 }
 \examples{
 d <- gengamma1_distrib()
