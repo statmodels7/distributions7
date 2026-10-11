@@ -285,32 +285,6 @@ register_dexpected(Weibull3Distrib, function(d, y, th, k, t) {
 })
 
 
-#' @title Weibull Derivatives in the Response, Mean and Shape
-#' @name distrib_grad_y.Weibull3Distrib
-#' @aliases distrib_hess_y.Weibull3Distrib distrib_deriv3_y.Weibull3Distrib
-#'   distrib_deriv4_y.Weibull3Distrib distrib_cross_y.Weibull3Distrib
-#'   distrib_cross2_y.Weibull3Distrib distrib_grad_y_hess.Weibull3Distrib
-#'   distrib_hess_y_hess.Weibull3Distrib
-#'
-#' @description
-#' The derivatives of the log-density in the response to order four, and the
-#' mixed derivatives of orders one and two in the response and one and two in
-#' \eqn{(m, \sigma)}, each a closed form from its own compiled kernel.
-#'
-#' @param distrib A `Weibull3Distrib` object.
-#' @param y A numeric vector of strictly positive observations.
-#' @param theta A named list with components `mean` and `sigma`.
-#' @param scale `"parameter"` or `"link"`, for the mixed derivatives.
-#' @param ... Unused.
-#'
-#' @return A numeric vector for the derivatives in the response; a named list,
-#'   keyed by parameter or by parameter pair, for the mixed derivatives.
-#'
-#' @seealso [distrib_gradient.Weibull3Distrib()].
-#'
-#' @examples
-#' d <- weibull3_distrib()
-#' distrib_grad_y(d, c(0.7, 2.5), list(mean = 4, sigma = 1.7))
 #' Response Derivatives of the Weibull at Zero
 #'
 #' @description
@@ -337,6 +311,33 @@ weibull3_dy_at_zero <- function(out, y, theta, k) {
   out[z] <- dy_log(s - 1, 0, k) + dy_pow(-exp(-s * lb), s, 0, k)
   out
 }
+
+#' @title Weibull Derivatives in the Response, Mean and Shape
+#' @name distrib_grad_y.Weibull3Distrib
+#' @aliases distrib_hess_y.Weibull3Distrib distrib_deriv3_y.Weibull3Distrib
+#'   distrib_deriv4_y.Weibull3Distrib distrib_cross_y.Weibull3Distrib
+#'   distrib_cross2_y.Weibull3Distrib distrib_grad_y_hess.Weibull3Distrib
+#'   distrib_hess_y_hess.Weibull3Distrib
+#'
+#' @description
+#' The derivatives of the log-density in the response to order four, and the
+#' mixed derivatives of orders one and two in the response and one and two in
+#' \eqn{(m, \sigma)}, each a closed form from its own compiled kernel.
+#'
+#' @param distrib A `Weibull3Distrib` object.
+#' @param y A numeric vector of strictly positive observations.
+#' @param theta A named list with components `mean` and `sigma`.
+#' @param scale `"parameter"` or `"link"`, for the mixed derivatives.
+#' @param ... Unused.
+#'
+#' @return A numeric vector for the derivatives in the response; a named list,
+#'   keyed by parameter or by parameter pair, for the mixed derivatives.
+#'
+#' @seealso [distrib_gradient.Weibull3Distrib()].
+#'
+#' @examples
+#' d <- weibull3_distrib()
+#' distrib_grad_y(d, c(0.7, 2.5), list(mean = 4, sigma = 1.7))
 S7::method(distrib_grad_y, Weibull3Distrib) <- function(distrib, y, theta, ...) {
   weibull3_dy_at_zero(weibull3_dy1_cpp(y, theta[[1]], theta[[2]])$y, y, theta, 1L)
 }

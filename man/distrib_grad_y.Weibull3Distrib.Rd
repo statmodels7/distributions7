@@ -2,7 +2,6 @@
 % Please edit documentation in R/weibull3_distrib.R
 \name{distrib_grad_y.Weibull3Distrib}
 \alias{distrib_grad_y.Weibull3Distrib}
-\alias{weibull3_dy_at_zero}
 \alias{distrib_hess_y.Weibull3Distrib}
 \alias{distrib_deriv3_y.Weibull3Distrib}
 \alias{distrib_deriv4_y.Weibull3Distrib}
@@ -11,19 +10,12 @@
 \alias{distrib_grad_y_hess.Weibull3Distrib}
 \alias{distrib_hess_y_hess.Weibull3Distrib}
 \title{Weibull Derivatives in the Response, Mean and Shape}
-\usage{
-weibull3_dy_at_zero(out, y, theta, k)
-}
 \arguments{
-\item{out}{The kernel's result, a numeric vector.}
-
-\item{y}{The response, of the length of \code{out}.}
-
-\item{theta}{A list with the mean and the shape, in that order.}
-
-\item{k}{The derivative order, 1 to 4.}
-
 \item{distrib}{A \code{Weibull3Distrib} object.}
+
+\item{y}{A numeric vector of strictly positive observations.}
+
+\item{theta}{A named list with components \code{mean} and \code{sigma}.}
 
 \item{scale}{\code{"parameter"} or \code{"link"}, for the mixed derivatives.}
 
@@ -32,27 +24,16 @@ weibull3_dy_at_zero(out, y, theta, k)
 \value{
 A numeric vector for the derivatives in the response; a named list,
 keyed by parameter or by parameter pair, for the mixed derivatives.
-
-\code{out} with its entries at \code{y = 0} replaced.
 }
 \description{
 The derivatives of the log-density in the response to order four, and the
 mixed derivatives of orders one and two in the response and one and two in
 \eqn{(m, \sigma)}, each a closed form from its own compiled kernel.
-
-Replaces the entries of \code{out} at \code{y = 0} by the derivative of order \code{k} of
-\eqn{(\sigma - 1)\log y - b^{-\sigma} y^{\sigma}} there, from \code{\link[=dy_log]{dy_log()}} and
-\code{\link[=dy_pow]{dy_pow()}}. The compiled response kernels of \code{\link[=weibull3_distrib]{weibull3_distrib()}} divide by
-\eqn{y} and give \code{NaN} at zero, where the derivative exists when
-\eqn{\sigma = 1} and is infinite otherwise.
 }
 \examples{
 d <- weibull3_distrib()
 distrib_grad_y(d, c(0.7, 2.5), list(mean = 4, sigma = 1.7))
-Response Derivatives of the Weibull at Zero
-
 }
 \seealso{
 \code{\link[=distrib_gradient.Weibull3Distrib]{distrib_gradient.Weibull3Distrib()}}.
 }
-\keyword{internal}
