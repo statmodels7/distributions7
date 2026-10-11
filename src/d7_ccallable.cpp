@@ -889,8 +889,8 @@ void mapped_rule(int id, const double* th, double a, double b,
 // a shape parameter, the derivatives are integrals of the density's own:
 //   F_k(q) = int_{lo}^{q} f s_k,  F_kl(q) = int_{lo}^{q} f (l_kl + s_k s_l),
 // taken by the rule of pt_trunc_rule.h, or as minus the same integrals over
-// [q, hi) when q lies above the family's center, so that neither side is a
-// difference of two numbers near one. A location-scale family integrates
+// [q, hi) when that side holds less mass (quad_side_upper()), so that
+// neither side is a difference of two numbers near one. A location-scale family integrates
 // only its shape parameters: with z = (q - mu)/sigma and l_y = -s_mu,
 // F_mu = -f, F_sigma = -z f, F_mumu = -f s_mu, F_sigmasigma =
 // f (-z^2 s_mu + 2z/sigma), F_musigma = f (-z s_mu + 1/sigma), and for a
@@ -1074,24 +1074,49 @@ void quad_cdf_sums(int id, double q, const double* th, int mask, bool upper,
     for (int k = 0; k < 16; ++k) Ikl[k] = (double) S2[k];
 }
 
-// the side of q to integrate over: above the center, the upper side,
-// except on (0, 1) when the second shape is below one, where the mass
-// within one unit in the last place of 1 is not representable in y (it is
-// eps^b of the total) and the lower side is used instead
-bool quad_side_upper(int id, double q, const double* th) {
-    double c, s;
-    cont_center_scale(id, th, &c, &s);
+// the side of q to integrate over: the one whose mass is at most one half,
+// so that a derivative small beside one is not the sum of terms of order
+// one (the center of a skewed family can lie far in its lower tail: the
+// generalized gamma's is its scale a). The mass is R's distribution
+// function where the family has one, else the integral over the side of
+// the center, flipped when it exceeds one half. On (0, 1), when the second
+// shape is below one, the lower side is used always: the mass within one
+// unit in the last place of 1 is not representable in y (it is eps^b of
+// the total)
+// the first choice of side, and whether it is final (`fixed`); when it is
+// not, the caller flips it if the integral over it exceeds one half
+bool quad_side_first(int id, double q, const double* th, bool* fixed) {
+    *fixed = true;
     if (id == 4 && (1 - th[0]) * th[1] < 1) return false;
     if (id == 31 && th[1] < 1) return false;
+    double F;
+    if (closed_cdf(id, q, th, true, &F)) return F > 0.5;
+    *fixed = false;
+    double c, s;
+    cont_center_scale(id, th, &c, &s);
     return q > c;
+}
+
+bool quad_side_upper(int id, double q, const double* th) {
+    bool fixed;
+    const bool up = quad_side_first(id, q, th, &fixed);
+    if (fixed) return up;
+    double I0, Ik[4], Ikl[16];
+    quad_cdf_sums(id, q, th, 0, up, false, &I0, Ik, Ikl);
+    return (I0 > 0.5) ? !up : up;
 }
 
 double quad_cdf(int id, double q, const double* th, bool lower) {
     double F;
     if (closed_cdf(id, q, th, lower, &F)) return F;
-    const bool up = quad_side_upper(id, q, th);
+    bool fixed;
+    bool up = quad_side_first(id, q, th, &fixed);
     double I0, Ik[4], Ikl[16];
     quad_cdf_sums(id, q, th, 0, up, false, &I0, Ik, Ikl);
+    if (!fixed && I0 > 0.5) {
+        up = !up;
+        quad_cdf_sums(id, q, th, 0, up, false, &I0, Ik, Ikl);
+    }
     // I0 is F on the lower side and S on the upper
     if (up) return lower ? 1 - I0 : I0;
     return lower ? I0 : 1 - I0;
@@ -1103,9 +1128,14 @@ void quad_cdf_derivs(int id, double q, const double* th, bool want_h,
     const int P = d7_n_params[id];
     bool ls;
     const int mask = quad_cdf_mask(id, &ls);
-    const bool up = quad_side_upper(id, q, th);
+    bool fixed;
+    bool up = quad_side_first(id, q, th, &fixed);
     double I0, Ik[4], Ikl[16];
     quad_cdf_sums(id, q, th, mask, up, want_h, &I0, Ik, Ikl);
+    if (!fixed && I0 > 0.5) {
+        up = !up;
+        quad_cdf_sums(id, q, th, mask, up, want_h, &I0, Ik, Ikl);
+    }
     const double sgn = up ? -1.0 : 1.0;
     // the point quantities a location-scale family reads at q
     double f = 0.0, z = 0.0, sq[4] = {0, 0, 0, 0};

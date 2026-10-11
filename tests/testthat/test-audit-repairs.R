@@ -293,3 +293,29 @@ test_that("pdf, cdf and quantile reject parameters of a non-conformable length",
   expect_length(distrib_pdf(gaussian1_distrib(), 0, list(mu = c(0, 1, 2), sigma = 1)), 3L)
   expect_length(distrib_pdf(gaussian1_distrib(), numeric(0), list(mu = 0, sigma = 1)), 0L)
 })
+
+test_that("the compiled cdf derivatives keep their digits below a skewed family's center", {
+  # gengamma1 at a = 0.3, d = 8, p = 0.6 has its center at a, far below the
+  # mass: F(0.45) = 5.3e-10. Reference: mpmath at 50 digits
+  d <- gengamma1_distrib()
+  th <- list(a = 0.3, d = 8, p = 0.6)
+  F0 <- 5.2743263006301626861e-10
+  g <- distrib_grad_cdf(d, 0.45, th, log = FALSE)
+  expect_equal(unlist(g), c(a = -1.2821114668315061085e-8,
+                            d = -2.101558501494046745e-9,
+                            p = 3.0620037342448392449e-8), tolerance = 1e-12)
+  gl <- distrib_grad_cdf(d, 0.45, th, log = TRUE)
+  expect_equal(gl$a, -1.2821114668315061085e-8 / F0, tolerance = 1e-12)
+  h <- distrib_hess_cdf(d, 0.45, th, log = FALSE)
+  expect_equal(unlist(h), c(a_a = 3.5192871250284835526e-7,
+                            d_d = 8.2692148707183725488e-9,
+                            p_p = 1.6561318003955667355e-6,
+                            a_d = 4.934034206120274724e-8,
+                            a_p = -7.4192296758546975624e-7,
+                            d_p = -1.1675649433772458047e-7), tolerance = 1e-12)
+  d3 <- distrib_deriv3_cdf(d, 0.45, th, log = FALSE)
+  expect_equal(c(d3$a_a_a, d3$d_d_d, d3$p_p_p, d3$a_d_p),
+               c(-0.000010767830623535425806, -3.2104070943110229934e-8,
+                 0.000082709171285004732319, 2.7273099542232438651e-6),
+               tolerance = 1e-11)
+})

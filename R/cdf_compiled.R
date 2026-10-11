@@ -20,10 +20,13 @@
 #' the family's center, an exp-sinh tail beyond), in \eqn{\log y} on
 #' \eqn{(0, \infty)} and in \eqn{\mathrm{logit}(y)} on \eqn{(0, 1)}, so that
 #' a density that behaves like \eqn{y^{k-1}} at an end of its support is
-#' integrated as an exponential tail. Above the family's center the integral
-#' runs over the upper part of the support with the opposite sign, except for
-#' the two beta families when their second shape is below one, which always
-#' integrate the lower part. For the families that
+#' integrated as an exponential tail. When the part of the support above
+#' \eqn{q} holds less mass than the part below, the integral runs over the
+#' upper part with the opposite sign, so that a derivative that is small
+#' beside one is not a sum of terms of order one; the mass is the family's
+#' closed distribution function where it has one, and the integral of the
+#' density otherwise. The two beta families always integrate the lower part
+#' when their second shape is below one. For the families that
 #' are location-scale in \eqn{(\mu, \sigma)} only the shape parameters are
 #' integrated: with \eqn{z = (q - \mu)/\sigma} the location and scale
 #' components are \eqn{-f}, \eqn{-z f} and, at second order, \eqn{-f s_\mu},
@@ -33,11 +36,7 @@
 #' `pt()`, `pgamma()`, `pchisq()` or `pbeta()` where the family has one, and
 #' the same integral of the density otherwise. The tail and the log scale
 #' are applied as for every family, by the conversion of the lower-tail
-#' derivatives. The quadrature has an absolute accuracy of about
-#' \eqn{10^{-15}} on the natural scale; on the log scale it is divided by
-#' \eqn{F(q)}, so far in the lower tail the relative accuracy falls (about
-#' \eqn{3 \times 10^{-7}} for the generalized gamma at
-#' \eqn{F \approx 5 \times 10^{-10}}).
+#' derivatives.
 #'
 #' @param distrib A distribution object of one of the families above.
 #' @param q A numeric vector of quantiles.
