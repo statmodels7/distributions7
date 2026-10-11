@@ -843,7 +843,16 @@ bool cont_center_scale(int id, const double* th, double* c, double* s) {
         *s = *c * d7::sqrt_cr(std::log1p(r));
         return true;
     }
-    case 25: case 30: *c = th[0]; *s = th[0]; return true;
+    case 25: {
+        // gengamma1: (y/a)^p is gamma(d/p), whose median is near d/p, so
+        // the mass sits at a (d/p)^(1/p) and not at the scale a
+        *c = th[0] * std::pow(th[1] / th[2], 1 / th[2]);
+        *s = *c;
+        if (R_FINITE(*c) && *c > 0) return true;
+        *c = th[0]; *s = th[0];
+        return true;
+    }
+    case 30: *c = th[0]; *s = th[0]; return true;
     case 4: {
         *c = th[0];
         *s = d7::sqrt_cr(th[0] * (1 - th[0]) / (1 + th[1]));
