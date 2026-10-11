@@ -56,7 +56,18 @@ The integral is taken by a fixed rule (tanh-sinh panels doubling away from
 the family's center, an exp-sinh tail beyond), in \eqn{\log y} on
 \eqn{(0, \infty)} and in \eqn{\mathrm{logit}(y)} on \eqn{(0, 1)}, so that
 a density that behaves like \eqn{y^{k-1}} at an end of its support is
-integrated as an exponential tail. When the part of the support above
+integrated as an exponential tail; in \eqn{\log y} the panels are at most
+one unit wide, and they restart at the scale \eqn{\theta} where the
+density's fast decay begins when that point lies more than one unit
+above the center. For a small \eqn{k} part of the mass lies below the
+smallest representable double, so on \eqn{(0, \infty)} the part below
+\eqn{y_0 = \min(q, 10^{-290})} is integrated in closed form wherever it
+holds at least \eqn{10^{-17}} of \eqn{F(q)}: there the log-density and
+its parameter derivatives are linear in \eqn{L = \log y}, so they are
+read at \eqn{10^{-290}} and 15 units of \eqn{L} below it and extended to
+\eqn{L_0 = \log y_0}, and \eqn{\int_{-\infty}^{L_0} e^{c + k u} g(u)\, du =
+f(y_0)\, y_0 \sum_j (-1)^j g^{(j)}(L_0)/k^{j+1}} (\code{\link[=compiled_cdf_head]{compiled_cdf_head()}}
+at orders three and four). When the part of the support above
 \eqn{q} holds less mass than the part below, the integral runs over the
 upper part with the opposite sign, so that a derivative that is small
 beside one is not a sum of terms of order one; the mass is the family's

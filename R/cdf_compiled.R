@@ -20,7 +20,18 @@
 #' the family's center, an exp-sinh tail beyond), in \eqn{\log y} on
 #' \eqn{(0, \infty)} and in \eqn{\mathrm{logit}(y)} on \eqn{(0, 1)}, so that
 #' a density that behaves like \eqn{y^{k-1}} at an end of its support is
-#' integrated as an exponential tail. When the part of the support above
+#' integrated as an exponential tail; in \eqn{\log y} the panels are at most
+#' one unit wide, and they restart at the scale \eqn{\theta} where the
+#' density's fast decay begins when that point lies more than one unit
+#' above the center. For a small \eqn{k} part of the mass lies below the
+#' smallest representable double, so on \eqn{(0, \infty)} the part below
+#' \eqn{y_0 = \min(q, 10^{-290})} is integrated in closed form wherever it
+#' holds at least \eqn{10^{-17}} of \eqn{F(q)}: there the log-density and
+#' its parameter derivatives are linear in \eqn{L = \log y}, so they are
+#' read at \eqn{10^{-290}} and 15 units of \eqn{L} below it and extended to
+#' \eqn{L_0 = \log y_0}, and \eqn{\int_{-\infty}^{L_0} e^{c + k u} g(u)\, du =
+#' f(y_0)\, y_0 \sum_j (-1)^j g^{(j)}(L_0)/k^{j+1}} ([compiled_cdf_head()]
+#' at orders three and four). When the part of the support above
 #' \eqn{q} holds less mass than the part below, the integral runs over the
 #' upper part with the opposite sign, so that a derivative that is small
 #' beside one is not a sum of terms of order one; the mass is the family's
@@ -156,6 +167,7 @@ compiled_cdf_deriv_k <- function(distrib, q, theta, order) {
     ellq <- parent_ell(distrib, a$q, th, order - 1L, params)
     bq <- function(J) if (!length(J)) 1 else bell_f_ratio(params[J], ellq)
   }
+  head <- compiled_cdf_head(distrib, rule, th, order, params)
   out <- lapply(deriv_indices(params, order), function(I) {
     if (ls && any(I <= 2L)) {
       if (any(I == 1L)) return(-fq * bq(I[-match(1L, I)]))
@@ -168,12 +180,73 @@ compiled_cdf_deriv_k <- function(distrib, q, theta, order) {
       }
       return(acc)
     }
-    if (!any_pts) return(numeric(n))
-    v <- fw * bell_f_ratio(params[I], ell)
-    v[!live] <- 0
-    sgn * ld_group_sum(as.numeric(v), ix, n)
+    res <- numeric(n)
+    if (any_pts) {
+      v <- fw * bell_f_ratio(params[I], ell)
+      v[!live] <- 0
+      res <- sgn * ld_group_sum(as.numeric(v), ix, n)
+    }
+    if (!is.null(head)) res[head$idx] <- res[head$idx] + head$integral(I)
+    res
   })
   stats::setNames(out, deriv_names(params, order))
+}
+
+#' Power-Law Head of a Compiled CDF Derivative
+#'
+#' @description
+#' The part of \eqn{\partial_I F(q) = \int_0^q f B_I} below the cut
+#' \eqn{y_0} that `cdf_rule_cpp()` reports for a family on
+#' \eqn{(0, \infty)} whose density behaves like \eqn{y^{\alpha - 1}} near
+#' zero (a gamma or a generalized gamma with a small shape), where part of
+#' the mass lies below the smallest representable double.
+#'
+#' @details
+#' On \eqn{(0, y_0]}, with \eqn{L = \log y}, every derivative of \eqn{\ell}
+#' in the parameters is linear in \eqn{L}, so it is read at
+#' \eqn{10^{-290}} and 15 units of \eqn{L} below it and extended to any
+#' \eqn{L}; \eqn{B_I} is then a polynomial in \eqn{L} of degree at most
+#' four, and
+#' \deqn{\int_{-\infty}^{L_0} e^{c + \alpha u} B_I(u)\, du =
+#'   \frac{f(y_0)\, y_0}{\alpha} \int_0^\infty e^{-t}
+#'   B_I(L_0 - t/\alpha)\, dt}
+#' is taken by the three-point Gauss-Laguerre rule, exact for a polynomial
+#' of degree five. The cut, \eqn{\alpha} and \eqn{f(y_0)\,y_0} come from
+#' `cdf_rule_cpp()`, which uses the same head at orders one and two.
+#'
+#' @param distrib A family named in [compiled_cdf_deriv_k()].
+#' @param rule The list `cdf_rule_cpp()` returns.
+#' @param th The named list of parameter vectors, one value per point.
+#' @param order The derivative order, 3 or 4.
+#' @param params The parameter names.
+#'
+#' @return `NULL` when no point has a head; otherwise a list with `idx`, the
+#'   points that have one, and `integral`, a function of a multi-index that
+#'   returns the head's integral at those points.
+#'
+#' @keywords internal
+compiled_cdf_head <- function(distrib, rule, th, order, params) {
+  hi <- rule$head_idx
+  if (!length(hi)) return(NULL)
+  t <- c(0.41577455678347908, 2.2942803602790417, 6.2899450829374792)
+  w <- c(0.71109300992917302, 0.27851773356924085, 0.010389256501586136)
+  thh <- lapply(th, `[`, hi)
+  e0 <- parent_ell(distrib, rule$head_y0, thh, order, params)
+  e1 <- parent_ell(distrib, rule$head_y1, thh, order, params)
+  nh <- length(hi)
+  # node k of point i at position (k - 1) nh + i, as its distance in L
+  # from the reading point: (L0 - La) - t_k / alpha
+  off <- rep(rule$head_off, times = 3L) -
+    rep(t, each = nh) / rep(rule$head_alpha, times = 3L)
+  ell <- function(block) {
+    a0 <- e0(block)
+    rep(a0, times = 3L) + rep((a0 - e1(block)) / rule$head_dL, times = 3L) * off
+  }
+  scale <- exp(rule$head_logE) / rule$head_alpha
+  list(idx = hi, integral = function(I) {
+    b <- matrix(bell_f_ratio(params[I], ell), nrow = nh)
+    scale * as.numeric(b %*% w)
+  })
 }
 
 #' Families With a Compiled CDF Quadrature

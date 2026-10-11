@@ -319,3 +319,48 @@ test_that("the compiled cdf derivatives keep their digits below a skewed family'
                  0.000082709171285004732319, 2.7273099542232438651e-6),
                tolerance = 1e-11)
 })
+
+test_that("the compiled cdf derivatives of a small shape reach the mass below the smallest double", {
+  # References: mpmath at 40 digits. At shape 0.005 part of the mass lies
+  # below 4.9e-324, where the rule cannot place a node
+  cdf_all <- function(d, q, th) c(distrib_grad_cdf(d, q, th, log = FALSE),
+                                   distrib_hess_cdf(d, q, th, log = FALSE),
+                                   distrib_deriv4_cdf(d, q, th, log = FALSE))
+  g <- cdf_all(gamma1_distrib(), 1e-100, list(mu = 2, phi = 200))
+  expect_equal(unlist(g[c("mu", "phi", "mu_mu", "mu_phi", "phi_phi",
+                          "mu_phi_phi_phi", "phi_phi_phi_phi")]),
+               c(mu = -0.00076943902331987, phi = 0.001805726832182122,
+                 mu_mu = 0.0003866431092182347, mu_phi = -6.671219638559544e-07,
+                 phi_phi = -7.424868150084919e-06,
+                 mu_phi_phi_phi = -4.157699974890023e-10,
+                 phi_phi_phi_phi = 7.497486244573357e-10), tolerance = 1e-10)
+  # a quantile below the cut of the rule
+  g <- cdf_all(gamma1_distrib(), 1e-300, list(mu = 2, phi = 200))
+  expect_equal(unlist(g[c("mu", "phi", "phi_phi", "phi_phi_phi_phi")]),
+               c(mu = -7.6943902331987e-05, phi = 0.0005349124482310583,
+                 phi_phi = 3.951442524532925e-06,
+                 phi_phi_phi_phi = -1.252944720052137e-10), tolerance = 1e-10)
+  g <- cdf_all(chisq_distrib(), 1e-200, list(mu = 0.05))
+  expect_equal(c(g$mu, g$mu_mu, g$mu_mu_mu_mu),
+               c(-0.0022955343752240616, 0.5287417888585819, 28051.33434587288),
+               tolerance = 1e-10)
+  # gengamma1, where (y/a)^p underflows below the cut
+  th <- list(a = 1, d = 0.02, p = 1.5)
+  g <- cdf_all(gengamma1_distrib(), 1e-200, th)
+  expect_equal(unlist(g[c("a", "d", "p", "a_a", "a_d", "a_p", "a_d_d_p", "p_p_p_p")]),
+               c(a = -2.015159028006222e-06, d = -0.04636343772873302,
+                 p = -4.975153368261382e-07, a_a = 2.0554622085663467e-06,
+                 a_d = 0.0008265108031743492, a_p = 9.950306736522764e-09,
+                 a_d_d_p = 0.0012547487652387612, p_p_p_p = 3.3715653580485747e-06),
+               tolerance = 1e-10)
+  # the upper side, where the density's cutoff at a was crossed by a wide panel
+  g <- cdf_all(gengamma1_distrib(), 1e-5, th)
+  expect_equal(distrib_deriv3_cdf(gengamma1_distrib(), 1e-5, th, log = FALSE)$a_p_p,
+               -0.00010366663713644697, tolerance = 1e-10)
+  expect_equal(unlist(g[c("a", "d", "p", "a_a", "a_d", "a_p", "a_d_d_p", "p_p_p_p")]),
+               c(a = -0.01600697662786376, d = -8.917963886473382,
+                 p = -0.0039519007377655435, a_a = 0.016327115401143465,
+                 a_d = -0.6219895595583572, a_p = 7.903226567976277e-05,
+                 a_d_d_p = 0.20176308876144255, p_p_p_p = 0.026773836482916757),
+               tolerance = 1e-10)
+})

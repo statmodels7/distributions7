@@ -890,7 +890,8 @@ int cont_kinks(int id, const double* th, double* kk) {
 void mapped_rule(int id, const double* th, double a, double b,
                  const double* kk, int nk, std::vector<double>& y,
                  std::vector<double>& w, std::vector<double>* ly = nullptr,
-                 std::vector<double>* l1y = nullptr);
+                 std::vector<double>* l1y = nullptr, double sv_max = 20.0);
+int cont_map(int id, const double* th);
 
 // ---- distribution functions by quadrature ----------------------------------
 //
@@ -1017,6 +1018,140 @@ bool closed_cdf(int id, double q, const double* th, bool lower, double* F) {
     }
 }
 
+// The rule of the cdf quadrature in log y is cut at kCdfHeadCut, below
+// which a family on (0, Inf) whose density behaves like y^(alpha - 1) is
+// integrated in closed form, and its panels are at most kCdfSvMax wide in
+// log y, so that the cutoff of a small-shape gamma's density (of width
+// one in log y) is resolved.
+const double kCdfHeadCut = 1e-290;
+const double kCdfSvMax = 1.0;
+
+// The power-law head of a family integrated in log y: on (0, y0], y0 the
+// smaller of q and kCdfHeadCut, with L = log y, the log-density is
+// c + (alpha - 1) L and every derivative of it in the parameters is linear
+// in L, to rounding. Its mass is int_{-Inf}^{L0} e^{c + alpha u} g(u) du =
+// E sum_j (-1)^j g^(j)(L0) / alpha^(j+1), E = f(y0) y0, for g a polynomial
+// in u. The family's functions are read at ya = kCdfHeadCut and at 15 and
+// 30 units of L below it, all normal doubles, and extended linearly to L0
+// (q itself may be subnormal); the head is refused when the two slopes of
+// the log-density or of a score disagree, and it is used where its mass
+// is at least 1e-17 of F(q) (otherwise the rule from zero is exact and
+// unchanged).
+struct CdfHead {
+    double ya, yb, dL, La, L0, y0, alpha, logE;
+};
+
+bool cdf_head(int id, double q, const double* th, int mask, CdfHead* h) {
+    if (id >= kWrapBase || cont_map(id, th) != 1 || !(q > 0)) return false;
+    const double ya = kCdfHeadCut, La = std::log(ya);
+    const double yb = std::exp(La - 15), yc = std::exp(La - 30);
+    const double d1 = La - std::log(yb), d2 = std::log(yb) - std::log(yc);
+    const double y0 = std::min(q, ya), L0 = std::log(y0);
+    const double la = d7_logpdf(id, ya, th), lb = d7_logpdf(id, yb, th);
+    if (!R_FINITE(la) || !R_FINITE(lb)) return false;
+    const double a1 = (la - lb) / d1;
+    // the head's mass, E / alpha, against F(q): the closed distribution
+    // function cannot give F(y0) where (y0/a)^p underflows
+    const double logE = la + a1 * (L0 - La) + L0;
+    double Fq;
+    if (!closed_cdf(id, q, th, true, &Fq)) return false;
+    if (!(1 + a1 > 0) || !(std::exp(logE) / (1 + a1) > 1e-17 * Fq))
+        return false;
+    const double lc = d7_logpdf(id, yc, th);
+    if (!R_FINITE(lc)) return false;
+    const double a2 = (lb - lc) / d2;
+    if (std::fabs(a1 - a2) > 1e-9 * (1 + std::fabs(a1))) return false;
+    const int P = d7_n_params[id];
+    for (int k = 0; k < P; ++k) {
+        if (!((mask >> k) & 1)) continue;
+        double s0[2], s1[2], s2[2];
+        d7_score_curv(id, k, ya, th, s0);
+        d7_score_curv(id, k, yb, th, s1);
+        d7_score_curv(id, k, yc, th, s2);
+        const double b1 = (s0[0] - s1[0]) / d1, b2 = (s1[0] - s2[0]) / d2;
+        if (std::fabs(b1 - b2) >
+            1e-9 * (1 + std::fabs(b1) + std::fabs(s0[0]) / 15)) return false;
+    }
+    h->ya = ya;
+    h->yb = yb;
+    h->dL = d1;
+    h->La = La;
+    h->L0 = L0;
+    h->y0 = y0;
+    h->alpha = 1 + a1;
+    h->logE = logE;
+    return R_FINITE(h->alpha) && h->alpha > 0 && R_FINITE(h->logE);
+}
+
+// A cut of the cdf rule where the density of a family on (0, Inf) begins
+// its fast decay, at the scale theta of exp(-(y/theta)^p): from there the
+// decay has width 1/p in log y, while the panels that double away from the
+// center reach it several units wide when the center lies far below it (a
+// small shape). The cut is placed when it lies more than one unit of log y
+// above the center; the panels then restart from it.
+int cdf_edge_cut(int id, const double* th, double* kk) {
+    double e;
+    switch (id) {
+    case 1: e = th[1] * th[0]; break;           // gamma1: phi mu
+    case 17: e = th[1] / th[0]; break;          // gamma2: sigma2 / mu
+    case 9: e = 2.0; break;                     // chisq
+    case 25: e = th[0]; break;                  // gengamma1: a
+    case 26:                                    // gengamma2: a from the mean
+        e = std::exp(std::log(th[0]) + R::lgammafn(th[1] / th[2]) -
+                     R::lgammafn((th[1] + 1) / th[2]));
+        break;
+    default: return 0;
+    }
+    double c, s;
+    cont_center_scale(id, th, &c, &s);
+    if (!R_FINITE(e) || !(e > 0) || !(c > 0) || !(std::log(e / c) > 1))
+        return 0;
+    kk[0] = e;
+    return 1;
+}
+
+// the head's contributions to the sums of quad_cdf_sums(); a value at L0
+// is the value at La extended along its slope
+void cdf_head_sums(int id, const double* th, int mask, bool want_h,
+                   const CdfHead& hd, long double* S0, long double* S1,
+                   long double* S2) {
+    const int P = d7_n_params[id];
+    const double a = hd.alpha, E = std::exp(hd.logE), dl = hd.L0 - hd.La;
+    // g(L0) / a - g'(L0) / a^2 + g''(L0) / a^3
+    auto mom = [a](double g, double g1, double g2) {
+        return g / a - g1 / (a * a) + g2 / (a * a * a);
+    };
+    *S0 += E / a;
+    double g0[4] = {0, 0, 0, 0}, l0[4] = {0, 0, 0, 0}, bg[4] = {0, 0, 0, 0},
+        bl[4] = {0, 0, 0, 0};
+    for (int k = 0; k < P; ++k) {
+        if (!((mask >> k) & 1)) continue;
+        double s0[2], s1[2];
+        d7_score_curv(id, k, hd.ya, th, s0);
+        d7_score_curv(id, k, hd.yb, th, s1);
+        bg[k] = (s0[0] - s1[0]) / hd.dL;   // per unit of L
+        bl[k] = (s0[1] - s1[1]) / hd.dL;
+        g0[k] = s0[0] + bg[k] * dl;
+        l0[k] = s0[1] + bl[k] * dl;
+        S1[k] += E * mom(g0[k], bg[k], 0.0);
+    }
+    if (!want_h) return;
+    for (int k = 0; k < P; ++k) {
+        if (!((mask >> k) & 1)) continue;
+        S2[k * 4 + k] += E * mom(l0[k] + g0[k] * g0[k],
+                                 bl[k] + 2 * bg[k] * g0[k],
+                                 2 * bg[k] * bg[k]);
+        for (int m = k + 1; m < P; ++m) {
+            if (!((mask >> m) & 1)) continue;
+            const double ha = hess_off(id, k, m, hd.ya, th);
+            const double bh = (ha - hess_off(id, k, m, hd.yb, th)) / hd.dL;
+            S2[k * 4 + m] += E * mom(ha + bh * dl + g0[k] * g0[m],
+                                     bh + bg[k] * g0[m] + g0[k] * bg[m],
+                                     2 * bg[k] * bg[m]);
+        }
+    }
+}
+
 // the integrals over the side of q: I0 = int f, Ik = int f s_k and
 // Ikl = int f (l_kl + s_k s_l) over the parameters of `mask`, with
 // `upper` true for [q, hi)
@@ -1027,13 +1162,19 @@ void quad_cdf_sums(int id, double q, const double* th, int mask, bool upper,
     cont_support(id, th, &slo, &shi);
     cont_center_scale(id, th, &c, &s);
     std::vector<double> ys, ws;
-    const double a = upper ? std::max(q, slo) : slo;
-    const double b = upper ? shi : std::min(q, shi);
     const bool logs = logs_family(id);
+    CdfHead hd;
+    const bool head = !upper && !logs && cdf_head(id, q, th, mask, &hd);
+    const double a = upper ? std::max(q, slo) : (head ? hd.y0 : slo);
+    const double b = upper ? shi : std::min(q, shi);
     std::vector<double> lys, l1ys;
-    mapped_rule(id, th, a, b, nullptr, 0, ys, ws, logs ? &lys : nullptr,
-                logs ? &l1ys : nullptr);
+    double kk[1];
+    const int nk = cdf_edge_cut(id, th, kk);
+    if (b > a)
+        mapped_rule(id, th, a, b, kk, nk, ys, ws, logs ? &lys : nullptr,
+                    logs ? &l1ys : nullptr, kCdfSvMax);
     long double S0 = 0.0L, S1[4] = {0, 0, 0, 0}, S2[16] = {0};
+    if (head) cdf_head_sums(id, th, mask, want_h, hd, &S0, S1, S2);
     for (std::size_t j = 0; j < ys.size(); ++j) {
         const double y = ys[j];
         if (logs) {
@@ -1227,7 +1368,7 @@ int cont_map(int id, const double* th) {
 void mapped_rule(int id, const double* th, double a, double b,
                  const double* kk, int nk, std::vector<double>& y,
                  std::vector<double>& w, std::vector<double>* ly,
-                 std::vector<double>* l1y) {
+                 std::vector<double>* l1y, double sv_max) {
     if (ly != nullptr) ly->clear();
     if (l1y != nullptr) l1y->clear();
     double c, s;
@@ -1245,7 +1386,7 @@ void mapped_rule(int id, const double* th, double a, double b,
     };
     const double cv = fwd(c);
     double sv = (mp == 1) ? s / c : s / (c * (1 - c));
-    sv = std::min(20.0, std::max(0.05, sv));
+    sv = std::min(mp == 1 ? sv_max : 20.0, std::max(0.05, sv));
     double kv[4];
     for (int i = 0; i < nk && i < 4; ++i) kv[i] = fwd(kk[i]);
     d7::trunc_rule(fwd(a), fwd(b), cv, sv, kv, nk, y, w);
@@ -2222,18 +2363,38 @@ Rcpp::List cdf_rule_cpp(std::string cls, Rcpp::NumericVector q,
     if (id < 0 || id >= kWrapBase || !quad_cdf_family(id))
         Rcpp::stop("no compiled cdf quadrature for '%s'", cls);
     const int n = q.size(), np = theta.ncol();
+    bool ls;
+    const int mask = quad_cdf_mask(id, &ls);
     Rcpp::LogicalVector upper(n);
-    std::vector<int> idx;
-    std::vector<double> yy, ww, ys, ws, th(np);
+    std::vector<int> idx, hidx;
+    std::vector<double> yy, ww, ys, ws, th(np), hy0, hy1, hdl, hoff, ha, hle;
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < np; ++j) th[j] = theta(i, j);
         const bool up = quad_side_upper(id, q[i], th.data());
         upper[i] = up;
         double slo, shi;
         cont_support(id, th.data(), &slo, &shi);
-        const double a = up ? std::max(q[i], slo) : slo;
+        CdfHead hd;
+        const bool head = !up && !logs_family(id) &&
+            cdf_head(id, q[i], th.data(), mask, &hd);
+        if (head) {
+            hidx.push_back(i + 1);
+            hy0.push_back(hd.ya);
+            hy1.push_back(hd.yb);
+            hdl.push_back(hd.dL);
+            hoff.push_back(hd.L0 - hd.La);
+            ha.push_back(hd.alpha);
+            hle.push_back(hd.logE);
+        }
+        const double a = up ? std::max(q[i], slo) : (head ? hd.y0 : slo);
         const double b = up ? shi : std::min(q[i], shi);
-        mapped_rule(id, th.data(), a, b, nullptr, 0, ys, ws);
+        ys.clear();
+        ws.clear();
+        double kk[1];
+        const int nk = cdf_edge_cut(id, th.data(), kk);
+        if (b > a)
+            mapped_rule(id, th.data(), a, b, kk, nk, ys, ws, nullptr,
+                        nullptr, kCdfSvMax);
         for (std::size_t j = 0; j < ys.size(); ++j) {
             idx.push_back(i + 1);
             yy.push_back(ys[j]);
@@ -2243,7 +2404,14 @@ Rcpp::List cdf_rule_cpp(std::string cls, Rcpp::NumericVector q,
     return Rcpp::List::create(Rcpp::_["idx"] = Rcpp::wrap(idx),
                               Rcpp::_["y"] = Rcpp::wrap(yy),
                               Rcpp::_["w"] = Rcpp::wrap(ww),
-                              Rcpp::_["upper"] = upper);
+                              Rcpp::_["upper"] = upper,
+                              Rcpp::_["head_idx"] = Rcpp::wrap(hidx),
+                              Rcpp::_["head_y0"] = Rcpp::wrap(hy0),
+                              Rcpp::_["head_y1"] = Rcpp::wrap(hy1),
+                              Rcpp::_["head_dL"] = Rcpp::wrap(hdl),
+                              Rcpp::_["head_off"] = Rcpp::wrap(hoff),
+                              Rcpp::_["head_alpha"] = Rcpp::wrap(ha),
+                              Rcpp::_["head_logE"] = Rcpp::wrap(hle));
 }
 
 // fold_rule() for folded_expected() in R, which reads the same nodes
