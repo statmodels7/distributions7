@@ -2,9 +2,9 @@
 
 Returns 0. The density is symmetric about \\\mu\\ at every parameter
 value, so every odd central moment vanishes and the standardized third
-one with them. The result is multiplied by a length-carrying quantity,
-so a `theta` whose components vary by observation gets one zero per
-observation.
+one with them. The zero is recycled to the length of the longest
+component of `theta`, so a `theta` whose components vary by observation
+gets one zero per observation.
 
 The **fourth** moment is not zero and is not closed form here:
 [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
@@ -22,7 +22,8 @@ the Gaussian's 0 and the Laplace's 3.
 - theta:
 
   A named list with components `mu`, `lambda` and `alpha`. Aligned and
-  validated by name, so a missing or out-of-bounds component throws.
+  validated by name, so a missing or out-of-bounds component signals an
+  error.
 
 - ...:
 

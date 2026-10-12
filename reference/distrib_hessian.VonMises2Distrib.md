@@ -9,8 +9,8 @@ the score's \\\\\cos(y-\mu) - \rho\\\kappa'(\rho)\\. The components are
 computed by a compiled kernel.
 
 Unlike in the concentration parametrization, the pure second derivative
-is **not** free of the data: the term in \\\kappa''\\ carries
-\\\cos(y-\mu)\\, which the map's curvature brings in.
+is **not** free of the data: the term in \\\kappa''\\, the curvature of
+the map, multiplies \\\cos(y-\mu)\\.
 
 ## Arguments
 

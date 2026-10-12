@@ -24,8 +24,8 @@ that support.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, applied by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - approx:
 
@@ -43,8 +43,8 @@ that support.
 
 A named list of numeric vectors of length `length(y)`, one component per
 unordered pair of parameters, keyed as
-[`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each vector constant.
+[`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md);
+each vector is constant for scalar parameters.
 
 ## Notation
 

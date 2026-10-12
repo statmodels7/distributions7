@@ -1,13 +1,13 @@
-# The Quantities a Structured Parametrization Is About
+# Quantities Declared by a Structured Parametrization
 
-Returns the block
+Returns the block that
 [`mv_param_block()`](https://statmodels7.github.io/distributions7/reference/mv_param_block.md)
-declares, with the structure's common variance `scale` replaced by its
-square root where the matrix is a covariance or a scale matrix, or
+returns, with the common variance `scale` of the structure replaced by
+its square root where the matrix is a covariance or a scale matrix, or
 `NULL` where the structure declares no block. A structured matrix such
 as `compound_symmetry()` or `ar1()` is fixed by these few quantities, so
-they are what a summary reports in place of the standard deviation of
-every coordinate and the correlation of every pair, which repeat them.
+a summary reports them in place of the standard deviation of every
+coordinate and the correlation of every pair, which would repeat them.
 
 ## Usage
 

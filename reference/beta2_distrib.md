@@ -4,11 +4,12 @@ Builds the distribution object for the beta family on \\(0, 1)\\ in its
 canonical parametrization, the two shapes \\\alpha \> 0\\ and \\\beta \>
 0\\. The returned object carries closed-form derivatives of the
 log-density to fourth order, in the parameters and in the response, and
-closed-form moments, so every generic of the toolkit answers without a
-numerical fallback.
+closed-form moments. The fifth order and the mixed derivatives of order
+three and four in the response and the parameters come from the
+numerical fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the
+unconstrained scale on which an optimizer works. Both default to the
 logarithm, both shapes being positive.
 
 ## Usage
@@ -57,9 +58,9 @@ endpoint.
 This is the same law as
 [`beta1_distrib()`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md),
 which carries the mean and a precision, with \\\alpha = \mu\varphi\\ and
-\\\beta = (1-\mu)\varphi\\. The mean parametrization is the one a
-regression wants; this one is how the family is usually written, and it
-is what a conjugate analysis produces, the beta being conjugate for a
+\\\beta = (1-\mu)\varphi\\. The mean parametrization is the one used in
+regression; this one is how the family is usually written, and it is
+what a conjugate analysis produces, the beta being conjugate for a
 binomial probability.
 
 ## Where the response stops entering
@@ -78,21 +79,21 @@ second derivative already kills it: \$\$\ell^{(\alpha\alpha)} =
 
 Three consequences follow. The observed and expected Hessians are the
 same matrix, so Fisher scoring and Newton's method take the same step on
-the parameter scale, and asking any method for `expected = TRUE` returns
-the same numbers. Every third and fourth derivative is likewise a
+the parameter scale, and every method returns the same numbers with
+`expected = TRUE`. Every third and fourth derivative is likewise a
 difference of polygamma functions and free of the data. And the mixed
 entry \\\psi'(\alpha+\beta)\\ is positive at every setting, so the two
 shapes are never orthogonal.
 
 The derivatives of the *distribution* function in the parameters have no
 elementary form, the derivative of an incomplete beta in its shapes
-being hypergeometric, and are taken by finite difference on the analytic
-cdf.
+being hypergeometric, and are computed by a compiled quadrature of the
+density times the derivatives of the log-density.
 
 ## Estimation
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-maximizes the log-likelihood on the link scale. Neither estimate is
+maximizes the log-likelihood on the link scale. The estimates have no
 closed form, both estimating equations involving digamma functions. The
 method of moments supplies the starting values through the concentration
 \\k = \bar y(1-\bar y)/s^2 - 1\\, with \\\hat\alpha = k\bar y\\ and
@@ -120,12 +121,13 @@ parametrization a regression uses;
 [`betabinom2_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom2_distrib.md)
 for the beta as a mixing law over a binomial probability;
 [`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md)
-for the family a ratio of gammas turns into this one;
+for the gamma, from which the beta arises as \\X/(X+Y)\\ for independent
+gamma variables with a common scale;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
-passes;
+to validate a family of your own against the same battery of checks that
+this family passes;
 [Beta2Distrib](https://statmodels7.github.io/distributions7/reference/Beta2Distrib.md)
 for the class.
 
@@ -148,7 +150,7 @@ th <- list(alpha = 2, beta = 5)
 all.equal(distrib_pdf(d, y, th), dbeta(y, 2, 5))
 #> [1] TRUE
 
-# Moments: the mean is the ratio, and neither parameter is a mean.
+# Moments: the mean is alpha / (alpha + beta); neither parameter is a mean.
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))
 #>       mean        var       skew       kurt 

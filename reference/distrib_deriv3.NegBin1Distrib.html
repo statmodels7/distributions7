@@ -25,7 +25,7 @@ this page where approx and nsim are read."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,11 +136,11 @@ size and \(G(r) = \log\Gamma(y+r) - \log\Gamma(r)\).</p>
 <p>As \(\theta \to 0\) the family tends to the Poisson and the recursion's
 terms in the powers of \(r\) grow while their sum stays of order one. The
 polygamma differences go through <code><a href="psi_shift_diff.html">psi_shift_diff()</a></code> and are exact, but the
-cancellation among those powers is not repaired: at
-\(\theta = 5\times10^{-4}\) the terms reach \(8\times10^{6}\), and this
-order is not reliable below about \(\theta = 0.05\). The score itself,
-which does not carry the recursion, reaches the Poisson limit to five
-figures.</p>
+recursion loses its digits among those powers. For \(\theta &lt; 1\) the
+method therefore evaluates the form in \(\mu + i\theta\), which contains
+no size (<code><a href="negbin1_components.html">negbin1_components()</a></code>), at a cost of \(y\) terms per
+observation, and this order keeps its accuracy as \(\theta\) goes to
+zero.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

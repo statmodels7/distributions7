@@ -6,11 +6,12 @@ Builds the distribution object for the inverse Gaussian family on \\(0,
 generalized linear model parametrization, with variance function
 \\V(\mu) = \mu^3\\. The returned object carries closed-form derivatives
 of the log-density to fourth order, in the parameters and in the
-response, and closed-form moments, so every generic of the toolkit
-answers without a numerical fallback.
+response, and closed-form moments. The fifth order and the mixed
+derivatives of order three and four in the response and the parameters
+come from the numerical fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the
+unconstrained scale on which an optimizer works. Both default to the
 logarithm, both parameters being positive.
 
 ## Usage
@@ -56,17 +57,18 @@ distribution function is elementary in the standard normal one, \$\$F(q)
 \left(\dfrac{q}{\mu} + 1\right)\right\\,\$\$ and the quantile function
 is its numerical inverse.
 
-The law is the first-passage time of a Brownian motion with drift, which
-is why it is skewed however small the dispersion and why its variance
-grows with the cube of the mean. Beside the gamma, whose variance
-function is \\\mu^2\\, it puts more mass both near zero and far out.
+The law is the distribution of the first-passage time of a Brownian
+motion with drift to a fixed level. Its skewness \\3\sqrt{\phi\mu}\\
+tends to zero with \\\phi\mu\\. Compared with a gamma of the same mean
+and variance it has less mass near zero, its density vanishing like
+\\\exp\\-1/(2\phi y)\\\\ at the origin, and a right tail that decays at
+the rate \\1/(2\phi\mu^2)\\, half the gamma's.
 
 This is the same law as
 [`invgauss2_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss2_distrib.md),
-which carries the mean and the *variance*, the two being related by
-\\\sigma^2 = \phi\mu^3\\. They are separate families because the second
-parameter is a different quantity in each, with its own interpretation,
-standard error and interval.
+which carries the mean and the shape \\\lambda = 1/\phi\\. They are
+separate families because the second parameter is a different quantity
+in each, with its own interpretation, standard error and interval.
 
 ## Derivatives
 
@@ -78,13 +80,14 @@ Hessian is \$\$\mathbb{E}\left\[\ell^{(\mu\mu)}\right\] =
 = -\dfrac{1}{2\phi^2}, \qquad \mathbb{E}\left\[\ell^{(\mu\phi)}\right\]
 = 0.\$\$ The zero off-diagonal makes the mean and the dispersion
 orthogonal, so the mean equation can be fitted with the dispersion held
-at any value without biasing it. Note that the expected curvature in
-\\\phi\\ is \\-1/(2\phi^2)\\ whatever the mean, so the dispersion is
-estimated with the same precision at every scale of the response.
+at any value without biasing it. The expected curvature in \\\phi\\ is
+\\-1/(2\phi^2)\\ for every value of the mean, so the asymptotic variance
+of the estimated dispersion, \\2\phi^2/n\\, does not depend on the mean.
 
-The observed Hessian is a different matter, and the method page says so
-at length: neither diagonal entry is negative at every observation. That
-is the practical reason to fit this family by
+The diagonal entries of the observed Hessian,
+[`distrib_hessian.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.InvGauss1Distrib.md),
+are not negative at every observation, which is the practical reason to
+fit this family by
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md).
 
 Third and fourth orders are closed form as well, observed and expected,
@@ -101,9 +104,9 @@ closed form too, the expression above being elementary.
 
 ## Estimation
 
-Both maximum likelihood estimates are available in closed form, which
-few two-parameter families offer: \$\$\hat\mu = \bar y, \qquad \hat\phi
-= \dfrac{1}{n}\sum_i \dfrac{1}{y_i} - \dfrac{1}{\bar y}.\$\$
+The maximum likelihood estimates of both parameters have a closed form:
+\$\$\hat\mu = \bar y, \qquad \hat\phi = \dfrac{1}{n}\sum_i
+\dfrac{1}{y_i} - \dfrac{1}{\bar y}.\$\$
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 reaches them numerically on the link scale, and the example below checks
 both against the sample.
@@ -125,19 +128,19 @@ York.
 ## See also
 
 [`invgauss2_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss2_distrib.md)
-for the same law in the mean and the variance;
+for the same law in the mean and the shape;
 [`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md)
 for the other positive generalized linear model family, with variance
 function \\\mu^2\\;
 [`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md)
 for a third;
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
-for the counts this law mixes a Poisson into;
+for the Poisson mixed over this law;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
-passes;
+to validate a family of your own against the same battery of checks that
+this family passes;
 [InvGauss1Distrib](https://statmodels7.github.io/distributions7/reference/InvGauss1Distrib.md)
 for the class.
 

@@ -3,8 +3,8 @@
 Draws by the inverse transform,
 `distrib_quantile(distrib, runif(n), theta)`. The quantile function of
 this family is closed form, so the transform is exact and costs one
-uniform per draw; the base class's ratio-of-uniforms fallback is not
-needed.
+uniform per draw. The base class draws the same way for a family with
+its own quantile method.
 
 ## Arguments
 

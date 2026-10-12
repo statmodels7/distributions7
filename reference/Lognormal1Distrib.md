@@ -4,15 +4,17 @@ The S7 class of the lognormal family on \\(0, \infty)\\: the law of a
 variable whose logarithm is Gaussian with mean \\\mu\\ and variance
 \\\sigma^2 \> 0\\. Both parameters live **on the log scale**, so neither
 is the mean or the variance of \\Y\\ itself. It inherits from
-`continuous_distrib`, so it answers every generic of the `distrib`
-contract; the eleven methods listed below are registered on it directly
-and everything else comes from the parent.
+`continuous_distrib`, so every generic of the `distrib` class applies to
+it; the methods listed below are registered on it directly and
+everything else comes from the parent.
 
 Build one with
 [`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md),
 which supplies the two link functions and fills the properties in. This
 page documents the raw S7 constructor, which takes the parent's
-properties and validates none of the relationships between them.
+properties; the validator of `distrib` checks that they are consistent
+(the parameter count, a bound and a link for every parameter, ordered
+support bounds).
 
 ## Usage
 
@@ -97,20 +99,57 @@ they hold `"lognormal1"`, `"univariate"`, `c(0, Inf)`,
 
 ## Methods
 
-Registered on this class:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Lognormal1Distrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Lognormal1Distrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Lognormal1Distrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Lognormal1Distrib.md),
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Lognormal1Distrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal1Distrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Lognormal1Distrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Lognormal1Distrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Lognormal1Distrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Lognormal1Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Lognormal1Distrib.md)
+Registered on this class, each linked to the page that documents it:
 
-Everything else is inherited from
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Lognormal1Distrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Lognormal1Distrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Lognormal1Distrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Lognormal1Distrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal1Distrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Lognormal1Distrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Lognormal1Distrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Lognormal1Distrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Lognormal1Distrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Lognormal1Distrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Lognormal1Distrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Lognormal1Distrib.md),
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Lognormal1Distrib.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Lognormal1Distrib.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Lognormal1Distrib.md);
+
+- the derivatives of the distribution function:
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Lognormal1Distrib.md),
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.Lognormal1Distrib.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.Lognormal1Distrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.Lognormal1Distrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.Lognormal1Distrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.Lognormal1Distrib.md).
+
+Every other generic is inherited from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
@@ -124,7 +163,7 @@ which this becomes at \\\log y\\;
 [`distrib_pdf.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Lognormal1Distrib.md)
 and
 [`distrib_gradient.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal1Distrib.md)
-for the closed forms this class supplies.
+for the closed forms of this class.
 
 ## Examples
 

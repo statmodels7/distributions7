@@ -1,10 +1,9 @@
 # Excess Kurtosis of the Student t Distribution
 
 Closed form: \\\gamma_2 = 6/(\nu-4)\\ for \\\nu \> 4\\, `Inf` for \\2 \<
-\nu \le 4\\, and `NaN` at or below two. The value is the toolkit's
-standard example of tail weight running with a shape parameter: it is 6
-at \\\nu = 5\\, 1 at \\\nu = 10\\ and tends to the Gaussian's zero as
-the degrees of freedom grow.
+\nu \le 4\\, and `NaN` at or below two. The excess kurtosis is 6 at
+\\\nu = 5\\, 1 at \\\nu = 10\\, and tends to the Gaussian's zero as the
+degrees of freedom increase.
 
 ## Arguments
 

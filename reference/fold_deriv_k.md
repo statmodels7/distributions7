@@ -1,17 +1,18 @@
 # Build a Folded Derivative Method of a Given Order
 
-Returns the method
+Returns the method that
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
 registers for
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
-or
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md).
-Both orders run the same three steps, so the body is written once and
-the order is closed over: form the weight with
+and
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md),
+and the kernel that the fifth-derivative method uses. All orders run the
+same three steps, so the body is written once and the order is closed
+over: form the weight with
 [`fold_parts()`](https://statmodels7.github.io/distributions7/reference/fold_parts.md),
 build the block ratios with
 [`fold_ratio()`](https://statmodels7.github.io/distributions7/reference/fold_ratio.md),
-and hand them to
+and pass them to
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md)
 for every component of the order.
 
@@ -39,8 +40,8 @@ The ratios are \\d^B L/L = w\\(d^B f(x)/f(x)) + (1-w)\\(d^B
 f(-x)/f(-x))\\, and
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md)
 turns them into derivatives of \\\log L\\ by the moment-to-cumulant
-relation. Nothing about the fold is written out at third or fourth
-order; the same two functions serve every order the parent supplies.
+relation. The fold needs no separate formula at third or fourth order:
+the same two functions serve every order that the parent supplies.
 
 ## Notation
 

@@ -5,7 +5,10 @@ Closed form: \$\$\operatorname{Var}(Y) = \frac{\alpha\beta}
 \alpha/(\alpha+\beta)\\ and \\\phi = \alpha+\beta\\ this is the
 \\\mu(1-\mu)/(\phi+1)\\ of
 [`variance.Beta1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.Beta1Distrib.md),
-so the shapes and the mean-precision pair describe the same law.
+so the shapes and the mean-precision pair describe the same law. The
+method evaluates it in that form, with \\\mu = 1/(1 + \beta/\alpha)\\
+([`beta_mu_sigma()`](https://statmodels7.github.io/distributions7/reference/beta_mu_sigma.md)),
+so that \\\alpha\beta\\ is not formed where it underflows or overflows.
 
 ## Arguments
 
@@ -17,8 +20,8 @@ so the shapes and the mean-precision pair describe the same law.
 - theta:
 
   A named list with components `alpha` and `beta`, both positive, each a
-  numeric vector of length 1 or `n`. Both shapes below 1 puts the mass
-  at the two endpoints.
+  numeric vector of length 1 or `n`. If both shapes are below 1 the
+  density is unbounded at both endpoints and U-shaped.
 
 - ...:
 

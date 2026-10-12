@@ -15,13 +15,12 @@ polynomial in \\z\\ with the \\g_j\\ as coefficients:
 g_3}{\sigma^3}, \qquad \dfrac{\partial^3 \ell}{\partial \sigma^3} =
 -\dfrac{2 + 6z g_1 + 6z^2 g_2 + z^3 g_3}{\sigma^3}.\$\$
 
-With `expected = TRUE` the values are **numerical**, unlike the orders
-below them. Two of the nine expectations at this order and the next
-require \\\int w^k \mathrm{sech}^4 w \tanh^2 w \\ dw\\, which has no
-elementary form, so the method routes to
-[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-and `approx` and `nsim` are read. The default there is `"integrate"`,
-one quadrature per component.
+With `expected = TRUE` the expectations under the model are returned in
+closed form: \\1/(2\sigma^3)\\ for `mu_mu_sigma`,
+\\(2+\pi^2)/(2\sigma^3)\\ for `sigma_sigma_sigma`, and zero for the two
+components odd in \\z\\. They are integrals of the polynomials above
+against the logistic density, which reduce to values of the zeta
+function at even arguments. `approx` and `nsim` are ignored.
 
 ## Arguments
 
@@ -43,7 +42,7 @@ one quadrature per component.
 - expected:
 
   Logical of length 1. When `TRUE` the expectations under the model are
-  returned, by the numerical route described above. Defaults to `FALSE`.
+  returned, in closed form. Defaults to `FALSE`.
 
 - scale:
 
@@ -53,16 +52,13 @@ one quadrature per component.
 
 - approx:
 
-  One of `"integrate"` (the default), `"bartlett"`, `"mc"` or `"opg"`,
-  matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read
-  **only** when `expected = TRUE`, where it selects how the expectation
-  is approximated.
+  One of `"integrate"` (the default), `"bartlett"`, `"mc"` or `"opg"`.
+  Ignored, a closed form being available for the expected values;
+  accepted so that the signature matches the generic's.
 
 - nsim:
 
-  A single positive integer, the sample size used when `approx = "mc"`.
-  Read only when `expected = TRUE`. Defaults to `10000`.
+  Ignored, for the same reason. Defaults to `10000`.
 
 - ...:
 
@@ -91,8 +87,6 @@ name derivatives; a subscript on \\\ell\\ never does.
 for the order below and
 [`distrib_deriv4.LogisticDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.LogisticDistrib.md)
 for the order above;
-[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-for the numerical route the expected values take;
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
 for the generic.
 
@@ -114,19 +108,20 @@ dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu_mu
 all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 #> [1] TRUE
 
-# The expected values are numerical here: the pure-mu component is zero by
-# symmetry and comes back at the quadrature's own accuracy, not at zero.
+# The expected values, in closed form; the components odd in z are zero.
 lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 #> $mu_mu_mu
-#> [1] 4.336809e-19
+#> [1] 0
 #> 
 #> $mu_mu_sigma
 #> [1] 0.1481481
 #> 
 #> $mu_sigma_sigma
-#> [1] 4.163336e-17
+#> [1] 0
 #> 
 #> $sigma_sigma_sigma
 #> [1] 1.75846
 #> 
+c(1 / (2 * 1.5^3), (2 + pi^2) / (2 * 1.5^3))
+#> [1] 0.1481481 1.7584599
 ```

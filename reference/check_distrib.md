@@ -1,10 +1,14 @@
 # Numerically Validate a Distribution
 
 Runs a battery of numerical self-consistency checks on a `distrib`
-object. Validates a user-defined distribution: it verifies that the
-density integrates (or sums) to one, that the CDF, quantile function and
-random generator agree with each other and with the density, and that
-every analytical derivative matches its finite-difference counterpart.
+object. For a univariate distribution, user-defined or shipped, it
+verifies that the density integrates (or sums) to one, that the CDF,
+quantile function and random generator agree with each other and with
+the density, and that every analytical derivative matches its
+finite-difference counterpart. A multivariate distribution is validated
+by the separate battery of
+[`check_distrib_mv()`](https://statmodels7.github.io/distributions7/reference/check_distrib_mv.md),
+which has no CDF or quantile rows.
 
 ## Usage
 
@@ -45,15 +49,17 @@ check_distrib(
 - orders:
 
   Integer vector. Which parameter-derivative orders to check. Defaults
-  to `1:4`, the orders every family implements analytically; use e.g.
-  `1:2` for a faster run. Add `5` to check the numerical fifth as well;
-  see the bullet below for what that row compares and when it is
-  emitted.
+  to `1:4`, the orders that every shipped family implements
+  analytically; use e.g. `1:2` for a faster run. Add `5` to check the
+  fifth order as well; see the bullet below for what that row compares
+  and when it is emitted.
 
 - tol:
 
-  Numeric. Relative tolerance for the finite-difference comparisons.
-  Defaults to `1e-3`.
+  Numeric. Tolerance for the finite-difference comparisons, applied to
+  the absolute difference divided by the larger of one and the magnitude
+  of the reference, so that it is relative for large components and
+  absolute for small ones. Defaults to `1e-3`.
 
 - verbose:
 
@@ -84,10 +90,11 @@ The checks performed are:
   continuous distributions, and the generalized-inverse inequalities for
   discrete ones).
 
-- **rng**: the sample mean and variance of a large draw agree with
-  [`mean()`](https://rdrr.io/r/base/mean.html) and
-  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
-  within Monte Carlo error.
+- **rng**: the empirical distribution function of a large draw, at the
+  quantiles for the probabilities 0.05, 0.10, ..., 0.95, agrees with
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
+  within Monte Carlo error (the largest standardized difference stays
+  below 6).
 
 - **gradient, hessian, deriv3, deriv4**: analytical values against
   [`numerical_gradient()`](https://statmodels7.github.io/distributions7/reference/numerical_gradient.md),
@@ -100,19 +107,18 @@ The checks performed are:
   [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
   against
   [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md)
-  at a higher accuracy, five stencil nodes instead of three. No family
-  writes the fifth order out, so there is no analytic value to compare
-  against and this checks the differencing rather than a family's
-  algebra. It is emitted only where
+  at a higher accuracy, five stencil nodes instead of three. For a
+  family that reaches the numerical fifth order the row checks the
+  differencing; for a family that registers its own
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
+  it checks that method. It is emitted only where
   [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
   is `TRUE`: where the fourth order is itself a fallback the fifth is a
-  difference of a difference and no verdict on it would mean anything. A
-  family that owns its fourth-order method while building part of it
-  from stencils passes that test and may still fail this row:
-  [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
-  fails it at `nu = 3` and passes from `nu = 8` upward, the noise read
-  here being absolute and falling as `nu` grows. It is why `orders`
-  defaults to `1:4`.
+  difference of a difference and a verdict on it would carry no meaning.
+  A family that owns its fourth-order method while building part of it
+  from stencils passes that test and may still fail this row, whose
+  statistic is an absolute error for a small component. The row appears
+  only when `5` is among `orders`, which default to `1:4`.
 
 - **expected information**:
   [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
@@ -159,7 +165,10 @@ a row of the table: it is listed with its reason in the attribute
 `"FAIL"`. An infinite statistic is a failure, being a component that
 overflows where its reference does not; so is a check whose computation
 raised an error, and so is a density or a distribution function that is
-not finite, those three checks being defined on the values themselves.
+not finite. The checks defined on the values themselves (the
+non-negativity of the density, the range of the distribution function
+and, for a discrete family, the quantile round trip) are kept even when
+their statistic is missing.
 
 Mixed distributions — a density with point masses on top of it, as
 produced by

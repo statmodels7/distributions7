@@ -33,11 +33,12 @@ The excess is the fourth cumulant over the squared variance, \\\gamma_2
 = (\mu_4 - 3\mu_2^2)/\mu_2^2\\, with the central moments of \\Y/m_1\\
 computed as
 [`variance.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.GenGamma1Distrib.md)
-describes and the difference \\\mu_4 - 3\mu_2^2\\ formed in the same
-double-double arithmetic. Towards the lognormal the excess is of order
-\\1/k\\, \\k = d/p\\, with coefficient \\2(4h - 1)(2h - 1)\\, \\h =
-1/p\\; at \\p = 2\\ and \\p = 4\\ that coefficient vanishes and the
-excess is of order \\1/k^2\\.
+describes. Where the series is used (\\8h \le k\\ and \\4h^2 \le k\\)
+the difference \\\mu_4 - 3\mu_2^2\\ is formed in double-double
+arithmetic; elsewhere it is formed in ordinary doubles. Towards the
+lognormal the excess is of order \\1/k\\, \\k = d/p\\, with coefficient
+\\2(4h - 1)(2h - 1)\\, \\h = 1/p\\; at \\p = 2\\ and \\p = 4\\ that
+coefficient vanishes and the excess is of order \\1/k^2\\.
 
 ## Notation
 

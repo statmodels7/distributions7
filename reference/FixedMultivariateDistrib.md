@@ -1,9 +1,11 @@
 # S7 Class for Distributions With Fixed Parameters (Multivariate)
 
 The S7 class of a MULTIVARIATE distribution in which some parameters of
-the wrapped distribution are held at known values. It behaves exactly as
+the wrapped distribution are held at known values. It follows
 [FixedContinuousDistrib](https://statmodels7.github.io/distributions7/reference/FixedContinuousDistrib.md)
-does and adds the multivariate contract:
+in splicing the held values into `theta` and delegating to the parent.
+It has no distribution function, quantile or atoms, and adds the
+multivariate generics:
 [`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.md),
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md),
 [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md),
@@ -115,35 +117,55 @@ and `fixed_params` beside the parent's properties, `n_dim` included.
 
 ## Methods
 
-[`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
-registers 20 methods on this class:
-[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md),
-[`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md),
-[`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md),
-[`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md),
-[`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.md),
-[`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md),
-[`mv_reference_draw()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.md),
-[`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md),
-[`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md),
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md).
+Registered on this class, each linked to the page that documents it:
 
-Every one splices the held values back into `theta` and delegates to the
-parent. The set differs from the univariate classes': there is no
-distribution function, no quantile and no atom, and the `mv_*` accessors
-take their place. The generics a multivariate family rejects are not
-registered here at all, so the refusal is inherited from
-`multivariate_distrib` and keeps its own message.
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md),
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
+  [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md);
+
+- the moments:
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md);
+
+- the multivariate summaries:
+  [`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.md),
+  [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md),
+  [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md),
+  [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md),
+  [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md)
+  and
+  [`mv_reference_draw()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.md);
+
+- the exactness flags:
+  [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
+  and
+  [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md).
+
+Every other generic is inherited from
+[`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md).
 
 ## How every method works
 
@@ -173,7 +195,7 @@ level and is left undocumented to match, every one of them being the
 same delegation. Read the parent's page for what a method computes and
 this page for what the wrapper does to it.
 
-## What the refusals do
+## Generics that are rejected
 
 The multivariate branch sits BESIDE the continuous and discrete ones
 rather than under either, so the generics a multivariate family rejects
@@ -224,7 +246,7 @@ all.equal(distrib_pdf(d, y, theta, log = TRUE),
                       c(list(mu1 = 0, mu2 = 0), theta), log = TRUE))
 #> [1] TRUE
 
-# The multivariate contract survives the wrapper.
+# The multivariate generics work through the wrapper.
 mv_sigma(d, theta)
 #>     v1   v2
 #> v1 1.0 0.50
@@ -234,7 +256,7 @@ names(mv_derived(d, theta)$value)
 mv_marginal(d, theta, 1)$distrib@n_dim
 #> [1] 1
 
-# And so do the refusals the base class registers.
+# And so do the errors that the base class registers.
 try(distrib_cdf(d, y, theta))
 #> Error : distrib_cdf() is not defined for 'fixed multivariate gaussian [2d, sigma=log_cholesky] [mu1=0,mu2=0]': the distribution function is an integral over an orthant, with no closed form and no one-dimensional fallback.
 ```

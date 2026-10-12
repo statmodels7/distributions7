@@ -70,12 +70,11 @@ binomial size and \\G(r) = \log\Gamma(y+r) - \log\Gamma(r)\\.
 
 ## The Poisson boundary
 
-The caveat of
+The section of
 [`distrib_deriv3.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.md)
-applies here and more strongly: the recursion divides by \\\theta^{4}\\,
-so the cancellation among the powers of \\r\\ is worse at this order
-than at the one below. This order is not reliable below about \\\theta =
-0.05\\.
+applies here: for \\\theta \< 1\\ the method uses the form in \\\mu +
+i\theta\\, which contains no size, and this order keeps its accuracy as
+\\\theta\\ goes to zero.
 
 ## See also
 

@@ -4,24 +4,28 @@ $$f(y; \mu, \sigma, \nu) = \dfrac{1}{2 \sigma \sqrt{\nu}\, K_1(\sqrt{\nu})}
       \exp\left(-\sqrt{\nu + \left(\dfrac{y-\mu}{\sigma}\right)^2}\right),$$
 with \(K_1\) the modified Bessel function of the second kind. The
 exponent is the negative pseudo-Huber loss, quadratic in the residual near
-the location and linear far from it. That exponent is the pseudo-Huber
-loss, and this density is its exponential.
+the location and linear far from it, so the density is the exponential of
+that loss. The square root is formed as a hypotenuse,
+\(\max(|z|, \sqrt\nu)\sqrt{1 + (\min/\max)^2}\), so the log-density stays
+finite where \(z^2\) overflows.
 The normalizing constant is formed on the log scale through the
 exponentially scaled Bessel function,
-\(\log K_1(x) = \log\{e^x K_1(x)\} - x\). The Bessel terms are
-degree-homogeneous, so the scaled form is exact and stays finite where
-\(K_1(\sqrt{\nu})\) itself underflows, verified to \(\nu = 2000\)."><meta property="og:description" content="Computes the pseudo-Huber density
+\(\log K_1(x) = \log\{e^x K_1(x)\} - x\). The identity is exact, and the
+scaled function stays finite where \(K_1(\sqrt{\nu})\) itself
+underflows, which happens beyond \(\sqrt{\nu} \approx 700\)."><meta property="og:description" content="Computes the pseudo-Huber density
 $$f(y; \mu, \sigma, \nu) = \dfrac{1}{2 \sigma \sqrt{\nu}\, K_1(\sqrt{\nu})}
       \exp\left(-\sqrt{\nu + \left(\dfrac{y-\mu}{\sigma}\right)^2}\right),$$
 with \(K_1\) the modified Bessel function of the second kind. The
 exponent is the negative pseudo-Huber loss, quadratic in the residual near
-the location and linear far from it. That exponent is the pseudo-Huber
-loss, and this density is its exponential.
+the location and linear far from it, so the density is the exponential of
+that loss. The square root is formed as a hypotenuse,
+\(\max(|z|, \sqrt\nu)\sqrt{1 + (\min/\max)^2}\), so the log-density stays
+finite where \(z^2\) overflows.
 The normalizing constant is formed on the log scale through the
 exponentially scaled Bessel function,
-\(\log K_1(x) = \log\{e^x K_1(x)\} - x\). The Bessel terms are
-degree-homogeneous, so the scaled form is exact and stays finite where
-\(K_1(\sqrt{\nu})\) itself underflows, verified to \(\nu = 2000\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(\log K_1(x) = \log\{e^x K_1(x)\} - x\). The identity is exact, and the
+scaled function stays finite where \(K_1(\sqrt{\nu})\) itself
+underflows, which happens beyond \(\sqrt{\nu} \approx 700\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +33,7 @@ degree-homogeneous, so the scaled form is exact and stays finite where
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,13 +71,15 @@ $$f(y; \mu, \sigma, \nu) = \dfrac{1}{2 \sigma \sqrt{\nu}\, K_1(\sqrt{\nu})}
       \exp\left(-\sqrt{\nu + \left(\dfrac{y-\mu}{\sigma}\right)^2}\right),$$
 with \(K_1\) the modified Bessel function of the second kind. The
 exponent is the negative pseudo-Huber loss, quadratic in the residual near
-the location and linear far from it. That exponent is the pseudo-Huber
-loss, and this density is its exponential.</p>
+the location and linear far from it, so the density is the exponential of
+that loss. The square root is formed as a hypotenuse,
+\(\max(|z|, \sqrt\nu)\sqrt{1 + (\min/\max)^2}\), so the log-density stays
+finite where \(z^2\) overflows.</p>
 <p>The normalizing constant is formed on the log scale through the
 <strong>exponentially scaled</strong> Bessel function,
-\(\log K_1(x) = \log\{e^x K_1(x)\} - x\). The Bessel terms are
-degree-homogeneous, so the scaled form is exact and stays finite where
-\(K_1(\sqrt{\nu})\) itself underflows, verified to \(\nu = 2000\).</p>
+\(\log K_1(x) = \log\{e^x K_1(x)\} - x\). The identity is exact, and the
+scaled function stays finite where \(K_1(\sqrt{\nu})\) itself
+underflows, which happens beyond \(\sqrt{\nu} \approx 700\).</p>
     </div>
 
 

@@ -1,13 +1,14 @@
 # Dirichlet Mean Vector
 
-Returns the point of the simplex the mean parameter carries at the free
-values in `theta`. For this family that point **is** the mean,
+Returns the point of the simplex that the mean parameter carries at the
+free values in `theta`. For this family that point is the mean,
 \\\mathbb{E}\[Y_j\] = \mu_j\\, so
 [`mean.DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/mean.DirichletDistrib.md)
 delegates here. The value comes from
 [`parameters7::param_value()`](https://statmodels7.github.io/parameters7/reference/param_value.html)
-on the object's own simplex chart, so it lies on the open simplex by
-construction whatever the free values are.
+on the object's own simplex chart, so it lies on the simplex by
+construction; in floating point a coordinate underflows to zero for free
+values beyond about 745 in absolute value.
 
 ## Arguments
 
@@ -24,7 +25,8 @@ construction whatever the free values are.
 
 ## Value
 
-A numeric vector of length \\p\\, strictly positive and summing to one.
+A numeric vector of length \\p\\, without names, summing to one, with
+positive coordinates except where one underflows.
 
 ## See also
 

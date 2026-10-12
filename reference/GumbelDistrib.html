@@ -4,24 +4,24 @@ maxima, a location-scale family on the whole real line with location
 \(\mu\) and scale \(\sigma &amp;gt; 0\) and density
 \(\sigma^{-1}\exp\{-z - e^{-z}\}\) at \(z = (y-\mu)/\sigma\). Its shape
 is fixed: the skewness and the excess kurtosis are constants and cannot be
-fitted. It inherits from continuous_distrib, so it answers every generic
-of the distrib contract; the eleven methods listed below are registered on
-it directly and everything else comes from the parent.
+fitted. It inherits from continuous_distrib, so every generic of the
+distrib class applies to it; the methods listed below are registered on it
+directly and everything else comes from the parent.
 Build one with gumbel_distrib(), which supplies the two link functions and
 fills the properties in. This page documents the raw S7 constructor, which
-takes the parent's properties and validates none of the relationships
-between them."><meta property="og:description" content="The S7 class of the Gumbel (type I extreme value) family in the form for
+takes the parent's properties; the validator of distrib checks them, and
+the constructor adds no check of its own."><meta property="og:description" content="The S7 class of the Gumbel (type I extreme value) family in the form for
 maxima, a location-scale family on the whole real line with location
 \(\mu\) and scale \(\sigma &amp;gt; 0\) and density
 \(\sigma^{-1}\exp\{-z - e^{-z}\}\) at \(z = (y-\mu)/\sigma\). Its shape
 is fixed: the skewness and the excess kurtosis are constants and cannot be
-fitted. It inherits from continuous_distrib, so it answers every generic
-of the distrib contract; the eleven methods listed below are registered on
-it directly and everything else comes from the parent.
+fitted. It inherits from continuous_distrib, so every generic of the
+distrib class applies to it; the methods listed below are registered on it
+directly and everything else comes from the parent.
 Build one with gumbel_distrib(), which supplies the two link functions and
 fills the properties in. This page documents the raw S7 constructor, which
-takes the parent's properties and validates none of the relationships
-between them."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+takes the parent's properties; the validator of distrib checks them, and
+the constructor adds no check of its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +29,7 @@ between them."><meta property="og:image" content="https://statmodels7.github.io/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,13 +67,13 @@ between them."><meta property="og:image" content="https://statmodels7.github.io/
 \(\mu\) and scale \(\sigma &gt; 0\) and density
 \(\sigma^{-1}\exp\{-z - e^{-z}\}\) at \(z = (y-\mu)/\sigma\). Its shape
 is fixed: the skewness and the excess kurtosis are constants and cannot be
-fitted. It inherits from <code>continuous_distrib</code>, so it answers every generic
-of the <code>distrib</code> contract; the eleven methods listed below are registered on
-it directly and everything else comes from the parent.</p>
+fitted. It inherits from <code>continuous_distrib</code>, so every generic of the
+<code>distrib</code> class applies to it; the methods listed below are registered on it
+directly and everything else comes from the parent.</p>
 <p>Build one with <code><a href="gumbel_distrib.html">gumbel_distrib()</a></code>, which supplies the two link functions and
 fills the properties in. This page documents the raw S7 constructor, which
-takes the parent's properties and validates none of the relationships
-between them.</p>
+takes the parent's properties; the validator of <code>distrib</code> checks them, and
+the constructor adds no check of its own.</p>
     </div>
 
     <div class="section level2">
@@ -145,19 +145,42 @@ object built by <code><a href="gumbel_distrib.html">gumbel_distrib()</a></code> 
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered on this class:
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.GumbelDistrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_cdf.GumbelDistrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_deriv3.GumbelDistrib.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.GumbelDistrib.html">distrib_deriv4()</a></code>,
-<code><a href="distrib_expected_hessian.GumbelDistrib.html">distrib_expected_hessian()</a></code>,
-<code><a href="distrib_grad_y.GumbelDistrib.html">distrib_grad_y()</a></code>,
+<code><a href="distrib_quantile.GumbelDistrib.html">distrib_quantile()</a></code> and
+<code><a href="distrib_rng.GumbelDistrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.GumbelDistrib.html">distrib_gradient()</a></code>,
-<code><a href="distrib_hess_y.GumbelDistrib.html">distrib_hess_y()</a></code>,
 <code><a href="distrib_hessian.GumbelDistrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_pdf.GumbelDistrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_quantile.GumbelDistrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.GumbelDistrib.html">distrib_rng()</a></code></p>
-<p>Everything else is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
+<code><a href="distrib_expected_hessian.GumbelDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.GumbelDistrib.html">distrib_deriv3()</a></code>,
+<code><a href="distrib_deriv4.GumbelDistrib.html">distrib_deriv4()</a></code> and
+<code><a href="distrib_deriv5.GumbelDistrib.html">distrib_deriv5()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_dexpected_hessian.elementary.html">distrib_dexpected_hessian()</a></code>
+and
+<code><a href="distrib_dexpected_hessian.elementary.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the derivatives in the response:
+<code><a href="distrib_grad_y.GumbelDistrib.html">distrib_grad_y()</a></code>,
+<code><a href="distrib_hess_y.GumbelDistrib.html">distrib_hess_y()</a></code>,
+<code><a href="loc_deriv_y_k.html">distrib_deriv3_y()</a></code> and
+<code><a href="loc_deriv_y_k.html">distrib_deriv4_y()</a></code>;</p></li>
+<li><p>the mixed derivatives in the response and the parameters:
+<code><a href="distrib_cross_y.LogisticDistrib.html">distrib_cross_y()</a></code>,
+<code><a href="loc_scale_cross2_y.html">distrib_cross2_y()</a></code>,
+<code><a href="loc_cross3_y.html">distrib_cross3_y()</a></code>,
+<code><a href="loc_scale_grad_y_hess.html">distrib_grad_y_hess()</a></code> and
+<code><a href="loc_scale_grad_y_hess.html">distrib_hess_y_hess()</a></code>;</p></li>
+<li><p>the derivatives of the distribution function:
+<code><a href="distrib_grad_cdf.GumbelDistrib.html">distrib_grad_cdf()</a></code>,
+<code><a href="distrib_hess_cdf.GumbelDistrib.html">distrib_hess_cdf()</a></code>,
+<code><a href="loc_scale_deriv_cdf_k.html">distrib_deriv3_cdf()</a></code> and
+<code><a href="loc_scale_deriv_cdf_k.html">distrib_deriv4_cdf()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.GumbelDistrib.html">mean()</a></code>,
+<code><a href="variance.GumbelDistrib.html">variance()</a></code>,
+<code><a href="skewness.GumbelDistrib.html">skewness()</a></code> and
+<code><a href="kurtosis.GumbelDistrib.html">kurtosis()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

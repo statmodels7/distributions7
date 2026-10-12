@@ -5,9 +5,10 @@ Draws `n` independent variates as a normal variance mixture, \\Y = \mu +
 X\\, where \\X\\ follows the generalized inverse Gaussian law with
 density proportional to \\\exp\\-\sqrt{\nu}\\(x + 1/x)/2\\\\. \\X\\ is
 drawn by the ratio-of-uniforms method with the mode shifted to the
-origin (Hormann and Leydold, 2014), whose bounding box is set once per
-distinct \\\nu\\; below \\\nu = 10^{-16}\\ the mixing law is its
-exponential limit. The draws depend on `.Random.seed` in the usual way.
+origin (Hormann and Leydold, 2014), whose bounding box is recomputed
+whenever \\\nu\\ differs from that of the previous draw; below \\\nu =
+10^{-16}\\ the mixing law is its exponential limit. The draws depend on
+`.Random.seed` in the usual way.
 
 ## Arguments
 

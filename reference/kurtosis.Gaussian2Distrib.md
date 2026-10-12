@@ -16,8 +16,8 @@ three parametrizations it is written in.
 - theta:
 
   A named list with components `mu` and `sigma2` (positive), each a
-  numeric vector of length 1 or `n`. The values are not read, only their
-  lengths.
+  numeric vector of length 1 or `n`. The values are checked against the
+  parameter bounds, and only their lengths enter the result.
 
 - ...:
 

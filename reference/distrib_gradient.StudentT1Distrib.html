@@ -13,10 +13,9 @@ $$\dfrac{\partial \ell}{\partial \nu} = \dfrac{1}{2}\left[
 The location component redescends: it rises to \((\nu+1)/(2\sigma\sqrt{\nu})\)
 at \(|r| = \sigma\sqrt{\nu}\) and falls back towards zero beyond it, so a
 gross outlier contributes almost nothing to the estimating equation. A
-Gaussian's location score grows without bound instead, which is the whole
-reason this family is used for robust location estimation.
-With scale = &quot;link&quot; the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+Gaussian's location score \(r/\sigma^2\) grows linearly in \(r\).
+With scale = &quot;link&quot; the generic applies the chain rule for the links of the
+family before returning. This method always returns the parameter
 scale; the transformation happens in the generic. The arithmetic runs in a
 compiled kernel decomposed over the elements of the output, so the result
 does not depend on the thread count."><meta property="og:description" content="Computes the first derivatives of the location-scale Student t log-density
@@ -33,10 +32,9 @@ $$\dfrac{\partial \ell}{\partial \nu} = \dfrac{1}{2}\left[
 The location component redescends: it rises to \((\nu+1)/(2\sigma\sqrt{\nu})\)
 at \(|r| = \sigma\sqrt{\nu}\) and falls back towards zero beyond it, so a
 gross outlier contributes almost nothing to the estimating equation. A
-Gaussian's location score grows without bound instead, which is the whole
-reason this family is used for robust location estimation.
-With scale = &quot;link&quot; the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+Gaussian's location score \(r/\sigma^2\) grows linearly in \(r\).
+With scale = &quot;link&quot; the generic applies the chain rule for the links of the
+family before returning. This method always returns the parameter
 scale; the transformation happens in the generic. The arithmetic runs in a
 compiled kernel decomposed over the elements of the output, so the result
 does not depend on the thread count."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -47,7 +45,7 @@ does not depend on the thread count."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,10 +92,9 @@ $$\dfrac{\partial \ell}{\partial \nu} = \dfrac{1}{2}\left[
 <p>The location component <strong>redescends</strong>: it rises to \((\nu+1)/(2\sigma\sqrt{\nu})\)
 at \(|r| = \sigma\sqrt{\nu}\) and falls back towards zero beyond it, so a
 gross outlier contributes almost nothing to the estimating equation. A
-Gaussian's location score grows without bound instead, which is the whole
-reason this family is used for robust location estimation.</p>
-<p>With <code>scale = "link"</code> the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+Gaussian's location score \(r/\sigma^2\) grows linearly in \(r\).</p>
+<p>With <code>scale = "link"</code> the generic applies the chain rule for the links of the
+family before returning. This method always returns the parameter
 scale; the transformation happens in the generic. The arithmetic runs in a
 compiled kernel decomposed over the elements of the output, so the result
 does not depend on the thread count.</p>
@@ -133,8 +130,8 @@ numeric vector of length 1 or of the length of <code>y</code>. A component of le
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

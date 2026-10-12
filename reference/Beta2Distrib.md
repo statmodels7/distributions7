@@ -3,15 +3,17 @@
 The S7 class of the beta family on \\(0, 1)\\ in its canonical
 parametrization, the two shapes \\\alpha \> 0\\ and \\\beta \> 0\\, with
 density \\y^{\alpha-1}(1-y)^{\beta-1}/B(\alpha, \beta)\\. It inherits
-from `continuous_distrib`, so it answers every generic of the `distrib`
-contract; the eleven methods listed below are registered on it directly
+from `continuous_distrib`, so every generic of the `distrib` class
+applies to it; the methods listed below are registered on it directly
 and everything else comes from the parent.
 
 Build one with
 [`beta2_distrib()`](https://statmodels7.github.io/distributions7/reference/beta2_distrib.md),
 which supplies the two link functions and fills the properties in. This
 page documents the raw S7 constructor, which takes the parent's
-properties and validates none of the relationships between them.
+properties; the validator of `distrib` checks that they are consistent
+(the parameter count, a bound and a link for every parameter, ordered
+support bounds).
 
 ## Usage
 
@@ -96,20 +98,53 @@ domain \\(0, \infty)\\ for both parameters, and the two links.
 
 ## Methods
 
-Registered on this class:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Beta2Distrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Beta2Distrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Beta2Distrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Beta2Distrib.md),
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Beta2Distrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Beta2Distrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Beta2Distrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Beta2Distrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Beta2Distrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Beta2Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Beta2Distrib.md)
+Registered on this class, each linked to the page that documents it:
 
-Everything else is inherited from
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Beta2Distrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Beta2Distrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Beta2Distrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Beta2Distrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Beta2Distrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Beta2Distrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Beta2Distrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Beta2Distrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Beta2Distrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Beta2Distrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Beta2Distrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Beta2Distrib.md);
+
+- the derivatives of the distribution function:
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md),
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_deriv_cdf_k.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_deriv_cdf_k.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.Beta2Distrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.Beta2Distrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.Beta2Distrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.Beta2Distrib.md).
+
+Every other generic is inherited from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
@@ -121,7 +156,7 @@ for the same law in mean and precision;
 [`distrib_pdf.Beta2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Beta2Distrib.md)
 and
 [`distrib_gradient.Beta2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Beta2Distrib.md)
-for the closed forms this class supplies.
+for the closed forms of this class.
 
 ## Examples
 
@@ -139,7 +174,8 @@ d@params_interpretation
 d@bounds
 #> [1] 0 1
 
-# Both parameters are shapes, so neither is a mean: the mean is their ratio.
+# Both parameters are shapes, so neither is a mean: the mean is
+# alpha / (alpha + beta).
 mean(d, list(alpha = 2, beta = 5))
 #> [1] 0.2857143
 ```

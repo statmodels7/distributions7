@@ -5,31 +5,51 @@ log-mass with respect to \(\mu\) and \(\theta\), in closed form. Writing
 in \((\mu, \theta)\) and linear in \(y\), and the pure dispersion
 component carries \(\psi_2(y+\theta) - \psi_2(\theta)\), with
 \(\psi_2\) the second derivative of the digamma function.
+The mean components are formed from the bracket
+\(y/\mu^k - (y+\theta)/(\mu+\theta)^k\), written as
+\(y(1 - q^k)/\mu^k - \theta/(\mu+\theta)^k\) with
+\(q = \mu/(\mu+\theta)\) and \(1 - q^k\) computed as
+\(-\mathrm{expm1}(-k\,\mathrm{log1p}(\theta/\mu))\). Written directly
+its two terms agree to a relative \(\theta/\mu\) where \(y\) is near
+\(\mu\), and their difference loses that many digits at a small
+dispersion or a large mean; in this form the value keeps full relative
+accuracy, and a term with a zero coefficient contributes zero.
 With expected = TRUE the expectations are returned. The three components
 involving the mean need only \(\mathbb{E}[Y] = \mu\); the pure dispersion
 one needs \(\mathbb{E}[\psi_2(Y+\theta)]\), which has no closed form and
-is summed over the support with a far-tail correction, exactly as the
-expected Hessian sums \(\mathbb{E}[\psi_1(Y+\theta)]\). approx and
-nsim are ignored either way.
-The cancellation of distrib_gradient.NegBin2Distrib() applies here too and
-is not removed at this order: the pure dispersion components lose their
-digits at large \(\theta\), where the score itself is reliable to about
-five figures and no further."><meta property="og:description" content="Computes the four distinct third derivatives of the negative binomial
+is summed over the support with the mass recurrence and the stopping rule
+of distrib_expected_hessian.NegBin2Distrib(). approx and nsim are
+ignored either way.
+The cancellation of distrib_gradient.NegBin2Distrib() is performed
+symbolically at this order too: the observed pure dispersion component is
+a sum over \(j &amp;lt; y\) when \(\theta &amp;gt; 100\max(y, 1)\), and the expected
+one is a single merged sum, so both keep their accuracy at large
+\(\theta\)."><meta property="og:description" content="Computes the four distinct third derivatives of the negative binomial
 log-mass with respect to \(\mu\) and \(\theta\), in closed form. Writing
 \(s = \theta + \mu\), the three components involving the mean are rational
 in \((\mu, \theta)\) and linear in \(y\), and the pure dispersion
 component carries \(\psi_2(y+\theta) - \psi_2(\theta)\), with
 \(\psi_2\) the second derivative of the digamma function.
+The mean components are formed from the bracket
+\(y/\mu^k - (y+\theta)/(\mu+\theta)^k\), written as
+\(y(1 - q^k)/\mu^k - \theta/(\mu+\theta)^k\) with
+\(q = \mu/(\mu+\theta)\) and \(1 - q^k\) computed as
+\(-\mathrm{expm1}(-k\,\mathrm{log1p}(\theta/\mu))\). Written directly
+its two terms agree to a relative \(\theta/\mu\) where \(y\) is near
+\(\mu\), and their difference loses that many digits at a small
+dispersion or a large mean; in this form the value keeps full relative
+accuracy, and a term with a zero coefficient contributes zero.
 With expected = TRUE the expectations are returned. The three components
 involving the mean need only \(\mathbb{E}[Y] = \mu\); the pure dispersion
 one needs \(\mathbb{E}[\psi_2(Y+\theta)]\), which has no closed form and
-is summed over the support with a far-tail correction, exactly as the
-expected Hessian sums \(\mathbb{E}[\psi_1(Y+\theta)]\). approx and
-nsim are ignored either way.
-The cancellation of distrib_gradient.NegBin2Distrib() applies here too and
-is not removed at this order: the pure dispersion components lose their
-digits at large \(\theta\), where the score itself is reliable to about
-five figures and no further."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+is summed over the support with the mass recurrence and the stopping rule
+of distrib_expected_hessian.NegBin2Distrib(). approx and nsim are
+ignored either way.
+The cancellation of distrib_gradient.NegBin2Distrib() is performed
+symbolically at this order too: the observed pure dispersion component is
+a sum over \(j &amp;lt; y\) when \(\theta &amp;gt; 100\max(y, 1)\), and the expected
+one is a single merged sum, so both keep their accuracy at large
+\(\theta\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -37,7 +57,7 @@ five figures and no further."><meta property="og:image" content="https://statmod
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,16 +96,26 @@ log-mass with respect to \(\mu\) and \(\theta\), in closed form. Writing
 in \((\mu, \theta)\) and linear in \(y\), and the pure dispersion
 component carries \(\psi_2(y+\theta) - \psi_2(\theta)\), with
 \(\psi_2\) the second derivative of the digamma function.</p>
+<p>The mean components are formed from the bracket
+\(y/\mu^k - (y+\theta)/(\mu+\theta)^k\), written as
+\(y(1 - q^k)/\mu^k - \theta/(\mu+\theta)^k\) with
+\(q = \mu/(\mu+\theta)\) and \(1 - q^k\) computed as
+\(-\mathrm{expm1}(-k\,\mathrm{log1p}(\theta/\mu))\). Written directly
+its two terms agree to a relative \(\theta/\mu\) where \(y\) is near
+\(\mu\), and their difference loses that many digits at a small
+dispersion or a large mean; in this form the value keeps full relative
+accuracy, and a term with a zero coefficient contributes zero.</p>
 <p>With <code>expected = TRUE</code> the expectations are returned. The three components
 involving the mean need only \(\mathbb{E}[Y] = \mu\); the pure dispersion
 one needs \(\mathbb{E}[\psi_2(Y+\theta)]\), which has no closed form and
-is summed over the support with a far-tail correction, exactly as the
-expected Hessian sums \(\mathbb{E}[\psi_1(Y+\theta)]\). <code>approx</code> and
-<code>nsim</code> are ignored either way.</p>
-<p>The cancellation of <code><a href="distrib_gradient.NegBin2Distrib.html">distrib_gradient.NegBin2Distrib()</a></code> applies here too and
-<strong>is not removed at this order</strong>: the pure dispersion components lose their
-digits at large \(\theta\), where the score itself is reliable to about
-five figures and no further.</p>
+is summed over the support with the mass recurrence and the stopping rule
+of <code><a href="distrib_expected_hessian.NegBin2Distrib.html">distrib_expected_hessian.NegBin2Distrib()</a></code>. <code>approx</code> and <code>nsim</code> are
+ignored either way.</p>
+<p>The cancellation of <code><a href="distrib_gradient.NegBin2Distrib.html">distrib_gradient.NegBin2Distrib()</a></code> is performed
+symbolically at this order too: the observed pure dispersion component is
+a sum over \(j &lt; y\) when \(\theta &gt; 100\max(y, 1)\), and the expected
+one is a single merged sum, so both keep their accuracy at large
+\(\theta\).</p>
     </div>
 
 
@@ -132,8 +162,8 @@ model are returned in place of the observed values. Defaults to <code>FALSE</cod
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

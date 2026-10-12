@@ -3,10 +3,9 @@
 Returns the mean vector \\\mu\\, which for this family is the first
 \\p\\ parameters read off `theta` in order. The method is
 [`mv_leading_location()`](https://statmodels7.github.io/distributions7/reference/mv_leading_location.md),
-shared with every multivariate family whose location is its leading
-parameters, so the gaussian adds nothing of its own here: \\\mu\\ is
-both the location the density is centered on and the expectation of the
-law, which is not true of every family.
+shared with the Student t, whose location is also its leading
+parameters. For the gaussian \\\mu\\ is both the center of the density
+and the expectation of the law, which does not hold for every family.
 
 ## Arguments
 

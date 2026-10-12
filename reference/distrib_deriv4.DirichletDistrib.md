@@ -6,10 +6,10 @@ in closed form, by the same construction as
 one order up: a univariate partition sum per coordinate of the simplex,
 run by
 [`chain_univariate()`](https://statmodels7.github.io/distributions7/reference/chain_univariate.md)
-over the arrays
+over the arrays that
 [`dirichlet_map_tensors()`](https://statmodels7.github.io/distributions7/reference/dirichlet_map_tensors.md)
-supplies, plus the direct \\\log\Gamma(\phi)\\ term on the component all
-of whose indices name the concentration.
+supplies, plus the direct \\\log\Gamma(\phi)\\ term on the component
+whose indices all name the concentration.
 
 ## Arguments
 
@@ -32,25 +32,22 @@ of whose indices name the concentration.
 
 - expected:
 
-  Logical of length 1. When `TRUE` the expectation is returned, by
-  SAMPLING through
-  [`mv_expected_higher()`](https://statmodels7.github.io/distributions7/reference/mv_expected_higher.md).
-  Defaults to `FALSE`.
+  Logical of length 1. When `TRUE` the expectation is returned, in
+  closed form (see Details). Defaults to `FALSE`.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
 
 - approx:
 
-  Ignored: sampling is the only multivariate route to an expectation.
-  Present so that the signature matches the generic's.
+  Not read: the expectation is in closed form. Present so that the
+  signature matches the generic's.
 
 - nsim:
 
-  The number of draws used when `expected = TRUE`. Defaults to `10000`.
-  Ignored otherwise.
+  Not read. Present so that the signature matches the generic's.
 
 - ...:
 
@@ -64,15 +61,15 @@ components. With `expected = TRUE` every vector is constant.
 
 ## Details
 
-The license for this order is that the SAME assembly run at orders one
-and two reproduces the hand-written score and information, which are
-derived separately and are already under
-[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md).
-Agreement at the orders that can be checked is what authorizes the order
-that cannot.
+Run at order one, the same assembly reproduces
+[`distrib_gradient.DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.DirichletDistrib.md),
+which is written separately; on the additive log-ratio chart
+[`distrib_hessian.DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.DirichletDistrib.md)
+calls it at order two. The split of \\\log\Gamma(\alpha_j)\\ that keeps
+a small shape accurate is described in
+[`distrib_deriv3.DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.DirichletDistrib.md).
 
-With `expected = TRUE` the expectation is taken by sampling and carries
-Monte Carlo error of order `nsim^(-1/2)`.
+With `expected = TRUE` the expectation is exact, as for the third order.
 
 ## Notation
 
@@ -101,7 +98,7 @@ d4 <- distrib_deriv4(d, y, theta)
 length(d4)
 #> [1] 15
 
-# Against one stencil on the analytic third order.
+# Against a central difference of the third order in phi.
 h <- 1e-4
 tp <- theta; tp$phi <- tp$phi + h
 tm <- theta; tm$phi <- tm$phi - h

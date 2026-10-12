@@ -6,9 +6,9 @@ g^{-1}(y)\\. A transformation of the response contributes
 depend on \\\theta\\, so it vanishes from every derivative in \\\theta\\
 and leaves the parent's untouched.
 
-Measured on `transformation(gaussian1_distrib(), exp_transform())`, the
-whole component list is `all.equal` to the Gaussian's at `log(y)`, at
-this order and at the fourth.
+For `transformation(gaussian1_distrib(), exp_transform())`, the
+component list equals the Gaussian's at `log(y)`, at this order and at
+the fourth.
 
 ## Arguments
 

@@ -3,8 +3,8 @@
 Runs the map on plain numbers and returns the parent's parameters in the
 parent's own order, which is the form every probability function needs
 before delegating. The new parameters are aligned and validated first,
-so a missing or out-of-bounds component throws here and not several
-frames down.
+so a missing or out-of-bounds component signals an error here and not
+several frames down.
 
 ## Usage
 

@@ -19,7 +19,7 @@ every piece coming from mvt_dpieces()."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,8 +81,9 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, handled by the
-generic before dispatch. The two differ here.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The method
+returns the parameter scale and the generic applies the link scale to its
+result. The two differ here.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -96,15 +97,14 @@ parameter, in <code>distrib@params</code> order.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The shape differs from the gaussian's, and the difference is the family's
-defining property. There the response Hessian is \(-\Sigma^{-1}\), one
-matrix for the whole sample, so its derivative is one matrix per parameter.
-Here it depends on the observation through the weight, so this method and
-<code><a href="distrib_hess_y_hess.MvStudentTDistrib.html">distrib_hess_y_hess.MvStudentTDistrib()</a></code> return ONE MATRIX PER ROW. Nor
-does any component vanish: the gaussian's location components are exactly
-zero and none of these is.</p>
-<p>This is one of the three derivatives a marginal criterion reads when the
-family stands as a prior over a coefficient block.</p>
+    <p>For the gaussian the response Hessian is \(-\Sigma^{-1}\), one matrix for
+the whole sample, so its derivative in a parameter is one \(p \times p\)
+matrix. For the t the response Hessian depends on the observation through the
+weight, so this method and <code><a href="distrib_hess_y_hess.MvStudentTDistrib.html">distrib_hess_y_hess.MvStudentTDistrib()</a></code> return
+one matrix per row. The location components of the gaussian are exactly zero,
+while those of the t are not zero in general.</p>
+<p>This is one of the three derivatives that a marginal criterion reads when the
+family is a prior over a coefficient block.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -155,8 +155,8 @@ criterion reads, <code><a href="mvt_dpieces.html">mvt_dpieces()</a></code> for t
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">c2</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span> <span class="op">-</span></span></span>
 <span class="r-in"><span>          <span class="op">(</span><span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">tp</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">tm</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">h</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.428202e-11 6.885559e-11 1.155831e-10 1.811262e-10 2.061793e-10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] 1.042630e-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.428202e-11 6.885559e-11 9.892975e-11 1.811262e-10 1.895260e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] 1.713509e-11</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

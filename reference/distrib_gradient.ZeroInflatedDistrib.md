@@ -26,8 +26,9 @@ the parent, \$\$\frac{\partial \ell}{\partial \theta_i} = w\\ s_i(y),
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. `zi` rides a logit by default, so the two differ.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns. `zi` rides a
+  logit by default, so the two differ.
 
 - ...:
 
@@ -88,8 +89,8 @@ c(unique(round(g$zi[y > 0], 12)), theory = -1 / 0.75)
 #>              theory 
 #> -1.333333 -1.333333 
 
-# And the parent's component is zero at a zero only in the limit: it is
-# the parent's score there, weighted down by w.
+# At a zero, the parent's component is the parent's score there, weighted
+# down by w.
 c(weighted = g$mu[y == 0][1], unweighted = distrib_gradient(
     poisson_distrib(), 0, list(mu = 3))$mu)
 #>   weighted unweighted 

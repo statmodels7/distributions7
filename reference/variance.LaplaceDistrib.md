@@ -1,9 +1,8 @@
 # Variance of the Laplace Distribution
 
 Closed form, replacing the numerical default: \\\operatorname{Var}(Y) =
-2\sigma^2\\. The scale is not the standard deviation here: it is smaller
-by \\\sqrt2\\, which is worth knowing before a Laplace scale is compared
-with a Gaussian one.
+2\sigma^2\\, so the standard deviation is \\\sqrt2\\\sigma\\ and the
+scale is smaller than it by the factor \\\sqrt2\\.
 
 ## Arguments
 

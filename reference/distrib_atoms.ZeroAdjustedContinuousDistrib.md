@@ -1,9 +1,10 @@
 # Atoms of a Zero-Adjusted Continuous Distribution
 
 Declares the single point mass at zero, with probability \\\pi\\. This
-declaration is what marks the object a MIXED distribution: its density
-integrates to \\1 - \pi\\, so a consumer that does not know about the
-atom will find the missing \\\pi\\ and call it an error.
+declaration marks the object as a MIXED distribution: its density
+integrates to \\1 - \pi\\, and the remaining probability \\\pi\\ is the
+mass of the atom. A function that ignores the atom finds a total
+probability of \\1 - \pi\\.
 
 ## Arguments
 
@@ -28,20 +29,27 @@ at it.
 
 ## Details
 
-Three things read it.
+The declaration is read by
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md),
+[`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+and
+[`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md).
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-adjusts four of its thirteen checks, since the density integrates to
-\\1-\pi\\, the quantile round trip cannot close inside the jump, and a
-central difference in \\y\\ across the atom has no derivative to
-converge to.
-[`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
-splits its integral at the atom. And
+changes the checks that fail on a mixed law: the density integrates to
+\\1-\pi\\ plus the atom, the quantile round trip cannot close inside the
+jump, and a central difference in \\y\\ across the atom has no
+derivative to converge to.
+[`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+keeps the atoms of the parent that lie inside the truncation interval.
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
-REFUSES a parent that declares one, zero being its own preimage under
-the absolute value while every other point has two.
+rejects a parent that declares an atom, because zero is its own preimage
+under the absolute value and every other point has two.
+[`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
+does not read the declaration; its method for this class splits the
+integral at zero.
 
-The question is asked of the OBJECT, so the returned probability moves
-with `theta`.
+The probability is read from `theta`, so the returned value changes with
+the value of `za`.
 
 ## Notation
 
@@ -81,7 +89,7 @@ distrib_atoms(gaussian1_distrib(), theta[c("mu", "sigma")])
 #> numeric(0)
 #> 
 
-# The declaration is what folded() refuses on.
+# The declaration is what folded() rejects.
 try(folded(d))
 #> Error : 'zero-adjusted gaussian1' carries an atom, and folding would misplace it: zero is its own
 #>   preimage while every other point has two, so an atom at zero would be

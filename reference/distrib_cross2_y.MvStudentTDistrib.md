@@ -28,8 +28,9 @@ Writing \\M = \ell^{(yy)} = -c\\\Sigma^{-1} + 2d\\ww^\top\\ with \\c =
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The two differ here.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  The two differ here.
 
 - ...:
 
@@ -42,17 +43,16 @@ parameter, in `distrib@params` order.
 
 ## Details
 
-The shape differs from the gaussian's, and the difference is the
-family's defining property. There the response Hessian is
-\\-\Sigma^{-1}\\, one matrix for the whole sample, so its derivative is
-one matrix per parameter. Here it depends on the observation through the
-weight, so this method and
+For the gaussian the response Hessian is \\-\Sigma^{-1}\\, one matrix
+for the whole sample, so its derivative in a parameter is one \\p \times
+p\\ matrix. For the t the response Hessian depends on the observation
+through the weight, so this method and
 [`distrib_hess_y_hess.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.MvStudentTDistrib.md)
-return ONE MATRIX PER ROW. Nor does any component vanish: the gaussian's
-location components are exactly zero and none of these is.
+return one matrix per row. The location components of the gaussian are
+exactly zero, while those of the t are not zero in general.
 
-This is one of the three derivatives a marginal criterion reads when the
-family stands as a prior over a coefficient block.
+This is one of the three derivatives that a marginal criterion reads
+when the family is a prior over a coefficient block.
 
 ## Notation
 
@@ -106,6 +106,6 @@ vapply(seq_along(d@params), function(k) {
   max(abs(c2[[k]] -
           (distrib_hess_y(d, y, tp) - distrib_hess_y(d, y, tm)) / (2 * h)))
 }, numeric(1))
-#> [1] 2.428202e-11 6.885559e-11 1.155831e-10 1.811262e-10 2.061793e-10
-#> [6] 1.042630e-11
+#> [1] 2.428202e-11 6.885559e-11 9.892975e-11 1.811262e-10 1.895260e-10
+#> [6] 1.713509e-11
 ```

@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,8 +79,8 @@
 <p>Most of what <strong>distributions7</strong> offers beyond densities
 is derivatives: the score, the information, and the third and fourth
 derivatives of the log-likelihood. This vignette explains what they are,
-the two scales they are available on, and why the second scale — the
-link scale — is the one an optimizer needs.</p>
+the two scales they are available on, and why the second scale (the link
+scale) is the one that an optimizer needs.</p>
 <div class="section level2">
 <h2 id="the-derivatives-of-the-log-likelihood">The derivatives of the log-likelihood<a class="anchor" aria-label="anchor" href="#the-derivatives-of-the-log-likelihood"></a>
 </h2>
@@ -109,8 +109,8 @@ observation, as named lists:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $mu_sigma</span></span>
 <span><span class="co">#&gt; [1]  0.13921196 -0.04080963  0.18569525 -0.35450684</span></span></code></pre></div>
-<p>The <strong>expected</strong> Hessian — the negative Fisher
-information — is a separate generic, because for a correct model it does
+<p>The <strong>expected</strong> Hessian (the negative Fisher
+information) is a separate generic, because for a correct model it does
 not depend on
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -148,9 +148,11 @@ instead of the parameters.</p>
 <div class="section level2">
 <h2 id="two-scales">Two scales<a class="anchor" aria-label="anchor" href="#two-scales"></a>
 </h2>
-<p>Every derivative generic takes a <code>scale</code> argument. The
-default, <code>scale = "parameter"</code>, is what the examples above
-used: derivatives with respect to
+<p>Every generic for the parameter derivatives of the log-likelihood,
+from <code><a href="../reference/distrib_gradient.html">distrib_gradient()</a></code> to <code><a href="../reference/distrib_deriv5.html">distrib_deriv5()</a></code>,
+takes a <code>scale</code> argument. The default,
+<code>scale = "parameter"</code>, is what the examples above used:
+derivatives with respect to
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
 on its natural, constrained scale.</p>
 <p><code>scale = "link"</code> instead gives derivatives with respect to
@@ -167,9 +169,9 @@ is the log, so
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $sigma</span></span>
 <span><span class="co">#&gt; [1] -0.6075556 -0.9662751 -0.3017248  1.5449208</span></span></code></pre></div>
-<p>Nothing was differentiated numerically to get this. The chain rule
-was applied to the parameter-scale derivatives, exactly. For a single
-parameter with link
+<p>These values come from applying the chain rule exactly to the
+parameter-scale derivatives, with no numerical differentiation. For a
+single parameter with link
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><mi>ℓ</mi><mi>/</mi><mi>∂</mi><mi>η</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>∂</mi><mi>ℓ</mi><mi>/</mi><mi>∂</mi><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>/</mi><mspace width="0.167em"></mspace><msup><mi>g</mi><mo>′</mo></msup><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\partial\ell/\partial\eta = (\partial\ell/\partial\theta)\,/\,g'(\theta)</annotation></semantics></math>;
 with the log link on
@@ -194,7 +196,7 @@ that factor is simply
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>The transformation works at every order. The general rule is Faà di
-Bruno’s formula — the chain rule for higher derivatives — applied with a
+Bruno’s formula (the chain rule for higher derivatives) applied with a
 diagonal Jacobian, since each parameter has its own link. It is written
 once, in the body of each generic, so <code>scale = "link"</code> is
 available uniformly:</p>
@@ -225,15 +227,15 @@ unconstrained:
 ranges over the whole real line, and a Newton or Fisher-scoring step
 needs exactly the link-scale score and information this package computes
 in closed form.</p>
-<p>That is precisely what <code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> does — it optimizes
-on the link scale and maps back — and it is why its confidence intervals
-cannot leave a parameter’s domain. See
-<code><a href="../articles/fitting-a-model.html">vignette("fitting-a-model")</a></code> for that side of the story.</p>
+<p>That is what <code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> does: it optimizes on the
+link scale and maps back, which is why its confidence intervals cannot
+leave a parameter’s domain. See <code><a href="../articles/fitting-a-model.html">vignette("fitting-a-model")</a></code>
+for that side of the story.</p>
 <p>The information transforms consistently. Write
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>=</mo><msup><mi>g</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">h = g^{-1}</annotation></semantics></math>,
 so that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>h</mi><mo>′</mo></msup><mo stretchy="false" form="prefix">(</mo><mi>η</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>1</mn><mi>/</mi><msup><mi>g</mi><mo>′</mo></msup><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">h'(\eta) = 1/g'(\theta)</annotation></semantics></math>
-is the derivative of the inverse link — the same factor that already
+is the derivative of the inverse link, the same factor that already
 appeared in the first-order rule above. Because the score has zero
 expectation, the expected information on the link scale is the sandwich
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">diag</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>h</mi><mo>′</mo></msup><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>ℐ</mi><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">diag</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>h</mi><mo>′</mo></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{diag}(h') \, \mathcal{I} \, \operatorname{diag}(h')</annotation></semantics></math>;
@@ -275,14 +277,18 @@ expected derivatives; where they do not, the value is approximated, and
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $sigma2_sigma2_sigma2</span></span>
 <span><span class="co">#&gt; [1] 0.2638418</span></span></code></pre></div>
-<p>The strategies are <code>"bartlett"</code>, <code>"integrate"</code>
-and <code>"mc"</code>, trading speed against robustness. They rest on
-one idea: the outer product of gradients is the order-two case of the
-Bartlett identities, and the general identity expresses an expected
-derivative of any order through products of lower-order ones.
-<code><a href="../reference/distrib_deriv3.html">?distrib_deriv3</a></code> has the details; the default is chosen to
-be both cheap and valid, including for models where the usual regularity
-assumptions fail.</p>
+<p>The strategies are <code>"opg"</code>, <code>"bartlett"</code>,
+<code>"integrate"</code> and <code>"mc"</code>, trading speed against
+robustness. <code>"bartlett"</code> rests on the Bartlett identities:
+the outer product of gradients is their order-two case, and the general
+identity expresses an expected derivative of any order through products
+of lower-order ones. <code>"opg"</code> reads that outer product at each
+observation without taking an expectation, and <code>"integrate"</code>
+and <code>"mc"</code> average the observed derivative itself, by
+quadrature or by simulation. The default is <code>"opg"</code> for
+<code><a href="../reference/distrib_expected_hessian.html">distrib_expected_hessian()</a></code> and <code>"integrate"</code> for
+<code><a href="../reference/distrib_deriv3.html">distrib_deriv3()</a></code> and <code><a href="../reference/distrib_deriv4.html">distrib_deriv4()</a></code>;
+<code><a href="../reference/expected_derivative_methods.html">?expected_derivative_methods</a></code> has the details.</p>
 </div>
 <div class="section level2">
 <h2 id="a-note-for-authors-of-derivative-methods">A note for authors of derivative methods<a class="anchor" aria-label="anchor" href="#a-note-for-authors-of-derivative-methods"></a>
@@ -306,13 +312,13 @@ already follow this pattern.</p>
 </h2>
 <ul>
 <li>
-<code><a href="../articles/fitting-a-model.html">vignette("fitting-a-model")</a></code> — the link scale put to
-work in estimation.</li>
+<code><a href="../articles/fitting-a-model.html">vignette("fitting-a-model")</a></code>: the link scale put to work
+in estimation.</li>
 <li>
-<code><a href="../articles/defining-a-distribution.html">vignette("defining-a-distribution")</a></code> — adding a
+<code><a href="../articles/defining-a-distribution.html">vignette("defining-a-distribution")</a></code>: adding a
 distribution that inherits all of this.</li>
 <li>
-<code><a href="../reference/distrib_gradient.html">?distrib_gradient</a></code>, <code><a href="../reference/distrib_deriv3.html">?distrib_deriv3</a></code> — the
+<code><a href="../reference/distrib_gradient.html">?distrib_gradient</a></code>, <code><a href="../reference/distrib_deriv3.html">?distrib_deriv3</a></code>: the
 full reference.</li>
 </ul>
 </div>

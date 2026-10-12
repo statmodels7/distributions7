@@ -20,7 +20,8 @@ have.
 - theta:
 
   A named list with components `mu` (strictly between 0 and 1) and
-  `sigma` (positive), each a numeric vector of length 1 or `n`.
+  `sigma` (positive), each a numeric vector of length 1 or of the common
+  length of the parameter settings.
 
 - ...:
 
@@ -41,7 +42,7 @@ dispersion and \\n\\ the number of trials.
 [`mean.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/mean.BetaBinom1Distrib.md);
 [`variance.BinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/variance.BinomialDistrib.md),
 the \\\sigma \to 0\\ limit;
-[`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md);
+[`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md);
 [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md).
 
 ## Examples

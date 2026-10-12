@@ -1,12 +1,12 @@
 # Numerical Hyperparameter Hessians of the Response Derivatives
 
 Computes a second-order mixed component by one central difference, in
-each parameter, of an ANALYTIC first-order component. It is the fallback
-behind
-[`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
-and
-[`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
-for a family that provides no closed form.
+each parameter, of a first-order component. It supplies the pairs that
+have no closed form in the methods for location-scale families with a
+shape parameter and for families with a scale and no location. The
+default methods for a continuous family use
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md)
+instead.
 
 ## Usage
 
@@ -56,15 +56,17 @@ or
 so a distribution with a closed form for those pays for exactly one
 difference and never differences a difference.
 
-A mixed pair is differenced BOTH WAYS and averaged. The two agree in
-exact arithmetic, and in floating point they differ, the two steps being
-different sizes, while a second derivative of a scalar has to come out
-symmetric. On a gamma the two orders differ by about \\3\times
-10^{-10}\\, which is the size of the answer's own error.
+A mixed pair is differenced in both orders and the two results are
+averaged. They agree in exact arithmetic and differ in floating point,
+the two steps having different sizes, and the average is symmetric in
+the pair.
 
-The step is
-[`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)'s,
-so a parameter near a bound is differenced inward rather than across it.
+The step is chosen by
+[`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md)
+from the two candidates of
+[`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md),
+so that both evaluation points of the central difference of a parameter
+near a bound stay inside its domain.
 
 ## Notation
 
@@ -99,7 +101,7 @@ num$sigma_sigma
 max(abs(unlist(num) - unlist(distrib_grad_y_hess(d, y, theta))))
 #> [1] 4.191043e-10
 
-# A family that does take the fallback, checked against numDeriv.
+# A family that takes the default continuous method, checked against numDeriv.
 dg <- gamma2_distrib()
 yg <- c(0.5, 1, 2)
 thg <- list(mu = 2, sigma2 = 1)

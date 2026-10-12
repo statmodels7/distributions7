@@ -7,10 +7,10 @@ closed form and with no quadrature or simulation:
 -\dfrac{1}{2\sigma^2}, \qquad \mathbb{E}\left\[\dfrac{\partial^2
 \ell}{\partial \mu \\ \partial \sigma}\right\] = 0.\$\$ The information
 in the location is \\1/(2\sigma^2)\\, half of a Gaussian's
-\\1/\sigma^2\\ at the same scale, which is the price the heavy tails
-charge. The zero off-diagonal says the location and the scale are
-orthogonal. The expectations exist even though no moment of the family
-does: they are expectations of bounded functions of \\y\\, not of \\y\\.
+\\1/\sigma^2\\ at the same scale. The zero off-diagonal entry means that
+the location and the scale are orthogonal. The expectations exist
+although the family has no moments, because the second derivatives of
+the log-density are bounded functions of \\y\\.
 
 Because the values do not depend on the data, `approx` and `nsim` are
 ignored. `y` is read only for its length.
@@ -73,7 +73,7 @@ identity holds and this equals the variance of the score.
 ## See also
 
 [`distrib_hessian.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.CauchyDistrib.md)
-for the observed quantity this is the expectation of,
+for the observed Hessian, of which this is the expectation,
 [`distrib_expected_hessian.Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gaussian1Distrib.md)
 for the light-tailed comparison,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
@@ -105,8 +105,8 @@ lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 distrib_expected_hessian(gaussian1_distrib(), 0, th)$mu_mu
 #> [1] -0.4444444
 
-# The observed Hessian averages onto it over a large sample, even though
-# the sample mean of the same draws does not converge at all.
+# The observed Hessian averages onto it over a large sample, although the
+# sample mean of the same draws does not converge.
 set.seed(3)
 z <- distrib_rng(d, 2e5, th)
 vapply(distrib_hessian(d, z, th), mean, numeric(1))

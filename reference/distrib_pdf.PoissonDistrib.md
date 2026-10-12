@@ -15,16 +15,17 @@ what this returns is a probability and is at most 1.
 
 - y:
 
-  A numeric vector of counts. A non-integer or negative value gives 0
-  with a warning from
-  [`stats::dpois()`](https://rdrr.io/r/stats/Poisson.html).
+  A numeric vector of counts. A negative value gives 0, and a
+  non-integer value gives 0 with a warning from
+  [`stats::dpois()`](https://rdrr.io/r/stats/Poisson.html). A missing
+  value gives `NA`.
 
 - theta:
 
   A named list with the single component `mu`, a numeric vector of
   length 1 or of the length of `y`. A value of length 1 is recycled.
-  `mu` must be strictly positive; a negative value gives `NaN` with a
-  warning.
+  `mu` must be strictly positive; the generic signals an error for a
+  value outside \\(0, \infty)\\ before the method is called.
 
 - log:
 

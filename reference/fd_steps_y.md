@@ -1,4 +1,4 @@
-# Finite-Difference Steps That Respect the Support
+# Finite-Difference Steps Within the Support
 
 Returns the step for a central difference in the RESPONSE: `h_rel`
 scaled by \\\max(1, \|y\|)\\ and kept strictly inside the distribution's
@@ -48,14 +48,19 @@ fd_steps_y(
 
   The stencil the step is for, which fix its reach through
   [`numericals7::fd_offsets()`](https://statmodels7.github.io/numericals7/reference/fd_offsets.html):
-  the clamp is on the OUTERMOST node, so a rule evaluating two steps out
+  the clamp is on the outermost node, so a rule evaluating two steps out
   is cut to half of what a central difference is. The defaults are the
-  central difference, whose reach is one, which is every caller but
-  [`numerical_deriv_y()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv_y.md).
+  central difference, whose reach is one.
+  [`numerical_deriv_y()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv_y.md)
+  and
+  [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md)
+  pass the order of their own stencils.
 
 ## Value
 
-A numeric vector of steps, as long as `y`, every entry positive.
+A numeric vector of steps, as long as `y`. An observation strictly
+inside the support gets a positive step, and one on a finite bound gets
+zero.
 
 ## Details
 
@@ -66,25 +71,26 @@ is not differenced with a step below the resolution of a double.
 `to_bound = "clamp"` is what the support requires and no more. A gamma
 observation at \\y = 10^{-3}\\ differenced with the default step of \\6
 \times 10^{-6}\\ needs no help, but one at \\y = 10^{-8}\\ would be
-evaluated at a negative point, where the density is not defined and
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
-returns `-Inf`. The factor 0.49 leaves the step under half the distance
-to the bound, so both evaluation points stay inside with room to spare:
-at \\y = 10^{-8}\\ the step becomes \\4.9\times 10^{-9}\\ and the left
-point \\5.1\times 10^{-9}\\.
+evaluated at a negative point, where the log-density is not defined and
+`distrib_pdf(..., log = TRUE)` returns `-Inf`. The factor 0.49 leaves
+the step under half the distance to the bound, so both evaluation points
+stay inside with room to spare: at \\y = 10^{-8}\\ the step becomes
+\\4.9\times 10^{-9}\\ and the left point \\5.1\times 10^{-9}\\.
 
 `to_bound = "scale"` takes \\h = h\_{rel}\min(\max(1, \|y\|), d)\\, with
 \\d\\ the distance to the nearest finite bound, so the step shrinks in
 proportion as the response approaches the bound rather than sitting at
 \\0.49\\d\\. Where the log-density is singular at the bound, as a
-gamma's with a shape other than one or a beta's, the clamped step's
-relative error is \\(h/d)^2/3\\ and stops falling once the clamp binds:
-a plateau of 9.4e-02 on the first derivative and 1.4e-01 on the second,
-which the scaled step removes. Where the log-density is smooth at the
-bound the scaled step is the worse of the two at the smallest distances,
-its shorter step letting the rounding dominate, and
+gamma's with a shape other than one or a beta's, the relative error of
+the clamped step stops falling once the clamp binds. At \\h = 0.49\\d\\
+the central difference of \\\log y\\ has a relative error of 9.4e-02 on
+the first derivative and 1.4e-01 on the second (to leading order
+\\(h/d)^2/3\\ and \\(h/d)^2/2\\), a plateau that the scaled step
+removes. Where the log-density is smooth at the bound, the scaled step
+is the less accurate of the two at the smallest distances, because its
+shorter step lets the rounding dominate, and
 [`fd_stable_quotient()`](https://statmodels7.github.io/distributions7/reference/fd_stable_quotient.md)
-is what chooses between them.
+selects between them.
 
 ## Notation
 

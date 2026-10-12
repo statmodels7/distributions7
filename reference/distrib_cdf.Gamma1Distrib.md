@@ -56,8 +56,8 @@ for the inverse,
 for the density,
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
 for the derivatives of this function in the parameters, which the gamma
-takes by finite difference because the derivative of an incomplete gamma
-in its shape is hypergeometric, and
+computes by a compiled quadrature because the derivative of an
+incomplete gamma in its shape is hypergeometric, and
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
 for the generic.
 
@@ -76,7 +76,7 @@ all.equal(distrib_cdf(d, c(1, 3, 5), th),
 distrib_cdf(d, 5, th) + distrib_cdf(d, 5, th, lower.tail = FALSE)
 #> [1] 1
 
-# The gamma is right skewed, so less than half the mass lies below the mean.
+# The gamma is right skewed, so more than half the mass lies below the mean.
 distrib_cdf(d, 3, th)
 #> [1] 0.5939942
 

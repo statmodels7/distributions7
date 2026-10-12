@@ -1,11 +1,12 @@
 # Skewness of the Beta-Binomial Distribution in Two Shapes
 
-The standardized third central moment, \\\gamma_1 = c_3/c_2^{3/2}\\ with
-the central moments \\c_k\\ from
-[`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md)
-at \\\mu = \alpha/(\alpha+\beta)\\ and \\\sigma = 1/(\alpha+\beta)\\. It
-is zero when the two shapes are equal, the mixing beta being symmetric
-there.
+The skewness of
+[`skewness.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.BetaBinom1Distrib.md)
+at \\\mu = \alpha/(\alpha+\beta)\\ and \\\sigma = 1/(\alpha+\beta)\\,
+computed by
+[`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md).
+It is zero when the two shapes are equal, the mixing beta being
+symmetric there.
 
 ## Arguments
 
@@ -18,7 +19,8 @@ there.
 - theta:
 
   A named list with components `alpha` and `beta`, both positive, each a
-  numeric vector of length 1 or `n`.
+  numeric vector of length 1 or of the common length of the parameter
+  settings.
 
 - ...:
 
@@ -32,14 +34,14 @@ A numeric vector, of length
 ## Notation
 
 \\\alpha \> 0\\ and \\\beta \> 0\\ are the shapes of the mixing beta,
-\\n\\ the number of trials and \\c_k\\ the \\k\\-th central moment.
+\\n\\ the number of trials.
 
 ## See also
 
 [`kurtosis.BetaBinom2Distrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.BetaBinom2Distrib.md),
 from the same moments;
 [`skewness.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.BetaBinom1Distrib.md);
-[`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md);
+[`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md);
 [`betabinom2_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom2_distrib.md).
 
 ## Examples

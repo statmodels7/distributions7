@@ -32,7 +32,9 @@ silently.
 
 ## Value
 
-A single number, the expectation of `f` under the mixed law.
+A numeric vector with the expectation of `f` under the mixed law for
+each combination of the values in `theta`: a single number when `theta`
+holds scalars.
 
 ## Details
 

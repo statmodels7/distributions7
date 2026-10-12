@@ -21,7 +21,8 @@ positive multiple of a matrix leaving them alone.
 - theta:
 
   A named list of parameters, each component a single number. The
-  location components and `nu` are ignored.
+  generic requires every parameter and checks `nu` against its domain;
+  the location components and `nu` do not enter the result.
 
 ## Value
 
@@ -35,7 +36,7 @@ for the covariance,
 [`mv_sigma.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvGaussianDistrib.md),
 where the two coincide,
 [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md),
-which reports the square roots of this matrix's diagonal as
+which reports the square roots of the diagonal of this matrix as
 `scale_sd_v1` and so on, and
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
 for the generic.

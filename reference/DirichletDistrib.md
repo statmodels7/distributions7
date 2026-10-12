@@ -4,8 +4,7 @@ The S7 class of the Dirichlet family on the open simplex of \\p\\
 coordinates, parametrized by a mean vector \\\mu\\ carried on a
 `parameters7` simplex and a concentration \\\phi \> 0\\. It inherits
 from `multivariate_distrib`, so the distribution function and the
-quantile are refused rather than approximated; the eleven methods listed
-below are registered on it in this file and two more in `mv_higher.R`.
+quantile signal an error and are not approximated.
 
 The class carries an extra property beyond the parent's, `param`: the
 `parameters7` simplex the mean lies on, whose free names become the
@@ -13,7 +12,9 @@ family's own parameter names prefixed by `mean_`. Build one with
 [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md),
 which validates the simplex against `n_dim`, supplies the
 concentration's link and fills the properties in. This page documents
-the raw S7 constructor, which validates none of that.
+the raw S7 constructor, which runs only the validators of
+`multivariate_distrib` and `distrib`: it does not check the simplex
+against `n_dim` and does not supply links.
 
 ## Usage
 
@@ -88,9 +89,9 @@ DirichletDistrib(
 
 - n_dim:
 
-  The dimension \\p\\ of one observation. A single positive integer; the
-  validator rejects anything else, and also rejects a `dimension`
-  property other than `"multivariate"`.
+  The dimension \\p\\ of one observation, a single positive integer. The
+  validator rejects any other value, and also a `dimension` property
+  other than `"multivariate"`.
 
 - param:
 
@@ -114,30 +115,40 @@ unconstrained already.
 
 ## Methods
 
-Registered on this class in this file:
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.DirichletDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.DirichletDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.DirichletDistrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.DirichletDistrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.DirichletDistrib.md),
-[`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.DirichletDistrib.md),
-[`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.DirichletDistrib.md),
-[`mv_reference_draw()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.DirichletDistrib.md),
-[`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.DirichletDistrib.md),
-[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.DirichletDistrib.md)
-and
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.DirichletDistrib.md).
+Registered on this class, each linked to the page that documents it:
 
-Two more are registered in `mv_higher.R`:
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.DirichletDistrib.md)
-and
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.DirichletDistrib.md),
-both closed form.
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.DirichletDistrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.DirichletDistrib.md);
 
-Everything else is inherited from
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.DirichletDistrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.DirichletDistrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.DirichletDistrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.DirichletDistrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.DirichletDistrib.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.DirichletDistrib.md)
+  and
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.DirichletDistrib.md);
+
+- the multivariate summaries:
+  [`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.DirichletDistrib.md),
+  [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.DirichletDistrib.md)
+  and
+  [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.DirichletDistrib.md);
+
+- the validation and fitting helpers:
+  [`mv_reference_draw()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.DirichletDistrib.md).
+
+Every other generic is inherited from
 [`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md),
-which refuses the distribution function, the quantile and the response
-derivatives.
+whose methods signal an error for the distribution function, the
+quantile function, the response gradient and Hessian, the mixed response
+derivative, the skewness and the kurtosis.
 
 ## See also
 

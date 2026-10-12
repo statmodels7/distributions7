@@ -6,9 +6,7 @@ derivative:
 at order 2, with the first-order part taken from
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md),
 so a closed gradient the family does register is used here too. The step
-is \\\varepsilon^{1/4}\\ relative, about \\1.2\times10^{-4}\\, and the
-accuracy measured against a family's own closed form is
-\\1.7\times10^{-7}\\ relative.
+is \\\varepsilon^{1/4}\\ relative, about \\1.2\times10^{-4}\\.
 
 ## Arguments
 
@@ -53,7 +51,7 @@ correction \\\partial^2 P/P - (\partial P/P)^2\\ is applied afterwards
 by
 [`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md),
 which is why the gradient is fetched even when only the Hessian was
-asked for.
+requested.
 
 ## See also
 
@@ -66,16 +64,16 @@ for the stencils;
 ## Examples
 
 ``` r
-# A gamma reaches this method at both orders.
-d <- gamma2_distrib()
+# A truncated gamma reaches this method at both orders.
+d <- truncated(gamma2_distrib(), upper = 6)
 distrib_hess_cdf(d, c(1, 2), list(mu = 2, sigma2 = 1))
 #> $mu_mu
-#> [1] -2.1633204 -0.8750296
+#> [1] -2.1595748 -0.8712839
 #> 
 #> $sigma2_sigma2
-#> [1] -1.94894355 -0.03301621
+#> [1] -1.93036989 -0.01444246
 #> 
 #> $mu_sigma2
-#> [1] 1.9255856 0.3739333
+#> [1] 1.930828 0.379176
 #> 
 ```

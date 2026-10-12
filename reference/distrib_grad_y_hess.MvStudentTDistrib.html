@@ -4,16 +4,18 @@ one \(n \times p\) matrix per unordered pair of parameters. The response
 gradient is \(\ell^{(y)} = -c\,w\), so a second derivative in the
 parameters is the ordinary product rule
 $$\partial_{ab}\ell^{(y)} = -c_{ab}w - c_aw_b - c_bw_a - c\,w_{ab},$$
-with every piece from mvt_dpieces(). No pair vanishes here, where a
-gaussian's pair of location parameters is exactly zero: its response
-gradient is linear in the location and this one is not."><meta property="og:description" content="Computes \(\partial^3\ell/\partial y\,\partial\theta_a\partial\theta_b\),
+with every piece from mvt_dpieces(). For a gaussian the pair of two
+location parameters is exactly zero, its response gradient being linear in
+the location; the response gradient of the t is not, and these pairs are not
+zero in general."><meta property="og:description" content="Computes \(\partial^3\ell/\partial y\,\partial\theta_a\partial\theta_b\),
 one \(n \times p\) matrix per unordered pair of parameters. The response
 gradient is \(\ell^{(y)} = -c\,w\), so a second derivative in the
 parameters is the ordinary product rule
 $$\partial_{ab}\ell^{(y)} = -c_{ab}w - c_aw_b - c_bw_a - c\,w_{ab},$$
-with every piece from mvt_dpieces(). No pair vanishes here, where a
-gaussian's pair of location parameters is exactly zero: its response
-gradient is linear in the location and this one is not."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+with every piece from mvt_dpieces(). For a gaussian the pair of two
+location parameters is exactly zero, its response gradient being linear in
+the location; the response gradient of the t is not, and these pairs are not
+zero in general."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +23,7 @@ gradient is linear in the location and this one is not."><meta property="og:imag
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,9 +61,10 @@ one \(n \times p\) matrix per unordered pair of parameters. The response
 gradient is \(\ell^{(y)} = -c\,w\), so a second derivative in the
 parameters is the ordinary product rule
 $$\partial_{ab}\ell^{(y)} = -c_{ab}w - c_aw_b - c_bw_a - c\,w_{ab},$$
-with every piece from <code><a href="mvt_dpieces.html">mvt_dpieces()</a></code>. No pair vanishes here, where a
-gaussian's pair of location parameters is exactly zero: its response
-gradient is linear in the location and this one is not.</p>
+with every piece from <code><a href="mvt_dpieces.html">mvt_dpieces()</a></code>. For a gaussian the pair of two
+location parameters is exactly zero, its response gradient being linear in
+the location; the response gradient of the t is not, and these pairs are not
+zero in general.</p>
     </div>
 
 
@@ -84,8 +87,9 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, handled by the
-generic before dispatch. The two differ here.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The method
+returns the parameter scale and the generic applies the link scale to its
+result. The two differ here.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -151,7 +155,7 @@ response indices, <code><a href="mvt_dpieces.html">mvt_dpieces()</a></code> for 
 <span class="r-in"><span>                <span class="op">(</span><span class="fu">f</span><span class="op">(</span><span class="va">h</span>, <span class="va">h</span><span class="op">)</span> <span class="op">-</span> <span class="fu">f</span><span class="op">(</span><span class="va">h</span>, <span class="op">-</span><span class="va">h</span><span class="op">)</span> <span class="op">-</span> <span class="fu">f</span><span class="op">(</span><span class="op">-</span><span class="va">h</span>, <span class="va">h</span><span class="op">)</span> <span class="op">+</span> <span class="fu">f</span><span class="op">(</span><span class="op">-</span><span class="va">h</span>, <span class="op">-</span><span class="va">h</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">4</span> <span class="op">*</span> <span class="va">h</span> <span class="op">*</span> <span class="va">h</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">gh</span><span class="op">$</span><span class="va">mu1_mu2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          gap        scale </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1.161690e-06 6.296564e-01 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1.339510e-06 6.296564e-01 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

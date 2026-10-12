@@ -15,7 +15,7 @@ copy of it: the hand-written second parametrizations all do."><meta property="og
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,6 +105,12 @@ and orders the result.</p></dd>
 <dd><p>Should the expected derivatives be carried? A single
 logical, <code>FALSE</code> by default.</p></dd>
 
+
+<dt id="arg-approx-nsim">approx, nsim<a class="anchor" aria-label="anchor" href="#arg-approx-nsim"></a></dt>
+<dd><p>Forwarded to the parent's expected derivatives: <code>approx</code>
+is one of <code>"opg"</code> (the default), <code>"bartlett"</code>, <code>"integrate"</code> or <code>"mc"</code>, and
+<code>nsim</code> is the number of draws for <code>"mc"</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -116,8 +122,8 @@ logical, <code>FALSE</code> by default.</p></dd>
     <p>$$\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
       \ell^{(i_1 \dots i_{|\pi|})}(\theta)
       \prod_{B \in \pi} \frac{\partial^{|B|}\theta_{i_B}}{\partial\psi_B},$$
-the sum over set partitions of the multi-index. Every order the parent has
-in closed form therefore survives in closed form.</p>
+the sum over set partitions of the multi-index. Every order that the parent
+has in closed form therefore survives in closed form.</p>
     </div>
     <div class="section level2">
     <h2 id="under-expectation">Under expectation<a class="anchor" aria-label="anchor" href="#under-expectation"></a></h2>

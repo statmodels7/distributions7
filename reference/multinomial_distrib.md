@@ -3,9 +3,10 @@
 Builds the distribution object for the multinomial family on \\p\\
 categories and \\n\\ trials, parametrized by a probability vector
 carried on a `parameters7` simplex. The returned object carries
-closed-form derivatives of the log-mass to fourth order and a
-closed-form expected information, and its support is small enough to
-enumerate, so every expectation can be checked as an exact sum.
+closed-form derivatives of the log-mass to fourth order, a closed-form
+expected information and closed-form expectations of the third and
+fourth derivatives, and its support is small enough to enumerate, so
+every expectation can be checked as an exact sum.
 
 ## Usage
 
@@ -17,8 +18,8 @@ multinomial_distrib(n_dim, size, probs = parameters7::simplex(n_dim))
 
 - n_dim:
 
-  The number of categories \\p\\, a single integer of at least 2.
-  Anything else signals an error naming the argument.
+  The number of categories \\p\\, a single whole number of at least 2.
+  Any other value signals an error naming the argument.
 
 - size:
 
@@ -42,37 +43,37 @@ multinomial_distrib(n_dim, size, probs = parameters7::simplex(n_dim))
 
 An S7 object of class `MultinomialDistrib`, inheriting from
 `multivariate_distrib`, with `size` the trial count, `param` the simplex
-given here, `distrib_name` `"multinomial [pd, size=n, probs=<chart>]"`,
-`dimension` `"multivariate"`, `n_dim` \\p\\, `bounds` `c(0, size)`,
-`params` the simplex's free names prefixed by `probs_`, `n_params`
-\\p-1\\, and `link_params` the identity for each.
+given here, `distrib_name`
+`"multinomial [<p>d, size=<n>, probs=<name>]"` with `<name>` the
+`param_name` of the probability parameter, `dimension` `"multivariate"`,
+`n_dim` \\p\\, `bounds` `c(0, size)`, `params` the simplex's free names
+prefixed by `probs_`, `n_params` \\p-1\\, and `link_params` the identity
+for each.
 
 ## The parametrization
 
 The mass on the weak compositions of \\n\\ into \\p\\ parts is \$\$P(Y =
 y) = \frac{n!}{\prod\_{j=1}^{p} y_j!}\prod\_{j=1}^{p} p_j^{y_j},\$\$
 with \$\$\mathbb{E}\[Y_j\] = n p_j, \qquad \operatorname{Var}(Y_j) = n
-p_j (1 - p_j), \qquad \operatorname{Cov}(Y_j, Y_k) = -n p_j p_k.\$\$
-There is **no dispersion parameter**: the probabilities are all the
-family has, and \\p-1\\ of them are free.
+p_j (1 - p_j), \qquad \operatorname{Cov}(Y_j, Y_k) = -n p_j p_k.\$\$ The
+family has no dispersion parameter: its parameters are the
+probabilities, \\p-1\\ of them free.
 
 The probabilities are carried by a `parameters7` simplex and flattened
-into scalars with identity links, exactly as a covariance is for the
+into scalars with identity links, as a covariance is for the
 multivariate gaussian. The constraint that they be positive and sum to
-one lives in the parameter, where a scalar link could not express it.
+one is carried by the parameter, which a scalar link could not express.
 
-## A multivariate family that is discrete
+## The support
 
-This is the first family of the package that is multivariate and
-discrete, so its support is a finite set of points rather than a region.
+The family is multivariate and discrete, so its support is a finite set
+of points.
 [`mv_support.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_support.MultinomialDistrib.md)
-enumerates them, which lets an expectation be an exact sum and lets
+enumerates them, which makes an expectation an exact sum and lets
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-test the total mass by addition: measured, the mass over the support
-comes back at 1 to `8e-16` and the closed-form information agrees with
-the summed observed Hessian to the same order. An importance-sampling
-check would only ever compare against Monte Carlo error, and a
-normalization wrong by a thousandth would pass it.
+test the total mass by addition. An importance-sampling check compares
+only against Monte Carlo error, and a normalization wrong by a
+thousandth would pass it.
 
 The count of support points is \\\binom{n+p-1}{p-1}\\ and grows quickly,
 so the enumeration is a validation tool rather than a fitting route.
@@ -90,8 +91,12 @@ one, so every derivative of their sum is zero.
 On the default additive log-ratio chart the resulting information is
 exactly the covariance of the first \\p-1\\ counts, since \\A\_{jk} =
 p_j(\delta\_{jk}-p_k)\\ collapses the sum to \\\delta\_{kl}p_k -
-p_kp_l\\. Measured, the two agree to `2e-16` at every dimension and
-trial count tried.
+p_kp_l\\. On that chart every derivative of the log-mass of order two or
+more is \\-N\\ times a cumulant of the categorical law (see
+[`mn_cumulant()`](https://statmodels7.github.io/distributions7/reference/mn_cumulant.md)),
+a sum of products of probabilities that the methods compute without
+dividing by one, so a category whose probability is tiny or underflows
+gives finite derivatives.
 
 ## Marginals and conjugacy
 

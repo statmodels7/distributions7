@@ -15,7 +15,7 @@ differentiability off it."><meta property="og:image" content="https://statmodels
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,8 +96,9 @@ standing in front of \(\phi\).</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The five compositions and the order each one leaves, measured as the first
-derivative that jumps across \(v = 0\):</p>
+    <p>The five compositions and the order each one leaves, which is the number
+of continuous derivatives at \(v = 0\), one less than the order of the
+first derivative that jumps there:</p>
 <table class="table table"><tr><td><code>phi</code></td><td>\(\phi(v)\)</td><td>order</td></tr><tr><td><code>"abs"</code></td><td>\(\lvert v \rvert\)</td><td>0</td></tr><tr><td><code>"hinge"</code></td><td>\((v)_+\)</td><td>0</td></tr><tr><td><code>"hinge2"</code></td><td>\((v)_+^2\)</td><td>1</td></tr><tr><td><code>"hinge3"</code></td><td>\((v)_+^3\)</td><td>2</td></tr><tr><td><code>"step"</code></td><td>\(1\{v &gt; 0\}\)</td><td>-1</td></tr></table><p>The others reduce to the absolute value, \((v)_+ = (v + \lvert v
 \rvert)/2\) and \(1\{v&gt;0\} = (1 + \mathrm{sign}(v))/2\), so a smoothing of
 \(\lvert \cdot \rvert\) covers all of them by composition.</p>

@@ -83,11 +83,11 @@ returning it silently would hide a missing argument.
 
 ## What it is for
 
-A prior. `fixed(gaussian1_distrib(), mu = 0)` is the ridge penalty with
-its scale free, `fixed(laplace2_distrib(), mu = 0)` is the lasso, and
-`fixed(mvgaussian1_distrib(p), mu = 0)` is what a random effect is
-distributed by. `fixed(folded(gaussian1_distrib()), mu = 0)` is the
-half-normal.
+The wrapper builds priors. `fixed(gaussian1_distrib(), mu = 0)` is the
+ridge penalty with its scale free, `fixed(laplace2_distrib(), mu = 0)`
+is the lasso, and `fixed(mvgaussian1_distrib(p), mu = 0)` is what a
+random effect is distributed by.
+`fixed(folded(gaussian1_distrib()), mu = 0)` is the half-normal.
 
 The per-parameter smoothness declaration travels with the free
 parameters, so fixing the location of a Laplace leaves a distribution
@@ -154,7 +154,7 @@ fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)@fixed_params
 #> [1] 1
 #> 
 
-# Four refusals, each naming the condition that failed.
+# Four errors, each naming the condition that failed.
 try(fixed(gaussian1_distrib(), nope = 1))
 #> Error : 'nope' is not a parameter of 'gaussian1'. Parameters: mu, sigma.
 try(fixed(gaussian1_distrib(), sigma = -1))

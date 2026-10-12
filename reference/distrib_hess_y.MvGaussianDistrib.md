@@ -2,11 +2,10 @@
 
 Computes the second derivative of the log-density in the response,
 \$\$\frac{\partial^2 \ell}{\partial y\\ \partial y^\top} =
--\Sigma^{-1}.\$\$ The quadratic form is quadratic in \\y\\, so the
-matrix is the same at every observation and the response is read only to
-confirm its shape. One \\p \times p\\ matrix is returned, not \\n\\
-copies of it, and a consumer that expects one matrix per row must handle
-this family's shape explicitly.
+-\Sigma^{-1}.\$\$ The log-density is quadratic in \\y\\, so the matrix
+is the same at every observation and the response is not read. One \\p
+\times p\\ matrix is returned for the whole sample, and not one matrix
+per row.
 
 ## Arguments
 
@@ -19,8 +18,7 @@ this family's shape explicitly.
 
 - y:
 
-  An \\n \times p\\ numeric matrix of observations. Its values do not
-  enter the result.
+  An \\n \times p\\ numeric matrix of observations. Not read.
 
 - theta:
 
@@ -61,7 +59,7 @@ distrib_hess_y(d, y, theta)
 #> v1 -1.0141552  0.5399435
 #> v2  0.5399435 -1.4918247
 
-# One matrix whatever the sample size, and it does not move with y.
+# One matrix whatever the sample size, the same at every observation.
 identical(distrib_hess_y(d, y, theta), distrib_hess_y(d, y[1, ], theta))
 #> [1] TRUE
 

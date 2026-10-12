@@ -1,8 +1,8 @@
 # Mean of the Negative Binomial Distribution in the NB1 Parametrization
 
 Closed form: \\E\[Y\] = \mu\\. This parametrization carries the mean as
-its first parameter, so the method reads it off. What distinguishes NB1
-from NB2 is the variance function and not the mean.
+its first parameter. NB1 and NB2 have the same mean and differ in the
+variance function.
 
 ## Arguments
 

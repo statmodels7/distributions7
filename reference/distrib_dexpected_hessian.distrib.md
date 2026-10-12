@@ -2,7 +2,7 @@
 
 One central difference of
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-per parameter, refused where that quantity is itself approximated.
+per parameter; an error where that quantity is itself approximated.
 
 ## Arguments
 

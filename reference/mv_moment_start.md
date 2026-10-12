@@ -35,10 +35,9 @@ A list with two components: `mu`, a numeric vector of length \\p\\, and
 A sample covariance is singular when there are fewer observations than
 coordinates, and nearly singular when two coordinates almost coincide.
 Either way a `parameters7` structure cannot be inverted onto it, so the
-eigenvalues are floored at a small multiple of the largest before the
-matrix is handed on. The floor moves a starting value, which is allowed
-to be approximate; it would not be allowed anywhere the answer is
-reported.
+eigenvalues are floored at \\10^{-6}\\ times the larger of the largest
+eigenvalue and 1 before the matrix is handed on. The floor changes the
+starting value only.
 
 A response with one row has no covariance at all, and the identity is
 returned in its place.

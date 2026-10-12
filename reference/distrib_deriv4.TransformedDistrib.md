@@ -5,8 +5,8 @@ g^{-1}(y)\\, for the same reason as at third order: the Jacobian
 \\\log\|dg^{-1}/dy\|\\ carries no \\\theta\\, so it contributes nothing
 to any derivative in \\\theta\\ whatever the order.
 
-Nothing here is approximated and no partition sum is taken. The
-wrapper's work is entirely in the argument, not in the derivative.
+The wrapper adds no approximation and takes no partition sum: it
+evaluates the parent's fourth derivative at \\x = g^{-1}(y)\\.
 
 ## Arguments
 

@@ -9,9 +9,12 @@ is inverted by root finding, so
 [`distrib_rng.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.EnetDistrib.md)
 can use the inverse transform.
 
-The `qnorm` call is made on the **log** scale, its argument being
-\\\log(2p) + \log\Phi(-x)\\, because \\\Phi(-x)\\ underflows to zero
-past \\x = 38\\.
+The probability is first turned into the logarithms of both tails,
+without forming \\1 - p\\ or exponentiating a logarithm, and each half
+is inverted from the logarithm of its own tail. The `qnorm` call is made
+on the **log** scale, its argument being \\\log P + \log 2 +
+\log\Phi(-x)\\, because \\\Phi(-x)\\ underflows to zero beyond \\x
+\approx 38.5\\. A probability outside \\\[0, 1\]\\ gives `NaN`.
 
 ## Arguments
 
@@ -37,8 +40,8 @@ past \\x = 38\\.
 
 - log.p:
 
-  Logical of length 1. When `TRUE`, `p` is given as a logarithm and is
-  exponentiated first. Defaults to `FALSE`.
+  Logical of length 1. When `TRUE`, `p` is given as a logarithm.
+  Defaults to `FALSE`.
 
 - ...:
 

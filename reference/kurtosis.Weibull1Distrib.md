@@ -4,7 +4,10 @@ Closed form: \$\$\gamma_2 = \frac{g_4 - 4 g_1 g_3 + 6 g_1^2 g_2 - 3
 g_1^4} {(g_2 - g_1^2)^2} - 3, \qquad g_k = \Gamma(1 + k/\sigma).\$\$ The
 scale cancels, so the value depends on the shape alone. It is 6 at shape
 1, where the family is exponential, dips below zero over a band of
-moderate shapes, and climbs again as the shape grows.
+moderate shapes, and climbs again as the shape grows, towards 2.4. It is
+evaluated through
+[`weibull_moment_terms()`](https://statmodels7.github.io/distributions7/reference/weibull_moment_terms.md),
+as the skewness is.
 
 ## Arguments
 
@@ -17,7 +20,7 @@ moderate shapes, and climbs again as the shape grows.
 
   A named list with components `mu` (the scale, positive) and `sigma`
   (the shape, positive), each a numeric vector of length 1 or `n`. The
-  fourth moment requires a shape above \\1/4\\.
+  fourth moment exists for every positive shape.
 
 - ...:
 
@@ -37,7 +40,7 @@ value, so a setting that varies the scale alone repeats one number.
 
 [`skewness.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.Weibull1Distrib.md),
 [`variance.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.Weibull1Distrib.md),
-[`weibull_gamma_factors()`](https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.md),
+[`weibull_moment_terms()`](https://statmodels7.github.io/distributions7/reference/weibull_moment_terms.md),
 [`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md).
 
 ## Examples

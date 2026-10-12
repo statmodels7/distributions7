@@ -9,10 +9,18 @@ function, and the term in which \\\theta\\ appears outside \\r\\
 contributes \\-1/(1+\theta)\\ to the mixed entry.
 
 Because \\\partial r/\partial\mu = 1/\theta\\ and \\\partial
-r/\partial\theta = -r/\theta\\, every component divides by a power of
-\\\theta\\, and the components in \\\theta\\ lose their digits at small
-\\\theta\\ for the reason given on
-[`distrib_gradient.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin1Distrib.md).
+r/\partial\theta = -r/\theta\\, every component of that route divides by
+a power of \\\theta\\, so it is used only for \\\theta \ge 1\\. For
+\\\theta \< 1\\ and an integer count the kernel differentiates the form
+without the size given on
+[`distrib_gradient.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin1Distrib.md)
+once more: with \\u_i = \mu + i\theta\\, \\C = \sum\_{i=1}^{y-1}
+i/u_i^2\\ and \\D = \sum\_{i=1}^{y-1} i^2/u_i^2\\, \$\$\ell^{(\mu\mu)} =
+-\sum\_{i=0}^{y-1} u_i^{-2}, \qquad \ell^{(\mu\theta)} =
+\dfrac{1}{1+\theta} - C - q, \qquad \ell^{(\theta\theta)} =
+\dfrac{y-\mu}{(1+\theta)^2} - D - \mu q',\$\$ with \\q\\ and \\q'\\ from
+their power series below \\\theta = 1/4\\. Every component then keeps
+its accuracy as \\\theta\\ goes to zero.
 
 ## Arguments
 
@@ -43,9 +51,9 @@ r/\partial\theta = -r/\theta\\, every component divides by a power of
 
 - threads:
 
-  A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  A single positive integer, how many threads the kernel may use. For
+  fewer observations than an internal threshold the kernel runs
+  sequentially whatever the count. Defaults to `1L`.
 
 ## Value
 
@@ -90,8 +98,8 @@ h
 #> [1] -0.061179739  0.003195261  0.016858455
 #> 
 
-# The curvature in mu is exactly zero at y = 0, the size being 1 there, so
-# the observed information is singular at that count.
+# The curvature in mu is exactly zero at y = 0, where the log-mass is linear
+# in mu; the observed information at that count is indefinite.
 h$mu_mu
 #> [1]  0.00000000 -0.07812500 -0.09321181
 

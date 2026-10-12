@@ -6,22 +6,20 @@ the moment-to-cumulant expansion over set partitions, read on the truncated
 expectations \(\mathbb{E}_T[\partial^B f / f]\):
 $$d^I \log Z = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
       \prod_{B \in \pi} \mathbb{E}_T\!\left[\frac{\partial^B f}{f}\right].$$
-Each distinct block costs one quadrature, memoized across the partition
-sum, which is why a truncated derivative is far dearer than its parent's.
-Where the parent has genuinely closed cdf derivatives, or is a lattice
-family whose cdf derivatives are an exact sum, that route replaces the
-quadrature and is about three and a half times faster."><meta property="og:description" content="Truncation adds no parameter and one \(\theta\)-dependent normalizing
+Each distinct block that has no closed-form cdf derivative costs one
+quadrature, memoized across the partition sum. Where the parent has
+closed-form cdf derivatives of the block's order, the block is read from them
+and no quadrature is taken."><meta property="og:description" content="Truncation adds no parameter and one \(\theta\)-dependent normalizing
 constant: \(\ell_T = \ell - \log Z\) with
 \(Z(\theta) = F(U) - F(L^-)\). The derivatives of \(\log Z\) follow from
 the moment-to-cumulant expansion over set partitions, read on the truncated
 expectations \(\mathbb{E}_T[\partial^B f / f]\):
 $$d^I \log Z = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
       \prod_{B \in \pi} \mathbb{E}_T\!\left[\frac{\partial^B f}{f}\right].$$
-Each distinct block costs one quadrature, memoized across the partition
-sum, which is why a truncated derivative is far dearer than its parent's.
-Where the parent has genuinely closed cdf derivatives, or is a lattice
-family whose cdf derivatives are an exact sum, that route replaces the
-quadrature and is about three and a half times faster."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+Each distinct block that has no closed-form cdf derivative costs one
+quadrature, memoized across the partition sum. Where the parent has
+closed-form cdf derivatives of the block's order, the block is read from them
+and no quadrature is taken."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +27,7 @@ quadrature and is about three and a half times faster."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,11 +67,10 @@ the moment-to-cumulant expansion over set partitions, read on the truncated
 expectations \(\mathbb{E}_T[\partial^B f / f]\):
 $$d^I \log Z = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
       \prod_{B \in \pi} \mathbb{E}_T\!\left[\frac{\partial^B f}{f}\right].$$</p>
-<p>Each <strong>distinct block</strong> costs one quadrature, memoized across the partition
-sum, which is why a truncated derivative is far dearer than its parent's.
-Where the parent has genuinely closed cdf derivatives, or is a lattice
-family whose cdf derivatives are an exact sum, that route replaces the
-quadrature and is about three and a half times faster.</p>
+<p>Each distinct block that has no closed-form cdf derivative costs one
+quadrature, memoized across the partition sum. Where the parent has
+closed-form cdf derivatives of the block's order, the block is read from them
+and no quadrature is taken.</p>
     </div>
 
 

@@ -107,17 +107,40 @@ checks neither.
 
 ## Methods
 
-Registered on this class:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ZeroAdjustedDiscreteDistrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ZeroAdjustedDiscreteDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ZeroAdjustedDiscreteDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ZeroAdjustedDiscreteDistrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ZeroAdjustedDiscreteDistrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.ZeroAdjustedDiscreteDistrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.ZeroAdjustedDiscreteDistrib.md)
+Registered on this class, each linked to the page that documents it:
 
-The third and fourth derivatives come from the shared wrapper machinery
-in `wrapper_derivatives.R`; everything else is inherited from
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ZeroAdjustedDiscreteDistrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ZeroAdjustedDiscreteDistrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.ZeroAdjustedDiscreteDistrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.ZeroAdjustedDiscreteDistrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ZeroAdjustedDiscreteDistrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ZeroAdjustedDiscreteDistrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ZeroAdjustedDiscreteDistrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ZeroAdjustedDiscreteDistrib.md),
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ZeroAdjustedDiscreteDistrib.md)
+  and
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md);
+
+- the exactness flags:
+  [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
+  and
+  [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md);
+
+- the fitting helpers:
+  [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.zero_wrappers.md)
+  and
+  [`distrib_scalar_route()`](https://statmodels7.github.io/distributions7/reference/distrib_scalar_route.md).
+
+Every other generic is inherited from
 [`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
 
 ## Notation

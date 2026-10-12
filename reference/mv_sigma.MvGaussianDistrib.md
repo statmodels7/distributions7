@@ -35,7 +35,7 @@ for the same matrix read as a moment,
 [`mv_location.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_location.MvGaussianDistrib.md)
 for the mean,
 [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
-for the standard deviations and correlations a reader wants, and
+for the standard deviations and correlations of a fit, and
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
 for the generic.
 

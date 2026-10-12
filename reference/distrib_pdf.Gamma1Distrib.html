@@ -6,16 +6,16 @@ by calling stats::dgamma() at shape \(a = 1/\phi\) and rate
 \(b = 1/(\phi\mu)\). With log = TRUE the logarithm is formed inside
 dgamma() and stays finite where the density itself underflows.
 The density is unbounded at the origin when \(\phi &amp;gt; 1\), where the shape
-falls below one; it is flat there at \(\phi = 1\), the exponential case,
-and vanishes at the origin for \(\phi &amp;lt; 1\)."><meta property="og:description" content="Computes the gamma density
+falls below one; at \(\phi = 1\), the exponential case, it equals the
+rate \(1/\mu\) there, and it vanishes at the origin for \(\phi &amp;lt; 1\)."><meta property="og:description" content="Computes the gamma density
 $$f(y; \mu, \phi) = \dfrac{y^{1/\phi - 1}\,e^{-y/(\phi\mu)}}
       {(\phi\mu)^{1/\phi}\,\Gamma(1/\phi)}, \qquad y &amp;gt; 0,$$
 by calling stats::dgamma() at shape \(a = 1/\phi\) and rate
 \(b = 1/(\phi\mu)\). With log = TRUE the logarithm is formed inside
 dgamma() and stays finite where the density itself underflows.
 The density is unbounded at the origin when \(\phi &amp;gt; 1\), where the shape
-falls below one; it is flat there at \(\phi = 1\), the exponential case,
-and vanishes at the origin for \(\phi &amp;lt; 1\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+falls below one; at \(\phi = 1\), the exponential case, it equals the
+rate \(1/\mu\) there, and it vanishes at the origin for \(\phi &amp;lt; 1\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +23,7 @@ and vanishes at the origin for \(\phi &amp;lt; 1\)."><meta property="og:image" c
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,8 +63,8 @@ by calling <code><a href="https://rdrr.io/r/stats/GammaDist.html" class="externa
 \(b = 1/(\phi\mu)\). With <code>log = TRUE</code> the logarithm is formed inside
 <code><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">dgamma()</a></code> and stays finite where the density itself underflows.</p>
 <p>The density is unbounded at the origin when \(\phi &gt; 1\), where the shape
-falls below one; it is flat there at \(\phi = 1\), the exponential case,
-and vanishes at the origin for \(\phi &lt; 1\).</p>
+falls below one; at \(\phi = 1\), the exponential case, it equals the
+rate \(1/\mu\) there, and it vanishes at the origin for \(\phi &lt; 1\).</p>
     </div>
 
 
@@ -106,7 +106,8 @@ Defaults to <code>FALSE</code>.</p></dd>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_cdf.Gamma1Distrib.html">distrib_cdf.Gamma1Distrib()</a></code> for the distribution function,
 <code><a href="distrib_gradient.Gamma1Distrib.html">distrib_gradient.Gamma1Distrib()</a></code> for the derivatives of the log-density,
-<code><a href="gamma1_shape_rate.html">gamma1_shape_rate()</a></code> for the conversion this uses, and <code><a href="distrib_pdf.html">distrib_pdf()</a></code>
+<code><a href="gamma1_shape_rate.html">gamma1_shape_rate()</a></code> for the conversion that this method uses, and
+<code><a href="distrib_pdf.html">distrib_pdf()</a></code>
 for the generic.</p></div>
     </div>
 

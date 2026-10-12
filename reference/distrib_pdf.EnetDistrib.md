@@ -11,7 +11,7 @@ The constant goes through \\\log M\\. Written directly, \\\log M(x)\\
 adds \\x^2/2\\ to a log-probability of the same size and opposite sign,
 so it loses a digit for every factor of ten in \\x\\; past \\x = 30\\
 the asymptotic series is used instead. At \\\alpha = 1 - 10^{-12}\\ the
-argument reaches \\10^6\\, which an ordinary elastic net does.
+argument reaches \\10^6\\.
 
 ## Arguments
 
@@ -28,9 +28,8 @@ argument reaches \\10^6\\, which an ordinary elastic net does.
 
   A named list with components `mu`, `lambda` and `alpha`, each a
   numeric vector of length 1 or of the length of `y`. `lambda` must be
-  strictly positive and `alpha` strictly inside \\(0, 1)\\; at either
-  endpoint the constant's argument is not defined and the value is
-  `NaN`.
+  strictly positive and `alpha` strictly inside \\(0, 1)\\; the generic
+  signals an error for a value outside these domains.
 
 - log:
 

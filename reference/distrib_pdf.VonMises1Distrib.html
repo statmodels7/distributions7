@@ -5,23 +5,21 @@ $$f(y; \mu, \kappa) = \dfrac{e^{\kappa \cos(y - \mu)}}{2\pi I_0(\kappa)},
 with \(I_0\) the modified Bessel function of the first kind. Outside
 \([-\pi, \pi)\) the density is 0: the support is the declared interval,
 and an angle is not wrapped into it.
-The normalizing constant goes through numericals7::log_bessel_i().
-R's exponentially scaled besselI underflows
-to an exact zero between \(\kappa = 10^5\) and \(10^6\), where the
-logarithm then returns -Inf; log_bessel_i stays finite wherever the
-logarithm itself is representable. Measured at \(\kappa = 10^6\) it
-returns 999992.17 where the base route returns -Inf."><meta property="og:description" content="Computes the von Mises density
+The normalizing constant goes through numericals7::log_bessel_i(). R's
+exponentially scaled besselI returns an exact zero from about
+\(\kappa = 2 \times 10^5\), so that its logarithm is -Inf;
+log_bessel_i stays finite wherever the logarithm itself is
+representable."><meta property="og:description" content="Computes the von Mises density
 $$f(y; \mu, \kappa) = \dfrac{e^{\kappa \cos(y - \mu)}}{2\pi I_0(\kappa)},
       \qquad y \in [-\pi, \pi),$$
 with \(I_0\) the modified Bessel function of the first kind. Outside
 \([-\pi, \pi)\) the density is 0: the support is the declared interval,
 and an angle is not wrapped into it.
-The normalizing constant goes through numericals7::log_bessel_i().
-R's exponentially scaled besselI underflows
-to an exact zero between \(\kappa = 10^5\) and \(10^6\), where the
-logarithm then returns -Inf; log_bessel_i stays finite wherever the
-logarithm itself is representable. Measured at \(\kappa = 10^6\) it
-returns 999992.17 where the base route returns -Inf."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The normalizing constant goes through numericals7::log_bessel_i(). R's
+exponentially scaled besselI returns an exact zero from about
+\(\kappa = 2 \times 10^5\), so that its logarithm is -Inf;
+log_bessel_i stays finite wherever the logarithm itself is
+representable."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +27,7 @@ returns 999992.17 where the base route returns -Inf."><meta property="og:image" 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,12 +66,11 @@ $$f(y; \mu, \kappa) = \dfrac{e^{\kappa \cos(y - \mu)}}{2\pi I_0(\kappa)},
 with \(I_0\) the modified Bessel function of the first kind. Outside
 \([-\pi, \pi)\) the density is 0: the support is the declared interval,
 and an angle is not wrapped into it.</p>
-<p>The normalizing constant goes through <code><a href="https://statmodels7.github.io/numericals7/reference/log_bessel_i.html" class="external-link">numericals7::log_bessel_i()</a></code>.
-R's exponentially scaled <code>besselI</code> <strong>underflows
-to an exact zero</strong> between \(\kappa = 10^5\) and \(10^6\), where the
-logarithm then returns <code>-Inf</code>; <code>log_bessel_i</code> stays finite wherever the
-logarithm itself is representable. Measured at \(\kappa = 10^6\) it
-returns 999992.17 where the base route returns <code>-Inf</code>.</p>
+<p>The normalizing constant goes through <code><a href="https://statmodels7.github.io/numericals7/reference/log_bessel_i.html" class="external-link">numericals7::log_bessel_i()</a></code>. R's
+exponentially scaled <code>besselI</code> returns an exact zero from about
+\(\kappa = 2 \times 10^5\), so that its logarithm is <code>-Inf</code>;
+<code>log_bessel_i</code> stays finite wherever the logarithm itself is
+representable.</p>
     </div>
 
 
@@ -108,9 +105,8 @@ Defaults to <code>FALSE</code>.</p></dd>
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads
-<code><a href="https://statmodels7.github.io/numericals7/reference/log_bessel_i.html" class="external-link">numericals7::log_bessel_i()</a></code> may use. It is carried down because this is
-where the family spends its time: profiled at 80.8 per cent of a fit whose
-concentration is modeled, so that <code>kappa</code> is a vector. Defaults to <code>1L</code>.</p></dd>
+<code><a href="https://statmodels7.github.io/numericals7/reference/log_bessel_i.html" class="external-link">numericals7::log_bessel_i()</a></code> may use. The Bessel evaluation is the
+dominant cost when <code>kappa</code> is a vector. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

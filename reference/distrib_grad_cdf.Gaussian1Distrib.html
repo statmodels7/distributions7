@@ -3,13 +3,13 @@
 \(\partial F/\partial\mu = -f(q)\) and
 \(\partial F/\partial\sigma = -z f(q)\) with \(z = (q-\mu)/\sigma\). The
 method is loc_scale_grad_cdf() itself, shared with the logistic, the
-Cauchy and the Laplace, so nothing here is particular to the Gaussian beyond
-its density."><meta property="og:description" content="Closed form, from the location-scale structure:
+Laplace and the Gumbel, so nothing here is particular to the Gaussian
+beyond its density."><meta property="og:description" content="Closed form, from the location-scale structure:
 \(\partial F/\partial\mu = -f(q)\) and
 \(\partial F/\partial\sigma = -z f(q)\) with \(z = (q-\mu)/\sigma\). The
 method is loc_scale_grad_cdf() itself, shared with the logistic, the
-Cauchy and the Laplace, so nothing here is particular to the Gaussian beyond
-its density."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+Laplace and the Gumbel, so nothing here is particular to the Gaussian
+beyond its density."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +17,7 @@ its density."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +54,8 @@ its density."><meta property="og:image" content="https://statmodels7.github.io/d
 \(\partial F/\partial\mu = -f(q)\) and
 \(\partial F/\partial\sigma = -z f(q)\) with \(z = (q-\mu)/\sigma\). The
 method is <code><a href="loc_scale_grad_cdf.html">loc_scale_grad_cdf()</a></code> itself, shared with the logistic, the
-Cauchy and the Laplace, so nothing here is particular to the Gaussian beyond
-its density.</p>
+Laplace and the Gumbel, so nothing here is particular to the Gaussian
+beyond its density.</p>
     </div>
 
 
@@ -78,13 +78,16 @@ a numeric vector of length 1 or <code>n</code>.</p></dd>
 
 <dt id="arg-lower-tail">lower.tail<a class="anchor" aria-label="anchor" href="#arg-lower-tail"></a></dt>
 <dd><p>Is the lower tail wanted? A single logical, <code>TRUE</code> by
-default; <code>FALSE</code> flips the sign of every component.</p></dd>
+default. With <code>log = FALSE</code>, <code>FALSE</code> flips the sign of every component;
+with <code>log = TRUE</code> it returns the derivatives of \(\log S\), where
+\(S = 1 - F\), which are not the negatives of the lower-tail ones.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>
 <dd><p>Are derivatives of the log probability wanted? A single logical,
-<code>TRUE</code> by default. Far into a tail the probability underflows to zero and
-the result is <code>-Inf</code> or <code>NaN</code>.</p></dd>
+<code>TRUE</code> by default. The ratio \(f/P\) is formed as
+\(\exp(\log f - \log P)\), so the result stays finite far into either
+tail, where \(f\) and \(P\) underflow.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -96,8 +99,9 @@ length of <code>q</code> recycled against <code>theta</code>.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>A censored Gaussian likelihood is cheap for this reason: a right-censored
 observation contributes \(\log S(q)\), whose score in \(\mu\) is
-\(f(q)/S(q)\), the inverse Mills ratio, and the whole of it comes from the
-density the family already computes.</p>
+\(f(q)/S(q)\), the inverse Mills ratio of \(z\) divided by \(\sigma\),
+and the whole of it comes from the density that the family already
+computes.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

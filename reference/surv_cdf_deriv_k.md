@@ -39,7 +39,7 @@ surv_cdf_deriv_k(distrib, q, theta, order, Lval, Lderiv, inside = NULL)
 
   A function of a character vector of parameter names returning the
   corresponding partial derivative of \\L\\. An empty block is the
-  zeroth order and is never asked for.
+  zeroth order and is never requested.
 
 - inside:
 
@@ -63,8 +63,8 @@ into \\\partial^I F = -S\\B_I\\. It is the same identity the
 distribution wrappers use, read on the survival function instead of on
 the density, and
 [`bell_f_ratio()`](https://statmodels7.github.io/distributions7/reference/bell_f_ratio.md)
-runs the partition sum, so nothing here is transcribed from an
-expansion.
+runs the partition sum, so the derivatives come from that sum and not
+from a transcribed expansion.
 
 ## Two things the arithmetic needs
 

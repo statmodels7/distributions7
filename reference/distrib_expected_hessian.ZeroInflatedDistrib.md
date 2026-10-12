@@ -5,8 +5,9 @@ splitting the expectation over the two events \\y = 0\\ and \\y \> 0\\.
 The zero contributes with probability \\L_0\\ and carries the mixture's
 corrections; the positive part contributes with probability \\1 - L_0\\
 and carries the parent's own expected Hessian, less what the zero would
-have contributed to it. No component depends on the data, so every
-returned vector is constant and `y` is read for its length alone.
+have contributed to it. The wrapper's own blocks do not depend on the
+data, so the returned vectors are constant when the parent's expected
+Hessian is, and `y` is then read for its length alone.
 
 ## Arguments
 
@@ -28,8 +29,8 @@ returned vector is constant and `y` is read for its length alone.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - approx:
 
@@ -39,7 +40,7 @@ returned vector is constant and `y` is read for its length alone.
   block is an exact combination of the parent's density, score and
   observed Hessian at zero.
   [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
-  answers for this class by asking the parent.
+  returns, for this class, the value that it returns for the parent.
 
 - nsim:
 
@@ -58,10 +59,16 @@ is; a parent evaluated by an approximation can vary by observation.
 
 ## Details
 
-This is EXACT. `approx` and `nsim` are accepted so that the signature
-matches the generic's, and neither is read. The route works because the
-parent's expected Hessian is an expectation over its whole support, from
-which the single point at zero can be subtracted in closed form.
+The blocks of the wrapper are exact combinations of the parent's mass,
+score and observed Hessian at zero and of the parent's expected Hessian,
+an expectation over the whole support from which the single point at
+zero is subtracted in closed form. `approx` and `nsim` are forwarded to
+the parent's
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
+and take effect only where the parent has no closed form, so the result
+is exact exactly when the parent's is, as
+[`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
+reports.
 
 ## Notation
 

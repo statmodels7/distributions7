@@ -19,7 +19,7 @@ every continuous family, whether or not it writes one out."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,8 +79,8 @@ every continuous family, whether or not it writes one out.</p>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> or <code>"link"</code>, applied by the generic before
-dispatch.</p></dd>
+<dd><p>One of <code>"parameter"</code> or <code>"link"</code>. The generic applies the link
+scale to the value that the method returns.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -94,16 +94,15 @@ parameters, keyed as <code><a href="hess_names.html">hess_names(distrib@params)<
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The stencil is never applied to a quantity that is itself a fallback.
-Before 0.76.0 the fallback differenced <code><a href="distrib_cross_y.html">distrib_cross_y()</a></code> in the
-parameters whether or not that was analytic, and where it was a fallback
-that differenced a difference in the same parameter.</p>
+    <p>The stencil is never applied to a quantity that is itself a numerical
+fallback; only quantities that the family's class registers are used as the
+base.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_grad_y_hess.html">distrib_grad_y_hess()</a></code> for the generic,
 <code><a href="distrib_hess_y_hess.continuous_distrib.html">distrib_hess_y_hess.continuous_distrib()</a></code> for the fourth-order twin, and
-<code><a href="numerical_theta2_y.html">numerical_theta2_y()</a></code>, which does the work.</p></div>
+<code><a href="mixed_tensor_derivatives.html">mixed_tensor_derivatives()</a></code>, which does the work.</p></div>
     </div>
 
     <div class="section level2">

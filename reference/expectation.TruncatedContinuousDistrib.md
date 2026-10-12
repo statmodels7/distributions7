@@ -29,7 +29,8 @@ of a continuous distribution does.
 
 ## Value
 
-A single number, the expectation of `f` under the truncated law.
+A numeric vector with one expectation of `f` under the truncated law for
+each parameter combination (a single number for scalar `theta`).
 
 ## Details
 

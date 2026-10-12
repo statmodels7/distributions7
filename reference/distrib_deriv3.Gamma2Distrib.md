@@ -1,17 +1,24 @@
 # Gamma Third-Order Derivatives in Mean and Variance
 
 Computes the four distinct third derivatives of the gamma log-density
-with respect to \\\mu\\ and \\\sigma^2\\, in closed form. They come from
-differentiating the log-density in the shape \\\alpha = \mu^2/\sigma^2\\
-and the rate \\\lambda = \mu/\sigma^2\\ and carrying the result across
-by the chain rule, so each polygamma function of \\\alpha\\ is evaluated
-once. Every component of this order carries \\\psi_2\\, the second
-derivative of the digamma function.
+with respect to \\\mu\\ and \\\sigma^2\\, in closed form. With \\\alpha
+= \mu^2/\sigma^2\\ and \\z = y/\mu\\ the log-density is \\\ell =
+G(\alpha) + \alpha e(\mu) - \log y\\, with \\G(\alpha) =
+\alpha\log\alpha - \log\Gamma(\alpha) - \alpha\\ and \\e(\mu) = \log z -
+(z - 1)\\. The derivatives of \\G(\alpha(\mu, \sigma^2))\\ come from the
+formula of Faa di Bruno over the set partitions of the differentiation
+indices, and those of \\\alpha e(\mu)\\ from the product rule. The
+derivatives of \\G\\ are \\\log\alpha - \psi(\alpha)\\, \\1/\alpha -
+\psi_1(\alpha)\\, \\-1/\alpha^2 - \psi_2(\alpha)\\ and \\2/\alpha^3 -
+\psi_3(\alpha)\\, each evaluated from its asymptotic series at a large
+shape, and \\e\\ from a series near \\z = 1\\, so the components keep
+their digits when \\\alpha\\ is large. Every component of this order
+carries \\\psi_2\\, the second derivative of the digamma function.
 
 With `expected = TRUE` the expectations are returned, obtained by
 replacing \\Y\\ with \\\mu\\ and \\\log Y\\ with \\\psi(\alpha) -
-\log\lambda\\. Both routes are closed form, so no quadrature is run and
-`approx` and `nsim` are ignored.
+\log\lambda\\. Both routes are closed form, so the method uses no
+quadrature and ignores `approx` and `nsim`.
 
 ## Arguments
 
@@ -58,8 +65,8 @@ replacing \\Y\\ with \\\mu\\ and \\\log Y\\ with \\\psi(\alpha) -
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -81,8 +88,8 @@ for the order below and
 [`distrib_deriv4.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Gamma2Distrib.md)
 for the order above;
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
-for the generic and for the numerical route a family without a closed
-form takes.
+for the generic and for the numerical route that a family without a
+closed form uses.
 
 ## Examples
 

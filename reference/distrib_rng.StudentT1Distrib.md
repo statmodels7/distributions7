@@ -4,8 +4,7 @@ Draws `n` independent location-scale Student t variates as \\\mu +
 \sigma T\\ with \\T\\ from
 [`stats::rt()`](https://rdrr.io/r/stats/TDist.html), so the draws come
 from R's own generator and depend on `.Random.seed` in the usual way.
-The generalized ratio-of-uniforms fallback the base class supplies is
-bypassed.
+The inverse-transform fallback of the base class is not used.
 
 ## Arguments
 

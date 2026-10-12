@@ -6,16 +6,22 @@ would use costs one integration per observation; the series replaces
 \(n\) quadratures with a few dozen vectorized steps, using only the Bessel
 ratios \(I_j/I_0\) from a backward recurrence.
 Below \(-\pi\) the value is 0 and at or above \(\pi\) it is 1, the
-support being the declared interval. The result is clamped to
-\([0, 1]\): the series is exact and its rounding is not."><meta property="og:description" content="Computes \(F(q) = P(Y \le q)\) on \([-\pi, \pi)\) from the Fourier
+support being the declared interval. Where the requested tail is below
+\(10^{-6}\), where the absolute error of the series would cost relative
+accuracy, it comes from a quadrature
+of the tail instead, on the log scale (vm_cdf_tail()), so that a small
+tail probability and its logarithm keep their digits."><meta property="og:description" content="Computes \(F(q) = P(Y \le q)\) on \([-\pi, \pi)\) from the Fourier
 series of the density integrated term by term, through vm_cdf(). The
 density has no elementary antiderivative, and the quadrature the base class
 would use costs one integration per observation; the series replaces
 \(n\) quadratures with a few dozen vectorized steps, using only the Bessel
 ratios \(I_j/I_0\) from a backward recurrence.
 Below \(-\pi\) the value is 0 and at or above \(\pi\) it is 1, the
-support being the declared interval. The result is clamped to
-\([0, 1]\): the series is exact and its rounding is not."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+support being the declared interval. Where the requested tail is below
+\(10^{-6}\), where the absolute error of the series would cost relative
+accuracy, it comes from a quadrature
+of the tail instead, on the log scale (vm_cdf_tail()), so that a small
+tail probability and its logarithm keep their digits."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +29,7 @@ support being the declared interval. The result is clamped to
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,8 +69,11 @@ would use costs one integration per observation; the series replaces
 \(n\) quadratures with a few dozen vectorized steps, using only the Bessel
 <strong>ratios</strong> \(I_j/I_0\) from a backward recurrence.</p>
 <p>Below \(-\pi\) the value is 0 and at or above \(\pi\) it is 1, the
-support being the declared interval. The result is clamped to
-\([0, 1]\): the series is exact and its rounding is not.</p>
+support being the declared interval. Where the requested tail is below
+\(10^{-6}\), where the absolute error of the series would cost relative
+accuracy, it comes from a quadrature
+of the tail instead, on the log scale (<code><a href="vm_cdf_tail.html">vm_cdf_tail()</a></code>), so that a small
+tail probability and its logarithm keep their digits.</p>
     </div>
 
 
@@ -84,13 +93,13 @@ support being the declared interval. The result is clamped to
 <dd><p>A named list with components <code>mu</code> and <code>kappa</code>, each a numeric
 vector of length 1 or of the length of <code>q</code>. A component of length 1 is
 recycled. <code>mu</code> must lie in \((-\pi, \pi)\) and <code>kappa</code> be strictly
-positive; a non-positive <code>kappa</code> gives <code>NA</code>.</p></dd>
+positive; otherwise the generic signals an error.</p></dd>
 
 
 <dt id="arg-lower-tail">lower.tail<a class="anchor" aria-label="anchor" href="#arg-lower-tail"></a></dt>
 <dd><p>Logical of length 1. When <code>TRUE</code>, the default,
 probabilities are \(P(Y \le q)\); when <code>FALSE</code> they are
-\(P(Y &gt; q)\), formed as \(1 - F(q)\).</p></dd>
+\(P(Y &gt; q)\).</p></dd>
 
 
 <dt id="arg-log-p">log.p<a class="anchor" aria-label="anchor" href="#arg-log-p"></a></dt>

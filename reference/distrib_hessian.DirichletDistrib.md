@@ -9,11 +9,17 @@ per observation, in closed form. With \\g_j = \log y_j -
 = \phi\sum\_{j}\left(-t_j\phi A\_{jk}A\_{jl} + g_j B\_{j,kl}\right),
 \qquad \ell^{(\eta_k\phi)} = -\phi\sum\_{j} t_j \mu_j A\_{jk} +
 \sum\_{j} g_j A\_{jk},\$\$ \$\$\ell^{(\phi\phi)} = \psi'(\phi) -
-\sum\_{j} t_j \mu_j^2.\$\$ The pure-concentration entry is **free of the
-data**, the family being an exponential family in \\\log y\\ whose
+\sum\_{j} t_j \mu_j^2.\$\$ The pure-concentration entry does not depend
+on the data, the family being an exponential family in \\\log y\\ whose
 concentration multiplies a statistic linearly; it therefore equals its
 own expectation at every observation. The other two carry the data
-through \\g\\.
+through \\g\\. On the additive log-ratio chart the matrix is computed by
+the route of the higher orders,
+[`dirichlet_higher()`](https://statmodels7.github.io/distributions7/reference/dirichlet_higher.md),
+which writes \\-\log\Gamma(\alpha_j)\\ as \\\log\alpha_j -
+\log\Gamma(1 + \alpha_j)\\: written in \\\psi'(\alpha_j)\\, the two
+blocks of a coordinate whose shape is small cancel to the order of that
+shape.
 
 ## Arguments
 

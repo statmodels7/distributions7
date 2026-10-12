@@ -16,7 +16,7 @@ accumulate, at the rate the central limit theorem gives. It is zero at
 - theta:
 
   A named list with one component, `mu` (strictly between 0 and 1), a
-  numeric vector of length 1 or `n`.
+  numeric vector of length 1 or of the number of parameter settings.
 
 - ...:
 
@@ -24,7 +24,7 @@ accumulate, at the rate the central limit theorem gives. It is zero at
 
 ## Value
 
-A numeric vector, the length of `theta$mu`.
+A numeric vector, of length `max(length(theta$mu), length(x@size))`.
 
 ## See also
 

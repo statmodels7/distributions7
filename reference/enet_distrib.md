@@ -68,10 +68,10 @@ the distribution function, the quantile function, the mean, the variance
 and the skewness. The **kurtosis** is not, and comes from the base class
 by quadrature.
 
-The expected information is closed form for a reason worth naming: in
-the two rates the density is an exponential family with sufficient
-statistics \\-\|z\|\\ and \\-z^2/2\\, so the information there is the
-Hessian of \\\log Z\\, which the observed Hessian already computes. See
+The expected information is closed form because, in the two rates, the
+density is an exponential family with sufficient statistics \\-\|z\|\\
+and \\-z^2/2\\, so the information in those rates is the Hessian of
+\\\log Z\\, which the observed Hessian also uses. See
 [`distrib_expected_hessian.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.EnetDistrib.md).
 
 ## The kink
@@ -82,21 +82,26 @@ Like the Laplace, the log-likelihood is not differentiable in \\\mu\\.
 defined as the variance of the score instead. The two agree at every
 other entry.
 
-## Two numerical cautions
+## Numerical points
 
-Both were found by sweeping the parameters, and both bite at ordinary
-settings.
+Three points concern the normalizing constant, its derivatives and the
+tails.
 
 - \\\log M(x)\\ written directly adds \\x^2/2\\ to a log-probability of
-  the same size and opposite sign, losing a digit per factor of ten in
-  \\x\\. At \\\alpha = 1 - 10^{-12}\\ the argument reaches \\10^6\\ and
-  the density was wrong in the fourth digit; past \\x = 30\\ the
-  asymptotic series of the Mills ratio is used instead.
+  the same size and opposite sign, and loses a digit per factor of ten
+  in \\x\\. Beyond \\x = 30\\ the density therefore uses the asymptotic
+  series of the Mills ratio.
 
-- \\\Phi(-x)\\ is exactly zero past \\x = 38\\, and the distribution
-  function and the quantile divide by it. At \\\lambda = 20\\, \\\alpha
-  = 0.995\\ the argument is 63, so both work through `log.p` and
-  `qnorm(..., log.p = TRUE)`.
+- The derivatives of \\\log M\\, and those of \\\log Z\\ in the two
+  rates, are cumulants of the density proportional to \\e^{-xs -
+  s^2/2}\\ on \\s \> 0\\, computed from its moment ratios in a compiled
+  kernel; the form \\G = x - 1/M\\ would cancel for large \\x\\, and
+  each derivative built on it would lose more.
+
+- \\\Phi(-x)\\ underflows to zero beyond \\x \approx 38.5\\, and the
+  distribution function and the quantile divide by it. At \\\lambda =
+  20\\, \\\alpha = 0.995\\ the argument is 63, so both work on the log
+  scale, through `log.p` and `qnorm(..., log.p = TRUE)`.
 
 ## Comparison with glmnet
 
@@ -105,8 +110,8 @@ and corrects `lambda` by a single factor. That correction is exact for
 the \\\ell_1\\ part, homogeneous of degree one, and cannot be for the
 \\\ell_2\\ part, homogeneous of degree two. So a nominal \\(\lambda,
 \alpha)\\ names two different objectives in the two packages whenever
-\\\alpha \< 1\\. At \\\alpha = 1\\ the two agree to \\1.4\times10^{-4}\\
-whatever the scale of the response.
+\\\alpha \< 1\\. At \\\alpha = 1\\ the two objectives coincide and the
+fits agree up to the convergence tolerances of the two solvers.
 
 ## Parameter domains
 

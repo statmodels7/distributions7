@@ -5,7 +5,8 @@ The derivative generics of the package
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md))
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md),
+[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md))
 accept a `scale` argument selecting the parametrization the derivatives
 are taken with respect to:
 
@@ -49,20 +50,27 @@ For the **expected** Hessian the first-order term vanishes because the
 score has zero expectation, so the information transforms as the
 congruence \\\mathrm{diag}(h')\\\mathbb{E}\[H\]\\\mathrm{diag}(h')\\.
 
-The inverse-link derivatives \\h', h'', h''', h''''\\ are obtained from
-[`linkfunctions7::linkinvderiv()`](https://statmodels7.github.io/linkfunctions7/reference/linkinvderiv.html),
-so link-scale derivatives are available up to order 4 for every link in
+The inverse-link derivatives \\h', h'', \dots, h^{(5)}\\ are obtained
+from the order-specific generics
+[`linkfunctions7::dlinkinv()`](https://statmodels7.github.io/linkfunctions7/reference/dlinkinv.html)
+to
+[`linkfunctions7::d5linkinv()`](https://statmodels7.github.io/linkfunctions7/reference/d5linkinv.html),
+so link-scale derivatives are available up to order 5 for every link in
 linkfunctions7.
+[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
+composes its fifth order through
+[`deriv5_scale()`](https://statmodels7.github.io/distributions7/reference/deriv5_scale.md).
 
 ## See also
 
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 and
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md),
-the five generics that take `scale`;
+[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md),
+the six generics that take `scale`;
 [`bell_partial()`](https://statmodels7.github.io/distributions7/reference/bell_partial.md)
 for the polynomials this assembles;
 [`linkfunctions7::linkinvderiv()`](https://statmodels7.github.io/linkfunctions7/reference/linkinvderiv.html),
@@ -86,7 +94,7 @@ rbind(parameter = distrib_gradient(d, y, th)$sigma,
 #> link      -0.750 -1.0    0
 
 # At second order the term in h'' appears, so the link-scale component is
-# NOT the parameter-scale one times h' squared.
+# not the parameter-scale one times h' squared.
 g <- distrib_gradient(d, y, th)$sigma
 h <- distrib_hessian(d, y, th)$sigma_sigma
 all.equal(distrib_hessian(d, y, th, scale = "link")$sigma_sigma,

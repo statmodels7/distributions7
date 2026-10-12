@@ -62,9 +62,13 @@ the finite sum \\S_y\\. Computed afresh at each \\y\\ they cost \\y\\
 terms apiece; here they come from the Bessel recurrence \\S\_{y+1} =
 S\_{y-1} + \\(2y-1)/\alpha\\S_y\\, differentiated in \\\alpha\\ and
 written on positive quantities, so a whole pass costs a number of terms
-linear in the length of the support. The pass stops past the mean once
-the geometric bound on the remaining mass, the mass at \\y\\ times
-\\2\sigma\mu\\, is below \\10^{-17}\\ of the mass accumulated.
+linear in the length of the support. Past the mean the pass stops once
+\\f(y)\max\\r/(1-r),\\ 2\sigma\mu\\\\(y+1)/(\mu+1)\\^{4+2k}\\ is at most
+\\10^{-17}\\ of the mass accumulated, with \\f\\ the mass, \\r =
+f(y)/f(y-1)\\ and \\k = 0, 1, 2\\ the order of the derivative of the
+expected information: the first factor bounds the remaining mass, and
+the second the growth of the summands relative to their size near the
+mean.
 
 For
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)

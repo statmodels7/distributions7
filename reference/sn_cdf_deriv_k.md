@@ -41,8 +41,8 @@ natural scale, keyed as
 
 ## Details
 
-The map is the one the other location-scale families are chained
-through: \\z\\ is linear in the location and a reciprocal in the scale,
+The map is the one through which the other location-scale families are
+chained: \\z\\ is linear in the location and a reciprocal in the scale,
 so a block naming the location twice contributes an exact zero and only
 eight partials of the map are non-zero up to order four. The shape does
 not enter \\z\\ at all, which is why it can be carried as an index of

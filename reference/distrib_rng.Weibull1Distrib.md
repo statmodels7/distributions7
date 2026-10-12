@@ -3,9 +3,9 @@
 Draws `n` independent Weibull variates by calling
 [`stats::rweibull()`](https://rdrr.io/r/stats/Weibull.html), which
 inverts the distribution function at a uniform draw. The inversion is
-exact because the quantile function is elementary, so the generalized
-ratio-of-uniforms fallback the base class supplies is bypassed. The
-draws depend on `.Random.seed` in the usual way.
+exact because the quantile function is elementary, so the
+inverse-transform fallback of the base class is not used. The draws
+depend on `.Random.seed` in the usual way.
 
 ## Arguments
 

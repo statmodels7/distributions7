@@ -4,13 +4,24 @@ Computes the second derivative of the binomial log-mass with respect to
 the probability, one value per observation, in closed form:
 \$\$\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} -
 \dfrac{n-y}{(1-\mu)^2}.\$\$ It is negative for every admissible \\\mu\\
-and depends on the data through \\y\\ alone.
+and depends on the data through \\y\\ alone. Each term is formed by
+dividing its coefficient by the base once per power, and a term with a
+zero coefficient contributes zero, so at \\y = 0\\ the value is
+\\-n/(1-\mu)^2\\ however small \\\mu\\ is.
 
 On the **link** scale with the default logit the chain rule gives
-\\\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)\\, which carries **no
-data at all**: the defining property of a canonical link, and what makes
-the observed and the expected information the same matrix there. See
-[`distrib_expected_hessian.BinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BinomialDistrib.md).
+\\\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)\\, which carries no data;
+this is the defining property of a canonical link, and in exact
+arithmetic it makes the observed and the expected information the same
+matrix there (see
+[`distrib_expected_hessian.BinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BinomialDistrib.md)).
+The generic forms the link-scale value from the derivatives on the
+parameter scale, and for an observation on the far side of the
+probability (\\y = 0\\ with \\\mu\\ near 1, or \\y = n\\ with \\\mu\\
+near 0) its two terms cancel to a value much smaller than either. The
+relative error of the observed value then grows with \\\|\eta\|\\ (about
+\\10^{-3}\\ at \\\eta = 27.6\\), while the expected value is computed
+directly and stays exact.
 
 ## Arguments
 
@@ -47,7 +58,9 @@ the observed and the expected information the same matrix there. See
 ## Value
 
 A named list of one numeric vector, `mu_mu`, of length
-`max(length(y), length(mu), length(distrib@size))`.
+`max(length(y), length(mu), length(distrib@size))`. Each of `y`, `mu`
+and `size` must have length 1 or that length; any other length signals
+an error.
 
 ## See also
 

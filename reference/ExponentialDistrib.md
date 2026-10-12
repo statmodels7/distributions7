@@ -2,11 +2,11 @@
 
 The S7 class of the exponential family parametrized by its **mean**
 \\\mu \> 0\\, with density \\f(y) = \mu^{-1}e^{-y/\mu}\\ on \\\[0,
-\infty)\\. It inherits from `continuous_distrib`, so it answers every
-generic of the `distrib` contract; the eleven methods listed below are
+\infty)\\. It inherits from `continuous_distrib`, so every generic of
+the `distrib` class applies to it; the methods listed below are
 registered on it directly.
 
-This is the only single-parameter continuous family in the package, so
+The family has a single parameter, as does the chi-squared family, so
 every derivative array it returns has one component per order and its
 information is a number.
 
@@ -17,7 +17,8 @@ of the distribution, so \\\mu\\ is also its standard deviation.
 Build one with
 [`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md).
 This page documents the raw S7 constructor, which takes the parent's
-properties and validates none of the relationships between them.
+properties; the validator of `distrib` checks them, and the constructor
+adds no check of its own.
 
 ## Usage
 
@@ -101,20 +102,58 @@ they hold `"exponential"`, `"univariate"`, `c(0, Inf)`, `"mu"`,
 
 ## Methods
 
-Registered on this class:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ExponentialDistrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ExponentialDistrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ExponentialDistrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ExponentialDistrib.md),
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ExponentialDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ExponentialDistrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.ExponentialDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ExponentialDistrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ExponentialDistrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.ExponentialDistrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.ExponentialDistrib.md)
+Registered on this class, each linked to the page that documents it:
 
-Everything else is inherited from
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ExponentialDistrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ExponentialDistrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.ExponentialDistrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.ExponentialDistrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ExponentialDistrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ExponentialDistrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ExponentialDistrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ExponentialDistrib.md),
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ExponentialDistrib.md)
+  and
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.ExponentialDistrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ExponentialDistrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.ExponentialDistrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.ExponentialDistrib.md),
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/scale_only_cross2_method.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/scale_only_theta2_methods.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/scale_only_theta2_methods.md);
+
+- the derivatives of the distribution function:
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.md),
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.ExponentialDistrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.ExponentialDistrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.ExponentialDistrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.ExponentialDistrib.md).
+
+Every other generic is inherited from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also

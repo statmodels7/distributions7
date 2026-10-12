@@ -2,9 +2,13 @@
 
 Draws `n` independent angles by the rejection algorithm of Best and
 Fisher (1979), which proposes from a wrapped Cauchy envelope and accepts
-with a probability that **involves no Bessel function at all**, so the
-generator is cheap at any concentration: the normalizing constant, the
-expensive part of the density, never enters.
+with a probability that involves no Bessel function, so that the
+normalizing constant, the costly part of the density, is never
+evaluated. The constant \\b\\ of the envelope is computed as
+\\2a\kappa/\\(s+1)(a+\sqrt{2a})\\\\ with \\s = \sqrt{1+4\kappa^2}\\ and
+\\a = 1 + s\\, which keeps its digits at a small concentration; below
+\\\kappa = 10^{-300}\\ the envelope overflows, the law is uniform to
+double precision, and the draws are uniform on \\\[-\pi, \pi)\\.
 
 The accepted angles are drawn about zero and then shifted by \\\mu\\ and
 wrapped back into \\\[-\pi, \pi)\\, so every draw lies in the declared
@@ -13,8 +17,8 @@ and the loop over-proposes and repeats until `n` draws have been
 accepted. With a `kappa` that varies by observation each draw has its
 own envelope, and the loop proposes once for every draw not yet
 accepted, so that draw `i` is generated at `kappa[i]` and shifted by
-`mu[i]`. Either way the loop consumes an unpredictable number of R's
-uniform streams.
+`mu[i]`. Either way the number of uniform variates consumed depends on
+the draws.
 
 ## Arguments
 

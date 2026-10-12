@@ -17,8 +17,10 @@ than from `theta`, `size` being fixed data and not a parameter.
 - y:
 
   A numeric vector of counts of successes, integers between 0 and
-  `size`. Any other value gives 0 with a warning from
-  [`stats::dbinom()`](https://rdrr.io/r/stats/Binomial.html).
+  `size`. Any other value gives 0, and a non-integer value also gives a
+  warning from
+  [`stats::dbinom()`](https://rdrr.io/r/stats/Binomial.html). A missing
+  value gives `NA`.
 
 - theta:
 

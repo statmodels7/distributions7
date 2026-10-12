@@ -10,8 +10,8 @@ The compiled kernel does not branch on \\\xi = 0\\. It writes the
 log-survival as \\-(y/\sigma)\Lambda(u)\\ with \\u = \xi y/\sigma\\ and
 \\\Lambda(u) = \log(1+u)/u\\, which is analytic with \\\Lambda(0) = 1\\,
 so every division by the shape disappears and the exponential limit is
-an ordinary point of the formula. Measured, the density agrees with
-`dexp` to \\1.4\times10^{-17}\\ at \\\xi = 0\\ exactly.
+an ordinary point of the formula. At \\\xi = 0\\ the density agrees with
+`dexp` to rounding error.
 
 ## Arguments
 

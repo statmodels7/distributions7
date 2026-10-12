@@ -1,9 +1,9 @@
 # Variance of the Gamma Distribution
 
 Closed form: \\\operatorname{Var}(Y) = \sigma^2\\. The variance is the
-second parameter of this parametrization, so the method reads it off.
-The shape it implies is \\a = \mu^2/\sigma^2\\, and the higher moments
-are functions of it.
+second parameter of this parametrization. The shape that the two
+parameters imply is \\a = \mu^2/\sigma^2\\, and the skewness and the
+kurtosis are functions of this shape.
 
 ## Arguments
 

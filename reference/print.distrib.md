@@ -1,14 +1,14 @@
 # Print Method for `distrib` Objects
 
-Writes what a distribution object is: its name and dimension, the
-support, and one row per parameter giving the parameter's name, what it
-means, the interval it lives in and the link that carries it to the
-unconstrained scale. A wrapper prints its parent's line first, so
-`truncated(gamma2_distrib(), upper = 5)` shows both the truncation and
-the family under it.
-
-What it does **not** show is a value: a `distrib` carries a
-parametrization, not an estimate. For estimates see
+Prints the name of the distribution, its type (continuous or discrete)
+and its dimension, followed by one row per parameter giving the name of
+the parameter, its interpretation, the interval in which it lies and the
+link that maps it to the unconstrained scale. The name of a wrapper
+combines the wrapper and its parent, so
+`truncated(gamma2_distrib(), upper = 5)` prints as
+`Truncated Gamma2 [upper=5]`, followed by the parameter rows of the
+parent. No parameter value is shown, because a `distrib` carries a
+parametrization and no estimate; for estimates see
 [`print.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/print.distrib_fit.md).
 
 ## Arguments

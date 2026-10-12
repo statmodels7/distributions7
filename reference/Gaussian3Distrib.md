@@ -3,15 +3,17 @@
 The S7 class of the Gaussian (normal) family parametrized by its mean
 \\\mu\\ and its precision \\\tau = 1/\sigma^2 \> 0\\, with density
 \\f(y) = (\tau/2\pi)^{1/2}\exp\\-\tau(y-\mu)^2/2\\\\ on the whole real
-line. It inherits from `continuous_distrib`, so it answers every generic
-of the `distrib` contract; the eleven methods listed below are
-registered on it directly and everything else comes from the parent.
+line. It inherits from `continuous_distrib`, so every generic of the
+`distrib` class applies to it; the methods listed below are registered
+on it directly and everything else comes from the parent.
 
 Build one with
 [`gaussian3_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian3_distrib.md),
 which supplies the two link functions and fills the properties in. This
 page documents the raw S7 constructor, which takes the parent's
-properties and validates none of the relationships between them.
+properties; the validator of `distrib` checks that they are consistent
+(the parameter count, a bound and a link for every parameter, ordered
+support bounds).
 
 ## Usage
 
@@ -97,20 +99,59 @@ they hold `"gaussian3"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Gaussian3Distrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gaussian3Distrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Gaussian3Distrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gaussian3Distrib.md),
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Gaussian3Distrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gaussian3Distrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Gaussian3Distrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Gaussian3Distrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gaussian3Distrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Gaussian3Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Gaussian3Distrib.md)
+Registered on this class, each linked to the page that documents it:
 
-Everything else is inherited from
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gaussian3Distrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Gaussian3Distrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Gaussian3Distrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Gaussian3Distrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gaussian3Distrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Gaussian3Distrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gaussian3Distrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gaussian3Distrib.md),
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Gaussian3Distrib.md)
+  and
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Gaussian3Distrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Gaussian3Distrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Gaussian3Distrib.md),
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/mapped_theta2_methods.md),
+  [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/loc_cross3_y.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/mapped_theta2_methods.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/mapped_theta2_methods.md);
+
+- the derivatives of the distribution function:
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Gaussian3Distrib.md),
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.Gaussian3Distrib.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.Gaussian3Distrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.Gaussian3Distrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.Gaussian3Distrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.Gaussian3Distrib.md).
+
+Every other generic is inherited from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
@@ -124,7 +165,7 @@ for mean and variance;
 [`distrib_pdf.Gaussian3Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gaussian3Distrib.md)
 and
 [`distrib_gradient.Gaussian3Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gaussian3Distrib.md)
-for the closed forms this class supplies.
+for the closed forms of this class.
 
 ## Examples
 

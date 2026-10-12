@@ -42,10 +42,10 @@ The cost is two vectorized
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
 calls.
 
-EVERY family the package ships writes its own response gradient, so this
-method answers for user-defined families alone. A DISCRETE family has no
-derivative in the response, so no default is registered there and the
-call raises with the class named.
+Every continuous family that the package ships writes its own response
+gradient, so this method serves user-defined families only. A discrete
+family has no derivative in the response, so no default is registered
+there and the call signals an error that names the class.
 
 ## Notation
 

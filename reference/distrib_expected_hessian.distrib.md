@@ -5,9 +5,9 @@ information out. It rests on the second Bartlett identity,
 \\\mathbb{E}\[\ell^{(ij)}\] = -\mathbb{E}\[\ell^{(i)}\ell^{(j)}\]\\,
 which holds for a regular model and, unlike
 \\\mathbb{E}\[\ell^{(ij)}\]\\ read directly, survives a log-likelihood
-that is not differentiable in a parameter – the location of a Laplace,
+that is not differentiable in a parameter (the location of a Laplace,
 where the observed Hessian is degenerate while the score variance is
-still the information.
+still the information).
 
 ## Arguments
 
@@ -25,9 +25,9 @@ still the information.
 
 - scale:
 
-  `"parameter"` or `"link"`, the scale the components are reported on.
-  The transformation is applied in the generic's body, so this method
-  always returns the parameter scale.
+  `"parameter"` or `"link"`, the scale on which the components are
+  reported. The transformation is applied in the generic's body, so this
+  method always returns the parameter scale.
 
 - approx:
 
@@ -49,9 +49,10 @@ A named list of expected Hessian component vectors.
 
 ## Details
 
-`approx` says how the right-hand side is obtained, and the choice is a
-choice of cost. The default `"opg"` reads \\-\ell^{(i)}\ell^{(j)}\\ at
-each observation and takes no expectation, so it costs one call to
+The argument `approx` selects how the right-hand side is obtained, and
+the strategies differ in cost. The default `"opg"` reads
+\\-\ell^{(i)}\ell^{(j)}\\ at each observation and takes no expectation,
+so it costs one call to
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md);
 `"bartlett"` evaluates the expectation itself, which is a sum over the
 support for a discrete family and a quadrature for a continuous one, and

@@ -2,8 +2,8 @@
 
 The log-density is \\-a\lvert y-\mu\rvert - c(y-\mu)^2/2 - \log Z\\ with
 \\a = \lambda\alpha\\ and \\c = \lambda(1-\alpha)\\, so the composition
-is the absolute value at \\v = y - \mu\\ with \\c(\theta) =
--\lambda\alpha\\.
+is the absolute value at \\v = y - \mu\\ with coefficient
+\\-\lambda\alpha = -a\\.
 
 ## Arguments
 
@@ -23,13 +23,12 @@ The quadratic half and the normalizing constant are smooth, so the
 location is again the only non-smooth parameter, and \\m\_\mu = 0\\ for
 every \\\alpha \> 0\\.
 
-The SIZE of the kink is \\2\lambda\alpha\\ and goes to zero with
-\\\alpha\\, which is why a detector reading the second Bartlett identity
-finds this family in one sweep and not in another: at a small \\\alpha\\
-the family is nearly Gaussian and the missing curvature disappears into
-the scale of the rest of the matrix. The kink is there at every \\\alpha
-\> 0\\ all the same, and the declaration says so where a measurement of
-the curvature cannot.
+The size of the kink is \\2\lambda\alpha\\ and goes to zero with
+\\\alpha\\. A detector based on the second Bartlett identity therefore
+sees the missing curvature less clearly at small \\\alpha\\, where the
+family is nearly Gaussian. The kink exists at every \\\alpha \> 0\\, and
+the declaration records it independently of any measurement of the
+curvature.
 
 ## See also
 

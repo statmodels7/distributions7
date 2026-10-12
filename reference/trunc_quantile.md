@@ -2,11 +2,15 @@
 
 Inverts
 [`trunc_cdf()`](https://statmodels7.github.io/distributions7/reference/trunc_cdf.md)
-through the PARENT's quantile function, no root-finding of its own being
-needed: \\F_T(q) = p\\ holds exactly when \\F(q) = F(L^-) + pZ\\. The
-generalized inverse of a discrete distribution function satisfies the
-same relation, so the discrete case needs no separate treatment and the
-body is registered on both classes.
+through the parent's quantile function, with no root-finding of its own:
+\\F_T(q) = p\\ holds exactly when \\F(q) = F(L^-) + pZ\\, or, in the
+upper tail, when \\S(q) = S(U) + (1 - p)Z\\. A lower-tail probability on
+an interval with \\F(L^-) \le 1/2\\ is inverted in the parent's lower
+tail; otherwise the parent is inverted in the lower tail while
+\\F(L^-) + pZ \le 1/2\\ and in the upper tail beyond. The generalized
+inverse of a discrete distribution function satisfies the same
+relations; at \\p = 0\\ it gives the support point below \\L\\, so the
+result is kept in \\\[L, U\]\\. The body is registered on both classes.
 
 ## Usage
 

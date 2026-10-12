@@ -39,12 +39,12 @@ single number for a numeric vector. `NaN` for a family with no moments,
 \$\$\operatorname{Var}(Y) = \mathbb{E}\left\[(Y -
 \mathbb{E}\[Y\])^{2}\right\].\$\$
 
-43 of the 45 shipped families register a closed form, so the second
-central moment is a formula in the parameters and costs about 24
-microseconds; the two von Mises families fall through to
+Every univariate family except the two von Mises registers a closed
+form, so for them the second central moment is a formula in the
+parameters. The two von Mises families fall through to
 [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md),
-which is a quadrature and costs about 12 ms. The two routes agree to the
-rounding of the quadrature, 3e-15 relative on a Gaussian.
+which is a quadrature. The two routes agree to the accuracy of the
+quadrature.
 
 ## What the sample method returns
 

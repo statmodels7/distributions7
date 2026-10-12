@@ -8,10 +8,6 @@ sign at \\y = \mu - 2\\, which is the mode of the density for \\\mu \>
 constant \\-1/2\\ of an exponential with mean 2; below \\\mu = 2\\ the
 density has no interior mode and the derivative is negative throughout.
 
-Quantile residuals and the mixed derivatives of
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-read it.
-
 ## Arguments
 
 - distrib:
@@ -22,7 +18,9 @@ read it.
 - y:
 
   A numeric vector of strictly positive observations. At `y = 0` the
-  value is infinite unless \\\mu\\ is exactly 2.
+  value is `-Inf` for \\\mu \< 2\\, `Inf` for \\\mu \> 2\\ and \\-1/2\\
+  for \\\mu = 2\\, where the term in \\1/y\\ has a zero coefficient and
+  is dropped.
 
 - theta:
 

@@ -3,10 +3,9 @@
 Builds the distribution object for the Gumbel (type I extreme value)
 family in the form for **maxima**: a location-scale family on the whole
 real line with location \\\mu\\ and scale \\\sigma \> 0\\. The returned
-object carries closed-form derivatives of the log-density to fourth
-order, in the parameters and in the response, observed and expected, and
-closed-form moments, so every generic of the toolkit answers without a
-numerical fallback.
+object carries closed-form derivatives of the log-density to fifth order
+in the parameters and to fourth order in the response, closed-form
+expectations to fourth order, and closed-form moments.
 
 The two arguments choose the links that carry each parameter to the
 unconstrained scale an optimizer works on. The defaults are the identity
@@ -63,7 +62,7 @@ distribution, once centered and scaled, and that is what it is fitted
 to. It is max-stable: raising its distribution function to the \\n\\th
 power gives the same law with the location shifted by \\\sigma\log n\\.
 
-## Everything rests on w being standard exponential
+## Derivatives and expectations
 
 Write \\w = e^{-z}\\. Under the model \\w\\ is standard exponential
 whatever \\\mu\\ and \\\sigma\\ are, and the whole family is written in
@@ -72,11 +71,12 @@ w}{\sigma}, \qquad \dfrac{\partial \ell}{\partial \sigma} = \dfrac{z(1 -
 w) - 1}{\sigma},\$\$ the observed Hessian is \$\$\ell^{(\mu\mu)} =
 -\dfrac{w}{\sigma^2}, \quad \ell^{(\mu\sigma)} = -\dfrac{1 - w +
 zw}{\sigma^2}, \quad \ell^{(\sigma\sigma)} = \dfrac{1 - 2z + 2zw - z^2
-w}{\sigma^2},\$\$ and every expectation the family needs is a derivative
-of \\\Gamma\\ at 2: \\\mathbb{E}\[w\] = 1\\, \\\mathbb{E}\[w\log w\] =
-1-\gamma\\, \\\mathbb{E}\[w(\log w)^2\] = (1-\gamma)^2 + \pi^2/6 - 1\\.
-The expected Hessian follows in one line, and so do the third and fourth
-orders, through \\\mathbb{E}\[z^k w\] = (-1)^k\Gamma^{(k)}(2)\\.
+w}{\sigma^2},\$\$ and the expectations are derivatives of \\\Gamma\\ at
+2 (and, for \\\mathbb{E}\[z\] = \gamma\\, at 1): \\\mathbb{E}\[w\] =
+1\\, \\\mathbb{E}\[w\log w\] = 1-\gamma\\, \\\mathbb{E}\[w(\log w)^2\] =
+(1-\gamma)^2 + \pi^2/6 - 1\\. The expected Hessian follows in one line,
+and so do the third and fourth orders, through \\\mathbb{E}\[z^k w\] =
+(-1)^k\Gamma^{(k)}(2)\\.
 
 **The location and the scale are not orthogonal.** The mixed entry of
 the expected information is \\(1-\gamma)/\sigma^2\\, which is about

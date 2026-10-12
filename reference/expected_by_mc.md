@@ -37,17 +37,18 @@ A named list of expected derivative component vectors, each of length
 
 ## Details
 
-One simulation is run per *distinct* parameter configuration rather than
-per observation: the expectation depends on \\\theta\\ alone, so
-observations sharing a \\\theta\\ share an answer, and a model with a
-scalar \\\theta\\ costs one simulation however long `y` is.
+One simulation is run for each row of `theta` after recycling.
+Observations whose parameters coincide are not merged, so a `theta` that
+varies over the observations costs one simulation per observation, and a
+scalar `theta` costs one simulation however long `y` is.
 
 Estimates the same quantity as
 [`expected_by_integrate()`](https://statmodels7.github.io/distributions7/reference/expected_by_integrate.md),
 with an error falling as \\1/\sqrt{n\_{sim}}\\, and is stochastic unless
-the seed is fixed. Its cost is the cost of sampling, so it is the wrong
-choice for a distribution whose RNG falls back to inverse transform on a
-numerical quantile.
+the seed is fixed. Its cost is the cost of
+[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md),
+so it is expensive for a distribution whose generator inverts a slow
+quantile function.
 
 ## See also
 

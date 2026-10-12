@@ -9,12 +9,13 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{\theta}{\mu s},
 The mean entry and the mixed one are closed form, the latter vanishing
 because the observed mixed entry is \((y-\mu)/s^2\) and
 \(\mathbb{E}[Y] = \mu\). So the mean and the dispersion are orthogonal.
-\(\mathbb{E}[\psi_1(Y+\theta)]\) has no closed form. It is summed over the
-support through the mass recurrence, carried in log scale until the terms
-are representable, and stopped when the accumulated mass reaches
-\(1 - 10^{-12}\). The sum is exact to that mass, so this entry is a
-truncated exact sum and not a quadrature or a simulation; approx and
-nsim are ignored, and y is read only for its length."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model. With
+\(\mathbb{E}[\psi_1(Y+\theta)]\) has no closed form. The entry is computed
+as one sum over the support through the mass recurrence, carried in log
+scale until the terms are representable. Past the mode and after 100 terms
+the sum stops once \(p_k (1+k)^2 \le 10^{-17}\), with \(p_k\) the mass
+at \(k\). The entry is a truncated exact sum and not a quadrature or a
+simulation; approx and nsim are ignored, and y is read only for its
+length."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model. With
 \(s = \theta + \mu\) and \(\psi_1\) the trigamma function,
 $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{\theta}{\mu s},
       \qquad
@@ -24,12 +25,13 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{\theta}{\mu s},
 The mean entry and the mixed one are closed form, the latter vanishing
 because the observed mixed entry is \((y-\mu)/s^2\) and
 \(\mathbb{E}[Y] = \mu\). So the mean and the dispersion are orthogonal.
-\(\mathbb{E}[\psi_1(Y+\theta)]\) has no closed form. It is summed over the
-support through the mass recurrence, carried in log scale until the terms
-are representable, and stopped when the accumulated mass reaches
-\(1 - 10^{-12}\). The sum is exact to that mass, so this entry is a
-truncated exact sum and not a quadrature or a simulation; approx and
-nsim are ignored, and y is read only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(\mathbb{E}[\psi_1(Y+\theta)]\) has no closed form. The entry is computed
+as one sum over the support through the mass recurrence, carried in log
+scale until the terms are representable. Past the mode and after 100 terms
+the sum stops once \(p_k (1+k)^2 \le 10^{-17}\), with \(p_k\) the mass
+at \(k\). The entry is a truncated exact sum and not a quadrature or a
+simulation; approx and nsim are ignored, and y is read only for its
+length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -37,7 +39,7 @@ nsim are ignored, and y is read only for its length."><meta property="og:image" 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,12 +82,13 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{\theta}{\mu s},
 The mean entry and the mixed one are closed form, the latter vanishing
 because the observed mixed entry is \((y-\mu)/s^2\) and
 \(\mathbb{E}[Y] = \mu\). So the mean and the dispersion are orthogonal.</p>
-<p>\(\mathbb{E}[\psi_1(Y+\theta)]\) has no closed form. It is summed over the
-support through the mass recurrence, carried in log scale until the terms
-are representable, and stopped when the accumulated mass reaches
-\(1 - 10^{-12}\). The sum is exact to that mass, so this entry is a
-truncated exact sum and not a quadrature or a simulation; <code>approx</code> and
-<code>nsim</code> are ignored, and <code>y</code> is read only for its length.</p>
+<p>\(\mathbb{E}[\psi_1(Y+\theta)]\) has no closed form. The entry is computed
+as one sum over the support through the mass recurrence, carried in log
+scale until the terms are representable. Past the mode and after 100 terms
+the sum stops once \(p_k (1+k)^2 \le 10^{-17}\), with \(p_k\) the mass
+at \(k\). The entry is a truncated exact sum and not a quadrature or a
+simulation; <code>approx</code> and <code>nsim</code> are ignored, and <code>y</code> is read only for its
+length.</p>
     </div>
 
 
@@ -128,8 +131,8 @@ matches the generic's.</p></dd>
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -140,17 +143,12 @@ whatever the count says. Defaults to <code>1L</code>.</p></dd>
 when the parameters are.</p>
     </div>
     <div class="section level2">
-    <h2 id="a-caveat-at-large-theta">A caveat at large theta<a class="anchor" aria-label="anchor" href="#a-caveat-at-large-theta"></a></h2>
-    <p>The dispersion entry is a difference of two quantities that agree to
-leading order as \(\theta\) grows, and <strong>it is not rewritten to remove
-that cancellation</strong>, unlike the score and the observed Hessian. Its leading
-order needs one term more of the observed Hessian than those two do, the
-\(\theta^{-3}\) term vanishing under expectation, so it is a derivation of
-its own. Measured at \(\mu = 4\): it reads \(-7.3\times 10^{-8}\) at
-\(\theta = 10^2\), \(-3.6\times 10^{-16}\) at \(10^4\) and
-\(+1.7\times 10^{-16}\) at \(10^6\). The last is <strong>positive</strong>, which an
-expected second derivative cannot be, so a Fisher scoring step taken there
-is not reliable. The example below shows the sign turning.</p>
+    <h2 id="the-dispersion-entry-at-large-theta">The dispersion entry at large theta<a class="anchor" aria-label="anchor" href="#the-dispersion-entry-at-large-theta"></a></h2>
+    <p>The trigamma difference and the term \(\mu/(\theta s)\) agree to leading
+order as \(\theta\) grows. They are merged before the summation, so that
+the summand is a quotient of exact polynomials and the entry keeps its
+accuracy; it stays negative and tends to \(-\mu^2/(2\theta^4)\), as the
+example below shows.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -202,8 +200,8 @@ and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a>
 <span class="r-out co"><span class="r-pr">#&gt;</span> observed -0.08474479 -0.04931509 0.001129167</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expected -0.08333333 -0.04924470 0.000000000</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The dispersion entry cancels at large theta and turns positive, which an</span></span></span>
-<span class="r-in"><span><span class="co"># expected second derivative cannot be.</span></span></span>
+<span class="r-in"><span><span class="co"># The dispersion entry stays negative and tends to -mu^2/(2 theta^4) as theta</span></span></span>
+<span class="r-in"><span><span class="co"># grows.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1e2</span>, <span class="fl">1e4</span>, <span class="fl">1e6</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>       <span class="kw">function</span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">4</span>, theta <span class="op">=</span> <span class="va">t</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">theta_theta</span>,</span></span>

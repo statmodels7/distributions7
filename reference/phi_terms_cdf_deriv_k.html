@@ -15,7 +15,7 @@ elastic net, and both reach all four orders through this one function."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,18 +97,17 @@ the natural scale, keyed as
 weight and the tail. The weight side is
 \(\partial^{S} e^{w} = e^{w} B_{S}(w)\), the complete Bell polynomial in
 the partials of the <strong>log</strong> weight; the tail side is one Faa di Bruno pass
-over \(x\), whose inner derivatives are the Hermite factors of
-<code><a href="phi_hermite.html">phi_hermite()</a></code> times \(\varphi(x)\). Nothing is transcribed: both sums
-run on the package's own partition enumeration.</p>
+over \(x\), whose outer derivatives (those of \(\Phi\)) are the Hermite
+factors of <code><a href="phi_hermite.html">phi_hermite()</a></code> times \(\varphi(x)\). Both sums run on the
+partition enumeration of the package, not on a transcribed expansion.</p>
     </div>
     <div class="section level2">
-    <h2 id="why-the-log-weight">Why the log weight<a class="anchor" aria-label="anchor" href="#why-the-log-weight"></a></h2>
+    <h2 id="the-log-weight">The log weight<a class="anchor" aria-label="anchor" href="#the-log-weight"></a></h2>
     <p>The weight is never formed on its own. It is combined with the tail as
 <code>exp(w + pnorm(x, log.p = TRUE))</code>, because for the inverse Gaussian
-\(e^{2/(\phi\mu)}\) overflows exactly where \(\Phi(b)\) underflows: at
+\(e^{2/(\phi\mu)}\) overflows where \(\Phi(b)\) underflows: at
 \(\mu = 0.01\), \(\phi = 0.1\) the weight is <code>Inf</code> while the product is
-about \(3\times10^{-106}\), and the fourth derivative there comes back at
-\(3\times10^{-91}\).</p>
+finite.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

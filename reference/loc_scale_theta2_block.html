@@ -17,7 +17,7 @@ distrib_hess_y_hess(), and it derives nothing new."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,14 +108,14 @@ $$\frac{\partial^2\ell^{(yy)}}{\partial\mu^2} = \frac{B''}{\sigma^4},
     = \frac{z^2B'' + 6zB' + 6B}{\sigma^4}.$$</p>
     </div>
     <div class="section level2">
-    <h2 id="why-nothing-new-is-differentiated">Why nothing new is differentiated<a class="anchor" aria-label="anchor" href="#why-nothing-new-is-differentiated"></a></h2>
+    <h2 id="reuse-of-the-response-derivatives">Reuse of the response derivatives<a class="anchor" aria-label="anchor" href="#reuse-of-the-response-derivatives"></a></h2>
     <p>\(A\), \(A'\), \(A''\) and \(B\), \(B'\), \(B''\) are the
 family's OWN response derivatives times a power of \(\sigma\):
 \(A = \sigma\ell^{(y)}\), \(A' = B = \sigma^2\ell^{(yy)}\),
 \(A'' = B' = \sigma^3\ell^{(yyy)}\) and \(B'' = \sigma^4\ell^{(yyyy)}\).
-A family that already carries <code><a href="distrib_deriv3_y.html">distrib_deriv3_y()</a></code> and <code><a href="distrib_deriv3_y.html">distrib_deriv4_y()</a></code>
-therefore gets both orders in the parameters for free, which is the bargain
-<code><a href="loc_scale_cross_block.html">loc_scale_cross_block()</a></code> already takes at first order.</p>
+A family that supplies <code><a href="distrib_deriv3_y.html">distrib_deriv3_y()</a></code> and <code><a href="distrib_deriv3_y.html">distrib_deriv4_y()</a></code>
+therefore obtains both orders in the parameters in closed form, by the same
+argument that <code><a href="loc_scale_cross_block.html">loc_scale_cross_block()</a></code> applies at first order.</p>
 <p>A shape parameter beyond the two is NOT covered and falls back; see
 <code><a href="partial_theta2.html">partial_theta2()</a></code>, which splices these three components into the
 differenced ones.</p>

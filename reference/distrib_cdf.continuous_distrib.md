@@ -1,10 +1,7 @@
 # Default Numerical CDF for Continuous Distributions
 
 The fallback for a continuous family that implements no analytical
-distribution function: it integrates `distrib_pdf` numerically. Measured
-on a Gamma defined by its density alone, it agrees with
-[`stats::pgamma()`](https://rdrr.io/r/stats/GammaDist.html) to between
-\\1.2\times10^{-16}\\ and \\2.6\times10^{-15}\\ relative.
+distribution function: it integrates `distrib_pdf` numerically.
 
 ## Arguments
 
@@ -41,8 +38,9 @@ on a Gamma defined by its density alone, it agrees with
 ## Value
 
 A numeric vector of cumulative probabilities, the length of the recycled
-`q` and `theta`. `NA` for a row whose quadrature did not reach its
-accuracy target.
+`q` and `theta`, with `NA` where `q` is `NA`. A quantile whose
+quadrature does not reach its accuracy target signals an error that
+names it.
 
 ## Where the nodes go
 
@@ -50,11 +48,11 @@ An approximate mode is located first by
 [`find_pdf_anchor()`](https://statmodels7.github.io/distributions7/reference/find_pdf_anchor.md),
 and the integral is taken over whichever side of the mode holds \\q\\,
 the other side being reached through the complement. The quadrature
-nodes then concentrate where the probability mass is, and that placement
-is what buys the accuracy above at a density whose shape the integrator
-knows nothing about.
+nodes then concentrate where the probability mass is, which gives the
+integral its accuracy without any information about the shape of the
+density.
 
-## One call, not one per quantile
+## Batched quadrature
 
 Every quantile is integrated in a single batched
 [`numericals7::quad_vec()`](https://statmodels7.github.io/numericals7/reference/quad_vec.html)

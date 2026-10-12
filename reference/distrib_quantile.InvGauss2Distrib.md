@@ -20,8 +20,11 @@ returns `p`.
 - p:
 
   A numeric vector of probabilities in \\\[0, 1\]\\, or of their
-  logarithms when `log.p = TRUE`. A value outside the range gives `NaN`
-  with a warning; `p = 0` gives 0 and `p = 1` gives `Inf`.
+  logarithms when `log.p = TRUE`. A probability outside \\\[0, 1\]\\
+  gives `NA` without a warning; `p = 0` gives 0 and `p = 1` gives `Inf`.
+  With `log.p = TRUE` a positive value is passed to
+  [`statmod::qinvgauss()`](https://rdrr.io/pkg/statmod/man/invgauss.html),
+  which signals an error when `p` has more than one element.
 
 - theta:
 
@@ -67,7 +70,7 @@ th <- list(mu = 2, lambda = 3)
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #> [1] 0.4023134 1.5122507 6.4366188
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# Exact inverse: the round trip returns the probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #> [1] TRUE

@@ -4,14 +4,16 @@ $$\gamma_2 = \frac{1}{\sigma_z^{4}}
       \left\{\frac{3\nu^2}{(\nu-2)(\nu-4)}
              - \frac{4\mu_z^2\nu(3-\delta^2)}{\nu-3}
              + \frac{6\mu_z^2\nu}{\nu-2} - 3\mu_z^4\right\} - 3,$$
-and NaN at \(\nu \le 4\). The threshold is the highest of the four
-moments, the fourth being the one that fails first as the tails grow heavy."><meta property="og:description" content="Closed form for \(\nu &amp;gt; 4\), from Azzalini and Capitanio (2003):
+Inf at \(2 &amp;lt; \nu \le 4\), where the fourth moment diverges, as for the
+Student t, and NaN at \(\nu \le 2\). As \(\nu\) decreases the fourth
+moment is the first of the four to cease to exist."><meta property="og:description" content="Closed form for \(\nu &amp;gt; 4\), from Azzalini and Capitanio (2003):
 $$\gamma_2 = \frac{1}{\sigma_z^{4}}
       \left\{\frac{3\nu^2}{(\nu-2)(\nu-4)}
              - \frac{4\mu_z^2\nu(3-\delta^2)}{\nu-3}
              + \frac{6\mu_z^2\nu}{\nu-2} - 3\mu_z^4\right\} - 3,$$
-and NaN at \(\nu \le 4\). The threshold is the highest of the four
-moments, the fourth being the one that fails first as the tails grow heavy."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+Inf at \(2 &amp;lt; \nu \le 4\), where the fourth moment diverges, as for the
+Student t, and NaN at \(\nu \le 2\). As \(\nu\) decreases the fourth
+moment is the first of the four to cease to exist."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +21,7 @@ moments, the fourth being the one that fails first as the tails grow heavy."><me
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,8 +59,9 @@ $$\gamma_2 = \frac{1}{\sigma_z^{4}}
       \left\{\frac{3\nu^2}{(\nu-2)(\nu-4)}
              - \frac{4\mu_z^2\nu(3-\delta^2)}{\nu-3}
              + \frac{6\mu_z^2\nu}{\nu-2} - 3\mu_z^4\right\} - 3,$$
-and <code>NaN</code> at \(\nu \le 4\). The threshold is the highest of the four
-moments, the fourth being the one that fails first as the tails grow heavy.</p>
+<code>Inf</code> at \(2 &lt; \nu \le 4\), where the fourth moment diverges, as for the
+Student t, and <code>NaN</code> at \(\nu \le 2\). As \(\nu\) decreases the fourth
+moment is the first of the four to cease to exist.</p>
     </div>
 
 
@@ -73,8 +76,8 @@ moments, the fourth being the one that fails first as the tails grow heavy.</p>
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>mu</code>, <code>sigma</code> (positive), <code>alpha</code>
 (any sign) and <code>nu</code> (positive), each a numeric vector of length 1 or <code>n</code>.
-Only <code>alpha</code> and <code>nu</code> enter the value; settings with \(\nu \le 4\) give
-<code>NaN</code>.</p></dd>
+Only <code>alpha</code> and <code>nu</code> enter the value; settings with \(2 &lt; \nu \le 4\)
+give <code>Inf</code> and those with \(\nu \le 2\) give <code>NaN</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -84,8 +87,8 @@ Only <code>alpha</code> and <code>nu</code> enter the value; settings with \(\nu
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A numeric vector of excess kurtoses, of the length the recycled
-parameters imply, <code>NaN</code> wherever \(\nu \le 4\). Only <code>alpha</code> and <code>nu</code>
-enter the value.</p>
+parameters imply, <code>Inf</code> wherever \(2 &lt; \nu \le 4\) and <code>NaN</code> wherever
+\(\nu \le 2\). Only <code>alpha</code> and <code>nu</code> enter the value.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -115,7 +118,7 @@ distribution. <em>Journal of the Royal Statistical Society Series B</em> <strong
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># At shape zero this is the Student t's 6 / (nu - 4).</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="kurtosis.html">kurtosis</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0</span>, nu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NaN   6   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] Inf   6   1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># As nu grows it approaches the skew normal's value at the same shape.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>skewt <span class="op">=</span> <span class="fu"><a href="kurtosis.html">kurtosis</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">3</span>, nu <span class="op">=</span> <span class="fl">1e6</span><span class="op">)</span><span class="op">)</span>,</span></span>

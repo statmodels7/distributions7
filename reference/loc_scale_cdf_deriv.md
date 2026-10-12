@@ -54,10 +54,12 @@ f,\$\$ \$\$\frac{\partial^2 F}{\partial \mu^2} = f\\\ell_y, \qquad
 \frac{1}{\sigma}\right), \qquad \frac{\partial^2 F}{\partial \sigma^2} =
 f\left(z^2 \ell_y + \frac{2z}{\sigma}\right).\$\$
 
-This covers the censored-regression workhorses: the Gaussian, the
-logistic, the Cauchy and the Laplace all register these bodies
-unchanged, and the Student t and the pseudo-Huber use them for their
-first two components and difference the shape.
+The Gaussian, the logistic, the Laplace and the Gumbel register these
+bodies unchanged, and they are the families most used in censored
+regression. The Student t, pseudo-Huber and skew t families compute
+their location and scale components by the same formulas inside the
+compiled quadrature of
+[`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md).
 
 ## Notation
 
@@ -70,7 +72,5 @@ f/\partial y\\ its response derivative.
 [`loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_grad_cdf.md)
 and
 [`loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_hess_cdf.md),
-the two bodies families register;
-[`partial_loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_cdf.md),
-the variant for a family with a shape parameter as well;
+the two bodies that families register;
 [`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md).

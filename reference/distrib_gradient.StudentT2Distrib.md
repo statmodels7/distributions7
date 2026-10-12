@@ -45,7 +45,13 @@ information, each from its own compiled kernel.
 
 A named list with one numeric vector per component: 3, 6, 10, 15 and 21
 components at orders one to five, the second order keyed `mu_mu`,
-`sigma_sigma`, `nu_nu`, `mu_sigma`, `mu_nu`, `sigma_nu`.
+`sigma_sigma`, `nu_nu`, `mu_sigma`, `mu_nu`, `sigma_nu`. The expected
+information has the same six components, the expected third and fourth
+derivatives 10 and 15,
+[`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
+18 and
+[`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
+36.
 
 ## Details
 

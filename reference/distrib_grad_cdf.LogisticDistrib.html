@@ -3,13 +3,17 @@
 \(\partial F/\partial\mu = -f(q)\) and
 \(\partial F/\partial\sigma = -z f(q)\) with \(z = (q-\mu)/\sigma\). The
 method is loc_scale_grad_cdf() itself. For this family the density is
-\(F(1-F)/\sigma\), so the log-scale gradient is elementary in \(F\)
-alone and no special evaluation is needed anywhere on the line."><meta property="og:description" content="Closed form, from the location-scale structure:
+\(F(1-F)/\sigma\), so the log-scale gradient in the mean is
+\(-(1-F)/\sigma\). The method divides \(f\) by \(F\), so it returns
+NaN or Inf in a tail where \(F\) has underflowed to zero or rounded to
+one."><meta property="og:description" content="Closed form, from the location-scale structure:
 \(\partial F/\partial\mu = -f(q)\) and
 \(\partial F/\partial\sigma = -z f(q)\) with \(z = (q-\mu)/\sigma\). The
 method is loc_scale_grad_cdf() itself. For this family the density is
-\(F(1-F)/\sigma\), so the log-scale gradient is elementary in \(F\)
-alone and no special evaluation is needed anywhere on the line."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(F(1-F)/\sigma\), so the log-scale gradient in the mean is
+\(-(1-F)/\sigma\). The method divides \(f\) by \(F\), so it returns
+NaN or Inf in a tail where \(F\) has underflowed to zero or rounded to
+one."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +21,7 @@ alone and no special evaluation is needed anywhere on the line."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +58,10 @@ alone and no special evaluation is needed anywhere on the line."><meta property=
 \(\partial F/\partial\mu = -f(q)\) and
 \(\partial F/\partial\sigma = -z f(q)\) with \(z = (q-\mu)/\sigma\). The
 method is <code><a href="loc_scale_grad_cdf.html">loc_scale_grad_cdf()</a></code> itself. For this family the density is
-\(F(1-F)/\sigma\), so the log-scale gradient is elementary in \(F\)
-alone and no special evaluation is needed anywhere on the line.</p>
+\(F(1-F)/\sigma\), so the log-scale gradient in the mean is
+\(-(1-F)/\sigma\). The method divides \(f\) by \(F\), so it returns
+<code>NaN</code> or <code>Inf</code> in a tail where \(F\) has underflowed to zero or rounded to
+one.</p>
     </div>
 
 

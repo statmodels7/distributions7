@@ -2,17 +2,11 @@
 
 Computes the derivative of the log-density in the response,
 \$\$\frac{\partial \ell}{\partial y} = -\Sigma^{-1}(y - \mu),\$\$ one
-row per observation. This is the whitened residual with a minus sign, so
-it is exactly the negative of the score in the mean: for a location
-family the two derivatives differ only in sign, and the method returns
-the same numbers
-[`distrib_gradient.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvGaussianDistrib.md)
-gives for the mean components.
-
-The shape is what separates this from the univariate case. There the
-derivative in a scalar response is a numeric vector of length \\n\\;
-here it is an \\n \times p\\ matrix, and a consumer written for a vector
-will recycle it silently.
+row per observation. This is \\-w\\, with \\w = \Sigma^{-1}(y - \mu)\\,
+the negative of the score in the mean: for a location family the two
+derivatives differ only in sign. For a univariate family the derivative
+in the response is a numeric vector of length \\n\\; here it is an \\n
+\times p\\ matrix.
 
 ## Arguments
 
@@ -70,7 +64,7 @@ distrib_grad_y(d, y, theta)
 num <- t(apply(y, 1, function(r)
   numDeriv::grad(function(z) distrib_pdf(d, z, theta, log = TRUE), r)))
 max(abs(distrib_grad_y(d, y, theta) - num))
-#> [1] 5.809908e-11
+#> [1] 4.958045e-11
 
 # And it is minus the score in the mean, this being a location family.
 g <- distrib_gradient(d, y, theta)

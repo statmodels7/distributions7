@@ -1,15 +1,20 @@
 # Multivariate Gaussian Observed Hessian
 
 Computes the second derivatives of the log-density in closed form. With
-\\w = \Sigma^{-1}(y-\mu)\\ and \\A_k\\, \\A\_{kl}\\ the first and second
-derivatives of \\\Sigma\\ in the free values, \$\$\ell^{(\mu_a \mu_b)} =
--(\Sigma^{-1})\_{ab}, \qquad \ell^{(\mu_a \eta_k)} = -(\Sigma^{-1} A_k
-w)\_a,\$\$ \$\$\ell^{(\eta_k \eta_l)} = -\tfrac{1}{2}\frac{\partial^2
-\log\lvert\Sigma\rvert}{\partial\eta_k \partial\eta_l} + \tfrac{1}{2}\\
-w^\top A\_{kl} w - w^\top A_l \Sigma^{-1} A_k w.\$\$ The mean block does
-not depend on the response, so it is constant across rows; the mixed and
-matrix blocks do. The product \\\Sigma^{-1}A_k\\ is formed once and
-reused between the mixed block and the matrix block.
+\\r = y - \mu\\ and \\P_k\\, \\P\_{kl}\\ the first and second
+derivatives of \\\Sigma^{-1}\\ in the free values, \$\$\ell^{(\mu_a
+\mu_b)} = -(\Sigma^{-1})\_{ab}, \qquad \ell^{(\mu_a \eta_k)} = (P_k
+r)\_a,\$\$ \$\$\ell^{(\eta_k \eta_l)} = -\tfrac{1}{2}\frac{\partial^2
+\log\lvert\Sigma\rvert}{\partial\eta_k \partial\eta_l} - \tfrac{1}{2}\\
+r^\top P\_{kl} r.\$\$ The mean block does not depend on the response, so
+it is constant across rows; the mixed and matrix blocks do. \\P_k\\ and
+\\P\_{kl}\\ are read from
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md),
+exact for
+[`parameters7::log_cholesky()`](https://statmodels7.github.io/parameters7/reference/log_cholesky.html)
+where the covariance is nearly singular; written as products of
+\\\Sigma^{-1}\\ and the derivatives of \\\Sigma\\, the matrix block
+cancels there for an observation away from the degenerate direction.
 
 ## Arguments
 
@@ -31,9 +36,9 @@ reused between the mixed block and the matrix block.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. Every link of this family is the identity, so the two
-  scales coincide.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  Every link of this family is the identity, so the two scales coincide.
 
 - ...:
 
@@ -49,9 +54,9 @@ the diagonal first, then the off-diagonal pairs.
 ## Notation
 
 \\\mu\\ is the mean, \\\Sigma\\ the covariance, \\\eta\\ the free vector
-of the matrix parametrization, \\A_k\\ and \\A\_{kl}\\ its first and
-second derivative arrays, and \\\ell^{(ij)}\\ the second derivative of
-the log-density in parameters \\i\\ and \\j\\.
+of the matrix parametrization, \\P_k\\ and \\P\_{kl}\\ the first and
+second derivatives of \\\Sigma^{-1}\\, and \\\ell^{(ij)}\\ the second
+derivative of the log-density in parameters \\i\\ and \\j\\.
 
 ## See also
 
@@ -99,5 +104,5 @@ ref <- vapply(distributions7:::hess_pairs(d@params),
               function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
               numeric(1))
 max(abs(vapply(H, sum, numeric(1)) - ref))
-#> [1] 1.013385e-08
+#> [1] 1.06644e-08
 ```

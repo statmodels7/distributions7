@@ -1,10 +1,9 @@
 # Skew t Distribution Object
 
 Builds a skew \\t\\ distribution object with location \\\mu\\, scale
-\\\sigma\\, shape \\\alpha\\ and degrees of freedom \\\nu\\. It is the
-four-parameter family a location-scale-shape framework wants: the scale,
-the asymmetry and the tail weight are three separate parameters, each of
-which can carry its own linear predictor.
+\\\sigma\\, shape \\\alpha\\ and degrees of freedom \\\nu\\. The scale,
+the asymmetry and the tail weight are three separate parameters, and
+each of them can carry its own linear predictor.
 
 Three families sit inside it. \\\alpha = 0\\ is
 [`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md),
@@ -57,22 +56,24 @@ inheriting from `continuous_distrib`. Its `params` are
 `c("mu", "sigma", "alpha", "nu")`, its `bounds` `c(-Inf, Inf)`, and its
 `link_params` the four links given here.
 
-## Why the fourth parameter
+## Range of the skewness and the kurtosis
 
 The skew normal of
 [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
 reaches a skewness of at most 0.99527 and an excess kurtosis of at most
 0.86918, both approached only as \\\|\alpha\| \to \infty\\. Adding
-\\\nu\\ removes both ceilings: measured at \\\alpha = 50\\, the skewness
-is 1.190 at \\\nu = 30\\, 2.050 at \\\nu = 6\\ and 3.998 at \\\nu = 4\\.
+\\\nu\\ removes both ceilings: at \\\alpha = 50\\ the skewness is 1.12
+at \\\nu = 30\\, 2.05 at \\\nu = 6\\ and 4.00 at \\\nu = 4\\, and it
+grows without bound as \\\nu\\ decreases to 3.
 
 ## How the derivatives are computed
 
 The density contains \\T\_{\nu+1}\\, and the derivatives of a Student
 \\t\\ distribution function in its degrees of freedom have no elementary
 expression. They are integrals of the derivatives of the \\t\\ density
-and are taken by quadrature, so that every derivative this family
-reports, to order five, is exact to rounding; see
+and are taken by quadrature. The derivatives to order five are closed
+form in \\\mu\\, \\\sigma\\ and \\\alpha\\, and those in \\\nu\\ come
+from that quadrature; see
 [`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md).
 
 ## Fitting
@@ -82,8 +83,11 @@ quadrature over \\z\\ per distinct \\(\alpha, \nu)\\, so Fisher scoring
 on an intercept-only fit pays for one integral per iteration.
 
 The distribution function and the quantile function likewise have no
-elementary form; the base class integrates the density and inverts the
-result by root finding.
+elementary form. The distribution function integrates the density by the
+compiled rule of
+[`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md),
+and the quantile function inverts it by root finding in
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## Moments
 
@@ -97,19 +101,17 @@ parameters are kept apart.
 
 The skew normal's expected information loses a rank at \\\alpha = 0\\,
 because its shape score is a fixed multiple of its location score there.
-**The skew \\t\\ does not inherit that at finite \\\nu.\\** The tilting
-argument carries \\c = \sqrt{(\nu+1)/(\nu+z^2)}\\, which depends on the
-observation, so the two scores are not proportional: measured at
-\\\alpha = 0\\, \\\nu = 6\\, their ratio spreads over 0.76 across
-observations, where the skew normal's is constant to the last digit. The
-spread falls as \\O(1/\nu)\\, so the singularity is inherited only in
-the limit: 0.068 at \\\nu = 100\\, \\7\times10^{-4}\\ at \\10^4\\.
+For the skew \\t\\ at a finite \\\nu\\ the ratio of the score in
+\\\alpha\\ to the score in \\\mu\\ at \\\alpha = 0\\ is proportional to
+\\\sqrt{(\nu+z^2)/(\nu+1)}\\, which depends on the observation through
+\\z\\, whereas the skew normal's ratio is a constant. The relative
+variation of the ratio over \\z\\ is of order \\z^2/\nu\\, so the
+information becomes singular only as \\\nu \to \infty\\.
 
-What is weakly identified here is \\\nu\\ itself. The smallest
-eigenvalue of the information belongs to that direction and falls with
-\\\nu\\: measured at \\\alpha = 0\\, it is \\3.6\times10^{-3}\\ at \\\nu
-= 4\\, \\8.4\times10^{-4}\\ at 6 and \\1.7\times10^{-6}\\ at 30. A
-nearly Gaussian tail carries little information about how heavy it is.
+The parameter that is weakly identified is \\\nu\\. At \\\alpha = 0\\
+the smallest eigenvalue of the expected information corresponds to the
+direction of \\\nu\\ and decreases as \\\nu\\ grows, because a tail
+close to the Gaussian one carries little information about its weight.
 
 ## Parameter domains
 
@@ -171,9 +173,9 @@ t(vapply(c(1.5, 2.5, 3.5, 4.5), function(v) {
     skew = skewness(d, p), kurt = kurtosis(d, p))
 }, numeric(5)))
 #>       nu      mean      var     skew     kurt
-#> [1,] 1.5 1.9394975      NaN      NaN      NaN
-#> [2,] 2.5 1.1441396 3.690944      NaN      NaN
-#> [3,] 3.5 0.9875438 1.358091 6.021607      NaN
+#> [1,] 1.5 1.9394975      Inf      NaN      NaN
+#> [2,] 2.5 1.1441396 3.690944      NaN      Inf
+#> [3,] 3.5 0.9875438 1.358091 6.021607      Inf
 #> [4,] 4.5 0.9210146 0.951732 2.575662 34.78593
 
 # Fitting by Fisher scoring, the default, and by Newton on the observed

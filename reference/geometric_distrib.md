@@ -55,9 +55,9 @@ parameter value.
 
 The variance exceeds the mean by \\\mu^2\\, so this family sits above a
 Poisson of the same mean and is a one-parameter answer to
-overdispersion. The price is precision: the information is
-\\1/(\mu(1+\mu))\\ against a Poisson's \\1/\mu\\. Where the amount of
-overdispersion should itself be estimated,
+overdispersion. The information about the mean is \\1/(\mu(1+\mu))\\,
+against a Poisson's \\1/\mu\\, so the mean is estimated less precisely.
+Where the amount of overdispersion should itself be estimated,
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
 adds the parameter and contains this family at \\\theta = 1\\.
 

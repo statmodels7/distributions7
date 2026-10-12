@@ -10,11 +10,15 @@ is smallest at \\\mu = 1/2\\ and grows without bound as the probability
 approaches either endpoint.
 
 On the **link** scale with the default logit the value is
-\\-\mu(1-\mu)\\, and so is the observed Hessian: the logit is the
-canonical link, the observed curvature there carries no data, and the
-two coincide exactly. Fisher scoring and Newton's method therefore take
-the same step on a logistic regression, so iteratively reweighted least
-squares is both at once.
+\\-\mu(1-\mu)\\, and so is the observed Hessian in exact arithmetic: the
+logit is the canonical link and the observed curvature there carries no
+data. Fisher scoring and Newton's method therefore take the same step on
+a logistic regression, so iteratively reweighted least squares is both
+at once. In floating point the observed value is composed by the generic
+from the derivatives on the parameter scale and loses relative accuracy
+where \\\|\eta\|\\ is large (see
+[`distrib_hessian.BernoulliDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BernoulliDistrib.md));
+this value does not.
 
 Because the value does not depend on the data, `approx` and `nsim` are
 ignored. `y` is read only for its length.
@@ -99,7 +103,7 @@ vapply(c(0.5, 0.1, 0.01), function(p)
 #> [1]   4.00000  11.11111 101.01010
 
 # On the canonical logit link the observed and the expected values agree
-# exactly, at every observation.
+# at every observation.
 rbind(observed = distrib_hessian(d, c(0, 1, 1), th, scale = "link")$mu_mu,
       expected = distrib_expected_hessian(d, c(0, 1, 1), th,
                                           scale = "link")$mu_mu)

@@ -54,9 +54,9 @@ fit_hess_matrix(
 - approx:
 
   How the expectation is approximated for a family with no closed form
-  for it: `"bartlett"` (the default), `"integrate"` or `"mc"`. Read only
-  when `expected` is `TRUE` and the family has no exact expression;
-  ignored otherwise.
+  for it: `"opg"` (the default), `"bartlett"`, `"integrate"` or `"mc"`.
+  Read only when `expected` is `TRUE` and the family has no exact
+  expression; ignored otherwise.
 
 - nsim:
 

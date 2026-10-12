@@ -1,10 +1,15 @@
-# A Parameter Step That Chooses Itself
+# Selecting the Finite-Difference Step in One Parameter
 
 Evaluates a difference quotient in one parameter at both steps of
 [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
 and returns the one that agrees better with itself at half its own step,
-together with the quotient there. Every numerical derivative in the
-parameter direction takes its step from it.
+together with the quotient there. The numerical gradient and Hessian,
+the third and fourth orders that difference a Hessian, and the mixed
+response derivatives take their step from it;
+[`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md)
+and
+[`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md)
+use rules of their own.
 
 ## Usage
 
@@ -67,38 +72,28 @@ taken.
 For each of the two steps the quotient \\q(h)\\ is also taken at
 \\h/2\\, and the step kept is the one whose
 [`fd_self_consistency()`](https://statmodels7.github.io/distributions7/reference/fd_self_consistency.md)
-reading is strictly the smaller. Ties, and readings that are not usable,
-keep the clamped step, so the answer is the clamped one unless the
-scaled step is measurably better.
+reading is strictly the smaller. Ties and missing readings keep the
+clamped step, and an infinite reading on the clamped side gives way to a
+finite one on the scaled side, so the answer is the clamped step unless
+the scaled step is measurably better.
 
 The choice is made once for the whole vector rather than observation by
 observation, which is the opposite of what
 [`fd_stable_quotient()`](https://statmodels7.github.io/distributions7/reference/fd_stable_quotient.md)
-does in the response direction, and the difference is not an oversight.
-There each observation carries its own \\y\\ and therefore its own step,
-so a per-observation choice is a choice between two quantities that
-genuinely differ; here the parameter is usually one number for the whole
-sample, the two candidate quotients estimate the same thing, and the
-variation of the self-consistency reading across observations is the
-rounding rather than a signal. Measured over a census of 324 cells at
-distances from 1 to \\10^{-8}\\ from a bound, the whole-vector choice
-puts 307 gradients and 238 diagonal Hessian components within
-\\10^{-6}\\ of the analytic value against 285 and 229 for the
-per-observation choice, and on the 46 cells where the two differ the
-whole-vector one is the better on 44.
+does in the response direction. There each observation carries its own
+\\y\\ and therefore its own step, so a per-observation choice is a
+choice between two quantities that genuinely differ; here the parameter
+is usually one number for the whole sample, the two candidate quotients
+estimate the same thing, and the variation of the self-consistency
+reading across observations is the rounding rather than a signal.
 
 It costs four quotients where one would do, except where the two steps
 coincide at every entry, which is every call on a parameter with no
 finite bound and every positive parameter at or above one: there the
 clamped step is returned at once and nothing is evaluated twice.
-Measured on the same census, 61 cells of 324 take that path and their
-result is [`identical()`](https://rdrr.io/r/base/identical.html) to what
-the clamped step alone produced.
 
-Each order chooses its own step, with its own `h_rel` and its own
-stencil. A single choice made at first order and reused would cost 2
-cells of 324 on the Hessian; the two tests agree on 244 of the 263 cells
-where the steps differ at all.
+Each order selects its own step, with its own `h_rel` and its own
+stencil; a choice made at first order is not reused at higher orders.
 
 ## See also
 

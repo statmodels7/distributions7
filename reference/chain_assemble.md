@@ -62,16 +62,15 @@ standardized quantile.
 
 The key into an inner table is **built** from the parameter names and
 never parsed out of one, so a parameter whose own name contains an
-underscore is safe. That is the shape of mistake the package records
-having made once, in three separate fallbacks at once.
+underscore is safe.
 
 ## See also
 
 [`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md),
 its caller;
-[`loc_scale_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv_k.md)
-and
-[`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md),
-the two other consumers;
+[`loc_scale_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv_k.md),
+[`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md)
+and the mapped cdf derivatives of R/cdf_mapped_higher.R, further
+consumers;
 [`numericals7::set_partitions()`](https://statmodels7.github.io/numericals7/reference/set_partitions.html)
 for the enumeration.

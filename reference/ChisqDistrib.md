@@ -4,15 +4,16 @@ The S7 class of the chi-squared family on \\(0, \infty)\\, parametrized
 by its mean \\\mu \> 0\\, which is the degrees of freedom. They are
 treated as a continuous positive parameter, so the one-parameter family
 is estimable; the variance is then \\2\mu\\. It inherits from
-`continuous_distrib`, so it answers every generic of the `distrib`
-contract; the eleven methods listed below are registered on it directly
-and everything else comes from the parent.
+`continuous_distrib`, so every generic of the `distrib` class applies to
+it; the methods listed below are registered on it directly and
+everything else comes from the parent.
 
 Build one with
 [`chisq_distrib()`](https://statmodels7.github.io/distributions7/reference/chisq_distrib.md),
 which supplies the link function and fills the properties in. This page
-documents the raw S7 constructor, which takes the parent's properties
-and validates none of the relationships between them.
+documents the raw S7 constructor, which takes the parent's properties;
+the validator of `distrib` checks them, and the constructor adds no
+check of its own.
 
 ## Usage
 
@@ -97,20 +98,54 @@ the one link.
 
 ## Methods
 
-Registered on this class:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ChisqDistrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ChisqDistrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ChisqDistrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ChisqDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ChisqDistrib.md),
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ChisqDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ChisqDistrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.ChisqDistrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ChisqDistrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.ChisqDistrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.ChisqDistrib.md)
+Registered on this class, each linked to the page that documents it:
 
-Everything else is inherited from
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ChisqDistrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ChisqDistrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.ChisqDistrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.ChisqDistrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ChisqDistrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ChisqDistrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ChisqDistrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ChisqDistrib.md),
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ChisqDistrib.md)
+  and
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.ChisqDistrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ChisqDistrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.ChisqDistrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.ChisqDistrib.md);
+
+- the derivatives of the distribution function:
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md),
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_deriv_cdf_k.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_deriv_cdf_k.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.ChisqDistrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.ChisqDistrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.ChisqDistrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.ChisqDistrib.md).
+
+Every other generic is inherited from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
@@ -124,7 +159,7 @@ for the case \\\mu = 2\\;
 [`distrib_pdf.ChisqDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ChisqDistrib.md)
 and
 [`distrib_gradient.ChisqDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ChisqDistrib.md)
-for the closed forms this class supplies.
+for the closed forms of this class.
 
 ## Examples
 

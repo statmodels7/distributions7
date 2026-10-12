@@ -3,8 +3,7 @@
 Concatenates two results in the shape of
 [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md),
 stacking the `value`, `transform` and `block` vectors and row-binding
-the two Jacobians. It is what joins a parametrization's own quantities,
-from
+the two Jacobians. It joins the quantities of a parametrization, from
 [`mv_param_block()`](https://statmodels7.github.io/distributions7/reference/mv_param_block.md),
 onto the standard deviations and correlations.
 

@@ -1,14 +1,13 @@
-# The Matrix a Parameter List Describes
+# The Matrix That a Parameter List Describes
 
-Returns the matrix a multivariate distribution's parametrization
-carries, as a \\p \times p\\ numeric matrix: the COVARIANCE for a
-gaussian, and the SCALE MATRIX for a Student t. It is not in general the
-second moment. The Student t's covariance is \\\nu\Sigma/(\nu-2)\\ and
-does not exist below two degrees of freedom, while its scale matrix
+Returns the matrix that describes the spread of a multivariate
+distribution, as a \\p \times p\\ numeric matrix: the covariance for the
+gaussian, the Dirichlet and the multinomial, and the scale matrix for
+the Student t. The Student t's covariance is \\\nu\Sigma/(\nu-2)\\ for
+\\\nu \> 2\\ and is infinite for \\\nu \le 2\\, while its scale matrix
 exists at every \\\nu\\;
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
-is the generic that answers about the moment, and keeping the two apart
-is what allows a heavy-tailed family to be described at all.
+is the generic for the second moment.
 
 ## Usage
 
@@ -30,22 +29,26 @@ mv_sigma(distrib, theta)
 
 ## Value
 
-A \\p \times p\\ symmetric positive definite numeric matrix, with both
-dimnames `v1`, ..., `vp`.
+A \\p \times p\\ symmetric numeric matrix: positive definite, with both
+dimnames `v1`, ..., `vp`, for the gaussian and the Student t; of rank
+\\p - 1\\ and without dimnames for the Dirichlet and the multinomial,
+whose coordinates sum to a constant.
 
 ## Details
 
-Where the parametrization carries the PRECISION, as
+Where the parametrization carries the precision, as for
 [`mvgaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
-does, the matrix is inverted here, so the result is the covariance
-either way.
+and
+[`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md),
+the matrix is inverted here, so the result is the covariance or the
+scale matrix either way.
 
-The base-class method signals an error: not every multivariate family
-has a matrix parameter, and a family that does registers its own method.
+No method is registered on the class, so a family without a method of
+its own fails in dispatch.
 
 ## Notation
 
-\\\Sigma\\ is the matrix the parametrization carries, \\\nu\\ the
+\\\Sigma\\ is the matrix that the parametrization carries, \\\nu\\ the
 degrees of freedom of a Student t and \\p\\ the dimension.
 
 ## See also
@@ -55,11 +58,11 @@ for the moment,
 [`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.md)
 for the location,
 [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
-for the standard deviations and correlations a reader wants, and
+for the standard deviations and correlations of a fit, and
 [`mv_sigma.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvGaussianDistrib.md)
 and
 [`mv_sigma.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvStudentTDistrib.md)
-for the two methods.
+for two methods.
 
 ## Examples
 
@@ -80,8 +83,8 @@ all.equal(mv_sigma(d, theta), variance(d, theta))
 all.equal(variance(t2, th), (6 / 4) * mv_sigma(t2, th))
 #> [1] TRUE
 
-# At two degrees of freedom the covariance is gone and the scale matrix
-# stands.
+# At two degrees of freedom the covariance is infinite and the scale matrix
+# is finite.
 th2 <- th; th2$nu <- 2
 c(scale = mv_sigma(t2, th2)[1, 1], covariance = variance(t2, th2)[1, 1])
 #>      scale covariance 

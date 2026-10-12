@@ -31,10 +31,11 @@ definition, as happens whenever a package's code is evaluated instead of
 loaded.
 
 A wrapper must not use this reading. Its fourth derivative is registered
-on its own class, so the owner test says analytic, while the partition
-sum it evaluates is over the **parent's** first four derivatives and is
-analytic only when those are. Every wrapper therefore overrides the
-generic and asks its parent, which is why the test is a generic at all.
+on its own class, so the owner test reads it as analytic, while the
+partition sum that it evaluates is over the first four derivatives of
+the **parent** and is analytic only when those are. Every wrapper
+therefore overrides the generic and takes the answer from its parent,
+which is why the test is a generic at all.
 
 ## See also
 

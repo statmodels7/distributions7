@@ -1,10 +1,11 @@
 # The Second Derivative of the Inverse, by Position
 
-As
-[`mvg_a2()`](https://statmodels7.github.io/distributions7/reference/mvg_a2.md),
-for the second derivative of \\\Sigma^{-1}\\ that
+Reads the component of the second derivative array of \\\Sigma^{-1}\\
+that
 [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
-reads from the chart. Shared by the gaussian and the Student t.
+supplies, for the pair of free values \\(k, l)\\. The key is built from
+the sorted pair of free names, so the result does not depend on the
+order of the two positions. Shared by the gaussian and the Student t.
 
 ## Usage
 
@@ -22,7 +23,7 @@ mv_ai2(pc, k, l)
 
 - k, l:
 
-  Positions among the structure's free values.
+  Positions among the free values of the matrix parametrization.
 
 ## Value
 

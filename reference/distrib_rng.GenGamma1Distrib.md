@@ -2,8 +2,8 @@
 
 Draws by the family's own defining representation: a Gamma variate with
 shape \\d/p\\ and unit rate, raised to the power \\1/p\\ and multiplied
-by \\a\\. It is exact and costs one `rgamma` call, so neither inversion
-nor the base class's ratio-of-uniforms fallback is involved.
+by \\a\\. It is exact and costs one `rgamma` call; the inverse-transform
+fallback of the base class is not used.
 
 ## Arguments
 

@@ -39,13 +39,13 @@ does not have, and about `"skew normal1"`, a family the call does not
 name. The message here reports the centered parameter responsible and
 the value it holds.
 
-The check states a property of the delegation rather than guarding a
-value the public surface can reach.
+The check covers the failures of the delegation itself.
 [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
-bounds `gamma1` and every generic validates it before dispatch, so a
-skewness outside its domain is reported before the map runs; what
-remains reachable is a `sigma` and a `gamma1` each inside its own domain
-whose implied scale or location leaves the doubles.
+bounds `gamma1`, and every generic checks the parameters against their
+domains before it calls the method, so a skewness outside its domain is
+reported before the map runs. The remaining case is a `sigma` and a
+`gamma1`, each inside its own domain, whose implied scale or location is
+not finite.
 
 ## See also
 

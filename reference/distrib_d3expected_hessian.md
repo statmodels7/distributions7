@@ -65,9 +65,9 @@ otherwise. The step is the cube root of machine epsilon relative to the
 coordinate, kept inside a finite bound on the parameter scale by
 [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md).
 
-On `scale = "link"` the difference is taken along the free scale of the
-parameter, of the link-scale second derivative, so the chain rule is the
-one
+On `scale = "link"` the difference of the link-scale second derivative
+is taken along the free coordinate of the parameter, so the chain rule
+is the one that
 [`dexpected_link()`](https://statmodels7.github.io/distributions7/reference/dexpected_link.md)
 already applies.
 

@@ -14,6 +14,8 @@ dy_log1m(c, y, k)
 
 dy_pow(c, p, y, k)
 
+dy_zero(c, r)
+
 dy_logaff(c, a, b, y, k)
 
 dy_cos(c, m, y, k)
@@ -37,6 +39,11 @@ dy_cos(c, m, y, k)
 
   The exponent, for `dy_pow`.
 
+- r:
+
+  The derivative before the masking, for `dy_zero`, which sets it to 0
+  wherever the coefficient `c` (recycled to its length) is 0.
+
 - a, b:
 
   The affine coefficients, for `dy_logaff`.
@@ -52,4 +59,7 @@ A numeric vector the length of `y`.
 ## Details
 
 A term linear in \\y\\ is `dy_pow` at \\p = 1\\ and vanishes from the
-second order, so it needs no case of its own.
+second order, so it needs no case of its own. Where the coefficient of
+the derivative is zero (a shape equal to 1 in `dy_log` and `dy_log1m`,
+an integer exponent below the order in `dy_pow`) the result is 0 at
+every `y`, including the boundary where the power of `y` is infinite.

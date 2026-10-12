@@ -7,10 +7,18 @@ log-mass in \(r\) is \(\psi'(y+r) - \psi'(r)\), with \(\psi'\) the
 trigamma function, and the term in which \(\theta\) appears outside
 \(r\) contributes \(-1/(1+\theta)\) to the mixed entry.
 Because \(\partial r/\partial\mu = 1/\theta\) and
-\(\partial r/\partial\theta = -r/\theta\), every component divides by a
-power of \(\theta\), and the components in \(\theta\) lose their digits
-at small \(\theta\) for the reason given on
-distrib_gradient.NegBin1Distrib()."><meta property="og:description" content="Computes the three distinct second derivatives of the NB1 log-mass with
+\(\partial r/\partial\theta = -r/\theta\), every component of that route
+divides by a power of \(\theta\), so it is used only for
+\(\theta \ge 1\). For \(\theta &amp;lt; 1\) and an integer count the kernel
+differentiates the form without the size given on
+distrib_gradient.NegBin1Distrib() once more: with
+\(u_i = \mu + i\theta\), \(C = \sum_{i=1}^{y-1} i/u_i^2\) and
+\(D = \sum_{i=1}^{y-1} i^2/u_i^2\),
+$$\ell^{(\mu\mu)} = -\sum_{i=0}^{y-1} u_i^{-2}, \qquad
+      \ell^{(\mu\theta)} = \dfrac{1}{1+\theta} - C - q, \qquad
+      \ell^{(\theta\theta)} = \dfrac{y-\mu}{(1+\theta)^2} - D - \mu q',$$
+with \(q\) and \(q'\) from their power series below \(\theta = 1/4\).
+Every component then keeps its accuracy as \(\theta\) goes to zero."><meta property="og:description" content="Computes the three distinct second derivatives of the NB1 log-mass with
 respect to \(\mu\) and \(\theta\), one value per observation, in closed
 form. They are the two-variable chain rule through the size
 \(r = \mu/\theta\) applied once more: the second derivative of the
@@ -18,10 +26,18 @@ log-mass in \(r\) is \(\psi'(y+r) - \psi'(r)\), with \(\psi'\) the
 trigamma function, and the term in which \(\theta\) appears outside
 \(r\) contributes \(-1/(1+\theta)\) to the mixed entry.
 Because \(\partial r/\partial\mu = 1/\theta\) and
-\(\partial r/\partial\theta = -r/\theta\), every component divides by a
-power of \(\theta\), and the components in \(\theta\) lose their digits
-at small \(\theta\) for the reason given on
-distrib_gradient.NegBin1Distrib()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(\partial r/\partial\theta = -r/\theta\), every component of that route
+divides by a power of \(\theta\), so it is used only for
+\(\theta \ge 1\). For \(\theta &amp;lt; 1\) and an integer count the kernel
+differentiates the form without the size given on
+distrib_gradient.NegBin1Distrib() once more: with
+\(u_i = \mu + i\theta\), \(C = \sum_{i=1}^{y-1} i/u_i^2\) and
+\(D = \sum_{i=1}^{y-1} i^2/u_i^2\),
+$$\ell^{(\mu\mu)} = -\sum_{i=0}^{y-1} u_i^{-2}, \qquad
+      \ell^{(\mu\theta)} = \dfrac{1}{1+\theta} - C - q, \qquad
+      \ell^{(\theta\theta)} = \dfrac{y-\mu}{(1+\theta)^2} - D - \mu q',$$
+with \(q\) and \(q'\) from their power series below \(\theta = 1/4\).
+Every component then keeps its accuracy as \(\theta\) goes to zero."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +45,7 @@ distrib_gradient.NegBin1Distrib()."><meta property="og:image" content="https://s
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,10 +86,18 @@ log-mass in \(r\) is \(\psi'(y+r) - \psi'(r)\), with \(\psi'\) the
 trigamma function, and the term in which \(\theta\) appears outside
 \(r\) contributes \(-1/(1+\theta)\) to the mixed entry.</p>
 <p>Because \(\partial r/\partial\mu = 1/\theta\) and
-\(\partial r/\partial\theta = -r/\theta\), every component divides by a
-power of \(\theta\), and the components in \(\theta\) lose their digits
-at small \(\theta\) for the reason given on
-<code><a href="distrib_gradient.NegBin1Distrib.html">distrib_gradient.NegBin1Distrib()</a></code>.</p>
+\(\partial r/\partial\theta = -r/\theta\), every component of that route
+divides by a power of \(\theta\), so it is used only for
+\(\theta \ge 1\). For \(\theta &lt; 1\) and an integer count the kernel
+differentiates the form without the size given on
+<code><a href="distrib_gradient.NegBin1Distrib.html">distrib_gradient.NegBin1Distrib()</a></code> once more: with
+\(u_i = \mu + i\theta\), \(C = \sum_{i=1}^{y-1} i/u_i^2\) and
+\(D = \sum_{i=1}^{y-1} i^2/u_i^2\),
+$$\ell^{(\mu\mu)} = -\sum_{i=0}^{y-1} u_i^{-2}, \qquad
+      \ell^{(\mu\theta)} = \dfrac{1}{1+\theta} - C - q, \qquad
+      \ell^{(\theta\theta)} = \dfrac{y-\mu}{(1+\theta)^2} - D - \mu q',$$
+with \(q\) and \(q'\) from their power series below \(\theta = 1/4\).
+Every component then keeps its accuracy as \(\theta\) goes to zero.</p>
     </div>
 
 
@@ -106,8 +130,8 @@ recycled. Both must be strictly positive.</p></dd>
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -151,8 +175,8 @@ quantity, <code><a href="distrib_deriv3.NegBin1Distrib.html">distrib_deriv3.NegB
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.061179739  0.003195261  0.016858455</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The curvature in mu is exactly zero at y = 0, the size being 1 there, so</span></span></span>
-<span class="r-in"><span><span class="co"># the observed information is singular at that count.</span></span></span>
+<span class="r-in"><span><span class="co"># The curvature in mu is exactly zero at y = 0, where the log-mass is linear</span></span></span>
+<span class="r-in"><span><span class="co"># in mu; the observed information at that count is indefinite.</span></span></span>
 <span class="r-in"><span><span class="va">h</span><span class="op">$</span><span class="va">mu_mu</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.00000000 -0.07812500 -0.09321181</span>
 <span class="r-in"><span></span></span>

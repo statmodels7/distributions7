@@ -9,7 +9,7 @@ method rather than from the numerical fallback."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,8 @@ method rather than from the numerical fallback.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Used to decide whether inverse transform sampling is cheap enough to prefer
 over the ratio-of-uniforms sampler: inverting a <em>numerical</em> quantile costs
-a call to <code>uniroot</code> per draw.</p>
+several evaluations of the distribution function per draw, each of them a
+quadrature.</p>
 <p>The test uses the documented S7 trick. S7 records the class a method was
 registered on in the method's <code>signature</code> attribute, so an inherited
 fallback is recognized by that class being <code>continuous_distrib</code> itself.

@@ -9,7 +9,7 @@ than letting it abort the report."><meta property="og:image" content="https://st
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,15 +71,14 @@ the attribute <code>from_error = TRUE</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>A distribution under validation is by assumption possibly broken, so a check
-that throws is itself a result. Without this, the first component to raise
-would end the run and hide every check after it, which is the least useful
-moment to
-stop being informative.</p>
+    <p>A distribution under validation may be defective, so an error raised by a
+check is a result of that check. Without this conversion, the first
+component that raised an error would end the run and the checks after it
+would not be reported.</p>
 <p>The failed row is marked with the attribute <code>from_error</code>, which
 <code><a href="check_distrib.html">check_distrib()</a></code> reads before assembling the table: a check whose
-computation raised has failed, and it is never mistaken for one whose
-statistic merely came out non-finite, which is reported as not run.</p>
+computation raised an error has failed, and it is not treated as a check
+whose statistic came out <code>NaN</code> or <code>NA</code>, which is reported as not run.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

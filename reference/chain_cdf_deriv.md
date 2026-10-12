@@ -57,13 +57,14 @@ parametrizations, so the ordinary chain rule applies to the composition
 F_k\\h^k_a, \qquad \frac{\partial^2 F}{\partial\psi_a \partial\psi_b} =
 \sum\_{k,l} F\_{kl}\\h^k_a h^l_b + \sum_k F_k\\h^k\_{ab}.\$\$
 
-## When it is worth taking
+## Accuracy of the result
 
-The result is exact whenever the parent's own cdf derivatives are, and
-no better than they are otherwise: applied to a parent that differences
-its own cdf, the chain adds an exact transformation to an approximate
-quantity and buys nothing over differencing the new cdf directly.
-Checking that is the caller's business, and
+The result is exact whenever the cdf derivatives of the parent and the
+partials of the map are, and no better than they are otherwise: applied
+to a parent that differences its own cdf, the chain adds an exact
+transformation to an approximate quantity and gains nothing over
+differencing the new cdf directly. Checking that is the caller's
+business, and
 [`mapped_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv.md)
 is where it is done.
 

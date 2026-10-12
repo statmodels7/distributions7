@@ -3,13 +3,13 @@
 $$\gamma_1 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{3}\right],$$
 for a distribution object, or the sample skewness for a numeric vector. It
 is zero for a symmetric law, positive for a right tail and negative for a
-left one. 43 of the 45 shipped families register a closed form; the two von
-Mises reach a quadrature through moment()."><meta property="og:description" content="Computes the skewness, the third standardized central moment
+left one. Every univariate family except the two von Mises registers a
+closed form; these two reach a quadrature through moment()."><meta property="og:description" content="Computes the skewness, the third standardized central moment
 $$\gamma_1 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{3}\right],$$
 for a distribution object, or the sample skewness for a numeric vector. It
 is zero for a symmetric law, positive for a right tail and negative for a
-left one. 43 of the 45 shipped families register a closed form; the two von
-Mises reach a quadrature through moment()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+left one. Every univariate family except the two von Mises registers a
+closed form; these two reach a quadrature through moment()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +17,7 @@ Mises reach a quadrature through moment()."><meta property="og:image" content="h
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +54,8 @@ Mises reach a quadrature through moment()."><meta property="og:image" content="h
 <p>$$\gamma_1 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{3}\right],$$</p>
 <p>for a distribution object, or the sample skewness for a numeric vector. It
 is zero for a symmetric law, positive for a right tail and negative for a
-left one. 43 of the 45 shipped families register a closed form; the two von
-Mises reach a quadrature through <code><a href="moment.html">moment()</a></code>.</p>
+left one. Every univariate family except the two von Mises registers a
+closed form; these two reach a quadrature through <code><a href="moment.html">moment()</a></code>.</p>
     </div>
 
     <div class="section level2">
@@ -80,24 +80,25 @@ single logical, <code>FALSE</code> by default.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A numeric vector for a <code>distrib</code>, one value per parameter setting; a
-single number for a numeric vector. <code>NaN</code> for a family with no moments,
-<code>Inf</code> where the third moment diverges.</p>
+single number for a numeric vector. <code>NaN</code> where the third moment does not
+exist, as for the Cauchy and for the Student t at three degrees of freedom
+or fewer.</p>
     </div>
     <div class="section level2">
     <h2 id="what-the-sign-and-the-size-mean">What the sign and the size mean<a class="anchor" aria-label="anchor" href="#what-the-sign-and-the-size-mean"></a></h2>
     <p>\(\gamma_1\) is invariant to location and to positive scaling, so it is a
 property of the shape alone: every Gaussian has \(\gamma_1 = 0\) and every
-exponential has \(\gamma_1 = 2\), whatever their parameters. A family with
-a shape parameter moves along the axis with it, and that is why the quantity
-is worth reporting: a Poisson at mean \(\mu\) has
-\(\gamma_1 = \mu^{-1/2}\), so its asymmetry vanishes as the counts grow.</p>
+exponential has \(\gamma_1 = 2\), whatever their parameters. In a family
+with a shape parameter \(\gamma_1\) varies with that parameter: a Poisson
+at mean \(\mu\) has \(\gamma_1 = \mu^{-1/2}\), so its asymmetry vanishes
+as the counts grow.</p>
     </div>
     <div class="section level2">
     <h2 id="when-it-fails-to-exist">When it fails to exist<a class="anchor" aria-label="anchor" href="#when-it-fails-to-exist"></a></h2>
     <p>The third moment is needed, so a family with heavy tails may have no
 skewness even where it has a mean. A Student t has one only above three
-degrees of freedom and returns <code>Inf</code> at or below them; a Cauchy has none at
-any parameter value and returns <code>NaN</code>.</p>
+degrees of freedom and returns <code>NaN</code> at or below them; a Cauchy has none at
+any parameter value and also returns <code>NaN</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="what-the-sample-method-returns">What the sample method returns<a class="anchor" aria-label="anchor" href="#what-the-sample-method-returns"></a></h2>

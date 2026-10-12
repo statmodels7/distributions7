@@ -19,7 +19,7 @@ where the density itself underflows to zero."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,14 +72,14 @@ where the density itself underflows to zero.</p>
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric vector of observations. Every real value is in the
-support, so no value is rejected.</p></dd>
+support, so every value of <code>y</code> is valid.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>mu</code> and <code>sigma2</code>, each a numeric
 vector of length 1 or of the length of <code>y</code>. A component of length 1 is
-recycled. <code>sigma2</code> must be strictly positive; a zero or negative value
-makes <code>sqrt(sigma2)</code> zero or <code>NaN</code> and <code><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">stats::dnorm()</a></code> warns.</p></dd>
+recycled. <code>sigma2</code> must be strictly positive; the generic signals an
+error for a zero or negative value before the method is called.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>

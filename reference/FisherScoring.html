@@ -19,7 +19,7 @@ one with fisher_scoring(), which checks all four arguments."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,9 +77,10 @@ one with <code><a href="fisher_scoring.html">fisher_scoring()</a></code>, which 
 
 <dl><dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
 <dd><p>How the expectation is approximated when the family has no
-closed-form expected information: one of <code>"bartlett"</code>, <code>"integrate"</code>,
-<code>"mc"</code> or <code>"opg"</code>. Ignored by a family that has one, and <code><a href="fit_distrib.html">fit_distrib()</a></code>
-rejects the call in that case.</p></dd>
+closed-form expected information: one of <code>"opg"</code>, <code>"bartlett"</code>,
+<code>"integrate"</code> or <code>"mc"</code>. Ignored by a family that has one, and
+<code><a href="fit_distrib.html">fit_distrib()</a></code> rejects any value other than the default <code>"opg"</code> in that
+case.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -89,12 +90,12 @@ when <code>approx = "mc"</code> is in force.</p></dd>
 
 <dt id="arg-criterion">criterion<a class="anchor" aria-label="anchor" href="#arg-criterion"></a></dt>
 <dd><p>A stopping rule from <span class="pkg">optimizers7</span>, or <code>NULL</code> to take
-the default of <code><a href="https://statmodels7.github.io/optimizers7/reference/newton.html" class="external-link">optimizers7::newton()</a></code>.</p></dd>
+<code><a href="https://statmodels7.github.io/optimizers7/reference/crit_grad.html" class="external-link">optimizers7::crit_grad()</a></code> at its default tolerance.</p></dd>
 
 
 <dt id="arg-maxit">maxit<a class="anchor" aria-label="anchor" href="#arg-maxit"></a></dt>
 <dd><p>An iteration limit, a single positive number, or <code>NULL</code> for the
-same default.</p></dd>
+default of <code><a href="https://statmodels7.github.io/optimizers7/reference/newton.html" class="external-link">optimizers7::newton()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

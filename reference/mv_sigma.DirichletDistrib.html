@@ -3,23 +3,19 @@
 $$\operatorname{Cov}(Y_i, Y_j)
       = \dfrac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1},$$
 so the coordinate variances are \(\mu_j(1-\mu_j)/(\phi+1)\) and every
-covariance is negative, a rise in one coordinate having to be paid for by
-the others.
-The matrix is singular by construction: the coordinates sum to one, so
-the vector of ones is in its null space and the rank is \(p-1\). Anything
-that inverts a covariance must use the marginals or the free vector instead.
-The concentration acts as a precision, every entry falling as
-\(1/(\phi+1)\)."><meta property="og:description" content="Returns the covariance matrix of the family,
+covariance is negative, the coordinates summing to one.
+The matrix is singular: the coordinates sum to one, so the vector of ones is
+in its null space and the rank is \(p-1\). A computation that inverts a
+covariance works with the marginals or with the free vector instead. The
+concentration acts as a precision, every entry falling as \(1/(\phi+1)\)."><meta property="og:description" content="Returns the covariance matrix of the family,
 $$\operatorname{Cov}(Y_i, Y_j)
       = \dfrac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1},$$
 so the coordinate variances are \(\mu_j(1-\mu_j)/(\phi+1)\) and every
-covariance is negative, a rise in one coordinate having to be paid for by
-the others.
-The matrix is singular by construction: the coordinates sum to one, so
-the vector of ones is in its null space and the rank is \(p-1\). Anything
-that inverts a covariance must use the marginals or the free vector instead.
-The concentration acts as a precision, every entry falling as
-\(1/(\phi+1)\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+covariance is negative, the coordinates summing to one.
+The matrix is singular: the coordinates sum to one, so the vector of ones is
+in its null space and the rank is \(p-1\). A computation that inverts a
+covariance works with the marginals or with the free vector instead. The
+concentration acts as a precision, every entry falling as \(1/(\phi+1)\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +23,7 @@ The concentration acts as a precision, every entry falling as
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,13 +60,11 @@ The concentration acts as a precision, every entry falling as
 $$\operatorname{Cov}(Y_i, Y_j)
       = \dfrac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1},$$
 so the coordinate variances are \(\mu_j(1-\mu_j)/(\phi+1)\) and every
-covariance is negative, a rise in one coordinate having to be paid for by
-the others.</p>
-<p>The matrix is <strong>singular by construction</strong>: the coordinates sum to one, so
-the vector of ones is in its null space and the rank is \(p-1\). Anything
-that inverts a covariance must use the marginals or the free vector instead.
-The concentration acts as a precision, every entry falling as
-\(1/(\phi+1)\).</p>
+covariance is negative, the coordinates summing to one.</p>
+<p>The matrix is singular: the coordinates sum to one, so the vector of ones is
+in its null space and the rank is \(p-1\). A computation that inverts a
+covariance works with the marginals or with the free vector instead. The
+concentration acts as a precision, every entry falling as \(1/(\phi+1)\).</p>
     </div>
 
 
@@ -89,7 +83,8 @@ free values followed by <code>phi</code>, each of length 1.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A symmetric \(p \times p\) numeric matrix of rank \(p-1\).</p>
+    <p>A symmetric \(p \times p\) numeric matrix of rank \(p-1\),
+without dimnames.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

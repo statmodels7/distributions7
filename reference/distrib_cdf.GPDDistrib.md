@@ -2,14 +2,18 @@
 
 Computes the generalized Pareto distribution function \$\$F(q; \sigma,
 \xi) = 1 - \left(1 + \dfrac{\xi q}{\sigma}\right)^{-1/\xi},\$\$ with
-\\1 - e^{-q/\sigma}\\ at \\\xi = 0\\. The survival function is formed
-first and the tail and the logarithm applied to it, so the far tail
-keeps its digits.
+\\1 - e^{-q/\sigma}\\ at \\\xi = 0\\. A compiled kernel computes the
+logarithm of the survival function, \\\log S = -(q/\sigma)\Lambda(u)\\
+with \\u = \xi q/\sigma\\ and \\\Lambda(u) = \log(1+u)/u\\, as the
+density does, so there is no branch at \\\xi = 0\\. The upper tail is
+\\e^{\log S}\\, the lower tail \\-\mathrm{expm1}(\log S)\\, and their
+logarithms are \\\log S\\ and \\\log(1 - e^{\log S})\\ taken with
+[`expm1()`](https://rdrr.io/r/base/Log.html) or
+[`log1p()`](https://rdrr.io/r/base/Log.html), so both tails and their
+logarithms keep their digits far from the median.
 
-The value is 0 below \\q = 0\\ and 1 at and beyond
-[`gpd_endpoint()`](https://statmodels7.github.io/distributions7/reference/gpd_endpoint.md),
-and is clamped to \\\[0, 1\]\\ so that rounding cannot return a
-probability outside the unit interval.
+The value is 0 at and below \\q = 0\\ and 1 at and beyond
+[`gpd_endpoint()`](https://statmodels7.github.io/distributions7/reference/gpd_endpoint.md).
 
 ## Arguments
 
@@ -30,8 +34,7 @@ probability outside the unit interval.
 - lower.tail:
 
   Logical of length 1. When `TRUE`, the default, the value is \\P(Y \le
-  q)\\; when `FALSE` it is the survival function, which is the quantity
-  actually computed.
+  q)\\; when `FALSE` it is the survival function.
 
 - log.p:
 
@@ -46,14 +49,6 @@ probability outside the unit interval.
 
 A numeric vector of probabilities in \\\[0, 1\]\\, or their logarithms
 with `log.p = TRUE`, of the length of the recycled inputs.
-
-## Details
-
-The branch on \\\|\xi\| \< 10^{-8}\\ is taken by indexing, and that is
-not a stylistic choice. [`ifelse()`](https://rdrr.io/r/base/ifelse.html)
-returns a result the length of its **test**, so with it a scalar shape
-beside a vector of quantiles would collapse the answer to one number.
-The test is recycled to the answer's length first.
 
 ## Notation
 
@@ -80,9 +75,17 @@ all.equal(distrib_cdf(d, q, th), 1 - (1 + 0.3 * q / 1.5)^(-1 / 0.3))
 #> [1] TRUE
 
 # A scalar shape with a vector of quantiles returns one value per
-# quantile, which an ifelse() branch would not.
+# quantile.
 length(distrib_cdf(d, seq(0, 5, by = 1), th))
 #> [1] 6
+
+# Both tails keep their digits: a tiny lower tail and the logarithm of a
+# far upper tail.
+distrib_cdf(d, 1e-12, list(sigma = 1, xi = 0))
+#> [1] 1e-12
+distrib_cdf(d, 1000, list(sigma = 1, xi = 0), lower.tail = FALSE,
+            log.p = TRUE)
+#> [1] -1000
 
 # Shape zero is the exponential.
 all.equal(distrib_cdf(d, q, list(sigma = 1.5, xi = 0)),

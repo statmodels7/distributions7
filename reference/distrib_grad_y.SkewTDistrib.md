@@ -7,8 +7,8 @@ It is minus the derivative in \\\mu\\, exactly, because the response and
 the location enter the density only through their difference; the
 identity holds for every location family.
 
-It is closed form at every parameter value, \\\nu\\ included: nothing
-here differentiates the degrees of freedom.
+It is closed form at every parameter value, \\\nu\\ included, because
+the formula does not differentiate in the degrees of freedom.
 
 ## Arguments
 

@@ -43,9 +43,9 @@ A named list of numeric vectors, one per parameter, each the length of
 ## Details
 
 The sum is finite because the discrete class requires a finite lower
-bound on the support. The cost therefore grows with the largest quantile
-asked for and not with the number of parameters: on a Poisson of mean 30
-at 200 quantiles the whole gradient takes 0.14 ms.
+bound on the support. The cost therefore grows with the largest
+requested quantile and not with the number of parameters, and each
+quantile is summed separately.
 
 Six of the shipped discrete families use this method; the rest register
 a formula, several of which are exact simplifications of this same sum.

@@ -1,8 +1,8 @@
 # Default Second Derivative of the Expected Information
 
 Signals an error: a family without its own method has no second
-derivative of the expected information, a difference of a difference
-being refused.
+derivative of the expected information, because differencing the first
+derivative would be a difference of a difference.
 
 ## Arguments
 

@@ -2,9 +2,8 @@
 
 Closed form, replacing the numerical default: \\(\theta +
 2\mu)/\sqrt{\mu\theta(\theta+\mu)}\\. It is positive at every parameter
-value, a count distribution having a right tail and a floor at zero, and
-it decreases towards the Poisson value \\\mu^{-1/2}\\ as \\\theta\\
-grows.
+value and decreases towards the Poisson value \\\mu^{-1/2}\\ as
+\\\theta\\ grows.
 
 ## Arguments
 

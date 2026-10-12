@@ -1,9 +1,10 @@
 # Truncated Random Number Generator (Continuous)
 
-Draws by inverse transform on the parent, \\Y = Q\\F(L^-) + V Z\\\\ with
-\\V\\ uniform on \\(0, 1)\\. The draw is exact and terminates in one
-pass however small \\Z\\ is, where rejection sampling from the parent
-would need \\1/Z\\ draws on average.
+Draws by inverse transform on the parent, through
+[`distrib_quantile.TruncatedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.TruncatedContinuousDistrib.md)
+at \\V\\ uniform on \\(0, 1)\\. A draw needs one evaluation of the
+quantile function whatever \\Z\\ is, where rejection sampling from the
+parent would need \\1/Z\\ draws on average.
 
 ## Arguments
 

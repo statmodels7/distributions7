@@ -15,7 +15,7 @@ requested tail and scale."><meta property="og:image" content="https://statmodels
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,33 +96,37 @@ recycled against <code>theta</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>18 of the 42 univariate families reach these methods. For the ten discrete
-ones the result is exact; for the eight continuous ones (beta1, beta2,
-chisq, gamma1, gamma2, gengamma1 and the two von Mises) it carries the
-stencil's error, about \(1.5\times10^{-5}\) at order 3 and
-\(1.3\times10^{-4}\) at order 4.</p>
+    <p>Among the shipped univariate families the discrete ones reach these
+methods, and their result is exact. Every shipped continuous family
+registers its own methods: closed forms, or the compiled quadratures of
+<code><a href="compiled_cdf_deriv_k.html">compiled_cdf_deriv_k()</a></code>. The continuous default, one product stencil on
+the distribution function, serves families defined by the user and the
+wrappers, and carries a relative error of order \(10^{-5}\) at order 3
+and \(10^{-4}\) at order 4.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="cdf_tables.html">cdf_tables()</a></code> and <code><a href="cdf_scale_k.html">cdf_scale_k()</a></code>, the two halves;
-<code><a href="loc_scale_deriv_cdf_k.html">loc_scale_deriv_cdf_k()</a></code>, the closed route four families take instead.</p></div>
+<code><a href="loc_scale_deriv_cdf_k.html">loc_scale_deriv_cdf_k()</a></code>, the closed route that five families take
+instead.</p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A gamma reaches this method and differences its cdf.</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="distrib_deriv3_cdf.html">distrib_deriv3_cdf</a></span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma2 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A truncated gamma reaches this method and differences its cdf.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="distrib_deriv3_cdf.html">distrib_deriv3_cdf</a></span><span class="op">(</span><span class="fu"><a href="truncated.html">truncated</a></span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, upper <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>                   <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma2 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu_mu</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.7286449</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.7245243</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu_sigma2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.772715</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.7835818</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_sigma2_sigma2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5826834</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5751564</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $sigma2_sigma2_sigma2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.04939316</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.03537098</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A beta-binomial reaches it too, and its sum is exact.</span></span></span>

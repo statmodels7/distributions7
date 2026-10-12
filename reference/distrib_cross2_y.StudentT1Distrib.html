@@ -25,7 +25,7 @@ $$\frac{\partial\ell^{(yy)}}{\partial\mu} = \frac{(\nu+1)Q'}{\sigma^3},
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,7 +88,7 @@ $$\frac{\partial\ell^{(yy)}}{\partial\mu} = \frac{(\nu+1)Q'}{\sigma^3},
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> or <code>"link"</code>, applied by the generic before
+<dd><p>One of <code>"parameter"</code> or <code>"link"</code>, applied by the generic after
 dispatch.</p></dd>
 
 
@@ -103,11 +103,10 @@ dispatch.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Nothing vanishes here, unlike the gaussian's, and every component varies
-with the data: the t's response curvature is a function of \(z\) rather
-than a constant, and it is that dependence which makes the family
-redescending. The three formulas share \(Q\), \(Q'\) and
-\(\partial_\nu Q\), so each is evaluated once per observation.</p>
+    <p>Unlike the gaussian's, every component varies with the data, because the
+t's response curvature is a function of \(z\) rather than a constant. The
+three formulas share \(Q\), \(Q'\) and \(\partial_\nu Q\), so each is
+evaluated once per observation.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

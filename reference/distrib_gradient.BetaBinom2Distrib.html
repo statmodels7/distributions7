@@ -33,7 +33,7 @@ scale; the transformation happens in the generic.'><meta property="og:image" con
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -133,14 +133,11 @@ function, <code><a href="https://rdrr.io/r/base/Special.html" class="external-li
 
 
 <p>Each digamma difference cancels to leading order as the shapes grow at a
-fixed ratio, and this method writes it out directly. Measured at
-\(n = 10\), \(y = 3\) and a mean proportion of 0.4, the relative error
-against the limiting \(-5/(2S)\) with \(S = \alpha+\beta\) is
-\(6\times10^{-8}\) at \(S = 10^8\), \(4\times10^{-4}\) at
-\(10^{12}\) and 1.8 at \(10^{15}\). Where a concentration of that size
-is reachable, use <code><a href="distrib_gradient.BetaBinom1Distrib.html">distrib_gradient.BetaBinom1Distrib()</a></code>, whose compiled
-kernel forms the same difference as a sum of reciprocals and holds nine
-figures there.</p>
+fixed ratio. For a shape of at least 100 the compiled kernel forms it as an
+asymptotic series remainder plus one <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p()</a></code>, so the score keeps its
+accuracy as the concentration grows. At \(n = 10\), \(y = 3\) and a
+mean proportion of 0.4 its \(\alpha\) component tends to \(-5/(2S)\),
+with \(S = \alpha+\beta\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

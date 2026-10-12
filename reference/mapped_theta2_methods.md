@@ -48,6 +48,12 @@ its methods; what they share with it is the map, which `reparam_maps.R`
 already tabulates. Registered on `gaussian2`, `gaussian3`, `laplace2`
 and `invgauss2`.
 
+The parent of `invgauss2`, `invgauss1`, carries the three quantities in
+closed form: with \\\ell^{(y)} = -3/(2y) - 1/(2\phi\mu^2) + 1/(2\phi
+y^2)\\ and \\\ell^{(yy)} = 3/(2y^2) - 1/(\phi y^3)\\, every mixed
+derivative in \\(\mu, \phi)\\ is a monomial, and the map carries them to
+\\(\mu, \lambda)\\ with no difference taken.
+
 ## Notation
 
 \\\ell\\ is the log-density of one observation, \\\ell^{(y)}\\ and

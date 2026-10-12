@@ -34,7 +34,7 @@ A numeric vector, one value per observation.
 ## Details
 
 A term whose coefficient \\\prod\_{k=i}^{b-1}(a+k)\\ vanishes is dropped
-rather than multiplied, because the factor it would multiply is the
+rather than multiplied, because the factor that it would multiply is the
 entry `"0_0"`, which the table does not hold: in R `0 * NA` is `NA`.
 
 ## See also

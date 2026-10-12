@@ -29,19 +29,17 @@ its order and its lookup key.
 
 ## Details
 
+The multi-index list, the multiplicities and the keys of the
+parameter-scale components depend only on the parameter names and the
+order, not on the values.
 [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
-used to rebuild this on every call: the multi-index list, a `unique` and
-a `tabulate` per component, and a `sort` and a `paste` per combination
-to spell the key of the parameter-scale component to look up. None of it
-depends on the values, only on the names and the order, and a profile of
-a fitted score-driven model put `paste`, `sort` and `unique` among the
-leaders of its self time – a filter reaches this once per observation
-per iteration, so the names were being respelled millions of times per
-fit.
+reads them from this cache instead of rebuilding them on every call,
+which matters because a score-driven filter reaches it once per
+observation and iteration.
 
 The combinations are enumerated by decoding a counter in mixed radix
-rather than with `expand.grid`, which is the same device the loop used
-before and is now paid once.
+rather than with `expand.grid`, and the enumeration is paid once per
+family and order.
 
 The cache is keyed by the parameter names and the order, so it holds one
 entry per family per order actually used. It lives in the function's own

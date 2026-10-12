@@ -1,16 +1,19 @@
 # Multivariate Gaussian Score
 
 Computes the first derivatives of the log-density in closed form. With
-\\w = \Sigma^{-1}(y - \mu)\\ and \\A_k\\ the derivative of \\\Sigma\\ in
-the \\k\\-th free value of the matrix parametrization,
-\$\$\frac{\partial \ell}{\partial \mu} = w, \qquad \frac{\partial
-\ell}{\partial \eta_k} = -\frac{1}{2}\frac{\partial
-\log\lvert\Sigma\rvert}{\partial \eta_k} + \frac{1}{2}\\ w^\top A_k
-w.\$\$ The first term of the matrix component is the parametrization's
-own `param_dlogdet()`, so no trace is formed here; its sign is flipped
-where the parametrization carries the precision. The mean component
-needs no derivative array at all, which is why the mean and the matrix
-cost so differently in a fit.
+\\r = y - \mu\\, \\w = \Sigma^{-1}r\\ and \\P_k\\ the derivative of
+\\\Sigma^{-1}\\ in the \\k\\-th free value of the matrix
+parametrization, \$\$\frac{\partial \ell}{\partial \mu} = w, \qquad
+\frac{\partial \ell}{\partial \eta_k} = -\frac{1}{2}\frac{\partial
+\log\lvert\Sigma\rvert}{\partial \eta_k} - \frac{1}{2}\\ r^\top P_k
+r,\$\$ which is \\\tfrac{1}{2} w^\top A_k w\\ in the second term, with
+\\A_k\\ the derivative of \\\Sigma\\. The first term of the matrix
+component is the parametrization's own `param_dlogdet()`, so no trace is
+formed here; its sign is flipped where the parametrization carries the
+precision. \\P_k\\ is read from
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
+and not formed as \\-\Sigma^{-1}A_k\Sigma^{-1}\\, a product that cancels
+where the covariance is nearly singular.
 
 ## Arguments
 
@@ -32,9 +35,10 @@ cost so differently in a fit.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. Every link of this family is the identity, so the two
-  scales coincide and the results are the same numbers to the bit.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  Every link of this family is the identity, so the two scales coincide
+  and the results are the same numbers to the bit.
 
 - ...:
 
@@ -49,8 +53,9 @@ value of the matrix parametrization.
 ## Notation
 
 \\\mu\\ is the mean, \\\Sigma\\ the covariance, \\\eta\\ the free vector
-of the matrix parametrization, \\A_k = \partial\Sigma/\partial\eta_k\\
-and \\\ell\\ the log-density of one observation.
+of the matrix parametrization, \\A_k = \partial\Sigma/\partial\eta_k\\,
+\\P_k = \partial\Sigma^{-1}/\partial\eta_k\\ and \\\ell\\ the
+log-density of one observation.
 
 ## See also
 
@@ -86,9 +91,9 @@ ll <- function(v) {
   sum(distrib_pdf(d, y, t2, log = TRUE))
 }
 max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
-#> [1] 4.389364e-09
+#> [1] 4.368311e-09
 
-# The mean component is the whitened residual, one row per observation.
+# The mean component is w, one row per observation.
 S <- mv_sigma(d, theta)
 w <- sweep(y, 2, c(0.5, -0.3)) %*% solve(S)
 all.equal(cbind(g$mu1, g$mu2), w, check.attributes = FALSE)

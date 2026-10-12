@@ -41,7 +41,7 @@ fit <- fit_distrib(d, y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -844   AIC: 1692   BIC: 1700
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 620 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 517 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -55,15 +55,15 @@ fit
 #> sigma2   0.6991     0.0745 0.5532 0.8451
 ```
 
-The estimates recover the values the sample was generated from, and the
-print method shows them twice: on the **parameter scale**, and on the
-**link scale** where the fitting actually happened. More on that split
-below.
+The estimates recover the values from which the sample was generated,
+and the print method shows them twice: on the **parameter scale**, and
+on the **link scale** where the fitting actually happened. More on that
+split below.
 
 ## Reading the fit
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-returns an object that answers the familiar extractors:
+returns an object that supports the familiar extractors:
 
 ``` r
 
@@ -124,10 +124,10 @@ $`(0, 1)`$; a Gaussian’s standard deviation is positive. Optimizing
 those constrained parameters directly means fighting the boundary.
 Instead
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-optimizes the **unconstrained** parameters behind each link —
-$`\log\mu`$ and $`\log\sigma^2`$ for the gamma — where there is no
-boundary to hit, using the exact score and information the package
-provides on that scale.
+optimizes the **unconstrained** parameters behind each link ($`\log\mu`$
+and $`\log\sigma^2`$ for the gamma), where there is no boundary to hit,
+using the exact score and information the package provides on that
+scale.
 
 The estimates are then mapped back, and so are the intervals. Because a
 confidence interval is built symmetrically on the link scale and pushed
@@ -153,7 +153,7 @@ fit_distrib(b, rbinom(40, 1, 0.9))
 ```
 
 Even with a probability estimate close to one and only forty
-observations, the interval stays inside $`(0, 1)`$ — a symmetric
+observations, the interval stays inside $`(0, 1)`$, where a symmetric
 interval on the probability scale would have spilled past it.
 
 ## Choosing how it is optimized
@@ -200,14 +200,15 @@ c(fit_lbfgs@method, fit_nm@method)
 #> [1] "L-BFGS"      "nelder-mead"
 ```
 
-The three named strategies fall back to BFGS when they fail to converge;
-an optimizer supplied explicitly is never replaced, so the method
-reported is always the method that produced the estimates.
+The two second-order strategies, `"fisher"` and `"newton"`, fall back to
+BFGS when they fail to converge; `"bfgs"` and an optimizer supplied
+explicitly are never replaced, so the method reported is always the
+method that produced the estimates.
 
 ## Checking the fit against the data
 
-A fit remembers the data it came from, so it can be drawn over it. For a
-continuous distribution
+A fit stores the data from which it was estimated, so it can be drawn
+over them. For a continuous distribution
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) shows a kernel
 density of the sample with the fitted density on top:
 
@@ -250,21 +251,21 @@ quantile(boot_median, c(0.025, 0.975))
 #> 2.597115 2.869105
 ```
 
-It follows the
-[`stats::simulate()`](https://rdrr.io/r/stats/simulate.html) contract: a
-supplied `seed` makes the draw reproducible and is reported back on the
-result, and the caller’s random stream is left untouched.
+It follows the convention of
+[`stats::simulate()`](https://rdrr.io/r/stats/simulate.html): a supplied
+`seed` makes the draw reproducible and is reported back on the result,
+and the caller’s random stream is left untouched.
 
 ## Validating a distribution numerically
 
 Before a fit is trusted, and especially before a user-written
 distribution is,
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-puts it through thirteen numerical checks. It confirms that the density
-integrates to one, that the distribution function agrees with the
-density, that the quantile inverts it, that the generator follows it,
-and that every analytical derivative matches finite differences, on both
-the parameter and the link scale:
+puts it through a battery of numerical checks. It confirms that the
+density integrates to one, that the distribution function agrees with
+the density, that the quantile inverts it, that the generator follows
+it, that the analytical derivatives match finite differences on the
+parameter scale, and that the score matches them on the link scale:
 
 ``` r
 
@@ -281,8 +282,8 @@ invisible(check_distrib(d, list(mu = 3, sigma2 = 2)))
 #>   [OK  ] rng matches the cdf                         1.17e+00
 #>   [OK  ] gradient vs finite differences              6.49e-11
 #>   [OK  ] hessian vs finite differences               5.78e-08
-#>   [OK  ] deriv3 vs finite differences                1.75e-10
-#>   [OK  ] deriv4 vs finite differences                6.98e-08
+#>   [OK  ] deriv3 vs finite differences                1.42e-10
+#>   [OK  ] deriv4 vs finite differences                3.85e-08
 #>   [OK  ] expected information vs Monte Carlo         1.75e+00
 #>   [OK  ] response derivatives vs finite differences  2.07e-08
 #>   [OK  ] link-scale gradient vs finite differences   5.59e-08
@@ -296,11 +297,11 @@ it. It is the fastest way to catch a wrong formula.
 
 ## Further reading
 
-- [`vignette("defining-a-distribution")`](https://statmodels7.github.io/distributions7/articles/defining-a-distribution.md)
-  — defining a new distribution, which then works with everything shown
+- [`vignette("defining-a-distribution")`](https://statmodels7.github.io/distributions7/articles/defining-a-distribution.md):
+  defining a new distribution, which then works with everything shown
   here.
 - [`?fit_distrib`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md),
-  [`?check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-  — the full argument lists.
-- [`?distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
-  — the derivatives, including what `scale = "link"` does.
+  [`?check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md):
+  the full argument lists.
+- [`?distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md):
+  the derivatives, including what `scale = "link"` does.

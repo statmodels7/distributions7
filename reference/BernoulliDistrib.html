@@ -8,12 +8,12 @@ The mean is \(\mu\) and the variance \(\mu(1-\mu)\), so the two are tied
 and the family has no dispersion parameter of its own. The default link is
 the logit, which is the canonical link here: on its scale the observed
 and the expected information coincide.
-A Bernoulli is a binomial on one trial. binomial_distrib() with
-size = 1 gives the same law, and the two are worth keeping apart only
-because the binomial carries a size property this class does not.
+A Bernoulli is a binomial on one trial: binomial_distrib() with
+size = 1 gives the same law. The two are separate classes because the
+binomial carries a size property that this class does not have.
 Build one with bernoulli_distrib(). This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them."><meta property="og:description" content="The S7 class of the Bernoulli family parametrized by its success probability
+constructor, which takes the parent's properties; the validator of
+distrib checks them, and the constructor adds no check of its own."><meta property="og:description" content="The S7 class of the Bernoulli family parametrized by its success probability
 \(\mu \in (0, 1)\), with mass \(P(Y = 1) = \mu\) and
 \(P(Y = 0) = 1 - \mu\). It inherits from discrete_distrib, so
 expectations over its support are sums and no derivative with respect to
@@ -22,12 +22,12 @@ The mean is \(\mu\) and the variance \(\mu(1-\mu)\), so the two are tied
 and the family has no dispersion parameter of its own. The default link is
 the logit, which is the canonical link here: on its scale the observed
 and the expected information coincide.
-A Bernoulli is a binomial on one trial. binomial_distrib() with
-size = 1 gives the same law, and the two are worth keeping apart only
-because the binomial carries a size property this class does not.
+A Bernoulli is a binomial on one trial: binomial_distrib() with
+size = 1 gives the same law. The two are separate classes because the
+binomial carries a size property that this class does not have.
 Build one with bernoulli_distrib(). This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+constructor, which takes the parent's properties; the validator of
+distrib checks them, and the constructor adds no check of its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -35,7 +35,7 @@ relationships between them."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,12 +77,12 @@ the response is defined.</p>
 and the family has no dispersion parameter of its own. The default link is
 the logit, which is the <strong>canonical</strong> link here: on its scale the observed
 and the expected information coincide.</p>
-<p>A Bernoulli is a binomial on one trial. <code><a href="binomial_distrib.html">binomial_distrib()</a></code> with
-<code>size = 1</code> gives the same law, and the two are worth keeping apart only
-because the binomial carries a <code>size</code> property this class does not.</p>
+<p>A Bernoulli is a binomial on one trial: <code><a href="binomial_distrib.html">binomial_distrib()</a></code> with
+<code>size = 1</code> gives the same law. The two are separate classes because the
+binomial carries a <code>size</code> property that this class does not have.</p>
 <p>Build one with <code><a href="bernoulli_distrib.html">bernoulli_distrib()</a></code>. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.</p>
+constructor, which takes the parent's properties; the validator of
+<code>distrib</code> checks them, and the constructor adds no check of its own.</p>
     </div>
 
     <div class="section level2">
@@ -154,17 +154,27 @@ domain \((0, 1)\), and the one link.</p>
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered on this class:
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.BernoulliDistrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_cdf.BernoulliDistrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_deriv3.BernoulliDistrib.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.BernoulliDistrib.html">distrib_deriv4()</a></code>,
-<code><a href="distrib_expected_hessian.BernoulliDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_quantile.BernoulliDistrib.html">distrib_quantile()</a></code> and
+<code><a href="distrib_rng.BernoulliDistrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.BernoulliDistrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.BernoulliDistrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_pdf.BernoulliDistrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_quantile.BernoulliDistrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.BernoulliDistrib.html">distrib_rng()</a></code></p>
-<p>Everything else is inherited from <code><a href="discrete_distrib.html">discrete_distrib()</a></code>.</p>
+<code><a href="distrib_expected_hessian.BernoulliDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.BernoulliDistrib.html">distrib_deriv3()</a></code> and
+<code><a href="distrib_deriv4.BernoulliDistrib.html">distrib_deriv4()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_dexpected_hessian.elementary.html">distrib_dexpected_hessian()</a></code>
+and
+<code><a href="distrib_dexpected_hessian.elementary.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the derivatives of the distribution function:
+<code><a href="distrib_grad_cdf.BernoulliDistrib.html">distrib_grad_cdf()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.BernoulliDistrib.html">mean()</a></code>,
+<code><a href="variance.BernoulliDistrib.html">variance()</a></code>,
+<code><a href="skewness.BernoulliDistrib.html">skewness()</a></code> and
+<code><a href="kurtosis.BernoulliDistrib.html">kurtosis()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="discrete_distrib.html">discrete_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -6,14 +6,13 @@ observation, in closed form. Writing \\z = y/\mu\\ and \\u =
 z^{\sigma}\\, \$\$\dfrac{\partial \ell}{\partial \mu} =
 \dfrac{\sigma}{\mu}(u - 1), \qquad \dfrac{\partial \ell}{\partial
 \sigma} = \dfrac{1}{\sigma} + (1 - u)\log z.\$\$ Both components are
-polynomials in \\u\\ and \\u \log z\\, so every higher order is
-elementary as well.
+affine in \\u\\ with coefficients polynomial in \\\log z\\, so every
+higher order is elementary as well.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries before returning, giving \\\partial \ell / \partial
-\eta_j = h_j'(\eta_j)\\ \partial \ell / \partial \theta_j\\. This method
-always returns the parameter scale; the transformation happens in the
-generic.
+of the family before returning, giving \\\partial \ell / \partial \eta_j
+= h_j'(\eta_j)\\ \partial \ell / \partial \theta_j\\. This method always
+returns the parameter scale; the transformation happens in the generic.
 
 ## Arguments
 
@@ -45,8 +44,8 @@ generic.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 

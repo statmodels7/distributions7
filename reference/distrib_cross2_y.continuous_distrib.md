@@ -26,7 +26,7 @@ quantity to every continuous family, whether or not it writes one out.
 
 - scale:
 
-  One of `"parameter"` or `"link"`, applied by the generic before
+  One of `"parameter"` or `"link"`, applied by the generic after
   dispatch.
 
 - ...:
@@ -42,8 +42,10 @@ A named list with one numeric vector per parameter, keyed by
 
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
 for the generic,
-[`numerical_cross2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross2_y.md),
-which does the work, and
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md),
+which does the work,
+[`numerical_cross2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross2_y.md)
+for the differenced part of a family's own method, and
 [`distrib_cross2_y.Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Gaussian1Distrib.md)
 for a family that overrides it.
 

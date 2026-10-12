@@ -4,12 +4,16 @@
 and the Jacobian does not depend on \(\theta\), the expectation of the
 transformed model's second derivative is the parent's expectation
 reparametrized by the change of variables, which is the same number. No
-approximation runs and no Monte Carlo is needed, whatever approx says."><meta property="og:description" content="Returns the parent's expected Hessian, EXACTLY. Since
+approximation is added by the wrapper, and approx and nsim are not
+forwarded. The result is exact when the parent's expected Hessian is exact
+and otherwise is the value the parent's own default route returns."><meta property="og:description" content="Returns the parent's expected Hessian, EXACTLY. Since
 \(\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert\)
 and the Jacobian does not depend on \(\theta\), the expectation of the
 transformed model's second derivative is the parent's expectation
 reparametrized by the change of variables, which is the same number. No
-approximation runs and no Monte Carlo is needed, whatever approx says."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+approximation is added by the wrapper, and approx and nsim are not
+forwarded. The result is exact when the parent's expected Hessian is exact
+and otherwise is the value the parent's own default route returns."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +21,7 @@ approximation runs and no Monte Carlo is needed, whatever approx says."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +59,9 @@ approximation runs and no Monte Carlo is needed, whatever approx says."><meta pr
 and the Jacobian does not depend on \(\theta\), the expectation of the
 transformed model's second derivative is the parent's expectation
 reparametrized by the change of variables, which is the same number. No
-approximation runs and no Monte Carlo is needed, whatever <code>approx</code> says.</p>
+approximation is added by the wrapper, and <code>approx</code> and <code>nsim</code> are not
+forwarded. The result is exact when the parent's expected Hessian is exact
+and otherwise is the value the parent's own default route returns.</p>
     </div>
 
 
@@ -68,8 +74,9 @@ approximation runs and no Monte Carlo is needed, whatever <code>approx</code> sa
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of observations on the transformed scale. Read
-only through the parent, which uses its length.</p></dd>
+<dd><p>A numeric vector of observations on the transformed scale. It is
+mapped to the preimage and passed to the parent, which uses it for its
+length when its information is closed form and for its values otherwise.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -77,8 +84,8 @@ only through the parent, which uses its length.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, handled by the
-generic before dispatch.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The generic
+applies the link scale to the value that the method returns.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>

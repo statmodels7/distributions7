@@ -1,9 +1,9 @@
 # One Parameter Setting Per Curve
 
-Turns the `theta` a plot method was given into the list of scalar
-settings it draws, one per curve. A component of length \\k \> 1\\ asks
-for \\k\\ curves, so `list(mu = 0, sigma = c(1, 2, 4))` becomes three
-settings sharing a mean and differing in scale.
+Turns the `theta` that a plot method receives into the list of scalar
+settings that the method draws, one per curve. A component of length \\k
+\> 1\\ gives \\k\\ curves, so `list(mu = 0, sigma = c(1, 2, 4))` becomes
+three settings that share a mean and differ in scale.
 
 ## Usage
 
@@ -32,10 +32,9 @@ settings, which may be empty.
 
 ## Details
 
-Every component must have length 1 or the same \\k\\. A length that
-merely **divides** \\k\\ signals an error: R would recycle it without a
-word, and a partial setting is far likelier to be a mistake than a
-request.
+Every component must have length 1 or the same \\k\\. A length that only
+**divides** \\k\\ signals an error, because R would recycle such a
+component without a warning.
 
 The meaning is available only because a plot has no data to recycle a
 parameter against.

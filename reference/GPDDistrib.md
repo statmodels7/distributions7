@@ -6,16 +6,15 @@ shape \\\xi\\: \\f(y) = \sigma^{-1}(1 + \xi y/\sigma)^{-1/\xi-1}\\ on
 \\y \ge 0\\. At \\\xi = 0\\ it is the exponential, reached by a series,
 so a fit may move the shape through zero.
 
-It is the first family in the package whose **support moves with its
-parameters**: for \\\xi \< 0\\ it ends at \\-\sigma/\xi\\. That is what
-makes it non-regular, and it is why its expected information exists only
-above \\\xi = -1/2\\.
+For \\\xi \< 0\\ the support ends at \\-\sigma/\xi\\, so it **moves with
+the parameters**. That is what makes the family non-regular, and it is
+why its expected information exists only above \\\xi = -1/2\\.
 
 Build one with
 [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md),
 which supplies the two link functions. This page documents the raw S7
-constructor, which validates none of the relationships between its
-properties.
+constructor, which takes the parent's properties; the validator of
+`distrib` checks them, and the constructor adds no check of its own.
 
 ## Usage
 
@@ -98,35 +97,71 @@ and \\(-\infty,\infty)\\.
 
 ## Methods
 
-Registered in this file, all compiled apart from the first four:
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GPDDistrib.md),
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GPDDistrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GPDDistrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GPDDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GPDDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GPDDistrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GPDDistrib.md).
+Registered on this class, each linked to the page that documents it:
 
-Registered elsewhere, compiled, in `gpd_higher.R`: the orders three to
-five
-([`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md)),
-the derivatives in the response
-([`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md))
-and those of the distribution function
-([`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md));
-the derivatives of the expected information in `dexpected_families.R`;
-and the four moments in `moments.R`.
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GPDDistrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GPDDistrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GPDDistrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GPDDistrib.md);
 
-## What the moving endpoint costs
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GPDDistrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GPDDistrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GPDDistrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md),
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md)
+  and
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md),
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GPDDistrib.md);
+
+- the derivatives of the distribution function:
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md),
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.GPDDistrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.GPDDistrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.GPDDistrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.GPDDistrib.md).
+
+Every other generic is inherited from
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
+
+## Support depending on the parameters
 
 The derivatives are correct as derivatives of the log-density at every
 admissible point, whatever the sign of \\\xi\\. What is not automatic is
 the license to differentiate under the integral sign, which the Bartlett
 identities rest on. The expected information exists for \\\xi \> -1/2\\
-and is Smith's closed form; at or below that it does not exist and
+and is Smith's closed form. At or below that value it does not exist,
+and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-returns `NA`, along with the classical asymptotics of the maximum
-likelihood estimator.
+returns `NA`; the classical asymptotics of the maximum likelihood
+estimator do not hold either.
 
 ## See also
 

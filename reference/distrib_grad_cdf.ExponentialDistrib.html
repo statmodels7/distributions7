@@ -13,7 +13,7 @@ and surv_cdf_deriv_k() turns those into the derivatives of \(F\)."><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,8 @@ and <code><a href="surv_cdf_deriv_k.html">surv_cdf_deriv_k()</a></code> turns th
 
 <dt id="arg-q">q<a class="anchor" aria-label="anchor" href="#arg-q"></a></dt>
 <dd><p>A numeric vector of quantiles. Values at or below zero give
-derivatives of exactly zero.</p></dd>
+derivatives of exactly zero on the natural scale; on the log scale of the
+lower tail they are <code>NaN</code>, \(\log F\) being infinite there.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -87,15 +88,14 @@ default.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list with one numeric vector per component of the order the
-generic asked for, which for a one-parameter family is one at every order.</p>
+    <p>A named list with one numeric vector per component of the requested
+order, which for a one-parameter family is one at every order.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Against a product stencil on the same cdf: \(2.7\times10^{-11}\) at order
-1 and \(2.7\times10^{-5}\) at order 4. Below the support every derivative
-is exactly zero, the mask in <code><a href="surv_cdf_deriv_k.html">surv_cdf_deriv_k()</a></code> suppressing the finite
-value \(L\) would otherwise give there.</p>
+    <p>Below the support every derivative of \(F\) is exactly zero, the mask in
+<code><a href="surv_cdf_deriv_k.html">surv_cdf_deriv_k()</a></code> suppressing the finite value that \(L\) would
+otherwise give there.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

@@ -5,9 +5,9 @@ Draws from the mixture representation of
 at the dispersion
 [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
 implies: \\\lambda\\ from the inverse Gaussian with mean \\\mu\\ and
-shape \\\mu/\sigma\\, then \\Y \mid \lambda\\ from the Poisson. This is
-the one method of the family that composes the map; the derivative
-methods take \\\alpha\\ directly.
+shape \\\mu/\sigma\\, then \\Y \mid \lambda\\ from the Poisson. This
+method and the variance, skewness and kurtosis methods compose the map;
+the mass and the derivative methods take \\\alpha\\ directly.
 
 ## Arguments
 

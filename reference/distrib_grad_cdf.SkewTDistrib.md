@@ -1,9 +1,9 @@
 # Skew t Log-CDF Gradient
 
 Closed form in the location and the scale, \\-f(q)\\ and \\-z f(q)\\
-with \\z = (q-\mu)/\sigma\\; the component in the shape and in the
-degrees of freedom are integrals, each is the integral of the density's
-own derivative, taken by the compiled rule. The method is
+with \\z = (q-\mu)/\sigma\\; the components in the shape and in the
+degrees of freedom are integrals of the density's own derivatives, taken
+by the compiled rule. The method is
 [`compiled_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
 itself, shared with the other families whose distribution function has
 no closed derivative in a shape parameter.

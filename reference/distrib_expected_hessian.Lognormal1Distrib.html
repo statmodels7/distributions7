@@ -9,8 +9,8 @@ They follow from \(\mathbb{E}[\log Y] = \mu\) and
 \(\mathbb{E}[(\log Y - \mu)^2] = \sigma^2\), \(\log Y\) being Gaussian
 by construction. The zero off-diagonal says the two parameters are
 orthogonal, so their estimates are asymptotically independent.
-The information does not depend on the mean of \(Y\) at all, only on the
-variance of its logarithm. Because the values do not depend on the data,
+The information does not depend on \(\mu\), only on \(\sigma^2\), the
+variance of \(\log Y\). Because the values do not depend on the data,
 approx and nsim are ignored and y is read only for its length."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
 form and with no quadrature or simulation:
 $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\sigma^2}, \qquad
@@ -21,8 +21,8 @@ They follow from \(\mathbb{E}[\log Y] = \mu\) and
 \(\mathbb{E}[(\log Y - \mu)^2] = \sigma^2\), \(\log Y\) being Gaussian
 by construction. The zero off-diagonal says the two parameters are
 orthogonal, so their estimates are asymptotically independent.
-The information does not depend on the mean of \(Y\) at all, only on the
-variance of its logarithm. Because the values do not depend on the data,
+The information does not depend on \(\mu\), only on \(\sigma^2\), the
+variance of \(\log Y\). Because the values do not depend on the data,
 approx and nsim are ignored and y is read only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -31,7 +31,7 @@ approx and nsim are ignored and y is read only for its length."><meta property="
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,8 +74,8 @@ They follow from \(\mathbb{E}[\log Y] = \mu\) and
 \(\mathbb{E}[(\log Y - \mu)^2] = \sigma^2\), \(\log Y\) being Gaussian
 by construction. The zero off-diagonal says the two parameters are
 orthogonal, so their estimates are asymptotically independent.</p>
-<p>The information does not depend on the mean of \(Y\) at all, only on the
-variance of its logarithm. Because the values do not depend on the data,
+<p>The information does not depend on \(\mu\), only on \(\sigma^2\), the
+variance of \(\log Y\). Because the values do not depend on the data,
 <code>approx</code> and <code>nsim</code> are ignored and <code>y</code> is read only for its length.</p>
     </div>
 
@@ -119,8 +119,8 @@ quadrature, Monte Carlo and outer-product routes.</p></dd>
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -178,7 +178,7 @@ numbers, <code><a href="fisher_scoring.html">fisher_scoring()</a></code>, which 
 <span class="r-out co"><span class="r-pr">#&gt;</span> observed -2.777778     -3.808307 -0.01203833</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expected -2.777778     -3.858025  0.00000000</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The information does not move with the mean of Y, only with sigma2.</span></span></span>
+<span class="r-in"><span><span class="co"># The information does not depend on mu, only on sigma2.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>       <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">m</span>, sigma2 <span class="op">=</span> <span class="fl">0.36</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">sigma2_sigma2</span>,</span></span>

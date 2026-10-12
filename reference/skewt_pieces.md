@@ -1,10 +1,15 @@
 # The Pieces a Skew t Evaluates From
 
 Assembles the standardized variable, the argument of the tilting
-distribution function and the six scalar functions every closed-form
-derivative of the log-density is a combination of. Every method in this
-family calls it once and then writes its own formula in terms of the
-result.
+distribution function and the seven scalar functions \\A\\, \\A'\\,
+\\E\\, \\B\\, \\B'\\, \\Q\\ and \\Q'\\, of which the closed-form
+derivatives of the log-density in \\(\mu, \sigma, \alpha)\\ are
+combinations.
+[`distrib_grad_y.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewTDistrib.md)
+and
+[`distrib_hess_y.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewTDistrib.md)
+evaluate their formulas from the result; the derivatives in the
+parameters come from the compiled kernels.
 
 ## Usage
 
@@ -21,15 +26,16 @@ skewt_pieces(y, mu, sigma, alpha, nu)
 - mu, sigma, alpha, nu:
 
   The four parameters, numeric vectors of length 1 or of the length of
-  `y`. Nothing is validated: `sigma` and `nu` must be strictly positive.
+  `y`. The arguments are not validated; `sigma` and `nu` must be
+  strictly positive.
 
 ## Value
 
-A named list of ten numeric vectors, each of the length of the recycled
-inputs: `z` the standardized variable, `w` the tilting argument, `c` the
-factor relating them, `a` and `da` for \\A\\ and \\A'\\, `e` for \\E\\,
-`b` and `db` for \\B\\ and \\B'\\, and `q` and `dq` for \\Q\\ and
-\\Q'\\.
+A named list of ten numeric vectors, each of the length implied by the
+arguments on which it depends: `z` the standardized variable, `w` the
+tilting argument, `c` the factor relating them, `a` and `da` for \\A\\
+and \\A'\\, `e` for \\E\\, `b` and `db` for \\B\\ and \\B'\\, and `q`
+and `dq` for \\Q\\ and \\Q'\\.
 
 ## Details
 
@@ -43,14 +49,16 @@ w}{\partial z} = \alpha E, \qquad B' =
 with \\Q' = Q\\-(m+1)w/(m + w^2) - Q\\\\, the last from differentiating
 the quotient.
 
-\\Q\\ is formed as `exp(dt(log = TRUE) - pt(log.p = TRUE))` because both
-factors underflow together in the far left tail while the ratio stays
-finite. It matters as the degrees of freedom grow and the \\t\\ tail
-approaches the Gaussian's: measured at \\w = -60\\ with \\m = 2000\\,
-the log route returns 21.4345 and `dt(w, m)/pt(w, m)` returns `NaN`.
+\\Q\\ is formed as `exp(dt(log = TRUE) - pt(log.p = TRUE))`, because
+\\t_m(w)\\ and \\T_m(w)\\ underflow together in the far left tail while
+their ratio stays finite. The direct quotient is `NaN` there, in
+particular when the degrees of freedom are large and the \\t\\ tail is
+close to the Gaussian one. Where \\\|z\| \> 10^{20}\\ the functions are
+written in \\\sqrt{s}\\, \\z/\sqrt{s}\\ and \\\nu/s\\, so that no power
+of \\s\\ overflows.
 
-Nothing here differentiates in \\\nu\\. The derivative kernels evaluate
-the same quantities in bounded variables; see
+This function does not differentiate in \\\nu\\. The derivative kernels
+evaluate the same quantities in bounded variables; see
 [`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md).
 
 ## Notation

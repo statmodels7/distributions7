@@ -104,5 +104,5 @@ z <- distrib_rng(d, 2000, list(mu = 0.8, kappa = 3))
 mle <- as.list(coef(fit_distrib(d, z)))
 vapply(distrib_gradient(d, z, mle), sum, numeric(1))
 #>            mu         kappa 
-#> -5.080589e-13  2.680249e-08 
+#> -1.185151e-12  2.680243e-08 
 ```

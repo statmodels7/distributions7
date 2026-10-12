@@ -52,7 +52,7 @@ A named list of numeric vectors, keyed as
 
 ## Details
 
-The components are symmetric in \\(a,b)\\ and NOT in \\c\\: writing
+The components are symmetric in \\(a,b)\\ and not in \\c\\: writing
 \$\$\frac{\partial}{\partial\theta_c}\mathbb{E}\[\ell\_{ab}\] =
 \mathbb{E}\[\ell\_{abc}\] + \mathbb{E}\[\ell\_{ab}\ell\_{c}\],\$\$ the
 first term is fully symmetric and the second is not, so the result is
@@ -65,7 +65,7 @@ uses at order three.
 **The default method differences the family's own expected
 information**, one central stencil per parameter, which is a single
 difference of an analytic quantity wherever that quantity is a
-written-out formula. It is refused where it is not: see
+written-out formula. Where it is not, the method signals an error: see
 [`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md).
 
 On `scale = "link"` the difference is taken along the free scale of the

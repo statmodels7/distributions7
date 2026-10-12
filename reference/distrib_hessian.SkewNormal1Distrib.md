@@ -70,9 +70,8 @@ and \\-2.6\times10^{-27}\\, and the smallest one grows like \\\alpha^4\\
 as the shape moves off zero: \\4.4\times10^{-10}\\ at \\\alpha = 0.01\\
 and \\1.9\times10^{-3}\\ at \\\alpha = 0.5\\.
 
-The singularity belongs to the family as parametrized, not to the
-implementation. Azzalini's centered parametrization removes it, and
-lives in the separate object
+The singularity is a property of this parametrization. Azzalini's
+centered parametrization does not have it and is implemented by
 [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md).
 
 ## Notation
@@ -122,5 +121,5 @@ rank_gap <- function(a) {
   min(abs(eigen(-M, only.values = TRUE)$values))
 }
 vapply(c(0, 0.01, 0.5), rank_gap, 0)
-#> [1] 2.550320e-27 4.355684e-10 1.947533e-03
+#> [1] 2.550320e-27 4.355677e-10 1.947533e-03
 ```

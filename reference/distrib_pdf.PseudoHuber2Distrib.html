@@ -10,7 +10,9 @@ whose variance is \(\sigma^2\). The log-density is
 \(h(\nu) = -\tfrac14 \log\nu + \tfrac12 \log K_2(\sqrt\nu) -
 \tfrac32 \log K_1(\sqrt\nu)\). \(R\) and \(h\) are formed with the
 exponentially scaled Bessel functions, so they stay finite where
-\(K_1(\sqrt\nu)\) underflows."><meta property="og:description" content="Computes the density
+\(K_1(\sqrt\nu)\) underflows. \(D\) is formed as a hypotenuse of
+\(\sqrt{R}\,|y - \mu|/\sigma\) and \(\sqrt\nu\), so the log-density
+stays finite where the squared residual overflows."><meta property="og:description" content="Computes the density
 $$f(y; \mu, \sigma, \nu) = \dfrac{\sqrt{R(\nu)}}{2 \sigma \sqrt{\nu}\,
       K_1(\sqrt{\nu})} \exp\left(-\sqrt{\nu + R(\nu)
       \left(\dfrac{y-\mu}{\sigma}\right)^2}\right), \qquad
@@ -21,7 +23,9 @@ whose variance is \(\sigma^2\). The log-density is
 \(h(\nu) = -\tfrac14 \log\nu + \tfrac12 \log K_2(\sqrt\nu) -
 \tfrac32 \log K_1(\sqrt\nu)\). \(R\) and \(h\) are formed with the
 exponentially scaled Bessel functions, so they stay finite where
-\(K_1(\sqrt\nu)\) underflows."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(K_1(\sqrt\nu)\) underflows. \(D\) is formed as a hypotenuse of
+\(\sqrt{R}\,|y - \mu|/\sigma\) and \(\sqrt\nu\), so the log-density
+stays finite where the squared residual overflows."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +33,7 @@ exponentially scaled Bessel functions, so they stay finite where
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +77,9 @@ whose variance is \(\sigma^2\). The log-density is
 \(h(\nu) = -\tfrac14 \log\nu + \tfrac12 \log K_2(\sqrt\nu) -
 \tfrac32 \log K_1(\sqrt\nu)\). \(R\) and \(h\) are formed with the
 exponentially scaled Bessel functions, so they stay finite where
-\(K_1(\sqrt\nu)\) underflows.</p>
+\(K_1(\sqrt\nu)\) underflows. \(D\) is formed as a hypotenuse of
+\(\sqrt{R}\,|y - \mu|/\sigma\) and \(\sqrt\nu\), so the log-density
+stays finite where the squared residual overflows.</p>
     </div>
 
 

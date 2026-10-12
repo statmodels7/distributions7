@@ -18,9 +18,16 @@ generics named above; the value returned is theirs.
 ## Details
 
 Let \\\ell\\ be the log-density and \\\ell\_{i}, \ell\_{ij}, \dots\\ its
-derivatives with respect to the parameters. The three strategies are:
+derivatives with respect to the parameters. The strategies are:
 
-- `"bartlett"` (also spelled `"opg"`):
+- `"opg"`:
+
+  At order 2, reads \\-\ell_i \ell_j\\ at each observation and takes no
+  expectation, at the cost of one score evaluation; see
+  [`expected_by_opg()`](https://statmodels7.github.io/distributions7/reference/expected_by_opg.md).
+  Above order 2 it is routed to `"bartlett"`.
+
+- `"bartlett"`:
 
   Uses the Bartlett identity of the corresponding order, which expresses
   the expected derivative through expectations of *products of
@@ -33,11 +40,11 @@ derivatives with respect to the parameters. The three strategies are:
   3, \\\mathbb{E}\[\ell\_{ijk}\] =
   -\left(\mathbb{E}\[\ell\_{ij}\ell_k\] +
   \mathbb{E}\[\ell\_{ik}\ell_j\] + \mathbb{E}\[\ell\_{jk}\ell_i\] +
-  \mathbb{E}\[\ell_i\ell_j\ell_k\]\right)\\, and so on. *Fastest at
-  order 2* (only the score is needed) and the only variant that stays
-  valid when the log-likelihood is not differentiable in a parameter,
-  where \\\mathbb{E}\[H\]\\ degenerates but the score variance still
-  gives the information (see
+  \mathbb{E}\[\ell_i\ell_j\ell_k\]\right)\\, and so on. At order 2 it
+  needs only the score, whose product it integrates or sums, so it is
+  slower than `"opg"`. It stays valid when the log-likelihood is not
+  differentiable in a parameter, where \\\mathbb{E}\[H\]\\ degenerates
+  but the score variance still gives the information (see
   [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)).
   Deterministic. At higher orders it needs several integrals, so it is
   usually slower than `"integrate"`. It never requires the top-order
@@ -67,10 +74,11 @@ derivatives with respect to the parameters. The three strategies are:
   Estimates the same quantity as `"integrate"`. **Note:** the cost of
   this option is the cost of simulating from the distribution. A native
   [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
-  is best, and failing that the default RNG falls back to
+  is best; failing that, the default generator uses inverse transform
+  when the family has a quantile method of its own and
   [`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md),
-  which only needs the density. It becomes expensive only for a
-  distribution that supplies a quantile function slow enough to make
+  which only needs the density, otherwise. It becomes expensive only for
+  a distribution that supplies a quantile function slow enough to make
   inverse transform sampling the bottleneck; prefer `"bartlett"` or
   `"integrate"` in that case.
 
@@ -113,23 +121,33 @@ for the three implementations.
 ## Examples
 
 ``` r
-# A family with no closed-form expected information reads 'approx'. The two
-# deterministic strategies agree; Monte Carlo is the same quantity with
-# sampling error on it.
-sn <- skewnormal1_distrib()
-th <- list(mu = 0, sigma = 1, alpha = 3)
-set.seed(2)
-y <- distrib_rng(sn, 40, th)
+# A family defined by its density alone reads 'approx'. The two
+# deterministic strategies agree on the exact -2 / sigma^2; "opg" reads one
+# observation's score product, and Monte Carlo carries sampling error.
+Dens <- S7::new_class("Dens", parent = continuous_distrib)
+S7::method(distrib_pdf, Dens) <- function(distrib, y, theta, log = FALSE, ...) {
+  stats::dnorm(y, theta[[1]], theta[[2]], log = log)
+}
+d <- Dens(distrib_name = "dens", dimension = "univariate",
+          bounds = c(-Inf, Inf), params = c("mu", "sigma"),
+          params_interpretation = c(mu = "location", sigma = "scale"),
+          n_params = 2L,
+          params_bounds = list(mu = c(-Inf, Inf), sigma = c(0, Inf)),
+          link_params = list(mu = linkfunctions7::identity_link(),
+                             sigma = linkfunctions7::log_link()),
+          params_smooth = c(mu = TRUE, sigma = TRUE))
+th <- list(mu = 0, sigma = 2)
+y <- c(-1, 0.5, 2)
 
-vapply(c("bartlett", "integrate"), function(a) {
-  sum(distrib_expected_hessian(sn, y, th, approx = a)$alpha_alpha)
+vapply(c("opg", "bartlett", "integrate"), function(a) {
+  distrib_expected_hessian(d, y, th, approx = a)$sigma_sigma[1]
 }, numeric(1))
-#>  bartlett integrate 
-#> -1.085353 -1.085353 
+#>       opg  bartlett integrate 
+#> -0.140625 -0.500000 -0.500000 
 
 set.seed(3)
-sum(distrib_expected_hessian(sn, y, th, approx = "mc", nsim = 500)$alpha_alpha)
-#> [1] -1.085353
+distrib_expected_hessian(d, y, th, approx = "mc", nsim = 2000)$sigma_sigma[1]
+#> [1] -0.4575573
 
 # A family that writes its expected information out ignores the argument,
 # and fit_distrib() rejects one given there rather than dropping it.

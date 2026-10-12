@@ -20,7 +20,8 @@ y)\\ and \\(\log y - \mu)/(\sigma^4 y)\\.
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 - ...:
 
@@ -28,7 +29,7 @@ y)\\ and \\(\log y - \mu)/(\sigma^4 y)\\.
 
 ## Value
 
-A named list with components `mu` and `sigma`, each a numeric vector of
+A named list with components `mu` and `sigma2`, each a numeric vector of
 length `length(y)`.
 
 ## See also

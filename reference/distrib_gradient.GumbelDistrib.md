@@ -7,10 +7,10 @@ Computes the first derivatives of the Gumbel log-density with respect to
 \ell}{\partial \sigma} = \dfrac{z(1 - w) - 1}{\sigma}.\$\$
 
 The whole family is written in \\w\\, and under the model \\w\\ is
-**standard exponential** whatever the parameters. Every expectation this
-family needs is therefore a derivative of \\\Gamma\\ at 2, and the same
-fact bounds the score above in \\\mu\\ and leaves it unbounded below: a
-value far to the left makes \\w\\ enormous.
+**standard exponential** whatever the parameters. Every expectation of
+this family is therefore a derivative of \\\Gamma\\ at 1 or at 2. The
+score in \\\mu\\ is bounded above by \\1/\sigma\\ and unbounded below,
+because a value far to the left makes \\w\\ large.
 
 With `scale = "link"` the generic applies the chain rule for the links
 the family carries before returning. This method always returns the

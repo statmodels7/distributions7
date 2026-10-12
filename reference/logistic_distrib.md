@@ -2,8 +2,8 @@
 
 Builds the distribution object for the logistic family with mean \\\mu\\
 and scale \\\sigma \> 0\\. The returned object carries closed-form
-derivatives of the log-density to fourth order in the parameters and in
-the response, and closed-form moments.
+derivatives of the log-density to fifth order in the parameters and to
+fourth order in the response, and closed-form moments.
 
 The family is symmetric about \\\mu\\ with variance \\\pi^2\sigma^2/3\\,
 so \\\sigma\\ is a scale, not a standard deviation. Its distribution
@@ -53,8 +53,8 @@ function \\Q(p) = \mu + \sigma \log(p/(1-p))\\.
 The mean and the median are \\\mu\\, the variance is \\\pi^2
 \sigma^2/3\\, the skewness is 0 and the excess kurtosis is \\6/5\\. A
 logistic and a Gaussian matched on their variance are close in the body
-and differ in the tails, the logistic's decaying exponentially and the
-Gaussian's as a square exponential.
+and differ in the tails: the logistic density decays like \\e^{-\|z\|}\\
+and the Gaussian density like \\e^{-z^2/2}\\.
 
 ## Derivatives
 
@@ -69,16 +69,12 @@ z\tanh\left(\dfrac{z}{2}\right)\right\],\$\$ and the expected Hessian is
 \mathbb{E}\left\[\dfrac{\partial^2 \ell}{\partial \mu\\\partial
 \sigma}\right\] = 0.\$\$
 
-Third and fourth orders are closed form **observed** and numerical
-**expected**: two of the nine expectations at those orders require
-\\\int w^k \mathrm{sech}^4 w \tanh^2 w \\ dw\\, which has no elementary
-form, so
-[`distrib_deriv3.LogisticDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LogisticDistrib.md)
-and
+The observed derivatives of orders three to five are closed form, in
+[`distrib_deriv3.LogisticDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LogisticDistrib.md),
 [`distrib_deriv4.LogisticDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.LogisticDistrib.md)
-route their `expected = TRUE` branch to
-[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md).
-This is the only place in this family where a numerical route is taken.
+and
+[`distrib_deriv5.LogisticDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.LogisticDistrib.md),
+and the expectations of orders three and four are closed form as well.
 
 ## Estimation
 
@@ -127,7 +123,7 @@ d
 #>   mu    (mean)               | Link: identity   | Domain: (-Inf, Inf)
 #>   sigma (scale)              | Link: log        | Domain: (0, Inf)
 
-# The density and the distribution function are R's own.
+# The density is R's own.
 y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, sigma = 1.5)
 all.equal(distrib_pdf(d, y, th), dlogis(y, 0.4, 1.5))

@@ -61,8 +61,8 @@ ignored. `y` is read only for its length.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -81,7 +81,7 @@ holds and this equals the variance of the score.
 ## See also
 
 [`distrib_hessian.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.InvGauss1Distrib.md)
-for the observed quantity this is the expectation of,
+for the observed Hessian, of which this is the expectation,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
 which inverts it at each step, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)

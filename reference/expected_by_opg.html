@@ -15,7 +15,7 @@ support, so it costs one call to distrib_gradient()."><meta property="og:image" 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,25 +83,25 @@ support, so it costs one call to <code><a href="distrib_gradient.html">distrib_g
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The name is worth keeping apart from the identity it comes from. The second
+    <p>This route differs from the identity that it comes from. The second
 Bartlett identity states that
 \(\mathbb{E}[\ell^{(ij)}] = -\mathbb{E}[\ell^{(i)}\ell^{(j)}]\), and
 <code><a href="expected_by_bartlett.html">expected_by_bartlett()</a></code> evaluates the right-hand side as written, which
 for a discrete family is a sum over the whole support and for a continuous
 one a quadrature. This function drops the expectation and reads the
-integrand at the observation in hand. The two agree in expectation and not
-in cost: measured on <code><a href="pig1_distrib.html">pig1_distrib()</a></code> with \(\mu\) varying by
-observation, one call to the identity at \(n = 1000\) evaluated 1.67
-million rows of the family's derivative kernel and took 18.4 seconds, where
-this route evaluates \(n\) rows.</p>
-<p>What is given up is variance, not consistency.
+integrand at the observation in hand. The two agree in expectation and
+differ in cost: for a discrete family the identity evaluates the derivative
+kernel over the whole support for every observation, whereas this route
+evaluates it once per observation.</p>
+<p>The estimate has more variance than the exact expectation and remains
+consistent.
 \(-\ell^{(i)}\ell^{(j)}\) is an unbiased estimate of the corresponding
 component of \(\mathbb{E}[\ell^{(ij)}]\) at that observation, so the sum
 over observations, which is what a scoring step aggregates into
 \(X^\top W X\), estimates the information consistently. Component by
 component it is a rank-one matrix and correlates poorly with the exact
-expectation; summed it agreed with the exact route to within 10 per cent on
-the same measurement, and a fit driven by it reached the same maximum.</p>
+expectation; summed over the observations it approximates the exact
+information, and a fit driven by it reaches the same maximum.</p>
 <p>Two properties make it the right default for a scoring step. It is positive
 semidefinite by construction, being a sum of outer products, where the
 observed Hessian need not be away from the optimum; and the fixed point is

@@ -16,7 +16,7 @@ recycles it to the length the two parameters imply.
   A named list with components `mu` (the mean, any real value) and
   `sigma` (the standard deviation, positive), each a numeric vector of
   length 1 or `n`. Aligned and validated by name, so a missing or
-  out-of-bounds component throws.
+  out-of-bounds component signals an error.
 
 - ...:
 

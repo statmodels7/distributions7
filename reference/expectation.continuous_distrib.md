@@ -10,8 +10,8 @@ quantiles, which anchors the quadrature on the probability mass wherever
 it sits. For a family with a non-smooth parameter, the points that
 [`kink_knots()`](https://statmodels7.github.io/distributions7/reference/kink_knots.md)
 returns are knots as well, so that no panel contains a jump of the
-score. A combination the batched quadrature rejects – an integrable
-endpoint singularity too harsh for bisection – is rescued by one scalar
+score. A combination that the batched quadrature rejects (an integrable
+endpoint singularity too harsh for bisection) is rescued by one scalar
 [`stats::integrate()`](https://rdrr.io/r/stats/integrate.html) run,
 whose extrapolation reaches it; an error naming the combination is
 raised only when both routes fail.

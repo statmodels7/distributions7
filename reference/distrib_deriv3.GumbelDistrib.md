@@ -8,9 +8,10 @@ with respect to \\\mu\\ and \\\sigma\\, in closed form. With \\z =
 With `expected = TRUE` the expectations are returned, also in closed
 form. They rest on \\w\\ being standard exponential under the model,
 which makes \\\mathbb{E}\[z^k w\] = (-1)^k \Gamma^{(k)}(2)\\ and
-\\\mathbb{E}\[z\] = \gamma\\: every expectation the family needs is a
-derivative of \\\Gamma\\ at 2, assembled from polygamma functions there.
-Since both routes are closed form, `approx` and `nsim` are ignored.
+\\\mathbb{E}\[z\] = \gamma\\: every expectation of the family is a
+derivative of \\\Gamma\\ at 1 or at 2, assembled from polygamma
+functions there. Since both routes are closed form, `approx` and `nsim`
+are ignored.
 
 ## Arguments
 

@@ -6,24 +6,26 @@ $$f(y) \propto \lvert\Sigma\rvert^{-1/2}
 The location \(\mu\) contributes \(p\) scalar parameters, the scale
 matrix \(\Sigma\) is carried by a parameters7 parametrization whose
 free values become scalar parameters, and the degrees of freedom \(\nu\)
-is added last. It inherits from multivariate_distrib, so the response is
-an \(n \times p\) matrix and the distribution function and the quantile
-function are refused.
+is added last. It inherits from multivariate_distrib, so the response is an
+\(n \times p\) matrix and the distribution function and the quantile
+function signal an error.
 Build one with mvstudent_t1_distrib(), which fills the properties in and
 checks the rank of the parametrization. This page documents the raw S7
-constructor, which validates nothing."><meta property="og:description" content="The S7 class of the elliptical Student t family on \(\mathbb{R}^p\), with
+constructor, which runs only the validators of multivariate_distrib and
+distrib; nothing checks param."><meta property="og:description" content="The S7 class of the elliptical Student t family on \(\mathbb{R}^p\), with
 density
 $$f(y) \propto \lvert\Sigma\rvert^{-1/2}
   \left(1 + \frac{(y-\mu)^\top \Sigma^{-1} (y-\mu)}{\nu}\right)^{-(\nu+p)/2}.$$
 The location \(\mu\) contributes \(p\) scalar parameters, the scale
 matrix \(\Sigma\) is carried by a parameters7 parametrization whose
 free values become scalar parameters, and the degrees of freedom \(\nu\)
-is added last. It inherits from multivariate_distrib, so the response is
-an \(n \times p\) matrix and the distribution function and the quantile
-function are refused.
+is added last. It inherits from multivariate_distrib, so the response is an
+\(n \times p\) matrix and the distribution function and the quantile
+function signal an error.
 Build one with mvstudent_t1_distrib(), which fills the properties in and
 checks the rank of the parametrization. This page documents the raw S7
-constructor, which validates nothing."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+constructor, which runs only the validators of multivariate_distrib and
+distrib; nothing checks param."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +33,7 @@ constructor, which validates nothing."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,12 +73,13 @@ $$f(y) \propto \lvert\Sigma\rvert^{-1/2}
 The location \(\mu\) contributes \(p\) scalar parameters, the scale
 matrix \(\Sigma\) is carried by a <span class="pkg">parameters7</span> parametrization whose
 free values become scalar parameters, and the degrees of freedom \(\nu\)
-is added last. It inherits from <code>multivariate_distrib</code>, so the response is
-an \(n \times p\) matrix and the distribution function and the quantile
-function are refused.</p>
+is added last. It inherits from <code>multivariate_distrib</code>, so the response is an
+\(n \times p\) matrix and the distribution function and the quantile
+function signal an error.</p>
 <p>Build one with <code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code>, which fills the properties in and
 checks the rank of the parametrization. This page documents the raw S7
-constructor, which validates nothing.</p>
+constructor, which runs only the validators of <code>multivariate_distrib</code> and
+<code>distrib</code>; nothing checks <code>param</code>.</p>
     </div>
 
     <div class="section level2">
@@ -150,11 +153,13 @@ scalar parameters of the distribution.</p></dd>
 
 
 <dt id="arg-inverted">inverted<a class="anchor" aria-label="anchor" href="#arg-inverted"></a></dt>
-<dd><p>Logical of length 1. <code>TRUE</code> when <code>param</code> carries the
-inverse scale matrix \(\Sigma^{-1}\) and <code>FALSE</code> when it carries the
-scale matrix \(\Sigma\). Nothing but the sign of the log-determinant and
-one matrix inversion depends on it; the law is the same either way, and
-neither matrix is a moment of the response.</p></dd>
+<dd><p>Logical of length 1. <code>TRUE</code> when <code>param</code> carries the inverse
+scale matrix \(\Sigma^{-1}\) and <code>FALSE</code> when it carries the scale matrix
+\(\Sigma\). It decides which derivative arrays are the parametrization's
+own and which are obtained from them (see <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code>), the sign
+of the log-determinant, the prefix of the free names and the quantities
+that <code><a href="mv_summary.html">mv_summary()</a></code> reports. The same \(\Sigma\) gives the same law
+either way, and neither matrix is a moment of the response.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -170,25 +175,39 @@ supplied.</p>
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered on this class:
-<code><a href="distrib_cross2_y.MvStudentTDistrib.html">distrib_cross2_y()</a></code>,
-<code><a href="distrib_cross_y.MvStudentTDistrib.html">distrib_cross_y()</a></code>,
-<code><a href="distrib_expected_hessian.MvStudentTDistrib.html">distrib_expected_hessian()</a></code>,
-<code><a href="distrib_grad_y.MvStudentTDistrib.html">distrib_grad_y()</a></code>,
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.MvStudentTDistrib.html">distrib_pdf()</a></code> and
+<code><a href="distrib_rng.MvStudentTDistrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.MvStudentTDistrib.html">distrib_gradient()</a></code>,
-<code><a href="distrib_hess_y.MvStudentTDistrib.html">distrib_hess_y()</a></code>,
 <code><a href="distrib_hessian.MvStudentTDistrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_pdf.MvStudentTDistrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_rng.MvStudentTDistrib.html">distrib_rng()</a></code>,
-<code><a href="generate_random_theta.MvStudentTDistrib.html">generate_random_theta()</a></code>,
-<code><a href="mean.MvStudentTDistrib.html">mean()</a></code>,
+<code><a href="distrib_expected_hessian.MvStudentTDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.MvStudentTDistrib.html">distrib_deriv3()</a></code> and
+<code><a href="distrib_deriv4.MvStudentTDistrib.html">distrib_deriv4()</a></code>;</p></li>
+<li><p>the derivatives in the response:
+<code><a href="distrib_grad_y.MvStudentTDistrib.html">distrib_grad_y()</a></code>,
+<code><a href="distrib_hess_y.MvStudentTDistrib.html">distrib_hess_y()</a></code>,
+<code><a href="distrib_deriv3_y.MvStudentTDistrib.html">distrib_deriv3_y()</a></code> and
+<code><a href="distrib_deriv3_y.MvStudentTDistrib.html">distrib_deriv4_y()</a></code>;</p></li>
+<li><p>the mixed derivatives in the response and the parameters:
+<code><a href="distrib_cross_y.MvStudentTDistrib.html">distrib_cross_y()</a></code>,
+<code><a href="distrib_cross2_y.MvStudentTDistrib.html">distrib_cross2_y()</a></code>,
+<code><a href="distrib_cross3_y.MvStudentTDistrib.html">distrib_cross3_y()</a></code>,
+<code><a href="distrib_grad_y_hess.MvStudentTDistrib.html">distrib_grad_y_hess()</a></code> and
+<code><a href="distrib_hess_y_hess.MvStudentTDistrib.html">distrib_hess_y_hess()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.MvStudentTDistrib.html">mean()</a></code> and
+<code><a href="variance.MvStudentTDistrib.html">variance()</a></code>;</p></li>
+<li><p>the multivariate summaries:
 <code><a href="mv_location.MvStudentTDistrib.html">mv_location()</a></code>,
-<code><a href="mv_marginal.MvStudentTDistrib.html">mv_marginal()</a></code>,
 <code><a href="mv_sigma.MvStudentTDistrib.html">mv_sigma()</a></code>,
-<code><a href="variance.MvStudentTDistrib.html">variance()</a></code></p>
-<p>Everything else comes from <code><a href="multivariate_distrib.html">multivariate_distrib()</a></code>. The third and fourth
-derivatives are registered in <code>mv_higher.R</code>, which the two multivariate
-families share.</p>
+<code><a href="mv_marginal.MvStudentTDistrib.html">mv_marginal()</a></code> and
+<code><a href="mv_derived.MvStudentTDistrib.html">mv_derived()</a></code>;</p></li>
+<li><p>the validation and fitting helpers:
+<code><a href="mv_reference_draw.MvStudentTDistrib.html">mv_reference_draw()</a></code>,
+<code><a href="generate_random_theta.MvStudentTDistrib.html">generate_random_theta()</a></code> and
+<code><a href="distrib_start.MvStudentTDistrib.html">distrib_start()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="multivariate_distrib.html">multivariate_distrib()</a></code>, whose methods
+signal an error for the distribution function, the quantile function, the
+skewness and the kurtosis.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

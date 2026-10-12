@@ -69,7 +69,7 @@ y <- c(-0.5, 0, 1)
 g <- distrib_gradient(tn, y, theta)
 gp <- distrib_gradient(gaussian1_distrib(), y, theta)
 max(abs(unlist(g) - (unlist(gp) - rep(unlist(m), each = length(y)))))
-#> [1] 0
+#> [1] 5.551115e-17
 
 # It is also what makes the truncated score have mean zero, which the
 # untruncated score does not have over the interval.

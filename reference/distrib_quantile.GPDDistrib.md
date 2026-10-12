@@ -2,15 +2,18 @@
 
 Computes the quantiles in closed form, \$\$Q(p; \sigma, \xi) =
 \dfrac{\sigma}{\xi}\left\\(1-p)^{-\xi} - 1\right\\,\$\$ with
-\\-\sigma\log(1-p)\\ at \\\xi = 0\\. The generalized Pareto is one of
-the few families here whose quantile function is elementary, so nothing
-is inverted numerically and
+\\-\sigma\log(1-p)\\ at \\\xi = 0\\. The quantile function is
+elementary, so nothing is inverted numerically and
 [`distrib_rng.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GPDDistrib.md)
-can use the inverse transform.
+uses the inverse transform.
 
-Near zero the shape branch is taken on \\\|\xi\| \< 10^{-8}\\ and the
-value comes from `log1p(-p)`, which keeps its digits for a probability
-close to zero where `log(1 - p)` would not.
+The method first forms the logarithm of the survival probability, \\\log
+S\\, from `p` without computing \\1 - p\\ or exponentiating: `log1p(-p)`
+for a lower-tail probability, \\\log p\\ for an upper-tail one, and the
+corresponding forms when `log.p = TRUE`. The quantile is then
+\\\sigma\\\mathrm{expm1}(-\xi\log S)/\xi\\, and \\-\sigma\log S\\ at
+\\\xi = 0\\, so a probability close to zero or close to one keeps its
+digits whichever tail it is given in.
 
 ## Arguments
 
@@ -23,7 +26,7 @@ close to zero where `log(1 - p)` would not.
 
   A numeric vector of probabilities in \\\[0, 1\]\\, or their logarithms
   when `log.p = TRUE`. At `p = 1` the value is the endpoint, which is
-  `Inf` for a non-negative shape.
+  `Inf` for a non-negative shape; a value outside the range gives `NaN`.
 
 - theta:
 
@@ -37,8 +40,8 @@ close to zero where `log(1 - p)` would not.
 
 - log.p:
 
-  Logical of length 1. When `TRUE`, `p` is given as a logarithm and is
-  exponentiated first. Defaults to `FALSE`.
+  Logical of length 1. When `TRUE`, `p` is given as a logarithm.
+  Defaults to `FALSE`.
 
 - ...:
 
@@ -74,9 +77,11 @@ all.equal(distrib_quantile(d, p, list(sigma = 1.5, xi = 0)),
           qexp(p, rate = 1 / 1.5))
 #> [1] TRUE
 
-# A negative shape has a finite upper quantile: the endpoint itself.
+# A negative shape bounds the quantiles by the endpoint, which p = 1
+# reaches.
 c(q999 = distrib_quantile(d, 0.999, list(sigma = 2, xi = -0.4)),
+  q1 = distrib_quantile(d, 1, list(sigma = 2, xi = -0.4)),
   endpoint = distributions7:::gpd_endpoint(2, -0.4))
-#>     q999 endpoint 
-#> 4.684521 5.000000 
+#>     q999       q1 endpoint 
+#> 4.684521 5.000000 5.000000 
 ```

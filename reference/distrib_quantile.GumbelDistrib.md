@@ -19,8 +19,8 @@ returns `p`. The median is \\\mu - \sigma\log\log 2\\, about \\\mu +
 - p:
 
   A numeric vector of probabilities in \\\[0, 1\]\\, or of their
-  logarithms when `log.p = TRUE`. A value outside the range gives `NaN`;
-  the endpoints give `-Inf` and `Inf`.
+  logarithms when `log.p = TRUE`. A value outside the range gives `NaN`
+  with a warning; the endpoints give `-Inf` and `Inf`.
 
 - theta:
 

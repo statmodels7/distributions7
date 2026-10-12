@@ -54,9 +54,9 @@ values are logarithms and are non-positive.
 for the generalized inverse,
 [`distrib_pdf.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin2Distrib.md)
 for the mass,
-[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
-for the derivatives of this function in the parameters, which are an
-exact finite sum for a discrete family, and
+[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.NegBin2Distrib.md)
+for the derivatives of this function in the parameters (closed form in
+the mean, an exact finite sum in the dispersion), and
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
 for the generic.
 

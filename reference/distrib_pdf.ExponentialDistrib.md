@@ -24,9 +24,8 @@ reciprocal is taken inside the method; a reader passing `rate` where
 
   A named list with the single component `mu`, a numeric vector of
   length 1 or of the length of `y`. A value of length 1 is recycled.
-  `mu` must be strictly positive; a non-positive value gives `NaN` with
-  a warning from
-  [`stats::dexp()`](https://rdrr.io/r/stats/Exponential.html).
+  `mu` must be strictly positive; the generic signals an error for a
+  zero or negative value before the method is called.
 
 - log:
 

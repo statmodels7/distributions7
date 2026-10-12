@@ -5,23 +5,29 @@ $$F(q; \mu, \sigma) = \begin{cases}
   \tfrac{1}{2}\exp\!\left(\dfrac{q-\mu}{\sigma}\right), &amp;amp; q &amp;lt; \mu,\\[4pt]
   1 - \tfrac{1}{2}\exp\!\left(-\dfrac{q-\mu}{\sigma}\right), &amp;amp; q \ge \mu.
 \end{cases}$$
-The branch is selected per observation, and both arms are continuous at
-\(q = \mu\), where the value is \(1/2\). With lower.tail = FALSE the
-complement is taken after the branch, and with log.p = TRUE the logarithm
-of the result is taken; neither is computed in a way that avoids
-cancellation, so a probability that has already underflowed is not
-recovered."><meta property="og:description" content="Computes the Laplace distribution function, which is one exponential on each
+Both arms are continuous at \(q = \mu\), where the value is \(1/2\).
+The method computes the logarithm of each tail at the standardized
+residual \(r = (q-\mu)/\sigma\): the tail on the far side of the
+location is \(\log(1/2) - |r|\), and the tail on the near side is
+\(\log(1 - e^{-|r|}/2)\), computed with log1p(). The requested tail is
+returned on the log scale or exponentiated, so neither lower.tail = FALSE
+nor log.p = TRUE subtracts from one, and a tail probability far below
+machine epsilon, or its logarithm, is returned accurately. The helper is
+laplace_cdf_tails()."><meta property="og:description" content="Computes the Laplace distribution function, which is one exponential on each
 side of the location:
 $$F(q; \mu, \sigma) = \begin{cases}
   \tfrac{1}{2}\exp\!\left(\dfrac{q-\mu}{\sigma}\right), &amp;amp; q &amp;lt; \mu,\\[4pt]
   1 - \tfrac{1}{2}\exp\!\left(-\dfrac{q-\mu}{\sigma}\right), &amp;amp; q \ge \mu.
 \end{cases}$$
-The branch is selected per observation, and both arms are continuous at
-\(q = \mu\), where the value is \(1/2\). With lower.tail = FALSE the
-complement is taken after the branch, and with log.p = TRUE the logarithm
-of the result is taken; neither is computed in a way that avoids
-cancellation, so a probability that has already underflowed is not
-recovered."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+Both arms are continuous at \(q = \mu\), where the value is \(1/2\).
+The method computes the logarithm of each tail at the standardized
+residual \(r = (q-\mu)/\sigma\): the tail on the far side of the
+location is \(\log(1/2) - |r|\), and the tail on the near side is
+\(\log(1 - e^{-|r|}/2)\), computed with log1p(). The requested tail is
+returned on the log scale or exponentiated, so neither lower.tail = FALSE
+nor log.p = TRUE subtracts from one, and a tail probability far below
+machine epsilon, or its logarithm, is returned accurately. The helper is
+laplace_cdf_tails()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +35,7 @@ recovered."><meta property="og:image" content="https://statmodels7.github.io/dis
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,12 +74,15 @@ $$F(q; \mu, \sigma) = \begin{cases}
   \tfrac{1}{2}\exp\!\left(\dfrac{q-\mu}{\sigma}\right), &amp; q &lt; \mu,\\[4pt]
   1 - \tfrac{1}{2}\exp\!\left(-\dfrac{q-\mu}{\sigma}\right), &amp; q \ge \mu.
 \end{cases}$$
-The branch is selected per observation, and both arms are continuous at
-\(q = \mu\), where the value is \(1/2\). With <code>lower.tail = FALSE</code> the
-complement is taken after the branch, and with <code>log.p = TRUE</code> the logarithm
-of the result is taken; neither is computed in a way that avoids
-cancellation, so a probability that has already underflowed is not
-recovered.</p>
+Both arms are continuous at \(q = \mu\), where the value is \(1/2\).
+The method computes the logarithm of each tail at the standardized
+residual \(r = (q-\mu)/\sigma\): the tail on the far side of the
+location is \(\log(1/2) - |r|\), and the tail on the near side is
+\(\log(1 - e^{-|r|}/2)\), computed with <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p()</a></code>. The requested tail is
+returned on the log scale or exponentiated, so neither <code>lower.tail = FALSE</code>
+nor <code>log.p = TRUE</code> subtracts from one, and a tail probability far below
+machine epsilon, or its logarithm, is returned accurately. The helper is
+<code><a href="laplace_cdf_tails.html">laplace_cdf_tails()</a></code>.</p>
     </div>
 
 
@@ -97,14 +106,13 @@ recycled. <code>sigma</code> must be strictly positive.</p></dd>
 
 <dt id="arg-lower-tail">lower.tail<a class="anchor" aria-label="anchor" href="#arg-lower-tail"></a></dt>
 <dd><p>Logical of length 1. When <code>TRUE</code>, the default,
-probabilities are \(P(Y \le q)\); when <code>FALSE</code> they are \(P(Y &gt; q)\),
-computed as \(1 - F\).</p></dd>
+probabilities are \(P(Y \le q)\); when <code>FALSE</code> they are
+\(P(Y &gt; q)\).</p></dd>
 
 
 <dt id="arg-log-p">log.p<a class="anchor" aria-label="anchor" href="#arg-log-p"></a></dt>
 <dd><p>Logical of length 1. When <code>TRUE</code> the logarithm of the
-probability is returned, taken after the probability itself is formed.
-Defaults to <code>FALSE</code>.</p></dd>
+probability is returned. Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -143,6 +151,13 @@ the generic.</p></div>
 <span class="r-in"><span><span class="co"># Symmetric: F(mu - a) + F(mu + a) = 1.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span> <span class="op">-</span> <span class="fl">2</span>, <span class="va">th</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span> <span class="op">+</span> <span class="fl">2</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fifty scale units out, the upper tail is exp(-50)/2, and its logarithm</span></span></span>
+<span class="r-in"><span><span class="co"># is exact as well.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span> <span class="op">+</span> <span class="fl">50</span> <span class="op">*</span> <span class="fl">1.5</span>, <span class="va">th</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 9.643749e-23</span>
+<span class="r-in"><span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span> <span class="op">+</span> <span class="fl">50</span> <span class="op">*</span> <span class="fl">1.5</span>, <span class="va">th</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span>, log.p <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -50.69315</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

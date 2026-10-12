@@ -3,13 +3,25 @@
 in the two shapes, in closed form. The log-mass is a sum of log-gamma terms,
 so the third derivative is the same sum with \(\psi_2\), the second
 polygamma, in place of \(\log\Gamma\). A component naming both shapes
-keeps only the terms in \(\alpha+\beta\) and is free of the data.
+keeps only the terms in \(\alpha+\beta\) and is free of the data. Where
+\(\alpha+\beta &amp;gt; 10\) the polygamma differences cancel as the shapes
+grow, and the components are computed instead from the direct sums over
+the integer shifts, \(c_K[\sum_{i&amp;lt;y}(\alpha+i)^{-K} -
+\sum_{i&amp;lt;n}(\alpha+\beta+i)^{-K}]\) for the pure component in \(\alpha\)
+with \(c_K = (-1)^{K-1}(K-1)!\), whose terms have one sign
+(betabinom_direct()).
 With expected = TRUE the expectation is an exact finite sum over the
 support, so approx and nsim are ignored on both branches."><meta property="og:description" content="Computes the four distinct third derivatives of the beta-binomial log-mass
 in the two shapes, in closed form. The log-mass is a sum of log-gamma terms,
 so the third derivative is the same sum with \(\psi_2\), the second
 polygamma, in place of \(\log\Gamma\). A component naming both shapes
-keeps only the terms in \(\alpha+\beta\) and is free of the data.
+keeps only the terms in \(\alpha+\beta\) and is free of the data. Where
+\(\alpha+\beta &amp;gt; 10\) the polygamma differences cancel as the shapes
+grow, and the components are computed instead from the direct sums over
+the integer shifts, \(c_K[\sum_{i&amp;lt;y}(\alpha+i)^{-K} -
+\sum_{i&amp;lt;n}(\alpha+\beta+i)^{-K}]\) for the pure component in \(\alpha\)
+with \(c_K = (-1)^{K-1}(K-1)!\), whose terms have one sign
+(betabinom_direct()).
 With expected = TRUE the expectation is an exact finite sum over the
 support, so approx and nsim are ignored on both branches."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -19,7 +31,7 @@ support, so approx and nsim are ignored on both branches."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +68,13 @@ support, so approx and nsim are ignored on both branches."><meta property="og:im
 in the two shapes, in closed form. The log-mass is a sum of log-gamma terms,
 so the third derivative is the same sum with \(\psi_2\), the second
 polygamma, in place of \(\log\Gamma\). A component naming both shapes
-keeps only the terms in \(\alpha+\beta\) and is free of the data.</p>
+keeps only the terms in \(\alpha+\beta\) and is free of the data. Where
+\(\alpha+\beta &gt; 10\) the polygamma differences cancel as the shapes
+grow, and the components are computed instead from the direct sums over
+the integer shifts, \(c_K[\sum_{i&lt;y}(\alpha+i)^{-K} -
+\sum_{i&lt;n}(\alpha+\beta+i)^{-K}]\) for the pure component in \(\alpha\)
+with \(c_K = (-1)^{K-1}(K-1)!\), whose terms have one sign
+(<code><a href="betabinom_direct.html">betabinom_direct()</a></code>).</p>
 <p>With <code>expected = TRUE</code> the expectation is an <strong>exact finite sum</strong> over the
 support, so <code>approx</code> and <code>nsim</code> are ignored on both branches.</p>
     </div>

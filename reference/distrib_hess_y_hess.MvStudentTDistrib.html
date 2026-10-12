@@ -9,8 +9,8 @@ $$\partial_{ab} M = -c_{ab}\Sigma^{-1} - c_a\partial_b\Sigma^{-1}
   + 2d_{ab}\,ww^\top + 2d_a S(w_b, w) + 2d_b S(w_a, w)
   + 2d\left\{S(w_{ab}, w) + S(w_a, w_b)\right\},$$
 with \(S(u, v) = uv^\top + vu^\top\) and every piece from
-mvt_dpieces(). No pair vanishes, where for a gaussian every pair naming a
-location parameter is exactly zero."><meta property="og:description" content="Computes \(\partial^4\ell/\partial y\,\partial y^\top
+mvt_dpieces(). For a gaussian every pair naming a location parameter is
+exactly zero; for the t these pairs are not zero in general."><meta property="og:description" content="Computes \(\partial^4\ell/\partial y\,\partial y^\top
 \partial\theta_a\partial\theta_b\), one \(p \times p \times n\) array per
 unordered pair of parameters. It is the expansion of
 \(M = \ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top\) carried one order
@@ -20,8 +20,8 @@ $$\partial_{ab} M = -c_{ab}\Sigma^{-1} - c_a\partial_b\Sigma^{-1}
   + 2d_{ab}\,ww^\top + 2d_a S(w_b, w) + 2d_b S(w_a, w)
   + 2d\left\{S(w_{ab}, w) + S(w_a, w_b)\right\},$$
 with \(S(u, v) = uv^\top + vu^\top\) and every piece from
-mvt_dpieces(). No pair vanishes, where for a gaussian every pair naming a
-location parameter is exactly zero."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+mvt_dpieces(). For a gaussian every pair naming a location parameter is
+exactly zero; for the t these pairs are not zero in general."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +29,7 @@ location parameter is exactly zero."><meta property="og:image" content="https://
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +72,8 @@ $$\partial_{ab} M = -c_{ab}\Sigma^{-1} - c_a\partial_b\Sigma^{-1}
   + 2d_{ab}\,ww^\top + 2d_a S(w_b, w) + 2d_b S(w_a, w)
   + 2d\left\{S(w_{ab}, w) + S(w_a, w_b)\right\},$$
 with \(S(u, v) = uv^\top + vu^\top\) and every piece from
-<code><a href="mvt_dpieces.html">mvt_dpieces()</a></code>. No pair vanishes, where for a gaussian every pair naming a
-location parameter is exactly zero.</p>
+<code><a href="mvt_dpieces.html">mvt_dpieces()</a></code>. For a gaussian every pair naming a location parameter is
+exactly zero; for the t these pairs are not zero in general.</p>
     </div>
 
 
@@ -96,8 +96,9 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, handled by the
-generic before dispatch. The two differ here.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The method
+returns the parameter scale and the generic applies the link scale to its
+result. The two differ here.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -156,7 +157,7 @@ with one response index, <code><a href="mvt_dpieces.html">mvt_dpieces()</a></cod
 <span class="r-in"><span>                <span class="op">(</span><span class="fu">f</span><span class="op">(</span><span class="va">h</span>, <span class="va">h</span><span class="op">)</span> <span class="op">-</span> <span class="fu">f</span><span class="op">(</span><span class="va">h</span>, <span class="op">-</span><span class="va">h</span><span class="op">)</span> <span class="op">-</span> <span class="fu">f</span><span class="op">(</span><span class="op">-</span><span class="va">h</span>, <span class="va">h</span><span class="op">)</span> <span class="op">+</span> <span class="fu">f</span><span class="op">(</span><span class="op">-</span><span class="va">h</span>, <span class="op">-</span><span class="va">h</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">4</span> <span class="op">*</span> <span class="va">h</span> <span class="op">*</span> <span class="va">h</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">hh</span><span class="op">[[</span><span class="va">key</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          gap        scale </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7.384823e-07 1.163532e+00 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8.103763e-07 1.163532e+00 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -5,19 +5,21 @@ scale matrix \(\Sigma\) and mvstudent_t2_distrib() its inverse
 \(\Sigma^{-1}\). Each carries a location vector of \(p\) free
 parameters, the matrix through a parameters7 parametrization, and a
 positive degrees-of-freedom parameter. The free values become ordinary
-scalar parameters, so the object answers every generic of the distrib
-contract with theta a flat named list of numbers. Both default to an
-unstructured matrix in the log-Cholesky parametrization, which is
-p * (p + 1) / 2 free values, and to a log link on nu."><meta property="og:description" content="Two families on \(\mathbb{R}^p\), differing in which matrix their
+scalar parameters, so the generics of the distrib class accept the object,
+with theta a flat named list of numbers; the distribution function and the
+quantile function signal an error. Both default to an unstructured matrix in
+the log-Cholesky parametrization, which has p * (p + 1) / 2 free values,
+and to a log link on nu."><meta property="og:description" content="Two families on \(\mathbb{R}^p\), differing in which matrix their
 parametrization describes: mvstudent_t1_distrib() parametrizes the
 scale matrix \(\Sigma\) and mvstudent_t2_distrib() its inverse
 \(\Sigma^{-1}\). Each carries a location vector of \(p\) free
 parameters, the matrix through a parameters7 parametrization, and a
 positive degrees-of-freedom parameter. The free values become ordinary
-scalar parameters, so the object answers every generic of the distrib
-contract with theta a flat named list of numbers. Both default to an
-unstructured matrix in the log-Cholesky parametrization, which is
-p * (p + 1) / 2 free values, and to a log link on nu."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+scalar parameters, so the generics of the distrib class accept the object,
+with theta a flat named list of numbers; the distribution function and the
+quantile function signal an error. Both default to an unstructured matrix in
+the log-Cholesky parametrization, which has p * (p + 1) / 2 free values,
+and to a log link on nu."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +27,7 @@ p * (p + 1) / 2 free values, and to a log link on nu."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,10 +66,11 @@ parametrization describes: <code>mvstudent_t1_distrib()</code> parametrizes the
 \(\Sigma^{-1}\). Each carries a location vector of \(p\) free
 parameters, the matrix through a <span class="pkg">parameters7</span> parametrization, and a
 positive degrees-of-freedom parameter. The free values become ordinary
-scalar parameters, so the object answers every generic of the <code>distrib</code>
-contract with <code>theta</code> a flat named list of numbers. Both default to an
-unstructured matrix in the log-Cholesky parametrization, which is
-<code>p * (p + 1) / 2</code> free values, and to a log link on <code>nu</code>.</p>
+scalar parameters, so the generics of the <code>distrib</code> class accept the object,
+with <code>theta</code> a flat named list of numbers; the distribution function and the
+quantile function signal an error. Both default to an unstructured matrix in
+the log-Cholesky parametrization, which has <code>p * (p + 1) / 2</code> free values,
+and to a log link on <code>nu</code>.</p>
     </div>
 
     <div class="section level2">
@@ -83,14 +86,14 @@ unstructured matrix in the log-Cholesky parametrization, which is
 
 <dl><dt id="arg-n-dim">n_dim<a class="anchor" aria-label="anchor" href="#arg-n-dim"></a></dt>
 <dd><p>The dimension \(p\) of one observation. A single positive
-whole number, finite and at least 1. Anything else throws an error.</p></dd>
+whole number, finite and at least 1. Any other value signals an error.</p></dd>
 
 
 <dt id="arg-sigma">sigma<a class="anchor" aria-label="anchor" href="#arg-sigma"></a></dt>
 <dd><p>A <span class="pkg">parameters7</span> parametrization of the scale matrix, of
 dimension <code>n_dim</code> and of full rank. Defaults to
 <code>parameters7::log_cholesky(n_dim)</code>. A rank-deficient parametrization is
-rejected: the density would not normalize.</p></dd>
+rejected, the density not normalizing.</p></dd>
 
 
 <dt id="arg-link-nu">link_nu<a class="anchor" aria-label="anchor" href="#arg-link-nu"></a></dt>
@@ -101,7 +104,7 @@ every point of the free scale.</p></dd>
 
 
 <dt id="arg-omega">omega<a class="anchor" aria-label="anchor" href="#arg-omega"></a></dt>
-<dd><p>A <span class="pkg">parameters7</span> parametrization of the INVERSE scale
+<dd><p>A <span class="pkg">parameters7</span> parametrization of the inverse scale
 matrix, of dimension <code>n_dim</code> and of full rank. Defaults to
 <code>parameters7::log_cholesky(n_dim)</code>. It is the precision of the response
 only up to the factor \((\nu-2)/\nu\); see <strong>Details</strong>.</p></dd>
@@ -113,54 +116,54 @@ only up to the factor \((\nu-2)/\nu\); see <strong>Details</strong>.</p></dd>
 with <code>param</code> the parametrization supplied and <code>inverted</code> recording which
 matrix it carries. Its <code>params</code> are <code>mu1</code>, ..., <code>mup</code>, the prefixed
 free names, then <code>nu</code>; <code>n_params</code> is <code>p + param@n_free + 1</code>; every
-<code>params_bounds</code> entry is \((-\infty, \infty)\) except <code>nu</code>'s, which is
-\((0, \infty)\); and every link is the identity except <code>nu</code>'s.</p>
+<code>params_bounds</code> entry is \((-\infty, \infty)\) except that of <code>nu</code>,
+which is \((0, \infty)\); and every link is the identity except that of
+<code>nu</code>.</p>
     </div>
     <div class="section level2">
-    <h2 id="what-the-two-matrices-are-and-what-they-are-not">What the two matrices are, and what they are not<a class="anchor" aria-label="anchor" href="#what-the-two-matrices-are-and-what-they-are-not"></a></h2>
+    <h2 id="the-two-matrices">The two matrices<a class="anchor" aria-label="anchor" href="#the-two-matrices"></a></h2>
     <p>Neither matrix is a covariance, and neither is a precision. \(\Sigma\) is
-the <strong>scale matrix</strong>, the matrix in the density's quadratic form, and the
-moments are obtained from it by scaling in \(\nu\):</p>
+the <strong>scale matrix</strong>, the matrix in the quadratic form of the density, and
+the moments are obtained from it by scaling in \(\nu\):</p>
 <p>$$\operatorname{Var}(Y) = \frac{\nu}{\nu-2}\,\Sigma \quad (\nu &gt; 2),
   \qquad
   \operatorname{Var}(Y)^{-1} = \frac{\nu-2}{\nu}\,\Sigma^{-1}.$$</p>
-<p>So <code>mvstudent_t2_distrib()</code>'s matrix is the precision of the response only
-up to the factor \((\nu-2)/\nu\), which is 2/3 at \(\nu = 6\); a
-coordinate named <code>omega_log_L1</code> builds \(\Sigma^{-1}\) and not the
-precision. The prefix follows <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code>'s convention – it
-says which of the two matrices a free value builds – and this section is
-what says what those matrices mean.</p>
-<p>Below \(\nu = 2\) the covariance does not exist while the density is
-perfectly well defined, and below \(\nu = 1\) the mean does not exist
-either. That is why the two are kept apart: <code><a href="mv_sigma.html">mv_sigma()</a></code> returns the scale
-matrix, which the parametrization carries and which always exists, and
-<code><a href="variance.html">variance()</a></code> returns the covariance, which is a moment and returns <code>NaN</code>
-where there is none. The separation is what allows a fit to run at
-\(\nu = 1.5\).</p>
-<p>Two readings DO carry over from the matrix to the response without a
-factor, because a positive multiple cancels out of a ratio, and both are
-measured against the response's own covariance in the tests:</p><ul><li><p>the <strong>correlations</strong> of \(\Sigma\) are the correlations of \(Y\);</p></li>
+<p>So the matrix of <code>mvstudent_t2_distrib()</code> equals the precision of the
+response only up to the factor \((\nu-2)/\nu\), which is 2/3 at
+\(\nu = 6\); a coordinate named <code>omega_log_L1</code> is a free value of
+\(\Sigma^{-1}\) and not of the precision. The prefixes follow the
+convention of <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code> and name which of the two matrices a
+free value builds.</p>
+<p>For \(\nu \le 2\) the covariance does not exist while the density is well
+defined, and for \(\nu \le 1\) the mean does not exist either. For that
+reason <code><a href="mv_sigma.html">mv_sigma()</a></code> returns the scale matrix, which the parametrization
+carries and which exists at every admissible \(\nu\), and <code><a href="variance.html">variance()</a></code>
+returns the covariance, a moment, which is <code>Inf</code> in every entry for
+\(\nu \le 2\); <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code> returns <code>NaN</code> for \(\nu \le 1\). A fit
+therefore runs at \(\nu = 1.5\).</p>
+<p>Two readings carry over from the matrix to the response without a factor,
+because a positive multiple cancels out of a ratio:</p><ul><li><p>the <strong>correlations</strong> of \(\Sigma\) are the correlations of \(Y\);</p></li>
 <li><p>the <strong>partial correlations</strong> read off \(\Sigma^{-1}\), as
 \(-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}\), are the partial
 correlations of \(Y\).</p></li>
-</ul><p>One reading does NOT carry over. For a gaussian \(1/\Omega_{jj}\) is the
-conditional variance of \(Y_j\) given the rest; here it is the Schur
-complement of the SCALE matrix, so it is a conditional <strong>scale</strong>, and the
-conditional law of a \(t\) is itself a \(t\) whose scale carries a
-further factor depending on the conditioning values. <code><a href="mv_summary.html">mv_summary()</a></code> names
-that quantity <code>cscale_vj</code> rather than <code>cvar_vj</code> for exactly this reason,
-as it already names the diagonal quantities <code>scale_sd_vj</code>.</p>
+</ul><p>The conditional variance does not carry over. For a gaussian
+\(1/\Omega_{jj}\) is the conditional variance of \(Y_j\) given the rest;
+here it is the Schur complement of the scale matrix, so it is a conditional
+<strong>scale</strong>, and the conditional law of a \(t\) is itself a \(t\) whose
+scale carries a further factor depending on the conditioning values.
+<code><a href="mv_summary.html">mv_summary()</a></code> names that quantity <code>cscale_vj</code> and not <code>cvar_vj</code> for this
+reason, as it names the diagonal quantities <code>scale_sd_vj</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="which-side-to-write-a-structure-on">Which side to write a structure on<a class="anchor" aria-label="anchor" href="#which-side-to-write-a-structure-on"></a></h2>
     <p>Where the matrix parametrization is closed under inversion the two families
 describe the same laws in different coordinates. Where it is not they are
 different models: <code>mvstudent_t2_distrib(p, parameters7::ar1(p))</code> is the
-family whose INVERSE SCALE matrix has the entries \(\rho^{|i-j|}\), which
-is a legitimate law and is accepted without comment. To put the AR(1)
-pattern on the scale matrix while parametrizing the other side, pass the
-family whose value is that inverse,
-<code>mvstudent_t2_distrib(p, parameters7::ar1_inv(p))</code>.</p>
+family whose inverse scale matrix has the entries \(\sigma^2\rho^{|i-j|}\),
+with \(\sigma^2\) the scale of <code>ar1()</code>, and it is a valid law. The AR(1)
+pattern on the scale matrix with the other side parametrized is
+<code>mvstudent_t2_distrib(p, parameters7::ar1_inv(p))</code>, whose parametrization is
+that inverse.</p>
     </div>
     <div class="section level2">
     <h2 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a></h2>
@@ -168,38 +171,45 @@ family whose value is that inverse,
 its free values under the <code>sigma_</code> prefix for the scale matrix and the
 <code>omega_</code> prefix for its inverse, and <code>nu</code> comes last. The location and the
 matrix parameters are unconstrained and carry identity links; <code>nu</code> is
-positive and carries <code>link_nu</code>. So, unlike <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code>, this
-family's link scale is not its parameter scale, and <code>scale = "link"</code>
-multiplies each <code>nu</code> component by the chain-rule factor \(\nu\) under the
-default log link.</p>
+positive and carries <code>link_nu</code>. Unlike <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code>, this family
+therefore has a link scale that differs from its parameter scale: under the
+default log link, <code>scale = "link"</code> applies the chain rule of the log link to
+every derivative in <code>nu</code>.</p>
     </div>
     <div class="section level2">
-    <h2 id="what-it-is-for">What it is for<a class="anchor" aria-label="anchor" href="#what-it-is-for"></a></h2>
+    <h2 id="the-weight-of-an-observation">The weight of an observation<a class="anchor" aria-label="anchor" href="#the-weight-of-an-observation"></a></h2>
     <p>A gaussian fitted to data with a few outlying rows inflates its covariance
-to cover them. A \(t\) with \(\nu\) estimated does not: an observation
-at Mahalanobis distance \(q\) enters every derivative through the weight
-\(c = (\nu+p)/(\nu+q)\), which falls away as \(1/q\). The gaussian is
-the limit \(\nu \to \infty\), where \(c \equiv 1\) and nothing is
-downweighted.</p>
+to cover them. A \(t\) with \(\nu\) estimated does not: an observation at
+squared Mahalanobis distance \(q\) enters every derivative through the
+weight \(c = (\nu+p)/(\nu+q)\), which falls as \(1/q\). The gaussian is
+the limit \(\nu \to \infty\), where \(c \equiv 1\).</p>
     </div>
     <div class="section level2">
     <h2 id="the-expected-information">The expected information<a class="anchor" aria-label="anchor" href="#the-expected-information"></a></h2>
     <p>Closed form, from the family's own scale mixture; see
 <code><a href="distrib_expected_hessian.MvStudentTDistrib.html">distrib_expected_hessian.MvStudentTDistrib()</a></code> for the four blocks.
-<code><a href="fit_distrib.html">fit_distrib()</a></code> therefore REJECTS an <code>approx</code> argument on
+<code><a href="fit_distrib.html">fit_distrib()</a></code> therefore rejects an <code>approx</code> argument on
 <code><a href="fisher_scoring.html">fisher_scoring()</a></code> for this family, as it does for any family that computes
 its expected information exactly.</p>
     </div>
     <div class="section level2">
     <h2 id="reading-a-fit">Reading a fit<a class="anchor" aria-label="anchor" href="#reading-a-fit"></a></h2>
-    <p><code><a href="mv_summary.html">mv_summary()</a></code> reports the square roots of the diagonal of the SCALE matrix
-and the correlations. The correlations are the response's as well, a
-positive multiple of a matrix leaving them alone, but the diagonal
-quantities are not standard deviations of the response and are named
-<code>scale_sd_v1</code>, ..., <code>scale_sd_vp</code> to say so. The inverse parametrization
-adds what it describes directly: the partial correlations, which are the
-response's exactly, and the conditional scales <code>cscale_v1</code>, ...,
-<code>cscale_vp</code>, named as scales for the reason the first section gives.</p>
+    <p>For the scale parametrization, <code><a href="mv_summary.html">mv_summary()</a></code> reports the square roots of
+the diagonal of the scale matrix, named <code>scale_sd_v1</code>, ..., <code>scale_sd_vp</code>
+because they are not standard deviations of the response, and the
+correlations, which are the response's as well. For the inverse
+parametrization it reports instead the conditional scales <code>cscale_v1</code>, ...,
+<code>cscale_vp</code> and the partial correlations <code>pcor_vj_vk</code>, which are the
+response's exactly.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="degrees-of-freedom-far-from-the-gaussian-limit-and-close-to-it">Degrees of freedom far from the gaussian limit and close to it<a class="anchor" aria-label="anchor" href="#degrees-of-freedom-far-from-the-gaussian-limit-and-close-to-it"></a></h2>
+    <p>Every quantity of \(\nu\) alone (the constant of the density and its
+derivatives, and the expected information in \(\nu\)) is computed by
+<code><a href="mvt_cp_d.html">mvt_cp_d()</a></code> and <code><a href="mvt_info_nunu.html">mvt_info_nunu()</a></code> without the cancellation of the direct
+difference of gamma and polygamma functions, and the part that carries the
+data by <code><a href="mvt_h_d.html">mvt_h_d()</a></code>; all of them vanish as \(\nu\) grows, while the terms
+of the direct forms do not.</p>
     </div>
     <div class="section level2">
     <h2 id="the-response">The response<a class="anchor" aria-label="anchor" href="#the-response"></a></h2>
@@ -261,8 +271,8 @@ other side, and <code><a href="fit_distrib.html">fit_distrib()</a></code> to est
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span>, <span class="op">(</span><span class="fl">6</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="mv_sigma.html">mv_sigma</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Below two degrees of freedom the covariance does not exist and the</span></span></span>
-<span class="r-in"><span><span class="co"># density does; below one the mean goes too.</span></span></span>
+<span class="r-in"><span><span class="co"># For nu &lt;= 2 the covariance is infinite and the density is finite; for</span></span></span>
+<span class="r-in"><span><span class="co"># nu &lt;= 1 the mean does not exist.</span></span></span>
 <span class="r-in"><span><span class="va">theta</span><span class="op">$</span><span class="va">nu</span> <span class="op">&lt;-</span> <span class="fl">1.5</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>density <span class="op">=</span> <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="va">theta</span><span class="op">)</span>, variance <span class="op">=</span> <span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   density  variance </span>
@@ -272,8 +282,8 @@ other side, and <code><a href="fit_distrib.html">fit_distrib()</a></code> to est
 <span class="r-out co"><span class="r-pr">#&gt;</span>    density    mean.v1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.08456772        NaN </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The heavy tail is what the family is for: at four standard-scale units</span></span></span>
-<span class="r-in"><span><span class="co"># out, a t at nu = 6 puts far more mass than a gaussian of the same scale.</span></span></span>
+<span class="r-in"><span><span class="co"># At four units of scale from the location, a t at nu = 6 has a far larger</span></span></span>
+<span class="r-in"><span><span class="co"># density than a gaussian with the same matrix.</span></span></span>
 <span class="r-in"><span><span class="va">theta</span><span class="op">$</span><span class="va">nu</span> <span class="op">&lt;-</span> <span class="fl">6</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4.5</span>, <span class="op">-</span><span class="fl">4.3</span><span class="op">)</span>, <span class="va">theta</span><span class="op">)</span>,</span></span>
@@ -281,8 +291,8 @@ other side, and <code><a href="fit_distrib.html">fit_distrib()</a></code> to est
 <span class="r-out co"><span class="r-pr">#&gt;</span>            t     gaussian </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1.413233e-05 6.118878e-14 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The other parametrization carries the INVERSE scale matrix, and its free</span></span></span>
-<span class="r-in"><span><span class="co"># values say so by their prefix.</span></span></span>
+<span class="r-in"><span><span class="co"># The other parametrization carries the inverse scale matrix, and the prefix</span></span></span>
+<span class="r-in"><span><span class="co"># of its free values names it.</span></span></span>
 <span class="r-in"><span><span class="va">o</span> <span class="op">&lt;-</span> <span class="fu">mvstudent_t2_distrib</span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">o</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"          "mu2"          "omega_log_L1" "omega_log_L2" "omega_L2.1"  </span>
@@ -296,8 +306,8 @@ other side, and <code><a href="fit_distrib.html">fit_distrib()</a></code> to est
 <span class="r-in"><span>          <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="op">(</span><span class="fl">6</span> <span class="op">-</span> <span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="fl">6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">unclass</a></span><span class="op">(</span><span class="va">Om</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The correlations and the partial correlations, on the other hand, are the</span></span></span>
-<span class="r-in"><span><span class="co"># response's exactly: a positive multiple cancels out of a ratio.</span></span></span>
+<span class="r-in"><span><span class="co"># The correlations are the response's exactly: a positive multiple cancels</span></span></span>
+<span class="r-in"><span><span class="co"># out of a ratio.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov2cor</a></span><span class="op">(</span><span class="fu"><a href="mv_sigma.html">mv_sigma</a></span><span class="op">(</span><span class="va">o</span>, <span class="va">th_o</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov2cor</a></span><span class="op">(</span><span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">o</span>, <span class="va">th_o</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>

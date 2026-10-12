@@ -19,7 +19,7 @@ same chain rule the other location-scale families use."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,25 +95,24 @@ default.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list of numeric vectors of the order the generic asked for,
+    <p>A named list of numeric vectors of the requested order,
 keyed as <code><a href="deriv_names.html">deriv_names(distrib@params, order)</a></code>: three
 components for the gradient, six for the Hessian, ten at order 3 and
 fifteen at order 4.</p>
     </div>
     <div class="section level2">
-    <h2 id="what-it-is-worth">What it is worth<a class="anchor" aria-label="anchor" href="#what-it-is-worth"></a></h2>
-    <p>Against a product stencil on the same cdf, at \(\mu = 0.3\),
-\(\sigma = 1.2\), \(\alpha = 2\): \(3.6\times10^{-9}\) at order 1,
-\(2.1\times10^{-6}\) at order 2, \(9.5\times10^{-5}\) at order 3 and
-\(3.8\times10^{-4}\) at order 4.</p>
+    <h2 id="accuracy">Accuracy<a class="anchor" aria-label="anchor" href="#accuracy"></a></h2>
+    <p>The derivatives are closed forms. A product stencil on the same
+distribution function loses accuracy as the order grows, by one or two
+digits per order.</p>
     </div>
     <div class="section level2">
-    <h2 id="the-family-this-leaves-behind">The family this leaves behind<a class="anchor" aria-label="anchor" href="#the-family-this-leaves-behind"></a></h2>
-    <p>The skew normal used to be grouped with the Student t and the pseudo-Huber,
-whose shape components are differenced. It is not any more, and the reason
-is the elementary partials above: only the skew t still differences a shape
-here, its degrees of freedom entering through a Student t distribution
-function.</p>
+    <h2 id="relation-to-the-student-t-and-the-pseudo-huber">Relation to the Student t and the pseudo-Huber<a class="anchor" aria-label="anchor" href="#relation-to-the-student-t-and-the-pseudo-huber"></a></h2>
+    <p>The shape components of the skew normal are closed through the elementary
+partial derivatives of Owen's T given above. The Student t, the
+pseudo-Huber and the skew t have no closed derivative in a shape parameter;
+their shape components are integrals of the density's own derivatives,
+taken by the compiled rule.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -126,7 +125,8 @@ function and \(T\) Owen's T.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="sn_cdf_std_derivs.html">sn_cdf_std_derivs()</a></code> and <code><a href="sn_cdf_deriv_k.html">sn_cdf_deriv_k()</a></code> for the construction;
-<code><a href="distrib_grad_cdf.SkewTDistrib.html">distrib_grad_cdf.SkewTDistrib()</a></code>, which does difference its shape;
+<code><a href="distrib_grad_cdf.SkewTDistrib.html">distrib_grad_cdf.SkewTDistrib()</a></code>, which integrates its shape
+derivatives by the compiled rule;
 <code><a href="skewnormal1_distrib.html">skewnormal1_distrib()</a></code>.</p></div>
     </div>
 
@@ -141,13 +141,14 @@ function and \(T\) Owen's T.</p>
 <span class="r-in"><span>          <span class="op">-</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># At shape zero the family is Gaussian, and so are its cdf derivatives.</span></span></span>
+<span class="r-in"><span><span class="co"># At shape zero the family is Gaussian, and its location and scale</span></span></span>
+<span class="r-in"><span><span class="co"># derivatives agree with the Gaussian's.</span></span></span>
 <span class="r-in"><span><span class="va">g0</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_grad_cdf.html">distrib_grad_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.3</span>, sigma <span class="op">=</span> <span class="fl">1.2</span>, alpha <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                       log <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_grad_cdf.html">distrib_grad_cdf</a></span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">q</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.3</span>, sigma <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                       log <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">g0</span><span class="op">$</span><span class="va">mu</span> <span class="op">-</span> <span class="va">gg</span><span class="op">$</span><span class="va">mu</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.775558e-17</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Three, six, ten and fifteen components as the order rises.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="distrib_grad_cdf.html">distrib_grad_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">th</span><span class="op">)</span>,</span></span>

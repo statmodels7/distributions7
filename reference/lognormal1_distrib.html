@@ -4,20 +4,24 @@
 mean \(\mu\) and variance \(\sigma^2 &amp;gt; 0\). Both parameters are moments
 of the logarithm, so neither is the mean or the variance of \(Y\). The
 returned object carries closed-form derivatives of the log-density to fourth
-order, in the parameters and in the response, and closed-form moments, so
-every generic of the toolkit answers without a numerical fallback.
+order, in the parameters and in the response, closed-form derivatives of the
+distribution function, and closed-form moments. The fifth order and
+distrib_cross3_y() come from the numerical fallbacks of the base class.
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the identity for
+unconstrained scale on which an optimizer works. The defaults are the
+identity for
 \(\mu\), which ranges over the whole line, and the logarithm for
 \(\sigma^2\), which keeps it positive at every predictor."><meta property="og:description" content="Builds the distribution object for the lognormal family on
 \((0, \infty)\): the law of a variable whose logarithm is Gaussian with
 mean \(\mu\) and variance \(\sigma^2 &amp;gt; 0\). Both parameters are moments
 of the logarithm, so neither is the mean or the variance of \(Y\). The
 returned object carries closed-form derivatives of the log-density to fourth
-order, in the parameters and in the response, and closed-form moments, so
-every generic of the toolkit answers without a numerical fallback.
+order, in the parameters and in the response, closed-form derivatives of the
+distribution function, and closed-form moments. The fifth order and
+distrib_cross3_y() come from the numerical fallbacks of the base class.
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the identity for
+unconstrained scale on which an optimizer works. The defaults are the
+identity for
 \(\mu\), which ranges over the whole line, and the logarithm for
 \(\sigma^2\), which keeps it positive at every predictor."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -27,7 +31,7 @@ unconstrained scale an optimizer works on. The defaults are the identity for
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,10 +69,12 @@ unconstrained scale an optimizer works on. The defaults are the identity for
 mean \(\mu\) and variance \(\sigma^2 &gt; 0\). Both parameters are moments
 <strong>of the logarithm</strong>, so neither is the mean or the variance of \(Y\). The
 returned object carries closed-form derivatives of the log-density to fourth
-order, in the parameters and in the response, and closed-form moments, so
-every generic of the toolkit answers without a numerical fallback.</p>
+order, in the parameters and in the response, closed-form derivatives of the
+distribution function, and closed-form moments. The fifth order and
+<code><a href="distrib_cross3_y.html">distrib_cross3_y()</a></code> come from the numerical fallbacks of the base class.</p>
 <p>The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the identity for
+unconstrained scale on which an optimizer works. The defaults are the
+identity for
 \(\mu\), which ranges over the whole line, and the logarithm for
 \(\sigma^2\), which keeps it positive at every predictor.</p>
     </div>
@@ -113,9 +119,9 @@ form because the log transformation is monotone.</p>
 <p>On the original scale the mean is \(e^{\mu + \sigma^2/2}\), the variance
 \((e^{\sigma^2}-1)e^{2\mu+\sigma^2}\), the skewness
 \((e^{\sigma^2}+2)\sqrt{e^{\sigma^2}-1}\) and the excess kurtosis
-\(e^{4\sigma^2}+2e^{3\sigma^2}+3e^{2\sigma^2}-6\). Three quantities are
-worth keeping apart: the mode is \(e^{\mu-\sigma^2}\), the median
-\(e^{\mu}\) and the mean \(e^{\mu+\sigma^2/2}\), in that order.</p>
+\(e^{4\sigma^2}+2e^{3\sigma^2}+3e^{2\sigma^2}-6\). The mode is
+\(e^{\mu-\sigma^2}\), the median \(e^{\mu}\) and the mean
+\(e^{\mu+\sigma^2/2}\), in increasing order.</p>
 <p><code><a href="lognormal2_distrib.html">lognormal2_distrib()</a></code> carries the same law parametrized by the mean and the
 variance of \(Y\) itself.</p>
     </div>
@@ -135,8 +141,8 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\sigma^2}, \quad
       \mathbb{E}\left[\ell^{(\mu\sigma^2)}\right] = 0.$$
 Every one of these agrees with <code><a href="gaussian2_distrib.html">gaussian2_distrib()</a></code> at \(\log y\),
 component for component and at all four orders, observed and expected. The
-two parameters are orthogonal and the information does not move with the
-mean of \(Y\).</p>
+two parameters are orthogonal and the information does not depend on
+\(\mu\).</p>
 <p>The derivatives <strong>in the response</strong> are where the two families differ, the
 Jacobian being a function of \(y\). They are still closed form; see
 <code><a href="distrib_grad_y.Lognormal1Distrib.html">distrib_grad_y.Lognormal1Distrib()</a></code> and
@@ -176,7 +182,8 @@ Wiley, New York.</p>
 with a multiplicative variance function; <code><a href="transformation.html">transformation()</a></code> for the general
 wrapper this family is a named instance of; <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the
 parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a family of your own against the
-same battery this one passes; <a href="Lognormal1Distrib.html">Lognormal1Distrib</a> for the class.</p></div>
+same battery of checks that this family passes; <a href="Lognormal1Distrib.html">Lognormal1Distrib</a> for the
+class.</p></div>
     </div>
 
     <div class="section level2">

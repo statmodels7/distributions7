@@ -3,8 +3,8 @@
 Assembled from the first three raw moments, \\\gamma_1 = (m_3 -
 3m_1m_2 + 2m_1^3)/(m_2 - m_1^2)^{3/2}\\ with \\m_k =
 a^k\\\Gamma\\(d+k)/p\\/\Gamma(d/p)\\. The scale cancels, so the value
-depends on the two shapes alone; unlike a gamma's it can be negative,
-which is part of what the second shape parameter buys.
+depends on the two shapes alone; unlike a gamma's it can be negative
+(for example at \\d = p\\ with \\p\\ above about 3.6, the Weibull case).
 
 ## Arguments
 

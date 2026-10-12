@@ -6,10 +6,10 @@ $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] =
       \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right] = 0.$$
 The information in the location is \(1/(2\sigma^2)\), half of a Gaussian's
-\(1/\sigma^2\) at the same scale, which is the price the heavy tails
-charge. The zero off-diagonal says the location and the scale are
-orthogonal. The expectations exist even though no moment of the family does:
-they are expectations of bounded functions of \(y\), not of \(y\).
+\(1/\sigma^2\) at the same scale. The zero off-diagonal entry means that
+the location and the scale are orthogonal. The expectations exist although
+the family has no moments, because the second derivatives of the
+log-density are bounded functions of \(y\).
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
 form and with no quadrature or simulation:
@@ -18,10 +18,10 @@ $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] =
       \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right] = 0.$$
 The information in the location is \(1/(2\sigma^2)\), half of a Gaussian's
-\(1/\sigma^2\) at the same scale, which is the price the heavy tails
-charge. The zero off-diagonal says the location and the scale are
-orthogonal. The expectations exist even though no moment of the family does:
-they are expectations of bounded functions of \(y\), not of \(y\).
+\(1/\sigma^2\) at the same scale. The zero off-diagonal entry means that
+the location and the scale are orthogonal. The expectations exist although
+the family has no moments, because the second derivatives of the
+log-density are bounded functions of \(y\).
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -31,7 +31,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,10 +71,10 @@ $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] =
       \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right] = 0.$$
 The information in the location is \(1/(2\sigma^2)\), half of a Gaussian's
-\(1/\sigma^2\) at the same scale, which is the price the heavy tails
-charge. The zero off-diagonal says the location and the scale are
-orthogonal. The expectations exist even though no moment of the family does:
-they are expectations of bounded functions of \(y\), not of \(y\).</p>
+\(1/\sigma^2\) at the same scale. The zero off-diagonal entry means that
+the location and the scale are orthogonal. The expectations exist although
+the family has no moments, because the second derivatives of the
+log-density are bounded functions of \(y\).</p>
 <p>Because the values do not depend on the data, <code>approx</code> and <code>nsim</code> are
 ignored. <code>y</code> is read only for its length.</p>
     </div>
@@ -139,8 +139,8 @@ this equals the variance of the score.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_hessian.CauchyDistrib.html">distrib_hessian.CauchyDistrib()</a></code> for the observed quantity this is
-the expectation of, <code><a href="distrib_expected_hessian.Gaussian1Distrib.html">distrib_expected_hessian.Gaussian1Distrib()</a></code> for the
+    <div class="dont-index"><p><code><a href="distrib_hessian.CauchyDistrib.html">distrib_hessian.CauchyDistrib()</a></code> for the observed Hessian, of which
+this is the expectation, <code><a href="distrib_expected_hessian.Gaussian1Distrib.html">distrib_expected_hessian.Gaussian1Distrib()</a></code> for the
 light-tailed comparison, <code><a href="fisher_scoring.html">fisher_scoring()</a></code>, which inverts it at each step,
 and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
     </div>
@@ -168,8 +168,8 @@ and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a>
 <span class="r-in"><span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">0</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.4444444</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The observed Hessian averages onto it over a large sample, even though</span></span></span>
-<span class="r-in"><span><span class="co"># the sample mean of the same draws does not converge at all.</span></span></span>
+<span class="r-in"><span><span class="co"># The observed Hessian averages onto it over a large sample, although the</span></span></span>
+<span class="r-in"><span><span class="co"># sample mean of the same draws does not converge.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">2e5</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">mean</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>

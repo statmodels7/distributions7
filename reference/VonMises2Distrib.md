@@ -1,10 +1,11 @@
 # von Mises Distribution Class, Mean Resultant Length
 
 The S7 class of the von Mises family written in its mean direction
-\\\mu\\ and its **mean resultant length** \\\rho \in (0, 1)\\, the
-quantity circular statistics reports and one minus the circular
-variance. It inherits from `continuous_distrib`; the nine methods listed
-below are registered on it directly.
+\\\mu\\ and its **mean resultant length** \\\rho \in (0, 1)\\, which is
+the quantity that is conventionally reported in circular statistics and
+equals one minus the circular variance. It inherits from
+`continuous_distrib`; the methods listed below are registered on it
+directly.
 
 The concentration of
 [`vonmises1_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md)
@@ -18,7 +19,8 @@ Build one with
 [`vonmises2_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.md),
 which supplies the two link functions and fills the properties in. This
 page documents the raw S7 constructor, which takes the parent's
-properties and validates none of the relationships between them.
+properties; the validator of `distrib` checks them, and the constructor
+adds no check of its own.
 
 ## Usage
 
@@ -104,24 +106,49 @@ domains \\(-\pi, \pi)\\ and \\(0, 1)\\.
 
 ## Methods
 
-Registered on this class:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.VonMises2Distrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises2Distrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.VonMises2Distrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.VonMises2Distrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.VonMises2Distrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.VonMises2Distrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.VonMises2Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.VonMises2Distrib.md),
-[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.VonMises2Distrib.md).
+Registered on this class, each linked to the page that documents it:
 
-The **quantile** and the response derivatives come from
-[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
-the quantile by root finding on this class's own distribution function.
-The remaining moments come from
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
-and its siblings, numerically, and are the ordinary moments of \\Y\\ as
-a number.
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.VonMises2Distrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.VonMises2Distrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.VonMises2Distrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.VonMises2Distrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.VonMises2Distrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.VonMises2Distrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises2Distrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.VonMises2Distrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.VonMises1Distrib.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.VonMises1Distrib.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.VonMises2Distrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.VonMises2Distrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.VonMises2Distrib.md);
+
+- the derivatives of the distribution function:
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md),
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_deriv_cdf_k.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_deriv_cdf_k.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.VonMises2Distrib.md).
+
+Every other generic is inherited from
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
 

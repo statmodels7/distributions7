@@ -37,10 +37,9 @@ single number for a numeric vector.
 \$\$\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}.\$\$
 
 The square root is taken after the variance, so accuracy and cost are
-the variance's: a closed form for 43 of the 45 shipped families, a
-quadrature for the two von Mises. A family whose variance is `NaN` or
-`Inf` gives the same here, and a negative variance cannot arise, so the
-root is always real.
+the variance's: a closed form for every univariate family except the two
+von Mises, which use a quadrature. A family whose variance is `NaN` or
+`Inf` gives the same here.
 
 On a numeric vector the value is
 [`stats::sd()`](https://rdrr.io/r/stats/sd.html), the root of the \\n -

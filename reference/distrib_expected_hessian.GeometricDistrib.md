@@ -3,10 +3,10 @@
 Returns the expectation of the observed second derivative under the
 model, in closed form and with no quadrature or simulation:
 \$\$\mathbb{E}\left\[\dfrac{\partial^2 \ell}{\partial \mu^2}\right\] =
--\dfrac{1}{\mu(1+\mu)},\$\$ which follows from \\\mathbb{E}\[Y\] = \mu\\
-killing the data term. The Fisher information is \\1/(\mu(1+\mu))\\, the
-reciprocal of the variance, so it is smaller than a Poisson's \\1/\mu\\
-at the same mean: the extra dispersion is paid for in precision.
+-\dfrac{1}{\mu(1+\mu)},\$\$ which follows because \\\mathbb{E}\[Y\] =
+\mu\\ makes the term in \\y - \mu\\ vanish in expectation. The Fisher
+information is \\1/(\mu(1+\mu))\\, the reciprocal of the variance, so it
+is smaller than a Poisson's \\1/\mu\\ at the same mean.
 
 Because the value does not depend on the data, `approx` and `nsim` are
 ignored. `y` is read only for its length.

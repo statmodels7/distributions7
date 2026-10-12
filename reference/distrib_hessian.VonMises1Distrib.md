@@ -7,8 +7,9 @@ log-density, one value per observation, in closed form:
 \\A(\kappa) = I_1(\kappa)/I_0(\kappa)\\. The pure-concentration entry is
 **free of the data**: the log-density is \\\kappa\cos(y-\mu) -
 \log\\2\pi I_0(\kappa)\\\\, linear in \\\kappa\\ apart from the
-normalizing constant, so \\\kappa\\ appears twice only inside \\\log
-I_0\\. It therefore equals its own expectation at every observation.
+normalizing constant, so its second derivative in \\\kappa\\ comes from
+\\\log I_0\\ alone. It therefore equals its own expectation at every
+observation.
 
 \\A'\\ comes from
 [`numericals7::bessel_i_ratio_d1()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html),
@@ -52,9 +53,10 @@ definite. The components are computed by a compiled kernel.
 
 ## Value
 
-A named list of three numeric vectors, `mu_mu`, `mu_kappa` and
-`kappa_kappa`, each of length
-`max(length(y), length(mu), length(kappa))`.
+A named list of three numeric vectors, `mu_mu`, `kappa_kappa` and
+`mu_kappa`, in the order of
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
+each of length `max(length(y), length(mu), length(kappa))`.
 
 ## Notation
 
@@ -82,7 +84,7 @@ y <- c(-1, 0, 0.5, 2)
 th <- list(mu = 0.5, kappa = 2)
 h <- distrib_hessian(d, y, th)
 names(h)
-#> [1] "mu_mu"       "mu_kappa"    "kappa_kappa"
+#> [1] "mu_mu"       "kappa_kappa" "mu_kappa"   
 
 # The pure-concentration entry is one number, repeated.
 unique(h$kappa_kappa)

@@ -6,12 +6,13 @@ parametrized by its mean \\\mu \in (0, 1)\\ and a precision \\\phi \>
 (1-\mu)\phi\\. This is the parametrization beta regression uses. The
 returned object carries closed-form derivatives of the log-density to
 fourth order, in the parameters and in the response, and closed-form
-moments, so every generic of the toolkit answers without a numerical
-fallback.
+moments. The fifth order and the mixed derivatives of order three and
+four in the response and the parameters come from the numerical
+fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the logit
-for the mean, which lives in \\(0, 1)\\, and the logarithm for the
+unconstrained scale on which an optimizer works. The defaults are the
+logit for the mean, which lives in \\(0, 1)\\, and the logarithm for the
 precision, which is positive.
 
 ## Usage
@@ -56,12 +57,12 @@ function its numerical inverse. The mean is \\\mu\\, the variance
 \\\mu(1-\mu)/(\phi+1)\\ and the skewness
 \\2(1-2\mu)\sqrt{\phi+1}/\\(\phi+2)\sqrt{\mu(1-\mu)}\\\\.
 
-The name *precision* is earned: at a fixed mean the variance falls as
-\\1/(\phi+1)\\, so \\\phi\\ says how tightly the mass concentrates. Two
-settings are worth recognizing. At \\\mu = 1/2\\ and \\\phi = 2\\ both
-shapes are 1 and the density is the uniform. Where a shape falls below
-one, which happens when \\\phi\\ is small, the density is unbounded at
-the corresponding endpoint.
+\\\phi\\ is called a precision because at a fixed mean the variance is
+proportional to \\1/(\phi+1)\\, so a larger \\\phi\\ concentrates the
+mass more tightly. At \\\mu = 1/2\\ and \\\phi = 2\\ both shapes are 1
+and the density is the uniform. A shape falls below one when \\\mu\phi
+\< 1\\ or \\(1-\mu)\phi \< 1\\, and the density is then unbounded at the
+corresponding endpoint.
 
 This is the same law as
 [`beta2_distrib()`](https://statmodels7.github.io/distributions7/reference/beta2_distrib.md),
@@ -97,16 +98,17 @@ quadratic in \\(\mu, \phi)\\ through the bilinear map \\\alpha =
   and differs in `mu_phi` by the log-odds residual \\\log\\y/(1-y)\\ -
   \psi(\alpha) + \psi(\beta)\\, whose expectation is zero;
 
-- **every** third and fourth derivative is free of the response, so
+- every third and fourth derivative is free of the response, so on the
+  parameter scale
   [`distrib_deriv3.Beta1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Beta1Distrib.md)
   and
   [`distrib_deriv4.Beta1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Beta1Distrib.md)
-  return the same numbers whether or not `expected = TRUE` is asked for.
+  return the same numbers for either value of `expected`.
 
 The derivatives of the *distribution* function in the parameters have no
 elementary form, the derivative of an incomplete beta in its shapes
-being hypergeometric, and are taken by finite difference on the analytic
-cdf.
+being hypergeometric, and are computed by a compiled quadrature of the
+density times the derivatives of the log-density.
 
 ## Estimation
 
@@ -133,20 +135,18 @@ rates and proportions. *Journal of Applied Statistics* **31**, 799-815.
 ## See also
 
 [`beta2_distrib()`](https://statmodels7.github.io/distributions7/reference/beta2_distrib.md)
-for the same law in the mean and the variance;
+for the same law in its two shapes;
 [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
 for the beta as a mixing law over a binomial probability;
 [`bernoulli_distrib()`](https://statmodels7.github.io/distributions7/reference/bernoulli_distrib.md)
-for a response at the endpoints rather than between them;
+for a response that takes only the values 0 and 1;
 [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
-and
-[`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
-for the wrappers a response with mass at 0 or 1 needs;
+for a response with a point mass at 0;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
-passes;
+to validate a family of your own against the same battery of checks that
+this family passes;
 [Beta1Distrib](https://statmodels7.github.io/distributions7/reference/Beta1Distrib.md)
 for the class.
 

@@ -1,9 +1,10 @@
 # Reject the Composition of Two Zero Wrappers
 
 Signals an error when the parent already models the probability of a
-zero, which is how both wrappers refuse to stack. The models this
-rejects are well defined and inestimable, so the constructor is the only
-place the problem can be caught: nothing at run time reports it.
+zero, which is how both constructors reject a parent that is already a
+zero wrapper. The models this rejects are well defined and inestimable,
+so the constructor is the only place the problem can be caught: nothing
+at run time reports it.
 
 ## Usage
 
@@ -24,13 +25,16 @@ check_not_stacked(distrib, fun, param)
 
 - param:
 
-  The name of the parameter it would add, a single string. Not currently
-  placed in the message; it is carried for the caller's own record.
+  The name of the parameter that the calling constructor would add, a
+  single string. An error is signaled when the parent already has a
+  parameter with this name.
 
 ## Value
 
-`NULL`, invisibly, when the parent is not a zero wrapper. Otherwise it
-signals an error naming the parent.
+`NULL`, invisibly, when the parent is not a zero wrapper and has no
+parameter named `param`. If the parent is a zero wrapper, the function
+signals an error that names the parent; if the parent already has a
+parameter named `param`, it signals an error that names that parameter.
 
 ## Details
 
@@ -58,17 +62,17 @@ the two callers.
 ``` r
 # A plain parent passes silently.
 distributions7:::check_not_stacked(poisson_distrib(),
-                                   "zero_inflated()", "zi")
+"zero_inflated", "zi")
 
-# A wrapped one does not, and the two orders are refused alike.
+# A wrapped one does not, and the two orders are rejected alike.
 try(zero_inflated(zero_adjusted(poisson_distrib())))
 #> Error : zero_inflated() cannot wrap 'zero-adjusted poisson', which already models the probability of a zero.
-#>   Stacking the two leaves only their combination identified: the second
-#>   parameter has an identically zero score, and any optimizer will wander
+#>   Stacking the two leaves only a combination of their parameters identified,
+#>   so the likelihood is flat along a direction and any optimizer will wander
 #>   along that ridge. Apply exactly one zero wrapper to a plain distribution.
 try(zero_adjusted(zero_inflated(poisson_distrib())))
 #> Error : zero_adjusted() cannot wrap 'zero-inflated poisson', which already models the probability of a zero.
-#>   Stacking the two leaves only their combination identified: the second
-#>   parameter has an identically zero score, and any optimizer will wander
+#>   Stacking the two leaves only a combination of their parameters identified,
+#>   so the likelihood is flat along a direction and any optimizer will wander
 #>   along that ridge. Apply exactly one zero wrapper to a plain distribution.
 ```

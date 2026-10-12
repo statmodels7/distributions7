@@ -5,15 +5,15 @@
 library(distributions7)
 ```
 
-## The idea in one sentence
+## Overview
 
 A new distribution in **distributions7** requires only its **density**
-(`distrib_pdf`). Everything else — cumulative distribution function,
-quantile function, random number generator, score (gradient), observed
-and expected Hessian, and the moments — is then available automatically
-through numerical fallbacks. A closed-form expression derived later is
-registered as a method and transparently takes over, with no change to
-calling code.
+(`distrib_pdf`). Everything else (the cumulative distribution function,
+the quantile function, the random number generator, the score, the
+observed and expected Hessian, and the moments) is then available
+automatically through numerical fallbacks. A closed-form expression
+derived later is registered as a method and transparently takes over,
+with no change to calling code.
 
 ## How dispatch makes this work
 
@@ -34,36 +34,40 @@ distribution object:
 | `mean`, `variance`, `std_dev`, `skewness`, `kurtosis`, `moment` | moments |
 
 Default methods for all of these (except `distrib_pdf`) are registered
-on the **base classes** `continuous_distrib` and `discrete_distrib`.
-Because S7 always selects the most specific applicable method, a
-subclass inherits those defaults until something more specific is
-registered. The defaults are:
+on the **base classes**: the probability functions on
+`continuous_distrib` and `discrete_distrib`, the response derivatives on
+`continuous_distrib`, and the parameter derivatives and the moments on
+`distrib`. Because S7 always selects the most specific applicable
+method, a subclass inherits those defaults until something more specific
+is registered. The defaults are:
 
-- `distrib_cdf` — numerical integration (continuous) or summation of the
-  pmf (discrete) of the density;
-- `distrib_quantile` — root-finding / table inversion on the CDF;
-- `distrib_rng` — Generalized Ratio-of-Uniforms
+- `distrib_cdf`: numerical integration of the density (continuous) or
+  summation of the mass (discrete);
+- `distrib_quantile`: root finding on the CDF (continuous) or inversion
+  of the cumulative table (discrete);
+- `distrib_rng`: for a continuous distribution, Generalized
+  Ratio-of-Uniforms
   ([`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md)),
-  which needs nothing but the density; inverse-transform sampling,
-  `distrib_quantile(runif(n))`, is used instead whenever an analytical
-  quantile function is supplied;
-- `distrib_gradient`, `distrib_hessian` — central finite differences of
+  which needs only the density, or inverse-transform sampling,
+  `distrib_quantile(runif(n))`, whenever an analytical quantile function
+  is supplied; for a discrete distribution, inversion of the cumulative
+  table;
+- `distrib_gradient`, `distrib_hessian`: central finite differences of
   the log-density (see
   [`numerical_gradient()`](https://statmodels7.github.io/distributions7/reference/numerical_gradient.md)
   /
   [`numerical_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md));
-- `distrib_deriv3`, `distrib_deriv4` — finite differences of the Hessian
-  (see
+- `distrib_deriv3`, `distrib_deriv4`: one central finite-difference
+  stencil on the highest-order derivative that the family implements
+  itself, which is a tensor-product stencil on the log-density for a
+  family defined by its density alone (see
   [`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md)
   /
-  [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md)),
-  with the expected versions obtained by
-  [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
-  of the observed ones;
-- `distrib_expected_hessian` — the
-  [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
-  of the observed Hessian;
-- the moments — numerical
+  [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md));
+- `distrib_expected_hessian`: by default (`approx = "opg"`) minus the
+  outer product of the score, read at each observation;
+  `approx = "bartlett"`, `"integrate"` and `"mc"` take an expectation;
+- the moments: numerical
   [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
   of the relevant power.
 
@@ -86,7 +90,7 @@ $`f(y;\mu,b)=\frac{1}{2b}\exp\!\left(-\frac{|y-\mu|}{b}\right)`$, with
 $`\mu\in\mathbb{R}`$ and $`b>0`$. Base R has no `dlaplace`, so this is a
 genuinely new distribution.
 
-**Step 1 — the class.** It is continuous, so we inherit from
+**Step 1: the class.** It is continuous, so we inherit from
 `continuous_distrib`:
 
 ``` r
@@ -94,10 +98,10 @@ genuinely new distribution.
 Laplace <- S7::new_class("Laplace", parent = continuous_distrib)
 ```
 
-**Step 2 — the density.** A method for `distrib_pdf`. The signature is
+**Step 2: the density.** A method for `distrib_pdf`. The signature is
 always `(distrib, y, theta, log = FALSE, ...)`, where `theta` is a named
 list of parameters (each element a scalar or a vector aligned with `y`).
-The `...` is required: a modelling function such as
+The `...` is required: a modeling function such as
 `statmodels7::statmod()` passes further arguments to the density, the
 number of threads among them, and a method without `...` stops on the
 first call.
@@ -117,8 +121,10 @@ Two conventions matter. `theta` is indexed positionally (`theta[[1]]`,
 branch is always implemented, because the numerical machinery evaluates
 the density on the log scale for stability.
 
-**Step 3 — the constructor.** A plain function returning an object of
-the class with the metadata filled in:
+**Step 3: the constructor.** A plain function returning an object of the
+class with the metadata filled in. The density is not differentiable in
+the location at $`y = \mu`$, which the constructor records in
+`params_smooth`:
 
 ``` r
 
@@ -132,7 +138,8 @@ laplace_distrib <- function(link_mu = linkfunctions7::identity_link(),
     params_interpretation = c(mu = "location", b = "scale"),
     n_params     = 2,
     params_bounds = list(mu = c(-Inf, Inf), b = c(0, Inf)),
-    link_params   = list(mu = link_mu, b = link_b)
+    link_params   = list(mu = link_mu, b = link_b),
+    params_smooth = c(mu = FALSE, b = TRUE)      # kink at y = mu
   )
 }
 ```
@@ -154,7 +161,7 @@ th <- list(mu = 1, b = 2)
 distrib_pdf(d, c(0, 1, 3), th)
 #> [1] 0.15163266 0.25000000 0.09196986
 
-# CDF, quantile, RNG --- all numerical fallbacks
+# CDF, quantile, RNG: all numerical fallbacks
 distrib_cdf(d, c(-1, 1, 4), th)
 #> [1] 0.1839397 0.5000000 0.8884349
 distrib_quantile(d, c(0.25, 0.5, 0.75), th)   # median is exactly mu = 1
@@ -162,7 +169,7 @@ distrib_quantile(d, c(0.25, 0.5, 0.75), th)   # median is exactly mu = 1
 head(distrib_rng(d, 5, th))
 #> [1]  5.723932 -2.857153  0.855691  2.715865  0.144959
 
-# score and Hessian --- finite differences of the log-density
+# score and Hessian: finite differences of the log-density
 str(distrib_gradient(d, c(-1, 3), th))
 #> List of 2
 #>  $ mu: num [1:2] -0.5 0.5
@@ -173,7 +180,7 @@ str(distrib_hessian(d, c(-1, 3), th))
 #>  $ b_b  : num [1:2] -0.25 -0.25
 #>  $ mu_b : num [1:2] 0.25 -0.25
 
-# moments --- numerical integration against the density
+# moments: numerical integration against the density
 c(mean = mean(d, th), variance = variance(d, th))  # Laplace variance is 2 b^2 = 8
 #>     mean variance 
 #>        1        8
@@ -189,7 +196,7 @@ lap_cdf <- function(q, mu, b) {
   ifelse(q < mu, 0.5 * exp((q - mu) / b), 1 - 0.5 * exp(-(q - mu) / b))
 }
 q <- c(-3, -1, 0, 1, 4)
-max(abs(distrib_cdf(d, q, th) - lap_cdf(q, 1, 2)))   # ~1e-10
+max(abs(distrib_cdf(d, q, th) - lap_cdf(q, 1, 2)))   # agrees to rounding
 #> [1] 1.110223e-16
 ```
 
@@ -210,7 +217,7 @@ d
 #> Dimensions:   univariate
 #> 
 #> Parameters:
-#>   mu (location)           | Link: identity   | Domain: (-Inf, Inf)
+#>   mu (location)           | Link: identity   | Domain: (-Inf, Inf)  [non-smooth log-likelihood]
 #>   b  (scale)              | Link: log        | Domain: (0, Inf)
 ```
 
@@ -302,14 +309,14 @@ Note the signature of the derivative method: it must mirror the generic,
 which carries a `scale` argument (and `...`). **A method always returns
 parameter-scale derivatives**; the chain rule is never implemented by
 hand. The generic applies the link-scale transformation afterwards when
-the caller asks for `scale = "link"`. The same applies to
+the caller requests `scale = "link"`. The same applies to
 `distrib_hessian`, `distrib_expected_hessian`, `distrib_deriv3` and
 `distrib_deriv4`. Of the probability-function methods, `distrib_pdf`
 takes `...` as Step 2 explains, and `distrib_cdf`, `distrib_quantile`
 and `distrib_rng` keep the signatures shown here.
 
-The results are identical to what the fallbacks produced, only faster
-and exact:
+The results agree with what the fallbacks produced, to the accuracy of
+the finite differences, and are now exact and faster:
 
 ``` r
 
@@ -323,15 +330,15 @@ str(distrib_gradient(d, c(-1, 3), th))                   # now analytical
 
 A practical suggestion for the order in which to add closed forms:
 
-1.  **`distrib_gradient`** — the single biggest speed-up for model
+1.  **`distrib_gradient`**: the single biggest speed-up for model
     fitting, since the score is evaluated at every optimization step.
     Writing it in C++ (via **Rcpp**), as the built-in distributions do,
     helps further.
-2.  **`distrib_hessian`** — for Newton-type optimization and standard
+2.  **`distrib_hessian`**: for Newton-type optimization and standard
     errors.
-3.  **`distrib_cdf` / `distrib_quantile` / `distrib_rng`** — for fast or
+3.  **`distrib_cdf` / `distrib_quantile` / `distrib_rng`**: for fast or
     high-volume simulation and tail probabilities.
-4.  **`distrib_expected_hessian`** and **analytical moments** — when a
+4.  **`distrib_expected_hessian`** and **analytical moments**: when a
     closed form exists and the fitting method is Fisher scoring, or
     exact moments are needed.
 
@@ -367,7 +374,8 @@ Once a distribution is defined,
 runs a battery of numerical self-consistency checks: it verifies that
 the density integrates (or sums) to one, that the CDF, quantile function
 and RNG agree with each other, and that every analytical derivative
-matches finite differences.
+matches finite differences. A derivative order that the family leaves to
+the fallbacks is listed as not run.
 
 ``` r
 
@@ -427,16 +435,16 @@ distrib_gradient(d, y, th, scale = "link")    # d l / d eta
 
 Because $`\sigma = e^{\eta}`$, the second element of the link-scale
 score is simply the parameter-scale score times $`\sigma`$. Higher
-orders follow the Faà di Bruno chain rule and are available up to order
-4; see
+orders follow the Faà di Bruno chain rule, and the link scale is
+available up to order 5; see
 [`?link_scale_derivatives`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md)
 for the formulas.
 
 ## Fitting a distribution to data
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-maximizes the likelihood on the link scale — where the parameters are
-unconstrained — using the analytical score and information, and then
+maximizes the likelihood on the link scale (where the parameters are
+unconstrained) using the analytical score and information, and then
 reports the estimates back on the parameter scale:
 
 ``` r
@@ -447,7 +455,7 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit_distrib(d, y)
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 18 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 21 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -495,24 +503,24 @@ almost everywhere, and the observed curvature
 $`\partial^2\ell/\partial\mu^2`$ is **zero**, so Newton-Raphson cannot
 update $`\mu`$.
 
-The package handles this in two ways. First, a distribution can declare
-which parameters are smooth via the `params_smooth` metadata (shown in
-[`print()`](https://rdrr.io/r/base/print.html)):
+The package handles this in two ways. First, a distribution declares
+which parameters are smooth through the `params_smooth` metadata, which
+the constructor of Step 3 sets and
+[`print()`](https://rdrr.io/r/base/print.html) shows:
 
 ``` r
 
 d <- laplace_distrib()
 param_smoothness(d)
-#>   mu    b 
-#> TRUE TRUE
+#>    mu     b 
+#> FALSE  TRUE
 ```
 
-Second, and most importantly, `distrib_expected_hessian` returns the
-**Fisher information** computed from the variance of the score,
-$`I=\mathbb{E}[\nabla\ell\,\nabla\ell^\top]`$, rather than from
-$`-\mathbb{E}[H]`$. For a regular model the two coincide, by the second
-Bartlett identity, but only the score-variance form stays valid when the
-identity fails. It gives the correct information $`1/b^2`$ for the
+Second, `distrib_expected_hessian` returns minus the Fisher information
+computed from the score, $`-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]`$,
+rather than $`\mathbb{E}[H]`$. For a regular model the two coincide, by
+the second Bartlett identity, but only the score form stays valid when
+the identity fails. It gives the correct information $`1/b^2`$ for the
 Laplace location, where $`-\mathbb{E}[H]`$ would give a degenerate zero:
 
 ``` r
@@ -520,16 +528,20 @@ Laplace location, where $`-\mathbb{E}[H]`$ would give a degenerate zero:
 th <- list(mu = 1, b = 2)
 distrib_hessian(d, c(-1, 0, 2), th)$mu_mu          # observed curvature: 0
 #> [1] 0 0 0
-distrib_expected_hessian(d, 0, th)$mu_mu           # Fisher information: -1/b^2
+distrib_expected_hessian(d, 0, th)$mu_mu           # minus the information: -1/b^2
 #> [1] -0.25
 ```
 
-This means that even a user-defined non-smooth distribution supplying
-only its density (and, ideally, an analytic score at the kink) obtains
-the right expected information automatically, because the default
-`distrib_expected_hessian` uses the outer product of the score. See
+The default `distrib_expected_hessian` reads the outer product of the
+score at each observation (`approx = "opg"`). For the Laplace location
+that product does not depend on the observation, so the default returns
+the information itself. For a component whose squared score varies with
+the response, the default is a per-observation estimate whose average
+over the sample estimates the information, and `approx = "bartlett"`
+takes the expectation exactly. See
 [`?laplace_distrib`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
-for the full worked example.
+for the family that the package ships, written in $`\sigma`$ in place of
+$`b`$.
 
 ## Summary
 

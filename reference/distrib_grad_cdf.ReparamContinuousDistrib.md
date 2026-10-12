@@ -2,8 +2,9 @@
 
 The chain rule on the parent's cdf derivatives, through
 [`mapped_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv.md).
-It is exact whenever the parent's are; where the parent differences its
-own cdf, so does this, the chain having nothing closed to carry.
+It is exact whenever the derivatives of the parent and the partials of
+the map are; where the parent differences its own cdf, so does this, the
+chain having nothing closed to carry.
 
 ## Arguments
 
@@ -40,12 +41,16 @@ of `q` recycled against `theta`.
 
 ## Details
 
-The map's partials come from the object itself,
+The partials of the map come from the object itself,
 [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
-reading the keyed tables the reparametrization was built with, so a
+reading the keyed tables that the reparametrization was built with. They
+are exact when
+[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+was given `map_derivs`, and single stencils on the map otherwise, so a
 family created by
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
-gets closed cdf derivatives for free as soon as its parent has them.
+carries the closed cdf derivatives of its parent through the map to the
+accuracy of those partials.
 
 ## See also
 
@@ -59,7 +64,7 @@ for the identity;
 
 ``` r
 # A Gaussian reparametrized in the variance. Its parent has closed cdf
-# derivatives, so the chain is exact.
+# derivatives, and the map's partials here come from a stencil.
 d <- reparametrize(
   gaussian1_distrib(),
   map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),

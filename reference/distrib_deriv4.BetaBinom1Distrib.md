@@ -8,12 +8,13 @@ describes carried one order further: the shape parametrization's fourth
 derivatives, each a difference of \\\psi^{(3)}\\, carried through the
 map \\(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)\\ by the partition
 sum of
-[`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md).
+[`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md),
+for \\\sigma \ge 0.1\\, and the direct sums below.
 
-With `expected = TRUE` the method calls
-[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-instead. That is the one place on this page where `approx` and `nsim`
-are read.
+With `expected = TRUE` the method returns the expectation as an exact
+finite sum over the support, from
+[`betabinom1_expected()`](https://statmodels7.github.io/distributions7/reference/betabinom1_expected.md).
+`approx` and `nsim` are ignored on both branches.
 
 ## Arguments
 
@@ -47,15 +48,12 @@ are read.
 
 - approx:
 
-  One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`, the strategy
-  [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-  uses. Read only when `expected = TRUE`.
+  Ignored, the expectation being an exact finite sum. Accepted so that
+  the signature matches the generic's.
 
 - nsim:
 
-  A single positive integer, the sample size when `approx = "mc"`. Read
-  only when `expected = TRUE`. Defaults to `10000`.
+  Ignored, for the same reason. Defaults to `10000`.
 
 - ...:
 

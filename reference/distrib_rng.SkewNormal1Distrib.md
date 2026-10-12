@@ -41,9 +41,13 @@ A numeric vector of `n` draws.
 
 ## Notation
 
-\\\delta = \alpha/\sqrt{1+\alpha^2}\\ is the correlation between \\Z\\
-and the half-normal component; \\\mu\\ is the location and \\\sigma\\
-the scale.
+\\\delta = \alpha/\sqrt{1+\alpha^2}\\ is the correlation of the Gaussian
+pair \\(U_0, V)\\, \\V = \delta U_0 + \sqrt{1-\delta^2}\\U_1\\, whose
+second component conditioned on \\U_0 \> 0\\ is \\Z\\. The method forms
+\\\delta\\ and \\\sqrt{1-\delta^2} = 1/\sqrt{1+\alpha^2}\\ in
+\\1/\alpha\\ where \\\|\alpha\| \> 1\\, so they keep their digits where
+\\\alpha^2\\ overflows. \\\mu\\ is the location and \\\sigma\\ the
+scale.
 
 ## See also
 

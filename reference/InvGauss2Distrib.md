@@ -3,15 +3,17 @@
 The S7 class of the inverse Gaussian family on \\(0, \infty)\\ in its
 classical parametrization, the mean \\\mu \> 0\\ and the shape \\\lambda
 \> 0\\, so that \\\operatorname{Var}(Y) = \mu^3/\lambda\\. It inherits
-from `continuous_distrib`, so it answers every generic of the `distrib`
-contract; the nine methods listed below are registered on it in this
+from `continuous_distrib`, so every generic of the `distrib` class
+applies to it; the methods listed below are registered on it in this
 file and everything else comes from the parent.
 
 Build one with
 [`invgauss2_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss2_distrib.md),
 which supplies the two link functions and fills the properties in. This
 page documents the raw S7 constructor, which takes the parent's
-properties and validates none of the relationships between them.
+properties; the validator of `distrib` checks that they are consistent
+(the parameter count, a bound and a link for every parameter, ordered
+support bounds).
 
 ## Usage
 
@@ -97,28 +99,57 @@ both parameters, and the two links.
 
 ## Methods
 
-Registered on this class in this file:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.InvGauss2Distrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.InvGauss2Distrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.InvGauss2Distrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.InvGauss2Distrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.InvGauss2Distrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.InvGauss2Distrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.InvGauss2Distrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.InvGauss2Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.InvGauss2Distrib.md)
+Registered on this class, each linked to the page that documents it:
 
-Three more are registered elsewhere in the package and are closed form
-too:
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.InvGauss2Distrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.InvGauss2Distrib.md)
-and
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.InvGauss2Distrib.md),
-the derivatives in the response and the mixed block, and
-[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.InvGauss2Distrib.md)
-for the derivatives of the distribution function.
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.InvGauss2Distrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.InvGauss2Distrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.InvGauss2Distrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.InvGauss2Distrib.md);
 
-Everything else is inherited from
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.InvGauss2Distrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.InvGauss2Distrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.InvGauss2Distrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.InvGauss2Distrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.InvGauss2Distrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.InvGauss2Distrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.InvGauss2Distrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.InvGauss2Distrib.md),
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/mapped_theta2_methods.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/mapped_theta2_methods.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/mapped_theta2_methods.md);
+
+- the derivatives of the distribution function:
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.InvGauss2Distrib.md),
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.InvGauss2Distrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.InvGauss2Distrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.InvGauss2Distrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.InvGauss2Distrib.md).
+
+Every other generic is inherited from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
@@ -130,7 +161,7 @@ for the same law in mean and dispersion \\\phi = 1/\lambda\\;
 [`distrib_pdf.InvGauss2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.InvGauss2Distrib.md)
 and
 [`distrib_gradient.InvGauss2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.InvGauss2Distrib.md)
-for the closed forms this class supplies.
+for the closed forms of this class.
 
 ## Examples
 

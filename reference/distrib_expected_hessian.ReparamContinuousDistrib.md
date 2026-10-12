@@ -75,7 +75,7 @@ which keeps the score term;
 [`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md);
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md);
 [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md),
-which answers for this class by asking the parent.
+which for this class returns the value of the parent.
 
 ## Examples
 
@@ -93,7 +93,7 @@ th <- list(mu = 1, sigma2 = 4)
 a <- distrib_expected_hessian(d, c(0, 1, 2), th)
 b <- distrib_expected_hessian(gaussian2_distrib(), c(0, 1, 2), th)
 
-# Matched by name, the two enumerating in different orders.
+# Matched by name; both results follow hess_names() here.
 max(abs(unlist(a[names(b)]) - unlist(b)))
 #> [1] 1.974032e-12
 ```

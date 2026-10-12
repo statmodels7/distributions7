@@ -2,11 +2,14 @@
 
 Closed form in the two shapes \\a = \mu\phi\\ and \\b = (1-\mu)\phi\\:
 \$\$\gamma_2 = \frac{6\\(a-b)^2(a+b+1) - ab(a+b+2)\\}
-{ab(a+b+2)(a+b+3)}.\$\$ It is the one family in the toolkit whose excess
-kurtosis is routinely negative: a beta on a bounded support has no tails
-to be heavy, and at \\\mu = 1/2\\, \\\phi = 2\\ the density is uniform,
-whose excess kurtosis is \\-6/5\\, the smallest value any distribution
-attains.
+{ab(a+b+2)(a+b+3)}.\$\$ The excess kurtosis is negative over a wide
+range of parameters, the support being bounded. At \\\mu = 1/2\\, \\\phi
+= 2\\ the density is uniform and the value is \\-6/5\\; at \\\mu = 1/2\\
+it tends to \\-2\\, the smallest value any distribution can have, as
+\\\phi\\ goes to zero. The method evaluates the form in \\(\mu, \phi)\\
+of
+[`beta_shape_moments()`](https://statmodels7.github.io/distributions7/reference/beta_shape_moments.md),
+in which \\ab\\ is not formed.
 
 ## Arguments
 
@@ -46,7 +49,8 @@ written in the same two shapes;
 ``` r
 d <- beta1_distrib()
 
-# The uniform case sits at the lower bound of -6/5.
+# The uniform case has excess kurtosis -6/5; a lower precision gives lower
+# values, down to -2.
 all.equal(kurtosis(d, list(mu = 0.5, phi = 2)), -1.2)
 #> [1] TRUE
 

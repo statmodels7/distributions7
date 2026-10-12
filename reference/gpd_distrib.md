@@ -8,8 +8,8 @@ in an analysis of extremes.
 
 At \\\xi = 0\\ it is the exponential, at \\\xi \> 0\\ it has a
 polynomial tail, and at \\\xi \< 0\\ it has a **finite upper endpoint**
-at \\-\sigma/\xi\\. That last case makes the family non-regular, and it
-is the one thing to know before using it.
+at \\-\sigma/\xi\\. The last case makes the family non-regular, so the
+expected information exists only for \\\xi \> -1/2\\.
 
 ## Usage
 
@@ -45,28 +45,30 @@ two links given here.
 \$\$f(y) = \dfrac{1}{\sigma}\left(1 + \dfrac{\xi
 y}{\sigma}\right)^{-1/\xi-1}, \qquad F(q) = 1 - \left(1 + \dfrac{\xi
 q}{\sigma}\right)^{-1/\xi}.\$\$ At \\\xi = 0\\ both reduce to the
-exponential. The implementation reaches that limit through a series, so
-the parameter may pass through zero during a fit. The quantile function
-is elementary, \\Q(p) = \sigma\\(1-p)^{-\xi}-1\\/\xi\\, so the generator
-is an exact inverse transform.
+exponential. The density, the distribution function and the derivatives
+are evaluated through the analytic function \\\log(1+u)/u\\ of \\u = \xi
+y/\sigma\\, so the shape may pass through zero during a fit. The
+quantile function is elementary, \\Q(p) =
+\sigma\\(1-p)^{-\xi}-1\\/\xi\\, so the generator is an exact inverse
+transform.
 
-## It is not parametrized by its mean
+## Parametrization
 
-The mean is \\\sigma/(1-\xi)\\ and exists only for \\\xi \< 1\\, so a
-mean parametrization would leave the family undescribable exactly where
-it is most used, in the heavy-tailed regime. The same argument keeps
+The family is parametrized by the scale \\\sigma\\ and the shape
+\\\xi\\. The mean is \\\sigma/(1-\xi)\\ and exists only for \\\xi \<
+1\\, so a mean parametrization would not describe the heavy-tailed
+members of the family. For the same reason
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
 and
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
-apart for the multivariate \\t\\: a parametrization must not depend on a
-moment that need not exist.
+are distinct for the multivariate \\t\\.
 
 ## The support depends on the parameters
 
-For \\\xi \< 0\\ the support is \\\[0, -\sigma/\xi\]\\, and this is the
-first family here of which that is true. What it costs is the automatic
-license to differentiate under the integral sign, on which the Bartlett
-identities rest. Two things survive and one does not:
+For \\\xi \< 0\\ the support is \\\[0, -\sigma/\xi\]\\, so it depends on
+the parameters. What this costs is the automatic license to
+differentiate under the integral sign, on which the Bartlett identities
+rest. Two things survive and one does not:
 
 - the derivatives returned are correct as derivatives of the log-density
   at every admissible point, whatever the sign of \\\xi\\;
@@ -84,18 +86,18 @@ identities rest. Two things survive and one does not:
 
 The object's `bounds` are `c(0, Inf)` because they are fixed at
 construction while the true endpoint moves with the parameters. The
-density is zero beyond it, so nothing computes a wrong number, and a
-caller reading `bounds` should ask
+density is zero beyond the endpoint and the distribution function is
+one, and a caller that needs the upper limit of the support should use
 [`gpd_endpoint()`](https://statmodels7.github.io/distributions7/reference/gpd_endpoint.md)
-instead.
+in place of `bounds`.
 
 ## Moments
 
-The mean is \\\sigma/(1-\xi)\\ for \\\xi \< 1\\, the variance
-\\\sigma^2/\\(1-\xi)^2(1-2\xi)\\\\ for \\\xi \< 1/2\\, the skewness
-needs \\\xi \< 1/3\\ and the kurtosis \\\xi \< 1/4. \\ Each returns
-`Inf` above its threshold, so a fitted object can report a mean where it
-has no variance.
+The mean is \\\sigma/(1-\xi)\\ for \\\xi \< 1\\ and the variance
+\\\sigma^2/\\(1-\xi)^2(1-2\xi)\\\\ for \\\xi \< 1/2\\. The skewness
+requires \\\xi \< 1/3\\ and the kurtosis \\\xi \< 1/4\\. Each of the
+four moments is returned as `Inf` at and above its threshold, so a
+fitted object can report a mean where the variance is infinite.
 
 ## Parameter domains
 

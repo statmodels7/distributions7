@@ -15,7 +15,7 @@ log-density jumps, \(\log\pi\) on one side and
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,9 +91,11 @@ parent's derivative elsewhere.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The <code>NaN</code> is the point of the function. The finite-difference default
-inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code> would straddle the jump and return a
-NUMBER for it, which is worse than an error: nothing downstream would notice.</p>
+    <p>At the atom the function returns <code>NaN</code>, because no derivative exists there.
+The finite-difference default inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code> would
+difference across the jump and return a finite number. It serves the response
+derivatives of orders one to four; <code><a href="za_y_list.html">za_y_list()</a></code> applies the same rule to the
+mixed derivatives, which are zero in <code>za</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

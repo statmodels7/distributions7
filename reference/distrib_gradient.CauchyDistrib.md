@@ -54,8 +54,8 @@ A named list of two numeric vectors, `mu` and `sigma`, each of length
 ## Notation
 
 \\\ell\\ is the log-density of one observation, \\\mu\\ the location and
-\\\sigma \> 0\\ the scale. Neither is a moment: no moment of this family
-exists.
+\\\sigma \> 0\\ the scale. Neither is a moment, because the family has
+no moments.
 
 ## See also
 

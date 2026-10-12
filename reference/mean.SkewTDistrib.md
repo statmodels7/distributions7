@@ -3,9 +3,8 @@
 Closed form for \\\nu \> 1\\: \\E\[Y\] = \mu + \sigma\delta b\_\nu\\,
 with \\\delta = \alpha/\sqrt{1+\alpha^2}\\ and \\b\_\nu =
 \sqrt{\nu/\pi}\\\Gamma\\(\nu-1)/2\\/\Gamma(\nu/2)\\. At \\\nu \le 1\\
-the value is `NaN`: the density is perfectly well defined there and its
-first moment is not, so a number would be a claim the law does not
-support.
+the value is `NaN`, because the first moment does not exist for that
+density.
 
 ## Arguments
 

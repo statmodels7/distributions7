@@ -5,11 +5,12 @@ scale \\\mu \> 0\\ and a shape \\\sigma \> 0\\, with density \\f(y) =
 (\sigma/\mu)(y/\mu)^{\sigma-1}\exp\\-(y/\mu)^{\sigma}\\\\ on \\y \> 0\\.
 The returned object carries closed-form derivatives of the log-density
 to fourth order, observed and expected, in the parameters and in the
-response, and closed-form moments, so every generic of the toolkit
-answers without a numerical fallback.
+response, and closed-form moments. The fifth order and
+[`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md)
+come from the numerical fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the
+unconstrained scale on which an optimizer works. Both default to the
 logarithm, both parameters being positive.
 
 ## Usage
@@ -52,15 +53,14 @@ distribution function \\F(q) = 1 - \exp\\-(q/\mu)^{\sigma}\\\\ and the
 quantile function \\Q(p) = \mu\\-\log(1-p)\\^{1/\sigma}\\. This is `WEI`
 in gamlss.
 
-**\\\mu\\ is the scale and not the mean.** The mean is \\\mu\\\Gamma(1 +
-1/\sigma)\\, which involves the shape, so a mean parametrization would
-make every derivative a derivative of the gamma function and of its
-inverse. The scale-shape form keeps the whole family elementary;
+The parameter \\\mu\\ is the scale. The mean is \\\mu\\\Gamma(1 +
+1/\sigma)\\ and involves the shape;
 [`mean.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/mean.Weibull1Distrib.md)
-reports the mean, and
+returns it. In the scale and the shape every derivative is elementary;
 [`weibull3_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull3_distrib.md)
-is the parametrization by a quantile for a reader who wants a location
-that is one.
+is the parametrization by the mean and the shape, in which the scale is
+\\m/\Gamma(1 + 1/\sigma)\\ and the derivatives contain the gamma
+function and its derivatives.
 
 ## Derivatives
 
@@ -115,14 +115,14 @@ being a multiplier. The hazard \\f/(1-F)\\ is
 decreasing for \\\sigma \< 1\\. That monotone hazard is why the family
 is used in survival work.
 
-Two shapes are named families: \\\sigma = 1\\ is the exponential with
-mean \\\mu\\, and \\\sigma = 2\\ the Rayleigh. Both are exact, not
-limiting, and the example checks the first.
+Two shapes give named families: \\\sigma = 1\\ is the exponential with
+mean \\\mu\\, and \\\sigma = 2\\ is the Rayleigh distribution with scale
+\\\mu/\sqrt{2}\\. The example checks the first.
 
 ## Estimation
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-maximizes the log-likelihood on the link scale. Neither estimate is
+maximizes the log-likelihood on the link scale. The estimates have no
 closed form: the shape solves \\1/\hat\sigma + \overline{\log y} = \sum
 y_i^{\hat\sigma}\log y_i / \sum y_i^{\hat\sigma}\\ by iteration, and the
 scale follows from it as \\\hat\mu = (n^{-1}\sum
@@ -149,7 +149,7 @@ Society, Series C*, **54**(3), 507-554.
 ## See also
 
 [`weibull3_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull3_distrib.md)
-for the same law parametrized by a quantile;
+for the same law in the mean and the shape;
 [`gumbel_distrib()`](https://statmodels7.github.io/distributions7/reference/gumbel_distrib.md),
 which is this family after a negative logarithm;
 [`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md)
@@ -161,8 +161,8 @@ for another extreme-value family;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
-passes;
+to validate a family of your own against the same battery of checks that
+this family passes;
 [Weibull1Distrib](https://statmodels7.github.io/distributions7/reference/Weibull1Distrib.md)
 for the class.
 

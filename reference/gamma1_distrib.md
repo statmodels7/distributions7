@@ -5,11 +5,12 @@ mean \\\mu \> 0\\ and a dispersion \\\phi \> 0\\, so that
 \\\operatorname{Var}(Y) = \phi\mu^2\\. This is the parametrization a
 generalized linear model uses. The returned object carries closed-form
 derivatives of the log-density to fourth order, in the parameters and in
-the response, and closed-form moments, so every generic of the toolkit
-answers without a numerical fallback.
+the response, and closed-form moments. The fifth order and the mixed
+derivatives of order three and four in the response and the parameters
+come from the numerical fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the
+unconstrained scale on which an optimizer works. Both default to the
 logarithm, both parameters being positive.
 
 ## Usage
@@ -99,8 +100,8 @@ and
 [`distrib_hess_y.Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Gamma1Distrib.md).
 The derivatives of the *distribution* function in the parameters have no
 elementary form here, the derivative of an incomplete gamma in its shape
-being hypergeometric, and are taken by finite difference on the analytic
-cdf.
+being hypergeometric, and are computed by a compiled quadrature of the
+density times the derivatives of the log-density.
 
 ## Estimation
 
@@ -142,8 +143,8 @@ for other positive families with a multiplicative variance function;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
-passes;
+to validate a family of your own against the same battery of checks that
+this family passes;
 [Gamma1Distrib](https://statmodels7.github.io/distributions7/reference/Gamma1Distrib.md)
 for the class.
 

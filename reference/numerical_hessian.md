@@ -2,9 +2,11 @@
 
 Computes the observed Hessian of the log-density with respect to the
 parameters by central finite differences of
-`distrib_pdf(..., log = TRUE)`. This powers the default
+`distrib_pdf(..., log = TRUE)`. The default
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
-method for distributions that do not implement an analytical Hessian.
+method calls it for a family that has neither an analytical Hessian nor
+an analytical score; a family with an analytical score has it
+differenced instead.
 
 ## Usage
 

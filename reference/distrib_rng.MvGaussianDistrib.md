@@ -2,10 +2,13 @@
 
 Draws from the multivariate gaussian by the standard factorization, \\y
 = \mu + L z\\ with \\z\\ a vector of independent standard normals and
-\\L L^\top = \Sigma\\. The factor is a Cholesky decomposition of the
-covariance, taken after the precision has been inverted where the matrix
-parametrization carries that side. The draws consume `n * p` values from
-R's own generator through
+\\L L^\top = \Sigma\\. The factor is read from the parametrization (see
+[`mv_sampling_factor()`](https://statmodels7.github.io/distributions7/reference/mv_sampling_factor.md)):
+its own factor where it carries the covariance, the inverse transpose of
+that factor where it carries the precision. A covariance that is nearly
+singular, which [`chol()`](https://rdrr.io/r/base/chol.html) of the
+assembled matrix can reject, is sampled without a decomposition. The
+draws consume `n * p` values from R's own generator through
 [`stats::rnorm()`](https://rdrr.io/r/stats/Normal.html), so the stream
 is reproducible under
 [`base::set.seed()`](https://rdrr.io/r/base/Random.html).

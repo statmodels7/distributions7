@@ -98,9 +98,9 @@ An S7 object of class `TruncatedDiscreteDistrib`, inheriting from
 
 ## Details
 
-The lower endpoint being included is the one place the two truncation
-classes differ. The tail below the interval is \\F(L^-) = F(L) - f(L)\\,
-so the mass sitting exactly on \\L\\ has to be added back;
+The tail below the interval is \\F(L^-) = F(L) - f(L)\\, because the
+lower endpoint is included in the support and the mass sitting exactly
+on \\L\\ has to be added back;
 [`trunc_constants()`](https://statmodels7.github.io/distributions7/reference/trunc_constants.md)
 does that through
 [`parent_mass_at()`](https://statmodels7.github.io/distributions7/reference/parent_mass_at.md),
@@ -125,16 +125,38 @@ and \\H\_{ij}\\ are the parent's score and observed Hessian; and
 
 ## Methods
 
-Methods implemented for this class:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.TruncatedDiscreteDistrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.TruncatedDiscreteDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.TruncatedDiscreteDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.TruncatedDiscreteDistrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.TruncatedDiscreteDistrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.TruncatedDiscreteDistrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.TruncatedDiscreteDistrib.md)
+Registered on this class, each linked to the page that documents it:
 
-Everything else is inherited from
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.TruncatedDiscreteDistrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.TruncatedDiscreteDistrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.TruncatedDiscreteDistrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.TruncatedDiscreteDistrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.TruncatedDiscreteDistrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.TruncatedDiscreteDistrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.TruncatedDiscreteDistrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.TruncatedDiscreteDistrib.md),
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.TruncatedDiscreteDistrib.md)
+  and
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md);
+
+- the exactness flags:
+  [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
+  and
+  [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md);
+
+- the fitting helpers:
+  [`distrib_scalar_route()`](https://statmodels7.github.io/distributions7/reference/distrib_scalar_route.md).
+
+Every other generic is inherited from
 [`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
 
 ## See also
@@ -163,8 +185,10 @@ distrib_pdf(ztp, 0:3, list(mu = 2))
 dpois(1:3, 2) / (1 - dpois(0, 2))
 #> [1] 0.3130353 0.3130353 0.2086902
 
-# An interval leaving too few support points is rejected by the
-# constructor, the parameter no longer being identified.
-try(truncated(bernoulli_distrib(), lower = 1))
-#> Error : lower = 1 lies at or above the support of 'bernoulli', which ends at 1: the truncated support would be empty.
+# An interval leaving too few support points to identify the parameters
+# is rejected by the constructor (two points for the two parameters).
+try(truncated(negbin2_distrib(), lower = 3, upper = 4))
+#> Error : Truncating 'negbin2' to [3, 4] leaves 2 support point(s), carrying 1 free
+#>   probabilities, while the distribution has 2 parameter(s). They would not be
+#>   identified. At least 3 support points are required.
 ```

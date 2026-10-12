@@ -38,16 +38,18 @@ of `q` recycled against `theta`.
 
 ## Details
 
-The family's distribution function is \\F(q) = \exp(-e^{-z})\\, so
-nothing here needs a quadrature or a series, which is why a Gumbel is
+The family's distribution function is \\F(q) = \exp(-e^{-z})\\, so its
+derivatives need neither a quadrature nor a series, which makes a Gumbel
 usable for censored extreme-value data: the score of a right-censored
-observation is \\f(q)/S(q)\\ and comes from the density alone.
+observation is the derivative of \\\log S(q)\\, which is \\f(q)/S(q)\\
+in \\\mu\\ and \\z f(q)/S(q)\\ in \\\sigma\\.
 
 ## Notation
 
 \\\mu\\ is the location, \\\sigma \> 0\\ the scale, \\z =
 (q-\mu)/\sigma\\, \\f\\ the density and \\F\\ the distribution function.
-The mean is \\\mu + \gamma\sigma\\ and not \\\mu\\.
+The mean is \\\mu + \gamma\sigma\\, with \\\gamma\\ Euler's constant,
+and not \\\mu\\.
 
 ## See also
 

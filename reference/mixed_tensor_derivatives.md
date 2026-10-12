@@ -73,8 +73,7 @@ For
 which carries the parent's score and Hessian in the parameters and no
 response derivative, the fourth-order \\\partial^4\ell/\partial
 y^2\\\partial\theta^2\\ is a second difference in the response of the
-analytical Hessian: \\r = 2\\, where the previous fallback differenced a
-difference in the same parameter.
+analytical Hessian, so \\r = 2\\.
 
 ## See also
 
@@ -99,6 +98,6 @@ k <- 1 / 0.26
 got <- distributions7:::mixed_tensor_derivatives(d, b, list(sigma2 = 0.26), 2, 2)
 rbind(got$sigma2_sigma2, -2 * k^3 * exp(b))
 #>           [,1]      [,2]
-#> [1,] -76.27673 -153.6023
+#> [1,] -76.27677 -153.6024
 #> [2,] -76.27675 -153.6025
 ```

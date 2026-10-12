@@ -4,7 +4,8 @@ Computes the five distinct fourth derivatives of the beta-binomial
 log-mass in the two shapes, in closed form, by the construction
 [`distrib_deriv3.BetaBinom2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom2Distrib.md)
 describes carried one order further: the same sum of terms with
-\\\psi_3\\, the third polygamma, in place of \\\log\Gamma\\.
+\\\psi_3\\, the third polygamma, in place of \\\log\Gamma\\, and the
+direct sums where \\\alpha+\beta \> 10\\.
 
 With `expected = TRUE` the expectation is an **exact finite sum** over
 the support, so `approx` and `nsim` are ignored on both branches.

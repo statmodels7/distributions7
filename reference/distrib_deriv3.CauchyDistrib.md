@@ -1,10 +1,14 @@
 # Cauchy Third-Order Derivatives
 
 Computes the four distinct third derivatives of the Cauchy log-density
-with respect to \\\mu\\ and \\\sigma\\, in closed form. Every component
-is a rational function of \\r = y - \mu\\ and \\\sigma\\ over a power of
-\\d = \sigma^2 + r^2\\, so all of them are bounded in \\y\\ and decay as
-\\\|r\|\\ grows.
+with respect to \\\mu\\ and \\\sigma\\, in closed form from a compiled
+kernel. Every component is a rational function of \\r = y - \mu\\ and
+\\\sigma\\ with a power of \\d = \sigma^2 + r^2\\ in the denominator, so
+all of them are bounded in \\y\\. Three of the four tend to zero as
+\\\|r\|\\ grows; the component in \\\sigma\\ alone tends to
+\\2/\sigma^3\\. The kernel evaluates them as described in
+[`distrib_deriv5.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.CauchyDistrib.md),
+without forming \\r^2\\.
 
 With `expected = TRUE` the expectations under the model are returned,
 also in closed form: the two components odd in \\r\\ vanish by symmetry,

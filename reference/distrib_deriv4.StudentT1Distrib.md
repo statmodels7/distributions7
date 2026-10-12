@@ -63,8 +63,10 @@ carry, from `mu_mu_mu_mu` to `nu_nu_nu_nu`, each of length
 
 Written like the third order, in \\z\\, \\q = z^2/\nu\\ and \\t =
 1/(1+q)\\, with the quantities of \\\nu\\ alone on their asymptotic
-series above \\\nu = 20\\: all fifteen components keep their digits and
-stay finite to `.Machine$double.xmax`.
+series above \\\nu = 20\\: on the parameter scale all fifteen components
+stay finite to `.Machine$double.xmax`. On the link scale the factors
+\\(h')^k\\ of the chain rule make some components non-finite from \\\nu
+= 10^{150}\\.
 
 ## See also
 

@@ -15,7 +15,7 @@ with \(b = \sqrt{2/\pi}\). The bound is attained only in the limit
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,8 +69,8 @@ with \(b = \sqrt{2/\pi}\). The bound is attained only in the limit
     <p>A skewness beyond it belongs to no skew normal, so
 <code><a href="skewnormal2_distrib.html">skewnormal2_distrib()</a></code> bounds <code>gamma1</code> there and gives it a
 <code><a href="https://statmodels7.github.io/linkfunctions7/reference/bounded_link.html" class="external-link">linkfunctions7::bounded_link()</a></code> over the open interval. Without the bound
-the centered-to-direct map would return a <code>NaN</code> several frames down, where
-the reason for it is no longer visible.</p>
+the centered-to-direct map would return <code>NaN</code> without any indication of the
+cause.</p>
 <p>The ceiling is approached slowly: measured, the skewness is 0.9556 at
 \(\alpha = 10\) and 0.99527 at \(\alpha = 10^4\). Data skewer than this
 needs <code><a href="skewt_distrib.html">skewt_distrib()</a></code>.</p>

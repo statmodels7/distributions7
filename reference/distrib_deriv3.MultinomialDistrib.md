@@ -2,11 +2,18 @@
 
 Computes every third derivative of the log-mass in the parameters, in
 closed form. Up to a constant in the counts the log-mass is \\\sum_j y_j
-\log p_j\\, so each term depends on ONE coordinate of the simplex and
-the chain rule collapses to a univariate partition sum per coordinate,
-with \$\$f^{(m)}(p) = (-1)^{m-1}(m-1)!\\p^{-m}.\$\$ The combinatorial
-factor carries no parameter, so it drops out of every derivative and the
-counts enter only as weights.
+\log p_j\\. On the additive log-ratio chart of
+[`parameters7::simplex()`](https://statmodels7.github.io/parameters7/reference/simplex.html)
+this equals \\\sum\_{j\<p} y_j\eta_j - N\\\mathrm{LSE}(\eta)\\, with
+\\N\\ the total of the row, so every derivative of order two or more is
+\\-N\\ times a joint cumulant of the indicators of the categorical law
+(see
+[`mn_cumulant()`](https://statmodels7.github.io/distributions7/reference/mn_cumulant.md)).
+The cumulant is a sum of products of probabilities, computed without
+dividing by one, so it stays finite when a probability underflows. On
+another chart each term depends on one coordinate of the simplex and the
+chain rule reduces to a univariate partition sum per coordinate, with
+\$\$f^{(m)}(p) = (-1)^{m-1}(m-1)!\\p^{-m},\$\$ weighted by the counts.
 
 ## Arguments
 
@@ -27,25 +34,22 @@ counts enter only as weights.
 
 - expected:
 
-  Logical of length 1. When `TRUE` the expectation is returned, by
-  SAMPLING through
-  [`mv_expected_higher()`](https://statmodels7.github.io/distributions7/reference/mv_expected_higher.md).
-  Defaults to `FALSE`.
+  Logical of length 1. When `TRUE` the expectation is returned, in
+  closed form (see Details). Defaults to `FALSE`.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
 
 - approx:
 
-  Ignored: sampling is the only multivariate route to an expectation.
-  Present so that the signature matches the generic's.
+  Not read: the expectation is in closed form. Present so that the
+  signature matches the generic's.
 
 - nsim:
 
-  The number of draws used when `expected = TRUE`. Defaults to `10000`.
-  Ignored otherwise.
+  Not read. Present so that the signature matches the generic's.
 
 - ...:
 
@@ -60,20 +64,17 @@ components, the simplex spending \\p - 1\\ free values. With
 
 ## Details
 
-The support is finite, so the expectation of any component is an exact
-sum over `mv_support(distrib, theta)` and needs no sampling.
-`expected = TRUE` nonetheless routes to
-[`mv_expected_higher()`](https://statmodels7.github.io/distributions7/reference/mv_expected_higher.md),
-which draws; a caller who wants the exact expectation forms the sum
-against
-[`distrib_pdf.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MultinomialDistrib.md)
-directly.
+With `expected = TRUE` the expectation is exact. The derivatives are
+linear in the counts, so the method replaces each count by its
+expectation \\n p_j\\. On the additive log-ratio chart this replaces
+\\N\\ by \\n\\, and the result equals the observed value at every row on
+the support.
 
 ## Notation
 
-\\p_j\\ is the probability of category \\j\\, \\y_j\\ its count,
-\\\eta\\ the simplex's free vector and \\\ell\\ the log-mass of one
-observation.
+\\p_j\\ is the probability of category \\j\\, \\y_j\\ its count, \\n\\
+the number of trials, \\\eta\\ the simplex's free vector and \\\ell\\
+the log-mass of one observation.
 
 ## See also
 
@@ -81,8 +82,8 @@ observation.
 for the next order,
 [`multinomial_higher()`](https://statmodels7.github.io/distributions7/reference/multinomial_higher.md)
 for the shared engine,
-[`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md)
-for the exact route to an expectation, and
+[`mn_cumulant()`](https://statmodels7.github.io/distributions7/reference/mn_cumulant.md)
+for the cumulants, and
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
 for the generic.
 
@@ -101,7 +102,7 @@ vapply(d3, sum, numeric(1))
 #> probs_alr1_probs_alr2_probs_alr2 probs_alr2_probs_alr2_probs_alr2 
 #>                        2.8642703                       -4.7842481 
 
-# Against one stencil on the analytic Hessian, component by component.
+# Against a central difference of the Hessian.
 h <- 1e-4
 tp <- theta; tp$probs_alr2 <- tp$probs_alr2 + h
 tm <- theta; tm$probs_alr2 <- tm$probs_alr2 - h
@@ -112,10 +113,11 @@ c(exact = sum(d3[["probs_alr1_probs_alr1_probs_alr2"]]),
 #>     exact   stencil 
 #> 0.4072999 0.4072999 
 
-# The support is finite, so the mass over it sums to one exactly and an
-# expectation can be taken as a sum rather than a sample.
+# The expectation equals the sum over the finite support.
 sup <- mv_support(d, theta)
-c(states = nrow(sup), mass = sum(distrib_pdf(d, sup, theta)))
-#> states   mass 
-#>     66      1 
+w <- distrib_pdf(d, sup, theta)
+c(expected = distrib_deriv3(d, y, theta, expected = TRUE)[[1]][1],
+  sum = sum(w * distrib_deriv3(d, sup, theta)[[1]]))
+#>   expected        sum 
+#> -0.1914194 -0.1914194 
 ```

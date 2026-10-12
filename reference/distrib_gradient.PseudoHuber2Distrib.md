@@ -20,7 +20,11 @@ kernel.
 
 - scale:
 
-  `"parameter"` or `"link"`; the link scale is applied by the generic.
+  `"parameter"` or `"link"`. The generic applies the link scale at
+  orders one to four;
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
+  applies it in the method, through
+  [`deriv5_scale()`](https://statmodels7.github.io/distributions7/reference/deriv5_scale.md).
 
 - expected:
 
@@ -52,14 +56,18 @@ its partial derivatives is closed: \$\$\partial\_\mu^i
 \partial\_\sigma^j \partial\_\nu^k Q = \[i = j = 0,\\ k = 1\] +
 R^{(k)}(\nu)\\ B_i\\ C_j,\$\$ with \\B_0 = r^2\\, \\B_1 = -2r\\, \\B_2 =
 2\\, \\B_i = 0\\ for \\i \ge 3\\, and \\C_j = (-1)^j (j+1)!\\
-\sigma^{-(j+2)}\\. A component of \\D\\ is Faa di Bruno's sum over the
-set partitions of its indices, with \\(d/dQ)^m \sqrt{Q} = c_m Q^{1/2 -
-m}\\. The derivatives of \\R\\ and \\h\\ are read off \\\log
-K_n(\sqrt\nu)\\, whose derivatives in \\t = \sqrt\nu\\ follow from the
-ratios \\K_n^{(j)}(t)/K_n(t) = (-1/2)^j \sum_i \binom{j}{i}
-K\_{\|n-j+2i\|}(t)/ K_n(t)\\, formed with exponentially scaled Bessel
-functions. A kernel of order \\m\\ computes \\R\\ and \\h\\ to order
-\\m\\ and the partitions of order \\m\\ only.
+\sigma^{-(j+2)}\\. A component of \\D\\ of order one and two is written
+out per component. For orders three to five the data part \\-A/\sigma\\,
+with \\A = \sqrt{\nu\sigma^2 + R(\nu) r^2}\\, is differentiated in
+closed form, in expressions written in \\u = r/A\\ and powers of \\1/A\\
+that are tabulated in the C++ sources. The derivatives of \\R\\ and \\h
+= \log(R)/2 - B\\ come from those of \\B(\nu) = \log\\\sqrt\nu
+K_1(\sqrt\nu)\\\\ and \\\log R\\, computed by three routes: the series
+of \\K_1\\ and \\K_2\\ at the origin below \\\nu = 1\\, the cumulants of
+the generalized inverse Gaussian law of their integral representation
+for \\1 \le \nu \< 400\\, and the asymptotic series from \\\nu = 400\\.
+A kernel of order \\m\\ computes \\R\\ and \\h\\ to order \\m\\ and
+nothing above it.
 
 The expected derivatives of orders three and four are those of
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md);

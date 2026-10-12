@@ -15,7 +15,7 @@ cdf_tail_scale()."><meta property="og:image" content="https://statmodels7.github
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,9 +95,9 @@ of <code>q</code> recycled against <code>theta</code>.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The sum is finite because the discrete class requires a finite lower bound
-on the support. The cost therefore grows with the largest quantile asked
-for and not with the number of parameters: on a Poisson of mean 30 at 200
-quantiles the whole gradient takes 0.14 ms.</p>
+on the support. The cost therefore grows with the largest requested
+quantile and not with the number of parameters, and each quantile is summed
+separately.</p>
 <p>Six of the shipped discrete families use this method; the rest register a
 formula, several of which are exact simplifications of this same sum. A
 Poisson's, for instance, telescopes to \(\partial F(k)/\partial\mu =

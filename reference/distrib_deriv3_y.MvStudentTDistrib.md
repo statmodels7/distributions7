@@ -14,7 +14,10 @@ free of \\y\\, and \$\$\ell\_{ijk} =
 six ways of choosing the pair \\(x, y)\\ from \\\\i, j, k, l\\\\, the
 other two indices taking the \\w\\s. Each follows from the order below
 by \\\partial s/\partial y = 2w\\ and \\\partial w/\partial y =
-\Omega\\.
+\Omega\\. Every term is evaluated in \\w/s\\ and \\1/s\\ (see
+[`mvt_yscaled()`](https://statmodels7.github.io/distributions7/reference/mvt_yscaled.md)),
+so no power of \\s\\ is formed and the arrays stay finite for an
+observation as far as \\10^{300}\\ from the location.
 
 ## Arguments
 
@@ -83,5 +86,5 @@ yp <- y; yp[, 1] <- yp[, 1] + h
 ym <- y; ym[, 1] <- ym[, 1] - h
 max(abs(d3[, , 1, ] -
         (distrib_hess_y(d, yp, theta) - distrib_hess_y(d, ym, theta)) / (2 * h)))
-#> [1] 1.595502e-11
+#> [1] 1.689321e-11
 ```

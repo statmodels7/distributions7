@@ -12,10 +12,10 @@ exactly what makes the score in \\\phi\\ have mean zero. The quantity
 dispersion entry is negative and the information is positive definite
 everywhere, where the observed Hessian is not.
 
-The zero off-diagonal says the mean and the dispersion are orthogonal.
-That orthogonality is the reason this parametrization is the one a
-generalized linear model uses: the mean equation can be fitted with the
-dispersion held at any value without biasing it.
+The off-diagonal entry is zero, so the mean and the dispersion are
+orthogonal. The score in \\\mu\\ has the dispersion as a common factor,
+so the mean equation can be solved with the dispersion held at any
+value.
 
 Because the values do not depend on the data, `approx` and `nsim` are
 ignored. `y` is read only for its length.
@@ -60,8 +60,8 @@ ignored. `y` is read only for its length.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -98,11 +98,11 @@ lapply(distrib_expected_hessian(d, c(1, 3, 5), th), unique)
 #> $mu_mu
 #> [1] -0.2222222
 #> 
-#> $mu_phi
-#> [1] 0
-#> 
 #> $phi_phi
 #> [1] -2.318945
+#> 
+#> $mu_phi
+#> [1] 0
 #> 
 
 # The dispersion entry, written out with the trigamma function.
@@ -116,9 +116,9 @@ z <- distrib_rng(d, 2e4, th)
 rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
       expected = vapply(distrib_expected_hessian(d, z, th),
                         function(v) v[1], numeric(1)))
-#>               mu_mu        mu_phi   phi_phi
-#> observed -0.2222366 -4.310552e-05 -2.288278
-#> expected -0.2222222  0.000000e+00 -2.318945
+#>               mu_mu   phi_phi        mu_phi
+#> observed -0.2222366 -2.288278 -4.310552e-05
+#> expected -0.2222222 -2.318945  0.000000e+00
 
 # Negative definite at every parameter setting, where the observed Hessian
 # is positive in mu wherever y < mu/2.

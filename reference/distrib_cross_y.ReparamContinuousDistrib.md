@@ -19,7 +19,8 @@ map.
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 - ...:
 

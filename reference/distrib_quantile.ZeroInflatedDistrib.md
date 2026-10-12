@@ -42,7 +42,7 @@ A numeric vector of quantiles, of the recycled length of `p` and
 
 ## Details
 
-The result is a LATTICE quantile and overshoots, as any discrete
+The result is a discrete quantile and can overshoot, as any discrete
 quantile does: `distrib_cdf(d, distrib_quantile(d, p, theta), theta)`
 returns the smallest attainable probability at or above `p`, not `p`
 itself. The inflated atom makes the first step larger than the parent's,
@@ -78,7 +78,7 @@ c(mass_at_zero = distrib_pdf(d, 0, theta),
 #> mass_at_zero      q_below 
 #>    0.2873403    0.0000000 
 
-# The round trip overshoots, as on any lattice: asked for 0.3, the
+# The round trip overshoots, as on any discrete support: for 0.3, the
 # attainable probability at the returned point is higher.
 p <- c(0.1, 0.3, 0.9)
 rbind(asked = p,

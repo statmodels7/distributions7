@@ -54,8 +54,11 @@ for the inverse,
 for the density,
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
 for the derivatives of this function in the parameter, which the
-chi-squared takes by finite difference because the derivative of an
-incomplete gamma in its shape is hypergeometric, and
+chi-squared computes by a compiled quadrature of the derivatives of the
+density
+([`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)),
+the derivative of an incomplete gamma in its shape being hypergeometric;
+and
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
 for the generic.
 
@@ -73,7 +76,7 @@ all.equal(distrib_cdf(d, c(1, 4, 9), th), pchisq(c(1, 4, 9), df = 4))
 distrib_cdf(d, 9, th) + distrib_cdf(d, 9, th, lower.tail = FALSE)
 #> [1] 1
 
-# Right skewed, so less than half the mass lies below the mean.
+# Right skewed, so more than half the mass lies below the mean.
 distrib_cdf(d, 4, th)
 #> [1] 0.5939942
 

@@ -15,7 +15,7 @@ map and the partial tables closed over, so no new algebra is involved."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,6 +90,11 @@ kernels, so they are NOT <code>ReparamContinuousDistrib</code> and do not inheri
 methods; what they share with it is the map, which <code>reparam_maps.R</code> already
 tabulates. Registered on <code>gaussian2</code>, <code>gaussian3</code>, <code>laplace2</code> and
 <code>invgauss2</code>.</p>
+<p>The parent of <code>invgauss2</code>, <code>invgauss1</code>, carries the three quantities in
+closed form: with \(\ell^{(y)} = -3/(2y) - 1/(2\phi\mu^2) + 1/(2\phi y^2)\)
+and \(\ell^{(yy)} = 3/(2y^2) - 1/(\phi y^3)\), every mixed derivative in
+\((\mu, \phi)\) is a monomial, and the map carries them to
+\((\mu, \lambda)\) with no difference taken.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

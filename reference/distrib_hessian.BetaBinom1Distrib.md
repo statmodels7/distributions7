@@ -10,6 +10,11 @@ difference of trigammas, \$\$\dfrac{\partial^2 \ell}{\partial \alpha^2}
 mass separately otherwise. The reported components follow by the
 two-variable chain rule of \\(\alpha, \beta) = (\mu/\sigma,
 (1-\mu)/\sigma)\\, whose own second derivatives contribute the rest.
+This route is taken for \\\sigma \ge 0.1\\; for \\\sigma \< 0.1\\ the
+components are the direct sums of order two given on
+[`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md),
+for the reason given on
+[`distrib_gradient.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.BetaBinom1Distrib.md).
 
 The arithmetic runs in a compiled kernel decomposed over the elements of
 the output, so the result does not depend on the thread count.
@@ -44,9 +49,9 @@ the output, so the result does not depend on the thread count.
 
 - threads:
 
-  A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  A single positive integer, how many threads the kernel may use. For
+  fewer observations than an internal threshold the kernel runs
+  sequentially whatever the count. Defaults to `1L`.
 
 ## Value
 

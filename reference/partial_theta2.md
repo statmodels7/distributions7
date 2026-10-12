@@ -1,10 +1,21 @@
 # Splice the Closed Location-Scale Pairs Into the Fallback
 
-Differences every component through
+At order 1, differences every component of
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+through
 [`numerical_theta2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.md)
 and then replaces the three that
 [`loc_scale_theta2_block()`](https://statmodels7.github.io/distributions7/reference/loc_scale_theta2_block.md)
-gives in closed form. It is what
+gives in closed form. At order 2, a pair of a location or scale
+parameter with a shape is one central difference, in the shape, of the
+closed component of
+[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
+and a pair of shapes is one stencil on
+[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md),
+a second-order stencil for a repeated shape and a mixed one for two
+shapes; the shape components of
+[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
+are not differenced again. It is what
 [`partial_loc_scale_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_y_hess.md)
 and
 [`partial_loc_scale_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_y_hess.md)
@@ -51,13 +62,13 @@ keyed as
 
 ## Details
 
-Differencing every component and overwriting three of them costs three
-unnecessary differences, and is how the two halves are kept keyed the
-same way without a second enumeration:
 [`numerical_theta2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.md)
-returns
-[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)'s
-full set, and the closed block's three names index into it directly.
+takes one central difference per parameter, and each difference yields
+every component that involves that parameter, so replacing the three
+location-scale pairs afterwards adds no evaluation of the first-order
+function. The result is keyed by
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
+and the closed block's three names index into it directly.
 
 ## Notation
 

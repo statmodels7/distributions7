@@ -1,13 +1,14 @@
 # Interpretable Estimates of a Multivariate Fit
 
-Reports the standard deviations, correlations and whatever else
+Reports the standard deviations, correlations and the other quantities
+that
 [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md)
 declares for the fitted distribution, each with its standard error and
 its confidence interval. A multivariate fit estimates the free values of
 a parameters7 parametrization, and those are coordinates: the estimate
-and standard error of `sigma_log_L2` answer no question anybody asked.
-This function carries the fit's variance matrix onto the quantities that
-do.
+and standard error of `sigma_log_L2` do not describe a quantity of
+interest. This function carries the variance matrix of the fit onto
+quantities that do.
 
 ## Usage
 
@@ -21,7 +22,7 @@ mv_summary(object, level = object@level)
 
   A
   [`distrib_fit()`](https://statmodels7.github.io/distributions7/reference/distrib_fit_class.md)
-  of a MULTIVARIATE distribution. A univariate fit is rejected: there
+  of a multivariate distribution. A univariate fit is rejected: there
   the parameters are already the interpretable quantities and
   [`confint.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/confint.distrib_fit.md)
   is the function to call.
@@ -46,18 +47,19 @@ vector naming the group each row belongs to, by which
 \widehat{\mathrm{Var}}(\hat\theta) \\ J^\top, \qquad J = \partial
 g/\partial\theta,\$\$ with \\J\\ taken from
 [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md),
-in closed form for the two families that ship and by one central
-difference for any other.
+in closed form for the multivariate gaussian and Student \\t\\ and by
+one central difference for the Dirichlet, the multinomial and any other
+family.
 
 ## Where each interval is built
 
-On the scale the quantity declares, then mapped back, which is the
-discipline
+Each interval is built on the scale that its quantity declares and then
+mapped back, as
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-applies to a univariate parameter. A standard deviation is intervalled
-on the log scale and a correlation on Fisher's \\z\\, so neither
-interval can leave the set its quantity lives in. An interval on the raw
-scale routinely puts a correlation above one.
+does for a univariate parameter. A standard deviation is intervalled on
+the log scale and a correlation on Fisher's \\z\\, so neither interval
+can leave the set in which its quantity lies. An interval on the raw
+scale can put a correlation above one.
 
 The standard error is carried onto that scale by the transform's own
 derivative, so the reported `Std. Error` column stays on the quantity's
@@ -88,7 +90,7 @@ truth <- list(mu1 = 0, mu2 = 1, sigma_log_L1 = 0,
 y <- distrib_rng(d, 500, truth)
 fit <- fit_distrib(d, y)
 
-# The standard deviations and the correlation, which is what one reads.
+# The standard deviations and the correlation.
 mv_summary(fit)
 #>            Estimate Std. Error      2.5%     97.5%
 #> sd_v1     1.0109159 0.03196797 0.9501620 1.0755544
@@ -104,7 +106,7 @@ confint(fit)
 #> sigma_log_L2 -0.008108583 0.11585042
 #> sigma_L2.1    0.562845028 0.76534030
 
-# Every interval stays inside the set its quantity lives in: the standard
+# Every interval stays inside the set of its quantity: the standard
 # deviations are positive and the correlation is inside (-1, 1).
 s <- mv_summary(fit)
 c(sd_lower_positive = all(s[1:2, 3] > 0),

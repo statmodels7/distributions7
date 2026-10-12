@@ -27,7 +27,7 @@ the way to build a fit; call fit_distrib()."><meta property="og:image" content="
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,7 +114,7 @@ the links the estimates are expressed in.</p></dd>
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>The observations the fit was computed from, kept so that the fitted
 distribution can be compared with the data by <code><a href="plot.distrib_fit.html">plot.distrib_fit()</a></code> and
-resampled by <code><a href="simulate.distrib_fit.html">simulate.distrib_fit()</a></code>.</p></dd>
+so that the information can be recomputed by <code><a href="vcov.distrib_fit.html">vcov.distrib_fit()</a></code>.</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
@@ -130,8 +130,8 @@ parameter, in the order <code>distrib@params</code> gives.</p></dd>
 
 <dt id="arg-se">se<a class="anchor" aria-label="anchor" href="#arg-se"></a></dt>
 <dd><p>Named standard errors on the parameter scale, from the delta
-method. <code>NaN</code> where the corresponding variance came back negative or
-missing.</p></dd>
+method. <code>NaN</code> where the corresponding variance came back negative, <code>NA</code>
+where it is missing.</p></dd>
 
 
 <dt id="arg-ci">ci<a class="anchor" aria-label="anchor" href="#arg-ci"></a></dt>
@@ -145,7 +145,8 @@ scale, one row per parameter, columns <code>lower</code> and <code>upper</code>.
 
 <dt id="arg-se-eta">se_eta<a class="anchor" aria-label="anchor" href="#arg-se-eta"></a></dt>
 <dd><p>Named standard errors on the link scale, the square roots of
-the diagonal of <code>vcov_eta</code>. These are the ones the fit computes; <code>se</code> is
+the diagonal of <code>vcov_eta</code>. These are the standard errors that the fit
+computes; <code>se</code> is
 derived from them.</p></dd>
 
 
@@ -171,10 +172,10 @@ in that case and only the uncertainty is missing.</p></dd>
 <strong>not</strong> divided by \(n\).</p></dd>
 
 
-<dt id="arg-bic-aic">bic, aic<a class="anchor" aria-label="anchor" href="#arg-bic-aic"></a></dt>
+<dt id="arg-aic-bic">aic, bic<a class="anchor" aria-label="anchor" href="#arg-aic-bic"></a></dt>
 <dd><p>Information criteria built on the unscaled log-likelihood,
-\(-2\ell + 2p\) and \(-2\ell + p\log n\) with \(p\) the number of
-estimated parameters.</p></dd>
+\(-2\ell + 2p\) and \(-2\ell + p\log n\) respectively, with \(p\)
+the number of estimated parameters.</p></dd>
 
 
 <dt id="arg-iterations">iterations<a class="anchor" aria-label="anchor" href="#arg-iterations"></a></dt>
@@ -189,7 +190,7 @@ whatever point it reached.</p></dd>
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><p>The optimization method actually used, which is not always the
-one asked for: <code>"Fisher scoring"</code> and <code>"Newton-Raphson"</code> fall back to
+one requested: <code>"Fisher scoring"</code> and <code>"Newton-Raphson"</code> fall back to
 <code>"BFGS"</code> when they fail, and this records which one produced the estimates.</p></dd>
 
 
@@ -212,9 +213,9 @@ evaluated in the run that was kept.</p></dd>
 
 <dt id="arg-score">score<a class="anchor" aria-label="anchor" href="#arg-score"></a></dt>
 <dd><p>The max-norm of the score <strong>per observation</strong> at the reported
-optimum. This is the quantity the stopping rule tested, so it says how
-close to stationary a run ended and is the one number a non-converged fit
-is worth reading for.</p></dd>
+optimum. This is the quantity that the stopping rule tested, so it
+measures how close to stationary a run ended, and it is the number to read
+on a fit that did not converge.</p></dd>
 
 
 <dt id="arg-elapsed">elapsed<a class="anchor" aria-label="anchor" href="#arg-elapsed"></a></dt>

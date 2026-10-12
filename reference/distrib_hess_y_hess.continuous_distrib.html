@@ -5,17 +5,13 @@ distrib_grad_y_hess.continuous_distrib() read one order higher in the
 response, and it makes the fourth-order mixed derivative available for
 every continuous family. For transformation(), which has an analytic
 Hessian in the parameters and no response derivative, it is a second
-difference in the response of that Hessian; before 0.76.0 it differenced
-a difference in the same parameter, and on a log-gamma it was wrong by a
-factor of seven."><meta property="og:description" content="Falls back to one tensor stencil on the highest quantity the family
+difference in the response of that Hessian."><meta property="og:description" content="Falls back to one tensor stencil on the highest quantity the family
 implements itself, through mixed_tensor_derivatives(). It is
 distrib_grad_y_hess.continuous_distrib() read one order higher in the
 response, and it makes the fourth-order mixed derivative available for
 every continuous family. For transformation(), which has an analytic
 Hessian in the parameters and no response derivative, it is a second
-difference in the response of that Hessian; before 0.76.0 it differenced
-a difference in the same parameter, and on a log-gamma it was wrong by a
-factor of seven."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+difference in the response of that Hessian."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +19,7 @@ factor of seven."><meta property="og:image" content="https://statmodels7.github.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,9 +58,7 @@ implements itself, through <code><a href="mixed_tensor_derivatives.html">mixed_t
 response, and it makes the fourth-order mixed derivative available for
 every continuous family. For <code><a href="transformation.html">transformation()</a></code>, which has an analytic
 Hessian in the parameters and no response derivative, it is a second
-difference in the response of that Hessian; before 0.76.0 it differenced
-a difference in the same parameter, and on a log-gamma it was wrong by a
-factor of seven.</p>
+difference in the response of that Hessian.</p>
     </div>
 
 
@@ -85,8 +79,8 @@ factor of seven.</p>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> or <code>"link"</code>, applied by the generic before
-dispatch.</p></dd>
+<dd><p>One of <code>"parameter"</code> or <code>"link"</code>. The generic applies the link
+scale to the value that the method returns.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

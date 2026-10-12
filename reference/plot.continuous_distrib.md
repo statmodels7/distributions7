@@ -2,7 +2,7 @@
 
 Draws the density of a continuous family over a grid of 1000 points, one
 curve per parameter setting. A component of `theta` given as a vector
-asks for one curve per element, so
+gives one curve per element, so
 `plot(d, list(mu = 0, sigma = c(1, 2, 4)))` draws three densities that
 share a mean and differ in scale.
 
@@ -16,8 +16,8 @@ share a mean and differ in scale.
 
   A named list or numeric vector holding one entry per parameter of `x`.
   A component of length \\k \> 1\\ draws \\k\\ curves, and every
-  component must have length 1 or that same \\k\\. Missing, a random
-  parameter is drawn by
+  component must have length 1 or that same \\k\\. When `theta` is
+  missing, random values for all parameters are drawn by
   [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md).
 
 - xlim:
@@ -28,7 +28,7 @@ share a mean and differ in scale.
 - legend:
 
   Logical of length 1: draw the key when several settings are plotted.
-  Defaults to `TRUE`. Nothing is drawn when only one is.
+  Defaults to `TRUE`. A single setting is drawn without a key.
 
 - ...:
 
@@ -57,14 +57,14 @@ for the palette.
 
 It covers every setting, not the first: from the smallest 0.5% quantile
 to the largest 99.5% quantile over them, widened by a tenth and clamped
-to the support. Give `xlim` to override it, which is worth doing for a
+to the support. Give `xlim` to override it, which is useful for a
 heavy-tailed family, whose 99.5% quantile can sit orders of magnitude
 past anything worth drawing.
 
 ## See also
 
 [`plot.discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.discrete_distrib.md)
-for a lattice family;
+for a discrete family;
 [`plot.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md)
 to compare a fit with data;
 [`plot_settings()`](https://statmodels7.github.io/distributions7/reference/plot_settings.md),
@@ -80,8 +80,8 @@ for the pieces.
 plot(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
 
 
-# A heavy-tailed family wants its own window: the 99.5% quantile of a
-# Cauchy is two orders of magnitude past the interesting part.
+# A heavy-tailed family needs its own window: the 99.5% quantile of a
+# standard Cauchy is about ten times as far out as the window drawn here.
 plot(cauchy_distrib(), list(mu = 0, sigma = 1), xlim = c(-6, 6))
 
 ```

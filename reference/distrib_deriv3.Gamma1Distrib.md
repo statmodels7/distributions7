@@ -12,8 +12,9 @@ Bruno on \\s(\phi) = 1/\phi\\, \$\$\ell^{(\phi\phi\phi)} = f_3 (s')^3 +
 
 With `expected = TRUE` the expectations are returned, obtained by
 replacing \\z\\ with 1 and \\\log z\\ with \\\psi(s) - \log s\\: \\f_1\\
-and the two components odd in \\z - 1\\ vanish. Both routes are closed
-form, so no quadrature is run and `approx` and `nsim` are ignored.
+and \\\ell^{(\mu\phi\phi)}\\, the component odd in \\z - 1\\, vanish.
+Both routes are closed form, so the method uses no quadrature and
+ignores `approx` and `nsim`.
 
 ## Arguments
 
@@ -60,8 +61,8 @@ form, so no quadrature is run and `approx` and `nsim` are ignored.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -82,8 +83,8 @@ for the order below and
 [`distrib_deriv4.Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Gamma1Distrib.md)
 for the order above;
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
-for the generic and for the numerical route a family without a closed
-form takes.
+for the generic and for the numerical route that a family without a
+closed form uses.
 
 ## Examples
 
@@ -103,7 +104,7 @@ all.equal(d3$mu_mu_phi, -s^2 * (1 - 2 * z) / 3^2)
 all.equal(d3$mu_phi_phi, 2 * s^3 * (z - 1) / 3)
 #> [1] TRUE
 
-# Expected values: the components odd in z - 1 vanish.
+# Expected values: mu_phi_phi, the component odd in z - 1, vanishes.
 lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 #> $mu_mu_mu
 #> [1] 0.2962963

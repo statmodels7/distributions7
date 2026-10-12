@@ -3,9 +3,9 @@
 Builds the distribution object for the chi-squared family on \\(0,
 \infty)\\, parametrized by its mean \\\mu \> 0\\, which is the degrees
 of freedom. The returned object carries closed-form derivatives of the
-log-density to fourth order, in the parameter and in the response, and
-closed-form moments, so every generic of the toolkit answers without a
-numerical fallback.
+log-density to fifth order in the parameter and to fourth order in the
+response, and closed-form moments. The derivatives of the distribution
+function in the parameter come from a compiled quadrature.
 
 The one argument chooses the link that carries the parameter to the
 unconstrained scale an optimizer works on, and defaults to the
@@ -45,13 +45,13 @@ variance \\2\mu\\, the skewness \\2\sqrt{2/\mu}\\ and the excess
 kurtosis \\12/\mu\\. The spread is tied to the mean, so the family has
 no free scale.
 
-The law is a gamma with shape \\\mu/2\\ and scale 2, and it is **not** a
-gamma with a parameter held: this package writes the gamma in \\(\mu,
-\sigma^2)\\, and a scale of 2 is the relation \\\sigma^2 = 2\mu\\
-between two parameters rather than a value one of them can be fixed at.
-At \\\mu = 2\\ it is the exponential with mean 2.
+The law is a gamma with shape \\\mu/2\\ and scale 2. This package writes
+the gamma in \\(\mu, \sigma^2)\\, and a scale of 2 corresponds to the
+relation \\\sigma^2 = 2\mu\\ between the two parameters, so the
+chi-squared cannot be obtained from the gamma by fixing one of them at a
+value. At \\\mu = 2\\ it is the exponential with mean 2.
 
-## The response leaves after the first derivative
+## Derivatives
 
 The family is a one-parameter exponential family in \\\log y\\, so
 \$\$\dfrac{\partial \ell}{\partial \mu} = \dfrac{\log y - \log 2 -
@@ -67,17 +67,19 @@ third and fourth order, so asking any of those methods for
 That coincidence does not carry to the scale a fit optimizes on. The
 second-order chain rule adds a term
 \\h''(\eta)\\\partial\ell/\partial\mu\\ to the link-scale Hessian; the
-expected version drops it because the score has mean zero, and a finite
-sample does not. Fisher scoring and Newton's method therefore take
-different steps here and agree at the optimum, where the summed score
-vanishes. The example on
+expected version drops it because the score has expectation zero,
+whereas the score of a finite sample is not zero away from the optimum.
+Fisher scoring and Newton's method therefore take different steps here
+and agree at the optimum, where the summed score vanishes. The example
+on
 [`distrib_hessian.ChisqDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ChisqDistrib.md)
 measures that difference.
 
 The derivatives of the *distribution* function in the parameter have no
 elementary form, the derivative of an incomplete gamma in its shape
-being hypergeometric, and are taken by finite difference on the analytic
-cdf.
+being hypergeometric, and are computed by a compiled quadrature of the
+derivatives of the density
+([`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)).
 
 ## Estimation
 

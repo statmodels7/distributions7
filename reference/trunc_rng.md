@@ -2,10 +2,11 @@
 
 Draws by inverse transform through
 [`trunc_quantile()`](https://statmodels7.github.io/distributions7/reference/trunc_quantile.md),
-\\Y = Q(F(L^-) + V Z)\\ with \\V\\ uniform on \\(0, 1)\\. The draw is
-exact and terminates in one pass however small \\Z\\ is, where rejection
-sampling from the parent would need \\1/Z\\ draws on average. One of the
-shared bodies, registered on both classes.
+\\Y = Q_T(V)\\ with \\V\\ uniform on \\(0, 1)\\. A draw needs one
+evaluation of the parent's quantile function whatever \\Z\\ is, where
+rejection sampling from the parent would need \\1/Z\\ draws on average,
+and an interval in the upper tail is inverted there. One of the shared
+bodies, registered on both classes.
 
 ## Usage
 

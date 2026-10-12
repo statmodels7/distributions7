@@ -13,11 +13,10 @@ quadrature or a simulation. `approx` and `nsim` are ignored, and `y` is
 read only for its length.
 
 **The mixed entry does not vanish**, so the mean and the dispersion are
-not orthogonal in this family. Measured at four settings it is 0.0172,
-0.0364, 0.0108 and 0.0157; in
+not orthogonal in this family; in
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
-the same entry is exactly zero. That is a difference between the two
-negative binomials rather than a difference of parametrization.
+the same entry is exactly zero. This is a difference between the two
+families, not between two parametrizations of one.
 
 ## Arguments
 
@@ -57,9 +56,9 @@ negative binomials rather than a difference of parametrization.
 
 - threads:
 
-  A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  A single positive integer, how many threads the kernel may use. For
+  fewer observations than an internal threshold the kernel runs
+  sequentially whatever the count. Defaults to `1L`.
 
 ## Value
 
@@ -73,12 +72,22 @@ when the parameters are.
 The summand of \\W\\ is a rational function of \\(\mu, \theta)\\,
 \\\theta(2\mu j + \theta j^2 - \mu^2)/((1+\theta) u_j^2)\\, so the terms
 of order \\\mu/\theta^2\\ that a composition through the size \\r =
-\mu/\theta\\ forms are never formed. The dispersion entry still loses
-digits as \\\theta \to 0\\, where the summands change sign and their sum
-tends to a finite limit. Measured at \\\mu = 4\\, it reads
-\\-0.49999887\\ at \\\theta = 10^{-6}\\, \\-0.49999994\\ at \\10^{-8}\\
-and \\-0.5000013\\ at \\10^{-10}\\, against the limit \\-1/2\\, and the
-matrix stays negative definite.
+\mu/\theta\\ forms are never formed. The summands still change sign as
+\\\theta \to 0\\, and \\W/\theta^2\\ loses relative accuracy in
+proportion to \\1/\theta\\, so \\W\\ is used only for \\\theta \ge
+0.02\\. For \\\theta \< 0.02\\ the dispersion entry is computed as the
+expectation of the observed one in the form without the size
+([`distrib_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.NegBin1Distrib.md)),
+\$\$\mathbb{E}\[\ell^{(\theta\theta)}\] = -\mathbb{E}\Big\[\sum\_{j\<Y}
+\frac{j^2}{u_j^2}\Big\] - \mu q'(\theta), \qquad q(\theta) =
+\frac{\theta - \log(1+\theta)}{\theta^2},\$\$ whose summands are all
+positive, and the mixed entry is \\-\theta/\mu\\ times it. Both keep
+their accuracy down to the Poisson limit, where the dispersion entry
+tends to \\-1/2\\. The derivatives of the expected information
+([`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
+and
+[`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md))
+are sums over the same mass and take the same two routes.
 
 ## Notation
 
@@ -128,11 +137,10 @@ c(nb1 = e$mu_theta[1],
 #>        nb1        nb2 
 #> 0.01717466 0.00000000 
 
-# The dispersion entry loses its digits as theta goes to zero, and turns
-# positive, which an expected second derivative cannot be.
+# As theta goes to zero the dispersion entry tends to its limit, -1/2.
 vapply(c(1e-2, 1e-4, 1e-6, 1e-8),
        function(t) distrib_expected_hessian(d, 0,
                      list(mu = 4, theta = t))$theta_theta,
        numeric(1))
-#> [1] -0.4889418 -0.4998875 -0.4999989 -0.4999999
+#> [1] -0.4889418 -0.4998875 -0.4999989 -0.5000000
 ```

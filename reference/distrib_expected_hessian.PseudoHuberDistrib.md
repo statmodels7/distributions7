@@ -67,8 +67,8 @@ the Bessel functions of the normalizing constant.
 
 The law is symmetric about \\\mu\\, so every component carrying \\\mu\\
 an odd number of times vanishes. The rule's nodes are symmetric about
-zero, so the two halves of such an integral cancel and the entry comes
-back as zero.
+zero, so the two halves of such an integral cancel up to rounding, and
+the entry comes back as zero to about \\10^{-20}\\.
 
 `approx` and `nsim` are accepted for the generic's sake and ignored.
 
@@ -90,13 +90,13 @@ th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 eh <- distrib_expected_hessian(d, y, th)
 vapply(eh, function(v) v[1], numeric(1))
 #>         mu_mu   sigma_sigma         nu_nu      mu_sigma         mu_nu 
-#> -2.620828e-01 -9.177697e-01 -5.412069e-03 -8.956503e-21 -2.035240e-21 
+#> -2.620828e-01 -9.177697e-01 -5.412069e-03  9.874776e-21 -9.764371e-22 
 #>      sigma_nu 
 #> -6.699758e-02 
 
 # The entries odd in the residual vanish by symmetry.
 c(eh$mu_sigma[1], eh$mu_nu[1])
-#> [1] -8.956503e-21 -2.035240e-21
+#> [1]  9.874776e-21 -9.764371e-22
 
 # The information does not depend on the observations, and scales with
 # sigma^-2 in the location and scale block.

@@ -4,18 +4,18 @@ their parametrization describes: mvgaussian1_distrib() parametrizes the
 covariance \(\Sigma\) and mvgaussian2_distrib() the precision
 \(\Omega = \Sigma^{-1}\). The mean is a vector of \(p\) free parameters
 and the matrix is carried by a parameters7 parametrization whose free
-values become ordinary scalar parameters, so the object answers every
-generic of the distrib contract with theta a flat named list of
-numbers. Both default to an unstructured matrix in the log-Cholesky
-parametrization, which is p * (p + 1) / 2 free values."><meta property="og:description" content="Two families on \(\mathbb{R}^p\), differing in which matrix of the law
+values become ordinary scalar parameters, so every generic of the distrib
+class applies to the object, with theta a flat named list of numbers. Both
+default to an unstructured matrix in the log-Cholesky parametrization, which
+has p * (p + 1) / 2 free values."><meta property="og:description" content="Two families on \(\mathbb{R}^p\), differing in which matrix of the law
 their parametrization describes: mvgaussian1_distrib() parametrizes the
 covariance \(\Sigma\) and mvgaussian2_distrib() the precision
 \(\Omega = \Sigma^{-1}\). The mean is a vector of \(p\) free parameters
 and the matrix is carried by a parameters7 parametrization whose free
-values become ordinary scalar parameters, so the object answers every
-generic of the distrib contract with theta a flat named list of
-numbers. Both default to an unstructured matrix in the log-Cholesky
-parametrization, which is p * (p + 1) / 2 free values."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+values become ordinary scalar parameters, so every generic of the distrib
+class applies to the object, with theta a flat named list of numbers. Both
+default to an unstructured matrix in the log-Cholesky parametrization, which
+has p * (p + 1) / 2 free values."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +23,7 @@ parametrization, which is p * (p + 1) / 2 free values."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,10 +61,10 @@ their parametrization describes: <code>mvgaussian1_distrib()</code> parametrizes
 <strong>covariance</strong> \(\Sigma\) and <code>mvgaussian2_distrib()</code> the <strong>precision</strong>
 \(\Omega = \Sigma^{-1}\). The mean is a vector of \(p\) free parameters
 and the matrix is carried by a <span class="pkg">parameters7</span> parametrization whose free
-values become ordinary scalar parameters, so the object answers every
-generic of the <code>distrib</code> contract with <code>theta</code> a flat named list of
-numbers. Both default to an unstructured matrix in the log-Cholesky
-parametrization, which is <code>p * (p + 1) / 2</code> free values.</p>
+values become ordinary scalar parameters, so every generic of the <code>distrib</code>
+class applies to the object, with <code>theta</code> a flat named list of numbers. Both
+default to an unstructured matrix in the log-Cholesky parametrization, which
+has <code>p * (p + 1) / 2</code> free values.</p>
     </div>
 
     <div class="section level2">
@@ -80,7 +80,7 @@ parametrization, which is <code>p * (p + 1) / 2</code> free values.</p>
 
 <dl><dt id="arg-n-dim">n_dim<a class="anchor" aria-label="anchor" href="#arg-n-dim"></a></dt>
 <dd><p>The dimension \(p\) of one observation. A single positive
-whole number, finite and at least 1. Anything else throws an error.</p></dd>
+whole number, finite and at least 1. Any other value signals an error.</p></dd>
 
 
 <dt id="arg-sigma">sigma<a class="anchor" aria-label="anchor" href="#arg-sigma"></a></dt>
@@ -104,88 +104,80 @@ prefixed free names, <code>n_params</code> is <code>p + param@n_free</code>, eve
 <code>params_bounds</code> is \((-\infty, \infty)\) and every link is the identity.</p>
     </div>
     <div class="section level2">
-    <h2 id="why-they-are-two-families-and-not-one-argument">Why they are two families and not one argument<a class="anchor" aria-label="anchor" href="#why-they-are-two-families-and-not-one-argument"></a></h2>
+    <h2 id="the-two-families">The two families<a class="anchor" aria-label="anchor" href="#the-two-families"></a></h2>
     <p>The numbering is the package's convention, the one that separates
-<code><a href="gaussian1_distrib.html">gaussian1_distrib()</a></code>, <code><a href="gaussian2_distrib.html">gaussian2_distrib()</a></code> and <code><a href="gaussian3_distrib.html">gaussian3_distrib()</a></code>:
-one name per parametrization, because in a modeling framework a
-parametrization decides what a linear predictor acts on. Here the decision
-is sharper than a change of coordinates. A matrix parametrization is
-<strong>closed under inversion</strong> when the inverse of every matrix it produces is
-one of its own; <code><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">parameters7::log_cholesky()</a></code>,
-<code><a href="https://statmodels7.github.io/parameters7/reference/matrix_log.html" class="external-link">parameters7::matrix_log()</a></code>, <code><a href="https://statmodels7.github.io/parameters7/reference/diagonal_matrix.html" class="external-link">parameters7::diagonal_matrix()</a></code>,
-<code><a href="https://statmodels7.github.io/parameters7/reference/scalar_matrix.html" class="external-link">parameters7::scalar_matrix()</a></code>, <code><a href="https://statmodels7.github.io/parameters7/reference/compound_symmetry.html" class="external-link">parameters7::compound_symmetry()</a></code> and
-<code><a href="https://statmodels7.github.io/parameters7/reference/dr_prod.html" class="external-link">parameters7::dr_prod()</a></code> are, and <code><a href="https://statmodels7.github.io/parameters7/reference/correlation_matrix.html" class="external-link">parameters7::correlation_matrix()</a></code>,
-<code><a href="https://statmodels7.github.io/parameters7/reference/ar1.html" class="external-link">parameters7::ar1()</a></code> and <code><a href="https://statmodels7.github.io/parameters7/reference/autoregressive.html" class="external-link">parameters7::autoregressive()</a></code> are not.</p>
+<code><a href="gaussian1_distrib.html">gaussian1_distrib()</a></code>, <code><a href="gaussian2_distrib.html">gaussian2_distrib()</a></code> and <code><a href="gaussian3_distrib.html">gaussian3_distrib()</a></code>: one
+name per parametrization, because in a modeling framework a parametrization
+decides what a linear predictor acts on. Here the choice can change the model
+as well as the coordinates. A matrix parametrization is <strong>closed under
+inversion</strong> when the inverse of every matrix that it produces is one of its
+own; <code><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">parameters7::log_cholesky()</a></code>, <code><a href="https://statmodels7.github.io/parameters7/reference/matrix_log.html" class="external-link">parameters7::matrix_log()</a></code>,
+<code><a href="https://statmodels7.github.io/parameters7/reference/diagonal_matrix.html" class="external-link">parameters7::diagonal_matrix()</a></code>, <code><a href="https://statmodels7.github.io/parameters7/reference/scalar_matrix.html" class="external-link">parameters7::scalar_matrix()</a></code>,
+<code><a href="https://statmodels7.github.io/parameters7/reference/compound_symmetry.html" class="external-link">parameters7::compound_symmetry()</a></code> and <code><a href="https://statmodels7.github.io/parameters7/reference/dr_prod.html" class="external-link">parameters7::dr_prod()</a></code> are, and
+<code><a href="https://statmodels7.github.io/parameters7/reference/correlation_matrix.html" class="external-link">parameters7::correlation_matrix()</a></code>, <code><a href="https://statmodels7.github.io/parameters7/reference/ar1.html" class="external-link">parameters7::ar1()</a></code> and
+<code><a href="https://statmodels7.github.io/parameters7/reference/autoregressive.html" class="external-link">parameters7::autoregressive()</a></code> are not.</p>
 <p>Where it is closed the two families describe the same laws in different
-coordinates, and a fit reaches the same maximum: measured on 400
-four-dimensional observations with <code>log_cholesky(4)</code>, both report
-\(-1867.271395\) and the two differ by \(5\times10^{-13}\). Where it is
-not closed they are different models, and the same measurement with
-<code><a href="https://statmodels7.github.io/parameters7/reference/ar1.html" class="external-link">parameters7::ar1()</a></code> gives \(-1868.65\) against \(-1982.61\), a gap of
-113.95: the inverse of an AR(1) covariance is tridiagonal and is not an
-AR(1) at any parameters.</p>
-<p>Neither family restricts which parametrization it takes.
-<code>mvgaussian2_distrib(p, parameters7::ar1(p))</code> is the model whose precision
-has the entries \(\rho^{|i-j|}\), which is a legitimate law and is
-accepted without comment. To write the AR(1) <strong>process</strong> on the precision
-side, pass the family whose value is that inverse:
-<code>mvgaussian2_distrib(p, parameters7::ar1_inv(p))</code>.</p>
+coordinates, and a fit reaches the same maximum. Where it is not closed they
+are different models: the inverse of an AR(1) covariance is tridiagonal and
+is not an AR(1) matrix at any parameters, so <code><a href="https://statmodels7.github.io/parameters7/reference/ar1.html" class="external-link">parameters7::ar1()</a></code> on the
+covariance and on the precision give different maximized log-likelihoods.</p>
+<p>Both constructors accept any parametrization of the right dimension and of
+full rank. <code>mvgaussian2_distrib(p, parameters7::ar1(p))</code> is the model whose
+precision has the entries \(\sigma^2\rho^{|i-j|}\), with \(\sigma^2\)
+the scale of <code>ar1()</code>, and it is a valid law. The AR(1) <strong>process</strong> written
+on the precision side is <code>mvgaussian2_distrib(p, parameters7::ar1_inv(p))</code>,
+whose parametrization is that inverse.</p>
     </div>
     <div class="section level2">
-    <h2 id="what-it-costs">What it costs<a class="anchor" aria-label="anchor" href="#what-it-costs"></a></h2>
-    <p>The two cost about the same. Every derivative here is written in the
-covariance, so a precision parametrization is inverted once per call and
-its derivative arrays are carried across by
-\(\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma\). Measured at
-\(n = 1000\) on an unstructured matrix, the precision form costs 0.86 to
-1.07 times the covariance form for the score and 0.97 to 1.10 for the
-Hessian, across \(p = 4, 8, 12\).</p>
+    <h2 id="the-arithmetic-of-the-two-sides">The arithmetic of the two sides<a class="anchor" aria-label="anchor" href="#the-arithmetic-of-the-two-sides"></a></h2>
+    <p>The derivatives of both families are computed from the derivative arrays of
+\(\Sigma\) and of \(\Sigma^{-1}\). The parametrization supplies one of
+the two, and <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code> obtains the other: through
+<code><a href="https://statmodels7.github.io/parameters7/reference/param_inv_d1.html" class="external-link">parameters7::param_inv_d1()</a></code> and its siblings under a covariance
+parametrization, and by the chain rule for an inverse under a precision one.</p>
     </div>
     <div class="section level2">
     <h2 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a></h2>
     <p>The mean contributes <code>mu1</code>, ..., <code>mup</code>. The matrix contributes the
-parametrization's free values, prefixed by the matrix they describe:
+parametrization's free values, prefixed by the matrix that they describe:
 <code>sigma_</code> for a covariance and <code>omega_</code> for a precision. A two-dimensional
 gaussian on an unstructured covariance therefore has the five parameters
 <code>mu1</code>, <code>mu2</code>, <code>sigma_log_L1</code>, <code>sigma_log_L2</code> and <code>sigma_L2.1</code>, while the
-same parametrization on the precision gives <code>omega_log_L1</code> and the rest.
-The prefix is what distinguishes the two models in a printed table: a free
-value's name says how the matrix is built, not which matrix it is.</p>
+same parametrization on the precision gives <code>omega_log_L1</code> and the rest. The
+prefix distinguishes the two models in a printed table, since the name of a
+free value gives the construction of the matrix and does not say which
+matrix it is.</p>
 <p>All of these parameters are unconstrained, so all of the links are the
-identity. The constraint that makes the matrix positive definite lives
-inside the matrix parametrization, which needs no link to express it. One
-practical consequence is that the parameter scale and the link scale
-coincide, so <code>scale = "link"</code> returns the same numbers as
-<code>scale = "parameter"</code>, to the bit.</p>
+identity. The constraint that makes the matrix positive definite is carried
+by the matrix parametrization, which needs no link to express it. The
+parameter scale and the link scale therefore coincide, and
+<code>scale = "link"</code> returns the same numbers as <code>scale = "parameter"</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="reading-a-fit">Reading a fit<a class="anchor" aria-label="anchor" href="#reading-a-fit"></a></h2>
-    <p>The free values are coordinates, and nobody reads a logarithm of a diagonal
-entry of a Cholesky factor. <code><a href="mv_summary.html">mv_summary()</a></code> carries a fit's variance matrix
-onto the standard deviations and the correlations by the delta method, and
-<code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> shows those. A precision parametrization also reports the
-conditional standard deviations and the partial correlations, which are what
-it describes directly: \(1/\Omega_{jj} = \operatorname{Var}(Y_j \mid
-Y_{-j})\), whose ratio to the marginal variance is \(1 - R_j^2\) for the
-regression of that coordinate on all the others. At \(p = 2\) the partial
-correlation and the marginal correlation are the same number, so it is not
-printed twice.</p>
+    <p>The free values are coordinates of the parametrization and have no direct
+interpretation. <code><a href="mv_summary.html">mv_summary()</a></code> carries the variance matrix of a fit onto the
+standard deviations and the correlations by the delta method, and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>
+shows those. A precision parametrization reports instead the conditional
+variances and the partial correlations, which it describes directly:
+\(1/\Omega_{jj} = \operatorname{Var}(Y_j \mid Y_{-j})\), whose ratio to
+the marginal variance is \(1 - R_j^2\) for the regression of that
+coordinate on all the others.</p>
     </div>
     <div class="section level2">
     <h2 id="rank">Rank<a class="anchor" aria-label="anchor" href="#rank"></a></h2>
     <p>A rank-deficient parametrization is rejected with an error. A singular
 covariance gives a law supported on a subspace, with no density against
 Lebesgue measure; a singular precision gives a quadratic form that is flat
-along its null space and does not normalize. Both are failures, and a
-parametrization of that kind is a legitimate penalty but not a legitimate
-density.</p>
+along its null space and does not normalize. Such a parametrization can
+serve as a penalty but does not define a density.</p>
     </div>
     <div class="section level2">
     <h2 id="the-response">The response<a class="anchor" aria-label="anchor" href="#the-response"></a></h2>
     <p>An \(n \times p\) matrix, one row per observation. A plain vector of
-length \(p\) is read as a single observation. A parameter may not vary
-from observation to observation here: the parametrization describes one
-matrix for the whole sample.</p>
+length \(p\) is read as a single observation. A parameter may not vary from
+observation to observation here, the parametrization describing one matrix
+for the whole sample.</p>
     </div>
     <div class="section level2">
     <h2 id="the-distribution">The distribution<a class="anchor" aria-label="anchor" href="#the-distribution"></a></h2>
@@ -202,14 +194,13 @@ $$\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \Sigma.$$</p>
 <p>\(\mu\) is the mean vector, \(\Sigma\) the covariance, \(\Omega\) the
 precision, \(p\) the dimension of one observation and \(n\) the number
 of observations. \(\eta\) is the free vector of the matrix
-parametrization, the unconstrained coordinates an optimizer moves, and
-\(A_k = \partial\Sigma/\partial\eta_k\).</p>
+parametrization, the unconstrained coordinates that an optimizer moves.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="gaussian1_distrib.html">gaussian1_distrib()</a></code> for the one-dimensional case,
 <code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> for the heavy-tailed sibling,
-<code><a href="mv_summary.html">mv_summary()</a></code> for the quantities a fit reports,
+<code><a href="mv_summary.html">mv_summary()</a></code> for the quantities that a fit reports,
 <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate one,
 <code><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">parameters7::log_cholesky()</a></code> for the default parametrization, and
 <code><a href="https://statmodels7.github.io/parameters7/reference/inverse_of.html" class="external-link">parameters7::inverse_of()</a></code> for writing a structure on the other side.</p></div>
@@ -233,8 +224,8 @@ parametrization, the unconstrained coordinates an optimizer moves, and
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0.5</span>, mu2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.3</span>, sigma_log_L1 <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
 <span class="r-in"><span>              sigma_log_L2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span>, sigma_L2.1 <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The covariance the free values describe, and its positive definiteness,</span></span></span>
-<span class="r-in"><span><span class="co"># which holds for any five numbers at all.</span></span></span>
+<span class="r-in"><span><span class="co"># The covariance that the free values describe, positive definite for any</span></span></span>
+<span class="r-in"><span><span class="co"># five numbers.</span></span></span>
 <span class="r-in"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="mv_sigma.html">mv_sigma</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S</span>, <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        v1     v2</span>
@@ -257,7 +248,7 @@ parametrization, the unconstrained coordinates an optimizer moves, and
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"          "mu2"          "sigma_log_d1" "sigma_log_d2"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The precision form is the other family, and its free values are prefixed</span></span></span>
-<span class="r-in"><span><span class="co"># by the matrix they describe.</span></span></span>
+<span class="r-in"><span><span class="co"># by the matrix that they describe.</span></span></span>
 <span class="r-in"><span><span class="va">o</span> <span class="op">&lt;-</span> <span class="fu">mvgaussian2_distrib</span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">o</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"          "mu2"          "omega_log_L1" "omega_log_L2" "omega_L2.1"  </span>
@@ -274,7 +265,7 @@ parametrization, the unconstrained coordinates an optimizer moves, and
 <span class="r-out co"><span class="r-pr">#&gt;</span>   0.8187308   1.0141552 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># An AR(1) covariance and an AR(1) precision are different models, and the</span></span></span>
-<span class="r-in"><span><span class="co"># family names which one is meant.</span></span></span>
+<span class="r-in"><span><span class="co"># name of the family records which one is meant.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>covariance <span class="op">=</span> <span class="fu">mvgaussian1_distrib</span><span class="op">(</span><span class="fl">4</span>, <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/ar1.html" class="external-link">ar1</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">@</span><span class="va">distrib_name</span>,</span></span>
 <span class="r-in"><span>  precision <span class="op">=</span> <span class="fu">mvgaussian2_distrib</span><span class="op">(</span><span class="fl">4</span>, <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/ar1.html" class="external-link">ar1</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">@</span><span class="va">distrib_name</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                              covariance                               precision </span>

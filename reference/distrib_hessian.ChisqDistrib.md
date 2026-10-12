@@ -13,8 +13,9 @@ exactly.
 
 The coincidence is on the **parameter** scale. On the link scale the two
 differ, the second-order chain rule adding a term
-\\h''(\eta)\\\partial\ell/\partial\mu\\ that the expected version drops
-and a sample does not; the example below measures it.
+\\h''(\eta)\\\partial\ell/\partial\mu\\, which the expected version
+drops because the score has expectation zero; the score of a sample is
+not zero away from the optimum, and the example below measures the term.
 
 ## Arguments
 

@@ -3,13 +3,15 @@
 Builds the distribution object for the Cauchy family with location
 \\\mu\\ and scale \\\sigma \> 0\\, the Student's t on one degree of
 freedom. The returned object carries closed-form derivatives of the
-log-density to fourth order, in the parameters and in the response, so
-every generic of the toolkit answers without a numerical fallback.
+log-density to fifth order in the parameters and to fourth order in the
+response, closed-form mixed derivatives in the response and the
+parameters, and closed-form derivatives of the distribution function to
+fourth order.
 
-No moment of this family exists, so the two parameters are the median
-and the half-interquartile range. Its tails decay like \\y^{-2}\\, and
-the resulting score is bounded, which makes a Cauchy likelihood a
-standard choice when the data carry gross outliers.
+The family has no moments, so the two parameters are the median and the
+half-interquartile range. Its tails decay like \\y^{-2}\\, and the
+resulting score is bounded, which makes a Cauchy likelihood a standard
+choice when the data carry gross outliers.
 
 ## Usage
 
@@ -81,16 +83,20 @@ r}{d^2},\$\$ and its expectation \$\$\mathbb{E}\left\[\dfrac{\partial^2
 \ell}{\partial \sigma^2}\right\] = -\dfrac{1}{2\sigma^2}, \qquad
 \mathbb{E}\left\[\dfrac{\partial^2 \ell}{\partial \mu\\\partial
 \sigma}\right\] = 0.\$\$ The information in the location is half a
-Gaussian's at the same scale. Every derivative is bounded in \\y\\, so
-an expectation of any of them exists even though no moment of \\Y\\
-does.
+Gaussian's at the same scale. Every derivative of the log-density is
+bounded in \\y\\, so its expectation exists although \\Y\\ has no
+moments.
 
 Third and fourth orders are closed form as well, observed and expected,
 in
 [`distrib_deriv3.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.CauchyDistrib.md)
 and
 [`distrib_deriv4.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.CauchyDistrib.md),
-as are the derivatives in the response.
+and the observed fifth order in
+[`distrib_deriv5.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.CauchyDistrib.md);
+so are the derivatives in the response and those of the distribution
+function
+([`cauchy_cdf_method()`](https://statmodels7.github.io/distributions7/reference/cauchy_cdf_method.md)).
 
 ## Estimation
 
@@ -144,13 +150,13 @@ d
 #>   mu    (location)           | Link: identity   | Domain: (-Inf, Inf)
 #>   sigma (scale)              | Link: log        | Domain: (0, Inf)
 
-# The density and the distribution function are R's own.
+# The density agrees with R's own.
 y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, sigma = 1.5)
 all.equal(distrib_pdf(d, y, th), dcauchy(y, 0.4, 1.5))
 #> [1] TRUE
 
-# No moment exists; the median and the half-interquartile range do.
+# The moments do not exist; the median and the half-interquartile range do.
 c(mean = mean(d, th), variance = variance(d, th))
 #>     mean variance 
 #>      NaN      NaN 

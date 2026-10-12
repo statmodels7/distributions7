@@ -15,7 +15,7 @@ its likelihood derivatives, are between them enough."><meta property="og:image" 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,11 +107,12 @@ $$\frac{\partial F}{\partial\psi_a} = \sum_k F_k\,h^k_a, \qquad
         = \sum_{k,l} F_{kl}\,h^k_a h^l_b + \sum_k F_k\,h^k_{ab}.$$</p>
     </div>
     <div class="section level2">
-    <h2 id="when-it-is-worth-taking">When it is worth taking<a class="anchor" aria-label="anchor" href="#when-it-is-worth-taking"></a></h2>
-    <p>The result is exact whenever the parent's own cdf derivatives are, and no
-better than they are otherwise: applied to a parent that differences its own
-cdf, the chain adds an exact transformation to an approximate quantity and
-buys nothing over differencing the new cdf directly. Checking that is the
+    <h2 id="accuracy-of-the-result">Accuracy of the result<a class="anchor" aria-label="anchor" href="#accuracy-of-the-result"></a></h2>
+    <p>The result is exact whenever the cdf derivatives of the parent and the
+partials of the map are, and no better than they are otherwise: applied to
+a parent that differences its own cdf, the chain adds an exact
+transformation to an approximate quantity and gains nothing over
+differencing the new cdf directly. Checking that is the
 caller's business, and <code><a href="mapped_cdf_deriv.html">mapped_cdf_deriv()</a></code> is where it is done.</p>
     </div>
     <div class="section level2">

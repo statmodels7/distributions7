@@ -11,8 +11,9 @@ a subtraction of \\\log\sigma\\, so the logarithm stays finite far into
 the tails.
 
 The tails are polynomial, of order \\\|y\|^{-(\nu+1)}\\, so the density
-decays far more slowly than a Gaussian's and no value of \\y\\
-underflows at an ordinary \\\nu\\.
+decays far more slowly than a Gaussian's; it still underflows to zero at
+a very large \\\|y\|\\ (at \\\nu = 5\\ and \\\sigma = 1.2\\, by \\\|y\|
+= 10^{60}\\).
 
 ## Arguments
 
@@ -24,15 +25,14 @@ underflows at an ordinary \\\nu\\.
 - y:
 
   A numeric vector of observations. Every real value is in the support,
-  so no value is rejected.
+  so every value of `y` is valid.
 
 - theta:
 
   A named list with components `mu`, `sigma` and `nu`, each a numeric
   vector of length 1 or of the length of `y`. A component of length 1 is
-  recycled. `sigma` and `nu` must be strictly positive; a zero or
-  negative value gives `NaN` with a warning from
-  [`stats::dt()`](https://rdrr.io/r/stats/TDist.html).
+  recycled. `sigma` and `nu` must be strictly positive; the generic
+  signals an error for a zero or negative value.
 
 - log:
 

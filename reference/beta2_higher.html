@@ -19,7 +19,7 @@ mixed component is \(\psi^{(k)}(\alpha+\beta)\)."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,14 +96,16 @@ order 3 and five at order 4, named for the distinct multi-indices.</p>
 \((\alpha-1)\log y + (\beta-1)\log(1-y)\), which is linear in the two
 parameters, so the second derivative already kills it. Every order from two
 upwards is therefore free of the response, the observed and the expected
-derivatives are the same numbers, and no expectation is computed anywhere in
-this family. The three polygamma values are evaluated once each and recycled.</p>
+derivatives are the same numbers, and the methods of this family compute
+them without an expectation. The three polygamma values are evaluated once
+each and recycled.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="beta2_distrib.html">beta2_distrib()</a></code> for the family, and
-<code><a href="distrib_hessian.Beta2Distrib.html">distrib_hessian.Beta2Distrib()</a></code>, <code><a href="distrib_deriv3.Beta2Distrib.html">distrib_deriv3.Beta2Distrib()</a></code> and
-<code><a href="distrib_deriv4.Beta2Distrib.html">distrib_deriv4.Beta2Distrib()</a></code> for the methods that call it.</p></div>
+<code><a href="distrib_deriv3.Beta2Distrib.html">distrib_deriv3.Beta2Distrib()</a></code> and <code><a href="distrib_deriv4.Beta2Distrib.html">distrib_deriv4.Beta2Distrib()</a></code> for
+the methods that call it. The second order is computed by the compiled
+kernel of <code><a href="distrib_hessian.Beta2Distrib.html">distrib_hessian.Beta2Distrib()</a></code>.</p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

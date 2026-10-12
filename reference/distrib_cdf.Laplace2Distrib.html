@@ -6,20 +6,24 @@ $$F(q; \mu, \lambda) = \begin{cases}
   1 - \tfrac{1}{2}\exp(-\lambda(q-\mu)), &amp;amp; q \ge \mu.
 \end{cases}$$
 Both arms are continuous at \(q = \mu\), where the value is \(1/2\).
-With lower.tail = FALSE the complement is taken after the branch, and with
-log.p = TRUE the logarithm is taken afterwards; neither avoids
-cancellation, so a probability that has already underflowed is not
-recovered."><meta property="og:description" content="Computes the Laplace distribution function in the rate parametrization,
+Each tail is computed on the log scale at \(r = \lambda(q - \mu)\) by
+laplace_cdf_tails(), as for distrib_cdf.LaplaceDistrib(): the far tail
+is \(\log(1/2) - |r|\) and the near one \(\log(1 - e^{-|r|}/2)\), so
+lower.tail = FALSE and log.p = TRUE subtract from nothing, and a tail
+probability far below machine epsilon, or its logarithm, is returned
+accurately."><meta property="og:description" content="Computes the Laplace distribution function in the rate parametrization,
 one exponential on each side of the location:
 $$F(q; \mu, \lambda) = \begin{cases}
   \tfrac{1}{2}\exp(\lambda(q-\mu)), &amp;amp; q &amp;lt; \mu,\\[4pt]
   1 - \tfrac{1}{2}\exp(-\lambda(q-\mu)), &amp;amp; q \ge \mu.
 \end{cases}$$
 Both arms are continuous at \(q = \mu\), where the value is \(1/2\).
-With lower.tail = FALSE the complement is taken after the branch, and with
-log.p = TRUE the logarithm is taken afterwards; neither avoids
-cancellation, so a probability that has already underflowed is not
-recovered."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+Each tail is computed on the log scale at \(r = \lambda(q - \mu)\) by
+laplace_cdf_tails(), as for distrib_cdf.LaplaceDistrib(): the far tail
+is \(\log(1/2) - |r|\) and the near one \(\log(1 - e^{-|r|}/2)\), so
+lower.tail = FALSE and log.p = TRUE subtract from nothing, and a tail
+probability far below machine epsilon, or its logarithm, is returned
+accurately."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +31,7 @@ recovered."><meta property="og:image" content="https://statmodels7.github.io/dis
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,10 +71,12 @@ $$F(q; \mu, \lambda) = \begin{cases}
   1 - \tfrac{1}{2}\exp(-\lambda(q-\mu)), &amp; q \ge \mu.
 \end{cases}$$
 Both arms are continuous at \(q = \mu\), where the value is \(1/2\).
-With <code>lower.tail = FALSE</code> the complement is taken after the branch, and with
-<code>log.p = TRUE</code> the logarithm is taken afterwards; neither avoids
-cancellation, so a probability that has already underflowed is not
-recovered.</p>
+Each tail is computed on the log scale at \(r = \lambda(q - \mu)\) by
+<code><a href="laplace_cdf_tails.html">laplace_cdf_tails()</a></code>, as for <code><a href="distrib_cdf.LaplaceDistrib.html">distrib_cdf.LaplaceDistrib()</a></code>: the far tail
+is \(\log(1/2) - |r|\) and the near one \(\log(1 - e^{-|r|}/2)\), so
+<code>lower.tail = FALSE</code> and <code>log.p = TRUE</code> subtract from nothing, and a tail
+probability far below machine epsilon, or its logarithm, is returned
+accurately.</p>
     </div>
 
 
@@ -94,8 +100,8 @@ recycled. <code>lambda</code> must be strictly positive.</p></dd>
 
 <dt id="arg-lower-tail">lower.tail<a class="anchor" aria-label="anchor" href="#arg-lower-tail"></a></dt>
 <dd><p>Logical of length 1. When <code>TRUE</code>, the default,
-probabilities are \(P(Y \le q)\); when <code>FALSE</code> they are \(P(Y &gt; q)\),
-computed as \(1 - F\).</p></dd>
+probabilities are \(P(Y \le q)\); when <code>FALSE</code> they are
+\(P(Y &gt; q)\).</p></dd>
 
 
 <dt id="arg-log-p">log.p<a class="anchor" aria-label="anchor" href="#arg-log-p"></a></dt>

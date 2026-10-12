@@ -21,7 +21,8 @@ D^3)\\ with \\r = y - \mu\\.
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 - ...:
 
@@ -30,9 +31,7 @@ D^3)\\ with \\r = y - \mu\\.
 ## Value
 
 A named list with components `mu`, `sigma` and `nu`, each a numeric
-vector of length `length(y)`. All three are exact; measured against
-Richardson on the analytic response gradient the worst is
-\\1.3\times10^{-11}\\ relative.
+vector of length `length(y)`. All three are exact.
 
 ## See also
 

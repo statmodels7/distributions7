@@ -28,10 +28,10 @@ zero.
 ## Details
 
 The argument \\u\\ is the squared Mahalanobis distance divided by the
-degrees of freedom, so it is small exactly where the family is close to
-the gaussian or the observation is close to the location, so it is the
-ordinary case and not an edge one. Taken directly at \\u = 10^{-8}\\ the
-difference loses about nine significant figures.
+degrees of freedom. It is small when the family is close to the gaussian
+or when the observation is close to the location, so small values of
+\\u\\ are the ordinary case. Evaluated directly at \\u = 10^{-8}\\, the
+difference keeps about eight significant figures.
 
 ## Notation
 
@@ -41,9 +41,9 @@ location and \\\nu\\ the degrees of freedom.
 ## See also
 
 [`mvt_A()`](https://statmodels7.github.io/distributions7/reference/mvt_A.md)
-and
-[`mvt_T()`](https://statmodels7.github.io/distributions7/reference/mvt_T.md)
-for the other two cancellations, and
+for the part of the score without the data,
+[`mvt_h_d()`](https://statmodels7.github.io/distributions7/reference/mvt_h_d.md)
+for the higher derivatives of the data term, and
 [`distrib_gradient.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvStudentTDistrib.md)
 for the consumer.
 

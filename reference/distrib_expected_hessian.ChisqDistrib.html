@@ -9,8 +9,9 @@ value is negative at every \(\mu\), the trigamma function being positive,
 so the information is positive throughout.
 The identity holds on the parameter scale. On the link scale the
 second-order chain rule adds \(h''(\eta)\,\partial\ell/\partial\mu\) to
-the observed Hessian; the expected version drops that term because the score
-has mean zero, and a finite sample does not. Fisher scoring and Newton's
+the observed Hessian. The expected version drops that term because the score
+has expectation zero, whereas the score of a finite sample is not zero away
+from the optimum. Fisher scoring and Newton's
 method therefore take different steps here and agree at the optimum, where
 the summed score vanishes."><meta property="og:description" content="Returns the same number as distrib_hessian.ChisqDistrib(),
 $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
@@ -22,8 +23,9 @@ value is negative at every \(\mu\), the trigamma function being positive,
 so the information is positive throughout.
 The identity holds on the parameter scale. On the link scale the
 second-order chain rule adds \(h''(\eta)\,\partial\ell/\partial\mu\) to
-the observed Hessian; the expected version drops that term because the score
-has mean zero, and a finite sample does not. Fisher scoring and Newton's
+the observed Hessian. The expected version drops that term because the score
+has expectation zero, whereas the score of a finite sample is not zero away
+from the optimum. Fisher scoring and Newton's
 method therefore take different steps here and agree at the optimum, where
 the summed score vanishes."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,7 +35,7 @@ the summed score vanishes."><meta property="og:image" content="https://statmodel
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,8 +78,9 @@ value is negative at every \(\mu\), the trigamma function being positive,
 so the information is positive throughout.</p>
 <p>The identity holds on the <strong>parameter</strong> scale. On the link scale the
 second-order chain rule adds \(h''(\eta)\,\partial\ell/\partial\mu\) to
-the observed Hessian; the expected version drops that term because the score
-has mean zero, and a finite sample does not. Fisher scoring and Newton's
+the observed Hessian. The expected version drops that term because the score
+has expectation zero, whereas the score of a finite sample is not zero away
+from the optimum. Fisher scoring and Newton's
 method therefore take different steps here and agree at the optimum, where
 the summed score vanishes.</p>
     </div>

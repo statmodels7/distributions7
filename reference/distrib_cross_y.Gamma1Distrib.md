@@ -20,7 +20,8 @@ the mean component is \\1/(\phi\mu^2)\\ and the dispersion one
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 - ...:
 
@@ -28,7 +29,7 @@ the mean component is \\1/(\phi\mu^2)\\ and the dispersion one
 
 ## Value
 
-A named list with components `mu` and `sigma2`, each a numeric vector of
+A named list with components `mu` and `phi`, each a numeric vector of
 length `length(y)`.
 
 ## See also

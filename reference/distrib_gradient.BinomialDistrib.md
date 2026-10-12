@@ -47,7 +47,9 @@ logit is the canonical link of this family.
 ## Value
 
 A named list of one numeric vector, `mu`, of length
-`max(length(y), length(mu), length(distrib@size))`.
+`max(length(y), length(mu), length(distrib@size))`. Each of `y`, `mu`
+and `size` must have length 1 or that length; any other length signals
+an error.
 
 ## Notation
 

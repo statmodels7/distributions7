@@ -9,7 +9,7 @@ and raises in the centered family's own terms when they are not."><meta property
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,12 +77,12 @@ against its own domains. Without this check a caller who wrote <code>gamma1</cod
 reads an error about <code>alpha</code>, a parameter the model does not have, and
 about <code>"skew normal1"</code>, a family the call does not name. The message here
 reports the centered parameter responsible and the value it holds.</p>
-<p>The check states a property of the delegation rather than guarding a value
-the public surface can reach. <code><a href="skewnormal2_distrib.html">skewnormal2_distrib()</a></code> bounds <code>gamma1</code> and
-every generic validates it before dispatch, so a skewness outside its
-domain is reported before the map runs; what remains reachable is a <code>sigma</code>
-and a <code>gamma1</code> each inside its own domain whose implied scale or
-location leaves the doubles.</p>
+<p>The check covers the failures of the delegation itself.
+<code><a href="skewnormal2_distrib.html">skewnormal2_distrib()</a></code> bounds <code>gamma1</code>, and every generic checks the
+parameters against their domains before it calls the method, so a
+skewness outside its domain is reported before the map runs. The remaining
+case is a <code>sigma</code> and a <code>gamma1</code>, each inside its own domain, whose implied
+scale or location is not finite.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -8,8 +8,8 @@ hyperbolic. It inherits from continuous_distrib; the eleven methods listed
 below are registered on it in this file.
 Build one with pseudohuber_distrib(), which supplies the three link
 functions and fills the properties in. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them."><meta property="og:description" content="The S7 class of the pseudo-Huber family, a location-scale family on the
+constructor, which takes the parent's properties; the validator of
+distrib checks them, and the constructor adds no check of its own."><meta property="og:description" content="The S7 class of the pseudo-Huber family, a location-scale family on the
 whole real line whose log-density is the negative pseudo-Huber loss
 \(-\sqrt{\nu + z^2}\), with a shape \(\nu &amp;gt; 0\) interpolating between a
 Laplace at \(\nu \to 0\) and a Gaussian at \(\nu \to \infty\). It is the
@@ -18,8 +18,8 @@ hyperbolic. It inherits from continuous_distrib; the eleven methods listed
 below are registered on it in this file.
 Build one with pseudohuber_distrib(), which supplies the three link
 functions and fills the properties in. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+constructor, which takes the parent's properties; the validator of
+distrib checks them, and the constructor adds no check of its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +27,7 @@ relationships between them."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,8 +69,8 @@ hyperbolic. It inherits from <code>continuous_distrib</code>; the eleven methods
 below are registered on it in this file.</p>
 <p>Build one with <code><a href="pseudohuber_distrib.html">pseudohuber_distrib()</a></code>, which supplies the three link
 functions and fills the properties in. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.</p>
+constructor, which takes the parent's properties; the validator of
+<code>distrib</code> checks them, and the constructor adds no check of its own.</p>
     </div>
 
     <div class="section level2">
@@ -144,31 +144,44 @@ and the domains \((-\infty, \infty)\), \((0, \infty)\),
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered on this class in this file:
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.PseudoHuberDistrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_cdf.PseudoHuberDistrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_deriv3.PseudoHuberDistrib.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.PseudoHuberDistrib.html">distrib_deriv4()</a></code>,
-<code><a href="distrib_expected_hessian.PseudoHuberDistrib.html">distrib_expected_hessian()</a></code>,
-<code><a href="distrib_grad_y.PseudoHuberDistrib.html">distrib_grad_y()</a></code>,
+<code><a href="distrib_quantile.PseudoHuberDistrib.html">distrib_quantile()</a></code> and
+<code><a href="distrib_rng.PseudoHuberDistrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.PseudoHuberDistrib.html">distrib_gradient()</a></code>,
-<code><a href="distrib_hess_y.PseudoHuberDistrib.html">distrib_hess_y()</a></code>,
 <code><a href="distrib_hessian.PseudoHuberDistrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_pdf.PseudoHuberDistrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_quantile.PseudoHuberDistrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.PseudoHuberDistrib.html">distrib_rng()</a></code>, and the expected
-information with its two derivatives,
 <code><a href="distrib_expected_hessian.PseudoHuberDistrib.html">distrib_expected_hessian()</a></code>,
-registered through <code><a href="register_loc_scale_expected.html">register_loc_scale_expected()</a></code>.</p>
-<p>Registered from other files: the mixed derivative
-<code><a href="distrib_cross_y.PseudoHuberDistrib.html">distrib_cross_y()</a></code> and the
-distribution-function derivatives
-<code><a href="distrib_grad_cdf.PseudoHuberDistrib.html">distrib_grad_cdf()</a></code> and
-<code><a href="distrib_hess_cdf.PseudoHuberDistrib.html">distrib_hess_cdf()</a></code>, plus the four
-moments <code><a href="mean.PseudoHuberDistrib.html">mean()</a></code>,
+<code><a href="distrib_deriv3.PseudoHuberDistrib.html">distrib_deriv3()</a></code> and
+<code><a href="distrib_deriv4.PseudoHuberDistrib.html">distrib_deriv4()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_expected_hessian.PseudoHuberDistrib.html">distrib_dexpected_hessian()</a></code>
+and
+<code><a href="distrib_expected_hessian.PseudoHuberDistrib.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the derivatives in the response:
+<code><a href="distrib_grad_y.PseudoHuberDistrib.html">distrib_grad_y()</a></code>,
+<code><a href="distrib_hess_y.PseudoHuberDistrib.html">distrib_hess_y()</a></code>,
+<code><a href="loc_deriv_y_k.html">distrib_deriv3_y()</a></code> and
+<code><a href="loc_deriv_y_k.html">distrib_deriv4_y()</a></code>;</p></li>
+<li><p>the mixed derivatives in the response and the parameters:
+<code><a href="distrib_cross_y.PseudoHuberDistrib.html">distrib_cross_y()</a></code>,
+<code><a href="loc_scale_cross2_y.html">distrib_cross2_y()</a></code>,
+<code><a href="loc_cross3_y.html">distrib_cross3_y()</a></code>,
+<code><a href="partial_loc_scale_grad_y_hess.html">distrib_grad_y_hess()</a></code> and
+<code><a href="partial_loc_scale_grad_y_hess.html">distrib_hess_y_hess()</a></code>;</p></li>
+<li><p>the derivatives of the distribution function:
+<code><a href="distrib_grad_cdf.PseudoHuberDistrib.html">distrib_grad_cdf()</a></code>,
+<code><a href="distrib_hess_cdf.PseudoHuberDistrib.html">distrib_hess_cdf()</a></code>,
+<code><a href="partial_loc_scale_deriv_cdf_k.html">distrib_deriv3_cdf()</a></code> and
+<code><a href="partial_loc_scale_deriv_cdf_k.html">distrib_deriv4_cdf()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.PseudoHuberDistrib.html">mean()</a></code>,
 <code><a href="variance.PseudoHuberDistrib.html">variance()</a></code>,
 <code><a href="skewness.PseudoHuberDistrib.html">skewness()</a></code> and
-<code><a href="kurtosis.PseudoHuberDistrib.html">kurtosis()</a></code> in <code>moments.R</code>.</p>
-<p>Everything else is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
+<code><a href="kurtosis.PseudoHuberDistrib.html">kurtosis()</a></code>;</p></li>
+<li><p>the fitting helpers:
+<code><a href="distrib_intercept_start.PseudoHuberDistrib.html">distrib_intercept_start()</a></code>
+and <code><a href="expected_hessian_costly.html">expected_hessian_costly()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -11,8 +11,8 @@ The class inherits from continuous_distrib. Its parametrization is
 \(\delta = \alpha/\sqrt{1+\alpha^2}\).
 Build one with skewnormal1_distrib(), which supplies the three link
 functions and fills the properties in. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them."><meta property="og:description" content="The S7 class of Azzalini's skew normal family, a Gaussian carrying a shape
+constructor, which takes the parent's properties; the validator of
+distrib checks them, and the constructor adds no check of its own."><meta property="og:description" content="The S7 class of Azzalini's skew normal family, a Gaussian carrying a shape
 parameter that tilts it. With \(z = (y-\mu)/\sigma\) the density is
 \(f(y) = 2\phi(z)\Phi(\alpha z)/\sigma\), so the factor \(2\Phi(\alpha z)\)
 is above one on the side where \(\alpha z &amp;gt; 0\) and below one on the other.
@@ -24,8 +24,8 @@ The class inherits from continuous_distrib. Its parametrization is
 \(\delta = \alpha/\sqrt{1+\alpha^2}\).
 Build one with skewnormal1_distrib(), which supplies the three link
 functions and fills the properties in. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+constructor, which takes the parent's properties; the validator of
+distrib checks them, and the constructor adds no check of its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -33,7 +33,7 @@ relationships between them."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,8 +78,8 @@ Gaussian.</p>
 \(\delta = \alpha/\sqrt{1+\alpha^2}\).</p>
 <p>Build one with <code><a href="skewnormal1_distrib.html">skewnormal1_distrib()</a></code>, which supplies the three link
 functions and fills the properties in. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.</p>
+constructor, which takes the parent's properties; the validator of
+<code>distrib</code> checks them, and the constructor adds no check of its own.</p>
     </div>
 
     <div class="section level2">
@@ -153,34 +153,43 @@ interpretations <code>c(mu = "location", sigma = "scale", alpha = "shape")</code
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered in this file:
-<code><a href="distrib_pdf.SkewNormal1Distrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_cdf.SkewNormal1Distrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_rng.SkewNormal1Distrib.html">distrib_rng()</a></code>,
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.SkewNormal1Distrib.html">distrib_pdf()</a></code>,
+<code><a href="distrib_cdf.SkewNormal1Distrib.html">distrib_cdf()</a></code> and
+<code><a href="distrib_rng.SkewNormal1Distrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.SkewNormal1Distrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.SkewNormal1Distrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_deriv3.SkewNormal1Distrib.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.SkewNormal1Distrib.html">distrib_deriv4()</a></code>,
+<code><a href="distrib_expected_hessian.SkewNormal1Distrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.SkewNormal1Distrib.html">distrib_deriv3()</a></code> and
+<code><a href="distrib_deriv4.SkewNormal1Distrib.html">distrib_deriv4()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_expected_hessian.SkewNormal1Distrib.html">distrib_dexpected_hessian()</a></code>
+and
+<code><a href="distrib_expected_hessian.SkewNormal1Distrib.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the derivatives in the response:
 <code><a href="distrib_grad_y.SkewNormal1Distrib.html">distrib_grad_y()</a></code>,
-<code><a href="distrib_hess_y.SkewNormal1Distrib.html">distrib_hess_y()</a></code>, and the expected
-information with its two derivatives,
-<code><a href="distrib_expected_hessian.SkewNormal1Distrib.html">distrib_expected_hessian()</a></code>.</p>
-<p>Registered elsewhere in the package, all closed form: the four moments
-<code><a href="mean.SkewNormal1Distrib.html">mean()</a></code>, <code><a href="variance.SkewNormal1Distrib.html">variance()</a></code>,
+<code><a href="distrib_hess_y.SkewNormal1Distrib.html">distrib_hess_y()</a></code>,
+<code><a href="loc_deriv_y_k.html">distrib_deriv3_y()</a></code> and
+<code><a href="loc_deriv_y_k.html">distrib_deriv4_y()</a></code>;</p></li>
+<li><p>the mixed derivatives in the response and the parameters:
+<code><a href="distrib_cross_y.SkewNormal1Distrib.html">distrib_cross_y()</a></code>,
+<code><a href="loc_scale_cross2_y.html">distrib_cross2_y()</a></code>,
+<code><a href="loc_cross3_y.html">distrib_cross3_y()</a></code>,
+<code><a href="partial_loc_scale_grad_y_hess.html">distrib_grad_y_hess()</a></code> and
+<code><a href="partial_loc_scale_grad_y_hess.html">distrib_hess_y_hess()</a></code>;</p></li>
+<li><p>the derivatives of the distribution function:
+<code><a href="distrib_grad_cdf.SkewNormal1Distrib.html">distrib_grad_cdf()</a></code>,
+<code><a href="distrib_grad_cdf.SkewNormal1Distrib.html">distrib_hess_cdf()</a></code>,
+<code><a href="distrib_grad_cdf.SkewNormal1Distrib.html">distrib_deriv3_cdf()</a></code> and
+<code><a href="distrib_grad_cdf.SkewNormal1Distrib.html">distrib_deriv4_cdf()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.SkewNormal1Distrib.html">mean()</a></code>,
+<code><a href="variance.SkewNormal1Distrib.html">variance()</a></code>,
 <code><a href="skewness.SkewNormal1Distrib.html">skewness()</a></code> and
-<code><a href="kurtosis.SkewNormal1Distrib.html">kurtosis()</a></code> in <code>moments.R</code>; the mixed
-response-parameter derivative <code><a href="distrib_cross_y.html">distrib_cross_y()</a></code> in
-<code>cross_derivatives_families.R</code>; the four orders of the distribution
-function's parameter derivatives, <code><a href="distrib_grad_cdf.html">distrib_grad_cdf()</a></code>
-through <code><a href="distrib_deriv3_cdf.html">distrib_deriv4_cdf()</a></code>, in
-<code>cdf_skewnormal_higher.R</code>; and the second-order response derivatives
-<code><a href="distrib_cross2_y.html">distrib_cross2_y()</a></code>,
-<code><a href="distrib_grad_y_hess.html">distrib_grad_y_hess()</a></code> and
-<code><a href="distrib_grad_y_hess.html">distrib_hess_y_hess()</a></code> in <code>theta2_families.R</code>.</p>
-<p>The <strong>quantile</strong> comes from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>, by root finding on the
-distribution function. The <strong>expected information</strong> has no elementary form
-and is computed by one quadrature per distinct \(\alpha\); see
-<code><a href="distrib_expected_hessian.SkewNormal1Distrib.html">distrib_expected_hessian.SkewNormal1Distrib()</a></code>.</p>
+<code><a href="kurtosis.SkewNormal1Distrib.html">kurtosis()</a></code>;</p></li>
+<li><p>the fitting helpers:
+<code><a href="distrib_intercept_start.SkewNormal1Distrib.html">distrib_intercept_start()</a></code>
+and <code><a href="expected_hessian_costly.html">expected_hessian_costly()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -10,11 +10,19 @@ likewise in \\\beta\\ with \\n - y\\ in place of \\y\\. The reported
 components follow by the chain rule of \\(\alpha, \beta) = (\mu/\sigma,
 (1-\mu)/\sigma)\\.
 
-Each digamma difference cancels to leading order as the shapes grow, so
-the compiled kernel forms it as a sum of reciprocals, the shifts being
-integers. The location component then holds its accuracy to a
-concentration of \\10^{15}\\, where the direct difference has lost every
-digit.
+The kernel uses these shape forms for \\\sigma \ge 0.1\\, where they are
+accurate. As \\\sigma\\ goes to zero (the binomial limit) the
+derivatives of the map grow like powers of \\1/\sigma\\ and the terms of
+the chain rule cancel, so for \\\sigma \< 0.1\\ the kernel uses the
+direct sums of
+[`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
+instead: with \\u_i = \mu + i\sigma\\, \\v_i = 1 - \mu + i\sigma\\ and
+\\w_i = 1 + i\sigma\\, \$\$\dfrac{\partial \ell}{\partial \mu} =
+\sum\_{i\<y} \dfrac{1}{u_i} - \sum\_{i\<n-y} \dfrac{1}{v_i}, \qquad
+\dfrac{\partial \ell}{\partial \sigma} = \sum\_{i\<y} \dfrac{i}{u_i} +
+\sum\_{i\<n-y} \dfrac{i}{v_i} - \sum\_{i\<n} \dfrac{i}{w_i}.\$\$ Each
+sum has terms of one sign, so both components keep their accuracy at any
+concentration; the cost is \\O(n)\\ per observation.
 
 With `scale = "link"` the generic applies the chain rule for the links
 the family carries before returning. This method always returns the
@@ -52,9 +60,9 @@ thread count.
 
 - threads:
 
-  A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  A single positive integer, how many threads the kernel may use. For
+  fewer observations than an internal threshold the kernel runs
+  sequentially whatever the count. Defaults to `1L`.
 
 ## Value
 

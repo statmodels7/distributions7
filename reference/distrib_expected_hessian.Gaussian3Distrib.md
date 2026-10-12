@@ -54,8 +54,8 @@ ignored. `y` is read only for its length.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -74,7 +74,7 @@ this equals the variance of the score.
 ## See also
 
 [`distrib_hessian.Gaussian3Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Gaussian3Distrib.md)
-for the observed quantity this is the expectation of,
+for the observed Hessian, of which this is the expectation,
 [`distrib_expected_hessian.Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gaussian1Distrib.md)
 for the same information in the standard deviation,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
@@ -93,11 +93,11 @@ lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 #> $mu_mu
 #> [1] -0.25
 #> 
-#> $mu_tau
-#> [1] 0
-#> 
 #> $tau_tau
 #> [1] -8
+#> 
+#> $mu_tau
+#> [1] 0
 #> 
 
 # The observed Hessian averages onto them over a large sample.
@@ -106,9 +106,9 @@ z <- distrib_rng(d, 2e4, th)
 rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
       expected = vapply(distrib_expected_hessian(d, z, th),
                         function(v) v[1], numeric(1)))
-#>          mu_mu      mu_tau tau_tau
-#> observed -0.25 0.005200559      -8
-#> expected -0.25 0.000000000      -8
+#>          mu_mu tau_tau      mu_tau
+#> observed -0.25      -8 0.005200559
+#> expected -0.25      -8 0.000000000
 
 # The information transforms by the delta method: with dtau/dsigma =
 # -2/sigma^3, the precision entry carries onto gaussian1's -2/sigma^2.

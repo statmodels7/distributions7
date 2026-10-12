@@ -43,12 +43,12 @@ fit_distrib(
 - start:
 
   Optional named list of starting values **on the parameter scale**.
-  `NULL`, the default, asks
+  `NULL`, the default, takes the starting values from
   [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md),
-  which lets a family compute a start from the data; a family that says
-  nothing falls back to draws from the parameter domains and the
-  restarts below. A value that is neither `NULL` nor a list signals an
-  error naming the argument, because `start` sits before `method` in the
+  which computes them from the data for a family that registers a method
+  and otherwise draws them from the parameter domains, with the restarts
+  below. A value that is neither `NULL` nor a list signals an error
+  naming the argument, because `start` sits before `method` in the
   signature and an optimizer passed positionally lands here.
 
 - method:
@@ -77,25 +77,28 @@ fit_distrib(
   set there, on an optimizer through its own `maxit` and `criterion` and
   on
   [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
-  through the same two arguments. Where the caller sets neither, the
-  rule is
+  through the same two arguments. For
+  [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
+  and the three strings the rule is
   [`optimizers7::crit_grad()`](https://statmodels7.github.io/optimizers7/reference/crit_grad.html)
-  at its own tolerance.
+  at its default tolerance when none is set; an optimizer object keeps
+  its own default.
 
 - level:
 
-  Confidence level for `ci` and `ci_eta`, a single number in \\(0, 1)\\.
-  Defaults to 0.95. Any other level is available afterwards from
+  Confidence level for `ci` and `ci_eta`, a single number in \\(0, 1)\\;
+  any other value signals an error. Defaults to 0.95. Any other level is
+  available afterwards from
   [`confint.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/confint.distrib_fit.md)
   without refitting.
 
 - n_start:
 
-  How many starting values to ask
+  How many starting values to request from
   [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
-  for when `start` is `NULL`. Defaults to 5. A family that returns its
-  own estimate returns one and ignores this. Ignored entirely when
-  `start` is given.
+  when `start` is `NULL`. Defaults to 5. A family that returns its own
+  estimate returns one and ignores this. Ignored entirely when `start`
+  is given.
 
 - threads:
 
@@ -128,11 +131,12 @@ Optimizing \\\eta \in \mathbb{R}^p\\ in place of the constrained
 \\\theta\\ removes the need for box constraints: a scale cannot become
 negative and a probability cannot leave \\(0,1)\\, because every link
 maps onto the interior of its parameter's domain. The score and the
-information on that scale are exact, not numerical, through the chain
-rule of
-[`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
+information on that scale follow from those on the parameter scale
+through the chain rule of
+[`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md),
+and they are exact wherever the family's own derivatives are.
 
-## The objective is the mean, not the sum
+## Scaling of the objective
 
 What the optimizer receives is \\-\ell(\eta)/n\\, with the gradient and
 the Hessian divided by \\n\\ with it. Scaling by a positive constant
@@ -147,10 +151,10 @@ unscaled at the optimum.
 ## Standard errors and intervals
 
 The variance matrix on the link scale is the inverse information at
-\\\hat\eta\\. The expected information is used when the fit itself used
-it or when the family writes it out; otherwise the observed Hessian,
-which every family has. The delta method carries it to the parameter
-scale, \$\$\widehat{\mathrm{Var}}(\hat\theta) =
+\\\hat\eta\\. The expected information is used when the family writes it
+out, unless `method = "newton"` is requested; otherwise the observed
+Hessian, which every family has, is used. The delta method carries it to
+the parameter scale, \$\$\widehat{\mathrm{Var}}(\hat\theta) =
 J\\\widehat{\mathrm{Var}}(\hat\eta)\\J, \qquad J =
 \mathrm{diag}\\\left(\frac{dg^{-1}}{d\eta}\Big\|\_{\hat\eta}\right).\$\$
 Intervals are built symmetrically on the link scale, \\\hat\eta \pm
@@ -162,22 +166,17 @@ parameter scale would not.
 ## Restarts, the fallback and the tie-break
 
 Each starting value is tried in turn, and the search stops once two runs
-that converged have reached the best objective found so far, to a
-relative \\10^{-8}\\ of the mean negative log-likelihood. A single
-converged run is not taken as the answer because it may be a degenerate
-stationary point: on
-[`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
-of
-[`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
-the first start converges at a log-likelihood about 97 units below the
-maximum the other starts reach. Where fewer than two runs converge every
-start is tried and the best is kept. Fisher scoring and Newton's method
-fall back to BFGS from the same starting value when they fail; an
-optimizer the caller named does not. Among the runs that finish, a
-converged one beats a non-converged one and the objective breaks ties,
-so the fit reports the best run and not the last. A run of a discrete
-family whose log-likelihood came back positive is discarded before any
-comparison.
+that converged have reached the best objective found so far, to within
+\\10^{-8}\\ times the larger of 1 and the absolute value of the mean
+negative log-likelihood. A single converged run is not taken as the
+answer because it may be a degenerate stationary point. Where fewer than
+two runs converge every start is tried and the best is kept. Fisher
+scoring and Newton's method fall back to BFGS from the same starting
+value when they fail; an optimizer the caller named does not. Among the
+runs that finish, a converged one beats a non-converged one and the
+objective breaks ties, so the fit reports the best run and not the last.
+A run of a discrete family whose log-likelihood came back positive is
+discarded before any comparison.
 
 ## See also
 

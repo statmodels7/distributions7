@@ -79,10 +79,13 @@ An object of class `continuous_distrib`.
 ## Methods
 
 Defaults for continuous distributions, built from the density alone: the
-cdf by quadrature, the quantile function by root finding, and the
-generator by Generalized Ratio-of-Uniforms
+cdf by quadrature, the quantile function by root finding, the generator
+by Generalized Ratio-of-Uniforms
 ([`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md))
-or inverse transform when an analytical quantile is available.
+or inverse transform when an analytical quantile is available, the
+derivatives in the response and the mixed derivatives by finite
+differences, and the derivatives of the cdf by differencing it. The list
+below is partial.
 
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.continuous_distrib.md),
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.continuous_distrib.md),

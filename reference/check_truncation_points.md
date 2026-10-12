@@ -1,7 +1,7 @@
 # Validate the Truncation Endpoints
 
 Checks that the interval is well formed and that truncating this parent
-there leaves a model worth fitting.
+there removes some, but not all, of its probability.
 [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
 calls it before building anything, so every rejection names the endpoint
 and the support it was compared against.
@@ -35,8 +35,8 @@ check_truncation_points(distrib, lower, upper, is_disc)
 
 ## Value
 
-Invisibly `NULL`. Every failure raises, with the endpoint and the
-parent's support named.
+Invisibly `NULL`. A failed condition signals an error that names the
+argument; the errors about the support also name the parent's support.
 
 ## Details
 

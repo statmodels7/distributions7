@@ -39,9 +39,9 @@ logit is the canonical link of this family.
 
 - threads:
 
-  A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  A single positive integer, how many threads the kernel may use. For
+  fewer observations than an internal threshold the kernel runs
+  sequentially whatever the count. Defaults to `1L`.
 
 ## Value
 

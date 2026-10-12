@@ -29,9 +29,9 @@ and only its derivative is not.
 
   A named list with components `mu`, `sigma` and `gamma1`, each a
   numeric vector of length 1 or of the length of `y`. `sigma` must be
-  strictly positive and `gamma1` must lie in \\(-0.9952717,
-  0.9952717)\\; a skewness outside that range belongs to no skew normal
-  and the map returns `NaN`.
+  strictly positive and `gamma1` must lie in the open interval
+  \\(-0.9952717, 0.9952717)\\; the generic signals an error for a value
+  outside it before the map is evaluated.
 
 - log:
 

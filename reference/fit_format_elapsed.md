@@ -25,8 +25,10 @@ fit_format_elapsed(sec)
 ## Value
 
 A character string of length 1: `"0.4 ms"`, `"40 ms"`, `"1.5 s"`,
-`"59.4 s"`, `"1 min 01 s"`. Seconds are rounded to one decimal below a
-minute and to the nearest second above it.
+`"59.4 s"`, `"1 min 01 s"`. Milliseconds, and seconds below a minute,
+are given to three significant digits; above a minute the seconds are
+rounded to the nearest second. The unit is chosen on the rounded value,
+so that no field reaches its carry.
 
 ## See also
 

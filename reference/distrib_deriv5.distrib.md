@@ -1,7 +1,7 @@
 # Default Fifth-Order Derivatives for `distrib` Objects
 
-The route every family takes at the fifth order: one central difference
-of the fourth, through
+The route that a family takes at the fifth order when it registers no
+method of its own: one central difference of the fourth, through
 [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md).
 
 ## Arguments
@@ -26,7 +26,9 @@ of the fourth, through
 
 - ...:
 
-  Unused.
+  Passed to
+  [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md),
+  which accepts `accuracy`.
 
 ## Value
 
@@ -37,13 +39,15 @@ gives them.
 
 ## Details
 
-This is registered on the base class and nothing overrides it, so it is
-not a fallback in the usual sense – no family writes the fifth order out
-yet. What differs between families is the quantity being differenced.
+This is registered on the base class. Ten families write the fifth order
+out themselves (see
+[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)),
+and the wrappers override it. Among the families that reach it, what
+differs is the quantity being differenced:
 [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
-answers whether that quantity is analytic, and
+reports whether that quantity is analytic, and
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-reports the order-5 row as unchecked where it is not.
+emits no order-5 row where it is not.
 
 ## See also
 

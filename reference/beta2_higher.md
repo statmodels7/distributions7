@@ -42,16 +42,17 @@ The data enter the log-density only through \\(\alpha-1)\log y +
 (\beta-1)\log(1-y)\\, which is linear in the two parameters, so the
 second derivative already kills it. Every order from two upwards is
 therefore free of the response, the observed and the expected
-derivatives are the same numbers, and no expectation is computed
-anywhere in this family. The three polygamma values are evaluated once
-each and recycled.
+derivatives are the same numbers, and the methods of this family compute
+them without an expectation. The three polygamma values are evaluated
+once each and recycled.
 
 ## See also
 
 [`beta2_distrib()`](https://statmodels7.github.io/distributions7/reference/beta2_distrib.md)
 for the family, and
-[`distrib_hessian.Beta2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Beta2Distrib.md),
 [`distrib_deriv3.Beta2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Beta2Distrib.md)
 and
 [`distrib_deriv4.Beta2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Beta2Distrib.md)
-for the methods that call it.
+for the methods that call it. The second order is computed by the
+compiled kernel of
+[`distrib_hessian.Beta2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Beta2Distrib.md).

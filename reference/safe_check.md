@@ -27,16 +27,16 @@ attribute `from_error = TRUE`.
 
 ## Details
 
-A distribution under validation is by assumption possibly broken, so a
-check that throws is itself a result. Without this, the first component
-to raise would end the run and hide every check after it, which is the
-least useful moment to stop being informative.
+A distribution under validation may be defective, so an error raised by
+a check is a result of that check. Without this conversion, the first
+component that raised an error would end the run and the checks after it
+would not be reported.
 
 The failed row is marked with the attribute `from_error`, which
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-reads before assembling the table: a check whose computation raised has
-failed, and it is never mistaken for one whose statistic merely came out
-non-finite, which is reported as not run.
+reads before assembling the table: a check whose computation raised an
+error has failed, and it is not treated as a check whose statistic came
+out `NaN` or `NA`, which is reported as not run.
 
 ## See also
 

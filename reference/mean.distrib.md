@@ -3,10 +3,10 @@
 Evaluates \\E\[Y\]\\ by quadrature over the support of a continuous
 family or by summing the series of a discrete one, through one call of
 [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
-at `p = 1`. This is the fallback that runs when the family has
-registered no closed form. Of the 45 shipped families only the two von
-Mises reach it; the rest carry a formula, which is a hundredfold cheaper
-and exact.
+at `p = 1`. This method is used when the family registers no closed
+form; among the univariate families that is the first von Mises
+([`vonmises1_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md)),
+and the second registers a method that calls this route.
 
 ## Arguments
 
@@ -30,9 +30,9 @@ and exact.
 ## Value
 
 A numeric vector of means, of length equal to the longest component of
-`theta`. `NaN` or `Inf` where the integral does not converge, with no
-warning: a family whose mean does not exist registers its own method
-instead of relying on this one.
+`theta`. Where the integral does not converge the quadrature signals an
+error; a family whose mean does not exist registers its own method
+instead of using this one.
 
 ## See also
 

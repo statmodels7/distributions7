@@ -37,9 +37,9 @@ A function of one block, returning that component's vector.
 
 ## Details
 
-The orders are fetched once per call rather than once per block. A
-partition sum at fourth order asks for the same handful of components
-repeatedly, and the parent's derivative may itself be expensive.
+The orders are fetched once per call and not once per block. A partition
+sum at fourth order reads the same handful of components repeatedly, and
+the parent's derivative may be expensive to evaluate.
 
 ## See also
 

@@ -30,8 +30,8 @@ fold_ratio(parent, x, theta, order, params, w)
 
 - order:
 
-  The highest derivative order the caller will ask for, a single whole
-  number from 1 to 4. Blocks longer than this are not prepared.
+  The highest derivative order that is needed, a single whole number
+  from 1 to 4. Blocks longer than this are not prepared.
 
 - params:
 
@@ -49,10 +49,11 @@ vector of the recycled length of `x`.
 
 ## Details
 
-The memoization matters because a partition sum asks for the same block
+The memoization is useful because a partition sum needs the same block
 many times: at order four the same singleton block appears in most of
-the partitions. Each distinct block costs two evaluations of the
-parent's derivatives, one at \\+x\\ and one at \\-x\\, and no more.
+the partitions. The parent's derivatives are evaluated once at \\+x\\
+and once at \\-x\\ for the whole call, up to the requested order, and
+each distinct block is then assembled from them once.
 
 ## Notation
 

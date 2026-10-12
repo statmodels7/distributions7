@@ -7,8 +7,8 @@ is constant within a parameter setting and is recycled to the length of y.
 Being a location family, the Gaussian has the same curvature in the response
 as in its location, and this equals the mu_mu component of
 distrib_hessian.Gaussian3Distrib(). In this parametrization that curvature
-is the parameter itself, which is the sense in which the precision measures
-how sharply the log-density peaks."><meta property="og:description" content="Computes the second derivative of the Gaussian log-density with respect to
+is minus the precision, so a larger precision gives a sharper peak of the
+log-density."><meta property="og:description" content="Computes the second derivative of the Gaussian log-density with respect to
 the response,
 $$\dfrac{\partial^2 \ell}{\partial y^2} = -\tau,$$
 in closed form. It does not depend on \(y\) or on \(\mu\), so the value
@@ -16,8 +16,8 @@ is constant within a parameter setting and is recycled to the length of y.
 Being a location family, the Gaussian has the same curvature in the response
 as in its location, and this equals the mu_mu component of
 distrib_hessian.Gaussian3Distrib(). In this parametrization that curvature
-is the parameter itself, which is the sense in which the precision measures
-how sharply the log-density peaks."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+is minus the precision, so a larger precision gives a sharper peak of the
+log-density."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +25,7 @@ how sharply the log-density peaks."><meta property="og:image" content="https://s
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,8 +66,8 @@ is constant within a parameter setting and is recycled to the length of <code>y<
 Being a location family, the Gaussian has the same curvature in the response
 as in its location, and this equals the <code>mu_mu</code> component of
 <code><a href="distrib_hessian.Gaussian3Distrib.html">distrib_hessian.Gaussian3Distrib()</a></code>. In this parametrization that curvature
-is the parameter itself, which is the sense in which the precision measures
-how sharply the log-density peaks.</p>
+is minus the precision, so a larger precision gives a sharper peak of the
+log-density.</p>
     </div>
 
 
@@ -95,7 +95,8 @@ be strictly positive.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A numeric vector of length <code>length(y)</code>, every entry \(-\tau\).</p>
+    <p>A numeric vector of length
+<code>max(length(y), length(mu), length(tau))</code>, every entry \(-\tau\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

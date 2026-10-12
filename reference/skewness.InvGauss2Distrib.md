@@ -1,9 +1,9 @@
-# Skewness of the Inverse Gaussian Distribution in Mean and Rate
+# Skewness of the Inverse Gaussian Distribution in Mean and Shape
 
 Closed form: \\\gamma_1 = 3\sqrt{\mu/\lambda}\\. It is positive at every
 parameter value and depends on the two only through their ratio, so the
-whole family is one curve indexed by \\\mu/\lambda\\. Small mean or
-large rate gives a nearly Gaussian shape.
+whole family is one curve indexed by \\\mu/\lambda\\. A small mean or a
+large \\\lambda\\ gives a nearly Gaussian shape.
 
 ## Arguments
 
@@ -28,7 +28,7 @@ A numeric vector, of length
 
 ## Notation
 
-\\\mu \> 0\\ is the mean and \\\lambda \> 0\\ the rate.
+\\\mu \> 0\\ is the mean and \\\lambda \> 0\\ the shape.
 
 ## See also
 

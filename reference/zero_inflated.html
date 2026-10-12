@@ -23,7 +23,7 @@ process or from a mechanism that switches it off."><meta property="og:image" con
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,17 +130,18 @@ points has \(k-1\) free probabilities, so at least <code>n_params + 2</code> sup
 points are needed. This rules out the Bernoulli and
 <code>binomial_distrib(size = 1)</code>, where <code>mu</code> and <code>zi</code> between them describe a
 single free cell.</p></li>
-</ul><p>A large support is NECESSARY without being sufficient. With \(\mu\) large
-enough that \(f(0)\) underflows, or \(\zeta\) close to zero, the ridge
-reappears in the data instead of in the model, and <code><a href="fit_distrib.html">fit_distrib()</a></code> reports
-the standard errors that reveal it.</p>
+</ul><p>A support with enough points is necessary for identification but not
+sufficient. If \(\mu\) is large enough that \(f(0)\) underflows, or
+\(\zeta\) is close to zero, the data carry little information about
+\(\zeta\), and the standard errors that <code><a href="fit_distrib.html">fit_distrib()</a></code> reports are large.</p>
     </div>
     <div class="section level2">
     <h2 id="what-the-result-supports">What the result supports<a class="anchor" aria-label="anchor" href="#what-the-result-supports"></a></h2>
-    <p>The whole <code>distrib</code> contract: the mass function, the distribution function,
-the quantile function, the generator, the analytic score, the observed and
-the expected Hessian, and the third and fourth derivatives from the shared
-wrapper machinery. The moments come from <code><a href="moment.html">moment()</a></code> numerically.</p>
+    <p>The mass function, the distribution function, the quantile function, the
+generator, the analytic score, the observed and the expected Hessian, and the
+third, fourth and fifth derivatives from the shared wrapper machinery. The
+derivatives with respect to the response are not defined for a discrete
+family. The moments are computed numerically by <code><a href="moment.html">moment()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -153,8 +154,8 @@ support points.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="zero_adjusted.html">zero_adjusted()</a></code> for the hurdle counterpart,
-<a href="ZeroInflatedDistrib.html">ZeroInflatedDistrib</a> for the class, <code><a href="truncated.html">truncated()</a></code>, which the hurdle uses
-internally, and <code><a href="check_distrib.html">check_distrib()</a></code> to validate the result.</p></div>
+<a href="ZeroInflatedDistrib.html">ZeroInflatedDistrib</a> for the class, <code><a href="truncated.html">truncated()</a></code> for truncation to an
+interval, and <code><a href="check_distrib.html">check_distrib()</a></code> to validate the result.</p></div>
     </div>
 
     <div class="section level2">
@@ -195,8 +196,8 @@ internally, and <code><a href="check_distrib.html">check_distrib()</a></code> to
 <span class="r-out co"><span class="r-pr">#&gt;</span>   A support of at least 3 points is required.</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">zero_inflated</span><span class="op">(</span><span class="fu"><a href="zero_adjusted.html">zero_adjusted</a></span><span class="op">(</span><span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : zero_inflated() cannot wrap 'zero-adjusted poisson', which already models the probability of a zero.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Stacking the two leaves only their combination identified: the second</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   parameter has an identically zero score, and any optimizer will wander</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Stacking the two leaves only a combination of their parameters identified,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   so the likelihood is flat along a direction and any optimizer will wander</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   along that ridge. Apply exactly one zero wrapper to a plain distribution.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Nor can a continuous parent be inflated: there is no mass at zero to add</span></span></span>

@@ -15,7 +15,7 @@ own."><meta property="og:image" content="https://statmodels7.github.io/distribut
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,8 +80,8 @@ parameters are a location and a scale in that order.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> or <code>"link"</code>, applied by the generic before
-dispatch.</p></dd>
+<dd><p>One of <code>"parameter"</code> or <code>"link"</code>. The generic applies the link
+scale to the value that the method returns.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -99,9 +99,10 @@ dispatch.</p></dd>
 shape parameter beyond the two takes
 <code><a href="partial_loc_scale_grad_y_hess.html">partial_loc_scale_grad_y_hess()</a></code> instead, where the pairs touching that
 shape are differenced.</p>
-<p>Both bodies read the family's own third and fourth response derivatives, so
-a family supplying <code><a href="distrib_deriv3_y.html">distrib_deriv3_y()</a></code> and <code><a href="distrib_deriv3_y.html">distrib_deriv4_y()</a></code> gets these
-in closed form with no further algebra.</p>
+<p><code>loc_scale_grad_y_hess()</code> reads the family's own response derivatives up to
+the third and <code>loc_scale_hess_y_hess()</code> up to the fourth, so a family that
+supplies <code><a href="distrib_deriv3_y.html">distrib_deriv3_y()</a></code> and <code><a href="distrib_deriv3_y.html">distrib_deriv4_y()</a></code> obtains both bodies in
+closed form.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

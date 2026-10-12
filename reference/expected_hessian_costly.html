@@ -11,7 +11,7 @@ sum for each observation or each distinct shape; FALSE otherwise."><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,25 +73,23 @@ sum for each observation or each distinct shape; <code>FALSE</code> otherwise.</
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The answer is a statement about cost, and it is read beside
-<code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code>, which states accuracy. Two kinds of family
-answer <code>TRUE</code>.</p>
+<code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code>, which concerns accuracy. Three kinds of family
+return <code>TRUE</code>.</p>
 <p>The location-scale families <code><a href="skewnormal1_distrib.html">skewnormal1_distrib()</a></code>,
-<code><a href="skewnormal2_distrib.html">skewnormal2_distrib()</a></code>, <code><a href="skewt_distrib.html">skewt_distrib()</a></code> and <code><a href="pseudohuber_distrib.html">pseudohuber_distrib()</a></code>
-take one integral over the standardized response per distinct shape, from
-<code><a href="loc_scale_expected.html">loc_scale_expected()</a></code>: nothing where the shape is the same for every
-observation, one integral per observation where it is modelled. Measured
-on smooth regressions at 1000 observations with the shape developed over a
-covariate, a fit that takes the scoring step on this information costs 7
-to 21 times one that takes it on the observed information, at the same
-estimate.</p>
+<code><a href="skewnormal2_distrib.html">skewnormal2_distrib()</a></code>, <code><a href="skewt_distrib.html">skewt_distrib()</a></code>, <code><a href="pseudohuber_distrib.html">pseudohuber_distrib()</a></code> and
+<code><a href="pseudohuber2_distrib.html">pseudohuber2_distrib()</a></code> take one integral over the standardized response
+per distinct shape, from <code><a href="loc_scale_expected.html">loc_scale_expected()</a></code>: one integral where the
+shape is the same for every observation, and one per observation where it
+is modeled. A fit that takes the scoring step on this information then
+costs several times one that takes it on the observed information, at the
+same estimate.</p>
 <p>The Poisson-inverse Gaussians <code><a href="pig1_distrib.html">pig1_distrib()</a></code> and <code><a href="pig2_distrib.html">pig2_distrib()</a></code> sum
 over the support for each observation, over a number of terms that grows
-as \(\sigma\mu\): about 25 microseconds an observation at
-\(\mu = 3\), \(\sigma = 0.3\) and 2 milliseconds at \(\mu = 30\),
-\(\sigma = 3\), against a few microseconds for the observed information.
-Measured at 1000 observations, a fit on it costs 1 to 6 times one on the
-observed information at the same estimate, and far more where the fit
-passes through a large \(\sigma\mu\).</p>
+as \(\sigma\mu\), whereas their observed information is a closed form.
+A fit on it costs more than one on the observed information at the same
+estimate, and far more where the fit passes through a large
+\(\sigma\mu\).</p>
+<p>A <code><a href="folded.html">folded()</a></code> distribution also returns <code>TRUE</code>.</p>
 <p><span class="pkg">statmodels7</span>'s <code>iwls(hessian = "auto")</code> therefore settles on the
 observed information for these families. The default answers for a
 wrapper's parent, read off its <code>parent_distrib</code> property, and <code>FALSE</code> for a

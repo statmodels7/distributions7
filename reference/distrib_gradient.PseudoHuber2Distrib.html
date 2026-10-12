@@ -11,7 +11,7 @@ kernel."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,8 +67,9 @@ kernel.</p>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p><code>"parameter"</code> or <code>"link"</code>; the link scale is applied by the
-generic.</p></dd>
+<dd><p><code>"parameter"</code> or <code>"link"</code>. The generic applies the link
+scale at orders one to four; <code><a href="distrib_deriv5.html">distrib_deriv5()</a></code> applies it in the
+method, through <code><a href="deriv5_scale.html">deriv5_scale()</a></code>.</p></dd>
 
 
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
@@ -102,14 +103,18 @@ $$\partial_\mu^i \partial_\sigma^j \partial_\nu^k Q =
       [i = j = 0,\, k = 1] + R^{(k)}(\nu)\, B_i\, C_j,$$
 with \(B_0 = r^2\), \(B_1 = -2r\), \(B_2 = 2\), \(B_i = 0\) for
 \(i \ge 3\), and \(C_j = (-1)^j (j+1)!\, \sigma^{-(j+2)}\). A component
-of \(D\) is Faa di Bruno's sum over the set partitions of its indices,
-with \((d/dQ)^m \sqrt{Q} = c_m Q^{1/2 - m}\). The derivatives of
-\(R\) and \(h\) are read off \(\log K_n(\sqrt\nu)\), whose
-derivatives in \(t = \sqrt\nu\) follow from the ratios
-\(K_n^{(j)}(t)/K_n(t) = (-1/2)^j \sum_i \binom{j}{i} K_{|n-j+2i|}(t)/
-K_n(t)\), formed with exponentially scaled Bessel functions. A kernel of
-order \(m\) computes \(R\) and \(h\) to order \(m\) and the
-partitions of order \(m\) only.</p>
+of \(D\) of order one and two is written out per component. For orders
+three to five the data part \(-A/\sigma\), with
+\(A = \sqrt{\nu\sigma^2 + R(\nu) r^2}\), is differentiated in closed
+form, in expressions written in \(u = r/A\) and powers of \(1/A\)
+that are tabulated in the C++ sources. The derivatives of \(R\) and
+\(h = \log(R)/2 - B\) come from those of
+\(B(\nu) = \log\{\sqrt\nu K_1(\sqrt\nu)\}\) and \(\log R\), computed
+by three routes: the series of \(K_1\) and \(K_2\) at the origin
+below \(\nu = 1\), the cumulants of the generalized inverse Gaussian
+law of their integral representation for \(1 \le \nu &lt; 400\), and the
+asymptotic series from \(\nu = 400\). A kernel of order \(m\)
+computes \(R\) and \(h\) to order \(m\) and nothing above it.</p>
 <p>The expected derivatives of orders three and four are those of
 <code><a href="expected_derivative.html">expected_derivative()</a></code>; the expected information is registered through
 <code><a href="register_loc_scale_expected.html">register_loc_scale_expected()</a></code>.</p>

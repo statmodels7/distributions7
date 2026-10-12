@@ -18,7 +18,8 @@ observation.
 - theta:
 
   A named list with components `mu`, `lambda` and `alpha`. Aligned and
-  validated by name, so a missing or out-of-bounds component throws.
+  validated by name, so a missing or out-of-bounds component signals an
+  error.
 
 - ...:
 

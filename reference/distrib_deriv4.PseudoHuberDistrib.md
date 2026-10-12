@@ -2,10 +2,9 @@
 
 Computes the fifteen distinct fourth derivatives of the pseudo-Huber
 log-density in \\\mu\\, \\\sigma\\ and \\\nu\\, **in closed form**, in a
-compiled kernel. The Bessel handling is
-[`distrib_deriv3.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.PseudoHuberDistrib.md)'s:
-the functions enter through \\\nu\\ alone, in their exponentially scaled
-forms.
+compiled kernel. The Bessel functions enter through \\\nu\\ alone, and
+their derivatives come from the three routes described in
+[`distrib_deriv3.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.PseudoHuberDistrib.md).
 
 **The expected fourth derivatives have no closed form.** With
 `expected = TRUE` the method calls

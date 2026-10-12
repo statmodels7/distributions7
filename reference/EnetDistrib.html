@@ -12,8 +12,9 @@ Like the Laplace, its log-likelihood is not differentiable in
 \(\mu\): the absolute value carries a kink at the location, and
 params_smooth records mu = FALSE.
 Build one with enet_distrib(), which supplies the three link functions.
-This page documents the raw S7 constructor, which validates none of the
-relationships between its properties."><meta property="og:description" content="The S7 class of the density whose negative logarithm is the elastic-net
+This page documents the raw S7 constructor, which takes the parent's
+properties; the validator of distrib checks them, and the constructor
+adds no check of its own."><meta property="og:description" content="The S7 class of the density whose negative logarithm is the elastic-net
 penalty: a Laplace and a Gaussian at the same location, multiplied together
 and normalized,
 $$f(y) \propto \exp\{-\lambda\alpha|y-\mu|
@@ -26,8 +27,9 @@ Like the Laplace, its log-likelihood is not differentiable in
 \(\mu\): the absolute value carries a kink at the location, and
 params_smooth records mu = FALSE.
 Build one with enet_distrib(), which supplies the three link functions.
-This page documents the raw S7 constructor, which validates none of the
-relationships between its properties."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+This page documents the raw S7 constructor, which takes the parent's
+properties; the validator of distrib checks them, and the constructor
+adds no check of its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -35,7 +37,7 @@ relationships between its properties."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,8 +83,9 @@ a member. Both remain families of their own.</p>
 \(\mu\)</strong>: the absolute value carries a kink at the location, and
 <code>params_smooth</code> records <code>mu = FALSE</code>.</p>
 <p>Build one with <code><a href="enet_distrib.html">enet_distrib()</a></code>, which supplies the three link functions.
-This page documents the raw S7 constructor, which validates none of the
-relationships between its properties.</p>
+This page documents the raw S7 constructor, which takes the parent's
+properties; the validator of <code>distrib</code> checks them, and the constructor
+adds no check of its own.</p>
     </div>
 
     <div class="section level2">
@@ -154,25 +157,37 @@ domains \((-\infty,\infty)\), \((0,\infty)\) and \((0,1)\), and
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered in this file:
-<code><a href="distrib_pdf.EnetDistrib.html">distrib_pdf()</a></code>,
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.EnetDistrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_cdf.EnetDistrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_quantile.EnetDistrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.EnetDistrib.html">distrib_rng()</a></code>,
+<code><a href="distrib_quantile.EnetDistrib.html">distrib_quantile()</a></code> and
+<code><a href="distrib_rng.EnetDistrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.EnetDistrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.EnetDistrib.html">distrib_hessian()</a></code>,
 <code><a href="distrib_expected_hessian.EnetDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.EnetDistrib.html">distrib_deriv3()</a></code> and
+<code><a href="distrib_deriv4.EnetDistrib.html">distrib_deriv4()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_dexpected_hessian.elementary.html">distrib_dexpected_hessian()</a></code>;</p></li>
+<li><p>the derivatives in the response:
 <code><a href="distrib_grad_y.EnetDistrib.html">distrib_grad_y()</a></code>,
 <code><a href="distrib_hess_y.EnetDistrib.html">distrib_hess_y()</a></code>,
-<code><a href="distrib_cross_y.EnetDistrib.html">distrib_cross_y()</a></code>,
-<code><a href="mean.EnetDistrib.html">mean()</a></code>, <code><a href="variance.EnetDistrib.html">variance()</a></code>,
-<code><a href="skewness.EnetDistrib.html">skewness()</a></code>.</p>
-<p>Registered in <code>enet_higher.R</code>, both closed form:
-<code><a href="distrib_deriv3.EnetDistrib.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.EnetDistrib.html">distrib_deriv4()</a></code>.</p>
-<p>The <strong>kurtosis</strong> has no closed form here and comes from the base class by
-quadrature. So does the fourth response derivative and beyond, which are
-zero: the log-density is quadratic in \(y\) away from the location.</p>
+<code><a href="loc_deriv_y_k.html">distrib_deriv3_y()</a></code> and
+<code><a href="loc_deriv_y_k.html">distrib_deriv4_y()</a></code>;</p></li>
+<li><p>the mixed derivatives in the response and the parameters:
+<code><a href="distrib_cross_y.EnetDistrib.html">distrib_cross_y()</a></code> and
+<code><a href="loc_cross3_y.html">distrib_cross3_y()</a></code>;</p></li>
+<li><p>the derivatives of the distribution function:
+<code><a href="distrib_grad_cdf.EnetDistrib.html">distrib_grad_cdf()</a></code>,
+<code><a href="distrib_grad_cdf.EnetDistrib.html">distrib_hess_cdf()</a></code>,
+<code><a href="distrib_grad_cdf.EnetDistrib.html">distrib_deriv3_cdf()</a></code> and
+<code><a href="distrib_grad_cdf.EnetDistrib.html">distrib_deriv4_cdf()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.EnetDistrib.html">mean()</a></code>,
+<code><a href="variance.EnetDistrib.html">variance()</a></code> and
+<code><a href="skewness.EnetDistrib.html">skewness()</a></code>;</p></li>
+<li><p>the decomposition at the kink:
+<code><a href="kink_decomposition.EnetDistrib.html">kink_decomposition()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="the-two-quantities-everything-is-written-in">The two quantities everything is written in<a class="anchor" aria-label="anchor" href="#the-two-quantities-everything-is-written-in"></a></h2>
@@ -181,8 +196,12 @@ zero: the log-density is quadratic in \(y\) away from the location.</p>
 <p>With \(a = \lambda\alpha\), \(c = \lambda(1-\alpha)\) and
 \(x = a/\sqrt c\), every derivative in the two rates is a polynomial in
 \(x\) and \(G = \mathrm{d}\log M/\mathrm{d}x\), where \(M\) is the
-Mills ratio. The map \((\lambda, \alpha) \mapsto (a, c)\) is bilinear, so
-the chain onto the reported parameters adds one cross term and nothing else.</p>
+Mills ratio. \(G\) and its derivatives are the cumulants, with alternating
+signs, of the density proportional to \(e^{-xs - s^2/2}\) on
+\(s &gt; 0\), computed in a compiled kernel from the ratios of its moments
+without forming the difference \(x - 1/M\). The map
+\((\lambda, \alpha) \mapsto (a, c)\) is bilinear, so the chain onto the
+reported parameters adds one cross term and nothing else.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

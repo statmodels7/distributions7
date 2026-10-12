@@ -25,7 +25,7 @@ y)^2\), with \(\mathrm{se}(\hat\mu) = \hat\sigma/\sqrt{n}\) and
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,9 +99,10 @@ a multivariate family. Every observation is read at the same \(\theta\).</p></dd
 
 <dt id="arg-start">start<a class="anchor" aria-label="anchor" href="#arg-start"></a></dt>
 <dd><p>Optional named list of starting values <strong>on the parameter
-scale</strong>. <code>NULL</code>, the default, asks <code><a href="distrib_start.html">distrib_start()</a></code>, which lets a family
-compute a start from the data; a family that says nothing falls back to
-draws from the parameter domains and the restarts below. A value that is
+scale</strong>. <code>NULL</code>, the default, takes the starting values from
+<code><a href="distrib_start.html">distrib_start()</a></code>, which computes them from the data for a family that
+registers a method and otherwise draws them from the parameter domains,
+with the restarts below. A value that is
 neither <code>NULL</code> nor a list signals an error naming the argument, because
 <code>start</code> sits before <code>method</code> in the signature and an optimizer passed
 positionally lands here.</p></dd>
@@ -123,18 +124,21 @@ the three ready-made strategies. The first two fall back to BFGS if they
 fail to converge; an optimizer the caller chose is never replaced.</p></li>
 </ul><p>The iteration limit and the stopping rule belong to the method and are set
 there, on an optimizer through its own <code>maxit</code> and <code>criterion</code> and on
-<code><a href="fisher_scoring.html">fisher_scoring()</a></code> through the same two arguments. Where the caller sets
-neither, the rule is <code><a href="https://statmodels7.github.io/optimizers7/reference/crit_grad.html" class="external-link">optimizers7::crit_grad()</a></code> at its own tolerance.</p></dd>
+<code><a href="fisher_scoring.html">fisher_scoring()</a></code> through the same two arguments. For
+<code><a href="fisher_scoring.html">fisher_scoring()</a></code> and the three strings the rule is
+<code><a href="https://statmodels7.github.io/optimizers7/reference/crit_grad.html" class="external-link">optimizers7::crit_grad()</a></code> at its default tolerance when none is set; an
+optimizer object keeps its own default.</p></dd>
 
 
 <dt id="arg-level">level<a class="anchor" aria-label="anchor" href="#arg-level"></a></dt>
 <dd><p>Confidence level for <code>ci</code> and <code>ci_eta</code>, a single number in
-\((0, 1)\). Defaults to 0.95. Any other level is available afterwards
-from <code><a href="confint.distrib_fit.html">confint.distrib_fit()</a></code> without refitting.</p></dd>
+\((0, 1)\); any other value signals an error. Defaults to 0.95. Any
+other level is available afterwards from <code><a href="confint.distrib_fit.html">confint.distrib_fit()</a></code> without
+refitting.</p></dd>
 
 
 <dt id="arg-n-start">n_start<a class="anchor" aria-label="anchor" href="#arg-n-start"></a></dt>
-<dd><p>How many starting values to ask <code><a href="distrib_start.html">distrib_start()</a></code> for when
+<dd><p>How many starting values to request from <code><a href="distrib_start.html">distrib_start()</a></code> when
 <code>start</code> is <code>NULL</code>. Defaults to 5. A family that returns its own estimate
 returns one and ignores this. Ignored entirely when <code>start</code> is given.</p></dd>
 
@@ -167,11 +171,12 @@ says the mass function has broken down at the parameters reached.</p>
 \(\theta\) removes the need for box constraints: a scale cannot become
 negative and a probability cannot leave \((0,1)\), because every link maps
 onto the interior of its parameter's domain. The score and the information
-on that scale are exact, not numerical, through the chain rule of
-<code><a href="link_scale_derivatives.html">link_scale_derivatives()</a></code>.</p>
+on that scale follow from those on the parameter scale through the chain
+rule of <code><a href="link_scale_derivatives.html">link_scale_derivatives()</a></code>, and they are exact wherever the
+family's own derivatives are.</p>
     </div>
     <div class="section level2">
-    <h2 id="the-objective-is-the-mean-not-the-sum">The objective is the mean, not the sum<a class="anchor" aria-label="anchor" href="#the-objective-is-the-mean-not-the-sum"></a></h2>
+    <h2 id="scaling-of-the-objective">Scaling of the objective<a class="anchor" aria-label="anchor" href="#scaling-of-the-objective"></a></h2>
     <p>What the optimizer receives is \(-\ell(\eta)/n\), with the gradient and
 the Hessian divided by \(n\) with it. Scaling by a positive constant moves
 neither the maximum nor any Newton step, since \(H^{-1}g\) is unchanged
@@ -184,9 +189,9 @@ information and every standard error are recomputed unscaled at the optimum.</p>
     <div class="section level2">
     <h2 id="standard-errors-and-intervals">Standard errors and intervals<a class="anchor" aria-label="anchor" href="#standard-errors-and-intervals"></a></h2>
     <p>The variance matrix on the link scale is the inverse information at
-\(\hat\eta\). The expected information is used when the fit itself used it
-or when the family writes it out; otherwise the observed Hessian, which
-every family has. The delta method carries it to the parameter scale,
+\(\hat\eta\). The expected information is used when the family writes it
+out, unless <code>method = "newton"</code> is requested; otherwise the observed
+Hessian, which every family has, is used. The delta method carries it to the parameter scale,
 $$\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
       \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right).$$
 Intervals are built symmetrically on the link scale, \(\hat\eta \pm
@@ -198,11 +203,10 @@ would not.</p>
     <div class="section level2">
     <h2 id="restarts-the-fallback-and-the-tie-break">Restarts, the fallback and the tie-break<a class="anchor" aria-label="anchor" href="#restarts-the-fallback-and-the-tie-break"></a></h2>
     <p>Each starting value is tried in turn, and the search stops once two runs
-that converged have reached the best objective found so far, to a relative
-\(10^{-8}\) of the mean negative log-likelihood. A single converged run is
-not taken as the answer because it may be a degenerate stationary point:
-on <code><a href="zero_adjusted.html">zero_adjusted()</a></code> of <code><a href="pig1_distrib.html">pig1_distrib()</a></code> the first start converges at a
-log-likelihood about 97 units below the maximum the other starts reach.
+that converged have reached the best objective found so far, to within
+\(10^{-8}\) times the larger of 1 and the absolute value of the mean
+negative log-likelihood. A single converged run is not taken as the answer
+because it may be a degenerate stationary point.
 Where fewer than two runs converge every start is tried and the best is
 kept. Fisher scoring and Newton's method fall back to BFGS from
 the same starting value when they fail; an optimizer the caller named does

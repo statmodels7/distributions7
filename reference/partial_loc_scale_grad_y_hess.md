@@ -8,8 +8,16 @@ method bodies for a family carrying shape parameters beyond its location
 and scale. The three pairs in \\(\mu, \sigma)\\ come from
 [`loc_scale_theta2_block()`](https://statmodels7.github.io/distributions7/reference/loc_scale_theta2_block.md)
 in closed form, and every pair touching a shape parameter from one
-central difference of the analytic first-order component. Both delegate
-to
+central difference of the first-order component,
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+for the third-order body and
+[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
+for the fourth. In the fourth-order body a pair of shape parameters is
+one stencil on the analytic
+[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md),
+since the shape components of
+[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
+are themselves a difference in the shape. Both delegate to
 [`partial_theta2()`](https://statmodels7.github.io/distributions7/reference/partial_theta2.md),
 which does the splicing.
 
@@ -51,8 +59,8 @@ partial_loc_scale_hess_y_hess(
 
 - scale:
 
-  One of `"parameter"` or `"link"`, applied by the generic before
-  dispatch.
+  One of `"parameter"` or `"link"`. The generic applies the link scale
+  to the value that the method returns.
 
 - ...:
 
@@ -66,10 +74,9 @@ keyed as
 
 ## Details
 
-Registered on the Student t, the pseudo-Huber, the skew normal and the
-skew t. Measured against a numerical Hessian of the response derivative,
-the closed pairs agree to about \\10^{-11}\\ and the differenced ones to
-between \\10^{-7}\\ and \\10^{-6}\\, which is one stencil's accuracy.
+Registered on the two pseudo-Huber parametrizations, the skew normal and
+the skew t. The Student t's methods, documented on this page as well,
+call compiled kernels of their own and do not use these bodies.
 
 ## Notation
 
@@ -93,30 +100,30 @@ for the generics.
 ## Examples
 
 ``` r
-d <- student_t1_distrib()
+d <- skewnormal1_distrib()
 y <- c(-0.7, 0.3, 1.4)
-theta <- list(mu = 0.3, sigma = 1.2, nu = 6)
+theta <- list(mu = 0.3, sigma = 1.2, alpha = 0.7)
 
 g3 <- distrib_grad_y_hess(d, y, theta)
 names(g3)
-#> [1] "mu_mu"       "sigma_sigma" "nu_nu"       "mu_sigma"    "mu_nu"      
-#> [6] "sigma_nu"   
+#> [1] "mu_mu"       "sigma_sigma" "alpha_alpha" "mu_sigma"    "mu_alpha"   
+#> [6] "sigma_alpha"
 vapply(g3, function(z) z[1], numeric(1))
-#>        mu_mu  sigma_sigma        nu_nu     mu_sigma        mu_nu     sigma_nu 
-#> -0.389443959  2.336663756  0.001414536 -0.634612372  0.018751535 -0.011680640 
+#>       mu_mu sigma_sigma alpha_alpha    mu_sigma    mu_alpha sigma_alpha 
+#>  0.03060209  4.59301048  1.09678158 -1.60525989  0.76774711 -1.77660202 
 
 # Against a numerical Hessian of the response gradient. The three pairs in
-# (mu, sigma) are closed and the three touching nu are differenced.
+# (mu, sigma) are closed and the three touching alpha are differenced.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2],
-                                              nu = v[3]))
-numDeriv::hessian(f, c(0.3, 1.2, 6))
-#>             [,1]        [,2]         [,3]
-#> [1,] -0.38944396 -0.63461237  0.018751535
-#> [2,] -0.63461237  2.33666376 -0.011680640
-#> [3,]  0.01875153 -0.01168064  0.001414536
+                                              alpha = v[3]))
+numDeriv::hessian(f, c(0.3, 1.2, 0.7))
+#>             [,1]      [,2]       [,3]
+#> [1,]  0.03060209 -1.605260  0.7677471
+#> [2,] -1.60525989  4.593010 -1.7766020
+#> [3,]  0.76774711 -1.776602  1.0967816
 
 # The closed three are exactly the location-scale block's.
 cl <- distributions7:::loc_scale_theta2_block(d, y, theta, 1L)
 all(vapply(names(cl), function(k) identical(g3[[k]], cl[[k]]), logical(1)))
-#> [1] FALSE
+#> [1] TRUE
 ```

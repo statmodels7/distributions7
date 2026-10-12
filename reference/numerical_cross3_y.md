@@ -3,9 +3,10 @@
 Computes \\\partial^4 \ell / \partial y^3\\ \partial \theta_i\\ by one
 central difference of
 [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
-in each parameter. It is what the default
+in each parameter. The default
 [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md)
-method runs for a continuous family that is not a location family.
+method reaches the same quantity through
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md).
 
 ## Usage
 
@@ -55,7 +56,8 @@ difference. Where that derivative is itself the base class's stencil on
 the log-density, the two differences act on different variables and
 compose into one mixed stencil. The step is chosen by
 [`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md),
-so a parameter near a bound is differenced on the side the bound allows.
+so that both evaluation points of a parameter near a bound stay inside
+its domain.
 
 ## See also
 

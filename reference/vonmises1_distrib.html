@@ -17,7 +17,7 @@ from a Bessel series in place of the quadrature the base class would use."><meta
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,15 +96,13 @@ positive.</p></dd>
     <h2 id="the-parametrization">The parametrization<a class="anchor" aria-label="anchor" href="#the-parametrization"></a></h2>
     <p>The density on \(y \in [-\pi, \pi)\) is
 $$f(y; \mu, \kappa) = \dfrac{e^{\kappa\cos(y-\mu)}}{2\pi I_0(\kappa)},$$
-with \(I_0\) the modified Bessel function of the first kind. This is the
-first family in the package whose support has the topology of a circle: the
-two ends of the interval are the same point, so the density need not vanish
-at either. <code><a href="vonmises2_distrib.html">vonmises2_distrib()</a></code> is the same law parametrized by the mean
+with \(I_0\) the modified Bessel function of the first kind. The support
+has the topology of a circle: the two ends of the interval are the same
+point, so the density need not vanish at either. <code><a href="vonmises2_distrib.html">vonmises2_distrib()</a></code> is the same law parametrized by the mean
 resultant length in place of the concentration.</p>
-<p>The normalizing constant goes through <code><a href="https://statmodels7.github.io/numericals7/reference/log_bessel_i.html" class="external-link">numericals7::log_bessel_i()</a></code>. R's
-exponentially scaled <code>besselI</code> underflows to an exact zero between
-\(\kappa = 10^5\) and \(10^6\), where the logarithm returns <code>-Inf</code>;
-measured at \(\kappa = 10^6\) the toolkit's routine returns 999992.17.</p>
+<p>The normalizing constant goes through <code><a href="https://statmodels7.github.io/numericals7/reference/log_bessel_i.html" class="external-link">numericals7::log_bessel_i()</a></code>, which
+stays finite where R's exponentially scaled <code>besselI</code> returns an exact zero
+(from about \(\kappa = 2 \times 10^5\)).</p>
     </div>
     <div class="section level2">
     <h2 id="score-information-and-orthogonality">Score, information, and orthogonality<a class="anchor" aria-label="anchor" href="#score-information-and-orthogonality"></a></h2>
@@ -113,8 +111,10 @@ measured at \(\kappa = 10^6\) the toolkit's routine returns 999992.17.</p>
 $$\dfrac{\partial\ell}{\partial\mu} = \kappa\sin(y-\mu), \qquad
       \dfrac{\partial\ell}{\partial\kappa} = \cos(y-\mu) - A(\kappa),$$
 and every second derivative is closed form, with
-\(A'(\kappa) = 1 - A(\kappa)/\kappa - A(\kappa)^2\) from the Bessel
-recurrences and no further evaluation. Since
+\(A'(\kappa) = 1 - A(\kappa)/\kappa - A(\kappa)^2\). numericals7 evaluates
+\(A'\) and the higher derivatives of \(A\) from a power series for
+small \(\kappa\), where that identity cancels, and from the identity in
+extended precision or an asymptotic series above. Since
 \(\mathbb{E}[\sin(Y-\mu)] = 0\) by symmetry, <strong>the two parameters are
 orthogonal</strong>: the expected information is diagonal, and Fisher scoring
 updates the direction and the concentration independently.</p>
@@ -152,12 +152,13 @@ infinitely many.</p>
     </div>
     <div class="section level2">
     <h2 id="the-distribution-function">The distribution function<a class="anchor" aria-label="anchor" href="#the-distribution-function"></a></h2>
-    <p>The density has no elementary antiderivative. The base class would
-integrate it once per observation, which measured 4.5 seconds at ten
-thousand points; this class supplies <code><a href="distrib_cdf.VonMises1Distrib.html">distrib_cdf.VonMises1Distrib()</a></code>
-instead, a Fourier series integrated term by term whose term count is
-\(8.5\sqrt{\kappa} + 10\), measured. The <strong>quantile</strong> does come from
-<code><a href="continuous_distrib.html">continuous_distrib()</a></code>, by root finding on that series.</p>
+    <p>The density has no elementary antiderivative. The base class integrates it
+numerically, once per observation; this class supplies
+<code><a href="distrib_cdf.VonMises1Distrib.html">distrib_cdf.VonMises1Distrib()</a></code> instead, a Fourier series integrated term
+by term with \(\max\{20, \lceil 8.5\sqrt{\kappa}\rceil + 10\}\) terms,
+and a quadrature of the tail where the requested tail is below
+\(10^{-6}\). The <strong>quantile</strong> comes from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>, by
+root finding on the logarithm of the smaller tail.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -209,8 +210,8 @@ this one passes; <a href="VonMises1Distrib.html">VonMises1Distrib</a> for the cl
 <span class="r-in"><span><span class="co"># The expected information is diagonal: direction and concentration are</span></span></span>
 <span class="r-in"><span><span class="co"># orthogonal, the sine having mean zero.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>, <span class="va">th</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu    mu_kappa kappa_kappa </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  -1.3955493   0.0000000  -0.1642232 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu kappa_kappa    mu_kappa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -1.3955493  -0.1642232   0.0000000 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The ordinary mean is not the mean direction, the interval being cut at</span></span></span>
 <span class="r-in"><span><span class="co"># plus or minus pi.</span></span></span>

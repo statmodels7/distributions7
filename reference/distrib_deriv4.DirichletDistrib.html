@@ -3,13 +3,15 @@
 closed form, by the same construction as
 distrib_deriv3.DirichletDistrib() one order up: a univariate partition sum
 per coordinate of the simplex, run by chain_univariate() over the arrays
-dirichlet_map_tensors() supplies, plus the direct \(\log\Gamma(\phi)\)
-term on the component all of whose indices name the concentration."><meta property="og:description" content="Computes every fourth derivative of the log-density in the parameters, in
+that dirichlet_map_tensors() supplies, plus the direct
+\(\log\Gamma(\phi)\) term on the component whose indices all name the
+concentration."><meta property="og:description" content="Computes every fourth derivative of the log-density in the parameters, in
 closed form, by the same construction as
 distrib_deriv3.DirichletDistrib() one order up: a univariate partition sum
 per coordinate of the simplex, run by chain_univariate() over the arrays
-dirichlet_map_tensors() supplies, plus the direct \(\log\Gamma(\phi)\)
-term on the component all of whose indices name the concentration."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+that dirichlet_map_tensors() supplies, plus the direct
+\(\log\Gamma(\phi)\) term on the component whose indices all name the
+concentration."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +19,7 @@ term on the component all of whose indices name the concentration."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +56,9 @@ term on the component all of whose indices name the concentration."><meta proper
 closed form, by the same construction as
 <code><a href="distrib_deriv3.DirichletDistrib.html">distrib_deriv3.DirichletDistrib()</a></code> one order up: a univariate partition sum
 per coordinate of the simplex, run by <code><a href="chain_univariate.html">chain_univariate()</a></code> over the arrays
-<code><a href="dirichlet_map_tensors.html">dirichlet_map_tensors()</a></code> supplies, plus the direct \(\log\Gamma(\phi)\)
-term on the component all of whose indices name the concentration.</p>
+that <code><a href="dirichlet_map_tensors.html">dirichlet_map_tensors()</a></code> supplies, plus the direct
+\(\log\Gamma(\phi)\) term on the component whose indices all name the
+concentration.</p>
     </div>
 
 
@@ -81,22 +84,22 @@ coordinate is outside the support and gives a non-finite component through
 
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
 <dd><p>Logical of length 1. When <code>TRUE</code> the expectation is returned,
-by SAMPLING through <code><a href="mv_expected_higher.html">mv_expected_higher()</a></code>. Defaults to <code>FALSE</code>.</p></dd>
+in closed form (see Details). Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, handled by the
-generic before dispatch.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The method
+returns the parameter scale and the generic applies the link scale to its
+result.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored: sampling is the only multivariate route to an
-expectation. Present so that the signature matches the generic's.</p></dd>
+<dd><p>Not read: the expectation is in closed form. Present so that
+the signature matches the generic's.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>The number of draws used when <code>expected = TRUE</code>. Defaults to
-<code>10000</code>. Ignored otherwise.</p></dd>
+<dd><p>Not read. Present so that the signature matches the generic's.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -111,12 +114,12 @@ components. With <code>expected = TRUE</code> every vector is constant.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The license for this order is that the SAME assembly run at orders one and
-two reproduces the hand-written score and information, which are derived
-separately and are already under <code><a href="check_distrib.html">check_distrib()</a></code>. Agreement at the orders
-that can be checked is what authorizes the order that cannot.</p>
-<p>With <code>expected = TRUE</code> the expectation is taken by sampling and carries
-Monte Carlo error of order <code>nsim^(-1/2)</code>.</p>
+    <p>Run at order one, the same assembly reproduces
+<code><a href="distrib_gradient.DirichletDistrib.html">distrib_gradient.DirichletDistrib()</a></code>, which is written separately; on the
+additive log-ratio chart <code><a href="distrib_hessian.DirichletDistrib.html">distrib_hessian.DirichletDistrib()</a></code> calls it at
+order two. The split of \(\log\Gamma(\alpha_j)\) that keeps a small shape
+accurate is described in <code><a href="distrib_deriv3.DirichletDistrib.html">distrib_deriv3.DirichletDistrib()</a></code>.</p>
+<p>With <code>expected = TRUE</code> the expectation is exact, as for the third order.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -144,7 +147,7 @@ generic.</p></div>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">d4</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 15</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against one stencil on the analytic third order.</span></span></span>
+<span class="r-in"><span><span class="co"># Against a central difference of the third order in phi.</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fl">1e-4</span></span></span>
 <span class="r-in"><span><span class="va">tp</span> <span class="op">&lt;-</span> <span class="va">theta</span>; <span class="va">tp</span><span class="op">$</span><span class="va">phi</span> <span class="op">&lt;-</span> <span class="va">tp</span><span class="op">$</span><span class="va">phi</span> <span class="op">+</span> <span class="va">h</span></span></span>
 <span class="r-in"><span><span class="va">tm</span> <span class="op">&lt;-</span> <span class="va">theta</span>; <span class="va">tm</span><span class="op">$</span><span class="va">phi</span> <span class="op">&lt;-</span> <span class="va">tm</span><span class="op">$</span><span class="va">phi</span> <span class="op">-</span> <span class="va">h</span></span></span>
@@ -154,7 +157,6 @@ generic.</p></div>
 <span class="r-in"><span>            <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">h</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        exact      stencil </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.006042767 -0.006042767 </span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

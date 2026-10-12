@@ -1,9 +1,12 @@
 # Fourth-Order Derivatives of a Reparametrized Distribution
 
-The partition sum at order four, observed or expected. This is the
-highest order the toolkit carries, and it is what a marginal criterion's
-exact gradient reads, so a reparametrized family used inside a penalized
-fit reaches it through this method.
+The partition sum at order four, observed or expected. A marginal
+criterion reads this order in its exact Hessian, so a reparametrized
+family used inside a penalized fit reaches it through this method. The
+fifth derivative has no method registered on the reparametrized classes:
+[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
+dispatches to the base method, which differences the lower orders
+numerically.
 
 ## Usage
 
@@ -47,8 +50,8 @@ reparam_deriv4(
 
 - approx:
 
-  The strategy the parent uses for an expected derivative it has no
-  closed form for, one of `"integrate"`, `"bartlett"`, `"mc"` or
+  The strategy that the parent uses for an expected derivative for which
+  it has no closed form, one of `"integrate"`, `"bartlett"`, `"mc"` or
   `"opg"`. Passed straight through.
 
 - nsim:

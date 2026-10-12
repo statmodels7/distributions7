@@ -3,8 +3,9 @@
 Draws `n` independent Cauchy variates by calling
 [`stats::rcauchy()`](https://rdrr.io/r/stats/Cauchy.html), so the draws
 come from R's own generator and depend on `.Random.seed` in the usual
-way. The generalized ratio-of-uniforms fallback the base class supplies
-is bypassed.
+way. The base class would draw by inversion through
+[`distrib_quantile.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.CauchyDistrib.md),
+which gives a different sequence for the same seed.
 
 A sample from this family carries extreme values at a rate that does not
 diminish with `n`, and its running mean does not settle: the sample mean

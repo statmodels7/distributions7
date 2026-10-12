@@ -50,10 +50,7 @@ generates them, rather than written.
 
 ## Registered on
 
-The fourteen families
-[`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
-serves through
-[`loc_deriv_y_k()`](https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.md):
+The fourteen location families on which this function is registered:
 `Gaussian1Distrib`, `Gaussian2Distrib`, `Gaussian3Distrib`,
 `CauchyDistrib`, `LogisticDistrib`, `LaplaceDistrib`, `Laplace2Distrib`,
 `EnetDistrib`, `PseudoHuberDistrib`, `StudentT1Distrib`,

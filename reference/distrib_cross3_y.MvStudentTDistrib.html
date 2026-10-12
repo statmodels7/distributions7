@@ -31,7 +31,7 @@ from mvt_dpieces(): \(N_a\) is one for \(\nu\) and zero otherwise."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,8 +97,9 @@ from <code><a href="mvt_dpieces.html">mvt_dpieces()</a></code>: \(N_a\) is one f
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, handled by the
-generic before dispatch.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The method
+returns the parameter scale and the generic applies the link scale to its
+result.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -131,7 +132,7 @@ parameters this is, and <code><a href="distrib_cross3_y.html">distrib_cross3_y()
 <span class="r-in"><span><span class="va">tm</span> <span class="op">&lt;-</span> <span class="va">theta</span>; <span class="va">tm</span><span class="op">$</span><span class="va">nu</span> <span class="op">&lt;-</span> <span class="fl">6</span> <span class="op">-</span> <span class="va">h</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">c3</span><span class="op">$</span><span class="va">nu</span> <span class="op">-</span> <span class="op">(</span><span class="fu"><a href="distrib_deriv3_y.html">distrib_deriv3_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">tp</span><span class="op">)</span> <span class="op">-</span></span></span>
 <span class="r-in"><span>                 <span class="fu"><a href="distrib_deriv3_y.html">distrib_deriv3_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">tm</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">h</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.882004e-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.89001e-11</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

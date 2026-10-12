@@ -11,7 +11,7 @@ distrib_grad_y() and distrib_hess_y()."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,10 +85,12 @@ distrib_grad_y() and distrib_hess_y()."><meta property="og:image" content="https
     <p>A family whose response enters only as \(y - \mu\) gets these from the
 derivatives it already has in the location, since
 \(\partial^{k}\ell/\partial y^{k} = (-1)^{k}\,
-\partial^{k}\ell/\partial\mu^{k}\); the others take one stencil of the
-requested order on the log-density.</p>
-<p>As with the orders below, a discrete family has no such derivative and the
-generic rejects rather than returning a difference across the lattice.</p>
+\partial^{k}\ell/\partial\mu^{k}\). The other shipped families take them from
+closed forms of their own, and a family defined by its density alone takes
+one stencil of the requested order on the log-density.</p>
+<p>As with the lower orders, a discrete family has no such derivative, and the
+call signals an error instead of returning a difference between support
+points.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

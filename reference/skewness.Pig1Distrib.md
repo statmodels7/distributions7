@@ -4,8 +4,9 @@ Closed form from the cumulants, \\\gamma_1 = \kappa_3/\kappa_2^{3/2}\\
 with \$\$\kappa_2 = \mu + \sigma\mu^2, \qquad \kappa_3 = \mu +
 3\sigma\mu^2 + 3\sigma^2\mu^3.\$\$ This is where the family separates
 from a negative binomial: matched on mean and variance, the
-Poisson-inverse Gaussian is the more skewed of the two, its extra term
-in \\\sigma^2\mu^3\\ having no counterpart there.
+Poisson-inverse Gaussian is the more skewed of the two, the coefficient
+of \\\sigma^2\mu^3\\ in \\\kappa_3\\ being 3 here and 2 for a negative
+binomial with \\\theta = 1/\sigma\\.
 
 ## Arguments
 

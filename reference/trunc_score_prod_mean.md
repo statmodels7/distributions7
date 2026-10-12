@@ -7,8 +7,10 @@ adds it to
 [`trunc_hess_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_hess_mean.md)
 where the cdf route is unavailable, and
 [`trunc_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/trunc_expected_hessian.md)
-uses it whatever the parent is, the expected Hessian being
-\\-\mathrm{Cov}\_T(s_i, s_j)\\.
+uses it for a parent without a scalar route, the expected Hessian being
+\\-\mathrm{Cov}\_T(s_i, s_j)\\. For a parent with a scalar route, the
+sums \\S\_{ij}\\ come from
+[`trunc_route_parts()`](https://statmodels7.github.io/distributions7/reference/trunc_route_parts.md).
 
 ## Usage
 

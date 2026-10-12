@@ -4,7 +4,7 @@ Draws `n` independent lognormal variates by calling
 [`stats::rlnorm()`](https://rdrr.io/r/stats/Lognormal.html) at
 `meanlog = mu` and `sdlog = sqrt(sigma2)`, so the draws come from R's
 own generator and depend on `.Random.seed` in the usual way. The
-ratio-of-uniforms fallback the base class supplies is bypassed.
+inverse-transform fallback of the base class is not used.
 
 ## Arguments
 
@@ -30,7 +30,8 @@ ratio-of-uniforms fallback the base class supplies is bypassed.
 
 ## Value
 
-A numeric vector of `n` strictly positive draws.
+A numeric vector of `n` non-negative draws. When \\\mu\\ is very
+negative a draw can underflow to 0.
 
 ## See also
 

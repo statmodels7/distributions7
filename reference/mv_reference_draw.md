@@ -1,10 +1,10 @@
 # A Proposal for Integrating a Multivariate Density
 
-Draws from a distribution that DOMINATES the family, together with the
-log-density of those draws, so that an importance-sampling estimate of
-\\\int f = 1\\ can be formed. It is consumed by
+Draws from a distribution that dominates the family, and returns the
+log-density of the draws under that distribution, so that the
+importance-sampling estimate of \\\int f = 1\\ can be formed.
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-and by nothing else, a discrete family taking the exact sum over
+is its only consumer; a discrete family takes the exact sum over
 [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md)
 instead.
 
@@ -31,35 +31,35 @@ mv_reference_draw(distrib, theta, n, ...)
 
 - ...:
 
-  Passed to methods. No shipped method reads it.
+  Passed to methods. The shipped methods do not read it.
 
 ## Value
 
 A named list with `y`, an \\n \times p\\ numeric matrix of draws, and
 `logd`, a numeric vector of length \\n\\ holding their log-density under
-the PROPOSAL.
+the proposal.
 
-## Why the proposal is inflated
+## The default proposal
 
-The default is a gaussian with the family's mean and TWICE its
-covariance, which serves any family supported on all of
-\\\mathbb{R}^p\\. The inflation is load-bearing: a proposal equal to the
-distribution itself makes every importance ratio one, so the estimate is
-one by construction and certifies nothing.
+The method of the class draws from a gaussian with the family's mean and
+twice its covariance, which requires a finite, non-singular covariance.
+The inflation keeps the estimate informative: for a gaussian family, a
+proposal equal to the family makes every importance ratio one.
 
-## A family on a lower-dimensional support must override
+## Families with a proposal of their own
 
 A Dirichlet lives on the simplex, a set of measure zero in
-\\\mathbb{R}^p\\, and a gaussian proposal spread over the ambient space
-places no mass on it. The failure is QUIET:
-[`chol()`](https://rdrr.io/r/base/chol.html) accepts the singular
-covariance, and the estimate of an integral that is 1 comes back at
-\\2\times10^{-8}\\. The Dirichlet therefore registers the uniform on the
-simplex, whose density is the constant \\\Gamma(p)\\.
+\\\mathbb{R}^p\\, where a gaussian spread over the ambient space places
+no mass; its covariance is singular, and the estimate from the default
+proposal is far from one. The Dirichlet registers the uniform
+distribution on the simplex, whose density is the constant
+\\\Gamma(p)\\. A Student t has no finite covariance at \\\nu \le 2\\,
+and its tails are heavier than a gaussian's at every \\\nu\\; it
+registers a Student t with half its degrees of freedom and twice its
+scale matrix.
 
-The draws and the log-density must be taken against the SAME dominating
-measure the family's density is written against, or the ratio means
-nothing.
+The draws and their log-density are taken against the dominating measure
+with respect to which the family's density is written.
 
 ## Notation
 
@@ -71,9 +71,11 @@ gamma function.
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md),
 the only consumer,
 [`mv_reference_draw.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.multivariate_distrib.md)
-for the default, and
+for the default,
+[`mv_reference_draw.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.MvStudentTDistrib.md)
+for the Student t's, and
 [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md),
-the exact route a discrete family takes.
+the exact route of a discrete family.
 
 ## Examples
 
@@ -96,8 +98,8 @@ r <- mv_reference_draw(d, theta, 20000)
 mean(exp(distrib_pdf(d, r$y, theta, log = TRUE) - r$logd))
 #> [1] 0.992289
 
-# A Dirichlet lives on the simplex and registers its own proposal, the
-# uniform there.
+# A Dirichlet registers its own proposal, the uniform distribution on the
+# simplex.
 dd <- dirichlet_distrib(3)
 thd <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)
 set.seed(3)

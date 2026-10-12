@@ -1,7 +1,11 @@
 # Shared Argument Handling for the Derivative Generics
 
 Aligns `theta`, checks that every parameter has length 1 or \\n\\, and
-recycles a scalar `y` up to \\n\\ when `theta` is vectorized.
+recycles a scalar `y` up to \\n\\ when `theta` is vectorized. A constant
+of the family that varies by observation (a binomial's vector `size`,
+its parents' included) enters \\n\\ too: the response and the parameters
+must then have length 1 or the length of that constant, and any other
+length signals an error.
 
 ## Usage
 

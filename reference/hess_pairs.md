@@ -28,8 +28,8 @@ order to combine the parent's score with its Hessian. Splitting the
 string on `"_"` is the obvious way and it is wrong: a parameter whose
 own name contains an underscore (`"log_scale"`) makes
 `"log_scale_log_scale"` split into four pieces, and taking the first and
-the last silently yields `c("log", "scale")`. Building the map from the
-parameter vector cannot be fooled.
+the last silently yields `c("log", "scale")`. The map is built from the
+parameter vector, so it does not depend on the characters in the names.
 
 [`deriv_indices()`](https://statmodels7.github.io/distributions7/reference/deriv_indices.md)
 is the same idea for orders above two.

@@ -41,7 +41,7 @@ mean, the distribution being right skewed at every parameter value.
 
 ## Value
 
-A numeric vector of quantiles in \\\[0, \infty)\\, of length
+A numeric vector of quantiles in \\\[0, \infty\]\\, of length
 `max(length(p), length(mu))`.
 
 ## See also

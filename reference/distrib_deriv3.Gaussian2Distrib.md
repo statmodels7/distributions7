@@ -8,7 +8,7 @@ with respect to \\\mu\\ and \\v = \sigma^2\\, in closed form. Writing
 `expected = TRUE` the expectations are returned, obtained by replacing
 \\r\\ with 0 and \\r^2\\ with \\v\\: the component odd in \\r\\ vanishes
 and \\\ell^{(vvv)}\\ becomes \\2/v^3\\. Both routes are closed form, so
-no quadrature is run and `approx` and `nsim` are ignored.
+the method uses no quadrature and ignores `approx` and `nsim`.
 
 ## Arguments
 
@@ -55,8 +55,8 @@ no quadrature is run and `approx` and `nsim` are ignored.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -78,8 +78,8 @@ for the order below and
 [`distrib_deriv4.Gaussian2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Gaussian2Distrib.md)
 for the order above;
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
-for the generic and for the numerical route a family without a closed
-form takes.
+for the generic and for the numerical route that a family without a
+closed form uses.
 
 ## Examples
 

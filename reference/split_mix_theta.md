@@ -2,9 +2,9 @@
 
 Separates a full `theta` into the parent distribution's parameters and
 the single mixing parameter the wrapper adds. Both zero wrappers append
-their parameter LAST, so the split is positional and needs no name
-matching, which keeps it correct for a parent whose own parameter
-happens to be called `zi` or `pi`.
+their parameter last, so the split is positional and uses no parameter
+names. The constructors reject a parent that already has a parameter
+with the wrapper's name (`zi` or `za`).
 
 ## Usage
 
@@ -16,8 +16,8 @@ split_mix_theta(distrib, theta)
 
 - distrib:
 
-  A `ZeroInflatedDistrib` or a zero-adjusted object, whose
-  `parent_distrib` supplies the names of the first block.
+  A `ZeroInflatedDistrib` or a zero-adjusted object, whose `n_params`
+  gives the position of the wrapper's parameter.
 
 - theta:
 

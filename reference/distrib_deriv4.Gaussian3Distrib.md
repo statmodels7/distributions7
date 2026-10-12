@@ -55,14 +55,14 @@ are all without effect.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
 A named list of five numeric vectors, `mu_mu_mu_mu`, `mu_mu_mu_tau`,
 `mu_mu_tau_tau`, `mu_tau_tau_tau` and `tau_tau_tau_tau`, each of length
-`length(y)`. Only the last is non-zero.
+`max(length(y), length(mu), length(tau))`. Only the last is non-zero.
 
 ## Notation
 
@@ -108,7 +108,7 @@ lapply(d4, unique)
 -3 / 0.25^4
 #> [1] -768
 
-# Free of the response, so asking for the expectation changes nothing.
+# Free of the response, so expected = TRUE changes nothing.
 identical(d4, distrib_deriv4(d, y, th, expected = TRUE))
 #> [1] TRUE
 

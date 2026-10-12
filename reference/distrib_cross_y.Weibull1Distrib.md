@@ -22,7 +22,8 @@ identity and reduces to \\\sigma^2 w/(\mu y)\\ with \\w =
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 - ...:
 

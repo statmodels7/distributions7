@@ -7,15 +7,16 @@ a **second** difference of the family's own
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 rather than a difference of the third order, or, for a family without
 its own Hessian, one tensor-product stencil on its score or its
-log-density. On both routes each parameter is differenced once, so the
+log-density. On both routes each component is a single stencil, so the
 package's rule against nesting one difference inside another holds.
 Expected ones come from
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-at the strategy `approx` names.
+at the strategy that `approx` names.
 
-As at the order below, no family shipped in this package reaches it.
-Being a second difference it is the least accurate route the package
-offers, and its step is chosen accordingly.
+As at the order below, the families shipped in this package write the
+fourth order out themselves. A second difference of the Hessian is less
+accurate than the first difference of the third order, and its step is
+chosen accordingly.
 
 ## Arguments
 

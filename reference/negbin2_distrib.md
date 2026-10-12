@@ -3,9 +3,10 @@
 Builds the distribution object for the negative binomial family on the
 non-negative integers in the NB2 parametrization: the mean \\\mu \> 0\\
 and a dispersion \\\theta \> 0\\, so that \\\operatorname{Var}(Y) =
-\mu + \mu^2/\theta\\. This is the count model a regression reaches for
-when a Poisson is overdispersed. The returned object carries closed-form
-derivatives of the log-mass to fourth order and closed-form moments.
+\mu + \mu^2/\theta\\. It is a standard count model for data that are
+overdispersed relative to a Poisson. The returned object carries
+closed-form derivatives of the log-mass to fourth order and closed-form
+moments.
 
 The two arguments choose the links that carry each parameter to the
 unconstrained scale an optimizer works on. Both default to the
@@ -85,22 +86,20 @@ orthogonal.
 
 The family tends to the Poisson as \\\theta\\ grows, so every derivative
 in \\\theta\\ vanishes there and is written as a sum of terms that
-cancel to leading order. The score and the observed Hessian are computed
-in forms that perform those cancellations symbolically, and are reliable
-throughout; the direct expression for the score is wrong by one part in
-a thousand at \\\theta = 10^6\\ and changes sign at \\10^8\\. Two
-quantities are **not** rewritten, and both pages say so:
-
-- the expected information in \\\theta\\, which is measured positive
-  from about \\\theta = 10^6\\ and so is unusable there
-  ([`distrib_expected_hessian.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin2Distrib.md));
-
-- the third and fourth derivatives in \\\theta\\
-  ([`distrib_deriv3.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin2Distrib.md),
-  [`distrib_deriv4.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.NegBin2Distrib.md)).
-
-A fit reaches that regime routinely, a nearly equidispersed sample
-driving \\\theta\\ towards its boundary.
+cancel to leading order. The score, the observed Hessian, the expected
+information in \\\theta\\ and the third and fourth derivatives in
+\\\theta\\, observed and expected, are computed in forms that perform
+those cancellations symbolically
+([`distrib_gradient.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin2Distrib.md),
+[`distrib_expected_hessian.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin2Distrib.md),
+[`distrib_deriv3.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin2Distrib.md)).
+As \\\theta\\ goes to zero the derivatives in the mean cancel in the
+same way, and their brackets are written so that they keep full relative
+accuracy
+([`distrib_hessian.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.NegBin2Distrib.md)).
+A fit reaches the large-\\\theta\\ regime when the sample is nearly
+equidispersed, since the estimate of \\\theta\\ then grows towards the
+boundary of its domain.
 
 ## Estimation
 
@@ -109,7 +108,7 @@ maximizes the log-likelihood on the link scale. The mean has the
 closed-form estimate \\\hat\mu = \bar y\\; the dispersion solves an
 equation in digamma functions and is reached numerically. The method of
 moments supplies the starting value \\\bar y^2/(s^2 - \bar y)\\, with
-\\s^2\\ the sample variance.
+\\s^2\\ the sample variance, or \\10^3\\ when \\s^2 \le \bar y\\.
 
 ## Notation
 

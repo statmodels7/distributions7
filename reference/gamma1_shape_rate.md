@@ -1,4 +1,4 @@
-# The Shape and Rate a Mean and Dispersion Imply
+# Shape and Rate of the Gamma from Its Mean and Dispersion
 
 Converts the `gamma1` parameters to the shape and rate
 [`stats::dgamma()`](https://rdrr.io/r/stats/GammaDist.html) takes: \\a =
@@ -31,4 +31,4 @@ arithmetic produces.
 [`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md)
 for the family and
 [`distrib_pdf.Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gamma1Distrib.md)
-for the density this feeds.
+for the density that uses it.

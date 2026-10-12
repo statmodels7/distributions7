@@ -7,9 +7,9 @@ e^{-y/2}}{2^{\mu/2}\\\Gamma(\mu/2)}, \qquad y \> 0,\$\$ by calling
 [`dchisq()`](https://rdrr.io/r/stats/Chisquare.html) and stays finite
 where the density itself underflows.
 
-The density is unbounded at the origin for \\\mu \< 2\\, flat there at
-\\\mu = 2\\, where the family is the exponential with mean 2, and
-vanishes at the origin for \\\mu \> 2\\.
+The density is unbounded at the origin for \\\mu \< 2\\, equals 1/2
+there at \\\mu = 2\\, where the family is the exponential with mean 2,
+and vanishes at the origin for \\\mu \> 2\\.
 
 ## Arguments
 
@@ -21,8 +21,8 @@ vanishes at the origin for \\\mu \> 2\\.
 - y:
 
   A numeric vector of observations. The support is \\(0, \infty)\\; a
-  value at or below zero gives 0, `Inf` or a finite value according to
-  \\\mu\\.
+  negative value gives 0, and the value 0 gives `Inf`, 1/2 or 0
+  according as \\\mu\\ is below, equal to or above 2.
 
 - theta:
 

@@ -47,8 +47,9 @@ An object of class `kink_spec` carrying the four fields.
 
 ## Details
 
-The five compositions and the order each one leaves, measured as the
-first derivative that jumps across \\v = 0\\:
+The five compositions and the order each one leaves, which is the number
+of continuous derivatives at \\v = 0\\, one less than the order of the
+first derivative that jumps there:
 
 |            |                     |       |
 |------------|---------------------|-------|

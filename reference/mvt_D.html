@@ -13,7 +13,7 @@ first order, so below \(\lvert u\rvert = 10^{-3}\) the expansion
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,10 +75,10 @@ below \(-1\) are outside the domain of the logarithm and give <code>NaN</code> f
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The argument \(u\) is the squared Mahalanobis distance divided by the
-degrees of freedom, so it is small exactly where the family is close to the
-gaussian or the observation is close to the location, so it is the ordinary
-case and not an edge one. Taken directly at \(u = 10^{-8}\) the difference
-loses about nine significant figures.</p>
+degrees of freedom. It is small when the family is close to the gaussian or
+when the observation is close to the location, so small values of \(u\) are
+the ordinary case. Evaluated directly at \(u = 10^{-8}\), the difference
+keeps about eight significant figures.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -89,7 +89,8 @@ location and \(\nu\) the degrees of freedom.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="mvt_A.html">mvt_A()</a></code> and <code><a href="mvt_T.html">mvt_T()</a></code> for the other two cancellations, and
+    <div class="dont-index"><p><code><a href="mvt_A.html">mvt_A()</a></code> for the part of the score without the data, <code><a href="mvt_h_d.html">mvt_h_d()</a></code>
+for the higher derivatives of the data term, and
 <code><a href="distrib_gradient.MvStudentTDistrib.html">distrib_gradient.MvStudentTDistrib()</a></code> for the consumer.</p></div>
     </div>
 

@@ -1,9 +1,9 @@
 # Expected Information of a Multivariate Distribution, by Sampling
 
-The fallback for a multivariate family with no closed form: the
-expectation of the observed Hessian, taken over a sample drawn from the
-family. All four shipped families register their own closed forms, so
-this runs only for a family written elsewhere.
+The fallback for a multivariate family without a closed form: an average
+over a sample drawn from the family. Every shipped multivariate class
+registers its own closed form, so this method runs only for a family
+written elsewhere.
 
 ## Arguments
 
@@ -11,7 +11,7 @@ this runs only for a family written elsewhere.
 
   A
   [`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
-  object with no closed form of its own.
+  object without a closed form of its own.
 
 - y:
 
@@ -24,19 +24,18 @@ this runs only for a family written elsewhere.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the result of the method.
 
 - approx:
 
-  One of `"bartlett"` (the default, equivalently `"opg"`) or `"mc"`.
-  `"integrate"` is not available here and falls through to sampling.
+  One of `"opg"` (the default), `"bartlett"` or `"mc"`; the first two
+  are the same computation here. `"integrate"` signals an error.
 
 - nsim:
 
   The Monte Carlo sample size. Defaults to `10000`. The error falls as
-  its square root, so ten times the accuracy costs a hundred times the
-  draws.
+  its square root.
 
 - ...:
 
@@ -48,39 +47,41 @@ A named list of numeric vectors of length \\n\\, keyed as
 [`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
 each vector constant.
 
-## Why the one-dimensional routes do not survive
+## The routes
 
-[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)'s
-`"integrate"` splits a one-dimensional integral at quantiles, and there
-are no quantiles here; `"bartlett"` would need the score's own higher
-derivatives assembled over a \\p\\-dimensional partition sum. What is
-left is sampling, and both admissible values of `approx` route to it.
+The `"integrate"` route of
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
+splits a one-dimensional integral at quantiles, and a multivariate
+family has no quantiles, so `approx = "integrate"` signals an error. The
+other values sample: `"opg"` and `"bartlett"` are the same computation
+here, the average of the negative outer product of the score, and `"mc"`
+averages the observed Hessian. The two averages agree in expectation by
+the second Bartlett identity and differ by sampling error at any finite
+`nsim`.
 
-## The result is a sample, not an integral
+## Monte Carlo error
 
-It carries Monte Carlo error of order `nsim^(-1/2)`, and two calls under
-different seeds give two answers. Set a seed before calling if the
-result must be reproducible, and expect a fit that inverts this matrix
-to move with it. `"bartlett"` averages the outer product of the score
-and `"mc"` averages the observed Hessian; the two agree in expectation
-by the second Bartlett identity, and differ by sampling error at any
-finite `nsim`.
+The result carries Monte Carlo error of order `nsim^(-1/2)`, and two
+calls under different seeds give different values. A seed set before the
+call makes the result reproducible, and a fit that inverts this matrix
+moves with it.
 
 ## See also
 
 [`distrib_expected_hessian.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvGaussianDistrib.md)
 and
 [`distrib_expected_hessian.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvStudentTDistrib.md)
-for the closed forms,
+for two closed forms,
 [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md),
-which says which route a family takes, and
+which reports whether a family has a closed form, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 for the generic.
 
 ## Examples
 
 ``` r
-# Every shipped family overrides, so reach the fallback directly.
+# Every shipped family has its own method, so the fallback is called
+# directly.
 d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5)
@@ -108,7 +109,7 @@ round(rbind(sampled = vapply(sampled, function(z) z[1], numeric(1)),
 #> sampled                   0.006
 #> closed                    0.000
 
-# Two seeds give two answers, this being a sample.
+# Two seeds give two values, the result being a sample.
 set.seed(2)
 again <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
               approx = "mc", nsim = 4000)

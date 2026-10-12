@@ -1,8 +1,9 @@
 # Where the Kink Sits on the Response Scale
 
 Solves \\v(y, \theta) = 0\\ for `y`, which is where the log-density is
-not smooth. Returns `NA` when no sign change is bracketed inside the
-support.
+not smooth. The search runs over the support, cut to \\\[-1000, 1000\]\\
+on a side whose bound is infinite, and returns `NA` when no sign change
+is bracketed there.
 
 ## Usage
 

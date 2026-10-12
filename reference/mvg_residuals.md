@@ -1,11 +1,9 @@
-# Residuals and Whitened Residuals of a Multivariate Gaussian
+# Residuals of a Multivariate Gaussian and Their Image Under the Precision
 
 Computes the centered response \\r_i = y_i - \mu\\ and its image under
-the inverse covariance, \\w_i = \Sigma^{-1} r_i\\. Every derivative of a
-multivariate gaussian is written in those two: the score in the mean is
-\\w\\, the quadratic form of the log-density is \\r^\top w\\, and the
-matrix components are quadratic forms \\w^\top A w\\. Forming them once
-per call is what keeps a component from re-solving the same system.
+the inverse covariance, \\w_i = \Sigma^{-1} r_i\\. The score in the mean
+is \\w\\, the response gradient is \\-w\\, and the derivatives in the
+matrix are quadratic forms in \\r\\. Both are formed once per call.
 
 ## Usage
 
@@ -45,7 +43,7 @@ for the argument, and
 [`distrib_gradient.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvGaussianDistrib.md)
 and
 [`distrib_hessian.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MvGaussianDistrib.md)
-for the consumers.
+for consumers.
 
 ## Examples
 
@@ -71,7 +69,7 @@ all.equal(rowSums(res$r * res$w),
           mahalanobis(y, pc$mu, pc$sigma))
 #> [1] TRUE
 
-# And the score in the mean is w itself, one row per observation.
+# The score in the mean is w itself, one row per observation.
 g <- distrib_gradient(d, y, theta)
 all.equal(cbind(g$mu1, g$mu2), res$w, check.attributes = FALSE)
 #> [1] TRUE

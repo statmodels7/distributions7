@@ -56,7 +56,9 @@ Both routes are closed form, so `approx` and `nsim` are ignored.
 ## Value
 
 A named list of one numeric vector, `mu_mu_mu_mu`, of length
-`max(length(y), length(mu), length(distrib@size))`.
+`max(length(y), length(mu), length(distrib@size))`. Each of `y`, `mu`
+and `size` must have length 1 or that length; any other length signals
+an error.
 
 ## Notation
 

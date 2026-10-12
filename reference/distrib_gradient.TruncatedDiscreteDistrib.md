@@ -24,8 +24,8 @@ being exact sums themselves.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, applied by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - ...:
 

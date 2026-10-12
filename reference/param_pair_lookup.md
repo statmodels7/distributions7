@@ -1,12 +1,12 @@
 # Where Each Pair of Free Values Sits in a Parametrization's Second Derivatives
 
 Builds a lookup from a pair of free-value positions to the position of
-the matching component of
-[`parameters7::param_d2()`](https://statmodels7.github.io/parameters7/reference/param_d2.html).
-A Hessian method walks the unordered pairs of the distribution's own
-parameters and has to find, for each matrix pair, the second derivative
-array that belongs to it; the two enumerations are not the same, because
-the distribution's parameters carry the mean components in front.
+the matching component of the parametrization's second derivative arrays
+(`param_d2()`, `param_inv_d2()` and `param_d2logdet()` share the
+enumeration). A Hessian method walks the unordered pairs of the
+distribution's own parameters and finds, for each matrix pair, the array
+that belongs to it; the two enumerations are not the same, because the
+distribution's parameters carry the mean components in front.
 
 ## Usage
 

@@ -31,10 +31,10 @@ FisherScoring(
 - approx:
 
   How the expectation is approximated when the family has no closed-form
-  expected information: one of `"bartlett"`, `"integrate"`, `"mc"` or
-  `"opg"`. Ignored by a family that has one, and
+  expected information: one of `"opg"`, `"bartlett"`, `"integrate"` or
+  `"mc"`. Ignored by a family that has one, and
   [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-  rejects the call in that case.
+  rejects any value other than the default `"opg"` in that case.
 
 - nsim:
 
@@ -43,13 +43,15 @@ FisherScoring(
 
 - criterion:
 
-  A stopping rule from optimizers7, or `NULL` to take the default of
-  [`optimizers7::newton()`](https://statmodels7.github.io/optimizers7/reference/newton.html).
+  A stopping rule from optimizers7, or `NULL` to take
+  [`optimizers7::crit_grad()`](https://statmodels7.github.io/optimizers7/reference/crit_grad.html)
+  at its default tolerance.
 
 - maxit:
 
-  An iteration limit, a single positive number, or `NULL` for the same
-  default.
+  An iteration limit, a single positive number, or `NULL` for the
+  default of
+  [`optimizers7::newton()`](https://statmodels7.github.io/optimizers7/reference/newton.html).
 
 ## Value
 

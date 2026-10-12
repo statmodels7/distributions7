@@ -7,8 +7,7 @@ It changes sign at \(y = \mu - 2\), which is the mode of the density for
 \(\mu &amp;gt; 2\). At \(\mu = 2\) the first term drops out and the derivative
 is the constant \(-1/2\) of an exponential with mean 2; below \(\mu =
 2\) the density has no interior mode and the derivative is negative
-throughout.
-Quantile residuals and the mixed derivatives of distrib_cross_y() read it."><meta property="og:description" content="Computes the first derivative of the chi-squared log-density with respect to
+throughout."><meta property="og:description" content="Computes the first derivative of the chi-squared log-density with respect to
 the response, in closed form:
 $$\dfrac{\partial \ell}{\partial y} = \dfrac{\mu/2 - 1}{y}
       - \dfrac{1}{2}.$$
@@ -16,8 +15,7 @@ It changes sign at \(y = \mu - 2\), which is the mode of the density for
 \(\mu &amp;gt; 2\). At \(\mu = 2\) the first term drops out and the derivative
 is the constant \(-1/2\) of an exponential with mean 2; below \(\mu =
 2\) the density has no interior mode and the derivative is negative
-throughout.
-Quantile residuals and the mixed derivatives of distrib_cross_y() read it."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+throughout."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +23,7 @@ Quantile residuals and the mixed derivatives of distrib_cross_y() read it."><met
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +65,6 @@ It changes sign at \(y = \mu - 2\), which is the mode of the density for
 is the constant \(-1/2\) of an exponential with mean 2; below \(\mu =
 2\) the density has no interior mode and the derivative is negative
 throughout.</p>
-<p>Quantile residuals and the mixed derivatives of <code><a href="distrib_cross_y.html">distrib_cross_y()</a></code> read it.</p>
     </div>
 
 
@@ -81,7 +78,9 @@ throughout.</p>
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric vector of strictly positive observations. At <code>y = 0</code> the
-value is infinite unless \(\mu\) is exactly 2.</p></dd>
+value is <code>-Inf</code> for \(\mu &lt; 2\), <code>Inf</code> for \(\mu &gt; 2\) and \(-1/2\)
+for \(\mu = 2\), where the term in \(1/y\) has a zero coefficient
+and is dropped.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>

@@ -1,4 +1,4 @@
-# The Kink a Family Carries
+# The Kink of a Family
 
 The one non-smooth piece of a log-density, as the composition
 \\c(\theta)\\\phi(v(y,\theta))\\ of
@@ -27,9 +27,14 @@ or `NULL` when the family is smooth.
 
 ## Details
 
-Three families declare one, all for the same reason – an absolute value
-of the residual in the log-density – and every other family inherits the
-base method, which returns `NULL`.
+Three families declare one
+([`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md),
+[`laplace2_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md)
+and
+[`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md)),
+all for the same reason: an absolute value of the residual in the
+log-density. Every other family inherits the base method, which returns
+`NULL`.
 
 A wrapper does not propagate the declaration today, so a wrapper of a
 kinked family returns `NULL` here while `params_smooth` still records
@@ -47,7 +52,7 @@ for the order deduced from it,
 [`check_kink()`](https://statmodels7.github.io/distributions7/reference/check_kink.md)
 for the validator, and
 [`param_smoothness()`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md)
-for the logical this generalises.
+for the logical that this generalizes.
 
 ## Examples
 

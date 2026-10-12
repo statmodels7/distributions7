@@ -46,9 +46,13 @@ The mass on \\y \in \\0, 1\\\\ is \$\$P(Y = y; \mu) =
 \mu^{y}(1-\mu)^{1-y},\$\$ with \\\mu \in (0, 1)\\. The mean is \\\mu\\,
 the variance \\\mu(1-\mu)\\, the skewness \\(1-2\mu)/\sqrt{\mu(1-\mu)}\\
 and the excess kurtosis \\(1 - 6\mu(1-\mu))/(\mu(1-\mu))\\. The family
-has no dispersion parameter: fixing the mean fixes the variance, which
-is why overdispersion in binary data has to come from elsewhere, most
-often from a random effect or from grouping.
+has no dispersion parameter: the mean fixes the variance, so a single
+binary response cannot be overdispersed. Overdispersion arises in
+grouped counts, for which
+[`binomial_distrib()`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md)
+and
+[`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
+are the families, or through a random effect or other clustering.
 
 ## The canonical link
 
@@ -57,9 +61,11 @@ once \\\eta = \log(\mu/(1-\mu))\\ is the parameter. The logit is
 therefore the canonical link, and on its scale \$\$\dfrac{\partial
 \ell}{\partial \eta} = y - \mu, \qquad \dfrac{\partial^2 \ell}{\partial
 \eta^2} = -\mu(1-\mu).\$\$ The second carries no data, so the observed
-and the expected information coincide. Under a probit or a complementary
-log-log link they do not, and the choice between Fisher scoring and
-Newton's method becomes a real one.
+and the expected information coincide in exact arithmetic (the computed
+observed value loses accuracy at large \\\|\eta\|\\; see
+[`distrib_hessian.BernoulliDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BernoulliDistrib.md)).
+Under a probit or a complementary log-log link they do not, and the
+choice between Fisher scoring and Newton's method becomes a real one.
 
 ## Derivatives
 
@@ -68,15 +74,14 @@ On the parameter scale, \$\$\dfrac{\partial \ell}{\partial \mu} =
 \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2},\$\$ with
 expectations \\0\\ and \\-1/(\mu(1-\mu))\\. The information is the
 reciprocal of the variance, so it is smallest at \\\mu = 1/2\\ and grows
-without bound towards either endpoint: a near-certain outcome is very
-informative about its own probability.
+without bound towards either endpoint.
 
 ## Estimation
 
 The maximum likelihood estimate is the sample proportion, \\\hat\mu =
-\bar y\\, in closed form. A sample of all zeros or all ones drives the
-estimate to the boundary, where the logit is infinite; that is
-separation, and it is a property of the data.
+\bar y\\, in closed form. A sample of all zeros or all ones puts the
+estimate on the boundary of \\(0, 1)\\, where the logit is infinite, so
+under the default link the estimate on the link scale does not exist.
 
 ## Notation
 

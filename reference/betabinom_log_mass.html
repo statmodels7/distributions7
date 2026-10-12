@@ -13,7 +13,7 @@ made from the shapes alone, so it is deterministic and costs one comparison."><m
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,10 +93,8 @@ $$\log\Gamma(\alpha+y) - \log\Gamma(\alpha) =
       \sum_{j=0}^{y-1}\log(\alpha+j),$$
 and the mass follows from three such sums, none of which forms a quantity
 larger than \(n\log(\alpha+\beta)\). The sums also give the binomial limit
-correctly as the shapes grow at a fixed ratio: measured at \(n = 10\),
-\(y = 3\) and \(\alpha/(\alpha+\beta) = 0.4\), the log-mass agrees with
-the binomial one to twelve figures at a concentration of \(10^{14}\),
-where the beta-function route is wrong in the third decimal.</p>
+correctly as the shapes grow at a fixed ratio, where the beta-function
+route loses one digit per factor of ten in the concentration.</p>
 <p>The cost is \(O(n)\) in the size, which is why the route is taken only
 where it is needed.</p>
     </div>

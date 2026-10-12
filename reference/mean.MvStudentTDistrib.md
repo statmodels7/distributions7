@@ -1,13 +1,15 @@
 # Mean of a Multivariate Student t
 
 Returns \\\mathbb{E}\[Y\] = \mu\\ for \\\nu \> 1\\, and a vector of
-`NaN` otherwise. Below one degree of freedom the defining integral does
-not converge: the density decays like \\\lVert y\rVert^{-(\nu+p)}\\ and
-the first absolute moment integrates \\\lVert y\rVert^{1-\nu-p}\\ over a
-shell of surface \\\lVert y\rVert^{p-1}\\, which is finite only for
-\\\nu \> 1\\. The location is a parameter and the mean is a moment; at
-\\\nu \le 1\\ the first exists and the second does not, so `NaN` is the
-answer and \\\mu\\ would be the wrong one.
+`NaN` otherwise. For one degree of freedom or fewer the defining
+integral does not converge: the density decays like \\\lVert
+y\rVert^{-(\nu+p)}\\ and the first absolute moment integrates \\\lVert
+y\rVert^{1-\nu-p}\\ over a shell of surface \\\lVert y\rVert^{p-1}\\,
+which is finite only for \\\nu \> 1\\. The location \\\mu\\ is a
+parameter and exists at every \\\nu\\, while the mean is a moment; for
+\\\nu \le 1\\ this method returns `NaN` and
+[`mv_location.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_location.MvStudentTDistrib.md)
+returns \\\mu\\.
 
 ## Arguments
 
@@ -51,7 +53,7 @@ mean(d, theta)
 #>  0.5 -0.3 
 
 # Below one degree of freedom the mean does not exist, while the location
-# and the density both do.
+# and the density do.
 t2 <- theta; t2$nu <- 0.8
 mean(d, t2)
 #>  v1  v2 

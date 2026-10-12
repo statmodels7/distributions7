@@ -13,7 +13,7 @@ Nothing is differenced and nothing is integrated: the sum is exact."><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@ Nothing is differenced and nothing is integrated: the sum is exact.</p>
 <dt id="arg-q">q<a class="anchor" aria-label="anchor" href="#arg-q"></a></dt>
 <dd><p>A numeric vector of quantiles. Each is handled separately, the
 support being walked from the lower bound up to it, so the cost grows with
-the largest quantile asked for.</p></dd>
+the largest requested quantile.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -91,18 +91,28 @@ the natural scale. <code><a href="cdf_tail_scale.html">cdf_tail_scale()</a></cod
 integral exchange and
 $$\frac{\partial^I F(q)}{F(q)}
       = \mathbb{E}\!\left[\frac{\partial^I f}{f} \;\middle|\; Y \le q\right],$$
-a partial expectation of exactly the quantity the Bartlett lemma expands: the
+a partial expectation of exactly the quantity that the Bartlett lemma expands: the
 score at first order, and \(\ell^{(ij)} + \ell^{(i)}\ell^{(j)}\) at second.
 For a discrete family that conditional expectation is a finite sum whenever
 the support has a finite lower bound, which the discrete class requires, so
 the identity is used as it stands.</p>
     </div>
     <div class="section level2">
-    <h2 id="a-trap-for-whoever-writes-a-test">A trap for whoever writes a test<a class="anchor" aria-label="anchor" href="#a-trap-for-whoever-writes-a-test"></a></h2>
-    <p>Checking this against the partial-expectation sum proves nothing: it is the
-same sum computed twice. A discrete implementation has to be checked against
+    <h2 id="testing-an-implementation">Testing an implementation<a class="anchor" aria-label="anchor" href="#testing-an-implementation"></a></h2>
+    <p>A comparison with the partial-expectation sum repeats the same computation
+and therefore does not test it. A discrete implementation has to be checked against
 finite differences of the cdf, and a continuous one against the partial
 expectation, so that the two sides of the comparison share no arithmetic.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="constants-that-vary-by-observation">Constants that vary by observation<a class="anchor" aria-label="anchor" href="#constants-that-vary-by-observation"></a></h2>
+    <p>A family whose constant varies by observation (a binomial's vector <code>size</code>, or
+a wrapper over one) is evaluated at each observation's own constant, taken by
+<code><a href="distrib_at_rows.html">distrib_at_rows()</a></code>, as the parameters are. A missing quantile gives a
+missing derivative. # The upper tail The derivatives of the mass sum to zero
+over the support, so where \(P(Y &gt; q)\) is below 0.01 the sum up to \(q\)
+is computed as minus the sum above it, a short series that keeps its digits
+where the sum up to \(q\) would cancel to a small number.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

@@ -2,9 +2,9 @@
 
 Closed form: \\\operatorname{Var}(Y) = \mu^2\\. The standard deviation
 equals the mean, so the coefficient of variation is exactly one at every
-parameter value. That single number is what identifies an exponential
-among the gammas: a sample whose relative spread is far from one is not
-one.
+parameter value. Among the gamma distributions, whose coefficient of
+variation is \\1/\sqrt a\\ for shape \\a\\, the exponential is the one
+with coefficient of variation one.
 
 ## Arguments
 

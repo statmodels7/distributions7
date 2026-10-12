@@ -30,12 +30,11 @@ A numeric vector of `NaN`, of length
 
 ## Details
 
-The reading a large positive excess kurtosis usually carries, that the
-tails are heavy, is right here and cannot be quantified on this scale:
-the family is heavy-tailed enough that the measure of tail weight is
-itself undefined. A Student t with \\\nu \> 4\\ is the nearest family
-that reports a number, and \\6/(\nu-4)\\ grows without bound as \\\nu\\
-falls towards 4.
+A large positive excess kurtosis usually indicates heavy tails. The
+Cauchy has heavy tails, but its fourth moment does not exist, so the
+excess kurtosis cannot measure their weight. A Student t with \\\nu \>
+4\\ is the nearest family that reports a number, and \\6/(\nu-4)\\ grows
+without bound as \\\nu\\ falls towards 4.
 
 ## Notation
 

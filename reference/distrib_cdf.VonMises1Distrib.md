@@ -9,8 +9,12 @@ replaces \\n\\ quadratures with a few dozen vectorized steps, using only
 the Bessel **ratios** \\I_j/I_0\\ from a backward recurrence.
 
 Below \\-\pi\\ the value is 0 and at or above \\\pi\\ it is 1, the
-support being the declared interval. The result is clamped to \\\[0,
-1\]\\: the series is exact and its rounding is not.
+support being the declared interval. Where the requested tail is below
+\\10^{-6}\\, where the absolute error of the series would cost relative
+accuracy, it comes from a quadrature of the tail instead, on the log
+scale
+([`vm_cdf_tail()`](https://statmodels7.github.io/distributions7/reference/vm_cdf_tail.md)),
+so that a small tail probability and its logarithm keep their digits.
 
 ## Arguments
 
@@ -28,12 +32,12 @@ support being the declared interval. The result is clamped to \\\[0,
   A named list with components `mu` and `kappa`, each a numeric vector
   of length 1 or of the length of `q`. A component of length 1 is
   recycled. `mu` must lie in \\(-\pi, \pi)\\ and `kappa` be strictly
-  positive; a non-positive `kappa` gives `NA`.
+  positive; otherwise the generic signals an error.
 
 - lower.tail:
 
   Logical of length 1. When `TRUE`, the default, probabilities are \\P(Y
-  \le q)\\; when `FALSE` they are \\P(Y \> q)\\, formed as \\1 - F(q)\\.
+  \le q)\\; when `FALSE` they are \\P(Y \> q)\\.
 
 - log.p:
 

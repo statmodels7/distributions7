@@ -4,28 +4,28 @@
 \(\gamma_1\). It is the same law as SkewNormal1Distrib, reached through
 the map of sn_cp_to_dp(), and the only thing that differs is which three
 numbers name a member of it.
-The parametrization is worth having for one property: its expected
-information is non-singular at \(\gamma_1 = 0\), where the direct
-parametrization's loses a rank. Measured at \(\mu = 0\), \(\sigma = 1\),
-the information's eigenvalues tend to 2, 1 and \(1/6\) as the skewness
+The expected information of this parametrization is non-singular at
+\(\gamma_1 = 0\), where the direct parametrization's loses a rank; at
+\(\sigma = 1\) its eigenvalues tend to 2, 1 and \(1/6\) as the skewness
 goes to zero.
 Build one with skewnormal2_distrib(), which supplies the three link
 functions and bounds the skewness at \(\pm 0.9952717\). This page
-documents the raw S7 constructor, which validates none of the relationships
-between its properties."><meta property="og:description" content="The S7 class of the skew normal written in its first three moments: the mean
+documents the raw S7 constructor, which takes the parent's properties; the
+validator of distrib checks them, and the constructor adds no check of
+its own."><meta property="og:description" content="The S7 class of the skew normal written in its first three moments: the mean
 \(\mu\), the standard deviation \(\sigma\) and the skewness
 \(\gamma_1\). It is the same law as SkewNormal1Distrib, reached through
 the map of sn_cp_to_dp(), and the only thing that differs is which three
 numbers name a member of it.
-The parametrization is worth having for one property: its expected
-information is non-singular at \(\gamma_1 = 0\), where the direct
-parametrization's loses a rank. Measured at \(\mu = 0\), \(\sigma = 1\),
-the information's eigenvalues tend to 2, 1 and \(1/6\) as the skewness
+The expected information of this parametrization is non-singular at
+\(\gamma_1 = 0\), where the direct parametrization's loses a rank; at
+\(\sigma = 1\) its eigenvalues tend to 2, 1 and \(1/6\) as the skewness
 goes to zero.
 Build one with skewnormal2_distrib(), which supplies the three link
 functions and bounds the skewness at \(\pm 0.9952717\). This page
-documents the raw S7 constructor, which validates none of the relationships
-between its properties."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+documents the raw S7 constructor, which takes the parent's properties; the
+validator of distrib checks them, and the constructor adds no check of
+its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -33,7 +33,7 @@ between its properties."><meta property="og:image" content="https://statmodels7.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,15 +71,15 @@ between its properties."><meta property="og:image" content="https://statmodels7.
 \(\gamma_1\). It is the same law as <a href="SkewNormal1Distrib.html">SkewNormal1Distrib</a>, reached through
 the map of <code><a href="sn_cp_to_dp.html">sn_cp_to_dp()</a></code>, and the only thing that differs is which three
 numbers name a member of it.</p>
-<p>The parametrization is worth having for one property: its expected
-information is non-singular at \(\gamma_1 = 0\), where the direct
-parametrization's loses a rank. Measured at \(\mu = 0\), \(\sigma = 1\),
-the information's eigenvalues tend to 2, 1 and \(1/6\) as the skewness
+<p>The expected information of this parametrization is non-singular at
+\(\gamma_1 = 0\), where the direct parametrization's loses a rank; at
+\(\sigma = 1\) its eigenvalues tend to 2, 1 and \(1/6\) as the skewness
 goes to zero.</p>
 <p>Build one with <code><a href="skewnormal2_distrib.html">skewnormal2_distrib()</a></code>, which supplies the three link
 functions and bounds the skewness at \(\pm 0.9952717\). This page
-documents the raw S7 constructor, which validates none of the relationships
-between its properties.</p>
+documents the raw S7 constructor, which takes the parent's properties; the
+validator of <code>distrib</code> checks them, and the constructor adds no check of
+its own.</p>
     </div>
 
     <div class="section level2">
@@ -150,26 +150,43 @@ interpretations <code>c(mu = "mean", sigma = "standard deviation", gamma1 = "ske
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>The probability functions delegate to <code><a href="skewnormal1_distrib.html">skewnormal1_distrib()</a></code> at the implied
-direct parameters:
-<code><a href="distrib_pdf.SkewNormal2Distrib.html">distrib_pdf()</a></code>,
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.SkewNormal2Distrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_cdf.SkewNormal2Distrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_quantile.SkewNormal2Distrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.SkewNormal2Distrib.html">distrib_rng()</a></code>.</p>
-<p>The derivatives in the parameters and in the response come from compiled
-kernels of the family's own, one per order and surface:
-<code><a href="distrib_gradient.SkewNormal2Distrib.html">distrib_gradient()</a></code> to
-<code><a href="distrib_gradient.SkewNormal2Distrib.html">distrib_deriv5()</a></code>,
-<code><a href="distrib_grad_y.SkewNormal2Distrib.html">distrib_grad_y()</a></code> and the mixed
-derivatives. The expected information and its derivatives are series in
-\(\gamma_1^{1/3}\) near zero skewness and quadratures elsewhere:
-<code><a href="distrib_expected_hessian.SkewNormal2Distrib.html">distrib_expected_hessian()</a></code>.</p>
-<p>Three of the four moments are a parameter read back:
-<code><a href="mean.SkewNormal2Distrib.html">mean()</a></code>,
+<code><a href="distrib_quantile.SkewNormal2Distrib.html">distrib_quantile()</a></code> and
+<code><a href="distrib_rng.SkewNormal2Distrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
+<code><a href="distrib_gradient.SkewNormal2Distrib.html">distrib_gradient()</a></code>,
+<code><a href="distrib_gradient.SkewNormal2Distrib.html">distrib_hessian()</a></code>,
+<code><a href="distrib_expected_hessian.SkewNormal2Distrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_gradient.SkewNormal2Distrib.html">distrib_deriv3()</a></code>,
+<code><a href="distrib_gradient.SkewNormal2Distrib.html">distrib_deriv4()</a></code> and
+<code><a href="distrib_gradient.SkewNormal2Distrib.html">distrib_deriv5()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_expected_hessian.SkewNormal2Distrib.html">distrib_dexpected_hessian()</a></code>
+and
+<code><a href="distrib_expected_hessian.SkewNormal2Distrib.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the derivatives in the response:
+<code><a href="distrib_grad_y.SkewNormal2Distrib.html">distrib_grad_y()</a></code>,
+<code><a href="distrib_grad_y.SkewNormal2Distrib.html">distrib_hess_y()</a></code>,
+<code><a href="loc_deriv_y_k.html">distrib_deriv3_y()</a></code> and
+<code><a href="loc_deriv_y_k.html">distrib_deriv4_y()</a></code>;</p></li>
+<li><p>the mixed derivatives in the response and the parameters:
+<code><a href="distrib_cross_y.SkewNormal2Distrib.html">distrib_cross_y()</a></code>,
+<code><a href="distrib_grad_y.SkewNormal2Distrib.html">distrib_cross2_y()</a></code>,
+<code><a href="loc_cross3_y.html">distrib_cross3_y()</a></code>,
+<code><a href="distrib_grad_y.SkewNormal2Distrib.html">distrib_grad_y_hess()</a></code> and
+<code><a href="distrib_grad_y.SkewNormal2Distrib.html">distrib_hess_y_hess()</a></code>;</p></li>
+<li><p>the derivatives of the distribution function:
+<code><a href="register_mapped_cdf_k.html">distrib_grad_cdf()</a></code>,
+<code><a href="register_mapped_cdf_k.html">distrib_hess_cdf()</a></code>,
+<code><a href="register_mapped_cdf_k.html">distrib_deriv3_cdf()</a></code> and
+<code><a href="register_mapped_cdf_k.html">distrib_deriv4_cdf()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.SkewNormal2Distrib.html">mean()</a></code>,
 <code><a href="variance.SkewNormal2Distrib.html">variance()</a></code>,
-<code><a href="skewness.SkewNormal2Distrib.html">skewness()</a></code>. The fourth,
-<code><a href="kurtosis.SkewNormal2Distrib.html">kurtosis()</a></code>, follows from the other three
-and is the parent's at the implied direct parameters.</p>
+<code><a href="skewness.SkewNormal2Distrib.html">skewness()</a></code> and
+<code><a href="kurtosis.SkewNormal2Distrib.html">kurtosis()</a></code>;</p></li>
+<li><p>the fitting helpers: <code><a href="expected_hessian_costly.html">expected_hessian_costly()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="the-point-at-zero-skewness">The point at zero skewness<a class="anchor" aria-label="anchor" href="#the-point-at-zero-skewness"></a></h2>
@@ -177,10 +194,11 @@ and is the parent's at the implied direct parameters.</p>
 
 <p>The map runs through a cube root, so \(\partial\alpha/\partial\gamma_1\)
 is unbounded at \(\gamma_1 = 0\). The score has a finite limit there and
-is returned, and so is the expected information; the observed derivatives
-of order two and more in \(\gamma_1\) grow like \(\gamma_1^{-2/3}\), and
-they and the derivatives of the expected information are rejected at
-\(\gamma_1 = 0\) exactly. The density and the distribution function equal
+is returned, and so is the expected information. A derivative of the
+log-density with \(k \ge 2\) differentiations in \(\gamma_1\) diverges
+like \(\gamma_1^{4/3-k}\) (\(\gamma_1^{-2/3}\) for \(k = 2\)). The
+methods of order two and more, and the derivatives of the expected
+information, signal an error at \(\gamma_1 = 0\) exactly. The density and the distribution function equal
 the Gaussian's there.</p>
     </div>
     <div class="section level2">

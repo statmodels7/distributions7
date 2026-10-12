@@ -8,7 +8,8 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{P}{\theta}, \qquad
       \dfrac{\partial \ell}{\partial \theta} = -\dfrac{\mu}{\theta^2}P
         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta}.$$
 The arithmetic runs in a compiled kernel decomposed over the elements of the
-output, so the result does not depend on the thread count."><meta property="og:description" content="Computes the first derivatives of the NB1 log-mass with respect to
+output, so the result does not depend on the thread count. These are the
+formulas the kernel evaluates for \(\theta \ge 1\)."><meta property="og:description" content="Computes the first derivatives of the NB1 log-mass with respect to
 \(\mu\) and \(\theta\), one value per observation, in closed form. Both
 come from the chain rule through the size \(r = \mu/\theta\). Writing
 \(P = \psi(y+r) - \psi(r) - \log(1+\theta)\) with \(\psi\) the digamma
@@ -17,7 +18,8 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{P}{\theta}, \qquad
       \dfrac{\partial \ell}{\partial \theta} = -\dfrac{\mu}{\theta^2}P
         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta}.$$
 The arithmetic runs in a compiled kernel decomposed over the elements of the
-output, so the result does not depend on the thread count."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+output, so the result does not depend on the thread count. These are the
+formulas the kernel evaluates for \(\theta \ge 1\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +27,7 @@ output, so the result does not depend on the thread count."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +69,8 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{P}{\theta}, \qquad
       \dfrac{\partial \ell}{\partial \theta} = -\dfrac{\mu}{\theta^2}P
         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta}.$$
 The arithmetic runs in a compiled kernel decomposed over the elements of the
-output, so the result does not depend on the thread count.</p>
+output, so the result does not depend on the thread count. These are the
+formulas the kernel evaluates for \(\theta \ge 1\).</p>
     </div>
 
 
@@ -100,8 +103,8 @@ recycled. Both must be strictly positive.</p></dd>
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -110,18 +113,27 @@ whatever the count says. Defaults to <code>1L</code>.</p></dd>
 length <code>max(length(y), length(mu), length(theta))</code>.</p>
     </div>
     <div class="section level2">
-    <h2 id="the-dispersion-at-small-theta">The dispersion at small theta<a class="anchor" aria-label="anchor" href="#the-dispersion-at-small-theta"></a></h2>
+    <h2 id="the-dispersion-below-one">The dispersion below one<a class="anchor" aria-label="anchor" href="#the-dispersion-below-one"></a></h2>
     <p>As \(\theta\) goes to zero the family tends to the Poisson, so the
-dispersion component tends to a finite limit while its individual terms run
+dispersion component tends to a finite limit while the terms above run
 away: \(r = \mu/\theta\) grows without bound and the chain rule divides by
-\(\theta^2\). The kernel computes the digamma difference in a form that
-performs the cancellation symbolically, and the value converges onto
+\(\theta^2\). For \(\theta &lt; 1\) and an integer count the kernel uses
+instead the form of the log-mass in which the size does not appear,
+\(\ell = \sum_{i&lt;y}\log(\mu + i\theta) - \log y! - (\mu/\theta)\log(1+\theta)
+- y\log(1+\theta)\). With \(B = \sum_{i=1}^{y-1} i/(\mu + i\theta)\) and
+\(q = (\theta - \log(1+\theta))/\theta^2\),
+$$\dfrac{\partial \ell}{\partial \mu} = \dfrac{y-\mu}{\mu}
+        - \dfrac{\theta}{\mu}B + \theta q, \qquad
+      \dfrac{\partial \ell}{\partial \theta} = B - \dfrac{y-\mu}{1+\theta}
+        - \mu q,$$
+with \(q\) from its power series below \(\theta = 1/4\). No term of
+order \(\mu/\theta^2\) is formed, so both components keep their accuracy
+as \(\theta\) goes to zero, where the dispersion component tends to
 $$\lim_{\theta \to 0} \dfrac{\partial \ell}{\partial \theta}
-      = \dfrac{(y-\mu)^2 - y}{2\mu},$$
-which the example below checks at three settings. What survives is about
-five significant figures at \(\theta = 10^{-8}\) and no more, the powers
-of \(r\) in the assembly carrying a cancellation of their own that is not
-removed.</p>
+      = \dfrac{(y-\mu)^2 - y}{2\mu}.$$
+The cost is \(y\) terms per observation in place of a fixed number of
+digamma evaluations. The example below compares the value with this limit
+at three settings.</p>
 <p>With <code>scale = "link"</code> the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter
 scale.</p>

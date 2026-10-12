@@ -3,17 +3,19 @@
 \(E[(Y-\mu)^p]\) of a distribution at one or more parameter settings. The
 expectation is taken numerically by expectation(), which integrates over
 the support of a continuous family and sums the series of a discrete one.
-The order \(p\) need not be a whole number, so fractional and absolute
-moments are reachable from the same function. Every setting supplied in
-theta is evaluated in one batched call, and the result carries one value
-per setting."><meta property="og:description" content="Computes the raw moment \(E[Y^p]\) or the central moment
+The order \(p\) may be fractional where \((y - c)^p\) is real over the
+whole support, \(c\) being the centering value (for example a raw moment
+of a family on the positive half-line); the integrand is \((y - c)^p\) and
+not \(|y - c|^p\). Every setting supplied in theta is evaluated in one
+batched call, and the result carries one value per setting."><meta property="og:description" content="Computes the raw moment \(E[Y^p]\) or the central moment
 \(E[(Y-\mu)^p]\) of a distribution at one or more parameter settings. The
 expectation is taken numerically by expectation(), which integrates over
 the support of a continuous family and sums the series of a discrete one.
-The order \(p\) need not be a whole number, so fractional and absolute
-moments are reachable from the same function. Every setting supplied in
-theta is evaluated in one batched call, and the result carries one value
-per setting."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The order \(p\) may be fractional where \((y - c)^p\) is real over the
+whole support, \(c\) being the centering value (for example a raw moment
+of a family on the positive half-line); the integrand is \((y - c)^p\) and
+not \(|y - c|^p\). Every setting supplied in theta is evaluated in one
+batched call, and the result carries one value per setting."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +23,7 @@ per setting."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,10 +60,11 @@ per setting."><meta property="og:image" content="https://statmodels7.github.io/d
 \(E[(Y-\mu)^p]\) of a distribution at one or more parameter settings. The
 expectation is taken numerically by <code><a href="expectation.html">expectation()</a></code>, which integrates over
 the support of a continuous family and sums the series of a discrete one.
-The order \(p\) need not be a whole number, so fractional and absolute
-moments are reachable from the same function. Every setting supplied in
-<code>theta</code> is evaluated in one batched call, and the result carries one value
-per setting.</p>
+The order \(p\) may be fractional where \((y - c)^p\) is real over the
+whole support, \(c\) being the centering value (for example a raw moment
+of a family on the positive half-line); the integrand is \((y - c)^p\) and
+not \(|y - c|^p\). Every setting supplied in <code>theta</code> is evaluated in one
+batched call, and the result carries one value per setting.</p>
     </div>
 
     <div class="section level2">
@@ -80,17 +83,19 @@ constructors such as <code><a href="gaussian1_distrib.html">gaussian1_distrib()<
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list of parameters on the parameter scale, with one
-component per parameter of <code>distrib</code>. Components may be vectors and are
-recycled against one another and against <code>p</code>, so several settings are
-evaluated in one call. The list is aligned and validated by name, so a
-missing or out-of-bounds component throws.</p></dd>
+component per parameter of <code>distrib</code>. Each component has length 1 or a
+common length \(n\), and <code>p</code> and <code>mu</code> likewise, so that \(n\) settings
+are evaluated in one call; other lengths signal an error. The list is
+aligned and validated by name, so a missing or out-of-bounds component
+signals an error.</p></dd>
 
 
 <dt id="arg-p">p<a class="anchor" aria-label="anchor" href="#arg-p"></a></dt>
 <dd><p>The order of the moment. A numeric vector of length 1 or of the
 number of settings, recycled against the components of <code>theta</code>. Defaults
-to 1, the mean. Non-integer orders are accepted; a negative order is
-accepted too and diverges for any family whose support reaches zero.</p></dd>
+to 1, the mean. A non-integer order is accepted where \((y - c)^p\) is
+real over the support. A negative order on a family whose support reaches
+zero gives a divergent integral, and the quadrature signals an error.</p></dd>
 
 
 <dt id="arg-central">central<a class="anchor" aria-label="anchor" href="#arg-central"></a></dt>
@@ -113,8 +118,9 @@ the series. Names here must not collide with the names in <code>theta</code>.</p
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A numeric vector of moments, of length equal to the longest of the
-components of <code>theta</code> and of <code>p</code>. <code>NaN</code> where the integrand is not
-defined, <code>Inf</code> where the integral diverges to infinity.</p>
+components of <code>theta</code> and of <code>p</code>. Where the integral or the series
+diverges, or the integrand is not real, an error is signaled in place of a
+value.</p>
     </div>
     <div class="section level2">
     <h2 id="what-is-computed">What is computed<a class="anchor" aria-label="anchor" href="#what-is-computed"></a></h2>
@@ -129,29 +135,25 @@ and supplying a fitted or a theoretical mean saves one pass.</p>
     </div>
     <div class="section level2">
     <h2 id="accuracy-and-cost">Accuracy and cost<a class="anchor" aria-label="anchor" href="#accuracy-and-cost"></a></h2>
-    <p>A continuous family's moment is a quadrature and a discrete family's is a
-series, so neither is exact. On a Gaussian the second and fourth central
-moments come back at \(9 - 2.8\times10^{-14}\) and
-\(3 - 8.9\times10^{-15}\) against the exact 9 and 3; on a Poisson the
-series is exact to the last bit at ordinary means. The price is the
-evaluation: one numerical variance of a Gaussian costs 2.3 ms against
-24 microseconds for the closed form the family registers, a factor of about
-94, and one numerical skewness costs 3.5 ms against the same 24
-microseconds. That gap is why 43 of the 45 shipped families answer
-<code><a href="variance.html">variance()</a></code> and <code><a href="skewness.html">skewness()</a></code> with a formula of their own; the two von Mises
-families are the ones that reach this function.</p>
+    <p>A continuous family's moment is computed by quadrature and a discrete
+family's by a series, so the result is accurate to the tolerance of
+<code><a href="expectation.html">expectation()</a></code> and is not exact. A closed form, where a family registers
+one, is cheaper by about two orders of magnitude. Every univariate family
+except the two von Mises registers closed forms for <code><a href="variance.html">variance()</a></code> and
+<code><a href="skewness.html">skewness()</a></code>, so this function is reached through them only for those two.</p>
     </div>
     <div class="section level2">
     <h2 id="a-moment-that-does-not-exist">A moment that does not exist<a class="anchor" aria-label="anchor" href="#a-moment-that-does-not-exist"></a></h2>
-    <p>A divergent integral does not announce itself. The quadrature returns
-whatever its truncation gives, a number that moves with the panel layout and
-looks like an estimate. A family whose moments fail to exist therefore
-registers a method that returns <code>NaN</code> directly, as the Cauchy does through
-<code><a href="mean.CauchyDistrib.html">mean.CauchyDistrib()</a></code>, and a family whose moments exist only above a
-threshold returns <code>Inf</code> where they do not, as the Student t does at
-\(\nu \le 4\) for the kurtosis. Reading a number back from this function on
-a family with no analytical method is a statement about the quadrature and
-not about the law.</p>
+    <p>When the integral or the series diverges, or the integrand is not real
+over the support, this function signals an error: the quadrature does not
+reach the requested accuracy (the mean of a Cauchy, a negative order on a
+family whose support reaches zero, a fractional central moment of a
+Gaussian) or the series does not converge (a fractional central moment of a
+Poisson). An integral that only appears to converge can still return a
+number that depends on the panel layout. A family whose moments fail to
+exist therefore registers methods that return <code>NaN</code> directly, as the Cauchy
+does through <code><a href="mean.CauchyDistrib.html">mean.CauchyDistrib()</a></code>, and a family whose moments exist only
+above a threshold returns <code>Inf</code> or <code>NaN</code> below it, as the Student t does.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -164,8 +166,8 @@ not about the law.</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="expectation.html">expectation()</a></code> for the quadrature and the series this rests on;
 <code><a href="mean.distrib.html">mean.distrib()</a></code>, <code><a href="variance.html">variance()</a></code>, <code><a href="std_dev.html">std_dev()</a></code>, <code><a href="skewness.html">skewness()</a></code> and <code><a href="kurtosis.html">kurtosis()</a></code>
-for the four standard moments, each of which prefers a family's closed
-form when one is registered.</p></div>
+for the standard moments, which use a family's closed form when one is
+registered.</p></div>
     </div>
 
     <div class="section level2">
@@ -182,7 +184,7 @@ form when one is registered.</p></div>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># p is recycled against theta, so one call covers a grid of orders.</span></span></span>
 <span class="r-in"><span><span class="fu">moment</span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, p <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, central <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>   <span class="co"># 0, 1, 0, 3</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 1 0 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -2.775558e-17  1.000000e+00  0.000000e+00  3.000000e+00</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Centering at zero recovers the raw moment.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu">moment</span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, p <span class="op">=</span> <span class="fl">2</span>, central <span class="op">=</span> <span class="cn">TRUE</span>, mu <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span></span>

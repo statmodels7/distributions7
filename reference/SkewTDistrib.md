@@ -8,15 +8,16 @@ t\_\nu(z)T\_{\nu+1}(w)/\sigma\\.
 
 It contains three families as limits. At \\\alpha = 0\\ it is the
 Student \\t\\; as \\\nu \to \infty\\ it is the skew normal, approached
-at \\O(1/\nu)\\; and with both it is the Gaussian. Its reason to exist
-is the skewness: the skew normal cannot pass 0.9953, and this family
-reaches 2.05 at \\\nu = 6\\ and 4.00 at \\\nu = 4\\.
+at \\O(1/\nu)\\; and with both it is the Gaussian. The skewness of the
+skew normal is bounded by 0.9953 in absolute value, whereas the skewness
+of this family reaches 2.05 at \\\nu = 6\\ and 4.00 at \\\nu = 4\\ for a
+large \\\alpha\\.
 
 Build one with
 [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md),
 which supplies the four link functions. This page documents the raw S7
-constructor, which validates none of the relationships between its
-properties.
+constructor, which takes the parent's properties; the validator of
+`distrib` checks them, and the constructor adds no check of its own.
 
 ## Usage
 
@@ -100,44 +101,74 @@ the properties hold `"skew t"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered in this file:
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewTDistrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.SkewTDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewTDistrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewTDistrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewTDistrib.md),
-[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.SkewTDistrib.md),
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewTDistrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewTDistrib.md),
-and the expected information with its two derivatives,
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md).
+Registered on this class, each linked to the page that documents it:
 
-Registered elsewhere: all four moments in `moments.R`
-([`mean()`](https://statmodels7.github.io/distributions7/reference/mean.SkewTDistrib.md),
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.SkewTDistrib.md),
-[`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.SkewTDistrib.md),
-[`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.SkewTDistrib.md));
-the mixed response-parameter derivative
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-in `cross_derivatives_families.R`; and
-[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
-in `cdf_derivatives_families.R`.
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewTDistrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.SkewTDistrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.SkewTDistrib.md);
 
-The **distribution function** and the **quantile function** come from
-[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
-by quadrature and by root finding on it. The **expected information**
-has no elementary form and is computed by one quadrature per distinct
-\\(\alpha, \nu)\\; see
-[`distrib_expected_hessian.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md).
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewTDistrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewTDistrib.md),
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewTDistrib.md)
+  and
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.SkewTDistrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewTDistrib.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewTDistrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewTDistrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.SkewTDistrib.md),
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cross2_y.md),
+  [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/loc_cross3_y.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_y_hess.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_y_hess.md);
+
+- the derivatives of the distribution function:
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewTDistrib.md),
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.SkewTDistrib.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_deriv_cdf_k.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_deriv_cdf_k.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.SkewTDistrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.SkewTDistrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.SkewTDistrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.SkewTDistrib.md);
+
+- the fitting helpers:
+  [`expected_hessian_costly()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_costly.md).
+
+Every other generic is inherited from
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## How the derivatives are computed
 
-Every derivative, to order five, comes from a compiled kernel in closed
-form. The density carries \\T\_{\nu+1}\\, and the derivatives of a
-Student \\t\\ distribution function in its degrees of freedom have no
-elementary expression; they are integrals of the derivatives of the
-\\t\\ density and are taken by quadrature. See
+The derivatives of the log-density in the parameters, to order five,
+come from compiled kernels. Those in \\\mu\\, \\\sigma\\ and \\\alpha\\
+are closed form. The density carries \\T\_{\nu+1}\\, and the derivatives
+of a Student \\t\\ distribution function in its degrees of freedom have
+no elementary expression; they are integrals of the derivatives of the
+\\t\\ density and are taken by quadrature. The derivatives in the
+response are evaluated in R from
+[`skewt_pieces()`](https://statmodels7.github.io/distributions7/reference/skewt_pieces.md).
+See
 [`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md).
 
 ## See also
@@ -149,7 +180,7 @@ for the \\\nu \to \infty\\ limit;
 [`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md)
 for the \\\alpha = 0\\ case;
 [`skewt_pieces()`](https://statmodels7.github.io/distributions7/reference/skewt_pieces.md)
-for the scalar functions the derivatives are built from.
+for the scalar functions from which the response derivatives are built.
 
 ## Examples
 

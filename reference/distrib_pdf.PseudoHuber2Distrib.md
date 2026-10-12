@@ -10,7 +10,9 @@ variance is \\\sigma^2\\. The log-density is \\-D - \log 2 -
 \mu)^2/\sigma^2}\\ and \\h(\nu) = -\tfrac14 \log\nu + \tfrac12 \log
 K_2(\sqrt\nu) - \tfrac32 \log K_1(\sqrt\nu)\\. \\R\\ and \\h\\ are
 formed with the exponentially scaled Bessel functions, so they stay
-finite where \\K_1(\sqrt\nu)\\ underflows.
+finite where \\K_1(\sqrt\nu)\\ underflows. \\D\\ is formed as a
+hypotenuse of \\\sqrt{R}\\\|y - \mu\|/\sigma\\ and \\\sqrt\nu\\, so the
+log-density stays finite where the squared residual overflows.
 
 ## Arguments
 

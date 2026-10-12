@@ -1,9 +1,10 @@
-# The Matrix, Its Inverse and Their Derivatives, From Either Side
+# The Matrix, Its Inverse and Their Derivatives
 
-The four matrix quantities every elliptical family evaluates from,
-computed from a matrix parametrization that carries either \\\Sigma\\ or
+Computes the matrix quantities from which the elliptical families
+evaluate, for a matrix parametrization that carries either \\\Sigma\\ or
 \\\Sigma^{-1}\\: the matrix, its inverse, the log-determinant of
-\\\Sigma\\, and the derivative arrays of \\\Sigma\\.
+\\\Sigma\\, and the first and second derivative arrays of \\\Sigma\\ and
+of \\\Sigma^{-1}\\.
 
 ## Usage
 
@@ -28,39 +29,36 @@ mv_matrix_pieces(s, eta, inverted, derivs = FALSE, derivs2 = FALSE)
 - derivs, derivs2:
 
   Whether the first and second derivative arrays are wanted.
-
-  The log-determinant's derivatives come back transported too, as
-  `dlogdet` and `d2logdet`. They are the one place a caller is likely to
-  get the sign wrong: \\\log\|\Sigma\| = -\log\|M\|\\, so both are the
-  parametrization's own negated, and reading them from here rather than
-  from
-  [`parameters7::param_dlogdet()`](https://statmodels7.github.io/parameters7/reference/param_dlogdet.html)
-  is what keeps the flip from being written by hand at each of the four
-  call sites – which is how the Student t's gradient came to be out by
-  14 while its Hessian was right.
+  `derivs2 = TRUE` computes the first derivatives as well.
 
 ## Value
 
-A list with `sigma`, `sigma_inv`, `logdet` (of \\\Sigma\\) and,
-according to the flags, `a`, `dlogdet` and then `a2`, `d2logdet`, all of
-\\\Sigma\\.
+A list with `sigma`, `sigma_inv`, `logdet` (of \\\Sigma\\) and
+`inverted`; with `derivs` or `derivs2` also `a` and `ai`, the first
+derivative arrays of \\\Sigma\\ and of \\\Sigma^{-1}\\, and `dlogdet`;
+with `derivs2` also `a2`, `ai2` and `d2logdet`.
 
 ## Details
 
-Every derivative in this package is written in \\\Sigma\\, so a
-parametrization carrying the other side is transported once, here, by
-the chain rule for an inverse:
-
+Where the parametrization carries \\\Sigma\\, the derivatives of
+\\\Sigma\\ are its own arrays and those of \\\Sigma^{-1}\\ come from
+[`parameters7::param_inv_d1()`](https://statmodels7.github.io/parameters7/reference/param_inv_d1.html)
+and
+[`parameters7::param_inv_d2()`](https://statmodels7.github.io/parameters7/reference/param_inv_d1.html),
+which are exact for
+[`parameters7::log_cholesky()`](https://statmodels7.github.io/parameters7/reference/log_cholesky.html)
+where the matrix is nearly singular. Where it carries \\\Sigma^{-1}\\,
+the derivatives of the inverse are the parametrization's own arrays, and
+those of \\\Sigma\\ follow from the chain rule for an inverse,
 \$\$\partial_k\Sigma = -\Sigma A_k \Sigma, \qquad \partial\_{kl}\Sigma =
 \Sigma\left(A_l\Sigma A_k + A_k\Sigma A_l - A\_{kl}\right)\Sigma,\$\$
+with \\A_k\\ and \\A\_{kl}\\ the parametrization's arrays.
 
-with \\A_k\\ and \\A\_{kl}\\ the parametrization's own arrays. Writing
-it once is what keeps
-[`mvg_pieces()`](https://statmodels7.github.io/distributions7/reference/mvg_pieces.md)
-and
-[`mvt_pieces()`](https://statmodels7.github.io/distributions7/reference/mvt_pieces.md)
-the same arithmetic: the two families differ in what they do with these
-quantities, not in how the quantities are obtained.
+The derivatives of the log-determinant are returned for \\\Sigma\\ in
+either case, as `dlogdet` and `d2logdet`. Where the parametrization
+carries \\M = \Sigma^{-1}\\, \\\log\|\Sigma\| = -\log\|M\|\\, so the
+parametrization's own derivatives are negated here, once for both
+families.
 
 ## See also
 

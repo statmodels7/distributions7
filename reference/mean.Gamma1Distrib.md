@@ -1,9 +1,9 @@
 # Mean of the Gamma Distribution in Mean and Dispersion
 
 Closed form: \\E\[Y\] = \mu\\. This is the gamma written by its mean and
-a dispersion, the parametrization a generalized linear model uses, so
-the mean is the first parameter and the variance function is
-\\\phi\mu^2\\.
+a dispersion, the parametrization of a generalized linear model, so the
+mean is the first parameter and the variance is \\\phi\mu^2\\, the
+dispersion times the variance function \\\mu^2\\.
 
 ## Arguments
 

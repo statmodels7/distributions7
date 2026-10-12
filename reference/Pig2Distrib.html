@@ -4,24 +4,24 @@ two parameters are orthogonal, gamlss's PIG2. It is the same law as
 Pig1Distrib; the mean stays \(\mu\) and the dispersion is replaced by
 \(\alpha\), the argument the mass function's Bessel function is evaluated
 at.
-Orthogonal means the expected information is diagonal. Measured at
-\(\mu = 3\), its mixed entry summed over the support is
-\(-8.8\times10^{-15}\) here against 7.39 in the mean-dispersion
-parametrization.
+Orthogonal means the expected information is diagonal: at \(\mu = 3\) and
+\(\sigma = 0.8\) its mixed entry is zero to rounding error here, against
+0.0368 in the mean-dispersion parametrization.
 Build one with pig2_distrib(), which supplies the two link functions. This
-page documents the raw S7 constructor, which validates none of the
-relationships between its properties."><meta property="og:description" content="The S7 class of the Poisson-inverse Gaussian in the parametrization whose
+page documents the raw S7 constructor, which takes the parent's
+properties; the validator of distrib checks them, and the constructor
+adds no check of its own."><meta property="og:description" content="The S7 class of the Poisson-inverse Gaussian in the parametrization whose
 two parameters are orthogonal, gamlss's PIG2. It is the same law as
 Pig1Distrib; the mean stays \(\mu\) and the dispersion is replaced by
 \(\alpha\), the argument the mass function's Bessel function is evaluated
 at.
-Orthogonal means the expected information is diagonal. Measured at
-\(\mu = 3\), its mixed entry summed over the support is
-\(-8.8\times10^{-15}\) here against 7.39 in the mean-dispersion
-parametrization.
+Orthogonal means the expected information is diagonal: at \(\mu = 3\) and
+\(\sigma = 0.8\) its mixed entry is zero to rounding error here, against
+0.0368 in the mean-dispersion parametrization.
 Build one with pig2_distrib(), which supplies the two link functions. This
-page documents the raw S7 constructor, which validates none of the
-relationships between its properties."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+page documents the raw S7 constructor, which takes the parent's
+properties; the validator of distrib checks them, and the constructor
+adds no check of its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +29,7 @@ relationships between its properties."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,13 +67,13 @@ two parameters are orthogonal, gamlss's <code>PIG2</code>. It is the same law as
 <a href="Pig1Distrib.html">Pig1Distrib</a>; the mean stays \(\mu\) and the dispersion is replaced by
 \(\alpha\), the argument the mass function's Bessel function is evaluated
 at.</p>
-<p>Orthogonal means the expected information is diagonal. Measured at
-\(\mu = 3\), its mixed entry summed over the support is
-\(-8.8\times10^{-15}\) here against 7.39 in the mean-dispersion
-parametrization.</p>
+<p>Orthogonal means the expected information is diagonal: at \(\mu = 3\) and
+\(\sigma = 0.8\) its mixed entry is zero to rounding error here, against
+0.0368 in the mean-dispersion parametrization.</p>
 <p>Build one with <code><a href="pig2_distrib.html">pig2_distrib()</a></code>, which supplies the two link functions. This
-page documents the raw S7 constructor, which validates none of the
-relationships between its properties.</p>
+page documents the raw S7 constructor, which takes the parent's
+properties; the validator of <code>distrib</code> checks them, and the constructor
+adds no check of its own.</p>
     </div>
 
     <div class="section level2">
@@ -145,23 +145,31 @@ relationships between its properties.</p>
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered in this file, the middle five reading one compiled kernel:
-<code><a href="distrib_pdf.Pig2Distrib.html">distrib_pdf()</a></code>,
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.Pig2Distrib.html">distrib_pdf()</a></code> and
+<code><a href="distrib_rng.Pig2Distrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.Pig2Distrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.Pig2Distrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_deriv3.Pig2Distrib.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.Pig2Distrib.html">distrib_deriv4()</a></code>,
-<code><a href="distrib_rng.Pig2Distrib.html">distrib_rng()</a></code>.</p>
-<p>Registered elsewhere: the four moments in <code>moments.R</code> and the data-based
-starting value in <code>starting_values.R</code>. The distribution function and the
-quantile come from <code><a href="discrete_distrib.html">discrete_distrib()</a></code>, both exact sums over the support.</p>
+<code><a href="distrib_expected_hessian.Pig2Distrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.Pig2Distrib.html">distrib_deriv3()</a></code> and
+<code><a href="distrib_deriv4.Pig2Distrib.html">distrib_deriv4()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_expected_hessian.Pig2Distrib.html">distrib_dexpected_hessian()</a></code> and
+<code><a href="distrib_expected_hessian.Pig2Distrib.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.Pig2Distrib.html">mean()</a></code>,
+<code><a href="variance.Pig2Distrib.html">variance()</a></code>, <code><a href="skewness.Pig2Distrib.html">skewness()</a></code>
+and <code><a href="kurtosis.Pig2Distrib.html">kurtosis()</a></code>;</p></li>
+<li><p>the fitting helpers: <code><a href="distrib_start.Pig2Distrib.html">distrib_start()</a></code> and
+<code><a href="expected_hessian_costly.html">expected_hessian_costly()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="discrete_distrib.html">discrete_distrib()</a></code>. The distribution
+function and the quantile are the inherited ones, documented at
+<code><a href="distrib_cdf.discrete_distrib.html">distrib_cdf.discrete_distrib()</a></code> and <code><a href="distrib_quantile.discrete_distrib.html">distrib_quantile.discrete_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="pig2_distrib.html">pig2_distrib()</a></code> to build one;
 <code><a href="pig1_distrib.html">pig1_distrib()</a></code> for the mean-dispersion parametrization;
-<code><a href="pig2_sigma.html">pig2_sigma()</a></code> for the map between them;
-the compiled kernels for the kernel all five derivative methods read.</p></div>
+<code><a href="pig2_sigma.html">pig2_sigma()</a></code> for the map between them.</p></div>
     </div>
 
     <div class="section level2">

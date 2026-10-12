@@ -2,14 +2,13 @@
 
 Returns the covariance matrix of the counts, \$\$\operatorname{Cov}(Y_i,
 Y_j) = n(\delta\_{ij}p_i - p_i p_j),\$\$ so the coordinate variances are
-\\np_j(1-p_j)\\, the binomial ones, and every covariance is negative:
-the counts share a fixed total, so one category can only grow at the
-others' expense.
+\\np_j(1-p_j)\\, the binomial ones, and every covariance is negative,
+the counts sharing a fixed total.
 
-The matrix is **singular by construction**, the coordinates summing to
-\\n\\, so the vector of ones is in its null space and the rank is
-\\p-1\\. Its leading \\(p-1)\times(p-1)\\ block is the expected
-information on the default chart; see
+The matrix is singular, the coordinates summing to \\n\\, so the vector
+of ones is in its null space and the rank is \\p-1\\. Its leading
+\\(p-1)\times(p-1)\\ block is the expected information on the default
+chart; see
 [`distrib_expected_hessian.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MultinomialDistrib.md).
 
 ## Arguments
@@ -26,7 +25,8 @@ information on the default chart; see
 
 ## Value
 
-A symmetric \\p \times p\\ numeric matrix of rank \\p-1\\.
+A symmetric \\p \times p\\ numeric matrix of rank \\p-1\\, without
+dimnames.
 
 ## See also
 

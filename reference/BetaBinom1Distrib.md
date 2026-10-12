@@ -3,10 +3,7 @@
 The S7 class of the beta-binomial family parametrized by a mean
 proportion \\\mu \in (0, 1)\\ and a dispersion \\\sigma \> 0\\, on the
 finite support \\\\0, 1, \dots, n\\\\. It inherits from
-`discrete_distrib`, so it answers every generic of the `distrib`
-contract; the seven methods listed below are registered on it in this
-file, two more in `betabinom1_higher.R`, and everything else comes from
-the parent.
+`discrete_distrib`.
 
 The class carries an extra property beyond the parent's, `size`: the
 number of trials \\n\\, fixed at construction as it is for
@@ -14,8 +11,9 @@ number of trials \\n\\, fixed at construction as it is for
 Build one with
 [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md),
 which validates `size`, supplies the two link functions and fills the
-properties in. This page documents the raw S7 constructor, which
-validates none of the relationships between them.
+properties in. This page documents the raw S7 constructor, which takes
+the parent's properties plus `size`; the validator of `distrib` checks
+the parent's properties, and the constructor adds no check of its own.
 
 ## Usage
 
@@ -108,29 +106,40 @@ they hold `"beta-binomial [size=n]"`, `"univariate"`, `c(0, size)`,
 
 ## Methods
 
-Registered on this class in this file:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.BetaBinom1Distrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BetaBinom1Distrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.BetaBinom1Distrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BetaBinom1Distrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.BetaBinom1Distrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.BetaBinom1Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.BetaBinom1Distrib.md).
+Registered on this class, each linked to the page that documents it:
 
-Six more are registered on the class from other files: the closed-form
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom1Distrib.md)
-and
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.BetaBinom1Distrib.md)
-in `betabinom1_higher.R`, and the four moments
-[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.BetaBinom1Distrib.md),
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.BetaBinom1Distrib.md),
-[`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.BetaBinom1Distrib.md)
-and
-[`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.BetaBinom1Distrib.md)
-in `moments.R`.
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.BetaBinom1Distrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.BetaBinom1Distrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.BetaBinom1Distrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.BetaBinom1Distrib.md);
 
-The response derivatives are refused, as for every discrete family: a
-mass function has no derivative in its argument.
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.BetaBinom1Distrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BetaBinom1Distrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BetaBinom1Distrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom1Distrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.BetaBinom1Distrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin1Distrib.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin1Distrib.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.BetaBinom1Distrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.BetaBinom1Distrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.BetaBinom1Distrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.BetaBinom1Distrib.md);
+
+- the fitting helpers:
+  [`distrib_scalar_route()`](https://statmodels7.github.io/distributions7/reference/distrib_scalar_route.md).
+
+Every other generic is inherited from
+[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
 
 ## See also
 

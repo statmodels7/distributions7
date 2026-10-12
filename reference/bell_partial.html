@@ -9,7 +9,7 @@ derivatives of the inverse link, for \(m \le 5\)."><meta property="og:image" con
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,13 +78,10 @@ link evaluated at \(\eta\), as a numeric vector.</p></dd>
 parameter carries its own link, the Jacobian of \(\theta \mapsto \eta\) is
 diagonal and the multivariate formula factorizes into a product of univariate
 ones, so only \(B_{m,j}\) for a single variable is required. They are
-written out rather than generated: there are fifteen of them at or below order
-five, and a table cannot be slower or wrong in a way a recursion could.</p>
-<p>The order-5 row was checked before it was written, against a construction of
-the same polynomials as the coefficient of \(t^5/5!\) in
-\((\sum_m x_m t^m/m!)^j/j!\), which shares no arithmetic with the table:
-the two agree to 1.8e-15, and the coefficients sum to the Bell number
-\(B_5 = 52\).</p>
+written out as a table of the fifteen polynomials with \(m \le 5\).</p>
+<p>The polynomial \(B_{m,j}\) is the coefficient of \(t^m/m!\) in
+\((\sum_k x_k t^k/k!)^j/j!\). The coefficients of the order-5 row sum to
+the Bell number \(B_5 = 52\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

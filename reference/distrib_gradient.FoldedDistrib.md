@@ -24,9 +24,9 @@ fold beyond the weight: \\s\\ is the parent's own score, evaluated at
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The links are the parent's, so the two scales differ
-  exactly where the parent's do.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns. The links are the
+  parent's, so the two scales differ exactly where the parent's do.
 
 - ...:
 
@@ -78,7 +78,7 @@ ll <- function(v) {
   sum(distrib_pdf(d, y, t2, log = TRUE))
 }
 max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
-#> [1] 2.683729e-10
+#> [1] 2.683747e-10
 
 # It is the mixture score, written out from the parent's own.
 p <- distributions7:::fold_parts(gaussian1_distrib(), y, theta)

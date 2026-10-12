@@ -13,7 +13,7 @@ all four orders follow at once, so a family has only to say what \(L\) is."><met
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,7 +85,7 @@ order the components, and its lower bound supplies the default mask.</p></dd>
 <dt id="arg-lderiv">Lderiv<a class="anchor" aria-label="anchor" href="#arg-lderiv"></a></dt>
 <dd><p>A function of a character vector of parameter names returning
 the corresponding partial derivative of \(L\). An empty block is the
-zeroth order and is never asked for.</p></dd>
+zeroth order and is never requested.</p></dd>
 
 
 <dt id="arg-inside">inside<a class="anchor" aria-label="anchor" href="#arg-inside"></a></dt>
@@ -108,8 +108,8 @@ wherever <code>inside</code> is <code>FALSE</code>.</p>
 complete Bell polynomial in the partials of \(L\), and \(F = 1 - S\)
 turns that into \(\partial^I F = -S\,B_I\). It is the same identity the
 distribution wrappers use, read on the survival function instead of on the
-density, and <code><a href="bell_f_ratio.html">bell_f_ratio()</a></code> runs the partition sum, so nothing here is
-transcribed from an expansion.</p>
+density, and <code><a href="bell_f_ratio.html">bell_f_ratio()</a></code> runs the partition sum, so the derivatives
+come from that sum and not from a transcribed expansion.</p>
     </div>
     <div class="section level2">
     <h2 id="two-things-the-arithmetic-needs">Two things the arithmetic needs<a class="anchor" aria-label="anchor" href="#two-things-the-arithmetic-needs"></a></h2>

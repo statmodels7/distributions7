@@ -11,7 +11,7 @@ loc_scale_cdf_deriv(), which stops at second order."><meta property="og:image" c
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,7 @@ that is location-scale in its first two parameters. The general form of
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">loc_scale_cdf_deriv_k</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">q</span>, <span class="va">theta</span>, <span class="va">order</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">loc_scale_cdf_deriv_k</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">q</span>, <span class="va">theta</span>, <span class="va">order</span>, over_f <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -61,7 +61,7 @@ that is location-scale in its first two parameters. The general form of
 <dl><dt id="arg-distrib">distrib<a class="anchor" aria-label="anchor" href="#arg-distrib"></a></dt>
 <dd><p>An object inheriting from <code>distrib</code> whose first two
 parameters are a location and a scale, and which supplies response
-derivatives to the order asked for.</p></dd>
+derivatives to the requested order.</p></dd>
 
 
 <dt id="arg-q">q<a class="anchor" aria-label="anchor" href="#arg-q"></a></dt>
@@ -102,8 +102,8 @@ partials are exact zeros.</p>
     <p>The response derivatives of orders 3 and 4 are what make this reach past
 second order: with only <code><a href="distrib_grad_y.html">distrib_grad_y()</a></code> and <code><a href="distrib_hess_y.html">distrib_hess_y()</a></code> the
 construction stops where <code><a href="loc_scale_cdf_deriv.html">loc_scale_cdf_deriv()</a></code> stops. At orders 1 and 2
-the two agree to the last bit, which is the check that licenses the orders
-above.</p>
+the two agree to rounding error, which is the check that supports the
+orders above.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

@@ -26,10 +26,11 @@ mn_parts(distrib, theta)
 ## Value
 
 A named list with `prob`, the probability vector of length \\p\\ summing
-to one; `A`, the \\p \times (p-1)\\ matrix of first derivatives in the
-free values; `B`, the list of second-derivative vectors keyed by
-unordered tuple; `idx`, those tuples; and `k`, the number of free
-values.
+to one; `lp`, its logarithm; `alr`, whether the parametrization is the
+additive log-ratio chart; `A`, the \\p \times (p-1)\\ matrix of first
+derivatives in the free values; `B`, the list of second-derivative
+vectors keyed by unordered tuple; `idx`, those tuples; and `k`, the
+number of free values.
 
 ## Details
 
@@ -38,7 +39,11 @@ that identity shows that the columns of \\A = \partial p/\partial\eta\\
 sum to zero and so does every second-derivative vector
 \\B\_{\cdot,kl}\\. The second of those makes the expected information
 closed form: under expectation the term carrying \\B\\ becomes \\n\sum_j
-B\_{j,kl}\\, which is zero.
+B\_{j,kl}\\, which is zero. On the additive log-ratio chart of
+[`parameters7::simplex()`](https://statmodels7.github.io/parameters7/reference/simplex.html)
+the log-probabilities are formed directly by
+[`mn_log_probs()`](https://statmodels7.github.io/distributions7/reference/mn_log_probs.md),
+so a probability that underflows keeps its logarithm.
 
 ## See also
 

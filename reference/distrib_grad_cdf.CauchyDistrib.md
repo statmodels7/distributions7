@@ -1,10 +1,10 @@
 # Cauchy Log-CDF Gradient
 
-Closed form, from the location-scale structure: \\\partial F/\partial\mu
-= -f(q)\\ and \\\partial F/\partial\sigma = -z f(q)\\ with \\z =
-(q-\mu)/\sigma\\. The method is
-[`loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_grad_cdf.md)
-itself.
+Closed form: \\\partial F/\partial\mu = -f(q)\\ and \\\partial
+F/\partial\sigma = -z f(q)\\ with \\z = (q-\mu)/\sigma\\, computed by
+[`cauchy_cdf_method()`](https://statmodels7.github.io/distributions7/reference/cauchy_cdf_method.md)
+as \\-\mathrm{Im}(\mathrm{i}^k Y^{-1})/\pi\\ with \\Y = q - \mu +
+\mathrm{i}\sigma\\, without squaring the residual.
 
 ## Arguments
 
@@ -39,11 +39,11 @@ of `q` recycled against `theta`.
 
 ## Details
 
-No moment of the Cauchy exists, and none is needed here: the
-distribution function is elementary, \\F(q) = 1/2 + \arctan(z)/\pi\\,
-and the identity \\\partial F/\partial\mu = -f\\ holds for every
-location-scale family whether or not its moments converge. The
-quantities this page returns are therefore exact where
+The family has no moments, and none is needed here: the distribution
+function is elementary, \\F(q) = 1/2 + \arctan(z)/\pi\\, and the
+identity \\\partial F/\partial\mu = -f\\ holds for every location-scale
+family whether or not its moments converge. The quantities this page
+returns are therefore exact where
 [`mean.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/mean.CauchyDistrib.md)
 and its siblings return `NaN`.
 
@@ -56,8 +56,8 @@ half-interquartile range.
 
 ## See also
 
-[`loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_grad_cdf.md)
-for the shared body;
+[`cauchy_cdf_method()`](https://statmodels7.github.io/distributions7/reference/cauchy_cdf_method.md)
+for the body;
 [`distrib_hess_cdf.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.CauchyDistrib.md)
 for the second order;
 [`mean.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/mean.CauchyDistrib.md)
@@ -71,7 +71,7 @@ d <- cauchy_distrib()
 th <- list(mu = 0.3, sigma = 1.2)
 q <- c(-1, 0.5, 2)
 
-# Exact, even though no moment of this family exists.
+# Exact, although the family has no moments.
 all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th))
 #> [1] TRUE

@@ -3,18 +3,22 @@
 canonical parametrization, the two shapes \(\alpha &amp;gt; 0\) and
 \(\beta &amp;gt; 0\). The returned object carries closed-form derivatives of the
 log-density to fourth order, in the parameters and in the response, and
-closed-form moments, so every generic of the toolkit answers without a
-numerical fallback.
+closed-form moments. The fifth order and the mixed derivatives of order
+three and four in the response and the parameters come from the numerical
+fallbacks of the base class.
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both shapes being positive."><meta property="og:description" content="Builds the distribution object for the beta family on \((0, 1)\) in its
 canonical parametrization, the two shapes \(\alpha &amp;gt; 0\) and
 \(\beta &amp;gt; 0\). The returned object carries closed-form derivatives of the
 log-density to fourth order, in the parameters and in the response, and
-closed-form moments, so every generic of the toolkit answers without a
-numerical fallback.
+closed-form moments. The fifth order and the mixed derivatives of order
+three and four in the response and the parameters come from the numerical
+fallbacks of the base class.
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both shapes being positive."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -23,7 +27,7 @@ both shapes being positive."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,10 +64,12 @@ both shapes being positive."><meta property="og:image" content="https://statmode
 canonical parametrization, the two shapes \(\alpha &gt; 0\) and
 \(\beta &gt; 0\). The returned object carries closed-form derivatives of the
 log-density to fourth order, in the parameters and in the response, and
-closed-form moments, so every generic of the toolkit answers without a
-numerical fallback.</p>
+closed-form moments. The fifth order and the mixed derivatives of order
+three and four in the response and the parameters come from the numerical
+fallbacks of the base class.</p>
 <p>The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both shapes being positive.</p>
     </div>
 
@@ -110,7 +116,7 @@ and the quantile function its numerical inverse. The mean is
 falls below one the density is unbounded at the corresponding endpoint.</p>
 <p>This is the same law as <code><a href="beta1_distrib.html">beta1_distrib()</a></code>, which carries the mean and a
 precision, with \(\alpha = \mu\varphi\) and \(\beta = (1-\mu)\varphi\).
-The mean parametrization is the one a regression wants; this one is how the
+The mean parametrization is the one used in regression; this one is how the
 family is usually written, and it is what a conjugate analysis produces, the
 beta being conjugate for a binomial probability.</p>
     </div>
@@ -130,19 +136,21 @@ $$\ell^{(\alpha\alpha)} = \psi'(\alpha+\beta) - \psi'(\alpha), \qquad
       \ell^{(\beta\beta)} = \psi'(\alpha+\beta) - \psi'(\beta).$$</p>
 <p>Three consequences follow. The observed and expected Hessians are the same
 matrix, so Fisher scoring and Newton's method take the same step on the
-parameter scale, and asking any method for <code>expected = TRUE</code> returns the
-same numbers. Every third and fourth derivative is likewise a difference of
+parameter scale, and every method returns the same numbers with
+<code>expected = TRUE</code>. Every third and fourth derivative is likewise a difference
+of
 polygamma functions and free of the data. And the mixed entry
 \(\psi'(\alpha+\beta)\) is positive at every setting, so the two shapes
 are never orthogonal.</p>
 <p>The derivatives of the <em>distribution</em> function in the parameters have no
 elementary form, the derivative of an incomplete beta in its shapes being
-hypergeometric, and are taken by finite difference on the analytic cdf.</p>
+hypergeometric, and are computed by a compiled quadrature of the density
+times the derivatives of the log-density.</p>
     </div>
     <div class="section level2">
     <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>
-    <p><code><a href="fit_distrib.html">fit_distrib()</a></code> maximizes the log-likelihood on the link scale. Neither
-estimate is closed form, both estimating equations involving digamma
+    <p><code><a href="fit_distrib.html">fit_distrib()</a></code> maximizes the log-likelihood on the link scale. The
+estimates have no closed form, both estimating equations involving digamma
 functions. The method of moments supplies the starting values through the
 concentration \(k = \bar y(1-\bar y)/s^2 - 1\), with
 \(\hat\alpha = k\bar y\) and \(\hat\beta = k(1-\bar y)\), and the
@@ -167,10 +175,11 @@ Wiley, New York.</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="beta1_distrib.html">beta1_distrib()</a></code> for the same law in the mean and a precision, which is the
 parametrization a regression uses; <code><a href="betabinom2_distrib.html">betabinom2_distrib()</a></code> for the beta as a
-mixing law over a binomial probability; <code><a href="gamma1_distrib.html">gamma1_distrib()</a></code> for the family a
-ratio of gammas turns into this one; <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the
+mixing law over a binomial probability; <code><a href="gamma1_distrib.html">gamma1_distrib()</a></code> for the gamma,
+from which the beta arises as \(X/(X+Y)\) for independent gamma
+variables with a common scale; <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the
 parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a family of your own against the
-same battery this one passes; <a href="Beta2Distrib.html">Beta2Distrib</a> for the class.</p></div>
+same battery of checks that this family passes; <a href="Beta2Distrib.html">Beta2Distrib</a> for the class.</p></div>
     </div>
 
     <div class="section level2">
@@ -191,7 +200,7 @@ same battery this one passes; <a href="Beta2Distrib.html">Beta2Distrib</a> for t
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">dbeta</a></span><span class="op">(</span><span class="va">y</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Moments: the mean is the ratio, and neither parameter is a mean.</span></span></span>
+<span class="r-in"><span><span class="co"># Moments: the mean is alpha / (alpha + beta); neither parameter is a mean.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, var <span class="op">=</span> <span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  skew <span class="op">=</span> <span class="fu"><a href="skewness.html">skewness</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, kurt <span class="op">=</span> <span class="fu"><a href="kurtosis.html">kurtosis</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mean        var       skew       kurt </span>

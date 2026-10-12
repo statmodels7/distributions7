@@ -55,17 +55,22 @@ A named list keyed as
 
 ## Details
 
-The step is
-[`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)',
-which shrinks near a finite boundary so that both evaluation points stay
-strictly inside the parameter's open domain. On the link scale the
-domain is the whole line and no clamp is needed, so the step is the
-plain relative one.
+On the parameter scale the step is chosen by
+[`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md)
+from the candidates of
+[`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md),
+which shrink near a finite boundary so that both evaluation points stay
+strictly inside the parameter's open domain; with `approx = "mc"` the
+step of
+[`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
+is used directly. On the link scale the domain is the whole line and no
+clamp is needed, so the step is the plain relative one.
 
-**It refuses rather than approximating an approximation.** Where the
-expected information is obtained by quadrature or by simulation, this
-would be a difference of a difference, which the package forbids
-everywhere, and it would cost 2p of the dearest call the family has.
+**The method signals an error where the expected information is itself
+an approximation.** Where the expected information is obtained by
+quadrature or by simulation, the result would be a difference of a
+difference, which the package does not compute anywhere, and it would
+cost 2p of the most expensive call that the family has.
 
 ## See also
 

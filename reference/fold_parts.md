@@ -1,11 +1,15 @@
 # The Two Preimages of a Folded Point
 
-Computes the parent's density at \\+x\\ and at \\-x\\, their sum, and
-the weight \\w = f(x)/L(x)\\ of the positive preimage. Every method of
+Computes the parent's density at \\+x\\ and at \\-x\\, their sum, its
+logarithm and the weight \\w = f(x)/L(x)\\ of the positive preimage.
+Every method of
 [FoldedDistrib](https://statmodels7.github.io/distributions7/reference/FoldedDistrib.md)
-needs the same four quantities, so they are formed once per call: the
-density is \\L\\, the score is \\w s(x) + (1-w) s(-x)\\, and every
-higher-order ratio is a \\w\\-weighted average of the parent's own.
+needs the same quantities, so they are formed once per call: the density
+is \\L\\, the score is \\w s(x) + (1-w) s(-x)\\, and every higher-order
+ratio is a \\w\\-weighted average of the parent's own. The weight and
+\\\log L\\ are formed from the two log-densities, \\w = 1/(1 + e^{\log
+f(-x) - \log f(x)})\\ and a log-sum-exp, so they stay correct where both
+densities underflow.
 
 ## Usage
 
@@ -22,7 +26,10 @@ fold_parts(parent, x, theta)
 - x:
 
   A numeric vector of points at which to evaluate. Negative values are
-  not screened out here; the calling method zeroes them.
+  not screened out here;
+  [`distrib_pdf.FoldedDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.FoldedDistrib.md)
+  returns zero for them, and the other methods require non-negative
+  values.
 
 - theta:
 
@@ -30,9 +37,9 @@ fold_parts(parent, x, theta)
 
 ## Value
 
-A named list of four numeric vectors of the recycled length: `fp` and
-`fm`, the parent's density at \\+x\\ and \\-x\\; `L`, their sum; and
-`w`, the ratio `fp / L`.
+A named list of five numeric vectors of the recycled length: `fp` and
+`fm`, the parent's density at \\+x\\ and \\-x\\; `L`, their sum; `logL`,
+its logarithm; and `w`, the ratio `fp / L`.
 
 ## Details
 
@@ -60,11 +67,12 @@ g <- gaussian1_distrib()
 theta <- list(mu = 0.5, sigma = 1.2)
 p <- distributions7:::fold_parts(g, c(0, 1, 3), theta)
 str(p)
-#> List of 4
-#>  $ fp: num [1:3] 0.305 0.305 0.038
-#>  $ fm: num [1:3] 0.30481 0.15221 0.00473
-#>  $ L : num [1:3] 0.6096 0.457 0.0427
-#>  $ w : num [1:3] 0.5 0.667 0.889
+#> List of 5
+#>  $ fp  : num [1:3] 0.305 0.305 0.038
+#>  $ fm  : num [1:3] 0.30481 0.15221 0.00473
+#>  $ L   : num [1:3] 0.6096 0.457 0.0427
+#>  $ logL: num [1:3] -0.495 -0.783 -3.154
+#>  $ w   : num [1:3] 0.5 0.667 0.889
 
 # L is the sum of the two preimages, which is the folded density.
 all.equal(p$L, dnorm(c(0, 1, 3), 0.5, 1.2) + dnorm(-c(0, 1, 3), 0.5, 1.2))

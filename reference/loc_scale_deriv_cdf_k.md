@@ -8,9 +8,11 @@ body that the location-scale families register:
 [`loc_scale_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv_k.md)
 at every order up to the one wanted, put on the requested tail and scale
 by
-[`cdf_scale_k()`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md).
-Five families use it, the Gaussian, the logistic, the Cauchy and the
-Laplace here and the Gumbel in `cdf_mapped_higher.R`.
+[`loc_scale_cdf_route()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_route.md).
+Four families use it, the Gaussian, the logistic and the Laplace here
+and the Gumbel in `cdf_mapped_higher.R`; the Cauchy has its own closed
+form,
+[`cauchy_cdf_method()`](https://statmodels7.github.io/distributions7/reference/cauchy_cdf_method.md).
 
 ## Usage
 
@@ -33,9 +35,8 @@ numeric vectors of that order.
 ## Details
 
 Every lower order is computed because the log-scale conversion reads
-them all. The function is a factory so that the order can be closed
-over, `force(order)` being what keeps the two registrations from sharing
-one value.
+them all. The function is a factory so that the order is fixed in the
+closure of each registered method.
 
 ## See also
 

@@ -2,8 +2,9 @@
 
 Builds the distribution object for the Laplace (double exponential)
 family with location \\\mu\\ and scale \\\sigma \> 0\\. The returned
-object carries closed-form derivatives of the log-density to fourth
-order and closed-form moments.
+object carries closed-form derivatives of the log-density to fifth order
+in the parameters and to fourth order in the response, and closed-form
+moments.
 
 The family is symmetric about \\\mu\\ with variance \\2\sigma^2\\ and
 excess kurtosis 3, so it is heavier tailed than a Gaussian. Its maximum
@@ -59,7 +60,7 @@ The mean and the median are \\\mu\\, the variance is \\2\sigma^2\\, the
 skewness is 0 and the excess kurtosis is 3.
 [`laplace2_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md)
 is the same law written by its rate \\\lambda = 1/\sigma\\, which is the
-form a lasso penalty uses.
+form that a lasso penalty uses.
 
 ## The kink, and what it costs
 
@@ -79,11 +80,13 @@ visible in the methods:
   [`distrib_expected_hessian.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LaplaceDistrib.md)
   returns.
 
-`params_smooth` is `c(mu = FALSE, sigma = TRUE)`, and
+`params_smooth` is `c(mu = FALSE, sigma = TRUE)`. When an entry is
+`FALSE`,
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-reads it to skip the finite-difference comparison in \\\mu\\, where a
-central difference straddling the corner returns a number that is not a
-derivative of anything.
+recomputes each finite-difference reference with half the step and drops
+the observations at which the two disagree, because a central difference
+that straddles the corner is not a derivative there; the comparison
+still covers every parameter, \\\mu\\ included.
 
 ## Estimation
 
@@ -122,7 +125,9 @@ and
 for the other robust location families, the second of which smooths this
 one's corner away;
 [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md),
-which contains this family as its pure-\\\ell_1\\ case;
+whose density tends to that of
+[`laplace2_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md)
+as its mixing weight \\\alpha\\ tends to 1;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 and
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)

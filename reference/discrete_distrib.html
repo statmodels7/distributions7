@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,8 +107,10 @@
 
 
 <p>Defaults for discrete distributions, built from the probability mass function
-alone by accumulating it over the support; they require a finite lower bound,
-which every standard count distribution has.</p>
+alone by accumulating it over the support, and for the derivatives of the cdf
+by exact summation; they require a finite lower bound, which every standard
+count distribution has. A discrete distribution has no derivatives in the
+response.</p>
 <p><code><a href="distrib_cdf.discrete_distrib.html">distrib_cdf()</a></code>,
 <code><a href="distrib_quantile.discrete_distrib.html">distrib_quantile()</a></code>,
 <code><a href="distrib_rng.discrete_distrib.html">distrib_rng()</a></code>,

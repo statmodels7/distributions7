@@ -39,26 +39,24 @@ differentiated again. The location and the scale then enter only through
 
 ## Value
 
-A named list of numeric vectors of the order the generic asked for,
-keyed as
+A named list of numeric vectors of the requested order, keyed as
 [`deriv_names(distrib@params, order)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md):
 three components for the gradient, six for the Hessian, ten at order 3
 and fifteen at order 4.
 
-## What it is worth
+## Accuracy
 
-Against a product stencil on the same cdf, at \\\mu = 0.3\\, \\\sigma =
-1.2\\, \\\alpha = 2\\: \\3.6\times10^{-9}\\ at order 1,
-\\2.1\times10^{-6}\\ at order 2, \\9.5\times10^{-5}\\ at order 3 and
-\\3.8\times10^{-4}\\ at order 4.
+The derivatives are closed forms. A product stencil on the same
+distribution function loses accuracy as the order grows, by one or two
+digits per order.
 
-## The family this leaves behind
+## Relation to the Student t and the pseudo-Huber
 
-The skew normal used to be grouped with the Student t and the
-pseudo-Huber, whose shape components are differenced. It is not any
-more, and the reason is the elementary partials above: only the skew t
-still differences a shape here, its degrees of freedom entering through
-a Student t distribution function.
+The shape components of the skew normal are closed through the
+elementary partial derivatives of Owen's T given above. The Student t,
+the pseudo-Huber and the skew t have no closed derivative in a shape
+parameter; their shape components are integrals of the density's own
+derivatives, taken by the compiled rule.
 
 ## Notation
 
@@ -73,7 +71,7 @@ and
 [`sn_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/sn_cdf_deriv_k.md)
 for the construction;
 [`distrib_grad_cdf.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewTDistrib.md),
-which does difference its shape;
+which integrates its shape derivatives by the compiled rule;
 [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md).
 
 ## Examples
@@ -88,13 +86,14 @@ all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th))
 #> [1] TRUE
 
-# At shape zero the family is Gaussian, and so are its cdf derivatives.
+# At shape zero the family is Gaussian, and its location and scale
+# derivatives agree with the Gaussian's.
 g0 <- distrib_grad_cdf(d, q, list(mu = 0.3, sigma = 1.2, alpha = 0),
                        log = FALSE)
 gg <- distrib_grad_cdf(gaussian1_distrib(), q, list(mu = 0.3, sigma = 1.2),
                        log = FALSE)
 max(abs(g0$mu - gg$mu))
-#> [1] 0
+#> [1] 2.775558e-17
 
 # Three, six, ten and fifteen components as the order rises.
 lengths(list(distrib_grad_cdf(d, q, th),

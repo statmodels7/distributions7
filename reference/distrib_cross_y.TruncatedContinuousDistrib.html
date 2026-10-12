@@ -4,16 +4,18 @@ log-density by \(\ell(y;\theta) - \log Z(\theta)\), and the normalizing
 constant does not depend on \(y\), so it vanishes from any derivative
 taking one derivative in the response. The equality is exact, not
 approximate, and holds at every observation inside the support.
-This is the one derivative of a truncated family that costs nothing. The
-gradient and the Hessian both need \(\log Z\) and its derivatives, which
-is one quadrature or one pair of cdf evaluations per component."><meta property="og:description" content="The parent's mixed derivatives, unchanged. Truncation replaces the parent's
+Like the response gradient and the response Hessian of a truncated family,
+this block costs nothing beyond the parent's. The gradient and the Hessian
+in the parameters both need \(\log Z\) and its derivatives, which is one
+quadrature or one pair of cdf evaluations per component."><meta property="og:description" content="The parent's mixed derivatives, unchanged. Truncation replaces the parent's
 log-density by \(\ell(y;\theta) - \log Z(\theta)\), and the normalizing
 constant does not depend on \(y\), so it vanishes from any derivative
 taking one derivative in the response. The equality is exact, not
 approximate, and holds at every observation inside the support.
-This is the one derivative of a truncated family that costs nothing. The
-gradient and the Hessian both need \(\log Z\) and its derivatives, which
-is one quadrature or one pair of cdf evaluations per component."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+Like the response gradient and the response Hessian of a truncated family,
+this block costs nothing beyond the parent's. The gradient and the Hessian
+in the parameters both need \(\log Z\) and its derivatives, which is one
+quadrature or one pair of cdf evaluations per component."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +23,7 @@ is one quadrature or one pair of cdf evaluations per component."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,9 +61,10 @@ log-density by \(\ell(y;\theta) - \log Z(\theta)\), and the normalizing
 constant does not depend on \(y\), so it vanishes from any derivative
 taking one derivative in the response. The equality is exact, not
 approximate, and holds at every observation inside the support.</p>
-<p>This is the one derivative of a truncated family that costs nothing. The
-gradient and the Hessian both need \(\log Z\) and its derivatives, which
-is one quadrature or one pair of cdf evaluations per component.</p>
+<p>Like the response gradient and the response Hessian of a truncated family,
+this block costs nothing beyond the parent's. The gradient and the Hessian
+in the parameters both need \(\log Z\) and its derivatives, which is one
+quadrature or one pair of cdf evaluations per component.</p>
     </div>
 
 
@@ -75,7 +78,8 @@ is one quadrature or one pair of cdf evaluations per component.</p>
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric vector of observations inside the truncation interval.
-Outside it the parent's value is returned, the method testing nothing.</p></dd>
+Outside it the parent's value is returned, because the method performs
+no test.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>

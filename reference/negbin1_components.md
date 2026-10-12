@@ -5,25 +5,20 @@ Returns the components of
 one to four, from the sparse form the NB1 log-likelihood takes in the
 size \\r = \mu/\theta\\.
 
-`nb1_exact_cut()` is the dispersion below which the cancellation-free
-assembly is used in place of the recursion in the size. It sits where
-the two agree and each is still comfortable: measured at \\\mu = 4\\,
-\\y = 3\\, they agree to 4e-11 or better at \\\theta = 1\\ and to
-5.5e-09 at \\\theta = 0.1\\, and part company below that.
+`nb1_exact_cut()` returns the dispersion, 1, below which the
+cancellation-free assembly is used in place of the recursion in the
+size. The scores and second derivatives use the same threshold in the
+compiled kernels.
 
 `nb1_M_derivs()` returns \\M(\theta) = \log(1+\theta)/\theta\\ and its
-derivatives to the order asked for. It is the one composite piece of the
+derivatives to the given order. It is the one composite piece of the
 cancellation-free form below, and it has a removable singularity at
 \\\theta = 0\\: the recursion \\\theta M^{(b+1)} + (b+1)M^{(b)} = (-1)^b
 b!/(1+\theta)^{b+1}\\ divides by \\\theta\\ and loses its digits there,
 while the series \\M^{(b)} = (-1)^b \sum\_{n\ge 0} (-1)^n
 \left\[\prod\_{i\le b}(n+i)\right\]\theta^n/(n+b+1)\\ converges only
-below one. The crossover is MEASURED and not chosen: the two agree to
-between 1.9e-16 and 3.4e-13 over \\\theta\\ from 0.01 to 0.5, and each
-fails on its own side – the recursion by 1.4e-04 at \\\theta = 10^{-6}\\
-and by 2.3e+08 at order four, the series by 1.1e-02 at \\\theta = 0.8\\.
-It is the shape the generalized Pareto's `Lambda` already carries one
-family over.
+below one. The function uses `nterm` terms of the series for \\\theta\\
+below `cut` and the recursion otherwise.
 
 `nb1_components_exact()` is the cancellation-free assembly, from the
 form in \\\mu + i\theta\\ that `negbin1_psums_cpp()` documents.
@@ -75,7 +70,7 @@ linear in \\\mu\\, so it contributes to components carrying at most one
 \\\mu\\; \\C\\ carries none. The only composite piece is
 \\G(\mu/\theta)\\.
 
-## The recursion that closes on itself
+## The recursion in the powers of r
 
 Its mixed derivatives take the form
 \$\$\frac{\partial^{a+b}}{\partial\mu^a\partial\theta^b}G(\mu/\theta) =
@@ -98,25 +93,23 @@ differences therefore go through
 which forms them as an exact sum of reciprocals rather than as a
 subtraction.
 
-## Where the recursion cedes, and the form that does not
+## The form without the size
 
-What that does not repair is the cancellation among the powers of \\r\\
-in the recursion itself: at orders three and four those terms are of
-size \\8\times10^6\\ at \\\theta = 5\times10^{-4}\\ and sum to a value
-of order one. Measured at \\\mu = 4\\, \\y = 3\\, the third derivative
-in \\\theta\\ reads \\-1.97\times10^{9}\\ at \\\theta = 10^{-6}\\ where
-the value is \\9/32\\, and the fourth \\7.90\times10^{15}\\.
+The polygamma differences do not remove the cancellation among the
+powers of \\r\\ in the recursion itself: at orders three and four those
+terms are large compared with their sum, and as \\\theta\\ goes to zero
+the recursion loses every significant digit.
 
-The size need not appear at all, which is what removes it. Since
-\\\log\Gamma(y+r) - \log\Gamma(r) = \sum\_{i\<y}\log(r+i)\\ and \\r =
-\mu/\theta\\, the \\y\log\theta\\ each such term carries cancels EXACTLY
-against \\C(\theta)\\, leaving \$\$\ell = \sum\_{i\<y}\log(\mu +
-i\theta) - \log(y!) - \frac{\mu}{\theta}\log(1+\theta) -
-y\log(1+\theta),\$\$ whose variable does not run away and whose every
-derivative is elementary. Below `nb1_exact_cut()` that is the route
-taken, through `nb1_components_exact()`; above it the recursion is
-within 4e-11 and costs \\O(1)\\ where the sum costs \\y\\ terms an
-observation.
+The size need not appear at all, and the form without it has no such
+cancellation. Since \\\log\Gamma(y+r) - \log\Gamma(r) =
+\sum\_{i\<y}\log(r+i)\\ and \\r = \mu/\theta\\, the \\y\log\theta\\ each
+such term carries cancels EXACTLY against \\C(\theta)\\, leaving
+\$\$\ell = \sum\_{i\<y}\log(\mu + i\theta) - \log(y!) -
+\frac{\mu}{\theta}\log(1+\theta) - y\log(1+\theta),\$\$ whose variable
+does not run away and whose every derivative is elementary. Below
+`nb1_exact_cut()` that is the route taken, through
+`nb1_components_exact()`; above it the recursion is accurate and costs
+\\O(1)\\ per observation, where the sum costs \\y\\ terms.
 
 ## See also
 

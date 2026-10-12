@@ -7,9 +7,9 @@ expectation: \$\$\mathbb{E}\left\[\ell^{(\alpha\alpha)}\right\] =
 \psi'(\alpha+\beta) - \psi'(\alpha), \qquad
 \mathbb{E}\left\[\ell^{(\alpha\beta)}\right\] = \psi'(\alpha+\beta),
 \qquad \mathbb{E}\left\[\ell^{(\beta\beta)}\right\] =
-\psi'(\alpha+\beta) - \psi'(\beta).\$\$ Nothing is averaged, integrated
-or simulated, so `approx` and `nsim` are ignored and `y` is read only
-for its length.
+\psi'(\alpha+\beta) - \psi'(\beta).\$\$ The expectation is exact, so the
+method does not average, integrate or simulate; it ignores `approx` and
+`nsim` and reads `y` only for its length.
 
 The consequence for fitting is that Fisher scoring and Newton's method
 take the same step on the parameter scale, both inverting the same
@@ -58,13 +58,14 @@ the two shapes are not orthogonal at any parameter setting.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
 A named list of three numeric vectors, `alpha_alpha`, `beta_beta` and
-`alpha_beta`, in that order, each of length `length(y)`.
+`alpha_beta`, in that order, each of length
+`max(length(y), length(alpha), length(beta))`.
 
 ## Notation
 

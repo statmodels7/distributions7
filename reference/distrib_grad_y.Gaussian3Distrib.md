@@ -4,10 +4,7 @@ Computes the first derivative of the Gaussian log-density with respect
 to the response, \$\$\dfrac{\partial \ell}{\partial y} = -\tau(y -
 \mu),\$\$ in closed form. The Gaussian is a location family in \\\mu\\,
 so the response enters the log-density only through \\y - \mu\\ and this
-derivative is the negative of the score in \\\mu\\. Quantile residuals
-and the mixed derivatives of
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-read it.
+derivative is the negative of the score in \\\mu\\.
 
 ## Arguments
 
@@ -42,8 +39,8 @@ for the second derivative in the response,
 [`distrib_gradient.Gaussian3Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gaussian3Distrib.md)
 for the score in the parameters, and
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
-for the generic and the finite-difference fallback a family without a
-closed form takes.
+for the generic and the finite-difference fallback that a family without
+a closed form uses.
 
 ## Examples
 

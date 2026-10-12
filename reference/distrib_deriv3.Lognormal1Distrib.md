@@ -13,8 +13,8 @@ Gaussian's read at \\\log y\\.
 With `expected = TRUE` the expectations are returned, obtained by
 replacing \\r\\ with 0 and \\r^2\\ with \\\sigma^2\\: the component odd
 in \\r\\ vanishes and the pure variance one becomes \\2/\sigma^6\\. Both
-routes are closed form, so no quadrature is run and `approx` and `nsim`
-are ignored.
+routes are closed form, so the method uses no quadrature and ignores
+`approx` and `nsim`.
 
 ## Arguments
 
@@ -61,8 +61,8 @@ are ignored.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 

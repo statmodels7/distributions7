@@ -23,8 +23,7 @@ A skewness beyond it belongs to no skew normal, so
 bounds `gamma1` there and gives it a
 [`linkfunctions7::bounded_link()`](https://statmodels7.github.io/linkfunctions7/reference/bounded_link.html)
 over the open interval. Without the bound the centered-to-direct map
-would return a `NaN` several frames down, where the reason for it is no
-longer visible.
+would return `NaN` without any indication of the cause.
 
 The ceiling is approached slowly: measured, the skewness is 0.9556 at
 \\\alpha = 10\\ and 0.99527 at \\\alpha = 10^4\\. Data skewer than this

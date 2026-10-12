@@ -38,7 +38,7 @@ root finding on the distribution function, reached through
 
   Passed to
   [`distrib_quantile.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.continuous_distrib.md),
-  including the root finder's tolerance.
+  which does not use them.
 
 ## Value
 

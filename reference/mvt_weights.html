@@ -15,7 +15,7 @@ in those four, so they are formed once per call."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,11 +81,10 @@ matrix, and <code>q</code> and <code>cw</code>, each a numeric vector of length 
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The weight is the whole of the family's resistance to outliers. At
-\(q = 0\) it is \((\nu+p)/\nu\), and it decays like \(1/q\), so an
-observation far from the location contributes less to every derivative
-instead of dragging the fit towards itself. Letting \(\nu \to \infty\)
-sends it to one and recovers the gaussian, where nothing is downweighted.</p>
+    <p>The weight limits the influence of a distant observation. At \(q = 0\) it
+is \((\nu+p)/\nu\), and it decays like \(1/q\), so an observation far
+from the location contributes less to every derivative. Letting \(\nu \to
+\infty\) sends it to one and recovers the gaussian.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

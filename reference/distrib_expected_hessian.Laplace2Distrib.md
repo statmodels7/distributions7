@@ -46,8 +46,9 @@ ignored. `y` is read only for its length.
   Ignored, a closed form being available. Accepted so that the signature
   matches the generic's. As for
   [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md),
-  a strategy averaging the observed second derivative would answer 0 in
-  the location.
+  the strategy `"mc"` of the generic, which averages the observed second
+  derivative over simulated draws, would give 0 in the location, while
+  `"opg"`, `"bartlett"` and `"integrate"` read the product of scores.
 
 - nsim:
 

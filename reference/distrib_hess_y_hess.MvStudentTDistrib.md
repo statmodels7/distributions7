@@ -12,8 +12,8 @@ c_b\partial_a\Sigma^{-1} - c\\\partial\_{ab}\Sigma^{-1} +
 2d\left\\S(w\_{ab}, w) + S(w_a, w_b)\right\\,\$\$ with \\S(u, v) =
 uv^\top + vu^\top\\ and every piece from
 [`mvt_dpieces()`](https://statmodels7.github.io/distributions7/reference/mvt_dpieces.md).
-No pair vanishes, where for a gaussian every pair naming a location
-parameter is exactly zero.
+For a gaussian every pair naming a location parameter is exactly zero;
+for the t these pairs are not zero in general.
 
 ## Arguments
 
@@ -35,8 +35,9 @@ parameter is exactly zero.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The two differ here.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  The two differ here.
 
 - ...:
 
@@ -97,5 +98,5 @@ c(gap = max(abs(hh[[key]] -
                 (f(h, h) - f(h, -h) - f(-h, h) + f(-h, -h)) / (4 * h * h))),
   scale = max(abs(hh[[key]])))
 #>          gap        scale 
-#> 7.384823e-07 1.163532e+00 
+#> 8.103763e-07 1.163532e+00 
 ```

@@ -4,8 +4,8 @@ Computes the Gumbel density, with \\z = (y - \mu)/\sigma\\, \$\$f(y;
 \mu, \sigma) = \dfrac{1}{\sigma} \exp\left\\-z - e^{-z}\right\\,\$\$
 written out rather than delegated, base R carrying no Gumbel. The two
 tails are of very different weight: the density falls like \\e^{-z}\\ to
-the right and like \\e^{-e^{-z}}\\ to the left, so the left one is
-doubly exponential and dies far faster.
+the right and like \\e^{-e^{-z}}\\ to the left, so the left tail is
+doubly exponential and decays much faster.
 
 With `log = TRUE` the exponent is returned directly and stays finite
 where the density itself underflows.
@@ -75,8 +75,8 @@ distrib_pdf(d, c(-5, 5), th)
 #> [1] 5.205427e-63 6.692700e-03
 
 # Far to the left the density underflows and its logarithm does not.
-distrib_pdf(d, -6, th)
-#> [1] 2.505348e-173
-distrib_pdf(d, -6, th, log = TRUE)
-#> [1] -397.4288
+distrib_pdf(d, -8, th)
+#> [1] 0
+distrib_pdf(d, -8, th, log = TRUE)
+#> [1] -2972.958
 ```

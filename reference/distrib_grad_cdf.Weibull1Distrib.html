@@ -15,7 +15,7 @@ the partials of \(h\), and those are elementary."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,8 @@ the partials of \(h\), and those are elementary.</p>
 
 <dt id="arg-q">q<a class="anchor" aria-label="anchor" href="#arg-q"></a></dt>
 <dd><p>A numeric vector of quantiles. Values at or below zero give
-derivatives of exactly zero.</p></dd>
+derivatives of exactly zero on the natural scale; on the log scale of the
+lower tail they are <code>NaN</code>, \(\log F\) being infinite there.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -90,7 +91,7 @@ default.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list of numeric vectors of the order the generic asked for,
+    <p>A named list of numeric vectors of the requested order,
 keyed as <code><a href="deriv_names.html">deriv_names(distrib@params, order)</a></code>: two
 components for the gradient, three for the Hessian, four at order 3 and
 five at order 4.</p>
@@ -103,13 +104,12 @@ zero when two do: \(h\) is linear in the shape. That is what keeps the
 expansion short at the higher orders.</p>
     </div>
     <div class="section level2">
-    <h2 id="an-exact-zero-worth-knowing-about">An exact zero worth knowing about<a class="anchor" aria-label="anchor" href="#an-exact-zero-worth-knowing-about"></a></h2>
+    <h2 id="the-shape-component-at-q-equal-to-mu">The shape component at q equal to mu<a class="anchor" aria-label="anchor" href="#the-shape-component-at-q-equal-to-mu"></a></h2>
     <p>At \(q = \mu\) the exponent \(h\) vanishes and so does
 \(\partial h/\partial\sigma = \log q - \log\mu\), so the shape component
 of the gradient is exactly zero there. A relative comparison against a
-numerical derivative at that point measures nothing; an absolute one is what
-to use, and it puts the closed route within \(2.3\times10^{-11}\) of a
-central difference of the cdf.</p>
+numerical derivative at that point has no meaning, and an absolute one is
+the comparison to use.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

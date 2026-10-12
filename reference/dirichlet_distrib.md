@@ -3,9 +3,9 @@
 Builds the distribution object for the Dirichlet family on the open
 simplex of \\p\\ coordinates, parametrized by a mean vector \\\mu\\ and
 a concentration \\\phi \> 0\\. The returned object carries closed-form
-derivatives of the log-density to fourth order and a **closed-form
-expected information**, which is unusual for a family with no location
-and scale to separate.
+derivatives of the log-density to fourth order, a closed-form expected
+information, and closed-form expectations of the third and fourth
+derivatives.
 
 The mean is carried on a `parameters7` simplex and flattened into scalar
 parameters, so every generic of the package indexes it as it does any
@@ -25,8 +25,8 @@ dirichlet_distrib(
 
 - n_dim:
 
-  The number of coordinates \\p\\, a single integer of at least 2.
-  Anything else signals an error naming the argument.
+  The number of coordinates \\p\\, a single whole number of at least 2.
+  Any other value signals an error naming the argument.
 
 - mean:
 
@@ -50,11 +50,12 @@ dirichlet_distrib(
 
 An S7 object of class `DirichletDistrib`, inheriting from
 `multivariate_distrib`, with `param` the simplex given here,
-`distrib_name` `"dirichlet [pd, mean=<chart>]"`, `dimension`
-`"multivariate"`, `n_dim` \\p\\, `bounds` `c(0, 1)`, `params` the
-simplex's free names prefixed by `mean_` followed by `"phi"`, `n_params`
-\\p\\, and `link_params` the identity for each mean coordinate and
-`link_phi` for the concentration.
+`distrib_name` `"dirichlet [<p>d, mean=<name>]"` with `<name>` the
+`param_name` of the mean parameter, `dimension` `"multivariate"`,
+`n_dim` \\p\\, `bounds` `c(0, 1)`, `params` the simplex's free names
+prefixed by `mean_` followed by `"phi"`, `n_params` \\p\\, and
+`link_params` the identity for each mean coordinate and `link_phi` for
+the concentration.
 
 ## The parametrization
 
@@ -68,55 +69,57 @@ is, the tighter the draws sit about the mean. The covariance is
 singular, the coordinates summing to one, and every off-diagonal entry
 is negative.
 
-The parametrization follows the design of the multivariate gaussian's.
-The constrained object, here a point of the simplex, is carried by a
-`parameters7` parameter and **flattened into scalars** with identity
-links, so
+The parametrization follows the design of the multivariate gaussian. The
+constrained object, here a point of the simplex, is carried by a
+`parameters7` parameter and flattened into scalars with identity links,
+so
 [`align_theta()`](https://statmodels7.github.io/distributions7/reference/align_theta.md),
 the derivative names, the link scale and
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-need no special case. The parameter names are the simplex's own free
-names prefixed by `mean_`, followed by `phi`.
+need no special case. The parameter names are the free names of the
+simplex prefixed by `mean_`, followed by `phi`.
 
-## A multivariate family that is not elliptical
+## A family without location and scale
 
-This is the first family of the package with no location and scale to
-separate: the support is a set of dimension \\p-1\\, not a Euclidean
-space, and the covariance is singular by construction. It is therefore
-the real test of the multivariate layer, and two of its methods exist to
-answer that test.
+The family has no location and scale to separate: the support is a set
+of dimension \\p-1\\, not a Euclidean space, and the covariance is
+singular by construction. Two methods follow from this.
 [`mv_marginal.DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.DirichletDistrib.md)
-returns a beta object rather than an error, and
+returns a beta distribution, and
 [`mv_reference_draw.DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.DirichletDistrib.md)
-replaces the base class's gaussian proposal with the uniform on the
-simplex, without which
+replaces the gaussian proposal of the base class with the uniform
+distribution on the simplex, which the normalization check of
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-would estimate an integral that is 1 at about `2e-08`.
+needs.
 
-## Why the expected information is closed form
+## The expected information
 
-Two identities do the work. Differentiating \\\sum_j \mu_j = 1\\ once
-shows that the columns of \\A = \partial\mu/\partial\eta\\ sum to zero,
-and twice that every second-derivative vector of the simplex does; and
-\\\mathbb{E}\[\log y_j\] = \psi(\alpha_j) - \psi(\phi)\\ makes
+Two identities make it closed form. Differentiating \\\sum_j \mu_j = 1\\
+once shows that the columns of \\A = \partial\mu/\partial\eta\\ sum to
+zero, and twice that every second-derivative vector of the simplex does;
+and \\\mathbb{E}\[\log y_j\] = \psi(\alpha_j) - \psi(\phi)\\ makes
 \\\mathbb{E}\[g_j\] = -\psi(\phi)\\ the same constant for every \\j\\.
 Every term of the observed Hessian that carries the data is that
-constant times one of the two zero sums, and vanishes.
+constant times one of the two zero sums, and vanishes. The higher
+derivatives depend on the data only linearly in \\\log y\\, so their
+expectations are closed form as well.
 
-## What is refused
+## Quantities that are not defined
 
-The distribution function and the quantile are refused by
+The distribution function and the quantile signal an error through
 [`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md),
-as for every family of that class: a distribution function on
-\\\mathbb{R}^p\\ is an orthant probability and a quantile needs an
-ordering. The response derivatives are refused too. A marginal over
-several coordinates at once is refused with the reason.
+as for every family of that class without a method of its own: a
+distribution function on \\\mathbb{R}^p\\ is an orthant probability and
+a quantile needs an ordering. The response derivatives signal an error
+as well, and a marginal over several coordinates at once signals an
+error that states the reason.
 
 ## Estimation
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-maximizes the log-likelihood on the link scale, over the simplex's free
-values and \\\log\phi\\. No estimate is closed form.
+maximizes the log-likelihood on the link scale, over the free values of
+the simplex and the link of \\\phi\\ (\\\log\phi\\ by default). No
+estimate is closed form.
 
 ## Notation
 
@@ -183,8 +186,7 @@ c(rank = qr(mv_sigma(d, th))$rank, dim = 3)
 #> rank  dim 
 #>    2    3 
 
-# The marginals are beta with the same concentration, so a panel of a pairs
-# plot is a real distribution.
+# The marginal of a coordinate is a beta with the same concentration.
 mv_marginal(d, th, which = 1)$theta
 #> $mu
 #> [1] 0.4260125

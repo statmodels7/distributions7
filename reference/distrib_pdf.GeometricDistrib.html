@@ -19,7 +19,7 @@ large the mean is."><meta property="og:image" content="https://statmodels7.githu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,8 +71,9 @@ large the mean is.</p>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of counts. A non-integer or negative value gives 0
-with a warning from <code><a href="https://rdrr.io/r/stats/Geometric.html" class="external-link">stats::dgeom()</a></code>.</p></dd>
+<dd><p>A numeric vector of counts. A negative value gives 0, and a
+non-integer value gives 0 with a warning from <code><a href="https://rdrr.io/r/stats/Geometric.html" class="external-link">stats::dgeom()</a></code>. A missing
+value gives <code>NA</code>.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>

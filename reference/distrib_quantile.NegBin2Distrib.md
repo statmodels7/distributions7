@@ -4,8 +4,8 @@ Computes the generalized inverse of the distribution function, \$\$Q(p;
 \mu, \theta) = \min\left\\y \in \mathbb{N}\_0 : F(y; \mu, \theta) \ge
 p\right\\,\$\$ by calling
 [`stats::qnbinom()`](https://rdrr.io/r/stats/NegBinomial.html) at
-`size = theta` and `mu = mu`. The support is a lattice, so the round
-trip through
+`size = theta` and `mu = mu`. The support is discrete, so the round trip
+through
 [`distrib_cdf.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.NegBin2Distrib.md)
 does **not** return `p`: it returns the mass up to the smallest integer
 whose cumulative probability reaches `p`, which overshoots.
@@ -69,8 +69,9 @@ q <- distrib_quantile(d, p, th)
 q
 #> [1]  0  3 13
 
-# On a lattice the round trip overshoots: the cumulative probability at the
-# returned integer is at or above the one asked for, not equal to it.
+# On a discrete support the round trip overshoots: the cumulative
+# probability at the returned integer is at or above the one given, not
+# equal to it.
 rbind(asked = p, reached = distrib_cdf(d, q, th))
 #>              [,1]      [,2]      [,3]
 #> asked   0.0250000 0.5000000 0.9750000

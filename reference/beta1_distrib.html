@@ -4,20 +4,24 @@ parametrized by its mean \(\mu \in (0, 1)\) and a precision \(\phi &amp;gt; 0\),
 so that the shapes are \(\alpha = \mu\phi\) and \(\beta = (1-\mu)\phi\).
 This is the parametrization beta regression uses. The returned object carries
 closed-form derivatives of the log-density to fourth order, in the parameters
-and in the response, and closed-form moments, so every generic of the toolkit
-answers without a numerical fallback.
+and in the response, and closed-form moments. The fifth order and the mixed
+derivatives of order three and four in the response and the parameters come
+from the numerical fallbacks of the base class.
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the logit for
+unconstrained scale on which an optimizer works. The defaults are the logit
+for
 the mean, which lives in \((0, 1)\), and the logarithm for the precision,
 which is positive."><meta property="og:description" content="Builds the distribution object for the beta family on \((0, 1)\)
 parametrized by its mean \(\mu \in (0, 1)\) and a precision \(\phi &amp;gt; 0\),
 so that the shapes are \(\alpha = \mu\phi\) and \(\beta = (1-\mu)\phi\).
 This is the parametrization beta regression uses. The returned object carries
 closed-form derivatives of the log-density to fourth order, in the parameters
-and in the response, and closed-form moments, so every generic of the toolkit
-answers without a numerical fallback.
+and in the response, and closed-form moments. The fifth order and the mixed
+derivatives of order three and four in the response and the parameters come
+from the numerical fallbacks of the base class.
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the logit for
+unconstrained scale on which an optimizer works. The defaults are the logit
+for
 the mean, which lives in \((0, 1)\), and the logarithm for the precision,
 which is positive."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -27,7 +31,7 @@ which is positive."><meta property="og:image" content="https://statmodels7.githu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,10 +69,12 @@ parametrized by its mean \(\mu \in (0, 1)\) and a precision \(\phi &gt; 0\),
 so that the shapes are \(\alpha = \mu\phi\) and \(\beta = (1-\mu)\phi\).
 This is the parametrization beta regression uses. The returned object carries
 closed-form derivatives of the log-density to fourth order, in the parameters
-and in the response, and closed-form moments, so every generic of the toolkit
-answers without a numerical fallback.</p>
+and in the response, and closed-form moments. The fifth order and the mixed
+derivatives of order three and four in the response and the parameters come
+from the numerical fallbacks of the base class.</p>
 <p>The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the logit for
+unconstrained scale on which an optimizer works. The defaults are the logit
+for
 the mean, which lives in \((0, 1)\), and the logarithm for the precision,
 which is positive.</p>
     </div>
@@ -114,12 +120,12 @@ regularized incomplete beta function, and the quantile function its
 numerical inverse. The mean is \(\mu\), the variance
 \(\mu(1-\mu)/(\phi+1)\) and the skewness
 \(2(1-2\mu)\sqrt{\phi+1}/\{(\phi+2)\sqrt{\mu(1-\mu)}\}\).</p>
-<p>The name <em>precision</em> is earned: at a fixed mean the variance falls as
-\(1/(\phi+1)\), so \(\phi\) says how tightly the mass concentrates. Two
-settings are worth recognizing. At \(\mu = 1/2\) and \(\phi = 2\) both
-shapes are 1 and the density is the uniform. Where a shape falls below one,
-which happens when \(\phi\) is small, the density is unbounded at the
-corresponding endpoint.</p>
+<p>\(\phi\) is called a precision because at a fixed mean the variance is
+proportional to \(1/(\phi+1)\), so a larger \(\phi\) concentrates the
+mass more tightly. At \(\mu = 1/2\) and \(\phi = 2\) both shapes are 1
+and the density is the uniform. A shape falls below one when
+\(\mu\phi &lt; 1\) or \((1-\mu)\phi &lt; 1\), and the density is then
+unbounded at the corresponding endpoint.</p>
 <p>This is the same law as <code><a href="beta2_distrib.html">beta2_distrib()</a></code>, which carries the mean and the
 <em>variance</em>, the two being related by \(\sigma^2 = \mu(1-\mu)/(\phi+1)\).
 They are separate families because the second parameter is a different
@@ -153,12 +159,14 @@ methods:</p><ul><li><p>the observed Hessian equals its expectation in <code>mu_m
 differs in <code>mu_phi</code> by the log-odds residual
 \(\log\{y/(1-y)\} - \psi(\alpha) + \psi(\beta)\), whose expectation is
 zero;</p></li>
-<li><p><strong>every</strong> third and fourth derivative is free of the response, so
-<code><a href="distrib_deriv3.Beta1Distrib.html">distrib_deriv3.Beta1Distrib()</a></code> and <code><a href="distrib_deriv4.Beta1Distrib.html">distrib_deriv4.Beta1Distrib()</a></code> return
-the same numbers whether or not <code>expected = TRUE</code> is asked for.</p></li>
+<li><p>every third and fourth derivative is free of the response, so on the
+parameter scale <code><a href="distrib_deriv3.Beta1Distrib.html">distrib_deriv3.Beta1Distrib()</a></code> and
+<code><a href="distrib_deriv4.Beta1Distrib.html">distrib_deriv4.Beta1Distrib()</a></code> return the same numbers for either value
+of <code>expected</code>.</p></li>
 </ul><p>The derivatives of the <em>distribution</em> function in the parameters have no
 elementary form, the derivative of an incomplete beta in its shapes being
-hypergeometric, and are taken by finite difference on the analytic cdf.</p>
+hypergeometric, and are computed by a compiled quadrature of the density
+times the derivatives of the log-density.</p>
     </div>
     <div class="section level2">
     <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>
@@ -185,13 +193,13 @@ rates and proportions. <em>Journal of Applied Statistics</em> <strong>31</strong
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="beta2_distrib.html">beta2_distrib()</a></code> for the same law in the mean and the variance;
+    <div class="dont-index"><p><code><a href="beta2_distrib.html">beta2_distrib()</a></code> for the same law in its two shapes;
 <code><a href="betabinom1_distrib.html">betabinom1_distrib()</a></code> for the beta as a mixing law over a binomial
-probability; <code><a href="bernoulli_distrib.html">bernoulli_distrib()</a></code> for a response at the endpoints rather
-than between them; <code><a href="zero_adjusted.html">zero_adjusted()</a></code> and <code><a href="truncated.html">truncated()</a></code> for the wrappers a
-response with mass at 0 or 1 needs; <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the
+probability; <code><a href="bernoulli_distrib.html">bernoulli_distrib()</a></code> for a response that takes only the
+values 0 and 1; <code><a href="zero_adjusted.html">zero_adjusted()</a></code> for a response with a point mass at 0;
+<code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the
 parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a family of your own against the
-same battery this one passes; <a href="Beta1Distrib.html">Beta1Distrib</a> for the class.</p></div>
+same battery of checks that this family passes; <a href="Beta1Distrib.html">Beta1Distrib</a> for the class.</p></div>
     </div>
 
     <div class="section level2">

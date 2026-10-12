@@ -13,7 +13,7 @@ probability \((p - \zeta)/(1 - \zeta)\)."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,11 +91,11 @@ Defaults to <code>FALSE</code>.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The result is a LATTICE quantile and overshoots, as any discrete quantile
+    <p>The result is a discrete quantile and can overshoot, as any discrete quantile
 does: <code>distrib_cdf(d, distrib_quantile(d, p, theta), theta)</code> returns the
-smallest attainable probability at or above <code>p</code>, not <code>p</code> itself. The
-inflated atom makes the first step larger than the parent's, so a
-probability below \(L_0\) maps to zero however small it is.</p>
+smallest attainable probability at or above <code>p</code>, not <code>p</code> itself. The inflated
+atom makes the first step larger than the parent's, so a probability below
+\(L_0\) maps to zero however small it is.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -127,7 +127,7 @@ log-mass of one observation.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mass_at_zero      q_below </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    0.2873403    0.0000000 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The round trip overshoots, as on any lattice: asked for 0.3, the</span></span></span>
+<span class="r-in"><span><span class="co"># The round trip overshoots, as on any discrete support: for 0.3, the</span></span></span>
 <span class="r-in"><span><span class="co"># attainable probability at the returned point is higher.</span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.9</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>asked <span class="op">=</span> <span class="va">p</span>,</span></span>

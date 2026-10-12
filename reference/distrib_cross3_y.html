@@ -11,7 +11,7 @@ distrib_deriv3_y() differentiated once in each parameter."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,10 +104,11 @@ each hyperparameter, \(-D'\mathrm{diag}(\partial_{\theta_i}\ell^{(yyy)}
 derivative of order three is \(-\partial^3\ell/\partial\mu^3\), so
 $$\frac{\partial^4\ell}{\partial y^3\,\partial\theta_i} =
   -\frac{\partial^4\ell}{\partial\mu^3\,\partial\theta_i},$$
-a component of <code><a href="distrib_deriv4.html">distrib_deriv4()</a></code> with a sign. The fourteen location
-families <code><a href="distrib_deriv3_y.html">distrib_deriv3_y()</a></code> serves by the same identity are served this
-way. Every other continuous family takes one central difference of
-<code><a href="distrib_deriv3_y.html">distrib_deriv3_y()</a></code> in each parameter, through <code><a href="numerical_cross3_y.html">numerical_cross3_y()</a></code>.</p>
+a component of <code><a href="distrib_deriv4.html">distrib_deriv4()</a></code> with a sign. The location families
+listed on the page of <code><a href="loc_cross3_y.html">loc_cross3_y()</a></code> are served this way. Every other
+continuous family goes through <code><a href="mixed_tensor_derivatives.html">mixed_tensor_derivatives()</a></code>, which takes one
+central difference of <code><a href="distrib_deriv3_y.html">distrib_deriv3_y()</a></code> in each parameter where the
+family has a method for it.</p>
     </div>
     <div class="section level2">
     <h2 id="the-link-scale">The link scale<a class="anchor" aria-label="anchor" href="#the-link-scale"></a></h2>

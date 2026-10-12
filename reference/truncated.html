@@ -4,16 +4,18 @@ that the probability the parent placed outside the interval is redistributed
 inside it. Either endpoint may be omitted, giving one-sided truncation, and
 at least one must be given. Discrete and continuous parents are both
 accepted.
-BOTH ENDPOINTS ARE INCLUDED, which for a discrete parent is the difference
-between truncated(poisson_distrib(), lower = 1), the zero-truncated
-Poisson on \(\{1, 2, \dots\}\), and truncating above one."><meta property="og:description" content="Restricts an existing distribution to \([L, U]\) and renormalizes it, so
+Both endpoints are included in the support. For a discrete parent this means
+that truncated(poisson_distrib(), lower = 1) is the zero-truncated Poisson
+on \(\{1, 2, \dots\}\), which keeps the mass at one, whereas truncating
+above one would remove it."><meta property="og:description" content="Restricts an existing distribution to \([L, U]\) and renormalizes it, so
 that the probability the parent placed outside the interval is redistributed
 inside it. Either endpoint may be omitted, giving one-sided truncation, and
 at least one must be given. Discrete and continuous parents are both
 accepted.
-BOTH ENDPOINTS ARE INCLUDED, which for a discrete parent is the difference
-between truncated(poisson_distrib(), lower = 1), the zero-truncated
-Poisson on \(\{1, 2, \dots\}\), and truncating above one."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+Both endpoints are included in the support. For a discrete parent this means
+that truncated(poisson_distrib(), lower = 1) is the zero-truncated Poisson
+on \(\{1, 2, \dots\}\), which keeps the mass at one, whereas truncating
+above one would remove it."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +23,7 @@ Poisson on \(\{1, 2, \dots\}\), and truncating above one."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,9 +61,10 @@ that the probability the parent placed outside the interval is redistributed
 inside it. Either endpoint may be omitted, giving one-sided truncation, and
 at least one must be given. Discrete and continuous parents are both
 accepted.</p>
-<p>BOTH ENDPOINTS ARE INCLUDED, which for a discrete parent is the difference
-between <code>truncated(poisson_distrib(), lower = 1)</code>, the zero-truncated
-Poisson on \(\{1, 2, \dots\}\), and truncating above one.</p>
+<p>Both endpoints are included in the support. For a discrete parent this means
+that <code>truncated(poisson_distrib(), lower = 1)</code> is the zero-truncated Poisson
+on \(\{1, 2, \dots\}\), which keeps the mass at one, whereas truncating
+above one would remove it.</p>
     </div>
 
     <div class="section level2">
@@ -101,8 +104,10 @@ $$f_T(y;\theta) = \frac{f(y;\theta)}{Z(\theta)} \quad (L \le y \le U),
   \qquad Q_T(p) = Q\{F(L^-;\theta) + pZ(\theta)\},$$
 with \(F(L^-) = F(L)\) for a continuous parent and \(F(L) - f(L)\) for a
 discrete one, the lower endpoint being kept. The quantile function inverts
-\(F_T\) through the parent's own, so drawing from the truncated law is an
-exact one-pass inverse transform however small \(Z\) is.</p>
+\(F_T\) through the parent's own, so drawing from the truncated law is a
+one-pass inverse transform. An interval in the upper tail is handled through
+the parent's survival function, in \(Z\), in the distribution function and
+in the quantile function.</p>
     </div>
     <div class="section level2">
     <h2 id="truncation-adds-no-parameter">Truncation adds no parameter<a class="anchor" aria-label="anchor" href="#truncation-adds-no-parameter"></a></h2>
@@ -118,23 +123,24 @@ $$\frac{\partial \ell_T}{\partial\theta_i} = s_i(y) - m_i, \qquad
     = H_{ij}(y) - M_{ij} + m_i m_j,$$
 $$\mathbb{E}\left[\frac{\partial^{2}\ell_T}
   {\partial\theta_i\partial\theta_j}\right] = -\mathrm{Cov}_T(s_i, s_j).$$
-The score is the parent's recentered at its truncated mean, and the
-information is the covariance of that score, which is the second Bartlett
-identity for the truncated model and is used here as a consistency check on
-the two expressions above.</p>
+The score is the parent's recentered at its truncated mean, and the expected
+Hessian is minus the covariance of that score. This is the second Bartlett
+identity for the truncated model, and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> evaluates
+it directly.</p>
     </div>
     <div class="section level2">
-    <h2 id="what-this-costs">What this costs<a class="anchor" aria-label="anchor" href="#what-this-costs"></a></h2>
-    <p>\(m_i\) and \(M_{ij}\) have no closed form for a general parent, and are
-obtained by quadrature or summation through <code><a href="expectation.html">expectation()</a></code>. Where the
-parent has exact cdf derivatives they come instead from two calls on it,
-measured at 1.4 ms against 4.9 ms for a truncated gaussian's Hessian; see
-<code><a href="has_exact_cdf_deriv.html">has_exact_cdf_deriv()</a></code> for why that route is gated on accuracy. Third and
-fourth derivatives are closed form as well, assembled by the partition sums
-of <code>wrapper_derivatives.R</code> from the same ratios taken at higher blocks, and
-they take the same two routes: the parent's cdf derivative of that order
-where the gate admits it, and one memoized <code><a href="expectation.html">expectation()</a></code> per distinct
-block otherwise.</p>
+    <h2 id="computation-of-the-derivatives">Computation of the derivatives<a class="anchor" aria-label="anchor" href="#computation-of-the-derivatives"></a></h2>
+    <p>\(m_i\) and \(M_{ij}\) have no closed form for a general parent. For a
+parent with a compiled scalar route they are computed from the retained mass
+and its derivatives by <code><a href="trunc_route_parts.html">trunc_route_parts()</a></code>. Otherwise, where the parent has
+exact cdf derivatives, they come from two calls on the cdf derivatives, and
+in the remaining cases they are obtained by quadrature or summation through
+<code><a href="expectation.html">expectation()</a></code>; see <code><a href="has_exact_cdf_deriv.html">has_exact_cdf_deriv()</a></code> for why that route is gated on
+accuracy. Third and fourth derivatives are closed form as well, assembled by
+the partition sums of <code>wrapper_derivatives.R</code> from the same ratios taken at
+higher blocks, and they take the same two routes: the parent's cdf derivative
+of that order where the gate admits it, and one memoized <code><a href="expectation.html">expectation()</a></code> per
+distinct block otherwise.</p>
     </div>
     <div class="section level2">
     <h2 id="what-the-constructor-rejects">What the constructor rejects<a class="anchor" aria-label="anchor" href="#what-the-constructor-rejects"></a></h2>
@@ -157,9 +163,9 @@ score. Truncating elsewhere, as in
 <code>truncated(zero_adjusted(gamma2_distrib()), upper = 5)</code>, is legitimate and
 the point mass is carried through
 <code><a href="distrib_atoms.TruncatedContinuousDistrib.html">distrib_atoms.TruncatedContinuousDistrib()</a></code>.</p></li>
-</ul><p>Truncating an already truncated distribution is allowed and is COLLAPSED
-into one object over the intersection of the two intervals. Nesting would be
-correct and would pay the quadrature cost twice.</p>
+</ul><p>Truncating an already truncated distribution is allowed. The result is one
+truncated object over the intersection of the two intervals, which avoids
+computing the normalizing constant twice.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -174,8 +180,8 @@ Hessian; \(\ell_T\) is the truncated log-likelihood; and
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="zero_inflated.html">zero_inflated()</a></code> and <code><a href="zero_adjusted.html">zero_adjusted()</a></code> for the wrappers that DO
-add a parameter, <code><a href="transformation.html">transformation()</a></code> for a change of variable,
+    <div class="dont-index"><p><code><a href="zero_inflated.html">zero_inflated()</a></code> and <code><a href="zero_adjusted.html">zero_adjusted()</a></code> for the wrappers that add a
+parameter, <code><a href="transformation.html">transformation()</a></code> for a change of variable,
 <a href="TruncatedContinuousDistrib.html">TruncatedContinuousDistrib</a> and <a href="TruncatedDiscreteDistrib.html">TruncatedDiscreteDistrib</a> for the two
 classes, and <code><a href="check_distrib.html">check_distrib()</a></code> to validate the result.</p></div>
     </div>
@@ -224,7 +230,7 @@ classes, and <code><a href="check_distrib.html">check_distrib()</a></code> to va
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3021864</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Three refusals, each naming the condition that failed.</span></span></span>
+<span class="r-in"><span><span class="co"># Three errors, each stating the condition that failed.</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">truncated</span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : truncated() was given lower = -2, which is at or below the lower bound of the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   support of 'gamma2' (0). Truncating there removes no probability mass and the</span>

@@ -1,7 +1,7 @@
 # A Second Derivative From One Stencil
 
 The mixed or repeated second derivative of a scalar function, from a
-single stencil rather than from nested first differences.
+single stencil, without nested first differences.
 
 ## Usage
 
@@ -35,11 +35,11 @@ A single number.
 
 ## Details
 
-The nodes, the weights and the step are numericals7's. Where the two
-coordinates differ the stencil is the product of two first-order
+The nodes, the weights and the step are those of numericals7. Where the
+two coordinates differ the stencil is the product of two first-order
 factors, which is one stencil in two variables and not a difference of a
-difference: nesting is forbidden along ONE variable, and is what a mixed
-derivative is along two.
+difference. Nested differences are not used along one variable; a mixed
+derivative differentiates along two different variables.
 
 ## See also
 

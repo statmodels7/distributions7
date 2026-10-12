@@ -3,8 +3,9 @@
 Draws `n` independent logistic variates by calling
 [`stats::rlogis()`](https://rdrr.io/r/stats/Logistic.html), so the draws
 come from R's own generator and depend on `.Random.seed` in the usual
-way. The generalized ratio-of-uniforms fallback the base class supplies
-is bypassed.
+way. The base class would draw by inversion through
+[`distrib_quantile.LogisticDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.LogisticDistrib.md),
+which gives a different sequence for the same seed.
 
 ## Arguments
 

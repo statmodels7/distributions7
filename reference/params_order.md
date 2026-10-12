@@ -2,9 +2,10 @@
 
 One integer per parameter: the largest `k` such that the log-density has
 `k` continuous derivatives in that parameter everywhere in `y`. `Inf`
-says the parameter is smooth, which is the answer for every family that
-declares no
-[`kink_decomposition()`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.md).
+marks a smooth parameter, which is the value for a family that declares
+no
+[`kink_decomposition()`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.md)
+and records every parameter as smooth in `params_smooth`.
 
 ## Usage
 
@@ -29,13 +30,13 @@ A named numeric vector, one entry per element of `distrib@params`.
 
 ## Details
 
-The order is DEDUCED and not declared. Where a family declares a
-decomposition \\c(\theta)\phi(v(y,\theta))\\, a parameter the kink moves
-with – one whose \\\partial v/\partial \theta_p\\ is not identically
-zero – inherits the order of \\\phi\\, and every other parameter stays
-`Inf`. Whether \\\partial v/\partial \theta_p\\ vanishes is measured at
-probe values rather than assumed, so a Huber cut-off held at zero
-reports the scale as smooth, which it then is.
+The order is deduced and not declared. Where a family declares a
+decomposition \\c(\theta)\phi(v(y,\theta))\\, a parameter with which the
+kink moves (one whose \\\partial v/\partial \theta_p\\ is not
+identically zero) inherits the order of \\\phi\\, and every other
+parameter stays `Inf`. Whether \\\partial v/\partial \theta_p\\ vanishes
+is measured at probe values rather than assumed, so a Huber cut-off held
+at zero reports the scale as smooth, which it then is.
 
 A family that declares no decomposition but records a parameter as
 non-smooth through `params_smooth` reports `NA` for it: there is a kink

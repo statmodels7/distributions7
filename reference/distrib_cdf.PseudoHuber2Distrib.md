@@ -3,7 +3,9 @@
 Computes \\P(Y \le q)\\ by numerical integration of the density, taken
 by the compiled rule of
 [`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
-over the tail on the side of \\q\\ away from \\\mu\\.
+over the tail on the side of \\q\\ away from \\\mu\\. With
+`log.p = TRUE` the logarithm is computed on the log scale, so it stays
+finite far in either tail.
 
 ## Arguments
 

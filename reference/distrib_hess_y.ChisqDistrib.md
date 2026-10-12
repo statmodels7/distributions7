@@ -19,7 +19,8 @@ where the family is the exponential with mean 2, and convex for \\\mu \<
 - y:
 
   A numeric vector of strictly positive observations. At `y = 0` the
-  value is infinite unless \\\mu\\ is exactly 2.
+  value is `Inf` for \\\mu \< 2\\, `-Inf` for \\\mu \> 2\\ and 0 for
+  \\\mu = 2\\, where the coefficient is zero.
 
 - theta:
 

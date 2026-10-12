@@ -12,10 +12,9 @@ terms fall below a tolerance, so this is a truncated exact sum and not a
 quadrature or a simulation. approx and nsim are ignored, and y is
 read only for its length.
 The mixed entry does not vanish, so the mean and the dispersion are not
-orthogonal in this family. Measured at four settings it is 0.0172, 0.0364,
-0.0108 and 0.0157; in negbin2_distrib() the same entry is exactly zero.
-That is a difference between the two negative binomials rather than a
-difference of parametrization."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model. Every term
+orthogonal in this family; in negbin2_distrib() the same entry is exactly
+zero. This is a difference between the two families, not between two
+parametrizations of one."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model. Every term
 carrying \(P = \psi(y+r) - \psi(r) - \log(1+\theta)\) drops out, its
 expectation vanishing by the first Bartlett identity. With
 \(u_j = \mu + \theta j\), the entries are \(-A\),
@@ -28,10 +27,9 @@ terms fall below a tolerance, so this is a truncated exact sum and not a
 quadrature or a simulation. approx and nsim are ignored, and y is
 read only for its length.
 The mixed entry does not vanish, so the mean and the dispersion are not
-orthogonal in this family. Measured at four settings it is 0.0172, 0.0364,
-0.0108 and 0.0157; in negbin2_distrib() the same entry is exactly zero.
-That is a difference between the two negative binomials rather than a
-difference of parametrization."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+orthogonal in this family; in negbin2_distrib() the same entry is exactly
+zero. This is a difference between the two families, not between two
+parametrizations of one."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -39,7 +37,7 @@ difference of parametrization."><meta property="og:image" content="https://statm
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,10 +83,9 @@ terms fall below a tolerance, so this is a truncated exact sum and not a
 quadrature or a simulation. <code>approx</code> and <code>nsim</code> are ignored, and <code>y</code> is
 read only for its length.</p>
 <p><strong>The mixed entry does not vanish</strong>, so the mean and the dispersion are not
-orthogonal in this family. Measured at four settings it is 0.0172, 0.0364,
-0.0108 and 0.0157; in <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> the same entry is exactly zero.
-That is a difference between the two negative binomials rather than a
-difference of parametrization.</p>
+orthogonal in this family; in <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> the same entry is exactly
+zero. This is a difference between the two families, not between two
+parametrizations of one.</p>
     </div>
 
 
@@ -130,8 +127,8 @@ Accepted so that the signature matches the generic's.</p></dd>
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -146,12 +143,21 @@ when the parameters are.</p>
     <p>The summand of \(W\) is a rational function of \((\mu, \theta)\),
 \(\theta(2\mu j + \theta j^2 - \mu^2)/((1+\theta) u_j^2)\), so the terms
 of order \(\mu/\theta^2\) that a composition through the size
-\(r = \mu/\theta\) forms are never formed. The dispersion entry still
-loses digits as \(\theta \to 0\), where the summands change sign and
-their sum tends to a finite limit. Measured at \(\mu = 4\), it reads
-\(-0.49999887\) at \(\theta = 10^{-6}\), \(-0.49999994\) at
-\(10^{-8}\) and \(-0.5000013\) at \(10^{-10}\), against the limit
-\(-1/2\), and the matrix stays negative definite.</p>
+\(r = \mu/\theta\) forms are never formed. The summands still change sign
+as \(\theta \to 0\), and \(W/\theta^2\) loses relative accuracy in
+proportion to \(1/\theta\), so \(W\) is used only for
+\(\theta \ge 0.02\). For \(\theta &lt; 0.02\) the dispersion entry is computed
+as the expectation of the observed one in the form without the size
+(<code><a href="distrib_hessian.NegBin1Distrib.html">distrib_hessian.NegBin1Distrib()</a></code>),
+$$\mathbb{E}[\ell^{(\theta\theta)}] = -\mathbb{E}\Big[\sum_{j&lt;Y}
+  \frac{j^2}{u_j^2}\Big] - \mu q'(\theta), \qquad
+  q(\theta) = \frac{\theta - \log(1+\theta)}{\theta^2},$$
+whose summands are all positive, and the mixed entry is \(-\theta/\mu\)
+times it. Both keep their accuracy down to the Poisson limit, where the
+dispersion entry tends to \(-1/2\). The derivatives of the expected
+information (<code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code> and
+<code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()</a></code>) are sums over the same mass and take the
+same two routes.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -199,13 +205,12 @@ quadratic-variance family, whose mixed entry is exactly zero,
 <span class="r-out co"><span class="r-pr">#&gt;</span>        nb1        nb2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.01717466 0.00000000 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The dispersion entry loses its digits as theta goes to zero, and turns</span></span></span>
-<span class="r-in"><span><span class="co"># positive, which an expected second derivative cannot be.</span></span></span>
+<span class="r-in"><span><span class="co"># As theta goes to zero the dispersion entry tends to its limit, -1/2.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1e-2</span>, <span class="fl">1e-4</span>, <span class="fl">1e-6</span>, <span class="fl">1e-8</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>       <span class="kw">function</span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">4</span>, theta <span class="op">=</span> <span class="va">t</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">theta_theta</span>,</span></span>
 <span class="r-in"><span>       <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.4889418 -0.4998875 -0.4999989 -0.4999999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.4889418 -0.4998875 -0.4999989 -0.5000000</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

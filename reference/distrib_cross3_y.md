@@ -61,13 +61,13 @@ derivative of order three is \\-\partial^3\ell/\partial\mu^3\\, so
 -\frac{\partial^4\ell}{\partial\mu^3\\\partial\theta_i},\$\$ a component
 of
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
-with a sign. The fourteen location families
+with a sign. The location families listed on the page of
+[`loc_cross3_y()`](https://statmodels7.github.io/distributions7/reference/loc_cross3_y.md)
+are served this way. Every other continuous family goes through
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md),
+which takes one central difference of
 [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
-serves by the same identity are served this way. Every other continuous
-family takes one central difference of
-[`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
-in each parameter, through
-[`numerical_cross3_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross3_y.md).
+in each parameter where the family has a method for it.
 
 ## The link scale
 

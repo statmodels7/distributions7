@@ -13,7 +13,7 @@ trans_deriv_k(order)
 
 - order:
 
-  The derivative order, 3 or 4.
+  The derivative order, 3, 4 or 5.
 
 ## Value
 

@@ -4,8 +4,8 @@ Computes the geometric distribution function \$\$F(q; \mu) = 1 -
 \left(\dfrac{\mu}{1+\mu}\right)^{\lfloor q \rfloor + 1}\$\$ by calling
 [`stats::pgeom()`](https://rdrr.io/r/stats/Geometric.html) at
 `prob = 1/(1+mu)`. The survival function is exactly
-\\(\mu/(1+\mu))^{q+1}\\, a geometric decay, and `lower.tail = FALSE`
-returns it without forming the difference.
+\\(\mu/(1+\mu))^{\lfloor q \rfloor + 1}\\, a geometric decay, and
+`lower.tail = FALSE` returns it without forming the difference.
 
 ## Arguments
 

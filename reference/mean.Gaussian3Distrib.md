@@ -1,9 +1,9 @@
 # Mean of the Gaussian Distribution in Location and Precision
 
 Closed form: \\E\[Y\] = \mu\\. This is the Gaussian written by its
-precision \\\tau = 1/\sigma^2\\, the parametrization a Bayesian prior or
-a penalized likelihood usually reaches for, and the mean is the location
-as it is in the other two.
+precision \\\tau = 1/\sigma^2\\, a parametrization common in Bayesian
+models. As in the other two Gaussian parametrizations, the mean is the
+location parameter.
 
 ## Arguments
 

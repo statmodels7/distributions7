@@ -3,8 +3,7 @@
 Draws `n` independent Gaussian variates by calling
 [`stats::rnorm()`](https://rdrr.io/r/stats/Normal.html), so the draws
 come from R's own normal generator and depend on `.Random.seed` in the
-usual way. The inverse-transform fallback the base class supplies is
-bypassed.
+usual way. The inverse-transform fallback of the base class is not used.
 
 ## Arguments
 

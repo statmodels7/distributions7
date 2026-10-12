@@ -7,12 +7,12 @@ and \\A = \partial\mu/\partial\eta\\ for the simplex's own Jacobian,
 \$\$\dfrac{\partial\ell}{\partial\eta_k} = \phi \sum\_{j} g_j A\_{jk},
 \qquad \dfrac{\partial\ell}{\partial\phi} = \psi(\phi) + \sum\_{j} g_j
 \mu_j.\$\$ The data enter only through \\\log y\\, the family being an
-exponential family in that statistic, so \\g\\ carries the whole of it.
+exponential family in that statistic.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries before returning. Every mean coordinate rides the
-identity, its free value being unconstrained already, so only the
-concentration's component changes.
+of the family to the result of the method. Every mean coordinate takes
+the identity link, its free value being unconstrained already, so only
+the component of the concentration changes.
 
 ## Arguments
 

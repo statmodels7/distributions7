@@ -3,9 +3,9 @@
 The chain rule on the parent's cdf derivatives at orders 3 and 4,
 through
 [`mapped_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv_k.md).
-It is exact whenever the parent's are exact at every order up to the one
-wanted, and falls to one product stencil on the reparametrized cdf
-otherwise.
+It is exact when the parent's derivatives are exact at every order up to
+the one wanted and the map's partials are exact, and falls to one
+product stencil on the reparametrized cdf when the parent's are not.
 
 ## Arguments
 
@@ -48,13 +48,16 @@ against `theta`.
 
 ## Details
 
-The map's partials come from the object itself,
+The partials of the map come from the object itself,
 [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
-reading the keyed tables the reparametrization was built with. A family
-created by
+reading the keyed tables that the reparametrization was built with. They
+are exact when
+[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+was given `map_derivs`, and single stencils on the map otherwise. A
+family created by
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
 over a parent with closed cdf derivatives therefore reaches the fourth
-order with no arithmetic of its own.
+order with no arithmetic of its own, to the accuracy of those partials.
 
 ## See also
 
@@ -77,8 +80,9 @@ d <- reparametrize(
 )
 th <- list(mu = 0.3, sigma2 = 1.44)
 
-# It agrees with the family written out by hand, to the closed route's own
-# accuracy rather than to the stencil's.
+# It agrees with the family written out by hand to the accuracy of the
+# numerical partials of the map, which reparametrize() forms when
+# map_derivs is not supplied.
 a <- distrib_deriv3_cdf(d, 1, th)
 b <- distrib_deriv3_cdf(gaussian2_distrib(), 1, th)
 max(abs(unlist(a) - unlist(b)))

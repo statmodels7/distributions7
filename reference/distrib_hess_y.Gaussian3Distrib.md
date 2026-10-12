@@ -7,9 +7,8 @@ is constant within a parameter setting and is recycled to the length of
 `y`. Being a location family, the Gaussian has the same curvature in the
 response as in its location, and this equals the `mu_mu` component of
 [`distrib_hessian.Gaussian3Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Gaussian3Distrib.md).
-In this parametrization that curvature is the parameter itself, which is
-the sense in which the precision measures how sharply the log-density
-peaks.
+In this parametrization that curvature is minus the precision, so a
+larger precision gives a sharper peak of the log-density.
 
 ## Arguments
 
@@ -34,7 +33,8 @@ peaks.
 
 ## Value
 
-A numeric vector of length `length(y)`, every entry \\-\tau\\.
+A numeric vector of length `max(length(y), length(mu), length(tau))`,
+every entry \\-\tau\\.
 
 ## See also
 

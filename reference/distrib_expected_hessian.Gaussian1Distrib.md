@@ -8,8 +8,8 @@ closed form and with no quadrature or simulation:
 \mathbb{E}\left\[\dfrac{\partial^2 \ell}{\partial \mu \\ \partial
 \sigma}\right\] = 0.\$\$ They follow from \\\mathbb{E}\[(Y-\mu)^2\] =
 \sigma^2\\ and \\\mathbb{E}\[Y-\mu\] = 0\\. The negative of this matrix
-is the Fisher information for one observation; the zero off-diagonal
-says the mean and the standard deviation are orthogonal, so their
+is the Fisher information for one observation. Its off-diagonal entry is
+zero, so the mean and the standard deviation are orthogonal and their
 estimates are asymptotically independent.
 
 Because the values do not depend on the data, `approx` and `nsim` are
@@ -55,8 +55,8 @@ ignored. `y` is read only for its length.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 

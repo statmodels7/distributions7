@@ -23,7 +23,7 @@ variance.SkewNormal1Distrib() give those."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,16 +110,20 @@ The factor \(2\Phi(\alpha z)\) exceeds one where \(\alpha z &gt; 0\) and
 falls below it where \(\alpha z &lt; 0\), so a positive \(\alpha\) moves
 mass to the right. The distribution function is Azzalini's identity
 \(F(q) = \Phi(z) - 2T(z, \alpha)\) with \(T\) Owen's T, one bounded
-quadrature per observation through <code><a href="https://statmodels7.github.io/numericals7/reference/owen_t.html" class="external-link">numericals7::owen_t()</a></code>. The quantile
-function has no closed form and comes from the base class by root finding.</p>
+quadrature per observation through <code><a href="https://statmodels7.github.io/numericals7/reference/owen_t.html" class="external-link">numericals7::owen_t()</a></code>, with an
+integral of the tail on the light side where that difference cancels. The
+quantile function has no closed form and comes from the base class by root
+finding on the logarithm of the smaller tail.</p>
     </div>
     <div class="section level2">
     <h2 id="derivatives">Derivatives<a class="anchor" aria-label="anchor" href="#derivatives"></a></h2>
     <p>The score and the observed Hessian are closed form, written in the inverse
 Mills ratio \(R(t) = \phi(t)/\Phi(t)\) at \(t = \alpha z\), and so are
-the third and fourth orders, in compiled kernels. One identity does all of
-it: \(R' = -R(t+R)\), so every derivative of \(\log\Phi(t)\) is a
-polynomial in \(t\) and \(R\).</p>
+the third and fourth orders, in compiled kernels. Since
+\(R' = -R(t+R)\), every derivative of \(\log\Phi(t)\) is a polynomial
+in \(t\) and \(R\); below \(t = -1\), where these polynomials cancel,
+the kernels use the cumulants of the logarithm of the Mills ratio
+instead.</p>
 <p>The <strong>expected</strong> information has no elementary form. It depends on
 \(\alpha\) alone once the location and the scale are factored out, so it
 is one integral over \(z\) per distinct \(\alpha\), and so are its first

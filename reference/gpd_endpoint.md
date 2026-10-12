@@ -34,9 +34,9 @@ automatically licensed. The consequence a user meets is that the
 expected information exists only for \\\xi \> -1/2\\; see
 [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md).
 
-[`ifelse()`](https://rdrr.io/r/base/ifelse.html) is correct here and is
-deliberate: both arguments are of the length of the test after
-recycling, so a vector of shapes gives a vector of endpoints.
+The two arguments are recycled to a common length before the branch on
+the sign of the shape, so a vector of scales beside a scalar shape gives
+a vector of endpoints.
 
 ## See also
 

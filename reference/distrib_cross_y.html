@@ -6,14 +6,16 @@ distrib_hessian() this completes the joint Hessian of the log-density in
 \((y, \theta)\): those two are the diagonal blocks and this is the
 off-diagonal one.
 Defined for continuous families only. A discrete family has no derivative
-in \(y\) to cross, and its base class refuses the call."><meta property="og:description" content="Computes the mixed second derivatives
+in \(y\) to cross, so no method is registered for it and the call signals
+an error."><meta property="og:description" content="Computes the mixed second derivatives
 \(\partial^2 \ell / \partial y\, \partial \theta_i\), one component per
 parameter and each a vector along y. Together with distrib_hess_y() and
 distrib_hessian() this completes the joint Hessian of the log-density in
 \((y, \theta)\): those two are the diagonal blocks and this is the
 off-diagonal one.
 Defined for continuous families only. A discrete family has no derivative
-in \(y\) to cross, and its base class refuses the call."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+in \(y\) to cross, so no method is registered for it and the call signals
+an error."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +23,7 @@ in \(y\) to cross, and its base class refuses the call."><meta property="og:imag
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +63,8 @@ parameter and each a vector along <code>y</code>. Together with <code><a href="d
 \((y, \theta)\): those two are the diagonal blocks and this is the
 off-diagonal one.</p>
 <p>Defined for continuous families only. A discrete family has no derivative
-in \(y\) to cross, and its base class refuses the call.</p>
+in \(y\) to cross, so no method is registered for it and the call signals
+an error.</p>
     </div>
 
     <div class="section level2">
@@ -95,7 +98,7 @@ always returns the parameter scale and never reads this.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Passed to the method. No shipped method reads it.</p></dd>
+<dd><p>Passed to the method. The shipped methods do not read it.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -121,10 +124,10 @@ by \(\sigma\) and the <code>mu</code> component by 1.</p>
     </div>
     <div class="section level2">
     <h2 id="where-the-closed-forms-are">Where the closed forms are<a class="anchor" aria-label="anchor" href="#where-the-closed-forms-are"></a></h2>
-    <p>All 32 continuous families in the package register one. The fallback in
-<code><a href="distrib_cross_y.continuous_distrib.html">distrib_cross_y.continuous_distrib()</a></code> therefore exists for families
-defined outside the package, and it is one central difference of
-<code><a href="distrib_grad_y.html">distrib_grad_y()</a></code> in each parameter.</p>
+    <p>Every continuous family in the package registers one. The fallback in
+<code><a href="distrib_cross_y.continuous_distrib.html">distrib_cross_y.continuous_distrib()</a></code> therefore serves families defined
+outside the package. It applies one tensor stencil to the highest quantity
+that the family implements itself, through <code><a href="mixed_tensor_derivatives.html">mixed_tensor_derivatives()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

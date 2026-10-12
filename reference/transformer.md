@@ -86,7 +86,7 @@ transformer(
 An S7 object of class `transformer`, carrying the ten properties above
 and nothing else.
 
-## What a map must be to be one
+## Requirements on the map
 
 \\g\\ has to be BIJECTIVE on the parent's support. A map that is two to
 one, such as the absolute value, has no inverse to carry a density
@@ -96,8 +96,11 @@ handles that case by adding the two preimages instead.
 
 ## Writing your own
 
-The ten properties are all required, and `trans_abs_jac` must accept a
-`log` argument, because
+The constructor accepts any subset of the ten properties and gives the
+others empty defaults, but
+[`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
+needs all of them to be functions of the stated form, and
+`trans_abs_jac` must accept a `log` argument, because
 [`distrib_pdf.TransformedDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.TransformedDistrib.md)
 works on the log scale throughout. `valid_support` takes the parent's
 `bounds` and answers whether the map applies; `bounds_fun` takes the

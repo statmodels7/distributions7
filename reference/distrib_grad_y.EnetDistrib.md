@@ -9,9 +9,10 @@ It is **undefined at the location**, where the sign jumps. `sign(0)` is
 0 in R, so the value returned there is \\-c(y-\mu) = 0\\, one point of
 the subdifferential.
 
-The score is bounded below by \\-a - c(y-\mu)\\ on either side, so the
-Laplace part contributes a jump of \\2a\\ across the location and the
-Gaussian part the slope.
+Away from the location the derivative equals \\-a - c(y-\mu)\\ for \\y
+\> \mu\\ and \\a - c(y-\mu)\\ for \\y \< \mu\\, so the Laplace part
+contributes a jump of \\-2a\\ across the location and the Gaussian part
+the slope \\-c\\.
 
 ## Arguments
 

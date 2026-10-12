@@ -31,7 +31,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,10 +105,12 @@ recycled. <code>sigma</code> must be strictly positive.</p></dd>
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
 <dd><p>Ignored, a closed form being available. Accepted so that the
-signature matches the generic's. This matters more here than elsewhere:
-the strategies that average the observed second derivative would return 0
-for the location, and only the score-based one recovers
-\(1/\sigma^2\).</p></dd>
+signature matches the generic's. Of the strategies of the generic,
+<code>"mc"</code> averages the observed second derivative over simulated draws
+and would give 0 for the location; <code>"opg"</code>, <code>"bartlett"</code> and
+<code>"integrate"</code> (which uses the Bartlett identity for a family with a
+non-smooth parameter) read the product of scores and give
+\(-1/\sigma^2\).</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -182,8 +184,8 @@ generic and the strategies it offers a family with no closed form.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  var_of_score   information mean_observed </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0.4444444     0.4444444     0.0000000 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Fisher scoring can fit the family because this matrix is nonsingular;</span></span></span>
-<span class="r-in"><span><span class="co"># a Newton step on the observed Hessian would divide by zero in mu.</span></span></span>
+<span class="r-in"><span><span class="co"># Fisher scoring fits the family because this matrix is nonsingular; the</span></span></span>
+<span class="r-in"><span><span class="co"># observed Hessian has a zero mu_mu entry.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        mu     sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.4051025 1.4992390 </span>

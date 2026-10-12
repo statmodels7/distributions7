@@ -3,15 +3,17 @@
 constructors and returns its code in the compiled registry and its
 parameters. A candidate is rebuilt from the parameters found in the
 transformer's closures, and the transformer is recognized when every one
-of its functions has the candidate's code and, where it is a closure of
-the constructor, the transformer's own environment; any other transformer
-has no code."><meta property="og:description" content="Identifies a transformer built by one of the twelve ready-made
+of its eight functions has the same source text as the candidate's, with the
+same decreasing flag, and, where the candidate's function is a closure
+created by the constructor, the same environment as the transformer's own
+function; any other transformer has no code."><meta property="og:description" content="Identifies a transformer built by one of the twelve ready-made
 constructors and returns its code in the compiled registry and its
 parameters. A candidate is rebuilt from the parameters found in the
 transformer's closures, and the transformer is recognized when every one
-of its functions has the candidate's code and, where it is a closure of
-the constructor, the transformer's own environment; any other transformer
-has no code."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+of its eight functions has the same source text as the candidate's, with the
+same decreasing flag, and, where the candidate's function is a closure
+created by the constructor, the same environment as the transformer's own
+function; any other transformer has no code."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +21,7 @@ has no code."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,9 +58,10 @@ has no code."><meta property="og:image" content="https://statmodels7.github.io/d
 constructors and returns its code in the compiled registry and its
 parameters. A candidate is rebuilt from the parameters found in the
 transformer's closures, and the transformer is recognized when every one
-of its functions has the candidate's code and, where it is a closure of
-the constructor, the transformer's own environment; any other transformer
-has no code.</p>
+of its eight functions has the same source text as the candidate's, with the
+same <code>decreasing</code> flag, and, where the candidate's function is a closure
+created by the constructor, the same environment as the transformer's own
+function; any other transformer has no code.</p>
     </div>
 
     <div class="section level2">

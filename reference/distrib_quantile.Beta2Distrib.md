@@ -67,7 +67,7 @@ th <- list(alpha = 2, beta = 5)
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #> [1] 0.04327187 0.26444998 0.64123458
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# Exact inverse: the round trip returns the probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #> [1] TRUE

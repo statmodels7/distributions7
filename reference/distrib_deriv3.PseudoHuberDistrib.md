@@ -4,9 +4,15 @@ Computes the ten distinct third derivatives of the pseudo-Huber
 log-density in \\\mu\\, \\\sigma\\ and \\\nu\\, **in closed form**, in a
 compiled kernel. Every component but the pure-\\\nu\\ one is a rational
 function of \\r = y - \mu\\, \\\sigma\\ and \\D = \sqrt{\nu +
-(r/\sigma)^2}\\; Bessel functions enter through \\\nu\\ alone, and the
-exponentially scaled forms are used so that a large \\\nu\\ does not
-overflow.
+(r/\sigma)^2}\\; Bessel functions enter through \\\nu\\ alone. The
+derivatives in \\\nu\\ of \\B(\nu) = \log\\\sqrt\nu K_1(\sqrt\nu)\\\\
+come from three routes, each where it keeps its digits: below \\\nu =
+1\\ the series of \\K_1\\ and \\K_2\\ at the origin; for \\1 \le \nu \<
+400\\ the cumulants of \\1/(4T)\\ under the generalized inverse Gaussian
+law of the integral representation of \\K_1\\, by the trapezoidal rule
+in \\\log t\\; and from \\\nu = 400\\ the asymptotic series of \\K_1\\,
+differentiated term by term in powers of \\\nu^{-1/2}\\. The same routes
+serve the score, the Hessian and the fourth order.
 
 **The expected third derivatives have no closed form.** With
 `expected = TRUE` the method calls
@@ -101,9 +107,9 @@ all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 vapply(distrib_deriv3(d, 0.4, th, expected = TRUE),
        function(v) v[1], numeric(1))
 #>          mu_mu_mu       mu_mu_sigma          mu_mu_nu    mu_sigma_sigma 
-#>      1.301043e-18      3.055008e-01      2.612955e-02     -2.775558e-17 
+#>      3.556183e-17      3.055008e-01      2.612955e-02      0.000000e+00 
 #>       mu_sigma_nu          mu_nu_nu sigma_sigma_sigma    sigma_sigma_nu 
-#>     -6.938894e-18     -1.192622e-18      3.135736e+00      7.878229e-02 
+#>     -5.637851e-18     -4.662069e-18      3.135736e+00      7.878229e-02 
 #>       sigma_nu_nu          nu_nu_nu 
 #>      2.363469e-02      5.907273e-03 
 ```

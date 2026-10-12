@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,9 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A numeric vector of draws, or <code>NULL</code> if no bounding box is found.</p>
+    <p>A numeric vector of draws. An error is signaled if the log-density
+at the mode is not finite, if no bounding rectangle can be built, or if no
+draw is accepted in 1000 rounds.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -79,10 +81,10 @@ reparametrized density, which is how the divergence transforms reuse it.</p>
 <p>Two devices make it safe. The kernel is <strong>recentered at the mode</strong>,
 without which a density located at \(\mu = 1000\) produces a degenerate
 bounding box; and it is <strong>normalized to a maximum of one</strong>. With those it
-rejects far less often than expected: bimodal densities, a Student t with half
-a degree of freedom and a Pareto with infinite mean are all fine. The only
-genuine rejection is a density that diverges at an edge, which is handled by
-transforming it away.</p>
+accepts a Student t with half a degree of freedom and a Pareto with infinite
+mean. A density that diverges at an edge is handled by transforming it away.
+The kernel must be unimodal: with two well-separated modes the search for
+the bounding rectangle stops at the valley next to the first mode.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

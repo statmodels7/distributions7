@@ -19,7 +19,7 @@ and removes none."><meta property="og:image" content="https://statmodels7.github
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -144,9 +144,10 @@ the parameters and
 \(\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert\)
 differentiates in \(\theta\) to the parent's own derivative at
 \(x = g^{-1}(y)\). The score, the observed Hessian and the EXPECTED
-Hessian are therefore the parent's, exactly, with no Monte Carlo anywhere.
-The response derivatives are not: those pick the Jacobian up and come from
-the base class.</p>
+Hessian are therefore the parent's own, at the same preimage. The expected
+Hessian is exact when the parent's is; otherwise it is whatever the parent's
+default route returns. The response derivatives are not: those pick the
+Jacobian up and come from the base class.</p>
 <p>Build one with <code><a href="transformation.html">transformation()</a></code>, which checks that the parent is
 continuous and that the transformer is valid on its support. This page
 documents the raw S7 constructor, which checks neither.</p>
@@ -163,17 +164,22 @@ documents the raw S7 constructor, which checks neither.</p>
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered on this class:
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.TransformedDistrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_cdf.TransformedDistrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_expected_hessian.TransformedDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_quantile.TransformedDistrib.html">distrib_quantile()</a></code> and
+<code><a href="distrib_rng.TransformedDistrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.TransformedDistrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.TransformedDistrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_pdf.TransformedDistrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_quantile.TransformedDistrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.TransformedDistrib.html">distrib_rng()</a></code></p>
-<p>The third and fourth derivatives come from the shared wrapper machinery in
-<code>wrapper_derivatives.R</code>; everything else is inherited from
-<code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
+<code><a href="distrib_expected_hessian.TransformedDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.TransformedDistrib.html">distrib_deriv3()</a></code>,
+<code><a href="distrib_deriv4.TransformedDistrib.html">distrib_deriv4()</a></code> and
+<code><a href="distrib_deriv5.wrappers.html">distrib_deriv5()</a></code>;</p></li>
+<li><p>the derivatives of the expected information: <code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code>
+and <code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the exactness flags: <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> and <code><a href="has_exact_deriv4.html">has_exact_deriv4()</a></code>;</p></li>
+<li><p>the fitting helpers: <code><a href="distrib_scalar_route.html">distrib_scalar_route()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

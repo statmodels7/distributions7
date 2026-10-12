@@ -2,8 +2,7 @@
 
 `TRUE` when the family registers
 [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md),
-which is what a discrete multivariate family does and a continuous one
-cannot.
+which a discrete multivariate family does and a continuous one cannot.
 
 ## Usage
 
@@ -24,17 +23,17 @@ A single logical.
 
 ## Details
 
-The question is asked of the method rather than of the class, because
-the multivariate branch sits beside
+The test reads the registered method, because the multivariate branch
+sits beside
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
 and
 [`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md)
-rather than under either, so there is no class to test. The owning class
-of a method is read through
+and not under either, so there is no class to test. The owning class of
+a method is read through
 [`is_class()`](https://statmodels7.github.io/distributions7/reference/is_class.md),
 never with [`identical()`](https://rdrr.io/r/base/identical.html), which
 is object identity and fails whenever the package's code is re-evaluated
-rather than loaded.
+in place of being loaded.
 
 ## See also
 

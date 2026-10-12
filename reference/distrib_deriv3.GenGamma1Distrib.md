@@ -59,8 +59,8 @@ With \\k = d/p\\ and \\U = p\log(y/a)\\, the log-density is \$\$\ell =
 \log p - \log y + kU - e^{U} - \log\Gamma(k),\$\$ and \\e^{U} =
 (y/a)^p\\ is a gamma variable with shape \\k\\ and unit rate. Every
 component is a closed form derived offline and written out: a polynomial
-in \\U\\, \\e^{U}\\ and \\a/y\\ whose coefficients depend on \\(d, p)\\
-alone, multiplied by \\a^{-r}\\ for \\r\\ derivatives in \\a\\. The
+in \\U\\ and \\e^{U}\\ whose coefficients depend on \\(d, p)\\ alone,
+multiplied by \\a^{-r}\\ for \\r\\ derivatives in \\a\\. The
 coefficients contain the polygamma functions at \\k + 1\\, through
 \\\psi^{(n)}(k) = \psi^{(n)}(k+1) + (-1)^{n+1} n!/k^{n+1}\\, so that the
 poles in \\1/k\\ which the derivatives combine cancel in the closed form

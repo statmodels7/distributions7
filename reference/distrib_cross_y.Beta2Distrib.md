@@ -19,7 +19,8 @@ Closed form: \\\ell^{(y)} = (\alpha-1)/y - (\beta-1)/(1-y)\\ gives
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 - ...:
 

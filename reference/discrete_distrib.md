@@ -79,8 +79,10 @@ An object of class `discrete_distrib`.
 ## Methods
 
 Defaults for discrete distributions, built from the probability mass
-function alone by accumulating it over the support; they require a
-finite lower bound, which every standard count distribution has.
+function alone by accumulating it over the support, and for the
+derivatives of the cdf by exact summation; they require a finite lower
+bound, which every standard count distribution has. A discrete
+distribution has no derivatives in the response.
 
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.discrete_distrib.md),
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.discrete_distrib.md),

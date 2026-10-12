@@ -4,8 +4,9 @@ Computes \\\partial^2\ell/\partial y^2\\, the curvature of the
 log-density in the response. With \\R' = -R(t+R)\\ at \\t = \alpha z\\,
 \$\$\dfrac{\partial^2 \ell}{\partial y^2} = \dfrac{\alpha^2 R' -
 1}{\sigma^2},\$\$ which is the same expression as
-\\\partial^2\ell/\partial\mu^2\\: two signs cancel where one did not at
-first order, so the response curvature equals the location curvature
+\\\partial^2\ell/\partial\mu^2\\. The first derivative in \\y\\ is minus
+the first derivative in \\\mu\\, and a second differentiation changes
+the sign again, so the response curvature equals the location curvature
 instead of being its negative.
 
 Since \\R'\\ is negative for every \\t\\, the value is strictly negative

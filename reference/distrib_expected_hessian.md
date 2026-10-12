@@ -43,12 +43,14 @@ distrib_expected_hessian(
 - approx:
 
   How the expectation is approximated **when the distribution has no
-  closed-form expected Hessian**; ignored otherwise. One of `"bartlett"`
-  (default, equivalently `"opg"`: the outer product of the score),
-  `"integrate"` (quadrature/summation of the observed Hessian) or `"mc"`
-  (Monte Carlo). See
+  closed-form expected Hessian**; ignored otherwise. One of `"opg"` (the
+  default: the outer product of the score, read at each observation
+  without taking an expectation), `"bartlett"` (the second Bartlett
+  identity, with the expectation taken by summation or quadrature),
+  `"integrate"` (quadrature or summation of the observed Hessian) or
+  `"mc"` (Monte Carlo). See
   [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
-  for the accuracy/speed trade-offs.
+  for the accuracy and speed of each.
 
 - nsim:
 
@@ -94,7 +96,9 @@ distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1))
 #> [1] 0
 #> 
 
-# a family with no closed form uses the strategy named by 'approx'
+# the pseudo-Huber computes its expected information itself, so 'approx'
+# has no effect here; it applies to a family without a closed form, such as
+# one defined by its density alone
 distrib_expected_hessian(
   pseudohuber_distrib(), 0, list(mu = 0, sigma = 1, nu = 1),
   approx = "integrate"
@@ -109,10 +113,10 @@ distrib_expected_hessian(
 #> [1] -0.01403316
 #> 
 #> $mu_sigma
-#> [1] -4.429858e-20
+#> [1] -7.391614e-21
 #> 
 #> $mu_nu
-#> [1] 1.282794e-21
+#> [1] -1.963363e-21
 #> 
 #> $sigma_nu
 #> [1] -0.1224472

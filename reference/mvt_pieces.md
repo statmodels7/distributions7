@@ -1,13 +1,13 @@
-# The Pieces a Multivariate t Evaluates From
+# The Pieces From Which a Multivariate t Evaluates
 
 Assembles, once per call, the location, the scale matrix, its inverse,
 the log-determinant and the degrees of freedom from a flat parameter
-vector, together with the matrix parametrization's derivative arrays
-when they are asked for. Every method of
+vector, together with the derivative arrays of \\\Sigma\\ and of
+\\\Sigma^{-1}\\ when they are requested. Every method of
 [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
-calls this first and works from the result, so a parameter vector is
-unpacked and a matrix factorized once per call instead of once per
-component.
+that evaluates the density or its derivatives calls this first and works
+from the result, so a parameter vector is unpacked and a matrix
+factorized once per call and not once per component.
 
 ## Usage
 
@@ -30,32 +30,34 @@ mvt_pieces(distrib, theta, derivs = FALSE, derivs2 = FALSE)
 
 - derivs:
 
-  Logical of length 1. When `TRUE` the first derivative arrays of the
-  scale matrix are computed and returned as `a`. Defaults to `FALSE`.
+  Logical of length 1. When `TRUE` the first derivative arrays are
+  computed. Defaults to `FALSE`.
 
 - derivs2:
 
   Logical of length 1. When `TRUE` the second derivative arrays are
-  computed as well and returned as `a2`; the first derivatives are not
-  computed with them, so a caller needing both sets `derivs` too.
-  Defaults to `FALSE`.
+  computed, and the first ones with them. Defaults to `FALSE`.
 
 ## Value
 
 A named list with `mu` (numeric of length \\p\\), `eta` (the matrix
 parametrization's free vector), `nu` (a single number), `p`, `s` (the
-parametrization itself), `sigma` and `sigma_inv` (\\p \times p\\
-matrices) and `logdet` (the log-determinant of \\\Sigma\\), plus `a` and
-`a2` when asked for: lists of \\p \times p\\ matrices, `a` one per free
-value and `a2` one per unordered pair.
+parametrization itself) and the elements of
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md):
+`sigma` and `sigma_inv` (\\p \times p\\ matrices), `logdet` (the
+log-determinant of \\\Sigma\\) and `inverted`; with derivatives
+requested also `a` and `ai` (the first derivative arrays of \\\Sigma\\
+and of \\\Sigma^{-1}\\) and `dlogdet`; with `derivs2` also `a2`, `ai2`
+and `d2logdet`.
 
 ## Details
 
-The scale matrix is always parametrized as itself, so there is no
-inversion branch here and no sign to flip on the log-determinant. That
-is the whole difference from
-[`mvg_pieces()`](https://statmodels7.github.io/distributions7/reference/mvg_pieces.md),
-whose parametrization may carry either side.
+The matrix quantities come from
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md),
+which the gaussian reads as well: where `distrib@inverted` is `TRUE` the
+parametrization carries \\\Sigma^{-1}\\, and the helper returns
+\\\Sigma\\ and the derivatives of both matrices whichever side it
+carries.
 
 ## Notation
 
@@ -81,7 +83,7 @@ theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 pc <- distributions7:::mvt_pieces(d, theta, derivs = TRUE)
 names(pc)
 #>  [1] "mu"        "eta"       "nu"        "p"         "s"         "sigma"    
-#>  [7] "sigma_inv" "logdet"    "ai"        "a"         "dlogdet"  
+#>  [7] "sigma_inv" "logdet"    "inverted"  "ai"        "a"         "dlogdet"  
 
 # sigma_inv is the inverse of the scale matrix, and logdet its determinant.
 all.equal(pc$sigma %*% pc$sigma_inv, diag(2), check.attributes = FALSE)

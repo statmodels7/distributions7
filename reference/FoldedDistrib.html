@@ -23,7 +23,7 @@ validates neither."><meta property="og:image" content="https://statmodels7.githu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -141,24 +141,31 @@ wrapped family's, <code>bounds</code> becomes <code>c(0, max(abs(parent bounds))
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered on this class:
-<code><a href="distrib_cdf.FoldedDistrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_deriv3.FoldedDistrib.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.FoldedDistrib.html">distrib_deriv4()</a></code>,
-<code><a href="distrib_grad_y.FoldedDistrib.html">distrib_grad_y()</a></code>,
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.FoldedDistrib.html">distrib_pdf()</a></code>,
+<code><a href="distrib_cdf.FoldedDistrib.html">distrib_cdf()</a></code> and
+<code><a href="distrib_rng.FoldedDistrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.FoldedDistrib.html">distrib_gradient()</a></code>,
-<code><a href="distrib_hess_y.FoldedDistrib.html">distrib_hess_y()</a></code>,
 <code><a href="distrib_hessian.FoldedDistrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_pdf.FoldedDistrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_rng.FoldedDistrib.html">distrib_rng()</a></code></p>
-<p>Everything else is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>, whose numerical
-quantile inverts the exact folded distribution function above.</p>
+<code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.FoldedDistrib.html">distrib_deriv3()</a></code>,
+<code><a href="distrib_deriv4.FoldedDistrib.html">distrib_deriv4()</a></code> and
+<code><a href="distrib_deriv5.wrappers.html">distrib_deriv5()</a></code>;</p></li>
+<li><p>the derivatives of the expected information: <code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code>
+and <code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the derivatives in the response:
+<code><a href="distrib_grad_y.FoldedDistrib.html">distrib_grad_y()</a></code> and
+<code><a href="distrib_hess_y.FoldedDistrib.html">distrib_hess_y()</a></code>;</p></li>
+<li><p>the kink: <code><a href="kink_knots.html">kink_knots()</a></code>;</p></li>
+<li><p>the exactness flags: <code><a href="has_exact_deriv4.html">has_exact_deriv4()</a></code> and <code><a href="expected_hessian_costly.html">expected_hessian_costly()</a></code>;</p></li>
+<li><p>the fitting helpers: <code><a href="distrib_scalar_route.html">distrib_scalar_route()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="folded.html">folded()</a></code> to build one, <code><a href="truncated.html">truncated()</a></code> for the other wrapper that
-adds no parameter, and <code><a href="fixed.html">fixed()</a></code>, which with <code>mu = 0</code> turns a folded
-gaussian into the half-normal.</p></div>
+    <div class="dont-index"><p><code><a href="folded.html">folded()</a></code> to build one, <code><a href="truncated.html">truncated()</a></code>, which also leaves the
+parameters of its parent unchanged, adds no parameter, and <code><a href="fixed.html">fixed()</a></code>, which
+with <code>mu = 0</code> turns a folded gaussian into the half-normal.</p></div>
     </div>
 
     <div class="section level2">

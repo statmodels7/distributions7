@@ -23,7 +23,7 @@ Gaussian one."><meta property="og:image" content="https://statmodels7.github.io/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -119,10 +119,10 @@ both ends: \(2/a\) as \(\alpha \to 1\) and \(\sqrt{2\pi/c}\) as
 distribution function, the quantile function, the mean, the variance and the
 skewness. The <strong>kurtosis</strong> is not, and comes from the base class by
 quadrature.</p>
-<p>The expected information is closed form for a reason worth naming: in the
-two rates the density is an exponential family with sufficient statistics
-\(-|z|\) and \(-z^2/2\), so the information there is the Hessian of
-\(\log Z\), which the observed Hessian already computes. See
+<p>The expected information is closed form because, in the two rates, the
+density is an exponential family with sufficient statistics \(-|z|\) and
+\(-z^2/2\), so the information in those rates is the Hessian of
+\(\log Z\), which the observed Hessian also uses. See
 <code><a href="distrib_expected_hessian.EnetDistrib.html">distrib_expected_hessian.EnetDistrib()</a></code>.</p>
     </div>
     <div class="section level2">
@@ -134,17 +134,21 @@ defined as the variance of the score instead. The two agree at every other
 entry.</p>
     </div>
     <div class="section level2">
-    <h2 id="two-numerical-cautions">Two numerical cautions<a class="anchor" aria-label="anchor" href="#two-numerical-cautions"></a></h2>
-    <p>Both were found by sweeping the parameters, and both bite at ordinary
-settings.</p><ul><li><p>\(\log M(x)\) written directly adds \(x^2/2\) to a log-probability of
-the same size and opposite sign, losing a digit per factor of ten in
-\(x\). At \(\alpha = 1 - 10^{-12}\) the argument reaches \(10^6\)
-and the density was wrong in the fourth digit; past \(x = 30\) the
-asymptotic series of the Mills ratio is used instead.</p></li>
-<li><p>\(\Phi(-x)\) is exactly zero past \(x = 38\), and the distribution
-function and the quantile divide by it. At \(\lambda = 20\),
-\(\alpha = 0.995\) the argument is 63, so both work through <code>log.p</code> and
-<code>qnorm(..., log.p = TRUE)</code>.</p></li>
+    <h2 id="numerical-points">Numerical points<a class="anchor" aria-label="anchor" href="#numerical-points"></a></h2>
+    <p>Three points concern the normalizing constant, its derivatives and the
+tails.</p><ul><li><p>\(\log M(x)\) written directly adds \(x^2/2\) to a log-probability of
+the same size and opposite sign, and loses a digit per factor of ten in
+\(x\). Beyond \(x = 30\) the density therefore uses the asymptotic
+series of the Mills ratio.</p></li>
+<li><p>The derivatives of \(\log M\), and those of \(\log Z\) in the two
+rates, are cumulants of the density proportional to
+\(e^{-xs - s^2/2}\) on \(s &gt; 0\), computed from its moment ratios in
+a compiled kernel; the form \(G = x - 1/M\) would cancel for large
+\(x\), and each derivative built on it would lose more.</p></li>
+<li><p>\(\Phi(-x)\) underflows to zero beyond \(x \approx 38.5\), and the
+distribution function and the quantile divide by it. At
+\(\lambda = 20\), \(\alpha = 0.995\) the argument is 63, so both work
+on the log scale, through <code>log.p</code> and <code>qnorm(..., log.p = TRUE)</code>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="comparison-with-glmnet">Comparison with glmnet<a class="anchor" aria-label="anchor" href="#comparison-with-glmnet"></a></h2>
@@ -153,8 +157,8 @@ corrects <code>lambda</code> by a single factor. That correction is exact for th
 \(\ell_1\) part, homogeneous of degree one, and cannot be for the
 \(\ell_2\) part, homogeneous of degree two. So a nominal
 \((\lambda, \alpha)\) names two different objectives in the two packages
-whenever \(\alpha &lt; 1\). At \(\alpha = 1\) the two agree to
-\(1.4\times10^{-4}\) whatever the scale of the response.</p>
+whenever \(\alpha &lt; 1\). At \(\alpha = 1\) the two objectives coincide
+and the fits agree up to the convergence tolerances of the two solvers.</p>
     </div>
     <div class="section level2">
     <h2 id="parameter-domains">Parameter domains<a class="anchor" aria-label="anchor" href="#parameter-domains"></a></h2>

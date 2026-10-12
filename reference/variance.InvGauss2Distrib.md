@@ -1,11 +1,11 @@
-# Variance of the Inverse Gaussian Distribution in Mean and Rate
+# Variance of the Inverse Gaussian Distribution in Mean and Shape
 
 Closed form: \\\operatorname{Var}(Y) = \mu^3/\lambda\\. With \\\lambda =
 1/\phi\\ this is the \\\phi\mu^3\\ of
 [`variance.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.InvGauss1Distrib.md),
 so the two parametrizations agree on the law and differ only in which
-number is reported. The cube in the mean is what separates the family
-from the gamma.
+number is reported. The variance grows with the cube of the mean, where
+that of the gamma grows with its square.
 
 ## Arguments
 
@@ -18,7 +18,7 @@ from the gamma.
 
   A named list with components `mu` (positive) and `lambda` (positive),
   each a numeric vector of length 1 or `n`. The variance diverges as the
-  rate approaches zero.
+  shape approaches zero.
 
 - ...:
 
@@ -31,7 +31,7 @@ A numeric vector of variances, of length
 
 ## Notation
 
-\\\mu \> 0\\ is the mean and \\\lambda \> 0\\ the rate.
+\\\mu \> 0\\ is the mean and \\\lambda \> 0\\ the shape.
 
 ## See also
 
@@ -46,7 +46,7 @@ the same quantity in the dispersion parametrization;
 ``` r
 d <- invgauss2_distrib()
 
-# The cube of the mean over the rate.
+# The cube of the mean over the shape.
 all.equal(variance(d, list(mu = 2, lambda = 8)), 1)
 #> [1] TRUE
 

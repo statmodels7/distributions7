@@ -2,10 +2,11 @@
 
 Returns `NaN`. The Cauchy density decays like \\y^{-2}\\, so \\\int
 \|y\| f(y)\\\mathrm{d}y\\ diverges and the first moment does not exist.
-`NaN` is returned directly, so that no quadrature is attempted: a
-numerical integration over a divergent integral returns whatever its
-truncation gives, a number that moves with the panel layout and reads
-like an estimate.
+`NaN` is returned directly and no quadrature is attempted; the numerical
+route of
+[`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
+applied to a Cauchy signals an error, the quadrature not reaching the
+requested accuracy.
 
 ## Arguments
 
@@ -19,8 +20,8 @@ like an estimate.
   A named list with components `mu` and `sigma` (positive), each a
   numeric vector of length 1 or `n`. The values are not read, only their
   lengths, and the list is still aligned and validated, so a missing or
-  out-of-bounds component throws as it would for a family whose moments
-  exist.
+  out-of-bounds component signals an error as it would for a family
+  whose moments exist.
 
 - ...:
 

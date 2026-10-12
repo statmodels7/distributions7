@@ -23,9 +23,8 @@ at \\\sigma = 1/\lambda\\.
 
   A named list with components `mu` and `lambda`, each a numeric vector
   of length 1 or of the length of `y`. A component of length 1 is
-  recycled. `lambda` must be strictly positive; the arithmetic is
-  performed as written, so a non-positive value gives `NaN` without a
-  warning of its own.
+  recycled. `lambda` must be strictly positive; the generic signals an
+  error for a zero or negative value before the method is called.
 
 - log:
 

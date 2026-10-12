@@ -1,11 +1,12 @@
 # A Starting Value Drawn From the Data
 
-Returns the starting values
+Returns the starting values that
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-begins from, computed from the response wherever the family knows how.
-The result is a list of named parameter lists on the **parameter**
-scale; the fit tries them in order and stops at the first that
-converges, so the first element is the one the family prefers.
+begins from, computed from the response where the family has a method
+for it. The result is a list of named parameter lists on the
+**parameter** scale. The fit tries them in order until two converged
+runs agree on the best objective, so the first element is the one tried
+first.
 
 ## Usage
 
@@ -33,7 +34,7 @@ distrib_start(distrib, y, n_start = 5L, ...)
 
 - ...:
 
-  Passed to methods. No shipped method reads it.
+  Passed to methods. The shipped methods do not use it.
 
 ## Value
 
@@ -45,14 +46,10 @@ which the validator treats as open.
 ## Details
 
 A starting value that ignores the data can be arbitrarily far from the
-answer, and how far decides whether the fit takes one step or never
-arrives. A four-dimensional Gaussian fitted to the iris measurements is
-the plain case: started at the origin of the unconstrained scale, which
-is a unit covariance and a zero mean, Newton with the expected
-information spends five hundred iterations and stops at a log-likelihood
-of \\-836\\; started at the sample mean and the sample covariance it
-converges in one iteration to \\-379.9146\\, the exact maximum. Nothing
-about the arithmetic changed.
+answer, and the distance decides how much work the fit does. For a
+multivariate Gaussian the sample mean and the sample covariance are the
+maximum likelihood estimate, so a fit that starts there converges in one
+iteration.
 
 The base method draws each parameter from its own domain and never reads
 `y`, so a family that registers nothing loses nothing. A family with a
@@ -92,8 +89,8 @@ rbind(start = mv_location(d, start), sample = colMeans(y))
 #> start  1.03554 -0.9415925
 #> sample 1.03554 -0.9415925
 
-# A univariate family asked for several starts gets one from the data and
-# the rest at random, so a caller asking for more still explores.
+# A univariate family gives one start from the data and the rest at
+# random, so a caller requesting several still explores.
 set.seed(2)
 s <- distrib_start(gaussian1_distrib(), rnorm(200, 900, 170), n_start = 3)
 length(s)

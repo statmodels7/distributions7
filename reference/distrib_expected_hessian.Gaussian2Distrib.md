@@ -7,8 +7,9 @@ closed form and with no quadrature or simulation. With \\v = \sigma^2\\,
 \mathbb{E}\left\[\ell^{(vv)}\right\] = -\dfrac{1}{2v^2}.\$\$ They follow
 from \\\mathbb{E}\[(Y-\mu)^2\] = v\\ and \\\mathbb{E}\[Y-\mu\] = 0\\.
 The negative of this matrix is the Fisher information for one
-observation; the zero off-diagonal says the mean and the variance are
-orthogonal, so their estimates are asymptotically independent.
+observation. Its off-diagonal entry is zero, so the mean and the
+variance are orthogonal and their estimates are asymptotically
+independent.
 
 Because the values do not depend on the data, `approx` and `nsim` are
 ignored. `y` is read only for its length.
@@ -53,8 +54,8 @@ ignored. `y` is read only for its length.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -93,11 +94,11 @@ lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 #> $mu_mu
 #> [1] -0.25
 #> 
-#> $mu_sigma2
-#> [1] 0
-#> 
 #> $sigma2_sigma2
 #> [1] -0.03125
+#> 
+#> $mu_sigma2
+#> [1] 0
 #> 
 
 # The observed Hessian averages onto them over a large sample.
@@ -106,9 +107,9 @@ z <- distrib_rng(d, 2e4, th)
 rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
       expected = vapply(distrib_expected_hessian(d, z, th),
                         function(v) v[1], numeric(1)))
-#>          mu_mu     mu_sigma2 sigma2_sigma2
-#> observed -0.25 -0.0003250349   -0.03084729
-#> expected -0.25  0.0000000000   -0.03125000
+#>          mu_mu sigma2_sigma2     mu_sigma2
+#> observed -0.25   -0.03084729 -0.0003250349
+#> expected -0.25   -0.03125000  0.0000000000
 
 # The information transforms by the delta method: with dv/dsigma = 2 sigma,
 # the variance entry carries onto gaussian1's -2/sigma^2.

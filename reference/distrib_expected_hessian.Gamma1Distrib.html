@@ -13,10 +13,9 @@ exactly what makes the score in \(\phi\) have mean zero. The quantity
 \(1/s - \psi'(s)\) is negative for every \(s &amp;gt; 0\), so the pure
 dispersion entry is negative and the information is positive definite
 everywhere, where the observed Hessian is not.
-The zero off-diagonal says the mean and the dispersion are orthogonal. That
-orthogonality is the reason this parametrization is the one a generalized
-linear model uses: the mean equation can be fitted with the dispersion held
-at any value without biasing it.
+The off-diagonal entry is zero, so the mean and the dispersion are
+orthogonal. The score in \(\mu\) has the dispersion as a common factor,
+so the mean equation can be solved with the dispersion held at any value.
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
 form and with no quadrature or simulation. With \(s = 1/\phi\),
@@ -32,10 +31,9 @@ exactly what makes the score in \(\phi\) have mean zero. The quantity
 \(1/s - \psi'(s)\) is negative for every \(s &amp;gt; 0\), so the pure
 dispersion entry is negative and the information is positive definite
 everywhere, where the observed Hessian is not.
-The zero off-diagonal says the mean and the dispersion are orthogonal. That
-orthogonality is the reason this parametrization is the one a generalized
-linear model uses: the mean equation can be fitted with the dispersion held
-at any value without biasing it.
+The off-diagonal entry is zero, so the mean and the dispersion are
+orthogonal. The score in \(\mu\) has the dispersion as a common factor,
+so the mean equation can be solved with the dispersion held at any value.
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -45,7 +43,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,10 +90,9 @@ exactly what makes the score in \(\phi\) have mean zero. The quantity
 \(1/s - \psi'(s)\) is negative for every \(s &gt; 0\), so the pure
 dispersion entry is negative and the information is positive definite
 everywhere, where the observed Hessian is not.</p>
-<p>The zero off-diagonal says the mean and the dispersion are orthogonal. That
-orthogonality is the reason this parametrization is the one a generalized
-linear model uses: the mean equation can be fitted with the dispersion held
-at any value without biasing it.</p>
+<p>The off-diagonal entry is zero, so the mean and the dispersion are
+orthogonal. The score in \(\mu\) has the dispersion as a common factor,
+so the mean equation can be solved with the dispersion held at any value.</p>
 <p>Because the values do not depend on the data, <code>approx</code> and <code>nsim</code> are
 ignored. <code>y</code> is read only for its length.</p>
     </div>
@@ -140,8 +137,8 @@ quadrature, Monte Carlo and outer-product routes.</p></dd>
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -177,11 +174,11 @@ the expectation of, <code><a href="fisher_scoring.html">fisher_scoring()</a></co
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.2222222</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $mu_phi</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $phi_phi</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -2.318945</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $mu_phi</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The dispersion entry, written out with the trigamma function.</span></span></span>
@@ -195,9 +192,9 @@ the expectation of, <code><a href="fisher_scoring.html">fisher_scoring()</a></co
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>observed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">mean</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      expected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, <span class="va">th</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                        <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               mu_mu        mu_phi   phi_phi</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> observed -0.2222366 -4.310552e-05 -2.288278</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> expected -0.2222222  0.000000e+00 -2.318945</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               mu_mu   phi_phi        mu_phi</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> observed -0.2222366 -2.288278 -4.310552e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> expected -0.2222222 -2.318945  0.000000e+00</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Negative definite at every parameter setting, where the observed Hessian</span></span></span>
 <span class="r-in"><span><span class="co"># is positive in mu wherever y &lt; mu/2.</span></span></span>

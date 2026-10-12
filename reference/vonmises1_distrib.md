@@ -46,19 +46,17 @@ An S7 object of class `VonMises1Distrib`, inheriting from
 
 The density on \\y \in \[-\pi, \pi)\\ is \$\$f(y; \mu, \kappa) =
 \dfrac{e^{\kappa\cos(y-\mu)}}{2\pi I_0(\kappa)},\$\$ with \\I_0\\ the
-modified Bessel function of the first kind. This is the first family in
-the package whose support has the topology of a circle: the two ends of
-the interval are the same point, so the density need not vanish at
-either.
+modified Bessel function of the first kind. The support has the topology
+of a circle: the two ends of the interval are the same point, so the
+density need not vanish at either.
 [`vonmises2_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.md)
 is the same law parametrized by the mean resultant length in place of
 the concentration.
 
 The normalizing constant goes through
-[`numericals7::log_bessel_i()`](https://statmodels7.github.io/numericals7/reference/log_bessel_i.html).
-R's exponentially scaled `besselI` underflows to an exact zero between
-\\\kappa = 10^5\\ and \\10^6\\, where the logarithm returns `-Inf`;
-measured at \\\kappa = 10^6\\ the toolkit's routine returns 999992.17.
+[`numericals7::log_bessel_i()`](https://statmodels7.github.io/numericals7/reference/log_bessel_i.html),
+which stays finite where R's exponentially scaled `besselI` returns an
+exact zero (from about \\\kappa = 2 \times 10^5\\).
 
 ## Score, information, and orthogonality
 
@@ -66,11 +64,13 @@ Writing \\A(\kappa) = I_1(\kappa)/I_0(\kappa)\\ for the derivative of
 \\\log I_0\\, \$\$\dfrac{\partial\ell}{\partial\mu} = \kappa\sin(y-\mu),
 \qquad \dfrac{\partial\ell}{\partial\kappa} = \cos(y-\mu) -
 A(\kappa),\$\$ and every second derivative is closed form, with
-\\A'(\kappa) = 1 - A(\kappa)/\kappa - A(\kappa)^2\\ from the Bessel
-recurrences and no further evaluation. Since \\\mathbb{E}\[\sin(Y-\mu)\]
-= 0\\ by symmetry, **the two parameters are orthogonal**: the expected
-information is diagonal, and Fisher scoring updates the direction and
-the concentration independently.
+\\A'(\kappa) = 1 - A(\kappa)/\kappa - A(\kappa)^2\\. numericals7
+evaluates \\A'\\ and the higher derivatives of \\A\\ from a power series
+for small \\\kappa\\, where that identity cancels, and from the identity
+in extended precision or an asymptotic series above. Since
+\\\mathbb{E}\[\sin(Y-\mu)\] = 0\\ by symmetry, **the two parameters are
+orthogonal**: the expected information is diagonal, and Fisher scoring
+updates the direction and the concentration independently.
 
 \\A(\kappa)\\ is the mean resultant length, so \\A'(\kappa)\\ is the
 variance of \\\cos(Y-\mu)\\ and is positive, which keeps the information
@@ -112,14 +112,15 @@ infinitely many.
 
 ## The distribution function
 
-The density has no elementary antiderivative. The base class would
-integrate it once per observation, which measured 4.5 seconds at ten
-thousand points; this class supplies
+The density has no elementary antiderivative. The base class integrates
+it numerically, once per observation; this class supplies
 [`distrib_cdf.VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.VonMises1Distrib.md)
-instead, a Fourier series integrated term by term whose term count is
-\\8.5\sqrt{\kappa} + 10\\, measured. The **quantile** does come from
+instead, a Fourier series integrated term by term with \\\max\\20,
+\lceil 8.5\sqrt{\kappa}\rceil + 10\\\\ terms, and a quadrature of the
+tail where the requested tail is below \\10^{-6}\\. The **quantile**
+comes from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
-by root finding on that series.
+by root finding on the logarithm of the smaller tail.
 
 ## Notation
 
@@ -179,8 +180,8 @@ integrate(function(v) distrib_pdf(d, v, th), -pi, pi)$value
 # The expected information is diagonal: direction and concentration are
 # orthogonal, the sine having mean zero.
 vapply(distrib_expected_hessian(d, 0, th), function(v) v[1], numeric(1))
-#>       mu_mu    mu_kappa kappa_kappa 
-#>  -1.3955493   0.0000000  -0.1642232 
+#>       mu_mu kappa_kappa    mu_kappa 
+#>  -1.3955493  -0.1642232   0.0000000 
 
 # The ordinary mean is not the mean direction, the interval being cut at
 # plus or minus pi.

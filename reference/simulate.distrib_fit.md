@@ -40,9 +40,12 @@ own fallback and the cost is that fallback's.
 
 ## Value
 
-A data frame of `object@n` rows and `nsim` columns named `sim_1` to
-`sim_nsim`, each column one replicate. The `"seed"` attribute carries
-the generator state described above.
+For a univariate fit, a data frame of `object@n` rows and `nsim` columns
+named `sim_1` to `sim_nsim`, each column one replicate. For a
+multivariate fit each replicate is a matrix, and the data frame has
+`object@n` rows and `nsim * p` columns named `sim_1.v1`, `sim_1.v2`, and
+so on. The `"seed"` attribute carries the generator state described
+above.
 
 ## See also
 

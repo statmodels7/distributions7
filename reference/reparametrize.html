@@ -23,7 +23,7 @@ are written."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,8 @@ are written.</p>
 <span>  <span class="va">links</span>,</span>
 <span>  map_derivs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  interpretation <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  name <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  params_smooth <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -114,8 +115,8 @@ of new parameters and <code>order</code>, an integer from 1 to 4, returning for 
 parent parameter the non-zero partial derivatives of the map with respect
 to the new parameters up to order <code>order</code>, keyed by the sorted tuple of
 new-parameter positions ("1", "1,2", "2,2,3,3", ...); a missing key is
-an exact zero. Each caller passes the highest order it reads, so a
-gradient asks for order one and a fourth derivative for order four. The
+an exact zero. Each caller passes the highest order that it reads, so a
+gradient passes order one and a fourth derivative passes order four. The
 shipped second parametrizations supply hand-written tables (see
 <code><a href="reparam_map_derivs.html">reparam_map_derivs()</a></code>); when <code>NULL</code>, each needed partial comes from one
 finite-difference stencil on the map.</p></dd>
@@ -130,6 +131,15 @@ parameter; defaults to the parameter names.</p></dd>
 <dd><p>An optional name for the result; defaults to the parent's with
 the new parameters appended.</p></dd>
 
+
+<dt id="arg-params-smooth">params_smooth<a class="anchor" aria-label="anchor" href="#arg-params-smooth"></a></dt>
+<dd><p>An optional named logical vector, one entry per new
+parameter, saying which of them the log-density is differentiable in.
+The map is arbitrary, so the default cannot read which new parameter
+reaches a kink of the parent: it is <code>TRUE</code> for every new parameter when
+every parameter of the parent is smooth, and <code>FALSE</code> for every one
+otherwise.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -139,10 +149,10 @@ the new parameters appended.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>A reparametrization is not a link. A link changes the scale a parameter is
-<em>modeled</em> on and leaves the parameter what it was; here the parameter
-<em>is</em> the new quantity, and that is what the estimate, the standard
-error and the confidence interval describe.</p>
+    <p>A link changes the scale on which a parameter is modeled and leaves the
+parameter itself unchanged. In a reparametrization the parameter is the new
+quantity, and the estimate, the standard error and the confidence interval
+describe that quantity.</p>
 <p><strong>The map is written in ordinary R.</strong> It takes a named list of the new
 parameters and returns a named list of the parent's, and nothing in it
 mentions derivatives:</p>
@@ -157,9 +167,10 @@ second parametrizations all do, and their formulas live in
 <code><a href="reparam_map_derivs.html">reparam_map_derivs()</a></code>. Leave it <code>NULL</code>, and each partial the chain needs
 comes from one central stencil of <code><a href="https://statmodels7.github.io/numericals7/reference/fd_derivative.html" class="external-link">numericals7::fd_derivative()</a></code> applied to
 the analytic map, a single stencil per order and never a chain of
-differences. The stencil route is good to about \(10^{-8}\) at first
-order and fades with the order, so a family fitted in earnest is worth a
-table.</p>
+differences. The stencil route is accurate to about \(10^{-11}\) at first
+order and loses accuracy quickly with the order (the third and fourth tables
+can be wrong in their leading digits), so a family used for anything beyond a
+first exploration needs <code>map_derivs</code>.</p>
 <p><strong>What is exact and what is inherited.</strong> The derivatives of the
 log-density are carried by
 $$\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
@@ -168,13 +179,17 @@ $$\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
 the sum over set partitions, so every order the parent has in closed form
 survives in closed form. Expectation being linear and the map
 deterministic, the expected derivatives obey the same formula, and the term
-carrying the second derivative of the map drops because the score has mean
-zero: a parent with an exact expected information gives an exact one here.
-The density, the distribution function, the quantile function, the generator
-and the response derivatives are the parent's at the mapped parameters.</p>
-<p><strong>Cost.</strong> A parameter that varies by observation needs one run of the
-map per observation; scalar parameters need one run in total, which is the
-case a fit is in.</p>
+carrying the parent's score (multiplied by a derivative of the map of the
+order being formed) drops because the score has mean zero: a parent with an
+exact expected information gives an exact one here. The density, the
+distribution function, the quantile function, the generator and the response
+derivatives are the parent's at the mapped parameters.</p>
+<p><strong>Cost.</strong> The density, the distribution function, the quantile function and
+the generator call the map once per evaluation, on whole vectors. When
+<code>map_derivs</code> is <code>NULL</code>, the derivatives call the map at the points of the
+stencil, several times for each observation (more at higher orders), and
+separately for each observation when a parameter varies by observation. A
+supplied <code>map_derivs</code> is called once per evaluation.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

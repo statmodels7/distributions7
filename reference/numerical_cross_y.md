@@ -4,13 +4,12 @@ Computes \\\partial^2 \ell / \partial y\\ \partial \theta_i\\ by one
 central difference of
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
 in each parameter, at a step of `h_rel` relative to the parameter's own
-magnitude. It powers the default
+magnitude. A family with a closed form for some of its parameters calls
+it for the remaining ones through `which`. The default
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-method for a continuous family with no closed form.
-
-Measured on a Gaussian against Richardson extrapolation of the same
-analytic response gradient, the two components agree to
-\\1.2\times10^{-11}\\ and \\9.0\times10^{-11}\\ relative.
+method for a continuous family uses
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md)
+instead.
 
 ## Usage
 
@@ -41,9 +40,9 @@ numerical_cross_y(
 - h_rel:
 
   The relative finite-difference step, a single positive number.
-  Defaults to `.Machine$double.eps^(1/3)`. A step near a parameter's
-  bound can push an evaluation outside the domain, where the density
-  returns `NaN`.
+  Defaults to `.Machine$double.eps^(1/3)`. The step is taken by
+  [`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md),
+  which keeps both evaluation points inside the bounds of the parameter.
 
 - which:
 
@@ -58,7 +57,7 @@ A named list with one numeric vector per requested parameter, each of
 length `length(y)`, in the order `which` gives or `distrib@params` where
 it is `NULL`.
 
-## One difference layer, not two
+## The quantity that is differenced
 
 The quantity differenced is the **response gradient**, not the
 log-density, so a family with an analytical `distrib_grad_y` pays for

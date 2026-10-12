@@ -17,7 +17,8 @@ simply \\-q/\mu\\.
 
 - q:
 
-  A numeric vector of quantiles. A negative value gives 0.
+  A numeric vector of quantiles. A negative value gives a lower-tail
+  probability of 0 and an upper-tail probability of 1.
 
 - theta:
 

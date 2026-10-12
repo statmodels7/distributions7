@@ -8,8 +8,8 @@ library(distributions7)
 Most of what **distributions7** offers beyond densities is derivatives:
 the score, the information, and the third and fourth derivatives of the
 log-likelihood. This vignette explains what they are, the two scales
-they are available on, and why the second scale — the link scale — is
-the one an optimizer needs.
+they are available on, and why the second scale (the link scale) is the
+one that an optimizer needs.
 
 ## The derivatives of the log-likelihood
 
@@ -44,9 +44,8 @@ distrib_hessian(d, y, theta)           # observed: d^2 ell / d theta^2
 #> [1]  0.13921196 -0.04080963  0.18569525 -0.35450684
 ```
 
-The **expected** Hessian — the negative Fisher information — is a
-separate generic, because for a correct model it does not depend on
-$`y`$:
+The **expected** Hessian (the negative Fisher information) is a separate
+generic, because for a correct model it does not depend on $`y`$:
 
 ``` r
 
@@ -90,9 +89,13 @@ parameters.
 
 ## Two scales
 
-Every derivative generic takes a `scale` argument. The default,
-`scale = "parameter"`, is what the examples above used: derivatives with
-respect to $`\theta`$ on its natural, constrained scale.
+Every generic for the parameter derivatives of the log-likelihood, from
+[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
+to
+[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md),
+takes a `scale` argument. The default, `scale = "parameter"`, is what
+the examples above used: derivatives with respect to $`\theta`$ on its
+natural, constrained scale.
 
 `scale = "link"` instead gives derivatives with respect to the
 **unconstrained** parameter $`\eta = g(\theta)`$ behind each link. For
@@ -109,9 +112,9 @@ distrib_gradient(d, y, theta, scale = "link")
 #> [1] -0.6075556 -0.9662751 -0.3017248  1.5449208
 ```
 
-Nothing was differentiated numerically to get this. The chain rule was
-applied to the parameter-scale derivatives, exactly. For a single
-parameter with link $`g`$,
+These values come from applying the chain rule exactly to the
+parameter-scale derivatives, with no numerical differentiation. For a
+single parameter with link $`g`$,
 $`\partial\ell/\partial\eta = (\partial\ell/\partial\theta)\,/\,g'(\theta)`$;
 with the log link on $`\sigma`$ that factor is simply $`\sigma`$:
 
@@ -140,7 +143,7 @@ all.equal(
 ```
 
 The transformation works at every order. The general rule is Faà di
-Bruno’s formula — the chain rule for higher derivatives — applied with a
+Bruno’s formula (the chain rule for higher derivatives) applied with a
 diagonal Jacobian, since each parameter has its own link. It is written
 once, in the body of each generic, so `scale = "link"` is available
 uniformly:
@@ -171,15 +174,15 @@ unconstrained: $`\eta`$ ranges over the whole real line, and a Newton or
 Fisher-scoring step needs exactly the link-scale score and information
 this package computes in closed form.
 
-That is precisely what
+That is what
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-does — it optimizes on the link scale and maps back — and it is why its
+does: it optimizes on the link scale and maps back, which is why its
 confidence intervals cannot leave a parameter’s domain. See
 [`vignette("fitting-a-model")`](https://statmodels7.github.io/distributions7/articles/fitting-a-model.md)
 for that side of the story.
 
 The information transforms consistently. Write $`h = g^{-1}`$, so that
-$`h'(\eta) = 1/g'(\theta)`$ is the derivative of the inverse link — the
+$`h'(\eta) = 1/g'(\theta)`$ is the derivative of the inverse link, the
 same factor that already appeared in the first-order rule above. Because
 the score has zero expectation, the expected information on the link
 scale is the sandwich
@@ -224,14 +227,21 @@ distrib_deriv3(gamma2_distrib(), 0, list(mu = 3, sigma2 = 2), expected = TRUE)
 #> [1] 0.2638418
 ```
 
-The strategies are `"bartlett"`, `"integrate"` and `"mc"`, trading speed
-against robustness. They rest on one idea: the outer product of
-gradients is the order-two case of the Bartlett identities, and the
-general identity expresses an expected derivative of any order through
-products of lower-order ones.
-[`?distrib_deriv3`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
-has the details; the default is chosen to be both cheap and valid,
-including for models where the usual regularity assumptions fail.
+The strategies are `"opg"`, `"bartlett"`, `"integrate"` and `"mc"`,
+trading speed against robustness. `"bartlett"` rests on the Bartlett
+identities: the outer product of gradients is their order-two case, and
+the general identity expresses an expected derivative of any order
+through products of lower-order ones. `"opg"` reads that outer product
+at each observation without taking an expectation, and `"integrate"` and
+`"mc"` average the observed derivative itself, by quadrature or by
+simulation. The default is `"opg"` for
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
+and `"integrate"` for
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
+and
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md);
+[`?expected_derivative_methods`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
+has the details.
 
 ## A note for authors of derivative methods
 
@@ -255,10 +265,10 @@ pattern.
 
 ## Where to go next
 
-- [`vignette("fitting-a-model")`](https://statmodels7.github.io/distributions7/articles/fitting-a-model.md)
-  — the link scale put to work in estimation.
-- [`vignette("defining-a-distribution")`](https://statmodels7.github.io/distributions7/articles/defining-a-distribution.md)
-  — adding a distribution that inherits all of this.
+- [`vignette("fitting-a-model")`](https://statmodels7.github.io/distributions7/articles/fitting-a-model.md):
+  the link scale put to work in estimation.
+- [`vignette("defining-a-distribution")`](https://statmodels7.github.io/distributions7/articles/defining-a-distribution.md):
+  adding a distribution that inherits all of this.
 - [`?distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
-  [`?distrib_deriv3`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
-  — the full reference.
+  [`?distrib_deriv3`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md):
+  the full reference.

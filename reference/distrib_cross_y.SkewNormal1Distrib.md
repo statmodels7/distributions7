@@ -29,7 +29,8 @@ which would evaluate it twice more.
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 - ...:
 
@@ -38,9 +39,7 @@ which would evaluate it twice more.
 ## Value
 
 A named list with components `mu`, `sigma` and `alpha`, each a numeric
-vector of length `length(y)`. All three are exact; measured against
-Richardson on the analytic response gradient the worst is
-\\3.6\times10^{-11}\\ relative.
+vector of length `length(y)`. All three are exact.
 
 ## See also
 
@@ -49,4 +48,4 @@ evaluated once for all three;
 [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
 for the family;
 [`distrib_cross_y.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.SkewTDistrib.md),
-where the shape is differenced.
+where the shape components are taken from the Hessian.

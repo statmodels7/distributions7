@@ -5,13 +5,15 @@ $$\gamma_2 = \frac{g_4 - 4 g_1 g_3 + 6 g_1^2 g_2 - 3 g_1^4}
       \qquad g_k = \Gamma(1 + k/\sigma).$$
 The scale cancels, so the value depends on the shape alone. It is 6 at shape
 1, where the family is exponential, dips below zero over a band of moderate
-shapes, and climbs again as the shape grows."><meta property="og:description" content="Closed form:
+shapes, and climbs again as the shape grows, towards 2.4. It is evaluated
+through weibull_moment_terms(), as the skewness is."><meta property="og:description" content="Closed form:
 $$\gamma_2 = \frac{g_4 - 4 g_1 g_3 + 6 g_1^2 g_2 - 3 g_1^4}
                       {(g_2 - g_1^2)^2} - 3,
       \qquad g_k = \Gamma(1 + k/\sigma).$$
 The scale cancels, so the value depends on the shape alone. It is 6 at shape
 1, where the family is exponential, dips below zero over a band of moderate
-shapes, and climbs again as the shape grows."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+shapes, and climbs again as the shape grows, towards 2.4. It is evaluated
+through weibull_moment_terms(), as the skewness is."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +21,7 @@ shapes, and climbs again as the shape grows."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +60,8 @@ $$\gamma_2 = \frac{g_4 - 4 g_1 g_3 + 6 g_1^2 g_2 - 3 g_1^4}
       \qquad g_k = \Gamma(1 + k/\sigma).$$
 The scale cancels, so the value depends on the shape alone. It is 6 at shape
 1, where the family is exponential, dips below zero over a band of moderate
-shapes, and climbs again as the shape grows.</p>
+shapes, and climbs again as the shape grows, towards 2.4. It is evaluated
+through <code><a href="weibull_moment_terms.html">weibull_moment_terms()</a></code>, as the skewness is.</p>
     </div>
 
 
@@ -73,7 +76,7 @@ shapes, and climbs again as the shape grows.</p>
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>mu</code> (the scale, positive) and
 <code>sigma</code> (the shape, positive), each a numeric vector of length 1 or <code>n</code>.
-The fourth moment requires a shape above \(1/4\).</p></dd>
+The fourth moment exists for every positive shape.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -95,7 +98,7 @@ value, so a setting that varies the scale alone repeats one number.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="skewness.Weibull1Distrib.html">skewness.Weibull1Distrib()</a></code>, <code><a href="variance.Weibull1Distrib.html">variance.Weibull1Distrib()</a></code>,
-<code><a href="weibull_gamma_factors.html">weibull_gamma_factors()</a></code>, <code><a href="weibull1_distrib.html">weibull1_distrib()</a></code>.</p></div>
+<code><a href="weibull_moment_terms.html">weibull_moment_terms()</a></code>, <code><a href="weibull1_distrib.html">weibull1_distrib()</a></code>.</p></div>
     </div>
 
     <div class="section level2">

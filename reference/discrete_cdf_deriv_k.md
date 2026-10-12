@@ -5,7 +5,9 @@ The general form of
 evaluates \\\partial^I F(q) = \sum\_{y \le q} f(y)\\\partial^I
 f/f\\(y)\\ for a discrete family at any order up to four. Nothing is
 differenced; the sum is exact wherever the support has a finite lower
-bound, which the discrete class requires.
+bound, which the discrete class requires. Where \\P(Y \> q)\\ is below
+0.01 the sum is computed as minus the sum above \\q\\, the derivatives
+of the mass summing to zero over the support.
 
 ## Usage
 

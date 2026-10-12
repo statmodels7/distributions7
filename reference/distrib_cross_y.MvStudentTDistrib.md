@@ -11,9 +11,10 @@ c\\\Sigma^{-1}e_j - \frac{\partial c}{\partial\mu_j}\\w, \qquad
 c\\\Sigma^{-1}A_k w - \frac{\partial c}{\partial\eta_k}\\w, \qquad
 \frac{\partial c}{\partial\eta_k} = \frac{(\nu+p)\\w^\top A_k
 w}{(\nu+q)^2},\$\$ \$\$\frac{\partial^2\ell}{\partial y\\\partial\nu} =
--\frac{(q-p)\\w}{(\nu+q)^2}.\$\$ Unlike the gaussian's, no component
-here is constant across rows: the location block carries the observation
-through \\c\\ even though its gaussian part does not.
+-\frac{(q-p)\\w}{(\nu+q)^2}.\$\$ For the gaussian the location block,
+\\\Sigma^{-1}e_j\\, is the same for every row; here every component
+varies with the row, the location block carrying the observation through
+\\c\\.
 
 ## Arguments
 
@@ -35,9 +36,9 @@ through \\c\\ even though its gaussian part does not.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The two differ here, `nu` carrying a log link by
-  default.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  The two differ here, `nu` carrying a log link by default.
 
 - ...:
 
@@ -50,12 +51,11 @@ A named list of \\n \times p\\ numeric matrices, one per parameter, in
 
 ## Details
 
-Nothing here is obstructed. The log-density carries no distribution
-function, only `lgamma`, a logarithm and a quadratic form, each
-elementary in \\\nu\\. As \\\nu \to \infty\\ the weight goes to one and
-its derivatives to zero, so every component becomes the gaussian's; the
-tests compare them against that limit, and at \\\nu = 10^7\\ the two
-agree to \\2.6\times10^{-6}\\.
+The log-density contains no distribution function, only `lgamma`, a
+logarithm and a quadratic form, so every derivative in \\\nu\\ is closed
+form. As \\\nu \to \infty\\ the weight tends to one and its derivatives
+to zero, so every component that the two families share tends to the
+gaussian's.
 
 ## Notation
 
@@ -98,8 +98,8 @@ vapply(seq_along(d@params), function(k) {
   max(abs(cy[[k]] -
           (distrib_grad_y(d, y, tp) - distrib_grad_y(d, y, tm)) / (2 * h)))
 }, numeric(1))
-#> [1] 2.464828e-11 2.847478e-11 1.023532e-10 7.835976e-11 7.881096e-11
-#> [6] 1.358529e-11
+#> [1] 1.909717e-11 3.402589e-11 7.158119e-11 7.280865e-11 5.279199e-11
+#> [6] 2.539313e-11
 
 # As nu grows every shared component approaches the gaussian's.
 t2 <- theta; t2$nu <- 1e7

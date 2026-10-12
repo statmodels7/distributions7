@@ -33,14 +33,13 @@ alone repeats one number.
 
 The two Bessel functions are evaluated exponentially scaled, through
 `besselK(sqrt(nu), r, expon.scaled = TRUE)`. Both carry the same factor
-\\e^{\sqrt{\nu}}\\, which cancels in the ratio, so the quotient is exact
-where the unscaled functions would have overflowed; the terms are degree
-homogeneous, and the scaling has been checked to \\\nu = 2000\\.
+\\e^{\sqrt{\nu}}\\, which cancels in the ratio, so the quotient remains
+finite at large \\\nu\\, where the unscaled functions underflow to zero.
 
-The quantity is also used inside the package: the bracket
+The standard deviation obtained from this variance sets the width of the
+first bracket of the root search in
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md)
-searches over for this family is built from it, so an error here would
-surface as a failed root search several frames away.
+for this family.
 
 ## Notation
 

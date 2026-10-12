@@ -1,12 +1,11 @@
 # Elastic-Net Expected Information
 
-Returns the expected Hessian in closed form. The family already carries
-every piece of it: in the two rates the density is an exponential
-family, so the information is the Hessian of its own log normalizing
-constant, and `.enet_logz_derivs()` computes that for the observed
-Hessian already.
+Returns the expected Hessian in closed form. In the two rates the
+density is an exponential family, so the information in those rates is
+the Hessian of the log normalizing constant, which the observed Hessian
+also uses.
 
-`expected`, `approx` and `nsim` are all ignored, the answer being exact.
+`approx` and `nsim` are accepted and ignored, the answer being exact.
 
 ## Arguments
 

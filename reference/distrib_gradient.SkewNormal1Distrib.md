@@ -7,15 +7,17 @@ With \\z = (y-\mu)/\sigma\\, \\t = \alpha z\\ and \\R(t) =
 \dfrac{\partial \ell}{\partial \sigma} = \dfrac{z^2 - 1 - \alpha z
 R}{\sigma}, \qquad \dfrac{\partial \ell}{\partial \alpha} = z R.\$\$
 Every derivative of \\\log\Phi(t)\\ is a polynomial in \\t\\ and \\R\\,
-because \\R' = -R(t+R)\\ closes the recursion, so the whole derivative
-surface of this family stays elementary.
+because \\R' = -R(t+R)\\ closes the recursion, so the derivatives of the
+log-density are elementary at every order. The kernels take them from
+[`distrib_deriv3.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewNormal1Distrib.md)'s
+routine, which uses that recursion for \\t \ge -1\\ and the cumulants of
+the logarithm of the Mills ratio below, where the recursion cancels.
 
-The ratio comes from
-[`numericals7::mills_ratio()`](https://statmodels7.github.io/numericals7/reference/mills_ratio.html),
-which forms it on the log scale. Below about \\t = -38\\ both
-\\\phi(t)\\ and \\\Phi(t)\\ underflow while their ratio is finite and
-close to \\-t\\: measured at \\t = -400\\ the ratio is 400.0025 where
-`dnorm(t)/pnorm(t)` is `NaN`.
+The ratio is formed on the log scale, as \\\exp\\\log\phi(t) -
+\log\Phi(t)\\\\, for \\t \ge -1\\, and from the logarithm of the Mills
+ratio below. Below about \\t = -38\\ both \\\phi(t)\\ and \\\Phi(t)\\
+underflow while their ratio is finite and close to \\-t\\: at \\t =
+-400\\ the ratio is about 400.0025, where `dnorm(t)/pnorm(t)` is `NaN`.
 
 At \\\alpha = 0\\ the shape score is \\z\sqrt{2/\pi}\\ and the location
 score is \\z/\sigma\\, so the two are exactly proportional. The expected

@@ -1,13 +1,13 @@
 # Interpretable Quantities of a Multivariate Gaussian
 
-Returns the quantities the chosen parametrization describes, with their
-Jacobian. Where the matrix parametrization declares its own block
+Returns the quantities that the chosen parametrization describes, with
+their Jacobian. Where the matrix parametrization declares its own block
 through
 [`parameters7::param_readable()`](https://statmodels7.github.io/parameters7/reference/param_readable.html)
 (a compound symmetry, an AR(1), an AR(p)), that block alone is returned,
 with the common variance `scale` reported as its square root `sd` on the
-covariance side. Otherwise a COVARIANCE parametrization reports the
-standard deviations and the correlations, and a PRECISION
+covariance side. Otherwise a covariance parametrization reports the
+standard deviations and the correlations, and a precision
 parametrization reports the conditional variances \\1/\Omega\_{jj} =
 \operatorname{Var}(Y_j \mid Y\_{-j})\\ and the partial correlations
 \\-\Omega\_{jk}/\sqrt{\Omega\_{jj}\Omega\_{kk}}\\, the correlation of
@@ -43,9 +43,9 @@ correlations for a precision.
 
 ## One parametrization, one set of quantities
 
-A user who writes the model on the precision asks to read the precision,
-so the marginal standard deviations and correlations are not reported
-beside its own quantities; they remain available from
+A model written on the precision is reported on the precision, so the
+marginal standard deviations and correlations are not reported beside
+its own quantities; they remain available from
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
 and
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md).
@@ -55,8 +55,8 @@ pair would repeat them.
 
 ## What a precision's diagonal means
 
-The quantity with a reading is the conditional VARIANCE, so
-\\1/\Omega\_{jj}\\ is reported rather than a square root of
+The diagonal of a precision is read through the conditional variance, so
+\\1/\Omega\_{jj}\\ is reported in place of a square root of
 \\\Omega\_{jj}\\. Its ratio to the marginal variance is \\1 - R_j^2\\
 for the regression of that coordinate on all the others. At \\p = 2\\
 the partial correlation equals the correlation.

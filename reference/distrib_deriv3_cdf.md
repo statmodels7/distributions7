@@ -34,8 +34,10 @@ distrib_deriv4_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical, `TRUE` by default; `FALSE`
-  flips the sign of every component.
+  Is the lower tail wanted? A single logical, `TRUE` by default. With
+  `log = FALSE`, `FALSE` flips the sign of every component; with
+  `log = TRUE` it returns the derivatives of \\\log S\\, which are not
+  the negatives of the lower-tail ones.
 
 - log:
 
@@ -77,13 +79,12 @@ and with only the first two orders available it pays one quadrature per
 component at orders three and four; with these it pays two calls on the
 parent instead.
 
-## Accuracy against speed
+## Accuracy
 
-Unusually, the closed route is the slower of the two at these orders: on
-a Gaussian at 1000 quantiles it costs 7.0 ms against the stencil's 4.7
-ms, because it runs a Faa di Bruno pass over the response derivatives.
-It is preferred for accuracy alone, the stencil being
-\\1.5\times10^{-5}\\ out at order 3 and \\1.3\times10^{-4}\\ at order 4.
+The closed route runs a Faa di Bruno pass over the response derivatives
+and costs about as much as the stencil. It is used for its accuracy: the
+stencil has a relative error of order \\10^{-5}\\ at order 3 and
+\\10^{-4}\\ at order 4.
 
 ## Notation
 

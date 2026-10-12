@@ -17,7 +17,7 @@ mechanism or the other."><meta property="og:image" content="https://statmodels7.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,9 +79,10 @@ strictly inside \((0, 1)\).</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>
-<dd><p>Logical of length 1. When <code>TRUE</code> the log-mass is returned. The
-logarithm is taken of the mixture, not inside the parent, so it underflows
-where the mixture does. Defaults to <code>FALSE</code>.</p></dd>
+<dd><p>Logical of length 1. When <code>TRUE</code> the log-mass is returned. It is
+computed from the parent's log-mass, as a log-sum-exp at zero and as
+\(\log(1-\zeta) + \log f(y)\) elsewhere, so it stays finite where the
+mass underflows. Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

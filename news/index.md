@@ -1,5 +1,555 @@
 # Changelog
 
+## distributions7 0.77.0
+
+The documentation of the whole package was checked against the code and
+rewritten in the plain register. The defects that the check found in the
+code are repaired in this version, each with a test that fails on
+0.76.1. The package now requires parameters7 (\>= 0.24.0).
+
+### New features
+
+- [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md),
+  [`gaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian2_distrib.md)
+  and
+  [`gaussian3_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian3_distrib.md)
+  compute the fifth derivative of the log-density in closed form, from a
+  compiled kernel. It came from the numerical fallback, whose step at a
+  small scale gave a relative error of 11 at `sigma = 1e-6` and 4e-4 at
+  `1e-3`.
+- Closed-form fifth derivatives for the Laplace (both parametrizations),
+  logistic, Cauchy, Gumbel, exponential and chi-squared families.
+- The expected third and fourth derivatives of the logistic are in
+  closed form; they were computed by quadrature.
+- [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+  with `expected = TRUE` are exact for the multivariate gaussian, the
+  Dirichlet and the multinomial (they sampled, and the Dirichlet gave
+  `NaN` at `phi = 0.02`); `approx` and `nsim` are ignored there. The
+  multivariate Student t still samples.
+- [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+  gains the argument `params_smooth`. By default the new parameters are
+  declared non-smooth when the parent has a non-smooth parameter; they
+  were all declared smooth, so that a reparametrized Laplace hid its
+  kink.
+
+### Changes
+
+- [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
+  and
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md)
+  signal an error for parameters of a length other than 1 or that of the
+  response, as the derivative generics do. They recycled silently, and
+  the compiled density of `gengamma1` and `gengamma2` read past the end
+  of a shorter parameter.
+- Every derivative generic treats a constant that varies by observation
+  (a binomial’s `size`) as a parameter: the response and the parameters
+  must have length 1 or its length, and any other length signals an
+  error.
+- The variance of
+  [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
+  is `Inf` for 1 \< nu \<= 2 and its excess kurtosis is `Inf` for 2 \<
+  nu \<= 4, as for
+  [`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md);
+  both were `NaN`.
+- The quantile functions of the generalized Pareto, the Laplace (both
+  parametrizations), the elastic net, the two pseudo-Huber families and
+  [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
+  return `NaN` for a probability outside \[0, 1\], as every other family
+  does. The generalized Pareto returned a finite number there, and the
+  pseudo-Huber families signalled an unrelated error.
+- [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
+  of the multivariate Student t draws `nu` from (5, 12), where the check
+  of the first two moments is reliable.
+
+### Bug fixes: generics and infrastructure
+
+- [`plot()`](https://rdrr.io/r/graphics/plot.default.html) of a
+  multivariate fit drew the observations of the wrong columns when
+  `mv_which` selected coordinates other than the first ones; the panels
+  now read the data by coordinate. The error for more than three
+  coordinates names `mv_which` for a fit.
+- The elapsed time printed by a fit no longer reaches the carry of its
+  unit (`1 min 60 s`, `60 s`, `1e+03 ms`).
+- The numerical quantile of a discrete family defined by its mass alone
+  returned `k + 1` at a probability equal to `F(k)` up to rounding. The
+  probability is now compared with the cumulative table after a relative
+  reduction of 64 epsilon, as
+  [`stats::qpois()`](https://rdrr.io/r/stats/Poisson.html) does.
+- [`numerical_deriv_y()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv_y.md)
+  computed the fourth-order stencil for any order other than 3; it now
+  signals an error for an order other than 3 or 4.
+- [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+  and [`confint()`](https://rdrr.io/r/stats/confint.html) signal an
+  error for a `level` outside (0, 1), which gave `NaN` intervals.
+- The standard error of a negative variance is `NaN` (it was 0), in
+  [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+  and in
+  [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md).
+- The third and fourth derivatives of the log cdf (`log = TRUE`) take
+  orders 1 and 2 from the family’s own
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
+  and
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md)
+  where the family has them, instead of differencing the cdf. Against
+  mpmath at 60 digits, `gamma2` order 3 goes from 6.7e-7 to 1.3e-14
+  relative and order 4 from 1.5e-5 to 1.4e-13; the Student t mixed
+  components in `nu` go from 6e-7 to 1.4e-15.
+- The log-scale derivatives of the distribution function of the
+  location-scale families read the family’s own upper tail and its log
+  density, so that they stay finite where F or 1 - F underflows.
+- [`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
+  returns finite log probabilities in the far tails, and the numerical
+  quantile of the base class solves on the logarithm of the smaller
+  tail, to probabilities of 1e-300.
+- The derivatives of the distribution function computed by the compiled
+  quadrature (gamma, chi-squared, generalized gamma, beta, von Mises,
+  Student t, pseudo-Huber, skew normal and skew t families) integrate
+  over the side of the quantile that holds less mass. The side was
+  chosen by a center, which for `gengamma1` is its scale `a` and can lie
+  far in the lower tail; there the derivatives were sums of terms of
+  order one, with a relative error of 4e-7 at `F = 5e-10`
+  (`a = 0.3, d = 8, p = 0.6`), now at rounding. `gamma1` at shape 0.02
+  gained three digits in the same way.
+- The same quadrature for the gamma, chi-squared and generalized gamma
+  families at a small shape: part of the mass lies below the smallest
+  representable double, and the derivatives of the distribution function
+  were infinite wherever the lower side was integrated (`gamma1` at
+  shape 0.005, half of the quantiles). Below `1e-290` the density
+  behaves like `y^(alpha - 1)` with every parameter derivative linear in
+  `log y`, and that part is integrated in closed form; the panels in
+  `log y` are at most one unit wide and restart where the fast decay of
+  the density begins. Orders one to four agree with mpmath to 1e-11
+  (normwise 1e-12), also at subnormal quantiles.
+- The upper tail of a discrete family without its own distribution
+  function (the two Poisson-inverse Gaussian families,
+  [`betabinom2_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom2_distrib.md)
+  and any user family) is summed term by term above the quantile past
+  the median, so that it keeps its accuracy however small it is; the
+  same holds for
+  [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md).
+  The upper tail of
+  [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
+  at 200 read 4.4e-16 for 1.7e-19, and an upper-tail quantile at 1e-17
+  was `Inf`.
+- The derivatives of the distribution function of a discrete family in
+  its upper tail are computed from the sum above the quantile (the
+  second to fourth orders of the Poisson were off by 3e-6 to 1e-5 at
+  `q = 24`, `mu = 3`). A missing quantile gives a missing cdf derivative
+  (it signalled an unrelated error).
+- Order-two components follow
+  [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
+  in every route. The parameter-scale Hessians of `gaussian2`,
+  `gaussian3`, `gamma1` and `invgauss2`, the Hessian and expected
+  information of the von Mises, and
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md)
+  of `invgauss1`, `invgauss2`, `weibull1`, the skew normals, the
+  generalized Pareto and the other families registered through the same
+  helpers returned them in the order of
+  [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md).
+
+### Bug fixes: continuous families
+
+- The cdf derivatives of
+  [`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md)
+  (the `sigma2` component of the gradient and every component at orders
+  3 and 4) and of
+  [`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md)
+  (every order) were `NaN` at `q <= 0`; they are zero there, as
+  documented.
+- The response derivatives of orders one to four were `NaN` at the
+  boundary of the support when the adjacent shape is exactly 1
+  (`gamma1`, `gamma2`, `beta1`, `beta2`, `weibull1`, `weibull3`); they
+  are now the limits there.
+- [`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md):
+  the score in `mu` and the terms that share `z - 1` are formed from
+  `(y - mu)/mu`, which keeps the digits next to the mean (the relative
+  error was 2e-2 at `y - mu = 1e-14` and is now at rounding).
+- [`gamma2_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma2_distrib.md):
+  the derivatives of orders one to four, observed and expected, lost a
+  digit for every factor of ten in the shape `mu^2/sigma2` (relative
+  error 1e-9 at order one and 3e-6 at order four at shape 1e6, against
+  mpmath). The kernels now write the log-density as
+  `G(alpha) + alpha e(mu) - log y` and use the cancellation-free rests
+  of the polygamma functions; the errors are 1e-14 and 2e-11. The
+  kernels cost 1.6 to 2 times what they did.
+- [`lognormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal2_distrib.md):
+  the observed derivatives of orders three to five lost their digits at
+  a small coefficient of variation (normwise relative error 4e-6 at
+  order four and 2e-4 at order five at mean 100 and coefficient of
+  variation 0.01, against mpmath). They are now composed from
+  `S = log(1 + v/m^2)` and `C = log(y/m)` and are at rounding; they cost
+  7 to 12 times what they did when the parameters vary by observation.
+  Orders one and two keep their closed forms.
+- The skewness and kurtosis of
+  [`lognormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal2_distrib.md),
+  and the kurtosis of
+  [`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md),
+  are formed from `v/m^2` and `expm1(sigma2)`; at `v/m^2 = 1e-12` they
+  lost four digits.
+- [`weibull3_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull3_distrib.md):
+  at a small shape the scale `m/Gamma(1 + 1/sigma)` underflowed to 0,
+  and the density and the distribution function were `NaN` (shape
+  0.002); they now work through the logarithm of the scale.
+- [`gengamma_components()`](https://statmodels7.github.io/distributions7/reference/gengamma_components.md)
+  (internal) signals an error for an order outside 1 to 4; at order 5 it
+  returned wrong values.
+- The generalized Pareto distribution function returned 1 below zero for
+  a positive shape. It is now formed from the log survival, so that both
+  tails and their logarithms keep their digits, and the quantile
+  function reads the logarithm of the tail without forming 1 - p.
+- The distribution and quantile functions of the Laplace (both
+  parametrizations), the elastic net and the two pseudo-Huber families
+  return each tail, and its logarithm, without underflow or `1 - p`.
+- The skew normal distribution function is integrated where
+  `pnorm(z) - 2 T(z, alpha)` loses its digits, and is defined at any
+  shape.
+- The von Mises distribution function resolves tail probabilities below
+  1e-10, and the draws are defined at a concentration below 1e-8. The
+  tail integral uses
+  [`numericals7::log_bessel_i()`](https://statmodels7.github.io/numericals7/reference/log_bessel_i.html)
+  (it was `Inf` from a concentration of about 2e5) and integrates each
+  side of the antimode from its end, in panels of growing width (at
+  `kappa = 1e6` it was off by a factor e^328). Below 1e-6, in place of
+  1e-10, the tail comes from the quadrature, where the absolute error of
+  the series left up to 3e-5 of relative error (now 1e-9 at most).
+- The Cauchy derivatives, of the log-density to order five and of the
+  distribution function to order four, are written in
+  `Y = y - mu + i sigma` and are finite and exact at any residual.
+- The normalizing constant of the elastic net and its derivatives are
+  computed from the cumulants of a truncated gaussian, exact as `alpha`
+  approaches one (the `alpha`-`alpha` curvature was off by 0.14 relative
+  at `alpha = 0.999`).
+- The derivative kernels of the skew normal are exact for `alpha z` far
+  below zero. The centered skew normal has exact derivatives far below
+  the step of its density, and its expected information is integrated at
+  that step and is negative definite up to the skewness ceiling.
+- The derivatives of the skew t in `nu` are accurate at large `nu` (off
+  by 7e-3 relative at `nu = 1000` before), and so are its other
+  derivatives where `z^2 < nu` at large `nu` (off by 7e-5 in `sigma^4`
+  at `nu = 1e6` before).
+- The pseudo-Huber derivatives in `nu` are exact over the whole domain
+  of `nu`.
+- [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
+  of the skew normal, the skew t and the pseudo-Huber families takes the
+  shape pairs from one stencil on the analytic response Hessian instead
+  of a difference of a difference (1.9e-6 to 1e-8 on the skew normal).
+  The mixed derivatives of the inverse gaussians in the response and the
+  parameters are in closed form (they carried stencil noise of 1e-6
+  where the value is zero). The location-scale and scale-only bodies,
+  and the response derivatives of the Cauchy, no longer return `NaN` at
+  an extreme observation.
+- Smaller repairs: the chi-squared response derivatives at `y = 0` with
+  `mu = 2`, the second derivative of the logistic in its tails, the skew
+  normal draws at a huge shape, and the log-densities of the Laplace,
+  Cauchy and pseudo-Huber families where an intermediate overflowed.
+
+### Bug fixes: discrete families and moments
+
+- [`binomial_distrib()`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md)
+  with a vector `size`: the derivative methods recycle the response,
+  `mu` and `size` to a common length. A size of length 2 against three
+  responses was read out of bounds, and a scalar response against a
+  vector size used only the first size.
+  [`binomial_distrib()`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md)
+  rejects a size that is not a vector of positive integers (2.5 was
+  accepted; 0, negative values and `NA` gave unrelated errors).
+- The derivatives of the distribution function of
+  [`binomial_distrib()`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md)
+  with a vector `size`, and of the wrappers over it, read the size of
+  each observation. The second to fourth orders mixed the sizes of
+  different observations (the Hessian of the log-cdf read 24.7 for -8.5
+  at size 5), and the gradient recycled a size of length 2 against three
+  quantiles with only the length warning of R.
+- The second to fourth derivatives of the Bernoulli, binomial, Poisson
+  and geometric log-mass no longer give `NaN` at a zero count and a mean
+  so small that its square underflows (they gave 0/0).
+- The geometric derivatives in the mean, observed and expected, and the
+  derivatives of
+  [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
+  in the mean at a small size are formed without the cancellation of two
+  near-equal quotients. The geometric Hessian at a count equal to a mean
+  of 1e14 was off by 6e-3, and the Hessian of
+  [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
+  in `mu` at `theta = 1e-8` by 8e-8.
+- [`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)
+  at the Poisson limit. The log-mass comes from
+  [`dnbinom()`](https://rdrr.io/r/stats/NegBinomial.html) in the mean
+  parametrization (0.11 relative error at `theta = 1e-15`, `-Inf` below
+  1e-17). The scores and second derivatives come from the sums in
+  `mu + i theta` below `theta = 1`, as the third and fourth already did
+  (`theta_theta` was 767 times too large at `theta = 1e-8`). The
+  distribution function, the quantile and the generator use the mean
+  parametrization of the base R functions, which does not form the
+  success probability 1/(1 + theta) (the draws had mean 0 at
+  `theta = 1e-17`).
+- The expected information of
+  [`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)
+  and its first and second derivatives at a small dispersion: below a
+  cut of `theta = 0.02` the dispersion entry is summed as the
+  expectation of the observed one, whose summands are all positive. The
+  entries in `theta` were off by 1.8e-4 at `theta = 1e-12`, and the
+  derivative of `E[l_theta,theta]` in `theta` read -8.59 for 1.125 at
+  `theta = 1e-8`. The observed second derivative in `theta` below
+  `theta = 1e-9` no longer drops a term of the series of q’ (2e-10
+  absolute).
+- The beta-binomial families at a large concentration: below a
+  dispersion of 0.1
+  ([`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md))
+  or above a total shape of 10
+  ([`betabinom2_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom2_distrib.md),
+  third and fourth orders) the derivatives come from finite sums over
+  the integer shifts, which keep their accuracy at any concentration
+  (the fourth derivative of
+  [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
+  in `sigma` was off by a factor 54 at `sigma = 1e-4`). So do the
+  expected information of
+  [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
+  and its first and second derivatives (the derivative of
+  `E[l_sigma,sigma]` in `sigma` read -13312 for 934 at `sigma = 1e-6`).
+- [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+  of
+  [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
+  with `expected = TRUE` sum exactly over the support, as
+  [`betabinom2_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom2_distrib.md)
+  does; `approx` and `nsim` are ignored there.
+- A missing count gives a missing mass in
+  [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md),
+  [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
+  and
+  [`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md)
+  (it gave 0) and in
+  [`betabinom2_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom2_distrib.md)
+  (it signalled an error).
+- The quantile of
+  [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
+  compares a probability with the cumulative sum relatively; an absolute
+  tolerance of 1e-12 returned 0 for every probability below it.
+- Moments. The skewness and excess kurtosis of the beta-binomial are in
+  closed form (the kurtosis had the wrong sign at a dispersion of 1e-6
+  and 1e6 trials). The beta families avoid products of the shapes (`NaN`
+  or `Inf` below a precision of 1e-155). The Weibull variance, skewness
+  and kurtosis avoid cancellation at a large shape and overflow at a
+  small one (the kurtosis read 32823 for 2.4 at shape 1e5). The skew
+  normal and the skew t are right at `|alpha|` above 1e154 (they
+  returned the gaussian values), and the skew t at a large `nu` (a
+  negative variance at 1e16).
+
+### Bug fixes: multivariate families
+
+- [`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md):
+  the third and fourth derivatives read the orientation of the matrix
+  chart. On the inverse scale matrix they were wrong at ordinary values
+  (a normwise error of 5 at order three).
+- The observed Hessian of the multivariate gaussian and Student t, and
+  their third and fourth derivatives, read the derivatives of the
+  inverse from the chart, through parameters7 (\>= 0.24.0) at orders
+  three and four. At `log L22 = -11.5` the Hessian of the gaussian had
+  the wrong sign and the third and fourth orders were off by orders of
+  magnitude; they now agree with an independent reference to 4e-15
+  (gaussian) and 2e-10 (Student t).
+- The draws of the multivariate gaussian and Student t come from the
+  factor of the matrix chart and not from
+  [`chol()`](https://rdrr.io/r/base/chol.html) of the assembled matrix,
+  which failed at a nearly singular covariance (from `log L22 = -20`).
+- The multivariate Student t at a large `nu`: the log-density, the
+  observed and expected information in `nu`, the third and fourth
+  derivatives in `nu` and the mixed response derivatives in `nu` are
+  formed without cancellation. At `nu = 1e10` the expected information
+  in `nu` was positive, and at `nu = 1e9` the third derivative was 50
+  times too large; they now agree with a 400-digit reference to 3e-16 up
+  to `nu = 1e100`.
+- The response derivatives of the multivariate Student t are finite up
+  to `|y| = 1e300` (the response Hessian had the wrong sign from
+  `1e100`).
+- The response Hessian of the multivariate gaussian and Student t is
+  exactly symmetric (the inverse of the matrix was symmetric only to
+  rounding).
+- [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md):
+  a missing row gives a missing density (it signalled an error); the
+  draws at a small concentration no longer contain rows of `NaN` (928 of
+  2000 at `phi = 0.001`); the Hessian and the third and fourth
+  derivatives at a tiny shape are exact on the additive log-ratio chart
+  (they were `NaN` at a shape of 1e-129).
+- [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md):
+  on the additive log-ratio chart the log-mass and every derivative come
+  from the log-probabilities and the cumulants of the categorical law,
+  so that a probability that underflows gives finite values (the
+  log-mass was `NaN` at a log-ratio of -800, and the Hessian from -400).
+- [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
+  of a fitted
+  [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md)
+  or
+  [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md)
+  runs: it reports the covariance of the response followed by the
+  probabilities of the simplex (it signalled “‘eta’ must be finite”).
+- Responses with zero rows give the derivatives of the multivariate
+  gaussian and Student t without warnings.
+- Arguments are validated under their own names: a non-numeric response,
+  a `which` that is not a set of distinct whole numbers in range (in
+  [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
+  and [`plot()`](https://rdrr.io/r/graphics/plot.default.html)), and an
+  `n_dim` that is not a whole number in the two simplex-valued
+  constructors.
+- [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+  of a multivariate Student t at a small `nu`: the density check samples
+  from a Student t proposal (it failed at `nu <= 2`), and the check of
+  the first two moments is listed as skipped when they are not finite.
+
+### Bug fixes: wrappers
+
+- [`bc_transform()`](https://statmodels7.github.io/distributions7/reference/bc_transform.md)
+  with a negative `lambda` was flagged as decreasing, although the
+  Box-Cox map increases for every `lambda`. The distribution function of
+  the transformed family returned one minus the true value and the
+  quantiles came out in reverse order (the density was right). The
+  compiled route had the same flag.
+- [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+  without `map_derivs` took every mixed derivative of the map at the
+  base point of the last parameter, so the Hessian and the higher orders
+  were wrong whenever the new parameters had different values (on a
+  gaussian with `mu = a b` and `sigma = exp(a - b)`, the Hessian entry
+  `a_b` was -54.7 against -29.9).
+- [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+  in the upper tail of the parent: the retained mass, the distribution
+  function and the quantile function are read from the survival function
+  of the parent where `F(L^-)` exceeds one half. A gaussian truncated
+  below 8 had a cdf of 1 at 8.5 (for 0.985), draws on `[8, 12]` outside
+  the interval and an error from `lower = 9`; a Poisson truncated below
+  20 drew 19. The third to fifth derivatives there had the wrong sign.
+  The upper tail of the cdf is computed directly (it returned 0 for a
+  mass of 1.5e-23).
+- [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+  over a discrete parent: the quantile at `p = 0` is the lower endpoint
+  (it was the support point below it), and a missing observation gives a
+  missing density (it signalled an error).
+- [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+  over a parent with an atom (a continuous family under
+  [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md))
+  with parameters that vary by observation: the mean, the variance and
+  [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
+  read the mass of the atom of each observation (they used that of the
+  first).
+- [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+  over a discrete parent with almost all its mass at zero: `1 - f(0)` is
+  formed from the log-mass, in the density, the distribution function,
+  the score and the observed and expected Hessians (at `mu = 1e-6` the
+  Hessian of a zero-adjusted Poisson was 31.6 against -0.083).
+- [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+  over a discrete parent with almost all its mass at zero, and a
+  discrete
+  [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+  family whose mass sits at its lower endpoint: the derivatives in the
+  parameters of the parent are written around the first retained point,
+  which removes the cancellation between the derivatives of the parent
+  and those of the normalizing constant. At `mu = 1e-8` the Hessian of a
+  zero-adjusted Poisson was 4 against -0.083; it is now exact, and the
+  gradient is exact to 1e-16. The third to fifth orders of
+  [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+  form `1 - f(0)` from the log-mass.
+- The quantiles and draws of
+  [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+  read a constant that varies by observation, such as the `size` of a
+  binomial (the draws exceeded their own size), and the quantile near
+  one is no longer clamped at `1 - 1e-10`.
+- [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+  over a continuous parent: the third and fourth response derivatives
+  and the mixed response derivatives are `NaN` at the atom, as the first
+  two are (they differenced across the jump), and a parent whose support
+  lies below zero is warned about and given bounds that contain the
+  atom.
+- [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md):
+  the upper tail of the distribution function and the quantile in the
+  upper tail come from the upper tail of the parent (the cdf returned 0
+  for 9.8e-57, and the quantile `Inf` for 30).
+- [`power_transform()`](https://statmodels7.github.io/distributions7/reference/power_transform.md)
+  with an even exponent over a parent supported below zero uses the
+  negative root as the inverse (the density was 0 and the cdf 1).
+- [`softplus_transform()`](https://statmodels7.github.io/distributions7/reference/softplus_transform.md)
+  no longer overflows at a large argument (quantiles and draws near 1000
+  were `Inf`), in R and in the compiled route.
+- The fifth derivative on the link scale of
+  [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+  and
+  [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
+  reads the link-scale route of the parent (it lost two digits).
+- [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md):
+  the weight of the two preimages and the log-density are formed from
+  the two log-densities (at `x = 45` the score had the wrong sign and
+  the log-density was `-Inf`); the response derivatives over a parent
+  with a bounded support no longer return `NaN` where the reflected
+  preimage lies outside it; the upper tail of the cdf comes from the two
+  tails of the parent.
+- The expected information of
+  [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md):
+  at a kink center of exactly zero the derivatives are the one-sided
+  limit (they dropped the boundary terms), and a center many scales from
+  the fold uses the information of the parent (the quadrature lost up to
+  three digits at `mu / sigma = 1e6`).
+
+### Known limits, documented
+
+- The log-scale cdf gradient underflows in the far tail (gaussian beyond
+  `q = -38.5`, logistic beyond `|z|` of about 620), although the value
+  is finite.
+- The fifth order of a family defined by its density alone is a
+  difference of a difference and is returned without a warning.
+- The ratio-of-uniforms fallback does not handle a density with two
+  well-separated modes.
+- The canonical-link observed curvature of the Bernoulli, binomial and
+  Poisson, composed by the generic, and the fourth order of the
+  Poisson-inverse Gaussian at a tiny dispersion and a large count are
+  documented with their accuracy.
+- For
+  [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+  and a zero-truncated discrete family with its mass at the first point,
+  the error of the derivative of order n falls from about `eps mu^(-n)`
+  to about `eps mu^(1 - n)`, but does not vanish: on a Poisson the third
+  order is off by 4e-6 relative at `mu = 1e-4`, and the fourth order is
+  wrong from `mu = 1e-8`.
+
+### Documentation
+
+- Every page of the package was checked against the code and rewritten
+  in the plain register, with the factual corrections that the check
+  found: the default `approx` is `"opg"`, which is not a spelling of
+  `"bartlett"`; every shipped family writes its expected information out
+  and registers its own cdf derivatives;
+  [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+  compares the empirical cdf of the generator, not its moments; the raw
+  class constructors are checked by the validator of `distrib`; the
+  derivatives of the distribution function of the gamma, beta and
+  generalized gamma families come from a compiled quadrature, not a
+  finite difference; the base sampler of a family with a quantile is
+  inversion, not ratio-of-uniforms;
+  [`beta2_distrib()`](https://statmodels7.github.io/distributions7/reference/beta2_distrib.md)
+  and
+  [`invgauss2_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss2_distrib.md)
+  are described in their own parameters, and
+  [`weibull3_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull3_distrib.md)
+  as the mean-and-shape parametrization; the panels of
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) for a
+  multivariate fit span three standard deviations, not two and a half;
+  [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
+  signals an error where its integral or series diverges.
+- The section “Methods” of every class page lists every method
+  registered on the class, grouped, each linked to its page.
+- The README and the three vignettes were rewritten; the Laplace
+  constructor of the vignette “Defining a new distribution” now sets
+  `params_smooth`, as its text describes.
+- “contract”, “lattice” and “throws” were removed from the
+  documentation.
+- Functions that lost their callers are kept commented out:
+  `weibull_pieces()`, `nb1_prob()`, `betabinom_central()`,
+  `betabinom_factorial_moments()`, `central_from_factorial()`,
+  `weibull_gamma_factors()`, and the three bodies
+  `partial_loc_scale_grad_cdf()`, `partial_loc_scale_hess_cdf()` and
+  `partial_loc_scale_cross_y()`, which no family registered.
+
 ## distributions7 0.76.1
 
 - [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md)

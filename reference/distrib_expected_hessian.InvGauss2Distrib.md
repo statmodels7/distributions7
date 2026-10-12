@@ -58,8 +58,8 @@ ignored. `y` is read only for its length.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -80,7 +80,7 @@ family's shape parameter.
 ## See also
 
 [`distrib_hessian.InvGauss2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.InvGauss2Distrib.md)
-for the observed quantity this is the expectation of,
+for the observed Hessian, of which this is the expectation,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
 which inverts it at each step, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
@@ -97,11 +97,11 @@ lapply(distrib_expected_hessian(d, c(1, 2, 3), th), unique)
 #> $mu_mu
 #> [1] -0.375
 #> 
-#> $mu_lambda
-#> [1] 0
-#> 
 #> $lambda_lambda
 #> [1] -0.05555556
+#> 
+#> $mu_lambda
+#> [1] 0
 #> 
 c(-3 / 2^3, 0, -1 / (2 * 3^2))
 #> [1] -0.37500000  0.00000000 -0.05555556
@@ -117,7 +117,7 @@ z <- distrib_rng(d, 2e4, th)
 rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
       expected = vapply(distrib_expected_hessian(d, z, th),
                         function(v) v[1], numeric(1)))
-#>               mu_mu   mu_lambda lambda_lambda
-#> observed -0.3827783 0.001728511   -0.05555556
-#> expected -0.3750000 0.000000000   -0.05555556
+#>               mu_mu lambda_lambda   mu_lambda
+#> observed -0.3827783   -0.05555556 0.001728511
+#> expected -0.3750000   -0.05555556 0.000000000
 ```

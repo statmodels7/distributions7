@@ -2,7 +2,8 @@
 
 Transformer for the one-parameter Box-Cox transformation \\Y =
 (X^\lambda - 1)/\lambda\\ (with \\Y = \log X\\ for \\\lambda = 0\\).
-Requires \\X \> 0\\.
+Requires \\X \> 0\\. The map is increasing for every \\\lambda\\, its
+derivative being \\X^{\lambda - 1}\\.
 
 ## Usage
 

@@ -42,8 +42,8 @@ expectations are
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -88,9 +88,7 @@ all.equal(h$sigma2_sigma2, 1 / (2 * 0.36^2) - r^2 / 0.36^3)
 
 # Identical to the Gaussian's at log y.
 all.equal(h, distrib_hessian(gaussian2_distrib(), log(y), th))
-#> [1] "Names: 2 string mismatches"                     
-#> [2] "Component 2: Mean relative difference: 1.049141"
-#> [3] "Component 3: Mean relative difference: 2.802071"
+#> [1] TRUE
 
 # It is the second derivative of the log-density, so a central difference
 # of the score reproduces it.

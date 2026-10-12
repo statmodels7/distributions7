@@ -1,7 +1,13 @@
 # Distribution Function of a Truncated Distribution
 
-Evaluates \\F_T(q) = (F(q) - F(L^-))/Z\\, clamped to \\\[0, 1\]\\. One
-of the shared method bodies, registered on both truncated classes.
+Evaluates \\F_T(q) = (F(q) - F(L^-))/Z\\ and the upper tail \\(F(U) -
+F(q))/Z\\, clamped to \\\[0, 1\]\\. The lower tail of an interval with
+\\F(L^-) \le 1/2\\ is the first difference as written. Otherwise, and
+for the upper tail, each difference is formed from the parent's
+distribution function while \\F(q) \le 1/2\\ and from its survival
+function beyond, as \\(S(L^-) - S(q))/Z\\ and \\(S(q) - S(U))/Z\\, so
+that neither tail is a difference of two numbers near one. One of the
+shared method bodies, registered on both truncated classes.
 
 ## Usage
 
@@ -44,9 +50,11 @@ to.
 
 ## Details
 
-The clamp is there to make the endpoints exact. It returns `0` at and
-below \\L\\ and `1` at and above \\U\\, where the unclamped ratio would
-give a small negative number or one plus a rounding.
+The clamp is there to make the endpoints exact. It returns `0` below
+\\L\\ and `1` at and above \\U\\, where the unclamped ratio would give a
+small negative number or one plus a rounding. At \\L\\ itself the value
+is `0` for a continuous parent and \\f(L)/Z\\, the mass of the lower
+endpoint, for a discrete one.
 
 ## Notation
 

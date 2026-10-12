@@ -28,11 +28,8 @@ fit_dtheta_deta(distrib, eta)
 - eta:
 
   A numeric vector of linear predictors, one per parameter, in the order
-  `distrib@params` gives. Only the first element of each link's answer
-  is kept, so an `eta` longer than the parameter count is silently
-  truncated by the same rule
-  [`fit_eta_from_theta()`](https://statmodels7.github.io/distributions7/reference/fit_eta_from_theta.md)
-  applies.
+  `distrib@params` gives. Only `eta[i]` is read for the i-th parameter,
+  so entries beyond the parameter count are ignored.
 
 ## Value
 

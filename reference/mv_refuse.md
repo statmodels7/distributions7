@@ -1,10 +1,11 @@
-# Reject a Quantity That Has No Multivariate Counterpart
+# Signal the Error for a Quantity Without a Multivariate Counterpart
 
-Raises the error a multivariate distribution gives for a one-dimensional
-quantity, in one wording: the name of the quantity, the family it was
-asked of, and a sentence saying what is missing. Every refusal on this
-class goes through it, so the eight of them read alike and none of them
-silently returns a number of the wrong shape.
+Signals the error that a multivariate distribution gives for a quantity
+that has no multivariate counterpart, in one wording: the name of the
+quantity, the family, and a sentence saying what is missing. Every
+method of the class that signals such an error calls this function, so
+the messages share one form and no method returns a number of the wrong
+shape.
 
 ## Usage
 
@@ -22,18 +23,17 @@ mv_refuse(distrib, what, why)
 
 - what:
 
-  The name of the quantity, a single string WITHOUT parentheses:
-  `"distrib_cdf"`, `"skewness"`. The `()` is appended here, so passing
-  them gives `distrib_cdf()()`.
+  The name of the quantity, a single string without parentheses, such as
+  `"distrib_cdf"` or `"skewness"`. The `()` is appended here.
 
 - why:
 
-  One sentence saying what is missing, a single string with no leading
+  One sentence saying what is missing, a single string without a leading
   capital. It is placed after a colon and carries its own final period.
 
 ## Value
 
-Never returns: it always signals an error, with `call. = FALSE` so the
+Does not return: it signals an error, with `call. = FALSE` so that the
 message is not prefixed by the internal call.
 
 ## See also
@@ -43,20 +43,20 @@ message is not prefixed by the internal call.
 [`skewness.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.multivariate_distrib.md)
 and
 [`kurtosis.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.multivariate_distrib.md)
-for the refusals it produces.
+for errors that it produces.
 
 ## Examples
 
 ``` r
 d <- mvgaussian1_distrib(2)
 
-# The wording every refusal on this class shares. The name carries no
-# parentheses; they are appended here.
+# The wording of these errors. The name carries no parentheses; they are
+# appended here.
 try(distributions7:::mv_refuse(d, "some_quantity",
                                "there is no such thing in p dimensions."))
 #> Error : some_quantity() is not defined for 'multivariate gaussian [2d, sigma=log_cholesky]': there is no such thing in p dimensions.
 
-# Which is what a caller sees from the generics themselves.
+# The same wording from a generic.
 try(distrib_cdf(d, rbind(c(0, 0)),
                 list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
                      sigma_log_L2 = 0, sigma_L2.1 = 0)))

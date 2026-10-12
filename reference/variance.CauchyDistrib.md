@@ -3,8 +3,8 @@
 Returns `NaN`. The variance is the second central moment, and it needs a
 first moment to center on; the Cauchy has neither. Its density decays
 like \\y^{-2}\\, so \\\int \|y\|^p f(y)\\\mathrm{d}y\\ diverges for
-every \\p \ge 1\\, and the failure at \\p = 2\\ is the worse of the two.
-`NaN` is returned directly, so that no quadrature is attempted.
+every \\p \ge 1\\, so the second moment does not exist either. `NaN` is
+returned directly, so that no quadrature is attempted.
 
 ## Arguments
 
@@ -35,9 +35,8 @@ gives `NaN` too, being the square root of this.
 The spread a Cauchy does have is its half-interquartile range, exactly
 \\\sigma\\, available from
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md).
-Note that \\\sigma\\ is a legitimate scale parameter: it sets the width
-of the density in the ordinary way, and only its identification with a
-standard deviation fails.
+The parameter \\\sigma\\ is a scale parameter, which sets the width of
+the density, but it is not a standard deviation.
 
 ## Notation
 

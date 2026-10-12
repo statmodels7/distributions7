@@ -11,11 +11,10 @@ come from
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
 at the strategy `approx` names.
 
-**No family shipped in this package reaches this method for its observed
-derivatives.** All 46 write the third order out, 24 of them in compiled
-kernels. It exists for a family defined outside the package, which gets
-four orders from a density alone, and it is the reference the analytical
-kernels are validated against.
+Every family shipped in this package writes the observed third order
+out, so this method serves a family defined outside the package, which
+gets five orders from a density alone. It is also the reference against
+which the analytical kernels are validated.
 
 ## Arguments
 

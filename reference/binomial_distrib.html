@@ -25,7 +25,7 @@ the expected information coincide on its scale."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,7 +93,12 @@ differ.</p></dd>
 value applies to every observation; a vector of the length of the response
 gives one count per observation. Defaults to <code>1</code>, which makes the object a
 Bernoulli; pass the group sizes for grouped data. The value is stored in
-the <code>size</code> property and sets <code>bounds</code> to <code>c(0, max(size))</code>.</p></dd>
+the <code>size</code> property and sets <code>bounds</code> to <code>c(0, max(size))</code>. A value that
+is missing, infinite, not an integer or below 1 signals an error. The
+derivative methods signal an error when the length of <code>size</code> is neither
+1 nor the common length of the response and <code>mu</code>; the mass, the
+distribution function, the quantile and the draws recycle it as
+<code><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">stats::dbinom()</a></code> and its companions do.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -111,20 +116,20 @@ $$P(Y = y; \mu) = \binom{n}{y}\mu^{y}(1-\mu)^{n-y},$$
 with \(n\) the number of trials and \(\mu \in (0, 1)\). The mean is
 \(n\mu\), the variance \(n\mu(1-\mu)\), the skewness
 \((1-2\mu)/\sqrt{n\mu(1-\mu)}\) and the excess kurtosis
-\((1-6\mu(1-\mu))/(n\mu(1-\mu))\). Both shape measures shrink like
-\(1/n\), which is the central limit theorem visible in the moments.</p>
+\((1-6\mu(1-\mu))/(n\mu(1-\mu))\). The skewness shrinks like
+\(1/\sqrt{n}\) and the excess kurtosis like \(1/n\), as the central
+limit theorem requires.</p>
 <p>As \(n \to \infty\) with \(n\mu\) held, the family tends to a Poisson of
 that mean; <code><a href="poisson_distrib.html">poisson_distrib()</a></code> is the limit and is the family to use when
 the number of trials is large and unrecorded.</p>
     </div>
     <div class="section level2">
     <h2 id="size-is-data">size is data<a class="anchor" aria-label="anchor" href="#size-is-data"></a></h2>
-    <p>The number of trials sits on the object rather than in <code>theta</code>, so it takes
-no link, is not counted in <code>n_params</code>, and cannot be estimated. Two
-consequences worth knowing: the same object cannot be reused across data
-sets with different group sizes, and <code>bounds</code> records <code>c(0, max(size))</code>, so
-a vector <code>size</code> gives a bound that is correct for the largest group and
-loose for the rest.</p>
+    <p>The number of trials sits on the object and not in <code>theta</code>, so it takes no
+link, is not counted in <code>n_params</code>, and cannot be estimated. The same
+object therefore cannot be reused across data sets with different group
+sizes. The property <code>bounds</code> records <code>c(0, max(size))</code>, which for a vector
+<code>size</code> is the bound of the largest group and is loose for the others.</p>
     </div>
     <div class="section level2">
     <h2 id="the-canonical-link">The canonical link<a class="anchor" aria-label="anchor" href="#the-canonical-link"></a></h2>

@@ -41,10 +41,11 @@ ignored. `y` is read only for its length.
 - approx:
 
   Ignored, a closed form being available. Accepted so that the signature
-  matches the generic's. This matters more here than elsewhere: the
-  strategies that average the observed second derivative would return 0
-  for the location, and only the score-based one recovers
-  \\1/\sigma^2\\.
+  matches the generic's. Of the strategies of the generic, `"mc"`
+  averages the observed second derivative over simulated draws and would
+  give 0 for the location; `"opg"`, `"bartlett"` and `"integrate"`
+  (which uses the Bartlett identity for a family with a non-smooth
+  parameter) read the product of scores and give \\-1/\sigma^2\\.
 
 - nsim:
 
@@ -121,8 +122,8 @@ c(var_of_score = mean(s^2),
 #>  var_of_score   information mean_observed 
 #>     0.4444444     0.4444444     0.0000000 
 
-# Fisher scoring can fit the family because this matrix is nonsingular;
-# a Newton step on the observed Hessian would divide by zero in mu.
+# Fisher scoring fits the family because this matrix is nonsingular; the
+# observed Hessian has a zero mu_mu entry.
 coef(fit_distrib(d, z))
 #>        mu     sigma 
 #> 0.4051025 1.4992390 

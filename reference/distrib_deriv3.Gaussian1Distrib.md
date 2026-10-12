@@ -7,10 +7,12 @@ y - \mu\\, \$\$\ell^{(\mu\mu\mu)} = 0, \qquad \ell^{(\mu\mu\sigma)} =
 \dfrac{6r}{\sigma^4}, \qquad \ell^{(\sigma\sigma\sigma)} =
 -\dfrac{2}{\sigma^3} + \dfrac{12 r^2}{\sigma^5}.\$\$ With
 `expected = TRUE` the expectations are returned, obtained by replacing
-\\r\\ with 0 and \\r^2\\ with \\\sigma^2\\: the two components carrying
-an odd power of \\r\\ vanish and \\\ell^{(\sigma\sigma\sigma)}\\ becomes
-\\10/\sigma^3\\. Both routes are closed form, so no quadrature is run
-and `approx` and `nsim` are ignored.
+\\r\\ with 0 and \\r^2\\ with \\\sigma^2\\:
+\\\ell^{(\mu\sigma\sigma)}\\, the one component odd in \\r\\, has
+expectation 0, the two constant components keep their values and
+\\\ell^{(\sigma\sigma\sigma)}\\ becomes \\10/\sigma^3\\. Both routes are
+closed form, so the method uses no quadrature and ignores `approx` and
+`nsim`.
 
 ## Arguments
 
@@ -57,8 +59,8 @@ and `approx` and `nsim` are ignored.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -80,8 +82,8 @@ for the order below and
 [`distrib_deriv4.Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Gaussian1Distrib.md)
 for the order above;
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
-for the generic and for the numerical route a family without a closed
-form takes.
+for the generic and for the numerical route that a family without a
+closed form uses.
 
 ## Examples
 

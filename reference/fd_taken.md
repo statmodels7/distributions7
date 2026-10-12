@@ -1,8 +1,8 @@
 # Central Differences on the Steps Actually Taken
 
 `fd_first_taken()` and `fd_second_taken()` form the central differences
-of first and second order, dividing by the distances their evaluation
-points actually lie at rather than by the nominal step.
+of first and second order, dividing by the distances at which their
+evaluation points actually lie rather than by the nominal step.
 
 ## Usage
 
@@ -36,17 +36,17 @@ A numeric vector as long as `x`.
 
 ## Details
 
-The point \\x + h\\ is a double, so the step it lies at is \\h\_+ = (x +
-h) - x\\, a subtraction that is exact, and the step on the other side is
-\\h\_- = x - (x - h)\\. Both may differ from \\h\\, and from each other,
-by the rounding of the evaluation points, at most one unit of the last
-place. With them \$\$f'(x) \approx \frac{f(x+h) - f(x-h)}{h\_+ + h\_-},
-\qquad f''(x) \approx \frac{2\\h\_- f(x+h) - (h\_+ + h\_-) f(x) + h\_+
-f(x-h)\\} {h\_+ h\_- (h\_+ + h\_-)},\$\$ which are the uniform formulas
-wherever \\h\_+ = h\_- = h\\. The correction is of the order of one unit
-of the last place over the step: negligible for a step of many units,
-and the whole of the accuracy for a step of a few, which is what a step
-within about \\10^{-10}\\ of a non-zero bound is.
+The point \\x + h\\ is a double, so the step at which it lies is \\h\_+
+= (x + h) - x\\, a subtraction that is exact, and the step on the other
+side is \\h\_- = x - (x - h)\\. Both may differ from \\h\\, and from
+each other, by the rounding of the evaluation points, at most one unit
+of the last place. With them \$\$f'(x) \approx \frac{f(x+h) -
+f(x-h)}{h\_+ + h\_-}, \qquad f''(x) \approx \frac{2\\h\_- f(x+h) -
+(h\_+ + h\_-) f(x) + h\_+ f(x-h)\\} {h\_+ h\_- (h\_+ + h\_-)},\$\$ which
+are the uniform formulas wherever \\h\_+ = h\_- = h\\. The correction is
+of the order of one unit of the last place over the step: negligible for
+a step of many units, and the whole of the accuracy for a step of a few,
+which is what a step within about \\10^{-10}\\ of a non-zero bound is.
 
 ## See also
 

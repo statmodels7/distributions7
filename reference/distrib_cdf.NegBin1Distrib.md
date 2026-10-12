@@ -3,11 +3,12 @@
 Computes the negative binomial distribution function, the partial sum of
 the mass, by calling
 [`stats::pnbinom()`](https://rdrr.io/r/stats/NegBinomial.html) at size
-\\r = \mu/\theta\\ and success probability \\1/(1+\theta)\\. That
-function evaluates it through the incomplete beta function, so nothing
-is summed. The result is a step function, constant between consecutive
-integers. Both tails are available exactly, and `log.p = TRUE` returns a
-logarithm that stays finite where the probability itself underflows.
+\\r = \mu/\theta\\ and mean \\\mu\\, so that the success probability
+\\1/(1+\theta)\\ is never formed. That function evaluates it through the
+incomplete beta function, so nothing is summed. The result is a step
+function, constant between consecutive integers. Both tails are
+available exactly, and `log.p = TRUE` returns a logarithm that stays
+finite where the probability itself underflows.
 
 ## Arguments
 
@@ -54,9 +55,7 @@ for the generalized inverse,
 [`distrib_pdf.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin1Distrib.md)
 for the mass,
 [`nb1_size()`](https://statmodels7.github.io/distributions7/reference/nb1_size.md)
-and
-[`nb1_prob()`](https://statmodels7.github.io/distributions7/reference/nb1_prob.md)
-for the pairing this uses, and
+for the size, and
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
 for the generic.
 

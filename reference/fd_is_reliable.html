@@ -11,7 +11,7 @@ against a reference that is itself reliable."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,24 +89,19 @@ Laplace's location being the example the package ships, and a central
 difference straddling it returns a number that is simply wrong. An observation
 landing within a step of that point therefore makes the <em>reference</em>
 invalid, not the analytical value being tested, and comparing against it
-reports a failure for code that is right. Because the draws are random, that
-happened rarely and unpredictably.</p>
+reports a failure for code that is right. Because the draws are random, such
+a failure cannot be predicted.</p>
 <p>Rather than hard-code where a kink is, the reference is recomputed with the
 step halved: where the two disagree, finite differencing has not converged and
 that observation is dropped. For a smooth log-likelihood nothing is ever
 dropped, so the check keeps its full strength: a gradient made 5\<!-- % wrong is -->
 still caught.</p>
-<p>Two details are load-bearing. The two estimates are compared <strong>relative
-to their own magnitude</strong> rather than against a denominator floored at one: near
-a kink both are tiny yet differ by a factor of two, which a floor of one
-flattens into apparent agreement. And if no observation survives, all are kept:
-a systematic disagreement is a real failure and should be reported, not hidden
-by the guard meant to protect against a local one.</p>
-<p>Note the placement. This is defined <em>after</em> <code><a href="check_distrib.html">check_distrib()</a></code>, not
-before it: a roxygen block attaches to whatever object follows it, so a helper
-slipped in between silently steals the documentation of the function it
-belongs to. That had already happened once here, leaving the package with a
-<code>fd_is_reliable.Rd</code> and no <code>check_distrib.Rd</code>.</p>
+<p>The two estimates are compared <strong>relative to their own magnitude</strong> rather
+than against a denominator floored at one: near a kink both are tiny yet
+differ by a factor of two, which a floor of one would hide. If no
+observation survives, all are kept, because a systematic disagreement is a
+real failure and is reported; the guard is meant for a local disagreement
+only.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

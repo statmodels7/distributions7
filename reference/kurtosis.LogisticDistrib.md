@@ -1,9 +1,10 @@
 # Excess Kurtosis of the Logistic Distribution
 
 Constant: \\\gamma_2 = 6/5 = 1.2\\, the excess over the Gaussian. The
-family is location-scale with no shape parameter, so a standardized
-moment is a number: every logistic has the same tail weight, a little
-heavier than a Gaussian's and well short of a Laplace's 3.
+family is location-scale with no shape parameter, so its standardized
+moments are constants. Every logistic has the same tail weight, a little
+heavier than that of a Gaussian and lighter than that of a Laplace,
+whose excess kurtosis is 3.
 
 ## Arguments
 

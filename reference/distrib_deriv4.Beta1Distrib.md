@@ -2,8 +2,9 @@
 
 Computes the five distinct fourth derivatives of the beta log-density
 with respect to \\\mu\\ and \\\phi\\, in closed form as combinations of
-\\\psi_3\\, the third derivative of the digamma function, at \\\alpha =
-\mu\phi\\, \\\beta = (1-\mu)\phi\\ and \\\phi\\.
+\\\psi_1\\, \\\psi_2\\ and \\\psi_3\\, the first three derivatives of
+the digamma function, at \\\alpha = \mu\phi\\, \\\beta = (1-\mu)\phi\\
+and \\\phi\\.
 
 As at third order, every component is free of the response, so the
 observed and expected values coincide exactly and `expected`, `approx`
@@ -54,14 +55,15 @@ and `nsim` are all without effect.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
 A named list of five numeric vectors, `mu_mu_mu_mu`, `mu_mu_mu_phi`,
 `mu_mu_phi_phi`, `mu_phi_phi_phi` and `phi_phi_phi_phi`, each of length
-`length(y)` and constant within itself when the parameters are.
+`max(length(y), length(mu), length(phi))` and constant within itself
+when the parameters are.
 
 ## Notation
 
@@ -104,7 +106,7 @@ lapply(d4, unique)
 #> [1] -0.006631567
 #> 
 
-# So asking for the expectation changes nothing.
+# So on the parameter scale expected = TRUE changes nothing.
 identical(d4, distrib_deriv4(d, y, th, expected = TRUE))
 #> [1] TRUE
 

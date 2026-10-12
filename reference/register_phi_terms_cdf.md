@@ -1,9 +1,9 @@
 # Register All Four CDF Orders on a Sum of Normal Tails
 
-Turns one term function into the four S7 methods a family of the shape
-\\F = c_0 + \sum_k s_k e^{w_k}\Phi(x_k)\\ needs, so that the family
-states its terms once instead of four times. The inverse Gaussian and
-the elastic net are the two families registered through it.
+Turns one term function into the four S7 methods that a family of the
+shape \\F = c_0 + \sum_k s_k e^{w_k}\Phi(x_k)\\ needs, so that the
+family states its terms once instead of four times. The inverse Gaussian
+and the elastic net are the two families registered through it.
 
 ## Usage
 

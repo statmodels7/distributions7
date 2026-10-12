@@ -71,6 +71,6 @@ all.equal((distrib_pdf(d, y + eps, th, log = TRUE) -
 # It vanishes at the mode, which exists because the shape exceeds one.
 mode <- 2 * ((1.5 - 1) / 1.5)^(1 / 1.5)
 c(mode = mode, deriv = distrib_grad_y(d, mode, th))
-#>      mode     deriv 
-#> 0.9614997 0.0000000 
+#>          mode         deriv 
+#>  9.614997e-01 -1.110223e-16 
 ```

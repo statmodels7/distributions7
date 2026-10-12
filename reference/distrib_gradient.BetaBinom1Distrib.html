@@ -9,10 +9,19 @@ $$\dfrac{\partial \ell}{\partial \alpha}
 and likewise in \(\beta\) with \(n - y\) in place of \(y\). The
 reported components follow by the chain rule of
 \((\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)\).
-Each digamma difference cancels to leading order as the shapes grow, so the
-compiled kernel forms it as a sum of reciprocals, the shifts being integers.
-The location component then holds its accuracy to a concentration of
-\(10^{15}\), where the direct difference has lost every digit.
+The kernel uses these shape forms for \(\sigma \ge 0.1\), where they are
+accurate. As \(\sigma\) goes to zero (the binomial limit) the derivatives
+of the map grow like powers of \(1/\sigma\) and the terms of the chain
+rule cancel, so for \(\sigma &amp;lt; 0.1\) the kernel uses the direct sums of
+betabinom1_distrib() instead: with \(u_i = \mu + i\sigma\),
+\(v_i = 1 - \mu + i\sigma\) and \(w_i = 1 + i\sigma\),
+$$\dfrac{\partial \ell}{\partial \mu}
+      = \sum_{i&amp;lt;y} \dfrac{1}{u_i} - \sum_{i&amp;lt;n-y} \dfrac{1}{v_i}, \qquad
+      \dfrac{\partial \ell}{\partial \sigma}
+      = \sum_{i&amp;lt;y} \dfrac{i}{u_i} + \sum_{i&amp;lt;n-y} \dfrac{i}{v_i}
+        - \sum_{i&amp;lt;n} \dfrac{i}{w_i}.$$
+Each sum has terms of one sign, so both components keep their accuracy at
+any concentration; the cost is \(O(n)\) per observation.
 With scale = "link" the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter
 scale. The arithmetic runs in a compiled kernel decomposed over the elements
@@ -26,10 +35,19 @@ $$\dfrac{\partial \ell}{\partial \alpha}
 and likewise in \(\beta\) with \(n - y\) in place of \(y\). The
 reported components follow by the chain rule of
 \((\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)\).
-Each digamma difference cancels to leading order as the shapes grow, so the
-compiled kernel forms it as a sum of reciprocals, the shifts being integers.
-The location component then holds its accuracy to a concentration of
-\(10^{15}\), where the direct difference has lost every digit.
+The kernel uses these shape forms for \(\sigma \ge 0.1\), where they are
+accurate. As \(\sigma\) goes to zero (the binomial limit) the derivatives
+of the map grow like powers of \(1/\sigma\) and the terms of the chain
+rule cancel, so for \(\sigma &amp;lt; 0.1\) the kernel uses the direct sums of
+betabinom1_distrib() instead: with \(u_i = \mu + i\sigma\),
+\(v_i = 1 - \mu + i\sigma\) and \(w_i = 1 + i\sigma\),
+$$\dfrac{\partial \ell}{\partial \mu}
+      = \sum_{i&amp;lt;y} \dfrac{1}{u_i} - \sum_{i&amp;lt;n-y} \dfrac{1}{v_i}, \qquad
+      \dfrac{\partial \ell}{\partial \sigma}
+      = \sum_{i&amp;lt;y} \dfrac{i}{u_i} + \sum_{i&amp;lt;n-y} \dfrac{i}{v_i}
+        - \sum_{i&amp;lt;n} \dfrac{i}{w_i}.$$
+Each sum has terms of one sign, so both components keep their accuracy at
+any concentration; the cost is \(O(n)\) per observation.
 With scale = "link" the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter
 scale. The arithmetic runs in a compiled kernel decomposed over the elements
@@ -41,7 +59,7 @@ of the output, so the result does not depend on the thread count.'><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,10 +102,19 @@ $$\dfrac{\partial \ell}{\partial \alpha}
 and likewise in \(\beta\) with \(n - y\) in place of \(y\). The
 reported components follow by the chain rule of
 \((\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)\).</p>
-<p>Each digamma difference cancels to leading order as the shapes grow, so the
-compiled kernel forms it as a sum of reciprocals, the shifts being integers.
-The location component then holds its accuracy to a concentration of
-\(10^{15}\), where the direct difference has lost every digit.</p>
+<p>The kernel uses these shape forms for \(\sigma \ge 0.1\), where they are
+accurate. As \(\sigma\) goes to zero (the binomial limit) the derivatives
+of the map grow like powers of \(1/\sigma\) and the terms of the chain
+rule cancel, so for \(\sigma &lt; 0.1\) the kernel uses the direct sums of
+<code><a href="betabinom1_distrib.html">betabinom1_distrib()</a></code> instead: with \(u_i = \mu + i\sigma\),
+\(v_i = 1 - \mu + i\sigma\) and \(w_i = 1 + i\sigma\),
+$$\dfrac{\partial \ell}{\partial \mu}
+      = \sum_{i&lt;y} \dfrac{1}{u_i} - \sum_{i&lt;n-y} \dfrac{1}{v_i}, \qquad
+      \dfrac{\partial \ell}{\partial \sigma}
+      = \sum_{i&lt;y} \dfrac{i}{u_i} + \sum_{i&lt;n-y} \dfrac{i}{v_i}
+        - \sum_{i&lt;n} \dfrac{i}{w_i}.$$
+Each sum has terms of one sign, so both components keep their accuracy at
+any concentration; the cost is \(O(n)\) per observation.</p>
 <p>With <code>scale = "link"</code> the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter
 scale. The arithmetic runs in a compiled kernel decomposed over the elements
@@ -124,8 +151,8 @@ recycled. <code>mu</code> must lie in \((0, 1)\) and <code>sigma</code> be stric
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

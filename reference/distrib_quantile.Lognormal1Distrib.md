@@ -71,7 +71,7 @@ q
 c(q[2] / q[1], q[3] / q[2])
 #> [1] 3.241313 3.241313
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# Exact inverse: the round trip returns the probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #> [1] TRUE

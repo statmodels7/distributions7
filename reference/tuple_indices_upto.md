@@ -1,15 +1,15 @@
 # Index Tuples of a Given Width Over a Number of Variables
 
 Enumerates the index multisets of exactly `order` indices drawn from
-`1:d`, in the order
+`1:d`, in the order that
 [`parameters7::param_tuple_indices()`](https://statmodels7.github.io/parameters7/reference/param_tuple_indices.html)
-uses. It takes a COUNT rather than a parametrization, so a composite
-index set formed by appending a coordinate can be enumerated without
-building an object of that shape. The Dirichlet's set is the one that
-needs this: its simplex free values followed by its concentration. The
-work is done by
+uses. It takes a count of variables in place of a parametrization, so a
+composite index set formed by appending a coordinate can be enumerated
+without building an object of that shape. The Dirichlet needs this for
+its simplex free values followed by its concentration. The work is done
+by
 [`numericals7::tuple_indices()`](https://statmodels7.github.io/numericals7/reference/tuple_indices.html),
-the toolkit's one copy of the enumeration.
+which this function wraps.
 
 ## Usage
 

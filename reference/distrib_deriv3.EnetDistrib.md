@@ -6,13 +6,15 @@ through
 Written in \\(\mu, a, c)\\ the log-density is quadratic in \\z = y-\mu\\
 and linear in each rate, so at this order only the normalizing constant
 contributes, apart from \\\partial^{3}\ell/\partial\mu^{2}\partial c =
--1\\. The bilinear map to \\(\lambda, \alpha)\\ then puts the data back
-in: `mu_mu_lambda` and `mu_mu_alpha` are not constant across
-observations even though their preimages are.
+-1\\. The bilinear map to \\(\lambda, \alpha)\\ through the second
+partials of the bilinear map puts the data back into one component:
+`mu_lambda_alpha`, equal to \\\mathrm{sgn}(z) - z\\, varies across
+observations although every third derivative in the rates is free of the
+data. `mu_mu_lambda` (\\-(1-\alpha)\\) and `mu_mu_alpha` (\\\lambda\\)
+are constants.
 
-The license for this order is that the same assembly at orders one and
-two reproduces the hand-written score and Hessian, measured at exactly 0
-and \\1.1\times10^{-16}\\.
+The same assembly at orders one and two reproduces the score and the
+observed Hessian.
 
 With `expected = TRUE` the value is an expectation, and there it is
 **not** closed form: the call routes to

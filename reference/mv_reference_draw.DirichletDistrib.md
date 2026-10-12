@@ -1,19 +1,17 @@
 # A Uniform Proposal on the Simplex
 
-Supplies the importance-sampling proposal
+Supplies the importance-sampling proposal against which
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-integrates the density against: the uniform distribution on the simplex,
-which is the Dirichlet with every shape equal to one. Its density is the
-constant \\\Gamma(p)\\ with respect to the same dominating measure the
-family's own density is written against, so the normalization check is a
-plain average.
+integrates the density: the uniform distribution on the simplex, which
+is the Dirichlet with every shape equal to one. Its density is the
+constant \\\Gamma(p)\\ with respect to the dominating measure of the
+family's own density, so the normalization check is a plain average.
 
-The base class's proposal is an inflated gaussian on \\\mathbb{R}^p\\,
-which places no mass on the simplex at all. It does not fail loudly
-there: [`base::chol()`](https://rdrr.io/r/base/chol.html) accepts the
-singular covariance, and the estimate of an integral that is 1 comes
-back at about `2e-08`. Overriding the proposal is what makes that check
-mean anything for this family.
+The proposal of the base class is a gaussian on \\\mathbb{R}^p\\, which
+places no mass on the simplex;
+[`base::chol()`](https://rdrr.io/r/base/chol.html) can accept the
+singular covariance without an error, and the estimate of the integral
+is then far from 1. This method replaces that proposal.
 
 ## Arguments
 

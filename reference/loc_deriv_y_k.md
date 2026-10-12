@@ -24,23 +24,23 @@ A function suitable for registering as an S7 method: it takes
 
 ## Details
 
-The identity is exact and needs no formula of its own, which is the
-point: the location derivative is already written, often as a compiled
-kernel, and the response derivative is the same number with a sign. It
-also fixes the two orders below, where \\\partial\ell/\partial y =
+The identity is exact and needs no formula of its own. The location
+derivative is already written, often as a compiled kernel, and the
+response derivative equals it up to the sign \\(-1)^{k}\\. The same
+identity holds at the lower orders, where \\\partial\ell/\partial y =
 -\partial\ell/ \partial\mu\\ and \\\partial^{2}\ell/\partial y^{2} =
-\partial^{2}\ell/\partial\mu^{2}\\, and the tests check the new orders
-against exactly that.
+\partial^{2}\ell/\partial\mu^{2}\\.
 
 ## Registered on
 
 This body serves both third- and fourth-order response derivatives on
-all fourteen location families, so `?distrib_deriv3_y.Gaussian1Distrib`
-and its twenty-seven siblings open this page: `Gaussian1Distrib`,
-`Gaussian2Distrib`, `Gaussian3Distrib`, `CauchyDistrib`,
-`LogisticDistrib`, `LaplaceDistrib`, `Laplace2Distrib`, `EnetDistrib`,
+the location families `Gaussian1Distrib`, `Gaussian2Distrib`,
+`Gaussian3Distrib`, `CauchyDistrib`, `LogisticDistrib`,
+`LaplaceDistrib`, `Laplace2Distrib`, `EnetDistrib`,
 `PseudoHuberDistrib`, `StudentT1Distrib`, `SkewNormal1Distrib`,
-`SkewNormal2Distrib`, `SkewTDistrib`, `GumbelDistrib`.
+`SkewTDistrib` and `GumbelDistrib`, and on `PseudoHuber2Distrib`, whose
+page documents it. `SkewNormal2Distrib` has compiled kernels of its own
+in the response; its two methods are listed here as aliases.
 
 ## See also
 

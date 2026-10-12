@@ -23,7 +23,8 @@ the shifts being integers, and stays exact to the binomial limit.
 - y:
 
   A numeric vector of counts. A value outside \\\\0, \dots, n\\\\ or not
-  an integer gives a mass of 0, or `-Inf` with `log = TRUE`.
+  an integer gives a mass of 0, or `-Inf` with `log = TRUE`. A missing
+  value gives `NA` (`NaN` for `NaN`).
 
 - theta:
 

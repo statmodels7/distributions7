@@ -3,8 +3,10 @@
 Draws `n` independent exponential variates by calling
 [`stats::rexp()`](https://rdrr.io/r/stats/Exponential.html) at
 `rate = 1/mu`, so the draws come from R's own generator and depend on
-`.Random.seed` in the usual way. The generalized ratio-of-uniforms
-fallback the base class supplies is bypassed.
+`.Random.seed` in the usual way. The base class would draw by inversion
+through
+[`distrib_quantile.ExponentialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.ExponentialDistrib.md),
+which gives a different sequence for the same seed.
 
 ## Arguments
 

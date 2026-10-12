@@ -44,13 +44,14 @@ Three checks, at probe parameters inside every interval:
 - `dv`:
 
   each \\\partial v/\partial \theta_p\\ against a central difference of
-  \\v\\ itself. This isolates `dv`, which nothing else reads.
+  \\v\\ itself. This checks `dv` on its own, although the jump check
+  below reads it as well.
 
 - `jump`:
 
   the jump of the score across the kink against the one the declaration
   predicts. Writing \\\Delta\phi'\\ for the jump of \\\phi'\\ at the
-  origin – 2 for \\\lvert v \rvert\\ and 1 for \\(v)\_+\\ – the score of
+  origin (2 for \\\lvert v \rvert\\ and 1 for \\(v)\_+\\), the score of
   \\c(\theta)\phi(v)\\ jumps by \$\$c(\theta)\\ \Delta\phi' \\ \partial
   v/\partial \theta_p\$\$ as \\y\\ crosses the surface \\v = 0\\. This
   is the check that matters: it reads `phi`, `v`, `dv` and `coef` at
@@ -62,8 +63,8 @@ Three checks, at probe parameters inside every interval:
   continuous across the same surface. Without this the check would pass
   a declaration that named too few parameters.
 
-A composition whose \\\Delta\phi'\\ is zero – \\(v)\_+^2\\ and
-\\(v)\_+^3\\, where the second and third derivative jump instead – is
+A composition whose \\\Delta\phi'\\ is zero (\\(v)\_+^2\\ and
+\\(v)\_+^3\\, where the second and third derivative jump instead) is
 reported as not checked rather than checked against zero, which any
 declaration would satisfy.
 

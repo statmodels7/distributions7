@@ -42,7 +42,7 @@ An S7 object of class `NegBin1Distrib`, inheriting from
 `n_params` `2`, `params_bounds` the domain \\(0, \infty)\\ for both, and
 `link_params` the two links given here.
 
-## Two negative binomials, and they are two families
+## Relation to the quadratic-variance negative binomial
 
 Two negative binomials are in common use and they are **different
 families**, not two parametrizations of one. Here the variance is
@@ -65,10 +65,10 @@ The mass on \\y = 0, 1, 2, \ldots\\ is \$\$P(Y = y) = \dfrac{\Gamma(y +
 \left(\dfrac{1}{1+\theta}\right)^{\mu/\theta}
 \left(\dfrac{\theta}{1+\theta}\right)^{y},\$\$ the distribution function
 is the partial sum and the quantile function its generalized inverse.
-The mean is \\\mu\\ and the variance \\\mu(1+\theta)\\. Two settings are
-worth recognizing: at \\\mu = \theta\\ the size is 1 and the law is the
-geometric, and as \\\theta\\ goes to zero it tends to the Poisson, where
-the quadratic form needs \\\theta \to \infty\\ instead.
+The mean is \\\mu\\ and the variance \\\mu(1+\theta)\\. Two special
+cases follow from the size: at \\\mu = \theta\\ it is 1 and the law is
+the geometric, and as \\\theta\\ goes to zero it tends to the Poisson,
+where the quadratic form needs \\\theta \to \infty\\ instead.
 
 ## Derivatives
 
@@ -84,31 +84,33 @@ what remains is two sums over the support against the exact mass
 ([`distrib_expected_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md)).
 
 **The mean and the dispersion are not orthogonal here.** The mixed entry
-of the expected information is small but non-zero at every setting
-measured, where
+of the expected information is non-zero, where
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
-has exactly zero there.
+has exactly zero.
 
-## What happens as theta goes to zero
+## The Poisson limit
 
 The family tends to the Poisson, so every derivative in \\\theta\\ tends
-to a finite limit while the pieces it is assembled from run away: the
-size \\r = \mu/\theta\\ grows without bound and the chain rule divides
-by powers of \\\theta\\. The score's digamma difference is computed in a
-form that performs its own cancellation symbolically, and the value
-converges onto \\\\(y-\mu)^2 - y\\/(2\mu)\\, holding to about five
-significant figures at \\\theta = 10^{-8}\\. The expected information is
-written in sums whose summands are rational in \\(\mu, \theta)\\ and
-stays negative definite to \\\theta = 10^{-10}\\
-([`distrib_expected_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md)).
-The third and fourth derivatives in \\\theta\\ are **not** rewritten,
-and their cancellation in the powers of \\r\\ is untouched
-([`distrib_deriv3.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.md),
+to a finite limit while the pieces of the chain rule through the size
+run away: \\r = \mu/\theta\\ grows without bound and the chain rule
+divides by powers of \\\theta\\. For \\\theta \< 1\\ every derivative of
+the log-mass, from the score to the fourth order, is therefore computed
+from the form in which the size does not appear, \$\$\ell =
+\sum\_{i\<y}\log(\mu + i\theta) - \log(y!) -
+\frac{\mu}{\theta}\log(1+\theta) - y\log(1+\theta),\$\$ whose
+derivatives are sums of powers of \\1/(\mu + i\theta)\\ and derivatives
+of \\\log(1+\theta)/\theta\\, at a cost of \\y\\ terms per observation
+([`distrib_gradient.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin1Distrib.md),
+[`distrib_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.NegBin1Distrib.md),
+[`distrib_deriv3.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.md),
 [`distrib_deriv4.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.NegBin1Distrib.md)).
-
-A fit reaches that regime routinely: on 2,000 Poisson counts with mean 4
-the dispersion is estimated at about \\1.7\times 10^{-8}\\ and the run
-reports convergence.
+The score's dispersion component tends to \\\\(y-\mu)^2 - y\\/(2\mu)\\.
+The expected information and its derivatives are sums over the support
+whose summands are all positive below \\\theta = 0.02\\
+([`distrib_expected_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md)).
+A fit reaches this regime when the data are equidispersed, since the
+maximum likelihood estimate of \\\theta\\ then lies at the boundary of
+its domain.
 
 ## Estimation
 

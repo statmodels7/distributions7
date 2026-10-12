@@ -24,9 +24,8 @@ Computes the logistic density \$\$f(y; \mu, \sigma) =
 
   A named list with components `mu` and `sigma`, each a numeric vector
   of length 1 or of the length of `y`. A component of length 1 is
-  recycled. `sigma` must be strictly positive; a zero or negative value
-  gives `NaN` with a warning from
-  [`stats::dlogis()`](https://rdrr.io/r/stats/Logistic.html).
+  recycled. `sigma` must be strictly positive; the generic signals an
+  error for a zero or negative value before the method is called.
 
 - log:
 

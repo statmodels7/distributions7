@@ -37,9 +37,7 @@ which is the one place on this page where `approx` and `nsim` are read.
 
   One of `"parameter"` (the default) or `"link"`, matched by
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method. **Note the argument order**: `scale`
-  precedes `expected` here, unlike on most families, so both are best
-  given by name.
+  the generic, not by this method.
 
 - expected:
 

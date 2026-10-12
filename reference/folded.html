@@ -19,7 +19,7 @@ folded normal proper is folded(gaussian1_distrib())."><meta property="og:image" 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,7 +90,7 @@ followed by the parent's; and <code>params_smooth</code> is the parent's smoothn
     <p>The map \(y \mapsto |y|\) is TWO TO ONE and has no inverse, so it cannot
 be a <code><a href="transformer.html">transformer()</a></code>. Instead of carrying a density through a Jacobian it
 ADDS the two preimages. Every point above zero has two of them and zero has
-one, which is why the constructor is careful about atoms.</p>
+one, so a parent with an atom is rejected (see below).</p>
     </div>
     <div class="section level2">
     <h2 id="where-the-derivatives-come-from">Where the derivatives come from<a class="anchor" aria-label="anchor" href="#where-the-derivatives-come-from"></a></h2>
@@ -108,13 +108,12 @@ analytic to fourth order.</p>
     </div>
     <div class="section level2">
     <h2 id="what-is-rejected">What is rejected<a class="anchor" aria-label="anchor" href="#what-is-rejected"></a></h2>
-    <p>A parent that does not reach below zero folds to itself, so the call would
-be a no-op; returning it unchanged would hide a mistaken call rather than
-report it, and the same check makes <code>folded()</code> of a folded distribution an
-error. A parent with an atom is rejected too: zero is its own preimage while
-every other point has two, so an atom at zero would be counted twice by the
-sum above and one elsewhere would be moved onto its reflection. A discrete
-parent is rejected outright.</p>
+    <p>A parent whose support lies in \([0, \infty)\) is mapped to itself by the
+absolute value, so <code>folded()</code> rejects it with an error; the same check
+rejects <code>folded()</code> of a folded distribution. an error. A parent with an atom
+is rejected too: zero is its own preimage while every other point has two, so
+an atom at zero would be counted twice by the sum above and one elsewhere
+would be moved onto its reflection. A discrete parent is rejected outright.</p>
     </div>
     <div class="section level2">
     <h2 id="the-sign-of-a-symmetric-parent-s-location-is-not-identified">The sign of a symmetric parent's location is not identified<a class="anchor" aria-label="anchor" href="#the-sign-of-a-symmetric-parent-s-location-is-not-identified"></a></h2>
@@ -122,14 +121,15 @@ parent is rejected outright.</p>
 -\mu)\), so the two terms of \(L\) merely swap and the likelihood is
 EXACTLY even in \(\mu\). A fit converges to \(+\hat\mu\) or
 \(-\hat\mu\) according to where it started, at the same maximized value to
-every digit: measured on 400 draws at \(\mu = 1.5\), two fits started at
-\(\pm 1\) reach \(\pm 1.50494\) with the same log-likelihood of
-\(-511.2516\). This is a property of the model, not of the fitting, and it
-is not rejected, the folded normal being a standard family; what is
-estimable is \(|\mu|\) together with the remaining parameters. Holding the
-location at zero removes the question and gives the half-normal. A parent
-that is not symmetric about its location, such as <code><a href="skewnormal1_distrib.html">skewnormal1_distrib()</a></code>,
-has no such invariance and its sign is identified.</p>
+every digit. The example below fits the same sample from starting values of
+opposite sign. The invariance belongs to the model and not to the fitting,
+and <code>folded()</code> does not reject it, since the folded normal is a standard
+family; what is estimable is \(|\mu|\) together with the remaining
+parameters. Holding the location at zero removes the question and gives the
+half-normal. A parent that is not symmetric about its location, such as
+<code><a href="skewnormal1_distrib.html">skewnormal1_distrib()</a></code>, is invariant only under the joint change of sign of
+the location and of the shape, so the sign of the location is identified once
+the shape is held fixed.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -141,9 +141,9 @@ parent's score and \(B\) a multiset of parameter names.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="truncated.html">truncated()</a></code>, the other wrapper that adds no parameter,
-<code><a href="fixed.html">fixed()</a></code>, which gives the half-normal, <code><a href="transformation.html">transformation()</a></code> for a map that
-IS one to one, and <a href="FoldedDistrib.html">FoldedDistrib</a> for the class.</p></div>
+    <div class="dont-index"><p><code><a href="truncated.html">truncated()</a></code>, which also leaves the parameters of its parent
+unchanged, <code><a href="fixed.html">fixed()</a></code>, which gives the half-normal, <code><a href="transformation.html">transformation()</a></code> for a
+map that IS one to one, and <a href="FoldedDistrib.html">FoldedDistrib</a> for the class.</p></div>
     </div>
 
     <div class="section level2">
@@ -177,7 +177,9 @@ IS one to one, and <a href="FoldedDistrib.html">FoldedDistrib</a> for the class.
 <span class="r-out co"><span class="r-pr">#&gt;</span> from_plus   1.504939 1.041631 -511.2516</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> from_minus -1.504939 1.041631 -511.2516</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A parent that is not symmetric about its location has no such invariance.</span></span></span>
+<span class="r-in"><span><span class="co"># With the shape held at 3, a skew-normal parent has no such invariance in</span></span></span>
+<span class="r-in"><span><span class="co"># the location alone (the joint sign change of mu and alpha leaves the</span></span></span>
+<span class="r-in"><span><span class="co"># likelihood unchanged).</span></span></span>
 <span class="r-in"><span><span class="va">sn</span> <span class="op">&lt;-</span> <span class="fu">folded</span><span class="op">(</span><span class="fu"><a href="skewnormal1_distrib.html">skewnormal1_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">zs</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">sn</span>, <span class="fl">300</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, sigma <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -190,12 +192,12 @@ IS one to one, and <a href="FoldedDistrib.html">FoldedDistrib</a> for the class.
 <span class="r-in"><span><span class="co"># Three rejections, each naming the condition that failed.</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">folded</span><span class="op">(</span><span class="fu"><a href="gamma1_distrib.html">gamma1_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : 'gamma1' is supported on [0, Inf], which the absolute value leaves alone.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   folded() would return the same distribution, so the call is a mistake</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   rather than a no-op and is reported as one.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   folded() would return the same distribution, so the call has no effect</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   and is rejected.</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">folded</span><span class="op">(</span><span class="fu">folded</span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : 'folded gaussian1' is supported on [0, Inf], which the absolute value leaves alone.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   folded() would return the same distribution, so the call is a mistake</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   rather than a no-op and is reported as one.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   folded() would return the same distribution, so the call has no effect</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   and is rejected.</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">folded</span><span class="op">(</span><span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : folded() supports continuous distributions only.</span>
 <span class="r-in"><span></span></span>

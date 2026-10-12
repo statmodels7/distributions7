@@ -4,7 +4,7 @@ written by its rate \(\lambda &amp;gt; 0\), with density
 \((\lambda/2)\exp(-\lambda|y-\mu|)\). It is the same law as
 laplace_distrib() at \(\lambda = 1/\sigma\), and every quantity that
 does not involve the second parameter is identical between them.
-The rate form is the one penalized regression uses: with \(\mu = 0\) the
+The rate form is the one that penalized regression uses: with \(\mu = 0\) the
 negative log-density is \(\lambda|y| - \log(\lambda/2)\), so \(\lambda\)
 is a shrinkage parameter and larger values penalize harder.
 penalties7::lasso_penalty() is this family with the location held at zero."><meta property="og:description" content="Builds the distribution object for the Laplace (double exponential) family
@@ -12,7 +12,7 @@ written by its rate \(\lambda &amp;gt; 0\), with density
 \((\lambda/2)\exp(-\lambda|y-\mu|)\). It is the same law as
 laplace_distrib() at \(\lambda = 1/\sigma\), and every quantity that
 does not involve the second parameter is identical between them.
-The rate form is the one penalized regression uses: with \(\mu = 0\) the
+The rate form is the one that penalized regression uses: with \(\mu = 0\) the
 negative log-density is \(\lambda|y| - \log(\lambda/2)\), so \(\lambda\)
 is a shrinkage parameter and larger values penalize harder.
 penalties7::lasso_penalty() is this family with the location held at zero."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -23,7 +23,7 @@ penalties7::lasso_penalty() is this family with the location held at zero."><met
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +61,7 @@ written by its <strong>rate</strong> \(\lambda &gt; 0\), with density
 \((\lambda/2)\exp(-\lambda|y-\mu|)\). It is the same law as
 <code><a href="laplace_distrib.html">laplace_distrib()</a></code> at \(\lambda = 1/\sigma\), and every quantity that
 does not involve the second parameter is identical between them.</p>
-<p>The rate form is the one penalized regression uses: with \(\mu = 0\) the
+<p>The rate form is the one that penalized regression uses: with \(\mu = 0\) the
 negative log-density is \(\lambda|y| - \log(\lambda/2)\), so \(\lambda\)
 is a shrinkage parameter and larger values penalize harder.
 <code>penalties7::lasso_penalty()</code> is this family with the location held at zero.</p>
@@ -123,8 +123,10 @@ is <code>c(mu = FALSE, lambda = TRUE)</code>. The consequences are set out on
 \(\log(\lambda/2) - \lambda|r|\), linear in \(\lambda\) apart from
 \(\log\lambda\) and piecewise linear in \(\mu\), so <strong>every</strong> third and
 fourth derivative except the pure-\(\lambda\) ones is exactly zero, and
-none of them depends on the data. <code>expected = TRUE</code> therefore returns the
-same values at those orders.</p>
+the pure-\(\lambda\) ones do not depend on the data. Hence
+<code>expected = TRUE</code> returns the same values at those orders. The observed
+fifth order, in <code><a href="distrib_deriv5.Laplace2Distrib.html">distrib_deriv5.Laplace2Distrib()</a></code>, has the same
+structure.</p>
     </div>
     <div class="section level2">
     <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>
@@ -139,9 +141,9 @@ information above.</p>
 
 <p>\(\ell\) is the log-density of one observation, \(\mu\) the location and
 \(\lambda &gt; 0\) the rate, with variance \(2/\lambda^2\). Here
-\(\lambda\) is a distribution parameter; the same letter names a smoothing
-parameter in <code>penalties7</code> and above, and the two meet in the lasso, which is
-this family with \(\mu\) held at zero.</p>
+\(\lambda\) is a distribution parameter; the same letter names the
+tuning parameter of a penalty in <code>penalties7</code>, and the two coincide in the
+lasso, which is this family with \(\mu\) held at zero.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -153,9 +155,9 @@ this family with \(\mu\) held at zero.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="laplace_distrib.html">laplace_distrib()</a></code> for the scale parametrization;
-<code><a href="enet_distrib.html">enet_distrib()</a></code>, which mixes this family with a Gaussian and contains it as
-the pure-\(\ell_1\) case; <code><a href="fixed.html">fixed()</a></code>, which holds the location at zero to
-produce a prior; <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters;
+<code><a href="enet_distrib.html">enet_distrib()</a></code>, which mixes this family with a Gaussian and tends to it as
+its mixing weight \(\alpha\) tends to 1; <code><a href="fixed.html">fixed()</a></code>, which holds the
+location at zero to produce a prior; <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters;
 <a href="Laplace2Distrib.html">Laplace2Distrib</a> for the class.</p></div>
     </div>
 

@@ -36,8 +36,8 @@ loc_scale_hess_y_hess(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 - scale:
 
-  One of `"parameter"` or `"link"`, applied by the generic before
-  dispatch.
+  One of `"parameter"` or `"link"`. The generic applies the link scale
+  to the value that the method returns.
 
 - ...:
 
@@ -55,12 +55,13 @@ carrying a shape parameter beyond the two takes
 [`partial_loc_scale_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_y_hess.md)
 instead, where the pairs touching that shape are differenced.
 
-Both bodies read the family's own third and fourth response derivatives,
-so a family supplying
+`loc_scale_grad_y_hess()` reads the family's own response derivatives up
+to the third and `loc_scale_hess_y_hess()` up to the fourth, so a family
+that supplies
 [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
 and
 [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
-gets these in closed form with no further algebra.
+obtains both bodies in closed form.
 
 ## Notation
 

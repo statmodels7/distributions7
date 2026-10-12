@@ -3,19 +3,14 @@
 Computes the first derivative of the lognormal log-density with respect
 to the response, in closed form. With \\r = \log y - \mu\\,
 \$\$\dfrac{\partial \ell}{\partial y} = -\dfrac{1}{y}\left(1 +
-\dfrac{r}{\sigma^2}\right).\$\$ This is where the family parts company
-with the Gaussian: the Jacobian \\1/y\\ of the log transformation
-carries no parameter and so leaves every derivative in \\\mu\\ and
-\\\sigma^2\\ alone, but it is a function of the response and does enter
-here.
+\dfrac{r}{\sigma^2}\right).\$\$ This is where the family differs from
+the Gaussian: the Jacobian \\1/y\\ of the log transformation carries no
+parameter and so leaves every derivative in \\\mu\\ and \\\sigma^2\\
+alone, but it is a function of the response and does enter here.
 
 The derivative vanishes at \\r = -\sigma^2\\, that is at \\y = e^{\mu -
 \sigma^2}\\, which is the mode of the density and lies below both the
 median \\e^{\mu}\\ and the mean \\e^{\mu + \sigma^2/2}\\.
-
-Quantile residuals and the mixed derivatives of
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-read it.
 
 ## Arguments
 

@@ -17,7 +17,7 @@ excess.
 - theta:
 
   A named list with one component, `mu` (strictly between 0 and 1), a
-  numeric vector of length 1 or `n`.
+  numeric vector of length 1 or of the number of parameter settings.
 
 - ...:
 
@@ -25,7 +25,8 @@ excess.
 
 ## Value
 
-A numeric vector of variances, the length of `theta$mu`.
+A numeric vector of variances, of length
+`max(length(theta$mu), length(x@size))`.
 
 ## See also
 

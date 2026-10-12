@@ -68,18 +68,18 @@ integrable if and only if \\\|\xi\| \< 1/2\\. Below that point the
 classical asymptotics of the maximum likelihood estimator do not hold
 either, so the `NA` reports a quantity that does not exist.
 
-Approaching the boundary the information diverges: measured at \\\sigma
-= 1.5\\, the \\\xi\\ component is \\-2.00\\ at \\\xi = 0\\, \\-7.14\\ at
-\\-0.3\\ and \\-196.1\\ at \\-0.49\\.
+Approaching the boundary the information diverges: the \\\xi\\ component
+\\-2/\\(1+2\xi)(1+\xi)\\\\, which does not depend on \\\sigma\\, equals
+\\-2\\ at \\\xi = 0\\, about \\-7.14\\ at \\-0.3\\ and about \\-196.1\\
+at \\-0.49\\.
 
 ## Checking it
 
-A Monte Carlo average of the observed Hessian is the weaker reference
-here, and disagreed with this formula by 9 per cent at \\\xi = -0.3\\
-while the formula was right: the second derivative blows up at the upper
-endpoint, so the sample mean converges slowly. Integrating on the
-**probability** scale instead, \\E\[h\] = \int_0^1 h(Q(u))\\du\\, turns
-the endpoint into an ordinary point and agrees to \\10^{-11}\\.
+A Monte Carlo average of the observed Hessian converges slowly here,
+because the second derivative is unbounded at the upper endpoint when
+\\\xi \< 0\\. Integrating on the **probability** scale instead, \\E\[h\]
+= \int_0^1 h(Q(u))\\du\\, turns the endpoint into an ordinary point and
+agrees to \\10^{-11}\\.
 
 ## References
 

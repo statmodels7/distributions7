@@ -7,16 +7,16 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\phi\mu^2},
       \dfrac{\partial \ell}{\partial \phi} =
       -s^2\left\{\log s + 1 - \psi(s) + \log z - z\right\},$$
 with \(\psi\) the digamma function. The first is the score of a gamma
-generalized linear model, the residual divided by the variance function
+generalized linear model, the residual divided by the variance
 \(\phi\mu^2\).
-The dispersion component is a difference of two quantities that agree to
-leading order as \(s\) grows: \(\log s - \psi(s)\) and
-\(\log z - (z - 1)\) each go to zero at the boundary this family tends
-towards. The kernel computes each of them as a polygamma minus its own
-asymptote, so the digits survive at large shape where the direct difference
-loses them.
-With scale = "link" the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+The dispersion component is the sum of \(\log s - \psi(s)\) and
+\(\log z - (z - 1)\), which tend to zero when the shape is large and
+\(z\) is near 1. The kernel evaluates the first by its asymptotic series
+for \(s \ge 50\) and the second by a series near \(z = 1\), and
+computes \(z - 1\) as \((y - \mu)/\mu\), so the digits survive where
+the direct differences lose them.
+With scale = "link" the generic applies the chain rule for the links of the
+family before returning. This method always returns the parameter
 scale.'><meta property="og:description" content='Computes the first derivatives of the gamma log-density with respect to
 \(\mu\) and \(\phi\), one value per observation, in closed form. With
 \(s = 1/\phi\) the shape and \(z = y/\mu\),
@@ -25,16 +25,16 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\phi\mu^2},
       \dfrac{\partial \ell}{\partial \phi} =
       -s^2\left\{\log s + 1 - \psi(s) + \log z - z\right\},$$
 with \(\psi\) the digamma function. The first is the score of a gamma
-generalized linear model, the residual divided by the variance function
+generalized linear model, the residual divided by the variance
 \(\phi\mu^2\).
-The dispersion component is a difference of two quantities that agree to
-leading order as \(s\) grows: \(\log s - \psi(s)\) and
-\(\log z - (z - 1)\) each go to zero at the boundary this family tends
-towards. The kernel computes each of them as a polygamma minus its own
-asymptote, so the digits survive at large shape where the direct difference
-loses them.
-With scale = "link" the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+The dispersion component is the sum of \(\log s - \psi(s)\) and
+\(\log z - (z - 1)\), which tend to zero when the shape is large and
+\(z\) is near 1. The kernel evaluates the first by its asymptotic series
+for \(s \ge 50\) and the second by a series near \(z = 1\), and
+computes \(z - 1\) as \((y - \mu)/\mu\), so the digits survive where
+the direct differences lose them.
+With scale = "link" the generic applies the chain rule for the links of the
+family before returning. This method always returns the parameter
 scale.'><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -43,7 +43,7 @@ scale.'><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,16 +84,16 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\phi\mu^2},
       \dfrac{\partial \ell}{\partial \phi} =
       -s^2\left\{\log s + 1 - \psi(s) + \log z - z\right\},$$
 with \(\psi\) the digamma function. The first is the score of a gamma
-generalized linear model, the residual divided by the variance function
+generalized linear model, the residual divided by the variance
 \(\phi\mu^2\).</p>
-<p>The dispersion component is a difference of two quantities that agree to
-leading order as \(s\) grows: \(\log s - \psi(s)\) and
-\(\log z - (z - 1)\) each go to zero at the boundary this family tends
-towards. The kernel computes each of them as a polygamma minus its own
-asymptote, so the digits survive at large shape where the direct difference
-loses them.</p>
-<p>With <code>scale = "link"</code> the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+<p>The dispersion component is the sum of \(\log s - \psi(s)\) and
+\(\log z - (z - 1)\), which tend to zero when the shape is large and
+\(z\) is near 1. The kernel evaluates the first by its asymptotic series
+for \(s \ge 50\) and the second by a series near \(z = 1\), and
+computes \(z - 1\) as \((y - \mu)/\mu\), so the digits survive where
+the direct differences lose them.</p>
+<p>With <code>scale = "link"</code> the generic applies the chain rule for the links of the
+family before returning. This method always returns the parameter
 scale.</p>
     </div>
 
@@ -127,8 +127,8 @@ recycled. Both must be strictly positive.</p></dd>
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -179,7 +179,7 @@ whatever the count says. Defaults to <code>1L</code>.</p></dd>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">zz</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">zz</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="va">sum</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            mu           phi </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -6.940997e-14 -6.346140e-06 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -7.857777e-14 -6.346140e-06 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

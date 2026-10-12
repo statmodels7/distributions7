@@ -14,15 +14,14 @@ per observation, in closed form. Writing \\r = y - \mu\\ and \\D =
 The location component **redescends**: it rises to
 \\(\nu+1)/(2\sigma\sqrt{\nu})\\ at \\\|r\| = \sigma\sqrt{\nu}\\ and
 falls back towards zero beyond it, so a gross outlier contributes almost
-nothing to the estimating equation. A Gaussian's location score grows
-without bound instead, which is the whole reason this family is used for
-robust location estimation.
+nothing to the estimating equation. A Gaussian's location score
+\\r/\sigma^2\\ grows linearly in \\r\\.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries before returning. This method always returns the
-parameter scale; the transformation happens in the generic. The
-arithmetic runs in a compiled kernel decomposed over the elements of the
-output, so the result does not depend on the thread count.
+of the family before returning. This method always returns the parameter
+scale; the transformation happens in the generic. The arithmetic runs in
+a compiled kernel decomposed over the elements of the output, so the
+result does not depend on the thread count.
 
 ## Arguments
 
@@ -54,8 +53,8 @@ output, so the result does not depend on the thread count.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 

@@ -2,13 +2,13 @@
 
 Draws a parameter vector for testing: each mean uniform on \\(-1, 1)\\
 and each free value of the matrix parametrization uniform on \\(-0.4,
-0.4)\\, which puts the matrix near the identity. The base class would
-draw every free value from one wide range; on a log-Cholesky diagonal
-that spans four orders of magnitude in the resulting variances, and a
-covariance drawn that way is a starting point no fit recovers from. The
-narrow band keeps
+0.4)\\, which for the default log-Cholesky parametrization puts the
+matrix near the identity. The method of the base class draws every
+unbounded parameter uniformly on \\(-3, 3)\\, which on a log-Cholesky
+diagonal gives variances between \\e^{-6}\\ and \\e^{6}\\ and a poorly
+conditioned covariance; the narrow band keeps the matrices that
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-reproducible on this family.
+draws for this family well conditioned.
 
 ## Arguments
 

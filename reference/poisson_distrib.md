@@ -47,17 +47,17 @@ and the variance are both \\\mu\\, the skewness is \\\mu^{-1/2}\\ and
 the excess kurtosis \\\mu^{-1}\\, so the distribution is right skewed at
 a small mean and close to Gaussian at a large one.
 
-## The canonical link, and what it buys
+## The canonical link
 
 The log-mass is \\y\log\mu - \mu - \log y!\\, which is linear in \\y\\
 once \\\eta = \log\mu\\ is the parameter. The logarithm is therefore the
 canonical link, and on its scale \$\$\dfrac{\partial \ell}{\partial
 \eta} = y - \mu, \qquad \dfrac{\partial^2 \ell}{\partial \eta^2} =
 -\mu.\$\$ The second of these carries no data, so the observed and the
-expected information coincide: Fisher scoring and Newton's method take
-the same step, and the iteratively reweighted least squares of a Poisson
-log-linear model is both at once. Under any other link the two differ
-and the choice matters.
+expected information coincide in exact arithmetic: Fisher scoring and
+Newton's method take the same step, and the iteratively reweighted least
+squares of a Poisson log-linear model is both at once. Under any other
+link the two differ and the choice matters.
 
 ## Derivatives
 

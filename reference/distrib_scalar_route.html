@@ -19,7 +19,7 @@ parameters of every observation."><meta property="og:image" content="https://sta
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,8 +82,10 @@ parameters of every observation.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p><code>NULL</code> when the registry does not cover the distribution;
 otherwise a list with <code>name</code>, a single character string, and
-<code>constants</code>, a named list of numeric vectors, each of length 1 or of the
-number of observations, in the order they follow the parameters.</p>
+<code>constants</code>, a list of numeric vectors (named for the size, the truncation
+points and the transformer parameters, unnamed for the fixed values), each
+of length 1 or of the number of observations, in the order they follow the
+parameters.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -93,22 +95,25 @@ derivative in the same parameter, all on the parameter scale, with <code>k</code
 counted from zero over <code>distrib@params</code> and <code>th</code> the parameters of one
 observation followed by its constants. <code>d7_logpdf(id, y, th)</code> returns the
 log-density of one observation. <code>d7_scalar_thread_safe(id)</code> returns
-1 when the entries of a distribution never reach the R API, so that they
-may be called from a worker thread, and 0 otherwise.</p>
+1 for every distribution or wrapped family that the registry covers, whose
+entries may be called from a worker thread, and -1 for an identifier that the
+registry does not recognize.</p>
 <p>The default method returns the class name when the registry covers the
 class and no constants; the binomial and the two beta-binomials carry
 their size as a constant.</p>
-<p>A wrapped family is named <code>"&lt;wrapper class&gt;[:aux]|&lt;inner name&gt;"</code>, <code>aux</code>
-being what the wrapper needs besides its constants and the inner name
-being the route's name of the wrapped family, which may itself be a
-wrapper; its constants are the inner family's followed by the wrapper's. For <code><a href="fixed.html">fixed()</a></code>, <code>aux</code> is the
-mask of the fixed parameters (bit <code>j - 1</code> for the <code>j</code>-th parameter of the
-inner family) and the wrapper's constants are the fixed values in the
-inner family's order. For <code><a href="zero_inflated.html">zero_inflated()</a></code> and <code><a href="zero_adjusted.html">zero_adjusted()</a></code> there is
-no <code>aux</code> and no constant of the wrapper's own, the probability being the
-last parameter. For <code><a href="transformation.html">transformation()</a></code>, <code>aux</code> is the code of the
-transformer, which must be one of the twelve ready-made ones, and the
-wrapper's constants are the transformer's parameters; a transformer built
+<p>A wrapped family is named <code>"&lt;wrapper class&gt;[:aux]|&lt;inner name&gt;"</code>, <code>aux</code> being
+what the wrapper needs besides its constants and the inner name being the
+route's name of the wrapped family, which may itself be a wrapper; its
+constants are the inner family's followed by the wrapper's. For <code><a href="fixed.html">fixed()</a></code>,
+<code>aux</code> is the mask of the fixed parameters (bit <code>j - 1</code> for the <code>j</code>-th
+parameter of the inner family) and the wrapper's constants are the fixed
+values in the inner family's order. For <code><a href="zero_inflated.html">zero_inflated()</a></code> and
+<code><a href="zero_adjusted.html">zero_adjusted()</a></code> there is no <code>aux</code> and no constant of the wrapper's own, the
+probability being the last parameter. For <code><a href="folded.html">folded()</a></code> there is no <code>aux</code> and no
+constant of the wrapper's own. For <code><a href="truncated.html">truncated()</a></code> there is no <code>aux</code> and the
+wrapper's constants are <code>lower</code> and <code>upper</code>. For <code><a href="transformation.html">transformation()</a></code>, <code>aux</code> is
+the code of the transformer, which must be one of the ready-made ones, and
+the wrapper's constants are the transformer's parameters; a transformer built
 with <code><a href="transformer.html">transformer()</a></code> has no route.</p>
     </div>
 

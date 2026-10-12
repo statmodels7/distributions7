@@ -60,11 +60,13 @@ numerically through
 
 ## What is rejected
 
-A discrete parent, since a change of variables needs a density; a
-transformer that is not valid on the parent's support, which the
-transformer itself decides through its `valid_support`; and a `new_name`
-that is not a single non-empty string. A map that is not injective, such
-as the absolute value, cannot be a transformer at all and is
+A parent that is not continuous (discrete or multivariate), since a
+change of variables of one coordinate needs a continuous density; a
+`transformer` argument that is not a `transformer` object; a transformer
+that is not valid on the parent's support, which the transformer itself
+decides through its `valid_support`; and a `new_name` that is not a
+single non-empty string. A map that is not injective, such as the
+absolute value, cannot be a transformer at all and is
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
 instead.
 
@@ -125,7 +127,7 @@ rbind(transformed = coef(fit_distrib(logn, y)),
 #> transformed    0.02264409 1.010916
 #> parent_on_logs 0.02264409 1.010916
 
-# Three refusals, each naming the condition that failed.
+# Three errors, each naming the condition that failed.
 try(transformation(poisson_distrib(), log_transform()))
 #> Error : transformation() currently supports only continuous distributions.
 try(transformation(gaussian1_distrib(), log_transform()))

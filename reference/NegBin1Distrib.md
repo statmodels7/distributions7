@@ -4,15 +4,14 @@ The S7 class of the negative binomial family on the non-negative
 integers whose variance is **linear** in the mean: with a mean \\\mu \>
 0\\ and a dispersion \\\theta \> 0\\, \\\operatorname{Var}(Y) =
 \mu(1+\theta)\\, so the variance-to-mean ratio is \\1+\theta\\ at every
-mean. It inherits from `discrete_distrib`, so it answers every generic
-of the `distrib` contract; the seven methods listed below are registered
-on it in this file and everything else comes from the parent.
+mean. It inherits from `discrete_distrib`.
 
 Build one with
 [`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md),
 which supplies the two link functions and fills the properties in. This
 page documents the raw S7 constructor, which takes the parent's
-properties and validates none of the relationships between them.
+properties; the validator of `distrib` checks them, and the constructor
+adds no check of its own.
 
 ## Usage
 
@@ -97,23 +96,36 @@ domain \\(0, \infty)\\ for both parameters, and the two links.
 
 ## Methods
 
-Registered on this class in this file:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.NegBin1Distrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin1Distrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.NegBin1Distrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin1Distrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.NegBin1Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.NegBin1Distrib.md)
+Registered on this class, each linked to the page that documents it:
 
-The third and fourth orders,
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.md)
-and
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.NegBin1Distrib.md),
-are registered elsewhere in the package, on top of
-[`negbin1_components()`](https://statmodels7.github.io/distributions7/reference/negbin1_components.md).
-A discrete family has no derivatives in the response. Everything else is
-inherited from
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin1Distrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.NegBin1Distrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.NegBin1Distrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.NegBin1Distrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin1Distrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.NegBin1Distrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.NegBin1Distrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin1Distrib.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin1Distrib.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.NegBin1Distrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.NegBin1Distrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.NegBin1Distrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.NegBin1Distrib.md).
+
+Every other generic is inherited from
 [`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
 
 ## See also

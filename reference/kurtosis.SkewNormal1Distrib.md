@@ -3,9 +3,10 @@
 Closed form: \$\$\gamma_2 = 2(\pi - 3)\\ \frac{(b\delta)^4}{(1 -
 b^2\delta^2)^{2}},\$\$ with \\\delta = \alpha/\sqrt{1+\alpha^2}\\ and
 \\b = \sqrt{2/\pi}\\. The fourth power makes it even in the shape and
-non-negative, so a skew normal is never lighter-tailed than a Gaussian,
-and \\\delta\\'s bound caps it at about 0.8692. A sample needing more
-excess kurtosis than that is outside the family whatever the shape.
+non-negative, so the excess kurtosis of a skew normal is never below the
+Gaussian's, and the bound on \\\delta\\ caps it at about 0.8692. A
+sample excess kurtosis beyond that value lies outside the range a skew
+normal can have at any shape.
 
 ## Arguments
 

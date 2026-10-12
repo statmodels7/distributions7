@@ -1,12 +1,12 @@
 # The Gaussian Estimate as a Starting Value for a t
 
 Returns the sample mean and the sample covariance with the degrees of
-freedom set at 8, which is heavy-tailed enough to be worth fitting and
-light enough for the second moment to exist. The Gaussian estimate is
-this family's limit as \\\nu\\ grows, so it is where a finite \\\nu\\ is
-looked for from.
+freedom set at 8, which gives tails clearly heavier than the Gaussian's
+and a finite second moment. The Gaussian estimate is the limit of this
+family as \\\nu\\ grows, so the search for a finite \\\nu\\ starts from
+it.
 
-One starting value is returned whatever `n_start` asks for.
+One starting value is returned for any value of `n_start`.
 
 ## Arguments
 

@@ -5,8 +5,9 @@ Closed form, from the location-scale structure: \\\partial F/\partial\mu
 (q-\mu)/\sigma\\. The method is
 [`loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_grad_cdf.md)
 itself. For this family the density is \\F(1-F)/\sigma\\, so the
-log-scale gradient is elementary in \\F\\ alone and no special
-evaluation is needed anywhere on the line.
+log-scale gradient in the mean is \\-(1-F)/\sigma\\. The method divides
+\\f\\ by \\F\\, so it returns `NaN` or `Inf` in a tail where \\F\\ has
+underflowed to zero or rounded to one.
 
 ## Arguments
 

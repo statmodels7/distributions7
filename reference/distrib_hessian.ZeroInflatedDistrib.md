@@ -27,8 +27,8 @@ of the parent component.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - ...:
 

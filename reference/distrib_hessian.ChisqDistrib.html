@@ -10,8 +10,9 @@ within a parameter setting, is recycled to the length of y, and equals
 distrib_expected_hessian.ChisqDistrib() exactly.
 The coincidence is on the parameter scale. On the link scale the two
 differ, the second-order chain rule adding a term
-\(h''(\eta)\,\partial\ell/\partial\mu\) that the expected version drops
-and a sample does not; the example below measures it."><meta property="og:description" content="Computes the second derivative of the chi-squared log-density with respect
+\(h''(\eta)\,\partial\ell/\partial\mu\), which the expected version
+drops because the score has expectation zero; the score of a sample is not
+zero away from the optimum, and the example below measures the term."><meta property="og:description" content="Computes the second derivative of the chi-squared log-density with respect
 to \(\mu\), in closed form:
 $$\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{\psi'(\mu/2)}{4},$$
 with \(\psi'\) the trigamma function. It does not involve the
@@ -22,8 +23,9 @@ within a parameter setting, is recycled to the length of y, and equals
 distrib_expected_hessian.ChisqDistrib() exactly.
 The coincidence is on the parameter scale. On the link scale the two
 differ, the second-order chain rule adding a term
-\(h''(\eta)\,\partial\ell/\partial\mu\) that the expected version drops
-and a sample does not; the example below measures it."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(h''(\eta)\,\partial\ell/\partial\mu\), which the expected version
+drops because the score has expectation zero; the score of a sample is not
+zero away from the optimum, and the example below measures the term."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +33,7 @@ and a sample does not; the example below measures it."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,8 +77,9 @@ within a parameter setting, is recycled to the length of <code>y</code>, and equ
 <code><a href="distrib_expected_hessian.ChisqDistrib.html">distrib_expected_hessian.ChisqDistrib()</a></code> exactly.</p>
 <p>The coincidence is on the <strong>parameter</strong> scale. On the link scale the two
 differ, the second-order chain rule adding a term
-\(h''(\eta)\,\partial\ell/\partial\mu\) that the expected version drops
-and a sample does not; the example below measures it.</p>
+\(h''(\eta)\,\partial\ell/\partial\mu\), which the expected version
+drops because the score has expectation zero; the score of a sample is not
+zero away from the optimum, and the example below measures the term.</p>
     </div>
 
 

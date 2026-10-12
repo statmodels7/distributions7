@@ -4,7 +4,7 @@ Closed form, from the location-scale structure: \\\partial F/\partial\mu
 = -f(q)\\ and \\\partial F/\partial\sigma = -z f(q)\\ with \\z =
 (q-\mu)/\sigma\\. The method is
 [`loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_grad_cdf.md)
-itself, shared with the logistic, the Cauchy and the Laplace, so nothing
+itself, shared with the logistic, the Laplace and the Gumbel, so nothing
 here is particular to the Gaussian beyond its density.
 
 ## Arguments
@@ -25,14 +25,17 @@ here is particular to the Gaussian beyond its density.
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical, `TRUE` by default; `FALSE`
-  flips the sign of every component.
+  Is the lower tail wanted? A single logical, `TRUE` by default. With
+  `log = FALSE`, `FALSE` flips the sign of every component; with
+  `log = TRUE` it returns the derivatives of \\\log S\\, where \\S = 1 -
+  F\\, which are not the negatives of the lower-tail ones.
 
 - log:
 
   Are derivatives of the log probability wanted? A single logical,
-  `TRUE` by default. Far into a tail the probability underflows to zero
-  and the result is `-Inf` or `NaN`.
+  `TRUE` by default. The ratio \\f/P\\ is formed as \\\exp(\log f - \log
+  P)\\, so the result stays finite far into either tail, where \\f\\ and
+  \\P\\ underflow.
 
 ## Value
 
@@ -43,8 +46,9 @@ of `q` recycled against `theta`.
 
 A censored Gaussian likelihood is cheap for this reason: a
 right-censored observation contributes \\\log S(q)\\, whose score in
-\\\mu\\ is \\f(q)/S(q)\\, the inverse Mills ratio, and the whole of it
-comes from the density the family already computes.
+\\\mu\\ is \\f(q)/S(q)\\, the inverse Mills ratio of \\z\\ divided by
+\\\sigma\\, and the whole of it comes from the density that the family
+already computes.
 
 ## Notation
 

@@ -9,7 +9,7 @@ beyond which a generalized Pareto puts no mass."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,9 +77,9 @@ and both ends of the interval move as the parameters do, so
 differentiating an expectation under the integral sign is not automatically
 licensed. The consequence a user meets is that the expected information
 exists only for \(\xi &gt; -1/2\); see <code><a href="gpd_distrib.html">gpd_distrib()</a></code>.</p>
-<p><code><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse()</a></code> is correct here and is deliberate: both arguments are of the
-length of the test after recycling, so a vector of shapes gives a vector of
-endpoints.</p>
+<p>The two arguments are recycled to a common length before the branch on
+the sign of the shape, so a vector of scales beside a scalar shape gives a
+vector of endpoints.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

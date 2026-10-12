@@ -5,9 +5,8 @@ uniform variates from
 [`stats::runif()`](https://rdrr.io/r/stats/Uniform.html) are passed
 through
 [`distrib_quantile.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.LaplaceDistrib.md).
-The quantile function is elementary and exact, so this is both cheaper
-and more accurate than the generalized ratio-of-uniforms fallback the
-base class supplies, which would have to reject draws around the kink.
+The base class draws the same way for a family with its own quantile
+method, so the method gives the draws that the base class would give.
 
 ## Arguments
 

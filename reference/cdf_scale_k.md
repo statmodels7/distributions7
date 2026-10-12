@@ -3,7 +3,7 @@
 The general form of
 [`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md):
 converts derivatives of \\F\\ into derivatives of whichever tail was
-asked for, on the natural or the logarithmic scale, at any order from 1
+requested, on the natural or the logarithmic scale, at any order from 1
 to 4.
 
 ## Usage
@@ -21,7 +21,10 @@ cdf_scale_k(distrib, Fq, dF, order, lower.tail, log)
 
 - Fq:
 
-  The distribution function at the quantile, a numeric vector.
+  The distribution function at the quantile, a numeric vector, possibly
+  with the attribute `"upper"` that
+  [`tail_cdf()`](https://statmodels7.github.io/distributions7/reference/tail_probability.md)
+  attaches.
 
 - dF:
 
@@ -51,13 +54,16 @@ orders are consumed on the way and do not appear in the result.
 ## The two conversions
 
 Switching to the upper tail flips the sign at every order, \\S = 1 -
-F\\. Switching to the log scale is the moment-to-cumulant relation
+F\\; the probability \\S\\ by which the log scale divides is the
+family's own upper tail when `Fq` comes from
+[`tail_cdf()`](https://statmodels7.github.io/distributions7/reference/tail_probability.md).
+Switching to the log scale is the moment-to-cumulant relation
 \$\$\partial^I \log P = \sum\_\pi (-1)^{\|\pi\|-1}(\|\pi\|-1)! \prod\_{B
 \in \pi} \frac{\partial^B P}{P},\$\$ summed over the set partitions of
 the multi-index by
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md).
 At second order it is the familiar \\\partial^2 P/P - (\partial
-P/P)^2\\, and at third and fourth it has 4 and 15 terms.
+P/P)^2\\, and at third and fourth order it has 5 and 15 terms.
 
 ## Why every lower order is needed
 
@@ -69,7 +75,7 @@ still assembles the first three.
 ## Notation
 
 \\F\\ is the distribution function, \\S = 1 - F\\ the survival function,
-\\P\\ whichever was asked for, \\\pi\\ a set partition of the
+\\P\\ whichever was requested, \\\pi\\ a set partition of the
 multi-index and \\B\\ one of its blocks.
 
 ## See also

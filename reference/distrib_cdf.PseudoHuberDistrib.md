@@ -34,7 +34,9 @@ difference of two numbers near one.
 - log.p:
 
   Logical of length 1. When `TRUE` the logarithm of the probability is
-  returned, taken after the quadrature. Defaults to `FALSE`.
+  returned, computed on the log scale by
+  [`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
+  so that it stays finite far in either tail. Defaults to `FALSE`.
 
 - ...:
 

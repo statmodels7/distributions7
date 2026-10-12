@@ -20,15 +20,9 @@ turns the integral into one over the whole \\t\\ line whose integrand
 decays double-exponentially at both ends, which the trapezoidal rule
 then integrates with an error falling like \\\exp(-c/h)\\; the negative
 half is its mirror image. The step is \\h = 1/32\\ and the nodes run
-from \\10^{-16}\\ to \\10^{60}\\ in \\\|z\|\\, about 580 in all. Against
-the same rule at \\h = 1/64\\, it reproduces the expected information to
-\\3\times10^{-14}\\ and its second derivative to \\7\times10^{-9}\\ on
-the skew normal up to \\\|\alpha\| = 500\\, the hardest case measured;
-at \\h = 1/24\\ that second derivative is \\2\times10^{-4}\\ out. Past
+from \\10^{-16}\\ to \\10^{60}\\ in \\\|z\|\\, about 580 in all. Past
 the upper end a tail decaying as \\\|z\|^{-1-\nu}\\ leaves a relative
-\\10^{-60\nu}/\nu\\, negligible for \\\nu \ge 0.3\\. The end is not
-taken further because the Student t's derivatives in \\\nu\\ are not
-finite at \\\|z\| = 10^{130}\\, where its density is still positive.
+\\10^{-60\nu}/\nu\\, negligible for \\\nu \ge 0.3\\.
 
 ## See also
 

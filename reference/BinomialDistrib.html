@@ -13,8 +13,9 @@ unequal group sizes is described.
 The default link is the logit, the canonical link here: on its scale the
 observed and the expected information coincide.
 Build one with binomial_distrib(). This page documents the raw S7
-constructor, which takes the parent's properties plus size and validates
-none of the relationships between them."><meta property="og:description" content="The S7 class of the binomial family: the number of successes in size
+constructor, which takes the parent's properties plus size; the
+validator of distrib checks the parent's properties, and size is
+checked by binomial_distrib(), not by this constructor."><meta property="og:description" content="The S7 class of the binomial family: the number of successes in size
 independent trials, each succeeding with probability \(\mu \in (0, 1)\).
 It inherits from discrete_distrib, so expectations over its support are
 sums and no derivative with respect to the response is defined.
@@ -28,8 +29,9 @@ unequal group sizes is described.
 The default link is the logit, the canonical link here: on its scale the
 observed and the expected information coincide.
 Build one with binomial_distrib(). This page documents the raw S7
-constructor, which takes the parent's properties plus size and validates
-none of the relationships between them."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+constructor, which takes the parent's properties plus size; the
+validator of distrib checks the parent's properties, and size is
+checked by binomial_distrib(), not by this constructor."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -37,7 +39,7 @@ none of the relationships between them."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,8 +86,9 @@ unequal group sizes is described.</p>
 <p>The default link is the logit, the <strong>canonical</strong> link here: on its scale the
 observed and the expected information coincide.</p>
 <p>Build one with <code><a href="binomial_distrib.html">binomial_distrib()</a></code>. This page documents the raw S7
-constructor, which takes the parent's properties plus <code>size</code> and validates
-none of the relationships between them.</p>
+constructor, which takes the parent's properties plus <code>size</code>; the
+validator of <code>distrib</code> checks the parent's properties, and <code>size</code> is
+checked by <code><a href="binomial_distrib.html">binomial_distrib()</a></code>, not by this constructor.</p>
     </div>
 
     <div class="section level2">
@@ -166,17 +169,28 @@ the <code>size</code> given.</p>
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered on this class:
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.BinomialDistrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_cdf.BinomialDistrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_deriv3.BinomialDistrib.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.BinomialDistrib.html">distrib_deriv4()</a></code>,
-<code><a href="distrib_expected_hessian.BinomialDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_quantile.BinomialDistrib.html">distrib_quantile()</a></code> and
+<code><a href="distrib_rng.BinomialDistrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.BinomialDistrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.BinomialDistrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_pdf.BinomialDistrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_quantile.BinomialDistrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.BinomialDistrib.html">distrib_rng()</a></code></p>
-<p>Everything else is inherited from <code><a href="discrete_distrib.html">discrete_distrib()</a></code>.</p>
+<code><a href="distrib_expected_hessian.BinomialDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.BinomialDistrib.html">distrib_deriv3()</a></code> and
+<code><a href="distrib_deriv4.BinomialDistrib.html">distrib_deriv4()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_dexpected_hessian.elementary.html">distrib_dexpected_hessian()</a></code>
+and
+<code><a href="distrib_dexpected_hessian.elementary.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the derivatives of the distribution function:
+<code><a href="distrib_grad_cdf.BinomialDistrib.html">distrib_grad_cdf()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.BinomialDistrib.html">mean()</a></code>,
+<code><a href="variance.BinomialDistrib.html">variance()</a></code>,
+<code><a href="skewness.BinomialDistrib.html">skewness()</a></code> and
+<code><a href="kurtosis.BinomialDistrib.html">kurtosis()</a></code>;</p></li>
+<li><p>the fitting helpers: <code><a href="distrib_scalar_route.html">distrib_scalar_route()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="discrete_distrib.html">discrete_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

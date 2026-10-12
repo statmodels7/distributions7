@@ -19,8 +19,7 @@ D^3}.\$\$
 
 The curvature in \\\mu\\ is negative at every observation, unlike a
 Student t's, so the log-density is concave in the location however far
-out the residual is. What redescends is the score, not the curvature's
-sign.
+out the residual is.
 
 ## Arguments
 

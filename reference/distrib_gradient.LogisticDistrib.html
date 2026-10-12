@@ -5,19 +5,19 @@ Writing \(z = (y - \mu)/\sigma\),
 $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{1}{\sigma} \tanh\left(\dfrac{z}{2}\right),
       \qquad
       \dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1}{\sigma}\left[1 - z \tanh\left(\dfrac{z}{2}\right)\right].$$
-The score in \(\mu\) is bounded by \(1/\sigma\) and saturates rather
-than redescending: a distant observation contributes a fixed amount instead
-of an unbounded one, as it would under a Gaussian, or a vanishing one, as it
-would under a Cauchy."><meta property="og:description" content="Computes the first derivatives of the logistic log-density with respect to
+The score in \(\mu\) is bounded by \(1/\sigma\) and tends to
+\(\pm 1/\sigma\) as \(|z|\) grows, so a distant observation contributes
+a fixed amount. Under a Gaussian the contribution grows without bound, and
+under a Cauchy it tends to zero."><meta property="og:description" content="Computes the first derivatives of the logistic log-density with respect to
 \(\mu\) and \(\sigma\), one value per observation, in closed form.
 Writing \(z = (y - \mu)/\sigma\),
 $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{1}{\sigma} \tanh\left(\dfrac{z}{2}\right),
       \qquad
       \dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1}{\sigma}\left[1 - z \tanh\left(\dfrac{z}{2}\right)\right].$$
-The score in \(\mu\) is bounded by \(1/\sigma\) and saturates rather
-than redescending: a distant observation contributes a fixed amount instead
-of an unbounded one, as it would under a Gaussian, or a vanishing one, as it
-would under a Cauchy."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The score in \(\mu\) is bounded by \(1/\sigma\) and tends to
+\(\pm 1/\sigma\) as \(|z|\) grows, so a distant observation contributes
+a fixed amount. Under a Gaussian the contribution grows without bound, and
+under a Cauchy it tends to zero."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +25,7 @@ would under a Cauchy."><meta property="og:image" content="https://statmodels7.gi
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,10 +64,10 @@ Writing \(z = (y - \mu)/\sigma\),
 $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{1}{\sigma} \tanh\left(\dfrac{z}{2}\right),
       \qquad
       \dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1}{\sigma}\left[1 - z \tanh\left(\dfrac{z}{2}\right)\right].$$</p>
-<p>The score in \(\mu\) is bounded by \(1/\sigma\) and saturates rather
-than redescending: a distant observation contributes a fixed amount instead
-of an unbounded one, as it would under a Gaussian, or a vanishing one, as it
-would under a Cauchy.</p>
+<p>The score in \(\mu\) is bounded by \(1/\sigma\) and tends to
+\(\pm 1/\sigma\) as \(|z|\) grows, so a distant observation contributes
+a fixed amount. Under a Gaussian the contribution grows without bound, and
+under a Cauchy it tends to zero.</p>
     </div>
 
 
@@ -147,7 +147,8 @@ residual. \(\sigma\) is not the standard deviation, which is
 <span class="r-in"><span><span class="fl">1</span> <span class="op">/</span> <span class="fl">1.5</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6666667</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The summed score vanishes at the maximum likelihood estimate.</span></span></span>
+<span class="r-in"><span><span class="co"># The summed score is close to zero at the maximum likelihood estimate,</span></span></span>
+<span class="r-in"><span><span class="co"># within the tolerance at which the fit stops.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">9</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">zz</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">3000</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">zz</span><span class="op">)</span></span></span>

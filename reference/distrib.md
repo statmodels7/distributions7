@@ -79,15 +79,22 @@ An object of class `distrib`.
 ## Methods
 
 Registered on the base class, so every distribution inherits them unless
-it registers something more specific. Those that compute derivatives do
-so by finite differences, which is why a subclass that implements
-nothing but
+it registers something more specific. The derivatives of the log-density
+in the parameters are computed by finite differences and the expected
+derivatives by the strategy named in `approx`, which is why a subclass
+that implements nothing but
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
-is already fully functional. Note that `distrib_pdf` itself has no
-default: the density is the one thing a distribution must supply.
+has every parameter derivative.
+[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
+itself has no default: the density is the one quantity that a
+distribution must supply. The list below is partial; the base class also
+registers
+[`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
+and the derivatives of the cdf of orders 3 and 4.
 
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.distrib.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.distrib.md),
+[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.distrib.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.distrib.md),
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.distrib.md),
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.distrib.md),

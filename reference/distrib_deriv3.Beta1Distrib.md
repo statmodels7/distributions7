@@ -2,17 +2,19 @@
 
 Computes the four distinct third derivatives of the beta log-density
 with respect to \\\mu\\ and \\\phi\\, in closed form as combinations of
-\\\psi_2\\, the second derivative of the digamma function, at \\\alpha =
-\mu\phi\\, \\\beta = (1-\mu)\phi\\ and \\\phi\\.
+\\\psi_1\\ and \\\psi_2\\, the first and second derivatives of the
+digamma function, at \\\alpha = \mu\phi\\, \\\beta = (1-\mu)\phi\\ and
+\\\phi\\.
 
-**Every component of this order is free of the response.** The data
-enter the log-density only through \\(\alpha-1)\log y +
-(\beta-1)\log(1-y)\\, which is linear in the shapes and so at most
-quadratic in \\(\mu, \phi)\\ through the bilinear map \\\alpha =
-\mu\phi\\; three derivatives kill it. The observed and expected values
-therefore coincide exactly, and `expected` selects nothing: the same
-kernel runs either way and the two results are identical to the bit.
-`approx` and `nsim` are ignored for the same reason.
+Every component of this order is free of the response. The data enter
+the log-density only through \\(\alpha-1)\log y + (\beta-1)\log(1-y)\\,
+which is linear in the shapes and so at most quadratic in \\(\mu,
+\phi)\\ through the bilinear map \\\alpha = \mu\phi\\, and its third
+derivatives are zero. On the parameter scale the observed and expected
+values therefore coincide, and the method runs the same kernel for
+either value of `expected`. On the link scale the generic adds terms in
+the score and the Hessian, which depend on the response, so the two
+differ there. `approx` and `nsim` are ignored.
 
 ## Arguments
 
@@ -59,15 +61,16 @@ kernel runs either way and the two results are identical to the bit.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
 A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_phi`,
-`mu_phi_phi` and `phi_phi_phi`, each of length `length(y)` and constant
-within itself when the parameters are. The names enumerate the distinct
-multi-indices of order three in two parameters.
+`mu_phi_phi` and `phi_phi_phi`, each of length
+`max(length(y), length(mu), length(phi))` and constant within itself
+when the parameters are. The names enumerate the distinct multi-indices
+of order three in two parameters.
 
 ## Notation
 
@@ -108,7 +111,7 @@ lapply(d3, unique)
 #> [1] 0.01036213
 #> 
 
-# So asking for the expectation changes nothing.
+# So on the parameter scale expected = TRUE changes nothing.
 identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
 #> [1] TRUE
 

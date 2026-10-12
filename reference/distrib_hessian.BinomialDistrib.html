@@ -3,21 +3,41 @@
 probability, one value per observation, in closed form:
 $$\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}.$$
 It is negative for every admissible \(\mu\) and depends on the data
-through \(y\) alone.
+through \(y\) alone. Each term is formed by dividing its coefficient by
+the base once per power, and a term with a zero coefficient contributes
+zero, so at \(y = 0\) the value is \(-n/(1-\mu)^2\) however small
+\(\mu\) is.
 On the link scale with the default logit the chain rule gives
-\(\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)\), which carries no data
-at all: the defining property of a canonical link, and what makes the
-observed and the expected information the same matrix there. See
-distrib_expected_hessian.BinomialDistrib()."><meta property="og:description" content="Computes the second derivative of the binomial log-mass with respect to the
+\(\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)\), which carries no
+data; this is the defining property of a canonical link, and in exact
+arithmetic it makes the observed and the expected information the same
+matrix there (see distrib_expected_hessian.BinomialDistrib()). The
+generic forms the link-scale value from the derivatives on the parameter
+scale, and for an observation on the far side of the probability
+(\(y = 0\) with \(\mu\) near 1, or \(y = n\) with \(\mu\) near 0)
+its two terms cancel to a value much smaller than either. The relative
+error of the observed value then grows with \(|\eta|\) (about
+\(10^{-3}\) at \(\eta = 27.6\)), while the expected value is computed
+directly and stays exact."><meta property="og:description" content="Computes the second derivative of the binomial log-mass with respect to the
 probability, one value per observation, in closed form:
 $$\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}.$$
 It is negative for every admissible \(\mu\) and depends on the data
-through \(y\) alone.
+through \(y\) alone. Each term is formed by dividing its coefficient by
+the base once per power, and a term with a zero coefficient contributes
+zero, so at \(y = 0\) the value is \(-n/(1-\mu)^2\) however small
+\(\mu\) is.
 On the link scale with the default logit the chain rule gives
-\(\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)\), which carries no data
-at all: the defining property of a canonical link, and what makes the
-observed and the expected information the same matrix there. See
-distrib_expected_hessian.BinomialDistrib()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)\), which carries no
+data; this is the defining property of a canonical link, and in exact
+arithmetic it makes the observed and the expected information the same
+matrix there (see distrib_expected_hessian.BinomialDistrib()). The
+generic forms the link-scale value from the derivatives on the parameter
+scale, and for an observation on the far side of the probability
+(\(y = 0\) with \(\mu\) near 1, or \(y = n\) with \(\mu\) near 0)
+its two terms cancel to a value much smaller than either. The relative
+error of the observed value then grows with \(|\eta|\) (about
+\(10^{-3}\) at \(\eta = 27.6\)), while the expected value is computed
+directly and stays exact."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +45,7 @@ distrib_expected_hessian.BinomialDistrib()."><meta property="og:image" content="
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,12 +82,22 @@ distrib_expected_hessian.BinomialDistrib()."><meta property="og:image" content="
 probability, one value per observation, in closed form:
 $$\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}.$$
 It is negative for every admissible \(\mu\) and depends on the data
-through \(y\) alone.</p>
+through \(y\) alone. Each term is formed by dividing its coefficient by
+the base once per power, and a term with a zero coefficient contributes
+zero, so at \(y = 0\) the value is \(-n/(1-\mu)^2\) however small
+\(\mu\) is.</p>
 <p>On the <strong>link</strong> scale with the default logit the chain rule gives
-\(\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)\), which carries <strong>no data
-at all</strong>: the defining property of a canonical link, and what makes the
-observed and the expected information the same matrix there. See
-<code><a href="distrib_expected_hessian.BinomialDistrib.html">distrib_expected_hessian.BinomialDistrib()</a></code>.</p>
+\(\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)\), which carries no
+data; this is the defining property of a canonical link, and in exact
+arithmetic it makes the observed and the expected information the same
+matrix there (see <code><a href="distrib_expected_hessian.BinomialDistrib.html">distrib_expected_hessian.BinomialDistrib()</a></code>). The
+generic forms the link-scale value from the derivatives on the parameter
+scale, and for an observation on the far side of the probability
+(\(y = 0\) with \(\mu\) near 1, or \(y = n\) with \(\mu\) near 0)
+its two terms cancel to a value much smaller than either. The relative
+error of the observed value then grows with \(|\eta|\) (about
+\(10^{-3}\) at \(\eta = 27.6\)), while the expected value is computed
+directly and stays exact.</p>
     </div>
 
 
@@ -106,7 +136,9 @@ use. Defaults to <code>1L</code>.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of one numeric vector, <code>mu_mu</code>, of length
-<code>max(length(y), length(mu), length(distrib@size))</code>.</p>
+<code>max(length(y), length(mu), length(distrib@size))</code>. Each of <code>y</code>, <code>mu</code> and
+<code>size</code> must have length 1 or that length; any other length signals an
+error.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

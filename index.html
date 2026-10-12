@@ -18,9 +18,9 @@
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Distributions as reusable objects">
-<meta name="description" content="Probability distributions written once, as objects any package can use, carrying exact derivatives of the log-likelihood to fourth order — with respect to the parameters, the response, and the unconstrained scale an optimizer works on.
+<meta name="description" content="Probability distributions written once, as objects any package can use, carrying exact derivatives of the log-likelihood to fourth order with respect to the parameters, the response, and the unconstrained scale on which an optimizer works.
 ">
-<meta property="og:description" content="Probability distributions written once, as objects any package can use, carrying exact derivatives of the log-likelihood to fourth order — with respect to the parameters, the response, and the unconstrained scale an optimizer works on.
+<meta property="og:description" content="Probability distributions written once, as objects any package can use, carrying exact derivatives of the log-likelihood to fourth order with respect to the parameters, the response, and the unconstrained scale on which an optimizer works.
 ">
 <meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png">
 </head>
@@ -32,7 +32,7 @@
 
     <a class="navbar-brand me-2" href="index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,8 +71,8 @@
 <img src="logo.png" class="logo" alt=""><h1 id="distributions7-">distributions7 <a class="anchor" aria-label="anchor" href="#distributions7-"></a>
 </h1>
 </div>
-<p>Almost every R package that fits statistical models writes its own distributions, privately: a <code>switch</code> on a character string, a list of closures nothing outside can reach. The same Gamma is therefore re-implemented again and again, each time only as far as that package happened to need it: the density and the score, sometimes the Hessian, rarely anything beyond.</p>
-<p><a href="https://statmodels7.github.io/distributions7/">distributions7</a> writes them once, as objects. Each carries the usual density, distribution and quantile functions, together with the <strong>exact derivatives of the log-likelihood up to fourth order</strong>. The derivatives are available with respect to the parameters, with respect to the response, and with respect to the unconstrained parameters behind a link function, which is the scale an optimizer works on.</p>
+<p>Almost every R package that fits statistical models writes its own distributions, privately: a <code>switch</code> on a character string, or a list of closures that only the package itself can reach. The same Gamma is therefore re-implemented again and again, each time only as far as that package happened to need it: the density and the score, sometimes the Hessian, rarely anything beyond.</p>
+<p><a href="https://statmodels7.github.io/distributions7/">distributions7</a> writes them once, as objects. Each carries the usual density, distribution and quantile functions, together with the <strong>exact derivatives of the log-likelihood up to fourth order</strong>, and a fifth order that is closed form for some families and one central difference of the analytic fourth order for the others. The derivatives are available with respect to the parameters, with respect to the response, and with respect to the unconstrained parameters behind a link function, which is the scale an optimizer works on.</p>
 <p>It is the distribution layer of <a href="https://statmodels7.github.io" class="external-link">statmodels7</a>, an S7 toolkit for statistical modeling, and works alongside <a href="https://statmodels7.github.io/linkfunctions7/" class="external-link">linkfunctions7</a>. The mathematics behind every formula, from the likelihood theory and the change of scale to the derivations for the zero-inflated, zero-adjusted, truncated and transformed wrappers, is worked out in <a href="https://statmodels7.github.io/book/" class="external-link">the statmodels7 book</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -80,14 +80,14 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"statmodels7/distributions7"</span><span class="op">)</span></span></code></pre></div>
-<p>Or the whole toolkit at once, which also installs the six sibling packages:</p>
+<p>Or the whole toolkit at once, which installs <a href="https://statmodels7.github.io/distributions7/">distributions7</a> together with the other packages of the toolkit:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"statmodels7/statmodels7"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="the-usual-functions">The usual functions<a class="anchor" aria-label="anchor" href="#the-usual-functions"></a>
 </h2>
-<p>The package carries 42 univariate distributions and 6 multivariate ones, one name per parametrization where a family has several – <code><a href="reference/gaussian1_distrib.html">gaussian1_distrib()</a></code> in mean and scale, <code><a href="reference/gaussian2_distrib.html">gaussian2_distrib()</a></code> in mean and variance, <code><a href="reference/gaussian3_distrib.html">gaussian3_distrib()</a></code> in mean and precision, and likewise for 14 other families. Each constructor takes the link functions used for its parameters, and parameters travel as a named list.</p>
+<p>The package carries 43 univariate distributions and 6 multivariate ones, one name per parametrization where a family has several (<code><a href="reference/gaussian1_distrib.html">gaussian1_distrib()</a></code> in mean and scale, <code><a href="reference/gaussian2_distrib.html">gaussian2_distrib()</a></code> in mean and variance, <code><a href="reference/gaussian3_distrib.html">gaussian3_distrib()</a></code> in mean and precision, and likewise for 14 other families). Each constructor takes the link functions used for its parameters, and parameters travel as a named list.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
@@ -102,21 +102,21 @@
 <div class="section level2">
 <h2 id="moments">Moments<a class="anchor" aria-label="anchor" href="#moments"></a>
 </h2>
-<p>A distribution is asked for its moments rather than having them looked up: the mean, the variance, the standard deviation, the skewness and the excess kurtosis, in closed form where one exists and by quadrature against the density where it does not. <code><a href="reference/moment.html">moment()</a></code> answers for an arbitrary order, raw or central.</p>
+<p>The moments of a distribution are computed on request: the mean, the variance, the standard deviation, the skewness and the excess kurtosis, from a closed form where the family has one and by quadrature against the density otherwise. <code><a href="reference/moment.html">moment()</a></code> computes a moment of any order, raw or central.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># sigma^2 and 3 sigma^4 at the even orders; the odd ones vanish, and they</span></span>
 <span><span class="co"># vanish to the accuracy of the quadrature that produced them rather than</span></span>
 <span><span class="co"># because a table said so</span></span>
 <span><span class="fu"><a href="reference/moment.html">moment</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span>, p <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, central <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 5.884182e-15 9.000000e+00 1.456613e-13 2.430000e+02</span></span>
+<span><span class="co">#&gt; [1]   0   9   0 243</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>skewness <span class="op">=</span> <span class="fu"><a href="reference/skewness.html">skewness</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span>, kurtosis <span class="op">=</span> <span class="fu"><a href="reference/kurtosis.html">kurtosis</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; skewness kurtosis </span></span>
 <span><span class="co">#&gt;        0        0</span></span></code></pre></div>
-<p>Every moment returns <strong>one value per parameter setting</strong>, so a component given as a vector asks for one moment per element and the answer can be bound to the rows it came from. That holds whether or not the parameter being varied happens to enter the formula: the variance of a Weibull below does not read its scale as a separate quantity, and still comes back three long.</p>
+<p>Every moment returns <strong>one value per parameter setting</strong>, so a component given as a vector gives one moment per element, and the result can be bound to the rows of that vector. This holds also when the varied parameter does not enter the formula: the skewness of a Weibull depends only on its shape, and three scales still give three values.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/weibull1_distrib.html">weibull1_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/variance.html">variance</a></span><span class="op">(</span><span class="va">w</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 2.146018e-03 2.146018e-01 2.146018e+03</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/skewness.html">skewness</a></span><span class="op">(</span><span class="va">w</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.6311107 0.6311107 0.6311107</span></span></code></pre></div>
 <p><code>theta</code> is read by name and not by position here as everywhere else, so the components may be written in any order.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -164,7 +164,7 @@
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gamma2</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 0 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 40 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -176,7 +176,7 @@
 <span><span class="co">#&gt;        Estimate Std. Error   2.5%  97.5%</span></span>
 <span><span class="co">#&gt; mu       1.0842     0.0213 1.0424 1.1260</span></span>
 <span><span class="co">#&gt; sigma2   0.6875     0.0744 0.5416 0.8334</span></span></code></pre></div>
-<p>The fit carries the data it was estimated from, so it can be checked against the data and simulated from:</p>
+<p>The fit carries the data from which it was estimated, so it can be checked against the data and simulated from:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-fit-plot-1.png" alt="" width="100%"></p>
@@ -185,7 +185,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">sims</span>, <span class="va">median</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     2.5%    97.5% </span></span>
 <span><span class="co">#&gt; 2.570081 2.881259</span></span></code></pre></div>
-<p>The optimization itself is delegated to <a href="https://statmodels7.github.io/optimizers7/" class="external-link">optimizers7</a>. One argument says how to optimize, and it takes either an optimizer of that package, which brings its own stopping rule, or <code><a href="reference/fisher_scoring.html">fisher_scoring()</a></code>, which is Newton’s method with the expected information and carries how that information is to be obtained when the family has no closed form for it.</p>
+<p>The optimization itself is delegated to <a href="https://statmodels7.github.io/optimizers7/" class="external-link">optimizers7</a>. The argument <code>method</code> selects the optimization. It accepts an optimizer of that package, which brings its own stopping rule; <code><a href="reference/fisher_scoring.html">fisher_scoring()</a></code>, which is Newton’s method with the expected information and records how that information is approximated when the family has no closed form for it; or one of the names <code>"fisher"</code>, <code>"newton"</code> and <code>"bfgs"</code>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="fu"><a href="reference/gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">y</span>,</span>
 <span>                    method <span class="op">=</span> <span class="fu">optimizers7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/optimizers7/reference/lbfgs.html" class="external-link">lbfgs</a></span><span class="op">(</span></span>
@@ -193,7 +193,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>fisher <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">)</span>, lbfgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">fit2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    fisher     lbfgs </span></span>
 <span><span class="co">#&gt; -841.2326 -841.2326</span></span></code></pre></div>
-<p>Where a fit starts matters more than it looks, so a family is asked for its own starting value through <code><a href="reference/distrib_start.html">distrib_start()</a></code>. A family with a known estimator returns it and the fit begins there; one that says nothing gets random draws.</p>
+<p>The starting values of a fit come from <code><a href="reference/distrib_start.html">distrib_start()</a></code>. A family with a known estimator returns it, and the fit begins there; a univariate family takes its first start from the moments of the data and its other starts at random.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">y4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">iris</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
@@ -218,7 +218,7 @@
 <span><span class="co">#&gt;           v1        v2</span></span>
 <span><span class="co">#&gt; v1 1.0476959 0.7273189</span></span>
 <span><span class="co">#&gt; v2 0.7273189 1.5380692</span></span></code></pre></div>
-<p>Those free values are coordinates an optimizer moves in, not quantities anybody reads, and they are not what the fit prints. <code><a href="reference/mv_summary.html">mv_summary()</a></code> carries the fit’s variance matrix onto the ones that are, by the delta method, and builds each interval on the scale that keeps it in its own set: a standard deviation on the log scale, a correlation on Fisher’s <em>z</em>. A precision parametrization reports the same standard deviations and correlations — they are properties of the law — and adds the conditional variances and partial correlations, which are what it describes directly.</p>
+<p>Those free values are the coordinates in which an optimizer moves, and they are not the quantities that the fit reports. <code><a href="reference/mv_summary.html">mv_summary()</a></code> carries the fit’s variance matrix onto the standard deviations and the correlations, by the delta method, and builds each interval on the scale that keeps it in its own set: a standard deviation on the log scale, a correlation on Fisher’s <em>z</em>. A precision parametrization reports the conditional variances and the partial correlations instead, which are what it describes directly; the marginal matrix remains available from <code><a href="reference/mv_sigma.html">mv_sigma()</a></code>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/mv_summary.html">mv_summary</a></span><span class="op">(</span><span class="va">fitm</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            Estimate Std. Error      2.5%     97.5%</span></span>
@@ -229,8 +229,8 @@
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fitm</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-mv-plot-1.png" alt="" width="100%"></p>
-<p><code><a href="reference/mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> is the heavy-tailed alternative, with the degrees of freedom estimated alongside everything else. Its <code><a href="reference/mv_sigma.html">mv_sigma()</a></code> is the <strong>scale</strong> matrix and its <code><a href="reference/variance.html">variance()</a></code> the covariance, which differ by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>ν</mi><mo>−</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\nu/(\nu-2)</annotation></semantics></math> and which the family keeps apart so that it remains usable below two degrees of freedom, where the covariance does not exist.</p>
-<p>Two families are not elliptical. <code><a href="reference/dirichlet_distrib.html">dirichlet_distrib()</a></code> lives on the simplex, written in a mean vector — a <code>parameters7</code> simplex — and a concentration, and its marginals are beta with that same concentration. <code><a href="reference/multinomial_distrib.html">multinomial_distrib()</a></code> is discrete, and being discrete it can enumerate its support: <code><a href="reference/mv_support.html">mv_support()</a></code> returns every vector of counts summing to the size, so its normalization and its expected information are exact sums rather than samples.</p>
+<p><code><a href="reference/mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> is the heavy-tailed alternative, with the degrees of freedom estimated alongside everything else. Its <code><a href="reference/mv_sigma.html">mv_sigma()</a></code> is the <strong>scale</strong> matrix and its <code><a href="reference/variance.html">variance()</a></code> the covariance, which differ by the factor <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>ν</mi><mo>−</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\nu/(\nu-2)</annotation></semantics></math>. The two are reported separately, so that the family remains usable at two degrees of freedom or fewer, where the covariance does not exist.</p>
+<p>Two families are not elliptical. <code><a href="reference/dirichlet_distrib.html">dirichlet_distrib()</a></code> lives on the simplex, written in a mean vector (a <code>parameters7</code> simplex) and a concentration, and its marginals are beta with that same concentration. <code><a href="reference/multinomial_distrib.html">multinomial_distrib()</a></code> is discrete, and being discrete it can enumerate its support: <code><a href="reference/mv_support.html">mv_support()</a></code> returns every vector of counts summing to the size, so its normalization and its expected information are exact sums rather than samples.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/multinomial_distrib.html">multinomial_distrib</a></span><span class="op">(</span><span class="fl">3</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>probs_alr1 <span class="op">=</span> <span class="fl">0.3</span>, probs_alr2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span></span>
@@ -244,7 +244,7 @@
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MyLaplace</span> <span class="op">&lt;-</span> <span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/new_class.html" class="external-link">new_class</a></span><span class="op">(</span><span class="st">"MyLaplace"</span>, parent <span class="op">=</span> <span class="va">continuous_distrib</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/method.html" class="external-link">method</a></span><span class="op">(</span><span class="va">distrib_pdf</span>, <span class="va">MyLaplace</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">y</span>, <span class="va">theta</span>, <span class="va">log</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/method.html" class="external-link">method</a></span><span class="op">(</span><span class="va">distrib_pdf</span>, <span class="va">MyLaplace</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">y</span>, <span class="va">theta</span>, <span class="va">log</span> <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">ld</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">theta</span><span class="op">$</span><span class="va">b</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">theta</span><span class="op">$</span><span class="va">mu</span><span class="op">)</span> <span class="op">/</span> <span class="va">theta</span><span class="op">$</span><span class="va">b</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="va">log</span><span class="op">)</span> <span class="va">ld</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ld</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -273,7 +273,7 @@
 <div class="section level2">
 <h2 id="validating-a-distribution">Validating a distribution<a class="anchor" aria-label="anchor" href="#validating-a-distribution"></a>
 </h2>
-<p><code><a href="reference/check_distrib.html">check_distrib()</a></code> puts a distribution through thirteen numerical checks. It verifies that the density integrates to one, that the distribution function agrees with it, that the quantile function inverts it, and that the generator follows it. It also checks every derivative order against finite differences, on both scales.</p>
+<p><code><a href="reference/check_distrib.html">check_distrib()</a></code> puts a univariate distribution through a battery of numerical checks. It verifies that the density integrates to one, that the distribution function agrees with it, that the quantile function inverts it, and that the generator follows it. It also compares every derivative that the family implements with finite differences, on the parameter and the link scale; a derivative order that the family leaves to the fallbacks is listed as not run, since both sides of the comparison would be the same arithmetic.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="reference/check_distrib.html">check_distrib</a></span><span class="op">(</span><span class="va">d2</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, nsim <span class="op">=</span> <span class="fl">2e4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Distribution: my laplace</span></span>
@@ -283,18 +283,23 @@
 <span><span class="co">#&gt;   [OK  ] density integrates to 1                     1.81e-10</span></span>
 <span><span class="co">#&gt;   [OK  ] density is non-negative                     5.00e-03</span></span>
 <span><span class="co">#&gt;   [OK  ] cdf in [0,1] and non-decreasing             2.46e-02</span></span>
-<span><span class="co">#&gt;   [OK  ] cdf agrees with the density                 6.25e-07</span></span>
-<span><span class="co">#&gt;   [OK  ] quantile/cdf round-trip                     3.31e-10</span></span>
+<span><span class="co">#&gt;   [OK  ] cdf agrees with the density                 3.78e-07</span></span>
+<span><span class="co">#&gt;   [OK  ] quantile/cdf round-trip                     1.11e-16</span></span>
 <span><span class="co">#&gt;   [OK  ] rng matches the cdf                         1.68e+00</span></span>
-<span><span class="co">#&gt;   [OK  ] gradient vs finite differences              0.00e+00</span></span>
-<span><span class="co">#&gt;   [OK  ] hessian vs finite differences               0.00e+00</span></span>
-<span><span class="co">#&gt;   [OK  ] deriv3 vs finite differences                0.00e+00</span></span>
-<span><span class="co">#&gt;   [OK  ] deriv4 vs finite differences                0.00e+00</span></span>
 <span><span class="co">#&gt;   [OK  ] expected information vs Monte Carlo         2.30e+00</span></span>
-<span><span class="co">#&gt;   [OK  ] response derivatives vs finite differences  0.00e+00</span></span>
+<span><span class="co">#&gt;   [OK  ] response derivatives vs finite differences  5.52e-09</span></span>
 <span><span class="co">#&gt;   [OK  ] link-scale gradient vs finite differences   3.24e-09</span></span>
+<span><span class="co">#&gt;   [ -- ] gradient vs finite differences              not run</span></span>
+<span><span class="co">#&gt;          no method of the family's own: the value is the numerical fallback, which this check would compare with itself</span></span>
+<span><span class="co">#&gt;   [ -- ] hessian vs finite differences               not run</span></span>
+<span><span class="co">#&gt;          no method of the family's own: the value is the numerical fallback, which this check would compare with itself</span></span>
+<span><span class="co">#&gt;   [ -- ] deriv3 vs finite differences                not run</span></span>
+<span><span class="co">#&gt;          no method of the family's own: the value is the numerical fallback, which this check would compare with itself</span></span>
+<span><span class="co">#&gt;   [ -- ] deriv4 vs finite differences                not run</span></span>
+<span><span class="co">#&gt;          no method of the family's own: the value is the numerical fallback, which this check would compare with itself</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; All 13 checks passed.</span></span></code></pre></div>
+<span><span class="co">#&gt; All 9 checks passed.</span></span>
+<span><span class="co">#&gt; 4 checks not run, for the reasons given above.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="what-is-in-the-box">What is in the box<a class="anchor" aria-label="anchor" href="#what-is-in-the-box"></a>
@@ -307,11 +312,11 @@
 <tbody>
 <tr>
 <td>continuous</td>
-<td>gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, generalized gamma, inverse gaussian, lognormal, exponential, chi-squared, Weibull, Gumbel, generalized Pareto, beta, von Mises</td>
+<td>gaussian, cauchy, logistic, Student’s t, Laplace, elastic net, pseudo-Huber, skew normal, skew t, gamma, generalized gamma, inverse gaussian, lognormal, exponential, chi-squared, Weibull, Gumbel, generalized Pareto, beta, von Mises</td>
 </tr>
 <tr>
 <td>discrete</td>
-<td>bernoulli, binomial, beta-binomial, poisson, geometric, negative binomial in both the quadratic and the linear variance parametrization</td>
+<td>bernoulli, binomial, beta-binomial, poisson, geometric, negative binomial in both the quadratic and the linear variance parametrization, Poisson-inverse Gaussian</td>
 </tr>
 <tr>
 <td>multivariate</td>
@@ -321,7 +326,8 @@
 <tr>
 <td>wrappers</td>
 <td>
-<code><a href="reference/zero_inflated.html">zero_inflated()</a></code>, <code><a href="reference/zero_adjusted.html">zero_adjusted()</a></code>, <code><a href="reference/truncated.html">truncated()</a></code>, <code><a href="reference/folded.html">folded()</a></code>, <code><a href="reference/fixed.html">fixed()</a></code>, <code><a href="reference/transformation.html">transformation()</a></code> with twelve transformers</td>
+<code><a href="reference/zero_inflated.html">zero_inflated()</a></code>, <code><a href="reference/zero_adjusted.html">zero_adjusted()</a></code>, <code><a href="reference/truncated.html">truncated()</a></code>, <code><a href="reference/folded.html">folded()</a></code>, <code><a href="reference/fixed.html">fixed()</a></code>, <code><a href="reference/transformation.html">transformation()</a></code> with twelve transformers, <code><a href="reference/reparametrize.html">reparametrize()</a></code>
+</td>
 </tr>
 <tr>
 <td>tools</td>

@@ -23,7 +23,7 @@ both contain this family in a limit."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,14 +101,14 @@ with \(\mu \in (0, \infty)\). The mean and the variance are both
 close to Gaussian at a large one.</p>
     </div>
     <div class="section level2">
-    <h2 id="the-canonical-link-and-what-it-buys">The canonical link, and what it buys<a class="anchor" aria-label="anchor" href="#the-canonical-link-and-what-it-buys"></a></h2>
+    <h2 id="the-canonical-link">The canonical link<a class="anchor" aria-label="anchor" href="#the-canonical-link"></a></h2>
     <p>The log-mass is \(y\log\mu - \mu - \log y!\), which is linear in \(y\)
 once \(\eta = \log\mu\) is the parameter. The logarithm is therefore the
 canonical link, and on its scale
 $$\dfrac{\partial \ell}{\partial \eta} = y - \mu, \qquad
       \dfrac{\partial^2 \ell}{\partial \eta^2} = -\mu.$$
 The second of these carries no data, so the observed and the expected
-information coincide: Fisher scoring and Newton's method take the same step,
+information coincide in exact arithmetic: Fisher scoring and Newton's method take the same step,
 and the iteratively reweighted least squares of a Poisson log-linear model
 is both at once. Under any other link the two differ and the choice matters.</p>
     </div>

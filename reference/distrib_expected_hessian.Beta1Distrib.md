@@ -15,10 +15,10 @@ data. The third drops the log-odds residual the observed mixed entry
 carries, whose expectation is zero because
 \\\mathbb{E}\[\log\\Y/(1-Y)\\\] = \psi(\alpha) - \psi(\beta)\\.
 
-The mixed entry does not vanish, so the mean and the precision are not
-orthogonal; their maximum likelihood estimates are asymptotically
-correlated. It does vanish at \\\mu = 1/2\\, where the two shapes are
-equal and the density is symmetric.
+The mixed entry is non-zero except at \\\mu = 1/2\\, where the two
+shapes are equal and the density is symmetric. Elsewhere the mean and
+the precision are not orthogonal, and their maximum likelihood estimates
+are asymptotically correlated.
 
 Because the values do not depend on the data, `approx` and `nsim` are
 ignored. `y` is read only for its length.
@@ -64,8 +64,8 @@ ignored. `y` is read only for its length.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 

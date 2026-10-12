@@ -20,8 +20,8 @@ delegates here.
 
 ## Value
 
-A numeric vector of length \\p\\, strictly positive and summing to the
-object's `size`.
+A numeric vector of length \\p\\, without names, summing to the object's
+`size`.
 
 ## See also
 

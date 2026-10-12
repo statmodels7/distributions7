@@ -1,9 +1,9 @@
 # Variance of the Gaussian Distribution in Location and Precision
 
-Closed form: \\\operatorname{Var}(Y) = 1/\tau\\. Larger precision means
-a tighter distribution, and the name records that. The reciprocal is the
-whole of the difference between this parametrization and
-[`gaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian2_distrib.md).
+Closed form: \\\operatorname{Var}(Y) = 1/\tau\\. A larger precision
+gives a smaller variance. This parametrization differs from
+[`gaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian2_distrib.md)
+only by the reciprocal \\\tau = 1/\sigma^2\\.
 
 ## Arguments
 

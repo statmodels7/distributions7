@@ -1,11 +1,13 @@
 # Cauchy Probability Density Function
 
 Computes the Cauchy density \$\$f(y; \mu, \sigma) = \dfrac{1}{\pi \sigma
-\left\[1 + \left(\dfrac{y-\mu}{\sigma}\right)^2\right\]}\$\$ by calling
-[`stats::dcauchy()`](https://rdrr.io/r/stats/Cauchy.html) at
-`location = mu` and `scale = sigma`. The density decays like \\y^{-2}\\,
-so it stays representable far out where a Gaussian of the same scale has
-underflowed to zero.
+\left\[1 + \left(\dfrac{y-\mu}{\sigma}\right)^2\right\]}\$\$ on the log
+scale, as \\-\log\pi - \log\sigma - \log(1 + z^2)\\ with \\z =
+(y-\mu)/\sigma\\. Where \\\|z\| \> 10^{150}\\ the last term is written
+as \\2\log\|z\| + \log(1 + z^{-2})\\, so the log-density stays finite
+where \\z^2\\ overflows. The density decays like \\y^{-2}\\, so it stays
+representable far out where a Gaussian of the same scale has underflowed
+to zero.
 
 ## Arguments
 
@@ -23,9 +25,8 @@ underflowed to zero.
 
   A named list with components `mu` and `sigma`, each a numeric vector
   of length 1 or of the length of `y`. A component of length 1 is
-  recycled. `sigma` must be strictly positive; a zero or negative value
-  gives `NaN` with a warning from
-  [`stats::dcauchy()`](https://rdrr.io/r/stats/Cauchy.html).
+  recycled. `sigma` must be strictly positive; the generic signals an
+  error for a zero or negative value before the method is called.
 
 - log:
 
@@ -58,7 +59,7 @@ for the generic.
 d <- cauchy_distrib()
 y <- c(-1.2, 0.3, 2.5)
 
-# The method is stats::dcauchy at this parametrization.
+# The same values as stats::dcauchy at this parametrization.
 all.equal(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5)),
           dcauchy(y, location = 0.4, scale = 1.5))
 #> [1] TRUE
@@ -73,4 +74,8 @@ distrib_pdf(d, 40, list(mu = 0, sigma = 1))
 #> [1] 0.0001988194
 distrib_pdf(gaussian1_distrib(), 40, list(mu = 0, sigma = 1))
 #> [1] 0
+
+# The log-density is finite at a residual whose square overflows.
+distrib_pdf(d, 1e160, list(mu = 0, sigma = 1), log = TRUE)
+#> [1] -737.972
 ```

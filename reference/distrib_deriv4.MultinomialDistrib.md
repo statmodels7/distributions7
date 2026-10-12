@@ -3,9 +3,10 @@
 Computes every fourth derivative of the log-mass in the parameters, in
 closed form, by the same construction as
 [`distrib_deriv3.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MultinomialDistrib.md)
-one order up: a univariate partition sum per coordinate of the simplex,
-with \\f^{(m)}(p) = (-1)^{m-1}(m-1)!\\p^{-m}\\ and the counts as
-weights.
+one order up: \\-N\\ times a cumulant of the categorical law on the
+additive log-ratio chart, and a univariate partition sum per coordinate
+of the simplex, with \\f^{(m)}(p) = (-1)^{m-1}(m-1)!\\p^{-m}\\ and the
+counts as weights, on another chart.
 
 ## Arguments
 
@@ -26,25 +27,22 @@ weights.
 
 - expected:
 
-  Logical of length 1. When `TRUE` the expectation is returned, by
-  SAMPLING through
-  [`mv_expected_higher()`](https://statmodels7.github.io/distributions7/reference/mv_expected_higher.md).
-  Defaults to `FALSE`.
+  Logical of length 1. When `TRUE` the expectation is returned, in
+  closed form (see Details). Defaults to `FALSE`.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
 
 - approx:
 
-  Ignored: sampling is the only multivariate route to an expectation.
-  Present so that the signature matches the generic's.
+  Not read: the expectation is in closed form. Present so that the
+  signature matches the generic's.
 
 - nsim:
 
-  The number of draws used when `expected = TRUE`. Defaults to `10000`.
-  Ignored otherwise.
+  Not read. Present so that the signature matches the generic's.
 
 - ...:
 
@@ -58,16 +56,19 @@ components. With `expected = TRUE` every vector is constant.
 
 ## Details
 
-The license for this order is that the SAME assembly run at orders one
-and two reproduces the hand-written score and information, which are
-derived separately and are already under
-[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md).
+Run at orders one and two, the same assembly reproduces
+[`distrib_gradient.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MultinomialDistrib.md)
+and
+[`distrib_hessian.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MultinomialDistrib.md),
+which are written separately.
+
+With `expected = TRUE` the expectation is exact, as for the third order.
 
 ## Notation
 
-\\p_j\\ is the probability of category \\j\\, \\y_j\\ its count,
-\\\eta\\ the simplex's free vector and \\\ell\\ the log-mass of one
-observation.
+\\p_j\\ is the probability of category \\j\\, \\y_j\\ its count, \\N\\
+the total of a row, \\\eta\\ the simplex's free vector and \\\ell\\ the
+log-mass of one observation.
 
 ## See also
 
@@ -94,7 +95,7 @@ names(d4)
 #> [4] "probs_alr1_probs_alr2_probs_alr2_probs_alr2"
 #> [5] "probs_alr2_probs_alr2_probs_alr2_probs_alr2"
 
-# Against one stencil on the analytic third order.
+# Against a central difference of the third order.
 h <- 1e-4
 tp <- theta; tp$probs_alr2 <- tp$probs_alr2 + h
 tm <- theta; tm$probs_alr2 <- tm$probs_alr2 - h

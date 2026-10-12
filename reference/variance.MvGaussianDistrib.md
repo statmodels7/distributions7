@@ -8,8 +8,8 @@ of the density is the covariance of the law, so the value agrees with
 the two part company in the heavy-tailed sibling, where the scale matrix
 exists at every \\\nu\\ and the covariance does not.
 
-The return is a matrix, not the numeric vector a univariate family
-gives, the second central moment of a vector being a matrix.
+The result is a matrix, the second central moment of a vector being a
+matrix, where a univariate family returns a numeric vector.
 
 ## Arguments
 

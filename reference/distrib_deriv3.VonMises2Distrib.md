@@ -38,8 +38,7 @@ which is the one place on this page where `approx` and `nsim` are read.
 
   One of `"parameter"` (the default) or `"link"`, matched by
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method. **Note the argument order**: `scale`
-  precedes `expected` here, so both are best given by name.
+  the generic, not by this method.
 
 - expected:
 
@@ -107,8 +106,8 @@ dn <- distrib_hessian(d2, y, list(mu = 0.5, rho = 0.7 - eps))$rho_rho
 all.equal((up - dn) / (2 * eps), d3$rho_rho_rho, tolerance = 1e-5)
 #> [1] TRUE
 
-# Unlike the concentration parametrization, no component is exactly zero:
-# the map's higher derivatives bring the data into all four.
+# Unlike the concentration parametrization, no component is exactly zero,
+# because kappa is a nonlinear function of rho.
 vapply(d3, function(v) v[1], numeric(1))
 #>     mu_mu_mu    mu_mu_rho   mu_rho_rho  rho_rho_rho 
 #>    2.0085836   -0.4356578  -31.5311208 -267.6200994 

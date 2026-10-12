@@ -13,7 +13,7 @@ the positive root of \(\alpha^2\sigma^2 - 2\mu\sigma - 1 = 0\)."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,14 +82,16 @@ Written this way there is no cancellation anywhere in the domain: both
 \(\mu\) and \(\sqrt{\mu^2 + \alpha^2}\) are positive, so the numerator
 is a sum of positive terms. The other root of the quadratic is negative and
 is discarded.</p>
-<p>Only <code><a href="distrib_rng.Pig2Distrib.html">distrib_rng.Pig2Distrib()</a></code> calls this. The derivative methods do not:
-the compiled kernel takes \(\alpha\) as a variable of its own, so the map
-is never differentiated.</p>
+<p><code><a href="distrib_rng.Pig2Distrib.html">distrib_rng.Pig2Distrib()</a></code> and the variance, skewness and kurtosis methods
+call this. The mass and the derivative methods do not: the compiled kernel
+takes \(\alpha\) as a variable of its own, so the map is never
+differentiated.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="pig2_distrib.html">pig2_distrib()</a></code> for the parametrization, <code><a href="pig1_distrib.html">pig1_distrib()</a></code> for the
-one it maps onto, and <code><a href="distrib_rng.Pig2Distrib.html">distrib_rng.Pig2Distrib()</a></code> for its only caller.</p></div>
+one it maps onto, and <code><a href="distrib_rng.Pig2Distrib.html">distrib_rng.Pig2Distrib()</a></code> and
+<code><a href="variance.Pig2Distrib.html">variance.Pig2Distrib()</a></code> for two of its callers.</p></div>
     </div>
 
     <div class="section level2">

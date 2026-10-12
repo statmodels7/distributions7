@@ -41,7 +41,9 @@ A named list with one numeric vector per parameter, keyed by
 
 [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md)
 for the generic,
-[`numerical_cross3_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross3_y.md),
-which does the work, and
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md),
+which does the work,
+[`numerical_cross3_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross3_y.md)
+for the differenced quantity, and
 [`loc_cross3_y()`](https://statmodels7.github.io/distributions7/reference/loc_cross3_y.md)
 for the location families.

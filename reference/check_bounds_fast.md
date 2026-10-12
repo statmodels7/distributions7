@@ -38,9 +38,8 @@ domain or not finite.
 
 [`align_theta()`](https://statmodels7.github.io/distributions7/reference/align_theta.md)
 calls this on every generic invocation, so its fixed cost is the
-package's fixed cost. Reading an S7 property costs a couple of
-microseconds, which is material against a budget of a few tens, and the
-caller has already read the properties it needs.
+package's fixed cost. Each read of an S7 property has a cost of its own,
+so the caller reads the properties it needs once and passes them on.
 
 Every offending parameter is collected before anything is raised, so a
 call with two bad values reports both rather than one at a time. At most

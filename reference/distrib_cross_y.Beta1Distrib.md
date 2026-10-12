@@ -20,7 +20,8 @@ Closed form. The shapes are \\a = \mu\phi\\ and \\b = (1-\mu)\phi\\, and
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 - ...:
 

@@ -13,7 +13,7 @@ from the five pieces of the log-density."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,7 +83,7 @@ six at order 2, ten at order 3 and fifteen at order 4. Each has the
 recycled length of the inputs.</p>
     </div>
     <div class="section level2">
-    <h2 id="why-the-assembly-is-short">Why the assembly is short<a class="anchor" aria-label="anchor" href="#why-the-assembly-is-short"></a></h2>
+    <h2 id="structure-of-the-assembly">Structure of the assembly<a class="anchor" aria-label="anchor" href="#structure-of-the-assembly"></a></h2>
     <p>With \(L = \log(y/a)\) the log-density splits into
 $$\ell = \log p - d\log a - \log\Gamma(d/p) + (d-1)\log y - e^{pL},$$
 and each piece is either elementary or a univariate function composed with a
@@ -96,9 +96,11 @@ derivative is therefore one term of one composition plus the elementary
 pieces, and no genuinely three-variable expansion is ever formed. A
 component naming both \(a\) and \(d\) comes from the elementary
 \(-d\log a\) alone.</p>
-<p>The assembly is checked at order two against the compiled Hessian, which was
-written independently, so the orders that cannot be checked against a
-hand-written form rest on the orders that can.</p>
+<p>The tests compare the assembly at orders one to four with the compiled
+kernels of <code><a href="distrib_gradient.GenGamma1Distrib.html">distrib_gradient.GenGamma1Distrib()</a></code>,
+<code><a href="distrib_hessian.GenGamma1Distrib.html">distrib_hessian.GenGamma1Distrib()</a></code> and the orders three and four, which
+were written independently. Below \(k = d/p\) of about 0.01 the assembly
+loses accuracy, since it evaluates \(\psi^{(n)}(k)\) near its pole.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

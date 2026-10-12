@@ -15,7 +15,7 @@ component with two calls on the parent."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,8 @@ component with two calls on the parent.</p>
 
 
 <dt id="arg-order">order<a class="anchor" aria-label="anchor" href="#arg-order"></a></dt>
-<dd><p>The derivative order, 1 or 2.</p></dd>
+<dd><p>The derivative order, an integer from 1 to 4. <code>NULL</code> is returned
+above 4.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -91,12 +92,12 @@ mass's derivatives with it, \(d^I F(L^-) = d^I F(L) - f(L) B_I\), where
 derivatives that <code><a href="bell_f_ratio.html">bell_f_ratio()</a></code> assembles.</p>
     </div>
     <div class="section level2">
-    <h2 id="when-it-declines">When it declines<a class="anchor" aria-label="anchor" href="#when-it-declines"></a></h2>
-    <p><code>NULL</code> is returned, and the caller falls back to quadrature, in two
-situations. The first is accuracy, and is decided by
-<code><a href="has_exact_cdf_deriv.html">has_exact_cdf_deriv()</a></code>. The second is correctness: a mixed parent with an
-atom sitting exactly on the lower endpoint, whose mass derivative is not the
-parent's own mass function.</p>
+    <h2 id="when-null-is-returned">When NULL is returned<a class="anchor" aria-label="anchor" href="#when-null-is-returned"></a></h2>
+    <p><code>NULL</code> is returned, and the caller falls back to quadrature, when the order
+exceeds four, the highest order of a cdf derivative, and in two further
+situations. The first is accuracy, and is decided by <code><a href="has_exact_cdf_deriv.html">has_exact_cdf_deriv()</a></code>.
+The second is correctness: a mixed parent with an atom sitting exactly on the
+lower endpoint, whose mass derivative is not the parent's own mass function.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -111,7 +112,8 @@ and \(H_{ij}\) are the parent's score and observed Hessian; and
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="has_exact_cdf_deriv.html">has_exact_cdf_deriv()</a></code> for the gate, <code><a href="trunc_score_mean.html">trunc_score_mean()</a></code> and
-<code><a href="trunc_M.html">trunc_M()</a></code> for the two callers, and <code><a href="trunc_constants.html">trunc_constants()</a></code> for \(Z\).</p></div>
+<code><a href="trunc_M.html">trunc_M()</a></code> for the callers at orders one and two, <code><a href="trunc_deriv_k.html">trunc_deriv_k()</a></code> for
+orders three to five, and <code><a href="trunc_constants.html">trunc_constants()</a></code> for \(Z\).</p></div>
     </div>
 
     <div class="section level2">
@@ -130,11 +132,13 @@ and \(H_{ij}\) are the parent's score and observed Hessian; and
 <span class="r-out co"><span class="r-pr">#&gt;</span>          mu       sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  0.08052166 -0.47667927 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A gamma parent has no closed-form cdf derivative, so the route declines</span></span></span>
-<span class="r-in"><span><span class="co"># and the caller integrates instead.</span></span></span>
+<span class="r-in"><span><span class="co"># A gamma parent has compiled cdf derivatives, so the route is available</span></span></span>
+<span class="r-in"><span><span class="co"># (the result is not NULL). Above order four the result is NULL.</span></span></span>
 <span class="r-in"><span><span class="va">tg</span> <span class="op">&lt;-</span> <span class="fu"><a href="truncated.html">truncated</a></span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, lower <span class="op">=</span> <span class="fl">0.5</span>, upper <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">trunc_mass_derivs</span><span class="op">(</span><span class="va">tg</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma2 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="fl">1L</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">trunc_mass_derivs</span><span class="op">(</span><span class="va">tg</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma2 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="fl">5L</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

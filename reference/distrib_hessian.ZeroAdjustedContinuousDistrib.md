@@ -24,8 +24,8 @@ truncation correction; the hurdle block is \\-1/\pi^2\\ at the atom and
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - ...:
 

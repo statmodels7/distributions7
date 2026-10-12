@@ -3,9 +3,13 @@
 Draws a multivariate distribution as a matrix of panels: the marginal
 density of each coordinate on the diagonal, contours of each bivariate
 marginal below it, and the implied correlation printed above it. The
-picture is built entirely from marginals, so it exists exactly where
+density panels are built from marginals, so the plot exists where
 [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
-does, which for the two families that ship is everywhere.
+returns a marginal of several coordinates, which holds for the
+multivariate gaussian and Student \\t\\. For the Dirichlet and the
+multinomial, whose marginals are returned one coordinate at a time, the
+plot signals the error of
+[`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md).
 
 ## Arguments
 
@@ -30,9 +34,10 @@ does, which for the two families that ship is everywhere.
 
 - n_grid:
 
-  Points per axis for the marginal densities and the contours. Defaults
-  to `80`. The bivariate panels evaluate the density on an
-  `n_grid * n_grid` grid, so the cost is quadratic in it.
+  Points per axis for the contours. The marginal density curves on the
+  diagonal use `4 * n_grid` points. Defaults to `80`. The bivariate
+  panels evaluate the density on an `n_grid * n_grid` grid, so the cost
+  is quadratic in it.
 
 - col_fit:
 
@@ -41,49 +46,51 @@ does, which for the two families that ship is everywhere.
 
 - ...:
 
-  Passed to the underlying plotting calls.
+  Accepted so that the signature matches the generic's, and not used.
 
 ## Value
 
 `x`, invisibly. Called for the plot it draws.
 
-## Why at most three coordinates
+## At most three coordinates
 
 A panel matrix of \\k\\ coordinates has \\k^2\\ panels, and past three
-the panels are too small to read. A larger distribution is rejected with
-an error naming the count and suggesting `which`; drawing it illegibly
-would be the worse answer.
+the panels are too small to read. A larger distribution signals an error
+that names the number of coordinates and suggests `which`.
 
-## What the contours are levels of
+## The contour levels
 
-The contours are levels of the DENSITY, not of the probability. An
-equal-density contour is what the shape of the density means, and a
-probability level would need the orthant integral this package does not
-approximate in several dimensions. The levels are chosen from the
-density's own range on the grid.
+The contours are levels of the density and not of the probability
+content of the enclosed region, which would require the mass of each
+level set of the density. The levels are those that
+[`graphics::contour()`](https://rdrr.io/r/graphics/contour.html) selects
+(about six, from [`pretty()`](https://rdrr.io/r/base/pretty.html)) over
+the range of the density on the grid.
 
 ## One setting only
 
 A univariate [`plot()`](https://rdrr.io/r/graphics/plot.default.html)
 method reads a `theta` component of length \\k\\ as \\k\\ settings drawn
 over one another. Here the picture is already a matrix of panels, with
-no axis left to overlay them on, so a component longer than one is
-rejected by name.
+no axis left to overlay them on, so a component longer than one signals
+an error that names it.
 
-## The range each panel is drawn over
+## The plotting range
 
-Two and a half standard deviations either side of the location, with the
-spread taken from the matrix the parametrization carries. A multivariate
-Student t at \\\nu \le 2\\ has no variance at all, and that is precisely
-the shape worth drawing, so
+Each coordinate is drawn over three standard deviations either side of
+the location, with the spread taken from the matrix that the
+parametrization carries (see
+[`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)).
+A multivariate Student \\t\\ with \\\nu \le 2\\ has an infinite
+variance, so
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
-cannot be the source. For an elliptical family the two agree up to a
-factor, which is all a plotting range needs.
+cannot be the source. For an elliptical family the two matrices agree up
+to a factor, which is enough for a plotting range.
 
 ## See also
 
 [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md),
-which supplies every panel,
+which supplies the density panels,
 [`plot.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md),
 which draws the same matrix with the data on it, and
 [`plot.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.md)
@@ -111,7 +118,7 @@ plot(t2, th2, which = c(1, 2))
 
 graphics::par(op)
 
-# Four coordinates would be sixteen panels, so it is refused by name.
+# Four coordinates would be sixteen panels, which signals an error.
 d4 <- mvgaussian1_distrib(4)
 th4 <- as.list(stats::setNames(rep(0, d4@n_params), d4@params))
 try(plot(d4, th4))

@@ -10,9 +10,9 @@ zero, and the only surviving component comes from \\\log\lambda\\:
 \dfrac{2}{\lambda^3},\$\$ with `mu_mu_mu`, `mu_mu_lambda` and
 `mu_lambda_lambda` all zero.
 
-None of these depends on the data, so the observed and expected values
-coincide: `expected`, `approx` and `nsim` are accepted and have no
-effect.
+These derivatives do not depend on the data, so the observed and
+expected values coincide: `expected`, `approx` and `nsim` are accepted
+and have no effect.
 
 ## Arguments
 
@@ -70,7 +70,7 @@ name derivatives.
 ## See also
 
 [`distrib_deriv3.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LaplaceDistrib.md)
-for the scale parametrization, where the picture is less sparse;
+for the scale parametrization, where more components are nonzero;
 [`distrib_deriv4.Laplace2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Laplace2Distrib.md)
 for the order above;
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)

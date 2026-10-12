@@ -2,10 +2,10 @@
 
 Computes the expectation of the observed Hessian in closed form, taken
 from the family's own scale mixture. Every component is a Beta moment or
-a polygamma, so no sampling and no quadrature runs, and two calls at the
-same parameters return the same numbers. No component depends on the
-data, so every returned vector is constant across rows and `y` is read
-for its row count alone.
+a polygamma, so nothing is sampled and no quadrature runs, and two calls
+at the same parameters return the same numbers. The components do not
+depend on the data, so every returned vector is constant across rows and
+`y` is used only for its row count.
 
 ## Arguments
 
@@ -28,9 +28,9 @@ for its row count alone.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The two differ here, `nu` carrying a log link by
-  default.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  The two differ here, `nu` carrying a log link by default.
 
 - approx:
 
@@ -51,20 +51,21 @@ for its row count alone.
 
 A named list of numeric vectors of length \\n\\, keyed as
 [`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each vector constant. The returned quantities are the expected SECOND
-DERIVATIVES, so the information is their negative.
+each vector constant. The returned quantities are the expected second
+derivatives, so the information is their negative.
 
 ## Why the expectations separate
 
 Writing \\q = z^\top\Sigma^{-1}z\\ and \\c = (\nu+p)/(\nu+q)\\, the
-variable \\v = q/(q+\nu)\\ is EXACTLY \\\mathrm{Beta}(p/2, \nu/2)\\ and
-is independent of the direction \\z/\lVert z\rVert\\, which is uniform
-on the sphere. Each expectation therefore factors into a radial part and
-an angular part: the radial one gives \\cq = (\nu+p)v\\ and \\c^2q^2 =
-(\nu+p)^2v^2\\, and the angular one gives \\\mathbb{E}\[ee^\top\] =
-I/p\\ and \\\mathbb{E}\[(e^\top Be)(e^\top Ce)\] =
-\\\operatorname{tr}B\operatorname{tr}C + 2\operatorname{tr}(BC)\\/
-\\p(p+2)\\\\.
+variable \\v = q/(q+\nu)\\ has exactly a \\\mathrm{Beta}(p/2, \nu/2)\\
+distribution and is independent of the direction \\e =
+\Sigma^{-1/2}z/\lVert\Sigma^{-1/2}z\rVert\\ of the whitened vector,
+which is uniform on the sphere. Each expectation therefore factors into
+a radial part and an angular part: the radial one gives \\cq =
+(\nu+p)v\\ and \\c^2q^2 = (\nu+p)^2v^2\\, and the angular one gives
+\\\mathbb{E}\[ee^\top\] = I/p\\ and \\\mathbb{E}\[(e^\top Be)(e^\top
+Ce)\] = \\\operatorname{tr}B\operatorname{tr}C +
+2\operatorname{tr}(BC)\\/ \\p(p+2)\\\\.
 
 ## The blocks
 
@@ -82,11 +83,10 @@ else, every cross-expectation with it being odd in \\z\\.
 Each block reduces to the gaussian's as \\\nu \to \infty\\:
 \\I\_{\mu\mu} \to \Sigma^{-1}\\, \\I\_{kl} \to T\_{kl}/2\\, and
 \\I\_{\nu\nu} \to 0\\, the degrees of freedom ceasing to be identified
-in the limit. Measured at \\p = 2\\ on an unstructured matrix,
-\\I\_{\nu\nu}\\ runs \\2.8\times10^{-3}\\, \\8.2\times10^{-6}\\,
-\\4.9\times10^{-9}\\, \\1.3\times10^{-14}\\ at \\\nu = 6, 30, 200,
-5000\\, which is why a standard error for \\\nu\\ is worth reading only
-where the tail is genuinely heavy.
+in the limit; \\I\_{\nu\nu}\\ is of order \\\nu^{-4}\\, so the standard
+error of \\\nu\\ is large unless the tail is heavy. Its terms as written
+above are of order \\\nu^{-2}\\ and cancel, so the block is computed by
+[`mvt_info_nunu()`](https://statmodels7.github.io/distributions7/reference/mvt_info_nunu.md).
 
 ## Notation
 
@@ -169,5 +169,5 @@ vapply(c(6, 30, 200, 5000), function(nu) {
   t2 <- theta; t2$nu <- nu
   -distrib_expected_hessian(d, matrix(0, 1, 2), t2)$nu_nu[1]
 }, numeric(1))
-#> [1] 2.777778e-03 8.169935e-06 4.853427e-09 1.278470e-14
+#> [1] 2.777778e-03 8.169935e-06 4.853427e-09 1.278465e-14
 ```

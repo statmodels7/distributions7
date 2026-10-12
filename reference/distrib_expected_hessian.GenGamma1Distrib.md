@@ -1,11 +1,11 @@
 # Generalized Gamma Expected Information
 
 Returns the expected second derivatives in closed form. Every
-expectation the observed Hessian needs is a moment of \\u = (Y/a)^{p}\\,
-which is Gamma with shape \\k = d/p\\ and unit rate: \$\$E\[u\] = k,
-\qquad E\[u\log u\] = k\\\psi(k+1), \qquad E\[u(\log u)^{2}\] =
-k\\\psi(k+1)^{2} + \psi'(k+1)\\.\$\$ So `approx` and `nsim` are ignored
-and
+expectation that the observed Hessian requires is a moment of \\u =
+(Y/a)^{p}\\, which is Gamma with shape \\k = d/p\\ and unit rate:
+\$\$E\[u\] = k, \qquad E\[u\log u\] = k\\\psi(k+1), \qquad E\[u(\log
+u)^{2}\] = k\\\psi(k+1)^{2} + \psi'(k+1)\\.\$\$ So `approx` and `nsim`
+are ignored and
 [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
 answers `TRUE`. It is the same device the Weibull and the Gumbel use,
 where the corresponding variable is standard exponential and the
@@ -56,8 +56,9 @@ expectations are derivatives of \\\Gamma\\ at 2.
 
 A named list of six numeric vectors in
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)'s
-order: `a_a`, `d_d`, `p_p`, `a_d`, `a_p`, `d_p`. Every entry is negative
-definite as a matrix and free of the data.
+order: `a_a`, `d_d`, `p_p`, `a_d`, `a_p`, `d_p`. The vectors depend on
+`y` only through its length, and the matrix that they form at each
+observation is negative definite.
 
 ## Identification
 
@@ -66,9 +67,10 @@ enter the density largely through their ratio \\k = d/p\\, and the
 information reflects that: measured at \\a = 2, d = 3, p = 1.5\\ its
 eigenvalues are 4.72, 0.138 and 0.00321, a condition number of 1470, and
 the flat direction is \\(0.79, -0.52, 0.33)\\ in \\(a, d, p)\\. A fit of
-all three wants several hundred observations; holding one with
+all three parameters needs several hundred observations for usable
+standard errors; holding one parameter fixed with
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
-is often the better model.
+removes the flat direction.
 
 ## Notation
 

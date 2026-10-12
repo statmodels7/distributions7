@@ -23,7 +23,7 @@ is the only discrete law that is memoryless."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,8 +107,8 @@ value.</p>
     <h2 id="overdispersion-and-memorylessness">Overdispersion and memorylessness<a class="anchor" aria-label="anchor" href="#overdispersion-and-memorylessness"></a></h2>
     <p>The variance exceeds the mean by \(\mu^2\), so this family sits above a
 Poisson of the same mean and is a one-parameter answer to overdispersion.
-The price is precision: the information is \(1/(\mu(1+\mu))\) against a
-Poisson's \(1/\mu\). Where the amount of overdispersion should itself be
+The information about the mean is \(1/(\mu(1+\mu))\), against a
+Poisson's \(1/\mu\), so the mean is estimated less precisely. Where the amount of overdispersion should itself be
 estimated, <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> adds the parameter and contains this family
 at \(\theta = 1\).</p>
 <p>The survival function is \(P(Y &gt; q) = (\mu/(1+\mu))^{q+1}\), so

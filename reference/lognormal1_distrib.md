@@ -5,14 +5,16 @@ Builds the distribution object for the lognormal family on \\(0,
 \\\mu\\ and variance \\\sigma^2 \> 0\\. Both parameters are moments **of
 the logarithm**, so neither is the mean or the variance of \\Y\\. The
 returned object carries closed-form derivatives of the log-density to
-fourth order, in the parameters and in the response, and closed-form
-moments, so every generic of the toolkit answers without a numerical
-fallback.
+fourth order, in the parameters and in the response, closed-form
+derivatives of the distribution function, and closed-form moments. The
+fifth order and
+[`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md)
+come from the numerical fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the identity
-for \\\mu\\, which ranges over the whole line, and the logarithm for
-\\\sigma^2\\, which keeps it positive at every predictor.
+unconstrained scale on which an optimizer works. The defaults are the
+identity for \\\mu\\, which ranges over the whole line, and the
+logarithm for \\\sigma^2\\, which keeps it positive at every predictor.
 
 ## Usage
 
@@ -56,9 +58,9 @@ transformation is monotone.
 On the original scale the mean is \\e^{\mu + \sigma^2/2}\\, the variance
 \\(e^{\sigma^2}-1)e^{2\mu+\sigma^2}\\, the skewness
 \\(e^{\sigma^2}+2)\sqrt{e^{\sigma^2}-1}\\ and the excess kurtosis
-\\e^{4\sigma^2}+2e^{3\sigma^2}+3e^{2\sigma^2}-6\\. Three quantities are
-worth keeping apart: the mode is \\e^{\mu-\sigma^2}\\, the median
-\\e^{\mu}\\ and the mean \\e^{\mu+\sigma^2/2}\\, in that order.
+\\e^{4\sigma^2}+2e^{3\sigma^2}+3e^{2\sigma^2}-6\\. The mode is
+\\e^{\mu-\sigma^2}\\, the median \\e^{\mu}\\ and the mean
+\\e^{\mu+\sigma^2/2}\\, in increasing order.
 
 [`lognormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal2_distrib.md)
 carries the same law parametrized by the mean and the variance of \\Y\\
@@ -81,7 +83,7 @@ these agrees with
 [`gaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian2_distrib.md)
 at \\\log y\\, component for component and at all four orders, observed
 and expected. The two parameters are orthogonal and the information does
-not move with the mean of \\Y\\.
+not depend on \\\mu\\.
 
 The derivatives **in the response** are where the two families differ,
 the Jacobian being a function of \\y\\. They are still closed form; see
@@ -130,8 +132,8 @@ for the general wrapper this family is a named instance of;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
-passes;
+to validate a family of your own against the same battery of checks that
+this family passes;
 [Lognormal1Distrib](https://statmodels7.github.io/distributions7/reference/Lognormal1Distrib.md)
 for the class.
 

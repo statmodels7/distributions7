@@ -5,21 +5,19 @@ family's own distrib_hessian() along each parameter, or, for a family
 without its own Hessian, one tensor-product stencil on its score or its
 log-density. Expected ones come from expected_derivative() at the
 strategy approx names.
-No family shipped in this package reaches this method for its observed
-derivatives. All 46 write the third order out, 24 of them in compiled
-kernels. It exists for a family defined outside the package, which gets four
-orders from a density alone, and it is the reference the analytical kernels
-are validated against."><meta property="og:description" content="The fallback for a family that registers no third-order method. Observed
+Every family shipped in this package writes the observed third order out,
+so this method serves a family defined outside the package, which gets five
+orders from a density alone. It is also the reference against which the
+analytical kernels are validated."><meta property="og:description" content="The fallback for a family that registers no third-order method. Observed
 derivatives come from numerical_deriv3(): one central difference of the
 family's own distrib_hessian() along each parameter, or, for a family
 without its own Hessian, one tensor-product stencil on its score or its
 log-density. Expected ones come from expected_derivative() at the
 strategy approx names.
-No family shipped in this package reaches this method for its observed
-derivatives. All 46 write the third order out, 24 of them in compiled
-kernels. It exists for a family defined outside the package, which gets four
-orders from a density alone, and it is the reference the analytical kernels
-are validated against."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+Every family shipped in this package writes the observed third order out,
+so this method serves a family defined outside the package, which gets five
+orders from a density alone. It is also the reference against which the
+analytical kernels are validated."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +25,7 @@ are validated against."><meta property="og:image" content="https://statmodels7.g
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,11 +64,10 @@ family's own <code><a href="distrib_hessian.html">distrib_hessian()</a></code> a
 without its own Hessian, one tensor-product stencil on its score or its
 log-density. Expected ones come from <code><a href="expected_derivative.html">expected_derivative()</a></code> at the
 strategy <code>approx</code> names.</p>
-<p><strong>No family shipped in this package reaches this method for its observed
-derivatives.</strong> All 46 write the third order out, 24 of them in compiled
-kernels. It exists for a family defined outside the package, which gets four
-orders from a density alone, and it is the reference the analytical kernels
-are validated against.</p>
+<p>Every family shipped in this package writes the observed third order out,
+so this method serves a family defined outside the package, which gets five
+orders from a density alone. It is also the reference against which the
+analytical kernels are validated.</p>
     </div>
 
 

@@ -6,10 +6,12 @@ in a compiled kernel. In the notation of
 the expressions stay short because \\t - \xi z = 1\\, which makes
 \\\partial u/\partial\sigma\\ equal to \\-z/(\sigma t^2)\\.
 
-The pure-\\\xi\\ component carries the same removable singularity the
-score does, one order worse, and goes through the same analytic function
-\\\Lambda(u) = \log(1+u)/u\\. The two terms that individually diverge as
-\\\xi \to 0\\ cancel, and the limit is an ordinary point of the formula.
+The pure-\\\xi\\ component has the same removable singularity as the
+score, to one order higher, and is computed from the second derivative
+of the analytic function \\\Lambda(u) = \log(1+u)/u\\ (written \\\phi\\
+on the pages of the score and of the higher orders). The two terms that
+individually diverge as \\\xi \to 0\\ cancel, and the limit is an
+ordinary point of the formula.
 
 This is the **observed** curvature at the data. The expected one is
 closed form as well, but only above \\\xi = -1/2\\; see

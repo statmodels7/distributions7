@@ -5,11 +5,15 @@ Computes the log-density \$\$\ell =
 \log\Gamma\\\left(\tfrac{\nu}{2}\right) - \tfrac{p}{2}\log(\nu\pi) -
 \tfrac{1}{2}\log\lvert\Sigma\rvert - \tfrac{\nu+p}{2}\log\\\left(1 +
 \tfrac{q}{\nu}\right),\$\$ with \\q = (y-\mu)^\top \Sigma^{-1}(y-\mu)\\,
-row by row, and exponentiates it unless `log = TRUE`. The last logarithm
-is taken with [`base::log1p()`](https://rdrr.io/r/base/Log.html), which
-is the difference between a number and a loss of every significant digit
-when \\q/\nu\\ is small: near the center of a family with many degrees
-of freedom, `log(1 + q/nu)` cancels its argument away.
+row by row, and exponentiates it unless `log = TRUE`. The gamma
+functions and \\-\tfrac{p}{2}\log\nu\\ enter as the single quantity of
+[`mvt_cp_d()`](https://statmodels7.github.io/distributions7/reference/mvt_cp_d.md),
+whose direct form cancels as \\\nu\\ grows. The last logarithm is
+evaluated with [`base::log1p()`](https://rdrr.io/r/base/Log.html), which
+keeps its relative accuracy when \\q/\nu\\ is small, and \\q\\ is the
+squared norm of the residual whitened by the parametrization's factor
+(see
+[`mv_quad()`](https://statmodels7.github.io/distributions7/reference/mv_quad.md)).
 
 ## Arguments
 

@@ -34,8 +34,7 @@ Detecting and measuring are the same operation. Walking towards the edge
 in decades lifts the log-density by \\(1 - \alpha)\log 10\\ per step
 when it diverges, and by an amount that dies away when it does not. So
 the probe establishing *whether* the density diverges also reports *how
-fast*, to about four decimals, with no search, reducing the cost per
-draw by several orders of magnitude for strongly divergent shapes.
+fast*, with no search.
 
 ## See also
 

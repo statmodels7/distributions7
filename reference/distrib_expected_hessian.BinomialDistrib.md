@@ -9,9 +9,13 @@ n\mu\\ in \\-y/\mu^2 - (n-y)/(1-\mu)^2\\. The Fisher information is
 and is smallest at \\\mu = 1/2\\.
 
 On the **link** scale with the default logit the value is
-\\-n\mu(1-\mu)\\, and so is the observed Hessian: the logit is the
-canonical link and the two coincide exactly, so iteratively reweighted
-least squares is Fisher scoring and Newton's method at once.
+\\-n\mu(1-\mu)\\, and so is the observed Hessian in exact arithmetic:
+the logit is the canonical link, so iteratively reweighted least squares
+is Fisher scoring and Newton's method at once. The observed value is
+composed by the generic and loses relative accuracy where \\\|\eta\|\\
+is large (see
+[`distrib_hessian.BinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BinomialDistrib.md));
+this value does not.
 
 Because the value does not depend on the data, `approx` and `nsim` are
 ignored. `y` is read only for its length.
@@ -60,8 +64,10 @@ ignored. `y` is read only for its length.
 ## Value
 
 A named list of one numeric vector, `mu_mu`, of length
-`max(length(y), length(mu), length(distrib@size))`, constant at
-\\-n/(\mu(1-\mu))\\ where `size` is.
+`max(length(y), length(mu), length(distrib@size))`, equal to
+\\-n/(\mu(1-\mu))\\ with the `size` of each observation. Each of `y`,
+`mu` and `size` must have length 1 or that length; any other length
+signals an error.
 
 ## Notation
 

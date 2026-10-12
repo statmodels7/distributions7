@@ -3,15 +3,15 @@
 Computes every third derivative of the log-density in the parameters, in
 closed form. The log-density is \$\$\ell = \log\Gamma(\phi) - \sum_j
 \log\Gamma(\alpha_j) + \sum_j(\alpha_j - 1)\log y_j, \qquad \alpha =
-\phi\\\mu(\eta),\$\$ so every term depends on ONE coordinate of the
-simplex and the chain rule collapses to a univariate partition sum per
+\phi\\\mu(\eta),\$\$ so every term depends on one coordinate of the
+simplex and the chain rule reduces to a univariate partition sum per
 coordinate, run by
 [`chain_univariate()`](https://statmodels7.github.io/distributions7/reference/chain_univariate.md)
-over the arrays
+over the arrays that
 [`dirichlet_map_tensors()`](https://statmodels7.github.io/distributions7/reference/dirichlet_map_tensors.md)
 supplies. The concentration also enters directly, through
-\\\log\Gamma(\phi)\\, which contributes only to the component all of
-whose indices name it.
+\\\log\Gamma(\phi)\\, which contributes only to the component whose
+indices all name it.
 
 ## Arguments
 
@@ -34,25 +34,22 @@ whose indices name it.
 
 - expected:
 
-  Logical of length 1. When `TRUE` the expectation is returned, by
-  SAMPLING through
-  [`mv_expected_higher()`](https://statmodels7.github.io/distributions7/reference/mv_expected_higher.md).
-  Defaults to `FALSE`.
+  Logical of length 1. When `TRUE` the expectation is returned, in
+  closed form (see Details). Defaults to `FALSE`.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
 
 - approx:
 
-  Ignored: sampling is the only multivariate route to an expectation.
-  Present so that the signature matches the generic's.
+  Not read: the expectation is in closed form. Present so that the
+  signature matches the generic's.
 
 - nsim:
 
-  The number of draws used when `expected = TRUE`. Defaults to `10000`.
-  Ignored otherwise.
+  Not read. Present so that the signature matches the generic's.
 
 - ...:
 
@@ -66,18 +63,36 @@ With `expected = TRUE` every vector is constant.
 
 ## Details
 
-The shape vector is bilinear in \\\phi\\ and \\\mu\\, so a component
-naming \\\phi\\ twice or more gets nothing from the map, and only the
-direct \\\log\Gamma(\phi)\\ term survives there. That is what keeps the
-order-3 and order-4 assemblies as cheap as the order-2 one.
+The shape vector is bilinear in \\\phi\\ and \\\mu\\, so the arrays of
+the map are zero for a component that names \\\phi\\ twice or more.
 
-With `expected = TRUE` the expectation is taken by sampling and carries
-Monte Carlo error of order `nsim^(-1/2)`.
+On the additive log-ratio chart of
+[`parameters7::simplex()`](https://statmodels7.github.io/parameters7/reference/simplex.html)
+the term \\-\log\Gamma(\alpha_j)\\ is split as \\\log\alpha_j -
+\log\Gamma(1 + \alpha_j)\\. The first part equals \\\log\phi + \eta_j -
+\mathrm{LSE}(\eta)\\, with \\\eta_p = 0\\, and its derivatives are added
+in closed form: \\p(-1)^{m-1}(m-1)!/\phi^m\\ on the component of order
+\\m\\ in \\\phi\\ alone, and \\-p\\ times a cumulant of the categorical
+law (see
+[`mn_cumulant()`](https://statmodels7.github.io/distributions7/reference/mn_cumulant.md))
+on a component that names only the free values of the mean. The second
+part is regular at a small shape, so the partition sum runs over
+\\\psi^{(m-1)}(1 + \alpha_j)\\. Applied to \\\log\Gamma(\alpha_j)\\
+directly, the chain rule would cancel at a small shape, terms of order
+one leaving a result of the order of \\\alpha_j\\. On another chart a
+coordinate with \\\alpha_j \< 1\\ is scaled by \\\alpha_j\\ through
+\\\alpha^m\psi^{(m-1)}(\alpha) = (-1)^m(m-1)! + \alpha^m\psi^{(m-1)}(1 +
+\alpha)\\, so that \\\psi^{(m-1)}(\alpha_j)\\ does not overflow.
+
+With `expected = TRUE` the expectation is exact. The response enters
+only through \\\sum_j(\alpha_j - 1)\log y_j\\, linearly, and
+\\\mathrm{E}\log y_j = \psi(\alpha_j) - \psi(\phi)\\.
 
 ## Notation
 
 \\\alpha\\ is the shape vector, \\\phi\\ the concentration, \\\mu\\ the
-mean on the simplex, \\\eta\\ its free vector, \\\Gamma\\ the gamma
+mean on the simplex, \\\eta\\ its free vector, \\p\\ the number of
+coordinates, \\\Gamma\\ the gamma function, \\\psi\\ the digamma
 function and \\\ell\\ the log-density of one observation.
 
 ## See also
@@ -107,8 +122,7 @@ names(d3)
 #>  [7] "mean_alr2_mean_alr2_mean_alr2" "mean_alr2_mean_alr2_phi"      
 #>  [9] "mean_alr2_phi_phi"             "phi_phi_phi"                  
 
-# Against one stencil on the analytic Hessian, which shares no algebra with
-# the partition sum.
+# Against a central difference of the Hessian in phi.
 h <- 1e-4
 tp <- theta; tp$phi <- tp$phi + h
 tm <- theta; tm$phi <- tm$phi - h
@@ -118,12 +132,15 @@ c(exact = sum(d3[["mean_alr1_mean_alr1_phi"]]),
 #>     exact   stencil 
 #> -1.096431 -1.096431 
 
-# The pure-phi component gets nothing from the map beyond the shapes
-# themselves: it is psi''(phi) minus the mu_j^3-weighted psi''(phi mu_j),
-# and so is the same at every observation.
+# The pure-phi component carries no response: it is psi''(phi) minus the
+# mu_j^3-weighted psi''(phi mu_j), the same at every observation.
 mu <- as.numeric(parameters7::param_value(d@param, c(0.3, -0.2)))
 c(component = d3[["phi_phi_phi"]][1],
   direct = psigamma(8, 2) - sum(mu^3 * psigamma(8 * mu, 2)))
 #>   component      direct 
 #> 0.004874712 0.004874712 
+
+# The expectation is exact, so it does not depend on the seed.
+distrib_deriv3(d, y, theta, expected = TRUE)[["phi_phi_phi"]][1]
+#> [1] 0.004874712
 ```

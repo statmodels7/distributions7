@@ -4,11 +4,10 @@ Returns the location \\\mu\\, the first \\p\\ parameters read off
 `theta` in order. The method is
 [`mv_leading_location()`](https://statmodels7.github.io/distributions7/reference/mv_leading_location.md),
 shared with the gaussian. For this family the location is the center of
-symmetry at every admissible \\\nu\\ and the mean only for \\\nu \> 1\\,
-which is why the generic is named for a location:
+symmetry at every admissible \\\nu\\ and the mean only for \\\nu \> 1\\:
 [`mean.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/mean.MvStudentTDistrib.md)
-returns `NaN` below one degree of freedom and this returns the location
-regardless.
+returns `NaN` for \\\nu \le 1\\, and this method returns the location at
+every \\\nu\\.
 
 ## Arguments
 

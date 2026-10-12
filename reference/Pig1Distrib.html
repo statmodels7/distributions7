@@ -5,15 +5,17 @@ and the variance \(\mu + \sigma\mu^2\). The family is a Poisson mixed
 over an inverse Gaussian rate, an overdispersed count model with a heavier
 tail than the negative binomial at the same variance.
 Build one with pig1_distrib(), which supplies the two link functions. This
-page documents the raw S7 constructor, which validates none of the
-relationships between its properties."><meta property="og:description" content="The S7 class of the Poisson-inverse Gaussian on \(\{0, 1, 2, \dots\}\) in
+page documents the raw S7 constructor, which takes the parent's
+properties; the validator of distrib checks them, and the constructor
+adds no check of its own."><meta property="og:description" content="The S7 class of the Poisson-inverse Gaussian on \(\{0, 1, 2, \dots\}\) in
 its mean-dispersion parametrization, gamlss's PIG: the mean is \(\mu\)
 and the variance \(\mu + \sigma\mu^2\). The family is a Poisson mixed
 over an inverse Gaussian rate, an overdispersed count model with a heavier
 tail than the negative binomial at the same variance.
 Build one with pig1_distrib(), which supplies the two link functions. This
-page documents the raw S7 constructor, which validates none of the
-relationships between its properties."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+page documents the raw S7 constructor, which takes the parent's
+properties; the validator of distrib checks them, and the constructor
+adds no check of its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +23,7 @@ relationships between its properties."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,8 +62,9 @@ and the variance \(\mu + \sigma\mu^2\). The family is a Poisson mixed
 over an inverse Gaussian rate, an overdispersed count model with a heavier
 tail than the negative binomial at the same variance.</p>
 <p>Build one with <code><a href="pig1_distrib.html">pig1_distrib()</a></code>, which supplies the two link functions. This
-page documents the raw S7 constructor, which validates none of the
-relationships between its properties.</p>
+page documents the raw S7 constructor, which takes the parent's
+properties; the validator of <code>distrib</code> checks them, and the constructor
+adds no check of its own.</p>
     </div>
 
     <div class="section level2">
@@ -132,27 +135,31 @@ relationships between its properties.</p>
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered in this file, the middle five reading one compiled kernel:
-<code><a href="distrib_pdf.Pig1Distrib.html">distrib_pdf()</a></code>,
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.Pig1Distrib.html">distrib_pdf()</a></code> and
+<code><a href="distrib_rng.Pig1Distrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.Pig1Distrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.Pig1Distrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_deriv3.Pig1Distrib.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.Pig1Distrib.html">distrib_deriv4()</a></code>,
-<code><a href="distrib_rng.Pig1Distrib.html">distrib_rng()</a></code>.</p>
-<p>Registered elsewhere: the four moments in <code>moments.R</code> and the data-based
-starting value in <code>starting_values.R</code>.</p>
-<p>The <strong>distribution function</strong> and the <strong>quantile</strong> come from
-<code><a href="discrete_distrib.html">discrete_distrib()</a></code>, where both are exact sums over the support. The
-<strong>expected information</strong> is computed exactly, with its first and second
-derivatives, by one pass over the support; see
-<code><a href="distrib_expected_hessian.Pig2Distrib.html">distrib_expected_hessian()</a></code>.</p>
+<code><a href="distrib_expected_hessian.Pig2Distrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.Pig1Distrib.html">distrib_deriv3()</a></code> and
+<code><a href="distrib_deriv4.Pig1Distrib.html">distrib_deriv4()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_expected_hessian.Pig2Distrib.html">distrib_dexpected_hessian()</a></code> and
+<code><a href="distrib_expected_hessian.Pig2Distrib.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.Pig1Distrib.html">mean()</a></code>,
+<code><a href="variance.Pig1Distrib.html">variance()</a></code>, <code><a href="skewness.Pig1Distrib.html">skewness()</a></code>
+and <code><a href="kurtosis.Pig1Distrib.html">kurtosis()</a></code>;</p></li>
+<li><p>the fitting helpers: <code><a href="distrib_start.Pig1Distrib.html">distrib_start()</a></code> and
+<code><a href="expected_hessian_costly.html">expected_hessian_costly()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="discrete_distrib.html">discrete_distrib()</a></code>. The distribution
+function and the quantile are the inherited ones, documented at
+<code><a href="distrib_cdf.discrete_distrib.html">distrib_cdf.discrete_distrib()</a></code> and <code><a href="distrib_quantile.discrete_distrib.html">distrib_quantile.discrete_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="pig1_distrib.html">pig1_distrib()</a></code> to build one;
 <code><a href="pig2_distrib.html">pig2_distrib()</a></code> for the parametrization whose two parameters are
-orthogonal; <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> for the other overdispersed count family;
-the compiled kernels for the kernel all five derivative methods read.</p></div>
+orthogonal; <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> for the other overdispersed count family.</p></div>
     </div>
 
     <div class="section level2">

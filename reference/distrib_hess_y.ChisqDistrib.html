@@ -21,7 +21,7 @@ for \(\mu &amp;lt; 2\)."><meta property="og:image" content="https://statmodels7.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,8 @@ for \(\mu &lt; 2\).</p>
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric vector of strictly positive observations. At <code>y = 0</code> the
-value is infinite unless \(\mu\) is exactly 2.</p></dd>
+value is <code>Inf</code> for \(\mu &lt; 2\), <code>-Inf</code> for \(\mu &gt; 2\) and 0 for
+\(\mu = 2\), where the coefficient is zero.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>

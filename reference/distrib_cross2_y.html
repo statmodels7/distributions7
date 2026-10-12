@@ -13,7 +13,7 @@ curvature moves with each parameter."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,10 +110,11 @@ rule enters, exactly as for <code><a href="distrib_cross_y.html">distrib_cross_y
     </div>
     <div class="section level2">
     <h2 id="where-the-numbers-come-from">Where the numbers come from<a class="anchor" aria-label="anchor" href="#where-the-numbers-come-from"></a></h2>
-    <p>A distribution with a closed form provides it. The rest take one central
-difference of <code><a href="distrib_hess_y.html">distrib_hess_y()</a></code> in each parameter, through
-<code><a href="numerical_cross2_y.html">numerical_cross2_y()</a></code>. The reference is the analytic response Hessian, so a
-family carrying one pays for exactly one difference.</p>
+    <p>A distribution with a closed form provides it. The rest apply one tensor
+stencil to the highest quantity that the family implements itself, through
+<code><a href="mixed_tensor_derivatives.html">mixed_tensor_derivatives()</a></code>: a central difference of the analytic response
+Hessian in each parameter where the family has one, so that such a family
+pays for exactly one difference.</p>
 <p>Continuous distributions only, as with every response derivative: a discrete
 family has no method and the call raises with its class named.</p>
     </div>

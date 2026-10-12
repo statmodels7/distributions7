@@ -3,22 +3,24 @@
 Shows a fit in four blocks: the family and the sample size with the
 log-likelihood and the two information criteria; what the optimizer did;
 the estimates on the parameter scale; and the same on the link scale, so
-that the interval the fit actually built is visible beside its image.
+that the interval that the fit built is visible beside its image. When
+every link is the identity the last block is replaced by a one-line
+note.
 
 The optimizer line names the method that produced the estimates, which
-is not always the one asked for, and the convergence line names the
+is not always the one requested, and the convergence line names the
 **stopping rule** that ended the run. Without that rule `converged` says
 nothing: it records that some test was met. A run that did not converge
 also prints the score per observation at the point it stopped at, which
 is the one number that says whether the point is usable.
 
 For a multivariate fit the coordinates of the covariance structure are
-replaced by the quantities the model is written in — the location, the
-standard deviations and the correlations that
+replaced by the quantities that the model is written in (the location,
+the standard deviations and the correlations that
 [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
-derives — because nobody reads a log-Cholesky coordinate. Any parameter
-the structure does not account for, such as the degrees of freedom of a
-\\t\\, is printed after them.
+derives), because a log-Cholesky coordinate has no direct
+interpretation. Any parameter that the structure does not account for,
+such as the degrees of freedom of a \\t\\, is printed after them.
 
 ## Arguments
 
@@ -30,10 +32,10 @@ the structure does not account for, such as the degrees of freedom of a
 
 - digits:
 
-  Number of significant digits for every table and for the header
-  figures. Defaults to 4. Passed to
-  [`base::round()`](https://rdrr.io/r/base/Round.html) for the tables,
-  so it is a number of decimal places there.
+  Number of digits to print. Defaults to 4. The header figures
+  (log-likelihood, AIC, BIC) are formatted to this many significant
+  digits, and the tables are rounded to this many decimal places by
+  [`base::round()`](https://rdrr.io/r/base/Round.html).
 
 - ...:
 
@@ -64,7 +66,7 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 print(fit_distrib(d, y))
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 6 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 5 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -78,7 +80,7 @@ print(fit_distrib(d, y))
 #> sigma   1.1095     0.0316 1.0475 1.1714
 
 # The link-scale block is where the interval is built. On a Gamma written
-# in the mean and the dispersion both parameters carry a log link, so both
+# in the mean and the variance both parameters carry a log link, so both
 # lower limits are positive by construction.
 g <- fit_distrib(gamma2_distrib(), rgamma(300, shape = 4, rate = 2))
 print(g, digits = 3)

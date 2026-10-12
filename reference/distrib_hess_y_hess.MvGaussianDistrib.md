@@ -8,8 +8,11 @@ matrix; for a pair of free values, \$\$\frac{\partial^4\ell}{\partial
 y\\\partial y^\top \partial\eta_k\partial\eta_l} =
 \Sigma^{-1}A\_{kl}\Sigma^{-1} - \Sigma^{-1}\\\left(A_l\Sigma^{-1}A_k +
 A_k\Sigma^{-1}A_l\right)\\\Sigma^{-1},\$\$ with \\A_k\\ and \\A\_{kl}\\
-the first and second derivatives of \\\Sigma\\. No component depends on
-the observation, so `y` is not read.
+the first and second derivatives of \\\Sigma\\. The matrix is
+\\-P\_{kl}\\, the second derivative of \\\Sigma^{-1}\\, and is read as
+such from
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md).
+The components do not depend on the observation, so `y` is not read.
 
 ## Arguments
 
@@ -30,8 +33,9 @@ the observation, so `y` is not read.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The two coincide here.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  Every link of this family is the identity, so the two scales coincide.
 
 - ...:
 

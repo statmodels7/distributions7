@@ -41,15 +41,15 @@ exactly.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
 A named list of three numeric vectors, `alpha_alpha`, `beta_beta` and
-`alpha_beta`, in that order, each of length `length(y)`. The three name
-the distinct entries of a symmetric \\2 \times 2\\ matrix per
-observation.
+`alpha_beta`, in that order, each of length
+`max(length(y), length(alpha), length(beta))`. The three name the
+distinct entries of a symmetric \\2 \times 2\\ matrix per observation.
 
 ## Notation
 
@@ -62,9 +62,7 @@ parameters \\i\\ and \\j\\; parenthesized superscripts name derivatives.
 [`distrib_gradient.Beta2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Beta2Distrib.md)
 for the score, which is the one quantity here that does read the data;
 [`distrib_expected_hessian.Beta2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Beta2Distrib.md),
-which returns the same numbers;
-[`beta2_higher()`](https://statmodels7.github.io/distributions7/reference/beta2_higher.md),
-which computes this; and
+which returns the same numbers; and
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 for the generic.
 

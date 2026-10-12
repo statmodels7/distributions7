@@ -3,8 +3,14 @@
 Computes the Laplace quantile function in the rate parametrization,
 \$\$Q(p; \mu, \lambda) = \mu - \dfrac{\mathrm{sign}(p -
 \tfrac{1}{2})}{\lambda}\\\log\left(1 - 2\left\|p -
-\tfrac{1}{2}\right\|\right),\$\$ one expression covering both arms. The
-median is \\\mu\\ and the quartiles are \\\mu \pm \log(2)/\lambda\\.
+\tfrac{1}{2}\right\|\right).\$\$ The median is \\\mu\\ and the quartiles
+are \\\mu \pm \log(2)/\lambda\\. As for
+[`distrib_quantile.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.LaplaceDistrib.md),
+the method works from the logarithm of the smaller tail through
+[`laplace_std_quantile()`](https://statmodels7.github.io/distributions7/reference/laplace_cdf_tails.md)
+and divides the standard quantile by \\\lambda\\, so a probability far
+below machine epsilon, given directly, through `lower.tail = FALSE` or
+through `log.p = TRUE`, gives an accurate quantile.
 
 ## Arguments
 
@@ -16,7 +22,8 @@ median is \\\mu\\ and the quartiles are \\\mu \pm \log(2)/\lambda\\.
 - p:
 
   A numeric vector of probabilities in \\\[0, 1\]\\, or of their
-  logarithms when `log.p = TRUE`. The endpoints give `-Inf` and `Inf`.
+  logarithms when `log.p = TRUE`. The endpoints give `-Inf` and `Inf`; a
+  value outside the range gives `NaN` with a warning.
 
 - theta:
 
@@ -27,13 +34,12 @@ median is \\\mu\\ and the quartiles are \\\mu \pm \log(2)/\lambda\\.
 - lower.tail:
 
   Logical of length 1. When `TRUE`, the default, `p` is \\P(Y \le q)\\;
-  when `FALSE` it is \\P(Y \> q)\\ and `p` is replaced by `1 - p` before
-  the formula is applied.
+  when `FALSE` it is \\P(Y \> q)\\.
 
 - log.p:
 
-  Logical of length 1. When `TRUE` the values in `p` are exponentiated
-  first. Defaults to `FALSE`.
+  Logical of length 1. When `TRUE` the values in `p` are read as
+  logarithms of probabilities. Defaults to `FALSE`.
 
 - ...:
 

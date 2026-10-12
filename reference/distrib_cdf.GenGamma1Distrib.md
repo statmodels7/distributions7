@@ -6,9 +6,9 @@ Gamma with shape \\d/p\\ and unit rate, so the distribution function is
 that Gamma's evaluated at \\(q/a)^p\\ and the whole computation is one
 `pgamma` call.
 
-`lower.tail` and `log.p` are passed straight to `pgamma`, so the
-survival function and the log-probability keep the accuracy R's own
-routine gives them in the far tail.
+`lower.tail` and `log.p` are passed to `pgamma`, so the survival
+function and the log-probability have the accuracy of `pgamma` in the
+far tail.
 
 ## Arguments
 

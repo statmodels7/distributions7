@@ -45,7 +45,7 @@ distrib_expected_hessian.SkewNormal1Distrib()."><meta property="og:image" conten
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -151,9 +151,9 @@ exactly proportional there, so no data can separate them. Measured at
 \(-2.6\times10^{-27}\), and the smallest one grows like
 \(\alpha^4\) as the shape moves off zero: \(4.4\times10^{-10}\) at
 \(\alpha = 0.01\) and \(1.9\times10^{-3}\) at \(\alpha = 0.5\).</p>
-<p>The singularity belongs to the family as parametrized, not to the
-implementation. Azzalini's centered parametrization removes it, and lives in
-the separate object <code><a href="skewnormal2_distrib.html">skewnormal2_distrib()</a></code>.</p>
+<p>The singularity is a property of this parametrization. Azzalini's centered
+parametrization does not have it and is implemented by
+<code><a href="skewnormal2_distrib.html">skewnormal2_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -200,7 +200,7 @@ and \(R' = -R(t+R)\).</p>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/eigen.html" class="external-link">eigen</a></span><span class="op">(</span><span class="op">-</span><span class="va">M</span>, only.values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">values</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="va">rank_gap</span>, <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.550320e-27 4.355684e-10 1.947533e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.550320e-27 4.355677e-10 1.947533e-03</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

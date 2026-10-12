@@ -15,7 +15,7 @@ like \(e^{-|y-\mu|/\sigma}\), so they are heavier than a Gaussian's."><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +72,8 @@ support, so no value is rejected.</p></dd>
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>mu</code> and <code>sigma</code>, each a numeric
 vector of length 1 or of the length of <code>y</code>. A component of length 1 is
-recycled. <code>sigma</code> must be strictly positive; a zero or negative value
-gives <code>NaN</code> with a warning from <code><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">stats::dlogis()</a></code>.</p></dd>
+recycled. <code>sigma</code> must be strictly positive; the generic signals an
+error for a zero or negative value before the method is called.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>

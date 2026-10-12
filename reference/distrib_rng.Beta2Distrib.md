@@ -4,7 +4,7 @@ Draws `n` independent beta variates by calling
 [`stats::rbeta()`](https://rdrr.io/r/stats/Beta.html) at
 `shape1 = alpha` and `shape2 = beta`, so the draws come from R's own
 beta generator and depend on `.Random.seed` in the usual way. The
-ratio-of-uniforms fallback the base class supplies is bypassed.
+inverse-transform fallback of the base class is not used.
 
 ## Arguments
 
@@ -30,7 +30,8 @@ ratio-of-uniforms fallback the base class supplies is bypassed.
 
 ## Value
 
-A numeric vector of `n` draws in \\(0, 1)\\.
+A numeric vector of `n` draws in \\\[0, 1\]\\. At a very small shape a
+draw can round to exactly 0 or 1.
 
 ## See also
 

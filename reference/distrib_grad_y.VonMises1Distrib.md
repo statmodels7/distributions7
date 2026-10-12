@@ -6,8 +6,9 @@ log-density with respect to the angle, in closed form:
 family is a location family on the circle, so this is exactly the
 negative of the direction score
 [`distrib_gradient.VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.VonMises1Distrib.md)`$mu`.
-It is **bounded by** \\\kappa\\ and vanishes at both the mode \\y =
-\mu\\ and the antimode \\y = \mu \pm \pi\\, as a periodic density must.
+It is **bounded by** \\\kappa\\ in absolute value and vanishes at the
+mode \\y = \mu\\ and at the antimode \\y = \mu \pm \pi\\, the stationary
+points of the density.
 
 ## Arguments
 

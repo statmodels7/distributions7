@@ -11,7 +11,7 @@ to the unconstrained \(\eta\)."><meta property="og:image" content="https://statm
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,7 @@ as it is for expected derivatives.</p></dd>
 
 
 <dt id="arg-order">order<a class="anchor" aria-label="anchor" href="#arg-order"></a></dt>
-<dd><p>The derivative order to assemble, 1 to 4.</p></dd>
+<dd><p>The derivative order to assemble, 1 to 5.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -87,13 +87,12 @@ in the implementation are deliberate and are the reason it is not simply a
 transcription of the formula:</p>
 <p>First order is special-cased. It is a diagonal rescaling,
 \(\partial \ell/\partial \eta_i = (\partial \ell/\partial \theta_i) h_i'\),
-and it is the order evaluated most often – once per scoring iteration – so
-sending it through the general assembly would spend a few hundred microseconds
-performing a multiplication.</p>
-<p>The nested sum over \(j_t = 1, \dots, m_t\) is enumerated by decoding a
-counter in mixed radix rather than by building the combinations with
-<code>expand.grid</code>, which on its own costs more than the rest of the loop
-together and is paid once per component on every call.</p>
+and it is the order evaluated most often (once per scoring iteration), so it
+bypasses the general assembly.</p>
+<p>The index structure of the nested sum over \(j_t = 1, \dots, m_t\)
+depends only on the parameter names and the order. It is computed once by
+<code><a href="link_scale_layout.html">link_scale_layout()</a></code> and cached, and the loop of this function performs
+only the arithmetic on the vectors.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

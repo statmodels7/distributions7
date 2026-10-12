@@ -31,9 +31,11 @@ stats from each repeating the algebra, and keeps them from drifting
 apart if the parametrization ever changes.
 
 The map is decreasing and carries \\(0, \infty)\\ onto \\(0, 1)\\: a
-large mean is a small success probability. No validation is performed,
-so a non-positive `mu` returns a value outside \\(0, 1)\\ and the caller
-sees the failure at the base R function.
+large mean is a small success probability. No validation is performed. A
+negative `mu` other than \\-1\\ gives a value outside \\\[0, 1\]\\, for
+which the base R functions return `NaN`, and `mu = 0` gives 1, which
+they accept as a point mass at zero. The methods are reached through the
+generics, which signal an error for a non-positive `mu` first.
 
 ## See also
 

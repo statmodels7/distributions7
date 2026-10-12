@@ -3,14 +3,16 @@
 in a compiled kernel, in the notation of
 distrib_deriv3.SkewNormal1Distrib(). The recursion
 \(R' = -R(t+R)\) keeps every one of them a polynomial in \(t\) and the
-inverse Mills ratio, so the fourth order needs nothing the third did not.
+inverse Mills ratio, so the fourth order uses the same two functions as
+the third, and the same cumulant route below \(t = -1\).
 With expected = TRUE the value is a numerical expectation, for the reason
 it is at third order: the integrals are the ones that block the expected
 information."><meta property="og:description" content="Computes the fifteen fourth derivatives of the log-density in closed form,
 in a compiled kernel, in the notation of
 distrib_deriv3.SkewNormal1Distrib(). The recursion
 \(R' = -R(t+R)\) keeps every one of them a polynomial in \(t\) and the
-inverse Mills ratio, so the fourth order needs nothing the third did not.
+inverse Mills ratio, so the fourth order uses the same two functions as
+the third, and the same cumulant route below \(t = -1\).
 With expected = TRUE the value is a numerical expectation, for the reason
 it is at third order: the integrals are the ones that block the expected
 information."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -21,7 +23,7 @@ information."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +60,8 @@ information."><meta property="og:image" content="https://statmodels7.github.io/d
 in a compiled kernel, in the notation of
 <code><a href="distrib_deriv3.SkewNormal1Distrib.html">distrib_deriv3.SkewNormal1Distrib()</a></code>. The recursion
 \(R' = -R(t+R)\) keeps every one of them a polynomial in \(t\) and the
-inverse Mills ratio, so the fourth order needs nothing the third did not.</p>
+inverse Mills ratio, so the fourth order uses the same two functions as
+the third, and the same cumulant route below \(t = -1\).</p>
 <p>With <code>expected = TRUE</code> the value is a numerical expectation, for the reason
 it is at third order: the integrals are the ones that block the expected
 information.</p>
@@ -151,7 +154,7 @@ family.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> analytic -2.030997 -1.959839 0.7048172 -7.884540e-06</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> numeric  -2.030997 -1.959839 0.7048172 -7.884542e-06</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The count is bit for bit independent of the thread count.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is bit for bit independent of the thread count.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv4.html">distrib_deriv4</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, threads <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="fu"><a href="distrib_deriv4.html">distrib_deriv4</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, threads <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

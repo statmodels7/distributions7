@@ -7,15 +7,15 @@ as
 the mean stays \\\mu\\ and the dispersion is replaced by \\\alpha\\, the
 argument the mass function's Bessel function is evaluated at.
 
-Orthogonal means the expected information is diagonal. Measured at \\\mu
-= 3\\, its mixed entry summed over the support is \\-8.8\times10^{-15}\\
-here against 7.39 in the mean-dispersion parametrization.
+Orthogonal means the expected information is diagonal: at \\\mu = 3\\
+and \\\sigma = 0.8\\ its mixed entry is zero to rounding error here,
+against 0.0368 in the mean-dispersion parametrization.
 
 Build one with
 [`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md),
 which supplies the two link functions. This page documents the raw S7
-constructor, which validates none of the relationships between its
-properties.
+constructor, which takes the parent's properties; the validator of
+`distrib` checks them, and the constructor adds no check of its own.
 
 ## Usage
 
@@ -98,19 +98,45 @@ the properties hold `"poisson-inverse gaussian (orthogonal)"`,
 
 ## Methods
 
-Registered in this file, the middle five reading one compiled kernel:
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Pig2Distrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Pig2Distrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Pig2Distrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig2Distrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Pig2Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Pig2Distrib.md).
+Registered on this class, each linked to the page that documents it:
 
-Registered elsewhere: the four moments in `moments.R` and the data-based
-starting value in `starting_values.R`. The distribution function and the
-quantile come from
-[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md),
-both exact sums over the support.
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Pig2Distrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Pig2Distrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Pig2Distrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Pig2Distrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig2Distrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Pig2Distrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.Pig2Distrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.Pig2Distrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.Pig2Distrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.Pig2Distrib.md);
+
+- the fitting helpers:
+  [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.Pig2Distrib.md)
+  and
+  [`expected_hessian_costly()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_costly.md).
+
+Every other generic is inherited from
+[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
+The distribution function and the quantile are the inherited ones,
+documented at
+[`distrib_cdf.discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.discrete_distrib.md)
+and
+[`distrib_quantile.discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.discrete_distrib.md).
 
 ## See also
 
@@ -119,8 +145,7 @@ to build one;
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
 for the mean-dispersion parametrization;
 [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
-for the map between them; the compiled kernels for the kernel all five
-derivative methods read.
+for the map between them.
 
 ## Examples
 

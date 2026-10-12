@@ -5,17 +5,21 @@ distrib_deriv3.BetaBinom1Distrib() describes carried one order further:
 the shape parametrization's fourth derivatives, each a difference of
 \(\psi^{(3)}\), carried through the map
 \((\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)\) by the partition sum of
-chain_derivatives().
-With expected = TRUE the method calls expected_derivative() instead.
-That is the one place on this page where approx and nsim are read."><meta property="og:description" content="Computes the five distinct fourth derivatives of the beta-binomial log-mass
+chain_derivatives(), for \(\sigma \ge 0.1\), and the direct sums
+below.
+With expected = TRUE the method returns the expectation as an exact
+finite sum over the support, from betabinom1_expected(). approx and
+nsim are ignored on both branches."><meta property="og:description" content="Computes the five distinct fourth derivatives of the beta-binomial log-mass
 in \(\mu\) and \(\sigma\), in closed form, by the construction
 distrib_deriv3.BetaBinom1Distrib() describes carried one order further:
 the shape parametrization's fourth derivatives, each a difference of
 \(\psi^{(3)}\), carried through the map
 \((\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)\) by the partition sum of
-chain_derivatives().
-With expected = TRUE the method calls expected_derivative() instead.
-That is the one place on this page where approx and nsim are read."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+chain_derivatives(), for \(\sigma \ge 0.1\), and the direct sums
+below.
+With expected = TRUE the method returns the expectation as an exact
+finite sum over the support, from betabinom1_expected(). approx and
+nsim are ignored on both branches."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +27,7 @@ That is the one place on this page where approx and nsim are read."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,9 +66,11 @@ in \(\mu\) and \(\sigma\), <strong>in closed form</strong>, by the construction
 the shape parametrization's fourth derivatives, each a difference of
 \(\psi^{(3)}\), carried through the map
 \((\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)\) by the partition sum of
-<code><a href="chain_derivatives.html">chain_derivatives()</a></code>.</p>
-<p>With <code>expected = TRUE</code> the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code> instead.
-That is the one place on this page where <code>approx</code> and <code>nsim</code> are read.</p>
+<code><a href="chain_derivatives.html">chain_derivatives()</a></code>, for \(\sigma \ge 0.1\), and the direct sums
+below.</p>
+<p>With <code>expected = TRUE</code> the method returns the expectation as an exact
+finite sum over the support, from <code><a href="betabinom1_expected.html">betabinom1_expected()</a></code>. <code>approx</code> and
+<code>nsim</code> are ignored on both branches.</p>
     </div>
 
 
@@ -98,14 +104,12 @@ model is returned in place of the value at the data. Defaults to <code>FALSE</co
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>One of <code>"integrate"</code> (the default here), <code>"bartlett"</code>, <code>"mc"</code>
-or <code>"opg"</code>, the strategy <code><a href="expected_derivative.html">expected_derivative()</a></code> uses. Read only when
-<code>expected = TRUE</code>.</p></dd>
+<dd><p>Ignored, the expectation being an exact finite sum. Accepted
+so that the signature matches the generic's.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>A single positive integer, the sample size when
-<code>approx = "mc"</code>. Read only when <code>expected = TRUE</code>. Defaults to <code>10000</code>.</p></dd>
+<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

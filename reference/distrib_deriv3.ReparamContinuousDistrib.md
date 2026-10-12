@@ -2,7 +2,7 @@
 
 The partition sum at order three, observed or expected. Every order the
 parent has in closed form survives in closed form, so a family
-reparametrized from one of the 42 that carry analytic third derivatives
+reparametrized from a parent that carries analytic third derivatives
 keeps them.
 
 ## Usage
@@ -48,8 +48,8 @@ reparam_deriv3(
 
 - approx:
 
-  The strategy the parent uses for an expected derivative it has no
-  closed form for, one of `"integrate"`, `"bartlett"`, `"mc"` or
+  The strategy that the parent uses for an expected derivative for which
+  it has no closed form, one of `"integrate"`, `"bartlett"`, `"mc"` or
   `"opg"`. Passed straight through; read only when `expected` is `TRUE`
   and only by a parent that approximates.
 

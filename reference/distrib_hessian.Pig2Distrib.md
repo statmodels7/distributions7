@@ -4,10 +4,10 @@ Returns the exact second derivatives of the log-mass in \\(\mu,
 \alpha)\\, read off columns `d20`, `d02` and `d11` of the compiled
 kernel `pig2_hessian_cpp`.
 
-The **observed** mixed entry is not zero at any single observation; what
-vanishes is its expectation. Measured at \\\mu = 3\\, \\\alpha =
-3.0104\\, the expectation summed over the support is
-\\-8.8\times10^{-15}\\ while the individual entries are of order one.
+The **observed** mixed entry is not zero in general; what vanishes is
+its expectation. At \\\mu = 3\\ and \\\alpha = 3.0104\\ the entry is
+proportional to \\y - \mu\\, and its expectation is zero to rounding
+error.
 
 ## Arguments
 
@@ -18,7 +18,8 @@ vanishes is its expectation. Measured at \\\mu = 3\\, \\\alpha =
 
 - y:
 
-  A numeric vector of counts. A value off the support gives `NaN`.
+  A numeric vector of counts. A value off the support, or a missing
+  value, gives `NaN`.
 
 - theta:
 
@@ -81,7 +82,7 @@ rbind(analytic = h$mu_alpha,
 # The mixed entry is not zero observation by observation; its expectation
 # is.
 c(observed = h$mu_alpha[1],
-  expected = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha))
+  expected = distrib_expected_hessian(d, 0, th)$mu_alpha)
 #>      observed      expected 
-#> -1.176464e-01 -8.183878e-15 
+#> -1.176464e-01 -4.071581e-17 
 ```

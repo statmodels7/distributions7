@@ -50,8 +50,9 @@ th <- list(mu = 0.5, rho = 0.7)
 set.seed(1)
 z <- distrib_rng(d2, 3e5, th)
 
-# This parametrization is the one a sample reads back directly: the mean
-# resultant length of the draws is rho, and the circular mean is mu.
+# In this parametrization both parameters are computed directly from a
+# sample: the mean resultant length of the draws estimates rho, and the
+# circular mean estimates mu.
 c(resultant = sqrt(mean(cos(z))^2 + mean(sin(z))^2), rho = 0.7)
 #> resultant       rho 
 #> 0.7003239 0.7000000 

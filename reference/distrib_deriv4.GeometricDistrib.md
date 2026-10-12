@@ -3,11 +3,14 @@
 Computes the fourth derivative of the geometric log-mass with respect to
 the mean, in closed form. As at third order it is a combination of
 \\\mu^{-k}\\ and \\(1+\mu)^{-k}\\ with the data entering linearly
-through \\y\\.
+through \\y\\: the value is \\-6(y/\mu^4 - (y+1)/(1+\mu)^4)\\, and the
+bracket is computed as at third order (see
+[`distrib_deriv3.GeometricDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GeometricDistrib.md)).
 
 With `expected = TRUE` the expectation is returned, obtained by
-substituting \\\mathbb{E}\[Y\] = \mu\\. Both routes are closed form, so
-`approx` and `nsim` are ignored.
+substituting \\\mathbb{E}\[Y\] = \mu\\, which gives \\-6(1 -
+q^3)/\mu^3\\. Both routes are closed form, so `approx` and `nsim` are
+ignored.
 
 ## Arguments
 

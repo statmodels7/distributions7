@@ -5,7 +5,8 @@ canonical parametrization, the two beta shapes \\\alpha \> 0\\ and
 \\\beta \> 0\\, on the finite support \\\\0, 1, \dots, n\\\\. The
 returned object carries closed-form derivatives of the log-mass to
 fourth order and expectations that are exact finite sums over the
-support, so every generic of the toolkit answers without a quadrature.
+support, so no quadrature is used. The fifth derivative comes from the
+numerical fallback of the base class.
 
 This is the same law as
 [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md),
@@ -69,8 +70,8 @@ a small dispersion and the binomial limit.
 ## Derivatives
 
 The log-mass is a sum of log-gamma terms, so a derivative of order \\k\\
-replaces each by \\\psi^{(k-1)}\\ and all four orders come from one
-routine,
+replaces each by \\\psi^{(k-1)}\\. The score and the Hessian come from
+compiled kernels, and the third and fourth orders from
 [`betabinom2_derivs()`](https://statmodels7.github.io/distributions7/reference/betabinom2_derivs.md).
 A component naming both shapes keeps only the terms in \\S\\ and is
 therefore free of the data at every order.
@@ -84,19 +85,18 @@ The two beta functions of the mass are each of magnitude \\S\log S\\
 while their difference is of order one, so writing the mass as that
 difference loses one digit per factor of ten in \\S\\.
 [`betabinom_log_mass()`](https://statmodels7.github.io/distributions7/reference/betabinom_log_mass.md)
-switches to a sum of logarithms past a measured threshold and stays
-exact: at \\n = 10\\, \\y = 3\\ and \\\alpha/S = 0.4\\, the log-mass
-agrees with the binomial one to twelve figures at \\S = 10^{14}\\, where
-the direct route is wrong in the third decimal.
+switches to a sum of logarithms once the error of the direct route would
+exceed \\10^{-8}\\, and the sums stay accurate to the binomial limit.
 
-**The derivatives are not rewritten that way here**, and cede earlier
-than the mass. Measured at the same setting, the relative error of the
-\\\alpha\\ score against its limit is \\6\times10^{-8}\\ at \\S =
-10^8\\, \\4\times10^{-4}\\ at \\10^{12}\\ and 1.8 at \\10^{15}\\.
-[`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)'s
-compiled kernel forms the same differences as sums of reciprocals and
-holds nine figures at \\S = 10^{15}\\, so that is the parametrization to
-use where such a concentration is reachable.
+The derivatives cancel in the same way. The score and the Hessian
+evaluate each polygamma difference, for a shape of at least 100, as an
+asymptotic series remainder plus one
+[`log1p()`](https://rdrr.io/r/base/Log.html). The third and fourth
+orders, and the expectations built from them, are computed for \\S \>
+10\\ from the direct sums over the integer shifts
+([`betabinom_direct()`](https://statmodels7.github.io/distributions7/reference/betabinom_direct.md)),
+whose terms have one sign each, at a cost of \\O(n)\\ per observation.
+Every order therefore keeps its accuracy as the concentration grows.
 
 ## Estimation
 

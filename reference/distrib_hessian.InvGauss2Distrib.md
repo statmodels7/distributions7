@@ -43,8 +43,8 @@ and it does so wherever \\y \< 2\mu/3\\.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -81,11 +81,11 @@ h
 #> $mu_mu
 #> [1]  0.1875 -0.3750 -0.9375
 #> 
-#> $mu_lambda
-#> [1] -0.125  0.000  0.125
-#> 
 #> $lambda_lambda
 #> [1] -0.05555556 -0.05555556 -0.05555556
+#> 
+#> $mu_lambda
+#> [1] -0.125  0.000  0.125
 #> 
 
 # The three closed forms, written out.

@@ -7,7 +7,7 @@ Closed form, from the same location-scale structure. With \\\ell_y =
 \frac{1}{\sigma}\right), \qquad \frac{\partial^2 F}{\partial\sigma^2} =
 f\left(z^2\ell_y + \frac{2z}{\sigma}\right).\$\$ The method is
 [`loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_hess_cdf.md)
-itself, shared with the logistic, the Cauchy and the Laplace.
+itself, shared with the logistic, the Laplace and the Gumbel.
 
 ## Arguments
 

@@ -1,9 +1,9 @@
-# The Location Vector a Parameter List Describes
+# The Location Vector That a Parameter List Describes
 
 Returns the location of a multivariate distribution as a numeric vector
 of length \\p\\. The parameters of a multivariate distribution are
-scalars, so that every generic of the package can index them; this
-generic puts the location back into the shape a reader thinks in.
+scalars, so that every generic of the package can index them, and this
+generic returns the location in the shape of the response.
 
 ## Usage
 
@@ -25,23 +25,22 @@ mv_location(distrib, theta)
 
 ## Value
 
-A numeric vector of length \\p\\, named `v1`, ..., `vp` after the
-coordinates of the response.
+A numeric vector of length \\p\\. The elliptical families name it `v1`,
+..., `vp` after the coordinates of the response; the Dirichlet and the
+multinomial return it without names.
 
 ## Details
 
-Not every multivariate family HAS a location: a Dirichlet is described
-by concentrations and a Wishart by a scale and a count. The base-class
-method therefore signals an error. Handing back the first \\p\\
-parameters under a name that does not fit them would be worse. The
-elliptical families register
-[`mv_leading_location()`](https://statmodels7.github.io/distributions7/reference/mv_leading_location.md),
-which does exactly that and is right for them.
-
-The location is the center of symmetry of the density. It is the MEAN as
-well for a gaussian, and for a Student t only above one degree of
-freedom; [`base::mean()`](https://rdrr.io/r/base/mean.html) is the
-generic that answers about the moment.
+The elliptical families return the center of symmetry of the density,
+which is the mean for a gaussian and, for a Student t, the mean only
+when \\\nu \> 1\\; they register
+[`mv_leading_location()`](https://statmodels7.github.io/distributions7/reference/mv_leading_location.md).
+The Dirichlet returns its mean vector, and the multinomial its mean
+vector of counts, the probabilities times the number of trials. The
+method of the class signals an error for a family without a method of
+its own, the first \\p\\ parameters of a family not being a location in
+general. [`base::mean()`](https://rdrr.io/r/base/mean.html) is the
+generic for the moment.
 
 ## Notation
 
@@ -52,10 +51,10 @@ generic that answers about the moment.
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
 for the matrix,
 [`mv_leading_location()`](https://statmodels7.github.io/distributions7/reference/mv_leading_location.md)
-for the implementation the elliptical families use,
+for the implementation that the elliptical families use,
 [`base::mean()`](https://rdrr.io/r/base/mean.html) for the moment, and
 [`mv_location.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/mv_location.multivariate_distrib.md)
-for the refusal.
+for the method of the class.
 
 ## Examples
 
@@ -75,8 +74,8 @@ rbind(location = mv_location(t2, th), mean = mean(t2, th))
 #> location   1  -1
 #> mean     NaN NaN
 
-# A Dirichlet has neither, and says so.
-try(mv_location(dirichlet_distrib(3),
-                list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)))
+# A Dirichlet returns its mean vector, a point of the simplex.
+mv_location(dirichlet_distrib(3),
+            list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8))
 #> [1] 0.4260125 0.2583897 0.3155978
 ```

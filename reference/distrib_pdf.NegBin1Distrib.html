@@ -5,9 +5,14 @@ $$P(Y = y; \mu, \theta) = \dfrac{\Gamma(y+r)}{\Gamma(r)\,y!}
       \left(\dfrac{1}{1+\theta}\right)^{r}
       \left(\dfrac{\theta}{1+\theta}\right)^{y}, \qquad
       y = 0, 1, 2, \ldots,$$
-which is the pairing that makes the variance \(\mu(1+\theta)\). The
-log-mass is formed in a compiled kernel and exponentiated when log is
-FALSE, so log = TRUE is the accurate route far into the tail.
+which is the pairing that makes the variance \(\mu(1+\theta)\). A
+compiled kernel forms the log-mass by R's negative binomial in its mean
+parametrization (size \(r\) and mean \(\mu\)), which never forms the
+success probability \(1/(1+\theta)\); that probability rounds to 1 below
+\(\theta \approx 10^{-16}\) and loses digits long before, so the mass
+stays accurate down to the Poisson limit. The log-mass is exponentiated
+when log is FALSE, and log = TRUE is the accurate route far into the
+tail.
 The mean sits inside the gamma functions here, through the size. In
 negbin2_distrib() the size is \(\theta\) and the mean stays outside
 them, which is the concrete difference between the two families."><meta property="og:description" content="Computes the negative binomial mass at size \(r = \mu/\theta\) and success
@@ -16,9 +21,14 @@ $$P(Y = y; \mu, \theta) = \dfrac{\Gamma(y+r)}{\Gamma(r)\,y!}
       \left(\dfrac{1}{1+\theta}\right)^{r}
       \left(\dfrac{\theta}{1+\theta}\right)^{y}, \qquad
       y = 0, 1, 2, \ldots,$$
-which is the pairing that makes the variance \(\mu(1+\theta)\). The
-log-mass is formed in a compiled kernel and exponentiated when log is
-FALSE, so log = TRUE is the accurate route far into the tail.
+which is the pairing that makes the variance \(\mu(1+\theta)\). A
+compiled kernel forms the log-mass by R's negative binomial in its mean
+parametrization (size \(r\) and mean \(\mu\)), which never forms the
+success probability \(1/(1+\theta)\); that probability rounds to 1 below
+\(\theta \approx 10^{-16}\) and loses digits long before, so the mass
+stays accurate down to the Poisson limit. The log-mass is exponentiated
+when log is FALSE, and log = TRUE is the accurate route far into the
+tail.
 The mean sits inside the gamma functions here, through the size. In
 negbin2_distrib() the size is \(\theta\) and the mean stays outside
 them, which is the concrete difference between the two families."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -29,7 +39,7 @@ them, which is the concrete difference between the two families."><meta property
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,9 +78,14 @@ $$P(Y = y; \mu, \theta) = \dfrac{\Gamma(y+r)}{\Gamma(r)\,y!}
       \left(\dfrac{1}{1+\theta}\right)^{r}
       \left(\dfrac{\theta}{1+\theta}\right)^{y}, \qquad
       y = 0, 1, 2, \ldots,$$
-which is the pairing that makes the variance \(\mu(1+\theta)\). The
-log-mass is formed in a compiled kernel and exponentiated when <code>log</code> is
-<code>FALSE</code>, so <code>log = TRUE</code> is the accurate route far into the tail.</p>
+which is the pairing that makes the variance \(\mu(1+\theta)\). A
+compiled kernel forms the log-mass by R's negative binomial in its mean
+parametrization (size \(r\) and mean \(\mu\)), which never forms the
+success probability \(1/(1+\theta)\); that probability rounds to 1 below
+\(\theta \approx 10^{-16}\) and loses digits long before, so the mass
+stays accurate down to the Poisson limit. The log-mass is exponentiated
+when <code>log</code> is <code>FALSE</code>, and <code>log = TRUE</code> is the accurate route far into the
+tail.</p>
 <p>The mean sits <strong>inside</strong> the gamma functions here, through the size. In
 <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> the size is \(\theta\) and the mean stays outside
 them, which is the concrete difference between the two families.</p>
@@ -86,7 +101,8 @@ them, which is the concrete difference between the two families.</p>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of counts. A negative value gives a mass of 0.</p></dd>
+<dd><p>A numeric vector of counts. A negative value gives a mass of 0, a
+non-integer value gives 0 with a warning, and a missing value gives <code>NA</code>.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -113,8 +129,7 @@ Defaults to <code>FALSE</code>.</p></dd>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_cdf.NegBin1Distrib.html">distrib_cdf.NegBin1Distrib()</a></code> for the distribution function,
 <code><a href="distrib_gradient.NegBin1Distrib.html">distrib_gradient.NegBin1Distrib()</a></code> for the derivatives of the log-mass,
-<code><a href="nb1_size.html">nb1_size()</a></code> and <code><a href="nb1_prob.html">nb1_prob()</a></code> for the pairing this uses, and
-<code><a href="distrib_pdf.html">distrib_pdf()</a></code> for the generic.</p></div>
+<code><a href="nb1_size.html">nb1_size()</a></code> for the size, and <code><a href="distrib_pdf.html">distrib_pdf()</a></code> for the generic.</p></div>
     </div>
 
     <div class="section level2">

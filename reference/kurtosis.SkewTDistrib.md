@@ -4,9 +4,10 @@ Closed form for \\\nu \> 4\\, from Azzalini and Capitanio (2003):
 \$\$\gamma_2 = \frac{1}{\sigma_z^{4}}
 \left\\\frac{3\nu^2}{(\nu-2)(\nu-4)} -
 \frac{4\mu_z^2\nu(3-\delta^2)}{\nu-3} + \frac{6\mu_z^2\nu}{\nu-2} -
-3\mu_z^4\right\\ - 3,\$\$ and `NaN` at \\\nu \le 4\\. The threshold is
-the highest of the four moments, the fourth being the one that fails
-first as the tails grow heavy.
+3\mu_z^4\right\\ - 3,\$\$ `Inf` at \\2 \< \nu \le 4\\, where the fourth
+moment diverges, as for the Student t, and `NaN` at \\\nu \le 2\\. As
+\\\nu\\ decreases the fourth moment is the first of the four to cease to
+exist.
 
 ## Arguments
 
@@ -19,8 +20,8 @@ first as the tails grow heavy.
 
   A named list with components `mu`, `sigma` (positive), `alpha` (any
   sign) and `nu` (positive), each a numeric vector of length 1 or `n`.
-  Only `alpha` and `nu` enter the value; settings with \\\nu \le 4\\
-  give `NaN`.
+  Only `alpha` and `nu` enter the value; settings with \\2 \< \nu \le
+  4\\ give `Inf` and those with \\\nu \le 2\\ give `NaN`.
 
 - ...:
 
@@ -29,8 +30,8 @@ first as the tails grow heavy.
 ## Value
 
 A numeric vector of excess kurtoses, of the length the recycled
-parameters imply, `NaN` wherever \\\nu \le 4\\. Only `alpha` and `nu`
-enter the value.
+parameters imply, `Inf` wherever \\2 \< \nu \le 4\\ and `NaN` wherever
+\\\nu \le 2\\. Only `alpha` and `nu` enter the value.
 
 ## Notation
 
@@ -62,7 +63,7 @@ d <- skewt_distrib()
 
 # At shape zero this is the Student t's 6 / (nu - 4).
 kurtosis(d, list(mu = 0, sigma = 1, alpha = 0, nu = c(4, 5, 10)))
-#> [1] NaN   6   1
+#> [1] Inf   6   1
 
 # As nu grows it approaches the skew normal's value at the same shape.
 c(skewt = kurtosis(d, list(mu = 0, sigma = 1, alpha = 3, nu = 1e6)),

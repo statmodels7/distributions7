@@ -33,7 +33,7 @@ Invisibly `NULL`. Called for the registration.
 All four orders are registered,
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
 included, so these families take the closed route from the first order
-up. Where the upper tail is asked for on the natural scale the
+up. Where the upper tail is requested on the natural scale the
 derivatives of \\S\\ are returned directly, \\\partial^I S = -\partial^I
 F\\, which is the one case where the survival function is the quantity
 the construction produces first.

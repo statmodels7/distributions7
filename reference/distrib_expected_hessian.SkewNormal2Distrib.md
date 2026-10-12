@@ -7,7 +7,11 @@ they come from their series in \\r = (\gamma_1/c)^{1/3}\\; elsewhere
 from the quadrature of
 [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md)
 over the family's own observed derivatives, the family being
-location-scale in \\(\mu, \sigma)\\ at fixed \\\gamma_1\\.
+location-scale in \\(\mu, \sigma)\\ at fixed \\\gamma_1\\. The
+quadrature is centered at the step of the skewing function, \\w = -r\\
+([`loc_scale_center()`](https://statmodels7.github.io/distributions7/reference/loc_scale_center.md)),
+which at a skewness near the ceiling is too sharp for nodes clustered at
+zero.
 
 ## Arguments
 
@@ -55,12 +59,12 @@ term by term against the series of the density, with gaussian moments,
 computed offline at 60 digits. It is asymptotic rather than convergent,
 and below the bound its terms fall under \\10^{-20}\\ before they turn.
 The information is finite at \\\gamma_1 = 0\\, where it is
-\\\mathrm{diag}(1, 2, 1/6)/\sigma^2\\ with the sign of a Hessian, but it
-is not analytic in \\\gamma_1\\ there: \\E\[\ell\_{\gamma_1\gamma_1}\]\\
-carries a term in \\\gamma_1^{2/3}\\ and \\E\[\ell\_{\mu\gamma_1}\]\\
-one in \\\gamma_1^{4/3}\\. Its derivatives in \\\gamma_1\\ are therefore
-infinite at zero skewness, where the two derivative methods signal an
-error.
+\\\mathrm{diag}(1/\sigma^2, 2/\sigma^2, 1/6)\\ with the sign of a
+Hessian, but it is not analytic in \\\gamma_1\\ there:
+\\E\[\ell\_{\gamma_1\gamma_1}\]\\ carries a term in \\\gamma_1^{2/3}\\
+and \\E\[\ell\_{\mu\gamma_1}\]\\ one in \\\gamma_1^{4/3}\\. Its
+derivatives in \\\gamma_1\\ are therefore infinite at zero skewness,
+where the two derivative methods signal an error.
 
 ## See also
 

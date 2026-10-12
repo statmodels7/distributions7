@@ -9,7 +9,7 @@ parameters it differentiates with respect to."><meta property="og:image" content
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +72,8 @@ Hessian. Splitting the string on <code>"_"</code> is the obvious way and it is
 wrong: a parameter whose own name contains an underscore
 (<code>"log_scale"</code>) makes <code>"log_scale_log_scale"</code> split into four
 pieces, and taking the first and the last silently yields
-<code>c("log", "scale")</code>. Building the map from the parameter vector cannot
-be fooled.</p>
+<code>c("log", "scale")</code>. The map is built from the parameter vector, so it does
+not depend on the characters in the names.</p>
 <p><code><a href="deriv_indices.html">deriv_indices()</a></code> is the same idea for orders above two.</p>
     </div>
     <div class="section level2">

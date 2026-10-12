@@ -1,13 +1,16 @@
 # Dirichlet Random Generation
 
-Draws `n` independent Dirichlet vectors by the representation the family
-is defined by: independent gamma variates with shapes \\\alpha_j =
+Draws `n` independent Dirichlet vectors by the representation that
+defines the family: independent gamma variates with shapes \\\alpha_j =
 \phi\mu_j\\ and a common rate, divided by their sum. The normalization
-removes the rate, so
-[`stats::rgamma()`](https://rdrr.io/r/stats/GammaDist.html)'s default of
-1 is used, and every row of the result sums to one by construction. The
-draws depend on `.Random.seed` in the usual way and consume \\p\\ of R's
-streams per observation.
+removes the rate, so the default rate of
+[`stats::rgamma()`](https://rdrr.io/r/stats/GammaDist.html) is used.
+When a shape is below 0.05 a gamma variate underflows to zero with a
+probability that is no longer negligible, and a row whose variates all
+underflow would be 0/0; the variates are then drawn on the log scale, as
+\\\log G(\alpha_j + 1) + \log(U)/\alpha_j\\, and normalized by a
+log-sum-exp, so every row sums to one and its largest coordinate is
+finite. The draws depend on `.Random.seed` in the usual way.
 
 ## Arguments
 
@@ -31,17 +34,19 @@ streams per observation.
 
 ## Value
 
-A numeric matrix with `n` rows and \\p\\ columns, each row strictly
-positive and summing to one.
+A numeric matrix with `n` rows and \\p\\ columns, each row summing to
+one. A coordinate whose value is below the smallest double rounds to
+zero, which happens at a concentration of order 0.01 or below; such a
+row is off the open simplex and has density zero.
 
 ## See also
 
 [`distrib_pdf.DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.DirichletDistrib.md)
 for the density,
 [`mv_reference_draw.DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.DirichletDistrib.md)
-for the uniform proposal
+for the uniform proposal against which
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-integrates against,
+integrates,
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters back from a sample, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)

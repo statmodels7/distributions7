@@ -23,7 +23,7 @@ A character vector, `length(hess_names(params)) * length(params)` long.
 
 ## Details
 
-The keys are BUILT and never parsed, which is the package's rule
+The keys are built and never parsed, which is the package's rule
 wherever a component name is a concatenation of parameter names: a
 parameter whose own name contains an underscore makes the string
 ambiguous to read back, and

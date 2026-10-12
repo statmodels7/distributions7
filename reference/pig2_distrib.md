@@ -8,9 +8,9 @@ the dispersion of
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
 by \\\alpha = \sqrt{1 + 2\sigma\mu}/\sigma\\.
 
-Orthogonal means the expected information is diagonal. Measured at \\\mu
-= 3\\, its mixed entry summed over the support is \\-8.8\times10^{-15}\\
-here against 7.39 in the mean-dispersion parametrization.
+Orthogonal means the expected information is diagonal: at \\\mu = 3\\
+and \\\sigma = 0.8\\ its mixed entry is zero to rounding error here,
+against 0.0368 in the mean-dispersion parametrization.
 
 ## Usage
 
@@ -39,33 +39,34 @@ inheriting from `discrete_distrib`. Its `params` are `c("mu", "alpha")`,
 its `bounds` `c(0, Inf)`, and its `link_params` the two links given
 here.
 
-## What orthogonality buys, and what it costs
+## Orthogonality
 
 The maximum likelihood estimates of \\\mu\\ and \\\alpha\\ are
-asymptotically independent, so a Fisher scoring step in one parameter
-does not disturb the other and the two can be modeled with separate
-linear predictors without their estimates fighting. The cost is that
-\\\alpha\\ has no moment reading of its own: a reader who wants to
-interpret the overdispersion directly wants
+asymptotically independent, so the expected information is block
+diagonal in the two parameters and each can be given its own linear
+predictor. The parameter \\\alpha\\ has no moment reading of its own:
+the overdispersion is read directly from
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)'s
 \\\sigma\\, which enters the variance as \\\mu + \sigma\mu^2\\.
 
 The two are one law and the map between them is closed both ways:
 \\\sigma = (\mu + \sqrt{\mu^2 + \alpha^2})/\alpha^2\\ through
 [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md),
-and \\\alpha = \sqrt{1 + 2\sigma\mu}/\sigma\\ back. gamlss states the
-first as \\\alpha = 1/(\sqrt{\mu^2+\sigma_2^2} - \mu)\\ in its own
-\\\sigma_2\\, which coincides with this \\\alpha\\.
+and \\\alpha = \sqrt{1 + 2\sigma\mu}/\sigma\\ back. In gamlss the
+parameter \\\sigma_2\\ of `PIG2` equals this \\\alpha\\, and the
+dispersion of `PIG` is obtained from it as
+\\1/(\sqrt{\mu^2+\sigma_2^2} - \mu)\\, the same map.
 
 ## How the derivatives are computed
 
-By the same compiled kernel as
-[`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md),
-with \\\alpha\\ as a variable of its own, so the Bessel argument needs
-no chain rule at all. Every partial to fourth order is exact and comes
-out of one pass; see the compiled kernels. The expected information is
-computed exactly, with its first and second derivatives, by one pass
-over the support per observation; see
+By compiled kernels of the same form as those of
+[`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
+(`pig2_pdf_cpp`, `pig2_gradient_cpp`, `pig2_hessian_cpp`,
+`pig2_deriv3_cpp` and `pig2_deriv4_cpp`), with \\\alpha\\ as a variable
+of its own, so the Bessel argument needs no chain rule. Every partial to
+fourth order is written out in closed form, and each order has its own
+kernel. The expected information is computed exactly, with its first and
+second derivatives, by one pass over the support per observation; see
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md).
 
 ## Parameter domains
@@ -75,8 +76,7 @@ over the support per observation; see
 - \\\alpha \in (0, \infty)\\
 
 A large \\\alpha\\ is a small dispersion, and the family tends to the
-Poisson: measured at \\\alpha = 10^4\\ the mass agrees with `dpois` over
-the head of the support.
+Poisson as \\\alpha\\ grows.
 
 ## The distribution
 
@@ -128,11 +128,11 @@ all.equal(distrib_pdf(d, 0:5, th),
 #> [1] TRUE
 
 # The property the parametrization exists for.
-c(pig2 = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha),
-  pig1 = sum(distrib_expected_hessian(pig1_distrib(), 0:200,
-                                      list(mu = 3, sigma = 0.8))$mu_sigma))
+c(pig2 = distrib_expected_hessian(d, 0, th)$mu_alpha,
+  pig1 = distrib_expected_hessian(pig1_distrib(), 0,
+                                  list(mu = 3, sigma = 0.8))$mu_sigma)
 #>          pig2          pig1 
-#> -8.183878e-15  7.392208e+00 
+#> -4.071581e-17  3.677716e-02 
 
 # A large alpha is a small dispersion, and the family tends to the Poisson.
 rbind(pig2 = distrib_pdf(d, 0:5, list(mu = 3, alpha = 1e4)),

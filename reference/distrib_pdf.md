@@ -36,10 +36,10 @@ A numeric vector of density values, one per observation.
 
 For a continuous family \\f(y; \theta)\\ is the density with respect to
 the Lebesgue measure and for a discrete one the mass \\f(y; \theta) =
-P(Y = y)\\; `log = TRUE` returns \\\log f(y; \theta)\\, which is the
-quantity every derivative generic differentiates. This is the only
-method a distribution has to supply: every other quantity has a
-numerical fallback derived from it.
+P(Y = y)\\; `log = TRUE` returns \\\log f(y; \theta)\\, the quantity
+that the derivative generics in the parameters and in the response
+differentiate. This is the only method that a distribution has to
+supply: every other quantity has a numerical fallback derived from it.
 
 ## See also
 

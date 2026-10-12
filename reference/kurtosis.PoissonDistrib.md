@@ -1,9 +1,9 @@
 # Excess Kurtosis of the Poisson Distribution
 
 Closed form: \\\gamma_2 = 1/\mu\\, the excess over the Gaussian. It is
-positive at every mean and decays like \\\mu^{-1}\\, twice as fast as
-the skewness, so a Poisson of moderate mean looks Gaussian in its tails
-before it looks symmetric.
+positive at every mean and decays like \\\mu^{-1}\\, whereas the
+skewness decays like \\\mu^{-1/2}\\: the excess kurtosis is the square
+of the skewness.
 
 ## Arguments
 

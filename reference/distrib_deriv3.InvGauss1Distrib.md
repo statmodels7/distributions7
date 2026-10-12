@@ -2,15 +2,15 @@
 
 Computes the four distinct third derivatives of the inverse Gaussian
 log-density with respect to \\\mu\\ and \\\phi\\, in closed form. The
-log-density is a linear combination of \\y\\, \\1/y\\ and \\\log y\\
-with coefficients rational in the parameters, so every derivative is a
-rational function of \\(\mu, \phi)\\ times one of those three
-statistics.
+log-density is \\-\tfrac12\log(2\pi\phi) - \tfrac32\log y -
+y/(2\phi\mu^2) + 1/(\phi\mu) - 1/(2\phi y)\\, so every derivative in the
+parameters is a rational function of \\(\mu, \phi)\\ multiplied by
+\\y\\, by \\1/y\\ or by 1.
 
 With `expected = TRUE` the expectations are returned, obtained by
 replacing \\Y\\ with \\\mu\\ and \\1/Y\\ with \\1/\mu + \phi\\. Both
-routes are closed form, so no quadrature is run and `approx` and `nsim`
-are ignored.
+routes are closed form, so the method uses no quadrature and ignores
+`approx` and `nsim`.
 
 ## Arguments
 
@@ -57,8 +57,8 @@ are ignored.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -80,8 +80,8 @@ for the order below and
 [`distrib_deriv4.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.InvGauss1Distrib.md)
 for the order above;
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
-for the generic and for the numerical route a family without a closed
-form takes.
+for the generic and for the numerical route that a family without a
+closed form uses.
 
 ## Examples
 

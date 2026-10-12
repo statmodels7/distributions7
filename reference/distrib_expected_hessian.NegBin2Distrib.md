@@ -11,12 +11,13 @@ vanishing because the observed mixed entry is \\(y-\mu)/s^2\\ and
 \\\mathbb{E}\[Y\] = \mu\\. So the mean and the dispersion are
 orthogonal.
 
-\\\mathbb{E}\[\psi_1(Y+\theta)\]\\ has no closed form. It is summed over
-the support through the mass recurrence, carried in log scale until the
-terms are representable, and stopped when the accumulated mass reaches
-\\1 - 10^{-12}\\. The sum is exact to that mass, so this entry is a
-truncated exact sum and not a quadrature or a simulation; `approx` and
-`nsim` are ignored, and `y` is read only for its length.
+\\\mathbb{E}\[\psi_1(Y+\theta)\]\\ has no closed form. The entry is
+computed as one sum over the support through the mass recurrence,
+carried in log scale until the terms are representable. Past the mode
+and after 100 terms the sum stops once \\p_k (1+k)^2 \le 10^{-17}\\,
+with \\p_k\\ the mass at \\k\\. The entry is a truncated exact sum and
+not a quadrature or a simulation; `approx` and `nsim` are ignored, and
+`y` is read only for its length.
 
 ## Arguments
 
@@ -57,9 +58,9 @@ truncated exact sum and not a quadrature or a simulation; `approx` and
 
 - threads:
 
-  A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  A single positive integer, how many threads the kernel may use. For
+  fewer observations than an internal threshold the kernel runs
+  sequentially whatever the count. Defaults to `1L`.
 
 ## Value
 
@@ -68,18 +69,13 @@ A named list of three numeric vectors, `mu_mu`, `theta_theta` and
 `max(length(y), length(mu), length(theta))` and constant within itself
 when the parameters are.
 
-## A caveat at large theta
+## The dispersion entry at large theta
 
-The dispersion entry is a difference of two quantities that agree to
-leading order as \\\theta\\ grows, and **it is not rewritten to remove
-that cancellation**, unlike the score and the observed Hessian. Its
-leading order needs one term more of the observed Hessian than those two
-do, the \\\theta^{-3}\\ term vanishing under expectation, so it is a
-derivation of its own. Measured at \\\mu = 4\\: it reads \\-7.3\times
-10^{-8}\\ at \\\theta = 10^2\\, \\-3.6\times 10^{-16}\\ at \\10^4\\ and
-\\+1.7\times 10^{-16}\\ at \\10^6\\. The last is **positive**, which an
-expected second derivative cannot be, so a Fisher scoring step taken
-there is not reliable. The example below shows the sign turning.
+The trigamma difference and the term \\\mu/(\theta s)\\ agree to leading
+order as \\\theta\\ grows. They are merged before the summation, so that
+the summand is a quotient of exact polynomials and the entry keeps its
+accuracy; it stays negative and tends to \\-\mu^2/(2\theta^4)\\, as the
+example below shows.
 
 ## Notation
 
@@ -132,8 +128,8 @@ rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
 #> observed -0.08474479 -0.04931509 0.001129167
 #> expected -0.08333333 -0.04924470 0.000000000
 
-# The dispersion entry cancels at large theta and turns positive, which an
-# expected second derivative cannot be.
+# The dispersion entry stays negative and tends to -mu^2/(2 theta^4) as theta
+# grows.
 vapply(c(1e2, 1e4, 1e6),
        function(t) distrib_expected_hessian(d, 0,
                      list(mu = 4, theta = t))$theta_theta,

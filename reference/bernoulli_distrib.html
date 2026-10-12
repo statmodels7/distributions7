@@ -23,7 +23,7 @@ Newton's method at once."><meta property="og:image" content="https://statmodels7
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,9 +101,10 @@ $$P(Y = y; \mu) = \mu^{y}(1-\mu)^{1-y},$$
 with \(\mu \in (0, 1)\). The mean is \(\mu\), the variance
 \(\mu(1-\mu)\), the skewness \((1-2\mu)/\sqrt{\mu(1-\mu)}\) and the
 excess kurtosis \((1 - 6\mu(1-\mu))/(\mu(1-\mu))\). The family has no
-dispersion parameter: fixing the mean fixes the variance, which is why
-overdispersion in binary data has to come from elsewhere, most often from a
-random effect or from grouping.</p>
+dispersion parameter: the mean fixes the variance, so a single binary
+response cannot be overdispersed. Overdispersion arises in grouped counts,
+for which <code><a href="binomial_distrib.html">binomial_distrib()</a></code> and <code><a href="betabinom1_distrib.html">betabinom1_distrib()</a></code> are the families,
+or through a random effect or other clustering.</p>
     </div>
     <div class="section level2">
     <h2 id="the-canonical-link">The canonical link<a class="anchor" aria-label="anchor" href="#the-canonical-link"></a></h2>
@@ -113,7 +114,8 @@ the canonical link, and on its scale
 $$\dfrac{\partial \ell}{\partial \eta} = y - \mu, \qquad
       \dfrac{\partial^2 \ell}{\partial \eta^2} = -\mu(1-\mu).$$
 The second carries no data, so the observed and the expected information
-coincide. Under a probit or a complementary log-log link they do not, and
+coincide in exact arithmetic (the computed observed value loses accuracy at
+large \(|\eta|\); see <code><a href="distrib_hessian.BernoulliDistrib.html">distrib_hessian.BernoulliDistrib()</a></code>). Under a probit or a complementary log-log link they do not, and
 the choice between Fisher scoring and Newton's method becomes a real one.</p>
     </div>
     <div class="section level2">
@@ -123,15 +125,15 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu(1-\mu)}, \qquad
       \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2},$$
 with expectations \(0\) and \(-1/(\mu(1-\mu))\). The information is the
 reciprocal of the variance, so it is smallest at \(\mu = 1/2\) and grows
-without bound towards either endpoint: a near-certain outcome is very
-informative about its own probability.</p>
+without bound towards either endpoint.</p>
     </div>
     <div class="section level2">
     <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>
     <p>The maximum likelihood estimate is the sample proportion,
 \(\hat\mu = \bar y\), in closed form. A sample of all zeros or all ones
-drives the estimate to the boundary, where the logit is infinite; that is
-separation, and it is a property of the data.</p>
+puts the estimate on the boundary of \((0, 1)\), where the logit is
+infinite, so under the default link the estimate on the link scale does
+not exist.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

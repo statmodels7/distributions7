@@ -7,9 +7,9 @@ observation, in closed form. With \\r = y - \mu\\, \$\$\ell^{(\mu\mu)} =
 -\dfrac{1}{2\tau^2}.\$\$ Two of the three are free of the data, so the
 observed and the expected Hessians differ in the mixed entry alone. That
 entry sums to \\\sum_i (y_i - \mu)\\, which vanishes at \\\hat\mu = \bar
-y\\: the two matrices agree exactly once the mean equation is solved and
-differ before that, so Fisher scoring and Newton's method take the same
-step at the maximum and different steps on the way there.
+y\\. The summed observed and expected Hessians therefore coincide
+whenever the mean equation is solved, whatever the value of \\\tau\\,
+and differ otherwise.
 
 ## Arguments
 
@@ -41,8 +41,8 @@ step at the maximum and different steps on the way there.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 

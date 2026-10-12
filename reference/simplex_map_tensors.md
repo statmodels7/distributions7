@@ -3,9 +3,9 @@
 Collects \\\partial^{S}\mu_j\\ for every multiset \\S\\ of free indices
 up to the requested order, keyed by the sorted tuple, as a list of
 numeric vectors over the coordinates \\j\\. The arrays come from
-parameters7, whose contract carries orders three and four for a
-`simplex`, so nothing is derived here; what the function adds is the
-keying, which lets the chain rule in
+parameters7, which supplies orders three and four for a `simplex`. The
+function derives nothing itself and only adds the keying, which lets the
+chain rule in
 [`chain_univariate()`](https://statmodels7.github.io/distributions7/reference/chain_univariate.md)
 look a block up by its index multiset.
 
@@ -29,8 +29,8 @@ simplex_map_tensors(s, eta, order)
 
 - order:
 
-  The highest order required, a single whole number from 1 to 4. Above 4
-  the `switch` returns `NULL` and the call fails.
+  The highest order required, a single whole number from 1 to 4. A
+  larger value signals an error.
 
 ## Value
 
@@ -41,7 +41,7 @@ multisets of width 1 to `order`.
 
 ## Notation
 
-\\\mu\\ is the point of the simplex the parametrization produces,
+\\\mu\\ is the point of the simplex that the parametrization produces,
 \\\eta\\ its free vector, and \\S\\ a multiset of free-value indices.
 
 ## See also

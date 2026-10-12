@@ -35,10 +35,10 @@ in the domain: both \\\mu\\ and \\\sqrt{\mu^2 + \alpha^2}\\ are
 positive, so the numerator is a sum of positive terms. The other root of
 the quadratic is negative and is discarded.
 
-Only
 [`distrib_rng.Pig2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Pig2Distrib.md)
-calls this. The derivative methods do not: the compiled kernel takes
-\\\alpha\\ as a variable of its own, so the map is never differentiated.
+and the variance, skewness and kurtosis methods call this. The mass and
+the derivative methods do not: the compiled kernel takes \\\alpha\\ as a
+variable of its own, so the map is never differentiated.
 
 ## See also
 
@@ -47,7 +47,9 @@ for the parametrization,
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
 for the one it maps onto, and
 [`distrib_rng.Pig2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Pig2Distrib.md)
-for its only caller.
+and
+[`variance.Pig2Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.Pig2Distrib.md)
+for two of its callers.
 
 ## Examples
 

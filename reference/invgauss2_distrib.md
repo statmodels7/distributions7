@@ -5,11 +5,12 @@ Builds the distribution object for the inverse Gaussian family on \\(0,
 the shape \\\lambda \> 0\\, so that \\\operatorname{Var}(Y) =
 \mu^3/\lambda\\. The returned object carries closed-form derivatives of
 the log-density to fourth order, in the parameters and in the response,
-and closed-form moments, so every generic of the toolkit answers without
-a numerical fallback.
+and closed-form moments. The fifth order and
+[`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md)
+come from the numerical fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the
+unconstrained scale on which an optimizer works. Both default to the
 logarithm, both parameters being positive.
 
 ## Usage
@@ -57,10 +58,11 @@ This is the same law as
 [`invgauss1_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss1_distrib.md),
 which carries a dispersion \\\phi = 1/\lambda\\. The map between the two
 moves one coordinate at a time, the mean being untouched, so both sets
-of derivatives stay elementary. The shape is the parametrization the
-family is usually written in, and it is the one in which the law is the
-first-passage time of a Brownian motion with drift \\\mu\\ and variance
-parameter \\\lambda\\.
+of derivatives stay elementary. The family is usually written in the
+shape parametrization. In it the law is the distribution of the
+first-passage time to a level \\a \> 0\\ of a Brownian motion with drift
+\\\nu \> 0\\ and variance parameter \\s^2\\, with \\\mu = a/\nu\\ and
+\\\lambda = a^2/s^2\\.
 
 ## Derivatives
 
@@ -126,12 +128,12 @@ and
 [`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md)
 for other positive families;
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
-for the counts this law mixes a Poisson into;
+for the Poisson mixed over this law;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
-passes;
+to validate a family of your own against the same battery of checks that
+this family passes;
 [InvGauss2Distrib](https://statmodels7.github.io/distributions7/reference/InvGauss2Distrib.md)
 for the class.
 

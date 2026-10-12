@@ -4,8 +4,8 @@
 **scale matrix** \\\Sigma\\ and `MvStudentT2Distrib` the family whose
 parametrization is its **inverse** \\\Sigma^{-1}\\. Both inherit from
 [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md),
-which carries every method: the two differ in what their free values
-describe, not in how anything is computed.
+which carries every method; the two differ in what their free values
+describe, and the computations are shared.
 
 ## Usage
 
@@ -110,9 +110,14 @@ MvStudentT2Distrib(
 
   Logical of length 1. `TRUE` when `param` carries the inverse scale
   matrix \\\Sigma^{-1}\\ and `FALSE` when it carries the scale matrix
-  \\\Sigma\\. Nothing but the sign of the log-determinant and one matrix
-  inversion depends on it; the law is the same either way, and neither
-  matrix is a moment of the response.
+  \\\Sigma\\. It decides which derivative arrays are the
+  parametrization's own and which are obtained from them (see
+  [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)),
+  the sign of the log-determinant, the prefix of the free names and the
+  quantities that
+  [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
+  reports. The same \\\Sigma\\ gives the same law either way, and
+  neither matrix is a moment of the response.
 
 ## Value
 
@@ -123,8 +128,8 @@ adding no properties of its own.
 
 ## Details
 
-Neither matrix is a covariance or a precision of the response, and the
-difference is a factor in \\\nu\\ that
+Neither matrix is a covariance or a precision of the response; they
+differ from those by a factor in \\\nu\\ that
 [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
 writes out. The numbering is the package's convention, the one that
 separates
@@ -135,8 +140,8 @@ and
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
 from
 [`gaussian3_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian3_distrib.md):
-a parametrization decides what a linear predictor acts on, so it gets a
-name.
+a parametrization decides what a linear predictor acts on, so it has a
+name of its own.
 
 ## See also
 

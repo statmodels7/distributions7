@@ -22,7 +22,8 @@ deriv_index_list(p, order)
 
 - order:
 
-  The derivative order, 1 to 4.
+  The derivative order, a positive integer; the link-scale assembly uses
+  1 to 5.
 
 ## Value
 

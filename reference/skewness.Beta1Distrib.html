@@ -4,12 +4,16 @@ $$\gamma_1 = \frac{2(b - a)\sqrt{a + b + 1}}
                       {(a + b + 2)\sqrt{ab}}.$$
 It takes the sign of \(b - a\), so a beta is right-skewed below a mean of
 one half, left-skewed above it, and exactly symmetric at \(\mu = 1/2\)
-whatever the precision."><meta property="og:description" content="Closed form in the two shapes \(a = \mu\phi\) and \(b = (1-\mu)\phi\):
+whatever the precision. The method evaluates the equivalent form in \((\mu, \phi)\)
+of beta_shape_moments(), in which the product \(ab\) is not formed, so
+the value is finite where \(ab\) underflows or overflows."><meta property="og:description" content="Closed form in the two shapes \(a = \mu\phi\) and \(b = (1-\mu)\phi\):
 $$\gamma_1 = \frac{2(b - a)\sqrt{a + b + 1}}
                       {(a + b + 2)\sqrt{ab}}.$$
 It takes the sign of \(b - a\), so a beta is right-skewed below a mean of
 one half, left-skewed above it, and exactly symmetric at \(\mu = 1/2\)
-whatever the precision."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+whatever the precision. The method evaluates the equivalent form in \((\mu, \phi)\)
+of beta_shape_moments(), in which the product \(ab\) is not formed, so
+the value is finite where \(ab\) underflows or overflows."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +21,7 @@ whatever the precision."><meta property="og:image" content="https://statmodels7.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +59,9 @@ $$\gamma_1 = \frac{2(b - a)\sqrt{a + b + 1}}
                       {(a + b + 2)\sqrt{ab}}.$$
 It takes the sign of \(b - a\), so a beta is right-skewed below a mean of
 one half, left-skewed above it, and exactly symmetric at \(\mu = 1/2\)
-whatever the precision.</p>
+whatever the precision. The method evaluates the equivalent form in \((\mu, \phi)\)
+of <code><a href="beta_shape_moments.html">beta_shape_moments()</a></code>, in which the product \(ab\) is not formed, so
+the value is finite where \(ab\) underflows or overflows.</p>
     </div>
 
 

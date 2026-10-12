@@ -19,9 +19,10 @@ large the mean is.
 
 - y:
 
-  A numeric vector of counts. A non-integer or negative value gives 0
-  with a warning from
-  [`stats::dgeom()`](https://rdrr.io/r/stats/Geometric.html).
+  A numeric vector of counts. A negative value gives 0, and a
+  non-integer value gives 0 with a warning from
+  [`stats::dgeom()`](https://rdrr.io/r/stats/Geometric.html). A missing
+  value gives `NA`.
 
 - theta:
 

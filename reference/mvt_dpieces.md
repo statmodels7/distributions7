@@ -1,13 +1,13 @@
 # The Pieces Every Mixed Response Derivative of the t Is Written In
 
 Assembles, once per call, the first and second derivatives in the
-parameters of the four quantities every mixed response derivative of
-this family is built from: \\s = \nu + q\\, the whitened residual \\w\\,
-the inverse scale matrix \\\Sigma^{-1}\\, and the two scalars \\c =
-(\nu+p)/s\\ and \\d = (\nu+p)/s^2\\ that follow from \\s\\. The response
-derivatives are \\\ell^{(y)} = -c\\w\\ and \\\ell^{(yy)} =
--c\\\Sigma^{-1} + 2d\\ww^\top\\, so differentiating either in the
-parameters is a product rule over these pieces and nothing else.
+parameters of the quantities from which every mixed response derivative
+of this family is built: \\s = \nu + q\\, the residual mapped through
+the inverse scale matrix \\w = \Sigma^{-1}(y-\mu)\\, the inverse scale
+matrix \\\Sigma^{-1}\\, and the two scalars \\c = (\nu+p)/s\\ and \\d =
+(\nu+p)/s^2\\. The response derivatives are \\\ell^{(y)} = -c\\w\\ and
+\\\ell^{(yy)} = -c\\\Sigma^{-1} + 2d\\ww^\top\\, so differentiating
+either in the parameters is a product rule over these pieces.
 
 ## Usage
 
@@ -35,12 +35,13 @@ mvt_dpieces(distrib, y, theta)
 
 ## Value
 
-A named list of the quantities above, INDEXED BY PARAMETER POSITION: the
+A named list of the quantities above, indexed by parameter position: the
 \\p\\ locations, then the matrix parametrization's free values, then
-\\\nu\\. Its components are `w`, `si`, `cw`, `dw` and `q` (the values),
-`sa`, `wa`, `Sa`, `ca`, `da` (lists of first derivatives, one per
-parameter), `npar`, and `pair(a, b)`, a function returning the
-second-order pieces `s`, `w`, `S`, `c` and `d` for one pair of
+\\\nu\\. Its components are `p`, `n` and `npar` (the dimension, the
+number of rows and the number of parameters), `w`, `si`, `s`, `cw` and
+`dw` (the values), `sa`, `wa`, `Sa`, `ca` and `da` (lists of first
+derivatives, one per parameter), and `pair(a, b)`, a function returning
+the second-order pieces `s`, `w`, `S`, `c` and `d` for one pair of
 positions.
 
 ## First derivatives
@@ -62,9 +63,16 @@ A_k\Sigma^{-1}A_l + A_l\Sigma^{-1}A_k - A\_{kl}\\,
 \$\$\partial\_{\eta_k\eta_l} s = w^\top B\_{kl}w, \quad
 \partial\_{\eta_k\eta_l} w = \Sigma^{-1}B\_{kl}w, \quad
 \partial\_{\eta_k\eta_l}\Sigma^{-1} = \Sigma^{-1}B\_{kl}\Sigma^{-1}.\$\$
-One middle matrix \\B\_{kl}\\ serves all three, which keeps the assembly
-short. \\c\\ and \\d\\ then follow by the quotient rule, \\\nu+p\\ being
-linear in \\\nu\\ and constant in everything else.
+The arrays \\P_k\\ and \\\Sigma^{-1}B\_{kl}\Sigma^{-1}\\ are the first
+and second derivatives of \\\Sigma^{-1}\\, read from
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
+and not formed from the derivatives of \\\Sigma\\; the derivatives in
+\\s\\ and \\w\\ are quadratic and linear forms in them. \\c\\ and \\d\\
+follow by the quotient rule, \\\nu+p\\ being linear in \\\nu\\ and
+constant in everything else; the derivative of \\c\\ in \\\nu\\ is
+written as \\(q-p)/s^2\\ and its second derivative as \\2(p-q)/s^3\\,
+the two terms of the quotient rule agreeing to leading order as \\\nu\\
+grows.
 
 ## Notation
 
@@ -115,5 +123,5 @@ sfun <- function(m1) {
   distributions7:::mvt_weights(y, pc)$q + t2$nu
 }
 max(abs(z$sa[[1]] - (sfun(0.5 + h) - sfun(0.5 - h)) / (2 * h)))
-#> [1] 6.164669e-11
+#> [1] 8.429746e-11
 ```

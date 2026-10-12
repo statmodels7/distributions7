@@ -10,9 +10,9 @@ family is the symmetric hyperbolic distribution, a special case of the
 generalized hyperbolic.
 
 The returned object carries closed-form derivatives of the log-density
-to fourth order in the parameters and closed first and second
-derivatives in the response. The distribution function, the quantile and
-the expected information are numerical; that is the price of the family.
+to fourth order in the parameters and in the response. The distribution
+function and the quantile are computed numerically, as is the expected
+information.
 
 ## Usage
 
@@ -68,17 +68,17 @@ exponent is quadratic in the residual near the location, where
 far from it, where it is \\\|z\|\\. That is the pseudo-Huber loss, and
 this family is its exponential.
 
-The Bessel terms are degree-homogeneous, so the exponentially scaled
-`besselK(x, nu, expon.scaled = TRUE)` is exact and avoids the overflow
-the unscaled form meets; the constant stays finite to \\\nu = 2000\\.
+The normalizing constant uses the exponentially scaled
+`besselK(x, 1, expon.scaled = TRUE)`, which equals \\e^x K_1(x)\\ and
+avoids the underflow of the unscaled function at large arguments.
 
 ## The two limits, with their rates
 
 At \\\nu \to 0\\ the exponent is \\\|y-\mu\|/\sigma\\ and the family is
-the **Laplace** with scale \\\sigma\\: measured at \\\mu = 0\\, \\\sigma
-= 1\\, the largest gap over \\y \in \\0.5, 1, 2, 4\\\\ is `4.9e-05` at
-\\\nu = 10^{-4}\\ and `1.9e-12` at \\10^{-12}\\, so the approach is
-\\O(\nu)\\.
+the **Laplace** with scale \\\sigma\\. The normalizing constant
+satisfies \\\sqrt{\nu} K_1(\sqrt{\nu}) = 1 + (\nu/4)\log\nu + O(\nu)\\,
+so the density approaches the Laplace density at rate
+\\O(\nu\log(1/\nu))\\.
 
 At \\\nu \to \infty\\ the exponent is \\\sqrt{\nu} +
 (y-\mu)^2/(2\sqrt{\nu}\sigma^2)\\ and the family is the **Gaussian**
@@ -105,12 +105,11 @@ is \$\$\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{\sigma^2 D},
 \dfrac{1}{\sigma}\left(\dfrac{r^2}{\sigma^2 D} - 1\right),\$\$
 \$\$\dfrac{\partial \ell}{\partial \nu} = -\dfrac{1}{2}\left\[
 \dfrac{1}{\nu} + \dfrac{1}{D} + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\\
-K_1(\sqrt{\nu})}\right\].\$\$ The location component is **bounded by**
-\\1/\sigma\\, which is the family's whole point; the curvature in
-\\\mu\\, unlike a Student t's, is negative at every observation, so the
-log-density stays concave in the location. Orders three and four are
-closed form too, in compiled kernels, as are the derivatives in the
-response and the mixed derivative
+K_1(\sqrt{\nu})}\right\].\$\$ The location component is bounded by
+\\1/\sigma\\; the curvature in \\\mu\\, unlike a Student t's, is
+negative at every observation, so the log-density stays concave in the
+location. Orders three and four are closed form too, in compiled
+kernels, as are the derivatives in the response and the mixed derivative
 [`distrib_cross_y.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.PseudoHuberDistrib.md),
 whose \\\nu\\ component is \\r/(2\sigma^2 D^3)\\.
 
@@ -118,9 +117,11 @@ whose \\\nu\\ component is \\r/(2\sigma^2 D^3)\\.
 
 The distribution function has no elementary form and is a quadrature,
 batched over the quantiles and reflected about \\\mu\\ so that only the
-lower tail is integrated. The quantile inverts it by root-finding. The
-generator does not use either: it draws the family as a normal variance
-mixture with a generalized inverse Gaussian mixing variable.
+lower tail is integrated, and computed on the log scale when the
+logarithm is requested. The quantile inverts it by root-finding on the
+logarithm of the smaller tail. The generator does not use either: it
+draws the family as a normal variance mixture with a generalized inverse
+Gaussian mixing variable.
 
 The **expected information has no elementary form either**, but it
 depends on \\\nu\\ alone once the location and the scale are factored

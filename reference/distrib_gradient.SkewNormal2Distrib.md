@@ -19,10 +19,10 @@ of orders one to five, each from its own compiled kernel.
 
 - scale:
 
-  `"parameter"` or `"link"`; the link scale is applied by the generic
-  (by
-  [`deriv5_scale()`](https://statmodels7.github.io/distributions7/reference/deriv5_scale.md)
-  at the fifth order).
+  `"parameter"` or `"link"`. At orders one to four the generic applies
+  the link scale after dispatch; the fifth-order method applies it
+  itself, through
+  [`deriv5_scale()`](https://statmodels7.github.io/distributions7/reference/deriv5_scale.md).
 
 - expected:
 
@@ -54,17 +54,27 @@ components at orders one to five.
 
 With \\w = (y - \mu)/\sigma\\, \\c = (4 - \pi)/2\\ and \\r =
 \mathrm{sign}(\gamma_1)(\|\gamma_1\|/c)^{1/3}\\, the log-density is
-\$\$\ell = -\log\sigma - \tfrac12\log(1 + r^2) - \tfrac12 z^2 +
-\log\Phi(x), \quad z = \frac{w + r}{\sqrt{1 + r^2}}, \quad x =
-\frac{r\\z}{\sqrt{b^2 - (1 - b^2) r^2}},\$\$ with \\b = \sqrt{2/\pi}\\,
-and a derivative in \\\gamma_1\\ is \\(3 c r^2)^{-1}\partial_r\\. Every
-component is a combination of the derivatives of \\F = \ell +
-\log\sigma\\ in \\w\\ and \\\gamma_1\\, derived offline. Their closed
-forms in \\x\\, \\w\\, \\r\\ and \\\phi(x)/\Phi(x)\\ cancel terms of
-order \\r^{-2k}\\ as \\\gamma_1 \to 0\\, so where \\\|x\| \< 0.4\\ and
-\\\|r\| \< 0.4\\ the kernels take the derivatives in \\\gamma_1\\ from
-the series \\F = \sum\_{n \ge 3} F_n(w) r^n\\, whose coefficients are
-polynomials in \\w\\ computed offline at 60 digits.
+\$\$\ell = \tfrac12\log\frac{2}{\pi} - \log\sigma - \tfrac12\log(1 +
+r^2) - \tfrac12 z^2 + \log\Phi(x), \quad z = \frac{w + r}{\sqrt{1 +
+r^2}}, \quad x = \frac{r\\z}{\sqrt{b^2 - (1 - b^2) r^2}},\$\$ with \\b =
+\sqrt{2/\pi}\\, and a derivative in \\\gamma_1\\ is \\(3 c
+r^2)^{-1}\partial_r\\. Every component is a combination of the
+derivatives of \\F = \ell + \log\sigma\\ in \\w\\ and \\\gamma_1\\,
+derived offline. Their closed forms in \\x\\, \\w\\, \\r\\ and
+\\\phi(x)/\Phi(x)\\ cancel terms of order \\r^{-2k}\\ as \\\gamma_1 \to
+0\\, so where \\\|x\| \< 0.4\\ and \\\|r\| \< 0.4\\ the kernels take the
+derivatives in \\\gamma_1\\ from the series \\F = \sum\_{n \ge 3} F_n(w)
+r^n\\, whose coefficients are polynomials in \\w\\ computed offline at
+60 digits. Far below the step of the skewing function, where \\x \< -1\\
+and outside the region of the series, the closed forms in
+\\\phi(x)/\Phi(x)\\ cancel as well, and the kernels compose the
+derivatives instead: those of \\1/\sqrt{b^2 - (1-b^2)r^2}\\,
+\\(1+r^2)^{-1/2}\\ and \\\log(1+r^2)\\ by Faa di Bruno in \\r\\, then in
+\\\gamma_1\\ through \\r(\gamma_1)\\, and the outer functions \\-u^2/2\\
+and \\\log\Phi\\ with \\z\\ and \\x\\, which are linear in \\w\\; the
+derivatives of \\\log\Phi\\ come from the cumulant route of
+[`distrib_deriv3.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewNormal1Distrib.md),
+which does not cancel there.
 
 The series has no \\r\\ and no \\r^2\\ term, so the score is finite at
 \\\gamma_1 = 0\\; its \\r^4\\ and \\r^5\\ terms do not vanish, so the

@@ -4,8 +4,8 @@ Draws `n` independent gamma variates by calling
 [`stats::rgamma()`](https://rdrr.io/r/stats/GammaDist.html) at shape
 \\\alpha = \mu^2/\sigma^2\\ and rate \\\lambda = \mu/\sigma^2\\, so the
 draws come from R's own gamma generator and depend on `.Random.seed` in
-the usual way. The ratio-of-uniforms fallback the base class supplies is
-bypassed.
+the usual way. The inverse-transform fallback of the base class is not
+used.
 
 ## Arguments
 
@@ -31,7 +31,8 @@ bypassed.
 
 ## Value
 
-A numeric vector of `n` strictly positive draws.
+A numeric vector of `n` non-negative draws. At a very small shape
+\\\mu^2/\sigma^2\\ a draw can underflow to exactly 0.
 
 ## See also
 

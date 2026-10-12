@@ -13,7 +13,7 @@ information, each from its own compiled kernel."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,7 +97,10 @@ use. Defaults to <code>1L</code>.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list with one numeric vector per component: 3, 6, 10, 15
 and 21 components at orders one to five, the second order keyed
-<code>mu_mu</code>, <code>sigma_sigma</code>, <code>nu_nu</code>, <code>mu_sigma</code>, <code>mu_nu</code>, <code>sigma_nu</code>.</p>
+<code>mu_mu</code>, <code>sigma_sigma</code>, <code>nu_nu</code>, <code>mu_sigma</code>, <code>mu_nu</code>, <code>sigma_nu</code>. The
+expected information has the same six components, the expected third
+and fourth derivatives 10 and 15, <code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code> 18 and
+<code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()</a></code> 36.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

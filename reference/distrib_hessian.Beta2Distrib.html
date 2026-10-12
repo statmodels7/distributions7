@@ -25,7 +25,7 @@ distrib_expected_hessian.Beta2Distrib() exactly."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,14 +100,15 @@ positive.</p></dd>
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of three numeric vectors, <code>alpha_alpha</code>, <code>beta_beta</code>
-and <code>alpha_beta</code>, in that order, each of length <code>length(y)</code>. The three
+and <code>alpha_beta</code>, in that order, each of length
+<code>max(length(y), length(alpha), length(beta))</code>. The three
 name the distinct entries of a symmetric \(2 \times 2\) matrix per
 observation.</p>
     </div>
@@ -124,8 +125,7 @@ observation.</p>
     <div class="dont-index"><p><code><a href="distrib_gradient.Beta2Distrib.html">distrib_gradient.Beta2Distrib()</a></code> for the score, which is the one
 quantity here that does read the data;
 <code><a href="distrib_expected_hessian.Beta2Distrib.html">distrib_expected_hessian.Beta2Distrib()</a></code>, which returns the same numbers;
-<code><a href="beta2_higher.html">beta2_higher()</a></code>, which computes this; and <code><a href="distrib_hessian.html">distrib_hessian()</a></code> for the
-generic.</p></div>
+and <code><a href="distrib_hessian.html">distrib_hessian()</a></code> for the generic.</p></div>
     </div>
 
     <div class="section level2">

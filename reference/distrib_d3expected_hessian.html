@@ -11,7 +11,7 @@ triple \((c,d,e)\)."><meta property="og:image" content="https://statmodels7.gith
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,9 +107,9 @@ that registers an analytic second derivative of its expected information
 and signals an error otherwise. The step is the cube root of machine epsilon
 relative to the coordinate, kept inside a finite bound on the parameter
 scale by <code><a href="fd_steps.html">fd_steps()</a></code>.</p>
-<p>On <code>scale = "link"</code> the difference is taken along the free scale of the
-parameter, of the link-scale second derivative, so the chain rule is the
-one <code><a href="dexpected_link.html">dexpected_link()</a></code> already applies.</p>
+<p>On <code>scale = "link"</code> the difference of the link-scale second derivative is
+taken along the free coordinate of the parameter, so the chain rule is the
+one that <code><a href="dexpected_link.html">dexpected_link()</a></code> already applies.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

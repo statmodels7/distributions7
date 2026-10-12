@@ -13,7 +13,7 @@ differentiates \(c\cos(y-m)\)."><meta property="og:image" content="https://statm
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,8 @@ differentiates \(c\cos(y-m)\).</p>
 <span></span>
 <span><span class="fu">dy_pow</span><span class="op">(</span><span class="va">c</span>, <span class="va">p</span>, <span class="va">y</span>, <span class="va">k</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">dy_zero</span><span class="op">(</span><span class="va">c</span>, <span class="va">r</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">dy_logaff</span><span class="op">(</span><span class="va">c</span>, <span class="va">a</span>, <span class="va">b</span>, <span class="va">y</span>, <span class="va">k</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">dy_cos</span><span class="op">(</span><span class="va">c</span>, <span class="va">m</span>, <span class="va">y</span>, <span class="va">k</span><span class="op">)</span></span></code></pre></div>
@@ -85,6 +87,11 @@ differentiates \(c\cos(y-m)\).</p>
 <dd><p>The exponent, for <code>dy_pow</code>.</p></dd>
 
 
+<dt id="arg-r">r<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
+<dd><p>The derivative before the masking, for <code>dy_zero</code>, which sets it
+to 0 wherever the coefficient <code>c</code> (recycled to its length) is 0.</p></dd>
+
+
 <dt id="arg-a-b">a, b<a class="anchor" aria-label="anchor" href="#arg-a-b"></a></dt>
 <dd><p>The affine coefficients, for <code>dy_logaff</code>.</p></dd>
 
@@ -100,7 +107,10 @@ differentiates \(c\cos(y-m)\).</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>A term linear in \(y\) is <code>dy_pow</code> at \(p = 1\) and vanishes from
-the second order, so it needs no case of its own.</p>
+the second order, so it needs no case of its own. Where the coefficient of
+the derivative is zero (a shape equal to 1 in <code>dy_log</code> and <code>dy_log1m</code>, an
+integer exponent below the order in <code>dy_pow</code>) the result is 0 at every
+<code>y</code>, including the boundary where the power of <code>y</code> is infinite.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

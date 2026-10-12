@@ -11,8 +11,10 @@ $$\frac{\partial^3\ell}{\partial y\,\partial\mu_j\partial\eta_k}
       - \Sigma^{-1}\!\left(A_l\Sigma^{-1}A_k
         + A_k\Sigma^{-1}A_l\right)\!w,$$
 with \(B_k = \Sigma^{-1}A_k\Sigma^{-1}\) and
-\(w = \Sigma^{-1}(y-\mu)\). Only the pure matrix pairs carry the
-observation, through \(w\); the mixed pairs repeat one row."><meta property="og:description" content="Computes \(\partial^3\ell/\partial y\,\partial\theta_a\partial\theta_b\),
+\(w = \Sigma^{-1}(y-\mu)\); the two are \(P_k e_j\) and \(-P_{kl}(y -
+\mu)\), computed from the derivatives of \(\Sigma^{-1}\) that
+mv_matrix_pieces() supplies. Only the pure matrix pairs carry the
+observation; the mixed pairs repeat one row."><meta property="og:description" content="Computes \(\partial^3\ell/\partial y\,\partial\theta_a\partial\theta_b\),
 one \(n \times p\) matrix per unordered pair of parameters. The response
 gradient \(-\Sigma^{-1}(y-\mu)\) is linear in the mean, so a pair naming
 two mean parameters gives the zero matrix. The mixed pairs and the pure
@@ -24,8 +26,10 @@ $$\frac{\partial^3\ell}{\partial y\,\partial\mu_j\partial\eta_k}
       - \Sigma^{-1}\!\left(A_l\Sigma^{-1}A_k
         + A_k\Sigma^{-1}A_l\right)\!w,$$
 with \(B_k = \Sigma^{-1}A_k\Sigma^{-1}\) and
-\(w = \Sigma^{-1}(y-\mu)\). Only the pure matrix pairs carry the
-observation, through \(w\); the mixed pairs repeat one row."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(w = \Sigma^{-1}(y-\mu)\); the two are \(P_k e_j\) and \(-P_{kl}(y -
+\mu)\), computed from the derivatives of \(\Sigma^{-1}\) that
+mv_matrix_pieces() supplies. Only the pure matrix pairs carry the
+observation; the mixed pairs repeat one row."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -33,7 +37,7 @@ observation, through \(w\); the mixed pairs repeat one row."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,8 +82,10 @@ $$\frac{\partial^3\ell}{\partial y\,\partial\mu_j\partial\eta_k}
       - \Sigma^{-1}\!\left(A_l\Sigma^{-1}A_k
         + A_k\Sigma^{-1}A_l\right)\!w,$$
 with \(B_k = \Sigma^{-1}A_k\Sigma^{-1}\) and
-\(w = \Sigma^{-1}(y-\mu)\). Only the pure matrix pairs carry the
-observation, through \(w\); the mixed pairs repeat one row.</p>
+\(w = \Sigma^{-1}(y-\mu)\); the two are \(P_k e_j\) and \(-P_{kl}(y -
+\mu)\), computed from the derivatives of \(\Sigma^{-1}\) that
+<code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code> supplies. Only the pure matrix pairs carry the
+observation; the mixed pairs repeat one row.</p>
     </div>
 
 
@@ -101,8 +107,10 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, handled by the
-generic before dispatch. The two coincide here.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The method
+returns the parameter scale and the generic applies the link scale to its
+result. Every link of this family is the identity, so the two scales
+coincide.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -127,8 +135,8 @@ and \(\ell\) the log-density of one observation.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_cross2_y.MvGaussianDistrib.html">distrib_cross2_y.MvGaussianDistrib()</a></code> and
-<code><a href="distrib_hess_y_hess.MvGaussianDistrib.html">distrib_hess_y_hess.MvGaussianDistrib()</a></code> for the other two derivatives a
-marginal criterion reads, and <code><a href="distrib_grad_y_hess.html">distrib_grad_y_hess()</a></code> for the generic.</p></div>
+<code><a href="distrib_hess_y_hess.MvGaussianDistrib.html">distrib_hess_y_hess.MvGaussianDistrib()</a></code> for the other two derivatives that
+a marginal criterion reads, and <code><a href="distrib_grad_y_hess.html">distrib_grad_y_hess()</a></code> for the generic.</p></div>
     </div>
 
     <div class="section level2">

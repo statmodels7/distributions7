@@ -2,19 +2,19 @@
 
 The S7 class of the multinomial family on \\p\\ categories and \\n\\
 trials, parametrized by a probability vector carried on a `parameters7`
-simplex. It inherits from `multivariate_distrib`, and it is the first
-multivariate family here whose support is a **finite set of points**
-rather than a region: every vector of non-negative integers summing to
-\\n\\. The nine methods listed below are registered on it in this file
-and two more in `mv_higher.R`.
+simplex. It inherits from `multivariate_distrib`. Its support is a
+finite set of points: every vector of non-negative integers summing to
+\\n\\.
 
 The class carries two properties beyond the parent's: `size`, the number
-of trials, fixed at construction; and `param`, the simplex the
-probabilities lie on, whose free names become the family's own parameter
+of trials, fixed at construction; and `param`, the simplex on which the
+probabilities lie, whose free names become the family's own parameter
 names prefixed by `probs_`. Build one with
 [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md),
-which validates all three and fills the properties in. This page
-documents the raw S7 constructor, which validates none of that.
+which validates `n_dim`, `size` and the simplex and fills the properties
+in. This page documents the raw S7 constructor, which runs only the
+validators of `multivariate_distrib` and `distrib` and does not check
+`size` or `param`.
 
 ## Usage
 
@@ -90,9 +90,9 @@ MultinomialDistrib(
 
 - n_dim:
 
-  The dimension \\p\\ of one observation. A single positive integer; the
-  validator rejects anything else, and also rejects a `dimension`
-  property other than `"multivariate"`.
+  The dimension \\p\\ of one observation, a single positive integer. The
+  validator rejects any other value, and also a `dimension` property
+  other than `"multivariate"`.
 
 - size:
 
@@ -115,34 +115,43 @@ properties are the parent's. For an object built by
 [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md),
 `params` is the simplex's free names prefixed by `probs_`, `n_params` is
 \\p-1\\, `bounds` is `c(0, size)`, and every parameter carries an
-identity link, its free value being unconstrained already. There is **no
-dispersion parameter**: the probabilities are all there is.
+identity link, its free value being unconstrained already. The family
+has no dispersion parameter.
 
 ## Methods
 
-Registered on this class in this file:
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MultinomialDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MultinomialDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MultinomialDistrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MultinomialDistrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.MultinomialDistrib.md),
-[`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.MultinomialDistrib.md),
-[`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.MultinomialDistrib.md),
-[`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MultinomialDistrib.md),
-[`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.MultinomialDistrib.md),
-[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.MultinomialDistrib.md)
-and
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.MultinomialDistrib.md).
+Registered on this class, each linked to the page that documents it:
 
-Two more are registered in `mv_higher.R`:
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MultinomialDistrib.md)
-and
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.MultinomialDistrib.md).
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MultinomialDistrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.MultinomialDistrib.md);
 
-Everything else is inherited from
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MultinomialDistrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MultinomialDistrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MultinomialDistrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MultinomialDistrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.MultinomialDistrib.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.MultinomialDistrib.md)
+  and
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.MultinomialDistrib.md);
+
+- the multivariate summaries:
+  [`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.MultinomialDistrib.md),
+  [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MultinomialDistrib.md),
+  [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.MultinomialDistrib.md)
+  and
+  [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.MultinomialDistrib.md).
+
+Every other generic is inherited from
 [`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md),
-which refuses the distribution function, the quantile and the response
-derivatives.
+whose methods signal an error for the distribution function, the
+quantile function, the response gradient and Hessian, the mixed response
+derivative, the skewness and the kurtosis.
 
 ## See also
 
@@ -170,7 +179,7 @@ c(categories = d@n_dim, trials = d@size, parameters = d@n_params)
 d@params
 #> [1] "probs_alr1" "probs_alr2"
 
-# The support is finite and enumerable, which is what the class is for.
+# The support is finite and enumerable.
 nrow(mv_support(d, NULL))
 #> [1] 21
 ```

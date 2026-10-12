@@ -2,18 +2,22 @@
 
 Returns the marginal law of a subset of coordinates, which for this
 family is again a Student t: the subvector of the location, the
-corresponding block of the scale matrix, and THE SAME degrees of
-freedom. \\\nu\\ does not change with the dimension, and that is why the
-family is closed under marginalization: the mixing variable of the
-scale-mixture representation is shared by every coordinate, so it
-survives integrating any of them out.
-
-The returned object is a fresh
+corresponding block of the scale matrix, and the same degrees of
+freedom. The mixing variable of the scale-mixture representation is
+shared by every coordinate, so it survives integrating any of them out.
+The returned object is a new
 [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
-of the reduced dimension on an unstructured scale matrix, so the free
-values are recomputed from the block by
+of the reduced dimension when `distrib` is a
+[MvStudentT1Distrib](https://statmodels7.github.io/distributions7/reference/MvStudentT1Distrib.md),
+and a new
+[`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
+when it is a
+[MvStudentT2Distrib](https://statmodels7.github.io/distributions7/reference/MvStudentT1Distrib.md),
+both on an unstructured log-Cholesky matrix. The free values are
+computed by
 [`parameters7::param_free()`](https://statmodels7.github.io/parameters7/reference/param_free.html)
-and are not a subset of the original's.
+from the block of the scale matrix (from its inverse for the second
+family), so they are not a subset of the original's.
 
 ## Arguments
 
@@ -22,7 +26,9 @@ and are not a subset of the original's.
   An
   [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   object, from
-  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
+  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
+  or
+  [`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
 
 - theta:
 
@@ -30,9 +36,10 @@ and are not a subset of the original's.
 
 - which:
 
-  An integer vector of coordinates to keep, between 1 and \\p\\.
-  Duplicates and out-of-range values are not checked and reach the
-  matrix subsetting.
+  An integer vector of distinct coordinates to keep, each between 1 and
+  \\p\\, already checked by the generic
+  [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md).
+  The marginal follows the order given.
 
 - ...:
 
@@ -41,7 +48,8 @@ and are not a subset of the original's.
 ## Value
 
 A named list with `distrib`, an `MvStudentTDistrib` of dimension
-`length(which)`, and `theta`, its parameters as a named list.
+`length(which)` of the parent's subclass, and `theta`, its parameters as
+a named list.
 
 ## Notation
 

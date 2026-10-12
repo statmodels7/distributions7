@@ -5,17 +5,17 @@ $$f(y; \mu) = \dfrac{y^{\mu/2 - 1} e^{-y/2}}{2^{\mu/2}\,\Gamma(\mu/2)},
 by calling stats::dchisq() at df = mu. With log = TRUE the logarithm
 is formed inside dchisq() and stays finite where the density itself
 underflows.
-The density is unbounded at the origin for \(\mu &amp;lt; 2\), flat there at
-\(\mu = 2\), where the family is the exponential with mean 2, and vanishes
-at the origin for \(\mu &amp;gt; 2\)."><meta property="og:description" content="Computes the chi-squared density
+The density is unbounded at the origin for \(\mu &amp;lt; 2\), equals 1/2 there
+at \(\mu = 2\), where the family is the exponential with mean 2, and
+vanishes at the origin for \(\mu &amp;gt; 2\)."><meta property="og:description" content="Computes the chi-squared density
 $$f(y; \mu) = \dfrac{y^{\mu/2 - 1} e^{-y/2}}{2^{\mu/2}\,\Gamma(\mu/2)},
       \qquad y &amp;gt; 0,$$
 by calling stats::dchisq() at df = mu. With log = TRUE the logarithm
 is formed inside dchisq() and stays finite where the density itself
 underflows.
-The density is unbounded at the origin for \(\mu &amp;lt; 2\), flat there at
-\(\mu = 2\), where the family is the exponential with mean 2, and vanishes
-at the origin for \(\mu &amp;gt; 2\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The density is unbounded at the origin for \(\mu &amp;lt; 2\), equals 1/2 there
+at \(\mu = 2\), where the family is the exponential with mean 2, and
+vanishes at the origin for \(\mu &amp;gt; 2\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +23,7 @@ at the origin for \(\mu &amp;gt; 2\)."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,9 +62,9 @@ $$f(y; \mu) = \dfrac{y^{\mu/2 - 1} e^{-y/2}}{2^{\mu/2}\,\Gamma(\mu/2)},
 by calling <code><a href="https://rdrr.io/r/stats/Chisquare.html" class="external-link">stats::dchisq()</a></code> at <code>df = mu</code>. With <code>log = TRUE</code> the logarithm
 is formed inside <code><a href="https://rdrr.io/r/stats/Chisquare.html" class="external-link">dchisq()</a></code> and stays finite where the density itself
 underflows.</p>
-<p>The density is unbounded at the origin for \(\mu &lt; 2\), flat there at
-\(\mu = 2\), where the family is the exponential with mean 2, and vanishes
-at the origin for \(\mu &gt; 2\).</p>
+<p>The density is unbounded at the origin for \(\mu &lt; 2\), equals 1/2 there
+at \(\mu = 2\), where the family is the exponential with mean 2, and
+vanishes at the origin for \(\mu &gt; 2\).</p>
     </div>
 
 
@@ -78,8 +78,8 @@ at the origin for \(\mu &gt; 2\).</p>
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric vector of observations. The support is
-\((0, \infty)\); a value at or below zero gives 0, <code>Inf</code> or a finite
-value according to \(\mu\).</p></dd>
+\((0, \infty)\); a negative value gives 0, and the value 0 gives <code>Inf</code>,
+1/2 or 0 according as \(\mu\) is below, equal to or above 2.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>

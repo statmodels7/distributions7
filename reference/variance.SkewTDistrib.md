@@ -2,10 +2,11 @@
 
 Closed form for \\\nu \> 2\\: \\\operatorname{Var}(Y) =
 \sigma^2\\\nu/(\nu-2) - \mu_z^2\\\\, with \\\mu_z = \delta b\_\nu\\ the
-mean of the standardized variable. At \\\nu \le 2\\ the value is `NaN`,
-the second moment not existing there. Two effects push in opposite
-directions: the \\t\\ factor \\\nu/(\nu-2)\\ inflates the variance above
-the scale, and the skewing term \\\mu_z^2\\ pulls it back.
+mean of the standardized variable. At \\1 \< \nu \le 2\\ the second
+moment diverges and the value is `Inf`, as for the Student t; at \\\nu
+\le 1\\ it is `NaN`. Two effects push in opposite directions: the \\t\\
+factor \\\nu/(\nu-2)\\ inflates the variance above the scale, and the
+skewing term \\\mu_z^2\\ pulls it back.
 
 ## Arguments
 
@@ -18,7 +19,8 @@ the scale, and the skewing term \\\mu_z^2\\ pulls it back.
 
   A named list with components `mu`, `sigma` (positive), `alpha` (any
   sign) and `nu` (positive), each a numeric vector of length 1 or `n`.
-  Settings with \\\nu \le 2\\ give `NaN`.
+  Settings with \\1 \< \nu \le 2\\ give `Inf` and those with \\\nu \le
+  1\\ give `NaN`.
 
 - ...:
 
@@ -27,8 +29,8 @@ the scale, and the skewing term \\\mu_z^2\\ pulls it back.
 ## Value
 
 A numeric vector of variances, of the length the recycled parameters
-imply, `NaN` wherever \\\nu \le 2\\. The scale, `alpha` and `nu` enter
-the value; the location does not.
+imply, `Inf` wherever \\1 \< \nu \le 2\\ and `NaN` wherever \\\nu \le
+1\\. The scale, `alpha` and `nu` enter the value; the location does not.
 
 ## Notation
 
@@ -61,7 +63,7 @@ d <- skewt_distrib()
 all.equal(variance(d, list(mu = 0, sigma = 1, alpha = 0, nu = 5)), 5 / 3)
 #> [1] TRUE
 
-# It does not exist at or below two degrees of freedom.
-variance(d, list(mu = 0, sigma = 1, alpha = 2, nu = c(2, 5)))
-#> [1]       NaN 0.9461605
+# It diverges for 1 < nu <= 2 and does not exist at or below 1.
+variance(d, list(mu = 0, sigma = 1, alpha = 2, nu = c(1, 2, 5)))
+#> [1]       NaN       Inf 0.9461605
 ```

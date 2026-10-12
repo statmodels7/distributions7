@@ -24,8 +24,8 @@ contributes to the second derivative of \\\log Z\\.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, applied by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - approx:
 
@@ -43,16 +43,24 @@ contributes to the second derivative of \\\log Z\\.
 
 A named list of numeric vectors of length `length(y)`, one component per
 unordered pair of parameters, keyed as
-[`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each vector constant.
+[`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md);
+each vector is constant for scalar parameters.
 
 ## Details
 
-One quadrature per component is needed even where the parent has exact
-cdf derivatives, since those give \\\mathbb{E}\_T\[H\_{ij}\] +
-\mathbb{E}\_T\[s_i s_j\]\\ and the covariance needs the second term on
-its own. No component depends on the data, so every returned vector is
-constant.
+The cdf derivatives of the parent give only \\\mathbb{E}\_T\[H\_{ij}\] +
+\mathbb{E}\_T\[s_i s_j\]\\, not the second term alone, so the expected
+Hessian reads separately computed sums of \\s_i s_j\\. For a parent with
+a scalar route,
+[`trunc_route_parts()`](https://statmodels7.github.io/distributions7/reference/trunc_route_parts.md)
+computes them by the compiled rule; otherwise
+[`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
+is called for each component. The cdf derivatives give
+\\\mathbb{E}\_T\[H\_{ij}\] + \mathbb{E}\_T\[s_i s_j\]\\ and the
+covariance needs the second term on its own. The components do not
+depend on the data. Each returned vector is constant when the parameters
+are scalars, and varies with the parameters when they vary by
+observation.
 
 ## Notation
 

@@ -10,10 +10,6 @@ constant \\-1/\mu\\ of an exponential. At \\\phi \> 1\\ the shape falls
 below 1, the density has no interior mode and the derivative is negative
 throughout.
 
-Quantile residuals and the mixed derivatives of
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-read it.
-
 ## Arguments
 
 - distrib:
@@ -48,7 +44,7 @@ for the second derivative in the response,
 [`distrib_gradient.Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gamma1Distrib.md)
 for the score in the parameters,
 [`gamma1_shape_rate()`](https://statmodels7.github.io/distributions7/reference/gamma1_shape_rate.md)
-for the conversion this uses, and
+for the conversion that this method uses, and
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
 for the generic.
 

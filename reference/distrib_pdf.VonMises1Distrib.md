@@ -8,11 +8,10 @@ and an angle is not wrapped into it.
 
 The normalizing constant goes through
 [`numericals7::log_bessel_i()`](https://statmodels7.github.io/numericals7/reference/log_bessel_i.html).
-R's exponentially scaled `besselI` **underflows to an exact zero**
-between \\\kappa = 10^5\\ and \\10^6\\, where the logarithm then returns
-`-Inf`; `log_bessel_i` stays finite wherever the logarithm itself is
-representable. Measured at \\\kappa = 10^6\\ it returns 999992.17 where
-the base route returns `-Inf`.
+R's exponentially scaled `besselI` returns an exact zero from about
+\\\kappa = 2 \times 10^5\\, so that its logarithm is `-Inf`;
+`log_bessel_i` stays finite wherever the logarithm itself is
+representable.
 
 ## Arguments
 
@@ -46,9 +45,8 @@ the base route returns `-Inf`.
 
   A single positive integer, how many threads
   [`numericals7::log_bessel_i()`](https://statmodels7.github.io/numericals7/reference/log_bessel_i.html)
-  may use. It is carried down because this is where the family spends
-  its time: profiled at 80.8 per cent of a fit whose concentration is
-  modeled, so that `kappa` is a vector. Defaults to `1L`.
+  may use. The Bessel evaluation is the dominant cost when `kappa` is a
+  vector. Defaults to `1L`.
 
 ## Value
 

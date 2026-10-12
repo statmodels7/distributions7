@@ -15,7 +15,7 @@ rate where mu is expected gets the reciprocal distribution."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +72,8 @@ the mean, so the reciprocal is taken inside the method; a reader passing
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with the single component <code>mu</code>, a numeric vector
 of length 1 or of the length of <code>y</code>. A value of length 1 is recycled.
-<code>mu</code> must be strictly positive; a non-positive value gives <code>NaN</code> with a
-warning from <code><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">stats::dexp()</a></code>.</p></dd>
+<code>mu</code> must be strictly positive; the generic signals an error for a zero
+or negative value before the method is called.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>

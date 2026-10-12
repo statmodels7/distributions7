@@ -1,11 +1,10 @@
-# No Numerical Mixed Response Derivative in Several Dimensions
+# Mixed Response Derivative of a Multivariate Family Without a Method
 
-Signals an error. Unlike the two refusals beside it, the obstruction
-here is not that a line differences wrongly: it is that no consumer has
-fixed the shape. The univariate generic returns one number per
-observation per parameter; the multivariate quantity is one \\n \times
-p\\ matrix per parameter, and a family that supplies it registers a
-method returning that, as the gaussian and the Student t do.
+Signals an error. The univariate generic returns one number per
+observation and per parameter, while the multivariate quantity is one
+\\n \times p\\ matrix per parameter, and the class has no fallback of
+that shape. A family that supplies it registers a method returning one
+matrix per parameter, as the gaussian and the Student t do.
 
 ## Arguments
 
@@ -17,16 +16,16 @@ method returning that, as the gaussian and the Student t do.
 
 - y:
 
-  An \\n \times p\\ numeric matrix of observations. Not examined.
+  An \\n \times p\\ numeric matrix of observations. Not read.
 
 - theta:
 
-  A named list of parameters. Not examined.
+  A named list of parameters. Not read.
 
 - scale:
 
-  One of `"parameter"` or `"link"`, handled by the generic before
-  dispatch. Not examined.
+  One of `"parameter"` or `"link"`. The generic applies the link scale
+  to the result of a method. Not read here.
 
 - ...:
 
@@ -34,15 +33,15 @@ method returning that, as the gaussian and the Student t do.
 
 ## Value
 
-Never returns: it always signals an error naming the family and the
-shape a method should produce.
+Does not return: it signals an error naming the family and the shape
+that a method produces.
 
 ## See also
 
 [`distrib_cross_y.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.MvGaussianDistrib.md)
 and
 [`distrib_cross_y.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.MvStudentTDistrib.md)
-for the two families that answer, and
+for the two families with a method, and
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
 for the generic.
 
@@ -56,7 +55,7 @@ y <- distrib_rng(d, 3, theta)
 try(distrib_cross_y(d, y, theta))
 #> Error : distrib_cross_y() is not defined for 'dirichlet [3d, mean=simplex]': register a closed form on the family, returning one n-by-p matrix per parameter as the gaussian and the Student t do.
 
-# The shape a method returns: one n by p matrix per parameter.
+# The shape that a method returns: one n by p matrix per parameter.
 g <- mvgaussian1_distrib(2)
 th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
            sigma_L2.1 = 0.5)

@@ -15,7 +15,7 @@ holds."><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,18 +81,18 @@ holds.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A function of a block, a character vector of parameter names, that
-returns the corresponding mixed partial. A block naming a parameter
-outside <code>nm</code> gives the order-zero factor for both, which is the value
-itself; no caller does that.</p>
+returns the corresponding mixed partial. Names outside <code>nm</code> are not
+counted, so a block made only of such names gives the order-zero factor
+for both, which is the value itself.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Both families this file serves are separable in exactly this way. The
+    <p>The inverse Gaussian, which uses this function, is separable in this way. The
 inverse Gaussian's \(a\), \(b\) and \(c\) are each a function of the
 mean times a function of the dispersion; the elastic net's \(s\) and
 \(x\) are each a function of \(\lambda\) times a function of
-\(\alpha\). Separability is why four orders are cheap here: no
-multivariate expansion is ever formed.</p>
+\(\alpha\). Each mixed partial is therefore a product of two
+one-variable derivatives, which is why four orders are cheap here.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

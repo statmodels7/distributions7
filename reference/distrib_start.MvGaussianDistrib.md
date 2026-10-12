@@ -3,12 +3,13 @@
 Returns the sample mean and the sample covariance, carried onto the
 distribution's matrix parametrization. For an unstructured covariance
 those **are** the maximum likelihood estimate, so the fit begins at the
-answer and confirms it in one step; for a structured one they are the
-closest matrix the parametrization can represent, which is a great deal
-nearer than the origin.
+answer and confirms it in one step. For a structured one the matrix is
+carried onto the structure exactly where the structure can represent it,
+and otherwise approximated by least squares on the entries (see
+[`param_free_or_fit()`](https://statmodels7.github.io/distributions7/reference/param_free_or_fit.md)).
 
-One starting value is returned whatever `n_start` asks for. There is
-nothing to explore when the first point is the estimate.
+One starting value is returned for any value of `n_start`, because the
+first point is already the estimate.
 
 ## Arguments
 

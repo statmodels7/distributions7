@@ -3,7 +3,10 @@
 Closed form: \$\$\gamma_1 = \frac{2(\beta - \alpha)\sqrt{\alpha +
 \beta + 1}} {(\alpha + \beta + 2)\sqrt{\alpha\beta}}.\$\$ It takes the
 sign of \\\beta - \alpha\\, so a beta is right-skewed when the first
-shape is the smaller and exactly symmetric when the two are equal.
+shape is the smaller and exactly symmetric when the two are equal. The
+method evaluates the form in the mean and the precision of
+[`beta_shape_moments()`](https://statmodels7.github.io/distributions7/reference/beta_shape_moments.md),
+in which \\\alpha\beta\\ is not formed.
 
 ## Arguments
 

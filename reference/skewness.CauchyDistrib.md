@@ -20,8 +20,8 @@ so that no quadrature is attempted.
   A named list of parameters with components `mu` and `sigma`, each a
   numeric vector of length 1 or `n`. The values are not read, only their
   lengths, but they are still aligned and validated, so a missing or
-  out-of-bounds component throws exactly as it would for a family whose
-  moments exist.
+  out-of-bounds component signals an error exactly as it would for a
+  family whose moments exist.
 
 - ...:
 
@@ -43,11 +43,10 @@ The generic
 evaluates \\\gamma_1 = \mathbb{E}\[((Y -
 \mathbb{E}Y)/\mathrm{sd}(Y))^3\]\\ for a `distrib` object by calling
 [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
-three times. On a Cauchy each of those integrals diverges, and a
-numerical quadrature over a divergent integral does not fail loudly: it
-returns whatever its truncation happens to give, a number that changes
-with the panel layout and looks like an estimate. This method
-short-circuits that.
+three times. On a Cauchy each of those integrals diverges, and
+[`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
+signals an error. This method returns `NaN` without running a
+quadrature.
 
 The same holds for
 [`mean.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/mean.CauchyDistrib.md),
@@ -58,11 +57,12 @@ and for the sample versions: a Cauchy sample mean does not converge as
 \\n\\ grows, it is itself Cauchy with the same scale, so no amount of
 data settles it. The example below shows that.
 
-What the Cauchy does have is a **median**, equal to \\\mu\\, and a
-half-interquartile range, equal to \\\sigma\\. Both are exact and finite
-at every parameter value, and both are available from
+The Cauchy has a **median**, equal to \\\mu\\, and a half-interquartile
+range, equal to \\\sigma\\. Both are finite at every parameter value and
+both are available from
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md).
-Reach for those when a location and a spread are wanted.
+They serve as a location and a spread where the mean and the variance do
+not exist.
 
 ## Notation
 

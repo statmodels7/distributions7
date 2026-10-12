@@ -3,9 +3,10 @@
 Computes \$\$\frac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j}
 = H\_{ij}(y) - M\_{ij} + m_i m_j, \qquad M\_{ij} =
 \mathbb{E}\_T\[H\_{ij} + s_i s_j\],\$\$ the subtracted part being the
-second derivative of \\\log Z\\. Only \\H\_{ij}(y)\\ varies with the
-data; the correction is one number per component, recycled to the length
-of `y`.
+second derivative of \\\log Z\\. Only \\H\_{ij}(y)\\ depends on the
+data. The correction depends on \\\theta\\ alone, so it is one number
+per component for a scalar \\\theta\\ and one number per distinct
+parameter vector when a parameter varies by observation.
 
 ## Arguments
 
@@ -24,8 +25,8 @@ of `y`.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, applied by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - ...:
 

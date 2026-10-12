@@ -49,10 +49,8 @@ nothing on the log scale has to be evaluated. The extra \\1/(2\sigma)\\
 in the second component is the chain rule onto the variance, this
 parametrization carrying \\\sigma^2\\ rather than \\\sigma\\.
 
-Only the gradient is registered; the second derivatives fall to
-[`distrib_hess_cdf.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.continuous_distrib.md),
-which differences the cdf and reuses this closed gradient for its
-first-order part.
+The second derivatives are registered separately, in closed form, by
+[`distrib_hess_cdf.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.Lognormal1Distrib.md).
 
 ## Notation
 
@@ -62,7 +60,7 @@ standard normal density.
 
 ## See also
 
-[`distrib_hess_cdf.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.continuous_distrib.md),
+[`distrib_hess_cdf.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.Lognormal1Distrib.md),
 the second order;
 [`distrib_grad_cdf.Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Gaussian1Distrib.md),
 the family on the log scale;

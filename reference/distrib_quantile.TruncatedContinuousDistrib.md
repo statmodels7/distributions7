@@ -2,9 +2,9 @@
 
 Evaluates \\Q_T(p) = Q\\F(L^-;\theta) + p\\Z(\theta)\\\\, inverting
 [`distrib_cdf.TruncatedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.TruncatedContinuousDistrib.md)
-through the PARENT's quantile function. No root-finding of its own is
-needed, and every returned value lies inside \\\[L, U\]\\ by
-construction.
+through the parent's quantile function, in its upper tail when the
+target exceeds one half. The quantile function needs no root-finding of
+its own, and every returned value lies in \\\[L, U\]\\.
 
 ## Arguments
 

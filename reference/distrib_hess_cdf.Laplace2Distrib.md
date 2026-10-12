@@ -5,8 +5,9 @@ Closed form. Writing \\r = q - \mu\\ and \\a = \|r\|\\,
 \qquad \frac{\partial^2 F}{\partial\lambda^2} =
 -\frac{\mathrm{sign}(r)\\a^2 f}{\lambda}, \qquad \frac{\partial^2
 F}{\partial\mu\\\partial\lambda} = -\left(\frac{1}{\lambda} - a\right)
-f.\$\$ The sign function is what carries the kink: all three jump at \\q
-= \mu\\, as they do in the scale parametrization.
+f.\$\$ The sign function carries the kink: `mu_mu` jumps at \\q = \mu\\,
+as it does in the scale parametrization, while `lambda_lambda` and
+`mu_lambda` are continuous there.
 
 ## Arguments
 
@@ -63,7 +64,7 @@ for the scale parametrization;
 d <- laplace2_distrib()
 th <- list(mu = 0.3, lambda = 1 / 1.2)
 
-# All three components jump across q = mu.
+# Only mu_mu jumps across q = mu; the other two components are continuous.
 distrib_hess_cdf(d, 0.3 + c(-1e-6, 1e-6), th, log = FALSE)
 #> $mu_mu
 #> [1]  0.3472219 -0.3472219
@@ -80,5 +81,5 @@ q <- c(-1, 2)
 exact <- distrib_hess_cdf(d, q, th, log = FALSE)
 fd <- numerical_cdf_deriv(d, q, th, order = 2)
 max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))
-#> [1] 2.17143e-07
+#> [1] 1.511045e-07
 ```

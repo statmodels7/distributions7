@@ -3,7 +3,8 @@
 Returns \\\partial\ell_T/\partial y\\, which inside \\\[L, U\]\\ is the
 PARENT's, \\Z\\ not depending on \\y\\. Outside the interval the
 log-density is \\-\infty\\ and no derivative exists, so `NaN` is
-returned where a finite difference would invent a number.
+returned where the finite-difference default would return a finite
+number.
 
 ## Arguments
 

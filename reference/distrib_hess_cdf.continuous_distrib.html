@@ -3,15 +3,11 @@
 derivative: numerical_cdf_deriv() at order 2, with the first-order part
 taken from distrib_grad_cdf(), so a closed gradient the family does
 register is used here too. The step is
-\(\varepsilon^{1/4}\) relative, about \(1.2\times10^{-4}\), and the
-accuracy measured against a family's own closed form is
-\(1.7\times10^{-7}\) relative."><meta property="og:description" content="The fallback for a continuous family that registers no closed second
+\(\varepsilon^{1/4}\) relative, about \(1.2\times10^{-4}\)."><meta property="og:description" content="The fallback for a continuous family that registers no closed second
 derivative: numerical_cdf_deriv() at order 2, with the first-order part
 taken from distrib_grad_cdf(), so a closed gradient the family does
 register is used here too. The step is
-\(\varepsilon^{1/4}\) relative, about \(1.2\times10^{-4}\), and the
-accuracy measured against a family's own closed form is
-\(1.7\times10^{-7}\) relative."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(\varepsilon^{1/4}\) relative, about \(1.2\times10^{-4}\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +15,7 @@ accuracy measured against a family's own closed form is
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,9 +52,7 @@ accuracy measured against a family's own closed form is
 derivative: <code><a href="numerical_cdf_deriv.html">numerical_cdf_deriv()</a></code> at order 2, with the first-order part
 taken from <code><a href="distrib_grad_cdf.html">distrib_grad_cdf()</a></code>, so a closed gradient the family does
 register is used here too. The step is
-\(\varepsilon^{1/4}\) relative, about \(1.2\times10^{-4}\), and the
-accuracy measured against a family's own closed form is
-\(1.7\times10^{-7}\) relative.</p>
+\(\varepsilon^{1/4}\) relative, about \(1.2\times10^{-4}\).</p>
     </div>
 
 
@@ -105,7 +99,7 @@ off-diagonal one the four-point mixed stencil, which differences two
 different variables and is therefore a single stencil. The log-scale
 correction \(\partial^2 P/P - (\partial P/P)^2\) is applied afterwards by
 <code><a href="cdf_tail_scale.html">cdf_tail_scale()</a></code>, which is why the gradient is fetched even when only the
-Hessian was asked for.</p>
+Hessian was requested.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -115,17 +109,17 @@ Hessian was asked for.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A gamma reaches this method at both orders.</span></span></span>
-<span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A truncated gamma reaches this method at both orders.</span></span></span>
+<span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="truncated.html">truncated</a></span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, upper <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_hess_cdf.html">distrib_hess_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma2 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -2.1633204 -0.8750296</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -2.1595748 -0.8712839</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $sigma2_sigma2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.94894355 -0.03301621</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.93036989 -0.01444246</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_sigma2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.9255856 0.3739333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.930828 0.379176</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

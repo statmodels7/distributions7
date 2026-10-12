@@ -1,16 +1,19 @@
 # Multinomial Score
 
 Computes the first derivatives of the multinomial log-mass with respect
-to the simplex's free values, one value per observation, in closed form.
-With \\A = \partial p/\partial\eta\\ the chart's own Jacobian,
+to the free values of the simplex, one value per observation, in closed
+form. With \\A = \partial p/\partial\eta\\ the Jacobian of the chart,
 \$\$\dfrac{\partial\ell}{\partial\eta_k} = \sum\_{j=1}^{p}
 \dfrac{y_j}{p_j}A\_{jk}.\$\$ The factorial term of the mass carries no
-parameter, so it contributes nothing, and the data enter only through
-the counts themselves.
+parameter, and the data enter only through the counts. On the additive
+log-ratio chart, where \\A\_{jk} = p_j(\delta\_{jk} - p_k)\\, the sum is
+computed as \\y_k - N p_k\\ with \\N\\ the total of the row, which
+divides by no probability.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries. Every parameter rides the identity here, its free
-value being unconstrained already, so the two scales coincide.
+of the family to the result of the method. Every parameter takes the
+identity link here, its free value being unconstrained already, so the
+two scales coincide.
 
 ## Arguments
 
@@ -89,5 +92,5 @@ supp <- mv_support(d, th)
 w <- distrib_pdf(d, supp, th)
 vapply(distrib_gradient(d, supp, th), function(v) sum(w * v), numeric(1))
 #>   probs_alr1   probs_alr2 
-#> 8.283305e-17 2.831936e-16 
+#> 1.869165e-16 2.311519e-16 
 ```

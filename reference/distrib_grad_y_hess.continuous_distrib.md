@@ -27,8 +27,8 @@ it writes one out.
 
 - scale:
 
-  One of `"parameter"` or `"link"`, applied by the generic before
-  dispatch.
+  One of `"parameter"` or `"link"`. The generic applies the link scale
+  to the value that the method returns.
 
 - ...:
 
@@ -42,11 +42,9 @@ keyed as
 
 ## Details
 
-The stencil is never applied to a quantity that is itself a fallback.
-Before 0.76.0 the fallback differenced
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-in the parameters whether or not that was analytic, and where it was a
-fallback that differenced a difference in the same parameter.
+The stencil is never applied to a quantity that is itself a numerical
+fallback; only quantities that the family's class registers are used as
+the base.
 
 ## See also
 
@@ -54,7 +52,7 @@ fallback that differenced a difference in the same parameter.
 for the generic,
 [`distrib_hess_y_hess.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.continuous_distrib.md)
 for the fourth-order twin, and
-[`numerical_theta2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.md),
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md),
 which does the work.
 
 ## Examples

@@ -1,9 +1,10 @@
 # An Inflated Gaussian Proposal
 
-The default proposal: a gaussian with the family's mean and TWICE its
-covariance, drawn as \\\mu + Lz\\ with \\LL^\top = 2\Sigma\\. The
-inflation makes the importance ratio informative; at the family's own
-covariance every ratio would be one.
+The default proposal: a gaussian with the family's mean and twice its
+covariance, drawn as \\\mu + Lz\\ with \\LL^\top = 2\Sigma\\. For a
+gaussian family a proposal with the family's own covariance would make
+every importance ratio one, and the inflation keeps the ratio
+informative.
 
 ## Arguments
 
@@ -32,19 +33,16 @@ numeric vector of length \\n\\.
 
 ## Details
 
-It requires the covariance to be non-singular, which a support of full
-dimension in \\\mathbb{R}^p\\ gives. On a family whose support is a
-lower-dimensional set the covariance is singular and
-[`chol()`](https://rdrr.io/r/base/chol.html) may accept it anyway, so
-the failure is quiet: see
-[`mv_reference_draw()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.md)
-for the measured consequence. Such a family registers its own method.
+The covariance must be finite and non-singular, which a family supported
+on all of \\\mathbb{R}^p\\ with finite second moments has. A family
+whose support is a lower-dimensional set, or whose covariance is
+infinite, registers its own method (see
+[`mv_reference_draw()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.md)).
 
-The log-density is formed from the Cholesky factor directly. The
-whitened residual is \\L^{-1}r\\, a LOWER triangular system, so
-[`base::forwardsolve()`](https://rdrr.io/r/base/backsolve.html) is what
-solves it; [`backsolve()`](https://rdrr.io/r/base/backsolve.html) on the
-transpose solves \\L^\top x = b\\, a different vector of the same shape.
+The log-density is computed from the Cholesky factor \\L\\: the whitened
+residual \\L^{-1}r\\ solves a lower triangular system, which
+[`base::forwardsolve()`](https://rdrr.io/r/base/backsolve.html)
+evaluates.
 
 ## Notation
 
@@ -54,7 +52,8 @@ factor of \\2\Sigma\\ and \\p\\ the dimension.
 ## See also
 
 [`mv_reference_draw()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.md)
-for the generic and the override a simplex-valued family needs, and
+for the generic and the proposals of the families that register their
+own, and
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 for the consumer.
 
@@ -74,14 +73,14 @@ r$y
 #> [3,] -0.1817573 -0.9015499
 #> [4,]  3.2560677  1.1721827
 
-# logd really is the log-density of the inflated gaussian at those draws.
+# logd is the log-density of the inflated gaussian at those draws.
 S2 <- 2 * variance(d, theta)
 mu <- c(1, -1)
 ref <- -0.5 * (2 * log(2 * pi) + log(det(S2)) + mahalanobis(r$y, mu, S2))
 all.equal(r$logd, as.numeric(ref))
 #> [1] TRUE
 
-# And the sample is twice as spread as the family, which is the point.
+# The sample is twice as spread as the family.
 set.seed(2)
 round(rbind(proposal = diag(var(mv_reference_draw(d, theta, 20000)$y)),
             family = diag(variance(d, theta))), 3)

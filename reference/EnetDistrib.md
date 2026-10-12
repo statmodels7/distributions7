@@ -17,8 +17,8 @@ Like the Laplace, its log-likelihood is **not differentiable in
 Build one with
 [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md),
 which supplies the three link functions. This page documents the raw S7
-constructor, which validates none of the relationships between its
-properties.
+constructor, which takes the parent's properties; the validator of
+`distrib` checks them, and the constructor adds no check of its own.
 
 ## Usage
 
@@ -102,36 +102,68 @@ domains \\(-\infty,\infty)\\, \\(0,\infty)\\ and \\(0,1)\\, and
 
 ## Methods
 
-Registered in this file:
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.EnetDistrib.md),
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.EnetDistrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.EnetDistrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.EnetDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.EnetDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.EnetDistrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.EnetDistrib.md),
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.EnetDistrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.EnetDistrib.md),
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.EnetDistrib.md),
-[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.EnetDistrib.md),
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.EnetDistrib.md),
-[`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.EnetDistrib.md).
+Registered on this class, each linked to the page that documents it:
 
-Registered in `enet_higher.R`, both closed form:
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.EnetDistrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.EnetDistrib.md).
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.EnetDistrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.EnetDistrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.EnetDistrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.EnetDistrib.md);
 
-The **kurtosis** has no closed form here and comes from the base class
-by quadrature. So does the fourth response derivative and beyond, which
-are zero: the log-density is quadratic in \\y\\ away from the location.
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.EnetDistrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.EnetDistrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.EnetDistrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.EnetDistrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.EnetDistrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.EnetDistrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.EnetDistrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.EnetDistrib.md)
+  and
+  [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/loc_cross3_y.md);
+
+- the derivatives of the distribution function:
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.EnetDistrib.md),
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.EnetDistrib.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.EnetDistrib.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.EnetDistrib.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.EnetDistrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.EnetDistrib.md)
+  and
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.EnetDistrib.md);
+
+- the decomposition at the kink:
+  [`kink_decomposition()`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.EnetDistrib.md).
+
+Every other generic is inherited from
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## The two quantities everything is written in
 
 With \\a = \lambda\alpha\\, \\c = \lambda(1-\alpha)\\ and \\x = a/\sqrt
 c\\, every derivative in the two rates is a polynomial in \\x\\ and \\G
-= \mathrm{d}\log M/\mathrm{d}x\\, where \\M\\ is the Mills ratio. The
-map \\(\lambda, \alpha) \mapsto (a, c)\\ is bilinear, so the chain onto
-the reported parameters adds one cross term and nothing else.
+= \mathrm{d}\log M/\mathrm{d}x\\, where \\M\\ is the Mills ratio. \\G\\
+and its derivatives are the cumulants, with alternating signs, of the
+density proportional to \\e^{-xs - s^2/2}\\ on \\s \> 0\\, computed in a
+compiled kernel from the ratios of its moments without forming the
+difference \\x - 1/M\\. The map \\(\lambda, \alpha) \mapsto (a, c)\\ is
+bilinear, so the chain onto the reported parameters adds one cross term
+and nothing else.
 
 ## See also
 

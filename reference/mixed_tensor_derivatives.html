@@ -21,7 +21,7 @@ difference."><meta property="og:image" content="https://statmodels7.github.io/di
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,8 +121,7 @@ are computed once.</p>
 <p>For <code><a href="transformation.html">transformation()</a></code>, which carries the parent's score and Hessian in
 the parameters and no response derivative, the fourth-order
 \(\partial^4\ell/\partial y^2\,\partial\theta^2\) is a second difference
-in the response of the analytical Hessian: \(r = 2\), where the previous
-fallback differenced a difference in the same parameter.</p>
+in the response of the analytical Hessian, so \(r = 2\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -142,7 +141,7 @@ fallbacks call this.</p></div>
 <span class="r-in"><span><span class="va">got</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">mixed_tensor_derivatives</span><span class="op">(</span><span class="va">d</span>, <span class="va">b</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sigma2 <span class="op">=</span> <span class="fl">0.26</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">got</span><span class="op">$</span><span class="va">sigma2_sigma2</span>, <span class="op">-</span><span class="fl">2</span> <span class="op">*</span> <span class="va">k</span><span class="op">^</span><span class="fl">3</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -76.27673 -153.6023</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -76.27677 -153.6024</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -76.27675 -153.6025</span>
 </code></pre></div>
     </div>

@@ -11,8 +11,8 @@ closed form and with no quadrature or simulation:
 off-diagonal says the two parameters are orthogonal, so their estimates
 are asymptotically independent.
 
-The information does not depend on the mean of \\Y\\ at all, only on the
-variance of its logarithm. Because the values do not depend on the data,
+The information does not depend on \\\mu\\, only on \\\sigma^2\\, the
+variance of \\\log Y\\. Because the values do not depend on the data,
 `approx` and `nsim` are ignored and `y` is read only for its length.
 
 ## Arguments
@@ -55,8 +55,8 @@ variance of its logarithm. Because the values do not depend on the data,
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -114,7 +114,7 @@ rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
 #> observed -2.777778     -3.808307 -0.01203833
 #> expected -2.777778     -3.858025  0.00000000
 
-# The information does not move with the mean of Y, only with sigma2.
+# The information does not depend on mu, only on sigma2.
 vapply(c(-2, 0, 5),
        function(m) distrib_expected_hessian(d, 0,
                      list(mu = m, sigma2 = 0.36))$sigma2_sigma2,

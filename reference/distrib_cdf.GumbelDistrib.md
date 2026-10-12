@@ -2,10 +2,10 @@
 
 Computes the Gumbel distribution function, with \\z = (q -
 \mu)/\sigma\\, \$\$F(q; \mu, \sigma) = \exp\left\\-e^{-z}\right\\.\$\$
-This is the defining property of the family: a maximum of \\n\\
-independent light-tailed variables has, after centering and scaling, a
-distribution function that is the \\n\\th power of one distribution
-function, and \\\exp\\-e^{-z}\\\\ is the fixed point of that operation.
+This function is the limit distribution of the maximum of \\n\\
+independent light-tailed variables, after centering and scaling. It is
+max-stable: its \\n\\th power is the same function with the location
+shifted by \\\sigma\log n\\.
 
 ## Arguments
 
@@ -49,7 +49,9 @@ values are logarithms and are non-positive.
 Both tails are computed on the scale that keeps them accurate. The lower
 tail is exact on the log scale, \\\log F = -e^{-z}\\, and the upper tail
 goes through [`base::expm1()`](https://rdrr.io/r/base/Log.html), so
-neither loses precision where it is small.
+neither loses precision where it is small. Where \\w = e^{-z}\\ is below
+\\10^{-10}\\ the logarithm of the upper tail is taken as \\-z - w/2\\,
+which stays finite where \\w\\ underflows.
 
 ## See also
 
@@ -87,4 +89,8 @@ distrib_cdf(d, -700, th)
 #> [1] 0
 distrib_cdf(d, -700, th, log.p = TRUE)
 #> [1] -1.014232e+304
+
+# Far in the upper tail the logarithm of the survival is -z.
+distrib_cdf(d, 800, th, lower.tail = FALSE, log.p = TRUE)
+#> [1] -800
 ```

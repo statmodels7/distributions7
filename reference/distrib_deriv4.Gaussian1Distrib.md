@@ -8,9 +8,10 @@ Writing \\r = y - \mu\\, \$\$\ell^{(\mu\mu\mu\mu)} =
 r}{\sigma^5}, \qquad \ell^{(\sigma\sigma\sigma\sigma)} =
 \dfrac{6}{\sigma^4} - \dfrac{60 r^2}{\sigma^6}.\$\$ With
 `expected = TRUE` the expectations are returned, obtained by replacing
-\\r\\ with 0 and \\r^2\\ with \\\sigma^2\\, which leaves
-\\-54/\sigma^4\\ in the last component and zero in the two odd ones.
-Both routes are closed form, so `approx` and `nsim` are ignored.
+\\r\\ with 0 and \\r^2\\ with \\\sigma^2\\, which leaves \\-6/\sigma^4\\
+in \\\ell^{(\mu\mu\sigma\sigma)}\\, \\-54/\sigma^4\\ in
+\\\ell^{(\sigma\sigma\sigma\sigma)}\\ and zero in the other three. Both
+routes are closed form, so `approx` and `nsim` are ignored.
 
 ## Arguments
 
@@ -57,8 +58,8 @@ Both routes are closed form, so `approx` and `nsim` are ignored.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 

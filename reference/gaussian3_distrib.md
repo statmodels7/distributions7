@@ -3,13 +3,12 @@
 Builds the distribution object for the Gaussian (normal) family
 parametrized by its mean \\\mu\\ and its precision \\\tau = 1/\sigma^2
 \> 0\\. The returned object carries closed-form derivatives of the
-log-density to fourth order, in the parameters and in the response, and
-closed-form moments, so every generic of the toolkit answers without a
-numerical fallback.
+log-density to fourth order in the response and to fifth order in the
+parameters, and closed-form moments.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the identity
-for the mean, which is already free, and the logarithm for the
+unconstrained scale on which an optimizer works. The defaults are the
+identity for the mean, which is already free, and the logarithm for the
 precision, which keeps it positive at every predictor.
 
 ## Usage
@@ -79,8 +78,8 @@ quadratic in \\\mu\\ and, in \\\tau\\, is \\\tfrac{1}{2}\log\tau\\ plus
 a term linear in \\\tau\\, so every third and fourth derivative is free
 of the response: at third order only \\\ell^{(\mu\mu\tau)} = -1\\ and
 \\\ell^{(\tau\tau\tau)} = 1/\tau^3\\ survive, and at fourth order only
-\\\ell^{(\tau\tau\tau\tau)} = -3/\tau^4\\. Asking those methods for the
-expectation returns the same numbers.
+\\\ell^{(\tau\tau\tau\tau)} = -3/\tau^4\\. With `expected = TRUE` those
+methods return the same numbers.
 
 ## Estimation
 
@@ -120,8 +119,8 @@ for heavier tails;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
-passes;
+to validate a family of your own against the same battery of checks that
+this family passes;
 [Gaussian3Distrib](https://statmodels7.github.io/distributions7/reference/Gaussian3Distrib.md)
 for the class.
 
@@ -161,7 +160,7 @@ rbind(fitted = coef(fit),
 #> fitted 3.091666 0.2470854
 #> closed 3.091666 0.2470854
 
-# The estimate is a precision, so the interval it reports is an interval for
+# The estimate is a precision, so its interval is an interval for
 # the precision and stays positive.
 confint(fit)
 #>          2.5%     97.5%

@@ -3,15 +3,14 @@
 Computes the derivative of the log-density in the response,
 \$\$\frac{\partial \ell}{\partial y} = -c\\\Sigma^{-1}(y-\mu), \qquad c
 = \frac{\nu+p}{\nu+q},\$\$ one row per observation: the gaussian's
-expression with the family's weight in front of it. The weight is what
-bounds the influence of a distant row. A gaussian's response gradient
-grows without limit as the observation moves away; this one rises, turns
-and decays like \\1/\lVert y\rVert\\, which is the redescending score of
-a heavy-tailed family.
-
-It is also minus the score in the location, this being a location
-family, so the same numbers appear in
-[`distrib_gradient.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvStudentTDistrib.md).
+expression with the family's weight in front of it. A gaussian's
+response gradient grows without limit as the observation moves away;
+this one rises, turns and decays like \\1/\lVert y\rVert\\, the
+redescending score of a heavy-tailed family. It is minus the score in
+the location, this being a location family. It is computed as
+\\-(\nu+p)\\w/s\\ with \\s = \nu + q\\ (see
+[`mvt_yscaled()`](https://statmodels7.github.io/distributions7/reference/mvt_yscaled.md)),
+which stays finite for a distant observation.
 
 ## Arguments
 
@@ -77,7 +76,7 @@ distrib_grad_y(d, y, theta)
 num <- t(apply(y, 1, function(r)
   numDeriv::grad(function(z) distrib_pdf(d, z, theta, log = TRUE), r)))
 max(abs(distrib_grad_y(d, y, theta) - num))
-#> [1] 8.781598e-11
+#> [1] 9.148349e-11
 
 # It is minus the score in the location.
 g <- distrib_gradient(d, y, theta)

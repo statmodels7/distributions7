@@ -31,9 +31,10 @@ rng_grou(distrib, n, theta, r = 2)
 - r:
 
   Numeric tuning parameter of the transformation power, default `2`.
-  `r=1` is the classical Ratio-of-Uniforms; larger values enclose
-  heavier tails (`r=2` keeps the acceptance region bounded for tails as
-  heavy as the Cauchy's, which is why it is the default).
+  `r=1` is the classical ratio-of-uniforms method, whose acceptance
+  region is bounded for tails decaying as fast as \\\|y\|^{-2}\\ (the
+  Cauchy); `r=2`, the default, keeps it bounded for tails as heavy as
+  \\\|y\|^{-3/2}\\.
 
 ## Value
 
@@ -115,11 +116,14 @@ exactly, which is also what
 
 The kernel must be unimodal and the parameters in `theta` must be
 scalars. Densities that diverge at one or at both edges of their support
-are handled by the reparametrizations described below.
+are handled by the reparametrizations described in the section on
+unbounded densities.
 
 Heavy tails are not an obstacle: with the default `r=2` the sampler
 handles a Student's t with half a degree of freedom and a Pareto with
-infinite mean, and multimodal densities are usually accepted as well.
+infinite mean. A density with two well-separated modes is not handled:
+the bounding rectangle is built around the mode found first, and the
+draws then come from one mode only, without a warning.
 
 ## See also
 

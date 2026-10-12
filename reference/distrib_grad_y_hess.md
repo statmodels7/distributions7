@@ -2,8 +2,9 @@
 
 Computes \\\partial^3 \ell / \partial y\\ \partial\theta_i
 \partial\theta_j\\, one component per unordered pair of parameters, each
-a vector along `y`. It says how the response GRADIENT curves in the
-parameters, and it is the third-order entry of the mixed grid below.
+a vector along `y`. It gives the second derivative, in the parameters,
+of the response gradient, and it is the third-order entry of the mixed
+grid below.
 
 ## Usage
 
@@ -15,7 +16,8 @@ distrib_grad_y_hess(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 - distrib:
 
-  A distribution object inheriting from `continuous_distrib`.
+  A distribution object inheriting from `continuous_distrib`, or a
+  multivariate Gaussian or Student t distribution.
 
 - y:
 
@@ -58,10 +60,11 @@ and
 | \\\partial/\partial y\\ | [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md) | [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md) | `distrib_grad_y_hess()` |
 | \\\partial^2/\partial y^2\\ | [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md) | [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md) | [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md) |
 
-The right-hand column is the one a marginal criterion's SECOND
-derivative asks of a penalty. A penalty is a negative log-density read
-at the coefficients, so \\\partial^2\rho/\partial\beta^2\\ carries the
-density's response curvature and the two mixed derivatives above carry
+The right-hand column is the one that the second derivative of a
+marginal criterion requires from a penalty. A penalty is a negative
+log-density read at the coefficients, so
+\\\partial^2\rho/\partial\beta^2\\ carries the density's response
+curvature and the two mixed derivatives above carry
 \\\partial^3\rho/\partial\beta\\\partial\theta^2\\ and
 \\\partial^4\rho/\partial\beta^2\partial\theta^2\\.
 
@@ -69,8 +72,9 @@ The components are keyed by
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
 the same enumeration
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
-uses, so a consumer looking a pair up finds it under the name it already
-knows.
+uses, so a consumer that looks up a pair finds it under the name that
+[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
+uses.
 
 ## The link scale
 
@@ -85,18 +89,17 @@ exactly as for
 
 ## Where the numbers come from
 
-A distribution with a closed form provides it. The rest take one central
-difference of the analytic
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-in each parameter, through
-[`numerical_theta2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.md).
-Off the diagonal the two differences act on DIFFERENT parameters, so
-they compose into one mixed stencil rather than the nested differencing
-of a single variable the package forbids.
+A distribution with a closed form provides it. A continuous distribution
+without one takes
+[`distrib_grad_y_hess.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.continuous_distrib.md),
+which applies one tensor stencil, through
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md),
+to the highest quantity that the family implements itself, so a single
+variable is never differenced twice.
 
-Continuous distributions only, as with every other response derivative:
-a discrete family has no method and the call raises with its class
-named.
+Methods exist for the continuous families and for the multivariate
+Gaussian and Student t families. A discrete family has no method, and
+the call signals an error that names its class.
 
 ## Notation
 
@@ -111,7 +114,7 @@ to the other.
 for the fourth-order twin,
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
 for the first-order column, and
-[`numerical_theta2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.md)
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md)
 for the fallback.
 
 ## Examples

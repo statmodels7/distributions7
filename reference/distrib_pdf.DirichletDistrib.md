@@ -3,13 +3,14 @@
 Computes the Dirichlet density \$\$f(y) =
 \dfrac{\Gamma(\phi)}{\prod\_{j=1}^{p} \Gamma(\alpha_j)} \prod\_{j=1}^{p}
 y_j^{\alpha_j - 1}, \qquad \alpha = \phi\mu,\$\$ one value per row of
-`y`, with respect to the \\(p-1)\\-dimensional measure the simplex
-carries.
+`y`, with respect to Lebesgue measure on the first \\p-1\\ coordinates,
+the last being \\1 - \sum\_{j\<p} y_j\\.
 
-The support is tested **before** the logarithm is taken. A negative
+The support is tested before the logarithm is taken: a negative
 coordinate would make [`base::log()`](https://rdrr.io/r/base/Log.html)
-warn, and a density evaluated off its support is 0, so a row that is not
-on the simplex returns 0 without a numerical complaint.
+warn, and a density evaluated off its support is 0. A row with a missing
+coordinate gives `NA`, as
+[`stats::dbeta()`](https://rdrr.io/r/stats/Beta.html) does.
 
 ## Arguments
 
@@ -24,7 +25,7 @@ on the simplex returns 0 without a numerical complaint.
   row strictly positive and summing to one within `1e-8`. A single
   observation may be given as a plain vector and is read as one row. A
   row failing either test gives a density of 0, or `-Inf` with
-  `log = TRUE`.
+  `log = TRUE`, and a row with a missing coordinate gives `NA`.
 
 - theta:
 

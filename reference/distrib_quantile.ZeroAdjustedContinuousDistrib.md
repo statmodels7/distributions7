@@ -43,9 +43,9 @@ A numeric vector of quantiles, of the recycled length of `p` and
 
 ## Details
 
-A whole interval of probabilities therefore maps to the same point,
-which is what inverting a distribution function with a jump means and is
-not a failure of the inversion. The interval has width \\\pi\\.
+An interval of probabilities of width \\\pi\\ therefore maps to the
+single point zero, as the generalized inverse of a distribution function
+with a jump requires.
 
 ## Notation
 

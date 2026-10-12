@@ -55,16 +55,11 @@ twenty times the gradient's: a second difference divides by \\h^2\\, so
 rounding grows as \\1/h^2\\ and the optimum moves out.
 [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
 applies the same boundary clamp. One Hessian costs \\2p\\ evaluations
-for the diagonal and \\4\\ per distinct pair, which is 6 in all for a
-two-parameter family.
-
-## What it delivers
-
-Measured on a Gamma in its mean and dispersion at \\(\mu, \sigma^2) =
-(2, 0.7)\\, against the family's own closed form: the three components
-agree to \\2.3\times10^{-9}\\, \\2.7\times10^{-8}\\ and
-\\3.6\times10^{-8}\\ relative, two to three digits worse than the
-gradient's. That is the price of a second difference.
+for the diagonal, \\4\\ per distinct pair and one at the center, which
+is 9 in all for a two-parameter family, and more when
+[`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md)
+compares two candidate steps. A second difference is about two digits
+less accurate than the first difference of the gradient.
 
 ## See also
 

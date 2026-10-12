@@ -20,7 +20,8 @@ gives \\2\mu/(\sigma^2 y) - 1/\sigma^2\\ and \\-\mu^2/(\sigma^4 y) +
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 - ...:
 

@@ -9,9 +9,10 @@ density only through their difference. The identity holds for every
 location family, so this method is one sign away from
 [`distrib_gradient.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal1Distrib.md).
 
-The quantity is what a censored likelihood and a quantile residual need,
-and it is the first ingredient of
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md).
+The derivatives in the response of this family, and the mixed
+derivatives of
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md),
+are computed in closed form from the Mills ratio.
 
 ## Arguments
 

@@ -10,7 +10,12 @@ dexpected_chain()):
 \(a_{\mu\sigma\sigma} = 2/\sigma^3\),
 \(a_{\sigma\sigma\sigma} = -6\mu/\sigma^4\), and for \(b\) the same
 with \(\mu\) replaced by \(1-\mu\) and every derivative in \(\mu\)
-changing sign; every derivative taking \(\mu\) twice is zero."><meta property="og:description" content="betabinom1_distrib() is the shapes \(a = \mu/\sigma\) and
+changing sign; every derivative taking \(\mu\) twice is zero. Below
+bb_direct_cut() these partials, of order \(\sigma^{-4}\), cancel among
+themselves, and the rows with \(\sigma &amp;lt; 0.1\) are computed instead by the
+compiled kernel betabinom1_dexpected_direct_cpp, which sums over the
+support the derivatives of the direct sums of betabinom1_distrib() in
+\((\mu, \sigma)\)."><meta property="og:description" content="betabinom1_distrib() is the shapes \(a = \mu/\sigma\) and
 \(b = (1-\mu)/\sigma\) under another name, so its derivatives are the
 shapes' ones, summed exactly over the support by the compiled kernel, and
 carried across with the map's partials written out (at order 1 by the
@@ -21,7 +26,12 @@ dexpected_chain()):
 \(a_{\mu\sigma\sigma} = 2/\sigma^3\),
 \(a_{\sigma\sigma\sigma} = -6\mu/\sigma^4\), and for \(b\) the same
 with \(\mu\) replaced by \(1-\mu\) and every derivative in \(\mu\)
-changing sign; every derivative taking \(\mu\) twice is zero."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+changing sign; every derivative taking \(\mu\) twice is zero. Below
+bb_direct_cut() these partials, of order \(\sigma^{-4}\), cancel among
+themselves, and the rows with \(\sigma &amp;lt; 0.1\) are computed instead by the
+compiled kernel betabinom1_dexpected_direct_cpp, which sums over the
+support the derivatives of the direct sums of betabinom1_distrib() in
+\((\mu, \sigma)\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +39,7 @@ changing sign; every derivative taking \(\mu\) twice is zero."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +83,12 @@ compiled kernel <code>betabinom1_dexpected1_cpp</code>, at order 2 by
 \(a_{\mu\sigma\sigma} = 2/\sigma^3\),
 \(a_{\sigma\sigma\sigma} = -6\mu/\sigma^4\), and for \(b\) the same
 with \(\mu\) replaced by \(1-\mu\) and every derivative in \(\mu\)
-changing sign; every derivative taking \(\mu\) twice is zero.</p>
+changing sign; every derivative taking \(\mu\) twice is zero. Below
+<code><a href="bb_direct_cut.html">bb_direct_cut()</a></code> these partials, of order \(\sigma^{-4}\), cancel among
+themselves, and the rows with \(\sigma &lt; 0.1\) are computed instead by the
+compiled kernel <code>betabinom1_dexpected_direct_cpp</code>, which sums over the
+support the derivatives of the direct sums of <code><a href="betabinom1_distrib.html">betabinom1_distrib()</a></code> in
+\((\mu, \sigma)\).</p>
     </div>
 
     <div class="section level2">

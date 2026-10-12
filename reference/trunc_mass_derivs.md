@@ -27,7 +27,8 @@ trunc_mass_derivs(distrib, theta, order)
 
 - order:
 
-  The derivative order, 1 or 2.
+  The derivative order, an integer from 1 to 4. `NULL` is returned above
+  4.
 
 ## Value
 
@@ -45,10 +46,11 @@ derivatives that
 [`bell_f_ratio()`](https://statmodels7.github.io/distributions7/reference/bell_f_ratio.md)
 assembles.
 
-## When it declines
+## When NULL is returned
 
-`NULL` is returned, and the caller falls back to quadrature, in two
-situations. The first is accuracy, and is decided by
+`NULL` is returned, and the caller falls back to quadrature, when the
+order exceeds four, the highest order of a cdf derivative, and in two
+further situations. The first is accuracy, and is decided by
 [`has_exact_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md).
 The second is correctness: a mixed parent with an atom sitting exactly
 on the lower endpoint, whose mass derivative is not the parent's own
@@ -69,7 +71,9 @@ for the gate,
 [`trunc_score_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_score_mean.md)
 and
 [`trunc_M()`](https://statmodels7.github.io/distributions7/reference/trunc_M.md)
-for the two callers, and
+for the callers at orders one and two,
+[`trunc_deriv_k()`](https://statmodels7.github.io/distributions7/reference/trunc_deriv_k.md)
+for orders three to five, and
 [`trunc_constants()`](https://statmodels7.github.io/distributions7/reference/trunc_constants.md)
 for \\Z\\.
 
@@ -90,9 +94,11 @@ unlist(distributions7:::trunc_score_mean_quad(tn, theta))
 #>          mu       sigma 
 #>  0.08052166 -0.47667927 
 
-# A gamma parent has no closed-form cdf derivative, so the route declines
-# and the caller integrates instead.
+# A gamma parent has compiled cdf derivatives, so the route is available
+# (the result is not NULL). Above order four the result is NULL.
 tg <- truncated(gamma2_distrib(), lower = 0.5, upper = 5)
 is.null(distributions7:::trunc_mass_derivs(tg, list(mu = 2, sigma2 = 1), 1L))
 #> [1] FALSE
+is.null(distributions7:::trunc_mass_derivs(tg, list(mu = 2, sigma2 = 1), 5L))
+#> [1] TRUE
 ```

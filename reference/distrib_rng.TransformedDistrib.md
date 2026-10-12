@@ -1,9 +1,9 @@
 # Transformed Random Number Generator
 
-Draws `n` values from the parent and applies \\g\\ to them. That is the
-DEFINITION of \\Y = g(X)\\, not an approximation of it, so the draws are
-exact whatever route the parent's own generator takes and consume
-exactly what the parent consumes from R's stream.
+Draws `n` values from the parent and applies \\g\\ to them. Because \\Y
+= g(X)\\ by definition, the draws are exact whatever route the parent's
+generator takes, and they consume exactly what the parent consumes from
+R's random number stream.
 
 ## Arguments
 

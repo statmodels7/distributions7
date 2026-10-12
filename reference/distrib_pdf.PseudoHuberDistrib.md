@@ -5,14 +5,16 @@ Computes the pseudo-Huber density \$\$f(y; \mu, \sigma, \nu) =
 \left(\dfrac{y-\mu}{\sigma}\right)^2}\right),\$\$ with \\K_1\\ the
 modified Bessel function of the second kind. The exponent is the
 negative pseudo-Huber loss, quadratic in the residual near the location
-and linear far from it. That exponent is the pseudo-Huber loss, and this
-density is its exponential.
+and linear far from it, so the density is the exponential of that loss.
+The square root is formed as a hypotenuse, \\\max(\|z\|,
+\sqrt\nu)\sqrt{1 + (\min/\max)^2}\\, so the log-density stays finite
+where \\z^2\\ overflows.
 
 The normalizing constant is formed on the log scale through the
 **exponentially scaled** Bessel function, \\\log K_1(x) = \log\\e^x
-K_1(x)\\ - x\\. The Bessel terms are degree-homogeneous, so the scaled
-form is exact and stays finite where \\K_1(\sqrt{\nu})\\ itself
-underflows, verified to \\\nu = 2000\\.
+K_1(x)\\ - x\\. The identity is exact, and the scaled function stays
+finite where \\K_1(\sqrt{\nu})\\ itself underflows, which happens beyond
+\\\sqrt{\nu} \approx 700\\.
 
 ## Arguments
 

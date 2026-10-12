@@ -31,18 +31,20 @@ count required.
 
 ## Details
 
-What it rules out is exactly the Bernoulli and
-`binomial_distrib(size = 1)`. Zero-adjusting a Bernoulli leaves the
-truncated part on the single point \\\\1\\\\ and `mu` disappears: the
-mass function is literally the same at `mu = 0.2` and at `mu = 0.9`.
-None of this is visible at run time, the mass summing to one and
+This rules out, among the shipped families, the Bernoulli,
+`binomial_distrib(size = 1)` and the beta-binomial families with `size`
+of 1 or 2 (which have two parameters and need four support points).
+Zero-adjusting a Bernoulli leaves the truncated part on the single point
+\\\\1\\\\ and `mu` disappears: the mass function is literally the same
+at `mu = 0.2` and at `mu = 0.9`. None of this is visible at run time,
+the mass summing to one and
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 passing, so the constructor is the only place it can be caught.
 
-A large support is NECESSARY without being sufficient. With a mean large
-enough that the parent puts almost no mass at zero, the extra parameter
-is weakly identified whatever the support size, which is a question
-about the data and one this check cannot ask.
+A support with enough points is necessary for identification but not
+sufficient. If the mean is large enough that the parent puts almost no
+mass at zero, the extra parameter is weakly identified for any support
+size. This depends on the data, and the check does not examine the data.
 
 ## See also
 

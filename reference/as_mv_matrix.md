@@ -1,11 +1,11 @@
 # Coerce a Multivariate Response to a Matrix
 
-Puts `y` in the \\n \times p\\ form every multivariate method expects. A
-matrix of the right width is returned unchanged; a plain vector of
-length \\p\\ is read as a SINGLE observation and returned as a one-row
-matrix, the reading a caller asking for a density at one point wants.
-Anything else is an error naming the length it was given and the
-dimension it should have had.
+Puts `y` in the \\n \times p\\ form that every multivariate method
+expects. A matrix of the right width is returned unchanged, and a
+numeric vector of length \\p\\ is read as a single observation and
+returned as a one-row matrix, which is the reading of a density at one
+point. A vector of any other length is an error naming its length and
+the dimension, and a response that is not numeric is an error as well.
 
 ## Usage
 
@@ -24,8 +24,9 @@ as_mv_matrix(distrib, y)
 - y:
 
   A numeric matrix with `distrib@n_dim` columns, or a numeric vector of
-  length `distrib@n_dim`. A vector of any other length is an error, as
-  is a matrix of the wrong width.
+  length `distrib@n_dim`. An empty vector gives a matrix with no rows. A
+  vector of any other length, a matrix of the wrong width and a
+  non-numeric `y` are errors.
 
 ## Value
 

@@ -1,12 +1,10 @@
 # The Support Points of a Discrete Multivariate Distribution
 
-Returns the points a discrete multivariate distribution places mass on,
-as a matrix with one row per point. Enumerating them turns every
-expectation into an EXACT SUM and lets
+Returns the points on which a discrete multivariate distribution places
+mass, as a matrix with one row per point. With the support enumerated,
+every expectation is an exact sum, and
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-verify the total mass by addition instead of by sampling: a
-normalization wrong by a thousandth is caught by the sum and would not
-be by a sample.
+verifies the total mass by addition instead of by sampling.
 
 ## Usage
 
@@ -24,42 +22,42 @@ mv_support(distrib, theta, ...)
 
 - theta:
 
-  A named list or vector of parameters. Families whose support does not
-  depend on them, which is every one that ships, ignore it.
+  A named list or vector of parameters. The shipped method does not read
+  it, the support of the multinomial not depending on them.
 
 - ...:
 
-  Passed to methods. No shipped method reads it.
+  Passed to methods. The shipped method does not read it.
 
 ## Value
 
 A numeric matrix with one row per support point and one column per
 coordinate.
 
-## Why the generic exists at all
+## Why the generic exists
 
-A univariate discrete distribution needs none: its support is a stretch
-of the integers and the package walks it. On a vector the support is a
-set whose shape depends on the family, and no walk covers every case.
+A univariate discrete distribution does not need it, since its support
+is a range of integers, which the package traverses. The support of a
+vector is a set whose shape depends on the family, so each discrete
+multivariate family enumerates its own.
 
 ## The multinomial's support
 
-For \\p\\ coordinates and \\n\\ trials it is the weak compositions of
-\\n\\ into \\p\\ parts, \$\$\mathcal{S} = \Bigl\\y \in \mathbb{N}\_0^{p}
-: \textstyle\sum\_{j=1}^{p} y_j = n\Bigr\\, \qquad
+For \\p\\ coordinates and \\n\\ trials it is the set of weak
+compositions of \\n\\ into \\p\\ parts, \$\$\mathcal{S} = \Bigl\\y \in
+\mathbb{N}\_0^{p} : \textstyle\sum\_{j=1}^{p} y_j = n\Bigr\\, \qquad
 \lvert\mathcal{S}\rvert = \binom{n + p - 1}{p - 1},\$\$ enumerated by
 [`numericals7::compositions()`](https://statmodels7.github.io/numericals7/reference/compositions.html).
 Every expectation is then the finite sum \\\sum\_{y \in \mathcal{S}}
 g(y) f(y; \theta)\\. The count grows quickly: 15 points at \\n = 4, p =
 3\\, and 5151 at \\n = 100, p = 3\\.
 
-## What the base class does
+## The method of the class
 
 It signals an error. A continuous family has no such set, and a discrete
-one whose support is infinite has no finite matrix to return; either way
-an answer would be a fiction.
+family whose support is infinite has no finite matrix to return.
 [`has_mv_support()`](https://statmodels7.github.io/distributions7/reference/has_mv_support.md)
-is the predicate a consumer asks before calling.
+tests whether a family has a method of its own.
 
 ## Notation
 
@@ -69,9 +67,9 @@ trials of a multinomial and \\f\\ the mass function.
 ## See also
 
 [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md),
-the one family that answers,
+the one family with a method,
 [`has_mv_support()`](https://statmodels7.github.io/distributions7/reference/has_mv_support.md)
-for the predicate,
+for the test,
 [`numericals7::compositions()`](https://statmodels7.github.io/numericals7/reference/compositions.html)
 for the enumeration, and
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
@@ -101,12 +99,11 @@ c(got = nrow(sup), expected = choose(4 + 3 - 1, 3 - 1))
 #>      got expected 
 #>       15       15 
 
-# And the mass over it sums to one exactly, which is the check a sample
-# could not make.
+# The mass over the support sums to one exactly.
 sum(distrib_pdf(d, sup, theta))
 #> [1] 1
 
-# A continuous family has no such set and says so.
+# A continuous family has no such set, and the call signals an error.
 try(mv_support(mvgaussian1_distrib(2),
                list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
                     sigma_log_L2 = 0, sigma_L2.1 = 0)))

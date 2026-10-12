@@ -3,8 +3,16 @@
 in \(\mu\), \(\sigma\) and \(\nu\), in closed form, in a compiled
 kernel. Every component but the pure-\(\nu\) one is a rational function of
 \(r = y - \mu\), \(\sigma\) and \(D = \sqrt{\nu + (r/\sigma)^2}\);
-Bessel functions enter through \(\nu\) alone, and the exponentially scaled
-forms are used so that a large \(\nu\) does not overflow.
+Bessel functions enter through \(\nu\) alone. The derivatives in
+\(\nu\) of \(B(\nu) = \log\{\sqrt\nu K_1(\sqrt\nu)\}\) come from
+three routes, each where it keeps its digits: below \(\nu = 1\) the
+series of \(K_1\) and \(K_2\) at the origin; for
+\(1 \le \nu &amp;lt; 400\) the cumulants of \(1/(4T)\) under the generalized
+inverse Gaussian law of the integral representation of \(K_1\), by the
+trapezoidal rule in \(\log t\); and from \(\nu = 400\) the asymptotic
+series of \(K_1\), differentiated term by term in powers of
+\(\nu^{-1/2}\). The same routes serve the score, the Hessian and the
+fourth order.
 The expected third derivatives have no closed form. With
 expected = TRUE the method calls expected_derivative(), which integrates
 the observed derivatives against the density by the strategy approx names.
@@ -12,8 +20,16 @@ That is the one place on this page where approx and nsim are read."><meta proper
 in \(\mu\), \(\sigma\) and \(\nu\), in closed form, in a compiled
 kernel. Every component but the pure-\(\nu\) one is a rational function of
 \(r = y - \mu\), \(\sigma\) and \(D = \sqrt{\nu + (r/\sigma)^2}\);
-Bessel functions enter through \(\nu\) alone, and the exponentially scaled
-forms are used so that a large \(\nu\) does not overflow.
+Bessel functions enter through \(\nu\) alone. The derivatives in
+\(\nu\) of \(B(\nu) = \log\{\sqrt\nu K_1(\sqrt\nu)\}\) come from
+three routes, each where it keeps its digits: below \(\nu = 1\) the
+series of \(K_1\) and \(K_2\) at the origin; for
+\(1 \le \nu &amp;lt; 400\) the cumulants of \(1/(4T)\) under the generalized
+inverse Gaussian law of the integral representation of \(K_1\), by the
+trapezoidal rule in \(\log t\); and from \(\nu = 400\) the asymptotic
+series of \(K_1\), differentiated term by term in powers of
+\(\nu^{-1/2}\). The same routes serve the score, the Hessian and the
+fourth order.
 The expected third derivatives have no closed form. With
 expected = TRUE the method calls expected_derivative(), which integrates
 the observed derivatives against the density by the strategy approx names.
@@ -25,7 +41,7 @@ That is the one place on this page where approx and nsim are read."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,8 +78,16 @@ That is the one place on this page where approx and nsim are read."><meta proper
 in \(\mu\), \(\sigma\) and \(\nu\), <strong>in closed form</strong>, in a compiled
 kernel. Every component but the pure-\(\nu\) one is a rational function of
 \(r = y - \mu\), \(\sigma\) and \(D = \sqrt{\nu + (r/\sigma)^2}\);
-Bessel functions enter through \(\nu\) alone, and the exponentially scaled
-forms are used so that a large \(\nu\) does not overflow.</p>
+Bessel functions enter through \(\nu\) alone. The derivatives in
+\(\nu\) of \(B(\nu) = \log\{\sqrt\nu K_1(\sqrt\nu)\}\) come from
+three routes, each where it keeps its digits: below \(\nu = 1\) the
+series of \(K_1\) and \(K_2\) at the origin; for
+\(1 \le \nu &lt; 400\) the cumulants of \(1/(4T)\) under the generalized
+inverse Gaussian law of the integral representation of \(K_1\), by the
+trapezoidal rule in \(\log t\); and from \(\nu = 400\) the asymptotic
+series of \(K_1\), differentiated term by term in powers of
+\(\nu^{-1/2}\). The same routes serve the score, the Hessian and the
+fourth order.</p>
 <p><strong>The expected third derivatives have no closed form.</strong> With
 <code>expected = TRUE</code> the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code>, which integrates
 the observed derivatives against the density by the strategy <code>approx</code> names.
@@ -155,9 +179,9 @@ or <code>"opg"</code>. Read only when <code>expected = TRUE</code>.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>       <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          mu_mu_mu       mu_mu_sigma          mu_mu_nu    mu_sigma_sigma </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      1.301043e-18      3.055008e-01      2.612955e-02     -2.775558e-17 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      3.556183e-17      3.055008e-01      2.612955e-02      0.000000e+00 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu_sigma_nu          mu_nu_nu sigma_sigma_sigma    sigma_sigma_nu </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     -6.938894e-18     -1.192622e-18      3.135736e+00      7.878229e-02 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -5.637851e-18     -4.662069e-18      3.135736e+00      7.878229e-02 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       sigma_nu_nu          nu_nu_nu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      2.363469e-02      5.907273e-03 </span>
 </code></pre></div>

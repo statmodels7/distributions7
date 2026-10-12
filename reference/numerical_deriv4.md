@@ -46,7 +46,8 @@ numerical_deriv4(
   Character vector of component names, or `NULL`, the default. A named
   component is left `NULL` in the result rather than computed, for a
   caller that supplies it in closed form. The names and their order are
-  unchanged, so nothing downstream has to know which were skipped.
+  unchanged, so a downstream caller does not need to know which were
+  skipped.
 
 ## Value
 

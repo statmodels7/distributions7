@@ -17,8 +17,8 @@ parent_mass_at(distrib, x, theta)
 
 - distrib:
 
-  A truncated distribution object, of either class. The branch is taken
-  on it, and the mass is asked of `distrib@parent_distrib`.
+  A truncated distribution object, of either class. Its class selects
+  the branch, and the mass is read from `distrib@parent_distrib`.
 
 - x:
 
@@ -35,15 +35,14 @@ A numeric vector of probabilities, of length one unless a parameter in
 
 ## Details
 
-The question is asked of the OBJECT, through
-[`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md),
-never of its class. Branching on `discrete_distrib` looks right and is
-wrong: the distribution function of `zero_adjusted(gamma2_distrib())`
-already contains the point mass at zero, so \\F(0) \ne F(0^-)\\ although
-the object is a `continuous_distrib`. Truncating such a parent from
-above, with the atom retained, would then drop exactly that mass out of
-\\Z\\ while every formula still read correctly, and the density would
-integrate to something other than one.
+The mass is read from the object through
+[`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
+and is not decided by the object's class. The distribution function of
+`zero_adjusted(gamma2_distrib())` contains the point mass at zero, so
+\\F(0) \ne F(0^-)\\ although the object is a `continuous_distrib`. A
+rule based on `discrete_distrib` would omit that mass from \\Z\\ when
+such a parent is truncated from above with the atom retained, and the
+density would not integrate to one.
 
 ## Notation
 

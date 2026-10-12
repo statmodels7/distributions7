@@ -3,9 +3,9 @@
 The second-order chain rule on the parent's cdf derivatives, through
 [`mapped_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv.md):
 \\\partial^2 F/\partial\psi_a\partial\psi_b = \sum\_{k,l} F\_{kl} h^k_a
-h^l_b + \sum_k F_k h^k\_{ab}\\. The second sum is the one a first-order
-chain does not have, and it is why the map's second partials are needed
-as well as its first.
+h^l_b + \sum_k F_k h^k\_{ab}\\. The second sum is the one that a
+first-order chain does not have, and it is why the map's second partials
+are needed as well as its first.
 
 ## Arguments
 
@@ -44,8 +44,9 @@ returned alongside.
 
 ## Details
 
-The gate asks the parent for exactness at **both** orders. A parent with
-a closed gradient and a differenced Hessian sends this whole method to
+The test requires the parent to be exact at **both** orders. A parent
+with a closed gradient and a differenced Hessian sends this whole method
+to
 [`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md),
 because carrying an exact first order onto an approximate second would
 not make the second exact.

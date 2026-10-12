@@ -1,12 +1,13 @@
 # Zero-Adjusted Discrete Expected Information
 
 Computes the expectation of the observed Hessian in closed form. The
-hurdle block is the Bernoulli information \\-1/\\\pi(1-\pi)\\\\, the
-mixed blocks are exactly zero, and the parent block is \\(1-\pi)\\ times
-the truncated parent's own expected Hessian: a positive observation
-arrives with probability \\1-\pi\\ and carries the whole of what
-\\\theta\\ is estimated from. No component depends on the data, so every
-returned vector is constant.
+hurdle block is the negative of the Bernoulli information,
+\\-1/\\\pi(1-\pi)\\\\, the mixed blocks are exactly zero, and the parent
+block is \\(1-\pi)\\ times the truncated parent's own expected Hessian:
+a positive observation arrives with probability \\1-\pi\\ and carries
+the whole of what \\\theta\\ is estimated from. The components do not
+depend on the observed values, so each returned vector is constant
+whenever the parent's expected Hessian is.
 
 ## Arguments
 
@@ -25,8 +26,8 @@ returned vector is constant.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - approx:
 
@@ -36,7 +37,7 @@ returned vector is constant.
   block is an exact combination of the parent's density, score and
   observed Hessian at zero.
   [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
-  answers for this class by asking the parent.
+  returns, for this class, the value that it returns for the parent.
 
 - nsim:
 
@@ -60,9 +61,10 @@ actual `y` rather than at zero.
 
 The block diagonal is why a hurdle model is cheap to fit: the two halves
 can be estimated independently, and the information matrix inverts
-blockwise. `approx` and `nsim` are accepted so that the signature
-matches the generic's and neither is read; the expectation here is
-exact.
+blockwise. `approx` and `nsim` are forwarded to the expected Hessian of
+the parent and are used only where the parent has no closed form. The
+remaining blocks are exact, and the whole expectation is exact when the
+parent's is.
 
 ## Notation
 

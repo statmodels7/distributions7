@@ -1,10 +1,11 @@
 # Gamma Fourth-Order Derivatives in Mean and Variance
 
 Computes the five distinct fourth derivatives of the gamma log-density
-with respect to \\\mu\\ and \\\sigma^2\\, in closed form, by the same
-chain rule from the shape \\\alpha = \mu^2/\sigma^2\\ and the rate
-\\\lambda = \mu/\sigma^2\\ that the lower orders use. Every component
-carries \\\psi_3\\, the third derivative of the digamma function.
+with respect to \\\mu\\ and \\\sigma^2\\, in closed form, by the
+decomposition described on
+[`distrib_deriv3.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gamma2Distrib.md).
+Every component carries \\\psi_3\\, the third derivative of the digamma
+function.
 
 With `expected = TRUE` the expectations are returned, obtained by
 replacing \\Y\\ with \\\mu\\ and \\\log Y\\ with \\\psi(\alpha) -
@@ -56,8 +57,8 @@ ignored.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 

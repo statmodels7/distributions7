@@ -4,13 +4,16 @@ Builds the distribution object for the beta-binomial family parametrized
 by a mean proportion \\\mu \in (0, 1)\\ and a dispersion \\\sigma \>
 0\\, on the finite support \\\\0, 1, \dots, n\\\\. The returned object
 carries closed-form derivatives of the log-mass to fourth order and
-expectations that are exact finite sums over the support, so every
-generic of the toolkit answers without a quadrature.
+expectations that are exact finite sums over the support, so no
+quadrature is used. The fifth derivative comes from the numerical
+fallback of the base class.
 
 The family is the binomial with its success probability drawn from a
 beta, which makes it the standard model for a proportion whose trials
-are not independent. It is overdispersed relative to a binomial at every
-\\\sigma \> 0\\ and approaches one as \\\sigma \to 0\\.
+are not independent. For \\n \> 1\\ it is overdispersed relative to a
+binomial with the same mean at every \\\sigma \> 0\\, and it approaches
+the binomial as \\\sigma \to 0\\. For \\n = 1\\ it is the Bernoulli
+distribution at every \\\sigma\\.
 
 ## Usage
 
@@ -63,20 +66,23 @@ is the same law written in \\(\alpha, \beta)\\ directly; the two agree
 mass for mass at \\\mu = \alpha/(\alpha+\beta)\\ and \\\sigma =
 1/(\alpha+\beta)\\.
 
-The family is **not** reachable from anything else in the package. It is
-neither a binomial with a parameter held fixed nor a wrapper over one,
-the mixing being over the success probability and not over the outcome.
+The family is a binomial whose success probability is drawn from a beta
+distribution. It is not a binomial with a parameter held fixed and not
+one of the wrappers over
+[`binomial_distrib()`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md),
+because the mixing acts on the success probability and not on the
+outcome.
 
 ## Overdispersion
 
 The mean is \\n\mu\\ and the variance \$\$\operatorname{Var}(Y) =
 n\mu(1-\mu) \left(1 + (n-1)\dfrac{\sigma}{1+\sigma}\right),\$\$ so the
 inflation over a binomial of the same mean is \\1 +
-(n-1)\sigma/(1+\sigma)\\, always above 1 and rising with both the trial
-count and the dispersion. The factor \\\sigma/(1+\sigma)\\ is the
-**intraclass correlation** between two trials of the same group. At \\n
-= 10\\ and \\\sigma = 0.5\\ that correlation is \\1/3\\ and the variance
-is four times a binomial's, 8.4 against 2.1.
+(n-1)\sigma/(1+\sigma)\\, above 1 for \\n \> 1\\ and rising with both
+the trial count and the dispersion. The factor \\\sigma/(1+\sigma)\\ is
+the **intraclass correlation** between two trials of the same group. At
+\\n = 10\\ and \\\sigma = 0.5\\ that correlation is \\1/3\\ and the
+variance is four times a binomial's (8.4 against 2.1 at \\\mu = 0.3\\).
 
 As \\\sigma \to 0\\ the mass converges to the binomial's at rate
 \\O(\sigma)\\, and the compiled kernel stays accurate all the way there;
@@ -96,28 +102,45 @@ Orders three and four are therefore **closed form** as well, in
 [`distrib_deriv3.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom1Distrib.md),
 and not the numerical fallback.
 
-Every expectation is an **exact finite sum** over \\\\0, \dots, n\\\\:
-the support is bounded, so there is nothing to integrate over.
+The shifts of the beta functions are integers, so with \\u_i = \mu +
+i\sigma\\, \\v_i = 1 - \mu + i\sigma\\ and \\w_i = 1 + i\sigma\\ the
+log-mass is also \$\$\ell = \log\binom{n}{y} + \sum\_{i\<y}\log u_i +
+\sum\_{i\<n-y}\log v_i - \sum\_{i\<n}\log w_i,\$\$ and a derivative with
+\\a\\ differentiations in \\\mu\\ and \\b\\ in \\\sigma\\, of order \\K
+= a + b\\, is \$\$c_K\Big\[\sum\_{i\<y}\frac{i^b}{u_i^K} +
+(-1)^a\sum\_{i\<n-y}\frac{i^b}{v_i^K} - \[a =
+0\]\sum\_{i\<n}\frac{i^b}{w_i^K}\Big\], \qquad c_K =
+(-1)^{K-1}(K-1)!.\$\$ Each sum has terms of one sign. These **direct
+sums** are used for \\\sigma \< 0.1\\ at every order, observed and
+expected, and the route through the shapes above it (see the next
+section).
+
+Every expectation, including those of the third and fourth derivatives,
+is an **exact finite sum** over \\\\0, \dots, n\\\\: the support is
+bounded, so there is nothing to integrate over.
 
 ## The cancellation at a small dispersion
 
 The two beta functions of the mass are of magnitude
 \\(\alpha+\beta)\log(\alpha+\beta)\\ while their difference is of order
 one, so writing the mass as that difference loses one digit per factor
-of ten in the concentration \\1/\sigma\\. At \\\sigma = 10^{-14}\\ the
-direct route is wrong in the third decimal of the log-mass. The kernel
-switches to a sum of logarithms instead, the shifts being integers, and
-the same rewrite runs through the score: measured at \\n = 10\\, \\\mu =
-0.4\\, \\y = 3\\, the mean component holds the binomial value \\-25/6\\
-to nine figures at a concentration of \\10^{15}\\.
+of ten in the concentration \\1/\sigma\\. The kernel computes the
+log-mass as the sum of logarithms above instead. The route through the
+shapes has the same defect in its derivatives: the polygamma differences
+are of order one while the derivatives of the map \\(\alpha, \beta)\\ in
+\\\sigma\\ are of order \\\sigma^{-(K+1)}\\, and their products cancel
+among themselves as \\\sigma\\ goes to zero. Below \\\sigma = 0.1\\ the
+derivatives and the expectations built from them therefore come from the
+direct sums, at a cost of \\O(n)\\ per observation; above it the shape
+route is accurate, and the direct sums would lose about \\\log\_{10} n\\
+digits there.
 
 ## Estimation
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 maximizes the log-likelihood on the link scale. Neither estimate is
-closed form. A sample with no extra-binomial variation drives
-\\\hat\sigma\\ towards zero, which is the correct answer and the
-boundary of the parameter space.
+available in closed form. For a sample with no extra-binomial variation,
+\\\hat\sigma\\ tends to zero, the boundary of the parameter space.
 
 ## Notation
 

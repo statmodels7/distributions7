@@ -27,9 +27,12 @@ A named list with `delta` and `bd`, each a numeric vector the length of
 ## Details
 
 \\\delta\\ is bounded: it runs over \\(-1, 1)\\ as \\\alpha\\ runs over
-the whole line, and it saturates quickly, reaching 0.995 at \\\alpha =
-10\\. That bound is what caps the skewness and the kurtosis the family
-can reach, and is why the skew t exists.
+the whole line, and it reaches 0.995 at \\\alpha = 10\\. This bound
+limits the skewness and the kurtosis that the family can reach. For
+\\\|\alpha\| \> 1\\ the value is computed as
+\\\mathrm{sign}(\alpha)/\sqrt{1 + \alpha^{-2}}\\, so that \\\alpha^2\\
+is not formed where it overflows (\\\|\alpha\| \> 1.3\times10^{154}\\),
+and \\\delta\\ tends to \\\pm 1\\ there.
 
 ## See also
 

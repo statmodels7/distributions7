@@ -19,7 +19,7 @@ leaving them alone."><meta property="og:image" content="https://statmodels7.gith
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +72,9 @@ leaving them alone.</p>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.
-The location components and <code>nu</code> are ignored.</p></dd>
+<dd><p>A named list of parameters, each component a single number. The
+generic requires every parameter and checks <code>nu</code> against its domain; the
+location components and <code>nu</code> do not enter the result.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -85,7 +86,7 @@ both dimnames <code>v1</code>, ..., <code>vp</code>.</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="variance.MvStudentTDistrib.html">variance.MvStudentTDistrib()</a></code> for the covariance,
 <code><a href="mv_sigma.MvGaussianDistrib.html">mv_sigma.MvGaussianDistrib()</a></code>, where the two coincide,
-<code><a href="mv_summary.html">mv_summary()</a></code>, which reports the square roots of this matrix's diagonal
+<code><a href="mv_summary.html">mv_summary()</a></code>, which reports the square roots of the diagonal of this matrix
 as <code>scale_sd_v1</code> and so on, and <code><a href="mv_sigma.html">mv_sigma()</a></code> for the generic.</p></div>
     </div>
 

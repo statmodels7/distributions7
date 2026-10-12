@@ -3,14 +3,13 @@
 Computes the second derivatives of the log-density in closed form, by
 differentiating the score of
 [`distrib_gradient.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvStudentTDistrib.md)
-once more. Every block picks up a term in \\\partial c/\partial\cdot\\,
-the weight \\c = (\nu+p)/(\nu+q)\\ depending on the observation through
-\\q\\. That dependence is what separates the family from the gaussian,
-where \\c\\ is one and those terms are absent. Writing \\w =
+once more. Every block has a term in a derivative of the weight \\c =
+(\nu+p)/(\nu+q)\\, which depends on the observation through \\q\\; for
+the gaussian \\c\\ is one and those terms are absent. Writing \\w =
 \Sigma^{-1}(y-\mu)\\ and \\d = \nu + q\\, the location block is
 \$\$\ell^{(\mu_a\mu_b)} = \frac{2c\\w_a w_b}{d} -
 c\\(\Sigma^{-1})\_{ab},\$\$ and \\\partial c/\partial\nu = (q-p)/d^2\\
-is what carries \\\nu\\ into every mixed block.
+carries \\\nu\\ into every mixed block.
 
 ## Arguments
 
@@ -32,9 +31,9 @@ is what carries \\\nu\\ into every mixed block.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The two differ here, `nu` carrying a log link by
-  default.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  The two differ here, `nu` carrying a log link by default.
 
 - ...:
 
@@ -49,24 +48,27 @@ Unlike the gaussian's, no block here is constant across rows.
 
 ## Details
 
-The pure \\\nu\\ component has three leading terms that cancel as
-\\\nu\\ grows. They collapse exactly into
-[`mvt_T()`](https://statmodels7.github.io/distributions7/reference/mvt_T.md),
-with no series and no crossover for an even dimension; see
-[`mvt_A()`](https://statmodels7.github.io/distributions7/reference/mvt_A.md)
-for what the direct form costs.
-
-The quantity \\w^\top A_k w\\ appears in three of the blocks and is
-formed once per free value, as is \\\Sigma^{-1}A_k\\.
+The pure \\\nu\\ component is \\c_p''(\nu) - h''(\nu)\\, with
+[`mvt_cp_d()`](https://statmodels7.github.io/distributions7/reference/mvt_cp_d.md)
+for the part of \\\nu\\ alone and
+[`mvt_h_d()`](https://statmodels7.github.io/distributions7/reference/mvt_h_d.md)
+for the part that carries the data, each written without the
+cancellation of its direct form; the result stays finite and accurate as
+\\\nu\\ grows. The blocks in the matrix read the derivatives \\P_k\\ and
+\\P\_{kl}\\ of \\\Sigma^{-1}\\ from
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md):
+with \\q_k = r^\top P_k r\\, the matrix block is
+\\-\tfrac{1}{2}\partial\_{kl}\log\lvert\Sigma\rvert + c\\q_kq_l/(2d) -
+\tfrac{c}{2}\\ r^\top P\_{kl} r\\.
 
 ## Notation
 
 \\\mu\\ is the location, \\\Sigma\\ the scale matrix, \\\nu\\ the
 degrees of freedom, \\\eta\\ the free vector of the matrix
-parametrization, \\A_k\\ and \\A\_{kl}\\ its first and second derivative
-arrays, \\q\\ the squared Mahalanobis distance, \\c\\ the weight and
-\\\ell^{(ij)}\\ the second derivative of the log-density in parameters
-\\i\\ and \\j\\.
+parametrization, \\P_k\\ and \\P\_{kl}\\ the first and second
+derivatives of \\\Sigma^{-1}\\, \\r = y - \mu\\, \\q\\ the squared
+Mahalanobis distance, \\c\\ the weight and \\\ell^{(ij)}\\ the second
+derivative of the log-density in parameters \\i\\ and \\j\\.
 
 ## See also
 
@@ -74,8 +76,10 @@ arrays, \\q\\ the squared Mahalanobis distance, \\c\\ the weight and
 for the expectation of this matrix, which is closed form,
 [`distrib_gradient.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvStudentTDistrib.md)
 for the score,
-[`mvt_T()`](https://statmodels7.github.io/distributions7/reference/mvt_T.md)
-for the cancellation in the \\\nu\\ component, and
+[`mvt_cp_d()`](https://statmodels7.github.io/distributions7/reference/mvt_cp_d.md)
+and
+[`mvt_h_d()`](https://statmodels7.github.io/distributions7/reference/mvt_h_d.md)
+for the \\\nu\\ component, and
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 for the generic.
 
@@ -115,7 +119,7 @@ ref <- vapply(distributions7:::hess_pairs(d@params),
               function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
               numeric(1))
 max(abs(vapply(H, sum, numeric(1)) - ref))
-#> [1] 1.978684e-09
+#> [1] 2.206509e-09
 
 # The location block moves with the observation, where a gaussian's does
 # not: the curvature at a far row is smaller.

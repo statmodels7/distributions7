@@ -19,7 +19,7 @@ expected fourth derivatives have no closed form."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -125,10 +125,10 @@ size and \(G(r) = \log\Gamma(y+r) - \log\Gamma(r)\).</p>
     <h2 id="the-poisson-boundary">The Poisson boundary<a class="anchor" aria-label="anchor" href="#the-poisson-boundary"></a></h2>
 
 
-<p>The caveat of <code><a href="distrib_deriv3.NegBin1Distrib.html">distrib_deriv3.NegBin1Distrib()</a></code> applies here and more
-strongly: the recursion divides by \(\theta^{4}\), so the cancellation
-among the powers of \(r\) is worse at this order than at the one below.
-This order is not reliable below about \(\theta = 0.05\).</p>
+<p>The section of <code><a href="distrib_deriv3.NegBin1Distrib.html">distrib_deriv3.NegBin1Distrib()</a></code> applies here: for
+\(\theta &lt; 1\) the method uses the form in \(\mu + i\theta\), which
+contains no size, and this order keeps its accuracy as \(\theta\) goes
+to zero.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

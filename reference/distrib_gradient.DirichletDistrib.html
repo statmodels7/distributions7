@@ -7,11 +7,11 @@ $$\dfrac{\partial\ell}{\partial\eta_k} = \phi \sum_{j} g_j A_{jk},
       \qquad
       \dfrac{\partial\ell}{\partial\phi} = \psi(\phi) + \sum_{j} g_j \mu_j.$$
 The data enter only through \(\log y\), the family being an exponential
-family in that statistic, so \(g\) carries the whole of it.
-With scale = &quot;link&quot; the generic applies the chain rule for the links the
-family carries before returning. Every mean coordinate rides the identity,
-its free value being unconstrained already, so only the concentration's
-component changes."><meta property="og:description" content="Computes the first derivatives of the Dirichlet log-density with respect to
+family in that statistic.
+With scale = &quot;link&quot; the generic applies the chain rule for the links of the
+family to the result of the method. Every mean coordinate takes the identity
+link, its free value being unconstrained already, so only the component of
+the concentration changes."><meta property="og:description" content="Computes the first derivatives of the Dirichlet log-density with respect to
 the mean's free values and the concentration, one value per observation, in
 closed form. Writing \(g_j = \log y_j - \psi(\alpha_j)\) and
 \(A = \partial\mu/\partial\eta\) for the simplex's own Jacobian,
@@ -19,11 +19,11 @@ $$\dfrac{\partial\ell}{\partial\eta_k} = \phi \sum_{j} g_j A_{jk},
       \qquad
       \dfrac{\partial\ell}{\partial\phi} = \psi(\phi) + \sum_{j} g_j \mu_j.$$
 The data enter only through \(\log y\), the family being an exponential
-family in that statistic, so \(g\) carries the whole of it.
-With scale = &quot;link&quot; the generic applies the chain rule for the links the
-family carries before returning. Every mean coordinate rides the identity,
-its free value being unconstrained already, so only the concentration's
-component changes."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+family in that statistic.
+With scale = &quot;link&quot; the generic applies the chain rule for the links of the
+family to the result of the method. Every mean coordinate takes the identity
+link, its free value being unconstrained already, so only the component of
+the concentration changes."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +31,7 @@ component changes."><meta property="og:image" content="https://statmodels7.githu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,11 +72,11 @@ $$\dfrac{\partial\ell}{\partial\eta_k} = \phi \sum_{j} g_j A_{jk},
       \qquad
       \dfrac{\partial\ell}{\partial\phi} = \psi(\phi) + \sum_{j} g_j \mu_j.$$
 The data enter only through \(\log y\), the family being an exponential
-family in that statistic, so \(g\) carries the whole of it.</p>
-<p>With <code>scale = "link"</code> the generic applies the chain rule for the links the
-family carries before returning. Every mean coordinate rides the identity,
-its free value being unconstrained already, so only the concentration's
-component changes.</p>
+family in that statistic.</p>
+<p>With <code>scale = "link"</code> the generic applies the chain rule for the links of the
+family to the result of the method. Every mean coordinate takes the identity
+link, its free value being unconstrained already, so only the component of
+the concentration changes.</p>
     </div>
 
 

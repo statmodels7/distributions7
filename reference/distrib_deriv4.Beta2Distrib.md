@@ -8,8 +8,8 @@ one of the three mixed components equal to \\\psi'''(\alpha+\beta)\\,
 with \\\psi'''\\ the third derivative of the digamma function.
 
 As at third order the values are free of the response, so `expected`,
-`approx` and `nsim` are all without effect and the result is identical
-to the bit whichever is asked for.
+`approx` and `nsim` are all without effect and the result is the same
+for every value of them.
 
 ## Arguments
 
@@ -56,7 +56,8 @@ to the bit whichever is asked for.
 A named list of five numeric vectors, `alpha_alpha_alpha_alpha`,
 `alpha_alpha_alpha_beta`, `alpha_alpha_beta_beta`,
 `alpha_beta_beta_beta` and `beta_beta_beta_beta`, each of length
-`length(y)` and constant within itself when the parameters are.
+`max(length(y), length(alpha), length(beta))` and constant within itself
+when the parameters are.
 
 ## Notation
 
@@ -101,7 +102,7 @@ lapply(d4, unique)
 psigamma(7, deriv = 3)
 #> [1] 0.007198199
 
-# Free of the response, so asking for the expectation changes nothing.
+# Free of the response, so expected = TRUE changes nothing.
 identical(d4, distrib_deriv4(d, y, th, expected = TRUE))
 #> [1] TRUE
 

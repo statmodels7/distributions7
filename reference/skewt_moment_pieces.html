@@ -15,7 +15,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,13 +81,16 @@ numeric vector recycled to the longer of <code>alpha</code> and <code>nu</code>.
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The gamma ratio in \(b_\nu\) is formed as
-<code>exp(lgamma((nu - 1) / 2) - lgamma(nu / 2))</code>, so it stays finite at degrees
-of freedom where the two gamma functions themselves would overflow.</p>
-<p>Existence is enforced here, once for all four callers: \(b_\nu\) is <code>NaN</code>
-at \(\nu \le 1\) and \(\sigma_z^2\) is <code>NaN</code> at \(\nu \le 2\), so a
-moment built from either inherits the <code>NaN</code> and no method has to test the
-threshold twice.</p>
+    <p>The gamma ratio in \(b_\nu\) is formed from the logarithm of the beta
+function, \(\Gamma\{(\nu-1)/2\}/\Gamma(\nu/2) = B\{(\nu-1)/2, 1/2\}/\sqrt{\pi}\),
+so that neither the gamma functions nor the difference of two large
+log-gamma values is formed, and \(b_\nu\) keeps its accuracy as \(\nu\)
+grows (to \(\nu = 10^{16}\) and beyond). \(\delta\) comes from
+<code><a href="skewnormal_delta.html">skewnormal_delta()</a></code>.</p>
+<p>\(b_\nu\) is <code>NaN</code> at \(\nu \le 1\) and \(\sigma_z^2\) is <code>NaN</code> at
+\(\nu \le 2\). The moment methods start from these pieces and mark the
+ranges where a moment diverges: the variance is <code>Inf</code> for
+\(1 &lt; \nu \le 2\) and the excess kurtosis for \(2 &lt; \nu \le 4\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

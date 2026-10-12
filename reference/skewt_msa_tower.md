@@ -3,9 +3,9 @@
 Builds the table of \\\partial^i_z\\\partial^c\_\alpha \ell\\, for every
 pair with \\c + i \le 4\\. Together with
 [`skewt_msa_component()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_component.md)
-it gives in closed form every derivative of the log-density that does
-not involve \\\nu\\, by a derivation in \\z\\ independent of the
-compiled kernels of
+it gives in closed form every derivative of the log-density up to order
+four that does not involve \\\nu\\, by a derivation in \\z\\ independent
+of the compiled kernels of
 [`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md),
 which are tested against it.
 
@@ -33,14 +33,15 @@ z^2}\\ and `a` is `z / rs`; the remaining fifteen elements are named
 them, for every \\c + i \le 4\\, with \\\Phi_0 = \ell\\ up to the terms
 free of \\z\\, so that `"0_0"` is `NA_real_` and is never read.
 
-## Why the block closes
+## Derivatives in the location, scale and shape
 
 With \\z = (y-\mu)/\sigma\\ and \\u(z) = z\sqrt{(\nu+1)/(\nu+z^2)}\\,
 the log-density is \$\$\ell = \log 2 - \log\sigma + g(z) +
 \Lambda(\alpha\\u(z)),\$\$ where \\g = \log t\_\nu\\ and \\\Lambda =
 \log T\_{\nu+1}\\. Neither \\\mu\\ nor \\\sigma\\ appears anywhere but
-inside \\z\\, and \\\alpha\\ nowhere but inside \\w = \alpha u\\, so two
-observations settle the whole block.
+inside \\z\\, and \\\alpha\\ nowhere but inside \\w = \alpha u\\, so
+every derivative in \\(\mu, \sigma, \alpha)\\ reduces to derivatives in
+\\z\\ and in the argument \\w\\ of \\\Lambda\\.
 
 The shape enters the argument of \\\Lambda\\ linearly, so
 differentiating in it never leaves the table: \$\$\Phi_c(z) \\=\\
@@ -57,7 +58,7 @@ F^{(a)}\\ and \\P\_{a,b+1} = (a+b)\\P\_{a,b} + z\\P\_{a,b}'\\. The
 explicit \\-\log\sigma\\ contributes only to the pure-\\\sigma\\
 components, where it adds \\(-1)^b (b-1)!\\\sigma^{-b}\\.
 
-## Nothing in it needs a difference
+## Closed-form ingredients
 
 \\u\\ and \\g\\ are rational in \\z\\ up to one square root, so their
 four derivatives are written out. \\\Lambda^{(k)}\\ follows from the

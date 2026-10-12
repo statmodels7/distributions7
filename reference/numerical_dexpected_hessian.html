@@ -9,7 +9,7 @@ difference in each parameter of the family's own expected information."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,14 +95,17 @@ rounding.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The step is <code><a href="fd_steps.html">fd_steps()</a></code>', which shrinks near a finite boundary so
-that both evaluation points stay strictly inside the parameter's open
-domain. On the link scale the domain is the whole line and no clamp is
-needed, so the step is the plain relative one.</p>
-<p><strong>It refuses rather than approximating an approximation.</strong> Where the
-expected information is obtained by quadrature or by simulation, this would
-be a difference of a difference, which the package forbids everywhere, and
-it would cost 2p of the dearest call the family has.</p>
+    <p>On the parameter scale the step is chosen by <code><a href="fd_stable_step.html">fd_stable_step()</a></code> from the
+candidates of <code><a href="fd_steps.html">fd_steps()</a></code>, which shrink near a finite boundary so that
+both evaluation points stay strictly inside the parameter's open domain;
+with <code>approx = "mc"</code> the step of <code><a href="fd_steps.html">fd_steps()</a></code> is used directly. On the link
+scale the domain is the whole line and no clamp is needed, so the step is
+the plain relative one.</p>
+<p><strong>The method signals an error where the expected information is itself an
+approximation.</strong> Where the expected information is obtained by quadrature
+or by simulation, the result would be a difference of a difference, which
+the package does not compute anywhere, and it would cost 2p of the most
+expensive call that the family has.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

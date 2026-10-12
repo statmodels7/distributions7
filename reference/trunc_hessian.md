@@ -27,8 +27,8 @@ trunc_hessian(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, applied by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - ...:
 
@@ -44,7 +44,13 @@ unordered pair of parameters, keyed as
 
 Only \\H\_{ij}(y)\\ varies with the data; the correction is a function
 of \\\theta\\ and the endpoints alone, so it is computed once and
-recycled to the length of `y`.
+recycled to the length of `y`. For a discrete parent whose retained mass
+sits at the lower endpoint, \\f(L)/Z \> 0.9\\, the two terms cancel to a
+number much smaller than either, and the Hessian there is taken from
+[`head_derivs()`](https://statmodels7.github.io/distributions7/reference/head_derivs.md)
+through
+[`head_override()`](https://statmodels7.github.io/distributions7/reference/head_override.md);
+the score and the third to fifth derivatives are treated the same way.
 
 ## Notation
 

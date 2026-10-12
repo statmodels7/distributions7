@@ -1,10 +1,10 @@
 # Variance of the Logistic Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \pi^2\sigma^2/3\\. The scale is
-not the standard deviation: it is smaller by \\\pi/\sqrt3 \approx
-1.8138\\. A logistic scale and a Gaussian one are therefore not
-comparable as they stand, which matters whenever a logistic is used as a
-heavier-tailed substitute for a Gaussian.
+Closed form: \\\operatorname{Var}(Y) = \pi^2\sigma^2/3\\. The standard
+deviation is \\\sigma\pi/\sqrt3 \approx 1.8138\sigma\\, so the scale is
+smaller than the standard deviation by the factor \\\pi/\sqrt3\\, and a
+logistic scale is not comparable with a Gaussian standard deviation as
+it stands.
 
 ## Arguments
 

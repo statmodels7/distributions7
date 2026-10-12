@@ -72,12 +72,16 @@ under the integral moves the measure as well as the integrand:
 \ell\_{ab}\ell\_{cd} + \ell\_{ab}\ell_c\ell_d)\\f.\$\$
 
 The integrals are taken by an exp-sinh rule on each half-line, from
-[`loc_scale_rule()`](https://statmodels7.github.io/distributions7/reference/loc_scale_rule.md).
-Its nodes cluster double-exponentially at \\z = 0\\, which is where the
-three families that use it put their one sharp feature (the step of the
-skewing function at a large shape, and the core of the pseudo-Huber at a
-small one), and the same transformation turns an algebraic tail into an
-exponential one, which is what the Student t's heavy tail needs.
+[`loc_scale_rule()`](https://statmodels7.github.io/distributions7/reference/loc_scale_rule.md),
+centered at the point that
+[`loc_scale_center()`](https://statmodels7.github.io/distributions7/reference/loc_scale_center.md)
+returns. Its nodes cluster double-exponentially at that center, which is
+where the location-scale families that use it put their one sharp
+feature: zero for the core of the pseudo-Huber at a small shape and for
+the skew t, and the step of the skewing function, \\w = -r\\, for the
+centered skew normal, and the same transformation turns an algebraic
+tail into an exponential one, which is what the Student t's heavy tail
+needs.
 
 A node where the density is exactly zero contributes nothing, whatever
 the derivatives read there. Any other non-finite contribution makes the

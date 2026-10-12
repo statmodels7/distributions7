@@ -22,8 +22,8 @@ no summation. The result is clamped to \\\[0, 1\]\\ against rounding.
 - lower.tail:
 
   Logical of length 1. When `TRUE`, the default, probabilities are \\P(Y
-  \le q)\\; when `FALSE` they are \\P(Y \> q)\\, formed as \\1 - F\\ and
-  so subject to that subtraction's cancellation far into the upper tail.
+  \le q)\\; when `FALSE` they are \\P(Y \> q)\\, formed from the
+  parent's own upper tail as \\(1 - \zeta) P(X \> q)\\.
 
 - log.p:
 
@@ -36,7 +36,8 @@ no summation. The result is clamped to \\\[0, 1\]\\ against rounding.
 
 ## Value
 
-A numeric vector of probabilities, in \\\[0, 1\]\\.
+A numeric vector of probabilities in \\\[0, 1\]\\, or their logarithms
+when `log.p = TRUE`.
 
 ## Notation
 
@@ -69,7 +70,7 @@ distrib_cdf(d, q, theta)
 all.equal(distrib_cdf(d, q, theta), 0.75 * ppois(q, 3) + 0.25)
 #> [1] TRUE
 
-# It agrees with the mass function summed, as it must on a lattice.
+# It agrees with the mass function summed, as it must on a discrete support.
 c(cdf = distrib_cdf(d, 5, theta), summed = sum(distrib_pdf(d, 0:5, theta)))
 #>       cdf    summed 
 #> 0.9370615 0.9370615 

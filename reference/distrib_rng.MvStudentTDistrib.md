@@ -3,9 +3,12 @@
 Draws from the family through its scale-mixture representation, \\y =
 \mu + L z\sqrt{\nu/g}\\ with \\z\\ a vector of independent standard
 normals, \\g \sim \chi^2\_\nu\\ independent of them, and \\LL^\top =
-\Sigma\\. A \\t\\ is a gaussian whose precision has been multiplied by a
-gamma variate, and that same representation is what gives the family its
-heavy tails and its closed-form expected information.
+\Sigma\\. The factor \\L\\ is read from the parametrization (see
+[`mv_sampling_factor()`](https://statmodels7.github.io/distributions7/reference/mv_sampling_factor.md)),
+so a scale matrix that is nearly singular is sampled without a
+decomposition. A \\t\\ is a gaussian whose precision has been multiplied
+by a gamma variate, and the same representation gives the closed-form
+expected information.
 
 The draws consume `n * p` normal variates and `n` chi-squared variates
 from R's own generators, in that order, so the stream is reproducible
@@ -41,7 +44,8 @@ An \\n \times p\\ numeric matrix, one draw per row, with column names
 ## Notation
 
 \\\mu\\ is the location, \\\Sigma\\ the scale matrix, \\\nu\\ the
-degrees of freedom and \\L\\ a lower Cholesky factor of \\\Sigma\\.
+degrees of freedom and \\L\\ a factor of \\\Sigma\\, \\LL^\top =
+\Sigma\\.
 
 ## See also
 
@@ -79,8 +83,8 @@ round(variance(d, theta), 2)
 #> v1 1.83 0.66
 #> v2 0.66 1.25
 
-# At nu = 1.5 it does not, and the sample covariance is a number that means
-# nothing: it grows with the sample instead of settling.
+# At nu = 1.5 the covariance is infinite, and the sample covariance grows
+# with the sample.
 t2 <- theta; t2$nu <- 1.5
 set.seed(3)
 vapply(c(2000, 20000, 200000),

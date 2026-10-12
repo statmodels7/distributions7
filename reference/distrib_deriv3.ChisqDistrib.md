@@ -8,9 +8,11 @@ the digamma function. It is one case of the general pattern \\\ell^{(k)}
 family is a one-parameter exponential family in \\\log y\\ and the
 response leaves the derivatives after the first order.
 
-The value is free of the response, so `expected` selects nothing: the
-same kernel runs either way and the two results are identical to the
-bit. `approx` and `nsim` are ignored for the same reason.
+On the parameter scale the value is free of the response, so `expected`
+selects nothing: the same kernel runs either way and the two results are
+identical to the bit. With `scale = "link"` the generic composes the
+observed and the expected derivative differently, and the two results
+differ. `approx` and `nsim` are ignored.
 
 ## Arguments
 
@@ -31,8 +33,9 @@ bit. `approx` and `nsim` are ignored for the same reason.
 
 - expected:
 
-  Logical of length 1, and without effect here, the observed and
-  expected third derivatives being the same number. Defaults to `FALSE`.
+  Logical of length 1. On the parameter scale it has no effect, the
+  observed and expected third derivatives being the same number; on the
+  link scale it selects the expected composition. Defaults to `FALSE`.
 
 - scale:
 
@@ -92,7 +95,8 @@ unique(distrib_deriv3(d, y, th)$mu_mu_mu)
 -psigamma(2, deriv = 2) / 8
 #> [1] 0.05051423
 
-# Free of the response, so asking for the expectation changes nothing.
+# Free of the response, so on the parameter scale the expectation is the
+# same.
 identical(distrib_deriv3(d, y, th), distrib_deriv3(d, y, th, expected = TRUE))
 #> [1] TRUE
 

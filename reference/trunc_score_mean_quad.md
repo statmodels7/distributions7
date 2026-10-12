@@ -4,9 +4,8 @@ Computes \\m_i = \mathbb{E}\_T\[s_i\]\\ by integrating the parent's
 score against the truncated law, one integral per parameter. It is the
 route
 [`trunc_score_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_score_mean.md)
-falls back on for a parent whose cdf derivatives are not exact, and is
-the only route for a gamma or a beta, whose distribution function has no
-elementary derivative in its shape.
+falls back on for a parent whose cdf derivatives are not exact, that is,
+a continuous parent without registered cdf derivatives.
 
 ## Usage
 
@@ -40,7 +39,7 @@ and \\H\_{ij}\\ are the parent's score and observed Hessian; and
 ## See also
 
 [`trunc_score_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_score_mean.md),
-which prefers the cdf route where it is exact, and
+which takes the cdf route where it is exact, and
 [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md),
 which performs the integration.
 
@@ -58,7 +57,8 @@ unlist(distributions7:::trunc_score_mean(tn, theta))
 #>          mu       sigma 
 #>  0.08052166 -0.47667927 
 
-# For a gamma parent this is the only route available.
+# A gamma parent has compiled cdf derivatives, so trunc_score_mean() takes the
+# cdf route for it; the quadrature gives the same numbers.
 tg <- truncated(gamma2_distrib(), lower = 0.5, upper = 5)
 unlist(distributions7:::trunc_score_mean_quad(tg, list(mu = 2, sigma2 = 1)))
 #>          mu      sigma2 

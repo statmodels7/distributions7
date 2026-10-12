@@ -31,15 +31,18 @@ vector recycled to the longer of `alpha` and `nu`.
 
 ## Details
 
-The gamma ratio in \\b\_\nu\\ is formed as
-`exp(lgamma((nu - 1) / 2) - lgamma(nu / 2))`, so it stays finite at
-degrees of freedom where the two gamma functions themselves would
-overflow.
+The gamma ratio in \\b\_\nu\\ is formed from the logarithm of the beta
+function, \\\Gamma\\(\nu-1)/2\\/\Gamma(\nu/2) = B\\(\nu-1)/2,
+1/2\\/\sqrt{\pi}\\, so that neither the gamma functions nor the
+difference of two large log-gamma values is formed, and \\b\_\nu\\ keeps
+its accuracy as \\\nu\\ grows (to \\\nu = 10^{16}\\ and beyond).
+\\\delta\\ comes from
+[`skewnormal_delta()`](https://statmodels7.github.io/distributions7/reference/skewnormal_delta.md).
 
-Existence is enforced here, once for all four callers: \\b\_\nu\\ is
-`NaN` at \\\nu \le 1\\ and \\\sigma_z^2\\ is `NaN` at \\\nu \le 2\\, so
-a moment built from either inherits the `NaN` and no method has to test
-the threshold twice.
+\\b\_\nu\\ is `NaN` at \\\nu \le 1\\ and \\\sigma_z^2\\ is `NaN` at
+\\\nu \le 2\\. The moment methods start from these pieces and mark the
+ranges where a moment diverges: the variance is `Inf` for \\1 \< \nu \le
+2\\ and the excess kurtosis for \\2 \< \nu \le 4\\.
 
 ## See also
 

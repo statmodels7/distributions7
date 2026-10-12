@@ -7,11 +7,11 @@ The mean and the variance are both \(\mu\), which is the constraint a
 count model most often has to relax; negbin2_distrib() and
 negbin1_distrib() do that, and both contain this family in the limit.
 The default link is the logarithm, which is the canonical link here. On
-its scale the observed and the expected information coincide, so Fisher
-scoring and Newton's method take the same step.
+its scale the observed and the expected information coincide in exact
+arithmetic, so Fisher scoring and Newton's method take the same step.
 Build one with poisson_distrib(). This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them."><meta property="og:description" content="The S7 class of the Poisson family parametrized by its mean \(\mu &amp;gt; 0\),
+constructor, which takes the parent's properties; the validator of
+distrib checks them, and the constructor adds no check of its own."><meta property="og:description" content="The S7 class of the Poisson family parametrized by its mean \(\mu &amp;gt; 0\),
 with mass \(P(Y = y) = e^{-\mu}\mu^y/y!\) on the non-negative integers. It
 inherits from discrete_distrib, so expectations over its support are exact
 sums and no derivative with respect to the response is defined.
@@ -19,11 +19,11 @@ The mean and the variance are both \(\mu\), which is the constraint a
 count model most often has to relax; negbin2_distrib() and
 negbin1_distrib() do that, and both contain this family in the limit.
 The default link is the logarithm, which is the canonical link here. On
-its scale the observed and the expected information coincide, so Fisher
-scoring and Newton's method take the same step.
+its scale the observed and the expected information coincide in exact
+arithmetic, so Fisher scoring and Newton's method take the same step.
 Build one with poisson_distrib(). This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+constructor, which takes the parent's properties; the validator of
+distrib checks them, and the constructor adds no check of its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +31,7 @@ relationships between them."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,11 +72,11 @@ sums and no derivative with respect to the response is defined.</p>
 count model most often has to relax; <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> and
 <code><a href="negbin1_distrib.html">negbin1_distrib()</a></code> do that, and both contain this family in the limit.</p>
 <p>The default link is the logarithm, which is the <strong>canonical</strong> link here. On
-its scale the observed and the expected information coincide, so Fisher
-scoring and Newton's method take the same step.</p>
+its scale the observed and the expected information coincide in exact
+arithmetic, so Fisher scoring and Newton's method take the same step.</p>
 <p>Build one with <code><a href="poisson_distrib.html">poisson_distrib()</a></code>. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.</p>
+constructor, which takes the parent's properties; the validator of
+<code>distrib</code> checks them, and the constructor adds no check of its own.</p>
     </div>
 
     <div class="section level2">
@@ -148,19 +148,27 @@ object built by <code><a href="poisson_distrib.html">poisson_distrib()</a></code
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered on this class:
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.PoissonDistrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_cdf.PoissonDistrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_deriv3.PoissonDistrib.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.PoissonDistrib.html">distrib_deriv4()</a></code>,
-<code><a href="distrib_expected_hessian.PoissonDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_quantile.PoissonDistrib.html">distrib_quantile()</a></code> and
+<code><a href="distrib_rng.PoissonDistrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.PoissonDistrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.PoissonDistrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_pdf.PoissonDistrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_quantile.PoissonDistrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.PoissonDistrib.html">distrib_rng()</a></code></p>
-<p>Everything else is inherited from <code><a href="discrete_distrib.html">discrete_distrib()</a></code>. Derivatives with
-respect to the response are refused by that parent: the support is a
-lattice, so there is nothing to differentiate along.</p>
+<code><a href="distrib_expected_hessian.PoissonDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.PoissonDistrib.html">distrib_deriv3()</a></code> and
+<code><a href="distrib_deriv4.PoissonDistrib.html">distrib_deriv4()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_dexpected_hessian.PoissonDistrib.html">distrib_dexpected_hessian()</a></code>
+and
+<code><a href="distrib_dexpected_hessian.PoissonDistrib.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the derivatives of the distribution function:
+<code><a href="distrib_grad_cdf.PoissonDistrib.html">distrib_grad_cdf()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.PoissonDistrib.html">mean()</a></code>,
+<code><a href="variance.PoissonDistrib.html">variance()</a></code>,
+<code><a href="skewness.PoissonDistrib.html">skewness()</a></code> and
+<code><a href="kurtosis.PoissonDistrib.html">kurtosis()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="discrete_distrib.html">discrete_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

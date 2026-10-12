@@ -5,15 +5,15 @@ $$\mathbb{E}[\ell^{(\mu_a \mu_b)}] = -(\Sigma^{-1})_{ab}, \qquad
   \mathbb{E}[\ell^{(\mu_a \eta_k)}] = 0, \qquad
   \mathbb{E}[\ell^{(\eta_k \eta_l)}] =
   -\tfrac{1}{2}\operatorname{tr}(\Sigma^{-1} A_k \Sigma^{-1} A_l).$$
-No component depends on the data, so every returned vector is constant
-across rows and y is read for its row count alone."><meta property="og:description" content="Computes the expectation of the observed Hessian in closed form, which for
+The components do not depend on the data, so every returned vector is
+constant across rows and y is used only for its row count."><meta property="og:description" content="Computes the expectation of the observed Hessian in closed form, which for
 this family is simpler than the observed matrix itself:
 $$\mathbb{E}[\ell^{(\mu_a \mu_b)}] = -(\Sigma^{-1})_{ab}, \qquad
   \mathbb{E}[\ell^{(\mu_a \eta_k)}] = 0, \qquad
   \mathbb{E}[\ell^{(\eta_k \eta_l)}] =
   -\tfrac{1}{2}\operatorname{tr}(\Sigma^{-1} A_k \Sigma^{-1} A_l).$$
-No component depends on the data, so every returned vector is constant
-across rows and y is read for its row count alone."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The components do not depend on the data, so every returned vector is
+constant across rows and y is used only for its row count."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +21,7 @@ across rows and y is read for its row count alone."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,8 +60,8 @@ $$\mathbb{E}[\ell^{(\mu_a \mu_b)}] = -(\Sigma^{-1})_{ab}, \qquad
   \mathbb{E}[\ell^{(\mu_a \eta_k)}] = 0, \qquad
   \mathbb{E}[\ell^{(\eta_k \eta_l)}] =
   -\tfrac{1}{2}\operatorname{tr}(\Sigma^{-1} A_k \Sigma^{-1} A_l).$$
-No component depends on the data, so every returned vector is constant
-across rows and <code>y</code> is read for its row count alone.</p>
+The components do not depend on the data, so every returned vector is
+constant across rows and <code>y</code> is used only for its row count.</p>
     </div>
 
 
@@ -84,9 +84,10 @@ enters any component.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, handled by the
-generic before dispatch. Every link of this family is the identity, so the
-two scales coincide.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The method
+returns the parameter scale and the generic applies the link scale to its
+result. Every link of this family is the identity, so the two scales
+coincide.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
@@ -112,17 +113,16 @@ strategy is consulted. Present so that the signature matches the generic's.</p><
     <p>Each mixed component is a linear function of \(w = \Sigma^{-1}(y-\mu)\),
 and \(\mathbb{E}[w] = 0\). The mean parameters and the matrix parameters
 are therefore orthogonal, and the information matrix is block diagonal
-whatever the matrix parametrization is. Fisher scoring on this family is
-well behaved for that reason: a step in the mean and a step in the
-covariance do not interfere.</p>
+whatever the matrix parametrization is. A Fisher scoring step in the mean
+therefore does not depend on the matrix parameters, and a step in the matrix
+parameters does not depend on the mean.</p>
     </div>
     <div class="section level2">
-    <h2 id="why-no-second-derivative-array-is-needed">Why no second derivative array is needed<a class="anchor" aria-label="anchor" href="#why-no-second-derivative-array-is-needed"></a></h2>
-    <p>The observed matrix block carries \(A_{kl}\) through both the
+    <h2 id="the-derivative-arrays-used">The derivative arrays used<a class="anchor" aria-label="anchor" href="#the-derivative-arrays-used"></a></h2>
+    <p>The observed matrix block carries the second derivatives through both the
 log-determinant term and the quadratic form. Under the expectation the two
-cancel, and only the first derivatives survive. That saves the whole
-<code>param_d2()</code> computation, which is the dearest part of the observed Hessian
-at any dimension worth the name.</p>
+terms cancel and only the first derivatives remain, so this method computes
+no second derivative array.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -157,7 +157,7 @@ whose Fisher scoring inverts this matrix, and
 <span class="r-out co"><span class="r-pr">#&gt;</span>         v1         v2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -1.0141552  0.5399435 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Every mixed mean-matrix component is exactly zero, not merely small.</span></span></span>
+<span class="r-in"><span><span class="co"># Every mixed mean-matrix component is exactly zero.</span></span></span>
 <span class="r-in"><span><span class="va">mixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^mu[0-9]+_sigma"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">EH</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">EH</span><span class="op">[</span><span class="va">mixed</span><span class="op">]</span>, <span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="va">z</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mu1_sigma_log_L1 mu1_sigma_log_L2   mu1_sigma_L2.1 mu2_sigma_log_L1 </span>

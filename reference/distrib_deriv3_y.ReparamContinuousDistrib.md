@@ -2,13 +2,14 @@
 
 The parent's third and fourth response derivatives, read at the parent's
 parameters. A reparametrization acts on \\\theta\\ and these derivatives
-are taken in \\y\\, so the two do not interact: no chain rule enters and
-the parent's answer is the answer, exactly.
+are taken in \\y\\, so the two do not interact: the chain rule does not
+enter, and the result of the parent is returned exactly.
 
-The same is true at the first and second orders, and for the mixed block
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-it is **not**: that one takes one derivative in each, so the map's
-first-order Jacobian does enter.
+The same holds at the first and second orders. It does not hold for the
+mixed block
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md),
+which takes one derivative in each, so that the first-order Jacobian of
+the map enters.
 
 ## Arguments
 

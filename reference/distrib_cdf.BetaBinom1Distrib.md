@@ -3,9 +3,14 @@
 Computes \\F(q) = P(Y \le q) = \sum\_{k \le \lfloor q \rfloor} P(Y =
 k)\\ as the cumulative sum of the mass over the whole support \\\\0,
 \dots, n\\\\. The support being finite, that sum is exact rather than an
-approximation, and it costs \\n+1\\ evaluations of the mass whatever the
-length of `q`. Below the support the probability is 0 and at or above
-\\n\\ it is 1.
+approximation, and it costs \\n+1\\ evaluations of the mass for each
+distinct parameter setting. Below the support the probability is 0 and
+at or above \\n\\ it is 1. With `lower.tail = FALSE` the upper tail
+\\P(Y \> q)\\ is the sum of the mass above \\q\\, accumulated from the
+top of the support, so an upper-tail probability far below machine
+epsilon is not formed as \\1 - F\\ and keeps its accuracy, on the log
+scale too. The helper is
+[`betabinom1_cum()`](https://statmodels7.github.io/distributions7/reference/betabinom1_cum.md).
 
 ## Arguments
 
@@ -22,14 +27,15 @@ length of `q`. Below the support the probability is 0 and at or above
 - theta:
 
   A named list with components `mu` and `sigma`, each a numeric vector
-  of length 1. `mu` must lie in \\(0, 1)\\ and `sigma` be strictly
-  positive. A parameter varying by observation is not supported here:
-  one cumulative table is built for the whole call.
+  of length 1 or of the length of `q`. `mu` must lie in \\(0, 1)\\ and
+  `sigma` be strictly positive. With scalar parameters one cumulative
+  table serves the whole call; parameters that vary by observation give
+  one table per observation.
 
 - lower.tail:
 
   Logical of length 1. When `TRUE`, the default, probabilities are \\P(Y
-  \le q)\\; when `FALSE` they are \\P(Y \> q)\\, formed as \\1 - F\\.
+  \le q)\\; when `FALSE` they are \\P(Y \> q)\\.
 
 - log.p:
 
@@ -43,8 +49,8 @@ length of `q`. Below the support the probability is 0 and at or above
 ## Value
 
 A numeric vector of probabilities in \\\[0, 1\]\\, of length
-`length(q)`. With `log.p = TRUE` the values are logarithms and are
-non-positive.
+`max(length(q), length(mu), length(sigma))`. With `log.p = TRUE` the
+values are logarithms and are non-positive.
 
 ## See also
 

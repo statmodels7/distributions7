@@ -13,7 +13,7 @@ square and the two shapes through the gamma ratios."><meta property="og:image" c
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,16 +77,19 @@ three components.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The difference is not formed. With \(k = d/p\) and \(h = 1/p\), the
+    <p>Where \(8h \le k\) and \(4h^2 \le k\) the difference \(m_2 - m_1^2\) is
+not formed. With \(k = d/p\) and \(h = 1/p\), the
 cumulant generating function of \(\log(Y/m_1)\) is
 \(K(s) = \sum_{n \ge 2} \psi^{(n-1)}(k)\,h^n (s^n - s)/n!\), and with
 \(e^{K(s)} = \sum_n a_n s^n\) the central moments of \(Y/m_1\) are
 $$\mu_r = r!\sum_{n \ge r} S(n, r)\,a_n,$$
 \(S\) the Stirling numbers of the second kind, a sum in which the leading
 orders that cancel in \(m_2 - m_1^2\) are absent. It is evaluated in
-double-double arithmetic where \(8h \le k\), and as
-\(\exp(\log m_2 - 2\log m_1) - 1\) from Stirling's form of the log-gamma
-differences elsewhere. Then \(\operatorname{Var}(Y) = m_1^2\mu_2\).</p>
+double-double arithmetic where \(8h \le k\) and \(4h^2 \le k\). Elsewhere
+\(\mu_2 = \exp(\log m_2 - 2\log m_1) - 1\) is evaluated with <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">expm1()</a></code>, the
+log-gamma differences being taken in Stirling's form for \(k \ge 10\) and
+as differences of <code><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma()</a></code> below. Then \(\operatorname{Var}(Y) =
+m_1^2\mu_2\).</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -114,7 +117,8 @@ differences elsewhere. Then \(\operatorname{Var}(Y) = m_1^2\mu_2\).</p>
 <span class="r-in"><span>          <span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="fu"><a href="weibull1_distrib.html">weibull1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Towards the lognormal the coefficient of variation is about sqrt(1/d).</span></span></span>
+<span class="r-in"><span><span class="co"># Towards the lognormal the squared coefficient of variation is about</span></span></span>
+<span class="r-in"><span><span class="co"># 1/(p d), which is 1/d here because p = 1.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, d <span class="op">=</span> <span class="fl">1e6</span>, p <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, d <span class="op">=</span> <span class="fl">1e6</span>, p <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1e-06</span>
 <span class="r-in"><span></span></span>

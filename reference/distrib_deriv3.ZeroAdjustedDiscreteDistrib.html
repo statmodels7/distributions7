@@ -5,19 +5,17 @@ exactly zero, and the two halves are differentiated separately. The
 \(\theta\) part is the parent's derivative less that of the truncation
 constant \(\log(1 - f_0)\), which is the mass the parent puts at zero and
 the hurdle removes.
-This is the structural difference from zero_inflated(), and it is one a
-reader can check in a line: there the mixed block is not zero, because
-inflation adds to the parent's mass at zero and no single zero can be
-attributed to a mechanism."><meta property="og:description" content="The hurdle likelihood factorizes into a binary part and a positive part,
+This is the structural difference from zero_inflated(), where the mixed
+block is not zero, because inflation adds to the parent's mass at zero and no
+single zero can be attributed to one mechanism."><meta property="og:description" content="The hurdle likelihood factorizes into a binary part and a positive part,
 so at every order the mixed components in za and a parent parameter are
 exactly zero, and the two halves are differentiated separately. The
 \(\theta\) part is the parent's derivative less that of the truncation
 constant \(\log(1 - f_0)\), which is the mass the parent puts at zero and
 the hurdle removes.
-This is the structural difference from zero_inflated(), and it is one a
-reader can check in a line: there the mixed block is not zero, because
-inflation adds to the parent's mass at zero and no single zero can be
-attributed to a mechanism."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+This is the structural difference from zero_inflated(), where the mixed
+block is not zero, because inflation adds to the parent's mass at zero and no
+single zero can be attributed to one mechanism."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +23,7 @@ attributed to a mechanism."><meta property="og:image" content="https://statmodel
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,10 +62,9 @@ exactly zero, and the two halves are differentiated separately. The
 \(\theta\) part is the parent's derivative less that of the truncation
 constant \(\log(1 - f_0)\), which is the mass the parent puts at zero and
 the hurdle removes.</p>
-<p>This is the structural difference from <code><a href="zero_inflated.html">zero_inflated()</a></code>, and it is one a
-reader can check in a line: there the mixed block is not zero, because
-inflation <em>adds</em> to the parent's mass at zero and no single zero can be
-attributed to a mechanism.</p>
+<p>This is the structural difference from <code><a href="zero_inflated.html">zero_inflated()</a></code>, where the mixed
+block is not zero, because inflation adds to the parent's mass at zero and no
+single zero can be attributed to one mechanism.</p>
     </div>
 
 
@@ -91,7 +88,7 @@ probability of a zero, in \((0, 1)\).</p></dd>
 
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
 <dd><p>Logical of length 1. <code>TRUE</code> takes the expectation, an exact
-sum over the support for a lattice parent.</p></dd>
+sum over the support for a discrete parent.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

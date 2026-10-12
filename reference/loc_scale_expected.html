@@ -13,7 +13,7 @@ of the remaining shape parameters."><meta property="og:image" content="https://s
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,10 +115,11 @@ $$\partial_{cd}\,\mathbb{E}[\ell_{ab}] = \int (\ell_{abcd}
   + \ell_{abc}\ell_d + \ell_{abd}\ell_c + \ell_{ab}\ell_{cd}
   + \ell_{ab}\ell_c\ell_d)\,f.$$</p>
 <p>The integrals are taken by an exp-sinh rule on each half-line, from
-<code><a href="loc_scale_rule.html">loc_scale_rule()</a></code>. Its nodes cluster double-exponentially at \(z = 0\),
-which is where the three families that use it put their one sharp feature
-(the step of the skewing function at a large shape, and the core of the
-pseudo-Huber at a small one), and the same transformation turns an algebraic
+<code><a href="loc_scale_rule.html">loc_scale_rule()</a></code>, centered at the point that <code><a href="loc_scale_center.html">loc_scale_center()</a></code> returns.
+Its nodes cluster double-exponentially at that center, which is where the
+location-scale families that use it put their one sharp feature: zero for
+the core of the pseudo-Huber at a small shape and for the skew t, and the
+step of the skewing function, \(w = -r\), for the centered skew normal, and the same transformation turns an algebraic
 tail into an exponential one, which is what the Student t's heavy tail
 needs.</p>
 <p>A node where the density is exactly zero contributes nothing, whatever the

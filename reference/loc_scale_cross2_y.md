@@ -44,8 +44,8 @@ partial_loc_scale_cross2_y(
 
 - scale:
 
-  One of `"parameter"` or `"link"`, applied by the generic before
-  dispatch.
+  One of `"parameter"` or `"link"`. The generic applies the link scale
+  to the value that the method returns.
 
 - ...:
 
@@ -59,9 +59,11 @@ A named list with one numeric vector per parameter, keyed by
 ## Details
 
 Registered on the logistic, Cauchy, Gumbel and Laplace for the first
-body, and on the pseudo-Huber, skew normal and skew t for the second.
-The gaussian and the Student t write their own out, and every remaining
-continuous family takes
+body, and on the two pseudo-Huber parametrizations, the skew normal and
+the skew t for the second. The gaussian and the Student t have methods
+of their own, as do several other families (the exponential, the
+Weibull, the generalized Pareto and the lognormal among them), and a
+continuous family with no method of its own takes
 [`distrib_cross2_y.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.continuous_distrib.md).
 
 ## Notation

@@ -1,14 +1,15 @@
 # Cauchy Log-CDF Hessian
 
 Closed form, from the same location-scale structure, through
-[`loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_hess_cdf.md).
-With \\\ell_y = \partial\log f/\partial y\\, which for a Cauchy is
-\\-2z/\\\sigma(1+z^2)\\\\, \$\$\frac{\partial^2 F}{\partial\mu^2} =
-f\\\ell_y, \qquad \frac{\partial^2 F}{\partial\mu\\\partial\sigma} =
-f\left(z\ell_y + \frac{1}{\sigma}\right), \qquad \frac{\partial^2
-F}{\partial\sigma^2} = f\left(z^2\ell_y + \frac{2z}{\sigma}\right).\$\$
-As with the gradient, these are exact although the family has no
-moments.
+[`cauchy_cdf_method()`](https://statmodels7.github.io/distributions7/reference/cauchy_cdf_method.md),
+which computes each component as one term in \\Y^{-2}\\, \\Y = q - \mu +
+\mathrm{i}\sigma\\. With \\\ell_y = \partial\log f/\partial y\\, which
+for a Cauchy is \\-2z/\\\sigma(1+z^2)\\\\, \$\$\frac{\partial^2
+F}{\partial\mu^2} = f\\\ell_y, \qquad \frac{\partial^2
+F}{\partial\mu\\\partial\sigma} = f\left(z\ell_y +
+\frac{1}{\sigma}\right), \qquad \frac{\partial^2 F}{\partial\sigma^2} =
+f\left(z^2\ell_y + \frac{2z}{\sigma}\right).\$\$ As with the gradient,
+these are exact although the family has no moments.
 
 ## Arguments
 

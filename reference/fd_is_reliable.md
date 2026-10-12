@@ -45,7 +45,7 @@ difference straddling it returns a number that is simply wrong. An
 observation landing within a step of that point therefore makes the
 *reference* invalid, not the analytical value being tested, and
 comparing against it reports a failure for code that is right. Because
-the draws are random, that happened rarely and unpredictably.
+the draws are random, such a failure cannot be predicted.
 
 Rather than hard-code where a kink is, the reference is recomputed with
 the step halved: where the two disagree, finite differencing has not
@@ -53,20 +53,12 @@ converged and that observation is dropped. For a smooth log-likelihood
 nothing is ever dropped, so the check keeps its full strength: a
 gradient made 5\\ still caught.
 
-Two details are load-bearing. The two estimates are compared **relative
-to their own magnitude** rather than against a denominator floored at
-one: near a kink both are tiny yet differ by a factor of two, which a
-floor of one flattens into apparent agreement. And if no observation
-survives, all are kept: a systematic disagreement is a real failure and
-should be reported, not hidden by the guard meant to protect against a
-local one.
-
-Note the placement. This is defined *after*
-[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md),
-not before it: a roxygen block attaches to whatever object follows it,
-so a helper slipped in between silently steals the documentation of the
-function it belongs to. That had already happened once here, leaving the
-package with a `fd_is_reliable.Rd` and no `check_distrib.Rd`.
+The two estimates are compared **relative to their own magnitude**
+rather than against a denominator floored at one: near a kink both are
+tiny yet differ by a factor of two, which a floor of one would hide. If
+no observation survives, all are kept, because a systematic disagreement
+is a real failure and is reported; the guard is meant for a local
+disagreement only.
 
 ## See also
 

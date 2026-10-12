@@ -11,7 +11,7 @@ in the location."><meta property="og:image" content="https://statmodels7.github.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,22 +70,25 @@ in the location.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The identity is exact and needs no formula of its own, which is the point:
-the location derivative is already written, often as a compiled kernel, and
-the response derivative is the same number with a sign. It also fixes the
-two orders below, where \(\partial\ell/\partial y = -\partial\ell/
+    <p>The identity is exact and needs no formula of its own. The location
+derivative is already written, often as a compiled kernel, and the response
+derivative equals it up to the sign \((-1)^{k}\). The same identity holds
+at the lower orders, where \(\partial\ell/\partial y = -\partial\ell/
 \partial\mu\) and \(\partial^{2}\ell/\partial y^{2} =
-\partial^{2}\ell/\partial\mu^{2}\), and the tests check the new orders
-against exactly that.</p>
+\partial^{2}\ell/\partial\mu^{2}\).</p>
     </div>
     <div class="section level2">
     <h2 id="registered-on">Registered on<a class="anchor" aria-label="anchor" href="#registered-on"></a></h2>
 
 
-<p>This body serves both third- and fourth-order response derivatives on all
-fourteen location families, so <code>?distrib_deriv3_y.Gaussian1Distrib</code> and its
-twenty-seven siblings open this page:
-<code>Gaussian1Distrib</code>, <code>Gaussian2Distrib</code>, <code>Gaussian3Distrib</code>, <code>CauchyDistrib</code>, <code>LogisticDistrib</code>, <code>LaplaceDistrib</code>, <code>Laplace2Distrib</code>, <code>EnetDistrib</code>, <code>PseudoHuberDistrib</code>, <code>StudentT1Distrib</code>, <code>SkewNormal1Distrib</code>, <code>SkewNormal2Distrib</code>, <code>SkewTDistrib</code>, <code>GumbelDistrib</code>.</p>
+<p>This body serves both third- and fourth-order response derivatives on the
+location families <code>Gaussian1Distrib</code>, <code>Gaussian2Distrib</code>,
+<code>Gaussian3Distrib</code>, <code>CauchyDistrib</code>, <code>LogisticDistrib</code>, <code>LaplaceDistrib</code>,
+<code>Laplace2Distrib</code>, <code>EnetDistrib</code>, <code>PseudoHuberDistrib</code>,
+<code>StudentT1Distrib</code>, <code>SkewNormal1Distrib</code>, <code>SkewTDistrib</code> and
+<code>GumbelDistrib</code>, and on <code>PseudoHuber2Distrib</code>, whose page documents it.
+<code>SkewNormal2Distrib</code> has compiled kernels of its own in the response; its
+two methods are listed here as aliases.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

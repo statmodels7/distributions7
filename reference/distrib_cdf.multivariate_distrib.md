@@ -1,14 +1,13 @@
-# No Distribution Function in Several Dimensions
+# Distribution Function of a Multivariate Distribution
 
 Signals an error. The distribution function of a multivariate law is
-\\P(Y_1 \le q_1, \ldots, Y_p \le q_p)\\, an integral over an orthant.
-There is no closed form for it in general, and the one-dimensional
-fallback has no counterpart:
-[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)'s
-default integrates the density over an interval of the line, and an
-orthant is not one. A numerical orthant probability is a separate piece
-of work with its own accuracy question, and this package does not
-attempt it.
+\\P(Y_1 \le q_1, \ldots, Y_p \le q_p)\\, an integral over an orthant. It
+has no closed form in general, and the default of
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
+which integrates the density over an interval of the line, has no
+counterpart in several dimensions. A numerical orthant probability is a
+separate computation with an accuracy question of its own, and the
+package does not provide it.
 
 ## Arguments
 
@@ -20,12 +19,12 @@ attempt it.
 
 - q:
 
-  A numeric matrix of quantiles, one row per point. Not examined: the
-  error is raised before it is read.
+  A numeric matrix of quantiles, one row per point. Not read: the error
+  is signalled first.
 
 - theta:
 
-  A named list of parameters. Not examined.
+  A named list of parameters. Not read.
 
 - ...:
 
@@ -33,21 +32,21 @@ attempt it.
 
 ## Value
 
-Never returns: it always signals an error naming the family.
+Does not return: it signals an error naming the family.
 
 ## Details
 
-The refusal is on the class, so it covers a family written elsewhere as
-well as the four that ship. A family that CAN answer registers its own
-method and the refusal never runs.
+The method is registered on the class, so it applies to a family written
+elsewhere as well as to the shipped ones. A family that can compute the
+distribution function registers its own method.
 
 ## See also
 
-[`distrib_quantile.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.multivariate_distrib.md),
-refused for a related reason,
+[`distrib_quantile.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.multivariate_distrib.md)
+for the quantile function,
 [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md),
-which for some families returns a univariate distribution that does
-answer, and
+which for the Dirichlet and the multinomial returns a univariate
+distribution with a distribution function, and
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
 for the generic.
 
@@ -61,15 +60,16 @@ theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 try(distrib_cdf(d, rbind(c(0, 0)), theta))
 #> Error : distrib_cdf() is not defined for 'multivariate gaussian [2d, sigma=log_cholesky]': the distribution function is an integral over an orthant, with no closed form and no one-dimensional fallback.
 
-# A gaussian's marginal is a ONE-DIMENSIONAL MvGaussianDistrib, so it
-# inherits the same refusal.
+# The marginal of a gaussian is a one-dimensional MvGaussian1Distrib, which
+# signals the same error.
 m <- mv_marginal(d, theta, 1)
 class(m$distrib)[1]
 #> [1] "distributions7::MvGaussian1Distrib"
 try(distrib_cdf(m$distrib, 0, m$theta))
 #> Error : distrib_cdf() is not defined for 'multivariate gaussian [1d, sigma=log_cholesky]': the distribution function is an integral over an orthant, with no closed form and no one-dimensional fallback.
 
-# A Dirichlet's marginal is a genuine univariate beta, and answers.
+# The marginal of a Dirichlet is a univariate beta, which has a distribution
+# function.
 b <- mv_marginal(dirichlet_distrib(3),
                  list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8), 1)
 class(b$distrib)[1]

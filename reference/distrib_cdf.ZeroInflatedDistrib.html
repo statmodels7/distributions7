@@ -13,7 +13,7 @@ The result is clamped to \([0, 1]\) against rounding."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +72,7 @@ The result is clamped to \([0, 1]\) against rounding.</p>
 <dt id="arg-lower-tail">lower.tail<a class="anchor" aria-label="anchor" href="#arg-lower-tail"></a></dt>
 <dd><p>Logical of length 1. When <code>TRUE</code>, the default,
 probabilities are \(P(Y \le q)\); when <code>FALSE</code> they are \(P(Y &gt; q)\),
-formed as \(1 - F\) and so subject to that subtraction's cancellation
-far into the upper tail.</p></dd>
+formed from the parent's own upper tail as \((1 - \zeta) P(X &gt; q)\).</p></dd>
 
 
 <dt id="arg-log-p">log.p<a class="anchor" aria-label="anchor" href="#arg-log-p"></a></dt>
@@ -87,7 +86,8 @@ Defaults to <code>FALSE</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A numeric vector of probabilities, in \([0, 1]\).</p>
+    <p>A numeric vector of probabilities in \([0, 1]\), or their
+logarithms when <code>log.p = TRUE</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -119,7 +119,7 @@ log-mass of one observation.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">theta</span><span class="op">)</span>, <span class="fl">0.75</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">ppois</a></span><span class="op">(</span><span class="va">q</span>, <span class="fl">3</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># It agrees with the mass function summed, as it must on a lattice.</span></span></span>
+<span class="r-in"><span><span class="co"># It agrees with the mass function summed, as it must on a discrete support.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>cdf <span class="op">=</span> <span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">5</span>, <span class="va">theta</span><span class="op">)</span>, summed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">5</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       cdf    summed </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.9370615 0.9370615 </span>

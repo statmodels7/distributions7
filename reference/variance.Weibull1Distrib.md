@@ -3,7 +3,12 @@
 Closed form: \\\operatorname{Var}(Y) = \mu^2 (g_2 - g_1^2)\\ with \\g_k
 = \Gamma(1 + k/\sigma)\\. The scale enters as a square and the shape
 through the two gamma factors, so the coefficient of variation
-\\\sqrt{g_2 - g_1^2}/g_1\\ is a function of the shape alone.
+\\\sqrt{g_2 - g_1^2}/g_1\\ is a function of the shape alone. The method
+computes \\\mu^2 g_1^2 (g_2/g_1^2 - 1)\\ from the logarithms of the
+gamma factors
+([`weibull_moment_terms()`](https://statmodels7.github.io/distributions7/reference/weibull_moment_terms.md)),
+so that \\g_2 - g_1^2\\ is not formed as a difference; the value is
+`Inf` only where it exceeds the largest double, as at a shape of 0.01.
 
 ## Arguments
 
@@ -16,8 +21,8 @@ through the two gamma factors, so the coefficient of variation
 
   A named list with components `mu` (the scale, positive) and `sigma`
   (the shape, positive), each a numeric vector of length 1 or `n`. The
-  variance diverges as the shape falls below \\1/2\\, the second moment
-  failing to exist there.
+  variance exists for every positive shape and grows without bound as
+  the shape tends to zero.
 
 - ...:
 
@@ -37,7 +42,7 @@ A numeric vector of variances, of length
 
 [`mean.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/mean.Weibull1Distrib.md),
 [`skewness.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.Weibull1Distrib.md),
-[`weibull_gamma_factors()`](https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.md),
+[`weibull_moment_terms()`](https://statmodels7.github.io/distributions7/reference/weibull_moment_terms.md),
 [`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md).
 
 ## Examples

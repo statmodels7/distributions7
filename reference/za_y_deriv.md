@@ -44,11 +44,13 @@ parent's derivative elsewhere.
 
 ## Details
 
-The `NaN` is the point of the function. The finite-difference default
-inherited from
+At the atom the function returns `NaN`, because no derivative exists
+there. The finite-difference default inherited from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
-would straddle the jump and return a NUMBER for it, which is worse than
-an error: nothing downstream would notice.
+would difference across the jump and return a finite number. It serves
+the response derivatives of orders one to four;
+[`za_y_list()`](https://statmodels7.github.io/distributions7/reference/za_y_list.md)
+applies the same rule to the mixed derivatives, which are zero in `za`.
 
 ## Notation
 

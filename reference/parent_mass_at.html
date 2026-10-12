@@ -15,7 +15,7 @@ is included in the truncated support, so the tail below the interval is
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,8 +65,8 @@ is included in the truncated support, so the tail below the interval is
 
 
 <dl><dt id="arg-distrib">distrib<a class="anchor" aria-label="anchor" href="#arg-distrib"></a></dt>
-<dd><p>A truncated distribution object, of either class. The branch
-is taken on it, and the mass is asked of <code>distrib@parent_distrib</code>.</p></dd>
+<dd><p>A truncated distribution object, of either class. Its class
+selects the branch, and the mass is read from <code>distrib@parent_distrib</code>.</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
@@ -84,14 +84,13 @@ in <code>theta</code> varies by observation.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The question is asked of the OBJECT, through <code><a href="distrib_atoms.html">distrib_atoms()</a></code>, never of its
-class. Branching on <code>discrete_distrib</code> looks right and is wrong: the
-distribution function of <code>zero_adjusted(gamma2_distrib())</code> already contains
-the point mass at zero, so \(F(0) \ne F(0^-)\) although the object is a
-<code>continuous_distrib</code>. Truncating such a parent from above, with the atom
-retained, would then drop exactly that mass out of \(Z\) while every
-formula still read correctly, and the density would integrate to something
-other than one.</p>
+    <p>The mass is read from the object through <code><a href="distrib_atoms.html">distrib_atoms()</a></code> and is not decided
+by the object's class. The distribution function of
+<code>zero_adjusted(gamma2_distrib())</code> contains the point mass at zero, so
+\(F(0) \ne F(0^-)\) although the object is a <code>continuous_distrib</code>. A rule
+based on <code>discrete_distrib</code> would omit that mass from \(Z\) when such a
+parent is truncated from above with the atom retained, and the density would
+not integrate to one.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

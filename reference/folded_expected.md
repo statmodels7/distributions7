@@ -80,7 +80,15 @@ error. The sums are accumulated as the scalar registry accumulates them.
 A parent that the registry does not cover, or that is not a
 location-scale family on the real line, is integrated by
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-with `approx = "integrate"` instead.
+with `approx = "integrate"` at order 0 and by
+[`numerical_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_dexpected_hessian.md)
+at order 1; at order 2 the call signals an error. Where the parent's
+mass beyond the fold is below the square of the machine epsilon, the
+folded variable is the parent or its mirror image, and the expectations
+are the parent's own expected Hessian and its derivatives, which the
+quadrature around the fold does not resolve at a center many scales
+away. A kink at a center of exactly zero is read as the one-sided limit,
+the quantities being even or odd in the center.
 
 A parent with a kink at its center \\c\\ (a parameter that is not
 smooth, as in

@@ -6,11 +6,12 @@ and \\\alpha = \sqrt{c}/\sigma\\, \$\$P(Y = y) =
 e^{1/\sigma}}{(\alpha\sigma)^y\\ y!}\\ K\_{y-1/2}(\alpha).\$\$
 
 The value is not computed that way. At half-integer order the Bessel
-function is a finite sum, the prefactors cancel, and what the compiled
-kernel evaluates is \\\ell(y) = y\log\mu - (y/2)\log c + (1-\sqrt
-c)/\sigma + \log S_y(\alpha) - \log y!\\ with \\S_y\\ a sum of \\y\\
-positive terms taken on the log scale. Nothing cancels and no Bessel
-routine is called.
+function is a finite sum and the prefactors cancel, which gives
+\\\ell(y) = y\log\mu - (y/2)\log c + (1-\sqrt c)/\sigma + \log S_y -
+\log y!\\ with \\S_y\\ a sum of \\y\\ positive terms taken on the log
+scale. The compiled kernel evaluates \\(1-\sqrt c)/\sigma\\ as
+\\-2\mu/(1+\sqrt c)\\ and \\S_y\\ in \\w = 1/(2\alpha)\\, so nothing
+cancels as \\\sigma \to 0\\, and no Bessel routine is called.
 
 ## Arguments
 
@@ -21,9 +22,9 @@ routine is called.
 
 - y:
 
-  A numeric vector of counts. A negative, non-integer or non-finite
-  value is off the support and gives a probability of 0, or `-Inf` with
-  `log = TRUE`.
+  A numeric vector of counts. A negative, non-integer or infinite value
+  is off the support and gives a probability of 0, or `-Inf` with
+  `log = TRUE`. A missing value gives `NA` (`NaN` for `NaN`).
 
 - theta:
 

@@ -3,8 +3,9 @@
 Computes \\\partial^2\ell/\partial y^2 = D'/\sigma^2\\, with \\D' = A' +
 Q'B^2 + QB'\\ in the notation of
 [`skewt_pieces()`](https://statmodels7.github.io/distributions7/reference/skewt_pieces.md).
-It is the same expression as \\\partial^2\ell/\partial\mu^2\\: two signs
-cancel where one did not at first order.
+It equals \\\partial^2\ell/\partial\mu^2\\, because the response and the
+location enter the density through \\y - \mu\\ and the sign of the first
+derivative disappears in the second.
 
 Unlike the skew normal's, the value **changes sign**. The Student
 \\t\\'s curvature is positive wherever \\\|z\| \> \sqrt{\nu}\\, so the

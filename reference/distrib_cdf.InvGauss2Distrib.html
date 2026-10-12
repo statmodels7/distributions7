@@ -9,8 +9,9 @@ $$F(q; \mu, \lambda) = \Phi\left\{\sqrt{\dfrac{\lambda}{q}}
 by calling statmod::pinvgauss() at mean = mu and
 dispersion = 1/lambda. Both tails are available exactly, and
 log.p = TRUE returns a logarithm that stays finite where the probability
-itself underflows. The exponential factor overflows at ordinary settings, so
-that function evaluates the expression on the log scale."><meta property="og:description" content="Computes the inverse Gaussian distribution function, which is elementary in
+itself underflows. The factor \(e^{2\lambda/\mu}\) overflows in double
+precision when \(2\lambda/\mu\) exceeds about 709, so that function
+evaluates the expression on the log scale."><meta property="og:description" content="Computes the inverse Gaussian distribution function, which is elementary in
 the standard normal distribution function \(\Phi\):
 $$F(q; \mu, \lambda) = \Phi\left\{\sqrt{\dfrac{\lambda}{q}}
         \left(\dfrac{q}{\mu} - 1\right)\right\}
@@ -20,8 +21,9 @@ $$F(q; \mu, \lambda) = \Phi\left\{\sqrt{\dfrac{\lambda}{q}}
 by calling statmod::pinvgauss() at mean = mu and
 dispersion = 1/lambda. Both tails are available exactly, and
 log.p = TRUE returns a logarithm that stays finite where the probability
-itself underflows. The exponential factor overflows at ordinary settings, so
-that function evaluates the expression on the log scale."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+itself underflows. The factor \(e^{2\lambda/\mu}\) overflows in double
+precision when \(2\lambda/\mu\) exceeds about 709, so that function
+evaluates the expression on the log scale."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +31,7 @@ that function evaluates the expression on the log scale."><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +74,9 @@ $$F(q; \mu, \lambda) = \Phi\left\{\sqrt{\dfrac{\lambda}{q}}
 by calling <code><a href="https://rdrr.io/pkg/statmod/man/invgauss.html" class="external-link">statmod::pinvgauss()</a></code> at <code>mean = mu</code> and
 <code>dispersion = 1/lambda</code>. Both tails are available exactly, and
 <code>log.p = TRUE</code> returns a logarithm that stays finite where the probability
-itself underflows. The exponential factor overflows at ordinary settings, so
-that function evaluates the expression on the log scale.</p>
+itself underflows. The factor \(e^{2\lambda/\mu}\) overflows in double
+precision when \(2\lambda/\mu\) exceeds about 709, so that function
+evaluates the expression on the log scale.</p>
     </div>
 
 

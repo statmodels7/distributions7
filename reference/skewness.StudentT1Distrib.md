@@ -2,8 +2,7 @@
 
 Zero for \\\nu \> 3\\, and `NaN` at or below three, where the third
 moment does not exist. The density is symmetric about \\\mu\\, so the
-value is zero wherever it is defined. The threshold records where the
-third moment exists.
+value is zero wherever it is defined.
 
 ## Arguments
 

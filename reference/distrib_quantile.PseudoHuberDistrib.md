@@ -1,16 +1,19 @@
 # Pseudo-Huber Quantile Function
 
 Computes \\Q(p)\\ by root-finding on the numerical distribution
-function, the family having no elementary quantile. Symmetry about
-\\\mu\\ does most of the work: \\Q(1/2) = \mu\\ exactly and without a
-search, and a probability above one half is reflected through \\Q(p) =
-2\mu - Q(1-p)\\, so the search always runs in the lower half.
+function, the family having no elementary quantile, through
+[`symmetric_log_quantile()`](https://statmodels7.github.io/distributions7/reference/symmetric_log_quantile.md).
+The probability is turned into the logarithms of both tails without
+forming \\1 - p\\ or exponentiating a logarithm, and the root of \\\log
+F(q) = \log P\\, with \\P\\ the smaller tail, is found below the
+location and reflected through \\Q = 2\mu - Q'\\ when the upper tail is
+the smaller one. \\Q(1/2) = \mu\\ exactly and without a search.
 
 The bracket starts at ten standard deviations below the location and
-doubles its width until it contains the root, at most 100 times.
+doubles its width until it contains the root, at most 2000 times.
 [`stats::uniroot()`](https://rdrr.io/r/stats/uniroot.html) then closes
 it to `sqrt(.Machine$double.eps)`. Each evaluation of the objective is a
-quadrature, so this is by far the dearest method of the family.
+quadrature, so this is the most expensive method of the family.
 
 ## Arguments
 

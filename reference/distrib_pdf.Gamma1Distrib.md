@@ -9,8 +9,9 @@ is formed inside [`dgamma()`](https://rdrr.io/r/stats/GammaDist.html)
 and stays finite where the density itself underflows.
 
 The density is unbounded at the origin when \\\phi \> 1\\, where the
-shape falls below one; it is flat there at \\\phi = 1\\, the exponential
-case, and vanishes at the origin for \\\phi \< 1\\.
+shape falls below one; at \\\phi = 1\\, the exponential case, it equals
+the rate \\1/\mu\\ there, and it vanishes at the origin for \\\phi \<
+1\\.
 
 ## Arguments
 
@@ -52,7 +53,7 @@ for the distribution function,
 [`distrib_gradient.Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gamma1Distrib.md)
 for the derivatives of the log-density,
 [`gamma1_shape_rate()`](https://statmodels7.github.io/distributions7/reference/gamma1_shape_rate.md)
-for the conversion this uses, and
+for the conversion that this method uses, and
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
 for the generic.
 

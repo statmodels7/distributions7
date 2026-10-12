@@ -13,7 +13,7 @@ method is loc_scale_grad_cdf() itself."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,10 +87,11 @@ length of <code>q</code> recycled against <code>theta</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The family's distribution function is \(F(q) = \exp(-e^{-z})\), so nothing
-here needs a quadrature or a series, which is why a Gumbel is usable for
-censored extreme-value data: the score of a right-censored observation is
-\(f(q)/S(q)\) and comes from the density alone.</p>
+    <p>The family's distribution function is \(F(q) = \exp(-e^{-z})\), so its
+derivatives need neither a quadrature nor a series, which makes a Gumbel
+usable for censored extreme-value data: the score of a right-censored
+observation is the derivative of \(\log S(q)\), which is \(f(q)/S(q)\)
+in \(\mu\) and \(z f(q)/S(q)\) in \(\sigma\).</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -98,7 +99,8 @@ censored extreme-value data: the score of a right-censored observation is
 
 <p>\(\mu\) is the location, \(\sigma &gt; 0\) the scale,
 \(z = (q-\mu)/\sigma\), \(f\) the density and \(F\) the distribution
-function. The mean is \(\mu + \gamma\sigma\) and not \(\mu\).</p>
+function. The mean is \(\mu + \gamma\sigma\), with \(\gamma\) Euler's
+constant, and not \(\mu\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

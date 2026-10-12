@@ -28,7 +28,7 @@ and the mean is the first parameter either way.
 
 A numeric vector of means, of length
 `max(length(theta$mu), length(theta$alpha))`. The value is the mean
-parameter itself, the dispersion entering neither it nor the length.
+parameter itself, recycled to that length.
 
 ## Notation
 

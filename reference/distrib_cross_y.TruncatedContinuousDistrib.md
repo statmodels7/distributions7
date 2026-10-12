@@ -6,9 +6,10 @@ normalizing constant does not depend on \\y\\, so it vanishes from any
 derivative taking one derivative in the response. The equality is exact,
 not approximate, and holds at every observation inside the support.
 
-This is the one derivative of a truncated family that costs nothing. The
-gradient and the Hessian both need \\\log Z\\ and its derivatives, which
-is one quadrature or one pair of cdf evaluations per component.
+Like the response gradient and the response Hessian of a truncated
+family, this block costs nothing beyond the parent's. The gradient and
+the Hessian in the parameters both need \\\log Z\\ and its derivatives,
+which is one quadrature or one pair of cdf evaluations per component.
 
 ## Arguments
 
@@ -19,7 +20,8 @@ is one quadrature or one pair of cdf evaluations per component.
 - y:
 
   A numeric vector of observations inside the truncation interval.
-  Outside it the parent's value is returned, the method testing nothing.
+  Outside it the parent's value is returned, because the method performs
+  no test.
 
 - theta:
 

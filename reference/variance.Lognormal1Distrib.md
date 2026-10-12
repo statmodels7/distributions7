@@ -17,8 +17,9 @@ on the spread of the logarithm alone.
 
   A named list with components `mu` (any real value) and `sigma2`
   (positive), each a numeric vector of length 1 or `n`. The variance
-  grows like \\e^{2\sigma^2}\\ and overflows to `Inf` well before
-  `sigma2` reaches 400.
+  grows like \\e^{2\sigma^2}\\ The variance overflows to `Inf` for
+  `sigma2` above about 355 at `mu = 0`, and the threshold rises as `mu`
+  decreases.
 
 - ...:
 

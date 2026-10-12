@@ -35,7 +35,7 @@ given order and keyed as
 keys them: three at order 1, six at order 2, ten at order 3 and fifteen
 at order 4. Each has the recycled length of the inputs.
 
-## Why the assembly is short
+## Structure of the assembly
 
 With \\L = \log(y/a)\\ the log-density splits into \$\$\ell = \log p -
 d\log a - \log\Gamma(d/p) + (d-1)\log y - e^{pL},\$\$ and each piece is
@@ -52,9 +52,13 @@ pieces, and no genuinely three-variable expansion is ever formed. A
 component naming both \\a\\ and \\d\\ comes from the elementary \\-d\log
 a\\ alone.
 
-The assembly is checked at order two against the compiled Hessian, which
-was written independently, so the orders that cannot be checked against
-a hand-written form rest on the orders that can.
+The tests compare the assembly at orders one to four with the compiled
+kernels of
+[`distrib_gradient.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma1Distrib.md),
+[`distrib_hessian.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GenGamma1Distrib.md)
+and the orders three and four, which were written independently. Below
+\\k = d/p\\ of about 0.01 the assembly loses accuracy, since it
+evaluates \\\psi^{(n)}(k)\\ near its pole.
 
 ## See also
 

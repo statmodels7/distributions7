@@ -4,7 +4,7 @@ Draws `n` independent gamma variates by calling
 [`stats::rgamma()`](https://rdrr.io/r/stats/GammaDist.html) at shape \\a
 = 1/\phi\\ and rate \\b = 1/(\phi\mu)\\, so the draws come from R's own
 gamma generator and depend on `.Random.seed` in the usual way. The
-ratio-of-uniforms fallback the base class supplies is bypassed.
+inverse-transform fallback of the base class is not used.
 
 ## Arguments
 

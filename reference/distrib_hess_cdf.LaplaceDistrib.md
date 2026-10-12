@@ -2,11 +2,13 @@
 
 Closed form, from the same location-scale structure, through
 [`loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_hess_cdf.md).
-The response derivative it reads is \\\ell_y =
--\mathrm{sign}(z)/\sigma\\, which jumps at \\q = \mu\\, so the second
-derivatives of \\F\\ jump there too. That is a property of the law and
-not a defect: the Laplace is the toolkit's non-regular family, and its
-location has no second derivative at the kink.
+The response derivative that it reads is \\\ell_y =
+-\mathrm{sign}(z)/\sigma\\, which jumps at \\q = \mu\\. The component
+`mu_mu` therefore jumps there, and the location has no second derivative
+at the kink, which is a property of the law. The components
+`sigma_sigma` and `mu_sigma` are continuous, because \\z\\\ell_y =
+-\|z\|/\sigma\\ and \\z^2\ell_y = -z\|z\|/\sigma\\ are continuous in
+\\z\\.
 
 ## Arguments
 
@@ -44,7 +46,8 @@ each the length of `q` recycled against `theta`.
 Away from \\q = \mu\\ the three components are the ordinary
 location-scale ones. At \\q = \mu\\ exactly, `sign(0)` is 0 and the
 returned `mu_mu` is the average of the two one-sided limits, which is
-the value the sign convention gives and is reported as it stands.
+the value that the sign convention gives, and it is reported as it
+stands.
 
 ## Notation
 
@@ -75,5 +78,5 @@ q <- c(-1, 2)
 exact <- distrib_hess_cdf(d, q, th, log = FALSE)
 fd <- numerical_cdf_deriv(d, q, th, order = 2)
 max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))
-#> [1] 1.064456e-07
+#> [1] 2.253148e-07
 ```

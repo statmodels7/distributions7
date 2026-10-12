@@ -13,7 +13,7 @@ route only where this is TRUE, and falls back to quadrature otherwise."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,15 +76,12 @@ route only where this is <code>TRUE</code>, and falls back to quadrature otherwi
     <div class="section level2">
     <h2 id="why-the-cheap-route-is-gated">Why the cheap route is gated<a class="anchor" aria-label="anchor" href="#why-the-cheap-route-is-gated"></a></h2>
     <p>Reading \(d^B Z\) off the parent's cdf derivatives replaces one quadrature
-per component with two calls on the parent: measured on a truncated
-gaussian's Hessian, 1.4 ms against 4.9 ms. Where the parent has no closed
-form, though, that route differences its distribution function and carries
-roughly \(10^{-8}\) of relative error into the Hessian, where the
-quadrature it replaced carried \(10^{-10}\).</p>
-<p>That is invisible in the Hessian itself, and visible downstream:
-<code><a href="numerical_deriv4.html">numerical_deriv4()</a></code> differentiates the analytical Hessian, so a noisier
-Hessian degrades the REFERENCE the fourth-order check compares against, and
-the check then fails on code that is right.</p>
+per component with two calls on the parent. Where the parent has no
+closed-form cdf derivative, that route differences its distribution function
+and has a larger relative error than the quadrature it would replace. The
+error passes into <code><a href="numerical_deriv4.html">numerical_deriv4()</a></code>, which differentiates the analytical
+Hessian, and enlarges the error of the reference used in the fourth-order
+check.</p>
     </div>
     <div class="section level2">
     <h2 id="how-a-genuine-method-is-recognized">How a genuine method is recognized<a class="anchor" aria-label="anchor" href="#how-a-genuine-method-is-recognized"></a></h2>
@@ -94,15 +91,15 @@ object cannot be used for this, S7 wrapping it. The third- and
 fourth-order defaults sit on <code>distrib</code> where the first two sit on
 <code>continuous_distrib</code>, so both base classes are excluded or a stencil would
 be read as a closed form.</p>
-<p>The question is asked of the OWNING CLASS, so a family that registers a
+<p>The test reads the class that owns the method, so a family that registers a
 method combining closed components with a stencil in one direction answers
 <code>TRUE</code>. That is the intended reading: what the gate protects against is the
 generic differencing the cdf itself.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="trunc_mass_derivs.html">trunc_mass_derivs()</a></code>, its one caller, and <code><a href="distrib_grad_cdf.html">distrib_grad_cdf()</a></code> for
-the generics it asks about.</p></div>
+    <div class="dont-index"><p><code><a href="trunc_mass_derivs.html">trunc_mass_derivs()</a></code>, its caller in this file, and
+<code><a href="distrib_grad_cdf.html">distrib_grad_cdf()</a></code> for the generics that it tests.</p></div>
     </div>
 
     <div class="section level2">
@@ -118,8 +115,7 @@ the generics it asks about.</p></div>
 <span class="r-in"><span>  <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">has_exact_cdf_deriv</span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">k</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE TRUE TRUE TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The gamma does not, the derivative of an incomplete gamma in its shape</span></span></span>
-<span class="r-in"><span><span class="co"># having no elementary form, so truncation falls back to quadrature there.</span></span></span>
+<span class="r-in"><span><span class="co"># The gamma's cdf derivatives are compiled, so it answers TRUE as well.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">has_exact_cdf_deriv</span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">k</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE TRUE TRUE TRUE</span>

@@ -1,13 +1,13 @@
 # Excess Kurtosis of the Beta-Binomial Distribution
 
-Assembled from the falling factorial moments, \\\gamma_2 = c_4/c_2^2 -
-3\\ with \\c_k\\ the central moments
-[`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md)
-returns. The success probability is what sets its sign. Near \\\mu =
-1/2\\ it is negative and falls towards \\-2\\ as the dispersion grows,
-the mass splitting between the two endpoints and the law approaching a
-scaled Bernoulli; near either end it is positive and large, the long
-tail towards the middle dominating.
+Closed form, written as one quotient by
+[`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md)
+so that it is not formed as a kurtosis near 3 minus 3. The success
+probability is what sets its sign. Near \\\mu = 1/2\\ it is negative and
+falls towards \\-2\\ as the dispersion grows, the mass splitting between
+the two endpoints and the law approaching a scaled Bernoulli; near
+either end it is positive and large, the long tail towards the middle
+dominating.
 
 ## Arguments
 
@@ -20,7 +20,8 @@ tail towards the middle dominating.
 - theta:
 
   A named list with components `mu` (strictly between 0 and 1) and
-  `sigma` (positive), each a numeric vector of length 1 or `n`.
+  `sigma` (positive), each a numeric vector of length 1 or of the common
+  length of the parameter settings.
 
 - ...:
 
@@ -34,8 +35,7 @@ A numeric vector of excess kurtoses, of length
 ## Notation
 
 \\\mu \in (0,1)\\ is the success probability, \\\sigma \> 0\\ the
-dispersion, \\n\\ the number of trials and \\c_k\\ the \\k\\-th central
-moment.
+dispersion, \\n\\ the number of trials.
 
 ## See also
 
@@ -43,7 +43,7 @@ moment.
 from the same moments;
 [`kurtosis.BinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.BinomialDistrib.md),
 the \\\sigma \to 0\\ limit;
-[`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md);
+[`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md);
 [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md).
 
 ## Examples

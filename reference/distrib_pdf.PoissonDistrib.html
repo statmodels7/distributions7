@@ -15,7 +15,7 @@ is at most 1."><meta property="og:image" content="https://statmodels7.github.io/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,15 +65,16 @@ is at most 1.</p>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of counts. A non-integer or negative value gives 0
-with a warning from <code><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">stats::dpois()</a></code>.</p></dd>
+<dd><p>A numeric vector of counts. A negative value gives 0, and a
+non-integer value gives 0 with a warning from <code><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">stats::dpois()</a></code>. A missing
+value gives <code>NA</code>.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with the single component <code>mu</code>, a numeric vector
 of length 1 or of the length of <code>y</code>. A value of length 1 is recycled.
-<code>mu</code> must be strictly positive; a negative value gives <code>NaN</code> with a
-warning.</p></dd>
+<code>mu</code> must be strictly positive; the generic signals an error for a value
+outside \((0, \infty)\) before the method is called.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>

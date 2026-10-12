@@ -7,19 +7,29 @@ rational in \\(\mu, \theta)\\ and linear in \\y\\, and the pure
 dispersion component carries \\\psi_2(y+\theta) - \psi_2(\theta)\\, with
 \\\psi_2\\ the second derivative of the digamma function.
 
+The mean components are formed from the bracket \\y/\mu^k -
+(y+\theta)/(\mu+\theta)^k\\, written as \\y(1 - q^k)/\mu^k -
+\theta/(\mu+\theta)^k\\ with \\q = \mu/(\mu+\theta)\\ and \\1 - q^k\\
+computed as \\-\mathrm{expm1}(-k\\\mathrm{log1p}(\theta/\mu))\\. Written
+directly its two terms agree to a relative \\\theta/\mu\\ where \\y\\ is
+near \\\mu\\, and their difference loses that many digits at a small
+dispersion or a large mean; in this form the value keeps full relative
+accuracy, and a term with a zero coefficient contributes zero.
+
 With `expected = TRUE` the expectations are returned. The three
 components involving the mean need only \\\mathbb{E}\[Y\] = \mu\\; the
 pure dispersion one needs \\\mathbb{E}\[\psi_2(Y+\theta)\]\\, which has
-no closed form and is summed over the support with a far-tail
-correction, exactly as the expected Hessian sums
-\\\mathbb{E}\[\psi_1(Y+\theta)\]\\. `approx` and `nsim` are ignored
-either way.
+no closed form and is summed over the support with the mass recurrence
+and the stopping rule of
+[`distrib_expected_hessian.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin2Distrib.md).
+`approx` and `nsim` are ignored either way.
 
 The cancellation of
 [`distrib_gradient.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin2Distrib.md)
-applies here too and **is not removed at this order**: the pure
-dispersion components lose their digits at large \\\theta\\, where the
-score itself is reliable to about five figures and no further.
+is performed symbolically at this order too: the observed pure
+dispersion component is a sum over \\j \< y\\ when \\\theta \>
+100\max(y, 1)\\, and the expected one is a single merged sum, so both
+keep their accuracy at large \\\theta\\.
 
 ## Arguments
 
@@ -64,9 +74,9 @@ score itself is reliable to about five figures and no further.
 
 - threads:
 
-  A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  A single positive integer, how many threads the kernel may use. For
+  fewer observations than an internal threshold the kernel runs
+  sequentially whatever the count. Defaults to `1L`.
 
 ## Value
 

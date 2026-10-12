@@ -1,10 +1,10 @@
 # Variance of the Beta Distribution
 
 Closed form: \\\operatorname{Var}(Y) = \mu(1-\mu)/(\phi+1)\\. The
-numerator is the Bernoulli variance at the same mean, the largest a
-distribution on \\(0,1)\\ can have, and \\\phi+1\\ divides it down.
-Larger \\\phi\\ therefore means a tighter distribution, which is the
-reason the parameter is called a precision.
+numerator is the Bernoulli variance at the same mean, which bounds the
+variance of every distribution on \\\[0, 1\]\\ with that mean, and
+\\\phi+1\\ divides it. Larger \\\phi\\ therefore means a tighter
+distribution, which is the reason the parameter is called a precision.
 
 ## Arguments
 

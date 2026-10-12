@@ -21,7 +21,7 @@ discrete_cdf_deriv(distrib, q, theta, order)
 
   A numeric vector of quantiles. Each is handled separately, the support
   being walked from the lower bound up to it, so the cost grows with the
-  largest quantile asked for.
+  largest requested quantile.
 
 - theta:
 
@@ -45,20 +45,32 @@ puts them on the requested tail.
 The region of integration does not depend on \\\theta\\, so derivative
 and integral exchange and \$\$\frac{\partial^I F(q)}{F(q)} =
 \mathbb{E}\\\left\[\frac{\partial^I f}{f} \\\middle\|\\ Y \le
-q\right\],\$\$ a partial expectation of exactly the quantity the
+q\right\],\$\$ a partial expectation of exactly the quantity that the
 Bartlett lemma expands: the score at first order, and \\\ell^{(ij)} +
 \ell^{(i)}\ell^{(j)}\\ at second. For a discrete family that conditional
 expectation is a finite sum whenever the support has a finite lower
 bound, which the discrete class requires, so the identity is used as it
 stands.
 
-## A trap for whoever writes a test
+## Testing an implementation
 
-Checking this against the partial-expectation sum proves nothing: it is
-the same sum computed twice. A discrete implementation has to be checked
-against finite differences of the cdf, and a continuous one against the
-partial expectation, so that the two sides of the comparison share no
-arithmetic.
+A comparison with the partial-expectation sum repeats the same
+computation and therefore does not test it. A discrete implementation
+has to be checked against finite differences of the cdf, and a
+continuous one against the partial expectation, so that the two sides of
+the comparison share no arithmetic.
+
+## Constants that vary by observation
+
+A family whose constant varies by observation (a binomial's vector
+`size`, or a wrapper over one) is evaluated at each observation's own
+constant, taken by
+[`distrib_at_rows()`](https://statmodels7.github.io/distributions7/reference/distrib_at_rows.md),
+as the parameters are. A missing quantile gives a missing derivative. \#
+The upper tail The derivatives of the mass sum to zero over the support,
+so where \\P(Y \> q)\\ is below 0.01 the sum up to \\q\\ is computed as
+minus the sum above it, a short series that keeps its digits where the
+sum up to \\q\\ would cancel to a small number.
 
 ## Notation
 

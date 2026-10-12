@@ -3,8 +3,9 @@
 Returns the expectation of the observed Hessian under the model, in
 closed form and with no quadrature, simulation or summation over the
 support: \$\$\mathbb{E}\[\ell^{(\eta_k\eta_l)}\] = -n\sum\_{j=1}^{p}
-\dfrac{A\_{jk}A\_{jl}}{p_j},\$\$ with \\A = \partial p/\partial\eta\\.
-`approx` and `nsim` are ignored: every strategy returns the same matrix.
+\dfrac{A\_{jk}A\_{jl}}{p_j},\$\$ with \\A = \partial p/\partial\eta\\;
+on the additive log-ratio chart it is computed as \\-n(\delta\_{kl}p_k -
+p_kp_l)\\, the form below. `approx` and `nsim` are not read.
 
 ## Arguments
 
@@ -51,7 +52,7 @@ matrix and named as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 names them, each of length `n_obs(distrib, y)` and constant along it.
 
-## Why the second-derivative term vanishes
+## The second-derivative term
 
 Under the model \\\mathbb{E}\[y_j\] = n p_j\\, so the term of the
 observed Hessian carrying \\B\\ becomes \\n\sum_j B\_{j,kl}\\. The
@@ -59,7 +60,7 @@ probabilities sum to one at every free vector, so every derivative of
 that sum is zero and the whole term drops out, leaving the display
 above. The same argument, one order lower, gives the score mean zero.
 
-## The information is the covariance of the first p-1 counts
+## The information on the additive log-ratio chart
 
 On the default chart,
 [`parameters7::simplex()`](https://statmodels7.github.io/parameters7/reference/simplex.html)'s
@@ -71,9 +72,8 @@ p_l,\$\$ and the expected information
 \\\operatorname{Cov}(Y_k, Y_l)\\, the leading \\(p-1)\times(p-1)\\ block
 of
 [`mv_sigma.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MultinomialDistrib.md).
-Measured, the two agree to `2e-16` at every dimension and trial count
-tried. The identity belongs to that chart; a different simplex
-parametrization has a different Jacobian and no such coincidence.
+The identity belongs to that chart; a different simplex parametrization
+has a different Jacobian.
 
 ## Notation
 

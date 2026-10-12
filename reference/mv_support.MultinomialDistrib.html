@@ -3,21 +3,17 @@
 summing to the trial count \(n\), one row per point. These are the weak
 compositions of \(n\) into \(p\) parts, supplied by
 numericals7::compositions().
-Having the support in hand is what turns every expectation into an exact
-sum. check_distrib() uses it to test that the mass adds to one and that
-the closed-form information matches the summed observed Hessian, both to
-machine precision; an importance-sampling check could only ever compare
-against Monte Carlo error, and a normalization wrong by a thousandth would
-pass it."><meta property="og:description" content="Enumerates the whole support: every vector of \(p\) non-negative integers
+With the support in hand every expectation is an exact sum. check_distrib()
+uses it to test that the mass adds to one, an equality with tolerance
+1e-10; an importance-sampling check compares only against Monte Carlo
+error, and a normalization wrong by a thousandth would pass it."><meta property="og:description" content="Enumerates the whole support: every vector of \(p\) non-negative integers
 summing to the trial count \(n\), one row per point. These are the weak
 compositions of \(n\) into \(p\) parts, supplied by
 numericals7::compositions().
-Having the support in hand is what turns every expectation into an exact
-sum. check_distrib() uses it to test that the mass adds to one and that
-the closed-form information matches the summed observed Hessian, both to
-machine precision; an importance-sampling check could only ever compare
-against Monte Carlo error, and a normalization wrong by a thousandth would
-pass it."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+With the support in hand every expectation is an exact sum. check_distrib()
+uses it to test that the mass adds to one, an equality with tolerance
+1e-10; an importance-sampling check compares only against Monte Carlo
+error, and a normalization wrong by a thousandth would pass it."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +21,7 @@ pass it."><meta property="og:image" content="https://statmodels7.github.io/distr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,12 +58,10 @@ pass it."><meta property="og:image" content="https://statmodels7.github.io/distr
 summing to the trial count \(n\), one row per point. These are the weak
 compositions of \(n\) into \(p\) parts, supplied by
 <code><a href="https://statmodels7.github.io/numericals7/reference/compositions.html" class="external-link">numericals7::compositions()</a></code>.</p>
-<p>Having the support in hand is what turns every expectation into an <strong>exact
-sum</strong>. <code><a href="check_distrib.html">check_distrib()</a></code> uses it to test that the mass adds to one and that
-the closed-form information matches the summed observed Hessian, both to
-machine precision; an importance-sampling check could only ever compare
-against Monte Carlo error, and a normalization wrong by a thousandth would
-pass it.</p>
+<p>With the support in hand every expectation is an exact sum. <code><a href="check_distrib.html">check_distrib()</a></code>
+uses it to test that the mass adds to one, an equality with tolerance
+<code>1e-10</code>; an importance-sampling check compares only against Monte Carlo
+error, and a normalization wrong by a thousandth would pass it.</p>
     </div>
 
 
@@ -125,7 +119,7 @@ generic.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> all_sum_to_5         rows      formula </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            1           21           21 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The mass over it adds to one exactly, which no sampling check could say.</span></span></span>
+<span class="r-in"><span><span class="co"># The mass over the support adds to one exactly.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">supp</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>probs_alr1 <span class="op">=</span> <span class="fl">0.3</span>, probs_alr2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -7.771561e-16</span>
 </code></pre></div>

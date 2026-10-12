@@ -59,6 +59,12 @@ chain_derivatives(
   Should the expected derivatives be carried? A single logical, `FALSE`
   by default.
 
+- approx, nsim:
+
+  Forwarded to the parent's expected derivatives: `approx` is one of
+  `"opg"` (the default), `"bartlett"`, `"integrate"` or `"mc"`, and
+  `nsim` is the number of draws for `"mc"`.
+
 ## Value
 
 A named list of numeric vectors, keyed as
@@ -69,8 +75,8 @@ A named list of numeric vectors, keyed as
 \$\$\ell^{(I)}(\psi) = \sum\_{\pi} \sum\_{i_1 \dots i\_{\|\pi\|}}
 \ell^{(i_1 \dots i\_{\|\pi\|})}(\theta) \prod\_{B \in \pi}
 \frac{\partial^{\|B\|}\theta\_{i_B}}{\partial\psi_B},\$\$ the sum over
-set partitions of the multi-index. Every order the parent has in closed
-form therefore survives in closed form.
+set partitions of the multi-index. Every order that the parent has in
+closed form therefore survives in closed form.
 
 ## Under expectation
 

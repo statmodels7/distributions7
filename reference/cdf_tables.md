@@ -1,15 +1,22 @@
-# CDF Derivative Tables of Every Order Up To One
+# CDF Derivative Tables up to a Given Order
 
-Assembles the derivatives of \\F\\ of orders 1 to `order` by whichever
-route the class uses: the exact finite sum for a discrete family, one
-product stencil on the analytic distribution function for a continuous
-one. Keeping the choice of route in a single statement is the point of
-the function.
+Assembles the derivatives of \\F\\ of orders 1 to `order`. A discrete
+family uses the exact finite sum at every order. A continuous family
+uses its own
+[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
+and
+[`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md)
+at orders 1 and 2 where it registers them, and
+[`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md)
+otherwise; at orders 3 and 4 it uses
+[`continuous_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/continuous_cdf_deriv_k.md),
+which is the compiled quadrature for some families and one product
+stencil on the distribution function for the others.
 
 ## Usage
 
 ``` r
-cdf_tables(distrib, q, theta, order)
+cdf_tables(distrib, q, theta, order, closed = TRUE)
 ```
 
 ## Arguments
@@ -30,6 +37,20 @@ cdf_tables(distrib, q, theta, order)
 
   The highest order wanted, 1 to 4.
 
+- closed:
+
+  Logical of length 1. `TRUE`, the default, takes orders 1 and 2 from
+  the family's own
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
+  and
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md)
+  where
+  [`has_exact_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md)
+  finds them; `FALSE` takes them from
+  [`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md).
+  A caller that is itself registered as one of those two methods passes
+  `FALSE`, which keeps it from calling itself.
+
 ## Value
 
 A list of length `order`. Element \\k\\ is a named list of \\k\\-th
@@ -44,12 +65,11 @@ wanted, because the moment-to-cumulant relation
 applies is a sum over partitions of the multi-index: a partition into
 \\k\\ blocks reads \\k\\ lower-order ratios.
 
-At orders 1 and 2 the tables come from
-[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
-and
-[`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),
-so a family's own closed forms are used where it has them; only orders 3
-and 4 reach the routes named above.
+Taking orders 1 and 2 from the family's own methods matters on the log
+scale, where
+[`cdf_scale_k()`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md)
+combines them with the higher orders: a differenced table at order 1 or
+2 would limit the accuracy of an exact one at order 3 or 4.
 
 ## See also
 

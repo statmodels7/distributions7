@@ -5,8 +5,10 @@ the family is defined by: a success probability from
 \\\mathrm{Beta}(\alpha, \beta)\\ with \\\alpha = \mu/\sigma\\ and
 \\\beta = (1-\mu)/\sigma\\, then a count from
 \\\mathrm{Binomial}(n\_{\mathrm{trials}}, p)\\ at that probability, one
-fresh probability per draw. The draws depend on `.Random.seed` in the
-usual way and consume two of R's streams per variate.
+fresh probability per draw. The draws are made by one call to
+[`stats::rbeta()`](https://rdrr.io/r/stats/Beta.html) followed by one
+call to [`stats::rbinom()`](https://rdrr.io/r/stats/Binomial.html), so
+they depend on `.Random.seed` in the usual way.
 
 ## Arguments
 

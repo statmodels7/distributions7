@@ -57,13 +57,13 @@ S\_{ij}/Z\\ and \\D\_{ijc}\\ is the derivative of \\\int f s_i s_j\\ in
 parameter \\c\\.
 
 For a discrete parent the integrals are sums over support points.
-`trunc_rule_cpp()` returns, for each observation, the points they run
-over: the retained points when they are finitely many, and otherwise a
-series over the retained points stopped by a rule on the masses alone.
-For the density, the score and the Hessian on an unbounded support, the
-points removed below `lower` are used instead when their mass is at most
-one half, and the retained sums are \\1 - \sum f\\, \\-\sum f s_i\\ and
-\\-\sum f(\ell\_{ij} + s_i s_j)\\.
+`trunc_rule_cpp()` returns, for each observation, the points over which
+the sums run: the retained points when they are finitely many, and
+otherwise a series over the retained points stopped by a rule on the
+masses alone. For the density, the score and the Hessian on an unbounded
+support, the points removed below `lower` are used instead when their
+mass is at most one half, and the retained sums are \\1 - \sum f\\,
+\\-\sum f s_i\\ and \\-\sum f(\ell\_{ij} + s_i s_j)\\.
 
 For a continuous parent, \\Z\\, \\Z_i\\ and \\Z\_{ij}\\ are the
 differences of the compiled distribution function and its derivatives at

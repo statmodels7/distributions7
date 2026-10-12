@@ -60,9 +60,11 @@ exact.
 
 ## Value
 
-A named list of three numeric vectors, `mu_mu`, `mu_kappa` and
-`kappa_kappa`, each of length `length(y)` and constant along it.
-`mu_kappa` is exactly zero.
+A named list of three numeric vectors, `mu_mu`, `kappa_kappa` and
+`mu_kappa`, in the order of
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
+each of length `length(y)` and constant along it. `mu_kappa` is exactly
+zero.
 
 ## Notation
 
@@ -86,8 +88,8 @@ d <- vonmises1_distrib()
 th <- list(mu = 0.5, kappa = 2)
 eh <- distrib_expected_hessian(d, c(-1, 0, 0.5, 2), th)
 vapply(eh, function(v) v[1], numeric(1))
-#>       mu_mu    mu_kappa kappa_kappa 
-#>  -1.3955493   0.0000000  -0.1642232 
+#>       mu_mu kappa_kappa    mu_kappa 
+#>  -1.3955493  -0.1642232   0.0000000 
 
 # The closed forms, written out; the off-diagonal is exactly zero, so the
 # two parameters are orthogonal.
@@ -101,8 +103,8 @@ c(mu_mu = -2 * A, mu_kappa = 0,
 set.seed(1)
 z <- distrib_rng(d, 3e5, th)
 vapply(distrib_hessian(d, z, th), mean, numeric(1))
-#>         mu_mu      mu_kappa   kappa_kappa 
-#> -1.3964000867 -0.0006979838 -0.1642231977 
+#>         mu_mu   kappa_kappa      mu_kappa 
+#> -1.3964000867 -0.1642231977 -0.0006979838 
 
 # The strategy argument is inert, the expectation being exact.
 identical(eh, distrib_expected_hessian(d, c(-1, 0, 0.5, 2), th,

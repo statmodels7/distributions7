@@ -3,13 +3,19 @@
 $$F_{ZA}(q) = \pi + (1-\pi)\frac{F(q;\theta) - f(0;\theta)}{1 - f(0;\theta)}
   \quad (q \ge 0),$$
 the parent's own distribution function shifted and rescaled by the
-truncation. It is 0 below zero and is clamped to \([0, 1]\) against
-rounding."><meta property="og:description" content="Computes the hurdle distribution function
+truncation, with \(1 - f(0)\) formed from the log-mass at zero. Where
+\(f(0) &amp;gt; 1/2\), and for the upper tail, the positive part is read from the
+parent's survival function wherever \(S(q)/\{1 - f(0)\}\) is below one
+half, so that neither tail is a difference of two numbers near one. The
+result is 0 below zero and is clamped to \([0, 1]\) against rounding."><meta property="og:description" content="Computes the hurdle distribution function
 $$F_{ZA}(q) = \pi + (1-\pi)\frac{F(q;\theta) - f(0;\theta)}{1 - f(0;\theta)}
   \quad (q \ge 0),$$
 the parent's own distribution function shifted and rescaled by the
-truncation. It is 0 below zero and is clamped to \([0, 1]\) against
-rounding."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+truncation, with \(1 - f(0)\) formed from the log-mass at zero. Where
+\(f(0) &amp;gt; 1/2\), and for the upper tail, the positive part is read from the
+parent's survival function wherever \(S(q)/\{1 - f(0)\}\) is below one
+half, so that neither tail is a difference of two numbers near one. The
+result is 0 below zero and is clamped to \([0, 1]\) against rounding."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +23,7 @@ rounding."><meta property="og:image" content="https://statmodels7.github.io/dist
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +60,11 @@ rounding."><meta property="og:image" content="https://statmodels7.github.io/dist
 $$F_{ZA}(q) = \pi + (1-\pi)\frac{F(q;\theta) - f(0;\theta)}{1 - f(0;\theta)}
   \quad (q \ge 0),$$
 the parent's own distribution function shifted and rescaled by the
-truncation. It is <code>0</code> below zero and is clamped to \([0, 1]\) against
-rounding.</p>
+truncation, with \(1 - f(0)\) formed from the log-mass at zero. Where
+\(f(0) &gt; 1/2\), and for the upper tail, the positive part is read from the
+parent's survival function wherever \(S(q)/\{1 - f(0)\}\) is below one
+half, so that neither tail is a difference of two numbers near one. The
+result is <code>0</code> below zero and is clamped to \([0, 1]\) against rounding.</p>
     </div>
 
 
@@ -78,8 +87,7 @@ rounding.</p>
 
 <dt id="arg-lower-tail">lower.tail<a class="anchor" aria-label="anchor" href="#arg-lower-tail"></a></dt>
 <dd><p>Logical of length 1. When <code>TRUE</code>, the default,
-probabilities are \(P(Y \le q)\); when <code>FALSE</code> they are \(P(Y &gt; q)\),
-formed as \(1 - F\).</p></dd>
+probabilities are \(P(Y \le q)\); when <code>FALSE</code> they are \(P(Y &gt; q)\).</p></dd>
 
 
 <dt id="arg-log-p">log.p<a class="anchor" aria-label="anchor" href="#arg-log-p"></a></dt>
@@ -123,7 +131,7 @@ Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> cdf_at_zero   parameter </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         0.4         0.4 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># It agrees with the mass function summed, as it must on a lattice.</span></span></span>
+<span class="r-in"><span><span class="co"># It agrees with the mass function summed, as it must on a discrete support.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>cdf <span class="op">=</span> <span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">5</span>, <span class="va">theta</span><span class="op">)</span>, summed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">5</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       cdf    summed </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.9470111 0.9470111 </span>

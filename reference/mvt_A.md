@@ -2,8 +2,9 @@
 
 Computes \\A_p(\nu) = \psi\\\left(\tfrac{\nu+p}{2}\right) -
 \psi\\\left(\tfrac{\nu}{2}\right) - \tfrac{p}{\nu}\\, the part of the
-score in \\\nu\\ that does not involve the data, in a form whose terms
-carry one sign so that nothing cancels.
+score in \\\nu\\ that does not involve the data, as twice the first
+derivative of
+[`mvt_cp_d()`](https://statmodels7.github.io/distributions7/reference/mvt_cp_d.md).
 
 ## Usage
 
@@ -15,45 +16,31 @@ mvt_A(nu, p)
 
 - nu:
 
-  The degrees of freedom, a numeric vector of any length, strictly
-  positive. Nothing is validated: a non-positive value reaches
-  [`base::digamma()`](https://rdrr.io/r/base/Special.html) and returns
-  `NaN`.
+  The degrees of freedom, a numeric vector of positive values. Not
+  validated.
 
 - p:
 
-  The dimension, a single positive whole number. Even and odd take
-  different branches.
+  The dimension, a single positive whole number.
 
 ## Value
 
-A numeric vector as long as `nu`, non-positive at every \\p\\ and
-exactly zero at \\p = 2\\.
+A numeric vector as long as `nu`: positive at \\p = 1\\, exactly zero at
+\\p = 2\\, and negative for \\p \ge 3\\.
 
-## Why the direct form fails
+## Details
 
 As \\\nu\\ grows the multivariate t tends to the multivariate gaussian
 and every derivative in \\\nu\\ vanishes, so \\A_p\\ is a difference of
 terms agreeing to leading order: \\\psi(\tfrac{\nu+p}{2}) -
-\psi(\tfrac{\nu}{2})\\ is \\p/\nu\\, and \\p/\nu\\ is what it is
-subtracted from. Measured at \\p = 4\\, the direct form is wrong by a
-relative \\4.9\times10^{-5}\\ at \\\nu = 10^6\\, by 39 per cent at
-\\10^8\\, and it CHANGES SIGN at \\10^9\\, reading
-\\+3.3\times10^{-16}\\ where the exact value is \\-4.0\times10^{-18}\\.
-
-## The repair needs no series for an even dimension
-
-\\p\\ is an integer dimension, so the shift between the two digamma
-arguments is a whole number of steps of the recurrence \\\psi(x+1) =
-\psi(x) + 1/x\\. For even \\p\\ that gives a sum whose terms all carry
-one sign: \$\$A_p(\nu) = -\sum\_{j=0}^{p/2-1}
-\frac{4j}{\nu(\nu+2j)}.\$\$ It is exactly zero at \\p = 2\\, where the
-direct form returns noise at \\10^{-16}\\.
-
-For odd \\p\\ the shift is a half-integer, so the recurrence carries the
-quantity onto the univariate
-[`mvt_A1()`](https://statmodels7.github.io/distributions7/reference/mvt_A1.md),
-which keeps a series of its own above a measured crossover.
+\psi(\tfrac{\nu}{2})\\ is close to \\p/\nu\\, the quantity from which it
+is subtracted. In floating point the direct form loses its significant
+digits as \\\nu\\ grows and eventually has the wrong sign. For even
+\\p\\ the recurrence \\\psi(x+1) = \psi(x) + 1/x\\ gives a sum whose
+terms carry one sign, \$\$A_p(\nu) = -\sum\_{j=0}^{p/2-1}
+\frac{4j}{\nu(\nu+2j)},\$\$ exactly zero at \\p = 2\\; for odd \\p\\
+[`mvt_cp_d()`](https://statmodels7.github.io/distributions7/reference/mvt_cp_d.md)
+sums an asymptotic series above \\\nu = \max(20, 4p)\\.
 
 ## Notation
 
@@ -62,12 +49,10 @@ digamma function.
 
 ## See also
 
-[`mvt_A1()`](https://statmodels7.github.io/distributions7/reference/mvt_A1.md)
-for the univariate case the odd branch reduces to,
-[`mvt_T()`](https://statmodels7.github.io/distributions7/reference/mvt_T.md)
-for the same treatment of the trigamma pair,
+[`mvt_cp_d()`](https://statmodels7.github.io/distributions7/reference/mvt_cp_d.md)
+for the computation,
 [`mvt_D()`](https://statmodels7.github.io/distributions7/reference/mvt_D.md)
-for the third cancellation, and
+for the part that carries the data, and
 [`distrib_gradient.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvStudentTDistrib.md)
 for the consumer.
 
@@ -83,7 +68,7 @@ rbind(exact = distributions7:::mvt_A(c(3, 10, 1e6), 2),
 #> direct -1.110223e-16 -5.551115e-17 2.79556e-16
 
 # At p = 4 the two agree while the direct form has digits left, and part
-# company at large nu, where the direct one changes sign.
+# company at large nu.
 nu <- c(3, 1e3, 1e6, 1e8, 1e9)
 signif(rbind(exact = distributions7:::mvt_A(nu, 4),
              direct = direct(nu, 4)), 5)

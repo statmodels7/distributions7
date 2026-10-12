@@ -8,6 +8,15 @@ trigamma function, \$\$\ell^{(\mu\mu)} = \dfrac{y+\theta}{s^2} -
 \ell^{(\theta\theta)} = \psi_1(y+\theta) - \psi_1(\theta) +
 \dfrac{\mu}{\theta s} + \dfrac{y-\mu}{s^2}.\$\$
 
+The mean components are formed from the bracket \\y/\mu^k -
+(y+\theta)/(\mu+\theta)^k\\, written as \\y(1 - q^k)/\mu^k -
+\theta/(\mu+\theta)^k\\ with \\q = \mu/(\mu+\theta)\\ and \\1 - q^k\\
+computed as \\-\mathrm{expm1}(-k\\\mathrm{log1p}(\theta/\mu))\\. Written
+directly its two terms agree to a relative \\\theta/\mu\\ where \\y\\ is
+near \\\mu\\, and their difference loses that many digits at a small
+dispersion or a large mean; in this form the value keeps full relative
+accuracy, and a term with a zero coefficient contributes zero.
+
 The dispersion entry cancels at large \\\theta\\ for the same reason the
 score does, and the kernel handles it the same way. Here the collapse is
 better than a series: with \\a = \theta\\, \\b = \theta + y\\ and \\c =
@@ -48,9 +57,9 @@ is how the two derivations check each other.
 
 - threads:
 
-  A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  A single positive integer, how many threads the kernel may use. For
+  fewer observations than an internal threshold the kernel runs
+  sequentially whatever the count. Defaults to `1L`.
 
 ## Value
 

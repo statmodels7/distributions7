@@ -5,15 +5,17 @@ $$P(Y = 0) = \pi, \qquad
 The mass at zero is the parameter itself, so it may sit ABOVE or BELOW the
 parent's \(f(0)\); the positive part is the parent renormalized away from
 zero. Everything is computed on the log scale and exponentiated at the end,
-with the normalizing constant taken through base::log1p() so that a parent
-with almost no mass at zero does not lose digits to log(1 - f0)."><meta property="og:description" content="Computes the hurdle mass function
+with the normalizing constant \(1 - f(0)\) formed from the parent's
+log-mass at zero as -expm1(log f(0)), so that a parent with almost all its
+mass at zero keeps its digits."><meta property="og:description" content="Computes the hurdle mass function
 $$P(Y = 0) = \pi, \qquad
   P(Y = y) = (1-\pi)\frac{f(y;\theta)}{1 - f(0;\theta)} \quad (y &amp;gt; 0).$$
 The mass at zero is the parameter itself, so it may sit ABOVE or BELOW the
 parent's \(f(0)\); the positive part is the parent renormalized away from
 zero. Everything is computed on the log scale and exponentiated at the end,
-with the normalizing constant taken through base::log1p() so that a parent
-with almost no mass at zero does not lose digits to log(1 - f0)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+with the normalizing constant \(1 - f(0)\) formed from the parent's
+log-mass at zero as -expm1(log f(0)), so that a parent with almost all its
+mass at zero keeps its digits."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +23,7 @@ with almost no mass at zero does not lose digits to log(1 - f0)."><meta property
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,8 +62,9 @@ $$P(Y = 0) = \pi, \qquad
 The mass at zero is the parameter itself, so it may sit ABOVE or BELOW the
 parent's \(f(0)\); the positive part is the parent renormalized away from
 zero. Everything is computed on the log scale and exponentiated at the end,
-with the normalizing constant taken through <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">base::log1p()</a></code> so that a parent
-with almost no mass at zero does not lose digits to <code>log(1 - f0)</code>.</p>
+with the normalizing constant \(1 - f(0)\) formed from the parent's
+log-mass at zero as <code>-expm1(log f(0))</code>, so that a parent with almost all its
+mass at zero keeps its digits.</p>
     </div>
 
 

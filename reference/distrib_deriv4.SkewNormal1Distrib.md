@@ -4,8 +4,8 @@ Computes the fifteen fourth derivatives of the log-density in closed
 form, in a compiled kernel, in the notation of
 [`distrib_deriv3.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewNormal1Distrib.md).
 The recursion \\R' = -R(t+R)\\ keeps every one of them a polynomial in
-\\t\\ and the inverse Mills ratio, so the fourth order needs nothing the
-third did not.
+\\t\\ and the inverse Mills ratio, so the fourth order uses the same two
+functions as the third, and the same cumulant route below \\t = -1\\.
 
 With `expected = TRUE` the value is a numerical expectation, for the
 reason it is at third order: the integrals are the ones that block the
@@ -98,7 +98,7 @@ rbind(analytic = d4$mu_mu_alpha_alpha,
 #> analytic -2.030997 -1.959839 0.7048172 -7.884540e-06
 #> numeric  -2.030997 -1.959839 0.7048172 -7.884542e-06
 
-# The count is bit for bit independent of the thread count.
+# The result is bit for bit independent of the thread count.
 identical(distrib_deriv4(d, y, th, threads = 1L),
           distrib_deriv4(d, y, th, threads = 2L))
 #> [1] TRUE

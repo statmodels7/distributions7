@@ -10,7 +10,10 @@ and the mixed shape component carries only the \(S\) part,
 \(-\psi_1(n+S) + \psi_1(S)\), the two shapes entering the mass separately
 otherwise. The reported components follow by the two-variable chain rule of
 \((\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)\), whose own second
-derivatives contribute the rest.
+derivatives contribute the rest. This route is taken for
+\(\sigma \ge 0.1\); for \(\sigma &amp;lt; 0.1\) the components are the direct
+sums of order two given on betabinom1_distrib(), for the reason given on
+distrib_gradient.BetaBinom1Distrib().
 The arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count."><meta property="og:description" content="Computes the three distinct second derivatives of the beta-binomial log-mass
 with respect to \(\mu\) and \(\sigma\), one value per observation, in
@@ -23,7 +26,10 @@ and the mixed shape component carries only the \(S\) part,
 \(-\psi_1(n+S) + \psi_1(S)\), the two shapes entering the mass separately
 otherwise. The reported components follow by the two-variable chain rule of
 \((\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)\), whose own second
-derivatives contribute the rest.
+derivatives contribute the rest. This route is taken for
+\(\sigma \ge 0.1\); for \(\sigma &amp;lt; 0.1\) the components are the direct
+sums of order two given on betabinom1_distrib(), for the reason given on
+distrib_gradient.BetaBinom1Distrib().
 The arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,7 +39,7 @@ output, so the result does not depend on the thread count."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +83,10 @@ and the <strong>mixed</strong> shape component carries only the \(S\) part,
 \(-\psi_1(n+S) + \psi_1(S)\), the two shapes entering the mass separately
 otherwise. The reported components follow by the two-variable chain rule of
 \((\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)\), whose own second
-derivatives contribute the rest.</p>
+derivatives contribute the rest. This route is taken for
+\(\sigma \ge 0.1\); for \(\sigma &lt; 0.1\) the components are the direct
+sums of order two given on <code><a href="betabinom1_distrib.html">betabinom1_distrib()</a></code>, for the reason given on
+<code><a href="distrib_gradient.BetaBinom1Distrib.html">distrib_gradient.BetaBinom1Distrib()</a></code>.</p>
 <p>The arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count.</p>
     </div>
@@ -112,8 +121,8 @@ recycled. <code>mu</code> must lie in \((0, 1)\) and <code>sigma</code> be stric
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

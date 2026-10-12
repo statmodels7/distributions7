@@ -4,16 +4,16 @@ $$f(y; \mu, \sigma) = \dfrac{\sigma}{\mu}
   \left(\dfrac{y}{\mu}\right)^{\sigma - 1}
   \exp\left\{-\left(\dfrac{y}{\mu}\right)^{\sigma}\right\}, \qquad y &amp;gt; 0,$$
 by calling stats::dweibull() at shape = sigma and scale = mu, so the
-accuracy and the underflow behavior are R's own. Outside the support the
-density is 0. With log = TRUE the logarithm is formed inside dweibull()
+accuracy and the underflow behavior are R's own. Below zero the density is
+0. With log = TRUE the logarithm is formed inside dweibull()
 and stays finite far into the upper tail, where the density itself
 underflows."><meta property="og:description" content="Computes the Weibull density
 $$f(y; \mu, \sigma) = \dfrac{\sigma}{\mu}
   \left(\dfrac{y}{\mu}\right)^{\sigma - 1}
   \exp\left\{-\left(\dfrac{y}{\mu}\right)^{\sigma}\right\}, \qquad y &amp;gt; 0,$$
 by calling stats::dweibull() at shape = sigma and scale = mu, so the
-accuracy and the underflow behavior are R's own. Outside the support the
-density is 0. With log = TRUE the logarithm is formed inside dweibull()
+accuracy and the underflow behavior are R's own. Below zero the density is
+0. With log = TRUE the logarithm is formed inside dweibull()
 and stays finite far into the upper tail, where the density itself
 underflows."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +23,7 @@ underflows."><meta property="og:image" content="https://statmodels7.github.io/di
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,8 +61,8 @@ $$f(y; \mu, \sigma) = \dfrac{\sigma}{\mu}
   \left(\dfrac{y}{\mu}\right)^{\sigma - 1}
   \exp\left\{-\left(\dfrac{y}{\mu}\right)^{\sigma}\right\}, \qquad y &gt; 0,$$
 by calling <code><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">stats::dweibull()</a></code> at <code>shape = sigma</code> and <code>scale = mu</code>, so the
-accuracy and the underflow behavior are R's own. Outside the support the
-density is 0. With <code>log = TRUE</code> the logarithm is formed inside <code><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">dweibull()</a></code>
+accuracy and the underflow behavior are R's own. Below zero the density is
+0. With <code>log = TRUE</code> the logarithm is formed inside <code><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">dweibull()</a></code>
 and stays finite far into the upper tail, where the density itself
 underflows.</p>
     </div>
@@ -77,15 +77,17 @@ underflows.</p>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of observations. A value at or below zero is
-outside the support and gives a density of 0.</p></dd>
+<dd><p>A numeric vector of observations. A negative value gives a density
+of 0. At zero the density is the limit of the formula: <code>Inf</code> for
+\(\sigma &lt; 1\), \(1/\mu\) for \(\sigma = 1\) and 0 for
+\(\sigma &gt; 1\).</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>mu</code> and <code>sigma</code>, each a numeric
 vector of length 1 or of the length of <code>y</code>. A component of length 1 is
-recycled. Both must be strictly positive; a zero or negative value gives
-<code>NaN</code> with a warning from <code><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">stats::dweibull()</a></code>.</p></dd>
+recycled. Both must be strictly positive; the generic signals an error
+for a zero or negative value before the method is called.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>

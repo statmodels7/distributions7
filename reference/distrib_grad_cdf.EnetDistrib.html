@@ -4,13 +4,13 @@ function is a truncated Gaussian: with \(z = q - \mu\), \(s = \sqrt c\)
 and \(x = a/\sqrt c\) it is \(e^{w}\Phi(X)\) below the location and
 \(1 - e^{w}\Phi(X)\) above it, for \(X = \pm sz - x\) and a weight
 \(w = -\log M(x) + x^2/2 + \mathrm{const}\) written through the Mills
-ratio the family already carries. The four registrations are made together
+ratio that the family already carries. The four registrations are made together
 by register_phi_terms_cdf()."><meta property="og:description" content="Closed form at every order from one to four. Each half of the distribution
 function is a truncated Gaussian: with \(z = q - \mu\), \(s = \sqrt c\)
 and \(x = a/\sqrt c\) it is \(e^{w}\Phi(X)\) below the location and
 \(1 - e^{w}\Phi(X)\) above it, for \(X = \pm sz - x\) and a weight
 \(w = -\log M(x) + x^2/2 + \mathrm{const}\) written through the Mills
-ratio the family already carries. The four registrations are made together
+ratio that the family already carries. The four registrations are made together
 by register_phi_terms_cdf()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -19,7 +19,7 @@ by register_phi_terms_cdf()."><meta property="og:image" content="https://statmod
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@ function is a truncated Gaussian: with \(z = q - \mu\), \(s = \sqrt c\)
 and \(x = a/\sqrt c\) it is \(e^{w}\Phi(X)\) below the location and
 \(1 - e^{w}\Phi(X)\) above it, for \(X = \pm sz - x\) and a weight
 \(w = -\log M(x) + x^2/2 + \mathrm{const}\) written through the Mills
-ratio the family already carries. The four registrations are made together
+ratio that the family already carries. The four registrations are made together
 by <code><a href="register_phi_terms_cdf.html">register_phi_terms_cdf()</a></code>.</p>
     </div>
 
@@ -96,32 +96,26 @@ default.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list of numeric vectors of the order the generic asked for,
+    <p>A named list of numeric vectors of the requested order,
 keyed as <code><a href="deriv_names.html">deriv_names(distrib@params, order)</a></code>: three
 components for the gradient, six for the Hessian, ten at order 3 and
 fifteen at order 4.</p>
     </div>
     <div class="section level2">
-    <h2 id="why-four-orders-are-cheap-here">Why four orders are cheap here<a class="anchor" aria-label="anchor" href="#why-four-orders-are-cheap-here"></a></h2>
+    <h2 id="separable-partial-derivatives">Separable partial derivatives<a class="anchor" aria-label="anchor" href="#separable-partial-derivatives"></a></h2>
     <p>Both \(s\) and \(x\) are a function of \(\lambda\) times a function of
-\(\alpha\), so their mixed partials are products of one-variable ones
-through <code><a href="separable_deriv.html">separable_deriv()</a></code>, and the one-variable ones are powers of affine
-functions through <code><a href="dpow_affine.html">dpow_affine()</a></code>. No multivariate expansion is formed at
-any order.</p>
+\(\alpha\), so their mixed partials are products of one-variable ones,
+formed in the term function with a product rule in \(\alpha\) for
+\(x\), and the one-variable ones are powers of affine functions through
+<code><a href="dpow_affine.html">dpow_affine()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="the-kink-at-the-location">The kink at the location<a class="anchor" aria-label="anchor" href="#the-kink-at-the-location"></a></h2>
-    <p>The location is the non-regular direction, as it is in the Laplace this
-family contains: the second derivative in \(\mu\) carries a point mass at
-\(q = \mu\), and the formulas hold on either side of it. A numerical check
-that straddles the location is checking the arithmetic against a reference
-that is not valid there.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="what-the-closed-route-is-worth">What the closed route is worth<a class="anchor" aria-label="anchor" href="#what-the-closed-route-is-worth"></a></h2>
-    <p>Against a product stencil on the same cdf: \(1.6\times10^{-9}\) at order
-1, \(3.5\times10^{-7}\) at order 2, \(3.0\times10^{-5}\) at order 3 and
-\(3.9\times10^{-4}\) at order 4.</p>
+    <p>The location is the non-regular direction, as it is in the Laplace that
+this family contains: the second derivative of \(F\) in \(\mu\) jumps at
+\(q = \mu\), and the third carries a point mass there. The formulas hold
+on either side of the location, so a numerical check that straddles it
+compares the arithmetic with a reference that is not valid there.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -149,7 +143,7 @@ distribution function and \(F\) the elastic net's.</p>
 <span class="r-in"><span><span class="co"># Against a central difference of the cdf, which shares no arithmetic.</span></span></span>
 <span class="r-in"><span><span class="va">fd</span> <span class="op">&lt;-</span> <span class="fu"><a href="numerical_cdf_deriv.html">numerical_cdf_deriv</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">th</span>, order <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="distrib_grad_cdf.html">distrib_grad_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">th</span>, log <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">fd</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.580186e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6.65741e-10</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Three, six, ten and fifteen components as the order rises.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="distrib_grad_cdf.html">distrib_grad_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">th</span><span class="op">)</span>,</span></span>

@@ -2,12 +2,12 @@
 
 The
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
-body the location-scale families share:
+body the location-scale families share: the factors of
 [`loc_scale_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv.md)
 at order 1, put on the requested tail and scale by
-[`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md).
-The Gaussian, the logistic, the Cauchy and the Laplace register this
-function itself, so their four pages document one piece of arithmetic.
+[`loc_scale_cdf_route()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_route.md).
+The Gaussian, the logistic, the Laplace and the Gumbel register this
+function itself, so their pages document one piece of arithmetic.
 
 ## Usage
 

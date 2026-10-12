@@ -15,7 +15,7 @@ consulted. A numeric vector is passed to stats::sd()."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,9 +83,9 @@ single number for a numeric vector.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>$$\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}.$$</p>
 <p>The square root is taken after the variance, so accuracy and cost are the
-variance's: a closed form for 43 of the 45 shipped families, a quadrature
-for the two von Mises. A family whose variance is <code>NaN</code> or <code>Inf</code> gives the
-same here, and a negative variance cannot arise, so the root is always real.</p>
+variance's: a closed form for every univariate family except the two von
+Mises, which use a quadrature. A family whose variance is <code>NaN</code> or <code>Inf</code>
+gives the same here.</p>
 <p>On a numeric vector the value is <code><a href="https://rdrr.io/r/stats/sd.html" class="external-link">stats::sd()</a></code>, the root of the \(n - 1\)
 variance.</p>
     </div>

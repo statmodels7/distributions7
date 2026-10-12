@@ -37,7 +37,8 @@ because \\Y \le q\\ is \\X \ge g^{-1}(q)\\ there.
 
 ## Value
 
-A numeric vector of probabilities, in \\\[0, 1\]\\.
+A numeric vector of probabilities, in \\\[0, 1\]\\, or of their
+logarithms, in \\(-\infty, 0\]\\, when `log.p = TRUE`.
 
 ## Details
 

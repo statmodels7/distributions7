@@ -6,20 +6,26 @@ and this parametrization is that one at \(\alpha = \mu/\sigma\) and
 \(\beta = (1-\mu)/\sigma\), so the Faa di Bruno partition sum of
 chain_derivatives() over the map delivers them. Both shapes are linear in
 \(\mu\) at fixed \(\sigma\), so every partial of the map carrying two or
-more \(\mu\) vanishes and the sum is short.
-With expected = TRUE the method calls expected_derivative() instead.
-That is the one place on this page where approx and nsim are read; on
-the observed branch both are ignored."><meta property="og:description" content="Computes the four distinct third derivatives of the beta-binomial log-mass
+more \(\mu\) vanishes and the sum is short. This route is taken for
+\(\sigma \ge 0.1\); for \(\sigma &amp;lt; 0.1\) the components are the direct
+sums over the integer shifts given on betabinom1_distrib(), which keep
+their accuracy as \(\sigma\) goes to zero (betabinom1_components()).
+With expected = TRUE the method returns the expectation as an exact
+finite sum over the support, from betabinom1_expected(). approx and
+nsim are ignored on both branches."><meta property="og:description" content="Computes the four distinct third derivatives of the beta-binomial log-mass
 in \(\mu\) and \(\sigma\), in closed form. The shape parametrization
 carries closed derivatives at every order, each a difference of polygammas,
 and this parametrization is that one at \(\alpha = \mu/\sigma\) and
 \(\beta = (1-\mu)/\sigma\), so the Faa di Bruno partition sum of
 chain_derivatives() over the map delivers them. Both shapes are linear in
 \(\mu\) at fixed \(\sigma\), so every partial of the map carrying two or
-more \(\mu\) vanishes and the sum is short.
-With expected = TRUE the method calls expected_derivative() instead.
-That is the one place on this page where approx and nsim are read; on
-the observed branch both are ignored."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+more \(\mu\) vanishes and the sum is short. This route is taken for
+\(\sigma \ge 0.1\); for \(\sigma &amp;lt; 0.1\) the components are the direct
+sums over the integer shifts given on betabinom1_distrib(), which keep
+their accuracy as \(\sigma\) goes to zero (betabinom1_components()).
+With expected = TRUE the method returns the expectation as an exact
+finite sum over the support, from betabinom1_expected(). approx and
+nsim are ignored on both branches."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +33,7 @@ the observed branch both are ignored."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,10 +73,13 @@ and this parametrization is that one at \(\alpha = \mu/\sigma\) and
 \(\beta = (1-\mu)/\sigma\), so the Faa di Bruno partition sum of
 <code><a href="chain_derivatives.html">chain_derivatives()</a></code> over the map delivers them. Both shapes are linear in
 \(\mu\) at fixed \(\sigma\), so every partial of the map carrying two or
-more \(\mu\) vanishes and the sum is short.</p>
-<p>With <code>expected = TRUE</code> the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code> instead.
-That is the one place on this page where <code>approx</code> and <code>nsim</code> are read; on
-the observed branch both are ignored.</p>
+more \(\mu\) vanishes and the sum is short. This route is taken for
+\(\sigma \ge 0.1\); for \(\sigma &lt; 0.1\) the components are the direct
+sums over the integer shifts given on <code><a href="betabinom1_distrib.html">betabinom1_distrib()</a></code>, which keep
+their accuracy as \(\sigma\) goes to zero (<code><a href="betabinom1_components.html">betabinom1_components()</a></code>).</p>
+<p>With <code>expected = TRUE</code> the method returns the expectation as an exact
+finite sum over the support, from <code><a href="betabinom1_expected.html">betabinom1_expected()</a></code>. <code>approx</code> and
+<code>nsim</code> are ignored on both branches.</p>
     </div>
 
 
@@ -104,14 +113,12 @@ model is returned in place of the value at the data. Defaults to <code>FALSE</co
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>One of <code>"integrate"</code> (the default here), <code>"bartlett"</code>, <code>"mc"</code>
-or <code>"opg"</code>, the strategy <code><a href="expected_derivative.html">expected_derivative()</a></code> uses. Read only when
-<code>expected = TRUE</code>.</p></dd>
+<dd><p>Ignored, the expectation being an exact finite sum. Accepted
+so that the signature matches the generic's.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>A single positive integer, the sample size when
-<code>approx = "mc"</code>. Read only when <code>expected = TRUE</code>. Defaults to <code>10000</code>.</p></dd>
+<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

@@ -3,14 +3,13 @@
 Returns the covariance matrix of the family, \$\$\operatorname{Cov}(Y_i,
 Y_j) = \dfrac{\delta\_{ij}\mu_i - \mu_i\mu_j}{\phi + 1},\$\$ so the
 coordinate variances are \\\mu_j(1-\mu_j)/(\phi+1)\\ and every
-covariance is negative, a rise in one coordinate having to be paid for
-by the others.
+covariance is negative, the coordinates summing to one.
 
-The matrix is **singular by construction**: the coordinates sum to one,
-so the vector of ones is in its null space and the rank is \\p-1\\.
-Anything that inverts a covariance must use the marginals or the free
-vector instead. The concentration acts as a precision, every entry
-falling as \\1/(\phi+1)\\.
+The matrix is singular: the coordinates sum to one, so the vector of
+ones is in its null space and the rank is \\p-1\\. A computation that
+inverts a covariance works with the marginals or with the free vector
+instead. The concentration acts as a precision, every entry falling as
+\\1/(\phi+1)\\.
 
 ## Arguments
 
@@ -26,7 +25,8 @@ falling as \\1/(\phi+1)\\.
 
 ## Value
 
-A symmetric \\p \times p\\ numeric matrix of rank \\p-1\\.
+A symmetric \\p \times p\\ numeric matrix of rank \\p-1\\, without
+dimnames.
 
 ## See also
 

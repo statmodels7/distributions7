@@ -2,7 +2,7 @@
 
 Returns the parameters a family's own first two moments imply for a
 sample, in closed form where the inversion has one, and `NULL` where
-this family has no entry. **38 of the 43 univariate families have one.**
+this family has no entry.
 
 A starting value should be an estimate. For most families the moment
 estimate is one line: the sample mean and variance are set equal to the
@@ -39,9 +39,9 @@ entry of `distrib@params`, or `NULL` where this family has no entry.
 Each is written against the family's own
 [`mean()`](https://rdrr.io/r/base/mean.html) and
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md),
-not from memory, and the tests check it the same way: a family's moment
-estimate applied to a large sample drawn from a known parameter must
-return that parameter.
+and the tests check it the same way: a family's moment estimate applied
+to a large sample drawn from a known parameter must return that
+parameter.
 
 ## Where a moment does not exist, and where the inversion is not closed
 
@@ -64,14 +64,17 @@ elementary moments at all for the elastic net.
 
 A family carrying one announces it there, as in
 `"beta-binomial [size=10]"`, so the bracketed part is stripped before
-the name is used as a lookup key. Without that no beta-binomial of any
-size would match its own entry, and silently: a missing key is a legal
-fallback.
+the name is used as a lookup key. If the bracketed part were kept, the
+lookup would find no entry for a beta-binomial of any size, and the fit
+would fall back to the default without a message, because a missing key
+is a valid result.
 
 ## See also
 
 [`start_from_moments()`](https://statmodels7.github.io/distributions7/reference/start_from_moments.md),
-the only caller and the fallback;
+the main caller and the fallback, and
+[`distrib_intercept_start.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.SkewNormal1Distrib.md),
+which also calls it;
 [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
 for the generic; [`mean()`](https://rdrr.io/r/base/mean.html) and
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md),

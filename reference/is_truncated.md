@@ -2,9 +2,9 @@
 
 Reports whether an object belongs to either truncated class.
 [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
-asks before wrapping, and collapses a nested truncation into a single
-object over the intersection of the two intervals. Nesting would be
-correct but would pay the quadrature cost of
+tests the object before wrapping, and collapses a nested truncation into
+a single object over the intersection of the two intervals. Nesting
+would be correct but would pay the quadrature cost of
 [`trunc_score_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_score_mean.md)
 twice for a law one truncation already describes.
 
@@ -18,8 +18,8 @@ is_truncated(distrib)
 
 - distrib:
 
-  An object inheriting from class `distrib`. Any other input returns
-  `FALSE`; nothing raises.
+  An object inheriting from class `distrib`. Any other input gives
+  `FALSE` without an error.
 
 ## Value
 

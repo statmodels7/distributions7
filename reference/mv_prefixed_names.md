@@ -1,11 +1,11 @@
 # Prefix a Parametrization's Free Names with the Matrix They Describe
 
-Returns the matrix parametrization's free names with `"sigma_"` or
-`"omega_"` in front, so that a printed parameter table says which matrix
-the coordinate belongs to. A free value's name says how the matrix is
-BUILT, not which matrix it is, so the same parametrization on the two
-sides of a model would otherwise give two genuinely different models the
-same parameter names.
+Returns the free names of a matrix parametrization with `"sigma_"` or
+`"omega_"` in front, so that a printed parameter table names the matrix
+to which each coordinate belongs. The free name of a value says how the
+matrix is built and not which matrix it is, so without the prefix the
+same parametrization of a covariance and of a precision would give two
+different models the same parameter names.
 
 ## Usage
 
@@ -31,9 +31,8 @@ A character vector as long as `free_names`.
 
 ## Details
 
-The prefix is applied by the DISTRIBUTION. The parametrization does not
-know which side of a model it has been handed to, so it cannot apply
-one.
+The distribution applies the prefix, because the parametrization does
+not record which side of a model it describes.
 
 ## See also
 
@@ -50,7 +49,7 @@ distributions7:::mv_prefixed_names(c("log_L1", "log_L2", "L2.1"))
 distributions7:::mv_prefixed_names(c("log_L1", "L2.1"), inverted = TRUE)
 #> [1] "omega_log_L1" "omega_L2.1"  
 
-# Which is what separates the two parametrizations of one law.
+# The prefixes separate the two parametrizations of one law.
 mvgaussian1_distrib(2)@params
 #> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"  
 mvgaussian2_distrib(2, parameters7::log_cholesky(2))@params

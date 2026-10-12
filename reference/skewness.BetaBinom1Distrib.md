@@ -1,11 +1,12 @@
 # Skewness of the Beta-Binomial Distribution
 
-Assembled from the falling factorial moments, \\\gamma_1 =
-c_3/c_2^{3/2}\\ with \\c_k\\ the central moments
-[`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md)
-returns. It is zero at \\\mu = 1/2\\ whatever the dispersion, the mixing
-beta being symmetric there, and it takes the sign of \\1 - 2\mu\\
-elsewhere.
+Closed form: \$\$\gamma_1 = (1 - 2\mu)\\\frac{1 + 2n\sigma}{1 + 2\sigma}
+\sqrt{\frac{1 + \sigma}{n\mu(1-\mu)(1 + n\sigma)}},\$\$ computed by
+[`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md).
+It is zero at \\\mu = 1/2\\ whatever the dispersion, the mixing beta
+being symmetric there, and it takes the sign of \\1 - 2\mu\\ elsewhere.
+The closed form forms no difference of raw moments, so it keeps its
+accuracy at a small dispersion and a large \\n\\.
 
 ## Arguments
 
@@ -18,7 +19,8 @@ elsewhere.
 - theta:
 
   A named list with components `mu` (strictly between 0 and 1) and
-  `sigma` (positive), each a numeric vector of length 1 or `n`.
+  `sigma` (positive), each a numeric vector of length 1 or of the common
+  length of the parameter settings.
 
 - ...:
 
@@ -29,18 +31,10 @@ elsewhere.
 A numeric vector, of length
 `max(length(theta$mu), length(theta$sigma))`.
 
-## Details
-
-The falling factorial moments are the quantities a beta-binomial has in
-closed form: each is a product of \\k\\ ratios and needs no sum over the
-support. The raw and then the central moments follow from them by two
-written-out linear maps.
-
 ## Notation
 
 \\\mu \in (0,1)\\ is the success probability, \\\sigma \> 0\\ the
-dispersion, \\n\\ the number of trials and \\c_k\\ the \\k\\-th central
-moment.
+dispersion, \\n\\ the number of trials.
 
 ## See also
 
@@ -48,7 +42,7 @@ moment.
 from the same moments;
 [`skewness.BinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/skewness.BinomialDistrib.md),
 the \\\sigma \to 0\\ limit;
-[`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md);
+[`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md);
 [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md).
 
 ## Examples

@@ -11,9 +11,10 @@ bilinear.
 The location component is **undefined at \\y = \mu\\**, where
 \\\mathrm{sgn}\\ jumps; `sign(0)` is 0 in R, so the value returned there
 is \\cz = 0\\, one point of the subdifferential. `params_smooth` records
-`mu = FALSE` so that
-[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)'s
-finite-difference guard knows.
+`mu = FALSE`, which
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+reads to discard the finite-difference references that straddle the
+location.
 
 ## Arguments
 

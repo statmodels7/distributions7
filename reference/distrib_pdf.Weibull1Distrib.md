@@ -6,8 +6,8 @@ Computes the Weibull density \$\$f(y; \mu, \sigma) = \dfrac{\sigma}{\mu}
 0,\$\$ by calling
 [`stats::dweibull()`](https://rdrr.io/r/stats/Weibull.html) at
 `shape = sigma` and `scale = mu`, so the accuracy and the underflow
-behavior are R's own. Outside the support the density is 0. With
-`log = TRUE` the logarithm is formed inside
+behavior are R's own. Below zero the density is 0. With `log = TRUE` the
+logarithm is formed inside
 [`dweibull()`](https://rdrr.io/r/stats/Weibull.html) and stays finite
 far into the upper tail, where the density itself underflows.
 
@@ -20,16 +20,17 @@ far into the upper tail, where the density itself underflows.
 
 - y:
 
-  A numeric vector of observations. A value at or below zero is outside
-  the support and gives a density of 0.
+  A numeric vector of observations. A negative value gives a density
+  of 0. At zero the density is the limit of the formula: `Inf` for
+  \\\sigma \< 1\\, \\1/\mu\\ for \\\sigma = 1\\ and 0 for \\\sigma \>
+  1\\.
 
 - theta:
 
   A named list with components `mu` and `sigma`, each a numeric vector
   of length 1 or of the length of `y`. A component of length 1 is
-  recycled. Both must be strictly positive; a zero or negative value
-  gives `NaN` with a warning from
-  [`stats::dweibull()`](https://rdrr.io/r/stats/Weibull.html).
+  recycled. Both must be strictly positive; the generic signals an error
+  for a zero or negative value before the method is called.
 
 - log:
 

@@ -2,8 +2,7 @@
 
 Closed form: \\E\[Y\] = \mu\\, the success probability. The response
 takes the values 0 and 1, so the mean is the probability of the second
-and every other moment is a function of it: a one-parameter family has
-nothing else for them to depend on.
+value, and every other moment is a function of \\\mu\\.
 
 ## Arguments
 
@@ -17,7 +16,7 @@ nothing else for them to depend on.
   A named list with one component, `mu` (the success probability,
   strictly between 0 and 1), a numeric vector of length 1 or `n`.
   Aligned and validated by name, so a value at or outside the unit
-  interval throws.
+  interval signals an error.
 
 - ...:
 

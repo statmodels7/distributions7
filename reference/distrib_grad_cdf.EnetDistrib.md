@@ -5,8 +5,8 @@ distribution function is a truncated Gaussian: with \\z = q - \mu\\, \\s
 = \sqrt c\\ and \\x = a/\sqrt c\\ it is \\e^{w}\Phi(X)\\ below the
 location and \\1 - e^{w}\Phi(X)\\ above it, for \\X = \pm sz - x\\ and a
 weight \\w = -\log M(x) + x^2/2 + \mathrm{const}\\ written through the
-Mills ratio the family already carries. The four registrations are made
-together by
+Mills ratio that the family already carries. The four registrations are
+made together by
 [`register_phi_terms_cdf()`](https://statmodels7.github.io/distributions7/reference/register_phi_terms_cdf.md).
 
 ## Arguments
@@ -41,35 +41,26 @@ together by
 
 ## Value
 
-A named list of numeric vectors of the order the generic asked for,
-keyed as
+A named list of numeric vectors of the requested order, keyed as
 [`deriv_names(distrib@params, order)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md):
 three components for the gradient, six for the Hessian, ten at order 3
 and fifteen at order 4.
 
-## Why four orders are cheap here
+## Separable partial derivatives
 
 Both \\s\\ and \\x\\ are a function of \\\lambda\\ times a function of
-\\\alpha\\, so their mixed partials are products of one-variable ones
-through
-[`separable_deriv()`](https://statmodels7.github.io/distributions7/reference/separable_deriv.md),
+\\\alpha\\, so their mixed partials are products of one-variable ones,
+formed in the term function with a product rule in \\\alpha\\ for \\x\\,
 and the one-variable ones are powers of affine functions through
 [`dpow_affine()`](https://statmodels7.github.io/distributions7/reference/dpow_affine.md).
-No multivariate expansion is formed at any order.
 
 ## The kink at the location
 
-The location is the non-regular direction, as it is in the Laplace this
-family contains: the second derivative in \\\mu\\ carries a point mass
-at \\q = \mu\\, and the formulas hold on either side of it. A numerical
-check that straddles the location is checking the arithmetic against a
-reference that is not valid there.
-
-## What the closed route is worth
-
-Against a product stencil on the same cdf: \\1.6\times10^{-9}\\ at order
-1, \\3.5\times10^{-7}\\ at order 2, \\3.0\times10^{-5}\\ at order 3 and
-\\3.9\times10^{-4}\\ at order 4.
+The location is the non-regular direction, as it is in the Laplace that
+this family contains: the second derivative of \\F\\ in \\\mu\\ jumps at
+\\q = \mu\\, and the third carries a point mass there. The formulas hold
+on either side of the location, so a numerical check that straddles it
+compares the arithmetic with a reference that is not valid there.
 
 ## Notation
 
@@ -100,7 +91,7 @@ th <- list(mu = 0, lambda = 1, alpha = 0.5)
 # Against a central difference of the cdf, which shares no arithmetic.
 fd <- numerical_cdf_deriv(d, q, th, order = 1)
 max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) / unlist(fd) - 1))
-#> [1] 1.580186e-09
+#> [1] 6.65741e-10
 
 # Three, six, ten and fifteen components as the order rises.
 lengths(list(distrib_grad_cdf(d, q, th),

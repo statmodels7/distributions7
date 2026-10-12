@@ -1,9 +1,9 @@
 # Mean of the Gamma Distribution
 
-Closed form: \\E\[Y\] = \mu\\. This parametrization carries the mean and
-the variance as its two parameters, so both of the first two moments are
-reads, and the shape and rate are recovered from them where they are
-needed.
+Closed form: \\E\[Y\] = \mu\\. The two parameters of this
+parametrization are the mean and the variance, so the method returns the
+first parameter. The shape \\\mu^2/\sigma^2\\ and the rate
+\\\mu/\sigma^2\\ are functions of the two.
 
 ## Arguments
 

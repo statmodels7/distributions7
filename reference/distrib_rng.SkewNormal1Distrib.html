@@ -27,7 +27,7 @@ itself."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,8 +105,12 @@ observation from its own member of the family.</p></dd>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>\(\delta = \alpha/\sqrt{1+\alpha^2}\) is the correlation between \(Z\)
-and the half-normal component; \(\mu\) is the location and \(\sigma\) the
+<p>\(\delta = \alpha/\sqrt{1+\alpha^2}\) is the correlation of the Gaussian
+pair \((U_0, V)\), \(V = \delta U_0 + \sqrt{1-\delta^2}\,U_1\), whose
+second component conditioned on \(U_0 &gt; 0\) is \(Z\). The method forms
+\(\delta\) and \(\sqrt{1-\delta^2} = 1/\sqrt{1+\alpha^2}\) in
+\(1/\alpha\) where \(|\alpha| &gt; 1\), so they keep their digits where
+\(\alpha^2\) overflows. \(\mu\) is the location and \(\sigma\) the
 scale.</p>
     </div>
     <div class="section level2">

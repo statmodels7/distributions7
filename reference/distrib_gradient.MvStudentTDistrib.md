@@ -1,18 +1,24 @@
 # Multivariate Student t Score
 
 Computes the first derivatives of the log-density in closed form. With
-\\w = \Sigma^{-1}(y-\mu)\\, \\q = (y-\mu)^\top w\\ and \\c =
-(\nu+p)/(\nu+q)\\, \$\$\partial\_\mu \ell = c\\w, \qquad
+\\w = \Sigma^{-1}(y-\mu)\\, \\q = (y-\mu)^\top w\\, \\c =
+(\nu+p)/(\nu+q)\\ and \\P_k\\ the derivative of \\\Sigma^{-1}\\ in the
+\\k\\-th free value, \$\$\partial\_\mu \ell = c\\w, \qquad
 \partial\_{\eta_k}\ell =
--\tfrac{1}{2}\partial\_{\eta_k}\log\lvert\Sigma\rvert + \tfrac{c}{2}\\
-w^\top A_k w,\$\$ \$\$\partial\_\nu \ell = \tfrac{1}{2}\left\[
-\psi\\\left(\tfrac{\nu+p}{2}\right) -
+-\tfrac{1}{2}\partial\_{\eta_k}\log\lvert\Sigma\rvert - \tfrac{c}{2}\\
+(y-\mu)^\top P_k (y-\mu),\$\$ \$\$\partial\_\nu \ell =
+\tfrac{1}{2}\left\[ \psi\\\left(\tfrac{\nu+p}{2}\right) -
 \psi\\\left(\tfrac{\nu}{2}\right) - \tfrac{p}{\nu} -
 \log\\\left(1+\tfrac{q}{\nu}\right) +
 \tfrac{(\nu+p)q}{\nu(\nu+q)}\right\].\$\$ The gaussian's score is the
-limit \\c \to 1\\. Every observation enters the location and matrix
-components through that one weight, and its decay with \\q\\ is the
-whole of the family's resistance to a distant row.
+limit \\c \to 1\\. Each observation enters the location and matrix
+components through the weight \\c\\, which decreases as \\q\\ grows.
+\\P_k\\ is read from
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
+and \\q\\ is computed by
+[`mv_quad()`](https://statmodels7.github.io/distributions7/reference/mv_quad.md),
+both without the cancellation of an explicit inverse where the scale
+matrix is nearly singular.
 
 ## Arguments
 
@@ -34,9 +40,10 @@ whole of the family's resistance to a distant row.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The two differ here: under the default log link the
-  `nu` component is multiplied by \\\nu\\, and the rest are unchanged.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  The two differ here: under the default log link the `nu` component is
+  multiplied by \\\nu\\, and the rest are unchanged.
 
 - ...:
 
@@ -50,22 +57,19 @@ the matrix parametrization, then `nu`.
 
 ## Details
 
-The \\\nu\\ component is NOT evaluated in the form printed above. Both
+The \\\nu\\ component is not evaluated in the form printed above. Both
 of its bracketed pairs cancel to leading order as \\\nu\\ grows, so it
-is assembled as \\A_p(\nu) + D(q/\nu) + (p/\nu)u/(1+u)\\ instead, with
+is assembled as \\A_p(\nu) + D(q/\nu) + (p/\nu)u/(1+u)\\, with
 [`mvt_A()`](https://statmodels7.github.io/distributions7/reference/mvt_A.md)
 and
 [`mvt_D()`](https://statmodels7.github.io/distributions7/reference/mvt_D.md)
-carrying out each cancellation exactly. The direct form loses every
-digit at large \\\nu\\ and changes sign at \\\nu = 10^9\\; see
-[`mvt_A()`](https://statmodels7.github.io/distributions7/reference/mvt_A.md)
-for the measurements.
+carrying out each cancellation exactly.
 
 ## Notation
 
 \\\mu\\ is the location, \\\Sigma\\ the scale matrix, \\\nu\\ the
 degrees of freedom, \\\eta\\ the free vector of the matrix
-parametrization, \\A_k = \partial\Sigma/\partial\eta_k\\, \\q\\ the
+parametrization, \\P_k = \partial\Sigma^{-1}/\partial\eta_k\\, \\q\\ the
 squared Mahalanobis distance, \\c\\ the weight, \\\psi\\ the digamma
 function and \\\ell\\ the log-density of one observation.
 
@@ -102,15 +106,15 @@ ll <- function(v) {
   sum(distrib_pdf(d, y, t2, log = TRUE))
 }
 max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
-#> [1] 8.141114e-09
+#> [1] 3.043962e-09
 
-# The location component is the weighted whitened residual, so a distant
-# row contributes less than a near one of the same direction.
+# The location component is c w, the weight times the residual mapped
+# through the inverse scale matrix.
 z <- distributions7:::mvt_weights(y, distributions7:::mvt_pieces(d, theta))
 all.equal(cbind(g$mu1, g$mu2), z$cw * z$w, check.attributes = FALSE)
 #> [1] TRUE
 
-# The nu component decays as nu^-2, computed without cancellation.
+# The nu component decays as nu^-2.
 vapply(c(1e3, 1e6, 1e10), function(nu) {
   t2 <- theta; t2$nu <- nu
   distrib_gradient(d, y[1, ], t2)$nu

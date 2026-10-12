@@ -2,8 +2,9 @@
 
 Computes \\\partial^4 \ell / \partial y^2\\ \partial\theta_i
 \partial\theta_j\\, one component per unordered pair of parameters, each
-a vector along `y`. It says how the response CURVATURE curves in the
-parameters, and it is the fourth-order entry of the mixed grid below.
+a vector along `y`. It gives the second derivative, in the parameters,
+of the response curvature, and it is the fourth-order entry of the mixed
+grid below.
 
 ## Usage
 
@@ -15,7 +16,8 @@ distrib_hess_y_hess(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 - distrib:
 
-  A distribution object inheriting from `continuous_distrib`.
+  A distribution object inheriting from `continuous_distrib`, or a
+  multivariate Gaussian or Student t distribution.
 
 - y:
 
@@ -58,10 +60,11 @@ and
 | \\\partial/\partial y\\ | [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md) | [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md) | [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md) |
 | \\\partial^2/\partial y^2\\ | [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md) | [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md) | `distrib_hess_y_hess()` |
 
-The right-hand column is the one a marginal criterion's SECOND
-derivative asks of a penalty. A penalty is a negative log-density read
-at the coefficients, so \\\partial^2\rho/\partial\beta^2\\ carries the
-density's response curvature and the two mixed derivatives above carry
+The right-hand column is the one that the second derivative of a
+marginal criterion requires from a penalty. A penalty is a negative
+log-density read at the coefficients, so
+\\\partial^2\rho/\partial\beta^2\\ carries the density's response
+curvature and the two mixed derivatives above carry
 \\\partial^3\rho/\partial\beta\\\partial\theta^2\\ and
 \\\partial^4\rho/\partial\beta^2\partial\theta^2\\.
 
@@ -83,13 +86,15 @@ obeys, with the first-order quantity taken one order higher in \\y\\.
 
 ## Where the numbers come from
 
-A distribution with a closed form provides it. The rest take one central
-difference of the analytic
-[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
-in each parameter, through
-[`numerical_theta2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.md).
-Continuous distributions only: a discrete family has no method and the
-call raises with its class named.
+A distribution with a closed form provides it. A continuous distribution
+without one takes
+[`distrib_hess_y_hess.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.continuous_distrib.md),
+which applies one tensor stencil, through
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md),
+to the highest quantity that the family implements itself. The
+multivariate Gaussian and Student t families have methods of their own;
+a discrete family has no method, and the call signals an error that
+names its class.
 
 ## Notation
 

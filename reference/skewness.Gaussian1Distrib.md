@@ -2,9 +2,7 @@
 
 Exactly zero at every parameter value. The density is symmetric about
 \\\mu\\, so every odd central moment vanishes. The constant is recycled
-to the length the parameters imply, and no quadrature is run: the
-numerical default returns a small non-zero number here, and an exact
-zero is available.
+to the length the parameters imply, and no quadrature is run.
 
 ## Arguments
 

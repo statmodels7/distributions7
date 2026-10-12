@@ -1,15 +1,15 @@
 # Standard Deviations and Correlations of a Structured Matrix
 
 Turns a symmetric positive definite matrix and the derivatives of its
-entries into the standard deviations and correlations a reader wants,
-with the Jacobian written out. Writing \\\Sigma = DRD\\ with \\D\\ the
-diagonal of standard deviations, \$\$\frac{\partial
-s_j}{\partial\theta_k} = \frac{A_k\[j,j\]}{2 s_j}, \qquad \frac{\partial
+entries into standard deviations and correlations, with the Jacobian
+written out. Writing \\\Sigma = DRD\\ with \\D\\ the diagonal of
+standard deviations, \$\$\frac{\partial s_j}{\partial\theta_k} =
+\frac{A_k\[j,j\]}{2 s_j}, \qquad \frac{\partial
 \rho\_{jl}}{\partial\theta_k} = \frac{A_k\[j,l\]}{s_j s_l} -
 \frac{\rho\_{jl}}{2}\left(\frac{A_k\[j,j\]}{\Sigma\_{jj}} +
 \frac{A_k\[l,l\]}{\Sigma\_{ll}}\right),\$\$ with \\A_k =
-\partial\Sigma/\partial\theta_k\\. Nothing new is computed: the arrays
-come from the parametrization the caller already has.
+\partial\Sigma/\partial\theta_k\\. No further derivative is computed:
+the arrays are those that the caller obtained from the parametrization.
 
 ## Usage
 
@@ -35,8 +35,9 @@ mv_sd_cor(
 
   A list of \\p \times p\\ numeric matrices, one per parameter of the
   distribution and in `params` order, holding
-  \\\partial\Sigma/\partial\theta_k\\. A parameter the matrix does not
-  depend on contributes a matrix of zeros.
+  \\\partial\Sigma/\partial\theta_k\\. For a parameter that the matrix
+  does not depend on, the entry is `NULL` or a matrix of zeros; both are
+  accepted.
 
 - params:
 
@@ -55,7 +56,7 @@ mv_sd_cor(
 
 - sd_block, cor_block:
 
-  The block labels the printed summary groups by.
+  The block labels by which the printed summary groups the quantities.
 
 ## Value
 

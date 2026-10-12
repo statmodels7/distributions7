@@ -2,10 +2,14 @@
 
 Closed form: \$\$\gamma_1 = \frac{g_3 - 3 g_1 g_2 + 2 g_1^3}{(g_2 -
 g_1^2)^{3/2}}, \qquad g_k = \Gamma(1 + k/\sigma).\$\$ The scale cancels,
-so the value is a function of the shape alone. It falls through zero at
-a shape near 3.60235, so a Weibull is right-skewed below that and
-left-skewed above it, which is one of the reasons the family covers more
-shapes than a gamma.
+so the value is a function of the shape alone. It is zero at a shape
+near 3.60235, so a Weibull is right-skewed below that value and
+left-skewed above it, whereas the skewness of a gamma is always
+positive. The method evaluates it through
+[`weibull_moment_terms()`](https://statmodels7.github.io/distributions7/reference/weibull_moment_terms.md),
+from the logarithms of the gamma factors and, for a shape of 5 or more,
+from their series in \\1/\sigma\\, so that the cancellation among the
+\\g_k\\ is never formed.
 
 ## Arguments
 
@@ -18,7 +22,7 @@ shapes than a gamma.
 
   A named list with components `mu` (the scale, positive) and `sigma`
   (the shape, positive), each a numeric vector of length 1 or `n`. The
-  third moment requires a shape above \\1/3\\.
+  third moment exists for every positive shape.
 
 - ...:
 
@@ -40,7 +44,7 @@ value, so a setting that varies the scale alone repeats one number.
 also free of the scale;
 [`variance.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.Weibull1Distrib.md),
 which is not;
-[`weibull_gamma_factors()`](https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.md),
+[`weibull_moment_terms()`](https://statmodels7.github.io/distributions7/reference/weibull_moment_terms.md),
 [`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md).
 
 ## Examples

@@ -4,12 +4,13 @@ through .enet_chain(). Written in \((\mu, a, c)\) the log-density is
 quadratic in \(z = y-\mu\) and linear in each rate, so at this order only
 the normalizing constant contributes, apart from
 \(\partial^{3}\ell/\partial\mu^{2}\partial c = -1\). The bilinear map to
-\((\lambda, \alpha)\) then puts the data back in: mu_mu_lambda and
-mu_mu_alpha are not constant across observations even though their
-preimages are.
-The license for this order is that the same assembly at orders one and two
-reproduces the hand-written score and Hessian, measured at exactly 0 and
-\(1.1\times10^{-16}\).
+\((\lambda, \alpha)\) through the second partials of the bilinear map
+puts the data back into one component: mu_lambda_alpha, equal to
+\(\mathrm{sgn}(z) - z\), varies across observations although every third
+derivative in the rates is free of the data. mu_mu_lambda
+(\(-(1-\alpha)\)) and mu_mu_alpha (\(\lambda\)) are constants.
+The same assembly at orders one and two reproduces the score and the
+observed Hessian.
 With expected = TRUE the value is an expectation, and there it is not
 closed form: the call routes to expected_derivative(), so approx and
 nsim are read."><meta property="og:description" content="Computes the ten third derivatives of the log-density in closed form,
@@ -17,12 +18,13 @@ through .enet_chain(). Written in \((\mu, a, c)\) the log-density is
 quadratic in \(z = y-\mu\) and linear in each rate, so at this order only
 the normalizing constant contributes, apart from
 \(\partial^{3}\ell/\partial\mu^{2}\partial c = -1\). The bilinear map to
-\((\lambda, \alpha)\) then puts the data back in: mu_mu_lambda and
-mu_mu_alpha are not constant across observations even though their
-preimages are.
-The license for this order is that the same assembly at orders one and two
-reproduces the hand-written score and Hessian, measured at exactly 0 and
-\(1.1\times10^{-16}\).
+\((\lambda, \alpha)\) through the second partials of the bilinear map
+puts the data back into one component: mu_lambda_alpha, equal to
+\(\mathrm{sgn}(z) - z\), varies across observations although every third
+derivative in the rates is free of the data. mu_mu_lambda
+(\(-(1-\alpha)\)) and mu_mu_alpha (\(\lambda\)) are constants.
+The same assembly at orders one and two reproduces the score and the
+observed Hessian.
 With expected = TRUE the value is an expectation, and there it is not
 closed form: the call routes to expected_derivative(), so approx and
 nsim are read."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -33,7 +35,7 @@ nsim are read."><meta property="og:image" content="https://statmodels7.github.io
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,12 +73,13 @@ through <code><a href="dot-enet_chain.html">.enet_chain()</a></code>. Written in
 quadratic in \(z = y-\mu\) and linear in each rate, so at this order only
 the normalizing constant contributes, apart from
 \(\partial^{3}\ell/\partial\mu^{2}\partial c = -1\). The bilinear map to
-\((\lambda, \alpha)\) then puts the data back in: <code>mu_mu_lambda</code> and
-<code>mu_mu_alpha</code> are not constant across observations even though their
-preimages are.</p>
-<p>The license for this order is that the same assembly at orders one and two
-reproduces the hand-written score and Hessian, measured at exactly 0 and
-\(1.1\times10^{-16}\).</p>
+\((\lambda, \alpha)\) through the second partials of the bilinear map
+puts the data back into one component: <code>mu_lambda_alpha</code>, equal to
+\(\mathrm{sgn}(z) - z\), varies across observations although every third
+derivative in the rates is free of the data. <code>mu_mu_lambda</code>
+(\(-(1-\alpha)\)) and <code>mu_mu_alpha</code> (\(\lambda\)) are constants.</p>
+<p>The same assembly at orders one and two reproduces the score and the
+observed Hessian.</p>
 <p>With <code>expected = TRUE</code> the value is an expectation, and there it is <strong>not</strong>
 closed form: the call routes to <code><a href="expected_derivative.html">expected_derivative()</a></code>, so <code>approx</code> and
 <code>nsim</code> are read.</p>

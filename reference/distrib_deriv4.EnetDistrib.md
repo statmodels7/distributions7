@@ -5,10 +5,12 @@ form, through
 [`.enet_chain()`](https://statmodels7.github.io/distributions7/reference/dot-enet_chain.md),
 in the notation of
 [`distrib_deriv3.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.EnetDistrib.md).
-At this order **nothing touches the location**: the data term is
-quadratic in \\z\\ and linear in each rate, so every component naming
-\\\mu\\ more than twice is exactly zero, and what remains is a
-derivative of the normalizing constant carried through the bilinear map.
+In the rates \\(\mu, a, c)\\ no fourth derivative involves \\\mu\\, the
+data term being quadratic in \\z\\ and linear in each rate. After the
+bilinear map every component naming \\\mu\\ more than twice is exactly
+zero, the only nonzero component with \\\mu\\ is `mu_mu_lambda_alpha`,
+the constant 1, and the others are derivatives of the normalizing
+constant carried through the bilinear map.
 
 With `expected = TRUE` the value is an expectation and is not closed
 form, as at third order.
@@ -78,9 +80,12 @@ d4 <- distrib_deriv4(d, y, th)
 length(d4)
 #> [1] 15
 
-# Nothing at this order touches the location.
+# The components that name the location more than twice are zero, and
+# mu_mu_lambda_alpha is the constant 1.
 d4$mu_mu_mu_mu
 #> [1] 0 0 0 0
+d4$mu_mu_lambda_alpha
+#> [1] 1 1 1 1
 
 # Against a central difference of the third order.
 eps <- 1e-5

@@ -3,8 +3,12 @@
 Computes the hurdle distribution function \$\$F\_{ZA}(q) = \pi +
 (1-\pi)\frac{F(q;\theta) - f(0;\theta)}{1 - f(0;\theta)} \quad (q \ge
 0),\$\$ the parent's own distribution function shifted and rescaled by
-the truncation. It is `0` below zero and is clamped to \\\[0, 1\]\\
-against rounding.
+the truncation, with \\1 - f(0)\\ formed from the log-mass at zero.
+Where \\f(0) \> 1/2\\, and for the upper tail, the positive part is read
+from the parent's survival function wherever \\S(q)/\\1 - f(0)\\\\ is
+below one half, so that neither tail is a difference of two numbers near
+one. The result is `0` below zero and is clamped to \\\[0, 1\]\\ against
+rounding.
 
 ## Arguments
 
@@ -24,7 +28,7 @@ against rounding.
 - lower.tail:
 
   Logical of length 1. When `TRUE`, the default, probabilities are \\P(Y
-  \le q)\\; when `FALSE` they are \\P(Y \> q)\\, formed as \\1 - F\\.
+  \le q)\\; when `FALSE` they are \\P(Y \> q)\\.
 
 - log.p:
 
@@ -68,7 +72,7 @@ c(cdf_at_zero = distrib_cdf(d, 0, theta), parameter = 0.4)
 #> cdf_at_zero   parameter 
 #>         0.4         0.4 
 
-# It agrees with the mass function summed, as it must on a lattice.
+# It agrees with the mass function summed, as it must on a discrete support.
 c(cdf = distrib_cdf(d, 5, theta), summed = sum(distrib_pdf(d, 0:5, theta)))
 #>       cdf    summed 
 #> 0.9470111 0.9470111 

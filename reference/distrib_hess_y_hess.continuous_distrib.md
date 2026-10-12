@@ -9,9 +9,7 @@ read one order higher in the response, and it makes the fourth-order
 mixed derivative available for every continuous family. For
 [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md),
 which has an analytic Hessian in the parameters and no response
-derivative, it is a second difference in the response of that Hessian;
-before 0.76.0 it differenced a difference in the same parameter, and on
-a log-gamma it was wrong by a factor of seven.
+derivative, it is a second difference in the response of that Hessian.
 
 ## Arguments
 
@@ -29,8 +27,8 @@ a log-gamma it was wrong by a factor of seven.
 
 - scale:
 
-  One of `"parameter"` or `"link"`, applied by the generic before
-  dispatch.
+  One of `"parameter"` or `"link"`. The generic applies the link scale
+  to the value that the method returns.
 
 - ...:
 

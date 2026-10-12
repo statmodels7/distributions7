@@ -1,7 +1,7 @@
 # Gaussian Mixed Second-Response Derivatives
 
-Closed form, and half of it zero. The gaussian's response curvature is
-\\\ell^{(yy)} = -1/\sigma^2\\, which carries no location, so
+Closed form. The gaussian's response curvature is \\\ell^{(yy)} =
+-1/\sigma^2\\, which carries no location, so
 \$\$\frac{\partial^3\ell}{\partial y^2\\\partial\mu} = 0, \qquad
 \frac{\partial^3\ell}{\partial y^2\\\partial\sigma} =
 \frac{2}{\sigma^3}.\$\$ Neither component varies with the data.
@@ -22,7 +22,7 @@ Closed form, and half of it zero. The gaussian's response curvature is
 
 - scale:
 
-  One of `"parameter"` or `"link"`, applied by the generic before
+  One of `"parameter"` or `"link"`, applied by the generic after
   dispatch.
 
 - ...:

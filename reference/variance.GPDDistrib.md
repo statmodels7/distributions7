@@ -2,9 +2,10 @@
 
 Closed form: \\\operatorname{Var}(Y) = \sigma^2/\\(1-\xi)^2(1-2\xi)\\\\
 for \\\xi \< 1/2\\, and `Inf` at or above one half. The threshold is
-half the mean's, the second moment being the first to fail as the tail
-grows heavy, and a fitted object at \\\xi = 0.6\\ reports a finite mean
-beside an infinite variance.
+half the mean's. As the shape increases, the excess kurtosis becomes
+infinite first (at \\\xi = 1/4\\), then the skewness (\\1/3\\), then the
+variance and finally the mean, so a fitted object at \\\xi = 0.6\\
+reports a finite mean beside an infinite variance.
 
 ## Arguments
 

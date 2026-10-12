@@ -16,7 +16,8 @@ are \\-e^{h}\\ times the complete Bell polynomial in the partials of
 - q:
 
   A numeric vector of quantiles. Values at or below zero give
-  derivatives of exactly zero.
+  derivatives of exactly zero on the natural scale; on the log scale of
+  the lower tail they are `NaN`, \\\log F\\ being infinite there.
 
 - theta:
 
@@ -38,8 +39,7 @@ are \\-e^{h}\\ times the complete Bell polynomial in the partials of
 
 ## Value
 
-A named list of numeric vectors of the order the generic asked for,
-keyed as
+A named list of numeric vectors of the requested order, keyed as
 [`deriv_names(distrib@params, order)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md):
 two components for the gradient, three for the Hessian, four at order 3
 and five at order 4.
@@ -51,14 +51,13 @@ without the factor \\\sigma\\ when one index names the shape, and
 exactly zero when two do: \\h\\ is linear in the shape. That is what
 keeps the expansion short at the higher orders.
 
-## An exact zero worth knowing about
+## The shape component at q equal to mu
 
 At \\q = \mu\\ the exponent \\h\\ vanishes and so does \\\partial
 h/\partial\sigma = \log q - \log\mu\\, so the shape component of the
 gradient is exactly zero there. A relative comparison against a
-numerical derivative at that point measures nothing; an absolute one is
-what to use, and it puts the closed route within \\2.3\times10^{-11}\\
-of a central difference of the cdf.
+numerical derivative at that point has no meaning, and an absolute one
+is the comparison to use.
 
 ## Notation
 

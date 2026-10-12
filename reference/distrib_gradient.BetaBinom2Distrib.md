@@ -62,14 +62,12 @@ function, [`digamma()`](https://rdrr.io/r/base/Special.html) in R.
 ## Large concentration
 
 Each digamma difference cancels to leading order as the shapes grow at a
-fixed ratio, and this method writes it out directly. Measured at \\n =
-10\\, \\y = 3\\ and a mean proportion of 0.4, the relative error against
-the limiting \\-5/(2S)\\ with \\S = \alpha+\beta\\ is \\6\times10^{-8}\\
-at \\S = 10^8\\, \\4\times10^{-4}\\ at \\10^{12}\\ and 1.8 at
-\\10^{15}\\. Where a concentration of that size is reachable, use
-[`distrib_gradient.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.BetaBinom1Distrib.md),
-whose compiled kernel forms the same difference as a sum of reciprocals
-and holds nine figures there.
+fixed ratio. For a shape of at least 100 the compiled kernel forms it as
+an asymptotic series remainder plus one
+[`log1p()`](https://rdrr.io/r/base/Log.html), so the score keeps its
+accuracy as the concentration grows. At \\n = 10\\, \\y = 3\\ and a mean
+proportion of 0.4 its \\\alpha\\ component tends to \\-5/(2S)\\, with
+\\S = \alpha+\beta\\.
 
 ## See also
 

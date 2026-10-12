@@ -25,7 +25,7 @@ The result sums to one, being a point of the simplex.
 
 ## Value
 
-A numeric vector of length \\p\\, strictly positive and summing to one.
+A numeric vector of length \\p\\, without names, summing to one.
 
 ## See also
 

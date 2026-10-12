@@ -5,27 +5,29 @@ of freedom \(\nu &amp;gt; 0\). The returned object carries closed-form
 derivatives of the log-density to fifth order in the parameters and to
 fourth order in the response, the mixed derivatives, and the expected
 information with its expected third and fourth orders and its first two
-derivatives, all closed forms; the derivatives of the distribution function
-in \(\nu\) are differenced.
+derivatives, all closed forms. The derivatives of the distribution function
+in \(\mu\) and \(\sigma\) are closed forms, and those in \(\nu\)
+come from a compiled quadrature of the derivatives of the density.
 The family is the standard heavy-tailed alternative to a Gaussian. Its
 location score redescends, so a gross outlier contributes almost nothing to
 the estimating equation, and \(\nu\) is estimated from the data rather
 than set: a large fitted \(\nu\) reports that the sample looks Gaussian.
 The three arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on."><meta property="og:description" content="Builds the distribution object for the location-scale Student t family,
+unconstrained scale on which an optimizer works."><meta property="og:description" content="Builds the distribution object for the location-scale Student t family,
 parametrized by a location \(\mu\), a scale \(\sigma &amp;gt; 0\) and degrees
 of freedom \(\nu &amp;gt; 0\). The returned object carries closed-form
 derivatives of the log-density to fifth order in the parameters and to
 fourth order in the response, the mixed derivatives, and the expected
 information with its expected third and fourth orders and its first two
-derivatives, all closed forms; the derivatives of the distribution function
-in \(\nu\) are differenced.
+derivatives, all closed forms. The derivatives of the distribution function
+in \(\mu\) and \(\sigma\) are closed forms, and those in \(\nu\)
+come from a compiled quadrature of the derivatives of the density.
 The family is the standard heavy-tailed alternative to a Gaussian. Its
 location score redescends, so a gross outlier contributes almost nothing to
 the estimating equation, and \(\nu\) is estimated from the data rather
 than set: a large fitted \(\nu\) reports that the sample looks Gaussian.
 The three arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+unconstrained scale on which an optimizer works."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -33,7 +35,7 @@ unconstrained scale an optimizer works on."><meta property="og:image" content="h
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,14 +74,15 @@ of freedom \(\nu &gt; 0\). The returned object carries closed-form
 derivatives of the log-density to fifth order in the parameters and to
 fourth order in the response, the mixed derivatives, and the expected
 information with its expected third and fourth orders and its first two
-derivatives, all closed forms; the derivatives of the distribution function
-in \(\nu\) are differenced.</p>
+derivatives, all closed forms. The derivatives of the distribution function
+in \(\mu\) and \(\sigma\) are closed forms, and those in \(\nu\)
+come from a compiled quadrature of the derivatives of the density.</p>
 <p>The family is the standard heavy-tailed alternative to a Gaussian. Its
 location score redescends, so a gross outlier contributes almost nothing to
 the estimating equation, and \(\nu\) is estimated from the data rather
 than set: a large fitted \(\nu\) reports that the sample looks Gaussian.</p>
 <p>The three arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on.</p>
+unconstrained scale on which an optimizer works.</p>
     </div>
 
     <div class="section level2">
@@ -133,11 +136,11 @@ the standard Student t distribution function.</p>
 \(\sigma\sqrt{\nu/(\nu-2)}\) and exists only above \(\nu = 2\). Keeping
 the two apart lets the family be fitted where the second moment does not
 exist; <code><a href="student_t2_distrib.html">student_t2_distrib()</a></code> is the parametrization by the standard
-deviation, for a reader who wants one.</p>
+deviation.</p>
 <p>Two shapes are named families: \(\nu = 1\) is the Cauchy, and
 \(\nu \to \infty\) the Gaussian with standard deviation \(\sigma\). The
 approach to the limit is \(O(1/\nu)\), so at \(\nu = 10^5\) the density
-already agrees with a Gaussian's to seven figures.</p>
+differs from a Gaussian's by a relative amount of order \(10^{-5}\).</p>
     </div>
     <div class="section level2">
     <h2 id="derivatives">Derivatives<a class="anchor" aria-label="anchor" href="#derivatives"></a></h2>
@@ -159,7 +162,7 @@ therefore orthogonal to the other two, whose estimates are asymptotically
 correlated with each other.</p>
     </div>
     <div class="section level2">
-    <h2 id="redescent-and-where-it-costs">Redescent, and where it costs<a class="anchor" aria-label="anchor" href="#redescent-and-where-it-costs"></a></h2>
+    <h2 id="redescending-score">Redescending score<a class="anchor" aria-label="anchor" href="#redescending-score"></a></h2>
     <p>The location score \((\nu+1)r/D\) rises to
 \((\nu+1)/(2\sigma\sqrt{\nu})\) at \(|r| = \sigma\sqrt{\nu}\) and falls
 back towards zero, so an observation far from the location is downweighted
@@ -171,8 +174,8 @@ default in <code><a href="fit_distrib.html">fit_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="moments">Moments<a class="anchor" aria-label="anchor" href="#moments"></a></h2>
-    <p>Each exists only above its own threshold, and the family reports <code>NaN</code> or
-<code>Inf</code> where it does not: the mean is \(\mu\) for \(\nu &gt; 1\), the
+    <p>Each exists only above its own threshold, and the method returns <code>NaN</code> or
+<code>Inf</code> below it: the mean is \(\mu\) for \(\nu &gt; 1\), the
 variance \(\sigma^2\nu/(\nu-2)\) for \(\nu &gt; 2\), the skewness 0 for
 \(\nu &gt; 3\) and the excess kurtosis \(6/(\nu-4)\) for \(\nu &gt; 4\). At
 \(\nu = 1.5\), for instance, the mean is \(\mu\) and the variance is
@@ -182,9 +185,9 @@ variance \(\sigma^2\nu/(\nu-2)\) for \(\nu &gt; 2\), the skewness 0 for
     <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>
     <p><code><a href="fit_distrib.html">fit_distrib()</a></code> maximizes the log-likelihood on the link scale by Fisher
 scoring. No estimate is closed form, the three estimating equations being
-coupled through \(D\). On Gaussian data \(\hat\nu\) runs towards its
-upper boundary, which is the correct answer and is reported as a value near
-the clamp of its log link rather than as <code>Inf</code>.</p>
+coupled through \(D\). On Gaussian data the likelihood has no finite
+maximizer in \(\nu\): \(\hat\nu\) diverges, and the fit returns a large
+finite value.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -213,7 +216,8 @@ limit; <code><a href="skewt_distrib.html">skewt_distrib()</a></code> to add a sh
 <code><a href="pseudohuber_distrib.html">pseudohuber_distrib()</a></code> and <code><a href="laplace_distrib.html">laplace_distrib()</a></code> for other robust families;
 <code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> for the multivariate version;
 <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a
-family of your own against the same battery this one passes;
+family of your own against the same battery of checks that this family
+passes;
 <a href="StudentT1Distrib.html">StudentT1Distrib</a> for the class.</p></div>
     </div>
 

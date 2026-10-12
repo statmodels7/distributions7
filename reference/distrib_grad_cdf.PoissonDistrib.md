@@ -50,7 +50,7 @@ distribution function and \\k = \lfloor q \rfloor\\.
 ## See also
 
 [`distrib_grad_cdf.discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.discrete_distrib.md),
-the general sum this replaces;
+the general sum that this replaces;
 [`distrib_grad_cdf.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.NegBin2Distrib.md),
 whose mean component tends to this one;
 [`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md).

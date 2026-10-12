@@ -3,23 +3,25 @@
 derivatives come from numerical_deriv4(): a second difference of the
 family's own distrib_hessian() rather than a difference of the third
 order, or, for a family without its own Hessian, one tensor-product stencil
-on its score or its log-density. On both routes each parameter is
-differenced once, so the package's rule against nesting one difference
-inside another holds. Expected ones come from expected_derivative() at
-the strategy approx names.
-As at the order below, no family shipped in this package reaches it. Being a
-second difference it is the least accurate route the package offers, and its
-step is chosen accordingly."><meta property="og:description" content="The fallback for a family that registers no fourth-order method. Observed
+on its score or its log-density. On both routes each component is a single
+stencil, so the package's rule against nesting one difference inside
+another holds. Expected ones come from expected_derivative() at the
+strategy that approx names.
+As at the order below, the families shipped in this package write the
+fourth order out themselves. A second difference of the Hessian is less
+accurate than the first difference of the third order, and its step is
+chosen accordingly."><meta property="og:description" content="The fallback for a family that registers no fourth-order method. Observed
 derivatives come from numerical_deriv4(): a second difference of the
 family's own distrib_hessian() rather than a difference of the third
 order, or, for a family without its own Hessian, one tensor-product stencil
-on its score or its log-density. On both routes each parameter is
-differenced once, so the package's rule against nesting one difference
-inside another holds. Expected ones come from expected_derivative() at
-the strategy approx names.
-As at the order below, no family shipped in this package reaches it. Being a
-second difference it is the least accurate route the package offers, and its
-step is chosen accordingly."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+on its score or its log-density. On both routes each component is a single
+stencil, so the package's rule against nesting one difference inside
+another holds. Expected ones come from expected_derivative() at the
+strategy that approx names.
+As at the order below, the families shipped in this package write the
+fourth order out themselves. A second difference of the Hessian is less
+accurate than the first difference of the third order, and its step is
+chosen accordingly."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +29,7 @@ step is chosen accordingly."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,13 +66,14 @@ step is chosen accordingly."><meta property="og:image" content="https://statmode
 derivatives come from <code><a href="numerical_deriv4.html">numerical_deriv4()</a></code>: a <strong>second</strong> difference of the
 family's own <code><a href="distrib_hessian.html">distrib_hessian()</a></code> rather than a difference of the third
 order, or, for a family without its own Hessian, one tensor-product stencil
-on its score or its log-density. On both routes each parameter is
-differenced once, so the package's rule against nesting one difference
-inside another holds. Expected ones come from <code><a href="expected_derivative.html">expected_derivative()</a></code> at
-the strategy <code>approx</code> names.</p>
-<p>As at the order below, no family shipped in this package reaches it. Being a
-second difference it is the least accurate route the package offers, and its
-step is chosen accordingly.</p>
+on its score or its log-density. On both routes each component is a single
+stencil, so the package's rule against nesting one difference inside
+another holds. Expected ones come from <code><a href="expected_derivative.html">expected_derivative()</a></code> at the
+strategy that <code>approx</code> names.</p>
+<p>As at the order below, the families shipped in this package write the
+fourth order out themselves. A second difference of the Hessian is less
+accurate than the first difference of the third order, and its step is
+chosen accordingly.</p>
     </div>
 
 

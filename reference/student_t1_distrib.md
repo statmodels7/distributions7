@@ -6,8 +6,10 @@ of freedom \\\nu \> 0\\. The returned object carries closed-form
 derivatives of the log-density to fifth order in the parameters and to
 fourth order in the response, the mixed derivatives, and the expected
 information with its expected third and fourth orders and its first two
-derivatives, all closed forms; the derivatives of the distribution
-function in \\\nu\\ are differenced.
+derivatives, all closed forms. The derivatives of the distribution
+function in \\\mu\\ and \\\sigma\\ are closed forms, and those in
+\\\nu\\ come from a compiled quadrature of the derivatives of the
+density.
 
 The family is the standard heavy-tailed alternative to a Gaussian. Its
 location score redescends, so a gross outlier contributes almost nothing
@@ -16,7 +18,7 @@ rather than set: a large fitted \\\nu\\ reports that the sample looks
 Gaussian.
 
 The three arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on.
+unconstrained scale on which an optimizer works.
 
 ## Usage
 
@@ -76,13 +78,12 @@ quantile function \\Q(p) = \mu + \sigma T\_\nu^{-1}(p)\\, with
 the two apart lets the family be fitted where the second moment does not
 exist;
 [`student_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t2_distrib.md)
-is the parametrization by the standard deviation, for a reader who wants
-one.
+is the parametrization by the standard deviation.
 
 Two shapes are named families: \\\nu = 1\\ is the Cauchy, and \\\nu \to
 \infty\\ the Gaussian with standard deviation \\\sigma\\. The approach
-to the limit is \\O(1/\nu)\\, so at \\\nu = 10^5\\ the density already
-agrees with a Gaussian's to seven figures.
+to the limit is \\O(1/\nu)\\, so at \\\nu = 10^5\\ the density differs
+from a Gaussian's by a relative amount of order \\10^{-5}\\.
 
 ## Derivatives
 
@@ -110,7 +111,7 @@ containing \\\mu\\ exactly zero. The location is therefore orthogonal to
 the other two, whose estimates are asymptotically correlated with each
 other.
 
-## Redescent, and where it costs
+## Redescending score
 
 The location score \\(\nu+1)r/D\\ rises to
 \\(\nu+1)/(2\sigma\sqrt{\nu})\\ at \\\|r\| = \sigma\sqrt{\nu}\\ and
@@ -124,21 +125,20 @@ is the default in
 
 ## Moments
 
-Each exists only above its own threshold, and the family reports `NaN`
-or `Inf` where it does not: the mean is \\\mu\\ for \\\nu \> 1\\, the
-variance \\\sigma^2\nu/(\nu-2)\\ for \\\nu \> 2\\, the skewness 0 for
-\\\nu \> 3\\ and the excess kurtosis \\6/(\nu-4)\\ for \\\nu \> 4\\. At
-\\\nu = 1.5\\, for instance, the mean is \\\mu\\ and the variance is
-`Inf`.
+Each exists only above its own threshold, and the method returns `NaN`
+or `Inf` below it: the mean is \\\mu\\ for \\\nu \> 1\\, the variance
+\\\sigma^2\nu/(\nu-2)\\ for \\\nu \> 2\\, the skewness 0 for \\\nu \>
+3\\ and the excess kurtosis \\6/(\nu-4)\\ for \\\nu \> 4\\. At \\\nu =
+1.5\\, for instance, the mean is \\\mu\\ and the variance is `Inf`.
 
 ## Estimation
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 maximizes the log-likelihood on the link scale by Fisher scoring. No
 estimate is closed form, the three estimating equations being coupled
-through \\D\\. On Gaussian data \\\hat\nu\\ runs towards its upper
-boundary, which is the correct answer and is reported as a value near
-the clamp of its log link rather than as `Inf`.
+through \\D\\. On Gaussian data the likelihood has no finite maximizer
+in \\\nu\\: \\\hat\nu\\ diverges, and the fit returns a large finite
+value.
 
 ## Notation
 
@@ -179,8 +179,8 @@ for the multivariate version;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
-passes;
+to validate a family of your own against the same battery of checks that
+this family passes;
 [StudentT1Distrib](https://statmodels7.github.io/distributions7/reference/StudentT1Distrib.md)
 for the class.
 

@@ -6,12 +6,19 @@ function, with \\z = (q-\mu)/\sigma\\: \$\$F(q; \mu, \sigma, \alpha) =
 evaluation costs one bounded one-dimensional quadrature, through
 [`numericals7::owen_t()`](https://statmodels7.github.io/numericals7/reference/owen_t.html),
 where the base class would integrate the density over a semi-infinite
-range; the bounded integrand is both cheaper and more accurate. A
-thousand quantiles cost about 20 milliseconds.
+range. The shape is clamped to \\10^{50}\\ in absolute value in the
+call, past which \\T(z, \alpha)\\ equals its limit \\\Phi(-\|z\|)/2\\ to
+double precision.
 
-The result is clamped to \\\[0, 1\]\\ before the tail and the logarithm
-are applied, so rounding in the quadrature cannot return a probability
-outside the unit interval.
+The method works on the log scale
+([`sn_log_lower()`](https://statmodels7.github.io/distributions7/reference/sn_log_lower.md)).
+The upper tail is computed as the lower tail of \\-Y\\, a skew normal of
+shape \\-\alpha\\, so neither tail is a complement. Where the difference
+\\\Phi(z) - 2T(z, \alpha)\\ cancels, that is where the requested tail is
+below \\10^{-3}\Phi(\pm z)\\, the tail is integrated instead by
+[`log_tail_integral()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md),
+so that a small tail probability and its logarithm keep their digits on
+the light side of the family.
 
 ## Arguments
 
@@ -33,13 +40,12 @@ outside the unit interval.
 - lower.tail:
 
   Logical of length 1. When `TRUE`, the default, the value is \\P(Y \le
-  q)\\; when `FALSE` it is \\P(Y \> q)\\, formed as the complement.
+  q)\\; when `FALSE` it is \\P(Y \> q)\\.
 
 - log.p:
 
   Logical of length 1. When `TRUE` the logarithm of the probability is
-  returned. Defaults to `FALSE`. The logarithm is taken after the clamp,
-  so a quantile far into the light tail returns `-Inf`.
+  returned, computed on the log scale. Defaults to `FALSE`.
 
 - ...:
 
@@ -80,7 +86,7 @@ rbind(owen = distrib_cdf(d, q, th),
       quadrature = vapply(q, function(u)
         integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))
 #>                    [,1]        [,2]      [,3]      [,4]
-#> owen       5.089134e-12 0.006369453 0.3892944 0.9544997
+#> owen       5.089126e-12 0.006369453 0.3892944 0.9544997
 #> quadrature 5.089126e-12 0.006369453 0.3892944 0.9544997
 
 # At shape zero, T(z, 0) = 0 and the identity is the Gaussian's.

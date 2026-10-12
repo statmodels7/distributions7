@@ -1,17 +1,17 @@
 # The Truncation Constant and Lower Tail
 
 Returns the tail below the interval, \\F(L^-)\\, and the retained mass
-\\Z = F(U) - F(L^-)\\. Every method of a truncated distribution divides
-by \\Z\\, and
+\\Z = P(L \le Y \le U)\\. Every method of a truncated distribution
+divides by \\Z\\, and
 [`trunc_cdf()`](https://statmodels7.github.io/distributions7/reference/trunc_cdf.md)
 and
 [`trunc_quantile()`](https://statmodels7.github.io/distributions7/reference/trunc_quantile.md)
-shift by \\F(L^-)\\ as well.
+shift by \\F(L^-)\\ or by the upper tail \\S(U) = P(Y \> U)\\ as well.
 
 ## Usage
 
 ``` r
-trunc_constants(distrib, theta)
+trunc_constants(distrib, theta, tails = FALSE)
 ```
 
 ## Arguments
@@ -25,10 +25,22 @@ trunc_constants(distrib, theta)
   A named list of the parent's parameters. A component may vary by
   observation.
 
+- tails:
+
+  Logical, default `FALSE`. When `TRUE` the result also carries `Fu`,
+  \\F(U)\\, and the two survival values `Sl`, \\P(Y \ge L)\\, and `Su`,
+  \\P(Y \> U)\\, which
+  [`trunc_cdf()`](https://statmodels7.github.io/distributions7/reference/trunc_cdf.md)
+  and
+  [`trunc_quantile()`](https://statmodels7.github.io/distributions7/reference/trunc_quantile.md)
+  read.
+
 ## Value
 
 A named list with `Fl`, the tail below the interval, and `Z`, the
-retained mass; each a numeric vector following the length of `theta`.
+retained mass, and with `Fu`, `Sl` and `Su` when `tails = TRUE`. Each is
+a numeric vector following the length of `theta`, or the single value
+`0` or `1` for an infinite endpoint.
 
 ## Details
 
@@ -43,10 +55,12 @@ parent.
 Both quantities are vectorized in \\\theta\\, so a parameter varying by
 observation gives one constant per observation.
 
-An interval carrying no probability under the given parameters raises an
-error naming the interval and the computed mass, the truncated law not
-being defined there. That is a likely place for a search to wander to,
-so the message says which endpoints produced it.
+Where \\F(L^-)\\ exceeds one half the interval lies in the upper tail,
+and \\F(U) - F(L^-)\\ keeps no digits there. \\Z\\ is then computed from
+the parent's survival function as \\S(L^-) - S(U)\\, with \\S(L^-) = P(Y
+\ge L) = P(Y \> L) + P(Y = L)\\. An error that names the interval and
+the computed mass is signaled when that mass is not finite or not
+positive, which happens only when it underflows.
 
 ## Notation
 

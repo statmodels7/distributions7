@@ -5,10 +5,9 @@ Computes \\\partial^2 \ell / \partial y^2\\ in closed form:
 The family is a location family on the circle, so this equals the
 pure-direction entry of
 [`distrib_hessian.VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.VonMises1Distrib.md),
-with no sign change. It is negative near the mode and **positive** on
-the half of the circle further than a quarter turn from it, the density
-having a minimum at the antimode; a periodic density cannot be concave
-everywhere.
+with no sign change. It is negative within a quarter turn of the mode
+and **positive** on the other half of the circle, where the density has
+its minimum at the antimode.
 
 ## Arguments
 

@@ -20,7 +20,8 @@ y^2)\\, the components are \\1/(\phi\mu^3)\\ and \\1/(2\phi^2\mu^2) -
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 - ...:
 
@@ -28,7 +29,7 @@ y^2)\\, the components are \\1/(\phi\mu^3)\\ and \\1/(2\phi^2\mu^2) -
 
 ## Value
 
-A named list with components `mu` and `sigma2`, each a numeric vector of
+A named list with components `mu` and `phi`, each a numeric vector of
 length `length(y)`.
 
 ## See also

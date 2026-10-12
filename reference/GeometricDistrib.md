@@ -3,13 +3,12 @@
 The S7 class of the geometric family parametrized by its **mean** \\\mu
 \> 0\\: the number of failures before the first success in independent
 trials, each succeeding with probability \\p = 1/(1+\mu)\\. It inherits
-from `discrete_distrib`, so its support is a set of isolated points, so
-expectations are sums and no derivative with respect to the response is
-defined.
+from `discrete_distrib`, so expectations over its support are sums and
+no derivative with respect to the response is defined.
 
-The parametrization is by the mean, the quantity the modeling layer
-above models: a link carries \\\mu\\ to the unconstrained scale and the
-probability follows. R's own `dgeom` takes `prob`, and the methods
+The parametrization is by the mean, so that a link can carry \\\mu\\ to
+the unconstrained scale; the success probability is computed from
+\\\mu\\. The base R function `dgeom` takes `prob`, and the methods
 convert through
 [`geom_prob()`](https://statmodels7.github.io/distributions7/reference/geom_prob.md).
 
@@ -21,7 +20,8 @@ memoryless.
 Build one with
 [`geometric_distrib()`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md).
 This page documents the raw S7 constructor, which takes the parent's
-properties and validates none of the relationships between them.
+properties; the validator of `distrib` checks them, and the constructor
+adds no check of its own.
 
 ## Usage
 
@@ -105,18 +105,36 @@ they hold `"geometric"`, `"univariate"`, `c(0, Inf)`, `"mu"`,
 
 ## Methods
 
-Registered on this class:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GeometricDistrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GeometricDistrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GeometricDistrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GeometricDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GeometricDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GeometricDistrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GeometricDistrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GeometricDistrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GeometricDistrib.md)
+Registered on this class, each linked to the page that documents it:
 
-Everything else is inherited from
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GeometricDistrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GeometricDistrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GeometricDistrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GeometricDistrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GeometricDistrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GeometricDistrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GeometricDistrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GeometricDistrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GeometricDistrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.GeometricDistrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.GeometricDistrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.GeometricDistrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.GeometricDistrib.md).
+
+Every other generic is inherited from
 [`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
 
 ## See also

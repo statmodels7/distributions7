@@ -8,11 +8,10 @@ expansion over set partitions, read on the truncated expectations
 (-1)^{\|\pi\|-1}(\|\pi\|-1)! \prod\_{B \in \pi}
 \mathbb{E}\_T\\\left\[\frac{\partial^B f}{f}\right\].\$\$
 
-Each **distinct block** costs one quadrature, memoized across the
-partition sum, which is why a truncated derivative is far dearer than
-its parent's. Where the parent has genuinely closed cdf derivatives, or
-is a lattice family whose cdf derivatives are an exact sum, that route
-replaces the quadrature and is about three and a half times faster.
+Each distinct block that has no closed-form cdf derivative costs one
+quadrature, memoized across the partition sum. Where the parent has
+closed-form cdf derivatives of the block's order, the block is read from
+them and no quadrature is taken.
 
 ## Arguments
 

@@ -11,8 +11,9 @@ The first entry is exactly zero for every observation, and that is the
 correct value: the log-density is piecewise linear in \(\mu\), so away
 from \(r = 0\) its second derivative vanishes, and at \(r = 0\) the
 derivative does not exist. The curvature of the log-likelihood in the
-location is concentrated in a set of measure zero, and no expectation of
-this quantity sees it.
+location is concentrated at the single point \(r = 0\), so the
+expectation of this second derivative is 0 although the information is
+positive.
 The consequence is that the observed information here is not the
 information. distrib_expected_hessian.LaplaceDistrib() returns
 \(-1/\sigma^2\), obtained from the variance of the score, and that page
@@ -28,8 +29,9 @@ The first entry is exactly zero for every observation, and that is the
 correct value: the log-density is piecewise linear in \(\mu\), so away
 from \(r = 0\) its second derivative vanishes, and at \(r = 0\) the
 derivative does not exist. The curvature of the log-likelihood in the
-location is concentrated in a set of measure zero, and no expectation of
-this quantity sees it.
+location is concentrated at the single point \(r = 0\), so the
+expectation of this second derivative is 0 although the information is
+positive.
 The consequence is that the observed information here is not the
 information. distrib_expected_hessian.LaplaceDistrib() returns
 \(-1/\sigma^2\), obtained from the variance of the score, and that page
@@ -41,7 +43,7 @@ explains which identity holds and which fails."><meta property="og:image" conten
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,8 +88,9 @@ $$\dfrac{\partial^2 \ell}{\partial \mu^2} = 0,
 correct value: the log-density is piecewise linear in \(\mu\), so away
 from \(r = 0\) its second derivative vanishes, and at \(r = 0\) the
 derivative does not exist. The curvature of the log-likelihood in the
-location is concentrated in a set of measure zero, and no expectation of
-this quantity sees it.</p>
+location is concentrated at the single point \(r = 0\), so the
+expectation of this second derivative is 0 although the information is
+positive.</p>
 <p>The consequence is that the observed information here is <strong>not</strong> the
 information. <code><a href="distrib_expected_hessian.LaplaceDistrib.html">distrib_expected_hessian.LaplaceDistrib()</a></code> returns
 \(-1/\sigma^2\), obtained from the variance of the score, and that page

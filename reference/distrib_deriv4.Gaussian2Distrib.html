@@ -7,8 +7,9 @@ $$\ell^{(\mu\mu\mu\mu)} = \ell^{(\mu\mu\mu v)} = 0, \qquad
       \ell^{(\mu vvv)} = -\dfrac{6r}{v^4}, \qquad
       \ell^{(vvvv)} = \dfrac{3}{v^4} - \dfrac{12 r^2}{v^5}.$$
 With expected = TRUE the expectations are returned, obtained by replacing
-\(r\) with 0 and \(r^2\) with \(v\), which leaves \(-9/v^4\) in the
-last component and zero in the two odd ones. Both routes are closed form, so
+\(r\) with 0 and \(r^2\) with \(v\), which leaves \(-2/v^3\) in
+\(\ell^{(\mu\mu vv)}\), \(-9/v^4\) in \(\ell^{(vvvv)}\) and zero in the
+other three. Both routes are closed form, so
 approx and nsim are ignored."><meta property="og:description" content="Computes the five distinct fourth derivatives of the Gaussian log-density
 with respect to \(\mu\) and \(v = \sigma^2\), in closed form. Writing
 \(r = y - \mu\),
@@ -17,8 +18,9 @@ $$\ell^{(\mu\mu\mu\mu)} = \ell^{(\mu\mu\mu v)} = 0, \qquad
       \ell^{(\mu vvv)} = -\dfrac{6r}{v^4}, \qquad
       \ell^{(vvvv)} = \dfrac{3}{v^4} - \dfrac{12 r^2}{v^5}.$$
 With expected = TRUE the expectations are returned, obtained by replacing
-\(r\) with 0 and \(r^2\) with \(v\), which leaves \(-9/v^4\) in the
-last component and zero in the two odd ones. Both routes are closed form, so
+\(r\) with 0 and \(r^2\) with \(v\), which leaves \(-2/v^3\) in
+\(\ell^{(\mu\mu vv)}\), \(-9/v^4\) in \(\ell^{(vvvv)}\) and zero in the
+other three. Both routes are closed form, so
 approx and nsim are ignored."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -27,7 +29,7 @@ approx and nsim are ignored."><meta property="og:image" content="https://statmod
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,8 +70,9 @@ $$\ell^{(\mu\mu\mu\mu)} = \ell^{(\mu\mu\mu v)} = 0, \qquad
       \ell^{(\mu vvv)} = -\dfrac{6r}{v^4}, \qquad
       \ell^{(vvvv)} = \dfrac{3}{v^4} - \dfrac{12 r^2}{v^5}.$$
 With <code>expected = TRUE</code> the expectations are returned, obtained by replacing
-\(r\) with 0 and \(r^2\) with \(v\), which leaves \(-9/v^4\) in the
-last component and zero in the two odd ones. Both routes are closed form, so
+\(r\) with 0 and \(r^2\) with \(v\), which leaves \(-2/v^3\) in
+\(\ell^{(\mu\mu vv)}\), \(-9/v^4\) in \(\ell^{(vvvv)}\) and zero in the
+other three. Both routes are closed form, so
 <code>approx</code> and <code>nsim</code> are ignored.</p>
     </div>
 
@@ -118,8 +121,8 @@ and the expected values.</p></dd>
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

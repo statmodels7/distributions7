@@ -17,7 +17,7 @@ location-scale."><meta property="og:image" content="https://statmodels7.github.i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,10 +103,11 @@ $$\frac{\partial^2 F}{\partial \mu^2} = f\,\ell_y, \qquad
         = f\left(z\,\ell_y + \frac{1}{\sigma}\right), \qquad
       \frac{\partial^2 F}{\partial \sigma^2}
         = f\left(z^2 \ell_y + \frac{2z}{\sigma}\right).$$</p>
-<p>This covers the censored-regression workhorses: the Gaussian, the logistic,
-the Cauchy and the Laplace all register these bodies unchanged, and the
-Student t and the pseudo-Huber use them for their first two components and
-difference the shape.</p>
+<p>The Gaussian, the logistic, the Laplace and the Gumbel register these
+bodies unchanged, and they are the families most used in
+censored regression. The Student t, pseudo-Huber and skew t families
+compute their location and scale components by the same formulas inside
+the compiled quadrature of <code><a href="compiled_cdf.html">compiled_cdf()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -119,8 +120,7 @@ difference the shape.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="loc_scale_grad_cdf.html">loc_scale_grad_cdf()</a></code> and <code><a href="loc_scale_hess_cdf.html">loc_scale_hess_cdf()</a></code>, the two bodies
-families register; <code><a href="partial_loc_scale_grad_cdf.html">partial_loc_scale_grad_cdf()</a></code>, the variant for a
-family with a shape parameter as well; <code><a href="cdf_tail_scale.html">cdf_tail_scale()</a></code>.</p></div>
+that families register; <code><a href="cdf_tail_scale.html">cdf_tail_scale()</a></code>.</p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

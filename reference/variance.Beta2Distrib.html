@@ -4,12 +4,16 @@ $$\operatorname{Var}(Y) = \frac{\alpha\beta}
       {(\alpha+\beta)^2(\alpha+\beta+1)}.$$
 Writing \(\mu = \alpha/(\alpha+\beta)\) and \(\phi = \alpha+\beta\) this
 is the \(\mu(1-\mu)/(\phi+1)\) of variance.Beta1Distrib(), so the shapes
-and the mean-precision pair describe the same law."><meta property="og:description" content="Closed form:
+and the mean-precision pair describe the same law. The method evaluates it in
+that form, with \(\mu = 1/(1 + \beta/\alpha)\) (beta_mu_sigma()), so that
+\(\alpha\beta\) is not formed where it underflows or overflows."><meta property="og:description" content="Closed form:
 $$\operatorname{Var}(Y) = \frac{\alpha\beta}
       {(\alpha+\beta)^2(\alpha+\beta+1)}.$$
 Writing \(\mu = \alpha/(\alpha+\beta)\) and \(\phi = \alpha+\beta\) this
 is the \(\mu(1-\mu)/(\phi+1)\) of variance.Beta1Distrib(), so the shapes
-and the mean-precision pair describe the same law."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+and the mean-precision pair describe the same law. The method evaluates it in
+that form, with \(\mu = 1/(1 + \beta/\alpha)\) (beta_mu_sigma()), so that
+\(\alpha\beta\) is not formed where it underflows or overflows."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +21,7 @@ and the mean-precision pair describe the same law."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +59,9 @@ $$\operatorname{Var}(Y) = \frac{\alpha\beta}
       {(\alpha+\beta)^2(\alpha+\beta+1)}.$$
 Writing \(\mu = \alpha/(\alpha+\beta)\) and \(\phi = \alpha+\beta\) this
 is the \(\mu(1-\mu)/(\phi+1)\) of <code><a href="variance.Beta1Distrib.html">variance.Beta1Distrib()</a></code>, so the shapes
-and the mean-precision pair describe the same law.</p>
+and the mean-precision pair describe the same law. The method evaluates it in
+that form, with \(\mu = 1/(1 + \beta/\alpha)\) (<code><a href="beta_mu_sigma.html">beta_mu_sigma()</a></code>), so that
+\(\alpha\beta\) is not formed where it underflows or overflows.</p>
     </div>
 
 
@@ -69,8 +75,8 @@ and the mean-precision pair describe the same law.</p>
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>alpha</code> and <code>beta</code>, both positive,
-each a numeric vector of length 1 or <code>n</code>. Both shapes below 1 puts the
-mass at the two endpoints.</p></dd>
+each a numeric vector of length 1 or <code>n</code>. If both shapes are below 1 the
+density is unbounded at both endpoints and U-shaped.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

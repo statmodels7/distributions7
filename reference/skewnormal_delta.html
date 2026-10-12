@@ -13,7 +13,7 @@ this helper and assemble different combinations of one number."><meta property="
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,9 +75,12 @@ of <code>alpha</code>.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>\(\delta\) is bounded: it runs over \((-1, 1)\) as \(\alpha\) runs
-over the whole line, and it saturates quickly, reaching 0.995 at
-\(\alpha = 10\). That bound is what caps the skewness and the kurtosis the
-family can reach, and is why the skew t exists.</p>
+over the whole line, and it reaches 0.995 at \(\alpha = 10\). This bound
+limits the skewness and the kurtosis that the family can reach. For
+\(|\alpha| &gt; 1\) the value is computed as
+\(\mathrm{sign}(\alpha)/\sqrt{1 + \alpha^{-2}}\), so that \(\alpha^2\)
+is not formed where it overflows (\(|\alpha| &gt; 1.3\times10^{154}\)), and
+\(\delta\) tends to \(\pm 1\) there.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

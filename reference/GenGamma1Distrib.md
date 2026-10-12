@@ -7,13 +7,15 @@ scale \\a \> 0\\ and two shapes \\d \> 0\\ and \\p \> 0\\, with density
 It is the flexible family for a positive response, and it nests four
 others exactly: the gamma at \\p = 1\\, the Weibull at \\d = p\\, the
 exponential at \\d = p = 1\\ and the half-normal at \\a = \sqrt2, d = 1,
-p = 2\\. Choosing between them becomes something to estimate.
+p = 2\\. The choice among these special cases can therefore be made by
+estimating \\d\\ and \\p\\.
 
 Build one with
 [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md),
 which supplies the three link functions. This page documents the raw S7
-constructor, which validates none of the relationships between its
-properties.
+constructor; the validator of `distrib` checks that the properties are
+consistent (the parameter count, a bound and a link for every parameter,
+ordered support bounds).
 
 ## Usage
 
@@ -96,28 +98,68 @@ the properties hold `"gengamma1"`, `"univariate"`, `c(0, Inf)`,
 
 ## Methods
 
-Registered in this file, the last three compiled:
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma1Distrib.md),
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GenGamma1Distrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GenGamma1Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GenGamma1Distrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma1Distrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GenGamma1Distrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GenGamma1Distrib.md).
+Registered on this class, each linked to the page that documents it:
 
-Registered elsewhere: the orders three to five and the derivatives in
-the response, compiled, in `gengamma1_higher.R`; the derivatives of the
-expected information in `dexpected_reparam.R`; and the four moments in
-`moments.R`. The derivatives of the distribution function are numerical.
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma1Distrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GenGamma1Distrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GenGamma1Distrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GenGamma1Distrib.md);
 
-## The one representation everything rests on
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma1Distrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GenGamma1Distrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GenGamma1Distrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md),
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
+  and
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.StudentT1Distrib.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.StudentT1Distrib.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md),
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GenGamma1Distrib.md);
+
+- the derivatives of the distribution function:
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md),
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_deriv_cdf_k.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_deriv_cdf_k.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma1Distrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.GenGamma1Distrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.GenGamma1Distrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.GenGamma1Distrib.md).
+
+Every other generic is inherited from
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
+
+## Representation as a gamma variable
 
 \\u = (Y/a)^p\\ is Gamma with shape \\k = d/p\\ and unit rate, exactly.
 The distribution function is that Gamma's, the quantile function inverts
 it, the generator raises a Gamma draw to the power \\1/p\\, and every
-expectation the information needs is a moment of \\u\\. It is the same
-device the Weibull and the Gumbel use, where the corresponding variable
-is standard exponential.
+expectation that the information requires is a moment of \\u\\. The
+Weibull and the Gumbel use the same device, with a standard exponential
+variable in place of the gamma.
 
 ## See also
 
@@ -127,9 +169,9 @@ to build one;
 [`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md)
 and
 [`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md)
-for the families it nests;
+for the families that it nests;
 [`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md)
-for the limit it approaches.
+for a limiting case.
 
 ## Examples
 

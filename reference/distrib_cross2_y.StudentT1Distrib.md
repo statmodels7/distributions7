@@ -26,7 +26,7 @@ zQ')}{\sigma^3}, \qquad \frac{\partial\ell^{(yy)}}{\partial\nu} =
 
 - scale:
 
-  One of `"parameter"` or `"link"`, applied by the generic before
+  One of `"parameter"` or `"link"`, applied by the generic after
   dispatch.
 
 - ...:
@@ -40,11 +40,10 @@ A named list of three numeric vectors of length `length(y)`, keyed `mu`,
 
 ## Details
 
-Nothing vanishes here, unlike the gaussian's, and every component varies
-with the data: the t's response curvature is a function of \\z\\ rather
-than a constant, and it is that dependence which makes the family
-redescending. The three formulas share \\Q\\, \\Q'\\ and \\\partial\_\nu
-Q\\, so each is evaluated once per observation.
+Unlike the gaussian's, every component varies with the data, because the
+t's response curvature is a function of \\z\\ rather than a constant.
+The three formulas share \\Q\\, \\Q'\\ and \\\partial\_\nu Q\\, so each
+is evaluated once per observation.
 
 ## Notation
 

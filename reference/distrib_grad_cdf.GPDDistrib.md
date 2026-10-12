@@ -56,7 +56,8 @@ At \\\xi \ge 0\\ the support is \\(0, \infty)\\; at \\\xi \< 0\\ it is
 bounded above at \\\sigma/\|\xi\|\\. Past the upper end, and below zero,
 \\F\\ is constant and every derivative is zero, except the derivatives
 of \\\log F\\ at \\q \le 0\\, where \\\log F = -\infty\\ and they are
-`NaN`.
+`NaN`. The derivatives of \\\log S\\ at and past the upper end, where
+\\\log S = -\infty\\, are returned as zero.
 
 ## See also
 

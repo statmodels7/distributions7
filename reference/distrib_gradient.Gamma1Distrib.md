@@ -7,18 +7,18 @@ Computes the first derivatives of the gamma log-density with respect to
 \ell}{\partial \phi} = -s^2\left\\\log s + 1 - \psi(s) + \log z -
 z\right\\,\$\$ with \\\psi\\ the digamma function. The first is the
 score of a gamma generalized linear model, the residual divided by the
-variance function \\\phi\mu^2\\.
+variance \\\phi\mu^2\\.
 
-The dispersion component is a difference of two quantities that agree to
-leading order as \\s\\ grows: \\\log s - \psi(s)\\ and \\\log z - (z -
-1)\\ each go to zero at the boundary this family tends towards. The
-kernel computes each of them as a polygamma minus its own asymptote, so
-the digits survive at large shape where the direct difference loses
-them.
+The dispersion component is the sum of \\\log s - \psi(s)\\ and \\\log
+z - (z - 1)\\, which tend to zero when the shape is large and \\z\\ is
+near 1. The kernel evaluates the first by its asymptotic series for \\s
+\ge 50\\ and the second by a series near \\z = 1\\, and computes \\z -
+1\\ as \\(y - \mu)/\mu\\, so the digits survive where the direct
+differences lose them.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries before returning. This method always returns the
-parameter scale.
+of the family before returning. This method always returns the parameter
+scale.
 
 ## Arguments
 
@@ -50,8 +50,8 @@ parameter scale.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -103,5 +103,5 @@ zz <- distrib_rng(d, 2000, th)
 fit <- fit_distrib(d, zz)
 vapply(distrib_gradient(d, zz, as.list(coef(fit))), sum, numeric(1))
 #>            mu           phi 
-#> -6.940997e-14 -6.346140e-06 
+#> -7.857777e-14 -6.346140e-06 
 ```

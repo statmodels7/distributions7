@@ -10,9 +10,12 @@ y\\\partial\mu_j\partial\eta_k} = -B_k e_j, \qquad
 \frac{\partial^3\ell}{\partial y\\\partial\eta_k\partial\eta_l} =
 \Sigma^{-1}A\_{kl}w - \Sigma^{-1}\\\left(A_l\Sigma^{-1}A_k +
 A_k\Sigma^{-1}A_l\right)\\w,\$\$ with \\B_k =
-\Sigma^{-1}A_k\Sigma^{-1}\\ and \\w = \Sigma^{-1}(y-\mu)\\. Only the
-pure matrix pairs carry the observation, through \\w\\; the mixed pairs
-repeat one row.
+\Sigma^{-1}A_k\Sigma^{-1}\\ and \\w = \Sigma^{-1}(y-\mu)\\; the two are
+\\P_k e_j\\ and \\-P\_{kl}(y - \mu)\\, computed from the derivatives of
+\\\Sigma^{-1}\\ that
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
+supplies. Only the pure matrix pairs carry the observation; the mixed
+pairs repeat one row.
 
 ## Arguments
 
@@ -34,8 +37,9 @@ repeat one row.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The two coincide here.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  Every link of this family is the identity, so the two scales coincide.
 
 - ...:
 
@@ -59,7 +63,7 @@ second derivative arrays, \\e_j\\ the \\j\\-th standard basis vector and
 [`distrib_cross2_y.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvGaussianDistrib.md)
 and
 [`distrib_hess_y_hess.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.MvGaussianDistrib.md)
-for the other two derivatives a marginal criterion reads, and
+for the other two derivatives that a marginal criterion reads, and
 [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
 for the generic.
 

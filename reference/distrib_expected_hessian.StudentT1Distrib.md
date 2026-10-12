@@ -65,14 +65,15 @@ kernel, so the result does not depend on the thread count.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
 A named list of six numeric vectors, `mu_mu`, `sigma_sigma`, `nu_nu`,
-`mu_sigma`, `mu_nu` and `sigma_nu`, each of length `length(y)` and each
-constant along it. `mu_sigma` and `mu_nu` are exactly zero.
+`mu_sigma`, `mu_nu` and `sigma_nu`, each of length
+`max(length(y), length(mu), length(sigma), length(nu))`. The values do
+not depend on `y`. `mu_sigma` and `mu_nu` are exactly zero.
 
 ## Notation
 
@@ -83,17 +84,18 @@ constant along it. `mu_sigma` and `mu_nu` are exactly zero.
 ## Large degrees of freedom
 
 The \\\nu\nu\\ entry is a difference of two trigammas half a unit apart
-plus a term that cancels it to leading order, so writing it directly
-loses every digit at a large \\\nu\\: before the asymptotic branches
-were added it changed sign at \\\nu \approx 3\times10^5\\ and read
-\\-n/2\\ on the link scale. The shipped kernel switches to a series at
-measured crossovers and stays correctly signed to
-`.Machine$double.xmax`.
+plus a term that cancels it to leading order, so the direct form loses
+every digit at a large \\\nu\\. The kernel evaluates it from an
+asymptotic series in \\1/\nu\\ above a crossover. The entry is negative
+and of order \\\nu^{-4}\\, so on the parameter scale it underflows to
+zero from about \\\nu = 10^{85}\\; on the link scale the factor
+\\\nu^2\\ of the chain rule makes it `NaN` from about \\\nu =
+10^{155}\\.
 
 ## See also
 
 [`distrib_hessian.StudentT1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.StudentT1Distrib.md)
-for the quantity this is the expectation of,
+for the observed Hessian, of which this is the expectation,
 [`distrib_gradient.StudentT1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT1Distrib.md)
 for the score, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)

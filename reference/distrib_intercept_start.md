@@ -2,7 +2,7 @@
 
 Returns, on the **parameter** scale, a starting value for each parameter
 whose intercept a regression should not take from the intercept-only
-maximum likelihood fit. A modelling layer carries each value onto the
+maximum likelihood fit. A modeling layer carries each value onto the
 parameter's own link and writes it to that equation's intercept. The
 base method returns an empty list: for most families the intercept-only
 fit is the right start.
@@ -25,7 +25,7 @@ distrib_intercept_start(distrib, y, ...)
 
 - ...:
 
-  Passed to methods. No shipped method reads it.
+  Passed to methods. The shipped methods do not use it.
 
 ## Value
 
@@ -39,12 +39,11 @@ The case this exists for is
 [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md).
 Without covariates the parent's overdispersion can absorb the excess
 zeros, so the intercept-only maximum puts the mixing weight at the edge
-of its domain – measured, \\\pi = 2.2 \times 10^{-308}\\ on a negative
-binomial with a true \\\pi = 0.25\\ – which is right for that model and
-a trap as a start for a model with covariates: the link is flat there,
-the score on the unconstrained scale vanishes, and the fit stays at the
-edge reporting convergence while an interior maximum 7.6 log-likelihood
-units higher exists. See
+of its domain. That is the maximum of the model without covariates, but
+it is a poor start for a model with covariates: the link is flat there,
+the score on the unconstrained scale vanishes, and the fit can stop at
+the edge, reporting convergence, although an interior maximum exists.
+See
 [`distrib_intercept_start.ZeroInflatedDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.ZeroInflatedDistrib.md).
 
 ## See also

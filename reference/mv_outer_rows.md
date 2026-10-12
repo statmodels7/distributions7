@@ -3,9 +3,7 @@
 Builds the \\p \times p \times n\\ array whose \\i\\th slice is
 \\a_ib_i^\top\\, the outer product of row \\i\\ of `a` with row \\i\\ of
 `b`. The whole array is assembled by two column replications and one
-permutation, with no loop over the observations, so the response
-derivatives of a multivariate family stay affordable at a sample size
-worth fitting.
+permutation, with no loop over the observations.
 
 ## Usage
 
@@ -18,8 +16,8 @@ mv_outer_rows(a, b)
 - a, b:
 
   Numeric matrices with the same dimensions, \\n\\ rows and \\p\\
-  columns. Nothing is validated: mismatched dimensions recycle silently,
-  as they would in the arithmetic underneath.
+  columns. Not validated: matrices of different dimensions signal the
+  error of the arithmetic underneath.
 
 ## Value
 

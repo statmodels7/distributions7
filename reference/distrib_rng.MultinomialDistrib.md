@@ -2,11 +2,10 @@
 
 Draws `n` independent multinomial counts by calling
 [`stats::rmultinom()`](https://rdrr.io/r/stats/Multinom.html) and
-transposing, so that one **row** of the result is one observation. R
-returns one column per draw; the package's convention throughout the
-multivariate families is one row per observation, and the transpose is
-the whole of the difference. The draws depend on `.Random.seed` in the
-usual way.
+transposing, so that one row of the result is one observation: R returns
+one column per draw, and the multivariate families of the package use
+one row per observation. The draws depend on `.Random.seed` in the usual
+way.
 
 ## Arguments
 
@@ -17,8 +16,8 @@ usual way.
 
 - n:
 
-  A single positive integer, the number of draws. Note that the number
-  of **trials** is the object's `size` property, not this argument.
+  A single positive integer, the number of draws. The number of trials
+  is the object's `size` property.
 
 - theta:
 

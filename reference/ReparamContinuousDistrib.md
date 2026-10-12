@@ -8,8 +8,12 @@ the defaults registered on
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
 and a discrete one those of
 [`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
-Nothing else distinguishes the two: every method in this file is
-registered on both, from the same body.
+The two classes differ only in their parent, and the methods of this
+file are registered on both from the same body, except
+[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
+and
+[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md),
+which only the continuous class registers.
 
 ## Usage
 
@@ -54,9 +58,9 @@ ReparamDiscreteDistrib(
 - dimension:
 
   `"univariate"` or `"multivariate"`. Always the first for a
-  reparametrization,
+  reparametrization, since
   [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
-  refusing a multivariate parent.
+  signals an error for a multivariate parent.
 
 - bounds:
 

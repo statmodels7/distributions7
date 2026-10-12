@@ -6,9 +6,10 @@ redistributed inside it. Either endpoint may be omitted, giving
 one-sided truncation, and at least one must be given. Discrete and
 continuous parents are both accepted.
 
-BOTH ENDPOINTS ARE INCLUDED, which for a discrete parent is the
-difference between `truncated(poisson_distrib(), lower = 1)`, the
-zero-truncated Poisson on \\\\1, 2, \dots\\\\, and truncating above one.
+Both endpoints are included in the support. For a discrete parent this
+means that `truncated(poisson_distrib(), lower = 1)` is the
+zero-truncated Poisson on \\\\1, 2, \dots\\\\, which keeps the mass at
+one, whereas truncating above one would remove it.
 
 ## Usage
 
@@ -49,8 +50,10 @@ Write \\Z(\theta) = P(L \le Y \le U)\\ for the retained mass. Then
 Q_T(p) = Q\\F(L^-;\theta) + pZ(\theta)\\,\$\$ with \\F(L^-) = F(L)\\ for
 a continuous parent and \\F(L) - f(L)\\ for a discrete one, the lower
 endpoint being kept. The quantile function inverts \\F_T\\ through the
-parent's own, so drawing from the truncated law is an exact one-pass
-inverse transform however small \\Z\\ is.
+parent's own, so drawing from the truncated law is a one-pass inverse
+transform. An interval in the upper tail is handled through the parent's
+survival function, in \\Z\\, in the distribution function and in the
+quantile function.
 
 ## Truncation adds no parameter
 
@@ -67,18 +70,22 @@ H\_{ij}(y) - M\_{ij} + m_i m_j,\$\$
 \$\$\mathbb{E}\left\[\frac{\partial^{2}\ell_T}
 {\partial\theta_i\partial\theta_j}\right\] = -\mathrm{Cov}\_T(s_i,
 s_j).\$\$ The score is the parent's recentered at its truncated mean,
-and the information is the covariance of that score, which is the second
-Bartlett identity for the truncated model and is used here as a
-consistency check on the two expressions above.
+and the expected Hessian is minus the covariance of that score. This is
+the second Bartlett identity for the truncated model, and
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
+evaluates it directly.
 
-## What this costs
+## Computation of the derivatives
 
-\\m_i\\ and \\M\_{ij}\\ have no closed form for a general parent, and
-are obtained by quadrature or summation through
-[`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md).
-Where the parent has exact cdf derivatives they come instead from two
-calls on it, measured at 1.4 ms against 4.9 ms for a truncated
-gaussian's Hessian; see
+\\m_i\\ and \\M\_{ij}\\ have no closed form for a general parent. For a
+parent with a compiled scalar route they are computed from the retained
+mass and its derivatives by
+[`trunc_route_parts()`](https://statmodels7.github.io/distributions7/reference/trunc_route_parts.md).
+Otherwise, where the parent has exact cdf derivatives, they come from
+two calls on the cdf derivatives, and in the remaining cases they are
+obtained by quadrature or summation through
+[`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md);
+see
 [`has_exact_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md)
 for why that route is gated on accuracy. Third and fourth derivatives
 are closed form as well, assembled by the partition sums of
@@ -117,9 +124,9 @@ per distinct block otherwise.
   and the point mass is carried through
   [`distrib_atoms.TruncatedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.TruncatedContinuousDistrib.md).
 
-Truncating an already truncated distribution is allowed and is COLLAPSED
-into one object over the intersection of the two intervals. Nesting
-would be correct and would pay the quadrature cost twice.
+Truncating an already truncated distribution is allowed. The result is
+one truncated object over the intersection of the two intervals, which
+avoids computing the normalizing constant twice.
 
 ## Notation
 
@@ -135,7 +142,7 @@ Hessian; \\\ell_T\\ is the truncated log-likelihood; and
 [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
 and
 [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
-for the wrappers that DO add a parameter,
+for the wrappers that add a parameter,
 [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
 for a change of variable,
 [TruncatedContinuousDistrib](https://statmodels7.github.io/distributions7/reference/TruncatedContinuousDistrib.md)
@@ -190,7 +197,7 @@ distrib_atoms(tz, list(mu = 2, sigma2 = 1, za = 0.3))
 #> [1] 0.3021864
 #> 
 
-# Three refusals, each naming the condition that failed.
+# Three errors, each stating the condition that failed.
 try(truncated(gamma2_distrib(), lower = -2))
 #> Error : truncated() was given lower = -2, which is at or below the lower bound of the
 #>   support of 'gamma2' (0). Truncating there removes no probability mass and the

@@ -60,8 +60,11 @@ numerical_cdf_deriv(
 ## Value
 
 A named list of numeric vectors, derivatives of \\F\\ itself and not of
-its logarithm, in the order `which` gives or in the enumeration order
-when it is `NULL`.
+its logarithm. At order 1 the components follow `which`, or the
+parameter order when `which` is `NULL`. At order 2 they are always in
+the order of
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
+restricted to the names in `which`.
 
 ## The stencils
 
@@ -75,22 +78,24 @@ package never composes two first differences in the same variable.
 ## The step
 
 The relative step is \\\varepsilon^{1/(k+2)}\\, which is
-\\6.1\times10^{-6}\\ at order 1 and \\1.2\times10^{-4}\\ at order 2, and
-it is scaled per component by `pmax(1, abs(theta[[j]]))`. **One step is
-chosen per observation and not per parameter**: `theta` may be
-vectorized, and a step read off its first element would be the wrong
-size everywhere else.
+\\6.1\times10^{-6}\\ at order 1 and \\1.2\times10^{-4}\\ at order 2. It
+is multiplied, for each parameter \\j\\, by `pmax(1, abs(theta[[j]]))`.
+Because `theta` may be vectorized, this product is a vector with one
+step per observation, so that every element of a vectorized parameter
+receives a step of the right size.
 
-## What it costs and what it delivers
+## Where it is used
 
-Measured on a Gaussian at 1000 quantiles, against the closed form the
-family registers: the relative error is \\6.1\times10^{-11}\\ at order 1
-and \\1.7\times10^{-7}\\ at order 2, and the calls take 0.29 ms and 0.71
-ms against the closed form's 0.16 ms. Of the 42 univariate families, 8
-reach this function for their gradient (beta1, beta2, chisq, gamma1,
-gamma2, gengamma1 and the two von Mises), where the derivative of an
-incomplete gamma or beta in its shape is hypergeometric or the cdf is
-itself a quadrature.
+No shipped univariate family calls this function for its gradient or
+Hessian: the families whose derivative in a shape parameter has no
+elementary form (the gamma, chi-squared, generalized gamma, beta, von
+Mises, Student t, pseudo-Huber and skew t families) register the
+compiled quadrature of
+[`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md).
+The function serves continuous families defined by the user, the
+wrappers of continuous families, and the first two tables of
+[`cdf_tables()`](https://statmodels7.github.io/distributions7/reference/cdf_tables.md)
+where a family has no method of its own.
 
 ## Notation
 
@@ -128,7 +133,7 @@ exact <- distrib_grad_cdf(d, q, th, log = FALSE)
 max(abs(numerical_cdf_deriv(d, q, th, 1)$mu / exact$mu - 1))
 #> [1] 6.085332e-11
 
-# Only the components asked for are differenced.
+# Only the requested components are differenced.
 names(numerical_cdf_deriv(d, q, th, order = 2, which = "mu_mu"))
 #> [1] "mu_mu"
 ```

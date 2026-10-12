@@ -54,17 +54,15 @@ matrix and named as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 names them, each of length `n_obs(distrib, y)` and constant along it.
 
-## Why the data-carrying terms drop out
+## The terms that carry the data
 
 Under the model \\\mathbb{E}\[\log y_j\] = \psi(\alpha_j) -
-\psi(\phi)\\, so \\\mathbb{E}\[g_j\] = -\psi(\phi)\\, **the same
-constant for every** \\j\\. Each term of the observed Hessian that
-carries the data is that constant times a sum over \\j\\ of a column of
-\\A\\ or of a second-derivative vector of the simplex, and both of those
-sum to zero: differentiating \\\sum_j \mu_j = 1\\ once gives the first,
-twice the second. Every such term is therefore exactly zero under
-expectation, which is why a family with no location and scale to
-separate still has a closed-form information matrix.
+\psi(\phi)\\, so \\\mathbb{E}\[g_j\] = -\psi(\phi)\\, the same constant
+for every \\j\\. Each term of the observed Hessian that carries the data
+is that constant times a sum over \\j\\ of a column of \\A\\ or of a
+second-derivative vector of the simplex, and both of those sum to zero:
+differentiating \\\sum_j \mu_j = 1\\ once gives the first, twice the
+second. Every such term is therefore zero under expectation.
 
 ## Notation
 

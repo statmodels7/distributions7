@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@ distribution back to it. Parameters travel as a named list.</p>
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gamma2</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -844   AIC: 1692   BIC: 1700</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 620 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 517 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -117,15 +117,15 @@ distribution back to it. Parameters travel as a named list.</p>
 <span><span class="co">#&gt;        Estimate Std. Error   2.5%  97.5%</span></span>
 <span><span class="co">#&gt; mu       1.0888     0.0214 1.0469 1.1306</span></span>
 <span><span class="co">#&gt; sigma2   0.6991     0.0745 0.5532 0.8451</span></span></code></pre></div>
-<p>The estimates recover the values the sample was generated from, and
-the print method shows them twice: on the <strong>parameter
+<p>The estimates recover the values from which the sample was generated,
+and the print method shows them twice: on the <strong>parameter
 scale</strong>, and on the <strong>link scale</strong> where the fitting
 actually happened. More on that split below.</p>
 </div>
 <div class="section level2">
 <h2 id="reading-the-fit">Reading the fit<a class="anchor" aria-label="anchor" href="#reading-the-fit"></a>
 </h2>
-<p><code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> returns an object that answers the
+<p><code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> returns an object that supports the
 familiar extractors:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
@@ -176,11 +176,11 @@ in
 a Gaussian’s standard deviation is positive. Optimizing those
 constrained parameters directly means fighting the boundary. Instead
 <code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> optimizes the <strong>unconstrained</strong>
-parameters behind each link —
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>μ</mi></mrow><annotation encoding="application/x-tex">\log\mu</annotation></semantics></math>
+parameters behind each link
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>μ</mi></mrow><annotation encoding="application/x-tex">\log\mu</annotation></semantics></math>
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><msup><mi>σ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\log\sigma^2</annotation></semantics></math>
-for the gamma — where there is no boundary to hit, using the exact score
+for the gamma), where there is no boundary to hit, using the exact score
 and information the package provides on that scale.</p>
 <p>The estimates are then mapped back, and so are the intervals. Because
 a confidence interval is built symmetrically on the link scale and
@@ -204,9 +204,9 @@ its endpoints can never leave the parameter’s domain:</p>
 <span><span class="co">#&gt; mu   2.5123     0.6003 1.3357 3.6889</span></span></code></pre></div>
 <p>Even with a probability estimate close to one and only forty
 observations, the interval stays inside
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, 1)</annotation></semantics></math>
-— a symmetric interval on the probability scale would have spilled past
-it.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, 1)</annotation></semantics></math>,
+where a symmetric interval on the probability scale would have spilled
+past it.</p>
 </div>
 <div class="section level2">
 <h2 id="choosing-how-it-is-optimized">Choosing how it is optimized<a class="anchor" aria-label="anchor" href="#choosing-how-it-is-optimized"></a>
@@ -243,16 +243,18 @@ chooses its stopping rule, its line search and its iteration budget:</p>
 <span><span class="co">#&gt;   -844.0323   -844.0323</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">fit_lbfgs</span><span class="op">@</span><span class="va">method</span>, <span class="va">fit_nm</span><span class="op">@</span><span class="va">method</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "L-BFGS"      "nelder-mead"</span></span></code></pre></div>
-<p>The three named strategies fall back to BFGS when they fail to
-converge; an optimizer supplied explicitly is never replaced, so the
-method reported is always the method that produced the estimates.</p>
+<p>The two second-order strategies, <code>"fisher"</code> and
+<code>"newton"</code>, fall back to BFGS when they fail to converge;
+<code>"bfgs"</code> and an optimizer supplied explicitly are never
+replaced, so the method reported is always the method that produced the
+estimates.</p>
 </div>
 <div class="section level2">
 <h2 id="checking-the-fit-against-the-data">Checking the fit against the data<a class="anchor" aria-label="anchor" href="#checking-the-fit-against-the-data"></a>
 </h2>
-<p>A fit remembers the data it came from, so it can be drawn over it.
-For a continuous distribution <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> shows a kernel density
-of the sample with the fitted density on top:</p>
+<p>A fit stores the data from which it was estimated, so it can be drawn
+over them. For a continuous distribution <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> shows a
+kernel density of the sample with the fitted density on top:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting-a-model_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="576"></p>
@@ -281,20 +283,21 @@ statistic:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">boot_median</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     2.5%    97.5% </span></span>
 <span><span class="co">#&gt; 2.597115 2.869105</span></span></code></pre></div>
-<p>It follows the <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code> contract: a supplied
-<code>seed</code> makes the draw reproducible and is reported back on
-the result, and the caller’s random stream is left untouched.</p>
+<p>It follows the convention of <code><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">stats::simulate()</a></code>: a
+supplied <code>seed</code> makes the draw reproducible and is reported
+back on the result, and the caller’s random stream is left
+untouched.</p>
 </div>
 <div class="section level2">
 <h2 id="validating-a-distribution-numerically">Validating a distribution numerically<a class="anchor" aria-label="anchor" href="#validating-a-distribution-numerically"></a>
 </h2>
 <p>Before a fit is trusted, and especially before a user-written
-distribution is, <code><a href="../reference/check_distrib.html">check_distrib()</a></code> puts it through thirteen
-numerical checks. It confirms that the density integrates to one, that
-the distribution function agrees with the density, that the quantile
-inverts it, that the generator follows it, and that every analytical
-derivative matches finite differences, on both the parameter and the
-link scale:</p>
+distribution is, <code><a href="../reference/check_distrib.html">check_distrib()</a></code> puts it through a battery
+of numerical checks. It confirms that the density integrates to one,
+that the distribution function agrees with the density, that the
+quantile inverts it, that the generator follows it, that the analytical
+derivatives match finite differences on the parameter scale, and that
+the score matches them on the link scale:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="../reference/check_distrib.html">check_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma2 <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Distribution: gamma2</span></span>
@@ -309,8 +312,8 @@ link scale:</p>
 <span><span class="co">#&gt;   [OK  ] rng matches the cdf                         1.17e+00</span></span>
 <span><span class="co">#&gt;   [OK  ] gradient vs finite differences              6.49e-11</span></span>
 <span><span class="co">#&gt;   [OK  ] hessian vs finite differences               5.78e-08</span></span>
-<span><span class="co">#&gt;   [OK  ] deriv3 vs finite differences                1.75e-10</span></span>
-<span><span class="co">#&gt;   [OK  ] deriv4 vs finite differences                6.98e-08</span></span>
+<span><span class="co">#&gt;   [OK  ] deriv3 vs finite differences                1.42e-10</span></span>
+<span><span class="co">#&gt;   [OK  ] deriv4 vs finite differences                3.85e-08</span></span>
 <span><span class="co">#&gt;   [OK  ] expected information vs Monte Carlo         1.75e+00</span></span>
 <span><span class="co">#&gt;   [OK  ] response derivatives vs finite differences  2.07e-08</span></span>
 <span><span class="co">#&gt;   [OK  ] link-scale gradient vs finite differences   5.59e-08</span></span>
@@ -325,13 +328,13 @@ printed next to it. It is the fastest way to catch a wrong formula.</p>
 </h2>
 <ul>
 <li>
-<code><a href="../articles/defining-a-distribution.html">vignette("defining-a-distribution")</a></code> — defining a new
+<code><a href="../articles/defining-a-distribution.html">vignette("defining-a-distribution")</a></code>: defining a new
 distribution, which then works with everything shown here.</li>
 <li>
-<code><a href="../reference/fit_distrib.html">?fit_distrib</a></code>, <code><a href="../reference/check_distrib.html">?check_distrib</a></code> — the full
+<code><a href="../reference/fit_distrib.html">?fit_distrib</a></code>, <code><a href="../reference/check_distrib.html">?check_distrib</a></code>: the full
 argument lists.</li>
 <li>
-<code><a href="../reference/distrib_gradient.html">?distrib_gradient</a></code> — the derivatives, including what
+<code><a href="../reference/distrib_gradient.html">?distrib_gradient</a></code>: the derivatives, including what
 <code>scale = "link"</code> does.</li>
 </ul>
 </div>

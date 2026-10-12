@@ -21,9 +21,9 @@ is not called here and no map is composed.
 
 - y:
 
-  A numeric vector of counts. A negative, non-integer or non-finite
-  value is off the support and gives a probability of 0, or `-Inf` with
-  `log = TRUE`.
+  A numeric vector of counts. A negative, non-integer or infinite value
+  is off the support and gives a probability of 0, or `-Inf` with
+  `log = TRUE`. A missing value gives `NA` (`NaN` for `NaN`).
 
 - theta:
 

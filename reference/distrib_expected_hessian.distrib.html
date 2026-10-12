@@ -4,14 +4,14 @@ out. It rests on the second Bartlett identity,
 \(\mathbb{E}[\ell^{(ij)}] = -\mathbb{E}[\ell^{(i)}\ell^{(j)}]\), which
 holds for a regular model and, unlike \(\mathbb{E}[\ell^{(ij)}]\) read
 directly, survives a log-likelihood that is not differentiable in a
-parameter – the location of a Laplace, where the observed Hessian is
-degenerate while the score variance is still the information."><meta property="og:description" content="Fallback method, for a family that does not write its expected information
+parameter (the location of a Laplace, where the observed Hessian is
+degenerate while the score variance is still the information)."><meta property="og:description" content="Fallback method, for a family that does not write its expected information
 out. It rests on the second Bartlett identity,
 \(\mathbb{E}[\ell^{(ij)}] = -\mathbb{E}[\ell^{(i)}\ell^{(j)}]\), which
 holds for a regular model and, unlike \(\mathbb{E}[\ell^{(ij)}]\) read
 directly, survives a log-likelihood that is not differentiable in a
-parameter – the location of a Laplace, where the observed Hessian is
-degenerate while the score variance is still the information."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+parameter (the location of a Laplace, where the observed Hessian is
+degenerate while the score variance is still the information)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +19,7 @@ degenerate while the score variance is still the information."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,8 +57,8 @@ out. It rests on the second Bartlett identity,
 \(\mathbb{E}[\ell^{(ij)}] = -\mathbb{E}[\ell^{(i)}\ell^{(j)}]\), which
 holds for a regular model and, unlike \(\mathbb{E}[\ell^{(ij)}]\) read
 directly, survives a log-likelihood that is not differentiable in a
-parameter – the location of a Laplace, where the observed Hessian is
-degenerate while the score variance is still the information.</p>
+parameter (the location of a Laplace, where the observed Hessian is
+degenerate while the score variance is still the information).</p>
     </div>
 
 
@@ -79,8 +79,8 @@ degenerate while the score variance is still the information.</p>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p><code>"parameter"</code> or <code>"link"</code>, the scale the components are
-reported on. The transformation is applied in the generic's body, so this
+<dd><p><code>"parameter"</code> or <code>"link"</code>, the scale on which the components
+are reported. The transformation is applied in the generic's body, so this
 method always returns the parameter scale.</p></dd>
 
 
@@ -104,8 +104,8 @@ generic's.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>approx</code> says how the right-hand side is obtained, and the choice is a
-choice of cost. The default <code>"opg"</code> reads
+    <p>The argument <code>approx</code> selects how the right-hand side is obtained, and the
+strategies differ in cost. The default <code>"opg"</code> reads
 \(-\ell^{(i)}\ell^{(j)}\) at each observation and takes no expectation,
 so it costs one call to <code><a href="distrib_gradient.html">distrib_gradient()</a></code>; <code>"bartlett"</code> evaluates the
 expectation itself, which is a sum over the support for a discrete family

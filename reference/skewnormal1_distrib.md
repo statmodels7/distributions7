@@ -62,17 +62,19 @@ exceeds one where \\\alpha z \> 0\\ and falls below it where \\\alpha z
 distribution function is Azzalini's identity \\F(q) = \Phi(z) - 2T(z,
 \alpha)\\ with \\T\\ Owen's T, one bounded quadrature per observation
 through
-[`numericals7::owen_t()`](https://statmodels7.github.io/numericals7/reference/owen_t.html).
-The quantile function has no closed form and comes from the base class
-by root finding.
+[`numericals7::owen_t()`](https://statmodels7.github.io/numericals7/reference/owen_t.html),
+with an integral of the tail on the light side where that difference
+cancels. The quantile function has no closed form and comes from the
+base class by root finding on the logarithm of the smaller tail.
 
 ## Derivatives
 
 The score and the observed Hessian are closed form, written in the
 inverse Mills ratio \\R(t) = \phi(t)/\Phi(t)\\ at \\t = \alpha z\\, and
-so are the third and fourth orders, in compiled kernels. One identity
-does all of it: \\R' = -R(t+R)\\, so every derivative of \\\log\Phi(t)\\
-is a polynomial in \\t\\ and \\R\\.
+so are the third and fourth orders, in compiled kernels. Since \\R' =
+-R(t+R)\\, every derivative of \\\log\Phi(t)\\ is a polynomial in \\t\\
+and \\R\\; below \\t = -1\\, where these polynomials cancel, the kernels
+use the cumulants of the logarithm of the Mills ratio instead.
 
 The **expected** information has no elementary form. It depends on
 \\\alpha\\ alone once the location and the scale are factored out, so it

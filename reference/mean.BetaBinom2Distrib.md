@@ -18,7 +18,8 @@ carries the same law with \\\mu = \alpha/(\alpha+\beta)\\ and \\\sigma =
 - theta:
 
   A named list with components `alpha` and `beta`, both positive, each a
-  numeric vector of length 1 or `n`.
+  numeric vector of length 1 or of the common length of the parameter
+  settings.
 
 - ...:
 
@@ -40,7 +41,7 @@ A numeric vector of means, of length
 where the dispersion does enter;
 [`mean.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/mean.BetaBinom1Distrib.md)
 for the mean-dispersion parametrization;
-[`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md);
+[`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md);
 [`betabinom2_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom2_distrib.md).
 
 ## Examples

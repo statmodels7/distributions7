@@ -9,9 +9,9 @@ parametrization uses.
 
 The concentration \\\kappa\\ of
 [`vonmises1_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md)
-is unbounded and hard to read. The resultant length is bounded, is the
-quantity circular statistics reports, and is one minus the circular
-variance; a sample reads it back directly as
+is unbounded and hard to interpret. The resultant length is bounded, is
+the quantity that is conventionally reported in circular statistics, and
+equals one minus the circular variance; it is computed from a sample as
 `sqrt(mean(cos(z))^2 + mean(sin(z))^2)`.
 
 ## Usage
@@ -59,16 +59,17 @@ strictly increasing bijection from \\(0, \infty)\\ onto \\(0, 1)\\.
 **Its inverse has no closed form**, which is why this is a family of its
 own and not a
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
-of the other. \\\kappa\\ is obtained by root finding on \\\log\kappa\\,
-and its four derivatives come from the inverse function rule applied to
-\\A'\\ through \\A^{(4)}\\, which the Bessel recurrences give from the
-same two evaluations \\A\\ already needs.
+of the other. numericals7 obtains \\\kappa\\ by Newton's method on
+\\\kappa\\, and its four derivatives come from the inverse function rule
+applied to \\A'\\ through \\A^{(4)}\\, which numericals7 evaluates from
+a power series at small \\\kappa\\, from the Bessel identities in
+extended precision, or from an asymptotic series.
 
-The map is steep near \\\rho = 1\\: measured,
-\\\mathrm{d}\kappa/\mathrm{d}\rho\\ is 2.00 at \\\rho = 0.01\\, 3.14 at
-0.5, 199 at 0.95 and \\5.0\times10^{5}\\ at 0.999. A fit whose data are
-nearly all in one direction is therefore far better conditioned in
-\\\kappa\\ than in \\\rho\\.
+The map is steep near \\\rho = 1\\: \\\mathrm{d}\kappa/\mathrm{d}\rho\\
+is 2.00 at \\\rho = 0.01\\, 3.14 at 0.5, 199 at 0.95 and
+\\5.0\times10^{5}\\ at 0.999. A fit whose data are nearly all in one
+direction is therefore far better conditioned in \\\kappa\\ than in
+\\\rho\\.
 
 ## Derivatives and information
 
@@ -92,9 +93,9 @@ Jacobian of the map is that reciprocal.
 returns the ordinary expectation of \\Y\\ on \\\[-\pi, \pi)\\, which
 differs from \\\mu\\ whenever \\\mu \ne 0\\;
 [`vonmises1_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md)
-discusses the same distinction. What this parametrization buys is that
-the **second** parameter is a quantity a sample reads back directly,
-which the concentration is not.
+discusses the same distinction. What this parametrization offers is that
+the **second** parameter can be computed directly from a sample, which
+is not the case for the concentration.
 
 ## Notation
 

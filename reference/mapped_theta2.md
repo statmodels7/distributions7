@@ -27,6 +27,8 @@ mapped_theta2(distrib, parent, th_par, maps, y, first, second)
 - th_par:
 
   A named list of the parent's parameters, evaluated at the new ones.
+  Not read by this function; the callers use it to compute `first` and
+  `second`.
 
 - maps:
 
@@ -37,8 +39,8 @@ mapped_theta2(distrib, parent, th_par, maps, y, first, second)
 
 - y:
 
-  A numeric vector of observations. Used only for its length, through
-  the components.
+  A numeric vector of observations. Not used; present so that the
+  signature matches the callers'.
 
 - first:
 
@@ -69,7 +71,7 @@ its second-order one. Both partial tables are the MAP's, already keyed
 by
 [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
 under the indices of the new parameters, `"1"` for a first partial and
-`"1,2"` for a second, so nothing is differentiated here.
+`"1,2"` for a second, so this function only combines them.
 
 ## What `first` and `second` are
 

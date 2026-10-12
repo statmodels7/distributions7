@@ -21,7 +21,10 @@ each from its own compiled kernel.
 
 - scale:
 
-  `"parameter"` or `"link"`; the link scale is applied by the generic.
+  `"parameter"` or `"link"`. For orders one to four the generic applies
+  the link scale after dispatch; the method for
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
+  applies it itself.
 
 - expected:
 

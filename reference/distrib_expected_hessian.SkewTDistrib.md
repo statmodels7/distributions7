@@ -1,6 +1,7 @@
 # Skew t Expected Hessian and Its Derivatives
 
-Returns the expected information, and through
+Returns the expected Hessian of the log-density, that is minus the
+expected information, and through
 [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
 and
 [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
@@ -53,7 +54,7 @@ and
 
 ## Details
 
-No component has an elementary form. The family is a location-scale
+The components have no elementary form. The family is a location-scale
 family, so every component equals its value at \\\mu = 0\\, \\\sigma =
 1\\ times \\\sigma^{-k}\\, with \\k\\ the number of indices on \\\mu\\
 or \\\sigma\\. The value there depends on \\(\alpha, \nu)\\ alone and is

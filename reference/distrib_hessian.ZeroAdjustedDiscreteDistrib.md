@@ -10,6 +10,14 @@ f(0)\\\\f''(0) + f'(0)^2}{\\1 - f(0)\\^2},\$\$ the second derivative of
 \\-\log\\1 - f(0)\\\\. The hurdle block is \\-1/\pi^2\\ at a zero and
 \\-1/(1-\pi)^2\\ elsewhere.
 
+Where the positive part's mass sits at one, \\f(1)/\\1 - f(0)\\ \>
+0.9\\, the parent's Hessian and the truncation term cancel to a number
+much smaller than either, and the block in \\\theta\\ is taken from
+[`head_derivs()`](https://statmodels7.github.io/distributions7/reference/head_derivs.md)
+through
+[`head_override()`](https://statmodels7.github.io/distributions7/reference/head_override.md);
+the score and the third to fifth derivatives are treated the same way.
+
 ## Arguments
 
 - distrib:
@@ -27,8 +35,8 @@ f(0)\\\\f''(0) + f'(0)^2}{\\1 - f(0)\\^2},\$\$ the second derivative of
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - ...:
 

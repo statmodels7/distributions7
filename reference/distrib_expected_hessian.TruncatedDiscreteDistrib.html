@@ -17,7 +17,7 @@ parent the expectations behind it are exact sums over that support."><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,8 +76,8 @@ parent the expectations behind it are exact sums over that support.</p>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, applied by the
-generic before dispatch.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The generic
+applies the link scale to the value that the method returns.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
@@ -96,7 +96,8 @@ generic before dispatch.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of numeric vectors of length <code>length(y)</code>, one component
 per unordered pair of parameters, keyed as
-<code><a href="hess_names.html">hess_names(distrib@params)</a></code>, each vector constant.</p>
+<code><a href="hess_names.html">hess_names(distrib@params)</a></code>; each vector is constant for
+scalar parameters.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

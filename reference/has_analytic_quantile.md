@@ -23,7 +23,8 @@ A single logical.
 
 Used to decide whether inverse transform sampling is cheap enough to
 prefer over the ratio-of-uniforms sampler: inverting a *numerical*
-quantile costs a call to `uniroot` per draw.
+quantile costs several evaluations of the distribution function per
+draw, each of them a quadrature.
 
 The test uses the documented S7 trick. S7 records the class a method was
 registered on in the method's `signature` attribute, so an inherited

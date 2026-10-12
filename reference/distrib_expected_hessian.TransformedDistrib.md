@@ -5,7 +5,9 @@ y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert\\ and the
 Jacobian does not depend on \\\theta\\, the expectation of the
 transformed model's second derivative is the parent's expectation
 reparametrized by the change of variables, which is the same number. No
-approximation runs and no Monte Carlo is needed, whatever `approx` says.
+approximation is added by the wrapper, and `approx` and `nsim` are not
+forwarded. The result is exact when the parent's expected Hessian is
+exact and otherwise is the value the parent's own default route returns.
 
 ## Arguments
 
@@ -16,8 +18,10 @@ approximation runs and no Monte Carlo is needed, whatever `approx` says.
 
 - y:
 
-  A numeric vector of observations on the transformed scale. Read only
-  through the parent, which uses its length.
+  A numeric vector of observations on the transformed scale. It is
+  mapped to the preimage and passed to the parent, which uses it for its
+  length when its information is closed form and for its values
+  otherwise.
 
 - theta:
 
@@ -25,8 +29,8 @@ approximation runs and no Monte Carlo is needed, whatever `approx` says.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - approx:
 

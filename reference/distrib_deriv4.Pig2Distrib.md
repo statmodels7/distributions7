@@ -1,9 +1,16 @@
 # Orthogonal Poisson-Inverse Gaussian Fourth Derivatives
 
-Returns the exact fourth derivatives of the log-mass in \\(\mu,
-\alpha)\\, read off the last five columns of the compiled kernel of
-`pig2_deriv4_cpp`. The kernel is asked for this order alone, so this is
-the order it was written for.
+Returns the fourth derivatives of the log-mass in \\(\mu, \alpha)\\,
+written out in closed form, read off the last five columns of the
+compiled kernel `pig2_deriv4_cpp`, which computes the fourth order
+alone.
+
+At a large count this order loses relative accuracy for the reason given
+on
+[`distrib_deriv4.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Pig1Distrib.md):
+at \\\alpha = 1\\ and \\y = 400\\ the component in \\\alpha\\ alone has
+a relative error of about \\10^{-5}\\. The orders below, and this order
+at counts under 100, are accurate to \\10^{-8}\\ or better.
 
 With `expected = TRUE` the value is an expectation and is not closed
 form, as at third order.
@@ -17,8 +24,8 @@ form, as at third order.
 
 - y:
 
-  A numeric vector of counts. With `expected = TRUE` its values are the
-  support points the expectation is summed over.
+  A numeric vector of counts. With `expected = TRUE` only its length is
+  used, and the expectation is summed over the whole support.
 
 - theta:
 

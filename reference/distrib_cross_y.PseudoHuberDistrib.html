@@ -13,7 +13,7 @@ location-scale identity; the response enters the shape only through
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,8 @@ location-scale identity; the response enters the shape only through
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>Handled by the generic before dispatch.</p></dd>
+<dd><p>Handled by the generic after dispatch; this method returns
+the parameter scale.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -80,9 +81,7 @@ location-scale identity; the response enters the shape only through
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list with components <code>mu</code>, <code>sigma</code> and <code>nu</code>, each a numeric
-vector of length <code>length(y)</code>. All three are exact; measured against
-Richardson on the analytic response gradient the worst is
-\(1.3\times10^{-11}\) relative.</p>
+vector of length <code>length(y)</code>. All three are exact.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

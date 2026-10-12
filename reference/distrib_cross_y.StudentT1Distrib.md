@@ -12,9 +12,9 @@ of the cdf derivatives: the log-density carries `lgamma` and a logarithm
 of \\D\\, both differentiable in \\\nu\\ in closed form, and no
 distribution function appears.
 
-Note that the \\\mu\\ component changes sign at \\\|r\| =
-\sigma\sqrt\nu\\ and decays as \\r^{-2}\\, where the Gaussian's is
-constant. That is the redescending score seen one derivative along.
+The \\\mu\\ component changes sign at \\\|r\| = \sigma\sqrt\nu\\ and
+decays as \\r^{-2}\\, where the Gaussian's is constant. It is the
+derivative in \\\mu\\ of the response score, which redescends.
 
 ## Arguments
 

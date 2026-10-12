@@ -4,10 +4,13 @@ Computes the multivariate gaussian log-density \$\$\ell =
 -\frac{p}{2}\log 2\pi - \frac{1}{2}\log\lvert\Sigma\rvert -
 \frac{1}{2}(y-\mu)^\top \Sigma^{-1} (y-\mu),\$\$ row by row, and
 exponentiates it unless `log = TRUE`. The log-determinant comes from the
-matrix parametrization's own `param_logdet()` and the quadratic form
-from its `param_solve()`, so neither a determinant nor an explicit
-inverse is formed by this method. Both are computed once per call, not
-once per observation, since the matrix does not vary with the response.
+matrix parametrization's own `param_logdet()`, so no determinant is
+formed. The quadratic form is the squared norm of the residual whitened
+by the parametrization's factor (see
+[`mv_quad()`](https://statmodels7.github.io/distributions7/reference/mv_quad.md)),
+which keeps its digits where the covariance is nearly singular. The
+matrix quantities are computed once per call, since the matrix does not
+vary with the response.
 
 ## Arguments
 

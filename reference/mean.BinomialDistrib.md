@@ -16,7 +16,8 @@ appear in `theta`.
 - theta:
 
   A named list with one component, `mu` (the success probability,
-  strictly between 0 and 1), a numeric vector of length 1 or `n`.
+  strictly between 0 and 1), a numeric vector of length 1 or of the
+  number of parameter settings.
 
 - ...:
 
@@ -24,7 +25,9 @@ appear in `theta`.
 
 ## Value
 
-A numeric vector of means, the length of `theta$mu`, in \\(0, n)\\.
+A numeric vector of means, of length
+`max(length(theta$mu), length(x@size))`, each in \\(0, n)\\ for the
+number of trials \\n\\ of that observation.
 
 ## Notation
 

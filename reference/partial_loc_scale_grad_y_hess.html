@@ -3,13 +3,19 @@
 family carrying shape parameters beyond its location and scale. The three
 pairs in \((\mu, \sigma)\) come from loc_scale_theta2_block() in closed
 form, and every pair touching a shape parameter from one central difference
-of the analytic first-order component. Both delegate to partial_theta2(),
-which does the splicing."><meta property="og:description" content="The distrib_grad_y_hess() and distrib_hess_y_hess() method bodies for a
+of the first-order component, distrib_cross_y() for the third-order body
+and distrib_cross2_y() for the fourth. In the fourth-order body a pair of
+shape parameters is one stencil on the analytic distrib_hess_y(), since the
+shape components of distrib_cross2_y() are themselves a difference in the
+shape. Both delegate to partial_theta2(), which does the splicing."><meta property="og:description" content="The distrib_grad_y_hess() and distrib_hess_y_hess() method bodies for a
 family carrying shape parameters beyond its location and scale. The three
 pairs in \((\mu, \sigma)\) come from loc_scale_theta2_block() in closed
 form, and every pair touching a shape parameter from one central difference
-of the analytic first-order component. Both delegate to partial_theta2(),
-which does the splicing."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+of the first-order component, distrib_cross_y() for the third-order body
+and distrib_cross2_y() for the fourth. In the fourth-order body a pair of
+shape parameters is one stencil on the analytic distrib_hess_y(), since the
+shape components of distrib_cross2_y() are themselves a difference in the
+shape. Both delegate to partial_theta2(), which does the splicing."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +23,7 @@ which does the splicing."><meta property="og:image" content="https://statmodels7
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +60,11 @@ which does the splicing."><meta property="og:image" content="https://statmodels7
 family carrying shape parameters beyond its location and scale. The three
 pairs in \((\mu, \sigma)\) come from <code><a href="loc_scale_theta2_block.html">loc_scale_theta2_block()</a></code> in closed
 form, and every pair touching a shape parameter from one central difference
-of the analytic first-order component. Both delegate to <code><a href="partial_theta2.html">partial_theta2()</a></code>,
-which does the splicing.</p>
+of the first-order component, <code><a href="distrib_cross_y.html">distrib_cross_y()</a></code> for the third-order body
+and <code><a href="distrib_cross2_y.html">distrib_cross2_y()</a></code> for the fourth. In the fourth-order body a pair of
+shape parameters is one stencil on the analytic <code><a href="distrib_hess_y.html">distrib_hess_y()</a></code>, since the
+shape components of <code><a href="distrib_cross2_y.html">distrib_cross2_y()</a></code> are themselves a difference in the
+shape. Both delegate to <code><a href="partial_theta2.html">partial_theta2()</a></code>, which does the splicing.</p>
     </div>
 
     <div class="section level2">
@@ -96,8 +105,8 @@ parameters are shapes.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> or <code>"link"</code>, applied by the generic before
-dispatch.</p></dd>
+<dd><p>One of <code>"parameter"</code> or <code>"link"</code>. The generic applies the link
+scale to the value that the method returns.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -111,10 +120,9 @@ parameters, keyed as <code><a href="hess_names.html">hess_names(distrib@params)<
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Registered on the Student t, the pseudo-Huber, the skew normal and the skew
-t. Measured against a numerical Hessian of the response derivative, the
-closed pairs agree to about \(10^{-11}\) and the differenced ones to
-between \(10^{-7}\) and \(10^{-6}\), which is one stencil's accuracy.</p>
+    <p>Registered on the two pseudo-Huber parametrizations, the skew normal and the
+skew t. The Student t's methods, documented on this page as well, call
+compiled kernels of their own and do not use these bodies.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -135,32 +143,32 @@ the two standardized quantities \(\sigma\ell^{(y)}\) and
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="student_t1_distrib.html">student_t1_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="skewnormal1_distrib.html">skewnormal1_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.7</span>, <span class="fl">0.3</span>, <span class="fl">1.4</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.3</span>, sigma <span class="op">=</span> <span class="fl">1.2</span>, nu <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.3</span>, sigma <span class="op">=</span> <span class="fl">1.2</span>, alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">g3</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_grad_y_hess.html">distrib_grad_y_hess</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">g3</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu_mu"       "sigma_sigma" "nu_nu"       "mu_sigma"    "mu_nu"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "sigma_nu"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu_mu"       "sigma_sigma" "alpha_alpha" "mu_sigma"    "mu_alpha"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "sigma_alpha"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">g3</span>, <span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="va">z</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        mu_mu  sigma_sigma        nu_nu     mu_sigma        mu_nu     sigma_nu </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -0.389443959  2.336663756  0.001414536 -0.634612372  0.018751535 -0.011680640 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu sigma_sigma alpha_alpha    mu_sigma    mu_alpha sigma_alpha </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.03060209  4.59301048  1.09678158 -1.60525989  0.76774711 -1.77660202 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Against a numerical Hessian of the response gradient. The three pairs in</span></span></span>
-<span class="r-in"><span><span class="co"># (mu, sigma) are closed and the three touching nu are differenced.</span></span></span>
+<span class="r-in"><span><span class="co"># (mu, sigma) are closed and the three touching alpha are differenced.</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, sigma <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>                                              nu <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">numDeriv</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/numDeriv/man/hessian.html" class="external-link">hessian</a></span><span class="op">(</span><span class="va">f</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">1.2</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             [,1]        [,2]         [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -0.38944396 -0.63461237  0.018751535</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.63461237  2.33666376 -0.011680640</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  0.01875153 -0.01168064  0.001414536</span>
+<span class="r-in"><span>                                              alpha <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">numDeriv</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/numDeriv/man/hessian.html" class="external-link">hessian</a></span><span class="op">(</span><span class="va">f</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">1.2</span>, <span class="fl">0.7</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             [,1]      [,2]       [,3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  0.03060209 -1.605260  0.7677471</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -1.60525989  4.593010 -1.7766020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  0.76774711 -1.776602  1.0967816</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The closed three are exactly the location-scale block's.</span></span></span>
 <span class="r-in"><span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="loc_scale_theta2_block.html">loc_scale_theta2_block</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span>, <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">g3</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span>, <span class="va">cl</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

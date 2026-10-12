@@ -23,7 +23,7 @@ expected_hessian_exact() answers TRUE."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,16 +124,16 @@ on the probability scale, the second derivative grows like
 only if \(|\xi| &lt; 1/2\). Below that point the classical asymptotics of the
 maximum likelihood estimator do not hold either, so the <code>NA</code> reports a
 quantity that does not exist.</p>
-<p>Approaching the boundary the information diverges: measured at
-\(\sigma = 1.5\), the \(\xi\) component is \(-2.00\) at
-\(\xi = 0\), \(-7.14\) at \(-0.3\) and \(-196.1\) at \(-0.49\).</p>
+<p>Approaching the boundary the information diverges: the \(\xi\)
+component \(-2/\{(1+2\xi)(1+\xi)\}\), which does not depend on
+\(\sigma\), equals \(-2\) at \(\xi = 0\), about \(-7.14\) at
+\(-0.3\) and about \(-196.1\) at \(-0.49\).</p>
     </div>
     <div class="section level2">
     <h2 id="checking-it">Checking it<a class="anchor" aria-label="anchor" href="#checking-it"></a></h2>
-    <p>A Monte Carlo average of the observed Hessian is the weaker reference here,
-and disagreed with this formula by 9 per cent at \(\xi = -0.3\) while the
-formula was right: the second derivative blows up at the upper endpoint, so
-the sample mean converges slowly. Integrating on the <strong>probability</strong> scale
+    <p>A Monte Carlo average of the observed Hessian converges slowly here,
+because the second derivative is unbounded at the upper endpoint when
+\(\xi &lt; 0\). Integrating on the <strong>probability</strong> scale
 instead, \(E[h] = \int_0^1 h(Q(u))\,du\), turns the endpoint into an
 ordinary point and agrees to \(10^{-11}\).</p>
     </div>

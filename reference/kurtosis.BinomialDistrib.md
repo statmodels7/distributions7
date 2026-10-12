@@ -2,9 +2,10 @@
 
 Closed form: \\\gamma_2 = \\1 - 6\mu(1-\mu)\\/\\n\mu(1-\mu)\\\\, the
 excess over the Gaussian. It is the Bernoulli's divided by \\n\\, so it
-vanishes twice as fast as the skewness and can take either sign: it is
-negative over the middle of the unit interval, where the support is
-bounded at both ends and the tails are lighter than a Gaussian's.
+decays like \\1/n\\, against \\1/\sqrt{n}\\ for the skewness, and it can
+take either sign: it is negative where \\\mu(1-\mu) \> 1/6\\, that is
+for \\\mu\\ between about 0.211 and 0.789, and positive outside that
+interval.
 
 ## Arguments
 
@@ -17,7 +18,7 @@ bounded at both ends and the tails are lighter than a Gaussian's.
 - theta:
 
   A named list with one component, `mu` (strictly between 0 and 1), a
-  numeric vector of length 1 or `n`.
+  numeric vector of length 1 or of the number of parameter settings.
 
 - ...:
 
@@ -25,7 +26,8 @@ bounded at both ends and the tails are lighter than a Gaussian's.
 
 ## Value
 
-A numeric vector of excess kurtoses, the length of `theta$mu`.
+A numeric vector of excess kurtoses, of length
+`max(length(theta$mu), length(x@size))`.
 
 ## See also
 

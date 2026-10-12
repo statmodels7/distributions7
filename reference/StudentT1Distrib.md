@@ -4,15 +4,17 @@ The S7 class of the location-scale Student t family, parametrized by a
 location \\\mu\\, a scale \\\sigma \> 0\\ and degrees of freedom \\\nu
 \> 0\\, with density proportional to \\\\1 +
 (y-\mu)^2/(\nu\sigma^2)\\^{-(\nu+1)/2}\\ on the whole real line. It
-inherits from `continuous_distrib`, so it answers every generic of the
-`distrib` contract; the eleven methods listed below are registered on it
+inherits from `continuous_distrib`, so every generic of the `distrib`
+class applies to it; the methods listed below are registered on it
 directly and everything else comes from the parent.
 
 Build one with
 [`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md),
 which supplies the three link functions and fills the properties in.
 This page documents the raw S7 constructor, which takes the parent's
-properties and validates none of the relationships between them.
+properties; the validator of `distrib` checks that the properties are
+consistent (the parameter count, a bound and a link for every parameter,
+ordered support bounds).
 
 ## Usage
 
@@ -98,40 +100,59 @@ they hold `"student t1"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class in this file:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.StudentT1Distrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.StudentT1Distrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.StudentT1Distrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.StudentT1Distrib.md),
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.StudentT1Distrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT1Distrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.StudentT1Distrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.StudentT1Distrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.StudentT1Distrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.StudentT1Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.StudentT1Distrib.md).
+Registered on this class, each linked to the page that documents it:
 
-Nine more are registered on the class from other files: the mixed
-derivatives
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.StudentT1Distrib.md)
-and
-[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.StudentT1Distrib.md),
-the distribution-function derivatives
-[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.StudentT1Distrib.md)
-and
-[`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.StudentT1Distrib.md),
-[`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
-and
-[`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
-in `theta2_families.R`, and the four moments
-[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.StudentT1Distrib.md),
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.StudentT1Distrib.md),
-[`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.StudentT1Distrib.md)
-and
-[`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.StudentT1Distrib.md)
-in `moments.R`.
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.StudentT1Distrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.StudentT1Distrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.StudentT1Distrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.StudentT1Distrib.md);
 
-Everything else is inherited from
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT1Distrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.StudentT1Distrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.StudentT1Distrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.StudentT1Distrib.md),
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.StudentT1Distrib.md)
+  and
+  [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.StudentT1Distrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.StudentT1Distrib.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.StudentT1Distrib.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.StudentT1Distrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.StudentT1Distrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.StudentT1Distrib.md),
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.StudentT1Distrib.md),
+  [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/loc_cross3_y.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_y_hess.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_y_hess.md);
+
+- the derivatives of the distribution function:
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.StudentT1Distrib.md),
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.StudentT1Distrib.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_deriv_cdf_k.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_deriv_cdf_k.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.StudentT1Distrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.StudentT1Distrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.StudentT1Distrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.StudentT1Distrib.md).
+
+Every other generic is inherited from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also

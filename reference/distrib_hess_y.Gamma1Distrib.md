@@ -32,8 +32,8 @@ where the family is exponential, and convex for \\\phi \> 1\\.
 
 ## Value
 
-A numeric vector of length `max(length(y), length(phi))`, one value per
-observation.
+A numeric vector of length `max(length(y), length(mu), length(phi))`,
+one value per observation.
 
 ## See also
 

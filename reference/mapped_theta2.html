@@ -13,7 +13,7 @@ reparametrized family, and it differentiates nothing itself."><meta property="og
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,7 +72,8 @@ reparametrized family, and it differentiates nothing itself.</p>
 
 <dt id="arg-th-par">th_par<a class="anchor" aria-label="anchor" href="#arg-th-par"></a></dt>
 <dd><p>A named list of the parent's parameters, evaluated at the new
-ones.</p></dd>
+ones. Not read by this function; the callers use it to compute <code>first</code>
+and <code>second</code>.</p></dd>
 
 
 <dt id="arg-maps">maps<a class="anchor" aria-label="anchor" href="#arg-maps"></a></dt>
@@ -81,8 +82,8 @@ entry per parent parameter, each a list keyed by new-parameter index.</p></dd>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of observations. Used only for its length,
-through the components.</p></dd>
+<dd><p>A numeric vector of observations. Not used; present so that the
+signature matches the callers'.</p></dd>
 
 
 <dt id="arg-first">first<a class="anchor" aria-label="anchor" href="#arg-first"></a></dt>
@@ -111,8 +112,8 @@ $$\frac{\partial^2 f}{\partial\alpha_a \partial\alpha_b}
   + \sum_i \frac{\partial^2\theta_i}{\partial\alpha_a\partial\alpha_b} f_i,$$
 with \(f_i\) the parent's first-order mixed component and \(f_{ij}\) its
 second-order one. Both partial tables are the MAP's, already keyed by
-<code><a href="reparam_tables.html">reparam_tables()</a></code> under the indices of the new parameters, <code>"1"</code> for a
-first partial and <code>"1,2"</code> for a second, so nothing is differentiated here.</p>
+<code><a href="reparam_tables.html">reparam_tables()</a></code> under the indices of the new parameters, <code>"1"</code> for a first
+partial and <code>"1,2"</code> for a second, so this function only combines them.</p>
     </div>
     <div class="section level2">
     <h2 id="what-first-and-second-are">What <code>first</code> and <code>second</code> are<a class="anchor" aria-label="anchor" href="#what-first-and-second-are"></a></h2>

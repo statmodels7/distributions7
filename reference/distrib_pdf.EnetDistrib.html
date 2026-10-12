@@ -10,7 +10,7 @@ The constant goes through \(\log M\). Written directly, \(\log M(x)\)
 adds \(x^2/2\) to a log-probability of the same size and opposite sign,
 so it loses a digit for every factor of ten in \(x\); past \(x = 30\)
 the asymptotic series is used instead. At \(\alpha = 1 - 10^{-12}\) the
-argument reaches \(10^6\), which an ordinary elastic net does."><meta property="og:description" content="Computes the elastic-net density
+argument reaches \(10^6\)."><meta property="og:description" content="Computes the elastic-net density
 $$f(y; \mu, \lambda, \alpha) = \frac{1}{Z}
   \exp\left\{-a|y-\mu| - \tfrac{c}{2}(y-\mu)^2\right\},$$
 with \(a = \lambda\alpha\), \(c = \lambda(1-\alpha)\) and
@@ -21,7 +21,7 @@ The constant goes through \(\log M\). Written directly, \(\log M(x)\)
 adds \(x^2/2\) to a log-probability of the same size and opposite sign,
 so it loses a digit for every factor of ten in \(x\); past \(x = 30\)
 the asymptotic series is used instead. At \(\alpha = 1 - 10^{-12}\) the
-argument reaches \(10^6\), which an ordinary elastic net does."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+argument reaches \(10^6\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +29,7 @@ argument reaches \(10^6\), which an ordinary elastic net does."><meta property="
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,7 @@ constant is finite at both ends of the mixing weight: \(2/a\) as
 adds \(x^2/2\) to a log-probability of the same size and opposite sign,
 so it loses a digit for every factor of ten in \(x\); past \(x = 30\)
 the asymptotic series is used instead. At \(\alpha = 1 - 10^{-12}\) the
-argument reaches \(10^6\), which an ordinary elastic net does.</p>
+argument reaches \(10^6\).</p>
     </div>
 
 
@@ -92,8 +92,8 @@ argument reaches \(10^6\), which an ordinary elastic net does.</p>
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>mu</code>, <code>lambda</code> and <code>alpha</code>, each a
 numeric vector of length 1 or of the length of <code>y</code>. <code>lambda</code> must be
-strictly positive and <code>alpha</code> strictly inside \((0, 1)\); at either
-endpoint the constant's argument is not defined and the value is <code>NaN</code>.</p></dd>
+strictly positive and <code>alpha</code> strictly inside \((0, 1)\); the generic
+signals an error for a value outside these domains.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>

@@ -3,8 +3,11 @@
 Returns the derivative component of a given order and multi-index for
 the beta-binomial log-mass in its two shapes. The log-mass is a sum of
 log-gamma terms, so its derivative of order \\k+1\\ is the same sum with
-\\\psi^{(k)}\\ in place of \\\log\Gamma\\. All four orders come from
-this one routine.
+\\\psi^{(k)}\\ in place of \\\log\Gamma\\.
+[`betabinom2_derivs()`](https://statmodels7.github.io/distributions7/reference/betabinom2_derivs.md)
+calls it for the third and fourth orders and for the expectations of
+[`betabinom2_expected()`](https://statmodels7.github.io/distributions7/reference/betabinom2_expected.md);
+the score and the Hessian come from compiled kernels.
 
 ## Usage
 

@@ -14,12 +14,12 @@ fdb1(h, u, order)
 
 - h:
 
-  A list of the outer derivatives `h1` to at least `h_order` at the
-  inner value.
+  A list of the outer derivatives of orders 1 to at least `order`,
+  evaluated at the inner value.
 
 - u:
 
-  A list of the inner derivatives `u1` to at least `u_order`.
+  A list of the inner derivatives of orders 1 to at least `order`.
 
 - order:
 

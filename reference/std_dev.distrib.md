@@ -46,7 +46,7 @@ th <- list(mu = 2, sigma = 3)
 all.equal(std_dev(d, th), sqrt(variance(d, th)))
 #> [1] TRUE
 
-# A Student t below two degrees of freedom has an infinite variance.
+# A Student t has an infinite variance for 1 < nu <= 2 (NaN for nu <= 1).
 std_dev(student_t1_distrib(), list(mu = 0, sigma = 1, nu = c(1.5, 5)))
 #> [1]      Inf 1.290994
 ```

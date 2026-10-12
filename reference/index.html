@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -401,7 +401,7 @@
       </dl></div><div class="section level2">
       <h2 id="derivatives">Derivatives<a class="anchor" aria-label="anchor" href="#derivatives"></a></h2>
 
-      <div class="section-desc"><p>The score, the observed and expected information, and higher orders — all available on the parameter scale or, through <code>scale = "link"</code>, with respect to the unconstrained parameters.</p></div>
+      <div class="section-desc"><p>The score, the observed and expected information, and higher orders, on the parameter scale or, through <code>scale = "link"</code>, with respect to the unconstrained parameters; and the derivatives with respect to the response and of the distribution function.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -588,7 +588,7 @@
           <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code>
 
         </dt>
-        <dd>Is a Family's Expected Information Written Out?</dd>
+        <dd>Whether a Family's Expected Information Is Written Out</dd>
 
         <dt>
 
@@ -602,7 +602,7 @@
           <code><a href="has_exact_deriv4.html">has_exact_deriv4()</a></code>
 
         </dt>
-        <dd>Is a Family's Fourth Derivative Its Own</dd>
+        <dd>Whether a Family Supplies Its Own Fourth Derivative</dd>
       </dl></div><div class="section level2">
       <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>
 
@@ -729,24 +729,24 @@
 
         <dt>
 
-          <code><a href="betabinom_factorial_moments.html">betabinom_factorial_moments()</a></code>
+          <code><a href="betabinom_moments.html">betabinom_moments()</a></code>
 
         </dt>
-        <dd>Falling Factorial Moments of a Beta-Binomial</dd>
+        <dd>Moments of the Beta-Binomial in Closed Form</dd>
 
         <dt>
 
-          <code><a href="central_from_factorial.html">central_from_factorial()</a></code>
+          <code><a href="beta_shape_moments.html">beta_shape_moments()</a></code>
 
         </dt>
-        <dd>Central Moments From Falling Factorial Moments</dd>
+        <dd>Moments of the Beta in Its Mean and Precision</dd>
 
         <dt>
 
-          <code><a href="betabinom_central.html">betabinom_central()</a></code>
+          <code><a href="weibull_moment_terms.html">weibull_moment_terms()</a></code>
 
         </dt>
-        <dd>Mean and Central Moments of a Beta-Binomial</dd>
+        <dd>Standardized Moments of a Weibull by Shape</dd>
       </dl></div><div class="section level2">
       <h2 id="building-on-a-distribution">Building on a distribution<a class="anchor" aria-label="anchor" href="#building-on-a-distribution"></a></h2>
 
@@ -899,7 +899,7 @@
       </dl></div><div class="section level2">
       <h2 id="several-dimensions">Several dimensions<a class="anchor" aria-label="anchor" href="#several-dimensions"></a></h2>
 
-      <div class="section-desc"><p>Distributions whose observations are vectors. The response is a matrix with one row per observation, and the parameters stay scalars: a mean vector contributes one each, and the matrix contributes the free values of the parameters7 structure that parametrizes it, so every generic of the package indexes them as it always did. There is one name per parametrization here as elsewhere, so the gaussian is written either in its covariance or in its precision and the t either in its scale matrix or in the inverse of that.</p></div>
+      <div class="section-desc"><p>Distributions whose observations are vectors. The response is a matrix with one row per observation, and the parameters stay scalars: a mean vector contributes one each, and the matrix contributes the free values of the parameters7 structure that parametrizes it, so every generic of the package indexes them as it does for a univariate family. There is one name per parametrization here as elsewhere, so the gaussian is written either in its covariance or in its precision and the t either in its scale matrix or in the inverse of that.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -939,14 +939,14 @@
           <code><a href="mv_location.html">mv_location()</a></code>
 
         </dt>
-        <dd>The Location Vector a Parameter List Describes</dd>
+        <dd>The Location Vector That a Parameter List Describes</dd>
 
         <dt>
 
           <code><a href="mv_sigma.html">mv_sigma()</a></code>
 
         </dt>
-        <dd>The Matrix a Parameter List Describes</dd>
+        <dd>The Matrix That a Parameter List Describes</dd>
 
         <dt>
 
@@ -1029,7 +1029,7 @@
       </dl></div><div class="section level2">
       <h2 id="numerical-fallbacks">Numerical fallbacks<a class="anchor" aria-label="anchor" href="#numerical-fallbacks"></a></h2>
 
-      <div class="section-desc"><p>What a distribution gets for free when it implements only its density. Rarely called directly, but useful as a reference for what is happening.</p></div>
+      <div class="section-desc"><p>What a distribution gets for free when it implements only its density. Rarely called directly; they show what the default methods compute.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -1274,7 +1274,7 @@
           <code><a href="kink_decomposition.html">kink_decomposition()</a></code>
 
         </dt>
-        <dd>The Kink a Family Carries</dd>
+        <dd>The Kink of a Family</dd>
 
         <dt>
 
@@ -1455,6 +1455,13 @@
 
         <dt>
 
+          <code><a href="distrib_deriv5.Gaussian1Distrib.html">distrib_deriv5.Gaussian1Distrib</a></code>
+
+        </dt>
+        <dd>Gaussian Fifth-Order Derivatives</dd>
+
+        <dt>
+
           <code><a href="distrib_expected_hessian.Gaussian1Distrib.html">distrib_expected_hessian.Gaussian1Distrib</a></code>
 
         </dt>
@@ -1569,6 +1576,13 @@
 
         <dt>
 
+          <code><a href="distrib_deriv5.Gaussian2Distrib.html">distrib_deriv5.Gaussian2Distrib</a></code>
+
+        </dt>
+        <dd>Gaussian Fifth-Order Derivatives, Mean and Variance</dd>
+
+        <dt>
+
           <code><a href="distrib_expected_hessian.Gaussian2Distrib.html">distrib_expected_hessian.Gaussian2Distrib</a></code>
 
         </dt>
@@ -1662,6 +1676,13 @@
 
         <dt>
 
+          <code><a href="distrib_deriv5.Gaussian3Distrib.html">distrib_deriv5.Gaussian3Distrib</a></code>
+
+        </dt>
+        <dd>Gaussian Fifth-Order Derivatives, Mean and Precision</dd>
+
+        <dt>
+
           <code><a href="distrib_expected_hessian.Gaussian3Distrib.html">distrib_expected_hessian.Gaussian3Distrib</a></code>
 
         </dt>
@@ -1752,6 +1773,13 @@
 
         </dt>
         <dd>Cauchy Fourth-Order Derivatives</dd>
+
+        <dt>
+
+          <code><a href="distrib_deriv5.CauchyDistrib.html">distrib_deriv5.CauchyDistrib</a></code>
+
+        </dt>
+        <dd>Cauchy Fifth-Order Derivatives</dd>
 
         <dt>
 
@@ -1859,6 +1887,13 @@
 
         </dt>
         <dd>Logistic Fourth-Order Derivatives</dd>
+
+        <dt>
+
+          <code><a href="distrib_deriv5.LogisticDistrib.html">distrib_deriv5.LogisticDistrib</a></code>
+
+        </dt>
+        <dd>Logistic Fifth-Order Derivatives</dd>
 
         <dt>
 
@@ -2141,6 +2176,13 @@
 
         <dt>
 
+          <code><a href="distrib_deriv5.LaplaceDistrib.html">distrib_deriv5.LaplaceDistrib</a></code>
+
+        </dt>
+        <dd>Laplace Fifth-Order Derivatives</dd>
+
+        <dt>
+
           <code><a href="distrib_expected_hessian.LaplaceDistrib.html">distrib_expected_hessian.LaplaceDistrib</a></code>
 
         </dt>
@@ -2245,6 +2287,13 @@
 
         </dt>
         <dd>Laplace Fourth-Order Derivatives, Rate Parametrization</dd>
+
+        <dt>
+
+          <code><a href="distrib_deriv5.Laplace2Distrib.html">distrib_deriv5.Laplace2Distrib</a></code>
+
+        </dt>
+        <dd>Laplace, Rate Parametrization Fifth-Order Derivatives</dd>
 
         <dt>
 
@@ -2892,6 +2941,13 @@
 
         <dt>
 
+          <code><a href="distrib_deriv5.GumbelDistrib.html">distrib_deriv5.GumbelDistrib</a></code>
+
+        </dt>
+        <dd>Gumbel Fifth-Order Derivatives</dd>
+
+        <dt>
+
           <code><a href="distrib_expected_hessian.GumbelDistrib.html">distrib_expected_hessian.GumbelDistrib</a></code>
 
         </dt>
@@ -3129,6 +3185,13 @@
 
         <dt>
 
+          <code><a href="distrib_deriv5.ExponentialDistrib.html">distrib_deriv5.ExponentialDistrib</a></code>
+
+        </dt>
+        <dd>Exponential Fifth-Order Derivatives</dd>
+
+        <dt>
+
           <code><a href="distrib_expected_hessian.ExponentialDistrib.html">distrib_expected_hessian.ExponentialDistrib</a></code>
 
         </dt>
@@ -3219,6 +3282,13 @@
 
         </dt>
         <dd>Chi-Squared Fourth-Order Derivative</dd>
+
+        <dt>
+
+          <code><a href="distrib_deriv5.ChisqDistrib.html">distrib_deriv5.ChisqDistrib</a></code>
+
+        </dt>
+        <dd>Chi-Squared Fifth-Order Derivatives</dd>
 
         <dt>
 
@@ -3572,7 +3642,7 @@
           <code><a href="gamma1_shape_rate.html">gamma1_shape_rate()</a></code>
 
         </dt>
-        <dd>The Shape and Rate a Mean and Dispersion Imply</dd>
+        <dd>Shape and Rate of the Gamma from Its Mean and Dispersion</dd>
       </dl></div><div class="section level2">
       <h2 id="inverse-gaussian">Inverse Gaussian<a class="anchor" aria-label="anchor" href="#inverse-gaussian"></a></h2>
 
@@ -6437,7 +6507,7 @@
       </dl></div><div class="section level2">
       <h2 id="internals">Internals<a class="anchor" aria-label="anchor" href="#internals"></a></h2>
 
-      <div class="section-desc"><p>The machinery the exported functions are built from. None of it is exported, and none of it is needed to use the package — it is documented so that the derivations can be followed from the code that implements them: the set partitions behind the Bartlett identities and the wrapper derivatives, the Bell polynomials behind the link scale, the ratio-of-uniforms sampler and the transforms that make it work on a divergent density.</p></div>
+      <div class="section-desc"><p>The machinery that the exported functions are built from. It is not needed to use the package, and it is documented so that the derivations can be followed from the code that implements them: the set partitions behind the Bartlett identities and the wrapper derivatives, the Bell polynomials behind the link scale, the ratio-of-uniforms sampler and the transforms that make it work on a divergent density.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -6474,6 +6544,20 @@
 
         <dt>
 
+          <code><a href="atom_mass_at.html">atom_mass_at()</a></code>
+
+        </dt>
+        <dd>Mass of an Atom at One Point, by Observation</dd>
+
+        <dt>
+
+          <code><a href="bb_direct_cut.html">bb_direct_cut()</a></code>
+
+        </dt>
+        <dd>The Concentration Above Which the Beta-Binomial Uses the Direct Sums</dd>
+
+        <dt>
+
           <code><a href="bell_f_ratio.html">bell_f_ratio()</a></code>
 
         </dt>
@@ -6492,6 +6576,20 @@
 
         </dt>
         <dd>Higher Derivatives of the Beta in Its Shapes</dd>
+
+        <dt>
+
+          <code><a href="beta_mu_sigma.html">beta_mu_sigma()</a></code>
+
+        </dt>
+        <dd>The Mean Proportion and Dispersion of a Beta in Its Shapes</dd>
+
+        <dt>
+
+          <code><a href="beta_shape_moments.html">beta_shape_moments()</a></code>
+
+        </dt>
+        <dd>Moments of the Beta in Its Mean and Precision</dd>
 
         <dt>
 
@@ -6516,6 +6614,13 @@
 
         <dt>
 
+          <code><a href="betabinom1_expected.html">betabinom1_expected()</a></code>
+
+        </dt>
+        <dd>The Beta-Binomial's Expected Higher Derivatives in Mean and Dispersion</dd>
+
+        <dt>
+
           <code><a href="betabinom2_component.html">betabinom2_component()</a></code>
 
         </dt>
@@ -6537,17 +6642,10 @@
 
         <dt>
 
-          <code><a href="betabinom_central.html">betabinom_central()</a></code>
+          <code><a href="betabinom_direct.html">betabinom_direct()</a></code>
 
         </dt>
-        <dd>Mean and Central Moments of a Beta-Binomial</dd>
-
-        <dt>
-
-          <code><a href="betabinom_factorial_moments.html">betabinom_factorial_moments()</a></code>
-
-        </dt>
-        <dd>Falling Factorial Moments of a Beta-Binomial</dd>
+        <dd>The Beta-Binomial Derivatives From the Direct Sums</dd>
 
         <dt>
 
@@ -6558,10 +6656,31 @@
 
         <dt>
 
+          <code><a href="betabinom_moments.html">betabinom_moments()</a></code>
+
+        </dt>
+        <dd>Moments of the Beta-Binomial in Closed Form</dd>
+
+        <dt>
+
+          <code><a href="binomial_recycle.html">binomial_recycle()</a></code>
+
+        </dt>
+        <dd>Recycle the Arguments of the Binomial Kernels</dd>
+
+        <dt>
+
           <code><a href="canon_key.html">canon_key()</a></code>
 
         </dt>
         <dd>Canonical Component Name of a Block</dd>
+
+        <dt>
+
+          <code><a href="cauchy_cdf_method.html">cauchy_cdf_method()</a></code>
+
+        </dt>
+        <dd>Cauchy Distribution Function Derivatives</dd>
 
         <dt>
 
@@ -6575,7 +6694,7 @@
           <code><a href="cdf_tables.html">cdf_tables()</a></code>
 
         </dt>
-        <dd>CDF Derivative Tables of Every Order Up To One</dd>
+        <dd>CDF Derivative Tables up to a Given Order</dd>
 
         <dt>
 
@@ -6583,13 +6702,6 @@
 
         </dt>
         <dd>Put CDF Derivatives on the Requested Tail and Scale</dd>
-
-        <dt>
-
-          <code><a href="central_from_factorial.html">central_from_factorial()</a></code>
-
-        </dt>
-        <dd>Central Moments From Falling Factorial Moments</dd>
 
         <dt>
 
@@ -6677,7 +6789,7 @@
 
         <dt>
 
-          <code><a href="compiled_cdf.html">compiled_cdf()</a></code> <code><a href="compiled_cdf.html">compiled_grad_cdf()</a></code> <code><a href="compiled_cdf.html">compiled_hess_cdf()</a></code> <code><a href="compiled_cdf.html">compiled_cdf_args()</a></code>
+          <code><a href="compiled_cdf.html">compiled_cdf()</a></code> <code><a href="compiled_cdf.html">compiled_log_cdf()</a></code> <code><a href="compiled_cdf.html">log_tail_integral()</a></code> <code><a href="compiled_cdf.html">compiled_grad_cdf()</a></code> <code><a href="compiled_cdf.html">compiled_hess_cdf()</a></code> <code><a href="compiled_cdf.html">compiled_cdf_args()</a></code>
 
         </dt>
         <dd>Distribution Function and Its Derivatives from the Compiled Kernels</dd>
@@ -6688,6 +6800,13 @@
 
         </dt>
         <dd>Third and Fourth Derivatives of a Compiled Distribution Function</dd>
+
+        <dt>
+
+          <code><a href="compiled_cdf_head.html">compiled_cdf_head()</a></code>
+
+        </dt>
+        <dd>Power-Law Head of a Compiled CDF Derivative</dd>
 
         <dt>
 
@@ -6803,6 +6922,13 @@
 
         <dt>
 
+          <code><a href="disc_upper_table.html">disc_upper_table()</a></code>
+
+        </dt>
+        <dd>Upper-Tail Table for a Discrete Distribution</dd>
+
+        <dt>
+
           <code><a href="discrete_cdf_deriv.html">discrete_cdf_deriv()</a></code>
 
         </dt>
@@ -6883,7 +7009,7 @@
           <code><a href="distrib_cdf.multivariate_distrib.html">distrib_cdf.multivariate_distrib</a></code>
 
         </dt>
-        <dd>No Distribution Function in Several Dimensions</dd>
+        <dd>Distribution Function of a Multivariate Distribution</dd>
 
         <dt>
 
@@ -7142,7 +7268,7 @@
           <code><a href="distrib_cross_y.multivariate_distrib.html">distrib_cross_y.multivariate_distrib</a></code>
 
         </dt>
-        <dd>No Numerical Mixed Response Derivative in Several Dimensions</dd>
+        <dd>Mixed Response Derivative of a Multivariate Family Without a Method</dd>
 
         <dt>
 
@@ -7527,7 +7653,7 @@
           <code><a href="distrib_grad_y.multivariate_distrib.html">distrib_grad_y.multivariate_distrib</a></code>
 
         </dt>
-        <dd>No Numerical Response Gradient in Several Dimensions</dd>
+        <dd>Response Gradient of a Multivariate Family Without a Method</dd>
 
         <dt>
 
@@ -7695,7 +7821,7 @@
           <code><a href="distrib_hess_y.multivariate_distrib.html">distrib_hess_y.multivariate_distrib</a></code>
 
         </dt>
-        <dd>No Numerical Response Hessian in Several Dimensions</dd>
+        <dd>Response Hessian of a Multivariate Family Without a Method</dd>
 
         <dt>
 
@@ -7779,7 +7905,7 @@
           <code><a href="distrib_intercept_start.distrib.html">distrib_intercept_start.distrib</a></code>
 
         </dt>
-        <dd>No Intercept Needs a Start of Its Own</dd>
+        <dd>Default Intercept Starting Values</dd>
 
         <dt>
 
@@ -7828,7 +7954,7 @@
           <code><a href="distrib_quantile.multivariate_distrib.html">distrib_quantile.multivariate_distrib</a></code>
 
         </dt>
-        <dd>No Quantile Function in Several Dimensions</dd>
+        <dd>Quantile Function of a Multivariate Distribution</dd>
 
         <dt>
 
@@ -8000,7 +8126,14 @@
 
         <dt>
 
-          <code><a href="dy_log.html">dy_log()</a></code> <code><a href="dy_log.html">dy_log1m()</a></code> <code><a href="dy_log.html">dy_pow()</a></code> <code><a href="dy_log.html">dy_logaff()</a></code> <code><a href="dy_log.html">dy_cos()</a></code>
+          <code><a href="drop_no_verdict.html">drop_no_verdict()</a></code>
+
+        </dt>
+        <dd>Set Aside the Rows of a Validation That Have No Verdict</dd>
+
+        <dt>
+
+          <code><a href="dy_log.html">dy_log()</a></code> <code><a href="dy_log.html">dy_log1m()</a></code> <code><a href="dy_log.html">dy_pow()</a></code> <code><a href="dy_log.html">dy_zero()</a></code> <code><a href="dy_log.html">dy_logaff()</a></code> <code><a href="dy_log.html">dy_cos()</a></code>
 
         </dt>
         <dd>The k-th Response Derivative of an Elementary Term</dd>
@@ -8073,14 +8206,14 @@
           <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code>
 
         </dt>
-        <dd>Is a Family's Expected Information Written Out?</dd>
+        <dd>Whether a Family's Expected Information Is Written Out</dd>
 
         <dt>
 
           <code><a href="expected_hessian_exact.distrib.html">expected_hessian_exact.distrib</a></code>
 
         </dt>
-        <dd>Whether the Owner of the Method Settles the Question</dd>
+        <dd>Expected Information Read from the Class of Its Method</dd>
 
         <dt>
 
@@ -8108,14 +8241,14 @@
           <code><a href="fd_stable_quotient.html">fd_stable_quotient()</a></code>
 
         </dt>
-        <dd>A Response Difference That Chooses Its Step</dd>
+        <dd>A Response Difference with a Selected Step</dd>
 
         <dt>
 
           <code><a href="fd_stable_step.html">fd_stable_step()</a></code>
 
         </dt>
-        <dd>A Parameter Step That Chooses Itself</dd>
+        <dd>Selecting the Finite-Difference Step in One Parameter</dd>
 
         <dt>
 
@@ -8129,7 +8262,7 @@
           <code><a href="fd_steps_y.html">fd_steps_y()</a></code>
 
         </dt>
-        <dd>Finite-Difference Steps That Respect the Support</dd>
+        <dd>Finite-Difference Steps Within the Support</dd>
 
         <dt>
 
@@ -8283,7 +8416,7 @@
           <code><a href="gamma1_shape_rate.html">gamma1_shape_rate()</a></code>
 
         </dt>
-        <dd>The Shape and Rate a Mean and Dispersion Imply</dd>
+        <dd>Shape and Rate of the Gamma from Its Mean and Dispersion</dd>
 
         <dt>
 
@@ -8420,6 +8553,20 @@
 
         <dt>
 
+          <code><a href="head_derivs.html">head_derivs()</a></code>
+
+        </dt>
+        <dd>Derivatives of a Discrete Truncated Log-Density Around Its First Point</dd>
+
+        <dt>
+
+          <code><a href="head_override.html">head_override()</a></code>
+
+        </dt>
+        <dd>Replace the Derivatives of a Truncated Discrete Part Near Degeneracy</dd>
+
+        <dt>
+
           <code><a href="hess_pair_name.html">hess_pair_name()</a></code>
 
         </dt>
@@ -8458,7 +8605,7 @@
           <code><a href="is_class.html">is_class()</a></code>
 
         </dt>
-        <dd>Is an S7 Class the Given Base Class?</dd>
+        <dd>Whether an S7 Class Is the Given Base Class</dd>
 
         <dt>
 
@@ -8661,7 +8808,7 @@
           <code><a href="kurtosis.InvGauss2Distrib.html">kurtosis.InvGauss2Distrib</a></code>
 
         </dt>
-        <dd>Excess Kurtosis of the Inverse Gaussian Distribution in Mean and Rate</dd>
+        <dd>Excess Kurtosis of the Inverse Gaussian Distribution in Mean and Shape</dd>
 
         <dt>
 
@@ -8780,7 +8927,7 @@
           <code><a href="kurtosis.multivariate_distrib.html">kurtosis.multivariate_distrib</a></code>
 
         </dt>
-        <dd>No Kurtosis Without Saying Which One</dd>
+        <dd>Kurtosis of a Multivariate Distribution</dd>
 
         <dt>
 
@@ -8788,6 +8935,13 @@
 
         </dt>
         <dd>Sample Excess Kurtosis</dd>
+
+        <dt>
+
+          <code><a href="laplace_cdf_tails.html">laplace_cdf_tails()</a></code> <code><a href="laplace_cdf_tails.html">laplace_std_quantile()</a></code>
+
+        </dt>
+        <dd>The Laplace Tails on the Log Scale</dd>
 
         <dt>
 
@@ -8830,6 +8984,20 @@
 
         </dt>
         <dd>Location-Scale CDF Derivatives at Any Order</dd>
+
+        <dt>
+
+          <code><a href="loc_scale_cdf_route.html">loc_scale_cdf_route()</a></code>
+
+        </dt>
+        <dd>Location-Scale Distribution Function Derivatives on Either Tail</dd>
+
+        <dt>
+
+          <code><a href="loc_scale_center.html">loc_scale_center()</a></code>
+
+        </dt>
+        <dd>The Center of the Location-Scale Rule</dd>
 
         <dt>
 
@@ -9151,7 +9319,7 @@
           <code><a href="mean.InvGauss2Distrib.html">mean.InvGauss2Distrib</a></code>
 
         </dt>
-        <dd>Mean of the Inverse Gaussian Distribution in Mean and Rate</dd>
+        <dd>Mean of the Inverse Gaussian Distribution in Mean and Shape</dd>
 
         <dt>
 
@@ -9316,6 +9484,27 @@
 
         <dt>
 
+          <code><a href="mn_cumulant.html">mn_cumulant()</a></code>
+
+        </dt>
+        <dd>A Joint Cumulant of the Indicators of a Categorical Law</dd>
+
+        <dt>
+
+          <code><a href="mn_is_alr.html">mn_is_alr()</a></code>
+
+        </dt>
+        <dd>Whether a Simplex Parameter Is the Additive Log-Ratio Chart</dd>
+
+        <dt>
+
+          <code><a href="mn_log_probs.html">mn_log_probs()</a></code>
+
+        </dt>
+        <dd>The Log-Probabilities on the Additive Log-Ratio Chart</dd>
+
+        <dt>
+
           <code><a href="mn_parts.html">mn_parts()</a></code>
 
         </dt>
@@ -9386,13 +9575,6 @@
 
         <dt>
 
-          <code><a href="mv_expected_higher.html">mv_expected_higher()</a></code>
-
-        </dt>
-        <dd>Expected Higher Derivatives of a Simplex-Valued Family by Sampling</dd>
-
-        <dt>
-
           <code><a href="mv_flat_theta.html">mv_flat_theta()</a></code>
 
         </dt>
@@ -9431,7 +9613,7 @@
           <code><a href="mv_location.multivariate_distrib.html">mv_location.multivariate_distrib</a></code>
 
         </dt>
-        <dd>No Location Without a Family That Has One</dd>
+        <dd>Location of a Family Without a Method</dd>
 
         <dt>
 
@@ -9452,14 +9634,14 @@
           <code><a href="mv_marginal.multivariate_distrib.html">mv_marginal.multivariate_distrib</a></code>
 
         </dt>
-        <dd>No Marginal Without a Closed Form</dd>
+        <dd>Marginal of a Family Without a Closed Form</dd>
 
         <dt>
 
           <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code>
 
         </dt>
-        <dd>The Matrix, Its Inverse and Their Derivatives, From Either Side</dd>
+        <dd>The Matrix, Its Inverse and Their Derivatives</dd>
 
         <dt>
 
@@ -9467,13 +9649,6 @@
 
         </dt>
         <dd>The Moment Estimates a Multivariate Family Starts From</dd>
-
-        <dt>
-
-          <code><a href="mv_ordered_partitions.html">mv_ordered_partitions()</a></code>
-
-        </dt>
-        <dd>Ordered Partitions of a Set of Positions</dd>
 
         <dt>
 
@@ -9487,7 +9662,7 @@
           <code><a href="mv_own_block.html">mv_own_block()</a></code>
 
         </dt>
-        <dd>The Quantities a Structured Parametrization Is About</dd>
+        <dd>Quantities Declared by a Structured Parametrization</dd>
 
         <dt>
 
@@ -9501,7 +9676,7 @@
           <code><a href="mv_param_block.html">mv_param_block()</a></code>
 
         </dt>
-        <dd>The Quantities the Matrix Parametrization Is About</dd>
+        <dd>Quantities Declared by the Matrix Parametrization</dd>
 
         <dt>
 
@@ -9512,10 +9687,24 @@
 
         <dt>
 
+          <code><a href="mv_quad.html">mv_quad()</a></code>
+
+        </dt>
+        <dd>The Quadratic Form of a Residual, Through the Chart's Factor</dd>
+
+        <dt>
+
           <code><a href="mv_reference_draw.DirichletDistrib.html">mv_reference_draw.DirichletDistrib</a></code>
 
         </dt>
         <dd>A Uniform Proposal on the Simplex</dd>
+
+        <dt>
+
+          <code><a href="mv_reference_draw.MvStudentTDistrib.html">mv_reference_draw.MvStudentTDistrib</a></code>
+
+        </dt>
+        <dd>A Multivariate t Proposal for Integrating the Density</dd>
 
         <dt>
 
@@ -9529,7 +9718,14 @@
           <code><a href="mv_refuse.html">mv_refuse()</a></code>
 
         </dt>
-        <dd>Reject a Quantity That Has No Multivariate Counterpart</dd>
+        <dd>Signal the Error for a Quantity Without a Multivariate Counterpart</dd>
+
+        <dt>
+
+          <code><a href="mv_sampling_factor.html">mv_sampling_factor()</a></code>
+
+        </dt>
+        <dd>A Factor of the Covariance for Sampling</dd>
 
         <dt>
 
@@ -9564,14 +9760,7 @@
           <code><a href="mv_support.multivariate_distrib.html">mv_support.multivariate_distrib</a></code>
 
         </dt>
-        <dd>No Enumerable Support</dd>
-
-        <dt>
-
-          <code><a href="mvg_a2.html">mvg_a2()</a></code>
-
-        </dt>
-        <dd>The Second Derivative of the Covariance, by Position</dd>
+        <dd>Support of a Family Without an Enumerable One</dd>
 
         <dt>
 
@@ -9585,7 +9774,7 @@
           <code><a href="mvg_pieces.html">mvg_pieces()</a></code>
 
         </dt>
-        <dd>The Pieces a Multivariate Gaussian Evaluates From</dd>
+        <dd>The Pieces From Which a Multivariate Gaussian Evaluates</dd>
 
         <dt>
 
@@ -9599,7 +9788,7 @@
           <code><a href="mvg_residuals.html">mvg_residuals()</a></code>
 
         </dt>
-        <dd>Residuals and Whitened Residuals of a Multivariate Gaussian</dd>
+        <dd>Residuals of a Multivariate Gaussian and Their Image Under the Precision</dd>
 
         <dt>
 
@@ -9624,13 +9813,6 @@
 
         <dt>
 
-          <code><a href="mvt_A1.html">mvt_A1()</a></code>
-
-        </dt>
-        <dd>The Univariate Digamma Difference at One Degree of Freedom</dd>
-
-        <dt>
-
           <code><a href="mvt_D.html">mvt_D()</a></code>
 
         </dt>
@@ -9638,24 +9820,10 @@
 
         <dt>
 
-          <code><a href="mvt_T.html">mvt_T()</a></code>
+          <code><a href="mvt_cp_d.html">mvt_cp_d()</a></code>
 
         </dt>
-        <dd>The Trigamma Difference of a Multivariate t, Without the Cancellation</dd>
-
-        <dt>
-
-          <code><a href="mvt_T1.html">mvt_T1()</a></code>
-
-        </dt>
-        <dd>The Univariate Trigamma Difference at One Degree of Freedom</dd>
-
-        <dt>
-
-          <code><a href="mvt_a2.html">mvt_a2()</a></code>
-
-        </dt>
-        <dd>The Second Derivative of the Scale Matrix, by Position</dd>
+        <dd>The Constant of a Multivariate t and Its Derivatives in nu</dd>
 
         <dt>
 
@@ -9666,6 +9834,13 @@
 
         <dt>
 
+          <code><a href="mvt_h_d.html">mvt_h_d()</a></code>
+
+        </dt>
+        <dd>The Data Term of a Multivariate t and Its Derivatives in nu</dd>
+
+        <dt>
+
           <code><a href="mvt_higher.html">mvt_higher()</a></code>
 
         </dt>
@@ -9673,10 +9848,24 @@
 
         <dt>
 
+          <code><a href="mvt_info_nunu.html">mvt_info_nunu()</a></code>
+
+        </dt>
+        <dd>The Expected Information in nu of a Multivariate t</dd>
+
+        <dt>
+
+          <code><a href="mvt_nu_coef.html">mvt_nu_coef()</a></code>
+
+        </dt>
+        <dd>The Taylor Coefficients Behind a Multivariate t's Degrees of Freedom</dd>
+
+        <dt>
+
           <code><a href="mvt_pieces.html">mvt_pieces()</a></code>
 
         </dt>
-        <dd>The Pieces a Multivariate t Evaluates From</dd>
+        <dd>The Pieces From Which a Multivariate t Evaluates</dd>
 
         <dt>
 
@@ -9701,17 +9890,17 @@
 
         <dt>
 
+          <code><a href="mvt_yscaled.html">mvt_yscaled()</a></code>
+
+        </dt>
+        <dd>The Weights of a Multivariate t, Scaled for a Distant Observation</dd>
+
+        <dt>
+
           <code><a href="n_support_points.html">n_support_points()</a></code>
 
         </dt>
         <dd>Number of Points in a Discrete Support</dd>
-
-        <dt>
-
-          <code><a href="nb1_prob.html">nb1_prob()</a></code>
-
-        </dt>
-        <dd>The Success Probability Behind an NB1 Dispersion</dd>
 
         <dt>
 
@@ -9778,6 +9967,13 @@
 
         <dt>
 
+          <code><a href="own_cdf_deriv.html">own_cdf_deriv()</a></code>
+
+        </dt>
+        <dd>A Family's Own First or Second CDF Derivatives as a Table</dd>
+
+        <dt>
+
           <code><a href="owns_method.html">owns_method()</a></code>
 
         </dt>
@@ -9813,13 +10009,6 @@
 
         <dt>
 
-          <code><a href="partial_loc_scale_cross_y.html">partial_loc_scale_cross_y()</a></code>
-
-        </dt>
-        <dd>Mixed Derivatives When Only Two Parameters Are Location-Scale</dd>
-
-        <dt>
-
           <code><a href="partial_loc_scale_deriv_cdf_k.html">partial_loc_scale_deriv_cdf_k()</a></code>
 
         </dt>
@@ -9827,24 +10016,10 @@
 
         <dt>
 
-          <code><a href="partial_loc_scale_grad_cdf.html">partial_loc_scale_grad_cdf()</a></code>
-
-        </dt>
-        <dd>CDF Gradient When Only Some Parameters Are Location-Scale</dd>
-
-        <dt>
-
           <code><a href="partial_loc_scale_grad_y_hess.html">partial_loc_scale_grad_y_hess()</a></code> <code><a href="partial_loc_scale_grad_y_hess.html">partial_loc_scale_hess_y_hess()</a></code>
 
         </dt>
         <dd>Second-Order Mixed Derivatives With a Shape Parameter</dd>
-
-        <dt>
-
-          <code><a href="partial_loc_scale_hess_cdf.html">partial_loc_scale_hess_cdf()</a></code>
-
-        </dt>
-        <dd>CDF Hessian When Only Some Parameters Are Location-Scale</dd>
 
         <dt>
 
@@ -9914,7 +10089,7 @@
           <code><a href="plot_legend_side.html">plot_legend_side()</a></code>
 
         </dt>
-        <dd>Where to Put the Key</dd>
+        <dd>Placing the Legend</dd>
 
         <dt>
 
@@ -9922,6 +10097,13 @@
 
         </dt>
         <dd>One Parameter Setting Per Curve</dd>
+
+        <dt>
+
+          <code><a href="power_negative_transform.html">power_negative_transform()</a></code>
+
+        </dt>
+        <dd>Even Power of a Negative Variable</dd>
 
         <dt>
 
@@ -10264,7 +10446,7 @@
           <code><a href="skewness.InvGauss2Distrib.html">skewness.InvGauss2Distrib</a></code>
 
         </dt>
-        <dd>Skewness of the Inverse Gaussian Distribution in Mean and Rate</dd>
+        <dd>Skewness of the Inverse Gaussian Distribution in Mean and Shape</dd>
 
         <dt>
 
@@ -10383,7 +10565,7 @@
           <code><a href="skewness.multivariate_distrib.html">skewness.multivariate_distrib</a></code>
 
         </dt>
-        <dd>No Skewness Without Saying Which One</dd>
+        <dd>Skewness of a Multivariate Distribution</dd>
 
         <dt>
 
@@ -10506,6 +10688,13 @@
 
         <dt>
 
+          <code><a href="sn_log_lower.html">sn_log_lower()</a></code>
+
+        </dt>
+        <dd>The Skew Normal's Lower Tail on the Log Scale</dd>
+
+        <dt>
+
           <code><a href="sn_max_skew.html">sn_max_skew()</a></code>
 
         </dt>
@@ -10580,6 +10769,27 @@
 
         </dt>
         <dd>CDF Derivatives From an Exponential Survival Function</dd>
+
+        <dt>
+
+          <code><a href="symmetric_log_quantile.html">symmetric_log_quantile()</a></code>
+
+        </dt>
+        <dd>The Quantile of a Symmetric Family on the Log Scale</dd>
+
+        <dt>
+
+          <code><a href="tail_helpers.html">log1mexp_neg()</a></code> <code><a href="tail_helpers.html">cdf_from_log_tails()</a></code> <code><a href="tail_helpers.html">quantile_log_tails()</a></code>
+
+        </dt>
+        <dd>Tail Probabilities on the Log Scale</dd>
+
+        <dt>
+
+          <code><a href="tail_probability.html">tail_cdf()</a></code> <code><a href="tail_probability.html">tail_probability()</a></code>
+
+        </dt>
+        <dd>The Probability of the Requested Tail</dd>
 
         <dt>
 
@@ -10929,7 +11139,7 @@
           <code><a href="variance.InvGauss2Distrib.html">variance.InvGauss2Distrib</a></code>
 
         </dt>
-        <dd>Variance of the Inverse Gaussian Distribution in Mean and Rate</dd>
+        <dd>Variance of the Inverse Gaussian Distribution in Mean and Shape</dd>
 
         <dt>
 
@@ -11080,6 +11290,13 @@
 
         <dt>
 
+          <code><a href="vm_cdf_tail.html">vm_log_tail()</a></code> <code><a href="vm_cdf_tail.html">vm_log_piece()</a></code> <code><a href="vm_cdf_tail.html">vm_cdf_tail()</a></code>
+
+        </dt>
+        <dd>The von Mises Tails Below the Series' Resolution</dd>
+
+        <dt>
+
           <code><a href="vm_dexpected.html">vm_dexpected()</a></code>
 
         </dt>
@@ -11094,7 +11311,14 @@
 
         <dt>
 
-          <code><a href="weibull3_scale.html">weibull3_scale()</a></code>
+          <code><a href="weibull3_dy_at_zero.html">weibull3_dy_at_zero()</a></code>
+
+        </dt>
+        <dd>Response Derivatives of the Weibull at Zero</dd>
+
+        <dt>
+
+          <code><a href="weibull3_scale.html">weibull3_scale()</a></code> <code><a href="weibull3_scale.html">weibull3_log_scale()</a></code> <code><a href="weibull3_scale.html">weibull3_scale_ok()</a></code>
 
         </dt>
         <dd>The Scale of a Weibull with a Given Mean</dd>
@@ -11108,17 +11332,10 @@
 
         <dt>
 
-          <code><a href="weibull_gamma_factors.html">weibull_gamma_factors()</a></code>
+          <code><a href="weibull_moment_terms.html">weibull_moment_terms()</a></code>
 
         </dt>
-        <dd>Gamma Factors of a Weibull's Moments</dd>
-
-        <dt>
-
-          <code><a href="weibull_pieces.html">weibull_pieces()</a></code>
-
-        </dt>
-        <dd>The Pieces a Weibull Evaluates From</dd>
+        <dd>Standardized Moments of a Weibull by Shape</dd>
 
         <dt>
 
@@ -11140,6 +11357,13 @@
 
         </dt>
         <dd>Response Derivative of a Zero-Adjusted Distribution</dd>
+
+        <dt>
+
+          <code><a href="za_y_list.html">za_y_list()</a></code>
+
+        </dt>
+        <dd>Mixed Response Derivatives of a Zero-Adjusted Continuous Family</dd>
 
         <dt>
 

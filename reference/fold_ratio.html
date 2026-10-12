@@ -19,7 +19,7 @@ $$\frac{d^B L}{L} = w \frac{d^B f(x)}{f(x)}
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,8 +83,8 @@ $$\frac{d^B L}{L} = w \frac{d^B f(x)}{f(x)}
 
 
 <dt id="arg-order">order<a class="anchor" aria-label="anchor" href="#arg-order"></a></dt>
-<dd><p>The highest derivative order the caller will ask for, a single
-whole number from 1 to 4. Blocks longer than this are not prepared.</p></dd>
+<dd><p>The highest derivative order that is needed, a single whole
+number from 1 to 4. Blocks longer than this are not prepared.</p></dd>
 
 
 <dt id="arg-params">params<a class="anchor" aria-label="anchor" href="#arg-params"></a></dt>
@@ -102,10 +102,11 @@ vector of the recycled length of <code>x</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The memoization matters because a partition sum asks for the same block many
+    <p>The memoization is useful because a partition sum needs the same block many
 times: at order four the same singleton block appears in most of the
-partitions. Each distinct block costs two evaluations of the parent's
-derivatives, one at \(+x\) and one at \(-x\), and no more.</p>
+partitions. The parent's derivatives are evaluated once at \(+x\) and once
+at \(-x\) for the whole call, up to the requested order, and each distinct
+block is then assembled from them once.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

@@ -3,23 +3,19 @@
 whose variance is linear in the mean: with a mean \(\mu &amp;gt; 0\) and a
 dispersion \(\theta &amp;gt; 0\), \(\operatorname{Var}(Y) = \mu(1+\theta)\), so
 the variance-to-mean ratio is \(1+\theta\) at every mean. It inherits from
-discrete_distrib, so it answers every generic of the distrib contract;
-the seven methods listed below are registered on it in this file and
-everything else comes from the parent.
+discrete_distrib.
 Build one with negbin1_distrib(), which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,
-which takes the parent's properties and validates none of the relationships
-between them."><meta property="og:description" content="The S7 class of the negative binomial family on the non-negative integers
+which takes the parent's properties; the validator of distrib checks
+them, and the constructor adds no check of its own."><meta property="og:description" content="The S7 class of the negative binomial family on the non-negative integers
 whose variance is linear in the mean: with a mean \(\mu &amp;gt; 0\) and a
 dispersion \(\theta &amp;gt; 0\), \(\operatorname{Var}(Y) = \mu(1+\theta)\), so
 the variance-to-mean ratio is \(1+\theta\) at every mean. It inherits from
-discrete_distrib, so it answers every generic of the distrib contract;
-the seven methods listed below are registered on it in this file and
-everything else comes from the parent.
+discrete_distrib.
 Build one with negbin1_distrib(), which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,
-which takes the parent's properties and validates none of the relationships
-between them."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+which takes the parent's properties; the validator of distrib checks
+them, and the constructor adds no check of its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +23,7 @@ between them."><meta property="og:image" content="https://statmodels7.github.io/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,13 +60,11 @@ between them."><meta property="og:image" content="https://statmodels7.github.io/
 whose variance is <strong>linear</strong> in the mean: with a mean \(\mu &gt; 0\) and a
 dispersion \(\theta &gt; 0\), \(\operatorname{Var}(Y) = \mu(1+\theta)\), so
 the variance-to-mean ratio is \(1+\theta\) at every mean. It inherits from
-<code>discrete_distrib</code>, so it answers every generic of the <code>distrib</code> contract;
-the seven methods listed below are registered on it in this file and
-everything else comes from the parent.</p>
+<code>discrete_distrib</code>.</p>
 <p>Build one with <code><a href="negbin1_distrib.html">negbin1_distrib()</a></code>, which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,
-which takes the parent's properties and validates none of the relationships
-between them.</p>
+which takes the parent's properties; the validator of <code>distrib</code> checks
+them, and the constructor adds no check of its own.</p>
     </div>
 
     <div class="section level2">
@@ -143,20 +137,25 @@ object built by <code><a href="negbin1_distrib.html">negbin1_distrib()</a></code
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered on this class in this file:
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.NegBin1Distrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_cdf.NegBin1Distrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_expected_hessian.NegBin1Distrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_quantile.NegBin1Distrib.html">distrib_quantile()</a></code> and
+<code><a href="distrib_rng.NegBin1Distrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.NegBin1Distrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.NegBin1Distrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_pdf.NegBin1Distrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_quantile.NegBin1Distrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.NegBin1Distrib.html">distrib_rng()</a></code></p>
-<p>The third and fourth orders,
+<code><a href="distrib_expected_hessian.NegBin1Distrib.html">distrib_expected_hessian()</a></code>,
 <code><a href="distrib_deriv3.NegBin1Distrib.html">distrib_deriv3()</a></code> and
-<code><a href="distrib_deriv4.NegBin1Distrib.html">distrib_deriv4()</a></code>, are registered
-elsewhere in the package, on top of <code><a href="negbin1_components.html">negbin1_components()</a></code>. A discrete
-family has no derivatives in the response. Everything else is inherited from
-<code><a href="discrete_distrib.html">discrete_distrib()</a></code>.</p>
+<code><a href="distrib_deriv4.NegBin1Distrib.html">distrib_deriv4()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_dexpected_hessian.NegBin1Distrib.html">distrib_dexpected_hessian()</a></code>
+and
+<code><a href="distrib_dexpected_hessian.NegBin1Distrib.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.NegBin1Distrib.html">mean()</a></code>,
+<code><a href="variance.NegBin1Distrib.html">variance()</a></code>,
+<code><a href="skewness.NegBin1Distrib.html">skewness()</a></code> and
+<code><a href="kurtosis.NegBin1Distrib.html">kurtosis()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="discrete_distrib.html">discrete_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

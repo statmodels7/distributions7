@@ -3,9 +3,8 @@
 Returns \\\partial \ell / \partial \eta\\ for the whole sample: the
 package's per-observation gradient on the link scale, summed over
 observations, as a plain numeric vector in parameter order. At the
-maximum likelihood estimate every entry is zero to rounding, and a
-Gaussian fitted to 200 draws answers about \\10^{-15}\\ there against
-204 and 752 one unit away.
+maximum likelihood estimate every entry is zero, up to the tolerance of
+the stopping rule that ended the fit.
 
 ## Usage
 

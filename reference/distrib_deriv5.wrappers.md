@@ -8,9 +8,13 @@ Computes the fifth derivatives of the log-likelihood of
 [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
 and
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
-families by the partition sums that give their third and fourth
-derivatives, one order up, and carries them to the link scale with
-[`deriv5_scale()`](https://statmodels7.github.io/distributions7/reference/deriv5_scale.md).
+families. The zero wrappers, the truncated and the folded families use
+the partition sums that give their third and fourth derivatives, one
+order up, and carry them to the link scale with
+[`deriv5_scale()`](https://statmodels7.github.io/distributions7/reference/deriv5_scale.md);
+a transformed and a fixed family read the parent's fifth derivative
+directly, on the scale requested, since their parameters and links are
+the parent's.
 
 ## Arguments
 
@@ -62,10 +66,8 @@ analytic, as
 reports. Where it is the stencil of
 [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md),
 the products of the Bell polynomials and, for a truncated family, the
-quadrature of its ratios amplify the stencil's error (3.4e-10 to 1.8e-9
-for a folded gaussian, 3.5e-10 to 3.1e-8 for a truncated one, against
-symbolic derivatives), and the wrapper's fifth derivative is instead one
-stencil on its own analytic fourth.
+quadrature of its ratios amplify the stencil's error, and the wrapper's
+fifth derivative is instead one stencil on its own analytic fourth.
 
 ## See also
 

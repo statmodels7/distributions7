@@ -3,13 +3,15 @@
 form and with no quadrature, simulation or summation over the support:
 $$\mathbb{E}[\ell^{(\eta_k\eta_l)}]
       = -n\sum_{j=1}^{p} \dfrac{A_{jk}A_{jl}}{p_j},$$
-with \(A = \partial p/\partial\eta\). approx and nsim are ignored:
-every strategy returns the same matrix."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
+with \(A = \partial p/\partial\eta\); on the additive log-ratio chart it is
+computed as \(-n(\delta_{kl}p_k - p_kp_l)\), the form below. approx and
+nsim are not read."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
 form and with no quadrature, simulation or summation over the support:
 $$\mathbb{E}[\ell^{(\eta_k\eta_l)}]
       = -n\sum_{j=1}^{p} \dfrac{A_{jk}A_{jl}}{p_j},$$
-with \(A = \partial p/\partial\eta\). approx and nsim are ignored:
-every strategy returns the same matrix."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+with \(A = \partial p/\partial\eta\); on the additive log-ratio chart it is
+computed as \(-n(\delta_{kl}p_k - p_kp_l)\), the form below. approx and
+nsim are not read."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +19,7 @@ every strategy returns the same matrix."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +56,9 @@ every strategy returns the same matrix."><meta property="og:image" content="http
 form and with no quadrature, simulation or summation over the support:
 $$\mathbb{E}[\ell^{(\eta_k\eta_l)}]
       = -n\sum_{j=1}^{p} \dfrac{A_{jk}A_{jl}}{p_j},$$
-with \(A = \partial p/\partial\eta\). <code>approx</code> and <code>nsim</code> are ignored:
-every strategy returns the same matrix.</p>
+with \(A = \partial p/\partial\eta\); on the additive log-ratio chart it is
+computed as \(-n(\delta_{kl}p_k - p_kp_l)\), the form below. <code>approx</code> and
+<code>nsim</code> are not read.</p>
     </div>
 
 
@@ -104,7 +107,7 @@ symmetric matrix and named as <code><a href="hess_names.html">hess_names()</a></
 <code>n_obs(distrib, y)</code> and constant along it.</p>
     </div>
     <div class="section level2">
-    <h2 id="why-the-second-derivative-term-vanishes">Why the second-derivative term vanishes<a class="anchor" aria-label="anchor" href="#why-the-second-derivative-term-vanishes"></a></h2>
+    <h2 id="the-second-derivative-term">The second-derivative term<a class="anchor" aria-label="anchor" href="#the-second-derivative-term"></a></h2>
     <p>Under the model \(\mathbb{E}[y_j] = n p_j\), so the term of the observed
 Hessian carrying \(B\) becomes \(n\sum_j B_{j,kl}\). The probabilities
 sum to one at every free vector, so every derivative of that sum is zero and
@@ -112,7 +115,7 @@ the whole term drops out, leaving the display above. The same argument, one
 order lower, gives the score mean zero.</p>
     </div>
     <div class="section level2">
-    <h2 id="the-information-is-the-covariance-of-the-first-p-counts">The information is the covariance of the first p-1 counts<a class="anchor" aria-label="anchor" href="#the-information-is-the-covariance-of-the-first-p-counts"></a></h2>
+    <h2 id="the-information-on-the-additive-log-ratio-chart">The information on the additive log-ratio chart<a class="anchor" aria-label="anchor" href="#the-information-on-the-additive-log-ratio-chart"></a></h2>
     <p>On the default chart, <code><a href="https://statmodels7.github.io/parameters7/reference/simplex.html" class="external-link">parameters7::simplex()</a></code>'s additive log-ratio
 coordinates, the Jacobian is \(A_{jk} = p_j(\delta_{jk} - p_k)\), so
 $$\sum_j \dfrac{A_{jk}A_{jl}}{p_j}
@@ -120,10 +123,9 @@ $$\sum_j \dfrac{A_{jk}A_{jl}}{p_j}
   = \delta_{kl}p_k - p_k p_l,$$
 and the expected information \(-\mathbb{E}[\ell^{(\eta_k\eta_l)}]\) is
 exactly \(\operatorname{Cov}(Y_k, Y_l)\), the leading
-\((p-1)\times(p-1)\) block of <code><a href="mv_sigma.MultinomialDistrib.html">mv_sigma.MultinomialDistrib()</a></code>. Measured,
-the two agree to <code>2e-16</code> at every dimension and trial count tried. The
-identity belongs to that chart; a different simplex parametrization has a
-different Jacobian and no such coincidence.</p>
+\((p-1)\times(p-1)\) block of <code><a href="mv_sigma.MultinomialDistrib.html">mv_sigma.MultinomialDistrib()</a></code>. The identity
+belongs to that chart; a different simplex parametrization has a different
+Jacobian.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

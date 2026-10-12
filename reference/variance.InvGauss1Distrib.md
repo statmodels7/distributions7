@@ -34,8 +34,8 @@ A numeric vector of variances, of length
 
 [`mean.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/mean.InvGauss1Distrib.md),
 [`skewness.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.InvGauss1Distrib.md);
-[`variance.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.Gamma2Distrib.md),
-whose variance function is the square;
+[`variance.Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.Gamma1Distrib.md),
+whose variance function \\\phi\mu^2\\ is of second degree;
 [`variance.InvGauss2Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.InvGauss2Distrib.md)
 for the other parametrization;
 [`invgauss1_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss1_distrib.md).

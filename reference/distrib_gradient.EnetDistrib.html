@@ -9,8 +9,8 @@ bilinear.
 The location component is undefined at \(y = \mu\), where
 \(\mathrm{sgn}\) jumps; sign(0) is 0 in R, so the value returned there
 is \(cz = 0\), one point of the subdifferential. params_smooth
-records mu = FALSE so that
-check_distrib()'s finite-difference guard knows."><meta property="og:description" content="Computes the three first derivatives of the log-density in closed form. With
+records mu = FALSE, which check_distrib() reads to discard the
+finite-difference references that straddle the location."><meta property="og:description" content="Computes the three first derivatives of the log-density in closed form. With
 \(z = y-\mu\), \(a = \lambda\alpha\) and \(c = \lambda(1-\alpha)\),
 $$\dfrac{\partial\ell}{\partial\mu} = a\,\mathrm{sgn}(z) + cz,$$
 and the two rate components are the data terms less the derivatives of
@@ -20,8 +20,8 @@ bilinear.
 The location component is undefined at \(y = \mu\), where
 \(\mathrm{sgn}\) jumps; sign(0) is 0 in R, so the value returned there
 is \(cz = 0\), one point of the subdifferential. params_smooth
-records mu = FALSE so that
-check_distrib()'s finite-difference guard knows."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+records mu = FALSE, which check_distrib() reads to discard the
+finite-difference references that straddle the location."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +29,7 @@ check_distrib()'s finite-difference guard knows."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +72,8 @@ bilinear.</p>
 <p>The location component is <strong>undefined at \(y = \mu\)</strong>, where
 \(\mathrm{sgn}\) jumps; <code>sign(0)</code> is 0 in R, so the value returned there
 is \(cz = 0\), one point of the subdifferential. <code>params_smooth</code>
-records <code>mu = FALSE</code> so that
-<code><a href="check_distrib.html">check_distrib()</a></code>'s finite-difference guard knows.</p>
+records <code>mu = FALSE</code>, which <code><a href="check_distrib.html">check_distrib()</a></code> reads to discard the
+finite-difference references that straddle the location.</p>
     </div>
 
 

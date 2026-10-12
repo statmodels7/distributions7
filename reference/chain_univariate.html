@@ -17,7 +17,7 @@ is vectorized over the coordinates, so one call serves every \(j\) at once."><me
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,11 +90,13 @@ as <code><a href="simplex_map_tensors.html">simplex_map_tensors()</a></code> ret
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This is why the two simplex-valued families are cheap at orders three and
-four. Their log-densities are sums of terms each depending on ONE coordinate,
+    <p>The two simplex-valued families use this at orders three and four. Their
+log-densities are sums of terms that each depend on one coordinate,
 \(\log\Gamma(\alpha_j)\) for the Dirichlet and \(\log p_j\) for the
-multinomial, so the multivariate Faa di Bruno collapses to one univariate
-partition sum per coordinate and no mixed derivative array is ever formed.</p>
+multinomial, so the multivariate Faa di Bruno formula reduces to one
+univariate partition sum per coordinate, and the mixed derivative arrays are
+never formed. The multinomial uses it only on a chart other than the additive
+log-ratio one, where its derivatives are cumulants (see <code><a href="mn_cumulant.html">mn_cumulant()</a></code>).</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

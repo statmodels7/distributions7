@@ -7,13 +7,14 @@ rational in \\(\mu, \theta)\\ and linear in \\y\\, and the pure
 dispersion component carries \\\psi_3(y+\theta) - \psi_3(\theta)\\, with
 \\\psi_3\\ the third derivative of the digamma function.
 
+The mean component is formed from the same bracket as at third order.
+
 With `expected = TRUE` the expectations are returned. The pure
 dispersion one needs \\\mathbb{E}\[\psi_3(Y+\theta)\]\\, summed over the
-support with a far-tail correction; the rest need only \\\mathbb{E}\[Y\]
-= \mu\\. `approx` and `nsim` are ignored either way, and the caveat
-about large \\\theta\\ on
-[`distrib_deriv3.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin2Distrib.md)
-applies here as well.
+support as at third order; the rest need only \\\mathbb{E}\[Y\] = \mu\\.
+`approx` and `nsim` are ignored either way. As at third order, the
+cancellation at large \\\theta\\ is performed symbolically
+([`distrib_deriv3.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin2Distrib.md)).
 
 ## Arguments
 
@@ -58,9 +59,9 @@ applies here as well.
 
 - threads:
 
-  A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  A single positive integer, how many threads the kernel may use. For
+  fewer observations than an internal threshold the kernel runs
+  sequentially whatever the count. Defaults to `1L`.
 
 ## Value
 

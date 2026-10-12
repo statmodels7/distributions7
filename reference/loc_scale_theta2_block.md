@@ -60,20 +60,20 @@ z/\partial\sigma = -z/\sigma\\, the chain rule gives
 \frac{\partial^2\ell^{(yy)}}{\partial\sigma^2} = \frac{z^2B'' + 6zB' +
 6B}{\sigma^4}.\$\$
 
-## Why nothing new is differentiated
+## Reuse of the response derivatives
 
 \\A\\, \\A'\\, \\A''\\ and \\B\\, \\B'\\, \\B''\\ are the family's OWN
 response derivatives times a power of \\\sigma\\: \\A =
 \sigma\ell^{(y)}\\, \\A' = B = \sigma^2\ell^{(yy)}\\, \\A'' = B' =
 \sigma^3\ell^{(yyy)}\\ and \\B'' = \sigma^4\ell^{(yyyy)}\\. A family
-that already carries
+that supplies
 [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
 and
 [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
-therefore gets both orders in the parameters for free, which is the
-bargain
+therefore obtains both orders in the parameters in closed form, by the
+same argument that
 [`loc_scale_cross_block()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cross_block.md)
-already takes at first order.
+applies at first order.
 
 A shape parameter beyond the two is NOT covered and falls back; see
 [`partial_theta2()`](https://statmodels7.github.io/distributions7/reference/partial_theta2.md),

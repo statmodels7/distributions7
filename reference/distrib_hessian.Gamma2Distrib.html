@@ -8,7 +8,9 @@ the shape.
 The curvature in \(\mu\) is not negative at every data point, and neither
 is the curvature in \(\sigma^2\): the observed information of a gamma is
 not positive definite everywhere. Its expectation is; see
-distrib_expected_hessian.Gamma2Distrib()."><meta property="og:description" content="Computes the three distinct second derivatives of the gamma log-density
+distrib_expected_hessian.Gamma2Distrib().
+The kernel evaluates them through the decomposition described on
+distrib_deriv3.Gamma2Distrib(), which keeps the digits at a large shape."><meta property="og:description" content="Computes the three distinct second derivatives of the gamma log-density
 with respect to \(\mu\) and \(\sigma^2\), one value per observation, in
 closed form, by differentiating the score of
 distrib_gradient.Gamma2Distrib() once more. Every component carries the
@@ -17,7 +19,9 @@ the shape.
 The curvature in \(\mu\) is not negative at every data point, and neither
 is the curvature in \(\sigma^2\): the observed information of a gamma is
 not positive definite everywhere. Its expectation is; see
-distrib_expected_hessian.Gamma2Distrib()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+distrib_expected_hessian.Gamma2Distrib().
+The kernel evaluates them through the decomposition described on
+distrib_deriv3.Gamma2Distrib(), which keeps the digits at a large shape."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +29,7 @@ distrib_expected_hessian.Gamma2Distrib()."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,6 +72,8 @@ the shape.</p>
 is the curvature in \(\sigma^2\): the observed information of a gamma is
 not positive definite everywhere. Its expectation is; see
 <code><a href="distrib_expected_hessian.Gamma2Distrib.html">distrib_expected_hessian.Gamma2Distrib()</a></code>.</p>
+<p>The kernel evaluates them through the decomposition described on
+<code><a href="distrib_deriv3.Gamma2Distrib.html">distrib_deriv3.Gamma2Distrib()</a></code>, which keeps the digits at a large shape.</p>
     </div>
 
 
@@ -100,8 +106,8 @@ recycled. Both must be strictly positive.</p></dd>
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

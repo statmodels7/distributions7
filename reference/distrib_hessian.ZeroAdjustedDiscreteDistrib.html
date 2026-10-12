@@ -8,7 +8,12 @@ correction
 $$H_{\mathrm{corr}} =
   \frac{\{1 - f(0)\}\,f''(0) + f'(0)^2}{\{1 - f(0)\}^2},$$
 the second derivative of \(-\log\{1 - f(0)\}\). The hurdle block is
-\(-1/\pi^2\) at a zero and \(-1/(1-\pi)^2\) elsewhere."><meta property="og:description" content="Computes the second derivatives of the hurdle log-mass in closed form. The
+\(-1/\pi^2\) at a zero and \(-1/(1-\pi)^2\) elsewhere.
+Where the positive part's mass sits at one, \(f(1)/\{1 - f(0)\} &amp;gt; 0.9\),
+the parent's Hessian and the truncation term cancel to a number much
+smaller than either, and the block in \(\theta\) is taken from
+head_derivs() through head_override(); the score and the third to fifth
+derivatives are treated the same way."><meta property="og:description" content="Computes the second derivatives of the hurdle log-mass in closed form. The
 MIXED BLOCKS ARE IDENTICALLY ZERO, at every observation and every parameter
 value, because the likelihood factorizes into a binary part in \(\pi\) and
 a positive-count part in \(\theta\). The parent block is zero at a zero
@@ -17,7 +22,12 @@ correction
 $$H_{\mathrm{corr}} =
   \frac{\{1 - f(0)\}\,f''(0) + f'(0)^2}{\{1 - f(0)\}^2},$$
 the second derivative of \(-\log\{1 - f(0)\}\). The hurdle block is
-\(-1/\pi^2\) at a zero and \(-1/(1-\pi)^2\) elsewhere."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(-1/\pi^2\) at a zero and \(-1/(1-\pi)^2\) elsewhere.
+Where the positive part's mass sits at one, \(f(1)/\{1 - f(0)\} &amp;gt; 0.9\),
+the parent's Hessian and the truncation term cancel to a number much
+smaller than either, and the block in \(\theta\) is taken from
+head_derivs() through head_override(); the score and the third to fifth
+derivatives are treated the same way."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +35,7 @@ the second derivative of \(-\log\{1 - f(0)\}\). The hurdle block is
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,6 +78,11 @@ $$H_{\mathrm{corr}} =
   \frac{\{1 - f(0)\}\,f''(0) + f'(0)^2}{\{1 - f(0)\}^2},$$
 the second derivative of \(-\log\{1 - f(0)\}\). The hurdle block is
 \(-1/\pi^2\) at a zero and \(-1/(1-\pi)^2\) elsewhere.</p>
+<p>Where the positive part's mass sits at one, \(f(1)/\{1 - f(0)\} &gt; 0.9\),
+the parent's Hessian and the truncation term cancel to a number much
+smaller than either, and the block in \(\theta\) is taken from
+<code><a href="head_derivs.html">head_derivs()</a></code> through <code><a href="head_override.html">head_override()</a></code>; the score and the third to fifth
+derivatives are treated the same way.</p>
     </div>
 
 
@@ -89,8 +104,8 @@ the second derivative of \(-\log\{1 - f(0)\}\). The hurdle block is
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, handled by the
-generic before dispatch.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The generic
+applies the link scale to the value that the method returns.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

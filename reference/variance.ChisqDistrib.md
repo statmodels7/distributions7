@@ -2,8 +2,7 @@
 
 Closed form: \\\operatorname{Var}(Y) = 2\mu\\. The variance is tied to
 the mean, so the family has one parameter where a gamma has two: it is
-exactly the gamma at \\\sigma^2 = 2\mu\\, and a sample whose variance is
-far from twice its mean is not chi-squared at any degrees of freedom.
+exactly the gamma at \\\sigma^2 = 2\mu\\, .
 
 ## Arguments
 

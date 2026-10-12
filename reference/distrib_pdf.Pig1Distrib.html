@@ -4,22 +4,24 @@ and \(\alpha = \sqrt{c}/\sigma\),
 $$P(Y = y) = \sqrt{\dfrac{2\alpha}{\pi}}\,
   \dfrac{\mu^y e^{1/\sigma}}{(\alpha\sigma)^y\, y!}\, K_{y-1/2}(\alpha).$$
 The value is not computed that way. At half-integer order the Bessel
-function is a finite sum, the prefactors cancel, and what the compiled
-kernel evaluates is
+function is a finite sum and the prefactors cancel, which gives
 \(\ell(y) = y\log\mu - (y/2)\log c + (1-\sqrt c)/\sigma
-  + \log S_y(\alpha) - \log y!\) with \(S_y\) a sum of \(y\) positive
-terms taken on the log scale. Nothing cancels and no Bessel routine is
-called."><meta property="og:description" content="Computes the Poisson-inverse Gaussian mass. With \(c = 1 + 2\sigma\mu\)
+  + \log S_y - \log y!\) with \(S_y\) a sum of \(y\) positive terms
+taken on the log scale. The compiled kernel evaluates
+\((1-\sqrt c)/\sigma\) as \(-2\mu/(1+\sqrt c)\) and \(S_y\) in
+\(w = 1/(2\alpha)\), so nothing cancels as \(\sigma \to 0\), and no
+Bessel routine is called."><meta property="og:description" content="Computes the Poisson-inverse Gaussian mass. With \(c = 1 + 2\sigma\mu\)
 and \(\alpha = \sqrt{c}/\sigma\),
 $$P(Y = y) = \sqrt{\dfrac{2\alpha}{\pi}}\,
   \dfrac{\mu^y e^{1/\sigma}}{(\alpha\sigma)^y\, y!}\, K_{y-1/2}(\alpha).$$
 The value is not computed that way. At half-integer order the Bessel
-function is a finite sum, the prefactors cancel, and what the compiled
-kernel evaluates is
+function is a finite sum and the prefactors cancel, which gives
 \(\ell(y) = y\log\mu - (y/2)\log c + (1-\sqrt c)/\sigma
-  + \log S_y(\alpha) - \log y!\) with \(S_y\) a sum of \(y\) positive
-terms taken on the log scale. Nothing cancels and no Bessel routine is
-called."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+  + \log S_y - \log y!\) with \(S_y\) a sum of \(y\) positive terms
+taken on the log scale. The compiled kernel evaluates
+\((1-\sqrt c)/\sigma\) as \(-2\mu/(1+\sqrt c)\) and \(S_y\) in
+\(w = 1/(2\alpha)\), so nothing cancels as \(\sigma \to 0\), and no
+Bessel routine is called."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +29,7 @@ called."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,12 +67,13 @@ and \(\alpha = \sqrt{c}/\sigma\),
 $$P(Y = y) = \sqrt{\dfrac{2\alpha}{\pi}}\,
   \dfrac{\mu^y e^{1/\sigma}}{(\alpha\sigma)^y\, y!}\, K_{y-1/2}(\alpha).$$</p>
 <p>The value is not computed that way. At half-integer order the Bessel
-function is a finite sum, the prefactors cancel, and what the compiled
-kernel evaluates is
+function is a finite sum and the prefactors cancel, which gives
 \(\ell(y) = y\log\mu - (y/2)\log c + (1-\sqrt c)/\sigma
-  + \log S_y(\alpha) - \log y!\) with \(S_y\) a sum of \(y\) positive
-terms taken on the log scale. Nothing cancels and no Bessel routine is
-called.</p>
+  + \log S_y - \log y!\) with \(S_y\) a sum of \(y\) positive terms
+taken on the log scale. The compiled kernel evaluates
+\((1-\sqrt c)/\sigma\) as \(-2\mu/(1+\sqrt c)\) and \(S_y\) in
+\(w = 1/(2\alpha)\), so nothing cancels as \(\sigma \to 0\), and no
+Bessel routine is called.</p>
     </div>
 
 
@@ -83,9 +86,9 @@ called.</p>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of counts. A negative, non-integer or non-finite
+<dd><p>A numeric vector of counts. A negative, non-integer or infinite
 value is off the support and gives a probability of 0, or <code>-Inf</code> with
-<code>log = TRUE</code>.</p></dd>
+<code>log = TRUE</code>. A missing value gives <code>NA</code> (<code>NaN</code> for <code>NaN</code>).</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>

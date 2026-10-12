@@ -4,7 +4,7 @@ Draws `n` independent inverse Gaussian variates by calling
 [`statmod::rinvgauss()`](https://rdrr.io/pkg/statmod/man/invgauss.html)
 at `mean = mu` and `dispersion = 1/lambda`, so the draws come from that
 package's generator and depend on `.Random.seed` in the usual way. The
-ratio-of-uniforms fallback the base class supplies is bypassed.
+inverse-transform fallback of the base class is not used.
 
 ## Arguments
 

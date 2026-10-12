@@ -1,10 +1,9 @@
-# No Skewness Without Saying Which One
+# Skewness of a Multivariate Distribution
 
-Signals an error. A scalar skewness for a vector response is not one
-quantity but a choice among several: Mardia's, Malkovich-Afifi's, and
-the vector of coordinatewise marginal skewnesses are different numbers,
-and they do not agree. Returning any one of them under the bare name
-would make a choice the caller did not.
+Signals an error. A scalar skewness of a vector response is a choice
+among several quantities: Mardia's, Malkovich and Afifi's, and the
+vector of the coordinatewise marginal skewnesses are different numbers,
+and the method does not return one of them under the bare name.
 
 ## Arguments
 
@@ -16,8 +15,7 @@ would make a choice the caller did not.
 
 - theta:
 
-  A named list of parameters. Not examined: the error is raised before
-  it is read.
+  A named list of parameters. Not read: the error is signalled first.
 
 - ...:
 
@@ -25,23 +23,23 @@ would make a choice the caller did not.
 
 ## Value
 
-Never returns: it always signals an error naming the family.
+Does not return: it signals an error naming the family.
 
 ## Details
 
 [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
-is only a way round this where the marginal is a genuinely univariate
-object. A Dirichlet's marginal is a beta and answers; an elliptical
-family's marginal is a one-dimensional object of its own class, so it
-inherits this refusal. Where it does answer, taking the marginal and
-asking it is explicit about which quantity is meant, which is the point.
+gives a coordinatewise skewness where the marginal is a univariate
+object. A Dirichlet's marginal is a beta and has a skewness; an
+elliptical family's marginal is a one-dimensional object of its own
+class and signals the same error. Applying the generic to a marginal
+states which quantity is meant.
 
 ## See also
 
-[`kurtosis.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.multivariate_distrib.md),
-refused for the same reason,
+[`kurtosis.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.multivariate_distrib.md)
+for the fourth moment,
 [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
-for the explicit route, and
+for the coordinatewise route, and
 [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.md)
 for the generic.
 
@@ -52,16 +50,16 @@ d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5)
 try(skewness(d, theta))
-#> Error : skewness() is not defined for 'multivariate gaussian [2d, sigma=log_cholesky]': a vector response has no single skewness: Mardia's, Malkovich-Afifi's and the vector of coordinatewise marginal skewnesses are different quantities. Ask a univariate family instead.
+#> Error : skewness() is not defined for 'multivariate gaussian [2d, sigma=log_cholesky]': a vector response has no single skewness: Mardia's, Malkovich and Afifi's and the vector of coordinatewise marginal skewnesses are different quantities. Use a univariate family instead.
 
-# A Dirichlet's marginal is a genuine univariate beta and has one. An
-# elliptical family's marginal is a one-dimensional object of its own
-# class, so it inherits this refusal rather than answering zero.
+# A Dirichlet's marginal is a univariate beta and has a skewness. An
+# elliptical family's marginal is a one-dimensional object of its own class
+# and signals the same error.
 m <- mv_marginal(dirichlet_distrib(3),
                  list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8), 1)
 skewness(m$distrib, m$theta)
 #> [1] 0.1795466
 try(skewness(mv_marginal(d, theta, 1)$distrib,
              mv_marginal(d, theta, 1)$theta))
-#> Error : skewness() is not defined for 'multivariate gaussian [1d, sigma=log_cholesky]': a vector response has no single skewness: Mardia's, Malkovich-Afifi's and the vector of coordinatewise marginal skewnesses are different quantities. Ask a univariate family instead.
+#> Error : skewness() is not defined for 'multivariate gaussian [1d, sigma=log_cholesky]': a vector response has no single skewness: Mardia's, Malkovich and Afifi's and the vector of coordinatewise marginal skewnesses are different quantities. Use a univariate family instead.
 ```

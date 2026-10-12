@@ -76,11 +76,12 @@ As \\\theta \to 0\\ the family tends to the Poisson and the recursion's
 terms in the powers of \\r\\ grow while their sum stays of order one.
 The polygamma differences go through
 [`psi_shift_diff()`](https://statmodels7.github.io/distributions7/reference/psi_shift_diff.md)
-and are exact, but the cancellation among those powers is not repaired:
-at \\\theta = 5\times10^{-4}\\ the terms reach \\8\times10^{6}\\, and
-this order is not reliable below about \\\theta = 0.05\\. The score
-itself, which does not carry the recursion, reaches the Poisson limit to
-five figures.
+and are exact, but the recursion loses its digits among those powers.
+For \\\theta \< 1\\ the method therefore evaluates the form in \\\mu +
+i\theta\\, which contains no size
+([`negbin1_components()`](https://statmodels7.github.io/distributions7/reference/negbin1_components.md)),
+at a cost of \\y\\ terms per observation, and this order keeps its
+accuracy as \\\theta\\ goes to zero.
 
 ## See also
 

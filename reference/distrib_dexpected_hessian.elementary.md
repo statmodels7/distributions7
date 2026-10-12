@@ -89,10 +89,10 @@ The expected informations differentiated, on the parameter scale:
   rate: \\-\lambda^2\\ and \\-1/\lambda^2\\;
 
 - elastic net, with \\a = \lambda\alpha\\, \\c = \lambda(1-\alpha)\\ and
-  \\Z\\ the normalizing constant: \\-(a^2 - 2acZ_a - 2c^2Z_c)\\ in the
-  location and the second derivatives of \\-\log Z\\ in the two rates,
-  whose derivatives are the third derivatives of \\\log Z\\, written
-  through the Mills ratio.
+  \\Z\\ the normalizing constant: \\-(a^2 - 2ac\\\partial_a\log Z -
+  2c^2\\\partial_c\log Z)\\ in the location and the second derivatives
+  of \\-\log Z\\ in the two rates, whose derivatives are the third
+  derivatives of \\\log Z\\, written through the Mills ratio.
 
 ## See also
 

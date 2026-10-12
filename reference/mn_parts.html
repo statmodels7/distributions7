@@ -11,7 +11,7 @@ single time and shares them."><meta property="og:image" content="https://statmod
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,18 +70,22 @@ simplex's free values in its own order.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list with <code>prob</code>, the probability vector of length \(p\)
-summing to one; <code>A</code>, the \(p \times (p-1)\) matrix of first derivatives
-in the free values; <code>B</code>, the list of second-derivative vectors keyed by
-unordered tuple; <code>idx</code>, those tuples; and <code>k</code>, the number of free values.</p>
+summing to one; <code>lp</code>, its logarithm; <code>alr</code>, whether the parametrization is
+the additive log-ratio chart; <code>A</code>, the \(p \times (p-1)\) matrix of first
+derivatives in the free values; <code>B</code>, the list of second-derivative vectors
+keyed by unordered tuple; <code>idx</code>, those tuples; and <code>k</code>, the number of free
+values.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The probabilities sum to one at every free vector, so differentiating that
 identity shows that the columns of \(A = \partial p/\partial\eta\) sum to
 zero and so does every second-derivative vector \(B_{\cdot,kl}\). The
-second of those makes the expected information closed form: under
-expectation the term carrying \(B\) becomes \(n\sum_j B_{j,kl}\), which
-is zero.</p>
+second of those makes the expected information closed form: under expectation
+the term carrying \(B\) becomes \(n\sum_j B_{j,kl}\), which is zero. On
+the additive log-ratio chart of <code><a href="https://statmodels7.github.io/parameters7/reference/simplex.html" class="external-link">parameters7::simplex()</a></code> the
+log-probabilities are formed directly by <code><a href="mn_log_probs.html">mn_log_probs()</a></code>, so a probability
+that underflows keeps its logarithm.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

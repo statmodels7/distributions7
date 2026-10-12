@@ -5,7 +5,13 @@ calling
 [`betabinom2_component()`](https://statmodels7.github.io/distributions7/reference/betabinom2_component.md)
 once per distinct multi-index, and names them as
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
-names them.
+names them. Where the concentration \\a + b\\ exceeds 10, the reciprocal
+of
+[`bb_direct_cut()`](https://statmodels7.github.io/distributions7/reference/bb_direct_cut.md),
+the polygamma differences cancel among themselves as the shapes grow at
+a fixed ratio, and those rows are computed from the direct sums of
+[`betabinom_direct()`](https://statmodels7.github.io/distributions7/reference/betabinom_direct.md)
+instead, whose terms have one sign each.
 
 ## Usage
 

@@ -9,7 +9,7 @@ It carries the name, the parameters with their domains and links, and the suppor
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,13 +110,16 @@ It carries the name, the parameters with their domains and links, and the suppor
 
 
 <p>Registered on the base class, so every distribution inherits them unless it
-registers something more specific. Those that compute derivatives do so by
-finite differences, which is why a subclass that implements nothing but
-<code><a href="distrib_pdf.html">distrib_pdf()</a></code> is already fully functional. Note that
-<code>distrib_pdf</code> itself has no default: the density is the one thing a
-distribution must supply.</p>
+registers something more specific. The derivatives of the log-density in the
+parameters are computed by finite differences and the expected derivatives
+by the strategy named in <code>approx</code>, which is why a subclass that implements
+nothing but <code><a href="distrib_pdf.html">distrib_pdf()</a></code> has every parameter derivative. <code><a href="distrib_pdf.html">distrib_pdf()</a></code>
+itself has no default: the density is the one quantity that a distribution
+must supply. The list below is partial; the base class also registers
+<code><a href="distrib_atoms.html">distrib_atoms()</a></code> and the derivatives of the cdf of orders 3 and 4.</p>
 <p><code><a href="distrib_deriv3.distrib.html">distrib_deriv3()</a></code>,
 <code><a href="distrib_deriv4.distrib.html">distrib_deriv4()</a></code>,
+<code><a href="distrib_deriv5.distrib.html">distrib_deriv5()</a></code>,
 <code><a href="distrib_expected_hessian.distrib.html">distrib_expected_hessian()</a></code>,
 <code><a href="distrib_gradient.distrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.distrib.html">distrib_hessian()</a></code>,

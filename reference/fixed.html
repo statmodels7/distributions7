@@ -15,7 +15,7 @@ derivatives are the parent's components among the free indices."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,9 +126,9 @@ silently would hide a missing argument.</p>
     </div>
     <div class="section level2">
     <h2 id="what-it-is-for">What it is for<a class="anchor" aria-label="anchor" href="#what-it-is-for"></a></h2>
-    <p>A prior. <code>fixed(gaussian1_distrib(), mu = 0)</code> is the ridge penalty with its
-scale free, <code>fixed(laplace2_distrib(), mu = 0)</code> is the lasso, and
-<code>fixed(mvgaussian1_distrib(p), mu = 0)</code> is what a random effect is
+    <p>The wrapper builds priors. <code>fixed(gaussian1_distrib(), mu = 0)</code> is the ridge
+penalty with its scale free, <code>fixed(laplace2_distrib(), mu = 0)</code> is the
+lasso, and <code>fixed(mvgaussian1_distrib(p), mu = 0)</code> is what a random effect is
 distributed by. <code>fixed(folded(gaussian1_distrib()), mu = 0)</code> is the
 half-normal.</p>
 <p>The per-parameter smoothness declaration travels with the free parameters,
@@ -194,7 +194,7 @@ the methods do.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Four refusals, each naming the condition that failed.</span></span></span>
+<span class="r-in"><span><span class="co"># Four errors, each naming the condition that failed.</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">fixed</span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, nope <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : 'nope' is not a parameter of 'gaussian1'. Parameters: mu, sigma.</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">fixed</span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>

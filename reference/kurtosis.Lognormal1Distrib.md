@@ -1,10 +1,13 @@
 # Excess Kurtosis of the Lognormal Distribution
 
 Closed form: \$\$\gamma_2 = e^{4\sigma^2} + 2e^{3\sigma^2} +
-3e^{2\sigma^2} - 6,\$\$ free of \\\mu\\. The leading term grows like
-\\e^{4\sigma^2}\\, so the tail weight explodes with the spread of the
-logarithm: at \\\sigma^2 = 1\\ it is 110.9, and the numerical route
-would need a quadrature far into the tail to see it at all.
+3e^{2\sigma^2} - 6,\$\$ free of \\\mu\\. It is evaluated as \\w(16 +
+15w + 6w^2 + w^3)\\ with \\w = e^{\sigma^2} - 1\\ formed by
+[`expm1()`](https://rdrr.io/r/base/Log.html), which keeps its digits at
+a small \\\sigma^2\\. The leading term grows like \\e^{4\sigma^2}\\, so
+the tail weight explodes with the spread of the logarithm: at \\\sigma^2
+= 1\\ it is 110.9, and the numerical route would need a quadrature far
+into the tail to see it at all.
 
 ## Arguments
 

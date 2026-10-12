@@ -58,30 +58,30 @@ parameter scale and of `object@se_eta` on the link scale.
 
 ## Which information
 
-`information` says which matrix is inverted, and the answer the fit
-stored is the default. That one is the expected information where the
-family writes it out, where it costs one evaluation and has the smaller
-variance, and the observed Hessian otherwise.
+`information` selects the matrix that is inverted, and the one that the
+fit stored is the default. That one is the expected information where
+the family writes it out, where it costs one evaluation and has the
+smaller variance, and the observed Hessian otherwise.
 
 The alternative is available because the two are different estimators
 and the choice is the reader's. They agree asymptotically and not in a
 sample: the expected one is the information averaged over the model, the
 observed one the curvature of the likelihood at the data in hand.
 
-Where a family does NOT write its expected information out, asking for
-`information = "expected"` reaches a fallback, and `approx` says which.
+Where a family does not write its expected information out,
+`information = "expected"` reaches a fallback, and `approx` selects it.
 The default `"opg"` is the outer product of the observed scores, which
 costs one gradient; `"bartlett"` evaluates the expectation itself, a sum
 over the support for a discrete family and a quadrature for a continuous
-one, and is orders of magnitude dearer. That difference is why a fit
-does not report standard errors from the expected information for such a
-family: measured on a Poisson-inverse gaussian regression at \\n =
-500\\, the outer product gives standard errors 5.7 per cent from those
-of the exact expectation where the observed information gives 0.6 per
-cent. The expensive route is reachable, and it is not the default.
+one, and is orders of magnitude dearer. A fit does not report standard
+errors from the expected information for such a family, because the
+outer product of the scores is a noisier estimate of the information
+than the observed Hessian. The expensive route is available through
+`approx`, and it is not the default.
 
-A matrix asked for by `information` is recomputed at the optimum, so it
-costs one evaluation of that information and is not read from the fit.
+A matrix requested through `information` is recomputed at the optimum,
+so it costs one evaluation of that information and is not read from the
+fit.
 
 ## See also
 

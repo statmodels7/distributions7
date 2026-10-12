@@ -38,7 +38,7 @@ numerical_hess_y(distrib, y, theta, h_rel = .Machine$double.eps^(1/4))
 
 A numeric vector as long as `y`.
 
-## Why the step is longer and the answer coarser
+## Step length of the second difference
 
 The truncation error is again \\O(h^2)\\, but the rounding error is
 \\O(\varepsilon/h^2)\\ where the first order's is \\O(\varepsilon/h)\\,

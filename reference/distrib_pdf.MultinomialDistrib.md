@@ -10,7 +10,11 @@ The factorials are formed through
 [`base::lgamma()`](https://rdrr.io/r/base/Special.html) and the product
 through a matrix multiplication by \\\log p\\, so the whole calculation
 runs on the log scale and a mass far below the smallest representable
-double still has a finite logarithm.
+double still has a finite logarithm. On the additive log-ratio chart
+\\\log p\\ is computed as \\\eta_j - \mathrm{LSE}(\eta)\\ (see
+[`mn_log_probs()`](https://statmodels7.github.io/distributions7/reference/mn_log_probs.md)),
+so a category whose probability underflows and whose count is zero
+contributes zero, as it should.
 
 ## Arguments
 

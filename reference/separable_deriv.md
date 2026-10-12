@@ -32,18 +32,18 @@ separable_deriv(nm, uderiv, vderiv)
 ## Value
 
 A function of a block, a character vector of parameter names, that
-returns the corresponding mixed partial. A block naming a parameter
-outside `nm` gives the order-zero factor for both, which is the value
-itself; no caller does that.
+returns the corresponding mixed partial. Names outside `nm` are not
+counted, so a block made only of such names gives the order-zero factor
+for both, which is the value itself.
 
 ## Details
 
-Both families this file serves are separable in exactly this way. The
-inverse Gaussian's \\a\\, \\b\\ and \\c\\ are each a function of the
-mean times a function of the dispersion; the elastic net's \\s\\ and
-\\x\\ are each a function of \\\lambda\\ times a function of \\\alpha\\.
-Separability is why four orders are cheap here: no multivariate
-expansion is ever formed.
+The inverse Gaussian, which uses this function, is separable in this
+way. The inverse Gaussian's \\a\\, \\b\\ and \\c\\ are each a function
+of the mean times a function of the dispersion; the elastic net's \\s\\
+and \\x\\ are each a function of \\\lambda\\ times a function of
+\\\alpha\\. Each mixed partial is therefore a product of two
+one-variable derivatives, which is why four orders are cheap here.
 
 ## See also
 

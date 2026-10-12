@@ -17,7 +17,7 @@ not defined, and it is returned directly so that no quadrature is attempted."><m
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,8 +71,8 @@ not defined, and it is returned directly so that no quadrature is attempted.</p>
 <dd><p>A named list of parameters with components <code>mu</code> and <code>sigma</code>,
 each a numeric vector of length 1 or <code>n</code>. The values are not read, only
 their lengths, but they are still aligned and validated, so a missing or
-out-of-bounds component throws exactly as it would for a family whose
-moments exist.</p></dd>
+out-of-bounds component signals an error exactly as it would for a family
+whose moments exist.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -92,18 +92,16 @@ observation shape every moment method returns.</p>
     <p>The generic <code><a href="skewness.html">skewness()</a></code> evaluates
 \(\gamma_1 = \mathbb{E}[((Y - \mathbb{E}Y)/\mathrm{sd}(Y))^3]\)
 for a <code>distrib</code> object by calling <code><a href="moment.html">moment()</a></code> three times. On a Cauchy each of
-those integrals diverges, and a numerical quadrature over a divergent
-integral does not fail loudly: it returns whatever its truncation happens to
-give, a number that changes with the panel layout and looks like an estimate.
-This method short-circuits that.</p>
+those integrals diverges, and <code><a href="moment.html">moment()</a></code> signals an error. This method
+returns <code>NaN</code> without running a quadrature.</p>
 <p>The same holds for <code><a href="mean.CauchyDistrib.html">mean.CauchyDistrib()</a></code>, <code><a href="variance.CauchyDistrib.html">variance.CauchyDistrib()</a></code> and
 <code><a href="kurtosis.CauchyDistrib.html">kurtosis.CauchyDistrib()</a></code>, and for the sample versions: a Cauchy sample mean
 does not converge as \(n\) grows, it is itself Cauchy with the same scale,
 so no amount of data settles it. The example below shows that.</p>
-<p>What the Cauchy does have is a <strong>median</strong>, equal to \(\mu\), and a
-half-interquartile range, equal to \(\sigma\). Both are exact and finite at
-every parameter value, and both are available from <code><a href="distrib_quantile.html">distrib_quantile()</a></code>.
-Reach for those when a location and a spread are wanted.</p>
+<p>The Cauchy has a <strong>median</strong>, equal to \(\mu\), and a half-interquartile
+range, equal to \(\sigma\). Both are finite at every parameter value and
+both are available from <code><a href="distrib_quantile.html">distrib_quantile()</a></code>. They serve as a location and a
+spread where the mean and the variance do not exist.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

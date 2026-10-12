@@ -11,10 +11,9 @@ compiled kernel decomposed over the elements of the output, so the
 result does not depend on the thread count.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries before returning, giving \\\partial \ell / \partial
-\eta_j = h_j'(\eta_j)\\ \partial \ell / \partial \theta_j\\. This method
-always returns the parameter scale; the transformation happens in the
-generic.
+of the family before returning, giving \\\partial \ell / \partial \eta_j
+= h_j'(\eta_j)\\ \partial \ell / \partial \theta_j\\. This method always
+returns the parameter scale; the transformation happens in the generic.
 
 ## Arguments
 
@@ -46,8 +45,8 @@ generic.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 

@@ -4,19 +4,21 @@
 and the shape \(\lambda &amp;gt; 0\), so that
 \(\operatorname{Var}(Y) = \mu^3/\lambda\). The returned object carries
 closed-form derivatives of the log-density to fourth order, in the
-parameters and in the response, and closed-form moments, so every generic of
-the toolkit answers without a numerical fallback.
+parameters and in the response, and closed-form moments. The fifth order and
+distrib_cross3_y() come from the numerical fallbacks of the base class.
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both parameters being positive."><meta property="og:description" content="Builds the distribution object for the inverse Gaussian family on
 \((0, \infty)\) in its classical parametrization, the mean \(\mu &amp;gt; 0\)
 and the shape \(\lambda &amp;gt; 0\), so that
 \(\operatorname{Var}(Y) = \mu^3/\lambda\). The returned object carries
 closed-form derivatives of the log-density to fourth order, in the
-parameters and in the response, and closed-form moments, so every generic of
-the toolkit answers without a numerical fallback.
+parameters and in the response, and closed-form moments. The fifth order and
+distrib_cross3_y() come from the numerical fallbacks of the base class.
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both parameters being positive."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -25,7 +27,7 @@ both parameters being positive."><meta property="og:image" content="https://stat
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,10 +65,11 @@ both parameters being positive."><meta property="og:image" content="https://stat
 and the shape \(\lambda &gt; 0\), so that
 \(\operatorname{Var}(Y) = \mu^3/\lambda\). The returned object carries
 closed-form derivatives of the log-density to fourth order, in the
-parameters and in the response, and closed-form moments, so every generic of
-the toolkit answers without a numerical fallback.</p>
+parameters and in the response, and closed-form moments. The fifth order and
+<code><a href="distrib_cross3_y.html">distrib_cross3_y()</a></code> come from the numerical fallbacks of the base class.</p>
 <p>The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both parameters being positive.</p>
     </div>
 
@@ -111,9 +114,10 @@ quantile function is its numerical inverse.</p>
 <p>This is the same law as <code><a href="invgauss1_distrib.html">invgauss1_distrib()</a></code>, which carries a dispersion
 \(\phi = 1/\lambda\). The map between the two moves one coordinate at a
 time, the mean being untouched, so both sets of derivatives stay elementary.
-The shape is the parametrization the family is usually written in, and it is
-the one in which the law is the first-passage time of a Brownian motion with
-drift \(\mu\) and variance parameter \(\lambda\).</p>
+The family is usually written in the shape parametrization. In it the law is
+the distribution of the first-passage time to a level \(a &gt; 0\) of a
+Brownian motion with drift \(\nu &gt; 0\) and variance parameter
+\(s^2\), with \(\mu = a/\nu\) and \(\lambda = a^2/s^2\).</p>
     </div>
     <div class="section level2">
     <h2 id="derivatives">Derivatives<a class="anchor" aria-label="anchor" href="#derivatives"></a></h2>
@@ -175,9 +179,10 @@ New York.</p>
     <div class="dont-index"><p><code><a href="invgauss1_distrib.html">invgauss1_distrib()</a></code> for the same law in the mean and a dispersion, which
 is the generalized linear model parametrization; <code><a href="gamma1_distrib.html">gamma1_distrib()</a></code> and
 <code><a href="lognormal1_distrib.html">lognormal1_distrib()</a></code> for other positive families;
-<code><a href="pig1_distrib.html">pig1_distrib()</a></code> for the counts this law mixes a Poisson into;
+<code><a href="pig1_distrib.html">pig1_distrib()</a></code> for the Poisson mixed over this law;
 <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a
-family of your own against the same battery this one passes;
+family of your own against the same battery of checks that this family
+passes;
 <a href="InvGauss2Distrib.html">InvGauss2Distrib</a> for the class.</p></div>
     </div>
 

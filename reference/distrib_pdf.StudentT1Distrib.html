@@ -6,16 +6,18 @@ dividing by \(\sigma\), the Jacobian of the standardization. With
 log = TRUE the division becomes a subtraction of \(\log\sigma\), so the
 logarithm stays finite far into the tails.
 The tails are polynomial, of order \(|y|^{-(\nu+1)}\), so the density
-decays far more slowly than a Gaussian's and no value of \(y\) underflows
-at an ordinary \(\nu\)."><meta property="og:description" content="Computes the location-scale Student t density
+decays far more slowly than a Gaussian's; it still underflows to zero at a
+very large \(|y|\) (at \(\nu = 5\) and \(\sigma = 1.2\), by
+\(|y| = 10^{60}\))."><meta property="og:description" content="Computes the location-scale Student t density
 $$f(y; \mu, \sigma, \nu) = \dfrac{\Gamma\left(\dfrac{\nu+1}{2}\right)}{\sigma\sqrt{\nu\pi}\,\Gamma\left(\dfrac{\nu}{2}\right)} \left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right)^{-\dfrac{\nu+1}{2}}$$
 by calling stats::dt() at the standardized value \((y-\mu)/\sigma\) and
 dividing by \(\sigma\), the Jacobian of the standardization. With
 log = TRUE the division becomes a subtraction of \(\log\sigma\), so the
 logarithm stays finite far into the tails.
 The tails are polynomial, of order \(|y|^{-(\nu+1)}\), so the density
-decays far more slowly than a Gaussian's and no value of \(y\) underflows
-at an ordinary \(\nu\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+decays far more slowly than a Gaussian's; it still underflows to zero at a
+very large \(|y|\) (at \(\nu = 5\) and \(\sigma = 1.2\), by
+\(|y| = 10^{60}\))."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +25,7 @@ at an ordinary \(\nu\)."><meta property="og:image" content="https://statmodels7.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,8 +65,9 @@ dividing by \(\sigma\), the Jacobian of the standardization. With
 <code>log = TRUE</code> the division becomes a subtraction of \(\log\sigma\), so the
 logarithm stays finite far into the tails.</p>
 <p>The tails are polynomial, of order \(|y|^{-(\nu+1)}\), so the density
-decays far more slowly than a Gaussian's and no value of \(y\) underflows
-at an ordinary \(\nu\).</p>
+decays far more slowly than a Gaussian's; it still underflows to zero at a
+very large \(|y|\) (at \(\nu = 5\) and \(\sigma = 1.2\), by
+\(|y| = 10^{60}\)).</p>
     </div>
 
 
@@ -78,14 +81,14 @@ at an ordinary \(\nu\).</p>
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric vector of observations. Every real value is in the
-support, so no value is rejected.</p></dd>
+support, so every value of <code>y</code> is valid.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>mu</code>, <code>sigma</code> and <code>nu</code>, each a
 numeric vector of length 1 or of the length of <code>y</code>. A component of length
-1 is recycled. <code>sigma</code> and <code>nu</code> must be strictly positive; a zero or
-negative value gives <code>NaN</code> with a warning from <code><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">stats::dt()</a></code>.</p></dd>
+1 is recycled. <code>sigma</code> and <code>nu</code> must be strictly positive; the generic
+signals an error for a zero or negative value.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>

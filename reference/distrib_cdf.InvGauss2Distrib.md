@@ -9,9 +9,9 @@ in the standard normal distribution function \\\Phi\\: \$\$F(q; \mu,
 [`statmod::pinvgauss()`](https://rdrr.io/pkg/statmod/man/invgauss.html)
 at `mean = mu` and `dispersion = 1/lambda`. Both tails are available
 exactly, and `log.p = TRUE` returns a logarithm that stays finite where
-the probability itself underflows. The exponential factor overflows at
-ordinary settings, so that function evaluates the expression on the log
-scale.
+the probability itself underflows. The factor \\e^{2\lambda/\mu}\\
+overflows in double precision when \\2\lambda/\mu\\ exceeds about 709,
+so that function evaluates the expression on the log scale.
 
 ## Arguments
 

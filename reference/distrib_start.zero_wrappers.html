@@ -19,7 +19,7 @@ parent also produces zeros."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,12 +95,11 @@ in the order of <code>distrib@params</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Without these methods the wrappers took the univariate fallback, which reads
-the location off the median of the whole sample: on data with half their
-values at zero that is zero, and a start at a mean of zero is the edge of a
-log link. On a zero-adjusted Poisson-inverse Gaussian sample the first
-start then converged to a degenerate point (\(\mu \to 0\),
-\(\sigma \to \infty\)) 97 log-likelihood units below the maximum.</p>
+    <p>The univariate method reads the location from the median of the whole
+sample, which is zero when at least half of the observations are zero, and
+a start at a mean of zero lies on the edge of a log link. These methods
+read the starting values of the parent from the observations described
+above instead.</p>
 <p>For a zero-adjusted family \(\hat p_0\) is the maximum likelihood estimate
 of the mixing probability, the likelihood factorizing into a binomial part
 and a positive part. For a zero-inflated one it over-estimates \(\pi\),

@@ -3,9 +3,10 @@
 Closed form for \\\nu \> 3\\, from Azzalini and Capitanio (2003):
 \$\$\gamma_1 = \frac{\mu_z}{\sigma_z^{3}}
 \left\\\frac{\nu(3-\delta^2)}{\nu-3} - \frac{3\nu}{\nu-2} +
-2\mu_z^2\right\\,\$\$ and `NaN` at \\\nu \le 3\\. Unlike the skew
-normal's, this skewness is unbounded: heavy tails supply asymmetry the
-Gaussian-tailed family cannot reach at any shape.
+2\mu_z^2\right\\,\$\$ and `NaN` at \\\nu \le 3\\. Unlike the skewness of
+the skew normal, this skewness is unbounded as \\\nu\\ decreases to 3,
+because the heavy tails produce an asymmetry that the Gaussian-tailed
+family cannot reach at any shape.
 
 ## Arguments
 

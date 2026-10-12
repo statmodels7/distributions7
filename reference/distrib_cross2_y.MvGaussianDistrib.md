@@ -6,9 +6,11 @@ response Hessian is \\-\Sigma^{-1}\\, which does not involve the mean,
 so every mean component is exactly the zero matrix; the matrix
 components are \$\$\frac{\partial^3\ell}{\partial y\\\partial
 y^\top\partial\eta_k} = B_k = \Sigma^{-1}A_k\Sigma^{-1},\$\$ with \\A_k
-= \partial\Sigma/\partial\eta_k\\. No component depends on the
-observation, so one matrix is returned per parameter and `y` is not read
-at all.
+= \partial\Sigma/\partial\eta_k\\, which is \\-P_k\\ and is read as such
+from
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md).
+The components do not depend on the observation, so one matrix is
+returned per parameter and `y` is not read.
 
 ## Arguments
 
@@ -30,8 +32,9 @@ at all.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The two coincide here.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  Every link of this family is the identity, so the two scales coincide.
 
 - ...:
 
@@ -44,13 +47,11 @@ A named list of \\p \times p\\ numeric matrices, one per parameter, in
 
 ## Details
 
-This is one of the three derivatives a marginal criterion reads when the
-family stands as a prior over a coefficient block, the other two being
+This is one of the three derivatives that a marginal criterion reads
+when the family is a prior over a coefficient block, the other two being
 [`distrib_hess_y_hess.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.MvGaussianDistrib.md)
 and
 [`distrib_grad_y_hess.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.MvGaussianDistrib.md).
-Every link of this family is the identity, so `scale = "link"` and
-`scale = "parameter"` give the same numbers.
 
 ## Notation
 

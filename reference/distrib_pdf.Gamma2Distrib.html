@@ -8,9 +8,9 @@ by calling stats::dgamma() at that shape and rate. With log = TRUE the
 logarithm is formed inside dgamma() and stays finite where the density
 itself underflows.
 The density is unbounded at the origin when \(\sigma^2 &amp;gt; \mu^2\), where
-the shape falls below one; it is flat there when \(\sigma^2 = \mu^2\),
-the exponential case, and vanishes at the origin when
-\(\sigma^2 &amp;lt; \mu^2\)."><meta property="og:description" content="Computes the gamma density
+the shape falls below one. When \(\sigma^2 = \mu^2\), the exponential
+case, it equals the rate \(1/\mu\) there, and it vanishes at the origin
+when \(\sigma^2 &amp;lt; \mu^2\)."><meta property="og:description" content="Computes the gamma density
 $$f(y; \mu, \sigma^2) = \dfrac{\lambda^{\alpha}}{\Gamma(\alpha)}
       y^{\alpha - 1} e^{-\lambda y}, \qquad
       \alpha = \dfrac{\mu^2}{\sigma^2}, \quad
@@ -19,9 +19,9 @@ by calling stats::dgamma() at that shape and rate. With log = TRUE the
 logarithm is formed inside dgamma() and stays finite where the density
 itself underflows.
 The density is unbounded at the origin when \(\sigma^2 &amp;gt; \mu^2\), where
-the shape falls below one; it is flat there when \(\sigma^2 = \mu^2\),
-the exponential case, and vanishes at the origin when
-\(\sigma^2 &amp;lt; \mu^2\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+the shape falls below one. When \(\sigma^2 = \mu^2\), the exponential
+case, it equals the rate \(1/\mu\) there, and it vanishes at the origin
+when \(\sigma^2 &amp;lt; \mu^2\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +29,7 @@ the exponential case, and vanishes at the origin when
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,9 +71,9 @@ by calling <code><a href="https://rdrr.io/r/stats/GammaDist.html" class="externa
 logarithm is formed inside <code><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">dgamma()</a></code> and stays finite where the density
 itself underflows.</p>
 <p>The density is unbounded at the origin when \(\sigma^2 &gt; \mu^2\), where
-the shape falls below one; it is flat there when \(\sigma^2 = \mu^2\),
-the exponential case, and vanishes at the origin when
-\(\sigma^2 &lt; \mu^2\).</p>
+the shape falls below one. When \(\sigma^2 = \mu^2\), the exponential
+case, it equals the rate \(1/\mu\) there, and it vanishes at the origin
+when \(\sigma^2 &lt; \mu^2\).</p>
     </div>
 
 

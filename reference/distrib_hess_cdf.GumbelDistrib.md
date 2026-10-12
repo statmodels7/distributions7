@@ -2,9 +2,9 @@
 
 Closed form from the same location-scale structure, through
 [`loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_hess_cdf.md).
-The response derivative it reads is \\\ell_y = (e^{-z} - 1)/\sigma\\,
-which is smooth everywhere, so all three components are continuous on
-the whole line.
+The response derivative that it reads is \\\ell_y = (e^{-z} -
+1)/\sigma\\, which is smooth everywhere, so all three components are
+continuous on the whole line.
 
 ## Arguments
 

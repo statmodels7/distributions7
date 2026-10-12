@@ -26,10 +26,10 @@ reparam_tables(distrib, theta, order)
 
 - order:
 
-  The highest order of partial the caller reads, an integer from 1 to 4:
-  one for a gradient, a distribution function's gradient or a mixed
-  response derivative, two for a Hessian or an expected information, and
-  so on. No partial of higher order is formed.
+  The highest order of partial that the caller reads, an integer from 1
+  to 4: one for a gradient, a distribution function's gradient or a
+  mixed response derivative, two for a Hessian or an expected
+  information, and so on. No partial of higher order is formed.
 
 ## Value
 
@@ -46,9 +46,10 @@ Otherwise each needed partial comes from one finite-difference stencil
 of
 [`numericals7::fd_derivative()`](https://statmodels7.github.io/numericals7/reference/fd_derivative.html)
 applied to the analytic map, a single stencil per order and never a
-chain of differences, at the accuracy that construction carries: about
-\\10^{-8}\\ at first order, fading with the order. Exact tables are
-therefore the recommendation for any family fitted in earnest.
+chain of differences, at the accuracy that construction carries: close
+to the stencil's own at first order and falling quickly with the order.
+Exact tables are therefore required for derivatives of order three and
+above.
 
 ## See also
 

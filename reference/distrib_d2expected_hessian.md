@@ -59,26 +59,22 @@ once more moves the measure a second time,
 = \mathbb{E}\[\ell\_{abcd}\] + \mathbb{E}\[\ell\_{abd}\ell\_{c}\] +
 \mathbb{E}\[\ell\_{abc}\ell\_{d}\] +
 \mathbb{E}\[\ell\_{ab}\ell\_{cd}\] +
-\mathbb{E}\[\ell\_{ab}\ell\_{c}\ell\_{d}\],\$\$ and no Bartlett identity
-isolates those moments. A family supplies the components as ordinary
-derivatives of its own written-out expected information; the components
-are symmetric in \\(a,b)\\ and in \\(c,d)\\ separately, and are keyed by
+\mathbb{E}\[\ell\_{ab}\ell\_{c}\ell\_{d}\],\$\$ and the Bartlett
+identities do not isolate those moments. A family supplies the
+components as ordinary derivatives of its own written-out expected
+information; the components are symmetric in \\(a,b)\\ and in \\(c,d)\\
+separately, and are keyed by
 [`d2expected_names()`](https://statmodels7.github.io/distributions7/reference/d2expected_names.md).
 
 **There is no numerical default.** A difference of
 [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md),
 whose own default is already a difference, would be the nested
-differencing the package forbids, so the base method signals an error
-and a family that does not register one has no second derivative. The
-families that do are
-[`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md),
-[`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md),
-[`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md),
-[`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md),
-[`beta1_distrib()`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md)
-and the seventeen listed on
-[distrib_dexpected_hessian.elementary](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md),
-each from a compiled kernel.
+differencing that the package does not use, so the base method signals
+an error and a family that does not register one has no second
+derivative. Every univariate family of the package except
+[`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md)
+registers one; the elementary families are listed on
+[distrib_dexpected_hessian.elementary](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md).
 
 On `scale = "link"` the expected information is \\F\_{ab} =
 \mathbb{E}\[\ell\_{ab}\]\\h_a' h_b'\\, with no term in \\h''\\ because

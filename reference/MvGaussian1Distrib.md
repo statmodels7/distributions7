@@ -4,8 +4,8 @@
 **covariance** and `MvGaussian2Distrib` the family whose matrix
 parametrization is the **precision**. Both inherit from
 [MvGaussianDistrib](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md),
-which carries every method: the two differ in what their free values
-describe, not in how anything is computed.
+which carries every method; the two differ in what their free values
+describe, and the computations are shared.
 
 ## Usage
 
@@ -109,8 +109,13 @@ MvGaussian2Distrib(
 
   Logical of length 1. `TRUE` when `param` carries the precision
   \\\Omega = \Sigma^{-1}\\ and `FALSE` when it carries the covariance
-  \\\Sigma\\. Nothing but the sign of the log-determinant and one matrix
-  inversion depends on it; the law is the same either way.
+  \\\Sigma\\. It decides which derivative arrays are the
+  parametrization's own and which are obtained from them (see
+  [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)),
+  the sign of the log-determinant, the prefix of the free names, and the
+  quantities that
+  [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
+  reports. The same matrix \\\Sigma\\ gives the same law either way.
 
 ## Value
 
@@ -121,7 +126,7 @@ adding no properties of its own.
 
 ## Details
 
-The two are separate families for the reason
+The two are separate families for the reason that
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md),
 [`gaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian2_distrib.md)
 and
@@ -150,7 +155,7 @@ c(covariance = S7::S7_inherits(mvgaussian1_distrib(2), MvGaussian1Distrib),
 #> covariance  precision 
 #>       TRUE       TRUE 
 
-# Both are multivariate gaussians, which is what carries the methods.
+# Both are multivariate gaussians, the class that carries the methods.
 S7::S7_inherits(mvgaussian2_distrib(2), MvGaussianDistrib)
 #> [1] TRUE
 ```

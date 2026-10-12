@@ -15,16 +15,17 @@ to counting measure, so what this returns is a probability.
 
 - y:
 
-  A numeric vector of zeros and ones. Any other value gives 0 with a
-  warning from
-  [`stats::dbinom()`](https://rdrr.io/r/stats/Binomial.html).
+  A numeric vector of zeros and ones. Any other value gives 0, and a
+  non-integer value also gives a warning from
+  [`stats::dbinom()`](https://rdrr.io/r/stats/Binomial.html). A missing
+  value gives `NA`.
 
 - theta:
 
   A named list with the single component `mu`, a numeric vector of
   length 1 or of the length of `y`. A value of length 1 is recycled.
-  `mu` must lie in \\(0, 1)\\; a value outside \\\[0, 1\]\\ gives `NaN`
-  with a warning.
+  `mu` must lie in \\(0, 1)\\; the generic signals an error for a value
+  outside that interval before the method is called.
 
 - log:
 

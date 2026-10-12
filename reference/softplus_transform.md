@@ -1,8 +1,10 @@
 # Softplus Transformation
 
 Transformer for the inverse-softplus map \\Y = \frac{1}{a}\log(e^{aX} -
-1)\\, sending \\(0, \infty)\\ to the real line. Inverse (softplus) \\X =
-\frac{1}{a}\log(1 + e^{aY})\\, Jacobian \\\|J\| = \text{plogis}(aY)\\.
+1)\\, sending \\(0, \infty)\\ to the real line, evaluated as \\X +
+\frac{1}{a}\log(1 - e^{-aX})\\ so that it does not overflow at a large
+argument. Inverse (softplus) \\X = \frac{1}{a}\log(1 + e^{aY})\\,
+Jacobian \\\|J\| = \text{plogis}(aY)\\.
 
 ## Usage
 

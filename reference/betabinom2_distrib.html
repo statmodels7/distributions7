@@ -3,16 +3,16 @@
 parametrization, the two beta shapes \(\alpha &amp;gt; 0\) and \(\beta &amp;gt; 0\),
 on the finite support \(\{0, 1, \dots, n\}\). The returned object carries
 closed-form derivatives of the log-mass to fourth order and expectations
-that are exact finite sums over the support, so every generic of the toolkit
-answers without a quadrature.
+that are exact finite sums over the support, so no quadrature is used. The
+fifth derivative comes from the numerical fallback of the base class.
 This is the same law as betabinom1_distrib(), which is written in a mean
 proportion and a dispersion. Use this one when the shapes themselves are the
 quantities of interest, and that one when a regression on the mean is."><meta property="og:description" content="Builds the distribution object for the beta-binomial family in its canonical
 parametrization, the two beta shapes \(\alpha &amp;gt; 0\) and \(\beta &amp;gt; 0\),
 on the finite support \(\{0, 1, \dots, n\}\). The returned object carries
 closed-form derivatives of the log-mass to fourth order and expectations
-that are exact finite sums over the support, so every generic of the toolkit
-answers without a quadrature.
+that are exact finite sums over the support, so no quadrature is used. The
+fifth derivative comes from the numerical fallback of the base class.
 This is the same law as betabinom1_distrib(), which is written in a mean
 proportion and a dispersion. Use this one when the shapes themselves are the
 quantities of interest, and that one when a regression on the mean is."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -23,7 +23,7 @@ quantities of interest, and that one when a regression on the mean is."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,8 +60,8 @@ quantities of interest, and that one when a regression on the mean is."><meta pr
 parametrization, the two beta shapes \(\alpha &gt; 0\) and \(\beta &gt; 0\),
 on the finite support \(\{0, 1, \dots, n\}\). The returned object carries
 closed-form derivatives of the log-mass to fourth order and expectations
-that are exact finite sums over the support, so every generic of the toolkit
-answers without a quadrature.</p>
+that are exact finite sums over the support, so no quadrature is used. The
+fifth derivative comes from the numerical fallback of the base class.</p>
 <p>This is the same law as <code><a href="betabinom1_distrib.html">betabinom1_distrib()</a></code>, which is written in a mean
 proportion and a dispersion. Use this one when the shapes themselves are the
 quantities of interest, and that one when a regression on the mean is.</p>
@@ -120,9 +120,10 @@ binomial limit.</p>
     <div class="section level2">
     <h2 id="derivatives">Derivatives<a class="anchor" aria-label="anchor" href="#derivatives"></a></h2>
     <p>The log-mass is a sum of log-gamma terms, so a derivative of order \(k\)
-replaces each by \(\psi^{(k-1)}\) and all four orders come from one
-routine, <code><a href="betabinom2_derivs.html">betabinom2_derivs()</a></code>. A component naming both shapes keeps only
-the terms in \(S\) and is therefore free of the data at every order.</p>
+replaces each by \(\psi^{(k-1)}\). The score and the Hessian come from
+compiled kernels, and the third and fourth orders from
+<code><a href="betabinom2_derivs.html">betabinom2_derivs()</a></code>. A component naming both shapes keeps only the terms
+in \(S\) and is therefore free of the data at every order.</p>
 <p>Every expectation is an <strong>exact finite sum</strong> over \(\{0, \dots, n\}\):
 the support is bounded, so there is nothing to integrate over.</p>
     </div>
@@ -131,18 +132,15 @@ the support is bounded, so there is nothing to integrate over.</p>
     <p>The two beta functions of the mass are each of magnitude \(S\log S\) while
 their difference is of order one, so writing the mass as that difference
 loses one digit per factor of ten in \(S\). <code><a href="betabinom_log_mass.html">betabinom_log_mass()</a></code>
-switches to a sum of logarithms past a measured threshold and stays exact:
-at \(n = 10\), \(y = 3\) and \(\alpha/S = 0.4\), the log-mass agrees
-with the binomial one to twelve figures at \(S = 10^{14}\), where the
-direct route is wrong in the third decimal.</p>
-<p><strong>The derivatives are not rewritten that way here</strong>, and cede earlier than
-the mass. Measured at the same setting, the relative error of the
-\(\alpha\) score against its limit is \(6\times10^{-8}\) at
-\(S = 10^8\), \(4\times10^{-4}\) at \(10^{12}\) and 1.8 at
-\(10^{15}\). <code><a href="betabinom1_distrib.html">betabinom1_distrib()</a></code>'s compiled kernel forms the same
-differences as sums of reciprocals and holds nine figures at
-\(S = 10^{15}\), so that is the parametrization to use where such a
-concentration is reachable.</p>
+switches to a sum of logarithms once the error of the direct route would
+exceed \(10^{-8}\), and the sums stay accurate to the binomial limit.</p>
+<p>The derivatives cancel in the same way. The score and the Hessian evaluate
+each polygamma difference, for a shape of at least 100, as an asymptotic
+series remainder plus one <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p()</a></code>. The third and fourth orders, and the
+expectations built from them, are computed for \(S &gt; 10\) from the direct
+sums over the integer shifts (<code><a href="betabinom_direct.html">betabinom_direct()</a></code>), whose terms have one
+sign each, at a cost of \(O(n)\) per observation. Every order therefore
+keeps its accuracy as the concentration grows.</p>
     </div>
     <div class="section level2">
     <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>

@@ -3,11 +3,13 @@
 branch of plot.distrib_fit(). It lays out one panel per ordered pair of
 the chosen coordinates: the marginal density on the diagonal, contours of
 the bivariate marginal below it, and the implied correlation printed above
-it. Every panel comes from mv_marginal(), so nothing is integrated."><meta property="og:description" content="The shared engine of plot.multivariate_distrib() and the multivariate
+it. The density panels come from mv_marginal(), so nothing is
+integrated; the printed correlation comes from mv_sigma()."><meta property="og:description" content="The shared engine of plot.multivariate_distrib() and the multivariate
 branch of plot.distrib_fit(). It lays out one panel per ordered pair of
 the chosen coordinates: the marginal density on the diagonal, contours of
 the bivariate marginal below it, and the implied correlation printed above
-it. Every panel comes from mv_marginal(), so nothing is integrated."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+it. The density panels come from mv_marginal(), so nothing is
+integrated; the printed correlation comes from mv_sigma()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -15,7 +17,7 @@ it. Every panel comes from mv_marginal(), so nothing is integrated."><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +54,8 @@ it. Every panel comes from mv_marginal(), so nothing is integrated."><meta prope
 branch of <code><a href="plot.distrib_fit.html">plot.distrib_fit()</a></code>. It lays out one panel per ordered pair of
 the chosen coordinates: the marginal density on the diagonal, contours of
 the bivariate marginal below it, and the implied correlation printed above
-it. Every panel comes from <code><a href="mv_marginal.html">mv_marginal()</a></code>, so nothing is integrated.</p>
+it. The density panels come from <code><a href="mv_marginal.html">mv_marginal()</a></code>, so nothing is
+integrated; the printed correlation comes from <code><a href="mv_sigma.html">mv_sigma()</a></code>.</p>
     </div>
 
     <div class="section level2">
@@ -65,6 +68,7 @@ it. Every panel comes from <code><a href="mv_marginal.html">mv_marginal()</a></c
 <span>  <span class="va">col_fit</span>,</span>
 <span>  <span class="va">data</span>,</span>
 <span>  col_data <span class="op">=</span> <span class="st">"#4682B4"</span>,</span>
+<span>  which_arg <span class="op">=</span> <span class="st">"which"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -82,8 +86,9 @@ it. Every panel comes from <code><a href="mv_marginal.html">mv_marginal()</a></c
 
 
 <dt id="arg-which">which<a class="anchor" aria-label="anchor" href="#arg-which"></a></dt>
-<dd><p>An integer vector of coordinates, or <code>NULL</code> for all of them.
-More than three is an error.</p></dd>
+<dd><p>An integer vector of distinct coordinates, or <code>NULL</code> for all
+of them. An empty, non-integer, out-of-range or duplicated <code>which</code>, or
+more than three coordinates, is an error.</p></dd>
 
 
 <dt id="arg-n-grid">n_grid<a class="anchor" aria-label="anchor" href="#arg-n-grid"></a></dt>
@@ -96,13 +101,20 @@ correlations.</p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>An \(n \times p\) matrix of observations, or <code>NULL</code> for a
-distribution with no data behind it.</p></dd>
+<dd><p>An \(n \times p\) matrix of observations with one column
+per coordinate of the distribution, whichever coordinates <code>which</code>
+selects, or <code>NULL</code> for a distribution with no data behind it.</p></dd>
 
 
 <dt id="arg-col-data">col_data<a class="anchor" aria-label="anchor" href="#arg-col-data"></a></dt>
 <dd><p>Color of the observed summary, used only when <code>data</code> is
 given. Defaults to <code>"#4682B4"</code>.</p></dd>
+
+
+<dt id="arg-which-arg">which_arg<a class="anchor" aria-label="anchor" href="#arg-which-arg"></a></dt>
+<dd><p>The name of the caller's argument that carries <code>which</code>,
+used in the error message for more than three coordinates. Defaults to
+<code>"which"</code>; <code><a href="plot.distrib_fit.html">plot.distrib_fit()</a></code> passes <code>"mv_which"</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -111,21 +123,22 @@ given. Defaults to <code>"#4682B4"</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>NULL</code>, invisibly. Called for the plot it draws, and it changes
-<code>graphics::par("mfrow")</code> and the margins, so a caller who needs the
-previous settings back saves them first.</p>
+    <p><code>NULL</code>, invisibly. Called for the plot it draws. The function sets
+<code>mfrow</code>, <code>mar</code> and <code>mgp</code> for the panel matrix and restores the previous
+values on exit.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>When <code>data</code> is supplied the diagonal also carries a kernel density estimate
-of the observed coordinate and the off-diagonal panels carry the
+of the observed coordinate and the panels below the diagonal carry the
 observations, so the fitted shape and the sample are read against each other
-in one frame. The kernel estimate is the comparison that assumes no model:
-it is what the data say without the family's help.</p>
-<p>The range each coordinate is drawn over is two and a half standard
-deviations either side of the location, with the spread taken from
-<code><a href="mv_sigma.html">mv_sigma()</a></code>, so a Student t at \(\nu \le 2\) still has a range where
-<code><a href="variance.html">variance()</a></code> would give it none.</p>
+in one frame. The panels above the diagonal show only the correlation. The
+kernel estimate (<code><a href="https://rdrr.io/r/stats/density.html" class="external-link">stats::density()</a></code>) does not depend on the fitted family and
+serves as a model-free comparison.</p>
+<p>Each coordinate is drawn over three standard deviations either side of the
+location, widened when <code>data</code> is supplied to include the observations. The
+spread is taken from <code><a href="mv_sigma.html">mv_sigma()</a></code>, so a Student \(t\) with \(\nu \le 2\)
+still has a finite range, where <code><a href="variance.html">variance()</a></code> returns an infinite matrix.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

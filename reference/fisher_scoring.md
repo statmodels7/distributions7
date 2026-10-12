@@ -30,10 +30,12 @@ fisher_scoring(
 - approx:
 
   How the expectation is approximated when the family has no closed-form
-  expected information. `"bartlett"` (the default) is the outer product
-  of the score, for which `"opg"` is an accepted synonym returning the
-  identical value; `"integrate"` is quadrature of the observed
-  information; `"mc"` is Monte Carlo. Matched by
+  expected information. `"opg"` (the default) is the outer product of
+  the observed scores, which costs one gradient; `"bartlett"` evaluates
+  the right-hand side of the second Bartlett identity, a sum over the
+  support for a discrete family and a quadrature for a continuous one;
+  `"integrate"` is quadrature of the observed information; `"mc"` is
+  Monte Carlo. Matched by
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html), so
   anything else signals an error listing the four. See
   [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
@@ -46,16 +48,21 @@ fisher_scoring(
 
 - criterion:
 
-  A stopping rule from optimizers7, or `NULL` (the default) to leave
-  [`optimizers7::newton()`](https://statmodels7.github.io/optimizers7/reference/newton.html)'s
-  own in force. Anything that is not a `criterion` object signals an
-  error.
+  A stopping rule from optimizers7, or `NULL` (the default), in which
+  case
+  [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+  stops on
+  [`optimizers7::crit_grad()`](https://statmodels7.github.io/optimizers7/reference/crit_grad.html)
+  at its default tolerance. An object that is not a `criterion` signals
+  an error.
 
 - maxit:
 
   An iteration limit, a single number at least 1, or `NULL` (the
-  default) for the same. When the limit is reached the fit reports
-  `converged = FALSE` and keeps the point.
+  default) for the limit of
+  [`optimizers7::newton()`](https://statmodels7.github.io/optimizers7/reference/newton.html).
+  When the limit is reached the fit reports `converged = FALSE` and
+  keeps the point.
 
 ## Value
 
@@ -63,7 +70,7 @@ An S7 object of class
 [`FisherScoring()`](https://statmodels7.github.io/distributions7/reference/FisherScoring.md),
 with properties `approx`, `nsim`, `criterion` and `maxit`.
 
-## One argument, three kinds of thing
+## Values accepted by the method argument
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 takes one argument saying how to optimize, and it takes an optimizer of
@@ -91,21 +98,19 @@ matrix inverted is therefore positive definite wherever
 therefore succeeds on a family whose observed Hessian is indefinite, the
 Laplace being the standard case.
 
-## Which strategy, and what it costs
+## Strategies for the expected information
 
 `approx` is read only where the family has no closed-form expected
-information; nine families in this package are in that position, and for
-them the choice is a trade of cost against noise. Measured on a skew
-normal at \\(\mu, \sigma, \alpha) = (0, 1, 3)\\ over 200 observations,
-`"bartlett"` and `"integrate"` agree to \\8\times 10^{-14}\\ on every
-component at 0.28 s and 0.18 s, and `"mc"` at `nsim = 2000` lands within
-about one per cent of them for no measurable time.
+information, as for a family defined by its density alone or a truncated
+family. The strategies differ in cost and in variance: `"opg"` costs one
+gradient, `"bartlett"` and `"integrate"` are deterministic and dearer,
+and `"mc"` adds simulation noise that decreases with `nsim`.
 
-A family that supplies the expectation in closed form ignores `approx`
-entirely, and
+A family that supplies the expectation in closed form ignores `approx`,
+and
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-signals an error when one is given there, so that a caller cannot come
-to believe a fit used a strategy it never read.
+signals an error when `approx` differs from the default `"opg"` for such
+a family, so that a fit never reports a strategy that was not used.
 
 ## See also
 
@@ -118,7 +123,7 @@ for what each `approx` computes;
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 for the matrix itself;
 [`optimizers7::newton()`](https://statmodels7.github.io/optimizers7/reference/newton.html),
-whose defaults stand where this sets none.
+whose iteration limit stands where this sets none.
 
 ## Examples
 
@@ -144,19 +149,9 @@ c(theta = sum(It$sigma_sigma), link = sum(Ie$sigma_sigma))   # ratio 2^2
 #> theta  link 
 #>   -50  -200 
 
-# 'approx' is read only where the family has no closed form. On a skew
-# normal the two deterministic strategies agree; Monte Carlo is noisy.
-sn <- skewnormal1_distrib()
-set.seed(2)
-ys <- distrib_rng(sn, 40, list(mu = 0, sigma = 1, alpha = 3))
-ths <- list(mu = 0, sigma = 1, alpha = 3)
-vapply(c("bartlett", "integrate"), function(a) {
-  sum(distrib_expected_hessian(sn, ys, ths, approx = a)$alpha_alpha)
-}, numeric(1))
-#>  bartlett integrate 
-#> -1.085353 -1.085353 
-
-# The same argument on a family that HAS one is rejected, not ignored.
+# 'approx' is read only where the family has no closed form (see the
+# examples of expected_derivative_methods). On a family that has one, a
+# value other than the default is rejected.
 try(fit_distrib(d, y, method = fisher_scoring(approx = "mc")))
 #> Error : 'gaussian1' computes its expected information exactly, in closed form or by
 #>   a quadrature of its own, so the 'approx' of fisher_scoring()

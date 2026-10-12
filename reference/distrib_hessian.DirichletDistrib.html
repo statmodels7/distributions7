@@ -9,10 +9,14 @@ $$\ell^{(\eta_k\eta_l)} = \phi\sum_{j}\left(-t_j\phi A_{jk}A_{jl}
       \ell^{(\eta_k\phi)} = -\phi\sum_{j} t_j \mu_j A_{jk}
         + \sum_{j} g_j A_{jk},$$
 $$\ell^{(\phi\phi)} = \psi'(\phi) - \sum_{j} t_j \mu_j^2.$$
-The pure-concentration entry is free of the data, the family being an
-exponential family in \(\log y\) whose concentration multiplies a
-statistic linearly; it therefore equals its own expectation at every
-observation. The other two carry the data through \(g\)."><meta property="og:description" content="Computes the distinct second derivatives of the Dirichlet log-density with
+The pure-concentration entry does not depend on the data, the family being an
+exponential family in \(\log y\) whose concentration multiplies a statistic
+linearly; it therefore equals its own expectation at every observation. The
+other two carry the data through \(g\). On the additive log-ratio chart the
+matrix is computed by the route of the higher orders, dirichlet_higher(),
+which writes \(-\log\Gamma(\alpha_j)\) as \(\log\alpha_j - \log\Gamma(1
++ \alpha_j)\): written in \(\psi'(\alpha_j)\), the two blocks of a
+coordinate whose shape is small cancel to the order of that shape."><meta property="og:description" content="Computes the distinct second derivatives of the Dirichlet log-density with
 respect to the mean's free values and the concentration, one value per
 observation, in closed form. With \(g_j = \log y_j - \psi(\alpha_j)\),
 \(t_j = \psi'(\alpha_j)\), \(A = \partial\mu/\partial\eta\) and
@@ -22,10 +26,14 @@ $$\ell^{(\eta_k\eta_l)} = \phi\sum_{j}\left(-t_j\phi A_{jk}A_{jl}
       \ell^{(\eta_k\phi)} = -\phi\sum_{j} t_j \mu_j A_{jk}
         + \sum_{j} g_j A_{jk},$$
 $$\ell^{(\phi\phi)} = \psi'(\phi) - \sum_{j} t_j \mu_j^2.$$
-The pure-concentration entry is free of the data, the family being an
-exponential family in \(\log y\) whose concentration multiplies a
-statistic linearly; it therefore equals its own expectation at every
-observation. The other two carry the data through \(g\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The pure-concentration entry does not depend on the data, the family being an
+exponential family in \(\log y\) whose concentration multiplies a statistic
+linearly; it therefore equals its own expectation at every observation. The
+other two carry the data through \(g\). On the additive log-ratio chart the
+matrix is computed by the route of the higher orders, dirichlet_higher(),
+which writes \(-\log\Gamma(\alpha_j)\) as \(\log\alpha_j - \log\Gamma(1
++ \alpha_j)\): written in \(\psi'(\alpha_j)\), the two blocks of a
+coordinate whose shape is small cancel to the order of that shape."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -33,7 +41,7 @@ observation. The other two carry the data through \(g\)."><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,10 +84,14 @@ $$\ell^{(\eta_k\eta_l)} = \phi\sum_{j}\left(-t_j\phi A_{jk}A_{jl}
       \ell^{(\eta_k\phi)} = -\phi\sum_{j} t_j \mu_j A_{jk}
         + \sum_{j} g_j A_{jk},$$
 $$\ell^{(\phi\phi)} = \psi'(\phi) - \sum_{j} t_j \mu_j^2.$$
-The pure-concentration entry is <strong>free of the data</strong>, the family being an
-exponential family in \(\log y\) whose concentration multiplies a
-statistic linearly; it therefore equals its own expectation at every
-observation. The other two carry the data through \(g\).</p>
+The pure-concentration entry does not depend on the data, the family being an
+exponential family in \(\log y\) whose concentration multiplies a statistic
+linearly; it therefore equals its own expectation at every observation. The
+other two carry the data through \(g\). On the additive log-ratio chart the
+matrix is computed by the route of the higher orders, <code><a href="dirichlet_higher.html">dirichlet_higher()</a></code>,
+which writes \(-\log\Gamma(\alpha_j)\) as \(\log\alpha_j - \log\Gamma(1
++ \alpha_j)\): written in \(\psi'(\alpha_j)\), the two blocks of a
+coordinate whose shape is small cancel to the order of that shape.</p>
     </div>
 
 

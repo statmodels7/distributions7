@@ -8,11 +8,14 @@ is \(1/(\mu(1-\mu))\), the reciprocal of the variance, so it is smallest
 at \(\mu = 1/2\) and grows without bound as the probability approaches
 either endpoint.
 On the link scale with the default logit the value is
-\(-\mu(1-\mu)\), and so is the observed Hessian: the logit is the
-canonical link, the observed curvature there carries no data, and the two
-coincide exactly. Fisher scoring and Newton's method therefore take the same
-step on a logistic regression, so iteratively reweighted least squares is
-both at once.
+\(-\mu(1-\mu)\), and so is the observed Hessian in exact arithmetic: the
+logit is the canonical link and the observed curvature there carries no
+data. Fisher scoring and Newton's method therefore take the same step on a
+logistic regression, so iteratively reweighted least squares is both at
+once. In floating point the observed value is composed by the generic from
+the derivatives on the parameter scale and loses relative accuracy where
+\(|\eta|\) is large (see distrib_hessian.BernoulliDistrib()); this
+value does not.
 Because the value does not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:description" content="Returns the expectation of the observed second derivative under the model,
 in closed form and with no quadrature or simulation:
@@ -23,11 +26,14 @@ is \(1/(\mu(1-\mu))\), the reciprocal of the variance, so it is smallest
 at \(\mu = 1/2\) and grows without bound as the probability approaches
 either endpoint.
 On the link scale with the default logit the value is
-\(-\mu(1-\mu)\), and so is the observed Hessian: the logit is the
-canonical link, the observed curvature there carries no data, and the two
-coincide exactly. Fisher scoring and Newton's method therefore take the same
-step on a logistic regression, so iteratively reweighted least squares is
-both at once.
+\(-\mu(1-\mu)\), and so is the observed Hessian in exact arithmetic: the
+logit is the canonical link and the observed curvature there carries no
+data. Fisher scoring and Newton's method therefore take the same step on a
+logistic regression, so iteratively reweighted least squares is both at
+once. In floating point the observed value is composed by the generic from
+the derivatives on the parameter scale and loses relative accuracy where
+\(|\eta|\) is large (see distrib_hessian.BernoulliDistrib()); this
+value does not.
 Because the value does not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -37,7 +43,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,11 +85,14 @@ is \(1/(\mu(1-\mu))\), the reciprocal of the variance, so it is smallest
 at \(\mu = 1/2\) and grows without bound as the probability approaches
 either endpoint.</p>
 <p>On the <strong>link</strong> scale with the default logit the value is
-\(-\mu(1-\mu)\), and so is the observed Hessian: the logit is the
-canonical link, the observed curvature there carries no data, and the two
-coincide exactly. Fisher scoring and Newton's method therefore take the same
-step on a logistic regression, so iteratively reweighted least squares is
-both at once.</p>
+\(-\mu(1-\mu)\), and so is the observed Hessian in exact arithmetic: the
+logit is the canonical link and the observed curvature there carries no
+data. Fisher scoring and Newton's method therefore take the same step on a
+logistic regression, so iteratively reweighted least squares is both at
+once. In floating point the observed value is composed by the generic from
+the derivatives on the parameter scale and loses relative accuracy where
+\(|\eta|\) is large (see <code><a href="distrib_hessian.BernoulliDistrib.html">distrib_hessian.BernoulliDistrib()</a></code>); this
+value does not.</p>
 <p>Because the value does not depend on the data, <code>approx</code> and <code>nsim</code> are
 ignored. <code>y</code> is read only for its length.</p>
     </div>
@@ -168,7 +177,7 @@ is the expectation of, <code><a href="fisher_scoring.html">fisher_scoring()</a><
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]   4.00000  11.11111 101.01010</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># On the canonical logit link the observed and the expected values agree</span></span></span>
-<span class="r-in"><span><span class="co"># exactly, at every observation.</span></span></span>
+<span class="r-in"><span><span class="co"># at every observation.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>observed <span class="op">=</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="va">th</span>, scale <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span>,</span></span>
 <span class="r-in"><span>      expected <span class="op">=</span> <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="va">th</span>,</span></span>
 <span class="r-in"><span>                                          scale <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span><span class="op">)</span></span></span>

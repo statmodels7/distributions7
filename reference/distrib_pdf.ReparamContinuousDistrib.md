@@ -1,10 +1,10 @@
 # Density of a Reparametrized Distribution
 
 The parent's density, evaluated at the mapped parameters. A change of
-parametrization does not change the law, so nothing is recomputed here:
-the new parameters go through
+parametrization does not change the law, so the density is not
+recomputed here: the new parameters go through
 [`reparam_theta()`](https://statmodels7.github.io/distributions7/reference/reparam_theta.md)
-and the parent answers.
+and the parent's density is evaluated at the result.
 
 ## Usage
 

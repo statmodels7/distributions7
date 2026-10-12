@@ -36,14 +36,9 @@ The comparison goes through
 rather than [`identical()`](https://rdrr.io/r/base/identical.html), for
 the reason recorded there.
 
-The argument is called `x` and not `distrib`, which is not a matter of
-taste. The base class of this package is itself named `distrib`, so an
-argument of that name SHADOWS it, and the comparison against the base
-class then compared the owning class with the distribution object
-instead. The consequence was silent and exactly backwards: every family
-whose expected information comes from the base class, which is the whole
-set this predicate exists to identify, was reported as having a closed
-form.
+The argument is named `x` because the base class of the package is named
+`distrib`, and an argument of that name would mask the class in the
+comparison with the base class.
 
 ## See also
 

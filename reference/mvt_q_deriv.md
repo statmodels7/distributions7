@@ -22,8 +22,10 @@ mvt_q_deriv(b, r, pget, p)
 
 - pget:
 
-  The accessor for \\\partial^{t}\Sigma^{-1}\\, as returned by
-  [`mvg_ptensors()`](https://statmodels7.github.io/distributions7/reference/mvg_ptensors.md).
+  The accessor for \\\partial^{t}\Sigma^{-1}\\, the `get` element of the
+  list that
+  [`mvg_ptensors()`](https://statmodels7.github.io/distributions7/reference/mvg_ptensors.md)
+  returns.
 
 - p:
 
@@ -31,5 +33,4 @@ mvt_q_deriv(b, r, pget, p)
 
 ## Value
 
-A numeric vector of length `nrow(r)`, or a scalar recycled by the
-caller.
+A numeric vector of length `nrow(r)`.

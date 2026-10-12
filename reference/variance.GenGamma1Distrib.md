@@ -27,15 +27,19 @@ three components.
 
 ## Details
 
-The difference is not formed. With \\k = d/p\\ and \\h = 1/p\\, the
-cumulant generating function of \\\log(Y/m_1)\\ is \\K(s) = \sum\_{n \ge
-2} \psi^{(n-1)}(k)\\h^n (s^n - s)/n!\\, and with \\e^{K(s)} = \sum_n a_n
+Where \\8h \le k\\ and \\4h^2 \le k\\ the difference \\m_2 - m_1^2\\ is
+not formed. With \\k = d/p\\ and \\h = 1/p\\, the cumulant generating
+function of \\\log(Y/m_1)\\ is \\K(s) = \sum\_{n \ge 2}
+\psi^{(n-1)}(k)\\h^n (s^n - s)/n!\\, and with \\e^{K(s)} = \sum_n a_n
 s^n\\ the central moments of \\Y/m_1\\ are \$\$\mu_r = r!\sum\_{n \ge r}
 S(n, r)\\a_n,\$\$ \\S\\ the Stirling numbers of the second kind, a sum
 in which the leading orders that cancel in \\m_2 - m_1^2\\ are absent.
-It is evaluated in double-double arithmetic where \\8h \le k\\, and as
-\\\exp(\log m_2 - 2\log m_1) - 1\\ from Stirling's form of the log-gamma
-differences elsewhere. Then \\\operatorname{Var}(Y) = m_1^2\mu_2\\.
+It is evaluated in double-double arithmetic where \\8h \le k\\ and
+\\4h^2 \le k\\. Elsewhere \\\mu_2 = \exp(\log m_2 - 2\log m_1) - 1\\ is
+evaluated with [`expm1()`](https://rdrr.io/r/base/Log.html), the
+log-gamma differences being taken in Stirling's form for \\k \ge 10\\
+and as differences of [`lgamma()`](https://rdrr.io/r/base/Special.html)
+below. Then \\\operatorname{Var}(Y) = m_1^2\mu_2\\.
 
 ## Notation
 
@@ -62,7 +66,8 @@ all.equal(variance(d, list(a = 2, d = 3, p = 3)),
           variance(weibull1_distrib(), list(mu = 2, sigma = 3)))
 #> [1] TRUE
 
-# Towards the lognormal the coefficient of variation is about sqrt(1/d).
+# Towards the lognormal the squared coefficient of variation is about
+# 1/(p d), which is 1/d here because p = 1.
 variance(d, list(a = 1, d = 1e6, p = 1)) / mean(d, list(a = 1, d = 1e6, p = 1))^2
 #> [1] 1e-06
 ```

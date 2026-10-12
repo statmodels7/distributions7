@@ -15,7 +15,7 @@ is the equidispersion the family is defined by.
 
   A named list with one component, `mu` (the mean, positive), a numeric
   vector of length 1 or `n`. Aligned and validated by name, so a
-  non-positive value throws.
+  non-positive value signals an error.
 
 - ...:
 

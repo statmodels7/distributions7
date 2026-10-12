@@ -6,9 +6,10 @@ with respect to \\\mu\\, in closed form: \$\$\ell^{(\mu\mu\mu\mu)} =
 of the digamma function, one case of \\\ell^{(k)} =
 -\psi^{(k-2)}(\mu/2)/2^{k}\\.
 
-The value is free of the response, so `expected`, `approx` and `nsim`
-are all without effect and the result is identical to the bit whichever
-is asked for.
+On the parameter scale the value is free of the response, so `expected`,
+`approx` and `nsim` have no effect and the result is identical to the
+bit in either case. With `scale = "link"` the observed and the expected
+results differ.
 
 ## Arguments
 
@@ -29,9 +30,9 @@ is asked for.
 
 - expected:
 
-  Logical of length 1, and without effect here, the observed and
-  expected fourth derivatives being the same number. Defaults to
-  `FALSE`.
+  Logical of length 1. On the parameter scale it has no effect, the
+  observed and expected fourth derivatives being the same number; on the
+  link scale it selects the expected composition. Defaults to `FALSE`.
 
 - scale:
 
@@ -89,7 +90,8 @@ unique(distrib_deriv4(d, y, th)$mu_mu_mu_mu)
 -psigamma(2, deriv = 3) / 16
 #> [1] -0.03087121
 
-# Free of the response, so asking for the expectation changes nothing.
+# Free of the response, so on the parameter scale the expectation is the
+# same.
 identical(distrib_deriv4(d, y, th),
           distrib_deriv4(d, y, th, expected = TRUE))
 #> [1] TRUE

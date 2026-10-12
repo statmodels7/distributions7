@@ -32,11 +32,10 @@ and `q` and `cw`, each a numeric vector of length \\n\\.
 
 ## Details
 
-The weight is the whole of the family's resistance to outliers. At \\q =
-0\\ it is \\(\nu+p)/\nu\\, and it decays like \\1/q\\, so an observation
-far from the location contributes less to every derivative instead of
-dragging the fit towards itself. Letting \\\nu \to \infty\\ sends it to
-one and recovers the gaussian, where nothing is downweighted.
+The weight limits the influence of a distant observation. At \\q = 0\\
+it is \\(\nu+p)/\nu\\, and it decays like \\1/q\\, so an observation far
+from the location contributes less to every derivative. Letting \\\nu
+\to \infty\\ sends it to one and recovers the gaussian.
 
 ## Notation
 

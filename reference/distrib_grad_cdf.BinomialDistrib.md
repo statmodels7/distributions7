@@ -21,7 +21,8 @@ so nothing is summed and nothing is differenced.
 - theta:
 
   A named list with one component, `mu` (the success probability,
-  strictly between 0 and 1), a numeric vector of length 1 or `n`.
+  strictly between 0 and 1), a numeric vector of length 1 or of the
+  length of `q`.
 
 - lower.tail:
 
@@ -39,7 +40,8 @@ so nothing is summed and nothing is differenced.
 ## Value
 
 A named list with one numeric vector, `mu`, the length of `q` recycled
-against `theta`.
+against `theta` and the `size` of the family. The generic signals an
+error for a `size` whose length is neither 1 nor that common length.
 
 ## Notation
 

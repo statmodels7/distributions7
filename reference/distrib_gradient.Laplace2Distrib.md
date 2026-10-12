@@ -54,9 +54,9 @@ A named list of two numeric vectors, `mu` and `lambda`, each of length
 
 \\\ell\\ is the log-density of one observation, \\\mu\\ the location and
 \\\lambda \> 0\\ the rate, with variance \\2/\lambda^2\\. \\r = y-\mu\\
-is the residual. Here \\\lambda\\ is a rate; the same letter names a
-penalty parameter above, and the two meet in the lasso, which is this
-family with \\\mu\\ held at zero.
+is the residual. Here \\\lambda\\ is a rate; the same letter names the
+tuning parameter of a lasso penalty, and the two coincide because the
+lasso is this family with \\\mu\\ held at zero.
 
 ## See also
 
@@ -87,5 +87,5 @@ set.seed(12)
 z <- distrib_rng(d, 2000, list(mu = 3, lambda = 0.5))
 lam_hat <- 1 / mean(abs(z - median(z)))
 sum(distrib_gradient(d, z, list(mu = median(z), lambda = lam_hat))$lambda)
-#> [1] -1.709743e-14
+#> [1] 2.331468e-14
 ```

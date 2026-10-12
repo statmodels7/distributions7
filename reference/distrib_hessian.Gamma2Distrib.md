@@ -12,6 +12,10 @@ neither is the curvature in \\\sigma^2\\: the observed information of a
 gamma is not positive definite everywhere. Its expectation is; see
 [`distrib_expected_hessian.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gamma2Distrib.md).
 
+The kernel evaluates them through the decomposition described on
+[`distrib_deriv3.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gamma2Distrib.md),
+which keeps the digits at a large shape.
+
 ## Arguments
 
 - distrib:
@@ -42,8 +46,8 @@ gamma is not positive definite everywhere. Its expectation is; see
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 

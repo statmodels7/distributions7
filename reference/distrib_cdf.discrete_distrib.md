@@ -17,7 +17,7 @@ absolute, which is the rounding of the addition itself.
 - q:
 
   A numeric vector of quantiles; a non-integer is floored, as a
-  distribution function on a lattice requires.
+  distribution function of a discrete variable requires.
 
 - theta:
 
@@ -26,12 +26,11 @@ absolute, which is the rounding of the addition itself.
 - lower.tail:
 
   Logical of length 1. `TRUE`, the default, returns \\P(Y \le q)\\;
-  `FALSE` returns the complement.
+  `FALSE` returns \\P(Y \> q)\\.
 
 - log.p:
 
-  Logical of length 1. `TRUE` returns the logarithm, taken after the
-  summation.
+  Logical of length 1. `TRUE` returns the logarithm of the probability.
 
 - ...:
 
@@ -44,16 +43,25 @@ A numeric vector of cumulative probabilities, the length of the recycled
 
 ## Details
 
-The cumulative table is built once per distinct parameter setting by
+The cumulative table is built by
 [`disc_cum_table()`](https://statmodels7.github.io/distributions7/reference/disc_cum_table.md)
-and every quantile sharing that setting is read from it, so a vector of
-quantiles costs one table between them. A support unbounded above is
-extended until the remaining mass falls below what the request needs.
+and rebuilt whenever the parameter setting of a row differs from that of
+the row before, so a vector of quantiles at one setting costs one table.
+A support unbounded above is extended, by doubling, until the table
+reaches the largest requested support point. With `lower.tail = FALSE`
+the upper tail \\P(Y \> q)\\ is \\1 - F(q)\\ where \\F(q) \le 1/2\\;
+past the median it is read from
+[`disc_upper_table()`](https://statmodels7.github.io/distributions7/reference/disc_upper_table.md),
+which sums the mass above \\q\\ from the top of its table, so a tail
+probability far below machine epsilon keeps its relative accuracy. A
+missing `q` gives `NA`.
 
 ## See also
 
 [`disc_cum_table()`](https://statmodels7.github.io/distributions7/reference/disc_cum_table.md),
 which builds the table;
+[`disc_upper_table()`](https://statmodels7.github.io/distributions7/reference/disc_upper_table.md),
+the table of the upper tail;
 [`distrib_quantile.discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.discrete_distrib.md),
 which inverts it;
 [`distrib_cdf.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.continuous_distrib.md),

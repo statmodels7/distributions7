@@ -54,8 +54,8 @@ for the inverse,
 for the density,
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
 for the derivatives of this function in the parameters, which the beta
-takes by finite difference because the derivative of an incomplete beta
-in its shapes is hypergeometric, and
+computes by a compiled quadrature because the derivative of an
+incomplete beta in its shapes is hypergeometric, and
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
 for the generic.
 

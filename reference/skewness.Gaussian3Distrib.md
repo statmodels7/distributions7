@@ -1,8 +1,9 @@
 # Skewness of the Gaussian Distribution in Location and Precision
 
 Exactly zero at every parameter value, the density being symmetric about
-\\\mu\\. A standardized moment does not see a change of parametrization,
-so this is the same zero the other two Gaussian classes return.
+\\\mu\\. A standardized moment is invariant under a change of
+parametrization, so this is the same zero that the other two Gaussian
+classes return.
 
 ## Arguments
 
@@ -14,8 +15,8 @@ so this is the same zero the other two Gaussian classes return.
 - theta:
 
   A named list with components `mu` and `tau` (positive), each a numeric
-  vector of length 1 or `n`. The values are not read, only their
-  lengths.
+  vector of length 1 or `n`. The values are checked against the
+  parameter bounds, and only their lengths enter the result.
 
 - ...:
 

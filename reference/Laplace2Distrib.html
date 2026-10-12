@@ -4,8 +4,8 @@ rate \(\lambda &amp;gt; 0\) in place of its scale, with density
 \(f(y) = (\lambda/2)\exp(-\lambda|y-\mu|)\) on the whole real line. It is
 the same law as laplace_distrib() at \(\lambda = 1/\sigma\); the
 parametrization differs and the derivatives with it. It inherits from
-continuous_distrib, so it answers every generic of the distrib contract.
-The rate form is the one a lasso penalty is written in: with \(\mu = 0\)
+continuous_distrib, so every generic of the distrib class applies to it.
+The rate form is the one in which a lasso penalty is written: with \(\mu = 0\)
 the negative log-density is \(\lambda|y| - \log(\lambda/2)\), so
 \(\lambda\) is the penalty's own tuning parameter and larger values shrink
 harder. penalties7::lasso_penalty() is this family with the location held
@@ -13,14 +13,14 @@ at zero.
 Like laplace_distrib(), this family has a kink at \(y = \mu\) and is
 non-regular in its location; params_smooth is c(mu = FALSE, lambda = TRUE).
 Build one with laplace2_distrib(). This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them."><meta property="og:description" content="The S7 class of the Laplace (double exponential) family written by its
+constructor, which takes the parent's properties; the validator of
+distrib checks them, and the constructor adds no check of its own."><meta property="og:description" content="The S7 class of the Laplace (double exponential) family written by its
 rate \(\lambda &amp;gt; 0\) in place of its scale, with density
 \(f(y) = (\lambda/2)\exp(-\lambda|y-\mu|)\) on the whole real line. It is
 the same law as laplace_distrib() at \(\lambda = 1/\sigma\); the
 parametrization differs and the derivatives with it. It inherits from
-continuous_distrib, so it answers every generic of the distrib contract.
-The rate form is the one a lasso penalty is written in: with \(\mu = 0\)
+continuous_distrib, so every generic of the distrib class applies to it.
+The rate form is the one in which a lasso penalty is written: with \(\mu = 0\)
 the negative log-density is \(\lambda|y| - \log(\lambda/2)\), so
 \(\lambda\) is the penalty's own tuning parameter and larger values shrink
 harder. penalties7::lasso_penalty() is this family with the location held
@@ -28,8 +28,8 @@ at zero.
 Like laplace_distrib(), this family has a kink at \(y = \mu\) and is
 non-regular in its location; params_smooth is c(mu = FALSE, lambda = TRUE).
 Build one with laplace2_distrib(). This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+constructor, which takes the parent's properties; the validator of
+distrib checks them, and the constructor adds no check of its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -37,7 +37,7 @@ relationships between them."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,8 +75,8 @@ relationships between them."><meta property="og:image" content="https://statmode
 \(f(y) = (\lambda/2)\exp(-\lambda|y-\mu|)\) on the whole real line. It is
 the same law as <code><a href="laplace_distrib.html">laplace_distrib()</a></code> at \(\lambda = 1/\sigma\); the
 parametrization differs and the derivatives with it. It inherits from
-<code>continuous_distrib</code>, so it answers every generic of the <code>distrib</code> contract.</p>
-<p>The rate form is the one a lasso penalty is written in: with \(\mu = 0\)
+<code>continuous_distrib</code>, so every generic of the <code>distrib</code> class applies to it.</p>
+<p>The rate form is the one in which a lasso penalty is written: with \(\mu = 0\)
 the negative log-density is \(\lambda|y| - \log(\lambda/2)\), so
 \(\lambda\) is the penalty's own tuning parameter and larger values shrink
 harder. <code>penalties7::lasso_penalty()</code> is this family with the location held
@@ -84,8 +84,8 @@ at zero.</p>
 <p>Like <code><a href="laplace_distrib.html">laplace_distrib()</a></code>, this family has a <strong>kink</strong> at \(y = \mu\) and is
 non-regular in its location; <code>params_smooth</code> is <code>c(mu = FALSE, lambda = TRUE)</code>.</p>
 <p>Build one with <code><a href="laplace2_distrib.html">laplace2_distrib()</a></code>. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.</p>
+constructor, which takes the parent's properties; the validator of
+<code>distrib</code> checks them, and the constructor adds no check of its own.</p>
     </div>
 
     <div class="section level2">
@@ -159,19 +159,44 @@ object built by <code><a href="laplace2_distrib.html">laplace2_distrib()</a></co
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered on this class:
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.Laplace2Distrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_cdf.Laplace2Distrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_deriv3.Laplace2Distrib.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.Laplace2Distrib.html">distrib_deriv4()</a></code>,
-<code><a href="distrib_expected_hessian.Laplace2Distrib.html">distrib_expected_hessian()</a></code>,
-<code><a href="distrib_grad_y.Laplace2Distrib.html">distrib_grad_y()</a></code>,
+<code><a href="distrib_quantile.Laplace2Distrib.html">distrib_quantile()</a></code> and
+<code><a href="distrib_rng.Laplace2Distrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.Laplace2Distrib.html">distrib_gradient()</a></code>,
-<code><a href="distrib_hess_y.Laplace2Distrib.html">distrib_hess_y()</a></code>,
 <code><a href="distrib_hessian.Laplace2Distrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_pdf.Laplace2Distrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_quantile.Laplace2Distrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.Laplace2Distrib.html">distrib_rng()</a></code></p>
-<p>Everything else is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
+<code><a href="distrib_expected_hessian.Laplace2Distrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.Laplace2Distrib.html">distrib_deriv3()</a></code>,
+<code><a href="distrib_deriv4.Laplace2Distrib.html">distrib_deriv4()</a></code> and
+<code><a href="distrib_deriv5.Laplace2Distrib.html">distrib_deriv5()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_dexpected_hessian.elementary.html">distrib_dexpected_hessian()</a></code>
+and
+<code><a href="distrib_dexpected_hessian.elementary.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the derivatives in the response:
+<code><a href="distrib_grad_y.Laplace2Distrib.html">distrib_grad_y()</a></code>,
+<code><a href="distrib_hess_y.Laplace2Distrib.html">distrib_hess_y()</a></code>,
+<code><a href="loc_deriv_y_k.html">distrib_deriv3_y()</a></code> and
+<code><a href="loc_deriv_y_k.html">distrib_deriv4_y()</a></code>;</p></li>
+<li><p>the mixed derivatives in the response and the parameters:
+<code><a href="distrib_cross_y.Laplace2Distrib.html">distrib_cross_y()</a></code>,
+<code><a href="mapped_theta2_methods.html">distrib_cross2_y()</a></code>,
+<code><a href="loc_cross3_y.html">distrib_cross3_y()</a></code>,
+<code><a href="mapped_theta2_methods.html">distrib_grad_y_hess()</a></code> and
+<code><a href="mapped_theta2_methods.html">distrib_hess_y_hess()</a></code>;</p></li>
+<li><p>the derivatives of the distribution function:
+<code><a href="distrib_grad_cdf.Laplace2Distrib.html">distrib_grad_cdf()</a></code>,
+<code><a href="distrib_hess_cdf.Laplace2Distrib.html">distrib_hess_cdf()</a></code>,
+<code><a href="register_mapped_cdf_k.html">distrib_deriv3_cdf()</a></code> and
+<code><a href="register_mapped_cdf_k.html">distrib_deriv4_cdf()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.Laplace2Distrib.html">mean()</a></code>,
+<code><a href="variance.Laplace2Distrib.html">variance()</a></code>,
+<code><a href="skewness.Laplace2Distrib.html">skewness()</a></code> and
+<code><a href="kurtosis.Laplace2Distrib.html">kurtosis()</a></code>;</p></li>
+<li><p>the decomposition at the kink:
+<code><a href="kink_decomposition.Laplace2Distrib.html">kink_decomposition()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

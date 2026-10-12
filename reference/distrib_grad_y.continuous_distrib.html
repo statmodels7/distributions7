@@ -15,7 +15,7 @@ that supplies a density and nothing else."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,10 +88,10 @@ support. The stencil's truncation error is \(O(h^2)\) and its rounding
 error \(O(\varepsilon/h)\), so that exponent minimizes their sum;
 measured against the gamma's closed form it delivers about
 \(3\times 10^{-10}\). The cost is two vectorized <code><a href="distrib_pdf.html">distrib_pdf()</a></code> calls.</p>
-<p>EVERY family the package ships writes its own response gradient, so this
-method answers for user-defined families alone. A DISCRETE family has no
-derivative in the response, so no default is registered there and the call
-raises with the class named.</p>
+<p>Every continuous family that the package ships writes its own response
+gradient, so this method serves user-defined families only. A discrete
+family has no derivative in the response, so no default is registered there
+and the call signals an error that names the class.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

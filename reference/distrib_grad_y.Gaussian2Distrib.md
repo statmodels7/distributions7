@@ -5,9 +5,7 @@ to the response, \$\$\dfrac{\partial \ell}{\partial y} = -\dfrac{y -
 \mu}{v}, \qquad v = \sigma^2,\$\$ in closed form. The Gaussian is a
 location family in \\\mu\\, so the response enters the log-density only
 through \\y - \mu\\ and this derivative is the negative of the score in
-\\\mu\\. Quantile residuals and the mixed derivatives of
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-read it.
+\\\mu\\.
 
 ## Arguments
 
@@ -42,8 +40,8 @@ for the second derivative in the response,
 [`distrib_gradient.Gaussian2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gaussian2Distrib.md)
 for the score in the parameters, and
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
-for the generic and the finite-difference fallback a family without a
-closed form takes.
+for the generic and the finite-difference fallback that a family without
+a closed form uses.
 
 ## Examples
 

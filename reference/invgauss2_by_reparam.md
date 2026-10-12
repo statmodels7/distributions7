@@ -18,12 +18,10 @@ A reparametrized distribution object.
 
 ## Details
 
-This exists as a check rather than as a second way of doing the same
-thing.
+This is a reference for the tests and is not exported.
 [`invgauss2_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss2_distrib.md)
 carries its own kernels, so the two are independent implementations of
-one object and their agreement needs no tolerance to be chosen. It is
-not exported for that reason.
+one law.
 
 ## See also
 

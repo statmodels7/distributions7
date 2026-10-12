@@ -2,8 +2,8 @@
 
 Returns the parent's score evaluated at \\x = g^{-1}(y)\\. The Jacobian
 does not depend on the parameters, so the score of the transformed model
-IS the parent's; the change of variables moves where the score is read,
-not what it is.
+IS the parent's, evaluated at the preimage \\g^{-1}(y)\\ of the
+observation.
 
 ## Arguments
 
@@ -22,8 +22,9 @@ not what it is.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The links are the parent's.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns. The links are the
+  parent's.
 
 - ...:
 

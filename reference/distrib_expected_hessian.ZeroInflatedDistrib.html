@@ -4,14 +4,16 @@ splitting the expectation over the two events \(y = 0\) and \(y &amp;gt; 0\).
 The zero contributes with probability \(L_0\) and carries the mixture's
 corrections; the positive part contributes with probability \(1 - L_0\)
 and carries the parent's own expected Hessian, less what the zero would have
-contributed to it. No component depends on the data, so every returned
-vector is constant and y is read for its length alone."><meta property="og:description" content="Computes the expectation of the observed Hessian in closed form, by
+contributed to it. The wrapper's own blocks do not depend on the data, so the
+returned vectors are constant when the parent's expected Hessian is, and y
+is then read for its length alone."><meta property="og:description" content="Computes the expectation of the observed Hessian in closed form, by
 splitting the expectation over the two events \(y = 0\) and \(y &amp;gt; 0\).
 The zero contributes with probability \(L_0\) and carries the mixture's
 corrections; the positive part contributes with probability \(1 - L_0\)
 and carries the parent's own expected Hessian, less what the zero would have
-contributed to it. No component depends on the data, so every returned
-vector is constant and y is read for its length alone."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+contributed to it. The wrapper's own blocks do not depend on the data, so the
+returned vectors are constant when the parent's expected Hessian is, and y
+is then read for its length alone."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +21,7 @@ vector is constant and y is read for its length alone."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,8 +59,9 @@ splitting the expectation over the two events \(y = 0\) and \(y &gt; 0\).
 The zero contributes with probability \(L_0\) and carries the mixture's
 corrections; the positive part contributes with probability \(1 - L_0\)
 and carries the parent's own expected Hessian, less what the zero would have
-contributed to it. No component depends on the data, so every returned
-vector is constant and <code>y</code> is read for its length alone.</p>
+contributed to it. The wrapper's own blocks do not depend on the data, so the
+returned vectors are constant when the parent's expected Hessian is, and <code>y</code>
+is then read for its length alone.</p>
     </div>
 
 
@@ -81,16 +84,16 @@ parent block reads <code>y</code> itself, through <code>distrib_expected_hessian
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, handled by the
-generic before dispatch.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The generic
+applies the link scale to the value that the method returns.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
 <dd><p>Forwarded to the parent's <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>, and
 read only where the parent has no closed form for it; every other block
-is an exact combination of the parent's density, score and observed
-Hessian at zero. <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> answers for this class by
-asking the parent.</p></dd>
+is an exact combination of the parent's density, score and observed Hessian
+at zero. <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> returns, for this class, the value that
+it returns for the parent.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -110,11 +113,13 @@ approximation can vary by observation.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This is EXACT. <code>approx</code> and <code>nsim</code> are accepted so that the signature
-matches the generic's, and neither is read. The route
-works because the parent's expected Hessian is an expectation over its whole
-support, from which the single point at zero can be subtracted in closed
-form.</p>
+    <p>The blocks of the wrapper are exact combinations of the parent's mass, score
+and observed Hessian at zero and of the parent's expected Hessian, an
+expectation over the whole support from which the single point at zero is
+subtracted in closed form. <code>approx</code> and <code>nsim</code> are forwarded to the parent's
+<code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> and take effect only where the parent has no
+closed form, so the result is exact exactly when the parent's is, as
+<code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> reports.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

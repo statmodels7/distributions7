@@ -4,14 +4,16 @@ $$\frac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j}
   = H_{ij}(y) - M_{ij} + m_i m_j, \qquad
   M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j],$$
 the subtracted part being the second derivative of \(\log Z\). Only
-\(H_{ij}(y)\) varies with the data; the correction is one number per
-component, recycled to the length of y."><meta property="og:description" content="Computes
+\(H_{ij}(y)\) depends on the data. The correction depends on \(\theta\)
+alone, so it is one number per component for a scalar \(\theta\) and one
+number per distinct parameter vector when a parameter varies by observation."><meta property="og:description" content="Computes
 $$\frac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j}
   = H_{ij}(y) - M_{ij} + m_i m_j, \qquad
   M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j],$$
 the subtracted part being the second derivative of \(\log Z\). Only
-\(H_{ij}(y)\) varies with the data; the correction is one number per
-component, recycled to the length of y."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(H_{ij}(y)\) depends on the data. The correction depends on \(\theta\)
+alone, so it is one number per component for a scalar \(\theta\) and one
+number per distinct parameter vector when a parameter varies by observation."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +21,7 @@ component, recycled to the length of y."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,8 +59,9 @@ $$\frac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j}
   = H_{ij}(y) - M_{ij} + m_i m_j, \qquad
   M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j],$$
 the subtracted part being the second derivative of \(\log Z\). Only
-\(H_{ij}(y)\) varies with the data; the correction is one number per
-component, recycled to the length of <code>y</code>.</p>
+\(H_{ij}(y)\) depends on the data. The correction depends on \(\theta\)
+alone, so it is one number per component for a scalar \(\theta\) and one
+number per distinct parameter vector when a parameter varies by observation.</p>
     </div>
 
 
@@ -79,8 +82,8 @@ component, recycled to the length of <code>y</code>.</p>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, applied by the
-generic before dispatch.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The generic
+applies the link scale to the value that the method returns.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

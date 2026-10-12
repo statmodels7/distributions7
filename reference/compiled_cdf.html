@@ -19,7 +19,7 @@ skew t."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,6 +65,10 @@ skew t.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compiled_cdf</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">q</span>, <span class="va">theta</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span>, log.p <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">compiled_log_cdf</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">a</span>, <span class="va">out</span>, <span class="va">lower.tail</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">log_tail_integral</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">q</span>, <span class="va">th</span>, <span class="va">lower.tail</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">compiled_grad_cdf</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">q</span>, <span class="va">theta</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span>, log <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">compiled_hess_cdf</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">q</span>, <span class="va">theta</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span>, log <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -96,6 +100,19 @@ skew t.</p>
 <dd><p>Unused.</p></dd>
 
 
+<dt id="arg-a">a<a class="anchor" aria-label="anchor" href="#arg-a"></a></dt>
+<dd><p>The value of <code>compiled_cdf_args()</code>.</p></dd>
+
+
+<dt id="arg-out">out<a class="anchor" aria-label="anchor" href="#arg-out"></a></dt>
+<dd><p>The probabilities of the requested tail, from the compiled
+kernel.</p></dd>
+
+
+<dt id="arg-th">th<a class="anchor" aria-label="anchor" href="#arg-th"></a></dt>
+<dd><p>A named list of scalar parameter values.</p></dd>
+
+
 <dt id="arg-log-log-p">log, log.p<a class="anchor" aria-label="anchor" href="#arg-log-log-p"></a></dt>
 <dd><p>Are derivatives of (or values of) the log probability
 wanted? A single logical.</p></dd>
@@ -106,6 +123,18 @@ wanted? A single logical.</p></dd>
     <p>For <code>compiled_cdf()</code>, a numeric vector; for the two derivative
 bodies, a named list of numeric vectors as <code><a href="distrib_grad_cdf.html">distrib_grad_cdf()</a></code> and
 <code><a href="distrib_hess_cdf.html">distrib_hess_cdf()</a></code> return.</p>
+<p><code>compiled_log_cdf()</code> returns the logarithm of <code>out</code>, formed as
+\(\log(1 - P_{\mathrm{other}})\) through <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p()</a></code> where <code>out</code> is
+above one half, and as
+\(\ell(q) + \log\int_0^{\infty} e^{\ell(q \mp u) - \ell(q)}\,du\)
+where <code>out</code> is below \(10^{-290}\), the integral taken by
+<code><a href="https://rdrr.io/r/stats/integrate.html" class="external-link">stats::integrate()</a></code> on the scale \(1/|\partial_y \ell(q)|\) and cut
+at the end of the support.</p>
+<p><code>log_tail_integral()</code> returns the logarithm of the probability of
+the tail beyond <code>q</code>, \(\ell(q) + \log\int_0^\infty
+  e^{\ell(q \mp u) - \ell(q)}\,du\), by <code><a href="https://rdrr.io/r/stats/integrate.html" class="external-link">stats::integrate()</a></code> on a scale
+adjusted until one step changes \(\ell\) by between 1/2 and 50, and
+\(\ell(q) - \log|\ell'(q)|\) where no such step is resolved.</p>
 <p><code>compiled_cdf_args()</code> returns the class name, the recycled
 quantiles and the parameter matrix the kernels read.</p>
     </div>
@@ -120,8 +149,24 @@ The integral is taken by a fixed rule (tanh-sinh panels doubling away from
 the family's center, an exp-sinh tail beyond), in \(\log y\) on
 \((0, \infty)\) and in \(\mathrm{logit}(y)\) on \((0, 1)\), so that
 a density that behaves like \(y^{k-1}\) at an end of its support is
-integrated as an exponential tail. Above the family's center the integral
-runs over \([q, \infty)\) with the opposite sign. For the families that
+integrated as an exponential tail; in \(\log y\) the panels are at most
+one unit wide, and they restart at the scale \(\theta\) where the
+density's fast decay begins when that point lies more than one unit
+above the center. For a small \(k\) part of the mass lies below the
+smallest representable double, so on \((0, \infty)\) the part below
+\(y_0 = \min(q, 10^{-290})\) is integrated in closed form wherever it
+holds at least \(10^{-17}\) of \(F(q)\): there the log-density and
+its parameter derivatives are linear in \(L = \log y\), so they are
+read at \(10^{-290}\) and 15 units of \(L\) below it and extended to
+\(L_0 = \log y_0\), and \(\int_{-\infty}^{L_0} e^{c + k u} g(u)\, du =
+f(y_0)\, y_0 \sum_j (-1)^j g^{(j)}(L_0)/k^{j+1}\) (<code><a href="compiled_cdf_head.html">compiled_cdf_head()</a></code>
+at orders three and four). When the part of the support above
+\(q\) holds less mass than the part below, the integral runs over the
+upper part with the opposite sign, so that a derivative that is small
+beside one is not a sum of terms of order one; the mass is the family's
+closed distribution function where it has one, and the integral of the
+density otherwise. The two beta families always integrate the lower part
+when their second shape is below one. For the families that
 are location-scale in \((\mu, \sigma)\) only the shape parameters are
 integrated: with \(z = (q - \mu)/\sigma\) the location and scale
 components are \(-f\), \(-z f\) and, at second order, \(-f s_\mu\),
@@ -129,9 +174,10 @@ components are \(-f\), \(-z f\) and, at second order, \(-f s_\mu\),
 mixed components with a shape \(k\) are \(-f s_k\) and
 \(-z f s_k\), all at \(q\). The distribution function itself is
 <code><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">pt()</a></code>, <code><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">pgamma()</a></code>, <code><a href="https://rdrr.io/r/stats/Chisquare.html" class="external-link">pchisq()</a></code> or <code><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">pbeta()</a></code> where the family has one, and
-the same integral of the density otherwise. The tail and the log scale
-are applied as for every family, by the conversion of the lower-tail
-derivatives.</p>
+the same integral of the density otherwise; with <code>log.p = TRUE</code> its
+logarithm is formed by <code>compiled_log_cdf()</code>, so that it stays finite in
+either tail. The tail and the log scale of the derivatives are applied as
+for every family, by the conversion of the lower-tail derivatives.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

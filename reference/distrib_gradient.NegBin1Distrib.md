@@ -9,7 +9,8 @@ function, \$\$\dfrac{\partial \ell}{\partial \mu} = \dfrac{P}{\theta},
 -\dfrac{\mu}{\theta^2}P - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} -
 \dfrac{y}{1+\theta}.\$\$ The arithmetic runs in a compiled kernel
 decomposed over the elements of the output, so the result does not
-depend on the thread count.
+depend on the thread count. These are the formulas the kernel evaluates
+for \\\theta \ge 1\\.
 
 ## Arguments
 
@@ -40,27 +41,35 @@ depend on the thread count.
 
 - threads:
 
-  A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  A single positive integer, how many threads the kernel may use. For
+  fewer observations than an internal threshold the kernel runs
+  sequentially whatever the count. Defaults to `1L`.
 
 ## Value
 
 A named list of two numeric vectors, `mu` and `theta`, each of length
 `max(length(y), length(mu), length(theta))`.
 
-## The dispersion at small theta
+## The dispersion below one
 
 As \\\theta\\ goes to zero the family tends to the Poisson, so the
-dispersion component tends to a finite limit while its individual terms
-run away: \\r = \mu/\theta\\ grows without bound and the chain rule
-divides by \\\theta^2\\. The kernel computes the digamma difference in a
-form that performs the cancellation symbolically, and the value
-converges onto \$\$\lim\_{\theta \to 0} \dfrac{\partial \ell}{\partial
-\theta} = \dfrac{(y-\mu)^2 - y}{2\mu},\$\$ which the example below
-checks at three settings. What survives is about five significant
-figures at \\\theta = 10^{-8}\\ and no more, the powers of \\r\\ in the
-assembly carrying a cancellation of their own that is not removed.
+dispersion component tends to a finite limit while the terms above run
+away: \\r = \mu/\theta\\ grows without bound and the chain rule divides
+by \\\theta^2\\. For \\\theta \< 1\\ and an integer count the kernel
+uses instead the form of the log-mass in which the size does not appear,
+\\\ell = \sum\_{i\<y}\log(\mu + i\theta) - \log y! -
+(\mu/\theta)\log(1+\theta) - y\log(1+\theta)\\. With \\B =
+\sum\_{i=1}^{y-1} i/(\mu + i\theta)\\ and \\q = (\theta -
+\log(1+\theta))/\theta^2\\, \$\$\dfrac{\partial \ell}{\partial \mu} =
+\dfrac{y-\mu}{\mu} - \dfrac{\theta}{\mu}B + \theta q, \qquad
+\dfrac{\partial \ell}{\partial \theta} = B - \dfrac{y-\mu}{1+\theta} -
+\mu q,\$\$ with \\q\\ from its power series below \\\theta = 1/4\\. No
+term of order \\\mu/\theta^2\\ is formed, so both components keep their
+accuracy as \\\theta\\ goes to zero, where the dispersion component
+tends to \$\$\lim\_{\theta \to 0} \dfrac{\partial \ell}{\partial \theta}
+= \dfrac{(y-\mu)^2 - y}{2\mu}.\$\$ The cost is \\y\\ terms per
+observation in place of a fixed number of digamma evaluations. The
+example below compares the value with this limit at three settings.
 
 With `scale = "link"` the generic applies the chain rule for the links
 the family carries before returning. This method always returns the

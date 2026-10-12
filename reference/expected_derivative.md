@@ -49,7 +49,7 @@ A named list of expected derivative component vectors.
 ## Details
 
 `"opg"` and `"bartlett"` are two readings of the second Bartlett
-identity and are NOT the same computation. The identity equates
+identity and are not the same computation. The identity equates
 \\\mathbb{E}\[\ell^{(ij)}\]\\ with
 \\-\mathbb{E}\[\ell^{(i)}\ell^{(j)}\]\\; `"bartlett"` evaluates the
 expectation, which is a sum over the support or a quadrature, while
@@ -57,10 +57,10 @@ expectation, which is a sum over the support or a quadrature, while
 at all. They agree in expectation and differ by orders of magnitude in
 cost, which is why `"opg"` is the default at order 2.
 
-Above order 2 the outer product of scores is not an identity for
-anything, so `"opg"` there is routed to `"bartlett"` rather than
-refused: the argument is one setting for a whole call and an order-4
-method may ask for the same strategy an order-2 one was given.
+Above order 2 the outer product of scores is not an identity, so `"opg"`
+is routed to `"bartlett"` and no error is signaled. The argument is one
+setting for a whole call, and a method of order 4 can receive the value
+that a method of order 2 received.
 
 ## See also
 

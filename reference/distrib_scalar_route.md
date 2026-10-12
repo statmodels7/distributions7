@@ -27,9 +27,11 @@ distrib_scalar_route(distrib, ...)
 ## Value
 
 `NULL` when the registry does not cover the distribution; otherwise a
-list with `name`, a single character string, and `constants`, a named
-list of numeric vectors, each of length 1 or of the number of
-observations, in the order they follow the parameters.
+list with `name`, a single character string, and `constants`, a list of
+numeric vectors (named for the size, the truncation points and the
+transformer parameters, unnamed for the fixed values), each of length 1
+or of the number of observations, in the order they follow the
+parameters.
 
 ## Details
 
@@ -41,9 +43,10 @@ second derivative and its derivative in the same parameter, all on the
 parameter scale, with `k` counted from zero over `distrib@params` and
 `th` the parameters of one observation followed by its constants.
 `d7_logpdf(id, y, th)` returns the log-density of one observation.
-`d7_scalar_thread_safe(id)` returns 1 when the entries of a distribution
-never reach the R API, so that they may be called from a worker thread,
-and 0 otherwise.
+`d7_scalar_thread_safe(id)` returns 1 for every distribution or wrapped
+family that the registry covers, whose entries may be called from a
+worker thread, and -1 for an identifier that the registry does not
+recognize.
 
 The default method returns the class name when the registry covers the
 class and no constants; the binomial and the two beta-binomials carry
@@ -63,8 +66,13 @@ and
 [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
 there is no `aux` and no constant of the wrapper's own, the probability
 being the last parameter. For
+[`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
+there is no `aux` and no constant of the wrapper's own. For
+[`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+there is no `aux` and the wrapper's constants are `lower` and `upper`.
+For
 [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md),
-`aux` is the code of the transformer, which must be one of the twelve
+`aux` is the code of the transformer, which must be one of the
 ready-made ones, and the wrapper's constants are the transformer's
 parameters; a transformer built with
 [`transformer()`](https://statmodels7.github.io/distributions7/reference/transformer.md)

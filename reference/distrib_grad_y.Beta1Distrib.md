@@ -9,10 +9,6 @@ so it is positive below the mode and negative above it. Where a shape
 falls below one the density is unbounded at the corresponding endpoint
 and the derivative does not change sign there.
 
-Quantile residuals and the mixed derivatives of
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-read it.
-
 ## Arguments
 
 - distrib:

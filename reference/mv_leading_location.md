@@ -1,11 +1,11 @@
 # The First p Parameters, Read as a Location
 
 Reads the first \\p\\ components of `theta` as the location vector. It
-is the implementation both elliptical families register
-[`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.md)
-with. It is correct exactly where a family's leading parameters ARE its
-location, which is a fact about the family; the shape of `theta` says
-nothing about it.
+is the implementation with which both elliptical families register
+[`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.md).
+It is correct where the leading \\p\\ parameters of a family are its
+location, which is a property of the family and not of the shape of
+`theta`.
 
 ## Usage
 
@@ -46,8 +46,8 @@ distributions7:::mv_leading_location(d, th)
 #>   v1   v2   v3 
 #>  1.0 -2.0  0.5 
 
-# Which is what mv_location() returns for this family, the method being
-# this function.
+# It is what mv_location() returns for this family, the method being this
+# function.
 mv_location(d, theta)
 #>   v1   v2   v3 
 #>  1.0 -2.0  0.5 

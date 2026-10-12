@@ -12,7 +12,14 @@ map's partials written out (at order 1 by the compiled kernel
 \\a\_{\mu\sigma\sigma} = 2/\sigma^3\\, \\a\_{\sigma\sigma\sigma} =
 -6\mu/\sigma^4\\, and for \\b\\ the same with \\\mu\\ replaced by
 \\1-\mu\\ and every derivative in \\\mu\\ changing sign; every
-derivative taking \\\mu\\ twice is zero.
+derivative taking \\\mu\\ twice is zero. Below
+[`bb_direct_cut()`](https://statmodels7.github.io/distributions7/reference/bb_direct_cut.md)
+these partials, of order \\\sigma^{-4}\\, cancel among themselves, and
+the rows with \\\sigma \< 0.1\\ are computed instead by the compiled
+kernel `betabinom1_dexpected_direct_cpp`, which sums over the support
+the derivatives of the direct sums of
+[`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
+in \\(\mu, \sigma)\\.
 
 ## Usage
 

@@ -1,6 +1,6 @@
 # Default Third and Fourth Response Derivatives
 
-One stencil of the order asked for, on the log-density.
+One stencil of the requested order, on the log-density.
 
 ## Arguments
 

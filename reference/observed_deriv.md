@@ -7,10 +7,11 @@ Routes to
 or
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 according to `order`, so that code working at an order fixed only at run
-time does not have to branch. Every strategy in
+time does not have to branch. The strategies of
 [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
-reads it, `"integrate"` and `"mc"` for the quantity they average and
-`"bartlett"` for the lower orders its identity multiplies together.
+other than `"opg"` read it: `"integrate"` and `"mc"` for the quantity
+that they average, and `"bartlett"` for the lower orders that its
+identity multiplies together.
 
 ## Usage
 

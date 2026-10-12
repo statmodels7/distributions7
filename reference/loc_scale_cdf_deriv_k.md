@@ -8,7 +8,7 @@ which stops at second order.
 ## Usage
 
 ``` r
-loc_scale_cdf_deriv_k(distrib, q, theta, order)
+loc_scale_cdf_deriv_k(distrib, q, theta, order, over_f = FALSE)
 ```
 
 ## Arguments
@@ -17,7 +17,7 @@ loc_scale_cdf_deriv_k(distrib, q, theta, order)
 
   An object inheriting from `distrib` whose first two parameters are a
   location and a scale, and which supplies response derivatives to the
-  order asked for.
+  requested order.
 
 - q:
 
@@ -59,8 +59,8 @@ and
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
 the construction stops where
 [`loc_scale_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv.md)
-stops. At orders 1 and 2 the two agree to the last bit, which is the
-check that licenses the orders above.
+stops. At orders 1 and 2 the two agree to rounding error, which is the
+check that supports the orders above.
 
 ## Notation
 

@@ -3,10 +3,10 @@
 Computes the expectation of the observed Hessian in closed form:
 \$\$\mathbb{E}\[H\_{\pi\pi}\] = -\frac{1}{\pi(1-\pi)}, \qquad
 \mathbb{E}\[H\_{\theta\pi}\] = 0, \qquad \mathbb{E}\[H\_{\theta\theta}\]
-= (1-\pi)\\\mathbb{E}\[H_W\].\$\$ The hurdle block is the Bernoulli
-information, the mixed blocks are exactly zero, and the parent block is
-the parent's own expectation weighted by the probability \\1-\pi\\ that
-an observation reaches it.
+= (1-\pi)\\\mathbb{E}\[H_W\].\$\$ The hurdle block is the negative of
+the Bernoulli information, the mixed blocks are exactly zero, and the
+parent block is the parent's own expectation weighted by the probability
+\\1-\pi\\ that an observation reaches it.
 
 ## Arguments
 
@@ -26,17 +26,17 @@ an observation reaches it.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - approx:
 
-  Read only by the parent block, and only where the parent has no closed
-  form for it; ignored for the hurdle block, which is exact whatever the
-  parent is.
+  Forwarded to the parent's expected Hessian and used only where the
+  parent has no closed form for it. The hurdle block is exact whatever
+  the parent is.
   [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
-  answers for this class by asking the parent, since the parent block is
-  the one that can fail to be exact.
+  returns, for this class, the value that it returns for the parent,
+  because the parent block is the only block that can fail to be exact.
 
 - nsim:
 
@@ -53,10 +53,9 @@ A named list of numeric vectors of length `length(y)`, keyed as
 
 ## Details
 
-`approx` and `nsim` are accepted so that the signature matches the
-generic's and neither is read here. They are also NOT forwarded to the
-parent, so a parent whose own expected Hessian is approximate takes its
-own defaults.
+`approx` and `nsim` are forwarded to the expected Hessian of the parent
+and are used only where the parent has no closed form. The hurdle block
+does not read them.
 
 ## Notation
 

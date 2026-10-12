@@ -54,14 +54,15 @@ reason.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
 A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_tau`,
-`mu_tau_tau` and `tau_tau_tau`, each of length `length(y)`. The names
-enumerate the distinct multi-indices of order three in two parameters.
+`mu_tau_tau` and `tau_tau_tau`, each of length
+`max(length(y), length(mu), length(tau))`. The names enumerate the
+distinct multi-indices of order three in two parameters.
 
 ## Notation
 
@@ -106,7 +107,7 @@ lapply(d3, unique)
 1 / 0.25^3
 #> [1] 64
 
-# Free of the response, so asking for the expectation changes nothing.
+# Free of the response, so expected = TRUE changes nothing.
 identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
 #> [1] TRUE
 

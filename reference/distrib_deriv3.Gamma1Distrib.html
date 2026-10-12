@@ -12,8 +12,9 @@ with \(s' = -s^2\), \(s'' = 2s^3\), \(s''' = -6s^4\) and \(f_k\) the
 \(k\)th derivative of \(\ell\) in \(s\).
 With expected = TRUE the expectations are returned, obtained by replacing
 \(z\) with 1 and \(\log z\) with \(\psi(s) - \log s\): \(f_1\) and
-the two components odd in \(z - 1\) vanish. Both routes are closed form,
-so no quadrature is run and approx and nsim are ignored."><meta property="og:description" content="Computes the four distinct third derivatives of the gamma log-density with
+\(\ell^{(\mu\phi\phi)}\), the component odd in \(z - 1\), vanish. Both
+routes are closed form,
+so the method uses no quadrature and ignores approx and nsim."><meta property="og:description" content="Computes the four distinct third derivatives of the gamma log-density with
 respect to \(\mu\) and \(\phi\), in closed form. With \(s = 1/\phi\)
 and \(z = y/\mu\),
 $$\ell^{(\mu\mu\mu)} = \dfrac{s(6z - 2)}{\mu^3}, \qquad
@@ -26,8 +27,9 @@ with \(s' = -s^2\), \(s'' = 2s^3\), \(s''' = -6s^4\) and \(f_k\) the
 \(k\)th derivative of \(\ell\) in \(s\).
 With expected = TRUE the expectations are returned, obtained by replacing
 \(z\) with 1 and \(\log z\) with \(\psi(s) - \log s\): \(f_1\) and
-the two components odd in \(z - 1\) vanish. Both routes are closed form,
-so no quadrature is run and approx and nsim are ignored."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(\ell^{(\mu\phi\phi)}\), the component odd in \(z - 1\), vanish. Both
+routes are closed form,
+so the method uses no quadrature and ignores approx and nsim."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -35,7 +37,7 @@ so no quadrature is run and approx and nsim are ignored."><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,8 +83,9 @@ with \(s' = -s^2\), \(s'' = 2s^3\), \(s''' = -6s^4\) and \(f_k\) the
 \(k\)th derivative of \(\ell\) in \(s\).</p>
 <p>With <code>expected = TRUE</code> the expectations are returned, obtained by replacing
 \(z\) with 1 and \(\log z\) with \(\psi(s) - \log s\): \(f_1\) and
-the two components odd in \(z - 1\) vanish. Both routes are closed form,
-so no quadrature is run and <code>approx</code> and <code>nsim</code> are ignored.</p>
+\(\ell^{(\mu\phi\phi)}\), the component odd in \(z - 1\), vanish. Both
+routes are closed form,
+so the method uses no quadrature and ignores <code>approx</code> and <code>nsim</code>.</p>
     </div>
 
 
@@ -130,8 +133,8 @@ and the expected values.</p></dd>
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -152,8 +155,8 @@ distinct multi-indices of order three in two parameters.</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_hessian.Gamma1Distrib.html">distrib_hessian.Gamma1Distrib()</a></code> for the order below and
 <code><a href="distrib_deriv4.Gamma1Distrib.html">distrib_deriv4.Gamma1Distrib()</a></code> for the order above;
-<code><a href="distrib_deriv3.html">distrib_deriv3()</a></code> for the generic and for the numerical route a family
-without a closed form takes.</p></div>
+<code><a href="distrib_deriv3.html">distrib_deriv3()</a></code> for the generic and for the numerical route that a
+family without a closed form uses.</p></div>
     </div>
 
     <div class="section level2">
@@ -173,7 +176,7 @@ without a closed form takes.</p></div>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">d3</span><span class="op">$</span><span class="va">mu_phi_phi</span>, <span class="fl">2</span> <span class="op">*</span> <span class="va">s</span><span class="op">^</span><span class="fl">3</span> <span class="op">*</span> <span class="op">(</span><span class="va">z</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Expected values: the components odd in z - 1 vanish.</span></span></span>
+<span class="r-in"><span><span class="co"># Expected values: mu_phi_phi, the component odd in z - 1, vanishes.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="va">unique</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu_mu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2962963</span>

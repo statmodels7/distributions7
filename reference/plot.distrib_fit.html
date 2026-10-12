@@ -4,7 +4,8 @@ choosing the comparison from the family's support. A continuous family is
 drawn as the fitted density over a kernel estimate of the data, with a rug
 of the observations underneath. A discrete one is drawn as the observed
 relative frequencies in bars with the fitted mass overlaid, a kernel
-estimate being a misrepresentation of a lattice sample.
+estimate being a misrepresentation of a sample from a discrete
+distribution.
 A multivariate fit is drawn as a panel matrix: the fitted marginal density
 and a kernel estimate of the data on the diagonal, the fitted contours over
 the observations below it, the fitted correlation above."><meta property="og:description" content="Compares the fitted distribution with the sample it was estimated from,
@@ -12,7 +13,8 @@ choosing the comparison from the family's support. A continuous family is
 drawn as the fitted density over a kernel estimate of the data, with a rug
 of the observations underneath. A discrete one is drawn as the observed
 relative frequencies in bars with the fitted mass overlaid, a kernel
-estimate being a misrepresentation of a lattice sample.
+estimate being a misrepresentation of a sample from a discrete
+distribution.
 A multivariate fit is drawn as a panel matrix: the fitted marginal density
 and a kernel estimate of the data on the diagonal, the fitted contours over
 the observations below it, the fitted correlation above."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -23,7 +25,7 @@ the observations below it, the fitted correlation above."><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +63,8 @@ choosing the comparison from the family's support. A continuous family is
 drawn as the fitted density over a kernel estimate of the data, with a rug
 of the observations underneath. A discrete one is drawn as the observed
 relative frequencies in bars with the fitted mass overlaid, a kernel
-estimate being a misrepresentation of a lattice sample.</p>
+estimate being a misrepresentation of a sample from a discrete
+distribution.</p>
 <p>A multivariate fit is drawn as a panel matrix: the fitted marginal density
 and a kernel estimate of the data on the diagonal, the fitted contours over
 the observations below it, the fitted correlation above.</p>
@@ -85,7 +88,7 @@ only; a discrete one is evaluated on its support.</p></dd>
 <dt id="arg-rug">rug<a class="anchor" aria-label="anchor" href="#arg-rug"></a></dt>
 <dd><p>Logical of length 1: draw a rug of the observations. Defaults to
 <code>TRUE</code> when there are at most 2000 of them, above which the rug becomes a
-solid band and says nothing.</p></dd>
+solid band that conveys no information.</p></dd>
 
 
 <dt id="arg-legend">legend<a class="anchor" aria-label="anchor" href="#arg-legend"></a></dt>
@@ -99,8 +102,10 @@ summary, in any form <code><a href="https://rdrr.io/r/grDevices/col2rgb.html" cl
 
 <dt id="arg-mv-which">mv_which<a class="anchor" aria-label="anchor" href="#arg-mv-which"></a></dt>
 <dd><p>For a multivariate fit, which coordinates to show, by index.
-Defaults to all of them, of which at most three are drawn: above that the
-panel matrix stops being readable. Ignored for a univariate fit.</p></dd>
+Defaults to all of them. At most three coordinates can be drawn, because
+a larger panel matrix is not readable, so a fit with more than three
+coordinates signals an error unless <code>mv_which</code> selects at most three.
+Ignored for a univariate fit.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

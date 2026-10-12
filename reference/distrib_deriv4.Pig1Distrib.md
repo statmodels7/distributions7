@@ -1,9 +1,18 @@
 # Poisson-Inverse Gaussian Fourth Derivatives
 
-Returns the exact fourth derivatives of the log-mass in \\(\mu,
-\sigma)\\, read off the last five columns of the compiled kernel of
-`pig1_deriv4_cpp`. The kernel is asked for this order alone, so this is
-the order it was written for and it costs the same as the score.
+Returns the fourth derivatives of the log-mass in \\(\mu, \sigma)\\,
+written out in closed form, read off the last five columns of the
+compiled kernel `pig1_deriv4_cpp`, which computes the fourth order
+alone.
+
+At a very small dispersion and a large count this order loses relative
+accuracy: the tables it is formed from are moments of the finite sum
+\\S_y\\, which has \\y\\ terms, and their combination cancels as
+\\\sigma\\ goes to zero. At \\\sigma = 10^{-7}\\ and counts of 100 and
+more the component in \\\sigma\\ alone has a relative error between
+\\10^{-7}\\ and \\2\times10^{-3}\\, growing with the count and with
+\\1/\mu\\; the orders below, and this order at counts under 100, are
+accurate to \\10^{-8}\\ or better there.
 
 With `expected = TRUE` the value is an expectation and is not closed
 form, as at third order.
@@ -17,8 +26,8 @@ form, as at third order.
 
 - y:
 
-  A numeric vector of counts. With `expected = TRUE` its values are the
-  support points the expectation is summed over.
+  A numeric vector of counts. With `expected = TRUE` only its length is
+  used, and the expectation is summed over the whole support.
 
 - theta:
 
@@ -92,14 +101,14 @@ rbind(analytic = d4$mu_mu_mu_sigma,
 #> analytic -0.148394
 #> numeric  -0.148394
 
-# All four orders come from one pass of the kernel, so the fourth costs
-# what the first does.
+# Each order has its own kernel, and the fourth costs about what the first
+# does.
 n <- 2e4
 set.seed(62)
 x <- distrib_rng(d, n, th)
 rbind(score = system.time(distrib_gradient(d, x, th))[["elapsed"]],
       fourth = system.time(distrib_deriv4(d, x, th))[["elapsed"]])
 #>         [,1]
-#> score  0.016
-#> fourth 0.015
+#> score  0.018
+#> fourth 0.019
 ```

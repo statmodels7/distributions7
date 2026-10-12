@@ -8,8 +8,8 @@ set gives \\d^I \log L_0\\, with every block naming \\\zeta\\ twice
 contributing nothing because \\L_0\\ is affine in it.
 
 The partitions of four indices number fifteen against five for three, so
-this order is the more expensive of the two by that ratio and by nothing
-else: the same identity and the same ratios \\d^B L_0 / L_0\\ are read.
+the partition sum has three times as many terms at this order. The same
+identity and the same ratios \\d^B L_0 / L_0\\ are used.
 
 ## Arguments
 

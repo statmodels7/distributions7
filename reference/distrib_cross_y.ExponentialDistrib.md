@@ -19,7 +19,8 @@ Closed form: the mean is a pure scale, so the identity \\-z\ell^{(yy)} -
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 - ...:
 

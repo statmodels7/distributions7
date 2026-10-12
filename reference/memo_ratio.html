@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,10 +66,11 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>A partition of a fourth-order index asks for the same small blocks many times
-over. For the truncated wrapper each distinct block costs a quadrature, so
-memoizing across the partition sum is the difference between one integration
-per block and one per occurrence.</p>
+    <p>A partition sum over a fourth-order index evaluates the same small blocks
+many times. For the truncated wrapper, a block whose cdf derivatives are not
+available in closed form costs a quadrature or a summation, so memoizing
+across the partition sum evaluates it once per distinct block and not once
+per occurrence.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

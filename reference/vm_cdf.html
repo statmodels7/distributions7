@@ -9,7 +9,7 @@ density, integrated term by term, in place of a quadrature."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,8 @@ density, integrated term by term, in place of a quadrature.</p>
 
 <dl><dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric vector of quantiles. Below \(-\pi\) the value is 0 and
-at or above \(\pi\) it is 1. <code>NA</code> and non-finite values give <code>NA</code>.</p></dd>
+at or above \(\pi\) it is 1, so that <code>-Inf</code> gives 0 and <code>Inf</code> gives 1.
+<code>NA</code> and <code>NaN</code> give <code>NA</code>.</p></dd>
 
 
 <dt id="arg-mu">mu<a class="anchor" aria-label="anchor" href="#arg-mu"></a></dt>
@@ -67,7 +68,8 @@ at or above \(\pi\) it is 1. <code>NA</code> and non-finite values give <code>NA
 
 <dt id="arg-kappa">kappa<a class="anchor" aria-label="anchor" href="#arg-kappa"></a></dt>
 <dd><p>A numeric vector of concentrations, recycled to the length of
-<code>y</code>. A value at or below zero gives <code>NA</code>.</p></dd>
+<code>y</code>. A value at or below zero gives <code>NA</code> for an angle inside the
+support.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -78,9 +80,8 @@ length of the inputs.</p>
     <div class="section level2">
     <h2 id="why-a-series">Why a series<a class="anchor" aria-label="anchor" href="#why-a-series"></a></h2>
     <p>The density has no elementary antiderivative, and the base class integrates
-it numerically: one quadrature per observation, which measured 4.5 seconds
-at ten thousand points and made this family a thousand times dearer than any
-other. The series is rapidly convergent. From
+it numerically, with one quadrature per observation. The series converges
+rapidly. From
 \(e^{\kappa\cos\theta} = I_0(\kappa) + 2\sum_{j\ge1} I_j(\kappa)
 \cos(j\theta)\), integrating from \(-\pi\) to \(x\),
 $$F(x) = \frac{x + \pi}{2\pi} + \frac{1}{\pi I_0(\kappa)}
@@ -96,16 +97,17 @@ loop runs over the series index and not over the data. The series is cheap
 for that reason: \(n\) quadratures become a few dozen vectorized steps.</p>
     </div>
     <div class="section level2">
-    <h2 id="how-many-terms-measured">How many terms, measured<a class="anchor" aria-label="anchor" href="#how-many-terms-measured"></a></h2>
-    <p>Compared against the same series at four times the length, machine precision
-is reached at 10 terms at \(\kappa = 0.5\), 26 at 10, 90 at 100, 242 at
-1000 and 404 at 3000, always under \(8.5\sqrt{\kappa} + 10\), which is the
-rule used, with a floor of 20.</p>
+    <h2 id="number-of-terms">Number of terms<a class="anchor" aria-label="anchor" href="#number-of-terms"></a></h2>
+    <p>The series is truncated at
+\(\max\{20, \lceil 8.5\sqrt{\kappa}\rceil + 10\}\) terms, with \(\kappa\)
+the largest concentration among the observations evaluated, which exceeds
+the number of terms at which the partial sums agree to double precision.</p>
 <p>The sum is accumulated over blocks of observations, because the natural
 expression forms an \(n \times m\) matrix, which at a hundred thousand
 points and a concentration of a hundred is already hundreds of megabytes.
-The result is clamped to \([0, 1]\): the series is exact and its rounding
-is not, and a distribution function cannot leave its own interval.</p>
+The result is clamped to \([0, 1]\) to remove the rounding error of the
+partial sums, whose absolute error is about \(10^{-16}\); <code><a href="vm_cdf_tail.html">vm_cdf_tail()</a></code>
+handles the tails below that resolution.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -2,7 +2,7 @@
 
 Draws the probability mass of a discrete family as stems over the
 integers in range, one set per parameter setting. A component of `theta`
-given as a vector asks for one setting per element, exactly as in
+given as a vector gives one setting per element, exactly as in
 [`plot.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.md).
 
 ## Arguments
@@ -15,8 +15,8 @@ given as a vector asks for one setting per element, exactly as in
 
   A named list or numeric vector holding one entry per parameter of `x`.
   A component of length \\k \> 1\\ draws \\k\\ sets of stems, and every
-  component must have length 1 or that same \\k\\. Missing, a random
-  parameter is drawn by
+  component must have length 1 or that same \\k\\. When `theta` is
+  missing, random values for all parameters are drawn by
   [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md).
 
 - xlim:

@@ -1,12 +1,13 @@
-# The Pieces a Multivariate Gaussian Evaluates From
+# The Pieces From Which a Multivariate Gaussian Evaluates
 
 Assembles, once per call, the mean, the covariance, the inverse
 covariance and the log-determinant from a flat parameter vector,
-together with the matrix parametrization's derivative arrays when they
-are asked for. Every method of
+together with the derivative arrays of \\\Sigma\\ and of \\\Sigma^{-1}\\
+when they are requested. The density, generator, derivative and moment
+methods of
 [MvGaussianDistrib](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
-calls this first and works from the result, so a parameter vector is
-unpacked and a matrix factorized once per call instead of once per
+call this first and work from the result, so a parameter vector is
+unpacked and a matrix factorized once per call and not once per
 component.
 
 ## Usage
@@ -30,55 +31,50 @@ mvg_pieces(distrib, theta, derivs = FALSE, derivs2 = FALSE)
 
 - derivs:
 
-  Logical of length 1. When `TRUE` the first derivative arrays of the
-  covariance are computed and returned as `a`. Defaults to `FALSE`.
+  Logical of length 1. When `TRUE` the first derivative arrays are
+  computed. Defaults to `FALSE`.
 
 - derivs2:
 
   Logical of length 1. When `TRUE` the second derivative arrays are
-  computed as well and returned as `a2`; the first derivatives are
-  computed with them, so `derivs` need not also be set. Defaults to
-  `FALSE`.
+  computed, and the first ones with them, so `derivs` need not also be
+  set. Defaults to `FALSE`.
 
 ## Value
 
-A named list with `mu` (numeric of length \\p\\), `sigma` and
-`sigma_inv` (\\p \times p\\ matrices), `logdet` (the log-determinant of
-\\\Sigma\\, a single number), `eta` (the matrix parametrization's free
-vector), `p` and `s` (the parametrization itself), plus `a` and `a2`
-when asked for: lists of \\p \times p\\ matrices, `a` one per free value
-and `a2` one per unordered pair in
+A named list with `mu` (numeric of length \\p\\), `eta` (the matrix
+parametrization's free vector), `p`, `s` (the parametrization itself)
+and the elements of
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md):
+`sigma` and `sigma_inv` (\\p \times p\\ matrices), `logdet` (the
+log-determinant of \\\Sigma\\) and `inverted`; with derivatives
+requested also `a` and `ai` (the first derivative arrays of \\\Sigma\\
+and of \\\Sigma^{-1}\\, one per free value) and `dlogdet`; with
+`derivs2` also `a2`, `ai2` (one array per unordered pair in
 [`parameters7::param_tuple_indices()`](https://statmodels7.github.io/parameters7/reference/param_tuple_indices.html)
-order.
+order) and `d2logdet`.
 
 ## Details
 
-The arithmetic downstream is written in the covariance whichever side
-the parametrization carries, so a precision parametrization is inverted
-here. Three things then change relative to a covariance parametrization:
-the log-determinant takes the opposite sign, the first derivatives are
-carried across by \\\partial\Sigma/\partial\eta_k = -\Sigma A_k
-\Sigma\\, and the second derivatives by differentiating that expression
-once more, \$\$\frac{\partial^2\Sigma}{\partial\eta_k\partial\eta_l} =
-\Sigma\left(A_l\Sigma A_k + A_k \Sigma A_l -
-\frac{\partial^2\Omega}{\partial\eta_k\partial\eta_l}\right)\Sigma,\$\$
-with \\A_k = \partial\Omega/\partial\eta_k\\. Those conversions are why
-the precision form is not the cheaper one here, contrary to what a
-reader might expect from the density alone.
+The matrix quantities come from
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md),
+which the Student t reads as well. Whichever side the parametrization
+carries, the result holds \\\Sigma\\, \\\Sigma^{-1}\\, the
+log-determinant of \\\Sigma\\ and the derivatives of both matrices.
 
 ## Notation
 
-\\\Sigma\\ is the covariance, \\\Omega = \Sigma^{-1}\\ the precision,
-\\\eta\\ the free vector of the matrix parametrization and \\A_k =
-\partial M/\partial\eta_k\\ the derivative of whichever matrix the
-parametrization carries.
+\\\Sigma\\ is the covariance, \\\Omega = \Sigma^{-1}\\ the precision and
+\\\eta\\ the free vector of the matrix parametrization.
 
 ## See also
 
 [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
-for the family and
+for the family,
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
+for the matrix quantities, and
 [`distrib_gradient.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvGaussianDistrib.md)
-for the first consumer.
+for a consumer.
 
 ## Examples
 
@@ -89,9 +85,9 @@ theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 pc <- distributions7:::mvg_pieces(d, theta, derivs = TRUE)
 names(pc)
 #>  [1] "mu"        "eta"       "p"         "s"         "sigma"     "sigma_inv"
-#>  [7] "logdet"    "ai"        "a"         "dlogdet"  
+#>  [7] "logdet"    "inverted"  "ai"        "a"         "dlogdet"  
 
-# sigma_inv really is the inverse, and logdet its log-determinant.
+# sigma_inv is the inverse, and logdet its log-determinant.
 all.equal(pc$sigma %*% pc$sigma_inv, diag(2), check.attributes = FALSE)
 #> [1] TRUE
 all.equal(pc$logdet, log(det(pc$sigma)))

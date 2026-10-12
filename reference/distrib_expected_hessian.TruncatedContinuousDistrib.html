@@ -19,7 +19,7 @@ derivative of \(\log Z\)."><meta property="og:image" content="https://statmodels
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,8 +79,8 @@ derivative of \(\log Z\).</p>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, applied by the
-generic before dispatch.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The generic
+applies the link scale to the value that the method returns.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
@@ -99,15 +99,21 @@ generic before dispatch.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of numeric vectors of length <code>length(y)</code>, one component
 per unordered pair of parameters, keyed as
-<code><a href="hess_names.html">hess_names(distrib@params)</a></code>, each vector constant.</p>
+<code><a href="hess_names.html">hess_names(distrib@params)</a></code>; each vector is constant for
+scalar parameters.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>One quadrature per component is needed even where the parent has exact cdf
-derivatives, since those give
+    <p>The cdf derivatives of the parent give only
+\(\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]\), not the second term
+alone, so the expected Hessian reads separately computed sums of \(s_i
+  s_j\). For a parent with a scalar route, <code><a href="trunc_route_parts.html">trunc_route_parts()</a></code> computes them
+by the compiled rule; otherwise <code><a href="expectation.html">expectation()</a></code> is called for each
+component. The cdf derivatives give
 \(\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]\) and the covariance needs
-the second term on its own. No component depends on the data, so every
-returned vector is constant.</p>
+the second term on its own. The components do not depend on the data. Each
+returned vector is constant when the parameters are scalars, and varies with
+the parameters when they vary by observation.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

@@ -1,7 +1,8 @@
 # Higher CDF Derivatives of a Family Written as a Map of Another
 
-The body every mapped family registers at orders 3 and 4, and at 2 where
-its written-out route stops there. It asks whether the parent's cdf
+The body that every mapped family registers at orders 3 and 4, at 2 as
+well where its written-out route stops at the gradient, and at every
+order for the centered skew normal. It tests whether the parent's cdf
 derivatives are exact at **every** order up to the one wanted, takes
 [`chain_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv_k.md)
 if they are, and falls back to
@@ -21,7 +22,8 @@ mapped_cdf_deriv_k(
   order,
   lower.tail,
   log,
-  q_par = q
+  q_par = q,
+  zero = NULL
 )
 ```
 
@@ -53,7 +55,7 @@ mapped_cdf_deriv_k(
 
 - order:
 
-  The derivative order, 2 to 4.
+  The derivative order, 1 to 4.
 
 - lower.tail:
 
@@ -68,6 +70,12 @@ mapped_cdf_deriv_k(
   The quantiles on the parent's scale. `q` by default, and `log(q)` for
   a lognormal.
 
+- zero:
+
+  `NULL`, the default, or a logical vector along `q` marking the points
+  where the distribution function is identically zero; there every
+  derivative of the distribution function is set to zero.
+
 ## Value
 
 A named list of numeric vectors of the requested order, on the requested
@@ -75,7 +83,7 @@ tail and scale.
 
 ## The gate
 
-The chain is exact only if everything it carries is exact, and the
+The chain is exact only if everything that it carries is exact, and the
 higher orders read the lower ones, so the test is over all of them. It
 is what stops a family from adding an exact transformation to a
 differenced parent and reporting the result as closed.

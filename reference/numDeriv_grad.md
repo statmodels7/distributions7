@@ -1,8 +1,7 @@
 # A Central-Difference Gradient Without a Dependency
 
-One central difference per coordinate, which is all the multivariate
-checks need and which keeps numDeriv a suggestion rather than a
-requirement.
+One central difference per coordinate, which is enough for the
+multivariate checks and keeps numDeriv out of the hard dependencies.
 
 ## Usage
 

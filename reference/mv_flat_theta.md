@@ -2,10 +2,9 @@
 
 Rejects a `theta` whose components are not single numbers, and returns
 the rest as one named numeric vector in `distrib@params` order. The
-families here take ONE parameter value for the whole sample: a
-parametrization describes one matrix, not one per row, and a parameter
-that varies by observation belongs to a model, which is the layer above
-this one.
+multivariate families take one value per parameter for the whole sample:
+a parametrization describes one matrix, and a parameter that varies by
+observation belongs to a model, which is the layer above this package.
 
 ## Usage
 
@@ -35,9 +34,9 @@ as `distrib@params`.
 ## Details
 
 A univariate family reads a `theta` component of length \\n\\ as one
-value per observation, so without this check a caller who wrote that
-here would get silent recycling against the \\p\\ columns instead of an
-error. The message names the offending parameter.
+value per observation. Without this check the same component given to a
+multivariate family would be recycled against the \\p\\ columns without
+an error. The message names the parameter.
 
 ## See also
 

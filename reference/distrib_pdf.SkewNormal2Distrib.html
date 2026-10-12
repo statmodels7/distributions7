@@ -29,7 +29,7 @@ only its derivative is not."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,9 +92,9 @@ only its derivative is not.</p>
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>mu</code>, <code>sigma</code> and <code>gamma1</code>, each a
 numeric vector of length 1 or of the length of <code>y</code>. <code>sigma</code> must be
-strictly positive and <code>gamma1</code> must lie in
-\((-0.9952717, 0.9952717)\); a skewness outside that range belongs to no
-skew normal and the map returns <code>NaN</code>.</p></dd>
+strictly positive and <code>gamma1</code> must lie in the open interval
+\((-0.9952717, 0.9952717)\); the generic signals an error for a value
+outside it before the map is evaluated.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>

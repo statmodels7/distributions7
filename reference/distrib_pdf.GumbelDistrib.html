@@ -4,16 +4,16 @@ $$f(y; \mu, \sigma) = \dfrac{1}{\sigma}
       \exp\left\{-z - e^{-z}\right\},$$
 written out rather than delegated, base R carrying no Gumbel. The two tails
 are of very different weight: the density falls like \(e^{-z}\) to the
-right and like \(e^{-e^{-z}}\) to the left, so the left one is doubly
-exponential and dies far faster.
+right and like \(e^{-e^{-z}}\) to the left, so the left tail is doubly
+exponential and decays much faster.
 With log = TRUE the exponent is returned directly and stays finite where
 the density itself underflows."><meta property="og:description" content="Computes the Gumbel density, with \(z = (y - \mu)/\sigma\),
 $$f(y; \mu, \sigma) = \dfrac{1}{\sigma}
       \exp\left\{-z - e^{-z}\right\},$$
 written out rather than delegated, base R carrying no Gumbel. The two tails
 are of very different weight: the density falls like \(e^{-z}\) to the
-right and like \(e^{-e^{-z}}\) to the left, so the left one is doubly
-exponential and dies far faster.
+right and like \(e^{-e^{-z}}\) to the left, so the left tail is doubly
+exponential and decays much faster.
 With log = TRUE the exponent is returned directly and stays finite where
 the density itself underflows."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +23,7 @@ the density itself underflows."><meta property="og:image" content="https://statm
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,8 +61,8 @@ $$f(y; \mu, \sigma) = \dfrac{1}{\sigma}
       \exp\left\{-z - e^{-z}\right\},$$
 written out rather than delegated, base R carrying no Gumbel. The two tails
 are of very different weight: the density falls like \(e^{-z}\) to the
-right and like \(e^{-e^{-z}}\) to the left, so the left one is doubly
-exponential and dies far faster.</p>
+right and like \(e^{-e^{-z}}\) to the left, so the left tail is doubly
+exponential and decays much faster.</p>
 <p>With <code>log = TRUE</code> the exponent is returned directly and stays finite where
 the density itself underflows.</p>
     </div>
@@ -130,10 +130,10 @@ under \(e^{-Y}\), and <code><a href="distrib_pdf.html">distrib_pdf()</a></code> 
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5.205427e-63 6.692700e-03</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Far to the left the density underflows and its logarithm does not.</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="op">-</span><span class="fl">6</span>, <span class="va">th</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.505348e-173</span>
-<span class="r-in"><span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="op">-</span><span class="fl">6</span>, <span class="va">th</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -397.4288</span>
+<span class="r-in"><span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="op">-</span><span class="fl">8</span>, <span class="va">th</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-in"><span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="op">-</span><span class="fl">8</span>, <span class="va">th</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -2972.958</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

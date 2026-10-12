@@ -5,8 +5,10 @@ gaussian is again a gaussian: the mean is the subvector and the
 covariance the corresponding block, with nothing to integrate. The
 result is a fresh
 [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
-of the reduced dimension, whose parameters are its own: a caller cannot
-expect them to be a subset of the ones passed in.
+of the reduced dimension (an
+[`mvgaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
+when the parent is written on the precision), whose parameters are its
+own and need not be a subset of the ones passed in.
 
 ## Arguments
 
@@ -15,7 +17,9 @@ expect them to be a subset of the ones passed in.
   An
   [MvGaussianDistrib](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
   object, from
-  [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md).
+  [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
+  or
+  [`mvgaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md).
 
 - theta:
 
@@ -23,9 +27,10 @@ expect them to be a subset of the ones passed in.
 
 - which:
 
-  An integer vector of coordinates to keep, between 1 and \\p\\.
-  Duplicates and out-of-range values are not checked and reach the
-  matrix subsetting.
+  An integer vector of distinct coordinates to keep, between 1 and
+  \\p\\. The generic
+  [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
+  checks it before dispatch.
 
 - ...:
 
@@ -34,26 +39,27 @@ expect them to be a subset of the ones passed in.
 ## Value
 
 A named list with `distrib`, an `MvGaussianDistrib` of dimension
-`length(which)` on a log-Cholesky covariance, and `theta`, its
+`length(which)` on a log-Cholesky matrix (a covariance, or a precision
+when the parent is written on the precision), and `theta`, its
 parameters as a named list.
 
 ## Details
 
-The marginal is returned on an UNSTRUCTURED covariance whatever the
-parent carried, because a block of a structured matrix need not have the
-parent's structure. The leading block of an AR(1) is AR(1); a block of a
-compound-symmetry matrix taken at scattered indices need not be; and a
-block of a precision matrix is not the inverse of the corresponding
-covariance block at all. Returning the unstructured form is correct in
-every case, at the cost of `k(k+1)/2` free values where the parent may
-have spent fewer.
+The marginal is returned on an unstructured log-Cholesky matrix whatever
+the parent carried, because a block of a structured matrix need not have
+the structure of the parent: the leading block of an AR(1) is AR(1), but
+a block taken at scattered indices need not be. A parent written on the
+precision gives a marginal written on the precision. The covariance
+block is computed first and then inverted, since a block of a precision
+matrix is not the inverse of the corresponding covariance block. The
+cost is `k(k+1)/2` free values where the parent may have spent fewer.
 
 ## See also
 
 [`mv_marginal.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.MvStudentTDistrib.md),
 where the degrees of freedom are carried across unchanged,
 [`plot.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.multivariate_distrib.md),
-whose panels are these marginals, and
+whose density panels are these marginals, and
 [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
 for the generic.
 
@@ -73,7 +79,7 @@ all.equal(mv_sigma(m$distrib, m$theta),
           mv_sigma(d, theta)[c(1, 3), c(1, 3)], check.attributes = FALSE)
 #> [1] TRUE
 
-# And a single coordinate is the univariate normal, against stats::dnorm.
+# A single coordinate is the univariate normal, against stats::dnorm.
 m1 <- mv_marginal(d, theta, 2)
 s <- sqrt(mv_sigma(d, theta)[2, 2])
 c(ours = distrib_pdf(m1$distrib, -1.4, m1$theta, log = TRUE),
@@ -81,12 +87,15 @@ c(ours = distrib_pdf(m1$distrib, -1.4, m1$theta, log = TRUE),
 #>     ours    dnorm 
 #> -1.04275 -1.04275 
 
-# A precision parametrization marginalizes to a covariance, the block of
-# the precision not being the precision of the block.
+# A precision parametrization marginalizes to a precision, computed from
+# the covariance block, since the block of the precision is not the
+# precision of the block.
 o <- mvgaussian2_distrib(3, parameters7::log_cholesky(3))
 th_o <- as.list(stats::setNames(unlist(theta), o@params))
-all.equal(mv_sigma(mv_marginal(o, th_o, c(1, 3))$distrib,
-                   mv_marginal(o, th_o, c(1, 3))$theta),
+mo <- mv_marginal(o, th_o, c(1, 3))
+mo$distrib@inverted
+#> [1] TRUE
+all.equal(mv_sigma(mo$distrib, mo$theta),
           mv_sigma(o, th_o)[c(1, 3), c(1, 3)], check.attributes = FALSE)
 #> [1] TRUE
 ```

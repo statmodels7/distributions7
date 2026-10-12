@@ -85,20 +85,21 @@ identified:
   and `binomial_distrib(size = 1)`, where `mu` and `zi` between them
   describe a single free cell.
 
-A large support is NECESSARY without being sufficient. With \\\mu\\
-large enough that \\f(0)\\ underflows, or \\\zeta\\ close to zero, the
-ridge reappears in the data instead of in the model, and
+A support with enough points is necessary for identification but not
+sufficient. If \\\mu\\ is large enough that \\f(0)\\ underflows, or
+\\\zeta\\ is close to zero, the data carry little information about
+\\\zeta\\, and the standard errors that
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-reports the standard errors that reveal it.
+reports are large.
 
 ## What the result supports
 
-The whole `distrib` contract: the mass function, the distribution
-function, the quantile function, the generator, the analytic score, the
-observed and the expected Hessian, and the third and fourth derivatives
-from the shared wrapper machinery. The moments come from
-[`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
-numerically.
+The mass function, the distribution function, the quantile function, the
+generator, the analytic score, the observed and the expected Hessian,
+and the third, fourth and fifth derivatives from the shared wrapper
+machinery. The derivatives with respect to the response are not defined
+for a discrete family. The moments are computed numerically by
+[`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md).
 
 ## Notation
 
@@ -112,8 +113,8 @@ support points.
 for the hurdle counterpart,
 [ZeroInflatedDistrib](https://statmodels7.github.io/distributions7/reference/ZeroInflatedDistrib.md)
 for the class,
-[`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md),
-which the hurdle uses internally, and
+[`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+for truncation to an interval, and
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 to validate the result.
 
@@ -156,8 +157,8 @@ try(zero_inflated(bernoulli_distrib()))
 #>   A support of at least 3 points is required.
 try(zero_inflated(zero_adjusted(poisson_distrib())))
 #> Error : zero_inflated() cannot wrap 'zero-adjusted poisson', which already models the probability of a zero.
-#>   Stacking the two leaves only their combination identified: the second
-#>   parameter has an identically zero score, and any optimizer will wander
+#>   Stacking the two leaves only a combination of their parameters identified,
+#>   so the likelihood is flat along a direction and any optimizer will wander
 #>   along that ridge. Apply exactly one zero wrapper to a plain distribution.
 
 # Nor can a continuous parent be inflated: there is no mass at zero to add

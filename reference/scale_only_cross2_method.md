@@ -31,7 +31,8 @@ signature, returning a named list with one numeric vector per parameter.
 ## Details
 
 A one-parameter family returns the closed component alone. Registered on
-the exponential, the Weibull and the generalized Pareto.
+the exponential and the Weibull; the generalized Pareto has a compiled
+method of its own.
 
 ## Notation
 

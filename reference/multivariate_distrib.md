@@ -2,14 +2,15 @@
 
 The subclass of `distrib` for distributions whose observations are
 vectors. The response is an \\n \times p\\ matrix, one row per
-observation, and `n_dim` records \\p\\. It is a SIBLING of
+observation, and `n_dim` records \\p\\. The class is a sibling of
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
 and
-[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md),
-not a subclass of either, so it inherits none of their one-dimensional
-defaults; the distribution function, the quantile function and the
-response derivatives are refused on this class instead of being
-approximated.
+[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md)
+and not a subclass of either, so it inherits none of their
+one-dimensional defaults. The methods registered on this class signal an
+error for the distribution function, the quantile function and the
+response derivatives; the gaussian and the Student t register response
+derivatives of their own.
 
 ## Usage
 
@@ -83,9 +84,9 @@ multivariate_distrib(
 
 - n_dim:
 
-  The dimension \\p\\ of one observation. A single positive integer; the
-  validator rejects anything else, and also rejects a `dimension`
-  property other than `"multivariate"`.
+  The dimension \\p\\ of one observation, a single positive integer. The
+  validator rejects any other value, and also a `dimension` property
+  other than `"multivariate"`.
 
 ## Value
 
@@ -94,39 +95,40 @@ Beyond the parent's `distrib_name`, `dimension`, `bounds`, `params`,
 `params_interpretation`, `n_params`, `params_bounds`, `link_params` and
 `params_smooth`, it carries `n_dim`.
 
-## The parameters are still scalars
+## The parameters are scalars
 
-As far as the rest of the package is concerned, a multivariate
-distribution's parameters are SCALARS. A mean vector contributes \\p\\
-of them and a covariance matrix contributes the free values of the
-parameters7 parametrization that carries it, so `theta` remains the
-named list of numbers every generic already understands, and the
-derivative bookkeeping needs no special case:
+The parameters of a multivariate distribution are scalars, as for every
+other distribution of the package. A mean vector contributes \\p\\ of
+them and a matrix contributes the free values of the parameters7
+parametrization that carries it, so `theta` is a named list of numbers
+and
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md),
 the Hessian keys, the link scale and
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-all work unchanged.
+apply without a special case.
 
-The constraint on the matrix lives inside the parametrization, not in a
-link, so every link of a multivariate distribution is the identity: the
-free values are already unconstrained.
+The constraint on a matrix or on a probability vector is carried by its
+parametrization, so the free values of a matrix and of a simplex take
+the identity link. A scalar parameter keeps a link of its own: the
+degrees of freedom of the Student t and the concentration of the
+Dirichlet take the log link by default.
 
-## Why it is a sibling of the one-dimensional classes
+## The one-dimensional defaults
 
 The defaults registered on
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
 are one-dimensional: a distribution function by quadrature over an
-interval, a quantile by root finding, a generator by ratio-of-uniforms
-on a scalar density. None of them means anything in \\p\\ dimensions,
-and inheriting them would offer answers that do not exist.
+interval, a quantile by root finding and a generator for a scalar
+density. They have no counterpart in \\p\\ dimensions, so the class does
+not inherit them.
 
-## No parameter varies by observation
+## Parameters that vary by observation
 
 A parametrization describes one matrix for the whole sample, and
 [`mv_flat_theta()`](https://statmodels7.github.io/distributions7/reference/mv_flat_theta.md)
 rejects a `theta` component longer than one. A distribution whose
-parameters depend on covariates is a model, which is the layer above
-this one.
+parameters depend on covariates is a model, which belongs to the layer
+above this package.
 
 ## See also
 
@@ -141,7 +143,7 @@ for the simplex-valued ones,
 [`n_obs()`](https://statmodels7.github.io/distributions7/reference/n_obs.md)
 for the observation count, and
 [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
-for the quantities a fit reports.
+for the quantities that a fit reports.
 
 ## Examples
 
@@ -153,18 +155,23 @@ c(n_dim = d@n_dim, n_params = d@n_params)
 #>    n_dim n_params 
 #>        2        5 
 
-# It is a sibling of continuous_distrib, not a subclass, so none of the
-# one-dimensional defaults is inherited.
-S7::S7_inherits(d, continuous_distrib)
-#> [1] FALSE
+# The class is a sibling of continuous_distrib and not a subclass.
+c(multivariate = S7::S7_inherits(d, multivariate_distrib),
+  continuous = S7::S7_inherits(d, continuous_distrib))
+#> multivariate   continuous 
+#>         TRUE        FALSE 
 
-# Every link is the identity: the constraint lives in the matrix
-# parametrization, which needs no link to express it.
+# The free values of the matrix take the identity link; the degrees of
+# freedom of a Student t take the log link.
 vapply(d@link_params, function(l) l@link_name, character(1))
 #>          mu1          mu2 sigma_log_L1 sigma_log_L2   sigma_L2.1 
 #>   "identity"   "identity"   "identity"   "identity"   "identity" 
+vapply(mvstudent_t1_distrib(2)@link_params, function(l) l@link_name,
+       character(1))
+#>          mu1          mu2 sigma_log_L1 sigma_log_L2   sigma_L2.1           nu 
+#>   "identity"   "identity"   "identity"   "identity"   "identity"        "log" 
 
-# And the four shipped families all sit here.
+# The shipped multivariate families all inherit from the class.
 vapply(list(mvgaussian1_distrib(2), mvstudent_t1_distrib(2),
             dirichlet_distrib(3), multinomial_distrib(3, size = 5)),
        function(x) S7::S7_inherits(x, multivariate_distrib), TRUE)

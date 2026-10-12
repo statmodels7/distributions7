@@ -6,24 +6,28 @@ modeled by two parameters instead of one. With \(z = (y-\mu)/\sigma\) and
 \(2 t_\nu(z)T_{\nu+1}(w)/\sigma\).
 It contains three families as limits. At \(\alpha = 0\) it is the Student
 \(t\); as \(\nu \to \infty\) it is the skew normal, approached at
-\(O(1/\nu)\); and with both it is the Gaussian. Its reason to exist is the
-skewness: the skew normal cannot pass 0.9953, and this family reaches 2.05
-at \(\nu = 6\) and 4.00 at \(\nu = 4\).
+\(O(1/\nu)\); and with both it is the Gaussian. The skewness of the skew
+normal is bounded by 0.9953 in absolute value, whereas the skewness of this
+family reaches 2.05 at \(\nu = 6\) and 4.00 at \(\nu = 4\) for a large
+\(\alpha\).
 Build one with skewt_distrib(), which supplies the four link functions.
-This page documents the raw S7 constructor, which validates none of the
-relationships between its properties."><meta property="og:description" content="The S7 class of Azzalini's skew \(t\): a Student \(t\) carrying a shape
+This page documents the raw S7 constructor, which takes the parent's
+properties; the validator of distrib checks them, and the constructor
+adds no check of its own."><meta property="og:description" content="The S7 class of Azzalini's skew \(t\): a Student \(t\) carrying a shape
 parameter that tilts it, so that the tail weight and the asymmetry are
 modeled by two parameters instead of one. With \(z = (y-\mu)/\sigma\) and
 \(w = \alpha z\sqrt{(\nu+1)/(\nu+z^2)}\) the density is
 \(2 t_\nu(z)T_{\nu+1}(w)/\sigma\).
 It contains three families as limits. At \(\alpha = 0\) it is the Student
 \(t\); as \(\nu \to \infty\) it is the skew normal, approached at
-\(O(1/\nu)\); and with both it is the Gaussian. Its reason to exist is the
-skewness: the skew normal cannot pass 0.9953, and this family reaches 2.05
-at \(\nu = 6\) and 4.00 at \(\nu = 4\).
+\(O(1/\nu)\); and with both it is the Gaussian. The skewness of the skew
+normal is bounded by 0.9953 in absolute value, whereas the skewness of this
+family reaches 2.05 at \(\nu = 6\) and 4.00 at \(\nu = 4\) for a large
+\(\alpha\).
 Build one with skewt_distrib(), which supplies the four link functions.
-This page documents the raw S7 constructor, which validates none of the
-relationships between its properties."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+This page documents the raw S7 constructor, which takes the parent's
+properties; the validator of distrib checks them, and the constructor
+adds no check of its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +35,7 @@ relationships between its properties."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,12 +75,14 @@ modeled by two parameters instead of one. With \(z = (y-\mu)/\sigma\) and
 \(2 t_\nu(z)T_{\nu+1}(w)/\sigma\).</p>
 <p>It contains three families as limits. At \(\alpha = 0\) it is the Student
 \(t\); as \(\nu \to \infty\) it is the skew normal, approached at
-\(O(1/\nu)\); and with both it is the Gaussian. Its reason to exist is the
-skewness: the skew normal cannot pass 0.9953, and this family reaches 2.05
-at \(\nu = 6\) and 4.00 at \(\nu = 4\).</p>
+\(O(1/\nu)\); and with both it is the Gaussian. The skewness of the skew
+normal is bounded by 0.9953 in absolute value, whereas the skewness of this
+family reaches 2.05 at \(\nu = 6\) and 4.00 at \(\nu = 4\) for a large
+\(\alpha\).</p>
 <p>Build one with <code><a href="skewt_distrib.html">skewt_distrib()</a></code>, which supplies the four link functions.
-This page documents the raw S7 constructor, which validates none of the
-relationships between its properties.</p>
+This page documents the raw S7 constructor, which takes the parent's
+properties; the validator of <code>distrib</code> checks them, and the constructor
+adds no check of its own.</p>
     </div>
 
     <div class="section level2">
@@ -147,47 +153,62 @@ relationships between its properties.</p>
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered in this file:
-<code><a href="distrib_pdf.SkewTDistrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_rng.SkewTDistrib.html">distrib_rng()</a></code>,
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.SkewTDistrib.html">distrib_pdf()</a></code>,
+<code><a href="distrib_cdf.SkewTDistrib.html">distrib_cdf()</a></code> and
+<code><a href="distrib_rng.SkewTDistrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.SkewTDistrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.SkewTDistrib.html">distrib_hessian()</a></code>,
+<code><a href="distrib_expected_hessian.SkewTDistrib.html">distrib_expected_hessian()</a></code>,
 <code><a href="distrib_deriv3.SkewTDistrib.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.SkewTDistrib.html">distrib_deriv4()</a></code>,
-<code><a href="distrib_deriv5.SkewTDistrib.html">distrib_deriv5()</a></code>,
+<code><a href="distrib_deriv4.SkewTDistrib.html">distrib_deriv4()</a></code> and
+<code><a href="distrib_deriv5.SkewTDistrib.html">distrib_deriv5()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_expected_hessian.SkewTDistrib.html">distrib_dexpected_hessian()</a></code> and
+<code><a href="distrib_expected_hessian.SkewTDistrib.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the derivatives in the response:
 <code><a href="distrib_grad_y.SkewTDistrib.html">distrib_grad_y()</a></code>,
-<code><a href="distrib_hess_y.SkewTDistrib.html">distrib_hess_y()</a></code>, and the expected
-information with its two derivatives,
-<code><a href="distrib_expected_hessian.SkewTDistrib.html">distrib_expected_hessian()</a></code>.</p>
-<p>Registered elsewhere: all four moments in <code>moments.R</code>
-(<code><a href="mean.SkewTDistrib.html">mean()</a></code>, <code><a href="variance.SkewTDistrib.html">variance()</a></code>,
-<code><a href="skewness.SkewTDistrib.html">skewness()</a></code>,
-<code><a href="kurtosis.SkewTDistrib.html">kurtosis()</a></code>); the mixed response-parameter
-derivative <code><a href="distrib_cross_y.html">distrib_cross_y()</a></code> in
-<code>cross_derivatives_families.R</code>; and
-<code><a href="distrib_grad_cdf.html">distrib_grad_cdf()</a></code> in <code>cdf_derivatives_families.R</code>.</p>
-<p>The <strong>distribution function</strong> and the <strong>quantile function</strong> come from
-<code><a href="continuous_distrib.html">continuous_distrib()</a></code>, by quadrature and by root finding on it. The
-<strong>expected information</strong> has no elementary form and is computed by one
-quadrature per distinct \((\alpha, \nu)\); see
-<code><a href="distrib_expected_hessian.SkewTDistrib.html">distrib_expected_hessian.SkewTDistrib()</a></code>.</p>
+<code><a href="distrib_hess_y.SkewTDistrib.html">distrib_hess_y()</a></code>,
+<code><a href="loc_deriv_y_k.html">distrib_deriv3_y()</a></code> and
+<code><a href="loc_deriv_y_k.html">distrib_deriv4_y()</a></code>;</p></li>
+<li><p>the mixed derivatives in the response and the parameters:
+<code><a href="distrib_cross_y.SkewTDistrib.html">distrib_cross_y()</a></code>,
+<code><a href="loc_scale_cross2_y.html">distrib_cross2_y()</a></code>,
+<code><a href="loc_cross3_y.html">distrib_cross3_y()</a></code>,
+<code><a href="partial_loc_scale_grad_y_hess.html">distrib_grad_y_hess()</a></code> and
+<code><a href="partial_loc_scale_grad_y_hess.html">distrib_hess_y_hess()</a></code>;</p></li>
+<li><p>the derivatives of the distribution function:
+<code><a href="distrib_grad_cdf.SkewTDistrib.html">distrib_grad_cdf()</a></code>,
+<code><a href="distrib_hess_cdf.SkewTDistrib.html">distrib_hess_cdf()</a></code>,
+<code><a href="partial_loc_scale_deriv_cdf_k.html">distrib_deriv3_cdf()</a></code> and
+<code><a href="partial_loc_scale_deriv_cdf_k.html">distrib_deriv4_cdf()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.SkewTDistrib.html">mean()</a></code>,
+<code><a href="variance.SkewTDistrib.html">variance()</a></code>,
+<code><a href="skewness.SkewTDistrib.html">skewness()</a></code> and
+<code><a href="kurtosis.SkewTDistrib.html">kurtosis()</a></code>;</p></li>
+<li><p>the fitting helpers: <code><a href="expected_hessian_costly.html">expected_hessian_costly()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="how-the-derivatives-are-computed">How the derivatives are computed<a class="anchor" aria-label="anchor" href="#how-the-derivatives-are-computed"></a></h2>
 
 
-<p>Every derivative, to order five, comes from a compiled kernel in closed
-form. The density carries \(T_{\nu+1}\), and the derivatives of a Student
-\(t\) distribution function in its degrees of freedom have no elementary
-expression; they are integrals of the derivatives of the \(t\) density and
-are taken by quadrature. See <code><a href="distrib_gradient.SkewTDistrib.html">distrib_gradient.SkewTDistrib()</a></code>.</p>
+<p>The derivatives of the log-density in the parameters, to order five, come
+from compiled kernels. Those in \(\mu\), \(\sigma\) and \(\alpha\)
+are closed form. The density carries \(T_{\nu+1}\), and the derivatives
+of a Student \(t\) distribution function in its degrees of freedom have no
+elementary expression; they are integrals of the derivatives of the
+\(t\) density and are taken by quadrature. The derivatives in the
+response are evaluated in R from <code><a href="skewt_pieces.html">skewt_pieces()</a></code>. See
+<code><a href="distrib_gradient.SkewTDistrib.html">distrib_gradient.SkewTDistrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="skewt_distrib.html">skewt_distrib()</a></code> to build one;
 <code><a href="skewnormal1_distrib.html">skewnormal1_distrib()</a></code> for the \(\nu \to \infty\) limit;
 <code><a href="student_t1_distrib.html">student_t1_distrib()</a></code> for the \(\alpha = 0\) case;
-<code><a href="skewt_pieces.html">skewt_pieces()</a></code> for the scalar functions the derivatives are built from.</p></div>
+<code><a href="skewt_pieces.html">skewt_pieces()</a></code> for the scalar functions from which the response
+derivatives are built.</p></div>
     </div>
 
     <div class="section level2">

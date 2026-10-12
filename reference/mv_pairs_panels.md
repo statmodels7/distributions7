@@ -6,10 +6,11 @@ and the multivariate branch of
 [`plot.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md).
 It lays out one panel per ordered pair of the chosen coordinates: the
 marginal density on the diagonal, contours of the bivariate marginal
-below it, and the implied correlation printed above it. Every panel
-comes from
+below it, and the implied correlation printed above it. The density
+panels come from
 [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md),
-so nothing is integrated.
+so nothing is integrated; the printed correlation comes from
+[`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md).
 
 ## Usage
 
@@ -22,6 +23,7 @@ mv_pairs_panels(
   col_fit,
   data,
   col_data = "#4682B4",
+  which_arg = "which",
   ...
 )
 ```
@@ -40,8 +42,9 @@ mv_pairs_panels(
 
 - which:
 
-  An integer vector of coordinates, or `NULL` for all of them. More than
-  three is an error.
+  An integer vector of distinct coordinates, or `NULL` for all of them.
+  An empty, non-integer, out-of-range or duplicated `which`, or more
+  than three coordinates, is an error.
 
 - n_grid:
 
@@ -54,13 +57,21 @@ mv_pairs_panels(
 
 - data:
 
-  An \\n \times p\\ matrix of observations, or `NULL` for a distribution
-  with no data behind it.
+  An \\n \times p\\ matrix of observations with one column per
+  coordinate of the distribution, whichever coordinates `which` selects,
+  or `NULL` for a distribution with no data behind it.
 
 - col_data:
 
   Color of the observed summary, used only when `data` is given.
   Defaults to `"#4682B4"`.
+
+- which_arg:
+
+  The name of the caller's argument that carries `which`, used in the
+  error message for more than three coordinates. Defaults to `"which"`;
+  [`plot.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md)
+  passes `"mv_which"`.
 
 - ...:
 
@@ -68,24 +79,27 @@ mv_pairs_panels(
 
 ## Value
 
-`NULL`, invisibly. Called for the plot it draws, and it changes
-`graphics::par("mfrow")` and the margins, so a caller who needs the
-previous settings back saves them first.
+`NULL`, invisibly. Called for the plot it draws. The function sets
+`mfrow`, `mar` and `mgp` for the panel matrix and restores the previous
+values on exit.
 
 ## Details
 
 When `data` is supplied the diagonal also carries a kernel density
-estimate of the observed coordinate and the off-diagonal panels carry
-the observations, so the fitted shape and the sample are read against
-each other in one frame. The kernel estimate is the comparison that
-assumes no model: it is what the data say without the family's help.
+estimate of the observed coordinate and the panels below the diagonal
+carry the observations, so the fitted shape and the sample are read
+against each other in one frame. The panels above the diagonal show only
+the correlation. The kernel estimate
+([`stats::density()`](https://rdrr.io/r/stats/density.html)) does not
+depend on the fitted family and serves as a model-free comparison.
 
-The range each coordinate is drawn over is two and a half standard
-deviations either side of the location, with the spread taken from
+Each coordinate is drawn over three standard deviations either side of
+the location, widened when `data` is supplied to include the
+observations. The spread is taken from
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md),
-so a Student t at \\\nu \le 2\\ still has a range where
+so a Student \\t\\ with \\\nu \le 2\\ still has a finite range, where
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
-would give it none.
+returns an infinite matrix.
 
 ## See also
 

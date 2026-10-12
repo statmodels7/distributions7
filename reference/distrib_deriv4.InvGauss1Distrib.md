@@ -2,9 +2,9 @@
 
 Computes the five distinct fourth derivatives of the inverse Gaussian
 log-density with respect to \\\mu\\ and \\\phi\\, in closed form, by the
-same route the lower orders take: the log-density is a linear
-combination of \\y\\, \\1/y\\ and \\\log y\\ with coefficients rational
-in the parameters.
+same route as the lower orders: every derivative in the parameters is a
+rational function of \\(\mu, \phi)\\ multiplied by \\y\\, by \\1/y\\ or
+by 1.
 
 With `expected = TRUE` the expectations are returned, obtained by
 replacing \\Y\\ with \\\mu\\ and \\1/Y\\ with \\1/\mu + \phi\\. Both
@@ -55,8 +55,8 @@ routes are closed form, so `approx` and `nsim` are ignored.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -77,7 +77,7 @@ for the order below,
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 for the generic, and
 [`distrib_expected_hessian.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.InvGauss1Distrib.md)
-for the second-order expectation these extend.
+for the expectation of order two.
 
 ## Examples
 

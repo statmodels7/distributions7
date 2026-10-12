@@ -53,17 +53,18 @@ and
 
 ## Details
 
-No component has an elementary form. In Azzalini's notation, with \\b =
-\sqrt{2/\pi}\\ and \\a_k = \mathbb{E}\\\left\[Z^k \\\phi(\alpha
-Z)/\Phi(\alpha Z)\\^2\right\]\\ for \\Z\\ a standard skew normal of
-shape \\\alpha\\, \$\$-\mathbb{E}\[\ell\_{\mu\mu}\] = \frac{1 + \alpha^2
-a_0}{\sigma^2},\quad -\mathbb{E}\[\ell\_{\sigma\sigma}\] = \frac{2 +
-\alpha^2 a_2}{\sigma^2},\quad -\mathbb{E}\[\ell\_{\alpha\alpha}\] =
-a_2,\$\$ and each \\a_k\\ is an integral that has no closed form. The
-family is a location-scale family, so every component equals its value
-at \\\mu = 0\\, \\\sigma = 1\\ times \\\sigma^{-k}\\, with \\k\\ the
-number of indices on \\\mu\\ or \\\sigma\\. The value there depends on
-\\\alpha\\ alone and is one integral over \\z\\ of the analytic observed
+The components are integrals without an elementary form. In Azzalini's
+notation, with \\b = \sqrt{2/\pi}\\ and \\a_k = \mathbb{E}\\\left\[Z^k
+\\\phi(\alpha Z)/\Phi(\alpha Z)\\^2\right\]\\ for \\Z\\ a standard skew
+normal of shape \\\alpha\\, \$\$-\mathbb{E}\[\ell\_{\mu\mu}\] =
+\frac{1 + \alpha^2 a_0}{\sigma^2},\quad
+-\mathbb{E}\[\ell\_{\sigma\sigma}\] = \frac{2 + \alpha^2
+a_2}{\sigma^2},\quad -\mathbb{E}\[\ell\_{\alpha\alpha}\] = a_2,\$\$ and
+each \\a_k\\ is an integral that has no closed form. The family is a
+location-scale family, so every component equals its value at \\\mu =
+0\\, \\\sigma = 1\\ times \\\sigma^{-k}\\, with \\k\\ the number of
+indices on \\\mu\\ or \\\sigma\\. The value there depends on \\\alpha\\
+alone and is one integral over \\z\\ of the analytic observed
 derivatives against the density, taken once per distinct \\\alpha\\ by
 the exp-sinh rule of
 [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md).

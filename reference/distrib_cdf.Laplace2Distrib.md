@@ -4,11 +4,15 @@ Computes the Laplace distribution function in the rate parametrization,
 one exponential on each side of the location: \$\$F(q; \mu, \lambda) =
 \begin{cases} \tfrac{1}{2}\exp(\lambda(q-\mu)), & q \< \mu,\\\[4pt\] 1 -
 \tfrac{1}{2}\exp(-\lambda(q-\mu)), & q \ge \mu. \end{cases}\$\$ Both
-arms are continuous at \\q = \mu\\, where the value is \\1/2\\. With
-`lower.tail = FALSE` the complement is taken after the branch, and with
-`log.p = TRUE` the logarithm is taken afterwards; neither avoids
-cancellation, so a probability that has already underflowed is not
-recovered.
+arms are continuous at \\q = \mu\\, where the value is \\1/2\\. Each
+tail is computed on the log scale at \\r = \lambda(q - \mu)\\ by
+[`laplace_cdf_tails()`](https://statmodels7.github.io/distributions7/reference/laplace_cdf_tails.md),
+as for
+[`distrib_cdf.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.LaplaceDistrib.md):
+the far tail is \\\log(1/2) - \|r\|\\ and the near one \\\log(1 -
+e^{-\|r\|}/2)\\, so `lower.tail = FALSE` and `log.p = TRUE` subtract
+from nothing, and a tail probability far below machine epsilon, or its
+logarithm, is returned accurately.
 
 ## Arguments
 
@@ -30,7 +34,7 @@ recovered.
 - lower.tail:
 
   Logical of length 1. When `TRUE`, the default, probabilities are \\P(Y
-  \le q)\\; when `FALSE` they are \\P(Y \> q)\\, computed as \\1 - F\\.
+  \le q)\\; when `FALSE` they are \\P(Y \> q)\\.
 
 - log.p:
 

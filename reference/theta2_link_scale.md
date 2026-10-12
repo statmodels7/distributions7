@@ -6,7 +6,7 @@ the unconstrained one. Both
 and
 [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
 call it after dispatch, so a method returns the parameter scale and
-never has to know about links.
+contains no code for links.
 
 ## Usage
 
@@ -81,7 +81,7 @@ d <- gaussian1_distrib()
 y <- c(-1, 0, 2)
 theta <- list(mu = 0.4, sigma = 1.3)
 
-# What the generic does when scale = "link" is asked for.
+# What the generic does with scale = "link".
 second <- distrib_grad_y_hess(d, y, theta)
 first <- distrib_cross_y(d, y, theta)
 linked <- distributions7:::theta2_link_scale(d, y, theta, second, first)

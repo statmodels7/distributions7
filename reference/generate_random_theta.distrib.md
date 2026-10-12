@@ -9,11 +9,12 @@ unbounded parameter is sampled around zero.
 The draws ignore the response entirely, so they are a fallback and never
 an estimate: being of order one whatever the data, they suit a shape or
 a probability and are the wrong order for a location or a scale on a
-response of any size.
+response of any size. The univariate methods of
 [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
-uses them for the starting values after the first, and
+use them for the starting values after the first, and the base method
+for all of them;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-uses them to probe a family at a parameter nobody chose.
+uses them to probe a family at an arbitrary parameter.
 
 ## Arguments
 

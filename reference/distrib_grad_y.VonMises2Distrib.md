@@ -24,7 +24,8 @@ parent's carried by \\\kappa'(\rho)\\, the location passing through.
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 ## Value
 

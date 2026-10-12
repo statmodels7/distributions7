@@ -1,7 +1,7 @@
 # Number of Points in a Discrete Support
 
 Returns how many points the distribution's support contains, read off
-its `bounds`, and `Inf` when the support is unbounded above. It is what
+its `bounds`, and `Inf` when either bound is infinite. It is what
 [`check_support_is_rich_enough()`](https://statmodels7.github.io/distributions7/reference/check_support_is_rich_enough.md)
 counts against the parameters a zero wrapper would spend.
 

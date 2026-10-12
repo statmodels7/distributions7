@@ -23,7 +23,7 @@ both parameters being positive."><meta property="og:image" content="https://stat
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,7 +97,7 @@ reason.</p></dd>
 <code>link_params</code> the two links given here.</p>
     </div>
     <div class="section level2">
-    <h2 id="two-negative-binomials-and-they-are-two-families">Two negative binomials, and they are two families<a class="anchor" aria-label="anchor" href="#two-negative-binomials-and-they-are-two-families"></a></h2>
+    <h2 id="relation-to-the-quadratic-variance-negative-binomial">Relation to the quadratic-variance negative binomial<a class="anchor" aria-label="anchor" href="#relation-to-the-quadratic-variance-negative-binomial"></a></h2>
     <p>Two negative binomials are in common use and they are <strong>different
 families</strong>, not two parametrizations of one. Here the variance is
 \(\mu(1+\theta)\), growing in proportion to the mean, so the dispersion
@@ -118,8 +118,8 @@ $$P(Y = y) = \dfrac{\Gamma(y + \mu/\theta)}{\Gamma(\mu/\theta)\,y!}
       \left(\dfrac{\theta}{1+\theta}\right)^{y},$$
 the distribution function is the partial sum and the quantile function its
 generalized inverse. The mean is \(\mu\) and the variance
-\(\mu(1+\theta)\). Two settings are worth recognizing: at \(\mu =
-\theta\) the size is 1 and the law is the geometric, and as \(\theta\) goes
+\(\mu(1+\theta)\). Two special cases follow from the size: at
+\(\mu = \theta\) it is 1 and the law is the geometric, and as \(\theta\) goes
 to zero it tends to the Poisson, where the quadratic form needs
 \(\theta \to \infty\) instead.</p>
     </div>
@@ -136,27 +136,30 @@ information every term carrying \(P\) drops out, its expectation vanishing
 by the first Bartlett identity, and what remains is two sums over the
 support against the exact mass (<code><a href="distrib_expected_hessian.NegBin1Distrib.html">distrib_expected_hessian.NegBin1Distrib()</a></code>).</p>
 <p><strong>The mean and the dispersion are not orthogonal here.</strong> The mixed entry of
-the expected information is small but non-zero at every setting measured,
-where <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> has exactly zero there.</p>
+the expected information is non-zero, where <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> has exactly
+zero.</p>
     </div>
     <div class="section level2">
-    <h2 id="what-happens-as-theta-goes-to-zero">What happens as theta goes to zero<a class="anchor" aria-label="anchor" href="#what-happens-as-theta-goes-to-zero"></a></h2>
+    <h2 id="the-poisson-limit">The Poisson limit<a class="anchor" aria-label="anchor" href="#the-poisson-limit"></a></h2>
     <p>The family tends to the Poisson, so every derivative in \(\theta\) tends
-to a finite limit while the pieces it is assembled from run away: the size
-\(r = \mu/\theta\) grows without bound and the chain rule divides by
-powers of \(\theta\). The score's digamma difference is computed in a form
-that performs its own cancellation symbolically, and the value converges
-onto \(\{(y-\mu)^2 - y\}/(2\mu)\), holding to about five significant
-figures at \(\theta = 10^{-8}\). The expected information is written in
-sums whose summands are rational in \((\mu, \theta)\) and stays negative
-definite to \(\theta = 10^{-10}\)
-(<code><a href="distrib_expected_hessian.NegBin1Distrib.html">distrib_expected_hessian.NegBin1Distrib()</a></code>). The third and fourth
-derivatives in \(\theta\) are <strong>not</strong> rewritten, and their cancellation in
-the powers of \(r\) is untouched (<code><a href="distrib_deriv3.NegBin1Distrib.html">distrib_deriv3.NegBin1Distrib()</a></code>,
-<code><a href="distrib_deriv4.NegBin1Distrib.html">distrib_deriv4.NegBin1Distrib()</a></code>).</p>
-<p>A fit reaches that regime routinely: on 2,000 Poisson counts with mean 4 the
-dispersion is estimated at about \(1.7\times 10^{-8}\) and the run reports
-convergence.</p>
+to a finite limit while the pieces of the chain rule through the size run
+away: \(r = \mu/\theta\) grows without bound and the chain rule divides by
+powers of \(\theta\). For \(\theta &lt; 1\) every derivative of the
+log-mass, from the score to the fourth order, is therefore computed from the
+form in which the size does not appear,
+$$\ell = \sum_{i&lt;y}\log(\mu + i\theta) - \log(y!)
+  - \frac{\mu}{\theta}\log(1+\theta) - y\log(1+\theta),$$
+whose derivatives are sums of powers of \(1/(\mu + i\theta)\) and
+derivatives of \(\log(1+\theta)/\theta\), at a cost of \(y\) terms per
+observation (<code><a href="distrib_gradient.NegBin1Distrib.html">distrib_gradient.NegBin1Distrib()</a></code>,
+<code><a href="distrib_hessian.NegBin1Distrib.html">distrib_hessian.NegBin1Distrib()</a></code>, <code><a href="distrib_deriv3.NegBin1Distrib.html">distrib_deriv3.NegBin1Distrib()</a></code>,
+<code><a href="distrib_deriv4.NegBin1Distrib.html">distrib_deriv4.NegBin1Distrib()</a></code>). The score's dispersion component tends
+to \(\{(y-\mu)^2 - y\}/(2\mu)\). The expected information and its
+derivatives are sums over the support whose summands are all positive below
+\(\theta = 0.02\) (<code><a href="distrib_expected_hessian.NegBin1Distrib.html">distrib_expected_hessian.NegBin1Distrib()</a></code>). A fit
+reaches this regime when the data are equidispersed, since the maximum
+likelihood estimate of \(\theta\) then lies at the boundary of its
+domain.</p>
     </div>
     <div class="section level2">
     <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>

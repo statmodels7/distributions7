@@ -3,11 +3,14 @@
 Computes the second derivative of the log-density in the response,
 \$\$\frac{\partial^2 \ell}{\partial y\\ \partial y^\top} =
 -c\\\Sigma^{-1} + 2d\\ww^\top, \qquad c = \frac{\nu+p}{\nu+q}, \quad d =
-\frac{\nu+p}{(\nu+q)^2},\$\$ one \\p \times p\\ matrix PER OBSERVATION.
+\frac{\nu+p}{(\nu+q)^2},\$\$ one \\p \times p\\ matrix per observation.
 The gaussian's response Hessian is one matrix for the whole sample; this
 one moves with the observation, and far enough out its rank-one term
-makes the curvature positive along the direction of the residual, which
-is the redescending score seen at second order.
+makes the curvature positive along the direction of the residual. The
+rank-one term is formed as \\2(\nu+p)(w/s)(w/s)^\top\\ with \\s = \nu +
+q\\ (see
+[`mvt_yscaled()`](https://statmodels7.github.io/distributions7/reference/mvt_yscaled.md)),
+so it neither underflows nor overflows for a distant observation.
 
 ## Arguments
 
@@ -70,7 +73,7 @@ dim(hy)
 max(abs(hy[, , 1] -
         numDeriv::hessian(function(z) distrib_pdf(d, z, theta, log = TRUE),
                           y[1, ])))
-#> [1] 3.413825e-11
+#> [1] 6.846601e-11
 
 # Far out along one coordinate the curvature turns positive, where a
 # gaussian's never does.

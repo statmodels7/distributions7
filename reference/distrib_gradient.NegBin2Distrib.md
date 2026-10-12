@@ -39,9 +39,9 @@ function.
 
 - threads:
 
-  A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  A single positive integer, how many threads the kernel may use. For
+  fewer observations than an internal threshold the kernel runs
+  sequentially whatever the count. Defaults to `1L`.
 
 ## Value
 
@@ -66,9 +66,8 @@ The kernel performs each cancellation symbolically instead. With \\a =
 w\right\\,\$\$ each bracket evaluated by its own series where the
 arguments are large. To leading order the result is \\\\y -
 (y-\mu)^2\\/(2\theta^2)\\, which the example below reproduces. A fit
-reaches that regime routinely: 2,000 counts drawn at a true \\\theta\\
-of 100 can report an estimate of order \\10^7\\, and where such a run
-stops is decided by this arithmetic.
+reaches that regime when the sample is nearly equidispersed, because the
+estimate of \\\theta\\ then grows without bound.
 
 With `scale = "link"` the generic applies the chain rule for the links
 the family carries before returning. This method always returns the

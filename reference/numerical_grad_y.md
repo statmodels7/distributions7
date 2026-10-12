@@ -37,7 +37,7 @@ numerical_grad_y(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
 
 A numeric vector as long as `y`.
 
-## The step and the accuracy it buys
+## Step length and accuracy
 
 The stencil's truncation error is \\O(h^2)\\ and its rounding error
 \\O(\varepsilon/h)\\, so the total is smallest at \\h \sim
@@ -94,8 +94,8 @@ distrib_grad_y(d, y, theta)
 max(abs(numerical_grad_y(d, y, theta) - distrib_grad_y(d, y, theta)))
 #> [1] 3.142242e-10
 
-# Too short a step is worse than too long. The error falls as h^2 and then
-# rises as eps / h, and the default sits at the turn.
+# The error falls as h^2 and then rises as eps / h, and the default sits
+# near the turn.
 err <- function(p) max(abs(numerical_grad_y(d, y, theta, h_rel = 10^(-p)) -
                            distrib_grad_y(d, y, theta)))
 setNames(vapply(1:8, err, numeric(1)), paste0("1e-", 1:8))

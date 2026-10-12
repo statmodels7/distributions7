@@ -11,9 +11,10 @@ derivatives in \\s\\ by Faa di Bruno on \\s(\phi) = 1/\phi\\,
 \$\$\ell^{(\phi^4)} = f_4 (s')^4 + 6 f_3 (s')^2 s'' + 3 f_2 (s'')^2 + 4
 f_2 s' s''' + f_1 s'''',\$\$ with \\s' = -s^2\\, \\s'' = 2s^3\\, \\s'''
 = -6s^4\\, \\s'''' = 24s^5\\ and \\f_k\\ the \\k\\th derivative of
-\\\ell\\ in \\s\\. The four \\f_k\\ are polygamma functions of \\s\\,
-each computed as a polygamma minus its own leading asymptote so that the
-digits survive at large shape.
+\\\ell\\ in \\s\\. \\f_2\\, \\f_3\\ and \\f_4\\ are polygamma functions
+of \\s\\, each computed as a polygamma minus its own leading asymptote,
+and \\f_1\\ also contains \\\log z - (z - 1)\\, so the digits survive at
+large shape.
 
 With `expected = TRUE` the expectations are returned, obtained by
 replacing \\z\\ with 1 and \\\log z\\ with \\\psi(s) - \log s\\. Both
@@ -64,8 +65,8 @@ routes are closed form, so `approx` and `nsim` are ignored.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -107,7 +108,7 @@ all.equal(d4$mu_mu_mu_mu, s * (6 - 24 * z) / 3^4)
 all.equal(d4$mu_phi_phi_phi, -6 * s^4 * (z - 1) / 3)
 #> [1] TRUE
 
-# Expected values: the components odd in z - 1 vanish.
+# Expected values: mu_phi_phi_phi, the component odd in z - 1, vanishes.
 lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 #> $mu_mu_mu_mu
 #> [1] -0.4444444

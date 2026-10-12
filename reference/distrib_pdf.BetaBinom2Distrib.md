@@ -22,7 +22,8 @@ which this calls.
 - y:
 
   A numeric vector of counts. A value outside \\\\0, \dots, n\\\\ or not
-  an integer gives a mass of 0, or `-Inf` with `log = TRUE`.
+  an integer gives a mass of 0, or `-Inf` with `log = TRUE`. A missing
+  value gives `NA`.
 
 - theta:
 

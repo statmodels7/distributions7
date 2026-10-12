@@ -35,7 +35,7 @@ kernel, so the result does not depend on the thread count."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,15 +126,16 @@ the signature matches the generic's, where it selects between
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of six numeric vectors, <code>mu_mu</code>, <code>sigma_sigma</code>,
-<code>nu_nu</code>, <code>mu_sigma</code>, <code>mu_nu</code> and <code>sigma_nu</code>, each of length <code>length(y)</code>
-and each constant along it. <code>mu_sigma</code> and <code>mu_nu</code> are exactly zero.</p>
+<code>nu_nu</code>, <code>mu_sigma</code>, <code>mu_nu</code> and <code>sigma_nu</code>, each of length
+<code>max(length(y), length(mu), length(sigma), length(nu))</code>. The values do not
+depend on <code>y</code>. <code>mu_sigma</code> and <code>mu_nu</code> are exactly zero.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -149,16 +150,18 @@ and each constant along it. <code>mu_sigma</code> and <code>mu_nu</code> are exa
 
 
 <p>The \(\nu\nu\) entry is a difference of two trigammas half a unit apart
-plus a term that cancels it to leading order, so writing it directly loses
-every digit at a large \(\nu\): before the asymptotic branches were added
-it changed sign at \(\nu \approx 3\times10^5\) and read \(-n/2\) on the
-link scale. The shipped kernel switches to a series at measured crossovers
-and stays correctly signed to <code>.Machine$double.xmax</code>.</p>
+plus a term that cancels it to leading order, so the direct form loses every
+digit at a large \(\nu\). The kernel evaluates it from an asymptotic
+series in \(1/\nu\) above a crossover. The entry is negative and of order
+\(\nu^{-4}\), so on the parameter scale it underflows to zero from about
+\(\nu = 10^{85}\); on the link scale the factor \(\nu^2\) of the chain
+rule makes it <code>NaN</code> from about \(\nu = 10^{155}\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_hessian.StudentT1Distrib.html">distrib_hessian.StudentT1Distrib()</a></code> for the quantity this is the
-expectation of, <code><a href="distrib_gradient.StudentT1Distrib.html">distrib_gradient.StudentT1Distrib()</a></code> for the score, and
+    <div class="dont-index"><p><code><a href="distrib_hessian.StudentT1Distrib.html">distrib_hessian.StudentT1Distrib()</a></code> for the observed Hessian, of
+which this is the expectation, <code><a href="distrib_gradient.StudentT1Distrib.html">distrib_gradient.StudentT1Distrib()</a></code> for
+the score, and
 <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
     </div>
 

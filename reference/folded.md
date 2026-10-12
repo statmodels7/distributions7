@@ -41,8 +41,8 @@ The map \\y \mapsto \|y\|\\ is TWO TO ONE and has no inverse, so it
 cannot be a
 [`transformer()`](https://statmodels7.github.io/distributions7/reference/transformer.md).
 Instead of carrying a density through a Jacobian it ADDS the two
-preimages. Every point above zero has two of them and zero has one,
-which is why the constructor is careful about atoms.
+preimages. Every point above zero has two of them and zero has one, so a
+parent with an atom is rejected (see below).
 
 ## Where the derivatives come from
 
@@ -58,13 +58,13 @@ gives a folded family analytic to fourth order.
 
 ## What is rejected
 
-A parent that does not reach below zero folds to itself, so the call
-would be a no-op; returning it unchanged would hide a mistaken call
-rather than report it, and the same check makes `folded()` of a folded
-distribution an error. A parent with an atom is rejected too: zero is
-its own preimage while every other point has two, so an atom at zero
-would be counted twice by the sum above and one elsewhere would be moved
-onto its reflection. A discrete parent is rejected outright.
+A parent whose support lies in \\\[0, \infty)\\ is mapped to itself by
+the absolute value, so `folded()` rejects it with an error; the same
+check rejects `folded()` of a folded distribution. an error. A parent
+with an atom is rejected too: zero is its own preimage while every other
+point has two, so an atom at zero would be counted twice by the sum
+above and one elsewhere would be moved onto its reflection. A discrete
+parent is rejected outright.
 
 ## The sign of a symmetric parent's location is not identified
 
@@ -72,15 +72,17 @@ When the parent is symmetric about its location, \\f(-x; \mu) = f(x;
 -\mu)\\, so the two terms of \\L\\ merely swap and the likelihood is
 EXACTLY even in \\\mu\\. A fit converges to \\+\hat\mu\\ or \\-\hat\mu\\
 according to where it started, at the same maximized value to every
-digit: measured on 400 draws at \\\mu = 1.5\\, two fits started at \\\pm
-1\\ reach \\\pm 1.50494\\ with the same log-likelihood of \\-511.2516\\.
-This is a property of the model, not of the fitting, and it is not
-rejected, the folded normal being a standard family; what is estimable
-is \\\|\mu\|\\ together with the remaining parameters. Holding the
-location at zero removes the question and gives the half-normal. A
-parent that is not symmetric about its location, such as
+digit. The example below fits the same sample from starting values of
+opposite sign. The invariance belongs to the model and not to the
+fitting, and `folded()` does not reject it, since the folded normal is a
+standard family; what is estimable is \\\|\mu\|\\ together with the
+remaining parameters. Holding the location at zero removes the question
+and gives the half-normal. A parent that is not symmetric about its
+location, such as
 [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md),
-has no such invariance and its sign is identified.
+is invariant only under the joint change of sign of the location and of
+the shape, so the sign of the location is identified once the shape is
+held fixed.
 
 ## Notation
 
@@ -91,7 +93,7 @@ parent's score and \\B\\ a multiset of parameter names.
 ## See also
 
 [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md),
-the other wrapper that adds no parameter,
+which also leaves the parameters of its parent unchanged,
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md),
 which gives the half-normal,
 [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
@@ -131,7 +133,9 @@ rbind(from_plus = c(coef(f1), logLik = as.numeric(logLik(f1))),
 #> from_plus   1.504939 1.041631 -511.2516
 #> from_minus -1.504939 1.041631 -511.2516
 
-# A parent that is not symmetric about its location has no such invariance.
+# With the shape held at 3, a skew-normal parent has no such invariance in
+# the location alone (the joint sign change of mu and alpha leaves the
+# likelihood unchanged).
 sn <- folded(skewnormal1_distrib())
 set.seed(4)
 zs <- distrib_rng(sn, 300, list(mu = 1, sigma = 1, alpha = 3))
@@ -144,12 +148,12 @@ c(at_plus_1 = lf(1), at_minus_1 = lf(-1))
 # Three rejections, each naming the condition that failed.
 try(folded(gamma1_distrib()))
 #> Error : 'gamma1' is supported on [0, Inf], which the absolute value leaves alone.
-#>   folded() would return the same distribution, so the call is a mistake
-#>   rather than a no-op and is reported as one.
+#>   folded() would return the same distribution, so the call has no effect
+#>   and is rejected.
 try(folded(folded(gaussian1_distrib())))
 #> Error : 'folded gaussian1' is supported on [0, Inf], which the absolute value leaves alone.
-#>   folded() would return the same distribution, so the call is a mistake
-#>   rather than a no-op and is reported as one.
+#>   folded() would return the same distribution, so the call has no effect
+#>   and is rejected.
 try(folded(poisson_distrib()))
 #> Error : folded() supports continuous distributions only.
 ```

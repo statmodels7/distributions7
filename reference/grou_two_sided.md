@@ -35,7 +35,9 @@ grou_two_sided(lp, b, div, n, r)
 
 ## Value
 
-A numeric vector of draws, or `NULL` if the sampler gives up.
+A numeric vector of draws.
+[`grou_core()`](https://statmodels7.github.io/distributions7/reference/grou_core.md)
+signals an error when it cannot draw.
 
 ## Details
 
@@ -48,9 +50,9 @@ and like \\1 - (1-u)^q\\ on the right, and has a closed-form derivative.
 The density of \\U\\ therefore carries the exponents \\p\alpha - 1\\ and
 \\q\beta - 1\\ at the two ends and is bounded as soon as \\p\alpha \>
 1\\ and \\q\beta \> 1\\. It vanishes there, in fact, turning the
-original U-shaped density into a single-peaked one, which is exactly
-what the sampler wants. Both exponents come from the same probe that
-detected the divergence, so nothing has to be searched for.
+original U-shaped density into a single-peaked one, the shape that the
+sampler requires. Both exponents come from the same probe that detected
+the divergence, so nothing has to be searched for.
 
 ## See also
 

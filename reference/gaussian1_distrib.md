@@ -3,14 +3,13 @@
 Builds the distribution object for the Gaussian (normal) family
 parametrized by its mean \\\mu\\ and its standard deviation \\\sigma \>
 0\\. The returned object carries closed-form derivatives of the
-log-density to fourth order, in the parameters and in the response, and
-closed-form moments, so every generic of the toolkit answers without a
-numerical fallback.
+log-density to fourth order in the response and to fifth order in the
+parameters, and closed-form moments.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the identity
-for the mean, which is already free, and the logarithm for the standard
-deviation, which keeps it positive at every predictor.
+unconstrained scale on which an optimizer works. The defaults are the
+identity for the mean, which is already free, and the logarithm for the
+standard deviation, which keeps it positive at every predictor.
 
 ## Usage
 
@@ -124,8 +123,8 @@ for heavier tails;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
-passes;
+to validate a family of your own against the same battery of checks that
+this family passes;
 [Gaussian1Distrib](https://statmodels7.github.io/distributions7/reference/Gaussian1Distrib.md)
 for the class.
 

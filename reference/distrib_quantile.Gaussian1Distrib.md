@@ -66,12 +66,12 @@ th <- list(mu = 0.4, sigma = 1.5)
 distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 #> [1] -0.6117346  0.4000000  1.4117346
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# Exact inverse: the round trip returns the probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #> [1] TRUE
 
-# A quantile 40 standard deviations out, asked for on the log scale
+# A quantile 40 standard deviations out, computed on the log scale
 # because the probability itself is zero in double precision.
 distrib_quantile(d, pnorm(-40, log.p = TRUE), list(mu = 0, sigma = 1),
                  log.p = TRUE)

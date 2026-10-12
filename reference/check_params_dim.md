@@ -31,8 +31,8 @@ Returns `NULL` invisibly if the check passes.
 
 ## Errors
 
-The function throws an error (`stop`) if it detects any parameter with a
-length that is neither 1 nor `n`. The error message lists the specific
+The function signals an error (`stop`) if any parameter has a length
+that is neither 1 nor `n`. The error message lists the specific
 parameters causing the mismatch.
 
 ## See also

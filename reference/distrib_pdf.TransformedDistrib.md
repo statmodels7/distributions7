@@ -15,9 +15,10 @@ representable numbers.
 
 - y:
 
-  A numeric vector of observations on the TRANSFORMED scale. A point
-  outside the transformed support gives `0`, the parent's density at its
-  preimage being zero there.
+  A numeric vector of observations on the TRANSFORMED scale. A point at
+  the edge of the transformed support gives `0`, and a point beyond it
+  gives `NaN` with a warning, because the inverse map is not defined
+  there.
 
 - theta:
 
@@ -44,8 +45,8 @@ Two singular cases are handled explicitly. A parent log-density that is
 `log(.Machine$double.xmax)`, so that a quadrature over the transformed
 density meets a large number instead of `Inf - Inf`. A parent density of
 exactly zero WINS over an infinite Jacobian, so the result is `-Inf`.
-The point is outside the transformed support and `-Inf` says so, where
-the unguarded sum would give `NaN`.
+The point is on the boundary or outside the transformed support, and the
+result is `-Inf` where the unguarded sum would give `NaN`.
 
 ## Notation
 
@@ -82,6 +83,6 @@ integrate(function(z) distrib_pdf(d, z, theta), 0, Inf)$value
 # Written out, the parent's density at the preimage times the Jacobian.
 tr <- d@transformer
 all.equal(distrib_pdf(d, y, theta),
-          dnorm(tr@trans_inv(y), 0.5, 0.8) * tr@trans_abs_jac(y))
-#> [1] "Mean relative difference: 1.347779"
+          dnorm(tr@trans_inv(y), 0.5, 0.8) * tr@trans_abs_jac(y, log = FALSE))
+#> [1] TRUE
 ```

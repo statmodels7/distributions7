@@ -5,14 +5,11 @@ integers summing to the trial count \\n\\, one row per point. These are
 the weak compositions of \\n\\ into \\p\\ parts, supplied by
 [`numericals7::compositions()`](https://statmodels7.github.io/numericals7/reference/compositions.html).
 
-Having the support in hand is what turns every expectation into an
-**exact sum**.
+With the support in hand every expectation is an exact sum.
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-uses it to test that the mass adds to one and that the closed-form
-information matches the summed observed Hessian, both to machine
-precision; an importance-sampling check could only ever compare against
-Monte Carlo error, and a normalization wrong by a thousandth would pass
-it.
+uses it to test that the mass adds to one, an equality with tolerance
+`1e-10`; an importance-sampling check compares only against Monte Carlo
+error, and a normalization wrong by a thousandth would pass it.
 
 ## Arguments
 
@@ -71,7 +68,7 @@ c(all_sum_to_5 = all(rowSums(supp) == 5),
 #> all_sum_to_5         rows      formula 
 #>            1           21           21 
 
-# The mass over it adds to one exactly, which no sampling check could say.
+# The mass over the support adds to one exactly.
 sum(distrib_pdf(d, supp, list(probs_alr1 = 0.3, probs_alr2 = -0.2))) - 1
 #> [1] -7.771561e-16
 ```

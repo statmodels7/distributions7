@@ -27,9 +27,10 @@ or the other.
 
 - log:
 
-  Logical of length 1. When `TRUE` the log-mass is returned. The
-  logarithm is taken of the mixture, not inside the parent, so it
-  underflows where the mixture does. Defaults to `FALSE`.
+  Logical of length 1. When `TRUE` the log-mass is returned. It is
+  computed from the parent's log-mass, as a log-sum-exp at zero and as
+  \\\log(1-\zeta) + \log f(y)\\ elsewhere, so it stays finite where the
+  mass underflows. Defaults to `FALSE`.
 
 - ...:
 

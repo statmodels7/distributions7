@@ -5,9 +5,13 @@ success probability \\1/(1+\theta)\\, \$\$P(Y = y; \mu, \theta) =
 \dfrac{\Gamma(y+r)}{\Gamma(r)\\y!} \left(\dfrac{1}{1+\theta}\right)^{r}
 \left(\dfrac{\theta}{1+\theta}\right)^{y}, \qquad y = 0, 1, 2,
 \ldots,\$\$ which is the pairing that makes the variance
-\\\mu(1+\theta)\\. The log-mass is formed in a compiled kernel and
-exponentiated when `log` is `FALSE`, so `log = TRUE` is the accurate
-route far into the tail.
+\\\mu(1+\theta)\\. A compiled kernel forms the log-mass by R's negative
+binomial in its mean parametrization (size \\r\\ and mean \\\mu\\),
+which never forms the success probability \\1/(1+\theta)\\; that
+probability rounds to 1 below \\\theta \approx 10^{-16}\\ and loses
+digits long before, so the mass stays accurate down to the Poisson
+limit. The log-mass is exponentiated when `log` is `FALSE`, and
+`log = TRUE` is the accurate route far into the tail.
 
 The mean sits **inside** the gamma functions here, through the size. In
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
@@ -23,7 +27,9 @@ concrete difference between the two families.
 
 - y:
 
-  A numeric vector of counts. A negative value gives a mass of 0.
+  A numeric vector of counts. A negative value gives a mass of 0, a
+  non-integer value gives 0 with a warning, and a missing value gives
+  `NA`.
 
 - theta:
 
@@ -52,9 +58,7 @@ for the distribution function,
 [`distrib_gradient.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin1Distrib.md)
 for the derivatives of the log-mass,
 [`nb1_size()`](https://statmodels7.github.io/distributions7/reference/nb1_size.md)
-and
-[`nb1_prob()`](https://statmodels7.github.io/distributions7/reference/nb1_prob.md)
-for the pairing this uses, and
+for the size, and
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
 for the generic.
 

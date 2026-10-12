@@ -9,8 +9,11 @@ at that concentration.
 What it replaces is the base class's quadrature, one integration per
 observation. See
 [`vm_cdf()`](https://statmodels7.github.io/distributions7/reference/vm_cdf.md)
-for the series, its measured term count and the blocking that keeps the
-intermediate small.
+for the series, its number of terms and the blocking that keeps the
+intermediate small. Where the requested tail is below \\10^{-6}\\, where
+the absolute error of the series would cost relative accuracy, it comes
+from a quadrature of the tail on the log scale
+([`vm_cdf_tail()`](https://statmodels7.github.io/distributions7/reference/vm_cdf_tail.md)).
 
 ## Arguments
 
@@ -33,7 +36,7 @@ intermediate small.
 - lower.tail:
 
   Logical of length 1. When `TRUE`, the default, probabilities are \\P(Y
-  \le q)\\; when `FALSE` they are \\P(Y \> q)\\, formed as \\1 - F(q)\\.
+  \le q)\\; when `FALSE` they are \\P(Y \> q)\\.
 
 - log.p:
 

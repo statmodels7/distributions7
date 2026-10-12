@@ -24,8 +24,8 @@ the weighted average of their first-order ones.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - ...:
 
@@ -39,7 +39,7 @@ keyed as
 
 ## Details
 
-No formula is written out for the fold.
+The Hessian of the fold has no formula of its own.
 [`fold_ratio()`](https://statmodels7.github.io/distributions7/reference/fold_ratio.md)
 supplies the ratios and
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md)
@@ -88,5 +88,5 @@ ref <- vapply(distributions7:::hess_pairs(d@params),
               function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
               numeric(1))
 max(abs(vapply(H, sum, numeric(1)) - ref))
-#> [1] 5.178435e-10
+#> [1] 5.134275e-10
 ```

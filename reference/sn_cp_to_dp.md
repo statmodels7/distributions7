@@ -47,10 +47,9 @@ With \\b = \sqrt{2/\pi}\\, \$\$c = \mathrm{sign}(\gamma_1)
 The caller supplies the sign, so the body reads
 \\s\\(2s\gamma_1/(4-\pi))^{1/3}\\ with no
 [`abs()`](https://rdrr.io/r/base/MathFun.html) in it. Away from zero the
-sign is locally constant, so the expression is exact and differentiable
-as written, and the derivative tables of
-[`md_skewnormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
-differentiate it directly.
+sign is locally constant, so the expression equals the cube-root term of
+the map. The derivatives of the map are computed in closed form by
+[`md_skewnormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md).
 
 ## See also
 

@@ -3,9 +3,7 @@
 The S7 class of the beta-binomial family in its canonical
 parametrization, the two beta shapes \\\alpha \> 0\\ and \\\beta \> 0\\,
 on the finite support \\\\0, 1, \dots, n\\\\. It inherits from
-`discrete_distrib`, so it answers every generic of the `distrib`
-contract; the seven methods listed below are registered on it directly
-and everything else comes from the parent.
+`discrete_distrib`.
 
 The class carries an extra property beyond the parent's, `size`: the
 number of trials \\n\\, fixed at construction as it is for
@@ -13,8 +11,9 @@ number of trials \\n\\, fixed at construction as it is for
 Build one with
 [`betabinom2_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom2_distrib.md),
 which validates `size`, supplies the two link functions and fills the
-properties in. This page documents the raw S7 constructor, which
-validates none of the relationships between them.
+properties in. This page documents the raw S7 constructor, which takes
+the parent's properties plus `size`; the validator of `distrib` checks
+the parent's properties, and the constructor adds no check of its own.
 
 ## Usage
 
@@ -107,27 +106,43 @@ for both, and the two links.
 
 ## Methods
 
-Registered on this class:
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom2Distrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.BetaBinom2Distrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BetaBinom2Distrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.BetaBinom2Distrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BetaBinom2Distrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.BetaBinom2Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.BetaBinom2Distrib.md).
+Registered on this class, each linked to the page that documents it:
 
-The four moments
-[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.BetaBinom2Distrib.md),
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.BetaBinom2Distrib.md),
-[`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.BetaBinom2Distrib.md)
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.BetaBinom2Distrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.BetaBinom2Distrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.BetaBinom2Distrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BetaBinom2Distrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BetaBinom2Distrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom2Distrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.BetaBinom2Distrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin1Distrib.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.NegBin1Distrib.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.BetaBinom2Distrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.BetaBinom2Distrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.BetaBinom2Distrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.BetaBinom2Distrib.md);
+
+- the fitting helpers:
+  [`distrib_scalar_route()`](https://statmodels7.github.io/distributions7/reference/distrib_scalar_route.md).
+
+Every other generic is inherited from
+[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
+The distribution function and the quantile are the inherited ones,
+documented at
+[`distrib_cdf.discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.discrete_distrib.md)
 and
-[`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.BetaBinom2Distrib.md)
-are registered in `moments.R`.
-
-The distribution and quantile functions come from
-[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md)
-rather than from this class, and on a finite support the parent's
-cumulative sum of the mass is exact.
+[`distrib_quantile.discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.discrete_distrib.md).
 
 ## See also
 

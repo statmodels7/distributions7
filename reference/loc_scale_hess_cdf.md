@@ -2,11 +2,11 @@
 
 The
 [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md)
-body the location-scale families share:
+body the location-scale families share: the factors of
 [`loc_scale_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv.md)
 at both orders, put on the requested tail and scale by
-[`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md).
-Both orders are needed even when only the Hessian was asked for, the
+[`loc_scale_cdf_route()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_route.md).
+Both orders are needed even when only the Hessian was requested, the
 log-scale correction reading the first derivatives.
 
 ## Usage

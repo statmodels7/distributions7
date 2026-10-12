@@ -2,11 +2,10 @@
 
 Returns, for each key of
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-the two positions in `distrib@params` that the key names, in the same
-order the keys come in. A multivariate method branches on whether a
+the two positions in `distrib@params` that the key names, in the order
+in which the keys come. A multivariate method branches on whether a
 component belongs to the mean block, the matrix block or the mixed
-block, which is a question about position, so positions are what it asks
-for.
+block, which depends on position.
 
 ## Usage
 

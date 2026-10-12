@@ -19,7 +19,8 @@ At \\\alpha \to 0\\ it tends to \\1/c\\, the Gaussian's; at \\\alpha \to
 - theta:
 
   A named list with components `mu`, `lambda` and `alpha`. Aligned and
-  validated by name, so a missing or out-of-bounds component throws.
+  validated by name, so a missing or out-of-bounds component signals an
+  error.
 
 - ...:
 
@@ -63,8 +64,8 @@ rbind(alpha = c(1e-10, 1 - 1e-10),
       ours = c(variance(d, list(mu = 0, lambda = 2, alpha = 1e-10)),
                variance(d, list(mu = 0, lambda = 2, alpha = 1 - 1e-10))),
       limit = c(1 / 2, 2 / 2^2))
-#>        [,1]      [,2]
-#> alpha 1e-10 1.0000000
-#> ours  5e-01 0.4999994
-#> limit 5e-01 0.5000000
+#>        [,1] [,2]
+#> alpha 1e-10  1.0
+#> ours  5e-01  0.5
+#> limit 5e-01  0.5
 ```

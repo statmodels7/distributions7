@@ -3,12 +3,12 @@
 mapped_cdf_deriv():
 \(\partial^2 F/\partial\psi_a\partial\psi_b
      = \sum_{k,l} F_{kl} h^k_a h^l_b + \sum_k F_k h^k_{ab}\). The second sum
-is the one a first-order chain does not have, and it is why the map's second
+is the one that a first-order chain does not have, and it is why the map's second
 partials are needed as well as its first."><meta property="og:description" content="The second-order chain rule on the parent's cdf derivatives, through
 mapped_cdf_deriv():
 \(\partial^2 F/\partial\psi_a\partial\psi_b
      = \sum_{k,l} F_{kl} h^k_a h^l_b + \sum_k F_k h^k_{ab}\). The second sum
-is the one a first-order chain does not have, and it is why the map's second
+is the one that a first-order chain does not have, and it is why the map's second
 partials are needed as well as its first."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -17,7 +17,7 @@ partials are needed as well as its first."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,7 @@ partials are needed as well as its first."><meta property="og:image" content="ht
 <code><a href="mapped_cdf_deriv.html">mapped_cdf_deriv()</a></code>:
 \(\partial^2 F/\partial\psi_a\partial\psi_b
      = \sum_{k,l} F_{kl} h^k_a h^l_b + \sum_k F_k h^k_{ab}\). The second sum
-is the one a first-order chain does not have, and it is why the map's second
+is the one that a first-order chain does not have, and it is why the map's second
 partials are needed as well as its first.</p>
     </div>
 
@@ -97,7 +97,7 @@ alongside.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The gate asks the parent for exactness at <strong>both</strong> orders. A parent with a
+    <p>The test requires the parent to be exact at <strong>both</strong> orders. A parent with a
 closed gradient and a differenced Hessian sends this whole method to
 <code><a href="numerical_cdf_deriv.html">numerical_cdf_deriv()</a></code>, because carrying an exact first order onto an
 approximate second would not make the second exact.</p>

@@ -5,9 +5,9 @@ for this family is simpler than the observed matrix itself:
 \$\$\mathbb{E}\[\ell^{(\mu_a \mu_b)}\] = -(\Sigma^{-1})\_{ab}, \qquad
 \mathbb{E}\[\ell^{(\mu_a \eta_k)}\] = 0, \qquad
 \mathbb{E}\[\ell^{(\eta_k \eta_l)}\] =
--\tfrac{1}{2}\operatorname{tr}(\Sigma^{-1} A_k \Sigma^{-1} A_l).\$\$ No
-component depends on the data, so every returned vector is constant
-across rows and `y` is read for its row count alone.
+-\tfrac{1}{2}\operatorname{tr}(\Sigma^{-1} A_k \Sigma^{-1} A_l).\$\$ The
+components do not depend on the data, so every returned vector is
+constant across rows and `y` is used only for its row count.
 
 ## Arguments
 
@@ -30,9 +30,9 @@ across rows and `y` is read for its row count alone.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. Every link of this family is the identity, so the two
-  scales coincide.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  Every link of this family is the identity, so the two scales coincide.
 
 - approx:
 
@@ -58,17 +58,16 @@ each vector constant.
 Each mixed component is a linear function of \\w = \Sigma^{-1}(y-\mu)\\,
 and \\\mathbb{E}\[w\] = 0\\. The mean parameters and the matrix
 parameters are therefore orthogonal, and the information matrix is block
-diagonal whatever the matrix parametrization is. Fisher scoring on this
-family is well behaved for that reason: a step in the mean and a step in
-the covariance do not interfere.
+diagonal whatever the matrix parametrization is. A Fisher scoring step
+in the mean therefore does not depend on the matrix parameters, and a
+step in the matrix parameters does not depend on the mean.
 
-## Why no second derivative array is needed
+## The derivative arrays used
 
-The observed matrix block carries \\A\_{kl}\\ through both the
-log-determinant term and the quadratic form. Under the expectation the
-two cancel, and only the first derivatives survive. That saves the whole
-`param_d2()` computation, which is the dearest part of the observed
-Hessian at any dimension worth the name.
+The observed matrix block carries the second derivatives through both
+the log-determinant term and the quadratic form. Under the expectation
+the two terms cancel and only the first derivatives remain, so this
+method computes no second derivative array.
 
 ## Notation
 
@@ -105,7 +104,7 @@ c(EH$mu1_mu1[1], EH$mu1_mu2[1])
 #>         v1         v2 
 #> -1.0141552  0.5399435 
 
-# Every mixed mean-matrix component is exactly zero, not merely small.
+# Every mixed mean-matrix component is exactly zero.
 mixed <- grep("^mu[0-9]+_sigma", names(EH), value = TRUE)
 vapply(EH[mixed], function(z) z[1], numeric(1))
 #> mu1_sigma_log_L1 mu1_sigma_log_L2   mu1_sigma_L2.1 mu2_sigma_log_L1 

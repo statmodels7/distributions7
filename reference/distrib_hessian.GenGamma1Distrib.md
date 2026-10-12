@@ -5,10 +5,9 @@ in a compiled kernel, by differentiating the expressions of
 [`distrib_gradient.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma1Distrib.md)
 again.
 
-One component is worth naming: the mixed \\a\\-\\d\\ entry is \\-1/a\\,
-free of the data. The scale and the first shape meet in the log-density
-only through the term \\-d\log a\\, which is bilinear, so its second
-derivative carries no observation.
+The mixed \\a\\-\\d\\ entry is \\-1/a\\, free of the data. The scale and
+the first shape meet in the log-density only through the term \\-d\log
+a\\, which is bilinear, so its second derivative carries no observation.
 
 ## Arguments
 

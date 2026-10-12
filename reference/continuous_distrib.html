@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,9 +107,11 @@
 
 
 <p>Defaults for continuous distributions, built from the density alone: the cdf by
-quadrature, the quantile function by root finding, and the generator by
-Generalized Ratio-of-Uniforms (<code><a href="rng_grou.html">rng_grou()</a></code>) or inverse transform when
-an analytical quantile is available.</p>
+quadrature, the quantile function by root finding, the generator by
+Generalized Ratio-of-Uniforms (<code><a href="rng_grou.html">rng_grou()</a></code>) or inverse transform when an
+analytical quantile is available, the derivatives in the response and the
+mixed derivatives by finite differences, and the derivatives of the cdf by
+differencing it. The list below is partial.</p>
 <p><code><a href="distrib_cdf.continuous_distrib.html">distrib_cdf()</a></code>,
 <code><a href="distrib_grad_y.continuous_distrib.html">distrib_grad_y()</a></code>,
 <code><a href="distrib_hess_y.continuous_distrib.html">distrib_hess_y()</a></code>,

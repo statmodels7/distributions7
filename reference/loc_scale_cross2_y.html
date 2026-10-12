@@ -19,7 +19,7 @@ distrib_hess_y() through numerical_cross2_y()."><meta property="og:image" conten
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,8 +92,8 @@ parameters are a location and a scale in that order.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> or <code>"link"</code>, applied by the generic before
-dispatch.</p></dd>
+<dd><p>One of <code>"parameter"</code> or <code>"link"</code>. The generic applies the link
+scale to the value that the method returns.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -108,9 +108,11 @@ dispatch.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Registered on the logistic, Cauchy, Gumbel and Laplace for the first body,
-and on the pseudo-Huber, skew normal and skew t for the second. The
-gaussian and the Student t write their own out, and every remaining
-continuous family takes <code><a href="distrib_cross2_y.continuous_distrib.html">distrib_cross2_y.continuous_distrib()</a></code>.</p>
+and on the two pseudo-Huber parametrizations, the skew normal and the skew t
+for the second. The gaussian and the Student t have methods of their own, as
+do several other families (the exponential, the Weibull, the generalized
+Pareto and the lognormal among them), and a continuous family with no method
+of its own takes <code><a href="distrib_cross2_y.continuous_distrib.html">distrib_cross2_y.continuous_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

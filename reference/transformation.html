@@ -17,7 +17,7 @@ $$f_Y(y) = f_X(g^{-1}(y)) \cdot \left\lvert\frac{d}{dy} g^{-1}(y)\right\rvert.$$
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,11 +104,13 @@ lost. The moments are available numerically through <code><a href="moment.html">
     </div>
     <div class="section level2">
     <h2 id="what-is-rejected">What is rejected<a class="anchor" aria-label="anchor" href="#what-is-rejected"></a></h2>
-    <p>A discrete parent, since a change of variables needs a density; a
-transformer that is not valid on the parent's support, which the transformer
-itself decides through its <code>valid_support</code>; and a <code>new_name</code> that is not a
-single non-empty string. A map that is not injective, such as the absolute
-value, cannot be a transformer at all and is <code><a href="folded.html">folded()</a></code> instead.</p>
+    <p>A parent that is not continuous (discrete or multivariate), since a change of
+variables of one coordinate needs a continuous density; a <code>transformer</code>
+argument that is not a <code>transformer</code> object; a transformer that is not valid
+on the parent's support, which the transformer itself decides through its
+<code>valid_support</code>; and a <code>new_name</code> that is not a single non-empty string. A
+map that is not injective, such as the absolute value, cannot be a
+transformer at all and is <code><a href="folded.html">folded()</a></code> instead.</p>
     </div>
     <div class="section level2">
     <h2 id="naming-the-result">Naming the result<a class="anchor" aria-label="anchor" href="#naming-the-result"></a></h2>
@@ -161,7 +163,7 @@ injective, and <code><a href="fixed.html">fixed()</a></code>, <code><a href="tru
 <span class="r-out co"><span class="r-pr">#&gt;</span> transformed    0.02264409 1.010916</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> parent_on_logs 0.02264409 1.010916</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Three refusals, each naming the condition that failed.</span></span></span>
+<span class="r-in"><span><span class="co"># Three errors, each naming the condition that failed.</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">transformation</span><span class="op">(</span><span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="log_transform.html">log_transform</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : transformation() currently supports only continuous distributions.</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">transformation</span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="log_transform.html">log_transform</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>

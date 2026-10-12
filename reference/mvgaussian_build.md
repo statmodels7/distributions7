@@ -1,14 +1,15 @@
 # Build One of the Two Multivariate Gaussian Families
 
-The body
+The body that
 [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
 and
 [`mvgaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
-share. The two differ in the class they instantiate, in the prefix their
-free names carry and in what `params_interpretation` calls the matrix,
-and in nothing else: every method is registered on
+share. The two differ in the class that they instantiate, in the
+`inverted` property, in the prefix of their free names, in the tag of
+`distrib_name` (`sigma=` or `omega=`) and in what
+`params_interpretation` calls the matrix. Every method is registered on
 [MvGaussianDistrib](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md),
-the parent both inherit.
+the parent of both.
 
 ## Usage
 
@@ -42,4 +43,4 @@ An object of class `cls`.
 ## See also
 
 [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md),
-the constructors this serves.
+the constructors that it serves.

@@ -4,10 +4,13 @@ Computes the generalized inverse \\Q(p) = \min\\y : F(y) \ge p\\\\ by
 walking the exact cumulative sum over the support. The result is an
 integer count, the distribution function being a step function, so
 `Q(F(y))` returns `y` while `F(Q(p))` is at least `p` and generally
-exceeds it. A tolerance of `1e-12` is allowed on the comparison so that
-a `p` obtained from
+exceeds it. A relative tolerance of 64 machine epsilons is allowed on
+the comparison so that a `p` obtained from
 [`distrib_cdf.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.BetaBinom1Distrib.md)
-maps back to the count it came from.
+maps back to the count it came from. With `lower.tail = FALSE` the upper
+tail is inverted against \\P(Y \> k)\\ summed from the top of the
+support, so a small upper-tail probability gives the count it belongs
+to.
 
 ## Arguments
 
@@ -19,15 +22,17 @@ maps back to the count it came from.
 - p:
 
   A numeric vector of probabilities in \\\[0, 1\]\\, or of their
-  logarithms when `log.p = TRUE`. `NA` is returned for `NA`; a value at
-  or below 0 gives 0 and one at or above 1 gives `n`.
+  logarithms when `log.p = TRUE`. `NA` is returned for `NA` and `NaN`
+  for a value outside \\\[0, 1\]\\; \\p = 0\\ gives 0 and \\p = 1\\
+  gives \\n\\ (the reverse with `lower.tail = FALSE`).
 
 - theta:
 
   A named list with components `mu` and `sigma`, each a numeric vector
-  of length 1. `mu` must lie in \\(0, 1)\\ and `sigma` be strictly
-  positive. One cumulative table is built for the whole call, so a
-  parameter varying by observation is not supported here.
+  of length 1 or of the length of `p`. `mu` must lie in \\(0, 1)\\ and
+  `sigma` be strictly positive. With scalar parameters one cumulative
+  table serves the whole call; parameters that vary by observation give
+  one table per observation.
 
 - lower.tail:
 
@@ -46,7 +51,7 @@ maps back to the count it came from.
 ## Value
 
 A numeric vector of counts in \\\\0, \dots, n\\\\, of length
-`length(p)`.
+`max(length(p), length(mu), length(sigma))`.
 
 ## See also
 

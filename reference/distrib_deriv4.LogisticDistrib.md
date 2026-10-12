@@ -15,13 +15,12 @@ g_3 + z^3 g_4}{\sigma^4}, \qquad \dfrac{\partial^4 \ell}{\partial
 \sigma^4} = \dfrac{6 + 24z g_1 + 36z^2 g_2 + 12z^3 g_3 + z^4
 g_4}{\sigma^4}.\$\$
 
-With `expected = TRUE` the values are **numerical**, for the reason
-given on
-[`distrib_deriv3.LogisticDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LogisticDistrib.md):
-two of the nine expectations at these two orders have no elementary
-form. The method routes to
-[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
-so `approx` and `nsim` are read.
+With `expected = TRUE` the expectations under the model are returned in
+closed form, as at third order: \\1/(15\sigma^4)\\ for `mu_mu_mu_mu`,
+\\(\pi^2-60)/(45\sigma^4)\\ for `mu_mu_sigma_sigma`,
+\\(7\pi^4-600\pi^2-810)/(225\sigma^4)\\ for `sigma_sigma_sigma_sigma`,
+and zero for the two components odd in \\z\\. `approx` and `nsim` are
+ignored.
 
 ## Arguments
 
@@ -43,7 +42,7 @@ so `approx` and `nsim` are read.
 - expected:
 
   Logical of length 1. When `TRUE` the expectations under the model are
-  returned, by the numerical route. Defaults to `FALSE`.
+  returned, in closed form. Defaults to `FALSE`.
 
 - scale:
 
@@ -53,15 +52,13 @@ so `approx` and `nsim` are read.
 
 - approx:
 
-  One of `"integrate"` (the default), `"bartlett"`, `"mc"` or `"opg"`,
-  matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read
-  only when `expected = TRUE`.
+  One of `"integrate"` (the default), `"bartlett"`, `"mc"` or `"opg"`.
+  Ignored, a closed form being available for the expected values;
+  accepted so that the signature matches the generic's.
 
 - nsim:
 
-  A single positive integer, the sample size used when `approx = "mc"`.
-  Read only when `expected = TRUE`. Defaults to `10000`.
+  Ignored, for the same reason. Defaults to `10000`.
 
 - ...:
 
@@ -89,8 +86,6 @@ superscripts name derivatives.
 
 [`distrib_deriv3.LogisticDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LogisticDistrib.md)
 for the order below and for the \\g_j\\ used here;
-[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-for the numerical route;
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 for the generic.
 

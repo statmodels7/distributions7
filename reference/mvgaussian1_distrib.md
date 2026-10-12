@@ -6,9 +6,9 @@ the **covariance** \\\Sigma\\ and `mvgaussian2_distrib()` the
 **precision** \\\Omega = \Sigma^{-1}\\. The mean is a vector of \\p\\
 free parameters and the matrix is carried by a parameters7
 parametrization whose free values become ordinary scalar parameters, so
-the object answers every generic of the `distrib` contract with `theta`
+every generic of the `distrib` class applies to the object, with `theta`
 a flat named list of numbers. Both default to an unstructured matrix in
-the log-Cholesky parametrization, which is `p * (p + 1) / 2` free
+the log-Cholesky parametrization, which has `p * (p + 1) / 2` free
 values.
 
 ## Usage
@@ -24,7 +24,7 @@ mvgaussian2_distrib(n_dim, omega = NULL)
 - n_dim:
 
   The dimension \\p\\ of one observation. A single positive whole
-  number, finite and at least 1. Anything else throws an error.
+  number, finite and at least 1. Any other value signals an error.
 
 - sigma:
 
@@ -47,7 +47,7 @@ side it carries. Its `params` are `mu1`, ..., `mup` followed by the
 prefixed free names, `n_params` is `p + param@n_free`, every entry of
 `params_bounds` is \\(-\infty, \infty)\\ and every link is the identity.
 
-## Why they are two families and not one argument
+## The two families
 
 The numbering is the package's convention, the one that separates
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md),
@@ -55,10 +55,10 @@ The numbering is the package's convention, the one that separates
 and
 [`gaussian3_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian3_distrib.md):
 one name per parametrization, because in a modeling framework a
-parametrization decides what a linear predictor acts on. Here the
-decision is sharper than a change of coordinates. A matrix
+parametrization decides what a linear predictor acts on. Here the choice
+can change the model as well as the coordinates. A matrix
 parametrization is **closed under inversion** when the inverse of every
-matrix it produces is one of its own;
+matrix that it produces is one of its own;
 [`parameters7::log_cholesky()`](https://statmodels7.github.io/parameters7/reference/log_cholesky.html),
 [`parameters7::matrix_log()`](https://statmodels7.github.io/parameters7/reference/matrix_log.html),
 [`parameters7::diagonal_matrix()`](https://statmodels7.github.io/parameters7/reference/diagonal_matrix.html),
@@ -74,81 +74,77 @@ and
 are not.
 
 Where it is closed the two families describe the same laws in different
-coordinates, and a fit reaches the same maximum: measured on 400
-four-dimensional observations with `log_cholesky(4)`, both report
-\\-1867.271395\\ and the two differ by \\5\times10^{-13}\\. Where it is
-not closed they are different models, and the same measurement with
+coordinates, and a fit reaches the same maximum. Where it is not closed
+they are different models: the inverse of an AR(1) covariance is
+tridiagonal and is not an AR(1) matrix at any parameters, so
 [`parameters7::ar1()`](https://statmodels7.github.io/parameters7/reference/ar1.html)
-gives \\-1868.65\\ against \\-1982.61\\, a gap of 113.95: the inverse of
-an AR(1) covariance is tridiagonal and is not an AR(1) at any
-parameters.
+on the covariance and on the precision give different maximized
+log-likelihoods.
 
-Neither family restricts which parametrization it takes.
-`mvgaussian2_distrib(p, parameters7::ar1(p))` is the model whose
-precision has the entries \\\rho^{\|i-j\|}\\, which is a legitimate law
-and is accepted without comment. To write the AR(1) **process** on the
-precision side, pass the family whose value is that inverse:
-`mvgaussian2_distrib(p, parameters7::ar1_inv(p))`.
+Both constructors accept any parametrization of the right dimension and
+of full rank. `mvgaussian2_distrib(p, parameters7::ar1(p))` is the model
+whose precision has the entries \\\sigma^2\rho^{\|i-j\|}\\, with
+\\\sigma^2\\ the scale of `ar1()`, and it is a valid law. The AR(1)
+**process** written on the precision side is
+`mvgaussian2_distrib(p, parameters7::ar1_inv(p))`, whose parametrization
+is that inverse.
 
-## What it costs
+## The arithmetic of the two sides
 
-The two cost about the same. Every derivative here is written in the
-covariance, so a precision parametrization is inverted once per call and
-its derivative arrays are carried across by
-\\\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma\\. Measured at \\n
-= 1000\\ on an unstructured matrix, the precision form costs 0.86 to
-1.07 times the covariance form for the score and 0.97 to 1.10 for the
-Hessian, across \\p = 4, 8, 12\\.
+The derivatives of both families are computed from the derivative arrays
+of \\\Sigma\\ and of \\\Sigma^{-1}\\. The parametrization supplies one
+of the two, and
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
+obtains the other: through
+[`parameters7::param_inv_d1()`](https://statmodels7.github.io/parameters7/reference/param_inv_d1.html)
+and its siblings under a covariance parametrization, and by the chain
+rule for an inverse under a precision one.
 
 ## Parameters
 
 The mean contributes `mu1`, ..., `mup`. The matrix contributes the
-parametrization's free values, prefixed by the matrix they describe:
-`sigma_` for a covariance and `omega_` for a precision. A
+parametrization's free values, prefixed by the matrix that they
+describe: `sigma_` for a covariance and `omega_` for a precision. A
 two-dimensional gaussian on an unstructured covariance therefore has the
 five parameters `mu1`, `mu2`, `sigma_log_L1`, `sigma_log_L2` and
 `sigma_L2.1`, while the same parametrization on the precision gives
-`omega_log_L1` and the rest. The prefix is what distinguishes the two
-models in a printed table: a free value's name says how the matrix is
-built, not which matrix it is.
+`omega_log_L1` and the rest. The prefix distinguishes the two models in
+a printed table, since the name of a free value gives the construction
+of the matrix and does not say which matrix it is.
 
 All of these parameters are unconstrained, so all of the links are the
-identity. The constraint that makes the matrix positive definite lives
-inside the matrix parametrization, which needs no link to express it.
-One practical consequence is that the parameter scale and the link scale
-coincide, so `scale = "link"` returns the same numbers as
-`scale = "parameter"`, to the bit.
+identity. The constraint that makes the matrix positive definite is
+carried by the matrix parametrization, which needs no link to express
+it. The parameter scale and the link scale therefore coincide, and
+`scale = "link"` returns the same numbers as `scale = "parameter"`.
 
 ## Reading a fit
 
-The free values are coordinates, and nobody reads a logarithm of a
-diagonal entry of a Cholesky factor.
+The free values are coordinates of the parametrization and have no
+direct interpretation.
 [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
-carries a fit's variance matrix onto the standard deviations and the
-correlations by the delta method, and
+carries the variance matrix of a fit onto the standard deviations and
+the correlations by the delta method, and
 [`print()`](https://rdrr.io/r/base/print.html) shows those. A precision
-parametrization also reports the conditional standard deviations and the
-partial correlations, which are what it describes directly:
-\\1/\Omega\_{jj} = \operatorname{Var}(Y_j \mid Y\_{-j})\\, whose ratio
-to the marginal variance is \\1 - R_j^2\\ for the regression of that
-coordinate on all the others. At \\p = 2\\ the partial correlation and
-the marginal correlation are the same number, so it is not printed
-twice.
+parametrization reports instead the conditional variances and the
+partial correlations, which it describes directly: \\1/\Omega\_{jj} =
+\operatorname{Var}(Y_j \mid Y\_{-j})\\, whose ratio to the marginal
+variance is \\1 - R_j^2\\ for the regression of that coordinate on all
+the others.
 
 ## Rank
 
 A rank-deficient parametrization is rejected with an error. A singular
 covariance gives a law supported on a subspace, with no density against
 Lebesgue measure; a singular precision gives a quadratic form that is
-flat along its null space and does not normalize. Both are failures, and
-a parametrization of that kind is a legitimate penalty but not a
-legitimate density.
+flat along its null space and does not normalize. Such a parametrization
+can serve as a penalty but does not define a density.
 
 ## The response
 
 An \\n \times p\\ matrix, one row per observation. A plain vector of
 length \\p\\ is read as a single observation. A parameter may not vary
-from observation to observation here: the parametrization describes one
+from observation to observation here, the parametrization describing one
 matrix for the whole sample.
 
 ## The distribution
@@ -163,8 +159,7 @@ on \\y \in \mathbb{R}^{p}\\, with \$\$\mathbb{E}\[Y\] = \mu, \qquad
 \\\mu\\ is the mean vector, \\\Sigma\\ the covariance, \\\Omega\\ the
 precision, \\p\\ the dimension of one observation and \\n\\ the number
 of observations. \\\eta\\ is the free vector of the matrix
-parametrization, the unconstrained coordinates an optimizer moves, and
-\\A_k = \partial\Sigma/\partial\eta_k\\.
+parametrization, the unconstrained coordinates that an optimizer moves.
 
 ## See also
 
@@ -173,7 +168,7 @@ for the one-dimensional case,
 [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
 for the heavy-tailed sibling,
 [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
-for the quantities a fit reports,
+for the quantities that a fit reports,
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate one,
 [`parameters7::log_cholesky()`](https://statmodels7.github.io/parameters7/reference/log_cholesky.html)
@@ -200,8 +195,8 @@ d
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 
-# The covariance the free values describe, and its positive definiteness,
-# which holds for any five numbers at all.
+# The covariance that the free values describe, positive definite for any
+# five numbers.
 S <- mv_sigma(d, theta)
 round(S, 4)
 #>        v1     v2
@@ -224,7 +219,7 @@ mvgaussian1_distrib(2, parameters7::diagonal_matrix(2))@params
 #> [1] "mu1"          "mu2"          "sigma_log_d1" "sigma_log_d2"
 
 # The precision form is the other family, and its free values are prefixed
-# by the matrix they describe.
+# by the matrix that they describe.
 o <- mvgaussian2_distrib(2)
 o@params
 #> [1] "mu1"          "mu2"          "omega_log_L1" "omega_log_L2" "omega_L2.1"  
@@ -241,7 +236,7 @@ c(conditional = 1 / Om[1, 1], marginal = mv_sigma(o, th_o)[1, 1])
 #>   0.8187308   1.0141552 
 
 # An AR(1) covariance and an AR(1) precision are different models, and the
-# family names which one is meant.
+# name of the family records which one is meant.
 c(covariance = mvgaussian1_distrib(4, parameters7::ar1(4))@distrib_name,
   precision = mvgaussian2_distrib(4, parameters7::ar1(4))@distrib_name)
 #>                              covariance                               precision 

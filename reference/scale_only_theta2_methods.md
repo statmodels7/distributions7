@@ -8,8 +8,11 @@ method bodies for a family with a scale and no location: the scale's own
 pair comes from
 [`scale_only_theta2()`](https://statmodels7.github.io/distributions7/reference/scale_only_theta2.md)
 in closed form, and every pair touching a shape parameter from one
-central difference of the analytic first-order component through
+central difference of the first-order component through
 [`numerical_theta2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.md).
+In the fourth-order body that component, from
+[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
+is itself differenced for the shape parameter.
 
 ## Usage
 
@@ -32,8 +35,8 @@ generics' signature.
 
 A one-parameter family returns the closed component alone and never
 differences anything. Registered on the exponential, which is that case,
-and on the Weibull and the generalized Pareto, whose second parameter is
-a shape.
+and on the Weibull, whose second parameter is a shape. The generalized
+Pareto has compiled methods of its own.
 
 ## Notation
 

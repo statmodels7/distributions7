@@ -1,15 +1,17 @@
 # Multivariate Student t Third Derivatives
 
 Computes every third derivative of the log-density in the parameters, in
-closed form. Nothing is obstructed here: the log-density carries
-`lgamma`, a logarithm and a quadratic form, each elementary in \\\nu\\,
-so there is no distribution function to differentiate in its degrees of
-freedom. The component splits into a location-and-matrix part, handled
-by the same array expansion the gaussian uses through
+closed form. The log-density carries `lgamma`, a logarithm and a
+quadratic form, each elementary in \\\nu\\. The location-and-matrix part
+of a component is handled by the array expansion that the gaussian uses
+through
 [`mvg_ptensors()`](https://statmodels7.github.io/distributions7/reference/mvg_ptensors.md),
-and a \\\nu\\ part obtained by differentiating
-\\(-1)^{m-1}(m-1)!/(\nu+q)^m\\ against the linear prefactor
-\\(\nu+p)/2\\.
+and the \\\nu\\ part by differentiating \\(-1)^{m-1}(m-1)!/(\nu+q)^m\\
+against the linear prefactor \\(\nu+p)/2\\. The components in \\\nu\\
+alone come from
+[`mvt_cp_d()`](https://statmodels7.github.io/distributions7/reference/mvt_cp_d.md)
+and
+[`mvt_h_d()`](https://statmodels7.github.io/distributions7/reference/mvt_h_d.md).
 
 ## Arguments
 
@@ -18,7 +20,9 @@ and a \\\nu\\ part obtained by differentiating
   An
   [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   object, from
-  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
+  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
+  or
+  [`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
 
 - y:
 
@@ -32,24 +36,24 @@ and a \\\nu\\ part obtained by differentiating
 - expected:
 
   Logical of length 1. When `TRUE` the expectation is returned, by
-  SAMPLING: `nsim` draws are made and the observed components averaged.
+  sampling: `nsim` draws are made and the observed components averaged.
   Defaults to `FALSE`.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The two differ here, `nu` carrying a log link by
-  default.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  The two differ here, `nu` carrying a log link by default.
 
 - approx:
 
-  Ignored: sampling is the only multivariate route to an expectation.
+  Not read: `expected = TRUE` always takes the expectation by sampling.
   Present so that the signature matches the generic's.
 
 - nsim:
 
   The number of draws used when `expected = TRUE`. Defaults to `10000`.
-  Ignored otherwise.
+  Not read otherwise.
 
 - ...:
 
@@ -64,17 +68,16 @@ constant.
 
 ## Details
 
-The license for this order is that the SAME assembly run at orders one
-and two reproduces the hand-written score and information, which are
-derived separately and are already under
-[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md).
-Against one stencil on the analytic Hessian, every component here agrees
-to a relative \\1.2\times10^{-8}\\ or better.
+Run at orders one and two, the same assembly reproduces
+[`distrib_gradient.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvStudentTDistrib.md)
+and
+[`distrib_hessian.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MvStudentTDistrib.md),
+which are written separately, for the scale matrix and for its inverse.
 
-Unlike the gaussian's, no component vanishes. There a tuple with three
-location indices is exactly zero, the quadratic form being quadratic in
-\\\mu\\; here the weight depends on \\q\\, so
-\\\ell^{(\mu_1\mu_1\mu_1)}\\ is an ordinary non-zero number.
+For the gaussian, every component with three location indices is zero,
+because the quadratic form is quadratic in \\\mu\\. Here the weight
+depends on \\q\\, and \\\ell^{(\mu_1\mu_1\mu_1)}\\ is an ordinary
+non-zero number.
 
 With `expected = TRUE` the expectation is taken by sampling and carries
 Monte Carlo error of order `nsim^(-1/2)`.
@@ -118,7 +121,7 @@ c(t = sum(d3[["mu1_mu1_mu1"]]),
 #>        t gaussian 
 #>  1.36229  0.00000 
 
-# Against one stencil on the analytic Hessian.
+# Against a central difference of the Hessian in nu.
 h <- 1e-4
 tp <- theta; tp$nu <- tp$nu + h
 tm <- theta; tm$nu <- tm$nu - h

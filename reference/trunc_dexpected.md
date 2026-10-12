@@ -1,13 +1,14 @@
 # The Derivatives of a Truncated Family's Expected Information
 
 Computes the first (`k = 1`) or second (`k = 2`) derivatives of the
-expected information of a
+expected Hessian of a
 [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
-family on the parameter scale, as expectations under the truncated law
-taken by
+family on the parameter scale. For `k = 1` and a parent with a scalar
+route they are formed from the compiled sums of
+[`trunc_route_parts()`](https://statmodels7.github.io/distributions7/reference/trunc_route_parts.md);
+otherwise they are expectations under the truncated law taken by
 [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md),
-the sums over the support or the quadratures that give the expected
-information itself.
+as the expected Hessian itself is.
 
 ## Usage
 
@@ -58,19 +59,19 @@ A named list keyed as
 
 ## Details
 
-With \\\ell\\ the truncated log-likelihood, \\\ell - \log Z\\, and \\G =
-\ell_i \ell_j\\, the second Bartlett identity gives \\E\[\ell\_{ij}\] =
--E\[G\]\\, and differentiating under the expectation, \$\$\partial_c
-E\[G\] = E\[G_c + G\ell_c\],\$\$ \$\$\partial\_{cd} E\[G\] =
-E\[G\_{cd} + G_c\ell_d + G_d\ell_c + G(\ell_c\ell_d + \ell\_{cd})\],\$\$
-with \\G_c = \ell\_{ic}\ell_j + \ell_i\ell\_{jc}\\ and \\G\_{cd} =
-\ell\_{icd}\ell_j + \ell\_{ic}\ell\_{jd} + \ell\_{id}\ell\_{jc} +
-\ell_i\ell\_{jcd}\\. The truncation points do not depend on the
-parameters, so no boundary term arises. The truncated derivatives are
-the parent's less those of \\\log Z\\, which do not depend on \\y\\:
-they are computed once per parameter combination by
-`trunc_logz_derivs()` and passed to the integrand, which reads only the
-parent's derivatives at the nodes. Registered through
+With \\\ell = \ell_P - \log Z\\ the truncated log-likelihood, \\\ell_P\\
+being the parent's, and \\G = \ell_i \ell_j\\, the second Bartlett
+identity gives \\E\[\ell\_{ij}\] = -E\[G\]\\, and differentiating under
+the expectation, \$\$\partial_c E\[G\] = E\[G_c + G\ell_c\],\$\$
+\$\$\partial\_{cd} E\[G\] = E\[G\_{cd} + G_c\ell_d + G_d\ell_c +
+G(\ell_c\ell_d + \ell\_{cd})\],\$\$ with \\G_c = \ell\_{ic}\ell_j +
+\ell_i\ell\_{jc}\\ and \\G\_{cd} = \ell\_{icd}\ell_j +
+\ell\_{ic}\ell\_{jd} + \ell\_{id}\ell\_{jc} + \ell_i\ell\_{jcd}\\. The
+truncation points do not depend on the parameters, so no boundary term
+arises. The truncated derivatives are the parent's less those of \\\log
+Z\\, which do not depend on \\y\\: they are computed once per parameter
+combination by `trunc_logz_derivs()` and passed to the integrand, which
+reads only the parent's derivatives at the nodes. Registered through
 [`register_dexpected()`](https://statmodels7.github.io/distributions7/reference/register_dexpected.md).
 
 `trunc_logz_derivs()` returns the derivatives of \\\log Z\\ to order

@@ -4,8 +4,8 @@ Builds the
 [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.md)
 or
 [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.md)
-body the Student t, the pseudo-Huber and the skew t register: the
-components over the location and the scale from
+body that the two Student t, the two pseudo-Huber and the skew t
+families register: the components over the location and the scale from
 [`loc_scale_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv_k.md),
 and every component naming a shape parameter from
 [`continuous_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/continuous_cdf_deriv_k.md).
@@ -28,21 +28,23 @@ A function of `(distrib, q, theta, lower.tail, log, ...)` suitable for
 registering as an S7 method on either generic, returning a named list of
 numeric vectors of that order.
 
-## Why the stencil is taken over everything
+## The tables of lower order
 
-The stencil runs over every component and the closed ones then overwrite
-it, so the location and the scale are computed twice. That is
-deliberate: the whole cdf surface costs milliseconds at a thousand
-quantiles, and the alternative, widening the stencil's signature to take
-a subset at these orders, would touch a shared function for no
-measurable gain. The orders below do use `which`, where the same
-components are asked for far more often.
+At orders one and two every component comes from the family's own
+[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
+and
+[`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),
+and at orders three and four from
+[`continuous_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/continuous_cdf_deriv_k.md),
+which is the compiled quadrature for these families. The closed location
+and scale components then replace the corresponding entries, so those
+components are computed twice.
 
-## Who is not here
+## The skew normal
 
-The skew normal was among these families and is not any more. Owen's T
-has elementary partial derivatives in both of its arguments, so its
-shape components close too and it has a route of its own in
+The skew normal is not registered here. Owen's T has elementary partial
+derivatives in both of its arguments, so the shape components of its
+distribution function are closed, and it has a route of its own in
 `cdf_skewnormal_higher.R`.
 
 ## See also
@@ -51,5 +53,5 @@ shape components close too and it has a route of its own in
 for the closed components;
 [`numerical_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv_k.md)
 for the rest;
-[`partial_loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_hess_cdf.md)
+[`compiled_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
 for the second order.

@@ -18,8 +18,8 @@ The arithmetic runs in a compiled kernel decomposed over the elements of
 the output, so the result does not depend on the thread count.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries before returning. This method always returns the
-parameter scale.
+of the family before returning. This method always returns the parameter
+scale.
 
 ## Arguments
 
@@ -51,8 +51,8 @@ parameter scale.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 

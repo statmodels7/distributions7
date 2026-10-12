@@ -19,15 +19,14 @@ into the tails, where the density itself underflows to zero.
 - y:
 
   A numeric vector of observations. Every real value is in the support,
-  so no value is rejected.
+  so every value of `y` is valid.
 
 - theta:
 
   A named list with components `mu` and `sigma`, each a numeric vector
   of length 1 or of the length of `y`. A component of length 1 is
-  recycled. `sigma` must be strictly positive; a zero or negative value
-  gives `NaN` with a warning from
-  [`stats::dnorm()`](https://rdrr.io/r/stats/Normal.html).
+  recycled. `sigma` must be strictly positive; the generic signals an
+  error for a zero or negative value before the method is called.
 
 - log:
 

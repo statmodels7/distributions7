@@ -9,9 +9,9 @@ puts at zero and the hurdle removes.
 
 This is the structural difference from
 [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md),
-and it is one a reader can check in a line: there the mixed block is not
-zero, because inflation *adds* to the parent's mass at zero and no
-single zero can be attributed to a mechanism.
+where the mixed block is not zero, because inflation adds to the
+parent's mass at zero and no single zero can be attributed to one
+mechanism.
 
 ## Arguments
 
@@ -32,7 +32,7 @@ single zero can be attributed to a mechanism.
 - expected:
 
   Logical of length 1. `TRUE` takes the expectation, an exact sum over
-  the support for a lattice parent.
+  the support for a discrete parent.
 
 - ...:
 

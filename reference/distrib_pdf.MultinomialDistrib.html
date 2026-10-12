@@ -7,7 +7,10 @@ parts. A row with a negative entry, a non-integer entry, or a sum other than
 The factorials are formed through base::lgamma() and the product through a
 matrix multiplication by \(\log p\), so the whole calculation runs on the
 log scale and a mass far below the smallest representable double still has a
-finite logarithm."><meta property="og:description" content="Computes the multinomial mass
+finite logarithm. On the additive log-ratio chart \(\log p\) is computed as
+\(\eta_j - \mathrm{LSE}(\eta)\) (see mn_log_probs()), so a category whose
+probability underflows and whose count is zero contributes zero, as it
+should."><meta property="og:description" content="Computes the multinomial mass
 $$P(Y = y) = \dfrac{n!}{\prod_{j=1}^{p} y_j!}\prod_{j=1}^{p} p_j^{y_j},$$
 one value per row of y, on the weak compositions of \(n\) into \(p\)
 parts. A row with a negative entry, a non-integer entry, or a sum other than
@@ -15,7 +18,10 @@ parts. A row with a negative entry, a non-integer entry, or a sum other than
 The factorials are formed through base::lgamma() and the product through a
 matrix multiplication by \(\log p\), so the whole calculation runs on the
 log scale and a mass far below the smallest representable double still has a
-finite logarithm."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+finite logarithm. On the additive log-ratio chart \(\log p\) is computed as
+\(\eta_j - \mathrm{LSE}(\eta)\) (see mn_log_probs()), so a category whose
+probability underflows and whose count is zero contributes zero, as it
+should."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +29,7 @@ finite logarithm."><meta property="og:image" content="https://statmodels7.github
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +70,10 @@ parts. A row with a negative entry, a non-integer entry, or a sum other than
 <p>The factorials are formed through <code><a href="https://rdrr.io/r/base/Special.html" class="external-link">base::lgamma()</a></code> and the product through a
 matrix multiplication by \(\log p\), so the whole calculation runs on the
 log scale and a mass far below the smallest representable double still has a
-finite logarithm.</p>
+finite logarithm. On the additive log-ratio chart \(\log p\) is computed as
+\(\eta_j - \mathrm{LSE}(\eta)\) (see <code><a href="mn_log_probs.html">mn_log_probs()</a></code>), so a category whose
+probability underflows and whose count is zero contributes zero, as it
+should.</p>
     </div>
 
 

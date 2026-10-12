@@ -17,7 +17,8 @@ is computed exactly by one pass over the support; see
 
 - y:
 
-  A numeric vector of counts. A value off the support gives `NaN`.
+  A numeric vector of counts. A value off the support, or a missing
+  value, gives `NaN`.
 
 - theta:
 

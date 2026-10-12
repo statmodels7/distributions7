@@ -40,15 +40,15 @@ parent's derivative inside.
 
 ## Details
 
-The `NaN` is the point of the function. The finite-difference default
-inherited from
+The function returns `NaN` for a point outside \\\[L, U\]\\. The
+finite-difference default inherited from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
-would straddle the boundary and return a NUMBER for a point outside the
-support, which nothing downstream would question.
+differences across the boundary and returns a finite number there,
+although the log-density is \\-\infty\\.
 
-A parameter varying by observation is subset to the retained
-observations before the parent is called, so the parent sees a `theta`
-matching the `y` it is given.
+A parameter that varies by observation is subset to the retained
+observations before the parent is called, so that the parent receives a
+`theta` matching the `y` that it is given.
 
 ## Notation
 

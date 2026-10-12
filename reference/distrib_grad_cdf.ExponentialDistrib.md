@@ -17,7 +17,8 @@ turns those into the derivatives of \\F\\.
 - q:
 
   A numeric vector of quantiles. Values at or below zero give
-  derivatives of exactly zero.
+  derivatives of exactly zero on the natural scale; on the log scale of
+  the lower tail they are `NaN`, \\\log F\\ being infinite there.
 
 - theta:
 
@@ -39,17 +40,14 @@ turns those into the derivatives of \\F\\.
 
 ## Value
 
-A named list with one numeric vector per component of the order the
-generic asked for, which for a one-parameter family is one at every
-order.
+A named list with one numeric vector per component of the requested
+order, which for a one-parameter family is one at every order.
 
 ## Details
 
-Against a product stencil on the same cdf: \\2.7\times10^{-11}\\ at
-order 1 and \\2.7\times10^{-5}\\ at order 4. Below the support every
-derivative is exactly zero, the mask in
+Below the support every derivative of \\F\\ is exactly zero, the mask in
 [`surv_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/surv_cdf_deriv_k.md)
-suppressing the finite value \\L\\ would otherwise give there.
+suppressing the finite value that \\L\\ would otherwise give there.
 
 ## Notation
 

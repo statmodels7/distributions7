@@ -8,13 +8,14 @@ matrix \\\Sigma\\ is carried by a parameters7 parametrization whose free
 values become scalar parameters, and the degrees of freedom \\\nu\\ is
 added last. It inherits from `multivariate_distrib`, so the response is
 an \\n \times p\\ matrix and the distribution function and the quantile
-function are refused.
+function signal an error.
 
 Build one with
 [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md),
 which fills the properties in and checks the rank of the
-parametrization. This page documents the raw S7 constructor, which
-validates nothing.
+parametrization. This page documents the raw S7 constructor, which runs
+only the validators of `multivariate_distrib` and `distrib`; nothing
+checks `param`.
 
 ## Usage
 
@@ -104,9 +105,14 @@ MvStudentTDistrib(
 
   Logical of length 1. `TRUE` when `param` carries the inverse scale
   matrix \\\Sigma^{-1}\\ and `FALSE` when it carries the scale matrix
-  \\\Sigma\\. Nothing but the sign of the log-determinant and one matrix
-  inversion depends on it; the law is the same either way, and neither
-  matrix is a moment of the response.
+  \\\Sigma\\. It decides which derivative arrays are the
+  parametrization's own and which are obtained from them (see
+  [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)),
+  the sign of the log-determinant, the prefix of the free names and the
+  quantities that
+  [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
+  reports. The same \\\Sigma\\ gives the same law either way, and
+  neither matrix is a moment of the response.
 
 ## Value
 
@@ -119,27 +125,58 @@ supplied.
 
 ## Methods
 
-Registered on this class:
-[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvStudentTDistrib.md),
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.MvStudentTDistrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvStudentTDistrib.md),
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.MvStudentTDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvStudentTDistrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.MvStudentTDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MvStudentTDistrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MvStudentTDistrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.MvStudentTDistrib.md),
-[`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.MvStudentTDistrib.md),
-[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.MvStudentTDistrib.md),
-[`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.MvStudentTDistrib.md),
-[`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.MvStudentTDistrib.md),
-[`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvStudentTDistrib.md),
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.MvStudentTDistrib.md)
+Registered on this class, each linked to the page that documents it:
 
-Everything else comes from
-[`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md).
-The third and fourth derivatives are registered in `mv_higher.R`, which
-the two multivariate families share.
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MvStudentTDistrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.MvStudentTDistrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvStudentTDistrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MvStudentTDistrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvStudentTDistrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvStudentTDistrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.MvStudentTDistrib.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.MvStudentTDistrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.MvStudentTDistrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.MvStudentTDistrib.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.MvStudentTDistrib.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.MvStudentTDistrib.md),
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvStudentTDistrib.md),
+  [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.MvStudentTDistrib.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.MvStudentTDistrib.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.MvStudentTDistrib.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.MvStudentTDistrib.md)
+  and
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.MvStudentTDistrib.md);
+
+- the multivariate summaries:
+  [`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.MvStudentTDistrib.md),
+  [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvStudentTDistrib.md),
+  [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.MvStudentTDistrib.md)
+  and
+  [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvStudentTDistrib.md);
+
+- the validation and fitting helpers:
+  [`mv_reference_draw()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.MvStudentTDistrib.md),
+  [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.MvStudentTDistrib.md)
+  and
+  [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.MvStudentTDistrib.md).
+
+Every other generic is inherited from
+[`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md),
+whose methods signal an error for the distribution function, the
+quantile function, the skewness and the kurtosis.
 
 ## See also
 

@@ -25,7 +25,7 @@ the interval is cut at \\\pm\pi\\ and the density is not symmetric about
 
   A named list with components `mu` and `rho`, each a numeric vector of
   length 1. `rho` must lie in \\(0, 1)\\. Aligned and validated by name,
-  so a missing or out-of-bounds component throws.
+  so a missing or out-of-bounds component signals an error.
 
 - ...:
 

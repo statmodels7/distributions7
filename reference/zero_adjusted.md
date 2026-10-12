@@ -5,18 +5,19 @@ by `za`, and leaves everything else to the parent. What that means
 depends on the parent's type, and the constructor dispatches on it:
 
 - a DISCRETE parent with 0 in its support gives a HURDLE model. The mass
-  the parent puts at zero is removed, the parent is renormalized over
-  the positive values, and \\\pi\\ takes its place.
+  that the parent puts at zero is removed, the parent is renormalized
+  over the positive values, and \\\pi\\ takes its place.
 
 - a CONTINUOUS parent gives a MIXED distribution. Nothing has to be
   removed, \\P(Y = 0)\\ being zero already; a point mass \\\pi\\ is
   placed at zero and the density is scaled by \\1-\pi\\.
 
-It is the wrapper to reach for when zeros come from their own mechanism,
-no claim filed or no rainfall, and the parent describes only what
-happens once that mechanism has been passed. Where the zeros come partly
-from the parent and partly from a separate source, so that no single
-zero can be attributed,
+The wrapper applies when the zeros come from a mechanism of their own
+(for example, no claim is filed or no rain falls) and the parent
+describes only the observations produced after that mechanism has
+allowed a positive outcome. Where the zeros come partly from the parent
+and partly from a separate source, so that no single zero can be
+attributed,
 [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
 is the model.
 
@@ -110,9 +111,10 @@ identified:
 A continuous parent supported on the whole line is accepted and gives a
 spike-at-zero model, but \\y = 0\\ then no longer identifies its own
 mechanism: the atom sits where the density is positive. A continuous
-parent whose support does not reach zero at all, say \\(2, 5)\\, is
-accepted with a WARNING, the atom then being disconnected from the rest
-of the law, which is legitimate and rarely intended.
+parent whose support does not contain zero, say \\(2, 5)\\ or \\(-5,
+-2)\\, is accepted with a warning, because the atom is then disconnected
+from the rest of the law, which is well defined and rarely intended. The
+bounds of the result are extended to contain zero.
 
 ## Notation
 
@@ -175,7 +177,7 @@ round(coef(fit_distrib(zag, yg)), 3)
 #>     mu sigma2     za 
 #>  2.029  1.016  0.302 
 
-# Two refusals, each naming the condition that failed.
+# Two errors, each naming the condition that failed.
 try(zero_adjusted(bernoulli_distrib()))
 #> Error : zero_adjusted() cannot wrap 'bernoulli': its support has 2 points, so the family has 1 free
 #>   probability, while the wrapped distribution would have 2 parameters. They are not
@@ -183,7 +185,7 @@ try(zero_adjusted(bernoulli_distrib()))
 #>   A support of at least 3 points is required.
 try(zero_adjusted(zero_inflated(poisson_distrib())))
 #> Error : zero_adjusted() cannot wrap 'zero-inflated poisson', which already models the probability of a zero.
-#>   Stacking the two leaves only their combination identified: the second
-#>   parameter has an identically zero score, and any optimizer will wander
+#>   Stacking the two leaves only a combination of their parameters identified,
+#>   so the likelihood is flat along a direction and any optimizer will wander
 #>   along that ridge. Apply exactly one zero wrapper to a plain distribution.
 ```

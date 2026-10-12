@@ -19,7 +19,8 @@ Closed form: \\\ell^{(y)} = -(y-\mu)/\sigma^2\\ gives \\1/\sigma^2\\ and
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 - ...:
 

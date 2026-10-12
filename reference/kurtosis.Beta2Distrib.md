@@ -2,10 +2,14 @@
 
 Closed form: \$\$\gamma_2 = \frac{6\\(\alpha-\beta)^2(\alpha+\beta+1) -
 \alpha\beta(\alpha+\beta+2)\\}
-{\alpha\beta(\alpha+\beta+2)(\alpha+\beta+3)}.\$\$ It is routinely
-negative, the support being bounded at both ends: at \\\alpha = \beta =
-1\\ the density is uniform and the value is \\-6/5\\, the smallest
-excess kurtosis any distribution attains.
+{\alpha\beta(\alpha+\beta+2)(\alpha+\beta+3)}.\$\$ It is negative over a
+wide range of shapes, the support being bounded at both ends: at
+\\\alpha = \beta = 1\\ the density is uniform and the value is \\-6/5\\,
+and as both shapes go to zero it tends to \\-2\\, the smallest excess
+kurtosis any distribution can have. The method evaluates the form in the
+mean and the precision of
+[`beta_shape_moments()`](https://statmodels7.github.io/distributions7/reference/beta_shape_moments.md),
+in which \\\alpha\beta\\ is not formed.
 
 ## Arguments
 
@@ -44,7 +48,7 @@ written in the same two shapes;
 ``` r
 d <- beta2_distrib()
 
-# The uniform case sits at the lower bound of -6/5.
+# The uniform case has excess kurtosis -6/5.
 all.equal(kurtosis(d, list(alpha = 1, beta = 1)), -1.2)
 #> [1] TRUE
 

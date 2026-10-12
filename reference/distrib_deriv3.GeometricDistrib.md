@@ -3,11 +3,23 @@
 Computes the third derivative of the geometric log-mass with respect to
 the mean, in closed form. The log-mass is \\y\log\mu -
 (y+1)\log(1+\mu)\\, so every derivative is a combination of \\\mu^{-k}\\
-and \\(1+\mu)^{-k}\\ with the data entering linearly through \\y\\.
+and \\(1+\mu)^{-k}\\ with the data entering linearly through \\y\\: the
+value is \\2(y/\mu^3 - (y+1)/(1+\mu)^3)\\.
+
+The kernel writes the bracket \\y/\mu^k - (y+1)/(1+\mu)^k\\ of order
+\\k\\ as \\y(1 - q^k)/\mu^k - 1/(1+\mu)^k\\ with \\q = \mu/(1+\mu)\\,
+and computes \\1 - q^k\\ as
+\\-\mathrm{expm1}(-k\\\mathrm{log1p}(1/\mu))\\. The two terms of the
+original form agree to a relative \\1/\mu\\ where \\y\\ is near \\\mu\\,
+and their difference would lose that many digits at a large mean; in
+this form the value keeps full relative accuracy. A term with a zero
+coefficient contributes zero, so the value at \\y = 0\\ stays finite
+however small \\\mu\\ is.
 
 With `expected = TRUE` the expectation is returned, obtained by
-substituting \\\mathbb{E}\[Y\] = \mu\\. Both routes are closed form, so
-no quadrature is run and `approx` and `nsim` are ignored.
+substituting \\\mathbb{E}\[Y\] = \mu\\, which gives \\2(1 - q^2)/\mu^2\\
+with the same device. Both routes are closed form, so no quadrature is
+run and `approx` and `nsim` are ignored.
 
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order.

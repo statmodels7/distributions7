@@ -13,7 +13,7 @@ arithmetic as the compiled registry."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,13 +101,13 @@ over the retained set, so that \(E_T[s_i s_j] = S_{ij}/Z\) and
 \(D_{ijc}\) is the derivative of \(\int f s_i s_j\) in parameter
 \(c\).</p>
 <p>For a discrete parent the integrals are sums over support points.
-<code>trunc_rule_cpp()</code> returns, for each observation, the points they run
-over: the retained points when they are finitely many, and otherwise a
-series over the retained points stopped by a rule on the masses alone.
-For the density, the score and the Hessian on an unbounded support, the
-points removed below <code>lower</code> are used instead when their mass is at most
-one half, and the retained sums are \(1 - \sum f\), \(-\sum f s_i\)
-and \(-\sum f(\ell_{ij} + s_i s_j)\).</p>
+<code>trunc_rule_cpp()</code> returns, for each observation, the points over which the
+sums run: the retained points when they are finitely many, and otherwise a
+series over the retained points stopped by a rule on the masses alone. For
+the density, the score and the Hessian on an unbounded support, the points
+removed below <code>lower</code> are used instead when their mass is at most one half,
+and the retained sums are \(1 - \sum f\), \(-\sum f s_i\) and \(-\sum
+f(\ell_{ij} + s_i s_j)\).</p>
 <p>For a continuous parent, \(Z\), \(Z_i\) and \(Z_{ij}\) are the
 differences of the compiled distribution function and its derivatives at
 the two truncation points (<code>trunc_cont_ends_cpp()</code>), \(Z\) in the

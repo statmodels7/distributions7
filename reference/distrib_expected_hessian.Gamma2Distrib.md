@@ -18,7 +18,11 @@ estimates are asymptotically correlated.
 [`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md)
 carries the same law with a dispersion in place of the variance, and
 there the mixed entry is exactly zero. The matrix is negative definite
-throughout, so the information it negates is positive definite.
+throughout, so the information is positive definite.
+
+The kernel evaluates them through the decomposition described on
+[`distrib_deriv3.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gamma2Distrib.md),
+which keeps the digits at a large shape.
 
 Because the values do not depend on the data, `approx` and `nsim` are
 ignored. `y` is read only for its length.
@@ -63,8 +67,8 @@ ignored. `y` is read only for its length.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 

@@ -7,9 +7,9 @@ parameter is sampled around zero.
 The draws ignore the response entirely, so they are a fallback and never an
 estimate: being of order one whatever the data, they suit a shape or a
 probability and are the wrong order for a location or a scale on a response
-of any size. distrib_start() uses them for the starting values
-after the first, and check_distrib() uses them to probe a family at a
-parameter nobody chose."><meta property="og:description" content="Draws one parameter value per entry of distrib@params, each inside that
+of any size. The univariate methods of distrib_start() use them for the
+starting values after the first, and the base method for all of them;
+check_distrib() uses them to probe a family at an arbitrary parameter."><meta property="og:description" content="Draws one parameter value per entry of distrib@params, each inside that
 parameter's own interval in params_bounds and strictly away from its
 ends. A bounded interval is sampled across its width, a half-line is
 sampled from a positive draw offset from the finite end, and an unbounded
@@ -17,9 +17,9 @@ parameter is sampled around zero.
 The draws ignore the response entirely, so they are a fallback and never an
 estimate: being of order one whatever the data, they suit a shape or a
 probability and are the wrong order for a location or a scale on a response
-of any size. distrib_start() uses them for the starting values
-after the first, and check_distrib() uses them to probe a family at a
-parameter nobody chose."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+of any size. The univariate methods of distrib_start() use them for the
+starting values after the first, and the base method for all of them;
+check_distrib() uses them to probe a family at an arbitrary parameter."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +27,7 @@ parameter nobody chose."><meta property="og:image" content="https://statmodels7.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,9 +68,9 @@ parameter is sampled around zero.</p>
 <p>The draws ignore the response entirely, so they are a fallback and never an
 estimate: being of order one whatever the data, they suit a shape or a
 probability and are the wrong order for a location or a scale on a response
-of any size. <code><a href="distrib_start.html">distrib_start()</a></code> uses them for the starting values
-after the first, and <code><a href="check_distrib.html">check_distrib()</a></code> uses them to probe a family at a
-parameter nobody chose.</p>
+of any size. The univariate methods of <code><a href="distrib_start.html">distrib_start()</a></code> use them for the
+starting values after the first, and the base method for all of them;
+<code><a href="check_distrib.html">check_distrib()</a></code> uses them to probe a family at an arbitrary parameter.</p>
     </div>
 
 

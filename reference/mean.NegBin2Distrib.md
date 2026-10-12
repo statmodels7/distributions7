@@ -17,7 +17,7 @@ Nothing is integrated and nothing is summed.
   A named list with components `mu` (the mean, positive) and `theta`
   (the dispersion, positive), each a numeric vector of length 1 or `n`.
   Aligned and validated by name, so a missing or out-of-bounds component
-  throws.
+  signals an error.
 
 - ...:
 

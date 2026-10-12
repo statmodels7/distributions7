@@ -3,7 +3,8 @@
 Builds the distribution object for the exponential family parametrized
 by its **mean** \\\mu \> 0\\, with density \\\mu^{-1}e^{-y/\mu}\\ on
 \\\[0, \infty)\\. The returned object carries closed-form derivatives of
-the log-density to fourth order and closed-form moments.
+the log-density to fifth order in the mean and to fourth order in the
+response, and closed-form moments.
 
 The family has one parameter and a fixed shape: the standard deviation
 equals the mean, the skewness is 2 and the excess kurtosis is 6 whatever
@@ -65,13 +66,13 @@ is a constant and
 [`distrib_hess_y.ExponentialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.ExponentialDistrib.md)
 is zero.
 
-The exponential is the only continuous law with this property, so a
-fitted exponential is also the statement that the process has no memory.
-When it does,
+The exponential is the only continuous law with this property, so
+fitting an exponential assumes that the process has no memory. If the
+process has a memory,
 [`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md)
 and
-[`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md)
-both contain this family at a unit shape and let the hazard rise or
+[`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md),
+which both contain this family at a unit shape, let the hazard rise or
 fall.
 
 ## Derivatives
@@ -84,7 +85,9 @@ Writing \\\ell = -\log\mu - y/\mu\\, the four orders are
 \dfrac{6\mu - 24y}{\mu^5},\$\$ and their expectations follow by
 substituting \\\mathbb{E}\[Y\] = \mu\\: \\0\\, \\-1/\mu^2\\, \\4/\mu^3\\
 and \\-18/\mu^4\\. The information is \\1/\mu^2\\, so the asymptotic
-standard error of \\\hat\mu\\ is \\\mu/\sqrt n\\.
+standard error of \\\hat\mu\\ is \\\mu/\sqrt n\\. The fifth order,
+\\(120y - 24\mu)/\mu^6\\, is in
+[`distrib_deriv5.ExponentialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.ExponentialDistrib.md).
 
 ## Estimation
 

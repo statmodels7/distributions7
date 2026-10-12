@@ -3,13 +3,15 @@
 family is defined by: a success probability from
 \(\mathrm{Beta}(\alpha, \beta)\), then a count from
 \(\mathrm{Binomial}(n_{\mathrm{trials}}, p)\) at that probability, one
-fresh probability per draw. The draws depend on .Random.seed in the usual
-way and consume two of R's streams per variate."><meta property="og:description" content="Draws n independent beta-binomial counts by the two-stage hierarchy the
+fresh probability per draw. The draws are made by one call to
+stats::rbeta() followed by one call to stats::rbinom(), so they depend
+on .Random.seed in the usual way."><meta property="og:description" content="Draws n independent beta-binomial counts by the two-stage hierarchy the
 family is defined by: a success probability from
 \(\mathrm{Beta}(\alpha, \beta)\), then a count from
 \(\mathrm{Binomial}(n_{\mathrm{trials}}, p)\) at that probability, one
-fresh probability per draw. The draws depend on .Random.seed in the usual
-way and consume two of R's streams per variate."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+fresh probability per draw. The draws are made by one call to
+stats::rbeta() followed by one call to stats::rbinom(), so they depend
+on .Random.seed in the usual way."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +19,7 @@ way and consume two of R's streams per variate."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +56,9 @@ way and consume two of R's streams per variate."><meta property="og:image" conte
 family is defined by: a success probability from
 \(\mathrm{Beta}(\alpha, \beta)\), then a count from
 \(\mathrm{Binomial}(n_{\mathrm{trials}}, p)\) at that probability, one
-fresh probability per draw. The draws depend on <code>.Random.seed</code> in the usual
-way and consume two of R's streams per variate.</p>
+fresh probability per draw. The draws are made by one call to
+<code><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">stats::rbeta()</a></code> followed by one call to <code><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">stats::rbinom()</a></code>, so they depend
+on <code>.Random.seed</code> in the usual way.</p>
     </div>
 
 

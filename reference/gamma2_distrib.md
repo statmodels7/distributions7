@@ -5,11 +5,12 @@ mean \\\mu \> 0\\ and its variance \\\sigma^2 \> 0\\, so that the shape
 is \\\alpha = \mu^2/\sigma^2\\ and the rate \\\lambda = \mu/\sigma^2\\.
 The returned object carries closed-form derivatives of the log-density
 to fourth order, in the parameters and in the response, and closed-form
-moments, so every generic of the toolkit answers without a numerical
-fallback.
+moments. The fifth order and the mixed derivatives of order three and
+four in the response and the parameters come from the numerical
+fallbacks of the base class.
 
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the
+unconstrained scale on which an optimizer works. Both default to the
 logarithm, both parameters being positive.
 
 ## Usage
@@ -84,8 +85,7 @@ mean equation fitted with the variance held at a wrong value is biased.
 In
 [`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md),
 where the second parameter is the dispersion \\\phi = \sigma^2/\mu^2\\,
-the same entry is exactly zero. That is the reason a generalized linear
-model uses the dispersion.
+the same entry is exactly zero.
 
 Third and fourth orders are closed form as well, observed and expected,
 in
@@ -98,8 +98,8 @@ and
 [`distrib_hess_y.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Gamma2Distrib.md).
 The derivatives of the *distribution* function in the parameters have no
 elementary form, the derivative of an incomplete gamma in its shape
-being hypergeometric, and are taken by finite difference on the analytic
-cdf.
+being hypergeometric, and are computed by a compiled quadrature of the
+density times the derivatives of the log-density.
 
 ## Estimation
 
@@ -137,8 +137,8 @@ for other positive families written in the mean and the variance;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
-passes;
+to validate a family of your own against the same battery of checks that
+this family passes;
 [Gamma2Distrib](https://statmodels7.github.io/distributions7/reference/Gamma2Distrib.md)
 for the class.
 

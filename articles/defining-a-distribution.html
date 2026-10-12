@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,13 +77,13 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://statmodels7.github.io/distributions7/">distributions7</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="the-idea-in-one-sentence">The idea in one sentence<a class="anchor" aria-label="anchor" href="#the-idea-in-one-sentence"></a>
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p>A new distribution in <strong>distributions7</strong> requires only
 its <strong>density</strong> (<code>distrib_pdf</code>). Everything else
-— cumulative distribution function, quantile function, random number
-generator, score (gradient), observed and expected Hessian, and the
-moments — is then available automatically through numerical fallbacks. A
+(the cumulative distribution function, the quantile function, the random
+number generator, the score, the observed and expected Hessian, and the
+moments) is then available automatically through numerical fallbacks. A
 closed-form expression derived later is registered as a method and
 transparently takes over, with no change to calling code.</p>
 </div>
@@ -154,37 +154,44 @@ parameters</td>
 </tbody>
 </table>
 <p>Default methods for all of these (except <code>distrib_pdf</code>)
-are registered on the <strong>base classes</strong>
-<code>continuous_distrib</code> and <code>discrete_distrib</code>.
-Because S7 always selects the most specific applicable method, a
-subclass inherits those defaults until something more specific is
-registered. The defaults are:</p>
+are registered on the <strong>base classes</strong>: the probability
+functions on <code>continuous_distrib</code> and
+<code>discrete_distrib</code>, the response derivatives on
+<code>continuous_distrib</code>, and the parameter derivatives and the
+moments on <code>distrib</code>. Because S7 always selects the most
+specific applicable method, a subclass inherits those defaults until
+something more specific is registered. The defaults are:</p>
 <ul>
 <li>
-<code>distrib_cdf</code> — numerical integration (continuous) or
-summation of the pmf (discrete) of the density;</li>
+<code>distrib_cdf</code>: numerical integration of the density
+(continuous) or summation of the mass (discrete);</li>
 <li>
-<code>distrib_quantile</code> — root-finding / table inversion on
-the CDF;</li>
+<code>distrib_quantile</code>: root finding on the CDF (continuous)
+or inversion of the cumulative table (discrete);</li>
 <li>
-<code>distrib_rng</code> — Generalized Ratio-of-Uniforms
-(<code><a href="../reference/rng_grou.html">rng_grou()</a></code>), which needs nothing but the density;
-inverse-transform sampling, <code>distrib_quantile(runif(n))</code>, is
-used instead whenever an analytical quantile function is supplied;</li>
+<code>distrib_rng</code>: for a continuous distribution, Generalized
+Ratio-of-Uniforms (<code><a href="../reference/rng_grou.html">rng_grou()</a></code>), which needs only the
+density, or inverse-transform sampling,
+<code>distrib_quantile(runif(n))</code>, whenever an analytical quantile
+function is supplied; for a discrete distribution, inversion of the
+cumulative table;</li>
 <li>
-<code>distrib_gradient</code>, <code>distrib_hessian</code> —
-central finite differences of the log-density (see
+<code>distrib_gradient</code>, <code>distrib_hessian</code>: central
+finite differences of the log-density (see
 <code><a href="../reference/numerical_gradient.html">numerical_gradient()</a></code> /
 <code><a href="../reference/numerical_hessian.html">numerical_hessian()</a></code>);</li>
 <li>
-<code>distrib_deriv3</code>, <code>distrib_deriv4</code> — finite
-differences of the Hessian (see <code><a href="../reference/numerical_deriv3.html">numerical_deriv3()</a></code> /
-<code><a href="../reference/numerical_deriv4.html">numerical_deriv4()</a></code>), with the expected versions obtained by
-<code><a href="../reference/expectation.html">expectation()</a></code> of the observed ones;</li>
+<code>distrib_deriv3</code>, <code>distrib_deriv4</code>: one
+central finite-difference stencil on the highest-order derivative that
+the family implements itself, which is a tensor-product stencil on the
+log-density for a family defined by its density alone (see
+<code><a href="../reference/numerical_deriv3.html">numerical_deriv3()</a></code> / <code><a href="../reference/numerical_deriv4.html">numerical_deriv4()</a></code>);</li>
 <li>
-<code>distrib_expected_hessian</code> — the
-<code><a href="../reference/expectation.html">expectation()</a></code> of the observed Hessian;</li>
-<li>the moments — numerical <code><a href="../reference/expectation.html">expectation()</a></code> of the relevant
+<code>distrib_expected_hessian</code>: by default
+(<code>approx = "opg"</code>) minus the outer product of the score, read
+at each observation; <code>approx = "bartlett"</code>,
+<code>"integrate"</code> and <code>"mc"</code> take an expectation;</li>
+<li>the moments: numerical <code><a href="../reference/expectation.html">expectation()</a></code> of the relevant
 power.</li>
 </ul>
 </div>
@@ -215,16 +222,16 @@ and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">b&gt;0</annotation></semantics></math>.
 Base R has no <code>dlaplace</code>, so this is a genuinely new
 distribution.</p>
-<p><strong>Step 1 — the class.</strong> It is continuous, so we inherit
+<p><strong>Step 1: the class.</strong> It is continuous, so we inherit
 from <code>continuous_distrib</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Laplace</span> <span class="op">&lt;-</span> <span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/new_class.html" class="external-link">new_class</a></span><span class="op">(</span><span class="st">"Laplace"</span>, parent <span class="op">=</span> <span class="va">continuous_distrib</span><span class="op">)</span></span></code></pre></div>
-<p><strong>Step 2 — the density.</strong> A method for
+<p><strong>Step 2: the density.</strong> A method for
 <code>distrib_pdf</code>. The signature is always
 <code>(distrib, y, theta, log = FALSE, ...)</code>, where
 <code>theta</code> is a named list of parameters (each element a scalar
 or a vector aligned with <code>y</code>). The <code>...</code> is
-required: a modelling function such as
+required: a modeling function such as
 <code>statmodels7::statmod()</code> passes further arguments to the
 density, the number of threads among them, and a method without
 <code>...</code> stops on the first call.</p>
@@ -240,8 +247,11 @@ density, the number of threads among them, and a method without
 <em>names</em> stay free, and the <code>log</code> branch is always
 implemented, because the numerical machinery evaluates the density on
 the log scale for stability.</p>
-<p><strong>Step 3 — the constructor.</strong> A plain function returning
-an object of the class with the metadata filled in:</p>
+<p><strong>Step 3: the constructor.</strong> A plain function returning
+an object of the class with the metadata filled in. The density is not
+differentiable in the location at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">y = \mu</annotation></semantics></math>,
+which the constructor records in <code>params_smooth</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">laplace_distrib</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">link_mu</span> <span class="op">=</span> <span class="fu">linkfunctions7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">identity_link</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                            <span class="va">link_b</span>  <span class="op">=</span> <span class="fu">linkfunctions7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/linkfunctions7/reference/log_link.html" class="external-link">log_link</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -253,7 +263,8 @@ an object of the class with the metadata filled in:</p>
 <span>    params_interpretation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="st">"location"</span>, b <span class="op">=</span> <span class="st">"scale"</span><span class="op">)</span>,</span>
 <span>    n_params     <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>    params_bounds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="cn">Inf</span><span class="op">)</span>, b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    link_params   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">link_mu</span>, b <span class="op">=</span> <span class="va">link_b</span><span class="op">)</span></span>
+<span>    link_params   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">link_mu</span>, b <span class="op">=</span> <span class="va">link_b</span><span class="op">)</span>,</span>
+<span>    params_smooth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="cn">FALSE</span>, b <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>      <span class="co"># kink at y = mu</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>The <code>params_bounds</code> are used by the fallbacks
@@ -271,7 +282,7 @@ parameter’s domain) and by <code><a href="../reference/generate_random_theta.h
 <span><span class="fu"><a href="../reference/distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.15163266 0.25000000 0.09196986</span></span>
 <span></span>
-<span><span class="co"># CDF, quantile, RNG --- all numerical fallbacks</span></span>
+<span><span class="co"># CDF, quantile, RNG: all numerical fallbacks</span></span>
 <span><span class="fu"><a href="../reference/distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.1839397 0.5000000 0.8884349</span></span>
 <span><span class="fu"><a href="../reference/distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span>   <span class="co"># median is exactly mu = 1</span></span>
@@ -279,7 +290,7 @@ parameter’s domain) and by <code><a href="../reference/generate_random_theta.h
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">5</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]  5.723932 -2.857153  0.855691  2.715865  0.144959</span></span>
 <span></span>
-<span><span class="co"># score and Hessian --- finite differences of the log-density</span></span>
+<span><span class="co"># score and Hessian: finite differences of the log-density</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
 <span><span class="co">#&gt;  $ mu: num [1:2] -0.5 0.5</span></span>
@@ -290,7 +301,7 @@ parameter’s domain) and by <code><a href="../reference/generate_random_theta.h
 <span><span class="co">#&gt;  $ b_b  : num [1:2] -0.25 -0.25</span></span>
 <span><span class="co">#&gt;  $ mu_b : num [1:2] 0.25 -0.25</span></span>
 <span></span>
-<span><span class="co"># moments --- numerical integration against the density</span></span>
+<span><span class="co"># moments: numerical integration against the density</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, variance <span class="op">=</span> <span class="fu"><a href="../reference/variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span>  <span class="co"># Laplace variance is 2 b^2 = 8</span></span>
 <span><span class="co">#&gt;     mean variance </span></span>
 <span><span class="co">#&gt;        1        8</span></span></code></pre></div>
@@ -302,7 +313,7 @@ Laplace:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">q</span> <span class="op">&lt;</span> <span class="va">mu</span>, <span class="fl">0.5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">(</span><span class="va">q</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span> <span class="op">/</span> <span class="va">b</span><span class="op">)</span>, <span class="fl">1</span> <span class="op">-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="va">q</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span> <span class="op">/</span> <span class="va">b</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="va">q</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="../reference/distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">th</span><span class="op">)</span> <span class="op">-</span> <span class="fu">lap_cdf</span><span class="op">(</span><span class="va">q</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>   <span class="co"># ~1e-10</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="../reference/distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">th</span><span class="op">)</span> <span class="op">-</span> <span class="fu">lap_cdf</span><span class="op">(</span><span class="va">q</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>   <span class="co"># agrees to rounding</span></span>
 <span><span class="co">#&gt; [1] 1.110223e-16</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># variance should be exactly 2 b^2</span></span>
@@ -316,7 +327,7 @@ Laplace:</p>
 <span><span class="co">#&gt; Dimensions:   univariate</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameters:</span></span>
-<span><span class="co">#&gt;   mu (location)           | Link: identity   | Domain: (-Inf, Inf)</span></span>
+<span><span class="co">#&gt;   mu (location)           | Link: identity   | Domain: (-Inf, Inf)  [non-smooth log-likelihood]</span></span>
 <span><span class="co">#&gt;   b  (scale)              | Link: log        | Domain: (0, Inf)</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span></span></code></pre></div>
@@ -400,15 +411,15 @@ generic, which carries a <code>scale</code> argument (and
 <code>...</code>). <strong>A method always returns parameter-scale
 derivatives</strong>; the chain rule is never implemented by hand. The
 generic applies the link-scale transformation afterwards when the caller
-asks for <code>scale = "link"</code>. The same applies to
+requests <code>scale = "link"</code>. The same applies to
 <code>distrib_hessian</code>, <code>distrib_expected_hessian</code>,
 <code>distrib_deriv3</code> and <code>distrib_deriv4</code>. Of the
 probability-function methods, <code>distrib_pdf</code> takes
 <code>...</code> as Step 2 explains, and <code>distrib_cdf</code>,
 <code>distrib_quantile</code> and <code>distrib_rng</code> keep the
 signatures shown here.</p>
-<p>The results are identical to what the fallbacks produced, only faster
-and exact:</p>
+<p>The results agree with what the fallbacks produced, to the accuracy
+of the finite differences, and are now exact and faster:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="../reference/distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">th</span><span class="op">)</span> <span class="op">-</span> <span class="fu">lap_cdf</span><span class="op">(</span><span class="va">q</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>       <span class="co"># now exact</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
@@ -420,20 +431,20 @@ and exact:</p>
 forms:</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong><code>distrib_gradient</code></strong> — the single biggest
+<strong><code>distrib_gradient</code></strong>: the single biggest
 speed-up for model fitting, since the score is evaluated at every
 optimization step. Writing it in C++ (via <strong>Rcpp</strong>), as the
 built-in distributions do, helps further.</li>
 <li>
-<strong><code>distrib_hessian</code></strong> — for Newton-type
+<strong><code>distrib_hessian</code></strong>: for Newton-type
 optimization and standard errors.</li>
 <li>
 <strong><code>distrib_cdf</code> / <code>distrib_quantile</code> /
-<code>distrib_rng</code></strong> — for fast or high-volume simulation
+<code>distrib_rng</code></strong>: for fast or high-volume simulation
 and tail probabilities.</li>
 <li>
 <strong><code>distrib_expected_hessian</code></strong> and
-<strong>analytical moments</strong> — when a closed form exists and the
+<strong>analytical moments</strong>: when a closed form exists and the
 fitting method is Fisher scoring, or exact moments are needed.</li>
 </ol>
 </div>
@@ -465,7 +476,8 @@ is a one-liner.</p>
 battery of numerical self-consistency checks: it verifies that the
 density integrates (or sums) to one, that the CDF, quantile function and
 RNG agree with each other, and that every analytical derivative matches
-finite differences.</p>
+finite differences. A derivative order that the family leaves to the
+fallbacks is listed as not run.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_distrib.html">check_distrib</a></span><span class="op">(</span><span class="fu"><a href="../reference/laplace_distrib.html">laplace_distrib</a></span><span class="op">(</span><span class="op">)</span>, theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
 <span>              n <span class="op">=</span> <span class="fl">40</span>, nsim <span class="op">=</span> <span class="fl">2e4</span>, orders <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span>
@@ -524,15 +536,16 @@ itself:</p>
 the second element of the link-scale score is simply the parameter-scale
 score times
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>.
-Higher orders follow the Faà di Bruno chain rule and are available up to
-order 4; see <code><a href="../reference/link_scale_derivatives.html">?link_scale_derivatives</a></code> for the formulas.</p>
+Higher orders follow the Faà di Bruno chain rule, and the link scale is
+available up to order 5; see <code><a href="../reference/link_scale_derivatives.html">?link_scale_derivatives</a></code> for
+the formulas.</p>
 </div>
 <div class="section level2">
 <h2 id="fitting-a-distribution-to-data">Fitting a distribution to data<a class="anchor" aria-label="anchor" href="#fitting-a-distribution-to-data"></a>
 </h2>
 <p><code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> maximizes the likelihood on the link scale
-— where the parameters are unconstrained — using the analytical score
-and information, and then reports the estimates back on the parameter
+(where the parameters are unconstrained) using the analytical score and
+information, and then reports the estimates back on the parameter
 scale:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
@@ -541,7 +554,7 @@ scale:</p>
 <span><span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gaussian1</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 18 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 21 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -590,23 +603,23 @@ exists only almost everywhere, and the observed curvature
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>∂</mi><mn>2</mn></msup><mi>ℓ</mi><mi>/</mi><mi>∂</mi><msup><mi>μ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\partial^2\ell/\partial\mu^2</annotation></semantics></math>
 is <strong>zero</strong>, so Newton-Raphson cannot update
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>.</p>
-<p>The package handles this in two ways. First, a distribution can
-declare which parameters are smooth via the <code>params_smooth</code>
-metadata (shown in <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>):</p>
+<p>The package handles this in two ways. First, a distribution declares
+which parameters are smooth through the <code>params_smooth</code>
+metadata, which the constructor of Step 3 sets and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>
+shows:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/laplace_distrib.html">laplace_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/param_smoothness.html">param_smoothness</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   mu    b </span></span>
-<span><span class="co">#&gt; TRUE TRUE</span></span></code></pre></div>
-<p>Second, and most importantly, <code>distrib_expected_hessian</code>
-returns the <strong>Fisher information</strong> computed from the
-variance of the score,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo>=</mo><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>∇</mi><mi>ℓ</mi><mspace width="0.167em"></mspace><mi>∇</mi><msup><mi>ℓ</mi><mi>⊤</mi></msup><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">I=\mathbb{E}[\nabla\ell\,\nabla\ell^\top]</annotation></semantics></math>,
-rather than from
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>H</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">-\mathbb{E}[H]</annotation></semantics></math>.
+<span><span class="co">#&gt;    mu     b </span></span>
+<span><span class="co">#&gt; FALSE  TRUE</span></span></code></pre></div>
+<p>Second, <code>distrib_expected_hessian</code> returns minus the
+Fisher information computed from the score,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>∇</mi><mi>ℓ</mi><mspace width="0.167em"></mspace><mi>∇</mi><msup><mi>ℓ</mi><mi>⊤</mi></msup><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]</annotation></semantics></math>,
+rather than
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>H</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\mathbb{E}[H]</annotation></semantics></math>.
 For a regular model the two coincide, by the second Bartlett identity,
-but only the score-variance form stays valid when the identity fails. It
-gives the correct information
+but only the score form stays valid when the identity fails. It gives
+the correct information
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><msup><mi>b</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">1/b^2</annotation></semantics></math>
 for the Laplace location, where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>H</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">-\mathbb{E}[H]</annotation></semantics></math>
@@ -615,14 +628,20 @@ would give a degenerate zero:</p>
 <code class="sourceCode R"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span>          <span class="co"># observed curvature: 0</span></span>
 <span><span class="co">#&gt; [1] 0 0 0</span></span>
-<span><span class="fu"><a href="../reference/distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span>           <span class="co"># Fisher information: -1/b^2</span></span>
+<span><span class="fu"><a href="../reference/distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span>           <span class="co"># minus the information: -1/b^2</span></span>
 <span><span class="co">#&gt; [1] -0.25</span></span></code></pre></div>
-<p>This means that even a user-defined non-smooth distribution supplying
-only its density (and, ideally, an analytic score at the kink) obtains
-the right expected information automatically, because the default
-<code>distrib_expected_hessian</code> uses the outer product of the
-score. See <code><a href="../reference/laplace_distrib.html">?laplace_distrib</a></code> for the full worked
-example.</p>
+<p>The default <code>distrib_expected_hessian</code> reads the outer
+product of the score at each observation (<code>approx = "opg"</code>).
+For the Laplace location that product does not depend on the
+observation, so the default returns the information itself. For a
+component whose squared score varies with the response, the default is a
+per-observation estimate whose average over the sample estimates the
+information, and <code>approx = "bartlett"</code> takes the expectation
+exactly. See <code><a href="../reference/laplace_distrib.html">?laplace_distrib</a></code> for the family that the
+package ships, written in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
+in place of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>.</p>
 </div>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>

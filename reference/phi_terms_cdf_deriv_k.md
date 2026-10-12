@@ -46,20 +46,18 @@ natural scale, keyed as
 The Leibniz rule splits the positions of the multi-index \\I\\ between
 the weight and the tail. The weight side is \\\partial^{S} e^{w} = e^{w}
 B\_{S}(w)\\, the complete Bell polynomial in the partials of the **log**
-weight; the tail side is one Faa di Bruno pass over \\x\\, whose inner
-derivatives are the Hermite factors of
+weight; the tail side is one Faa di Bruno pass over \\x\\, whose outer
+derivatives (those of \\\Phi\\) are the Hermite factors of
 [`phi_hermite()`](https://statmodels7.github.io/distributions7/reference/phi_hermite.md)
-times \\\varphi(x)\\. Nothing is transcribed: both sums run on the
-package's own partition enumeration.
+times \\\varphi(x)\\. Both sums run on the partition enumeration of the
+package, not on a transcribed expansion.
 
-## Why the log weight
+## The log weight
 
 The weight is never formed on its own. It is combined with the tail as
 `exp(w + pnorm(x, log.p = TRUE))`, because for the inverse Gaussian
-\\e^{2/(\phi\mu)}\\ overflows exactly where \\\Phi(b)\\ underflows: at
-\\\mu = 0.01\\, \\\phi = 0.1\\ the weight is `Inf` while the product is
-about \\3\times10^{-106}\\, and the fourth derivative there comes back
-at \\3\times10^{-91}\\.
+\\e^{2/(\phi\mu)}\\ overflows where \\\Phi(b)\\ underflows: at \\\mu =
+0.01\\, \\\phi = 0.1\\ the weight is `Inf` while the product is finite.
 
 ## Notation
 

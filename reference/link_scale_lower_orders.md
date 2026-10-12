@@ -31,7 +31,7 @@ link_scale_lower_orders(distrib, y, theta, expected, order)
 
 - order:
 
-  The order being assembled, 1 to 4.
+  The order being assembled, 1 to 5.
 
 ## Value
 
@@ -43,9 +43,9 @@ order-\\m\\ parameter-scale derivatives.
 Faa di Bruno mixes all lower orders into each link-scale component, so
 they must all be to hand before the assembly starts. For **expected**
 derivatives the first-order slot is filled with zeros rather than with
-the score, because \\\mathbb{E}\[\ell_i\] = 0\\: the term is genuinely
-absent, not merely unavailable, which is also why the expected
-information transforms as a plain congruence.
+the score, because \\\mathbb{E}\[\ell_i\] = 0\\. The term is absent from
+the expected derivatives, which is also why the expected information
+transforms as a plain congruence.
 
 ## See also
 

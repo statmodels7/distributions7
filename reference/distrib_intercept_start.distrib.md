@@ -1,4 +1,4 @@
-# No Intercept Needs a Start of Its Own
+# Default Intercept Starting Values
 
 The base method: an empty list, the intercept-only fit being the start
 for every parameter.

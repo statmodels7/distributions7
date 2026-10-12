@@ -3,7 +3,11 @@
 Returns the components of a derivative of order one to four of the
 beta-binomial log-mass with respect to \\\mu\\ and \\\sigma\\, by
 carrying the shape parametrization's own derivatives through the map
-\\(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)\\.
+\\(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)\\ for \\\sigma \ge
+0.1\\, and from the direct sums of
+[`betabinom_direct()`](https://statmodels7.github.io/distributions7/reference/betabinom_direct.md)
+below
+[`bb_direct_cut()`](https://statmodels7.github.io/distributions7/reference/bb_direct_cut.md).
 
 ## Usage
 
@@ -60,6 +64,14 @@ The construction is the one
 runs, used here by a family whose first two orders are written out by
 hand in a compiled kernel. A fresh `BetaBinom2Distrib` object is built
 on each call, which costs one S7 construction per evaluation.
+
+Below
+[`bb_direct_cut()`](https://statmodels7.github.io/distributions7/reference/bb_direct_cut.md)
+the map's derivatives, of order \\\sigma^{-(K+1)}\\ at order \\K\\,
+cancel among themselves, and the rows with \\\sigma \< 0.1\\ are
+computed from the direct sums over the integer shifts instead
+([`betabinom_direct()`](https://statmodels7.github.io/distributions7/reference/betabinom_direct.md)),
+whose terms have one sign each.
 
 ## See also
 

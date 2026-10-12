@@ -15,7 +15,7 @@ neither a native RNG nor an analytical quantile function."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,9 +78,10 @@ neither a native RNG nor an analytical quantile function.</p>
 
 <dt id="arg-r">r<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
 <dd><p>Numeric tuning parameter of the transformation power, default <code>2</code>.
-<code>r=1</code> is the classical Ratio-of-Uniforms; larger values enclose
-heavier tails (<code>r=2</code> keeps the acceptance region bounded for tails as
-heavy as the Cauchy's, which is why it is the default).</p></dd>
+<code>r=1</code> is the classical ratio-of-uniforms method, whose acceptance region
+is bounded for tails decaying as fast as \(|y|^{-2}\) (the Cauchy);
+<code>r=2</code>, the default, keeps it bounded for tails as heavy as
+\(|y|^{-3/2}\).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -154,10 +155,12 @@ is also what <code><a href="https://rdrr.io/r/stats/Beta.html" class="external-l
 
 <p>The kernel must be unimodal and the parameters in <code>theta</code> must be scalars.
 Densities that diverge at one or at both edges of their support are handled by
-the reparametrizations described below.</p>
+the reparametrizations described in the section on unbounded densities.</p>
 <p>Heavy tails are not an obstacle: with the default <code>r=2</code> the sampler
 handles a Student's t with half a degree of freedom and a Pareto with infinite
-mean, and multimodal densities are usually accepted as well.</p>
+mean. A density with two well-separated modes is not handled: the bounding
+rectangle is built around the mode found first, and the draws then come
+from one mode only, without a warning.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

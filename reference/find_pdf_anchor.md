@@ -1,7 +1,8 @@
 # Locate an Interior High-Density Point
 
-Finds an approximate mode, used to split integrals, to scale
-root-finding brackets and to recenter the ratio-of-uniforms kernel.
+Finds an approximate mode, at which
+[`distrib_cdf.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.continuous_distrib.md)
+splits its integral.
 
 ## Usage
 

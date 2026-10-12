@@ -10,7 +10,8 @@ this completes the joint Hessian of the log-density in \\(y, \theta)\\:
 those two are the diagonal blocks and this is the off-diagonal one.
 
 Defined for continuous families only. A discrete family has no
-derivative in \\y\\ to cross, and its base class refuses the call.
+derivative in \\y\\ to cross, so no method is registered for it and the
+call signals an error.
 
 ## Usage
 
@@ -44,7 +45,7 @@ distrib_cross_y(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 - ...:
 
-  Passed to the method. No shipped method reads it.
+  Passed to the method. The shipped methods do not read it.
 
 ## Value
 
@@ -70,12 +71,12 @@ multiplied by \\\sigma\\ and the `mu` component by 1.
 
 ## Where the closed forms are
 
-All 32 continuous families in the package register one. The fallback in
+Every continuous family in the package registers one. The fallback in
 [`distrib_cross_y.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.continuous_distrib.md)
-therefore exists for families defined outside the package, and it is one
-central difference of
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
-in each parameter.
+therefore serves families defined outside the package. It applies one
+tensor stencil to the highest quantity that the family implements
+itself, through
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md).
 
 ## See also
 

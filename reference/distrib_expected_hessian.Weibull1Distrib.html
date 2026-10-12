@@ -35,7 +35,7 @@ strategy returns the same three numbers."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,14 +126,15 @@ the signature matches the generic's, where it selects between
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of three numeric vectors, <code>mu_mu</code>, <code>sigma_sigma</code> and
-<code>mu_sigma</code>, each of length <code>length(y)</code> and each constant along it.</p>
+<code>mu_sigma</code>, each of length <code>max(length(y), length(mu), length(sigma))</code>
+and constant when <code>mu</code> and <code>sigma</code> have length 1.</p>
     </div>
     <div class="section level2">
     <h2 id="why-the-expectations-are-gamma-derivatives">Why the expectations are gamma derivatives<a class="anchor" aria-label="anchor" href="#why-the-expectations-are-gamma-derivatives"></a></h2>
@@ -159,8 +160,9 @@ substitution, since \(\exp(-\text{Gumbel})\) is Weibull, so
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_hessian.Weibull1Distrib.html">distrib_hessian.Weibull1Distrib()</a></code> for the quantity this is the
-expectation of, <code><a href="distrib_gradient.Weibull1Distrib.html">distrib_gradient.Weibull1Distrib()</a></code> for the score, and
+    <div class="dont-index"><p><code><a href="distrib_hessian.Weibull1Distrib.html">distrib_hessian.Weibull1Distrib()</a></code> for the observed Hessian, of
+which this is the expectation, <code><a href="distrib_gradient.Weibull1Distrib.html">distrib_gradient.Weibull1Distrib()</a></code> for
+the score, and
 <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
     </div>
 

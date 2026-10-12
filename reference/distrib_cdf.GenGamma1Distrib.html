@@ -4,16 +4,14 @@ gamma function. The identity is exact:
 \(u = (Y/a)^p\) is Gamma with shape \(d/p\) and unit rate, so the
 distribution function is that Gamma's evaluated at \((q/a)^p\) and the
 whole computation is one pgamma call.
-lower.tail and log.p are passed straight to pgamma, so the survival
-function and the log-probability keep the accuracy R's own routine gives
-them in the far tail."><meta property="og:description" content="Computes \(F(q) = P(d/p,\, (q/a)^{p})\), the regularized lower incomplete
+lower.tail and log.p are passed to pgamma, so the survival function
+and the log-probability have the accuracy of pgamma in the far tail."><meta property="og:description" content="Computes \(F(q) = P(d/p,\, (q/a)^{p})\), the regularized lower incomplete
 gamma function. The identity is exact:
 \(u = (Y/a)^p\) is Gamma with shape \(d/p\) and unit rate, so the
 distribution function is that Gamma's evaluated at \((q/a)^p\) and the
 whole computation is one pgamma call.
-lower.tail and log.p are passed straight to pgamma, so the survival
-function and the log-probability keep the accuracy R's own routine gives
-them in the far tail."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+lower.tail and log.p are passed to pgamma, so the survival function
+and the log-probability have the accuracy of pgamma in the far tail."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +19,7 @@ them in the far tail."><meta property="og:image" content="https://statmodels7.gi
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,9 +57,8 @@ gamma function. The identity is exact:
 \(u = (Y/a)^p\) is Gamma with shape \(d/p\) and unit rate, so the
 distribution function is that Gamma's evaluated at \((q/a)^p\) and the
 whole computation is one <code>pgamma</code> call.</p>
-<p><code>lower.tail</code> and <code>log.p</code> are passed straight to <code>pgamma</code>, so the survival
-function and the log-probability keep the accuracy R's own routine gives
-them in the far tail.</p>
+<p><code>lower.tail</code> and <code>log.p</code> are passed to <code>pgamma</code>, so the survival function
+and the log-probability have the accuracy of <code>pgamma</code> in the far tail.</p>
     </div>
 
 

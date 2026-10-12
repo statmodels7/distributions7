@@ -7,10 +7,9 @@ A family with an analytic response gradient or score differences it
 once, in the parameter or in the response; a family with a density alone
 takes one four-point mixed stencil of the log-density.
 
-**No family shipped in this package reaches this method.** All 32
-continuous families register a closed form, so this exists for a family
-defined outside the package, which gets the mixed block for free from
-its density alone.
+Every continuous family shipped in this package registers a closed form,
+so this method serves a family defined outside the package, which
+obtains the mixed block from its density alone.
 
 ## Arguments
 
@@ -43,8 +42,10 @@ A named list with one numeric vector per parameter, keyed by
 
 ## See also
 
-[`numerical_cross_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross_y.md),
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md),
 which does the work;
+[`numerical_cross_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross_y.md)
+for the differenced part of a family's own method;
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
 for the generic;
 [`distrib_cross_y.Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Gaussian1Distrib.md)

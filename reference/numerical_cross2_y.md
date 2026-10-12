@@ -3,9 +3,12 @@
 Computes \\\partial^3 \ell / \partial y^2\\ \partial \theta_i\\ by one
 central difference of
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
-in each parameter. It is what the default
+in each parameter. A family with a closed form for some components calls
+it for the rest. The default
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
-method runs for a continuous family with no closed form of its own.
+method for a continuous family uses
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md)
+instead.
 
 ## Usage
 
@@ -56,11 +59,14 @@ log-density, so a distribution carrying an analytic `distrib_hess_y`
 pays for exactly one finite-difference layer. Where that Hessian is
 itself a fallback the two differences act on different variables and
 compose into a single mixed stencil, rather than into the nested
-differencing of one variable the package forbids.
+differencing of one variable that the package does not use.
 
-The step is
-[`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)'s,
-so a parameter near a bound is differenced inward instead of across it.
+The step is chosen by
+[`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md)
+from the two candidates of
+[`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md),
+so that both evaluation points of a parameter near a bound stay inside
+its domain.
 
 ## Notation
 

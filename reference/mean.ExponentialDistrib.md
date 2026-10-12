@@ -30,7 +30,7 @@ which is the square of this;
 [`mean.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/mean.Weibull1Distrib.md)
 and
 [`mean.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/mean.Gamma2Distrib.md),
-the two families that contain this one;
+two of the families that contain this one;
 [`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md).
 
 ## Examples

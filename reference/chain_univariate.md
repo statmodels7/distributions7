@@ -38,12 +38,14 @@ A numeric vector over the coordinates, as long as the elements of `fd`.
 
 ## Details
 
-This is why the two simplex-valued families are cheap at orders three
-and four. Their log-densities are sums of terms each depending on ONE
-coordinate, \\\log\Gamma(\alpha_j)\\ for the Dirichlet and \\\log p_j\\
-for the multinomial, so the multivariate Faa di Bruno collapses to one
-univariate partition sum per coordinate and no mixed derivative array is
-ever formed.
+The two simplex-valued families use this at orders three and four. Their
+log-densities are sums of terms that each depend on one coordinate,
+\\\log\Gamma(\alpha_j)\\ for the Dirichlet and \\\log p_j\\ for the
+multinomial, so the multivariate Faa di Bruno formula reduces to one
+univariate partition sum per coordinate, and the mixed derivative arrays
+are never formed. The multinomial uses it only on a chart other than the
+additive log-ratio one, where its derivatives are cumulants (see
+[`mn_cumulant()`](https://statmodels7.github.io/distributions7/reference/mn_cumulant.md)).
 
 ## Notation
 

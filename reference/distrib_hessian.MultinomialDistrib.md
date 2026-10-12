@@ -5,9 +5,13 @@ with respect to the simplex's free values, one value per observation, in
 closed form. With \\A = \partial p/\partial\eta\\ and \\B\_{\cdot,kl} =
 \partial^2 p/\partial\eta_k\partial\eta_l\\, \$\$\ell^{(\eta_k\eta_l)} =
 \sum\_{j=1}^{p}\left(\dfrac{y_j}{p_j}B\_{j,kl} -
-\dfrac{y_j}{p_j^2}A\_{jk}A\_{jl}\right).\$\$ Both terms carry the data,
-so the observed matrix differs from its expectation at every
-observation.
+\dfrac{y_j}{p_j^2}A\_{jk}A\_{jl}\right).\$\$ On the additive log-ratio
+chart the two terms combine into \\-N(\delta\_{kl}p_k - p_kp_l)\\, with
+\\N\\ the total of the row, the second cumulant of the categorical law,
+which the method computes directly and without dividing by a
+probability; for a row on the support \\N = n\\, so the observed matrix
+equals its expectation. On another chart the two terms need not combine
+in this way.
 
 ## Arguments
 

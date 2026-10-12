@@ -15,8 +15,8 @@ reports. The parametrization does not enter a standardized moment.
 - theta:
 
   A named list with components `mu` and `tau` (positive), each a numeric
-  vector of length 1 or `n`. The values are not read, only their
-  lengths.
+  vector of length 1 or `n`. The values are checked against the
+  parameter bounds, and only their lengths enter the result.
 
 - ...:
 

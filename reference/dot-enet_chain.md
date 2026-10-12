@@ -42,13 +42,11 @@ names them, each a numeric vector of the length of `y`.
 
 ## Details
 
-The license for orders three and four is that the **same assembly** run
-at orders one and two reproduces the hand-written score and observed
-Hessian: measured, exactly 0 at order one and \\1.1\times10^{-16}\\ at
-order two. Against an independent route, one product stencil on the
-analytic log-density, the pure-\\\lambda\\ components agree to
-\\2\times10^{-4}\\ at order three and \\2\times10^{-3}\\ at order four,
-which is the stencil's own accuracy at those orders.
+The same assembly run at orders one and two reproduces the score and the
+observed Hessian of
+[`distrib_gradient.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.EnetDistrib.md)
+and
+[`distrib_hessian.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.EnetDistrib.md).
 
 ## See also
 
@@ -68,8 +66,7 @@ d <- enet_distrib()
 y <- c(-1.5, -0.3, 0.4, 2.1)
 th <- list(mu = 0, lambda = 2, alpha = 0.5)
 
-# At order one it reproduces the hand-written score exactly, which is what
-# licenses the orders where there is nothing to compare against.
+# At order one it reproduces the score of distrib_gradient().
 g <- distrib_gradient(d, y, th)
 a1 <- distributions7:::.enet_chain(y, th, 1L)
 max(abs(unlist(a1[names(g)]) - unlist(g)))
@@ -79,5 +76,5 @@ max(abs(unlist(a1[names(g)]) - unlist(g)))
 h <- distrib_hessian(d, y, th)
 a2 <- distributions7:::.enet_chain(y, th, 2L)
 max(abs(unlist(a2[names(h)]) - unlist(h)))
-#> [1] 1.110223e-16
+#> [1] 1.665335e-16
 ```

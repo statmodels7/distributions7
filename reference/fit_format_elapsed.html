@@ -15,7 +15,7 @@ observations then reads 40 ms where one of ten million reads
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,8 +73,10 @@ otherwise validated, and a negative number is formatted as it stands.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A character string of length 1: <code>"0.4 ms"</code>, <code>"40 ms"</code>, <code>"1.5 s"</code>,
-<code>"59.4 s"</code>, <code>"1 min 01 s"</code>. Seconds are rounded to one decimal below a
-minute and to the nearest second above it.</p>
+<code>"59.4 s"</code>, <code>"1 min 01 s"</code>. Milliseconds, and seconds below a minute, are
+given to three significant digits; above a minute the seconds are rounded
+to the nearest second. The unit is chosen on the rounded value, so that
+no field reaches its carry.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

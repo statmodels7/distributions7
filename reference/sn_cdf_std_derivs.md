@@ -33,15 +33,14 @@ A nested list indexed `[[i + 1]][[j + 1]]`, holding
 \\\partial^i_z\partial^j\_\alpha G\\ as a numeric vector. Entries with
 \\i + j\\ above `order` are absent.
 
-## Why the integral never has to be differentiated
+## The integral in Owen's T
 
 Owen's T is defined by an integral, and both of its partial derivatives
 are elementary: \$\$\frac{\partial T}{\partial h} =
 -\varphi(h)\left\\\Phi(ah) - \tfrac12\right\\, \qquad \frac{\partial
 T}{\partial a} = \frac{\varphi(h)\\\varphi(ah)}{1+a^2}.\$\$ The integral
 is therefore differentiated away at the first order and never has to be
-differentiated again. A quantity defined by an integral is not thereby a
-quantity whose derivatives need one.
+differentiated again.
 
 ## The first derivatives, and the check on them
 

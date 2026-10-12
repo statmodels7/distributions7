@@ -20,8 +20,8 @@ returns `p`.
 - p:
 
   A numeric vector of probabilities in \\\[0, 1\]\\, or of their
-  logarithms when `log.p = TRUE`. A value outside the range gives `NaN`
-  with a warning; `p = 0` gives 0 and `p = 1` gives `Inf`.
+  logarithms when `log.p = TRUE`. A value outside the range gives `NA`
+  without a warning; `p = 0` gives 0 and `p = 1` gives `Inf`.
 
 - theta:
 
@@ -68,7 +68,7 @@ th <- list(mu = 1, phi = 2)
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #> [1] 0.08521603 0.51422989 4.94962402
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# Exact inverse: the round trip returns the probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #> [1] TRUE

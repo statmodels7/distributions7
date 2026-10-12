@@ -37,7 +37,7 @@ parametrization carries.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,7 +87,7 @@ parametrization carries.</p></li>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mvg_higher</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">y</span>, <span class="va">theta</span>, <span class="va">order</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mvg_higher</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">y</span>, <span class="va">theta</span>, <span class="va">order</span>, expected <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -108,9 +108,12 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-order">order<a class="anchor" aria-label="anchor" href="#arg-order"></a></dt>
-<dd><p>Either <code>3L</code> or <code>4L</code>. No other value is accepted: the
-log-determinant derivative is chosen by <code>switch(order - 2L, ...)</code>, which
-returns <code>NULL</code> outside that range and fails at the call.</p></dd>
+<dd><p>The derivative order, <code>3L</code> or <code>4L</code>.</p></dd>
+
+
+<dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
+<dd><p>Logical of length 1. When <code>TRUE</code> the expectation of each
+component is returned. Defaults to <code>FALSE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -123,11 +126,11 @@ covariance.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The log-determinant derivatives come from <code><a href="https://statmodels7.github.io/parameters7/reference/param_d3logdet.html" class="external-link">parameters7::param_d3logdet()</a></code>
-and <code>param_d4logdet()</code>, and the precision arrays from <code><a href="mvg_ptensors.html">mvg_ptensors()</a></code>, so
-nothing here is a transcription of an expanded formula. The only case that
-costs anything is the pure-matrix one, and even that is a quadratic form per
-observation once the array is in hand.</p>
+    <p>The log-determinant derivatives come from <code><a href="https://statmodels7.github.io/parameters7/reference/param_d3logdet.html" class="external-link">parameters7::param_d3logdet()</a></code> and
+<code>param_d4logdet()</code>, and the precision arrays from <code><a href="mvg_ptensors.html">mvg_ptensors()</a></code>. With
+<code>expected = TRUE</code> the response enters through \(r\) and \(r^\top P_t r\),
+whose expectations are 0 and \(\operatorname{tr}(P_t\Sigma)\), so the
+expectation is exact.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

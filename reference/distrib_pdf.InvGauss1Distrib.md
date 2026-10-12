@@ -49,7 +49,7 @@ for the distribution function,
 [`distrib_gradient.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.InvGauss1Distrib.md)
 for the derivatives of the log-density,
 [`distrib_pdf.InvGauss2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.InvGauss2Distrib.md)
-for the same density in the variance, and
+for the same density in the shape \\\lambda = 1/\phi\\, and
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
 for the generic.
 

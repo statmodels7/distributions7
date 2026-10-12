@@ -1,10 +1,12 @@
 # Cauchy Fourth-Order Derivatives
 
 Computes the five distinct fourth derivatives of the Cauchy log-density
-with respect to \\\mu\\ and \\\sigma\\, in closed form. As at third
-order, every component is a rational function of \\r = y - \mu\\ and
-\\\sigma\\ over a power of \\d = \sigma^2 + r^2\\ and so is bounded in
-\\y\\.
+with respect to \\\mu\\ and \\\sigma\\, in closed form from the compiled
+kernel of the third order. As at third order, every component is a
+rational function of \\r = y - \mu\\ and \\\sigma\\ with a power of \\d
+= \sigma^2 + r^2\\ in the denominator, and so is bounded in \\y\\; the
+component in \\\sigma\\ alone tends to \\-6/\sigma^4\\ as \\\|r\|\\
+grows, and the others to zero.
 
 With `expected = TRUE` the expectations under the model are returned,
 also in closed form; the two components odd in \\r\\ vanish by symmetry.

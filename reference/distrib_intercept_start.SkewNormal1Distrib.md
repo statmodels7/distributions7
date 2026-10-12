@@ -33,14 +33,7 @@ the direct parametrization the curvature in \\\mu\\ there grows as
 \\\alpha^2\\, so a regression started from that point takes steps of
 order \\1/\alpha^2\\ and does not reach its maximum. The moment estimate
 with the skewness held at 0.9 gives \\\alpha = 6.3\\ and the matching
-location and scale. Measured on
-[`MASS::Cars93`](https://rdrr.io/pkg/MASS/man/Cars93.html), price on
-horse power (marginal skewness 1.48): the intercept-only start was at
-\\\alpha = 1.4 \times 10^6\\ and the REML criterion was unavailable at
-the starting point, and from the moment estimate the fit converged to
-the marginal log-likelihood of
-[`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
-on the same model.
+location and scale.
 
 ## See also
 

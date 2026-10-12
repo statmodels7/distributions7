@@ -4,14 +4,11 @@ Computes the first derivative of the beta log-density with respect to
 the response, in closed form: \$\$\dfrac{\partial \ell}{\partial y} =
 \dfrac{\alpha - 1}{y} - \dfrac{\beta - 1}{1 - y}.\$\$ Where both shapes
 exceed one it changes sign at the mode \\(\alpha-1)/(\alpha+\beta-2)\\,
-so it is positive below the mode and negative above it. Where a shape
-falls below one the density is unbounded at the corresponding endpoint
-and the derivative does not change sign there. At \\\alpha = \beta = 1\\
-it is identically zero, the density being the uniform.
-
-Quantile residuals and the mixed derivatives of
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-read it.
+so it is positive below the mode and negative above it. Where both
+shapes are below one it changes sign at the same point, the antimode,
+from negative to positive. Where exactly one shape is below one it has
+one sign on all of \\(0, 1)\\. At \\\alpha = \beta = 1\\ it is
+identically zero, the density being the uniform.
 
 ## Arguments
 

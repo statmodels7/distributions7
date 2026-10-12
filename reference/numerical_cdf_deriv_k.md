@@ -58,13 +58,13 @@ it is scaled per component by the parameter. It balances the \\h^2\\
 truncation against the \\\varepsilon/h^{k}\\ rounding, and it is chosen
 per observation because `theta` may vary by observation.
 
-## What it delivers
+## Accuracy
 
-Measured on a Gaussian against the closed forms that family registers,
-the relative error is \\1.5\times10^{-5}\\ at order 3 and
-\\1.3\times10^{-4}\\ at order 4. That is a long way short of the closed
-route and is the reason a family registers one where it can: the loss is
-about five digits at order 3 and about four at order 4.
+Against the closed forms of a location-scale family the stencil has a
+relative error, normwise over each component, of the order of
+\\10^{-5}\\ at order 3 and \\10^{-4}\\ at order 4. The closed forms are
+accurate to rounding error, which is why a family registers one where it
+can.
 
 ## Notation
 

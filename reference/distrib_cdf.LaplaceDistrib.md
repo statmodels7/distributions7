@@ -4,12 +4,17 @@ Computes the Laplace distribution function, which is one exponential on
 each side of the location: \$\$F(q; \mu, \sigma) = \begin{cases}
 \tfrac{1}{2}\exp\\\left(\dfrac{q-\mu}{\sigma}\right), & q \<
 \mu,\\\[4pt\] 1 - \tfrac{1}{2}\exp\\\left(-\dfrac{q-\mu}{\sigma}\right),
-& q \ge \mu. \end{cases}\$\$ The branch is selected per observation, and
-both arms are continuous at \\q = \mu\\, where the value is \\1/2\\.
-With `lower.tail = FALSE` the complement is taken after the branch, and
-with `log.p = TRUE` the logarithm of the result is taken; neither is
-computed in a way that avoids cancellation, so a probability that has
-already underflowed is not recovered.
+& q \ge \mu. \end{cases}\$\$ Both arms are continuous at \\q = \mu\\,
+where the value is \\1/2\\. The method computes the logarithm of each
+tail at the standardized residual \\r = (q-\mu)/\sigma\\: the tail on
+the far side of the location is \\\log(1/2) - \|r\|\\, and the tail on
+the near side is \\\log(1 - e^{-\|r\|}/2)\\, computed with
+[`log1p()`](https://rdrr.io/r/base/Log.html). The requested tail is
+returned on the log scale or exponentiated, so neither
+`lower.tail = FALSE` nor `log.p = TRUE` subtracts from one, and a tail
+probability far below machine epsilon, or its logarithm, is returned
+accurately. The helper is
+[`laplace_cdf_tails()`](https://statmodels7.github.io/distributions7/reference/laplace_cdf_tails.md).
 
 ## Arguments
 
@@ -31,13 +36,12 @@ already underflowed is not recovered.
 - lower.tail:
 
   Logical of length 1. When `TRUE`, the default, probabilities are \\P(Y
-  \le q)\\; when `FALSE` they are \\P(Y \> q)\\, computed as \\1 - F\\.
+  \le q)\\; when `FALSE` they are \\P(Y \> q)\\.
 
 - log.p:
 
   Logical of length 1. When `TRUE` the logarithm of the probability is
-  returned, taken after the probability itself is formed. Defaults to
-  `FALSE`.
+  returned. Defaults to `FALSE`.
 
 - ...:
 
@@ -78,4 +82,11 @@ all.equal(distrib_cdf(d, q, th),
 # Symmetric: F(mu - a) + F(mu + a) = 1.
 distrib_cdf(d, 0.4 - 2, th) + distrib_cdf(d, 0.4 + 2, th)
 #> [1] 1
+
+# Fifty scale units out, the upper tail is exp(-50)/2, and its logarithm
+# is exact as well.
+distrib_cdf(d, 0.4 + 50 * 1.5, th, lower.tail = FALSE)
+#> [1] 9.643749e-23
+distrib_cdf(d, 0.4 + 50 * 1.5, th, lower.tail = FALSE, log.p = TRUE)
+#> [1] -50.69315
 ```

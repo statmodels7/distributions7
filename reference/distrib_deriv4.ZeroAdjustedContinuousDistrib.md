@@ -7,8 +7,8 @@ constant enters and the log-likelihood is \\\log(1 - \pi) +
 parent's fourth derivatives unchanged, the pure `za` component is that
 of \\\log(1-\pi)\\, and everything mixing the two is exactly zero.
 
-No partition sum is taken here at all, so this is the cheapest of the
-six wrappers at this order.
+No partition sum is taken here, because the parameter components are the
+parent's own.
 
 ## Arguments
 

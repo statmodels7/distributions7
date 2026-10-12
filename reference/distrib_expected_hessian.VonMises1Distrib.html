@@ -29,7 +29,7 @@ independently. approx and nsim are ignored, the expectation being exact."><meta 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,8 +122,9 @@ whatever the count says. Defaults to <code>1L</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list of three numeric vectors, <code>mu_mu</code>, <code>mu_kappa</code> and
-<code>kappa_kappa</code>, each of length <code>length(y)</code> and constant along it.
+    <p>A named list of three numeric vectors, <code>mu_mu</code>, <code>kappa_kappa</code> and
+<code>mu_kappa</code>, in the order of <code><a href="hess_names.html">hess_names()</a></code>, each of length <code>length(y)</code>
+and constant along it.
 <code>mu_kappa</code> is exactly zero.</p>
     </div>
     <div class="section level2">
@@ -147,8 +148,8 @@ expectation of, <code><a href="distrib_gradient.VonMises1Distrib.html">distrib_g
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.5</span>, kappa <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">eh</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">eh</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu    mu_kappa kappa_kappa </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  -1.3955493   0.0000000  -0.1642232 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu kappa_kappa    mu_kappa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -1.3955493  -0.1642232   0.0000000 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The closed forms, written out; the off-diagonal is exactly zero, so the</span></span></span>
 <span class="r-in"><span><span class="co"># two parameters are orthogonal.</span></span></span>
@@ -162,8 +163,8 @@ expectation of, <code><a href="distrib_gradient.VonMises1Distrib.html">distrib_g
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">3e5</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">mean</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         mu_mu      mu_kappa   kappa_kappa </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -1.3964000867 -0.0006979838 -0.1642231977 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         mu_mu   kappa_kappa      mu_kappa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -1.3964000867 -0.1642231977 -0.0006979838 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The strategy argument is inert, the expectation being exact.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">eh</span>, <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">th</span>,</span></span>

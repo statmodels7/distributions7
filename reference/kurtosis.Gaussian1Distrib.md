@@ -3,9 +3,8 @@
 Exactly zero at every parameter value. The raw fourth standardized
 moment of a Gaussian is 3, and
 [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
-reports the excess over that number, so this family sits at the origin
-of the scale by construction. Every other family's excess kurtosis is
-read as a comparison with it.
+reports the excess over that number, so this family has excess kurtosis
+zero by construction.
 
 ## Arguments
 

@@ -15,7 +15,7 @@ $$\frac{\partial F}{\partial\mu} = -q\,f(q), \qquad
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,9 +101,8 @@ location-scale formulas are rewritten in the density of \(Y\) itself and
 nothing on the log scale has to be evaluated. The extra \(1/(2\sigma)\) in
 the second component is the chain rule onto the variance, this
 parametrization carrying \(\sigma^2\) rather than \(\sigma\).</p>
-<p>Only the gradient is registered; the second derivatives fall to
-<code><a href="distrib_hess_cdf.continuous_distrib.html">distrib_hess_cdf.continuous_distrib()</a></code>, which differences the cdf and
-reuses this closed gradient for its first-order part.</p>
+<p>The second derivatives are registered separately, in closed form, by
+<code><a href="distrib_hess_cdf.Lognormal1Distrib.html">distrib_hess_cdf.Lognormal1Distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -115,7 +114,7 @@ reuses this closed gradient for its first-order part.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_hess_cdf.continuous_distrib.html">distrib_hess_cdf.continuous_distrib()</a></code>, the second order;
+    <div class="dont-index"><p><code><a href="distrib_hess_cdf.Lognormal1Distrib.html">distrib_hess_cdf.Lognormal1Distrib()</a></code>, the second order;
 <code><a href="distrib_grad_cdf.Gaussian1Distrib.html">distrib_grad_cdf.Gaussian1Distrib()</a></code>, the family on the log scale;
 <code><a href="lognormal1_distrib.html">lognormal1_distrib()</a></code>.</p></div>
     </div>

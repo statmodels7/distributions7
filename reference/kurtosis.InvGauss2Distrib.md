@@ -1,4 +1,4 @@
-# Excess Kurtosis of the Inverse Gaussian Distribution in Mean and Rate
+# Excess Kurtosis of the Inverse Gaussian Distribution in Mean and Shape
 
 Closed form: \\\gamma_2 = 15\mu/\lambda\\, the excess over the Gaussian.
 Like the skewness it depends on the two parameters through their ratio
@@ -29,7 +29,7 @@ A numeric vector of excess kurtoses, of length
 
 ## Notation
 
-\\\mu \> 0\\ is the mean and \\\lambda \> 0\\ the rate.
+\\\mu \> 0\\ is the mean and \\\lambda \> 0\\ the shape.
 
 ## See also
 

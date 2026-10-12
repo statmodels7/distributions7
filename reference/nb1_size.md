@@ -8,7 +8,8 @@ the gamma functions of the mass and makes NB1 a different family from
 the quadratic-variance one.
 
 Nothing is validated; a non-positive `theta` gives an infinite or
-negative size and the caller sees the failure at the base R function.
+negative size. The methods are reached through the generics, which
+signal an error for a non-positive parameter first.
 
 ## Usage
 
@@ -34,8 +35,6 @@ A numeric vector of sizes, of the length the division produces.
 ## See also
 
 [`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)
-for the family,
-[`nb1_prob()`](https://statmodels7.github.io/distributions7/reference/nb1_prob.md)
-for the success probability that goes with it, and
+for the family, and
 [`distrib_pdf.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin1Distrib.md)
-for the mass they feed.
+for the mass it feeds.

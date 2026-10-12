@@ -4,9 +4,9 @@ Closed form. With \\r = y - \mu\\, \$\$\frac{\partial^2 \ell}{\partial
 y\\ \partial \mu} = \frac{1}{\sigma^2}, \qquad \frac{\partial^2
 \ell}{\partial y\\ \partial \sigma} = \frac{2r}{\sigma^3}.\$\$
 
-The first is constant along `y`, a quadratic log-density in a location
-parameter giving nothing else; the second changes sign with the
-residual, being zero at the mean and growing linearly away from it.
+The first component is constant in `y`, because the log-density is
+quadratic in the response and in the location. The second is zero at the
+mean and grows linearly with the residual, so it changes sign there.
 
 ## Arguments
 

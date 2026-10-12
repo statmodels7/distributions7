@@ -3,27 +3,25 @@
 parametrized by a mean direction \(\mu\) and a concentration
 \(\kappa &amp;gt; 0\), with density
 \(f(y) = e^{\kappa\cos(y-\mu)}/\{2\pi I_0(\kappa)\}\) on
-\([-\pi, \pi)\). It inherits from continuous_distrib; the nine methods
+\([-\pi, \pi)\). It inherits from continuous_distrib; the methods
 listed below are registered on it directly.
-This is the first family in the package whose support has the topology of a
-circle: the two ends of the interval are the same point, so the density need
-not vanish at either.
+The support of this family has the topology of a circle: the two ends of
+the interval are the same point, so the density need not vanish at either.
 Build one with vonmises1_distrib(), which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,
-which takes the parent's properties and validates none of the relationships
-between them."><meta property="og:description" content="The S7 class of the von Mises family, the natural distribution for an angle,
+which takes the parent's properties; the validator of distrib checks
+them, and the constructor adds no check of its own."><meta property="og:description" content="The S7 class of the von Mises family, the natural distribution for an angle,
 parametrized by a mean direction \(\mu\) and a concentration
 \(\kappa &amp;gt; 0\), with density
 \(f(y) = e^{\kappa\cos(y-\mu)}/\{2\pi I_0(\kappa)\}\) on
-\([-\pi, \pi)\). It inherits from continuous_distrib; the nine methods
+\([-\pi, \pi)\). It inherits from continuous_distrib; the methods
 listed below are registered on it directly.
-This is the first family in the package whose support has the topology of a
-circle: the two ends of the interval are the same point, so the density need
-not vanish at either.
+The support of this family has the topology of a circle: the two ends of
+the interval are the same point, so the density need not vanish at either.
 Build one with vonmises1_distrib(), which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,
-which takes the parent's properties and validates none of the relationships
-between them."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+which takes the parent's properties; the validator of distrib checks
+them, and the constructor adds no check of its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +29,7 @@ between them."><meta property="og:image" content="https://statmodels7.github.io/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,15 +66,14 @@ between them."><meta property="og:image" content="https://statmodels7.github.io/
 parametrized by a mean direction \(\mu\) and a concentration
 \(\kappa &gt; 0\), with density
 \(f(y) = e^{\kappa\cos(y-\mu)}/\{2\pi I_0(\kappa)\}\) on
-\([-\pi, \pi)\). It inherits from <code>continuous_distrib</code>; the nine methods
+\([-\pi, \pi)\). It inherits from <code>continuous_distrib</code>; the methods
 listed below are registered on it directly.</p>
-<p>This is the first family in the package whose support has the topology of a
-circle: the two ends of the interval are the same point, so the density need
-not vanish at either.</p>
+<p>The support of this family has the topology of a circle: the two ends of
+the interval are the same point, so the density need not vanish at either.</p>
 <p>Build one with <code><a href="vonmises1_distrib.html">vonmises1_distrib()</a></code>, which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,
-which takes the parent's properties and validates none of the relationships
-between them.</p>
+which takes the parent's properties; the validator of <code>distrib</code> checks
+them, and the constructor adds no check of its own.</p>
     </div>
 
     <div class="section level2">
@@ -149,22 +146,31 @@ object built by <code><a href="vonmises1_distrib.html">vonmises1_distrib()</a></
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered on this class:
-<code><a href="distrib_cdf.VonMises1Distrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_deriv3.VonMises1Distrib.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.VonMises1Distrib.html">distrib_deriv4()</a></code>,
-<code><a href="distrib_expected_hessian.VonMises1Distrib.html">distrib_expected_hessian()</a></code>,
-<code><a href="distrib_grad_y.VonMises1Distrib.html">distrib_grad_y()</a></code>,
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.VonMises1Distrib.html">distrib_pdf()</a></code>,
+<code><a href="distrib_cdf.VonMises1Distrib.html">distrib_cdf()</a></code> and
+<code><a href="distrib_rng.VonMises1Distrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.VonMises1Distrib.html">distrib_gradient()</a></code>,
-<code><a href="distrib_hess_y.VonMises1Distrib.html">distrib_hess_y()</a></code>,
 <code><a href="distrib_hessian.VonMises1Distrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_pdf.VonMises1Distrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_rng.VonMises1Distrib.html">distrib_rng()</a></code>.</p>
-<p>The <strong>quantile</strong> comes from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>, by root finding on the
-distribution function; the distribution function itself is this class's own
-and is a Bessel series, not the parent's quadrature. The four moments come
-from <code><a href="mean.distrib.html">mean.distrib()</a></code> and its siblings, numerically, and are the ordinary
-moments of \(Y\) as a number rather than the circular ones.</p>
+<code><a href="distrib_expected_hessian.VonMises1Distrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.VonMises1Distrib.html">distrib_deriv3()</a></code> and
+<code><a href="distrib_deriv4.VonMises1Distrib.html">distrib_deriv4()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_dexpected_hessian.VonMises1Distrib.html">distrib_dexpected_hessian()</a></code>
+and
+<code><a href="distrib_dexpected_hessian.VonMises1Distrib.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the derivatives in the response:
+<code><a href="distrib_grad_y.VonMises1Distrib.html">distrib_grad_y()</a></code>,
+<code><a href="distrib_hess_y.VonMises1Distrib.html">distrib_hess_y()</a></code>,
+<code><a href="register_dy_k.html">distrib_deriv3_y()</a></code> and
+<code><a href="register_dy_k.html">distrib_deriv4_y()</a></code>;</p></li>
+<li><p>the mixed derivatives in the response and the parameters:
+<code><a href="distrib_cross_y.VonMises1Distrib.html">distrib_cross_y()</a></code>;</p></li>
+<li><p>the derivatives of the distribution function: <code><a href="distrib_grad_cdf.html">distrib_grad_cdf()</a></code>,
+<code><a href="distrib_hess_cdf.html">distrib_hess_cdf()</a></code>,
+<code><a href="compiled_deriv_cdf_k.html">distrib_deriv3_cdf()</a></code> and
+<code><a href="compiled_deriv_cdf_k.html">distrib_deriv4_cdf()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

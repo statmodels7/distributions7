@@ -2,9 +2,9 @@
 
 Returns the covariance matrix of the family by delegating to
 [`mv_sigma.DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.DirichletDistrib.md).
-It is singular, the coordinates summing to one, so a caller wanting
-something to invert should take the marginals or work on the simplex's
-free vector.
+It is singular, the coordinates summing to one, so a computation that
+inverts a covariance works with the marginals or with the free vector of
+the simplex.
 
 ## Arguments
 

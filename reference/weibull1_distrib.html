@@ -4,19 +4,21 @@ scale \(\mu &amp;gt; 0\) and a shape \(\sigma &amp;gt; 0\), with density
 \(f(y) = (\sigma/\mu)(y/\mu)^{\sigma-1}\exp\{-(y/\mu)^{\sigma}\}\) on
 \(y &amp;gt; 0\). The returned object carries closed-form derivatives of the
 log-density to fourth order, observed and expected, in the parameters and in
-the response, and closed-form moments, so every generic of the toolkit
-answers without a numerical fallback.
+the response, and closed-form moments. The fifth order and
+distrib_cross3_y() come from the numerical fallbacks of the base class.
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both parameters being positive."><meta property="og:description" content="Builds the distribution object for the Weibull family parametrized by a
 scale \(\mu &amp;gt; 0\) and a shape \(\sigma &amp;gt; 0\), with density
 \(f(y) = (\sigma/\mu)(y/\mu)^{\sigma-1}\exp\{-(y/\mu)^{\sigma}\}\) on
 \(y &amp;gt; 0\). The returned object carries closed-form derivatives of the
 log-density to fourth order, observed and expected, in the parameters and in
-the response, and closed-form moments, so every generic of the toolkit
-answers without a numerical fallback.
+the response, and closed-form moments. The fifth order and
+distrib_cross3_y() come from the numerical fallbacks of the base class.
 The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both parameters being positive."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -25,7 +27,7 @@ both parameters being positive."><meta property="og:image" content="https://stat
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,10 +65,11 @@ scale \(\mu &gt; 0\) and a shape \(\sigma &gt; 0\), with density
 \(f(y) = (\sigma/\mu)(y/\mu)^{\sigma-1}\exp\{-(y/\mu)^{\sigma}\}\) on
 \(y &gt; 0\). The returned object carries closed-form derivatives of the
 log-density to fourth order, observed and expected, in the parameters and in
-the response, and closed-form moments, so every generic of the toolkit
-answers without a numerical fallback.</p>
+the response, and closed-form moments. The fifth order and
+<code><a href="distrib_cross3_y.html">distrib_cross3_y()</a></code> come from the numerical fallbacks of the base class.</p>
 <p>The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
+unconstrained scale on which an optimizer works. Both default to the
+logarithm,
 both parameters being positive.</p>
     </div>
 
@@ -108,13 +111,12 @@ $$f(y; \mu, \sigma) = \dfrac{\sigma}{\mu}
 the distribution function \(F(q) = 1 - \exp\{-(q/\mu)^{\sigma}\}\) and the
 quantile function \(Q(p) = \mu\{-\log(1-p)\}^{1/\sigma}\). This is <code>WEI</code> in
 <span class="pkg">gamlss</span>.</p>
-<p><strong>\(\mu\) is the scale and not the mean.</strong> The mean is
-\(\mu\,\Gamma(1 + 1/\sigma)\), which involves the shape, so a mean
-parametrization would make every derivative a derivative of the gamma
-function and of its inverse. The scale-shape form keeps the whole family
-elementary; <code><a href="mean.Weibull1Distrib.html">mean.Weibull1Distrib()</a></code> reports the mean, and
-<code><a href="weibull3_distrib.html">weibull3_distrib()</a></code> is the parametrization by a quantile for a reader who
-wants a location that is one.</p>
+<p>The parameter \(\mu\) is the scale. The mean is
+\(\mu\,\Gamma(1 + 1/\sigma)\) and involves the shape;
+<code><a href="mean.Weibull1Distrib.html">mean.Weibull1Distrib()</a></code> returns it. In the scale and the shape every
+derivative is elementary; <code><a href="weibull3_distrib.html">weibull3_distrib()</a></code> is the parametrization by
+the mean and the shape, in which the scale is \(m/\Gamma(1 + 1/\sigma)\)
+and the derivatives contain the gamma function and its derivatives.</p>
     </div>
     <div class="section level2">
     <h2 id="derivatives">Derivatives<a class="anchor" aria-label="anchor" href="#derivatives"></a></h2>
@@ -166,14 +168,14 @@ scale being a multiplier. The hazard \(f/(1-F)\) is
 \((\sigma/\mu)(y/\mu)^{\sigma-1}\), increasing for \(\sigma &gt; 1\) and
 decreasing for \(\sigma &lt; 1\). That monotone hazard is why the family is
 used in survival work.</p>
-<p>Two shapes are named families: \(\sigma = 1\) is the exponential with mean
-\(\mu\), and \(\sigma = 2\) the Rayleigh. Both are exact, not limiting,
-and the example checks the first.</p>
+<p>Two shapes give named families: \(\sigma = 1\) is the exponential with
+mean \(\mu\), and \(\sigma = 2\) is the Rayleigh distribution with
+scale \(\mu/\sqrt{2}\). The example checks the first.</p>
     </div>
     <div class="section level2">
     <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>
-    <p><code><a href="fit_distrib.html">fit_distrib()</a></code> maximizes the log-likelihood on the link scale. Neither
-estimate is closed form: the shape solves
+    <p><code><a href="fit_distrib.html">fit_distrib()</a></code> maximizes the log-likelihood on the link scale. The
+estimates have no closed form: the shape solves
 \(1/\hat\sigma + \overline{\log y} = \sum y_i^{\hat\sigma}\log y_i /
 \sum y_i^{\hat\sigma}\) by iteration, and the scale follows from it as
 \(\hat\mu = (n^{-1}\sum y_i^{\hat\sigma})^{1/\hat\sigma}\). The example
@@ -199,12 +201,13 @@ Generalized additive models for location, scale and shape.
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="weibull3_distrib.html">weibull3_distrib()</a></code> for the same law parametrized by a quantile;
+    <div class="dont-index"><p><code><a href="weibull3_distrib.html">weibull3_distrib()</a></code> for the same law in the mean and the shape;
 <code><a href="gumbel_distrib.html">gumbel_distrib()</a></code>, which is this family after a negative logarithm;
 <code><a href="exponential_distrib.html">exponential_distrib()</a></code> and <code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code> for the special case and
 the generalization; <code><a href="gpd_distrib.html">gpd_distrib()</a></code> for another extreme-value family;
 <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a
-family of your own against the same battery this one passes;
+family of your own against the same battery of checks that this family
+passes;
 <a href="Weibull1Distrib.html">Weibull1Distrib</a> for the class.</p></div>
     </div>
 

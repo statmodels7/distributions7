@@ -7,8 +7,8 @@ family written by its **rate** \\\lambda \> 0\\, with density
 at \\\lambda = 1/\sigma\\, and every quantity that does not involve the
 second parameter is identical between them.
 
-The rate form is the one penalized regression uses: with \\\mu = 0\\ the
-negative log-density is \\\lambda\|y\| - \log(\lambda/2)\\, so
+The rate form is the one that penalized regression uses: with \\\mu =
+0\\ the negative log-density is \\\lambda\|y\| - \log(\lambda/2)\\, so
 \\\lambda\\ is a shrinkage parameter and larger values penalize harder.
 `penalties7::lasso_penalty()` is this family with the location held at
 zero.
@@ -76,8 +76,11 @@ A second consequence is visible at the higher orders. The log-density is
 \\\log(\lambda/2) - \lambda\|r\|\\, linear in \\\lambda\\ apart from
 \\\log\lambda\\ and piecewise linear in \\\mu\\, so **every** third and
 fourth derivative except the pure-\\\lambda\\ ones is exactly zero, and
-none of them depends on the data. `expected = TRUE` therefore returns
-the same values at those orders.
+the pure-\\\lambda\\ ones do not depend on the data. Hence
+`expected = TRUE` returns the same values at those orders. The observed
+fifth order, in
+[`distrib_deriv5.Laplace2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.Laplace2Distrib.md),
+has the same structure.
 
 ## Estimation
 
@@ -90,9 +93,9 @@ reaches them by Fisher scoring, which inverts the information above.
 
 \\\ell\\ is the log-density of one observation, \\\mu\\ the location and
 \\\lambda \> 0\\ the rate, with variance \\2/\lambda^2\\. Here
-\\\lambda\\ is a distribution parameter; the same letter names a
-smoothing parameter in `penalties7` and above, and the two meet in the
-lasso, which is this family with \\\mu\\ held at zero.
+\\\lambda\\ is a distribution parameter; the same letter names the
+tuning parameter of a penalty in `penalties7`, and the two coincide in
+the lasso, which is this family with \\\mu\\ held at zero.
 
 ## References
 
@@ -108,8 +111,8 @@ Tibshirani, R. (1996). Regression shrinkage and selection via the lasso.
 [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
 for the scale parametrization;
 [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md),
-which mixes this family with a Gaussian and contains it as the
-pure-\\\ell_1\\ case;
+which mixes this family with a Gaussian and tends to it as its mixing
+weight \\\alpha\\ tends to 1;
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md),
 which holds the location at zero to produce a prior;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)

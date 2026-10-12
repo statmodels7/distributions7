@@ -17,7 +17,7 @@ addition itself."><meta property="og:image" content="https://statmodels7.github.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,7 @@ no method of its own.</p></dd>
 
 <dt id="arg-q">q<a class="anchor" aria-label="anchor" href="#arg-q"></a></dt>
 <dd><p>A numeric vector of quantiles; a non-integer is floored, as a
-distribution function on a lattice requires.</p></dd>
+distribution function of a discrete variable requires.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -78,13 +78,13 @@ distribution function on a lattice requires.</p></dd>
 
 
 <dt id="arg-lower-tail">lower.tail<a class="anchor" aria-label="anchor" href="#arg-lower-tail"></a></dt>
-<dd><p>Logical of length 1. <code>TRUE</code>, the default, returns
-\(P(Y \le q)\); <code>FALSE</code> returns the complement.</p></dd>
+<dd><p>Logical of length 1. <code>TRUE</code>, the default, returns \(P(Y
+\le q)\); <code>FALSE</code> returns \(P(Y &gt; q)\).</p></dd>
 
 
 <dt id="arg-log-p">log.p<a class="anchor" aria-label="anchor" href="#arg-log-p"></a></dt>
-<dd><p>Logical of length 1. <code>TRUE</code> returns the logarithm, taken after
-the summation.</p></dd>
+<dd><p>Logical of length 1. <code>TRUE</code> returns the logarithm of the
+probability.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -98,16 +98,21 @@ recycled <code>q</code> and <code>theta</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The cumulative table is built once per distinct parameter setting by
-<code><a href="disc_cum_table.html">disc_cum_table()</a></code> and every quantile sharing that setting is read from it,
-so a vector of quantiles costs one table between them. A support unbounded
-above is extended until the remaining mass falls below what the request
-needs.</p>
+    <p>The cumulative table is built by <code><a href="disc_cum_table.html">disc_cum_table()</a></code> and rebuilt whenever the
+parameter setting of a row differs from that of the row before, so a vector
+of quantiles at one setting costs one table. A support unbounded above is
+extended, by doubling, until the table reaches the largest requested support
+point. With <code>lower.tail = FALSE</code> the upper tail \(P(Y &gt; q)\) is \(1 -
+F(q)\) where \(F(q) \le 1/2\); past the median it is read from
+<code><a href="disc_upper_table.html">disc_upper_table()</a></code>, which sums the mass above \(q\) from the top of its
+table, so a tail probability far below machine epsilon keeps its relative
+accuracy. A missing <code>q</code> gives <code>NA</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="disc_cum_table.html">disc_cum_table()</a></code>, which builds the table;
-<code><a href="distrib_quantile.discrete_distrib.html">distrib_quantile.discrete_distrib()</a></code>, which inverts it;
+    <div class="dont-index"><p><code><a href="disc_cum_table.html">disc_cum_table()</a></code>, which builds the table; <code><a href="disc_upper_table.html">disc_upper_table()</a></code>,
+the table of the upper tail; <code><a href="distrib_quantile.discrete_distrib.html">distrib_quantile.discrete_distrib()</a></code>, which
+inverts it;
 <code><a href="distrib_cdf.continuous_distrib.html">distrib_cdf.continuous_distrib()</a></code>, where the same question needs a
 quadrature; <code><a href="distrib_cdf.html">distrib_cdf()</a></code> for the generic.</p></div>
     </div>

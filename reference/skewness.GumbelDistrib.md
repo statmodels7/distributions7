@@ -1,10 +1,9 @@
 # Skewness of the Gumbel Distribution
 
 Constant: \\\gamma_1 = 12\sqrt6\\\zeta(3)/\pi^3 \approx 1.1395\\, with
-\\\zeta(3)\\ Apery's constant. The Gumbel is location-scale with no
-shape parameter, so its standardized moments are numbers and not
-functions: every Gumbel has this same right skew, whatever its location
-and scale.
+\\\zeta(3)\\ Apery's constant. The Gumbel is a location-scale family
+with no shape parameter, so its standardized moments are constants:
+every Gumbel has this same right skew, whatever its location and scale.
 
 ## Arguments
 
@@ -29,9 +28,8 @@ A numeric vector, every element \\12\sqrt6\\\zeta(3)/\pi^3\\, of length
 
 ## Details
 
-\\\zeta(3) = 1.2020569031595942854\\ is written out in the body. Base R
-has no function that returns it, and one number does not justify a
-dependency.
+\\\zeta(3) = 1.2020569031595942854\\ is written out in the body, since
+base R has no function that returns it.
 
 ## Notation
 

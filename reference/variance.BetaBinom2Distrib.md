@@ -1,11 +1,12 @@
 # Variance of the Beta-Binomial Distribution in Two Shapes
 
-The second central moment, assembled from the falling factorial moments
-by
-[`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md)
-at \\\mu = \alpha/(\alpha+\beta)\\ and \\\sigma = 1/(\alpha+\beta)\\. It
-exceeds the binomial variance at the same mean, and the excess grows as
-the two shapes shrink. That excess is the family's reason for being.
+Closed form: \\\operatorname{Var}(Y) = n\mu(1-\mu)(1 + n\sigma)/(1 +
+\sigma)\\ at \\\mu = \alpha/(\alpha+\beta)\\ and \\\sigma =
+1/(\alpha+\beta)\\, computed by
+[`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md).
+For \\n \> 1\\ it exceeds the binomial variance at the same mean, and
+the excess grows as the two shapes shrink; for \\n = 1\\ it is the
+Bernoulli variance.
 
 ## Arguments
 
@@ -18,8 +19,9 @@ the two shapes shrink. That excess is the family's reason for being.
 - theta:
 
   A named list with components `alpha` and `beta`, both positive, each a
-  numeric vector of length 1 or `n`. Large shapes concentrate the mixing
-  beta and take the family towards a binomial.
+  numeric vector of length 1 or of the common length of the parameter
+  settings. Large shapes concentrate the mixing beta and take the family
+  towards a binomial.
 
 - ...:
 
@@ -40,7 +42,7 @@ A numeric vector of variances, of length
 [`mean.BetaBinom2Distrib()`](https://statmodels7.github.io/distributions7/reference/mean.BetaBinom2Distrib.md),
 [`skewness.BetaBinom2Distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.BetaBinom2Distrib.md);
 [`variance.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.BetaBinom1Distrib.md);
-[`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md);
+[`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md);
 [`betabinom2_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom2_distrib.md).
 
 ## Examples

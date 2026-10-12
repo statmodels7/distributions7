@@ -25,7 +25,7 @@ $$\frac{\partial \ell}{\partial \zeta}
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,8 +88,9 @@ $$\frac{\partial \ell}{\partial \zeta}
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, handled by the
-generic before dispatch. <code>zi</code> rides a logit by default, so the two differ.</p></dd>
+<dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>. The generic
+applies the link scale to the value that the method returns. <code>zi</code> rides a
+logit by default, so the two differ.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -150,8 +151,8 @@ Hessian and \(\ell\) the log-mass of one observation.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              theory </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -1.333333 -1.333333 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># And the parent's component is zero at a zero only in the limit: it is</span></span></span>
-<span class="r-in"><span><span class="co"># the parent's score there, weighted down by w.</span></span></span>
+<span class="r-in"><span><span class="co"># At a zero, the parent's component is the parent's score there, weighted</span></span></span>
+<span class="r-in"><span><span class="co"># down by w.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>weighted <span class="op">=</span> <span class="va">g</span><span class="op">$</span><span class="va">mu</span><span class="op">[</span><span class="va">y</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, unweighted <span class="op">=</span> <span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   weighted unweighted </span>

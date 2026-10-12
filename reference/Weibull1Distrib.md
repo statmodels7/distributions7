@@ -3,15 +3,17 @@
 The S7 class of the Weibull family parametrized by a scale \\\mu \> 0\\
 and a shape \\\sigma \> 0\\, with density \\f(y) =
 (\sigma/\mu)(y/\mu)^{\sigma-1}\exp\\-(y/\mu)^{\sigma}\\\\ on the
-positive half line. It inherits from `continuous_distrib`, so it answers
-every generic of the `distrib` contract; the methods listed below are
-registered on it directly and everything else comes from the parent.
+positive half line. It inherits from `continuous_distrib`, so every
+generic of the `distrib` class applies to it; the methods listed below
+are registered on it directly and everything else comes from the parent.
 
 Build one with
 [`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md),
 which supplies the two link functions and fills the properties in. This
 page documents the raw S7 constructor, which takes the parent's
-properties and validates none of the relationships between them.
+properties; the validator of `distrib` checks that they are consistent
+(the parameter count, a bound and a link for every parameter, ordered
+support bounds).
 
 ## Usage
 
@@ -96,32 +98,57 @@ the interpretations `c(mu = "scale", sigma = "shape")`, `2`, the domain
 
 ## Methods
 
-Registered on this class in this file:
-[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Weibull1Distrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Weibull1Distrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Weibull1Distrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Weibull1Distrib.md),
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Weibull1Distrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Weibull1Distrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Weibull1Distrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Weibull1Distrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Weibull1Distrib.md),
-[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Weibull1Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Weibull1Distrib.md).
+Registered on this class, each linked to the page that documents it:
 
-Four more are registered on the class from other files:
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Weibull1Distrib.md)
-in `cross_derivatives_families.R`,
-[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull1Distrib.md)
-in `cdf_survival_higher.R`, and the four moments
-[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.Weibull1Distrib.md),
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.Weibull1Distrib.md),
-[`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.Weibull1Distrib.md)
-and
-[`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.Weibull1Distrib.md)
-in `moments.R`.
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Weibull1Distrib.md),
+  [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Weibull1Distrib.md),
+  [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Weibull1Distrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Weibull1Distrib.md);
 
-Everything else is inherited from
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Weibull1Distrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Weibull1Distrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Weibull1Distrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Weibull1Distrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Weibull1Distrib.md);
+
+- the derivatives of the expected information:
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  and
+  [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Weibull1Distrib.md),
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Weibull1Distrib.md),
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md)
+  and
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Weibull1Distrib.md),
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/scale_only_cross2_method.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/scale_only_theta2_methods.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/scale_only_theta2_methods.md);
+
+- the derivatives of the distribution function:
+  [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull1Distrib.md),
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull1Distrib.md),
+  [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull1Distrib.md)
+  and
+  [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull1Distrib.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.Weibull1Distrib.md),
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.Weibull1Distrib.md),
+  [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.Weibull1Distrib.md)
+  and
+  [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.Weibull1Distrib.md).
+
+Every other generic is inherited from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
@@ -129,13 +156,13 @@ Everything else is inherited from
 [`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md)
 to build one;
 [`weibull3_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull3_distrib.md)
-for the same law parametrized by a quantile;
+for the same law in the mean and the shape;
 [`gumbel_distrib()`](https://statmodels7.github.io/distributions7/reference/gumbel_distrib.md),
 which is this family on a negative log scale;
 [`distrib_pdf.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Weibull1Distrib.md)
 and
 [`distrib_gradient.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Weibull1Distrib.md)
-for the closed forms it supplies.
+for the closed forms of this class.
 
 ## Examples
 

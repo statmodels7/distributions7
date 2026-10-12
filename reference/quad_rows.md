@@ -16,7 +16,7 @@ quad_rows(integrand, lower, upper)
 
 - integrand:
 
-  The integrand, in `quad_vec`'s matrix contract.
+  The integrand, in the matrix convention of `quad_vec`.
 
 - lower, upper:
 

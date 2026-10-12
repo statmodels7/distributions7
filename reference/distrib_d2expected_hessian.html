@@ -9,7 +9,7 @@ one component per pair \((a,b)\) and per pair \((c,d)\)."><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,18 +102,17 @@ $$\frac{\partial^2}{\partial\theta_c\,\partial\theta_d}\mathbb{E}[\ell_{ab}]
   = \mathbb{E}[\ell_{abcd}] + \mathbb{E}[\ell_{abd}\ell_{c}]
   + \mathbb{E}[\ell_{abc}\ell_{d}] + \mathbb{E}[\ell_{ab}\ell_{cd}]
   + \mathbb{E}[\ell_{ab}\ell_{c}\ell_{d}],$$
-and no Bartlett identity isolates those moments. A family supplies the
+and the Bartlett identities do not isolate those moments. A family supplies the
 components as ordinary derivatives of its own written-out expected
 information; the components are symmetric in \((a,b)\) and in \((c,d)\)
 separately, and are keyed by <code><a href="d2expected_names.html">d2expected_names()</a></code>.</p>
 <p><strong>There is no numerical default.</strong> A difference of
 <code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code>, whose own default is already a difference,
-would be the nested differencing the package forbids, so the base method
-signals an error and a family that does not register one has no second
-derivative. The families that do are <code><a href="gaussian1_distrib.html">gaussian1_distrib()</a></code>,
-<code><a href="poisson_distrib.html">poisson_distrib()</a></code>, <code><a href="gamma1_distrib.html">gamma1_distrib()</a></code>, <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code>,
-<code><a href="beta1_distrib.html">beta1_distrib()</a></code> and the seventeen listed on
-<a href="distrib_dexpected_hessian.elementary.html">distrib_dexpected_hessian.elementary</a>, each from a compiled kernel.</p>
+would be the nested differencing that the package does not use, so the base
+method signals an error and a family that does not register one has no
+second derivative. Every univariate family of the package except
+<code><a href="enet_distrib.html">enet_distrib()</a></code> registers one; the elementary families are listed on
+<a href="distrib_dexpected_hessian.elementary.html">distrib_dexpected_hessian.elementary</a>.</p>
 <p>On <code>scale = "link"</code> the expected information is
 \(F_{ab} = \mathbb{E}[\ell_{ab}]\,h_a' h_b'\), with no term in \(h''\)
 because \(\mathbb{E}[\ell_a] = 0\), and its derivatives follow by

@@ -2,8 +2,7 @@
 
 Returns the exact third derivatives of the log-mass in \\(\mu,
 \sigma)\\, read off columns `d30`, `d21`, `d12` and `d03` of the
-compiled fourth-order kernel of `pig1_deriv3_cpp`. The kernel computes
-this order alone, so this order costs no more than the score does.
+compiled kernel `pig1_deriv3_cpp`, which computes the third order alone.
 
 With `expected = TRUE` the value is an expectation instead, and there it
 is **not** closed form: the call routes to
@@ -19,8 +18,8 @@ so `approx` and `nsim` are read.
 
 - y:
 
-  A numeric vector of counts. With `expected = TRUE` its values are the
-  support points the expectation is summed over.
+  A numeric vector of counts. With `expected = TRUE` only its length is
+  used, and the expectation is summed over the whole support.
 
 - theta:
 

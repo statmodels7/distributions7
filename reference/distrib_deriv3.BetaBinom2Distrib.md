@@ -5,7 +5,13 @@ log-mass in the two shapes, in closed form. The log-mass is a sum of
 log-gamma terms, so the third derivative is the same sum with
 \\\psi_2\\, the second polygamma, in place of \\\log\Gamma\\. A
 component naming both shapes keeps only the terms in \\\alpha+\beta\\
-and is free of the data.
+and is free of the data. Where \\\alpha+\beta \> 10\\ the polygamma
+differences cancel as the shapes grow, and the components are computed
+instead from the direct sums over the integer shifts,
+\\c_K\[\sum\_{i\<y}(\alpha+i)^{-K} -
+\sum\_{i\<n}(\alpha+\beta+i)^{-K}\]\\ for the pure component in
+\\\alpha\\ with \\c_K = (-1)^{K-1}(K-1)!\\, whose terms have one sign
+([`betabinom_direct()`](https://statmodels7.github.io/distributions7/reference/betabinom_direct.md)).
 
 With `expected = TRUE` the expectation is an **exact finite sum** over
 the support, so `approx` and `nsim` are ignored on both branches.

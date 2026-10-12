@@ -21,7 +21,7 @@ well as more."><meta property="og:image" content="https://statmodels7.github.io/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -147,17 +147,25 @@ the raw S7 constructor, which checks neither.</p>
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered on this class:
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution:
+<code><a href="distrib_pdf.ZeroAdjustedDiscreteDistrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_cdf.ZeroAdjustedDiscreteDistrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_expected_hessian.ZeroAdjustedDiscreteDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_quantile.ZeroAdjustedDiscreteDistrib.html">distrib_quantile()</a></code> and
+<code><a href="distrib_rng.ZeroAdjustedDiscreteDistrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.ZeroAdjustedDiscreteDistrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.ZeroAdjustedDiscreteDistrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_pdf.ZeroAdjustedDiscreteDistrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_quantile.ZeroAdjustedDiscreteDistrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.ZeroAdjustedDiscreteDistrib.html">distrib_rng()</a></code></p>
-<p>The third and fourth derivatives come from the shared wrapper machinery in
-<code>wrapper_derivatives.R</code>; everything else is inherited from
-<code><a href="discrete_distrib.html">discrete_distrib()</a></code>.</p>
+<code><a href="distrib_expected_hessian.ZeroAdjustedDiscreteDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.ZeroAdjustedDiscreteDistrib.html">distrib_deriv3()</a></code>,
+<code><a href="distrib_deriv4.ZeroAdjustedDiscreteDistrib.html">distrib_deriv4()</a></code> and
+<code><a href="distrib_deriv5.wrappers.html">distrib_deriv5()</a></code>;</p></li>
+<li><p>the derivatives of the expected information: <code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code>
+and <code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the exactness flags: <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> and <code><a href="has_exact_deriv4.html">has_exact_deriv4()</a></code>;</p></li>
+<li><p>the fitting helpers:
+<code><a href="distrib_start.zero_wrappers.html">distrib_start()</a></code> and
+<code><a href="distrib_scalar_route.html">distrib_scalar_route()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="discrete_distrib.html">discrete_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

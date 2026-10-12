@@ -22,7 +22,7 @@ surviving cases off the gaussian's algebra. Writing \\r = y - \mu\\ and
 ## Usage
 
 ``` r
-mvg_higher(distrib, y, theta, order)
+mvg_higher(distrib, y, theta, order, expected = FALSE)
 ```
 
 ## Arguments
@@ -45,9 +45,12 @@ mvg_higher(distrib, y, theta, order)
 
 - order:
 
-  Either `3L` or `4L`. No other value is accepted: the log-determinant
-  derivative is chosen by `switch(order - 2L, ...)`, which returns
-  `NULL` outside that range and fails at the call.
+  The derivative order, `3L` or `4L`.
+
+- expected:
+
+  Logical of length 1. When `TRUE` the expectation of each component is
+  returned. Defaults to `FALSE`.
 
 ## Value
 
@@ -61,10 +64,10 @@ two-dimensional gaussian on an unstructured covariance.
 The log-determinant derivatives come from
 [`parameters7::param_d3logdet()`](https://statmodels7.github.io/parameters7/reference/param_d3logdet.html)
 and `param_d4logdet()`, and the precision arrays from
-[`mvg_ptensors()`](https://statmodels7.github.io/distributions7/reference/mvg_ptensors.md),
-so nothing here is a transcription of an expanded formula. The only case
-that costs anything is the pure-matrix one, and even that is a quadratic
-form per observation once the array is in hand.
+[`mvg_ptensors()`](https://statmodels7.github.io/distributions7/reference/mvg_ptensors.md).
+With `expected = TRUE` the response enters through \\r\\ and \\r^\top
+P_t r\\, whose expectations are 0 and \\\operatorname{tr}(P_t\Sigma)\\,
+so the expectation is exact.
 
 ## Notation
 

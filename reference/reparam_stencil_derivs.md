@@ -40,12 +40,14 @@ describes.
 
 ## Details
 
-The accuracy is about \\10^{-8}\\ at first order and fades with the
-order, which is why a family fitted in earnest supplies `map_derivs`
-instead. What the fallback buys is that a user's own reparametrization
-works immediately, with no derivatives written: the same bargain
+The accuracy is of the order of \\10^{-11}\\ at first order and falls
+quickly with the order (see
+[`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)),
+which is why a family fitted in earnest supplies `map_derivs` instead.
+What the fallback buys is that a user's own reparametrization works
+immediately, with no derivatives written, as
 [`distrib_grad_y.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.continuous_distrib.md)
-offers a density-only family.
+does for a density-only family.
 
 ## See also
 

@@ -56,13 +56,14 @@ strategy returns the same three numbers.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
 A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
-`mu_sigma`, each of length `length(y)` and each constant along it.
+`mu_sigma`, each of length `max(length(y), length(mu), length(sigma))`
+and constant when `mu` and `sigma` have length 1.
 
 ## Why the expectations are gamma derivatives
 
@@ -87,7 +88,7 @@ rests on the same three moments.
 ## See also
 
 [`distrib_hessian.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Weibull1Distrib.md)
-for the quantity this is the expectation of,
+for the observed Hessian, of which this is the expectation,
 [`distrib_gradient.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Weibull1Distrib.md)
 for the score, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)

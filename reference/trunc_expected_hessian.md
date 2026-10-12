@@ -2,10 +2,11 @@
 
 Computes \$\$\mathbb{E}\left\[\frac{\partial^2 \ell_T}{\partial\theta_i
 \partial\theta_j}\right\] = -\mathrm{Cov}\_T(s_i, s_j),\$\$ the second
-Bartlett identity under the truncated law: the parent's expected Hessian
-cancels exactly against the term it contributes to the second derivative
-of \\\log Z\\. One of the shared bodies, registered on both truncated
-classes.
+Bartlett identity under the truncated law. The truncated-law mean of the
+parent's Hessian, \\\mathbb{E}\_T\[H\_{ij}\]\\, cancels against the same
+quantity in \\M\_{ij}\\, which enters the second derivative of \\\log
+Z\\, and \\-\mathrm{Cov}\_T(s_i, s_j)\\ remains. One of the shared
+bodies, registered on both truncated classes.
 
 ## Usage
 
@@ -37,8 +38,8 @@ trunc_expected_hessian(
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, applied by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The generic applies
+  the link scale to the value that the method returns.
 
 - approx:
 
@@ -56,20 +57,24 @@ trunc_expected_hessian(
 
 A named list of numeric vectors of length `length(y)`, one component per
 unordered pair of parameters, keyed as
-[`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each vector constant.
+[`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md);
+each vector is constant for scalar parameters.
 
 ## Details
 
-This needs one quadrature per component even where the parent has exact
-cdf derivatives. Those give \\d\_{ij} Z\\, which is
-\\\mathbb{E}\_T\[H\_{ij}\] + \mathbb{E}\_T\[s_i s_j\]\\, and the
-covariance needs the second term on its own.
+For a parent without a scalar route this needs one quadrature per
+component even where the parent has exact cdf derivatives. Those give
+\\d\_{ij} Z / Z\\, which is \\\mathbb{E}\_T\[H\_{ij}\] +
+\mathbb{E}\_T\[s_i s_j\]\\, and the covariance needs the second term on
+its own. For a parent with a scalar route the sums come from
+[`trunc_route_parts()`](https://statmodels7.github.io/distributions7/reference/trunc_route_parts.md).
 
-No component depends on the data, so every returned vector is constant.
-`approx` and `nsim` are accepted so that the signature matches the
-generic's, and neither is read: the identity above is exact, and what it
-rests on is computed by quadrature whatever `approx` says.
+The components do not depend on the data, so for a single parameter
+vector every returned vector is constant; if a parameter varies by
+observation, the components vary with it. `approx` and `nsim` are
+accepted so that the signature matches the generic's, and neither is
+read: the identity above is exact, and what it rests on is computed by
+quadrature whatever `approx` says.
 
 ## Notation
 

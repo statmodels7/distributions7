@@ -1,7 +1,7 @@
 # Describe a Trial Parameter Value
 
-Renders the point a map was probed at as `(a = 1, b = 2)`, so that a
-failure in
+Renders the point at which a map was probed as `(a = 1, b = 2)`, so that
+a failure in
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)'s
 construction check names the point instead of leaving the caller to
 guess it.

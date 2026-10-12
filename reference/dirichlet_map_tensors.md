@@ -3,7 +3,7 @@
 Collects \\\partial^{S}\alpha\\ for every multiset \\S\\ over the
 Dirichlet's composite index set, the simplex's free values followed by
 the concentration. The shape vector \\\alpha = \phi\\\mu(\eta)\\ is
-BILINEAR in the concentration and the mean, so the whole array follows
+bilinear in the concentration and the mean, so the whole array follows
 from
 [`simplex_map_tensors()`](https://statmodels7.github.io/distributions7/reference/simplex_map_tensors.md)
 by three cases: \\\phi\\\partial^{S}\mu\\ when \\S\\ names no \\\phi\\,
@@ -39,7 +39,7 @@ dirichlet_map_tensors(s, eta, phi, order)
 ## Value
 
 A named list of numeric vectors over the coordinates, keyed by sorted
-tuple over the composite index set with \\\phi\\ LAST, so at
+tuple over the composite index set with \\\phi\\ last, so at
 `s@n_free = 2` the concentration is index 3 and the key `"3,3"` holds a
 vector of zeros.
 

@@ -9,7 +9,7 @@ of orders one to five, each from its own compiled kernel."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,8 +64,9 @@ of orders one to five, each from its own compiled kernel.</p>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p><code>"parameter"</code> or <code>"link"</code>; the link scale is applied by the
-generic (by <code><a href="deriv5_scale.html">deriv5_scale()</a></code> at the fifth order).</p></dd>
+<dd><p><code>"parameter"</code> or <code>"link"</code>. At orders one to four the generic
+applies the link scale after dispatch; the fifth-order method applies it
+itself, through <code><a href="deriv5_scale.html">deriv5_scale()</a></code>.</p></dd>
 
 
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
@@ -96,7 +97,7 @@ and 21 components at orders one to five.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>With \(w = (y - \mu)/\sigma\), \(c = (4 - \pi)/2\) and
 \(r = \mathrm{sign}(\gamma_1)(|\gamma_1|/c)^{1/3}\), the log-density is
-$$\ell = -\log\sigma - \tfrac12\log(1 + r^2) - \tfrac12 z^2 + \log\Phi(x),
+$$\ell = \tfrac12\log\frac{2}{\pi} - \log\sigma - \tfrac12\log(1 + r^2) - \tfrac12 z^2 + \log\Phi(x),
   \quad z = \frac{w + r}{\sqrt{1 + r^2}}, \quad
   x = \frac{r\,z}{\sqrt{b^2 - (1 - b^2) r^2}},$$
 with \(b = \sqrt{2/\pi}\), and a derivative in \(\gamma_1\) is
@@ -107,7 +108,15 @@ derived offline. Their closed forms in \(x\), \(w\), \(r\) and
 \(\gamma_1 \to 0\), so where \(|x| &lt; 0.4\) and \(|r| &lt; 0.4\) the
 kernels take the derivatives in \(\gamma_1\) from the series
 \(F = \sum_{n \ge 3} F_n(w) r^n\), whose coefficients are polynomials in
-\(w\) computed offline at 60 digits.</p>
+\(w\) computed offline at 60 digits. Far below the step of the skewing
+function, where \(x &lt; -1\) and outside the region of the series, the
+closed forms in \(\phi(x)/\Phi(x)\) cancel as well, and the kernels
+compose the derivatives instead: those of \(1/\sqrt{b^2 - (1-b^2)r^2}\),
+\((1+r^2)^{-1/2}\) and \(\log(1+r^2)\) by Faa di Bruno in \(r\), then
+in \(\gamma_1\) through \(r(\gamma_1)\), and the outer functions
+\(-u^2/2\) and \(\log\Phi\) with \(z\) and \(x\), which are linear
+in \(w\); the derivatives of \(\log\Phi\) come from the cumulant route
+of <code><a href="distrib_deriv3.SkewNormal1Distrib.html">distrib_deriv3.SkewNormal1Distrib()</a></code>, which does not cancel there.</p>
 <p>The series has no \(r\) and no \(r^2\) term, so the score is finite at
 \(\gamma_1 = 0\); its \(r^4\) and \(r^5\) terms do not vanish, so the
 derivatives of order two or more in \(\gamma_1\) diverge there and the

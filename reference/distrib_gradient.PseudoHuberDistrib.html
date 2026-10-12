@@ -9,11 +9,11 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{\sigma^2 D}, \qquad
 $$\dfrac{\partial \ell}{\partial \nu} = -\dfrac{1}{2}\left[
   \dfrac{1}{\nu} + \dfrac{1}{D}
   + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\, K_1(\sqrt{\nu})}\right].$$
-The location component redescends: it grows like \(r/\sigma^2\) near
-the location and tends to \(\pm 1/\sigma\) far from it, so a gross outlier
-contributes a bounded amount to the estimating equation. That bounded
-influence is the whole reason the pseudo-Huber loss exists, and here it is
-the score of a genuine likelihood.
+The location component is bounded: it grows like
+\(r/(\sigma^2\sqrt{\nu})\) near the location and tends to
+\(\pm 1/\sigma\) far from it, so a gross outlier contributes a bounded
+amount to the estimating equation. Unlike the score of a Student t, it does
+not return to zero.
 With scale = &quot;link&quot; the generic applies the chain rule for the links the
 family carries. This method always returns the parameter scale. The
 arithmetic runs in a compiled kernel; the Bessel ratio enters only the
@@ -27,11 +27,11 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{\sigma^2 D}, \qquad
 $$\dfrac{\partial \ell}{\partial \nu} = -\dfrac{1}{2}\left[
   \dfrac{1}{\nu} + \dfrac{1}{D}
   + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\, K_1(\sqrt{\nu})}\right].$$
-The location component redescends: it grows like \(r/\sigma^2\) near
-the location and tends to \(\pm 1/\sigma\) far from it, so a gross outlier
-contributes a bounded amount to the estimating equation. That bounded
-influence is the whole reason the pseudo-Huber loss exists, and here it is
-the score of a genuine likelihood.
+The location component is bounded: it grows like
+\(r/(\sigma^2\sqrt{\nu})\) near the location and tends to
+\(\pm 1/\sigma\) far from it, so a gross outlier contributes a bounded
+amount to the estimating equation. Unlike the score of a Student t, it does
+not return to zero.
 With scale = &quot;link&quot; the generic applies the chain rule for the links the
 family carries. This method always returns the parameter scale. The
 arithmetic runs in a compiled kernel; the Bessel ratio enters only the
@@ -43,7 +43,7 @@ arithmetic runs in a compiled kernel; the Bessel ratio enters only the
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,11 +86,11 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{\sigma^2 D}, \qquad
 $$\dfrac{\partial \ell}{\partial \nu} = -\dfrac{1}{2}\left[
   \dfrac{1}{\nu} + \dfrac{1}{D}
   + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\, K_1(\sqrt{\nu})}\right].$$</p>
-<p>The location component <strong>redescends</strong>: it grows like \(r/\sigma^2\) near
-the location and tends to \(\pm 1/\sigma\) far from it, so a gross outlier
-contributes a bounded amount to the estimating equation. That bounded
-influence is the whole reason the pseudo-Huber loss exists, and here it is
-the score of a genuine likelihood.</p>
+<p>The location component is bounded: it grows like
+\(r/(\sigma^2\sqrt{\nu})\) near the location and tends to
+\(\pm 1/\sigma\) far from it, so a gross outlier contributes a bounded
+amount to the estimating equation. Unlike the score of a Student t, it does
+not return to zero.</p>
 <p>With <code>scale = "link"</code> the generic applies the chain rule for the links the
 family carries. This method always returns the parameter scale. The
 arithmetic runs in a compiled kernel; the Bessel ratio enters only the

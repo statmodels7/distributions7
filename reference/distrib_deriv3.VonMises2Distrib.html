@@ -35,7 +35,7 @@ the one place on this page where approx and nsim are read."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,9 +107,7 @@ vector of length 1 or of the length of <code>y</code>. <code>rho</code> must lie
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method. <strong>Note the
-argument order</strong>: <code>scale</code> precedes <code>expected</code> here, so both are best given
-by name.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
 
 
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
@@ -176,8 +174,8 @@ concentration and \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\).</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="op">(</span><span class="va">up</span> <span class="op">-</span> <span class="va">dn</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">eps</span><span class="op">)</span>, <span class="va">d3</span><span class="op">$</span><span class="va">rho_rho_rho</span>, tolerance <span class="op">=</span> <span class="fl">1e-5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Unlike the concentration parametrization, no component is exactly zero:</span></span></span>
-<span class="r-in"><span><span class="co"># the map's higher derivatives bring the data into all four.</span></span></span>
+<span class="r-in"><span><span class="co"># Unlike the concentration parametrization, no component is exactly zero,</span></span></span>
+<span class="r-in"><span><span class="co"># because kappa is a nonlinear function of rho.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">d3</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     mu_mu_mu    mu_mu_rho   mu_rho_rho  rho_rho_rho </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2.0085836   -0.4356578  -31.5311208 -267.6200994 </span>

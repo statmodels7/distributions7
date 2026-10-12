@@ -1,12 +1,13 @@
 # Recycle a Single Point Against Parameters That Vary by Observation
 
-Returns `x` repeated to the common length of the parameters when `x` has
-length one and some parameter is longer, and `x` unchanged otherwise.
+Checks that `x` and the parameters are conformable and returns `x`
+repeated to the common length when it has length one and some parameter
+is longer.
 
 ## Usage
 
 ``` r
-recycle_point(distrib, x, theta)
+recycle_point(distrib, x, theta, arg = "y")
 ```
 
 ## Arguments
@@ -23,6 +24,11 @@ recycle_point(distrib, x, theta)
 
   The aligned parameter list.
 
+- arg:
+
+  The name of `x` in the calling generic, used in the error message.
+  Defaults to `"y"`.
+
 ## Value
 
 A numeric vector.
@@ -33,28 +39,19 @@ A numeric vector.
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
 and
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md)
-call it before dispatch, as
-[`check_derivative_args()`](https://statmodels7.github.io/distributions7/reference/check_derivative_args.md)
-recycles the response for the derivative generics. A compiled kernel
-sizes its output by the length of the response, so without it a single
-point evaluated at parameters of length \\n\\ returned ONE value, read
-at the first observation's parameters. Measured on eight families –
-[`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md),
-[`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md),
-[`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md),
-[`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md),
-[`betabinom2_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom2_distrib.md),
-[`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md),
-[`gengamma2_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma2_distrib.md)
-and
-[`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md)
-– and reachable wherever a wrapper evaluates its parent at a fixed
-point:
+call it before dispatch, as the derivative generics call
+[`check_derivative_args()`](https://statmodels7.github.io/distributions7/reference/check_derivative_args.md),
+and the rule is the same: with \\n\\ the largest of the lengths of `x`
+and of the parameters, every parameter must have length 1 or \\n\\ and
+`x` must have length 1 or \\n\\; otherwise the function signals an
+error. A compiled kernel sizes its output by the length of the response,
+so a single point evaluated at parameters of length \\n\\ has to be
+repeated \\n\\ times to give one value per observation. This matters
+wherever a wrapper evaluates its parent at a fixed point, as
 [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
-reads \\f(0)\\ that way, and with parameters varying by observation its
-derivatives were out by a relative 0.5 to 38 on those parents while its
-density, evaluated at the full response, was right. A multivariate
-response is a matrix and is left alone.
+does for \\f(0)\\. An empty `x` with parameters of length at most one is
+returned as it is. A multivariate response is a matrix and is left
+alone.
 
 ## See also
 

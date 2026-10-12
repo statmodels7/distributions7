@@ -9,7 +9,7 @@ giving the component belonging to any block."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,9 +81,9 @@ giving the component belonging to any block.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The orders are fetched once per call rather than once per block. A partition
-sum at fourth order asks for the same handful of components repeatedly, and
-the parent's derivative may itself be expensive.</p>
+    <p>The orders are fetched once per call and not once per block. A partition sum
+at fourth order reads the same handful of components repeatedly, and the
+parent's derivative may be expensive to evaluate.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -23,7 +23,8 @@ difference, so that \\\partial_y\partial\_\theta\ell =
 
 - scale:
 
-  Handled by the generic before dispatch.
+  Handled by the generic after dispatch; this method returns the
+  parameter scale.
 
 - ...:
 

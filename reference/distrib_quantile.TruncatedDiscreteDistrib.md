@@ -33,7 +33,7 @@ point of the truncated law.
 ## Value
 
 A numeric vector of quantiles, every one a support point in \\\[L,
-U\]\\.
+U\]\\; a probability of zero gives \\L\\.
 
 ## Notation
 
@@ -62,7 +62,7 @@ theta <- list(mu = 2)
 distrib_quantile(ztp, c(0.1, 0.5, 0.9), theta)
 #> [1] 1 2 4
 
-# Never below the lower endpoint, whatever probability is asked for.
+# Never below the lower endpoint, whatever the probability.
 distrib_quantile(ztp, c(0, 1e-12, 0.5), theta)
-#> [1] 0 1 2
+#> [1] 1 1 2
 ```

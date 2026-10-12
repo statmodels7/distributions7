@@ -7,10 +7,6 @@ a location family in \\\mu\\, so the response enters the log-density
 only through \\y - \mu\\ and this derivative is the negative of the
 score in \\\mu\\. It vanishes at \\y = \mu\\, which is the mode.
 
-Quantile residuals and the mixed derivatives of
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-read it.
-
 ## Arguments
 
 - distrib:

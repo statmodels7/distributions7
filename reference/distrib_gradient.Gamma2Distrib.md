@@ -11,11 +11,15 @@ y\right\\}{(\sigma^2)^2},\$\$ with \\\psi\\ the digamma function. Both
 components carry the digamma, because both parameters move the shape; in
 [`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md),
 where the second parameter is a dispersion, only the second component
-does.
+does. With \\z = y/\mu\\ they equal \\\\2\mu(g + e) + y -
+\mu\\/\sigma^2\\ and \\-\alpha(g + e)/\sigma^2\\, where \\g =
+\log\alpha - \psi(\alpha)\\ and \\e = \log z - (z - 1)\\, and the kernel
+computes them in that form, each of \\g\\ and \\e\\ without
+cancellation.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries before returning. This method always returns the
-parameter scale.
+of the family before returning. This method always returns the parameter
+scale.
 
 ## Arguments
 
@@ -47,8 +51,8 @@ parameter scale.
 - threads:
 
   A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  a fixed number of observations, set per kernel, the kernel runs
+  sequentially. Defaults to `1L`.
 
 ## Value
 
@@ -97,5 +101,5 @@ z <- distrib_rng(d, 2000, th)
 fit <- fit_distrib(d, z)
 vapply(distrib_gradient(d, z, as.list(coef(fit))), sum, numeric(1))
 #>            mu        sigma2 
-#>  1.200567e-09 -8.849422e-10 
+#>  1.201931e-09 -8.856853e-10 
 ```

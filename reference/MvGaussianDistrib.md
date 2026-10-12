@@ -7,7 +7,7 @@ The mean \\\mu\\ contributes \\p\\ scalar parameters and the matrix is
 carried by a parameters7 parametrization, whose free values become
 scalar parameters in their turn. It inherits from
 `multivariate_distrib`, so the response is an \\n \times p\\ matrix and
-the distribution function and the quantile function are refused.
+the distribution function and the quantile function signal an error.
 
 Build one with
 [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md),
@@ -103,8 +103,13 @@ MvGaussianDistrib(
 
   Logical of length 1. `TRUE` when `param` carries the precision
   \\\Omega = \Sigma^{-1}\\ and `FALSE` when it carries the covariance
-  \\\Sigma\\. Nothing but the sign of the log-determinant and one matrix
-  inversion depends on it; the law is the same either way.
+  \\\Sigma\\. It decides which derivative arrays are the
+  parametrization's own and which are obtained from them (see
+  [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)),
+  the sign of the log-determinant, the prefix of the free names, and the
+  quantities that
+  [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
+  reports. The same matrix \\\Sigma\\ gives the same law either way.
 
 ## Value
 
@@ -122,27 +127,54 @@ identity.
 
 ## Methods
 
-Registered on this class:
-[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvGaussianDistrib.md),
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.MvGaussianDistrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvGaussianDistrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.MvGaussianDistrib.md),
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvGaussianDistrib.md),
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.MvGaussianDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvGaussianDistrib.md),
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.MvGaussianDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MvGaussianDistrib.md),
-[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MvGaussianDistrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.MvGaussianDistrib.md),
-[`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.MvGaussianDistrib.md),
-[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.MvGaussianDistrib.md),
-[`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.MvGaussianDistrib.md),
-[`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvGaussianDistrib.md),
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.MvGaussianDistrib.md)
+Registered on this class, each linked to the page that documents it:
 
-Everything else comes from
+- the distribution:
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MvGaussianDistrib.md)
+  and
+  [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.MvGaussianDistrib.md);
+
+- the derivatives in the parameters:
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvGaussianDistrib.md),
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MvGaussianDistrib.md),
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvGaussianDistrib.md),
+  [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvGaussianDistrib.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.MvGaussianDistrib.md);
+
+- the derivatives in the response:
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.MvGaussianDistrib.md)
+  and
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.MvGaussianDistrib.md);
+
+- the mixed derivatives in the response and the parameters:
+  [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.MvGaussianDistrib.md),
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvGaussianDistrib.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.MvGaussianDistrib.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.MvGaussianDistrib.md);
+
+- the moments:
+  [`mean()`](https://statmodels7.github.io/distributions7/reference/mean.MvGaussianDistrib.md)
+  and
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.MvGaussianDistrib.md);
+
+- the multivariate summaries:
+  [`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.MvGaussianDistrib.md),
+  [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvGaussianDistrib.md),
+  [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.MvGaussianDistrib.md)
+  and
+  [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvGaussianDistrib.md);
+
+- the validation and fitting helpers:
+  [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.MvGaussianDistrib.md)
+  and
+  [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.MvGaussianDistrib.md).
+
+Every other generic is inherited from
 [`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md),
-including the two refusals.
+whose methods signal an error for the distribution function, the
+quantile function, the skewness and the kurtosis.
 
 ## See also
 
@@ -163,7 +195,7 @@ S7::S7_inherits(d, multivariate_distrib)
 #> [1] TRUE
 
 # Five scalar parameters: two means and the three free values of the
-# log-Cholesky covariance, prefixed by the matrix they describe.
+# log-Cholesky covariance, prefixed by the matrix that they describe.
 d@params
 #> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"  
 d@n_dim

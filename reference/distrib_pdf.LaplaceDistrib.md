@@ -2,10 +2,12 @@
 
 Computes the Laplace density \$\$f(y; \mu, \sigma) = \dfrac{1}{2\sigma}
 \exp\left(-\dfrac{\|y - \mu\|}{\sigma}\right)\$\$ from the log-density
-\\-\log(2\sigma) - \|y-\mu\|/\sigma\\, which is formed first and
-exponentiated only when `log = FALSE`. The density is continuous
-everywhere and has a corner at \\y = \mu\\, where the two exponential
-arms meet. That corner makes the family non-regular in its location.
+\\-\log 2 - \log\sigma - \|y-\mu\|/\sigma\\, which is formed first and
+exponentiated only when `log = FALSE`. The two logarithms are taken
+separately, so the value stays finite where \\2\sigma\\ overflows. The
+density is continuous everywhere and has a corner at \\y = \mu\\, where
+the two exponential arms meet. That corner makes the family non-regular
+in its location.
 
 ## Arguments
 
@@ -23,9 +25,8 @@ arms meet. That corner makes the family non-regular in its location.
 
   A named list with components `mu` and `sigma`, each a numeric vector
   of length 1 or of the length of `y`. A component of length 1 is
-  recycled. `sigma` must be strictly positive; the arithmetic is
-  performed as written, so a non-positive value gives `NaN` or `Inf`
-  without a warning of its own.
+  recycled. `sigma` must be strictly positive; the generic signals an
+  error for a zero or negative value before the method is called.
 
 - log:
 

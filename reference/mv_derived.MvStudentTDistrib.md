@@ -1,13 +1,14 @@
 # Scale Standard Deviations and Correlations of a Multivariate t
 
-Returns the square roots of the diagonal of the SCALE matrix and the
-correlations it implies, with the closed-form Jacobian
+Returns the square roots of the diagonal of the scale matrix and the
+correlations that it implies, with the closed-form Jacobian that
 [`mv_sd_cor()`](https://statmodels7.github.io/distributions7/reference/mv_sd_cor.md)
-supplies. The correlations are the response's as well: the covariance is
-\\\nu\Sigma/(\nu-2)\\ where it exists, and a positive multiple of a
-matrix leaves its correlations alone. The diagonal quantities are NOT
-standard deviations of the response, and are named `scale_sd_v1`, ...,
-`scale_sd_vp` and blocked as `"Scale standard deviations"` to say so.
+supplies. The correlations are also those of the response: the
+covariance is \\\nu\Sigma/(\nu-2)\\ where it exists, and a positive
+multiple of a matrix has the same correlations. The diagonal quantities
+are not standard deviations of the response, and for that reason they
+are named `scale_sd_v1`, ..., `scale_sd_vp` and blocked as
+`"Scale standard deviations"`.
 
 The rule of
 [`mv_derived.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvGaussianDistrib.md)
@@ -24,7 +25,9 @@ matrix.
   An
   [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   object, from
-  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
+  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
+  or
+  [`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
 
 - theta:
 
@@ -45,10 +48,10 @@ conditional scales and \\p(p-1)/2\\ partial correlations.
 
 ## Details
 
-The degrees of freedom appear in no quantity here. \\\nu\\ is already an
-interpretable parameter on its own scale, so
+The quantities do not include the degrees of freedom: \\\nu\\ is
+interpretable on its own scale, so
 [`confint.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/confint.distrib_fit.md)
-reports it and this generic does not repeat it. That is also why the
+reports it and this generic does not repeat it. For the same reason the
 \\\nu\\ column of the Jacobian is zero.
 
 ## Notation
@@ -98,7 +101,7 @@ c(reported = der$value[["cor_v1_v2"]],
 #>        reported from_covariance 
 #>       0.4472136       0.4472136 
 
-# nu enters no quantity here, so its Jacobian column is zero.
+# The Jacobian column of nu is zero.
 der$jacobian[, "nu"]
 #> scale_sd_v1 scale_sd_v2   cor_v1_v2 
 #>           0           0           0 

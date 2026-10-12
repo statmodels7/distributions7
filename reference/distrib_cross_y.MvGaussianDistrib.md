@@ -5,10 +5,13 @@ Computes \\\partial^2\ell/\partial y\\ \partial\theta_k\\, one \\n
 response gradient is \\-w\\, and differentiating it in the mean and in
 the free values of the matrix parametrization gives \$\$\frac{\partial^2
 \ell}{\partial y \\\partial \mu_j} = \Sigma^{-1}e_j, \qquad
-\frac{\partial^2 \ell}{\partial y \\\partial \eta_k} = \Sigma^{-1}A_k
-w,\$\$ with \\A_k = \partial\Sigma/\partial\eta_k\\. The mean block is
-column \\j\\ of \\\Sigma^{-1}\\ at every observation; the matrix block
-carries the observation through \\w\\.
+\frac{\partial^2 \ell}{\partial y \\\partial \eta_k} = -P_k (y - \mu) =
+\Sigma^{-1}A_k w,\$\$ with \\A_k\\ and \\P_k\\ the derivatives of
+\\\Sigma\\ and of \\\Sigma^{-1}\\. The mean block is column \\j\\ of
+\\\Sigma^{-1}\\ at every observation; the matrix block carries the
+observation, and is computed from \\P_k\\ as
+[`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
+supplies it.
 
 ## Arguments
 
@@ -30,8 +33,9 @@ carries the observation through \\w\\.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The two coincide here.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  Every link of this family is the identity, so the two scales coincide.
 
 - ...:
 
@@ -44,11 +48,9 @@ A named list of \\n \times p\\ numeric matrices, one per parameter, in
 
 ## Details
 
-The shape is the one a consumer needs. A penalty whose prior is this
-family reads the block
-\\\partial^2\rho/\partial\beta\\\partial\theta_k\\ for one
-hyperparameter at a time, and the coefficients of one group are the row
-of \\y\\ the density is read at.
+The result has one \\n \times p\\ matrix per parameter, the shape of the
+response, so the derivative in \\\theta_k\\ of each row of the response
+gradient is read row by row.
 
 Every link of this family is the identity, so `scale = "link"` and
 `scale = "parameter"` give the same numbers.
@@ -57,8 +59,8 @@ Every link of this family is the identity, so `scale = "link"` and
 
 \\\mu\\ is the mean, \\\Sigma\\ the covariance, \\\eta\\ the free vector
 of the matrix parametrization, \\A_k = \partial\Sigma/\partial\eta_k\\,
-\\e_j\\ the \\j\\-th standard basis vector and \\\ell\\ the log-density
-of one observation.
+\\P_k = \partial\Sigma^{-1}/\partial\eta_k\\, \\e_j\\ the \\j\\-th
+standard basis vector and \\\ell\\ the log-density of one observation.
 
 ## See also
 

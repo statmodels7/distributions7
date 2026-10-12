@@ -1,7 +1,7 @@
 # Put CDF Derivatives on the Requested Tail and Scale
 
 Converts derivatives of the distribution function \\F\\ into derivatives
-of whichever tail was asked for, on the natural or the logarithmic
+of whichever tail was requested, on the natural or the logarithmic
 scale. Every route to a cdf derivative in this package produces
 derivatives of \\F\\ itself, so the `lower.tail` and `log` arguments are
 handled once, here, and no method has to implement four cases.
@@ -21,7 +21,10 @@ cdf_tail_scale(distrib, Fq, dF1, dF2 = NULL, lower.tail, log)
 
 - Fq:
 
-  The distribution function at the quantile, a numeric vector.
+  The distribution function at the quantile, a numeric vector, possibly
+  with the attribute `"upper"` that
+  [`tail_cdf()`](https://statmodels7.github.io/distributions7/reference/tail_probability.md)
+  attaches.
 
 - dF1:
 
@@ -55,23 +58,28 @@ component. The gradient is not returned alongside the Hessian.
 ## The two conversions
 
 Switching to the upper tail flips the sign, \\S = 1 - F\\ giving
-\\\partial^I S = -\partial^I F\\ at every order. Switching to the log
-scale divides by the probability, which at second order brings in the
-familiar correction \$\$\partial^2 \log P = \frac{\partial^2 P}{P} -
-\frac{\partial P}{P}\\\frac{\partial P}{P}.\$\$ The two commute, and
-both are applied to whatever was handed in.
+\\\partial^I S = -\partial^I F\\ at every order. The probability \\S\\
+by which the log scale divides is the family's own upper tail when `Fq`
+comes from
+[`tail_cdf()`](https://statmodels7.github.io/distributions7/reference/tail_probability.md),
+and \\1 - F\\ otherwise
+([`tail_probability()`](https://statmodels7.github.io/distributions7/reference/tail_probability.md)).
+Switching to the log scale divides by the probability, which at second
+order brings in the familiar correction \$\$\partial^2 \log P =
+\frac{\partial^2 P}{P} - \frac{\partial P}{P}\\\frac{\partial P}{P}.\$\$
+The two commute, and both are applied to whatever was handed in.
 
 ## What the caller must supply
 
 `dF1` is always read, at second order as well: the correction above
-needs the first derivatives of the same tail. A caller asking for a
+needs the first derivatives of the same tail. A caller requesting a
 Hessian therefore passes both lists, and passes them as derivatives of
 \\F\\ on the natural scale, whichever tail the result is wanted on.
 
 ## Notation
 
 \\F\\ is the distribution function, \\S = 1 - F\\ the survival function,
-\\P\\ whichever of the two was asked for, and \\\partial^I\\ a
+\\P\\ whichever of the two was requested, and \\\partial^I\\ a
 derivative with respect to a multi-index of parameters.
 
 ## See also

@@ -17,7 +17,7 @@ numbers near one."><meta property="og:image" content="https://statmodels7.github
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,8 @@ probabilities are \(P(Y \le q)\); when <code>FALSE</code> they are \(P(Y &gt; q)
 
 <dt id="arg-log-p">log.p<a class="anchor" aria-label="anchor" href="#arg-log-p"></a></dt>
 <dd><p>Logical of length 1. When <code>TRUE</code> the logarithm of the
-probability is returned, taken after the quadrature. Defaults to <code>FALSE</code>.</p></dd>
+probability is returned, computed on the log scale by <code><a href="compiled_cdf.html">compiled_cdf()</a></code>
+so that it stays finite far in either tail. Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

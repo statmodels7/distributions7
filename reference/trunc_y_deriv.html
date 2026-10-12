@@ -15,7 +15,7 @@ derivative exists."><meta property="og:image" content="https://statmodels7.githu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,13 +88,13 @@ parent's derivative inside.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The <code>NaN</code> is the point of the function. The finite-difference default
-inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code> would straddle the boundary and return
-a NUMBER for a point outside the support, which nothing downstream would
-question.</p>
-<p>A parameter varying by observation is subset to the retained observations
-before the parent is called, so the parent sees a <code>theta</code> matching the <code>y</code>
-it is given.</p>
+    <p>The function returns <code>NaN</code> for a point outside \([L, U]\). The
+finite-difference default inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code> differences
+across the boundary and returns a finite number there, although the
+log-density is \(-\infty\).</p>
+<p>A parameter that varies by observation is subset to the retained observations
+before the parent is called, so that the parent receives a <code>theta</code> matching
+the <code>y</code> that it is given.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

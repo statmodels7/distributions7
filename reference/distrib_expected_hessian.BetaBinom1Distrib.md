@@ -4,14 +4,15 @@ Returns the expectation of the observed Hessian under the model,
 \\\sum\_{k=0}^{n} P(Y=k)\\
 \partial^2\ell/\partial\theta_i\partial\theta_j\\ evaluated at \\y =
 k\\. The support being finite, that is an **exact finite sum** of
-\\n+1\\ terms rather than a quadrature or a sample. The answer is the
-expectation to machine precision, and a bounded support is what makes
-that available.
+\\n+1\\ terms rather than a quadrature or a sample, and the summand is
+the observed Hessian of
+[`distrib_hessian.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BetaBinom1Distrib.md),
+from the direct sums for \\\sigma \< 0.1\\ and from the shapes above.
 
 `approx` and `nsim` are therefore ignored; every strategy returns the
-same three numbers. The arithmetic runs in a compiled kernel decomposed
-over the elements of the output, so the result does not depend on the
-thread count.
+same three numbers. The compiled kernel is sequential: it evaluates the
+sum once for each run of consecutive observations that share their
+parameters, and `threads` is ignored.
 
 ## Arguments
 
@@ -54,9 +55,9 @@ thread count.
 
 - threads:
 
-  A single positive integer, how many threads the kernel may use. Below
-  the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  A single positive integer. It is accepted so that the signature
+  matches the other derivative methods; this kernel is sequential and
+  ignores it. Defaults to `1L`.
 
 ## Value
 

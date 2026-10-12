@@ -59,8 +59,8 @@ distrib_fit(
   The observations the fit was computed from, kept so that the fitted
   distribution can be compared with the data by
   [`plot.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md)
-  and resampled by
-  [`simulate.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/simulate.distrib_fit.md).
+  and so that the information can be recomputed by
+  [`vcov.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.md).
 
 - n:
 
@@ -75,7 +75,8 @@ distrib_fit(
 - se:
 
   Named standard errors on the parameter scale, from the delta method.
-  `NaN` where the corresponding variance came back negative or missing.
+  `NaN` where the corresponding variance came back negative, `NA` where
+  it is missing.
 
 - ci:
 
@@ -89,8 +90,8 @@ distrib_fit(
 - se_eta:
 
   Named standard errors on the link scale, the square roots of the
-  diagonal of `vcov_eta`. These are the ones the fit computes; `se` is
-  derived from them.
+  diagonal of `vcov_eta`. These are the standard errors that the fit
+  computes; `se` is derived from them.
 
 - ci_eta:
 
@@ -114,11 +115,11 @@ distrib_fit(
   The maximized log-likelihood, summed over observations and **not**
   divided by \\n\\.
 
-- bic, aic:
+- aic, bic:
 
   Information criteria built on the unscaled log-likelihood, \\-2\ell +
-  2p\\ and \\-2\ell + p\log n\\ with \\p\\ the number of estimated
-  parameters.
+  2p\\ and \\-2\ell + p\log n\\ respectively, with \\p\\ the number of
+  estimated parameters.
 
 - iterations:
 
@@ -133,7 +134,7 @@ distrib_fit(
 - method:
 
   The optimization method actually used, which is not always the one
-  asked for: `"Fisher scoring"` and `"Newton-Raphson"` fall back to
+  requested: `"Fisher scoring"` and `"Newton-Raphson"` fall back to
   `"BFGS"` when they fail, and this records which one produced the
   estimates.
 
@@ -157,9 +158,9 @@ distrib_fit(
 - score:
 
   The max-norm of the score **per observation** at the reported optimum.
-  This is the quantity the stopping rule tested, so it says how close to
-  stationary a run ended and is the one number a non-converged fit is
-  worth reading for.
+  This is the quantity that the stopping rule tested, so it measures how
+  close to stationary a run ended, and it is the number to read on a fit
+  that did not converge.
 
 - elapsed:
 

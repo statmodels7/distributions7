@@ -5,9 +5,10 @@ Answers whether a distribution registers
 for itself, which is how
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
 decides that a parent carries a point mass and must be rejected. The
-question is asked of the CLASS the method is registered on, not of a
+function examines the class on which the method is registered and not a
 value: a distribution with an atom declares one at every parameter
-setting, and a value taken at one setting could be empty by accident.
+setting, whereas a value taken at one setting could be empty by
+accident.
 
 ## Usage
 
@@ -47,8 +48,9 @@ wrapper of a family without atoms declares none.
 The argument is named `parent` deliberately. The base class of this
 package is called `distrib`, and an argument of that name would shadow
 it: the comparison meant for the base class would then be against the
-object. That defect has been met before in this package and is avoided
-by naming.
+object. That The argument is named `parent` because an argument named
+`distrib` would shadow the base class `distrib` in the comparison with
+the class.
 
 ## See also
 

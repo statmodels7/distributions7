@@ -3,11 +3,13 @@
 \(\theta\) with slope inner, which is
 \((\mathrm{inner})^k\,p(p-1)\cdots(p-k+1)\,u^{p-k}\). The elastic net's
 tail arguments are powers of affine functions of its two hyperparameters, so
-this supplies their one-variable derivatives to separable_deriv()."><meta property="og:description" content="Returns \(\partial^k u^p/\partial\theta^k\) where \(u\) is affine in
+this supplies their one-variable derivatives to the term function of the
+elastic net."><meta property="og:description" content="Returns \(\partial^k u^p/\partial\theta^k\) where \(u\) is affine in
 \(\theta\) with slope inner, which is
 \((\mathrm{inner})^k\,p(p-1)\cdots(p-k+1)\,u^{p-k}\). The elastic net's
 tail arguments are powers of affine functions of its two hyperparameters, so
-this supplies their one-variable derivatives to separable_deriv()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+this supplies their one-variable derivatives to the term function of the
+elastic net."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -15,7 +17,7 @@ this supplies their one-variable derivatives to separable_deriv()."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +54,8 @@ this supplies their one-variable derivatives to separable_deriv()."><meta proper
 \(\theta\) with slope <code>inner</code>, which is
 \((\mathrm{inner})^k\,p(p-1)\cdots(p-k+1)\,u^{p-k}\). The elastic net's
 tail arguments are powers of affine functions of its two hyperparameters, so
-this supplies their one-variable derivatives to <code><a href="separable_deriv.html">separable_deriv()</a></code>.</p>
+this supplies their one-variable derivatives to the term function of the
+elastic net.</p>
     </div>
 
     <div class="section level2">
@@ -94,7 +97,7 @@ vector recyclable against <code>u</code>.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># The second derivative of (2 theta)^3 at theta = 1 is 8 * 3 * 2 * 2 = 24.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># The second derivative of (2 theta)^3 = 8 theta^3 at theta = 1 is 48.</span></span></span>
 <span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">dpow_affine</span><span class="op">(</span>u <span class="op">=</span> <span class="fl">2</span>, p <span class="op">=</span> <span class="fl">3</span>, k <span class="op">=</span> <span class="fl">2</span>, inner <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 48</span>
 <span class="r-in"><span></span></span>

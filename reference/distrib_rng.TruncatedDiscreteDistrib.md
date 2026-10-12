@@ -1,9 +1,10 @@
 # Truncated Random Number Generator (Discrete)
 
-Draws by inverse transform on the parent, exact for a discrete
-distribution function: \\Y = Q\\F(L^-) + V Z\\\\ with \\V\\ uniform on
-\\(0, 1)\\. Every draw is a support point inside \\\[L, U\]\\, in one
-pass and with no rejection.
+Draws by inverse transform on the parent, through
+[`distrib_quantile.TruncatedDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.TruncatedDiscreteDistrib.md)
+at \\V\\ uniform on \\(0, 1)\\. Every draw is a support point in \\\[L,
+U\]\\, in one pass and with no rejection, an interval in the upper tail
+included.
 
 ## Arguments
 

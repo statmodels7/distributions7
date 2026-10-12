@@ -41,12 +41,13 @@ A numeric vector the length of `y`.
 A family whose response enters only as \\y - \mu\\ gets these from the
 derivatives it already has in the location, since
 \\\partial^{k}\ell/\partial y^{k} = (-1)^{k}\\
-\partial^{k}\ell/\partial\mu^{k}\\; the others take one stencil of the
-requested order on the log-density.
+\partial^{k}\ell/\partial\mu^{k}\\. The other shipped families take them
+from closed forms of their own, and a family defined by its density
+alone takes one stencil of the requested order on the log-density.
 
-As with the orders below, a discrete family has no such derivative and
-the generic rejects rather than returning a difference across the
-lattice.
+As with the lower orders, a discrete family has no such derivative, and
+the call signals an error instead of returning a difference between
+support points.
 
 ## See also
 

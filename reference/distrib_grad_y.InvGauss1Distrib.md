@@ -8,10 +8,6 @@ density and the second from the exponent. It changes sign at the mode,
 which for this family is \\\mu\\(1 + 9\phi^2\mu^2/4)^{1/2} -
 3\phi\mu/2\\\\, always strictly below the mean.
 
-Quantile residuals and the mixed derivatives of
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-read it.
-
 ## Arguments
 
 - distrib:

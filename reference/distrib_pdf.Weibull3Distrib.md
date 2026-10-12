@@ -7,7 +7,8 @@ function, the quantile function and the generator are
 [`stats::pweibull()`](https://rdrr.io/r/stats/Weibull.html),
 [`stats::qweibull()`](https://rdrr.io/r/stats/Weibull.html) and
 [`stats::rweibull()`](https://rdrr.io/r/stats/Weibull.html) at that
-scale.
+scale. At a small shape \\b\\ underflows to 0; there the four methods
+evaluate the same formulas through \\\log b\\ and \\\log(y/b)\\.
 
 ## Arguments
 

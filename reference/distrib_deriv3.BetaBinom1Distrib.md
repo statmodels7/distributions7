@@ -9,12 +9,17 @@ Bruno partition sum of
 [`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md)
 over the map delivers them. Both shapes are linear in \\\mu\\ at fixed
 \\\sigma\\, so every partial of the map carrying two or more \\\mu\\
-vanishes and the sum is short.
+vanishes and the sum is short. This route is taken for \\\sigma \ge
+0.1\\; for \\\sigma \< 0.1\\ the components are the direct sums over the
+integer shifts given on
+[`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md),
+which keep their accuracy as \\\sigma\\ goes to zero
+([`betabinom1_components()`](https://statmodels7.github.io/distributions7/reference/betabinom1_components.md)).
 
-With `expected = TRUE` the method calls
-[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-instead. That is the one place on this page where `approx` and `nsim`
-are read; on the observed branch both are ignored.
+With `expected = TRUE` the method returns the expectation as an exact
+finite sum over the support, from
+[`betabinom1_expected()`](https://statmodels7.github.io/distributions7/reference/betabinom1_expected.md).
+`approx` and `nsim` are ignored on both branches.
 
 ## Arguments
 
@@ -48,15 +53,12 @@ are read; on the observed branch both are ignored.
 
 - approx:
 
-  One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`, the strategy
-  [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-  uses. Read only when `expected = TRUE`.
+  Ignored, the expectation being an exact finite sum. Accepted so that
+  the signature matches the generic's.
 
 - nsim:
 
-  A single positive integer, the sample size when `approx = "mc"`. Read
-  only when `expected = TRUE`. Defaults to `10000`.
+  Ignored, for the same reason. Defaults to `10000`.
 
 - ...:
 

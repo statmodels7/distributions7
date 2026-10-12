@@ -7,9 +7,9 @@ unordered pair of parameters. The response gradient is \\\ell^{(y)} =
 product rule \$\$\partial\_{ab}\ell^{(y)} = -c\_{ab}w - c_aw_b -
 c_bw_a - c\\w\_{ab},\$\$ with every piece from
 [`mvt_dpieces()`](https://statmodels7.github.io/distributions7/reference/mvt_dpieces.md).
-No pair vanishes here, where a gaussian's pair of location parameters is
-exactly zero: its response gradient is linear in the location and this
-one is not.
+For a gaussian the pair of two location parameters is exactly zero, its
+response gradient being linear in the location; the response gradient of
+the t is not, and these pairs are not zero in general.
 
 ## Arguments
 
@@ -31,8 +31,9 @@ one is not.
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch. The two differ here.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
+  The two differ here.
 
 - ...:
 
@@ -99,5 +100,5 @@ c(gap = max(abs(gh$mu1_mu2 -
                 (f(h, h) - f(h, -h) - f(-h, h) + f(-h, -h)) / (4 * h * h))),
   scale = max(abs(gh$mu1_mu2)))
 #>          gap        scale 
-#> 1.161690e-06 6.296564e-01 
+#> 1.339510e-06 6.296564e-01 
 ```

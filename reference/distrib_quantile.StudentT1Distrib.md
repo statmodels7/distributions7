@@ -5,8 +5,8 @@ Computes the location-scale Student t quantile function \$\$Q(p; \mu,
 the standard Student t quantile function on \\\nu\\ degrees of freedom,
 by calling [`stats::qt()`](https://rdrr.io/r/stats/TDist.html). The
 distribution function is strictly increasing on the whole line, so the
-inverse is exact and unique and the root-finding fallback the base class
-supplies is bypassed. `Q(0)` is `-Inf` and `Q(1)` is `Inf`.
+inverse is exact and unique and the root-finding fallback of the base
+class is not used. `Q(0)` is `-Inf` and `Q(1)` is `Inf`.
 
 ## Arguments
 

@@ -35,10 +35,9 @@ from `link_scale.R`, whose order-2 case is ordered for
 – diagonal first – while
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
 is lexicographic; pairing those would silently attach the name
-`"mu_sigma"` to the index `(sigma, sigma)`. The orders actually
-registered here are 3 and 4, where the two orderings agree; generating
-the indices locally removes the mismatch instead of depending on it
-never being reached.
+`"mu_sigma"` to the index `(sigma, sigma)`. The orders used here are 3,
+4 and 5, where the two orderings agree; generating the indices locally
+removes the mismatch instead of depending on it never being reached.
 
 ## See also
 

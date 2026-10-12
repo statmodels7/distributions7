@@ -5,25 +5,25 @@ high threshold, parametrized by a scale \(\sigma &amp;gt; 0\) and a shape
 \(f(y) = \sigma^{-1}(1 + \xi y/\sigma)^{-1/\xi-1}\) on \(y \ge 0\). At
 \(\xi = 0\) it is the exponential, reached by a series, so a fit may move
 the shape through zero.
-It is the first family in the package whose support moves with its
-parameters: for \(\xi &amp;lt; 0\) it ends at \(-\sigma/\xi\). That is what
-makes it non-regular, and it is why its expected information exists only
+For \(\xi &amp;lt; 0\) the support ends at \(-\sigma/\xi\), so it moves with
+the parameters. That is what makes the family non-regular, and it is why its expected information exists only
 above \(\xi = -1/2\).
 Build one with gpd_distrib(), which supplies the two link functions. This
-page documents the raw S7 constructor, which validates none of the
-relationships between its properties."><meta property="og:description" content="The S7 class of the generalized Pareto family, the law of exceedances over a
+page documents the raw S7 constructor, which takes the parent's
+properties; the validator of distrib checks them, and the constructor
+adds no check of its own."><meta property="og:description" content="The S7 class of the generalized Pareto family, the law of exceedances over a
 high threshold, parametrized by a scale \(\sigma &amp;gt; 0\) and a shape
 \(\xi\):
 \(f(y) = \sigma^{-1}(1 + \xi y/\sigma)^{-1/\xi-1}\) on \(y \ge 0\). At
 \(\xi = 0\) it is the exponential, reached by a series, so a fit may move
 the shape through zero.
-It is the first family in the package whose support moves with its
-parameters: for \(\xi &amp;lt; 0\) it ends at \(-\sigma/\xi\). That is what
-makes it non-regular, and it is why its expected information exists only
+For \(\xi &amp;lt; 0\) the support ends at \(-\sigma/\xi\), so it moves with
+the parameters. That is what makes the family non-regular, and it is why its expected information exists only
 above \(\xi = -1/2\).
 Build one with gpd_distrib(), which supplies the two link functions. This
-page documents the raw S7 constructor, which validates none of the
-relationships between its properties."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+page documents the raw S7 constructor, which takes the parent's
+properties; the validator of distrib checks them, and the constructor
+adds no check of its own."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +31,7 @@ relationships between its properties."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,13 +70,13 @@ high threshold, parametrized by a scale \(\sigma &gt; 0\) and a shape
 \(f(y) = \sigma^{-1}(1 + \xi y/\sigma)^{-1/\xi-1}\) on \(y \ge 0\). At
 \(\xi = 0\) it is the exponential, reached by a series, so a fit may move
 the shape through zero.</p>
-<p>It is the first family in the package whose <strong>support moves with its
-parameters</strong>: for \(\xi &lt; 0\) it ends at \(-\sigma/\xi\). That is what
-makes it non-regular, and it is why its expected information exists only
+<p>For \(\xi &lt; 0\) the support ends at \(-\sigma/\xi\), so it <strong>moves with
+the parameters</strong>. That is what makes the family non-regular, and it is why its expected information exists only
 above \(\xi = -1/2\).</p>
 <p>Build one with <code><a href="gpd_distrib.html">gpd_distrib()</a></code>, which supplies the two link functions. This
-page documents the raw S7 constructor, which validates none of the
-relationships between its properties.</p>
+page documents the raw S7 constructor, which takes the parent's
+properties; the validator of <code>distrib</code> checks them, and the constructor
+adds no check of its own.</p>
     </div>
 
     <div class="section level2">
@@ -147,32 +147,51 @@ relationships between its properties.</p>
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Registered in this file, all compiled apart from the first four:
-<code><a href="distrib_pdf.GPDDistrib.html">distrib_pdf()</a></code>,
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.GPDDistrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_cdf.GPDDistrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_quantile.GPDDistrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.GPDDistrib.html">distrib_rng()</a></code>,
+<code><a href="distrib_quantile.GPDDistrib.html">distrib_quantile()</a></code> and
+<code><a href="distrib_rng.GPDDistrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.GPDDistrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.GPDDistrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_expected_hessian.GPDDistrib.html">distrib_expected_hessian()</a></code>.</p>
-<p>Registered elsewhere, compiled, in <code>gpd_higher.R</code>: the orders three to five
-(<code><a href="distrib_deriv3.GPDDistrib.html">distrib_deriv3()</a></code>), the derivatives in the
-response (<code><a href="distrib_grad_y.GPDDistrib.html">distrib_grad_y()</a></code>) and those of the
-distribution function (<code><a href="distrib_grad_cdf.GPDDistrib.html">distrib_grad_cdf()</a></code>);
-the derivatives of the expected information in <code>dexpected_families.R</code>; and
-the four moments in <code>moments.R</code>.</p>
+<code><a href="distrib_expected_hessian.GPDDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.GPDDistrib.html">distrib_deriv3()</a></code>,
+<code><a href="distrib_deriv3.GPDDistrib.html">distrib_deriv4()</a></code> and
+<code><a href="distrib_deriv3.GPDDistrib.html">distrib_deriv5()</a></code>;</p></li>
+<li><p>the derivatives of the expected information:
+<code><a href="distrib_dexpected_hessian.elementary.html">distrib_dexpected_hessian()</a></code> and
+<code><a href="distrib_dexpected_hessian.elementary.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the derivatives in the response:
+<code><a href="distrib_grad_y.GPDDistrib.html">distrib_grad_y()</a></code>,
+<code><a href="distrib_grad_y.GPDDistrib.html">distrib_hess_y()</a></code>,
+<code><a href="distrib_grad_y.GPDDistrib.html">distrib_deriv3_y()</a></code> and
+<code><a href="distrib_grad_y.GPDDistrib.html">distrib_deriv4_y()</a></code>;</p></li>
+<li><p>the mixed derivatives in the response and the parameters:
+<code><a href="distrib_grad_y.GPDDistrib.html">distrib_cross_y()</a></code>,
+<code><a href="distrib_grad_y.GPDDistrib.html">distrib_cross2_y()</a></code>,
+<code><a href="distrib_grad_y.GPDDistrib.html">distrib_grad_y_hess()</a></code> and
+<code><a href="distrib_grad_y.GPDDistrib.html">distrib_hess_y_hess()</a></code>;</p></li>
+<li><p>the derivatives of the distribution function:
+<code><a href="distrib_grad_cdf.GPDDistrib.html">distrib_grad_cdf()</a></code>,
+<code><a href="distrib_grad_cdf.GPDDistrib.html">distrib_hess_cdf()</a></code>,
+<code><a href="distrib_grad_cdf.GPDDistrib.html">distrib_deriv3_cdf()</a></code> and
+<code><a href="distrib_grad_cdf.GPDDistrib.html">distrib_deriv4_cdf()</a></code>;</p></li>
+<li><p>the moments: <code><a href="mean.GPDDistrib.html">mean()</a></code>,
+<code><a href="variance.GPDDistrib.html">variance()</a></code>, <code><a href="skewness.GPDDistrib.html">skewness()</a></code>
+and <code><a href="kurtosis.GPDDistrib.html">kurtosis()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
-    <h2 id="what-the-moving-endpoint-costs">What the moving endpoint costs<a class="anchor" aria-label="anchor" href="#what-the-moving-endpoint-costs"></a></h2>
+    <h2 id="support-depending-on-the-parameters">Support depending on the parameters<a class="anchor" aria-label="anchor" href="#support-depending-on-the-parameters"></a></h2>
 
 
 <p>The derivatives are correct as derivatives of the log-density at every
 admissible point, whatever the sign of \(\xi\). What is not automatic is
 the license to differentiate under the integral sign, which the Bartlett
 identities rest on. The expected information exists for \(\xi &gt; -1/2\)
-and is Smith's closed form; at or below that it does not exist and
-<code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> returns <code>NA</code>, along with the classical
-asymptotics of the maximum likelihood estimator.</p>
+and is Smith's closed form. At or below that value it does not exist, and
+<code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> returns <code>NA</code>; the classical asymptotics of the
+maximum likelihood estimator do not hold either.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

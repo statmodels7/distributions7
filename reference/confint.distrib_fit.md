@@ -3,7 +3,7 @@
 Returns Wald intervals for the estimated parameters. They are built
 symmetrically on the link scale, \\\hat\eta \pm z\_{1-\alpha/2}\\
 \mathrm{se}(\hat\eta)\\, and mapped through \\g^{-1}\\ when the
-parameter scale is asked for, so a limit cannot leave the parameter's
+parameter scale is requested, so a limit cannot leave the parameter's
 domain: a scale has a positive lower limit and a probability stays
 inside \\(0,1)\\. The two ends are sorted after mapping, because a link
 need not be increasing.
@@ -37,8 +37,8 @@ of one quantile.
   Either `"parameter"` (the default) or `"link"`, matched by
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html); anything
   else signals an error. It is the fourth argument, so name it:
-  `confint(fit, "sigma", "link")` passes `"link"` as `level` and fails
-  inside the quantile.
+  `confint(fit, "sigma", "link")` passes `"link"` as `level`, which then
+  signals an error.
 
 - ...:
 

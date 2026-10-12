@@ -29,7 +29,7 @@ distrib_expected_hessian.Lognormal1Distrib()."><meta property="og:image" content
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,8 +106,8 @@ recycled. <code>sigma2</code> must be strictly positive.</p></dd>
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+use. Below a fixed number of observations, set per kernel, the kernel
+runs sequentially. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -151,9 +151,7 @@ quantity, <code><a href="distrib_deriv3.Lognormal1Distrib.html">distrib_deriv3.L
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Identical to the Gaussian's at log y.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">h</span>, <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="fu"><a href="gaussian2_distrib.html">gaussian2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Names: 2 string mismatches"                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "Component 2: Mean relative difference: 1.049141"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "Component 3: Mean relative difference: 2.802071"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># It is the second derivative of the log-density, so a central difference</span></span></span>
 <span class="r-in"><span><span class="co"># of the score reproduces it.</span></span></span>

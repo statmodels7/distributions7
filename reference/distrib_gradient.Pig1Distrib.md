@@ -14,7 +14,8 @@ partial out in closed form from the finite Bessel sum.
 
 - y:
 
-  A numeric vector of counts. A value off the support gives `NaN`.
+  A numeric vector of counts. A value off the support, or a missing
+  value, gives `NaN`.
 
 - theta:
 
@@ -72,7 +73,7 @@ rbind(analytic = vapply(g, sum, 0),
 #> numeric  0.1950793 -1.036359
 
 # The mean and the dispersion are not orthogonal here: the mixed entry of
-# the expected information is far from zero. pig2_distrib() removes that.
-sum(distrib_expected_hessian(d, 0:200, th)$mu_sigma)
-#> [1] 7.392208
+# the expected information is not zero. pig2_distrib() removes that.
+distrib_expected_hessian(d, 0, th)$mu_sigma
+#> [1] 0.03677716
 ```

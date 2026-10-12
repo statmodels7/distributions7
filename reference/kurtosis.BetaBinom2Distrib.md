@@ -1,12 +1,12 @@
 # Excess Kurtosis of the Beta-Binomial Distribution in Two Shapes
 
-The standardized fourth central moment less three, \\\gamma_2 =
-c_4/c_2^2 - 3\\, with the central moments \\c_k\\ from
-[`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md)
-at \\\mu = \alpha/(\alpha+\beta)\\ and \\\sigma = 1/(\alpha+\beta)\\.
+The excess kurtosis of
+[`kurtosis.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.BetaBinom1Distrib.md)
+at \\\mu = \alpha/(\alpha+\beta)\\ and \\\sigma = 1/(\alpha+\beta)\\,
+computed by
+[`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md).
 Its sign follows the balance of the two shapes: negative where they are
-comparable and the mass splits towards the two endpoints, positive where
-one dominates.
+comparable, positive where one dominates.
 
 ## Arguments
 
@@ -19,7 +19,8 @@ one dominates.
 - theta:
 
   A named list with components `alpha` and `beta`, both positive, each a
-  numeric vector of length 1 or `n`.
+  numeric vector of length 1 or of the common length of the parameter
+  settings.
 
 - ...:
 
@@ -33,14 +34,14 @@ A numeric vector of excess kurtoses, of length
 ## Notation
 
 \\\alpha \> 0\\ and \\\beta \> 0\\ are the shapes of the mixing beta,
-\\n\\ the number of trials and \\c_k\\ the \\k\\-th central moment.
+\\n\\ the number of trials.
 
 ## See also
 
 [`skewness.BetaBinom2Distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.BetaBinom2Distrib.md),
 from the same moments;
 [`kurtosis.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.BetaBinom1Distrib.md);
-[`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md);
+[`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md);
 [`betabinom2_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom2_distrib.md).
 
 ## Examples

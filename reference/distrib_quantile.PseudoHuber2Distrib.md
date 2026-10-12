@@ -2,9 +2,14 @@
 
 Inverts
 [`distrib_cdf.PseudoHuber2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.PseudoHuber2Distrib.md)
-by root finding on the lower half, in a bracket that starts ten standard
-deviations below \\\mu\\ and is doubled until it contains the quantile;
-an upper quantile is the reflection of the lower one about \\\mu\\.
+through
+[`symmetric_log_quantile()`](https://statmodels7.github.io/distributions7/reference/symmetric_log_quantile.md):
+the root of \\\log F(q) = \log P\\, with \\P\\ the smaller tail, is
+found below \\\mu\\ in a bracket that starts ten standard deviations
+below it and is doubled until it contains the quantile, and an upper
+quantile is the reflection of the lower one about \\\mu\\. Neither \\1 -
+p\\ nor the exponential of a logarithm is formed, so a probability far
+below machine epsilon gives an accurate quantile.
 
 ## Arguments
 

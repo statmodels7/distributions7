@@ -28,7 +28,7 @@ to_link_scale(distrib, theta, nat, order)
 
 - order:
 
-  The derivative order to assemble, 1 to 4.
+  The derivative order to assemble, 1 to 5.
 
 ## Value
 
@@ -43,14 +43,15 @@ not simply a transcription of the formula:
 
 First order is special-cased. It is a diagonal rescaling, \\\partial
 \ell/\partial \eta_i = (\partial \ell/\partial \theta_i) h_i'\\, and it
-is the order evaluated most often – once per scoring iteration – so
-sending it through the general assembly would spend a few hundred
-microseconds performing a multiplication.
+is the order evaluated most often (once per scoring iteration), so it
+bypasses the general assembly.
 
-The nested sum over \\j_t = 1, \dots, m_t\\ is enumerated by decoding a
-counter in mixed radix rather than by building the combinations with
-`expand.grid`, which on its own costs more than the rest of the loop
-together and is paid once per component on every call.
+The index structure of the nested sum over \\j_t = 1, \dots, m_t\\
+depends only on the parameter names and the order. It is computed once
+by
+[`link_scale_layout()`](https://statmodels7.github.io/distributions7/reference/link_scale_layout.md)
+and cached, and the loop of this function performs only the arithmetic
+on the vectors.
 
 ## See also
 

@@ -11,10 +11,6 @@ the constant \\-1/\mu\\ of an exponential; when \\\sigma^2 \> \mu^2\\
 the density has no interior mode and the derivative is negative
 throughout.
 
-Quantile residuals and the mixed derivatives of
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-read it.
-
 ## Arguments
 
 - distrib:

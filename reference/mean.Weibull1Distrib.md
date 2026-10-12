@@ -29,9 +29,9 @@ A numeric vector of means, of length
 
 ## Details
 
-A mean parametrization was available and was not taken: it would make
-every derivative of the family a derivative of the gamma function and of
-its inverse. The cost of the choice is paid here, in one gamma
+The package also ships the Weibull in its mean and shape,
+[`weibull3_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull3_distrib.md).
+In the scale parametrization of this page the mean needs one gamma
 evaluation per setting.
 
 ## Notation
@@ -45,8 +45,8 @@ uses.
 
 [`variance.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.Weibull1Distrib.md),
 [`skewness.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.Weibull1Distrib.md),
-[`weibull_gamma_factors()`](https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.md)
-for the shared factors,
+[`weibull_moment_terms()`](https://statmodels7.github.io/distributions7/reference/weibull_moment_terms.md)
+for the terms in the shape,
 [`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md).
 
 ## Examples

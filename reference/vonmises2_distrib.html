@@ -6,9 +6,9 @@ of the log-density to fourth order, a closed-form expected information, and
 the same Bessel-series distribution function the concentration
 parametrization uses.
 The concentration \(\kappa\) of vonmises1_distrib() is unbounded and
-hard to read. The resultant length is bounded, is the quantity circular
-statistics reports, and is one minus the circular variance; a sample reads
-it back directly as
+hard to interpret. The resultant length is bounded, is the quantity that is
+conventionally reported in circular statistics, and equals one minus the
+circular variance; it is computed from a sample as
 sqrt(mean(cos(z))^2 + mean(sin(z))^2)."><meta property="og:description" content="Builds the distribution object for the von Mises family parametrized by its
 mean direction \(\mu\) and its mean resultant length
 \(\rho \in (0, 1)\). The returned object carries closed-form derivatives
@@ -16,9 +16,9 @@ of the log-density to fourth order, a closed-form expected information, and
 the same Bessel-series distribution function the concentration
 parametrization uses.
 The concentration \(\kappa\) of vonmises1_distrib() is unbounded and
-hard to read. The resultant length is bounded, is the quantity circular
-statistics reports, and is one minus the circular variance; a sample reads
-it back directly as
+hard to interpret. The resultant length is bounded, is the quantity that is
+conventionally reported in circular statistics, and equals one minus the
+circular variance; it is computed from a sample as
 sqrt(mean(cos(z))^2 + mean(sin(z))^2)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -27,7 +27,7 @@ sqrt(mean(cos(z))^2 + mean(sin(z))^2)."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,9 +67,9 @@ of the log-density to fourth order, a closed-form expected information, and
 the same Bessel-series distribution function the concentration
 parametrization uses.</p>
 <p>The concentration \(\kappa\) of <code><a href="vonmises1_distrib.html">vonmises1_distrib()</a></code> is unbounded and
-hard to read. The resultant length is bounded, is the quantity circular
-statistics reports, and is one minus the circular variance; a sample reads
-it back directly as
+hard to interpret. The resultant length is bounded, is the quantity that is
+conventionally reported in circular statistics, and equals one minus the
+circular variance; it is computed from a sample as
 <code>sqrt(mean(cos(z))^2 + mean(sin(z))^2)</code>.</p>
     </div>
 
@@ -115,11 +115,12 @@ with \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\), and
 \(\mathbb{E}[\cos(Y-\mu)] = \rho\). The map \(\rho = A(\kappa)\) is a
 strictly increasing bijection from \((0, \infty)\) onto \((0, 1)\).</p>
 <p><strong>Its inverse has no closed form</strong>, which is why this is a family of its own
-and not a <code><a href="reparametrize.html">reparametrize()</a></code> of the other. \(\kappa\) is obtained by root
-finding on \(\log\kappa\), and its four derivatives come from the inverse
-function rule applied to \(A'\) through \(A^{(4)}\), which the Bessel
-recurrences give from the same two evaluations \(A\) already needs.</p>
-<p>The map is steep near \(\rho = 1\): measured,
+and not a <code><a href="reparametrize.html">reparametrize()</a></code> of the other. numericals7 obtains \(\kappa\)
+by Newton's method on \(\kappa\), and its four derivatives come from the
+inverse function rule applied to \(A'\) through \(A^{(4)}\), which
+numericals7 evaluates from a power series at small \(\kappa\), from the
+Bessel identities in extended precision, or from an asymptotic series.</p>
+<p>The map is steep near \(\rho = 1\):
 \(\mathrm{d}\kappa/\mathrm{d}\rho\) is 2.00 at \(\rho = 0.01\), 3.14 at
 0.5, 199 at 0.95 and \(5.0\times10^{5}\) at 0.999. A fit whose data are
 nearly all in one direction is therefore far better conditioned in
@@ -145,8 +146,8 @@ Jacobian of the map is that reciprocal.</p>
     <p><code><a href="mean.VonMises2Distrib.html">mean.VonMises2Distrib()</a></code> returns the ordinary expectation of \(Y\) on
 \([-\pi, \pi)\), which differs from \(\mu\) whenever \(\mu \ne 0\);
 <code><a href="vonmises1_distrib.html">vonmises1_distrib()</a></code> discusses the same distinction. What this
-parametrization buys is that the <strong>second</strong> parameter is a quantity a sample
-reads back directly, which the concentration is not.</p>
+parametrization offers is that the <strong>second</strong> parameter can be computed
+directly from a sample, which is not the case for the concentration.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

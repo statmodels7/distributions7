@@ -5,16 +5,18 @@
 inverse Gaussian law with density proportional to
 \(\exp\{-\sqrt{\nu}\,(x + 1/x)/2\}\). \(X\) is drawn by the
 ratio-of-uniforms method with the mode shifted to the origin (Hormann and
-Leydold, 2014), whose bounding box is set once per distinct \(\nu\);
-below \(\nu = 10^{-16}\) the mixing law is its exponential limit. The
+Leydold, 2014), whose bounding box is recomputed whenever \(\nu\) differs
+from that of the previous draw; below \(\nu = 10^{-16}\) the mixing law
+is its exponential limit. The
 draws depend on .Random.seed in the usual way."><meta property="og:description" content="Draws n independent variates as a normal variance mixture,
 \(Y = \mu + \sqrt{W} Z\) with \(Z\) standard normal and
 \(W = \sigma^2 \sqrt{\nu}\, X\), where \(X\) follows the generalized
 inverse Gaussian law with density proportional to
 \(\exp\{-\sqrt{\nu}\,(x + 1/x)/2\}\). \(X\) is drawn by the
 ratio-of-uniforms method with the mode shifted to the origin (Hormann and
-Leydold, 2014), whose bounding box is set once per distinct \(\nu\);
-below \(\nu = 10^{-16}\) the mixing law is its exponential limit. The
+Leydold, 2014), whose bounding box is recomputed whenever \(\nu\) differs
+from that of the previous draw; below \(\nu = 10^{-16}\) the mixing law
+is its exponential limit. The
 draws depend on .Random.seed in the usual way."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -23,7 +25,7 @@ draws depend on .Random.seed in the usual way."><meta property="og:image" conten
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,8 +64,9 @@ draws depend on .Random.seed in the usual way."><meta property="og:image" conten
 inverse Gaussian law with density proportional to
 \(\exp\{-\sqrt{\nu}\,(x + 1/x)/2\}\). \(X\) is drawn by the
 ratio-of-uniforms method with the mode shifted to the origin (Hormann and
-Leydold, 2014), whose bounding box is set once per distinct \(\nu\);
-below \(\nu = 10^{-16}\) the mixing law is its exponential limit. The
+Leydold, 2014), whose bounding box is recomputed whenever \(\nu\) differs
+from that of the previous draw; below \(\nu = 10^{-16}\) the mixing law
+is its exponential limit. The
 draws depend on <code>.Random.seed</code> in the usual way.</p>
     </div>
 

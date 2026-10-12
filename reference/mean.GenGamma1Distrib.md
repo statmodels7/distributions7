@@ -1,8 +1,8 @@
 # Mean of the Generalized Gamma Distribution
 
 Closed form: \\E\[Y\] = a\\\Gamma\\(d+1)/p\\/\Gamma(d/p)\\, the first
-raw moment. None of the three parameters is the mean: \\a\\ is a scale
-and \\d\\ and \\p\\ are shapes, and the gamma ratio is what carries the
+raw moment. The mean is a function of all three parameters: \\a\\ is a
+scale, \\d\\ and \\p\\ are shapes, and the gamma ratio carries the
 shapes into the mean.
 
 ## Arguments
@@ -33,10 +33,11 @@ The logarithm of the gamma ratio is formed in Stirling's form, \\(k -
 remainders, for \\k = d/p \ge 10\\ and \\h = 1/p\\, where the difference
 of the two log-gamma values would lose digits.
 
-The family nests four the toolkit ships separately, and each is a check
-on this formula: the gamma at \\p = 1\\, the Weibull at \\d = p\\, the
-exponential at \\d = p = 1\\ and the half-normal at \\a = \sqrt2, d = 1,
-p = 2\\.
+The family nests the gamma at \\p = 1\\, the Weibull at \\d = p\\ and
+the exponential at \\d = p = 1\\, which the toolkit ships as families,
+and the half-normal at \\a = \sqrt2, d = 1, p = 2\\, which the toolkit
+builds as `fixed(folded(gaussian1_distrib()), mu = 0)`. Each is a check
+on this formula.
 
 ## Notation
 

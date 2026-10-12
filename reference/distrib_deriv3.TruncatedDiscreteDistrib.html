@@ -3,17 +3,17 @@
 \log Z\) with \(d^I \log Z\) from the moment-to-cumulant expansion over
 set partitions, with every expectation taken by summation over the
 retained support in place of a quadrature.
-That makes it both exact and cheap. The support of a truncated lattice
-family is finite whenever both endpoints are, so each block is a finite sum
-of terms the parent already computes, and the memoization across the
-partition sum applies as before."><meta property="og:description" content="The same construction as for a continuous parent, \(\ell_T = \ell -
+When both endpoints are finite, the support of a truncated discrete family is
+finite, so each block is a finite sum of terms that the parent already
+computes, and the memoization across the partition sum applies as before.
+With an infinite upper endpoint the sums run over an infinite support."><meta property="og:description" content="The same construction as for a continuous parent, \(\ell_T = \ell -
 \log Z\) with \(d^I \log Z\) from the moment-to-cumulant expansion over
 set partitions, with every expectation taken by summation over the
 retained support in place of a quadrature.
-That makes it both exact and cheap. The support of a truncated lattice
-family is finite whenever both endpoints are, so each block is a finite sum
-of terms the parent already computes, and the memoization across the
-partition sum applies as before."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+When both endpoints are finite, the support of a truncated discrete family is
+finite, so each block is a finite sum of terms that the parent already
+computes, and the memoization across the partition sum applies as before.
+With an infinite upper endpoint the sums run over an infinite support."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +21,7 @@ partition sum applies as before."><meta property="og:image" content="https://sta
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,10 +58,10 @@ partition sum applies as before."><meta property="og:image" content="https://sta
 \log Z\) with \(d^I \log Z\) from the moment-to-cumulant expansion over
 set partitions, with every expectation taken by <strong>summation over the
 retained support</strong> in place of a quadrature.</p>
-<p>That makes it both exact and cheap. The support of a truncated lattice
-family is finite whenever both endpoints are, so each block is a finite sum
-of terms the parent already computes, and the memoization across the
-partition sum applies as before.</p>
+<p>When both endpoints are finite, the support of a truncated discrete family is
+finite, so each block is a finite sum of terms that the parent already
+computes, and the memoization across the partition sum applies as before.
+With an infinite upper endpoint the sums run over an infinite support.</p>
     </div>
 
 
@@ -116,7 +116,7 @@ a quadrature apiece.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1027039 0.2508520 0.3990002</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The parent's third derivative in mu is 2 y / mu^3 - ... and the truncated</span></span></span>
+<span class="r-in"><span><span class="co"># The parent's third derivative in mu is 2 y / mu^3 and the truncated</span></span></span>
 <span class="r-in"><span><span class="co"># one differs by the derivative of log Z, which is the whole wrapper.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>truncated <span class="op">=</span> <span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">tr</span>, <span class="fl">4</span>, <span class="va">th</span><span class="op">)</span><span class="op">[[</span><span class="st">"mu_mu_mu"</span><span class="op">]</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>  parent <span class="op">=</span> <span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">4</span>, <span class="va">th</span><span class="op">)</span><span class="op">[[</span><span class="st">"mu_mu_mu"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>

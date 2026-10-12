@@ -32,8 +32,8 @@ singletons survives.
 
 - expected:
 
-  Logical of length 1. `TRUE` takes the expectation, which for a lattice
-  parent is an exact sum over the support.
+  Logical of length 1. `TRUE` takes the expectation, which for a
+  discrete parent is an exact sum over the support.
 
 - ...:
 

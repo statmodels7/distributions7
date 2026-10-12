@@ -14,7 +14,10 @@ observation, in closed form. Writing \\z = (y - \mu)/\sigma\\,
 
 The curvature in \\\mu\\ is negative everywhere and vanishes as
 \\\|z\|\\ grows, so a distant observation carries almost no information
-about the location. The expectations are
+about the location. The kernel computes \\\mathrm{sech}^2(z/2)\\ as
+\\4e/(1+e)^2\\ with \\e = e^{-\|z\|}\\, so the value keeps its relative
+accuracy far into the tails, where \\1 - \tanh^2(z/2)\\ would cancel to
+zero. The expectations are
 [`distrib_expected_hessian.LogisticDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LogisticDistrib.md).
 
 ## Arguments

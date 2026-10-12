@@ -1,8 +1,9 @@
 # A Resolved Kernel for One Parameter's Link-Scale Derivatives
 
-The log-density, the score and the curvature in ONE parameter's
-unconstrained scale, as three functions with everything that does not
-depend on the data already resolved.
+The log-density, the score, the curvature, the expected information and
+its derivative for one parameter on its unconstrained scale, as five
+functions with everything that does not depend on the data already
+resolved.
 
 ## Usage
 
@@ -18,22 +19,8 @@ distrib_kernel(distrib, param)
 
 - param:
 
-  The name of the parameter whose unconstrained scale the derivatives
-  are taken with respect to.
-
-  The kernel also carries the expected information of the same
-  coordinate and its derivative in that coordinate, which a filter whose
-  score is scaled by a power of the information reads at each step. On
-  the link scale the information is \\I_p =
-  -\mathbb{E}\[\ell\_{pp}\]\\h'(\eta_p)^2\\, with no term in \\h''\\
-  because the score has mean zero, and
-
-  \$\$\frac{\partial I_p}{\partial \eta_p} =
-  -\frac{\partial\mathbb{E}\[\ell\_{pp}\]}{\partial\theta_p}\\h'^3 -
-  2\\\mathbb{E}\[\ell\_{pp}\]\\h'\\h''.\$\$
-
-  The two methods are looked up when first called, so a family without
-  an expected information still yields the other three functions.
+  The name of the parameter with respect to whose unconstrained scale
+  the derivatives are taken.
 
 ## Value
 
@@ -42,13 +29,11 @@ A list of five functions of `(y, theta, eta)`: `logdens`, `score`,
 
 ## Details
 
-The generic route is the right one almost everywhere: it validates its
-arguments, aligns `theta` by name, dispatches, and assembles every
-component of the requested order. A recursion that calls back once per
-observation cannot afford any of that. A score-driven filter evaluates
-the score at a predictor it has just produced, so the call cannot be
-vectorized away, and profiling a fitted model put S7 dispatch, the
-argument checking and the name arithmetic at the whole of its cost.
+The generic route validates its arguments, aligns `theta` by name,
+dispatches, and assembles every component of the requested order. A
+score-driven filter evaluates the score once per observation, at a
+predictor that it has just produced, so these steps cannot be vectorized
+away and their cost dominates.
 
 This resolves the family's methods and the link's once, and applies the
 chain rule for the single component wanted rather than for all of them.
@@ -63,14 +48,30 @@ which is what
 [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
 computes for those two components and nothing else.
 
-The bargain is that the caller takes on what the generic was doing.
-`theta` must already be a list in the family's own order, its values
-unnamed and of a length the family accepts against `y`; nothing is
-checked. The entry for `param` is replaced, so its value on the way in
-is immaterial. The inverse link is clamped strictly inside its bounds
+The caller takes on the checks that the generic would have made. `theta`
+must already be a list named by the parameters of the family, in the
+family's own order, with values of a length that the family accepts
+against `y`; nothing is checked. The entry named `param` is replaced, so
+its value on the way in is immaterial. A list without names is not
+replaced at that entry, and a list whose names are out of order is read
+by position. The inverse link is clamped strictly inside its bounds
 exactly as
 [`linkfunctions7::linkinv()`](https://statmodels7.github.io/linkfunctions7/reference/linkinv.html)
-does, because that is a correctness property and not an optimization.
+does, which correctness requires.
+
+The kernel also carries the expected information of the same coordinate
+and its derivative in that coordinate, which a filter whose score is
+scaled by a power of the information reads at each step. On the link
+scale the information is \\I_p =
+-\mathbb{E}\[\ell\_{pp}\]\\h'(\eta_p)^2\\, with no term in \\h''\\
+because the score has mean zero, and
+
+\$\$\frac{\partial I_p}{\partial \eta_p} =
+-\frac{\partial\mathbb{E}\[\ell\_{pp}\]}{\partial\theta_p}\\h'^3 -
+2\\\mathbb{E}\[\ell\_{pp}\]\\h'\\h''.\$\$
+
+The two methods are looked up when first called, so a family without an
+expected information still yields the other three functions.
 
 ## See also
 

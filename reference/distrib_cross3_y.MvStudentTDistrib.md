@@ -32,8 +32,8 @@ write \\T\_{ijk} = \Omega\_{ij}w_k + \Omega\_{ik}w_j +
 
 - scale:
 
-  One of `"parameter"` (the default) or `"link"`, handled by the generic
-  before dispatch.
+  One of `"parameter"` (the default) or `"link"`. The method returns the
+  parameter scale and the generic applies the link scale to its result.
 
 - ...:
 
@@ -67,5 +67,5 @@ tp <- theta; tp$nu <- 6 + h
 tm <- theta; tm$nu <- 6 - h
 max(abs(c3$nu - (distrib_deriv3_y(d, y, tp) -
                  distrib_deriv3_y(d, y, tm)) / (2 * h)))
-#> [1] 1.882004e-11
+#> [1] 1.89001e-11
 ```

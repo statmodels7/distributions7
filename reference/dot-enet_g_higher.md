@@ -1,9 +1,7 @@
 # Higher Derivatives of the Elastic Net's Log Mills Ratio
 
-Adds \\G''\\ and \\G'''\\ to the list of pieces, obtained by
-differentiating the identity \\G' = 1 + xG - G^2\\ instead of the ratio
-itself: \$\$G'' = G + xG' - 2GG', \qquad G''' = 2G' + xG'' - 2(G')^{2} -
-2GG''.\$\$
+Adds \\G''\\ and \\G'''\\ to the list of pieces, the second and third
+derivatives of \\G = \mathrm{d}\log M/\mathrm{d}x\\.
 
 ## Usage
 
@@ -25,11 +23,13 @@ each of the length `g` has.
 
 ## Details
 
-Written this way each order is a polynomial in \\x\\, \\G\\ and the
-orders below, so the cancellation that afflicts \\G = x - 1/M\\ for
-large \\x\\ is confined to \\G\\ itself, where `.enet_G()` already
-switches to an asymptotic series past \\\|x\| = 10^3\\. Nothing above
-first order introduces a new cancellation.
+The derivatives of \\\log M\\ are, with alternating signs, the cumulants
+of the density proportional to \\e^{-xs - s^2/2}\\ on \\s \> 0\\, and a
+compiled kernel computes them from the ratios of its moments, which
+follow a recursion run downward for \\x \ge 1\\. The identities \\G' =
+1 + xG - G^2\\ and \\G'' = G + xG' - 2GG'\\ hold, but they cancel for
+large \\x\\ (\\1 + xG\\ is of order \\x^{-2}\\ while its terms are of
+order one), so they are not used.
 
 ## Notation
 
@@ -52,8 +52,11 @@ c(x = p$x, G = p$g, dG = p$dg, d2G = p$d2g, d3G = p$d3g)
 #>           x           G          dG         d2G         d3G 
 #>  1.00000000 -0.52513528  0.19909767 -0.11693120  0.07917498 
 
-# G'' against a central difference of the identity for G'.
-gp <- function(x) { g <- distributions7:::.enet_G(x); 1 + x * g - g^2 }
+# G'' against a central difference of G'.
+gp <- function(x) {
+  distributions7:::.enet_parts(list(mu = 0, lambda = 2 * x^2,
+                                    alpha = 0.5))$dg
+}
 eps <- 1e-5
 c(analytic = p$d2g, numeric = (gp(p$x + eps) - gp(p$x - eps)) / (2 * eps))
 #>   analytic    numeric 

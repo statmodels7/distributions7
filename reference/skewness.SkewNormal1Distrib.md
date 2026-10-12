@@ -4,9 +4,9 @@ Closed form: \$\$\gamma_1 = \frac{4-\pi}{2}\\ \frac{(b\delta)^3}{(1 -
 b^2\delta^2)^{3/2}},\$\$ with \\\delta = \alpha/\sqrt{1+\alpha^2}\\ and
 \\b = \sqrt{2/\pi}\\. It takes the sign of the shape and vanishes at
 zero. Because \\\delta\\ is bounded by 1, the skewness the family can
-reach is bounded too, by about 0.9953 in absolute value: a sample skewed
-more than that cannot be fitted by a skew normal at any shape, and the
-skew t is the family to reach for.
+reach is bounded too, by about 0.9953 in absolute value. A sample
+skewness beyond that value lies outside the range a skew normal can have
+at any shape; the skewness of the skew t has no such bound.
 
 ## Arguments
 

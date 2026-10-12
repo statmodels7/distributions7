@@ -30,8 +30,8 @@ A numeric vector, the length of `y` recycled against `theta`.
 ## Details
 
 Only the continuous class registers this. A discrete family has no
-response derivative, and the base class refuses one, so there is nothing
-for a discrete reparametrization to delegate.
+response derivative, and no method is registered for it on the base
+class, so there is nothing for a discrete reparametrization to delegate.
 
 ## See also
 

@@ -1,9 +1,10 @@
 # Folded Distribution Function
 
 Computes \\P(\|Y\| \le q) = F(q) - F(-q)\\ from the parent's own
-distribution function, exactly and with no quadrature. It is the
-difference of two calls on the parent, clamped to \\\[0, 1\]\\ against
-rounding and set to zero below the support.
+distribution function, exactly and with no quadrature, clamped to \\\[0,
+1\]\\ against rounding and set to zero below the support. The upper tail
+is \\P(\|Y\| \> q) = S(q) + F(-q)\\, with \\S\\ the parent's survival
+function.
 
 ## Arguments
 
@@ -14,7 +15,8 @@ rounding and set to zero below the support.
 
 - q:
 
-  A numeric vector of quantiles. Values below zero give probability `0`.
+  A numeric vector of quantiles. Values below zero give lower-tail
+  probability `0` (and upper-tail probability `1`).
 
 - theta:
 
@@ -40,11 +42,9 @@ A numeric vector of probabilities, in \\\[0, 1\]\\.
 
 ## Details
 
-`lower.tail = FALSE` and `log.p = TRUE` are formed from the computed
-probability, as \\1 - p\\ and \\\log p\\, not by a separate route
-through the parent. Far into the upper tail that difference cancels, so
-a caller who needs the survival function of a folded distribution to
-many digits should expect the loss the subtraction implies.
+`lower.tail = FALSE` is computed from the parent's two tails and not as
+\\1 - p\\, so the survival function keeps its digits far into the upper
+tail; `log.p = TRUE` takes the logarithm of the probability returned.
 
 ## Notation
 
@@ -56,7 +56,8 @@ variable.
 [`distrib_pdf.FoldedDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.FoldedDistrib.md)
 for the density,
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md),
-which the class inherits and which inverts this exactly, and
+which the class inherits and which inverts this function by numerical
+root finding, and
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
 for the generic.
 
@@ -84,5 +85,5 @@ distrib_cdf(d, 1, theta, log.p = TRUE)
 # The inherited quantile inverts it, so the round trip closes.
 p <- c(0.1, 0.5, 0.9)
 max(abs(distrib_cdf(d, distrib_quantile(d, p, theta), theta) - p))
-#> [1] 1.110223e-16
+#> [1] 2.775558e-17
 ```

@@ -6,6 +6,17 @@ the mean, one value per observation, in closed form. Differentiating
 \mu^2} = \dfrac{-\mu(1+\mu) - (y-\mu)(1+2\mu)}{\mu^2(1+\mu)^2},\$\$
 which depends on the data through \\y\\ alone. Its expectation is
 [`distrib_expected_hessian.GeometricDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GeometricDistrib.md).
+Equivalently the value is \\-(y/\mu^2 - (y+1)/(1+\mu)^2)\\.
+
+The kernel writes the bracket \\y/\mu^k - (y+1)/(1+\mu)^k\\ of order
+\\k\\ as \\y(1 - q^k)/\mu^k - 1/(1+\mu)^k\\ with \\q = \mu/(1+\mu)\\,
+and computes \\1 - q^k\\ as
+\\-\mathrm{expm1}(-k\\\mathrm{log1p}(1/\mu))\\. The two terms of the
+original form agree to a relative \\1/\mu\\ where \\y\\ is near \\\mu\\,
+and their difference would lose that many digits at a large mean; in
+this form the value keeps full relative accuracy. A term with a zero
+coefficient contributes zero, so the value at \\y = 0\\ stays finite
+however small \\\mu\\ is.
 
 ## Arguments
 

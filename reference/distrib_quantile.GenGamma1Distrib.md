@@ -1,10 +1,10 @@
 # Generalized Gamma Quantile Function
 
 Computes \\Q(u) = a\\\\Q\_\Gamma(u;\\ d/p)\\^{1/p}\\, inverting the same
-representation the distribution function uses: \\(Y/a)^p\\ is Gamma with
+representation as the distribution function: \\(Y/a)^p\\ is Gamma with
 shape \\d/p\\, so its quantile raised to the power \\1/p\\ and scaled by
 \\a\\ is the generalized gamma's. The whole computation is one `qgamma`
-call, and nothing is inverted by root finding.
+call, without root finding.
 
 ## Arguments
 

@@ -1,17 +1,22 @@
 # Skew Normal Third Derivatives
 
 Computes the ten third derivatives of the log-density in closed form, in
-a compiled kernel. The family's whole derivative surface stays
-elementary for one reason: with \\t = \alpha z\\ and \\R(t) =
-\phi(t)/\Phi(t)\\ the inverse Mills ratio, \\R' = -R(t+R)\\ closes the
-recursion, so every derivative of \\\log\Phi(t)\\ is a polynomial in
-\\t\\ and \\R\\ and no new special function appears at any order.
+a compiled kernel. With \\t = \alpha z\\ and \\R(t) = \phi(t)/\Phi(t)\\
+the inverse Mills ratio, \\R' = -R(t+R)\\, so every derivative of
+\\\log\Phi(t)\\ is a polynomial in \\t\\ and \\R\\. For \\t \ge -1\\ the
+kernel evaluates these polynomials. Below \\t = -1\\ they cancel (\\t +
+R\\ is of size \\1/\|t\|\\ while \\t\\ and \\R\\ are of size \\\|t\|\\),
+and the derivatives of \\\log\Phi(t)\\ are taken instead from
+\\\log\Phi(t) = -t^2/2 - \log(2\pi)/2 + L(-t)\\, with \\L\\ the
+logarithm of the Mills ratio, whose derivatives are, with alternating
+signs, the cumulants of the density proportional to \\e^{ts - s^2/2}\\
+on \\s \> 0\\; no difference of large numbers is formed.
 
-With `expected = TRUE` the value is an expectation instead, and there it
-is **numerical**: the integrals are the ones that block the expected
-information, so the call routes to
+With `expected = TRUE` the value is an expectation, computed numerically
+by
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-and `approx` and `nsim` are read.
+from the same kind of integrals as the expected information. The
+arguments `approx` and `nsim` are used only in this case.
 
 ## Arguments
 

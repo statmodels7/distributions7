@@ -3,8 +3,10 @@
 Draws `n` independent chi-squared variates by calling
 [`stats::rchisq()`](https://rdrr.io/r/stats/Chisquare.html) at
 `df = mu`, so the draws come from R's own generator and depend on
-`.Random.seed` in the usual way. The ratio-of-uniforms fallback the base
-class supplies is bypassed.
+`.Random.seed` in the usual way. The base class would draw by inversion
+through
+[`distrib_quantile.ChisqDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.ChisqDistrib.md),
+which gives a different sequence for the same seed.
 
 ## Arguments
 

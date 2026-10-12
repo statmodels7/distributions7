@@ -23,7 +23,8 @@ independent.
 
 - y:
 
-  A numeric vector of counts. A value off the support gives `NaN`.
+  A numeric vector of counts. A value off the support, or a missing
+  value, gives `NaN`.
 
 - theta:
 
@@ -80,9 +81,9 @@ rbind(analytic = vapply(g, sum, 0),
 
 # The two scores are uncorrelated under the model, which is what
 # orthogonality means and what pig1 does not have.
-c(pig2 = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha),
-  pig1 = sum(distrib_expected_hessian(pig1_distrib(), 0:200,
-                                      list(mu = 3, sigma = 0.8))$mu_sigma))
+c(pig2 = distrib_expected_hessian(d, 0, th)$mu_alpha,
+  pig1 = distrib_expected_hessian(pig1_distrib(), 0,
+                                  list(mu = 3, sigma = 0.8))$mu_sigma)
 #>          pig2          pig1 
-#> -8.183878e-15  7.392208e+00 
+#> -4.071581e-17  3.677716e-02 
 ```

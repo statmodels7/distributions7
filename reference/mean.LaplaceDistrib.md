@@ -3,8 +3,7 @@
 Closed form, replacing the numerical default: \\E\[Y\] = \mu\\. The
 density is symmetric about \\\mu\\, so the location is the mean and the
 median at once. The value is recycled to the length the two parameters
-imply, and no quadrature is run: the kink at \\y = \mu\\ makes the
-numerical route needlessly awkward for a quantity available in one read.
+imply, and no quadrature is run.
 
 ## Arguments
 

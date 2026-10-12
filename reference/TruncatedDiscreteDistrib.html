@@ -17,7 +17,7 @@ validation the constructor performs."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -133,12 +133,11 @@ support. Either may be infinite, and a finite one must be a whole number.</p></d
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The lower endpoint being included is the one place the two truncation
-classes differ. The tail below the interval is \(F(L^-) = F(L) - f(L)\),
-so the mass sitting exactly on \(L\) has to be added back;
-<code><a href="trunc_constants.html">trunc_constants()</a></code> does that through <code><a href="parent_mass_at.html">parent_mass_at()</a></code>, and
-<code><a href="trunc_mass_derivs.html">trunc_mass_derivs()</a></code> applies the matching correction to the derivatives of
-\(Z\).</p>
+    <p>The tail below the interval is \(F(L^-) = F(L) - f(L)\), because the lower
+endpoint is included in the support and the mass sitting exactly on \(L\)
+has to be added back; <code><a href="trunc_constants.html">trunc_constants()</a></code> does that through
+<code><a href="parent_mass_at.html">parent_mass_at()</a></code>, and <code><a href="trunc_mass_derivs.html">trunc_mass_derivs()</a></code> applies the matching correction
+to the derivatives of \(Z\).</p>
 <p>Truncation adds no parameter, so the object carries exactly the parent's
 <code>params</code>, <code>params_bounds</code> and <code>link_params</code>. What it can remove is
 IDENTIFIABILITY: \(k\) retained support points carry \(k-1\) free
@@ -159,15 +158,22 @@ and \(H_{ij}\) are the parent's score and observed Hessian; and
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
 
 
-<p>Methods implemented for this class:
+<p>Registered on this class, each linked to the page that documents it:</p><ul><li><p>the distribution: <code><a href="distrib_pdf.TruncatedDiscreteDistrib.html">distrib_pdf()</a></code>,
 <code><a href="distrib_cdf.TruncatedDiscreteDistrib.html">distrib_cdf()</a></code>,
-<code><a href="distrib_expected_hessian.TruncatedDiscreteDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_quantile.TruncatedDiscreteDistrib.html">distrib_quantile()</a></code> and
+<code><a href="distrib_rng.TruncatedDiscreteDistrib.html">distrib_rng()</a></code>;</p></li>
+<li><p>the derivatives in the parameters:
 <code><a href="distrib_gradient.TruncatedDiscreteDistrib.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.TruncatedDiscreteDistrib.html">distrib_hessian()</a></code>,
-<code><a href="distrib_pdf.TruncatedDiscreteDistrib.html">distrib_pdf()</a></code>,
-<code><a href="distrib_quantile.TruncatedDiscreteDistrib.html">distrib_quantile()</a></code>,
-<code><a href="distrib_rng.TruncatedDiscreteDistrib.html">distrib_rng()</a></code></p>
-<p>Everything else is inherited from <code><a href="discrete_distrib.html">discrete_distrib()</a></code>.</p>
+<code><a href="distrib_expected_hessian.TruncatedDiscreteDistrib.html">distrib_expected_hessian()</a></code>,
+<code><a href="distrib_deriv3.TruncatedDiscreteDistrib.html">distrib_deriv3()</a></code>,
+<code><a href="distrib_deriv4.TruncatedDiscreteDistrib.html">distrib_deriv4()</a></code> and
+<code><a href="distrib_deriv5.wrappers.html">distrib_deriv5()</a></code>;</p></li>
+<li><p>the derivatives of the expected information: <code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code>
+and <code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()</a></code>;</p></li>
+<li><p>the exactness flags: <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> and <code><a href="has_exact_deriv4.html">has_exact_deriv4()</a></code>;</p></li>
+<li><p>the fitting helpers: <code><a href="distrib_scalar_route.html">distrib_scalar_route()</a></code>.</p></li>
+</ul><p>Every other generic is inherited from <code><a href="discrete_distrib.html">discrete_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -191,10 +197,12 @@ the continuous branch, and <code><a href="trunc_constants.html">trunc_constants(
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">dpois</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">dpois</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3130353 0.3130353 0.2086902</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># An interval leaving too few support points is rejected by the</span></span></span>
-<span class="r-in"><span><span class="co"># constructor, the parameter no longer being identified.</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu"><a href="truncated.html">truncated</a></span><span class="op">(</span><span class="fu"><a href="bernoulli_distrib.html">bernoulli_distrib</a></span><span class="op">(</span><span class="op">)</span>, lower <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error : lower = 1 lies at or above the support of 'bernoulli', which ends at 1: the truncated support would be empty.</span>
+<span class="r-in"><span><span class="co"># An interval leaving too few support points to identify the parameters</span></span></span>
+<span class="r-in"><span><span class="co"># is rejected by the constructor (two points for the two parameters).</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu"><a href="truncated.html">truncated</a></span><span class="op">(</span><span class="fu"><a href="negbin2_distrib.html">negbin2_distrib</a></span><span class="op">(</span><span class="op">)</span>, lower <span class="op">=</span> <span class="fl">3</span>, upper <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Error : Truncating 'negbin2' to [3, 4] leaves 2 support point(s), carrying 1 free</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   probabilities, while the distribution has 2 parameter(s). They would not be</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   identified. At least 3 support points are required.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

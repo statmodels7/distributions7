@@ -7,9 +7,9 @@ $$\ell^{(\mu\mu)} = -\kappa\cos(y-\mu), \qquad
 with \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\). The
 pure-concentration entry is free of the data: the log-density is
 \(\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}\), linear in \(\kappa\)
-apart from the normalizing constant, so \(\kappa\) appears twice only
-inside \(\log I_0\). It therefore equals its own expectation at every
-observation.
+apart from the normalizing constant, so its second derivative in
+\(\kappa\) comes from \(\log I_0\) alone. It therefore equals its own
+expectation at every observation.
 \(A'\) comes from numericals7::bessel_i_ratio_d1(), accurate to the
 last bits at any concentration. It is the variance of
 \(\cos(Y-\mu)\) and is positive, so the information is positive
@@ -21,9 +21,9 @@ $$\ell^{(\mu\mu)} = -\kappa\cos(y-\mu), \qquad
 with \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\). The
 pure-concentration entry is free of the data: the log-density is
 \(\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}\), linear in \(\kappa\)
-apart from the normalizing constant, so \(\kappa\) appears twice only
-inside \(\log I_0\). It therefore equals its own expectation at every
-observation.
+apart from the normalizing constant, so its second derivative in
+\(\kappa\) comes from \(\log I_0\) alone. It therefore equals its own
+expectation at every observation.
 \(A'\) comes from numericals7::bessel_i_ratio_d1(), accurate to the
 last bits at any concentration. It is the variance of
 \(\cos(Y-\mu)\) and is positive, so the information is positive
@@ -35,7 +35,7 @@ definite. The components are computed by a compiled kernel."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,9 +76,9 @@ $$\ell^{(\mu\mu)} = -\kappa\cos(y-\mu), \qquad
 with \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\). The
 pure-concentration entry is <strong>free of the data</strong>: the log-density is
 \(\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}\), linear in \(\kappa\)
-apart from the normalizing constant, so \(\kappa\) appears twice only
-inside \(\log I_0\). It therefore equals its own expectation at every
-observation.</p>
+apart from the normalizing constant, so its second derivative in
+\(\kappa\) comes from \(\log I_0\) alone. It therefore equals its own
+expectation at every observation.</p>
 <p>\(A'\) comes from <code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html" class="external-link">numericals7::bessel_i_ratio_d1()</a></code>, accurate to the
 last bits at any concentration. It is the variance of
 \(\cos(Y-\mu)\) and is positive, so the information is positive
@@ -122,8 +122,8 @@ whatever the count says. Defaults to <code>1L</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list of three numeric vectors, <code>mu_mu</code>, <code>mu_kappa</code> and
-<code>kappa_kappa</code>, each of length
+    <p>A named list of three numeric vectors, <code>mu_mu</code>, <code>kappa_kappa</code> and
+<code>mu_kappa</code>, in the order of <code><a href="hess_names.html">hess_names()</a></code>, each of length
 <code>max(length(y), length(mu), length(kappa))</code>.</p>
     </div>
     <div class="section level2">
@@ -150,7 +150,7 @@ quantity, <code><a href="https://statmodels7.github.io/numericals7/reference/bes
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.5</span>, kappa <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">h</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu_mu"       "mu_kappa"    "kappa_kappa"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu_mu"       "kappa_kappa" "mu_kappa"   </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The pure-concentration entry is one number, repeated.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">h</span><span class="op">$</span><span class="va">kappa_kappa</span><span class="op">)</span></span></span>

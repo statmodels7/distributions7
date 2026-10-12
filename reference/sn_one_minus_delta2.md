@@ -1,13 +1,16 @@
 # One Minus the Squared Skewness Parameter
 
-Returns \\1 - \delta^2\\, the quantity the shape of the direct
-parametrization divides by. Written in the skewness alone it is \$\$1 -
-\delta^2 = 1 -
-\left(\dfrac{\lvert\gamma_1\rvert}{\gamma\_{\max}}\right)^{2/3},\$\$
-with \\\gamma\_{\max}\\ the ceiling of
-[`sn_max_skew()`](https://statmodels7.github.io/distributions7/reference/sn_max_skew.md),
-and it is evaluated through `log` and `expm1`, which leaves no
-cancellation in it.
+Returns \\1 - q\\, with \\q =
+(\lvert\gamma_1\rvert/\gamma\_{\max})^{2/3}\\ and \\\gamma\_{\max}\\ the
+ceiling of
+[`sn_max_skew()`](https://statmodels7.github.io/distributions7/reference/sn_max_skew.md).
+With \\c\\ and \\\delta\\ as in
+[`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md),
+\\1 - q = (1 + c^2)(1 - \delta^2)\\, and the shape of the direct
+parametrization is \\\alpha = c/(b\sqrt{1-q})\\, so this is the quantity
+by which it divides. It is evaluated as
+\\-\mathrm{expm1}\\(2/3)\log(\lvert\gamma_1\rvert/\gamma\_{\max})\\\\,
+which involves no cancellation.
 
 ## Usage
 
@@ -44,10 +47,9 @@ The two forms this replaces differ from it only at the top of the range,
 and both subtract two nearly equal numbers there. `1 - (mu_z/b)^2`
 reaches exactly zero at the largest skewness
 [`linkfunctions7::bounded_link()`](https://statmodels7.github.io/linkfunctions7/reference/bounded_link.html)
-can produce, and the \\b^2 + (b^2-1)c^2\\ of
-[`md_skewnormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
-reaches \\-1.11\times 10^{-16}\\. At that skewness, one unit in the last
-place inside the bound, this returns \\9.42\times 10^{-17}\\, and the
+can produce, and the difference \\b^2 + (b^2-1)c^2\\ reaches
+\\-1.11\times 10^{-16}\\. At that skewness, one unit in the last place
+inside the bound, this function returns \\1.48\times 10^{-16}\\, and the
 shape that follows from it is \\1.36\times 10^{8}\\ and finite.
 
 ## See also

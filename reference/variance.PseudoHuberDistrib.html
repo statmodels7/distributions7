@@ -17,7 +17,7 @@ and the factor grows roughly like \(\sqrt{\nu}\) at large \(\nu\)."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.76.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,12 +87,10 @@ varies <code>mu</code> alone repeats one number.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The two Bessel functions are evaluated exponentially scaled, through
 <code>besselK(sqrt(nu), r, expon.scaled = TRUE)</code>. Both carry the same factor
-\(e^{\sqrt{\nu}}\), which cancels in the ratio, so the quotient is exact
-where the unscaled functions would have overflowed; the terms are degree
-homogeneous, and the scaling has been checked to \(\nu = 2000\).</p>
-<p>The quantity is also used inside the package: the bracket
-<code><a href="distrib_quantile.html">distrib_quantile()</a></code> searches over for this family is built from it, so an
-error here would surface as a failed root search several frames away.</p>
+\(e^{\sqrt{\nu}}\), which cancels in the ratio, so the quotient remains
+finite at large \(\nu\), where the unscaled functions underflow to zero.</p>
+<p>The standard deviation obtained from this variance sets the width of the
+first bracket of the root search in <code><a href="distrib_quantile.html">distrib_quantile()</a></code> for this family.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

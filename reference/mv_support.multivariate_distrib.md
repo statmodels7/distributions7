@@ -1,10 +1,9 @@
-# No Enumerable Support
+# Support of a Family Without an Enumerable One
 
-Signals an error. A continuous family places no mass on any finite set
-of points, and a discrete family whose support is infinite has no finite
-matrix to return, so there is nothing correct to hand back. A family
-that DOES have a finite support registers its own method, and among the
-four that ship only the multinomial does.
+Signals an error. A continuous family places no mass on a finite set of
+points, and a discrete family whose support is infinite has no finite
+matrix to return. A family with a finite support registers its own
+method; among the shipped families the multinomial does.
 
 ## Arguments
 
@@ -16,8 +15,7 @@ four that ship only the multinomial does.
 
 - theta:
 
-  A named list of parameters. Not examined: the error is raised before
-  it is read.
+  A named list of parameters. Not read: the error is signalled first.
 
 - ...:
 
@@ -25,16 +23,18 @@ four that ship only the multinomial does.
 
 ## Value
 
-Never returns: it always signals an error naming the family.
+Does not return: it signals an error naming the family.
 
 ## See also
 
 [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md)
-for the generic and the multinomial's answer,
+for the generic and the multinomial's method,
 [`has_mv_support()`](https://statmodels7.github.io/distributions7/reference/has_mv_support.md)
-for the predicate that avoids this error, and
+for the test that avoids this error, and
 [`mv_reference_draw()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.md),
-the route a continuous family takes instead.
+the route that
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+takes for a continuous family.
 
 ## Examples
 
@@ -47,7 +47,7 @@ try(mv_support(d, theta))
 #>   and a discrete one whose support is infinite has no finite matrix to
 #>   return; a family that does have one registers this generic.
 
-# The predicate a consumer asks first.
+# The test that check_distrib() applies first.
 c(gaussian = distributions7:::has_mv_support(d),
   multinomial = distributions7:::has_mv_support(
     multinomial_distrib(3, size = 4)))
