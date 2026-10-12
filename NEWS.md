@@ -334,6 +334,14 @@ package now requires parameters7 (>= 0.24.0).
   `1 - f(0)` is formed from the log-mass, in the density, the distribution
   function, the score and the observed and expected Hessians (at `mu = 1e-6`
   the Hessian of a zero-adjusted Poisson was 31.6 against -0.083).
+* `zero_adjusted()` over a discrete parent with almost all its mass at zero,
+  and a discrete `truncated()` family whose mass sits at its lower endpoint:
+  the derivatives in the parameters of the parent are written around the
+  first retained point, which removes the cancellation between the
+  derivatives of the parent and those of the normalizing constant. At
+  `mu = 1e-8` the Hessian of a zero-adjusted Poisson was 4 against -0.083;
+  it is now exact, and the gradient is exact to 1e-16. The third to fifth
+  orders of `zero_adjusted()` form `1 - f(0)` from the log-mass.
 * The quantiles and draws of `zero_adjusted()` read a constant that varies by
   observation, such as the `size` of a binomial (the draws exceeded their own
   size), and the quantile near one is no longer clamped at `1 - 1e-10`.
@@ -376,9 +384,11 @@ package now requires parameters7 (>= 0.24.0).
   Poisson, composed by the generic, and the fourth order of the
   Poisson-inverse Gaussian at a tiny dispersion and a large count are
   documented with their accuracy.
-* The observed Hessian of `zero_adjusted()` and of a zero-truncated family
-  at `f(0)` near one is formed from a difference that cancels (5e-4 relative
-  on a Poisson at `mu = 1e-6`).
+* For `zero_adjusted()` and a zero-truncated discrete family with its mass
+  at the first point, the error of the derivative of order n falls from
+  about `eps mu^(-n)` to about `eps mu^(1 - n)`, but does not vanish: on a
+  Poisson the third order is off by 4e-6 relative at `mu = 1e-4`, and the
+  fourth order is wrong from `mu = 1e-8`.
 
 ## Documentation
 
