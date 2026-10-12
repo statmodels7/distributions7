@@ -14,9 +14,11 @@ simplex's free values in its own order.}
 }
 \value{
 A named list with \code{prob}, the probability vector of length \eqn{p}
-summing to one; \code{A}, the \eqn{p \times (p-1)} matrix of first derivatives
-in the free values; \code{B}, the list of second-derivative vectors keyed by
-unordered tuple; \code{idx}, those tuples; and \code{k}, the number of free values.
+summing to one; \code{lp}, its logarithm; \code{alr}, whether the parametrization is
+the additive log-ratio chart; \code{A}, the \eqn{p \times (p-1)} matrix of first
+derivatives in the free values; \code{B}, the list of second-derivative vectors
+keyed by unordered tuple; \code{idx}, those tuples; and \code{k}, the number of free
+values.
 }
 \description{
 Evaluates the probability vector and the simplex's first two derivative
@@ -27,9 +29,11 @@ single time and shares them.
 The probabilities sum to one at every free vector, so differentiating that
 identity shows that the columns of \eqn{A = \partial p/\partial\eta} sum to
 zero and so does every second-derivative vector \eqn{B_{\cdot,kl}}. The
-second of those makes the expected information closed form: under
-expectation the term carrying \eqn{B} becomes \eqn{n\sum_j B_{j,kl}}, which
-is zero.
+second of those makes the expected information closed form: under expectation
+the term carrying \eqn{B} becomes \eqn{n\sum_j B_{j,kl}}, which is zero. On
+the additive log-ratio chart of \code{\link[parameters7:simplex]{parameters7::simplex()}} the
+log-probabilities are formed directly by \code{\link[=mn_log_probs]{mn_log_probs()}}, so a probability
+that underflows keeps its logarithm.
 }
 \seealso{
 \code{\link[=distrib_gradient.MultinomialDistrib]{distrib_gradient.MultinomialDistrib()}} for the first consumer,

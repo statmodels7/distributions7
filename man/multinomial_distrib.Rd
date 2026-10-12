@@ -7,8 +7,8 @@
 multinomial_distrib(n_dim, size, probs = parameters7::simplex(n_dim))
 }
 \arguments{
-\item{n_dim}{The number of categories \eqn{p}, a single integer of at least
-2. Anything else signals an error naming the argument.}
+\item{n_dim}{The number of categories \eqn{p}, a single whole number of at
+least 2. Any other value signals an error naming the argument.}
 
 \item{size}{The number of trials \eqn{n}, a single positive integer. It is a
 constant of the distribution and not a parameter, as for
@@ -25,7 +25,8 @@ link.}
 \value{
 An S7 object of class \code{MultinomialDistrib}, inheriting from
 \code{multivariate_distrib}, with \code{size} the trial count, \code{param} the simplex
-given here, \code{distrib_name} \code{"multinomial [pd, size=n, probs=<chart>]"},
+given here, \code{distrib_name} \code{"multinomial [<p>d, size=<n>, probs=<name>]"}
+with \verb{<name>} the \code{param_name} of the probability parameter,
 \code{dimension} \code{"multivariate"}, \code{n_dim} \eqn{p}, \code{bounds} \code{c(0, size)},
 \code{params} the simplex's free names prefixed by \code{probs_}, \code{n_params}
 \eqn{p-1}, and \code{link_params} the identity for each.
@@ -34,9 +35,10 @@ given here, \code{distrib_name} \code{"multinomial [pd, size=n, probs=<chart>]"}
 Builds the distribution object for the multinomial family on \eqn{p}
 categories and \eqn{n} trials, parametrized by a probability vector carried
 on a \code{parameters7} simplex. The returned object carries closed-form
-derivatives of the log-mass to fourth order and a closed-form expected
-information, and its support is small enough to enumerate, so every
-expectation can be checked as an exact sum.
+derivatives of the log-mass to fourth order, a closed-form expected
+information and closed-form expectations of the third and fourth derivatives,
+and its support is small enough to enumerate, so every expectation can be
+checked as an exact sum.
 }
 \section{The parametrization}{
 The mass on the weak compositions of \eqn{n} into \eqn{p} parts is
@@ -45,24 +47,21 @@ with
 \deqn{\mathbb{E}[Y_j] = n p_j, \qquad
       \operatorname{Var}(Y_j) = n p_j (1 - p_j), \qquad
       \operatorname{Cov}(Y_j, Y_k) = -n p_j p_k.}
-There is \strong{no dispersion parameter}: the probabilities are all the family
-has, and \eqn{p-1} of them are free.
+The family has no dispersion parameter: its parameters are the probabilities,
+\eqn{p-1} of them free.
 
 The probabilities are carried by a \code{parameters7} simplex and flattened into
-scalars with identity links, exactly as a covariance is for the multivariate
-gaussian. The constraint that they be positive and sum to one lives in the
-parameter, where a scalar link could not express it.
+scalars with identity links, as a covariance is for the multivariate
+gaussian. The constraint that they be positive and sum to one is carried by
+the parameter, which a scalar link could not express.
 }
 
-\section{A multivariate family that is discrete}{
-This is the first family of the package that is multivariate and discrete,
-so its support is a finite set of points rather than a region.
-\code{\link[=mv_support.MultinomialDistrib]{mv_support.MultinomialDistrib()}} enumerates them, which lets an expectation
-be an exact sum and lets \code{\link[=check_distrib]{check_distrib()}} test the total mass by addition:
-measured, the mass over the support comes back at 1 to \code{8e-16} and the
-closed-form information agrees with the summed observed Hessian to the same
-order. An importance-sampling check would only ever compare against Monte
-Carlo error, and a normalization wrong by a thousandth would pass it.
+\section{The support}{
+The family is multivariate and discrete, so its support is a finite set of
+points. \code{\link[=mv_support.MultinomialDistrib]{mv_support.MultinomialDistrib()}} enumerates them, which makes an
+expectation an exact sum and lets \code{\link[=check_distrib]{check_distrib()}} test the total mass by
+addition. An importance-sampling check compares only against Monte Carlo
+error, and a normalization wrong by a thousandth would pass it.
 
 The count of support points is \eqn{\binom{n+p-1}{p-1}} and grows quickly,
 so the enumeration is a validation tool rather than a fitting route.
@@ -79,10 +78,13 @@ second-derivative term into \eqn{n\sum_j B_{j,kl}}, which vanishes: the
 probabilities sum to one, so every derivative of their sum is zero.
 
 On the default additive log-ratio chart the resulting information is exactly
-the covariance of the first \eqn{p-1} counts, since
-\eqn{A_{jk} = p_j(\delta_{jk}-p_k)} collapses the sum to
-\eqn{\delta_{kl}p_k - p_kp_l}. Measured, the two agree to \code{2e-16} at every
-dimension and trial count tried.
+the covariance of the first \eqn{p-1} counts, since \eqn{A_{jk} =
+p_j(\delta_{jk}-p_k)} collapses the sum to \eqn{\delta_{kl}p_k - p_kp_l}. On
+that chart every derivative of the log-mass of order two or more is \eqn{-N}
+times a cumulant of the categorical law (see \code{\link[=mn_cumulant]{mn_cumulant()}}), a sum of
+products of probabilities that the methods compute without dividing by one,
+so a category whose probability is tiny or underflows gives finite
+derivatives.
 }
 
 \section{Marginals and conjugacy}{

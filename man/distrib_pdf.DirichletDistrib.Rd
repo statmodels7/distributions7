@@ -9,7 +9,8 @@
 \item{y}{A numeric matrix with one row per observation and \eqn{p} columns,
 each row strictly positive and summing to one within \code{1e-8}. A single
 observation may be given as a plain vector and is read as one row. A row
-failing either test gives a density of 0, or \code{-Inf} with \code{log = TRUE}.}
+failing either test gives a density of 0, or \code{-Inf} with \code{log = TRUE}, and
+a row with a missing coordinate gives \code{NA}.}
 
 \item{theta}{A named list of parameters on the parameter scale: the mean's
 free values followed by \code{phi}, each of length 1. A parameter may not vary
@@ -29,13 +30,12 @@ observation.
 Computes the Dirichlet density
 \deqn{f(y) = \dfrac{\Gamma(\phi)}{\prod_{j=1}^{p} \Gamma(\alpha_j)}
       \prod_{j=1}^{p} y_j^{\alpha_j - 1}, \qquad \alpha = \phi\mu,}
-one value per row of \code{y}, with respect to the \eqn{(p-1)}-dimensional
-measure the simplex carries.
+one value per row of \code{y}, with respect to Lebesgue measure on the first
+\eqn{p-1} coordinates, the last being \eqn{1 - \sum_{j<p} y_j}.
 
-The support is tested \strong{before} the logarithm is taken. A negative
-coordinate would make \code{\link[base:Log]{base::log()}} warn, and a density evaluated off its
-support is 0, so a row that is not on the simplex returns 0 without a
-numerical complaint.
+The support is tested before the logarithm is taken: a negative coordinate
+would make \code{\link[base:Log]{base::log()}} warn, and a density evaluated off its support is 0.
+A row with a missing coordinate gives \code{NA}, as \code{\link[stats:Beta]{stats::dbeta()}} does.
 }
 \section{Notation}{
 

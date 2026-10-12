@@ -25,11 +25,10 @@ Mahalanobis distance \eqn{q_i = r_i^\top w_i}, and the weight
 in those four, so they are formed once per call.
 }
 \details{
-The weight is the whole of the family's resistance to outliers. At
-\eqn{q = 0} it is \eqn{(\nu+p)/\nu}, and it decays like \eqn{1/q}, so an
-observation far from the location contributes less to every derivative
-instead of dragging the fit towards itself. Letting \eqn{\nu \to \infty}
-sends it to one and recovers the gaussian, where nothing is downweighted.
+The weight limits the influence of a distant observation. At \eqn{q = 0} it
+is \eqn{(\nu+p)/\nu}, and it decays like \eqn{1/q}, so an observation far
+from the location contributes less to every derivative. Letting \eqn{\nu \to
+\infty} sends it to one and recovers the gaussian.
 }
 \section{Notation}{
 

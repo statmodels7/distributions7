@@ -11,14 +11,13 @@ mvt_q_deriv(b, r, pget, p)
 
 \item{r}{The \eqn{n \times p} matrix of residuals.}
 
-\item{pget}{The accessor for \eqn{\partial^{t}\Sigma^{-1}}, as returned by
-\code{\link[=mvg_ptensors]{mvg_ptensors()}}.}
+\item{pget}{The accessor for \eqn{\partial^{t}\Sigma^{-1}}, the \code{get}
+element of the list that \code{\link[=mvg_ptensors]{mvg_ptensors()}} returns.}
 
 \item{p}{The dimension.}
 }
 \value{
-A numeric vector of length \code{nrow(r)}, or a scalar recycled by
-the caller.
+A numeric vector of length \code{nrow(r)}.
 }
 \description{
 Evaluates \eqn{\partial^{B} q} for a multiset \eqn{B} of mean and matrix

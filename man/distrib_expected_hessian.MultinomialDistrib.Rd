@@ -34,10 +34,11 @@ Returns the expectation of the observed Hessian under the model, in closed
 form and with no quadrature, simulation or summation over the support:
 \deqn{\mathbb{E}[\ell^{(\eta_k\eta_l)}]
       = -n\sum_{j=1}^{p} \dfrac{A_{jk}A_{jl}}{p_j},}
-with \eqn{A = \partial p/\partial\eta}. \code{approx} and \code{nsim} are ignored:
-every strategy returns the same matrix.
+with \eqn{A = \partial p/\partial\eta}; on the additive log-ratio chart it is
+computed as \eqn{-n(\delta_{kl}p_k - p_kp_l)}, the form below. \code{approx} and
+\code{nsim} are not read.
 }
-\section{Why the second-derivative term vanishes}{
+\section{The second-derivative term}{
 Under the model \eqn{\mathbb{E}[y_j] = n p_j}, so the term of the observed
 Hessian carrying \eqn{B} becomes \eqn{n\sum_j B_{j,kl}}. The probabilities
 sum to one at every free vector, so every derivative of that sum is zero and
@@ -45,7 +46,7 @@ the whole term drops out, leaving the display above. The same argument, one
 order lower, gives the score mean zero.
 }
 
-\section{The information is the covariance of the first p-1 counts}{
+\section{The information on the additive log-ratio chart}{
 On the default chart, \code{\link[parameters7:simplex]{parameters7::simplex()}}'s additive log-ratio
 coordinates, the Jacobian is \eqn{A_{jk} = p_j(\delta_{jk} - p_k)}, so
 \deqn{\sum_j \dfrac{A_{jk}A_{jl}}{p_j}
@@ -53,10 +54,9 @@ coordinates, the Jacobian is \eqn{A_{jk} = p_j(\delta_{jk} - p_k)}, so
   = \delta_{kl}p_k - p_k p_l,}
 and the expected information \eqn{-\mathbb{E}[\ell^{(\eta_k\eta_l)}]} is
 exactly \eqn{\operatorname{Cov}(Y_k, Y_l)}, the leading
-\eqn{(p-1)\times(p-1)} block of \code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma.MultinomialDistrib()}}. Measured,
-the two agree to \code{2e-16} at every dimension and trial count tried. The
-identity belongs to that chart; a different simplex parametrization has a
-different Jacobian and no such coincidence.
+\eqn{(p-1)\times(p-1)} block of \code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma.MultinomialDistrib()}}. The identity
+belongs to that chart; a different simplex parametrization has a different
+Jacobian.
 }
 
 \section{Notation}{

@@ -12,8 +12,9 @@ length \eqn{p} is read as a single observation.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. The two differ here.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. The two differ here.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -27,9 +28,10 @@ one \eqn{n \times p} matrix per unordered pair of parameters. The response
 gradient is \eqn{\ell^{(y)} = -c\,w}, so a second derivative in the
 parameters is the ordinary product rule
 \deqn{\partial_{ab}\ell^{(y)} = -c_{ab}w - c_aw_b - c_bw_a - c\,w_{ab},}
-with every piece from \code{\link[=mvt_dpieces]{mvt_dpieces()}}. No pair vanishes here, where a
-gaussian's pair of location parameters is exactly zero: its response
-gradient is linear in the location and this one is not.
+with every piece from \code{\link[=mvt_dpieces]{mvt_dpieces()}}. For a gaussian the pair of two
+location parameters is exactly zero, its response gradient being linear in
+the location; the response gradient of the t is not, and these pairs are not
+zero in general.
 }
 \section{Notation}{
 

@@ -24,8 +24,8 @@ the covariance of the law, so the value agrees with
 sibling, where the scale matrix exists at every \eqn{\nu} and the covariance
 does not.
 
-The return is a matrix, not the numeric vector a univariate family gives,
-the second central moment of a vector being a matrix.
+The result is a matrix, the second central moment of a vector being a matrix,
+where a univariate family returns a numeric vector.
 }
 \examples{
 d <- mvgaussian1_distrib(2)

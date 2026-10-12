@@ -14,13 +14,13 @@ A named list of \code{distrib@n_params} single numbers, named and ordered
 as \code{distrib@params}.
 }
 \description{
-Draws a parameter vector for testing: each location uniform on
-\eqn{(-1, 1)}, each free value of the matrix parametrization uniform on
-\eqn{(-0.4, 0.4)}, and the degrees of freedom uniform on \eqn{(3, 12)}. The
-matrix band puts the scale matrix near the identity, as it does for the
-gaussian; the \eqn{\nu} band is chosen so that the family is genuinely
-heavy-tailed and every moment \code{\link[=check_distrib]{check_distrib()}} compares still exists, the
-variance needing \eqn{\nu > 2} and the kurtosis \eqn{\nu > 4}.
+Draws a parameter vector for testing: each location uniform on \eqn{(-1, 1)},
+each free value of the matrix parametrization uniform on \eqn{(-0.4, 0.4)},
+and the degrees of freedom uniform on \eqn{(5, 12)}. The matrix band puts the
+scale matrix near the identity, as it does for the gaussian. The \eqn{\nu}
+band keeps the family heavy-tailed and above \eqn{\nu = 4}, so the covariance
+and the fourth moment exist at every draw; the comparison of the generator
+with the covariance in \code{\link[=check_distrib]{check_distrib()}} needs both.
 }
 \examples{
 d <- mvstudent_t1_distrib(2)
@@ -32,8 +32,8 @@ unlist(generate_random_theta(d))
 set.seed(12)
 round(apply(replicate(400, unlist(generate_random_theta(d))), 1, range), 2)
 
-# Every draw keeps nu above 4, so the covariance and the kurtosis of every
-# coordinate exist.
+# Every draw keeps nu above 4, so the covariance and the fourth moment of
+# every coordinate exist.
 set.seed(13)
 all(replicate(50, is.finite(variance(d, generate_random_theta(d))[1, 1])))
 

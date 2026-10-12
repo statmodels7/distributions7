@@ -21,14 +21,14 @@ A single number.
 }
 \description{
 The mixed or repeated second derivative of a scalar function, from a single
-stencil rather than from nested first differences.
+stencil, without nested first differences.
 }
 \details{
-The nodes, the weights and the step are \pkg{numericals7}'s. Where the two
-coordinates differ the stencil is the product of two first-order factors,
-which is one stencil in two variables and not a difference of a difference:
-nesting is forbidden along ONE variable, and is what a mixed derivative is
-along two.
+The nodes, the weights and the step are those of \pkg{numericals7}. Where the
+two coordinates differ the stencil is the product of two first-order factors,
+which is one stencil in two variables and not a difference of a difference.
+Nested differences are not used along one variable; a mixed derivative
+differentiates along two different variables.
 }
 \seealso{
 \code{\link[numericals7:fd_weights]{numericals7::fd_weights()}}

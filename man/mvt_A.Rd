@@ -7,50 +7,35 @@
 mvt_A(nu, p)
 }
 \arguments{
-\item{nu}{The degrees of freedom, a numeric vector of any length, strictly
-positive. Nothing is validated: a non-positive value reaches
-\code{\link[base:Special]{base::digamma()}} and returns \code{NaN}.}
+\item{nu}{The degrees of freedom, a numeric vector of positive values. Not
+validated.}
 
-\item{p}{The dimension, a single positive whole number. Even and odd take
-different branches.}
+\item{p}{The dimension, a single positive whole number.}
 }
 \value{
-A numeric vector as long as \code{nu}, non-positive at every \eqn{p} and
-exactly zero at \eqn{p = 2}.
+A numeric vector as long as \code{nu}: positive at \eqn{p = 1}, exactly
+zero at \eqn{p = 2}, and negative for \eqn{p \ge 3}.
 }
 \description{
 Computes
 \eqn{A_p(\nu) = \psi\!\left(\tfrac{\nu+p}{2}\right)
 - \psi\!\left(\tfrac{\nu}{2}\right) - \tfrac{p}{\nu}}, the part of the score
-in \eqn{\nu} that does not involve the data, in a form whose terms carry one
-sign so that nothing cancels.
+in \eqn{\nu} that does not involve the data, as twice the first derivative
+of \code{\link[=mvt_cp_d]{mvt_cp_d()}}.
 }
-\section{Why the direct form fails}{
+\details{
 As \eqn{\nu} grows the multivariate t tends to the multivariate gaussian and
 every derivative in \eqn{\nu} vanishes, so \eqn{A_p} is a difference of
 terms agreeing to leading order:
-\eqn{\psi(\tfrac{\nu+p}{2}) - \psi(\tfrac{\nu}{2})} is \eqn{p/\nu}, and
-\eqn{p/\nu} is what it is subtracted from. Measured at \eqn{p = 4}, the
-direct form is wrong by a relative \eqn{4.9\times10^{-5}} at
-\eqn{\nu = 10^6}, by 39 per cent at \eqn{10^8}, and it CHANGES SIGN at
-\eqn{10^9}, reading \eqn{+3.3\times10^{-16}} where the exact value is
-\eqn{-4.0\times10^{-18}}.
+\eqn{\psi(\tfrac{\nu+p}{2}) - \psi(\tfrac{\nu}{2})} is close to \eqn{p/\nu},
+the quantity from which it is subtracted. In floating point the direct form
+loses its significant digits as \eqn{\nu} grows and eventually has the wrong
+sign. For even \eqn{p} the recurrence \eqn{\psi(x+1) = \psi(x) + 1/x} gives
+a sum whose terms carry one sign,
+\deqn{A_p(\nu) = -\sum_{j=0}^{p/2-1} \frac{4j}{\nu(\nu+2j)},}
+exactly zero at \eqn{p = 2}; for odd \eqn{p} \code{\link[=mvt_cp_d]{mvt_cp_d()}} sums an
+asymptotic series above \eqn{\nu = \max(20, 4p)}.
 }
-
-\section{The repair needs no series for an even dimension}{
-\eqn{p} is an integer dimension, so the shift between the two digamma
-arguments is a whole number of steps of the recurrence
-\eqn{\psi(x+1) = \psi(x) + 1/x}. For even \eqn{p} that gives a sum whose
-terms all carry one sign:
-\deqn{A_p(\nu) = -\sum_{j=0}^{p/2-1} \frac{4j}{\nu(\nu+2j)}.}
-It is exactly zero at \eqn{p = 2}, where the direct form returns noise at
-\eqn{10^{-16}}.
-
-For odd \eqn{p} the shift is a half-integer, so the recurrence carries the
-quantity onto the univariate \code{\link[=mvt_A1]{mvt_A1()}}, which keeps a series of its own
-above a measured crossover.
-}
-
 \section{Notation}{
 
 \eqn{\nu} is the degrees of freedom, \eqn{p} the dimension and \eqn{\psi}
@@ -64,7 +49,7 @@ rbind(exact = distributions7:::mvt_A(c(3, 10, 1e6), 2),
       direct = direct(c(3, 10, 1e6), 2))
 
 # At p = 4 the two agree while the direct form has digits left, and part
-# company at large nu, where the direct one changes sign.
+# company at large nu.
 nu <- c(3, 1e3, 1e6, 1e8, 1e9)
 signif(rbind(exact = distributions7:::mvt_A(nu, 4),
              direct = direct(nu, 4)), 5)
@@ -75,9 +60,8 @@ cbind(nu = nu, scaled = distributions7:::mvt_A(nu, 4) * nu^2)
 
 }
 \seealso{
-\code{\link[=mvt_A1]{mvt_A1()}} for the univariate case the odd branch reduces to,
-\code{\link[=mvt_T]{mvt_T()}} for the same treatment of the trigamma pair, \code{\link[=mvt_D]{mvt_D()}} for the
-third cancellation, and \code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}} for the
+\code{\link[=mvt_cp_d]{mvt_cp_d()}} for the computation, \code{\link[=mvt_D]{mvt_D()}} for the part that
+carries the data, and \code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}} for the
 consumer.
 }
 \keyword{internal}

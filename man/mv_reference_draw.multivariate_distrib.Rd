@@ -18,22 +18,20 @@ A named list with \code{y}, an \eqn{n \times p} numeric matrix, and
 \code{logd}, a numeric vector of length \eqn{n}.
 }
 \description{
-The default proposal: a gaussian with the family's mean and TWICE its
-covariance, drawn as \eqn{\mu + Lz} with \eqn{LL^\top = 2\Sigma}. The
-inflation makes the importance ratio informative; at the family's own
-covariance every ratio would be one.
+The default proposal: a gaussian with the family's mean and twice its
+covariance, drawn as \eqn{\mu + Lz} with \eqn{LL^\top = 2\Sigma}. For a
+gaussian family a proposal with the family's own covariance would make every
+importance ratio one, and the inflation keeps the ratio informative.
 }
 \details{
-It requires the covariance to be non-singular, which a support of full
-dimension in \eqn{\mathbb{R}^p} gives. On a family whose support is a
-lower-dimensional set the covariance is singular and \code{chol()} may accept it
-anyway, so the failure is quiet: see \code{\link[=mv_reference_draw]{mv_reference_draw()}} for the measured
-consequence. Such a family registers its own method.
+The covariance must be finite and non-singular, which a family supported on
+all of \eqn{\mathbb{R}^p} with finite second moments has. A family whose
+support is a lower-dimensional set, or whose covariance is infinite,
+registers its own method (see \code{\link[=mv_reference_draw]{mv_reference_draw()}}).
 
-The log-density is formed from the Cholesky factor directly. The whitened
-residual is \eqn{L^{-1}r}, a LOWER triangular system, so
-\code{\link[base:backsolve]{base::forwardsolve()}} is what solves it; \code{backsolve()} on the transpose
-solves \eqn{L^\top x = b}, a different vector of the same shape.
+The log-density is computed from the Cholesky factor \eqn{L}: the whitened
+residual \eqn{L^{-1}r} solves a lower triangular system, which
+\code{\link[base:backsolve]{base::forwardsolve()}} evaluates.
 }
 \section{Notation}{
 
@@ -50,20 +48,20 @@ set.seed(1)
 r <- mv_reference_draw(d, theta, 4)
 r$y
 
-# logd really is the log-density of the inflated gaussian at those draws.
+# logd is the log-density of the inflated gaussian at those draws.
 S2 <- 2 * variance(d, theta)
 mu <- c(1, -1)
 ref <- -0.5 * (2 * log(2 * pi) + log(det(S2)) + mahalanobis(r$y, mu, S2))
 all.equal(r$logd, as.numeric(ref))
 
-# And the sample is twice as spread as the family, which is the point.
+# The sample is twice as spread as the family.
 set.seed(2)
 round(rbind(proposal = diag(var(mv_reference_draw(d, theta, 20000)$y)),
             family = diag(variance(d, theta))), 3)
 
 }
 \seealso{
-\code{\link[=mv_reference_draw]{mv_reference_draw()}} for the generic and the override a
-simplex-valued family needs, and \code{\link[=check_distrib]{check_distrib()}} for the consumer.
+\code{\link[=mv_reference_draw]{mv_reference_draw()}} for the generic and the proposals of the
+families that register their own, and \code{\link[=check_distrib]{check_distrib()}} for the consumer.
 }
 \keyword{internal}

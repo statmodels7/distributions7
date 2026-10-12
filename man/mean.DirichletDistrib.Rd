@@ -13,8 +13,7 @@ free values followed by \code{phi}, each of length 1.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of length \eqn{p}, strictly positive and summing to
-one.
+A numeric vector of length \eqn{p}, without names, summing to one.
 }
 \description{
 Returns the mean vector \eqn{\mathbb{E}[Y] = \mu}, which for this family is

@@ -11,19 +11,19 @@ mvstudent_t2_distrib(n_dim, omega = NULL, link_nu = linkfunctions7::log_link())
 }
 \arguments{
 \item{n_dim}{The dimension \eqn{p} of one observation. A single positive
-whole number, finite and at least 1. Anything else signals an error.}
+whole number, finite and at least 1. Any other value signals an error.}
 
 \item{sigma}{A \pkg{parameters7} parametrization of the scale matrix, of
 dimension \code{n_dim} and of full rank. Defaults to
 \code{parameters7::log_cholesky(n_dim)}. A rank-deficient parametrization is
-rejected: the density would not normalize.}
+rejected, the density not normalizing.}
 
 \item{link_nu}{The link carrying the degrees of freedom to the
 unconstrained scale, a \code{linkfunctions7::link} object. Defaults to
 \code{linkfunctions7::log_link()}, which keeps \eqn{\nu} strictly positive at
 every point of the free scale.}
 
-\item{omega}{A \pkg{parameters7} parametrization of the INVERSE scale
+\item{omega}{A \pkg{parameters7} parametrization of the inverse scale
 matrix, of dimension \code{n_dim} and of full rank. Defaults to
 \code{parameters7::log_cholesky(n_dim)}. It is the precision of the response
 only up to the factor \eqn{(\nu-2)/\nu}; see \strong{Details}.}
@@ -33,8 +33,9 @@ An S7 object of class \link{MvStudentT1Distrib} or \link{MvStudentT2Distrib},
 with \code{param} the parametrization supplied and \code{inverted} recording which
 matrix it carries. Its \code{params} are \code{mu1}, ..., \code{mup}, the prefixed
 free names, then \code{nu}; \code{n_params} is \code{p + param@n_free + 1}; every
-\code{params_bounds} entry is \eqn{(-\infty, \infty)} except \code{nu}'s, which is
-\eqn{(0, \infty)}; and every link is the identity except \code{nu}'s.
+\code{params_bounds} entry is \eqn{(-\infty, \infty)} except that of \code{nu},
+which is \eqn{(0, \infty)}; and every link is the identity except that of
+\code{nu}.
 }
 \description{
 Two families on \eqn{\mathbb{R}^p}, differing in which matrix their
@@ -43,38 +44,38 @@ parametrization describes: \code{mvstudent_t1_distrib()} parametrizes the
 \eqn{\Sigma^{-1}}. Each carries a location vector of \eqn{p} free
 parameters, the matrix through a \pkg{parameters7} parametrization, and a
 positive degrees-of-freedom parameter. The free values become ordinary
-scalar parameters, so every generic of the \code{distrib} class applies to the
-object, with \code{theta} a flat named list of numbers. Both default to an
-unstructured matrix in the log-Cholesky parametrization, which is
-\code{p * (p + 1) / 2} free values, and to a log link on \code{nu}.
+scalar parameters, so the generics of the \code{distrib} class accept the object,
+with \code{theta} a flat named list of numbers; the distribution function and the
+quantile function signal an error. Both default to an unstructured matrix in
+the log-Cholesky parametrization, which has \code{p * (p + 1) / 2} free values,
+and to a log link on \code{nu}.
 }
-\section{What the two matrices are, and what they are not}{
+\section{The two matrices}{
 Neither matrix is a covariance, and neither is a precision. \eqn{\Sigma} is
-the \strong{scale matrix}, the matrix in the density's quadratic form, and the
-moments are obtained from it by scaling in \eqn{\nu}:
+the \strong{scale matrix}, the matrix in the quadratic form of the density, and
+the moments are obtained from it by scaling in \eqn{\nu}:
 
 \deqn{\operatorname{Var}(Y) = \frac{\nu}{\nu-2}\,\Sigma \quad (\nu > 2),
   \qquad
   \operatorname{Var}(Y)^{-1} = \frac{\nu-2}{\nu}\,\Sigma^{-1}.}
 
-So \code{mvstudent_t2_distrib()}'s matrix is the precision of the response only
-up to the factor \eqn{(\nu-2)/\nu}, which is 2/3 at \eqn{\nu = 6}; a
-coordinate named \code{omega_log_L1} builds \eqn{\Sigma^{-1}} and not the
-precision. The prefix follows \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}'s convention -- it
-says which of the two matrices a free value builds -- and this section is
-what says what those matrices mean.
+So the matrix of \code{mvstudent_t2_distrib()} equals the precision of the
+response only up to the factor \eqn{(\nu-2)/\nu}, which is 2/3 at
+\eqn{\nu = 6}; a coordinate named \code{omega_log_L1} is a free value of
+\eqn{\Sigma^{-1}} and not of the precision. The prefixes follow the
+convention of \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} and name which of the two matrices a
+free value builds.
 
-Below \eqn{\nu = 2} the covariance does not exist while the density is
-perfectly well defined, and below \eqn{\nu = 1} the mean does not exist
-either. That is why the two are kept apart: \code{\link[=mv_sigma]{mv_sigma()}} returns the scale
-matrix, which the parametrization carries and which always exists, and
-\code{\link[=variance]{variance()}} returns the covariance, which is a moment and returns \code{NaN}
-where there is none. The separation is what allows a fit to run at
-\eqn{\nu = 1.5}.
+For \eqn{\nu \le 2} the covariance does not exist while the density is well
+defined, and for \eqn{\nu \le 1} the mean does not exist either. For that
+reason \code{\link[=mv_sigma]{mv_sigma()}} returns the scale matrix, which the parametrization
+carries and which exists at every admissible \eqn{\nu}, and \code{\link[=variance]{variance()}}
+returns the covariance, a moment, which is \code{Inf} in every entry for
+\eqn{\nu \le 2}; \code{\link[=mean]{mean()}} returns \code{NaN} for \eqn{\nu \le 1}. A fit
+therefore runs at \eqn{\nu = 1.5}.
 
-Two readings DO carry over from the matrix to the response without a
-factor, because a positive multiple cancels out of a ratio, and both are
-measured against the response's own covariance in the tests:
+Two readings carry over from the matrix to the response without a factor,
+because a positive multiple cancels out of a ratio:
 \itemize{
 \item the \strong{correlations} of \eqn{\Sigma} are the correlations of \eqn{Y};
 \item the \strong{partial correlations} read off \eqn{\Sigma^{-1}}, as
@@ -82,24 +83,24 @@ measured against the response's own covariance in the tests:
 correlations of \eqn{Y}.
 }
 
-One reading does NOT carry over. For a gaussian \eqn{1/\Omega_{jj}} is the
-conditional variance of \eqn{Y_j} given the rest; here it is the Schur
-complement of the SCALE matrix, so it is a conditional \strong{scale}, and the
-conditional law of a \eqn{t} is itself a \eqn{t} whose scale carries a
-further factor depending on the conditioning values. \code{\link[=mv_summary]{mv_summary()}} names
-that quantity \code{cscale_vj} rather than \code{cvar_vj} for exactly this reason,
-as it already names the diagonal quantities \code{scale_sd_vj}.
+The conditional variance does not carry over. For a gaussian
+\eqn{1/\Omega_{jj}} is the conditional variance of \eqn{Y_j} given the rest;
+here it is the Schur complement of the scale matrix, so it is a conditional
+\strong{scale}, and the conditional law of a \eqn{t} is itself a \eqn{t} whose
+scale carries a further factor depending on the conditioning values.
+\code{\link[=mv_summary]{mv_summary()}} names that quantity \code{cscale_vj} and not \code{cvar_vj} for this
+reason, as it names the diagonal quantities \code{scale_sd_vj}.
 }
 
 \section{Which side to write a structure on}{
 Where the matrix parametrization is closed under inversion the two families
 describe the same laws in different coordinates. Where it is not they are
 different models: \code{mvstudent_t2_distrib(p, parameters7::ar1(p))} is the
-family whose INVERSE SCALE matrix has the entries \eqn{\rho^{|i-j|}}, which
-is a legitimate law and is accepted without comment. To put the AR(1)
-pattern on the scale matrix while parametrizing the other side, pass the
-family whose value is that inverse,
-\code{mvstudent_t2_distrib(p, parameters7::ar1_inv(p))}.
+family whose inverse scale matrix has the entries \eqn{\sigma^2\rho^{|i-j|}},
+with \eqn{\sigma^2} the scale of \code{ar1()}, and it is a valid law. The AR(1)
+pattern on the scale matrix with the other side parametrized is
+\code{mvstudent_t2_distrib(p, parameters7::ar1_inv(p))}, whose parametrization is
+that inverse.
 }
 
 \section{Parameters}{
@@ -107,38 +108,45 @@ The location contributes \code{mu1}, ..., \code{mup}, the parametrization contri
 its free values under the \code{sigma_} prefix for the scale matrix and the
 \code{omega_} prefix for its inverse, and \code{nu} comes last. The location and the
 matrix parameters are unconstrained and carry identity links; \code{nu} is
-positive and carries \code{link_nu}. So, unlike \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}, this
-family's link scale is not its parameter scale, and \code{scale = "link"}
-multiplies each \code{nu} component by the chain-rule factor \eqn{\nu} under the
-default log link.
+positive and carries \code{link_nu}. Unlike \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}, this family
+therefore has a link scale that differs from its parameter scale: under the
+default log link, \code{scale = "link"} applies the chain rule of the log link to
+every derivative in \code{nu}.
 }
 
-\section{What it is for}{
+\section{The weight of an observation}{
 A gaussian fitted to data with a few outlying rows inflates its covariance
-to cover them. A \eqn{t} with \eqn{\nu} estimated does not: an observation
-at Mahalanobis distance \eqn{q} enters every derivative through the weight
-\eqn{c = (\nu+p)/(\nu+q)}, which falls away as \eqn{1/q}. The gaussian is
-the limit \eqn{\nu \to \infty}, where \eqn{c \equiv 1} and nothing is
-downweighted.
+to cover them. A \eqn{t} with \eqn{\nu} estimated does not: an observation at
+squared Mahalanobis distance \eqn{q} enters every derivative through the
+weight \eqn{c = (\nu+p)/(\nu+q)}, which falls as \eqn{1/q}. The gaussian is
+the limit \eqn{\nu \to \infty}, where \eqn{c \equiv 1}.
 }
 
 \section{The expected information}{
 Closed form, from the family's own scale mixture; see
 \code{\link[=distrib_expected_hessian.MvStudentTDistrib]{distrib_expected_hessian.MvStudentTDistrib()}} for the four blocks.
-\code{\link[=fit_distrib]{fit_distrib()}} therefore REJECTS an \code{approx} argument on
+\code{\link[=fit_distrib]{fit_distrib()}} therefore rejects an \code{approx} argument on
 \code{\link[=fisher_scoring]{fisher_scoring()}} for this family, as it does for any family that computes
 its expected information exactly.
 }
 
 \section{Reading a fit}{
-\code{\link[=mv_summary]{mv_summary()}} reports the square roots of the diagonal of the SCALE matrix
-and the correlations. The correlations are the response's as well, a
-positive multiple of a matrix leaving them alone, but the diagonal
-quantities are not standard deviations of the response and are named
-\code{scale_sd_v1}, ..., \code{scale_sd_vp} to say so. The inverse parametrization
-adds what it describes directly: the partial correlations, which are the
-response's exactly, and the conditional scales \code{cscale_v1}, ...,
-\code{cscale_vp}, named as scales for the reason the first section gives.
+For the scale parametrization, \code{\link[=mv_summary]{mv_summary()}} reports the square roots of
+the diagonal of the scale matrix, named \code{scale_sd_v1}, ..., \code{scale_sd_vp}
+because they are not standard deviations of the response, and the
+correlations, which are the response's as well. For the inverse
+parametrization it reports instead the conditional scales \code{cscale_v1}, ...,
+\code{cscale_vp} and the partial correlations \code{pcor_vj_vk}, which are the
+response's exactly.
+}
+
+\section{Degrees of freedom far from the gaussian limit and close to it}{
+Every quantity of \eqn{\nu} alone (the constant of the density and its
+derivatives, and the expected information in \eqn{\nu}) is computed by
+\code{\link[=mvt_cp_d]{mvt_cp_d()}} and \code{\link[=mvt_info_nunu]{mvt_info_nunu()}} without the cancellation of the direct
+difference of gamma and polygamma functions, and the part that carries the
+data by \code{\link[=mvt_h_d]{mvt_h_d()}}; all of them vanish as \eqn{\nu} grows, while the terms
+of the direct forms do not.
 }
 
 \section{The response}{
@@ -174,22 +182,22 @@ theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 mv_sigma(d, theta)
 all.equal(variance(d, theta), (6 / 4) * mv_sigma(d, theta))
 
-# Below two degrees of freedom the covariance does not exist and the
-# density does; below one the mean goes too.
+# For nu <= 2 the covariance is infinite and the density is finite; for
+# nu <= 1 the mean does not exist.
 theta$nu <- 1.5
 c(density = distrib_pdf(d, c(0, 0), theta), variance = variance(d, theta)[1, 1])
 theta$nu <- 0.8
 c(density = distrib_pdf(d, c(0, 0), theta), mean = mean(d, theta)[1])
 
-# The heavy tail is what the family is for: at four standard-scale units
-# out, a t at nu = 6 puts far more mass than a gaussian of the same scale.
+# At four units of scale from the location, a t at nu = 6 has a far larger
+# density than a gaussian with the same matrix.
 theta$nu <- 6
 g <- mvgaussian1_distrib(2)
 c(t = distrib_pdf(d, c(4.5, -4.3), theta),
   gaussian = distrib_pdf(g, c(4.5, -4.3), theta[1:5]))
 
-# The other parametrization carries the INVERSE scale matrix, and its free
-# values say so by their prefix.
+# The other parametrization carries the inverse scale matrix, and the prefix
+# of its free values names it.
 o <- mvstudent_t2_distrib(2)
 o@params
 
@@ -200,8 +208,8 @@ Om <- parameters7::param_value(o@param, unlist(th_o)[3:5])
 all.equal(unname(solve(variance(o, th_o))),
           unname((6 - 2) / 6 * unclass(Om)))
 
-# The correlations and the partial correlations, on the other hand, are the
-# response's exactly: a positive multiple cancels out of a ratio.
+# The correlations are the response's exactly: a positive multiple cancels
+# out of a ratio.
 all.equal(cov2cor(mv_sigma(o, th_o)), cov2cor(variance(o, th_o)))
 
 }

@@ -15,16 +15,16 @@ coordinate is outside the support and gives a non-finite component through
 \code{mean_alr1}, ..., \code{mean_alr(p-1)} and \code{phi}.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation is returned,
-by SAMPLING through \code{\link[=mv_expected_higher]{mv_expected_higher()}}. Defaults to \code{FALSE}.}
+in closed form (see Details). Defaults to \code{FALSE}.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result.}
 
-\item{approx}{Ignored: sampling is the only multivariate route to an
-expectation. Present so that the signature matches the generic's.}
+\item{approx}{Not read: the expectation is in closed form. Present so that
+the signature matches the generic's.}
 
-\item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
-\code{10000}. Ignored otherwise.}
+\item{nsim}{Not read. Present so that the signature matches the generic's.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -38,17 +38,18 @@ Computes every fourth derivative of the log-density in the parameters, in
 closed form, by the same construction as
 \code{\link[=distrib_deriv3.DirichletDistrib]{distrib_deriv3.DirichletDistrib()}} one order up: a univariate partition sum
 per coordinate of the simplex, run by \code{\link[=chain_univariate]{chain_univariate()}} over the arrays
-\code{\link[=dirichlet_map_tensors]{dirichlet_map_tensors()}} supplies, plus the direct \eqn{\log\Gamma(\phi)}
-term on the component all of whose indices name the concentration.
+that \code{\link[=dirichlet_map_tensors]{dirichlet_map_tensors()}} supplies, plus the direct
+\eqn{\log\Gamma(\phi)} term on the component whose indices all name the
+concentration.
 }
 \details{
-The license for this order is that the SAME assembly run at orders one and
-two reproduces the hand-written score and information, which are derived
-separately and are already under \code{\link[=check_distrib]{check_distrib()}}. Agreement at the orders
-that can be checked is what authorizes the order that cannot.
+Run at order one, the same assembly reproduces
+\code{\link[=distrib_gradient.DirichletDistrib]{distrib_gradient.DirichletDistrib()}}, which is written separately; on the
+additive log-ratio chart \code{\link[=distrib_hessian.DirichletDistrib]{distrib_hessian.DirichletDistrib()}} calls it at
+order two. The split of \eqn{\log\Gamma(\alpha_j)} that keeps a small shape
+accurate is described in \code{\link[=distrib_deriv3.DirichletDistrib]{distrib_deriv3.DirichletDistrib()}}.
 
-With \code{expected = TRUE} the expectation is taken by sampling and carries
-Monte Carlo error of order \code{nsim^(-1/2)}.
+With \code{expected = TRUE} the expectation is exact, as for the third order.
 }
 \section{Notation}{
 
@@ -66,7 +67,7 @@ y <- distrib_rng(d, 5, theta)
 d4 <- distrib_deriv4(d, y, theta)
 length(d4)
 
-# Against one stencil on the analytic third order.
+# Against a central difference of the third order in phi.
 h <- 1e-4
 tp <- theta; tp$phi <- tp$phi + h
 tm <- theta; tm$phi <- tm$phi - h
@@ -74,7 +75,6 @@ c(exact = sum(d4[["mean_alr1_mean_alr1_phi_phi"]]),
   stencil = (sum(distrib_deriv3(d, y, tp)[["mean_alr1_mean_alr1_phi"]]) -
              sum(distrib_deriv3(d, y, tm)[["mean_alr1_mean_alr1_phi"]])) /
             (2 * h))
-
 }
 \seealso{
 \code{\link[=distrib_deriv3.DirichletDistrib]{distrib_deriv3.DirichletDistrib()}} for the order below,

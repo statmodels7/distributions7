@@ -24,16 +24,17 @@ A named list with one numeric vector per free value, in the order
 }
 \description{
 Computes the first derivatives of the multinomial log-mass with respect to
-the simplex's free values, one value per observation, in closed form. With
-\eqn{A = \partial p/\partial\eta} the chart's own Jacobian,
-\deqn{\dfrac{\partial\ell}{\partial\eta_k}
-      = \sum_{j=1}^{p} \dfrac{y_j}{p_j}A_{jk}.}
-The factorial term of the mass carries no parameter, so it contributes
-nothing, and the data enter only through the counts themselves.
+the free values of the simplex, one value per observation, in closed form.
+With \eqn{A = \partial p/\partial\eta} the Jacobian of the chart,
+\deqn{\dfrac{\partial\ell}{\partial\eta_k} = \sum_{j=1}^{p}
+\dfrac{y_j}{p_j}A_{jk}.} The factorial term of the mass carries no parameter,
+and the data enter only through the counts. On the additive log-ratio chart,
+where \eqn{A_{jk} = p_j(\delta_{jk} - p_k)}, the sum is computed as \eqn{y_k
+- N p_k} with \eqn{N} the total of the row, which divides by no probability.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries. Every parameter rides the identity here, its free value
-being unconstrained already, so the two scales coincide.
+With \code{scale = "link"} the generic applies the chain rule for the links of the
+family to the result of the method. Every parameter takes the identity link
+here, its free value being unconstrained already, so the two scales coincide.
 }
 \section{Notation}{
 

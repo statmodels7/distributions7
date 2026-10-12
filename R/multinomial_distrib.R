@@ -7,19 +7,16 @@ NULL
 #' @description
 #' The S7 class of the multinomial family on \eqn{p} categories and \eqn{n}
 #' trials, parametrized by a probability vector carried on a `parameters7`
-#' simplex. It inherits from `multivariate_distrib`, and it is the first
-#' multivariate family here whose support is a **finite set of points** rather
-#' than a region: every vector of non-negative integers summing to \eqn{n}.
-#' The nine methods listed below are registered on it in this file and two more
-#' in `mv_higher.R`.
+#' simplex. It inherits from `multivariate_distrib`. Its support is a finite set
+#' of points: every vector of non-negative integers summing to \eqn{n}.
 #'
 #' The class carries two properties beyond the parent's: `size`, the number of
-#' trials, fixed at construction; and `param`, the
-#' simplex the probabilities lie on, whose free names become the family's own
-#' parameter names prefixed by `probs_`. Build one with
-#' [multinomial_distrib()], which validates all three and fills the properties
-#' in. This page documents the raw S7 constructor, which validates none of
-#' that.
+#' trials, fixed at construction; and `param`, the simplex on which the
+#' probabilities lie, whose free names become the family's own parameter names
+#' prefixed by `probs_`. Build one with [multinomial_distrib()], which validates
+#' `n_dim`, `size` and the simplex and fills the properties in. This page
+#' documents the raw S7 constructor, which runs only the validators of
+#' `multivariate_distrib` and `distrib` and does not check `size` or `param`.
 #'
 #' @inheritParams multivariate_distrib
 #' @param size The number of trials \eqn{n}, a single positive integer stored
@@ -35,8 +32,7 @@ NULL
 #'   [multinomial_distrib()], `params` is the simplex's free names prefixed by
 #'   `probs_`, `n_params` is \eqn{p-1}, `bounds` is `c(0, size)`, and every
 #'   parameter carries an identity link, its free value being unconstrained
-#'   already. There is **no dispersion parameter**: the probabilities are all
-#'   there is.
+#'   already. The family has no dispersion parameter.
 #'
 #' @seealso [multinomial_distrib()] to build one;
 #'   [binomial_distrib()], which is a coordinate's marginal and the
@@ -45,25 +41,27 @@ NULL
 #'   [parameters7::simplex()] for the chart.
 #'
 #' @section Methods:
-#' Registered on this class in this file:
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.MultinomialDistrib],
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.MultinomialDistrib] and
+#'   [`distrib_rng()`][distrib_rng.MultinomialDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.MultinomialDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.MultinomialDistrib],
-#'   [`distrib_pdf()`][distrib_pdf.MultinomialDistrib],
-#'   [`distrib_rng()`][distrib_rng.MultinomialDistrib],
-#'   [`mv_location()`][mv_location.MultinomialDistrib],
-#'   [`mv_marginal()`][mv_marginal.MultinomialDistrib],
-#'   [`mv_sigma()`][mv_sigma.MultinomialDistrib],
-#'   [`mv_support()`][mv_support.MultinomialDistrib],
-#'   [`mean()`][mean.MultinomialDistrib] and
-#'   [`variance()`][variance.MultinomialDistrib].
-#'
-#' Two more are registered in `mv_higher.R`:
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.MultinomialDistrib],
 #'   [`distrib_deriv3()`][distrib_deriv3.MultinomialDistrib] and
-#'   [`distrib_deriv4()`][distrib_deriv4.MultinomialDistrib].
+#'   [`distrib_deriv4()`][distrib_deriv4.MultinomialDistrib];
+#' - the moments: [`mean()`][mean.MultinomialDistrib] and
+#'   [`variance()`][variance.MultinomialDistrib];
+#' - the multivariate summaries:
+#'   [`mv_location()`][mv_location.MultinomialDistrib],
+#'   [`mv_sigma()`][mv_sigma.MultinomialDistrib],
+#'   [`mv_marginal()`][mv_marginal.MultinomialDistrib] and
+#'   [`mv_support()`][mv_support.MultinomialDistrib].
 #'
-#' Everything else is inherited from [multivariate_distrib()], which refuses
-#' the distribution function, the quantile and the response derivatives.
+#' Every other generic is inherited from [multivariate_distrib()], whose methods
+#' signal an error for the distribution function, the quantile function, the
+#' response gradient and Hessian, the mixed response derivative, the skewness
+#' and the kurtosis.
 #'
 #' @examples
 #' d <- multinomial_distrib(3, size = 5)
@@ -73,7 +71,7 @@ NULL
 #' c(categories = d@n_dim, trials = d@size, parameters = d@n_params)
 #' d@params
 #'
-#' # The support is finite and enumerable, which is what the class is for.
+#' # The support is finite and enumerable.
 #' nrow(mv_support(d, NULL))
 MultinomialDistrib <- S7::new_class("MultinomialDistrib",
   parent = multivariate_distrib,
@@ -91,18 +89,22 @@ MultinomialDistrib <- S7::new_class("MultinomialDistrib",
 #' The probabilities sum to one at every free vector, so differentiating that
 #' identity shows that the columns of \eqn{A = \partial p/\partial\eta} sum to
 #' zero and so does every second-derivative vector \eqn{B_{\cdot,kl}}. The
-#' second of those makes the expected information closed form: under
-#' expectation the term carrying \eqn{B} becomes \eqn{n\sum_j B_{j,kl}}, which
-#' is zero.
+#' second of those makes the expected information closed form: under expectation
+#' the term carrying \eqn{B} becomes \eqn{n\sum_j B_{j,kl}}, which is zero. On
+#' the additive log-ratio chart of [parameters7::simplex()] the
+#' log-probabilities are formed directly by [mn_log_probs()], so a probability
+#' that underflows keeps its logarithm.
 #'
 #' @param distrib A [MultinomialDistrib()] object, read for its `param`.
 #' @param theta A named list of parameters on the parameter scale, the
 #'   simplex's free values in its own order.
 #'
 #' @return A named list with `prob`, the probability vector of length \eqn{p}
-#'   summing to one; `A`, the \eqn{p \times (p-1)} matrix of first derivatives
-#'   in the free values; `B`, the list of second-derivative vectors keyed by
-#'   unordered tuple; `idx`, those tuples; and `k`, the number of free values.
+#'   summing to one; `lp`, its logarithm; `alr`, whether the parametrization is
+#'   the additive log-ratio chart; `A`, the \eqn{p \times (p-1)} matrix of first
+#'   derivatives in the free values; `B`, the list of second-derivative vectors
+#'   keyed by unordered tuple; `idx`, those tuples; and `k`, the number of free
+#'   values.
 #'
 #' @seealso [distrib_gradient.MultinomialDistrib()] for the first consumer,
 #'   [dir_parts()] for the Dirichlet's counterpart, and
@@ -112,7 +114,12 @@ MultinomialDistrib <- S7::new_class("MultinomialDistrib",
 mn_parts <- function(distrib, theta) {
   s <- distrib@param
   eta <- mv_flat_theta(distrib, theta)
-  list(prob = as.numeric(parameters7::param_value(s, eta)),
+  # on the additive log-ratio chart the log-probabilities are formed directly,
+  # so a probability that underflows keeps its logarithm
+  alr <- mn_is_alr(s)
+  lp <- if (alr) mn_log_probs(s, eta) else NULL
+  prob <- if (alr) exp(lp) else as.numeric(parameters7::param_value(s, eta))
+  list(prob = prob, lp = if (alr) lp else log(prob), alr = alr,
        A = do.call(cbind, parameters7::param_d1(s, eta)),
        B = parameters7::param_d2(s, eta),
        idx = parameters7::param_tuple_indices(s, 2L),
@@ -133,7 +140,10 @@ mn_parts <- function(distrib, theta) {
 #' The factorials are formed through [base::lgamma()] and the product through a
 #' matrix multiplication by \eqn{\log p}, so the whole calculation runs on the
 #' log scale and a mass far below the smallest representable double still has a
-#' finite logarithm.
+#' finite logarithm. On the additive log-ratio chart \eqn{\log p} is computed as
+#' \eqn{\eta_j - \mathrm{LSE}(\eta)} (see [mn_log_probs()]), so a category whose
+#' probability underflows and whose count is zero contributes zero, as it
+#' should.
 #'
 #' @param distrib A `MultinomialDistrib` object, from [multinomial_distrib()].
 #' @param y A numeric matrix with one row per observation and \eqn{p} columns,
@@ -177,7 +187,7 @@ S7::method(distrib_pdf, MultinomialDistrib) <- function(distrib, y, theta, log =
   y <- if (is.matrix(y)) y else matrix(y, nrow = 1L)
   n <- distrib@size
   out <- lgamma(n + 1) - rowSums(lgamma(y + 1)) +
-    as.numeric(y %*% log(p$prob))
+    as.numeric(y %*% p$lp)
   bad <- apply(y, 1L, function(r) {
     any(r < 0) || any(r != round(r)) || abs(sum(r) - n) > 1e-8
   })
@@ -189,14 +199,13 @@ S7::method(distrib_pdf, MultinomialDistrib) <- function(distrib, y, theta, log =
 #' @name distrib_rng.MultinomialDistrib
 #' @description
 #' Draws `n` independent multinomial counts by calling [stats::rmultinom()] and
-#' transposing, so that one **row** of the result is one observation. R returns
-#' one column per draw; the package's convention throughout the multivariate
-#' families is one row per observation, and the transpose is the whole of the
-#' difference. The draws depend on `.Random.seed` in the usual way.
+#' transposing, so that one row of the result is one observation: R returns one
+#' column per draw, and the multivariate families of the package use one row per
+#' observation. The draws depend on `.Random.seed` in the usual way.
 #'
 #' @param distrib A `MultinomialDistrib` object, from [multinomial_distrib()].
-#' @param n A single positive integer, the number of draws. Note that the
-#'   number of **trials** is the object's `size` property, not this argument.
+#' @param n A single positive integer, the number of draws. The number of trials
+#'   is the object's `size` property.
 #' @param theta A named list of the simplex's free values on the parameter
 #'   scale, each of length 1.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -237,12 +246,10 @@ S7::method(distrib_rng, MultinomialDistrib) <- function(distrib, n, theta, ...) 
 #' compositions of \eqn{n} into \eqn{p} parts, supplied by
 #' [numericals7::compositions()].
 #'
-#' Having the support in hand is what turns every expectation into an **exact
-#' sum**. [check_distrib()] uses it to test that the mass adds to one and that
-#' the closed-form information matches the summed observed Hessian, both to
-#' machine precision; an importance-sampling check could only ever compare
-#' against Monte Carlo error, and a normalization wrong by a thousandth would
-#' pass it.
+#' With the support in hand every expectation is an exact sum. [check_distrib()]
+#' uses it to test that the mass adds to one, an equality with tolerance
+#' `1e-10`; an importance-sampling check compares only against Monte Carlo
+#' error, and a normalization wrong by a thousandth would pass it.
 #'
 #' @param distrib A `MultinomialDistrib` object, from [multinomial_distrib()],
 #'   read for its `size` and `n_dim`.
@@ -270,7 +277,7 @@ S7::method(distrib_rng, MultinomialDistrib) <- function(distrib, n, theta, ...) 
 #' c(all_sum_to_5 = all(rowSums(supp) == 5),
 #'   rows = nrow(supp), formula = choose(5 + 3 - 1, 3 - 1))
 #'
-#' # The mass over it adds to one exactly, which no sampling check could say.
+#' # The mass over the support adds to one exactly.
 #' sum(distrib_pdf(d, supp, list(probs_alr1 = 0.3, probs_alr2 = -0.2))) - 1
 S7::method(mv_support, MultinomialDistrib) <- function(distrib, theta, ...) {
   numericals7::compositions(distrib@size, distrib@n_dim)
@@ -280,16 +287,17 @@ S7::method(mv_support, MultinomialDistrib) <- function(distrib, theta, ...) {
 #' @name distrib_gradient.MultinomialDistrib
 #' @description
 #' Computes the first derivatives of the multinomial log-mass with respect to
-#' the simplex's free values, one value per observation, in closed form. With
-#' \eqn{A = \partial p/\partial\eta} the chart's own Jacobian,
-#' \deqn{\dfrac{\partial\ell}{\partial\eta_k}
-#'       = \sum_{j=1}^{p} \dfrac{y_j}{p_j}A_{jk}.}
-#' The factorial term of the mass carries no parameter, so it contributes
-#' nothing, and the data enter only through the counts themselves.
+#' the free values of the simplex, one value per observation, in closed form.
+#' With \eqn{A = \partial p/\partial\eta} the Jacobian of the chart,
+#' \deqn{\dfrac{\partial\ell}{\partial\eta_k} = \sum_{j=1}^{p}
+#' \dfrac{y_j}{p_j}A_{jk}.} The factorial term of the mass carries no parameter,
+#' and the data enter only through the counts. On the additive log-ratio chart,
+#' where \eqn{A_{jk} = p_j(\delta_{jk} - p_k)}, the sum is computed as \eqn{y_k
+#' - N p_k} with \eqn{N} the total of the row, which divides by no probability.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries. Every parameter rides the identity here, its free value
-#' being unconstrained already, so the two scales coincide.
+#' With `scale = "link"` the generic applies the chain rule for the links of the
+#' family to the result of the method. Every parameter takes the identity link
+#' here, its free value being unconstrained already, so the two scales coincide.
 #'
 #' @param distrib A `MultinomialDistrib` object, from [multinomial_distrib()].
 #' @param y A numeric matrix with one row per observation and \eqn{p} columns,
@@ -338,6 +346,14 @@ S7::method(distrib_gradient, MultinomialDistrib) <- function(distrib, y, theta,
                                                               scale = c("parameter", "link"), ...) {
   p <- mn_parts(distrib, theta)
   y <- if (is.matrix(y)) y else matrix(y, nrow = 1L)
+  if (p$alr) {
+    # y_k - N p_k, with N the row's total: no division by a probability
+    tot <- rowSums(y)
+    return(stats::setNames(
+      lapply(seq_len(p$k), function(k) y[, k] - tot * p$prob[k]),
+      distrib@params
+    ))
+  }
   yp <- sweep(y, 2L, p$prob, "/")
   stats::setNames(
     lapply(seq_len(p$k), function(k) as.numeric(yp %*% p$A[, k])),
@@ -354,8 +370,12 @@ S7::method(distrib_gradient, MultinomialDistrib) <- function(distrib, y, theta,
 #' \eqn{B_{\cdot,kl} = \partial^2 p/\partial\eta_k\partial\eta_l},
 #' \deqn{\ell^{(\eta_k\eta_l)} = \sum_{j=1}^{p}\left(\dfrac{y_j}{p_j}B_{j,kl}
 #'       - \dfrac{y_j}{p_j^2}A_{jk}A_{jl}\right).}
-#' Both terms carry the data, so the observed matrix differs from its
-#' expectation at every observation.
+#' On the additive log-ratio chart the two terms combine into
+#' \eqn{-N(\delta_{kl}p_k - p_kp_l)}, with \eqn{N} the total of the row, the
+#' second cumulant of the categorical law, which the method computes directly
+#' and without dividing by a probability; for a row on the support \eqn{N = n},
+#' so the observed matrix equals its expectation. On another chart the two terms
+#' need not combine in this way.
 #'
 #' @param distrib A `MultinomialDistrib` object, from [multinomial_distrib()].
 #' @param y A numeric matrix with one row per observation and \eqn{p} columns,
@@ -407,11 +427,20 @@ S7::method(distrib_hessian, MultinomialDistrib) <- function(distrib, y, theta,
                                                              scale = c("parameter", "link"), ...) {
   p <- mn_parts(distrib, theta)
   y <- if (is.matrix(y)) y else matrix(y, nrow = 1L)
-  yp <- sweep(y, 2L, p$prob, "/")
-  yp2 <- sweep(y, 2L, p$prob^2, "/")
   nm <- hess_names(distrib@params)
   pr <- hess_pairs(distrib@params)
   pos <- stats::setNames(seq_along(distrib@params), distrib@params)
+  if (p$alr) {
+    # -N (p_a delta_ab - p_a p_b), the second cumulant of the categorical law
+    tot <- rowSums(y)
+    return(stats::setNames(lapply(seq_along(nm), function(m) {
+      a <- pos[[pr[[m]][1]]]
+      b <- pos[[pr[[m]][2]]]
+      -tot * mn_cumulant(p$prob, c(a, b))
+    }), nm))
+  }
+  yp <- sweep(y, 2L, p$prob, "/")
+  yp2 <- sweep(y, 2L, p$prob^2, "/")
 
   stats::setNames(lapply(seq_along(nm), function(m) {
     a <- pos[[pr[[m]][1]]]
@@ -432,11 +461,12 @@ S7::method(distrib_hessian, MultinomialDistrib) <- function(distrib, y, theta,
 #' form and with no quadrature, simulation or summation over the support:
 #' \deqn{\mathbb{E}[\ell^{(\eta_k\eta_l)}]
 #'       = -n\sum_{j=1}^{p} \dfrac{A_{jk}A_{jl}}{p_j},}
-#' with \eqn{A = \partial p/\partial\eta}. `approx` and `nsim` are ignored:
-#' every strategy returns the same matrix.
+#' with \eqn{A = \partial p/\partial\eta}; on the additive log-ratio chart it is
+#' computed as \eqn{-n(\delta_{kl}p_k - p_kp_l)}, the form below. `approx` and
+#' `nsim` are not read.
 #'
 #' @details
-#' # Why the second-derivative term vanishes
+#' # The second-derivative term
 #'
 #' Under the model \eqn{\mathbb{E}[y_j] = n p_j}, so the term of the observed
 #' Hessian carrying \eqn{B} becomes \eqn{n\sum_j B_{j,kl}}. The probabilities
@@ -444,7 +474,7 @@ S7::method(distrib_hessian, MultinomialDistrib) <- function(distrib, y, theta,
 #' the whole term drops out, leaving the display above. The same argument, one
 #' order lower, gives the score mean zero.
 #'
-#' # The information is the covariance of the first p-1 counts
+#' # The information on the additive log-ratio chart
 #'
 #' On the default chart, [parameters7::simplex()]'s additive log-ratio
 #' coordinates, the Jacobian is \eqn{A_{jk} = p_j(\delta_{jk} - p_k)}, so
@@ -453,10 +483,9 @@ S7::method(distrib_hessian, MultinomialDistrib) <- function(distrib, y, theta,
 #'   = \delta_{kl}p_k - p_k p_l,}
 #' and the expected information \eqn{-\mathbb{E}[\ell^{(\eta_k\eta_l)}]} is
 #' exactly \eqn{\operatorname{Cov}(Y_k, Y_l)}, the leading
-#' \eqn{(p-1)\times(p-1)} block of [mv_sigma.MultinomialDistrib()]. Measured,
-#' the two agree to `2e-16` at every dimension and trial count tried. The
-#' identity belongs to that chart; a different simplex parametrization has a
-#' different Jacobian and no such coincidence.
+#' \eqn{(p-1)\times(p-1)} block of [mv_sigma.MultinomialDistrib()]. The identity
+#' belongs to that chart; a different simplex parametrization has a different
+#' Jacobian.
 #'
 #' @param distrib A `MultinomialDistrib` object, from [multinomial_distrib()].
 #' @param y A numeric matrix of observations. Only its row count is read
@@ -519,7 +548,12 @@ S7::method(distrib_expected_hessian, MultinomialDistrib) <- function(distrib, y,
   stats::setNames(lapply(seq_along(nm), function(m) {
     a <- pos[[pr[[m]][1]]]
     b <- pos[[pr[[m]][2]]]
-    rep(-distrib@size * sum(p$A[, a] * p$A[, b] / p$prob), n)
+    v <- if (p$alr) {
+      -distrib@size * mn_cumulant(p$prob, c(a, b))
+    } else {
+      -distrib@size * sum(p$A[, a] * p$A[, b] / p$prob)
+    }
+    rep(v, n)
   }), nm)
 }
 
@@ -535,8 +569,8 @@ S7::method(distrib_expected_hessian, MultinomialDistrib) <- function(distrib, y,
 #' @param theta A named list of the simplex's free values on the parameter
 #'   scale, each of length 1.
 #'
-#' @return A numeric vector of length \eqn{p}, strictly positive and summing to
-#'   the object's `size`.
+#' @return A numeric vector of length \eqn{p}, without names, summing to the
+#'   object's `size`.
 #'
 #' @seealso [mv_sigma.MultinomialDistrib()] for the covariance,
 #'   [mean.MultinomialDistrib()], which calls this, and [mv_location()] for the
@@ -561,20 +595,19 @@ S7::method(mv_location, MultinomialDistrib) <- function(distrib, theta) {
 #' Returns the covariance matrix of the counts,
 #' \deqn{\operatorname{Cov}(Y_i, Y_j) = n(\delta_{ij}p_i - p_i p_j),}
 #' so the coordinate variances are \eqn{np_j(1-p_j)}, the binomial ones, and
-#' every covariance is negative: the counts share a fixed total, so one
-#' category can only grow at the others' expense.
+#' every covariance is negative, the counts sharing a fixed total.
 #'
-#' The matrix is **singular by construction**, the coordinates summing to
-#' \eqn{n}, so the vector of ones is in its null space and the rank is
-#' \eqn{p-1}. Its leading \eqn{(p-1)\times(p-1)} block is the expected
-#' information on the default chart; see
-#' [distrib_expected_hessian.MultinomialDistrib()].
+#' The matrix is singular, the coordinates summing to \eqn{n}, so the vector of
+#' ones is in its null space and the rank is \eqn{p-1}. Its leading
+#' \eqn{(p-1)\times(p-1)} block is the expected information on the default
+#' chart; see [distrib_expected_hessian.MultinomialDistrib()].
 #'
 #' @param distrib A `MultinomialDistrib` object, from [multinomial_distrib()].
 #' @param theta A named list of the simplex's free values on the parameter
 #'   scale, each of length 1.
 #'
-#' @return A symmetric \eqn{p \times p} numeric matrix of rank \eqn{p-1}.
+#' @return A symmetric \eqn{p \times p} numeric matrix of rank \eqn{p-1},
+#'   without dimnames.
 #'
 #' @seealso [mv_location.MultinomialDistrib()] for the mean,
 #'   [variance.MultinomialDistrib()], which calls this,
@@ -628,8 +661,8 @@ S7::method(mean, MultinomialDistrib) <- function(x, theta, ...) {
 #' @description
 #' Returns the covariance matrix of the counts by delegating to
 #' [mv_sigma.MultinomialDistrib()]. It is singular, the counts summing to the
-#' trial count, so a caller wanting something to invert should take the
-#' marginals or work on the simplex's free vector.
+#' trial count, so a computation that inverts a covariance works with the
+#' marginals or with the free vector of the simplex.
 #'
 #' @param x A `MultinomialDistrib` object, from [multinomial_distrib()]. The
 #'   argument is named `x` for consistency with [base::mean()], whose signature
@@ -656,16 +689,20 @@ S7::method(variance, MultinomialDistrib) <- function(x, theta, ...) {
 #' failure, and the trial count is unchanged. The returned object carries the
 #' same `size` as the multinomial and its `mu` is \eqn{p_j}.
 #'
-#' Several coordinates at once are refused. A sub-vector is again multinomial,
-#' but only after the remaining outcomes are collapsed into a category of their
-#' own, and returning that object under this name would mislead. The error
-#' says so.
+#' A vector of several coordinates signals an error: a sub-vector is again
+#' multinomial only once the remaining outcomes are collapsed into a category of
+#' their own, which is a different object from the sub-vector, and the error
+#' message gives this reason. For the same reason [plot.multivariate_distrib()],
+#' whose panels are marginals of two coordinates, signals that error for this
+#' family.
 #'
 #' @param distrib A `MultinomialDistrib` object, from [multinomial_distrib()].
 #' @param theta A named list of the simplex's free values on the parameter
 #'   scale, each of length 1.
 #' @param which A single integer in \eqn{1, \dots, p}, the category wanted. A
-#'   vector of length other than 1 signals an error explaining why.
+#'   vector of two or more distinct categories signals an error explaining why;
+#'   an empty, duplicated, non-integer or out-of-range `which` is rejected
+#'   earlier by [mv_marginal()].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with `distrib`, a [binomial_distrib()] object at the
@@ -710,12 +747,13 @@ S7::method(mv_marginal, MultinomialDistrib) <- function(distrib, theta, which, .
 #' Builds the distribution object for the multinomial family on \eqn{p}
 #' categories and \eqn{n} trials, parametrized by a probability vector carried
 #' on a `parameters7` simplex. The returned object carries closed-form
-#' derivatives of the log-mass to fourth order and a closed-form expected
-#' information, and its support is small enough to enumerate, so every
-#' expectation can be checked as an exact sum.
+#' derivatives of the log-mass to fourth order, a closed-form expected
+#' information and closed-form expectations of the third and fourth derivatives,
+#' and its support is small enough to enumerate, so every expectation can be
+#' checked as an exact sum.
 #'
-#' @param n_dim The number of categories \eqn{p}, a single integer of at least
-#'   2. Anything else signals an error naming the argument.
+#' @param n_dim The number of categories \eqn{p}, a single whole number of at
+#'   least 2. Any other value signals an error naming the argument.
 #' @param size The number of trials \eqn{n}, a single positive integer. It is a
 #'   constant of the distribution and not a parameter, as for
 #'   [binomial_distrib()], so an object cannot be reused across data sets whose
@@ -736,24 +774,21 @@ S7::method(mv_marginal, MultinomialDistrib) <- function(distrib, theta, which, .
 #' \deqn{\mathbb{E}[Y_j] = n p_j, \qquad
 #'       \operatorname{Var}(Y_j) = n p_j (1 - p_j), \qquad
 #'       \operatorname{Cov}(Y_j, Y_k) = -n p_j p_k.}
-#' There is **no dispersion parameter**: the probabilities are all the family
-#' has, and \eqn{p-1} of them are free.
+#' The family has no dispersion parameter: its parameters are the probabilities,
+#' \eqn{p-1} of them free.
 #'
 #' The probabilities are carried by a `parameters7` simplex and flattened into
-#' scalars with identity links, exactly as a covariance is for the multivariate
-#' gaussian. The constraint that they be positive and sum to one lives in the
-#' parameter, where a scalar link could not express it.
+#' scalars with identity links, as a covariance is for the multivariate
+#' gaussian. The constraint that they be positive and sum to one is carried by
+#' the parameter, which a scalar link could not express.
 #'
-#' # A multivariate family that is discrete
+#' # The support
 #'
-#' This is the first family of the package that is multivariate and discrete,
-#' so its support is a finite set of points rather than a region.
-#' [mv_support.MultinomialDistrib()] enumerates them, which lets an expectation
-#' be an exact sum and lets [check_distrib()] test the total mass by addition:
-#' measured, the mass over the support comes back at 1 to `8e-16` and the
-#' closed-form information agrees with the summed observed Hessian to the same
-#' order. An importance-sampling check would only ever compare against Monte
-#' Carlo error, and a normalization wrong by a thousandth would pass it.
+#' The family is multivariate and discrete, so its support is a finite set of
+#' points. [mv_support.MultinomialDistrib()] enumerates them, which makes an
+#' expectation an exact sum and lets [check_distrib()] test the total mass by
+#' addition. An importance-sampling check compares only against Monte Carlo
+#' error, and a normalization wrong by a thousandth would pass it.
 #'
 #' The count of support points is \eqn{\binom{n+p-1}{p-1}} and grows quickly,
 #' so the enumeration is a validation tool rather than a fitting route.
@@ -770,10 +805,13 @@ S7::method(mv_marginal, MultinomialDistrib) <- function(distrib, theta, which, .
 #' probabilities sum to one, so every derivative of their sum is zero.
 #'
 #' On the default additive log-ratio chart the resulting information is exactly
-#' the covariance of the first \eqn{p-1} counts, since
-#' \eqn{A_{jk} = p_j(\delta_{jk}-p_k)} collapses the sum to
-#' \eqn{\delta_{kl}p_k - p_kp_l}. Measured, the two agree to `2e-16` at every
-#' dimension and trial count tried.
+#' the covariance of the first \eqn{p-1} counts, since \eqn{A_{jk} =
+#' p_j(\delta_{jk}-p_k)} collapses the sum to \eqn{\delta_{kl}p_k - p_kp_l}. On
+#' that chart every derivative of the log-mass of order two or more is \eqn{-N}
+#' times a cumulant of the categorical law (see [mn_cumulant()]), a sum of
+#' products of probabilities that the methods compute without dividing by one,
+#' so a category whose probability is tiny or underflows gives finite
+#' derivatives.
 #'
 #' # Marginals and conjugacy
 #'
@@ -797,7 +835,8 @@ S7::method(mv_marginal, MultinomialDistrib) <- function(distrib, theta, which, .
 #'
 #' @return An S7 object of class `MultinomialDistrib`, inheriting from
 #'   `multivariate_distrib`, with `size` the trial count, `param` the simplex
-#'   given here, `distrib_name` `"multinomial [pd, size=n, probs=<chart>]"`,
+#'   given here, `distrib_name` `"multinomial [<p>d, size=<n>, probs=<name>]"`
+#'   with `<name>` the `param_name` of the probability parameter,
 #'   `dimension` `"multivariate"`, `n_dim` \eqn{p}, `bounds` `c(0, size)`,
 #'   `params` the simplex's free names prefixed by `probs_`, `n_params`
 #'   \eqn{p-1}, and `link_params` the identity for each.
@@ -852,10 +891,11 @@ S7::method(mv_marginal, MultinomialDistrib) <- function(distrib, theta, which, .
 #' @export
 multinomial_distrib <- function(n_dim, size,
                                 probs = parameters7::simplex(n_dim)) {
-  p <- as.integer(n_dim)
-  if (length(p) != 1L || is.na(p) || p < 2L) {
+  if (!is.numeric(n_dim) || length(n_dim) != 1L || !is.finite(n_dim) ||
+      n_dim != round(n_dim) || n_dim < 2) {
     stop("'n_dim' must be a single integer of at least 2.", call. = FALSE)
   }
+  p <- as.integer(n_dim)
   if (!is.numeric(size) || length(size) != 1L || !is.finite(size) ||
       size < 1 || size != round(size)) {
     stop("'size' must be a single positive integer.", call. = FALSE)

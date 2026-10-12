@@ -16,14 +16,20 @@ mvt_higher(distrib, y, theta, order)
 \item{order}{The derivative order, 1 to 4.}
 }
 \value{
-A named list of numeric vectors, one per component.
+A named list of numeric vectors of length \eqn{n}, keyed as
+\code{deriv_names(distrib@params, order)}.
 }
 \description{
-Splits a component into its mean-and-matrix part and its \eqn{\nu} part.
-The log-determinant and the \eqn{\nu} constant each contribute to one kind
-of component only; the remaining term is a univariate chain rule in \eqn{q}
-whose outer derivatives, \eqn{(-1)^{m-1}(m-1)!/(\nu+q)^{m}}, are then
-differentiated in \eqn{\nu} by the Leibniz rule against the prefactor
-\eqn{(\nu+p)/2}, which is linear.
+Splits a component into its mean-and-matrix part and its \eqn{\nu} part. The
+log-determinant contributes only to a component whose indices all name the
+matrix, with the sign set by the orientation of the chart (see
+\code{\link[=mvg_ptensors]{mvg_ptensors()}}). A component whose indices all name \eqn{\nu} is computed
+by \code{\link[=mvt_cp_d]{mvt_cp_d()}} and \code{\link[=mvt_h_d]{mvt_h_d()}}, which avoid the cancellation of the direct
+forms at large \eqn{\nu}. Every other component is a univariate chain rule
+in \eqn{q} over the set partitions of its mean and matrix indices, whose
+outer derivatives \eqn{(-1)^{m-1}(m-1)!/(\nu+q)^{m}} are differentiated in
+\eqn{\nu} by the Leibniz rule against the linear prefactor \eqn{(\nu+p)/2}.
+The two terms of the Leibniz rule are combined into one fraction, since
+written separately they agree to leading order as \eqn{\nu} grows.
 }
 \keyword{internal}

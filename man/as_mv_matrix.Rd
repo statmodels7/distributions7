@@ -11,19 +11,20 @@ as_mv_matrix(distrib, y)
 read.}
 
 \item{y}{A numeric matrix with \code{distrib@n_dim} columns, or a numeric vector
-of length \code{distrib@n_dim}. A vector of any other length is an error, as is
-a matrix of the wrong width.}
+of length \code{distrib@n_dim}. An empty vector gives a matrix with no rows. A
+vector of any other length, a matrix of the wrong width and a non-numeric
+\code{y} are errors.}
 }
 \value{
 A numeric matrix with \code{distrib@n_dim} columns.
 }
 \description{
-Puts \code{y} in the \eqn{n \times p} form every multivariate method expects. A
-matrix of the right width is returned unchanged; a plain vector of length
-\eqn{p} is read as a SINGLE observation and returned as a one-row matrix,
-the reading a caller asking for a density at one point wants. Anything else
-is an error naming the length it was given and the dimension it should have
-had.
+Puts \code{y} in the \eqn{n \times p} form that every multivariate method
+expects. A matrix of the right width is returned unchanged, and a numeric
+vector of length \eqn{p} is read as a single observation and returned as a
+one-row matrix, which is the reading of a density at one point. A vector of
+any other length is an error naming its length and the dimension, and a
+response that is not numeric is an error as well.
 }
 \examples{
 d <- mvgaussian1_distrib(2)

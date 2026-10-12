@@ -30,10 +30,11 @@ Computes the multivariate gaussian log-density
 \deqn{\ell = -\frac{p}{2}\log 2\pi - \frac{1}{2}\log\lvert\Sigma\rvert
   - \frac{1}{2}(y-\mu)^\top \Sigma^{-1} (y-\mu),}
 row by row, and exponentiates it unless \code{log = TRUE}. The log-determinant
-comes from the matrix parametrization's own \code{param_logdet()} and the
-quadratic form from its \code{param_solve()}, so neither a determinant nor an
-explicit inverse is formed by this method. Both are computed once per call,
-not once per observation, since the matrix does not vary with the response.
+comes from the matrix parametrization's own \code{param_logdet()}, so no
+determinant is formed. The quadratic form is the squared norm of the residual
+whitened by the parametrization's factor (see \code{\link[=mv_quad]{mv_quad()}}), which keeps its
+digits where the covariance is nearly singular. The matrix quantities are
+computed once per call, since the matrix does not vary with the response.
 }
 \examples{
 d <- mvgaussian1_distrib(2)

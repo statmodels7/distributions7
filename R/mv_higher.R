@@ -19,15 +19,14 @@ NULL
 #' Collects \eqn{\partial^{S}\mu_j} for every multiset \eqn{S} of free indices
 #' up to the requested order, keyed by the sorted tuple, as a list of numeric
 #' vectors over the coordinates \eqn{j}. The arrays come from
-#' \pkg{parameters7}, which supplies orders three and four for a
-#' `simplex`, so nothing is derived here; what the function adds is the keying,
-#' which lets the chain rule in [chain_univariate()] look a block up by its
-#' index multiset.
+#' \pkg{parameters7}, which supplies orders three and four for a `simplex`. The
+#' function derives nothing itself and only adds the keying, which lets the
+#' chain rule in [chain_univariate()] look a block up by its index multiset.
 #'
 #' @param s A `parameters7::simplex()` parametrization.
 #' @param eta The free vector, a numeric vector of length `s@n_free`.
 #' @param order The highest order required, a single whole number from 1 to 4.
-#'   Above 4 the `switch` returns `NULL` and the call fails.
+#'   A larger value signals an error.
 #'
 #' @return A named list of numeric vectors, each as long as the simplex has
 #'   coordinates, keyed `"1"`, `"2"`, `"1,1"`, `"1,2"` and so on, with the
@@ -35,7 +34,7 @@ NULL
 #'   multisets of width 1 to `order`.
 #'
 #' @section Notation:
-#' \eqn{\mu} is the point of the simplex the parametrization produces,
+#' \eqn{\mu} is the point of the simplex that the parametrization produces,
 #' \eqn{\eta} its free vector, and \eqn{S} a multiset of free-value indices.
 #'
 #' @seealso [chain_univariate()], which consumes these,
@@ -83,11 +82,13 @@ simplex_map_tensors <- function(s, eta, order) {
 #' is vectorized over the coordinates, so one call serves every \eqn{j} at once.
 #'
 #' @details
-#' This is why the two simplex-valued families are cheap at orders three and
-#' four. Their log-densities are sums of terms each depending on ONE coordinate,
+#' The two simplex-valued families use this at orders three and four. Their
+#' log-densities are sums of terms that each depend on one coordinate,
 #' \eqn{\log\Gamma(\alpha_j)} for the Dirichlet and \eqn{\log p_j} for the
-#' multinomial, so the multivariate Faa di Bruno collapses to one univariate
-#' partition sum per coordinate and no mixed derivative array is ever formed.
+#' multinomial, so the multivariate Faa di Bruno formula reduces to one
+#' univariate partition sum per coordinate, and the mixed derivative arrays are
+#' never formed. The multinomial uses it only on a chart other than the additive
+#' log-ratio one, where its derivatives are cumulants (see [mn_cumulant()]).
 #'
 #' @param tuple An integer vector of free-value indices, with repeats allowed.
 #'   Its length is the derivative order.
@@ -145,7 +146,7 @@ chain_univariate <- function(tuple, fd, ud) {
 #' @description
 #' Collects \eqn{\partial^{S}\alpha} for every multiset \eqn{S} over the
 #' Dirichlet's composite index set, the simplex's free values followed by the
-#' concentration. The shape vector \eqn{\alpha = \phi\,\mu(\eta)} is BILINEAR
+#' concentration. The shape vector \eqn{\alpha = \phi\,\mu(\eta)} is bilinear
 #' in the concentration and the mean, so the whole array follows from
 #' [simplex_map_tensors()] by three cases: \eqn{\phi\,\partial^{S}\mu} when
 #' \eqn{S} names no \eqn{\phi}, \eqn{\partial^{S'}\mu} when it names one, and
@@ -157,7 +158,7 @@ chain_univariate <- function(tuple, fd, ud) {
 #' @param order The highest order required, a single whole number from 1 to 4.
 #'
 #' @return A named list of numeric vectors over the coordinates, keyed by sorted
-#'   tuple over the composite index set with \eqn{\phi} LAST, so at
+#'   tuple over the composite index set with \eqn{\phi} last, so at
 #'   `s@n_free = 2` the concentration is index 3 and the key `"3,3"` holds a
 #'   vector of zeros.
 #'
@@ -213,13 +214,13 @@ dirichlet_map_tensors <- function(s, eta, phi, order) {
 #' @title Index Tuples of a Given Width Over a Number of Variables
 #'
 #' @description
-#' Enumerates the index multisets of exactly `order` indices drawn from
-#' `1:d`, in the order `parameters7::param_tuple_indices()` uses. It takes a
-#' COUNT rather than a parametrization, so a composite index set formed by
-#' appending a coordinate can be enumerated without building an object of that
-#' shape. The Dirichlet's set is the one that needs this: its simplex free
-#' values followed by its concentration. The work is done by
-#' `numericals7::tuple_indices()`, the toolkit's one copy of the enumeration.
+#' Enumerates the index multisets of exactly `order` indices drawn from `1:d`,
+#' in the order that `parameters7::param_tuple_indices()` uses. It takes a count
+#' of variables in place of a parametrization, so a composite index set formed
+#' by appending a coordinate can be enumerated without building an object of
+#' that shape. The Dirichlet needs this for its simplex free values followed by
+#' its concentration. The work is done by `numericals7::tuple_indices()`, which
+#' this function wraps.
 #'
 #' @param d The number of variables, a single positive whole number.
 #' @param order The tuple width, a single whole number from 1 to 4.
@@ -248,65 +249,69 @@ tuple_indices_upto <- function(d, order) {
   numericals7::tuple_indices(d, order)
 }
 
-#' @title Expected Higher Derivatives of a Simplex-Valued Family by Sampling
-#'
-#' @description
-#' Averages the closed-form observed third or fourth derivatives over a sample
-#' drawn from the family. This is the route the multivariate branch takes
-#' throughout: a quadrature over the simplex has no counterpart to the
-#' one-dimensional split at quantiles, and the Bartlett route would need the
-#' score's own higher derivatives. The result therefore carries Monte Carlo
-#' error of order `nsim^(-1/2)`, and a caller who needs it reproducible sets a
-#' seed first.
-#'
-#' @details
-#' Only the two simplex-valued families reach here. The branch is taken on
-#' whether `distrib` inherits `DirichletDistrib`, everything else being routed
-#' to [multinomial_higher()], so this function must not be called for any third
-#' family.
-#'
-#' @param distrib A `DirichletDistrib` or `MultinomialDistrib` object.
-#' @param y The observed response, read only for its number of rows.
-#' @param theta A named list of parameters, each component a single number.
-#' @param order The derivative order, `3L` or `4L`.
-#' @param nsim The Monte Carlo sample size, a single positive whole number.
-#'
-#' @return A named list of numeric vectors of length `n_obs(distrib, y)`, each
-#'   constant across observations, keyed as `deriv_names(distrib@params, order)`.
-#'
-#' @seealso [dirichlet_higher()] and [multinomial_higher()] for the observed
-#'   derivatives it averages, and [distrib_deriv3.DirichletDistrib()] for the
-#'   method that calls it.
-#'
-#' @examples
-#' d <- dirichlet_distrib(3)
-#' theta <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)
-#' set.seed(1)
-#' y <- distrib_rng(d, 5, theta)
-#'
-#' set.seed(5)
-#' e3 <- distributions7:::mv_expected_higher(d, y, theta, 3L, 3000)
-#'
-#' # One value per observation, and every vector constant.
-#' lengths(e3)[1:3]
-#' all(vapply(e3, function(z) diff(range(z)) == 0, TRUE))
-#'
-#' # Two seeds give two answers, this being a sample rather than an integral.
-#' set.seed(6)
-#' c(first = e3[[1]][1],
-#'   second = distributions7:::mv_expected_higher(d, y, theta, 3L, 3000)[[1]][1])
-#'
-#' @keywords internal
-mv_expected_higher <- function(distrib, y, theta, order, nsim) {
-  big <- distrib_rng(distrib, nsim, theta)
-  ob <- if (S7::S7_inherits(distrib, DirichletDistrib)) {
-    dirichlet_higher(distrib, big, theta, order)
-  } else {
-    multinomial_higher(distrib, big, theta, order)
-  }
-  n <- n_obs(distrib, y)
-  lapply(ob, function(v) rep(mean(v), n))
-}
+# Commented out on 2026-10-12 (T4): the expected third and fourth orders of the Dirichlet and the multinomial
+# are closed form (dirichlet_higher(), multinomial_higher() with
+# expected = TRUE), so the sampling route has no caller.
+# Kept rather than deleted.
+# @title Expected Higher Derivatives of a Simplex-Valued Family by Sampling
+#
+# @description
+# Averages the closed-form observed third or fourth derivatives over a sample
+# drawn from the family. This is the route the multivariate branch takes
+# throughout: a quadrature over the simplex has no counterpart to the
+# one-dimensional split at quantiles, and the Bartlett route would need the
+# score's own higher derivatives. The result therefore carries Monte Carlo
+# error of order `nsim^(-1/2)`, and a caller who needs it reproducible sets a
+# seed first.
+#
+# @details
+# Only the two simplex-valued families reach here. The branch is taken on
+# whether `distrib` inherits `DirichletDistrib`, everything else being routed
+# to [multinomial_higher()], so this function must not be called for any third
+# family.
+#
+# @param distrib A `DirichletDistrib` or `MultinomialDistrib` object.
+# @param y The observed response, read only for its number of rows.
+# @param theta A named list of parameters, each component a single number.
+# @param order The derivative order, `3L` or `4L`.
+# @param nsim The Monte Carlo sample size, a single positive whole number.
+#
+# @return A named list of numeric vectors of length `n_obs(distrib, y)`, each
+#   constant across observations, keyed as `deriv_names(distrib@params, order)`.
+#
+# @seealso [dirichlet_higher()] and [multinomial_higher()] for the observed
+#   derivatives it averages, and [distrib_deriv3.DirichletDistrib()] for the
+#   method that calls it.
+#
+# @examples
+# d <- dirichlet_distrib(3)
+# theta <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)
+# set.seed(1)
+# y <- distrib_rng(d, 5, theta)
+#
+# set.seed(5)
+# e3 <- distributions7:::mv_expected_higher(d, y, theta, 3L, 3000)
+#
+# # One value per observation, and every vector constant.
+# lengths(e3)[1:3]
+# all(vapply(e3, function(z) diff(range(z)) == 0, TRUE))
+#
+# # Two seeds give two answers, this being a sample rather than an integral.
+# set.seed(6)
+# c(first = e3[[1]][1],
+#   second = distributions7:::mv_expected_higher(d, y, theta, 3L, 3000)[[1]][1])
+#
+# @keywords internal
+# mv_expected_higher <- function(distrib, y, theta, order, nsim) {
+#   big <- distrib_rng(distrib, nsim, theta)
+#   ob <- if (S7::S7_inherits(distrib, DirichletDistrib)) {
+#     dirichlet_higher(distrib, big, theta, order)
+#   } else {
+#     multinomial_higher(distrib, big, theta, order)
+#   }
+#   n <- n_obs(distrib, y)
+#   lapply(ob, function(v) rep(mean(v), n))
+# }
 
 
 #' @title Dirichlet Third Derivatives
@@ -317,20 +322,36 @@ mv_expected_higher <- function(distrib, y, theta, order, nsim) {
 #' closed form. The log-density is
 #' \deqn{\ell = \log\Gamma(\phi) - \sum_j \log\Gamma(\alpha_j)
 #'   + \sum_j(\alpha_j - 1)\log y_j, \qquad \alpha = \phi\,\mu(\eta),}
-#' so every term depends on ONE coordinate of the simplex and the chain rule
-#' collapses to a univariate partition sum per coordinate, run by
-#' [chain_univariate()] over the arrays [dirichlet_map_tensors()] supplies. The
-#' concentration also enters directly, through \eqn{\log\Gamma(\phi)}, which
-#' contributes only to the component all of whose indices name it.
+#' so every term depends on one coordinate of the simplex and the chain rule
+#' reduces to a univariate partition sum per coordinate, run by
+#' [chain_univariate()] over the arrays that [dirichlet_map_tensors()] supplies.
+#' The concentration also enters directly, through \eqn{\log\Gamma(\phi)}, which
+#' contributes only to the component whose indices all name it.
 #'
 #' @details
-#' The shape vector is bilinear in \eqn{\phi} and \eqn{\mu}, so a component
-#' naming \eqn{\phi} twice or more gets nothing from the map, and only the
-#' direct \eqn{\log\Gamma(\phi)} term survives there. That is what keeps the
-#' order-3 and order-4 assemblies as cheap as the order-2 one.
+#' The shape vector is bilinear in \eqn{\phi} and \eqn{\mu}, so the arrays of
+#' the map are zero for a component that names \eqn{\phi} twice or more.
 #'
-#' With `expected = TRUE` the expectation is taken by sampling and carries
-#' Monte Carlo error of order `nsim^(-1/2)`.
+#' On the additive log-ratio chart of [parameters7::simplex()] the term
+#' \eqn{-\log\Gamma(\alpha_j)} is split as
+#' \eqn{\log\alpha_j - \log\Gamma(1 + \alpha_j)}. The first part equals
+#' \eqn{\log\phi + \eta_j - \mathrm{LSE}(\eta)}, with \eqn{\eta_p = 0}, and its
+#' derivatives are added in closed form: \eqn{p(-1)^{m-1}(m-1)!/\phi^m} on the
+#' component of order \eqn{m} in \eqn{\phi} alone, and \eqn{-p} times a cumulant
+#' of the categorical law (see [mn_cumulant()]) on a component that names only
+#' the free values of the mean. The second part is regular at a small shape, so
+#' the partition sum runs over \eqn{\psi^{(m-1)}(1 + \alpha_j)}. Applied to
+#' \eqn{\log\Gamma(\alpha_j)} directly, the chain rule would cancel at a small
+#' shape, terms of order one leaving a result of the order of \eqn{\alpha_j}. On
+#' another chart a coordinate with \eqn{\alpha_j < 1} is scaled by
+#' \eqn{\alpha_j} through
+#' \eqn{\alpha^m\psi^{(m-1)}(\alpha) = (-1)^m(m-1)! + \alpha^m\psi^{(m-1)}(1 + \alpha)},
+#' so that \eqn{\psi^{(m-1)}(\alpha_j)} does not overflow.
+#'
+#' With `expected = TRUE` the expectation is exact. The response enters only
+#' through \eqn{\sum_j(\alpha_j - 1)\log y_j}, linearly, and
+#' \eqn{\mathrm{E}\log y_j = \psi(\alpha_j) - \psi(\phi)}.
+#'
 #' @param distrib A `DirichletDistrib` object, from [dirichlet_distrib()].
 #' @param y A numeric matrix with one row per observation and one column per
 #'   coordinate, each row a point of the open simplex. A row with a zero
@@ -339,13 +360,13 @@ mv_expected_higher <- function(distrib, y, theta, order, nsim) {
 #' @param theta A named list of parameters, each component a single number:
 #'   `mean_alr1`, ..., `mean_alr(p-1)` and `phi`.
 #' @param expected Logical of length 1. When `TRUE` the expectation is returned,
-#'   by SAMPLING through [mv_expected_higher()]. Defaults to `FALSE`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch.
-#' @param approx Ignored: sampling is the only multivariate route to an
-#'   expectation. Present so that the signature matches the generic's.
-#' @param nsim The number of draws used when `expected = TRUE`. Defaults to
-#'   `10000`. Ignored otherwise.
+#'   in closed form (see Details). Defaults to `FALSE`.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The method
+#'   returns the parameter scale and the generic applies the link scale to its
+#'   result.
+#' @param approx Not read: the expectation is in closed form. Present so that
+#'   the signature matches the generic's.
+#' @param nsim Not read. Present so that the signature matches the generic's.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 3)`. At \eqn{p = 3} there are ten
@@ -353,7 +374,8 @@ mv_expected_higher <- function(distrib, y, theta, order, nsim) {
 #'
 #' @section Notation:
 #' \eqn{\alpha} is the shape vector, \eqn{\phi} the concentration, \eqn{\mu}
-#' the mean on the simplex, \eqn{\eta} its free vector, \eqn{\Gamma} the gamma
+#' the mean on the simplex, \eqn{\eta} its free vector, \eqn{p} the number of
+#' coordinates, \eqn{\Gamma} the gamma function, \eqn{\psi} the digamma
 #' function and \eqn{\ell} the log-density of one observation.
 #'
 #' @seealso [distrib_deriv4.DirichletDistrib()] for the next order,
@@ -370,8 +392,7 @@ mv_expected_higher <- function(distrib, y, theta, order, nsim) {
 #' d3 <- distrib_deriv3(d, y, theta)
 #' names(d3)
 #'
-#' # Against one stencil on the analytic Hessian, which shares no algebra with
-#' # the partition sum.
+#' # Against a central difference of the Hessian in phi.
 #' h <- 1e-4
 #' tp <- theta; tp$phi <- tp$phi + h
 #' tm <- theta; tm$phi <- tm$phi - h
@@ -379,20 +400,20 @@ mv_expected_higher <- function(distrib, y, theta, order, nsim) {
 #'   stencil = (sum(distrib_hessian(d, y, tp)[["mean_alr1_mean_alr1"]]) -
 #'              sum(distrib_hessian(d, y, tm)[["mean_alr1_mean_alr1"]])) / (2 * h))
 #'
-#' # The pure-phi component gets nothing from the map beyond the shapes
-#' # themselves: it is psi''(phi) minus the mu_j^3-weighted psi''(phi mu_j),
-#' # and so is the same at every observation.
+#' # The pure-phi component carries no response: it is psi''(phi) minus the
+#' # mu_j^3-weighted psi''(phi mu_j), the same at every observation.
 #' mu <- as.numeric(parameters7::param_value(d@param, c(0.3, -0.2)))
 #' c(component = d3[["phi_phi_phi"]][1],
 #'   direct = psigamma(8, 2) - sum(mu^3 * psigamma(8 * mu, 2)))
 #'
+#' # The expectation is exact, so it does not depend on the seed.
+#' distrib_deriv3(d, y, theta, expected = TRUE)[["phi_phi_phi"]][1]
 S7::method(distrib_deriv3, DirichletDistrib) <- function(distrib, y, theta,
                                                          expected = FALSE,
                                                          scale = c("parameter", "link"),
                                                          approx = c("integrate", "bartlett", "mc", "opg"),
                                                          nsim = 10000, ...) {
-  if (expected) return(mv_expected_higher(distrib, y, theta, 3L, nsim))
-  dirichlet_higher(distrib, y, theta, 3L)
+  dirichlet_higher(distrib, y, theta, 3L, expected = expected)
 }
 
 #' @title Dirichlet Fourth Derivatives
@@ -403,17 +424,19 @@ S7::method(distrib_deriv3, DirichletDistrib) <- function(distrib, y, theta,
 #' closed form, by the same construction as
 #' [distrib_deriv3.DirichletDistrib()] one order up: a univariate partition sum
 #' per coordinate of the simplex, run by [chain_univariate()] over the arrays
-#' [dirichlet_map_tensors()] supplies, plus the direct \eqn{\log\Gamma(\phi)}
-#' term on the component all of whose indices name the concentration.
+#' that [dirichlet_map_tensors()] supplies, plus the direct
+#' \eqn{\log\Gamma(\phi)} term on the component whose indices all name the
+#' concentration.
 #'
 #' @details
-#' The license for this order is that the SAME assembly run at orders one and
-#' two reproduces the hand-written score and information, which are derived
-#' separately and are already under [check_distrib()]. Agreement at the orders
-#' that can be checked is what authorizes the order that cannot.
+#' Run at order one, the same assembly reproduces
+#' [distrib_gradient.DirichletDistrib()], which is written separately; on the
+#' additive log-ratio chart [distrib_hessian.DirichletDistrib()] calls it at
+#' order two. The split of \eqn{\log\Gamma(\alpha_j)} that keeps a small shape
+#' accurate is described in [distrib_deriv3.DirichletDistrib()].
 #'
-#' With `expected = TRUE` the expectation is taken by sampling and carries
-#' Monte Carlo error of order `nsim^(-1/2)`.
+#' With `expected = TRUE` the expectation is exact, as for the third order.
+#'
 #' @param distrib A `DirichletDistrib` object, from [dirichlet_distrib()].
 #' @param y A numeric matrix with one row per observation and one column per
 #'   coordinate, each row a point of the open simplex. A row with a zero
@@ -422,13 +445,13 @@ S7::method(distrib_deriv3, DirichletDistrib) <- function(distrib, y, theta,
 #' @param theta A named list of parameters, each component a single number:
 #'   `mean_alr1`, ..., `mean_alr(p-1)` and `phi`.
 #' @param expected Logical of length 1. When `TRUE` the expectation is returned,
-#'   by SAMPLING through [mv_expected_higher()]. Defaults to `FALSE`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch.
-#' @param approx Ignored: sampling is the only multivariate route to an
-#'   expectation. Present so that the signature matches the generic's.
-#' @param nsim The number of draws used when `expected = TRUE`. Defaults to
-#'   `10000`. Ignored otherwise.
+#'   in closed form (see Details). Defaults to `FALSE`.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The method
+#'   returns the parameter scale and the generic applies the link scale to its
+#'   result.
+#' @param approx Not read: the expectation is in closed form. Present so that
+#'   the signature matches the generic's.
+#' @param nsim Not read. Present so that the signature matches the generic's.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 4)`. At \eqn{p = 3} there are fifteen
@@ -452,7 +475,7 @@ S7::method(distrib_deriv3, DirichletDistrib) <- function(distrib, y, theta,
 #' d4 <- distrib_deriv4(d, y, theta)
 #' length(d4)
 #'
-#' # Against one stencil on the analytic third order.
+#' # Against a central difference of the third order in phi.
 #' h <- 1e-4
 #' tp <- theta; tp$phi <- tp$phi + h
 #' tm <- theta; tm$phi <- tm$phi - h
@@ -460,32 +483,36 @@ S7::method(distrib_deriv3, DirichletDistrib) <- function(distrib, y, theta,
 #'   stencil = (sum(distrib_deriv3(d, y, tp)[["mean_alr1_mean_alr1_phi"]]) -
 #'              sum(distrib_deriv3(d, y, tm)[["mean_alr1_mean_alr1_phi"]])) /
 #'             (2 * h))
-#'
 S7::method(distrib_deriv4, DirichletDistrib) <- function(distrib, y, theta,
                                                          expected = FALSE,
                                                          scale = c("parameter", "link"),
                                                          approx = c("integrate", "bartlett", "mc", "opg"),
                                                          nsim = 10000, ...) {
-  if (expected) return(mv_expected_higher(distrib, y, theta, 4L, nsim))
-  dirichlet_higher(distrib, y, theta, 4L)
+  dirichlet_higher(distrib, y, theta, 4L, expected = expected)
 }
 
 #' Assemble a Dirichlet's Higher Derivatives
 #'
 #' @description
 #' Runs the univariate chain rule over the shape vector for every component of
-#' the requested order and adds the two terms that do not pass through it: the
-#' response, which enters \eqn{\alpha_j} linearly, and \eqn{\log\Gamma(\phi)}.
+#' the requested order and adds the terms that do not pass through it: the
+#' response, which enters \eqn{\alpha_j} linearly, \eqn{\log\Gamma(\phi)}, and
+#' on the additive log-ratio chart the derivatives of
+#' \eqn{\sum_j \log\alpha_j} (see [distrib_deriv3.DirichletDistrib()]).
 #'
 #' @param distrib A `DirichletDistrib` object.
 #' @param y A matrix with one row per observation.
 #' @param theta A named list of parameters.
-#' @param order The derivative order, 3 or 4.
+#' @param order The derivative order, 1 to 4.
+#' @param expected Logical of length 1. When `TRUE` the response term is
+#'   replaced by its expectation, through
+#'   \eqn{\mathrm{E}\log y_j = \psi(\alpha_j) - \psi(\phi)}.
 #'
-#' @return A named list of numeric vectors, one per component.
+#' @return A named list of numeric vectors of length `nrow(y)`, keyed as
+#'   `deriv_names(distrib@params, order)`.
 #'
 #' @keywords internal
-dirichlet_higher <- function(distrib, y, theta, order) {
+dirichlet_higher <- function(distrib, y, theta, order, expected = FALSE) {
   s <- distrib@param
   v <- mv_flat_theta(distrib, theta)
   k <- s@n_free
@@ -494,22 +521,65 @@ dirichlet_higher <- function(distrib, y, theta, order) {
   alpha <- phi * as.numeric(parameters7::param_value(s, eta))
 
   y <- if (is.matrix(y)) y else matrix(y, nrow = 1L)
-  ly <- log(y)
+  n <- nrow(y)
 
   ud <- dirichlet_map_tensors(s, eta, phi, order)
-  # f(a) = -log Gamma(a), so f^(m)(a) = -psi^(m-1)(a)
-  fd <- lapply(seq_len(order), function(m) -psigamma(alpha, m - 1L))
+  alr <- mn_is_alr(s)
+  if (alr) {
+    # -log Gamma(a) = log a - log Gamma(1 + a). On the additive log-ratio
+    # chart sum_j log a_j = K log phi + sum_(j<K) eta_j - K LSE(eta), whose
+    # derivatives are added below in closed form, and log Gamma(1 + a) is
+    # regular at a tiny shape: the chain rule on -log Gamma(a) itself cancels
+    # there, terms of order one leaving a result of the order of a.
+    prob <- exp(mn_log_probs(s, eta))
+    nk <- length(alpha)
+    fd <- lapply(seq_len(order), function(m) -psigamma(1 + alpha, m - 1L))
+    uds <- ud
+  } else {
+    # f(a) = -log Gamma(a), so f^(m)(a) = -psi^(m-1)(a). Each coordinate is
+    # scaled by sc = min(a, 1): the chain rule multiplies f^(m) by m tensors
+    # of the map, each proportional to a, so f^(m) sc^m and the tensors over
+    # sc give the same product without the overflow of psi^(m-1)(a) ~ a^-m at
+    # a tiny shape. a^m psi^(m-1)(a) = (-1)^m (m-1)! + a^m psi^(m-1)(1 + a).
+    sc <- pmin(alpha, 1)
+    small <- alpha < 1
+    fd <- lapply(seq_len(order), function(m) {
+      out <- numeric(length(alpha))
+      out[!small] <- -psigamma(alpha[!small], m - 1L)
+      out[small] <- -((-1)^m * factorial(m - 1L) +
+                        alpha[small]^m * psigamma(1 + alpha[small], m - 1L))
+      out
+    })
+    uds <- lapply(ud, function(u) u / sc)
+  }
+
+  # the response enters only through sum_j (alpha_j - 1) log y_j, linearly;
+  # its expectation is E log y_j = psi(alpha_j) - psi(phi)
+  ely <- if (expected) digamma(alpha) - digamma(phi) else NULL
+  ly <- if (expected) NULL else log(y)
 
   idx <- deriv_indices(distrib@params, order)
   out <- lapply(idx, function(t) {
     key <- paste(sort(t), collapse = ",")
     # the log-Gamma of the concentration enters only the component all of
     # whose indices name it, and neither term below carries the response
-    direct <- if (all(t == k + 1L)) psigamma(phi, order - 1L) else 0
-    base <- sum(chain_univariate(t, fd, ud)) + direct
+    nphi <- sum(t == k + 1L)
+    direct <- if (nphi == order) psigamma(phi, order - 1L) else 0
+    if (alr && nphi == order) {
+      direct <- direct + nk * (-1)^(order - 1L) * factorial(order - 1L) / phi^order
+    }
+    if (alr && nphi == 0L) {
+      direct <- direct + if (order == 1L) 1 - nk * prob[t] else
+        -nk * mn_cumulant(prob, t)
+    }
+    base <- sum(chain_univariate(t, fd, uds)) + direct
     # the response enters alpha linearly, so it multiplies the map's own
     # tensor and is the only term that varies by observation
-    base + as.numeric(ly %*% ud[[key]])
+    if (expected) {
+      rep(base + sum(ely * ud[[key]]), n)
+    } else {
+      base + as.numeric(ly %*% ud[[key]])
+    }
   })
   stats::setNames(out, deriv_names(distrib@params, order))
 }
@@ -521,32 +591,38 @@ dirichlet_higher <- function(distrib, y, theta, order) {
 #' @description
 #' Computes every third derivative of the log-mass in the parameters, in closed
 #' form. Up to a constant in the counts the log-mass is
-#' \eqn{\sum_j y_j \log p_j}, so each term depends on ONE coordinate of the
-#' simplex and the chain rule collapses to a univariate partition sum per
-#' coordinate, with
-#' \deqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m}.}
-#' The combinatorial factor carries no parameter, so it drops out of every
-#' derivative and the counts enter only as weights.
+#' \eqn{\sum_j y_j \log p_j}. On the additive log-ratio chart of
+#' [parameters7::simplex()] this equals
+#' \eqn{\sum_{j<p} y_j\eta_j - N\,\mathrm{LSE}(\eta)}, with \eqn{N} the total of
+#' the row, so every derivative of order two or more is \eqn{-N} times a joint
+#' cumulant of the indicators of the categorical law (see [mn_cumulant()]). The
+#' cumulant is a sum of products of probabilities, computed without dividing by
+#' one, so it stays finite when a probability underflows. On another chart
+#' each term depends on one coordinate of the simplex and the chain rule
+#' reduces to a univariate partition sum per coordinate, with
+#' \deqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m},}
+#' weighted by the counts.
 #'
 #' @details
-#' The support is finite, so the expectation of any component is an exact sum
-#' over `mv_support(distrib, theta)` and needs no sampling. `expected = TRUE`
-#' nonetheless routes to [mv_expected_higher()], which draws; a caller who
-#' wants the exact expectation forms the sum against
-#' [distrib_pdf.MultinomialDistrib()] directly.
+#' With `expected = TRUE` the expectation is exact. The derivatives are linear
+#' in the counts, so the method replaces each count by its expectation
+#' \eqn{n p_j}. On the additive log-ratio chart this replaces \eqn{N} by
+#' \eqn{n}, and the result equals the observed value at every row on the
+#' support.
+#'
 #' @param distrib A `MultinomialDistrib` object, from [multinomial_distrib()].
 #' @param y A numeric matrix with one row per observation and one column per
 #'   category, each row a vector of counts summing to `distrib@size`.
 #' @param theta A named list of parameters, each component a single number:
 #'   `probs_alr1`, ..., `probs_alr(p-1)`.
 #' @param expected Logical of length 1. When `TRUE` the expectation is returned,
-#'   by SAMPLING through [mv_expected_higher()]. Defaults to `FALSE`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch.
-#' @param approx Ignored: sampling is the only multivariate route to an
-#'   expectation. Present so that the signature matches the generic's.
-#' @param nsim The number of draws used when `expected = TRUE`. Defaults to
-#'   `10000`. Ignored otherwise.
+#'   in closed form (see Details). Defaults to `FALSE`.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The method
+#'   returns the parameter scale and the generic applies the link scale to its
+#'   result.
+#' @param approx Not read: the expectation is in closed form. Present so that
+#'   the signature matches the generic's.
+#' @param nsim Not read. Present so that the signature matches the generic's.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 3)`. At \eqn{p = 3} there are four
@@ -555,12 +631,12 @@ dirichlet_higher <- function(distrib, y, theta, order) {
 #'
 #' @section Notation:
 #' \eqn{p_j} is the probability of category \eqn{j}, \eqn{y_j} its count,
-#' \eqn{\eta} the simplex's free vector and \eqn{\ell} the log-mass of one
-#' observation.
+#' \eqn{n} the number of trials, \eqn{\eta} the simplex's free vector and
+#' \eqn{\ell} the log-mass of one observation.
 #'
 #' @seealso [distrib_deriv4.MultinomialDistrib()] for the next order,
-#'   [multinomial_higher()] for the shared engine, [mv_support()] for the exact
-#'   route to an expectation, and [distrib_deriv3()] for the generic.
+#'   [multinomial_higher()] for the shared engine, [mn_cumulant()] for the
+#'   cumulants, and [distrib_deriv3()] for the generic.
 #'
 #' @examples
 #' d <- multinomial_distrib(3, size = 10)
@@ -571,7 +647,7 @@ dirichlet_higher <- function(distrib, y, theta, order) {
 #' d3 <- distrib_deriv3(d, y, theta)
 #' vapply(d3, sum, numeric(1))
 #'
-#' # Against one stencil on the analytic Hessian, component by component.
+#' # Against a central difference of the Hessian.
 #' h <- 1e-4
 #' tp <- theta; tp$probs_alr2 <- tp$probs_alr2 + h
 #' tm <- theta; tm$probs_alr2 <- tm$probs_alr2 - h
@@ -580,18 +656,17 @@ dirichlet_higher <- function(distrib, y, theta, order) {
 #'              sum(distrib_hessian(d, y, tm)[["probs_alr1_probs_alr1"]])) /
 #'             (2 * h))
 #'
-#' # The support is finite, so the mass over it sums to one exactly and an
-#' # expectation can be taken as a sum rather than a sample.
+#' # The expectation equals the sum over the finite support.
 #' sup <- mv_support(d, theta)
-#' c(states = nrow(sup), mass = sum(distrib_pdf(d, sup, theta)))
-#'
+#' w <- distrib_pdf(d, sup, theta)
+#' c(expected = distrib_deriv3(d, y, theta, expected = TRUE)[[1]][1],
+#'   sum = sum(w * distrib_deriv3(d, sup, theta)[[1]]))
 S7::method(distrib_deriv3, MultinomialDistrib) <- function(distrib, y, theta,
                                                             expected = FALSE,
                                                             scale = c("parameter", "link"),
                                                             approx = c("integrate", "bartlett", "mc", "opg"),
                                                             nsim = 10000, ...) {
-  if (expected) return(mv_expected_higher(distrib, y, theta, 3L, nsim))
-  multinomial_higher(distrib, y, theta, 3L)
+  multinomial_higher(distrib, y, theta, 3L, expected = expected)
 }
 
 #' @title Multinomial Fourth Derivatives
@@ -600,27 +675,32 @@ S7::method(distrib_deriv3, MultinomialDistrib) <- function(distrib, y, theta,
 #' @description
 #' Computes every fourth derivative of the log-mass in the parameters, in
 #' closed form, by the same construction as
-#' [distrib_deriv3.MultinomialDistrib()] one order up: a univariate partition
-#' sum per coordinate of the simplex, with
-#' \eqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m}} and the counts as weights.
+#' [distrib_deriv3.MultinomialDistrib()] one order up: \eqn{-N} times a cumulant
+#' of the categorical law on the additive log-ratio chart, and a univariate
+#' partition sum per coordinate of the simplex, with
+#' \eqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m}} and the counts as weights, on
+#' another chart.
 #'
 #' @details
-#' The license for this order is that the SAME assembly run at orders one and
-#' two reproduces the hand-written score and information, which are derived
-#' separately and are already under [check_distrib()].
+#' Run at orders one and two, the same assembly reproduces
+#' [distrib_gradient.MultinomialDistrib()] and
+#' [distrib_hessian.MultinomialDistrib()], which are written separately.
+#'
+#' With `expected = TRUE` the expectation is exact, as for the third order.
+#'
 #' @param distrib A `MultinomialDistrib` object, from [multinomial_distrib()].
 #' @param y A numeric matrix with one row per observation and one column per
 #'   category, each row a vector of counts summing to `distrib@size`.
 #' @param theta A named list of parameters, each component a single number:
 #'   `probs_alr1`, ..., `probs_alr(p-1)`.
 #' @param expected Logical of length 1. When `TRUE` the expectation is returned,
-#'   by SAMPLING through [mv_expected_higher()]. Defaults to `FALSE`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch.
-#' @param approx Ignored: sampling is the only multivariate route to an
-#'   expectation. Present so that the signature matches the generic's.
-#' @param nsim The number of draws used when `expected = TRUE`. Defaults to
-#'   `10000`. Ignored otherwise.
+#'   in closed form (see Details). Defaults to `FALSE`.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The method
+#'   returns the parameter scale and the generic applies the link scale to its
+#'   result.
+#' @param approx Not read: the expectation is in closed form. Present so that
+#'   the signature matches the generic's.
+#' @param nsim Not read. Present so that the signature matches the generic's.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 4)`. At \eqn{p = 3} there are five
@@ -628,8 +708,8 @@ S7::method(distrib_deriv3, MultinomialDistrib) <- function(distrib, y, theta,
 #'
 #' @section Notation:
 #' \eqn{p_j} is the probability of category \eqn{j}, \eqn{y_j} its count,
-#' \eqn{\eta} the simplex's free vector and \eqn{\ell} the log-mass of one
-#' observation.
+#' \eqn{N} the total of a row, \eqn{\eta} the simplex's free vector and
+#' \eqn{\ell} the log-mass of one observation.
 #'
 #' @seealso [distrib_deriv3.MultinomialDistrib()] for the order below,
 #'   [multinomial_higher()] for the shared engine, and [distrib_deriv4()] for
@@ -644,7 +724,7 @@ S7::method(distrib_deriv3, MultinomialDistrib) <- function(distrib, y, theta,
 #' d4 <- distrib_deriv4(d, y, theta)
 #' names(d4)
 #'
-#' # Against one stencil on the analytic third order.
+#' # Against a central difference of the third order.
 #' h <- 1e-4
 #' tp <- theta; tp$probs_alr2 <- tp$probs_alr2 + h
 #' tm <- theta; tm$probs_alr2 <- tm$probs_alr2 - h
@@ -652,45 +732,160 @@ S7::method(distrib_deriv3, MultinomialDistrib) <- function(distrib, y, theta,
 #'   stencil = (sum(distrib_deriv3(d, y, tp)[["probs_alr1_probs_alr1_probs_alr2"]]) -
 #'              sum(distrib_deriv3(d, y, tm)[["probs_alr1_probs_alr1_probs_alr2"]])) /
 #'             (2 * h))
-#'
 S7::method(distrib_deriv4, MultinomialDistrib) <- function(distrib, y, theta,
                                                             expected = FALSE,
                                                             scale = c("parameter", "link"),
                                                             approx = c("integrate", "bartlett", "mc", "opg"),
                                                             nsim = 10000, ...) {
-  if (expected) return(mv_expected_higher(distrib, y, theta, 4L, nsim))
-  multinomial_higher(distrib, y, theta, 4L)
+  multinomial_higher(distrib, y, theta, 4L, expected = expected)
 }
+
+#' @title Whether a Simplex Parameter Is the Additive Log-Ratio Chart
+#'
+#' @description
+#' Returns `TRUE` when the probability parameter is a [parameters7::simplex()],
+#' whose free values are the additive log-ratios against the last category.
+#' On that chart the log-probabilities are \eqn{\eta_j - \mathrm{LSE}(\eta)}
+#' and their derivatives are cumulants of the categorical law, which
+#' [mn_log_probs()] and [mn_cumulant()] compute without dividing by a
+#' probability.
+#'
+#' @param s The probability parameter of a [multinomial_distrib()] or a
+#'   [dirichlet_distrib()].
+#'
+#' @return A single logical.
+#'
+#' @seealso [multinomial_higher()] and [distrib_hessian.MultinomialDistrib()].
+#'
+#' @examples
+#' distributions7:::mn_is_alr(parameters7::simplex(3))
+#'
+#' @keywords internal
+mn_is_alr <- function(s) {
+  S7::S7_inherits(s, parameters7::SimplexParam)
+}
+
+
+#' @title The Log-Probabilities on the Additive Log-Ratio Chart
+#'
+#' @description
+#' Computes \eqn{\log p_j = \eta_j - \mathrm{LSE}(\eta_1, \ldots,
+#' \eta_{K-1}, 0)}, with \eqn{\eta_K = 0}, the log-sum-exp shifted by its
+#' largest argument. A probability that underflows keeps its logarithm.
+#'
+#' @param s A [parameters7::simplex()] parameter.
+#' @param eta Its free vector.
+#'
+#' @return A numeric vector of length `s@n_free + 1`.
+#'
+#' @seealso [mn_is_alr()] and [mn_cumulant()].
+#'
+#' @examples
+#' distributions7:::mn_log_probs(parameters7::simplex(3), c(-800, 0))
+#'
+#' @keywords internal
+mn_log_probs <- function(s, eta) {
+  e <- c(as.numeric(eta), 0)
+  m <- max(e)
+  e - (m + log(sum(exp(e - m))))
+}
+
+
+#' @title A Joint Cumulant of the Indicators of a Categorical Law
+#'
+#' @description
+#' Computes the joint cumulant of the indicators \eqn{1\{Z = t_1\}, \ldots,
+#' 1\{Z = t_r\}} of a categorical variable with probabilities `prob`, which is
+#' the derivative of the log-sum-exp \eqn{\mathrm{LSE}(\eta)} in
+#' \eqn{\eta_{t_1}, \ldots, \eta_{t_r}}. It is the sum over the set partitions
+#' \eqn{\pi} of the positions of
+#' \eqn{(-1)^{\lvert\pi\rvert-1}(\lvert\pi\rvert-1)!\prod_{B\in\pi}\mu_B},
+#' where \eqn{\mu_B = p_k} if every index of \eqn{B} is \eqn{k} and zero
+#' otherwise.
+#'
+#' @param prob The probability vector.
+#' @param t An integer vector of category indices, of length 1 to 4.
+#'
+#' @return A single number.
+#'
+#' @seealso [multinomial_higher()], the consumer.
+#'
+#' @examples
+#' p <- c(0.2, 0.3, 0.5)
+#' # The second cumulant is p_k (delta_kl - p_l).
+#' c(distributions7:::mn_cumulant(p, c(1, 1)), 0.2 * 0.8)
+#' c(distributions7:::mn_cumulant(p, c(1, 2)), -0.2 * 0.3)
+#'
+#' @keywords internal
+mn_cumulant <- function(prob, t) {
+  acc <- 0
+  for (pt in numericals7::set_partitions(length(t))) {
+    q <- length(pt)
+    term <- (-1)^(q - 1L) * factorial(q - 1L)
+    for (b in pt) {
+      v <- t[b]
+      term <- if (all(v == v[1L])) term * prob[v[1L]] else 0
+      if (term == 0) break
+    }
+    acc <- acc + term
+  }
+  acc
+}
+
 
 #' Assemble a Multinomial's Higher Derivatives
 #'
 #' @description
-#' Runs the univariate chain rule over the probability vector for every
-#' component of the requested order, weighted by the summed counts.
+#' Computes every component of the requested order. On the additive log-ratio
+#' chart a component of order one is \eqn{y_k - N p_k} and a component of
+#' higher order is \eqn{-N} times a cumulant from [mn_cumulant()], with \eqn{N}
+#' the total of the row. On another chart the method runs the univariate chain
+#' rule over the probability vector for every component, weighted by the
+#' counts of each category.
 #'
 #' @param distrib A `MultinomialDistrib` object.
 #' @param y A matrix with one row per observation.
 #' @param theta A named list of parameters.
-#' @param order The derivative order, 3 or 4.
+#' @param order The derivative order, 1 to 4.
+#' @param expected Logical of length 1. When `TRUE` each count is replaced by
+#'   its expectation \eqn{n p_j}, which gives the expected derivatives exactly.
 #'
-#' @return A named list of numeric vectors, one per component.
+#' @return A named list of numeric vectors of length `nrow(y)`, keyed as
+#'   `deriv_names(distrib@params, order)`.
 #'
 #' @keywords internal
-multinomial_higher <- function(distrib, y, theta, order) {
+multinomial_higher <- function(distrib, y, theta, order, expected = FALSE) {
   s <- distrib@param
   eta <- mv_flat_theta(distrib, theta)
-  prob <- as.numeric(parameters7::param_value(s, eta))
-
   y <- if (is.matrix(y)) y else matrix(y, nrow = 1L)
+  n <- nrow(y)
+  idx <- deriv_indices(distrib@params, order)
 
+  if (mn_is_alr(s)) {
+    # sum_j y_j log p_j = sum_(j<K) y_j eta_j - N LSE(eta), so every
+    # derivative of order two or more is -N times a cumulant of the
+    # categorical law, a sum of products of probabilities with no division
+    prob <- exp(mn_log_probs(s, eta))
+    tot <- if (expected) rep(distrib@size, n) else rowSums(y)
+    out <- lapply(idx, function(t) {
+      if (length(t) == 1L) {
+        if (expected) rep(0, n) else y[, t] - tot * prob[t]
+      } else {
+        -tot * mn_cumulant(prob, t)
+      }
+    })
+    return(stats::setNames(out, deriv_names(distrib@params, order)))
+  }
+
+  prob <- as.numeric(parameters7::param_value(s, eta))
   ud <- simplex_map_tensors(s, eta, order)
   # f(p) = log p, so f^(m)(p) = (-1)^(m-1) (m-1)! p^-m
   fd <- lapply(seq_len(order), function(m) {
     (-1)^(m - 1L) * factorial(m - 1L) / prob^m
   })
-
-  idx <- deriv_indices(distrib@params, order)
-  out <- lapply(idx, function(t) as.numeric(y %*% chain_univariate(t, fd, ud)))
+  # linear in the counts, whose expectation is size * p
+  yy <- if (expected) matrix(distrib@size * prob, n, length(prob), byrow = TRUE) else y
+  out <- lapply(idx, function(t) as.numeric(yy %*% chain_univariate(t, fd, ud)))
   stats::setNames(out, deriv_names(distrib@params, order))
 }
 
@@ -713,12 +908,11 @@ multinomial_higher <- function(distrib, y, theta, order) {
 #'
 #' @param b An integer vector of composite indices, mean coordinates first.
 #' @param r The \eqn{n \times p} matrix of residuals.
-#' @param pget The accessor for \eqn{\partial^{t}\Sigma^{-1}}, as returned by
-#'   [mvg_ptensors()].
+#' @param pget The accessor for \eqn{\partial^{t}\Sigma^{-1}}, the `get`
+#'   element of the list that [mvg_ptensors()] returns.
 #' @param p The dimension.
 #'
-#' @return A numeric vector of length `nrow(r)`, or a scalar recycled by
-#'   the caller.
+#' @return A numeric vector of length `nrow(r)`.
 #'
 #' @keywords internal
 mvt_q_deriv <- function(b, r, pget, p) {
@@ -737,19 +931,25 @@ mvt_q_deriv <- function(b, r, pget, p) {
 #' Assemble a Multivariate Student t's Higher Derivatives
 #'
 #' @description
-#' Splits a component into its mean-and-matrix part and its \eqn{\nu} part.
-#' The log-determinant and the \eqn{\nu} constant each contribute to one kind
-#' of component only; the remaining term is a univariate chain rule in \eqn{q}
-#' whose outer derivatives, \eqn{(-1)^{m-1}(m-1)!/(\nu+q)^{m}}, are then
-#' differentiated in \eqn{\nu} by the Leibniz rule against the prefactor
-#' \eqn{(\nu+p)/2}, which is linear.
+#' Splits a component into its mean-and-matrix part and its \eqn{\nu} part. The
+#' log-determinant contributes only to a component whose indices all name the
+#' matrix, with the sign set by the orientation of the chart (see
+#' [mvg_ptensors()]). A component whose indices all name \eqn{\nu} is computed
+#' by [mvt_cp_d()] and [mvt_h_d()], which avoid the cancellation of the direct
+#' forms at large \eqn{\nu}. Every other component is a univariate chain rule
+#' in \eqn{q} over the set partitions of its mean and matrix indices, whose
+#' outer derivatives \eqn{(-1)^{m-1}(m-1)!/(\nu+q)^{m}} are differentiated in
+#' \eqn{\nu} by the Leibniz rule against the linear prefactor \eqn{(\nu+p)/2}.
+#' The two terms of the Leibniz rule are combined into one fraction, since
+#' written separately they agree to leading order as \eqn{\nu} grows.
 #'
 #' @param distrib A `MvStudentTDistrib` object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param order The derivative order, 1 to 4.
 #'
-#' @return A named list of numeric vectors, one per component.
+#' @return A named list of numeric vectors of length \eqn{n}, keyed as
+#'   `deriv_names(distrib@params, order)`.
 #'
 #' @keywords internal
 mvt_higher <- function(distrib, y, theta, order) {
@@ -762,9 +962,9 @@ mvt_higher <- function(distrib, y, theta, order) {
   nfree <- s@n_free
   inu <- p + nfree + 1L
   r <- sweep(y, 2L, pc$mu, "-")
-  q <- rowSums((r %*% pc$sigma_inv) * r)
+  q <- mv_quad(r, s, pc$eta, distrib@inverted)
 
-  pt <- mvg_ptensors(pc, order)
+  pt <- mvg_ptensors(pc, order, inverted = distrib@inverted)
   ldfun <- switch(order,
     parameters7::param_dlogdet, parameters7::param_d2logdet,
     parameters7::param_d3logdet, parameters7::param_d4logdet
@@ -773,15 +973,16 @@ mvt_higher <- function(distrib, y, theta, order) {
   ldkey <- vapply(parameters7::param_tuple_indices(s, order),
                   function(t) paste(sort(t), collapse = ","), character(1))
 
-  # d^a/dnu^a of c(nu) = lgamma((nu+p)/2) - lgamma(nu/2) - (p/2) log(nu pi)
-  cnu <- function(a) {
-    0.5^a * (psigamma((nu + p) / 2, a - 1L) - psigamma(nu / 2, a - 1L)) -
-      (p / 2) * (-1)^(a - 1L) * factorial(a - 1L) / nu^a
-  }
-  # d^a/dnu^a of (nu + q)^-m
-  wa <- function(m, a) {
-    if (a < 0L) return(rep(0, n))
-    (-1)^a * (factorial(m + a - 1L) / factorial(m - 1L)) / (nu + q)^(m + a)
+  # (nu + p)/2 d^a/dnu^a (nu + q)^-m + a/2 d^(a-1)/dnu^(a-1) (nu + q)^-m,
+  # combined into one fraction: written as two terms, they agree to leading
+  # order as nu grows. With s = nu + q it is
+  # (-1)^a (m+a-2)!/(m-1)! [nu (m-1) + p (m+a-1) - a q] / (2 s^(m+a)).
+  is <- 1 / (nu + q)
+  kpart <- function(m, a) {
+    if (a == 0L) return(0.5 * ((nu + p) * is) * is^(m - 1L))
+    br <- nu * (m - 1L) + p * (m + a - 1L) - a * q
+    0.5 * (-1)^a * (factorial(m + a - 2L) / factorial(m - 1L)) *
+      (br * is) * is^(m + a - 1L)
   }
 
   idx <- deriv_indices(distrib@params, order)
@@ -790,29 +991,22 @@ mvt_higher <- function(distrib, y, theta, order) {
     rest <- t[t != inu]
     acc <- rep(0, n)
 
-    # the constant in nu, present only when every index names nu
-    if (a == order) acc <- acc + cnu(a)
-
     # the log-determinant, present only when every index names the matrix
     if (a == 0L && length(rest) == order && all(rest > p)) {
-      acc <- acc - 0.5 * ld[[match(paste(sort(rest - p), collapse = ","), ldkey)]]
+      acc <- acc + pt$sign_ld *
+        ld[[match(paste(sort(rest - p), collapse = ","), ldkey)]]
     }
 
-    # -((nu+p)/2) log(1 + q/nu), differentiated in the rest and then in nu
     if (!length(rest)) {
-      # v(nu) = log(nu + q) - log(nu)
-      v <- if (a == 0L) base::log1p(q / nu) else
-        (-1)^(a - 1L) * factorial(a - 1L) * ((nu + q)^-a - nu^-a)
-      vprev <- if (a == 0L) rep(0, n) else if (a == 1L) base::log1p(q / nu) else
-        (-1)^(a - 2L) * factorial(a - 2L) * ((nu + q)^-(a - 1L) - nu^-(a - 1L))
-      acc <- acc - ((nu + p) / 2 * v + a / 2 * vprev)
+      # every index names nu: c_p^(a) - h^(a), each without its cancellation
+      acc <- acc + mvt_cp_d(nu, p, a) - mvt_h_d(q / nu, nu, p, a)
     } else {
+      # -((nu+p)/2) log(1 + q/nu), differentiated in the rest and then in nu
       for (part in index_partitions(rest)) {
         m <- length(part)
         term <- rep(1, n)
         for (b in part) term <- term * mvt_q_deriv(b, r, pt$get, p)
-        coef <- (-1)^(m - 1L) * factorial(m - 1L) *
-          ((nu + p) / 2 * wa(m, a) + a / 2 * wa(m, a - 1L))
+        coef <- (-1)^(m - 1L) * factorial(m - 1L) * kpart(m, a)
         acc <- acc - coef * term
       }
     }
@@ -827,43 +1021,43 @@ mvt_higher <- function(distrib, y, theta, order) {
 #'
 #' @description
 #' Computes every third derivative of the log-density in the parameters, in
-#' closed form. Nothing is obstructed here: the log-density carries
-#' `lgamma`, a logarithm and a quadratic form, each elementary in \eqn{\nu}, so
-#' there is no distribution function to differentiate in its degrees of
-#' freedom. The component splits into a location-and-matrix part, handled by
-#' the same array expansion the gaussian uses through [mvg_ptensors()], and a
-#' \eqn{\nu} part obtained by differentiating
+#' closed form. The log-density carries `lgamma`, a logarithm and a quadratic
+#' form, each elementary in \eqn{\nu}. The location-and-matrix part of a
+#' component is handled by the array expansion that the gaussian uses through
+#' [mvg_ptensors()], and the \eqn{\nu} part by differentiating
 #' \eqn{(-1)^{m-1}(m-1)!/(\nu+q)^m} against the linear prefactor
-#' \eqn{(\nu+p)/2}.
+#' \eqn{(\nu+p)/2}. The components in \eqn{\nu} alone come from [mvt_cp_d()]
+#' and [mvt_h_d()].
 #'
 #' @details
-#' The license for this order is that the SAME assembly run at orders one and
-#' two reproduces the hand-written score and information, which are derived
-#' separately and are already under [check_distrib()]. Against one stencil on
-#' the analytic Hessian, every component here agrees to a relative
-#' \eqn{1.2\times10^{-8}} or better.
+#' Run at orders one and two, the same assembly reproduces
+#' [distrib_gradient.MvStudentTDistrib()] and
+#' [distrib_hessian.MvStudentTDistrib()], which are written separately, for
+#' the scale matrix and for its inverse.
 #'
-#' Unlike the gaussian's, no component vanishes. There a tuple with three
-#' location indices is exactly zero, the quadratic form being quadratic in
-#' \eqn{\mu}; here the weight depends on \eqn{q}, so
-#' \eqn{\ell^{(\mu_1\mu_1\mu_1)}} is an ordinary non-zero number.
+#' For the gaussian, every component with three location indices is zero,
+#' because the quadratic form is quadratic in \eqn{\mu}. Here the weight
+#' depends on \eqn{q}, and \eqn{\ell^{(\mu_1\mu_1\mu_1)}} is an ordinary
+#' non-zero number.
 #'
 #' With `expected = TRUE` the expectation is taken by sampling and carries
 #' Monte Carlo error of order `nsim^(-1/2)`.
-#' @param distrib An [MvStudentTDistrib] object, from [mvstudent_t1_distrib()].
+#'
+#' @param distrib An [MvStudentTDistrib] object, from [mvstudent_t1_distrib()]
+#'   or [mvstudent_t2_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
 #'   length \eqn{p} is read as a single observation.
 #' @param theta A named list of parameters, each component a single number.
 #' @param expected Logical of length 1. When `TRUE` the expectation is returned,
-#'   by SAMPLING: `nsim` draws are made and the observed components averaged.
+#'   by sampling: `nsim` draws are made and the observed components averaged.
 #'   Defaults to `FALSE`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch. The two differ here, `nu` carrying a log link by
-#'   default.
-#' @param approx Ignored: sampling is the only multivariate route to an
-#'   expectation. Present so that the signature matches the generic's.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The method
+#'   returns the parameter scale and the generic applies the link scale to its
+#'   result. The two differ here, `nu` carrying a log link by default.
+#' @param approx Not read: `expected = TRUE` always takes the expectation by
+#'   sampling. Present so that the signature matches the generic's.
 #' @param nsim The number of draws used when `expected = TRUE`. Defaults to
-#'   `10000`. Ignored otherwise.
+#'   `10000`. Not read otherwise.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 3)`. At \eqn{p = 2} on an unstructured
@@ -895,14 +1089,13 @@ mvt_higher <- function(distrib, y, theta, order) {
 #'   gaussian = sum(distrib_deriv3(mvgaussian1_distrib(2), y,
 #'                                 theta[1:5])[["mu1_mu1_mu1"]]))
 #'
-#' # Against one stencil on the analytic Hessian.
+#' # Against a central difference of the Hessian in nu.
 #' h <- 1e-4
 #' tp <- theta; tp$nu <- tp$nu + h
 #' tm <- theta; tm$nu <- tm$nu - h
 #' c(exact = sum(d3[["mu1_mu2_nu"]]),
 #'   stencil = (sum(distrib_hessian(d, y, tp)[["mu1_mu2"]]) -
 #'              sum(distrib_hessian(d, y, tm)[["mu1_mu2"]])) / (2 * h))
-#'
 S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
                                                            expected = FALSE,
                                                            scale = c("parameter", "link"),
@@ -924,31 +1117,34 @@ S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
 #' Computes every fourth derivative of the log-density in the parameters, in
 #' closed form, by the same construction as
 #' [distrib_deriv3.MvStudentTDistrib()] one order up: the location and matrix
-#' part through [mvg_ptensors()]'s array expansion, and the \eqn{\nu} part by
+#' part through the array expansion of [mvg_ptensors()], the \eqn{\nu} part by
 #' differentiating \eqn{(-1)^{m-1}(m-1)!/(\nu+q)^m} against the linear
-#' prefactor \eqn{(\nu+p)/2}.
+#' prefactor \eqn{(\nu+p)/2}, and the components in \eqn{\nu} alone through
+#' [mvt_cp_d()] and [mvt_h_d()].
 #'
 #' @details
-#' The license for this order is that the SAME assembly run at orders one and
-#' two reproduces the hand-written score and information, which are derived
-#' separately and are already under [check_distrib()].
+#' Run at orders one and two, the same assembly reproduces the closed-form
+#' gradient and Hessian, which are written separately, for the scale matrix
+#' and for its inverse.
 #'
 #' With `expected = TRUE` the expectation is taken by sampling and carries
 #' Monte Carlo error of order `nsim^(-1/2)`.
-#' @param distrib An [MvStudentTDistrib] object, from [mvstudent_t1_distrib()].
+#'
+#' @param distrib An [MvStudentTDistrib] object, from [mvstudent_t1_distrib()]
+#'   or [mvstudent_t2_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
 #'   length \eqn{p} is read as a single observation.
 #' @param theta A named list of parameters, each component a single number.
 #' @param expected Logical of length 1. When `TRUE` the expectation is returned,
-#'   by SAMPLING: `nsim` draws are made and the observed components averaged.
+#'   by sampling: `nsim` draws are made and the observed components averaged.
 #'   Defaults to `FALSE`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch. The two differ here, `nu` carrying a log link by
-#'   default.
-#' @param approx Ignored: sampling is the only multivariate route to an
-#'   expectation. Present so that the signature matches the generic's.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The method
+#'   returns the parameter scale and the generic applies the link scale to its
+#'   result. The two differ here, `nu` carrying a log link by default.
+#' @param approx Not read: `expected = TRUE` always takes the expectation by
+#'   sampling. Present so that the signature matches the generic's.
 #' @param nsim The number of draws used when `expected = TRUE`. Defaults to
-#'   `10000`. Ignored otherwise.
+#'   `10000`. Not read otherwise.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 4)`. At \eqn{p = 2} on an unstructured
@@ -974,14 +1170,13 @@ S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
 #' d4 <- distrib_deriv4(d, y, theta)
 #' length(d4)
 #'
-#' # Against one stencil on the analytic third order.
+#' # Against a central difference of the third order in nu.
 #' h <- 1e-4
 #' tp <- theta; tp$nu <- tp$nu + h
 #' tm <- theta; tm$nu <- tm$nu - h
 #' c(exact = sum(d4[["mu1_mu2_nu_nu"]]),
 #'   stencil = (sum(distrib_deriv3(d, y, tp)[["mu1_mu2_nu"]]) -
 #'              sum(distrib_deriv3(d, y, tm)[["mu1_mu2_nu"]])) / (2 * h))
-#'
 S7::method(distrib_deriv4, MvStudentTDistrib) <- function(distrib, y, theta,
                                                            expected = FALSE,
                                                            scale = c("parameter", "link"),

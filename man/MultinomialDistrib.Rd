@@ -38,9 +38,9 @@ MultinomialDistrib(
 
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
-\item{n_dim}{The dimension \eqn{p} of one observation. A single positive
-integer; the validator rejects anything else, and also rejects a
-\code{dimension} property other than \code{"multivariate"}.}
+\item{n_dim}{The dimension \eqn{p} of one observation, a single positive
+integer. The validator rejects any other value, and also a \code{dimension}
+property other than \code{"multivariate"}.}
 
 \item{size}{The number of trials \eqn{n}, a single positive integer stored
 as a numeric. It belongs to the object, so an object cannot be reused
@@ -57,47 +57,47 @@ properties are the parent's. For an object built by
 \code{\link[=multinomial_distrib]{multinomial_distrib()}}, \code{params} is the simplex's free names prefixed by
 \code{probs_}, \code{n_params} is \eqn{p-1}, \code{bounds} is \code{c(0, size)}, and every
 parameter carries an identity link, its free value being unconstrained
-already. There is \strong{no dispersion parameter}: the probabilities are all
-there is.
+already. The family has no dispersion parameter.
 }
 \description{
 The S7 class of the multinomial family on \eqn{p} categories and \eqn{n}
 trials, parametrized by a probability vector carried on a \code{parameters7}
-simplex. It inherits from \code{multivariate_distrib}, and it is the first
-multivariate family here whose support is a \strong{finite set of points} rather
-than a region: every vector of non-negative integers summing to \eqn{n}.
-The nine methods listed below are registered on it in this file and two more
-in \code{mv_higher.R}.
+simplex. It inherits from \code{multivariate_distrib}. Its support is a finite set
+of points: every vector of non-negative integers summing to \eqn{n}.
 
 The class carries two properties beyond the parent's: \code{size}, the number of
-trials, fixed at construction; and \code{param}, the
-simplex the probabilities lie on, whose free names become the family's own
-parameter names prefixed by \code{probs_}. Build one with
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}, which validates all three and fills the properties
-in. This page documents the raw S7 constructor, which validates none of
-that.
+trials, fixed at construction; and \code{param}, the simplex on which the
+probabilities lie, whose free names become the family's own parameter names
+prefixed by \code{probs_}. Build one with \code{\link[=multinomial_distrib]{multinomial_distrib()}}, which validates
+\code{n_dim}, \code{size} and the simplex and fills the properties in. This page
+documents the raw S7 constructor, which runs only the validators of
+\code{multivariate_distrib} and \code{distrib} and does not check \code{size} or \code{param}.
 }
 \section{Methods}{
 
-Registered on this class in this file:
-\code{\link[=distrib_expected_hessian.MultinomialDistrib]{distrib_expected_hessian()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.MultinomialDistrib]{distrib_pdf()}} and
+\code{\link[=distrib_rng.MultinomialDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.MultinomialDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.MultinomialDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.MultinomialDistrib]{distrib_pdf()}},
-\code{\link[=distrib_rng.MultinomialDistrib]{distrib_rng()}},
-\code{\link[=mv_location.MultinomialDistrib]{mv_location()}},
-\code{\link[=mv_marginal.MultinomialDistrib]{mv_marginal()}},
-\code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma()}},
-\code{\link[=mv_support.MultinomialDistrib]{mv_support()}},
-\code{\link[=mean.MultinomialDistrib]{mean()}} and
-\code{\link[=variance.MultinomialDistrib]{variance()}}.
-
-Two more are registered in \code{mv_higher.R}:
+\code{\link[=distrib_expected_hessian.MultinomialDistrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_deriv3.MultinomialDistrib]{distrib_deriv3()}} and
-\code{\link[=distrib_deriv4.MultinomialDistrib]{distrib_deriv4()}}.
+\code{\link[=distrib_deriv4.MultinomialDistrib]{distrib_deriv4()}};
+\item the moments: \code{\link[=mean.MultinomialDistrib]{mean()}} and
+\code{\link[=variance.MultinomialDistrib]{variance()}};
+\item the multivariate summaries:
+\code{\link[=mv_location.MultinomialDistrib]{mv_location()}},
+\code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma()}},
+\code{\link[=mv_marginal.MultinomialDistrib]{mv_marginal()}} and
+\code{\link[=mv_support.MultinomialDistrib]{mv_support()}}.
+}
 
-Everything else is inherited from \code{\link[=multivariate_distrib]{multivariate_distrib()}}, which refuses
-the distribution function, the quantile and the response derivatives.
+Every other generic is inherited from \code{\link[=multivariate_distrib]{multivariate_distrib()}}, whose methods
+signal an error for the distribution function, the quantile function, the
+response gradient and Hessian, the mixed response derivative, the skewness
+and the kurtosis.
 }
 
 \examples{
@@ -108,7 +108,7 @@ S7::S7_inherits(d, multivariate_distrib)
 c(categories = d@n_dim, trials = d@size, parameters = d@n_params)
 d@params
 
-# The support is finite and enumerable, which is what the class is for.
+# The support is finite and enumerable.
 nrow(mv_support(d, NULL))
 }
 \seealso{

@@ -12,17 +12,15 @@
 \item{theta}{A named list of parameters, each component a single number.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation of each
-component is returned, by sampling. Defaults to \code{FALSE}.}
+component is returned. Defaults to \code{FALSE}.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. Every link of this family is the identity, so the
-two coincide.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. Every link of this family is the identity, so the two coincide.}
 
-\item{approx}{Ignored: sampling is the only multivariate route to an
-expectation here. Present so that the signature matches the generic's.}
+\item{approx}{Not read: the expectation is exact.}
 
-\item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
-\code{10000}. Ignored otherwise.}
+\item{nsim}{Not read, for the same reason.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -33,30 +31,25 @@ is constant.
 }
 \description{
 Computes every third derivative of the log-density in the parameters, in
-closed form, on the matrix parametrization's own \code{param_d3()}. Writing
-\eqn{r = y - \mu} and \eqn{P_t} for the precision's derivative array over
-the matrix indices of the tuple: three mean indices give exactly zero, the
-quadratic form being quadratic in \eqn{\mu}; two give \eqn{-P_t[i, j]}; one
-gives \eqn{(r P_t)_i}; none gives
+closed form. Writing \eqn{r = y - \mu} and \eqn{P_t} for the derivative of
+the precision over the matrix indices of the tuple: three mean indices give
+exactly zero, the log-density being quadratic in \eqn{\mu}; two give
+\eqn{-P_t[i, j]}; one gives \eqn{(r P_t)_i}; none gives
 \eqn{\pm\tfrac{1}{2}\,\partial^3\log\lvert M\rvert - \tfrac{1}{2} r^\top P_t r}.
-The arrays \eqn{P_t} come from the parametrization directly under a
-precision parametrization, and from the expansion of the derivative of an
-inverse under a covariance one.
+The arrays \eqn{P_t} come from \code{\link[=mvg_ptensors]{mvg_ptensors()}}.
 }
 \details{
-With \code{expected = TRUE} the expectation is taken by SAMPLING: \code{nsim} draws
-are made from the family and the observed components averaged over them.
-There is no exact route here and no quadrature, so \code{approx} is not read and
-the result carries Monte Carlo error of order \code{nsim^(-1/2)}. Set a seed
-before calling if the result must be reproducible. A component that does not
-depend on the response is returned exactly, whatever \code{nsim} is, because
-averaging a constant returns it.
+With \code{expected = TRUE} the expectation is exact: the response enters through
+\eqn{r}, whose expectation is zero, and through \eqn{r^\top P_t r}, whose
+expectation is \eqn{\operatorname{tr}(P_t\Sigma)}. \code{approx} and \code{nsim} are
+not read.
 }
 \section{Notation}{
 
-\eqn{\mu} is the mean, \eqn{M} the matrix the parametrization carries,
-\eqn{\eta} its free vector, \eqn{r = y - \mu} the centered response and
-\eqn{P_t} the precision's derivative array over the multiset \eqn{t}.
+\eqn{\mu} is the mean, \eqn{M} the matrix that the parametrization carries,
+\eqn{\Sigma} the covariance, \eqn{\eta} the free vector, \eqn{r = y - \mu}
+the centered response and \eqn{P_t} the derivative of the precision over the
+multiset \eqn{t}.
 }
 
 \examples{
@@ -80,12 +73,12 @@ c(exact = sum(d3[["mu1_mu2_sigma_L2.1"]]),
   stencil = (sum(distrib_hessian(d, y, tp)[["mu1_mu2"]]) -
              sum(distrib_hessian(d, y, tm)[["mu1_mu2"]])) / (2 * h))
 
-# The expected version samples, so a component that carries the response
-# moves with the seed while one that does not is exact.
+# The expectation in closed form, against an average over a large sample.
+e3 <- distrib_deriv3(d, y, theta, expected = TRUE)
 set.seed(9)
-e3 <- distrib_deriv3(d, y, theta, expected = TRUE, nsim = 4000)
-c(sampled = e3[["mu1_mu1_sigma_L2.1"]][1],
-  observed = mean(d3[["mu1_mu1_sigma_L2.1"]]))
+big <- distrib_deriv3(d, distrib_rng(d, 50000, theta), theta)
+c(closed = e3[["sigma_log_L1_sigma_log_L1_sigma_L2.1"]][1],
+  sampled = mean(big[["sigma_log_L1_sigma_log_L1_sigma_L2.1"]]))
 
 }
 \seealso{

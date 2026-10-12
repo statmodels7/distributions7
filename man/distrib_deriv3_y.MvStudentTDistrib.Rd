@@ -34,8 +34,11 @@ response, one array per observation. With \eqn{w = \Sigma^{-1}(y-\mu)},
   + \frac{48N}{s^4}\,w_iw_jw_kw_l,}
 where the middle sum runs over the six ways of choosing the pair
 \eqn{(x, y)} from \eqn{\{i, j, k, l\}}, the other two indices taking the
-\eqn{w}s. Each follows from the order below by \eqn{\partial s/\partial y
-= 2w} and \eqn{\partial w/\partial y = \Omega}.
+\eqn{w}s. Each follows from the order below by \eqn{\partial s/\partial y =
+2w} and \eqn{\partial w/\partial y = \Omega}. Every term is evaluated in
+\eqn{w/s} and \eqn{1/s} (see \code{\link[=mvt_yscaled]{mvt_yscaled()}}), so no power of \eqn{s} is
+formed and the arrays stay finite for an observation as far as \eqn{10^{300}}
+from the location.
 }
 \details{
 A multivariate Student t prior over a block of coefficients has a Hessian

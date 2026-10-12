@@ -12,9 +12,9 @@ length \eqn{p} is read as a single observation.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. The two differ here, \code{nu} carrying a log link by
-default.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. The two differ here, \code{nu} carrying a log link by default.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -38,17 +38,15 @@ the gaussian term it multiplies. With
     = \frac{(\nu+p)\,w^\top A_k w}{(\nu+q)^2},}
 \deqn{\frac{\partial^2\ell}{\partial y\,\partial\nu}
     = -\frac{(q-p)\,w}{(\nu+q)^2}.}
-Unlike the gaussian's, no component here is constant across rows: the
-location block carries the observation through \eqn{c} even though its
-gaussian part does not.
+For the gaussian the location block, \eqn{\Sigma^{-1}e_j}, is the same for
+every row; here every component varies with the row, the location block
+carrying the observation through \eqn{c}.
 }
 \details{
-Nothing here is obstructed. The log-density carries no distribution
-function, only \code{lgamma}, a logarithm and a quadratic form, each elementary
-in \eqn{\nu}. As \eqn{\nu \to \infty} the weight goes to one and its
-derivatives to zero, so every component becomes the gaussian's; the tests
-compare them against that limit, and at \eqn{\nu = 10^7} the two agree to
-\eqn{2.6\times10^{-6}}.
+The log-density contains no distribution function, only \code{lgamma}, a logarithm
+and a quadratic form, so every derivative in \eqn{\nu} is closed form. As
+\eqn{\nu \to \infty} the weight tends to one and its derivatives to zero, so
+every component that the two families share tends to the gaussian's.
 }
 \section{Notation}{
 

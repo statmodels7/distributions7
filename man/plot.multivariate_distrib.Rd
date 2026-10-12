@@ -15,54 +15,57 @@ length greater than one is an error.}
 Defaults to \code{NULL}, which means all of them and is itself an error above
 three coordinates.}
 
-\item{n_grid}{Points per axis for the marginal densities and the contours.
-Defaults to \code{80}. The bivariate panels evaluate the density on an
-\code{n_grid * n_grid} grid, so the cost is quadratic in it.}
+\item{n_grid}{Points per axis for the contours. The marginal density curves
+on the diagonal use \code{4 * n_grid} points. Defaults to \code{80}. The bivariate
+panels evaluate the density on an \code{n_grid * n_grid} grid, so the cost is
+quadratic in it.}
 
 \item{col_fit}{Color of the density curves, the contours and the printed
 correlations. Defaults to \code{"#B22222"}.}
 
-\item{...}{Passed to the underlying plotting calls.}
+\item{...}{Accepted so that the signature matches the generic's, and not
+used.}
 }
 \value{
 \code{x}, invisibly. Called for the plot it draws.
 }
 \description{
-Draws a multivariate distribution as a matrix of panels: the marginal
-density of each coordinate on the diagonal, contours of each bivariate
-marginal below it, and the implied correlation printed above it. The picture
-is built entirely from marginals, so it exists exactly where
-\code{\link[=mv_marginal]{mv_marginal()}} does, which for the two families that ship is everywhere.
+Draws a multivariate distribution as a matrix of panels: the marginal density
+of each coordinate on the diagonal, contours of each bivariate marginal below
+it, and the implied correlation printed above it. The density panels are
+built from marginals, so the plot exists where \code{\link[=mv_marginal]{mv_marginal()}} returns a
+marginal of several coordinates, which holds for the multivariate gaussian
+and Student \eqn{t}. For the Dirichlet and the multinomial, whose marginals
+are returned one coordinate at a time, the plot signals the error of
+\code{\link[=mv_marginal]{mv_marginal()}}.
 }
-\section{Why at most three coordinates}{
+\section{At most three coordinates}{
 A panel matrix of \eqn{k} coordinates has \eqn{k^2} panels, and past three
-the panels are too small to read. A larger distribution is rejected with an
-error naming the count and suggesting \code{which}; drawing it illegibly would be
-the worse answer.
+the panels are too small to read. A larger distribution signals an error that
+names the number of coordinates and suggests \code{which}.
 }
 
-\section{What the contours are levels of}{
-The contours are levels of the DENSITY, not of the probability. An
-equal-density contour is what the shape of the density means, and a
-probability level would need the orthant integral this package does not
-approximate in several dimensions. The levels are chosen from the density's
-own range on the grid.
+\section{The contour levels}{
+The contours are levels of the density and not of the probability content of
+the enclosed region, which would require the mass of each level set of the
+density. The levels are those that \code{graphics::contour()} selects (about six,
+from \code{pretty()}) over the range of the density on the grid.
 }
 
 \section{One setting only}{
 A univariate \code{plot()} method reads a \code{theta} component of length \eqn{k} as
 \eqn{k} settings drawn over one another. Here the picture is already a matrix
 of panels, with no axis left to overlay them on, so a component longer than
-one is rejected by name.
+one signals an error that names it.
 }
 
-\section{The range each panel is drawn over}{
-Two and a half standard deviations either side of the location, with the
-spread taken from the matrix the parametrization carries. A multivariate
-Student t at \eqn{\nu \le 2} has no variance at all, and that is precisely
-the shape worth drawing, so \code{\link[=variance]{variance()}} cannot be the source. For an
-elliptical family the two agree up to a factor, which is all a plotting
-range needs.
+\section{The plotting range}{
+Each coordinate is drawn over three standard deviations either side of the
+location, with the spread taken from the matrix that the parametrization
+carries (see \code{\link[=mv_sigma]{mv_sigma()}}). A multivariate Student \eqn{t} with \eqn{\nu \le
+2} has an infinite variance, so \code{\link[=variance]{variance()}} cannot be the source. For an
+elliptical family the two matrices agree up to a factor, which is enough for
+a plotting range.
 }
 
 \examples{
@@ -83,14 +86,14 @@ op <- graphics::par(no.readonly = TRUE)
 plot(t2, th2, which = c(1, 2))
 graphics::par(op)
 
-# Four coordinates would be sixteen panels, so it is refused by name.
+# Four coordinates would be sixteen panels, which signals an error.
 d4 <- mvgaussian1_distrib(4)
 th4 <- as.list(stats::setNames(rep(0, d4@n_params), d4@params))
 try(plot(d4, th4))
 
 }
 \seealso{
-\code{\link[=mv_marginal]{mv_marginal()}}, which supplies every panel,
+\code{\link[=mv_marginal]{mv_marginal()}}, which supplies the density panels,
 \code{\link[=plot.distrib_fit]{plot.distrib_fit()}}, which draws the same matrix with the data on it,
 and \code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}} for the one-dimensional case, which does
 overlay several settings.

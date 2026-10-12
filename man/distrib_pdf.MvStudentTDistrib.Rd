@@ -30,12 +30,13 @@ Computes the log-density
   - \log\Gamma\!\left(\tfrac{\nu}{2}\right)
   - \tfrac{p}{2}\log(\nu\pi) - \tfrac{1}{2}\log\lvert\Sigma\rvert
   - \tfrac{\nu+p}{2}\log\!\left(1 + \tfrac{q}{\nu}\right),}
-with \eqn{q = (y-\mu)^\top \Sigma^{-1}(y-\mu)}, row by row, and
-exponentiates it unless \code{log = TRUE}. The last logarithm is taken with
-\code{\link[base:Log]{base::log1p()}}, which is the difference between a number and a loss of
-every significant digit when \eqn{q/\nu} is small: near the center of a
-family with many degrees of freedom, \code{log(1 + q/nu)} cancels its argument
-away.
+with \eqn{q = (y-\mu)^\top \Sigma^{-1}(y-\mu)}, row by row, and exponentiates
+it unless \code{log = TRUE}. The gamma functions and \eqn{-\tfrac{p}{2}\log\nu}
+enter as the single quantity of \code{\link[=mvt_cp_d]{mvt_cp_d()}}, whose direct form cancels as
+\eqn{\nu} grows. The last logarithm is evaluated with \code{\link[base:Log]{base::log1p()}}, which
+keeps its relative accuracy when \eqn{q/\nu} is small, and \eqn{q} is the
+squared norm of the residual whitened by the parametrization's factor (see
+\code{\link[=mv_quad]{mv_quad()}}).
 }
 \section{Notation}{
 

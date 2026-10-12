@@ -47,8 +47,11 @@ into scalar parameters of the distribution.}
 
 \item{inverted}{Logical of length 1. \code{TRUE} when \code{param} carries the
 precision \eqn{\Omega = \Sigma^{-1}} and \code{FALSE} when it carries the
-covariance \eqn{\Sigma}. Nothing but the sign of the log-determinant and
-one matrix inversion depends on it; the law is the same either way.}
+covariance \eqn{\Sigma}. It decides which derivative arrays are the
+parametrization's own and which are obtained from them (see
+\code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}), the sign of the log-determinant, the prefix of the
+free names, and the quantities that \code{\link[=mv_summary]{mv_summary()}} reports. The same matrix
+\eqn{\Sigma} gives the same law either way.}
 }
 \value{
 An S7 object of class \code{MvGaussianDistrib}, inheriting from
@@ -65,12 +68,12 @@ identity.
 \description{
 The S7 class of the gaussian family on \eqn{\mathbb{R}^p}, with density
 \deqn{f(y) = (2\pi)^{-p/2}\lvert\Sigma\rvert^{-1/2}
-  \exp\!\left\{-\tfrac{1}{2}(y-\mu)^\top\Sigma^{-1}(y-\mu)\right\}.}
-The mean \eqn{\mu} contributes \eqn{p} scalar parameters and the matrix is
-carried by a \pkg{parameters7} parametrization, whose free values become
-scalar parameters in their turn. It inherits from \code{multivariate_distrib},
-so the response is an \eqn{n \times p} matrix and the distribution function
-and the quantile function are refused.
+\exp\!\left\{-\tfrac{1}{2}(y-\mu)^\top\Sigma^{-1}(y-\mu)\right\}.} The mean
+\eqn{\mu} contributes \eqn{p} scalar parameters and the matrix is carried by
+a \pkg{parameters7} parametrization, whose free values become scalar
+parameters in their turn. It inherits from \code{multivariate_distrib}, so the
+response is an \eqn{n \times p} matrix and the distribution function and the
+quantile function signal an error.
 
 Build one with \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}, which fills the properties in and
 checks that the matrix parametrization has full rank. This page documents
@@ -79,26 +82,39 @@ between \code{n_dim} and the parametrization's dimension.
 }
 \section{Methods}{
 
-Registered on this class:
-\code{\link[=distrib_cross2_y.MvGaussianDistrib]{distrib_cross2_y()}},
-\code{\link[=distrib_cross_y.MvGaussianDistrib]{distrib_cross_y()}},
-\code{\link[=distrib_deriv3.MvGaussianDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.MvGaussianDistrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.MvGaussianDistrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_grad_y.MvGaussianDistrib]{distrib_grad_y()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.MvGaussianDistrib]{distrib_pdf()}} and
+\code{\link[=distrib_rng.MvGaussianDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.MvGaussianDistrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.MvGaussianDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.MvGaussianDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.MvGaussianDistrib]{distrib_pdf()}},
-\code{\link[=distrib_rng.MvGaussianDistrib]{distrib_rng()}},
-\code{\link[=generate_random_theta.MvGaussianDistrib]{generate_random_theta()}},
-\code{\link[=mean.MvGaussianDistrib]{mean()}},
+\code{\link[=distrib_expected_hessian.MvGaussianDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.MvGaussianDistrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.MvGaussianDistrib]{distrib_deriv4()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.MvGaussianDistrib]{distrib_grad_y()}} and
+\code{\link[=distrib_hess_y.MvGaussianDistrib]{distrib_hess_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.MvGaussianDistrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.MvGaussianDistrib]{distrib_cross2_y()}},
+\code{\link[=distrib_grad_y_hess.MvGaussianDistrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.MvGaussianDistrib]{distrib_hess_y_hess()}};
+\item the moments: \code{\link[=mean.MvGaussianDistrib]{mean()}} and
+\code{\link[=variance.MvGaussianDistrib]{variance()}};
+\item the multivariate summaries:
 \code{\link[=mv_location.MvGaussianDistrib]{mv_location()}},
 \code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma()}},
-\code{\link[=variance.MvGaussianDistrib]{variance()}}
+\code{\link[=mv_marginal.MvGaussianDistrib]{mv_marginal()}} and
+\code{\link[=mv_derived.MvGaussianDistrib]{mv_derived()}};
+\item the validation and fitting helpers:
+\code{\link[=generate_random_theta.MvGaussianDistrib]{generate_random_theta()}} and
+\code{\link[=distrib_start.MvGaussianDistrib]{distrib_start()}}.
+}
 
-Everything else comes from \code{\link[=multivariate_distrib]{multivariate_distrib()}}, including the two
-refusals.
+Every other generic is inherited from \code{\link[=multivariate_distrib]{multivariate_distrib()}}, whose methods
+signal an error for the distribution function, the quantile function, the
+skewness and the kurtosis.
 }
 
 \examples{
@@ -106,7 +122,7 @@ d <- mvgaussian1_distrib(2)
 S7::S7_inherits(d, multivariate_distrib)
 
 # Five scalar parameters: two means and the three free values of the
-# log-Cholesky covariance, prefixed by the matrix they describe.
+# log-Cholesky covariance, prefixed by the matrix that they describe.
 d@params
 d@n_dim
 d@param@free_names

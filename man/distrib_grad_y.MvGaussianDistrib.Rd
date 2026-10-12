@@ -20,16 +20,11 @@ An \eqn{n \times p} numeric matrix, row \eqn{i} holding
 \description{
 Computes the derivative of the log-density in the response,
 \deqn{\frac{\partial \ell}{\partial y} = -\Sigma^{-1}(y - \mu),}
-one row per observation. This is the whitened residual with a minus sign,
-so it is exactly the negative of the score in the mean: for a location
-family the two derivatives differ only in sign, and the method returns the
-same numbers \code{\link[=distrib_gradient.MvGaussianDistrib]{distrib_gradient.MvGaussianDistrib()}} gives for the mean
-components.
-
-The shape is what separates this from the univariate case. There the
-derivative in a scalar response is a numeric vector of length \eqn{n}; here
-it is an \eqn{n \times p} matrix, and a consumer written for a vector will
-recycle it silently.
+one row per observation. This is \eqn{-w}, with \eqn{w = \Sigma^{-1}(y -
+\mu)}, the negative of the score in the mean: for a location family the two
+derivatives differ only in sign. For a univariate family the derivative in
+the response is a numeric vector of length \eqn{n}; here it is an \eqn{n
+\times p} matrix.
 }
 \examples{
 d <- mvgaussian1_distrib(2)

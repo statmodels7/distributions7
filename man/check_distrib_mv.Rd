@@ -15,34 +15,41 @@ check_distrib_mv(distrib, theta, n, nsim, tol)
 
 \item{nsim}{The Monte Carlo sample size.}
 
-\item{tol}{The relative tolerance.}
+\item{tol}{The tolerance of the gradient and response-derivative
+comparisons, applied to the absolute difference divided by the larger of
+one and the magnitude of the reference; the Hessian comparison uses
+\code{10 * tol}. The other checks use fixed thresholds.}
 }
 \value{
 A list of one-row data frames, as \code{\link[=check_distrib]{check_distrib()}} builds.
 }
 \description{
-The battery \code{\link[=check_distrib]{check_distrib()}} runs on a multivariate distribution,
-where the one-dimensional checks have no counterpart.
+Runs the battery of \code{\link[=check_distrib]{check_distrib()}} on a multivariate distribution, where
+the one-dimensional checks have no counterpart.
 }
 \details{
-Five of the univariate checks do not survive the move to \eqn{p} dimensions:
-the distribution function is an integral over an orthant, the quantile
-function inverts an ordering that does not exist, and the two checks built on
-them go with them. Running them anyway and reporting the rejections as failures
-is the mistake a validator makes when it does not know about a case, and it
-is worse than not checking, because a user validating their own distribution
-cannot tell a real defect from it.
+Five of the univariate checks have no counterpart in \eqn{p} dimensions: the
+integration of the density by one-dimensional quadrature, the two checks of
+the distribution function (its range and its agreement with the density),
+the quantile round trip, and the comparison of the generator with the
+distribution function. The distribution function is an integral over an
+orthant, and the quantile function inverts an ordering that does not exist
+in several dimensions. Reporting these checks as failures would mark a
+correct family as defective, and a user validating their own distribution
+could not tell a real defect from them.
 
-What replaces them are checks that do generalize:
+The battery runs the checks that do generalize:
 \enumerate{
 \item \strong{the density is positive and finite} on a sample;
 \item \strong{the density integrates to one}. For a family that enumerates
 its support through \code{\link[=mv_support]{mv_support()}} this is an exact sum over
-that support; otherwise it is importance sampling from the proposal
-\code{\link[=mv_reference_draw]{mv_reference_draw()}} supplies, which by default is a gaussian
-with the same mean and an inflated covariance. The proposal is
-deliberately not the distribution itself, which would make the ratio
-identically one and the check vacuous;
+that support, with tolerance \code{1e-10}; otherwise it is importance
+sampling from the proposal that \code{\link[=mv_reference_draw]{mv_reference_draw()}} supplies, with
+tolerance \code{20 / sqrt(nsim)}. The default proposal is a gaussian with the
+same mean and twice the covariance; the Student \eqn{t} uses a Student
+\eqn{t} with half the degrees of freedom and twice the scale matrix, and
+the Dirichlet the uniform law on the simplex. The proposal is not the
+distribution itself, which would make the ratio identically one;
 \item \strong{the score has mean zero}, the first Bartlett identity, under
 the distribution's own generator, so it is also a check that the
 generator and the density describe the same law;
@@ -51,17 +58,23 @@ summed log-density;
 \item \strong{the expected information} against the Monte Carlo average of
 the observed Hessian, and against the variance of the score, which is the
 second Bartlett identity;
-\item \strong{the generator} against the first two moments;
+\item \strong{the generator} against the first two moments. When the mean or the
+covariance of the family is not finite (a Student \eqn{t} with
+\eqn{\nu \le 2}) the row has no statistic, and \code{\link[=check_distrib]{check_distrib()}} lists it
+among the skipped checks with that reason. The tolerance is
+\code{20 / sqrt(nsim)}, which assumes a finite fourth moment: for a Student
+\eqn{t} with \eqn{2 < \nu \le 4} the sample covariance has no variance,
+and the row can fail with a correct generator;
 \item \strong{the response derivatives} against finite differences in
 \eqn{y}.
 }
 
-The last of these is emitted only when it applies, as the univariate battery
-already omits the checks that a discrete family has no counterpart for. A
-family with an enumerable support is discrete and has no derivative in the
-response, and the multivariate base class rejects
-\code{\link[=distrib_grad_y]{distrib_grad_y()}} by design, so a family that has not registered
-one has made a choice rather than left a gap.
+The last of these is run only when it applies, as the univariate battery
+omits the checks that have no counterpart for a discrete family. A family
+with an enumerable support is discrete and has no derivative in the
+response, and the multivariate base class signals an error for
+\code{\link[=distrib_grad_y]{distrib_grad_y()}}, so a family that has not registered a method has no
+response derivatives by design, and the check is omitted for it.
 }
 \seealso{
 \code{\link[=check_distrib]{check_distrib()}}

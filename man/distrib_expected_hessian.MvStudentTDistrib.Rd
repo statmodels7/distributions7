@@ -13,9 +13,9 @@ enters any component.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. The two differ here, \code{nu} carrying a log link by
-default.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. The two differ here, \code{nu} carrying a log link by default.}
 
 \item{approx}{Ignored: the expectation is exact and no approximation
 strategy is consulted. \code{\link[=fit_distrib]{fit_distrib()}} rejects a \code{fisher_scoring(approx =)}
@@ -28,22 +28,24 @@ for this family for that reason.}
 \value{
 A named list of numeric vectors of length \eqn{n}, keyed as
 \code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant. The
-returned quantities are the expected SECOND DERIVATIVES, so the
+returned quantities are the expected second derivatives, so the
 information is their negative.
 }
 \description{
 Computes the expectation of the observed Hessian in closed form, taken from
 the family's own scale mixture. Every component is a Beta moment or a
-polygamma, so no sampling and no quadrature runs, and two calls at the same
-parameters return the same numbers. No component depends on the data, so
-every returned vector is constant across rows and \code{y} is read for its row
-count alone.
+polygamma, so nothing is sampled and no quadrature runs, and two calls at the
+same parameters return the same numbers. The components do not depend on the
+data, so every returned vector is constant across rows and \code{y} is used only
+for its row count.
 }
 \section{Why the expectations separate}{
 Writing \eqn{q = z^\top\Sigma^{-1}z} and \eqn{c = (\nu+p)/(\nu+q)}, the
-variable \eqn{v = q/(q+\nu)} is EXACTLY \eqn{\mathrm{Beta}(p/2, \nu/2)} and
-is independent of the direction \eqn{z/\lVert z\rVert}, which is uniform on
-the sphere. Each expectation therefore factors into a radial part and an
+variable \eqn{v = q/(q+\nu)} has exactly a \eqn{\mathrm{Beta}(p/2, \nu/2)}
+distribution and is independent of the direction \eqn{e =
+\Sigma^{-1/2}z/\lVert\Sigma^{-1/2}z\rVert} of the whitened vector, which is
+uniform on the sphere. Each expectation therefore factors into a radial part
+and an
 angular part: the radial one gives \eqn{cq = (\nu+p)v} and
 \eqn{c^2q^2 = (\nu+p)^2v^2}, and the angular one gives
 \eqn{\mathbb{E}[ee^\top] = I/p} and
@@ -65,14 +67,12 @@ it being odd in \eqn{z}.
 }
 
 \section{The gaussian limit}{
-Each block reduces to the gaussian's as \eqn{\nu \to \infty}:
-\eqn{I_{\mu\mu} \to \Sigma^{-1}}, \eqn{I_{kl} \to T_{kl}/2}, and
-\eqn{I_{\nu\nu} \to 0}, the degrees of freedom ceasing to be identified in
-the limit. Measured at \eqn{p = 2} on an unstructured matrix, \eqn{I_{\nu\nu}}
-runs \eqn{2.8\times10^{-3}}, \eqn{8.2\times10^{-6}},
-\eqn{4.9\times10^{-9}}, \eqn{1.3\times10^{-14}} at
-\eqn{\nu = 6, 30, 200, 5000}, which is why a standard error for \eqn{\nu} is
-worth reading only where the tail is genuinely heavy.
+Each block reduces to the gaussian's as \eqn{\nu \to \infty}: \eqn{I_{\mu\mu}
+\to \Sigma^{-1}}, \eqn{I_{kl} \to T_{kl}/2}, and \eqn{I_{\nu\nu} \to 0}, the
+degrees of freedom ceasing to be identified in the limit; \eqn{I_{\nu\nu}} is
+of order \eqn{\nu^{-4}}, so the standard error of \eqn{\nu} is large unless
+the tail is heavy. Its terms as written above are of order \eqn{\nu^{-2}} and
+cancel, so the block is computed by \code{\link[=mvt_info_nunu]{mvt_info_nunu()}}.
 }
 
 \section{Notation}{

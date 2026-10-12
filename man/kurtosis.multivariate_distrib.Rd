@@ -2,26 +2,26 @@
 % Please edit documentation in R/multivariate.R
 \name{kurtosis.multivariate_distrib}
 \alias{kurtosis.multivariate_distrib}
-\title{No Kurtosis Without Saying Which One}
+\title{Kurtosis of a Multivariate Distribution}
 \arguments{
 \item{x}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
-\item{theta}{A named list of parameters. Not examined: the error is raised
-before it is read.}
+\item{theta}{A named list of parameters. Not read: the error is signalled
+first.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-Never returns: it always signals an error naming the family.
+Does not return: it signals an error naming the family.
 }
 \description{
-Signals an error, for the reason \code{\link[=skewness.multivariate_distrib]{skewness.multivariate_distrib()}} gives: a
-scalar kurtosis for a vector response is a choice among Mardia's,
-Malkovich-Afifi's and the vector of coordinatewise marginal kurtoses, which
-are different numbers. A caller who wants a coordinatewise one takes the
-marginal and asks it, where the marginal is a genuinely univariate object:
-a Dirichlet's is a beta and answers, an elliptical family's is a
-one-dimensional object of its own class and inherits this refusal.
+Signals an error, for the reason that \code{\link[=skewness.multivariate_distrib]{skewness.multivariate_distrib()}}
+gives: a scalar kurtosis of a vector response is a choice among Mardia's,
+Malkovich and Afifi's and the vector of the coordinatewise marginal
+kurtoses, which are different numbers. A coordinatewise kurtosis is the
+kurtosis of a marginal, where the marginal is a univariate object: a
+Dirichlet's is a beta and has one, while an elliptical family's is a
+one-dimensional object of its own class and signals the same error.
 }
 \examples{
 d <- mvstudent_t1_distrib(2)
@@ -29,20 +29,20 @@ theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5, nu = 6)
 try(kurtosis(d, theta))
 
-# A Student t's marginal is a one-dimensional MvStudentTDistrib, so it
-# inherits the same refusal.
+# A Student t's marginal is a one-dimensional MvStudentT1Distrib, which
+# signals the same error.
 try(kurtosis(mv_marginal(d, theta, 1)$distrib,
              mv_marginal(d, theta, 1)$theta))
 
-# A Dirichlet's marginal is a genuine univariate beta and answers.
+# A Dirichlet's marginal is a univariate beta and has a kurtosis.
 b <- mv_marginal(dirichlet_distrib(3),
                  list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8), 1)
 kurtosis(b$distrib, b$theta)
 
 }
 \seealso{
-\code{\link[=skewness.multivariate_distrib]{skewness.multivariate_distrib()}} for the same refusal one moment
-down, \code{\link[=mv_marginal]{mv_marginal()}} for the explicit route, and \code{\link[=kurtosis]{kurtosis()}} for the
+\code{\link[=skewness.multivariate_distrib]{skewness.multivariate_distrib()}} for the third moment,
+\code{\link[=mv_marginal]{mv_marginal()}} for the coordinatewise route, and \code{\link[=kurtosis]{kurtosis()}} for the
 generic.
 }
 \keyword{internal}

@@ -7,8 +7,9 @@
 \item{distrib}{An \link{MvStudentTDistrib} object, from
 \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
-\item{theta}{A named list of parameters, each component a single number.
-The location components and \code{nu} are ignored.}
+\item{theta}{A named list of parameters, each component a single number. The
+generic requires every parameter and checks \code{nu} against its domain; the
+location components and \code{nu} do not enter the result.}
 }
 \value{
 A \eqn{p \times p} symmetric positive definite numeric matrix, with
@@ -43,7 +44,7 @@ vapply(c(3, 6, 60), function(nu) {
 \seealso{
 \code{\link[=variance.MvStudentTDistrib]{variance.MvStudentTDistrib()}} for the covariance,
 \code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}}, where the two coincide,
-\code{\link[=mv_summary]{mv_summary()}}, which reports the square roots of this matrix's diagonal
+\code{\link[=mv_summary]{mv_summary()}}, which reports the square roots of the diagonal of this matrix
 as \code{scale_sd_v1} and so on, and \code{\link[=mv_sigma]{mv_sigma()}} for the generic.
 }
 \keyword{internal}

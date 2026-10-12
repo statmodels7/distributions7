@@ -20,16 +20,14 @@ An \eqn{n \times p} numeric matrix, row \eqn{i} holding
 }
 \description{
 Computes the derivative of the log-density in the response,
-\deqn{\frac{\partial \ell}{\partial y} = -c\,\Sigma^{-1}(y-\mu),
-  \qquad c = \frac{\nu+p}{\nu+q},}
-one row per observation: the gaussian's expression with the family's weight
-in front of it. The weight is what bounds the influence of a distant row.
-A gaussian's response gradient grows without limit as the observation moves
-away; this one rises, turns and decays like \eqn{1/\lVert y\rVert}, which is
-the redescending score of a heavy-tailed family.
-
-It is also minus the score in the location, this being a location family, so
-the same numbers appear in \code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}}.
+\deqn{\frac{\partial \ell}{\partial y} = -c\,\Sigma^{-1}(y-\mu), \qquad c =
+\frac{\nu+p}{\nu+q},} one row per observation: the gaussian's expression with
+the family's weight in front of it. A gaussian's response gradient grows
+without limit as the observation moves away; this one rises, turns and decays
+like \eqn{1/\lVert y\rVert}, the redescending score of a heavy-tailed family.
+It is minus the score in the location, this being a location family. It is
+computed as \eqn{-(\nu+p)\,w/s} with \eqn{s = \nu + q} (see \code{\link[=mvt_yscaled]{mvt_yscaled()}}),
+which stays finite for a distant observation.
 }
 \section{Notation}{
 

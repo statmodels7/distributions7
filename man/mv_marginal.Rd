@@ -12,11 +12,13 @@ mv_marginal(distrib, theta, which, ...)
 \item{theta}{A named list or vector of parameters, each component a single
 number. Aligned by the generic before dispatch.}
 
-\item{which}{An integer vector of coordinates to keep. The generic checks it
-before dispatch: it must be non-empty, free of \code{NA}, free of duplicates,
-and inside \code{1:distrib@n_dim}. Anything else is an error naming the range.}
+\item{which}{A vector of distinct whole numbers in \code{1:distrib@n_dim}, the
+coordinates to keep. The generic checks it before dispatch and signals an
+error naming the range for an empty, missing, non-integer, duplicated or
+out-of-range value. The Dirichlet and the multinomial accept a single
+coordinate.}
 
-\item{...}{Passed to methods. No shipped method reads it.}
+\item{...}{Passed to methods. The shipped methods do not read it.}
 }
 \value{
 A named list with \code{distrib}, the marginal distribution object, and
@@ -27,38 +29,46 @@ Returns the distribution of a subset of the coordinates, together with its
 parameters. For a subset \eqn{A},
 \deqn{f_A(y_A; \theta) = \int_{\mathbb{R}^{\lvert A^{c}\rvert}}
     f(y; \theta)\, \mathrm{d}y_{A^{c}},}
-which every family this package ships has in closed form. A family without
-one is refused: a quadrature over the discarded coordinates would be a
-different object under the same name.
+which the shipped families have in closed form: any subset for the gaussian
+and the Student t, and a single coordinate for the Dirichlet and the
+multinomial. The method of the class signals an error, because a quadrature
+over the discarded coordinates would give a different object under the same
+name.
 }
-\section{What each family gives}{
+\section{What each family returns}{
 A gaussian's marginal is a gaussian with \eqn{\mu_A} and \eqn{\Sigma_{AA}}.
-A Student t's is a Student t with \eqn{\mu_A}, \eqn{\Sigma_{AA}} and THE
-SAME \eqn{\nu}: conditioning on the mixing variable of the scale-mixture
-representation leaves a gaussian, whose marginal is gaussian, and the
-mixture is then taken back. A Dirichlet's marginal of one coordinate is a
+A Student t's is a Student t with \eqn{\mu_A}, \eqn{\Sigma_{AA}} and the same
+\eqn{\nu}: conditionally on the mixing variable of the scale-mixture
+representation the vector is gaussian, whose marginal is gaussian, and
+mixing again gives a Student t. A Dirichlet's marginal of one coordinate is a
 beta with the same concentration \eqn{\phi}, and a multinomial's is a
-binomial.
+binomial. For several coordinates these two signal an error, because the
+subvector has the family's form only once a coordinate for the remaining
+mass is added.
 }
 
-\section{What the returned object is}{
-A FRESH distribution of the reduced dimension, whose parameters are its own.
+\section{The returned object}{
+A new distribution of the reduced dimension, whose parameters are its own.
 The elliptical families return an object of their own class on an
-unstructured matrix, so a gaussian's one-coordinate marginal is a
-one-dimensional \code{MvGaussianDistrib} and still refuses a distribution
-function; the simplex-valued families return genuinely univariate objects, a
-beta and a binomial, which answer everything a univariate family does.
+unstructured log-Cholesky matrix, carrying the covariance or the precision
+as the parent does, so a gaussian's one-coordinate marginal is a
+one-dimensional \code{MvGaussian1Distrib} and signals an error for the
+distribution function. The simplex-valued families return univariate
+objects, a beta and a binomial, which have every method of a univariate
+family.
 }
 
-\section{Why the plot depends on it}{
-A panel of a pairs plot IS a marginal, so
-\code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}} exists exactly where the marginals do.
+\section{The plot}{
+A panel of the pairs plot of \code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}} is a marginal of
+one or two coordinates, so the plot is available for the gaussian and the
+Student t, and signals the error above for the Dirichlet and the
+multinomial.
 }
 
 \section{Notation}{
 
 \eqn{A} is the retained subset of coordinates, \eqn{A^c} its complement,
-\eqn{\mu} the location, \eqn{\Sigma} the matrix the family carries,
+\eqn{\mu} the location, \eqn{\Sigma} the matrix that the family carries,
 \eqn{\nu} a Student t's degrees of freedom and \eqn{\phi} a Dirichlet's
 concentration.
 }
@@ -79,8 +89,7 @@ t3 <- mvstudent_t1_distrib(3)
 th <- as.list(stats::setNames(c(unlist(theta), 5), t3@params))
 c(full = th$nu, marginal = mv_marginal(t3, th, c(1, 3))$theta$nu)
 
-# A Dirichlet's is a beta with the same concentration, and is a genuinely
-# univariate object.
+# A Dirichlet's is a beta with the same concentration, a univariate object.
 b <- mv_marginal(dirichlet_distrib(3),
                  list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8), 1)
 class(b$distrib)[1]
@@ -95,5 +104,5 @@ try(mv_marginal(d, theta, 4))
 \code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}}, whose panels are these marginals,
 and \code{\link[=mv_marginal.MvGaussianDistrib]{mv_marginal.MvGaussianDistrib()}},
 \code{\link[=mv_marginal.MvStudentTDistrib]{mv_marginal.MvStudentTDistrib()}} and
-\code{\link[=mv_marginal.multivariate_distrib]{mv_marginal.multivariate_distrib()}} for the methods and the refusal.
+\code{\link[=mv_marginal.multivariate_distrib]{mv_marginal.multivariate_distrib()}} for the methods and the error.
 }

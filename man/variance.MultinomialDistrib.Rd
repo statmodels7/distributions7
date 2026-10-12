@@ -19,8 +19,8 @@ A symmetric \eqn{p \times p} numeric matrix of rank \eqn{p-1}.
 \description{
 Returns the covariance matrix of the counts by delegating to
 \code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma.MultinomialDistrib()}}. It is singular, the counts summing to the
-trial count, so a caller wanting something to invert should take the
-marginals or work on the simplex's free vector.
+trial count, so a computation that inverts a covariance works with the
+marginals or with the free vector of the simplex.
 }
 \seealso{
 \code{\link[=mean.MultinomialDistrib]{mean.MultinomialDistrib()}} for the mean vector,

@@ -9,8 +9,10 @@
 \item{theta}{A named list of parameters on the parameter scale: the mean's
 free values followed by \code{phi}, each of length 1.}
 
-\item{which}{A single integer in \eqn{1, \dots, p}, the coordinate wanted.
-A vector of length other than 1 signals an error explaining why.}
+\item{which}{A single integer in \eqn{1, \dots, p}, the coordinate wanted. A
+vector of two or more distinct coordinates signals an error explaining why;
+an empty, duplicated, non-integer or out-of-range \code{which} is rejected
+earlier by \code{\link[=mv_marginal]{mv_marginal()}}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -22,18 +24,17 @@ A named list with \code{distrib}, a \code{\link[=beta1_distrib]{beta1_distrib()}
 Returns the law of one coordinate, which is
 \eqn{\mathrm{Beta}(\alpha_j, \phi - \alpha_j)}. In this package's mean and
 precision parametrization of the beta that is mean \eqn{\mu_j} and precision
-\eqn{\phi}, so no reparametrization is needed at all and \strong{the
-concentration is shared by every marginal}, as the multivariate t's degrees
-of freedom are.
+\eqn{\phi}, so every marginal carries the concentration of the joint law, as
+every marginal of the multivariate t carries its degrees of freedom.
 
-This is one of the few families for which the generic returns an object
-rather than signaling an error. A panel of a pairs plot is therefore a real
-distribution here.
-
-Several coordinates at once are refused. A sub-vector of a Dirichlet is
-again Dirichlet, but only after the remaining mass is collapsed into a
-coordinate of its own, and returning that object under this name would
-mislead. The error says so.
+The marginal of one coordinate is a univariate beta distribution, so, unlike
+the marginals of the elliptical families, it has a distribution function, a
+quantile and the moments of a univariate family. A vector of several
+coordinates signals an error: a sub-vector of a Dirichlet is again Dirichlet
+only once the remaining mass is collapsed into a coordinate of its own, which
+is a different object from the sub-vector. For the same reason
+\code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}}, whose panels are marginals of two coordinates,
+signals that error for this family.
 }
 \examples{
 d <- dirichlet_distrib(3)

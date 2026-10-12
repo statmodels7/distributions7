@@ -12,9 +12,9 @@ length \eqn{p} is read as a single observation.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. The two differ here, \code{nu} carrying a log link by
-default.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. The two differ here, \code{nu} carrying a log link by default.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -26,34 +26,33 @@ block here is constant across rows.
 }
 \description{
 Computes the second derivatives of the log-density in closed form, by
-differentiating the score of
-\code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}} once more. Every block picks up a
-term in \eqn{\partial c/\partial\cdot}, the weight
-\eqn{c = (\nu+p)/(\nu+q)} depending on the observation through \eqn{q}. That
-dependence is what separates the family from the gaussian, where \eqn{c} is
-one and those terms are absent. Writing \eqn{w = \Sigma^{-1}(y-\mu)} and
-\eqn{d = \nu + q}, the location block is
+differentiating the score of \code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}} once
+more. Every block has a term in a derivative of the weight \eqn{c =
+(\nu+p)/(\nu+q)}, which depends on the observation through \eqn{q}; for the
+gaussian \eqn{c} is one and those terms are absent. Writing \eqn{w =
+\Sigma^{-1}(y-\mu)} and \eqn{d = \nu + q}, the location block is
 \deqn{\ell^{(\mu_a\mu_b)} = \frac{2c\,w_a w_b}{d} - c\,(\Sigma^{-1})_{ab},}
-and \eqn{\partial c/\partial\nu = (q-p)/d^2} is what carries \eqn{\nu} into
+and \eqn{\partial c/\partial\nu = (q-p)/d^2} carries \eqn{\nu} into
 every mixed block.
 }
 \details{
-The pure \eqn{\nu} component has three leading terms that cancel as
-\eqn{\nu} grows. They collapse exactly into \code{\link[=mvt_T]{mvt_T()}}, with no series and no
-crossover for an even dimension; see \code{\link[=mvt_A]{mvt_A()}} for what the direct form
-costs.
-
-The quantity \eqn{w^\top A_k w} appears in three of the blocks and is formed
-once per free value, as is \eqn{\Sigma^{-1}A_k}.
+The pure \eqn{\nu} component is \eqn{c_p''(\nu) - h''(\nu)}, with
+\code{\link[=mvt_cp_d]{mvt_cp_d()}} for the part of \eqn{\nu} alone and \code{\link[=mvt_h_d]{mvt_h_d()}} for the part
+that carries the data, each written without the cancellation of its direct
+form; the result stays finite and accurate as \eqn{\nu} grows. The blocks in
+the matrix read the derivatives \eqn{P_k} and \eqn{P_{kl}} of
+\eqn{\Sigma^{-1}} from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}: with \eqn{q_k = r^\top P_k r},
+the matrix block is \eqn{-\tfrac{1}{2}\partial_{kl}\log\lvert\Sigma\rvert +
+c\,q_kq_l/(2d) - \tfrac{c}{2}\, r^\top P_{kl} r}.
 }
 \section{Notation}{
 
 \eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
 degrees of freedom, \eqn{\eta} the free vector of the matrix
-parametrization, \eqn{A_k} and \eqn{A_{kl}} its first and second derivative
-arrays, \eqn{q} the squared Mahalanobis distance, \eqn{c} the weight and
-\eqn{\ell^{(ij)}} the second derivative of the log-density in parameters
-\eqn{i} and \eqn{j}.
+parametrization, \eqn{P_k} and \eqn{P_{kl}} the first and second derivatives
+of \eqn{\Sigma^{-1}}, \eqn{r = y - \mu}, \eqn{q} the squared Mahalanobis
+distance, \eqn{c} the weight and \eqn{\ell^{(ij)}} the second derivative of
+the log-density in parameters \eqn{i} and \eqn{j}.
 }
 
 \examples{
@@ -88,8 +87,8 @@ c(q_near = z$q[near], curv_near = H$mu1_mu1[near],
 \seealso{
 \code{\link[=distrib_expected_hessian.MvStudentTDistrib]{distrib_expected_hessian.MvStudentTDistrib()}} for the expectation
 of this matrix, which is closed form,
-\code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}} for the score, \code{\link[=mvt_T]{mvt_T()}} for the
-cancellation in the \eqn{\nu} component, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the
+\code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}} for the score, \code{\link[=mvt_cp_d]{mvt_cp_d()}} and
+\code{\link[=mvt_h_d]{mvt_h_d()}} for the \eqn{\nu} component, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the
 generic.
 }
 \keyword{internal}

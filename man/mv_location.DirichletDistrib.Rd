@@ -11,16 +11,17 @@ free values followed by \code{phi}, each of length 1. The concentration is read
 but not used here.}
 }
 \value{
-A numeric vector of length \eqn{p}, strictly positive and summing to
-one.
+A numeric vector of length \eqn{p}, without names, summing to one,
+with positive coordinates except where one underflows.
 }
 \description{
-Returns the point of the simplex the mean parameter carries at the free
-values in \code{theta}. For this family that point \strong{is} the mean,
+Returns the point of the simplex that the mean parameter carries at the free
+values in \code{theta}. For this family that point is the mean,
 \eqn{\mathbb{E}[Y_j] = \mu_j}, so \code{\link[=mean.DirichletDistrib]{mean.DirichletDistrib()}} delegates here.
-The value comes from \code{\link[parameters7:param_value]{parameters7::param_value()}} on the object's own
-simplex chart, so it lies on the open simplex by construction whatever the
-free values are.
+The value comes from \code{\link[parameters7:param_value]{parameters7::param_value()}} on the object's own simplex
+chart, so it lies on the simplex by construction; in floating point a
+coordinate underflows to zero for free values beyond about 745 in absolute
+value.
 }
 \examples{
 d <- dirichlet_distrib(3)

@@ -4,23 +4,22 @@
 \alias{distrib_expected_hessian.multivariate_distrib}
 \title{Expected Information of a Multivariate Distribution, by Sampling}
 \arguments{
-\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no closed form of its
-own.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object without a closed form of
+its own.}
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations; only its row
 count is used, the expectation being over the law.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the result of the method.}
 
-\item{approx}{One of \code{"bartlett"} (the default, equivalently \code{"opg"}) or
-\code{"mc"}. \code{"integrate"} is not available here and falls through to sampling.}
+\item{approx}{One of \code{"opg"} (the default), \code{"bartlett"} or \code{"mc"}; the
+first two are the same computation here. \code{"integrate"} signals an error.}
 
 \item{nsim}{The Monte Carlo sample size. Defaults to \code{10000}. The error
-falls as its square root, so ten times the accuracy costs a hundred times
-the draws.}
+falls as its square root.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -29,30 +28,31 @@ A named list of numeric vectors of length \eqn{n}, keyed as
 \code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant.
 }
 \description{
-The fallback for a multivariate family with no closed form: the expectation
-of the observed Hessian, taken over a sample drawn from the family. All four
-shipped families register their own closed forms, so this runs only for a
-family written elsewhere.
+The fallback for a multivariate family without a closed form: an average
+over a sample drawn from the family. Every shipped multivariate class
+registers its own closed form, so this method runs only for a family written
+elsewhere.
 }
-\section{Why the one-dimensional routes do not survive}{
-\code{\link[=continuous_distrib]{continuous_distrib()}}'s \code{"integrate"} splits a one-dimensional integral at
-quantiles, and there are no quantiles here; \code{"bartlett"} would need the
-score's own higher derivatives assembled over a \eqn{p}-dimensional
-partition sum. What is left is sampling, and both admissible values of
-\code{approx} route to it.
+\section{The routes}{
+The \code{"integrate"} route of \code{\link[=continuous_distrib]{continuous_distrib()}} splits a one-dimensional
+integral at quantiles, and a multivariate family has no quantiles, so
+\code{approx = "integrate"} signals an error. The other values sample: \code{"opg"}
+and \code{"bartlett"} are the same computation here, the average of the negative
+outer product of the score, and \code{"mc"} averages the observed Hessian. The
+two averages agree in expectation by the second Bartlett identity and differ
+by sampling error at any finite \code{nsim}.
 }
 
-\section{The result is a sample, not an integral}{
-It carries Monte Carlo error of order \code{nsim^(-1/2)}, and two calls under
-different seeds give two answers. Set a seed before calling if the result
-must be reproducible, and expect a fit that inverts this matrix to move with
-it. \code{"bartlett"} averages the outer product of the score and \code{"mc"} averages
-the observed Hessian; the two agree in expectation by the second Bartlett
-identity, and differ by sampling error at any finite \code{nsim}.
+\section{Monte Carlo error}{
+The result carries Monte Carlo error of order \code{nsim^(-1/2)}, and two calls
+under different seeds give different values. A seed set before the call
+makes the result reproducible, and a fit that inverts this matrix moves with
+it.
 }
 
 \examples{
-# Every shipped family overrides, so reach the fallback directly.
+# Every shipped family has its own method, so the fallback is called
+# directly.
 d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5)
@@ -65,7 +65,7 @@ exact <- distrib_expected_hessian(d, matrix(0, 3, 2), theta)
 round(rbind(sampled = vapply(sampled, function(z) z[1], numeric(1)),
             closed = vapply(exact, function(z) z[1], numeric(1))), 3)
 
-# Two seeds give two answers, this being a sample.
+# Two seeds give two values, the result being a sample.
 set.seed(2)
 again <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
               approx = "mc", nsim = 4000)
@@ -74,8 +74,8 @@ c(first = sampled$mu1_mu1[1], second = again$mu1_mu1[1])
 }
 \seealso{
 \code{\link[=distrib_expected_hessian.MvGaussianDistrib]{distrib_expected_hessian.MvGaussianDistrib()}} and
-\code{\link[=distrib_expected_hessian.MvStudentTDistrib]{distrib_expected_hessian.MvStudentTDistrib()}} for the closed forms,
-\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}, which says which route a family takes, and
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
+\code{\link[=distrib_expected_hessian.MvStudentTDistrib]{distrib_expected_hessian.MvStudentTDistrib()}} for two closed forms,
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}, which reports whether a family has a closed
+form, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }
 \keyword{internal}

@@ -16,13 +16,13 @@ A list of integer vectors, each of length \code{order}, sorted within
 itself. Its length is \code{choose(d + order - 1, order)}.
 }
 \description{
-Enumerates the index multisets of exactly \code{order} indices drawn from
-\code{1:d}, in the order \code{parameters7::param_tuple_indices()} uses. It takes a
-COUNT rather than a parametrization, so a composite index set formed by
-appending a coordinate can be enumerated without building an object of that
-shape. The Dirichlet's set is the one that needs this: its simplex free
-values followed by its concentration. The work is done by
-\code{numericals7::tuple_indices()}, the toolkit's one copy of the enumeration.
+Enumerates the index multisets of exactly \code{order} indices drawn from \code{1:d},
+in the order that \code{parameters7::param_tuple_indices()} uses. It takes a count
+of variables in place of a parametrization, so a composite index set formed
+by appending a coordinate can be enumerated without building an object of
+that shape. The Dirichlet needs this for its simplex free values followed by
+its concentration. The work is done by \code{numericals7::tuple_indices()}, which
+this function wraps.
 }
 \examples{
 # Two indices over three variables: the three repeats then the three pairs.

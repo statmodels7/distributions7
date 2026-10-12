@@ -2,31 +2,31 @@
 % Please edit documentation in R/multivariate.R
 \name{distrib_hess_y.multivariate_distrib}
 \alias{distrib_hess_y.multivariate_distrib}
-\title{No Numerical Response Hessian in Several Dimensions}
+\title{Response Hessian of a Multivariate Family Without a Method}
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no method of its own.}
 
-\item{y}{An \eqn{n \times p} numeric matrix of observations. Not examined.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. Not read.}
 
-\item{theta}{A named list of parameters. Not examined.}
+\item{theta}{A named list of parameters. Not read.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-Never returns: it always signals an error naming the family.
+Does not return: it signals an error naming the family.
 }
 \description{
-Signals an error, for the reason
-\code{\link[=distrib_grad_y.multivariate_distrib]{distrib_grad_y.multivariate_distrib()}} gives: the univariate numerical
-fallback differences along a line and would produce a scalar where a
-\eqn{p \times p} matrix is wanted. A family that can supply
-\eqn{\partial^2\ell/\partial y\,\partial y^\top} registers its own method.
+Signals an error, for the reason that \code{\link[=distrib_grad_y.multivariate_distrib]{distrib_grad_y.multivariate_distrib()}}
+gives: the univariate numerical fallback differences along a line and would
+produce a scalar where a \eqn{p \times p} matrix is wanted. A family that can
+supply \eqn{\partial^2\ell/\partial y\,\partial y^\top} registers its own
+method.
 }
 \details{
-The two families that answer return DIFFERENT shapes, and a consumer has to
-allow for both: the gaussian's Hessian does not depend on the observation
-and comes back as one \eqn{p \times p} matrix, while the Student t's does
-and comes back as a \eqn{p \times p \times n} array.
+The two families with a method return different shapes: the gaussian's
+Hessian does not depend on the observation and is returned as one
+\eqn{p \times p} matrix, while the Student t's does and is returned as a
+\eqn{p \times p \times n} array.
 }
 \examples{
 d <- dirichlet_distrib(3)
@@ -35,7 +35,7 @@ set.seed(1)
 y <- distrib_rng(d, 3, theta)
 try(distrib_hess_y(d, y, theta))
 
-# The two families that answer return different shapes.
+# The two families with a method return different shapes.
 th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
            sigma_L2.1 = 0.5)
 yy <- rbind(c(1, -1), c(0, 0))
@@ -45,7 +45,7 @@ dim(distrib_hess_y(mvstudent_t1_distrib(2), yy, c(th, list(nu = 6))))
 }
 \seealso{
 \code{\link[=distrib_hess_y.MvGaussianDistrib]{distrib_hess_y.MvGaussianDistrib()}} and
-\code{\link[=distrib_hess_y.MvStudentTDistrib]{distrib_hess_y.MvStudentTDistrib()}} for the two families that answer and
-for the shape difference, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
+\code{\link[=distrib_hess_y.MvStudentTDistrib]{distrib_hess_y.MvStudentTDistrib()}} for the two families with a method,
+and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }
 \keyword{internal}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/multivariate.R
 \name{mv_refuse}
 \alias{mv_refuse}
-\title{Reject a Quantity That Has No Multivariate Counterpart}
+\title{Signal the Error for a Quantity Without a Multivariate Counterpart}
 \usage{
 mv_refuse(distrib, what, why)
 }
@@ -10,34 +10,33 @@ mv_refuse(distrib, what, why)
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object, whose \code{distrib_name} is
 quoted in the message.}
 
-\item{what}{The name of the quantity, a single string WITHOUT parentheses:
-\code{"distrib_cdf"}, \code{"skewness"}. The \verb{()} is appended here, so passing them
-gives \code{distrib_cdf()()}.}
+\item{what}{The name of the quantity, a single string without parentheses,
+such as \code{"distrib_cdf"} or \code{"skewness"}. The \verb{()} is appended here.}
 
-\item{why}{One sentence saying what is missing, a single string with no
+\item{why}{One sentence saying what is missing, a single string without a
 leading capital. It is placed after a colon and carries its own final
 period.}
 }
 \value{
-Never returns: it always signals an error, with \code{call. = FALSE} so
+Does not return: it signals an error, with \code{call. = FALSE} so that
 the message is not prefixed by the internal call.
 }
 \description{
-Raises the error a multivariate distribution gives for a one-dimensional
-quantity, in one wording: the name of the quantity, the family it was asked
-of, and a sentence saying what is missing. Every refusal on this class goes
-through it, so the eight of them read alike and none of them silently
-returns a number of the wrong shape.
+Signals the error that a multivariate distribution gives for a quantity that
+has no multivariate counterpart, in one wording: the name of the quantity,
+the family, and a sentence saying what is missing. Every method of the class
+that signals such an error calls this function, so the messages share one
+form and no method returns a number of the wrong shape.
 }
 \examples{
 d <- mvgaussian1_distrib(2)
 
-# The wording every refusal on this class shares. The name carries no
-# parentheses; they are appended here.
+# The wording of these errors. The name carries no parentheses; they are
+# appended here.
 try(distributions7:::mv_refuse(d, "some_quantity",
                                "there is no such thing in p dimensions."))
 
-# Which is what a caller sees from the generics themselves.
+# The same wording from a generic.
 try(distrib_cdf(d, rbind(c(0, 0)),
                 list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
                      sigma_log_L2 = 0, sigma_L2.1 = 0)))
@@ -47,6 +46,6 @@ try(distrib_cdf(d, rbind(c(0, 0)),
 \code{\link[=distrib_cdf.multivariate_distrib]{distrib_cdf.multivariate_distrib()}},
 \code{\link[=distrib_quantile.multivariate_distrib]{distrib_quantile.multivariate_distrib()}},
 \code{\link[=skewness.multivariate_distrib]{skewness.multivariate_distrib()}} and
-\code{\link[=kurtosis.multivariate_distrib]{kurtosis.multivariate_distrib()}} for the refusals it produces.
+\code{\link[=kurtosis.multivariate_distrib]{kurtosis.multivariate_distrib()}} for errors that it produces.
 }
 \keyword{internal}

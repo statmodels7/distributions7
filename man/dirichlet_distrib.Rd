@@ -11,8 +11,8 @@ dirichlet_distrib(
 )
 }
 \arguments{
-\item{n_dim}{The number of coordinates \eqn{p}, a single integer of at least
-2. Anything else signals an error naming the argument.}
+\item{n_dim}{The number of coordinates \eqn{p}, a single whole number of at
+least 2. Any other value signals an error naming the argument.}
 
 \item{mean}{A \code{parameters7} parameter producing \eqn{p} coordinates that sum
 to one, normally a \code{\link[parameters7:simplex]{parameters7::simplex()}}. Defaults to
@@ -27,8 +27,9 @@ The mean's free values are unconstrained already and carry the identity.}
 }
 \value{
 An S7 object of class \code{DirichletDistrib}, inheriting from
-\code{multivariate_distrib}, with \code{param} the simplex given here,
-\code{distrib_name} \code{"dirichlet [pd, mean=<chart>]"}, \code{dimension}
+\code{multivariate_distrib}, with \code{param} the simplex given here, \code{distrib_name}
+\code{"dirichlet [<p>d, mean=<name>]"} with \verb{<name>} the \code{param_name} of the
+mean parameter, \code{dimension}
 \code{"multivariate"}, \code{n_dim} \eqn{p}, \code{bounds} \code{c(0, 1)}, \code{params} the
 simplex's free names prefixed by \code{mean_} followed by \code{"phi"}, \code{n_params}
 \eqn{p}, and \code{link_params} the identity for each mean coordinate and
@@ -38,9 +39,9 @@ simplex's free names prefixed by \code{mean_} followed by \code{"phi"}, \code{n_
 Builds the distribution object for the Dirichlet family on the open simplex
 of \eqn{p} coordinates, parametrized by a mean vector \eqn{\mu} and a
 concentration \eqn{\phi > 0}. The returned object carries closed-form
-derivatives of the log-density to fourth order and a \strong{closed-form expected
-information}, which is unusual for a family with no location and scale to
-separate.
+derivatives of the log-density to fourth order, a closed-form expected
+information, and closed-form expectations of the third and fourth
+derivatives.
 
 The mean is carried on a \code{parameters7} simplex and flattened into scalar
 parameters, so every generic of the package indexes it as it does any other
@@ -58,46 +59,49 @@ So \eqn{\phi} is a \strong{precision}: the larger it is, the tighter the draws
 sit about the mean. The covariance is singular, the coordinates summing to
 one, and every off-diagonal entry is negative.
 
-The parametrization follows the design of the multivariate gaussian's. The
+The parametrization follows the design of the multivariate gaussian. The
 constrained object, here a point of the simplex, is carried by a
-\code{parameters7} parameter and \strong{flattened into scalars} with identity links,
-so \code{align_theta()}, the derivative names, the link scale and
-\code{\link[=fit_distrib]{fit_distrib()}} need no special case. The parameter names are the simplex's
-own free names prefixed by \code{mean_}, followed by \code{phi}.
+\code{parameters7} parameter and flattened into scalars with identity links, so
+\code{align_theta()}, the derivative names, the link scale and \code{\link[=fit_distrib]{fit_distrib()}}
+need no special case. The parameter names are the free names of the simplex
+prefixed by \code{mean_}, followed by \code{phi}.
 }
 
-\section{A multivariate family that is not elliptical}{
-This is the first family of the package with no location and scale to
-separate: the support is a set of dimension \eqn{p-1}, not a Euclidean
-space, and the covariance is singular by construction. It is therefore the
-real test of the multivariate layer, and two of its methods exist to answer
-that test. \code{\link[=mv_marginal.DirichletDistrib]{mv_marginal.DirichletDistrib()}} returns a beta object rather
-than an error, and \code{\link[=mv_reference_draw.DirichletDistrib]{mv_reference_draw.DirichletDistrib()}} replaces the base
-class's gaussian proposal with the uniform on the simplex, without which
-\code{\link[=check_distrib]{check_distrib()}} would estimate an integral that is 1 at about \code{2e-08}.
+\section{A family without location and scale}{
+The family has no location and scale to separate: the support is a set of
+dimension \eqn{p-1}, not a Euclidean space, and the covariance is singular by
+construction. Two methods follow from this. \code{\link[=mv_marginal.DirichletDistrib]{mv_marginal.DirichletDistrib()}}
+returns a beta distribution, and \code{\link[=mv_reference_draw.DirichletDistrib]{mv_reference_draw.DirichletDistrib()}}
+replaces the gaussian proposal of the base class with the uniform
+distribution on the simplex, which the normalization check of
+\code{\link[=check_distrib]{check_distrib()}} needs.
 }
 
-\section{Why the expected information is closed form}{
-Two identities do the work. Differentiating \eqn{\sum_j \mu_j = 1} once
-shows that the columns of \eqn{A = \partial\mu/\partial\eta} sum to zero,
-and twice that every second-derivative vector of the simplex does; and
+\section{The expected information}{
+Two identities make it closed form. Differentiating \eqn{\sum_j \mu_j = 1}
+once shows that the columns of \eqn{A = \partial\mu/\partial\eta} sum to
+zero, and twice that every second-derivative vector of the simplex does; and
 \eqn{\mathbb{E}[\log y_j] = \psi(\alpha_j) - \psi(\phi)} makes
 \eqn{\mathbb{E}[g_j] = -\psi(\phi)} the same constant for every \eqn{j}.
 Every term of the observed Hessian that carries the data is that constant
-times one of the two zero sums, and vanishes.
+times one of the two zero sums, and vanishes. The higher derivatives depend
+on the data only linearly in \eqn{\log y}, so their expectations are closed
+form as well.
 }
 
-\section{What is refused}{
-The distribution function and the quantile are refused by
-\code{\link[=multivariate_distrib]{multivariate_distrib()}}, as for every family of that class: a distribution
-function on \eqn{\mathbb{R}^p} is an orthant probability and a quantile
-needs an ordering. The response derivatives are refused too. A marginal over
-several coordinates at once is refused with the reason.
+\section{Quantities that are not defined}{
+The distribution function and the quantile signal an error through
+\code{\link[=multivariate_distrib]{multivariate_distrib()}}, as for every family of that class without a method
+of its own: a distribution function on \eqn{\mathbb{R}^p} is an orthant
+probability and a quantile needs an ordering. The response derivatives signal
+an error as well, and a marginal over several coordinates at once signals an
+error that states the reason.
 }
 
 \section{Estimation}{
-\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale, over the
-simplex's free values and \eqn{\log\phi}. No estimate is closed form.
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale, over the free
+values of the simplex and the link of \eqn{\phi} (\eqn{\log\phi} by default).
+No estimate is closed form.
 }
 
 \section{Notation}{
@@ -121,8 +125,7 @@ round(mv_sigma(d, th), 6)
 # space.
 c(rank = qr(mv_sigma(d, th))$rank, dim = 3)
 
-# The marginals are beta with the same concentration, so a panel of a pairs
-# plot is a real distribution.
+# The marginal of a coordinate is a beta with the same concentration.
 mv_marginal(d, th, which = 1)$theta
 
 # The density and the sample agree on the mean and the coordinate variance.

@@ -13,17 +13,15 @@ has_mv_support(x)
 A single logical.
 }
 \description{
-\code{TRUE} when the family registers \code{\link[=mv_support]{mv_support()}}, which is
-what a discrete multivariate family does and a continuous one cannot.
+\code{TRUE} when the family registers \code{\link[=mv_support]{mv_support()}}, which a discrete
+multivariate family does and a continuous one cannot.
 }
 \details{
-The question is asked of the method rather than of the class, because the
-multivariate branch sits beside \code{\link[=continuous_distrib]{continuous_distrib()}} and
-\code{\link[=discrete_distrib]{discrete_distrib()}} rather than under either, so there is no
-class to test. The owning class of a method is read through
-\code{\link[=is_class]{is_class()}}, never with \code{identical()}, which is object
-identity and fails whenever the package's code is re-evaluated rather than
-loaded.
+The test reads the registered method, because the multivariate branch sits
+beside \code{\link[=continuous_distrib]{continuous_distrib()}} and \code{\link[=discrete_distrib]{discrete_distrib()}} and not under either,
+so there is no class to test. The owning class of a method is read through
+\code{\link[=is_class]{is_class()}}, never with \code{identical()}, which is object identity and fails
+whenever the package's code is re-evaluated in place of being loaded.
 }
 \seealso{
 \code{\link[=mv_support]{mv_support()}}, \code{\link[=check_distrib]{check_distrib()}}

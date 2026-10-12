@@ -23,10 +23,10 @@ first order, so below \eqn{\lvert u\rvert = 10^{-3}} the expansion
 }
 \details{
 The argument \eqn{u} is the squared Mahalanobis distance divided by the
-degrees of freedom, so it is small exactly where the family is close to the
-gaussian or the observation is close to the location, so it is the ordinary
-case and not an edge one. Taken directly at \eqn{u = 10^{-8}} the difference
-loses about nine significant figures.
+degrees of freedom. It is small when the family is close to the gaussian or
+when the observation is close to the location, so small values of \eqn{u} are
+the ordinary case. Evaluated directly at \eqn{u = 10^{-8}}, the difference
+keeps about eight significant figures.
 }
 \section{Notation}{
 
@@ -48,7 +48,8 @@ cbind(u = u,
 
 }
 \seealso{
-\code{\link[=mvt_A]{mvt_A()}} and \code{\link[=mvt_T]{mvt_T()}} for the other two cancellations, and
+\code{\link[=mvt_A]{mvt_A()}} for the part of the score without the data, \code{\link[=mvt_h_d]{mvt_h_d()}}
+for the higher derivatives of the data term, and
 \code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}} for the consumer.
 }
 \keyword{internal}

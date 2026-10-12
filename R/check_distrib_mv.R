@@ -4,28 +4,32 @@ NULL
 #' Validate a Multivariate Distribution
 #'
 #' @description
-#' The battery [check_distrib()] runs on a multivariate distribution,
-#' where the one-dimensional checks have no counterpart.
+#' Runs the battery of [check_distrib()] on a multivariate distribution, where
+#' the one-dimensional checks have no counterpart.
 #'
 #' @details
-#' Five of the univariate checks do not survive the move to \eqn{p} dimensions:
-#' the distribution function is an integral over an orthant, the quantile
-#' function inverts an ordering that does not exist, and the two checks built on
-#' them go with them. Running them anyway and reporting the rejections as failures
-#' is the mistake a validator makes when it does not know about a case, and it
-#' is worse than not checking, because a user validating their own distribution
-#' cannot tell a real defect from it.
+#' Five of the univariate checks have no counterpart in \eqn{p} dimensions: the
+#' integration of the density by one-dimensional quadrature, the two checks of
+#' the distribution function (its range and its agreement with the density),
+#' the quantile round trip, and the comparison of the generator with the
+#' distribution function. The distribution function is an integral over an
+#' orthant, and the quantile function inverts an ordering that does not exist
+#' in several dimensions. Reporting these checks as failures would mark a
+#' correct family as defective, and a user validating their own distribution
+#' could not tell a real defect from them.
 #'
-#' What replaces them are checks that do generalize:
+#' The battery runs the checks that do generalize:
 #'
 #' 1. **the density is positive and finite** on a sample;
 #' 2. **the density integrates to one**. For a family that enumerates
 #'    its support through [mv_support()] this is an exact sum over
-#'    that support; otherwise it is importance sampling from the proposal
-#'    [mv_reference_draw()] supplies, which by default is a gaussian
-#'    with the same mean and an inflated covariance. The proposal is
-#'    deliberately not the distribution itself, which would make the ratio
-#'    identically one and the check vacuous;
+#'    that support, with tolerance `1e-10`; otherwise it is importance
+#'    sampling from the proposal that [mv_reference_draw()] supplies, with
+#'    tolerance `20 / sqrt(nsim)`. The default proposal is a gaussian with the
+#'    same mean and twice the covariance; the Student \eqn{t} uses a Student
+#'    \eqn{t} with half the degrees of freedom and twice the scale matrix, and
+#'    the Dirichlet the uniform law on the simplex. The proposal is not the
+#'    distribution itself, which would make the ratio identically one;
 #' 3. **the score has mean zero**, the first Bartlett identity, under
 #'    the distribution's own generator, so it is also a check that the
 #'    generator and the density describe the same law;
@@ -34,22 +38,31 @@ NULL
 #' 5. **the expected information** against the Monte Carlo average of
 #'    the observed Hessian, and against the variance of the score, which is the
 #'    second Bartlett identity;
-#' 6. **the generator** against the first two moments;
+#' 6. **the generator** against the first two moments. When the mean or the
+#'    covariance of the family is not finite (a Student \eqn{t} with
+#'    \eqn{\nu \le 2}) the row has no statistic, and [check_distrib()] lists it
+#'    among the skipped checks with that reason. The tolerance is
+#'    `20 / sqrt(nsim)`, which assumes a finite fourth moment: for a Student
+#'    \eqn{t} with \eqn{2 < \nu \le 4} the sample covariance has no variance,
+#'    and the row can fail with a correct generator;
 #' 7. **the response derivatives** against finite differences in
 #'    \eqn{y}.
 #'
-#' The last of these is emitted only when it applies, as the univariate battery
-#' already omits the checks that a discrete family has no counterpart for. A
-#' family with an enumerable support is discrete and has no derivative in the
-#' response, and the multivariate base class rejects
-#' [distrib_grad_y()] by design, so a family that has not registered
-#' one has made a choice rather than left a gap.
+#' The last of these is run only when it applies, as the univariate battery
+#' omits the checks that have no counterpart for a discrete family. A family
+#' with an enumerable support is discrete and has no derivative in the
+#' response, and the multivariate base class signals an error for
+#' [distrib_grad_y()], so a family that has not registered a method has no
+#' response derivatives by design, and the check is omitted for it.
 #'
 #' @param distrib A [multivariate_distrib()] object.
 #' @param theta A named list of parameters, already aligned.
 #' @param n The number of observations drawn for the derivative checks.
 #' @param nsim The Monte Carlo sample size.
-#' @param tol The relative tolerance.
+#' @param tol The tolerance of the gradient and response-derivative
+#'   comparisons, applied to the absolute difference divided by the larger of
+#'   one and the magnitude of the reference; the Hessian comparison uses
+#'   `10 * tol`. The other checks use fixed thresholds.
 #'
 #' @return A list of one-row data frames, as [check_distrib()] builds.
 #'
@@ -154,15 +167,22 @@ check_distrib_mv <- function(distrib, theta, n, nsim, tol) {
 
   # --- the generator -------------------------------------------------------
   res[[length(res) + 1L]] <- safe_check("rng matches the first two moments", {
-    big <- distrib_rng(distrib, nsim, theta)
     mu <- as.numeric(mean(distrib, theta))
     sg <- as.matrix(variance(distrib, theta))
-    sc <- sqrt(max(diag(sg)))
-    d <- max(
-      max(abs(colMeans(big) - mu)) / sc,
-      max(abs(stats::cov(big) - sg)) / max(abs(sg))
-    )
-    new_check("rng matches the first two moments", d < 20 / sqrt(nsim), d)
+    if (!all(is.finite(mu)) || !all(is.finite(sg))) {
+      # the moments do not exist, so there is nothing to compare the sample
+      # with: no verdict, and check_distrib() lists the row as skipped
+      new_check("rng matches the first two moments", FALSE, NA_real_,
+                "the mean or the covariance of the family is not finite")
+    } else {
+      big <- distrib_rng(distrib, nsim, theta)
+      sc <- sqrt(max(diag(sg)))
+      d <- max(
+        max(abs(colMeans(big) - mu)) / sc,
+        max(abs(stats::cov(big) - sg)) / max(abs(sg))
+      )
+      new_check("rng matches the first two moments", d < 20 / sqrt(nsim), d)
+    }
   })
 
   # --- the response --------------------------------------------------------
@@ -187,17 +207,15 @@ check_distrib_mv <- function(distrib, theta, n, nsim, tol) {
 #' Whether a Multivariate Family Enumerates Its Support
 #'
 #' @description
-#' `TRUE` when the family registers [mv_support()], which is
-#' what a discrete multivariate family does and a continuous one cannot.
+#' `TRUE` when the family registers [mv_support()], which a discrete
+#' multivariate family does and a continuous one cannot.
 #'
 #' @details
-#' The question is asked of the method rather than of the class, because the
-#' multivariate branch sits beside [continuous_distrib()] and
-#' [discrete_distrib()] rather than under either, so there is no
-#' class to test. The owning class of a method is read through
-#' [is_class()], never with `identical()`, which is object
-#' identity and fails whenever the package's code is re-evaluated rather than
-#' loaded.
+#' The test reads the registered method, because the multivariate branch sits
+#' beside [continuous_distrib()] and [discrete_distrib()] and not under either,
+#' so there is no class to test. The owning class of a method is read through
+#' [is_class()], never with `identical()`, which is object identity and fails
+#' whenever the package's code is re-evaluated in place of being loaded.
 #'
 #' @param x An object inheriting from class [multivariate_distrib()].
 #'
@@ -217,8 +235,8 @@ has_mv_support <- function(x) {
 #' Whether a Multivariate Family Implements Its Response Derivatives
 #'
 #' @description
-#' `TRUE` when [distrib_grad_y()] comes from the family rather
-#' than from the base class, whose method rejects.
+#' `TRUE` when [distrib_grad_y()] comes from the family and not from the
+#' base class, whose method signals an error.
 #'
 #' @param x An object inheriting from class [multivariate_distrib()].
 #'
@@ -237,8 +255,8 @@ has_mv_grad_y <- function(x) {
 #' A Central-Difference Gradient Without a Dependency
 #'
 #' @description
-#' One central difference per coordinate, which is all the multivariate checks
-#' need and which keeps \pkg{numDeriv} a suggestion rather than a requirement.
+#' One central difference per coordinate, which is enough for the multivariate
+#' checks and keeps \pkg{numDeriv} out of the hard dependencies.
 #'
 #' @details
 #' The nodes, the weights and the step are \pkg{numericals7}'s.
@@ -277,14 +295,14 @@ numDeriv_grad <- function(f, x, h_rel = NULL) {
 #'
 #' @description
 #' The mixed or repeated second derivative of a scalar function, from a single
-#' stencil rather than from nested first differences.
+#' stencil, without nested first differences.
 #'
 #' @details
-#' The nodes, the weights and the step are \pkg{numericals7}'s. Where the two
-#' coordinates differ the stencil is the product of two first-order factors,
-#' which is one stencil in two variables and not a difference of a difference:
-#' nesting is forbidden along ONE variable, and is what a mixed derivative is
-#' along two.
+#' The nodes, the weights and the step are those of \pkg{numericals7}. Where the
+#' two coordinates differ the stencil is the product of two first-order factors,
+#' which is one stencil in two variables and not a difference of a difference.
+#' Nested differences are not used along one variable; a mixed derivative
+#' differentiates along two different variables.
 #'
 #' @param f A function of a numeric vector, returning one number.
 #' @param x The point.

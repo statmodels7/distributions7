@@ -19,8 +19,8 @@ A symmetric \eqn{p \times p} numeric matrix of rank \eqn{p-1}.
 \description{
 Returns the covariance matrix of the family by delegating to
 \code{\link[=mv_sigma.DirichletDistrib]{mv_sigma.DirichletDistrib()}}. It is singular, the coordinates summing to
-one, so a caller wanting something to invert should take the marginals or
-work on the simplex's free vector.
+one, so a computation that inverts a covariance works with the marginals or
+with the free vector of the simplex.
 }
 \seealso{
 \code{\link[=mean.DirichletDistrib]{mean.DirichletDistrib()}} for the mean vector,

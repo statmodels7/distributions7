@@ -8,16 +8,17 @@ NULL
 #' The S7 class of the Dirichlet family on the open simplex of \eqn{p}
 #' coordinates, parametrized by a mean vector \eqn{\mu} carried on a
 #' `parameters7` simplex and a concentration \eqn{\phi > 0}. It inherits from
-#' `multivariate_distrib`, so the distribution function and the quantile are
-#' refused rather than approximated; the eleven methods listed below are
-#' registered on it in this file and two more in `mv_higher.R`.
+#' `multivariate_distrib`, so the distribution function and the quantile signal
+#' an error and are not approximated.
 #'
 #' The class carries an extra property beyond the parent's, `param`: the
 #' `parameters7` simplex the mean lies on, whose free names become the
 #' family's own parameter names prefixed by `mean_`. Build one with
-#' [dirichlet_distrib()], which validates the simplex against `n_dim`,
-#' supplies the concentration's link and fills the properties in. This page
-#' documents the raw S7 constructor, which validates none of that.
+#' [dirichlet_distrib()], which validates the simplex against `n_dim`, supplies
+#' the concentration's link and fills the properties in. This page documents the
+#' raw S7 constructor, which runs only the validators of `multivariate_distrib`
+#' and `distrib`: it does not check the simplex against `n_dim` and does not
+#' supply links.
 #'
 #' @inheritParams multivariate_distrib
 #' @param param The `parameters7` [parameters7::simplex()] carrying the mean.
@@ -40,25 +41,28 @@ NULL
 #'   [parameters7::simplex()] for the chart.
 #'
 #' @section Methods:
-#' Registered on this class in this file:
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.DirichletDistrib],
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.DirichletDistrib] and
+#'   [`distrib_rng()`][distrib_rng.DirichletDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.DirichletDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.DirichletDistrib],
-#'   [`distrib_pdf()`][distrib_pdf.DirichletDistrib],
-#'   [`distrib_rng()`][distrib_rng.DirichletDistrib],
-#'   [`mv_location()`][mv_location.DirichletDistrib],
-#'   [`mv_marginal()`][mv_marginal.DirichletDistrib],
-#'   [`mv_reference_draw()`][mv_reference_draw.DirichletDistrib],
-#'   [`mv_sigma()`][mv_sigma.DirichletDistrib],
-#'   [`mean()`][mean.DirichletDistrib] and
-#'   [`variance()`][variance.DirichletDistrib].
-#'
-#' Two more are registered in `mv_higher.R`:
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.DirichletDistrib],
 #'   [`distrib_deriv3()`][distrib_deriv3.DirichletDistrib] and
-#'   [`distrib_deriv4()`][distrib_deriv4.DirichletDistrib], both closed form.
+#'   [`distrib_deriv4()`][distrib_deriv4.DirichletDistrib];
+#' - the moments: [`mean()`][mean.DirichletDistrib] and
+#'   [`variance()`][variance.DirichletDistrib];
+#' - the multivariate summaries:
+#'   [`mv_location()`][mv_location.DirichletDistrib],
+#'   [`mv_sigma()`][mv_sigma.DirichletDistrib] and
+#'   [`mv_marginal()`][mv_marginal.DirichletDistrib];
+#' - the validation and fitting helpers:
+#'   [`mv_reference_draw()`][mv_reference_draw.DirichletDistrib].
 #'
-#' Everything else is inherited from [multivariate_distrib()], which refuses
-#' the distribution function, the quantile and the response derivatives.
+#' Every other generic is inherited from [multivariate_distrib()], whose methods
+#' signal an error for the distribution function, the quantile function, the
+#' response gradient and Hessian, the mixed response derivative, the skewness
+#' and the kurtosis.
 #'
 #' @examples
 #' d <- dirichlet_distrib(3)
@@ -158,19 +162,19 @@ dir_b_index <- function(idx, k, l) {
 #' Computes the Dirichlet density
 #' \deqn{f(y) = \dfrac{\Gamma(\phi)}{\prod_{j=1}^{p} \Gamma(\alpha_j)}
 #'       \prod_{j=1}^{p} y_j^{\alpha_j - 1}, \qquad \alpha = \phi\mu,}
-#' one value per row of `y`, with respect to the \eqn{(p-1)}-dimensional
-#' measure the simplex carries.
+#' one value per row of `y`, with respect to Lebesgue measure on the first
+#' \eqn{p-1} coordinates, the last being \eqn{1 - \sum_{j<p} y_j}.
 #'
-#' The support is tested **before** the logarithm is taken. A negative
-#' coordinate would make [base::log()] warn, and a density evaluated off its
-#' support is 0, so a row that is not on the simplex returns 0 without a
-#' numerical complaint.
+#' The support is tested before the logarithm is taken: a negative coordinate
+#' would make [base::log()] warn, and a density evaluated off its support is 0.
+#' A row with a missing coordinate gives `NA`, as [stats::dbeta()] does.
 #'
 #' @param distrib A `DirichletDistrib` object, from [dirichlet_distrib()].
 #' @param y A numeric matrix with one row per observation and \eqn{p} columns,
 #'   each row strictly positive and summing to one within `1e-8`. A single
 #'   observation may be given as a plain vector and is read as one row. A row
-#'   failing either test gives a density of 0, or `-Inf` with `log = TRUE`.
+#'   failing either test gives a density of 0, or `-Inf` with `log = TRUE`, and
+#'   a row with a missing coordinate gives `NA`.
 #' @param theta A named list of parameters on the parameter scale: the mean's
 #'   free values followed by `phi`, each of length 1. A parameter may not vary
 #'   by observation here, the mean being one point of the simplex for the whole
@@ -218,8 +222,14 @@ S7::method(distrib_pdf, DirichletDistrib) <- function(distrib, y, theta, log = F
   # The support is tested before the logarithm rather than after: log() of a
   # negative coordinate warns, and a density evaluated off its support is zero
   # rather than a numerical complaint.
-  ok <- apply(y, 1L, function(r) all(r > 0) && abs(sum(r) - 1) <= 1e-8)
+  # A row with a missing coordinate gives NA, as stats::dbeta() does.
+  miss <- vapply(seq_len(nrow(y)), function(i) anyNA(y[i, ]), logical(1))
+  ok <- vapply(seq_len(nrow(y)), function(i) {
+    r <- y[i, ]
+    !anyNA(r) && all(r > 0) && abs(sum(r) - 1) <= 1e-8
+  }, logical(1))
   out <- rep(-Inf, nrow(y))
+  out[miss] <- NA_real_
   if (any(ok)) {
     out[ok] <- const + as.numeric(log(y[ok, , drop = FALSE]) %*% (p$alpha - 1))
   }
@@ -229,12 +239,16 @@ S7::method(distrib_pdf, DirichletDistrib) <- function(distrib, y, theta, log = F
 #' @title Dirichlet Random Generation
 #' @name distrib_rng.DirichletDistrib
 #' @description
-#' Draws `n` independent Dirichlet vectors by the representation the family is
-#' defined by: independent gamma variates with shapes \eqn{\alpha_j = \phi\mu_j}
+#' Draws `n` independent Dirichlet vectors by the representation that defines
+#' the family: independent gamma variates with shapes \eqn{\alpha_j = \phi\mu_j}
 #' and a common rate, divided by their sum. The normalization removes the rate,
-#' so [stats::rgamma()]'s default of 1 is used, and every row of the result
-#' sums to one by construction. The draws depend on `.Random.seed` in the usual
-#' way and consume \eqn{p} of R's streams per observation.
+#' so the default rate of [stats::rgamma()] is used. When a shape is below 0.05
+#' a gamma variate underflows to zero with a probability that is no longer
+#' negligible, and a row whose variates all underflow would be 0/0; the variates
+#' are then drawn on the log scale, as \eqn{\log G(\alpha_j + 1) +
+#' \log(U)/\alpha_j}, and normalized by a log-sum-exp, so every row sums to one
+#' and its largest coordinate is finite. The draws depend on `.Random.seed` in
+#' the usual way.
 #'
 #' @param distrib A `DirichletDistrib` object, from [dirichlet_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -242,12 +256,14 @@ S7::method(distrib_pdf, DirichletDistrib) <- function(distrib, y, theta, log = F
 #'   free values followed by `phi`, each of length 1.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric matrix with `n` rows and \eqn{p} columns, each row
-#'   strictly positive and summing to one.
+#' @return A numeric matrix with `n` rows and \eqn{p} columns, each row summing
+#'   to one. A coordinate whose value is below the smallest double rounds to
+#'   zero, which happens at a concentration of order 0.01 or below; such a row
+#'   is off the open simplex and has density zero.
 #'
 #' @seealso [distrib_pdf.DirichletDistrib()] for the density,
-#'   [mv_reference_draw.DirichletDistrib()] for the uniform proposal
-#'   [check_distrib()] integrates against, [fit_distrib()] to estimate the
+#'   [mv_reference_draw.DirichletDistrib()] for the uniform proposal against which
+#'   [check_distrib()] integrates, [fit_distrib()] to estimate the
 #'   parameters back from a sample, and [distrib_rng()] for the generic.
 #'
 #' @examples
@@ -269,8 +285,22 @@ S7::method(distrib_pdf, DirichletDistrib) <- function(distrib, y, theta, log = F
 S7::method(distrib_rng, DirichletDistrib) <- function(distrib, n, theta, ...) {
   p <- dir_parts(distrib, theta)
   d <- length(p$alpha)
-  g <- matrix(stats::rgamma(n * d, rep(p$alpha, each = n)), nrow = n)
-  g / rowSums(g)
+  a <- rep(p$alpha, each = n)
+  if (all(p$alpha >= 0.05)) {
+    g <- matrix(stats::rgamma(n * d, a), nrow = n)
+    return(g / rowSums(g))
+  }
+  # A gamma variate of shape below 0.05 underflows to zero with a probability
+  # that is no longer negligible, and a row whose variates all underflow is
+  # 0/0. The variates are drawn on the log scale instead, as
+  # log G(a + 1) + log(U)/a, and normalized by a log-sum-exp, so the largest
+  # coordinate of every row is finite; a coordinate below the smallest double
+  # still rounds to zero.
+  lg <- matrix(log(stats::rgamma(n * d, a + 1)) + log(stats::runif(n * d)) / a,
+               nrow = n)
+  lg <- lg - apply(lg, 1L, max)
+  e <- exp(lg)
+  e / rowSums(e)
 }
 
 #' @title Dirichlet Score
@@ -284,12 +314,12 @@ S7::method(distrib_rng, DirichletDistrib) <- function(distrib, n, theta, ...) {
 #'       \qquad
 #'       \dfrac{\partial\ell}{\partial\phi} = \psi(\phi) + \sum_{j} g_j \mu_j.}
 #' The data enter only through \eqn{\log y}, the family being an exponential
-#' family in that statistic, so \eqn{g} carries the whole of it.
+#' family in that statistic.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries before returning. Every mean coordinate rides the identity,
-#' its free value being unconstrained already, so only the concentration's
-#' component changes.
+#' With `scale = "link"` the generic applies the chain rule for the links of the
+#' family to the result of the method. Every mean coordinate takes the identity
+#' link, its free value being unconstrained already, so only the component of
+#' the concentration changes.
 #'
 #' @param distrib A `DirichletDistrib` object, from [dirichlet_distrib()].
 #' @param y A numeric matrix with one row per observation and \eqn{p} columns,
@@ -359,10 +389,14 @@ S7::method(distrib_gradient, DirichletDistrib) <- function(distrib, y, theta,
 #'       \ell^{(\eta_k\phi)} = -\phi\sum_{j} t_j \mu_j A_{jk}
 #'         + \sum_{j} g_j A_{jk},}
 #' \deqn{\ell^{(\phi\phi)} = \psi'(\phi) - \sum_{j} t_j \mu_j^2.}
-#' The pure-concentration entry is **free of the data**, the family being an
-#' exponential family in \eqn{\log y} whose concentration multiplies a
-#' statistic linearly; it therefore equals its own expectation at every
-#' observation. The other two carry the data through \eqn{g}.
+#' The pure-concentration entry does not depend on the data, the family being an
+#' exponential family in \eqn{\log y} whose concentration multiplies a statistic
+#' linearly; it therefore equals its own expectation at every observation. The
+#' other two carry the data through \eqn{g}. On the additive log-ratio chart the
+#' matrix is computed by the route of the higher orders, [dirichlet_higher()],
+#' which writes \eqn{-\log\Gamma(\alpha_j)} as \eqn{\log\alpha_j - \log\Gamma(1
+#' + \alpha_j)}: written in \eqn{\psi'(\alpha_j)}, the two blocks of a
+#' coordinate whose shape is small cancel to the order of that shape.
 #'
 #' @param distrib A `DirichletDistrib` object, from [dirichlet_distrib()].
 #' @param y A numeric matrix with one row per observation and \eqn{p} columns,
@@ -408,6 +442,13 @@ S7::method(distrib_gradient, DirichletDistrib) <- function(distrib, y, theta,
 #'       closed = vapply(h, sum, numeric(1)))
 S7::method(distrib_hessian, DirichletDistrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"), ...) {
+  if (mn_is_alr(distrib@param)) {
+    # the route of the higher orders, which splits -log Gamma(alpha) into
+    # log alpha - log Gamma(1 + alpha): written in trigamma(alpha), the two
+    # blocks of a rare coordinate cancel to the order of its shape
+    h <- dirichlet_higher(distrib, y, theta, 2L)
+    return(h[hess_names(distrib@params)])
+  }
   p <- dir_parts(distrib, theta)
   y <- if (is.matrix(y)) y else matrix(y, nrow = 1L)
   n <- nrow(y)
@@ -450,17 +491,15 @@ S7::method(distrib_hessian, DirichletDistrib) <- function(distrib, y, theta,
 #' `approx` and `nsim` are ignored: every strategy returns the same matrix.
 #'
 #' @details
-#' # Why the data-carrying terms drop out
+#' # The terms that carry the data
 #'
 #' Under the model \eqn{\mathbb{E}[\log y_j] = \psi(\alpha_j) - \psi(\phi)}, so
-#' \eqn{\mathbb{E}[g_j] = -\psi(\phi)}, **the same constant for every**
-#' \eqn{j}. Each term of the observed Hessian that carries the data is that
-#' constant times a sum over \eqn{j} of a column of \eqn{A} or of a
-#' second-derivative vector of the simplex, and both of those sum to zero:
-#' differentiating \eqn{\sum_j \mu_j = 1} once gives the first, twice the
-#' second. Every such term is therefore exactly zero under expectation, which
-#' is why a family with no location and scale to separate still has a
-#' closed-form information matrix.
+#' \eqn{\mathbb{E}[g_j] = -\psi(\phi)}, the same constant for every \eqn{j}.
+#' Each term of the observed Hessian that carries the data is that constant
+#' times a sum over \eqn{j} of a column of \eqn{A} or of a second-derivative
+#' vector of the simplex, and both of those sum to zero: differentiating
+#' \eqn{\sum_j \mu_j = 1} once gives the first, twice the second. Every such
+#' term is therefore zero under expectation.
 #'
 #' @param distrib A `DirichletDistrib` object, from [dirichlet_distrib()].
 #' @param y A numeric matrix of observations. Only its row count is read
@@ -540,20 +579,21 @@ S7::method(distrib_expected_hessian, DirichletDistrib) <- function(distrib, y, t
 #' @title Dirichlet Mean Vector
 #' @name mv_location.DirichletDistrib
 #' @description
-#' Returns the point of the simplex the mean parameter carries at the free
-#' values in `theta`. For this family that point **is** the mean,
+#' Returns the point of the simplex that the mean parameter carries at the free
+#' values in `theta`. For this family that point is the mean,
 #' \eqn{\mathbb{E}[Y_j] = \mu_j}, so [mean.DirichletDistrib()] delegates here.
-#' The value comes from [parameters7::param_value()] on the object's own
-#' simplex chart, so it lies on the open simplex by construction whatever the
-#' free values are.
+#' The value comes from [parameters7::param_value()] on the object's own simplex
+#' chart, so it lies on the simplex by construction; in floating point a
+#' coordinate underflows to zero for free values beyond about 745 in absolute
+#' value.
 #'
 #' @param distrib A `DirichletDistrib` object, from [dirichlet_distrib()].
 #' @param theta A named list of parameters on the parameter scale: the mean's
 #'   free values followed by `phi`, each of length 1. The concentration is read
 #'   but not used here.
 #'
-#' @return A numeric vector of length \eqn{p}, strictly positive and summing to
-#'   one.
+#' @return A numeric vector of length \eqn{p}, without names, summing to one,
+#'   with positive coordinates except where one underflows.
 #'
 #' @seealso [mv_sigma.DirichletDistrib()] for the covariance,
 #'   [mean.DirichletDistrib()], which calls this, and [mv_location()] for the
@@ -579,20 +619,19 @@ S7::method(mv_location, DirichletDistrib) <- function(distrib, theta) {
 #' \deqn{\operatorname{Cov}(Y_i, Y_j)
 #'       = \dfrac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1},}
 #' so the coordinate variances are \eqn{\mu_j(1-\mu_j)/(\phi+1)} and every
-#' covariance is negative, a rise in one coordinate having to be paid for by
-#' the others.
+#' covariance is negative, the coordinates summing to one.
 #'
-#' The matrix is **singular by construction**: the coordinates sum to one, so
-#' the vector of ones is in its null space and the rank is \eqn{p-1}. Anything
-#' that inverts a covariance must use the marginals or the free vector instead.
-#' The concentration acts as a precision, every entry falling as
-#' \eqn{1/(\phi+1)}.
+#' The matrix is singular: the coordinates sum to one, so the vector of ones is
+#' in its null space and the rank is \eqn{p-1}. A computation that inverts a
+#' covariance works with the marginals or with the free vector instead. The
+#' concentration acts as a precision, every entry falling as \eqn{1/(\phi+1)}.
 #'
 #' @param distrib A `DirichletDistrib` object, from [dirichlet_distrib()].
 #' @param theta A named list of parameters on the parameter scale: the mean's
 #'   free values followed by `phi`, each of length 1.
 #'
-#' @return A symmetric \eqn{p \times p} numeric matrix of rank \eqn{p-1}.
+#' @return A symmetric \eqn{p \times p} numeric matrix of rank \eqn{p-1},
+#'   without dimnames.
 #'
 #' @seealso [mv_location.DirichletDistrib()] for the mean,
 #'   [variance.DirichletDistrib()], which calls this,
@@ -633,8 +672,7 @@ S7::method(mv_sigma, DirichletDistrib) <- function(distrib, theta) {
 #'   free values followed by `phi`, each of length 1.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of length \eqn{p}, strictly positive and summing to
-#'   one.
+#' @return A numeric vector of length \eqn{p}, without names, summing to one.
 #'
 #' @seealso [variance.DirichletDistrib()] for the covariance,
 #'   [mv_location.DirichletDistrib()], which this calls, and
@@ -649,8 +687,8 @@ S7::method(mean, DirichletDistrib) <- function(x, theta, ...) {
 #' @description
 #' Returns the covariance matrix of the family by delegating to
 #' [mv_sigma.DirichletDistrib()]. It is singular, the coordinates summing to
-#' one, so a caller wanting something to invert should take the marginals or
-#' work on the simplex's free vector.
+#' one, so a computation that inverts a covariance works with the marginals or
+#' with the free vector of the simplex.
 #'
 #' @param x A `DirichletDistrib` object, from [dirichlet_distrib()]. The
 #'   argument is named `x` for consistency with [base::mean()], whose signature
@@ -672,17 +710,16 @@ S7::method(variance, DirichletDistrib) <- function(x, theta, ...) {
 #' @title A Uniform Proposal on the Simplex
 #' @name mv_reference_draw.DirichletDistrib
 #' @description
-#' Supplies the importance-sampling proposal [check_distrib()] integrates the
-#' density against: the uniform distribution on the simplex, which is the
+#' Supplies the importance-sampling proposal against which [check_distrib()]
+#' integrates the density: the uniform distribution on the simplex, which is the
 #' Dirichlet with every shape equal to one. Its density is the constant
-#' \eqn{\Gamma(p)} with respect to the same dominating measure the family's own
-#' density is written against, so the normalization check is a plain average.
+#' \eqn{\Gamma(p)} with respect to the dominating measure of the family's own
+#' density, so the normalization check is a plain average.
 #'
-#' The base class's proposal is an inflated gaussian on \eqn{\mathbb{R}^p},
-#' which places no mass on the simplex at all. It does not fail loudly there:
-#' [base::chol()] accepts the singular covariance, and the estimate of an
-#' integral that is 1 comes back at about `2e-08`. Overriding the proposal is
-#' what makes that check mean anything for this family.
+#' The proposal of the base class is a gaussian on \eqn{\mathbb{R}^p}, which
+#' places no mass on the simplex; [base::chol()] can accept the singular
+#' covariance without an error, and the estimate of the integral is then far
+#' from 1. This method replaces that proposal.
 #'
 #' @param distrib A `DirichletDistrib` object, from [dirichlet_distrib()], read
 #'   for its `n_dim` alone.
@@ -711,24 +748,25 @@ S7::method(mv_reference_draw, DirichletDistrib) <- function(distrib, theta, n, .
 #' Returns the law of one coordinate, which is
 #' \eqn{\mathrm{Beta}(\alpha_j, \phi - \alpha_j)}. In this package's mean and
 #' precision parametrization of the beta that is mean \eqn{\mu_j} and precision
-#' \eqn{\phi}, so no reparametrization is needed at all and **the
-#' concentration is shared by every marginal**, as the multivariate t's degrees
-#' of freedom are.
+#' \eqn{\phi}, so every marginal carries the concentration of the joint law, as
+#' every marginal of the multivariate t carries its degrees of freedom.
 #'
-#' This is one of the few families for which the generic returns an object
-#' rather than signaling an error. A panel of a pairs plot is therefore a real
-#' distribution here.
-#'
-#' Several coordinates at once are refused. A sub-vector of a Dirichlet is
-#' again Dirichlet, but only after the remaining mass is collapsed into a
-#' coordinate of its own, and returning that object under this name would
-#' mislead. The error says so.
+#' The marginal of one coordinate is a univariate beta distribution, so, unlike
+#' the marginals of the elliptical families, it has a distribution function, a
+#' quantile and the moments of a univariate family. A vector of several
+#' coordinates signals an error: a sub-vector of a Dirichlet is again Dirichlet
+#' only once the remaining mass is collapsed into a coordinate of its own, which
+#' is a different object from the sub-vector. For the same reason
+#' [plot.multivariate_distrib()], whose panels are marginals of two coordinates,
+#' signals that error for this family.
 #'
 #' @param distrib A `DirichletDistrib` object, from [dirichlet_distrib()].
 #' @param theta A named list of parameters on the parameter scale: the mean's
 #'   free values followed by `phi`, each of length 1.
-#' @param which A single integer in \eqn{1, \dots, p}, the coordinate wanted.
-#'   A vector of length other than 1 signals an error explaining why.
+#' @param which A single integer in \eqn{1, \dots, p}, the coordinate wanted. A
+#'   vector of two or more distinct coordinates signals an error explaining why;
+#'   an empty, duplicated, non-integer or out-of-range `which` is rejected
+#'   earlier by [mv_marginal()].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with `distrib`, a [beta1_distrib()] object, and
@@ -778,16 +816,16 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #' Builds the distribution object for the Dirichlet family on the open simplex
 #' of \eqn{p} coordinates, parametrized by a mean vector \eqn{\mu} and a
 #' concentration \eqn{\phi > 0}. The returned object carries closed-form
-#' derivatives of the log-density to fourth order and a **closed-form expected
-#' information**, which is unusual for a family with no location and scale to
-#' separate.
+#' derivatives of the log-density to fourth order, a closed-form expected
+#' information, and closed-form expectations of the third and fourth
+#' derivatives.
 #'
 #' The mean is carried on a `parameters7` simplex and flattened into scalar
 #' parameters, so every generic of the package indexes it as it does any other
 #' family.
 #'
-#' @param n_dim The number of coordinates \eqn{p}, a single integer of at least
-#'   2. Anything else signals an error naming the argument.
+#' @param n_dim The number of coordinates \eqn{p}, a single whole number of at
+#'   least 2. Any other value signals an error naming the argument.
 #' @param mean A `parameters7` parameter producing \eqn{p} coordinates that sum
 #'   to one, normally a [parameters7::simplex()]. Defaults to
 #'   `parameters7::simplex(n_dim)`. An object that is not a `parameters7`
@@ -812,46 +850,49 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #' sit about the mean. The covariance is singular, the coordinates summing to
 #' one, and every off-diagonal entry is negative.
 #'
-#' The parametrization follows the design of the multivariate gaussian's. The
+#' The parametrization follows the design of the multivariate gaussian. The
 #' constrained object, here a point of the simplex, is carried by a
-#' `parameters7` parameter and **flattened into scalars** with identity links,
-#' so `align_theta()`, the derivative names, the link scale and
-#' [fit_distrib()] need no special case. The parameter names are the simplex's
-#' own free names prefixed by `mean_`, followed by `phi`.
+#' `parameters7` parameter and flattened into scalars with identity links, so
+#' `align_theta()`, the derivative names, the link scale and [fit_distrib()]
+#' need no special case. The parameter names are the free names of the simplex
+#' prefixed by `mean_`, followed by `phi`.
 #'
-#' # A multivariate family that is not elliptical
+#' # A family without location and scale
 #'
-#' This is the first family of the package with no location and scale to
-#' separate: the support is a set of dimension \eqn{p-1}, not a Euclidean
-#' space, and the covariance is singular by construction. It is therefore the
-#' real test of the multivariate layer, and two of its methods exist to answer
-#' that test. [mv_marginal.DirichletDistrib()] returns a beta object rather
-#' than an error, and [mv_reference_draw.DirichletDistrib()] replaces the base
-#' class's gaussian proposal with the uniform on the simplex, without which
-#' [check_distrib()] would estimate an integral that is 1 at about `2e-08`.
+#' The family has no location and scale to separate: the support is a set of
+#' dimension \eqn{p-1}, not a Euclidean space, and the covariance is singular by
+#' construction. Two methods follow from this. [mv_marginal.DirichletDistrib()]
+#' returns a beta distribution, and [mv_reference_draw.DirichletDistrib()]
+#' replaces the gaussian proposal of the base class with the uniform
+#' distribution on the simplex, which the normalization check of
+#' [check_distrib()] needs.
 #'
-#' # Why the expected information is closed form
+#' # The expected information
 #'
-#' Two identities do the work. Differentiating \eqn{\sum_j \mu_j = 1} once
-#' shows that the columns of \eqn{A = \partial\mu/\partial\eta} sum to zero,
-#' and twice that every second-derivative vector of the simplex does; and
+#' Two identities make it closed form. Differentiating \eqn{\sum_j \mu_j = 1}
+#' once shows that the columns of \eqn{A = \partial\mu/\partial\eta} sum to
+#' zero, and twice that every second-derivative vector of the simplex does; and
 #' \eqn{\mathbb{E}[\log y_j] = \psi(\alpha_j) - \psi(\phi)} makes
 #' \eqn{\mathbb{E}[g_j] = -\psi(\phi)} the same constant for every \eqn{j}.
 #' Every term of the observed Hessian that carries the data is that constant
-#' times one of the two zero sums, and vanishes.
+#' times one of the two zero sums, and vanishes. The higher derivatives depend
+#' on the data only linearly in \eqn{\log y}, so their expectations are closed
+#' form as well.
 #'
-#' # What is refused
+#' # Quantities that are not defined
 #'
-#' The distribution function and the quantile are refused by
-#' [multivariate_distrib()], as for every family of that class: a distribution
-#' function on \eqn{\mathbb{R}^p} is an orthant probability and a quantile
-#' needs an ordering. The response derivatives are refused too. A marginal over
-#' several coordinates at once is refused with the reason.
+#' The distribution function and the quantile signal an error through
+#' [multivariate_distrib()], as for every family of that class without a method
+#' of its own: a distribution function on \eqn{\mathbb{R}^p} is an orthant
+#' probability and a quantile needs an ordering. The response derivatives signal
+#' an error as well, and a marginal over several coordinates at once signals an
+#' error that states the reason.
 #'
 #' # Estimation
 #'
-#' [fit_distrib()] maximizes the log-likelihood on the link scale, over the
-#' simplex's free values and \eqn{\log\phi}. No estimate is closed form.
+#' [fit_distrib()] maximizes the log-likelihood on the link scale, over the free
+#' values of the simplex and the link of \eqn{\phi} (\eqn{\log\phi} by default).
+#' No estimate is closed form.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean vector,
@@ -860,8 +901,9 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #' chart and \eqn{\psi} the digamma function.
 #'
 #' @return An S7 object of class `DirichletDistrib`, inheriting from
-#'   `multivariate_distrib`, with `param` the simplex given here,
-#'   `distrib_name` `"dirichlet [pd, mean=<chart>]"`, `dimension`
+#'   `multivariate_distrib`, with `param` the simplex given here, `distrib_name`
+#'   `"dirichlet [<p>d, mean=<name>]"` with `<name>` the `param_name` of the
+#'   mean parameter, `dimension`
 #'   `"multivariate"`, `n_dim` \eqn{p}, `bounds` `c(0, 1)`, `params` the
 #'   simplex's free names prefixed by `mean_` followed by `"phi"`, `n_params`
 #'   \eqn{p}, and `link_params` the identity for each mean coordinate and
@@ -891,8 +933,7 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #' # space.
 #' c(rank = qr(mv_sigma(d, th))$rank, dim = 3)
 #'
-#' # The marginals are beta with the same concentration, so a panel of a pairs
-#' # plot is a real distribution.
+#' # The marginal of a coordinate is a beta with the same concentration.
 #' mv_marginal(d, th, which = 1)$theta
 #'
 #' # The density and the sample agree on the mean and the coordinate variance.
@@ -916,10 +957,11 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #' @export
 dirichlet_distrib <- function(n_dim, mean = parameters7::simplex(n_dim),
                               link_phi = log_link()) {
-  p <- as.integer(n_dim)
-  if (length(p) != 1L || is.na(p) || p < 2L) {
+  if (!is.numeric(n_dim) || length(n_dim) != 1L || !is.finite(n_dim) ||
+      n_dim != round(n_dim) || n_dim < 2) {
     stop("'n_dim' must be a single integer of at least 2.", call. = FALSE)
   }
+  p <- as.integer(n_dim)
   if (!S7::S7_inherits(mean, parameters7::parameter)) {
     stop("'mean' must be a parameters7 parameter.", call. = FALSE)
   }

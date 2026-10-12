@@ -23,12 +23,10 @@ summing to the trial count \eqn{n}, one row per point. These are the weak
 compositions of \eqn{n} into \eqn{p} parts, supplied by
 \code{\link[numericals7:compositions]{numericals7::compositions()}}.
 
-Having the support in hand is what turns every expectation into an \strong{exact
-sum}. \code{\link[=check_distrib]{check_distrib()}} uses it to test that the mass adds to one and that
-the closed-form information matches the summed observed Hessian, both to
-machine precision; an importance-sampling check could only ever compare
-against Monte Carlo error, and a normalization wrong by a thousandth would
-pass it.
+With the support in hand every expectation is an exact sum. \code{\link[=check_distrib]{check_distrib()}}
+uses it to test that the mass adds to one, an equality with tolerance
+\code{1e-10}; an importance-sampling check compares only against Monte Carlo
+error, and a normalization wrong by a thousandth would pass it.
 }
 \examples{
 d <- multinomial_distrib(3, size = 5)
@@ -41,7 +39,7 @@ head(supp)
 c(all_sum_to_5 = all(rowSums(supp) == 5),
   rows = nrow(supp), formula = choose(5 + 3 - 1, 3 - 1))
 
-# The mass over it adds to one exactly, which no sampling check could say.
+# The mass over the support adds to one exactly.
 sum(distrib_pdf(d, supp, list(probs_alr1 = 0.3, probs_alr2 = -0.2))) - 1
 }
 \seealso{

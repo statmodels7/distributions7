@@ -2,24 +2,23 @@
 % Please edit documentation in R/multivariate.R
 \name{mv_support.multivariate_distrib}
 \alias{mv_support.multivariate_distrib}
-\title{No Enumerable Support}
+\title{Support of a Family Without an Enumerable One}
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no method of its own.}
 
-\item{theta}{A named list of parameters. Not examined: the error is raised
-before it is read.}
+\item{theta}{A named list of parameters. Not read: the error is signalled
+first.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-Never returns: it always signals an error naming the family.
+Does not return: it signals an error naming the family.
 }
 \description{
-Signals an error. A continuous family places no mass on any finite set of
+Signals an error. A continuous family places no mass on a finite set of
 points, and a discrete family whose support is infinite has no finite matrix
-to return, so there is nothing correct to hand back. A family that DOES have
-a finite support registers its own method, and among the four that ship only
-the multinomial does.
+to return. A family with a finite support registers its own method; among
+the shipped families the multinomial does.
 }
 \examples{
 d <- mvgaussian1_distrib(2)
@@ -27,15 +26,16 @@ theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0)
 try(mv_support(d, theta))
 
-# The predicate a consumer asks first.
+# The test that check_distrib() applies first.
 c(gaussian = distributions7:::has_mv_support(d),
   multinomial = distributions7:::has_mv_support(
     multinomial_distrib(3, size = 4)))
 
 }
 \seealso{
-\code{\link[=mv_support]{mv_support()}} for the generic and the multinomial's answer,
-\code{\link[=has_mv_support]{has_mv_support()}} for the predicate that avoids this error, and
-\code{\link[=mv_reference_draw]{mv_reference_draw()}}, the route a continuous family takes instead.
+\code{\link[=mv_support]{mv_support()}} for the generic and the multinomial's method,
+\code{\link[=has_mv_support]{has_mv_support()}} for the test that avoids this error, and
+\code{\link[=mv_reference_draw]{mv_reference_draw()}}, the route that \code{\link[=check_distrib]{check_distrib()}} takes for a
+continuous family.
 }
 \keyword{internal}

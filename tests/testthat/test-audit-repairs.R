@@ -929,3 +929,214 @@ test_that("the cdf derivatives read a vector size per observation", {
   expect_true(all(is.na(unlist(lapply(distrib_hess_cdf(negbin2_distrib(), NA, list(mu = 3, theta = 2)),
                                        identity)))))
 })
+
+# T4 (2026-10-12): the multivariate families. References are mpmath at 60 to
+# 400 digits (vd_T4_testref.py, vd_T4_4.py, vd_T4_dirref2.py).
+
+test_that("the higher orders of a t on the precision read the precision", {
+  # references: mpmath at 60 digits on the log-density (vd_T4_testref.py)
+  d <- mvstudent_t2_distrib(2)
+  th <- list(mu1 = 0.5, mu2 = -0.3, omega_log_L1 = 0.1, omega_log_L2 = -0.2,
+             omega_L2.1 = 0.4, nu = 6)
+  y <- rbind(c(0.7, -0.1))
+  d3 <- distrib_deriv3(d, y, th)
+  expect_rel(c(d3$omega_log_L1_omega_log_L1_omega_log_L1, d3$mu1_mu1_omega_log_L1),
+             c(-0.26892228239176166, -2.9977214752055362), tolerance = 1e-12)
+  d4 <- distrib_deriv4(d, y, th)
+  expect_rel(c(d4$omega_log_L1_omega_log_L1_omega_log_L1_omega_log_L1,
+               d4$mu1_omega_log_L1_omega_log_L1_nu),
+             c(-0.49377410560316784, -0.043808656253851526), tolerance = 1e-12)
+})
+
+test_that("the derivatives at a nearly singular covariance read the chart's inverse", {
+  y <- rbind(c(0.7, -0.1))
+  g <- mvgaussian1_distrib(2)
+  th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -11.5,
+             sigma_L2.1 = 0.4)
+  expect_rel(c(distrib_hessian(g, y, th)$sigma_L2.1_sigma_L2.1,
+               distrib_deriv3(g, y, th)$sigma_log_L1_sigma_L2.1_sigma_L2.1,
+               distrib_deriv4(g, y, th)$sigma_log_L1_sigma_log_L1_sigma_L2.1_sigma_L2.1),
+             c(-319134810.56577108, 638269621.13154215, -1276539242.2630843),
+             tolerance = 1e-12)
+  th9 <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = -9, sigma_L2.1 = 1)
+  expect_rel(distrib_hessian(g, rbind(c(0.3, -0.8)), th9)$sigma_log_L1_sigma_log_L1,
+             -27577187.217678815, tolerance = 1e-12)
+  t1 <- mvstudent_t1_distrib(2)
+  tt <- c(th, list(nu = 6))
+  expect_rel(c(distrib_hessian(t1, y, tt)$sigma_L2.1_sigma_L2.1,
+               distrib_deriv3(t1, y, tt)$sigma_L2.1_sigma_L2.1_sigma_L2.1),
+             c(16.087966413079724, 45.628553775988601), tolerance = 1e-10)
+})
+
+test_that("a nearly singular covariance is sampled through the chart's factor", {
+  th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = -20, sigma_L2.1 = 1)
+  set.seed(1)
+  y <- distrib_rng(mvgaussian1_distrib(2), 50, th)
+  # L = [[1, 0], [1, e^-20]], so the two coordinates differ by e^-20 z
+  expect_lt(max(abs(y[, 2] - y[, 1])), 1e-7)
+  set.seed(1)
+  yt <- distrib_rng(mvstudent_t1_distrib(2), 50, c(th, list(nu = 5)))
+  expect_true(all(is.finite(yt)))
+  # the precision side: the sample covariance approaches the inverse
+  om <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0.3, omega_log_L2 = -0.4, omega_L2.1 = 0.5)
+  d2 <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
+  set.seed(2)
+  expect_lt(max(abs(var(distrib_rng(d2, 2e5, om)) - mv_sigma(d2, om))), 0.02)
+})
+
+test_that("a response with no rows gives empty results without a warning", {
+  th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2,
+             sigma_L2.1 = 0.4)
+  y0 <- matrix(numeric(0), 0, 2)
+  expect_silent(distrib_cross_y(mvgaussian1_distrib(2), y0, th))
+  expect_silent(distrib_grad_y_hess(mvgaussian1_distrib(2), y0, th))
+  t1 <- mvstudent_t1_distrib(2)
+  tt <- c(th, list(nu = 6))
+  expect_silent(distrib_cross_y(t1, y0, tt))
+  expect_silent(distrib_hess_y_hess(t1, y0, tt))
+})
+
+test_that("the arguments of the multivariate families are validated", {
+  d <- mvgaussian1_distrib(3)
+  th <- list(mu1 = 1, mu2 = 0, mu3 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+             sigma_log_L3 = 0, sigma_L2.1 = 0, sigma_L3.1 = 0, sigma_L3.2 = 0)
+  expect_error(as_mv_matrix(mvgaussian1_distrib(2), c("a", "b")), "must be numeric")
+  expect_error(mv_marginal(d, th, 1.7), "distinct coordinates")
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off(), add = TRUE)
+  expect_error(plot(d, th, which = integer(0)), "distinct coordinates")
+  expect_error(multinomial_distrib(3.5, size = 4), "'n_dim' must be")
+  expect_error(multinomial_distrib(3.5, size = 4, probs = parameters7::simplex(3)),
+               "'n_dim' must be")
+  expect_error(dirichlet_distrib(3.7), "'n_dim' must be")
+  expect_error(dirichlet_distrib(3.7, mean = parameters7::simplex(3)), "'n_dim' must be")
+})
+
+test_that("the Dirichlet reads a missing row as missing and draws no empty row", {
+  d <- dirichlet_distrib(3)
+  th <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 12)
+  v <- distrib_pdf(d, rbind(c(NaN, NaN, NaN), c(NA, 0.5, 0.5), c(0.2, 0.3, 0.5)), th)
+  expect_true(all(is.na(v[1:2])) && is.finite(v[3]))
+  set.seed(1)
+  r <- distrib_rng(d, 2000, list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 0.001))
+  expect_false(anyNA(r))
+  expect_lt(max(abs(rowSums(r) - 1)), 1e-14)
+})
+
+test_that("the Dirichlet's expected higher orders are exact", {
+  # references: E log y fixed at psi(alpha) - psi(phi), mpmath diff in theta
+  d <- dirichlet_distrib(3)
+  y <- rbind(c(0.2, 0.3, 0.5))
+  e <- distrib_deriv3(d, y, list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 0.02),
+                      expected = TRUE)
+  expect_rel(c(e$mean_alr1_mean_alr1_mean_alr1, e$mean_alr1_mean_alr2_phi, e$phi_phi_phi),
+             c(-0.23846356819017141, 1.1992994370226738, 499998.01781172543),
+             tolerance = 1e-10)
+  e8 <- distrib_deriv3(d, y, list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8),
+                       expected = TRUE)
+  expect_rel(c(e8$mean_alr1_mean_alr1_mean_alr1, e8$mean_alr1_mean_alr2_phi, e8$phi_phi_phi),
+             c(-0.72168791215910121, 0.10917417299768075, 0.0048747124378896325),
+             tolerance = 1e-10)
+})
+
+test_that("the Dirichlet's derivatives at a tiny shape", {
+  d <- dirichlet_distrib(3)
+  th <- list(mean_alr1 = -300, mean_alr2 = -0.2, phi = 10)
+  y <- rbind(c(0.2, 0.3, 0.5))
+  d3 <- distrib_deriv3(d, y, th)
+  d4 <- distrib_deriv4(d, y, th)
+  expect_true(all(is.finite(unlist(d3))) && all(is.finite(unlist(d4))))
+  # references at 400 digits: the components of the rare coordinate are of
+  # the order of its shape, which the chain rule on log Gamma(alpha) lost
+  expect_rel(c(d3$mean_alr1_mean_alr1_mean_alr1, d4$mean_alr1_mean_alr1_mean_alr2_phi),
+             c(3.6853475222666919e-130, -2.9797559445734233e-131), tolerance = 1e-13)
+  h <- distrib_hessian(d, y, list(mean_alr1 = -30, mean_alr2 = -0.2, phi = 10))
+  expect_rel(h$mean_alr1_mean_alr1, 6.6986696578612316e-13, tolerance = 1e-13)
+})
+
+test_that("the multinomial at a probability that underflows", {
+  d <- multinomial_distrib(3, size = 5)
+  th <- list(probs_alr1 = -800, probs_alr2 = 0)
+  y <- rbind(c(0, 2, 3))
+  expect_rel(c(distrib_pdf(d, y, th, log = TRUE), distrib_gradient(d, y, th)$probs_alr2,
+               distrib_hessian(d, y, th)$probs_alr2_probs_alr2),
+             c(-1.1631508098056809, -0.5, -1.25), tolerance = 1e-14)
+  d10 <- multinomial_distrib(3, size = 10)
+  v <- unlist(c(distrib_deriv3(d10, rbind(c(0, 4, 6)), list(probs_alr1 = -400, probs_alr2 = 0)),
+                distrib_deriv4(d10, rbind(c(0, 4, 6)), list(probs_alr1 = -200, probs_alr2 = 0))))
+  expect_true(all(is.finite(v)))
+  # the expected third order in closed form, -size times the cumulant
+  e <- distrib_deriv3(d10, rbind(c(0, 4, 6)), list(probs_alr1 = 0.3, probs_alr2 = -0.2),
+                      expected = TRUE)
+  p <- exp(c(0.3, -0.2, 0)) / sum(exp(c(0.3, -0.2, 0)))
+  expect_rel(e$probs_alr1_probs_alr1_probs_alr1, -10 * p[1] * (1 - p[1]) * (1 - 2 * p[1]),
+             tolerance = 1e-13)
+})
+
+test_that("check_distrib() on a t without a covariance has no failed row", {
+  d <- mvstudent_t1_distrib(2)
+  th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2,
+             sigma_L2.1 = 0.4, nu = 1.5)
+  set.seed(1)
+  r <- check_distrib(d, theta = th, verbose = FALSE)
+  expect_true(all(r$status == "OK"))
+  expect_true("rng matches the first two moments" %in% attr(r, "skipped")$check)
+})
+
+test_that("mv_summary() reads the simplex of a Dirichlet and a multinomial", {
+  set.seed(1)
+  fd <- fit_distrib(dirichlet_distrib(3),
+                    distrib_rng(dirichlet_distrib(3), 200,
+                                list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)))
+  expect_true(all(c("p1", "p2", "p3") %in% rownames(mv_summary(fd))))
+  dm <- multinomial_distrib(3, size = 10)
+  fm <- fit_distrib(dm, distrib_rng(dm, 200, list(probs_alr1 = 0.3, probs_alr2 = -0.2)))
+  expect_true(all(c("p1", "p2", "p3") %in% rownames(mv_summary(fm))))
+})
+
+test_that("the t's quantities of nu are exact at many degrees of freedom", {
+  d3 <- mvstudent_t1_distrib(3)
+  z3 <- list(mu1 = 0, mu2 = 0, mu3 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+             sigma_log_L3 = 0, sigma_L2.1 = 0, sigma_L3.1 = 0, sigma_L3.2 = 0)
+  expect_rel(distrib_pdf(d3, c(0, 0, 0), c(z3, list(nu = 1e12)), log = TRUE),
+             -2.7568155996132682, tolerance = 1e-15)
+  expect_rel(-distrib_expected_hessian(d3, matrix(0, 1, 3), c(z3, list(nu = 1e8)))$nu_nu,
+             1.349999889000007e-31, tolerance = 1e-13)
+  d2 <- mvstudent_t1_distrib(2)
+  z2 <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0)
+  y <- rbind(c(1, -0.5))
+  # d^k/dnu^k of the log-density at q = 1.25, p = 2 (vd_T4_4.py)
+  expect_rel(distrib_hessian(d2, y, c(z2, list(nu = 1e100)))$nu_nu, -1.71875e-300,
+             tolerance = 1e-13)
+  expect_rel(distrib_deriv3(d2, y, c(z2, list(nu = 1e9)))$nu_nu_nu,
+             5.156249989062500020751953e-36, tolerance = 1e-13)
+  expect_rel(distrib_deriv4(d2, y, c(z2, list(nu = 1e9)))$nu_nu_nu_nu,
+             -2.062499994531250012451172e-44, tolerance = 1e-13)
+  # d/dnu of the response gradient, -y (q - p)/(nu + q)^2
+  expect_rel(as.numeric(distrib_cross_y(d2, y, c(z2, list(nu = 1e12)))$nu),
+             -c(1, -0.5) * (1.25 - 2) / (1e12 + 1.25)^2, tolerance = 1e-14)
+  # the odd-dimension pair at the crossovers the old series used
+  expect_rel(mvt_A(150, 3), -6.6078492311602689e-5, tolerance = 1e-14)
+  expect_rel(2 * mvt_cp_d(100, 3, 2L), 2.9408900886328065e-6, tolerance = 1e-14)
+})
+
+test_that("the t's response derivatives at a distant observation", {
+  d <- mvstudent_t1_distrib(1)
+  th <- list(mu1 = 0, sigma_log_L1 = 0, nu = 5)
+  # l_yy = 6 (y^2 - 5)/(5 + y^2)^2, l_yyy = 12 y (15 - y^2)/(5 + y^2)^3
+  expect_rel(as.numeric(distrib_hess_y(d, matrix(1e100), th)), 6e-200, tolerance = 1e-13)
+  expect_rel(as.numeric(distrib_deriv3_y(d, matrix(1e60), th)), -1.2e-179, tolerance = 1e-13)
+  expect_rel(as.numeric(distrib_deriv4_y(d, matrix(1e60), th)), 3.6e-239, tolerance = 1e-13)
+  expect_true(is.finite(as.numeric(distrib_hess_y(d, matrix(1e300), th))))
+})
+
+test_that("the response Hessian of an elliptical family is exactly symmetric", {
+  # the inverse of the matrix is symmetrized once, in mv_matrix_pieces()
+  for (d in list(mvgaussian1_distrib(3), mvstudent_t1_distrib(3))) {
+    set.seed(4)
+    th <- generate_random_theta(d)
+    y <- distrib_rng(d, 6, th)
+    h <- distrib_hess_y(d, y, th)
+    expect_identical(h, if (length(dim(h)) == 2L) t(h) else aperm(h, c(2L, 1L, 3L)))
+  }
+})

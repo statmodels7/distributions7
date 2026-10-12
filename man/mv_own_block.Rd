@@ -2,7 +2,7 @@
 % Please edit documentation in R/mv_summary.R
 \name{mv_own_block}
 \alias{mv_own_block}
-\title{The Quantities a Structured Parametrization Is About}
+\title{Quantities Declared by a Structured Parametrization}
 \usage{
 mv_own_block(distrib, theta, sd_label = "sd")
 }
@@ -18,13 +18,13 @@ The result of \code{\link[=mv_param_block]{mv_param_block()}}, possibly with one
 transformed, or \code{NULL}.
 }
 \description{
-Returns the block \code{\link[=mv_param_block]{mv_param_block()}} declares, with the structure's common
-variance \code{scale} replaced by its square root where the matrix is a
+Returns the block that \code{\link[=mv_param_block]{mv_param_block()}} returns, with the common variance
+\code{scale} of the structure replaced by its square root where the matrix is a
 covariance or a scale matrix, or \code{NULL} where the structure declares no
 block. A structured matrix such as \code{compound_symmetry()} or \code{ar1()} is fixed
-by these few quantities, so they are what a summary reports in place of the
-standard deviation of every coordinate and the correlation of every pair,
-which repeat them.
+by these few quantities, so a summary reports them in place of the standard
+deviation of every coordinate and the correlation of every pair, which would
+repeat them.
 }
 \details{
 The standard deviation is \eqn{\sqrt{s}} with \eqn{s} the \code{scale}, so its

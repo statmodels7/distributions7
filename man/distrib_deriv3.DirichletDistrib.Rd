@@ -15,16 +15,16 @@ coordinate is outside the support and gives a non-finite component through
 \code{mean_alr1}, ..., \code{mean_alr(p-1)} and \code{phi}.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation is returned,
-by SAMPLING through \code{\link[=mv_expected_higher]{mv_expected_higher()}}. Defaults to \code{FALSE}.}
+in closed form (see Details). Defaults to \code{FALSE}.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result.}
 
-\item{approx}{Ignored: sampling is the only multivariate route to an
-expectation. Present so that the signature matches the generic's.}
+\item{approx}{Not read: the expectation is in closed form. Present so that
+the signature matches the generic's.}
 
-\item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
-\code{10000}. Ignored otherwise.}
+\item{nsim}{Not read. Present so that the signature matches the generic's.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -38,25 +38,41 @@ Computes every third derivative of the log-density in the parameters, in
 closed form. The log-density is
 \deqn{\ell = \log\Gamma(\phi) - \sum_j \log\Gamma(\alpha_j)
   + \sum_j(\alpha_j - 1)\log y_j, \qquad \alpha = \phi\,\mu(\eta),}
-so every term depends on ONE coordinate of the simplex and the chain rule
-collapses to a univariate partition sum per coordinate, run by
-\code{\link[=chain_univariate]{chain_univariate()}} over the arrays \code{\link[=dirichlet_map_tensors]{dirichlet_map_tensors()}} supplies. The
-concentration also enters directly, through \eqn{\log\Gamma(\phi)}, which
-contributes only to the component all of whose indices name it.
+so every term depends on one coordinate of the simplex and the chain rule
+reduces to a univariate partition sum per coordinate, run by
+\code{\link[=chain_univariate]{chain_univariate()}} over the arrays that \code{\link[=dirichlet_map_tensors]{dirichlet_map_tensors()}} supplies.
+The concentration also enters directly, through \eqn{\log\Gamma(\phi)}, which
+contributes only to the component whose indices all name it.
 }
 \details{
-The shape vector is bilinear in \eqn{\phi} and \eqn{\mu}, so a component
-naming \eqn{\phi} twice or more gets nothing from the map, and only the
-direct \eqn{\log\Gamma(\phi)} term survives there. That is what keeps the
-order-3 and order-4 assemblies as cheap as the order-2 one.
+The shape vector is bilinear in \eqn{\phi} and \eqn{\mu}, so the arrays of
+the map are zero for a component that names \eqn{\phi} twice or more.
 
-With \code{expected = TRUE} the expectation is taken by sampling and carries
-Monte Carlo error of order \code{nsim^(-1/2)}.
+On the additive log-ratio chart of \code{\link[parameters7:simplex]{parameters7::simplex()}} the term
+\eqn{-\log\Gamma(\alpha_j)} is split as
+\eqn{\log\alpha_j - \log\Gamma(1 + \alpha_j)}. The first part equals
+\eqn{\log\phi + \eta_j - \mathrm{LSE}(\eta)}, with \eqn{\eta_p = 0}, and its
+derivatives are added in closed form: \eqn{p(-1)^{m-1}(m-1)!/\phi^m} on the
+component of order \eqn{m} in \eqn{\phi} alone, and \eqn{-p} times a cumulant
+of the categorical law (see \code{\link[=mn_cumulant]{mn_cumulant()}}) on a component that names only
+the free values of the mean. The second part is regular at a small shape, so
+the partition sum runs over \eqn{\psi^{(m-1)}(1 + \alpha_j)}. Applied to
+\eqn{\log\Gamma(\alpha_j)} directly, the chain rule would cancel at a small
+shape, terms of order one leaving a result of the order of \eqn{\alpha_j}. On
+another chart a coordinate with \eqn{\alpha_j < 1} is scaled by
+\eqn{\alpha_j} through
+\eqn{\alpha^m\psi^{(m-1)}(\alpha) = (-1)^m(m-1)! + \alpha^m\psi^{(m-1)}(1 + \alpha)},
+so that \eqn{\psi^{(m-1)}(\alpha_j)} does not overflow.
+
+With \code{expected = TRUE} the expectation is exact. The response enters only
+through \eqn{\sum_j(\alpha_j - 1)\log y_j}, linearly, and
+\eqn{\mathrm{E}\log y_j = \psi(\alpha_j) - \psi(\phi)}.
 }
 \section{Notation}{
 
 \eqn{\alpha} is the shape vector, \eqn{\phi} the concentration, \eqn{\mu}
-the mean on the simplex, \eqn{\eta} its free vector, \eqn{\Gamma} the gamma
+the mean on the simplex, \eqn{\eta} its free vector, \eqn{p} the number of
+coordinates, \eqn{\Gamma} the gamma function, \eqn{\psi} the digamma
 function and \eqn{\ell} the log-density of one observation.
 }
 
@@ -69,8 +85,7 @@ y <- distrib_rng(d, 5, theta)
 d3 <- distrib_deriv3(d, y, theta)
 names(d3)
 
-# Against one stencil on the analytic Hessian, which shares no algebra with
-# the partition sum.
+# Against a central difference of the Hessian in phi.
 h <- 1e-4
 tp <- theta; tp$phi <- tp$phi + h
 tm <- theta; tm$phi <- tm$phi - h
@@ -78,13 +93,14 @@ c(exact = sum(d3[["mean_alr1_mean_alr1_phi"]]),
   stencil = (sum(distrib_hessian(d, y, tp)[["mean_alr1_mean_alr1"]]) -
              sum(distrib_hessian(d, y, tm)[["mean_alr1_mean_alr1"]])) / (2 * h))
 
-# The pure-phi component gets nothing from the map beyond the shapes
-# themselves: it is psi''(phi) minus the mu_j^3-weighted psi''(phi mu_j),
-# and so is the same at every observation.
+# The pure-phi component carries no response: it is psi''(phi) minus the
+# mu_j^3-weighted psi''(phi mu_j), the same at every observation.
 mu <- as.numeric(parameters7::param_value(d@param, c(0.3, -0.2)))
 c(component = d3[["phi_phi_phi"]][1],
   direct = psigamma(8, 2) - sum(mu^3 * psigamma(8 * mu, 2)))
 
+# The expectation is exact, so it does not depend on the seed.
+distrib_deriv3(d, y, theta, expected = TRUE)[["phi_phi_phi"]][1]
 }
 \seealso{
 \code{\link[=distrib_deriv4.DirichletDistrib]{distrib_deriv4.DirichletDistrib()}} for the next order,

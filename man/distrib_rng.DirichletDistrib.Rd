@@ -14,16 +14,22 @@ free values followed by \code{phi}, each of length 1.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric matrix with \code{n} rows and \eqn{p} columns, each row
-strictly positive and summing to one.
+A numeric matrix with \code{n} rows and \eqn{p} columns, each row summing
+to one. A coordinate whose value is below the smallest double rounds to
+zero, which happens at a concentration of order 0.01 or below; such a row
+is off the open simplex and has density zero.
 }
 \description{
-Draws \code{n} independent Dirichlet vectors by the representation the family is
-defined by: independent gamma variates with shapes \eqn{\alpha_j = \phi\mu_j}
+Draws \code{n} independent Dirichlet vectors by the representation that defines
+the family: independent gamma variates with shapes \eqn{\alpha_j = \phi\mu_j}
 and a common rate, divided by their sum. The normalization removes the rate,
-so \code{\link[stats:GammaDist]{stats::rgamma()}}'s default of 1 is used, and every row of the result
-sums to one by construction. The draws depend on \code{.Random.seed} in the usual
-way and consume \eqn{p} of R's streams per observation.
+so the default rate of \code{\link[stats:GammaDist]{stats::rgamma()}} is used. When a shape is below 0.05
+a gamma variate underflows to zero with a probability that is no longer
+negligible, and a row whose variates all underflow would be 0/0; the variates
+are then drawn on the log scale, as \eqn{\log G(\alpha_j + 1) +
+\log(U)/\alpha_j}, and normalized by a log-sum-exp, so every row sums to one
+and its largest coordinate is finite. The draws depend on \code{.Random.seed} in
+the usual way.
 }
 \examples{
 d <- dirichlet_distrib(3)
@@ -44,7 +50,7 @@ rbind(sample = c(mean(Z[, 1]), var(Z[, 1])),
 }
 \seealso{
 \code{\link[=distrib_pdf.DirichletDistrib]{distrib_pdf.DirichletDistrib()}} for the density,
-\code{\link[=mv_reference_draw.DirichletDistrib]{mv_reference_draw.DirichletDistrib()}} for the uniform proposal
-\code{\link[=check_distrib]{check_distrib()}} integrates against, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
+\code{\link[=mv_reference_draw.DirichletDistrib]{mv_reference_draw.DirichletDistrib()}} for the uniform proposal against which
+\code{\link[=check_distrib]{check_distrib()}} integrates, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
 parameters back from a sample, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

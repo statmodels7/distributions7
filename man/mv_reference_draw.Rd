@@ -14,38 +14,39 @@ number.}
 
 \item{n}{The number of draws, a single positive whole number.}
 
-\item{...}{Passed to methods. No shipped method reads it.}
+\item{...}{Passed to methods. The shipped methods do not read it.}
 }
 \value{
 A named list with \code{y}, an \eqn{n \times p} numeric matrix of draws,
 and \code{logd}, a numeric vector of length \eqn{n} holding their log-density
-under the PROPOSAL.
+under the proposal.
 }
 \description{
-Draws from a distribution that DOMINATES the family, together with the
-log-density of those draws, so that an importance-sampling estimate of
-\eqn{\int f = 1} can be formed. It is consumed by \code{\link[=check_distrib]{check_distrib()}} and by
-nothing else, a discrete family taking the exact sum over \code{\link[=mv_support]{mv_support()}}
-instead.
+Draws from a distribution that dominates the family, and returns the
+log-density of the draws under that distribution, so that the
+importance-sampling estimate of \eqn{\int f = 1} can be formed.
+\code{\link[=check_distrib]{check_distrib()}} is its only consumer; a discrete family takes the exact
+sum over \code{\link[=mv_support]{mv_support()}} instead.
 }
-\section{Why the proposal is inflated}{
-The default is a gaussian with the family's mean and TWICE its covariance,
-which serves any family supported on all of \eqn{\mathbb{R}^p}. The
-inflation is load-bearing: a proposal equal to the distribution itself makes
-every importance ratio one, so the estimate is one by construction and
-certifies nothing.
+\section{The default proposal}{
+The method of the class draws from a gaussian with the family's mean and
+twice its covariance, which requires a finite, non-singular covariance. The
+inflation keeps the estimate informative: for a gaussian family, a proposal
+equal to the family makes every importance ratio one.
 }
 
-\section{A family on a lower-dimensional support must override}{
+\section{Families with a proposal of their own}{
 A Dirichlet lives on the simplex, a set of measure zero in
-\eqn{\mathbb{R}^p}, and a gaussian proposal spread over the ambient space
-places no mass on it. The failure is QUIET: \code{chol()} accepts the singular
-covariance, and the estimate of an integral that is 1 comes back at
-\eqn{2\times10^{-8}}. The Dirichlet therefore registers the uniform on the
-simplex, whose density is the constant \eqn{\Gamma(p)}.
+\eqn{\mathbb{R}^p}, where a gaussian spread over the ambient space places no
+mass; its covariance is singular, and the estimate from the default proposal
+is far from one. The Dirichlet registers the uniform distribution on the
+simplex, whose density is the constant \eqn{\Gamma(p)}. A Student t has no
+finite covariance at \eqn{\nu \le 2}, and its tails are heavier than a
+gaussian's at every \eqn{\nu}; it registers a Student t with half its degrees
+of freedom and twice its scale matrix.
 
-The draws and the log-density must be taken against the SAME dominating
-measure the family's density is written against, or the ratio means nothing.
+The draws and their log-density are taken against the dominating measure
+with respect to which the family's density is written.
 }
 
 \section{Notation}{
@@ -66,8 +67,8 @@ set.seed(2)
 r <- mv_reference_draw(d, theta, 20000)
 mean(exp(distrib_pdf(d, r$y, theta, log = TRUE) - r$logd))
 
-# A Dirichlet lives on the simplex and registers its own proposal, the
-# uniform there.
+# A Dirichlet registers its own proposal, the uniform distribution on the
+# simplex.
 dd <- dirichlet_distrib(3)
 thd <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)
 set.seed(3)
@@ -79,6 +80,7 @@ log(gamma(3))
 }
 \seealso{
 \code{\link[=check_distrib]{check_distrib()}}, the only consumer,
-\code{\link[=mv_reference_draw.multivariate_distrib]{mv_reference_draw.multivariate_distrib()}} for the default, and
-\code{\link[=mv_support]{mv_support()}}, the exact route a discrete family takes.
+\code{\link[=mv_reference_draw.multivariate_distrib]{mv_reference_draw.multivariate_distrib()}} for the default,
+\code{\link[=mv_reference_draw.MvStudentTDistrib]{mv_reference_draw.MvStudentTDistrib()}} for the Student t's, and
+\code{\link[=mv_support]{mv_support()}}, the exact route of a discrete family.
 }

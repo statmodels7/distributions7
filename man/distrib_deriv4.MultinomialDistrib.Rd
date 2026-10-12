@@ -13,16 +13,16 @@ category, each row a vector of counts summing to \code{distrib@size}.}
 \code{probs_alr1}, ..., \code{probs_alr(p-1)}.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation is returned,
-by SAMPLING through \code{\link[=mv_expected_higher]{mv_expected_higher()}}. Defaults to \code{FALSE}.}
+in closed form (see Details). Defaults to \code{FALSE}.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result.}
 
-\item{approx}{Ignored: sampling is the only multivariate route to an
-expectation. Present so that the signature matches the generic's.}
+\item{approx}{Not read: the expectation is in closed form. Present so that
+the signature matches the generic's.}
 
-\item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
-\code{10000}. Ignored otherwise.}
+\item{nsim}{Not read. Present so that the signature matches the generic's.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -34,20 +34,24 @@ components. With \code{expected = TRUE} every vector is constant.
 \description{
 Computes every fourth derivative of the log-mass in the parameters, in
 closed form, by the same construction as
-\code{\link[=distrib_deriv3.MultinomialDistrib]{distrib_deriv3.MultinomialDistrib()}} one order up: a univariate partition
-sum per coordinate of the simplex, with
-\eqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m}} and the counts as weights.
+\code{\link[=distrib_deriv3.MultinomialDistrib]{distrib_deriv3.MultinomialDistrib()}} one order up: \eqn{-N} times a cumulant
+of the categorical law on the additive log-ratio chart, and a univariate
+partition sum per coordinate of the simplex, with
+\eqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m}} and the counts as weights, on
+another chart.
 }
 \details{
-The license for this order is that the SAME assembly run at orders one and
-two reproduces the hand-written score and information, which are derived
-separately and are already under \code{\link[=check_distrib]{check_distrib()}}.
+Run at orders one and two, the same assembly reproduces
+\code{\link[=distrib_gradient.MultinomialDistrib]{distrib_gradient.MultinomialDistrib()}} and
+\code{\link[=distrib_hessian.MultinomialDistrib]{distrib_hessian.MultinomialDistrib()}}, which are written separately.
+
+With \code{expected = TRUE} the expectation is exact, as for the third order.
 }
 \section{Notation}{
 
 \eqn{p_j} is the probability of category \eqn{j}, \eqn{y_j} its count,
-\eqn{\eta} the simplex's free vector and \eqn{\ell} the log-mass of one
-observation.
+\eqn{N} the total of a row, \eqn{\eta} the simplex's free vector and
+\eqn{\ell} the log-mass of one observation.
 }
 
 \examples{
@@ -59,7 +63,7 @@ y <- distrib_rng(d, 5, theta)
 d4 <- distrib_deriv4(d, y, theta)
 names(d4)
 
-# Against one stencil on the analytic third order.
+# Against a central difference of the third order.
 h <- 1e-4
 tp <- theta; tp$probs_alr2 <- tp$probs_alr2 + h
 tm <- theta; tm$probs_alr2 <- tm$probs_alr2 - h
@@ -67,7 +71,6 @@ c(exact = sum(d4[["probs_alr1_probs_alr1_probs_alr2_probs_alr2"]]),
   stencil = (sum(distrib_deriv3(d, y, tp)[["probs_alr1_probs_alr1_probs_alr2"]]) -
              sum(distrib_deriv3(d, y, tm)[["probs_alr1_probs_alr1_probs_alr2"]])) /
             (2 * h))
-
 }
 \seealso{
 \code{\link[=distrib_deriv3.MultinomialDistrib]{distrib_deriv3.MultinomialDistrib()}} for the order below,

@@ -19,29 +19,29 @@ a covariance, or \eqn{p} conditional variances and \eqn{p(p-1)/2} partial
 correlations for a precision.
 }
 \description{
-Returns the quantities the chosen parametrization describes, with their
+Returns the quantities that the chosen parametrization describes, with their
 Jacobian. Where the matrix parametrization declares its own block through
 \code{parameters7::param_readable()} (a compound symmetry, an AR(1), an AR(p)),
 that block alone is returned, with the common variance \code{scale} reported as
-its square root \code{sd} on the covariance side. Otherwise a COVARIANCE
+its square root \code{sd} on the covariance side. Otherwise a covariance
 parametrization reports the standard deviations and the correlations, and a
-PRECISION parametrization reports the conditional variances
+precision parametrization reports the conditional variances
 \eqn{1/\Omega_{jj} = \operatorname{Var}(Y_j \mid Y_{-j})} and the partial
 correlations \eqn{-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}}, the
 correlation of two coordinates given all the others.
 }
 \section{One parametrization, one set of quantities}{
-A user who writes the model on the precision asks to read the precision, so
-the marginal standard deviations and correlations are not reported beside
-its own quantities; they remain available from \code{mv_sigma()} and
-\code{variance()}. In the same way a structured matrix is fixed by its few
-parameters, and the standard deviation of every coordinate and the
-correlation of every pair would repeat them.
+A model written on the precision is reported on the precision, so the
+marginal standard deviations and correlations are not reported beside its own
+quantities; they remain available from \code{mv_sigma()} and \code{variance()}. In the
+same way a structured matrix is fixed by its few parameters, and the standard
+deviation of every coordinate and the correlation of every pair would repeat
+them.
 }
 
 \section{What a precision's diagonal means}{
-The quantity with a reading is the conditional VARIANCE, so
-\eqn{1/\Omega_{jj}} is reported rather than a square root of
+The diagonal of a precision is read through the conditional variance, so
+\eqn{1/\Omega_{jj}} is reported in place of a square root of
 \eqn{\Omega_{jj}}. Its ratio to the marginal variance is \eqn{1 - R_j^2} for
 the regression of that coordinate on all the others. At \eqn{p = 2} the
 partial correlation equals the correlation.

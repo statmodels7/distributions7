@@ -40,16 +40,14 @@ form and with no quadrature or simulation:
 with \eqn{t_j = \psi'(\alpha_j)} and \eqn{A = \partial\mu/\partial\eta}.
 \code{approx} and \code{nsim} are ignored: every strategy returns the same matrix.
 }
-\section{Why the data-carrying terms drop out}{
+\section{The terms that carry the data}{
 Under the model \eqn{\mathbb{E}[\log y_j] = \psi(\alpha_j) - \psi(\phi)}, so
-\eqn{\mathbb{E}[g_j] = -\psi(\phi)}, \strong{the same constant for every}
-\eqn{j}. Each term of the observed Hessian that carries the data is that
-constant times a sum over \eqn{j} of a column of \eqn{A} or of a
-second-derivative vector of the simplex, and both of those sum to zero:
-differentiating \eqn{\sum_j \mu_j = 1} once gives the first, twice the
-second. Every such term is therefore exactly zero under expectation, which
-is why a family with no location and scale to separate still has a
-closed-form information matrix.
+\eqn{\mathbb{E}[g_j] = -\psi(\phi)}, the same constant for every \eqn{j}.
+Each term of the observed Hessian that carries the data is that constant
+times a sum over \eqn{j} of a column of \eqn{A} or of a second-derivative
+vector of the simplex, and both of those sum to zero: differentiating
+\eqn{\sum_j \mu_j = 1} once gives the first, twice the second. Every such
+term is therefore zero under expectation.
 }
 
 \section{Notation}{

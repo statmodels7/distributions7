@@ -2,7 +2,7 @@
 % Please edit documentation in R/multivariate.R
 \name{mv_location}
 \alias{mv_location}
-\title{The Location Vector a Parameter List Describes}
+\title{The Location Vector That a Parameter List Describes}
 \usage{
 mv_location(distrib, theta)
 }
@@ -13,26 +13,25 @@ mv_location(distrib, theta)
 number. Aligned by the generic before dispatch.}
 }
 \value{
-A numeric vector of length \eqn{p}, named \code{v1}, ..., \code{vp} after the
-coordinates of the response.
+A numeric vector of length \eqn{p}. The elliptical families name it
+\code{v1}, ..., \code{vp} after the coordinates of the response; the Dirichlet and
+the multinomial return it without names.
 }
 \description{
 Returns the location of a multivariate distribution as a numeric vector of
-length \eqn{p}. The parameters of a multivariate distribution are scalars,
-so that every generic of the package can index them; this generic puts the
-location back into the shape a reader thinks in.
+length \eqn{p}. The parameters of a multivariate distribution are scalars, so
+that every generic of the package can index them, and this generic returns
+the location in the shape of the response.
 }
 \details{
-Not every multivariate family HAS a location: a Dirichlet is described by
-concentrations and a Wishart by a scale and a count. The base-class method
-therefore signals an error. Handing back the first \eqn{p} parameters under
-a name that does not fit them would be worse. The elliptical families
-register \code{\link[=mv_leading_location]{mv_leading_location()}}, which does exactly that and is right for
-them.
-
-The location is the center of symmetry of the density. It is the MEAN as
-well for a gaussian, and for a Student t only above one degree of freedom;
-\code{\link[base:mean]{base::mean()}} is the generic that answers about the moment.
+The elliptical families return the center of symmetry of the density, which
+is the mean for a gaussian and, for a Student t, the mean only when
+\eqn{\nu > 1}; they register \code{\link[=mv_leading_location]{mv_leading_location()}}. The Dirichlet returns
+its mean vector, and the multinomial its mean vector of counts, the
+probabilities times the number of trials. The method of the class signals an
+error for a family without a method of its own, the first \eqn{p} parameters
+of a family not being a location in general. \code{\link[base:mean]{base::mean()}} is the generic
+for the moment.
 }
 \section{Notation}{
 
@@ -50,13 +49,14 @@ t2 <- mvstudent_t1_distrib(2)
 th <- c(theta, list(nu = 0.8))
 rbind(location = mv_location(t2, th), mean = mean(t2, th))
 
-# A Dirichlet has neither, and says so.
-try(mv_location(dirichlet_distrib(3),
-                list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)))
+# A Dirichlet returns its mean vector, a point of the simplex.
+mv_location(dirichlet_distrib(3),
+            list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8))
 
 }
 \seealso{
 \code{\link[=mv_sigma]{mv_sigma()}} for the matrix, \code{\link[=mv_leading_location]{mv_leading_location()}} for the
-implementation the elliptical families use, \code{\link[base:mean]{base::mean()}} for the moment,
-and \code{\link[=mv_location.multivariate_distrib]{mv_location.multivariate_distrib()}} for the refusal.
+implementation that the elliptical families use, \code{\link[base:mean]{base::mean()}} for the
+moment, and \code{\link[=mv_location.multivariate_distrib]{mv_location.multivariate_distrib()}} for the method of the
+class.
 }

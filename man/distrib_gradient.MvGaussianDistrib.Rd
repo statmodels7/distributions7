@@ -11,9 +11,10 @@ length \eqn{p} is read as a single observation.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. Every link of this family is the identity, so the
-two scales coincide and the results are the same numbers to the bit.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. Every link of this family is the identity, so the two scales
+coincide and the results are the same numbers to the bit.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -23,24 +24,26 @@ parameter, in \code{distrib@params} order: \eqn{p} mean components followed by
 one per free value of the matrix parametrization.
 }
 \description{
-Computes the first derivatives of the log-density in closed form. With
-\eqn{w = \Sigma^{-1}(y - \mu)} and \eqn{A_k} the derivative of \eqn{\Sigma}
-in the \eqn{k}-th free value of the matrix parametrization,
-\deqn{\frac{\partial \ell}{\partial \mu} = w, \qquad
-  \frac{\partial \ell}{\partial \eta_k} =
-  -\frac{1}{2}\frac{\partial \log\lvert\Sigma\rvert}{\partial \eta_k}
-  + \frac{1}{2}\, w^\top A_k w.}
-The first term of the matrix component is the parametrization's own
-\code{param_dlogdet()}, so no trace is formed here; its sign is flipped where the
-parametrization carries the precision. The mean component needs no
-derivative array at all, which is why the mean and the matrix cost so
-differently in a fit.
+Computes the first derivatives of the log-density in closed form. With \eqn{r
+= y - \mu}, \eqn{w = \Sigma^{-1}r} and \eqn{P_k} the derivative of
+\eqn{\Sigma^{-1}} in the \eqn{k}-th free value of the matrix parametrization,
+\deqn{\frac{\partial \ell}{\partial \mu} = w, \qquad \frac{\partial
+\ell}{\partial \eta_k} = -\frac{1}{2}\frac{\partial
+\log\lvert\Sigma\rvert}{\partial \eta_k} - \frac{1}{2}\, r^\top P_k r,} which
+is \eqn{\tfrac{1}{2} w^\top A_k w} in the second term, with \eqn{A_k} the
+derivative of \eqn{\Sigma}. The first term of the matrix component is the
+parametrization's own \code{param_dlogdet()}, so no trace is formed here; its sign
+is flipped where the parametrization carries the precision. \eqn{P_k} is read
+from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}} and not formed as \eqn{-\Sigma^{-1}A_k\Sigma^{-1}},
+a product that cancels where the covariance is nearly singular.
 }
 \section{Notation}{
 
 \eqn{\mu} is the mean, \eqn{\Sigma} the covariance, \eqn{\eta} the free
-vector of the matrix parametrization, \eqn{A_k = \partial\Sigma/\partial\eta_k}
-and \eqn{\ell} the log-density of one observation.
+vector of the matrix parametrization, \eqn{A_k =
+\partial\Sigma/\partial\eta_k}, \eqn{P_k =
+\partial\Sigma^{-1}/\partial\eta_k} and \eqn{\ell} the log-density of one
+observation.
 }
 
 \examples{
@@ -62,7 +65,7 @@ ll <- function(v) {
 }
 max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
 
-# The mean component is the whitened residual, one row per observation.
+# The mean component is w, one row per observation.
 S <- mv_sigma(d, theta)
 w <- sweep(y, 2, c(0.5, -0.3)) \%*\% solve(S)
 all.equal(cbind(g$mu1, g$mu2), w, check.attributes = FALSE)

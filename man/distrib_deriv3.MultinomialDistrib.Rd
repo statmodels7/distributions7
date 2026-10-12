@@ -13,16 +13,16 @@ category, each row a vector of counts summing to \code{distrib@size}.}
 \code{probs_alr1}, ..., \code{probs_alr(p-1)}.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation is returned,
-by SAMPLING through \code{\link[=mv_expected_higher]{mv_expected_higher()}}. Defaults to \code{FALSE}.}
+in closed form (see Details). Defaults to \code{FALSE}.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result.}
 
-\item{approx}{Ignored: sampling is the only multivariate route to an
-expectation. Present so that the signature matches the generic's.}
+\item{approx}{Not read: the expectation is in closed form. Present so that
+the signature matches the generic's.}
 
-\item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
-\code{10000}. Ignored otherwise.}
+\item{nsim}{Not read. Present so that the signature matches the generic's.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -35,25 +35,30 @@ components, the simplex spending \eqn{p - 1} free values. With
 \description{
 Computes every third derivative of the log-mass in the parameters, in closed
 form. Up to a constant in the counts the log-mass is
-\eqn{\sum_j y_j \log p_j}, so each term depends on ONE coordinate of the
-simplex and the chain rule collapses to a univariate partition sum per
-coordinate, with
-\deqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m}.}
-The combinatorial factor carries no parameter, so it drops out of every
-derivative and the counts enter only as weights.
+\eqn{\sum_j y_j \log p_j}. On the additive log-ratio chart of
+\code{\link[parameters7:simplex]{parameters7::simplex()}} this equals
+\eqn{\sum_{j<p} y_j\eta_j - N\,\mathrm{LSE}(\eta)}, with \eqn{N} the total of
+the row, so every derivative of order two or more is \eqn{-N} times a joint
+cumulant of the indicators of the categorical law (see \code{\link[=mn_cumulant]{mn_cumulant()}}). The
+cumulant is a sum of products of probabilities, computed without dividing by
+one, so it stays finite when a probability underflows. On another chart
+each term depends on one coordinate of the simplex and the chain rule
+reduces to a univariate partition sum per coordinate, with
+\deqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m},}
+weighted by the counts.
 }
 \details{
-The support is finite, so the expectation of any component is an exact sum
-over \code{mv_support(distrib, theta)} and needs no sampling. \code{expected = TRUE}
-nonetheless routes to \code{\link[=mv_expected_higher]{mv_expected_higher()}}, which draws; a caller who
-wants the exact expectation forms the sum against
-\code{\link[=distrib_pdf.MultinomialDistrib]{distrib_pdf.MultinomialDistrib()}} directly.
+With \code{expected = TRUE} the expectation is exact. The derivatives are linear
+in the counts, so the method replaces each count by its expectation
+\eqn{n p_j}. On the additive log-ratio chart this replaces \eqn{N} by
+\eqn{n}, and the result equals the observed value at every row on the
+support.
 }
 \section{Notation}{
 
 \eqn{p_j} is the probability of category \eqn{j}, \eqn{y_j} its count,
-\eqn{\eta} the simplex's free vector and \eqn{\ell} the log-mass of one
-observation.
+\eqn{n} the number of trials, \eqn{\eta} the simplex's free vector and
+\eqn{\ell} the log-mass of one observation.
 }
 
 \examples{
@@ -65,7 +70,7 @@ y <- distrib_rng(d, 5, theta)
 d3 <- distrib_deriv3(d, y, theta)
 vapply(d3, sum, numeric(1))
 
-# Against one stencil on the analytic Hessian, component by component.
+# Against a central difference of the Hessian.
 h <- 1e-4
 tp <- theta; tp$probs_alr2 <- tp$probs_alr2 + h
 tm <- theta; tm$probs_alr2 <- tm$probs_alr2 - h
@@ -74,14 +79,14 @@ c(exact = sum(d3[["probs_alr1_probs_alr1_probs_alr2"]]),
              sum(distrib_hessian(d, y, tm)[["probs_alr1_probs_alr1"]])) /
             (2 * h))
 
-# The support is finite, so the mass over it sums to one exactly and an
-# expectation can be taken as a sum rather than a sample.
+# The expectation equals the sum over the finite support.
 sup <- mv_support(d, theta)
-c(states = nrow(sup), mass = sum(distrib_pdf(d, sup, theta)))
-
+w <- distrib_pdf(d, sup, theta)
+c(expected = distrib_deriv3(d, y, theta, expected = TRUE)[[1]][1],
+  sum = sum(w * distrib_deriv3(d, sup, theta)[[1]]))
 }
 \seealso{
 \code{\link[=distrib_deriv4.MultinomialDistrib]{distrib_deriv4.MultinomialDistrib()}} for the next order,
-\code{\link[=multinomial_higher]{multinomial_higher()}} for the shared engine, \code{\link[=mv_support]{mv_support()}} for the exact
-route to an expectation, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
+\code{\link[=multinomial_higher]{multinomial_higher()}} for the shared engine, \code{\link[=mn_cumulant]{mn_cumulant()}} for the
+cumulants, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

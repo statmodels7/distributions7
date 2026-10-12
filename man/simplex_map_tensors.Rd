@@ -12,7 +12,7 @@ simplex_map_tensors(s, eta, order)
 \item{eta}{The free vector, a numeric vector of length \code{s@n_free}.}
 
 \item{order}{The highest order required, a single whole number from 1 to 4.
-Above 4 the \code{switch} returns \code{NULL} and the call fails.}
+A larger value signals an error.}
 }
 \value{
 A named list of numeric vectors, each as long as the simplex has
@@ -24,14 +24,13 @@ multisets of width 1 to \code{order}.
 Collects \eqn{\partial^{S}\mu_j} for every multiset \eqn{S} of free indices
 up to the requested order, keyed by the sorted tuple, as a list of numeric
 vectors over the coordinates \eqn{j}. The arrays come from
-\pkg{parameters7}, which supplies orders three and four for a
-\code{simplex}, so nothing is derived here; what the function adds is the keying,
-which lets the chain rule in \code{\link[=chain_univariate]{chain_univariate()}} look a block up by its
-index multiset.
+\pkg{parameters7}, which supplies orders three and four for a \code{simplex}. The
+function derives nothing itself and only adds the keying, which lets the
+chain rule in \code{\link[=chain_univariate]{chain_univariate()}} look a block up by its index multiset.
 }
 \section{Notation}{
 
-\eqn{\mu} is the point of the simplex the parametrization produces,
+\eqn{\mu} is the point of the simplex that the parametrization produces,
 \eqn{\eta} its free vector, and \eqn{S} a multiset of free-value indices.
 }
 

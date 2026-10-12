@@ -6,8 +6,7 @@
 \arguments{
 \item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} numeric matrix of observations. Its values do
-not enter the result.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. Not read.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
@@ -19,11 +18,9 @@ A \eqn{p \times p} numeric matrix, symmetric and negative definite.
 \description{
 Computes the second derivative of the log-density in the response,
 \deqn{\frac{\partial^2 \ell}{\partial y\, \partial y^\top} = -\Sigma^{-1}.}
-The quadratic form is quadratic in \eqn{y}, so the matrix is the same at
-every observation and the response is read only to confirm its shape. One
-\eqn{p \times p} matrix is returned, not \eqn{n} copies of it, and a
-consumer that expects one matrix per row must handle this family's shape
-explicitly.
+The log-density is quadratic in \eqn{y}, so the matrix is the same at every
+observation and the response is not read. One \eqn{p \times p} matrix is
+returned for the whole sample, and not one matrix per row.
 }
 \examples{
 d <- mvgaussian1_distrib(2)
@@ -35,7 +32,7 @@ y <- distrib_rng(d, 4, theta)
 distrib_hess_y(d, y, theta)
 -solve(mv_sigma(d, theta))
 
-# One matrix whatever the sample size, and it does not move with y.
+# One matrix whatever the sample size, the same at every observation.
 identical(distrib_hess_y(d, y, theta), distrib_hess_y(d, y[1, ], theta))
 
 # Against a numerical Hessian at one observation.

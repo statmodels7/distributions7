@@ -11,7 +11,7 @@ mvgaussian2_distrib(n_dim, omega = NULL)
 }
 \arguments{
 \item{n_dim}{The dimension \eqn{p} of one observation. A single positive
-whole number, finite and at least 1. Anything else signals an error.}
+whole number, finite and at least 1. Any other value signals an error.}
 
 \item{sigma}{A \pkg{parameters7} parametrization of the covariance, of
 dimension \code{n_dim} and of full rank. Defaults to
@@ -34,96 +34,88 @@ their parametrization describes: \code{mvgaussian1_distrib()} parametrizes the
 \strong{covariance} \eqn{\Sigma} and \code{mvgaussian2_distrib()} the \strong{precision}
 \eqn{\Omega = \Sigma^{-1}}. The mean is a vector of \eqn{p} free parameters
 and the matrix is carried by a \pkg{parameters7} parametrization whose free
-values become ordinary scalar parameters, so every generic of the
-\code{distrib} class applies to the object, with \code{theta} a flat named list of
-numbers. Both default to an unstructured matrix in the log-Cholesky
-parametrization, which is \code{p * (p + 1) / 2} free values.
+values become ordinary scalar parameters, so every generic of the \code{distrib}
+class applies to the object, with \code{theta} a flat named list of numbers. Both
+default to an unstructured matrix in the log-Cholesky parametrization, which
+has \code{p * (p + 1) / 2} free values.
 }
-\section{Why they are two families and not one argument}{
+\section{The two families}{
 The numbering is the package's convention, the one that separates
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} and \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}:
-one name per parametrization, because in a modeling framework a
-parametrization decides what a linear predictor acts on. Here the decision
-is sharper than a change of coordinates. A matrix parametrization is
-\strong{closed under inversion} when the inverse of every matrix it produces is
-one of its own; \code{\link[parameters7:log_cholesky]{parameters7::log_cholesky()}},
-\code{\link[parameters7:matrix_log]{parameters7::matrix_log()}}, \code{\link[parameters7:diagonal_matrix]{parameters7::diagonal_matrix()}},
-\code{\link[parameters7:scalar_matrix]{parameters7::scalar_matrix()}}, \code{\link[parameters7:compound_symmetry]{parameters7::compound_symmetry()}} and
-\code{\link[parameters7:dr_prod]{parameters7::dr_prod()}} are, and \code{\link[parameters7:correlation_matrix]{parameters7::correlation_matrix()}},
-\code{\link[parameters7:ar1]{parameters7::ar1()}} and \code{\link[parameters7:autoregressive]{parameters7::autoregressive()}} are not.
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} and \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}: one
+name per parametrization, because in a modeling framework a parametrization
+decides what a linear predictor acts on. Here the choice can change the model
+as well as the coordinates. A matrix parametrization is \strong{closed under
+inversion} when the inverse of every matrix that it produces is one of its
+own; \code{\link[parameters7:log_cholesky]{parameters7::log_cholesky()}}, \code{\link[parameters7:matrix_log]{parameters7::matrix_log()}},
+\code{\link[parameters7:diagonal_matrix]{parameters7::diagonal_matrix()}}, \code{\link[parameters7:scalar_matrix]{parameters7::scalar_matrix()}},
+\code{\link[parameters7:compound_symmetry]{parameters7::compound_symmetry()}} and \code{\link[parameters7:dr_prod]{parameters7::dr_prod()}} are, and
+\code{\link[parameters7:correlation_matrix]{parameters7::correlation_matrix()}}, \code{\link[parameters7:ar1]{parameters7::ar1()}} and
+\code{\link[parameters7:autoregressive]{parameters7::autoregressive()}} are not.
 
 Where it is closed the two families describe the same laws in different
-coordinates, and a fit reaches the same maximum: measured on 400
-four-dimensional observations with \code{log_cholesky(4)}, both report
-\eqn{-1867.271395} and the two differ by \eqn{5\times10^{-13}}. Where it is
-not closed they are different models, and the same measurement with
-\code{\link[parameters7:ar1]{parameters7::ar1()}} gives \eqn{-1868.65} against \eqn{-1982.61}, a gap of
-113.95: the inverse of an AR(1) covariance is tridiagonal and is not an
-AR(1) at any parameters.
+coordinates, and a fit reaches the same maximum. Where it is not closed they
+are different models: the inverse of an AR(1) covariance is tridiagonal and
+is not an AR(1) matrix at any parameters, so \code{\link[parameters7:ar1]{parameters7::ar1()}} on the
+covariance and on the precision give different maximized log-likelihoods.
 
-Neither family restricts which parametrization it takes.
-\code{mvgaussian2_distrib(p, parameters7::ar1(p))} is the model whose precision
-has the entries \eqn{\rho^{|i-j|}}, which is a legitimate law and is
-accepted without comment. To write the AR(1) \strong{process} on the precision
-side, pass the family whose value is that inverse:
-\code{mvgaussian2_distrib(p, parameters7::ar1_inv(p))}.
+Both constructors accept any parametrization of the right dimension and of
+full rank. \code{mvgaussian2_distrib(p, parameters7::ar1(p))} is the model whose
+precision has the entries \eqn{\sigma^2\rho^{|i-j|}}, with \eqn{\sigma^2}
+the scale of \code{ar1()}, and it is a valid law. The AR(1) \strong{process} written
+on the precision side is \code{mvgaussian2_distrib(p, parameters7::ar1_inv(p))},
+whose parametrization is that inverse.
 }
 
-\section{What it costs}{
-The two cost about the same. Every derivative here is written in the
-covariance, so a precision parametrization is inverted once per call and
-its derivative arrays are carried across by
-\eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma}. Measured at
-\eqn{n = 1000} on an unstructured matrix, the precision form costs 0.86 to
-1.07 times the covariance form for the score and 0.97 to 1.10 for the
-Hessian, across \eqn{p = 4, 8, 12}.
+\section{The arithmetic of the two sides}{
+The derivatives of both families are computed from the derivative arrays of
+\eqn{\Sigma} and of \eqn{\Sigma^{-1}}. The parametrization supplies one of
+the two, and \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}} obtains the other: through
+\code{\link[parameters7:param_inv_d1]{parameters7::param_inv_d1()}} and its siblings under a covariance
+parametrization, and by the chain rule for an inverse under a precision one.
 }
 
 \section{Parameters}{
 The mean contributes \code{mu1}, ..., \code{mup}. The matrix contributes the
-parametrization's free values, prefixed by the matrix they describe:
+parametrization's free values, prefixed by the matrix that they describe:
 \code{sigma_} for a covariance and \code{omega_} for a precision. A two-dimensional
 gaussian on an unstructured covariance therefore has the five parameters
 \code{mu1}, \code{mu2}, \code{sigma_log_L1}, \code{sigma_log_L2} and \code{sigma_L2.1}, while the
-same parametrization on the precision gives \code{omega_log_L1} and the rest.
-The prefix is what distinguishes the two models in a printed table: a free
-value's name says how the matrix is built, not which matrix it is.
+same parametrization on the precision gives \code{omega_log_L1} and the rest. The
+prefix distinguishes the two models in a printed table, since the name of a
+free value gives the construction of the matrix and does not say which
+matrix it is.
 
 All of these parameters are unconstrained, so all of the links are the
-identity. The constraint that makes the matrix positive definite lives
-inside the matrix parametrization, which needs no link to express it. One
-practical consequence is that the parameter scale and the link scale
-coincide, so \code{scale = "link"} returns the same numbers as
-\code{scale = "parameter"}, to the bit.
+identity. The constraint that makes the matrix positive definite is carried
+by the matrix parametrization, which needs no link to express it. The
+parameter scale and the link scale therefore coincide, and
+\code{scale = "link"} returns the same numbers as \code{scale = "parameter"}.
 }
 
 \section{Reading a fit}{
-The free values are coordinates, and nobody reads a logarithm of a diagonal
-entry of a Cholesky factor. \code{\link[=mv_summary]{mv_summary()}} carries a fit's variance matrix
-onto the standard deviations and the correlations by the delta method, and
-\code{print()} shows those. A precision parametrization also reports the
-conditional standard deviations and the partial correlations, which are what
-it describes directly: \eqn{1/\Omega_{jj} = \operatorname{Var}(Y_j \mid
-Y_{-j})}, whose ratio to the marginal variance is \eqn{1 - R_j^2} for the
-regression of that coordinate on all the others. At \eqn{p = 2} the partial
-correlation and the marginal correlation are the same number, so it is not
-printed twice.
+The free values are coordinates of the parametrization and have no direct
+interpretation. \code{\link[=mv_summary]{mv_summary()}} carries the variance matrix of a fit onto the
+standard deviations and the correlations by the delta method, and \code{print()}
+shows those. A precision parametrization reports instead the conditional
+variances and the partial correlations, which it describes directly:
+\eqn{1/\Omega_{jj} = \operatorname{Var}(Y_j \mid Y_{-j})}, whose ratio to
+the marginal variance is \eqn{1 - R_j^2} for the regression of that
+coordinate on all the others.
 }
 
 \section{Rank}{
 A rank-deficient parametrization is rejected with an error. A singular
 covariance gives a law supported on a subspace, with no density against
 Lebesgue measure; a singular precision gives a quadratic form that is flat
-along its null space and does not normalize. Both are failures, and a
-parametrization of that kind is a legitimate penalty but not a legitimate
-density.
+along its null space and does not normalize. Such a parametrization can
+serve as a penalty but does not define a density.
 }
 
 \section{The response}{
 An \eqn{n \times p} matrix, one row per observation. A plain vector of
-length \eqn{p} is read as a single observation. A parameter may not vary
-from observation to observation here: the parametrization describes one
-matrix for the whole sample.
+length \eqn{p} is read as a single observation. A parameter may not vary from
+observation to observation here, the parametrization describing one matrix
+for the whole sample.
 }
 
 \section{The distribution}{
@@ -138,8 +130,7 @@ on \eqn{y \in \mathbb{R}^{p}}, with
 \eqn{\mu} is the mean vector, \eqn{\Sigma} the covariance, \eqn{\Omega} the
 precision, \eqn{p} the dimension of one observation and \eqn{n} the number
 of observations. \eqn{\eta} is the free vector of the matrix
-parametrization, the unconstrained coordinates an optimizer moves, and
-\eqn{A_k = \partial\Sigma/\partial\eta_k}.
+parametrization, the unconstrained coordinates that an optimizer moves.
 }
 
 \examples{
@@ -149,8 +140,8 @@ d
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 
-# The covariance the free values describe, and its positive definiteness,
-# which holds for any five numbers at all.
+# The covariance that the free values describe, positive definite for any
+# five numbers.
 S <- mv_sigma(d, theta)
 round(S, 4)
 eigen(S, only.values = TRUE)$values
@@ -167,7 +158,7 @@ all.equal(distrib_pdf(d, y, theta, log = TRUE), as.numeric(ref))
 mvgaussian1_distrib(2, parameters7::diagonal_matrix(2))@params
 
 # The precision form is the other family, and its free values are prefixed
-# by the matrix they describe.
+# by the matrix that they describe.
 o <- mvgaussian2_distrib(2)
 o@params
 th_o <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0.1,
@@ -180,7 +171,7 @@ all.equal(mv_sigma(o, th_o), solve(Om), check.attributes = FALSE)
 c(conditional = 1 / Om[1, 1], marginal = mv_sigma(o, th_o)[1, 1])
 
 # An AR(1) covariance and an AR(1) precision are different models, and the
-# family names which one is meant.
+# name of the family records which one is meant.
 c(covariance = mvgaussian1_distrib(4, parameters7::ar1(4))@distrib_name,
   precision = mvgaussian2_distrib(4, parameters7::ar1(4))@distrib_name)
 
@@ -188,7 +179,7 @@ c(covariance = mvgaussian1_distrib(4, parameters7::ar1(4))@distrib_name,
 \seealso{
 \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the one-dimensional case,
 \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} for the heavy-tailed sibling,
-\code{\link[=mv_summary]{mv_summary()}} for the quantities a fit reports,
+\code{\link[=mv_summary]{mv_summary()}} for the quantities that a fit reports,
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate one,
 \code{\link[parameters7:log_cholesky]{parameters7::log_cholesky()}} for the default parametrization, and
 \code{\link[parameters7:inverse_of]{parameters7::inverse_of()}} for writing a structure on the other side.

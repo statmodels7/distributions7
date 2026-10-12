@@ -18,8 +18,8 @@ numDeriv_grad(f, x, h_rel = NULL)
 A numeric vector the length of \code{x}.
 }
 \description{
-One central difference per coordinate, which is all the multivariate checks
-need and which keeps \pkg{numDeriv} a suggestion rather than a requirement.
+One central difference per coordinate, which is enough for the multivariate
+checks and keeps \pkg{numDeriv} out of the hard dependencies.
 }
 \details{
 The nodes, the weights and the step are \pkg{numericals7}'s.

@@ -4,7 +4,7 @@
 \alias{mvg_higher}
 \title{The Closed-Form Higher Derivatives of a Multivariate Gaussian}
 \usage{
-mvg_higher(distrib, y, theta, order)
+mvg_higher(distrib, y, theta, order, expected = FALSE)
 }
 \arguments{
 \item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
@@ -14,9 +14,10 @@ length \eqn{p} is read as a single observation.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{order}{Either \code{3L} or \code{4L}. No other value is accepted: the
-log-determinant derivative is chosen by \code{switch(order - 2L, ...)}, which
-returns \code{NULL} outside that range and fails at the call.}
+\item{order}{The derivative order, \code{3L} or \code{4L}.}
+
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation of each
+component is returned. Defaults to \code{FALSE}.}
 }
 \value{
 A named list of numeric vectors of length \eqn{n}, one per
@@ -44,11 +45,11 @@ parametrization carries.
 }
 }
 \details{
-The log-determinant derivatives come from \code{parameters7::param_d3logdet()}
-and \code{param_d4logdet()}, and the precision arrays from \code{\link[=mvg_ptensors]{mvg_ptensors()}}, so
-nothing here is a transcription of an expanded formula. The only case that
-costs anything is the pure-matrix one, and even that is a quadratic form per
-observation once the array is in hand.
+The log-determinant derivatives come from \code{parameters7::param_d3logdet()} and
+\code{param_d4logdet()}, and the precision arrays from \code{\link[=mvg_ptensors]{mvg_ptensors()}}. With
+\code{expected = TRUE} the response enters through \eqn{r} and \eqn{r^\top P_t r},
+whose expectations are 0 and \eqn{\operatorname{tr}(P_t\Sigma)}, so the
+expectation is exact.
 }
 \section{Notation}{
 

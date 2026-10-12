@@ -13,23 +13,27 @@ no method of its own.}
 }
 \value{
 A named list with \code{value}, \code{jacobian}, \code{transform} and \code{block}, as
-\code{\link[=mv_derived]{mv_derived()}} documents. There are \code{p * (p + 1) / 2} quantities, blocked
-as \code{"Variances"} and \code{"Covariances"}.
+\code{\link[=mv_derived]{mv_derived()}} documents. There are \code{p * (p + 1) / 2} matrix entries,
+blocked as \code{"Variances"} and \code{"Covariances"}, followed by the quantities
+that the matrix parametrization declares through \code{param_readable()} when
+it declares any.
 }
 \description{
-Returns the distinct entries of the matrix \code{\link[=mv_sigma]{mv_sigma()}} produces, named
-\code{sigma_vi_vj} after the coordinates they belong to, with a Jacobian from one
-central difference in each parameter. This is the fallback for a family that
-registers no method of its own: reporting the matrix on its own scale is
-worth more to a reader than reporting a Cholesky coordinate, even where the
-entries are not the standard deviations and correlations a closed-form
-method would give.
+Returns the distinct entries of the matrix that \code{\link[=mv_sigma]{mv_sigma()}} produces, named
+\code{sigma_vi_vj} after their coordinates, with a Jacobian from one central
+difference in each parameter, followed by the block that \code{\link[=mv_param_block]{mv_param_block()}}
+returns when the parametrization declares one. It is the method of a family
+that registers none of its own, among them the Dirichlet and the
+multinomial, whose matrix is the covariance of the response. The entries
+are variances and covariances, where a closed-form method reports standard
+deviations and correlations.
 }
 \details{
 The diagonal entries are variances and are intervalled on the log scale; the
 off-diagonal ones are unconstrained given the diagonal and are intervalled on
-their own. That is weaker than the closed-form methods, whose correlations
-ride Fisher's \eqn{z} and so cannot leave \eqn{(-1, 1)}.
+their own scale. The closed-form methods report correlations on Fisher's
+\eqn{z}, whose intervals stay inside \eqn{(-1, 1)}; the interval of a
+covariance has no such bound.
 }
 \examples{
 d <- mvgaussian1_distrib(2)
@@ -42,12 +46,16 @@ d0 <- base(d, distributions7:::align_theta(d, theta))
 d0$value
 d0$transform
 
-# The entries really are the matrix, read off its lower triangle.
+# The entries are the lower triangle of the matrix.
 mv_sigma(d, theta)
 
 # Against the closed-form method, which reports standard deviations and a
-# correlation instead of variances and a covariance.
+# correlation in place of variances and a covariance.
 mv_derived(d, theta)$value
+
+# The Dirichlet uses this method: its covariance, then its probabilities.
+dd <- dirichlet_distrib(3)
+mv_derived(dd, list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8))$block
 
 }
 \seealso{

@@ -19,8 +19,9 @@ mv_sd_cor(
 
 \item{a}{A list of \eqn{p \times p} numeric matrices, one per parameter of
 the distribution and in \code{params} order, holding
-\eqn{\partial\Sigma/\partial\theta_k}. A parameter the matrix does not
-depend on contributes a matrix of zeros.}
+\eqn{\partial\Sigma/\partial\theta_k}. For a parameter that the matrix
+does not depend on, the entry is \code{NULL} or a matrix of zeros; both are
+accepted.}
 
 \item{params}{The distribution's parameter names, which become the column
 names of the Jacobian.}
@@ -32,7 +33,8 @@ standard deviations of the response.}
 \item{cor_label}{The prefix for the off-diagonal quantities. Defaults to
 \code{"cor"}.}
 
-\item{sd_block, cor_block}{The block labels the printed summary groups by.}
+\item{sd_block, cor_block}{The block labels by which the printed summary
+groups the quantities.}
 }
 \value{
 A named list with \code{value}, \code{jacobian}, \code{transform} and \code{block}, as
@@ -41,8 +43,8 @@ scale and \eqn{p(p-1)/2} off-diagonal ones on Fisher's \eqn{z}.
 }
 \description{
 Turns a symmetric positive definite matrix and the derivatives of its
-entries into the standard deviations and correlations a reader wants, with
-the Jacobian written out. Writing \eqn{\Sigma = DRD} with \eqn{D} the
+entries into standard deviations and correlations, with the Jacobian
+written out. Writing \eqn{\Sigma = DRD} with \eqn{D} the
 diagonal of standard deviations,
 \deqn{\frac{\partial s_j}{\partial\theta_k} = \frac{A_k[j,j]}{2 s_j},
   \qquad
@@ -50,8 +52,9 @@ diagonal of standard deviations,
     = \frac{A_k[j,l]}{s_j s_l}
       - \frac{\rho_{jl}}{2}\left(\frac{A_k[j,j]}{\Sigma_{jj}}
         + \frac{A_k[l,l]}{\Sigma_{ll}}\right),}
-with \eqn{A_k = \partial\Sigma/\partial\theta_k}. Nothing new is computed:
-the arrays come from the parametrization the caller already has.
+with \eqn{A_k = \partial\Sigma/\partial\theta_k}. No further derivative is
+computed: the arrays are those that the caller obtained from the
+parametrization.
 }
 \section{Notation}{
 

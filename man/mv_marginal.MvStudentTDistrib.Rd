@@ -4,33 +4,34 @@
 \alias{mv_marginal.MvStudentTDistrib}
 \title{Marginal of a Multivariate Student t}
 \arguments{
-\item{distrib}{An \link{MvStudentTDistrib} object, from
-\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}
+or \code{\link[=mvstudent_t2_distrib]{mvstudent_t2_distrib()}}.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{which}{An integer vector of coordinates to keep, between 1 and
-\eqn{p}. Duplicates and out-of-range values are not checked and reach the
-matrix subsetting.}
+\item{which}{An integer vector of distinct coordinates to keep, each between
+1 and \eqn{p}, already checked by the generic \code{\link[=mv_marginal]{mv_marginal()}}. The marginal
+follows the order given.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A named list with \code{distrib}, an \code{MvStudentTDistrib} of dimension
-\code{length(which)}, and \code{theta}, its parameters as a named list.
+\code{length(which)} of the parent's subclass, and \code{theta}, its parameters as a
+named list.
 }
 \description{
-Returns the marginal law of a subset of coordinates, which for this family
-is again a Student t: the subvector of the location, the corresponding block
-of the scale matrix, and THE SAME degrees of freedom. \eqn{\nu} does not
-change with the dimension, and that is why the family is closed under
-marginalization: the mixing variable of the scale-mixture representation is
-shared by every coordinate, so it survives integrating any of them out.
-
-The returned object is a fresh \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} of the reduced
-dimension on an unstructured scale matrix, so the free values are recomputed
-from the block by \code{parameters7::param_free()} and are not a subset of the
-original's.
+Returns the marginal law of a subset of coordinates, which for this family is
+again a Student t: the subvector of the location, the corresponding block of
+the scale matrix, and the same degrees of freedom. The mixing variable of the
+scale-mixture representation is shared by every coordinate, so it survives
+integrating any of them out. The returned object is a new
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} of the reduced dimension when \code{distrib} is a
+\link{MvStudentT1Distrib}, and a new \code{\link[=mvstudent_t2_distrib]{mvstudent_t2_distrib()}} when it is a
+\link{MvStudentT2Distrib}, both on an unstructured log-Cholesky matrix. The free
+values are computed by \code{parameters7::param_free()} from the block of the
+scale matrix (from its inverse for the second family), so they are not a
+subset of the original's.
 }
 \section{Notation}{
 

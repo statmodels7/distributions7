@@ -46,11 +46,13 @@ its inverse, according to \code{inverted}, inheriting from
 \code{parameters7::parameter}. Its \code{n_free} free values are flattened into
 scalar parameters of the distribution.}
 
-\item{inverted}{Logical of length 1. \code{TRUE} when \code{param} carries the
-inverse scale matrix \eqn{\Sigma^{-1}} and \code{FALSE} when it carries the
-scale matrix \eqn{\Sigma}. Nothing but the sign of the log-determinant and
-one matrix inversion depends on it; the law is the same either way, and
-neither matrix is a moment of the response.}
+\item{inverted}{Logical of length 1. \code{TRUE} when \code{param} carries the inverse
+scale matrix \eqn{\Sigma^{-1}} and \code{FALSE} when it carries the scale matrix
+\eqn{\Sigma}. It decides which derivative arrays are the parametrization's
+own and which are obtained from them (see \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}), the sign
+of the log-determinant, the prefix of the free names and the quantities
+that \code{\link[=mv_summary]{mv_summary()}} reports. The same \eqn{\Sigma} gives the same law
+either way, and neither matrix is a moment of the response.}
 }
 \value{
 An S7 object of class \code{MvStudentTDistrib}, inheriting from
@@ -68,36 +70,54 @@ density
 The location \eqn{\mu} contributes \eqn{p} scalar parameters, the scale
 matrix \eqn{\Sigma} is carried by a \pkg{parameters7} parametrization whose
 free values become scalar parameters, and the degrees of freedom \eqn{\nu}
-is added last. It inherits from \code{multivariate_distrib}, so the response is
-an \eqn{n \times p} matrix and the distribution function and the quantile
-function are refused.
+is added last. It inherits from \code{multivariate_distrib}, so the response is an
+\eqn{n \times p} matrix and the distribution function and the quantile
+function signal an error.
 
 Build one with \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}, which fills the properties in and
 checks the rank of the parametrization. This page documents the raw S7
-constructor, which validates nothing.
+constructor, which runs only the validators of \code{multivariate_distrib} and
+\code{distrib}; nothing checks \code{param}.
 }
 \section{Methods}{
 
-Registered on this class:
-\code{\link[=distrib_cross2_y.MvStudentTDistrib]{distrib_cross2_y()}},
-\code{\link[=distrib_cross_y.MvStudentTDistrib]{distrib_cross_y()}},
-\code{\link[=distrib_expected_hessian.MvStudentTDistrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_grad_y.MvStudentTDistrib]{distrib_grad_y()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.MvStudentTDistrib]{distrib_pdf()}} and
+\code{\link[=distrib_rng.MvStudentTDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.MvStudentTDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.MvStudentTDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.MvStudentTDistrib]{distrib_pdf()}},
-\code{\link[=distrib_rng.MvStudentTDistrib]{distrib_rng()}},
-\code{\link[=generate_random_theta.MvStudentTDistrib]{generate_random_theta()}},
-\code{\link[=mean.MvStudentTDistrib]{mean()}},
+\code{\link[=distrib_expected_hessian.MvStudentTDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.MvStudentTDistrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.MvStudentTDistrib]{distrib_deriv4()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.MvStudentTDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.MvStudentTDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.MvStudentTDistrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.MvStudentTDistrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.MvStudentTDistrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.MvStudentTDistrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross3_y.MvStudentTDistrib]{distrib_cross3_y()}},
+\code{\link[=distrib_grad_y_hess.MvStudentTDistrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.MvStudentTDistrib]{distrib_hess_y_hess()}};
+\item the moments: \code{\link[=mean.MvStudentTDistrib]{mean()}} and
+\code{\link[=variance.MvStudentTDistrib]{variance()}};
+\item the multivariate summaries:
 \code{\link[=mv_location.MvStudentTDistrib]{mv_location()}},
-\code{\link[=mv_marginal.MvStudentTDistrib]{mv_marginal()}},
 \code{\link[=mv_sigma.MvStudentTDistrib]{mv_sigma()}},
-\code{\link[=variance.MvStudentTDistrib]{variance()}}
+\code{\link[=mv_marginal.MvStudentTDistrib]{mv_marginal()}} and
+\code{\link[=mv_derived.MvStudentTDistrib]{mv_derived()}};
+\item the validation and fitting helpers:
+\code{\link[=mv_reference_draw.MvStudentTDistrib]{mv_reference_draw()}},
+\code{\link[=generate_random_theta.MvStudentTDistrib]{generate_random_theta()}} and
+\code{\link[=distrib_start.MvStudentTDistrib]{distrib_start()}}.
+}
 
-Everything else comes from \code{\link[=multivariate_distrib]{multivariate_distrib()}}. The third and fourth
-derivatives are registered in \code{mv_higher.R}, which the two multivariate
-families share.
+Every other generic is inherited from \code{\link[=multivariate_distrib]{multivariate_distrib()}}, whose methods
+signal an error for the distribution function, the quantile function, the
+skewness and the kurtosis.
 }
 
 \examples{

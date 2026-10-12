@@ -25,11 +25,12 @@ Computes the second derivative of the log-density in the response,
 \deqn{\frac{\partial^2 \ell}{\partial y\, \partial y^\top}
   = -c\,\Sigma^{-1} + 2d\,ww^\top, \qquad
   c = \frac{\nu+p}{\nu+q}, \quad d = \frac{\nu+p}{(\nu+q)^2},}
-one \eqn{p \times p} matrix PER OBSERVATION. The gaussian's response
-Hessian is one matrix for the whole sample; this one moves with the
-observation, and far enough out its rank-one term makes the curvature
-positive along the direction of the residual, which is the redescending
-score seen at second order.
+one \eqn{p \times p} matrix per observation. The gaussian's response Hessian
+is one matrix for the whole sample; this one moves with the observation, and
+far enough out its rank-one term makes the curvature positive along the
+direction of the residual. The rank-one term is formed as
+\eqn{2(\nu+p)(w/s)(w/s)^\top} with \eqn{s = \nu + q} (see \code{\link[=mvt_yscaled]{mvt_yscaled()}}),
+so it neither underflows nor overflows for a distant observation.
 }
 \section{Notation}{
 

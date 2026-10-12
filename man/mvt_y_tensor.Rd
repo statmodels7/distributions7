@@ -5,12 +5,15 @@
 \alias{mvt_y_tensor3_d}
 \title{Response Tensors of the Multivariate Student t}
 \usage{
-mvt_y_tensor(z, order)
+mvt_y_tensor(z, pc, order)
 
 mvt_y_tensor3_d(z, N, Na, sa, wa, Oa)
 }
 \arguments{
-\item{z}{The result of \code{\link[=mvt_dpieces]{mvt_dpieces()}}.}
+\item{z}{For \code{mvt_y_tensor()} the result of \code{\link[=mvt_yscaled]{mvt_yscaled()}}; for
+\code{mvt_y_tensor3_d()} the result of \code{\link[=mvt_dpieces]{mvt_dpieces()}}.}
+
+\item{pc}{The result of \code{\link[=mvt_pieces]{mvt_pieces()}}.}
 
 \item{order}{\code{3L} or \code{4L}.}
 
@@ -29,17 +32,20 @@ A numeric array with \eqn{n} as its last dimension.
 }
 \description{
 \code{mvt_y_tensor()} assembles the third or fourth response derivative of
-\code{\link[=distrib_deriv3_y.MvStudentTDistrib]{distrib_deriv3_y.MvStudentTDistrib()}} from the pieces of \code{\link[=mvt_dpieces]{mvt_dpieces()}},
-one observation at a time. \code{mvt_y_tensor3_d()} assembles the derivative of
-the third one in a parameter, given that parameter's derivatives of
-\eqn{N}, \eqn{s}, \eqn{w} and \eqn{\Omega}.
+\code{\link[=distrib_deriv3_y.MvStudentTDistrib]{distrib_deriv3_y.MvStudentTDistrib()}} from the scaled quantities of
+\code{\link[=mvt_yscaled]{mvt_yscaled()}}, one observation at a time: every term is written in
+\eqn{w/s} and \eqn{1/s}, so no power of \eqn{s} is formed.
+\code{mvt_y_tensor3_d()} assembles the derivative of the third one in a
+parameter, given that parameter's derivatives of \eqn{N}, \eqn{s}, \eqn{w}
+and \eqn{\Omega}.
 }
 \examples{
 d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0, nu = 4)
-z <- distributions7:::mvt_dpieces(d, matrix(c(1, -1), 1, 2), theta)
-dim(distributions7:::mvt_y_tensor(z, 3L))
+pc <- distributions7:::mvt_pieces(d, theta)
+z <- distributions7:::mvt_yscaled(matrix(c(1, -1), 1, 2), pc)
+dim(distributions7:::mvt_y_tensor(z, pc, 3L))
 
 }
 \seealso{

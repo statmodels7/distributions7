@@ -9,31 +9,31 @@ mv_support(distrib, theta, ...)
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
-\item{theta}{A named list or vector of parameters. Families whose support
-does not depend on them, which is every one that ships, ignore it.}
+\item{theta}{A named list or vector of parameters. The shipped method does
+not read it, the support of the multinomial not depending on them.}
 
-\item{...}{Passed to methods. No shipped method reads it.}
+\item{...}{Passed to methods. The shipped method does not read it.}
 }
 \value{
 A numeric matrix with one row per support point and one column per
 coordinate.
 }
 \description{
-Returns the points a discrete multivariate distribution places mass on, as a
-matrix with one row per point. Enumerating them turns every expectation into
-an EXACT SUM and lets \code{\link[=check_distrib]{check_distrib()}} verify the total mass by addition
-instead of by sampling: a normalization wrong by a thousandth is caught by
-the sum and would not be by a sample.
+Returns the points on which a discrete multivariate distribution places
+mass, as a matrix with one row per point. With the support enumerated, every
+expectation is an exact sum, and \code{\link[=check_distrib]{check_distrib()}} verifies the total mass
+by addition instead of by sampling.
 }
-\section{Why the generic exists at all}{
-A univariate discrete distribution needs none: its support is a stretch of
-the integers and the package walks it. On a vector the support is a set
-whose shape depends on the family, and no walk covers every case.
+\section{Why the generic exists}{
+A univariate discrete distribution does not need it, since its support is a
+range of integers, which the package traverses. The support of a vector is a
+set whose shape depends on the family, so each discrete multivariate family
+enumerates its own.
 }
 
 \section{The multinomial's support}{
-For \eqn{p} coordinates and \eqn{n} trials it is the weak compositions of
-\eqn{n} into \eqn{p} parts,
+For \eqn{p} coordinates and \eqn{n} trials it is the set of weak
+compositions of \eqn{n} into \eqn{p} parts,
 \deqn{\mathcal{S} = \Bigl\{y \in \mathbb{N}_0^{p} :
   \textstyle\sum_{j=1}^{p} y_j = n\Bigr\},
   \qquad \lvert\mathcal{S}\rvert = \binom{n + p - 1}{p - 1},}
@@ -42,11 +42,10 @@ finite sum \eqn{\sum_{y \in \mathcal{S}} g(y) f(y; \theta)}. The count grows
 quickly: 15 points at \eqn{n = 4, p = 3}, and 5151 at \eqn{n = 100, p = 3}.
 }
 
-\section{What the base class does}{
-It signals an error. A continuous family has no such set, and a discrete one
-whose support is infinite has no finite matrix to return; either way an
-answer would be a fiction. \code{\link[=has_mv_support]{has_mv_support()}} is the predicate a consumer
-asks before calling.
+\section{The method of the class}{
+It signals an error. A continuous family has no such set, and a discrete
+family whose support is infinite has no finite matrix to return.
+\code{\link[=has_mv_support]{has_mv_support()}} tests whether a family has a method of its own.
 }
 
 \section{Notation}{
@@ -68,18 +67,17 @@ head(sup, 4)
 # The count is the number of weak compositions.
 c(got = nrow(sup), expected = choose(4 + 3 - 1, 3 - 1))
 
-# And the mass over it sums to one exactly, which is the check a sample
-# could not make.
+# The mass over the support sums to one exactly.
 sum(distrib_pdf(d, sup, theta))
 
-# A continuous family has no such set and says so.
+# A continuous family has no such set, and the call signals an error.
 try(mv_support(mvgaussian1_distrib(2),
                list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
                     sigma_log_L2 = 0, sigma_L2.1 = 0)))
 
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}, the one family that answers,
-\code{\link[=has_mv_support]{has_mv_support()}} for the predicate, \code{\link[numericals7:compositions]{numericals7::compositions()}} for
-the enumeration, and \code{\link[=check_distrib]{check_distrib()}} for the consumer.
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}, the one family with a method,
+\code{\link[=has_mv_support]{has_mv_support()}} for the test, \code{\link[numericals7:compositions]{numericals7::compositions()}} for the
+enumeration, and \code{\link[=check_distrib]{check_distrib()}} for the consumer.
 }

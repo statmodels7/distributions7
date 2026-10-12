@@ -11,28 +11,28 @@ mv_sigma_derivs(distrib, theta, n_before)
 
 \item{theta}{A named list of parameters, already aligned.}
 
-\item{n_before}{The number of parameters before the matrix parametrization's
-free values, which is \eqn{p} for both shipped families. Those positions
-get zero matrices.}
+\item{n_before}{The number of parameters before the free values of the
+matrix parametrization, which is \eqn{p} for the gaussian and the Student
+\eqn{t}.}
 }
 \value{
-A list of \eqn{p \times p} numeric matrices, as long as
-\code{distrib@params}. Every entry outside the parametrization's stretch is a
-matrix of zeros.
+A list as long as \code{distrib@params}. The entries at the positions of
+the free values of the parametrization are \eqn{p \times p} numeric
+matrices; every other entry is \code{NULL}.
 }
 \description{
-Returns \eqn{\partial\Sigma/\partial\theta_k} for EVERY parameter of a
+Returns \eqn{\partial\Sigma/\partial\theta_k} for every parameter of a
 multivariate distribution, in \code{distrib@params} order, so that the list can
 be indexed by parameter position without any bookkeeping at the call site.
-The parametrization supplies the derivatives of its own free values; the
+The parametrization supplies the derivatives in its own free values; the
 location components and, for a Student \eqn{t}, the degrees of freedom leave
-the matrix alone and contribute a matrix of zeros.
+the matrix alone, and their entries of the list are \code{NULL}.
 }
 \details{
-Where the parametrization carries the PRECISION the arrays are carried onto
+Where the parametrization carries the precision the arrays are carried onto
 the covariance by \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma},
-so the result is always in the covariance whichever side the model is
-written on.
+so the result is always in the covariance, on whichever side the model is
+written.
 }
 \section{Notation}{
 
@@ -48,7 +48,7 @@ theta <- distributions7:::align_theta(
           sigma_L2.1 = 0.5))
 a <- distributions7:::mv_sigma_derivs(d, theta, 2)
 
-# One entry per parameter, and the two mean entries are zero.
+# One entry per parameter, and the two mean entries are NULL.
 length(a) == d@n_params
 a[[1]]
 

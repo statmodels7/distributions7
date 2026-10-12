@@ -12,9 +12,10 @@ enters any component.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. Every link of this family is the identity, so the
-two scales coincide.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. Every link of this family is the identity, so the two scales
+coincide.}
 
 \item{approx}{Ignored: the expectation is exact and no approximation
 strategy is consulted. Present so that the signature matches the generic's.}
@@ -34,24 +35,23 @@ this family is simpler than the observed matrix itself:
   \mathbb{E}[\ell^{(\mu_a \eta_k)}] = 0, \qquad
   \mathbb{E}[\ell^{(\eta_k \eta_l)}] =
   -\tfrac{1}{2}\operatorname{tr}(\Sigma^{-1} A_k \Sigma^{-1} A_l).}
-No component depends on the data, so every returned vector is constant
-across rows and \code{y} is read for its row count alone.
+The components do not depend on the data, so every returned vector is
+constant across rows and \code{y} is used only for its row count.
 }
 \section{Why the mixed block vanishes}{
 Each mixed component is a linear function of \eqn{w = \Sigma^{-1}(y-\mu)},
 and \eqn{\mathbb{E}[w] = 0}. The mean parameters and the matrix parameters
 are therefore orthogonal, and the information matrix is block diagonal
-whatever the matrix parametrization is. Fisher scoring on this family is
-well behaved for that reason: a step in the mean and a step in the
-covariance do not interfere.
+whatever the matrix parametrization is. A Fisher scoring step in the mean
+therefore does not depend on the matrix parameters, and a step in the matrix
+parameters does not depend on the mean.
 }
 
-\section{Why no second derivative array is needed}{
-The observed matrix block carries \eqn{A_{kl}} through both the
+\section{The derivative arrays used}{
+The observed matrix block carries the second derivatives through both the
 log-determinant term and the quadratic form. Under the expectation the two
-cancel, and only the first derivatives survive. That saves the whole
-\code{param_d2()} computation, which is the dearest part of the observed Hessian
-at any dimension worth the name.
+terms cancel and only the first derivatives remain, so this method computes
+no second derivative array.
 }
 
 \section{Notation}{
@@ -74,7 +74,7 @@ EH <- distrib_expected_hessian(d, y, theta)
 c(EH$mu1_mu1[1], EH$mu1_mu2[1])
 -solve(mv_sigma(d, theta))[1, ]
 
-# Every mixed mean-matrix component is exactly zero, not merely small.
+# Every mixed mean-matrix component is exactly zero.
 mixed <- grep("^mu[0-9]+_sigma", names(EH), value = TRUE)
 vapply(EH[mixed], function(z) z[1], numeric(1))
 

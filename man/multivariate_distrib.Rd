@@ -36,9 +36,9 @@ multivariate_distrib(
 
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
-\item{n_dim}{The dimension \eqn{p} of one observation. A single positive
-integer; the validator rejects anything else, and also rejects a
-\code{dimension} property other than \code{"multivariate"}.}
+\item{n_dim}{The dimension \eqn{p} of one observation, a single positive
+integer. The validator rejects any other value, and also a \code{dimension}
+property other than \code{"multivariate"}.}
 }
 \value{
 An S7 object of class \code{multivariate_distrib}, inheriting from
@@ -49,39 +49,40 @@ An S7 object of class \code{multivariate_distrib}, inheriting from
 \description{
 The subclass of \code{distrib} for distributions whose observations are vectors.
 The response is an \eqn{n \times p} matrix, one row per observation, and
-\code{n_dim} records \eqn{p}. It is a SIBLING of \code{\link[=continuous_distrib]{continuous_distrib()}} and
-\code{\link[=discrete_distrib]{discrete_distrib()}}, not a subclass of either, so it inherits none of their
-one-dimensional defaults; the distribution function, the quantile function
-and the response derivatives are refused on this class instead of being
-approximated.
+\code{n_dim} records \eqn{p}. The class is a sibling of \code{\link[=continuous_distrib]{continuous_distrib()}} and
+\code{\link[=discrete_distrib]{discrete_distrib()}} and not a subclass of either, so it inherits none of
+their one-dimensional defaults. The methods registered on this class signal
+an error for the distribution function, the quantile function and the
+response derivatives; the gaussian and the Student t register response
+derivatives of their own.
 }
-\section{The parameters are still scalars}{
-As far as the rest of the package is concerned, a multivariate
-distribution's parameters are SCALARS. A mean vector contributes \eqn{p} of
-them and a covariance matrix contributes the free values of the
-\pkg{parameters7} parametrization that carries it, so \code{theta} remains the
-named list of numbers every generic already understands, and the derivative
-bookkeeping needs no special case: \code{\link[=deriv_names]{deriv_names()}}, the Hessian keys, the
-link scale and \code{\link[=fit_distrib]{fit_distrib()}} all work unchanged.
+\section{The parameters are scalars}{
+The parameters of a multivariate distribution are scalars, as for every
+other distribution of the package. A mean vector contributes \eqn{p} of them
+and a matrix contributes the free values of the \pkg{parameters7}
+parametrization that carries it, so \code{theta} is a named list of numbers and
+\code{\link[=deriv_names]{deriv_names()}}, the Hessian keys, the link scale and \code{\link[=fit_distrib]{fit_distrib()}} apply
+without a special case.
 
-The constraint on the matrix lives inside the parametrization, not in a
-link, so every link of a multivariate distribution is the identity: the free
-values are already unconstrained.
+The constraint on a matrix or on a probability vector is carried by its
+parametrization, so the free values of a matrix and of a simplex take the
+identity link. A scalar parameter keeps a link of its own: the degrees of
+freedom of the Student t and the concentration of the Dirichlet take the log
+link by default.
 }
 
-\section{Why it is a sibling of the one-dimensional classes}{
+\section{The one-dimensional defaults}{
 The defaults registered on \code{\link[=continuous_distrib]{continuous_distrib()}} are one-dimensional: a
 distribution function by quadrature over an interval, a quantile by root
-finding, a generator by ratio-of-uniforms on a scalar density. None of them
-means anything in \eqn{p} dimensions, and inheriting them would offer
-answers that do not exist.
+finding and a generator for a scalar density. They have no counterpart in
+\eqn{p} dimensions, so the class does not inherit them.
 }
 
-\section{No parameter varies by observation}{
+\section{Parameters that vary by observation}{
 A parametrization describes one matrix for the whole sample, and
 \code{\link[=mv_flat_theta]{mv_flat_theta()}} rejects a \code{theta} component longer than one. A
-distribution whose parameters depend on covariates is a model, which is the
-layer above this one.
+distribution whose parameters depend on covariates is a model, which belongs
+to the layer above this package.
 }
 
 \examples{
@@ -89,15 +90,17 @@ d <- mvgaussian1_distrib(2)
 S7::S7_inherits(d, multivariate_distrib)
 c(n_dim = d@n_dim, n_params = d@n_params)
 
-# It is a sibling of continuous_distrib, not a subclass, so none of the
-# one-dimensional defaults is inherited.
-S7::S7_inherits(d, continuous_distrib)
+# The class is a sibling of continuous_distrib and not a subclass.
+c(multivariate = S7::S7_inherits(d, multivariate_distrib),
+  continuous = S7::S7_inherits(d, continuous_distrib))
 
-# Every link is the identity: the constraint lives in the matrix
-# parametrization, which needs no link to express it.
+# The free values of the matrix take the identity link; the degrees of
+# freedom of a Student t take the log link.
 vapply(d@link_params, function(l) l@link_name, character(1))
+vapply(mvstudent_t1_distrib(2)@link_params, function(l) l@link_name,
+       character(1))
 
-# And the four shipped families all sit here.
+# The shipped multivariate families all inherit from the class.
 vapply(list(mvgaussian1_distrib(2), mvstudent_t1_distrib(2),
             dirichlet_distrib(3), multinomial_distrib(3, size = 5)),
        function(x) S7::S7_inherits(x, multivariate_distrib), TRUE)
@@ -107,5 +110,5 @@ vapply(list(mvgaussian1_distrib(2), mvstudent_t1_distrib(2),
 \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} and \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} for the
 elliptical families, \code{\link[=dirichlet_distrib]{dirichlet_distrib()}} and \code{\link[=multinomial_distrib]{multinomial_distrib()}} for
 the simplex-valued ones, \code{\link[=n_obs]{n_obs()}} for the observation count, and
-\code{\link[=mv_summary]{mv_summary()}} for the quantities a fit reports.
+\code{\link[=mv_summary]{mv_summary()}} for the quantities that a fit reports.
 }

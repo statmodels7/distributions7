@@ -10,7 +10,9 @@
 scale, each of length 1.}
 
 \item{which}{A single integer in \eqn{1, \dots, p}, the category wanted. A
-vector of length other than 1 signals an error explaining why.}
+vector of two or more distinct categories signals an error explaining why;
+an empty, duplicated, non-integer or out-of-range \code{which} is rejected
+earlier by \code{\link[=mv_marginal]{mv_marginal()}}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -24,10 +26,12 @@ Returns the law of one coordinate, which is
 failure, and the trial count is unchanged. The returned object carries the
 same \code{size} as the multinomial and its \code{mu} is \eqn{p_j}.
 
-Several coordinates at once are refused. A sub-vector is again multinomial,
-but only after the remaining outcomes are collapsed into a category of their
-own, and returning that object under this name would mislead. The error
-says so.
+A vector of several coordinates signals an error: a sub-vector is again
+multinomial only once the remaining outcomes are collapsed into a category of
+their own, which is a different object from the sub-vector, and the error
+message gives this reason. For the same reason \code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}},
+whose panels are marginals of two coordinates, signals that error for this
+family.
 }
 \examples{
 d <- multinomial_distrib(3, size = 5)

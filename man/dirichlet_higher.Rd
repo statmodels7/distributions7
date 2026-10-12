@@ -4,7 +4,7 @@
 \alias{dirichlet_higher}
 \title{Assemble a Dirichlet's Higher Derivatives}
 \usage{
-dirichlet_higher(distrib, y, theta, order)
+dirichlet_higher(distrib, y, theta, order, expected = FALSE)
 }
 \arguments{
 \item{distrib}{A \code{DirichletDistrib} object.}
@@ -13,14 +13,21 @@ dirichlet_higher(distrib, y, theta, order)
 
 \item{theta}{A named list of parameters.}
 
-\item{order}{The derivative order, 3 or 4.}
+\item{order}{The derivative order, 1 to 4.}
+
+\item{expected}{Logical of length 1. When \code{TRUE} the response term is
+replaced by its expectation, through
+\eqn{\mathrm{E}\log y_j = \psi(\alpha_j) - \psi(\phi)}.}
 }
 \value{
-A named list of numeric vectors, one per component.
+A named list of numeric vectors of length \code{nrow(y)}, keyed as
+\code{deriv_names(distrib@params, order)}.
 }
 \description{
 Runs the univariate chain rule over the shape vector for every component of
-the requested order and adds the two terms that do not pass through it: the
-response, which enters \eqn{\alpha_j} linearly, and \eqn{\log\Gamma(\phi)}.
+the requested order and adds the terms that do not pass through it: the
+response, which enters \eqn{\alpha_j} linearly, \eqn{\log\Gamma(\phi)}, and
+on the additive log-ratio chart the derivatives of
+\eqn{\sum_j \log\alpha_j} (see \code{\link[=distrib_deriv3.DirichletDistrib]{distrib_deriv3.DirichletDistrib()}}).
 }
 \keyword{internal}

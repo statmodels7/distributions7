@@ -31,12 +31,12 @@ closed form. Writing \eqn{g_j = \log y_j - \psi(\alpha_j)} and
       \qquad
       \dfrac{\partial\ell}{\partial\phi} = \psi(\phi) + \sum_{j} g_j \mu_j.}
 The data enter only through \eqn{\log y}, the family being an exponential
-family in that statistic, so \eqn{g} carries the whole of it.
+family in that statistic.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries before returning. Every mean coordinate rides the identity,
-its free value being unconstrained already, so only the concentration's
-component changes.
+With \code{scale = "link"} the generic applies the chain rule for the links of the
+family to the result of the method. Every mean coordinate takes the identity
+link, its free value being unconstrained already, so only the component of
+the concentration changes.
 }
 \section{Notation}{
 

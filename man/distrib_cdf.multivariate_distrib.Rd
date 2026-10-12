@@ -2,33 +2,33 @@
 % Please edit documentation in R/multivariate.R
 \name{distrib_cdf.multivariate_distrib}
 \alias{distrib_cdf.multivariate_distrib}
-\title{No Distribution Function in Several Dimensions}
+\title{Distribution Function of a Multivariate Distribution}
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
-\item{q}{A numeric matrix of quantiles, one row per point. Not examined: the
-error is raised before it is read.}
+\item{q}{A numeric matrix of quantiles, one row per point. Not read: the
+error is signalled first.}
 
-\item{theta}{A named list of parameters. Not examined.}
+\item{theta}{A named list of parameters. Not read.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-Never returns: it always signals an error naming the family.
+Does not return: it signals an error naming the family.
 }
 \description{
 Signals an error. The distribution function of a multivariate law is
-\eqn{P(Y_1 \le q_1, \ldots, Y_p \le q_p)}, an integral over an orthant.
-There is no closed form for it in general, and the one-dimensional fallback
-has no counterpart: \code{\link[=continuous_distrib]{continuous_distrib()}}'s default integrates the density
-over an interval of the line, and an orthant is not one. A numerical orthant
-probability is a separate piece of work with its own accuracy question, and
-this package does not attempt it.
+\eqn{P(Y_1 \le q_1, \ldots, Y_p \le q_p)}, an integral over an orthant. It
+has no closed form in general, and the default of \code{\link[=continuous_distrib]{continuous_distrib()}},
+which integrates the density over an interval of the line, has no
+counterpart in several dimensions. A numerical orthant probability is a
+separate computation with an accuracy question of its own, and the package
+does not provide it.
 }
 \details{
-The refusal is on the class, so it covers a family written elsewhere as
-well as the four that ship. A family that CAN answer registers its own
-method and the refusal never runs.
+The method is registered on the class, so it applies to a family written
+elsewhere as well as to the shipped ones. A family that can compute the
+distribution function registers its own method.
 }
 \examples{
 d <- mvgaussian1_distrib(2)
@@ -37,13 +37,14 @@ theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 
 try(distrib_cdf(d, rbind(c(0, 0)), theta))
 
-# A gaussian's marginal is a ONE-DIMENSIONAL MvGaussianDistrib, so it
-# inherits the same refusal.
+# The marginal of a gaussian is a one-dimensional MvGaussian1Distrib, which
+# signals the same error.
 m <- mv_marginal(d, theta, 1)
 class(m$distrib)[1]
 try(distrib_cdf(m$distrib, 0, m$theta))
 
-# A Dirichlet's marginal is a genuine univariate beta, and answers.
+# The marginal of a Dirichlet is a univariate beta, which has a distribution
+# function.
 b <- mv_marginal(dirichlet_distrib(3),
                  list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8), 1)
 class(b$distrib)[1]
@@ -51,8 +52,9 @@ distrib_cdf(b$distrib, 0.4, b$theta)
 
 }
 \seealso{
-\code{\link[=distrib_quantile.multivariate_distrib]{distrib_quantile.multivariate_distrib()}}, refused for a related
-reason, \code{\link[=mv_marginal]{mv_marginal()}}, which for some families returns a univariate
-distribution that does answer, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
+\code{\link[=distrib_quantile.multivariate_distrib]{distrib_quantile.multivariate_distrib()}} for the quantile function,
+\code{\link[=mv_marginal]{mv_marginal()}}, which for the Dirichlet and the multinomial returns a
+univariate distribution with a distribution function, and \code{\link[=distrib_cdf]{distrib_cdf()}}
+for the generic.
 }
 \keyword{internal}

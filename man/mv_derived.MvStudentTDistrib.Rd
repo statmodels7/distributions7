@@ -5,7 +5,7 @@
 \title{Scale Standard Deviations and Correlations of a Multivariate t}
 \arguments{
 \item{distrib}{An \link{MvStudentTDistrib} object, from
-\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} or \code{\link[=mvstudent_t2_distrib]{mvstudent_t2_distrib()}}.}
 
 \item{theta}{A named list of parameters, already aligned by the generic.}
 
@@ -20,13 +20,13 @@ parametrization \eqn{p} conditional scales and \eqn{p(p-1)/2} partial
 correlations.
 }
 \description{
-Returns the square roots of the diagonal of the SCALE matrix and the
-correlations it implies, with the closed-form Jacobian \code{\link[=mv_sd_cor]{mv_sd_cor()}}
-supplies. The correlations are the response's as well: the covariance is
-\eqn{\nu\Sigma/(\nu-2)} where it exists, and a positive multiple of a matrix
-leaves its correlations alone. The diagonal quantities are NOT standard
-deviations of the response, and are named \code{scale_sd_v1}, ..., \code{scale_sd_vp}
-and blocked as \code{"Scale standard deviations"} to say so.
+Returns the square roots of the diagonal of the scale matrix and the
+correlations that it implies, with the closed-form Jacobian that
+\code{\link[=mv_sd_cor]{mv_sd_cor()}} supplies. The correlations are also those of the response: the
+covariance is \eqn{\nu\Sigma/(\nu-2)} where it exists, and a positive
+multiple of a matrix has the same correlations. The diagonal quantities are
+not standard deviations of the response, and for that reason they are named
+\code{scale_sd_v1}, ..., \code{scale_sd_vp} and blocked as \code{"Scale standard deviations"}.
 
 The rule of \code{\link[=mv_derived.MvGaussianDistrib]{mv_derived.MvGaussianDistrib()}} holds here as well: a
 structured parametrization reports its own block alone, its \code{scale} as the
@@ -35,10 +35,10 @@ parametrization reports the conditional scales \eqn{1/M_{jj}} and the
 partial correlations and nothing of the scale matrix.
 }
 \details{
-The degrees of freedom appear in no quantity here. \eqn{\nu} is already an
-interpretable parameter on its own scale, so \code{\link[=confint.distrib_fit]{confint.distrib_fit()}}
-reports it and this generic does not repeat it. That is also why the
-\eqn{\nu} column of the Jacobian is zero.
+The quantities do not include the degrees of freedom: \eqn{\nu} is
+interpretable on its own scale, so \code{\link[=confint.distrib_fit]{confint.distrib_fit()}} reports it and
+this generic does not repeat it. For the same reason the \eqn{\nu} column of
+the Jacobian is zero.
 }
 \section{Notation}{
 
@@ -65,7 +65,7 @@ cv <- function(m) m[1, 2] / sqrt(m[1, 1] * m[2, 2])
 c(reported = der$value[["cor_v1_v2"]],
   from_covariance = cv(variance(d, theta)))
 
-# nu enters no quantity here, so its Jacobian column is zero.
+# The Jacobian column of nu is zero.
 der$jacobian[, "nu"]
 
 }

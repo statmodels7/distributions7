@@ -11,8 +11,10 @@ component of this derivative depends on the response.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. The two coincide here.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. Every link of this family is the identity, so the two scales
+coincide.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -28,17 +30,15 @@ one \eqn{p \times p} matrix per parameter. The response Hessian is
 is exactly the zero matrix; the matrix components are
 \deqn{\frac{\partial^3\ell}{\partial y\,\partial y^\top\partial\eta_k}
   = B_k = \Sigma^{-1}A_k\Sigma^{-1},}
-with \eqn{A_k = \partial\Sigma/\partial\eta_k}. No component depends on the
-observation, so one matrix is returned per parameter and \code{y} is not read at
-all.
+with \eqn{A_k = \partial\Sigma/\partial\eta_k}, which is \eqn{-P_k} and is
+read as such from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}. The components do not depend on the
+observation, so one matrix is returned per parameter and \code{y} is not read.
 }
 \details{
-This is one of the three derivatives a marginal criterion reads when the
-family stands as a prior over a coefficient block, the other two being
+This is one of the three derivatives that a marginal criterion reads when the
+family is a prior over a coefficient block, the other two being
 \code{\link[=distrib_hess_y_hess.MvGaussianDistrib]{distrib_hess_y_hess.MvGaussianDistrib()}} and
-\code{\link[=distrib_grad_y_hess.MvGaussianDistrib]{distrib_grad_y_hess.MvGaussianDistrib()}}. Every link of this family is the
-identity, so \code{scale = "link"} and \code{scale = "parameter"} give the same
-numbers.
+\code{\link[=distrib_grad_y_hess.MvGaussianDistrib]{distrib_grad_y_hess.MvGaussianDistrib()}}.
 }
 \section{Notation}{
 

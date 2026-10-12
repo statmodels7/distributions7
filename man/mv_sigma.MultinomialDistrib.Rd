@@ -10,20 +10,19 @@
 scale, each of length 1.}
 }
 \value{
-A symmetric \eqn{p \times p} numeric matrix of rank \eqn{p-1}.
+A symmetric \eqn{p \times p} numeric matrix of rank \eqn{p-1},
+without dimnames.
 }
 \description{
 Returns the covariance matrix of the counts,
 \deqn{\operatorname{Cov}(Y_i, Y_j) = n(\delta_{ij}p_i - p_i p_j),}
 so the coordinate variances are \eqn{np_j(1-p_j)}, the binomial ones, and
-every covariance is negative: the counts share a fixed total, so one
-category can only grow at the others' expense.
+every covariance is negative, the counts sharing a fixed total.
 
-The matrix is \strong{singular by construction}, the coordinates summing to
-\eqn{n}, so the vector of ones is in its null space and the rank is
-\eqn{p-1}. Its leading \eqn{(p-1)\times(p-1)} block is the expected
-information on the default chart; see
-\code{\link[=distrib_expected_hessian.MultinomialDistrib]{distrib_expected_hessian.MultinomialDistrib()}}.
+The matrix is singular, the coordinates summing to \eqn{n}, so the vector of
+ones is in its null space and the rank is \eqn{p-1}. Its leading
+\eqn{(p-1)\times(p-1)} block is the expected information on the default
+chart; see \code{\link[=distrib_expected_hessian.MultinomialDistrib]{distrib_expected_hessian.MultinomialDistrib()}}.
 }
 \examples{
 d <- multinomial_distrib(3, size = 5)

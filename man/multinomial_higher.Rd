@@ -4,7 +4,7 @@
 \alias{multinomial_higher}
 \title{Assemble a Multinomial's Higher Derivatives}
 \usage{
-multinomial_higher(distrib, y, theta, order)
+multinomial_higher(distrib, y, theta, order, expected = FALSE)
 }
 \arguments{
 \item{distrib}{A \code{MultinomialDistrib} object.}
@@ -13,13 +13,21 @@ multinomial_higher(distrib, y, theta, order)
 
 \item{theta}{A named list of parameters.}
 
-\item{order}{The derivative order, 3 or 4.}
+\item{order}{The derivative order, 1 to 4.}
+
+\item{expected}{Logical of length 1. When \code{TRUE} each count is replaced by
+its expectation \eqn{n p_j}, which gives the expected derivatives exactly.}
 }
 \value{
-A named list of numeric vectors, one per component.
+A named list of numeric vectors of length \code{nrow(y)}, keyed as
+\code{deriv_names(distrib@params, order)}.
 }
 \description{
-Runs the univariate chain rule over the probability vector for every
-component of the requested order, weighted by the summed counts.
+Computes every component of the requested order. On the additive log-ratio
+chart a component of order one is \eqn{y_k - N p_k} and a component of
+higher order is \eqn{-N} times a cumulant from \code{\link[=mn_cumulant]{mn_cumulant()}}, with \eqn{N}
+the total of the row. On another chart the method runs the univariate chain
+rule over the probability vector for every component, weighted by the
+counts of each category.
 }
 \keyword{internal}

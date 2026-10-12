@@ -17,11 +17,12 @@ values, keyed \code{"k:l"} with \eqn{k \le l}. Its length is
 }
 \description{
 Builds a lookup from a pair of free-value positions to the position of the
-matching component of \code{parameters7::param_d2()}. A Hessian method walks the
-unordered pairs of the distribution's own parameters and has to find, for
-each matrix pair, the second derivative array that belongs to it; the two
-enumerations are not the same, because the distribution's parameters carry
-the mean components in front.
+matching component of the parametrization's second derivative arrays
+(\code{param_d2()}, \code{param_inv_d2()} and \code{param_d2logdet()} share the
+enumeration). A Hessian method walks the unordered pairs of the
+distribution's own parameters and finds, for each matrix pair, the array that
+belongs to it; the two enumerations are not the same, because the
+distribution's parameters carry the mean components in front.
 }
 \details{
 The keys are built from \pkg{parameters7}'s own enumeration rather than by

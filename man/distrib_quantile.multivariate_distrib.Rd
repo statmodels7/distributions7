@@ -2,27 +2,26 @@
 % Please edit documentation in R/multivariate.R
 \name{distrib_quantile.multivariate_distrib}
 \alias{distrib_quantile.multivariate_distrib}
-\title{No Quantile Function in Several Dimensions}
+\title{Quantile Function of a Multivariate Distribution}
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
-\item{p}{A numeric vector of probabilities. Not examined: the error is
-raised before it is read.}
+\item{p}{A numeric vector of probabilities. Not read: the error is signalled
+first.}
 
-\item{theta}{A named list of parameters. Not examined.}
+\item{theta}{A named list of parameters. Not read.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-Never returns: it always signals an error naming the family.
+Does not return: it signals an error naming the family.
 }
 \description{
-Signals an error. A quantile is defined by inverting a distribution function
-along an ORDERING, and \eqn{\mathbb{R}^p} has none for \eqn{p > 1}. The
-obstruction is deeper than the one that stops
-\code{\link[=distrib_cdf.multivariate_distrib]{distrib_cdf.multivariate_distrib()}}: there a number exists and is hard to
-compute, here there is no number to compute. Several quantities go by the
-name in the literature, and they disagree.
+Signals an error. A quantile inverts a distribution function along an
+ordering of the line, and \eqn{\mathbb{R}^p} has no ordering compatible with
+its vector structure for \eqn{p > 1}, so the multivariate quantile is not one
+object: several quantities go by that name in the literature, and they
+differ.
 }
 \examples{
 d <- mvgaussian1_distrib(2)
@@ -31,17 +30,17 @@ theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 
 try(distrib_quantile(d, 0.5, theta))
 
-# A gaussian's marginal is a one-dimensional MvGaussianDistrib and refuses
-# too; a Dirichlet's is a univariate beta and answers.
+# The marginal of a gaussian signals the same error; the marginal of a
+# Dirichlet is a univariate beta and has a quantile function.
 b <- mv_marginal(dirichlet_distrib(3),
                  list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8), 1)
 distrib_quantile(b$distrib, c(0.025, 0.5, 0.975), b$theta)
 
 }
 \seealso{
-\code{\link[=distrib_cdf.multivariate_distrib]{distrib_cdf.multivariate_distrib()}} for the related refusal,
-\code{\link[=mv_marginal]{mv_marginal()}}, which for some families returns a univariate
-distribution that does answer, and \code{\link[=distrib_quantile]{distrib_quantile()}} for the
-generic.
+\code{\link[=distrib_cdf.multivariate_distrib]{distrib_cdf.multivariate_distrib()}} for the distribution function,
+\code{\link[=mv_marginal]{mv_marginal()}}, which for the Dirichlet and the multinomial returns a
+univariate distribution with a quantile function, and \code{\link[=distrib_quantile]{distrib_quantile()}}
+for the generic.
 }
 \keyword{internal}

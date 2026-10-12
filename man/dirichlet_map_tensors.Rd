@@ -17,14 +17,14 @@ dirichlet_map_tensors(s, eta, phi, order)
 }
 \value{
 A named list of numeric vectors over the coordinates, keyed by sorted
-tuple over the composite index set with \eqn{\phi} LAST, so at
+tuple over the composite index set with \eqn{\phi} last, so at
 \code{s@n_free = 2} the concentration is index 3 and the key \code{"3,3"} holds a
 vector of zeros.
 }
 \description{
 Collects \eqn{\partial^{S}\alpha} for every multiset \eqn{S} over the
 Dirichlet's composite index set, the simplex's free values followed by the
-concentration. The shape vector \eqn{\alpha = \phi\,\mu(\eta)} is BILINEAR
+concentration. The shape vector \eqn{\alpha = \phi\,\mu(\eta)} is bilinear
 in the concentration and the mean, so the whole array follows from
 \code{\link[=simplex_map_tensors]{simplex_map_tensors()}} by three cases: \eqn{\phi\,\partial^{S}\mu} when
 \eqn{S} names no \eqn{\phi}, \eqn{\partial^{S'}\mu} when it names one, and

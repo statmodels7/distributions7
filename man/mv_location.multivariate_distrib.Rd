@@ -2,38 +2,38 @@
 % Please edit documentation in R/multivariate.R
 \name{mv_location.multivariate_distrib}
 \alias{mv_location.multivariate_distrib}
-\title{No Location Without a Family That Has One}
+\title{Location of a Family Without a Method}
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no method of its own.}
 
-\item{theta}{A named list of parameters. Not examined: the error is raised
-before it is read.}
+\item{theta}{A named list of parameters. Not read: the error is signalled
+first.}
 }
 \value{
-Never returns: it always signals an error naming the family.
+Does not return: it signals an error naming the family.
 }
 \description{
-Signals an error. Not every multivariate family has a location: a Dirichlet
-is described by concentrations and a Wishart by a scale and a count, and
-handing back the first \eqn{p} parameters under the name of a mean would be
-a wrong answer in the shape of a right one. A family that HAS one registers
-its own method, and the two elliptical families register
-\code{\link[=mv_leading_location]{mv_leading_location()}}.
+Signals an error. The first \eqn{p} parameters of a family are not a
+location in general, so the class has no default. The shipped families
+register their own methods: the elliptical families \code{\link[=mv_leading_location]{mv_leading_location()}},
+the Dirichlet and the multinomial their mean vector. A family written
+elsewhere registers its own method.
 }
 \examples{
-# The Dirichlet registers no location.
-try(mv_location(dirichlet_distrib(3),
-                list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)))
+# Every shipped family registers a method, so the method of the class is
+# called directly.
+base <- S7::method(mv_location, multivariate_distrib)
+try(base(dirichlet_distrib(3),
+         list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)))
 
-# The gaussian does.
-mv_location(mvgaussian1_distrib(2),
-            list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0,
-                 sigma_log_L2 = 0, sigma_L2.1 = 0))
+# The Dirichlet's own method returns its mean vector.
+mv_location(dirichlet_distrib(3),
+            list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8))
 
 }
 \seealso{
 \code{\link[=mv_location]{mv_location()}} for the generic, \code{\link[=mv_leading_location]{mv_leading_location()}} for the
-implementation the elliptical families use, and
-\code{\link[=mv_location.MvGaussianDistrib]{mv_location.MvGaussianDistrib()}} for one that answers.
+implementation that the elliptical families use, and
+\code{\link[=mv_location.MvGaussianDistrib]{mv_location.MvGaussianDistrib()}} for a method.
 }
 \keyword{internal}

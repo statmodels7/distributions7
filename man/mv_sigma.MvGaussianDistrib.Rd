@@ -41,7 +41,7 @@ all.equal(mv_sigma(o, th_o), solve(Om), check.attributes = FALSE)
 \seealso{
 \code{\link[=variance.MvGaussianDistrib]{variance.MvGaussianDistrib()}} for the same matrix read as a
 moment, \code{\link[=mv_location.MvGaussianDistrib]{mv_location.MvGaussianDistrib()}} for the mean,
-\code{\link[=mv_summary]{mv_summary()}} for the standard deviations and correlations a reader
-wants, and \code{\link[=mv_sigma]{mv_sigma()}} for the generic.
+\code{\link[=mv_summary]{mv_summary()}} for the standard deviations and correlations of a fit, and
+\code{\link[=mv_sigma]{mv_sigma()}} for the generic.
 }
 \keyword{internal}

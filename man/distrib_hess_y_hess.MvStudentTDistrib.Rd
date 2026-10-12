@@ -12,8 +12,9 @@ length \eqn{p} is read as a single observation.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. The two differ here.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. The two differ here.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -33,8 +34,8 @@ further than \code{\link[=distrib_cross2_y.MvStudentTDistrib]{distrib_cross2_y.M
   + 2d_{ab}\,ww^\top + 2d_a S(w_b, w) + 2d_b S(w_a, w)
   + 2d\left\{S(w_{ab}, w) + S(w_a, w_b)\right\},}
 with \eqn{S(u, v) = uv^\top + vu^\top} and every piece from
-\code{\link[=mvt_dpieces]{mvt_dpieces()}}. No pair vanishes, where for a gaussian every pair naming a
-location parameter is exactly zero.
+\code{\link[=mvt_dpieces]{mvt_dpieces()}}. For a gaussian every pair naming a location parameter is
+exactly zero; for the t these pairs are not zero in general.
 }
 \section{Notation}{
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/multivariate.R
 \name{mv_matrix_pieces}
 \alias{mv_matrix_pieces}
-\title{The Matrix, Its Inverse and Their Derivatives, From Either Side}
+\title{The Matrix, Its Inverse and Their Derivatives}
 \usage{
 mv_matrix_pieces(s, eta, inverted, derivs = FALSE, derivs2 = FALSE)
 }
@@ -14,40 +14,38 @@ mv_matrix_pieces(s, eta, inverted, derivs = FALSE, derivs2 = FALSE)
 \item{inverted}{\code{TRUE} when \code{s} carries \eqn{\Sigma^{-1}}.}
 
 \item{derivs, derivs2}{Whether the first and second derivative arrays are
-wanted.
-
-The log-determinant's derivatives come back transported too, as \code{dlogdet}
-and \code{d2logdet}. They are the one place a caller is likely to get the sign
-wrong: \eqn{\log|\Sigma| = -\log|M|}, so both are the parametrization's own
-negated, and reading them from here rather than from
-\code{\link[parameters7:param_dlogdet]{parameters7::param_dlogdet()}} is what keeps the flip from being written by
-hand at each of the four call sites -- which is how the Student t's
-gradient came to be out by 14 while its Hessian was right.}
+wanted. \code{derivs2 = TRUE} computes the first derivatives as well.}
 }
 \value{
-A list with \code{sigma}, \code{sigma_inv}, \code{logdet} (of \eqn{\Sigma}) and,
-according to the flags, \code{a}, \code{dlogdet} and then \code{a2}, \code{d2logdet}, all of
-\eqn{\Sigma}.
+A list with \code{sigma}, \code{sigma_inv}, \code{logdet} (of \eqn{\Sigma}) and
+\code{inverted}; with \code{derivs} or \code{derivs2} also \code{a} and \code{ai}, the first
+derivative arrays of \eqn{\Sigma} and of \eqn{\Sigma^{-1}}, and \code{dlogdet};
+with \code{derivs2} also \code{a2}, \code{ai2} and \code{d2logdet}.
 }
 \description{
-The four matrix quantities every elliptical family evaluates from, computed
-from a matrix parametrization that carries either \eqn{\Sigma} or
+Computes the matrix quantities from which the elliptical families evaluate,
+for a matrix parametrization that carries either \eqn{\Sigma} or
 \eqn{\Sigma^{-1}}: the matrix, its inverse, the log-determinant of
-\eqn{\Sigma}, and the derivative arrays of \eqn{\Sigma}.
+\eqn{\Sigma}, and the first and second derivative arrays of \eqn{\Sigma} and
+of \eqn{\Sigma^{-1}}.
 }
 \details{
-Every derivative in this package is written in \eqn{\Sigma}, so a
-parametrization carrying the other side is transported once, here, by the
-chain rule for an inverse:
-
+Where the parametrization carries \eqn{\Sigma}, the derivatives of
+\eqn{\Sigma} are its own arrays and those of \eqn{\Sigma^{-1}} come from
+\code{\link[parameters7:param_inv_d1]{parameters7::param_inv_d1()}} and \code{\link[parameters7:param_inv_d1]{parameters7::param_inv_d2()}}, which are
+exact for \code{\link[parameters7:log_cholesky]{parameters7::log_cholesky()}} where the matrix is nearly singular.
+Where it carries \eqn{\Sigma^{-1}}, the derivatives of the inverse are the
+parametrization's own arrays, and those of \eqn{\Sigma} follow from the
+chain rule for an inverse,
 \deqn{\partial_k\Sigma = -\Sigma A_k \Sigma, \qquad
   \partial_{kl}\Sigma = \Sigma\left(A_l\Sigma A_k + A_k\Sigma A_l
     - A_{kl}\right)\Sigma,}
+with \eqn{A_k} and \eqn{A_{kl}} the parametrization's arrays.
 
-with \eqn{A_k} and \eqn{A_{kl}} the parametrization's own arrays. Writing
-it once is what keeps \code{\link[=mvg_pieces]{mvg_pieces()}} and \code{\link[=mvt_pieces]{mvt_pieces()}} the same arithmetic:
-the two families differ in what they do with these quantities, not in how
-the quantities are obtained.
+The derivatives of the log-determinant are returned for \eqn{\Sigma} in
+either case, as \code{dlogdet} and \code{d2logdet}. Where the parametrization carries
+\eqn{M = \Sigma^{-1}}, \eqn{\log|\Sigma| = -\log|M|}, so the
+parametrization's own derivatives are negated here, once for both families.
 }
 \seealso{
 \code{\link[=mvg_pieces]{mvg_pieces()}} and \code{\link[=mvt_pieces]{mvt_pieces()}}, the two callers.

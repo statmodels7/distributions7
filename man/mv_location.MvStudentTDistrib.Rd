@@ -18,9 +18,9 @@ coordinates of the response.
 Returns the location \eqn{\mu}, the first \eqn{p} parameters read off
 \code{theta} in order. The method is \code{\link[=mv_leading_location]{mv_leading_location()}}, shared with the
 gaussian. For this family the location is the center of symmetry at every
-admissible \eqn{\nu} and the mean only for \eqn{\nu > 1}, which is why the
-generic is named for a location: \code{\link[=mean.MvStudentTDistrib]{mean.MvStudentTDistrib()}} returns \code{NaN}
-below one degree of freedom and this returns the location regardless.
+admissible \eqn{\nu} and the mean only for \eqn{\nu > 1}:
+\code{\link[=mean.MvStudentTDistrib]{mean.MvStudentTDistrib()}} returns \code{NaN} for \eqn{\nu \le 1}, and this method
+returns the location at every \eqn{\nu}.
 }
 \examples{
 d <- mvstudent_t1_distrib(2)

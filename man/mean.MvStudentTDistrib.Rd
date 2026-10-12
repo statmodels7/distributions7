@@ -16,13 +16,13 @@ the location for \eqn{\nu > 1} and \code{NaN} throughout for \eqn{\nu \le 1}.
 }
 \description{
 Returns \eqn{\mathbb{E}[Y] = \mu} for \eqn{\nu > 1}, and a vector of \code{NaN}
-otherwise. Below one degree of freedom the defining integral does not
+otherwise. For one degree of freedom or fewer the defining integral does not
 converge: the density decays like \eqn{\lVert y\rVert^{-(\nu+p)}} and the
 first absolute moment integrates \eqn{\lVert y\rVert^{1-\nu-p}} over a shell
-of surface \eqn{\lVert y\rVert^{p-1}}, which is finite only for
-\eqn{\nu > 1}. The location is a parameter and the mean is a moment; at
-\eqn{\nu \le 1} the first exists and the second does not, so \code{NaN} is the
-answer and \eqn{\mu} would be the wrong one.
+of surface \eqn{\lVert y\rVert^{p-1}}, which is finite only for \eqn{\nu >
+1}. The location \eqn{\mu} is a parameter and exists at every \eqn{\nu},
+while the mean is a moment; for \eqn{\nu \le 1} this method returns \code{NaN} and
+\code{\link[=mv_location.MvStudentTDistrib]{mv_location.MvStudentTDistrib()}} returns \eqn{\mu}.
 }
 \examples{
 d <- mvstudent_t1_distrib(2)
@@ -32,7 +32,7 @@ theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 mean(d, theta)
 
 # Below one degree of freedom the mean does not exist, while the location
-# and the density both do.
+# and the density do.
 t2 <- theta; t2$nu <- 0.8
 mean(d, t2)
 mv_location(d, t2)

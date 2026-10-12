@@ -2,7 +2,7 @@
 % Please edit documentation in R/mvgaussian_distrib.R
 \name{mvg_residuals}
 \alias{mvg_residuals}
-\title{Residuals and Whitened Residuals of a Multivariate Gaussian}
+\title{Residuals of a Multivariate Gaussian and Their Image Under the Precision}
 \usage{
 mvg_residuals(y, pc)
 }
@@ -21,11 +21,9 @@ right-multiplication of \code{r} by \code{sigma_inv} giving the same rows becaus
 }
 \description{
 Computes the centered response \eqn{r_i = y_i - \mu} and its image under the
-inverse covariance, \eqn{w_i = \Sigma^{-1} r_i}. Every derivative of a
-multivariate gaussian is written in those two: the score in the mean is
-\eqn{w}, the quadratic form of the log-density is \eqn{r^\top w}, and the
-matrix components are quadratic forms \eqn{w^\top A w}. Forming them once
-per call is what keeps a component from re-solving the same system.
+inverse covariance, \eqn{w_i = \Sigma^{-1} r_i}. The score in the mean is
+\eqn{w}, the response gradient is \eqn{-w}, and the derivatives in the
+matrix are quadratic forms in \eqn{r}. Both are formed once per call.
 }
 \section{Notation}{
 
@@ -49,7 +47,7 @@ all.equal(res$w, res$r \%*\% solve(pc$sigma), check.attributes = FALSE)
 all.equal(rowSums(res$r * res$w),
           mahalanobis(y, pc$mu, pc$sigma))
 
-# And the score in the mean is w itself, one row per observation.
+# The score in the mean is w itself, one row per observation.
 g <- distrib_gradient(d, y, theta)
 all.equal(cbind(g$mu1, g$mu2), res$w, check.attributes = FALSE)
 
@@ -57,6 +55,6 @@ all.equal(cbind(g$mu1, g$mu2), res$w, check.attributes = FALSE)
 \seealso{
 \code{\link[=mvg_pieces]{mvg_pieces()}} for the argument, and
 \code{\link[=distrib_gradient.MvGaussianDistrib]{distrib_gradient.MvGaussianDistrib()}} and
-\code{\link[=distrib_hessian.MvGaussianDistrib]{distrib_hessian.MvGaussianDistrib()}} for the consumers.
+\code{\link[=distrib_hessian.MvGaussianDistrib]{distrib_hessian.MvGaussianDistrib()}} for consumers.
 }
 \keyword{internal}

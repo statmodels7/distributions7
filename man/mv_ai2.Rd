@@ -9,14 +9,16 @@ mv_ai2(pc, k, l)
 \arguments{
 \item{pc}{Pieces carrying \code{ai2}, from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}} with \code{derivs2}.}
 
-\item{k, l}{Positions among the structure's free values.}
+\item{k, l}{Positions among the free values of the matrix parametrization.}
 }
 \value{
 A \eqn{p \times p} numeric matrix.
 }
 \description{
-As \code{\link[=mvg_a2]{mvg_a2()}}, for the second derivative of \eqn{\Sigma^{-1}} that
-\code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}} reads from the chart. Shared by the gaussian and the
-Student t.
+Reads the component of the second derivative array of \eqn{\Sigma^{-1}}
+that \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}} supplies, for the pair of free values
+\eqn{(k, l)}. The key is built from the sorted pair of free names, so the
+result does not depend on the order of the two positions. Shared by the
+gaussian and the Student t.
 }
 \keyword{internal}

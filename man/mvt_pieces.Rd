@@ -2,7 +2,7 @@
 % Please edit documentation in R/mvstudent_t_distrib.R
 \name{mvt_pieces}
 \alias{mvt_pieces}
-\title{The Pieces a Multivariate t Evaluates From}
+\title{The Pieces From Which a Multivariate t Evaluates}
 \usage{
 mvt_pieces(distrib, theta, derivs = FALSE, derivs2 = FALSE)
 }
@@ -13,33 +13,35 @@ mvt_pieces(distrib, theta, derivs = FALSE, derivs2 = FALSE)
 any list whose components are in \code{distrib@params} order.}
 
 \item{derivs}{Logical of length 1. When \code{TRUE} the first derivative arrays
-of the scale matrix are computed and returned as \code{a}. Defaults to \code{FALSE}.}
+are computed. Defaults to \code{FALSE}.}
 
 \item{derivs2}{Logical of length 1. When \code{TRUE} the second derivative arrays
-are computed as well and returned as \code{a2}; the first derivatives are not
-computed with them, so a caller needing both sets \code{derivs} too. Defaults
-to \code{FALSE}.}
+are computed, and the first ones with them. Defaults to \code{FALSE}.}
 }
 \value{
 A named list with \code{mu} (numeric of length \eqn{p}), \code{eta} (the
 matrix parametrization's free vector), \code{nu} (a single number), \code{p}, \code{s}
-(the parametrization itself), \code{sigma} and \code{sigma_inv} (\eqn{p \times p}
-matrices) and \code{logdet} (the log-determinant of \eqn{\Sigma}), plus \code{a} and
-\code{a2} when asked for: lists of \eqn{p \times p} matrices, \code{a} one per free
-value and \code{a2} one per unordered pair.
+(the parametrization itself) and the elements of \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}:
+\code{sigma} and \code{sigma_inv} (\eqn{p \times p} matrices), \code{logdet} (the
+log-determinant of \eqn{\Sigma}) and \code{inverted}; with derivatives
+requested also \code{a} and \code{ai} (the first derivative arrays of \eqn{\Sigma}
+and of \eqn{\Sigma^{-1}}) and \code{dlogdet}; with \code{derivs2} also \code{a2}, \code{ai2}
+and \code{d2logdet}.
 }
 \description{
 Assembles, once per call, the location, the scale matrix, its inverse, the
 log-determinant and the degrees of freedom from a flat parameter vector,
-together with the matrix parametrization's derivative arrays when they are
-asked for. Every method of \link{MvStudentTDistrib} calls this first and works
-from the result, so a parameter vector is unpacked and a matrix factorized
-once per call instead of once per component.
+together with the derivative arrays of \eqn{\Sigma} and of \eqn{\Sigma^{-1}}
+when they are requested. Every method of \link{MvStudentTDistrib} that evaluates
+the density or its derivatives calls this first and works from the result,
+so a parameter vector is unpacked and a matrix factorized once per call and
+not once per component.
 }
 \details{
-The scale matrix is always parametrized as itself, so there is no inversion
-branch here and no sign to flip on the log-determinant. That is the whole
-difference from \code{\link[=mvg_pieces]{mvg_pieces()}}, whose parametrization may carry either side.
+The matrix quantities come from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}, which the gaussian
+reads as well: where \code{distrib@inverted} is \code{TRUE} the parametrization
+carries \eqn{\Sigma^{-1}}, and the helper returns \eqn{\Sigma} and the
+derivatives of both matrices whichever side it carries.
 }
 \section{Notation}{
 

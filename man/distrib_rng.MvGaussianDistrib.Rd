@@ -18,11 +18,13 @@ An \eqn{n \times p} numeric matrix, one draw per row, with column
 names \code{v1}, ..., \code{vp} and no row names.
 }
 \description{
-Draws from the multivariate gaussian by the standard factorization,
-\eqn{y = \mu + L z} with \eqn{z} a vector of independent standard normals
-and \eqn{L L^\top = \Sigma}. The factor is a Cholesky decomposition of the
-covariance, taken after the precision has been inverted where the matrix
-parametrization carries that side. The draws consume \code{n * p} values from R's
+Draws from the multivariate gaussian by the standard factorization, \eqn{y =
+\mu + L z} with \eqn{z} a vector of independent standard normals and \eqn{L
+L^\top = \Sigma}. The factor is read from the parametrization (see
+\code{\link[=mv_sampling_factor]{mv_sampling_factor()}}): its own factor where it carries the covariance, the
+inverse transpose of that factor where it carries the precision. A covariance
+that is nearly singular, which \code{chol()} of the assembled matrix can reject,
+is sampled without a decomposition. The draws consume \code{n * p} values from R's
 own generator through \code{\link[stats:Normal]{stats::rnorm()}}, so the stream is reproducible under
 \code{\link[base:Random]{base::set.seed()}}.
 }

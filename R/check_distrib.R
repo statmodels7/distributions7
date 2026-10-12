@@ -191,7 +191,8 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   # distributions: a user validating their own code could not tell a real
   # defect from it. The battery that does generalize is a separate one.
   if (S7::S7_inherits(distrib, multivariate_distrib)) {
-    out <- do.call(rbind, check_distrib_mv(distrib, theta, n, nsim, tol))
+    out <- drop_no_verdict(check_distrib_mv(distrib, theta, n, nsim, tol),
+                           on_values = "density is positive and finite")
     if (verbose) print_check_table(distrib, out, theta, n, nsim)
     return(invisible(out))
   }
@@ -668,6 +669,36 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   # its statistic.
   on_values <- c("density is non-negative", "cdf in [0,1] and non-decreasing",
                  if (!is_cont) "quantile/cdf round-trip")
+  out <- drop_no_verdict(res, on_values)
+
+  if (verbose) print_check_table(distrib, out, theta, n, nsim)
+
+  invisible(out)
+}
+
+#' Set Aside the Rows of a Validation That Have No Verdict
+#'
+#' @description
+#' Binds the rows of [check_distrib()] into a table, leaving out each row that
+#' compared nothing and recording it with its reason in the attribute
+#' `"skipped"`: a row marked as a numerical fallback, and a row whose statistic
+#' is `NaN` or `NA` without its computation having raised. A row that raised
+#' keeps its failure, and so does a row named in `on_values`, whose criterion
+#' is defined on the values themselves.
+#'
+#' @param res A list of one-row data frames from [new_check()] and
+#'   [safe_check()].
+#' @param on_values A character vector of check names that are kept whatever
+#'   their statistic.
+#'
+#' @return A data frame with columns `check`, `status`, `statistic` and
+#'   `detail`, carrying the attribute `"skipped"` (a data frame with columns
+#'   `check` and `reason`) when some row was left out.
+#'
+#' @seealso [check_distrib()], the caller.
+#'
+#' @keywords internal
+drop_no_verdict <- function(res, on_values) {
   skipped <- list()
   kept <- vapply(res, function(r) {
     if (isTRUE(attr(r, "fallback"))) {
@@ -693,10 +724,7 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
     rownames(sk) <- NULL
     attr(out, "skipped") <- sk
   }
-
-  if (verbose) print_check_table(distrib, out, theta, n, nsim)
-
-  invisible(out)
+  out
 }
 
 #' Print a Validation Table

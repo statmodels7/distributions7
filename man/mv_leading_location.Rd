@@ -17,10 +17,10 @@ A numeric vector of length \code{distrib@n_dim}, named \code{v1}, ..., \code{vp}
 }
 \description{
 Reads the first \eqn{p} components of \code{theta} as the location vector. It is
-the implementation both elliptical families register \code{\link[=mv_location]{mv_location()}} with.
-It is correct exactly where a family's leading parameters ARE its location,
-which is a fact about the family; the shape of \code{theta} says nothing about
-it.
+the implementation with which both elliptical families register
+\code{\link[=mv_location]{mv_location()}}. It is correct where the leading \eqn{p} parameters of a
+family are its location, which is a property of the family and not of the
+shape of \code{theta}.
 }
 \examples{
 d <- mvgaussian1_distrib(3)
@@ -28,8 +28,8 @@ theta <- as.list(stats::setNames(c(1, -2, 0.5, rep(0, 6)), d@params))
 th <- distributions7:::align_theta(d, theta)
 distributions7:::mv_leading_location(d, th)
 
-# Which is what mv_location() returns for this family, the method being
-# this function.
+# It is what mv_location() returns for this family, the method being this
+# function.
 mv_location(d, theta)
 
 }

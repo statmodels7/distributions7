@@ -12,17 +12,15 @@
 \item{theta}{A named list of parameters, each component a single number.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation of each
-component is returned, by sampling. Defaults to \code{FALSE}.}
+component is returned. Defaults to \code{FALSE}.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. Every link of this family is the identity, so the
-two coincide.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. Every link of this family is the identity, so the two coincide.}
 
-\item{approx}{Ignored: sampling is the only multivariate route to an
-expectation here. Present so that the signature matches the generic's.}
+\item{approx}{Not read: the expectation is exact.}
 
-\item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
-\code{10000}. Ignored otherwise.}
+\item{nsim}{Not read, for the same reason.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -33,25 +31,21 @@ is constant.
 }
 \description{
 Computes every fourth derivative of the log-density in the parameters, in
-closed form, by the same algebra as
-\code{\link[=distrib_deriv3.MvGaussianDistrib]{distrib_deriv3.MvGaussianDistrib()}} one order up: the tuple is split into
-mean indices and matrix indices, three or more mean indices give exactly
-zero, and the rest are read off the precision's derivative array \eqn{P_t}
-and the fourth derivative of the log-determinant. The arrays come from
-\code{parameters7::param_d4()} under a precision parametrization and from the
-expansion of the derivative of an inverse under a covariance one.
+closed form, by the algebra of \code{\link[=distrib_deriv3.MvGaussianDistrib]{distrib_deriv3.MvGaussianDistrib()}} one
+order up: the tuple is split into mean indices and matrix indices, three or
+more mean indices give exactly zero, and the rest are read off the
+derivative of the precision \eqn{P_t} from \code{\link[=mvg_ptensors]{mvg_ptensors()}} and the fourth
+derivative of the log-determinant.
 }
 \details{
-With \code{expected = TRUE} the expectation is taken by sampling \code{nsim} draws
-from the family and averaging the observed components, exactly as at order
-three. \code{approx} is not read, and the result carries Monte Carlo error of
-order \code{nsim^(-1/2)}.
+With \code{expected = TRUE} the expectation is exact, for the reason given at
+order three. \code{approx} and \code{nsim} are not read.
 }
 \section{Notation}{
 
-\eqn{\mu} is the mean, \eqn{M} the matrix the parametrization carries,
+\eqn{\mu} is the mean, \eqn{M} the matrix that the parametrization carries,
 \eqn{\eta} its free vector, \eqn{r = y - \mu} the centered response and
-\eqn{P_t} the precision's derivative array over the multiset \eqn{t}.
+\eqn{P_t} the derivative of the precision over the multiset \eqn{t}.
 }
 
 \examples{

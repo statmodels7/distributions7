@@ -11,8 +11,10 @@ length \eqn{p} is read as a single observation.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. The two coincide here.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. Every link of this family is the identity, so the two scales
+coincide.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -34,8 +36,10 @@ matrix pairs are
       - \Sigma^{-1}\!\left(A_l\Sigma^{-1}A_k
         + A_k\Sigma^{-1}A_l\right)\!w,}
 with \eqn{B_k = \Sigma^{-1}A_k\Sigma^{-1}} and
-\eqn{w = \Sigma^{-1}(y-\mu)}. Only the pure matrix pairs carry the
-observation, through \eqn{w}; the mixed pairs repeat one row.
+\eqn{w = \Sigma^{-1}(y-\mu)}; the two are \eqn{P_k e_j} and \eqn{-P_{kl}(y -
+\mu)}, computed from the derivatives of \eqn{\Sigma^{-1}} that
+\code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}} supplies. Only the pure matrix pairs carry the
+observation; the mixed pairs repeat one row.
 }
 \section{Notation}{
 
@@ -77,7 +81,7 @@ max(abs(gh$sigma_log_L1_sigma_L2.1 -
 }
 \seealso{
 \code{\link[=distrib_cross2_y.MvGaussianDistrib]{distrib_cross2_y.MvGaussianDistrib()}} and
-\code{\link[=distrib_hess_y_hess.MvGaussianDistrib]{distrib_hess_y_hess.MvGaussianDistrib()}} for the other two derivatives a
-marginal criterion reads, and \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} for the generic.
+\code{\link[=distrib_hess_y_hess.MvGaussianDistrib]{distrib_hess_y_hess.MvGaussianDistrib()}} for the other two derivatives that
+a marginal criterion reads, and \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} for the generic.
 }
 \keyword{internal}

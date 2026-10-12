@@ -20,8 +20,8 @@ after those of \code{out}.
 \description{
 Concatenates two results in the shape of \code{\link[=mv_derived]{mv_derived()}}, stacking the
 \code{value}, \code{transform} and \code{block} vectors and row-binding the two Jacobians.
-It is what joins a parametrization's own quantities, from
-\code{\link[=mv_param_block]{mv_param_block()}}, onto the standard deviations and correlations.
+It joins the quantities of a parametrization, from \code{\link[=mv_param_block]{mv_param_block()}}, onto
+the standard deviations and correlations.
 }
 \examples{
 d <- mvgaussian1_distrib(2)

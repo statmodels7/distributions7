@@ -17,10 +17,9 @@ long as \code{hess_names(distrib@params)} and in that order. Each pair is
 }
 \description{
 Returns, for each key of \code{\link[=hess_names]{hess_names()}}, the two positions in
-\code{distrib@params} that the key names, in the same order the keys come in. A
+\code{distrib@params} that the key names, in the order in which the keys come. A
 multivariate method branches on whether a component belongs to the mean
-block, the matrix block or the mixed block, which is a question about
-position, so positions are what it asks for.
+block, the matrix block or the mixed block, which depends on position.
 }
 \details{
 \code{\link[=hess_pairs]{hess_pairs()}} answers the same question with parameter names, which suits a

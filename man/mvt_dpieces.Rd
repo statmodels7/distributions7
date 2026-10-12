@@ -16,22 +16,23 @@ by \code{\link[=as_mv_matrix]{as_mv_matrix()}}.}
 \item{theta}{A named list of parameters, each component a single number.}
 }
 \value{
-A named list of the quantities above, INDEXED BY PARAMETER POSITION:
+A named list of the quantities above, indexed by parameter position:
 the \eqn{p} locations, then the matrix parametrization's free values, then
-\eqn{\nu}. Its components are \code{w}, \code{si}, \code{cw}, \code{dw} and \code{q} (the values),
-\code{sa}, \code{wa}, \code{Sa}, \code{ca}, \code{da} (lists of first derivatives, one per
-parameter), \code{npar}, and \code{pair(a, b)}, a function returning the second-order
+\eqn{\nu}. Its components are \code{p}, \code{n} and \code{npar} (the dimension, the
+number of rows and the number of parameters), \code{w}, \code{si}, \code{s}, \code{cw} and \code{dw}
+(the values), \code{sa}, \code{wa}, \code{Sa}, \code{ca} and \code{da} (lists of first derivatives,
+one per parameter), and \code{pair(a, b)}, a function returning the second-order
 pieces \code{s}, \code{w}, \code{S}, \code{c} and \code{d} for one pair of positions.
 }
 \description{
 Assembles, once per call, the first and second derivatives in the parameters
-of the four quantities every mixed response derivative of this family is
-built from: \eqn{s = \nu + q}, the whitened residual \eqn{w}, the inverse
-scale matrix \eqn{\Sigma^{-1}}, and the two scalars \eqn{c = (\nu+p)/s} and
-\eqn{d = (\nu+p)/s^2} that follow from \eqn{s}. The response derivatives are
-\eqn{\ell^{(y)} = -c\,w} and
+of the quantities from which every mixed response derivative of this family
+is built: \eqn{s = \nu + q}, the residual mapped through the inverse scale
+matrix \eqn{w = \Sigma^{-1}(y-\mu)}, the inverse scale matrix
+\eqn{\Sigma^{-1}}, and the two scalars \eqn{c = (\nu+p)/s} and \eqn{d =
+(\nu+p)/s^2}. The response derivatives are \eqn{\ell^{(y)} = -c\,w} and
 \eqn{\ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top}, so differentiating either
-in the parameters is a product rule over these pieces and nothing else.
+in the parameters is a product rule over these pieces.
 }
 \section{First derivatives}{
 Writing \eqn{A_k} for the matrix parametrization's first derivatives,
@@ -53,9 +54,14 @@ and, with \eqn{B_{kl} = A_k\Sigma^{-1}A_l + A_l\Sigma^{-1}A_k - A_{kl}},
 \deqn{\partial_{\eta_k\eta_l} s = w^\top B_{kl}w, \quad
   \partial_{\eta_k\eta_l} w = \Sigma^{-1}B_{kl}w, \quad
   \partial_{\eta_k\eta_l}\Sigma^{-1} = \Sigma^{-1}B_{kl}\Sigma^{-1}.}
-One middle matrix \eqn{B_{kl}} serves all three, which keeps the assembly
-short. \eqn{c} and \eqn{d} then follow by the quotient rule, \eqn{\nu+p}
-being linear in \eqn{\nu} and constant in everything else.
+The arrays \eqn{P_k} and \eqn{\Sigma^{-1}B_{kl}\Sigma^{-1}} are the first and
+second derivatives of \eqn{\Sigma^{-1}}, read from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}} and
+not formed from the derivatives of \eqn{\Sigma}; the derivatives in \eqn{s}
+and \eqn{w} are quadratic and linear forms in them. \eqn{c} and \eqn{d}
+follow by the quotient rule, \eqn{\nu+p} being linear in \eqn{\nu} and
+constant in everything else; the derivative of \eqn{c} in \eqn{\nu} is
+written as \eqn{(q-p)/s^2} and its second derivative as \eqn{2(p-q)/s^3}, the
+two terms of the quotient rule agreeing to leading order as \eqn{\nu} grows.
 }
 
 \section{Notation}{

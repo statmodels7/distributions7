@@ -2,7 +2,7 @@
 % Please edit documentation in R/multivariate.R
 \name{mv_sigma}
 \alias{mv_sigma}
-\title{The Matrix a Parameter List Describes}
+\title{The Matrix That a Parameter List Describes}
 \usage{
 mv_sigma(distrib, theta)
 }
@@ -13,29 +13,30 @@ mv_sigma(distrib, theta)
 number. Aligned by the generic before dispatch.}
 }
 \value{
-A \eqn{p \times p} symmetric positive definite numeric matrix, with
-both dimnames \code{v1}, ..., \code{vp}.
+A \eqn{p \times p} symmetric numeric matrix: positive definite, with
+both dimnames \code{v1}, ..., \code{vp}, for the gaussian and the Student t; of rank
+\eqn{p - 1} and without dimnames for the Dirichlet and the multinomial,
+whose coordinates sum to a constant.
 }
 \description{
-Returns the matrix a multivariate distribution's parametrization carries, as
-a \eqn{p \times p} numeric matrix: the COVARIANCE for a gaussian, and the
-SCALE MATRIX for a Student t. It is not in general the second moment. The
-Student t's covariance is \eqn{\nu\Sigma/(\nu-2)} and does not exist below
-two degrees of freedom, while its scale matrix exists at every \eqn{\nu};
-\code{\link[=variance]{variance()}} is the generic that answers about the moment, and keeping the
-two apart is what allows a heavy-tailed family to be described at all.
+Returns the matrix that describes the spread of a multivariate distribution,
+as a \eqn{p \times p} numeric matrix: the covariance for the gaussian, the
+Dirichlet and the multinomial, and the scale matrix for the Student t. The
+Student t's covariance is \eqn{\nu\Sigma/(\nu-2)} for \eqn{\nu > 2} and is
+infinite for \eqn{\nu \le 2}, while its scale matrix exists at every
+\eqn{\nu}; \code{\link[=variance]{variance()}} is the generic for the second moment.
 }
 \details{
-Where the parametrization carries the PRECISION, as
-\code{mvgaussian2_distrib()} does, the matrix is inverted here, so the
-result is the covariance either way.
+Where the parametrization carries the precision, as for
+\code{mvgaussian2_distrib()} and \code{mvstudent_t2_distrib()}, the matrix is inverted
+here, so the result is the covariance or the scale matrix either way.
 
-The base-class method signals an error: not every multivariate family has a
-matrix parameter, and a family that does registers its own method.
+No method is registered on the class, so a family without a method of its
+own fails in dispatch.
 }
 \section{Notation}{
 
-\eqn{\Sigma} is the matrix the parametrization carries, \eqn{\nu} the
+\eqn{\Sigma} is the matrix that the parametrization carries, \eqn{\nu} the
 degrees of freedom of a Student t and \eqn{p} the dimension.
 }
 
@@ -51,15 +52,15 @@ th <- c(theta, list(nu = 6))
 all.equal(mv_sigma(d, theta), variance(d, theta))
 all.equal(variance(t2, th), (6 / 4) * mv_sigma(t2, th))
 
-# At two degrees of freedom the covariance is gone and the scale matrix
-# stands.
+# At two degrees of freedom the covariance is infinite and the scale matrix
+# is finite.
 th2 <- th; th2$nu <- 2
 c(scale = mv_sigma(t2, th2)[1, 1], covariance = variance(t2, th2)[1, 1])
 
 }
 \seealso{
 \code{\link[=variance]{variance()}} for the moment, \code{\link[=mv_location]{mv_location()}} for the location,
-\code{\link[=mv_summary]{mv_summary()}} for the standard deviations and correlations a reader
-wants, and \code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}} and
-\code{\link[=mv_sigma.MvStudentTDistrib]{mv_sigma.MvStudentTDistrib()}} for the two methods.
+\code{\link[=mv_summary]{mv_summary()}} for the standard deviations and correlations of a fit, and
+\code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}} and \code{\link[=mv_sigma.MvStudentTDistrib]{mv_sigma.MvStudentTDistrib()}} for two
+methods.
 }

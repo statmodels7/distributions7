@@ -7,7 +7,7 @@
 mv_summary(object, level = object@level)
 }
 \arguments{
-\item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} of a MULTIVARIATE distribution. A univariate
+\item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} of a multivariate distribution. A univariate
 fit is rejected: there the parameters are already the interpretable
 quantities and \code{\link[=confint.distrib_fit]{confint.distrib_fit()}} is the function to call.}
 
@@ -23,28 +23,29 @@ character vector naming the group each row belongs to, by which \code{print()}
 lays the summary out.
 }
 \description{
-Reports the standard deviations, correlations and whatever else
+Reports the standard deviations, correlations and the other quantities that
 \code{\link[=mv_derived]{mv_derived()}} declares for the fitted distribution, each with its standard
 error and its confidence interval. A multivariate fit estimates the free
-values of a \pkg{parameters7} parametrization, and those are coordinates:
-the estimate and standard error of \code{sigma_log_L2} answer no question anybody
-asked. This function carries the fit's variance matrix onto the quantities
-that do.
+values of a \pkg{parameters7} parametrization, and those are coordinates: the
+estimate and standard error of \code{sigma_log_L2} do not describe a quantity of
+interest. This function carries the variance matrix of the fit onto
+quantities that do.
 }
 \section{The delta method}{
 \deqn{\widehat{\mathrm{Var}}\{g(\hat\theta)\}
   = J \, \widehat{\mathrm{Var}}(\hat\theta) \, J^\top,
   \qquad J = \partial g/\partial\theta,}
-with \eqn{J} taken from \code{\link[=mv_derived]{mv_derived()}}, in closed form for the two families
-that ship and by one central difference for any other.
+with \eqn{J} taken from \code{\link[=mv_derived]{mv_derived()}}, in closed form for the multivariate
+gaussian and Student \eqn{t} and by one central difference for the
+Dirichlet, the multinomial and any other family.
 }
 
 \section{Where each interval is built}{
-On the scale the quantity declares, then mapped back, which is the
-discipline \code{\link[=fit_distrib]{fit_distrib()}} applies to a univariate parameter. A standard
+Each interval is built on the scale that its quantity declares and then
+mapped back, as \code{\link[=fit_distrib]{fit_distrib()}} does for a univariate parameter. A standard
 deviation is intervalled on the log scale and a correlation on Fisher's
-\eqn{z}, so neither interval can leave the set its quantity lives in. An
-interval on the raw scale routinely puts a correlation above one.
+\eqn{z}, so neither interval can leave the set in which its quantity lies. An
+interval on the raw scale can put a correlation above one.
 
 The standard error is carried onto that scale by the transform's own
 derivative, so the reported \verb{Std. Error} column stays on the quantity's
@@ -66,13 +67,13 @@ truth <- list(mu1 = 0, mu2 = 1, sigma_log_L1 = 0,
 y <- distrib_rng(d, 500, truth)
 fit <- fit_distrib(d, y)
 
-# The standard deviations and the correlation, which is what one reads.
+# The standard deviations and the correlation.
 mv_summary(fit)
 
 # The coordinates the fit was estimated on, beside them.
 confint(fit)
 
-# Every interval stays inside the set its quantity lives in: the standard
+# Every interval stays inside the set of its quantity: the standard
 # deviations are positive and the correlation is inside (-1, 1).
 s <- mv_summary(fit)
 c(sd_lower_positive = all(s[1:2, 3] > 0),

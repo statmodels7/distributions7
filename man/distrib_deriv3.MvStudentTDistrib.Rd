@@ -4,7 +4,8 @@
 \alias{distrib_deriv3.MvStudentTDistrib}
 \title{Multivariate Student t Third Derivatives}
 \arguments{
-\item{distrib}{An \link{MvStudentTDistrib} object, from \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}
+or \code{\link[=mvstudent_t2_distrib]{mvstudent_t2_distrib()}}.}
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
@@ -12,18 +13,18 @@ length \eqn{p} is read as a single observation.}
 \item{theta}{A named list of parameters, each component a single number.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation is returned,
-by SAMPLING: \code{nsim} draws are made and the observed components averaged.
+by sampling: \code{nsim} draws are made and the observed components averaged.
 Defaults to \code{FALSE}.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. The two differ here, \code{nu} carrying a log link by
-default.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. The two differ here, \code{nu} carrying a log link by default.}
 
-\item{approx}{Ignored: sampling is the only multivariate route to an
-expectation. Present so that the signature matches the generic's.}
+\item{approx}{Not read: \code{expected = TRUE} always takes the expectation by
+sampling. Present so that the signature matches the generic's.}
 
 \item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
-\code{10000}. Ignored otherwise.}
+\code{10000}. Not read otherwise.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -35,26 +36,24 @@ is constant.
 }
 \description{
 Computes every third derivative of the log-density in the parameters, in
-closed form. Nothing is obstructed here: the log-density carries
-\code{lgamma}, a logarithm and a quadratic form, each elementary in \eqn{\nu}, so
-there is no distribution function to differentiate in its degrees of
-freedom. The component splits into a location-and-matrix part, handled by
-the same array expansion the gaussian uses through \code{\link[=mvg_ptensors]{mvg_ptensors()}}, and a
-\eqn{\nu} part obtained by differentiating
+closed form. The log-density carries \code{lgamma}, a logarithm and a quadratic
+form, each elementary in \eqn{\nu}. The location-and-matrix part of a
+component is handled by the array expansion that the gaussian uses through
+\code{\link[=mvg_ptensors]{mvg_ptensors()}}, and the \eqn{\nu} part by differentiating
 \eqn{(-1)^{m-1}(m-1)!/(\nu+q)^m} against the linear prefactor
-\eqn{(\nu+p)/2}.
+\eqn{(\nu+p)/2}. The components in \eqn{\nu} alone come from \code{\link[=mvt_cp_d]{mvt_cp_d()}}
+and \code{\link[=mvt_h_d]{mvt_h_d()}}.
 }
 \details{
-The license for this order is that the SAME assembly run at orders one and
-two reproduces the hand-written score and information, which are derived
-separately and are already under \code{\link[=check_distrib]{check_distrib()}}. Against one stencil on
-the analytic Hessian, every component here agrees to a relative
-\eqn{1.2\times10^{-8}} or better.
+Run at orders one and two, the same assembly reproduces
+\code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}} and
+\code{\link[=distrib_hessian.MvStudentTDistrib]{distrib_hessian.MvStudentTDistrib()}}, which are written separately, for
+the scale matrix and for its inverse.
 
-Unlike the gaussian's, no component vanishes. There a tuple with three
-location indices is exactly zero, the quadratic form being quadratic in
-\eqn{\mu}; here the weight depends on \eqn{q}, so
-\eqn{\ell^{(\mu_1\mu_1\mu_1)}} is an ordinary non-zero number.
+For the gaussian, every component with three location indices is zero,
+because the quadratic form is quadratic in \eqn{\mu}. Here the weight
+depends on \eqn{q}, and \eqn{\ell^{(\mu_1\mu_1\mu_1)}} is an ordinary
+non-zero number.
 
 With \code{expected = TRUE} the expectation is taken by sampling and carries
 Monte Carlo error of order \code{nsim^(-1/2)}.
@@ -81,14 +80,13 @@ c(t = sum(d3[["mu1_mu1_mu1"]]),
   gaussian = sum(distrib_deriv3(mvgaussian1_distrib(2), y,
                                 theta[1:5])[["mu1_mu1_mu1"]]))
 
-# Against one stencil on the analytic Hessian.
+# Against a central difference of the Hessian in nu.
 h <- 1e-4
 tp <- theta; tp$nu <- tp$nu + h
 tm <- theta; tm$nu <- tm$nu - h
 c(exact = sum(d3[["mu1_mu2_nu"]]),
   stencil = (sum(distrib_hessian(d, y, tp)[["mu1_mu2"]]) -
              sum(distrib_hessian(d, y, tm)[["mu1_mu2"]])) / (2 * h))
-
 }
 \seealso{
 \code{\link[=distrib_deriv4.MvStudentTDistrib]{distrib_deriv4.MvStudentTDistrib()}} for the next order,

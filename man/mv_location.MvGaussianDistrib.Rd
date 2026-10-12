@@ -15,12 +15,11 @@ coordinates of the response. The parameter names \code{mu1}, ..., \code{mup} do 
 appear on it.
 }
 \description{
-Returns the mean vector \eqn{\mu}, which for this family is the first
-\eqn{p} parameters read off \code{theta} in order. The method is
-\code{\link[=mv_leading_location]{mv_leading_location()}}, shared with every multivariate family whose
-location is its leading parameters, so the gaussian adds nothing of its own
-here: \eqn{\mu} is both the location the density is centered on and the
-expectation of the law, which is not true of every family.
+Returns the mean vector \eqn{\mu}, which for this family is the first \eqn{p}
+parameters read off \code{theta} in order. The method is \code{\link[=mv_leading_location]{mv_leading_location()}},
+shared with the Student t, whose location is also its leading parameters. For
+the gaussian \eqn{\mu} is both the center of the density and the expectation
+of the law, which does not hold for every family.
 }
 \examples{
 d <- mvgaussian1_distrib(3)

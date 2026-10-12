@@ -11,9 +11,10 @@ length \eqn{p} is read as a single observation.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. Every link of this family is the identity, so the
-two scales coincide.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. Every link of this family is the identity, so the two scales
+coincide.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -24,23 +25,25 @@ the diagonal first, then the off-diagonal pairs.
 }
 \description{
 Computes the second derivatives of the log-density in closed form. With
-\eqn{w = \Sigma^{-1}(y-\mu)} and \eqn{A_k}, \eqn{A_{kl}} the first and
-second derivatives of \eqn{\Sigma} in the free values,
-\deqn{\ell^{(\mu_a \mu_b)} = -(\Sigma^{-1})_{ab}, \qquad
-  \ell^{(\mu_a \eta_k)} = -(\Sigma^{-1} A_k w)_a,}
-\deqn{\ell^{(\eta_k \eta_l)} =
-  -\tfrac{1}{2}\frac{\partial^2 \log\lvert\Sigma\rvert}{\partial\eta_k \partial\eta_l}
-  + \tfrac{1}{2}\, w^\top A_{kl} w - w^\top A_l \Sigma^{-1} A_k w.}
-The mean block does not depend on the response, so it is constant across
-rows; the mixed and matrix blocks do. The product \eqn{\Sigma^{-1}A_k} is
-formed once and reused between the mixed block and the matrix block.
+\eqn{r = y - \mu} and \eqn{P_k}, \eqn{P_{kl}} the first and second
+derivatives of \eqn{\Sigma^{-1}} in the free values, \deqn{\ell^{(\mu_a
+\mu_b)} = -(\Sigma^{-1})_{ab}, \qquad \ell^{(\mu_a \eta_k)} = (P_k r)_a,}
+\deqn{\ell^{(\eta_k \eta_l)} = -\tfrac{1}{2}\frac{\partial^2
+\log\lvert\Sigma\rvert}{\partial\eta_k \partial\eta_l} - \tfrac{1}{2}\,
+r^\top P_{kl} r.} The mean block does not depend on the response, so it is
+constant across rows; the mixed and matrix blocks do. \eqn{P_k} and
+\eqn{P_{kl}} are read from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}, exact for
+\code{\link[parameters7:log_cholesky]{parameters7::log_cholesky()}} where the covariance is nearly singular;
+written as products of \eqn{\Sigma^{-1}} and the derivatives of \eqn{\Sigma},
+the matrix block cancels there for an observation away from the degenerate
+direction.
 }
 \section{Notation}{
 
 \eqn{\mu} is the mean, \eqn{\Sigma} the covariance, \eqn{\eta} the free
-vector of the matrix parametrization, \eqn{A_k} and \eqn{A_{kl}} its first
-and second derivative arrays, and \eqn{\ell^{(ij)}} the second derivative of
-the log-density in parameters \eqn{i} and \eqn{j}.
+vector of the matrix parametrization, \eqn{P_k} and \eqn{P_{kl}} the first
+and second derivatives of \eqn{\Sigma^{-1}}, and \eqn{\ell^{(ij)}} the second
+derivative of the log-density in parameters \eqn{i} and \eqn{j}.
 }
 
 \examples{

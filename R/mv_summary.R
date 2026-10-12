@@ -4,45 +4,47 @@ NULL
 #' @title Interpretable Quantities of a Multivariate Distribution
 #'
 #' @description
-#' Returns the quantities a reader of a multivariate fit wants: standard
-#' deviations, correlations, and whatever else the family's matrix
-#' parametrization is about. It returns with them the Jacobian that carries
-#' standard errors onto those quantities, and the scale each one's confidence
-#' interval should be built on.
+#' Returns the quantities that a reader of a multivariate fit reads: standard
+#' deviations, correlations, and the quantities that the matrix parametrization
+#' of the family declares. It also returns the Jacobian that carries standard
+#' errors onto those quantities, and the scale on which the confidence interval
+#' of each one is built.
 #'
 #' @details
-#' # Why coordinates are not quantities
+#' # Coordinates and quantities
 #'
-#' The free values of a \pkg{parameters7} parametrization are coordinates
-#' chosen so that an optimizer can move freely. The logarithm of the second
-#' diagonal entry of a Cholesky factor has an estimate and a standard error,
-#' and neither answers a question anybody asked. This generic names the
-#' quantities that do and supplies \eqn{\partial g/\partial\theta}, so
-#' [mv_summary()] can apply the delta method to them.
+#' The free values of a \pkg{parameters7} parametrization are coordinates chosen
+#' so that an optimizer can move freely. The logarithm of the second diagonal
+#' entry of a Cholesky factor has an estimate and a standard error, but these do
+#' not describe a quantity of interest. This generic names the quantities that
+#' do and supplies \eqn{\partial g/\partial\theta}, so that [mv_summary()] can
+#' apply the delta method to them.
 #'
 #' # The interval scale each quantity declares
 #'
-#' Each quantity carries the scale its interval should be built on, exactly as
+#' Each quantity carries the scale on which its interval is built, as
 #' [fit_distrib()] builds a univariate interval on the link scale and maps it
 #' back. A standard deviation is intervalled on the log scale, so the interval
-#' cannot reach zero; a correlation on Fisher's
-#' \eqn{z = \mathrm{artanh}(\rho)}, so it cannot leave \eqn{(-1, 1)}; an
-#' unconstrained quantity on its own scale. On the raw scale a correlation's
-#' interval routinely exceeds one.
+#' cannot reach zero; a correlation on Fisher's \eqn{z = \mathrm{artanh}(\rho)},
+#' so it cannot leave \eqn{(-1, 1)}; an unconstrained quantity on its own scale.
+#' On the raw scale the interval of a correlation can exceed one.
 #'
 #' # What the default method reports
 #'
 #' The method registered on [multivariate_distrib()] returns the distinct
-#' entries of the matrix [mv_sigma()] produces, named `sigma_v1_v1` and so on,
-#' with a Jacobian from one central difference per parameter. A family whose
-#' matrix is not a covariance still reports it on its own scale, which beats
-#' reporting a Cholesky coordinate. The two shipped families override with
-#' closed-form Jacobians.
+#' entries of the matrix that [mv_sigma()] produces, named `sigma_v1_v1` and so
+#' on, with a Jacobian from one central difference per parameter, followed by
+#' the quantities that the matrix parametrization declares through
+#' `param_readable()`. A family whose matrix is not a covariance reports that
+#' matrix on its own scale. The multivariate gaussian and Student t families
+#' override this method with closed-form Jacobians; the Dirichlet and the
+#' multinomial use it, and report the covariance of the response followed by the
+#' probabilities of the simplex.
 #'
 #' @param distrib An object inheriting from [multivariate_distrib()].
 #' @param theta A named list or vector of parameters, each component a single
 #'   number. Aligned by the generic before dispatch, so any order is accepted.
-#' @param ... Passed to methods. No shipped method reads it.
+#' @param ... Passed to methods. The methods of the package do not use it.
 #'
 #' @return A named list with
 #'   \describe{
@@ -59,7 +61,7 @@ NULL
 #'
 #' @section Notation:
 #' \eqn{\theta} is the parameter vector, \eqn{g} the map to the reported
-#' quantities, \eqn{\Sigma} the matrix the family carries and \eqn{\rho} a
+#' quantities, \eqn{\Sigma} the matrix that the family carries and \eqn{\rho} a
 #' correlation.
 #'
 #' @seealso [mv_summary()], which applies the delta method to this,
@@ -73,7 +75,7 @@ NULL
 #' der <- mv_derived(d, theta)
 #' der$value
 #'
-#' # Each quantity declares the scale its interval is built on.
+#' # Each quantity declares the scale on which its interval is built.
 #' der$transform
 #' der$block
 #'
@@ -142,47 +144,51 @@ mv_entry_index <- function(p, prefix) {
 }
 
 
-#' @title The Quantities the Matrix Parametrization Is About
+#' @title Quantities Declared by the Matrix Parametrization
 #'
 #' @description
-#' Returns the block a \pkg{parameters7} family declares through
-#' `param_readable()`, widened to the distribution's own parameter vector: the
-#' parametrization's Jacobian columns are placed in the stretch of
-#' `distrib@params` its free values occupy, and every other column is zero. An
-#' AR(1) covariance, for instance, is about a scale and a correlation, and
-#' those are what a reader wants beside the standard deviations.
+#' Returns the block that a \pkg{parameters7} parametrization declares through
+#' `param_readable()`, widened to the parameter vector of the distribution: the
+#' Jacobian columns of the parametrization are placed at the positions of its
+#' free values in `distrib@params`, and every other column is zero. An AR(1)
+#' covariance, for instance, declares a scale and a correlation, which a
+#' summary reports beside the standard deviations.
 #'
 #' @details
-#' A family that declares nothing returns `NULL`, and the summary is then
-#' whatever [mv_derived()] produced without it. The label says `(precision)`
-#' when the distribution is inverted, because the parametrization does not know
-#' which side of the model it was handed to.
+#' A parametrization that declares nothing gives `NULL`, and the summary is
+#' then the result of [mv_derived()] without it. The label ends in
+#' `(precision)` when the distribution is inverted, because the parametrization
+#' itself does not record whether its matrix is a covariance or a precision.
 #'
-#' A multivariate family written OUTSIDE this package may have no `param`
-#' property at all, so the property is asked for with `S7::prop_names()` rather
-#' than assumed.
+#' The positions of the free values are found by name: the family names each
+#' free value with a prefix followed by the free name, after the location for
+#' the gaussian and the Student t and first for the Dirichlet and the
+#' multinomial. Where a name does not identify exactly one parameter, the
+#' positions after the location are used. A multivariate family written outside
+#' this package may have no `param` property, so the function tests for it with
+#' `S7::prop_names()` and returns `NULL` when it is absent.
 #'
 #' @param distrib A [multivariate_distrib()] object.
 #' @param theta A named list of parameters, already aligned.
 #'
 #' @return `NULL` where the parametrization declares nothing, or a named list
-#'   in the shape of [mv_derived()]'s return: `value`, `jacobian`, `transform`
-#'   and `block`, with the Jacobian as wide as `distrib@params`.
+#'   in the shape of the return value of [mv_derived()]: `value`, `jacobian`,
+#'   `transform` and `block`, with the Jacobian as wide as `distrib@params`.
 #'
 #' @seealso [parameters7::param_readable()] for what a parametrization
 #'   declares, [mv_append_block()] for how the result is joined on, and
-#'   [mv_derived.MvGaussianDistrib()] for the consumer.
+#'   [mv_derived.multivariate_distrib()] and [mv_own_block()] for the
+#'   consumers.
 #'
 #' @examples
-#' # A log-Cholesky covariance declares nothing: its free values are
-#' # coordinates and nothing more.
+#' # A log-Cholesky covariance declares no block.
 #' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #' th <- distributions7:::align_theta(d, theta)
 #' is.null(distributions7:::mv_param_block(d, th))
 #'
-#' # An AR(1) covariance is about a scale and a correlation, and says so.
+#' # An AR(1) covariance declares a scale and a correlation.
 #' a <- mvgaussian1_distrib(3, parameters7::ar1(3))
 #' th <- as.list(stats::setNames(c(0, 0, 0, 0.1, 0.3), a@params))
 #' pb <- distributions7:::mv_param_block(a, distributions7:::align_theta(a, th))
@@ -190,10 +196,17 @@ mv_entry_index <- function(p, prefix) {
 #' pb$transform
 #' pb$block
 #'
-#' # The Jacobian is as wide as the distribution's parameter vector, with the
-#' # mean columns zero.
+#' # The Jacobian is as wide as the parameter vector of the distribution, with
+#' # the mean columns zero.
 #' dim(pb$jacobian)
 #' pb$jacobian[, 1:3]
+#'
+#' # The simplex of a Dirichlet declares its probabilities, whose free values
+#' # come first among the parameters.
+#' dd <- dirichlet_distrib(3)
+#' thd <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)
+#' pbd <- distributions7:::mv_param_block(dd, distributions7:::align_theta(dd, thd))
+#' pbd$value
 #'
 #' @keywords internal
 mv_param_block <- function(distrib, theta) {
@@ -204,17 +217,28 @@ mv_param_block <- function(distrib, theta) {
   s <- distrib@param
   p <- distrib@n_dim
   v <- mv_flat_theta(distrib, theta)
-  r <- parameters7::param_readable(s, v[p + seq_len(s@n_free)])
+  # Where the structure's free values sit among the parameters: after the
+  # location for the elliptical families, first for the simplex-valued ones.
+  # Each is found by its name, which the family writes as a prefix and the
+  # free name; a name that does not identify one parameter falls back to the
+  # position after the location.
+  pos <- vapply(s@free_names, function(f) {
+    hit <- which(endsWith(distrib@params, paste0("_", f)))
+    if (length(hit) == 1L) hit else NA_integer_
+  }, integer(1))
+  if (anyNA(pos) || anyDuplicated(pos)) pos <- p + seq_len(s@n_free)
+  r <- parameters7::param_readable(s, v[pos])
   if (is.null(r)) return(NULL)
 
   nm <- names(r$value)
   jac <- matrix(0, length(nm), distrib@n_params,
                 dimnames = list(nm, distrib@params))
-  jac[, p + seq_len(s@n_free)] <- r$jacobian
+  jac[, pos] <- r$jacobian
   # Which matrix the family describes is the distribution's business, not the
   # structure's: the same structure carries a covariance on one side of a
   # model and a precision on the other.
-  label <- if (isTRUE(distrib@inverted)) {
+  inv <- "inverted" %in% S7::prop_names(distrib) && isTRUE(distrib@inverted)
+  label <- if (inv) {
     paste(r$label, "(precision)")
   } else {
     r$label
@@ -224,16 +248,16 @@ mv_param_block <- function(distrib, theta) {
 }
 
 
-#' @title The Quantities a Structured Parametrization Is About
+#' @title Quantities Declared by a Structured Parametrization
 #'
 #' @description
-#' Returns the block [mv_param_block()] declares, with the structure's common
-#' variance `scale` replaced by its square root where the matrix is a
+#' Returns the block that [mv_param_block()] returns, with the common variance
+#' `scale` of the structure replaced by its square root where the matrix is a
 #' covariance or a scale matrix, or `NULL` where the structure declares no
 #' block. A structured matrix such as `compound_symmetry()` or `ar1()` is fixed
-#' by these few quantities, so they are what a summary reports in place of the
-#' standard deviation of every coordinate and the correlation of every pair,
-#' which repeat them.
+#' by these few quantities, so a summary reports them in place of the standard
+#' deviation of every coordinate and the correlation of every pair, which would
+#' repeat them.
 #'
 #' @details
 #' The standard deviation is \eqn{\sqrt{s}} with \eqn{s} the `scale`, so its
@@ -280,8 +304,8 @@ mv_own_block <- function(distrib, theta, sd_label = "sd") {
 #' @description
 #' Concatenates two results in the shape of [mv_derived()], stacking the
 #' `value`, `transform` and `block` vectors and row-binding the two Jacobians.
-#' It is what joins a parametrization's own quantities, from
-#' [mv_param_block()], onto the standard deviations and correlations.
+#' It joins the quantities of a parametrization, from [mv_param_block()], onto
+#' the standard deviations and correlations.
 #'
 #' @param out A named list with `value`, `jacobian`, `transform` and `block`,
 #'   as [mv_derived()] returns.
@@ -323,19 +347,21 @@ mv_append_block <- function(out, extra) {
 #' @name mv_derived.multivariate_distrib
 #'
 #' @description
-#' Returns the distinct entries of the matrix [mv_sigma()] produces, named
-#' `sigma_vi_vj` after the coordinates they belong to, with a Jacobian from one
-#' central difference in each parameter. This is the fallback for a family that
-#' registers no method of its own: reporting the matrix on its own scale is
-#' worth more to a reader than reporting a Cholesky coordinate, even where the
-#' entries are not the standard deviations and correlations a closed-form
-#' method would give.
+#' Returns the distinct entries of the matrix that [mv_sigma()] produces, named
+#' `sigma_vi_vj` after their coordinates, with a Jacobian from one central
+#' difference in each parameter, followed by the block that [mv_param_block()]
+#' returns when the parametrization declares one. It is the method of a family
+#' that registers none of its own, among them the Dirichlet and the
+#' multinomial, whose matrix is the covariance of the response. The entries
+#' are variances and covariances, where a closed-form method reports standard
+#' deviations and correlations.
 #'
 #' @details
 #' The diagonal entries are variances and are intervalled on the log scale; the
 #' off-diagonal ones are unconstrained given the diagonal and are intervalled on
-#' their own. That is weaker than the closed-form methods, whose correlations
-#' ride Fisher's \eqn{z} and so cannot leave \eqn{(-1, 1)}.
+#' their own scale. The closed-form methods report correlations on Fisher's
+#' \eqn{z}, whose intervals stay inside \eqn{(-1, 1)}; the interval of a
+#' covariance has no such bound.
 #'
 #' @param distrib An object inheriting from [multivariate_distrib()] that has
 #'   no method of its own.
@@ -343,8 +369,10 @@ mv_append_block <- function(out, extra) {
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with `value`, `jacobian`, `transform` and `block`, as
-#'   [mv_derived()] documents. There are `p * (p + 1) / 2` quantities, blocked
-#'   as `"Variances"` and `"Covariances"`.
+#'   [mv_derived()] documents. There are `p * (p + 1) / 2` matrix entries,
+#'   blocked as `"Variances"` and `"Covariances"`, followed by the quantities
+#'   that the matrix parametrization declares through `param_readable()` when
+#'   it declares any.
 #'
 #' @seealso [mv_derived.MvGaussianDistrib()] and
 #'   [mv_derived.MvStudentTDistrib()] for the two closed-form methods,
@@ -361,12 +389,16 @@ mv_append_block <- function(out, extra) {
 #' d0$value
 #' d0$transform
 #'
-#' # The entries really are the matrix, read off its lower triangle.
+#' # The entries are the lower triangle of the matrix.
 #' mv_sigma(d, theta)
 #'
 #' # Against the closed-form method, which reports standard deviations and a
-#' # correlation instead of variances and a covariance.
+#' # correlation in place of variances and a covariance.
 #' mv_derived(d, theta)$value
+#'
+#' # The Dirichlet uses this method: its covariance, then its probabilities.
+#' dd <- dirichlet_distrib(3)
+#' mv_derived(dd, list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8))$block
 #'
 #' @keywords internal
 S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
@@ -405,8 +437,8 @@ S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
 #'
 #' @description
 #' Turns a symmetric positive definite matrix and the derivatives of its
-#' entries into the standard deviations and correlations a reader wants, with
-#' the Jacobian written out. Writing \eqn{\Sigma = DRD} with \eqn{D} the
+#' entries into standard deviations and correlations, with the Jacobian
+#' written out. Writing \eqn{\Sigma = DRD} with \eqn{D} the
 #' diagonal of standard deviations,
 #' \deqn{\frac{\partial s_j}{\partial\theta_k} = \frac{A_k[j,j]}{2 s_j},
 #'   \qquad
@@ -414,14 +446,16 @@ S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
 #'     = \frac{A_k[j,l]}{s_j s_l}
 #'       - \frac{\rho_{jl}}{2}\left(\frac{A_k[j,j]}{\Sigma_{jj}}
 #'         + \frac{A_k[l,l]}{\Sigma_{ll}}\right),}
-#' with \eqn{A_k = \partial\Sigma/\partial\theta_k}. Nothing new is computed:
-#' the arrays come from the parametrization the caller already has.
+#' with \eqn{A_k = \partial\Sigma/\partial\theta_k}. No further derivative is
+#' computed: the arrays are those that the caller obtained from the
+#' parametrization.
 #'
 #' @param sigma A \eqn{p \times p} symmetric positive definite numeric matrix.
 #' @param a A list of \eqn{p \times p} numeric matrices, one per parameter of
 #'   the distribution and in `params` order, holding
-#'   \eqn{\partial\Sigma/\partial\theta_k}. A parameter the matrix does not
-#'   depend on contributes a matrix of zeros.
+#'   \eqn{\partial\Sigma/\partial\theta_k}. For a parameter that the matrix
+#'   does not depend on, the entry is `NULL` or a matrix of zeros; both are
+#'   accepted.
 #' @param params The distribution's parameter names, which become the column
 #'   names of the Jacobian.
 #' @param sd_label The prefix for the diagonal quantities. Defaults to `"sd"`;
@@ -429,7 +463,8 @@ S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
 #'   standard deviations of the response.
 #' @param cor_label The prefix for the off-diagonal quantities. Defaults to
 #'   `"cor"`.
-#' @param sd_block,cor_block The block labels the printed summary groups by.
+#' @param sd_block,cor_block The block labels by which the printed summary
+#'   groups the quantities.
 #'
 #' @return A named list with `value`, `jacobian`, `transform` and `block`, as
 #'   [mv_derived()] documents. There are \eqn{p} diagonal quantities on the log
@@ -531,28 +566,28 @@ mv_sd_cor <- function(sigma, a, params, sd_label = "sd", cor_label = "cor",
 #' @title Derivatives of the Covariance with Respect to Every Parameter
 #'
 #' @description
-#' Returns \eqn{\partial\Sigma/\partial\theta_k} for EVERY parameter of a
+#' Returns \eqn{\partial\Sigma/\partial\theta_k} for every parameter of a
 #' multivariate distribution, in `distrib@params` order, so that the list can
 #' be indexed by parameter position without any bookkeeping at the call site.
-#' The parametrization supplies the derivatives of its own free values; the
+#' The parametrization supplies the derivatives in its own free values; the
 #' location components and, for a Student \eqn{t}, the degrees of freedom leave
-#' the matrix alone and contribute a matrix of zeros.
+#' the matrix alone, and their entries of the list are `NULL`.
 #'
 #' @details
-#' Where the parametrization carries the PRECISION the arrays are carried onto
+#' Where the parametrization carries the precision the arrays are carried onto
 #' the covariance by \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma},
-#' so the result is always in the covariance whichever side the model is
-#' written on.
+#' so the result is always in the covariance, on whichever side the model is
+#' written.
 #'
 #' @param distrib A [multivariate_distrib()] object with a `param` property.
 #' @param theta A named list of parameters, already aligned.
-#' @param n_before The number of parameters before the matrix parametrization's
-#'   free values, which is \eqn{p} for both shipped families. Those positions
-#'   get zero matrices.
+#' @param n_before The number of parameters before the free values of the
+#'   matrix parametrization, which is \eqn{p} for the gaussian and the Student
+#'   \eqn{t}.
 #'
-#' @return A list of \eqn{p \times p} numeric matrices, as long as
-#'   `distrib@params`. Every entry outside the parametrization's stretch is a
-#'   matrix of zeros.
+#' @return A list as long as `distrib@params`. The entries at the positions of
+#'   the free values of the parametrization are \eqn{p \times p} numeric
+#'   matrices; every other entry is `NULL`.
 #'
 #' @section Notation:
 #' \eqn{\Sigma} is the covariance or scale matrix, \eqn{\eta} the free vector of
@@ -569,7 +604,7 @@ mv_sd_cor <- function(sigma, a, params, sd_label = "sd", cor_label = "cor",
 #'           sigma_L2.1 = 0.5))
 #' a <- distributions7:::mv_sigma_derivs(d, theta, 2)
 #'
-#' # One entry per parameter, and the two mean entries are zero.
+#' # One entry per parameter, and the two mean entries are NULL.
 #' length(a) == d@n_params
 #' a[[1]]
 #'
@@ -602,13 +637,13 @@ mv_sigma_derivs <- function(distrib, theta, n_before) {
 #' @name mv_derived.MvGaussianDistrib
 #'
 #' @description
-#' Returns the quantities the chosen parametrization describes, with their
+#' Returns the quantities that the chosen parametrization describes, with their
 #' Jacobian. Where the matrix parametrization declares its own block through
 #' `parameters7::param_readable()` (a compound symmetry, an AR(1), an AR(p)),
 #' that block alone is returned, with the common variance `scale` reported as
-#' its square root `sd` on the covariance side. Otherwise a COVARIANCE
+#' its square root `sd` on the covariance side. Otherwise a covariance
 #' parametrization reports the standard deviations and the correlations, and a
-#' PRECISION parametrization reports the conditional variances
+#' precision parametrization reports the conditional variances
 #' \eqn{1/\Omega_{jj} = \operatorname{Var}(Y_j \mid Y_{-j})} and the partial
 #' correlations \eqn{-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}}, the
 #' correlation of two coordinates given all the others.
@@ -616,17 +651,17 @@ mv_sigma_derivs <- function(distrib, theta, n_before) {
 #' @details
 #' # One parametrization, one set of quantities
 #'
-#' A user who writes the model on the precision asks to read the precision, so
-#' the marginal standard deviations and correlations are not reported beside
-#' its own quantities; they remain available from `mv_sigma()` and
-#' `variance()`. In the same way a structured matrix is fixed by its few
-#' parameters, and the standard deviation of every coordinate and the
-#' correlation of every pair would repeat them.
+#' A model written on the precision is reported on the precision, so the
+#' marginal standard deviations and correlations are not reported beside its own
+#' quantities; they remain available from `mv_sigma()` and `variance()`. In the
+#' same way a structured matrix is fixed by its few parameters, and the standard
+#' deviation of every coordinate and the correlation of every pair would repeat
+#' them.
 #'
 #' # What a precision's diagonal means
 #'
-#' The quantity with a reading is the conditional VARIANCE, so
-#' \eqn{1/\Omega_{jj}} is reported rather than a square root of
+#' The diagonal of a precision is read through the conditional variance, so
+#' \eqn{1/\Omega_{jj}} is reported in place of a square root of
 #' \eqn{\Omega_{jj}}. Its ratio to the marginal variance is \eqn{1 - R_j^2} for
 #' the regression of that coordinate on all the others. At \eqn{p = 2} the
 #' partial correlation equals the correlation.
@@ -732,13 +767,14 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
 #' @name mv_derived.MvStudentTDistrib
 #'
 #' @description
-#' Returns the square roots of the diagonal of the SCALE matrix and the
-#' correlations it implies, with the closed-form Jacobian [mv_sd_cor()]
-#' supplies. The correlations are the response's as well: the covariance is
-#' \eqn{\nu\Sigma/(\nu-2)} where it exists, and a positive multiple of a matrix
-#' leaves its correlations alone. The diagonal quantities are NOT standard
-#' deviations of the response, and are named `scale_sd_v1`, ..., `scale_sd_vp`
-#' and blocked as `"Scale standard deviations"` to say so.
+#' Returns the square roots of the diagonal of the scale matrix and the
+#' correlations that it implies, with the closed-form Jacobian that
+#' [mv_sd_cor()] supplies. The correlations are also those of the response: the
+#' covariance is \eqn{\nu\Sigma/(\nu-2)} where it exists, and a positive
+#' multiple of a matrix has the same correlations. The diagonal quantities are
+#' not standard deviations of the response, and for that reason they are named
+#' `scale_sd_v1`, ..., `scale_sd_vp` and blocked as `"Scale standard
+#' deviations"`.
 #'
 #' The rule of [mv_derived.MvGaussianDistrib()] holds here as well: a
 #' structured parametrization reports its own block alone, its `scale` as the
@@ -747,13 +783,13 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
 #' partial correlations and nothing of the scale matrix.
 #'
 #' @details
-#' The degrees of freedom appear in no quantity here. \eqn{\nu} is already an
-#' interpretable parameter on its own scale, so [confint.distrib_fit()]
-#' reports it and this generic does not repeat it. That is also why the
-#' \eqn{\nu} column of the Jacobian is zero.
+#' The quantities do not include the degrees of freedom: \eqn{\nu} is
+#' interpretable on its own scale, so [confint.distrib_fit()] reports it and
+#' this generic does not repeat it. For the same reason the \eqn{\nu} column of
+#' the Jacobian is zero.
 #'
 #' @param distrib An [MvStudentTDistrib] object, from
-#'   [mvstudent_t1_distrib()].
+#'   [mvstudent_t1_distrib()] or [mvstudent_t2_distrib()].
 #' @param theta A named list of parameters, already aligned by the generic.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -792,7 +828,7 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
 #' c(reported = der$value[["cor_v1_v2"]],
 #'   from_covariance = cv(variance(d, theta)))
 #'
-#' # nu enters no quantity here, so its Jacobian column is zero.
+#' # The Jacobian column of nu is zero.
 #' der$jacobian[, "nu"]
 #'
 #' @keywords internal
@@ -862,13 +898,13 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
 #' @title Interpretable Estimates of a Multivariate Fit
 #'
 #' @description
-#' Reports the standard deviations, correlations and whatever else
+#' Reports the standard deviations, correlations and the other quantities that
 #' [mv_derived()] declares for the fitted distribution, each with its standard
 #' error and its confidence interval. A multivariate fit estimates the free
-#' values of a \pkg{parameters7} parametrization, and those are coordinates:
-#' the estimate and standard error of `sigma_log_L2` answer no question anybody
-#' asked. This function carries the fit's variance matrix onto the quantities
-#' that do.
+#' values of a \pkg{parameters7} parametrization, and those are coordinates: the
+#' estimate and standard error of `sigma_log_L2` do not describe a quantity of
+#' interest. This function carries the variance matrix of the fit onto
+#' quantities that do.
 #'
 #' @details
 #' # The delta method
@@ -876,22 +912,23 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
 #' \deqn{\widehat{\mathrm{Var}}\{g(\hat\theta)\}
 #'   = J \, \widehat{\mathrm{Var}}(\hat\theta) \, J^\top,
 #'   \qquad J = \partial g/\partial\theta,}
-#' with \eqn{J} taken from [mv_derived()], in closed form for the two families
-#' that ship and by one central difference for any other.
+#' with \eqn{J} taken from [mv_derived()], in closed form for the multivariate
+#' gaussian and Student \eqn{t} and by one central difference for the
+#' Dirichlet, the multinomial and any other family.
 #'
 #' # Where each interval is built
 #'
-#' On the scale the quantity declares, then mapped back, which is the
-#' discipline [fit_distrib()] applies to a univariate parameter. A standard
+#' Each interval is built on the scale that its quantity declares and then
+#' mapped back, as [fit_distrib()] does for a univariate parameter. A standard
 #' deviation is intervalled on the log scale and a correlation on Fisher's
-#' \eqn{z}, so neither interval can leave the set its quantity lives in. An
-#' interval on the raw scale routinely puts a correlation above one.
+#' \eqn{z}, so neither interval can leave the set in which its quantity lies. An
+#' interval on the raw scale can put a correlation above one.
 #'
 #' The standard error is carried onto that scale by the transform's own
 #' derivative, so the reported `Std. Error` column stays on the quantity's
 #' natural scale while the limits are computed on the transformed one.
 #'
-#' @param object A [distrib_fit()] of a MULTIVARIATE distribution. A univariate
+#' @param object A [distrib_fit()] of a multivariate distribution. A univariate
 #'   fit is rejected: there the parameters are already the interpretable
 #'   quantities and [confint.distrib_fit()] is the function to call.
 #' @param level The confidence level, a single number strictly inside
@@ -921,13 +958,13 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
 #' y <- distrib_rng(d, 500, truth)
 #' fit <- fit_distrib(d, y)
 #'
-#' # The standard deviations and the correlation, which is what one reads.
+#' # The standard deviations and the correlation.
 #' mv_summary(fit)
 #'
 #' # The coordinates the fit was estimated on, beside them.
 #' confint(fit)
 #'
-#' # Every interval stays inside the set its quantity lives in: the standard
+#' # Every interval stays inside the set of its quantity: the standard
 #' # deviations are positive and the correlation is inside (-1, 1).
 #' s <- mv_summary(fit)
 #' c(sd_lower_positive = all(s[1:2, 3] > 0),

@@ -19,12 +19,14 @@ An \eqn{n \times p} numeric matrix, one draw per row, with column
 names \code{v1}, ..., \code{vp}.
 }
 \description{
-Draws from the family through its scale-mixture representation,
-\eqn{y = \mu + L z\sqrt{\nu/g}} with \eqn{z} a vector of independent
-standard normals, \eqn{g \sim \chi^2_\nu} independent of them, and
-\eqn{LL^\top = \Sigma}. A \eqn{t} is a gaussian whose precision has been
-multiplied by a gamma variate, and that same representation is what gives
-the family its heavy tails and its closed-form expected information.
+Draws from the family through its scale-mixture representation, \eqn{y = \mu
++ L z\sqrt{\nu/g}} with \eqn{z} a vector of independent standard normals,
+\eqn{g \sim \chi^2_\nu} independent of them, and \eqn{LL^\top = \Sigma}. The
+factor \eqn{L} is read from the parametrization (see \code{\link[=mv_sampling_factor]{mv_sampling_factor()}}),
+so a scale matrix that is nearly singular is sampled without a decomposition.
+A \eqn{t} is a gaussian whose precision has been multiplied by a gamma
+variate, and the same representation gives the closed-form expected
+information.
 
 The draws consume \code{n * p} normal variates and \code{n} chi-squared variates from
 R's own generators, in that order, so the stream is reproducible under
@@ -33,7 +35,8 @@ R's own generators, in that order, so the stream is reproducible under
 \section{Notation}{
 
 \eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
-degrees of freedom and \eqn{L} a lower Cholesky factor of \eqn{\Sigma}.
+degrees of freedom and \eqn{L} a factor of \eqn{\Sigma}, \eqn{LL^\top =
+\Sigma}.
 }
 
 \examples{
@@ -50,8 +53,8 @@ big <- distrib_rng(d, 40000, theta)
 round(var(big), 2)
 round(variance(d, theta), 2)
 
-# At nu = 1.5 it does not, and the sample covariance is a number that means
-# nothing: it grows with the sample instead of settling.
+# At nu = 1.5 the covariance is infinite, and the sample covariance grows
+# with the sample.
 t2 <- theta; t2$nu <- 1.5
 set.seed(3)
 vapply(c(2000, 20000, 200000),

@@ -35,7 +35,10 @@ parts. A row with a negative entry, a non-integer entry, or a sum other than
 The factorials are formed through \code{\link[base:Special]{base::lgamma()}} and the product through a
 matrix multiplication by \eqn{\log p}, so the whole calculation runs on the
 log scale and a mass far below the smallest representable double still has a
-finite logarithm.
+finite logarithm. On the additive log-ratio chart \eqn{\log p} is computed as
+\eqn{\eta_j - \mathrm{LSE}(\eta)} (see \code{\link[=mn_log_probs]{mn_log_probs()}}), so a category whose
+probability underflows and whose count is zero contributes zero, as it
+should.
 }
 \examples{
 d <- multinomial_distrib(3, size = 5)

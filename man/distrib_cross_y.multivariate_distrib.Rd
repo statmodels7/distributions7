@@ -2,30 +2,29 @@
 % Please edit documentation in R/multivariate.R
 \name{distrib_cross_y.multivariate_distrib}
 \alias{distrib_cross_y.multivariate_distrib}
-\title{No Numerical Mixed Response Derivative in Several Dimensions}
+\title{Mixed Response Derivative of a Multivariate Family Without a Method}
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no method of its own.}
 
-\item{y}{An \eqn{n \times p} numeric matrix of observations. Not examined.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. Not read.}
 
-\item{theta}{A named list of parameters. Not examined.}
+\item{theta}{A named list of parameters. Not read.}
 
-\item{scale}{One of \code{"parameter"} or \code{"link"}, handled by the generic before
-dispatch. Not examined.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}. The generic applies the link
+scale to the result of a method. Not read here.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-Never returns: it always signals an error naming the family and the
-shape a method should produce.
+Does not return: it signals an error naming the family and the
+shape that a method produces.
 }
 \description{
-Signals an error. Unlike the two refusals beside it, the obstruction here is
-not that a line differences wrongly: it is that no consumer has fixed the
-shape. The univariate generic returns one number per observation per
-parameter; the multivariate quantity is one \eqn{n \times p} matrix per
-parameter, and a family that supplies it registers a method returning that,
-as the gaussian and the Student t do.
+Signals an error. The univariate generic returns one number per observation
+and per parameter, while the multivariate quantity is one
+\eqn{n \times p} matrix per parameter, and the class has no fallback of that
+shape. A family that supplies it registers a method returning one matrix per
+parameter, as the gaussian and the Student t do.
 }
 \examples{
 d <- dirichlet_distrib(3)
@@ -34,7 +33,7 @@ set.seed(1)
 y <- distrib_rng(d, 3, theta)
 try(distrib_cross_y(d, y, theta))
 
-# The shape a method returns: one n by p matrix per parameter.
+# The shape that a method returns: one n by p matrix per parameter.
 g <- mvgaussian1_distrib(2)
 th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
            sigma_L2.1 = 0.5)
@@ -44,7 +43,7 @@ c(entries = length(cy), rows = nrow(cy[[1]]), cols = ncol(cy[[1]]))
 }
 \seealso{
 \code{\link[=distrib_cross_y.MvGaussianDistrib]{distrib_cross_y.MvGaussianDistrib()}} and
-\code{\link[=distrib_cross_y.MvStudentTDistrib]{distrib_cross_y.MvStudentTDistrib()}} for the two families that answer,
+\code{\link[=distrib_cross_y.MvStudentTDistrib]{distrib_cross_y.MvStudentTDistrib()}} for the two families with a method,
 and \code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

@@ -10,8 +10,10 @@
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. The two coincide here.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. Every link of this family is the identity, so the two scales
+coincide.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -32,7 +34,9 @@ pair of free values,
       - \Sigma^{-1}\!\left(A_l\Sigma^{-1}A_k
         + A_k\Sigma^{-1}A_l\right)\!\Sigma^{-1},}
 with \eqn{A_k} and \eqn{A_{kl}} the first and second derivatives of
-\eqn{\Sigma}. No component depends on the observation, so \code{y} is not read.
+\eqn{\Sigma}. The matrix is \eqn{-P_{kl}}, the second derivative of
+\eqn{\Sigma^{-1}}, and is read as such from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}. The
+components do not depend on the observation, so \code{y} is not read.
 }
 \section{Notation}{
 

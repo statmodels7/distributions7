@@ -18,16 +18,16 @@ ordered as \code{distrib@params}.
 }
 \description{
 Rejects a \code{theta} whose components are not single numbers, and returns the
-rest as one named numeric vector in \code{distrib@params} order. The families
-here take ONE parameter value for the whole sample: a parametrization
-describes one matrix, not one per row, and a parameter that varies by
-observation belongs to a model, which is the layer above this one.
+rest as one named numeric vector in \code{distrib@params} order. The multivariate
+families take one value per parameter for the whole sample: a
+parametrization describes one matrix, and a parameter that varies by
+observation belongs to a model, which is the layer above this package.
 }
 \details{
 A univariate family reads a \code{theta} component of length \eqn{n} as one value
-per observation, so without this check a caller who wrote that here would
-get silent recycling against the \eqn{p} columns instead of an error. The
-message names the offending parameter.
+per observation. Without this check the same component given to a
+multivariate family would be recycled against the \eqn{p} columns without an
+error. The message names the parameter.
 }
 \examples{
 d <- mvgaussian1_distrib(2)

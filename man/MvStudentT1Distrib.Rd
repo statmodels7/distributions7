@@ -62,11 +62,13 @@ its inverse, according to \code{inverted}, inheriting from
 \code{parameters7::parameter}. Its \code{n_free} free values are flattened into
 scalar parameters of the distribution.}
 
-\item{inverted}{Logical of length 1. \code{TRUE} when \code{param} carries the
-inverse scale matrix \eqn{\Sigma^{-1}} and \code{FALSE} when it carries the
-scale matrix \eqn{\Sigma}. Nothing but the sign of the log-determinant and
-one matrix inversion depends on it; the law is the same either way, and
-neither matrix is a moment of the response.}
+\item{inverted}{Logical of length 1. \code{TRUE} when \code{param} carries the inverse
+scale matrix \eqn{\Sigma^{-1}} and \code{FALSE} when it carries the scale matrix
+\eqn{\Sigma}. It decides which derivative arrays are the parametrization's
+own and which are obtained from them (see \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}), the sign
+of the log-determinant, the prefix of the free names and the quantities
+that \code{\link[=mv_summary]{mv_summary()}} reports. The same \eqn{\Sigma} gives the same law
+either way, and neither matrix is a moment of the response.}
 }
 \value{
 An object of class \code{MvStudentT1Distrib} or \code{MvStudentT2Distrib}, a
@@ -76,16 +78,16 @@ subclass of \link{MvStudentTDistrib} adding no properties of its own.
 \code{MvStudentT1Distrib} is the family whose matrix parametrization is the
 \strong{scale matrix} \eqn{\Sigma} and \code{MvStudentT2Distrib} the family whose
 parametrization is its \strong{inverse} \eqn{\Sigma^{-1}}. Both inherit from
-\link{MvStudentTDistrib}, which carries every method: the two differ in what
-their free values describe, not in how anything is computed.
+\link{MvStudentTDistrib}, which carries every method; the two differ in what
+their free values describe, and the computations are shared.
 }
 \details{
-Neither matrix is a covariance or a precision of the response, and the
-difference is a factor in \eqn{\nu} that \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} writes
+Neither matrix is a covariance or a precision of the response; they differ
+from those by a factor in \eqn{\nu} that \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} writes
 out. The numbering is the package's convention, the one that separates
 \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} from \code{\link[=mvgaussian2_distrib]{mvgaussian2_distrib()}} and
 \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}: a parametrization decides
-what a linear predictor acts on, so it gets a name.
+what a linear predictor acts on, so it has a name of its own.
 }
 \examples{
 c(scale = S7::S7_inherits(mvstudent_t1_distrib(2), MvStudentT1Distrib),

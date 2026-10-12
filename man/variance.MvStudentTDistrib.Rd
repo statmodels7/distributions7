@@ -32,13 +32,13 @@ variance(d, theta)
 mv_sigma(d, theta)
 all.equal(variance(d, theta), (6 / 4) * mv_sigma(d, theta))
 
-# The factor blows up as nu falls to 2 and the covariance goes with it.
+# The factor grows without bound as nu falls to 2.
 vapply(c(10, 3, 2.5, 2.05, 2), function(nu) {
   t2 <- theta; t2$nu <- nu
   variance(d, t2)[1, 1]
 }, numeric(1))
 
-# Correlations are unaffected: a positive multiple leaves them alone.
+# The correlations are the same: a positive multiple cancels out of them.
 cv <- function(m) m[1, 2] / sqrt(m[1, 1] * m[2, 2])
 c(scale = cv(mv_sigma(d, theta)), covariance = cv(variance(d, theta)))
 

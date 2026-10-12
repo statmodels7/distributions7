@@ -10,8 +10,8 @@
 scale, each of length 1.}
 }
 \value{
-A numeric vector of length \eqn{p}, strictly positive and summing to
-the object's \code{size}.
+A numeric vector of length \eqn{p}, without names, summing to the
+object's \code{size}.
 }
 \description{
 Returns \eqn{\mathbb{E}[Y] = n p}, the trial count times the probability

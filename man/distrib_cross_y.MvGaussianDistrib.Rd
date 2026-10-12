@@ -11,8 +11,10 @@ length \eqn{p} is read as a single observation.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. The two coincide here.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. Every link of this family is the identity, so the two scales
+coincide.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -21,22 +23,21 @@ A named list of \eqn{n \times p} numeric matrices, one per
 parameter, in \code{distrib@params} order.
 }
 \description{
-Computes \eqn{\partial^2\ell/\partial y\, \partial\theta_k}, one
-\eqn{n \times p} matrix per parameter. With \eqn{w = \Sigma^{-1}(y - \mu)}
-the response gradient is \eqn{-w}, and differentiating it in the mean and in
-the free values of the matrix parametrization gives
-\deqn{\frac{\partial^2 \ell}{\partial y \,\partial \mu_j} = \Sigma^{-1}e_j,
-  \qquad
-  \frac{\partial^2 \ell}{\partial y \,\partial \eta_k} = \Sigma^{-1}A_k w,}
-with \eqn{A_k = \partial\Sigma/\partial\eta_k}. The mean block is column
-\eqn{j} of \eqn{\Sigma^{-1}} at every observation; the matrix block carries
-the observation through \eqn{w}.
+Computes \eqn{\partial^2\ell/\partial y\, \partial\theta_k}, one \eqn{n
+\times p} matrix per parameter. With \eqn{w = \Sigma^{-1}(y - \mu)} the
+response gradient is \eqn{-w}, and differentiating it in the mean and in the
+free values of the matrix parametrization gives \deqn{\frac{\partial^2
+\ell}{\partial y \,\partial \mu_j} = \Sigma^{-1}e_j, \qquad \frac{\partial^2
+\ell}{\partial y \,\partial \eta_k} = -P_k (y - \mu) = \Sigma^{-1}A_k w,}
+with \eqn{A_k} and \eqn{P_k} the derivatives of \eqn{\Sigma} and of
+\eqn{\Sigma^{-1}}. The mean block is column \eqn{j} of \eqn{\Sigma^{-1}} at
+every observation; the matrix block carries the observation, and is computed
+from \eqn{P_k} as \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}} supplies it.
 }
 \details{
-The shape is the one a consumer needs. A penalty whose prior is this family
-reads the block \eqn{\partial^2\rho/\partial\beta\,\partial\theta_k} for one
-hyperparameter at a time, and the coefficients of one group are the row of
-\eqn{y} the density is read at.
+The result has one \eqn{n \times p} matrix per parameter, the shape of the
+response, so the derivative in \eqn{\theta_k} of each row of the response
+gradient is read row by row.
 
 Every link of this family is the identity, so \code{scale = "link"} and
 \code{scale = "parameter"} give the same numbers.
@@ -44,9 +45,10 @@ Every link of this family is the identity, so \code{scale = "link"} and
 \section{Notation}{
 
 \eqn{\mu} is the mean, \eqn{\Sigma} the covariance, \eqn{\eta} the free
-vector of the matrix parametrization, \eqn{A_k = \partial\Sigma/\partial\eta_k},
-\eqn{e_j} the \eqn{j}-th standard basis vector and \eqn{\ell} the
-log-density of one observation.
+vector of the matrix parametrization, \eqn{A_k =
+\partial\Sigma/\partial\eta_k}, \eqn{P_k =
+\partial\Sigma^{-1}/\partial\eta_k}, \eqn{e_j} the \eqn{j}-th standard basis
+vector and \eqn{\ell} the log-density of one observation.
 }
 
 \examples{

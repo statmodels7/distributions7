@@ -20,17 +20,16 @@ uniform on the simplex, and \code{logd}, a numeric vector of length \code{n} hol
 the constant \eqn{\log\Gamma(p)}.
 }
 \description{
-Supplies the importance-sampling proposal \code{\link[=check_distrib]{check_distrib()}} integrates the
-density against: the uniform distribution on the simplex, which is the
+Supplies the importance-sampling proposal against which \code{\link[=check_distrib]{check_distrib()}}
+integrates the density: the uniform distribution on the simplex, which is the
 Dirichlet with every shape equal to one. Its density is the constant
-\eqn{\Gamma(p)} with respect to the same dominating measure the family's own
-density is written against, so the normalization check is a plain average.
+\eqn{\Gamma(p)} with respect to the dominating measure of the family's own
+density, so the normalization check is a plain average.
 
-The base class's proposal is an inflated gaussian on \eqn{\mathbb{R}^p},
-which places no mass on the simplex at all. It does not fail loudly there:
-\code{\link[base:chol]{base::chol()}} accepts the singular covariance, and the estimate of an
-integral that is 1 comes back at about \code{2e-08}. Overriding the proposal is
-what makes that check mean anything for this family.
+The proposal of the base class is a gaussian on \eqn{\mathbb{R}^p}, which
+places no mass on the simplex; \code{\link[base:chol]{base::chol()}} can accept the singular
+covariance without an error, and the estimate of the integral is then far
+from 1. This method replaces that proposal.
 }
 \seealso{
 \code{\link[=check_distrib]{check_distrib()}}, which consumes this,

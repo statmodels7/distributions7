@@ -21,8 +21,9 @@ mv_pairs_panels(
 
 \item{theta}{A named list of parameters, already aligned by the caller.}
 
-\item{which}{An integer vector of coordinates, or \code{NULL} for all of them.
-More than three is an error.}
+\item{which}{An integer vector of distinct coordinates, or \code{NULL} for all
+of them. An empty, non-integer, out-of-range or duplicated \code{which}, or
+more than three coordinates, is an error.}
 
 \item{n_grid}{Points per axis, a single positive whole number.}
 
@@ -43,28 +44,30 @@ used in the error message for more than three coordinates. Defaults to
 \item{...}{Unused.}
 }
 \value{
-\code{NULL}, invisibly. Called for the plot it draws, and it changes
-\code{graphics::par("mfrow")} and the margins, so a caller who needs the
-previous settings back saves them first.
+\code{NULL}, invisibly. Called for the plot it draws. The function sets
+\code{mfrow}, \code{mar} and \code{mgp} for the panel matrix and restores the previous
+values on exit.
 }
 \description{
 The shared engine of \code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}} and the multivariate
 branch of \code{\link[=plot.distrib_fit]{plot.distrib_fit()}}. It lays out one panel per ordered pair of
 the chosen coordinates: the marginal density on the diagonal, contours of
 the bivariate marginal below it, and the implied correlation printed above
-it. Every panel comes from \code{\link[=mv_marginal]{mv_marginal()}}, so nothing is integrated.
+it. The density panels come from \code{\link[=mv_marginal]{mv_marginal()}}, so nothing is
+integrated; the printed correlation comes from \code{\link[=mv_sigma]{mv_sigma()}}.
 }
 \details{
 When \code{data} is supplied the diagonal also carries a kernel density estimate
-of the observed coordinate and the off-diagonal panels carry the
+of the observed coordinate and the panels below the diagonal carry the
 observations, so the fitted shape and the sample are read against each other
-in one frame. The kernel estimate is the comparison that assumes no model:
-it is what the data say without the family's help.
+in one frame. The panels above the diagonal show only the correlation. The
+kernel estimate (\code{stats::density()}) does not depend on the fitted family and
+serves as a model-free comparison.
 
-The range each coordinate is drawn over is two and a half standard
-deviations either side of the location, with the spread taken from
-\code{\link[=mv_sigma]{mv_sigma()}}, so a Student t at \eqn{\nu \le 2} still has a range where
-\code{\link[=variance]{variance()}} would give it none.
+Each coordinate is drawn over three standard deviations either side of the
+location, widened when \code{data} is supplied to include the observations. The
+spread is taken from \code{\link[=mv_sigma]{mv_sigma()}}, so a Student \eqn{t} with \eqn{\nu \le 2}
+still has a finite range, where \code{\link[=variance]{variance()}} returns an infinite matrix.
 }
 \examples{
 d <- mvgaussian1_distrib(2)

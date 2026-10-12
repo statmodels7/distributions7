@@ -12,7 +12,7 @@ mv_derived(distrib, theta, ...)
 \item{theta}{A named list or vector of parameters, each component a single
 number. Aligned by the generic before dispatch, so any order is accepted.}
 
-\item{...}{Passed to methods. No shipped method reads it.}
+\item{...}{Passed to methods. The methods of the package do not use it.}
 }
 \value{
 A named list with
@@ -29,44 +29,46 @@ belongs to, by which the printed summary is laid out.}
 All four are named after the quantities and are the same length.
 }
 \description{
-Returns the quantities a reader of a multivariate fit wants: standard
-deviations, correlations, and whatever else the family's matrix
-parametrization is about. It returns with them the Jacobian that carries
-standard errors onto those quantities, and the scale each one's confidence
-interval should be built on.
+Returns the quantities that a reader of a multivariate fit reads: standard
+deviations, correlations, and the quantities that the matrix parametrization
+of the family declares. It also returns the Jacobian that carries standard
+errors onto those quantities, and the scale on which the confidence interval
+of each one is built.
 }
-\section{Why coordinates are not quantities}{
-The free values of a \pkg{parameters7} parametrization are coordinates
-chosen so that an optimizer can move freely. The logarithm of the second
-diagonal entry of a Cholesky factor has an estimate and a standard error,
-and neither answers a question anybody asked. This generic names the
-quantities that do and supplies \eqn{\partial g/\partial\theta}, so
-\code{\link[=mv_summary]{mv_summary()}} can apply the delta method to them.
+\section{Coordinates and quantities}{
+The free values of a \pkg{parameters7} parametrization are coordinates chosen
+so that an optimizer can move freely. The logarithm of the second diagonal
+entry of a Cholesky factor has an estimate and a standard error, but these do
+not describe a quantity of interest. This generic names the quantities that
+do and supplies \eqn{\partial g/\partial\theta}, so that \code{\link[=mv_summary]{mv_summary()}} can
+apply the delta method to them.
 }
 
 \section{The interval scale each quantity declares}{
-Each quantity carries the scale its interval should be built on, exactly as
+Each quantity carries the scale on which its interval is built, as
 \code{\link[=fit_distrib]{fit_distrib()}} builds a univariate interval on the link scale and maps it
 back. A standard deviation is intervalled on the log scale, so the interval
-cannot reach zero; a correlation on Fisher's
-\eqn{z = \mathrm{artanh}(\rho)}, so it cannot leave \eqn{(-1, 1)}; an
-unconstrained quantity on its own scale. On the raw scale a correlation's
-interval routinely exceeds one.
+cannot reach zero; a correlation on Fisher's \eqn{z = \mathrm{artanh}(\rho)},
+so it cannot leave \eqn{(-1, 1)}; an unconstrained quantity on its own scale.
+On the raw scale the interval of a correlation can exceed one.
 }
 
 \section{What the default method reports}{
 The method registered on \code{\link[=multivariate_distrib]{multivariate_distrib()}} returns the distinct
-entries of the matrix \code{\link[=mv_sigma]{mv_sigma()}} produces, named \code{sigma_v1_v1} and so on,
-with a Jacobian from one central difference per parameter. A family whose
-matrix is not a covariance still reports it on its own scale, which beats
-reporting a Cholesky coordinate. The two shipped families override with
-closed-form Jacobians.
+entries of the matrix that \code{\link[=mv_sigma]{mv_sigma()}} produces, named \code{sigma_v1_v1} and so
+on, with a Jacobian from one central difference per parameter, followed by
+the quantities that the matrix parametrization declares through
+\code{param_readable()}. A family whose matrix is not a covariance reports that
+matrix on its own scale. The multivariate gaussian and Student t families
+override this method with closed-form Jacobians; the Dirichlet and the
+multinomial use it, and report the covariance of the response followed by the
+probabilities of the simplex.
 }
 
 \section{Notation}{
 
 \eqn{\theta} is the parameter vector, \eqn{g} the map to the reported
-quantities, \eqn{\Sigma} the matrix the family carries and \eqn{\rho} a
+quantities, \eqn{\Sigma} the matrix that the family carries and \eqn{\rho} a
 correlation.
 }
 
@@ -77,7 +79,7 @@ theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 der <- mv_derived(d, theta)
 der$value
 
-# Each quantity declares the scale its interval is built on.
+# Each quantity declares the scale on which its interval is built.
 der$transform
 der$block
 

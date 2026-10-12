@@ -2,7 +2,7 @@
 % Please edit documentation in R/mvgaussian_distrib.R
 \name{mvg_pieces}
 \alias{mvg_pieces}
-\title{The Pieces a Multivariate Gaussian Evaluates From}
+\title{The Pieces From Which a Multivariate Gaussian Evaluates}
 \usage{
 mvg_pieces(distrib, theta, derivs = FALSE, derivs2 = FALSE)
 }
@@ -13,47 +13,42 @@ mvg_pieces(distrib, theta, derivs = FALSE, derivs2 = FALSE)
 any list whose components are in \code{distrib@params} order.}
 
 \item{derivs}{Logical of length 1. When \code{TRUE} the first derivative arrays
-of the covariance are computed and returned as \code{a}. Defaults to \code{FALSE}.}
+are computed. Defaults to \code{FALSE}.}
 
 \item{derivs2}{Logical of length 1. When \code{TRUE} the second derivative arrays
-are computed as well and returned as \code{a2}; the first derivatives are
-computed with them, so \code{derivs} need not also be set. Defaults to \code{FALSE}.}
+are computed, and the first ones with them, so \code{derivs} need not also be
+set. Defaults to \code{FALSE}.}
 }
 \value{
-A named list with \code{mu} (numeric of length \eqn{p}), \code{sigma} and
-\code{sigma_inv} (\eqn{p \times p} matrices), \code{logdet} (the log-determinant of
-\eqn{\Sigma}, a single number), \code{eta} (the matrix parametrization's free
-vector), \code{p} and \code{s} (the parametrization itself), plus \code{a} and \code{a2} when
-asked for: lists of \eqn{p \times p} matrices, \code{a} one per free value and
-\code{a2} one per unordered pair in \code{parameters7::param_tuple_indices()} order.
+A named list with \code{mu} (numeric of length \eqn{p}), \code{eta} (the
+matrix parametrization's free vector), \code{p}, \code{s} (the parametrization
+itself) and the elements of \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}: \code{sigma} and \code{sigma_inv}
+(\eqn{p \times p} matrices), \code{logdet} (the log-determinant of
+\eqn{\Sigma}) and \code{inverted}; with derivatives requested also \code{a} and \code{ai}
+(the first derivative arrays of \eqn{\Sigma} and of \eqn{\Sigma^{-1}}, one
+per free value) and \code{dlogdet}; with \code{derivs2} also \code{a2}, \code{ai2} (one array
+per unordered pair in \code{parameters7::param_tuple_indices()} order) and
+\code{d2logdet}.
 }
 \description{
 Assembles, once per call, the mean, the covariance, the inverse covariance
 and the log-determinant from a flat parameter vector, together with the
-matrix parametrization's derivative arrays when they are asked for. Every
-method of \link{MvGaussianDistrib} calls this first and works from the result, so
-a parameter vector is unpacked and a matrix factorized once per call instead
-of once per component.
+derivative arrays of \eqn{\Sigma} and of \eqn{\Sigma^{-1}} when they are
+requested. The density, generator, derivative and moment methods of
+\link{MvGaussianDistrib} call this first and work from the result, so a parameter
+vector is unpacked and a matrix factorized once per call and not once per
+component.
 }
 \details{
-The arithmetic downstream is written in the covariance whichever side the
-parametrization carries, so a precision parametrization is inverted here.
-Three things then change relative to a covariance parametrization: the
-log-determinant takes the opposite sign, the first derivatives are carried
-across by \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma}, and the
-second derivatives by differentiating that expression once more,
-\deqn{\frac{\partial^2\Sigma}{\partial\eta_k\partial\eta_l} =
-  \Sigma\left(A_l\Sigma A_k + A_k \Sigma A_l - \frac{\partial^2\Omega}{\partial\eta_k\partial\eta_l}\right)\Sigma,}
-with \eqn{A_k = \partial\Omega/\partial\eta_k}. Those conversions are why
-the precision form is not the cheaper one here, contrary to what a reader
-might expect from the density alone.
+The matrix quantities come from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}, which the Student t
+reads as well. Whichever side the parametrization carries, the result holds
+\eqn{\Sigma}, \eqn{\Sigma^{-1}}, the log-determinant of \eqn{\Sigma} and the
+derivatives of both matrices.
 }
 \section{Notation}{
 
-\eqn{\Sigma} is the covariance, \eqn{\Omega = \Sigma^{-1}} the precision,
-\eqn{\eta} the free vector of the matrix parametrization and
-\eqn{A_k = \partial M/\partial\eta_k} the derivative of whichever matrix
-the parametrization carries.
+\eqn{\Sigma} is the covariance, \eqn{\Omega = \Sigma^{-1}} the precision and
+\eqn{\eta} the free vector of the matrix parametrization.
 }
 
 \examples{
@@ -63,7 +58,7 @@ theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 pc <- distributions7:::mvg_pieces(d, theta, derivs = TRUE)
 names(pc)
 
-# sigma_inv really is the inverse, and logdet its log-determinant.
+# sigma_inv is the inverse, and logdet its log-determinant.
 all.equal(pc$sigma \%*\% pc$sigma_inv, diag(2), check.attributes = FALSE)
 all.equal(pc$logdet, log(det(pc$sigma)))
 
@@ -80,7 +75,8 @@ all.equal(po$logdet, -parameters7::param_logdet(o@param, unlist(th_o)[3:5]))
 
 }
 \seealso{
-\code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} for the family and
-\code{\link[=distrib_gradient.MvGaussianDistrib]{distrib_gradient.MvGaussianDistrib()}} for the first consumer.
+\code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} for the family, \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}} for the
+matrix quantities, and \code{\link[=distrib_gradient.MvGaussianDistrib]{distrib_gradient.MvGaussianDistrib()}} for a
+consumer.
 }
 \keyword{internal}

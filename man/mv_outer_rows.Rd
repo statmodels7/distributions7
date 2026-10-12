@@ -8,8 +8,8 @@ mv_outer_rows(a, b)
 }
 \arguments{
 \item{a, b}{Numeric matrices with the same dimensions, \eqn{n} rows and
-\eqn{p} columns. Nothing is validated: mismatched dimensions recycle
-silently, as they would in the arithmetic underneath.}
+\eqn{p} columns. Not validated: matrices of different dimensions signal the
+error of the arithmetic underneath.}
 }
 \value{
 A \eqn{p \times p \times n} numeric array. It is symmetric slice by
@@ -19,8 +19,7 @@ slice only when \code{a} and \code{b} are the same matrix.
 Builds the \eqn{p \times p \times n} array whose \eqn{i}th slice is
 \eqn{a_ib_i^\top}, the outer product of row \eqn{i} of \code{a} with row \eqn{i}
 of \code{b}. The whole array is assembled by two column replications and one
-permutation, with no loop over the observations, so the response derivatives
-of a multivariate family stay affordable at a sample size worth fitting.
+permutation, with no loop over the observations.
 }
 \examples{
 a <- matrix(1:6, 3, 2)

@@ -30,8 +30,12 @@ form. With \eqn{A = \partial p/\partial\eta} and
 \eqn{B_{\cdot,kl} = \partial^2 p/\partial\eta_k\partial\eta_l},
 \deqn{\ell^{(\eta_k\eta_l)} = \sum_{j=1}^{p}\left(\dfrac{y_j}{p_j}B_{j,kl}
       - \dfrac{y_j}{p_j^2}A_{jk}A_{jl}\right).}
-Both terms carry the data, so the observed matrix differs from its
-expectation at every observation.
+On the additive log-ratio chart the two terms combine into
+\eqn{-N(\delta_{kl}p_k - p_kp_l)}, with \eqn{N} the total of the row, the
+second cumulant of the categorical law, which the method computes directly
+and without dividing by a probability; for a row on the support \eqn{N = n},
+so the observed matrix equals its expectation. On another chart the two terms
+need not combine in this way.
 }
 \section{Notation}{
 

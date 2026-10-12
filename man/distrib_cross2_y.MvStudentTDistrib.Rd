@@ -12,8 +12,9 @@ length \eqn{p} is read as a single observation.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. The two differ here.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
+returns the parameter scale and the generic applies the link scale to its
+result. The two differ here.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -31,16 +32,15 @@ one \eqn{p \times p \times n} array per parameter. Writing
 every piece coming from \code{\link[=mvt_dpieces]{mvt_dpieces()}}.
 }
 \details{
-The shape differs from the gaussian's, and the difference is the family's
-defining property. There the response Hessian is \eqn{-\Sigma^{-1}}, one
-matrix for the whole sample, so its derivative is one matrix per parameter.
-Here it depends on the observation through the weight, so this method and
-\code{\link[=distrib_hess_y_hess.MvStudentTDistrib]{distrib_hess_y_hess.MvStudentTDistrib()}} return ONE MATRIX PER ROW. Nor
-does any component vanish: the gaussian's location components are exactly
-zero and none of these is.
+For the gaussian the response Hessian is \eqn{-\Sigma^{-1}}, one matrix for
+the whole sample, so its derivative in a parameter is one \eqn{p \times p}
+matrix. For the t the response Hessian depends on the observation through the
+weight, so this method and \code{\link[=distrib_hess_y_hess.MvStudentTDistrib]{distrib_hess_y_hess.MvStudentTDistrib()}} return
+one matrix per row. The location components of the gaussian are exactly zero,
+while those of the t are not zero in general.
 
-This is one of the three derivatives a marginal criterion reads when the
-family stands as a prior over a coefficient block.
+This is one of the three derivatives that a marginal criterion reads when the
+family is a prior over a coefficient block.
 }
 \section{Notation}{
 

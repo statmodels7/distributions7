@@ -63,8 +63,11 @@ into scalar parameters of the distribution.}
 
 \item{inverted}{Logical of length 1. \code{TRUE} when \code{param} carries the
 precision \eqn{\Omega = \Sigma^{-1}} and \code{FALSE} when it carries the
-covariance \eqn{\Sigma}. Nothing but the sign of the log-determinant and
-one matrix inversion depends on it; the law is the same either way.}
+covariance \eqn{\Sigma}. It decides which derivative arrays are the
+parametrization's own and which are obtained from them (see
+\code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}), the sign of the log-determinant, the prefix of the
+free names, and the quantities that \code{\link[=mv_summary]{mv_summary()}} reports. The same matrix
+\eqn{\Sigma} gives the same law either way.}
 }
 \value{
 An object of class \code{MvGaussian1Distrib} or \code{MvGaussian2Distrib}, a
@@ -73,24 +76,24 @@ subclass of \link{MvGaussianDistrib} adding no properties of its own.
 \description{
 \code{MvGaussian1Distrib} is the family whose matrix parametrization is the
 \strong{covariance} and \code{MvGaussian2Distrib} the family whose matrix
-parametrization is the \strong{precision}. Both inherit from
-\link{MvGaussianDistrib}, which carries every method: the two differ in what
-their free values describe, not in how anything is computed.
+parametrization is the \strong{precision}. Both inherit from \link{MvGaussianDistrib},
+which carries every method; the two differ in what their free values
+describe, and the computations are shared.
 }
 \details{
-The two are separate families for the reason \code{gaussian1_distrib()},
-\code{gaussian2_distrib()} and \code{gaussian3_distrib()} are separate families: a
+The two are separate families for the reason that \code{\link[=gaussian1_distrib]{gaussian1_distrib()}},
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}} and \code{\link[=gaussian3_distrib]{gaussian3_distrib()}} are separate families: a
 parametrization is a modeling decision, and a predictor imposed on the
 coordinates of \eqn{\Sigma} is a different model from the same predictor
-imposed on the coordinates of \eqn{\Omega}. Where the matrix
-parametrization is closed under inversion the two describe the same laws in
-different coordinates; where it is not, they describe different laws.
+imposed on the coordinates of \eqn{\Omega}. Where the matrix parametrization
+is closed under inversion the two describe the same laws in different
+coordinates; where it is not, they describe different laws.
 }
 \examples{
 c(covariance = S7::S7_inherits(mvgaussian1_distrib(2), MvGaussian1Distrib),
   precision = S7::S7_inherits(mvgaussian2_distrib(2), MvGaussian2Distrib))
 
-# Both are multivariate gaussians, which is what carries the methods.
+# Both are multivariate gaussians, the class that carries the methods.
 S7::S7_inherits(mvgaussian2_distrib(2), MvGaussianDistrib)
 
 }
