@@ -18,7 +18,11 @@ A list with elements \code{y} and \code{theta}, both conformable.
 }
 \description{
 Aligns \code{theta}, checks that every parameter has length 1 or \eqn{n}, and
-recycles a scalar \code{y} up to \eqn{n} when \code{theta} is vectorized.
+recycles a scalar \code{y} up to \eqn{n} when \code{theta} is vectorized. A constant
+of the family that varies by observation (a binomial's vector \code{size}, its
+parents' included) enters \eqn{n} too: the response and the parameters must
+then have length 1 or the length of that constant, and any other length
+signals an error.
 }
 \details{
 An empty \code{y} is allowed through untouched, giving empty derivatives, the

@@ -47,6 +47,13 @@ finite differences of the cdf, and a continuous one against the partial
 expectation, so that the two sides of the comparison share no arithmetic.
 }
 
+\section{Constants that vary by observation}{
+A family whose constant varies by observation (a binomial's vector \code{size},
+or a wrapper over one) is evaluated at each observation's own constant,
+taken by \code{\link[=distrib_at_rows]{distrib_at_rows()}}, as the parameters are. A missing quantile
+gives a missing derivative.
+}
+
 \section{Notation}{
 
 \eqn{f} is the mass function, \eqn{F} the distribution function,

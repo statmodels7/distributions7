@@ -673,7 +673,7 @@ test_that("the binomial recycles a vector size in every derivative", {
   expect_length(distrib_deriv4(d, 2, th)$mu_mu_mu_mu, 3L)
   # a size of length 2 against three responses was read out of bounds
   expect_error(distrib_gradient(binomial_distrib(size = c(5, 10)), 1:3, th),
-               "must have length 1 or 3")
+               "'size' has length 2")
 })
 
 test_that("the binomial size is validated", {
@@ -905,4 +905,27 @@ test_that("the NB1 observed curvature in theta below theta = 1e-9", {
   d <- negbin1_distrib()
   expect_rel(distrib_hessian(d, 3, list(mu = 4, theta = 1e-10))$theta_theta,
              0.020833333361458333323, tolerance = 1e-13)
+})
+
+test_that("the cdf derivatives read a vector size per observation", {
+  d3 <- binomial_distrib(size = c(5, 10, 20))
+  th <- list(mu = 0.3)
+  # the closed form of the gradient of F, -n dbinom(k, n - 1, p), per size
+  expect_rel(distrib_grad_cdf(d3, c(1, 4, 9), th, log = FALSE)$mu,
+             -c(5, 10, 20) * dbinom(c(1, 4, 9), c(4, 9, 19), 0.3), tolerance = 1e-14)
+  for (f in list(distrib_hess_cdf, distrib_deriv3_cdf, distrib_deriv4_cdf)) {
+    v <- unlist(f(d3, 2, th))
+    s <- vapply(c(5, 10, 20), function(n) unlist(f(binomial_distrib(size = n), 2, th)), 0)
+    expect_rel(v, s, tolerance = 1e-12)
+  }
+  z3 <- zero_inflated(binomial_distrib(size = c(5, 10, 20)))
+  thz <- list(mu = 0.3, zi = 0.2)
+  v <- distrib_hess_cdf(z3, 2, thz)
+  s <- lapply(c(5, 10, 20), function(n) distrib_hess_cdf(zero_inflated(binomial_distrib(size = n)), 2, thz))
+  for (k in names(v)) expect_rel(v[[k]], vapply(s, `[[`, 0, k), tolerance = 1e-12)
+  # a size whose length is neither 1 nor that of the response is rejected
+  expect_error(distrib_grad_cdf(binomial_distrib(size = c(5, 10)), 1:3, th), "'size' has length 2")
+  # a missing quantile gives a missing derivative
+  expect_true(all(is.na(unlist(lapply(distrib_hess_cdf(negbin2_distrib(), NA, list(mu = 3, theta = 2)),
+                                       identity)))))
 })

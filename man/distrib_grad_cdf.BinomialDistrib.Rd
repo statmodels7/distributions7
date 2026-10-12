@@ -11,8 +11,8 @@ carrying the trial count in its \code{size} property.}
 values below zero give a derivative of zero.}
 
 \item{theta}{A named list with one component, \code{mu} (the success
-probability, strictly between 0 and 1), a numeric vector of length 1 or
-\code{n}.}
+probability, strictly between 0 and 1), a numeric vector of length 1 or of
+the length of \code{q}.}
 
 \item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
 default.}
@@ -24,7 +24,8 @@ default.}
 }
 \value{
 A named list with one numeric vector, \code{mu}, the length of \code{q}
-recycled against \code{theta}.
+recycled against \code{theta} and the \code{size} of the family. The generic signals
+an error for a \code{size} whose length is neither 1 nor that common length.
 }
 \description{
 Closed form, and exact: the companion identity to the Poisson's,

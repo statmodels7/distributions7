@@ -266,7 +266,11 @@ distrib_rng <- S7::new_generic("distrib_rng", "distrib", function(distrib, n, th
 #'
 #' @description
 #' Aligns `theta`, checks that every parameter has length 1 or \eqn{n}, and
-#' recycles a scalar `y` up to \eqn{n} when `theta` is vectorized.
+#' recycles a scalar `y` up to \eqn{n} when `theta` is vectorized. A constant
+#' of the family that varies by observation (a binomial's vector `size`, its
+#' parents' included) enters \eqn{n} too: the response and the parameters must
+#' then have length 1 or the length of that constant, and any other length
+#' signals an error.
 #'
 #' @details
 #' An empty `y` is allowed through untouched, giving empty derivatives, the
@@ -304,6 +308,17 @@ check_derivative_args <- function(distrib, y, theta) {
   }
 
   n <- max(length(y), lengths(pars))
+  # a constant of the family that varies by observation sets the number of
+  # observations as a parameter does; recycled silently against a longer
+  # response it was read out of step with it
+  nc <- distrib_const_rows(distrib)
+  if (nc > 1L) {
+    if (n != 1L && n != nc) {
+      stop(sprintf("The family's 'size' has length %d; the response and the parameters must have length 1 or %d, not %d.",
+                   nc, nc, n), call. = FALSE)
+    }
+    n <- nc
+  }
   check_params_dim(pars, n = n)
   if (length(y) != n) {
     if (length(y) != 1) {

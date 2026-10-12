@@ -179,13 +179,21 @@ discrete_cdf_deriv_k <- function(distrib, q, theta, order) {
   idx <- deriv_indices(params, order)
 
   out <- stats::setNames(lapply(nm, function(i) numeric(n)), nm)
+  # a constant that varies by observation (a binomial's size) is taken at
+  # the row, as the parameters are
+  rows <- distrib_const_rows(distrib) > 1L
   for (k in seq_len(n)) {
+    if (is.na(q[k])) {
+      for (m in seq_along(nm)) out[[m]][k] <- NA_real_
+      next
+    }
     if (q[k] < lo) next
     th_k <- lapply(theta[seq_along(params)],
                    function(v) if (length(v) > 1) v[k] else v)
+    dk <- if (rows) distrib_at_rows(distrib, k, n) else distrib
     grid <- seq(lo, floor(q[k] + 1e-9))
-    fy <- distrib_pdf(distrib, grid, th_k)
-    ell <- parent_ell(distrib, grid, th_k, order, params)
+    fy <- distrib_pdf(dk, grid, th_k)
+    ell <- parent_ell(dk, grid, th_k, order, params)
     for (m in seq_along(nm)) {
       out[[m]][k] <- sum(fy * bell_f_ratio(params[idx[[m]]], ell))
     }

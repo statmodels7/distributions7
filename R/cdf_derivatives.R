@@ -140,6 +140,13 @@ cdf_tail_scale <- function(distrib, Fq, dF1, dF2 = NULL, lower.tail, log) {
 #' finite differences of the cdf, and a continuous one against the partial
 #' expectation, so that the two sides of the comparison share no arithmetic.
 #'
+#' # Constants that vary by observation
+#'
+#' A family whose constant varies by observation (a binomial's vector `size`,
+#' or a wrapper over one) is evaluated at each observation's own constant,
+#' taken by [distrib_at_rows()], as the parameters are. A missing quantile
+#' gives a missing derivative.
+#'
 #' @section Notation:
 #' \eqn{f} is the mass function, \eqn{F} the distribution function,
 #' \eqn{\ell = \log f} and \eqn{\partial^I} a derivative with respect to a
@@ -171,17 +178,25 @@ discrete_cdf_deriv <- function(distrib, q, theta, order) {
   out <- lapply(nms, function(nm) numeric(n))
   names(out) <- nms
 
+  # a constant that varies by observation (a binomial's size) is taken at
+  # the row, as the parameters are
+  rows <- distrib_const_rows(distrib) > 1L
   for (k in seq_len(n)) {
     th_k <- lapply(theta[seq_along(params)],
                    function(v) if (length(v) > 1) v[k] else v)
+    if (is.na(q[k])) {
+      for (nm in nms) out[[nm]][k] <- NA_real_
+      next
+    }
     if (q[k] < lo) next
+    dk <- if (rows) distrib_at_rows(distrib, k, n) else distrib
     grid <- seq(lo, floor(q[k] + 1e-9))
-    fy <- distrib_pdf(distrib, grid, th_k)
-    g <- distrib_gradient(distrib, grid, th_k)
+    fy <- distrib_pdf(dk, grid, th_k)
+    g <- distrib_gradient(dk, grid, th_k)
     if (order == 1L) {
       for (nm in nms) out[[nm]][k] <- sum(fy * g[[nm]])
     } else {
-      h <- distrib_hessian(distrib, grid, th_k)
+      h <- distrib_hessian(dk, grid, th_k)
       for (nm in nms) {
         pr <- pairs[[nm]]
         out[[nm]][k] <- sum(fy * (h[[nm]] + g[[pr[1]]] * g[[pr[2]]]))
@@ -1339,8 +1354,8 @@ S7::method(distrib_grad_cdf, PoissonDistrib) <- function(distrib, q, theta,
 #' @param q A numeric vector of quantiles. Non-integer values are floored;
 #'   values below zero give a derivative of zero.
 #' @param theta A named list with one component, `mu` (the success
-#'   probability, strictly between 0 and 1), a numeric vector of length 1 or
-#'   `n`.
+#'   probability, strictly between 0 and 1), a numeric vector of length 1 or of
+#'   the length of `q`.
 #' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
 #'   default.
 #' @param log Are derivatives of the log probability wanted? A single logical,
@@ -1348,7 +1363,8 @@ S7::method(distrib_grad_cdf, PoissonDistrib) <- function(distrib, q, theta,
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector, `mu`, the length of `q`
-#'   recycled against `theta`.
+#'   recycled against `theta` and the `size` of the family. The generic signals
+#'   an error for a `size` whose length is neither 1 nor that common length.
 #'
 #' @seealso [distrib_grad_cdf.BernoulliDistrib()], this identity at
 #'   \eqn{n = 1}; [distrib_grad_cdf.discrete_distrib()], the general sum;
