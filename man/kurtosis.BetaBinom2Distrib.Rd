@@ -8,7 +8,8 @@
 trial count in its \code{size} property.}
 
 \item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
-each a numeric vector of length 1 or \code{n}.}
+each a numeric vector of length 1 or of the common length of the parameter
+settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,17 +18,15 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-The standardized fourth central moment less three,
-\eqn{\gamma_2 = c_4/c_2^2 - 3}, with the central moments \eqn{c_k} from
-\code{\link[=betabinom_central]{betabinom_central()}} at \eqn{\mu = \alpha/(\alpha+\beta)} and
-\eqn{\sigma = 1/(\alpha+\beta)}. Its sign follows the balance of the two
-shapes: negative where they are comparable and the mass splits towards the
-two endpoints, positive where one dominates.
+The excess kurtosis of \code{\link[=kurtosis.BetaBinom1Distrib]{kurtosis.BetaBinom1Distrib()}} at \eqn{\mu =
+\alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)}, computed by
+\code{\link[=betabinom_moments]{betabinom_moments()}}. Its sign follows the balance of the two shapes:
+negative where they are comparable, positive where one dominates.
 }
 \section{Notation}{
 
 \eqn{\alpha > 0} and \eqn{\beta > 0} are the shapes of the mixing beta,
-\eqn{n} the number of trials and \eqn{c_k} the \eqn{k}-th central moment.
+\eqn{n} the number of trials.
 }
 
 \examples{
@@ -44,7 +43,7 @@ all.equal(kurtosis(d, list(alpha = 2, beta = 3)),
 }
 \seealso{
 \code{\link[=skewness.BetaBinom2Distrib]{skewness.BetaBinom2Distrib()}}, from the same moments;
-\code{\link[=kurtosis.BetaBinom1Distrib]{kurtosis.BetaBinom1Distrib()}}; \code{\link[=betabinom_central]{betabinom_central()}};
+\code{\link[=kurtosis.BetaBinom1Distrib]{kurtosis.BetaBinom1Distrib()}}; \code{\link[=betabinom_moments]{betabinom_moments()}};
 \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.
 }
 \keyword{internal}

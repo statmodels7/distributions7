@@ -24,11 +24,11 @@ gamma functions of the mass and makes NB1 a different family from the
 quadratic-variance one.
 
 Nothing is validated; a non-positive \code{theta} gives an infinite or negative
-size and the caller sees the failure at the base R function.
+size. The methods are reached through the generics, which signal an error
+for a non-positive parameter first.
 }
 \seealso{
-\code{\link[=negbin1_distrib]{negbin1_distrib()}} for the family, \code{\link[=nb1_prob]{nb1_prob()}} for the success
-probability that goes with it, and \code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf.NegBin1Distrib()}} for the
-mass they feed.
+\code{\link[=negbin1_distrib]{negbin1_distrib()}} for the family, and
+\code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf.NegBin1Distrib()}} for the mass it feeds.
 }
 \keyword{internal}

@@ -19,12 +19,10 @@ model is returned in place of the value at the data. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}, the strategy \code{\link[=expected_derivative]{expected_derivative()}} uses. Read only when
-\code{expected = TRUE}.}
+\item{approx}{Ignored, the expectation being an exact finite sum. Accepted
+so that the signature matches the generic's.}
 
-\item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -41,10 +39,12 @@ in \eqn{\mu} and \eqn{\sigma}, \strong{in closed form}, by the construction
 the shape parametrization's fourth derivatives, each a difference of
 \eqn{\psi^{(3)}}, carried through the map
 \eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)} by the partition sum of
-\code{\link[=chain_derivatives]{chain_derivatives()}}.
+\code{\link[=chain_derivatives]{chain_derivatives()}}, for \eqn{\sigma \ge 0.1}, and the direct sums
+below.
 
-With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}} instead.
-That is the one place on this page where \code{approx} and \code{nsim} are read.
+With \code{expected = TRUE} the method returns the expectation as an exact
+finite sum over the support, from \code{\link[=betabinom1_expected]{betabinom1_expected()}}. \code{approx} and
+\code{nsim} are ignored on both branches.
 }
 \section{Notation}{
 

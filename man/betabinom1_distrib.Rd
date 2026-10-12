@@ -33,13 +33,15 @@ Builds the distribution object for the beta-binomial family parametrized by
 a mean proportion \eqn{\mu \in (0, 1)} and a dispersion \eqn{\sigma > 0}, on
 the finite support \eqn{\{0, 1, \dots, n\}}. The returned object carries
 closed-form derivatives of the log-mass to fourth order and expectations
-that are exact finite sums over the support, so every generic of the toolkit
-answers without a quadrature.
+that are exact finite sums over the support, so no quadrature is used. The
+fifth derivative comes from the numerical fallback of the base class.
 
 The family is the binomial with its success probability drawn from a beta,
 which makes it the standard model for a proportion whose trials are not
-independent. It is overdispersed relative to a binomial at every
-\eqn{\sigma > 0} and approaches one as \eqn{\sigma \to 0}.
+independent. For \eqn{n > 1} it is overdispersed relative to a binomial
+with the same mean at every \eqn{\sigma > 0}, and it approaches the
+binomial as \eqn{\sigma \to 0}. For \eqn{n = 1} it is the Bernoulli
+distribution at every \eqn{\sigma}.
 }
 \section{The parametrization}{
 Write \eqn{\alpha = \mu/\sigma} and \eqn{\beta = (1-\mu)/\sigma} for the two
@@ -50,9 +52,10 @@ with \eqn{B} the beta function. \code{\link[=betabinom2_distrib]{betabinom2_dist
 written in \eqn{(\alpha, \beta)} directly; the two agree mass for mass at
 \eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)}.
 
-The family is \strong{not} reachable from anything else in the package. It is
-neither a binomial with a parameter held fixed nor a wrapper over one, the
-mixing being over the success probability and not over the outcome.
+The family is a binomial whose success probability is drawn from a beta
+distribution. It is not a binomial with a parameter held fixed and not one
+of the wrappers over \code{\link[=binomial_distrib]{binomial_distrib()}}, because the mixing acts on the
+success probability and not on the outcome.
 }
 
 \section{Overdispersion}{
@@ -60,11 +63,11 @@ The mean is \eqn{n\mu} and the variance
 \deqn{\operatorname{Var}(Y) = n\mu(1-\mu)
       \left(1 + (n-1)\dfrac{\sigma}{1+\sigma}\right),}
 so the inflation over a binomial of the same mean is
-\eqn{1 + (n-1)\sigma/(1+\sigma)}, always above 1 and rising with both the
-trial count and the dispersion. The factor \eqn{\sigma/(1+\sigma)} is the
+\eqn{1 + (n-1)\sigma/(1+\sigma)}, above 1 for \eqn{n > 1} and rising with
+both the trial count and the dispersion. The factor \eqn{\sigma/(1+\sigma)} is the
 \strong{intraclass correlation} between two trials of the same group. At
 \eqn{n = 10} and \eqn{\sigma = 0.5} that correlation is \eqn{1/3} and the
-variance is four times a binomial's, 8.4 against 2.1.
+variance is four times a binomial's (8.4 against 2.1 at \eqn{\mu = 0.3}).
 
 As \eqn{\sigma \to 0} the mass converges to the binomial's at rate
 \eqn{O(\sigma)}, and the compiled kernel stays accurate all the way there;
@@ -85,27 +88,45 @@ orders are a short partition sum. Orders three and four are therefore
 \strong{closed form} as well, in \code{\link[=distrib_deriv3.BetaBinom1Distrib]{distrib_deriv3.BetaBinom1Distrib()}}, and not
 the numerical fallback.
 
-Every expectation is an \strong{exact finite sum} over \eqn{\{0, \dots, n\}}:
-the support is bounded, so there is nothing to integrate over.
+The shifts of the beta functions are integers, so with
+\eqn{u_i = \mu + i\sigma}, \eqn{v_i = 1 - \mu + i\sigma} and
+\eqn{w_i = 1 + i\sigma} the log-mass is also
+\deqn{\ell = \log\binom{n}{y} + \sum_{i<y}\log u_i + \sum_{i<n-y}\log v_i
+  - \sum_{i<n}\log w_i,}
+and a derivative with \eqn{a} differentiations in \eqn{\mu} and \eqn{b} in
+\eqn{\sigma}, of order \eqn{K = a + b}, is
+\deqn{c_K\Big[\sum_{i<y}\frac{i^b}{u_i^K} + (-1)^a\sum_{i<n-y}\frac{i^b}{v_i^K}
+  - [a = 0]\sum_{i<n}\frac{i^b}{w_i^K}\Big], \qquad c_K = (-1)^{K-1}(K-1)!.}
+Each sum has terms of one sign. These \strong{direct sums} are used for
+\eqn{\sigma < 0.1} at every order, observed and expected, and the route
+through the shapes above it (see the next section).
+
+Every expectation, including those of the third and fourth derivatives, is
+an \strong{exact finite sum} over \eqn{\{0, \dots, n\}}: the support is bounded,
+so there is nothing to integrate over.
 }
 
 \section{The cancellation at a small dispersion}{
 The two beta functions of the mass are of magnitude
 \eqn{(\alpha+\beta)\log(\alpha+\beta)} while their difference is of order
 one, so writing the mass as that difference loses one digit per factor of
-ten in the concentration \eqn{1/\sigma}. At \eqn{\sigma = 10^{-14}} the
-direct route is wrong in the third decimal of the log-mass. The kernel
-switches to a sum of logarithms instead, the shifts being integers, and the
-same rewrite runs through the score: measured at \eqn{n = 10},
-\eqn{\mu = 0.4}, \eqn{y = 3}, the mean component holds the binomial value
-\eqn{-25/6} to nine figures at a concentration of \eqn{10^{15}}.
+ten in the concentration \eqn{1/\sigma}. The kernel computes the log-mass
+as the sum of logarithms above instead. The route through the shapes has
+the same defect in its derivatives: the polygamma differences are of order
+one while the derivatives of the map \eqn{(\alpha, \beta)} in \eqn{\sigma}
+are of order \eqn{\sigma^{-(K+1)}}, and their products cancel among
+themselves as \eqn{\sigma} goes to zero. Below \eqn{\sigma = 0.1} the
+derivatives and the expectations built from them therefore come from the
+direct sums, at a cost of \eqn{O(n)} per observation; above it the shape
+route is accurate, and the direct sums would lose about
+\eqn{\log_{10} n} digits there.
 }
 
 \section{Estimation}{
 \code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
-estimate is closed form. A sample with no extra-binomial variation drives
-\eqn{\hat\sigma} towards zero, which is the correct answer and the boundary
-of the parameter space.
+estimate is available in closed form. For a sample with no extra-binomial
+variation, \eqn{\hat\sigma} tends to zero, the boundary of the parameter
+space.
 }
 
 \section{Notation}{

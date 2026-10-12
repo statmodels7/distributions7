@@ -18,8 +18,8 @@ recycled. Both must be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{mu_theta} and
@@ -37,10 +37,18 @@ trigamma function, and the term in which \eqn{\theta} appears outside
 \eqn{r} contributes \eqn{-1/(1+\theta)} to the mixed entry.
 
 Because \eqn{\partial r/\partial\mu = 1/\theta} and
-\eqn{\partial r/\partial\theta = -r/\theta}, every component divides by a
-power of \eqn{\theta}, and the components in \eqn{\theta} lose their digits
-at small \eqn{\theta} for the reason given on
-\code{\link[=distrib_gradient.NegBin1Distrib]{distrib_gradient.NegBin1Distrib()}}.
+\eqn{\partial r/\partial\theta = -r/\theta}, every component of that route
+divides by a power of \eqn{\theta}, so it is used only for
+\eqn{\theta \ge 1}. For \eqn{\theta < 1} and an integer count the kernel
+differentiates the form without the size given on
+\code{\link[=distrib_gradient.NegBin1Distrib]{distrib_gradient.NegBin1Distrib()}} once more: with
+\eqn{u_i = \mu + i\theta}, \eqn{C = \sum_{i=1}^{y-1} i/u_i^2} and
+\eqn{D = \sum_{i=1}^{y-1} i^2/u_i^2},
+\deqn{\ell^{(\mu\mu)} = -\sum_{i=0}^{y-1} u_i^{-2}, \qquad
+      \ell^{(\mu\theta)} = \dfrac{1}{1+\theta} - C - q, \qquad
+      \ell^{(\theta\theta)} = \dfrac{y-\mu}{(1+\theta)^2} - D - \mu q',}
+with \eqn{q} and \eqn{q'} from their power series below \eqn{\theta = 1/4}.
+Every component then keeps its accuracy as \eqn{\theta} goes to zero.
 }
 \section{Notation}{
 
@@ -57,8 +65,8 @@ th <- list(mu = 4, theta = 4)
 h <- distrib_hessian(d, y, th)
 h
 
-# The curvature in mu is exactly zero at y = 0, the size being 1 there, so
-# the observed information is singular at that count.
+# The curvature in mu is exactly zero at y = 0, where the log-mass is linear
+# in mu; the observed information at that count is indefinite.
 h$mu_mu
 
 # It is the second derivative of the log-mass, so a central difference of

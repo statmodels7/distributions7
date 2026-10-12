@@ -880,3 +880,29 @@ test_that("the beta moments at extreme precisions", {
   expect_rel(skewness(beta2_distrib(), list(alpha = 1e-200, beta = 2e-200)),
                1 / sqrt(2), tolerance = 1e-15)
 })
+
+test_that("the NB1 expected information and its derivatives at a small dispersion", {
+  # mpmath, 60 digits: G = E[l_theta,theta] = -E[D] - mu q'(theta) and its
+  # derivatives by mp.diff; E[l_mu,theta] = -theta G/mu
+  d <- negbin1_distrib()
+  ref <- list(c(4, 1e-12, -0.499999999998875, 1.1249999999961042, -3.8958333333149113),
+              c(4, 1e-8, -0.4999999887500002, 1.1249999610416677, -3.895833149114589),
+              c(50, 1e-8, -0.49999998990000016, 1.009999969329334, -3.06706654239443),
+              c(4, 0.6, -0.18060194723592765, 0.23761269355675782, -0.47449809149075506))
+  for (r in ref) {
+    th <- list(mu = r[1], theta = r[2])
+    e <- distrib_expected_hessian(d, 0, th)
+    expect_rel(e$theta_theta, r[3], tolerance = 1e-12)
+    expect_rel(e$mu_theta, -r[2] * r[3] / r[1], tolerance = 1e-12)
+    expect_rel(distrib_dexpected_hessian(d, 0, th)$theta_theta_theta, r[4], tolerance = 1e-12)
+    expect_rel(distrib_d2expected_hessian(d, 0, th)$theta_theta_theta_theta, r[5],
+               tolerance = 1e-12)
+  }
+})
+
+test_that("the NB1 observed curvature in theta below theta = 1e-9", {
+  # mpmath, 40 digits: (y - mu)/(1 + theta)^2 - D_y - mu q'(theta)
+  d <- negbin1_distrib()
+  expect_rel(distrib_hessian(d, 3, list(mu = 4, theta = 1e-10))$theta_theta,
+             0.020833333361458333323, tolerance = 1e-13)
+})

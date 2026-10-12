@@ -8,7 +8,8 @@
 trial count in its \code{size} property.}
 
 \item{theta}{A named list with components \code{mu} (strictly between 0 and 1)
-and \code{sigma} (positive), each a numeric vector of length 1 or \code{n}.}
+and \code{sigma} (positive), each a numeric vector of length 1 or of the common
+length of the parameter settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -47,7 +48,7 @@ c(betabinomial = variance(d, list(mu = 0.3, sigma = 1e-8)),
 }
 \seealso{
 \code{\link[=mean.BetaBinom1Distrib]{mean.BetaBinom1Distrib()}}; \code{\link[=variance.BinomialDistrib]{variance.BinomialDistrib()}}, the
-\eqn{\sigma \to 0} limit; \code{\link[=betabinom_central]{betabinom_central()}};
+\eqn{\sigma \to 0} limit; \code{\link[=betabinom_moments]{betabinom_moments()}};
 \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.
 }
 \keyword{internal}

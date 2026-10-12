@@ -26,8 +26,8 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_theta},
@@ -43,17 +43,28 @@ in \eqn{(\mu, \theta)} and linear in \eqn{y}, and the pure dispersion
 component carries \eqn{\psi_2(y+\theta) - \psi_2(\theta)}, with
 \eqn{\psi_2} the second derivative of the digamma function.
 
+The mean components are formed from the bracket
+\eqn{y/\mu^k - (y+\theta)/(\mu+\theta)^k}, written as
+\eqn{y(1 - q^k)/\mu^k - \theta/(\mu+\theta)^k} with
+\eqn{q = \mu/(\mu+\theta)} and \eqn{1 - q^k} computed as
+\eqn{-\mathrm{expm1}(-k\,\mathrm{log1p}(\theta/\mu))}. Written directly
+its two terms agree to a relative \eqn{\theta/\mu} where \eqn{y} is near
+\eqn{\mu}, and their difference loses that many digits at a small
+dispersion or a large mean; in this form the value keeps full relative
+accuracy, and a term with a zero coefficient contributes zero.
+
 With \code{expected = TRUE} the expectations are returned. The three components
 involving the mean need only \eqn{\mathbb{E}[Y] = \mu}; the pure dispersion
 one needs \eqn{\mathbb{E}[\psi_2(Y+\theta)]}, which has no closed form and
-is summed over the support with a far-tail correction, exactly as the
-expected Hessian sums \eqn{\mathbb{E}[\psi_1(Y+\theta)]}. \code{approx} and
-\code{nsim} are ignored either way.
+is summed over the support with the mass recurrence and the stopping rule
+of \code{\link[=distrib_expected_hessian.NegBin2Distrib]{distrib_expected_hessian.NegBin2Distrib()}}. \code{approx} and \code{nsim} are
+ignored either way.
 
-The cancellation of \code{\link[=distrib_gradient.NegBin2Distrib]{distrib_gradient.NegBin2Distrib()}} applies here too and
-\strong{is not removed at this order}: the pure dispersion components lose their
-digits at large \eqn{\theta}, where the score itself is reliable to about
-five figures and no further.
+The cancellation of \code{\link[=distrib_gradient.NegBin2Distrib]{distrib_gradient.NegBin2Distrib()}} is performed
+symbolically at this order too: the observed pure dispersion component is
+a sum over \eqn{j < y} when \eqn{\theta > 100\max(y, 1)}, and the expected
+one is a single merged sum, so both keep their accuracy at large
+\eqn{\theta}.
 }
 \section{Notation}{
 

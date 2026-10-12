@@ -21,7 +21,9 @@ Closed form in the two shapes \eqn{a = \mu\phi} and \eqn{b = (1-\mu)\phi}:
                       {(a + b + 2)\sqrt{ab}}.}
 It takes the sign of \eqn{b - a}, so a beta is right-skewed below a mean of
 one half, left-skewed above it, and exactly symmetric at \eqn{\mu = 1/2}
-whatever the precision.
+whatever the precision. The method evaluates the equivalent form in \eqn{(\mu, \phi)}
+of \code{\link[=beta_shape_moments]{beta_shape_moments()}}, in which the product \eqn{ab} is not formed, so
+the value is finite where \eqn{ab} underflows or overflows.
 }
 \section{Notation}{
 

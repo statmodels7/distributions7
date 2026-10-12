@@ -12,11 +12,11 @@ distribution function of a discrete variable requires.}
 
 \item{theta}{A named list of parameters, each of length 1 or \code{length(q)}.}
 
-\item{lower.tail}{Logical of length 1. \code{TRUE}, the default, returns
-\eqn{P(Y \le q)}; \code{FALSE} returns the complement.}
+\item{lower.tail}{Logical of length 1. \code{TRUE}, the default, returns \eqn{P(Y
+\le q)}; \code{FALSE} returns \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical of length 1. \code{TRUE} returns the logarithm, taken after
-the summation.}
+\item{log.p}{Logical of length 1. \code{TRUE} returns the logarithm of the
+probability.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -33,15 +33,20 @@ approximate, so on a Poisson defined by its mass alone it agrees with
 addition itself.
 }
 \details{
-The cumulative table is built by \code{\link[=disc_cum_table]{disc_cum_table()}} and rebuilt whenever
-the parameter setting of a row differs from that of the row before, so a
-vector of quantiles at one setting costs one table. A support unbounded
-above is extended, by doubling, until the table reaches the largest
-requested support point.
+The cumulative table is built by \code{\link[=disc_cum_table]{disc_cum_table()}} and rebuilt whenever the
+parameter setting of a row differs from that of the row before, so a vector
+of quantiles at one setting costs one table. A support unbounded above is
+extended, by doubling, until the table reaches the largest requested support
+point. With \code{lower.tail = FALSE} the upper tail \eqn{P(Y > q)} is \eqn{1 -
+F(q)} where \eqn{F(q) \le 1/2}; past the median it is read from
+\code{\link[=disc_upper_table]{disc_upper_table()}}, which sums the mass above \eqn{q} from the top of its
+table, so a tail probability far below machine epsilon keeps its relative
+accuracy. A missing \code{q} gives \code{NA}.
 }
 \seealso{
-\code{\link[=disc_cum_table]{disc_cum_table()}}, which builds the table;
-\code{\link[=distrib_quantile.discrete_distrib]{distrib_quantile.discrete_distrib()}}, which inverts it;
+\code{\link[=disc_cum_table]{disc_cum_table()}}, which builds the table; \code{\link[=disc_upper_table]{disc_upper_table()}},
+the table of the upper tail; \code{\link[=distrib_quantile.discrete_distrib]{distrib_quantile.discrete_distrib()}}, which
+inverts it;
 \code{\link[=distrib_cdf.continuous_distrib]{distrib_cdf.continuous_distrib()}}, where the same question needs a
 quadrature; \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

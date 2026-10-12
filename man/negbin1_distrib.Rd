@@ -34,7 +34,7 @@ The two arguments choose the links that carry each parameter to the
 unconstrained scale an optimizer works on. Both default to the logarithm,
 both parameters being positive.
 }
-\section{Two negative binomials, and they are two families}{
+\section{Relation to the quadratic-variance negative binomial}{
 Two negative binomials are in common use and they are \strong{different
 families}, not two parametrizations of one. Here the variance is
 \eqn{\mu(1+\theta)}, growing in proportion to the mean, so the dispersion
@@ -56,8 +56,8 @@ The mass on \eqn{y = 0, 1, 2, \ldots} is
       \left(\dfrac{\theta}{1+\theta}\right)^{y},}
 the distribution function is the partial sum and the quantile function its
 generalized inverse. The mean is \eqn{\mu} and the variance
-\eqn{\mu(1+\theta)}. Two settings are worth recognizing: at \eqn{\mu =
-\theta} the size is 1 and the law is the geometric, and as \eqn{\theta} goes
+\eqn{\mu(1+\theta)}. Two special cases follow from the size: at
+\eqn{\mu = \theta} it is 1 and the law is the geometric, and as \eqn{\theta} goes
 to zero it tends to the Poisson, where the quadratic form needs
 \eqn{\theta \to \infty} instead.
 }
@@ -75,28 +75,30 @@ by the first Bartlett identity, and what remains is two sums over the
 support against the exact mass (\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}}).
 
 \strong{The mean and the dispersion are not orthogonal here.} The mixed entry of
-the expected information is small but non-zero at every setting measured,
-where \code{\link[=negbin2_distrib]{negbin2_distrib()}} has exactly zero there.
+the expected information is non-zero, where \code{\link[=negbin2_distrib]{negbin2_distrib()}} has exactly
+zero.
 }
 
-\section{What happens as theta goes to zero}{
+\section{The Poisson limit}{
 The family tends to the Poisson, so every derivative in \eqn{\theta} tends
-to a finite limit while the pieces it is assembled from run away: the size
-\eqn{r = \mu/\theta} grows without bound and the chain rule divides by
-powers of \eqn{\theta}. The score's digamma difference is computed in a form
-that performs its own cancellation symbolically, and the value converges
-onto \eqn{\{(y-\mu)^2 - y\}/(2\mu)}, holding to about five significant
-figures at \eqn{\theta = 10^{-8}}. The expected information is written in
-sums whose summands are rational in \eqn{(\mu, \theta)} and stays negative
-definite to \eqn{\theta = 10^{-10}}
-(\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}}). The third and fourth
-derivatives in \eqn{\theta} are \strong{not} rewritten, and their cancellation in
-the powers of \eqn{r} is untouched (\code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3.NegBin1Distrib()}},
-\code{\link[=distrib_deriv4.NegBin1Distrib]{distrib_deriv4.NegBin1Distrib()}}).
-
-A fit reaches that regime routinely: on 2,000 Poisson counts with mean 4 the
-dispersion is estimated at about \eqn{1.7\times 10^{-8}} and the run reports
-convergence.
+to a finite limit while the pieces of the chain rule through the size run
+away: \eqn{r = \mu/\theta} grows without bound and the chain rule divides by
+powers of \eqn{\theta}. For \eqn{\theta < 1} every derivative of the
+log-mass, from the score to the fourth order, is therefore computed from the
+form in which the size does not appear,
+\deqn{\ell = \sum_{i<y}\log(\mu + i\theta) - \log(y!)
+  - \frac{\mu}{\theta}\log(1+\theta) - y\log(1+\theta),}
+whose derivatives are sums of powers of \eqn{1/(\mu + i\theta)} and
+derivatives of \eqn{\log(1+\theta)/\theta}, at a cost of \eqn{y} terms per
+observation (\code{\link[=distrib_gradient.NegBin1Distrib]{distrib_gradient.NegBin1Distrib()}},
+\code{\link[=distrib_hessian.NegBin1Distrib]{distrib_hessian.NegBin1Distrib()}}, \code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3.NegBin1Distrib()}},
+\code{\link[=distrib_deriv4.NegBin1Distrib]{distrib_deriv4.NegBin1Distrib()}}). The score's dispersion component tends
+to \eqn{\{(y-\mu)^2 - y\}/(2\mu)}. The expected information and its
+derivatives are sums over the support whose summands are all positive below
+\eqn{\theta = 0.02} (\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}}). A fit
+reaches this regime when the data are equidispersed, since the maximum
+likelihood estimate of \eqn{\theta} then lies at the boundary of its
+domain.
 }
 
 \section{Estimation}{

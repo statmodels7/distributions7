@@ -28,7 +28,11 @@ five at order 4. Each has the recycled length of the inputs.
 \description{
 Assembles the full set of derivative components of a given order by calling
 \code{\link[=betabinom2_component]{betabinom2_component()}} once per distinct multi-index, and names them as
-\code{\link[=deriv_names]{deriv_names()}} names them.
+\code{\link[=deriv_names]{deriv_names()}} names them. Where the concentration \eqn{a + b} exceeds
+10, the reciprocal of \code{\link[=bb_direct_cut]{bb_direct_cut()}}, the polygamma differences cancel
+among themselves as the shapes grow at a fixed ratio, and those rows are
+computed from the direct sums of \code{\link[=betabinom_direct]{betabinom_direct()}} instead, whose terms
+have one sign each.
 }
 \seealso{
 \code{\link[=betabinom2_component]{betabinom2_component()}} for one component,

@@ -12,6 +12,9 @@ betabinom1_cum(n, theta, len, upper = FALSE)
 \item{theta}{A named list with the two parameters.}
 
 \item{len}{The length of the quantity the caller evaluates at.}
+
+\item{upper}{Logical of length 1. When \code{TRUE} the upper tail is returned.
+Defaults to \code{FALSE}.}
 }
 \value{
 A numeric vector of length \code{n + 1}, or a matrix with \code{n + 1}
@@ -20,11 +23,15 @@ columns.
 \description{
 The cumulative mass over \eqn{\{0, \dots, n\}}: a vector where both
 parameters are scalar, and otherwise a matrix with one row per observation,
-each observation's parameters crossed with the support.
+each observation's parameters crossed with the support. With
+\code{upper = TRUE} the entry at \eqn{k} is \eqn{P(Y > k)}, the mass above
+\eqn{k} accumulated from the top of the support, in place of
+\eqn{P(Y \le k)}.
 }
 \details{
-The kernel reads its parameters per element, so handing it the support
-against a vector of parameters recycled nothing and read past the end of
-the shorter vector; that is what the matrix branch replaced.
+The kernel reads its parameters element by element, so the support and a
+vector of parameters are not passed to it together: each observation's
+parameters are crossed with the support, and the sum is taken along each
+row.
 }
 \keyword{internal}

@@ -33,20 +33,18 @@ not defined, and it is returned directly so that no quadrature is attempted.
 The generic \code{\link[=skewness]{skewness()}} evaluates
 \eqn{\gamma_1 = \mathbb{E}[((Y - \mathbb{E}Y)/\mathrm{sd}(Y))^3]}
 for a \code{distrib} object by calling \code{\link[=moment]{moment()}} three times. On a Cauchy each of
-those integrals diverges, and a numerical quadrature over a divergent
-integral does not fail loudly: it returns whatever its truncation happens to
-give, a number that changes with the panel layout and looks like an estimate.
-This method short-circuits that.
+those integrals diverges, and \code{\link[=moment]{moment()}} signals an error. This method
+returns \code{NaN} without running a quadrature.
 
 The same holds for \code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}}, \code{\link[=variance.CauchyDistrib]{variance.CauchyDistrib()}} and
 \code{\link[=kurtosis.CauchyDistrib]{kurtosis.CauchyDistrib()}}, and for the sample versions: a Cauchy sample mean
 does not converge as \eqn{n} grows, it is itself Cauchy with the same scale,
 so no amount of data settles it. The example below shows that.
 
-What the Cauchy does have is a \strong{median}, equal to \eqn{\mu}, and a
-half-interquartile range, equal to \eqn{\sigma}. Both are exact and finite at
-every parameter value, and both are available from \code{\link[=distrib_quantile]{distrib_quantile()}}.
-Reach for those when a location and a spread are wanted.
+The Cauchy has a \strong{median}, equal to \eqn{\mu}, and a half-interquartile
+range, equal to \eqn{\sigma}. Both are finite at every parameter value and
+both are available from \code{\link[=distrib_quantile]{distrib_quantile()}}. They serve as a location and a
+spread where the mean and the variance do not exist.
 }
 \section{Notation}{
 

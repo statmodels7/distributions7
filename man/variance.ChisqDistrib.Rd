@@ -17,8 +17,7 @@ A numeric vector of variances, the length of \code{theta$mu}.
 \description{
 Closed form: \eqn{\operatorname{Var}(Y) = 2\mu}. The variance is tied to the
 mean, so the family has one parameter where a gamma has two: it is exactly
-the gamma at \eqn{\sigma^2 = 2\mu}, and a sample whose variance is far from
-twice its mean is not chi-squared at any degrees of freedom.
+the gamma at \eqn{\sigma^2 = 2\mu}, .
 }
 \examples{
 d <- chisq_distrib()

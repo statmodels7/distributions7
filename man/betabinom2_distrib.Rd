@@ -33,8 +33,8 @@ Builds the distribution object for the beta-binomial family in its canonical
 parametrization, the two beta shapes \eqn{\alpha > 0} and \eqn{\beta > 0},
 on the finite support \eqn{\{0, 1, \dots, n\}}. The returned object carries
 closed-form derivatives of the log-mass to fourth order and expectations
-that are exact finite sums over the support, so every generic of the toolkit
-answers without a quadrature.
+that are exact finite sums over the support, so no quadrature is used. The
+fifth derivative comes from the numerical fallback of the base class.
 
 This is the same law as \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, which is written in a mean
 proportion and a dispersion. Use this one when the shapes themselves are the
@@ -55,9 +55,10 @@ binomial limit.
 
 \section{Derivatives}{
 The log-mass is a sum of log-gamma terms, so a derivative of order \eqn{k}
-replaces each by \eqn{\psi^{(k-1)}} and all four orders come from one
-routine, \code{\link[=betabinom2_derivs]{betabinom2_derivs()}}. A component naming both shapes keeps only
-the terms in \eqn{S} and is therefore free of the data at every order.
+replaces each by \eqn{\psi^{(k-1)}}. The score and the Hessian come from
+compiled kernels, and the third and fourth orders from
+\code{\link[=betabinom2_derivs]{betabinom2_derivs()}}. A component naming both shapes keeps only the terms
+in \eqn{S} and is therefore free of the data at every order.
 
 Every expectation is an \strong{exact finite sum} over \eqn{\{0, \dots, n\}}:
 the support is bounded, so there is nothing to integrate over.
@@ -67,19 +68,16 @@ the support is bounded, so there is nothing to integrate over.
 The two beta functions of the mass are each of magnitude \eqn{S\log S} while
 their difference is of order one, so writing the mass as that difference
 loses one digit per factor of ten in \eqn{S}. \code{\link[=betabinom_log_mass]{betabinom_log_mass()}}
-switches to a sum of logarithms past a measured threshold and stays exact:
-at \eqn{n = 10}, \eqn{y = 3} and \eqn{\alpha/S = 0.4}, the log-mass agrees
-with the binomial one to twelve figures at \eqn{S = 10^{14}}, where the
-direct route is wrong in the third decimal.
+switches to a sum of logarithms once the error of the direct route would
+exceed \eqn{10^{-8}}, and the sums stay accurate to the binomial limit.
 
-\strong{The derivatives are not rewritten that way here}, and cede earlier than
-the mass. Measured at the same setting, the relative error of the
-\eqn{\alpha} score against its limit is \eqn{6\times10^{-8}} at
-\eqn{S = 10^8}, \eqn{4\times10^{-4}} at \eqn{10^{12}} and 1.8 at
-\eqn{10^{15}}. \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}'s compiled kernel forms the same
-differences as sums of reciprocals and holds nine figures at
-\eqn{S = 10^{15}}, so that is the parametrization to use where such a
-concentration is reachable.
+The derivatives cancel in the same way. The score and the Hessian evaluate
+each polygamma difference, for a shape of at least 100, as an asymptotic
+series remainder plus one \code{log1p()}. The third and fourth orders, and the
+expectations built from them, are computed for \eqn{S > 10} from the direct
+sums over the integer shifts (\code{\link[=betabinom_direct]{betabinom_direct()}}), whose terms have one
+sign each, at a cost of \eqn{O(n)} per observation. Every order therefore
+keeps its accuracy as the concentration grows.
 }
 
 \section{Estimation}{

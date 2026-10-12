@@ -8,7 +8,8 @@
 \code{size} property supplies the number of trials.}
 
 \item{y}{A numeric vector of counts of successes, integers between 0 and
-\code{size}. Any other value gives 0 with a warning from \code{\link[stats:Binomial]{stats::dbinom()}}.}
+\code{size}. Any other value gives 0, and a non-integer value also gives a
+warning from \code{\link[stats:Binomial]{stats::dbinom()}}. A missing value gives \code{NA}.}
 
 \item{theta}{A named list with the single component \code{mu}, a numeric vector
 of length 1 or of the length of \code{y}. A value of length 1 is recycled.

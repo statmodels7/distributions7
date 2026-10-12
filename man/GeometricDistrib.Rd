@@ -48,14 +48,14 @@ object built by \code{\link[=geometric_distrib]{geometric_distrib()}} they hold 
 The S7 class of the geometric family parametrized by its \strong{mean}
 \eqn{\mu > 0}: the number of failures before the first success in
 independent trials, each succeeding with probability
-\eqn{p = 1/(1+\mu)}. It inherits from \code{discrete_distrib}, so its support is
-a set of isolated points, so expectations are sums and no derivative with
-respect to the response is defined.
+\eqn{p = 1/(1+\mu)}. It inherits from \code{discrete_distrib}, so expectations
+over its support are sums and no derivative with respect to the response
+is defined.
 
-The parametrization is by the mean, the quantity the modeling layer above
-models: a link carries \eqn{\mu} to the unconstrained scale and the
-probability follows. R's own \code{dgeom} takes
-\code{prob}, and the methods convert through \code{\link[=geom_prob]{geom_prob()}}.
+The parametrization is by the mean, so that a link can carry \eqn{\mu} to
+the unconstrained scale; the success probability is computed from
+\eqn{\mu}. The base R function \code{dgeom} takes \code{prob}, and the methods
+convert through \code{\link[=geom_prob]{geom_prob()}}.
 
 The variance is \eqn{\mu(1+\mu)}, always above the mean, so this family is
 overdispersed relative to a Poisson of the same mean. It is the negative
@@ -63,23 +63,34 @@ binomial at a dispersion of one, and it is the only discrete law that is
 memoryless.
 
 Build one with \code{\link[=geometric_distrib]{geometric_distrib()}}. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.
+constructor, which takes the parent's properties; the validator of
+\code{distrib} checks them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.GeometricDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.GeometricDistrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.GeometricDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.GeometricDistrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.GeometricDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_quantile.GeometricDistrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.GeometricDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.GeometricDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.GeometricDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.GeometricDistrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.GeometricDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.GeometricDistrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.GeometricDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.GeometricDistrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.GeometricDistrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.GeometricDistrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.GeometricDistrib]{distrib_d2expected_hessian()}};
+\item the moments: \code{\link[=mean.GeometricDistrib]{mean()}},
+\code{\link[=variance.GeometricDistrib]{variance()}},
+\code{\link[=skewness.GeometricDistrib]{skewness()}} and
+\code{\link[=kurtosis.GeometricDistrib]{kurtosis()}}.
+}
 
-Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
+Every other generic is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
 \examples{

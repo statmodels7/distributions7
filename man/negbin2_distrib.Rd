@@ -26,8 +26,9 @@ An S7 object of class \code{NegBin2Distrib}, inheriting from
 Builds the distribution object for the negative binomial family on the
 non-negative integers in the NB2 parametrization: the mean \eqn{\mu > 0} and
 a dispersion \eqn{\theta > 0}, so that
-\eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}. This is the count model a
-regression reaches for when a Poisson is overdispersed. The returned object
+\eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}. It is a standard count
+model for data that are overdispersed relative to a Poisson. The returned
+object
 carries closed-form derivatives of the log-mass to fourth order and
 closed-form moments.
 
@@ -75,21 +76,17 @@ The zero off-diagonal makes the mean and the dispersion orthogonal.
 \section{Every derivative in theta cancels as theta grows}{
 The family tends to the Poisson as \eqn{\theta} grows, so every derivative
 in \eqn{\theta} vanishes there and is written as a sum of terms that cancel
-to leading order. The score and the observed Hessian are computed in forms
-that perform those cancellations symbolically, and are reliable throughout;
-the direct expression for the score is wrong by one part in a thousand at
-\eqn{\theta = 10^6} and changes sign at \eqn{10^8}. Two quantities are
-\strong{not} rewritten, and both pages say so:
-\itemize{
-\item the expected information in \eqn{\theta}, which is measured positive from
-about \eqn{\theta = 10^6} and so is unusable there
-(\code{\link[=distrib_expected_hessian.NegBin2Distrib]{distrib_expected_hessian.NegBin2Distrib()}});
-\item the third and fourth derivatives in \eqn{\theta}
-(\code{\link[=distrib_deriv3.NegBin2Distrib]{distrib_deriv3.NegBin2Distrib()}}, \code{\link[=distrib_deriv4.NegBin2Distrib]{distrib_deriv4.NegBin2Distrib()}}).
-}
-
-A fit reaches that regime routinely, a nearly equidispersed sample driving
-\eqn{\theta} towards its boundary.
+to leading order. The score, the observed Hessian, the expected information
+in \eqn{\theta} and the third and fourth derivatives in \eqn{\theta},
+observed and expected, are computed in forms that perform those
+cancellations symbolically (\code{\link[=distrib_gradient.NegBin2Distrib]{distrib_gradient.NegBin2Distrib()}},
+\code{\link[=distrib_expected_hessian.NegBin2Distrib]{distrib_expected_hessian.NegBin2Distrib()}},
+\code{\link[=distrib_deriv3.NegBin2Distrib]{distrib_deriv3.NegBin2Distrib()}}). As \eqn{\theta} goes to zero the
+derivatives in the mean cancel in the same way, and their brackets are
+written so that they keep full relative accuracy
+(\code{\link[=distrib_hessian.NegBin2Distrib]{distrib_hessian.NegBin2Distrib()}}). A fit reaches the large-\eqn{\theta}
+regime when the sample is nearly equidispersed, since the estimate of
+\eqn{\theta} then grows towards the boundary of its domain.
 }
 
 \section{Estimation}{
@@ -97,7 +94,7 @@ A fit reaches that regime routinely, a nearly equidispersed sample driving
 the closed-form estimate \eqn{\hat\mu = \bar y}; the dispersion solves an
 equation in digamma functions and is reached numerically. The method of
 moments supplies the starting value \eqn{\bar y^2/(s^2 - \bar y)}, with
-\eqn{s^2} the sample variance.
+\eqn{s^2} the sample variance, or \eqn{10^3} when \eqn{s^2 \le \bar y}.
 }
 
 \section{Notation}{

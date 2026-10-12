@@ -18,8 +18,8 @@ recycled. Both must be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to \code{1L}.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{theta}, each of
@@ -35,20 +35,30 @@ function,
       \dfrac{\partial \ell}{\partial \theta} = -\dfrac{\mu}{\theta^2}P
         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta}.}
 The arithmetic runs in a compiled kernel decomposed over the elements of the
-output, so the result does not depend on the thread count.
+output, so the result does not depend on the thread count. These are the
+formulas the kernel evaluates for \eqn{\theta \ge 1}.
 }
-\section{The dispersion at small theta}{
+\section{The dispersion below one}{
 As \eqn{\theta} goes to zero the family tends to the Poisson, so the
-dispersion component tends to a finite limit while its individual terms run
+dispersion component tends to a finite limit while the terms above run
 away: \eqn{r = \mu/\theta} grows without bound and the chain rule divides by
-\eqn{\theta^2}. The kernel computes the digamma difference in a form that
-performs the cancellation symbolically, and the value converges onto
+\eqn{\theta^2}. For \eqn{\theta < 1} and an integer count the kernel uses
+instead the form of the log-mass in which the size does not appear,
+\eqn{\ell = \sum_{i<y}\log(\mu + i\theta) - \log y! - (\mu/\theta)\log(1+\theta)
+- y\log(1+\theta)}. With \eqn{B = \sum_{i=1}^{y-1} i/(\mu + i\theta)} and
+\eqn{q = (\theta - \log(1+\theta))/\theta^2},
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y-\mu}{\mu}
+        - \dfrac{\theta}{\mu}B + \theta q, \qquad
+      \dfrac{\partial \ell}{\partial \theta} = B - \dfrac{y-\mu}{1+\theta}
+        - \mu q,}
+with \eqn{q} from its power series below \eqn{\theta = 1/4}. No term of
+order \eqn{\mu/\theta^2} is formed, so both components keep their accuracy
+as \eqn{\theta} goes to zero, where the dispersion component tends to
 \deqn{\lim_{\theta \to 0} \dfrac{\partial \ell}{\partial \theta}
-      = \dfrac{(y-\mu)^2 - y}{2\mu},}
-which the example below checks at three settings. What survives is about
-five significant figures at \eqn{\theta = 10^{-8}} and no more, the powers
-of \eqn{r} in the assembly carrying a cancellation of their own that is not
-removed.
+      = \dfrac{(y-\mu)^2 - y}{2\mu}.}
+The cost is \eqn{y} terms per observation in place of a fixed number of
+digamma evaluations. The example below compares the value with this limit
+at three settings.
 
 With \code{scale = "link"} the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter

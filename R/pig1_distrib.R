@@ -12,8 +12,9 @@ NULL
 #' tail than the negative binomial at the same variance.
 #'
 #' Build one with [pig1_distrib()], which supplies the two link functions. This
-#' page documents the raw S7 constructor, which validates none of the
-#' relationships between its properties.
+#' page documents the raw S7 constructor, which takes the parent's
+#' properties; the validator of `distrib` checks them, and the constructor
+#' adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -25,27 +26,31 @@ NULL
 #'   \eqn{(0, \infty)}.
 #'
 #' @section Methods:
-#' Registered in this file, the middle five reading one compiled kernel:
-#'   [`distrib_pdf()`][distrib_pdf.Pig1Distrib],
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.Pig1Distrib] and
+#'   [`distrib_rng()`][distrib_rng.Pig1Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.Pig1Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.Pig1Distrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.Pig1Distrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.Pig1Distrib],
-#'   [`distrib_rng()`][distrib_rng.Pig1Distrib].
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Pig1Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Pig1Distrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.Pig1Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.Pig1Distrib] and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.Pig1Distrib];
+#' - the moments: [`mean()`][mean.Pig1Distrib],
+#'   [`variance()`][variance.Pig1Distrib], [`skewness()`][skewness.Pig1Distrib]
+#'   and [`kurtosis()`][kurtosis.Pig1Distrib];
+#' - the fitting helpers: [`distrib_start()`][distrib_start.Pig1Distrib] and
+#'   [expected_hessian_costly()].
 #'
-#' Registered elsewhere: the four moments in `moments.R` and the data-based
-#' starting value in `starting_values.R`.
-#'
-#' The **distribution function** and the **quantile** come from
-#' [discrete_distrib()], where both are exact sums over the support. The
-#' **expected information** is computed exactly, with its first and second
-#' derivatives, by one pass over the support; see
-#' [`distrib_expected_hessian()`][distrib_expected_hessian.Pig2Distrib].
+#' Every other generic is inherited from [discrete_distrib()]. The distribution
+#' function and the quantile are the inherited ones, documented at
+#' [distrib_cdf.discrete_distrib()] and [distrib_quantile.discrete_distrib()].
 #'
 #' @seealso [pig1_distrib()] to build one;
 #'   [pig2_distrib()] for the parametrization whose two parameters are
-#'   orthogonal; [negbin2_distrib()] for the other overdispersed count family;
-#'   the compiled kernels for the kernel all five derivative methods read.
+#'   orthogonal; [negbin2_distrib()] for the other overdispersed count family.
 #'
 #' @examples
 #' d <- pig1_distrib()
@@ -76,17 +81,18 @@ Pig1Distrib <- S7::new_class("Pig1Distrib", parent = discrete_distrib)
 #'   \dfrac{\mu^y e^{1/\sigma}}{(\alpha\sigma)^y\, y!}\, K_{y-1/2}(\alpha).}
 #'
 #' The value is not computed that way. At half-integer order the Bessel
-#' function is a finite sum, the prefactors cancel, and what the compiled
-#' kernel evaluates is
+#' function is a finite sum and the prefactors cancel, which gives
 #' \eqn{\ell(y) = y\log\mu - (y/2)\log c + (1-\sqrt c)/\sigma
-#'   + \log S_y(\alpha) - \log y!} with \eqn{S_y} a sum of \eqn{y} positive
-#' terms taken on the log scale. Nothing cancels and no Bessel routine is
-#' called.
+#'   + \log S_y - \log y!} with \eqn{S_y} a sum of \eqn{y} positive terms
+#' taken on the log scale. The compiled kernel evaluates
+#' \eqn{(1-\sqrt c)/\sigma} as \eqn{-2\mu/(1+\sqrt c)} and \eqn{S_y} in
+#' \eqn{w = 1/(2\alpha)}, so nothing cancels as \eqn{\sigma \to 0}, and no
+#' Bessel routine is called.
 #'
 #' @param distrib A `Pig1Distrib` object, from [pig1_distrib()].
-#' @param y A numeric vector of counts. A negative, non-integer or non-finite
+#' @param y A numeric vector of counts. A negative, non-integer or infinite
 #'   value is off the support and gives a probability of 0, or `-Inf` with
-#'   `log = TRUE`.
+#'   `log = TRUE`. A missing value gives `NA` (`NaN` for `NaN`).
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. Both must be strictly
 #'   positive.
@@ -145,7 +151,8 @@ S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE,
 #' out in closed form from the finite Bessel sum.
 #'
 #' @param distrib A `Pig1Distrib` object, from [pig1_distrib()].
-#' @param y A numeric vector of counts. A value off the support gives `NaN`.
+#' @param y A numeric vector of counts. A value off the support, or a missing
+#'   value, gives `NaN`.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. Both must be strictly
 #'   positive.
@@ -180,8 +187,8 @@ S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE,
 #'       numeric = numDeriv::grad(f, c(3, 0.8)))
 #'
 #' # The mean and the dispersion are not orthogonal here: the mixed entry of
-#' # the expected information is far from zero. pig2_distrib() removes that.
-#' sum(distrib_expected_hessian(d, 0:200, th)$mu_sigma)
+#' # the expected information is not zero. pig2_distrib() removes that.
+#' distrib_expected_hessian(d, 0, th)$mu_sigma
 S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
                                                       scale = c("parameter", "link"), ..., threads = 1L) {
   pig1_gradient_cpp(y, theta[[1]], theta[[2]], threads)
@@ -197,10 +204,11 @@ S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
 #'
 #' This is the **observed** curvature at the data. The expected information is
 #' computed exactly by one pass over the support; see
-#' [`distrib_expected_hessian()`][distrib_expected_hessian.Pig2Distrib].
+#' [`distrib_expected_hessian()`][distrib_expected_hessian.Pig1Distrib].
 #'
 #' @param distrib A `Pig1Distrib` object, from [pig1_distrib()].
-#' @param y A numeric vector of counts. A value off the support gives `NaN`.
+#' @param y A numeric vector of counts. A value off the support, or a missing
+#'   value, gives `NaN`.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. Both must be strictly
 #'   positive.
@@ -244,17 +252,16 @@ S7::method(distrib_hessian, Pig1Distrib) <- function(distrib, y, theta,
 #'
 #' @description
 #' Returns the exact third derivatives of the log-mass in \eqn{(\mu, \sigma)},
-#' read off columns `d30`, `d21`, `d12` and `d03` of the compiled fourth-order
-#' kernel of `pig1_deriv3_cpp`. The kernel computes this order alone,
-#' so this order costs no more than the score does.
+#' read off columns `d30`, `d21`, `d12` and `d03` of the compiled kernel
+#' `pig1_deriv3_cpp`, which computes the third order alone.
 #'
 #' With `expected = TRUE` the value is an expectation instead, and there it is
 #' **not** closed form: the call routes to `expected_derivative()`, so `approx`
 #' and `nsim` are read.
 #'
 #' @param distrib A `Pig1Distrib` object, from [pig1_distrib()].
-#' @param y A numeric vector of counts. With `expected = TRUE` its values are
-#'   the support points the expectation is summed over.
+#' @param y A numeric vector of counts. With `expected = TRUE` only its length
+#'   is used, and the expectation is summed over the whole support.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`.
 #' @param expected Logical of length 1. When `FALSE`, the default, the observed
@@ -310,17 +317,25 @@ S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
 #' @name distrib_deriv4.Pig1Distrib
 #'
 #' @description
-#' Returns the exact fourth derivatives of the log-mass in
-#' \eqn{(\mu, \sigma)}, read off the last five columns of the compiled kernel
-#' of `pig1_deriv4_cpp`. The kernel is asked for this order alone, so this is
-#' the order it was written for and it costs the same as the score.
+#' Returns the fourth derivatives of the log-mass in \eqn{(\mu, \sigma)},
+#' written out in closed form, read off the last five columns of the compiled
+#' kernel `pig1_deriv4_cpp`, which computes the fourth order alone.
+#'
+#' At a very small dispersion and a large count this order loses relative
+#' accuracy: the tables it is formed from are moments of the finite sum
+#' \eqn{S_y}, which has \eqn{y} terms, and their combination cancels as
+#' \eqn{\sigma} goes to zero. At \eqn{\sigma = 10^{-7}} and counts of 100 and
+#' more the component in \eqn{\sigma} alone has a relative error between
+#' \eqn{10^{-7}} and \eqn{2\times10^{-3}}, growing with the count and with
+#' \eqn{1/\mu}; the orders below, and this order at counts under 100, are
+#' accurate to \eqn{10^{-8}} or better there.
 #'
 #' With `expected = TRUE` the value is an expectation and is not closed form,
 #' as at third order.
 #'
 #' @param distrib A `Pig1Distrib` object, from [pig1_distrib()].
-#' @param y A numeric vector of counts. With `expected = TRUE` its values are
-#'   the support points the expectation is summed over.
+#' @param y A numeric vector of counts. With `expected = TRUE` only its length
+#'   is used, and the expectation is summed over the whole support.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`.
 #' @param expected Logical of length 1. When `FALSE`, the default, the observed
@@ -356,8 +371,8 @@ S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
 #'                  distrib_deriv3(d, y, list(mu = 3, sigma = 0.8 - eps))$mu_mu_mu) /
 #'                 (2 * eps))
 #'
-#' # All four orders come from one pass of the kernel, so the fourth costs
-#' # what the first does.
+#' # Each order has its own kernel, and the fourth costs about what the first
+#' # does.
 #' n <- 2e4
 #' set.seed(62)
 #' x <- distrib_rng(d, n, th)
@@ -438,74 +453,77 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta, ...) {
 #' # The mass function, and how it is computed
 #'
 #' The mass carries the modified Bessel function \eqn{K_{y-1/2}}, which at
-#' half-integer order is a finite sum. What the kernels evaluate is that sum,
-#' on the log scale, after the prefactors have canceled; no Bessel routine is
-#' called. With \eqn{c = 1 + 2\sigma\mu} and \eqn{\alpha = \sqrt{c}/\sigma},
-#' \deqn{\ell(y) = y\log\mu - \tfrac{y}{2}\log c + \tfrac{1}{\sigma}
-#'   + \psi(\alpha) - \log y!,\qquad
-#'   \psi(\alpha) = -\alpha + \log S_y(\alpha),}
-#' \deqn{S_y(\alpha) = \sum_{k=0}^{y-1}
-#'   \dfrac{\Gamma(y+k)}{\Gamma(k+1)\Gamma(y-k)}\,(2\alpha)^{-k},
+#' half-integer order is a finite sum. The kernels evaluate that sum on the log
+#' scale, after the prefactors have canceled; no Bessel routine is called.
+#' With \eqn{c = 1 + 2\sigma\mu}, \eqn{\alpha = \sqrt{c}/\sigma} and
+#' \eqn{w = 1/(2\alpha)},
+#' \deqn{\ell(y) = y\log\mu - \tfrac{y}{2}\log c - \dfrac{2\mu}{1+\sqrt c}
+#'   + \log S_y(w) - \log y!,}
+#' \deqn{S_y(w) = \sum_{k=0}^{y-1}
+#'   \dfrac{\Gamma(y+k)}{\Gamma(k+1)\Gamma(y-k)}\,w^{k},
 #'   \qquad S_0 = 1.}
-#' \eqn{S_y} sums \eqn{y} positive terms on the log scale, so nothing
-#' cancels. The derivatives of \eqn{\psi} in \eqn{\alpha} are the weighted
-#' rising-factorial moments of \eqn{k} under those terms; everything else is
-#' elementary. Every partial to fourth order is written out by hand, so no
-#' order is differenced.
+#' The term \eqn{-2\mu/(1+\sqrt c)} is \eqn{1/\sigma - \alpha} written without
+#' the subtraction, and \eqn{S_y} sums \eqn{y} positive terms on the log
+#' scale, so every piece stays smooth as \eqn{\sigma \to 0}, where \eqn{w}
+#' tends to \eqn{\sigma/2}. The derivatives of \eqn{\log S_y} in \eqn{w} are
+#' the weighted factorial moments of \eqn{k} under those terms; everything
+#' else is elementary. Every partial to fourth order is written out by hand,
+#' so no order is differenced.
 #'
 #' # One kernel per generic
 #'
 #' There is one compiled kernel per quantity -- `pig1_pdf_cpp`,
 #' `pig1_gradient_cpp`, `pig1_hessian_cpp`, `pig1_deriv3_cpp`,
-#' `pig1_deriv4_cpp` and their `pig2` twins -- so asking for the mass does not
+#' `pig1_deriv4_cpp` and their `pig2` twins -- so computing the mass does not
 #' evaluate four orders of derivatives. Each recycles a scalar parameter and
 #' tests the support itself, as every other compiled family's kernel does: a
-#' \eqn{y} that is negative, fractional or not finite reads `-Inf` in the mass
-#' and `NaN` in a derivative.
+#' \eqn{y} that is negative, fractional or infinite reads `-Inf` in the mass
+#' and `NaN` in a derivative, and a missing \eqn{y} reads `NA` in the mass.
+#' The cost of every kernel is dominated by \eqn{S_y}, which is \eqn{O(y)} per
+#' observation and is computed at every order.
 #'
-#' The saving is smaller than the count of quantities suggests, because the
-#' cost is \eqn{S_y}, which is \eqn{O(y)} per observation and which every
-#' order pays in full: measured over \eqn{2\times10^4} observations the five
-#' kernels run at 21.0, 21.3, 22.0, 22.7 and 23.3 milliseconds.
+#' The kernels `pig1_hd_jet_cpp` and `pig2_hd_jet_cpp` evaluate the same
+#' expression by a bivariate jet truncated at total order four, and
+#' `pig1_hd_cpp` and `pig2_hd_cpp` return all fifteen columns at once. They are
+#' used only to test the explicit kernels.
 #'
-#' A second pair, `pig1_hd_jet_cpp` and `pig2_hd_jet_cpp`, carries a bivariate
-#' jet truncated at total order four through the same expression. It shares no
-#' algebra with the explicit route, so the tests compare the two with no
-#' tolerance to hide behind, and it is not used in production;
-#' `pig1_hd_cpp` and `pig2_hd_cpp` return all fifteen columns at once and
-#' exist to be that comparison's other side.
+#' The fourth order loses relative accuracy at a very small dispersion and a
+#' large count (see [distrib_deriv4.Pig1Distrib()]).
 #'
-#' @section Notation:
-#' \eqn{\mu} is the mean, \eqn{\sigma} the dispersion, \eqn{\alpha} the
-#' Bessel argument, \eqn{K_\nu} the modified Bessel function of the second
-#' kind, and \eqn{\ell} the log-mass of one observation.
+#' # The expected information
 #'
 #' The **expected information** is computed exactly, with its first and
 #' second derivatives, by one pass over the support per observation; see
-#' [`distrib_expected_hessian()`][distrib_expected_hessian.Pig2Distrib].
+#' [`distrib_expected_hessian()`][distrib_expected_hessian.Pig1Distrib].
 #'
 #' # The tail
 #'
-#' Measured at \eqn{\mu = 3}, \eqn{\sigma = 0.8}, against a negative binomial
-#' matched on the variance (\eqn{\theta = 1/\sigma}, both at 10.2): the mass at
-#' \eqn{y = 20} is \eqn{6.8\times10^{-4}} against \eqn{4.8\times10^{-4}}, at 40
-#' it is \eqn{5.8\times10^{-6}} against \eqn{5.4\times10^{-7}}, and at 60
-#' \eqn{7.2\times10^{-8}} against \eqn{5.6\times10^{-10}}. The gap widens with
-#' the count, and that widening is what a heavier tail means here.
+#' At \eqn{\mu = 3} and \eqn{\sigma = 0.8}, compared with a negative binomial of
+#' the same mean and variance (\eqn{\theta = 1/\sigma}, variance 10.2), the mass
+#' at \eqn{y = 20} is \eqn{6.8\times10^{-4}} against \eqn{4.8\times10^{-4}}, at
+#' 40 it is \eqn{5.8\times10^{-6}} against \eqn{5.4\times10^{-7}}, and at 60
+#' \eqn{7.2\times10^{-8}} against \eqn{5.6\times10^{-10}}. The ratio of the two
+#' masses increases with the count.
 #'
 #' # Which parametrization to use
 #'
-#' In this one \eqn{\mu} and \eqn{\sigma} are **not** orthogonal: measured at
-#' the same setting, the mixed entry of the expected information summed over
-#' the support is 7.39. [pig2_distrib()] replaces \eqn{\sigma} by the Bessel
-#' argument \eqn{\alpha} and makes that entry zero, at the cost of a second
-#' parameter with no moment reading. Use this one to model the dispersion
-#' directly and that one to fit the two parameters independently.
+#' In this one \eqn{\mu} and \eqn{\sigma} are not orthogonal: at the same
+#' setting the mixed entry of the expected information is 0.0368, against
+#' diagonal entries of -0.105 and -0.195. [pig2_distrib()] replaces
+#' \eqn{\sigma} by the Bessel argument \eqn{\alpha} and makes that entry zero,
+#' and \eqn{\alpha} has no moment reading. Use this parametrization to model
+#' the dispersion directly and the other to fit the two parameters
+#' independently.
 #'
 #' # Parameter domains
 #'
 #' - \eqn{\mu \in (0, \infty)}
 #' - \eqn{\sigma \in (0, \infty)}
+#'
+#' @section Notation:
+#' \eqn{\mu} is the mean, \eqn{\sigma} the dispersion, \eqn{\alpha} the
+#' Bessel argument, \eqn{K_\nu} the modified Bessel function of the second
+#' kind, and \eqn{\ell} the log-mass of one observation.
 #'
 #' @section The distribution:
 #' \deqn{P(Y=y) = \sqrt{\frac{2\alpha}{\pi}}\,\frac{\mu^{y}e^{1/\sigma}}{(\alpha\sigma)^{y}\,y!}\,K_{y-1/2}(\alpha), \qquad \alpha = \sqrt{\frac{1}{\sigma^{2}} + \frac{2\mu}{\sigma}}}
@@ -532,8 +550,8 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta, ...) {
 #'
 #' @seealso [pig2_distrib()] for the orthogonal parametrization,
 #'   [negbin2_distrib()] for the other overdispersed count family,
-#'   [poisson_distrib()] for the limit at \eqn{\sigma \to 0},
-#'   the compiled kernels for the kernel, and [Pig1Distrib] for the class.
+#'   [poisson_distrib()] for the limit at \eqn{\sigma \to 0}, and
+#'   [Pig1Distrib] for the class.
 #'
 #' @examples
 #' d <- pig1_distrib()
@@ -551,9 +569,9 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta, ...) {
 #'       negbin = distrib_pdf(nb, c(20, 40, 60), nbth))
 #'
 #' # The two parameters are not orthogonal, which pig2_distrib() repairs.
-#' c(pig1 = sum(distrib_expected_hessian(d, 0:200, th)$mu_sigma),
-#'   pig2 = sum(distrib_expected_hessian(pig2_distrib(), 0:200,
-#'                                       list(mu = 3, alpha = 3.010399))$mu_alpha))
+#' c(pig1 = distrib_expected_hessian(d, 0, th)$mu_sigma,
+#'   pig2 = distrib_expected_hessian(pig2_distrib(), 0,
+#'                                   list(mu = 3, alpha = 3.010399))$mu_alpha)
 #'
 #' # A fit recovers both parameters.
 #' set.seed(63)

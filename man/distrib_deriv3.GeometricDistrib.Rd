@@ -36,11 +36,22 @@ Computes the third derivative of the geometric log-mass with respect to the
 mean, in closed form. The log-mass is
 \eqn{y\log\mu - (y+1)\log(1+\mu)}, so every derivative is a combination of
 \eqn{\mu^{-k}} and \eqn{(1+\mu)^{-k}} with the data entering linearly
-through \eqn{y}.
+through \eqn{y}: the value is \eqn{2(y/\mu^3 - (y+1)/(1+\mu)^3)}.
+
+The kernel writes the bracket \eqn{y/\mu^k - (y+1)/(1+\mu)^k} of order
+\eqn{k} as \eqn{y(1 - q^k)/\mu^k - 1/(1+\mu)^k} with
+\eqn{q = \mu/(1+\mu)}, and computes \eqn{1 - q^k} as
+\eqn{-\mathrm{expm1}(-k\,\mathrm{log1p}(1/\mu))}. The two terms of the
+original form agree to a relative \eqn{1/\mu} where \eqn{y} is near
+\eqn{\mu}, and their difference would lose that many digits at a large
+mean; in this form the value keeps full relative accuracy. A term with a
+zero coefficient contributes zero, so the value at \eqn{y = 0} stays finite
+however small \eqn{\mu} is.
 
 With \code{expected = TRUE} the expectation is returned, obtained by substituting
-\eqn{\mathbb{E}[Y] = \mu}. Both routes are closed form, so no quadrature is
-run and \code{approx} and \code{nsim} are ignored.
+\eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{2(1 - q^2)/\mu^2} with the same
+device. Both routes are closed form, so no quadrature is run and \code{approx}
+and \code{nsim} are ignored.
 
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order.

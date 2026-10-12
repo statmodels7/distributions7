@@ -28,7 +28,9 @@ the inputs.
 Returns the components of a derivative of order one to four of the
 beta-binomial log-mass with respect to \eqn{\mu} and \eqn{\sigma}, by
 carrying the shape parametrization's own derivatives through the map
-\eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)}.
+\eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)} for
+\eqn{\sigma \ge 0.1}, and from the direct sums of \code{\link[=betabinom_direct]{betabinom_direct()}}
+below \code{\link[=bb_direct_cut]{bb_direct_cut()}}.
 }
 \details{
 The shape parametrization \code{\link[=betabinom2_distrib]{betabinom2_distrib()}} carries closed derivatives
@@ -43,6 +45,12 @@ The construction is the one \code{\link[=reparametrize]{reparametrize()}} runs, 
 whose first two orders are written out by hand in a compiled kernel. A
 fresh \code{BetaBinom2Distrib} object is built on each call, which costs one S7
 construction per evaluation.
+
+Below \code{\link[=bb_direct_cut]{bb_direct_cut()}} the map's derivatives, of order
+\eqn{\sigma^{-(K+1)}} at order \eqn{K}, cancel among themselves, and the
+rows with \eqn{\sigma < 0.1} are computed from the direct sums over the
+integer shifts instead (\code{\link[=betabinom_direct]{betabinom_direct()}}), whose terms have one sign
+each.
 }
 \seealso{
 \code{\link[=distrib_deriv3.BetaBinom1Distrib]{distrib_deriv3.BetaBinom1Distrib()}} and

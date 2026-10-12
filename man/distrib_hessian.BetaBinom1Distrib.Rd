@@ -18,8 +18,8 @@ recycled. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly positi
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{mu_sigma} and
@@ -39,7 +39,10 @@ and the \strong{mixed} shape component carries only the \eqn{S} part,
 \eqn{-\psi_1(n+S) + \psi_1(S)}, the two shapes entering the mass separately
 otherwise. The reported components follow by the two-variable chain rule of
 \eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)}, whose own second
-derivatives contribute the rest.
+derivatives contribute the rest. This route is taken for
+\eqn{\sigma \ge 0.1}; for \eqn{\sigma < 0.1} the components are the direct
+sums of order two given on \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, for the reason given on
+\code{\link[=distrib_gradient.BetaBinom1Distrib]{distrib_gradient.BetaBinom1Distrib()}}.
 
 The arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count.

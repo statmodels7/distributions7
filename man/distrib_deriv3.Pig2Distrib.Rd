@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{Pig2Distrib} object, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
-\item{y}{A numeric vector of counts. With \code{expected = TRUE} its values are
-the support points the expectation is summed over.}
+\item{y}{A numeric vector of counts. With \code{expected = TRUE} only its length
+is used, and the expectation is summed over the whole support.}
 
 \item{theta}{A named list with components \code{mu} and \code{alpha}, each a numeric
 vector of length 1 or of the length of \code{y}.}
@@ -37,8 +37,7 @@ A named list of four numeric vectors: \code{mu_mu_mu}, \code{mu_mu_alpha},
 \description{
 Returns the exact third derivatives of the log-mass in
 \eqn{(\mu, \alpha)}, read off columns \code{d30}, \code{d21}, \code{d12} and \code{d03} of the
-compiled kernel \code{pig2_deriv3_cpp}. All four orders come out
-of one pass of the kernel, so this order costs what the score does.
+compiled kernel \code{pig2_deriv3_cpp}, which computes the third order alone.
 
 With \code{expected = TRUE} the value is an expectation instead, and there it is
 \strong{not} closed form: the call routes to \code{expected_derivative()}, so \code{approx}

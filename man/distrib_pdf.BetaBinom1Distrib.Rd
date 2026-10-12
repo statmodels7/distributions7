@@ -8,7 +8,7 @@
 
 \item{y}{A numeric vector of counts. A value outside
 \eqn{\{0, \dots, n\}} or not an integer gives a mass of 0, or \code{-Inf} with
-\code{log = TRUE}.}
+\code{log = TRUE}. A missing value gives \code{NA} (\code{NaN} for \code{NaN}).}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is

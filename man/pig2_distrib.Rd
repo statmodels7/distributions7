@@ -26,32 +26,33 @@ which the mass function's Bessel function is evaluated, related to the
 dispersion of \code{\link[=pig1_distrib]{pig1_distrib()}} by
 \eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma}.
 
-Orthogonal means the expected information is diagonal. Measured at
-\eqn{\mu = 3}, its mixed entry summed over the support is
-\eqn{-8.8\times10^{-15}} here against 7.39 in the mean-dispersion
-parametrization.
+Orthogonal means the expected information is diagonal: at \eqn{\mu = 3} and
+\eqn{\sigma = 0.8} its mixed entry is zero to rounding error here, against
+0.0368 in the mean-dispersion parametrization.
 }
-\section{What orthogonality buys, and what it costs}{
+\section{Orthogonality}{
 The maximum likelihood estimates of \eqn{\mu} and \eqn{\alpha} are
-asymptotically independent, so a Fisher scoring step in one parameter does
-not disturb the other and the two can be modeled with separate linear
-predictors without their estimates fighting. The cost is that \eqn{\alpha}
-has no moment reading of its own: a reader who wants to interpret the
-overdispersion directly wants \code{\link[=pig1_distrib]{pig1_distrib()}}'s \eqn{\sigma}, which enters
-the variance as \eqn{\mu + \sigma\mu^2}.
+asymptotically independent, so the expected information is block diagonal
+in the two parameters and each can be given its own linear predictor. The
+parameter \eqn{\alpha} has no moment reading of its own: the overdispersion
+is read directly from \code{\link[=pig1_distrib]{pig1_distrib()}}'s \eqn{\sigma}, which enters the
+variance as \eqn{\mu + \sigma\mu^2}.
 
 The two are one law and the map between them is closed both ways:
 \eqn{\sigma = (\mu + \sqrt{\mu^2 + \alpha^2})/\alpha^2} through
-\code{\link[=pig2_sigma]{pig2_sigma()}}, and \eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma} back. gamlss
-states the first as \eqn{\alpha = 1/(\sqrt{\mu^2+\sigma_2^2} - \mu)} in its
-own \eqn{\sigma_2}, which coincides with this \eqn{\alpha}.
+\code{\link[=pig2_sigma]{pig2_sigma()}}, and \eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma} back. In
+gamlss the parameter \eqn{\sigma_2} of \code{PIG2} equals this \eqn{\alpha}, and
+the dispersion of \code{PIG} is obtained from it as
+\eqn{1/(\sqrt{\mu^2+\sigma_2^2} - \mu)}, the same map.
 }
 
 \section{How the derivatives are computed}{
-By the same compiled kernel as \code{\link[=pig1_distrib]{pig1_distrib()}}, with \eqn{\alpha} as a
-variable of its own, so the Bessel argument needs no chain rule at all.
-Every partial to fourth order is exact and comes out of one pass; see
-the compiled kernels. The expected information is computed exactly, with
+By compiled kernels of the same form as those of \code{\link[=pig1_distrib]{pig1_distrib()}}
+(\code{pig2_pdf_cpp}, \code{pig2_gradient_cpp}, \code{pig2_hessian_cpp}, \code{pig2_deriv3_cpp}
+and \code{pig2_deriv4_cpp}), with \eqn{\alpha} as a variable of its own, so the
+Bessel argument needs no chain rule. Every partial to fourth order is
+written out in closed form, and each order has its own kernel. The
+expected information is computed exactly, with
 its first and second derivatives, by one pass over the support per
 observation; see
 \code{\link[=distrib_expected_hessian.Pig2Distrib]{distrib_expected_hessian()}}.
@@ -64,8 +65,7 @@ observation; see
 }
 
 A large \eqn{\alpha} is a small dispersion, and the family tends to the
-Poisson: measured at \eqn{\alpha = 10^4} the mass agrees with \code{dpois} over
-the head of the support.
+Poisson as \eqn{\alpha} grows.
 }
 
 \section{The distribution}{
@@ -89,9 +89,9 @@ all.equal(distrib_pdf(d, 0:5, th),
           distrib_pdf(pig1_distrib(), 0:5, list(mu = 3, sigma = 0.8)))
 
 # The property the parametrization exists for.
-c(pig2 = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha),
-  pig1 = sum(distrib_expected_hessian(pig1_distrib(), 0:200,
-                                      list(mu = 3, sigma = 0.8))$mu_sigma))
+c(pig2 = distrib_expected_hessian(d, 0, th)$mu_alpha,
+  pig1 = distrib_expected_hessian(pig1_distrib(), 0,
+                                  list(mu = 3, sigma = 0.8))$mu_sigma)
 
 # A large alpha is a small dispersion, and the family tends to the Poisson.
 rbind(pig2 = distrib_pdf(d, 0:5, list(mu = 3, alpha = 1e4)),

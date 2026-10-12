@@ -33,7 +33,12 @@ compiled kernel \code{betabinom1_dexpected1_cpp}, at order 2 by
 \eqn{a_{\mu\sigma\sigma} = 2/\sigma^3},
 \eqn{a_{\sigma\sigma\sigma} = -6\mu/\sigma^4}, and for \eqn{b} the same
 with \eqn{\mu} replaced by \eqn{1-\mu} and every derivative in \eqn{\mu}
-changing sign; every derivative taking \eqn{\mu} twice is zero.
+changing sign; every derivative taking \eqn{\mu} twice is zero. Below
+\code{\link[=bb_direct_cut]{bb_direct_cut()}} these partials, of order \eqn{\sigma^{-4}}, cancel among
+themselves, and the rows with \eqn{\sigma < 0.1} are computed instead by the
+compiled kernel \code{betabinom1_dexpected_direct_cpp}, which sums over the
+support the derivatives of the direct sums of \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} in
+\eqn{(\mu, \sigma)}.
 }
 \seealso{
 \code{\link[=support_dexpected]{support_dexpected()}}, \code{\link[=dexpected_chain]{dexpected_chain()}}

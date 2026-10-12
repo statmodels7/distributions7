@@ -7,16 +7,15 @@ NULL
 #' @description
 #' The S7 class of the beta-binomial family in its canonical parametrization,
 #' the two beta shapes \eqn{\alpha > 0} and \eqn{\beta > 0}, on the finite
-#' support \eqn{\{0, 1, \dots, n\}}. It inherits from `discrete_distrib`, so
-#' every generic of the `distrib` class applies to it; the methods listed below
-#' are registered on it directly and everything else comes from the parent.
+#' support \eqn{\{0, 1, \dots, n\}}. It inherits from `discrete_distrib`.
 #'
 #' The class carries an extra property beyond the parent's, `size`: the number
 #' of trials \eqn{n}, fixed at construction as it is for
 #' [BinomialDistrib()]. Build one with [betabinom2_distrib()], which
 #' validates `size`, supplies the two link functions and fills the properties
-#' in. This page documents the raw S7 constructor, which validates none of the
-#' relationships between them.
+#' in. This page documents the raw S7 constructor, which takes the parent's
+#' properties plus `size`; the validator of `distrib` checks the parent's
+#' properties, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #' @param size The number of trials \eqn{n}, a single positive integer. It
@@ -39,23 +38,28 @@ NULL
 #'   [distrib_pdf.BetaBinom2Distrib()] for the mass function.
 #'
 #' @section Methods:
-#' Registered on this class:
-#'   [`distrib_deriv3()`][distrib_deriv3.BetaBinom2Distrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.BetaBinom2Distrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.BetaBinom2Distrib],
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.BetaBinom2Distrib] and
+#'   [`distrib_rng()`][distrib_rng.BetaBinom2Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.BetaBinom2Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.BetaBinom2Distrib],
-#'   [`distrib_pdf()`][distrib_pdf.BetaBinom2Distrib],
-#'   [`distrib_rng()`][distrib_rng.BetaBinom2Distrib].
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.BetaBinom2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.BetaBinom2Distrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.BetaBinom2Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.BetaBinom2Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.BetaBinom2Distrib];
+#' - the moments: [`mean()`][mean.BetaBinom2Distrib],
+#'   [`variance()`][variance.BetaBinom2Distrib],
+#'   [`skewness()`][skewness.BetaBinom2Distrib] and
+#'   [`kurtosis()`][kurtosis.BetaBinom2Distrib];
+#' - the fitting helpers: [distrib_scalar_route()].
 #'
-#' The four moments [`mean()`][mean.BetaBinom2Distrib],
-#' [`variance()`][variance.BetaBinom2Distrib],
-#' [`skewness()`][skewness.BetaBinom2Distrib] and
-#' [`kurtosis()`][kurtosis.BetaBinom2Distrib] are registered in `moments.R`.
-#'
-#' The distribution and quantile functions come from
-#' [discrete_distrib()] rather than from this class, and on a finite support
-#' the parent's cumulative sum of the mass is exact.
+#' Every other generic is inherited from [discrete_distrib()]. The distribution
+#' function and the quantile are the inherited ones, documented at
+#' [distrib_cdf.discrete_distrib()] and [distrib_quantile.discrete_distrib()].
 #'
 #' @examples
 #' d <- betabinom2_distrib(size = 10)
@@ -79,8 +83,10 @@ BetaBinom2Distrib <- S7::new_class("BetaBinom2Distrib",
 #' Returns the derivative component of a given order and multi-index for the
 #' beta-binomial log-mass in its two shapes. The log-mass is a sum of log-gamma
 #' terms, so its derivative of order \eqn{k+1} is the same sum with
-#' \eqn{\psi^{(k)}} in place of \eqn{\log\Gamma}. All four orders come from
-#' this one routine.
+#' \eqn{\psi^{(k)}} in place of \eqn{\log\Gamma}. [betabinom2_derivs()] calls
+#' it for the third and fourth orders and for the expectations of
+#' [betabinom2_expected()]; the score and the Hessian come from compiled
+#' kernels.
 #'
 #' @details
 #' With \eqn{a} and \eqn{b} the shapes and \eqn{n} the size, the log-mass is
@@ -123,7 +129,11 @@ betabinom2_component <- function(y, a, b, n, k, i, j) {
 #' @description
 #' Assembles the full set of derivative components of a given order by calling
 #' [betabinom2_component()] once per distinct multi-index, and names them as
-#' [deriv_names()] names them.
+#' [deriv_names()] names them. Where the concentration \eqn{a + b} exceeds
+#' 10, the reciprocal of [bb_direct_cut()], the polygamma differences cancel
+#' among themselves as the shapes grow at a fixed ratio, and those rows are
+#' computed from the direct sums of [betabinom_direct()] instead, whose terms
+#' have one sign each.
 #'
 #' @param y A numeric vector of counts.
 #' @param a,b The two shapes, each a numeric vector of length 1 or of the
@@ -239,7 +249,8 @@ bb_direct_cut <- function() 0.1
 #'
 #' @param distrib A `BetaBinom2Distrib` object, from [betabinom2_distrib()].
 #' @param y A numeric vector of counts. A value outside \eqn{\{0, \dots, n\}}
-#'   or not an integer gives a mass of 0, or `-Inf` with `log = TRUE`.
+#'   or not an integer gives a mass of 0, or `-Inf` with `log = TRUE`. A
+#'   missing value gives `NA`.
 #' @param theta A named list with components `alpha` and `beta`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
@@ -316,10 +327,8 @@ S7::method(distrib_pdf, BetaBinom2Distrib) <- function(distrib, y, theta, log = 
 #'       \sum_{j=0}^{y-1}\log(\alpha+j),}
 #' and the mass follows from three such sums, none of which forms a quantity
 #' larger than \eqn{n\log(\alpha+\beta)}. The sums also give the binomial limit
-#' correctly as the shapes grow at a fixed ratio: measured at \eqn{n = 10},
-#' \eqn{y = 3} and \eqn{\alpha/(\alpha+\beta) = 0.4}, the log-mass agrees with
-#' the binomial one to twelve figures at a concentration of \eqn{10^{14}},
-#' where the beta-function route is wrong in the third decimal.
+#' correctly as the shapes grow at a fixed ratio, where the beta-function
+#' route loses one digit per factor of ten in the concentration.
 #'
 #' The cost is \eqn{O(n)} in the size, which is why the route is taken only
 #' where it is needed.
@@ -365,8 +374,9 @@ betabinom_log_mass <- function(y, a, b, n) {
 #' family is defined by: a success probability from
 #' \eqn{\mathrm{Beta}(\alpha, \beta)}, then a count from
 #' \eqn{\mathrm{Binomial}(n_{\mathrm{trials}}, p)} at that probability, one
-#' fresh probability per draw. The draws depend on `.Random.seed` in the usual
-#' way and consume two of R's streams per variate.
+#' fresh probability per draw. The draws are made by one call to
+#' [stats::rbeta()] followed by one call to [stats::rbinom()], so they depend
+#' on `.Random.seed` in the usual way.
 #'
 #' @param distrib A `BetaBinom2Distrib` object, from [betabinom2_distrib()].
 #' @param n A single positive integer, the number of draws. Note that the
@@ -440,14 +450,11 @@ S7::method(distrib_rng, BetaBinom2Distrib) <- function(distrib, n, theta, ...) {
 #'
 #' @section Large concentration:
 #' Each digamma difference cancels to leading order as the shapes grow at a
-#' fixed ratio, and this method writes it out directly. Measured at
-#' \eqn{n = 10}, \eqn{y = 3} and a mean proportion of 0.4, the relative error
-#' against the limiting \eqn{-5/(2S)} with \eqn{S = \alpha+\beta} is
-#' \eqn{6\times10^{-8}} at \eqn{S = 10^8}, \eqn{4\times10^{-4}} at
-#' \eqn{10^{12}} and 1.8 at \eqn{10^{15}}. Where a concentration of that size
-#' is reachable, use [distrib_gradient.BetaBinom1Distrib()], whose compiled
-#' kernel forms the same difference as a sum of reciprocals and holds nine
-#' figures there.
+#' fixed ratio. For a shape of at least 100 the compiled kernel forms it as an
+#' asymptotic series remainder plus one `log1p()`, so the score keeps its
+#' accuracy as the concentration grows. At \eqn{n = 10}, \eqn{y = 3} and a
+#' mean proportion of 0.4 its \eqn{\alpha} component tends to \eqn{-5/(2S)},
+#' with \eqn{S = \alpha+\beta}.
 #'
 #' @seealso [distrib_hessian.BetaBinom2Distrib()] for the second derivatives,
 #'   [distrib_expected_hessian.BetaBinom2Distrib()] for their expectation,
@@ -674,7 +681,13 @@ betabinom2_expected <- function(distrib, y, theta, order,
 #' in the two shapes, in closed form. The log-mass is a sum of log-gamma terms,
 #' so the third derivative is the same sum with \eqn{\psi_2}, the second
 #' polygamma, in place of \eqn{\log\Gamma}. A component naming both shapes
-#' keeps only the terms in \eqn{\alpha+\beta} and is free of the data.
+#' keeps only the terms in \eqn{\alpha+\beta} and is free of the data. Where
+#' \eqn{\alpha+\beta > 10} the polygamma differences cancel as the shapes
+#' grow, and the components are computed instead from the direct sums over
+#' the integer shifts, \eqn{c_K[\sum_{i<y}(\alpha+i)^{-K} -
+#' \sum_{i<n}(\alpha+\beta+i)^{-K}]} for the pure component in \eqn{\alpha}
+#' with \eqn{c_K = (-1)^{K-1}(K-1)!}, whose terms have one sign
+#' ([betabinom_direct()]).
 #'
 #' With `expected = TRUE` the expectation is an **exact finite sum** over the
 #' support, so `approx` and `nsim` are ignored on both branches.
@@ -739,7 +752,7 @@ S7::method(distrib_deriv3, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #' in the two shapes, in closed form, by the construction
 #' [distrib_deriv3.BetaBinom2Distrib()] describes carried one order further:
 #' the same sum of terms with \eqn{\psi_3}, the third polygamma, in place of
-#' \eqn{\log\Gamma}.
+#' \eqn{\log\Gamma}, and the direct sums where \eqn{\alpha+\beta > 10}.
 #'
 #' With `expected = TRUE` the expectation is an **exact finite sum** over the
 #' support, so `approx` and `nsim` are ignored on both branches.
@@ -805,8 +818,8 @@ S7::method(distrib_deriv4, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #' parametrization, the two beta shapes \eqn{\alpha > 0} and \eqn{\beta > 0},
 #' on the finite support \eqn{\{0, 1, \dots, n\}}. The returned object carries
 #' closed-form derivatives of the log-mass to fourth order and expectations
-#' that are exact finite sums over the support, so every generic of the toolkit
-#' answers without a quadrature.
+#' that are exact finite sums over the support, so no quadrature is used. The
+#' fifth derivative comes from the numerical fallback of the base class.
 #'
 #' This is the same law as [betabinom1_distrib()], which is written in a mean
 #' proportion and a dispersion. Use this one when the shapes themselves are the
@@ -840,9 +853,10 @@ S7::method(distrib_deriv4, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #' # Derivatives
 #'
 #' The log-mass is a sum of log-gamma terms, so a derivative of order \eqn{k}
-#' replaces each by \eqn{\psi^{(k-1)}} and all four orders come from one
-#' routine, [betabinom2_derivs()]. A component naming both shapes keeps only
-#' the terms in \eqn{S} and is therefore free of the data at every order.
+#' replaces each by \eqn{\psi^{(k-1)}}. The score and the Hessian come from
+#' compiled kernels, and the third and fourth orders from
+#' [betabinom2_derivs()]. A component naming both shapes keeps only the terms
+#' in \eqn{S} and is therefore free of the data at every order.
 #'
 #' Every expectation is an **exact finite sum** over \eqn{\{0, \dots, n\}}:
 #' the support is bounded, so there is nothing to integrate over.
@@ -852,19 +866,16 @@ S7::method(distrib_deriv4, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #' The two beta functions of the mass are each of magnitude \eqn{S\log S} while
 #' their difference is of order one, so writing the mass as that difference
 #' loses one digit per factor of ten in \eqn{S}. [betabinom_log_mass()]
-#' switches to a sum of logarithms past a measured threshold and stays exact:
-#' at \eqn{n = 10}, \eqn{y = 3} and \eqn{\alpha/S = 0.4}, the log-mass agrees
-#' with the binomial one to twelve figures at \eqn{S = 10^{14}}, where the
-#' direct route is wrong in the third decimal.
+#' switches to a sum of logarithms once the error of the direct route would
+#' exceed \eqn{10^{-8}}, and the sums stay accurate to the binomial limit.
 #'
-#' **The derivatives are not rewritten that way here**, and cede earlier than
-#' the mass. Measured at the same setting, the relative error of the
-#' \eqn{\alpha} score against its limit is \eqn{6\times10^{-8}} at
-#' \eqn{S = 10^8}, \eqn{4\times10^{-4}} at \eqn{10^{12}} and 1.8 at
-#' \eqn{10^{15}}. [betabinom1_distrib()]'s compiled kernel forms the same
-#' differences as sums of reciprocals and holds nine figures at
-#' \eqn{S = 10^{15}}, so that is the parametrization to use where such a
-#' concentration is reachable.
+#' The derivatives cancel in the same way. The score and the Hessian evaluate
+#' each polygamma difference, for a shape of at least 100, as an asymptotic
+#' series remainder plus one `log1p()`. The third and fourth orders, and the
+#' expectations built from them, are computed for \eqn{S > 10} from the direct
+#' sums over the integer shifts ([betabinom_direct()]), whose terms have one
+#' sign each, at a cost of \eqn{O(n)} per observation. Every order therefore
+#' keeps its accuracy as the concentration grows.
 #'
 #' # Estimation
 #'

@@ -30,7 +30,9 @@ use. Defaults to \code{1L}.}
 }
 \value{
 A named list of one numeric vector, \code{mu_mu_mu}, of length
-\code{max(length(y), length(mu), length(distrib@size))}.
+\code{max(length(y), length(mu), length(distrib@size))}. Each of \code{y}, \code{mu} and
+\code{size} must have length 1 or that length; any other length signals an
+error.
 }
 \description{
 Computes the third derivative of the binomial log-mass with respect to the

@@ -21,14 +21,14 @@ being the square root of this.
 Returns \code{NaN}. The variance is the second central moment, and it needs a
 first moment to center on; the Cauchy has neither. Its density decays like
 \eqn{y^{-2}}, so \eqn{\int |y|^p f(y)\,\mathrm{d}y} diverges for every
-\eqn{p \ge 1}, and the failure at \eqn{p = 2} is the worse of the two.
+\eqn{p \ge 1}, so the second moment does not exist either.
 \code{NaN} is returned directly, so that no quadrature is attempted.
 }
 \details{
 The spread a Cauchy does have is its half-interquartile range, exactly
-\eqn{\sigma}, available from \code{\link[=distrib_quantile]{distrib_quantile()}}. Note that \eqn{\sigma} is
-a legitimate scale parameter: it sets the width of the density in the
-ordinary way, and only its identification with a standard deviation fails.
+\eqn{\sigma}, available from \code{\link[=distrib_quantile]{distrib_quantile()}}. The parameter \eqn{\sigma}
+is a scale parameter, which sets the width of the density, but it is not a
+standard deviation.
 }
 \section{Notation}{
 

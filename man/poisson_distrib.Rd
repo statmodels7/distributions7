@@ -40,14 +40,14 @@ with \eqn{\mu \in (0, \infty)}. The mean and the variance are both
 close to Gaussian at a large one.
 }
 
-\section{The canonical link, and what it buys}{
+\section{The canonical link}{
 The log-mass is \eqn{y\log\mu - \mu - \log y!}, which is linear in \eqn{y}
 once \eqn{\eta = \log\mu} is the parameter. The logarithm is therefore the
 canonical link, and on its scale
 \deqn{\dfrac{\partial \ell}{\partial \eta} = y - \mu, \qquad
       \dfrac{\partial^2 \ell}{\partial \eta^2} = -\mu.}
 The second of these carries no data, so the observed and the expected
-information coincide: Fisher scoring and Newton's method take the same step,
+information coincide in exact arithmetic: Fisher scoring and Newton's method take the same step,
 and the iteratively reweighted least squares of a Poisson log-linear model
 is both at once. Under any other link the two differ and the choice matters.
 }

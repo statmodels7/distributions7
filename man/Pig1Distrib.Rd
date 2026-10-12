@@ -51,27 +51,35 @@ over an inverse Gaussian rate, an overdispersed count model with a heavier
 tail than the negative binomial at the same variance.
 
 Build one with \code{\link[=pig1_distrib]{pig1_distrib()}}, which supplies the two link functions. This
-page documents the raw S7 constructor, which validates none of the
-relationships between its properties.
+page documents the raw S7 constructor, which takes the parent's
+properties; the validator of \code{distrib} checks them, and the constructor
+adds no check of its own.
 }
 \section{Methods}{
 
-Registered in this file, the middle five reading one compiled kernel:
-\code{\link[=distrib_pdf.Pig1Distrib]{distrib_pdf()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.Pig1Distrib]{distrib_pdf()}} and
+\code{\link[=distrib_rng.Pig1Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.Pig1Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.Pig1Distrib]{distrib_hessian()}},
-\code{\link[=distrib_deriv3.Pig1Distrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.Pig1Distrib]{distrib_deriv4()}},
-\code{\link[=distrib_rng.Pig1Distrib]{distrib_rng()}}.
+\code{\link[=distrib_expected_hessian.Pig1Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.Pig1Distrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.Pig1Distrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.Pig1Distrib]{distrib_dexpected_hessian()}} and
+\code{\link[=distrib_d2expected_hessian.Pig1Distrib]{distrib_d2expected_hessian()}};
+\item the moments: \code{\link[=mean.Pig1Distrib]{mean()}},
+\code{\link[=variance.Pig1Distrib]{variance()}}, \code{\link[=skewness.Pig1Distrib]{skewness()}}
+and \code{\link[=kurtosis.Pig1Distrib]{kurtosis()}};
+\item the fitting helpers: \code{\link[=distrib_start.Pig1Distrib]{distrib_start()}} and
+\code{\link[=expected_hessian_costly]{expected_hessian_costly()}}.
+}
 
-Registered elsewhere: the four moments in \code{moments.R} and the data-based
-starting value in \code{starting_values.R}.
-
-The \strong{distribution function} and the \strong{quantile} come from
-\code{\link[=discrete_distrib]{discrete_distrib()}}, where both are exact sums over the support. The
-\strong{expected information} is computed exactly, with its first and second
-derivatives, by one pass over the support; see
-\code{\link[=distrib_expected_hessian.Pig2Distrib]{distrib_expected_hessian()}}.
+Every other generic is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}. The distribution
+function and the quantile are the inherited ones, documented at
+\code{\link[=distrib_cdf.discrete_distrib]{distrib_cdf.discrete_distrib()}} and \code{\link[=distrib_quantile.discrete_distrib]{distrib_quantile.discrete_distrib()}}.
 }
 
 \examples{
@@ -92,6 +100,5 @@ sum(distrib_pdf(d, 0:300, th))
 \seealso{
 \code{\link[=pig1_distrib]{pig1_distrib()}} to build one;
 \code{\link[=pig2_distrib]{pig2_distrib()}} for the parametrization whose two parameters are
-orthogonal; \code{\link[=negbin2_distrib]{negbin2_distrib()}} for the other overdispersed count family;
-the compiled kernels for the kernel all five derivative methods read.
+orthogonal; \code{\link[=negbin2_distrib]{negbin2_distrib()}} for the other overdispersed count family.
 }

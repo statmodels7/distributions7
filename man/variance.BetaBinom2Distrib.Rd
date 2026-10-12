@@ -8,7 +8,8 @@
 trial count in its \code{size} property.}
 
 \item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
-each a numeric vector of length 1 or \code{n}. Large shapes concentrate the
+each a numeric vector of length 1 or of the common length of the parameter
+settings. Large shapes concentrate the
 mixing beta and take the family towards a binomial.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -18,11 +19,11 @@ A numeric vector of variances, of length
 \code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-The second central moment, assembled from the falling factorial moments by
-\code{\link[=betabinom_central]{betabinom_central()}} at \eqn{\mu = \alpha/(\alpha+\beta)} and
-\eqn{\sigma = 1/(\alpha+\beta)}. It exceeds the binomial variance at the
-same mean, and the excess grows as the two shapes shrink. That excess is the
-family's reason for being.
+Closed form: \eqn{\operatorname{Var}(Y) = n\mu(1-\mu)(1 + n\sigma)/(1 +
+\sigma)} at \eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\sigma =
+1/(\alpha+\beta)}, computed by \code{\link[=betabinom_moments]{betabinom_moments()}}. For \eqn{n > 1} it
+exceeds the binomial variance at the same mean, and the excess grows as the
+two shapes shrink; for \eqn{n = 1} it is the Bernoulli variance.
 }
 \section{Notation}{
 
@@ -45,7 +46,7 @@ c(betabinomial = variance(d, list(alpha = 2, beta = 3)),
 }
 \seealso{
 \code{\link[=mean.BetaBinom2Distrib]{mean.BetaBinom2Distrib()}}, \code{\link[=skewness.BetaBinom2Distrib]{skewness.BetaBinom2Distrib()}};
-\code{\link[=variance.BetaBinom1Distrib]{variance.BetaBinom1Distrib()}}; \code{\link[=betabinom_central]{betabinom_central()}};
+\code{\link[=variance.BetaBinom1Distrib]{variance.BetaBinom1Distrib()}}; \code{\link[=betabinom_moments]{betabinom_moments()}};
 \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.
 }
 \keyword{internal}

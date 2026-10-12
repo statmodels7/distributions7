@@ -19,8 +19,7 @@ A numeric vector of zeros, of length
 \description{
 Exactly zero at every parameter value. The raw fourth standardized moment of
 a Gaussian is 3, and \code{\link[=kurtosis]{kurtosis()}} reports the excess over that number, so
-this family sits at the origin of the scale by construction. Every other
-family's excess kurtosis is read as a comparison with it.
+this family has excess kurtosis zero by construction.
 }
 \examples{
 d <- gaussian1_distrib()

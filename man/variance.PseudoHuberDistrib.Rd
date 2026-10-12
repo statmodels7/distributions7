@@ -28,13 +28,11 @@ and the factor grows roughly like \eqn{\sqrt{\nu}} at large \eqn{\nu}.
 \details{
 The two Bessel functions are evaluated exponentially scaled, through
 \code{besselK(sqrt(nu), r, expon.scaled = TRUE)}. Both carry the same factor
-\eqn{e^{\sqrt{\nu}}}, which cancels in the ratio, so the quotient is exact
-where the unscaled functions would have overflowed; the terms are degree
-homogeneous, and the scaling has been checked to \eqn{\nu = 2000}.
+\eqn{e^{\sqrt{\nu}}}, which cancels in the ratio, so the quotient remains
+finite at large \eqn{\nu}, where the unscaled functions underflow to zero.
 
-The quantity is also used inside the package: the bracket
-\code{\link[=distrib_quantile]{distrib_quantile()}} searches over for this family is built from it, so an
-error here would surface as a failed root search several frames away.
+The standard deviation obtained from this variance sets the width of the
+first bracket of the root search in \code{\link[=distrib_quantile]{distrib_quantile()}} for this family.
 }
 \section{Notation}{
 

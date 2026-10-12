@@ -6,9 +6,9 @@
 \arguments{
 \item{distrib}{A \code{Pig2Distrib} object, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
-\item{y}{A numeric vector of counts. A negative, non-integer or non-finite
+\item{y}{A numeric vector of counts. A negative, non-integer or infinite
 value is off the support and gives a probability of 0, or \code{-Inf} with
-\code{log = TRUE}.}
+\code{log = TRUE}. A missing value gives \code{NA} (\code{NaN} for \code{NaN}).}
 
 \item{theta}{A named list with components \code{mu} and \code{alpha}, each a numeric
 vector of length 1 or of the length of \code{y}. Both must be strictly

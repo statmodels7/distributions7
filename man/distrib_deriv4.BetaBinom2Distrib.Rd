@@ -38,7 +38,7 @@ Computes the five distinct fourth derivatives of the beta-binomial log-mass
 in the two shapes, in closed form, by the construction
 \code{\link[=distrib_deriv3.BetaBinom2Distrib]{distrib_deriv3.BetaBinom2Distrib()}} describes carried one order further:
 the same sum of terms with \eqn{\psi_3}, the third polygamma, in place of
-\eqn{\log\Gamma}.
+\eqn{\log\Gamma}, and the direct sums where \eqn{\alpha+\beta > 10}.
 
 With \code{expected = TRUE} the expectation is an \strong{exact finite sum} over the
 support, so \code{approx} and \code{nsim} are ignored on both branches.

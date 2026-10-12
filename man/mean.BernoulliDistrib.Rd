@@ -19,9 +19,8 @@ A numeric vector of means, the length of \code{theta$mu}, strictly inside
 }
 \description{
 Closed form: \eqn{E[Y] = \mu}, the success probability. The response takes
-the values 0 and 1, so the mean is the probability of the second and every
-other moment is a function of it: a one-parameter family has nothing else
-for them to depend on.
+the values 0 and 1, so the mean is the probability of the second value, and
+every other moment is a function of \eqn{\mu}.
 }
 \examples{
 d <- bernoulli_distrib()

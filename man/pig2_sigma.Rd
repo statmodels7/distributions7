@@ -29,9 +29,10 @@ Written this way there is no cancellation anywhere in the domain: both
 is a sum of positive terms. The other root of the quadratic is negative and
 is discarded.
 
-Only \code{\link[=distrib_rng.Pig2Distrib]{distrib_rng.Pig2Distrib()}} calls this. The derivative methods do not:
-the compiled kernel takes \eqn{\alpha} as a variable of its own, so the map
-is never differentiated.
+\code{\link[=distrib_rng.Pig2Distrib]{distrib_rng.Pig2Distrib()}} and the variance, skewness and kurtosis methods
+call this. The mass and the derivative methods do not: the compiled kernel
+takes \eqn{\alpha} as a variable of its own, so the map is never
+differentiated.
 }
 \examples{
 # The map, and the round trip back through alpha = sqrt(1 + 2 sigma mu)/sigma.
@@ -44,6 +45,7 @@ distributions7:::pig2_sigma(3, c(1, 3, 30, 300))
 }
 \seealso{
 \code{\link[=pig2_distrib]{pig2_distrib()}} for the parametrization, \code{\link[=pig1_distrib]{pig1_distrib()}} for the
-one it maps onto, and \code{\link[=distrib_rng.Pig2Distrib]{distrib_rng.Pig2Distrib()}} for its only caller.
+one it maps onto, and \code{\link[=distrib_rng.Pig2Distrib]{distrib_rng.Pig2Distrib()}} and
+\code{\link[=variance.Pig2Distrib]{variance.Pig2Distrib()}} for two of its callers.
 }
 \keyword{internal}

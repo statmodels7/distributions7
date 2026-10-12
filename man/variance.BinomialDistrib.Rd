@@ -8,12 +8,13 @@
 count in its \code{size} property.}
 
 \item{theta}{A named list with one component, \code{mu} (strictly between 0 and
-1), a numeric vector of length 1 or \code{n}.}
+1), a numeric vector of length 1 or of the number of parameter settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of variances, the length of \code{theta$mu}.
+A numeric vector of variances,
+of length \code{max(length(theta$mu), length(x@size))}.
 }
 \description{
 Closed form: \eqn{\operatorname{Var}(Y) = n\mu(1-\mu)}. The trials are

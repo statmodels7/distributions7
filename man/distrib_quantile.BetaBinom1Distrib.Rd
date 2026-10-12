@@ -7,13 +7,15 @@
 \item{distrib}{A \code{BetaBinom1Distrib} object, from \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.}
 
 \item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
-logarithms when \code{log.p = TRUE}. \code{NA} is returned for \code{NA}; a value at or
-below 0 gives 0 and one at or above 1 gives \code{n}.}
+logarithms when \code{log.p = TRUE}. \code{NA} is returned for \code{NA} and \code{NaN} for a
+value outside \eqn{[0, 1]}; \eqn{p = 0} gives 0 and \eqn{p = 1} gives
+\eqn{n} (the reverse with \code{lower.tail = FALSE}).}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
-vector of length 1. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly
-positive. One cumulative table is built for the whole call, so a parameter
-varying by observation is not supported here.}
+vector of length 1 or of the length of \code{p}. \code{mu} must lie in
+\eqn{(0, 1)} and \code{sigma} be strictly positive. With scalar parameters one
+cumulative table serves the whole call; parameters that vary by
+observation give one table per observation.}
 
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
 \eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
@@ -25,15 +27,18 @@ Defaults to \code{FALSE}.}
 }
 \value{
 A numeric vector of counts in \eqn{\{0, \dots, n\}}, of length
-\code{length(p)}.
+\code{max(length(p), length(mu), length(sigma))}.
 }
 \description{
 Computes the generalized inverse \eqn{Q(p) = \min\{y : F(y) \ge p\}} by
 walking the exact cumulative sum over the support. The result is an integer
 count, the distribution function being a step function, so \code{Q(F(y))} returns
-\code{y} while \code{F(Q(p))} is at least \code{p} and generally exceeds it. A tolerance of
-\code{1e-12} is allowed on the comparison so that a \code{p} obtained from
-\code{\link[=distrib_cdf.BetaBinom1Distrib]{distrib_cdf.BetaBinom1Distrib()}} maps back to the count it came from.
+\code{y} while \code{F(Q(p))} is at least \code{p} and generally exceeds it. A relative
+tolerance of 64 machine epsilons is allowed on the comparison so that a \code{p}
+obtained from \code{\link[=distrib_cdf.BetaBinom1Distrib]{distrib_cdf.BetaBinom1Distrib()}} maps back to the count it
+came from. With \code{lower.tail = FALSE} the upper tail is inverted against
+\eqn{P(Y > k)} summed from the top of the support, so a small upper-tail
+probability gives the count it belongs to.
 }
 \examples{
 d <- betabinom1_distrib(size = 10)

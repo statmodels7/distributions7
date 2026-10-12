@@ -53,10 +53,10 @@ size and \eqn{G(r) = \log\Gamma(y+r) - \log\Gamma(r)}.
 
 \section{The Poisson boundary}{
 
-The caveat of \code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3.NegBin1Distrib()}} applies here and more
-strongly: the recursion divides by \eqn{\theta^{4}}, so the cancellation
-among the powers of \eqn{r} is worse at this order than at the one below.
-This order is not reliable below about \eqn{\theta = 0.05}.
+The section of \code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3.NegBin1Distrib()}} applies here: for
+\eqn{\theta < 1} the method uses the form in \eqn{\mu + i\theta}, which
+contains no size, and this order keeps its accuracy as \eqn{\theta} goes
+to zero.
 }
 
 \examples{

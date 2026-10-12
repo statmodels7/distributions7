@@ -27,42 +27,74 @@ negative binomial at the same variance}.
 }
 \section{The mass function, and how it is computed}{
 The mass carries the modified Bessel function \eqn{K_{y-1/2}}, which at
-half-integer order is a finite sum. What the kernels evaluate is that sum,
-on the log scale, after the prefactors have canceled; no Bessel routine is
-called. With \eqn{c = 1 + 2\sigma\mu} and \eqn{\alpha = \sqrt{c}/\sigma},
-\deqn{\ell(y) = y\log\mu - \tfrac{y}{2}\log c + \tfrac{1}{\sigma}
-  + \psi(\alpha) - \log y!,\qquad
-  \psi(\alpha) = -\alpha + \log S_y(\alpha),}
-\deqn{S_y(\alpha) = \sum_{k=0}^{y-1}
-  \dfrac{\Gamma(y+k)}{\Gamma(k+1)\Gamma(y-k)}\,(2\alpha)^{-k},
+half-integer order is a finite sum. The kernels evaluate that sum on the log
+scale, after the prefactors have canceled; no Bessel routine is called.
+With \eqn{c = 1 + 2\sigma\mu}, \eqn{\alpha = \sqrt{c}/\sigma} and
+\eqn{w = 1/(2\alpha)},
+\deqn{\ell(y) = y\log\mu - \tfrac{y}{2}\log c - \dfrac{2\mu}{1+\sqrt c}
+  + \log S_y(w) - \log y!,}
+\deqn{S_y(w) = \sum_{k=0}^{y-1}
+  \dfrac{\Gamma(y+k)}{\Gamma(k+1)\Gamma(y-k)}\,w^{k},
   \qquad S_0 = 1.}
-\eqn{S_y} sums \eqn{y} positive terms on the log scale, so nothing
-cancels. The derivatives of \eqn{\psi} in \eqn{\alpha} are the weighted
-rising-factorial moments of \eqn{k} under those terms; everything else is
-elementary. Every partial to fourth order is written out by hand, so no
-order is differenced.
+The term \eqn{-2\mu/(1+\sqrt c)} is \eqn{1/\sigma - \alpha} written without
+the subtraction, and \eqn{S_y} sums \eqn{y} positive terms on the log
+scale, so every piece stays smooth as \eqn{\sigma \to 0}, where \eqn{w}
+tends to \eqn{\sigma/2}. The derivatives of \eqn{\log S_y} in \eqn{w} are
+the weighted factorial moments of \eqn{k} under those terms; everything
+else is elementary. Every partial to fourth order is written out by hand,
+so no order is differenced.
 }
 
 \section{One kernel per generic}{
 There is one compiled kernel per quantity -- \code{pig1_pdf_cpp},
 \code{pig1_gradient_cpp}, \code{pig1_hessian_cpp}, \code{pig1_deriv3_cpp},
-\code{pig1_deriv4_cpp} and their \code{pig2} twins -- so asking for the mass does not
+\code{pig1_deriv4_cpp} and their \code{pig2} twins -- so computing the mass does not
 evaluate four orders of derivatives. Each recycles a scalar parameter and
 tests the support itself, as every other compiled family's kernel does: a
-\eqn{y} that is negative, fractional or not finite reads \code{-Inf} in the mass
-and \code{NaN} in a derivative.
+\eqn{y} that is negative, fractional or infinite reads \code{-Inf} in the mass
+and \code{NaN} in a derivative, and a missing \eqn{y} reads \code{NA} in the mass.
+The cost of every kernel is dominated by \eqn{S_y}, which is \eqn{O(y)} per
+observation and is computed at every order.
 
-The saving is smaller than the count of quantities suggests, because the
-cost is \eqn{S_y}, which is \eqn{O(y)} per observation and which every
-order pays in full: measured over \eqn{2\times10^4} observations the five
-kernels run at 21.0, 21.3, 22.0, 22.7 and 23.3 milliseconds.
+The kernels \code{pig1_hd_jet_cpp} and \code{pig2_hd_jet_cpp} evaluate the same
+expression by a bivariate jet truncated at total order four, and
+\code{pig1_hd_cpp} and \code{pig2_hd_cpp} return all fifteen columns at once. They are
+used only to test the explicit kernels.
 
-A second pair, \code{pig1_hd_jet_cpp} and \code{pig2_hd_jet_cpp}, carries a bivariate
-jet truncated at total order four through the same expression. It shares no
-algebra with the explicit route, so the tests compare the two with no
-tolerance to hide behind, and it is not used in production;
-\code{pig1_hd_cpp} and \code{pig2_hd_cpp} return all fifteen columns at once and
-exist to be that comparison's other side.
+The fourth order loses relative accuracy at a very small dispersion and a
+large count (see \code{\link[=distrib_deriv4.Pig1Distrib]{distrib_deriv4.Pig1Distrib()}}).
+}
+
+\section{The expected information}{
+The \strong{expected information} is computed exactly, with its first and
+second derivatives, by one pass over the support per observation; see
+\code{\link[=distrib_expected_hessian.Pig1Distrib]{distrib_expected_hessian()}}.
+}
+
+\section{The tail}{
+At \eqn{\mu = 3} and \eqn{\sigma = 0.8}, compared with a negative binomial of
+the same mean and variance (\eqn{\theta = 1/\sigma}, variance 10.2), the mass
+at \eqn{y = 20} is \eqn{6.8\times10^{-4}} against \eqn{4.8\times10^{-4}}, at
+40 it is \eqn{5.8\times10^{-6}} against \eqn{5.4\times10^{-7}}, and at 60
+\eqn{7.2\times10^{-8}} against \eqn{5.6\times10^{-10}}. The ratio of the two
+masses increases with the count.
+}
+
+\section{Which parametrization to use}{
+In this one \eqn{\mu} and \eqn{\sigma} are not orthogonal: at the same
+setting the mixed entry of the expected information is 0.0368, against
+diagonal entries of -0.105 and -0.195. \code{\link[=pig2_distrib]{pig2_distrib()}} replaces
+\eqn{\sigma} by the Bessel argument \eqn{\alpha} and makes that entry zero,
+and \eqn{\alpha} has no moment reading. Use this parametrization to model
+the dispersion directly and the other to fit the two parameters
+independently.
+}
+
+\section{Parameter domains}{
+\itemize{
+\item \eqn{\mu \in (0, \infty)}
+\item \eqn{\sigma \in (0, \infty)}
+}
 }
 
 \section{Notation}{
@@ -70,28 +102,6 @@ exist to be that comparison's other side.
 \eqn{\mu} is the mean, \eqn{\sigma} the dispersion, \eqn{\alpha} the
 Bessel argument, \eqn{K_\nu} the modified Bessel function of the second
 kind, and \eqn{\ell} the log-mass of one observation.
-
-The \strong{expected information} is computed exactly, with its first and
-second derivatives, by one pass over the support per observation; see
-\code{\link[=distrib_expected_hessian.Pig2Distrib]{distrib_expected_hessian()}}.The tail
-
-Measured at \eqn{\mu = 3}, \eqn{\sigma = 0.8}, against a negative binomial
-matched on the variance (\eqn{\theta = 1/\sigma}, both at 10.2): the mass at
-\eqn{y = 20} is \eqn{6.8\times10^{-4}} against \eqn{4.8\times10^{-4}}, at 40
-it is \eqn{5.8\times10^{-6}} against \eqn{5.4\times10^{-7}}, and at 60
-\eqn{7.2\times10^{-8}} against \eqn{5.6\times10^{-10}}. The gap widens with
-the count, and that widening is what a heavier tail means here.Which parametrization to use
-
-In this one \eqn{\mu} and \eqn{\sigma} are \strong{not} orthogonal: measured at
-the same setting, the mixed entry of the expected information summed over
-the support is 7.39. \code{\link[=pig2_distrib]{pig2_distrib()}} replaces \eqn{\sigma} by the Bessel
-argument \eqn{\alpha} and makes that entry zero, at the cost of a second
-parameter with no moment reading. Use this one to model the dispersion
-directly and that one to fit the two parameters independently.Parameter domains
-\itemize{
-\item \eqn{\mu \in (0, \infty)}
-\item \eqn{\sigma \in (0, \infty)}
-}
 }
 
 \section{The distribution}{
@@ -118,9 +128,9 @@ rbind(pig = distrib_pdf(d, c(20, 40, 60), th),
       negbin = distrib_pdf(nb, c(20, 40, 60), nbth))
 
 # The two parameters are not orthogonal, which pig2_distrib() repairs.
-c(pig1 = sum(distrib_expected_hessian(d, 0:200, th)$mu_sigma),
-  pig2 = sum(distrib_expected_hessian(pig2_distrib(), 0:200,
-                                      list(mu = 3, alpha = 3.010399))$mu_alpha))
+c(pig1 = distrib_expected_hessian(d, 0, th)$mu_sigma,
+  pig2 = distrib_expected_hessian(pig2_distrib(), 0,
+                                  list(mu = 3, alpha = 3.010399))$mu_alpha)
 
 # A fit recovers both parameters.
 set.seed(63)
@@ -139,6 +149,6 @@ Statistics} 17(2), 171--181.
 \seealso{
 \code{\link[=pig2_distrib]{pig2_distrib()}} for the orthogonal parametrization,
 \code{\link[=negbin2_distrib]{negbin2_distrib()}} for the other overdispersed count family,
-\code{\link[=poisson_distrib]{poisson_distrib()}} for the limit at \eqn{\sigma \to 0},
-the compiled kernels for the kernel, and \link{Pig1Distrib} for the class.
+\code{\link[=poisson_distrib]{poisson_distrib()}} for the limit at \eqn{\sigma \to 0}, and
+\link{Pig1Distrib} for the class.
 }

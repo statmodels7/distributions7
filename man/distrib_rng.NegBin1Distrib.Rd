@@ -20,19 +20,19 @@ A numeric vector of \code{n} non-negative integers.
 }
 \description{
 Draws \code{n} independent counts by calling \code{\link[stats:NegBinomial]{stats::rnbinom()}} at size
-\eqn{r = \mu/\theta} and success probability \eqn{1/(1+\theta)}, so the
-draws come from R's own generator and depend on \code{.Random.seed} in the usual
+\eqn{r = \mu/\theta} and mean \eqn{\mu}, so the success probability
+\eqn{1/(1+\theta)} is never formed and the draws come from R's own generator and depend on \code{.Random.seed} in the usual
 way. The cumulative-table fallback the base class supplies for a discrete
 family is bypassed.
 }
 \examples{
 d <- negbin1_distrib()
 
-# Same generator as stats::rnbinom at size mu/theta and prob 1/(1 + theta).
+# Same generator as stats::rnbinom at size mu/theta and mean mu.
 set.seed(2)
 a <- distrib_rng(d, 5, list(mu = 4, theta = 4))
 set.seed(2)
-identical(a, rnbinom(5, size = 1, prob = 1 / 5))
+identical(a, rnbinom(5, size = 1, mu = 4))
 
 # The sample moments recover the parameters: the mean directly, and the
 # dispersion as var/mean - 1.

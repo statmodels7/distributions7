@@ -24,8 +24,9 @@ family is defined by: a success probability from
 \eqn{\mathrm{Beta}(\alpha, \beta)} with \eqn{\alpha = \mu/\sigma} and
 \eqn{\beta = (1-\mu)/\sigma}, then a count from
 \eqn{\mathrm{Binomial}(n_{\mathrm{trials}}, p)} at that probability, one
-fresh probability per draw. The draws depend on \code{.Random.seed} in the usual
-way and consume two of R's streams per variate.
+fresh probability per draw. The draws are made by one call to
+\code{\link[stats:Beta]{stats::rbeta()}} followed by one call to \code{\link[stats:Binomial]{stats::rbinom()}}, so they depend
+on \code{.Random.seed} in the usual way.
 }
 \examples{
 d <- betabinom1_distrib(size = 10)

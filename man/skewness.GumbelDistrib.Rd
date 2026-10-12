@@ -17,14 +17,13 @@ length \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
 Constant: \eqn{\gamma_1 = 12\sqrt6\,\zeta(3)/\pi^3 \approx 1.1395}, with
-\eqn{\zeta(3)} Apery's constant. The Gumbel is location-scale with no shape
-parameter, so its standardized moments are numbers and not functions: every
-Gumbel has this same right skew, whatever its location and scale.
+\eqn{\zeta(3)} Apery's constant. The Gumbel is a location-scale family with
+no shape parameter, so its standardized moments are constants: every Gumbel
+has this same right skew, whatever its location and scale.
 }
 \details{
-\eqn{\zeta(3) = 1.2020569031595942854} is written out in the body. Base R
-has no function that returns it, and one number does not justify a
-dependency.
+\eqn{\zeta(3) = 1.2020569031595942854} is written out in the body, since
+base R has no function that returns it.
 }
 \section{Notation}{
 

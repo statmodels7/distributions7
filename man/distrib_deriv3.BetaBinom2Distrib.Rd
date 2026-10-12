@@ -37,7 +37,13 @@ Computes the four distinct third derivatives of the beta-binomial log-mass
 in the two shapes, in closed form. The log-mass is a sum of log-gamma terms,
 so the third derivative is the same sum with \eqn{\psi_2}, the second
 polygamma, in place of \eqn{\log\Gamma}. A component naming both shapes
-keeps only the terms in \eqn{\alpha+\beta} and is free of the data.
+keeps only the terms in \eqn{\alpha+\beta} and is free of the data. Where
+\eqn{\alpha+\beta > 10} the polygamma differences cancel as the shapes
+grow, and the components are computed instead from the direct sums over
+the integer shifts, \eqn{c_K[\sum_{i<y}(\alpha+i)^{-K} -
+\sum_{i<n}(\alpha+\beta+i)^{-K}]} for the pure component in \eqn{\alpha}
+with \eqn{c_K = (-1)^{K-1}(K-1)!}, whose terms have one sign
+(\code{\link[=betabinom_direct]{betabinom_direct()}}).
 
 With \code{expected = TRUE} the expectation is an \strong{exact finite sum} over the
 support, so \code{approx} and \code{nsim} are ignored on both branches.

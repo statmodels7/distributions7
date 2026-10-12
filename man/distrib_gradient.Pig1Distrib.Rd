@@ -6,7 +6,8 @@
 \arguments{
 \item{distrib}{A \code{Pig1Distrib} object, from \code{\link[=pig1_distrib]{pig1_distrib()}}.}
 
-\item{y}{A numeric vector of counts. A value off the support gives \code{NaN}.}
+\item{y}{A numeric vector of counts. A value off the support, or a missing
+value, gives \code{NaN}.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}. Both must be strictly
@@ -50,8 +51,8 @@ rbind(analytic = vapply(g, sum, 0),
       numeric = numDeriv::grad(f, c(3, 0.8)))
 
 # The mean and the dispersion are not orthogonal here: the mixed entry of
-# the expected information is far from zero. pig2_distrib() removes that.
-sum(distrib_expected_hessian(d, 0:200, th)$mu_sigma)
+# the expected information is not zero. pig2_distrib() removes that.
+distrib_expected_hessian(d, 0, th)$mu_sigma
 }
 \seealso{
 \code{pig1_gradient_cpp} for the kernel and the closed form it evaluates,

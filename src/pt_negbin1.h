@@ -63,6 +63,22 @@ inline NB1parts nb1_parts(double y, double mu, double th, int order) {
 // expectation, mu/(theta^2 (1 + theta)) = E[Y]/(theta^2 (1 + theta)), and
 // the two merge into the one summand v_j, an exact polynomial over u_j^2.
 //
+// W still cancels as theta -> 0: v_j is of order theta and changes sign, and
+// W/theta^2 tends to -1/2, so the relative error of E[l_theta,theta] and
+// E[l_mu,theta] grew like eps/theta (1e-7 at theta = 1e-8, 1.8e-4 at 1e-12,
+// mu = 4) and d_theta E[l_theta,theta] was -8.59 against 1.125 at 1e-8.
+// Below nb1_expected_cut() the sums therefore carry
+//   G = E[l_theta,theta] = -E[D_Y] - mu q'(theta),  D_k = sum_{j<k} j^2/u_j^2,
+// the expectation of h_theta,theta below (E[Y - mu] = 0), whose summands are
+// all positive; the cancellation left is between E[D] (about mu/3 + 1/2) and
+// mu q' (about -mu/3), a factor mu and not 1/theta, and the D sums carry the
+// rounding of about mu + 40 sd terms. Above the cut G = W/theta^2 from the W
+// sums. The cut is where the two meet: against 50-digit sums on a grid of mu
+// from 4 to 500 and theta from 1e-4 to 0.9 the W route reads 3e-11 and the D
+// route 1.5e-13 at mu = 500, theta = 0.01, and 2.4e-12 against 2e-11 at
+// theta = 0.05 (vg_T3_nb1ref5.py). Either way the sums return G with its
+// derivatives, and E[l_mu,theta] = -theta G/mu.
+//
 // The derivatives of A and W are sums over the same mass with the score of
 // the mass beside the summand,
 //   d_c F   = E[f_c + f s_c],
@@ -170,7 +186,8 @@ inline void nb1_q(double t, double* q, double* qp) {
             if (n >= 3) sp += sg * prev * (n - 2) / n;
             prev = pw;
             pw *= t;
-            if (pw < 1e-18) break;
+            // q' lags q by one power: stop on the power q' adds next
+            if (prev < 1e-18) break;
         }
         *q = s;
         *qp = sp;
@@ -181,11 +198,46 @@ inline void nb1_q(double t, double* q, double* qp) {
     }
 }
 
+// q'' and q''' for the derivatives of G below, by
+//   q''  = sum_{n>=4} (-1)^n theta^(n-4) (n - 2)(n - 3)/n,
+//   q''' = sum_{n>=5} (-1)^n theta^(n-5) (n - 2)(n - 3)(n - 4)/n
+// below theta = 0.5, and above it by the closed forms, with T = theta -
+// log1p(theta) and s = theta (1 + theta),
+//   q''  = -(1 + 2 theta)/s^2 - 2/(theta^2 (1 + theta)) + 6 T/theta^4,
+//   q''' = 2 (1 + 2 theta)^2/s^3 + 10/(theta^3 (1 + theta)) - 24 T/theta^5,
+// which lose a factor of a few hundred at theta = 0.5 and less above.
+inline void nb1_q23(double t, double* qpp, double* qppp) {
+    if (t < 0.5) {
+        double s2 = 0.0, s3 = 0.0, pw = 1.0, prev = 0.0;   // pw = t^(n-4)
+        for (int n = 4; n < 200; ++n) {
+            const double sg = (n % 2 == 0) ? 1.0 : -1.0;
+            s2 += sg * pw * (n - 2) * (n - 3) / n;
+            if (n >= 5) s3 += sg * prev * (n - 2) * (n - 3) * (n - 4) / n;
+            prev = pw;
+            pw *= t;
+            // q''' lags q'' by one power: stop on the power q''' adds next
+            if (prev * n * n * n < 1e-18) break;
+        }
+        *qpp = s2;
+        *qppp = s3;
+    } else {
+        const double T = t - std::log1p(t), s = t * (1.0 + t), w = 1.0 + 2.0 * t;
+        const double t2 = t * t, t3 = t2 * t;
+        *qpp = -w / (s * s) - 2.0 / (t2 * (1.0 + t)) + 6.0 * T / (t2 * t2);
+        *qppp = 2.0 * w * w / (s * s * s) + 10.0 / (t3 * (1.0 + t))
+                - 24.0 * T / (t3 * t2);
+    }
+}
+
 // The dispersion below which the scores and second derivatives are read
 // from the sums in mu + i theta (nb1_low_exact) rather than from
 // nb1_parts(): the cut of the higher orders, nb1_exact_cut() in
 // R/negbin1_higher.R. Above it the two agree to 1e-11 or better.
 inline double nb1_low_cut() { return 1.0; }
+
+// The dispersion below which the expected information and its derivatives
+// are summed in G = -E[D] - mu q' (nb1_dsums0/1/2) rather than in W.
+inline double nb1_expected_cut() { return 0.02; }
 
 // The scores and second derivatives from the form in mu + i theta, by the
 // formulas for s_mu, s_theta, h_mu,mu, h_mu,theta and h_theta,theta above
@@ -221,7 +273,7 @@ inline void nb1_low_exact(double y, double mu, double th, int order,
 }
 
 // A and W at one (mu, theta)
-inline void nb1_sums0(double mu, double th, double* A, double* W) {
+inline void nb1_wsums0(double mu, double th, double* A, double* W) {
     NB1mass w = nb1_mass(mu, th);
     const double r = w.r, ratio = w.ratio, lratio = w.lratio, mode = w.mode;
     double pk = w.pk, lpk = w.lpk;
@@ -243,7 +295,7 @@ inline void nb1_sums0(double mu, double th, double* A, double* W) {
 }
 
 // A and W with their first derivatives, each as (value, d_mu, d_theta)
-inline void nb1_sums1(double mu, double th, double* A, double* W) {
+inline void nb1_wsums1(double mu, double th, double* A, double* W) {
     NB1mass w = nb1_mass(mu, th);
     const double r = w.r, ratio = w.ratio, lratio = w.lratio, mode = w.mode;
     double pk = w.pk, lpk = w.lpk;
@@ -281,7 +333,7 @@ inline void nb1_sums1(double mu, double th, double* A, double* W) {
 
 // A and W with their first and second derivatives, each as (value, d_mu,
 // d_theta, d_mu,mu, d_mu,theta, d_theta,theta)
-inline void nb1_sums2(double mu, double th, double* A, double* W) {
+inline void nb1_wsums2(double mu, double th, double* A, double* W) {
     NB1mass w = nb1_mass(mu, th);
     const double r = w.r, ratio = w.ratio, lratio = w.lratio, mode = w.mode;
     double pk = w.pk, lpk = w.lpk;
@@ -337,6 +389,166 @@ inline void nb1_sums2(double mu, double th, double* A, double* W) {
     for (int j = 0; j < 6; ++j) { A[j] = s[0][j]; W[j] = s[1][j]; }
 }
 
+// A and G = E[l_theta,theta] below nb1_expected_cut(), from the D sums
+inline void nb1_dsums0(double mu, double th, double* A, double* G) {
+    NB1mass w = nb1_mass(mu, th);
+    const double r = w.r, ratio = w.ratio, lratio = w.lratio, mode = w.mode;
+    double pk = w.pk, lpk = w.lpk;
+    bool logscale = w.logscale;
+    double q, qp;
+    nb1_q(th, &q, &qp);
+    double a = 0.0, Dv = 0.0, sa = 0.0, sd = 0.0;
+    for (int k = 0; k <= w.kmax; ++k) {
+        const double kd = (double) k;
+        sa += pk * a;
+        sd += pk * Dv;
+        if (negbin1_series_done(kd, pk, mode)) break;
+        const double u = mu + th * kd, iu = 1.0 / u, iu2 = iu * iu;
+        a += iu2;
+        Dv += kd * kd * iu2;
+        nb1_mass_step(kd, r, ratio, lratio, pk, lpk, logscale);
+    }
+    *A = sa;
+    *G = -sd - mu * qp;
+}
+
+// the same with the first derivatives, each as (value, d_mu, d_theta)
+inline void nb1_dsums1(double mu, double th, double* A, double* G) {
+    NB1mass w = nb1_mass(mu, th);
+    const double r = w.r, ratio = w.ratio, lratio = w.lratio, mode = w.mode;
+    double pk = w.pk, lpk = w.lpk;
+    bool logscale = w.logscale;
+    const double iop = 1.0 / (1.0 + th), imu = 1.0 / mu, thmu = th * imu;
+    double q, qp, qpp, qppp;
+    nb1_q(th, &q, &qp);
+    nb1_q23(th, &qpp, &qppp);
+    const double thq = th * q, muq = mu * q;
+    double a = 0.0, am = 0.0, at = 0.0, Dv = 0.0, Dm = 0.0, Dt = 0.0, B = 0.0;
+    double sa[3] = {0, 0, 0}, sd[3] = {0, 0, 0};
+    for (int k = 0; k <= w.kmax; ++k) {
+        const double kd = (double) k, p = pk;
+        const double sm = (kd - mu) * imu - thmu * B + thq;
+        const double st = -(kd - mu) * iop + B - muq;
+        sa[0] += p * a;
+        sa[1] += p * (am + a * sm);
+        sa[2] += p * (at + a * st);
+        sd[0] += p * Dv;
+        sd[1] += p * (Dm + Dv * sm);
+        sd[2] += p * (Dt + Dv * st);
+        if (negbin1_series_done(kd, p, mode)) break;
+        const double u = mu + th * kd, iu = 1.0 / u, iu2 = iu * iu, iu3 = iu2 * iu;
+        const double k2 = kd * kd;
+        a += iu2;
+        am -= 2.0 * iu3;
+        at -= 2.0 * kd * iu3;
+        Dv += k2 * iu2;
+        Dm -= 2.0 * k2 * iu3;
+        Dt -= 2.0 * k2 * kd * iu3;
+        B += kd * iu;
+        nb1_mass_step(kd, r, ratio, lratio, pk, lpk, logscale);
+    }
+    for (int j = 0; j < 3; ++j) A[j] = sa[j];
+    G[0] = -sd[0] - mu * qp;
+    G[1] = -sd[1] - qp;
+    G[2] = -sd[2] - mu * qpp;
+}
+
+// the same with the first and second derivatives, each as (value, d_mu,
+// d_theta, d_mu,mu, d_mu,theta, d_theta,theta)
+inline void nb1_dsums2(double mu, double th, double* A, double* G) {
+    NB1mass w = nb1_mass(mu, th);
+    const double r = w.r, ratio = w.ratio, lratio = w.lratio, mode = w.mode;
+    double pk = w.pk, lpk = w.lpk;
+    bool logscale = w.logscale;
+    const double iop = 1.0 / (1.0 + th), iop2 = iop * iop;
+    const double imu = 1.0 / mu, thmu = th * imu;
+    double q, qp, qpp, qppp;
+    nb1_q(th, &q, &qp);
+    nb1_q23(th, &qpp, &qppp);
+    const double thq = th * q, muq = mu * q, muqp = mu * qp;
+    double f[2][6] = {{0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}};
+    double s[2][6] = {{0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}};
+    double B = 0.0, C = 0.0;
+    for (int k = 0; k <= w.kmax; ++k) {
+        const double kd = (double) k, p = pk;
+        const double sm = (kd - mu) * imu - thmu * B + thq;
+        const double st = -(kd - mu) * iop + B - muq;
+        const double hmm = -f[0][0];
+        const double hmt = iop - C - q;
+        const double htt = (kd - mu) * iop2 - f[1][0] - muqp;
+        for (int e = 0; e < 2; ++e) {
+            const double* g = f[e];
+            double* o = s[e];
+            o[0] += p * g[0];
+            o[1] += p * (g[1] + g[0] * sm);
+            o[2] += p * (g[2] + g[0] * st);
+            o[3] += p * (g[3] + 2.0 * g[1] * sm + g[0] * (sm * sm + hmm));
+            o[4] += p * (g[4] + g[1] * st + g[2] * sm + g[0] * (sm * st + hmt));
+            o[5] += p * (g[5] + 2.0 * g[2] * st + g[0] * (st * st + htt));
+        }
+        if (negbin1_series_done(kd, p, mode)) break;
+        const double u = mu + th * kd, iu = 1.0 / u, iu2 = iu * iu,
+                     iu3 = iu2 * iu, iu4 = iu2 * iu2;
+        const double k2 = kd * kd;
+        double* a = f[0];
+        a[0] += iu2;
+        a[1] -= 2.0 * iu3;
+        a[2] -= 2.0 * kd * iu3;
+        a[3] += 6.0 * iu4;
+        a[4] += 6.0 * kd * iu4;
+        a[5] += 6.0 * k2 * iu4;
+        double* D = f[1];
+        D[0] += k2 * iu2;
+        D[1] -= 2.0 * k2 * iu3;
+        D[2] -= 2.0 * k2 * kd * iu3;
+        D[3] += 6.0 * k2 * iu4;
+        D[4] += 6.0 * k2 * kd * iu4;
+        D[5] += 6.0 * k2 * k2 * iu4;
+        B += kd * iu;
+        C += kd * iu2;
+        nb1_mass_step(kd, r, ratio, lratio, pk, lpk, logscale);
+    }
+    for (int j = 0; j < 6; ++j) A[j] = s[0][j];
+    G[0] = -s[1][0] - mu * qp;
+    G[1] = -s[1][1] - qp;
+    G[2] = -s[1][2] - mu * qpp;
+    G[3] = -s[1][3];
+    G[4] = -s[1][4] - qpp;
+    G[5] = -s[1][5] - mu * qppp;
+}
+
+// A and G = E[l_theta,theta] at one (mu, theta), from the D sums below
+// nb1_expected_cut() and from G = W/theta^2 above it
+inline void nb1_sums0(double mu, double th, double* A, double* G) {
+    if (th < nb1_expected_cut()) { nb1_dsums0(mu, th, A, G); return; }
+    double W;
+    nb1_wsums0(mu, th, A, &W);
+    *G = W / (th * th);
+}
+
+inline void nb1_sums1(double mu, double th, double* A, double* G) {
+    if (th < nb1_expected_cut()) { nb1_dsums1(mu, th, A, G); return; }
+    double W[3];
+    nb1_wsums1(mu, th, A, W);
+    const double i2 = 1.0 / (th * th), i3 = i2 / th;
+    G[0] = W[0] * i2;
+    G[1] = W[1] * i2;
+    G[2] = W[2] * i2 - 2.0 * W[0] * i3;
+}
+
+inline void nb1_sums2(double mu, double th, double* A, double* G) {
+    if (th < nb1_expected_cut()) { nb1_dsums2(mu, th, A, G); return; }
+    double W[6];
+    nb1_wsums2(mu, th, A, W);
+    const double i2 = 1.0 / (th * th), i3 = i2 / th, i4 = i2 * i2;
+    G[0] = W[0] * i2;
+    G[1] = W[1] * i2;
+    G[2] = W[2] * i2 - 2.0 * W[0] * i3;
+    G[3] = W[3] * i2;
+    G[4] = W[4] * i2 - 2.0 * W[1] * i3;
+    G[5] = W[5] * i2 - 4.0 * W[2] * i3 + 6.0 * W[0] * i4;
+}
+
 namespace d7 {
 
 inline double negbin1_score_mu(const NB1parts& z) {
@@ -356,20 +568,21 @@ inline double negbin1_hess_theta_theta(const NB1parts& z) {
 }
 
 // The expected Hessian from nb1_sums0(): E[l_mu,mu] = -A,
-// E[l_theta,theta] = W/theta^2, E[l_mu,theta] = -W/(mu theta)
+// E[l_theta,theta] = G, E[l_mu,theta] = -theta G/mu
 inline double negbin1_expected_mu_mu(double A) {
     return -A;
 }
 
-inline double negbin1_expected_theta_theta(double t, double W) {
-    return W / (t * t);
+inline double negbin1_expected_theta_theta(double t, double G) {
+    return G;
 }
 
-inline double negbin1_expected_mu_theta(double m, double t, double W) {
-    return -W / (m * t);
+inline double negbin1_expected_mu_theta(double m, double t, double G) {
+    return -t * G / m;
 }
 
-// Its first derivatives, from nb1_sums1()'s (value, d_mu, d_theta)
+// Its first derivatives, from nb1_sums1()'s (value, d_mu, d_theta) of A
+// and G
 inline double negbin1_dexpected_mu_mu_mu(const double* A) {
     return -A[1];
 }
@@ -378,22 +591,22 @@ inline double negbin1_dexpected_mu_mu_theta(const double* A) {
     return -A[2];
 }
 
-inline double negbin1_dexpected_theta_theta_mu(double t, const double* W) {
-    return W[1] / (t * t);
+inline double negbin1_dexpected_theta_theta_mu(double t, const double* G) {
+    return G[1];
 }
 
-inline double negbin1_dexpected_theta_theta_theta(double t, const double* W) {
-    return W[2] / (t * t) - 2.0 * W[0] / (t * t * t);
+inline double negbin1_dexpected_theta_theta_theta(double t, const double* G) {
+    return G[2];
 }
 
 inline double negbin1_dexpected_mu_theta_mu(double m, double t,
-                                            const double* W) {
-    return -W[1] / (m * t) + W[0] / (m * m * t);
+                                            const double* G) {
+    return -t * G[1] / m + t * G[0] / (m * m);
 }
 
 inline double negbin1_dexpected_mu_theta_theta(double m, double t,
-                                               const double* W) {
-    return -W[2] / (m * t) + W[0] / (m * t * t);
+                                               const double* G) {
+    return -G[0] / m - t * G[2] / m;
 }
 
 // The scores and second derivatives at one observation, by the route that
@@ -431,14 +644,14 @@ inline void negbin1_score_curv(int k, double y, const double* th,
 inline void negbin1_info_dinfo(int k, double y, const double* th,
                                double* out) {
     double m = th[0], t = th[1];
-    double A[3], W[3];
-    nb1_sums1(m, t, A, W);
+    double A[3], G[3];
+    nb1_sums1(m, t, A, G);
     if (k == 0) {
         out[0] = negbin1_expected_mu_mu(A[0]);
         out[1] = negbin1_dexpected_mu_mu_mu(A);
     } else {
-        out[0] = negbin1_expected_theta_theta(t, W[0]);
-        out[1] = negbin1_dexpected_theta_theta_theta(t, W);
+        out[0] = negbin1_expected_theta_theta(t, G[0]);
+        out[1] = negbin1_dexpected_theta_theta_theta(t, G);
     }
 }
 

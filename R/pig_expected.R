@@ -32,10 +32,13 @@ NULL
 #' terms apiece; here they come from the Bessel recurrence
 #' \eqn{S_{y+1} = S_{y-1} + \{(2y-1)/\alpha\}S_y}, differentiated in
 #' \eqn{\alpha} and written on positive quantities, so a whole pass costs a
-#' number of terms linear in the length of the support. The pass stops past
-#' the mean once the geometric bound on the remaining mass, the mass at
-#' \eqn{y} times \eqn{2\sigma\mu}, is below \eqn{10^{-17}} of the mass
-#' accumulated.
+#' number of terms linear in the length of the support. Past the mean the pass
+#' stops once
+#' \eqn{f(y)\max\{r/(1-r),\, 2\sigma\mu\}\{(y+1)/(\mu+1)\}^{4+2k}} is at most
+#' \eqn{10^{-17}} of the mass accumulated, with \eqn{f} the mass,
+#' \eqn{r = f(y)/f(y-1)} and \eqn{k = 0, 1, 2} the order of the derivative of
+#' the expected information: the first factor bounds the remaining mass, and
+#' the second the growth of the summands relative to their size near the mean.
 #'
 #' For [pig1_distrib()] the recurrence runs in \eqn{w = 1/(2\alpha) =
 #' \sigma/(2\sqrt{1 + 2\sigma\mu})} instead, \eqn{S_{y+1} = S_{y-1} +

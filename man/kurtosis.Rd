@@ -26,22 +26,21 @@ the three a Gaussian has:
 
 The subtraction puts the Gaussian at zero, so the sign reads as a comparison
 with it: positive for heavier tails and a sharper peak, negative for lighter
-ones. 42 of the 45 shipped families register a closed form; the elastic net
-and the two von Mises reach a quadrature through \code{\link[=moment]{moment()}}.
+ones. Every univariate family except the elastic net and the two von Mises
+registers a closed form; these three reach a quadrature through \code{\link[=moment]{moment()}}.
 }
 \section{Why the three is subtracted}{
-The raw fourth standardized moment is 3 for every Gaussian, whatever its
-mean and scale, so it carries no information about the Gaussian itself.
-Subtracting it makes the quantity a signed distance from normality and puts
-the two commonest reference laws at recognizable values: 0 for the Gaussian,
-3 for the Laplace, \eqn{6/(\nu-4)} for a Student t.
+The fourth standardized moment is 3 for every Gaussian, whatever its mean
+and scale. Subtracting 3 gives zero for the Gaussian, so the sign of the
+result compares the tails with the Gaussian's. The excess kurtosis is 3 for
+the Laplace and \eqn{6/(\nu-4)} for a Student t with \eqn{\nu > 4}.
 }
 
 \section{When it fails to exist}{
 The fourth moment is needed, so the threshold is higher than for
 \code{\link[=skewness]{skewness()}}: a Student t has an excess kurtosis only above four degrees of
-freedom and returns \code{Inf} at or below them, and a Cauchy returns \code{NaN} at
-every parameter value.
+freedom. Between two and four degrees of freedom it returns \code{Inf}, at two or
+fewer it returns \code{NaN}, and a Cauchy returns \code{NaN} at every parameter value.
 }
 
 \section{What the sample method returns}{

@@ -27,8 +27,10 @@ use. Defaults to \code{1L}.}
 }
 \value{
 A named list of one numeric vector, \code{mu_mu}, of length
-\code{max(length(y), length(mu), length(distrib@size))}, constant at
-\eqn{-n/(\mu(1-\mu))} where \code{size} is.
+\code{max(length(y), length(mu), length(distrib@size))}, equal to
+\eqn{-n/(\mu(1-\mu))} with the \code{size} of each observation. Each of \code{y},
+\code{mu} and \code{size} must have length 1 or that length; any other length
+signals an error.
 }
 \description{
 Returns the expectation of the observed second derivative under the model,
@@ -40,9 +42,11 @@ which follows from \eqn{\mathbb{E}[Y] = n\mu} in
 is smallest at \eqn{\mu = 1/2}.
 
 On the \strong{link} scale with the default logit the value is
-\eqn{-n\mu(1-\mu)}, and so is the observed Hessian: the logit is the
-canonical link and the two coincide exactly, so iteratively reweighted
-least squares is Fisher scoring and Newton's method at once.
+\eqn{-n\mu(1-\mu)}, and so is the observed Hessian in exact arithmetic: the
+logit is the canonical link, so iteratively reweighted least squares is
+Fisher scoring and Newton's method at once. The observed value is composed
+by the generic and loses relative accuracy where \eqn{|\eta|} is large
+(see \code{\link[=distrib_hessian.BinomialDistrib]{distrib_hessian.BinomialDistrib()}}); this value does not.
 
 Because the value does not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.

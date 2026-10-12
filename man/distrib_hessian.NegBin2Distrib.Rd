@@ -18,8 +18,8 @@ recycled. Both must be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{theta_theta} and
@@ -36,6 +36,16 @@ trigamma function,
       \ell^{(\mu\theta)} = \dfrac{y-\mu}{s^2}, \qquad
       \ell^{(\theta\theta)} = \psi_1(y+\theta) - \psi_1(\theta)
         + \dfrac{\mu}{\theta s} + \dfrac{y-\mu}{s^2}.}
+
+The mean components are formed from the bracket
+\eqn{y/\mu^k - (y+\theta)/(\mu+\theta)^k}, written as
+\eqn{y(1 - q^k)/\mu^k - \theta/(\mu+\theta)^k} with
+\eqn{q = \mu/(\mu+\theta)} and \eqn{1 - q^k} computed as
+\eqn{-\mathrm{expm1}(-k\,\mathrm{log1p}(\theta/\mu))}. Written directly
+its two terms agree to a relative \eqn{\theta/\mu} where \eqn{y} is near
+\eqn{\mu}, and their difference loses that many digits at a small
+dispersion or a large mean; in this form the value keeps full relative
+accuracy, and a term with a zero coefficient contributes zero.
 
 The dispersion entry cancels at large \eqn{\theta} for the same reason the
 score does, and the kernel handles it the same way. Here the collapse is

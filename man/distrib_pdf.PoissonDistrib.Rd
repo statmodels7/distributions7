@@ -6,13 +6,14 @@
 \arguments{
 \item{distrib}{A \code{PoissonDistrib} object, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{y}{A numeric vector of counts. A non-integer or negative value gives 0
-with a warning from \code{\link[stats:Poisson]{stats::dpois()}}.}
+\item{y}{A numeric vector of counts. A negative value gives 0, and a
+non-integer value gives 0 with a warning from \code{\link[stats:Poisson]{stats::dpois()}}. A missing
+value gives \code{NA}.}
 
 \item{theta}{A named list with the single component \code{mu}, a numeric vector
 of length 1 or of the length of \code{y}. A value of length 1 is recycled.
-\code{mu} must be strictly positive; a negative value gives \code{NaN} with a
-warning.}
+\code{mu} must be strictly positive; the generic signals an error for a value
+outside \eqn{(0, \infty)} before the method is called.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned, which
 stays finite for a count far above the mean where the mass itself

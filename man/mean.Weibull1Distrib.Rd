@@ -23,10 +23,9 @@ not the mean; the gamma factor is what separates the two, and it is 1 only
 at shape 1, where the family is exponential.
 }
 \details{
-A mean parametrization was available and was not taken: it would make every
-derivative of the family a derivative of the gamma function and of its
-inverse. The cost of the choice is paid here, in one gamma evaluation per
-setting.
+The package also ships the Weibull in its mean and shape,
+\code{\link[=weibull3_distrib]{weibull3_distrib()}}. In the scale parametrization of this page the mean
+needs one gamma evaluation per setting.
 }
 \section{Notation}{
 

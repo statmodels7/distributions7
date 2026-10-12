@@ -19,8 +19,9 @@ A numeric vector of variances, of length
 }
 \description{
 Closed form: \eqn{\operatorname{Var}(Y) = \mu(1-\mu)/(\phi+1)}. The
-numerator is the Bernoulli variance at the same mean, the largest a
-distribution on \eqn{(0,1)} can have, and \eqn{\phi+1} divides it down.
+numerator is the Bernoulli variance at the same mean, which bounds the
+variance of every distribution on \eqn{[0, 1]} with that mean, and
+\eqn{\phi+1} divides it.
 Larger \eqn{\phi} therefore means a tighter distribution, which is the
 reason the parameter is called a precision.
 }

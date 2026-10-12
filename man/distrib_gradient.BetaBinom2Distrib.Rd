@@ -51,14 +51,11 @@ function, \code{digamma()} in R.
 \section{Large concentration}{
 
 Each digamma difference cancels to leading order as the shapes grow at a
-fixed ratio, and this method writes it out directly. Measured at
-\eqn{n = 10}, \eqn{y = 3} and a mean proportion of 0.4, the relative error
-against the limiting \eqn{-5/(2S)} with \eqn{S = \alpha+\beta} is
-\eqn{6\times10^{-8}} at \eqn{S = 10^8}, \eqn{4\times10^{-4}} at
-\eqn{10^{12}} and 1.8 at \eqn{10^{15}}. Where a concentration of that size
-is reachable, use \code{\link[=distrib_gradient.BetaBinom1Distrib]{distrib_gradient.BetaBinom1Distrib()}}, whose compiled
-kernel forms the same difference as a sum of reciprocals and holds nine
-figures there.
+fixed ratio. For a shape of at least 100 the compiled kernel forms it as an
+asymptotic series remainder plus one \code{log1p()}, so the score keeps its
+accuracy as the concentration grows. At \eqn{n = 10}, \eqn{y = 3} and a
+mean proportion of 0.4 its \eqn{\alpha} component tends to \eqn{-5/(2S)},
+with \eqn{S = \alpha+\beta}.
 }
 
 \examples{

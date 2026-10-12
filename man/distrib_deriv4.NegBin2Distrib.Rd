@@ -26,8 +26,8 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to \code{1L}.}
 }
 \value{
 A named list of five numeric vectors, \code{mu_mu_mu_mu},
@@ -43,11 +43,13 @@ rational in \eqn{(\mu, \theta)} and linear in \eqn{y}, and the pure
 dispersion component carries \eqn{\psi_3(y+\theta) - \psi_3(\theta)}, with
 \eqn{\psi_3} the third derivative of the digamma function.
 
+The mean component is formed from the same bracket as at third order.
+
 With \code{expected = TRUE} the expectations are returned. The pure dispersion
-one needs \eqn{\mathbb{E}[\psi_3(Y+\theta)]}, summed over the support with a
-far-tail correction; the rest need only \eqn{\mathbb{E}[Y] = \mu}. \code{approx}
-and \code{nsim} are ignored either way, and the caveat about large \eqn{\theta}
-on \code{\link[=distrib_deriv3.NegBin2Distrib]{distrib_deriv3.NegBin2Distrib()}} applies here as well.
+one needs \eqn{\mathbb{E}[\psi_3(Y+\theta)]}, summed over the support as at
+third order; the rest need only \eqn{\mathbb{E}[Y] = \mu}. \code{approx} and
+\code{nsim} are ignored either way. As at third order, the cancellation at large
+\eqn{\theta} is performed symbolically (\code{\link[=distrib_deriv3.NegBin2Distrib]{distrib_deriv3.NegBin2Distrib()}}).
 }
 \section{Notation}{
 

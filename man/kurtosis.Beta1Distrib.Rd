@@ -19,10 +19,12 @@ A numeric vector of excess kurtoses, of length
 Closed form in the two shapes \eqn{a = \mu\phi} and \eqn{b = (1-\mu)\phi}:
 \deqn{\gamma_2 = \frac{6\{(a-b)^2(a+b+1) - ab(a+b+2)\}}
                       {ab(a+b+2)(a+b+3)}.}
-It is the one family in the toolkit whose excess kurtosis is routinely
-negative: a beta on a bounded support has no tails to be heavy, and at
-\eqn{\mu = 1/2}, \eqn{\phi = 2} the density is uniform, whose excess
-kurtosis is \eqn{-6/5}, the smallest value any distribution attains.
+The excess kurtosis is negative over a wide range of parameters, the support
+being bounded. At \eqn{\mu = 1/2}, \eqn{\phi = 2} the density is uniform and
+the value is \eqn{-6/5}; at \eqn{\mu = 1/2} it tends to \eqn{-2}, the
+smallest value any distribution can have, as \eqn{\phi} goes to zero. The
+method evaluates the form in \eqn{(\mu, \phi)} of \code{\link[=beta_shape_moments]{beta_shape_moments()}}, in
+which \eqn{ab} is not formed.
 }
 \section{Notation}{
 
@@ -33,7 +35,8 @@ kurtosis is \eqn{-6/5}, the smallest value any distribution attains.
 \examples{
 d <- beta1_distrib()
 
-# The uniform case sits at the lower bound of -6/5.
+# The uniform case has excess kurtosis -6/5; a lower precision gives lower
+# values, down to -2.
 all.equal(kurtosis(d, list(mu = 0.5, phi = 2)), -1.2)
 
 # Negative over the symmetric middle, positive as the mass piles at an end.

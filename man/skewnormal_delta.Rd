@@ -23,9 +23,12 @@ this helper and assemble different combinations of one number.
 }
 \details{
 \eqn{\delta} is bounded: it runs over \eqn{(-1, 1)} as \eqn{\alpha} runs
-over the whole line, and it saturates quickly, reaching 0.995 at
-\eqn{\alpha = 10}. That bound is what caps the skewness and the kurtosis the
-family can reach, and is why the skew t exists.
+over the whole line, and it reaches 0.995 at \eqn{\alpha = 10}. This bound
+limits the skewness and the kurtosis that the family can reach. For
+\eqn{|\alpha| > 1} the value is computed as
+\eqn{\mathrm{sign}(\alpha)/\sqrt{1 + \alpha^{-2}}}, so that \eqn{\alpha^2}
+is not formed where it overflows (\eqn{|\alpha| > 1.3\times10^{154}}), and
+\eqn{\delta} tends to \eqn{\pm 1} there.
 }
 \examples{
 # delta saturates at one as the shape grows.

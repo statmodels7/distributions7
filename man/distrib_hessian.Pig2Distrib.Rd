@@ -6,7 +6,8 @@
 \arguments{
 \item{distrib}{A \code{Pig2Distrib} object, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
-\item{y}{A numeric vector of counts. A value off the support gives \code{NaN}.}
+\item{y}{A numeric vector of counts. A value off the support, or a missing
+value, gives \code{NaN}.}
 
 \item{theta}{A named list with components \code{mu} and \code{alpha}, each a numeric
 vector of length 1 or of the length of \code{y}. Both must be strictly
@@ -29,10 +30,10 @@ Returns the exact second derivatives of the log-mass in
 \eqn{(\mu, \alpha)}, read off columns \code{d20}, \code{d02} and \code{d11} of the compiled
 kernel \code{pig2_hessian_cpp}.
 
-The \strong{observed} mixed entry is not zero at any single observation; what
-vanishes is its expectation. Measured at \eqn{\mu = 3},
-\eqn{\alpha = 3.0104}, the expectation summed over the support is
-\eqn{-8.8\times10^{-15}} while the individual entries are of order one.
+The \strong{observed} mixed entry is not zero in general; what vanishes is its
+expectation. At \eqn{\mu = 3} and \eqn{\alpha = 3.0104} the entry is
+proportional to \eqn{y - \mu}, and its expectation is zero to rounding
+error.
 }
 \examples{
 d <- pig2_distrib()
@@ -52,7 +53,7 @@ rbind(analytic = h$mu_alpha,
 # The mixed entry is not zero observation by observation; its expectation
 # is.
 c(observed = h$mu_alpha[1],
-  expected = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha))
+  expected = distrib_expected_hessian(d, 0, th)$mu_alpha)
 }
 \seealso{
 \code{\link[=distrib_gradient.Pig2Distrib]{distrib_gradient.Pig2Distrib()}} for the order below,

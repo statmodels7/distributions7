@@ -39,11 +39,14 @@ at \eqn{\mu = 1/2} and grows without bound as the probability approaches
 either endpoint.
 
 On the \strong{link} scale with the default logit the value is
-\eqn{-\mu(1-\mu)}, and so is the observed Hessian: the logit is the
-canonical link, the observed curvature there carries no data, and the two
-coincide exactly. Fisher scoring and Newton's method therefore take the same
-step on a logistic regression, so iteratively reweighted least squares is
-both at once.
+\eqn{-\mu(1-\mu)}, and so is the observed Hessian in exact arithmetic: the
+logit is the canonical link and the observed curvature there carries no
+data. Fisher scoring and Newton's method therefore take the same step on a
+logistic regression, so iteratively reweighted least squares is both at
+once. In floating point the observed value is composed by the generic from
+the derivatives on the parameter scale and loses relative accuracy where
+\eqn{|\eta|} is large (see \code{\link[=distrib_hessian.BernoulliDistrib]{distrib_hessian.BernoulliDistrib()}}); this
+value does not.
 
 Because the value does not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.
@@ -70,7 +73,7 @@ vapply(c(0.5, 0.1, 0.01), function(p)
   -distrib_expected_hessian(d, 0, list(mu = p))$mu_mu, numeric(1))
 
 # On the canonical logit link the observed and the expected values agree
-# exactly, at every observation.
+# at every observation.
 rbind(observed = distrib_hessian(d, c(0, 1, 1), th, scale = "link")$mu_mu,
       expected = distrib_expected_hessian(d, c(0, 1, 1), th,
                                           scale = "link")$mu_mu)

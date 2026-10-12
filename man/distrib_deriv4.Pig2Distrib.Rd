@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{Pig2Distrib} object, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
-\item{y}{A numeric vector of counts. With \code{expected = TRUE} its values are
-the support points the expectation is summed over.}
+\item{y}{A numeric vector of counts. With \code{expected = TRUE} only its length
+is used, and the expectation is summed over the whole support.}
 
 \item{theta}{A named list with components \code{mu} and \code{alpha}, each a numeric
 vector of length 1 or of the length of \code{y}.}
@@ -35,10 +35,15 @@ A named list of five numeric vectors: \code{mu_mu_mu_mu},
 \code{alpha_alpha_alpha_alpha}.
 }
 \description{
-Returns the exact fourth derivatives of the log-mass in
-\eqn{(\mu, \alpha)}, read off the last five columns of the compiled kernel
-of \code{pig2_deriv4_cpp}. The kernel is asked for this order alone, so this is
-the order it was written for.
+Returns the fourth derivatives of the log-mass in \eqn{(\mu, \alpha)},
+written out in closed form, read off the last five columns of the compiled
+kernel \code{pig2_deriv4_cpp}, which computes the fourth order alone.
+
+At a large count this order loses relative accuracy for the reason given
+on \code{\link[=distrib_deriv4.Pig1Distrib]{distrib_deriv4.Pig1Distrib()}}: at \eqn{\alpha = 1} and \eqn{y = 400}
+the component in \eqn{\alpha} alone has a relative error of about
+\eqn{10^{-5}}. The orders below, and this order at counts under 100, are
+accurate to \eqn{10^{-8}} or better.
 
 With \code{expected = TRUE} the value is an expectation and is not closed form,
 as at third order.

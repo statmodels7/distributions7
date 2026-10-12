@@ -16,11 +16,11 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/3}. The scale is not
-the standard deviation: it is smaller by \eqn{\pi/\sqrt3 \approx 1.8138}. A
-logistic scale and a Gaussian one are therefore not comparable as they
-stand, which matters whenever a logistic is used as a heavier-tailed
-substitute for a Gaussian.
+Closed form: \eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/3}. The standard
+deviation is \eqn{\sigma\pi/\sqrt3 \approx 1.8138\sigma}, so the scale is
+smaller than the standard deviation by the factor \eqn{\pi/\sqrt3}, and a
+logistic scale is not comparable with a Gaussian standard deviation as it
+stands.
 }
 \examples{
 d <- logistic_distrib()

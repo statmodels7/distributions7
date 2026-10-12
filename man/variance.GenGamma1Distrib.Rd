@@ -22,16 +22,19 @@ Closed form from the first two raw moments,
 square and the two shapes through the gamma ratios.
 }
 \details{
-The difference is not formed. With \eqn{k = d/p} and \eqn{h = 1/p}, the
+Where \eqn{8h \le k} and \eqn{4h^2 \le k} the difference \eqn{m_2 - m_1^2} is
+not formed. With \eqn{k = d/p} and \eqn{h = 1/p}, the
 cumulant generating function of \eqn{\log(Y/m_1)} is
 \eqn{K(s) = \sum_{n \ge 2} \psi^{(n-1)}(k)\,h^n (s^n - s)/n!}, and with
 \eqn{e^{K(s)} = \sum_n a_n s^n} the central moments of \eqn{Y/m_1} are
 \deqn{\mu_r = r!\sum_{n \ge r} S(n, r)\,a_n,}
 \eqn{S} the Stirling numbers of the second kind, a sum in which the leading
 orders that cancel in \eqn{m_2 - m_1^2} are absent. It is evaluated in
-double-double arithmetic where \eqn{8h \le k}, and as
-\eqn{\exp(\log m_2 - 2\log m_1) - 1} from Stirling's form of the log-gamma
-differences elsewhere. Then \eqn{\operatorname{Var}(Y) = m_1^2\mu_2}.
+double-double arithmetic where \eqn{8h \le k} and \eqn{4h^2 \le k}. Elsewhere
+\eqn{\mu_2 = \exp(\log m_2 - 2\log m_1) - 1} is evaluated with \code{expm1()}, the
+log-gamma differences being taken in Stirling's form for \eqn{k \ge 10} and
+as differences of \code{lgamma()} below. Then \eqn{\operatorname{Var}(Y) =
+m_1^2\mu_2}.
 }
 \section{Notation}{
 
@@ -49,7 +52,8 @@ all.equal(variance(d, list(a = 2, d = 3, p = 1)), 12)
 all.equal(variance(d, list(a = 2, d = 3, p = 3)),
           variance(weibull1_distrib(), list(mu = 2, sigma = 3)))
 
-# Towards the lognormal the coefficient of variation is about sqrt(1/d).
+# Towards the lognormal the squared coefficient of variation is about
+# 1/(p d), which is 1/d here because p = 1.
 variance(d, list(a = 1, d = 1e6, p = 1)) / mean(d, list(a = 1, d = 1e6, p = 1))^2
 
 }

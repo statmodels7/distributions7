@@ -18,8 +18,8 @@ recycled. Both must be strictly positive.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to \code{1L}.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{theta}, each of
@@ -55,9 +55,9 @@ The kernel performs each cancellation symbolically instead. With
       + \left\{\log(1 + w) - w\right\},}
 each bracket evaluated by its own series where the arguments are large. To
 leading order the result is \eqn{\{y - (y-\mu)^2\}/(2\theta^2)}, which the
-example below reproduces. A fit reaches that regime routinely: 2,000 counts
-drawn at a true \eqn{\theta} of 100 can report an estimate of order
-\eqn{10^7}, and where such a run stops is decided by this arithmetic.
+example below reproduces. A fit reaches that regime when the sample is
+nearly equidispersed, because the estimate of \eqn{\theta} then grows
+without bound.
 
 With \code{scale = "link"} the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter

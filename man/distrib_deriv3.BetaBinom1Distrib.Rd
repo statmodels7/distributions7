@@ -19,12 +19,10 @@ model is returned in place of the value at the data. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}, the strategy \code{\link[=expected_derivative]{expected_derivative()}} uses. Read only when
-\code{expected = TRUE}.}
+\item{approx}{Ignored, the expectation being an exact finite sum. Accepted
+so that the signature matches the generic's.}
 
-\item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -42,11 +40,14 @@ and this parametrization is that one at \eqn{\alpha = \mu/\sigma} and
 \eqn{\beta = (1-\mu)/\sigma}, so the Faa di Bruno partition sum of
 \code{\link[=chain_derivatives]{chain_derivatives()}} over the map delivers them. Both shapes are linear in
 \eqn{\mu} at fixed \eqn{\sigma}, so every partial of the map carrying two or
-more \eqn{\mu} vanishes and the sum is short.
+more \eqn{\mu} vanishes and the sum is short. This route is taken for
+\eqn{\sigma \ge 0.1}; for \eqn{\sigma < 0.1} the components are the direct
+sums over the integer shifts given on \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, which keep
+their accuracy as \eqn{\sigma} goes to zero (\code{\link[=betabinom1_components]{betabinom1_components()}}).
 
-With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}} instead.
-That is the one place on this page where \code{approx} and \code{nsim} are read; on
-the observed branch both are ignored.
+With \code{expected = TRUE} the method returns the expectation as an exact
+finite sum over the support, from \code{\link[=betabinom1_expected]{betabinom1_expected()}}. \code{approx} and
+\code{nsim} are ignored on both branches.
 }
 \section{Notation}{
 

@@ -11,15 +11,17 @@ moment(distrib, theta, p = 1, central = FALSE, mu = NULL, ...)
 constructors such as \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} or \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
 \item{theta}{A named list of parameters on the parameter scale, with one
-component per parameter of \code{distrib}. Components may be vectors and are
-recycled against one another and against \code{p}, so several settings are
-evaluated in one call. The list is aligned and validated by name, so a
-missing or out-of-bounds component signals an error.}
+component per parameter of \code{distrib}. Each component has length 1 or a
+common length \eqn{n}, and \code{p} and \code{mu} likewise, so that \eqn{n} settings
+are evaluated in one call; other lengths signal an error. The list is
+aligned and validated by name, so a missing or out-of-bounds component
+signals an error.}
 
 \item{p}{The order of the moment. A numeric vector of length 1 or of the
 number of settings, recycled against the components of \code{theta}. Defaults
-to 1, the mean. Non-integer orders are accepted; a negative order is
-accepted too and diverges for any family whose support reaches zero.}
+to 1, the mean. A non-integer order is accepted where \eqn{(y - c)^p} is
+real over the support. A negative order on a family whose support reaches
+zero gives a divergent integral, and the quadrature signals an error.}
 
 \item{central}{Should the moment be taken about the mean? A single logical,
 \code{FALSE} by default, which gives the raw moment and needs no extra pass.
@@ -34,18 +36,20 @@ the series. Names here must not collide with the names in \code{theta}.}
 }
 \value{
 A numeric vector of moments, of length equal to the longest of the
-components of \code{theta} and of \code{p}. \code{NaN} where the integrand is not
-defined, \code{Inf} where the integral diverges to infinity.
+components of \code{theta} and of \code{p}. Where the integral or the series
+diverges, or the integrand is not real, an error is signaled in place of a
+value.
 }
 \description{
 Computes the raw moment \eqn{E[Y^p]} or the central moment
 \eqn{E[(Y-\mu)^p]} of a distribution at one or more parameter settings. The
 expectation is taken numerically by \code{\link[=expectation]{expectation()}}, which integrates over
 the support of a continuous family and sums the series of a discrete one.
-The order \eqn{p} need not be a whole number, so fractional and absolute
-moments are reachable from the same function. Every setting supplied in
-\code{theta} is evaluated in one batched call, and the result carries one value
-per setting.
+The order \eqn{p} may be fractional where \eqn{(y - c)^p} is real over the
+whole support, \eqn{c} being the centering value (for example a raw moment
+of a family on the positive half-line); the integrand is \eqn{(y - c)^p} and
+not \eqn{|y - c|^p}. Every setting supplied in \code{theta} is evaluated in one
+batched call, and the result carries one value per setting.
 }
 \section{What is computed}{
 With \code{central = FALSE},
@@ -59,29 +63,25 @@ and supplying a fitted or a theoretical mean saves one pass.
 }
 
 \section{Accuracy and cost}{
-A continuous family's moment is a quadrature and a discrete family's is a
-series, so neither is exact. On a Gaussian the second and fourth central
-moments come back at \eqn{9 - 2.8\times10^{-14}} and
-\eqn{3 - 8.9\times10^{-15}} against the exact 9 and 3; on a Poisson the
-series is exact to the last bit at ordinary means. The price is the
-evaluation: one numerical variance of a Gaussian costs 2.3 ms against
-24 microseconds for the closed form the family registers, a factor of about
-94, and one numerical skewness costs 3.5 ms against the same 24
-microseconds. That gap is why 43 of the 45 shipped families answer
-\code{\link[=variance]{variance()}} and \code{\link[=skewness]{skewness()}} with a formula of their own; the two von Mises
-families are the ones that reach this function.
+A continuous family's moment is computed by quadrature and a discrete
+family's by a series, so the result is accurate to the tolerance of
+\code{\link[=expectation]{expectation()}} and is not exact. A closed form, where a family registers
+one, is cheaper by about two orders of magnitude. Every univariate family
+except the two von Mises registers closed forms for \code{\link[=variance]{variance()}} and
+\code{\link[=skewness]{skewness()}}, so this function is reached through them only for those two.
 }
 
 \section{A moment that does not exist}{
-A divergent integral does not announce itself. The quadrature returns
-whatever its truncation gives, a number that moves with the panel layout and
-looks like an estimate. A family whose moments fail to exist therefore
-registers a method that returns \code{NaN} directly, as the Cauchy does through
-\code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}}, and a family whose moments exist only above a
-threshold returns \code{Inf} where they do not, as the Student t does at
-\eqn{\nu \le 4} for the kurtosis. Reading a number back from this function on
-a family with no analytical method is a statement about the quadrature and
-not about the law.
+When the integral or the series diverges, or the integrand is not real
+over the support, this function signals an error: the quadrature does not
+reach the requested accuracy (the mean of a Cauchy, a negative order on a
+family whose support reaches zero, a fractional central moment of a
+Gaussian) or the series does not converge (a fractional central moment of a
+Poisson). An integral that only appears to converge can still return a
+number that depends on the panel layout. A family whose moments fail to
+exist therefore registers methods that return \code{NaN} directly, as the Cauchy
+does through \code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}}, and a family whose moments exist only
+above a threshold returns \code{Inf} or \code{NaN} below it, as the Student t does.
 }
 
 \section{Notation}{
@@ -115,6 +115,6 @@ all.equal(moment(poisson_distrib(), list(mu = 3), p = 2, central = TRUE), 3)
 \seealso{
 \code{\link[=expectation]{expectation()}} for the quadrature and the series this rests on;
 \code{\link[=mean.distrib]{mean.distrib()}}, \code{\link[=variance]{variance()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}}
-for the four standard moments, each of which prefers a family's closed
-form when one is registered.
+for the standard moments, which use a family's closed form when one is
+registered.
 }

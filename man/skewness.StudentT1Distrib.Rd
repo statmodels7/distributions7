@@ -19,8 +19,7 @@ components, zero where \eqn{\nu > 3} and \code{NaN} elsewhere.
 \description{
 Zero for \eqn{\nu > 3}, and \code{NaN} at or below three, where the third moment
 does not exist. The density is symmetric about \eqn{\mu}, so the value is
-zero wherever it is defined. The threshold records where the third moment
-exists.
+zero wherever it is defined.
 }
 \section{Notation}{
 

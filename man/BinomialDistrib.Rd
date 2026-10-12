@@ -69,23 +69,38 @@ The default link is the logit, the \strong{canonical} link here: on its scale th
 observed and the expected information coincide.
 
 Build one with \code{\link[=binomial_distrib]{binomial_distrib()}}. This page documents the raw S7
-constructor, which takes the parent's properties plus \code{size} and validates
-none of the relationships between them.
+constructor, which takes the parent's properties plus \code{size}; the
+validator of \code{distrib} checks the parent's properties, and \code{size} is
+checked by \code{\link[=binomial_distrib]{binomial_distrib()}}, not by this constructor.
 }
 \section{Methods}{
 
-Registered on this class:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.BinomialDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.BinomialDistrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.BinomialDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.BinomialDistrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.BinomialDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_quantile.BinomialDistrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.BinomialDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.BinomialDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.BinomialDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.BinomialDistrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.BinomialDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.BinomialDistrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.BinomialDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.BinomialDistrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.BinomialDistrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.BinomialDistrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.BinomialDistrib]{distrib_d2expected_hessian()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.BinomialDistrib]{distrib_grad_cdf()}};
+\item the moments: \code{\link[=mean.BinomialDistrib]{mean()}},
+\code{\link[=variance.BinomialDistrib]{variance()}},
+\code{\link[=skewness.BinomialDistrib]{skewness()}} and
+\code{\link[=kurtosis.BinomialDistrib]{kurtosis()}};
+\item the fitting helpers: \code{\link[=distrib_scalar_route]{distrib_scalar_route()}}.
+}
 
-Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
+Every other generic is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
 \examples{

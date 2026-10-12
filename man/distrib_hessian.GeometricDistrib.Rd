@@ -30,7 +30,18 @@ mean, one value per observation, in closed form. Differentiating
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2}
       = \dfrac{-\mu(1+\mu) - (y-\mu)(1+2\mu)}{\mu^2(1+\mu)^2},}
 which depends on the data through \eqn{y} alone. Its expectation is
-\code{\link[=distrib_expected_hessian.GeometricDistrib]{distrib_expected_hessian.GeometricDistrib()}}.
+\code{\link[=distrib_expected_hessian.GeometricDistrib]{distrib_expected_hessian.GeometricDistrib()}}. Equivalently the value is
+\eqn{-(y/\mu^2 - (y+1)/(1+\mu)^2)}.
+
+The kernel writes the bracket \eqn{y/\mu^k - (y+1)/(1+\mu)^k} of order
+\eqn{k} as \eqn{y(1 - q^k)/\mu^k - 1/(1+\mu)^k} with
+\eqn{q = \mu/(1+\mu)}, and computes \eqn{1 - q^k} as
+\eqn{-\mathrm{expm1}(-k\,\mathrm{log1p}(1/\mu))}. The two terms of the
+original form agree to a relative \eqn{1/\mu} where \eqn{y} is near
+\eqn{\mu}, and their difference would lose that many digits at a large
+mean; in this form the value keeps full relative accuracy. A term with a
+zero coefficient contributes zero, so the value at \eqn{y = 0} stays finite
+however small \eqn{\mu} is.
 }
 \examples{
 d <- geometric_distrib()

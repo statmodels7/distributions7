@@ -18,9 +18,9 @@ A numeric vector of means, of length
 }
 \description{
 Closed form: \eqn{E[Y] = \mu}. This is the Gaussian written by its
-precision \eqn{\tau = 1/\sigma^2}, the parametrization a Bayesian prior or a
-penalized likelihood usually reaches for, and the mean is the location as it
-is in the other two.
+precision \eqn{\tau = 1/\sigma^2}, a parametrization common in Bayesian
+models. As in the other two Gaussian parametrizations, the mean is the
+location parameter.
 }
 \examples{
 d <- gaussian3_distrib()

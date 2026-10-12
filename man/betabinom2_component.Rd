@@ -30,8 +30,10 @@ component not depending on \code{y}.
 Returns the derivative component of a given order and multi-index for the
 beta-binomial log-mass in its two shapes. The log-mass is a sum of log-gamma
 terms, so its derivative of order \eqn{k+1} is the same sum with
-\eqn{\psi^{(k)}} in place of \eqn{\log\Gamma}. All four orders come from
-this one routine.
+\eqn{\psi^{(k)}} in place of \eqn{\log\Gamma}. \code{\link[=betabinom2_derivs]{betabinom2_derivs()}} calls
+it for the third and fourth orders and for the expectations of
+\code{\link[=betabinom2_expected]{betabinom2_expected()}}; the score and the Hessian come from compiled
+kernels.
 }
 \details{
 With \eqn{a} and \eqn{b} the shapes and \eqn{n} the size, the log-mass is

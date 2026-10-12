@@ -6,7 +6,8 @@
 \arguments{
 \item{distrib}{A \code{Pig1Distrib} object, from \code{\link[=pig1_distrib]{pig1_distrib()}}.}
 
-\item{y}{A numeric vector of counts. A value off the support gives \code{NaN}.}
+\item{y}{A numeric vector of counts. A value off the support, or a missing
+value, gives \code{NaN}.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}. Both must be strictly
@@ -31,7 +32,7 @@ compiled kernel \code{pig1_hessian_cpp}.
 
 This is the \strong{observed} curvature at the data. The expected information is
 computed exactly by one pass over the support; see
-\code{\link[=distrib_expected_hessian.Pig2Distrib]{distrib_expected_hessian()}}.
+\code{\link[=distrib_expected_hessian.Pig1Distrib]{distrib_expected_hessian()}}.
 }
 \examples{
 d <- pig1_distrib()

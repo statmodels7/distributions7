@@ -17,9 +17,9 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$tau))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = 1/\tau}. Larger precision means a
-tighter distribution, and the name records that. The reciprocal is the whole
-of the difference between this parametrization and \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.
+Closed form: \eqn{\operatorname{Var}(Y) = 1/\tau}. A larger precision gives a
+smaller variance. This parametrization differs from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
+only by the reciprocal \eqn{\tau = 1/\sigma^2}.
 }
 \examples{
 d <- gaussian3_distrib()

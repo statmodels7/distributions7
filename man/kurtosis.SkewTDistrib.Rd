@@ -8,15 +8,15 @@
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} (positive), \code{alpha}
 (any sign) and \code{nu} (positive), each a numeric vector of length 1 or \code{n}.
-Only \code{alpha} and \code{nu} enter the value; settings with \eqn{\nu \le 4} give
-\code{NaN}.}
+Only \code{alpha} and \code{nu} enter the value; settings with \eqn{2 < \nu \le 4}
+give \code{Inf} and those with \eqn{\nu \le 2} give \code{NaN}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of excess kurtoses, of the length the recycled
-parameters imply, \code{NaN} wherever \eqn{\nu \le 4}. Only \code{alpha} and \code{nu}
-enter the value.
+parameters imply, \code{Inf} wherever \eqn{2 < \nu \le 4} and \code{NaN} wherever
+\eqn{\nu \le 2}. Only \code{alpha} and \code{nu} enter the value.
 }
 \description{
 Closed form for \eqn{\nu > 4}, from Azzalini and Capitanio (2003):
@@ -24,8 +24,9 @@ Closed form for \eqn{\nu > 4}, from Azzalini and Capitanio (2003):
       \left\{\frac{3\nu^2}{(\nu-2)(\nu-4)}
              - \frac{4\mu_z^2\nu(3-\delta^2)}{\nu-3}
              + \frac{6\mu_z^2\nu}{\nu-2} - 3\mu_z^4\right\} - 3,}
-and \code{NaN} at \eqn{\nu \le 4}. The threshold is the highest of the four
-moments, the fourth being the one that fails first as the tails grow heavy.
+\code{Inf} at \eqn{2 < \nu \le 4}, where the fourth moment diverges, as for the
+Student t, and \code{NaN} at \eqn{\nu \le 2}. As \eqn{\nu} decreases the fourth
+moment is the first of the four to cease to exist.
 }
 \section{Notation}{
 

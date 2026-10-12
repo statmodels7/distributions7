@@ -30,8 +30,9 @@ A numeric vector of non-negative integers, of length
 Computes the generalized inverse of the distribution function,
 \deqn{Q(p; \mu, \theta) =
       \min\left\{y \in \mathbb{N}_0 : F(y; \mu, \theta) \ge p\right\},}
-by calling \code{\link[stats:NegBinomial]{stats::qnbinom()}} at size \eqn{r = \mu/\theta} and success
-probability \eqn{1/(1+\theta)}. The support is discrete, so the round trip
+by calling \code{\link[stats:NegBinomial]{stats::qnbinom()}} at size \eqn{r = \mu/\theta} and mean
+\eqn{\mu}, so that the success probability \eqn{1/(1+\theta)} is never
+formed. The support is discrete, so the round trip
 through \code{\link[=distrib_cdf.NegBin1Distrib]{distrib_cdf.NegBin1Distrib()}} does \strong{not} return \code{p}: it returns
 the mass up to the smallest integer whose cumulative probability reaches
 \code{p}, which overshoots.
@@ -46,7 +47,7 @@ q <- distrib_quantile(d, p, th)
 q
 
 # On a discrete support the round trip overshoots: the cumulative
-# probability at the returned integer is at or above the one asked for, not
+# probability at the returned integer is at or above the one given, not
 # equal to it.
 rbind(asked = p, reached = distrib_cdf(d, q, th))
 

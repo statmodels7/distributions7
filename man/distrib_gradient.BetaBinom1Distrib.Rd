@@ -18,8 +18,8 @@ recycled. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly positi
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to \code{1L}.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{sigma}, each of
@@ -37,10 +37,19 @@ and likewise in \eqn{\beta} with \eqn{n - y} in place of \eqn{y}. The
 reported components follow by the chain rule of
 \eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)}.
 
-Each digamma difference cancels to leading order as the shapes grow, so the
-compiled kernel forms it as a sum of reciprocals, the shifts being integers.
-The location component then holds its accuracy to a concentration of
-\eqn{10^{15}}, where the direct difference has lost every digit.
+The kernel uses these shape forms for \eqn{\sigma \ge 0.1}, where they are
+accurate. As \eqn{\sigma} goes to zero (the binomial limit) the derivatives
+of the map grow like powers of \eqn{1/\sigma} and the terms of the chain
+rule cancel, so for \eqn{\sigma < 0.1} the kernel uses the direct sums of
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}} instead: with \eqn{u_i = \mu + i\sigma},
+\eqn{v_i = 1 - \mu + i\sigma} and \eqn{w_i = 1 + i\sigma},
+\deqn{\dfrac{\partial \ell}{\partial \mu}
+      = \sum_{i<y} \dfrac{1}{u_i} - \sum_{i<n-y} \dfrac{1}{v_i}, \qquad
+      \dfrac{\partial \ell}{\partial \sigma}
+      = \sum_{i<y} \dfrac{i}{u_i} + \sum_{i<n-y} \dfrac{i}{v_i}
+        - \sum_{i<n} \dfrac{i}{w_i}.}
+Each sum has terms of one sign, so both components keep their accuracy at
+any concentration; the cost is \eqn{O(n)} per observation.
 
 With \code{scale = "link"} the generic applies the chain rule for the links the
 family carries before returning. This method always returns the parameter

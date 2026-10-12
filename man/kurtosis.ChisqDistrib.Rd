@@ -17,9 +17,8 @@ positive throughout.
 }
 \description{
 Closed form: \eqn{\gamma_2 = 12/\mu}, the excess over the Gaussian. It is
-positive at every degrees of freedom and decays like \eqn{\mu^{-1}}, twice
-as fast as the skewness, so a chi-squared looks Gaussian in its tails before
-it looks symmetric.
+positive at every degrees of freedom and decays like \eqn{\mu^{-1}}, whereas
+the skewness decays like \eqn{\mu^{-1/2}}: \eqn{\gamma_2 = 3\gamma_1^2/2}.
 }
 \examples{
 d <- chisq_distrib()

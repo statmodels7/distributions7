@@ -6,7 +6,8 @@
 \arguments{
 \item{distrib}{A \code{Pig2Distrib} object, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
-\item{y}{A numeric vector of counts. A value off the support gives \code{NaN}.}
+\item{y}{A numeric vector of counts. A value off the support, or a missing
+value, gives \code{NaN}.}
 
 \item{theta}{A named list with components \code{mu} and \code{alpha}, each a numeric
 vector of length 1 or of the length of \code{y}. Both must be strictly
@@ -52,9 +53,9 @@ rbind(analytic = vapply(g, sum, 0),
 
 # The two scores are uncorrelated under the model, which is what
 # orthogonality means and what pig1 does not have.
-c(pig2 = sum(distrib_expected_hessian(d, 0:200, th)$mu_alpha),
-  pig1 = sum(distrib_expected_hessian(pig1_distrib(), 0:200,
-                                      list(mu = 3, sigma = 0.8))$mu_sigma))
+c(pig2 = distrib_expected_hessian(d, 0, th)$mu_alpha,
+  pig1 = distrib_expected_hessian(pig1_distrib(), 0,
+                                  list(mu = 3, sigma = 0.8))$mu_sigma)
 }
 \seealso{
 \code{\link[=distrib_hessian.Pig2Distrib]{distrib_hessian.Pig2Distrib()}} for the second derivatives,

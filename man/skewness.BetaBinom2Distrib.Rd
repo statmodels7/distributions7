@@ -8,7 +8,8 @@
 trial count in its \code{size} property.}
 
 \item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
-each a numeric vector of length 1 or \code{n}.}
+each a numeric vector of length 1 or of the common length of the parameter
+settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,15 +18,15 @@ A numeric vector, of length
 \code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-The standardized third central moment, \eqn{\gamma_1 = c_3/c_2^{3/2}} with
-the central moments \eqn{c_k} from \code{\link[=betabinom_central]{betabinom_central()}} at
-\eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)}. It is
+The skewness of \code{\link[=skewness.BetaBinom1Distrib]{skewness.BetaBinom1Distrib()}} at \eqn{\mu =
+\alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)}, computed by
+\code{\link[=betabinom_moments]{betabinom_moments()}}. It is
 zero when the two shapes are equal, the mixing beta being symmetric there.
 }
 \section{Notation}{
 
 \eqn{\alpha > 0} and \eqn{\beta > 0} are the shapes of the mixing beta,
-\eqn{n} the number of trials and \eqn{c_k} the \eqn{k}-th central moment.
+\eqn{n} the number of trials.
 }
 
 \examples{
@@ -42,7 +43,7 @@ all.equal(skewness(d, list(alpha = 2, beta = 3)),
 }
 \seealso{
 \code{\link[=kurtosis.BetaBinom2Distrib]{kurtosis.BetaBinom2Distrib()}}, from the same moments;
-\code{\link[=skewness.BetaBinom1Distrib]{skewness.BetaBinom1Distrib()}}; \code{\link[=betabinom_central]{betabinom_central()}};
+\code{\link[=skewness.BetaBinom1Distrib]{skewness.BetaBinom1Distrib()}}; \code{\link[=betabinom_moments]{betabinom_moments()}};
 \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.
 }
 \keyword{internal}

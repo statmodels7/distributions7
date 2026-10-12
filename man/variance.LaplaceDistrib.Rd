@@ -18,9 +18,9 @@ enter the value, so a setting that varies \code{mu} alone repeats one number.
 }
 \description{
 Closed form, replacing the numerical default:
-\eqn{\operatorname{Var}(Y) = 2\sigma^2}. The scale is not the standard
-deviation here: it is smaller by \eqn{\sqrt2}, which is worth knowing before
-a Laplace scale is compared with a Gaussian one.
+\eqn{\operatorname{Var}(Y) = 2\sigma^2}, so the standard deviation is
+\eqn{\sqrt2\,\sigma} and the scale is smaller than it by the factor
+\eqn{\sqrt2}.
 }
 \examples{
 d <- laplace_distrib()

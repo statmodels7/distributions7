@@ -7,7 +7,8 @@
 \item{distrib}{A \code{BetaBinom2Distrib} object, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.}
 
 \item{y}{A numeric vector of counts. A value outside \eqn{\{0, \dots, n\}}
-or not an integer gives a mass of 0, or \code{-Inf} with \code{log = TRUE}.}
+or not an integer gives a mass of 0, or \code{-Inf} with \code{log = TRUE}. A
+missing value gives \code{NA}.}
 
 \item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is

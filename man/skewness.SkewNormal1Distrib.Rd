@@ -24,8 +24,9 @@ Closed form:
 with \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. It
 takes the sign of the shape and vanishes at zero. Because \eqn{\delta} is
 bounded by 1, the skewness the family can reach is bounded too, by about
-0.9953 in absolute value: a sample skewed more than that cannot be fitted by
-a skew normal at any shape, and the skew t is the family to reach for.
+0.9953 in absolute value. A sample skewness beyond that value lies outside
+the range a skew normal can have at any shape; the skewness of the skew t
+has no such bound.
 }
 \section{Notation}{
 

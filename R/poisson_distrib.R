@@ -15,12 +15,12 @@ NULL
 #' [negbin1_distrib()] do that, and both contain this family in the limit.
 #'
 #' The default link is the logarithm, which is the **canonical** link here. On
-#' its scale the observed and the expected information coincide, so Fisher
-#' scoring and Newton's method take the same step.
+#' its scale the observed and the expected information coincide in exact
+#' arithmetic, so Fisher scoring and Newton's method take the same step.
 #'
 #' Build one with [poisson_distrib()]. This page documents the raw S7
-#' constructor, which takes the parent's properties and validates none of the
-#' relationships between them.
+#' constructor, which takes the parent's properties; the validator of
+#' `distrib` checks them, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -38,20 +38,29 @@ NULL
 #'   [distrib_expected_hessian.PoissonDistrib()] for the information.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.PoissonDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.PoissonDistrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.PoissonDistrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.PoissonDistrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.PoissonDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.PoissonDistrib] and
+#'   [`distrib_rng()`][distrib_rng.PoissonDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.PoissonDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.PoissonDistrib],
-#'   [`distrib_pdf()`][distrib_pdf.PoissonDistrib],
-#'   [`distrib_quantile()`][distrib_quantile.PoissonDistrib],
-#'   [`distrib_rng()`][distrib_rng.PoissonDistrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.PoissonDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.PoissonDistrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.PoissonDistrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.PoissonDistrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.PoissonDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.PoissonDistrib];
+#' - the moments: [`mean()`][mean.PoissonDistrib],
+#'   [`variance()`][variance.PoissonDistrib],
+#'   [`skewness()`][skewness.PoissonDistrib] and
+#'   [`kurtosis()`][kurtosis.PoissonDistrib].
 #'
-#' Everything else is inherited from [discrete_distrib()]. Derivatives with
-#' respect to the response signal an error on that parent: the support is
-#' discrete, so there is nothing to differentiate along.
+#' Every other generic is inherited from [discrete_distrib()].
 #'
 #' @examples
 #' d <- poisson_distrib()
@@ -85,12 +94,13 @@ PoissonDistrib <- S7::new_class("PoissonDistrib", parent = discrete_distrib)
 #' is at most 1.
 #'
 #' @param distrib A `PoissonDistrib` object, from [poisson_distrib()].
-#' @param y A numeric vector of counts. A non-integer or negative value gives 0
-#'   with a warning from [stats::dpois()].
+#' @param y A numeric vector of counts. A negative value gives 0, and a
+#'   non-integer value gives 0 with a warning from [stats::dpois()]. A missing
+#'   value gives `NA`.
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. A value of length 1 is recycled.
-#'   `mu` must be strictly positive; a negative value gives `NaN` with a
-#'   warning.
+#'   `mu` must be strictly positive; the generic signals an error for a value
+#'   outside \eqn{(0, \infty)} before the method is called.
 #' @param log Logical of length 1. When `TRUE` the log-mass is returned, which
 #'   stays finite for a count far above the mean where the mass itself
 #'   underflows. Defaults to `FALSE`.
@@ -290,8 +300,8 @@ S7::method(distrib_rng, PoissonDistrib) <- function(distrib, n, theta, ...) {
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. For fewer observations than an internal threshold the kernel runs
+#'   sequentially whatever the count. Defaults to `1L`.
 #'
 #' @return A named list of one numeric vector, `mu`, of length
 #'   `max(length(y), length(mu))`.
@@ -334,14 +344,23 @@ S7::method(distrib_gradient, PoissonDistrib) <- function(distrib, y, theta, scal
 #' mean, one value per observation, in closed form:
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2}.}
 #' It depends on the data only through \eqn{y}, and is exactly zero at an
-#' observed count of zero; the curvature at \eqn{y = 0} comes entirely from the
-#' \eqn{-\mu} term of the log-mass, which is linear.
+#' observed count of zero, because at \eqn{y = 0} the log-mass \eqn{-\mu} is
+#' linear in \eqn{\mu}. The term is formed by dividing \eqn{y} by \eqn{\mu}
+#' once per power, and a zero count contributes zero, so the value at
+#' \eqn{y = 0} stays zero however small \eqn{\mu} is.
 #'
 #' On the **link** scale with the default logarithm the chain rule gives
-#' \eqn{\partial^2\ell/\partial\eta^2 = -\mu}, which carries **no data at
-#' all**. That is the defining property of a canonical link, and it makes the
-#' observed and the expected information the same matrix there; see
-#' [distrib_expected_hessian.PoissonDistrib()].
+#' \eqn{\partial^2\ell/\partial\eta^2 = -\mu}, which carries no data; this
+#' is the defining property of a canonical link, and in exact arithmetic it
+#' makes the observed and the expected information the same matrix there (see
+#' [distrib_expected_hessian.PoissonDistrib()]). The generic forms the
+#' link-scale value as \eqn{-y + (y - \mu)} from the derivatives on the
+#' parameter scale, and for a count much larger than the mean the two terms
+#' cancel to a value much smaller than either. The relative error of the
+#' observed value is then of the order of machine epsilon times
+#' \eqn{y/\mu} (about \eqn{4 \times 10^{-3}} at \eqn{y = 1000},
+#' \eqn{\mu = 10^{-10}}), while the expected value is computed directly and
+#' stays exact.
 #'
 #' @param distrib A `PoissonDistrib` object, from [poisson_distrib()].
 #' @param y A numeric vector of counts.
@@ -395,11 +414,14 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 #' sample mean whose variance is \eqn{\mu}.
 #'
 #' On the **link** scale with the default logarithm the value is \eqn{-\mu},
-#' and so is the observed Hessian: the log is the canonical link, the observed
-#' curvature there carries no data, and the two coincide exactly. Fisher
-#' scoring and Newton's method therefore take the same step on a Poisson model
-#' with a log link, which is why the two are not distinguished in the classical
-#' generalized-linear-model literature for this case.
+#' and so is the observed Hessian in exact arithmetic: the log is the canonical
+#' link and the observed curvature there carries no data. Fisher scoring and
+#' Newton's method therefore take the same step on a Poisson model with a log
+#' link, which is why the two are not distinguished in the classical
+#' generalized-linear-model literature for this case. The observed value is
+#' composed by the generic and loses relative accuracy for a count much larger
+#' than the mean (see [distrib_hessian.PoissonDistrib()]); this value does
+#' not.
 #'
 #' Because the value does not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -440,7 +462,7 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 #' -1 / 3
 #'
 #' # On the canonical log link the observed and the expected values agree
-#' # exactly, at every observation.
+#' # at every observation.
 #' rbind(observed = distrib_hessian(d, c(0, 2, 7), th, scale = "link")$mu_mu,
 #'       expected = distrib_expected_hessian(d, c(0, 2, 7), th,
 #'                                           scale = "link")$mu_mu)
@@ -640,7 +662,7 @@ S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expect
 #' \eqn{\mu^{-1}}, so the distribution is right skewed at a small mean and
 #' close to Gaussian at a large one.
 #'
-#' # The canonical link, and what it buys
+#' # The canonical link
 #'
 #' The log-mass is \eqn{y\log\mu - \mu - \log y!}, which is linear in \eqn{y}
 #' once \eqn{\eta = \log\mu} is the parameter. The logarithm is therefore the
@@ -648,7 +670,7 @@ S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expect
 #' \deqn{\dfrac{\partial \ell}{\partial \eta} = y - \mu, \qquad
 #'       \dfrac{\partial^2 \ell}{\partial \eta^2} = -\mu.}
 #' The second of these carries no data, so the observed and the expected
-#' information coincide: Fisher scoring and Newton's method take the same step,
+#' information coincide in exact arithmetic: Fisher scoring and Newton's method take the same step,
 #' and the iteratively reweighted least squares of a Poisson log-linear model
 #' is both at once. Under any other link the two differ and the choice matters.
 #'

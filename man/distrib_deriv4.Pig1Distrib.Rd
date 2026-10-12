@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{Pig1Distrib} object, from \code{\link[=pig1_distrib]{pig1_distrib()}}.}
 
-\item{y}{A numeric vector of counts. With \code{expected = TRUE} its values are
-the support points the expectation is summed over.}
+\item{y}{A numeric vector of counts. With \code{expected = TRUE} only its length
+is used, and the expectation is summed over the whole support.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}.}
@@ -35,10 +35,18 @@ A named list of five numeric vectors: \code{mu_mu_mu_mu},
 \code{sigma_sigma_sigma_sigma}.
 }
 \description{
-Returns the exact fourth derivatives of the log-mass in
-\eqn{(\mu, \sigma)}, read off the last five columns of the compiled kernel
-of \code{pig1_deriv4_cpp}. The kernel is asked for this order alone, so this is
-the order it was written for and it costs the same as the score.
+Returns the fourth derivatives of the log-mass in \eqn{(\mu, \sigma)},
+written out in closed form, read off the last five columns of the compiled
+kernel \code{pig1_deriv4_cpp}, which computes the fourth order alone.
+
+At a very small dispersion and a large count this order loses relative
+accuracy: the tables it is formed from are moments of the finite sum
+\eqn{S_y}, which has \eqn{y} terms, and their combination cancels as
+\eqn{\sigma} goes to zero. At \eqn{\sigma = 10^{-7}} and counts of 100 and
+more the component in \eqn{\sigma} alone has a relative error between
+\eqn{10^{-7}} and \eqn{2\times10^{-3}}, growing with the count and with
+\eqn{1/\mu}; the orders below, and this order at counts under 100, are
+accurate to \eqn{10^{-8}} or better there.
 
 With \code{expected = TRUE} the value is an expectation and is not closed form,
 as at third order.
@@ -57,8 +65,8 @@ rbind(analytic = d4$mu_mu_mu_sigma,
                  distrib_deriv3(d, y, list(mu = 3, sigma = 0.8 - eps))$mu_mu_mu) /
                 (2 * eps))
 
-# All four orders come from one pass of the kernel, so the fourth costs
-# what the first does.
+# Each order has its own kernel, and the fourth costs about what the first
+# does.
 n <- 2e4
 set.seed(62)
 x <- distrib_rng(d, n, th)

@@ -17,9 +17,10 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. This parametrization carries the mean and the
-variance as its two parameters, so both of the first two moments are reads,
-and the shape and rate are recovered from them where they are needed.
+Closed form: \eqn{E[Y] = \mu}. The two parameters of this parametrization are
+the mean and the variance, so the method returns the first parameter. The
+shape \eqn{\mu^2/\sigma^2} and the rate \eqn{\mu/\sigma^2} are functions of
+the two.
 }
 \examples{
 d <- gamma2_distrib()

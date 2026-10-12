@@ -40,9 +40,10 @@ The mass on \eqn{y \in \{0, 1\}} is
 with \eqn{\mu \in (0, 1)}. The mean is \eqn{\mu}, the variance
 \eqn{\mu(1-\mu)}, the skewness \eqn{(1-2\mu)/\sqrt{\mu(1-\mu)}} and the
 excess kurtosis \eqn{(1 - 6\mu(1-\mu))/(\mu(1-\mu))}. The family has no
-dispersion parameter: fixing the mean fixes the variance, which is why
-overdispersion in binary data has to come from elsewhere, most often from a
-random effect or from grouping.
+dispersion parameter: the mean fixes the variance, so a single binary
+response cannot be overdispersed. Overdispersion arises in grouped counts,
+for which \code{\link[=binomial_distrib]{binomial_distrib()}} and \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} are the families,
+or through a random effect or other clustering.
 }
 
 \section{The canonical link}{
@@ -52,7 +53,8 @@ the canonical link, and on its scale
 \deqn{\dfrac{\partial \ell}{\partial \eta} = y - \mu, \qquad
       \dfrac{\partial^2 \ell}{\partial \eta^2} = -\mu(1-\mu).}
 The second carries no data, so the observed and the expected information
-coincide. Under a probit or a complementary log-log link they do not, and
+coincide in exact arithmetic (the computed observed value loses accuracy at
+large \eqn{|\eta|}; see \code{\link[=distrib_hessian.BernoulliDistrib]{distrib_hessian.BernoulliDistrib()}}). Under a probit or a complementary log-log link they do not, and
 the choice between Fisher scoring and Newton's method becomes a real one.
 }
 
@@ -62,15 +64,15 @@ On the parameter scale,
       \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2},}
 with expectations \eqn{0} and \eqn{-1/(\mu(1-\mu))}. The information is the
 reciprocal of the variance, so it is smallest at \eqn{\mu = 1/2} and grows
-without bound towards either endpoint: a near-certain outcome is very
-informative about its own probability.
+without bound towards either endpoint.
 }
 
 \section{Estimation}{
 The maximum likelihood estimate is the sample proportion,
 \eqn{\hat\mu = \bar y}, in closed form. A sample of all zeros or all ones
-drives the estimate to the boundary, where the logit is infinite; that is
-separation, and it is a property of the data.
+puts the estimate on the boundary of \eqn{(0, 1)}, where the logit is
+infinite, so under the default link the estimate on the link scale does
+not exist.
 }
 
 \section{Notation}{

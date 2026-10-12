@@ -16,11 +16,10 @@ A numeric vector of 3s, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Exactly 3 at every parameter value, the excess over the Gaussian's own
-fourth standardized moment. A standardized moment is free of location and
-scale, and the Laplace has no shape parameter, so the whole family sits at
-one point of the kurtosis axis. That point is the reference the toolkit's
-heavier-tailed families are read against.
+Exactly 3 at every parameter value, the excess over the Gaussian's fourth
+standardized moment of 3. A standardized moment is free of location and
+scale, and the Laplace has no shape parameter, so the excess kurtosis is
+the same for the whole family.
 }
 \examples{
 d <- laplace_distrib()

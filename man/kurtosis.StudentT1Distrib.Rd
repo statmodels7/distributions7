@@ -19,10 +19,9 @@ of the three components, \code{Inf} where \eqn{2 < \nu \le 4} and \code{NaN} whe
 }
 \description{
 Closed form: \eqn{\gamma_2 = 6/(\nu-4)} for \eqn{\nu > 4}, \code{Inf} for
-\eqn{2 < \nu \le 4}, and \code{NaN} at or below two. The value is the toolkit's
-standard example of tail weight running with a shape parameter: it is 6 at
-\eqn{\nu = 5}, 1 at \eqn{\nu = 10} and tends to the Gaussian's zero as the
-degrees of freedom grow.
+\eqn{2 < \nu \le 4}, and \code{NaN} at or below two. The excess kurtosis is 6 at
+\eqn{\nu = 5}, 1 at \eqn{\nu = 10}, and tends to the Gaussian's zero as the
+degrees of freedom increase.
 }
 \section{Notation}{
 

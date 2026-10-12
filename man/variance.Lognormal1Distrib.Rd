@@ -8,8 +8,8 @@
 
 \item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
 (positive), each a numeric vector of length 1 or \code{n}. The variance grows
-like \eqn{e^{2\sigma^2}} and overflows to \code{Inf} well before \code{sigma2}
-reaches 400.}
+like \eqn{e^{2\sigma^2}} The variance overflows to \code{Inf} for \code{sigma2} above
+about 355 at \code{mu = 0}, and the threshold rises as \code{mu} decreases.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

@@ -16,13 +16,13 @@ NULL
 #' the logit, which is the **canonical** link here: on its scale the observed
 #' and the expected information coincide.
 #'
-#' A Bernoulli is a binomial on one trial. [binomial_distrib()] with
-#' `size = 1` gives the same law, and the two are worth keeping apart only
-#' because the binomial carries a `size` property this class does not.
+#' A Bernoulli is a binomial on one trial: [binomial_distrib()] with
+#' `size = 1` gives the same law. The two are separate classes because the
+#' binomial carries a `size` property that this class does not have.
 #'
 #' Build one with [bernoulli_distrib()]. This page documents the raw S7
-#' constructor, which takes the parent's properties and validates none of the
-#' relationships between them.
+#' constructor, which takes the parent's properties; the validator of
+#' `distrib` checks them, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -40,18 +40,29 @@ NULL
 #'   [linkfunctions7::logit_link()], the canonical link.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.BernoulliDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.BernoulliDistrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.BernoulliDistrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.BernoulliDistrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.BernoulliDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.BernoulliDistrib] and
+#'   [`distrib_rng()`][distrib_rng.BernoulliDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.BernoulliDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.BernoulliDistrib],
-#'   [`distrib_pdf()`][distrib_pdf.BernoulliDistrib],
-#'   [`distrib_quantile()`][distrib_quantile.BernoulliDistrib],
-#'   [`distrib_rng()`][distrib_rng.BernoulliDistrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.BernoulliDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.BernoulliDistrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.BernoulliDistrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.BernoulliDistrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.BernoulliDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.BernoulliDistrib];
+#' - the moments: [`mean()`][mean.BernoulliDistrib],
+#'   [`variance()`][variance.BernoulliDistrib],
+#'   [`skewness()`][skewness.BernoulliDistrib] and
+#'   [`kurtosis()`][kurtosis.BernoulliDistrib].
 #'
-#' Everything else is inherited from [discrete_distrib()].
+#' Every other generic is inherited from [discrete_distrib()].
 #'
 #' @examples
 #' d <- bernoulli_distrib()
@@ -84,12 +95,13 @@ BernoulliDistrib <- S7::new_class("BernoulliDistrib", parent = discrete_distrib)
 #' probability.
 #'
 #' @param distrib A `BernoulliDistrib` object, from [bernoulli_distrib()].
-#' @param y A numeric vector of zeros and ones. Any other value gives 0 with a
-#'   warning from [stats::dbinom()].
+#' @param y A numeric vector of zeros and ones. Any other value gives 0, and a
+#'   non-integer value also gives a warning from [stats::dbinom()]. A missing
+#'   value gives `NA`.
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. A value of length 1 is recycled.
-#'   `mu` must lie in \eqn{(0, 1)}; a value outside \eqn{[0, 1]} gives `NaN`
-#'   with a warning.
+#'   `mu` must lie in \eqn{(0, 1)}; the generic signals an error for a value
+#'   outside that interval before the method is called.
 #' @param log Logical of length 1. When `TRUE` the log-mass is returned, which
 #'   stays finite for a probability so small that the mass underflows.
 #'   Defaults to `FALSE`.
@@ -288,8 +300,8 @@ S7::method(distrib_rng, BernoulliDistrib) <- function(distrib, n, theta, ...) {
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. For fewer observations than an internal threshold the kernel runs
+#'   sequentially whatever the count. Defaults to `1L`.
 #'
 #' @return A named list of one numeric vector, `mu`, of length
 #'   `max(length(y), length(mu))`.
@@ -332,13 +344,23 @@ S7::method(distrib_gradient, BernoulliDistrib) <- function(distrib, y, theta, sc
 #' probability, one value per observation, in closed form:
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2}.}
 #' It is negative for every admissible \eqn{\mu} and takes one of two values
-#' according to whether the observation is 0 or 1.
+#' according to whether the observation is 0 or 1. Each term is formed by
+#' dividing its coefficient by the base once per power, and a term with a zero
+#' coefficient contributes zero, so at \eqn{y = 0} the value is
+#' \eqn{-1/(1-\mu)^2} however small \eqn{\mu} is.
 #'
 #' On the **link** scale with the default logit the chain rule gives
-#' \eqn{\partial^2\ell/\partial\eta^2 = -\mu(1-\mu)}, which carries **no data
-#' at all**. That is the defining property of a canonical link and makes the
-#' observed and the expected information the same matrix there; see
-#' [distrib_expected_hessian.BernoulliDistrib()].
+#' \eqn{\partial^2\ell/\partial\eta^2 = -\mu(1-\mu)}, which carries no
+#' data; this is the defining property of a canonical link, and in exact
+#' arithmetic it makes the observed and the expected information the same
+#' matrix there (see [distrib_expected_hessian.BernoulliDistrib()]). The
+#' generic forms the link-scale value from the derivatives on the parameter
+#' scale, and for an observation on the far side of the probability
+#' (\eqn{y = 0} with \eqn{\mu} near 1, or \eqn{y = 1} with \eqn{\mu} near 0)
+#' its two terms cancel to a value much smaller than either. The relative
+#' error of the observed value then grows with \eqn{|\eta|} (about
+#' \eqn{10^{-3}} at \eqn{\eta = 27.6}), while the expected value is computed
+#' directly and stays exact.
 #'
 #' @param distrib A `BernoulliDistrib` object, from [bernoulli_distrib()].
 #' @param y A numeric vector of zeros and ones.
@@ -394,11 +416,14 @@ S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta, sca
 #' either endpoint.
 #'
 #' On the **link** scale with the default logit the value is
-#' \eqn{-\mu(1-\mu)}, and so is the observed Hessian: the logit is the
-#' canonical link, the observed curvature there carries no data, and the two
-#' coincide exactly. Fisher scoring and Newton's method therefore take the same
-#' step on a logistic regression, so iteratively reweighted least squares is
-#' both at once.
+#' \eqn{-\mu(1-\mu)}, and so is the observed Hessian in exact arithmetic: the
+#' logit is the canonical link and the observed curvature there carries no
+#' data. Fisher scoring and Newton's method therefore take the same step on a
+#' logistic regression, so iteratively reweighted least squares is both at
+#' once. In floating point the observed value is composed by the generic from
+#' the derivatives on the parameter scale and loses relative accuracy where
+#' \eqn{|\eta|} is large (see [distrib_hessian.BernoulliDistrib()]); this
+#' value does not.
 #'
 #' Because the value does not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -443,7 +468,7 @@ S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta, sca
 #'   -distrib_expected_hessian(d, 0, list(mu = p))$mu_mu, numeric(1))
 #'
 #' # On the canonical logit link the observed and the expected values agree
-#' # exactly, at every observation.
+#' # at every observation.
 #' rbind(observed = distrib_hessian(d, c(0, 1, 1), th, scale = "link")$mu_mu,
 #'       expected = distrib_expected_hessian(d, c(0, 1, 1), th,
 #'                                           scale = "link")$mu_mu)
@@ -608,9 +633,10 @@ S7::method(distrib_deriv4, BernoulliDistrib) <- function(distrib, y, theta, expe
 #' with \eqn{\mu \in (0, 1)}. The mean is \eqn{\mu}, the variance
 #' \eqn{\mu(1-\mu)}, the skewness \eqn{(1-2\mu)/\sqrt{\mu(1-\mu)}} and the
 #' excess kurtosis \eqn{(1 - 6\mu(1-\mu))/(\mu(1-\mu))}. The family has no
-#' dispersion parameter: fixing the mean fixes the variance, which is why
-#' overdispersion in binary data has to come from elsewhere, most often from a
-#' random effect or from grouping.
+#' dispersion parameter: the mean fixes the variance, so a single binary
+#' response cannot be overdispersed. Overdispersion arises in grouped counts,
+#' for which [binomial_distrib()] and [betabinom1_distrib()] are the families,
+#' or through a random effect or other clustering.
 #'
 #' # The canonical link
 #'
@@ -620,7 +646,8 @@ S7::method(distrib_deriv4, BernoulliDistrib) <- function(distrib, y, theta, expe
 #' \deqn{\dfrac{\partial \ell}{\partial \eta} = y - \mu, \qquad
 #'       \dfrac{\partial^2 \ell}{\partial \eta^2} = -\mu(1-\mu).}
 #' The second carries no data, so the observed and the expected information
-#' coincide. Under a probit or a complementary log-log link they do not, and
+#' coincide in exact arithmetic (the computed observed value loses accuracy at
+#' large \eqn{|\eta|}; see [distrib_hessian.BernoulliDistrib()]). Under a probit or a complementary log-log link they do not, and
 #' the choice between Fisher scoring and Newton's method becomes a real one.
 #'
 #' # Derivatives
@@ -630,15 +657,15 @@ S7::method(distrib_deriv4, BernoulliDistrib) <- function(distrib, y, theta, expe
 #'       \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2},}
 #' with expectations \eqn{0} and \eqn{-1/(\mu(1-\mu))}. The information is the
 #' reciprocal of the variance, so it is smallest at \eqn{\mu = 1/2} and grows
-#' without bound towards either endpoint: a near-certain outcome is very
-#' informative about its own probability.
+#' without bound towards either endpoint.
 #'
 #' # Estimation
 #'
 #' The maximum likelihood estimate is the sample proportion,
 #' \eqn{\hat\mu = \bar y}, in closed form. A sample of all zeros or all ones
-#' drives the estimate to the boundary, where the logit is infinite; that is
-#' separation, and it is a property of the data.
+#' puts the estimate on the boundary of \eqn{(0, 1)}, where the logit is
+#' infinite, so under the default link the estimate on the link scale does
+#' not exist.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-mass of one observation and \eqn{\mu \in (0,1)} the

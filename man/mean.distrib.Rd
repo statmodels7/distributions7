@@ -14,16 +14,17 @@ one mean is returned per setting.}
 }
 \value{
 A numeric vector of means, of length equal to the longest component
-of \code{theta}. \code{NaN} or \code{Inf} where the integral does not converge, with no
-warning: a family whose mean does not exist registers its own method
-instead of relying on this one.
+of \code{theta}. Where the integral does not converge the quadrature signals an
+error; a family whose mean does not exist registers its own method instead
+of using this one.
 }
 \description{
 Evaluates \eqn{E[Y]} by quadrature over the support of a continuous family
 or by summing the series of a discrete one, through one call of \code{\link[=moment]{moment()}}
-at \code{p = 1}. This is the fallback that runs when the family has registered no
-closed form. Of the 45 shipped families only the two von Mises reach it; the
-rest carry a formula, which is a hundredfold cheaper and exact.
+at \code{p = 1}. This method is used when the family registers no closed form;
+among the univariate families that is the first von Mises
+(\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}), and the second registers a method that calls this
+route.
 }
 \examples{
 # The von Mises is one of the two families with no closed-form mean, so this

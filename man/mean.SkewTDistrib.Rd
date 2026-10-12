@@ -22,9 +22,8 @@ four components, \code{NaN} wherever \eqn{\nu \le 1}.
 Closed form for \eqn{\nu > 1}: \eqn{E[Y] = \mu + \sigma\delta b_\nu}, with
 \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and
 \eqn{b_\nu = \sqrt{\nu/\pi}\,\Gamma\{(\nu-1)/2\}/\Gamma(\nu/2)}. At
-\eqn{\nu \le 1} the value is \code{NaN}: the density is perfectly well defined
-there and its first moment is not, so a number would be a claim the law does
-not support.
+\eqn{\nu \le 1} the value is \code{NaN}, because the first moment does not exist
+for that density.
 }
 \section{Notation}{
 

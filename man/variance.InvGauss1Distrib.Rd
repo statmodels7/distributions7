@@ -39,7 +39,8 @@ variance(d, list(mu = c(1, 2, 4), phi = 0.5))
 }
 \seealso{
 \code{\link[=mean.InvGauss1Distrib]{mean.InvGauss1Distrib()}}, \code{\link[=skewness.InvGauss1Distrib]{skewness.InvGauss1Distrib()}};
-\code{\link[=variance.Gamma2Distrib]{variance.Gamma2Distrib()}}, whose variance function is the square;
+\code{\link[=variance.Gamma1Distrib]{variance.Gamma1Distrib()}}, whose variance function \eqn{\phi\mu^2} is of
+second degree;
 \code{\link[=variance.InvGauss2Distrib]{variance.InvGauss2Distrib()}} for the other parametrization;
 \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.
 }

@@ -44,7 +44,7 @@ NULL
 #' components carrying at most one \eqn{\mu}; \eqn{C} carries none. The only
 #' composite piece is \eqn{G(\mu/\theta)}.
 #'
-#' # The recursion that closes on itself
+#' # The recursion in the powers of r
 #'
 #' Its mixed derivatives take the form
 #' \deqn{\frac{\partial^{a+b}}{\partial\mu^a\partial\theta^b}G(\mu/\theta)
@@ -66,16 +66,15 @@ NULL
 #' differences therefore go through [psi_shift_diff()], which forms them as an
 #' exact sum of reciprocals rather than as a subtraction.
 #'
-#' # Where the recursion cedes, and the form that does not
+#' # The form without the size
 #'
-#' What that does not repair is the cancellation among the powers of \eqn{r} in
-#' the recursion itself: at orders three and four those terms are of size
-#' \eqn{8\times10^6} at \eqn{\theta = 5\times10^{-4}} and sum to a value of
-#' order one. Measured at \eqn{\mu = 4}, \eqn{y = 3}, the third derivative in
-#' \eqn{\theta} reads \eqn{-1.97\times10^{9}} at \eqn{\theta = 10^{-6}} where
-#' the value is \eqn{9/32}, and the fourth \eqn{7.90\times10^{15}}.
+#' The polygamma differences do not remove the cancellation among the powers
+#' of \eqn{r} in the recursion itself: at orders three and four those terms
+#' are large compared with their sum, and as \eqn{\theta} goes to zero the
+#' recursion loses every significant digit.
 #'
-#' The size need not appear at all, which is what removes it. Since
+#' The size need not appear at all, and the form without it has no such
+#' cancellation. Since
 #' \eqn{\log\Gamma(y+r) - \log\Gamma(r) = \sum_{i<y}\log(r+i)} and
 #' \eqn{r = \mu/\theta}, the \eqn{y\log\theta} each such term carries cancels
 #' EXACTLY against \eqn{C(\theta)}, leaving
@@ -83,8 +82,8 @@ NULL
 #'   - \frac{\mu}{\theta}\log(1+\theta) - y\log(1+\theta),}
 #' whose variable does not run away and whose every derivative is elementary.
 #' Below [nb1_exact_cut()] that is the route taken, through
-#' [nb1_components_exact()]; above it the recursion is within 4e-11 and costs
-#' \eqn{O(1)} where the sum costs \eqn{y} terms an observation.
+#' [nb1_components_exact()]; above it the recursion is accurate and costs
+#' \eqn{O(1)} per observation, where the sum costs \eqn{y} terms.
 #'
 #' @param y A numeric vector of counts.
 #' @param theta A named list with components `mu` and `theta`, each a numeric
@@ -200,28 +199,24 @@ negbin1_components <- function(y, theta, order) {
 
 #' @rdname negbin1_components
 #' @description
-#' `nb1_exact_cut()` is the dispersion below which the cancellation-free
-#' assembly is used in place of the recursion in the size. It sits where the
-#' two agree and each is still comfortable: measured at \eqn{\mu = 4},
-#' \eqn{y = 3}, they agree to 4e-11 or better at \eqn{\theta = 1} and to
-#' 5.5e-09 at \eqn{\theta = 0.1}, and part company below that.
+#' `nb1_exact_cut()` returns the dispersion, 1, below which the
+#' cancellation-free assembly is used in place of the recursion in the size.
+#' The scores and second derivatives use the same threshold in the compiled
+#' kernels.
 #' @keywords internal
 nb1_exact_cut <- function() 1
 
 #' @rdname negbin1_components
 #' @description
 #' `nb1_M_derivs()` returns \eqn{M(\theta) = \log(1+\theta)/\theta} and its
-#' derivatives to the order asked for. It is the one composite piece of the
+#' derivatives to the given order. It is the one composite piece of the
 #' cancellation-free form below, and it has a removable singularity at
 #' \eqn{\theta = 0}: the recursion \eqn{\theta M^{(b+1)} + (b+1)M^{(b)} =
 #' (-1)^b b!/(1+\theta)^{b+1}} divides by \eqn{\theta} and loses its digits
 #' there, while the series \eqn{M^{(b)} = (-1)^b \sum_{n\ge 0} (-1)^n
 #' \left[\prod_{i\le b}(n+i)\right]\theta^n/(n+b+1)} converges only below one.
-#' The crossover is MEASURED and not chosen: the two agree to between 1.9e-16
-#' and 3.4e-13 over \eqn{\theta} from 0.01 to 0.5, and each fails on its own
-#' side -- the recursion by 1.4e-04 at \eqn{\theta = 10^{-6}} and by 2.3e+08 at
-#' order four, the series by 1.1e-02 at \eqn{\theta = 0.8}. It is the shape the
-#' generalized Pareto's `Lambda` already carries one family over.
+#' The function uses `nterm` terms of the series for \eqn{\theta} below `cut`
+#' and the recursion otherwise.
 #' @keywords internal
 nb1_M_derivs <- function(th, order, cut = 0.5, nterm = 80L) {
   out <- vector("list", order + 1L)
@@ -324,11 +319,11 @@ nb1_components_exact <- function(y, mu, th, order) {
 #' As \eqn{\theta \to 0} the family tends to the Poisson and the recursion's
 #' terms in the powers of \eqn{r} grow while their sum stays of order one. The
 #' polygamma differences go through [psi_shift_diff()] and are exact, but the
-#' cancellation among those powers is not repaired: at
-#' \eqn{\theta = 5\times10^{-4}} the terms reach \eqn{8\times10^{6}}, and this
-#' order is not reliable below about \eqn{\theta = 0.05}. The score itself,
-#' which does not carry the recursion, reaches the Poisson limit to five
-#' figures.
+#' recursion loses its digits among those powers. For \eqn{\theta < 1} the
+#' method therefore evaluates the form in \eqn{\mu + i\theta}, which contains
+#' no size ([negbin1_components()]), at a cost of \eqn{y} terms per
+#' observation, and this order keeps its accuracy as \eqn{\theta} goes to
+#' zero.
 #'
 #' @seealso [distrib_hessian.NegBin1Distrib()] for the order below,
 #'   [distrib_deriv4.NegBin1Distrib()] for the order above,
@@ -405,10 +400,10 @@ S7::method(distrib_deriv3, NegBin1Distrib) <- function(distrib, y, theta,
 #' size and \eqn{G(r) = \log\Gamma(y+r) - \log\Gamma(r)}.
 #'
 #' @section The Poisson boundary:
-#' The caveat of [distrib_deriv3.NegBin1Distrib()] applies here and more
-#' strongly: the recursion divides by \eqn{\theta^{4}}, so the cancellation
-#' among the powers of \eqn{r} is worse at this order than at the one below.
-#' This order is not reliable below about \eqn{\theta = 0.05}.
+#' The section of [distrib_deriv3.NegBin1Distrib()] applies here: for
+#' \eqn{\theta < 1} the method uses the form in \eqn{\mu + i\theta}, which
+#' contains no size, and this order keeps its accuracy as \eqn{\theta} goes
+#' to zero.
 #'
 #' @seealso [distrib_deriv3.NegBin1Distrib()] for the order below and the
 #'   recursion, [negbin1_components()] for the assembly, and

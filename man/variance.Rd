@@ -29,11 +29,10 @@ passed to \code{\link[stats:cor]{stats::var()}}. Where the variance does not exi
 \section{The two routes}{
 \deqn{\operatorname{Var}(Y) = \mathbb{E}\left[(Y - \mathbb{E}[Y])^{2}\right].}
 
-43 of the 45 shipped families register a closed form, so the second central
-moment is a formula in the parameters and costs about 24 microseconds; the
-two von Mises families fall through to \code{\link[=moment]{moment()}}, which is a quadrature and
-costs about 12 ms. The two routes agree to the rounding of the quadrature,
-3e-15 relative on a Gaussian.
+Every univariate family except the two von Mises registers a closed form,
+so for them the second central moment is a formula in the parameters. The
+two von Mises families fall through to \code{\link[=moment]{moment()}}, which is a quadrature.
+The two routes agree to the accuracy of the quadrature.
 }
 
 \section{What the sample method returns}{

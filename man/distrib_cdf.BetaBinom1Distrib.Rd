@@ -10,13 +10,13 @@
 \code{F(2.7)} is \code{F(2)}.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
-vector of length 1. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly
-positive. A parameter varying by observation is not supported here: one
-cumulative table is built for the whole call.}
+vector of length 1 or of the length of \code{q}. \code{mu} must lie in
+\eqn{(0, 1)} and \code{sigma} be strictly positive. With scalar parameters one
+cumulative table serves the whole call; parameters that vary by
+observation give one table per observation.}
 
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
-probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)},
-formed as \eqn{1 - F}.}
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
 probability is returned. Defaults to \code{FALSE}.}
@@ -25,16 +25,20 @@ probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
 A numeric vector of probabilities in \eqn{[0, 1]}, of length
-\code{length(q)}. With \code{log.p = TRUE} the values are logarithms and are
-non-positive.
+\code{max(length(q), length(mu), length(sigma))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
 Computes \eqn{F(q) = P(Y \le q) = \sum_{k \le \lfloor q \rfloor} P(Y = k)}
 as the cumulative sum of the mass over the whole support
 \eqn{\{0, \dots, n\}}. The support being finite, that sum is exact rather
-than an approximation, and it costs \eqn{n+1} evaluations of the mass
-whatever the length of \code{q}. Below the support the probability is 0 and at or
-above \eqn{n} it is 1.
+than an approximation, and it costs \eqn{n+1} evaluations of the mass for
+each distinct parameter setting. Below the support the probability is 0
+and at or above \eqn{n} it is 1. With \code{lower.tail = FALSE} the upper tail
+\eqn{P(Y > q)} is the sum of the mass above \eqn{q}, accumulated from the
+top of the support, so an upper-tail probability far below machine epsilon
+is not formed as \eqn{1 - F} and keeps its accuracy, on the log scale
+too. The helper is \code{\link[=betabinom1_cum]{betabinom1_cum()}}.
 }
 \examples{
 d <- betabinom1_distrib(size = 10)

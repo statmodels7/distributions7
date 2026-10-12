@@ -8,19 +8,19 @@
 count in its \code{size} property.}
 
 \item{theta}{A named list with one component, \code{mu} (strictly between 0 and
-1), a numeric vector of length 1 or \code{n}.}
+1), a numeric vector of length 1 or of the number of parameter settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of excess kurtoses, the length of \code{theta$mu}.
+A numeric vector of excess kurtoses, of length \code{max(length(theta$mu), length(x@size))}.
 }
 \description{
 Closed form: \eqn{\gamma_2 = \{1 - 6\mu(1-\mu)\}/\{n\mu(1-\mu)\}}, the
 excess over the Gaussian. It is the Bernoulli's divided by \eqn{n}, so it
-vanishes twice as fast as the skewness and can take either sign: it is
-negative over the middle of the unit interval, where the support is bounded
-at both ends and the tails are lighter than a Gaussian's.
+decays like \eqn{1/n}, against \eqn{1/\sqrt{n}} for the skewness, and it can
+take either sign: it is negative where \eqn{\mu(1-\mu) > 1/6}, that is for
+\eqn{\mu} between about 0.211 and 0.789, and positive outside that interval.
 }
 \examples{
 d <- binomial_distrib(size = 10)

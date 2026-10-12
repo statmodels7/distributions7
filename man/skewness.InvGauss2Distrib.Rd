@@ -2,7 +2,7 @@
 % Please edit documentation in R/moments.R
 \name{skewness.InvGauss2Distrib}
 \alias{skewness.InvGauss2Distrib}
-\title{Skewness of the Inverse Gaussian Distribution in Mean and Rate}
+\title{Skewness of the Inverse Gaussian Distribution in Mean and Shape}
 \arguments{
 \item{x}{An \code{InvGauss2Distrib}, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
@@ -18,12 +18,12 @@ A numeric vector, of length
 \description{
 Closed form: \eqn{\gamma_1 = 3\sqrt{\mu/\lambda}}. It is positive at every
 parameter value and depends on the two only through their ratio, so the
-whole family is one curve indexed by \eqn{\mu/\lambda}. Small mean or large
-rate gives a nearly Gaussian shape.
+whole family is one curve indexed by \eqn{\mu/\lambda}. A small mean or a
+large \eqn{\lambda} gives a nearly Gaussian shape.
 }
 \section{Notation}{
 
-\eqn{\mu > 0} is the mean and \eqn{\lambda > 0} the rate.
+\eqn{\mu > 0} is the mean and \eqn{\lambda > 0} the shape.
 }
 
 \examples{

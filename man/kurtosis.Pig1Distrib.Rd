@@ -19,9 +19,9 @@ A numeric vector of excess kurtoses, of length
 Closed form from the cumulants, \eqn{\gamma_2 = \kappa_4/\kappa_2^{2}} with
 \deqn{\kappa_2 = \mu + \sigma\mu^2, \qquad
       \kappa_4 = \mu + 7\sigma\mu^2 + 18\sigma^2\mu^3 + 15\sigma^3\mu^4.}
-The ratio of the fourth cumulant to the squared second \strong{is} the excess
-kurtosis, so no 3 is subtracted here: the subtraction is what turns a fourth
-\emph{moment} into an excess, and a fourth cumulant already carries it.
+The ratio of the fourth cumulant to the squared second equals the excess
+kurtosis, because the fourth cumulant already excludes the term 3 of the
+fourth standardized moment, so no 3 is subtracted here.
 }
 \section{Notation}{
 

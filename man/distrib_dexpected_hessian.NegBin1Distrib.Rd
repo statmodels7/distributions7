@@ -32,17 +32,18 @@ parameters for three families whose expected information is itself a sum
 over the support.
 }
 \details{
-\strong{NB1.} The expected information is \eqn{-A}, \eqn{W/\theta^2} and
-\eqn{-W/(\mu\theta)}, with \eqn{A} and \eqn{W} the two sums over the support
-of \code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}}. Their derivatives are sums
-over the same mass with the score of the mass beside the summand,
-\eqn{\partial_c F = \mathbb{E}[f_c + f s_c]} and
-\eqn{\partial_{ce} F = \mathbb{E}[f_{ce} + f_c s_e + f_e s_c + f(s_c s_e +
-h_{ce})]}, taken in \eqn{(\mu, \theta)} by a compiled kernel, with the
-scores \eqn{s} and second derivatives \eqn{h} of the log-mass written so
-that no term of order \eqn{\mu/\theta^2} is formed. The accuracy decreases
-toward the Poisson limit \eqn{\theta \to 0}, where the fourth derivative in
-\eqn{\theta} is the least accurate component.
+\strong{NB1.} The expected information is \eqn{-A}, \eqn{G} and \eqn{-\theta
+G/\mu}, with \eqn{A} and \eqn{G = \mathbb{E}[\ell_{\theta\theta}]} the two
+sums over the support of \code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}}; below
+\eqn{\theta = 0.02} \eqn{G} is \eqn{-\mathbb{E}[\sum_{j<Y} j^2/(\mu +
+j\theta)^2] - \mu q'(\theta)}, whose summands are all positive, and above it
+\eqn{W/\theta^2}. Their derivatives are sums over the same mass with the
+score of the mass beside the summand, \eqn{\partial_c F = \mathbb{E}[f_c + f
+s_c]} and \eqn{\partial_{ce} F = \mathbb{E}[f_{ce} + f_c s_e + f_e s_c +
+f(s_c s_e + h_{ce})]}, taken in \eqn{(\mu, \theta)} by a compiled kernel,
+with the scores \eqn{s} and second derivatives \eqn{h} of the log-mass
+written so that no term of order \eqn{\mu/\theta^2} is formed. Every
+component keeps its accuracy down to the Poisson limit \eqn{\theta \to 0}.
 
 \strong{Beta-binomial.} The support \eqn{\{0, \dots, n\}} is finite, so the
 identities
@@ -53,8 +54,9 @@ and its second-order counterpart,
 are exact finite sums against the mass. They are taken in the shapes by a
 compiled kernel, where every derivative of the log-mass is a polygamma
 difference at an integer shift and is therefore a sum of negative powers,
-accumulated beside the mass with no polygamma called;
-\code{\link[=betabinom1_distrib]{betabinom1_distrib()}} reads the same sums through its map to the shapes
+accumulated beside the mass with no polygamma called; \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
+reads the same sums through its map to the shapes for \eqn{\sigma \ge 0.1},
+and below that sums the derivatives of its own direct sums over the support
 (\code{\link[=betabinom1_dexpected]{betabinom1_dexpected()}}). \code{\link[=support_dexpected]{support_dexpected()}} computes the same
 identities from the family's own observed derivatives, sharing no
 arithmetic with the kernel, and the compiled kernel is the faster of the

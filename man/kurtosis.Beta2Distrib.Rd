@@ -20,9 +20,12 @@ Closed form:
 \deqn{\gamma_2 = \frac{6\{(\alpha-\beta)^2(\alpha+\beta+1)
                          - \alpha\beta(\alpha+\beta+2)\}}
                       {\alpha\beta(\alpha+\beta+2)(\alpha+\beta+3)}.}
-It is routinely negative, the support being bounded at both ends: at
-\eqn{\alpha = \beta = 1} the density is uniform and the value is
-\eqn{-6/5}, the smallest excess kurtosis any distribution attains.
+It is negative over a wide range of shapes, the support being bounded at both
+ends: at \eqn{\alpha = \beta = 1} the density is uniform and the value is
+\eqn{-6/5}, and as both shapes go to zero it tends to \eqn{-2}, the smallest
+excess kurtosis any distribution can have. The method evaluates the form in
+the mean and the precision of \code{\link[=beta_shape_moments]{beta_shape_moments()}}, in which
+\eqn{\alpha\beta} is not formed.
 }
 \section{Notation}{
 
@@ -32,7 +35,7 @@ It is routinely negative, the support being bounded at both ends: at
 \examples{
 d <- beta2_distrib()
 
-# The uniform case sits at the lower bound of -6/5.
+# The uniform case has excess kurtosis -6/5.
 all.equal(kurtosis(d, list(alpha = 1, beta = 1)), -1.2)
 
 # It agrees with the mean-precision parametrization on the same law.

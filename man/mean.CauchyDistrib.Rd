@@ -21,10 +21,9 @@ A numeric vector of \code{NaN}, of length
 \description{
 Returns \code{NaN}. The Cauchy density decays like \eqn{y^{-2}}, so
 \eqn{\int |y| f(y)\,\mathrm{d}y} diverges and the first moment does not
-exist. \code{NaN} is returned directly, so that no quadrature is attempted: a
-numerical integration over a divergent integral returns whatever its
-truncation gives, a number that moves with the panel layout and reads like
-an estimate.
+exist. \code{NaN} is returned directly and no quadrature is attempted; the
+numerical route of \code{\link[=moment]{moment()}} applied to a Cauchy signals an error, the
+quadrature not reaching the requested accuracy.
 }
 \details{
 What the family does have is a \strong{median}, equal to \eqn{\mu}, and a

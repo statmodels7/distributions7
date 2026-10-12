@@ -17,8 +17,8 @@ of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to \code{1L}.}
 }
 \value{
 A named list of one numeric vector, \code{mu}, of length

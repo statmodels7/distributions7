@@ -24,9 +24,9 @@ that the signature matches the generic's, where it selects between
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+\item{threads}{A single positive integer. It is accepted so that the
+signature matches the other derivative methods; this kernel is
+sequential and ignores it. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{mu_sigma} and
@@ -36,13 +36,15 @@ A named list of three numeric vectors, \code{mu_mu}, \code{mu_sigma} and
 Returns the expectation of the observed Hessian under the model,
 \eqn{\sum_{k=0}^{n} P(Y=k)\, \partial^2\ell/\partial\theta_i\partial\theta_j}
 evaluated at \eqn{y = k}. The support being finite, that is an \strong{exact
-finite sum} of \eqn{n+1} terms rather than a quadrature or a sample. The
-answer is the expectation to machine precision, and a bounded support is
-what makes that available.
+finite sum} of \eqn{n+1} terms rather than a quadrature or a sample, and
+the summand is the observed Hessian of
+\code{\link[=distrib_hessian.BetaBinom1Distrib]{distrib_hessian.BetaBinom1Distrib()}}, from the direct sums for
+\eqn{\sigma < 0.1} and from the shapes above.
 
 \code{approx} and \code{nsim} are therefore ignored; every strategy returns the same
-three numbers. The arithmetic runs in a compiled kernel decomposed over the
-elements of the output, so the result does not depend on the thread count.
+three numbers. The compiled kernel is sequential: it evaluates the sum once
+for each run of consecutive observations that share their parameters, and
+\code{threads} is ignored.
 }
 \examples{
 d <- betabinom1_distrib(size = 10)

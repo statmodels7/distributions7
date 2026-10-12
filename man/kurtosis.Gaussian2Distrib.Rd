@@ -7,8 +7,8 @@
 \item{x}{A \code{Gaussian2Distrib}, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma2} (positive), each
-a numeric vector of length 1 or \code{n}. The values are not read, only their
-lengths.}
+a numeric vector of length 1 or \code{n}. The values are checked against the
+parameter bounds, and only their lengths enter the result.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

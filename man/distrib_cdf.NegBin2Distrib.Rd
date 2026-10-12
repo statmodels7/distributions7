@@ -59,7 +59,9 @@ distrib_cdf(d, 2000, th, lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
 \code{\link[=distrib_quantile.NegBin2Distrib]{distrib_quantile.NegBin2Distrib()}} for the generalized inverse,
-\code{\link[=distrib_pdf.NegBin2Distrib]{distrib_pdf.NegBin2Distrib()}} for the mass, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the
-derivatives of this function in the parameters, which are an exact finite
-sum for a discrete family, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
+\code{\link[=distrib_pdf.NegBin2Distrib]{distrib_pdf.NegBin2Distrib()}} for the mass,
+\code{\link[=distrib_grad_cdf.NegBin2Distrib]{distrib_grad_cdf()}} for the
+derivatives of this function in the parameters (closed form in the mean,
+an exact finite sum in the dispersion), and \code{\link[=distrib_cdf]{distrib_cdf()}} for the
+generic.
 }

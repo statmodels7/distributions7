@@ -8,7 +8,8 @@
 trial count in its \code{size} property.}
 
 \item{theta}{A named list with components \code{mu} (strictly between 0 and 1)
-and \code{sigma} (positive), each a numeric vector of length 1 or \code{n}.}
+and \code{sigma} (positive), each a numeric vector of length 1 or of the common
+length of the parameter settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,9 +18,9 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Assembled from the falling factorial moments,
-\eqn{\gamma_2 = c_4/c_2^2 - 3} with \eqn{c_k} the central moments
-\code{\link[=betabinom_central]{betabinom_central()}} returns. The success probability is what sets its
+Closed form, written as one quotient by \code{\link[=betabinom_moments]{betabinom_moments()}} so that it is
+not formed as a kurtosis near 3 minus 3. The success probability is what sets
+its
 sign. Near \eqn{\mu = 1/2} it is negative and falls
 towards \eqn{-2} as the dispersion grows, the mass splitting between the two
 endpoints and the law approaching a scaled Bernoulli; near either end it is
@@ -28,8 +29,7 @@ positive and large, the long tail towards the middle dominating.
 \section{Notation}{
 
 \eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
-dispersion, \eqn{n} the number of trials and \eqn{c_k} the \eqn{k}-th
-central moment.
+dispersion, \eqn{n} the number of trials.
 }
 
 \examples{
@@ -49,6 +49,6 @@ c(betabinomial = kurtosis(d, list(mu = 0.3, sigma = 1e-8)),
 \seealso{
 \code{\link[=skewness.BetaBinom1Distrib]{skewness.BetaBinom1Distrib()}}, from the same moments;
 \code{\link[=kurtosis.BinomialDistrib]{kurtosis.BinomialDistrib()}}, the \eqn{\sigma \to 0} limit;
-\code{\link[=betabinom_central]{betabinom_central()}}; \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.
+\code{\link[=betabinom_moments]{betabinom_moments()}}; \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.
 }
 \keyword{internal}

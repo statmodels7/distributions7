@@ -28,14 +28,23 @@ Computes the second derivative of the Poisson log-mass with respect to the
 mean, one value per observation, in closed form:
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2}.}
 It depends on the data only through \eqn{y}, and is exactly zero at an
-observed count of zero; the curvature at \eqn{y = 0} comes entirely from the
-\eqn{-\mu} term of the log-mass, which is linear.
+observed count of zero, because at \eqn{y = 0} the log-mass \eqn{-\mu} is
+linear in \eqn{\mu}. The term is formed by dividing \eqn{y} by \eqn{\mu}
+once per power, and a zero count contributes zero, so the value at
+\eqn{y = 0} stays zero however small \eqn{\mu} is.
 
 On the \strong{link} scale with the default logarithm the chain rule gives
-\eqn{\partial^2\ell/\partial\eta^2 = -\mu}, which carries \strong{no data at
-all}. That is the defining property of a canonical link, and it makes the
-observed and the expected information the same matrix there; see
-\code{\link[=distrib_expected_hessian.PoissonDistrib]{distrib_expected_hessian.PoissonDistrib()}}.
+\eqn{\partial^2\ell/\partial\eta^2 = -\mu}, which carries no data; this
+is the defining property of a canonical link, and in exact arithmetic it
+makes the observed and the expected information the same matrix there (see
+\code{\link[=distrib_expected_hessian.PoissonDistrib]{distrib_expected_hessian.PoissonDistrib()}}). The generic forms the
+link-scale value as \eqn{-y + (y - \mu)} from the derivatives on the
+parameter scale, and for a count much larger than the mean the two terms
+cancel to a value much smaller than either. The relative error of the
+observed value is then of the order of machine epsilon times
+\eqn{y/\mu} (about \eqn{4 \times 10^{-3}} at \eqn{y = 1000},
+\eqn{\mu = 10^{-10}}), while the expected value is computed directly and
+stays exact.
 }
 \examples{
 d <- poisson_distrib()

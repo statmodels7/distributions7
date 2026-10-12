@@ -28,9 +28,10 @@ values are logarithms and are non-positive.
 }
 \description{
 Computes the negative binomial distribution function, the partial sum of the
-mass, by calling \code{\link[stats:NegBinomial]{stats::pnbinom()}} at size \eqn{r = \mu/\theta} and success
-probability \eqn{1/(1+\theta)}. That function evaluates it through the
-incomplete beta function, so nothing is summed. The result is a step
+mass, by calling \code{\link[stats:NegBinomial]{stats::pnbinom()}} at size \eqn{r = \mu/\theta} and mean
+\eqn{\mu}, so that the success probability \eqn{1/(1+\theta)} is never
+formed. That function evaluates it through the incomplete beta function,
+so nothing is summed. The result is a step
 function, constant between consecutive integers. Both tails are available
 exactly, and \code{log.p = TRUE} returns a logarithm that stays finite where the
 probability itself underflows.
@@ -55,7 +56,6 @@ distrib_cdf(d, 2000, th, lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
 \code{\link[=distrib_quantile.NegBin1Distrib]{distrib_quantile.NegBin1Distrib()}} for the generalized inverse,
-\code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf.NegBin1Distrib()}} for the mass, \code{\link[=nb1_size]{nb1_size()}} and
-\code{\link[=nb1_prob]{nb1_prob()}} for the pairing this uses, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the
-generic.
+\code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf.NegBin1Distrib()}} for the mass, \code{\link[=nb1_size]{nb1_size()}} for the size,
+and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

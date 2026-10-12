@@ -18,8 +18,9 @@ A numeric vector of excess kurtoses, the length of \code{theta$mu}, above
 \description{
 Closed form: \eqn{\gamma_2 = 6 + 1/\{\mu(1+\mu)\}}, the excess over the
 Gaussian. It stays above 6 at every mean and tends to 6 as the counts grow,
-the exponential's value; the family is heavy-tailed at every parameter
-setting and does not become Gaussian as a Poisson does.
+the exponential's value. The tails are geometric at every parameter setting,
+so the family has a positive excess kurtosis everywhere and does not approach
+the Gaussian as a Poisson does.
 }
 \examples{
 d <- geometric_distrib()

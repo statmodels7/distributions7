@@ -22,20 +22,32 @@ use. Defaults to \code{1L}.}
 }
 \value{
 A named list of one numeric vector, \code{mu_mu}, of length
-\code{max(length(y), length(mu), length(distrib@size))}.
+\code{max(length(y), length(mu), length(distrib@size))}. Each of \code{y}, \code{mu} and
+\code{size} must have length 1 or that length; any other length signals an
+error.
 }
 \description{
 Computes the second derivative of the binomial log-mass with respect to the
 probability, one value per observation, in closed form:
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}.}
 It is negative for every admissible \eqn{\mu} and depends on the data
-through \eqn{y} alone.
+through \eqn{y} alone. Each term is formed by dividing its coefficient by
+the base once per power, and a term with a zero coefficient contributes
+zero, so at \eqn{y = 0} the value is \eqn{-n/(1-\mu)^2} however small
+\eqn{\mu} is.
 
 On the \strong{link} scale with the default logit the chain rule gives
-\eqn{\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)}, which carries \strong{no data
-at all}: the defining property of a canonical link, and what makes the
-observed and the expected information the same matrix there. See
-\code{\link[=distrib_expected_hessian.BinomialDistrib]{distrib_expected_hessian.BinomialDistrib()}}.
+\eqn{\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)}, which carries no
+data; this is the defining property of a canonical link, and in exact
+arithmetic it makes the observed and the expected information the same
+matrix there (see \code{\link[=distrib_expected_hessian.BinomialDistrib]{distrib_expected_hessian.BinomialDistrib()}}). The
+generic forms the link-scale value from the derivatives on the parameter
+scale, and for an observation on the far side of the probability
+(\eqn{y = 0} with \eqn{\mu} near 1, or \eqn{y = n} with \eqn{\mu} near 0)
+its two terms cancel to a value much smaller than either. The relative
+error of the observed value then grows with \eqn{|\eta|} (about
+\eqn{10^{-3}} at \eqn{\eta = 27.6}), while the expected value is computed
+directly and stays exact.
 }
 \examples{
 d <- binomial_distrib(size = 10)

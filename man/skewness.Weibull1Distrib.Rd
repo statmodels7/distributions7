@@ -8,7 +8,7 @@
 
 \item{theta}{A named list with components \code{mu} (the scale, positive) and
 \code{sigma} (the shape, positive), each a numeric vector of length 1 or \code{n}.
-The third moment requires a shape above \eqn{1/3}.}
+The third moment exists for every positive shape.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -21,10 +21,13 @@ value, so a setting that varies the scale alone repeats one number.
 Closed form:
 \deqn{\gamma_1 = \frac{g_3 - 3 g_1 g_2 + 2 g_1^3}{(g_2 - g_1^2)^{3/2}},
       \qquad g_k = \Gamma(1 + k/\sigma).}
-The scale cancels, so the value is a function of the shape alone. It falls
-through zero at a shape near 3.60235, so a Weibull is right-skewed below
-that and left-skewed above it, which is one of the reasons the family covers
-more shapes than a gamma.
+The scale cancels, so the value is a function of the shape alone. It is
+zero at a shape near 3.60235, so a Weibull is right-skewed below that value
+and left-skewed above it, whereas the skewness of a gamma is always
+positive. The method evaluates it through \code{\link[=weibull_moment_terms]{weibull_moment_terms()}}, from
+the logarithms of the gamma factors and, for a shape of 5 or more, from
+their series in \eqn{1/\sigma}, so that the cancellation among the
+\eqn{g_k} is never formed.
 }
 \section{Notation}{
 

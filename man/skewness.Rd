@@ -15,8 +15,9 @@ single logical, \code{FALSE} by default.}
 }
 \value{
 A numeric vector for a \code{distrib}, one value per parameter setting; a
-single number for a numeric vector. \code{NaN} for a family with no moments,
-\code{Inf} where the third moment diverges.
+single number for a numeric vector. \code{NaN} where the third moment does not
+exist, as for the Cauchy and for the Student t at three degrees of freedom
+or fewer.
 }
 \description{
 Computes the skewness, the third standardized central moment
@@ -25,23 +26,23 @@ Computes the skewness, the third standardized central moment
 
 for a distribution object, or the sample skewness for a numeric vector. It
 is zero for a symmetric law, positive for a right tail and negative for a
-left one. 43 of the 45 shipped families register a closed form; the two von
-Mises reach a quadrature through \code{\link[=moment]{moment()}}.
+left one. Every univariate family except the two von Mises registers a
+closed form; these two reach a quadrature through \code{\link[=moment]{moment()}}.
 }
 \section{What the sign and the size mean}{
 \eqn{\gamma_1} is invariant to location and to positive scaling, so it is a
 property of the shape alone: every Gaussian has \eqn{\gamma_1 = 0} and every
-exponential has \eqn{\gamma_1 = 2}, whatever their parameters. A family with
-a shape parameter moves along the axis with it, and that is why the quantity
-is worth reporting: a Poisson at mean \eqn{\mu} has
-\eqn{\gamma_1 = \mu^{-1/2}}, so its asymmetry vanishes as the counts grow.
+exponential has \eqn{\gamma_1 = 2}, whatever their parameters. In a family
+with a shape parameter \eqn{\gamma_1} varies with that parameter: a Poisson
+at mean \eqn{\mu} has \eqn{\gamma_1 = \mu^{-1/2}}, so its asymmetry vanishes
+as the counts grow.
 }
 
 \section{When it fails to exist}{
 The third moment is needed, so a family with heavy tails may have no
 skewness even where it has a mean. A Student t has one only above three
-degrees of freedom and returns \code{Inf} at or below them; a Cauchy has none at
-any parameter value and returns \code{NaN}.
+degrees of freedom and returns \code{NaN} at or below them; a Cauchy has none at
+any parameter value and also returns \code{NaN}.
 }
 
 \section{What the sample method returns}{

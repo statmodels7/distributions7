@@ -8,14 +8,14 @@
 count in its \code{size} property.}
 
 \item{theta}{A named list with one component, \code{mu} (the success
-probability, strictly between 0 and 1), a numeric vector of length 1 or
-\code{n}.}
+probability, strictly between 0 and 1), a numeric vector of length 1 or of
+the number of parameter settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of means, the length of \code{theta$mu}, in
-\eqn{(0, n)}.
+A numeric vector of means, of length \code{max(length(theta$mu), length(x@size))}, each in \eqn{(0, n)} for the number of trials \eqn{n} of
+that observation.
 }
 \description{
 Closed form: \eqn{E[Y] = n\mu}, with \eqn{n} the number of trials and

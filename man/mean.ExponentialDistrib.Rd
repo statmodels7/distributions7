@@ -27,7 +27,7 @@ mean(d, list(mu = c(1, 2, 3)))
 }
 \seealso{
 \code{\link[=variance.ExponentialDistrib]{variance.ExponentialDistrib()}}, which is the square of this;
-\code{\link[=mean.Weibull1Distrib]{mean.Weibull1Distrib()}} and \code{\link[=mean.Gamma2Distrib]{mean.Gamma2Distrib()}}, the two families that
+\code{\link[=mean.Weibull1Distrib]{mean.Weibull1Distrib()}} and \code{\link[=mean.Gamma2Distrib]{mean.Gamma2Distrib()}}, two of the families that
 contain this one; \code{\link[=exponential_distrib]{exponential_distrib()}}.
 }
 \keyword{internal}

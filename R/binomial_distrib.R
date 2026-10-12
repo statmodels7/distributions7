@@ -22,8 +22,9 @@ NULL
 #' observed and the expected information coincide.
 #'
 #' Build one with [binomial_distrib()]. This page documents the raw S7
-#' constructor, which takes the parent's properties plus `size` and validates
-#' none of the relationships between them.
+#' constructor, which takes the parent's properties plus `size`; the
+#' validator of `distrib` checks the parent's properties, and `size` is
+#' checked by [binomial_distrib()], not by this constructor.
 #'
 #' @inheritParams distrib
 #' @param size A numeric vector, the number of trials. A single value applies
@@ -47,18 +48,30 @@ NULL
 #'   small probability.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.BinomialDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.BinomialDistrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.BinomialDistrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.BinomialDistrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.BinomialDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.BinomialDistrib] and
+#'   [`distrib_rng()`][distrib_rng.BinomialDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.BinomialDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.BinomialDistrib],
-#'   [`distrib_pdf()`][distrib_pdf.BinomialDistrib],
-#'   [`distrib_quantile()`][distrib_quantile.BinomialDistrib],
-#'   [`distrib_rng()`][distrib_rng.BinomialDistrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.BinomialDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.BinomialDistrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.BinomialDistrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.BinomialDistrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.BinomialDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.BinomialDistrib];
+#' - the moments: [`mean()`][mean.BinomialDistrib],
+#'   [`variance()`][variance.BinomialDistrib],
+#'   [`skewness()`][skewness.BinomialDistrib] and
+#'   [`kurtosis()`][kurtosis.BinomialDistrib];
+#' - the fitting helpers: [distrib_scalar_route()].
 #'
-#' Everything else is inherited from [discrete_distrib()].
+#' Every other generic is inherited from [discrete_distrib()].
 #'
 #' @examples
 #' d <- binomial_distrib(size = 10)
@@ -97,7 +110,8 @@ BinomialDistrib <- S7::new_class("BinomialDistrib",
 #' @param distrib A `BinomialDistrib` object, from [binomial_distrib()]. Its
 #'   `size` property supplies the number of trials.
 #' @param y A numeric vector of counts of successes, integers between 0 and
-#'   `size`. Any other value gives 0 with a warning from [stats::dbinom()].
+#'   `size`. Any other value gives 0, and a non-integer value also gives a
+#'   warning from [stats::dbinom()]. A missing value gives `NA`.
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. A value of length 1 is recycled.
 #'   `mu` must lie in \eqn{(0, 1)}.
@@ -311,7 +325,9 @@ S7::method(distrib_rng, BinomialDistrib) <- function(distrib, n, theta, ...) {
 #'   use. Defaults to `1L`.
 #'
 #' @return A named list of one numeric vector, `mu`, of length
-#'   `max(length(y), length(mu), length(distrib@size))`.
+#'   `max(length(y), length(mu), length(distrib@size))`. Each of `y`, `mu` and
+#'   `size` must have length 1 or that length; any other length signals an
+#'   error.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-mass of one observation, \eqn{n} the number of trials
@@ -350,13 +366,23 @@ S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta, sca
 #' probability, one value per observation, in closed form:
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}.}
 #' It is negative for every admissible \eqn{\mu} and depends on the data
-#' through \eqn{y} alone.
+#' through \eqn{y} alone. Each term is formed by dividing its coefficient by
+#' the base once per power, and a term with a zero coefficient contributes
+#' zero, so at \eqn{y = 0} the value is \eqn{-n/(1-\mu)^2} however small
+#' \eqn{\mu} is.
 #'
 #' On the **link** scale with the default logit the chain rule gives
-#' \eqn{\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)}, which carries **no data
-#' at all**: the defining property of a canonical link, and what makes the
-#' observed and the expected information the same matrix there. See
-#' [distrib_expected_hessian.BinomialDistrib()].
+#' \eqn{\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)}, which carries no
+#' data; this is the defining property of a canonical link, and in exact
+#' arithmetic it makes the observed and the expected information the same
+#' matrix there (see [distrib_expected_hessian.BinomialDistrib()]). The
+#' generic forms the link-scale value from the derivatives on the parameter
+#' scale, and for an observation on the far side of the probability
+#' (\eqn{y = 0} with \eqn{\mu} near 1, or \eqn{y = n} with \eqn{\mu} near 0)
+#' its two terms cancel to a value much smaller than either. The relative
+#' error of the observed value then grows with \eqn{|\eta|} (about
+#' \eqn{10^{-3}} at \eqn{\eta = 27.6}), while the expected value is computed
+#' directly and stays exact.
 #'
 #' @param distrib A `BinomialDistrib` object, from [binomial_distrib()]. Its
 #'   `size` property supplies the number of trials.
@@ -370,7 +396,9 @@ S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta, sca
 #'   use. Defaults to `1L`.
 #'
 #' @return A named list of one numeric vector, `mu_mu`, of length
-#'   `max(length(y), length(mu), length(distrib@size))`.
+#'   `max(length(y), length(mu), length(distrib@size))`. Each of `y`, `mu` and
+#'   `size` must have length 1 or that length; any other length signals an
+#'   error.
 #'
 #' @seealso [distrib_gradient.BinomialDistrib()] for the score,
 #'   [distrib_expected_hessian.BinomialDistrib()] for the expectation of this
@@ -413,9 +441,11 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #' is smallest at \eqn{\mu = 1/2}.
 #'
 #' On the **link** scale with the default logit the value is
-#' \eqn{-n\mu(1-\mu)}, and so is the observed Hessian: the logit is the
-#' canonical link and the two coincide exactly, so iteratively reweighted
-#' least squares is Fisher scoring and Newton's method at once.
+#' \eqn{-n\mu(1-\mu)}, and so is the observed Hessian in exact arithmetic: the
+#' logit is the canonical link, so iteratively reweighted least squares is
+#' Fisher scoring and Newton's method at once. The observed value is composed
+#' by the generic and loses relative accuracy where \eqn{|\eta|} is large
+#' (see [distrib_hessian.BinomialDistrib()]); this value does not.
 #'
 #' Because the value does not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -435,8 +465,10 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #'   use. Defaults to `1L`.
 #'
 #' @return A named list of one numeric vector, `mu_mu`, of length
-#'   `max(length(y), length(mu), length(distrib@size))`, constant at
-#'   \eqn{-n/(\mu(1-\mu))} where `size` is.
+#'   `max(length(y), length(mu), length(distrib@size))`, equal to
+#'   \eqn{-n/(\mu(1-\mu))} with the `size` of each observation. Each of `y`,
+#'   `mu` and `size` must have length 1 or that length; any other length
+#'   signals an error.
 #'
 #' @section Notation:
 #' The **expected information** is
@@ -500,7 +532,9 @@ S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, th
 #'   use. Defaults to `1L`.
 #'
 #' @return A named list of one numeric vector, `mu_mu_mu`, of length
-#'   `max(length(y), length(mu), length(distrib@size))`.
+#'   `max(length(y), length(mu), length(distrib@size))`. Each of `y`, `mu` and
+#'   `size` must have length 1 or that length; any other length signals an
+#'   error.
 #'
 #' @section Notation:
 #' \eqn{\ell^{(\mu\mu\mu)}} is the third derivative of the log-mass with
@@ -563,7 +597,9 @@ S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expec
 #'   use. Defaults to `1L`.
 #'
 #' @return A named list of one numeric vector, `mu_mu_mu_mu`, of length
-#'   `max(length(y), length(mu), length(distrib@size))`.
+#'   `max(length(y), length(mu), length(distrib@size))`. Each of `y`, `mu` and
+#'   `size` must have length 1 or that length; any other length signals an
+#'   error.
 #'
 #' @section Notation:
 #' \eqn{\ell^{(\mu\mu\mu\mu)}} is the fourth derivative of the log-mass with
@@ -652,7 +688,12 @@ binomial_recycle <- function(y, mu, size) {
 #'   value applies to every observation; a vector of the length of the response
 #'   gives one count per observation. Defaults to `1`, which makes the object a
 #'   Bernoulli; pass the group sizes for grouped data. The value is stored in
-#'   the `size` property and sets `bounds` to `c(0, max(size))`.
+#'   the `size` property and sets `bounds` to `c(0, max(size))`. A value that
+#'   is missing, infinite, not an integer or below 1 signals an error. The
+#'   derivative methods signal an error when the length of `size` is neither
+#'   1 nor the common length of the response and `mu`; the mass, the
+#'   distribution function, the quantile and the draws recycle it as
+#'   [stats::dbinom()] and its companions do.
 #'
 #' @details
 #' # The parametrization
@@ -662,8 +703,9 @@ binomial_recycle <- function(y, mu, size) {
 #' with \eqn{n} the number of trials and \eqn{\mu \in (0, 1)}. The mean is
 #' \eqn{n\mu}, the variance \eqn{n\mu(1-\mu)}, the skewness
 #' \eqn{(1-2\mu)/\sqrt{n\mu(1-\mu)}} and the excess kurtosis
-#' \eqn{(1-6\mu(1-\mu))/(n\mu(1-\mu))}. Both shape measures shrink like
-#' \eqn{1/n}, which is the central limit theorem visible in the moments.
+#' \eqn{(1-6\mu(1-\mu))/(n\mu(1-\mu))}. The skewness shrinks like
+#' \eqn{1/\sqrt{n}} and the excess kurtosis like \eqn{1/n}, as the central
+#' limit theorem requires.
 #'
 #' As \eqn{n \to \infty} with \eqn{n\mu} held, the family tends to a Poisson of
 #' that mean; [poisson_distrib()] is the limit and is the family to use when
@@ -671,12 +713,11 @@ binomial_recycle <- function(y, mu, size) {
 #'
 #' # size is data
 #'
-#' The number of trials sits on the object rather than in `theta`, so it takes
-#' no link, is not counted in `n_params`, and cannot be estimated. Two
-#' consequences worth knowing: the same object cannot be reused across data
-#' sets with different group sizes, and `bounds` records `c(0, max(size))`, so
-#' a vector `size` gives a bound that is correct for the largest group and
-#' loose for the rest.
+#' The number of trials sits on the object and not in `theta`, so it takes no
+#' link, is not counted in `n_params`, and cannot be estimated. The same
+#' object therefore cannot be reused across data sets with different group
+#' sizes. The property `bounds` records `c(0, max(size))`, which for a vector
+#' `size` is the bound of the largest group and is loose for the others.
 #'
 #' # The canonical link
 #'

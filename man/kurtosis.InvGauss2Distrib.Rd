@@ -2,7 +2,7 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.InvGauss2Distrib}
 \alias{kurtosis.InvGauss2Distrib}
-\title{Excess Kurtosis of the Inverse Gaussian Distribution in Mean and Rate}
+\title{Excess Kurtosis of the Inverse Gaussian Distribution in Mean and Shape}
 \arguments{
 \item{x}{An \code{InvGauss2Distrib}, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
@@ -24,7 +24,7 @@ parametrization.
 }
 \section{Notation}{
 
-\eqn{\mu > 0} is the mean and \eqn{\lambda > 0} the rate.
+\eqn{\mu > 0} is the mean and \eqn{\lambda > 0} the shape.
 }
 
 \examples{

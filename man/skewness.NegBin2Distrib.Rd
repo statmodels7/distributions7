@@ -19,8 +19,7 @@ A numeric vector, of length
 \description{
 Closed form, replacing the numerical default:
 \eqn{(\theta + 2\mu)/\sqrt{\mu\theta(\theta+\mu)}}. It is positive at every
-parameter value, a count distribution having a right tail and a floor at
-zero, and it decreases towards the Poisson value \eqn{\mu^{-1/2}} as
+parameter value and decreases towards the Poisson value \eqn{\mu^{-1/2}} as
 \eqn{\theta} grows.
 }
 \examples{

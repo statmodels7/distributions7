@@ -19,8 +19,10 @@ A numeric vector, of length
 Closed form:
 \deqn{\gamma_1 = \frac{2(\beta - \alpha)\sqrt{\alpha + \beta + 1}}
                       {(\alpha + \beta + 2)\sqrt{\alpha\beta}}.}
-It takes the sign of \eqn{\beta - \alpha}, so a beta is right-skewed when
-the first shape is the smaller and exactly symmetric when the two are equal.
+It takes the sign of \eqn{\beta - \alpha}, so a beta is right-skewed when the
+first shape is the smaller and exactly symmetric when the two are equal. The
+method evaluates the form in the mean and the precision of
+\code{\link[=beta_shape_moments]{beta_shape_moments()}}, in which \eqn{\alpha\beta} is not formed.
 }
 \section{Notation}{
 

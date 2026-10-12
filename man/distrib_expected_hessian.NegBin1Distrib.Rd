@@ -23,8 +23,8 @@ Accepted so that the signature matches the generic's.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
-use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+use. For fewer observations than an internal threshold the kernel runs
+sequentially whatever the count. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{mu_theta} and
@@ -47,21 +47,29 @@ quadrature or a simulation. \code{approx} and \code{nsim} are ignored, and \code
 read only for its length.
 
 \strong{The mixed entry does not vanish}, so the mean and the dispersion are not
-orthogonal in this family. Measured at four settings it is 0.0172, 0.0364,
-0.0108 and 0.0157; in \code{\link[=negbin2_distrib]{negbin2_distrib()}} the same entry is exactly zero.
-That is a difference between the two negative binomials rather than a
-difference of parametrization.
+orthogonal in this family; in \code{\link[=negbin2_distrib]{negbin2_distrib()}} the same entry is exactly
+zero. This is a difference between the two families, not between two
+parametrizations of one.
 }
 \section{Accuracy at small theta}{
 The summand of \eqn{W} is a rational function of \eqn{(\mu, \theta)},
 \eqn{\theta(2\mu j + \theta j^2 - \mu^2)/((1+\theta) u_j^2)}, so the terms
 of order \eqn{\mu/\theta^2} that a composition through the size
-\eqn{r = \mu/\theta} forms are never formed. The dispersion entry still
-loses digits as \eqn{\theta \to 0}, where the summands change sign and
-their sum tends to a finite limit. Measured at \eqn{\mu = 4}, it reads
-\eqn{-0.49999887} at \eqn{\theta = 10^{-6}}, \eqn{-0.49999994} at
-\eqn{10^{-8}} and \eqn{-0.5000013} at \eqn{10^{-10}}, against the limit
-\eqn{-1/2}, and the matrix stays negative definite.
+\eqn{r = \mu/\theta} forms are never formed. The summands still change sign
+as \eqn{\theta \to 0}, and \eqn{W/\theta^2} loses relative accuracy in
+proportion to \eqn{1/\theta}, so \eqn{W} is used only for
+\eqn{\theta \ge 0.02}. For \eqn{\theta < 0.02} the dispersion entry is computed
+as the expectation of the observed one in the form without the size
+(\code{\link[=distrib_hessian.NegBin1Distrib]{distrib_hessian.NegBin1Distrib()}}),
+\deqn{\mathbb{E}[\ell^{(\theta\theta)}] = -\mathbb{E}\Big[\sum_{j<Y}
+  \frac{j^2}{u_j^2}\Big] - \mu q'(\theta), \qquad
+  q(\theta) = \frac{\theta - \log(1+\theta)}{\theta^2},}
+whose summands are all positive, and the mixed entry is \eqn{-\theta/\mu}
+times it. Both keep their accuracy down to the Poisson limit, where the
+dispersion entry tends to \eqn{-1/2}. The derivatives of the expected
+information (\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} and
+\code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}}) are sums over the same mass and take the
+same two routes.
 }
 
 \section{Notation}{
@@ -87,8 +95,7 @@ eigen(M, only.values = TRUE)$values
 c(nb1 = e$mu_theta[1],
   nb2 = distrib_expected_hessian(negbin2_distrib(), 0, th)$mu_theta)
 
-# The dispersion entry loses its digits as theta goes to zero, and turns
-# positive, which an expected second derivative cannot be.
+# As theta goes to zero the dispersion entry tends to its limit, -1/2.
 vapply(c(1e-2, 1e-4, 1e-6, 1e-8),
        function(t) distrib_expected_hessian(d, 0,
                      list(mu = 4, theta = t))$theta_theta,

@@ -18,7 +18,12 @@ differ.}
 value applies to every observation; a vector of the length of the response
 gives one count per observation. Defaults to \code{1}, which makes the object a
 Bernoulli; pass the group sizes for grouped data. The value is stored in
-the \code{size} property and sets \code{bounds} to \code{c(0, max(size))}.}
+the \code{size} property and sets \code{bounds} to \code{c(0, max(size))}. A value that
+is missing, infinite, not an integer or below 1 signals an error. The
+derivative methods signal an error when the length of \code{size} is neither
+1 nor the common length of the response and \code{mu}; the mass, the
+distribution function, the quantile and the draws recycle it as
+\code{\link[stats:Binomial]{stats::dbinom()}} and its companions do.}
 }
 \value{
 An S7 object of class \code{BinomialDistrib}, inheriting from
@@ -47,8 +52,9 @@ The mass on \eqn{y \in \{0, 1, \dots, n\}} is
 with \eqn{n} the number of trials and \eqn{\mu \in (0, 1)}. The mean is
 \eqn{n\mu}, the variance \eqn{n\mu(1-\mu)}, the skewness
 \eqn{(1-2\mu)/\sqrt{n\mu(1-\mu)}} and the excess kurtosis
-\eqn{(1-6\mu(1-\mu))/(n\mu(1-\mu))}. Both shape measures shrink like
-\eqn{1/n}, which is the central limit theorem visible in the moments.
+\eqn{(1-6\mu(1-\mu))/(n\mu(1-\mu))}. The skewness shrinks like
+\eqn{1/\sqrt{n}} and the excess kurtosis like \eqn{1/n}, as the central
+limit theorem requires.
 
 As \eqn{n \to \infty} with \eqn{n\mu} held, the family tends to a Poisson of
 that mean; \code{\link[=poisson_distrib]{poisson_distrib()}} is the limit and is the family to use when
@@ -56,12 +62,11 @@ the number of trials is large and unrecorded.
 }
 
 \section{size is data}{
-The number of trials sits on the object rather than in \code{theta}, so it takes
-no link, is not counted in \code{n_params}, and cannot be estimated. Two
-consequences worth knowing: the same object cannot be reused across data
-sets with different group sizes, and \code{bounds} records \code{c(0, max(size))}, so
-a vector \code{size} gives a bound that is correct for the largest group and
-loose for the rest.
+The number of trials sits on the object and not in \code{theta}, so it takes no
+link, is not counted in \code{n_params}, and cannot be estimated. The same
+object therefore cannot be reused across data sets with different group
+sizes. The property \code{bounds} records \code{c(0, max(size))}, which for a vector
+\code{size} is the bound of the largest group and is loose for the others.
 }
 
 \section{The canonical link}{

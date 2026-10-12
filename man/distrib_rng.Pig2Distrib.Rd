@@ -22,8 +22,9 @@ An integer-valued numeric vector of \code{n} draws.
 Draws from the mixture representation of \code{\link[=distrib_rng.Pig1Distrib]{distrib_rng.Pig1Distrib()}}, at the
 dispersion \code{\link[=pig2_sigma]{pig2_sigma()}} implies: \eqn{\lambda} from the inverse Gaussian
 with mean \eqn{\mu} and shape \eqn{\mu/\sigma}, then \eqn{Y \mid \lambda}
-from the Poisson. This is the one method of the family that composes the
-map; the derivative methods take \eqn{\alpha} directly.
+from the Poisson. This method and the variance, skewness and kurtosis
+methods compose the map; the mass and the derivative methods take
+\eqn{\alpha} directly.
 }
 \examples{
 d <- pig2_distrib()

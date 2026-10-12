@@ -51,28 +51,40 @@ two parameters are orthogonal, gamlss's \code{PIG2}. It is the same law as
 \eqn{\alpha}, the argument the mass function's Bessel function is evaluated
 at.
 
-Orthogonal means the expected information is diagonal. Measured at
-\eqn{\mu = 3}, its mixed entry summed over the support is
-\eqn{-8.8\times10^{-15}} here against 7.39 in the mean-dispersion
-parametrization.
+Orthogonal means the expected information is diagonal: at \eqn{\mu = 3} and
+\eqn{\sigma = 0.8} its mixed entry is zero to rounding error here, against
+0.0368 in the mean-dispersion parametrization.
 
 Build one with \code{\link[=pig2_distrib]{pig2_distrib()}}, which supplies the two link functions. This
-page documents the raw S7 constructor, which validates none of the
-relationships between its properties.
+page documents the raw S7 constructor, which takes the parent's
+properties; the validator of \code{distrib} checks them, and the constructor
+adds no check of its own.
 }
 \section{Methods}{
 
-Registered in this file, the middle five reading one compiled kernel:
-\code{\link[=distrib_pdf.Pig2Distrib]{distrib_pdf()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.Pig2Distrib]{distrib_pdf()}} and
+\code{\link[=distrib_rng.Pig2Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.Pig2Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.Pig2Distrib]{distrib_hessian()}},
-\code{\link[=distrib_deriv3.Pig2Distrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.Pig2Distrib]{distrib_deriv4()}},
-\code{\link[=distrib_rng.Pig2Distrib]{distrib_rng()}}.
+\code{\link[=distrib_expected_hessian.Pig2Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.Pig2Distrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.Pig2Distrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.Pig2Distrib]{distrib_dexpected_hessian()}} and
+\code{\link[=distrib_d2expected_hessian.Pig2Distrib]{distrib_d2expected_hessian()}};
+\item the moments: \code{\link[=mean.Pig2Distrib]{mean()}},
+\code{\link[=variance.Pig2Distrib]{variance()}}, \code{\link[=skewness.Pig2Distrib]{skewness()}}
+and \code{\link[=kurtosis.Pig2Distrib]{kurtosis()}};
+\item the fitting helpers: \code{\link[=distrib_start.Pig2Distrib]{distrib_start()}} and
+\code{\link[=expected_hessian_costly]{expected_hessian_costly()}}.
+}
 
-Registered elsewhere: the four moments in \code{moments.R} and the data-based
-starting value in \code{starting_values.R}. The distribution function and the
-quantile come from \code{\link[=discrete_distrib]{discrete_distrib()}}, both exact sums over the support.
+Every other generic is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}. The distribution
+function and the quantile are the inherited ones, documented at
+\code{\link[=distrib_cdf.discrete_distrib]{distrib_cdf.discrete_distrib()}} and \code{\link[=distrib_quantile.discrete_distrib]{distrib_quantile.discrete_distrib()}}.
 }
 
 \examples{
@@ -93,6 +105,5 @@ rbind(pig2 = distrib_pdf(d, 0:5, list(mu = 3, alpha = al)),
 \seealso{
 \code{\link[=pig2_distrib]{pig2_distrib()}} to build one;
 \code{\link[=pig1_distrib]{pig1_distrib()}} for the mean-dispersion parametrization;
-\code{\link[=pig2_sigma]{pig2_sigma()}} for the map between them;
-the compiled kernels for the kernel all five derivative methods read.
+\code{\link[=pig2_sigma]{pig2_sigma()}} for the map between them.
 }

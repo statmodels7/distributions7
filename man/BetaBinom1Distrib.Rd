@@ -54,39 +54,42 @@ the parent's: \code{distrib_name}, \code{dimension}, \code{bounds}, \code{params
 \description{
 The S7 class of the beta-binomial family parametrized by a mean proportion
 \eqn{\mu \in (0, 1)} and a dispersion \eqn{\sigma > 0}, on the finite support
-\eqn{\{0, 1, \dots, n\}}. It inherits from \code{discrete_distrib}, so every
-generic of the \code{distrib} class applies to it; the methods listed below are
-registered on it in this file, two more in \code{betabinom1_higher.R}, and
-everything else comes from the parent.
+\eqn{\{0, 1, \dots, n\}}. It inherits from \code{discrete_distrib}.
 
 The class carries an extra property beyond the parent's, \code{size}: the number
 of trials \eqn{n}, fixed at construction as it is for
 \code{\link[=BinomialDistrib]{BinomialDistrib()}}. Build one with \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, which
 validates \code{size}, supplies the two link functions and fills the properties
-in. This page documents the raw S7 constructor, which validates none of the
-relationships between them.
+in. This page documents the raw S7 constructor, which takes the parent's
+properties plus \code{size}; the validator of \code{distrib} checks the parent's
+properties, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class in this file:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.BetaBinom1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.BetaBinom1Distrib]{distrib_cdf()}},
-\code{\link[=distrib_expected_hessian.BetaBinom1Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_quantile.BetaBinom1Distrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.BetaBinom1Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.BetaBinom1Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.BetaBinom1Distrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.BetaBinom1Distrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.BetaBinom1Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.BetaBinom1Distrib]{distrib_rng()}}.
-
-Six more are registered on the class from other files: the closed-form
+\code{\link[=distrib_expected_hessian.BetaBinom1Distrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_deriv3.BetaBinom1Distrib]{distrib_deriv3()}} and
-\code{\link[=distrib_deriv4.BetaBinom1Distrib]{distrib_deriv4()}} in
-\code{betabinom1_higher.R}, and the four moments
-\code{\link[=mean.BetaBinom1Distrib]{mean()}}, \code{\link[=variance.BetaBinom1Distrib]{variance()}},
+\code{\link[=distrib_deriv4.BetaBinom1Distrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.BetaBinom1Distrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.BetaBinom1Distrib]{distrib_d2expected_hessian()}};
+\item the moments: \code{\link[=mean.BetaBinom1Distrib]{mean()}},
+\code{\link[=variance.BetaBinom1Distrib]{variance()}},
 \code{\link[=skewness.BetaBinom1Distrib]{skewness()}} and
-\code{\link[=kurtosis.BetaBinom1Distrib]{kurtosis()}} in \code{moments.R}.
+\code{\link[=kurtosis.BetaBinom1Distrib]{kurtosis()}};
+\item the fitting helpers: \code{\link[=distrib_scalar_route]{distrib_scalar_route()}}.
+}
 
-The response derivatives are refused, as for every discrete family: a mass
-function has no derivative in its argument.
+Every other generic is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
 \examples{

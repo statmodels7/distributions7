@@ -38,11 +38,14 @@ error of \eqn{\hat\mu} is \eqn{\sqrt{\mu/n}}, the standard error of a
 sample mean whose variance is \eqn{\mu}.
 
 On the \strong{link} scale with the default logarithm the value is \eqn{-\mu},
-and so is the observed Hessian: the log is the canonical link, the observed
-curvature there carries no data, and the two coincide exactly. Fisher
-scoring and Newton's method therefore take the same step on a Poisson model
-with a log link, which is why the two are not distinguished in the classical
-generalized-linear-model literature for this case.
+and so is the observed Hessian in exact arithmetic: the log is the canonical
+link and the observed curvature there carries no data. Fisher scoring and
+Newton's method therefore take the same step on a Poisson model with a log
+link, which is why the two are not distinguished in the classical
+generalized-linear-model literature for this case. The observed value is
+composed by the generic and loses relative accuracy for a count much larger
+than the mean (see \code{\link[=distrib_hessian.PoissonDistrib]{distrib_hessian.PoissonDistrib()}}); this value does
+not.
 
 Because the value does not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.
@@ -65,7 +68,7 @@ unique(distrib_expected_hessian(d, c(0, 2, 7), th)$mu_mu)
 -1 / 3
 
 # On the canonical log link the observed and the expected values agree
-# exactly, at every observation.
+# at every observation.
 rbind(observed = distrib_hessian(d, c(0, 2, 7), th, scale = "link")$mu_mu,
       expected = distrib_expected_hessian(d, c(0, 2, 7), th,
                                           scale = "link")$mu_mu)

@@ -50,32 +50,38 @@ The S7 class of the negative binomial family on the non-negative integers
 whose variance is \strong{linear} in the mean: with a mean \eqn{\mu > 0} and a
 dispersion \eqn{\theta > 0}, \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}, so
 the variance-to-mean ratio is \eqn{1+\theta} at every mean. It inherits from
-\code{discrete_distrib}, so every generic of the \code{distrib} class applies to it;
-the methods listed below are registered on it in this file and everything
-else comes from the parent.
+\code{discrete_distrib}.
 
 Build one with \code{\link[=negbin1_distrib]{negbin1_distrib()}}, which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,
-which takes the parent's properties and validates none of the relationships
-between them.
+which takes the parent's properties; the validator of \code{distrib} checks
+them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class in this file:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.NegBin1Distrib]{distrib_cdf()}},
-\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_quantile.NegBin1Distrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.NegBin1Distrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.NegBin1Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.NegBin1Distrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.NegBin1Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.NegBin1Distrib]{distrib_rng()}}
-
-The third and fourth orders,
+\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3()}} and
-\code{\link[=distrib_deriv4.NegBin1Distrib]{distrib_deriv4()}}, are registered
-elsewhere in the package, on top of \code{\link[=negbin1_components]{negbin1_components()}}. A discrete
-family has no derivatives in the response. Everything else is inherited from
-\code{\link[=discrete_distrib]{discrete_distrib()}}.
+\code{\link[=distrib_deriv4.NegBin1Distrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.NegBin1Distrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.NegBin1Distrib]{distrib_d2expected_hessian()}};
+\item the moments: \code{\link[=mean.NegBin1Distrib]{mean()}},
+\code{\link[=variance.NegBin1Distrib]{variance()}},
+\code{\link[=skewness.NegBin1Distrib]{skewness()}} and
+\code{\link[=kurtosis.NegBin1Distrib]{kurtosis()}}.
+}
+
+Every other generic is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
 \examples{

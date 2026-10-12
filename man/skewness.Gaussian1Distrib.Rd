@@ -19,8 +19,7 @@ A numeric vector of zeros, of length
 \description{
 Exactly zero at every parameter value. The density is symmetric about
 \eqn{\mu}, so every odd central moment vanishes. The constant is recycled to
-the length the parameters imply, and no quadrature is run: the numerical
-default returns a small non-zero number here, and an exact zero is available.
+the length the parameters imply, and no quadrature is run.
 }
 \examples{
 d <- gaussian1_distrib()

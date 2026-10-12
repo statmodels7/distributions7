@@ -28,9 +28,9 @@ consulted. A numeric vector is passed to \code{\link[stats:sd]{stats::sd()}}.
 \deqn{\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}.}
 
 The square root is taken after the variance, so accuracy and cost are the
-variance's: a closed form for 43 of the 45 shipped families, a quadrature
-for the two von Mises. A family whose variance is \code{NaN} or \code{Inf} gives the
-same here, and a negative variance cannot arise, so the root is always real.
+variance's: a closed form for every univariate family except the two von
+Mises, which use a quadrature. A family whose variance is \code{NaN} or \code{Inf}
+gives the same here.
 
 On a numeric vector the value is \code{\link[stats:sd]{stats::sd()}}, the root of the \eqn{n - 1}
 variance.

@@ -35,11 +35,13 @@ A named list of one numeric vector, \code{mu_mu_mu_mu}, of length
 Computes the fourth derivative of the geometric log-mass with respect to the
 mean, in closed form. As at third order it is a combination of
 \eqn{\mu^{-k}} and \eqn{(1+\mu)^{-k}} with the data entering linearly
-through \eqn{y}.
+through \eqn{y}: the value is \eqn{-6(y/\mu^4 - (y+1)/(1+\mu)^4)}, and the
+bracket is computed as at third order
+(see \code{\link[=distrib_deriv3.GeometricDistrib]{distrib_deriv3.GeometricDistrib()}}).
 
 With \code{expected = TRUE} the expectation is returned, obtained by substituting
-\eqn{\mathbb{E}[Y] = \mu}. Both routes are closed form, so \code{approx} and
-\code{nsim} are ignored.
+\eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{-6(1 - q^3)/\mu^3}. Both routes
+are closed form, so \code{approx} and \code{nsim} are ignored.
 }
 \section{Notation}{
 

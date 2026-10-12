@@ -47,8 +47,8 @@ value.
 \section{Overdispersion and memorylessness}{
 The variance exceeds the mean by \eqn{\mu^2}, so this family sits above a
 Poisson of the same mean and is a one-parameter answer to overdispersion.
-The price is precision: the information is \eqn{1/(\mu(1+\mu))} against a
-Poisson's \eqn{1/\mu}. Where the amount of overdispersion should itself be
+The information about the mean is \eqn{1/(\mu(1+\mu))}, against a
+Poisson's \eqn{1/\mu}, so the mean is estimated less precisely. Where the amount of overdispersion should itself be
 estimated, \code{\link[=negbin2_distrib]{negbin2_distrib()}} adds the parameter and contains this family
 at \eqn{\theta = 1}.
 

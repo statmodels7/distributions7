@@ -6,9 +6,9 @@
 \arguments{
 \item{distrib}{A \code{Pig1Distrib} object, from \code{\link[=pig1_distrib]{pig1_distrib()}}.}
 
-\item{y}{A numeric vector of counts. A negative, non-integer or non-finite
+\item{y}{A numeric vector of counts. A negative, non-integer or infinite
 value is off the support and gives a probability of 0, or \code{-Inf} with
-\code{log = TRUE}.}
+\code{log = TRUE}. A missing value gives \code{NA} (\code{NaN} for \code{NaN}).}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}. Both must be strictly
@@ -33,12 +33,13 @@ and \eqn{\alpha = \sqrt{c}/\sigma},
   \dfrac{\mu^y e^{1/\sigma}}{(\alpha\sigma)^y\, y!}\, K_{y-1/2}(\alpha).}
 
 The value is not computed that way. At half-integer order the Bessel
-function is a finite sum, the prefactors cancel, and what the compiled
-kernel evaluates is
+function is a finite sum and the prefactors cancel, which gives
 \eqn{\ell(y) = y\log\mu - (y/2)\log c + (1-\sqrt c)/\sigma
-  + \log S_y(\alpha) - \log y!} with \eqn{S_y} a sum of \eqn{y} positive
-terms taken on the log scale. Nothing cancels and no Bessel routine is
-called.
+  + \log S_y - \log y!} with \eqn{S_y} a sum of \eqn{y} positive terms
+taken on the log scale. The compiled kernel evaluates
+\eqn{(1-\sqrt c)/\sigma} as \eqn{-2\mu/(1+\sqrt c)} and \eqn{S_y} in
+\eqn{w = 1/(2\alpha)}, so nothing cancels as \eqn{\sigma \to 0}, and no
+Bessel routine is called.
 }
 \section{Notation}{
 

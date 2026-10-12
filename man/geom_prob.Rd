@@ -25,9 +25,11 @@ The mean number of failures before the first success is \eqn{(1-p)/p}, so
 apart if the parametrization ever changes.
 
 The map is decreasing and carries \eqn{(0, \infty)} onto \eqn{(0, 1)}: a
-large mean is a small success probability. No validation is performed, so a
-non-positive \code{mu} returns a value outside \eqn{(0, 1)} and the caller sees
-the failure at the base R function.
+large mean is a small success probability. No validation is performed. A
+negative \code{mu} other than \eqn{-1} gives a value outside \eqn{[0, 1]}, for
+which the base R functions return \code{NaN}, and \code{mu = 0} gives 1, which they
+accept as a point mass at zero. The methods are reached through the
+generics, which signal an error for a non-positive \code{mu} first.
 }
 \seealso{
 \code{\link[=geometric_distrib]{geometric_distrib()}} for the family, and

@@ -55,29 +55,40 @@ count model most often has to relax; \code{\link[=negbin2_distrib]{negbin2_distr
 \code{\link[=negbin1_distrib]{negbin1_distrib()}} do that, and both contain this family in the limit.
 
 The default link is the logarithm, which is the \strong{canonical} link here. On
-its scale the observed and the expected information coincide, so Fisher
-scoring and Newton's method take the same step.
+its scale the observed and the expected information coincide in exact
+arithmetic, so Fisher scoring and Newton's method take the same step.
 
 Build one with \code{\link[=poisson_distrib]{poisson_distrib()}}. This page documents the raw S7
-constructor, which takes the parent's properties and validates none of the
-relationships between them.
+constructor, which takes the parent's properties; the validator of
+\code{distrib} checks them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.PoissonDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.PoissonDistrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.PoissonDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.PoissonDistrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.PoissonDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_quantile.PoissonDistrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.PoissonDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.PoissonDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.PoissonDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.PoissonDistrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.PoissonDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.PoissonDistrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.PoissonDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.PoissonDistrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.PoissonDistrib]{distrib_deriv4()}};
+\item the derivatives of the expected information:
+\code{\link[=distrib_dexpected_hessian.PoissonDistrib]{distrib_dexpected_hessian()}}
+and
+\code{\link[=distrib_d2expected_hessian.PoissonDistrib]{distrib_d2expected_hessian()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.PoissonDistrib]{distrib_grad_cdf()}};
+\item the moments: \code{\link[=mean.PoissonDistrib]{mean()}},
+\code{\link[=variance.PoissonDistrib]{variance()}},
+\code{\link[=skewness.PoissonDistrib]{skewness()}} and
+\code{\link[=kurtosis.PoissonDistrib]{kurtosis()}}.
+}
 
-Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}. Derivatives with
-respect to the response signal an error on that parent: the support is
-discrete, so there is nothing to differentiate along.
+Every other generic is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
 \examples{

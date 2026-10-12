@@ -9,7 +9,8 @@ trial count in its \code{size} property.}
 
 \item{theta}{A named list with components \code{mu} (the success probability,
 strictly between 0 and 1) and \code{sigma} (the dispersion, positive), each a
-numeric vector of length 1 or \code{n}.}
+numeric vector of length 1 or of the common length of the parameter
+settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -18,9 +19,9 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{E[Y] = n\mu}, the same as a binomial's. Mixing the success
-probability over a beta leaves the mean where it was, the beta's own mean
-being \eqn{\mu}; the dispersion shows in the variance and above, not here.
+Closed form: \eqn{E[Y] = n\mu}, the same as a binomial's. The mixing beta has
+mean \eqn{\mu}, so mixing the success probability over it does not change the
+mean; the dispersion enters the variance and the higher moments.
 }
 \section{Notation}{
 

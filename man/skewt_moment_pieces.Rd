@@ -25,14 +25,17 @@ Returns the four pieces the family's four moment methods share:
 \eqn{\sigma_z^2 = \nu/(\nu-2) - \mu_z^2}.
 }
 \details{
-The gamma ratio in \eqn{b_\nu} is formed as
-\code{exp(lgamma((nu - 1) / 2) - lgamma(nu / 2))}, so it stays finite at degrees
-of freedom where the two gamma functions themselves would overflow.
+The gamma ratio in \eqn{b_\nu} is formed from the logarithm of the beta
+function, \eqn{\Gamma\{(\nu-1)/2\}/\Gamma(\nu/2) = B\{(\nu-1)/2, 1/2\}/\sqrt{\pi}},
+so that neither the gamma functions nor the difference of two large
+log-gamma values is formed, and \eqn{b_\nu} keeps its accuracy as \eqn{\nu}
+grows (to \eqn{\nu = 10^{16}} and beyond). \eqn{\delta} comes from
+\code{\link[=skewnormal_delta]{skewnormal_delta()}}.
 
-Existence is enforced here, once for all four callers: \eqn{b_\nu} is \code{NaN}
-at \eqn{\nu \le 1} and \eqn{\sigma_z^2} is \code{NaN} at \eqn{\nu \le 2}, so a
-moment built from either inherits the \code{NaN} and no method has to test the
-threshold twice.
+\eqn{b_\nu} is \code{NaN} at \eqn{\nu \le 1} and \eqn{\sigma_z^2} is \code{NaN} at
+\eqn{\nu \le 2}. The moment methods start from these pieces and mark the
+ranges where a moment diverges: the variance is \code{Inf} for
+\eqn{1 < \nu \le 2} and the excess kurtosis for \eqn{2 < \nu \le 4}.
 }
 \examples{
 # Below two degrees of freedom the variance piece is NaN.

@@ -32,10 +32,10 @@ A named list of one numeric vector, \code{mu_mu}, of length
 Returns the expectation of the observed second derivative under the model,
 in closed form and with no quadrature or simulation:
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu(1+\mu)},}
-which follows from \eqn{\mathbb{E}[Y] = \mu} killing the data term. The
-Fisher information is \eqn{1/(\mu(1+\mu))}, the reciprocal of the variance,
-so it is smaller than a Poisson's \eqn{1/\mu} at the same mean: the extra
-dispersion is paid for in precision.
+which follows because \eqn{\mathbb{E}[Y] = \mu} makes the term in
+\eqn{y - \mu} vanish in expectation. The Fisher information is
+\eqn{1/(\mu(1+\mu))}, the reciprocal of the variance, so it is smaller
+than a Poisson's \eqn{1/\mu} at the same mean.
 
 Because the value does not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.

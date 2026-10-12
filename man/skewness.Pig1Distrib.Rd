@@ -22,7 +22,8 @@ with
       \kappa_3 = \mu + 3\sigma\mu^2 + 3\sigma^2\mu^3.}
 This is where the family separates from a negative binomial: matched on
 mean and variance, the Poisson-inverse Gaussian is the more skewed of the
-two, its extra term in \eqn{\sigma^2\mu^3} having no counterpart there.
+two, the coefficient of \eqn{\sigma^2\mu^3} in \eqn{\kappa_3} being 3 here
+and 2 for a negative binomial with \eqn{\theta = 1/\sigma}.
 }
 \details{
 The cumulants of a mixed Poisson are the Poisson's plus what the mixing

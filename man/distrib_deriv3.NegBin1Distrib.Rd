@@ -58,11 +58,11 @@ size and \eqn{G(r) = \log\Gamma(y+r) - \log\Gamma(r)}.
 As \eqn{\theta \to 0} the family tends to the Poisson and the recursion's
 terms in the powers of \eqn{r} grow while their sum stays of order one. The
 polygamma differences go through \code{\link[=psi_shift_diff]{psi_shift_diff()}} and are exact, but the
-cancellation among those powers is not repaired: at
-\eqn{\theta = 5\times10^{-4}} the terms reach \eqn{8\times10^{6}}, and this
-order is not reliable below about \eqn{\theta = 0.05}. The score itself,
-which does not carry the recursion, reaches the Poisson limit to five
-figures.
+recursion loses its digits among those powers. For \eqn{\theta < 1} the
+method therefore evaluates the form in \eqn{\mu + i\theta}, which contains
+no size (\code{\link[=negbin1_components]{negbin1_components()}}), at a cost of \eqn{y} terms per
+observation, and this order keeps its accuracy as \eqn{\theta} goes to
+zero.
 }
 
 \examples{

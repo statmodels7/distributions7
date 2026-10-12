@@ -8,20 +8,23 @@
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} (positive), \code{alpha}
 (any sign) and \code{nu} (positive), each a numeric vector of length 1 or \code{n}.
-Settings with \eqn{\nu \le 2} give \code{NaN}.}
+Settings with \eqn{1 < \nu \le 2} give \code{Inf} and those with
+\eqn{\nu \le 1} give \code{NaN}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of variances, of the length the recycled
-parameters imply, \code{NaN} wherever \eqn{\nu \le 2}. The scale, \code{alpha} and
-\code{nu} enter the value; the location does not.
+parameters imply, \code{Inf} wherever \eqn{1 < \nu \le 2} and \code{NaN} wherever
+\eqn{\nu \le 1}. The scale, \code{alpha} and \code{nu} enter the value; the location
+does not.
 }
 \description{
 Closed form for \eqn{\nu > 2}:
 \eqn{\operatorname{Var}(Y) = \sigma^2\{\nu/(\nu-2) - \mu_z^2\}}, with
 \eqn{\mu_z = \delta b_\nu} the mean of the standardized variable. At
-\eqn{\nu \le 2} the value is \code{NaN}, the second moment not existing there.
+\eqn{1 < \nu \le 2} the second moment diverges and the value is \code{Inf}, as
+for the Student t; at \eqn{\nu \le 1} it is \code{NaN}.
 Two effects push in opposite directions: the \eqn{t} factor
 \eqn{\nu/(\nu-2)} inflates the variance above the scale, and the skewing
 term \eqn{\mu_z^2} pulls it back.
@@ -39,8 +42,8 @@ d <- skewt_distrib()
 # At shape zero this is the Student t's nu / (nu - 2).
 all.equal(variance(d, list(mu = 0, sigma = 1, alpha = 0, nu = 5)), 5 / 3)
 
-# It does not exist at or below two degrees of freedom.
-variance(d, list(mu = 0, sigma = 1, alpha = 2, nu = c(2, 5)))
+# It diverges for 1 < nu <= 2 and does not exist at or below 1.
+variance(d, list(mu = 0, sigma = 1, alpha = 2, nu = c(1, 2, 5)))
 
 }
 \references{

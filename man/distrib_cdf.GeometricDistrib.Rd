@@ -29,7 +29,7 @@ A numeric vector of probabilities in \eqn{[0, 1]}, of length
 Computes the geometric distribution function
 \deqn{F(q; \mu) = 1 - \left(\dfrac{\mu}{1+\mu}\right)^{\lfloor q \rfloor + 1}}
 by calling \code{\link[stats:Geometric]{stats::pgeom()}} at \code{prob = 1/(1+mu)}. The survival function is
-exactly \eqn{(\mu/(1+\mu))^{q+1}}, a geometric decay, and
+exactly \eqn{(\mu/(1+\mu))^{\lfloor q \rfloor + 1}}, a geometric decay, and
 \code{lower.tail = FALSE} returns it without forming the difference.
 }
 \examples{

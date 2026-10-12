@@ -6,7 +6,8 @@
 \arguments{
 \item{distrib}{A \code{NegBin1Distrib} object, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
-\item{y}{A numeric vector of counts. A negative value gives a mass of 0.}
+\item{y}{A numeric vector of counts. A negative value gives a mass of 0, a
+non-integer value gives 0 with a warning, and a missing value gives \code{NA}.}
 
 \item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is
@@ -28,9 +29,14 @@ probability \eqn{1/(1+\theta)},
       \left(\dfrac{1}{1+\theta}\right)^{r}
       \left(\dfrac{\theta}{1+\theta}\right)^{y}, \qquad
       y = 0, 1, 2, \ldots,}
-which is the pairing that makes the variance \eqn{\mu(1+\theta)}. The
-log-mass is formed in a compiled kernel and exponentiated when \code{log} is
-\code{FALSE}, so \code{log = TRUE} is the accurate route far into the tail.
+which is the pairing that makes the variance \eqn{\mu(1+\theta)}. A
+compiled kernel forms the log-mass by R's negative binomial in its mean
+parametrization (size \eqn{r} and mean \eqn{\mu}), which never forms the
+success probability \eqn{1/(1+\theta)}; that probability rounds to 1 below
+\eqn{\theta \approx 10^{-16}} and loses digits long before, so the mass
+stays accurate down to the Poisson limit. The log-mass is exponentiated
+when \code{log} is \code{FALSE}, and \code{log = TRUE} is the accurate route far into the
+tail.
 
 The mean sits \strong{inside} the gamma functions here, through the size. In
 \code{\link[=negbin2_distrib]{negbin2_distrib()}} the size is \eqn{\theta} and the mean stays outside
@@ -57,6 +63,5 @@ sum(distrib_pdf(d, 0:600, th))
 \seealso{
 \code{\link[=distrib_cdf.NegBin1Distrib]{distrib_cdf.NegBin1Distrib()}} for the distribution function,
 \code{\link[=distrib_gradient.NegBin1Distrib]{distrib_gradient.NegBin1Distrib()}} for the derivatives of the log-mass,
-\code{\link[=nb1_size]{nb1_size()}} and \code{\link[=nb1_prob]{nb1_prob()}} for the pairing this uses, and
-\code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
+\code{\link[=nb1_size]{nb1_size()}} for the size, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

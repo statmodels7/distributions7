@@ -37,24 +37,20 @@ Returns the components of
 to four, from the sparse form the NB1 log-likelihood takes in the size
 \eqn{r = \mu/\theta}.
 
-\code{nb1_exact_cut()} is the dispersion below which the cancellation-free
-assembly is used in place of the recursion in the size. It sits where the
-two agree and each is still comfortable: measured at \eqn{\mu = 4},
-\eqn{y = 3}, they agree to 4e-11 or better at \eqn{\theta = 1} and to
-5.5e-09 at \eqn{\theta = 0.1}, and part company below that.
+\code{nb1_exact_cut()} returns the dispersion, 1, below which the
+cancellation-free assembly is used in place of the recursion in the size.
+The scores and second derivatives use the same threshold in the compiled
+kernels.
 
 \code{nb1_M_derivs()} returns \eqn{M(\theta) = \log(1+\theta)/\theta} and its
-derivatives to the order asked for. It is the one composite piece of the
+derivatives to the given order. It is the one composite piece of the
 cancellation-free form below, and it has a removable singularity at
 \eqn{\theta = 0}: the recursion \eqn{\theta M^{(b+1)} + (b+1)M^{(b)} =
 (-1)^b b!/(1+\theta)^{b+1}} divides by \eqn{\theta} and loses its digits
 there, while the series \eqn{M^{(b)} = (-1)^b \sum_{n\ge 0} (-1)^n
 \left[\prod_{i\le b}(n+i)\right]\theta^n/(n+b+1)} converges only below one.
-The crossover is MEASURED and not chosen: the two agree to between 1.9e-16
-and 3.4e-13 over \eqn{\theta} from 0.01 to 0.5, and each fails on its own
-side -- the recursion by 1.4e-04 at \eqn{\theta = 10^{-6}} and by 2.3e+08 at
-order four, the series by 1.1e-02 at \eqn{\theta = 0.8}. It is the shape the
-generalized Pareto's \code{Lambda} already carries one family over.
+The function uses \code{nterm} terms of the series for \eqn{\theta} below \code{cut}
+and the recursion otherwise.
 
 \code{nb1_components_exact()} is the cancellation-free assembly, from the form in
 \eqn{\mu + i\theta} that \code{negbin1_psums_cpp()} documents.
@@ -70,7 +66,7 @@ components carrying at most one \eqn{\mu}; \eqn{C} carries none. The only
 composite piece is \eqn{G(\mu/\theta)}.
 }
 
-\section{The recursion that closes on itself}{
+\section{The recursion in the powers of r}{
 Its mixed derivatives take the form
 \deqn{\frac{\partial^{a+b}}{\partial\mu^a\partial\theta^b}G(\mu/\theta)
   = \theta^{-(a+b)}\sum_j c_j\, r^j\, G^{(a+j)}(r),}
@@ -92,15 +88,14 @@ differences therefore go through \code{\link[=psi_shift_diff]{psi_shift_diff()}}
 exact sum of reciprocals rather than as a subtraction.
 }
 
-\section{Where the recursion cedes, and the form that does not}{
-What that does not repair is the cancellation among the powers of \eqn{r} in
-the recursion itself: at orders three and four those terms are of size
-\eqn{8\times10^6} at \eqn{\theta = 5\times10^{-4}} and sum to a value of
-order one. Measured at \eqn{\mu = 4}, \eqn{y = 3}, the third derivative in
-\eqn{\theta} reads \eqn{-1.97\times10^{9}} at \eqn{\theta = 10^{-6}} where
-the value is \eqn{9/32}, and the fourth \eqn{7.90\times10^{15}}.
+\section{The form without the size}{
+The polygamma differences do not remove the cancellation among the powers
+of \eqn{r} in the recursion itself: at orders three and four those terms
+are large compared with their sum, and as \eqn{\theta} goes to zero the
+recursion loses every significant digit.
 
-The size need not appear at all, which is what removes it. Since
+The size need not appear at all, and the form without it has no such
+cancellation. Since
 \eqn{\log\Gamma(y+r) - \log\Gamma(r) = \sum_{i<y}\log(r+i)} and
 \eqn{r = \mu/\theta}, the \eqn{y\log\theta} each such term carries cancels
 EXACTLY against \eqn{C(\theta)}, leaving
@@ -108,8 +103,8 @@ EXACTLY against \eqn{C(\theta)}, leaving
   - \frac{\mu}{\theta}\log(1+\theta) - y\log(1+\theta),}
 whose variable does not run away and whose every derivative is elementary.
 Below \code{\link[=nb1_exact_cut]{nb1_exact_cut()}} that is the route taken, through
-\code{\link[=nb1_components_exact]{nb1_components_exact()}}; above it the recursion is within 4e-11 and costs
-\eqn{O(1)} where the sum costs \eqn{y} terms an observation.
+\code{\link[=nb1_components_exact]{nb1_components_exact()}}; above it the recursion is accurate and costs
+\eqn{O(1)} per observation, where the sum costs \eqn{y} terms.
 }
 
 \seealso{

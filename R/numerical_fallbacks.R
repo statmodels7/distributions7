@@ -1137,28 +1137,33 @@ disc_upper_table <- function(distrib, theta, need_p = NULL, need_k = NULL, kmax 
 #' addition itself.
 #'
 #' @details
-#' The cumulative table is built by [disc_cum_table()] and rebuilt whenever
-#' the parameter setting of a row differs from that of the row before, so a
-#' vector of quantiles at one setting costs one table. A support unbounded
-#' above is extended, by doubling, until the table reaches the largest
-#' requested support point.
+#' The cumulative table is built by [disc_cum_table()] and rebuilt whenever the
+#' parameter setting of a row differs from that of the row before, so a vector
+#' of quantiles at one setting costs one table. A support unbounded above is
+#' extended, by doubling, until the table reaches the largest requested support
+#' point. With `lower.tail = FALSE` the upper tail \eqn{P(Y > q)} is \eqn{1 -
+#' F(q)} where \eqn{F(q) \le 1/2}; past the median it is read from
+#' [disc_upper_table()], which sums the mass above \eqn{q} from the top of its
+#' table, so a tail probability far below machine epsilon keeps its relative
+#' accuracy. A missing `q` gives `NA`.
 #'
 #' @param distrib An object inheriting from `discrete_distrib` that registers
 #'   no method of its own.
 #' @param q A numeric vector of quantiles; a non-integer is floored, as a
 #'   distribution function of a discrete variable requires.
 #' @param theta A named list of parameters, each of length 1 or `length(q)`.
-#' @param lower.tail Logical of length 1. `TRUE`, the default, returns
-#'   \eqn{P(Y \le q)}; `FALSE` returns the complement.
-#' @param log.p Logical of length 1. `TRUE` returns the logarithm, taken after
-#'   the summation.
+#' @param lower.tail Logical of length 1. `TRUE`, the default, returns \eqn{P(Y
+#'   \le q)}; `FALSE` returns \eqn{P(Y > q)}.
+#' @param log.p Logical of length 1. `TRUE` returns the logarithm of the
+#'   probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of cumulative probabilities, the length of the
 #'   recycled `q` and `theta`.
 #'
-#' @seealso [disc_cum_table()], which builds the table;
-#'   [distrib_quantile.discrete_distrib()], which inverts it;
+#' @seealso [disc_cum_table()], which builds the table; [disc_upper_table()],
+#'   the table of the upper tail; [distrib_quantile.discrete_distrib()], which
+#'   inverts it;
 #'   [distrib_cdf.continuous_distrib()], where the same question needs a
 #'   quadrature; [distrib_cdf()] for the generic.
 #' @keywords internal
@@ -1208,7 +1213,11 @@ S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.t
 #' compared with the running sum after a relative reduction of
 #' \eqn{64\varepsilon}, as [stats::qpois()] does, so that a probability equal
 #' to \eqn{F(k)} returns \eqn{k}; on a Poisson defined by its mass alone the
-#' result agrees with [stats::qpois()].
+#' result agrees with [stats::qpois()]. With `lower.tail = FALSE` an upper-tail
+#' probability below one half is inverted against the table of \eqn{P(Y > k)}
+#' that [disc_upper_table()] sums from the top, so that it is not turned into
+#' \eqn{1 - p}, which would lose its digits; the quantile of an upper-tail
+#' probability far below machine epsilon is therefore finite and accurate.
 #'
 #' Because the distribution function is a step function, the round trip does
 #' not close. Asking for 0.025, 0.5 and 0.975 returns points
@@ -1218,7 +1227,8 @@ S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.t
 #' @param distrib An object inheriting from `discrete_distrib` that registers
 #'   no method of its own.
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or their
-#'   logarithms under `log.p`.
+#'   logarithms under `log.p`. A value outside \eqn{[0, 1]} gives `NaN` and a
+#'   missing value `NA`.
 #' @param theta A named list of parameters, each of length 1 or `length(p)`.
 #' @param lower.tail Logical of length 1. `TRUE`, the default, treats `p` as
 #'   \eqn{P(Y \le q)}; `FALSE` treats it as the upper tail.
@@ -1229,8 +1239,9 @@ S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.t
 #' @return A numeric vector of support points, the length of the recycled `p`
 #'   and `theta`.
 #'
-#' @seealso [disc_cum_table()], which builds the table;
-#'   [distrib_cdf.discrete_distrib()], the function it inverts;
+#' @seealso [disc_cum_table()], which builds the table; [disc_upper_table()],
+#'   the table of the upper tail; [distrib_cdf.discrete_distrib()], the function
+#'   it inverts;
 #'   [distrib_rng.discrete_distrib()], which reads the same table;
 #'   [distrib_quantile()] for the generic.
 #' @keywords internal

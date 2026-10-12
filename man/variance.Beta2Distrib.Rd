@@ -7,8 +7,8 @@
 \item{x}{A \code{Beta2Distrib}, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
 \item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
-each a numeric vector of length 1 or \code{n}. Both shapes below 1 puts the
-mass at the two endpoints.}
+each a numeric vector of length 1 or \code{n}. If both shapes are below 1 the
+density is unbounded at both endpoints and U-shaped.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -22,7 +22,9 @@ Closed form:
       {(\alpha+\beta)^2(\alpha+\beta+1)}.}
 Writing \eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\phi = \alpha+\beta} this
 is the \eqn{\mu(1-\mu)/(\phi+1)} of \code{\link[=variance.Beta1Distrib]{variance.Beta1Distrib()}}, so the shapes
-and the mean-precision pair describe the same law.
+and the mean-precision pair describe the same law. The method evaluates it in
+that form, with \eqn{\mu = 1/(1 + \beta/\alpha)} (\code{\link[=beta_mu_sigma]{beta_mu_sigma()}}), so that
+\eqn{\alpha\beta} is not formed where it underflows or overflows.
 }
 \section{Notation}{
 

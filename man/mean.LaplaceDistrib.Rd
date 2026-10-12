@@ -19,8 +19,7 @@ A numeric vector of means, of length
 Closed form, replacing the numerical default: \eqn{E[Y] = \mu}. The density
 is symmetric about \eqn{\mu}, so the location is the mean and the median at
 once. The value is recycled to the length the two parameters imply, and no
-quadrature is run: the kink at \eqn{y = \mu} makes the numerical route
-needlessly awkward for a quantity available in one read.
+quadrature is run.
 }
 \examples{
 d <- laplace_distrib()

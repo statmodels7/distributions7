@@ -26,9 +26,11 @@ gamma ties them by \eqn{\gamma_2 = 3\gamma_1^2/2}.
 \details{
 The excess is the fourth cumulant over the squared variance,
 \eqn{\gamma_2 = (\mu_4 - 3\mu_2^2)/\mu_2^2}, with the central moments of
-\eqn{Y/m_1} computed as \code{\link[=variance.GenGamma1Distrib]{variance.GenGamma1Distrib()}} describes and the
-difference \eqn{\mu_4 - 3\mu_2^2} formed in the same double-double
-arithmetic. Towards the lognormal the excess is of order \eqn{1/k},
+\eqn{Y/m_1} computed as \code{\link[=variance.GenGamma1Distrib]{variance.GenGamma1Distrib()}} describes. Where the
+series is used (\eqn{8h \le k} and \eqn{4h^2 \le k}) the difference
+\eqn{\mu_4 - 3\mu_2^2} is formed in double-double arithmetic; elsewhere it is
+formed in ordinary doubles. Towards the lognormal the excess is of order
+\eqn{1/k},
 \eqn{k = d/p}, with coefficient \eqn{2(4h - 1)(2h - 1)}, \eqn{h = 1/p}; at
 \eqn{p = 2} and \eqn{p = 4} that coefficient vanishes and the excess is of
 order \eqn{1/k^2}.

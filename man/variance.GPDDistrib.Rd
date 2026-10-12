@@ -21,9 +21,10 @@ A numeric vector of variances, of length
 Closed form:
 \eqn{\operatorname{Var}(Y) = \sigma^2/\{(1-\xi)^2(1-2\xi)\}} for
 \eqn{\xi < 1/2}, and \code{Inf} at or above one half. The threshold is half the
-mean's, the second moment being the first to fail as the tail grows heavy,
-and a fitted object at \eqn{\xi = 0.6} reports a finite mean beside an
-infinite variance.
+mean's. As the shape increases, the excess kurtosis becomes infinite first
+(at \eqn{\xi = 1/4}), then the skewness (\eqn{1/3}), then the variance and
+finally the mean, so a fitted object at \eqn{\xi = 0.6} reports a finite mean
+beside an infinite variance.
 }
 \section{Notation}{
 

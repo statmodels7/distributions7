@@ -8,7 +8,7 @@
 
 \item{theta}{A named list with components \code{mu} (the scale, positive) and
 \code{sigma} (the shape, positive), each a numeric vector of length 1 or \code{n}.
-The fourth moment requires a shape above \eqn{1/4}.}
+The fourth moment exists for every positive shape.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -24,7 +24,8 @@ Closed form:
       \qquad g_k = \Gamma(1 + k/\sigma).}
 The scale cancels, so the value depends on the shape alone. It is 6 at shape
 1, where the family is exponential, dips below zero over a band of moderate
-shapes, and climbs again as the shape grows.
+shapes, and climbs again as the shape grows, towards 2.4. It is evaluated
+through \code{\link[=weibull_moment_terms]{weibull_moment_terms()}}, as the skewness is.
 }
 \section{Notation}{
 

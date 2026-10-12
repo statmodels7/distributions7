@@ -18,8 +18,9 @@ A numeric vector of means, of length
 }
 \description{
 Closed form: \eqn{E[Y] = \mu}. This is the gamma written by its mean and a
-dispersion, the parametrization a generalized linear model uses, so the mean
-is the first parameter and the variance function is \eqn{\phi\mu^2}.
+dispersion, the parametrization of a generalized linear model, so the mean is
+the first parameter and the variance is \eqn{\phi\mu^2}, the dispersion times
+the variance function \eqn{\mu^2}.
 }
 \examples{
 d <- gamma1_distrib()

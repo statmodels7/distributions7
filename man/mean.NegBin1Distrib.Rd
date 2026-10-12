@@ -18,8 +18,8 @@ A numeric vector of means, of length
 }
 \description{
 Closed form: \eqn{E[Y] = \mu}. This parametrization carries the mean as its
-first parameter, so the method reads it off. What distinguishes NB1 from NB2
-is the variance function and not the mean.
+first parameter. NB1 and NB2 have the same mean and differ in the variance
+function.
 }
 \examples{
 d <- negbin1_distrib()

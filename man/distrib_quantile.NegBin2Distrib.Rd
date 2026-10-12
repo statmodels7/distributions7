@@ -46,7 +46,7 @@ q <- distrib_quantile(d, p, th)
 q
 
 # On a discrete support the round trip overshoots: the cumulative
-# probability at the returned integer is at or above the one asked for, not
+# probability at the returned integer is at or above the one given, not
 # equal to it.
 rbind(asked = p, reached = distrib_cdf(d, q, th))
 

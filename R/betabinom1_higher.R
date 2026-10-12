@@ -41,7 +41,9 @@ md_betabinom1 <- function(psi, order) {
 #' Returns the components of a derivative of order one to four of the
 #' beta-binomial log-mass with respect to \eqn{\mu} and \eqn{\sigma}, by
 #' carrying the shape parametrization's own derivatives through the map
-#' \eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)}.
+#' \eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)} for
+#' \eqn{\sigma \ge 0.1}, and from the direct sums of [betabinom_direct()]
+#' below [bb_direct_cut()].
 #'
 #' @details
 #' The shape parametrization [betabinom2_distrib()] carries closed derivatives
@@ -56,6 +58,12 @@ md_betabinom1 <- function(psi, order) {
 #' whose first two orders are written out by hand in a compiled kernel. A
 #' fresh `BetaBinom2Distrib` object is built on each call, which costs one S7
 #' construction per evaluation.
+#'
+#' Below [bb_direct_cut()] the map's derivatives, of order
+#' \eqn{\sigma^{-(K+1)}} at order \eqn{K}, cancel among themselves, and the
+#' rows with \eqn{\sigma < 0.1} are computed from the direct sums over the
+#' integer shifts instead ([betabinom_direct()]), whose terms have one sign
+#' each.
 #'
 #' @param distrib A [BetaBinom1Distrib()] object, read for its `size` and
 #'   `params`.
@@ -141,11 +149,14 @@ betabinom1_expected <- function(distrib, y, theta, order) {
 #' \eqn{\beta = (1-\mu)/\sigma}, so the Faa di Bruno partition sum of
 #' [chain_derivatives()] over the map delivers them. Both shapes are linear in
 #' \eqn{\mu} at fixed \eqn{\sigma}, so every partial of the map carrying two or
-#' more \eqn{\mu} vanishes and the sum is short.
+#' more \eqn{\mu} vanishes and the sum is short. This route is taken for
+#' \eqn{\sigma \ge 0.1}; for \eqn{\sigma < 0.1} the components are the direct
+#' sums over the integer shifts given on [betabinom1_distrib()], which keep
+#' their accuracy as \eqn{\sigma} goes to zero ([betabinom1_components()]).
 #'
-#' With `expected = TRUE` the method calls [expected_derivative()] instead.
-#' That is the one place on this page where `approx` and `nsim` are read; on
-#' the observed branch both are ignored.
+#' With `expected = TRUE` the method returns the expectation as an exact
+#' finite sum over the support, from [betabinom1_expected()]. `approx` and
+#' `nsim` are ignored on both branches.
 #'
 #' @param distrib A `BetaBinom1Distrib` object, from [betabinom1_distrib()].
 #' @param y A numeric vector of counts in \eqn{\{0, \dots, n\}}. With
@@ -157,11 +168,9 @@ betabinom1_expected <- function(distrib, y, theta, order) {
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`, the strategy [expected_derivative()] uses. Read only when
-#'   `expected = TRUE`.
-#' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#' @param approx Ignored, the expectation being an exact finite sum. Accepted
+#'   so that the signature matches the generic's.
+#' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_sigma`,
@@ -217,10 +226,12 @@ S7::method(distrib_deriv3, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' the shape parametrization's fourth derivatives, each a difference of
 #' \eqn{\psi^{(3)}}, carried through the map
 #' \eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)} by the partition sum of
-#' [chain_derivatives()].
+#' [chain_derivatives()], for \eqn{\sigma \ge 0.1}, and the direct sums
+#' below.
 #'
-#' With `expected = TRUE` the method calls [expected_derivative()] instead.
-#' That is the one place on this page where `approx` and `nsim` are read.
+#' With `expected = TRUE` the method returns the expectation as an exact
+#' finite sum over the support, from [betabinom1_expected()]. `approx` and
+#' `nsim` are ignored on both branches.
 #'
 #' @param distrib A `BetaBinom1Distrib` object, from [betabinom1_distrib()].
 #' @param y A numeric vector of counts in \eqn{\{0, \dots, n\}}. With
@@ -232,11 +243,9 @@ S7::method(distrib_deriv3, BetaBinom1Distrib) <- function(distrib, y, theta,
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`, the strategy [expected_derivative()] uses. Read only when
-#'   `expected = TRUE`.
-#' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#' @param approx Ignored, the expectation being an exact finite sum. Accepted
+#'   so that the signature matches the generic's.
+#' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,

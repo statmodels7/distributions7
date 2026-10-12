@@ -24,9 +24,9 @@ Cauchy has none of them: its density decays like \eqn{y^{-2}}, and
 returned directly, so that no quadrature is attempted.
 }
 \details{
-The reading a large positive excess kurtosis usually carries, that the tails
-are heavy, is right here and cannot be quantified on this scale: the family
-is heavy-tailed enough that the measure of tail weight is itself undefined.
+A large positive excess kurtosis usually indicates heavy tails. The Cauchy
+has heavy tails, but its fourth moment does not exist, so the excess kurtosis
+cannot measure their weight.
 A Student t with \eqn{\nu > 4} is the nearest family that reports a number,
 and \eqn{6/(\nu-4)} grows without bound as \eqn{\nu} falls towards 4.
 }

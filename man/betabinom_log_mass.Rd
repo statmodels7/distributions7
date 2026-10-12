@@ -38,10 +38,8 @@ each log-gamma difference is an exact sum of logarithms,
       \sum_{j=0}^{y-1}\log(\alpha+j),}
 and the mass follows from three such sums, none of which forms a quantity
 larger than \eqn{n\log(\alpha+\beta)}. The sums also give the binomial limit
-correctly as the shapes grow at a fixed ratio: measured at \eqn{n = 10},
-\eqn{y = 3} and \eqn{\alpha/(\alpha+\beta) = 0.4}, the log-mass agrees with
-the binomial one to twelve figures at a concentration of \eqn{10^{14}},
-where the beta-function route is wrong in the third decimal.
+correctly as the shapes grow at a fixed ratio, where the beta-function
+route loses one digit per factor of ten in the concentration.
 
 The cost is \eqn{O(n)} in the size, which is why the route is taken only
 where it is needed.

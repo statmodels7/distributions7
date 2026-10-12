@@ -15,7 +15,7 @@
 \value{
 A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$sigma))}. The value is the mean
-parameter itself, the dispersion entering neither it nor the length.
+parameter itself, recycled to that length.
 }
 \description{
 Closed form: \eqn{E[Y] = \mu}, the first cumulant. The family is a Poisson

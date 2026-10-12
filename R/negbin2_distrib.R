@@ -9,14 +9,12 @@ NULL
 #' the NB2 parametrization: the mean \eqn{\mu > 0} and a dispersion
 #' \eqn{\theta > 0}, so that \eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}
 #' and the variance is quadratic in the mean. It inherits from
-#' `discrete_distrib`, so every generic of the `distrib` class applies to it;
-#' the methods listed below are registered on it directly and everything else
-#' comes from the parent.
+#' `discrete_distrib`.
 #'
 #' Build one with [negbin2_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
-#' which takes the parent's properties and validates none of the relationships
-#' between them.
+#' which takes the parent's properties; the validator of `distrib` checks
+#' them, and the constructor adds no check of its own.
 #'
 #' @inheritParams distrib
 #'
@@ -36,20 +34,29 @@ NULL
 #'   the closed forms this class supplies.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.NegBin2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.NegBin2Distrib],
-#'   [`distrib_deriv3()`][distrib_deriv3.NegBin2Distrib],
-#'   [`distrib_deriv4()`][distrib_deriv4.NegBin2Distrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.NegBin2Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.NegBin2Distrib] and
+#'   [`distrib_rng()`][distrib_rng.NegBin2Distrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.NegBin2Distrib],
 #'   [`distrib_hessian()`][distrib_hessian.NegBin2Distrib],
-#'   [`distrib_pdf()`][distrib_pdf.NegBin2Distrib],
-#'   [`distrib_quantile()`][distrib_quantile.NegBin2Distrib],
-#'   [`distrib_rng()`][distrib_rng.NegBin2Distrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.NegBin2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.NegBin2Distrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.NegBin2Distrib];
+#' - the derivatives of the expected information:
+#'   [`distrib_dexpected_hessian()`][distrib_dexpected_hessian.NegBin2Distrib]
+#'   and
+#'   [`distrib_d2expected_hessian()`][distrib_d2expected_hessian.NegBin2Distrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.NegBin2Distrib];
+#' - the moments: [`mean()`][mean.NegBin2Distrib],
+#'   [`variance()`][variance.NegBin2Distrib],
+#'   [`skewness()`][skewness.NegBin2Distrib] and
+#'   [`kurtosis()`][kurtosis.NegBin2Distrib].
 #'
-#' A discrete family has no derivatives in the response, so there are nine
-#' here where a continuous family has eleven. Everything else is inherited from
-#' [discrete_distrib()].
+#' Every other generic is inherited from [discrete_distrib()].
 #'
 #' @examples
 #' d <- negbin2_distrib()
@@ -160,9 +167,11 @@ S7::method(distrib_pdf, NegBin2Distrib) <- function(distrib, y, theta, log = FAL
 #'   values are logarithms and are non-positive.
 #'
 #' @seealso [distrib_quantile.NegBin2Distrib()] for the generalized inverse,
-#'   [distrib_pdf.NegBin2Distrib()] for the mass, [distrib_grad_cdf()] for the
-#'   derivatives of this function in the parameters, which are an exact finite
-#'   sum for a discrete family, and [distrib_cdf()] for the generic.
+#'   [distrib_pdf.NegBin2Distrib()] for the mass,
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.NegBin2Distrib] for the
+#'   derivatives of this function in the parameters (closed form in the mean,
+#'   an exact finite sum in the dispersion), and [distrib_cdf()] for the
+#'   generic.
 #'
 #' @examples
 #' d <- negbin2_distrib()
@@ -235,7 +244,7 @@ S7::method(distrib_cdf, NegBin2Distrib) <- function(distrib, q, theta, lower.tai
 #' q
 #'
 #' # On a discrete support the round trip overshoots: the cumulative
-#' # probability at the returned integer is at or above the one asked for, not
+#' # probability at the returned integer is at or above the one given, not
 #' # equal to it.
 #' rbind(asked = p, reached = distrib_cdf(d, q, th))
 #'
@@ -332,9 +341,9 @@ S7::method(distrib_rng, NegBin2Distrib) <- function(distrib, n, theta, ...) {
 #'       + \left\{\log(1 + w) - w\right\},}
 #' each bracket evaluated by its own series where the arguments are large. To
 #' leading order the result is \eqn{\{y - (y-\mu)^2\}/(2\theta^2)}, which the
-#' example below reproduces. A fit reaches that regime routinely: 2,000 counts
-#' drawn at a true \eqn{\theta} of 100 can report an estimate of order
-#' \eqn{10^7}, and where such a run stops is decided by this arithmetic.
+#' example below reproduces. A fit reaches that regime when the sample is
+#' nearly equidispersed, because the estimate of \eqn{\theta} then grows
+#' without bound.
 #'
 #' With `scale = "link"` the generic applies the chain rule for the links the
 #' family carries before returning. This method always returns the parameter
@@ -349,8 +358,8 @@ S7::method(distrib_rng, NegBin2Distrib) <- function(distrib, n, theta, ...) {
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. For fewer observations than an internal threshold the kernel runs
+#'   sequentially whatever the count. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `theta`, each of
 #'   length `max(length(y), length(mu), length(theta))`.
@@ -410,6 +419,16 @@ S7::method(distrib_gradient, NegBin2Distrib) <- function(distrib, y, theta, scal
 #'       \ell^{(\theta\theta)} = \psi_1(y+\theta) - \psi_1(\theta)
 #'         + \dfrac{\mu}{\theta s} + \dfrac{y-\mu}{s^2}.}
 #'
+#' The mean components are formed from the bracket
+#' \eqn{y/\mu^k - (y+\theta)/(\mu+\theta)^k}, written as
+#' \eqn{y(1 - q^k)/\mu^k - \theta/(\mu+\theta)^k} with
+#' \eqn{q = \mu/(\mu+\theta)} and \eqn{1 - q^k} computed as
+#' \eqn{-\mathrm{expm1}(-k\,\mathrm{log1p}(\theta/\mu))}. Written directly
+#' its two terms agree to a relative \eqn{\theta/\mu} where \eqn{y} is near
+#' \eqn{\mu}, and their difference loses that many digits at a small
+#' dispersion or a large mean; in this form the value keeps full relative
+#' accuracy, and a term with a zero coefficient contributes zero.
+#'
 #' The dispersion entry cancels at large \eqn{\theta} for the same reason the
 #' score does, and the kernel handles it the same way. Here the collapse is
 #' better than a series: with \eqn{a = \theta}, \eqn{b = \theta + y} and
@@ -431,8 +450,8 @@ S7::method(distrib_gradient, NegBin2Distrib) <- function(distrib, y, theta, scal
 #'   [base::match.arg()]. Read by the generic, not by this method.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. For fewer observations than an internal threshold the kernel runs
+#'   sequentially whatever the count. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `theta_theta` and
 #'   `mu_theta`, in that order, each of length
@@ -493,25 +512,21 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 #' because the observed mixed entry is \eqn{(y-\mu)/s^2} and
 #' \eqn{\mathbb{E}[Y] = \mu}. So the mean and the dispersion are orthogonal.
 #'
-#' \eqn{\mathbb{E}[\psi_1(Y+\theta)]} has no closed form. It is summed over the
-#' support through the mass recurrence, carried in log scale until the terms
-#' are representable, and stopped when the accumulated mass reaches
-#' \eqn{1 - 10^{-12}}. The sum is exact to that mass, so this entry is a
-#' truncated exact sum and not a quadrature or a simulation; `approx` and
-#' `nsim` are ignored, and `y` is read only for its length.
+#' \eqn{\mathbb{E}[\psi_1(Y+\theta)]} has no closed form. The entry is computed
+#' as one sum over the support through the mass recurrence, carried in log
+#' scale until the terms are representable. Past the mode and after 100 terms
+#' the sum stops once \eqn{p_k (1+k)^2 \le 10^{-17}}, with \eqn{p_k} the mass
+#' at \eqn{k}. The entry is a truncated exact sum and not a quadrature or a
+#' simulation; `approx` and `nsim` are ignored, and `y` is read only for its
+#' length.
 #'
-#' # A caveat at large theta
+#' # The dispersion entry at large theta
 #'
-#' The dispersion entry is a difference of two quantities that agree to
-#' leading order as \eqn{\theta} grows, and **it is not rewritten to remove
-#' that cancellation**, unlike the score and the observed Hessian. Its leading
-#' order needs one term more of the observed Hessian than those two do, the
-#' \eqn{\theta^{-3}} term vanishing under expectation, so it is a derivation of
-#' its own. Measured at \eqn{\mu = 4}: it reads \eqn{-7.3\times 10^{-8}} at
-#' \eqn{\theta = 10^2}, \eqn{-3.6\times 10^{-16}} at \eqn{10^4} and
-#' \eqn{+1.7\times 10^{-16}} at \eqn{10^6}. The last is **positive**, which an
-#' expected second derivative cannot be, so a Fisher scoring step taken there
-#' is not reliable. The example below shows the sign turning.
+#' The trigamma difference and the term \eqn{\mu/(\theta s)} agree to leading
+#' order as \eqn{\theta} grows. They are merged before the summation, so that
+#' the summand is a quotient of exact polynomials and the entry keeps its
+#' accuracy; it stays negative and tends to \eqn{-\mu^2/(2\theta^4)}, as the
+#' example below shows.
 #'
 #' @param distrib A `NegBin2Distrib` object, from [negbin2_distrib()].
 #' @param y A numeric vector of counts. Only its length is used.
@@ -526,8 +541,8 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. For fewer observations than an internal threshold the kernel runs
+#'   sequentially whatever the count. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `theta_theta` and
 #'   `mu_theta`, in that order, each of length
@@ -563,8 +578,8 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 #'       expected = vapply(distrib_expected_hessian(d, z, th),
 #'                         function(v) v[1], numeric(1)))
 #'
-#' # The dispersion entry cancels at large theta and turns positive, which an
-#' # expected second derivative cannot be.
+#' # The dispersion entry stays negative and tends to -mu^2/(2 theta^4) as theta
+#' # grows.
 #' vapply(c(1e2, 1e4, 1e6),
 #'        function(t) distrib_expected_hessian(d, 0,
 #'                      list(mu = 4, theta = t))$theta_theta,
@@ -645,17 +660,28 @@ S7::method(distrib_d2expected_hessian, NegBin2Distrib) <- function(distrib, y, t
 #' component carries \eqn{\psi_2(y+\theta) - \psi_2(\theta)}, with
 #' \eqn{\psi_2} the second derivative of the digamma function.
 #'
+#' The mean components are formed from the bracket
+#' \eqn{y/\mu^k - (y+\theta)/(\mu+\theta)^k}, written as
+#' \eqn{y(1 - q^k)/\mu^k - \theta/(\mu+\theta)^k} with
+#' \eqn{q = \mu/(\mu+\theta)} and \eqn{1 - q^k} computed as
+#' \eqn{-\mathrm{expm1}(-k\,\mathrm{log1p}(\theta/\mu))}. Written directly
+#' its two terms agree to a relative \eqn{\theta/\mu} where \eqn{y} is near
+#' \eqn{\mu}, and their difference loses that many digits at a small
+#' dispersion or a large mean; in this form the value keeps full relative
+#' accuracy, and a term with a zero coefficient contributes zero.
+#'
 #' With `expected = TRUE` the expectations are returned. The three components
 #' involving the mean need only \eqn{\mathbb{E}[Y] = \mu}; the pure dispersion
 #' one needs \eqn{\mathbb{E}[\psi_2(Y+\theta)]}, which has no closed form and
-#' is summed over the support with a far-tail correction, exactly as the
-#' expected Hessian sums \eqn{\mathbb{E}[\psi_1(Y+\theta)]}. `approx` and
-#' `nsim` are ignored either way.
+#' is summed over the support with the mass recurrence and the stopping rule
+#' of [distrib_expected_hessian.NegBin2Distrib()]. `approx` and `nsim` are
+#' ignored either way.
 #'
-#' The cancellation of [distrib_gradient.NegBin2Distrib()] applies here too and
-#' **is not removed at this order**: the pure dispersion components lose their
-#' digits at large \eqn{\theta}, where the score itself is reliable to about
-#' five figures and no further.
+#' The cancellation of [distrib_gradient.NegBin2Distrib()] is performed
+#' symbolically at this order too: the observed pure dispersion component is
+#' a sum over \eqn{j < y} when \eqn{\theta > 100\max(y, 1)}, and the expected
+#' one is a single merged sum, so both keep their accuracy at large
+#' \eqn{\theta}.
 #'
 #' @param distrib A `NegBin2Distrib` object, from [negbin2_distrib()].
 #' @param y A numeric vector of counts. With `expected = TRUE` only its length
@@ -671,8 +697,8 @@ S7::method(distrib_d2expected_hessian, NegBin2Distrib) <- function(distrib, y, t
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. For fewer observations than an internal threshold the kernel runs
+#'   sequentially whatever the count. Defaults to `1L`.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_theta`,
 #'   `mu_theta_theta` and `theta_theta_theta`, each of length
@@ -720,11 +746,13 @@ S7::method(distrib_deriv3, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' dispersion component carries \eqn{\psi_3(y+\theta) - \psi_3(\theta)}, with
 #' \eqn{\psi_3} the third derivative of the digamma function.
 #'
+#' The mean component is formed from the same bracket as at third order.
+#'
 #' With `expected = TRUE` the expectations are returned. The pure dispersion
-#' one needs \eqn{\mathbb{E}[\psi_3(Y+\theta)]}, summed over the support with a
-#' far-tail correction; the rest need only \eqn{\mathbb{E}[Y] = \mu}. `approx`
-#' and `nsim` are ignored either way, and the caveat about large \eqn{\theta}
-#' on [distrib_deriv3.NegBin2Distrib()] applies here as well.
+#' one needs \eqn{\mathbb{E}[\psi_3(Y+\theta)]}, summed over the support as at
+#' third order; the rest need only \eqn{\mathbb{E}[Y] = \mu}. `approx` and
+#' `nsim` are ignored either way. As at third order, the cancellation at large
+#' \eqn{\theta} is performed symbolically ([distrib_deriv3.NegBin2Distrib()]).
 #'
 #' @param distrib A `NegBin2Distrib` object, from [negbin2_distrib()].
 #' @param y A numeric vector of counts. With `expected = TRUE` only its length
@@ -740,8 +768,8 @@ S7::method(distrib_deriv3, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
-#'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   use. For fewer observations than an internal threshold the kernel runs
+#'   sequentially whatever the count. Defaults to `1L`.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
 #'   `mu_mu_mu_theta`, `mu_mu_theta_theta`, `mu_theta_theta_theta` and
@@ -787,8 +815,9 @@ S7::method(distrib_deriv4, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' Builds the distribution object for the negative binomial family on the
 #' non-negative integers in the NB2 parametrization: the mean \eqn{\mu > 0} and
 #' a dispersion \eqn{\theta > 0}, so that
-#' \eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}. This is the count model a
-#' regression reaches for when a Poisson is overdispersed. The returned object
+#' \eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}. It is a standard count
+#' model for data that are overdispersed relative to a Poisson. The returned
+#' object
 #' carries closed-form derivatives of the log-mass to fourth order and
 #' closed-form moments.
 #'
@@ -845,20 +874,17 @@ S7::method(distrib_deriv4, NegBin2Distrib) <- function(distrib, y, theta, expect
 #'
 #' The family tends to the Poisson as \eqn{\theta} grows, so every derivative
 #' in \eqn{\theta} vanishes there and is written as a sum of terms that cancel
-#' to leading order. The score and the observed Hessian are computed in forms
-#' that perform those cancellations symbolically, and are reliable throughout;
-#' the direct expression for the score is wrong by one part in a thousand at
-#' \eqn{\theta = 10^6} and changes sign at \eqn{10^8}. Two quantities are
-#' **not** rewritten, and both pages say so:
-#'
-#' - the expected information in \eqn{\theta}, which is measured positive from
-#'   about \eqn{\theta = 10^6} and so is unusable there
-#'   ([distrib_expected_hessian.NegBin2Distrib()]);
-#' - the third and fourth derivatives in \eqn{\theta}
-#'   ([distrib_deriv3.NegBin2Distrib()], [distrib_deriv4.NegBin2Distrib()]).
-#'
-#' A fit reaches that regime routinely, a nearly equidispersed sample driving
-#' \eqn{\theta} towards its boundary.
+#' to leading order. The score, the observed Hessian, the expected information
+#' in \eqn{\theta} and the third and fourth derivatives in \eqn{\theta},
+#' observed and expected, are computed in forms that perform those
+#' cancellations symbolically ([distrib_gradient.NegBin2Distrib()],
+#' [distrib_expected_hessian.NegBin2Distrib()],
+#' [distrib_deriv3.NegBin2Distrib()]). As \eqn{\theta} goes to zero the
+#' derivatives in the mean cancel in the same way, and their brackets are
+#' written so that they keep full relative accuracy
+#' ([distrib_hessian.NegBin2Distrib()]). A fit reaches the large-\eqn{\theta}
+#' regime when the sample is nearly equidispersed, since the estimate of
+#' \eqn{\theta} then grows towards the boundary of its domain.
 #'
 #' # Estimation
 #'
@@ -866,7 +892,7 @@ S7::method(distrib_deriv4, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' the closed-form estimate \eqn{\hat\mu = \bar y}; the dispersion solves an
 #' equation in digamma functions and is reached numerically. The method of
 #' moments supplies the starting value \eqn{\bar y^2/(s^2 - \bar y)}, with
-#' \eqn{s^2} the sample variance.
+#' \eqn{s^2} the sample variance, or \eqn{10^3} when \eqn{s^2 \le \bar y}.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-mass of one observation, \eqn{\mu > 0} the mean and

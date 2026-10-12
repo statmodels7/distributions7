@@ -2,13 +2,13 @@
 % Please edit documentation in R/moments.R
 \name{variance.InvGauss2Distrib}
 \alias{variance.InvGauss2Distrib}
-\title{Variance of the Inverse Gaussian Distribution in Mean and Rate}
+\title{Variance of the Inverse Gaussian Distribution in Mean and Shape}
 \arguments{
 \item{x}{An \code{InvGauss2Distrib}, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{lambda}
 (positive), each a numeric vector of length 1 or \code{n}. The variance
-diverges as the rate approaches zero.}
+diverges as the shape approaches zero.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -20,18 +20,18 @@ A numeric vector of variances, of length
 Closed form: \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}. With
 \eqn{\lambda = 1/\phi} this is the \eqn{\phi\mu^3} of
 \code{\link[=variance.InvGauss1Distrib]{variance.InvGauss1Distrib()}}, so the two parametrizations agree on the law
-and differ only in which number is reported. The cube in the mean is what
-separates the family from the gamma.
+and differ only in which number is reported. The variance grows with the cube
+of the mean, where that of the gamma grows with its square.
 }
 \section{Notation}{
 
-\eqn{\mu > 0} is the mean and \eqn{\lambda > 0} the rate.
+\eqn{\mu > 0} is the mean and \eqn{\lambda > 0} the shape.
 }
 
 \examples{
 d <- invgauss2_distrib()
 
-# The cube of the mean over the rate.
+# The cube of the mean over the shape.
 all.equal(variance(d, list(mu = 2, lambda = 8)), 1)
 
 # The two parametrizations agree when lambda = 1 / phi.
