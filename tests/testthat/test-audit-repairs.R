@@ -1423,3 +1423,26 @@ test_that("the inverse gaussians' mixed derivatives are closed", {
   expect_equal(h1$phi_phi, -2 / (0.4^3 * c(0.4, 2.3)^3))
   expect_equal(h1$mu_mu, c(0, 0))
 })
+
+test_that("a zero-truncated count near degeneracy keeps its derivatives", {
+  # references from mpmath at 90 digits (chk_B1head_ref.py, proto_B1b_ref.py):
+  # l = y log mu - mu - log(1 - exp(-mu)) at y = 1
+  za <- zero_adjusted(poisson_distrib())
+  tp <- truncated(poisson_distrib(), lower = 1)
+  for (d in list(za, tp)) {
+    th <- function(m) if (identical(d, za)) list(mu = m, za = 0.5) else list(mu = m)
+    expect_rel(distrib_gradient(d, 1, th(1e-8))$mu, -0.50000000083333333, tolerance = 1e-13)
+    expect_rel(distrib_hessian(d, 1, th(1e-6))$mu_mu, -0.083333333333329167, tolerance = 1e-7)
+    expect_rel(distrib_hessian(d, 1, th(1e-8))$mu_mu, -1 / 12, tolerance = 1e-7)
+    expect_rel(distrib_deriv3(d, 1, th(1e-4))$mu_mu_mu, 8.3333333267195767e-7, tolerance = 1e-5)
+  }
+  # a parameter that varies by observation, and the zero kept apart
+  h <- distrib_hessian(za, c(0, 1, 2, 1), list(mu = c(1e-8, 1e-8, 2, 1e-4), za = 0.4))
+  expect_equal(h$mu_mu[1], 0)
+  expect_rel(h$mu_mu[2:4], c(-1 / 12, -0.31898458475842238, -0.083333333291666667),
+             tolerance = 1e-7)
+  # two parameters
+  h2 <- distrib_hessian(truncated(negbin2_distrib(), lower = 1), 1, list(mu = 1e-8, theta = 2))
+  expect_rel(h2$mu_mu, 0.31249999718750002, tolerance = 1e-6)
+  expect_rel(h2$mu_theta, 0.12499999729166669, tolerance = 1e-12)
+})

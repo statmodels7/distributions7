@@ -1361,7 +1361,12 @@ trunc_gradient <- function(distrib, y, theta, scale = c("parameter", "link"), ..
   m <- if (is.null(parts)) trunc_score_mean(distrib, theta) else
     lapply(parts$Zi, function(v) v / parts$Z)
   g <- distrib_gradient(distrib@parent_distrib, y, theta)
-  stats::setNames(lapply(distrib@params, function(p) g[[p]] - m[[p]]), distrib@params)
+  res <- stats::setNames(lapply(distrib@params, function(p) g[[p]] - m[[p]]),
+                         distrib@params)
+  if (S7::S7_inherits(distrib, TruncatedDiscreteDistrib)) {
+    res <- head_override(distrib, y, theta, 1L, res)
+  }
+  res
 }
 
 #' @title Observed Hessian of a Truncated Distribution
@@ -1377,7 +1382,11 @@ trunc_gradient <- function(distrib, y, theta, scale = c("parameter", "link"), ..
 #' @details
 #' Only \eqn{H_{ij}(y)} varies with the data; the correction is a function of
 #' \eqn{\theta} and the endpoints alone, so it is computed once and recycled to
-#' the length of `y`.
+#' the length of `y`. For a discrete parent whose retained mass sits at the
+#' lower endpoint, \eqn{f(L)/Z > 0.9}, the two terms cancel to a number much
+#' smaller than either, and the Hessian there is taken from [head_derivs()]
+#' through [head_override()]; the score and the third to fifth derivatives are
+#' treated the same way.
 #'
 #' @param distrib A truncated distribution object, of either class.
 #' @param y A numeric vector of observations.
@@ -1444,7 +1453,11 @@ trunc_hessian <- function(distrib, y, theta, scale = c("parameter", "link"), ...
     # d_ij log Z = M_ij - m_i m_j
     h[[nm]] - M[[nm]] + m[[pr[1]]] * m[[pr[2]]]
   })
-  expand_params(stats::setNames(res, names(pairs))[hess_names(distrib@params)], n)
+  res <- expand_params(stats::setNames(res, names(pairs))[hess_names(distrib@params)], n)
+  if (S7::S7_inherits(distrib, TruncatedDiscreteDistrib)) {
+    res <- head_override(distrib, y, theta, 2L, res)
+  }
+  res
 }
 
 #' @title Expected Hessian of a Truncated Distribution

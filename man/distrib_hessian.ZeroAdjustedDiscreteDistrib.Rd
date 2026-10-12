@@ -32,6 +32,12 @@ correction
   \frac{\{1 - f(0)\}\,f''(0) + f'(0)^2}{\{1 - f(0)\}^2},}
 the second derivative of \eqn{-\log\{1 - f(0)\}}. The hurdle block is
 \eqn{-1/\pi^2} at a zero and \eqn{-1/(1-\pi)^2} elsewhere.
+
+Where the positive part's mass sits at one, \eqn{f(1)/\{1 - f(0)\} > 0.9},
+the parent's Hessian and the truncation term cancel to a number much
+smaller than either, and the block in \eqn{\theta} is taken from
+\code{\link[=head_derivs]{head_derivs()}} through \code{\link[=head_override]{head_override()}}; the score and the third to fifth
+derivatives are treated the same way.
 }
 \section{Notation}{
 

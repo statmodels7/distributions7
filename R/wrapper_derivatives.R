@@ -150,6 +150,152 @@ assemble_deriv <- function(distrib, order, component) {
 }
 
 
+#' @title Derivatives of a Discrete Truncated Log-Density Around Its First Point
+#'
+#' @description
+#' Computes the parameter derivatives of the log-density of a discrete parent
+#' truncated to \eqn{\{L, L+1, \dots, U\}} as
+#' \deqn{\ell_T(y) = \{\ell(y) - \ell(L)\} - \log R, \qquad
+#'   R = \sum_{k \ge L} r_k, \quad r_k = f(k)/f(L).}
+#' The derivatives of \eqn{\ell(y) - \ell(L)} and of \eqn{\log r_k} are
+#' differences of the parent's own at two points, and those of \eqn{\log R}
+#' come from the ratios \eqn{d^B R / R = \sum_k r_k B_B(\log r_k) / R} by the
+#' moment-to-cumulant relation of [log_deriv()]. Where the retained mass sits
+#' at \eqn{L} (a zero-truncated count with a mean near zero), the parent's
+#' derivatives and those of \eqn{\log Z} are both of order \eqn{\mu^{-n}} and
+#' cancel to a number of order one; in this form the leading power cancels
+#' exactly, and the error falls from about \eqn{\epsilon\mu^{-n}} to about
+#' \eqn{\epsilon\mu^{1-n}}.
+#'
+#' @details
+#' The sum over the support starts with eight points and doubles until the last
+#' ratio is below \eqn{e^{-40}} in every row, or the support ends, up to 4096
+#' points.
+#'
+#' @param parent A discrete distribution object.
+#' @param y A numeric vector of retained observations.
+#' @param theta A named list of the parent's parameters, each of length one or
+#'   of the length of `y`.
+#' @param L,U The truncation endpoints, `L` finite.
+#' @param order The highest derivative order, 1 to 5.
+#' @param params The parent's parameter names.
+#'
+#' @return A function of a block of parameter names returning the derivative
+#'   of \eqn{\ell_T} with respect to that block, one value per observation.
+#'
+#' @seealso [head_override()], which applies it, and [log_deriv()].
+#'
+#' @keywords internal
+#'
+#' @examples
+#' p <- poisson_distrib()
+#' h <- distributions7:::head_derivs(p, c(1, 2), list(mu = 1e-6), 1, Inf, 2L, "mu")
+#' h(c("mu", "mu"))
+head_derivs <- function(parent, y, theta, L, U, order, params) {
+  n <- length(y)
+  th <- lapply(theta, rep_len, length.out = n)
+  G <- 8L
+  repeat {
+    ks <- L + seq_len(G) - 1L
+    if (is.finite(U)) ks <- ks[ks <= U]
+    G <- length(ks)
+    yy <- rep(ks, each = n)
+    tt <- lapply(th, rep, times = G)
+    lr <- matrix(distrib_pdf(parent, yy, tt, log = TRUE), n, G)
+    lr <- lr - lr[, 1L]
+    last <- lr[, G]
+    done <- (is.finite(U) && ks[G] >= U) || G >= 4096L ||
+      all(!is.finite(last) | last < -40)
+    if (done) break
+    G <- 2L * G
+  }
+  r <- exp(lr)
+  r[!is.finite(r)] <- 0
+  eG <- parent_ell(parent, yy, tt, order, params)
+  eL <- parent_ell(parent, rep(L, n), th, order, params)
+  eY <- parent_ell(parent, y, th, order, params)
+  Rs <- rowSums(r)
+  ratio <- memo_ratio(function(block) {
+    d <- function(b) {
+      v <- matrix(eG(b), n, G) - eL(b)
+      v[, 1L] <- 0
+      v
+    }
+    rowSums(r * bell_f_ratio(block, d)) / Rs
+  }, params)
+  function(block) eY(block) - eL(block) - log_deriv(block, ratio)
+}
+
+#' @title Replace the Derivatives of a Truncated Discrete Part Near Degeneracy
+#'
+#' @description
+#' Overwrites, in a result of [distrib_gradient()], [distrib_hessian()] or of
+#' the third to fifth derivatives of a discrete [truncated()] family or of a
+#' discrete [zero_adjusted()] family, the components in the parent's
+#' parameters at the observations where the retained mass sits at the first
+#' retained point, \eqn{f(L)/Z > 0.9}, with the values of [head_derivs()]. The
+#' components in the zero-adjustment parameter are left as they are.
+#'
+#' @param distrib A `TruncatedDiscreteDistrib` or `ZeroAdjustedDiscreteDistrib`.
+#' @param y A numeric vector of observations.
+#' @param theta A named list of parameters, aligned.
+#' @param order The derivative order of `res`, 1 to 5.
+#' @param res The result to correct, a named list of components.
+#'
+#' @return `res`, with the components replaced where the condition holds.
+#'
+#' @seealso [head_derivs()].
+#'
+#' @keywords internal
+#'
+#' @examples
+#' d <- truncated(poisson_distrib(), lower = 1)
+#' distrib_hessian(d, 1, list(mu = 1e-6))$mu_mu
+head_override <- function(distrib, y, theta, order, res) {
+  parent <- distrib@parent_distrib
+  pp <- parent@params
+  n <- length(y)
+  za <- S7::S7_inherits(distrib, ZeroAdjustedDiscreteDistrib)
+  th <- if (za) theta[seq_len(distrib@n_params - 1L)] else theta[pp]
+  names(th) <- pp
+  if (za) {
+    L <- parent@bounds[1L] + 1
+    U <- parent@bounds[2L]
+    lZ <- log(-expm1(distrib_pdf(parent, parent@bounds[1L], th, log = TRUE)))
+    keep <- !is.na(y) & y >= L
+  } else {
+    L <- distrib@lower
+    U <- distrib@upper
+    if (!is.finite(L)) return(res)
+    lZ <- log(trunc_constants(distrib, th)$Z)
+    keep <- !is.na(y) & y >= L & y <= U
+  }
+  share <- rep_len(distrib_pdf(parent, L, th, log = TRUE) - lZ, n)
+  rows <- which(keep & share > log(0.9))
+  if (!length(rows)) return(res)
+  par_r <- distrib_at_rows(parent, rows, n)
+  th_r <- lapply(th, function(v) if (length(v) > 1L) v[rows] else v)
+  head <- head_derivs(par_r, y[rows], th_r, L, U, order, pp)
+  params <- distrib@params
+  blocks <- if (order == 1L) {
+    stats::setNames(as.list(params), params)
+  } else if (order == 2L) {
+    hess_pairs(params)
+  } else {
+    stats::setNames(lapply(deriv_indices(params, order), function(i) params[i]),
+                    deriv_names(params, order))
+  }
+  for (nm in names(res)) {
+    b <- blocks[[nm]]
+    if (is.null(b) || !all(b %in% pp)) next
+    v <- rep_len(res[[nm]], n)
+    v[rows] <- head(b)
+    res[[nm]] <- v
+  }
+  res
+}
+
+
 # --------------------------------------------------------------------------
 # Transformed distributions
 #
@@ -332,14 +478,15 @@ za_disc_deriv_k <- function(order) {
     za <- theta[[distrib@n_params]]
     n <- length(y)
 
-    f0 <- exp(distrib_pdf(parent, 0, pars, log = TRUE))
+    lf0 <- distrib_pdf(parent, 0, pars, log = TRUE)
+    f0 <- exp(lf0)
     ell_0 <- parent_ell(parent, 0, pars, order, p_names)
 
     ratio <- memo_ratio(function(block) {
-      -f0 * bell_f_ratio(block, ell_0) / (1 - f0)
+      -f0 * bell_f_ratio(block, ell_0) / (-expm1(lf0))
     }, params)
 
-    assemble_deriv(distrib, order, function(idx) {
+    res <- assemble_deriv(distrib, order, function(idx) {
       sp <- split_index(idx, za_name)
       if (sp$n_mix > 0L && length(sp$theta) > 0L) return(rep(0, n))
 
@@ -354,6 +501,7 @@ za_disc_deriv_k <- function(order) {
         rep_len(log_deriv(idx, ratio), n)
       ifelse(y == 0, 0, at_pos)
     })
+    head_override(distrib, y, theta, order, res)
   }
 }
 
@@ -465,10 +613,14 @@ trunc_deriv_k <- function(order) {
       }, theta)
     }, params)
 
-    assemble_deriv(distrib, order, function(idx) {
+    res <- assemble_deriv(distrib, order, function(idx) {
       own <- distrib_deriv_component(parent, y, theta, idx, params, order)
       rep_len(own - rep_len(log_deriv(idx, ratio), n), n)
     })
+    if (S7::S7_inherits(distrib, TruncatedDiscreteDistrib)) {
+      res <- head_override(distrib, y, theta, order, res)
+    }
+    res
   }
 }
 

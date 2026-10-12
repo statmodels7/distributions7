@@ -34,7 +34,11 @@ classes.
 \details{
 Only \eqn{H_{ij}(y)} varies with the data; the correction is a function of
 \eqn{\theta} and the endpoints alone, so it is computed once and recycled to
-the length of \code{y}.
+the length of \code{y}. For a discrete parent whose retained mass sits at the
+lower endpoint, \eqn{f(L)/Z > 0.9}, the two terms cancel to a number much
+smaller than either, and the Hessian there is taken from \code{\link[=head_derivs]{head_derivs()}}
+through \code{\link[=head_override]{head_override()}}; the score and the third to fifth derivatives are
+treated the same way.
 }
 \section{Notation}{
 

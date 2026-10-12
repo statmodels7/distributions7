@@ -564,7 +564,7 @@ S7::method(distrib_gradient, ZeroAdjustedDiscreteDistrib) <- function(distrib, y
     res[[nm]] <- ifelse(y == 0, 0, term_pos)
   }
   res[[za_name]] <- ifelse(y == 0, 1 / za, -1 / (1 - za))
-  res
+  head_override(distrib, y, theta, 1L, res)
 }
 
 #' @title Zero-Adjusted Discrete Observed Hessian
@@ -581,6 +581,12 @@ S7::method(distrib_gradient, ZeroAdjustedDiscreteDistrib) <- function(distrib, y
 #'   \frac{\{1 - f(0)\}\,f''(0) + f'(0)^2}{\{1 - f(0)\}^2},}
 #' the second derivative of \eqn{-\log\{1 - f(0)\}}. The hurdle block is
 #' \eqn{-1/\pi^2} at a zero and \eqn{-1/(1-\pi)^2} elsewhere.
+#'
+#' Where the positive part's mass sits at one, \eqn{f(1)/\{1 - f(0)\} > 0.9},
+#' the parent's Hessian and the truncation term cancel to a number much
+#' smaller than either, and the block in \eqn{\theta} is taken from
+#' [head_derivs()] through [head_override()]; the score and the third to fifth
+#' derivatives are treated the same way.
 #'
 #' @param distrib A `ZeroAdjustedDiscreteDistrib` object, from
 #'   [zero_adjusted()].
@@ -668,7 +674,8 @@ S7::method(distrib_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y,
     res[[nm]] <- ifelse(y == 0, 0, h_orig[[nm]] + hess_correction)
   }
 
-  expand_params(res[hess_names(distrib@params)], n)
+  head_override(distrib, y, theta, 2L,
+                expand_params(res[hess_names(distrib@params)], n))
 }
 
 #' @title Zero-Adjusted Discrete Expected Information
