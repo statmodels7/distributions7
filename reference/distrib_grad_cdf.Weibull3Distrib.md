@@ -6,6 +6,11 @@ kernel, carried to the upper tail and the log scale by
 [`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md)
 and
 [`cdf_scale_k()`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md).
+The derivatives of the log survival function
+(`lower.tail = FALSE, log = TRUE`) are those of \\-(q/b)^\sigma\\
+itself, from
+[`weibull3_log_surv_derivs()`](https://statmodels7.github.io/distributions7/reference/weibull3_log_surv_derivs.md),
+so that they are finite where \\1 - F\\ underflows.
 
 ## Arguments
 

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,10 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.77.1" id="distributions7-0771">distributions7 0.77.1<a class="anchor" aria-label="anchor" href="#distributions7-0771"></a></h2>
+<ul><li>The derivatives of the log survival function of <code><a href="../reference/weibull3_distrib.html">weibull3_distrib()</a></code> (<code>lower.tail = FALSE, log = TRUE</code>) are those of <code>-(q/b)^sigma</code> taken directly, as for <code><a href="../reference/weibull1_distrib.html">weibull1_distrib()</a></code>. They were composed from the derivatives of the distribution function and divided by <code>1 - F</code>, which gave a relative error of 8.5e-7 at order four (mean 60, shape 6, <code>q = 162</code>) and <code>NaN</code> from the first order where <code>1 - F</code> underflows (<code>q = 480</code>, where the fourth derivative in the shape is -3030618.19). Against mpmath at 50 digits the 490 components of orders one to four on five parameter sets agree to 3.5e-14. The test that compared this surface with <code><a href="../reference/reparametrize.html">reparametrize()</a></code> failed on Linux and macOS, because the reference was 6.4e-6 from the exact value there; the surface is now checked against mpmath.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.77.0" id="distributions7-0770">distributions7 0.77.0<a class="anchor" aria-label="anchor" href="#distributions7-0770"></a></h2>
 <p>The documentation of the whole package was checked against the code and rewritten in the plain register. The defects that the check found in the code are repaired in this version, each with a test that fails on 0.76.1. The package now requires parameters7 (&gt;= 0.24.0).</p>

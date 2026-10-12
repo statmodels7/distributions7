@@ -4376,6 +4376,9 @@ transforms that make it work on a divergent density.
 - [`weibull3_dy_at_zero()`](https://statmodels7.github.io/distributions7/reference/weibull3_dy_at_zero.md)
   : Response Derivatives of the Weibull at Zero
 
+- [`weibull3_log_surv_derivs()`](https://statmodels7.github.io/distributions7/reference/weibull3_log_surv_derivs.md)
+  : Log-Survival Derivatives of the Weibull, Mean and Shape
+
 - [`weibull3_scale()`](https://statmodels7.github.io/distributions7/reference/weibull3_scale.md)
   [`weibull3_log_scale()`](https://statmodels7.github.io/distributions7/reference/weibull3_scale.md)
   [`weibull3_scale_ok()`](https://statmodels7.github.io/distributions7/reference/weibull3_scale.md)

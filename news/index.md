@@ -1,5 +1,23 @@
 # Changelog
 
+## distributions7 0.77.1
+
+- The derivatives of the log survival function of
+  [`weibull3_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull3_distrib.md)
+  (`lower.tail = FALSE, log = TRUE`) are those of `-(q/b)^sigma` taken
+  directly, as for
+  [`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md).
+  They were composed from the derivatives of the distribution function
+  and divided by `1 - F`, which gave a relative error of 8.5e-7 at order
+  four (mean 60, shape 6, `q = 162`) and `NaN` from the first order
+  where `1 - F` underflows (`q = 480`, where the fourth derivative in
+  the shape is -3030618.19). Against mpmath at 50 digits the 490
+  components of orders one to four on five parameter sets agree to
+  3.5e-14. The test that compared this surface with
+  [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+  failed on Linux and macOS, because the reference was 6.4e-6 from the
+  exact value there; the surface is now checked against mpmath.
+
 ## distributions7 0.77.0
 
 The documentation of the whole package was checked against the code and
