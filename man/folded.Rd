@@ -103,7 +103,9 @@ f2 <- fit_distrib(d, z, start = list(mu = -1, sigma = 1))
 rbind(from_plus = c(coef(f1), logLik = as.numeric(logLik(f1))),
       from_minus = c(coef(f2), logLik = as.numeric(logLik(f2))))
 
-# With the shape held at 3, a skew-normal parent has no such invariance in the location alone (the joint sign change of mu and alpha leaves the likelihood unchanged).
+# With the shape held at 3, a skew-normal parent has no such invariance in
+# the location alone (the joint sign change of mu and alpha leaves the
+# likelihood unchanged).
 sn <- folded(skewnormal1_distrib())
 set.seed(4)
 zs <- distrib_rng(sn, 300, list(mu = 1, sigma = 1, alpha = 3))

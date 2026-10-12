@@ -4,11 +4,9 @@
 \alias{partial_loc_scale_grad_y_hess}
 \alias{distrib_grad_y_hess.StudentT1Distrib}
 \alias{distrib_grad_y_hess.PseudoHuberDistrib}
-\alias{distrib_grad_y_hess.PseudoHuber2Distrib}
 \alias{distrib_grad_y_hess.SkewNormal1Distrib}
 \alias{distrib_grad_y_hess.SkewTDistrib}
 \alias{distrib_hess_y_hess.StudentT1Distrib}
-\alias{distrib_hess_y_hess.PseudoHuber2Distrib}
 \alias{distrib_hess_y_hess.PseudoHuberDistrib}
 \alias{distrib_hess_y_hess.SkewNormal1Distrib}
 \alias{distrib_hess_y_hess.SkewTDistrib}

@@ -417,9 +417,9 @@ loc_scale_hess_y_hess <- function(distrib, y, theta,
 #'   [distrib_grad_y_hess()] and [distrib_hess_y_hess()] for the generics.
 #'
 #' @aliases distrib_grad_y_hess.StudentT1Distrib
-#'   distrib_grad_y_hess.PseudoHuberDistrib distrib_grad_y_hess.PseudoHuber2Distrib
+#'   distrib_grad_y_hess.PseudoHuberDistrib
 #'   distrib_grad_y_hess.SkewNormal1Distrib distrib_grad_y_hess.SkewTDistrib
-#'   distrib_hess_y_hess.StudentT1Distrib distrib_hess_y_hess.PseudoHuber2Distrib
+#'   distrib_hess_y_hess.StudentT1Distrib
 #'   distrib_hess_y_hess.PseudoHuberDistrib
 #'   distrib_hess_y_hess.SkewNormal1Distrib distrib_hess_y_hess.SkewTDistrib
 #'
