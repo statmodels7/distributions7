@@ -21,8 +21,8 @@ trunc_expected_hessian(
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, applied by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns.}
 
 \item{approx}{Ignored. Present so that the signature matches the generic's.}
 
@@ -33,27 +33,31 @@ generic before dispatch.}
 \value{
 A named list of numeric vectors of length \code{length(y)}, one component
 per unordered pair of parameters, keyed as
-\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant.
+\code{\link[=hess_names]{hess_names(distrib@params)}}; each vector is constant for
+scalar parameters.
 }
 \description{
 Computes
 \deqn{\mathbb{E}\left[\frac{\partial^2 \ell_T}{\partial\theta_i
   \partial\theta_j}\right] = -\mathrm{Cov}_T(s_i, s_j),}
-the second Bartlett identity under the truncated law: the parent's expected
-Hessian cancels exactly against the term it contributes to the second
-derivative of \eqn{\log Z}. One of the shared bodies, registered on both
-truncated classes.
+the second Bartlett identity under the truncated law. The truncated-law mean
+of the parent's Hessian, \eqn{\mathbb{E}_T[H_{ij}]}, cancels against the same
+quantity in \eqn{M_{ij}}, which enters the second derivative of \eqn{\log Z},
+and \eqn{-\mathrm{Cov}_T(s_i, s_j)} remains. One of the shared bodies,
+registered on both truncated classes.
 }
 \details{
-This needs one quadrature per component even where the parent has exact cdf
-derivatives. Those give \eqn{d_{ij} Z}, which is
-\eqn{\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]}, and the covariance needs
-the second term on its own.
+For a parent without a scalar route this needs one quadrature per component
+even where the parent has exact cdf derivatives. Those give \eqn{d_{ij} Z /
+Z}, which is \eqn{\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]}, and the
+covariance needs the second term on its own. For a parent with a scalar route
+the sums come from \code{\link[=trunc_route_parts]{trunc_route_parts()}}.
 
-No component depends on the data, so every returned vector is constant.
-\code{approx} and \code{nsim} are accepted so that the signature matches the
-generic's, and neither is read: the identity above is exact, and what it
-rests on is computed by quadrature whatever \code{approx} says.
+The components do not depend on the data, so for a single parameter vector
+every returned vector is constant; if a parameter varies by observation, the
+components vary with it. \code{approx} and \code{nsim} are accepted so that the
+signature matches the generic's, and neither is read: the identity above is
+exact, and what it rests on is computed by quadrature whatever \code{approx} says.
 }
 \section{Notation}{
 

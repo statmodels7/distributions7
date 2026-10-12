@@ -22,24 +22,27 @@ NULL
 #' counted from zero over `distrib@params` and `th` the parameters of one
 #' observation followed by its constants. `d7_logpdf(id, y, th)` returns the
 #' log-density of one observation. `d7_scalar_thread_safe(id)` returns
-#' 1 when the entries of a distribution never reach the R API, so that they
-#' may be called from a worker thread, and 0 otherwise.
+#' 1 for every distribution or wrapped family that the registry covers, whose
+#' entries may be called from a worker thread, and -1 for an identifier that the
+#' registry does not recognize.
 #'
 #' The default method returns the class name when the registry covers the
 #' class and no constants; the binomial and the two beta-binomials carry
 #' their size as a constant.
 #'
-#' A wrapped family is named `"<wrapper class>[:aux]|<inner name>"`, `aux`
-#' being what the wrapper needs besides its constants and the inner name
-#' being the route's name of the wrapped family, which may itself be a
-#' wrapper; its constants are the inner family's followed by the wrapper's. For [fixed()], `aux` is the
-#' mask of the fixed parameters (bit `j - 1` for the `j`-th parameter of the
-#' inner family) and the wrapper's constants are the fixed values in the
-#' inner family's order. For [zero_inflated()] and [zero_adjusted()] there is
-#' no `aux` and no constant of the wrapper's own, the probability being the
-#' last parameter. For [transformation()], `aux` is the code of the
-#' transformer, which must be one of the twelve ready-made ones, and the
-#' wrapper's constants are the transformer's parameters; a transformer built
+#' A wrapped family is named `"<wrapper class>[:aux]|<inner name>"`, `aux` being
+#' what the wrapper needs besides its constants and the inner name being the
+#' route's name of the wrapped family, which may itself be a wrapper; its
+#' constants are the inner family's followed by the wrapper's. For [fixed()],
+#' `aux` is the mask of the fixed parameters (bit `j - 1` for the `j`-th
+#' parameter of the inner family) and the wrapper's constants are the fixed
+#' values in the inner family's order. For [zero_inflated()] and
+#' [zero_adjusted()] there is no `aux` and no constant of the wrapper's own, the
+#' probability being the last parameter. For [folded()] there is no `aux` and no
+#' constant of the wrapper's own. For [truncated()] there is no `aux` and the
+#' wrapper's constants are `lower` and `upper`. For [transformation()], `aux` is
+#' the code of the transformer, which must be one of the ready-made ones, and
+#' the wrapper's constants are the transformer's parameters; a transformer built
 #' with [transformer()] has no route.
 #'
 #' @param distrib A distribution object inheriting from `distrib`.
@@ -47,8 +50,10 @@ NULL
 #'
 #' @return `NULL` when the registry does not cover the distribution;
 #'   otherwise a list with `name`, a single character string, and
-#'   `constants`, a named list of numeric vectors, each of length 1 or of the
-#'   number of observations, in the order they follow the parameters.
+#'   `constants`, a list of numeric vectors (named for the size, the truncation
+#'   points and the transformer parameters, unnamed for the fixed values), each
+#'   of length 1 or of the number of observations, in the order they follow the
+#'   parameters.
 #'
 #' @examples
 #' distrib_scalar_route(gaussian1_distrib())

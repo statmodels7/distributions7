@@ -11,8 +11,8 @@
 \item{theta}{A named list of the parent's parameters. Truncation adds none,
 so the returned list has exactly the parent's components.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, applied by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

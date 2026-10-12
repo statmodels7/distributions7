@@ -15,7 +15,10 @@ A \code{\link[=transformer]{transformer()}} object.
 \description{
 Transformer for \eqn{Y = X^p}. Inverse \eqn{X = Y^{1/p}},
 Jacobian \eqn{|J| = \frac{1}{|p|}|Y|^{1/p - 1}}. Fractional powers require a
-non-negative support; even integer powers require a support that does not straddle 0.
+non-negative support; even integer powers require a support that does not
+straddle 0, and on a support at or below zero \code{\link[=transformation]{transformation()}} uses the
+negative root \eqn{X = -Y^{1/p}} as the inverse; negative powers require a
+support that excludes 0, its endpoints included.
 }
 \examples{
 d <- transformation(gamma2_distrib(), power_transform(p = 2))

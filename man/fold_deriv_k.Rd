@@ -14,17 +14,18 @@ A function with the signature of \code{distrib_deriv3()}, suitable for
 \verb{S7::method(...) <- }.
 }
 \description{
-Returns the method \code{\link[=folded]{folded()}} registers for \code{distrib_deriv3()} or
-\code{distrib_deriv4()}. Both orders run the same three steps, so the body is
-written once and the order is closed over: form the weight with
-\code{\link[=fold_parts]{fold_parts()}}, build the block ratios with \code{\link[=fold_ratio]{fold_ratio()}}, and hand them to
-\code{\link[=log_deriv]{log_deriv()}} for every component of the order.
+Returns the method that \code{\link[=folded]{folded()}} registers for \code{distrib_deriv3()} and
+\code{distrib_deriv4()}, and the kernel that the fifth-derivative method uses. All
+orders run the same three steps, so the body is written once and the order is
+closed over: form the weight with \code{\link[=fold_parts]{fold_parts()}}, build the block ratios with
+\code{\link[=fold_ratio]{fold_ratio()}}, and pass them to \code{\link[=log_deriv]{log_deriv()}} for every component of the
+order.
 }
 \details{
 The ratios are \eqn{d^B L/L = w\,(d^B f(x)/f(x)) + (1-w)\,(d^B f(-x)/f(-x))},
 and \code{\link[=log_deriv]{log_deriv()}} turns them into derivatives of \eqn{\log L} by the
-moment-to-cumulant relation. Nothing about the fold is written out at third
-or fourth order; the same two functions serve every order the parent
+moment-to-cumulant relation. The fold needs no separate formula at third or
+fourth order: the same two functions serve every order that the parent
 supplies.
 }
 \section{Notation}{

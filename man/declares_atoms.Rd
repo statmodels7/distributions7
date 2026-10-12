@@ -18,9 +18,9 @@ those wraps a distribution for which the function returns \code{TRUE};
 \description{
 Answers whether a distribution registers \code{\link[=distrib_atoms]{distrib_atoms()}} for itself, which
 is how \code{\link[=folded]{folded()}} decides that a parent carries a point mass and must be
-rejected. The question is asked of the CLASS the method is registered on,
-not of a value: a distribution with an atom declares one at every parameter
-setting, and a value taken at one setting could be empty by accident.
+rejected. The function examines the class on which the method is registered
+and not a value: a distribution with an atom declares one at every parameter
+setting, whereas a value taken at one setting could be empty by accident.
 }
 \details{
 The wrappers \code{\link[=fixed]{fixed()}}, \code{\link[=reparametrize]{reparametrize()}} and \code{\link[=truncated]{truncated()}} register
@@ -32,7 +32,8 @@ and a wrapper of a family without atoms declares none.
 The argument is named \code{parent} deliberately. The base class of this package
 is called \code{distrib}, and an argument of that name would shadow it: the
 comparison meant for the base class would then be against the object. That
-defect has been met before in this package and is avoided by naming.
+The argument is named \code{parent} because an argument named \code{distrib} would
+shadow the base class \code{distrib} in the comparison with the class.
 }
 \examples{
 # A plain gaussian declares none.

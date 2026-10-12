@@ -16,10 +16,10 @@
 A numeric vector of length \code{n}, on the transformed scale.
 }
 \description{
-Draws \code{n} values from the parent and applies \eqn{g} to them. That is the
-DEFINITION of \eqn{Y = g(X)}, not an approximation of it, so the draws are
-exact whatever route the parent's own generator takes and consume exactly
-what the parent consumes from R's stream.
+Draws \code{n} values from the parent and applies \eqn{g} to them. Because \eqn{Y
+= g(X)} by definition, the draws are exact whatever route the parent's
+generator takes, and they consume exactly what the parent consumes from R's
+random number stream.
 }
 \examples{
 d <- transformation(gaussian1_distrib(), exp_transform())

@@ -20,8 +20,8 @@ NULL
 #' @description
 #' Computes \eqn{\partial^3 \ell / \partial y\, \partial\theta_i
 #' \partial\theta_j}, one component per unordered pair of parameters, each a
-#' vector along `y`. It says how the response GRADIENT curves in the
-#' parameters, and it is the third-order entry of the mixed grid below.
+#' vector along `y`. It gives the second derivative, in the parameters, of the
+#' response gradient, and it is the third-order entry of the mixed grid below.
 #'
 #' @details
 #' These are the second-order column of the mixed grid whose first-order column
@@ -32,16 +32,17 @@ NULL
 #' | \eqn{\partial/\partial y}   | [distrib_grad_y()] | [distrib_cross_y()]  | [distrib_grad_y_hess()] |
 #' | \eqn{\partial^2/\partial y^2} | [distrib_hess_y()] | [distrib_cross2_y()] | [distrib_hess_y_hess()] |
 #'
-#' The right-hand column is the one a marginal criterion's SECOND derivative
-#' asks of a penalty. A penalty is a negative log-density read at the
+#' The right-hand column is the one that the second derivative of a marginal
+#' criterion requires from a penalty. A penalty is a negative log-density read
+#' at the
 #' coefficients, so \eqn{\partial^2\rho/\partial\beta^2} carries the density's
 #' response curvature and the two mixed derivatives above carry
 #' \eqn{\partial^3\rho/\partial\beta\,\partial\theta^2} and
 #' \eqn{\partial^4\rho/\partial\beta^2\partial\theta^2}.
 #'
 #' The components are keyed by [hess_names()], the same enumeration
-#' [distrib_hessian()] uses, so a consumer looking a pair up finds it under the
-#' name it already knows.
+#' [distrib_hessian()] uses, so a consumer that looks up a pair finds it under
+#' the name that [distrib_hessian()] uses.
 #'
 #' # The link scale
 #'
@@ -53,16 +54,18 @@ NULL
 #'
 #' # Where the numbers come from
 #'
-#' A distribution with a closed form provides it. The rest take one central
-#' difference of the analytic [distrib_cross_y()] in each parameter, through
-#' [numerical_theta2_y()]. Off the diagonal the two differences act on
-#' DIFFERENT parameters, so they compose into one mixed stencil rather than the
-#' nested differencing of a single variable the package forbids.
+#' A distribution with a closed form provides it. A continuous distribution
+#' without one takes [distrib_grad_y_hess.continuous_distrib()], which applies
+#' one tensor stencil, through [mixed_tensor_derivatives()], to the highest
+#' quantity that the family implements itself, so a single variable is never
+#' differenced twice.
 #'
-#' Continuous distributions only, as with every other response derivative: a
-#' discrete family has no method and the call raises with its class named.
+#' Methods exist for the continuous families and for the multivariate Gaussian
+#' and Student t families. A discrete family has no method, and the call signals
+#' an error that names its class.
 #'
-#' @param distrib A distribution object inheriting from `continuous_distrib`.
+#' @param distrib A distribution object inheriting from `continuous_distrib`,
+#'   or a multivariate Gaussian or Student t distribution.
 #' @param y A numeric vector of observations.
 #' @param theta A named list, or named numeric vector, of distribution
 #'   parameters. Aligned by the generic before dispatch.
@@ -81,7 +84,7 @@ NULL
 #'
 #' @seealso [distrib_hess_y_hess()] for the fourth-order twin,
 #'   [distrib_cross_y()] for the first-order column, and
-#'   [numerical_theta2_y()] for the fallback.
+#'   [mixed_tensor_derivatives()] for the fallback.
 #'
 #' @examples
 #' d <- gaussian1_distrib()
@@ -125,8 +128,8 @@ distrib_grad_y_hess <- S7::new_generic("distrib_grad_y_hess", "distrib", functio
 #' @description
 #' Computes \eqn{\partial^4 \ell / \partial y^2\, \partial\theta_i
 #' \partial\theta_j}, one component per unordered pair of parameters, each a
-#' vector along `y`. It says how the response CURVATURE curves in the
-#' parameters, and it is the fourth-order entry of the mixed grid below.
+#' vector along `y`. It gives the second derivative, in the parameters, of the
+#' response curvature, and it is the fourth-order entry of the mixed grid below.
 #'
 #' @details
 #' These are the second-order column of the mixed grid whose first-order column
@@ -137,8 +140,9 @@ distrib_grad_y_hess <- S7::new_generic("distrib_grad_y_hess", "distrib", functio
 #' | \eqn{\partial/\partial y}   | [distrib_grad_y()] | [distrib_cross_y()]  | [distrib_grad_y_hess()] |
 #' | \eqn{\partial^2/\partial y^2} | [distrib_hess_y()] | [distrib_cross2_y()] | [distrib_hess_y_hess()] |
 #'
-#' The right-hand column is the one a marginal criterion's SECOND derivative
-#' asks of a penalty. A penalty is a negative log-density read at the
+#' The right-hand column is the one that the second derivative of a marginal
+#' criterion requires from a penalty. A penalty is a negative log-density read
+#' at the
 #' coefficients, so \eqn{\partial^2\rho/\partial\beta^2} carries the density's
 #' response curvature and the two mixed derivatives above carry
 #' \eqn{\partial^3\rho/\partial\beta\,\partial\theta^2} and
@@ -157,12 +161,15 @@ distrib_grad_y_hess <- S7::new_generic("distrib_grad_y_hess", "distrib", functio
 #'
 #' # Where the numbers come from
 #'
-#' A distribution with a closed form provides it. The rest take one central
-#' difference of the analytic [distrib_cross2_y()] in each parameter, through
-#' [numerical_theta2_y()]. Continuous distributions only: a discrete family has
-#' no method and the call raises with its class named.
+#' A distribution with a closed form provides it. A continuous distribution
+#' without one takes [distrib_hess_y_hess.continuous_distrib()], which applies
+#' one tensor stencil, through [mixed_tensor_derivatives()], to the highest
+#' quantity that the family implements itself. The multivariate Gaussian and
+#' Student t families have methods of their own; a discrete family has no
+#' method, and the call signals an error that names its class.
 #'
-#' @param distrib A distribution object inheriting from `continuous_distrib`.
+#' @param distrib A distribution object inheriting from `continuous_distrib`,
+#'   or a multivariate Gaussian or Student t distribution.
 #' @param y A numeric vector of observations.
 #' @param theta A named list, or named numeric vector, of distribution
 #'   parameters. Aligned by the generic before dispatch.
@@ -221,8 +228,8 @@ distrib_hess_y_hess <- S7::new_generic("distrib_hess_y_hess", "distrib", functio
 #' @description
 #' Carries a quantity keyed by parameter pair from the parameter scale onto the
 #' unconstrained one. Both [distrib_grad_y_hess()] and [distrib_hess_y_hess()]
-#' call it after dispatch, so a method returns the parameter scale and never
-#' has to know about links.
+#' call it after dispatch, so a method returns the parameter scale and contains
+#' no code for links.
 #'
 #' @details
 #' The chain rule is DIAGONAL, each parameter carrying its own link, so a pair
@@ -264,7 +271,7 @@ distrib_hess_y_hess <- S7::new_generic("distrib_hess_y_hess", "distrib", functio
 #' y <- c(-1, 0, 2)
 #' theta <- list(mu = 0.4, sigma = 1.3)
 #'
-#' # What the generic does when scale = "link" is asked for.
+#' # What the generic does with scale = "link".
 #' second <- distrib_grad_y_hess(d, y, theta)
 #' first <- distrib_cross_y(d, y, theta)
 #' linked <- distributions7:::theta2_link_scale(d, y, theta, second, first)
@@ -296,23 +303,23 @@ theta2_link_scale <- function(distrib, y, theta, second, first) {
 #'
 #' @description
 #' Computes a second-order mixed component by one central difference, in each
-#' parameter, of an ANALYTIC first-order component. It is the fallback behind
-#' [distrib_grad_y_hess()] and [distrib_hess_y_hess()] for a family that
-#' provides no closed form.
+#' parameter, of a first-order component. It supplies the pairs that have no
+#' closed form in the methods for location-scale families with a shape parameter
+#' and for families with a scale and no location. The default methods for a
+#' continuous family use [mixed_tensor_derivatives()] instead.
 #'
 #' @details
 #' The reference is [distrib_cross_y()] or [distrib_cross2_y()], so a
 #' distribution with a closed form for those pays for exactly one difference
 #' and never differences a difference.
 #'
-#' A mixed pair is differenced BOTH WAYS and averaged. The two agree in exact
-#' arithmetic, and in floating point they differ, the two steps being
-#' different sizes, while a second derivative of a scalar has to come out
-#' symmetric. On a gamma the two orders differ by about
-#' \eqn{3\times 10^{-10}}, which is the size of the answer's own error.
+#' A mixed pair is differenced in both orders and the two results are averaged.
+#' They agree in exact arithmetic and differ in floating point, the two steps
+#' having different sizes, and the average is symmetric in the pair.
 #'
-#' The step is [fd_steps()]'s, so a parameter near a bound is differenced
-#' inward rather than across it.
+#' The step is chosen by [fd_stable_step()] from the two candidates of
+#' [fd_steps()], so that both evaluation points of the central difference of a
+#' parameter near a bound stay inside its domain.
 #'
 #' @param distrib A distribution object. Its `params` and `params_bounds` set
 #'   the enumeration and the steps.
@@ -350,7 +357,7 @@ theta2_link_scale <- function(distrib, y, theta, second, first) {
 #' # the fallback for.
 #' max(abs(unlist(num) - unlist(distrib_grad_y_hess(d, y, theta))))
 #'
-#' # A family that does take the fallback, checked against numDeriv.
+#' # A family that takes the default continuous method, checked against numDeriv.
 #' dg <- gamma2_distrib()
 #' yg <- c(0.5, 1, 2)
 #' thg <- list(mu = 2, sigma2 = 1)
@@ -398,16 +405,15 @@ numerical_theta2_y <- function(distrib, y, theta, inner,
 #' every continuous family, whether or not it writes one out.
 #'
 #' @details
-#' The stencil is never applied to a quantity that is itself a fallback.
-#' Before 0.76.0 the fallback differenced [distrib_cross_y()] in the
-#' parameters whether or not that was analytic, and where it was a fallback
-#' that differenced a difference in the same parameter.
+#' The stencil is never applied to a quantity that is itself a numerical
+#' fallback; only quantities that the family's class registers are used as the
+#' base.
 #'
 #' @param distrib A `continuous_distrib` object with no closed form of its own.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
-#'   dispatch.
+#' @param scale One of `"parameter"` or `"link"`. The generic applies the link
+#'   scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per unordered pair of
@@ -415,7 +421,7 @@ numerical_theta2_y <- function(distrib, y, theta, inner,
 #'
 #' @seealso [distrib_grad_y_hess()] for the generic,
 #'   [distrib_hess_y_hess.continuous_distrib()] for the fourth-order twin, and
-#'   [numerical_theta2_y()], which does the work.
+#'   [mixed_tensor_derivatives()], which does the work.
 #'
 #' @keywords internal
 #'
@@ -448,15 +454,13 @@ S7::method(distrib_grad_y_hess, continuous_distrib) <- function(distrib, y, thet
 #' response, and it makes the fourth-order mixed derivative available for
 #' every continuous family. For [transformation()], which has an analytic
 #' Hessian in the parameters and no response derivative, it is a second
-#' difference in the response of that Hessian; before 0.76.0 it differenced
-#' a difference in the same parameter, and on a log-gamma it was wrong by a
-#' factor of seven.
+#' difference in the response of that Hessian.
 #'
 #' @param distrib A `continuous_distrib` object with no closed form of its own.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
-#'   dispatch.
+#' @param scale One of `"parameter"` or `"link"`. The generic applies the link
+#'   scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per unordered pair of
@@ -502,8 +506,8 @@ S7::method(distrib_hess_y_hess, continuous_distrib) <- function(distrib, y, thet
 #' @param distrib A `Gaussian1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list with `mu` and `sigma`.
-#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
-#'   dispatch.
+#' @param scale One of `"parameter"` or `"link"`. The generic applies the link
+#'   scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of three numeric vectors of length `length(y)`, keyed
@@ -561,8 +565,8 @@ S7::method(distrib_grad_y_hess, Gaussian1Distrib) <- function(distrib, y, theta,
 #' @param distrib A `Gaussian1Distrib` object.
 #' @param y A numeric vector of observations. Only its length is used.
 #' @param theta A named list with `mu` and `sigma`.
-#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
-#'   dispatch.
+#' @param scale One of `"parameter"` or `"link"`. The generic applies the link
+#'   scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of three numeric vectors of length `length(y)`, keyed

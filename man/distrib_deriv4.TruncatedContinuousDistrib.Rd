@@ -27,10 +27,11 @@ and \eqn{d^I \log Z} comes from the moment-to-cumulant expansion over the
 fifteen partitions of four indices, each block an expectation
 \eqn{\mathbb{E}_T[\partial^B f / f]} under the truncated law.
 
-The cost is set by the number of \strong{distinct} blocks, not by the number of
-partitions: a block met twice is computed once and looked up. At four
-indices over two parameters that is five distinct blocks against fifteen
-partitions.
+The cost is set by the number of distinct blocks: a block that occurs in
+several partitions is computed once and looked up. For the component
+\code{mu_mu_sigma_sigma}, the fifteen partitions use eight distinct blocks,
+and over all components of order four with two parameters the blocks of one
+to four indices number fourteen.
 }
 \examples{
 tr <- truncated(gaussian1_distrib(), lower = -1, upper = 3)

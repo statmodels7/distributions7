@@ -142,10 +142,13 @@ cdf_tail_scale <- function(distrib, Fq, dF1, dF2 = NULL, lower.tail, log) {
 #'
 #' # Constants that vary by observation
 #'
-#' A family whose constant varies by observation (a binomial's vector `size`,
-#' or a wrapper over one) is evaluated at each observation's own constant,
-#' taken by [distrib_at_rows()], as the parameters are. A missing quantile
-#' gives a missing derivative.
+#' A family whose constant varies by observation (a binomial's vector `size`, or
+#' a wrapper over one) is evaluated at each observation's own constant, taken by
+#' [distrib_at_rows()], as the parameters are. A missing quantile gives a
+#' missing derivative. # The upper tail The derivatives of the mass sum to zero
+#' over the support, so where \eqn{P(Y > q)} is below 0.01 the sum up to \eqn{q}
+#' is computed as minus the sum above it, a short series that keeps its digits
+#' where the sum up to \eqn{q} would cancel to a small number.
 #'
 #' @section Notation:
 #' \eqn{f} is the mass function, \eqn{F} the distribution function,
@@ -181,6 +184,9 @@ discrete_cdf_deriv <- function(distrib, q, theta, order) {
   # a constant that varies by observation (a binomial's size) is taken at
   # the row, as the parameters are
   rows <- distrib_const_rows(distrib) > 1L
+  # the upper tail of every quantile, read once to choose the side of each sum
+  surv <- distrib_cdf(distrib, q, theta[seq_along(params)], lower.tail = FALSE)
+  surv <- rep_len(surv, n)
   for (k in seq_len(n)) {
     th_k <- lapply(theta[seq_along(params)],
                    function(v) if (length(v) > 1) v[k] else v)
@@ -190,17 +196,29 @@ discrete_cdf_deriv <- function(distrib, q, theta, order) {
     }
     if (q[k] < lo) next
     dk <- if (rows) distrib_at_rows(distrib, k, n) else distrib
-    grid <- seq(lo, floor(q[k] + 1e-9))
-    fy <- distrib_pdf(dk, grid, th_k)
-    g <- distrib_gradient(dk, grid, th_k)
-    if (order == 1L) {
-      for (nm in nms) out[[nm]][k] <- sum(fy * g[[nm]])
-    } else {
+    terms <- function(grid) {
+      fy <- distrib_pdf(dk, grid, th_k)
+      g <- distrib_gradient(dk, grid, th_k)
+      if (order == 1L) return(lapply(g[nms], function(v) fy * v))
       h <- distrib_hessian(dk, grid, th_k)
-      for (nm in nms) {
+      lapply(stats::setNames(nms, nms), function(nm) {
         pr <- pairs[[nm]]
-        out[[nm]][k] <- sum(fy * (h[[nm]] + g[[pr[1]]] * g[[pr[2]]]))
+        fy * (h[[nm]] + g[[pr[1]]] * g[[pr[2]]])
+      })
+    }
+    top <- floor(q[k] + 1e-9)
+    # the lower sum loses about eps / S(q) of relative accuracy, so it is
+    # replaced only where the upper tail is small
+    if (isTRUE(surv[k] < 0.01)) {
+      # the derivatives of the mass sum to zero over the support, so in the
+      # upper tail the sum below q is minus the small sum above it
+      for (nm in nms) {
+        out[[nm]][k] <- -discrete_support_sum(function(K, I) terms(K)[[nm]],
+                                               top + 1, distrib@bounds[2], 1L)
       }
+    } else {
+      tk <- terms(seq(lo, top))
+      for (nm in nms) out[[nm]][k] <- sum(tk[[nm]])
     }
   }
   out

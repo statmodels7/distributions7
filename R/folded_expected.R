@@ -32,9 +32,15 @@ NULL
 #' and read the folded third derivatives as well. At order 2 a parent
 #' without a route signals an error. The sums are
 #' accumulated as the scalar registry accumulates them. A parent that the
-#' registry does not cover, or that is not a location-scale family on the
-#' real line, is integrated by [expected_derivative()] with
-#' `approx = "integrate"` instead.
+#' registry does not cover, or that is not a location-scale family on the real
+#' line, is integrated by [expected_derivative()] with `approx = "integrate"` at
+#' order 0 and by [numerical_dexpected_hessian()] at order 1; at order 2 the
+#' call signals an error. Where the parent's mass beyond the fold is below the
+#' square of the machine epsilon, the folded variable is the parent or its
+#' mirror image, and the expectations are the parent's own expected Hessian and
+#' its derivatives, which the quadrature around the fold does not resolve at a
+#' center many scales away. A kink at a center of exactly zero is read as the
+#' one-sided limit, the quantities being even or odd in the center.
 #'
 #' @param distrib A [folded()] family.
 #' @param y The response, read for its length.
@@ -84,11 +90,36 @@ folded_expected <- function(distrib, y, theta, order) {
                                        "integrate", 10000))
   }
   m <- nrow(U)
+  # A kink center at exactly zero sits on the edge of the half line, where the
+  # boundary terms have no side to be read from. The quantities are even or
+  # odd in the center, so the one-sided limit is the value: the center is
+  # moved to a positive number far below any scale.
+  kp <- which(!param_smoothness(distrib)[P])
+  if (order >= 1L && length(kp) == 1L) {
+    at0 <- U[, kp] == 0 & cs[, 1] == 0
+    U[at0, kp] <- 1e-250
+    cs[at0, 1] <- 1e-250
+  }
   pairs <- which(upper.tri(diag(p), diag = TRUE), arr.ind = TRUE)
   keys <- switch(order + 1L, hess_names(P), dexpected_names(P),
                  c(dexpected_names(P), d2expected_names(P)))
   vals <- matrix(NA_real_, m, length(keys), dimnames = list(NULL, keys))
   for (u in seq_len(m)) {
+    # With the parent's mass beyond the fold below eps^2 the folded variable
+    # is the parent or its mirror image, whose information is the parent's;
+    # the quadrature, built around the fold, does not resolve a center many
+    # scales away from it.
+    thp <- stats::setNames(as.list(U[u, seq_len(p)]), P)
+    reflected <- distrib_cdf(parent, 0, thp, lower.tail = cs[u, 1] > 0)
+    if (is.finite(reflected) && reflected < .Machine$double.eps^2) {
+      ref <- switch(order + 1L,
+        distrib_expected_hessian(parent, 1, thp),
+        distrib_dexpected_hessian(parent, 1, thp),
+        c(distrib_dexpected_hessian(parent, 1, thp),
+          distrib_d2expected_hessian(parent, 1, thp)))
+      vals[u, ] <- vapply(keys, function(k) ref[[k]][1L], numeric(1))
+      next
+    }
     rule <- fold_rule_cpp(cs[u, 1], cs[u, 2])
     yv <- rule$y
     thu <- lapply(seq_len(p), function(j) rep(U[u, j], length(yv)))

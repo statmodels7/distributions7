@@ -22,8 +22,8 @@ parent's at the mapped parameters and no chain rule enters.
 }
 \details{
 Only the continuous class registers this. A discrete family has no response
-derivative, and the base class refuses one, so there is nothing for a
-discrete reparametrization to delegate.
+derivative, and no method is registered for it on the base class, so there is
+nothing for a discrete reparametrization to delegate.
 }
 \examples{
 d <- reparametrize(

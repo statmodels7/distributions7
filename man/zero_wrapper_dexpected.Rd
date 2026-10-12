@@ -47,14 +47,17 @@ A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}}, each co
 length \code{length(y)}, on the parameter scale.
 }
 \description{
-Compute the first derivatives of the expected information of
-\code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} families in closed form, from the
-parent's expected information and its derivatives and from the parent's
-mass, score and Hessian at zero, on the parameter scale.
+Compute the first derivatives of the expected Hessian of \code{\link[=zero_inflated]{zero_inflated()}}
+and \code{\link[=zero_adjusted]{zero_adjusted()}} families in closed form in the parent's expected
+Hessian and its derivatives and in the parent's mass, score and Hessian at
+zero, on the parameter scale. The parent's derivatives of the expected
+Hessian come from its own method, which is analytic for some families and a
+central difference for the others.
 }
 \details{
 With \eqn{f = f(0)}, \eqn{s} and \eqn{H} the parent's score and Hessian at
-zero, \eqn{E} and \eqn{D} the parent's expected information and its
+zero, \eqn{E} and \eqn{D} the parent's expected Hessian (the negative of the
+expected information) and its
 derivatives, \eqn{\zeta} the zero-inflation probability and
 \eqn{L = \zeta + (1-\zeta) f}, the zero-inflated expected information is
 \deqn{E^{ZI}_{ij} = (1-\zeta) E_{ij} + \zeta(1-\zeta) f s_i s_j / L,}
@@ -69,10 +72,11 @@ derivatives follow with \eqn{\partial_c f = f s_c} and
 the mixed block being zero; for the continuous one
 \eqn{E^{ZA}_{ij} = (1-\pi) E_{ij}}.
 
-Each entry is computed by \code{zi_dexpected_entry()},
-\code{za_disc_dexpected_entry()} or \code{za_cont_dexpected_entry()} with the
-expressions of the scalar registry (\code{pt_wrappers.h}), so that the two
-routes agree to the last bit.
+Each entry is computed by \code{zi_dexpected_entry()}, \code{za_disc_dexpected_entry()}
+or \code{za_cont_dexpected_entry()}. The scalar registry (\code{pt_wrappers.h}) writes
+with the same expressions the entries in which the pair and the parameter
+differentiated are one parent parameter \code{k}, and the entry in the
+probability.
 }
 \seealso{
 \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}

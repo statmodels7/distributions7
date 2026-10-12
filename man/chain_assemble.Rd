@@ -43,12 +43,12 @@ the standardized quantile.
 
 The key into an inner table is \strong{built} from the parameter names and never
 parsed out of one, so a parameter whose own name contains an underscore is
-safe. That is the shape of mistake the package records having made once, in
-three separate fallbacks at once.
+safe.
 }
 \seealso{
 \code{\link[=chain_derivatives]{chain_derivatives()}}, its caller;
-\code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}} and \code{\link[=enet_distrib]{enet_distrib()}}, the two other consumers;
+\code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}}, \code{\link[=enet_distrib]{enet_distrib()}} and the mapped cdf derivatives
+of R/cdf_mapped_higher.R, further consumers;
 \code{\link[numericals7:set_partitions]{numericals7::set_partitions()}} for the enumeration.
 }
 \keyword{internal}

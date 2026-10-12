@@ -61,19 +61,29 @@ validates neither.
 }
 \section{Methods}{
 
-Registered on this class:
-\code{\link[=distrib_cdf.FoldedDistrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.FoldedDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.FoldedDistrib]{distrib_deriv4()}},
-\code{\link[=distrib_grad_y.FoldedDistrib]{distrib_grad_y()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.FoldedDistrib]{distrib_pdf()}},
+\code{\link[=distrib_cdf.FoldedDistrib]{distrib_cdf()}} and
+\code{\link[=distrib_rng.FoldedDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.FoldedDistrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.FoldedDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.FoldedDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.FoldedDistrib]{distrib_pdf()}},
-\code{\link[=distrib_rng.FoldedDistrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.FoldedDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.FoldedDistrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.FoldedDistrib]{distrib_deriv5()}};
+\item the derivatives of the expected information: \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}
+and \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.FoldedDistrib]{distrib_grad_y()}} and
+\code{\link[=distrib_hess_y.FoldedDistrib]{distrib_hess_y()}};
+\item the kink: \code{\link[=kink_knots]{kink_knots()}};
+\item the exactness flags: \code{\link[=has_exact_deriv4]{has_exact_deriv4()}} and \code{\link[=expected_hessian_costly]{expected_hessian_costly()}};
+\item the fitting helpers: \code{\link[=distrib_scalar_route]{distrib_scalar_route()}}.
+}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}, whose numerical
-quantile inverts the exact folded distribution function above.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{
@@ -90,7 +100,7 @@ d@distrib_name
 d@parent_distrib@distrib_name
 }
 \seealso{
-\code{\link[=folded]{folded()}} to build one, \code{\link[=truncated]{truncated()}} for the other wrapper that
-adds no parameter, and \code{\link[=fixed]{fixed()}}, which with \code{mu = 0} turns a folded
-gaussian into the half-normal.
+\code{\link[=folded]{folded()}} to build one, \code{\link[=truncated]{truncated()}}, which also leaves the
+parameters of its parent unchanged, adds no parameter, and \code{\link[=fixed]{fixed()}}, which
+with \code{mu = 0} turns a folded gaussian into the half-normal.
 }

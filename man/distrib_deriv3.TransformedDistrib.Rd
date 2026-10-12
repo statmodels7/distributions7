@@ -28,9 +28,8 @@ Exactly the parent's third derivatives, read at the preimage
 depend on \eqn{\theta}, so it vanishes from every derivative in
 \eqn{\theta} and leaves the parent's untouched.
 
-Measured on \code{transformation(gaussian1_distrib(), exp_transform())}, the
-whole component list is \code{all.equal} to the Gaussian's at \code{log(y)}, at this
-order and at the fourth.
+For \code{transformation(gaussian1_distrib(), exp_transform())}, the component
+list equals the Gaussian's at \code{log(y)}, at this order and at the fourth.
 }
 \examples{
 # A lognormal built by transforming a Gaussian.

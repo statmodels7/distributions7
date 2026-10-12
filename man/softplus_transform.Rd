@@ -13,9 +13,11 @@ softplus_transform(a = 1)
 A \code{\link[=transformer]{transformer()}} object.
 }
 \description{
-Transformer for the inverse-softplus map \eqn{Y = \frac{1}{a}\log(e^{aX} - 1)},
-sending \eqn{(0, \infty)} to the real line. Inverse (softplus)
-\eqn{X = \frac{1}{a}\log(1 + e^{aY})}, Jacobian \eqn{|J| = \text{plogis}(aY)}.
+Transformer for the inverse-softplus map \eqn{Y =
+  \frac{1}{a}\log(e^{aX} - 1)}, sending \eqn{(0, \infty)} to the real line,
+evaluated as \eqn{X + \frac{1}{a}\log(1 - e^{-aX})} so that it does not
+overflow at a large argument. Inverse (softplus) \eqn{X = \frac{1}{a}\log(1
+  + e^{aY})}, Jacobian \eqn{|J| = \text{plogis}(aY)}.
 }
 \examples{
 d <- transformation(gamma2_distrib(), softplus_transform(a = 1))

@@ -16,10 +16,10 @@ A numeric vector of \code{n} random draws, every one a support point in
 \eqn{[L, U]}.
 }
 \description{
-Draws by inverse transform on the parent, exact for a discrete distribution
-function: \eqn{Y = Q\{F(L^-) + V Z\}} with \eqn{V} uniform on \eqn{(0, 1)}.
-Every draw is a support point inside \eqn{[L, U]}, in one pass and with no
-rejection.
+Draws by inverse transform on the parent, through
+\code{\link[=distrib_quantile.TruncatedDiscreteDistrib]{distrib_quantile.TruncatedDiscreteDistrib()}} at \eqn{V} uniform on \eqn{(0,
+1)}. Every draw is a support point in \eqn{[L, U]}, in one pass and with no
+rejection, an interval in the upper tail included.
 }
 \section{Notation}{
 

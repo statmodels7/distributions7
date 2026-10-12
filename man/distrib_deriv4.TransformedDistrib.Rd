@@ -26,8 +26,8 @@ Exactly the parent's fourth derivatives, read at the preimage
 \eqn{\log|dg^{-1}/dy|} carries no \eqn{\theta}, so it contributes nothing to
 any derivative in \eqn{\theta} whatever the order.
 
-Nothing here is approximated and no partition sum is taken. The wrapper's
-work is entirely in the argument, not in the derivative.
+The wrapper adds no approximation and takes no partition sum: it evaluates
+the parent's fourth derivative at \eqn{x = g^{-1}(y)}.
 }
 \examples{
 logn <- transformation(gaussian1_distrib(), exp_transform())

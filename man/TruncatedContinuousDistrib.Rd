@@ -72,9 +72,12 @@ The parent may itself carry point masses, as \code{\link[=zero_adjusted]{zero_ad
 continuous distribution does. Those atoms survive truncation where they lie
 inside the interval, rescaled by \eqn{1/Z}, and
 \code{\link[=distrib_atoms.TruncatedContinuousDistrib]{distrib_atoms.TruncatedContinuousDistrib()}} reports them. Two methods exist
-only for that case: \code{\link[=expectation.TruncatedContinuousDistrib]{expectation.TruncatedContinuousDistrib()}} adds the
-masses to the integral, and \code{\link[=parent_mass_at]{parent_mass_at()}} asks the parent for the mass
-on a single point instead of assuming a continuous parent has none.
+only for that case: \code{\link[=distrib_atoms.TruncatedContinuousDistrib]{distrib_atoms.TruncatedContinuousDistrib()}} and
+\code{\link[=expectation.TruncatedContinuousDistrib]{expectation.TruncatedContinuousDistrib()}}, which adds the masses to the
+integral. The internal function \code{\link[=parent_mass_at]{parent_mass_at()}} is not a method: it
+returns the parent's mass at a single point (the mass function for a discrete
+parent, the atom for a mixed one, zero for an ordinary continuous parent) and
+serves both truncation classes.
 }
 
 \section{Notation}{
@@ -88,20 +91,35 @@ and \eqn{H_{ij}} are the parent's score and observed Hessian; and
 
 \section{Methods}{
 
-Methods implemented for this class:
-\code{\link[=distrib_atoms.TruncatedContinuousDistrib]{distrib_atoms()}},
-\code{\link[=distrib_cdf.TruncatedContinuousDistrib]{distrib_cdf()}},
-\code{\link[=distrib_expected_hessian.TruncatedContinuousDistrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_grad_y.TruncatedContinuousDistrib]{distrib_grad_y()}},
-\code{\link[=distrib_gradient.TruncatedContinuousDistrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.TruncatedContinuousDistrib]{distrib_hess_y()}},
-\code{\link[=distrib_hessian.TruncatedContinuousDistrib]{distrib_hessian()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution:
 \code{\link[=distrib_pdf.TruncatedContinuousDistrib]{distrib_pdf()}},
+\code{\link[=distrib_cdf.TruncatedContinuousDistrib]{distrib_cdf()}},
 \code{\link[=distrib_quantile.TruncatedContinuousDistrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.TruncatedContinuousDistrib]{distrib_rng()}},
-\code{\link[=expectation.TruncatedContinuousDistrib]{expectation()}}
+\code{\link[=distrib_atoms.TruncatedContinuousDistrib]{distrib_atoms()}} and
+\code{\link[=expectation.TruncatedContinuousDistrib]{expectation()}};
+\item the derivatives in the parameters:
+\code{\link[=distrib_gradient.TruncatedContinuousDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.TruncatedContinuousDistrib]{distrib_hessian()}},
+\code{\link[=distrib_expected_hessian.TruncatedContinuousDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.TruncatedContinuousDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.TruncatedContinuousDistrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.TruncatedContinuousDistrib]{distrib_deriv5()}};
+\item the derivatives of the expected information: \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}
+and \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.TruncatedContinuousDistrib]{distrib_grad_y()}} and
+\code{\link[=distrib_hess_y.TruncatedContinuousDistrib]{distrib_hess_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.TruncatedContinuousDistrib]{distrib_cross_y()}};
+\item the kink: \code{\link[=kink_knots]{kink_knots()}};
+\item the exactness flags: \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} and \code{\link[=has_exact_deriv4]{has_exact_deriv4()}};
+\item the fitting helpers: \code{\link[=distrib_scalar_route]{distrib_scalar_route()}}.
+}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \examples{

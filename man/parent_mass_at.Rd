@@ -7,8 +7,8 @@
 parent_mass_at(distrib, x, theta)
 }
 \arguments{
-\item{distrib}{A truncated distribution object, of either class. The branch
-is taken on it, and the mass is asked of \code{distrib@parent_distrib}.}
+\item{distrib}{A truncated distribution object, of either class. Its class
+selects the branch, and the mass is read from \code{distrib@parent_distrib}.}
 
 \item{x}{A single number, the point to evaluate at.}
 
@@ -26,14 +26,13 @@ is included in the truncated support, so the tail below the interval is
 \eqn{F(L^-) = F(L) - P(Y = L)}.
 }
 \details{
-The question is asked of the OBJECT, through \code{\link[=distrib_atoms]{distrib_atoms()}}, never of its
-class. Branching on \code{discrete_distrib} looks right and is wrong: the
-distribution function of \code{zero_adjusted(gamma2_distrib())} already contains
-the point mass at zero, so \eqn{F(0) \ne F(0^-)} although the object is a
-\code{continuous_distrib}. Truncating such a parent from above, with the atom
-retained, would then drop exactly that mass out of \eqn{Z} while every
-formula still read correctly, and the density would integrate to something
-other than one.
+The mass is read from the object through \code{\link[=distrib_atoms]{distrib_atoms()}} and is not decided
+by the object's class. The distribution function of
+\code{zero_adjusted(gamma2_distrib())} contains the point mass at zero, so
+\eqn{F(0) \ne F(0^-)} although the object is a \code{continuous_distrib}. A rule
+based on \code{discrete_distrib} would omit that mass from \eqn{Z} when such a
+parent is truncated from above with the atom retained, and the density would
+not integrate to one.
 }
 \section{Notation}{
 

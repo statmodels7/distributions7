@@ -31,9 +31,11 @@ log-density jumps, \eqn{\log\pi} on one side and
 \eqn{\log\{(1-\pi)f(y)\}} on the other, and no derivative exists.
 }
 \details{
-The \code{NaN} is the point of the function. The finite-difference default
-inherited from \code{\link[=continuous_distrib]{continuous_distrib()}} would straddle the jump and return a
-NUMBER for it, which is worse than an error: nothing downstream would notice.
+At the atom the function returns \code{NaN}, because no derivative exists there.
+The finite-difference default inherited from \code{\link[=continuous_distrib]{continuous_distrib()}} would
+difference across the jump and return a finite number. It serves the response
+derivatives of orders one to four; \code{za_y_list()} applies the same rule to the
+mixed derivatives, which are zero in \code{za}.
 }
 \section{Notation}{
 

@@ -29,9 +29,9 @@ component mixing \eqn{\zeta} with a parent parameter is exactly zero; at
 set gives \eqn{d^I \log L_0}, with every block naming \eqn{\zeta} twice
 contributing nothing because \eqn{L_0} is affine in it.
 
-The partitions of four indices number fifteen against five for three, so
-this order is the more expensive of the two by that ratio and by nothing
-else: the same identity and the same ratios \eqn{d^B L_0 / L_0} are read.
+The partitions of four indices number fifteen against five for three, so the
+partition sum has three times as many terms at this order. The same identity
+and the same ratios \eqn{d^B L_0 / L_0} are used.
 }
 \examples{
 zi <- zero_inflated(poisson_distrib())

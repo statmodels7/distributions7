@@ -10,8 +10,8 @@
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
-dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}. The generic applies the link
+scale to the value that the method returns.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -26,9 +26,7 @@ implements itself, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_d
 response, and it makes the fourth-order mixed derivative available for
 every continuous family. For \code{\link[=transformation]{transformation()}}, which has an analytic
 Hessian in the parameters and no response derivative, it is a second
-difference in the response of that Hessian; before 0.76.0 it differenced
-a difference in the same parameter, and on a log-gamma it was wrong by a
-factor of seven.
+difference in the response of that Hessian.
 }
 \examples{
 d <- gamma2_distrib()

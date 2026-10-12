@@ -9,8 +9,10 @@ NULL
 #' `"TruncatedContinuousDistrib|<inner name>"`, with the inner family's
 #' constants followed by the truncation points `lower` and `upper`, as
 #' [distrib_scalar_route()] describes, or `NULL` when the parent has no
-#' route. A continuous parent needs a compiled distribution function, and
-#' the only wrapper it may carry is [fixed()].
+#' route. A continuous parent needs a family with a compiled distribution
+#' function and at most four parameters, which may be wrapped by any chain of
+#' [fixed()], [folded()] and [transformation()] (the last with one of the
+#' ready-made transformers).
 #'
 #' @param distrib A truncated family.
 #' @param ... Unused.
@@ -50,13 +52,13 @@ S7::method(distrib_scalar_route, TruncatedContinuousDistrib) <- truncated_scalar
 #' \eqn{c}.
 #'
 #' For a discrete parent the integrals are sums over support points.
-#' `trunc_rule_cpp()` returns, for each observation, the points they run
-#' over: the retained points when they are finitely many, and otherwise a
-#' series over the retained points stopped by a rule on the masses alone.
-#' For the density, the score and the Hessian on an unbounded support, the
-#' points removed below `lower` are used instead when their mass is at most
-#' one half, and the retained sums are \eqn{1 - \sum f}, \eqn{-\sum f s_i}
-#' and \eqn{-\sum f(\ell_{ij} + s_i s_j)}.
+#' `trunc_rule_cpp()` returns, for each observation, the points over which the
+#' sums run: the retained points when they are finitely many, and otherwise a
+#' series over the retained points stopped by a rule on the masses alone. For
+#' the density, the score and the Hessian on an unbounded support, the points
+#' removed below `lower` are used instead when their mass is at most one half,
+#' and the retained sums are \eqn{1 - \sum f}, \eqn{-\sum f s_i} and \eqn{-\sum
+#' f(\ell_{ij} + s_i s_j)}.
 #'
 #' For a continuous parent, \eqn{Z}, \eqn{Z_i} and \eqn{Z_{ij}} are the
 #' differences of the compiled distribution function and its derivatives at

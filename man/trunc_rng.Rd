@@ -20,11 +20,11 @@ observation must have length \code{n}.}
 A numeric vector of \code{n} draws, every one inside \eqn{[L, U]}.
 }
 \description{
-Draws by inverse transform through \code{\link[=trunc_quantile]{trunc_quantile()}},
-\eqn{Y = Q(F(L^-) + V Z)} with \eqn{V} uniform on \eqn{(0, 1)}. The draw is
-exact and terminates in one pass however small \eqn{Z} is, where rejection
-sampling from the parent would need \eqn{1/Z} draws on average. One of the
-shared bodies, registered on both classes.
+Draws by inverse transform through \code{\link[=trunc_quantile]{trunc_quantile()}}, \eqn{Y = Q_T(V)} with
+\eqn{V} uniform on \eqn{(0, 1)}. A draw needs one evaluation of the parent's
+quantile function whatever \eqn{Z} is, where rejection sampling from the
+parent would need \eqn{1/Z} draws on average, and an interval in the upper
+tail is inverted there. One of the shared bodies, registered on both classes.
 }
 \section{Notation}{
 

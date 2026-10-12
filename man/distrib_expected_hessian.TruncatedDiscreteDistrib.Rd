@@ -10,8 +10,8 @@
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, applied by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns.}
 
 \item{approx}{Ignored. Present so that the signature matches the generic's.}
 
@@ -22,7 +22,8 @@ generic before dispatch.}
 \value{
 A named list of numeric vectors of length \code{length(y)}, one component
 per unordered pair of parameters, keyed as
-\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant.
+\code{\link[=hess_names]{hess_names(distrib@params)}}; each vector is constant for
+scalar parameters.
 }
 \description{
 Computes

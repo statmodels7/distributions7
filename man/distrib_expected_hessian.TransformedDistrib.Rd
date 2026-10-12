@@ -6,13 +6,14 @@
 \arguments{
 \item{distrib}{A \code{TransformedDistrib} object, from \code{\link[=transformation]{transformation()}}.}
 
-\item{y}{A numeric vector of observations on the transformed scale. Read
-only through the parent, which uses its length.}
+\item{y}{A numeric vector of observations on the transformed scale. It is
+mapped to the preimage and passed to the parent, which uses it for its
+length when its information is closed form and for its values otherwise.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns.}
 
 \item{approx}{Ignored: the delegation is exact. Present so that the
 signature matches the generic's. Note that it is not forwarded, so a
@@ -32,7 +33,9 @@ Returns the parent's expected Hessian, EXACTLY. Since
 and the Jacobian does not depend on \eqn{\theta}, the expectation of the
 transformed model's second derivative is the parent's expectation
 reparametrized by the change of variables, which is the same number. No
-approximation runs and no Monte Carlo is needed, whatever \code{approx} says.
+approximation is added by the wrapper, and \code{approx} and \code{nsim} are not
+forwarded. The result is exact when the parent's expected Hessian is exact
+and otherwise is the value the parent's own default route returns.
 }
 \details{
 This is the strongest of the three delegations: the score and the observed

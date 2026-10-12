@@ -8,17 +8,17 @@ is_truncated(distrib)
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{distrib}. Any other input
-returns \code{FALSE}; nothing raises.}
+gives \code{FALSE} without an error.}
 }
 \value{
 A single logical.
 }
 \description{
 Reports whether an object belongs to either truncated class. \code{\link[=truncated]{truncated()}}
-asks before wrapping, and collapses a nested truncation into a single
-object over the intersection of the two intervals. Nesting would be correct
-but would pay the quadrature cost of \code{\link[=trunc_score_mean]{trunc_score_mean()}} twice for a law
-one truncation already describes.
+tests the object before wrapping, and collapses a nested truncation into a
+single object over the intersection of the two intervals. Nesting would be
+correct but would pay the quadrature cost of \code{\link[=trunc_score_mean]{trunc_score_mean()}} twice for a
+law one truncation already describes.
 }
 \examples{
 tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)

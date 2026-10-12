@@ -19,10 +19,11 @@ point of the parent.
 }
 \description{
 Draws zeros with probability \eqn{\pi} and otherwise samples from the
-ZERO-TRUNCATED parent, so no draw from the positive part is ever zero. The
-truncated draw is taken by inverting the parent's distribution function at a
-uniform rescaled onto \eqn{(f(0), 1)}, which needs no rejection loop and so
-terminates in bounded time however small the positive mass is.
+zero-truncated parent, so no draw from the positive part is ever zero. The
+truncated draw is taken by inverting the parent's distribution function in
+its upper tail, at \eqn{(1 - U)\{1 - f(0)\}} with \eqn{U} uniform, at the
+rows of the observations. It needs no rejection loop and so terminates in
+bounded time however small the positive mass is.
 }
 \section{Notation}{
 
@@ -46,6 +47,7 @@ c(sampled_zero = mean(big == 0), parameter = 0.4,
 }
 \seealso{
 \code{\link[=distrib_pdf.ZeroAdjustedDiscreteDistrib]{distrib_pdf.ZeroAdjustedDiscreteDistrib()}} for the mass function
-these are drawn from, \code{\link[=truncated]{truncated()}} for the truncation the positive part
-uses, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
+these are drawn from, \code{\link[=truncated]{truncated()}} for the general truncation wrapper (the
+method here draws the positive part by inversion and does not call it), and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

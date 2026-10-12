@@ -24,17 +24,23 @@ A named list with one numeric vector per unordered pair of
 parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-Differences every component through \code{\link[=numerical_theta2_y]{numerical_theta2_y()}} and then replaces
-the three that \code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}} gives in closed form. It is what
+At order 1, differences every component of \code{\link[=distrib_cross_y]{distrib_cross_y()}} through
+\code{\link[=numerical_theta2_y]{numerical_theta2_y()}} and then replaces the three that
+\code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}} gives in closed form. At order 2, a pair of a
+location or scale parameter with a shape is one central difference, in the
+shape, of the closed component of \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, and a pair of shapes
+is one stencil on \code{\link[=distrib_hess_y]{distrib_hess_y()}}, a second-order stencil for a repeated
+shape and a mixed one for two shapes; the shape components of
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} are not differenced again. It is what
 \code{\link[=partial_loc_scale_grad_y_hess]{partial_loc_scale_grad_y_hess()}} and \code{\link[=partial_loc_scale_hess_y_hess]{partial_loc_scale_hess_y_hess()}} both
 run, at order 1 and 2 respectively.
 }
 \details{
-Differencing every component and overwriting three of them costs three
-unnecessary differences, and is how the two halves are kept keyed the same
-way without a second enumeration: \code{\link[=numerical_theta2_y]{numerical_theta2_y()}} returns
-\code{\link[=hess_names]{hess_names()}}'s full set, and the closed block's three names index into it
-directly.
+\code{\link[=numerical_theta2_y]{numerical_theta2_y()}} takes one central difference per parameter, and each
+difference yields every component that involves that parameter, so replacing
+the three location-scale pairs afterwards adds no evaluation of the
+first-order function. The result is keyed by \code{\link[=hess_names]{hess_names()}}, and the closed
+block's three names index into it directly.
 }
 \section{Notation}{
 

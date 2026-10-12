@@ -37,8 +37,8 @@ With \eqn{A = \sigma\ell^{(y)}} and \eqn{B = \sigma^2\ell^{(yy)}},
   \frac{\partial^2\ell^{(yy)}}{\partial\sigma^2}
   = \frac{z^2B'' + 6zB' + 6B}{\sigma^4},}
 and the primed quantities are the family's own third and fourth response
-derivatives times a power of \eqn{\sigma}, so nothing is differentiated
-here. Any parameter beyond the scale is a SHAPE and is not covered;
+derivatives times a power of \eqn{\sigma}, so no further differentiation is
+needed. A parameter beyond the scale is a shape and is not covered;
 \code{\link[=scale_only_theta2_methods]{scale_only_theta2_methods()}} differences those.
 }
 \section{Notation}{

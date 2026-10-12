@@ -12,8 +12,7 @@
 \item{theta}{A named list with the parent's parameters followed by \code{za}.}
 
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
-probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)},
-formed as \eqn{1 - F}.}
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm is returned.
 Defaults to \code{FALSE}.}
@@ -28,8 +27,11 @@ Computes the hurdle distribution function
 \deqn{F_{ZA}(q) = \pi + (1-\pi)\frac{F(q;\theta) - f(0;\theta)}{1 - f(0;\theta)}
   \quad (q \ge 0),}
 the parent's own distribution function shifted and rescaled by the
-truncation. It is \code{0} below zero and is clamped to \eqn{[0, 1]} against
-rounding.
+truncation, with \eqn{1 - f(0)} formed from the log-mass at zero. Where
+\eqn{f(0) > 1/2}, and for the upper tail, the positive part is read from the
+parent's survival function wherever \eqn{S(q)/\{1 - f(0)\}} is below one
+half, so that neither tail is a difference of two numbers near one. The
+result is \code{0} below zero and is clamped to \eqn{[0, 1]} against rounding.
 }
 \section{Notation}{
 

@@ -28,14 +28,14 @@ and needs no correction; outside, the log-density is \eqn{-\infty} and no
 derivative exists.
 }
 \details{
-The \code{NaN} is the point of the function. The finite-difference default
-inherited from \code{\link[=continuous_distrib]{continuous_distrib()}} would straddle the boundary and return
-a NUMBER for a point outside the support, which nothing downstream would
-question.
+The function returns \code{NaN} for a point outside \eqn{[L, U]}. The
+finite-difference default inherited from \code{\link[=continuous_distrib]{continuous_distrib()}} differences
+across the boundary and returns a finite number there, although the
+log-density is \eqn{-\infty}.
 
-A parameter varying by observation is subset to the retained observations
-before the parent is called, so the parent sees a \code{theta} matching the \code{y}
-it is given.
+A parameter that varies by observation is subset to the retained observations
+before the parent is called, so that the parent receives a \code{theta} matching
+the \code{y} that it is given.
 }
 \section{Notation}{
 

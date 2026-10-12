@@ -16,7 +16,9 @@ requires.}
 \item{...}{Passed to \code{f} and to the parent's \code{\link[=expectation]{expectation()}}.}
 }
 \value{
-A single number, the expectation of \code{f} under the mixed law.
+A numeric vector with the expectation of \code{f} under the mixed law for
+each combination of the values in \code{theta}: a single number when \code{theta}
+holds scalars.
 }
 \description{
 Computes \eqn{\mathbb{E}[f(Y)]} by splitting the expectation at the atom,

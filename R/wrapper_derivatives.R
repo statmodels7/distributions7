@@ -42,10 +42,11 @@ NULL
 #' Caches a ratio function by the canonical key of its block.
 #'
 #' @details
-#' A partition of a fourth-order index asks for the same small blocks many times
-#' over. For the truncated wrapper each distinct block costs a quadrature, so
-#' memoizing across the partition sum is the difference between one integration
-#' per block and one per occurrence.
+#' A partition sum over a fourth-order index evaluates the same small blocks
+#' many times. For the truncated wrapper, a block whose cdf derivatives are not
+#' available in closed form costs a quadrature or a summation, so memoizing
+#' across the partition sum evaluates it once per distinct block and not once
+#' per occurrence.
 #'
 #' @param f The ratio function to wrap.
 #' @param params The parameter names, in declaration order.
@@ -74,10 +75,9 @@ memo_ratio <- function(f, params) {
 #' `deriv_index_list()` from `link_scale.R`, whose order-2 case is
 #' ordered for [hess_names()] -- diagonal first -- while
 #' `deriv_names()` is lexicographic; pairing those would silently attach the
-#' name `"mu_sigma"` to the index `(sigma, sigma)`. The orders actually
-#' registered here are 3 and 4, where the two orderings agree; generating the
-#' indices locally removes the mismatch instead of depending on it never being
-#' reached.
+#' name `"mu_sigma"` to the index `(sigma, sigma)`. The orders used here are 3,
+#' 4 and 5, where the two orderings agree; generating the indices locally
+#' removes the mismatch instead of depending on it never being reached.
 #'
 #' @param params A character vector of parameter names.
 #' @param order The derivative order.
@@ -170,7 +170,7 @@ assemble_deriv <- function(distrib, order, component) {
 #' \eqn{x = g^{-1}(y)}. The methods exist only so that the numerical fallback is
 #' never reached.
 #'
-#' @param order The derivative order, 3 or 4.
+#' @param order The derivative order, 3, 4 or 5.
 #'
 #' @return A function suitable for registering as an S7 method.
 #'
@@ -216,7 +216,7 @@ trans_deriv_k <- function(order) {
 #' block of parameters alone, and \eqn{-f_0 (d^A f_0/f_0)/L_0} for a block
 #' carrying one \eqn{\zeta}.
 #'
-#' @param order The derivative order, 3 or 4.
+#' @param order The derivative order, 3, 4 or 5.
 #'
 #' @return A function suitable for registering as an S7 method.
 #'
@@ -312,7 +312,7 @@ distrib_deriv_component <- function(parent, y, theta, idx, params, order) {
 #' of \eqn{\log(1 - f_0)}, whose ratios are
 #' \eqn{d^B(1-f_0)/(1-f_0) = -(d^B f_0/f_0) f_0/(1-f_0)}.
 #'
-#' @param order The derivative order, 3 or 4.
+#' @param order The derivative order, 3, 4 or 5.
 #'
 #' @return A function suitable for registering as an S7 method.
 #'
@@ -376,7 +376,7 @@ za_disc_deriv_k <- function(order) {
 #' to correct for: the parameter part is simply the parent's derivative, switched
 #' off at the atom.
 #'
-#' @param order The derivative order, 3 or 4.
+#' @param order The derivative order, 3, 4 or 5.
 #'
 #' @return A function suitable for registering as an S7 method.
 #'
@@ -431,7 +431,7 @@ za_cont_deriv_k <- function(order) {
 #' quadrature or summation, which is why they are memoized across the partition
 #' sum.
 #'
-#' @param order The derivative order, 3 or 4.
+#' @param order The derivative order, 3, 4 or 5.
 #'
 #' @return A function suitable for registering as an S7 method.
 #'
@@ -487,9 +487,8 @@ trunc_deriv_k <- function(order) {
 #' depend on \eqn{\theta}, so it vanishes from every derivative in
 #' \eqn{\theta} and leaves the parent's untouched.
 #'
-#' Measured on `transformation(gaussian1_distrib(), exp_transform())`, the
-#' whole component list is `all.equal` to the Gaussian's at `log(y)`, at this
-#' order and at the fourth.
+#' For `transformation(gaussian1_distrib(), exp_transform())`, the component
+#' list equals the Gaussian's at `log(y)`, at this order and at the fourth.
 #'
 #' @param distrib A `TransformedDistrib` object, from [transformation()].
 #' @param y A numeric vector of observations on the transformed scale.
@@ -529,8 +528,8 @@ S7::method(distrib_deriv3, TransformedDistrib) <- trans_deriv_k(3L)
 #' \eqn{\log|dg^{-1}/dy|} carries no \eqn{\theta}, so it contributes nothing to
 #' any derivative in \eqn{\theta} whatever the order.
 #'
-#' Nothing here is approximated and no partition sum is taken. The wrapper's
-#' work is entirely in the argument, not in the derivative.
+#' The wrapper adds no approximation and takes no partition sum: it evaluates
+#' the parent's fourth derivative at \eqn{x = g^{-1}(y)}.
 #'
 #' @param distrib A `TransformedDistrib` object, from [transformation()].
 #' @param y A numeric vector of observations on the transformed scale.
@@ -613,9 +612,9 @@ S7::method(distrib_deriv3, ZeroInflatedDistrib) <- zi_deriv_k(3L)
 #' set gives \eqn{d^I \log L_0}, with every block naming \eqn{\zeta} twice
 #' contributing nothing because \eqn{L_0} is affine in it.
 #'
-#' The partitions of four indices number fifteen against five for three, so
-#' this order is the more expensive of the two by that ratio and by nothing
-#' else: the same identity and the same ratios \eqn{d^B L_0 / L_0} are read.
+#' The partitions of four indices number fifteen against five for three, so the
+#' partition sum has three times as many terms at this order. The same identity
+#' and the same ratios \eqn{d^B L_0 / L_0} are used.
 #'
 #' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
 #' @param y A numeric vector of counts.
@@ -655,10 +654,9 @@ S7::method(distrib_deriv4, ZeroInflatedDistrib) <- zi_deriv_k(4L)
 #' constant \eqn{\log(1 - f_0)}, which is the mass the parent puts at zero and
 #' the hurdle removes.
 #'
-#' This is the structural difference from [zero_inflated()], and it is one a
-#' reader can check in a line: there the mixed block is not zero, because
-#' inflation *adds* to the parent's mass at zero and no single zero can be
-#' attributed to a mechanism.
+#' This is the structural difference from [zero_inflated()], where the mixed
+#' block is not zero, because inflation adds to the parent's mass at zero and no
+#' single zero can be attributed to one mechanism.
 #'
 #' @param distrib A `ZeroAdjustedDiscreteDistrib` object, from
 #'   [zero_adjusted()].
@@ -792,8 +790,8 @@ S7::method(distrib_deriv3, ZeroAdjustedContinuousDistrib) <- za_cont_deriv_k(3L)
 #' derivatives unchanged, the pure `za` component is that of
 #' \eqn{\log(1-\pi)}, and everything mixing the two is exactly zero.
 #'
-#' No partition sum is taken here at all, so this is the cheapest of the six
-#' wrappers at this order.
+#' No partition sum is taken here, because the parameter components are the
+#' parent's own.
 #'
 #' @param distrib A `ZeroAdjustedContinuousDistrib` object, from
 #'   [zero_adjusted()].
@@ -836,11 +834,10 @@ S7::method(distrib_deriv4, ZeroAdjustedContinuousDistrib) <- za_cont_deriv_k(4L)
 #' \deqn{d^I \log Z = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
 #'       \prod_{B \in \pi} \mathbb{E}_T\!\left[\frac{\partial^B f}{f}\right].}
 #'
-#' Each **distinct block** costs one quadrature, memoized across the partition
-#' sum, which is why a truncated derivative is far dearer than its parent's.
-#' Where the parent has genuinely closed cdf derivatives, or is a discrete
-#' family whose cdf derivatives are an exact sum, that route replaces the
-#' quadrature and is about three and a half times faster.
+#' Each distinct block that has no closed-form cdf derivative costs one
+#' quadrature, memoized across the partition sum. Where the parent has
+#' closed-form cdf derivatives of the block's order, the block is read from them
+#' and no quadrature is taken.
 #'
 #' @param distrib A `TruncatedContinuousDistrib` object, from [truncated()].
 #' @param y A numeric vector of observations inside the truncation interval.
@@ -879,10 +876,11 @@ S7::method(distrib_deriv3, TruncatedContinuousDistrib) <- trunc_deriv_k(3L)
 #' fifteen partitions of four indices, each block an expectation
 #' \eqn{\mathbb{E}_T[\partial^B f / f]} under the truncated law.
 #'
-#' The cost is set by the number of **distinct** blocks, not by the number of
-#' partitions: a block met twice is computed once and looked up. At four
-#' indices over two parameters that is five distinct blocks against fifteen
-#' partitions.
+#' The cost is set by the number of distinct blocks: a block that occurs in
+#' several partitions is computed once and looked up. For the component
+#' \code{mu_mu_sigma_sigma}, the fifteen partitions use eight distinct blocks,
+#' and over all components of order four with two parameters the blocks of one
+#' to four indices number fourteen.
 #'
 #' @param distrib A `TruncatedContinuousDistrib` object, from [truncated()].
 #' @param y A numeric vector of observations inside the truncation interval.
@@ -917,10 +915,10 @@ S7::method(distrib_deriv4, TruncatedContinuousDistrib) <- trunc_deriv_k(4L)
 #' set partitions, with every expectation taken by **summation over the
 #' retained support** in place of a quadrature.
 #'
-#' That makes it both exact and cheap. The support of a truncated discrete
-#' family is finite whenever both endpoints are, so each block is a finite sum
-#' of terms the parent already computes, and the memoization across the
-#' partition sum applies as before.
+#' When both endpoints are finite, the support of a truncated discrete family is
+#' finite, so each block is a finite sum of terms that the parent already
+#' computes, and the memoization across the partition sum applies as before.
+#' With an infinite upper endpoint the sums run over an infinite support.
 #'
 #' @param distrib A `TruncatedDiscreteDistrib` object, from [truncated()].
 #' @param y A numeric vector of counts inside the truncation interval. Both
@@ -941,7 +939,7 @@ S7::method(distrib_deriv4, TruncatedContinuousDistrib) <- trunc_deriv_k(4L)
 #'
 #' distrib_deriv3(tr, c(2, 4, 6), th)
 #'
-#' # The parent's third derivative in mu is 2 y / mu^3 - ... and the truncated
+#' # The parent's third derivative in mu is 2 y / mu^3 and the truncated
 #' # one differs by the derivative of log Z, which is the whole wrapper.
 #' c(truncated = distrib_deriv3(tr, 4, th)[["mu_mu_mu"]],
 #'   parent = distrib_deriv3(poisson_distrib(), 4, th)[["mu_mu_mu"]])
@@ -961,9 +959,9 @@ S7::method(distrib_deriv3, TruncatedDiscreteDistrib) <- trunc_deriv_k(3L)
 #' and \eqn{d^I \log Z} from the moment-to-cumulant expansion over the fifteen
 #' partitions of four indices.
 #'
-#' Because every block is a finite sum, this order costs what the order below
-#' costs times the ratio of distinct blocks, and nothing is approximated
-#' anywhere in it.
+#' Each block is a sum over the retained support, finite when both endpoints are
+#' finite, and the memoization across the partition sum applies as at the order
+#' below.
 #'
 #' @param distrib A `TruncatedDiscreteDistrib` object, from [truncated()].
 #' @param y A numeric vector of counts inside the truncation interval. Both

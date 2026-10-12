@@ -10,8 +10,9 @@
 
 \item{theta}{A named list with the parent's parameters followed by \code{zi}.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. \code{zi} rides a logit by default, so the two differ.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns. \code{zi} rides a
+logit by default, so the two differ.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -65,8 +66,8 @@ max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
 # Every positive observation gives the same zi component, -1 / (1 - zi).
 c(unique(round(g$zi[y > 0], 12)), theory = -1 / 0.75)
 
-# And the parent's component is zero at a zero only in the limit: it is
-# the parent's score there, weighted down by w.
+# At a zero, the parent's component is the parent's score there, weighted
+# down by w.
 c(weighted = g$mu[y == 0][1], unweighted = distrib_gradient(
     poisson_distrib(), 0, list(mu = 3))$mu)
 }

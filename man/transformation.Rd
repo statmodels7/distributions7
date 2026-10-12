@@ -44,11 +44,13 @@ lost. The moments are available numerically through \code{\link[=moment]{moment(
 }
 
 \section{What is rejected}{
-A discrete parent, since a change of variables needs a density; a
-transformer that is not valid on the parent's support, which the transformer
-itself decides through its \code{valid_support}; and a \code{new_name} that is not a
-single non-empty string. A map that is not injective, such as the absolute
-value, cannot be a transformer at all and is \code{\link[=folded]{folded()}} instead.
+A parent that is not continuous (discrete or multivariate), since a change of
+variables of one coordinate needs a continuous density; a \code{transformer}
+argument that is not a \code{transformer} object; a transformer that is not valid
+on the parent's support, which the transformer itself decides through its
+\code{valid_support}; and a \code{new_name} that is not a single non-empty string. A
+map that is not injective, such as the absolute value, cannot be a
+transformer at all and is \code{\link[=folded]{folded()}} instead.
 }
 
 \section{Naming the result}{
@@ -85,7 +87,7 @@ y <- distrib_rng(logn, 500, list(mu = 0, sigma = 1))
 rbind(transformed = coef(fit_distrib(logn, y)),
       parent_on_logs = coef(fit_distrib(gaussian1_distrib(), log(y))))
 
-# Three refusals, each naming the condition that failed.
+# Three errors, each naming the condition that failed.
 try(transformation(poisson_distrib(), log_transform()))
 try(transformation(gaussian1_distrib(), log_transform()))
 try(transformation(gaussian1_distrib(), exp_transform(), new_name = ""))

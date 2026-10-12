@@ -14,6 +14,9 @@
 \alias{distrib_cross2_y.InvGauss2Distrib}
 \alias{distrib_grad_y_hess.InvGauss2Distrib}
 \alias{distrib_hess_y_hess.InvGauss2Distrib}
+\alias{distrib_cross2_y.InvGauss1Distrib}
+\alias{distrib_grad_y_hess.InvGauss1Distrib}
+\alias{distrib_hess_y_hess.InvGauss1Distrib}
 \title{The Mixed Grid of a Family Written Out Against a Tabulated Map}
 \usage{
 mapped_theta2_methods(parent, th_par, tables)
@@ -44,6 +47,12 @@ kernels, so they are NOT \code{ReparamContinuousDistrib} and do not inherit its
 methods; what they share with it is the map, which \code{reparam_maps.R} already
 tabulates. Registered on \code{gaussian2}, \code{gaussian3}, \code{laplace2} and
 \code{invgauss2}.
+
+The parent of \code{invgauss2}, \code{invgauss1}, carries the three quantities in
+closed form: with \eqn{\ell^{(y)} = -3/(2y) - 1/(2\phi\mu^2) + 1/(2\phi y^2)}
+and \eqn{\ell^{(yy)} = 3/(2y^2) - 1/(\phi y^3)}, every mixed derivative in
+\eqn{(\mu, \phi)} is a monomial, and the map carries them to
+\eqn{(\mu, \lambda)} with no difference taken.
 }
 \section{Notation}{
 

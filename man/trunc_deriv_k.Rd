@@ -7,7 +7,7 @@
 trunc_deriv_k(order)
 }
 \arguments{
-\item{order}{The derivative order, 3 or 4.}
+\item{order}{The derivative order, 3, 4 or 5.}
 }
 \value{
 A function suitable for registering as an S7 method.

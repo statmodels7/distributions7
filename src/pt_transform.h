@@ -100,7 +100,7 @@ inline double transform_fwd(int code, double x, const double* tp) {
     case 9: return tp[0] + tp[1] * x;
     case 10: return R::qlogis(x, 0.0, 1.0, 1, 0);
     case 11: return R::plogis(x, 0.0, 1.0, 1, 0);
-    case 12: return (x == 0) ? R_NegInf : std::log(std::expm1(tp[0] * x)) / tp[0];
+    case 12: return (x == 0) ? R_NegInf : x + std::log(-std::expm1(-tp[0] * x)) / tp[0];
     default: return R_NaN;
     }
 }
@@ -108,7 +108,7 @@ inline double transform_fwd(int code, double x, const double* tp) {
 inline bool transform_decreasing(int code, const double* tp) {
     switch (code) {
     case 3: return true;
-    case 5: case 7: return tp[0] < 0;
+    case 5: return tp[0] < 0;
     case 9: return tp[1] < 0;
     default: return false;
     }

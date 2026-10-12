@@ -7,7 +7,8 @@
 distrib_hess_y_hess(distrib, y, theta, scale = c("parameter", "link"), ...)
 }
 \arguments{
-\item{distrib}{A distribution object inheriting from \code{continuous_distrib}.}
+\item{distrib}{A distribution object inheriting from \code{continuous_distrib},
+or a multivariate Gaussian or Student t distribution.}
 
 \item{y}{A numeric vector of observations.}
 
@@ -30,8 +31,8 @@ parameters, each as long as \code{y}, keyed as
 \description{
 Computes \eqn{\partial^4 \ell / \partial y^2\, \partial\theta_i
 \partial\theta_j}, one component per unordered pair of parameters, each a
-vector along \code{y}. It says how the response CURVATURE curves in the
-parameters, and it is the fourth-order entry of the mixed grid below.
+vector along \code{y}. It gives the second derivative, in the parameters, of the
+response curvature, and it is the fourth-order entry of the mixed grid below.
 }
 \details{
 These are the second-order column of the mixed grid whose first-order column
@@ -42,8 +43,9 @@ is \code{\link[=distrib_cross_y]{distrib_cross_y()}} and \code{\link[=distrib_cr
 }
 
 
-The right-hand column is the one a marginal criterion's SECOND derivative
-asks of a penalty. A penalty is a negative log-density read at the
+The right-hand column is the one that the second derivative of a marginal
+criterion requires from a penalty. A penalty is a negative log-density read
+at the
 coefficients, so \eqn{\partial^2\rho/\partial\beta^2} carries the density's
 response curvature and the two mixed derivatives above carry
 \eqn{\partial^3\rho/\partial\beta\,\partial\theta^2} and
@@ -61,10 +63,12 @@ taken one order higher in \eqn{y}.
 }
 
 \section{Where the numbers come from}{
-A distribution with a closed form provides it. The rest take one central
-difference of the analytic \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} in each parameter, through
-\code{\link[=numerical_theta2_y]{numerical_theta2_y()}}. Continuous distributions only: a discrete family has
-no method and the call raises with its class named.
+A distribution with a closed form provides it. A continuous distribution
+without one takes \code{\link[=distrib_hess_y_hess.continuous_distrib]{distrib_hess_y_hess.continuous_distrib()}}, which applies
+one tensor stencil, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}, to the highest
+quantity that the family implements itself. The multivariate Gaussian and
+Student t families have methods of their own; a discrete family has no
+method, and the call signals an error that names its class.
 }
 
 \section{Notation}{

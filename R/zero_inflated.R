@@ -34,18 +34,27 @@ NULL
 #'   parent.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.ZeroInflatedDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.ZeroInflatedDistrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.ZeroInflatedDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.ZeroInflatedDistrib] and
+#'   [`distrib_rng()`][distrib_rng.ZeroInflatedDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.ZeroInflatedDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.ZeroInflatedDistrib],
-#'   [`distrib_pdf()`][distrib_pdf.ZeroInflatedDistrib],
-#'   [`distrib_quantile()`][distrib_quantile.ZeroInflatedDistrib],
-#'   [`distrib_rng()`][distrib_rng.ZeroInflatedDistrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.ZeroInflatedDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.ZeroInflatedDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.ZeroInflatedDistrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.ZeroInflatedDistrib];
+#' - the derivatives of the expected information: [distrib_dexpected_hessian()]
+#'   and [distrib_d2expected_hessian()];
+#' - the exactness flags: [expected_hessian_exact()] and [has_exact_deriv4()];
+#' - the fitting helpers:
+#'   [`distrib_start()`][distrib_start.ZeroInflatedDistrib],
+#'   [`distrib_intercept_start()`][distrib_intercept_start.ZeroInflatedDistrib]
+#'   and [distrib_scalar_route()].
 #'
-#' The third and fourth derivatives come from the shared wrapper machinery in
-#' `wrapper_derivatives.R`; everything else is inherited from
-#' [discrete_distrib()].
+#' Every other generic is inherited from [discrete_distrib()].
 #'
 #' @examples
 #' d <- zero_inflated(poisson_distrib())
@@ -72,12 +81,12 @@ ZeroInflatedDistrib <- S7::new_class("ZeroInflatedDistrib",
 #' @description
 #' Separates a full `theta` into the parent distribution's parameters and the
 #' single mixing parameter the wrapper adds. Both zero wrappers append their
-#' parameter LAST, so the split is positional and needs no name matching, which
-#' keeps it correct for a parent whose own parameter happens to be called `zi`
-#' or `pi`.
+#' parameter last, so the split is positional and uses no parameter names. The
+#' constructors reject a parent that already has a parameter with the wrapper's
+#' name (`zi` or `za`).
 #'
 #' @param distrib A `ZeroInflatedDistrib` or a zero-adjusted object, whose
-#'   `parent_distrib` supplies the names of the first block.
+#'   `n_params` gives the position of the wrapper's parameter.
 #' @param theta A named list of parameters, already aligned, the parent's
 #'   followed by the wrapper's.
 #'
@@ -117,9 +126,9 @@ split_mix_theta <- function(distrib, theta) {
 #'
 #' @description
 #' Returns how many points the distribution's support contains, read off its
-#' `bounds`, and `Inf` when the support is unbounded above. It is what
-#' [check_support_is_rich_enough()] counts against the parameters a zero
-#' wrapper would spend.
+#' `bounds`, and `Inf` when either bound is infinite. It is what
+#' [check_support_is_rich_enough()] counts against the parameters a zero wrapper
+#' would spend.
 #'
 #' @param distrib A `distrib` object, whose `bounds` are read.
 #'
@@ -147,16 +156,16 @@ n_support_points <- function(distrib) {
 #'
 #' @description
 #' Answers whether the object is already one of the two zero wrappers, which is
-#' how each of them refuses to be applied on top of the other. Stacking them
-#' leaves only their combination identified, so the check is what turns a model
-#' with a flat direction into an error at construction.
+#' how each constructor rejects a parent that is the other wrapper. Stacking
+#' them leaves only their combination identified, so the check is what turns a
+#' model with a flat direction into an error at construction.
 #'
 #' @param distrib A `distrib` object.
 #'
 #' @return `TRUE` for a zero-inflated or a zero-adjusted object of either kind,
 #'   `FALSE` otherwise.
 #'
-#' @seealso [check_not_stacked()], which reports the refusal, and
+#' @seealso [check_not_stacked()], which signals the error, and
 #'   [zero_inflated()] and [zero_adjusted()] for what stacking would cost.
 #'
 #' @examples
@@ -177,9 +186,10 @@ is_zero_wrapper <- function(distrib) {
 #'
 #' @description
 #' Signals an error when the parent already models the probability of a zero,
-#' which is how both wrappers refuse to stack. The models this rejects are
-#' well defined and inestimable, so the constructor is the only place the
-#' problem can be caught: nothing at run time reports it.
+#' which is how both constructors reject a parent that is already a zero
+#' wrapper. The models this rejects are well defined and inestimable, so the
+#' constructor is the only place the problem can be caught: nothing at run time
+#' reports it.
 #'
 #' @details
 #' Two zero parameters cannot both be identified. Zero-adjusting a
@@ -193,12 +203,14 @@ is_zero_wrapper <- function(distrib) {
 #' @param distrib The candidate parent, a `distrib` object.
 #' @param fun The name of the calling constructor, a single string, quoted in
 #'   the message.
-#' @param param The name of the parameter it would add, a single string. Not
-#'   currently placed in the message; it is carried for the caller's own
-#'   record.
+#' @param param The name of the parameter that the calling constructor would
+#'   add, a single string. An error is signaled when the parent already has a
+#'   parameter with this name.
 #'
-#' @return `NULL`, invisibly, when the parent is not a zero wrapper. Otherwise
-#'   it signals an error naming the parent.
+#' @return `NULL`, invisibly, when the parent is not a zero wrapper and has no
+#'   parameter named `param`. If the parent is a zero wrapper, the function
+#'   signals an error that names the parent; if the parent already has a
+#'   parameter named `param`, it signals an error that names that parameter.
 #'
 #' @seealso [is_zero_wrapper()] for the test, and [zero_inflated()] and
 #'   [zero_adjusted()], the two callers.
@@ -206,9 +218,9 @@ is_zero_wrapper <- function(distrib) {
 #' @examples
 #' # A plain parent passes silently.
 #' distributions7:::check_not_stacked(poisson_distrib(),
-#'                                    "zero_inflated()", "zi")
+#' "zero_inflated", "zi")
 #'
-#' # A wrapped one does not, and the two orders are refused alike.
+#' # A wrapped one does not, and the two orders are rejected alike.
 #' try(zero_inflated(zero_adjusted(poisson_distrib())))
 #' try(zero_adjusted(zero_inflated(poisson_distrib())))
 #'
@@ -218,8 +230,8 @@ check_not_stacked <- function(distrib, fun, param) {
     stop(sprintf(
       paste0(
         "%s() cannot wrap '%s', which already models the probability of a zero.\n",
-        "  Stacking the two leaves only their combination identified: the second\n",
-        "  parameter has an identically zero score, and any optimizer will wander\n",
+        "  Stacking the two leaves only a combination of their parameters identified,\n",
+        "  so the likelihood is flat along a direction and any optimizer will wander\n",
         "  along that ridge. Apply exactly one zero wrapper to a plain distribution."
       ),
       fun, distrib@distrib_name
@@ -243,17 +255,19 @@ check_not_stacked <- function(distrib, fun, param) {
 #' is the SAME for both wrappers.
 #'
 #' @details
-#' What it rules out is exactly the Bernoulli and `binomial_distrib(size = 1)`.
-#' Zero-adjusting a Bernoulli leaves the truncated part on the single point
-#' \eqn{\{1\}} and `mu` disappears: the mass function is literally the same at
-#' `mu = 0.2` and at `mu = 0.9`. None of this is visible at run time, the mass
-#' summing to one and [check_distrib()] passing, so the constructor is the only
-#' place it can be caught.
+#' This rules out, among the shipped families, the Bernoulli,
+#' `binomial_distrib(size = 1)` and the beta-binomial families with `size` of 1
+#' or 2 (which have two parameters and need four support points). Zero-adjusting
+#' a Bernoulli leaves the truncated part on the single point \eqn{\{1\}} and
+#' `mu` disappears: the mass function is literally the same at `mu = 0.2` and at
+#' `mu = 0.9`. None of this is visible at run time, the mass summing to one and
+#' [check_distrib()] passing, so the constructor is the only place it can be
+#' caught.
 #'
-#' A large support is NECESSARY without being sufficient. With a mean large
-#' enough that the parent puts almost no mass at zero, the extra parameter is
-#' weakly identified whatever the support size, which is a question about the
-#' data and one this check cannot ask.
+#' A support with enough points is necessary for identification but not
+#' sufficient. If the mean is large enough that the parent puts almost no mass
+#' at zero, the extra parameter is weakly identified for any support size. This
+#' depends on the data, and the check does not examine the data.
 #'
 #' @param distrib The candidate parent, a `distrib` object.
 #' @param fun The name of the calling constructor, a single string, quoted in
@@ -318,9 +332,10 @@ check_support_is_rich_enough <- function(distrib, fun) {
 #' @param theta A named list with the parent's parameters followed by `zi`,
 #'   each a numeric vector of length 1 or of the length of `y`. `zi` must lie
 #'   strictly inside \eqn{(0, 1)}.
-#' @param log Logical of length 1. When `TRUE` the log-mass is returned. The
-#'   logarithm is taken of the mixture, not inside the parent, so it underflows
-#'   where the mixture does. Defaults to `FALSE`.
+#' @param log Logical of length 1. When `TRUE` the log-mass is returned. It is
+#'   computed from the parent's log-mass, as a log-sum-exp at zero and as
+#'   \eqn{\log(1-\zeta) + \log f(y)} elsewhere, so it stays finite where the
+#'   mass underflows. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of the recycled length of `y` and `theta`.
@@ -388,13 +403,13 @@ S7::method(distrib_pdf, ZeroInflatedDistrib) <- function(distrib, y, theta, log 
 #' @param theta A named list with the parent's parameters followed by `zi`.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default,
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)},
-#'   formed as \eqn{1 - F} and so subject to that subtraction's cancellation
-#'   far into the upper tail.
+#'   formed from the parent's own upper tail as \eqn{(1 - \zeta) P(X > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm is returned.
 #'   Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of probabilities, in \eqn{[0, 1]}.
+#' @return A numeric vector of probabilities in \eqn{[0, 1]}, or their
+#'   logarithms when `log.p = TRUE`.
 #'
 #' @section Notation:
 #' \eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
@@ -427,10 +442,16 @@ S7::method(distrib_cdf, ZeroInflatedDistrib) <- function(distrib, q, theta, lowe
   pars <- split_mix_theta(distrib, theta)
   zi <- pars$mix
 
-  res <- (1 - zi) * distrib_cdf(distrib@parent_distrib, q, pars$orig) + zi * (q >= 0)
+  parent <- distrib@parent_distrib
+  if (lower.tail) {
+    res <- (1 - zi) * distrib_cdf(parent, q, pars$orig) + zi * (q >= 0)
+  } else {
+    # the upper tail from the parent's own, with no difference near one
+    res <- ifelse(q >= 0,
+                  (1 - zi) * distrib_cdf(parent, q, pars$orig, lower.tail = FALSE),
+                  1 - (1 - zi) * distrib_cdf(parent, q, pars$orig))
+  }
   res <- pmin(pmax(res, 0), 1)
-
-  if (!lower.tail) res <- 1 - res
   if (log.p) log(res) else res
 }
 
@@ -444,11 +465,11 @@ S7::method(distrib_cdf, ZeroInflatedDistrib) <- function(distrib, q, theta, lowe
 #' probability \eqn{(p - \zeta)/(1 - \zeta)}.
 #'
 #' @details
-#' The result is a LATTICE quantile and overshoots, as any discrete quantile
+#' The result is a discrete quantile and can overshoot, as any discrete quantile
 #' does: `distrib_cdf(d, distrib_quantile(d, p, theta), theta)` returns the
-#' smallest attainable probability at or above `p`, not `p` itself. The
-#' inflated atom makes the first step larger than the parent's, so a
-#' probability below \eqn{L_0} maps to zero however small it is.
+#' smallest attainable probability at or above `p`, not `p` itself. The inflated
+#' atom makes the first step larger than the parent's, so a probability below
+#' \eqn{L_0} maps to zero however small it is.
 #'
 #' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
 #' @param p A numeric vector of probabilities, clamped to \eqn{[0, 1]} after
@@ -493,7 +514,6 @@ S7::method(distrib_quantile, ZeroInflatedDistrib) <- function(distrib, p, theta,
   parent <- distrib@parent_distrib
 
   if (log.p) p <- exp(p)
-  if (!lower.tail) p <- 1 - p
   p <- pmin(pmax(p, 0), 1)
 
   # Expand everything to a common length for consistent subsetting
@@ -501,18 +521,23 @@ S7::method(distrib_quantile, ZeroInflatedDistrib) <- function(distrib, p, theta,
   p <- all_params$.p
   th_orig <- all_params[names(pars$orig)]
   zi <- all_params[[distrib@params[distrib@n_params]]]
+  # both tails of the requested probability, neither formed as 1 - (1 - p)
+  p_low <- if (lower.tail) p else 1 - p
+  p_up <- if (lower.tail) 1 - p else p
 
   F0 <- distrib_cdf(parent, 0, th_orig)
   prob_at_zero <- zi + (1 - zi) * F0
 
   q_vals <- numeric(length(p))
-  idx <- (p > prob_at_zero)
+  rows <- which(p_low > prob_at_zero)
 
-  if (any(idx)) {
-    p_trans <- (p[idx] - zi[idx]) / (1 - zi[idx])
-    p_trans <- pmin(pmax(p_trans, 0), 1)
-    th_sub <- lapply(th_orig, function(x) if (length(x) > 1) x[idx] else x)
-    q_vals[idx] <- distrib_quantile(parent, p_trans, th_sub)
+  if (length(rows)) {
+    # the parent at these rows, a constant that varies by observation
+    # included, inverted in its upper tail at P(X > q) = p_up / (1 - zi)
+    par_sub <- distrib_at_rows(parent, rows, length(p))
+    th_sub <- lapply(th_orig, function(x) if (length(x) > 1) x[rows] else x)
+    target <- pmin(p_up[rows] / (1 - zi[rows]), 1)
+    q_vals[rows] <- distrib_quantile(par_sub, target, th_sub, lower.tail = FALSE)
   }
 
   q_vals
@@ -589,8 +614,9 @@ S7::method(distrib_rng, ZeroInflatedDistrib) <- function(distrib, n, theta, ...)
 #' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
 #' @param y A numeric vector of observations.
 #' @param theta A named list with the parent's parameters followed by `zi`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch. `zi` rides a logit by default, so the two differ.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The generic
+#'   applies the link scale to the value that the method returns. `zi` rides a
+#'   logit by default, so the two differ.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per parameter, in
@@ -626,8 +652,8 @@ S7::method(distrib_rng, ZeroInflatedDistrib) <- function(distrib, n, theta, ...)
 #' # Every positive observation gives the same zi component, -1 / (1 - zi).
 #' c(unique(round(g$zi[y > 0], 12)), theory = -1 / 0.75)
 #'
-#' # And the parent's component is zero at a zero only in the limit: it is
-#' # the parent's score there, weighted down by w.
+#' # At a zero, the parent's component is the parent's score there, weighted
+#' # down by w.
 #' c(weighted = g$mu[y == 0][1], unweighted = distrib_gradient(
 #'     poisson_distrib(), 0, list(mu = 3))$mu)
 S7::method(distrib_gradient, ZeroInflatedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
@@ -678,8 +704,8 @@ S7::method(distrib_gradient, ZeroInflatedDistrib) <- function(distrib, y, theta,
 #' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
 #' @param y A numeric vector of observations.
 #' @param theta A named list with the parent's parameters followed by `zi`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The generic
+#'   applies the link scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, one per unordered pair of
@@ -770,15 +796,18 @@ S7::method(distrib_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, 
 #' The zero contributes with probability \eqn{L_0} and carries the mixture's
 #' corrections; the positive part contributes with probability \eqn{1 - L_0}
 #' and carries the parent's own expected Hessian, less what the zero would have
-#' contributed to it. No component depends on the data, so every returned
-#' vector is constant and `y` is read for its length alone.
+#' contributed to it. The wrapper's own blocks do not depend on the data, so the
+#' returned vectors are constant when the parent's expected Hessian is, and `y`
+#' is then read for its length alone.
 #'
 #' @details
-#' This is EXACT. `approx` and `nsim` are accepted so that the signature
-#' matches the generic's, and neither is read. The route
-#' works because the parent's expected Hessian is an expectation over its whole
-#' support, from which the single point at zero can be subtracted in closed
-#' form.
+#' The blocks of the wrapper are exact combinations of the parent's mass, score
+#' and observed Hessian at zero and of the parent's expected Hessian, an
+#' expectation over the whole support from which the single point at zero is
+#' subtracted in closed form. `approx` and `nsim` are forwarded to the parent's
+#' [distrib_expected_hessian()] and take effect only where the parent has no
+#' closed form, so the result is exact exactly when the parent's is, as
+#' [expected_hessian_exact()] reports.
 #'
 #' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
 #' @param y A numeric vector of observations. Only its length is used when the
@@ -786,13 +815,13 @@ S7::method(distrib_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, 
 #'   parent block reads `y` itself, through `distrib_expected_hessian(parent,
 #'   y, ...)`.
 #' @param theta A named list with the parent's parameters followed by `zi`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The generic
+#'   applies the link scale to the value that the method returns.
 #' @param approx Forwarded to the parent's `distrib_expected_hessian()`, and
 #'   read only where the parent has no closed form for it; every other block
-#'   is an exact combination of the parent's density, score and observed
-#'   Hessian at zero. [expected_hessian_exact()] answers for this class by
-#'   asking the parent.
+#'   is an exact combination of the parent's density, score and observed Hessian
+#'   at zero. [expected_hessian_exact()] returns, for this class, the value that
+#'   it returns for the parent.
 #' @param nsim Forwarded for the same reason and under the same condition.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -942,17 +971,18 @@ S7::method(expected_hessian_exact, ZeroInflatedDistrib) <- function(x, ...) {
 #'   `binomial_distrib(size = 1)`, where `mu` and `zi` between them describe a
 #'   single free cell.
 #'
-#' A large support is NECESSARY without being sufficient. With \eqn{\mu} large
-#' enough that \eqn{f(0)} underflows, or \eqn{\zeta} close to zero, the ridge
-#' reappears in the data instead of in the model, and [fit_distrib()] reports
-#' the standard errors that reveal it.
+#' A support with enough points is necessary for identification but not
+#' sufficient. If \eqn{\mu} is large enough that \eqn{f(0)} underflows, or
+#' \eqn{\zeta} is close to zero, the data carry little information about
+#' \eqn{\zeta}, and the standard errors that [fit_distrib()] reports are large.
 #'
 #' # What the result supports
 #'
-#' Every generic of the `distrib` class: the mass function, the distribution
-#' function, the quantile function, the generator, the analytic score, the
-#' observed and the expected Hessian, and the third and fourth derivatives
-#' from the shared wrapper machinery. The moments come from [moment()] numerically.
+#' The mass function, the distribution function, the quantile function, the
+#' generator, the analytic score, the observed and the expected Hessian, and the
+#' third, fourth and fifth derivatives from the shared wrapper machinery. The
+#' derivatives with respect to the response are not defined for a discrete
+#' family. The moments are computed numerically by [moment()].
 #'
 #' @section Notation:
 #' \eqn{f} is the parent's mass function, \eqn{\theta} its parameters,
@@ -977,8 +1007,8 @@ S7::method(expected_hessian_exact, ZeroInflatedDistrib) <- function(x, ...) {
 #'   `distrib_name` is `"zero-inflated "` followed by the parent's.
 #'
 #' @seealso [zero_adjusted()] for the hurdle counterpart,
-#'   [ZeroInflatedDistrib] for the class, [truncated()], which the hurdle uses
-#'   internally, and [check_distrib()] to validate the result.
+#'   [ZeroInflatedDistrib] for the class, [truncated()] for truncation to an
+#'   interval, and [check_distrib()] to validate the result.
 #'
 #' @examples
 #' zip <- zero_inflated(poisson_distrib())

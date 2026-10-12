@@ -8,9 +8,10 @@ NULL
 #' What [reparametrize()] returns: the same law as its parent, written in
 #' different coordinates. There is one class per kind of parent, so that a
 #' continuous parent keeps the defaults registered on [continuous_distrib()]
-#' and a discrete one those of [discrete_distrib()]. Nothing else distinguishes
-#' the two: every method in this file is registered on both, from the same
-#' body.
+#' and a discrete one those of [discrete_distrib()]. The two classes differ only
+#' in their parent, and the methods of this file are registered on both from the
+#' same body, except [distrib_grad_y()] and [distrib_hess_y()], which only the
+#' continuous class registers.
 #'
 #' @details
 #' The three properties beyond a distribution's own are what the methods read.
@@ -23,7 +24,8 @@ NULL
 #'
 #' @param distrib_name The name of the family, a single string.
 #' @param dimension `"univariate"` or `"multivariate"`. Always the first for a
-#'   reparametrization, [reparametrize()] refusing a multivariate parent.
+#'   reparametrization, since [reparametrize()] signals an error for a
+#'   multivariate parent.
 #' @param params A character vector naming the new parameters.
 #' @param params_bounds A named list of length-two numeric vectors, the open
 #'   interval each new parameter lives in.
@@ -170,17 +172,17 @@ reparam_theta <- function(distrib, theta) {
 #' [reparam_map_derivs()]. Otherwise each needed partial comes from one
 #' finite-difference stencil of [numericals7::fd_derivative()] applied to the
 #' analytic map, a single stencil per order and never a chain of differences,
-#' at the accuracy that construction carries: about \eqn{10^{-8}} at first
-#' order, fading with the order. Exact tables are therefore the recommendation
-#' for any family fitted in earnest.
+#' at the accuracy that construction carries: close to the stencil's own at
+#' first order and falling quickly with the order. Exact tables are therefore
+#' required for derivatives of order three and above.
 #'
 #' @param distrib A reparametrized distribution.
 #' @param theta A named list of the new parameters, already aligned by
 #'   [reparam_theta()]'s caller. Only the first `n_params` components are read.
-#' @param order The highest order of partial the caller reads, an integer from
-#'   1 to 4: one for a gradient, a distribution function's gradient or a mixed
-#'   response derivative, two for a Hessian or an expected information, and
-#'   so on. No partial of higher order is formed.
+#' @param order The highest order of partial that the caller reads, an integer
+#'   from 1 to 4: one for a gradient, a distribution function's gradient or a
+#'   mixed response derivative, two for a Hessian or an expected information,
+#'   and so on. No partial of higher order is formed.
 #'
 #' @return A list over the parent's parameters, each element a keyed list of
 #'   that component's partial derivatives up to order `order`.
@@ -206,11 +208,12 @@ reparam_tables <- function(distrib, theta, order) {
 #' not the same-variable nesting the toolkit forbids.
 #'
 #' @details
-#' The accuracy is about \eqn{10^{-8}} at first order and fades with the order,
-#' which is why a family fitted in earnest supplies `map_derivs` instead. What
-#' the fallback buys is that a user's own reparametrization works immediately,
-#' with no derivatives written: the same bargain
-#' [distrib_grad_y.continuous_distrib()] offers a density-only family.
+#' The accuracy is of the order of \eqn{10^{-11}} at first order and falls
+#' quickly with the order (see [reparam_tables()]), which is why a family fitted
+#' in earnest supplies `map_derivs` instead. What the fallback buys is that a
+#' user's own reparametrization works immediately, with no derivatives
+#' written, as [distrib_grad_y.continuous_distrib()] does for a density-only
+#' family.
 #'
 #' @param map The map function, of a named list of the new parameters returning
 #'   a named list of the parent's.
@@ -255,9 +258,10 @@ reparam_stencil_derivs <- function(map, params, parent_params) {
         for (j in dirs) {
           ord <- counts[j]
           gprev <- gcur
-          xj <- base[[j]]
+          # The base point is captured inside local(): a closure that read a
+          # loop variable would see the last direction's value.
           gcur <- local({
-            jj <- j; oo <- ord; gp <- gprev; dd <- dirs
+            jj <- j; oo <- ord; gp <- gprev; dd <- dirs; xj <- base[[j]]
             function(x) {
               vapply(seq_len(pp), function(i) {
                 numericals7::fd_derivative(function(z) {
@@ -283,9 +287,9 @@ reparam_stencil_derivs <- function(map, params, parent_params) {
 #' Parameter Derivatives of a Reparametrized Distribution
 #'
 #' @description
-#' The body the four derivative methods share: aligns the new parameters, maps
-#' them to the parent's, fetches the map's tables and hands all three to
-#' [chain_derivatives()]. The `order` and `expected` arguments are what
+#' The body that the four derivative methods share: it aligns the new
+#' parameters, maps them to the parent's, fetches the map's tables and hands all
+#' three to [chain_derivatives()]. The `order` and `expected` arguments are what
 #' separate the four registrations.
 #'
 #' @param distrib A reparametrized distribution.
@@ -295,6 +299,9 @@ reparam_stencil_derivs <- function(map, params, parent_params) {
 #' @param expected Should the expected derivatives be carried? A single
 #'   logical, `FALSE` by default. `TRUE` is meaningful from order 2 up, the
 #'   score having mean zero.
+#' @param approx,nsim Forwarded to the parent's expected derivatives: `approx`
+#'   is one of `"opg"` (the default), `"bartlett"`, `"integrate"` or `"mc"`, and
+#'   `nsim` is the number of draws for `"mc"`.
 #'
 #' @return A named list of numeric vectors, keyed as
 #'   [`deriv_names(distrib@params, order)`][deriv_names].
@@ -335,8 +342,8 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE,
 #' \deqn{\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
 #'       \ell^{(i_1 \dots i_{|\pi|})}(\theta)
 #'       \prod_{B \in \pi} \frac{\partial^{|B|}\theta_{i_B}}{\partial\psi_B},}
-#' the sum over set partitions of the multi-index. Every order the parent has
-#' in closed form therefore survives in closed form.
+#' the sum over set partitions of the multi-index. Every order that the parent
+#' has in closed form therefore survives in closed form.
 #'
 #' # Under expectation
 #'
@@ -362,6 +369,9 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE,
 #' @param order The derivative order, 1 to 4.
 #' @param expected Should the expected derivatives be carried? A single
 #'   logical, `FALSE` by default.
+#' @param approx,nsim Forwarded to the parent's expected derivatives: `approx`
+#'   is one of `"opg"` (the default), `"bartlett"`, `"integrate"` or `"mc"`, and
+#'   `nsim` is the number of draws for `"mc"`.
 #'
 #' @return A named list of numeric vectors, keyed as
 #'   [`deriv_names(new_params, order)`][deriv_names].
@@ -424,8 +434,7 @@ chain_derivatives <- function(parent, y, th_par, maps, new_params, order,
 #'
 #' The key into an inner table is **built** from the parameter names and never
 #' parsed out of one, so a parameter whose own name contains an underscore is
-#' safe. That is the shape of mistake the package records having made once, in
-#' three separate fallbacks at once.
+#' safe.
 #'
 #' @param D A list of length `order`. `D[[k]]` is the inner derivative table of
 #'   order \eqn{k}, keyed as
@@ -443,7 +452,8 @@ chain_derivatives <- function(parent, y, th_par, maps, new_params, order,
 #'   [`deriv_names(new_params, order)`][deriv_names].
 #'
 #' @seealso [chain_derivatives()], its caller;
-#'   [loc_scale_cdf_deriv_k()] and [enet_distrib()], the two other consumers;
+#'   [loc_scale_cdf_deriv_k()], [enet_distrib()] and the mapped cdf derivatives
+#'   of R/cdf_mapped_higher.R, further consumers;
 #'   [numericals7::set_partitions()] for the enumeration.
 #'
 #' @keywords internal
@@ -513,8 +523,9 @@ chain_assemble <- function(D, inner_params, maps, new_params, order, n) {
 #'
 #' @description
 #' The parent's density, evaluated at the mapped parameters. A change of
-#' parametrization does not change the law, so nothing is recomputed here: the
-#' new parameters go through [reparam_theta()] and the parent answers.
+#' parametrization does not change the law, so the density is not recomputed
+#' here: the new parameters go through [reparam_theta()] and the parent's
+#' density is evaluated at the result.
 #'
 #' @param distrib A reparametrized distribution, from [reparametrize()].
 #' @param y A numeric vector of observations.
@@ -788,7 +799,7 @@ S7::method(distrib_gradient, ReparamDiscreteDistrib) <- reparam_gradient
 #' a <- distrib_hessian(d, c(0, 1, 2), th)
 #' b <- distrib_hessian(gaussian2_distrib(), c(0, 1, 2), th)
 #'
-#' # The two enumerate their components in different orders, so match by name.
+#' # Components of the two results are matched by name; here both follow hess_names().
 #' rbind(reparametrized = names(a), written_out = names(b))
 #' max(abs(unlist(a[names(b)]) - unlist(b)))
 #'
@@ -835,7 +846,7 @@ S7::method(distrib_hessian, ReparamDiscreteDistrib) <- reparam_hessian
 #'
 #' @seealso [distrib_hessian.ReparamContinuousDistrib()], which keeps the score
 #'   term; [chain_derivatives()]; [reparametrize()];
-#'   [expected_hessian_exact()], which answers for this class by asking the
+#'   [expected_hessian_exact()], which for this class returns the value of the
 #'   parent.
 #'
 #' @examples
@@ -852,7 +863,7 @@ S7::method(distrib_hessian, ReparamDiscreteDistrib) <- reparam_hessian
 #' a <- distrib_expected_hessian(d, c(0, 1, 2), th)
 #' b <- distrib_expected_hessian(gaussian2_distrib(), c(0, 1, 2), th)
 #'
-#' # Matched by name, the two enumerating in different orders.
+#' # Matched by name; both results follow hess_names() here.
 #' max(abs(unlist(a[names(b)]) - unlist(b)))
 #'
 #' @keywords internal
@@ -906,7 +917,7 @@ S7::method(expected_hessian_exact, ReparamDiscreteDistrib) <- function(x, ...) {
 #' @description
 #' The partition sum at order three, observed or expected. Every order the
 #' parent has in closed form survives in closed form, so a family reparametrized
-#' from one of the 42 that carry analytic third derivatives keeps them.
+#' from a parent that carries analytic third derivatives keeps them.
 #'
 #' @details
 #' The sum reads the map's partials up to order three, which is where a
@@ -922,8 +933,8 @@ S7::method(expected_hessian_exact, ReparamDiscreteDistrib) <- function(x, ...) {
 #'   the score having mean zero.
 #' @param scale Either `"parameter"` (the default) or `"link"`, handled by the
 #'   generic after this method has returned.
-#' @param approx The strategy the parent uses for an expected derivative it has
-#'   no closed form for, one of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`.
+#' @param approx The strategy that the parent uses for an expected derivative
+#'   for which it has no closed form, one of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`.
 #'   Passed straight through; read only when `expected` is `TRUE` and only by a
 #'   parent that approximates.
 #' @param nsim The number of draws for `approx = "mc"`, 10000 by default.
@@ -968,10 +979,12 @@ S7::method(distrib_deriv3, ReparamDiscreteDistrib) <- reparam_deriv3
 #' @aliases distrib_deriv4.ReparamDiscreteDistrib
 #'
 #' @description
-#' The partition sum at order four, observed or expected. This is the highest
-#' order the toolkit carries, and it is what a marginal criterion's exact
-#' gradient reads, so a reparametrized family used inside a penalized fit
-#' reaches it through this method.
+#' The partition sum at order four, observed or expected. A marginal criterion
+#' reads this order in its exact Hessian, so a reparametrized family used inside
+#' a penalized fit reaches it through this method. The fifth derivative has no
+#' method registered on the reparametrized classes: [distrib_deriv5()]
+#' dispatches to the base method, which differences the lower orders
+#' numerically.
 #'
 #' @param distrib A reparametrized distribution, from [reparametrize()].
 #' @param y The response, a numeric vector.
@@ -980,8 +993,8 @@ S7::method(distrib_deriv3, ReparamDiscreteDistrib) <- reparam_deriv3
 #'   `FALSE` by default.
 #' @param scale Either `"parameter"` (the default) or `"link"`, handled by the
 #'   generic after this method has returned.
-#' @param approx The strategy the parent uses for an expected derivative it has
-#'   no closed form for, one of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`.
+#' @param approx The strategy that the parent uses for an expected derivative
+#'   for which it has no closed form, one of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`.
 #'   Passed straight through.
 #' @param nsim The number of draws for `approx = "mc"`, 10000 by default.
 #'   Passed through.
@@ -1030,8 +1043,8 @@ S7::method(distrib_deriv4, ReparamDiscreteDistrib) <- reparam_deriv4
 #'
 #' @details
 #' Only the continuous class registers this. A discrete family has no response
-#' derivative, and the base class refuses one, so there is nothing for a
-#' discrete reparametrization to delegate.
+#' derivative, and no method is registered for it on the base class, so there is
+#' nothing for a discrete reparametrization to delegate.
 #'
 #' @param distrib A reparametrized distribution, from [reparametrize()].
 #' @param y The response, a numeric vector.
@@ -1146,9 +1159,9 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #' Describe a Trial Parameter Value
 #'
 #' @description
-#' Renders the point a map was probed at as `(a = 1, b = 2)`, so that a failure
-#' in [reparametrize()]'s construction check names the point instead of leaving
-#' the caller to guess it.
+#' Renders the point at which a map was probed as `(a = 1, b = 2)`, so that a
+#' failure in [reparametrize()]'s construction check names the point instead of
+#' leaving the caller to guess it.
 #'
 #' @param probe A named list of parameter values, each of length 1.
 #'
@@ -1177,10 +1190,10 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #' are written.
 #'
 #' @details
-#' A reparametrization is not a link. A link changes the scale a parameter is
-#' *modeled* on and leaves the parameter what it was; here the parameter
-#' *is* the new quantity, and that is what the estimate, the standard
-#' error and the confidence interval describe.
+#' A link changes the scale on which a parameter is modeled and leaves the
+#' parameter itself unchanged. In a reparametrization the parameter is the new
+#' quantity, and the estimate, the standard error and the confidence interval
+#' describe that quantity.
 #'
 #' **The map is written in ordinary R.** It takes a named list of the new
 #' parameters and returns a named list of the parent's, and nothing in it
@@ -1198,9 +1211,10 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #' [reparam_map_derivs()]. Leave it `NULL`, and each partial the chain needs
 #' comes from one central stencil of [numericals7::fd_derivative()] applied to
 #' the analytic map, a single stencil per order and never a chain of
-#' differences. The stencil route is good to about \eqn{10^{-8}} at first
-#' order and fades with the order, so a family fitted in earnest is worth a
-#' table.
+#' differences. The stencil route is accurate to about \eqn{10^{-11}} at first
+#' order and loses accuracy quickly with the order (the third and fourth tables
+#' can be wrong in their leading digits), so a family used for anything beyond a
+#' first exploration needs `map_derivs`.
 #'
 #' **What is exact and what is inherited.** The derivatives of the
 #' log-density are carried by
@@ -1210,14 +1224,18 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #' the sum over set partitions, so every order the parent has in closed form
 #' survives in closed form. Expectation being linear and the map
 #' deterministic, the expected derivatives obey the same formula, and the term
-#' carrying the second derivative of the map drops because the score has mean
-#' zero: a parent with an exact expected information gives an exact one here.
-#' The density, the distribution function, the quantile function, the generator
-#' and the response derivatives are the parent's at the mapped parameters.
+#' carrying the parent's score (multiplied by a derivative of the map of the
+#' order being formed) drops because the score has mean zero: a parent with an
+#' exact expected information gives an exact one here. The density, the
+#' distribution function, the quantile function, the generator and the response
+#' derivatives are the parent's at the mapped parameters.
 #'
-#' **Cost.** A parameter that varies by observation needs one run of the
-#' map per observation; scalar parameters need one run in total, which is the
-#' case a fit is in.
+#' **Cost.** The density, the distribution function, the quantile function and
+#' the generator call the map once per evaluation, on whole vectors. When
+#' `map_derivs` is `NULL`, the derivatives call the map at the points of the
+#' stencil, several times for each observation (more at higher orders), and
+#' separately for each observation when a parameter varies by observation. A
+#' supplied `map_derivs` is called once per evaluation.
 #'
 #' @param distrib The distribution to rewrite.
 #' @param map A function of a named list of the new parameters, returning a
@@ -1232,8 +1250,8 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #'   parent parameter the non-zero partial derivatives of the map with respect
 #'   to the new parameters up to order `order`, keyed by the sorted tuple of
 #'   new-parameter positions ("1", "1,2", "2,2,3,3", ...); a missing key is
-#'   an exact zero. Each caller passes the highest order it reads, so a
-#'   gradient asks for order one and a fourth derivative for order four. The
+#'   an exact zero. Each caller passes the highest order that it reads, so a
+#'   gradient passes order one and a fourth derivative passes order four. The
 #'   shipped second parametrizations supply hand-written tables (see
 #'   [reparam_map_derivs()]); when `NULL`, each needed partial comes from one
 #'   finite-difference stencil on the map.
@@ -1241,6 +1259,12 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #'   parameter; defaults to the parameter names.
 #' @param name An optional name for the result; defaults to the parent's with
 #'   the new parameters appended.
+#' @param params_smooth An optional named logical vector, one entry per new
+#'   parameter, saying which of them the log-density is differentiable in.
+#'   The map is arbitrary, so the default cannot read which new parameter
+#'   reaches a kink of the parent: it is `TRUE` for every new parameter when
+#'   every parameter of the parent is smooth, and `FALSE` for every one
+#'   otherwise.
 #'
 #' @return A distribution object of class
 #'   [ReparamContinuousDistrib()] or
@@ -1267,7 +1291,7 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #' @export
 reparametrize <- function(distrib, map, params, bounds, links,
                           map_derivs = NULL, interpretation = NULL,
-                          name = NULL) {
+                          name = NULL, params_smooth = NULL) {
   if (!S7::S7_inherits(distrib, continuous_distrib) &&
     !S7::S7_inherits(distrib, discrete_distrib)) {
     stop("'distrib' must inherit from 'continuous_distrib' or 'discrete_distrib'.",
@@ -1289,6 +1313,20 @@ reparametrize <- function(distrib, map, params, bounds, links,
   }
   if (is.null(interpretation)) {
     interpretation <- stats::setNames(params, params)
+  }
+  # The map is arbitrary, so which new parameter reaches a kink of the parent
+  # cannot be read without theta: a parent with any non-smooth parameter makes
+  # every new parameter non-smooth unless the caller says otherwise.
+  if (is.null(params_smooth)) {
+    smooth_parent <- all(param_smoothness(distrib))
+    params_smooth <- stats::setNames(rep(smooth_parent, length(params)), params)
+  } else {
+    if (!is.logical(params_smooth) || anyNA(params_smooth) ||
+        !setequal(names(params_smooth), params) ||
+        length(params_smooth) != length(params)) {
+      stop("'params_smooth' must be a named logical vector with one entry ",
+           "per new parameter.", call. = FALSE)
+    }
   }
 
   # The map has to return the parent's parameters, and the cheapest place to
@@ -1358,7 +1396,7 @@ reparametrize <- function(distrib, map, params, bounds, links,
     n_params = length(params),
     params_bounds = bounds[params],
     link_params = links[params],
-    params_smooth = stats::setNames(rep(TRUE, length(params)), params),
+    params_smooth = params_smooth[params],
     parent_distrib = distrib,
     reparam_map = map,
     reparam_derivs = if (is.null(map_derivs)) {

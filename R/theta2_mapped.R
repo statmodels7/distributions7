@@ -35,8 +35,8 @@ NULL
 #'   + \sum_i \frac{\partial^2\theta_i}{\partial\alpha_a\partial\alpha_b} f_i,}
 #' with \eqn{f_i} the parent's first-order mixed component and \eqn{f_{ij}} its
 #' second-order one. Both partial tables are the MAP's, already keyed by
-#' [reparam_tables()] under the indices of the new parameters, `"1"` for a
-#' first partial and `"1,2"` for a second, so nothing is differentiated here.
+#' [reparam_tables()] under the indices of the new parameters, `"1"` for a first
+#' partial and `"1,2"` for a second, so this function only combines them.
 #'
 #' # What `first` and `second` are
 #'
@@ -52,11 +52,12 @@ NULL
 #'   `params` are read, to key the result.
 #' @param parent The parent distribution, whose `params` key the inputs.
 #' @param th_par A named list of the parent's parameters, evaluated at the new
-#'   ones.
+#'   ones. Not read by this function; the callers use it to compute `first`
+#'   and `second`.
 #' @param maps The map's keyed partial tables, from [reparam_tables()]: one
 #'   entry per parent parameter, each a list keyed by new-parameter index.
-#' @param y A numeric vector of observations. Used only for its length,
-#'   through the components.
+#' @param y A numeric vector of observations. Not used; present so that the
+#'   signature matches the callers'.
 #' @param first The parent's first-order components, keyed by the parent's
 #'   parameters.
 #' @param second The parent's second-order components, keyed by the parent's
@@ -144,8 +145,8 @@ mapped_theta2 <- function(distrib, parent, th_par, maps, y, first, second) {
 #' @param distrib A `ReparamContinuousDistrib` object, from [reparametrize()].
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the NEW parameters.
-#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
-#'   dispatch.
+#' @param scale One of `"parameter"` or `"link"`. The generic applies the link
+#'   scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per unordered pair of the new
@@ -228,8 +229,8 @@ S7::method(distrib_hess_y_hess, ReparamContinuousDistrib) <-
 #' @param distrib A `ReparamContinuousDistrib` object, from [reparametrize()].
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the NEW parameters.
-#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
-#'   dispatch.
+#' @param scale One of `"parameter"` or `"link"`. The generic applies the link
+#'   scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per new parameter, keyed by

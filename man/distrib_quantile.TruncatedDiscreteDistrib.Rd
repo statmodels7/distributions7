@@ -18,7 +18,7 @@ scale.}
 }
 \value{
 A numeric vector of quantiles, every one a support point in
-\eqn{[L, U]}.
+\eqn{[L, U]}; a probability of zero gives \eqn{L}.
 }
 \description{
 Evaluates \eqn{Q_T(p) = Q\{F(L^-;\theta) + p\,Z(\theta)\}} through the
@@ -42,7 +42,7 @@ theta <- list(mu = 2)
 
 distrib_quantile(ztp, c(0.1, 0.5, 0.9), theta)
 
-# Never below the lower endpoint, whatever probability is asked for.
+# Never below the lower endpoint, whatever the probability.
 distrib_quantile(ztp, c(0, 1e-12, 0.5), theta)
 }
 \seealso{

@@ -70,9 +70,9 @@ silently would hide a missing argument.
 }
 
 \section{What it is for}{
-A prior. \code{fixed(gaussian1_distrib(), mu = 0)} is the ridge penalty with its
-scale free, \code{fixed(laplace2_distrib(), mu = 0)} is the lasso, and
-\code{fixed(mvgaussian1_distrib(p), mu = 0)} is what a random effect is
+The wrapper builds priors. \code{fixed(gaussian1_distrib(), mu = 0)} is the ridge
+penalty with its scale free, \code{fixed(laplace2_distrib(), mu = 0)} is the
+lasso, and \code{fixed(mvgaussian1_distrib(p), mu = 0)} is what a random effect is
 distributed by. \code{fixed(folded(gaussian1_distrib()), mu = 0)} is the
 half-normal.
 
@@ -117,7 +117,7 @@ fixed(zero_inflated(poisson_distrib()), zi = 0.3)@params
 # Two calls collapse into one wrapper, and fixing everything is legal.
 fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)@fixed_params
 
-# Four refusals, each naming the condition that failed.
+# Four errors, each naming the condition that failed.
 try(fixed(gaussian1_distrib(), nope = 1))
 try(fixed(gaussian1_distrib(), sigma = -1))
 try(fixed(gaussian1_distrib(), mu = c(0, 1)))

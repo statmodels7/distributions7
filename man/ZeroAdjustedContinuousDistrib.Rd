@@ -47,8 +47,9 @@ beside the parent's properties, with \code{za} added last.
 The S7 class of a continuous distribution with a point mass at zero:
 \deqn{P(Y = 0) = \pi, \qquad f_Y(y) = (1-\pi) f(y; \theta) \; (y \ne 0).}
 The result is a MIXED distribution, a density plus an atom, and it declares
-that atom through \code{\link[=distrib_atoms]{distrib_atoms()}}. That declaration is how
-\code{\link[=check_distrib]{check_distrib()}} and \code{\link[=expectation]{expectation()}} learn to treat it as one.
+that atom through \code{\link[=distrib_atoms]{distrib_atoms()}}. \code{\link[=check_distrib]{check_distrib()}}, \code{\link[=truncated]{truncated()}} and
+\code{\link[=folded]{folded()}} read that declaration; \code{\link[=expectation]{expectation()}} has a method of its own for
+this class, which splits the integral at zero.
 }
 \details{
 No truncation is needed here. A continuous parent has \eqn{P(Y = 0) = 0}, so
@@ -61,25 +62,45 @@ The likelihood factorizes completely: the mixed blocks of the Hessian are
 exactly zero, \eqn{\pi} is estimated by the proportion of zeros and
 \eqn{\theta} by the parent's own fit to the non-zero observations.
 
-Build one with \code{\link[=zero_adjusted]{zero_adjusted()}}. This page documents the raw S7
-constructor, which validates nothing.
+Build one with \code{\link[=zero_adjusted]{zero_adjusted()}}, which rejects a parent that is already a
+zero wrapper or that has a parameter named \code{za}, and warns when the support
+of the parent starts above zero. This page documents the raw S7 constructor,
+which applies the validator of the class \code{distrib} to the properties and
+performs none of those checks.
 }
 \section{Methods}{
 
-Registered on this class:
-\code{\link[=distrib_atoms.ZeroAdjustedContinuousDistrib]{distrib_atoms()}},
-\code{\link[=distrib_cdf.ZeroAdjustedContinuousDistrib]{distrib_cdf()}},
-\code{\link[=distrib_expected_hessian.ZeroAdjustedContinuousDistrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_grad_y.ZeroAdjustedContinuousDistrib]{distrib_grad_y()}},
-\code{\link[=distrib_gradient.ZeroAdjustedContinuousDistrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.ZeroAdjustedContinuousDistrib]{distrib_hess_y()}},
-\code{\link[=distrib_hessian.ZeroAdjustedContinuousDistrib]{distrib_hessian()}},
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution:
 \code{\link[=distrib_pdf.ZeroAdjustedContinuousDistrib]{distrib_pdf()}},
+\code{\link[=distrib_cdf.ZeroAdjustedContinuousDistrib]{distrib_cdf()}},
 \code{\link[=distrib_quantile.ZeroAdjustedContinuousDistrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.ZeroAdjustedContinuousDistrib]{distrib_rng()}},
-\code{\link[=expectation.ZeroAdjustedContinuousDistrib]{expectation()}}
+\code{\link[=distrib_atoms.ZeroAdjustedContinuousDistrib]{distrib_atoms()}} and
+\code{\link[=expectation.ZeroAdjustedContinuousDistrib]{expectation()}};
+\item the derivatives in the parameters:
+\code{\link[=distrib_gradient.ZeroAdjustedContinuousDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.ZeroAdjustedContinuousDistrib]{distrib_hessian()}},
+\code{\link[=distrib_expected_hessian.ZeroAdjustedContinuousDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.ZeroAdjustedContinuousDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.ZeroAdjustedContinuousDistrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.ZeroAdjustedContinuousDistrib]{distrib_deriv5()}};
+\item the derivatives of the expected information: \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}
+and \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.ZeroAdjustedContinuousDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.ZeroAdjustedContinuousDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} and \code{\link[=distrib_deriv4_y]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y]{distrib_cross_y()}}, \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} and \code{\link[=distrib_cross3_y]{distrib_cross3_y()}};
+\item the exactness flags: \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} and \code{\link[=has_exact_deriv4]{has_exact_deriv4()}};
+\item the fitting helpers:
+\code{\link[=distrib_start.ZeroAdjustedContinuousDistrib]{distrib_start()}} and
+\code{\link[=distrib_scalar_route]{distrib_scalar_route()}}.
+}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \section{Notation}{

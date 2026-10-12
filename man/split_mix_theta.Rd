@@ -8,7 +8,7 @@ split_mix_theta(distrib, theta)
 }
 \arguments{
 \item{distrib}{A \code{ZeroInflatedDistrib} or a zero-adjusted object, whose
-\code{parent_distrib} supplies the names of the first block.}
+\code{n_params} gives the position of the wrapper's parameter.}
 
 \item{theta}{A named list of parameters, already aligned, the parent's
 followed by the wrapper's.}
@@ -20,9 +20,9 @@ and \code{mix}, the wrapper's parameter as a numeric vector.
 \description{
 Separates a full \code{theta} into the parent distribution's parameters and the
 single mixing parameter the wrapper adds. Both zero wrappers append their
-parameter LAST, so the split is positional and needs no name matching, which
-keeps it correct for a parent whose own parameter happens to be called \code{zi}
-or \code{pi}.
+parameter last, so the split is positional and uses no parameter names. The
+constructors reject a parent that already has a parameter with the wrapper's
+name (\code{zi} or \code{za}).
 }
 \examples{
 d <- zero_inflated(poisson_distrib())

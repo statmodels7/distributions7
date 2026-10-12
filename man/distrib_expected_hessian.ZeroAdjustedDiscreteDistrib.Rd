@@ -11,14 +11,14 @@
 
 \item{theta}{A named list with the parent's parameters followed by \code{za}.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns.}
 
 \item{approx}{Forwarded to the parent's \code{distrib_expected_hessian()}, and
 read only where the parent has no closed form for it; every other block
-is an exact combination of the parent's density, score and observed
-Hessian at zero. \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} answers for this class by
-asking the parent.}
+is an exact combination of the parent's density, score and observed Hessian
+at zero. \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} returns, for this class, the value that
+it returns for the parent.}
 
 \item{nsim}{Forwarded for the same reason and under the same condition.}
 
@@ -35,18 +35,20 @@ zero.
 }
 \description{
 Computes the expectation of the observed Hessian in closed form. The hurdle
-block is the Bernoulli information \eqn{-1/\{\pi(1-\pi)\}}, the mixed blocks
-are exactly zero, and the parent block is \eqn{(1-\pi)} times the truncated
-parent's own expected Hessian: a positive observation arrives with
-probability \eqn{1-\pi} and carries the whole of what \eqn{\theta} is
-estimated from. No component depends on the data, so every returned vector
-is constant.
+block is the negative of the Bernoulli information, \eqn{-1/\{\pi(1-\pi)\}},
+the mixed blocks are exactly zero, and the parent block is \eqn{(1-\pi)}
+times the truncated parent's own expected Hessian: a positive observation
+arrives with probability \eqn{1-\pi} and carries the whole of what
+\eqn{\theta} is estimated from. The components do not depend on the observed
+values, so each returned vector is constant whenever the parent's expected
+Hessian is.
 }
 \details{
 The block diagonal is why a hurdle model is cheap to fit: the two halves can
 be estimated independently, and the information matrix inverts blockwise.
-\code{approx} and \code{nsim} are accepted so that the signature matches the generic's
-and neither is read; the expectation here is exact.
+\code{approx} and \code{nsim} are forwarded to the expected Hessian of the parent and
+are used only where the parent has no closed form. The remaining blocks are
+exact, and the whole expectation is exact when the parent's is.
 }
 \section{Notation}{
 

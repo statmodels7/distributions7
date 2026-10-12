@@ -142,8 +142,10 @@ tail_probability <- function(Fq, lower.tail) {
 #' The general form of [discrete_cdf_deriv()]: evaluates
 #' \eqn{\partial^I F(q) = \sum_{y \le q} f(y)\,\partial^I f/f\,(y)} for a
 #' discrete family at any order up to four. Nothing is differenced; the sum is
-#' exact wherever the support has a finite lower bound, which the discrete
-#' class requires.
+#' exact wherever the support has a finite lower bound, which the discrete class
+#' requires. Where \eqn{P(Y > q)} is below 0.01 the sum is computed as minus the
+#' sum above \eqn{q}, the derivatives of the mass summing to zero over the
+#' support.
 #'
 #' @details
 #' What changes above second order is only the summand. \eqn{\partial^I f/f} is
@@ -182,6 +184,9 @@ discrete_cdf_deriv_k <- function(distrib, q, theta, order) {
   # a constant that varies by observation (a binomial's size) is taken at
   # the row, as the parameters are
   rows <- distrib_const_rows(distrib) > 1L
+  # the upper tail of every quantile, read once to choose the side of each sum
+  surv <- distrib_cdf(distrib, q, theta[seq_along(params)], lower.tail = FALSE)
+  surv <- rep_len(surv, n)
   for (k in seq_len(n)) {
     if (is.na(q[k])) {
       for (m in seq_along(nm)) out[[m]][k] <- NA_real_
@@ -191,11 +196,27 @@ discrete_cdf_deriv_k <- function(distrib, q, theta, order) {
     th_k <- lapply(theta[seq_along(params)],
                    function(v) if (length(v) > 1) v[k] else v)
     dk <- if (rows) distrib_at_rows(distrib, k, n) else distrib
-    grid <- seq(lo, floor(q[k] + 1e-9))
-    fy <- distrib_pdf(dk, grid, th_k)
-    ell <- parent_ell(dk, grid, th_k, order, params)
-    for (m in seq_along(nm)) {
-      out[[m]][k] <- sum(fy * bell_f_ratio(params[idx[[m]]], ell))
+    term <- function(grid, m) {
+      ell <- parent_ell(dk, grid, th_k, order, params)
+      distrib_pdf(dk, grid, th_k) * bell_f_ratio(params[idx[[m]]], ell)
+    }
+    top <- floor(q[k] + 1e-9)
+    # the lower sum loses about eps / S(q) of relative accuracy, so it is
+    # replaced only where the upper tail is small
+    if (isTRUE(surv[k] < 0.01)) {
+      # the derivatives of the mass sum to zero over the support, so in the
+      # upper tail the sum below q is minus the small sum above it
+      for (m in seq_along(nm)) {
+        out[[m]][k] <- -discrete_support_sum(function(K, I) term(K, m),
+                                             top + 1, distrib@bounds[2], 1L)
+      }
+    } else {
+      grid <- seq(lo, top)
+      fy <- distrib_pdf(dk, grid, th_k)
+      ell <- parent_ell(dk, grid, th_k, order, params)
+      for (m in seq_along(nm)) {
+        out[[m]][k] <- sum(fy * bell_f_ratio(params[idx[[m]]], ell))
+      }
     }
   }
   out

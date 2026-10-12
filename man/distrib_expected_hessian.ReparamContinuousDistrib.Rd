@@ -69,14 +69,14 @@ th <- list(mu = 1, sigma2 = 4)
 a <- distrib_expected_hessian(d, c(0, 1, 2), th)
 b <- distrib_expected_hessian(gaussian2_distrib(), c(0, 1, 2), th)
 
-# Matched by name, the two enumerating in different orders.
+# Matched by name; both results follow hess_names() here.
 max(abs(unlist(a[names(b)]) - unlist(b)))
 
 }
 \seealso{
 \code{\link[=distrib_hessian.ReparamContinuousDistrib]{distrib_hessian.ReparamContinuousDistrib()}}, which keeps the score
 term; \code{\link[=chain_derivatives]{chain_derivatives()}}; \code{\link[=reparametrize]{reparametrize()}};
-\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}, which answers for this class by asking the
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}, which for this class returns the value of the
 parent.
 }
 \keyword{internal}

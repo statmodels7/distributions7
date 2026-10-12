@@ -13,8 +13,8 @@
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation is
 approximated by \code{\link[=expected_derivative]{expected_derivative()}}. Defaults to \code{FALSE}.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns.}
 
 \item{approx}{The strategy \code{\link[=expected_derivative]{expected_derivative()}} uses when
 \code{expected = TRUE}: one of \code{"integrate"} (the default), \code{"bartlett"},

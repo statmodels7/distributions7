@@ -10,8 +10,8 @@
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, applied by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns.}
 
 \item{approx}{Ignored. Present so that the signature matches the generic's.}
 
@@ -22,7 +22,8 @@ generic before dispatch.}
 \value{
 A named list of numeric vectors of length \code{length(y)}, one component
 per unordered pair of parameters, keyed as
-\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant.
+\code{\link[=hess_names]{hess_names(distrib@params)}}; each vector is constant for
+scalar parameters.
 }
 \description{
 Computes
@@ -34,11 +35,16 @@ Hessian cancels exactly against the term it contributes to the second
 derivative of \eqn{\log Z}.
 }
 \details{
-One quadrature per component is needed even where the parent has exact cdf
-derivatives, since those give
+The cdf derivatives of the parent give only
+\eqn{\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]}, not the second term
+alone, so the expected Hessian reads separately computed sums of \eqn{s_i
+  s_j}. For a parent with a scalar route, \code{trunc_route_parts()} computes them
+by the compiled rule; otherwise \code{\link[=expectation]{expectation()}} is called for each
+component. The cdf derivatives give
 \eqn{\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]} and the covariance needs
-the second term on its own. No component depends on the data, so every
-returned vector is constant.
+the second term on its own. The components do not depend on the data. Each
+returned vector is constant when the parameters are scalars, and varies with
+the parameters when they vary by observation.
 }
 \section{Notation}{
 

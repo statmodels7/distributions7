@@ -10,8 +10,8 @@
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, applied by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -26,8 +26,9 @@ Computes
   = H_{ij}(y) - M_{ij} + m_i m_j, \qquad
   M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j],}
 the subtracted part being the second derivative of \eqn{\log Z}. Only
-\eqn{H_{ij}(y)} varies with the data; the correction is one number per
-component, recycled to the length of \code{y}.
+\eqn{H_{ij}(y)} depends on the data. The correction depends on \eqn{\theta}
+alone, so it is one number per component for a scalar \eqn{\theta} and one
+number per distinct parameter vector when a parameter varies by observation.
 }
 \section{Notation}{
 

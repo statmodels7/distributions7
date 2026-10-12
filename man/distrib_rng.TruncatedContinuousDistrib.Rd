@@ -16,10 +16,11 @@ A numeric vector of \code{n} random draws, every one inside
 \eqn{[L, U]}.
 }
 \description{
-Draws by inverse transform on the parent,
-\eqn{Y = Q\{F(L^-) + V Z\}} with \eqn{V} uniform on \eqn{(0, 1)}. The draw
-is exact and terminates in one pass however small \eqn{Z} is, where
-rejection sampling from the parent would need \eqn{1/Z} draws on average.
+Draws by inverse transform on the parent, through
+\code{\link[=distrib_quantile.TruncatedContinuousDistrib]{distrib_quantile.TruncatedContinuousDistrib()}} at \eqn{V} uniform on
+\eqn{(0, 1)}. A draw needs one evaluation of the quantile function whatever
+\eqn{Z} is, where rejection sampling from the parent would need \eqn{1/Z}
+draws on average.
 }
 \section{Notation}{
 

@@ -30,11 +30,11 @@ inflated mass at zero, and otherwise the parent's quantile at the rescaled
 probability \eqn{(p - \zeta)/(1 - \zeta)}.
 }
 \details{
-The result is a LATTICE quantile and overshoots, as any discrete quantile
+The result is a discrete quantile and can overshoot, as any discrete quantile
 does: \code{distrib_cdf(d, distrib_quantile(d, p, theta), theta)} returns the
-smallest attainable probability at or above \code{p}, not \code{p} itself. The
-inflated atom makes the first step larger than the parent's, so a
-probability below \eqn{L_0} maps to zero however small it is.
+smallest attainable probability at or above \code{p}, not \code{p} itself. The inflated
+atom makes the first step larger than the parent's, so a probability below
+\eqn{L_0} maps to zero however small it is.
 }
 \section{Notation}{
 

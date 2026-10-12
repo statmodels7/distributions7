@@ -46,14 +46,14 @@ and at the next order in the response
     = \frac{z^2B'' + 6zB' + 6B}{\sigma^4}.}
 }
 
-\section{Why nothing new is differentiated}{
+\section{Reuse of the response derivatives}{
 \eqn{A}, \eqn{A'}, \eqn{A''} and \eqn{B}, \eqn{B'}, \eqn{B''} are the
 family's OWN response derivatives times a power of \eqn{\sigma}:
 \eqn{A = \sigma\ell^{(y)}}, \eqn{A' = B = \sigma^2\ell^{(yy)}},
 \eqn{A'' = B' = \sigma^3\ell^{(yyy)}} and \eqn{B'' = \sigma^4\ell^{(yyyy)}}.
-A family that already carries \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} and \code{\link[=distrib_deriv4_y]{distrib_deriv4_y()}}
-therefore gets both orders in the parameters for free, which is the bargain
-\code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} already takes at first order.
+A family that supplies \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} and \code{\link[=distrib_deriv4_y]{distrib_deriv4_y()}}
+therefore obtains both orders in the parameters in closed form, by the same
+argument that \code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} applies at first order.
 
 A shape parameter beyond the two is NOT covered and falls back; see
 \code{\link[=partial_theta2]{partial_theta2()}}, which splices these three components into the

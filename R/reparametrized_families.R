@@ -172,10 +172,9 @@ gengamma2_by_reparam <- function(link_mean = log_link(), link_d = log_link(),
 #' [reparametrize()] rather than written out.
 #'
 #' @details
-#' This exists as a check rather than as a second way of doing the same thing.
-#' [invgauss2_distrib()] carries its own kernels, so the two are
-#' independent implementations of one object and their agreement needs no
-#' tolerance to be chosen. It is not exported for that reason.
+#' This is a reference for the tests and is not exported. [invgauss2_distrib()]
+#' carries its own kernels, so the two are independent implementations of one
+#' law.
 #'
 #' @return A reparametrized distribution object.
 #'

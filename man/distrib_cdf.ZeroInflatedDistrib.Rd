@@ -12,8 +12,7 @@
 
 \item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
 probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)},
-formed as \eqn{1 - F} and so subject to that subtraction's cancellation
-far into the upper tail.}
+formed from the parent's own upper tail as \eqn{(1 - \zeta) P(X > q)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm is returned.
 Defaults to \code{FALSE}.}
@@ -21,7 +20,8 @@ Defaults to \code{FALSE}.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of probabilities, in \eqn{[0, 1]}.
+A numeric vector of probabilities in \eqn{[0, 1]}, or their
+logarithms when \code{log.p = TRUE}.
 }
 \description{
 Computes

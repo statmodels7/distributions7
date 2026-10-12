@@ -28,11 +28,12 @@ cross-variable composition of two first differences is one mixed stencil and
 not the same-variable nesting the toolkit forbids.
 }
 \details{
-The accuracy is about \eqn{10^{-8}} at first order and fades with the order,
-which is why a family fitted in earnest supplies \code{map_derivs} instead. What
-the fallback buys is that a user's own reparametrization works immediately,
-with no derivatives written: the same bargain
-\code{\link[=distrib_grad_y.continuous_distrib]{distrib_grad_y.continuous_distrib()}} offers a density-only family.
+The accuracy is of the order of \eqn{10^{-11}} at first order and falls
+quickly with the order (see \code{\link[=reparam_tables]{reparam_tables()}}), which is why a family fitted
+in earnest supplies \code{map_derivs} instead. What the fallback buys is that a
+user's own reparametrization works immediately, with no derivatives
+written, as \code{\link[=distrib_grad_y.continuous_distrib]{distrib_grad_y.continuous_distrib()}} does for a density-only
+family.
 }
 \seealso{
 \code{\link[=reparam_tables]{reparam_tables()}}, which calls the result;

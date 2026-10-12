@@ -15,9 +15,9 @@ is_zero_wrapper(distrib)
 }
 \description{
 Answers whether the object is already one of the two zero wrappers, which is
-how each of them refuses to be applied on top of the other. Stacking them
-leaves only their combination identified, so the check is what turns a model
-with a flat direction into an error at construction.
+how each constructor rejects a parent that is the other wrapper. Stacking
+them leaves only their combination identified, so the check is what turns a
+model with a flat direction into an error at construction.
 }
 \examples{
 c(plain = distributions7:::is_zero_wrapper(poisson_distrib()),
@@ -28,7 +28,7 @@ c(plain = distributions7:::is_zero_wrapper(poisson_distrib()),
 
 }
 \seealso{
-\code{\link[=check_not_stacked]{check_not_stacked()}}, which reports the refusal, and
+\code{\link[=check_not_stacked]{check_not_stacked()}}, which signals the error, and
 \code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} for what stacking would cost.
 }
 \keyword{internal}

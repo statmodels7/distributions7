@@ -48,10 +48,13 @@ expectation, so that the two sides of the comparison share no arithmetic.
 }
 
 \section{Constants that vary by observation}{
-A family whose constant varies by observation (a binomial's vector \code{size},
-or a wrapper over one) is evaluated at each observation's own constant,
-taken by \code{\link[=distrib_at_rows]{distrib_at_rows()}}, as the parameters are. A missing quantile
-gives a missing derivative.
+A family whose constant varies by observation (a binomial's vector \code{size}, or
+a wrapper over one) is evaluated at each observation's own constant, taken by
+\code{\link[=distrib_at_rows]{distrib_at_rows()}}, as the parameters are. A missing quantile gives a
+missing derivative. # The upper tail The derivatives of the mass sum to zero
+over the support, so where \eqn{P(Y > q)} is below 0.01 the sum up to \eqn{q}
+is computed as minus the sum above it, a short series that keeps its digits
+where the sum up to \eqn{q} would cancel to a small number.
 }
 
 \section{Notation}{

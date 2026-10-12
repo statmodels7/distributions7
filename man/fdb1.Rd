@@ -7,10 +7,10 @@
 fdb1(h, u, order)
 }
 \arguments{
-\item{h}{A list of the outer derivatives \code{h1} to at least \code{h_order} at the
-inner value.}
+\item{h}{A list of the outer derivatives of orders 1 to at least \code{order},
+evaluated at the inner value.}
 
-\item{u}{A list of the inner derivatives \code{u1} to at least \code{u_order}.}
+\item{u}{A list of the inner derivatives of orders 1 to at least \code{order}.}
 
 \item{order}{An integer from 1 to 4.}
 }

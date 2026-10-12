@@ -34,9 +34,11 @@ A named list of fifth-derivative components keyed by
 \description{
 Computes the fifth derivatives of the log-likelihood of \code{\link[=zero_inflated]{zero_inflated()}},
 \code{\link[=zero_adjusted]{zero_adjusted()}}, \code{\link[=truncated]{truncated()}}, \code{\link[=folded]{folded()}}, \code{\link[=transformation]{transformation()}} and
-\code{\link[=fixed]{fixed()}} families by the partition sums that give their third and fourth
-derivatives, one order up, and carries them to the link scale with
-\code{\link[=deriv5_scale]{deriv5_scale()}}.
+\code{\link[=fixed]{fixed()}} families. The zero wrappers, the truncated and the folded families
+use the partition sums that give their third and fourth derivatives, one
+order up, and carry them to the link scale with \code{\link[=deriv5_scale]{deriv5_scale()}}; a
+transformed and a fixed family read the parent's fifth derivative directly,
+on the scale requested, since their parameters and links are the parent's.
 }
 \details{
 The zero wrappers, the truncated and the folded families assemble the
@@ -51,10 +53,9 @@ parent's fifth derivative is.
 The partition sums are used only where the parent's fifth derivative is
 analytic, as \code{\link[=has_exact_deriv5]{has_exact_deriv5()}} reports. Where it is the stencil of
 \code{\link[=numerical_deriv5]{numerical_deriv5()}}, the products of the Bell polynomials and, for a
-truncated family, the quadrature of its ratios amplify the stencil's error
-(3.4e-10 to 1.8e-9 for a folded gaussian, 3.5e-10 to 3.1e-8 for a
-truncated one, against symbolic derivatives), and the wrapper's fifth
-derivative is instead one stencil on its own analytic fourth.
+truncated family, the quadrature of its ratios amplify the stencil's error,
+and the wrapper's fifth derivative is instead one stencil on its own analytic
+fourth.
 }
 \seealso{
 \code{\link[=distrib_deriv5]{distrib_deriv5()}}, \code{\link[=log_deriv]{log_deriv()}}, \code{\link[=bell_f_ratio]{bell_f_ratio()}}

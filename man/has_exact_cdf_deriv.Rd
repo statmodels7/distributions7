@@ -22,16 +22,12 @@ route only where this is \code{TRUE}, and falls back to quadrature otherwise.
 }
 \section{Why the cheap route is gated}{
 Reading \eqn{d^B Z} off the parent's cdf derivatives replaces one quadrature
-per component with two calls on the parent: measured on a truncated
-gaussian's Hessian, 1.4 ms against 4.9 ms. Where the parent has no closed
-form, though, that route differences its distribution function and carries
-roughly \eqn{10^{-8}} of relative error into the Hessian, where the
-quadrature it replaced carried \eqn{10^{-10}}.
-
-That is invisible in the Hessian itself, and visible downstream:
-\code{\link[=numerical_deriv4]{numerical_deriv4()}} differentiates the analytical Hessian, so a noisier
-Hessian degrades the REFERENCE the fourth-order check compares against, and
-the check then fails on code that is right.
+per component with two calls on the parent. Where the parent has no
+closed-form cdf derivative, that route differences its distribution function
+and has a larger relative error than the quadrature it would replace. The
+error passes into \code{\link[=numerical_deriv4]{numerical_deriv4()}}, which differentiates the analytical
+Hessian, and enlarges the error of the reference used in the fourth-order
+check.
 }
 
 \section{How a genuine method is recognized}{
@@ -42,7 +38,7 @@ fourth-order defaults sit on \code{distrib} where the first two sit on
 \code{continuous_distrib}, so both base classes are excluded or a stencil would
 be read as a closed form.
 
-The question is asked of the OWNING CLASS, so a family that registers a
+The test reads the class that owns the method, so a family that registers a
 method combining closed components with a stencil in one direction answers
 \code{TRUE}. That is the intended reading: what the gate protects against is the
 generic differencing the cdf itself.
@@ -58,13 +54,12 @@ vapply(1:4, function(k)
 vapply(1:4, function(k)
   distributions7:::has_exact_cdf_deriv(gaussian1_distrib(), k), logical(1))
 
-# The gamma does not, the derivative of an incomplete gamma in its shape
-# having no elementary form, so truncation falls back to quadrature there.
+# The gamma's cdf derivatives are compiled, so it answers TRUE as well.
 vapply(1:4, function(k)
   distributions7:::has_exact_cdf_deriv(gamma2_distrib(), k), logical(1))
 }
 \seealso{
-\code{\link[=trunc_mass_derivs]{trunc_mass_derivs()}}, its one caller, and \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for
-the generics it asks about.
+\code{\link[=trunc_mass_derivs]{trunc_mass_derivs()}}, its caller in this file, and
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the generics that it tests.
 }
 \keyword{internal}

@@ -62,7 +62,7 @@ that says which supports the map applies to and what it does to them. It
 carries no distribution and answers no distribution generic; it is consumed
 by \code{\link[=transformation]{transformation()}}, which returns a \link{TransformedDistrib}.
 }
-\section{What a map must be to be one}{
+\section{Requirements on the map}{
 \eqn{g} has to be BIJECTIVE on the parent's support. A map that is two to
 one, such as the absolute value, has no inverse to carry a density through
 and cannot be a transformer at all; \code{\link[=folded]{folded()}} handles that case by adding
@@ -70,13 +70,14 @@ the two preimages instead.
 }
 
 \section{Writing your own}{
-The ten properties are all required, and \code{trans_abs_jac} must accept a \code{log}
-argument, because \code{\link[=distrib_pdf.TransformedDistrib]{distrib_pdf.TransformedDistrib()}} works on the log scale
-throughout. \code{valid_support} takes the parent's \code{bounds} and answers whether
-the map applies; \code{bounds_fun} takes the same and returns the transformed
-support. Nothing validates the derivatives, so
-\code{\link[=check_distrib]{check_distrib()}} on the resulting distribution is what catches a
-transcription error in them.
+The constructor accepts any subset of the ten properties and gives the others
+empty defaults, but \code{\link[=transformation]{transformation()}} needs all of them to be functions of
+the stated form, and \code{trans_abs_jac} must accept a \code{log} argument, because
+\code{\link[=distrib_pdf.TransformedDistrib]{distrib_pdf.TransformedDistrib()}} works on the log scale throughout.
+\code{valid_support} takes the parent's \code{bounds} and answers whether the map
+applies; \code{bounds_fun} takes the same and returns the transformed support.
+Nothing validates the derivatives, so \code{\link[=check_distrib]{check_distrib()}} on the resulting
+distribution is what catches a transcription error in them.
 }
 
 \section{Notation}{

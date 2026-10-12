@@ -57,12 +57,11 @@ Construct one with \code{\link[=truncated]{truncated()}}; calling the class dire
 validation the constructor performs.
 }
 \details{
-The lower endpoint being included is the one place the two truncation
-classes differ. The tail below the interval is \eqn{F(L^-) = F(L) - f(L)},
-so the mass sitting exactly on \eqn{L} has to be added back;
-\code{\link[=trunc_constants]{trunc_constants()}} does that through \code{\link[=parent_mass_at]{parent_mass_at()}}, and
-\code{\link[=trunc_mass_derivs]{trunc_mass_derivs()}} applies the matching correction to the derivatives of
-\eqn{Z}.
+The tail below the interval is \eqn{F(L^-) = F(L) - f(L)}, because the lower
+endpoint is included in the support and the mass sitting exactly on \eqn{L}
+has to be added back; \code{\link[=trunc_constants]{trunc_constants()}} does that through
+\code{\link[=parent_mass_at]{parent_mass_at()}}, and \code{\link[=trunc_mass_derivs]{trunc_mass_derivs()}} applies the matching correction
+to the derivatives of \eqn{Z}.
 
 Truncation adds no parameter, so the object carries exactly the parent's
 \code{params}, \code{params_bounds} and \code{link_params}. What it can remove is
@@ -81,16 +80,26 @@ and \eqn{H_{ij}} are the parent's score and observed Hessian; and
 
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.TruncatedDiscreteDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.TruncatedDiscreteDistrib]{distrib_cdf()}},
-\code{\link[=distrib_expected_hessian.TruncatedDiscreteDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_quantile.TruncatedDiscreteDistrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.TruncatedDiscreteDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.TruncatedDiscreteDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.TruncatedDiscreteDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.TruncatedDiscreteDistrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.TruncatedDiscreteDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.TruncatedDiscreteDistrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.TruncatedDiscreteDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.TruncatedDiscreteDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.TruncatedDiscreteDistrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.TruncatedDiscreteDistrib]{distrib_deriv5()}};
+\item the derivatives of the expected information: \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}
+and \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}};
+\item the exactness flags: \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} and \code{\link[=has_exact_deriv4]{has_exact_deriv4()}};
+\item the fitting helpers: \code{\link[=distrib_scalar_route]{distrib_scalar_route()}}.
+}
 
-Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
+Every other generic is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
 \examples{
@@ -103,9 +112,9 @@ c(name = ztp@distrib_name, bounds = paste(ztp@bounds, collapse = ", "))
 distrib_pdf(ztp, 0:3, list(mu = 2))
 dpois(1:3, 2) / (1 - dpois(0, 2))
 
-# An interval leaving too few support points is rejected by the
-# constructor, the parameter no longer being identified.
-try(truncated(bernoulli_distrib(), lower = 1))
+# An interval leaving too few support points to identify the parameters
+# is rejected by the constructor (two points for the two parameters).
+try(truncated(negbin2_distrib(), lower = 3, upper = 4))
 }
 \seealso{
 \code{\link[=truncated]{truncated()}} for the constructor, \link{TruncatedContinuousDistrib} for

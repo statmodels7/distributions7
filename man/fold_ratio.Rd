@@ -13,8 +13,8 @@ fold_ratio(parent, x, theta, order, params, w)
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{order}{The highest derivative order the caller will ask for, a single
-whole number from 1 to 4. Blocks longer than this are not prepared.}
+\item{order}{The highest derivative order that is needed, a single whole
+number from 1 to 4. Blocks longer than this are not prepared.}
 
 \item{params}{The parameter names, as \code{distrib@params}.}
 
@@ -34,10 +34,11 @@ Bell polynomial evaluated at each preimage and averaged with the weight
   + (1-w) \frac{d^B f(-x)}{f(-x)}.}
 }
 \details{
-The memoization matters because a partition sum asks for the same block many
+The memoization is useful because a partition sum needs the same block many
 times: at order four the same singleton block appears in most of the
-partitions. Each distinct block costs two evaluations of the parent's
-derivatives, one at \eqn{+x} and one at \eqn{-x}, and no more.
+partitions. The parent's derivatives are evaluated once at \eqn{+x} and once
+at \eqn{-x} for the whole call, up to the requested order, and each distinct
+block is then assembled from them once.
 }
 \section{Notation}{
 

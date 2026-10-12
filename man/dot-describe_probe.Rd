@@ -13,9 +13,9 @@
 A single string.
 }
 \description{
-Renders the point a map was probed at as \verb{(a = 1, b = 2)}, so that a failure
-in \code{\link[=reparametrize]{reparametrize()}}'s construction check names the point instead of leaving
-the caller to guess it.
+Renders the point at which a map was probed as \verb{(a = 1, b = 2)}, so that a
+failure in \code{\link[=reparametrize]{reparametrize()}}'s construction check names the point instead of
+leaving the caller to guess it.
 }
 \seealso{
 \code{\link[=reparametrize]{reparametrize()}}, the one caller.

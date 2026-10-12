@@ -32,7 +32,7 @@ folded normal proper is \code{folded(gaussian1_distrib())}.
 The map \eqn{y \mapsto |y|} is TWO TO ONE and has no inverse, so it cannot
 be a \code{\link[=transformer]{transformer()}}. Instead of carrying a density through a Jacobian it
 ADDS the two preimages. Every point above zero has two of them and zero has
-one, which is why the constructor is careful about atoms.
+one, so a parent with an atom is rejected (see below).
 }
 
 \section{Where the derivatives come from}{
@@ -50,13 +50,12 @@ analytic to fourth order.
 }
 
 \section{What is rejected}{
-A parent that does not reach below zero folds to itself, so the call would
-be a no-op; returning it unchanged would hide a mistaken call rather than
-report it, and the same check makes \code{folded()} of a folded distribution an
-error. A parent with an atom is rejected too: zero is its own preimage while
-every other point has two, so an atom at zero would be counted twice by the
-sum above and one elsewhere would be moved onto its reflection. A discrete
-parent is rejected outright.
+A parent whose support lies in \eqn{[0, \infty)} is mapped to itself by the
+absolute value, so \code{folded()} rejects it with an error; the same check
+rejects \code{folded()} of a folded distribution. an error. A parent with an atom
+is rejected too: zero is its own preimage while every other point has two, so
+an atom at zero would be counted twice by the sum above and one elsewhere
+would be moved onto its reflection. A discrete parent is rejected outright.
 }
 
 \section{The sign of a symmetric parent's location is not identified}{
@@ -64,14 +63,15 @@ When the parent is symmetric about its location, \eqn{f(-x; \mu) = f(x;
 -\mu)}, so the two terms of \eqn{L} merely swap and the likelihood is
 EXACTLY even in \eqn{\mu}. A fit converges to \eqn{+\hat\mu} or
 \eqn{-\hat\mu} according to where it started, at the same maximized value to
-every digit: measured on 400 draws at \eqn{\mu = 1.5}, two fits started at
-\eqn{\pm 1} reach \eqn{\pm 1.50494} with the same log-likelihood of
-\eqn{-511.2516}. This is a property of the model, not of the fitting, and it
-is not rejected, the folded normal being a standard family; what is
-estimable is \eqn{|\mu|} together with the remaining parameters. Holding the
-location at zero removes the question and gives the half-normal. A parent
-that is not symmetric about its location, such as \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}},
-has no such invariance and its sign is identified.
+every digit. The example below fits the same sample from starting values of
+opposite sign. The invariance belongs to the model and not to the fitting,
+and \code{folded()} does not reject it, since the folded normal is a standard
+family; what is estimable is \eqn{|\mu|} together with the remaining
+parameters. Holding the location at zero removes the question and gives the
+half-normal. A parent that is not symmetric about its location, such as
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, is invariant only under the joint change of sign of
+the location and of the shape, so the sign of the location is identified once
+the shape is held fixed.
 }
 
 \section{Notation}{
@@ -103,7 +103,7 @@ f2 <- fit_distrib(d, z, start = list(mu = -1, sigma = 1))
 rbind(from_plus = c(coef(f1), logLik = as.numeric(logLik(f1))),
       from_minus = c(coef(f2), logLik = as.numeric(logLik(f2))))
 
-# A parent that is not symmetric about its location has no such invariance.
+# With the shape held at 3, a skew-normal parent has no such invariance in the location alone (the joint sign change of mu and alpha leaves the likelihood unchanged).
 sn <- folded(skewnormal1_distrib())
 set.seed(4)
 zs <- distrib_rng(sn, 300, list(mu = 1, sigma = 1, alpha = 3))
@@ -118,7 +118,7 @@ try(folded(poisson_distrib()))
 
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}, the other wrapper that adds no parameter,
-\code{\link[=fixed]{fixed()}}, which gives the half-normal, \code{\link[=transformation]{transformation()}} for a map that
-IS one to one, and \link{FoldedDistrib} for the class.
+\code{\link[=truncated]{truncated()}}, which also leaves the parameters of its parent
+unchanged, \code{\link[=fixed]{fixed()}}, which gives the half-normal, \code{\link[=transformation]{transformation()}} for a
+map that IS one to one, and \link{FoldedDistrib} for the class.
 }

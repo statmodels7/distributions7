@@ -16,9 +16,11 @@ NULL
 #' @description
 #' Computes the fifth derivatives of the log-likelihood of [zero_inflated()],
 #' [zero_adjusted()], [truncated()], [folded()], [transformation()] and
-#' [fixed()] families by the partition sums that give their third and fourth
-#' derivatives, one order up, and carries them to the link scale with
-#' [deriv5_scale()].
+#' [fixed()] families. The zero wrappers, the truncated and the folded families
+#' use the partition sums that give their third and fourth derivatives, one
+#' order up, and carry them to the link scale with [deriv5_scale()]; a
+#' transformed and a fixed family read the parent's fifth derivative directly,
+#' on the scale requested, since their parameters and links are the parent's.
 #'
 #' @details
 #' The zero wrappers, the truncated and the folded families assemble the
@@ -49,10 +51,9 @@ NULL
 #' The partition sums are used only where the parent's fifth derivative is
 #' analytic, as [has_exact_deriv5()] reports. Where it is the stencil of
 #' [numerical_deriv5()], the products of the Bell polynomials and, for a
-#' truncated family, the quadrature of its ratios amplify the stencil's error
-#' (3.4e-10 to 1.8e-9 for a folded gaussian, 3.5e-10 to 3.1e-8 for a
-#' truncated one, against symbolic derivatives), and the wrapper's fifth
-#' derivative is instead one stencil on its own analytic fourth.
+#' truncated family, the quadrature of its ratios amplify the stencil's error,
+#' and the wrapper's fifth derivative is instead one stencil on its own analytic
+#' fourth.
 #' @param builder One of the order-generic builders of
 #'   `R/wrapper_derivatives.R` or [fold_deriv_k()].
 #' @usage NULL
@@ -102,20 +103,23 @@ S7::method(distrib_deriv5, TruncatedContinuousDistrib) <- wrapper_deriv5_method(
 S7::method(distrib_deriv5, TruncatedDiscreteDistrib) <- wrapper_deriv5_method(trunc_deriv_k)
 S7::method(distrib_deriv5, FoldedDistrib) <- wrapper_deriv5_method(fold_deriv_k)
 
+# The parameters and their links are the parent's, so the parent's own
+# link-scale route applies at the transformed observation.
 S7::method(distrib_deriv5, TransformedDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"), ...) {
-  res <- distrib_deriv5(distrib@parent_distrib,
-                        distrib@transformer@trans_inv(y), theta)
-  deriv5_scale(distrib, y, theta, res, match.arg(scale))
+  distrib_deriv5(distrib@parent_distrib, distrib@transformer@trans_inv(y),
+                 theta, scale = match.arg(scale))
 }
 
 for (.fixed_cls in list(FixedContinuousDistrib, FixedDiscreteDistrib)) {
   S7::method(distrib_deriv5, .fixed_cls) <- function(
       distrib, y, theta, scale = c("parameter", "link"), ...) {
+    # A component in the free parameters reads only their links, which are
+    # the parent's, so the parent's link-scale route applies.
     res <- distrib_deriv5(distrib@parent_distrib, y,
-                          fixed_full_theta(distrib, theta))
-    deriv5_scale(distrib, y, theta, res[deriv_names(distrib@params, 5L)],
-                 match.arg(scale))
+                          fixed_full_theta(distrib, theta),
+                          scale = match.arg(scale))
+    res[deriv_names(distrib@params, 5L)]
   }
 }
 rm(.fixed_cls)

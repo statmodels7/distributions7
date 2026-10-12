@@ -10,8 +10,8 @@
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -29,10 +29,10 @@ of the two components' second-order ratios, less the square of the weighted
 average of their first-order ones.
 }
 \details{
-No formula is written out for the fold. \code{\link[=fold_ratio]{fold_ratio()}} supplies the ratios
-and \code{\link[=log_deriv]{log_deriv()}} turns them into derivatives of \eqn{\log L}, the same two
-functions the third and fourth orders use. Each ratio is a complete Bell
-polynomial in the parent's own log-derivatives, so a parent with closed
+The Hessian of the fold has no formula of its own. \code{\link[=fold_ratio]{fold_ratio()}} supplies
+the ratios and \code{\link[=log_deriv]{log_deriv()}} turns them into derivatives of \eqn{\log L}, the
+same two functions the third and fourth orders use. Each ratio is a complete
+Bell polynomial in the parent's own log-derivatives, so a parent with closed
 forms gives the folded family closed forms.
 }
 \section{Notation}{

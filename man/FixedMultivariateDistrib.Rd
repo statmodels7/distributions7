@@ -74,8 +74,10 @@ An S7 object of class \code{FixedMultivariateDistrib}, inheriting from
 }
 \description{
 The S7 class of a MULTIVARIATE distribution in which some parameters of the
-wrapped distribution are held at known values. It behaves exactly as
-\link{FixedContinuousDistrib} does and adds the multivariate generics:
+wrapped distribution are held at known values. It follows
+\link{FixedContinuousDistrib} in splicing the held values into \code{theta} and
+delegating to the parent. It has no distribution function, quantile or
+atoms, and adds the multivariate generics:
 \code{\link[=mv_location]{mv_location()}}, \code{\link[=mv_sigma]{mv_sigma()}}, \code{\link[=mv_marginal]{mv_marginal()}}, \code{\link[=mv_support]{mv_support()}},
 \code{\link[=mv_reference_draw]{mv_reference_draw()}} and \code{\link[=mv_derived]{mv_derived()}} all delegate to the parent at the
 spliced \code{theta}, and \code{\link[=mv_derived]{mv_derived()}} reports the parent's quantities with the
@@ -87,15 +89,38 @@ parameter alone is what a random effect is distributed by.
 }
 \section{Methods}{
 
-\code{fixed()} registers 20 methods on this class:
-\code{distrib_cross2_y()}, \code{distrib_cross_y()}, \code{distrib_deriv3()}, \code{distrib_deriv4()}, \code{distrib_expected_hessian()}, \code{distrib_grad_y()}, \code{distrib_grad_y_hess()}, \code{distrib_gradient()}, \code{distrib_hess_y()}, \code{distrib_hess_y_hess()}, \code{distrib_hessian()}, \code{distrib_pdf()}, \code{distrib_rng()}, \code{mv_derived()}, \code{mv_location()}, \code{mv_marginal()}, \code{mv_reference_draw()}, \code{mv_sigma()}, \code{mv_support()}, \code{variance()}.
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.FixedMultivariateDistrib]{distrib_pdf()}}
+and \code{\link[=distrib_rng.FixedMultivariateDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
+\code{\link[=distrib_gradient.FixedMultivariateDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.FixedMultivariateDistrib]{distrib_hessian()}},
+\code{\link[=distrib_expected_hessian.FixedMultivariateDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.FixedMultivariateDistrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.FixedMultivariateDistrib]{distrib_deriv4()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.FixedMultivariateDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.FixedMultivariateDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} and \code{\link[=distrib_deriv4_y]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.FixedMultivariateDistrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.FixedMultivariateDistrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross3_y]{distrib_cross3_y()}},
+\code{\link[=distrib_grad_y_hess.FixedMultivariateDistrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.FixedMultivariateDistrib]{distrib_hess_y_hess()}};
+\item the moments: \code{\link[=variance.FixedMultivariateDistrib]{variance()}};
+\item the multivariate summaries:
+\code{\link[=mv_location.FixedMultivariateDistrib]{mv_location()}},
+\code{\link[=mv_sigma.FixedMultivariateDistrib]{mv_sigma()}},
+\code{\link[=mv_marginal.FixedMultivariateDistrib]{mv_marginal()}},
+\code{\link[=mv_support.FixedMultivariateDistrib]{mv_support()}},
+\code{\link[=mv_derived.FixedMultivariateDistrib]{mv_derived()}} and
+\code{\link[=mv_reference_draw.FixedMultivariateDistrib]{mv_reference_draw()}};
+\item the exactness flags: \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} and \code{\link[=has_exact_deriv4]{has_exact_deriv4()}}.
+}
 
-Every one splices the held values back into \code{theta} and delegates to the
-parent. The set differs from the univariate classes': there is no
-distribution function, no quantile and no atom, and the \verb{mv_*} accessors
-take their place. The generics a multivariate family rejects are not
-registered here at all, so the refusal is inherited from
-\code{multivariate_distrib} and keeps its own message.
+Every other generic is inherited from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.
 }
 
 \section{How every method works}{
@@ -124,7 +149,7 @@ Read the parent's page for what a method computes and this page for what the
 wrapper does to it.
 }
 
-\section{What the refusals do}{
+\section{Generics that are rejected}{
 The multivariate branch sits BESIDE the continuous and discrete ones rather
 than under either, so the generics a multivariate family rejects by design,
 the distribution function and the quantile, are inherited unregistered and
@@ -151,7 +176,7 @@ mv_sigma(d, theta)
 names(mv_derived(d, theta)$value)
 mv_marginal(d, theta, 1)$distrib@n_dim
 
-# And so do the refusals the base class registers.
+# And so do the errors that the base class registers.
 try(distrib_cdf(d, y, theta))
 }
 \seealso{

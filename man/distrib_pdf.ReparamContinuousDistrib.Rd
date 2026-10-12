@@ -26,8 +26,9 @@ A numeric vector of densities, the length of \code{y} recycled against
 }
 \description{
 The parent's density, evaluated at the mapped parameters. A change of
-parametrization does not change the law, so nothing is recomputed here: the
-new parameters go through \code{\link[=reparam_theta]{reparam_theta()}} and the parent answers.
+parametrization does not change the law, so the density is not recomputed
+here: the new parameters go through \code{\link[=reparam_theta]{reparam_theta()}} and the parent's
+density is evaluated at the result.
 }
 \examples{
 d <- reparametrize(

@@ -29,19 +29,20 @@ Makes the probability of a zero a parameter of its own, \eqn{\pi}, carried
 by \code{za}, and leaves everything else to the parent. What that means depends
 on the parent's type, and the constructor dispatches on it:
 \itemize{
-\item a DISCRETE parent with 0 in its support gives a HURDLE model. The mass the
-parent puts at zero is removed, the parent is renormalized over the
-positive values, and \eqn{\pi} takes its place.
+\item a DISCRETE parent with 0 in its support gives a HURDLE model. The mass
+that the parent puts at zero is removed, the parent is renormalized over
+the positive values, and \eqn{\pi} takes its place.
 \item a CONTINUOUS parent gives a MIXED distribution. Nothing has to be removed,
 \eqn{P(Y = 0)} being zero already; a point mass \eqn{\pi} is placed at zero
 and the density is scaled by \eqn{1-\pi}.
 }
 
-It is the wrapper to reach for when zeros come from their own mechanism, no
-claim filed or no rainfall, and the parent describes only what happens once
-that mechanism has been passed. Where the zeros come partly from the parent
-and partly from a separate source, so that no single zero can be attributed,
-\code{\link[=zero_inflated]{zero_inflated()}} is the model.
+The wrapper applies when the zeros come from a mechanism of their own (for
+example, no claim is filed or no rain falls) and the parent describes only
+the observations produced after that mechanism has allowed a positive
+outcome. Where the zeros come partly from the parent and partly from a
+separate source, so that no single zero can be attributed, \code{\link[=zero_inflated]{zero_inflated()}}
+is the model.
 }
 \section{A discrete parent: the hurdle}{
 \deqn{P(Y = y; \theta, \pi) = \begin{cases} \pi & y = 0 \\
@@ -92,9 +93,10 @@ part concentrated on \eqn{\{1\}} and \code{mu} vanishes from the likelihood.
 A continuous parent supported on the whole line is accepted and gives a
 spike-at-zero model, but \eqn{y = 0} then no longer identifies its own
 mechanism: the atom sits where the density is positive. A continuous parent
-whose support does not reach zero at all, say \eqn{(2, 5)}, is accepted with
-a WARNING, the atom then being disconnected from the rest of the law, which
-is legitimate and rarely intended.
+whose support does not contain zero, say \eqn{(2, 5)} or \eqn{(-5, -2)}, is
+accepted with a warning, because the atom is then disconnected from the rest
+of the law, which is well defined and rarely intended. The bounds of the
+result are extended to contain zero.
 }
 
 \section{Notation}{
@@ -129,7 +131,7 @@ set.seed(5)
 yg <- distrib_rng(zag, 2000, list(mu = 2, sigma2 = 1, za = 0.3))
 round(coef(fit_distrib(zag, yg)), 3)
 
-# Two refusals, each naming the condition that failed.
+# Two errors, each naming the condition that failed.
 try(zero_adjusted(bernoulli_distrib()))
 try(zero_adjusted(zero_inflated(poisson_distrib())))
 

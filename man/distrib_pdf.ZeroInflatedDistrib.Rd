@@ -13,9 +13,10 @@ returns whatever the parent returns there, scaled by \eqn{1-\zeta}.}
 each a numeric vector of length 1 or of the length of \code{y}. \code{zi} must lie
 strictly inside \eqn{(0, 1)}.}
 
-\item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned. The
-logarithm is taken of the mixture, not inside the parent, so it underflows
-where the mixture does. Defaults to \code{FALSE}.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned. It is
+computed from the parent's log-mass, as a log-sum-exp at zero and as
+\eqn{\log(1-\zeta) + \log f(y)} elsewhere, so it stays finite where the
+mass underflows. Defaults to \code{FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

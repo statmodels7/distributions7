@@ -28,8 +28,8 @@ A named list keyed exactly as \code{second}.
 \description{
 Carries a quantity keyed by parameter pair from the parameter scale onto the
 unconstrained one. Both \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}
-call it after dispatch, so a method returns the parameter scale and never
-has to know about links.
+call it after dispatch, so a method returns the parameter scale and contains
+no code for links.
 }
 \details{
 The chain rule is DIAGONAL, each parameter carrying its own link, so a pair
@@ -55,7 +55,7 @@ d <- gaussian1_distrib()
 y <- c(-1, 0, 2)
 theta <- list(mu = 0.4, sigma = 1.3)
 
-# What the generic does when scale = "link" is asked for.
+# What the generic does with scale = "link".
 second <- distrib_grad_y_hess(d, y, theta)
 first <- distrib_cross_y(d, y, theta)
 linked <- distributions7:::theta2_link_scale(d, y, theta, second, first)

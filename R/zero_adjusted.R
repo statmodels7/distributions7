@@ -40,18 +40,27 @@ NULL
 #'   a mixed distribution: a density with an atom on it.
 #'
 #' @section Methods:
-#' Registered on this class:
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution:
+#'   [`distrib_pdf()`][distrib_pdf.ZeroAdjustedDiscreteDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.ZeroAdjustedDiscreteDistrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.ZeroAdjustedDiscreteDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.ZeroAdjustedDiscreteDistrib] and
+#'   [`distrib_rng()`][distrib_rng.ZeroAdjustedDiscreteDistrib];
+#' - the derivatives in the parameters:
 #'   [`distrib_gradient()`][distrib_gradient.ZeroAdjustedDiscreteDistrib],
 #'   [`distrib_hessian()`][distrib_hessian.ZeroAdjustedDiscreteDistrib],
-#'   [`distrib_pdf()`][distrib_pdf.ZeroAdjustedDiscreteDistrib],
-#'   [`distrib_quantile()`][distrib_quantile.ZeroAdjustedDiscreteDistrib],
-#'   [`distrib_rng()`][distrib_rng.ZeroAdjustedDiscreteDistrib]
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.ZeroAdjustedDiscreteDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.ZeroAdjustedDiscreteDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.ZeroAdjustedDiscreteDistrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.ZeroAdjustedDiscreteDistrib];
+#' - the derivatives of the expected information: [distrib_dexpected_hessian()]
+#'   and [distrib_d2expected_hessian()];
+#' - the exactness flags: [expected_hessian_exact()] and [has_exact_deriv4()];
+#' - the fitting helpers:
+#'   [`distrib_start()`][distrib_start.ZeroAdjustedDiscreteDistrib] and
+#'   [distrib_scalar_route()].
 #'
-#' The third and fourth derivatives come from the shared wrapper machinery in
-#' `wrapper_derivatives.R`; everything else is inherited from
-#' [discrete_distrib()].
+#' Every other generic is inherited from [discrete_distrib()].
 #'
 #' @section Notation:
 #' \eqn{f} is the parent's mass function, \eqn{\pi} the probability of a zero
@@ -87,8 +96,9 @@ ZeroAdjustedDiscreteDistrib <- S7::new_class("ZeroAdjustedDiscreteDistrib",
 #' The S7 class of a continuous distribution with a point mass at zero:
 #' \deqn{P(Y = 0) = \pi, \qquad f_Y(y) = (1-\pi) f(y; \theta) \; (y \ne 0).}
 #' The result is a MIXED distribution, a density plus an atom, and it declares
-#' that atom through [distrib_atoms()]. That declaration is how
-#' [check_distrib()] and [expectation()] learn to treat it as one.
+#' that atom through [distrib_atoms()]. [check_distrib()], [truncated()] and
+#' [folded()] read that declaration; [expectation()] has a method of its own for
+#' this class, which splits the integral at zero.
 #'
 #' @details
 #' No truncation is needed here. A continuous parent has \eqn{P(Y = 0) = 0}, so
@@ -101,8 +111,11 @@ ZeroAdjustedDiscreteDistrib <- S7::new_class("ZeroAdjustedDiscreteDistrib",
 #' exactly zero, \eqn{\pi} is estimated by the proportion of zeros and
 #' \eqn{\theta} by the parent's own fit to the non-zero observations.
 #'
-#' Build one with [zero_adjusted()]. This page documents the raw S7
-#' constructor, which validates nothing.
+#' Build one with [zero_adjusted()], which rejects a parent that is already a
+#' zero wrapper or that has a parameter named `za`, and warns when the support
+#' of the parent starts above zero. This page documents the raw S7 constructor,
+#' which applies the validator of the class `distrib` to the properties and
+#' performs none of those checks.
 #'
 #' @inheritParams distrib
 #' @param parent_distrib The wrapped `continuous_distrib` object.
@@ -117,20 +130,35 @@ ZeroAdjustedDiscreteDistrib <- S7::new_class("ZeroAdjustedDiscreteDistrib",
 #'   for exactly that atom.
 #'
 #' @section Methods:
-#' Registered on this class:
-#'   [`distrib_atoms()`][distrib_atoms.ZeroAdjustedContinuousDistrib],
-#'   [`distrib_cdf()`][distrib_cdf.ZeroAdjustedContinuousDistrib],
-#'   [`distrib_expected_hessian()`][distrib_expected_hessian.ZeroAdjustedContinuousDistrib],
-#'   [`distrib_grad_y()`][distrib_grad_y.ZeroAdjustedContinuousDistrib],
-#'   [`distrib_gradient()`][distrib_gradient.ZeroAdjustedContinuousDistrib],
-#'   [`distrib_hess_y()`][distrib_hess_y.ZeroAdjustedContinuousDistrib],
-#'   [`distrib_hessian()`][distrib_hessian.ZeroAdjustedContinuousDistrib],
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution:
 #'   [`distrib_pdf()`][distrib_pdf.ZeroAdjustedContinuousDistrib],
+#'   [`distrib_cdf()`][distrib_cdf.ZeroAdjustedContinuousDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.ZeroAdjustedContinuousDistrib],
 #'   [`distrib_rng()`][distrib_rng.ZeroAdjustedContinuousDistrib],
-#'   [`expectation()`][expectation.ZeroAdjustedContinuousDistrib]
+#'   [`distrib_atoms()`][distrib_atoms.ZeroAdjustedContinuousDistrib] and
+#'   [`expectation()`][expectation.ZeroAdjustedContinuousDistrib];
+#' - the derivatives in the parameters:
+#'   [`distrib_gradient()`][distrib_gradient.ZeroAdjustedContinuousDistrib],
+#'   [`distrib_hessian()`][distrib_hessian.ZeroAdjustedContinuousDistrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.ZeroAdjustedContinuousDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.ZeroAdjustedContinuousDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.ZeroAdjustedContinuousDistrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.ZeroAdjustedContinuousDistrib];
+#' - the derivatives of the expected information: [distrib_dexpected_hessian()]
+#'   and [distrib_d2expected_hessian()];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.ZeroAdjustedContinuousDistrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.ZeroAdjustedContinuousDistrib],
+#'   [distrib_deriv3_y()] and [distrib_deriv4_y()];
+#' - the mixed derivatives in the response and the parameters:
+#'   [distrib_cross_y()], [distrib_cross2_y()] and [distrib_cross3_y()];
+#' - the exactness flags: [expected_hessian_exact()] and [has_exact_deriv4()];
+#' - the fitting helpers:
+#'   [`distrib_start()`][distrib_start.ZeroAdjustedContinuousDistrib] and
+#'   [distrib_scalar_route()].
 #'
-#' Everything else is inherited from [continuous_distrib()].
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @section Notation:
 #' \eqn{f} is the parent's density, \eqn{\pi} the probability of a zero and
@@ -169,8 +197,9 @@ ZeroAdjustedContinuousDistrib <- S7::new_class("ZeroAdjustedContinuousDistrib",
 #' The mass at zero is the parameter itself, so it may sit ABOVE or BELOW the
 #' parent's \eqn{f(0)}; the positive part is the parent renormalized away from
 #' zero. Everything is computed on the log scale and exponentiated at the end,
-#' with the normalizing constant taken through [base::log1p()] so that a parent
-#' with almost no mass at zero does not lose digits to `log(1 - f0)`.
+#' with the normalizing constant \eqn{1 - f(0)} formed from the parent's
+#' log-mass at zero as `-expm1(log f(0))`, so that a parent with almost all its
+#' mass at zero keeps its digits.
 #'
 #' @param distrib A `ZeroAdjustedDiscreteDistrib` object, from
 #'   [zero_adjusted()].
@@ -217,8 +246,10 @@ S7::method(distrib_pdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, the
   parent <- distrib@parent_distrib
   za <- pars$mix
 
-  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
-  log_res_pos <- log(1 - za) + distrib_pdf(parent, y, pars$orig, log = TRUE) - log1p(-f0)
+  # 1 - f(0) from the log-mass, which keeps its digits when f(0) is near one
+  lf0 <- distrib_pdf(parent, 0, pars$orig, log = TRUE)
+  log_res_pos <- log(1 - za) + distrib_pdf(parent, y, pars$orig, log = TRUE) -
+    log(-expm1(lf0))
 
   log_res <- ifelse(y == 0, rep(log(za), length.out = length(y)), log_res_pos)
 
@@ -233,16 +264,18 @@ S7::method(distrib_pdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, the
 #' \deqn{F_{ZA}(q) = \pi + (1-\pi)\frac{F(q;\theta) - f(0;\theta)}{1 - f(0;\theta)}
 #'   \quad (q \ge 0),}
 #' the parent's own distribution function shifted and rescaled by the
-#' truncation. It is `0` below zero and is clamped to \eqn{[0, 1]} against
-#' rounding.
+#' truncation, with \eqn{1 - f(0)} formed from the log-mass at zero. Where
+#' \eqn{f(0) > 1/2}, and for the upper tail, the positive part is read from the
+#' parent's survival function wherever \eqn{S(q)/\{1 - f(0)\}} is below one
+#' half, so that neither tail is a difference of two numbers near one. The
+#' result is `0` below zero and is clamped to \eqn{[0, 1]} against rounding.
 #'
 #' @param distrib A `ZeroAdjustedDiscreteDistrib` object, from
 #'   [zero_adjusted()].
 #' @param q A numeric vector of quantiles. Values below zero give `0`.
 #' @param theta A named list with the parent's parameters followed by `za`.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default,
-#'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)},
-#'   formed as \eqn{1 - F}.
+#'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm is returned.
 #'   Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -278,15 +311,28 @@ S7::method(distrib_cdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, q, the
   parent <- distrib@parent_distrib
   za <- pars$mix
 
-  f0 <- distrib_pdf(parent, 0, pars$orig)
-  F_orig <- distrib_cdf(parent, q, pars$orig)
-
-  cdf_trunc <- pmax(0, (F_orig - f0) / (1 - f0))
-  res <- za + (1 - za) * cdf_trunc
-  res[q < 0] <- 0
-  res <- pmin(res, 1)
-
-  if (!lower.tail) res <- 1 - res
+  lf0 <- distrib_pdf(parent, 0, pars$orig, log = TRUE)
+  pos <- -expm1(lf0)
+  low <- pmax(0, (distrib_cdf(parent, q, pars$orig) - exp(lf0)) / pos)
+  if (lower.tail && all(lf0 <= log(0.5))) {
+    # with f(0) at most one half the difference keeps its digits
+    res <- za + (1 - za) * low
+    res[q < 0] <- 0
+    res <- pmin(res, 1)
+    return(if (log.p) log(res) else res)
+  }
+  # the positive part's survival S(q) / (1 - f(0)), from the parent's upper
+  # tail, and its distribution function from whichever side is not near one
+  surv <- pmin(distrib_cdf(parent, q, pars$orig, lower.tail = FALSE) / pos, 1)
+  cdf_trunc <- ifelse(surv < 0.5, 1 - surv, low)
+  if (lower.tail) {
+    res <- za + (1 - za) * cdf_trunc
+    res[q < 0] <- 0
+    res <- pmin(res, 1)
+  } else {
+    res <- (1 - za) * ifelse(surv < 0.5, surv, 1 - low)
+    res[q < 0] <- 1
+  }
   if (log.p) log(res) else res
 }
 
@@ -296,14 +342,16 @@ S7::method(distrib_cdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, q, the
 #' @description
 #' Inverts the hurdle distribution function. The quantile is `0` for
 #' \eqn{p \le \pi}, the whole mass at zero, and otherwise the PARENT's quantile
-#' at \eqn{u\{1 - f(0)\} + f(0)} with \eqn{u = (p - \pi)/(1 - \pi)}: the
-#' probability is rescaled out of the hurdle and back onto the parent's own
-#' scale before the parent is asked.
+#' at \eqn{u\{1 - f(0)\} + f(0)} with \eqn{u = (p - \pi)/(1 - \pi)}. The parent
+#' is inverted in its upper tail, at \eqn{(1 - p)\{1 - f(0)\}/(1 - \pi)}, at the
+#' rows of the observations, so that a constant that varies by observation (a
+#' binomial's size) is read at its own row.
 #'
 #' @details
-#' The result is a LATTICE quantile and overshoots, as any discrete quantile
-#' does. Every probability at or below \eqn{\pi} maps to zero, so the first
-#' step is as large as the mass at zero.
+#' The result is a quantile of a discrete distribution: the distribution
+#' function evaluated at it is at least `p`, and usually larger. Every
+#' probability at or below \eqn{\pi} maps to zero, so the first step has
+#' probability \eqn{\pi}, and `p = 1` gives the upper end of the support.
 #'
 #' @param distrib A `ZeroAdjustedDiscreteDistrib` object, from
 #'   [zero_adjusted()].
@@ -346,24 +394,27 @@ S7::method(distrib_quantile, ZeroAdjustedDiscreteDistrib) <- function(distrib, p
   parent <- distrib@parent_distrib
 
   if (log.p) p <- exp(p)
-  if (!lower.tail) p <- 1 - p
   p <- pmin(pmax(p, 0), 1)
 
   all_params <- expand_params(c(list(.p = p), theta))
   p <- all_params$.p
   th_orig <- all_params[names(pars$orig)]
   za <- all_params[[distrib@params[distrib@n_params]]]
+  # both tails of the requested probability, neither formed as 1 - (1 - p)
+  p_low <- if (lower.tail) p else 1 - p
+  p_up <- if (lower.tail) 1 - p else p
 
-  f0 <- distrib_pdf(parent, 0, th_orig)
   q_vals <- numeric(length(p))
-  idx <- (p > za)
+  rows <- which(p_low > za)
 
-  if (any(idx)) {
-    u <- (p[idx] - za[idx]) / (1 - za[idx])
-    f0_sub <- if (length(f0) > 1) f0[idx] else f0
-    target <- pmin(u * (1 - f0_sub) + f0_sub, 1 - 1e-10)
-    th_sub <- lapply(th_orig, function(x) if (length(x) > 1) x[idx] else x)
-    q_vals[idx] <- distrib_quantile(parent, target, th_sub)
+  if (length(rows)) {
+    # the parent at these rows, a constant that varies by observation included
+    par_sub <- distrib_at_rows(parent, rows, length(p))
+    th_sub <- lapply(th_orig, function(x) if (length(x) > 1) x[rows] else x)
+    lf0 <- distrib_pdf(par_sub, 0, th_sub, log = TRUE)
+    # the positive part's upper tail, rescaled onto the parent's upper tail
+    target <- p_up[rows] / (1 - za[rows]) * (-expm1(lf0))
+    q_vals[rows] <- distrib_quantile(par_sub, target, th_sub, lower.tail = FALSE)
   }
 
   q_vals
@@ -374,10 +425,11 @@ S7::method(distrib_quantile, ZeroAdjustedDiscreteDistrib) <- function(distrib, p
 #'
 #' @description
 #' Draws zeros with probability \eqn{\pi} and otherwise samples from the
-#' ZERO-TRUNCATED parent, so no draw from the positive part is ever zero. The
-#' truncated draw is taken by inverting the parent's distribution function at a
-#' uniform rescaled onto \eqn{(f(0), 1)}, which needs no rejection loop and so
-#' terminates in bounded time however small the positive mass is.
+#' zero-truncated parent, so no draw from the positive part is ever zero. The
+#' truncated draw is taken by inverting the parent's distribution function in
+#' its upper tail, at \eqn{(1 - U)\{1 - f(0)\}} with \eqn{U} uniform, at the
+#' rows of the observations. It needs no rejection loop and so terminates in
+#' bounded time however small the positive mass is.
 #'
 #' @param distrib A `ZeroAdjustedDiscreteDistrib` object, from
 #'   [zero_adjusted()].
@@ -394,8 +446,9 @@ S7::method(distrib_quantile, ZeroAdjustedDiscreteDistrib) <- function(distrib, p
 #' \eqn{\ell} the log-mass of one observation.
 #'
 #' @seealso [distrib_pdf.ZeroAdjustedDiscreteDistrib()] for the mass function
-#'   these are drawn from, [truncated()] for the truncation the positive part
-#'   uses, and [distrib_rng()] for the generic.
+#'   these are drawn from, [truncated()] for the general truncation wrapper (the
+#'   method here draws the positive part by inversion and does not call it), and
+#'   [distrib_rng()] for the generic.
 #'
 #' @examples
 #' d <- zero_adjusted(poisson_distrib())
@@ -418,13 +471,15 @@ S7::method(distrib_rng, ZeroAdjustedDiscreteDistrib) <- function(distrib, n, the
   y <- numeric(n)
 
   if (any(!is_zero)) {
-    n_pos <- sum(!is_zero)
-    f0 <- distrib_pdf(parent, 0, pars$orig)
-    f0_sub <- if (length(f0) > 1) f0[!is_zero] else f0
-    th_sub <- lapply(pars$orig, function(x) if (length(x) > 1) x[!is_zero] else x)
+    rows <- which(!is_zero)
+    par_sub <- distrib_at_rows(parent, rows, n)
+    th_sub <- lapply(pars$orig, function(x) if (length(x) > 1) x[rows] else x)
+    lf0 <- distrib_pdf(par_sub, 0, th_sub, log = TRUE)
 
-    u <- stats::runif(n_pos)
-    y[!is_zero] <- distrib_quantile(parent, f0_sub + u * (1 - f0_sub), th_sub)
+    # F^{-1}(f0 + u (1 - f0)), read from the upper tail at (1 - u)(1 - f0)
+    u <- stats::runif(length(rows))
+    y[rows] <- distrib_quantile(par_sub, (1 - u) * (-expm1(lf0)), th_sub,
+                                lower.tail = FALSE)
   }
 
   y
@@ -450,8 +505,9 @@ S7::method(distrib_rng, ZeroAdjustedDiscreteDistrib) <- function(distrib, n, the
 #'   [zero_adjusted()].
 #' @param y A numeric vector of observations.
 #' @param theta A named list with the parent's parameters followed by `za`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch. `za` rides a logit by default.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The generic
+#'   applies the link scale to the value that the method returns. `za` rides a
+#'   logit by default.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per parameter, in
@@ -496,9 +552,9 @@ S7::method(distrib_gradient, ZeroAdjustedDiscreteDistrib) <- function(distrib, y
   za <- pars$mix
   za_name <- distrib@params[distrib@n_params]
 
-  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
+  lf0 <- distrib_pdf(parent, 0, pars$orig, log = TRUE)
   score_0 <- distrib_gradient(parent, 0, pars$orig)
-  correction <- f0 / (1 - f0)
+  correction <- exp(lf0) / (-expm1(lf0))
 
   grad_orig <- distrib_gradient(parent, y, pars$orig)
 
@@ -530,8 +586,8 @@ S7::method(distrib_gradient, ZeroAdjustedDiscreteDistrib) <- function(distrib, y
 #'   [zero_adjusted()].
 #' @param y A numeric vector of observations.
 #' @param theta A named list with the parent's parameters followed by `za`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The generic
+#'   applies the link scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, one per unordered pair of
@@ -580,11 +636,12 @@ S7::method(distrib_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y,
   za_name <- distrib@params[distrib@n_params]
   n <- length(y)
 
-  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
+  lf0 <- distrib_pdf(parent, 0, pars$orig, log = TRUE)
+  f0 <- exp(lf0)
   grad_0 <- distrib_gradient(parent, 0, pars$orig)
   hess_0_obs <- distrib_hessian(parent, 0, pars$orig)
   h_orig <- distrib_hessian(parent, y, pars$orig)
-  denom <- 1 - f0
+  denom <- -expm1(lf0)
   pairs <- hess_pairs(names(pars$orig))
 
   res <- list()
@@ -619,30 +676,32 @@ S7::method(distrib_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y,
 #'
 #' @description
 #' Computes the expectation of the observed Hessian in closed form. The hurdle
-#' block is the Bernoulli information \eqn{-1/\{\pi(1-\pi)\}}, the mixed blocks
-#' are exactly zero, and the parent block is \eqn{(1-\pi)} times the truncated
-#' parent's own expected Hessian: a positive observation arrives with
-#' probability \eqn{1-\pi} and carries the whole of what \eqn{\theta} is
-#' estimated from. No component depends on the data, so every returned vector
-#' is constant.
+#' block is the negative of the Bernoulli information, \eqn{-1/\{\pi(1-\pi)\}},
+#' the mixed blocks are exactly zero, and the parent block is \eqn{(1-\pi)}
+#' times the truncated parent's own expected Hessian: a positive observation
+#' arrives with probability \eqn{1-\pi} and carries the whole of what
+#' \eqn{\theta} is estimated from. The components do not depend on the observed
+#' values, so each returned vector is constant whenever the parent's expected
+#' Hessian is.
 #'
 #' @details
 #' The block diagonal is why a hurdle model is cheap to fit: the two halves can
 #' be estimated independently, and the information matrix inverts blockwise.
-#' `approx` and `nsim` are accepted so that the signature matches the generic's
-#' and neither is read; the expectation here is exact.
+#' `approx` and `nsim` are forwarded to the expected Hessian of the parent and
+#' are used only where the parent has no closed form. The remaining blocks are
+#' exact, and the whole expectation is exact when the parent's is.
 #'
 #' @param distrib A `ZeroAdjustedDiscreteDistrib` object, from
 #'   [zero_adjusted()].
 #' @param y A numeric vector of observations. Only its length is used.
 #' @param theta A named list with the parent's parameters followed by `za`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The generic
+#'   applies the link scale to the value that the method returns.
 #' @param approx Forwarded to the parent's `distrib_expected_hessian()`, and
 #'   read only where the parent has no closed form for it; every other block
-#'   is an exact combination of the parent's density, score and observed
-#'   Hessian at zero. [expected_hessian_exact()] answers for this class by
-#'   asking the parent.
+#'   is an exact combination of the parent's density, score and observed Hessian
+#'   at zero. [expected_hessian_exact()] returns, for this class, the value that
+#'   it returns for the parent.
 #' @param nsim Forwarded for the same reason and under the same condition.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -689,12 +748,13 @@ S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(di
   za_name <- distrib@params[distrib@n_params]
   n <- length(y)
 
-  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
+  lf0 <- distrib_pdf(parent, 0, pars$orig, log = TRUE)
+  f0 <- exp(lf0)
   grad_0 <- distrib_gradient(parent, 0, pars$orig)
   hess_0_obs <- distrib_hessian(parent, 0, pars$orig)
   h_orig_exp <- distrib_expected_hessian(parent, y, pars$orig,
                                          approx = approx, nsim = nsim)
-  denom <- 1 - f0
+  denom <- -expm1(lf0)
   pairs <- hess_pairs(names(pars$orig))
 
   res <- list()
@@ -869,9 +929,9 @@ S7::method(distrib_cdf, ZeroAdjustedContinuousDistrib) <- function(distrib, q, t
 #' at \eqn{(p - \pi)/(1-\pi)}.
 #'
 #' @details
-#' A whole interval of probabilities therefore maps to the same point, which is
-#' what inverting a distribution function with a jump means and is not a
-#' failure of the inversion. The interval has width \eqn{\pi}.
+#' An interval of probabilities of width \eqn{\pi} therefore maps to the single
+#' point zero, as the generalized inverse of a distribution function with a jump
+#' requires.
 #'
 #' @param distrib A `ZeroAdjustedContinuousDistrib` object, from
 #'   [zero_adjusted()].
@@ -1027,8 +1087,8 @@ S7::method(distrib_rng, ZeroAdjustedContinuousDistrib) <- function(distrib, n, t
 #'   [zero_adjusted()].
 #' @param y A numeric vector of observations.
 #' @param theta A named list with the parent's parameters followed by `za`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The generic
+#'   applies the link scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per parameter, in
@@ -1094,8 +1154,8 @@ S7::method(distrib_gradient, ZeroAdjustedContinuousDistrib) <- function(distrib,
 #'   [zero_adjusted()].
 #' @param y A numeric vector of observations.
 #' @param theta A named list with the parent's parameters followed by `za`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The generic
+#'   applies the link scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, one per unordered pair of
@@ -1162,27 +1222,27 @@ S7::method(distrib_hessian, ZeroAdjustedContinuousDistrib) <- function(distrib, 
 #' \deqn{\mathbb{E}[H_{\pi\pi}] = -\frac{1}{\pi(1-\pi)}, \qquad
 #'   \mathbb{E}[H_{\theta\pi}] = 0, \qquad
 #'   \mathbb{E}[H_{\theta\theta}] = (1-\pi)\,\mathbb{E}[H_W].}
-#' The hurdle block is the Bernoulli information, the mixed blocks are exactly
-#' zero, and the parent block is the parent's own expectation weighted by the
-#' probability \eqn{1-\pi} that an observation reaches it.
+#' The hurdle block is the negative of the Bernoulli information, the mixed
+#' blocks are exactly zero, and the parent block is the parent's own expectation
+#' weighted by the probability \eqn{1-\pi} that an observation reaches it.
 #'
 #' @details
-#' `approx` and `nsim` are accepted so that the signature matches the generic's
-#' and neither is read here. They are also NOT forwarded to the parent, so a
-#' parent whose own expected Hessian is approximate takes its own defaults.
+#' `approx` and `nsim` are forwarded to the expected Hessian of the parent and
+#' are used only where the parent has no closed form. The hurdle block does not
+#' read them.
 #'
 #' @param distrib A `ZeroAdjustedContinuousDistrib` object, from
 #'   [zero_adjusted()].
 #' @param y A numeric vector of observations, passed to the parent, which uses
 #'   its length.
 #' @param theta A named list with the parent's parameters followed by `za`.
-#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
-#'   generic before dispatch.
-#' @param approx Read only by the parent block, and only where the parent has
-#'   no closed form for it; ignored for the hurdle block, which is exact
-#'   whatever the parent is. [expected_hessian_exact()] answers for this class
-#'   by asking the parent, since the parent block is the one that can fail to
-#'   be exact.
+#' @param scale One of `"parameter"` (the default) or `"link"`. The generic
+#'   applies the link scale to the value that the method returns.
+#' @param approx Forwarded to the parent's expected Hessian and used only where
+#'   the parent has no closed form for it. The hurdle block is exact whatever
+#'   the parent is. [expected_hessian_exact()] returns, for this class, the
+#'   value that it returns for the parent, because the parent block is the only
+#'   block that can fail to be exact.
 #' @param nsim Read for the same reason and under the same condition.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -1259,20 +1319,24 @@ S7::method(expected_hessian_exact, ZeroAdjustedContinuousDistrib) <- function(x,
 #'
 #' @description
 #' Declares the single point mass at zero, with probability \eqn{\pi}. This
-#' declaration is what marks the object a MIXED distribution: its density
-#' integrates to \eqn{1 - \pi}, so a consumer that does not know about the atom
-#' will find the missing \eqn{\pi} and call it an error.
+#' declaration marks the object as a MIXED distribution: its density integrates
+#' to \eqn{1 - \pi}, and the remaining probability \eqn{\pi} is the mass of the
+#' atom. A function that ignores the atom finds a total probability of \eqn{1 -
+#' \pi}.
 #'
 #' @details
-#' Three things read it. [check_distrib()] adjusts four of its thirteen checks,
-#' since the density integrates to \eqn{1-\pi}, the quantile round trip cannot
-#' close inside the jump, and a central difference in \eqn{y} across the atom
-#' has no derivative to converge to. [expectation()] splits its integral at the
-#' atom. And [folded()] REFUSES a parent that declares one, zero being its own
-#' preimage under the absolute value while every other point has two.
+#' The declaration is read by [check_distrib()], [truncated()] and [folded()].
+#' [check_distrib()] changes the checks that fail on a mixed law: the density
+#' integrates to \eqn{1-\pi} plus the atom, the quantile round trip cannot close
+#' inside the jump, and a central difference in \eqn{y} across the atom has no
+#' derivative to converge to. [truncated()] keeps the atoms of the parent that
+#' lie inside the truncation interval. [folded()] rejects a parent that declares
+#' an atom, because zero is its own preimage under the absolute value and every
+#' other point has two. [expectation()] does not read the declaration; its
+#' method for this class splits the integral at zero.
 #'
-#' The question is asked of the OBJECT, so the returned probability moves with
-#' `theta`.
+#' The probability is read from `theta`, so the returned value changes with the
+#' value of `za`.
 #'
 #' @param distrib A `ZeroAdjustedContinuousDistrib` object, from
 #'   [zero_adjusted()].
@@ -1299,7 +1363,7 @@ S7::method(expected_hessian_exact, ZeroAdjustedContinuousDistrib) <- function(x,
 #' # A plain continuous parent declares none.
 #' distrib_atoms(gaussian1_distrib(), theta[c("mu", "sigma")])
 #'
-#' # The declaration is what folded() refuses on.
+#' # The declaration is what folded() rejects.
 #' try(folded(d))
 S7::method(distrib_atoms, ZeroAdjustedContinuousDistrib) <- function(distrib, theta, ...) {
   list(y = 0, p = unname(theta[[distrib@n_params]][1]))
@@ -1315,9 +1379,11 @@ S7::method(distrib_atoms, ZeroAdjustedContinuousDistrib) <- function(distrib, th
 #' \eqn{\log\{(1-\pi)f(y)\}} on the other, and no derivative exists.
 #'
 #' @details
-#' The `NaN` is the point of the function. The finite-difference default
-#' inherited from [continuous_distrib()] would straddle the jump and return a
-#' NUMBER for it, which is worse than an error: nothing downstream would notice.
+#' At the atom the function returns `NaN`, because no derivative exists there.
+#' The finite-difference default inherited from [continuous_distrib()] would
+#' difference across the jump and return a finite number. It serves the response
+#' derivatives of orders one to four; `za_y_list()` applies the same rule to the
+#' mixed derivatives, which are zero in `za`.
 #'
 #' @param distrib A zero-adjusted distribution object.
 #' @param y A numeric vector of observations.
@@ -1355,6 +1421,7 @@ za_y_deriv <- function(distrib, y, theta, fun) {
   pars <- split_mix_theta(distrib, theta)
   out <- rep(NaN, length(y))
   nz <- y != 0
+  nz[is.na(nz)] <- TRUE
   if (any(nz)) {
     th_sub <- lapply(pars$orig, function(x) if (length(x) > 1) x[nz] else x)
     out[nz] <- fun(distrib@parent_distrib, y[nz], th_sub)
@@ -1368,9 +1435,9 @@ za_y_deriv <- function(distrib, y, theta, fun) {
 #' @description
 #' Returns \eqn{\partial\ell/\partial y}, which equals the PARENT's for
 #' \eqn{y \ne 0}, the factor \eqn{1-\pi} not depending on \eqn{y}. At the atom
-#' the log-density jumps and no derivative exists, so `NaN` is returned. That
-#' is deliberate: the numerical fallback would straddle the jump and hand back
-#' a number nothing downstream would question.
+#' the log-density jumps and no derivative exists, so `NaN` is returned. The
+#' numerical fallback would difference across the jump and return a finite
+#' number.
 #'
 #' @param distrib A `ZeroAdjustedContinuousDistrib` object, from
 #'   [zero_adjusted()].
@@ -1462,7 +1529,9 @@ S7::method(distrib_hess_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y
 #' @param theta A named list with the parent's parameters followed by `za`.
 #' @param ... Passed to `f` and to the parent's [expectation()].
 #'
-#' @return A single number, the expectation of `f` under the mixed law.
+#' @return A numeric vector with the expectation of `f` under the mixed law for
+#'   each combination of the values in `theta`: a single number when `theta`
+#'   holds scalars.
 #'
 #' @section Notation:
 #' \eqn{\pi} is the probability of the atom at zero, \eqn{W} the parent's
@@ -1518,18 +1587,19 @@ S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, t
 #' by `za`, and leaves everything else to the parent. What that means depends
 #' on the parent's type, and the constructor dispatches on it:
 #'
-#' - a DISCRETE parent with 0 in its support gives a HURDLE model. The mass the
-#'   parent puts at zero is removed, the parent is renormalized over the
-#'   positive values, and \eqn{\pi} takes its place.
+#' - a DISCRETE parent with 0 in its support gives a HURDLE model. The mass
+#' that the parent puts at zero is removed, the parent is renormalized over
+#' the positive values, and \eqn{\pi} takes its place.
 #' - a CONTINUOUS parent gives a MIXED distribution. Nothing has to be removed,
 #'   \eqn{P(Y = 0)} being zero already; a point mass \eqn{\pi} is placed at zero
 #'   and the density is scaled by \eqn{1-\pi}.
 #'
-#' It is the wrapper to reach for when zeros come from their own mechanism, no
-#' claim filed or no rainfall, and the parent describes only what happens once
-#' that mechanism has been passed. Where the zeros come partly from the parent
-#' and partly from a separate source, so that no single zero can be attributed,
-#' [zero_inflated()] is the model.
+#' The wrapper applies when the zeros come from a mechanism of their own (for
+#' example, no claim is filed or no rain falls) and the parent describes only
+#' the observations produced after that mechanism has allowed a positive
+#' outcome. Where the zeros come partly from the parent and partly from a
+#' separate source, so that no single zero can be attributed, [zero_inflated()]
+#' is the model.
 #'
 #' @details
 #' # A discrete parent: the hurdle
@@ -1581,9 +1651,10 @@ S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, t
 #' A continuous parent supported on the whole line is accepted and gives a
 #' spike-at-zero model, but \eqn{y = 0} then no longer identifies its own
 #' mechanism: the atom sits where the density is positive. A continuous parent
-#' whose support does not reach zero at all, say \eqn{(2, 5)}, is accepted with
-#' a WARNING, the atom then being disconnected from the rest of the law, which
-#' is legitimate and rarely intended.
+#' whose support does not contain zero, say \eqn{(2, 5)} or \eqn{(-5, -2)}, is
+#' accepted with a warning, because the atom is then disconnected from the rest
+#' of the law, which is well defined and rarely intended. The bounds of the
+#' result are extended to contain zero.
 #'
 #' @section Notation:
 #' \eqn{f} is a discrete parent's mass function, \eqn{f_W} a continuous one's
@@ -1635,7 +1706,7 @@ S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, t
 #' yg <- distrib_rng(zag, 2000, list(mu = 2, sigma2 = 1, za = 0.3))
 #' round(coef(fit_distrib(zag, yg)), 3)
 #'
-#' # Two refusals, each naming the condition that failed.
+#' # Two errors, each naming the condition that failed.
 #' try(zero_adjusted(bernoulli_distrib()))
 #' try(zero_adjusted(zero_inflated(poisson_distrib())))
 #'
@@ -1664,20 +1735,21 @@ zero_adjusted <- function(distrib, link_za = logit_link()) {
     if (distrib@bounds[1] > 0) {
       stop(sprintf(paste0(
         "zero_adjusted() requires 0 in the support of '%s', which starts at %g.\n",
-        "  A hurdle model removes the mass the parent places at zero and replaces it\n",
+        "  A hurdle model removes the mass that the parent places at zero and replaces it\n",
         "  by 'za'; with P(Y = 0) = 0 there is nothing to remove or to truncate."
       ), distrib@distrib_name, distrib@bounds[1]), call. = FALSE)
     }
     check_support_is_rich_enough(distrib, "zero_adjusted")
     do.call(ZeroAdjustedDiscreteDistrib, c(common, list(bounds = c(0, distrib@bounds[2]))))
   } else {
-    if (distrib@bounds[1] > 0) {
+    if (distrib@bounds[1] > 0 || distrib@bounds[2] < 0) {
       warning(sprintf(paste0(
-        "The support of '%s' starts at %g, so the point mass at zero is disconnected ",
+        "The support of '%s' is [%g, %g], so the point mass at zero is disconnected ",
         "from the rest of the distribution. This is well-defined but rarely intended: ",
-        "zero-adjustment is normally applied to a density that reaches down to zero."
-      ), distrib@distrib_name, distrib@bounds[1]), call. = FALSE)
+        "zero-adjustment is normally applied to a density that reaches zero."
+      ), distrib@distrib_name, distrib@bounds[1], distrib@bounds[2]), call. = FALSE)
     }
-    do.call(ZeroAdjustedContinuousDistrib, c(common, list(bounds = c(min(0, distrib@bounds[1]), distrib@bounds[2]))))
+    do.call(ZeroAdjustedContinuousDistrib, c(common, list(bounds = c(
+      min(0, distrib@bounds[1]), max(0, distrib@bounds[2])))))
   }
 }

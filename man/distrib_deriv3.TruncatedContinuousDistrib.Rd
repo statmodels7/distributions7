@@ -30,11 +30,10 @@ expectations \eqn{\mathbb{E}_T[\partial^B f / f]}:
 \deqn{d^I \log Z = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
       \prod_{B \in \pi} \mathbb{E}_T\!\left[\frac{\partial^B f}{f}\right].}
 
-Each \strong{distinct block} costs one quadrature, memoized across the partition
-sum, which is why a truncated derivative is far dearer than its parent's.
-Where the parent has genuinely closed cdf derivatives, or is a discrete
-family whose cdf derivatives are an exact sum, that route replaces the
-quadrature and is about three and a half times faster.
+Each distinct block that has no closed-form cdf derivative costs one
+quadrature, memoized across the partition sum. Where the parent has
+closed-form cdf derivatives of the block's order, the block is read from them
+and no quadrature is taken.
 }
 \examples{
 tr <- truncated(gaussian1_distrib(), lower = -1, upper = 3)

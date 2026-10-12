@@ -732,8 +732,12 @@ S7::method(distrib_deriv5, CauchyDistrib) <- function(distrib, y, theta,
 #' max(abs(distrib_grad_y(d, seq(-1e3, 1e3, length.out = 1e4), th)))
 #' 1 / 1.5
 S7::method(distrib_grad_y, CauchyDistrib) <- function(distrib, y, theta, ...) {
+  # r and sigma scaled by the larger of the two, so r^2 does not overflow
   r <- y - theta[[1]]
-  -2 * r / (theta[[2]]^2 + r^2)
+  a <- pmax(abs(r), theta[[2]])
+  u <- r / a
+  v <- theta[[2]] / a
+  -2 * u / (u^2 + v^2) / a
 }
 
 #' @title Cauchy Second Derivative in the Response
@@ -780,8 +784,10 @@ S7::method(distrib_grad_y, CauchyDistrib) <- function(distrib, y, theta, ...) {
 #'            concave = distrib_hess_y(d, 0.4 + z * 1.5, th) < 0)
 S7::method(distrib_hess_y, CauchyDistrib) <- function(distrib, y, theta, ...) {
   r <- y - theta[[1]]
-  s2 <- theta[[2]]^2
-  2 * (r^2 - s2) / (s2 + r^2)^2
+  a <- pmax(abs(r), theta[[2]])
+  u <- r / a
+  v <- theta[[2]] / a
+  2 * (u^2 - v^2) / (u^2 + v^2)^2 / a / a
 }
 
 #' @title Cauchy Distribution Function Derivatives

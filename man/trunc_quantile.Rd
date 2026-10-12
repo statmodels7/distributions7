@@ -26,11 +26,16 @@ A numeric vector of quantiles, of the length \code{p} and \code{theta} recycle
 to.
 }
 \description{
-Inverts \code{\link[=trunc_cdf]{trunc_cdf()}} through the PARENT's quantile function, no
-root-finding of its own being needed: \eqn{F_T(q) = p} holds exactly when
-\eqn{F(q) = F(L^-) + pZ}. The generalized inverse of a discrete
-distribution function satisfies the same relation, so the discrete case
-needs no separate treatment and the body is registered on both classes.
+Inverts \code{\link[=trunc_cdf]{trunc_cdf()}} through the parent's quantile function, with no
+root-finding of its own: \eqn{F_T(q) = p} holds exactly when \eqn{F(q) =
+F(L^-) + pZ}, or, in the upper tail, when \eqn{S(q) = S(U) + (1 - p)Z}. A
+lower-tail probability on an interval with \eqn{F(L^-) \le 1/2} is inverted
+in the parent's lower tail; otherwise the parent is inverted in the lower
+tail while \eqn{F(L^-) + pZ \le 1/2} and in the upper tail beyond. The
+generalized inverse of a discrete distribution
+function satisfies the same relations; at \eqn{p = 0} it gives the support
+point below \eqn{L}, so the result is kept in \eqn{[L, U]}. The body is
+registered on both classes.
 }
 \details{
 \code{p} and \code{theta} are expanded to a common length before being combined.

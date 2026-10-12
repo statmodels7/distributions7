@@ -30,10 +30,9 @@ exactly zero, and the two halves are differentiated separately. The
 constant \eqn{\log(1 - f_0)}, which is the mass the parent puts at zero and
 the hurdle removes.
 
-This is the structural difference from \code{\link[=zero_inflated]{zero_inflated()}}, and it is one a
-reader can check in a line: there the mixed block is not zero, because
-inflation \emph{adds} to the parent's mass at zero and no single zero can be
-attributed to a mechanism.
+This is the structural difference from \code{\link[=zero_inflated]{zero_inflated()}}, where the mixed
+block is not zero, because inflation adds to the parent's mass at zero and no
+single zero can be attributed to one mechanism.
 }
 \examples{
 h <- zero_adjusted(poisson_distrib())

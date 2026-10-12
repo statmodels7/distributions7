@@ -33,6 +33,12 @@ NULL
 #' tabulates. Registered on `gaussian2`, `gaussian3`, `laplace2` and
 #' `invgauss2`.
 #'
+#' The parent of `invgauss2`, `invgauss1`, carries the three quantities in
+#' closed form: with \eqn{\ell^{(y)} = -3/(2y) - 1/(2\phi\mu^2) + 1/(2\phi y^2)}
+#' and \eqn{\ell^{(yy)} = 3/(2y^2) - 1/(\phi y^3)}, every mixed derivative in
+#' \eqn{(\mu, \phi)} is a monomial, and the map carries them to
+#' \eqn{(\mu, \lambda)} with no difference taken.
+#'
 #' @param parent The parent distribution, built once and closed over.
 #' @param th_par A function of the new parameters returning the parent's, as a
 #'   named list.
@@ -58,7 +64,8 @@ NULL
 #'   distrib_hess_y_hess.Gaussian3Distrib distrib_cross2_y.Laplace2Distrib
 #'   distrib_grad_y_hess.Laplace2Distrib distrib_hess_y_hess.Laplace2Distrib
 #'   distrib_cross2_y.InvGauss2Distrib distrib_grad_y_hess.InvGauss2Distrib
-#'   distrib_hess_y_hess.InvGauss2Distrib
+#'   distrib_hess_y_hess.InvGauss2Distrib distrib_cross2_y.InvGauss1Distrib
+#'   distrib_grad_y_hess.InvGauss1Distrib distrib_hess_y_hess.InvGauss1Distrib
 #'
 #' @keywords internal
 #'
@@ -119,8 +126,8 @@ mapped_theta2_methods <- function(parent, th_par, tables) {
 #'   \frac{\partial^2\ell^{(yy)}}{\partial\sigma^2}
 #'   = \frac{z^2B'' + 6zB' + 6B}{\sigma^4},}
 #' and the primed quantities are the family's own third and fourth response
-#' derivatives times a power of \eqn{\sigma}, so nothing is differentiated
-#' here. Any parameter beyond the scale is a SHAPE and is not covered;
+#' derivatives times a power of \eqn{\sigma}, so no further differentiation is
+#' needed. A parameter beyond the scale is a shape and is not covered;
 #' [scale_only_theta2_methods()] differences those.
 #'
 #' @param distrib An object inheriting from class `distrib`, with a scale and
@@ -174,13 +181,13 @@ scale_only_theta2 <- function(distrib, y, theta, order = 1L, at = 1L) {
     a <- s * ly
     a1 <- s^2 * lyy
     a2 <- s^3 * l3
-    (z^2 * a2 + 4 * z * a1 + 2 * a) / s^3
+    (z * (z * a2) + 4 * z * a1 + 2 * a) / s^3
   } else {
     l4 <- distrib_deriv4_y(distrib, y, theta) + 0 * y
     b <- s^2 * lyy
     b1 <- s^3 * l3
     b2 <- s^4 * l4
-    (z^2 * b2 + 6 * z * b1 + 6 * b) / s^4
+    (z * (z * b2) + 6 * z * b1 + 6 * b) / s^4
   }
 }
 
@@ -191,14 +198,15 @@ scale_only_theta2 <- function(distrib, y, theta, order = 1L, at = 1L) {
 #' Builds the [distrib_grad_y_hess()] and [distrib_hess_y_hess()] method bodies
 #' for a family with a scale and no location: the scale's own pair comes from
 #' [scale_only_theta2()] in closed form, and every pair touching a shape
-#' parameter from one central difference of the analytic first-order component
-#' through [numerical_theta2_y()].
+#' parameter from one central difference of the first-order component through
+#' [numerical_theta2_y()]. In the fourth-order body that component, from
+#' [distrib_cross2_y()], is itself differenced for the shape parameter.
 #'
 #' @details
 #' A one-parameter family returns the closed component alone and never
 #' differences anything. Registered on the exponential, which is that case, and
-#' on the Weibull and the generalized Pareto, whose second parameter is a
-#' shape.
+#' on the Weibull, whose second parameter is a shape. The generalized Pareto has
+#' compiled methods of its own.
 #'
 #' @param at The index of the scale parameter in `distrib@params`. Default `1`.
 #'
@@ -275,7 +283,8 @@ scale_only_theta2_methods <- function(at = 1L) {
 #'
 #' @details
 #' A one-parameter family returns the closed component alone. Registered on the
-#' exponential, the Weibull and the generalized Pareto.
+#' exponential and the Weibull; the generalized Pareto has a compiled method of
+#' its own.
 #'
 #' @param at The index of the scale parameter in `distrib@params`. Default `1`.
 #'
@@ -352,6 +361,34 @@ S7::method(distrib_hess_y_hess, Gaussian3Distrib) <- .m$hess2
 S7::method(distrib_cross2_y, Laplace2Distrib) <- .m$cross2
 S7::method(distrib_grad_y_hess, Laplace2Distrib) <- .m$grad2
 S7::method(distrib_hess_y_hess, Laplace2Distrib) <- .m$hess2
+
+# invgauss1 in closed form: l_y = -3/(2y) - 1/(2 phi mu^2) + 1/(2 phi y^2) and
+# l_yy = 3/(2y^2) - 1/(phi y^3) are rational in (mu, phi), so every mixed
+# derivative is a monomial and invgauss2 inherits them through its map.
+S7::method(distrib_cross2_y, InvGauss1Distrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"), ...) {
+  ph <- theta[[2]]
+  n <- max(length(y), length(theta[[1]]), length(ph))
+  list(mu = rep_len(0, n), phi = rep_len(1 / (ph^2 * y^3), n))
+}
+S7::method(distrib_grad_y_hess, InvGauss1Distrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"), ...) {
+  mu <- theta[[1]]
+  ph <- theta[[2]]
+  n <- max(length(y), length(mu), length(ph))
+  out <- list(mu_mu = rep_len(-3 / (ph * mu^4), n),
+              mu_phi = rep_len(-1 / (ph^2 * mu^3), n),
+              phi_phi = rep_len((1 / y^2 - 1 / mu^2) / ph^3, n))
+  out[hess_names(distrib@params)]
+}
+S7::method(distrib_hess_y_hess, InvGauss1Distrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"), ...) {
+  ph <- theta[[2]]
+  n <- max(length(y), length(theta[[1]]), length(ph))
+  out <- list(mu_mu = rep_len(0, n), mu_phi = rep_len(0, n),
+              phi_phi = rep_len(-2 / (ph^3 * y^3), n))
+  out[hess_names(distrib@params)]
+}
 
 .m <- mapped_theta2_methods(
   invgauss1_distrib(),
@@ -496,8 +533,8 @@ lognormal_theta_chain <- function(y, theta, order, second) {
 #' @param distrib A `Lognormal1Distrib` object.
 #' @param y A numeric vector of observations, strictly positive.
 #' @param theta A named list containing `mu` and `sigma2`.
-#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
-#'   dispatch.
+#' @param scale One of `"parameter"` or `"link"`. The generic applies the link
+#'   scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, keyed by parameter for

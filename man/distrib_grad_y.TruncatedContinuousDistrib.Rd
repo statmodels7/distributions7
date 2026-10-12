@@ -20,7 +20,7 @@ A numeric vector as long as \code{y}.
 Returns \eqn{\partial\ell_T/\partial y}, which inside \eqn{[L, U]} is the
 PARENT's, \eqn{Z} not depending on \eqn{y}. Outside the interval the
 log-density is \eqn{-\infty} and no derivative exists, so \code{NaN} is returned
-where a finite difference would invent a number.
+where the finite-difference default would return a finite number.
 }
 \section{Notation}{
 

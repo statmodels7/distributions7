@@ -12,14 +12,14 @@ its length.}
 
 \item{theta}{A named list with the parent's parameters followed by \code{za}.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns.}
 
-\item{approx}{Read only by the parent block, and only where the parent has
-no closed form for it; ignored for the hurdle block, which is exact
-whatever the parent is. \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} answers for this class
-by asking the parent, since the parent block is the one that can fail to
-be exact.}
+\item{approx}{Forwarded to the parent's expected Hessian and used only where
+the parent has no closed form for it. The hurdle block is exact whatever
+the parent is. \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} returns, for this class, the
+value that it returns for the parent, because the parent block is the only
+block that can fail to be exact.}
 
 \item{nsim}{Read for the same reason and under the same condition.}
 
@@ -34,14 +34,14 @@ Computes the expectation of the observed Hessian in closed form:
 \deqn{\mathbb{E}[H_{\pi\pi}] = -\frac{1}{\pi(1-\pi)}, \qquad
   \mathbb{E}[H_{\theta\pi}] = 0, \qquad
   \mathbb{E}[H_{\theta\theta}] = (1-\pi)\,\mathbb{E}[H_W].}
-The hurdle block is the Bernoulli information, the mixed blocks are exactly
-zero, and the parent block is the parent's own expectation weighted by the
-probability \eqn{1-\pi} that an observation reaches it.
+The hurdle block is the negative of the Bernoulli information, the mixed
+blocks are exactly zero, and the parent block is the parent's own expectation
+weighted by the probability \eqn{1-\pi} that an observation reaches it.
 }
 \details{
-\code{approx} and \code{nsim} are accepted so that the signature matches the generic's
-and neither is read here. They are also NOT forwarded to the parent, so a
-parent whose own expected Hessian is approximate takes its own defaults.
+\code{approx} and \code{nsim} are forwarded to the expected Hessian of the parent and
+are used only where the parent has no closed form. The hurdle block does not
+read them.
 }
 \section{Notation}{
 

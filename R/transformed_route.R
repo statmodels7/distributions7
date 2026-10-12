@@ -8,9 +8,10 @@ NULL
 #' constructors and returns its code in the compiled registry and its
 #' parameters. A candidate is rebuilt from the parameters found in the
 #' transformer's closures, and the transformer is recognized when every one
-#' of its functions has the candidate's code and, where it is a closure of
-#' the constructor, the transformer's own environment; any other transformer
-#' has no code.
+#' of its eight functions has the same source text as the candidate's, with the
+#' same \code{decreasing} flag, and, where the candidate's function is a closure
+#' created by the constructor, the same environment as the transformer's own
+#' function; any other transformer has no code.
 #'
 #' @param tr A [transformer()] object.
 #'

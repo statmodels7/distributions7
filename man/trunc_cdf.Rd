@@ -26,13 +26,21 @@ A numeric vector of probabilities, of the length \code{q} and \code{theta}
 recycle to.
 }
 \description{
-Evaluates \eqn{F_T(q) = (F(q) - F(L^-))/Z}, clamped to \eqn{[0, 1]}. One of
-the shared method bodies, registered on both truncated classes.
+Evaluates \eqn{F_T(q) = (F(q) - F(L^-))/Z} and the upper tail \eqn{(F(U) -
+F(q))/Z}, clamped to \eqn{[0, 1]}. The lower tail of an interval with
+\eqn{F(L^-) \le 1/2} is the first difference as written. Otherwise, and for
+the upper tail, each difference is formed from the parent's distribution
+function while \eqn{F(q) \le 1/2} and from its survival function beyond, as
+\eqn{(S(L^-) - S(q))/Z} and \eqn{(S(q) - S(U))/Z}, so that neither tail is a
+difference of two numbers near one. One of the shared method bodies,
+registered on both truncated classes.
 }
 \details{
-The clamp is there to make the endpoints exact. It returns \code{0} at and below
-\eqn{L} and \code{1} at and above \eqn{U}, where the unclamped ratio would give a
-small negative number or one plus a rounding.
+The clamp is there to make the endpoints exact. It returns \code{0} below \eqn{L}
+and \code{1} at and above \eqn{U}, where the unclamped ratio would give a small
+negative number or one plus a rounding. At \eqn{L} itself the value is \code{0}
+for a continuous parent and \eqn{f(L)/Z}, the mass of the lower endpoint, for
+a discrete one.
 }
 \section{Notation}{
 

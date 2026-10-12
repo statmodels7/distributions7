@@ -15,9 +15,9 @@ inclusive, or \code{Inf}.
 }
 \description{
 Returns how many points the distribution's support contains, read off its
-\code{bounds}, and \code{Inf} when the support is unbounded above. It is what
-\code{\link[=check_support_is_rich_enough]{check_support_is_rich_enough()}} counts against the parameters a zero
-wrapper would spend.
+\code{bounds}, and \code{Inf} when either bound is infinite. It is what
+\code{\link[=check_support_is_rich_enough]{check_support_is_rich_enough()}} counts against the parameters a zero wrapper
+would spend.
 }
 \examples{
 # A count family has an unbounded support.

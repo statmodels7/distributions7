@@ -42,13 +42,13 @@ over the retained set, so that \eqn{E_T[s_i s_j] = S_{ij}/Z} and
 \eqn{c}.
 
 For a discrete parent the integrals are sums over support points.
-\code{trunc_rule_cpp()} returns, for each observation, the points they run
-over: the retained points when they are finitely many, and otherwise a
-series over the retained points stopped by a rule on the masses alone.
-For the density, the score and the Hessian on an unbounded support, the
-points removed below \code{lower} are used instead when their mass is at most
-one half, and the retained sums are \eqn{1 - \sum f}, \eqn{-\sum f s_i}
-and \eqn{-\sum f(\ell_{ij} + s_i s_j)}.
+\code{trunc_rule_cpp()} returns, for each observation, the points over which the
+sums run: the retained points when they are finitely many, and otherwise a
+series over the retained points stopped by a rule on the masses alone. For
+the density, the score and the Hessian on an unbounded support, the points
+removed below \code{lower} are used instead when their mass is at most one half,
+and the retained sums are \eqn{1 - \sum f}, \eqn{-\sum f s_i} and \eqn{-\sum
+f(\ell_{ij} + s_i s_j)}.
 
 For a continuous parent, \eqn{Z}, \eqn{Z_i} and \eqn{Z_{ij}} are the
 differences of the compiled distribution function and its derivatives at

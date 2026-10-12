@@ -4,23 +4,29 @@
 \alias{trunc_constants}
 \title{The Truncation Constant and Lower Tail}
 \usage{
-trunc_constants(distrib, theta)
+trunc_constants(distrib, theta, tails = FALSE)
 }
 \arguments{
 \item{distrib}{A truncated distribution object, of either class.}
 
 \item{theta}{A named list of the parent's parameters. A component may vary
 by observation.}
+
+\item{tails}{Logical, default \code{FALSE}. When \code{TRUE} the result also carries
+\code{Fu}, \eqn{F(U)}, and the two survival values \code{Sl}, \eqn{P(Y \ge L)}, and
+\code{Su}, \eqn{P(Y > U)}, which \code{\link[=trunc_cdf]{trunc_cdf()}} and \code{\link[=trunc_quantile]{trunc_quantile()}} read.}
 }
 \value{
 A named list with \code{Fl}, the tail below the interval, and \code{Z}, the
-retained mass; each a numeric vector following the length of \code{theta}.
+retained mass, and with \code{Fu}, \code{Sl} and \code{Su} when \code{tails = TRUE}. Each is a
+numeric vector following the length of \code{theta}, or the single value \code{0} or
+\code{1} for an infinite endpoint.
 }
 \description{
 Returns the tail below the interval, \eqn{F(L^-)}, and the retained mass
-\eqn{Z = F(U) - F(L^-)}. Every method of a truncated distribution divides
-by \eqn{Z}, and \code{\link[=trunc_cdf]{trunc_cdf()}} and \code{\link[=trunc_quantile]{trunc_quantile()}} shift by \eqn{F(L^-)}
-as well.
+\eqn{Z = P(L \le Y \le U)}. Every method of a truncated distribution divides
+by \eqn{Z}, and \code{\link[=trunc_cdf]{trunc_cdf()}} and \code{\link[=trunc_quantile]{trunc_quantile()}} shift by \eqn{F(L^-)} or
+by the upper tail \eqn{S(U) = P(Y > U)} as well.
 }
 \details{
 Both endpoints are INCLUDED in the truncated support, so any mass sitting
@@ -33,10 +39,12 @@ parent.
 Both quantities are vectorized in \eqn{\theta}, so a parameter varying by
 observation gives one constant per observation.
 
-An interval carrying no probability under the given parameters raises an
-error naming the interval and the computed mass, the truncated law not
-being defined there. That is a likely place for a search to wander to, so
-the message says which endpoints produced it.
+Where \eqn{F(L^-)} exceeds one half the interval lies in the upper tail, and
+\eqn{F(U) - F(L^-)} keeps no digits there. \eqn{Z} is then computed from the
+parent's survival function as \eqn{S(L^-) - S(U)}, with \eqn{S(L^-) = P(Y \ge
+L) = P(Y > L) + P(Y = L)}. An error that names the interval and the computed
+mass is signaled when that mass is not finite or not positive, which happens
+only when it underflows.
 }
 \section{Notation}{
 

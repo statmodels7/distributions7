@@ -19,8 +19,9 @@ parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 Computes \eqn{\mathbb{E}_T[s_i s_j]} for every unordered pair of parameters,
 by quadrature. Two consumers need it: \code{\link[=trunc_M]{trunc_M()}} adds it to
 \code{\link[=trunc_hess_mean]{trunc_hess_mean()}} where the cdf route is unavailable, and
-\code{\link[=trunc_expected_hessian]{trunc_expected_hessian()}} uses it whatever the parent is, the expected
-Hessian being \eqn{-\mathrm{Cov}_T(s_i, s_j)}.
+\code{\link[=trunc_expected_hessian]{trunc_expected_hessian()}} uses it for a parent without a scalar route, the
+expected Hessian being \eqn{-\mathrm{Cov}_T(s_i, s_j)}. For a parent with a
+scalar route, the sums \eqn{S_{ij}} come from \code{\link[=trunc_route_parts]{trunc_route_parts()}}.
 }
 \details{
 This is the quantity that keeps a truncated expected information expensive

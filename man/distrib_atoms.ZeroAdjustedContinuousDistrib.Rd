@@ -18,20 +18,24 @@ probability at it.
 }
 \description{
 Declares the single point mass at zero, with probability \eqn{\pi}. This
-declaration is what marks the object a MIXED distribution: its density
-integrates to \eqn{1 - \pi}, so a consumer that does not know about the atom
-will find the missing \eqn{\pi} and call it an error.
+declaration marks the object as a MIXED distribution: its density integrates
+to \eqn{1 - \pi}, and the remaining probability \eqn{\pi} is the mass of the
+atom. A function that ignores the atom finds a total probability of \eqn{1 -
+\pi}.
 }
 \details{
-Three things read it. \code{\link[=check_distrib]{check_distrib()}} adjusts four of its thirteen checks,
-since the density integrates to \eqn{1-\pi}, the quantile round trip cannot
-close inside the jump, and a central difference in \eqn{y} across the atom
-has no derivative to converge to. \code{\link[=expectation]{expectation()}} splits its integral at the
-atom. And \code{\link[=folded]{folded()}} REFUSES a parent that declares one, zero being its own
-preimage under the absolute value while every other point has two.
+The declaration is read by \code{\link[=check_distrib]{check_distrib()}}, \code{\link[=truncated]{truncated()}} and \code{\link[=folded]{folded()}}.
+\code{\link[=check_distrib]{check_distrib()}} changes the checks that fail on a mixed law: the density
+integrates to \eqn{1-\pi} plus the atom, the quantile round trip cannot close
+inside the jump, and a central difference in \eqn{y} across the atom has no
+derivative to converge to. \code{\link[=truncated]{truncated()}} keeps the atoms of the parent that
+lie inside the truncation interval. \code{\link[=folded]{folded()}} rejects a parent that declares
+an atom, because zero is its own preimage under the absolute value and every
+other point has two. \code{\link[=expectation]{expectation()}} does not read the declaration; its
+method for this class splits the integral at zero.
 
-The question is asked of the OBJECT, so the returned probability moves with
-\code{theta}.
+The probability is read from \code{theta}, so the returned value changes with the
+value of \code{za}.
 }
 \section{Notation}{
 
@@ -47,7 +51,7 @@ distrib_atoms(d, theta)
 # A plain continuous parent declares none.
 distrib_atoms(gaussian1_distrib(), theta[c("mu", "sigma")])
 
-# The declaration is what folded() refuses on.
+# The declaration is what folded() rejects.
 try(folded(d))
 }
 \seealso{

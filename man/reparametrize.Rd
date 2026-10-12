@@ -12,7 +12,8 @@ reparametrize(
   links,
   map_derivs = NULL,
   interpretation = NULL,
-  name = NULL
+  name = NULL,
+  params_smooth = NULL
 )
 }
 \arguments{
@@ -34,8 +35,8 @@ of new parameters and \code{order}, an integer from 1 to 4, returning for each
 parent parameter the non-zero partial derivatives of the map with respect
 to the new parameters up to order \code{order}, keyed by the sorted tuple of
 new-parameter positions ("1", "1,2", "2,2,3,3", ...); a missing key is
-an exact zero. Each caller passes the highest order it reads, so a
-gradient asks for order one and a fourth derivative for order four. The
+an exact zero. Each caller passes the highest order that it reads, so a
+gradient passes order one and a fourth derivative passes order four. The
 shipped second parametrizations supply hand-written tables (see
 \code{\link[=reparam_map_derivs]{reparam_map_derivs()}}); when \code{NULL}, each needed partial comes from one
 finite-difference stencil on the map.}
@@ -45,6 +46,13 @@ parameter; defaults to the parameter names.}
 
 \item{name}{An optional name for the result; defaults to the parent's with
 the new parameters appended.}
+
+\item{params_smooth}{An optional named logical vector, one entry per new
+parameter, saying which of them the log-density is differentiable in.
+The map is arbitrary, so the default cannot read which new parameter
+reaches a kink of the parent: it is \code{TRUE} for every new parameter when
+every parameter of the parent is smooth, and \code{FALSE} for every one
+otherwise.}
 }
 \value{
 A distribution object of class
@@ -64,10 +72,10 @@ derivatives in compiled code, which is how the families of this package
 are written.
 }
 \details{
-A reparametrization is not a link. A link changes the scale a parameter is
-\emph{modeled} on and leaves the parameter what it was; here the parameter
-\emph{is} the new quantity, and that is what the estimate, the standard
-error and the confidence interval describe.
+A link changes the scale on which a parameter is modeled and leaves the
+parameter itself unchanged. In a reparametrization the parameter is the new
+quantity, and the estimate, the standard error and the confidence interval
+describe that quantity.
 
 \strong{The map is written in ordinary R.} It takes a named list of the new
 parameters and returns a named list of the parent's, and nothing in it
@@ -85,9 +93,10 @@ second parametrizations all do, and their formulas live in
 \code{\link[=reparam_map_derivs]{reparam_map_derivs()}}. Leave it \code{NULL}, and each partial the chain needs
 comes from one central stencil of \code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} applied to
 the analytic map, a single stencil per order and never a chain of
-differences. The stencil route is good to about \eqn{10^{-8}} at first
-order and fades with the order, so a family fitted in earnest is worth a
-table.
+differences. The stencil route is accurate to about \eqn{10^{-11}} at first
+order and loses accuracy quickly with the order (the third and fourth tables
+can be wrong in their leading digits), so a family used for anything beyond a
+first exploration needs \code{map_derivs}.
 
 \strong{What is exact and what is inherited.} The derivatives of the
 log-density are carried by
@@ -97,14 +106,18 @@ log-density are carried by
 the sum over set partitions, so every order the parent has in closed form
 survives in closed form. Expectation being linear and the map
 deterministic, the expected derivatives obey the same formula, and the term
-carrying the second derivative of the map drops because the score has mean
-zero: a parent with an exact expected information gives an exact one here.
-The density, the distribution function, the quantile function, the generator
-and the response derivatives are the parent's at the mapped parameters.
+carrying the parent's score (multiplied by a derivative of the map of the
+order being formed) drops because the score has mean zero: a parent with an
+exact expected information gives an exact one here. The density, the
+distribution function, the quantile function, the generator and the response
+derivatives are the parent's at the mapped parameters.
 
-\strong{Cost.} A parameter that varies by observation needs one run of the
-map per observation; scalar parameters need one run in total, which is the
-case a fit is in.
+\strong{Cost.} The density, the distribution function, the quantile function and
+the generator call the map once per evaluation, on whole vectors. When
+\code{map_derivs} is \code{NULL}, the derivatives call the map at the points of the
+stencil, several times for each observation (more at higher orders), and
+separately for each observation when a parameter varies by observation. A
+supplied \code{map_derivs} is called once per evaluation.
 }
 \examples{
 # a gaussian in its mean and variance, obtained rather than written

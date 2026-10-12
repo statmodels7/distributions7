@@ -21,9 +21,10 @@ A numeric vector of quantiles.
 }
 \description{
 Evaluates \eqn{Q_T(p) = Q\{F(L^-;\theta) + p\,Z(\theta)\}}, inverting
-\code{\link[=distrib_cdf.TruncatedContinuousDistrib]{distrib_cdf.TruncatedContinuousDistrib()}} through the PARENT's quantile
-function. No root-finding of its own is needed, and every returned value
-lies inside \eqn{[L, U]} by construction.
+\code{\link[=distrib_cdf.TruncatedContinuousDistrib]{distrib_cdf.TruncatedContinuousDistrib()}} through the parent's quantile
+function, in its upper tail when the target exceeds one half. The quantile
+function needs no root-finding of its own, and every returned value lies in
+\eqn{[L, U]}.
 }
 \section{Notation}{
 

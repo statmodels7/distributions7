@@ -7,7 +7,8 @@
 distrib_grad_y_hess(distrib, y, theta, scale = c("parameter", "link"), ...)
 }
 \arguments{
-\item{distrib}{A distribution object inheriting from \code{continuous_distrib}.}
+\item{distrib}{A distribution object inheriting from \code{continuous_distrib},
+or a multivariate Gaussian or Student t distribution.}
 
 \item{y}{A numeric vector of observations.}
 
@@ -30,8 +31,8 @@ parameters, each as long as \code{y}, keyed as
 \description{
 Computes \eqn{\partial^3 \ell / \partial y\, \partial\theta_i
 \partial\theta_j}, one component per unordered pair of parameters, each a
-vector along \code{y}. It says how the response GRADIENT curves in the
-parameters, and it is the third-order entry of the mixed grid below.
+vector along \code{y}. It gives the second derivative, in the parameters, of the
+response gradient, and it is the third-order entry of the mixed grid below.
 }
 \details{
 These are the second-order column of the mixed grid whose first-order column
@@ -42,16 +43,17 @@ is \code{\link[=distrib_cross_y]{distrib_cross_y()}} and \code{\link[=distrib_cr
 }
 
 
-The right-hand column is the one a marginal criterion's SECOND derivative
-asks of a penalty. A penalty is a negative log-density read at the
+The right-hand column is the one that the second derivative of a marginal
+criterion requires from a penalty. A penalty is a negative log-density read
+at the
 coefficients, so \eqn{\partial^2\rho/\partial\beta^2} carries the density's
 response curvature and the two mixed derivatives above carry
 \eqn{\partial^3\rho/\partial\beta\,\partial\theta^2} and
 \eqn{\partial^4\rho/\partial\beta^2\partial\theta^2}.
 
 The components are keyed by \code{\link[=hess_names]{hess_names()}}, the same enumeration
-\code{\link[=distrib_hessian]{distrib_hessian()}} uses, so a consumer looking a pair up finds it under the
-name it already knows.
+\code{\link[=distrib_hessian]{distrib_hessian()}} uses, so a consumer that looks up a pair finds it under
+the name that \code{\link[=distrib_hessian]{distrib_hessian()}} uses.
 }
 \section{The link scale}{
 Each component is multiplied by \eqn{h_i'(\eta_i) h_j'(\eta_j)} and, on a
@@ -62,14 +64,15 @@ diagonal chain rule at second order, exactly as for \code{\link[=distrib_hessian
 }
 
 \section{Where the numbers come from}{
-A distribution with a closed form provides it. The rest take one central
-difference of the analytic \code{\link[=distrib_cross_y]{distrib_cross_y()}} in each parameter, through
-\code{\link[=numerical_theta2_y]{numerical_theta2_y()}}. Off the diagonal the two differences act on
-DIFFERENT parameters, so they compose into one mixed stencil rather than the
-nested differencing of a single variable the package forbids.
+A distribution with a closed form provides it. A continuous distribution
+without one takes \code{\link[=distrib_grad_y_hess.continuous_distrib]{distrib_grad_y_hess.continuous_distrib()}}, which applies
+one tensor stencil, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}, to the highest
+quantity that the family implements itself, so a single variable is never
+differenced twice.
 
-Continuous distributions only, as with every other response derivative: a
-discrete family has no method and the call raises with its class named.
+Methods exist for the continuous families and for the multivariate Gaussian
+and Student t families. A discrete family has no method, and the call signals
+an error that names its class.
 }
 
 \section{Notation}{
@@ -107,5 +110,5 @@ try(distrib_grad_y_hess(poisson_distrib(), 1:3, list(mu = 2)))
 \seealso{
 \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} for the fourth-order twin,
 \code{\link[=distrib_cross_y]{distrib_cross_y()}} for the first-order column, and
-\code{\link[=numerical_theta2_y]{numerical_theta2_y()}} for the fallback.
+\code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}} for the fallback.
 }

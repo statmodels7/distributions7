@@ -13,9 +13,10 @@ bc_transform(lambda)
 A \code{\link[=transformer]{transformer()}} object.
 }
 \description{
-Transformer for the one-parameter Box-Cox transformation
-\eqn{Y = (X^\lambda - 1)/\lambda} (with \eqn{Y = \log X} for \eqn{\lambda = 0}).
-Requires \eqn{X > 0}.
+Transformer for the one-parameter Box-Cox transformation \eqn{Y
+  = (X^\lambda - 1)/\lambda} (with \eqn{Y = \log X} for \eqn{\lambda = 0}).
+Requires \eqn{X > 0}. The map is increasing for every \eqn{\lambda}, its
+derivative being \eqn{X^{\lambda - 1}}.
 }
 \examples{
 d <- transformation(gamma2_distrib(), bc_transform(lambda = 0.5))

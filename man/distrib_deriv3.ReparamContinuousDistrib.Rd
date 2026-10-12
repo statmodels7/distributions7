@@ -31,8 +31,8 @@ the score having mean zero.}
 \item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, handled by the
 generic after this method has returned.}
 
-\item{approx}{The strategy the parent uses for an expected derivative it has
-no closed form for, one of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}.
+\item{approx}{The strategy that the parent uses for an expected derivative
+for which it has no closed form, one of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}.
 Passed straight through; read only when \code{expected} is \code{TRUE} and only by a
 parent that approximates.}
 
@@ -49,7 +49,7 @@ recycled against \code{theta}.
 \description{
 The partition sum at order three, observed or expected. Every order the
 parent has in closed form survives in closed form, so a family reparametrized
-from one of the 42 that carry analytic third derivatives keeps them.
+from a parent that carries analytic third derivatives keeps them.
 }
 \details{
 The sum reads the map's partials up to order three, which is where a

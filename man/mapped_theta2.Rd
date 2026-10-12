@@ -13,13 +13,14 @@ mapped_theta2(distrib, parent, th_par, maps, y, first, second)
 \item{parent}{The parent distribution, whose \code{params} key the inputs.}
 
 \item{th_par}{A named list of the parent's parameters, evaluated at the new
-ones.}
+ones. Not read by this function; the callers use it to compute \code{first}
+and \code{second}.}
 
 \item{maps}{The map's keyed partial tables, from \code{\link[=reparam_tables]{reparam_tables()}}: one
 entry per parent parameter, each a list keyed by new-parameter index.}
 
-\item{y}{A numeric vector of observations. Used only for its length,
-through the components.}
+\item{y}{A numeric vector of observations. Not used; present so that the
+signature matches the callers'.}
 
 \item{first}{The parent's first-order components, keyed by the parent's
 parameters.}
@@ -47,8 +48,8 @@ two-term expansion applies:
   + \sum_i \frac{\partial^2\theta_i}{\partial\alpha_a\partial\alpha_b} f_i,}
 with \eqn{f_i} the parent's first-order mixed component and \eqn{f_{ij}} its
 second-order one. Both partial tables are the MAP's, already keyed by
-\code{\link[=reparam_tables]{reparam_tables()}} under the indices of the new parameters, \code{"1"} for a
-first partial and \code{"1,2"} for a second, so nothing is differentiated here.
+\code{\link[=reparam_tables]{reparam_tables()}} under the indices of the new parameters, \code{"1"} for a first
+partial and \code{"1,2"} for a second, so this function only combines them.
 }
 
 \section{What \code{first} and \code{second} are}{

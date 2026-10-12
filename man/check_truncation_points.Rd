@@ -19,14 +19,14 @@ the caller has already determined. It governs the whole-number check
 alone.}
 }
 \value{
-Invisibly \code{NULL}. Every failure raises, with the endpoint and the
-parent's support named.
+Invisibly \code{NULL}. A failed condition signals an error that names the
+argument; the errors about the support also name the parent's support.
 }
 \description{
-Checks that the interval is well formed and that truncating this parent
-there leaves a model worth fitting. \code{\link[=truncated]{truncated()}} calls it before building
-anything, so every rejection names the endpoint and the support it was
-compared against.
+Checks that the interval is well formed and that truncating this parent there
+removes some, but not all, of its probability. \code{\link[=truncated]{truncated()}} calls it before
+building anything, so every rejection names the endpoint and the support it
+was compared against.
 }
 \details{
 Four conditions are tested, in order: each endpoint is a single

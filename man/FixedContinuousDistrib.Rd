@@ -84,14 +84,45 @@ picks this class or one of its two siblings from the parent.
 }
 \section{Methods}{
 
-\code{fixed()} registers 25 methods on this class:
-\code{distrib_atoms()}, \code{distrib_cdf()}, \code{distrib_cross2_y()}, \code{distrib_cross3_y()}, \code{distrib_cross_y()}, \code{distrib_deriv3()}, \code{distrib_deriv3_y()}, \code{distrib_deriv4()}, \code{distrib_deriv4_y()}, \code{distrib_expected_hessian()}, \code{distrib_grad_cdf()}, \code{distrib_grad_y()}, \code{distrib_grad_y_hess()}, \code{distrib_gradient()}, \code{distrib_hess_cdf()}, \code{distrib_hess_y()}, \code{distrib_hess_y_hess()}, \code{distrib_hessian()}, \code{distrib_pdf()}, \code{distrib_quantile()}, \code{distrib_rng()}, \code{kurtosis()}, \code{skewness()}, \code{std_dev()}, \code{variance()}.
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.FixedContinuousDistrib]{distrib_pdf()}},
+\code{\link[=distrib_cdf.FixedContinuousDistrib]{distrib_cdf()}},
+\code{\link[=distrib_quantile.FixedContinuousDistrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.FixedContinuousDistrib]{distrib_rng()}} and
+\code{\link[=distrib_atoms.FixedContinuousDistrib]{distrib_atoms()}};
+\item the derivatives in the parameters:
+\code{\link[=distrib_gradient.FixedContinuousDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.FixedContinuousDistrib]{distrib_hessian()}},
+\code{\link[=distrib_expected_hessian.FixedContinuousDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.FixedContinuousDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.FixedContinuousDistrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.FixedContinuousDistrib]{distrib_deriv5()}};
+\item the derivatives of the expected information: \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}
+and \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}};
+\item the derivatives in the response:
+\code{\link[=distrib_grad_y.FixedContinuousDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.FixedContinuousDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_deriv3_y.FixedContinuousDistrib]{distrib_deriv3_y()}} and
+\code{\link[=distrib_deriv4_y.FixedContinuousDistrib]{distrib_deriv4_y()}};
+\item the mixed derivatives in the response and the parameters:
+\code{\link[=distrib_cross_y.FixedContinuousDistrib]{distrib_cross_y()}},
+\code{\link[=distrib_cross2_y.FixedContinuousDistrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross3_y.FixedContinuousDistrib]{distrib_cross3_y()}},
+\code{\link[=distrib_grad_y_hess.FixedContinuousDistrib]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess.FixedContinuousDistrib]{distrib_hess_y_hess()}};
+\item the derivatives of the distribution function:
+\code{\link[=distrib_grad_cdf.FixedContinuousDistrib]{distrib_grad_cdf()}} and
+\code{\link[=distrib_hess_cdf.FixedContinuousDistrib]{distrib_hess_cdf()}};
+\item the moments: \code{\link[=variance.FixedContinuousDistrib]{variance()}},
+\code{\link[=std_dev.FixedContinuousDistrib]{std_dev()}},
+\code{\link[=skewness.FixedContinuousDistrib]{skewness()}} and
+\code{\link[=kurtosis.FixedContinuousDistrib]{kurtosis()}};
+\item the exactness flags: \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} and \code{\link[=has_exact_deriv4]{has_exact_deriv4()}};
+\item the fitting helpers: \code{\link[=distrib_scalar_route]{distrib_scalar_route()}}.
+}
 
-Every one splices the held values back into \code{theta} and delegates to the
-parent. The derivative methods then subset the parent's answer by the names
-the free parameter set generates, which is safe because the free set
-preserves the parent's order: the same combination of free parameters
-produces the same component string under either enumeration.
+Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \section{How every method works}{

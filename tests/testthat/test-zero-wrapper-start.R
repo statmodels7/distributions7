@@ -51,18 +51,19 @@ test_that("the proportion of zeros is kept inside the open interval", {
 })
 
 test_that("fit_distrib keeps the best of the converged runs, not the first", {
-  y <- za_pig1_sample(1)
-  d <- zero_adjusted(pig1_distrib())
-  # The starts the univariate fallback produced before the wrappers had a
-  # method: the first converges to a degenerate point, the others to the
-  # maximum.
-  set.seed(20260810L)
-  old <- start_from_moments(d, y, 5L)
+  # A Cauchy location with its scale held and two clusters of observations has
+  # two local maxima: the first start converges to the lower one, the others to
+  # the maximum. (The zero-adjusted PIG starts this test used reached a
+  # degenerate point only through the cancellation in 1 - f(0), since
+  # repaired.)
+  d <- fixed(cauchy_distrib(), sigma = 0.5)
+  y <- c(-10.1, -10, 9.8, 10, 10.2)
+  old <- list(list(mu = -10), list(mu = 10), list(mu = 10.5))
   lls <- vapply(old, function(s) {
     f <- suppressWarnings(fit_distrib(d, y, start = s))
     if (f@converged) as.numeric(logLik(f)) else NA_real_
   }, 0)
-  expect_true(isTRUE(lls[[1]] < max(lls, na.rm = TRUE) - 50))
+  expect_true(isTRUE(lls[[1]] < max(lls, na.rm = TRUE) - 5))
   local_mocked_bindings(distrib_start = function(distrib, y, n_start = 5L, ...) old)
   f <- fit_distrib(d, y)
   expect_true(f@converged)

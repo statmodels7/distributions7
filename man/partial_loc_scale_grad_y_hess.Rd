@@ -4,9 +4,11 @@
 \alias{partial_loc_scale_grad_y_hess}
 \alias{distrib_grad_y_hess.StudentT1Distrib}
 \alias{distrib_grad_y_hess.PseudoHuberDistrib}
+\alias{distrib_grad_y_hess.PseudoHuber2Distrib}
 \alias{distrib_grad_y_hess.SkewNormal1Distrib}
 \alias{distrib_grad_y_hess.SkewTDistrib}
 \alias{distrib_hess_y_hess.StudentT1Distrib}
+\alias{distrib_hess_y_hess.PseudoHuber2Distrib}
 \alias{distrib_hess_y_hess.PseudoHuberDistrib}
 \alias{distrib_hess_y_hess.SkewNormal1Distrib}
 \alias{distrib_hess_y_hess.SkewTDistrib}
@@ -38,8 +40,8 @@ parameters are shapes.}
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
-dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}. The generic applies the link
+scale to the value that the method returns.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -52,14 +54,16 @@ The \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=d
 family carrying shape parameters beyond its location and scale. The three
 pairs in \eqn{(\mu, \sigma)} come from \code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}} in closed
 form, and every pair touching a shape parameter from one central difference
-of the analytic first-order component. Both delegate to \code{\link[=partial_theta2]{partial_theta2()}},
-which does the splicing.
+of the first-order component, \code{\link[=distrib_cross_y]{distrib_cross_y()}} for the third-order body
+and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the fourth. In the fourth-order body a pair of
+shape parameters is one stencil on the analytic \code{\link[=distrib_hess_y]{distrib_hess_y()}}, since the
+shape components of \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} are themselves a difference in the
+shape. Both delegate to \code{\link[=partial_theta2]{partial_theta2()}}, which does the splicing.
 }
 \details{
-Registered on the Student t, the pseudo-Huber, the skew normal and the skew
-t. Measured against a numerical Hessian of the response derivative, the
-closed pairs agree to about \eqn{10^{-11}} and the differenced ones to
-between \eqn{10^{-7}} and \eqn{10^{-6}}, which is one stencil's accuracy.
+Registered on the two pseudo-Huber parametrizations, the skew normal and the
+skew t. The Student t's methods, documented on this page as well, call
+compiled kernels of their own and do not use these bodies.
 }
 \section{Notation}{
 
@@ -71,19 +75,19 @@ the two standardized quantities \eqn{\sigma\ell^{(y)}} and
 }
 
 \examples{
-d <- student_t1_distrib()
+d <- skewnormal1_distrib()
 y <- c(-0.7, 0.3, 1.4)
-theta <- list(mu = 0.3, sigma = 1.2, nu = 6)
+theta <- list(mu = 0.3, sigma = 1.2, alpha = 0.7)
 
 g3 <- distrib_grad_y_hess(d, y, theta)
 names(g3)
 vapply(g3, function(z) z[1], numeric(1))
 
 # Against a numerical Hessian of the response gradient. The three pairs in
-# (mu, sigma) are closed and the three touching nu are differenced.
+# (mu, sigma) are closed and the three touching alpha are differenced.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2],
-                                              nu = v[3]))
-numDeriv::hessian(f, c(0.3, 1.2, 6))
+                                              alpha = v[3]))
+numDeriv::hessian(f, c(0.3, 1.2, 0.7))
 
 # The closed three are exactly the location-scale block's.
 cl <- distributions7:::loc_scale_theta2_block(d, y, theta, 1L)

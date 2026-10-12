@@ -10,9 +10,9 @@
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. The links are the parent's, so the two scales
-differ exactly where the parent's do.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns. The links are
+the parent's, so the two scales differ exactly where the parent's do.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

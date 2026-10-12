@@ -15,9 +15,9 @@ NULL
 #' Bruno written out: \eqn{(h \circ u)'' = h''u_1^2 + h'u_2} and so on to
 #' order four. Each order is its own formula and forms nothing above it.
 #'
-#' @param h A list of the outer derivatives `h1` to at least `h_order` at the
-#'   inner value.
-#' @param u A list of the inner derivatives `u1` to at least `u_order`.
+#' @param h A list of the outer derivatives of orders 1 to at least `order`,
+#'   evaluated at the inner value.
+#' @param u A list of the inner derivatives of orders 1 to at least `order`.
 #' @param order An integer from 1 to 4.
 #' @return A numeric vector, the derivative of order `order` of the
 #'   composition.
@@ -47,8 +47,8 @@ fdb1 <- function(h, u, order) {
 #' only the entries of order up to `order` are read. A caller that needs
 #' several orders calls it once per order.
 #'
-#' @param h A list of the outer derivatives `h1` to at least `h_order` at the
-#'   inner value.
+#' @param h A list of the outer derivatives of orders 1 to at least `order`,
+#'   evaluated at the inner value.
 #' @param u The named list of inner partials.
 #' @param order An integer from 1 to 4.
 #' @return A named list of the partials of order `order` of the composition,

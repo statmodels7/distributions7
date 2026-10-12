@@ -32,9 +32,9 @@ below it the parent's quantile at \eqn{p/(1-\pi)}, and above it the parent's
 at \eqn{(p - \pi)/(1-\pi)}.
 }
 \details{
-A whole interval of probabilities therefore maps to the same point, which is
-what inverting a distribution function with a jump means and is not a
-failure of the inversion. The interval has width \eqn{\pi}.
+An interval of probabilities of width \eqn{\pi} therefore maps to the single
+point zero, as the generalized inverse of a distribution function with a jump
+requires.
 }
 \section{Notation}{
 

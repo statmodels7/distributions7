@@ -30,8 +30,8 @@ reparam_deriv4(
 \item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, handled by the
 generic after this method has returned.}
 
-\item{approx}{The strategy the parent uses for an expected derivative it has
-no closed form for, one of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}.
+\item{approx}{The strategy that the parent uses for an expected derivative
+for which it has no closed form, one of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}.
 Passed straight through.}
 
 \item{nsim}{The number of draws for \code{approx = "mc"}, 10000 by default.
@@ -45,10 +45,12 @@ A named list of numeric vectors keyed as
 recycled against \code{theta}.
 }
 \description{
-The partition sum at order four, observed or expected. This is the highest
-order the toolkit carries, and it is what a marginal criterion's exact
-gradient reads, so a reparametrized family used inside a penalized fit
-reaches it through this method.
+The partition sum at order four, observed or expected. A marginal criterion
+reads this order in its exact Hessian, so a reparametrized family used inside
+a penalized fit reaches it through this method. The fifth derivative has no
+method registered on the reparametrized classes: \code{\link[=distrib_deriv5]{distrib_deriv5()}}
+dispatches to the base method, which differences the lower orders
+numerically.
 }
 \examples{
 d <- reparametrize(

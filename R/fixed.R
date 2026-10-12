@@ -5,14 +5,43 @@ NULL
 #' @name FixedContinuousDistrib
 #'
 #' @section Methods:
-#' `fixed()` registers 25 methods on this class:
-#' `distrib_atoms()`, `distrib_cdf()`, `distrib_cross2_y()`, `distrib_cross3_y()`, `distrib_cross_y()`, `distrib_deriv3()`, `distrib_deriv3_y()`, `distrib_deriv4()`, `distrib_deriv4_y()`, `distrib_expected_hessian()`, `distrib_grad_cdf()`, `distrib_grad_y()`, `distrib_grad_y_hess()`, `distrib_gradient()`, `distrib_hess_cdf()`, `distrib_hess_y()`, `distrib_hess_y_hess()`, `distrib_hessian()`, `distrib_pdf()`, `distrib_quantile()`, `distrib_rng()`, `kurtosis()`, `skewness()`, `std_dev()`, `variance()`.
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.FixedContinuousDistrib],
+#'   [`distrib_cdf()`][distrib_cdf.FixedContinuousDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.FixedContinuousDistrib],
+#'   [`distrib_rng()`][distrib_rng.FixedContinuousDistrib] and
+#'   [`distrib_atoms()`][distrib_atoms.FixedContinuousDistrib];
+#' - the derivatives in the parameters:
+#'   [`distrib_gradient()`][distrib_gradient.FixedContinuousDistrib],
+#'   [`distrib_hessian()`][distrib_hessian.FixedContinuousDistrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.FixedContinuousDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.FixedContinuousDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.FixedContinuousDistrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.FixedContinuousDistrib];
+#' - the derivatives of the expected information: [distrib_dexpected_hessian()]
+#'   and [distrib_d2expected_hessian()];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.FixedContinuousDistrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.FixedContinuousDistrib],
+#'   [`distrib_deriv3_y()`][distrib_deriv3_y.FixedContinuousDistrib] and
+#'   [`distrib_deriv4_y()`][distrib_deriv4_y.FixedContinuousDistrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.FixedContinuousDistrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.FixedContinuousDistrib],
+#'   [`distrib_cross3_y()`][distrib_cross3_y.FixedContinuousDistrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.FixedContinuousDistrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.FixedContinuousDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.FixedContinuousDistrib] and
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.FixedContinuousDistrib];
+#' - the moments: [`variance()`][variance.FixedContinuousDistrib],
+#'   [`std_dev()`][std_dev.FixedContinuousDistrib],
+#'   [`skewness()`][skewness.FixedContinuousDistrib] and
+#'   [`kurtosis()`][kurtosis.FixedContinuousDistrib];
+#' - the exactness flags: [expected_hessian_exact()] and [has_exact_deriv4()];
+#' - the fitting helpers: [distrib_scalar_route()].
 #'
-#' Every one splices the held values back into `theta` and delegates to the
-#' parent. The derivative methods then subset the parent's answer by the names
-#' the free parameter set generates, which is safe because the free set
-#' preserves the parent's order: the same combination of free parameters
-#' produces the same component string under either enumeration.
+#' Every other generic is inherited from [continuous_distrib()].
 #'
 #' @aliases distrib_atoms.FixedContinuousDistrib
 #' @aliases distrib_cdf.FixedContinuousDistrib
@@ -122,13 +151,40 @@ FixedContinuousDistrib <- S7::new_class("FixedContinuousDistrib",
 #' @name FixedDiscreteDistrib
 #'
 #' @section Methods:
-#' `fixed()` registers 22 methods on this class:
-#' `distrib_atoms()`, `distrib_cdf()`, `distrib_cross2_y()`, `distrib_cross_y()`, `distrib_deriv3()`, `distrib_deriv4()`, `distrib_expected_hessian()`, `distrib_grad_cdf()`, `distrib_grad_y()`, `distrib_grad_y_hess()`, `distrib_gradient()`, `distrib_hess_cdf()`, `distrib_hess_y()`, `distrib_hess_y_hess()`, `distrib_hessian()`, `distrib_pdf()`, `distrib_quantile()`, `distrib_rng()`, `kurtosis()`, `skewness()`, `std_dev()`, `variance()`.
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.FixedDiscreteDistrib],
+#'   [`distrib_cdf()`][distrib_cdf.FixedDiscreteDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.FixedDiscreteDistrib],
+#'   [`distrib_rng()`][distrib_rng.FixedDiscreteDistrib] and
+#'   [`distrib_atoms()`][distrib_atoms.FixedDiscreteDistrib];
+#' - the derivatives in the parameters:
+#'   [`distrib_gradient()`][distrib_gradient.FixedDiscreteDistrib],
+#'   [`distrib_hessian()`][distrib_hessian.FixedDiscreteDistrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.FixedDiscreteDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.FixedDiscreteDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.FixedDiscreteDistrib] and
+#'   [`distrib_deriv5()`][distrib_deriv5.FixedDiscreteDistrib];
+#' - the derivatives of the expected information: [distrib_dexpected_hessian()]
+#'   and [distrib_d2expected_hessian()];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.FixedDiscreteDistrib] and
+#'   [`distrib_hess_y()`][distrib_hess_y.FixedDiscreteDistrib];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.FixedDiscreteDistrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.FixedDiscreteDistrib],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.FixedDiscreteDistrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.FixedDiscreteDistrib];
+#' - the derivatives of the distribution function:
+#'   [`distrib_grad_cdf()`][distrib_grad_cdf.FixedDiscreteDistrib] and
+#'   [`distrib_hess_cdf()`][distrib_hess_cdf.FixedDiscreteDistrib];
+#' - the moments: [`variance()`][variance.FixedDiscreteDistrib],
+#'   [`std_dev()`][std_dev.FixedDiscreteDistrib],
+#'   [`skewness()`][skewness.FixedDiscreteDistrib] and
+#'   [`kurtosis()`][kurtosis.FixedDiscreteDistrib];
+#' - the exactness flags: [expected_hessian_exact()] and [has_exact_deriv4()];
+#' - the fitting helpers: [distrib_scalar_route()].
 #'
-#' Every one splices the held values back into `theta` and delegates to the
-#' parent, exactly as on [FixedContinuousDistrib()]; the two classes share
-#' one registration loop. The response derivatives are inherited refusals
-#' from `discrete_distrib` and are not among them.
+#' Every other generic is inherited from [discrete_distrib()].
 #'
 #' @aliases distrib_atoms.FixedDiscreteDistrib
 #' @aliases distrib_cdf.FixedDiscreteDistrib
@@ -225,15 +281,36 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #' @name FixedMultivariateDistrib
 #'
 #' @section Methods:
-#' `fixed()` registers 20 methods on this class:
-#' `distrib_cross2_y()`, `distrib_cross_y()`, `distrib_deriv3()`, `distrib_deriv4()`, `distrib_expected_hessian()`, `distrib_grad_y()`, `distrib_grad_y_hess()`, `distrib_gradient()`, `distrib_hess_y()`, `distrib_hess_y_hess()`, `distrib_hessian()`, `distrib_pdf()`, `distrib_rng()`, `mv_derived()`, `mv_location()`, `mv_marginal()`, `mv_reference_draw()`, `mv_sigma()`, `mv_support()`, `variance()`.
+#' Registered on this class, each linked to the page that documents it:
+#' - the distribution: [`distrib_pdf()`][distrib_pdf.FixedMultivariateDistrib]
+#'   and [`distrib_rng()`][distrib_rng.FixedMultivariateDistrib];
+#' - the derivatives in the parameters:
+#'   [`distrib_gradient()`][distrib_gradient.FixedMultivariateDistrib],
+#'   [`distrib_hessian()`][distrib_hessian.FixedMultivariateDistrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.FixedMultivariateDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.FixedMultivariateDistrib] and
+#'   [`distrib_deriv4()`][distrib_deriv4.FixedMultivariateDistrib];
+#' - the derivatives in the response:
+#'   [`distrib_grad_y()`][distrib_grad_y.FixedMultivariateDistrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.FixedMultivariateDistrib],
+#'   [distrib_deriv3_y()] and [distrib_deriv4_y()];
+#' - the mixed derivatives in the response and the parameters:
+#'   [`distrib_cross_y()`][distrib_cross_y.FixedMultivariateDistrib],
+#'   [`distrib_cross2_y()`][distrib_cross2_y.FixedMultivariateDistrib],
+#'   [distrib_cross3_y()],
+#'   [`distrib_grad_y_hess()`][distrib_grad_y_hess.FixedMultivariateDistrib] and
+#'   [`distrib_hess_y_hess()`][distrib_hess_y_hess.FixedMultivariateDistrib];
+#' - the moments: [`variance()`][variance.FixedMultivariateDistrib];
+#' - the multivariate summaries:
+#'   [`mv_location()`][mv_location.FixedMultivariateDistrib],
+#'   [`mv_sigma()`][mv_sigma.FixedMultivariateDistrib],
+#'   [`mv_marginal()`][mv_marginal.FixedMultivariateDistrib],
+#'   [`mv_support()`][mv_support.FixedMultivariateDistrib],
+#'   [`mv_derived()`][mv_derived.FixedMultivariateDistrib] and
+#'   [`mv_reference_draw()`][mv_reference_draw.FixedMultivariateDistrib];
+#' - the exactness flags: [expected_hessian_exact()] and [has_exact_deriv4()].
 #'
-#' Every one splices the held values back into `theta` and delegates to the
-#' parent. The set differs from the univariate classes': there is no
-#' distribution function, no quantile and no atom, and the `mv_*` accessors
-#' take their place. The generics a multivariate family rejects are not
-#' registered here at all, so the refusal is inherited from
-#' `multivariate_distrib` and keeps its own message.
+#' Every other generic is inherited from [multivariate_distrib()].
 #'
 #' @aliases distrib_cross2_y.FixedMultivariateDistrib
 #' @aliases distrib_cross_y.FixedMultivariateDistrib
@@ -258,8 +335,10 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #'
 #' @description
 #' The S7 class of a MULTIVARIATE distribution in which some parameters of the
-#' wrapped distribution are held at known values. It behaves exactly as
-#' [FixedContinuousDistrib] does and adds the multivariate generics:
+#' wrapped distribution are held at known values. It follows
+#' [FixedContinuousDistrib] in splicing the held values into `theta` and
+#' delegating to the parent. It has no distribution function, quantile or
+#' atoms, and adds the multivariate generics:
 #' [mv_location()], [mv_sigma()], [mv_marginal()], [mv_support()],
 #' [mv_reference_draw()] and [mv_derived()] all delegate to the parent at the
 #' spliced `theta`, and [mv_derived()] reports the parent's quantities with the
@@ -296,7 +375,7 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #' Read the parent's page for what a method computes and this page for what the
 #' wrapper does to it.
 #'
-#' # What the refusals do
+#' # Generics that are rejected
 #'
 #' The multivariate branch sits BESIDE the continuous and discrete ones rather
 #' than under either, so the generics a multivariate family rejects by design,
@@ -339,7 +418,7 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #' names(mv_derived(d, theta)$value)
 #' mv_marginal(d, theta, 1)$distrib@n_dim
 #'
-#' # And so do the refusals the base class registers.
+#' # And so do the errors that the base class registers.
 #' try(distrib_cdf(d, y, theta))
 FixedMultivariateDistrib <- S7::new_class("FixedMultivariateDistrib",
   parent = multivariate_distrib,
@@ -988,9 +1067,9 @@ S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
 #'
 #' # What it is for
 #'
-#' A prior. `fixed(gaussian1_distrib(), mu = 0)` is the ridge penalty with its
-#' scale free, `fixed(laplace2_distrib(), mu = 0)` is the lasso, and
-#' `fixed(mvgaussian1_distrib(p), mu = 0)` is what a random effect is
+#' The wrapper builds priors. `fixed(gaussian1_distrib(), mu = 0)` is the ridge
+#' penalty with its scale free, `fixed(laplace2_distrib(), mu = 0)` is the
+#' lasso, and `fixed(mvgaussian1_distrib(p), mu = 0)` is what a random effect is
 #' distributed by. `fixed(folded(gaussian1_distrib()), mu = 0)` is the
 #' half-normal.
 #'
@@ -1059,7 +1138,7 @@ S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
 #' # Two calls collapse into one wrapper, and fixing everything is legal.
 #' fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)@fixed_params
 #'
-#' # Four refusals, each naming the condition that failed.
+#' # Four errors, each naming the condition that failed.
 #' try(fixed(gaussian1_distrib(), nope = 1))
 #' try(fixed(gaussian1_distrib(), sigma = -1))
 #' try(fixed(gaussian1_distrib(), mu = c(0, 1)))

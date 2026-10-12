@@ -10,21 +10,25 @@ fold_parts(parent, x, theta)
 \item{parent}{The wrapped \code{continuous_distrib} object.}
 
 \item{x}{A numeric vector of points at which to evaluate. Negative values
-are not screened out here; the calling method zeroes them.}
+are not screened out here; \code{\link[=distrib_pdf.FoldedDistrib]{distrib_pdf.FoldedDistrib()}} returns zero for
+them, and the other methods require non-negative values.}
 
 \item{theta}{A named list of the parent's parameters.}
 }
 \value{
-A named list of four numeric vectors of the recycled length: \code{fp}
+A named list of five numeric vectors of the recycled length: \code{fp}
 and \code{fm}, the parent's density at \eqn{+x} and \eqn{-x}; \code{L}, their sum;
-and \code{w}, the ratio \code{fp / L}.
+\code{logL}, its logarithm; and \code{w}, the ratio \code{fp / L}.
 }
 \description{
-Computes the parent's density at \eqn{+x} and at \eqn{-x}, their sum, and
-the weight \eqn{w = f(x)/L(x)} of the positive preimage. Every method of
-\link{FoldedDistrib} needs the same four quantities, so they are formed once per
-call: the density is \eqn{L}, the score is \eqn{w s(x) + (1-w) s(-x)}, and
-every higher-order ratio is a \eqn{w}-weighted average of the parent's own.
+Computes the parent's density at \eqn{+x} and at \eqn{-x}, their sum, its
+logarithm and the weight \eqn{w = f(x)/L(x)} of the positive preimage. Every
+method of \link{FoldedDistrib} needs the same quantities, so they are formed once
+per call: the density is \eqn{L}, the score is \eqn{w s(x) + (1-w) s(-x)},
+and every higher-order ratio is a \eqn{w}-weighted average of the parent's
+own. The weight and \eqn{\log L} are formed from the two log-densities,
+\eqn{w = 1/(1 + e^{\log f(-x) - \log f(x)})} and a log-sum-exp, so they stay
+correct where both densities underflow.
 }
 \details{
 At \eqn{x = 0} the two preimages coincide, so \eqn{w = 1/2} whatever the

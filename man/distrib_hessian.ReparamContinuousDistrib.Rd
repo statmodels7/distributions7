@@ -58,7 +58,7 @@ th <- list(mu = 1, sigma2 = 4)
 a <- distrib_hessian(d, c(0, 1, 2), th)
 b <- distrib_hessian(gaussian2_distrib(), c(0, 1, 2), th)
 
-# The two enumerate their components in different orders, so match by name.
+# Components of the two results are matched by name; here both follow hess_names().
 rbind(reparametrized = names(a), written_out = names(b))
 max(abs(unlist(a[names(b)]) - unlist(b)))
 

@@ -18,9 +18,8 @@ A named list of numeric vectors, one component per parameter, in
 \description{
 Computes \eqn{m_i = \mathbb{E}_T[s_i]} by integrating the parent's score
 against the truncated law, one integral per parameter. It is the route
-\code{\link[=trunc_score_mean]{trunc_score_mean()}} falls back on for a parent whose cdf derivatives are
-not exact, and is the only route for a gamma or a beta, whose distribution
-function has no elementary derivative in its shape.
+\code{\link[=trunc_score_mean]{trunc_score_mean()}} falls back on for a parent whose cdf derivatives are not
+exact, that is, a continuous parent without registered cdf derivatives.
 }
 \section{Notation}{
 
@@ -39,12 +38,13 @@ theta <- list(mu = 0.3, sigma = 1.2)
 unlist(distributions7:::trunc_score_mean_quad(tn, theta))
 unlist(distributions7:::trunc_score_mean(tn, theta))
 
-# For a gamma parent this is the only route available.
+# A gamma parent has compiled cdf derivatives, so trunc_score_mean() takes the
+# cdf route for it; the quadrature gives the same numbers.
 tg <- truncated(gamma2_distrib(), lower = 0.5, upper = 5)
 unlist(distributions7:::trunc_score_mean_quad(tg, list(mu = 2, sigma2 = 1)))
 }
 \seealso{
-\code{\link[=trunc_score_mean]{trunc_score_mean()}}, which prefers the cdf route where it is
-exact, and \code{\link[=expectation]{expectation()}}, which performs the integration.
+\code{\link[=trunc_score_mean]{trunc_score_mean()}}, which takes the cdf route where it is exact,
+and \code{\link[=expectation]{expectation()}}, which performs the integration.
 }
 \keyword{internal}

@@ -14,7 +14,8 @@ method requires.}
 \item{...}{Passed to \code{f} and to the inherited integration.}
 }
 \value{
-A single number, the expectation of \code{f} under the truncated law.
+A numeric vector with one expectation of \code{f} under the truncated law
+for each parameter combination (a single number for scalar \code{theta}).
 }
 \description{
 Computes \eqn{\mathbb{E}[f(Y)]} by integrating the density over

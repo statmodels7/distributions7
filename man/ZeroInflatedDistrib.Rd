@@ -62,18 +62,29 @@ which checks none of that.
 }
 \section{Methods}{
 
-Registered on this class:
+Registered on this class, each linked to the page that documents it:
+\itemize{
+\item the distribution: \code{\link[=distrib_pdf.ZeroInflatedDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.ZeroInflatedDistrib]{distrib_cdf()}},
-\code{\link[=distrib_expected_hessian.ZeroInflatedDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_quantile.ZeroInflatedDistrib]{distrib_quantile()}} and
+\code{\link[=distrib_rng.ZeroInflatedDistrib]{distrib_rng()}};
+\item the derivatives in the parameters:
 \code{\link[=distrib_gradient.ZeroInflatedDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.ZeroInflatedDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.ZeroInflatedDistrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.ZeroInflatedDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.ZeroInflatedDistrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.ZeroInflatedDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.ZeroInflatedDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.ZeroInflatedDistrib]{distrib_deriv4()}} and
+\code{\link[=distrib_deriv5.ZeroInflatedDistrib]{distrib_deriv5()}};
+\item the derivatives of the expected information: \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}
+and \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}};
+\item the exactness flags: \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} and \code{\link[=has_exact_deriv4]{has_exact_deriv4()}};
+\item the fitting helpers:
+\code{\link[=distrib_start.ZeroInflatedDistrib]{distrib_start()}},
+\code{\link[=distrib_intercept_start.ZeroInflatedDistrib]{distrib_intercept_start()}}
+and \code{\link[=distrib_scalar_route]{distrib_scalar_route()}}.
+}
 
-The third and fourth derivatives come from the shared wrapper machinery in
-\code{wrapper_derivatives.R}; everything else is inherited from
-\code{\link[=discrete_distrib]{discrete_distrib()}}.
+Every other generic is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
 \examples{

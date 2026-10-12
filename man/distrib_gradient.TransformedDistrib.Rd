@@ -10,8 +10,9 @@
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. The links are the parent's.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns. The links are
+the parent's.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -22,8 +23,7 @@ order.
 \description{
 Returns the parent's score evaluated at \eqn{x = g^{-1}(y)}. The Jacobian
 does not depend on the parameters, so the score of the transformed model IS
-the parent's; the change of variables moves where the score is read, not
-what it is.
+the parent's, evaluated at the preimage \eqn{g^{-1}(y)} of the observation.
 }
 \details{
 The transformation does not depend on \eqn{\theta}, so

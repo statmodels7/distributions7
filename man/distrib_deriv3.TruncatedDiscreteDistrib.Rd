@@ -28,10 +28,10 @@ The same construction as for a continuous parent, \eqn{\ell_T = \ell -
 set partitions, with every expectation taken by \strong{summation over the
 retained support} in place of a quadrature.
 
-That makes it both exact and cheap. The support of a truncated discrete
-family is finite whenever both endpoints are, so each block is a finite sum
-of terms the parent already computes, and the memoization across the
-partition sum applies as before.
+When both endpoints are finite, the support of a truncated discrete family is
+finite, so each block is a finite sum of terms that the parent already
+computes, and the memoization across the partition sum applies as before.
+With an infinite upper endpoint the sums run over an infinite support.
 }
 \examples{
 tr <- truncated(poisson_distrib(), lower = 1, upper = 8)
@@ -39,7 +39,7 @@ th <- list(mu = 3)
 
 distrib_deriv3(tr, c(2, 4, 6), th)
 
-# The parent's third derivative in mu is 2 y / mu^3 - ... and the truncated
+# The parent's third derivative in mu is 2 y / mu^3 and the truncated
 # one differs by the derivative of log Z, which is the whole wrapper.
 c(truncated = distrib_deriv3(tr, 4, th)[["mu_mu_mu"]],
   parent = distrib_deriv3(poisson_distrib(), 4, th)[["mu_mu_mu"]])

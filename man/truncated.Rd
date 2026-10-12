@@ -29,9 +29,10 @@ inside it. Either endpoint may be omitted, giving one-sided truncation, and
 at least one must be given. Discrete and continuous parents are both
 accepted.
 
-BOTH ENDPOINTS ARE INCLUDED, which for a discrete parent is the difference
-between \code{truncated(poisson_distrib(), lower = 1)}, the zero-truncated
-Poisson on \eqn{\{1, 2, \dots\}}, and truncating above one.
+Both endpoints are included in the support. For a discrete parent this means
+that \code{truncated(poisson_distrib(), lower = 1)} is the zero-truncated Poisson
+on \eqn{\{1, 2, \dots\}}, which keeps the mass at one, whereas truncating
+above one would remove it.
 }
 \section{The three functions}{
 Write \eqn{Z(\theta) = P(L \le Y \le U)} for the retained mass. Then
@@ -40,8 +41,10 @@ Write \eqn{Z(\theta) = P(L \le Y \le U)} for the retained mass. Then
   \qquad Q_T(p) = Q\{F(L^-;\theta) + pZ(\theta)\},}
 with \eqn{F(L^-) = F(L)} for a continuous parent and \eqn{F(L) - f(L)} for a
 discrete one, the lower endpoint being kept. The quantile function inverts
-\eqn{F_T} through the parent's own, so drawing from the truncated law is an
-exact one-pass inverse transform however small \eqn{Z} is.
+\eqn{F_T} through the parent's own, so drawing from the truncated law is a
+one-pass inverse transform. An interval in the upper tail is handled through
+the parent's survival function, in \eqn{Z}, in the distribution function and
+in the quantile function.
 }
 
 \section{Truncation adds no parameter}{
@@ -57,23 +60,24 @@ with both expectations taken under the TRUNCATED law,
     = H_{ij}(y) - M_{ij} + m_i m_j,}
 \deqn{\mathbb{E}\left[\frac{\partial^{2}\ell_T}
   {\partial\theta_i\partial\theta_j}\right] = -\mathrm{Cov}_T(s_i, s_j).}
-The score is the parent's recentered at its truncated mean, and the
-information is the covariance of that score, which is the second Bartlett
-identity for the truncated model and is used here as a consistency check on
-the two expressions above.
+The score is the parent's recentered at its truncated mean, and the expected
+Hessian is minus the covariance of that score. This is the second Bartlett
+identity for the truncated model, and \code{distrib_expected_hessian()} evaluates
+it directly.
 }
 
-\section{What this costs}{
-\eqn{m_i} and \eqn{M_{ij}} have no closed form for a general parent, and are
-obtained by quadrature or summation through \code{\link[=expectation]{expectation()}}. Where the
-parent has exact cdf derivatives they come instead from two calls on it,
-measured at 1.4 ms against 4.9 ms for a truncated gaussian's Hessian; see
-\code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}} for why that route is gated on accuracy. Third and
-fourth derivatives are closed form as well, assembled by the partition sums
-of \code{wrapper_derivatives.R} from the same ratios taken at higher blocks, and
-they take the same two routes: the parent's cdf derivative of that order
-where the gate admits it, and one memoized \code{\link[=expectation]{expectation()}} per distinct
-block otherwise.
+\section{Computation of the derivatives}{
+\eqn{m_i} and \eqn{M_{ij}} have no closed form for a general parent. For a
+parent with a compiled scalar route they are computed from the retained mass
+and its derivatives by \code{trunc_route_parts()}. Otherwise, where the parent has
+exact cdf derivatives, they come from two calls on the cdf derivatives, and
+in the remaining cases they are obtained by quadrature or summation through
+\code{\link[=expectation]{expectation()}}; see \code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}} for why that route is gated on
+accuracy. Third and fourth derivatives are closed form as well, assembled by
+the partition sums of \code{wrapper_derivatives.R} from the same ratios taken at
+higher blocks, and they take the same two routes: the parent's cdf derivative
+of that order where the gate admits it, and one memoized \code{\link[=expectation]{expectation()}} per
+distinct block otherwise.
 }
 
 \section{What the constructor rejects}{
@@ -98,9 +102,9 @@ the point mass is carried through
 \code{\link[=distrib_atoms.TruncatedContinuousDistrib]{distrib_atoms.TruncatedContinuousDistrib()}}.
 }
 
-Truncating an already truncated distribution is allowed and is COLLAPSED
-into one object over the intersection of the two intervals. Nesting would be
-correct and would pay the quadrature cost twice.
+Truncating an already truncated distribution is allowed. The result is one
+truncated object over the intersection of the two intervals, which avoids
+computing the normalizing constant twice.
 }
 
 \section{Notation}{
@@ -139,15 +143,15 @@ c(lower = t2@lower, upper = t2@upper)
 tz <- truncated(zero_adjusted(gamma2_distrib()), upper = 5)
 distrib_atoms(tz, list(mu = 2, sigma2 = 1, za = 0.3))
 
-# Three refusals, each naming the condition that failed.
+# Three errors, each stating the condition that failed.
 try(truncated(gamma2_distrib(), lower = -2))
 try(truncated(poisson_distrib(), lower = 1.5))
 try(truncated(zero_inflated(poisson_distrib()), lower = 1))
 
 }
 \seealso{
-\code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} for the wrappers that DO
-add a parameter, \code{\link[=transformation]{transformation()}} for a change of variable,
+\code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} for the wrappers that add a
+parameter, \code{\link[=transformation]{transformation()}} for a change of variable,
 \link{TruncatedContinuousDistrib} and \link{TruncatedDiscreteDistrib} for the two
 classes, and \code{\link[=check_distrib]{check_distrib()}} to validate the result.
 }

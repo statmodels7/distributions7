@@ -28,23 +28,23 @@ parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
 Computes a second-order mixed component by one central difference, in each
-parameter, of an ANALYTIC first-order component. It is the fallback behind
-\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} for a family that
-provides no closed form.
+parameter, of a first-order component. It supplies the pairs that have no
+closed form in the methods for location-scale families with a shape parameter
+and for families with a scale and no location. The default methods for a
+continuous family use \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}} instead.
 }
 \details{
 The reference is \code{\link[=distrib_cross_y]{distrib_cross_y()}} or \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, so a
 distribution with a closed form for those pays for exactly one difference
 and never differences a difference.
 
-A mixed pair is differenced BOTH WAYS and averaged. The two agree in exact
-arithmetic, and in floating point they differ, the two steps being
-different sizes, while a second derivative of a scalar has to come out
-symmetric. On a gamma the two orders differ by about
-\eqn{3\times 10^{-10}}, which is the size of the answer's own error.
+A mixed pair is differenced in both orders and the two results are averaged.
+They agree in exact arithmetic and differ in floating point, the two steps
+having different sizes, and the average is symmetric in the pair.
 
-The step is \code{\link[=fd_steps]{fd_steps()}}'s, so a parameter near a bound is differenced
-inward rather than across it.
+The step is chosen by \code{\link[=fd_stable_step]{fd_stable_step()}} from the two candidates of
+\code{\link[=fd_steps]{fd_steps()}}, so that both evaluation points of the central difference of a
+parameter near a bound stay inside its domain.
 }
 \section{Notation}{
 
@@ -67,7 +67,7 @@ num$sigma_sigma
 # the fallback for.
 max(abs(unlist(num) - unlist(distrib_grad_y_hess(d, y, theta))))
 
-# A family that does take the fallback, checked against numDeriv.
+# A family that takes the default continuous method, checked against numDeriv.
 dg <- gamma2_distrib()
 yg <- c(0.5, 1, 2)
 thg <- list(mu = 2, sigma2 = 1)

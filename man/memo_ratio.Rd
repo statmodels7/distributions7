@@ -18,10 +18,11 @@ A function with the same signature as \code{f}, backed by a cache.
 Caches a ratio function by the canonical key of its block.
 }
 \details{
-A partition of a fourth-order index asks for the same small blocks many times
-over. For the truncated wrapper each distinct block costs a quadrature, so
-memoizing across the partition sum is the difference between one integration
-per block and one per occurrence.
+A partition sum over a fourth-order index evaluates the same small blocks
+many times. For the truncated wrapper, a block whose cdf derivatives are not
+available in closed form costs a quadrature or a summation, so memoizing
+across the partition sum evaluates it once per distinct block and not once
+per occurrence.
 }
 \seealso{
 \code{\link[=trunc_deriv_k]{trunc_deriv_k()}}

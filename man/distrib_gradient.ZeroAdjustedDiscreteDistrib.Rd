@@ -11,8 +11,9 @@
 
 \item{theta}{A named list with the parent's parameters followed by \code{za}.}
 
-\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
-generic before dispatch. \code{za} rides a logit by default.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
+applies the link scale to the value that the method returns. \code{za} rides a
+logit by default.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

@@ -10,8 +10,8 @@
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
-dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}. The generic applies the link
+scale to the value that the method returns.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -29,10 +29,9 @@ fallback on \code{continuous_distrib} gives the third-order mixed derivative to
 every continuous family, whether or not it writes one out.
 }
 \details{
-The stencil is never applied to a quantity that is itself a fallback.
-Before 0.76.0 the fallback differenced \code{\link[=distrib_cross_y]{distrib_cross_y()}} in the
-parameters whether or not that was analytic, and where it was a fallback
-that differenced a difference in the same parameter.
+The stencil is never applied to a quantity that is itself a numerical
+fallback; only quantities that the family's class registers are used as the
+base.
 }
 \examples{
 # The gamma writes no closed form, so this method answers for it.
@@ -51,6 +50,6 @@ numDeriv::hessian(f, c(2, 1))
 \seealso{
 \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} for the generic,
 \code{\link[=distrib_hess_y_hess.continuous_distrib]{distrib_hess_y_hess.continuous_distrib()}} for the fourth-order twin, and
-\code{\link[=numerical_theta2_y]{numerical_theta2_y()}}, which does the work.
+\code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}, which does the work.
 }
 \keyword{internal}

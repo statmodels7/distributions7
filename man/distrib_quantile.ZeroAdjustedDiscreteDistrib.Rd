@@ -28,14 +28,16 @@ parent.
 \description{
 Inverts the hurdle distribution function. The quantile is \code{0} for
 \eqn{p \le \pi}, the whole mass at zero, and otherwise the PARENT's quantile
-at \eqn{u\{1 - f(0)\} + f(0)} with \eqn{u = (p - \pi)/(1 - \pi)}: the
-probability is rescaled out of the hurdle and back onto the parent's own
-scale before the parent is asked.
+at \eqn{u\{1 - f(0)\} + f(0)} with \eqn{u = (p - \pi)/(1 - \pi)}. The parent
+is inverted in its upper tail, at \eqn{(1 - p)\{1 - f(0)\}/(1 - \pi)}, at the
+rows of the observations, so that a constant that varies by observation (a
+binomial's size) is read at its own row.
 }
 \details{
-The result is a LATTICE quantile and overshoots, as any discrete quantile
-does. Every probability at or below \eqn{\pi} maps to zero, so the first
-step is as large as the mass at zero.
+The result is a quantile of a discrete distribution: the distribution
+function evaluated at it is at least \code{p}, and usually larger. Every
+probability at or below \eqn{\pi} maps to zero, so the first step has
+probability \eqn{\pi}, and \code{p = 1} gives the upper end of the support.
 }
 \section{Notation}{
 

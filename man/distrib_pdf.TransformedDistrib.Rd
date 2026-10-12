@@ -7,8 +7,8 @@
 \item{distrib}{A \code{TransformedDistrib} object, from \code{\link[=transformation]{transformation()}}.}
 
 \item{y}{A numeric vector of observations on the TRANSFORMED scale. A point
-outside the transformed support gives \code{0}, the parent's density at its
-preimage being zero there.}
+at the edge of the transformed support gives \code{0}, and a point beyond it
+gives \code{NaN} with a warning, because the inverse map is not defined there.}
 
 \item{theta}{A named list of the PARENT's parameters, unchanged by the
 transformation.}
@@ -34,8 +34,8 @@ Two singular cases are handled explicitly. A parent log-density that is
 \code{log(.Machine$double.xmax)}, so that a quadrature over the transformed
 density meets a large number instead of \code{Inf - Inf}. A parent density of
 exactly zero WINS over an infinite Jacobian, so the result is \code{-Inf}. The
-point is outside the transformed support and \code{-Inf} says so, where the
-unguarded sum would give \code{NaN}.
+point is on the boundary or outside the transformed support, and the result
+is \code{-Inf} where the unguarded sum would give \code{NaN}.
 }
 \section{Notation}{
 
@@ -59,7 +59,7 @@ integrate(function(z) distrib_pdf(d, z, theta), 0, Inf)$value
 # Written out, the parent's density at the preimage times the Jacobian.
 tr <- d@transformer
 all.equal(distrib_pdf(d, y, theta),
-          dnorm(tr@trans_inv(y), 0.5, 0.8) * tr@trans_abs_jac(y))
+          dnorm(tr@trans_inv(y), 0.5, 0.8) * tr@trans_abs_jac(y, log = FALSE))
 }
 \seealso{
 \code{\link[=distrib_cdf.TransformedDistrib]{distrib_cdf.TransformedDistrib()}} for the distribution function,

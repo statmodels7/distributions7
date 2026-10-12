@@ -30,8 +30,8 @@ parameters are a location and a scale in that order.}
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
-dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}. The generic applies the link
+scale to the value that the method returns.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -50,9 +50,11 @@ closed form, and each shape component from one central difference of
 }
 \details{
 Registered on the logistic, Cauchy, Gumbel and Laplace for the first body,
-and on the pseudo-Huber, skew normal and skew t for the second. The
-gaussian and the Student t write their own out, and every remaining
-continuous family takes \code{\link[=distrib_cross2_y.continuous_distrib]{distrib_cross2_y.continuous_distrib()}}.
+and on the two pseudo-Huber parametrizations, the skew normal and the skew t
+for the second. The gaussian and the Student t have methods of their own, as
+do several other families (the exponential, the Weibull, the generalized
+Pareto and the lognormal among them), and a continuous family with no method
+of its own takes \code{\link[=distrib_cross2_y.continuous_distrib]{distrib_cross2_y.continuous_distrib()}}.
 }
 \section{Notation}{
 

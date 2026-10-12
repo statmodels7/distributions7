@@ -12,19 +12,22 @@ check_not_stacked(distrib, fun, param)
 \item{fun}{The name of the calling constructor, a single string, quoted in
 the message.}
 
-\item{param}{The name of the parameter it would add, a single string. Not
-currently placed in the message; it is carried for the caller's own
-record.}
+\item{param}{The name of the parameter that the calling constructor would
+add, a single string. An error is signaled when the parent already has a
+parameter with this name.}
 }
 \value{
-\code{NULL}, invisibly, when the parent is not a zero wrapper. Otherwise
-it signals an error naming the parent.
+\code{NULL}, invisibly, when the parent is not a zero wrapper and has no
+parameter named \code{param}. If the parent is a zero wrapper, the function
+signals an error that names the parent; if the parent already has a
+parameter named \code{param}, it signals an error that names that parameter.
 }
 \description{
 Signals an error when the parent already models the probability of a zero,
-which is how both wrappers refuse to stack. The models this rejects are
-well defined and inestimable, so the constructor is the only place the
-problem can be caught: nothing at run time reports it.
+which is how both constructors reject a parent that is already a zero
+wrapper. The models this rejects are well defined and inestimable, so the
+constructor is the only place the problem can be caught: nothing at run time
+reports it.
 }
 \details{
 Two zero parameters cannot both be identified. Zero-adjusting a
@@ -38,9 +41,9 @@ to one throughout, and \code{\link[=check_distrib]{check_distrib()}} passes.
 \examples{
 # A plain parent passes silently.
 distributions7:::check_not_stacked(poisson_distrib(),
-                                   "zero_inflated()", "zi")
+"zero_inflated", "zi")
 
-# A wrapped one does not, and the two orders are refused alike.
+# A wrapped one does not, and the two orders are rejected alike.
 try(zero_inflated(zero_adjusted(poisson_distrib())))
 try(zero_adjusted(zero_inflated(poisson_distrib())))
 

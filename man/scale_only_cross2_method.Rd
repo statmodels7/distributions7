@@ -25,7 +25,8 @@ location. The scale's component is the identity
 }
 \details{
 A one-parameter family returns the closed component alone. Registered on the
-exponential, the Weibull and the generalized Pareto.
+exponential and the Weibull; the generalized Pareto has a compiled method of
+its own.
 }
 \section{Notation}{
 

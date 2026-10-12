@@ -56,15 +56,15 @@ NULL
 #'   \frac{\partial^2\ell^{(yy)}}{\partial\sigma^2}
 #'     = \frac{z^2B'' + 6zB' + 6B}{\sigma^4}.}
 #'
-#' # Why nothing new is differentiated
+#' # Reuse of the response derivatives
 #'
 #' \eqn{A}, \eqn{A'}, \eqn{A''} and \eqn{B}, \eqn{B'}, \eqn{B''} are the
 #' family's OWN response derivatives times a power of \eqn{\sigma}:
 #' \eqn{A = \sigma\ell^{(y)}}, \eqn{A' = B = \sigma^2\ell^{(yy)}},
 #' \eqn{A'' = B' = \sigma^3\ell^{(yyy)}} and \eqn{B'' = \sigma^4\ell^{(yyyy)}}.
-#' A family that already carries [distrib_deriv3_y()] and [distrib_deriv4_y()]
-#' therefore gets both orders in the parameters for free, which is the bargain
-#' [loc_scale_cross_block()] already takes at first order.
+#' A family that supplies [distrib_deriv3_y()] and [distrib_deriv4_y()]
+#' therefore obtains both orders in the parameters in closed form, by the same
+#' argument that [loc_scale_cross_block()] applies at first order.
 #'
 #' A shape parameter beyond the two is NOT covered and falls back; see
 #' [partial_theta2()], which splices these three components into the
@@ -129,7 +129,7 @@ loc_scale_theta2_block <- function(distrib, y, theta, order = 1L) {
     a1 <- s^2 * lyy
     a2 <- s^3 * l3
     out <- list(a2 / s^3,
-                (z^2 * a2 + 4 * z * a1 + 2 * a) / s^3,
+                (z * (z * a2) + 4 * z * a1 + 2 * a) / s^3,
                 (z * a2 + 2 * a1) / s^3)
   } else {
     l4 <- distrib_deriv4_y(distrib, y, theta) + 0 * y
@@ -137,7 +137,7 @@ loc_scale_theta2_block <- function(distrib, y, theta, order = 1L) {
     b1 <- s^3 * l3
     b2 <- s^4 * l4
     out <- list(b2 / s^4,
-                (z^2 * b2 + 6 * z * b1 + 6 * b) / s^4,
+                (z * (z * b2) + 6 * z * b1 + 6 * b) / s^4,
                 (z * b2 + 3 * b1) / s^4)
   }
   stats::setNames(out, c(paste0(params[1], "_", params[1]),
@@ -223,16 +223,18 @@ loc_scale_cross2_block <- function(distrib, y, theta) {
 #'
 #' @details
 #' Registered on the logistic, Cauchy, Gumbel and Laplace for the first body,
-#' and on the pseudo-Huber, skew normal and skew t for the second. The
-#' gaussian and the Student t write their own out, and every remaining
-#' continuous family takes [distrib_cross2_y.continuous_distrib()].
+#' and on the two pseudo-Huber parametrizations, the skew normal and the skew t
+#' for the second. The gaussian and the Student t have methods of their own, as
+#' do several other families (the exponential, the Weibull, the generalized
+#' Pareto and the lognormal among them), and a continuous family with no method
+#' of its own takes [distrib_cross2_y.continuous_distrib()].
 #'
 #' @param distrib An object inheriting from class `distrib`, whose first two
 #'   parameters are a location and a scale in that order.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
-#'   dispatch.
+#' @param scale One of `"parameter"` or `"link"`. The generic applies the link
+#'   scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per parameter, keyed by
@@ -308,16 +310,17 @@ partial_loc_scale_cross2_y <- function(distrib, y, theta,
 #' [partial_loc_scale_grad_y_hess()] instead, where the pairs touching that
 #' shape are differenced.
 #'
-#' Both bodies read the family's own third and fourth response derivatives, so
-#' a family supplying [distrib_deriv3_y()] and [distrib_deriv4_y()] gets these
-#' in closed form with no further algebra.
+#' [loc_scale_grad_y_hess()] reads the family's own response derivatives up to
+#' the third and [loc_scale_hess_y_hess()] up to the fourth, so a family that
+#' supplies [distrib_deriv3_y()] and [distrib_deriv4_y()] obtains both bodies in
+#' closed form.
 #'
 #' @param distrib An object inheriting from class `distrib`, whose first two
 #'   parameters are a location and a scale in that order.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
-#'   dispatch.
+#' @param scale One of `"parameter"` or `"link"`. The generic applies the link
+#'   scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of three numeric vectors, keyed as
@@ -379,22 +382,24 @@ loc_scale_hess_y_hess <- function(distrib, y, theta,
 #' family carrying shape parameters beyond its location and scale. The three
 #' pairs in \eqn{(\mu, \sigma)} come from [loc_scale_theta2_block()] in closed
 #' form, and every pair touching a shape parameter from one central difference
-#' of the analytic first-order component. Both delegate to [partial_theta2()],
-#' which does the splicing.
+#' of the first-order component, [distrib_cross_y()] for the third-order body
+#' and [distrib_cross2_y()] for the fourth. In the fourth-order body a pair of
+#' shape parameters is one stencil on the analytic [distrib_hess_y()], since the
+#' shape components of [distrib_cross2_y()] are themselves a difference in the
+#' shape. Both delegate to [partial_theta2()], which does the splicing.
 #'
 #' @details
-#' Registered on the Student t, the pseudo-Huber, the skew normal and the skew
-#' t. Measured against a numerical Hessian of the response derivative, the
-#' closed pairs agree to about \eqn{10^{-11}} and the differenced ones to
-#' between \eqn{10^{-7}} and \eqn{10^{-6}}, which is one stencil's accuracy.
+#' Registered on the two pseudo-Huber parametrizations, the skew normal and the
+#' skew t. The Student t's methods, documented on this page as well, call
+#' compiled kernels of their own and do not use these bodies.
 #'
 #' @param distrib An object inheriting from class `distrib`, whose first two
 #'   parameters are a location and a scale in that order and whose remaining
 #'   parameters are shapes.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
-#'   dispatch.
+#' @param scale One of `"parameter"` or `"link"`. The generic applies the link
+#'   scale to the value that the method returns.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per unordered pair of
@@ -412,28 +417,28 @@ loc_scale_hess_y_hess <- function(distrib, y, theta,
 #'   [distrib_grad_y_hess()] and [distrib_hess_y_hess()] for the generics.
 #'
 #' @aliases distrib_grad_y_hess.StudentT1Distrib
-#'   distrib_grad_y_hess.PseudoHuberDistrib
+#'   distrib_grad_y_hess.PseudoHuberDistrib distrib_grad_y_hess.PseudoHuber2Distrib
 #'   distrib_grad_y_hess.SkewNormal1Distrib distrib_grad_y_hess.SkewTDistrib
-#'   distrib_hess_y_hess.StudentT1Distrib
+#'   distrib_hess_y_hess.StudentT1Distrib distrib_hess_y_hess.PseudoHuber2Distrib
 #'   distrib_hess_y_hess.PseudoHuberDistrib
 #'   distrib_hess_y_hess.SkewNormal1Distrib distrib_hess_y_hess.SkewTDistrib
 #'
 #' @keywords internal
 #'
 #' @examples
-#' d <- student_t1_distrib()
+#' d <- skewnormal1_distrib()
 #' y <- c(-0.7, 0.3, 1.4)
-#' theta <- list(mu = 0.3, sigma = 1.2, nu = 6)
+#' theta <- list(mu = 0.3, sigma = 1.2, alpha = 0.7)
 #'
 #' g3 <- distrib_grad_y_hess(d, y, theta)
 #' names(g3)
 #' vapply(g3, function(z) z[1], numeric(1))
 #'
 #' # Against a numerical Hessian of the response gradient. The three pairs in
-#' # (mu, sigma) are closed and the three touching nu are differenced.
+#' # (mu, sigma) are closed and the three touching alpha are differenced.
 #' f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2],
-#'                                               nu = v[3]))
-#' numDeriv::hessian(f, c(0.3, 1.2, 6))
+#'                                               alpha = v[3]))
+#' numDeriv::hessian(f, c(0.3, 1.2, 0.7))
 #'
 #' # The closed three are exactly the location-scale block's.
 #' cl <- distributions7:::loc_scale_theta2_block(d, y, theta, 1L)
@@ -456,17 +461,23 @@ partial_loc_scale_hess_y_hess <- function(distrib, y, theta,
 #' @title Splice the Closed Location-Scale Pairs Into the Fallback
 #'
 #' @description
-#' Differences every component through [numerical_theta2_y()] and then replaces
-#' the three that [loc_scale_theta2_block()] gives in closed form. It is what
+#' At order 1, differences every component of [distrib_cross_y()] through
+#' [numerical_theta2_y()] and then replaces the three that
+#' [loc_scale_theta2_block()] gives in closed form. At order 2, a pair of a
+#' location or scale parameter with a shape is one central difference, in the
+#' shape, of the closed component of [distrib_cross2_y()], and a pair of shapes
+#' is one stencil on [distrib_hess_y()], a second-order stencil for a repeated
+#' shape and a mixed one for two shapes; the shape components of
+#' [distrib_cross2_y()] are not differenced again. It is what
 #' [partial_loc_scale_grad_y_hess()] and [partial_loc_scale_hess_y_hess()] both
 #' run, at order 1 and 2 respectively.
 #'
 #' @details
-#' Differencing every component and overwriting three of them costs three
-#' unnecessary differences, and is how the two halves are kept keyed the same
-#' way without a second enumeration: [numerical_theta2_y()] returns
-#' [hess_names()]'s full set, and the closed block's three names index into it
-#' directly.
+#' [numerical_theta2_y()] takes one central difference per parameter, and each
+#' difference yields every component that involves that parameter, so replacing
+#' the three location-scale pairs afterwards adds no evaluation of the
+#' first-order function. The result is keyed by [hess_names()], and the closed
+#' block's three names index into it directly.
 #'
 #' @param distrib An object inheriting from class `distrib`, whose first two
 #'   parameters are a location and a scale.
@@ -508,12 +519,54 @@ partial_loc_scale_hess_y_hess <- function(distrib, y, theta,
 #' # And it is exactly what the family's method returns.
 #' identical(out, distrib_grad_y_hess(d, y, theta))
 partial_theta2 <- function(distrib, y, theta, order) {
-  inner <- if (order == 1L) {
-    function(th) distrib_cross_y(distrib, y, th)
-  } else {
-    function(th) distrib_cross2_y(distrib, y, th)
+  if (order == 1L) {
+    out <- numerical_theta2_y(distrib, y, theta,
+                              function(th) distrib_cross_y(distrib, y, th))
+    closed <- loc_scale_theta2_block(distrib, y, theta, order)
+    out[names(closed)] <- closed
+    return(out)
   }
-  out <- numerical_theta2_y(distrib, y, theta, inner)
+  # At order 2 the shape components of distrib_cross2_y() are themselves a
+  # difference in the shape, so they are not differenced again: a pair with a
+  # location or scale parameter differences that parameter's closed
+  # component once, and a pair of shapes takes one stencil on the analytic
+  # distrib_hess_y().
+  params <- distrib@params
+  ls <- params[1:2]
+  at <- function(nm, x) {
+    th <- theta
+    th[[nm]] <- x
+    th
+  }
+  step <- function(nm, k) {
+    numericals7::fd_step(theta[[nm]], k, bounds = distrib@params_bounds[[nm]])
+  }
+  hy <- function(th) distrib_hess_y(distrib, y, th) + 0 * y
+  prs <- hess_pairs(params)
+  out <- stats::setNames(lapply(names(prs), function(nm) {
+    pr <- prs[[nm]]
+    if (all(pr %in% ls)) return(NULL)
+    if (any(pr %in% ls)) {
+      c0 <- pr[pr %in% ls][1L]
+      s0 <- pr[!pr %in% ls][1L]
+      return(numericals7::fd_derivative(function(x) {
+        distrib_cross2_y(distrib, y, at(s0, x))[[c0]]
+      }, theta[[s0]], order = 1L, h = step(s0, 1L)))
+    }
+    if (pr[1L] == pr[2L]) {
+      return(numericals7::fd_derivative(function(x) hy(at(pr[1L], x)),
+                                        theta[[pr[1L]]], order = 2L,
+                                        h = step(pr[1L], 2L)))
+    }
+    numericals7::fd_derivative(function(x1) {
+      th1 <- at(pr[1L], x1)
+      numericals7::fd_derivative(function(x2) {
+        th2 <- th1
+        th2[[pr[2L]]] <- x2
+        hy(th2)
+      }, theta[[pr[2L]]], order = 1L, h = step(pr[2L], 1L))
+    }, theta[[pr[1L]]], order = 1L, h = step(pr[1L], 1L))
+  }), names(prs))
   closed <- loc_scale_theta2_block(distrib, y, theta, order)
   out[names(closed)] <- closed
   out

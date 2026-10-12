@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{FoldedDistrib} object, from \code{\link[=folded]{folded()}}.}
 
-\item{q}{A numeric vector of quantiles. Values below zero give probability
-\code{0}.}
+\item{q}{A numeric vector of quantiles. Values below zero give lower-tail
+probability \code{0} (and upper-tail probability \code{1}).}
 
 \item{theta}{A named list of the parent's parameters.}
 
@@ -24,17 +24,15 @@ Defaults to \code{FALSE}.}
 A numeric vector of probabilities, in \eqn{[0, 1]}.
 }
 \description{
-Computes \eqn{P(|Y| \le q) = F(q) - F(-q)} from the parent's own
-distribution function, exactly and with no quadrature. It is the difference
-of two calls on the parent, clamped to \eqn{[0, 1]} against rounding and set
-to zero below the support.
+Computes \eqn{P(|Y| \le q) = F(q) - F(-q)} from the parent's own distribution
+function, exactly and with no quadrature, clamped to \eqn{[0, 1]} against
+rounding and set to zero below the support. The upper tail is \eqn{P(|Y| > q)
+= S(q) + F(-q)}, with \eqn{S} the parent's survival function.
 }
 \details{
-\code{lower.tail = FALSE} and \code{log.p = TRUE} are formed from the computed
-probability, as \eqn{1 - p} and \eqn{\log p}, not by a separate route
-through the parent. Far into the upper tail that difference cancels, so a
-caller who needs the survival function of a folded distribution to many
-digits should expect the loss the subtraction implies.
+\code{lower.tail = FALSE} is computed from the parent's two tails and not as
+\eqn{1 - p}, so the survival function keeps its digits far into the upper
+tail; \code{log.p = TRUE} takes the logarithm of the probability returned.
 }
 \section{Notation}{
 
@@ -64,5 +62,6 @@ max(abs(distrib_cdf(d, distrib_quantile(d, p, theta), theta) - p))
 \seealso{
 \code{\link[=distrib_pdf.FoldedDistrib]{distrib_pdf.FoldedDistrib()}} for the density,
 \code{\link[=distrib_quantile]{distrib_quantile()}}, which the class inherits and which inverts this
-exactly, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
+function by numerical root finding, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the
+generic.
 }

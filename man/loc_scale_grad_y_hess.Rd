@@ -25,8 +25,8 @@ parameters are a location and a scale in that order.}
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
-dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}. The generic applies the link
+scale to the value that the method returns.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -47,9 +47,10 @@ shape parameter beyond the two takes
 \code{\link[=partial_loc_scale_grad_y_hess]{partial_loc_scale_grad_y_hess()}} instead, where the pairs touching that
 shape are differenced.
 
-Both bodies read the family's own third and fourth response derivatives, so
-a family supplying \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} and \code{\link[=distrib_deriv4_y]{distrib_deriv4_y()}} gets these
-in closed form with no further algebra.
+\code{\link[=loc_scale_grad_y_hess]{loc_scale_grad_y_hess()}} reads the family's own response derivatives up to
+the third and \code{\link[=loc_scale_hess_y_hess]{loc_scale_hess_y_hess()}} up to the fourth, so a family that
+supplies \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} and \code{\link[=distrib_deriv4_y]{distrib_deriv4_y()}} obtains both bodies in
+closed form.
 }
 \section{Notation}{
 

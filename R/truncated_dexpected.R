@@ -5,15 +5,15 @@ NULL
 #'
 #' @description
 #' Computes the first (`k = 1`) or second (`k = 2`) derivatives of the
-#' expected information of a [truncated()] family on the parameter scale, as
-#' expectations under the truncated law taken by [expectation()], the sums
-#' over the support or the quadratures that give the expected information
-#' itself.
+#' expected Hessian of a [truncated()] family on the parameter scale. For `k =
+#' 1` and a parent with a scalar route they are formed from the compiled sums of
+#' `trunc_route_parts()`; otherwise they are expectations under the truncated
+#' law taken by [expectation()], as the expected Hessian itself is.
 #'
 #' @details
-#' With \eqn{\ell} the truncated log-likelihood, \eqn{\ell - \log Z}, and
-#' \eqn{G = \ell_i \ell_j}, the second Bartlett identity gives
-#' \eqn{E[\ell_{ij}] = -E[G]}, and differentiating under the expectation,
+#' With \eqn{\ell = \ell_P - \log Z} the truncated log-likelihood, \eqn{\ell_P}
+#' being the parent's, and \eqn{G = \ell_i \ell_j}, the second Bartlett identity
+#' gives \eqn{E[\ell_{ij}] = -E[G]}, and differentiating under the expectation,
 #' \deqn{\partial_c E[G] = E[G_c + G\ell_c],}
 #' \deqn{\partial_{cd} E[G] = E[G_{cd} + G_c\ell_d + G_d\ell_c +
 #'   G(\ell_c\ell_d + \ell_{cd})],}

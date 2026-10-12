@@ -20,7 +20,8 @@ computed by the parent. Defaults to \code{FALSE}.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of probabilities, in \eqn{[0, 1]}.
+A numeric vector of probabilities, in \eqn{[0, 1]}, or of their
+logarithms, in \eqn{(-\infty, 0]}, when \code{log.p = TRUE}.
 }
 \description{
 Computes \eqn{F_Y(q) = F_X(g^{-1}(q))} by evaluating the parent's own

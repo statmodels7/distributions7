@@ -28,9 +28,9 @@ taken by summation over the retained support: \eqn{\ell_T = \ell - \log Z},
 and \eqn{d^I \log Z} from the moment-to-cumulant expansion over the fifteen
 partitions of four indices.
 
-Because every block is a finite sum, this order costs what the order below
-costs times the ratio of distinct blocks, and nothing is approximated
-anywhere in it.
+Each block is a sum over the retained support, finite when both endpoints are
+finite, and the memoization across the partition sum applies as at the order
+below.
 }
 \examples{
 tr <- truncated(poisson_distrib(), lower = 1, upper = 8)

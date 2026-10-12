@@ -28,8 +28,9 @@ Computes the hurdle mass function
 The mass at zero is the parameter itself, so it may sit ABOVE or BELOW the
 parent's \eqn{f(0)}; the positive part is the parent renormalized away from
 zero. Everything is computed on the log scale and exponentiated at the end,
-with the normalizing constant taken through \code{\link[base:Log]{base::log1p()}} so that a parent
-with almost no mass at zero does not lose digits to \code{log(1 - f0)}.
+with the normalizing constant \eqn{1 - f(0)} formed from the parent's
+log-mass at zero as \verb{-expm1(log f(0))}, so that a parent with almost all its
+mass at zero keeps its digits.
 }
 \section{Notation}{
 

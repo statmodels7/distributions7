@@ -39,7 +39,8 @@ ReparamDiscreteDistrib(
 \item{distrib_name}{The name of the family, a single string.}
 
 \item{dimension}{\code{"univariate"} or \code{"multivariate"}. Always the first for a
-reparametrization, \code{\link[=reparametrize]{reparametrize()}} refusing a multivariate parent.}
+reparametrization, since \code{\link[=reparametrize]{reparametrize()}} signals an error for a
+multivariate parent.}
 
 \item{bounds}{A length-two numeric vector, the support.}
 
@@ -77,9 +78,10 @@ three above.
 What \code{\link[=reparametrize]{reparametrize()}} returns: the same law as its parent, written in
 different coordinates. There is one class per kind of parent, so that a
 continuous parent keeps the defaults registered on \code{\link[=continuous_distrib]{continuous_distrib()}}
-and a discrete one those of \code{\link[=discrete_distrib]{discrete_distrib()}}. Nothing else distinguishes
-the two: every method in this file is registered on both, from the same
-body.
+and a discrete one those of \code{\link[=discrete_distrib]{discrete_distrib()}}. The two classes differ only
+in their parent, and the methods of this file are registered on both from the
+same body, except \code{\link[=distrib_grad_y]{distrib_grad_y()}} and \code{\link[=distrib_hess_y]{distrib_hess_y()}}, which only the
+continuous class registers.
 }
 \details{
 The three properties beyond a distribution's own are what the methods read.

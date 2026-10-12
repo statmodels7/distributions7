@@ -11,7 +11,8 @@ trunc_mass_derivs(distrib, theta, order)
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{order}{The derivative order, 1 or 2.}
+\item{order}{The derivative order, an integer from 1 to 4. \code{NULL} is returned
+above 4.}
 }
 \value{
 A named list of derivative components of \eqn{Z}, keyed as
@@ -33,12 +34,12 @@ mass's derivatives with it, \eqn{d^I F(L^-) = d^I F(L) - f(L) B_I}, where
 derivatives that \code{\link[=bell_f_ratio]{bell_f_ratio()}} assembles.
 }
 
-\section{When it declines}{
-\code{NULL} is returned, and the caller falls back to quadrature, in two
-situations. The first is accuracy, and is decided by
-\code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}}. The second is correctness: a mixed parent with an
-atom sitting exactly on the lower endpoint, whose mass derivative is not the
-parent's own mass function.
+\section{When NULL is returned}{
+\code{NULL} is returned, and the caller falls back to quadrature, when the order
+exceeds four, the highest order of a cdf derivative, and in two further
+situations. The first is accuracy, and is decided by \code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}}.
+The second is correctness: a mixed parent with an atom sitting exactly on the
+lower endpoint, whose mass derivative is not the parent's own mass function.
 }
 
 \section{Notation}{
@@ -61,13 +62,15 @@ unlist(dZ) / Z
 # The same numbers the quadrature route returns, to machine precision.
 unlist(distributions7:::trunc_score_mean_quad(tn, theta))
 
-# A gamma parent has no closed-form cdf derivative, so the route declines
-# and the caller integrates instead.
+# A gamma parent has compiled cdf derivatives, so the route is available
+# (the result is not NULL). Above order four the result is NULL.
 tg <- truncated(gamma2_distrib(), lower = 0.5, upper = 5)
 is.null(distributions7:::trunc_mass_derivs(tg, list(mu = 2, sigma2 = 1), 1L))
+is.null(distributions7:::trunc_mass_derivs(tg, list(mu = 2, sigma2 = 1), 5L))
 }
 \seealso{
 \code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}} for the gate, \code{\link[=trunc_score_mean]{trunc_score_mean()}} and
-\code{\link[=trunc_M]{trunc_M()}} for the two callers, and \code{\link[=trunc_constants]{trunc_constants()}} for \eqn{Z}.
+\code{\link[=trunc_M]{trunc_M()}} for the callers at orders one and two, \code{trunc_deriv_k()} for
+orders three to five, and \code{\link[=trunc_constants]{trunc_constants()}} for \eqn{Z}.
 }
 \keyword{internal}

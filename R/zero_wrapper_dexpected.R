@@ -5,14 +5,17 @@ NULL
 #' The Derivatives of the Zero Wrappers' Expected Information
 #'
 #' @description
-#' Compute the first derivatives of the expected information of
-#' [zero_inflated()] and [zero_adjusted()] families in closed form, from the
-#' parent's expected information and its derivatives and from the parent's
-#' mass, score and Hessian at zero, on the parameter scale.
+#' Compute the first derivatives of the expected Hessian of [zero_inflated()]
+#' and [zero_adjusted()] families in closed form in the parent's expected
+#' Hessian and its derivatives and in the parent's mass, score and Hessian at
+#' zero, on the parameter scale. The parent's derivatives of the expected
+#' Hessian come from its own method, which is analytic for some families and a
+#' central difference for the others.
 #'
 #' @details
 #' With \eqn{f = f(0)}, \eqn{s} and \eqn{H} the parent's score and Hessian at
-#' zero, \eqn{E} and \eqn{D} the parent's expected information and its
+#' zero, \eqn{E} and \eqn{D} the parent's expected Hessian (the negative of the
+#' expected information) and its
 #' derivatives, \eqn{\zeta} the zero-inflation probability and
 #' \eqn{L = \zeta + (1-\zeta) f}, the zero-inflated expected information is
 #' \deqn{E^{ZI}_{ij} = (1-\zeta) E_{ij} + \zeta(1-\zeta) f s_i s_j / L,}
@@ -81,10 +84,11 @@ zero_wrapper_dexpected <- function(distrib, y, theta, threads = 1L) {
 
 #' @rdname zero_wrapper_dexpected
 #' @details
-#' Each entry is computed by `zi_dexpected_entry()`,
-#' `za_disc_dexpected_entry()` or `za_cont_dexpected_entry()` with the
-#' expressions of the scalar registry (`pt_wrappers.h`), so that the two
-#' routes agree to the last bit.
+#' Each entry is computed by `zi_dexpected_entry()`, `za_disc_dexpected_entry()`
+#' or `za_cont_dexpected_entry()`. The scalar registry (`pt_wrappers.h`) writes
+#' with the same expressions the entries in which the pair and the parameter
+#' differentiated are one parent parameter `k`, and the entry in the
+#' probability.
 #' @param i,j,c The indices of one entry: the pair and the parameter
 #'   differentiated, the parent's parameters first and the probability last.
 #' @param p The number of the parent's parameters.
@@ -380,3 +384,64 @@ for (.zw_cls in list(ZeroInflatedDistrib, ZeroAdjustedDiscreteDistrib,
   })
 }
 rm(.zw_cls)
+
+# Registered here, after the response and mixed generics are defined.
+#' @title Mixed Response Derivatives of a Zero-Adjusted Continuous Family
+#'
+#' @description
+#' Evaluates a mixed derivative in the response and the parameters,
+#' [distrib_cross_y()], [distrib_cross2_y()] or [distrib_cross3_y()], for
+#' [zero_adjusted()] over a continuous parent. Away from the atom the
+#' components of the parent's parameters are the parent's, and the component of
+#' `za` is zero, since `za` enters the log-density only through
+#' \eqn{\log(1 - \pi)}. At the atom every component is `NaN`, as for
+#' [za_y_deriv()]. The same guard is registered for [distrib_deriv3_y()] and
+#' [distrib_deriv4_y()] through [za_y_deriv()].
+#'
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
+#' @param y A numeric vector of observations.
+#' @param theta A named list with the parent's parameters followed by `za`.
+#' @param fun The generic to evaluate on the parent.
+#'
+#' @return A named list keyed by `distrib@params`, one numeric vector per
+#'   parameter, each as long as `y`.
+#'
+#' @seealso [za_y_deriv()] for the response derivatives.
+#'
+#' @keywords internal
+#'
+#' @examples
+#' d <- zero_adjusted(gaussian1_distrib())
+#' distributions7:::za_y_list(d, c(-1, 0, 2), list(mu = 1, sigma = 2, za = 0.3),
+#'                            distrib_cross_y)
+za_y_list <- function(distrib, y, theta, fun) {
+  pars <- split_mix_theta(distrib, theta)
+  nz <- y != 0
+  nz[is.na(nz)] <- TRUE
+  th_sub <- lapply(pars$orig, function(x) if (length(x) > 1) x[nz] else x)
+  inner <- if (any(nz)) fun(distrib@parent_distrib, y[nz], th_sub)
+  out <- lapply(distrib@params, function(nm) {
+    v <- rep(NaN, length(y))
+    v[nz] <- if (nm %in% names(pars$orig)) rep_len(inner[[nm]], sum(nz)) else 0
+    v
+  })
+  stats::setNames(out, distrib@params)
+}
+S7::method(distrib_deriv3_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, ...) {
+  za_y_deriv(distrib, y, theta, distrib_deriv3_y)
+}
+S7::method(distrib_deriv4_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, ...) {
+  za_y_deriv(distrib, y, theta, distrib_deriv4_y)
+}
+S7::method(distrib_cross_y, ZeroAdjustedContinuousDistrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"), ...) {
+  za_y_list(distrib, y, theta, distrib_cross_y)
+}
+S7::method(distrib_cross2_y, ZeroAdjustedContinuousDistrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"), ...) {
+  za_y_list(distrib, y, theta, distrib_cross2_y)
+}
+S7::method(distrib_cross3_y, ZeroAdjustedContinuousDistrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"), ...) {
+  za_y_list(distrib, y, theta, distrib_cross3_y)
+}

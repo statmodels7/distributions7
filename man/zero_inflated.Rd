@@ -71,17 +71,18 @@ points are needed. This rules out the Bernoulli and
 single free cell.
 }
 
-A large support is NECESSARY without being sufficient. With \eqn{\mu} large
-enough that \eqn{f(0)} underflows, or \eqn{\zeta} close to zero, the ridge
-reappears in the data instead of in the model, and \code{\link[=fit_distrib]{fit_distrib()}} reports
-the standard errors that reveal it.
+A support with enough points is necessary for identification but not
+sufficient. If \eqn{\mu} is large enough that \eqn{f(0)} underflows, or
+\eqn{\zeta} is close to zero, the data carry little information about
+\eqn{\zeta}, and the standard errors that \code{\link[=fit_distrib]{fit_distrib()}} reports are large.
 }
 
 \section{What the result supports}{
-Every generic of the \code{distrib} class: the mass function, the distribution
-function, the quantile function, the generator, the analytic score, the
-observed and the expected Hessian, and the third and fourth derivatives
-from the shared wrapper machinery. The moments come from \code{\link[=moment]{moment()}} numerically.
+The mass function, the distribution function, the quantile function, the
+generator, the analytic score, the observed and the expected Hessian, and the
+third, fourth and fifth derivatives from the shared wrapper machinery. The
+derivatives with respect to the response are not defined for a discrete
+family. The moments are computed numerically by \code{\link[=moment]{moment()}}.
 }
 
 \section{Notation}{
@@ -123,6 +124,6 @@ try(zero_inflated(gaussian1_distrib()))
 }
 \seealso{
 \code{\link[=zero_adjusted]{zero_adjusted()}} for the hurdle counterpart,
-\link{ZeroInflatedDistrib} for the class, \code{\link[=truncated]{truncated()}}, which the hurdle uses
-internally, and \code{\link[=check_distrib]{check_distrib()}} to validate the result.
+\link{ZeroInflatedDistrib} for the class, \code{\link[=truncated]{truncated()}} for truncation to an
+interval, and \code{\link[=check_distrib]{check_distrib()}} to validate the result.
 }

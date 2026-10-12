@@ -34,6 +34,10 @@ and orders the result.}
 
 \item{expected}{Should the expected derivatives be carried? A single
 logical, \code{FALSE} by default.}
+
+\item{approx, nsim}{Forwarded to the parent's expected derivatives: \code{approx}
+is one of \code{"opg"} (the default), \code{"bartlett"}, \code{"integrate"} or \code{"mc"}, and
+\code{nsim} is the number of draws for \code{"mc"}.}
 }
 \value{
 A named list of numeric vectors, keyed as
@@ -50,8 +54,8 @@ copy of it: the hand-written second parametrizations all do.
 \deqn{\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
       \ell^{(i_1 \dots i_{|\pi|})}(\theta)
       \prod_{B \in \pi} \frac{\partial^{|B|}\theta_{i_B}}{\partial\psi_B},}
-the sum over set partitions of the multi-index. Every order the parent has
-in closed form therefore survives in closed form.
+the sum over set partitions of the multi-index. Every order that the parent
+has in closed form therefore survives in closed form.
 }
 
 \section{Under expectation}{

@@ -1140,3 +1140,286 @@ test_that("the response Hessian of an elliptical family is exactly symmetric", {
     expect_identical(h, if (length(dim(h)) == 2L) t(h) else aperm(h, c(2L, 1L, 3L)))
   }
 })
+
+test_that("a truncation in the upper tail keeps its digits", {
+  th <- list(mu = 0, sigma = 1)
+  ref_cdf <- function(q, L) {
+    -expm1(pnorm(q, lower.tail = FALSE, log.p = TRUE) -
+             pnorm(L, lower.tail = FALSE, log.p = TRUE))
+  }
+  t8 <- truncated(gaussian1_distrib(), lower = 8)
+  expect_rel(distrib_cdf(t8, 8.5, th), ref_cdf(8.5, 8), tolerance = 1e-13)
+  p <- c(0.1, 0.5, 0.9)
+  expect_rel(distrib_quantile(t8, p, th),
+             qnorm(pnorm(8, lower.tail = FALSE, log.p = TRUE) + log1p(-p),
+                   lower.tail = FALSE, log.p = TRUE), tolerance = 1e-13)
+  expect_rel(distrib_cdf(truncated(gaussian1_distrib(), lower = 6), 6.5, th),
+             ref_cdf(6.5, 6), tolerance = 1e-13)
+  # a mass of 1e-19 is a truncated law, not an error
+  expect_rel(distrib_cdf(truncated(gaussian1_distrib(), lower = 9), 9.5, th),
+             ref_cdf(9.5, 9), tolerance = 1e-13)
+  set.seed(1)
+  r <- distrib_rng(truncated(gaussian1_distrib(), lower = 8, upper = 12), 2000, th)
+  expect_true(all(r >= 8 & r <= 12))
+  expect_gt(length(unique(r)), 1990)
+  for (L in c(20, 25, 40)) {
+    set.seed(1)
+    r <- distrib_rng(truncated(poisson_distrib(), lower = L), 500, list(mu = 2))
+    expect_true(all(r >= L))
+  }
+  # the upper tail of the cdf, read from the parent's survival function
+  t0 <- truncated(gaussian1_distrib(), lower = 0)
+  expect_rel(distrib_cdf(t0, 10, th, lower.tail = FALSE),
+             2 * pnorm(10, lower.tail = FALSE), tolerance = 1e-13)
+  expect_rel(distrib_cdf(t0, 10, th, lower.tail = FALSE, log.p = TRUE),
+             log(2) + pnorm(10, lower.tail = FALSE, log.p = TRUE), tolerance = 1e-13)
+})
+
+test_that("the higher derivatives of a truncation in the upper tail", {
+  # references from mpmath at 80 digits (vd_T5_ref1.py)
+  th <- list(mu = 0, sigma = 1)
+  t8 <- truncated(gaussian1_distrib(), lower = 8)
+  expect_rel(distrib_deriv3(t8, 8.5, th)$mu_mu_mu, -0.0032918765663441355, tolerance = 1e-8)
+  expect_rel(distrib_deriv4(t8, 8.5, th)$mu_mu_mu_mu, -0.0011052920954551627, tolerance = 1e-6)
+  tp <- truncated(poisson_distrib(), lower = 25)
+  expect_rel(distrib_deriv3(tp, 26, list(mu = 3))$mu_mu_mu, 0.073954376098727597, tolerance = 1e-10)
+  expect_rel(distrib_deriv5(tp, 26, list(mu = 3))[[1]], 0.098764103350051314, tolerance = 1e-5)
+})
+
+test_that("the cdf derivatives of a discrete family in its upper tail", {
+  p <- poisson_distrib()
+  f <- function(j) dpois(j, 3)
+  k <- 24
+  expect_rel(distrib_hess_cdf(p, k, list(mu = 3), log = FALSE)$mu_mu,
+             -(f(k - 1) - f(k)), tolerance = 1e-13)
+  expect_rel(distrib_deriv4_cdf(p, k, list(mu = 3), log = FALSE)$mu_mu_mu_mu,
+             -(f(k - 3) - 3 * f(k - 2) + 3 * f(k - 1) - f(k)), tolerance = 1e-13)
+})
+
+test_that("a discrete truncated quantile stays in the support", {
+  expect_equal(distrib_quantile(truncated(poisson_distrib(), lower = 3, upper = 6),
+                                c(0, 0.25, 1), list(mu = 2)), c(3, 3, 6))
+  expect_equal(distrib_quantile(truncated(poisson_distrib(), lower = 1),
+                                c(0, 1e-12, 0.5), list(mu = 2)), c(1, 1, 2))
+})
+
+test_that("a missing observation gives a missing truncated density", {
+  d <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+  out <- distrib_pdf(d, c(NA, 1), list(mu = 0.3, sigma = 1.2))
+  expect_true(is.na(out[1]))
+  expect_equal(out[2], dnorm(1, 0.3, 1.2) / (pnorm(2, 0.3, 1.2) - pnorm(-1, 0.3, 1.2)))
+  expect_true(is.na(distrib_pdf(truncated(poisson_distrib(), lower = 1), NA, list(mu = 2))))
+})
+
+test_that("a truncated parent with an atom, parameters by observation", {
+  tz <- truncated(zero_adjusted(gamma2_distrib()), upper = 5)
+  th <- list(mu = c(1, 4), sigma2 = c(1, 3), za = c(0.3, 0.6))
+  one <- function(f, i) f(tz, lapply(th, `[`, i))
+  expect_equal(mean(tz, th), c(one(mean, 1), one(mean, 2)), tolerance = 1e-12)
+  expect_equal(variance(tz, th), c(one(variance, 1), one(variance, 2)), tolerance = 1e-12)
+})
+
+test_that("a zero-adjusted family with almost all its mass at zero", {
+  # references from mpmath at 60 digits (vd_T5_ref2.py)
+  za <- zero_adjusted(poisson_distrib())
+  th <- list(mu = 1e-6, za = 0.5)
+  expect_rel(distrib_pdf(za, 1, th), 0.49999975000004167, tolerance = 1e-14)
+  expect_rel(distrib_cdf(za, 1, th), 0.99999975000004167, tolerance = 1e-14)
+  expect_rel(distrib_gradient(za, 1, th)$mu, -0.50000008333333333, tolerance = 1e-9)
+  expect_rel(distrib_expected_hessian(za, 1, th)$mu_mu, -250000.08333333333, tolerance = 1e-9)
+  th8 <- list(mu = 1e-8, za = 0.5)
+  expect_rel(distrib_cdf(za, 1, th8), 0.9999999975, tolerance = 1e-14)
+  expect_rel(distrib_gradient(za, 1, th8)$mu, -0.50000000083333333, tolerance = 1e-7)
+})
+
+test_that("zero_adjusted quantiles and draws read the size of each observation", {
+  zb <- zero_adjusted(binomial_distrib(size = c(5, 10, 20)))
+  expect_no_warning(q <- distrib_quantile(zb, c(0.1, 0.5, 0.9),
+                                          list(mu = c(0.3, 0.5, 0.7), za = 0.2)))
+  expect_equal(q, c(0, 4, 16))
+  n <- 3000
+  sz <- rep(c(2, 5, 20), length.out = n)
+  set.seed(11)
+  expect_no_warning(r <- distrib_rng(zero_adjusted(binomial_distrib(size = sz)), n,
+                                     list(mu = 0.5, za = 0.2)))
+  expect_true(all(r <= sz))
+  # the upper tail near one, with no clamp
+  za <- zero_adjusted(poisson_distrib())
+  p <- c(1 - 1e-11, 1 - 1e-13, 1)
+  expect_equal(distrib_quantile(za, p, list(mu = 3, za = 0.4)),
+               qpois((1 - p) / 0.6 * (1 - dpois(0, 3)), 3, lower.tail = FALSE))
+})
+
+test_that("zero_adjusted response derivatives are NaN at the atom", {
+  zg <- zero_adjusted(gaussian1_distrib())
+  th <- list(mu = 1, sigma = 2, za = 0.3)
+  y <- c(-1, 0, 2)
+  expect_true(is.nan(distrib_deriv3_y(zg, y, th)[2]))
+  expect_true(is.nan(distrib_deriv4_y(zg, y, th)[2]))
+  for (f in list(distrib_cross_y, distrib_cross2_y, distrib_cross3_y)) {
+    out <- f(zg, y, th)
+    expect_true(all(vapply(out, function(v) is.nan(v[2]), logical(1))))
+    expect_equal(out$za[c(1, 3)], c(0, 0))
+  }
+  expect_equal(distrib_cross_y(zg, y, th)$mu[c(1, 3)], c(0.25, 0.25))
+})
+
+test_that("zero_adjusted on a support below zero warns and covers the atom", {
+  expect_warning(d <- zero_adjusted(truncated(gaussian1_distrib(), lower = -5, upper = -2)),
+                 "disconnected")
+  expect_equal(d@bounds, c(-5, 0))
+})
+
+test_that("zero_inflated upper tails", {
+  zi <- zero_inflated(poisson_distrib())
+  th <- list(mu = 3, zi = 0.25)
+  expect_rel(distrib_cdf(zi, c(20, 60), th, lower.tail = FALSE),
+             0.75 * ppois(c(20, 60), 3, lower.tail = FALSE), tolerance = 1e-13)
+  expect_equal(distrib_quantile(zi, 1e-20, th, lower.tail = FALSE),
+               qpois(1e-20 / 0.75, 3, lower.tail = FALSE))
+})
+
+test_that("the Box-Cox transformation increases for a negative lambda", {
+  bc <- transformation(gamma2_distrib(), bc_transform(-0.5))
+  th <- list(mu = 2, sigma2 = 1)
+  q <- c(-1, 0, 0.5, 1)
+  expect_equal(distrib_cdf(bc, q, th), pgamma((-0.5 * q + 1)^(-2), 4, rate = 2),
+               tolerance = 1e-13)
+  p <- c(0.1, 0.5, 0.9)
+  expect_equal(distrib_quantile(bc, p, th),
+               (qgamma(p, 4, rate = 2)^(-0.5) - 1) / -0.5, tolerance = 1e-12)
+})
+
+test_that("an even power of a variable below zero", {
+  d <- transformation(truncated(gaussian1_distrib(), lower = -5, upper = -1),
+                      power_transform(2))
+  th <- list(mu = -2, sigma = 1)
+  y <- c(2, 4, 9)
+  Z <- pnorm(-1, -2) - pnorm(-5, -2)
+  expect_equal(distrib_pdf(d, y, th), dnorm(-sqrt(y), -2) / Z / (2 * sqrt(y)),
+               tolerance = 1e-13)
+  expect_equal(distrib_cdf(d, y, th), (pnorm(-1, -2) - pnorm(-sqrt(y), -2)) / Z,
+               tolerance = 1e-13)
+  d0 <- transformation(truncated(gaussian1_distrib(), upper = 0), power_transform(2))
+  expect_equal(d0@bounds, c(0, Inf))
+})
+
+test_that("the softplus transformation at a large argument", {
+  d <- transformation(gamma2_distrib(), softplus_transform())
+  th <- list(mu = 1000, sigma2 = 1)
+  expect_equal(distrib_quantile(d, c(0.1, 0.5), th),
+               qgamma(c(0.1, 0.5), 1e6, rate = 1000), tolerance = 1e-12)
+})
+
+test_that("the fifth derivative on the link scale of fixed and transformation", {
+  y <- c(0.5, 1.2, 2.5)
+  mu <- c(1, 2, 3)
+  fx <- fixed(gamma1_distrib(), phi = 0.3)
+  # on the log link l = -(y exp(-eta) + eta)/phi, so the fifth derivative is y/(phi mu)
+  expect_rel(distrib_deriv5(fx, y, list(mu = mu), scale = "link")$mu_mu_mu_mu_mu,
+             y / (0.3 * mu), tolerance = 5e-9)
+  tf <- transformation(gamma1_distrib(), log_transform())
+  th <- list(mu = mu, phi = 0.3)
+  expect_equal(distrib_deriv5(tf, log(y), th, scale = "link"),
+               distrib_deriv5(gamma1_distrib(), y, th, scale = "link"), tolerance = 1e-14)
+})
+
+test_that("a folded density far from zero", {
+  d <- folded(gaussian1_distrib())
+  th <- list(mu = 2, sigma = 1)
+  # w = 1 / (1 + exp(-4 x)) is one in double precision at x = 45
+  expect_equal(distrib_gradient(d, 45, th)$mu, 43)
+  expect_equal(distrib_pdf(d, 45, th, log = TRUE), dnorm(45, 2, log = TRUE))
+})
+
+test_that("a folded parent with a bounded support", {
+  d <- folded(truncated(gaussian1_distrib(), lower = -1, upper = 2))
+  th <- list(mu = 0.3, sigma = 1.2)
+  y <- c(1.5, 1.9)
+  expect_equal(distrib_grad_y(d, y, th), -(y - 0.3) / 1.44)
+  expect_equal(distrib_hess_y(d, y, th), rep(-1 / 1.44, 2))
+  expect_true(all(is.finite(distrib_gradient(d, y, th)$mu)))
+})
+
+test_that("the upper tail of a folded distribution", {
+  d <- folded(gaussian1_distrib())
+  th <- list(mu = 0.5, sigma = 1.2)
+  q <- c(10, 12, 20)
+  ref <- pnorm(q, 0.5, 1.2, lower.tail = FALSE) + pnorm(-q, 0.5, 1.2)
+  expect_rel(distrib_cdf(d, q, th, lower.tail = FALSE), ref, tolerance = 1e-13)
+  root <- uniroot(function(v) log(pnorm(v, 0.5, 1.2, lower.tail = FALSE) +
+                                    pnorm(-v, 0.5, 1.2)) - log(1e-20),
+                  c(5, 20), tol = 1e-13)$root
+  expect_equal(distrib_quantile(d, 1e-20, th, lower.tail = FALSE), root, tolerance = 1e-8)
+})
+
+test_that("the folded Laplace's expected derivatives at a center of zero", {
+  d <- folded(laplace_distrib())
+  at <- function(m) distrib_dexpected_hessian(d, 1, list(mu = m, sigma = 1))
+  a0 <- at(0)
+  a1 <- at(1e-12)
+  for (k in names(a0)) expect_equal(a0[[k]], a1[[k]], tolerance = 1e-10)
+  b0 <- distrib_d2expected_hessian(d, 1, list(mu = 0, sigma = 1))
+  expect_equal(b0$sigma_sigma_mu_mu, 2, tolerance = 1e-10)
+  expect_equal(b0$mu_sigma_mu_sigma, 3, tolerance = 1e-10)
+})
+
+test_that("the folded gaussian's information many scales from the fold", {
+  d <- folded(gaussian1_distrib())
+  for (m in c(1e4, 1e6, -1e4)) {
+    e <- distrib_expected_hessian(d, 1, list(mu = m, sigma = 1))
+    expect_equal(c(e$mu_mu, e$sigma_sigma, e$mu_sigma), c(-1, -2, 0), tolerance = 1e-14)
+  }
+})
+
+test_that("reparametrize() differentiates every direction at its own base point", {
+  mp <- function(psi) list(mu = psi$a * psi$b, sigma = exp(psi$a - psi$b))
+  d <- reparametrize(gaussian1_distrib(), map = mp, params = c("a", "b"),
+                     bounds = list(a = c(-Inf, Inf), b = c(-Inf, Inf)),
+                     links = list(a = linkfunctions7::identity_link(),
+                                  b = linkfunctions7::identity_link()))
+  a <- 0.7
+  b <- 1.9
+  y <- c(0.3, -1, 2)
+  s <- exp(a - b)
+  z <- (y - a * b) / s
+  lm <- z / s
+  ls <- (z^2 - 1) / s
+  ref <- -1 / s^2 * b * a + (-2 * z / s^2) * (b * (-s) + a * s) +
+    (1 - 3 * z^2) / s^2 * s * (-s) + lm - ls * s
+  expect_equal(distrib_hessian(d, y, list(a = a, b = b))$a_b, ref, tolerance = 1e-6)
+})
+
+test_that("reparametrize() declares the parent's kinks", {
+  args <- list(laplace_distrib(), map = function(psi) list(mu = psi$m, sigma = psi$s),
+               params = c("m", "s"), bounds = list(m = c(-Inf, Inf), s = c(0, Inf)),
+               links = list(m = linkfunctions7::identity_link(),
+                            s = linkfunctions7::log_link()))
+  expect_equal(unname(do.call(reparametrize, args)@params_smooth), c(FALSE, FALSE))
+  d <- do.call(reparametrize, c(args, list(params_smooth = c(m = FALSE, s = TRUE))))
+  expect_equal(d@params_smooth, c(m = FALSE, s = TRUE))
+})
+
+test_that("the skew normal's mixed fourth derivative in its shape", {
+  # mpmath at 60 digits (vd_T5_ref4.py)
+  h <- distrib_hess_y_hess(skewnormal1_distrib(), c(-0.7, 0.3, 1.4),
+                           list(mu = 0.3, sigma = 1.2, alpha = 0.7))
+  expect_rel(h$alpha_alpha, c(-1.2606639767339714, -0.88419412828830742,
+                              -0.13617558589228018), tolerance = 1e-7)
+})
+
+test_that("the mixed response derivatives at an extreme observation", {
+  g <- distrib_grad_y_hess(cauchy_distrib(), c(1e200, -1e200), list(mu = 0, sigma = 1))
+  expect_true(all(is.finite(unlist(g))))
+  e <- distrib_grad_y_hess(exponential_distrib(), c(0, 1e300), list(mu = 1.5))$mu_mu
+  expect_equal(e, rep(-2 / 1.5^3, 2))
+})
+
+test_that("the inverse gaussians' mixed derivatives are closed", {
+  h <- distrib_hess_y_hess(invgauss2_distrib(), c(0.4, 1.1, 2.3),
+                           list(mu = 1.5, lambda = 2.5))
+  expect_lt(max(abs(unlist(h))), 1e-14)
+  h1 <- distrib_hess_y_hess(invgauss1_distrib(), c(0.4, 2.3), list(mu = 1.5, phi = 0.4))
+  expect_equal(h1$phi_phi, -2 / (0.4^3 * c(0.4, 2.3)^3))
+  expect_equal(h1$mu_mu, c(0, 0))
+})
