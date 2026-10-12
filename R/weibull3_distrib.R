@@ -377,7 +377,10 @@ S7::method(distrib_hess_y_hess, Weibull3Distrib) <- function(
 #' The derivatives of \eqn{F(q) = 1 - \exp\{-(q/b)^\sigma\}} in
 #' \eqn{(m, \sigma)} to order four, each a closed form from its own compiled
 #' kernel, carried to the upper tail and the log scale by
-#' [cdf_tail_scale()] and [cdf_scale_k()].
+#' [cdf_tail_scale()] and [cdf_scale_k()]. The derivatives of the log
+#' survival function (`lower.tail = FALSE, log = TRUE`) are those of
+#' \eqn{-(q/b)^\sigma} itself, from [weibull3_log_surv_derivs()], so that
+#' they are finite where \eqn{1 - F} underflows.
 #'
 #' @param distrib A `Weibull3Distrib` object.
 #' @param q A numeric vector of strictly positive quantiles.
@@ -394,6 +397,7 @@ S7::method(distrib_hess_y_hess, Weibull3Distrib) <- function(
 #' distrib_grad_cdf(d, c(1, 3), list(mean = 4, sigma = 1.7), log = FALSE)
 S7::method(distrib_grad_cdf, Weibull3Distrib) <- function(
     distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
+  if (!lower.tail && log) return(weibull3_log_surv_derivs(distrib, q, theta, 1L))
   d1 <- weibull3_dcdf1_cpp(q, theta[[1]], theta[[2]])
   cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, NULL,
                  lower.tail, log)
@@ -401,6 +405,7 @@ S7::method(distrib_grad_cdf, Weibull3Distrib) <- function(
 
 S7::method(distrib_hess_cdf, Weibull3Distrib) <- function(
     distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
+  if (!lower.tail && log) return(weibull3_log_surv_derivs(distrib, q, theta, 2L))
   d1 <- weibull3_dcdf1_cpp(q, theta[[1]], theta[[2]])
   d2 <- weibull3_dcdf2_cpp(q, theta[[1]], theta[[2]])
   cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, d2,
@@ -409,6 +414,7 @@ S7::method(distrib_hess_cdf, Weibull3Distrib) <- function(
 
 S7::method(distrib_deriv3_cdf, Weibull3Distrib) <- function(
     distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
+  if (!lower.tail && log) return(weibull3_log_surv_derivs(distrib, q, theta, 3L))
   dF <- list(weibull3_dcdf1_cpp(q, theta[[1]], theta[[2]]),
              weibull3_dcdf2_cpp(q, theta[[1]], theta[[2]]),
              weibull3_dcdf3_cpp(q, theta[[1]], theta[[2]]))
@@ -417,11 +423,84 @@ S7::method(distrib_deriv3_cdf, Weibull3Distrib) <- function(
 
 S7::method(distrib_deriv4_cdf, Weibull3Distrib) <- function(
     distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
+  if (!lower.tail && log) return(weibull3_log_surv_derivs(distrib, q, theta, 4L))
   dF <- list(weibull3_dcdf1_cpp(q, theta[[1]], theta[[2]]),
              weibull3_dcdf2_cpp(q, theta[[1]], theta[[2]]),
              weibull3_dcdf3_cpp(q, theta[[1]], theta[[2]]),
              weibull3_dcdf4_cpp(q, theta[[1]], theta[[2]]))
   cdf_scale_k(distrib, tail_cdf(distrib, q, theta, lower.tail), dF, 4L, lower.tail, log)
+}
+
+
+#' Log-Survival Derivatives of the Weibull, Mean and Shape
+#'
+#' @description
+#' Computes the derivatives of order `o` of
+#' \eqn{\log S(q) = -e^{h}}, \eqn{h = \sigma\{\log q - \log m +
+#' \log\Gamma(1 + 1/\sigma)\}}, in \eqn{(m, \sigma)}, as
+#' \eqn{-e^{h}} times the complete Bell polynomial in the partial derivatives
+#' of \eqn{h} ([bell_f_ratio()]). The function \eqn{h} is \eqn{\sigma} times a
+#' sum of a function of \eqn{m} and a function of \eqn{\sigma}, so a mixed
+#' partial derivative of \eqn{h} is nonzero only when it names \eqn{\sigma}
+#' at most once; the pure derivatives in \eqn{\sigma} are
+#' \eqn{\sigma g_k + k g_{k-1}}, where \eqn{g_k} is the derivative of order
+#' \eqn{k} of \eqn{\log\Gamma(1 + 1/\sigma)} by the chain rule over the
+#' polygamma functions and \eqn{g_0} is the whole sum. At \eqn{q \le 0} every
+#' derivative is zero.
+#'
+#' @param distrib A `Weibull3Distrib` object.
+#' @param q A numeric vector of quantiles.
+#' @param theta A named list with components `mean` and `sigma`.
+#' @param o The derivative order, 1 to 4.
+#'
+#' @return A named list, one component per multi-index of order `o`, in the
+#'   order of [hess_names()] at order two.
+#'
+#' @examples
+#' d <- weibull3_distrib()
+#' distributions7:::weibull3_log_surv_derivs(d, c(18, 480),
+#'                                           list(mean = 60, sigma = 6), 2L)
+#'
+#' @keywords internal
+weibull3_log_surv_derivs <- function(distrib, q, theta, o) {
+  params <- distrib@params
+  n <- max(length(q), length(theta[[1]]), length(theta[[2]]))
+  q <- rep_len(q, n)
+  m <- rep_len(theta[[1]], n)
+  sigma <- rep_len(theta[[2]], n)
+  inside <- q > 0
+  # log q is taken at 1 outside the support, where the result is masked
+  lq <- log(ifelse(inside, q, 1))
+  x <- 1 / sigma
+  # derivatives of x = 1/sigma and of lgamma(1 + x) in sigma
+  xd <- list(-x^2, 2 * x^3, -6 * x^4, 24 * x^5)
+  p <- lapply(0:3, function(j) psigamma(1 + x, j))
+  g <- list(
+    p[[1]] * xd[[1]],
+    p[[2]] * xd[[1]]^2 + p[[1]] * xd[[2]],
+    p[[3]] * xd[[1]]^3 + 3 * p[[2]] * xd[[1]] * xd[[2]] + p[[1]] * xd[[3]],
+    p[[4]] * xd[[1]]^4 + 6 * p[[3]] * xd[[1]]^2 * xd[[2]] +
+      p[[2]] * (3 * xd[[2]]^2 + 4 * xd[[1]] * xd[[3]]) + p[[1]] * xd[[4]]
+  )
+  A <- lq - log(m) + lgamma(1 + x)
+  h <- sigma * A
+  hderiv <- function(block) {
+    ns <- sum(block == params[2L])
+    j <- sum(block == params[1L])
+    if (j == 0L) {
+      return(sigma * g[[ns]] + ns * (if (ns == 1L) A else g[[ns - 1L]]))
+    }
+    if (ns >= 2L) return(0 * q)
+    base <- (-1)^j * factorial(j - 1L) / m^j
+    if (ns == 1L) base else sigma * base
+  }
+  eh <- exp(h)
+  out <- lapply(deriv_indices(params, o), function(I) {
+    v <- -eh * bell_f_ratio(params[I], hderiv)
+    ifelse(inside, v, 0)
+  })
+  out <- stats::setNames(out, deriv_names(params, o))
+  if (o == 2L) out[hess_names(params)] else out
 }
 
 

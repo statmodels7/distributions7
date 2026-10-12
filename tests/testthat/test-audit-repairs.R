@@ -1446,3 +1446,34 @@ test_that("a zero-truncated count near degeneracy keeps its derivatives", {
   expect_rel(h2$mu_mu, 0.31249999718750002, tolerance = 1e-6)
   expect_rel(h2$mu_theta, 0.12499999729166669, tolerance = 1e-12)
 })
+
+test_that("weibull3's log survival derivatives are exact in the far tail", {
+  # references from mpmath at 50 digits (w3_ls_ref.py): the derivatives of
+  # log S = -(q Gamma(1 + 1/sigma)/m)^sigma at m = 60, sigma = 6
+  d <- weibull3_distrib()
+  th <- list(mean = 60, sigma = 6)
+  q <- c(162, 480)
+  g <- distrib_grad_cdf(d, q, th, lower.tail = FALSE, log = TRUE)
+  expect_rel(g$mean, c(24.699162598605941, 16712.428650744265), tolerance = 1e-12)
+  expect_rel(g$sigma, c(-240.46618702793865, -344237.60695462161), tolerance = 1e-12)
+  h <- distrib_hess_cdf(d, q, th, lower.tail = FALSE, log = TRUE)
+  expect_named(h, c("mean_mean", "sigma_sigma", "mean_sigma"))
+  expect_rel(h$mean_sigma, c(28.163145802561522, 37209.165470586205), tolerance = 1e-12)
+  d3 <- distrib_deriv3_cdf(d, q, th, lower.tail = FALSE, log = TRUE)
+  expect_rel(d3$sigma_sigma_sigma, c(-231.62826033794844, -1466308.7079488819),
+             tolerance = 1e-12)
+  d4 <- distrib_deriv4_cdf(d, q, th, lower.tail = FALSE, log = TRUE)
+  expect_rel(d4$sigma_sigma_sigma_sigma, c(-228.20780287861371, -3030618.1936604887),
+             tolerance = 1e-12)
+  expect_rel(d4$mean_mean_sigma_sigma, c(-4.6228276222375040, -10863.163059257059),
+             tolerance = 1e-12)
+  expect_rel(d4$mean_mean_mean_mean, c(-0.057631379396747196, -38.995666851736618),
+             tolerance = 1e-12)
+  # a small shape, and zero outside the support
+  d3s <- distrib_deriv4_cdf(d, 5.4, list(mean = 2, sigma = 0.15), lower.tail = FALSE,
+                            log = TRUE)
+  expect_rel(d3s$mean_sigma_sigma_sigma, 3.7139487595982251, tolerance = 1e-12)
+  g0 <- distrib_grad_cdf(d, c(-1, 0), th, lower.tail = FALSE, log = TRUE)
+  expect_equal(g0$mean, c(0, 0))
+  expect_equal(g0$sigma, c(0, 0))
+})
