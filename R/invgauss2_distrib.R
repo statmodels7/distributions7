@@ -211,7 +211,8 @@ S7::method(distrib_cdf, InvGauss2Distrib) <- function(distrib, q, theta,
 #' Computes the inverse Gaussian quantile function by calling
 #' [statmod::qinvgauss()] at `mean = mu` and `dispersion = 1/lambda`. There is
 #' no closed form: the distribution function is elementary but not invertible
-#' in elementary terms, so `qinvgauss()` inverts it numerically. The
+#' in elementary terms, so `qinvgauss()` inverts it numerically, with the
+#' far-tail correction of [invgauss_quantile()]. The
 #' distribution function is strictly increasing on \eqn{(0, \infty)}, so the
 #' round trip through [distrib_cdf.InvGauss2Distrib()] returns `p`.
 #'
@@ -253,8 +254,8 @@ S7::method(distrib_cdf, InvGauss2Distrib) <- function(distrib, q, theta,
 S7::method(distrib_quantile, InvGauss2Distrib) <- function(distrib, p, theta,
                                                             lower.tail = TRUE,
                                                             log.p = FALSE, ...) {
-  statmod::qinvgauss(p, mean = theta[[1]], dispersion = 1 / theta[[2]],
-                     lower.tail = lower.tail, log.p = log.p)
+  invgauss_quantile(distrib, p, theta, theta[[1]], 1 / theta[[2]], lower.tail,
+                    log.p)
 }
 
 #' @title Inverse Gaussian Random Number Generator in Mean and Shape

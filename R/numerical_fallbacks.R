@@ -223,7 +223,10 @@ S7::method(distrib_cdf, continuous_distrib) <- function(distrib, q, theta, lower
 #' to the reciprocal of the density there, so that a sharply peaked family and a
 #' diffuse one
 #' take a comparable number of expansions; after thirty doublings the step is
-#' multiplied by a thousand, so that a quantile far in a tail is reached.
+#' multiplied by a thousand, so that a quantile far in a tail is reached. The
+#' expansion stops at a quarter of the largest double: a root beyond it is
+#' returned as `Inf` (or `-Inf`), the quadrature of a distribution function
+#' being unable to reach the mass past the largest double.
 #'
 #' The probability is first turned into the logarithms of both tails by
 #' [quantile_log_tails()], without forming \eqn{1 - p} or exponentiating a
@@ -318,13 +321,19 @@ S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, 
   left <- ifelse(low, target <= log(Fm), target > log1p(-Fm))
   lo <- ifelse(left, b[1], m)
   hi <- ifelse(left, m, b[2])
+  beyond <- logical(length(target))
   for (side in c("lo", "hi")) {
     open <- which(if (side == "lo") left & !is.finite(b[1]) else
                     !left & !is.finite(b[2]))
     step <- s[open]
     for (it in seq_len(150L)) {
       if (!length(open)) break
-      x <- if (side == "lo") m[open] - step else m[open] + step
+      # the step stops at a quarter of the largest double: a root further out
+      # is returned as infinite, the tail beyond it being out of reach of
+      # the quadrature of a family whose distribution function is one
+      big <- .Machine$double.xmax / 4
+      x <- if (side == "lo") pmax(m[open] - step, -big) else
+        pmin(m[open] + step, big)
       # the residual of the solved tail: positive while x is short of the
       # root on the lower side, or beyond it on the upper side
       r <- lcdf_at(x, open) - target[open]
@@ -332,6 +341,9 @@ S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, 
       more <- if (side == "lo") r > 0 & low[open] | r < 0 & !low[open]
               else r < 0 & low[open] | r > 0 & !low[open]
       more[is.na(more)] <- FALSE
+      edge <- more & abs(x) == big
+      beyond[open[edge]] <- TRUE
+      more <- more & !edge
       open <- open[more]
       step <- (if (it > 30L) 1e3 else 2) * step[more]
     }
@@ -340,7 +352,9 @@ S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, 
   # safeguarded Newton inside the bracket
   x <- ifelse(is.finite(lo) & is.finite(hi), (lo + hi) / 2,
               ifelse(is.finite(lo), lo, hi))
-  act <- seq_along(target)
+  # a root past the largest double is the infinite end on that side
+  x[beyond] <- ifelse(left[beyond], -Inf, Inf)
+  act <- which(!beyond)
   for (it in seq_len(100L)) {
     if (!length(act)) break
     xa <- x[act]

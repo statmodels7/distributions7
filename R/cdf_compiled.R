@@ -68,11 +68,20 @@ compiled_cdf <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE,
   a <- compiled_cdf_args(distrib, q, theta)
   out <- d7_cdf_cpp(a$cls, a$q, a$tm, lower.tail)
   if (log.p) return(compiled_log_cdf(distrib, a, out, lower.tail))
-  # below 1e-290 the value is taken from the logarithm, which the kernel's
-  # sum does not resolve there
-  tiny <- !is.na(out) & out < 1e-290 & is.finite(a$q)
-  if (any(tiny)) out[tiny] <- exp(compiled_log_cdf(distrib, a, out, lower.tail)[tiny])
+  # in the far tail the value is taken from the logarithm, which the kernel's
+  # rule, placed on the family's own scale, does not resolve there
+  far <- compiled_far_tail(distrib, a, out)
+  if (any(far)) out[far] <- exp(compiled_log_cdf(distrib, a, out, lower.tail)[far])
   out
+}
+
+#' @rdname compiled_cdf
+#' @usage NULL
+#' @return `compiled_far_tail()` returns the logical vector of the quantiles
+#'   whose requested tail is below \eqn{e^{-5}}, inside the support.
+compiled_far_tail <- function(distrib, a, out) {
+  !is.na(out) & out < exp(log_tail_cut) & is.finite(a$q) &
+    a$q > distrib@bounds[1L] & a$q < distrib@bounds[2L]
 }
 
 #' @rdname compiled_cdf
@@ -82,10 +91,9 @@ compiled_cdf <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE,
 #' @return `compiled_log_cdf()` returns the logarithm of `out`, formed as
 #'   \eqn{\log(1 - P_{\mathrm{other}})} through `log1p()` where `out` is
 #'   above one half, and as
-#'   \eqn{\ell(q) + \log\int_0^{\infty} e^{\ell(q \mp u) - \ell(q)}\,du}
-#'   where `out` is below \eqn{10^{-290}}, the integral taken by
-#'   [stats::integrate()] on the scale \eqn{1/|\partial_y \ell(q)|} and cut
-#'   at the end of the support.
+#'   \eqn{\ell(q) + \log\int_{\mathrm{tail}} e^{\ell(y) - \ell(q)}\,dy}
+#'   where `out` is below \eqn{e^{-5}}, the integral taken by
+#'   [quad_log_tail_prob()] on the scale \eqn{1/|\partial_y \ell(q)|}.
 compiled_log_cdf <- function(distrib, a, out, lower.tail) {
   lo <- log(out)
   big <- !is.na(out) & out > 0.5
@@ -93,10 +101,11 @@ compiled_log_cdf <- function(distrib, a, out, lower.tail) {
     other <- d7_cdf_cpp(a$cls, a$q[big], a$tm[big, , drop = FALSE], !lower.tail)
     lo[big] <- log1p(-other)
   }
-  tiny <- which(!is.na(out) & out < 1e-290 & is.finite(a$q))
-  for (i in tiny) {
-    th <- stats::setNames(as.list(a$tm[i, ]), distrib@params)
-    lo[i] <- log_tail_integral(distrib, a$q[i], th, lower.tail)
+  far <- compiled_far_tail(distrib, a, out)
+  if (any(far)) {
+    th <- stats::setNames(lapply(seq_len(ncol(a$tm)),
+                                 function(j) a$tm[far, j]), distrib@params)
+    lo[far] <- quad_log_tail_prob(distrib, a$q[far], th, lower.tail)
   }
   lo
 }

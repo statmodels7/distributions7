@@ -29,7 +29,9 @@ The Student t with \eqn{\nu} degrees of freedom, location \eqn{\mu} and
 scale \eqn{s_0 = \sigma\sqrt{1 - 2/\nu}}, so that the standard deviation is
 \eqn{\sigma}. The density, the distribution function, the quantile function
 and the generator are \code{\link[stats:TDist]{stats::dt()}}, \code{\link[stats:TDist]{stats::pt()}}, \code{\link[stats:TDist]{stats::qt()}} and
-\code{\link[stats:TDist]{stats::rt()}} at that scale.
+\code{\link[stats:TDist]{stats::rt()}} at that scale. Where the requested tail probability is below
+\eqn{e^{-5}} the value of \code{qt()} is corrected by Newton steps on the log
+tail probability (\code{\link[=tail_quantile_refine]{tail_quantile_refine()}}).
 }
 \examples{
 d <- student_t2_distrib()

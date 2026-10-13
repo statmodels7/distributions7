@@ -224,7 +224,10 @@ S7::method(distrib_cdf, InvGauss1Distrib) <- function(distrib, q, theta, lower.t
 #' Computes the inverse Gaussian quantile function by calling
 #' [statmod::qinvgauss()] at `mean = mu` and `dispersion = phi`. There is no
 #' closed form: the distribution function is elementary but not invertible in
-#' elementary terms, so `qinvgauss()` inverts it numerically. The distribution
+#' elementary terms, so `qinvgauss()` inverts it numerically. Where the
+#' requested tail probability is below \eqn{e^{-5}}, where `qinvgauss()` can
+#' stop on its iteration limit, the value is corrected by Newton steps on the
+#' log tail probability ([invgauss_quantile()]). The distribution
 #' function is strictly increasing on \eqn{(0, \infty)}, so the round trip
 #' through [distrib_cdf.InvGauss1Distrib()] returns `p`.
 #'
@@ -263,13 +266,49 @@ S7::method(distrib_cdf, InvGauss1Distrib) <- function(distrib, q, theta, lower.t
 #' # The median falls well below the mean at this dispersion.
 #' c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 S7::method(distrib_quantile, InvGauss1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
-  statmod::qinvgauss(
-    p = p,
-    mean = theta[[1]],
-    dispersion = theta[[2]],
-    lower.tail = lower.tail,
-    log.p = log.p
-  )
+  invgauss_quantile(distrib, p, theta, theta[[1]], theta[[2]], lower.tail, log.p)
+}
+
+#' Inverse Gaussian Quantile With a Far-Tail Refinement
+#'
+#' @description
+#' Calls [statmod::qinvgauss()] and, where the requested tail probability is
+#' below \eqn{e^{-5}}, corrects its value with [tail_quantile_refine()]:
+#' there `qinvgauss()` can stop on its iteration limit with a value off by
+#' tens of per cent, and its warning is not passed on for those elements.
+#'
+#' @param distrib An `InvGauss1Distrib` or `InvGauss2Distrib` object.
+#' @param p,lower.tail,log.p As in [distrib_quantile()].
+#' @param theta The family's named list of parameters.
+#' @param mean,dispersion The parameters of `qinvgauss()`.
+#'
+#' @return A numeric vector of quantiles.
+#'
+#' @examples
+#' d <- invgauss1_distrib()
+#' th <- list(mu = 1.7, phi = 2.3)
+#' x <- distributions7:::invgauss_quantile(d, -800, th, 1.7, 2.3, FALSE, TRUE)
+#' distrib_cdf(d, x, th, lower.tail = FALSE, log.p = TRUE)
+#'
+#' @keywords internal
+invgauss_quantile <- function(distrib, p, theta, mean, dispersion, lower.tail,
+                              log.p) {
+  n <- max(length(p), length(mean), length(dispersion))
+  lt <- rep_len(if (log.p) p else log(p), n)
+  far <- !is.na(lt) & lt < log_tail_cut
+  x <- numeric(n)
+  pp <- rep_len(p, n); mm <- rep_len(mean, n); dd <- rep_len(dispersion, n)
+  if (any(!far)) {
+    x[!far] <- statmod::qinvgauss(pp[!far], mean = mm[!far],
+                                  dispersion = dd[!far],
+                                  lower.tail = lower.tail, log.p = log.p)
+  }
+  if (any(far)) {
+    x[far] <- suppressWarnings(statmod::qinvgauss(
+      pp[far], mean = mm[far], dispersion = dd[far],
+      lower.tail = lower.tail, log.p = log.p))
+  }
+  tail_quantile_refine(distrib, x, pp, theta, lower.tail, log.p)
 }
 
 #' @title Inverse Gaussian Random Number Generator in Mean and Dispersion

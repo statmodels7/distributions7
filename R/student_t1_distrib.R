@@ -223,8 +223,11 @@ S7::method(distrib_cdf, StudentT1Distrib) <- function(distrib, q, theta, lower.t
 #' with \eqn{T_\nu^{-1}} the standard Student t quantile function on \eqn{\nu}
 #' degrees of freedom, by calling [stats::qt()]. The distribution function is
 #' strictly increasing on the whole line, so the inverse is exact and unique
-#' and the root-finding fallback of the base class is not used. `Q(0)` is
-#' `-Inf` and `Q(1)` is `Inf`.
+#' and the root-finding fallback of the base class is not used. Where the
+#' requested tail probability is below \eqn{e^{-5}} the value of `qt()`,
+#' which loses digits there, is corrected by Newton steps on the log tail
+#' probability ([tail_quantile_refine()]). `Q(0)` is `-Inf` and `Q(1)` is
+#' `Inf`.
 #'
 #' @param distrib A `StudentT1Distrib` object, from [student_t1_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or of their
@@ -262,12 +265,14 @@ S7::method(distrib_cdf, StudentT1Distrib) <- function(distrib, q, theta, lower.t
 #' rbind(t = distrib_quantile(d, c(0.001, 0.999), th),
 #'       gaussian = qnorm(c(0.001, 0.999), 0.4, 1.2))
 S7::method(distrib_quantile, StudentT1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
-  theta[[1]] + theta[[2]] * stats::qt(
+  x <- theta[[1]] + theta[[2]] * stats::qt(
     p = p,
     df = theta[[3]],
     lower.tail = lower.tail,
     log.p = log.p
   )
+  # far in a tail qt() loses digits (2.5e-5 at log p = -800, nu = 2.4)
+  tail_quantile_refine(distrib, x, p, theta, lower.tail, log.p)
 }
 
 #' @title Student t Random Number Generator

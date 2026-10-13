@@ -1,3 +1,74 @@
+# distributions7 0.78.0
+
+The derivatives of the logarithm of a tail probability, and the tail
+probabilities and quantiles themselves, were checked against mpmath at 50
+digits on every continuous family, three parameter sets and both tails, at
+log probabilities from -5 to -1e5. The defects found are repaired, each with a
+test that fails on 0.77.1.
+
+## Bug fixes
+
+* The derivatives of `log S` and `log F` of order one to four were composed
+  from those of the distribution function and divided by the tail
+  probability. They lost digits as the tail probability fell (at a log
+  probability of -200, from 5e-9 for the logistic to 2e-5 for `gamma2`; at
+  -600 up to 8e-3; `student_t1` returned 1e7 at -200) and were `NaN` once it
+  underflowed, although the log probability is finite. They are now taken
+  directly:
+  * for the Gaussian (three parametrizations), the lognormal in
+    `(mu, sigma2)`, the Laplace (both parametrizations), the logistic and the
+    Gumbel, as `g(z)` with `z` linear in the location, by Faa di Bruno with
+    the derivatives of `g` written out (the Gaussian by its asymptotic
+    expansion from `z = 9`), in compiled code, in the whole support;
+  * for every other family whose distribution function goes through special
+    functions or quadrature (beta, gamma, chi-squared, generalized gamma,
+    inverse Gaussian, elastic net, lognormal in the mean and variance,
+    pseudo-Huber, skew normal, skew t, Student t, von Mises; and the lower
+    tail of the two Weibull families), as `l(q) + log J` with `J` the
+    integral of `exp(l(y) - l(q))` over the tail, where the log tail
+    probability is below -5. The partition sums are compiled.
+  Against mpmath the result is within 6e-13 at every representable quantile
+  of the census, both tails, except the second gamma parametrization at a
+  shape of 0.25 (3e-10 at -20) and the betas within 1e-13 of 1. The
+  natural-scale derivatives of the second group in the far tail are the
+  probability times the Bell polynomial in the log-scale ones.
+* The distribution function of `skewt_distrib()` was wrong between about
+  `q = 1e10` and the point where the tail fell below 1e-290: the compiled
+  quadrature runs on the family's own scale, which does not resolve a
+  polynomial tail far from the center (log S off by 3e-9 at `q = 1e10`, by
+  0.24 at `1e50`, and by up to 206 at `nu = 1.09`). Below a tail probability
+  of `exp(-5)` it is now the quadrature of the tail on the scale of `q`; the
+  two pseudo-Huber families take the same route.
+* `distrib_quantile()` of the Gumbel with `lower.tail = FALSE, log.p = TRUE`
+  returned `Inf` from `log p = -38` and lost digits from -20: it formed
+  `log(1 - exp(log p))`. The upper log survival function lost relative
+  accuracy near 0 for the same reason (1e-9 at `log S = -1e-8`).
+* The default quantile of a continuous family returns `Inf` (or `-Inf`) when
+  the root lies beyond a quarter of the largest double. It returned a finite
+  point where the tail was hundreds of log units away (the skew t at
+  `nu = 1.09`, `log p = -800`, gave `3.3e259`).
+* The quantiles of the inverse Gaussian were wrong far in either tail
+  (`statmod::qinvgauss()` stops on its iteration limit: 24 per cent at
+  `log p = -800`, 50 per cent at -1e5); those of the Student t lost digits
+  (2.5e-5 at -800); those of the two generalized gammas were 0 far in the
+  lower tail. Below a tail probability of `exp(-5)` they are corrected by
+  safeguarded Newton steps on the log tail probability; they agree with
+  mpmath to 1.6e-13.
+* The two Weibull families and the two generalized gammas returned `-Inf` for
+  `log F` far in the lower tail, where the cumulative hazard or the gamma
+  argument underflows; the value is now taken from its logarithm. The
+  Weibull quantile there is in closed form on the log scale.
+* The third, fourth and fifth derivatives of the log-density of
+  `lognormal2_distrib()` were `NaN` or infinite for `y` below `eps` times the
+  mean: `log(y/m)` was formed as `log1p((y - m)/m)`.
+
+## Known limits
+
+* A quantile beyond the largest double is not representable: the von Mises
+  at every target from -40, the betas from about -40 (the quantile is within
+  eps of 1), the Cauchy, the Student t, the skew t and the generalized Pareto
+  with a positive shape from about -800.
+
 # distributions7 0.77.1
 
 * The derivatives of the log survival function of `weibull3_distrib()`

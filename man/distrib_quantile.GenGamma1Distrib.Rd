@@ -32,8 +32,10 @@ inputs, strictly positive for a probability in \eqn{(0, 1)}.
 Computes \eqn{Q(u) = a\,\{Q_\Gamma(u;\, d/p)\}^{1/p}}, inverting the same
 representation as the distribution function: \eqn{(Y/a)^p} is Gamma with
 shape \eqn{d/p}, so its quantile raised to the power \eqn{1/p} and scaled by
-\eqn{a} is the generalized gamma's. The whole computation is one \code{qgamma}
-call, without root finding.
+\eqn{a} is the generalized gamma's. Where the requested tail probability is
+below \eqn{e^{-5}} the value is corrected by Newton steps on the log tail
+probability (\code{\link[=tail_quantile_refine]{tail_quantile_refine()}}): far in the lower tail on the log
+scale \code{qgamma()} returns 0.
 }
 \examples{
 d <- gengamma1_distrib()

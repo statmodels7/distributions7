@@ -219,8 +219,9 @@ S7::method(distrib_cdf, GumbelDistrib) <- function(distrib, q, theta, lower.tail
     # log F = -w exactly, so the lower tail never underflows to log(0).
     if (log.p) -w else exp(-w)
   } else {
-    # log(1 - exp(-w)) = -z + log1p(-w/2 + ...) where w is tiny
-    if (log.p) ifelse(w < 1e-10, -z - w / 2, log(-expm1(-w))) else -expm1(-w)
+    # log(1 - exp(-w)) = -z + log1p(-w/2 + ...) where w is tiny, and
+    # log1p(-exp(-w)) where w is large and the logarithm is close to 0
+    if (log.p) ifelse(w < 1e-10, -z - w / 2, log1mexp_neg(-w)) else -expm1(-w)
   }
 }
 
@@ -229,6 +230,10 @@ S7::method(distrib_cdf, GumbelDistrib) <- function(distrib, q, theta, lower.tail
 #' @description
 #' Computes the Gumbel quantile function in closed form,
 #' \deqn{Q(p; \mu, \sigma) = \mu - \sigma \log(-\log p).}
+#' For the upper tail on the log scale, \eqn{\log(-\log F)} is taken from
+#' \eqn{\log S} itself ([log_neg_log1mexp()]), never as
+#' \eqn{\log(1 - e^{\log S})}, which is \eqn{\log 1 = 0} once \eqn{S} is
+#' below machine epsilon.
 #' The distribution function is strictly increasing on the whole line, so this
 #' is its exact inverse and the round trip through
 #' [distrib_cdf.GumbelDistrib()] returns `p`. The median is
@@ -274,13 +279,19 @@ S7::method(distrib_cdf, GumbelDistrib) <- function(distrib, q, theta, lower.tail
 S7::method(distrib_quantile, GumbelDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   # log p is what the formula needs, so it is kept rather than exponentiated
   # and logged again; for the upper tail log(1 - p) comes from log1p.
-  lp <- if (lower.tail) {
-    if (log.p) p else log(p)
+  # the formula needs log(-log F); from the upper tail on the log scale it is
+  # taken from log S itself, since log F = log(1 - e^p) rounds to 0 once
+  # e^p is below eps and log(-0) is -Inf
+  ll <- if (lower.tail) {
+    if (log.p) log(-p) else log(-log(p))
+  } else if (log.p) {
+    log_neg_log1mexp(p)
   } else {
-    if (log.p) log(-expm1(p)) else log1p(-p)
+    log(-log1p(-p))
   }
-  theta[[1]] - theta[[2]] * log(-lp)
+  theta[[1]] - theta[[2]] * ll
 }
+
 
 #' @title Gumbel Random Number Generator
 #' @name distrib_rng.GumbelDistrib

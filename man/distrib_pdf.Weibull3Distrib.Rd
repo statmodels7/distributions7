@@ -31,7 +31,10 @@ the distribution function, the quantile function and the generator are
 \code{\link[stats:Weibull]{stats::dweibull()}}, \code{\link[stats:Weibull]{stats::pweibull()}}, \code{\link[stats:Weibull]{stats::qweibull()}} and
 \code{\link[stats:Weibull]{stats::rweibull()}} at that scale. At a small shape \eqn{b} underflows to
 0; there the four methods evaluate the same formulas through
-\eqn{\log b} and \eqn{\log(y/b)}.
+\eqn{\log b} and \eqn{\log(y/b)}. On the log scale of the lower tail the
+distribution function and the quantile go through the logarithm of the
+cumulative hazard (\code{\link[=weibull_log_lower]{weibull_log_lower()}}, \code{\link[=log_neg_log1mexp]{log_neg_log1mexp()}}), so that
+neither rounds where the hazard or \eqn{1 - p} would.
 }
 \examples{
 d <- weibull3_distrib()

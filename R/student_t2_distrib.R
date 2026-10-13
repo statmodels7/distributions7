@@ -94,7 +94,9 @@ student_t2_scale <- function(theta) {
 #' scale \eqn{s_0 = \sigma\sqrt{1 - 2/\nu}}, so that the standard deviation is
 #' \eqn{\sigma}. The density, the distribution function, the quantile function
 #' and the generator are [stats::dt()], [stats::pt()], [stats::qt()] and
-#' [stats::rt()] at that scale.
+#' [stats::rt()] at that scale. Where the requested tail probability is below
+#' \eqn{e^{-5}} the value of `qt()` is corrected by Newton steps on the log
+#' tail probability ([tail_quantile_refine()]).
 #'
 #' @param distrib A `StudentT2Distrib` object, from [student_t2_distrib()].
 #' @param y,q A numeric vector of observations or quantiles.
@@ -129,8 +131,10 @@ S7::method(distrib_cdf, StudentT2Distrib) <- function(distrib, q, theta,
 S7::method(distrib_quantile, StudentT2Distrib) <- function(distrib, p, theta,
                                                            lower.tail = TRUE,
                                                            log.p = FALSE, ...) {
-  theta[[1]] + student_t2_scale(theta) *
+  x <- theta[[1]] + student_t2_scale(theta) *
     stats::qt(p, df = theta[[3]], lower.tail = lower.tail, log.p = log.p)
+  # far in a tail qt() loses digits
+  tail_quantile_refine(distrib, x, p, theta, lower.tail, log.p)
 }
 
 S7::method(distrib_rng, StudentT2Distrib) <- function(distrib, n, theta, ...) {

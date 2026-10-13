@@ -38,7 +38,10 @@ parameter setting in one evaluation of the density per refinement
 to the reciprocal of the density there, so that a sharply peaked family and a
 diffuse one
 take a comparable number of expansions; after thirty doublings the step is
-multiplied by a thousand, so that a quantile far in a tail is reached.
+multiplied by a thousand, so that a quantile far in a tail is reached. The
+expansion stops at a quarter of the largest double: a root beyond it is
+returned as \code{Inf} (or \code{-Inf}), the quadrature of a distribution function
+being unable to reach the mass past the largest double.
 
 The probability is first turned into the logarithms of both tails by
 \code{\link[=quantile_log_tails]{quantile_log_tails()}}, without forming \eqn{1 - p} or exponentiating a

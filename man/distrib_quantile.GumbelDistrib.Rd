@@ -29,6 +29,10 @@ A numeric vector of quantiles, of length
 \description{
 Computes the Gumbel quantile function in closed form,
 \deqn{Q(p; \mu, \sigma) = \mu - \sigma \log(-\log p).}
+For the upper tail on the log scale, \eqn{\log(-\log F)} is taken from
+\eqn{\log S} itself (\code{\link[=log_neg_log1mexp]{log_neg_log1mexp()}}), never as
+\eqn{\log(1 - e^{\log S})}, which is \eqn{\log 1 = 0} once \eqn{S} is
+below machine epsilon.
 The distribution function is strictly increasing on the whole line, so this
 is its exact inverse and the round trip through
 \code{\link[=distrib_cdf.GumbelDistrib]{distrib_cdf.GumbelDistrib()}} returns \code{p}. The median is

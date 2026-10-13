@@ -111,7 +111,10 @@ weibull3_scale_ok <- function(lb) {
 #' [stats::dweibull()], [stats::pweibull()], [stats::qweibull()] and
 #' [stats::rweibull()] at that scale. At a small shape \eqn{b} underflows to
 #' 0; there the four methods evaluate the same formulas through
-#' \eqn{\log b} and \eqn{\log(y/b)}.
+#' \eqn{\log b} and \eqn{\log(y/b)}. On the log scale of the lower tail the
+#' distribution function and the quantile go through the logarithm of the
+#' cumulative hazard ([weibull_log_lower()], [log_neg_log1mexp()]), so that
+#' neither rounds where the hazard or \eqn{1 - p} would.
 #'
 #' @param distrib A `Weibull3Distrib` object, from [weibull3_distrib()].
 #' @param y,q A numeric vector of observations or quantiles.
@@ -149,6 +152,11 @@ S7::method(distrib_cdf, Weibull3Distrib) <- function(distrib, q, theta,
                                                      lower.tail = TRUE,
                                                      log.p = FALSE, ...) {
   lb <- weibull3_log_scale(theta)
+  # log F from the logarithm of the cumulative hazard, which pweibull() loses
+  # once the hazard itself underflows
+  if (lower.tail && log.p) {
+    return(weibull_log_lower(theta[[2]] * (suppressWarnings(log(pmax(q, 0))) - lb)))
+  }
   if (all(weibull3_scale_ok(lb))) {
     return(stats::pweibull(q, shape = theta[[2]], scale = exp(lb),
                            lower.tail = lower.tail, log.p = log.p))
@@ -166,6 +174,9 @@ S7::method(distrib_quantile, Weibull3Distrib) <- function(distrib, p, theta,
                                                           lower.tail = TRUE,
                                                           log.p = FALSE, ...) {
   lb <- weibull3_log_scale(theta)
+  # the cumulative hazard from log F without forming 1 - F, which qweibull()
+  # rounds to 1 once F is below eps
+  if (lower.tail && log.p) return(exp(lb + log_neg_log1mexp(p) / theta[[2]]))
   if (all(weibull3_scale_ok(lb))) {
     return(stats::qweibull(p, shape = theta[[2]], scale = exp(lb),
                            lower.tail = lower.tail, log.p = log.p))

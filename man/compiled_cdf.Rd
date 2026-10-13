@@ -2,6 +2,7 @@
 % Please edit documentation in R/cdf_compiled.R
 \name{compiled_cdf}
 \alias{compiled_cdf}
+\alias{compiled_far_tail}
 \alias{compiled_log_cdf}
 \alias{log_tail_integral}
 \alias{compiled_grad_cdf}
@@ -47,13 +48,15 @@ For \code{compiled_cdf()}, a numeric vector; for the two derivative
 bodies, a named list of numeric vectors as \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and
 \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} return.
 
+\code{compiled_far_tail()} returns the logical vector of the quantiles
+whose requested tail is below \eqn{e^{-5}}, inside the support.
+
 \code{compiled_log_cdf()} returns the logarithm of \code{out}, formed as
 \eqn{\log(1 - P_{\mathrm{other}})} through \code{log1p()} where \code{out} is
 above one half, and as
-\eqn{\ell(q) + \log\int_0^{\infty} e^{\ell(q \mp u) - \ell(q)}\,du}
-where \code{out} is below \eqn{10^{-290}}, the integral taken by
-\code{\link[stats:integrate]{stats::integrate()}} on the scale \eqn{1/|\partial_y \ell(q)|} and cut
-at the end of the support.
+\eqn{\ell(q) + \log\int_{\mathrm{tail}} e^{\ell(y) - \ell(q)}\,dy}
+where \code{out} is below \eqn{e^{-5}}, the integral taken by
+\code{\link[=quad_log_tail_prob]{quad_log_tail_prob()}} on the scale \eqn{1/|\partial_y \ell(q)|}.
 
 \code{log_tail_integral()} returns the logarithm of the probability of
 the tail beyond \code{q}, \eqn{\ell(q) + \log\int_0^\infty

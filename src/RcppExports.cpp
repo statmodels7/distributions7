@@ -3763,6 +3763,39 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ls_log_tail_cpp
+NumericMatrix ls_log_tail_cpp(NumericVector x, NumericVector mu, NumericVector t, int base, int wid, bool flip, bool split, int o);
+RcppExport SEXP _distributions7_ls_log_tail_cpp(SEXP xSEXP, SEXP muSEXP, SEXP tSEXP, SEXP baseSEXP, SEXP widSEXP, SEXP flipSEXP, SEXP splitSEXP, SEXP oSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type t(tSEXP);
+    Rcpp::traits::input_parameter< int >::type base(baseSEXP);
+    Rcpp::traits::input_parameter< int >::type wid(widSEXP);
+    Rcpp::traits::input_parameter< bool >::type flip(flipSEXP);
+    Rcpp::traits::input_parameter< bool >::type split(splitSEXP);
+    Rcpp::traits::input_parameter< int >::type o(oSEXP);
+    rcpp_result_gen = Rcpp::wrap(ls_log_tail_cpp(x, mu, t, base, wid, flip, split, o));
+    return rcpp_result_gen;
+END_RCPP
+}
+// log_tail_cumulants_cpp
+NumericMatrix log_tail_cumulants_cpp(List tabs, NumericMatrix W, IntegerVector pstart, IntegerVector ps, IntegerVector pr);
+RcppExport SEXP _distributions7_log_tail_cumulants_cpp(SEXP tabsSEXP, SEXP WSEXP, SEXP pstartSEXP, SEXP psSEXP, SEXP prSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type tabs(tabsSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type W(WSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type pstart(pstartSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type ps(psSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type pr(prSEXP);
+    rcpp_result_gen = Rcpp::wrap(log_tail_cumulants_cpp(tabs, W, pstart, ps, pr));
+    return rcpp_result_gen;
+END_RCPP
+}
 // logistic_gradient_cpp
 List logistic_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
 RcppExport SEXP _distributions7_logistic_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
@@ -6800,6 +6833,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_laplace2_deriv5_cpp", (DL_FUNC) &_distributions7_laplace2_deriv5_cpp, 4},
     {"_distributions7_loc_scale_rule_cpp", (DL_FUNC) &_distributions7_loc_scale_rule_cpp, 0},
     {"_distributions7_loc_scale_diag_cpp", (DL_FUNC) &_distributions7_loc_scale_diag_cpp, 4},
+    {"_distributions7_ls_log_tail_cpp", (DL_FUNC) &_distributions7_ls_log_tail_cpp, 8},
+    {"_distributions7_log_tail_cumulants_cpp", (DL_FUNC) &_distributions7_log_tail_cumulants_cpp, 5},
     {"_distributions7_logistic_gradient_cpp", (DL_FUNC) &_distributions7_logistic_gradient_cpp, 4},
     {"_distributions7_logistic_hessian_cpp", (DL_FUNC) &_distributions7_logistic_hessian_cpp, 4},
     {"_distributions7_logistic_expected_hessian_cpp", (DL_FUNC) &_distributions7_logistic_expected_hessian_cpp, 4},

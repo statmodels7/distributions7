@@ -190,7 +190,9 @@ S7::method(distrib_pdf, Weibull1Distrib) <- function(distrib, y, theta, log = FA
 #' \eqn{1 - F(q) = \exp\{-(q/\mu)^{\sigma}\}}, so `lower.tail = FALSE` with
 #' `log.p = TRUE` returns \eqn{-(q/\mu)^{\sigma}} exactly and never forms the
 #' difference. That combination is what a right-censored observation far out in
-#' the tail contributes to a log-likelihood.
+#' the tail contributes to a log-likelihood. With `lower.tail = TRUE` and
+#' `log.p = TRUE` the value is taken from \eqn{\log H = \sigma\log(q/\mu)}
+#' ([weibull_log_lower()]), so that it stays finite where \eqn{H} underflows.
 #'
 #' @param distrib A `Weibull1Distrib` object, from [weibull1_distrib()].
 #' @param q A numeric vector of quantiles. Below the support the probability is
@@ -228,6 +230,12 @@ S7::method(distrib_pdf, Weibull1Distrib) <- function(distrib, y, theta, log = FA
 #' # There the survival probability itself has underflowed to zero.
 #' distrib_cdf(d, 40, th, lower.tail = FALSE)
 S7::method(distrib_cdf, Weibull1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
+  # log F from the logarithm of the cumulative hazard, which pweibull() loses
+  # once the hazard itself underflows
+  if (lower.tail && log.p) {
+    return(weibull_log_lower(theta[[2]] *
+                               (suppressWarnings(log(pmax(q, 0))) - log(theta[[1]]))))
+  }
   stats::pweibull(
     q = q, shape = theta[[2]], scale = theta[[1]],
     lower.tail = lower.tail, log.p = log.p
@@ -239,7 +247,10 @@ S7::method(distrib_cdf, Weibull1Distrib) <- function(distrib, q, theta, lower.ta
 #' @description
 #' Computes the Weibull quantile function
 #' \deqn{Q(p; \mu, \sigma) = \mu \left\{-\log(1 - p)\right\}^{1/\sigma}}
-#' by calling [stats::qweibull()]. The distribution function is strictly
+#' by calling [stats::qweibull()]. With `lower.tail = TRUE` and
+#' `log.p = TRUE` the cumulative hazard is taken on the log scale from
+#' \eqn{\log p} ([log_neg_log1mexp()]) and never as \eqn{1 - p}, which rounds
+#' to 1 below machine epsilon. The distribution function is strictly
 #' increasing on \eqn{(0, \infty)}, so the inverse is exact and unique; the
 #' root-finding fallback of the base class is not used. `Q(0)` is 0 and
 #' `Q(1)` is `Inf`.
@@ -276,6 +287,9 @@ S7::method(distrib_cdf, Weibull1Distrib) <- function(distrib, q, theta, lower.ta
 #' # The median is mu times (log 2)^(1/sigma), whatever the shape.
 #' all.equal(distrib_quantile(d, 0.5, th), 2 * log(2)^(1 / 1.5))
 S7::method(distrib_quantile, Weibull1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
+  # the cumulative hazard from log F without forming 1 - F, which qweibull()
+  # rounds to 1 once F is below eps
+  if (lower.tail && log.p) return(theta[[1]] * exp(log_neg_log1mexp(p) / theta[[2]]))
   stats::qweibull(
     p = p, shape = theta[[2]], scale = theta[[1]],
     lower.tail = lower.tail, log.p = log.p

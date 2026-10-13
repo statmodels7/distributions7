@@ -32,7 +32,8 @@ A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 Computes the inverse Gaussian quantile function by calling
 \code{\link[statmod:invgauss]{statmod::qinvgauss()}} at \code{mean = mu} and \code{dispersion = 1/lambda}. There is
 no closed form: the distribution function is elementary but not invertible
-in elementary terms, so \code{qinvgauss()} inverts it numerically. The
+in elementary terms, so \code{qinvgauss()} inverts it numerically, with the
+far-tail correction of \code{\link[=invgauss_quantile]{invgauss_quantile()}}. The
 distribution function is strictly increasing on \eqn{(0, \infty)}, so the
 round trip through \code{\link[=distrib_cdf.InvGauss2Distrib]{distrib_cdf.InvGauss2Distrib()}} returns \code{p}.
 }

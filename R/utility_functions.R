@@ -531,6 +531,75 @@ log1mexp_neg <- function(a) {
   out
 }
 
+#' The Logarithm of minus log(1 - e^p)
+#'
+#' @description
+#' Returns \eqn{\log\{-\log(1 - e^{p})\}} for \eqn{p \le 0} without
+#' forming \eqn{1 - e^{p}}: as \eqn{\log(-\log(-\mathrm{expm1}(p)))} where
+#' \eqn{p > -\log 2}, and otherwise as
+#' \eqn{p + \log\{-\mathrm{log1p}(-u)/u\}}, \eqn{u = e^{p}}, which is
+#' \eqn{p} itself once \eqn{u} underflows. With \eqn{p = \log S} it is the
+#' \eqn{\log(-\log F)} of the Gumbel quantile; with \eqn{p = \log F} it is
+#' the logarithm of the Weibull cumulative hazard at the quantile.
+#'
+#' @param p A numeric vector of log probabilities.
+#'
+#' @return A numeric vector of the length of `p`.
+#'
+#' @examples
+#' # at p = -800 the value is -800 to double precision
+#' distributions7:::log_neg_log1mexp(c(-0.1, -50, -800))
+#'
+#' @keywords internal
+log_neg_log1mexp <- function(p) {
+  u <- exp(p)
+  far <- !is.na(p) & p <= -log(2)
+  out <- log(-log(-expm1(p)))
+  out[far] <- ifelse(u[far] == 0, p[far], p[far] + log(-log1p(-u[far]) / u[far]))
+  out
+}
+
+#' Lower-Tail Logarithms From the Logarithm of the Argument
+#'
+#' @description
+#' `weibull_log_lower()` returns \eqn{\log F = \log(1 - e^{-H})} from
+#' \eqn{\log H}, and `gamma_log_lower()` returns the logarithm of the
+#' regularized lower incomplete gamma function \eqn{P(k, w)} from
+#' \eqn{\log w}, so that a cumulative hazard or an argument that underflows
+#' still gives a finite logarithm. Below \eqn{\log H = -30} the first is
+#' \eqn{\log H - H/2}; below \eqn{\log w = -50} the second is
+#' \eqn{k\log w - \log\Gamma(k + 1) - w\,k/(k + 1)}, the first terms of
+#' the series of \eqn{P}; above, they are `log(-expm1(-H))` and
+#' [stats::pgamma()] on the log scale.
+#'
+#' @param lh,lw Numeric vectors, the logarithm of the cumulative hazard or of
+#'   the argument (`-Inf` at zero).
+#' @param k The shape of the gamma, recycled.
+#'
+#' @return A numeric vector of log probabilities.
+#'
+#' @examples
+#' # a hazard of e^-800 and an argument of e^-800, both below the double range
+#' distributions7:::weibull_log_lower(c(-3, -800))
+#' distributions7:::gamma_log_lower(c(-3, -800), 0.7)
+#'
+#' @keywords internal
+weibull_log_lower <- function(lh) {
+  ifelse(lh < -30, lh - exp(lh) / 2, log(-expm1(-exp(lh))))
+}
+
+#' @rdname weibull_log_lower
+gamma_log_lower <- function(lw, k) {
+  n <- max(length(lw), length(k))
+  lw <- rep_len(lw, n)
+  k <- rep_len(k, n)
+  far <- !is.na(lw) & lw < -50
+  out <- stats::pgamma(exp(lw), shape = k, rate = 1, log.p = TRUE)
+  w <- exp(lw[far])
+  out[far] <- k[far] * lw[far] - lgamma(k[far] + 1) - w * k[far] / (k[far] + 1)
+  out
+}
+
 #' @rdname tail_helpers
 cdf_from_log_tails <- function(log_lower, log_upper, lower.tail, log.p) {
   lp <- if (lower.tail) log_lower else log_upper

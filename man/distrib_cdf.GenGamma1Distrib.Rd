@@ -34,7 +34,10 @@ distribution function is that Gamma's evaluated at \eqn{(q/a)^p} and the
 whole computation is one \code{pgamma} call.
 
 \code{lower.tail} and \code{log.p} are passed to \code{pgamma}, so the survival function
-and the log-probability have the accuracy of \code{pgamma} in the far tail.
+and the log-probability have the accuracy of \code{pgamma} in the far tail. The
+logarithm of the lower tail is taken from \eqn{\log w = p\log(q/a)}
+(\code{\link[=gamma_log_lower]{gamma_log_lower()}}), so that it stays finite where \eqn{(q/a)^p}
+underflows.
 }
 \section{Notation}{
 

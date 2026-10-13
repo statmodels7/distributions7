@@ -51,6 +51,14 @@ the score}. For a discrete distribution the integral is a finite sum and the
 identity is exact, which is how the default method computes it there; for a
 continuous one the default differentiates \code{\link[=distrib_cdf]{distrib_cdf()}}
 numerically, and distributions with a closed form register it directly.
+
+Before dispatch, \code{\link[=log_tail_route]{log_tail_route()}} takes the derivatives of the log
+probability directly for the location-scale families, and far in a tail
+(log probability below \eqn{-5}) for the families whose distribution
+function goes through special functions or quadrature, so that they stay
+accurate and finite where the tail probability underflows. The same route
+gives the natural-scale derivatives of the second group there, as the
+probability times the complete Bell polynomial in the log-scale ones.
 }
 \examples{
 d <- gaussian1_distrib()

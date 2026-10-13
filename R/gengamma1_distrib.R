@@ -181,7 +181,10 @@ S7::method(distrib_pdf, GenGamma1Distrib) <- function(distrib, y, theta, log = F
 #' whole computation is one `pgamma` call.
 #'
 #' `lower.tail` and `log.p` are passed to `pgamma`, so the survival function
-#' and the log-probability have the accuracy of `pgamma` in the far tail.
+#' and the log-probability have the accuracy of `pgamma` in the far tail. The
+#' logarithm of the lower tail is taken from \eqn{\log w = p\log(q/a)}
+#' ([gamma_log_lower()]), so that it stays finite where \eqn{(q/a)^p}
+#' underflows.
 #'
 #' @param distrib A `GenGamma1Distrib` object, from [gengamma1_distrib()].
 #' @param q A numeric vector of quantiles. A negative value is clamped to zero
@@ -228,6 +231,9 @@ S7::method(distrib_cdf, GenGamma1Distrib) <- function(distrib, q, theta,
                                                       lower.tail = TRUE,
                                                       log.p = FALSE, ...) {
   a <- theta[[1]]; d <- theta[[2]]; p <- theta[[3]]
+  if (lower.tail && log.p) {
+    return(gamma_log_lower(p * (suppressWarnings(log(pmax(q, 0))) - log(a)), d / p))
+  }
   w <- pmax(q, 0)^p / a^p
   stats::pgamma(w, shape = d / p, rate = 1,
                 lower.tail = lower.tail, log.p = log.p)
@@ -240,8 +246,10 @@ S7::method(distrib_cdf, GenGamma1Distrib) <- function(distrib, q, theta,
 #' Computes \eqn{Q(u) = a\,\{Q_\Gamma(u;\, d/p)\}^{1/p}}, inverting the same
 #' representation as the distribution function: \eqn{(Y/a)^p} is Gamma with
 #' shape \eqn{d/p}, so its quantile raised to the power \eqn{1/p} and scaled by
-#' \eqn{a} is the generalized gamma's. The whole computation is one `qgamma`
-#' call, without root finding.
+#' \eqn{a} is the generalized gamma's. Where the requested tail probability is
+#' below \eqn{e^{-5}} the value is corrected by Newton steps on the log tail
+#' probability ([tail_quantile_refine()]): far in the lower tail on the log
+#' scale `qgamma()` returns 0.
 #'
 #' @param distrib A `GenGamma1Distrib` object, from [gengamma1_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or their
@@ -286,7 +294,8 @@ S7::method(distrib_quantile, GenGamma1Distrib) <- function(distrib, p, theta,
   a <- theta[[1]]; d <- theta[[2]]; pw <- theta[[3]]
   g <- stats::qgamma(p, shape = d / pw, rate = 1,
                      lower.tail = lower.tail, log.p = log.p)
-  a * g^(1 / pw)
+  # qgamma() returns 0 far in the lower tail on the log scale
+  tail_quantile_refine(distrib, a * g^(1 / pw), p, theta, lower.tail, log.p)
 }
 
 #' @title Generalized Gamma Random Generation

@@ -29,7 +29,10 @@ A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 \description{
 Computes the Weibull quantile function
 \deqn{Q(p; \mu, \sigma) = \mu \left\{-\log(1 - p)\right\}^{1/\sigma}}
-by calling \code{\link[stats:Weibull]{stats::qweibull()}}. The distribution function is strictly
+by calling \code{\link[stats:Weibull]{stats::qweibull()}}. With \code{lower.tail = TRUE} and
+\code{log.p = TRUE} the cumulative hazard is taken on the log scale from
+\eqn{\log p} (\code{\link[=log_neg_log1mexp]{log_neg_log1mexp()}}) and never as \eqn{1 - p}, which rounds
+to 1 below machine epsilon. The distribution function is strictly
 increasing on \eqn{(0, \infty)}, so the inverse is exact and unique; the
 root-finding fallback of the base class is not used. \code{Q(0)} is 0 and
 \code{Q(1)} is \code{Inf}.

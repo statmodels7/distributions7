@@ -1081,6 +1081,14 @@ loc_scale_diag_cpp <- function(fam, U, order, threads = 1L) {
     .Call(`_distributions7_loc_scale_diag_cpp`, fam, U, order, threads)
 }
 
+ls_log_tail_cpp <- function(x, mu, t, base, wid, flip, split, o) {
+    .Call(`_distributions7_ls_log_tail_cpp`, x, mu, t, base, wid, flip, split, o)
+}
+
+log_tail_cumulants_cpp <- function(tabs, W, pstart, ps, pr) {
+    .Call(`_distributions7_log_tail_cumulants_cpp`, tabs, W, pstart, ps, pr)
+}
+
 logistic_gradient_cpp <- function(y, mu, sigma, threads = 1L) {
     .Call(`_distributions7_logistic_gradient_cpp`, y, mu, sigma, threads)
 }

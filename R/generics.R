@@ -806,6 +806,14 @@ distrib_hess_y <- S7::new_generic("distrib_hess_y", "distrib", function(distrib,
 #' continuous one the default differentiates [distrib_cdf()]
 #' numerically, and distributions with a closed form register it directly.
 #'
+#' Before dispatch, [log_tail_route()] takes the derivatives of the log
+#' probability directly for the location-scale families, and far in a tail
+#' (log probability below \eqn{-5}) for the families whose distribution
+#' function goes through special functions or quadrature, so that they stay
+#' accurate and finite where the tail probability underflows. The same route
+#' gives the natural-scale derivatives of the second group there, as the
+#' probability times the complete Bell polynomial in the log-scale ones.
+#'
 #' @examples
 #' d <- gaussian1_distrib()
 #' theta <- list(mu = 0, sigma = 1)
@@ -819,6 +827,9 @@ distrib_grad_cdf <- S7::new_generic("distrib_grad_cdf", "distrib", function(dist
   args <- check_derivative_args(distrib, q, theta)
   q <- args$y
   theta <- args$theta
+  # the log-scale derivatives of the families log_tail_route() lists
+  r <- log_tail_route(distrib, q, theta, 1L, lower.tail, log, distrib_grad_cdf)
+  if (!is.null(r)) return(r)
   S7::S7_dispatch()
 })
 
@@ -852,6 +863,9 @@ distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(dist
   args <- check_derivative_args(distrib, q, theta)
   q <- args$y
   theta <- args$theta
+  # the log-scale derivatives of the families log_tail_route() lists
+  r <- log_tail_route(distrib, q, theta, 2L, lower.tail, log, distrib_hess_cdf)
+  if (!is.null(r)) return(r)
   S7::S7_dispatch()
 })
 

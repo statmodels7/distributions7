@@ -474,6 +474,9 @@ distrib_deriv3_cdf <- S7::new_generic(
     args <- check_derivative_args(distrib, q, theta)
     q <- args$y
     theta <- args$theta
+    # the log-scale derivatives of the families log_tail_route() lists
+    r <- log_tail_route(distrib, q, theta, 3L, lower.tail, log, distrib_deriv3_cdf)
+    if (!is.null(r)) return(r)
     S7::S7_dispatch()
   })
 
@@ -490,6 +493,9 @@ distrib_deriv4_cdf <- S7::new_generic(
     args <- check_derivative_args(distrib, q, theta)
     q <- args$y
     theta <- args$theta
+    # the log-scale derivatives of the families log_tail_route() lists
+    r <- log_tail_route(distrib, q, theta, 4L, lower.tail, log, distrib_deriv4_cdf)
+    if (!is.null(r)) return(r)
     S7::S7_dispatch()
   })
 

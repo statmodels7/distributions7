@@ -92,7 +92,8 @@ gengamma2_scale <- function(theta) {
 #' \eqn{a = m\,\Gamma(d/p)/\Gamma((d+1)/p)}, so that \eqn{E[Y] = m}. The
 #' density, the distribution function, the quantile function and the generator
 #' are those of [gengamma1_distrib()] at that scale: \eqn{(Y/a)^p} is a gamma
-#' variable with shape \eqn{d/p} and unit rate.
+#' variable with shape \eqn{d/p} and unit rate, with the same treatment of the
+#' far lower tail ([gamma_log_lower()], [tail_quantile_refine()]).
 #'
 #' @param distrib A `GenGamma2Distrib` object, from [gengamma2_distrib()].
 #' @param y,q A numeric vector of observations or quantiles.
@@ -120,6 +121,10 @@ S7::method(distrib_cdf, GenGamma2Distrib) <- function(distrib, q, theta,
                                                       lower.tail = TRUE,
                                                       log.p = FALSE, ...) {
   pw <- theta[[3]]
+  if (lower.tail && log.p) {
+    return(gamma_log_lower(pw * (suppressWarnings(log(pmax(q, 0))) -
+                                   log(gengamma2_scale(theta))), theta[[2]] / pw))
+  }
   stats::pgamma((pmax(q, 0) / gengamma2_scale(theta))^pw,
                 shape = theta[[2]] / pw, rate = 1,
                 lower.tail = lower.tail, log.p = log.p)
@@ -129,9 +134,11 @@ S7::method(distrib_quantile, GenGamma2Distrib) <- function(distrib, p, theta,
                                                            lower.tail = TRUE,
                                                            log.p = FALSE, ...) {
   pw <- theta[[3]]
-  gengamma2_scale(theta) *
+  x <- gengamma2_scale(theta) *
     stats::qgamma(p, shape = theta[[2]] / pw, rate = 1,
                   lower.tail = lower.tail, log.p = log.p)^(1 / pw)
+  # qgamma() returns 0 far in the lower tail on the log scale
+  tail_quantile_refine(distrib, x, p, theta, lower.tail, log.p)
 }
 
 S7::method(distrib_rng, GenGamma2Distrib) <- function(distrib, n, theta, ...) {

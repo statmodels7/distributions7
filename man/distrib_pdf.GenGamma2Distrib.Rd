@@ -29,7 +29,8 @@ The generalized gamma with shape \eqn{d}, power \eqn{p} and scale
 \eqn{a = m\,\Gamma(d/p)/\Gamma((d+1)/p)}, so that \eqn{E[Y] = m}. The
 density, the distribution function, the quantile function and the generator
 are those of \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} at that scale: \eqn{(Y/a)^p} is a gamma
-variable with shape \eqn{d/p} and unit rate.
+variable with shape \eqn{d/p} and unit rate, with the same treatment of the
+far lower tail (\code{\link[=gamma_log_lower]{gamma_log_lower()}}, \code{\link[=tail_quantile_refine]{tail_quantile_refine()}}).
 }
 \examples{
 d <- gengamma2_distrib()

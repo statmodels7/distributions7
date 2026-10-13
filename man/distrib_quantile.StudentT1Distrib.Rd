@@ -32,8 +32,11 @@ Computes the location-scale Student t quantile function
 with \eqn{T_\nu^{-1}} the standard Student t quantile function on \eqn{\nu}
 degrees of freedom, by calling \code{\link[stats:TDist]{stats::qt()}}. The distribution function is
 strictly increasing on the whole line, so the inverse is exact and unique
-and the root-finding fallback of the base class is not used. \code{Q(0)} is
-\code{-Inf} and \code{Q(1)} is \code{Inf}.
+and the root-finding fallback of the base class is not used. Where the
+requested tail probability is below \eqn{e^{-5}} the value of \code{qt()},
+which loses digits there, is corrected by Newton steps on the log tail
+probability (\code{\link[=tail_quantile_refine]{tail_quantile_refine()}}). \code{Q(0)} is \code{-Inf} and \code{Q(1)} is
+\code{Inf}.
 }
 \examples{
 d <- student_t1_distrib()

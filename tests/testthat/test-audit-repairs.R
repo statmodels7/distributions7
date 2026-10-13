@@ -1477,3 +1477,161 @@ test_that("weibull3's log survival derivatives are exact in the far tail", {
   expect_equal(g0$mean, c(0, 0))
   expect_equal(g0$sigma, c(0, 0))
 })
+
+# The far tails of the distribution function. References from mpmath at 50
+# digits: log P at the double q by the closed forms (gammainc, betainc, erfc)
+# or by quadrature, its partials by 17-point stencils in the parameters, and
+# the quantiles by bisection in log P.
+
+test_that("the location-scale families' log tails are exact far out", {
+  th <- list(mu = -1.4069480211474001, sigma2 = 2.2955310078570621)
+  d <- gaussian2_distrib()
+  q <- 59.022392587266665
+  g <- distrib_grad_cdf(d, q, th, lower.tail = FALSE, log = TRUE)
+  expect_rel(g$mu, 26.3413039594662, tolerance = 1e-13)
+  expect_rel(g$sigma2, 346.714469024386, tolerance = 1e-13)
+  d4 <- distrib_deriv4_cdf(d, q, th, lower.tail = FALSE, log = TRUE)
+  expect_rel(d4$sigma2_sigma2_sigma2_sigma2, -687.589735833622, tolerance = 1e-12)
+  expect_rel(d4$mu_mu_sigma2_sigma2, -0.165340977058262, tolerance = 1e-12)
+  ths <- list(mu = -1.4069480211474001, sigma = 2.2955310078570621)
+  d4 <- distrib_deriv4_cdf(gaussian1_distrib(), 1025.1496835662726, ths,
+                           lower.tail = FALSE, log = TRUE)
+  expect_rel(d4$sigma_sigma_sigma_sigma, -432133.874972064, tolerance = 1e-12)
+  expect_rel(d4$mu_sigma_sigma_sigma, -386.525665705131, tolerance = 1e-12)
+  thl <- list(mu = -1.4069480211474001, lambda = 2.2955310078570621)
+  g <- distrib_grad_cdf(laplace2_distrib(), 346.79433964763206, thl,
+                        lower.tail = FALSE, log = TRUE)
+  expect_rel(g$lambda, -348.201287668779, tolerance = 1e-13)
+  d3 <- distrib_deriv3_cdf(lognormal1_distrib(), 4.296347582838129e+25,
+                           list(mu = -1.4069480211474001,
+                                sigma2 = 2.2955310078570621),
+                           lower.tail = FALSE, log = TRUE)
+  expect_rel(d3$sigma2_sigma2_sigma2, 394.616557443479, tolerance = 1e-12)
+  expect_rel(d3$mu_sigma2_sigma2, 9.99144636536794, tolerance = 1e-12)
+  d4 <- distrib_deriv4_cdf(gumbel_distrib(), 229551.69383768507, ths,
+                           lower.tail = FALSE, log = TRUE)
+  expect_rel(d4$sigma_sigma_sigma_sigma, -86432.8010415432, tolerance = 1e-12)
+  # the lower tails
+  h <- distrib_hess_cdf(logistic_distrib(), -229554.50773372737, ths,
+                        lower.tail = TRUE, log = TRUE)
+  expect_rel(h$sigma_sigma, -37954.5344329992, tolerance = 1e-12)
+  h <- distrib_hess_cdf(gumbel_distrib(), -16.751681517494095, ths,
+                        lower.tail = TRUE, log = TRUE)
+  expect_rel(h$sigma_sigma, -8813.53742850509, tolerance = 1e-12)
+  expect_rel(h$mu_sigma, 1166.66344168801, tolerance = 1e-12)
+  h <- distrib_hess_cdf(gaussian3_distrib(), -27.73172446789487,
+                        list(mu = -1.4069480211474001, tau = 2.2955310078570621),
+                        lower.tail = TRUE, log = TRUE)
+  expect_rel(h$tau_tau, 0.0946488646340301, tolerance = 1e-12)
+})
+
+test_that("the other families' log tails are exact far out", {
+  h <- distrib_hess_cdf(gamma1_distrib(), 3043.265922066101,
+                        list(mu = 1.66650111253839, phi = 2.2955310078570621),
+                        lower.tail = FALSE, log = TRUE)
+  expect_rel(h$mu_mu, -573.091458202248, tolerance = 1e-12)
+  expect_rel(h$phi_phi, -300.615095564807, tolerance = 1e-12)
+  expect_rel(h$mu_phi, -207.838096794741, tolerance = 1e-12)
+  g <- distrib_grad_cdf(student_t1_distrib(), 1.8743888946995025e+100,
+                        list(mu = -1.4069480211474001, sigma = 2.2955310078570621,
+                             nu = 3.4798348437761892),
+                        lower.tail = FALSE, log = TRUE)
+  expect_rel(g$nu, -229.056119323907, tolerance = 1e-12)
+  tht <- list(mu = -1.4069480211474001, sigma = 2.2955310078570621,
+              alpha = 0.43712018011137843, nu = 5.4584259609691799)
+  g <- distrib_grad_cdf(skewt_distrib(), 1.8981376276022716e+64, tht,
+                        lower.tail = FALSE, log = TRUE)
+  expect_rel(g$nu, -145.886345268708, tolerance = 1e-12)
+  h <- distrib_hess_cdf(skewt_distrib(), 1.8981376276022716e+64, tht,
+                        lower.tail = FALSE, log = TRUE)
+  expect_rel(h$alpha_nu, -0.01671693571608, tolerance = 1e-11)
+  g <- distrib_grad_cdf(invgauss2_distrib(), 0.001439270893208819,
+                        list(mu = 1.66650111253839, lambda = 2.2955310078570621),
+                        lower.tail = TRUE, log = TRUE)
+  expect_rel(g$mu, -0.825842401464796, tolerance = 1e-12)
+  expect_rel(g$lambda, -347.015860041382, tolerance = 1e-12)
+  h <- distrib_hess_cdf(vonmises1_distrib(), 3.1415926535858065,
+                        list(mu = -1.1786820179251651, kappa = 2.2955310078570621),
+                        lower.tail = FALSE, log = TRUE)
+  expect_rel(h$mu_mu, 0.877221352289103, tolerance = 1e-12)
+  expect_rel(h$kappa_kappa, -0.128497105481304, tolerance = 1e-12)
+  thw <- list(mu = 1.66650111253839, sigma = 2.2955310078570621)
+  g <- distrib_grad_cdf(weibull1_distrib(), 7.392143171106777e-152, thw,
+                        lower.tail = TRUE, log = TRUE)
+  expect_rel(g$mu, -1.37745543077409, tolerance = 1e-12)
+  g <- distrib_grad_cdf(gengamma1_distrib(), 7.066044264980748e-152,
+                        list(a = 1.66650111253839, d = 2.2955310078570621,
+                             p = 3.4798348437761892),
+                        lower.tail = TRUE, log = TRUE)
+  expect_rel(g$p, 0.0333740512185141, tolerance = 1e-12)
+  # the natural scale, as S times the Bell polynomial in the partials of log S
+  ths2 <- list(mu = -1.8907064404338598, sigma = 4.2440068121533843,
+               alpha = 0.43995800893753767, nu = 1.091506330156699)
+  g <- distrib_grad_cdf(skewt_distrib(), 1.6300579860047128e+20, ths2,
+                        lower.tail = FALSE, log = FALSE)
+  expect_rel(g$nu, exp(-50) * -44.7655786534917, tolerance = 1e-12)
+})
+
+test_that("the skew t's distribution function in its polynomial tail", {
+  d <- skewt_distrib()
+  th <- list(mu = -1.8907064404338598, sigma = 4.2440068121533843,
+             alpha = 0.43995800893753767, nu = 1.091506330156699)
+  q <- c(1e10, 1e30, 1e65, 1e100)
+  expect_rel(distrib_cdf(d, q, th, lower.tail = FALSE, log.p = TRUE),
+             c(-24.333810945156059, -74.599535039498731, -162.56455220495956,
+               -250.52956937042038), tolerance = 1e-14)
+  # log S at the largest double is about -774, so the quantile at -800 lies
+  # past it
+  expect_equal(distrib_quantile(d, -800, th, lower.tail = FALSE, log.p = TRUE),
+               Inf)
+  expect_rel(distrib_quantile(d, -50, th, lower.tail = FALSE, log.p = TRUE),
+             1.6300579860047128e+20, tolerance = 1e-12)
+})
+
+test_that("quantiles far in a tail", {
+  thg <- list(mu = -1.4069480211474001, sigma = 2.2955310078570621)
+  expect_rel(distrib_quantile(gumbel_distrib(), c(-50, -800, -1e5), thg,
+                              lower.tail = FALSE, log.p = TRUE),
+             c(113.36960237170571, 1835.0178582645024, 229551.69383768507),
+             tolerance = 1e-14)
+  # log S close to 0, where log(1 - tiny) rounds
+  expect_rel(distrib_cdf(gumbel_distrib(), -9.025675626991534, thg,
+                         lower.tail = FALSE, log.p = TRUE),
+             -1.0000000000000205e-12, tolerance = 1e-12)
+  thi <- list(mu = 1.66650111253839, phi = 2.2955310078570621)
+  d <- invgauss1_distrib()
+  expect_rel(distrib_quantile(d, -800, thi, lower.tail = FALSE, log.p = TRUE),
+             10042.849072214065, tolerance = 1e-12)
+  expect_rel(distrib_quantile(d, -800, thi, lower.tail = TRUE, log.p = TRUE),
+             0.0002735166347031691, tolerance = 1e-12)
+  expect_silent(distrib_quantile(d, -800, thi, lower.tail = FALSE, log.p = TRUE))
+  expect_rel(distrib_quantile(student_t1_distrib(), -800,
+                              list(mu = -1.9917508419603109,
+                                   sigma = 4.8643467545276504,
+                                   nu = 2.3711598731111736),
+                              lower.tail = FALSE, log.p = TRUE),
+             1.361094356283159e+147, tolerance = 1e-12)
+  thw <- list(mu = 1.66650111253839, sigma = 2.2955310078570621)
+  expect_rel(distrib_quantile(weibull1_distrib(), -800, thw, log.p = TRUE),
+             7.392143171106777e-152, tolerance = 1e-14)
+  expect_rel(distrib_cdf(weibull1_distrib(), 7.392143171106777e-152, thw,
+                         log.p = TRUE), -800, tolerance = 1e-14)
+  thgg <- list(a = 1.66650111253839, d = 2.2955310078570621, p = 3.4798348437761892)
+  expect_rel(distrib_quantile(gengamma1_distrib(), -800, thgg, log.p = TRUE),
+             7.066044264980748e-152, tolerance = 1e-12)
+  expect_rel(distrib_cdf(gengamma1_distrib(), 7.066044264980748e-152, thgg,
+                         log.p = TRUE), -800, tolerance = 1e-14)
+})
+
+test_that("the lognormal's higher derivatives in the mean far below it", {
+  # C = log(y/m) was taken as log1p((y - m)/m), which is log1p(-1) = -Inf
+  # once y/m is below eps
+  th <- list(mean = 1.1908053335733713, var = 4.2440068121533843)
+  d3 <- distrib_deriv3(lognormal2_distrib(), c(1e-20, 1e-200), th)
+  expect_rel(d3$mean_mean_mean, c(-158.70663511104605, -14249.39417284847),
+             tolerance = 1e-11)
+  expect_rel(d3$var_var_var, c(29.048157232955179, 2886.2514945722126),
+             tolerance = 1e-11)
+  d4 <- distrib_deriv4(lognormal2_distrib(), 1e-20, th)
+  expect_true(all(is.finite(unlist(d4))))
+})

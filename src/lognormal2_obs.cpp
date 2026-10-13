@@ -124,7 +124,11 @@ List ln2_order(NumericVector y, NumericVector mean, NumericVector var, int K,
     double C2d[6];
     for (int i = 0; i < n; ++i) {
         if (!scalar) ln2_par(mean[i % n_m], var[i % n_v], K, P);
-        const double C = std::log1p((y[i] - P.m) / P.m);
+        // log1p near y = m; elsewhere the difference of logarithms, since
+        // (y - m)/m rounds to -1 once y/m is below eps and log1p(-1) = -Inf
+        const double C = std::fabs(y[i] - P.m) < 0.5 * P.m
+                             ? std::log1p((y[i] - P.m) / P.m)
+                             : std::log(y[i]) - std::log(P.m);
         ln2_c2(P, C, K, C2d);
         for (std::size_t c = 0; c < idx.size(); ++c)
             out[c][i] = ln2_component(idx[c].first, idx[c].second, P, C2d, C);
