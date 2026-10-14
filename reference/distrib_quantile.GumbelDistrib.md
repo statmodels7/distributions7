@@ -1,9 +1,13 @@
 # Gumbel Quantile Function
 
 Computes the Gumbel quantile function in closed form, \$\$Q(p; \mu,
-\sigma) = \mu - \sigma \log(-\log p).\$\$ The distribution function is
-strictly increasing on the whole line, so this is its exact inverse and
-the round trip through
+\sigma) = \mu - \sigma \log(-\log p).\$\$ For the upper tail on the log
+scale, \\\log(-\log F)\\ is taken from \\\log S\\ itself
+([`log_neg_log1mexp()`](https://statmodels7.github.io/distributions7/reference/log_neg_log1mexp.md)),
+never as \\\log(1 - e^{\log S})\\, which is \\\log 1 = 0\\ once \\S\\ is
+below machine epsilon. The distribution function is strictly increasing
+on the whole line, so this is its exact inverse and the round trip
+through
 [`distrib_cdf.GumbelDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GumbelDistrib.md)
 returns `p`. The median is \\\mu - \sigma\log\log 2\\, about \\\mu +
 0.3665\sigma\\, and lies between the mode \\\mu\\ and the mean \\\mu +

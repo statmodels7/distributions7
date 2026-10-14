@@ -3,11 +3,15 @@
 scale \(s_0 = \sigma\sqrt{1 - 2/\nu}\), so that the standard deviation is
 \(\sigma\). The density, the distribution function, the quantile function
 and the generator are stats::dt(), stats::pt(), stats::qt() and
-stats::rt() at that scale."><meta property="og:description" content="The Student t with \(\nu\) degrees of freedom, location \(\mu\) and
+stats::rt() at that scale. Where the requested tail probability is below
+\(e^{-5}\) the value of qt() is corrected by Newton steps on the log
+tail probability (tail_quantile_refine())."><meta property="og:description" content="The Student t with \(\nu\) degrees of freedom, location \(\mu\) and
 scale \(s_0 = \sigma\sqrt{1 - 2/\nu}\), so that the standard deviation is
 \(\sigma\). The density, the distribution function, the quantile function
 and the generator are stats::dt(), stats::pt(), stats::qt() and
-stats::rt() at that scale."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+stats::rt() at that scale. Where the requested tail probability is below
+\(e^{-5}\) the value of qt() is corrected by Newton steps on the log
+tail probability (tail_quantile_refine())."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -15,7 +19,7 @@ stats::rt() at that scale."><meta property="og:image" content="https://statmodel
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.78.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +56,9 @@ stats::rt() at that scale."><meta property="og:image" content="https://statmodel
 scale \(s_0 = \sigma\sqrt{1 - 2/\nu}\), so that the standard deviation is
 \(\sigma\). The density, the distribution function, the quantile function
 and the generator are <code><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">stats::dt()</a></code>, <code><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">stats::pt()</a></code>, <code><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">stats::qt()</a></code> and
-<code><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">stats::rt()</a></code> at that scale.</p>
+<code><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">stats::rt()</a></code> at that scale. Where the requested tail probability is below
+\(e^{-5}\) the value of <code><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">qt()</a></code> is corrected by Newton steps on the log
+tail probability (<code><a href="tail_quantile_refine.html">tail_quantile_refine()</a></code>).</p>
     </div>
 
 

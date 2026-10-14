@@ -6,7 +6,12 @@ the standard Student t quantile function on \\\nu\\ degrees of freedom,
 by calling [`stats::qt()`](https://rdrr.io/r/stats/TDist.html). The
 distribution function is strictly increasing on the whole line, so the
 inverse is exact and unique and the root-finding fallback of the base
-class is not used. `Q(0)` is `-Inf` and `Q(1)` is `Inf`.
+class is not used. Where the requested tail probability is below
+\\e^{-5}\\ the value of [`qt()`](https://rdrr.io/r/stats/TDist.html),
+which loses digits there, is corrected by Newton steps on the log tail
+probability
+([`tail_quantile_refine()`](https://statmodels7.github.io/distributions7/reference/tail_quantile_refine.md)).
+`Q(0)` is `-Inf` and `Q(1)` is `Inf`.
 
 ## Arguments
 

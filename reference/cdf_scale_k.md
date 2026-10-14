@@ -21,10 +21,10 @@ cdf_scale_k(distrib, Fq, dF, order, lower.tail, log)
 
 - Fq:
 
-  The distribution function at the quantile, a numeric vector, possibly
-  with the attribute `"upper"` that
-  [`tail_cdf()`](https://statmodels7.github.io/distributions7/reference/tail_probability.md)
-  attaches.
+  The value of
+  [`tail_cdf()`](https://statmodels7.github.io/distributions7/reference/tail_probability.md),
+  the probability of the requested tail, or a plain numeric vector of
+  distribution function values.
 
 - dF:
 

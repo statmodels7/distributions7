@@ -8,7 +8,10 @@ that Gamma's evaluated at \\(q/a)^p\\ and the whole computation is one
 
 `lower.tail` and `log.p` are passed to `pgamma`, so the survival
 function and the log-probability have the accuracy of `pgamma` in the
-far tail.
+far tail. The logarithm of the lower tail is taken from \\\log w =
+p\log(q/a)\\
+([`gamma_log_lower()`](https://statmodels7.github.io/distributions7/reference/weibull_log_lower.md)),
+so that it stays finite where \\(q/a)^p\\ underflows.
 
 ## Arguments
 

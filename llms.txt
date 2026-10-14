@@ -3586,6 +3586,9 @@ transforms that make it work on a divergent density.
 - [`invgauss2_by_reparam()`](https://statmodels7.github.io/distributions7/reference/invgauss2_by_reparam.md)
   : Inverse Gaussian Distribution in the Mean and Shape, Obtained
 
+- [`invgauss_quantile()`](https://statmodels7.github.io/distributions7/reference/invgauss_quantile.md)
+  : Inverse Gaussian Quantile With a Far-Tail Refinement
+
 - [`is_class()`](https://statmodels7.github.io/distributions7/reference/is_class.md)
   : Whether an S7 Class Is the Given Base Class
 
@@ -3804,8 +3807,14 @@ transforms that make it work on a divergent density.
 - [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md)
   : Derivatives of a Logarithm From the Ratios Alone
 
+- [`log_neg_log1mexp()`](https://statmodels7.github.io/distributions7/reference/log_neg_log1mexp.md)
+  : The Logarithm of minus log(1 - e^p)
+
 - [`log_pow_deriv()`](https://statmodels7.github.io/distributions7/reference/log_pow_deriv.md)
   : Derivatives of log(p) and log(1 - p)
+
+- [`log_tail_route()`](https://statmodels7.github.io/distributions7/reference/log_tail_route.md)
+  : The Log-Tail Route of the CDF Derivatives
 
 - [`lognormal2_by_reparam()`](https://statmodels7.github.io/distributions7/reference/lognormal2_by_reparam.md)
   : Lognormal Distribution in the Mean and Variance of Y, Obtained
@@ -3818,6 +3827,9 @@ transforms that make it work on a divergent density.
 
 - [`lp_edge_divergence()`](https://statmodels7.github.io/distributions7/reference/lp_edge_divergence.md)
   : Detect and Measure a Divergence at the Edges of the Support
+
+- [`ls_log_tail_derivs()`](https://statmodels7.github.io/distributions7/reference/ls_log_tail_derivs.md)
+  : Log-Tail Derivatives of the Location-Scale Families
 
 - [`mapped_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv.md)
   : CDF Derivatives of a Family Written as a Map of Another
@@ -4266,6 +4278,10 @@ transforms that make it work on a divergent density.
 - [`psi_shift_diff()`](https://statmodels7.github.io/distributions7/reference/psi_shift_diff.md)
   : Differences of a Polygamma at an Integer Shift
 
+- [`quad_log_tail_derivs()`](https://statmodels7.github.io/distributions7/reference/quad_log_tail_derivs.md)
+  [`quad_log_tail_prob()`](https://statmodels7.github.io/distributions7/reference/quad_log_tail_derivs.md)
+  : Log-Tail Derivatives by Quadrature of the Log-Density Derivatives
+
 - [`quad_rows()`](https://statmodels7.github.io/distributions7/reference/quad_rows.md)
   : Batched Quadrature with Rejection
 
@@ -4564,6 +4580,9 @@ transforms that make it work on a divergent density.
   [`tail_probability()`](https://statmodels7.github.io/distributions7/reference/tail_probability.md)
   : The Probability of the Requested Tail
 
+- [`tail_quantile_refine()`](https://statmodels7.github.io/distributions7/reference/tail_quantile_refine.md)
+  : Refine a Quantile Far in a Tail
+
 - [`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md)
   : Derivatives by One Stencil on the Highest Analytical Order
 
@@ -4804,6 +4823,10 @@ transforms that make it work on a divergent density.
 
 - [`weibull3_shape_moments()`](https://statmodels7.github.io/distributions7/reference/weibull3_shape_moments.md)
   : The Skewness and Excess Kurtosis of a Weibull Shape
+
+- [`weibull_log_lower()`](https://statmodels7.github.io/distributions7/reference/weibull_log_lower.md)
+  [`gamma_log_lower()`](https://statmodels7.github.io/distributions7/reference/weibull_log_lower.md)
+  : Lower-Tail Logarithms From the Logarithm of the Argument
 
 - [`weibull_moment_terms()`](https://statmodels7.github.io/distributions7/reference/weibull_moment_terms.md)
   : Standardized Moments of a Weibull by Shape

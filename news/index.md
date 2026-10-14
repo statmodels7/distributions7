@@ -1,5 +1,122 @@
 # Changelog
 
+## distributions7 0.78.1
+
+### Performance
+
+- The log-tail route of the four cdf-derivative generics evaluated the
+  distribution function up to four times on the quantiles that stay with
+  the family’s method: once to select them, once more when the generic
+  was called back on them and entered the route again, and once or twice
+  in the method itself. It now selects on the value the method computes
+  first and hands it over, and the call back does not enter the route. A
+  parameter of length one reaches the method as a scalar again, which
+  restores the methods’ path for a scalar parameter.
+- The compiled distribution function computes the logarithm of the far
+  tail only on the quantiles in it.
+- The cdf-derivative methods evaluate the probability of the requested
+  tail alone (for the upper tail they evaluated the distribution
+  function as well), and only on the log scale, which is the only one
+  that reads it. The methods of order three and four evaluated it three
+  times on the log scale and twice on the natural one, through the first
+  and second orders they assemble.
+- On 2000 draws the times return to those of 0.77.1 or fall below them:
+  order one of
+  [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
+  8.7 s in the lower tail and 8.6 s in the upper (13.5 s and 14.8 s in
+  0.78.0, 8.6 s and 10.1 s in 0.77.1), of
+  [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
+  4.0 s and 4.0 s (7.9 s and 10.6 s; 3.8 s and 5.2 s); order four of
+  [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md)
+  0.17 s (2.2 s, 0.12 s) and of
+  [`invgauss2_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss2_distrib.md)
+  0.46 s (0.83 s, 0.44 s).
+- The third and fourth derivatives of
+  [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md)
+  are compiled, one kernel per order, and the elastic net’s kernels form
+  the quantities of `(lambda, alpha)` once per distinct pair. The
+  quadrature of a far tail costs 2 to 3.5 ms per quantile at order four
+  instead of 21 to 23 ms.
+
+## distributions7 0.78.0
+
+The derivatives of the logarithm of a tail probability, and the tail
+probabilities and quantiles themselves, were checked against mpmath at
+50 digits on every continuous family, three parameter sets and both
+tails, at log probabilities from -5 to -1e5. The defects found are
+repaired, each with a test that fails on 0.77.1.
+
+### Bug fixes
+
+- The derivatives of `log S` and `log F` of order one to four were
+  composed from those of the distribution function and divided by the
+  tail probability. They lost digits as the tail probability fell (at a
+  log probability of -200, from 5e-9 for the logistic to 2e-5 for
+  `gamma2`; at -600 up to 8e-3; `student_t1` returned 1e7 at -200) and
+  were `NaN` once it underflowed, although the log probability is
+  finite. They are now taken directly:
+  - for the Gaussian (three parametrizations), the lognormal in
+    `(mu, sigma2)`, the Laplace (both parametrizations), the logistic
+    and the Gumbel, as `g(z)` with `z` linear in the location, by Faa di
+    Bruno with the derivatives of `g` written out (the Gaussian by its
+    asymptotic expansion from `z = 9`), in compiled code, in the whole
+    support;
+  - for every other family whose distribution function goes through
+    special functions or quadrature (beta, gamma, chi-squared,
+    generalized gamma, inverse Gaussian, elastic net, lognormal in the
+    mean and variance, pseudo-Huber, skew normal, skew t, Student t, von
+    Mises; and the lower tail of the two Weibull families), as
+    `l(q) + log J` with `J` the integral of `exp(l(y) - l(q))` over the
+    tail, where the log tail probability is below -5. The partition sums
+    are compiled. Against mpmath the result is within 6e-13 at every
+    representable quantile of the census, both tails, except the second
+    gamma parametrization at a shape of 0.25 (3e-10 at -20) and the
+    betas within 1e-13 of 1. The natural-scale derivatives of the second
+    group in the far tail are the probability times the Bell polynomial
+    in the log-scale ones.
+- The distribution function of
+  [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
+  was wrong between about `q = 1e10` and the point where the tail fell
+  below 1e-290: the compiled quadrature runs on the family’s own scale,
+  which does not resolve a polynomial tail far from the center (log S
+  off by 3e-9 at `q = 1e10`, by 0.24 at `1e50`, and by up to 206 at
+  `nu = 1.09`). Below a tail probability of `exp(-5)` it is now the
+  quadrature of the tail on the scale of `q`; the two pseudo-Huber
+  families take the same route.
+- [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md)
+  of the Gumbel with `lower.tail = FALSE, log.p = TRUE` returned `Inf`
+  from `log p = -38` and lost digits from -20: it formed
+  `log(1 - exp(log p))`. The upper log survival function lost relative
+  accuracy near 0 for the same reason (1e-9 at `log S = -1e-8`).
+- The default quantile of a continuous family returns `Inf` (or `-Inf`)
+  when the root lies beyond a quarter of the largest double. It returned
+  a finite point where the tail was hundreds of log units away (the skew
+  t at `nu = 1.09`, `log p = -800`, gave `3.3e259`).
+- The quantiles of the inverse Gaussian were wrong far in either tail
+  ([`statmod::qinvgauss()`](https://rdrr.io/pkg/statmod/man/invgauss.html)
+  stops on its iteration limit: 24 per cent at `log p = -800`, 50 per
+  cent at -1e5); those of the Student t lost digits (2.5e-5 at -800);
+  those of the two generalized gammas were 0 far in the lower tail.
+  Below a tail probability of `exp(-5)` they are corrected by
+  safeguarded Newton steps on the log tail probability; they agree with
+  mpmath to 1.6e-13.
+- The two Weibull families and the two generalized gammas returned
+  `-Inf` for `log F` far in the lower tail, where the cumulative hazard
+  or the gamma argument underflows; the value is now taken from its
+  logarithm. The Weibull quantile there is in closed form on the log
+  scale.
+- The third, fourth and fifth derivatives of the log-density of
+  [`lognormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal2_distrib.md)
+  were `NaN` or infinite for `y` below `eps` times the mean: `log(y/m)`
+  was formed as `log1p((y - m)/m)`.
+
+### Known limits
+
+- A quantile beyond the largest double is not representable: the von
+  Mises at every target from -40, the betas from about -40 (the quantile
+  is within eps of 1), the Cauchy, the Student t, the skew t and the
+  generalized Pareto with a positive shape from about -800.
+
 ## distributions7 0.77.1
 
 - The derivatives of the log survival function of

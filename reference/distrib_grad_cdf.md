@@ -67,6 +67,16 @@ for a continuous one the default differentiates
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
 numerically, and distributions with a closed form register it directly.
 
+Before dispatch,
+[`log_tail_route()`](https://statmodels7.github.io/distributions7/reference/log_tail_route.md)
+takes the derivatives of the log probability directly for the
+location-scale families, and far in a tail (log probability below
+\\-5\\) for the families whose distribution function goes through
+special functions or quadrature, so that they stay accurate and finite
+where the tail probability underflows. The same route gives the
+natural-scale derivatives of the second group there, as the probability
+times the complete Bell polynomial in the log-scale ones.
+
 ## See also
 
 [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),

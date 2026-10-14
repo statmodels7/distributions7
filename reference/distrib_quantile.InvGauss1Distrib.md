@@ -4,9 +4,13 @@ Computes the inverse Gaussian quantile function by calling
 [`statmod::qinvgauss()`](https://rdrr.io/pkg/statmod/man/invgauss.html)
 at `mean = mu` and `dispersion = phi`. There is no closed form: the
 distribution function is elementary but not invertible in elementary
-terms, so `qinvgauss()` inverts it numerically. The distribution
-function is strictly increasing on \\(0, \infty)\\, so the round trip
-through
+terms, so `qinvgauss()` inverts it numerically. Where the requested tail
+probability is below \\e^{-5}\\, where `qinvgauss()` can stop on its
+iteration limit, the value is corrected by Newton steps on the log tail
+probability
+([`invgauss_quantile()`](https://statmodels7.github.io/distributions7/reference/invgauss_quantile.md)).
+The distribution function is strictly increasing on \\(0, \infty)\\, so
+the round trip through
 [`distrib_cdf.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.InvGauss1Distrib.md)
 returns `p`.
 

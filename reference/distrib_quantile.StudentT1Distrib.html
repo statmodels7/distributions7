@@ -4,14 +4,20 @@ $$Q(p; \mu, \sigma, \nu) = \mu + \sigma\, T_\nu^{-1}(p)$$
 with \(T_\nu^{-1}\) the standard Student t quantile function on \(\nu\)
 degrees of freedom, by calling stats::qt(). The distribution function is
 strictly increasing on the whole line, so the inverse is exact and unique
-and the root-finding fallback of the base class is not used. Q(0) is
--Inf and Q(1) is Inf."><meta property="og:description" content="Computes the location-scale Student t quantile function
+and the root-finding fallback of the base class is not used. Where the
+requested tail probability is below \(e^{-5}\) the value of qt(),
+which loses digits there, is corrected by Newton steps on the log tail
+probability (tail_quantile_refine()). Q(0) is -Inf and Q(1) is
+Inf."><meta property="og:description" content="Computes the location-scale Student t quantile function
 $$Q(p; \mu, \sigma, \nu) = \mu + \sigma\, T_\nu^{-1}(p)$$
 with \(T_\nu^{-1}\) the standard Student t quantile function on \(\nu\)
 degrees of freedom, by calling stats::qt(). The distribution function is
 strictly increasing on the whole line, so the inverse is exact and unique
-and the root-finding fallback of the base class is not used. Q(0) is
--Inf and Q(1) is Inf."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+and the root-finding fallback of the base class is not used. Where the
+requested tail probability is below \(e^{-5}\) the value of qt(),
+which loses digits there, is corrected by Newton steps on the log tail
+probability (tail_quantile_refine()). Q(0) is -Inf and Q(1) is
+Inf."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +25,7 @@ and the root-finding fallback of the base class is not used. Q(0) is
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.78.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,8 +63,11 @@ $$Q(p; \mu, \sigma, \nu) = \mu + \sigma\, T_\nu^{-1}(p)$$
 with \(T_\nu^{-1}\) the standard Student t quantile function on \(\nu\)
 degrees of freedom, by calling <code><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">stats::qt()</a></code>. The distribution function is
 strictly increasing on the whole line, so the inverse is exact and unique
-and the root-finding fallback of the base class is not used. <code>Q(0)</code> is
-<code>-Inf</code> and <code>Q(1)</code> is <code>Inf</code>.</p>
+and the root-finding fallback of the base class is not used. Where the
+requested tail probability is below \(e^{-5}\) the value of <code><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">qt()</a></code>,
+which loses digits there, is corrected by Newton steps on the log tail
+probability (<code><a href="tail_quantile_refine.html">tail_quantile_refine()</a></code>). <code>Q(0)</code> is <code>-Inf</code> and <code>Q(1)</code> is
+<code>Inf</code>.</p>
     </div>
 
 

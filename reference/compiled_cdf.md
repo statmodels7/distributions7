@@ -75,13 +75,16 @@ and
 [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md)
 return.
 
+`compiled_far_tail()` returns the logical vector of the quantiles whose
+requested tail is below \\e^{-5}\\, inside the support.
+
 `compiled_log_cdf()` returns the logarithm of `out`, formed as
 \\\log(1 - P\_{\mathrm{other}})\\ through
 [`log1p()`](https://rdrr.io/r/base/Log.html) where `out` is above one
-half, and as \\\ell(q) + \log\int_0^{\infty} e^{\ell(q \mp u) -
-\ell(q)}\\du\\ where `out` is below \\10^{-290}\\, the integral taken by
-[`stats::integrate()`](https://rdrr.io/r/stats/integrate.html) on the
-scale \\1/\|\partial_y \ell(q)\|\\ and cut at the end of the support.
+half, and as \\\ell(q) + \log\int\_{\mathrm{tail}} e^{\ell(y) -
+\ell(q)}\\dy\\ where `out` is below \\e^{-5}\\, the integral taken by
+[`quad_log_tail_prob()`](https://statmodels7.github.io/distributions7/reference/quad_log_tail_derivs.md)
+on the scale \\1/\|\partial_y \ell(q)\|\\.
 
 `log_tail_integral()` returns the logarithm of the probability of the
 tail beyond `q`, \\\ell(q) + \log\int_0^\infty e^{\ell(q \mp u) -

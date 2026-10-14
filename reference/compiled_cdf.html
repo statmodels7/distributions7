@@ -19,7 +19,7 @@ skew t."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.78.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,13 +123,14 @@ wanted? A single logical.</p></dd>
     <p>For <code>compiled_cdf()</code>, a numeric vector; for the two derivative
 bodies, a named list of numeric vectors as <code><a href="distrib_grad_cdf.html">distrib_grad_cdf()</a></code> and
 <code><a href="distrib_hess_cdf.html">distrib_hess_cdf()</a></code> return.</p>
+<p><code>compiled_far_tail()</code> returns the logical vector of the quantiles
+whose requested tail is below \(e^{-5}\), inside the support.</p>
 <p><code>compiled_log_cdf()</code> returns the logarithm of <code>out</code>, formed as
 \(\log(1 - P_{\mathrm{other}})\) through <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p()</a></code> where <code>out</code> is
 above one half, and as
-\(\ell(q) + \log\int_0^{\infty} e^{\ell(q \mp u) - \ell(q)}\,du\)
-where <code>out</code> is below \(10^{-290}\), the integral taken by
-<code><a href="https://rdrr.io/r/stats/integrate.html" class="external-link">stats::integrate()</a></code> on the scale \(1/|\partial_y \ell(q)|\) and cut
-at the end of the support.</p>
+\(\ell(q) + \log\int_{\mathrm{tail}} e^{\ell(y) - \ell(q)}\,dy\)
+where <code>out</code> is below \(e^{-5}\), the integral taken by
+<code><a href="quad_log_tail_derivs.html">quad_log_tail_prob()</a></code> on the scale \(1/|\partial_y \ell(q)|\).</p>
 <p><code>log_tail_integral()</code> returns the logarithm of the probability of
 the tail beyond <code>q</code>, \(\ell(q) + \log\int_0^\infty
   e^{\ell(q \mp u) - \ell(q)}\,du\), by <code><a href="https://rdrr.io/r/stats/integrate.html" class="external-link">stats::integrate()</a></code> on a scale

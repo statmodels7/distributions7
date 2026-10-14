@@ -2,7 +2,11 @@
 
 Computes the Weibull quantile function \$\$Q(p; \mu, \sigma) = \mu
 \left\\-\log(1 - p)\right\\^{1/\sigma}\$\$ by calling
-[`stats::qweibull()`](https://rdrr.io/r/stats/Weibull.html). The
+[`stats::qweibull()`](https://rdrr.io/r/stats/Weibull.html). With
+`lower.tail = TRUE` and `log.p = TRUE` the cumulative hazard is taken on
+the log scale from \\\log p\\
+([`log_neg_log1mexp()`](https://statmodels7.github.io/distributions7/reference/log_neg_log1mexp.md))
+and never as \\1 - p\\, which rounds to 1 below machine epsilon. The
 distribution function is strictly increasing on \\(0, \infty)\\, so the
 inverse is exact and unique; the root-finding fallback of the base class
 is not used. `Q(0)` is 0 and `Q(1)` is `Inf`.

@@ -1,20 +1,21 @@
 # Elastic-Net Third Derivatives
 
-Computes the ten third derivatives of the log-density in closed form,
-through
-[`.enet_chain()`](https://statmodels7.github.io/distributions7/reference/dot-enet_chain.md).
-Written in \\(\mu, a, c)\\ the log-density is quadratic in \\z = y-\mu\\
-and linear in each rate, so at this order only the normalizing constant
-contributes, apart from \\\partial^{3}\ell/\partial\mu^{2}\partial c =
--1\\. The bilinear map to \\(\lambda, \alpha)\\ through the second
-partials of the bilinear map puts the data back into one component:
-`mu_lambda_alpha`, equal to \\\mathrm{sgn}(z) - z\\, varies across
-observations although every third derivative in the rates is free of the
-data. `mu_mu_lambda` (\\-(1-\alpha)\\) and `mu_mu_alpha` (\\\lambda\\)
-are constants.
+Computes the ten third derivatives of the log-density in closed form, in
+compiled code (`enet_deriv3_cpp()`). Written in \\(\mu, a, c)\\ the
+log-density is quadratic in \\z = y-\mu\\ and linear in each rate, so at
+this order only the normalizing constant contributes, apart from
+\\\partial^{3}\ell/\partial\mu^{2}\partial c = -1\\. The bilinear map to
+\\(\lambda, \alpha)\\ through the second partials of the bilinear map
+puts the data back into one component: `mu_lambda_alpha`, equal to
+\\\mathrm{sgn}(z) - z\\, varies across observations although every third
+derivative in the rates is free of the data. `mu_mu_lambda`
+(\\-(1-\alpha)\\) and `mu_mu_alpha` (\\\lambda\\) are constants.
 
-The same assembly at orders one and two reproduces the score and the
-observed Hessian.
+The kernel forms the components free of the data once per distinct pair
+\\(\lambda, \alpha)\\, as a partition sum over the bilinear map, and
+adds \\\mathrm{sgn}(z) - z\\ per observation.
+[`.enet_chain()`](https://statmodels7.github.io/distributions7/reference/dot-enet_chain.md)
+is the same assembly written in R.
 
 With `expected = TRUE` the value is an expectation, and there it is
 **not** closed form: the call routes to

@@ -3,8 +3,12 @@
 Computes \\Q(u) = a\\\\Q\_\Gamma(u;\\ d/p)\\^{1/p}\\, inverting the same
 representation as the distribution function: \\(Y/a)^p\\ is Gamma with
 shape \\d/p\\, so its quantile raised to the power \\1/p\\ and scaled by
-\\a\\ is the generalized gamma's. The whole computation is one `qgamma`
-call, without root finding.
+\\a\\ is the generalized gamma's. Where the requested tail probability
+is below \\e^{-5}\\ the value is corrected by Newton steps on the log
+tail probability
+([`tail_quantile_refine()`](https://statmodels7.github.io/distributions7/reference/tail_quantile_refine.md)):
+far in the lower tail on the log scale
+[`qgamma()`](https://rdrr.io/r/stats/GammaDist.html) returns 0.
 
 ## Arguments
 

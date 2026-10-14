@@ -1,9 +1,7 @@
 # Elastic-Net Fourth Derivatives
 
 Computes the fifteen fourth derivatives of the log-density in closed
-form, through
-[`.enet_chain()`](https://statmodels7.github.io/distributions7/reference/dot-enet_chain.md),
-in the notation of
+form, in compiled code (`enet_deriv4_cpp()`), in the notation of
 [`distrib_deriv3.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.EnetDistrib.md).
 In the rates \\(\mu, a, c)\\ no fourth derivative involves \\\mu\\, the
 data term being quadratic in \\z\\ and linear in each rate. After the

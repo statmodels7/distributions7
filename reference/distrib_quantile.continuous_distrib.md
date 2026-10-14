@@ -54,7 +54,10 @@ and expands geometrically, with a first step equal to the reciprocal of
 the density there, so that a sharply peaked family and a diffuse one
 take a comparable number of expansions; after thirty doublings the step
 is multiplied by a thousand, so that a quantile far in a tail is
-reached.
+reached. The expansion stops at a quarter of the largest double: a root
+beyond it is returned as `Inf` (or `-Inf`), the quadrature of a
+distribution function being unable to reach the mass past the largest
+double.
 
 The probability is first turned into the logarithms of both tails by
 [`quantile_log_tails()`](https://statmodels7.github.io/distributions7/reference/tail_helpers.md),

@@ -970,6 +970,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/invgauss1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/invgauss2_by_reparam.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/invgauss2_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/invgauss_quantile.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/is_class.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/is_fixed.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/is_reparam.html</loc></url>
@@ -1048,7 +1049,9 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_theta2_block.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/logLik.distrib_fit.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/log_deriv.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/log_neg_log1mexp.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/log_pow_deriv.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/log_tail_route.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/log_transform.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/logistic_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/logit_transform.html</loc></url>
@@ -1058,6 +1061,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/lognormal2_log_params.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/lognormal_theta_chain.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/lp_edge_divergence.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/ls_log_tail_derivs.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mapped_cross2_y.html</loc></url>
@@ -1252,6 +1256,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/pseudohuber2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/psi_shift_diff.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/quad_log_tail_derivs.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/quad_rows.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/quantile_anchors.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/recip_1p_sq.html</loc></url>
@@ -1358,6 +1363,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/symmetric_log_quantile.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/tail_helpers.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/tail_probability.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/tail_quantile_refine.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/tensor_derivatives.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/theta2_link_scale.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/to_link_scale.html</loc></url>
@@ -1446,6 +1452,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull3_log_surv_derivs.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull3_scale.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull3_shape_moments.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/weibull_log_lower.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull_moment_terms.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/yj_transform.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/za_cont_deriv_k.html</loc></url>

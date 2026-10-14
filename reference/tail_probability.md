@@ -4,12 +4,16 @@ Internal helpers of
 [`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md)
 and
 [`cdf_scale_k()`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md).
-`tail_cdf()` returns the distribution function at `q` and, when the
-upper tail is wanted, attaches the family's own upper-tail probability
-as the attribute `"upper"`, so that the upper tail is not formed as
-\\1 - F\\, which loses its digits once \\F\\ is close to one.
-`tail_probability()` returns the lower tail, or the upper tail from that
-attribute when it is present and from \\1 - F\\ otherwise.
+`tail_cdf()` returns the probability of the requested tail at `q`, from
+the family's own distribution function for that tail (so that the upper
+tail is not formed as \\1 - F\\, which loses its digits once \\F\\ is
+close to one), with the attribute `"tail"` set to `"lower"` or
+`"upper"`. Called with the arguments that
+[`log_tail_route()`](https://statmodels7.github.io/distributions7/reference/log_tail_route.md)
+has stored in `log_tail_stash`, it returns the stored value.
+`tail_probability()` returns the requested tail: the value itself when
+it carries the attribute `"tail"` for that tail, and otherwise, the
+value being read as the distribution function, \\F\\ or \\1 - F\\.
 
 ## Usage
 
@@ -44,8 +48,8 @@ tail_probability(Fq, lower.tail)
 
 ## Value
 
-A numeric vector of probabilities; for `tail_cdf()`, the distribution
-function with the attribute `"upper"` when `lower.tail` is `FALSE`.
+A numeric vector of probabilities; for `tail_cdf()`, with the attribute
+`"tail"`.
 
 ## Examples
 
@@ -54,7 +58,7 @@ d <- logistic_distrib()
 Fq <- distributions7:::tail_cdf(d, 40, list(mu = 0, sigma = 1), FALSE)
 # The upper tail survives where 1 - F is zero.
 c(from_family = distributions7:::tail_probability(Fq, FALSE),
-  one_minus_F = 1 - as.numeric(Fq))
+  one_minus_F = 1 - plogis(40))
 #>  from_family  one_minus_F 
 #> 4.248354e-18 0.000000e+00 
 ```

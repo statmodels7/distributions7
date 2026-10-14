@@ -7,7 +7,10 @@ survival function is elementary, \\1 - F(q) =
 \exp\\-(q/\mu)^{\sigma}\\\\, so `lower.tail = FALSE` with `log.p = TRUE`
 returns \\-(q/\mu)^{\sigma}\\ exactly and never forms the difference.
 That combination is what a right-censored observation far out in the
-tail contributes to a log-likelihood.
+tail contributes to a log-likelihood. With `lower.tail = TRUE` and
+`log.p = TRUE` the value is taken from \\\log H = \sigma\log(q/\mu)\\
+([`weibull_log_lower()`](https://statmodels7.github.io/distributions7/reference/weibull_log_lower.md)),
+so that it stays finite where \\H\\ underflows.
 
 ## Arguments
 

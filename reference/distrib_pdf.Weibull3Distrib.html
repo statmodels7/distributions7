@@ -5,13 +5,19 @@ the distribution function, the quantile function and the generator are
 stats::dweibull(), stats::pweibull(), stats::qweibull() and
 stats::rweibull() at that scale. At a small shape \(b\) underflows to
 0; there the four methods evaluate the same formulas through
-\(\log b\) and \(\log(y/b)\)."><meta property="og:description" content="The Weibull with shape \(\sigma\) and scale
+\(\log b\) and \(\log(y/b)\). On the log scale of the lower tail the
+distribution function and the quantile go through the logarithm of the
+cumulative hazard (weibull_log_lower(), log_neg_log1mexp()), so that
+neither rounds where the hazard or \(1 - p\) would."><meta property="og:description" content="The Weibull with shape \(\sigma\) and scale
 \(b = m / \Gamma(1 + 1/\sigma)\), so that \(E[Y] = m\). The density,
 the distribution function, the quantile function and the generator are
 stats::dweibull(), stats::pweibull(), stats::qweibull() and
 stats::rweibull() at that scale. At a small shape \(b\) underflows to
 0; there the four methods evaluate the same formulas through
-\(\log b\) and \(\log(y/b)\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(\log b\) and \(\log(y/b)\). On the log scale of the lower tail the
+distribution function and the quantile go through the logarithm of the
+cumulative hazard (weibull_log_lower(), log_neg_log1mexp()), so that
+neither rounds where the hazard or \(1 - p\) would."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +25,7 @@ stats::rweibull() at that scale. At a small shape \(b\) underflows to
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.78.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +64,10 @@ the distribution function, the quantile function and the generator are
 <code><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">stats::dweibull()</a></code>, <code><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">stats::pweibull()</a></code>, <code><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">stats::qweibull()</a></code> and
 <code><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">stats::rweibull()</a></code> at that scale. At a small shape \(b\) underflows to
 0; there the four methods evaluate the same formulas through
-\(\log b\) and \(\log(y/b)\).</p>
+\(\log b\) and \(\log(y/b)\). On the log scale of the lower tail the
+distribution function and the quantile go through the logarithm of the
+cumulative hazard (<code><a href="weibull_log_lower.html">weibull_log_lower()</a></code>, <code><a href="log_neg_log1mexp.html">log_neg_log1mexp()</a></code>), so that
+neither rounds where the hazard or \(1 - p\) would.</p>
     </div>
 
 

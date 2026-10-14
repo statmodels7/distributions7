@@ -6,11 +6,12 @@ and carries them onto \\(\mu, \lambda, \alpha)\\ through
 [`chain_assemble()`](https://statmodels7.github.io/distributions7/reference/chain_assemble.md)
 and the bilinear table of
 [`.enet_rate_maps()`](https://statmodels7.github.io/distributions7/reference/dot-enet_rate_maps.md).
-It is what
+It is the R form of the compiled kernels `enet_deriv3_cpp()` and
+`enet_deriv4_cpp()` that
 [`distrib_deriv3.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.EnetDistrib.md)
 and
 [`distrib_deriv4.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.EnetDistrib.md)
-return.
+call, and serves the tests as their reference.
 
 ## Usage
 
@@ -57,7 +58,7 @@ for the map,
 [`chain_assemble()`](https://statmodels7.github.io/distributions7/reference/chain_assemble.md)
 for the partition sum, and
 [`distrib_deriv3.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.EnetDistrib.md)
-for the method that calls this.
+for the method.
 
 ## Examples
 

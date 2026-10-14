@@ -13,7 +13,7 @@ distrib_cdf.continuous_distrib()."><meta property="og:image" content="https://st
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.77.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.78.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,7 +99,10 @@ parameter setting in one evaluation of the density per refinement
 to the reciprocal of the density there, so that a sharply peaked family and a
 diffuse one
 take a comparable number of expansions; after thirty doublings the step is
-multiplied by a thousand, so that a quantile far in a tail is reached.</p>
+multiplied by a thousand, so that a quantile far in a tail is reached. The
+expansion stops at a quarter of the largest double: a root beyond it is
+returned as <code>Inf</code> (or <code>-Inf</code>), the quadrature of a distribution function
+being unable to reach the mass past the largest double.</p>
 <p>The probability is first turned into the logarithms of both tails by
 <code><a href="tail_helpers.html">quantile_log_tails()</a></code>, without forming \(1 - p\) or exponentiating a
 logarithm, and each root is solved on the tail with the smaller

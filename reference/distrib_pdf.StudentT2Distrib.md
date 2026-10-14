@@ -7,7 +7,11 @@ function and the generator are
 [`stats::dt()`](https://rdrr.io/r/stats/TDist.html),
 [`stats::pt()`](https://rdrr.io/r/stats/TDist.html),
 [`stats::qt()`](https://rdrr.io/r/stats/TDist.html) and
-[`stats::rt()`](https://rdrr.io/r/stats/TDist.html) at that scale.
+[`stats::rt()`](https://rdrr.io/r/stats/TDist.html) at that scale. Where
+the requested tail probability is below \\e^{-5}\\ the value of
+[`qt()`](https://rdrr.io/r/stats/TDist.html) is corrected by Newton
+steps on the log tail probability
+([`tail_quantile_refine()`](https://statmodels7.github.io/distributions7/reference/tail_quantile_refine.md)).
 
 ## Arguments
 
