@@ -56,8 +56,8 @@ NULL
 #'
 #' @param distrib An object inheriting from `distrib`. Only its `params` are
 #'   read, to name and enumerate the components.
-#' @param Fq The distribution function at the quantile, a numeric vector,
-#'   possibly with the attribute `"upper"` that [tail_cdf()] attaches.
+#' @param Fq The value of [tail_cdf()], the probability of the requested
+#'   tail, or a plain numeric vector of distribution function values.
 #' @param dF A list of length `order`. Element \eqn{k} is the table of
 #'   \eqn{k}-th derivatives of \eqn{F}, keyed as
 #'   [`deriv_names(distrib@params, k)`][deriv_names], on the natural scale and
@@ -97,14 +97,15 @@ cdf_scale_k <- function(distrib, Fq, dF, order, lower.tail, log) {
 #'
 #' @description
 #' Internal helpers of [cdf_tail_scale()] and [cdf_scale_k()].
-#' `tail_cdf()` returns the distribution function at `q` and, when the upper
-#' tail is wanted, attaches the family's own upper-tail probability as the
-#' attribute `"upper"`, so that the upper tail is not formed as
-#' \eqn{1 - F}, which loses its digits once \eqn{F} is close to one. Called
-#' with the arguments that [log_tail_route()] has stored in
+#' `tail_cdf()` returns the probability of the requested tail at `q`, from
+#' the family's own distribution function for that tail (so that the upper
+#' tail is not formed as \eqn{1 - F}, which loses its digits once \eqn{F} is
+#' close to one), with the attribute `"tail"` set to `"lower"` or `"upper"`.
+#' Called with the arguments that [log_tail_route()] has stored in
 #' `log_tail_stash`, it returns the stored value.
-#' `tail_probability()` returns the lower tail, or the upper tail from that
-#' attribute when it is present and from \eqn{1 - F} otherwise.
+#' `tail_probability()` returns the requested tail: the value itself when it
+#' carries the attribute `"tail"` for that tail, and otherwise, the value being
+#' read as the distribution function, \eqn{F} or \eqn{1 - F}.
 #'
 #' @param distrib A distribution object.
 #' @param q A numeric vector of quantiles.
@@ -113,16 +114,15 @@ cdf_scale_k <- function(distrib, Fq, dF, order, lower.tail, log) {
 #' @param Fq The value of `tail_cdf()`, or a plain numeric vector of
 #'   distribution function values.
 #'
-#' @return A numeric vector of probabilities; for `tail_cdf()`, the
-#'   distribution function with the attribute `"upper"` when `lower.tail` is
-#'   `FALSE`.
+#' @return A numeric vector of probabilities; for `tail_cdf()`, with the
+#'   attribute `"tail"`.
 #'
 #' @examples
 #' d <- logistic_distrib()
 #' Fq <- distributions7:::tail_cdf(d, 40, list(mu = 0, sigma = 1), FALSE)
 #' # The upper tail survives where 1 - F is zero.
 #' c(from_family = distributions7:::tail_probability(Fq, FALSE),
-#'   one_minus_F = 1 - as.numeric(Fq))
+#'   one_minus_F = 1 - plogis(40))
 #'
 #' @keywords internal
 tail_cdf <- function(distrib, q, theta, lower.tail) {
@@ -132,16 +132,16 @@ tail_cdf <- function(distrib, q, theta, lower.tail) {
       identical(attr(S7::S7_class(distrib), "name"), st$cls) &&
       identical(q, st$q) && identical(theta[names(st$theta)], st$theta))
     return(st$Fq)
-  Fq <- distrib_cdf(distrib, q, theta)
-  if (!lower.tail) attr(Fq, "upper") <- distrib_cdf(distrib, q, theta, lower.tail = FALSE)
-  Fq
+  structure(as.numeric(distrib_cdf(distrib, q, theta, lower.tail = lower.tail)),
+            tail = if (lower.tail) "lower" else "upper")
 }
 
 #' @rdname tail_probability
 tail_probability <- function(Fq, lower.tail) {
-  if (lower.tail) return(as.numeric(Fq))
-  up <- attr(Fq, "upper")
-  if (is.null(up)) 1 - as.numeric(Fq) else up
+  v <- as.numeric(Fq)
+  tl <- attr(Fq, "tail")
+  if (is.null(tl)) tl <- "lower"
+  if (identical(tl, if (lower.tail) "lower" else "upper")) v else 1 - v
 }
 
 #' CDF Derivatives of a Discrete Distribution at Any Order

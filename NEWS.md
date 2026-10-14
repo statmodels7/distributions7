@@ -12,11 +12,18 @@
   methods' path for a scalar parameter.
 * The compiled distribution function computes the logarithm of the far tail
   only on the quantiles in it.
-* On 2000 draws the times return to those of 0.77.1: order one of
-  `skewt_distrib()` 9.0 s in the lower tail (13.5 s in 0.78.0, 8.6 s in
-  0.77.1), of `pseudohuber_distrib()` 3.8 s (7.9 s, 3.8 s); order four of
-  `enet_distrib()` 0.17 s (2.2 s, 0.12 s) and of `invgauss2_distrib()`
-  0.43 s (0.83 s, 0.44 s).
+* The cdf-derivative methods evaluate the probability of the requested tail
+  alone (for the upper tail they evaluated the distribution function as
+  well), and only on the log scale, which is the only one that reads it. The
+  methods of order three and four evaluated it three times on the log scale
+  and twice on the natural one, through the first and second orders they
+  assemble.
+* On 2000 draws the times return to those of 0.77.1 or fall below them:
+  order one of `skewt_distrib()` 8.7 s in the lower tail and 8.6 s in the
+  upper (13.5 s and 14.8 s in 0.78.0, 8.6 s and 10.1 s in 0.77.1), of
+  `pseudohuber_distrib()` 4.0 s and 4.0 s (7.9 s and 10.6 s; 3.8 s and
+  5.2 s); order four of `enet_distrib()` 0.17 s (2.2 s, 0.12 s) and of
+  `invgauss2_distrib()` 0.46 s (0.83 s, 0.44 s).
 * The third and fourth derivatives of `enet_distrib()` are compiled, one
   kernel per order, and the elastic net's kernels form the quantities of
   `(lambda, alpha)` once per distinct pair. The quadrature of a far tail

@@ -22,27 +22,27 @@ tail_probability(Fq, lower.tail)
 distribution function values.}
 }
 \value{
-A numeric vector of probabilities; for \code{tail_cdf()}, the
-distribution function with the attribute \code{"upper"} when \code{lower.tail} is
-\code{FALSE}.
+A numeric vector of probabilities; for \code{tail_cdf()}, with the
+attribute \code{"tail"}.
 }
 \description{
 Internal helpers of \code{\link[=cdf_tail_scale]{cdf_tail_scale()}} and \code{\link[=cdf_scale_k]{cdf_scale_k()}}.
-\code{tail_cdf()} returns the distribution function at \code{q} and, when the upper
-tail is wanted, attaches the family's own upper-tail probability as the
-attribute \code{"upper"}, so that the upper tail is not formed as
-\eqn{1 - F}, which loses its digits once \eqn{F} is close to one. Called
-with the arguments that \code{\link[=log_tail_route]{log_tail_route()}} has stored in
+\code{tail_cdf()} returns the probability of the requested tail at \code{q}, from
+the family's own distribution function for that tail (so that the upper
+tail is not formed as \eqn{1 - F}, which loses its digits once \eqn{F} is
+close to one), with the attribute \code{"tail"} set to \code{"lower"} or \code{"upper"}.
+Called with the arguments that \code{\link[=log_tail_route]{log_tail_route()}} has stored in
 \code{log_tail_stash}, it returns the stored value.
-\code{tail_probability()} returns the lower tail, or the upper tail from that
-attribute when it is present and from \eqn{1 - F} otherwise.
+\code{tail_probability()} returns the requested tail: the value itself when it
+carries the attribute \code{"tail"} for that tail, and otherwise, the value being
+read as the distribution function, \eqn{F} or \eqn{1 - F}.
 }
 \examples{
 d <- logistic_distrib()
 Fq <- distributions7:::tail_cdf(d, 40, list(mu = 0, sigma = 1), FALSE)
 # The upper tail survives where 1 - F is zero.
 c(from_family = distributions7:::tail_probability(Fq, FALSE),
-  one_minus_F = 1 - as.numeric(Fq))
+  one_minus_F = 1 - plogis(40))
 
 }
 \keyword{internal}

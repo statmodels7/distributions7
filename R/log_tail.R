@@ -96,8 +96,7 @@ log_tail_route <- function(distrib, q, theta, order, lower.tail, log, generic) {
   if (any(!far)) {
     qn <- q[!far]
     thn <- sub(!far)
-    Fn <- as.numeric(Fq)[!far]
-    if (!lower.tail) attr(Fn, "upper") <- attr(Fq, "upper")[!far]
+    Fn <- structure(as.numeric(Fq)[!far], tail = attr(Fq, "tail"))
     list2env(list(cls = cls, q = qn, theta = thn, lower = lower.tail, Fq = Fn),
              envir = log_tail_stash)
     # the call back to the generic does not come through the route again

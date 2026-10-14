@@ -62,8 +62,9 @@ NULL
 #'
 #' @param distrib An object inheriting from `distrib`. Only its `params` are
 #'   read, to name and pair the components.
-#' @param Fq The distribution function at the quantile, a numeric vector,
-#'   possibly with the attribute `"upper"` that [tail_cdf()] attaches.
+#' @param Fq The value of [tail_cdf()], the probability of the requested
+#'   tail, or a plain numeric vector of distribution function values. It is
+#'   read only on the log scale.
 #' @param dF1 A named list of first derivatives of \eqn{F}, one component per
 #'   parameter, in the parameter order.
 #' @param dF2 A named list of second derivatives of \eqn{F}, keyed as
@@ -85,19 +86,21 @@ NULL
 #' @keywords internal
 cdf_tail_scale <- function(distrib, Fq, dF1, dF2 = NULL, lower.tail, log) {
   params <- distrib@params
-  P <- tail_probability(Fq, lower.tail)
   sgn <- if (lower.tail) 1 else -1
 
   d1 <- lapply(dF1, function(v) sgn * v)
   names(d1) <- params
   if (is.null(dF2)) {
     if (!log) return(d1)
+    P <- tail_probability(Fq, lower.tail)
     return(stats::setNames(lapply(params, function(p) d1[[p]] / P), params))
   }
 
   d2 <- lapply(dF2, function(v) sgn * v)
   names(d2) <- names(dF2)
   if (!log) return(d2)
+  # the probability is read on the log scale only
+  P <- tail_probability(Fq, lower.tail)
 
   pairs <- hess_pairs(params)
   stats::setNames(lapply(names(pairs), function(nm) {

@@ -161,11 +161,11 @@ mapped_cdf_deriv <- function(distrib, parent, th_par, maps, q, theta, order,
                              lower.tail, log) {
   exact <- has_exact_cdf_deriv(parent, 1L) &&
     (order == 1L || has_exact_cdf_deriv(parent, 2L))
-  Fq <- tail_cdf(distrib, q, theta, lower.tail)
   if (!exact) {
     d1 <- numerical_cdf_deriv(distrib, q, theta, 1L)
     d2 <- if (order == 1L) NULL else numerical_cdf_deriv(distrib, q, theta, 2L)
-    return(cdf_tail_scale(distrib, Fq, d1, d2, lower.tail, log))
+    return(cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail),
+                          d1, d2, lower.tail, log))
   }
   d1 <- chain_cdf_deriv(parent, q, th_par, maps, distrib@params, 1L)
   d2 <- if (order == 1L) {
@@ -173,7 +173,8 @@ mapped_cdf_deriv <- function(distrib, parent, th_par, maps, q, theta, order,
   } else {
     chain_cdf_deriv(parent, q, th_par, maps, distrib@params, 2L)
   }
-  cdf_tail_scale(distrib, Fq, d1, d2, lower.tail, log)
+  cdf_tail_scale(distrib, tail_cdf(distrib, q, theta, lower.tail), d1, d2,
+                 lower.tail, log)
 }
 
 

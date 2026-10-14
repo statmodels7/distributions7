@@ -10,8 +10,8 @@ cdf_scale_k(distrib, Fq, dF, order, lower.tail, log)
 \item{distrib}{An object inheriting from \code{distrib}. Only its \code{params} are
 read, to name and enumerate the components.}
 
-\item{Fq}{The distribution function at the quantile, a numeric vector,
-possibly with the attribute \code{"upper"} that \code{\link[=tail_cdf]{tail_cdf()}} attaches.}
+\item{Fq}{The value of \code{\link[=tail_cdf]{tail_cdf()}}, the probability of the requested
+tail, or a plain numeric vector of distribution function values.}
 
 \item{dF}{A list of length \code{order}. Element \eqn{k} is the table of
 \eqn{k}-th derivatives of \eqn{F}, keyed as

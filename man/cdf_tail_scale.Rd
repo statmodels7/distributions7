@@ -10,8 +10,9 @@ cdf_tail_scale(distrib, Fq, dF1, dF2 = NULL, lower.tail, log)
 \item{distrib}{An object inheriting from \code{distrib}. Only its \code{params} are
 read, to name and pair the components.}
 
-\item{Fq}{The distribution function at the quantile, a numeric vector,
-possibly with the attribute \code{"upper"} that \code{\link[=tail_cdf]{tail_cdf()}} attaches.}
+\item{Fq}{The value of \code{\link[=tail_cdf]{tail_cdf()}}, the probability of the requested
+tail, or a plain numeric vector of distribution function values. It is
+read only on the log scale.}
 
 \item{dF1}{A named list of first derivatives of \eqn{F}, one component per
 parameter, in the parameter order.}

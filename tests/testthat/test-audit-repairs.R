@@ -1666,3 +1666,17 @@ test_that("the log-tail route hands the near quantiles to the family's method", 
     }
   }
 })
+
+test_that("tail_cdf() evaluates the requested tail alone", {
+  d <- logistic_distrib()
+  th <- list(mu = 0, sigma = 1)
+  up <- distributions7:::tail_cdf(d, 40, th, FALSE)
+  expect_identical(attr(up, "tail"), "upper")
+  expect_equal(distributions7:::tail_probability(up, FALSE),
+               plogis(40, lower.tail = FALSE), tolerance = 1e-14)
+  lo <- distributions7:::tail_cdf(d, -1, th, TRUE)
+  expect_equal(distributions7:::tail_probability(lo, TRUE), plogis(-1),
+               tolerance = 1e-14)
+  # a plain vector is read as the distribution function
+  expect_identical(distributions7:::tail_probability(0.25, FALSE), 0.75)
+})
