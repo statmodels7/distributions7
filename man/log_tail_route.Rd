@@ -5,6 +5,7 @@
 \alias{log_tail_route}
 \alias{log_tail_cut}
 \alias{log_tail_off}
+\alias{log_tail_stash}
 \alias{log_tail_quad}
 \alias{log_tail_quad_lower}
 \alias{log_tail_ls}
@@ -51,8 +52,14 @@ method. Elsewhere it returns \code{NULL} and the generic dispatches as usual.
 quadrature route for both tails and \code{log_tail_quad_lower} those for the
 lower tail, which adds the two Weibull families; \code{log_tail_cut} is the
 threshold, \eqn{-5}; \code{log_tail_off} holds the switch that turns the
-route off while a quantile it cannot take is sent back to the family's
-method.
+route off while quantiles are sent back to the family's method.
+
+The quantiles are selected on \code{\link[=tail_cdf]{tail_cdf()}}, the value the family's method
+computes first. While the method runs on the quantiles that are not far,
+\code{log_tail_stash} holds that value with the class, quantiles, parameters
+and tail it belongs to, and \code{\link[=tail_cdf]{tail_cdf()}} returns it for a call with the
+same arguments instead of evaluating the distribution function again. A
+parameter of length one is passed to the method as a scalar.
 }
 \examples{
 d <- gaussian1_distrib()

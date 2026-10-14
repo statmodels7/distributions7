@@ -137,3 +137,41 @@ test_that("the derivatives of the expected information are the y-free third deri
     expect_identical(de$mu_mu_mu, 0)
   }
 })
+
+test_that("the compiled third and fourth derivatives are the R assembly's", {
+  # enet_deriv3_cpp() and enet_deriv4_cpp() form the data-free components
+  # once per (lambda, alpha); .enet_chain() assembles every component in R
+  d <- enet_distrib()
+  y <- c(-2.3, -0.4, 0, 0.15, 1.1, 3.7)
+  for (th in list(list(mu = 0, lambda = 1.5, alpha = 0.6),
+                  list(mu = -1.0, lambda = 0.4, alpha = 1e-6),
+                  list(mu = 2.0, lambda = 800, alpha = 0.97),
+                  list(mu = 0.3, lambda = 1e-3, alpha = 1 - 1e-6))) {
+    # normwise: at lambda = 800 the smallest components are 1e-11 against
+    # 1e-5 and differ in the order of the sum (5e-13 relative to themselves)
+    for (o in 3:4) {
+      got <- if (o == 3L) distrib_deriv3(d, y, th) else distrib_deriv4(d, y, th)
+      ref <- distributions7:::.enet_chain(y, th, o)
+      expect_identical(names(got), names(ref))
+      expect_lt(max(abs(unlist(got) - unlist(ref))) / max(abs(unlist(ref))), 1e-13)
+    }
+  }
+})
+
+test_that("a parameter that varies by row gives each row its own value", {
+  d <- enet_distrib()
+  set.seed(5)
+  n <- 12
+  th <- list(mu = rnorm(n), lambda = rexp(n) * 3, alpha = runif(n))
+  th$lambda[7:12] <- th$lambda[1:6]
+  th$alpha[7:12] <- th$alpha[1:6]
+  y <- rnorm(n)
+  for (f in list(distrib_gradient, distrib_hessian, distrib_deriv3,
+                 distrib_deriv4)) {
+    v <- f(d, y, th)
+    for (i in c(2L, 8L)) {
+      one <- f(d, y[i], lapply(th, `[`, i))
+      expect_identical(vapply(v, `[`, 0, i), unlist(one))
+    }
+  }
+})

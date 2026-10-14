@@ -1635,3 +1635,34 @@ test_that("the lognormal's higher derivatives in the mean far below it", {
   d4 <- distrib_deriv4(lognormal2_distrib(), 1e-20, th)
   expect_true(all(is.finite(unlist(d4))))
 })
+
+test_that("the log-tail route hands the near quantiles to the family's method", {
+  # the quantiles above log P = -5 get exactly what the family's method
+  # returns for them, with a scalar parameter left scalar, and the stored
+  # distribution function is cleared after the call
+  dd <- list(enet_distrib(), invgauss2_distrib(), pseudohuber_distrib())
+  for (d in dd) {
+    set.seed(1)
+    th <- generate_random_theta(d)
+    set.seed(3)
+    y <- c(distrib_rng(d, 40, th),
+           distrib_quantile(d, c(-8, -30), th, lower.tail = FALSE, log.p = TRUE),
+           distrib_quantile(d, c(-8, -30), th, lower.tail = TRUE, log.p = TRUE))
+    gens <- if (S7::S7_inherits(d, PseudoHuberDistrib)) list(distrib_grad_cdf) else
+      list(distrib_grad_cdf, distrib_deriv4_cdf)
+    for (lt in c(TRUE, FALSE)) {
+      lp <- distrib_cdf(d, y, th, lower.tail = lt, log.p = TRUE)
+      near <- lp >= -5
+      expect_true(any(!near))
+      sw <- distributions7:::log_tail_off
+      for (g in gens) {
+        got <- g(d, y, th, lower.tail = lt)
+        sw$on <- TRUE
+        own <- g(d, y[near], th, lower.tail = lt)
+        sw$on <- FALSE
+        expect_identical(lapply(got, `[`, near), own)
+        expect_length(ls(distributions7:::log_tail_stash), 0L)
+      }
+    }
+  }
+})

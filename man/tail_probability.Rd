@@ -31,7 +31,9 @@ Internal helpers of \code{\link[=cdf_tail_scale]{cdf_tail_scale()}} and \code{\l
 \code{tail_cdf()} returns the distribution function at \code{q} and, when the upper
 tail is wanted, attaches the family's own upper-tail probability as the
 attribute \code{"upper"}, so that the upper tail is not formed as
-\eqn{1 - F}, which loses its digits once \eqn{F} is close to one.
+\eqn{1 - F}, which loses its digits once \eqn{F} is close to one. Called
+with the arguments that \code{\link[=log_tail_route]{log_tail_route()}} has stored in
+\code{log_tail_stash}, it returns the stored value.
 \code{tail_probability()} returns the lower tail, or the upper tail from that
 attribute when it is present and from \eqn{1 - F} otherwise.
 }

@@ -207,8 +207,10 @@ NULL
 #' Assembles the log-density's derivatives in \eqn{(\mu, a, c)} through
 #' [.enet_ac_derivs()] and carries them onto \eqn{(\mu, \lambda, \alpha)}
 #' through [chain_assemble()] and the bilinear table of [.enet_rate_maps()].
-#' It is what [distrib_deriv3.EnetDistrib()] and
-#' [distrib_deriv4.EnetDistrib()] return.
+#' It is the R form of the compiled kernels `enet_deriv3_cpp()` and
+#' `enet_deriv4_cpp()` that [distrib_deriv3.EnetDistrib()] and
+#' [distrib_deriv4.EnetDistrib()] call, and serves the tests as their
+#' reference.
 #'
 #' @details
 #' The same assembly run at orders one and two reproduces the score and the
@@ -226,7 +228,7 @@ NULL
 #'
 #' @seealso [.enet_ac_derivs()] for the inner half, [.enet_rate_maps()] for
 #'   the map, [chain_assemble()] for the partition sum, and
-#'   [distrib_deriv3.EnetDistrib()] for the method that calls this.
+#'   [distrib_deriv3.EnetDistrib()] for the method.
 #'
 #' @examples
 #' d <- enet_distrib()
@@ -255,9 +257,9 @@ NULL
 #' @name distrib_deriv3.EnetDistrib
 #'
 #' @description
-#' Computes the ten third derivatives of the log-density in closed form,
-#' through [.enet_chain()]. Written in \eqn{(\mu, a, c)} the log-density is
-#' quadratic in \eqn{z = y-\mu} and linear in each rate, so at this order only
+#' Computes the ten third derivatives of the log-density in closed form, in
+#' compiled code (`enet_deriv3_cpp()`). Written in \eqn{(\mu, a, c)} the
+#' log-density is quadratic in \eqn{z = y-\mu} and linear in each rate, so at this order only
 #' the normalizing constant contributes, apart from
 #' \eqn{\partial^{3}\ell/\partial\mu^{2}\partial c = -1}. The bilinear map to
 #' \eqn{(\lambda, \alpha)} through the second partials of the bilinear map
@@ -266,8 +268,10 @@ NULL
 #' derivative in the rates is free of the data. `mu_mu_lambda`
 #' (\eqn{-(1-\alpha)}) and `mu_mu_alpha` (\eqn{\lambda}) are constants.
 #'
-#' The same assembly at orders one and two reproduces the score and the
-#' observed Hessian.
+#' The kernel forms the components free of the data once per distinct pair
+#' \eqn{(\lambda, \alpha)}, as a partition sum over the bilinear map, and adds
+#' \eqn{\mathrm{sgn}(z) - z} per observation. [.enet_chain()] is the same
+#' assembly written in R.
 #'
 #' With `expected = TRUE` the value is an expectation, and there it is **not**
 #' closed form: the call routes to [expected_derivative()], so `approx` and
@@ -333,7 +337,7 @@ S7::method(distrib_deriv3, EnetDistrib) <- function(distrib, y, theta,
     return(expected_derivative(distrib, y, theta, order = 3L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  .enet_chain(y, theta, 3L)
+  enet_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }
 
 #' @title Elastic-Net Fourth Derivatives
@@ -341,7 +345,7 @@ S7::method(distrib_deriv3, EnetDistrib) <- function(distrib, y, theta,
 #'
 #' @description
 #' Computes the fifteen fourth derivatives of the log-density in closed form,
-#' through [.enet_chain()], in the notation of
+#' in compiled code (`enet_deriv4_cpp()`), in the notation of
 #' [distrib_deriv3.EnetDistrib()]. In the rates \eqn{(\mu, a, c)} no fourth
 #' derivative involves \eqn{\mu}, the data term being quadratic in \eqn{z} and
 #' linear in each rate. After the bilinear map every component naming
@@ -409,5 +413,5 @@ S7::method(distrib_deriv4, EnetDistrib) <- function(distrib, y, theta,
     return(expected_derivative(distrib, y, theta, order = 4L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  .enet_chain(y, theta, 4L)
+  enet_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }

@@ -421,6 +421,14 @@ enet_logz_ac_cpp <- function(a, c, order) {
     .Call(`_distributions7_enet_logz_ac_cpp`, a, c, order)
 }
 
+enet_deriv3_cpp <- function(y, mu, lambda, alpha) {
+    .Call(`_distributions7_enet_deriv3_cpp`, y, mu, lambda, alpha)
+}
+
+enet_deriv4_cpp <- function(y, mu, lambda, alpha) {
+    .Call(`_distributions7_enet_deriv4_cpp`, y, mu, lambda, alpha)
+}
+
 exponential_gradient_cpp <- function(y, mu, threads = 1L) {
     .Call(`_distributions7_exponential_gradient_cpp`, y, mu, threads)
 }

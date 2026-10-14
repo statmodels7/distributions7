@@ -1,3 +1,27 @@
+# distributions7 0.78.1
+
+## Performance
+
+* The log-tail route of the four cdf-derivative generics evaluated the
+  distribution function up to four times on the quantiles that stay with the
+  family's method: once to select them, once more when the generic was
+  called back on them and entered the route again, and once or twice in the
+  method itself. It now selects on the value the method computes first and
+  hands it over, and the call back does not enter the route. A parameter of
+  length one reaches the method as a scalar again, which restores the
+  methods' path for a scalar parameter.
+* The compiled distribution function computes the logarithm of the far tail
+  only on the quantiles in it.
+* On 2000 draws the times return to those of 0.77.1: order one of
+  `skewt_distrib()` 9.0 s in the lower tail (13.5 s in 0.78.0, 8.6 s in
+  0.77.1), of `pseudohuber_distrib()` 3.8 s (7.9 s, 3.8 s); order four of
+  `enet_distrib()` 0.17 s (2.2 s, 0.12 s) and of `invgauss2_distrib()`
+  0.43 s (0.83 s, 0.44 s).
+* The third and fourth derivatives of `enet_distrib()` are compiled, one
+  kernel per order, and the elastic net's kernels form the quantities of
+  `(lambda, alpha)` once per distinct pair. The quadrature of a far tail
+  costs 2 to 3.5 ms per quantile at order four instead of 21 to 23 ms.
+
 # distributions7 0.78.0
 
 The derivatives of the logarithm of a tail probability, and the tail

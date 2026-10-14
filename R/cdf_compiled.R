@@ -71,7 +71,10 @@ compiled_cdf <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE,
   # in the far tail the value is taken from the logarithm, which the kernel's
   # rule, placed on the family's own scale, does not resolve there
   far <- compiled_far_tail(distrib, a, out)
-  if (any(far)) out[far] <- exp(compiled_log_cdf(distrib, a, out, lower.tail)[far])
+  if (any(far)) {
+    af <- list(cls = a$cls, q = a$q[far], tm = a$tm[far, , drop = FALSE])
+    out[far] <- exp(compiled_log_cdf(distrib, af, out[far], lower.tail))
+  }
   out
 }
 

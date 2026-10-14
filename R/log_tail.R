@@ -37,8 +37,14 @@ NULL
 #' quadrature route for both tails and `log_tail_quad_lower` those for the
 #' lower tail, which adds the two Weibull families; `log_tail_cut` is the
 #' threshold, \eqn{-5}; `log_tail_off` holds the switch that turns the
-#' route off while a quantile it cannot take is sent back to the family's
-#' method.
+#' route off while quantiles are sent back to the family's method.
+#'
+#' The quantiles are selected on [tail_cdf()], the value the family's method
+#' computes first. While the method runs on the quantiles that are not far,
+#' `log_tail_stash` holds that value with the class, quantiles, parameters
+#' and tail it belongs to, and [tail_cdf()] returns it for a call with the
+#' same arguments instead of evaluating the distribution function again. A
+#' parameter of length one is passed to the method as a scalar.
 #'
 #' @param distrib An object inheriting from `distrib`.
 #' @param q A numeric vector of quantiles, already recycled by the generic.
@@ -75,17 +81,35 @@ log_tail_route <- function(distrib, q, theta, order, lower.tail, log, generic) {
     return(NULL)
   n <- max(length(q), lengths(theta[distrib@params]))
   q <- rep_len(q, n)
-  th <- lapply(theta[distrib@params], rep_len, length.out = n)
-  lp <- distrib_cdf(distrib, q, th, lower.tail = lower.tail, log.p = TRUE)
+  th <- theta[distrib@params]
+  # the selection reads the value the family's method computes first, and
+  # hands it to that method through log_tail_stash
+  Fq <- tail_cdf(distrib, q, th, lower.tail)
+  lp <- base::log(tail_probability(Fq, lower.tail))
   far <- !is.na(lp) & lp < log_tail_cut & is.finite(q) &
     q > distrib@bounds[1L] & q < distrib@bounds[2L]
-  if (!any(far)) return(NULL)
   nm <- deriv_names(distrib@params, order)
   out <- stats::setNames(lapply(nm, function(i) numeric(n)), nm)
-  sub <- function(idx) lapply(th, `[`, idx)
+  # a parameter of length one stays a scalar, so that a method with a path
+  # for a scalar parameter keeps it
+  sub <- function(idx) lapply(th, function(v) if (length(v) == 1L) v else v[idx])
   if (any(!far)) {
-    near <- generic(distrib, q[!far], sub(!far), lower.tail = lower.tail,
-                    log = log)
+    qn <- q[!far]
+    thn <- sub(!far)
+    Fn <- as.numeric(Fq)[!far]
+    if (!lower.tail) attr(Fn, "upper") <- attr(Fq, "upper")[!far]
+    list2env(list(cls = cls, q = qn, theta = thn, lower = lower.tail, Fq = Fn),
+             envir = log_tail_stash)
+    # the call back to the generic does not come through the route again
+    log_tail_off$on <- TRUE
+    on.exit({
+      log_tail_off$on <- FALSE
+      rm(list = ls(log_tail_stash), envir = log_tail_stash)
+    }, add = TRUE)
+    near <- generic(distrib, qn, thn, lower.tail = lower.tail, log = log)
+    log_tail_off$on <- FALSE
+    rm(list = ls(log_tail_stash), envir = log_tail_stash)
+    if (!any(far)) return(near)
     for (i in nm) out[[i]][!far] <- near[[i]]
   }
   if (isTRUE(log)) {
@@ -96,7 +120,8 @@ log_tail_route <- function(distrib, q, theta, order, lower.tail, log, generic) {
     lt <- quad_log_tail_derivs(distrib, q[far], sub(far), order, lower.tail,
                                all_orders = TRUE)
     ell <- function(b) lt[[length(b)]][[canon_key(b, distrib@params)]]
-    P <- exp(lp[far])
+    P <- exp(distrib_cdf(distrib, q[far], sub(far), lower.tail = lower.tail,
+                         log.p = TRUE))
     tail <- stats::setNames(lapply(deriv_indices(distrib@params, order),
                                    function(I) P * bell_f_ratio(distrib@params[I], ell)),
                             nm)
@@ -128,6 +153,11 @@ log_tail_cut <- -5
 #' @format NULL
 log_tail_off <- new.env()
 log_tail_off$on <- FALSE
+
+#' @rdname log_tail_route
+#' @usage NULL
+#' @format NULL
+log_tail_stash <- new.env()
 
 #' @rdname log_tail_route
 #' @usage NULL

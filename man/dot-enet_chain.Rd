@@ -23,8 +23,10 @@ numeric vector of the length of \code{y}.
 Assembles the log-density's derivatives in \eqn{(\mu, a, c)} through
 \code{\link[=.enet_ac_derivs]{.enet_ac_derivs()}} and carries them onto \eqn{(\mu, \lambda, \alpha)}
 through \code{\link[=chain_assemble]{chain_assemble()}} and the bilinear table of \code{\link[=.enet_rate_maps]{.enet_rate_maps()}}.
-It is what \code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()}} and
-\code{\link[=distrib_deriv4.EnetDistrib]{distrib_deriv4.EnetDistrib()}} return.
+It is the R form of the compiled kernels \code{enet_deriv3_cpp()} and
+\code{enet_deriv4_cpp()} that \code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()}} and
+\code{\link[=distrib_deriv4.EnetDistrib]{distrib_deriv4.EnetDistrib()}} call, and serves the tests as their
+reference.
 }
 \details{
 The same assembly run at orders one and two reproduces the score and the
@@ -50,6 +52,6 @@ max(abs(unlist(a2[names(h)]) - unlist(h)))
 \seealso{
 \code{\link[=.enet_ac_derivs]{.enet_ac_derivs()}} for the inner half, \code{\link[=.enet_rate_maps]{.enet_rate_maps()}} for
 the map, \code{\link[=chain_assemble]{chain_assemble()}} for the partition sum, and
-\code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()}} for the method that calls this.
+\code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()}} for the method.
 }
 \keyword{internal}

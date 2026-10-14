@@ -32,7 +32,7 @@ A named list of fifteen numeric vectors, from \code{mu_mu_mu_mu} to
 }
 \description{
 Computes the fifteen fourth derivatives of the log-density in closed form,
-through \code{\link[=.enet_chain]{.enet_chain()}}, in the notation of
+in compiled code (\code{enet_deriv4_cpp()}), in the notation of
 \code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()}}. In the rates \eqn{(\mu, a, c)} no fourth
 derivative involves \eqn{\mu}, the data term being quadratic in \eqn{z} and
 linear in each rate. After the bilinear map every component naming

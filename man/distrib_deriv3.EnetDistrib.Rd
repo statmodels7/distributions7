@@ -31,9 +31,9 @@ A named list of ten numeric vectors, from \code{mu_mu_mu} to
 \code{alpha_alpha_alpha} as \code{\link[=deriv_names]{deriv_names()}} names them.
 }
 \description{
-Computes the ten third derivatives of the log-density in closed form,
-through \code{\link[=.enet_chain]{.enet_chain()}}. Written in \eqn{(\mu, a, c)} the log-density is
-quadratic in \eqn{z = y-\mu} and linear in each rate, so at this order only
+Computes the ten third derivatives of the log-density in closed form, in
+compiled code (\code{enet_deriv3_cpp()}). Written in \eqn{(\mu, a, c)} the
+log-density is quadratic in \eqn{z = y-\mu} and linear in each rate, so at this order only
 the normalizing constant contributes, apart from
 \eqn{\partial^{3}\ell/\partial\mu^{2}\partial c = -1}. The bilinear map to
 \eqn{(\lambda, \alpha)} through the second partials of the bilinear map
@@ -42,8 +42,10 @@ puts the data back into one component: \code{mu_lambda_alpha}, equal to
 derivative in the rates is free of the data. \code{mu_mu_lambda}
 (\eqn{-(1-\alpha)}) and \code{mu_mu_alpha} (\eqn{\lambda}) are constants.
 
-The same assembly at orders one and two reproduces the score and the
-observed Hessian.
+The kernel forms the components free of the data once per distinct pair
+\eqn{(\lambda, \alpha)}, as a partition sum over the bilinear map, and adds
+\eqn{\mathrm{sgn}(z) - z} per observation. \code{\link[=.enet_chain]{.enet_chain()}} is the same
+assembly written in R.
 
 With \code{expected = TRUE} the value is an expectation, and there it is \strong{not}
 closed form: the call routes to \code{\link[=expected_derivative]{expected_derivative()}}, so \code{approx} and

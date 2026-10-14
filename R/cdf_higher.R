@@ -100,7 +100,9 @@ cdf_scale_k <- function(distrib, Fq, dF, order, lower.tail, log) {
 #' `tail_cdf()` returns the distribution function at `q` and, when the upper
 #' tail is wanted, attaches the family's own upper-tail probability as the
 #' attribute `"upper"`, so that the upper tail is not formed as
-#' \eqn{1 - F}, which loses its digits once \eqn{F} is close to one.
+#' \eqn{1 - F}, which loses its digits once \eqn{F} is close to one. Called
+#' with the arguments that [log_tail_route()] has stored in
+#' `log_tail_stash`, it returns the stored value.
 #' `tail_probability()` returns the lower tail, or the upper tail from that
 #' attribute when it is present and from \eqn{1 - F} otherwise.
 #'
@@ -124,6 +126,12 @@ cdf_scale_k <- function(distrib, Fq, dF, order, lower.tail, log) {
 #'
 #' @keywords internal
 tail_cdf <- function(distrib, q, theta, lower.tail) {
+  # the value log_tail_route() computed for these arguments
+  st <- log_tail_stash
+  if (!is.null(st$Fq) && identical(st$lower, lower.tail) &&
+      identical(attr(S7::S7_class(distrib), "name"), st$cls) &&
+      identical(q, st$q) && identical(theta[names(st$theta)], st$theta))
+    return(st$Fq)
   Fq <- distrib_cdf(distrib, q, theta)
   if (!lower.tail) attr(Fq, "upper") <- distrib_cdf(distrib, q, theta, lower.tail = FALSE)
   Fq

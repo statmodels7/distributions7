@@ -1,6 +1,13 @@
 #include <Rcpp.h>
 #include <cmath>
 #include <vector>
+#include <algorithm>
+#include <array>
+#include <cstdint>
+#include <cstring>
+#include <functional>
+#include <string>
+#include <unordered_map>
 #include "d7_par.h"
 #include "pt_enet.h"
 using namespace Rcpp;
@@ -15,24 +22,209 @@ using namespace Rcpp;
 //   l_la = (-|z| + z^2/2) - (lambda w'Z''v + Z_a - Z_c),
 //   E_ml = E_ma = 0,  E_la = -lambda w'Z''v,
 //   E_mm = -(a^2 - 2ac Z_a - 2c^2 Z_c).
-// The quantities of (lambda, alpha) are formed once when both are scalars.
+// The quantities of (lambda, alpha) are formed once per distinct pair of
+// values (enet_unique_pairs()), the pairs being found before the loop.
 
 namespace {
 
-struct EnetAt {
-    const NumericVector &lam, &al;
-    bool both, l_s, a_s;
-    d7::EnetPar P0;
-    EnetAt(const NumericVector& l, const NumericVector& a)
-        : lam(l), al(a), l_s(l.size() == 1), a_s(a.size() == 1) {
-        both = l_s && a_s;
-        if (both) P0 = d7::enet_par(lam[0], al[0]);
-    }
-    d7::EnetPar operator()(std::size_t i) const {
-        if (both) return P0;
-        return d7::enet_par(l_s ? lam[0] : lam[i], a_s ? al[0] : al[i]);
+struct PairHash {
+    std::size_t operator()(const std::pair<std::uint64_t, std::uint64_t>& k) const {
+        return std::hash<std::uint64_t>()(k.first * 0x9E3779B97F4A7C15ULL ^ k.second);
     }
 };
+
+// the distinct (lambda, alpha) pairs among the first n elements, compared by
+// their bits, and the index of each element's pair
+void enet_unique_pairs(const NumericVector& lam, const NumericVector& al,
+                       std::size_t n, std::vector<double>& ul,
+                       std::vector<double>& ua, std::vector<int>& id) {
+    const bool l_s = lam.size() == 1, a_s = al.size() == 1;
+    id.assign(n, 0);
+    if (l_s && a_s) {
+        ul.assign(1, lam[0]);
+        ua.assign(1, al[0]);
+        return;
+    }
+    std::unordered_map<std::pair<std::uint64_t, std::uint64_t>, int, PairHash> seen;
+    for (std::size_t i = 0; i < n; ++i) {
+        const double l = l_s ? lam[0] : lam[i], a = a_s ? al[0] : al[i];
+        std::pair<std::uint64_t, std::uint64_t> k;
+        std::memcpy(&k.first, &l, sizeof(double));
+        std::memcpy(&k.second, &a, sizeof(double));
+        auto it = seen.find(k);
+        if (it == seen.end()) {
+            it = seen.emplace(k, static_cast<int>(ul.size())).first;
+            ul.push_back(l);
+            ua.push_back(a);
+        }
+        id[i] = it->second;
+    }
+}
+
+struct EnetAt {
+    std::vector<d7::EnetPar> P;
+    std::vector<int> id;
+    EnetAt(const NumericVector& l, const NumericVector& a, std::size_t n) {
+        std::vector<double> ul, ua;
+        enet_unique_pairs(l, a, n, ul, ua, id);
+        P.resize(ul.size());
+        for (std::size_t u = 0; u < ul.size(); ++u) P[u] = d7::enet_par(ul[u], ua[u]);
+    }
+    const d7::EnetPar& operator()(std::size_t i) const { return P[id[i]]; }
+};
+
+// The derivatives of l = -a|z| - c z^2/2 - log Z(a, c) in (mu, a, c) along
+// the index tuple ix (0 = mu, 1 = a, 2 = c) of length m, with s = sgn(z) and
+// d[i][j] the partial derivatives of log Z. The data term is quadratic in z
+// and linear in each rate, so beyond the second order only d/dmu^2 dc = -1
+// carries mu.
+double enet_l_ac(int m, const int* ix, double z, double s, double a, double c,
+                 const double d[5][5]) {
+    int nm = 0, na = 0, nc = 0;
+    for (int r = 0; r < m; ++r) {
+        if (ix[r] == 0) ++nm;
+        else if (ix[r] == 1) ++na;
+        else ++nc;
+    }
+    if (m == 1) {
+        if (nm) return a * s + c * z;
+        if (na) return -std::fabs(z) - d[1][0];
+        return -z * z / 2.0 - d[0][1];
+    }
+    if (nm == 0) return -d[na][nc];
+    if (m == 2) {
+        if (nm == 2) return -c;
+        return na ? s : z;
+    }
+    if (m == 3 && nm == 2 && nc == 1) return -1.0;
+    return 0.0;
+}
+
+// the m-linear form of those derivatives on the directions dir[0..m-1], each
+// a vector in (mu, a, c)
+double enet_l_form(int m, const double (*dir)[3], double z, double s, double a,
+                   double c, const double d[5][5]) {
+    int ix[4] = {0, 0, 0, 0};
+    double out = 0.0;
+    int total = 1;
+    for (int r = 0; r < m; ++r) total *= 3;
+    for (int t = 0; t < total; ++t) {
+        int u = t;
+        double w = 1.0;
+        for (int r = 0; r < m; ++r) {
+            ix[r] = u % 3;
+            u /= 3;
+            w *= dir[r][ix[r]];
+        }
+        if (w != 0.0) out += w * enet_l_ac(m, ix, z, s, a, c, d);
+    }
+    return out;
+}
+
+// One derivative of order k in (mu, lambda, alpha), with nm, nl and na the
+// counts of each. a = lambda alpha and c = lambda (1 - alpha) are bilinear:
+// d(a, c)/dlambda = w = (alpha, 1 - alpha), d(a, c)/dalpha = lambda v,
+// d^2(a, c)/dlambda dalpha = v = (1, -1), and nothing above. The partition
+// sum keeps the blocks of size one and the pairs {lambda, alpha}: with j such
+// pairs, C(nl, j) C(na, j) j! partitions contribute the form of order k - j
+// on nm times e_mu, nl - j times w, na - j times lambda v and j times v.
+double enet_deriv_lam_al(int nm, int nl, int na, double z, double s,
+                         double lam, double al, const double d[5][5]) {
+    const double a = lam * al, c = lam * (1.0 - al);
+    const double emu[3] = {1.0, 0.0, 0.0}, w[3] = {0.0, al, 1.0 - al},
+                 lv[3] = {0.0, lam, -lam}, v[3] = {0.0, 1.0, -1.0};
+    static const double fact[5] = {1.0, 1.0, 2.0, 6.0, 24.0};
+    double out = 0.0;
+    for (int j = 0; j <= std::min(nl, na); ++j) {
+        const double coef = fact[nl] / (fact[j] * fact[nl - j]) *
+                            fact[na] / (fact[j] * fact[na - j]) * fact[j];
+        double dir[4][3];
+        int m = 0;
+        auto add = [&](const double* e, int times) {
+            for (int t = 0; t < times; ++t, ++m)
+                for (int q = 0; q < 3; ++q) dir[m][q] = e[q];
+        };
+        add(emu, nm);
+        add(w, nl - j);
+        add(lv, na - j);
+        add(v, j);
+        out += coef * enet_l_form(m, dir, z, s, a, c, d);
+    }
+    return out;
+}
+
+// The derivatives of order k (3 or 4) in (mu, lambda, alpha), keyed as
+// deriv_names(). Each is the same for every observation at one parameter
+// value except mu_lambda_alpha at order three, sgn(z) - z, so a table is
+// formed once per distinct (lambda, alpha) and that one component is added
+// per observation.
+List enet_deriv_k(NumericVector y, NumericVector mu, NumericVector lambda,
+                  NumericVector alpha, int k) {
+    const std::size_t n = std::max({y.size(), mu.size(), lambda.size(),
+                                    alpha.size()});
+    static const char* nmv[3] = {"mu", "lambda", "alpha"};
+    // the multi-indices in the order of deriv_names(): nondecreasing tuples
+    std::vector<std::array<int, 3>> cnt;
+    std::vector<std::string> keys;
+    int ix[4];
+    std::function<void(int, int)> rec = [&](int pos, int from) {
+        if (pos == k) {
+            std::array<int, 3> c3 = {0, 0, 0};
+            std::string s;
+            for (int r = 0; r < k; ++r) {
+                ++c3[ix[r]];
+                if (r) s += "_";
+                s += nmv[ix[r]];
+            }
+            cnt.push_back(c3);
+            keys.push_back(s);
+            return;
+        }
+        for (int v = from; v < 3; ++v) {
+            ix[pos] = v;
+            rec(pos + 1, v);
+        }
+    };
+    rec(0, 0);
+    const int nk = static_cast<int>(cnt.size());
+
+    std::vector<double> ul, ua;
+    std::vector<int> id;
+    enet_unique_pairs(lambda, alpha, n, ul, ua, id);
+    std::vector<double> tab(ul.size() * nk);
+    for (std::size_t u = 0; u < ul.size(); ++u) {
+        double d[5][5];
+        d7::enet_logz_ac(ul[u] * ua[u], ul[u] * (1.0 - ua[u]), k, d);
+        for (int c = 0; c < nk; ++c)
+            tab[u * nk + c] = enet_deriv_lam_al(cnt[c][0], cnt[c][1], cnt[c][2],
+                                                0.0, 0.0, ul[u], ua[u], d);
+    }
+    // the component that carries the data at order three
+    int mla = -1;
+    if (k == 3)
+        for (int c = 0; c < nk; ++c)
+            if (cnt[c][0] == 1 && cnt[c][1] == 1 && cnt[c][2] == 1) mla = c;
+
+    std::vector<NumericVector> cols(nk);
+    for (int c = 0; c < nk; ++c) cols[c] = NumericVector(n);
+    const bool y_s = y.size() == 1, m_s = mu.size() == 1;
+    for (std::size_t i = 0; i < n; ++i) {
+        const double* t = &tab[id[i] * nk];
+        for (int c = 0; c < nk; ++c) cols[c][i] = t[c];
+        if (mla >= 0) {
+            const double z = (y_s ? y[0] : y[i]) - (m_s ? mu[0] : mu[i]);
+            cols[mla][i] += d7::enet_sign(z) - z;
+        }
+    }
+    List out(nk);
+    CharacterVector nm(nk);
+    for (int c = 0; c < nk; ++c) {
+        out[c] = cols[c];
+        nm[c] = keys[c];
+    }
+    out.attr("names") = nm;
+    return out;
+}
 
 }  // namespace
 
@@ -44,7 +236,7 @@ List enet_gradient_cpp(NumericVector y, NumericVector mu, NumericVector lambda,
     bool m_s = (mu.size() == 1);
     const double *yp = y.begin(), *mp = mu.begin();
     double *o1 = g_m.begin(), *o2 = g_l.begin(), *o3 = g_a.begin();
-    EnetAt at(lambda, alpha);
+    EnetAt at(lambda, alpha, n);
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         const d7::EnetPar P = at(i);
         double z = yp[i] - (m_s ? mp[0] : mp[i]);
@@ -65,7 +257,7 @@ List enet_hessian_cpp(NumericVector y, NumericVector mu, NumericVector lambda,
     const double *yp = y.begin(), *mp = mu.begin();
     double *o1 = h_mm.begin(), *o2 = h_ll.begin(), *o3 = h_aa.begin(),
            *o4 = h_ml.begin(), *o5 = h_ma.begin(), *o6 = h_la.begin();
-    EnetAt at(lambda, alpha);
+    EnetAt at(lambda, alpha, n);
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         const d7::EnetPar P = at(i);
         double z = yp[i] - (m_s ? mp[0] : mp[i]);
@@ -92,7 +284,7 @@ List enet_expected_hessian_cpp(NumericVector y, NumericVector mu,
     NumericVector h_mm(n), h_ll(n), h_aa(n), h_ml(n), h_ma(n), h_la(n);
     double *o1 = h_mm.begin(), *o2 = h_ll.begin(), *o3 = h_aa.begin(),
            *o6 = h_la.begin();
-    EnetAt at(lambda, alpha);
+    EnetAt at(lambda, alpha, n);
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         const d7::EnetPar P = at(i);
         double al = P.al;
@@ -128,7 +320,7 @@ List enet_dexpected1_cpp(NumericVector y, NumericVector mu,
         v[k] = NumericVector(n);
         o[k] = v[k].begin();
     }
-    EnetAt at(lambda, alpha);
+    EnetAt at(lambda, alpha, n);
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         const d7::EnetPar P = at(i);
         const d7::EnetT3 T = d7::enet_t3(P);
@@ -213,4 +405,20 @@ List enet_logz_ac_cpp(NumericVector a, NumericVector c, int order) {
         out[k - 1] = ok;
     }
     return out;
+}
+
+// the third derivatives of the log-density, keyed as
+// deriv_names(c("mu", "lambda", "alpha"), 3)
+// [[Rcpp::export]]
+List enet_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector lambda,
+                     NumericVector alpha) {
+    return enet_deriv_k(y, mu, lambda, alpha, 3);
+}
+
+// the fourth derivatives of the log-density, keyed as
+// deriv_names(c("mu", "lambda", "alpha"), 4)
+// [[Rcpp::export]]
+List enet_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector lambda,
+                     NumericVector alpha) {
+    return enet_deriv_k(y, mu, lambda, alpha, 4);
 }
