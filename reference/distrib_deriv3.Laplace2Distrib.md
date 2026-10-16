@@ -2,8 +2,8 @@
 
 Computes the four distinct third derivatives of the Laplace log-density
 with respect to \\\mu\\ and \\\lambda\\. In this parametrization the
-log-density is \\\log(\lambda/2) - \lambda\|y-\mu\|\\, which is **linear
-in \\\lambda\\** apart from \\\log\lambda\\, and piecewise linear in
+log-density is \\\log(\lambda/2) - \lambda\|y-\mu\|\\, which is linear
+in \\\lambda\\ apart from \\\log\lambda\\, and piecewise linear in
 \\\mu\\. Every third derivative involving \\\mu\\ at all is therefore
 zero, and the only surviving component comes from \\\log\lambda\\:
 \$\$\dfrac{\partial^3 \ell}{\partial \lambda^3} =
@@ -39,8 +39,8 @@ and have no effect.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 

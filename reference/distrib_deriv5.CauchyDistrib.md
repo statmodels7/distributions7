@@ -10,11 +10,11 @@ derivative of \\\log Y\\ of order \\n\\, with \\j\\ derivatives in
 \$\$-2(-1)^{j+n-1}(n-1)!\\\mathrm{Re}(\mathrm{i}^k Y^{-n}),\$\$ plus
 \\(-1)^{n-1}(n-1)!/\sigma^n\\ from \\\log\sigma\\ in the component that
 is pure in \\\sigma\\. The kernel forms \\1/Y\\ by Smith's division and
-never forms \\(y - \mu)^2\\ or \\\sigma^2\\, so no two terms cancel and
-the components stay finite at any residual. The observed orders one to
-four are computed by the same formula. With `scale = "link"` the
-components are composed with the link derivatives by the routine that
-every family with a fifth-order kernel uses.
+never forms \\(y - \mu)^2\\ or \\\sigma^2\\, so the terms do not cancel
+one another and the components stay finite at any residual. The observed
+orders one to four are computed by the same formula. With
+`scale = "link"` the components are composed with the link derivatives
+by the routine that every family with a fifth-order kernel uses.
 
 ## Arguments
 
@@ -64,8 +64,8 @@ for the generic.
 ``` r
 d <- cauchy_distrib()
 d5 <- distrib_deriv5(d, c(-1.2, 0.3, 1e200), list(mu = 0.4, sigma = 1.5))
-# Finite far in the tail, where the component pure in sigma tends to
-# 24/sigma^5.
+# The derivatives are finite far in the tail, where the component pure in
+# sigma tends to 24/sigma^5.
 c(d5$sigma_sigma_sigma_sigma_sigma[3], 24 / 1.5^5)
 #> [1] 3.160494 3.160494
 ```

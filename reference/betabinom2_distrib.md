@@ -5,7 +5,7 @@ canonical parametrization, the two beta shapes \\\alpha \> 0\\ and
 \\\beta \> 0\\, on the finite support \\\\0, 1, \dots, n\\\\. The
 returned object carries closed-form derivatives of the log-mass to
 fourth order and expectations that are exact finite sums over the
-support, so no quadrature is used. The fifth derivative comes from the
+support, so quadrature is not used. The fifth derivative comes from the
 numerical fallback of the base class.
 
 This is the same law as
@@ -76,8 +76,8 @@ compiled kernels, and the third and fourth orders from
 A component naming both shapes keeps only the terms in \\S\\ and is
 therefore free of the data at every order.
 
-Every expectation is an **exact finite sum** over \\\\0, \dots, n\\\\:
-the support is bounded, so there is nothing to integrate over.
+Every expectation is an exact finite sum over \\\\0, \dots, n\\\\,
+because the support is bounded, and the method computes no integral.
 
 ## The cancellation at a large concentration
 
@@ -101,9 +101,10 @@ Every order therefore keeps its accuracy as the concentration grows.
 ## Estimation
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-maximizes the log-likelihood on the link scale. Neither shape is closed
-form, and the two are strongly correlated at a large concentration, the
-data then determining their ratio far better than their size.
+maximizes the log-likelihood on the link scale. The estimates of both
+shapes lack a closed form, and the two are strongly correlated at a
+large concentration, because the data then determine their ratio far
+better than their size.
 
 ## Notation
 
@@ -126,8 +127,8 @@ Distributions*, 3rd edition, Section 6.9. Wiley, Hoboken.
 ## See also
 
 [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
-for the same law in a mean proportion and a dispersion, which is the one
-to model a mean with;
+for the same law in a mean proportion and a dispersion, which is the
+family to use when a mean is modeled;
 [`binomial_distrib()`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md)
 for the limit at a large concentration and
 [`beta1_distrib()`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md)
@@ -135,7 +136,7 @@ for the mixing law;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the shapes;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
+to validate a user-defined family against the same battery that this one
 passes;
 [BetaBinom2Distrib](https://statmodels7.github.io/distributions7/reference/BetaBinom2Distrib.md)
 for the class.
@@ -158,13 +159,14 @@ th <- list(alpha = 2, beta = 3)
 sum(distrib_pdf(d, 0:10, th))
 #> [1] 1
 
-# The closed-form moments, and the same numbers from the shapes.
+# The moments are computed by the object and again in closed form from the
+# shapes.
 c(mean = mean(d, th), var = variance(d, th),
   closed_mean = 10 * 2 / 5, closed_var = 10 * 2 * 3 * 15 / (25 * 6))
 #>        mean         var closed_mean  closed_var 
 #>           4           6           4           6 
 
-# The same law as betabinom1 at mu = alpha / S and sigma = 1 / S.
+# This is the same law as betabinom1 at mu = alpha / S and sigma = 1 / S.
 all.equal(distrib_pdf(d, 0:10, th),
           distrib_pdf(betabinom1_distrib(size = 10), 0:10,
                       list(mu = 0.4, sigma = 0.2)))

@@ -36,8 +36,8 @@ returns `p`.
 - log.p:
 
   Logical of length 1. When `TRUE` the values in `p` are read as
-  logarithms of probabilities, which is how a quantile deep in a tail is
-  requested without the probability underflowing. Defaults to `FALSE`.
+  logarithms of probabilities, so that a quantile deep in a tail can be
+  requested without underflow in the probability. Defaults to `FALSE`.
 
 - ...:
 

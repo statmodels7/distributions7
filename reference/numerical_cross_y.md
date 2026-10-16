@@ -59,11 +59,11 @@ it is `NULL`.
 
 ## The quantity that is differenced
 
-The quantity differenced is the **response gradient**, not the
-log-density, so a family with an analytical `distrib_grad_y` pays for
-exactly one finite-difference layer. Where the response gradient is
-itself the finite-difference fallback the composition is the four-point
-mixed stencil on the log-density: the two differences act on different
+The quantity differenced is the response gradient, not the log-density,
+so a family with an analytical `distrib_grad_y` pays for exactly one
+finite-difference layer. Where the response gradient is itself the
+finite-difference fallback the composition is the four-point mixed
+stencil on the log-density: the two differences act on different
 variables, so they commute into a single stencil instead of compounding
 the way nested differences in one variable do.
 
@@ -76,9 +76,9 @@ truncation of a central difference against a rounding term growing as
 ## See also
 
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md),
-the generic it serves;
+the generic that it serves;
 [`numerical_grad_y()`](https://statmodels7.github.io/distributions7/reference/numerical_grad_y.md)
-for the quantity it differences;
+for the quantity that it differences;
 [`numerical_cross2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross2_y.md)
 for the third-order analogue.
 

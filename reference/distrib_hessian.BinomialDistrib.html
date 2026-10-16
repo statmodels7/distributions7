@@ -3,7 +3,7 @@
 probability, one value per observation, in closed form:
 $$\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}.$$
 It is negative for every admissible \(\mu\) and depends on the data
-through \(y\) alone. Each term is formed by dividing its coefficient by
+only through \(y\). Each term is formed by dividing its coefficient by
 the base once per power, and a term with a zero coefficient contributes
 zero, so at \(y = 0\) the value is \(-n/(1-\mu)^2\) however small
 \(\mu\) is.
@@ -22,7 +22,7 @@ directly and stays exact."><meta property="og:description" content="Computes the
 probability, one value per observation, in closed form:
 $$\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}.$$
 It is negative for every admissible \(\mu\) and depends on the data
-through \(y\) alone. Each term is formed by dividing its coefficient by
+only through \(y\). Each term is formed by dividing its coefficient by
 the base once per power, and a term with a zero coefficient contributes
 zero, so at \(y = 0\) the value is \(-n/(1-\mu)^2\) however small
 \(\mu\) is.
@@ -45,7 +45,7 @@ directly and stays exact."><meta property="og:image" content="https://statmodels
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,11 +82,11 @@ directly and stays exact."><meta property="og:image" content="https://statmodels
 probability, one value per observation, in closed form:
 $$\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}.$$
 It is negative for every admissible \(\mu\) and depends on the data
-through \(y\) alone. Each term is formed by dividing its coefficient by
+only through \(y\). Each term is formed by dividing its coefficient by
 the base once per power, and a term with a zero coefficient contributes
 zero, so at \(y = 0\) the value is \(-n/(1-\mu)^2\) however small
 \(\mu\) is.</p>
-<p>On the <strong>link</strong> scale with the default logit the chain rule gives
+<p>On the link scale with the default logit the chain rule gives
 \(\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)\), which carries no
 data; this is the defining property of a canonical link, and in exact
 arithmetic it makes the observed and the expected information the same
@@ -121,7 +121,7 @@ of length 1 or of the length of <code>y</code>. <code>mu</code> must lie in \((0
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -153,7 +153,7 @@ quantity, and <code><a href="distrib_hessian.html">distrib_hessian()</a></code> 
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span>, <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The closed form, written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The closed form is written out.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span>,</span></span>
 <span class="r-in"><span>          <span class="op">-</span><span class="va">y</span> <span class="op">/</span> <span class="fl">0.3</span><span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="op">(</span><span class="fl">10</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span> <span class="op">/</span> <span class="fl">0.7</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

@@ -13,7 +13,7 @@ to four, by splitting the log-density into a part that is analytic at
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -111,23 +111,23 @@ $$\partial^{a,b} W = \sum_{j} \binom{b}{j}\, \partial^{a,j}L \cdot
       \partial^{b-j}(1/\xi),$$
 produces terms of size \(\xi^{-(b+1)}\) that cancel against each other, so
 near zero the form loses every digit. Below a threshold it is replaced by the
-series the cancellation leaves,
+series that the cancellation leaves,
 $$W = \sum_{k \ge 0} \frac{(-1)^k \xi^k z^{k+1}}{k+1},$$
 differentiated term by term.</p>
-<p>The threshold is on \(\lvert\xi z\rvert\) and <strong>not</strong> on \(\xi\). At
+<p>The threshold is on \(\lvert\xi z\rvert\) and not on \(\xi\). At
 order \(b\) the Leibniz terms are of size \(z\xi^{-b}\) against an answer
 of size \(z^{b+1}\), so the relative cancellation is
 \((\xi z)^{-b}\) and the accuracy is \(\varepsilon(\xi z)^{-b}\), which
 at order four reaches 0.3 by \(\xi z = 1.7\times10^{-4}\). The series
 needs \(\lvert\xi z\rvert &lt; 1\) to converge and is cut at 0.2, where
-forty terms leave \(10^{-28}\) while the Leibniz form still carries \(10^{-13}\), so
-the two overlap.</p>
+forty terms leave \(10^{-28}\) while the Leibniz form still carries
+\(10^{-13}\), so the two overlap.</p>
     </div>
     <div class="section level2">
     <h2 id="what-the-series-branch-evaluates">What the series branch evaluates<a class="anchor" aria-label="anchor" href="#what-the-series-branch-evaluates"></a></h2>
-    <p>The two elementwise powers the sum appears to need are algebraically one:
+    <p>The two elementwise powers that the sum appears to need are algebraically one:
 with \(u = \xi z\), \(\xi^{k-b}z^{k+1} = u^{k-b}z^{b+1}\), so
-\(z^{b+1}/\sigma^a\) leaves the sum and what remains is a <strong>polynomial in</strong>
+\(z^{b+1}/\sigma^a\) leaves the sum and what remains is a polynomial in
 \(u\) whose coefficients are scalar in \(k\). <code>gpd_poly_cpp()</code> evaluates
 it by Horner from the highest power down, which sums a decaying series
 smallest first. Each branch also runs on its own elements only, so a sample
@@ -135,8 +135,8 @@ straddling the cut does not pay for both in full.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_deriv3.GPDDistrib.html">distrib_deriv3.GPDDistrib()</a></code> for the compiled kernels this
-assembly is checked against; <code><a href="fdb2.html">fdb2()</a></code> for the two-variable composition
+    <div class="dont-index"><p><code><a href="distrib_deriv3.GPDDistrib.html">distrib_deriv3.GPDDistrib()</a></code> for the compiled kernels against
+which this assembly is checked; <code><a href="fdb2.html">fdb2()</a></code> for the two-variable composition
 template; and
 <code><a href="gpd_distrib.html">gpd_distrib()</a></code> for the family.</p></div>
     </div>

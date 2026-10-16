@@ -31,7 +31,7 @@ support, so approx and nsim are ignored on both branches."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@ the integer shifts, \(c_K[\sum_{i&lt;y}(\alpha+i)^{-K} -
 \sum_{i&lt;n}(\alpha+\beta+i)^{-K}]\) for the pure component in \(\alpha\)
 with \(c_K = (-1)^{K-1}(K-1)!\), whose terms have one sign
 (<code><a href="betabinom_direct.html">betabinom_direct()</a></code>).</p>
-<p>With <code>expected = TRUE</code> the expectation is an <strong>exact finite sum</strong> over the
+<p>With <code>expected = TRUE</code> the expectation is an exact finite sum over the
 support, so <code>approx</code> and <code>nsim</code> are ignored on both branches.</p>
     </div>
 
@@ -107,12 +107,12 @@ the model is returned in place of the value at the data. Defaults to
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored here, both branches being exact. Accepted so that the
-signature matches the generic's.</p></dd>
+<dd><p>Ignored here, because both branches are exact. It is accepted
+so that the signature matches the generic's.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>

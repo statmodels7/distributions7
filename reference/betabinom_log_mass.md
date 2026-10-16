@@ -1,8 +1,8 @@
 # Log-Mass of the Beta-Binomial
 
 Returns \\\log\binom{n}{y} + \log B(y+\alpha, n-y+\beta) - \log
-B(\alpha, \beta)\\ by whichever of two routes is accurate at the shapes
-given. The choice is made from the shapes alone, so it is deterministic
+B(\alpha, \beta)\\ by whichever of two routes is accurate at the given
+shapes. The choice depends only on the shapes, so it is deterministic
 and costs one comparison.
 
 ## Usage
@@ -40,11 +40,11 @@ one, so forming the mass as that difference carries an absolute error of
 \\\varepsilon\\ times the larger magnitude. That route is used only
 while the error stays below `1e-8`.
 
-Beyond it the shifts \\y\\, \\n-y\\ and \\n\\ are **integers**, so each
+Beyond it the shifts \\y\\, \\n-y\\ and \\n\\ are integers, so each
 log-gamma difference is an exact sum of logarithms,
 \$\$\log\Gamma(\alpha+y) - \log\Gamma(\alpha) =
 \sum\_{j=0}^{y-1}\log(\alpha+j),\$\$ and the mass follows from three
-such sums, none of which forms a quantity larger than
+such sums, each of which forms only quantities no larger than
 \\n\log(\alpha+\beta)\\. The sums also give the binomial limit correctly
 as the shapes grow at a fixed ratio, where the beta-function route loses
 one digit per factor of ten in the concentration.

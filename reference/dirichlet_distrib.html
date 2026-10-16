@@ -23,7 +23,7 @@ family."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,7 +120,7 @@ $$f(y) = \frac{\Gamma(\phi)}{\prod_{j=1}^{p}\Gamma(\alpha_j)}
 with
 $$\mathbb{E}[Y_j] = \mu_j, \qquad
       \operatorname{Cov}(Y_i, Y_j) = \frac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1}.$$
-So \(\phi\) is a <strong>precision</strong>: the larger it is, the tighter the draws
+So \(\phi\) is a precision: the larger it is, the tighter the draws
 sit about the mean. The covariance is singular, the coordinates summing to
 one, and every off-diagonal entry is negative.</p>
 <p>The parametrization follows the design of the multivariate gaussian. The
@@ -187,12 +187,12 @@ Chapman and Hall, London.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="beta1_distrib.html">beta1_distrib()</a></code> for a coordinate's marginal and the two-coordinate case
-seen on the line; <code><a href="multinomial_distrib.html">multinomial_distrib()</a></code> for the discrete family on the
-same simplex; <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code> for the elliptical multivariate
-family; <code><a href="https://statmodels7.github.io/parameters7/reference/simplex.html" class="external-link">parameters7::simplex()</a></code> for the chart the mean rides;
-<code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a
-family of your own against the same battery this one passes;
-<a href="DirichletDistrib.html">DirichletDistrib</a> for the class.</p></div>
+seen on the line; <code><a href="multinomial_distrib.html">multinomial_distrib()</a></code> for the discrete family on the same
+simplex; <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code> for the elliptical multivariate family;
+<code><a href="https://statmodels7.github.io/parameters7/reference/simplex.html" class="external-link">parameters7::simplex()</a></code> for the chart the mean rides; <code><a href="fit_distrib.html">fit_distrib()</a></code> to
+estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a family of your own
+against the same battery that this one passes; <a href="DirichletDistrib.html">DirichletDistrib</a> for the
+class.</p></div>
     </div>
 
     <div class="section level2">

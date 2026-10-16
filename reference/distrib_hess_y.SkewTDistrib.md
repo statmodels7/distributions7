@@ -7,8 +7,8 @@ It equals \\\partial^2\ell/\partial\mu^2\\, because the response and the
 location enter the density through \\y - \mu\\ and the sign of the first
 derivative disappears in the second.
 
-Unlike the skew normal's, the value **changes sign**. The Student
-\\t\\'s curvature is positive wherever \\\|z\| \> \sqrt{\nu}\\, so the
+Unlike the skew normal's, the value changes sign. The Student \\t\\'s
+curvature is positive wherever \\\|z\| \> \sqrt{\nu}\\, so the
 log-density is convex in the far tail. That convexity makes the family's
 score redescend, and its estimates resistant to an outlier.
 

@@ -30,8 +30,8 @@ function.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -50,14 +50,14 @@ A named list of two numeric vectors, `mu` and `theta`, each of length
 
 ## The dispersion at large theta
 
-The dispersion component is **not** computed as written above. As
-\\\theta\\ grows the family tends to the Poisson and this derivative
-vanishes, its three terms canceling to leading order: \\\psi(y+\theta) -
+The dispersion component is not computed as written above. As \\\theta\\
+grows the family tends to the Poisson and this derivative vanishes, its
+three terms canceling to leading order: \\\psi(y+\theta) -
 \psi(\theta)\\ is \\y/\theta\\, \\\log\\\theta/s\\\\ is \\-\mu/\theta\\
 and \\(\mu-y)/s\\ is \\(\mu-y)/\theta\\, and the three sum to zero, so
 the value is \\O(\theta^{-2})\\ computed from terms of size
 \\\theta^{-1}\\. Written directly it is wrong by about one part in a
-thousand at \\\theta = 10^6\\ and **changes sign** at \\10^8\\.
+thousand at \\\theta = 10^6\\ and changes sign at \\10^8\\.
 
 The kernel performs each cancellation symbolically instead. With \\a =
 \theta\\, \\b = \theta + y\\, \\c = \theta + \mu\\ and \\w =
@@ -70,7 +70,7 @@ reaches that regime when the sample is nearly equidispersed, because the
 estimate of \\\theta\\ then grows without bound.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries before returning. This method always returns the
+that the family carries before returning. This method always returns the
 parameter scale.
 
 ## Notation

@@ -6,20 +6,18 @@ and the shape \(\lambda &amp;gt; 0\), so that
 closed-form derivatives of the log-density to fourth order, in the
 parameters and in the response, and closed-form moments. The fifth order and
 distrib_cross3_y() come from the numerical fallbacks of the base class.
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm,
-both parameters being positive."><meta property="og:description" content="Builds the distribution object for the inverse Gaussian family on
+logarithm, because both parameters are positive."><meta property="og:description" content="Builds the distribution object for the inverse Gaussian family on
 \((0, \infty)\) in its classical parametrization, the mean \(\mu &amp;gt; 0\)
 and the shape \(\lambda &amp;gt; 0\), so that
 \(\operatorname{Var}(Y) = \mu^3/\lambda\). The returned object carries
 closed-form derivatives of the log-density to fourth order, in the
 parameters and in the response, and closed-form moments. The fifth order and
 distrib_cross3_y() come from the numerical fallbacks of the base class.
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm,
-both parameters being positive."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+logarithm, because both parameters are positive."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +25,7 @@ both parameters being positive."><meta property="og:image" content="https://stat
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,10 +65,9 @@ and the shape \(\lambda &gt; 0\), so that
 closed-form derivatives of the log-density to fourth order, in the
 parameters and in the response, and closed-form moments. The fifth order and
 <code><a href="distrib_cross3_y.html">distrib_cross3_y()</a></code> come from the numerical fallbacks of the base class.</p>
-<p>The two arguments choose the links that carry each parameter to the
+<p>The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm,
-both parameters being positive.</p>
+logarithm, because both parameters are positive.</p>
     </div>
 
     <div class="section level2">
@@ -133,7 +130,7 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{\lambda}{\mu^3},
       \mathbb{E}\left[\ell^{(\lambda\lambda)}\right] =
         -\dfrac{1}{2\lambda^2}.$$
 The zero off-diagonal makes the mean and the shape orthogonal.</p>
-<p>The log-density is <strong>linear in \(\lambda\)</strong> apart from
+<p>The log-density is linear in \(\lambda\) apart from
 \(\tfrac12\log\lambda\), and that shapes every higher order. The pure
 shape derivatives are those of the logarithm alone,
 \(-1/(2\lambda^2)\), \(1/\lambda^3\) and \(-3/\lambda^4\); every

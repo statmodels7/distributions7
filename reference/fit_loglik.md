@@ -5,7 +5,7 @@ Sums the log-density over the observations, \\\sum_i \log f(y_i;
 observation is read at the same \\\theta\\, which is the i.i.d.
 assumption the fitting layer makes.
 
-The value is **not** divided by \\n\\.
+The value is not divided by \\n\\.
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 scales it when it hands the objective to an optimizer, and recomputes it
 unscaled here for the `loglik`, `aic` and `bic` a fit reports.

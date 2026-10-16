@@ -25,7 +25,7 @@ the canonical link of this family."><meta property="og:image" content="https://s
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{y}{\mu} - \dfrac{1-y}{1-\mu}
 The residual is divided by the variance, so an observation near a
 probability of 0 or 1 that goes the other way contributes an arbitrarily
 large score.</p>
-<p>On the <strong>link</strong> scale with the default logit the generic's chain rule gives
+<p>On the link scale with the default logit the generic's chain rule gives
 \(\partial\ell/\partial\eta = y - \mu\), the raw residual: the logit is
 the canonical link of this family.</p>
     </div>
@@ -90,7 +90,7 @@ of length 1 or of the length of <code>y</code>. <code>mu</code> must lie in \((0
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -115,7 +115,7 @@ sequentially whatever the count. Defaults to <code>1L</code>.</p></dd>
 <p>\(\ell\) is the log-mass of one observation and \(\mu \in (0,1)\) the
 success probability, with variance \(\mu(1-\mu)\).
 \(\eta = \log(\mu/(1-\mu))\) is the parameter on the link scale, the log
-odds. A <strong>canonical</strong> link makes the log-mass linear in the sufficient
+odds. A canonical link makes the log-mass linear in the sufficient
 statistic times \(\eta\).</p>
     </div>
     <div class="section level2">
@@ -131,7 +131,7 @@ statistic times \(\eta\).</p>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The closed form, written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The method agrees with the closed form written out.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu</span>, <span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">0.3</span> <span class="op">*</span> <span class="fl">0.7</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>

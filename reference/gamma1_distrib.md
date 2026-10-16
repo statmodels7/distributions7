@@ -2,16 +2,16 @@
 
 Builds the distribution object for the gamma family parametrized by its
 mean \\\mu \> 0\\ and a dispersion \\\phi \> 0\\, so that
-\\\operatorname{Var}(Y) = \phi\mu^2\\. This is the parametrization a
-generalized linear model uses. The returned object carries closed-form
+\\\operatorname{Var}(Y) = \phi\mu^2\\. This is the parametrization that
+a generalized linear model uses. The returned object carries closed-form
 derivatives of the log-density to fourth order, in the parameters and in
 the response, and closed-form moments. The fifth order and the mixed
 derivatives of order three and four in the response and the parameters
 come from the numerical fallbacks of the base class.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm, both parameters being positive.
+logarithm, because both parameters are positive.
 
 ## Usage
 
@@ -63,10 +63,10 @@ at \\\phi \to 0\\ it tends to a Gaussian with variance \\\phi\mu^2\\.
 
 This is the same law as
 [`gamma2_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma2_distrib.md),
-which carries the mean and the *variance*, the two being related by
-\\\sigma^2 = \phi\mu^2\\. They are separate families because the second
-parameter is a different quantity in each, with its own interpretation,
-standard error and interval.
+which carries the mean and the *variance*, and the two second parameters
+are related by \\\sigma^2 = \phi\mu^2\\. They are separate families
+because the second parameter is a different quantity in each, with its
+own interpretation, standard error and interval.
 
 ## Derivatives
 
@@ -78,8 +78,8 @@ Writing \\s = 1/\phi\\ and \\z = y/\mu\\, the score is
 \quad \mathbb{E}\left\[\ell^{(\mu\phi)}\right\] = 0, \quad
 \mathbb{E}\left\[\ell^{(\phi\phi)}\right\] = s^4\left\\\dfrac{1}{s} -
 \psi'(s)\right\\.\$\$ The zero off-diagonal makes the mean and the
-dispersion orthogonal, so the mean equation can be fitted with the
-dispersion held at any value without biasing it.
+dispersion orthogonal, so the mean equation can be fitted at any fixed
+value of the dispersion without biasing it.
 
 Every derivative in \\\phi\\ is the corresponding derivative in \\s\\
 carried across by the one-variable chain rule, with \\s' = -s^2\\, \\s''
@@ -87,7 +87,7 @@ carried across by the one-variable chain rule, with \\s' = -s^2\\, \\s''
 function is evaluated once. Two quantities in those derivatives cancel
 as \\s\\ grows, \\\log s - \psi(s)\\ and its polygamma analogues; each
 is computed as a polygamma minus its own leading asymptote, so the
-digits survive at the large shape a nearly Gaussian gamma reaches.
+digits survive at the large shape that a nearly Gaussian gamma reaches.
 
 Third and fourth orders are closed form as well, observed and expected,
 in
@@ -99,9 +99,9 @@ as are the derivatives in the response,
 and
 [`distrib_hess_y.Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Gamma1Distrib.md).
 The derivatives of the *distribution* function in the parameters have no
-elementary form here, the derivative of an incomplete gamma in its shape
-being hypergeometric, and are computed by a compiled quadrature of the
-density times the derivatives of the log-density.
+elementary form here because the derivative of an incomplete gamma in
+its shape is hypergeometric, and they are computed by a compiled
+quadrature of the density times the derivatives of the log-density.
 
 ## Estimation
 
@@ -167,7 +167,7 @@ th <- list(mu = 3, phi = 0.5)
 all.equal(distrib_pdf(d, y, th), dgamma(y, shape = 2, rate = 1 / 1.5))
 #> [1] TRUE
 
-# Moments in closed form: skewness 2 sqrt(phi), excess kurtosis 6 phi.
+# The moments have closed forms: skewness 2 sqrt(phi), excess kurtosis 6 phi.
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))
 #>     mean      var     skew     kurt 
@@ -175,7 +175,7 @@ c(mean = mean(d, th), var = variance(d, th),
 c(2 * sqrt(0.5), 6 * 0.5)
 #> [1] 1.414214 3.000000
 
-# Fitting recovers the parameters, the mean exactly at the sample mean.
+# Fitting recovers the parameters, and the fitted mean equals the sample mean.
 set.seed(4)
 z <- distrib_rng(d, 2000, th)
 fit <- fit_distrib(d, z)

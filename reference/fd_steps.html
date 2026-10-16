@@ -13,7 +13,7 @@ nearest finite bound or by scaling it on that distance."><meta property="og:imag
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,7 +99,7 @@ difference, whose reach is one.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The domain clamp is what allows a finite-difference fallback to be offered at
-all. Parameter domains here are <strong>open</strong>: a scale parameter is positive, not
+all. Parameter domains here are open: a scale parameter is positive, not
 non-negative. A step chosen from the magnitude alone therefore takes a small
 \(\sigma\) straight through zero, and the log-density comes back <code>NaN</code>
 for reasons that look like a bug in the density. Clamping to 49\<!-- % of the -->

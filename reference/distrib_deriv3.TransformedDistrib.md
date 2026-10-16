@@ -23,8 +23,7 @@ the fourth.
 
 - theta:
 
-  A named list of the **parent's** parameters; a transformation adds
-  none.
+  A named list of the parent's parameters; a transformation adds none.
 
 - expected:
 

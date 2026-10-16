@@ -19,7 +19,7 @@ derivatives of \\G = \mathrm{d}\log M/\mathrm{d}x\\.
 ## Value
 
 `p` with two components added: `d2g` for \\G''\\ and `d3g` for \\G'''\\,
-each of the length `g` has.
+and each of them has the same length as `g`.
 
 ## Details
 
@@ -41,7 +41,7 @@ M/\mathrm{d}x\\.
 [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md)
 for the family and
 [`distrib_deriv3.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.EnetDistrib.md)
-for the order these serve.
+for the order that these serve.
 
 ## Examples
 
@@ -52,7 +52,7 @@ c(x = p$x, G = p$g, dG = p$dg, d2G = p$d2g, d3G = p$d3g)
 #>           x           G          dG         d2G         d3G 
 #>  1.00000000 -0.52513528  0.19909767 -0.11693120  0.07917498 
 
-# G'' against a central difference of G'.
+# G'' is compared with a central difference of G'.
 gp <- function(x) {
   distributions7:::.enet_parts(list(mu = 0, lambda = 2 * x^2,
                                     alpha = 0.5))$dg

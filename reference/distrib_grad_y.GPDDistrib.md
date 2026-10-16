@@ -2,10 +2,10 @@
 
 Return the derivatives of the log-density in the response to order four,
 and the mixed derivatives of orders one and two in the response and one
-and two in \\(\sigma, \xi)\\, each a closed form from its own compiled
-kernel. The derivative in the response is \\\ell^{(y)} = -(1 +
-\xi)/(\sigma t)\\, with \\t = 1 + \xi y/\sigma\\, so none of these forms
-divides by \\\xi\\; \\t\\ is formed as
+and two in \\(\sigma, \xi)\\. Each of these is a closed form from its
+own compiled kernel. The derivative in the response is \\\ell^{(y)} =
+-(1 + \xi)/(\sigma t)\\, with \\t = 1 + \xi y/\sigma\\, so these forms
+do not divide by \\\xi\\; \\t\\ is formed as
 [`distrib_deriv3.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md)
 describes. Outside the support every component is `NaN`.
 

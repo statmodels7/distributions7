@@ -3,7 +3,7 @@
 Computes the second derivative of the chi-squared log-density with
 respect to the response, in closed form: \$\$\dfrac{\partial^2
 \ell}{\partial y^2} = -\dfrac{\mu/2 - 1}{y^2}.\$\$ The exponential term
-drops out, the log-density being linear in \\y\\ apart from the
+drops out because the log-density is linear in \\y\\ apart from the
 \\(\mu/2 - 1)\log y\\ term. The sign follows \\\mu\\: the log-density is
 concave in the response for \\\mu \> 2\\, exactly flat at \\\mu = 2\\,
 where the family is the exponential with mean 2, and convex for \\\mu \<
@@ -56,12 +56,12 @@ th <- list(mu = 4)
 all.equal(distrib_hess_y(d, y, th), -(4 / 2 - 1) / y^2)
 #> [1] TRUE
 
-# Concave above mu = 2, flat at it, convex below.
+# The log-density is concave above mu = 2, flat at it and convex below.
 vapply(c(4, 2, 1), function(m) distrib_hess_y(d, 4, list(mu = m)),
        numeric(1))
 #> [1] -0.06250  0.00000  0.03125
 
-# Negative everywhere at four degrees of freedom.
+# The second derivative is negative everywhere at four degrees of freedom.
 all(distrib_hess_y(d, y, th) < 0)
 #> [1] TRUE
 ```

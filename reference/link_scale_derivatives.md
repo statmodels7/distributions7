@@ -27,8 +27,8 @@ derivative generics named above; the value returned is theirs.
 
 Write \\h_i = g_i^{-1}\\, so that \\\theta_i = h_i(\eta_i)\\. Because
 each parameter carries its own link, the Jacobian
-\\\partial\theta/\partial\eta\\ is **diagonal** and the multivariate Faa
-di Bruno formula factorizes. For a derivative whose multi-index involves
+\\\partial\theta/\partial\eta\\ is diagonal and the multivariate Faa di
+Bruno formula factorizes. For a derivative whose multi-index involves
 the distinct parameters \\p_1,\dots,p_r\\ with multiplicities
 \\m_1,\dots,m_r\\, \$\$\frac{\partial^k \ell}{\partial \eta\_{p_1}^{m_1}
 \cdots \partial \eta\_{p_r}^{m_r}} = \sum\_{j_1=1}^{m_1} \cdots
@@ -46,9 +46,9 @@ polynomials. The low-order cases are \$\$\frac{\partial \ell}{\partial
 simply multiply the corresponding factors (e.g.
 \\\partial^2\ell/\partial\eta_a\partial\eta_b = \ell\_{ab} h_a' h_b'\\).
 
-For the **expected** Hessian the first-order term vanishes because the
-score has zero expectation, so the information transforms as the
-congruence \\\mathrm{diag}(h')\\\mathbb{E}\[H\]\\\mathrm{diag}(h')\\.
+For the expected Hessian the first-order term vanishes because the score
+has zero expectation, so the information transforms as the congruence
+\\\mathrm{diag}(h')\\\mathbb{E}\[H\]\\\mathrm{diag}(h')\\.
 
 The inverse-link derivatives \\h', h'', \dots, h^{(5)}\\ are obtained
 from the order-specific generics

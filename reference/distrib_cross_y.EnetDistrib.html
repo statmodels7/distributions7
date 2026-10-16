@@ -33,7 +33,7 @@ hyperparameters together needs this block."><meta property="og:image" content="h
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,9 +103,10 @@ numeric vector of length 1 or of the length of <code>y</code>.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>Either <code>"parameter"</code>, the default, or <code>"link"</code>. On the link
-scale the chain rule is the gradient's own first-order diagonal one, the
-response derivative not interacting with a reparametrization of <code>theta</code>;
-the transformation is applied in the generic's body.</p></dd>
+scale the chain rule is the gradient's own first-order diagonal one,
+because the response derivative does not interact with a
+reparametrization of <code>theta</code>; the transformation is applied in the
+generic's body.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -139,7 +140,8 @@ each of the length of the recycled inputs.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cy</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu"     "lambda" "alpha" </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a central difference of the response derivative in a parameter.</span></span></span>
+<span class="r-in"><span><span class="co"># The analytic value is compared with a central difference of the response</span></span></span>
+<span class="r-in"><span><span class="co"># derivative in a parameter.</span></span></span>
 <span class="r-in"><span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-6</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>analytic <span class="op">=</span> <span class="va">cy</span><span class="op">$</span><span class="va">lambda</span>,</span></span>
 <span class="r-in"><span>      numeric <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, lambda <span class="op">=</span> <span class="fl">2</span> <span class="op">+</span> <span class="va">eps</span>,</span></span>

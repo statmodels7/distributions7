@@ -23,7 +23,7 @@ so no new algebra is needed for either."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,7 +92,7 @@ scale second. The order is positional and is not checked.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An <strong>unnamed</strong> list of two numeric vectors, each of length
+    <p>An unnamed list of two numeric vectors, each of length
 <code>length(y)</code>: the location component then the scale one. The caller names
 them.</p>
     </div>
@@ -101,7 +101,7 @@ them.</p>
     <p>The scale formula uses only that \(\sigma\) is a scale, so it holds when
 there is no location at all and \(z = y/\sigma\). That covers the
 exponential's mean, the Weibull's scale and the generalized Pareto's. A
-<strong>shape</strong> parameter is not covered: it is written out per family, or
+shape parameter is not covered: it is written out per family, or
 differenced where it has no elementary form.</p>
 <p>Both components are recycled to the length of <code>y</code> by the <code>+ 0 * y</code> in the
 body, so a family whose second response derivative is constant still

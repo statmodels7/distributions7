@@ -36,13 +36,13 @@ ignored. `y` is read only for its length.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available. Accepted so that the signature
-  matches the generic's.
+  Ignored, because a closed form is available. It is accepted so that
+  the signature matches the generic's.
 
 - nsim:
 
@@ -56,7 +56,7 @@ ignored. `y` is read only for its length.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -65,16 +65,16 @@ A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\theta\\\partial\theta^\top\]\\,
-the expectation of the **observed information** under the model. The
+the expectation of the observed information under the model. The
 logistic is a regular family, so the second Bartlett identity holds and
 this equals the variance of the score.
 
 ## See also
 
 [`distrib_hessian.LogisticDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.LogisticDistrib.md)
-for the observed quantity this is the expectation of,
+for the observed quantity whose expectation this is,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
 which inverts it at each step, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)

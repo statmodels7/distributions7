@@ -4,7 +4,7 @@ Returns the negative of the Fisher information, in closed form and with
 no quadrature or simulation: \$\$-I(\mu) = -\dfrac{1}{\sigma^2}, \qquad
 -I(\sigma) = -\dfrac{1}{\sigma^2}, \qquad -I(\mu, \sigma) = 0.\$\$
 
-For \\\mu\\ this is **not** the expectation of
+For \\\mu\\ this is not the expectation of
 [`distrib_hessian.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.LaplaceDistrib.md),
 which is identically zero. It is the variance of the score:
 \\\partial\ell/\partial\mu = \mathrm{sign}(r)/\sigma\\ has mean 0 and
@@ -35,17 +35,18 @@ ignored. `y` is read only for its length.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available. Accepted so that the signature
-  matches the generic's. Of the strategies of the generic, `"mc"`
-  averages the observed second derivative over simulated draws and would
-  give 0 for the location; `"opg"`, `"bartlett"` and `"integrate"`
-  (which uses the Bartlett identity for a family with a non-smooth
-  parameter) read the product of scores and give \\-1/\sigma^2\\.
+  Ignored, because a closed form is available. It is accepted so that
+  the signature matches the generic's. Of the strategies of the generic,
+  `"mc"` averages the observed second derivative over simulated draws
+  and would give 0 for the location; `"opg"`, `"bartlett"` and
+  `"integrate"` (which uses the Bartlett identity for a family with a
+  non-smooth parameter) read the product of scores and give
+  \\-1/\sigma^2\\.
 
 - nsim:
 
@@ -59,7 +60,7 @@ ignored. `y` is read only for its length.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -69,14 +70,14 @@ the parameters are.
 
 ## Notation
 
-The **observed information** is
+The observed information is
 \\-\partial^2\ell/\partial\theta\\\partial\theta^\top\\ at the data. The
-**expected information** is usually its expectation, and for a regular
+expected information is usually its expectation, and for a regular
 family the two agree with the variance of the score by the second
-Bartlett identity. The Laplace is **not** regular in \\\mu\\: the first
+Bartlett identity. The Laplace is not regular in \\\mu\\: the first
 identity \\\mathbb{E}\[\partial\ell/\partial\mu\] = 0\\ still holds, the
-second does not, and the information is **defined** as the variance of
-the score. That is what this method returns.
+second does not, and the information is defined as the variance of the
+score. That is what this method returns.
 
 ## See also
 

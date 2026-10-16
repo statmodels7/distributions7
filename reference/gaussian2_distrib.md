@@ -6,7 +6,7 @@ returned object carries closed-form derivatives of the log-density to
 fourth order in the response and to fifth order in the parameters, and
 closed-form moments.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
 identity for the mean, which is already free, and the logarithm for the
 variance, which keeps it positive at every predictor.
@@ -24,7 +24,7 @@ gaussian2_distrib(link_mu = identity_link(), link_sigma2 = log_link())
   A `link` object from `linkfunctions7` for the mean \\\mu\\. Defaults
   to
   [`linkfunctions7::identity_link()`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html),
-  the mean ranging over the whole line already.
+  because the mean already ranges over the whole line.
 
 - link_sigma2:
 
@@ -54,7 +54,7 @@ this parametrization is `NO2` in the gamlss family catalog.
 
 This is the same law as
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
-in different coordinates, \\\sigma^2\\ here being the square of the
+in different coordinates; here \\\sigma^2\\ is the square of the
 \\\sigma\\ there. The two are separate families and not one family under
 a link. A link changes the scale on which a parameter is modeled and
 leaves the parameter unchanged, whereas here the parameter, its
@@ -74,8 +74,9 @@ v)} = -\dfrac{r}{v^2}, \quad \ell^{(vv)} = \dfrac{1}{2v^2} -
 \mathbb{E}\left\[\ell^{(vv)}\right\] = -\dfrac{1}{2v^2}.\$\$ The zero
 off-diagonal makes the mean and the variance orthogonal, so their
 maximum likelihood estimates are asymptotically independent.
-Orthogonality holds in all three parametrizations of this family, the
-mean being orthogonal to any smooth function of the spread alone.
+Orthogonality holds in all three parametrizations of this family,
+because the mean is orthogonal to any smooth function of the spread that
+does not involve the mean.
 
 Third and fourth orders are closed form as well, observed and expected,
 in
@@ -141,13 +142,13 @@ d
 #>   mu     (mean)               | Link: identity   | Domain: (-Inf, Inf)
 #>   sigma2 (variance)           | Link: log        | Domain: (0, Inf)
 
-# The same law as gaussian1 at sigma = sqrt(sigma2).
+# The law is the same as gaussian1 at sigma = sqrt(sigma2).
 y <- c(-1.2, 0.3, 2.5)
 all.equal(distrib_pdf(d, y, list(mu = 1, sigma2 = 4)),
           distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))
 #> [1] TRUE
 
-# Moments in closed form: the variance is the parameter itself.
+# The moments are in closed form, and the variance is the parameter itself.
 th <- list(mu = 1, sigma2 = 4)
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))

@@ -4,10 +4,10 @@ The fallback for a discrete family that implements no analytical
 quantile function: the smallest support point \\k\\ with \\F(k) \ge p\\,
 read off the cumulative table that
 [`disc_cum_table()`](https://statmodels7.github.io/distributions7/reference/disc_cum_table.md)
-builds. It is **exact**. The distribution function of a discrete
-variable is a step function, so inverting it is a lookup and there is
-nothing to solve. The probability is compared with the running sum after
-a relative reduction of \\64\varepsilon\\, as
+builds. It is exact. The distribution function of a discrete variable is
+a step function, so inverting it is a lookup and there is nothing to
+solve. The probability is compared with the running sum after a relative
+reduction of \\64\varepsilon\\, as
 [`stats::qpois()`](https://rdrr.io/r/stats/Poisson.html) does, so that a
 probability equal to \\F(k)\\ returns \\k\\; on a Poisson defined by its
 mass alone the result agrees with

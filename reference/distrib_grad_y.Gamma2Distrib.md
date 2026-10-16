@@ -54,11 +54,11 @@ d <- gamma2_distrib()
 y <- c(1, 3, 5)
 th <- list(mu = 3, sigma2 = 2)
 
-# Written out at the implied shape and rate.
+# The derivative is written out at the implied shape and rate.
 all.equal(distrib_grad_y(d, y, th), (9 / 2 - 1) / y - 3 / 2)
 #> [1] TRUE
 
-# Zero at the mode, positive below it and negative above.
+# The derivative is zero at the mode, positive below it and negative above.
 mode <- (9 / 2 - 1) / (3 / 2)
 c(mode = mode, at_mode = distrib_grad_y(d, mode, th))
 #>     mode  at_mode 

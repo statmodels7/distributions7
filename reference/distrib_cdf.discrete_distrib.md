@@ -2,7 +2,7 @@
 
 The fallback for a discrete family that implements no analytical
 distribution function: it sums the mass from the finite lower bound of
-the support up to \\\lfloor q \rfloor\\. The sum is **exact**, not
+the support up to \\\lfloor q \rfloor\\. The sum is exact, not
 approximate, so on a Poisson defined by its mass alone it agrees with
 [`stats::ppois()`](https://rdrr.io/r/stats/Poisson.html) to \\10^{-16}\\
 absolute, which is the rounding of the addition itself.

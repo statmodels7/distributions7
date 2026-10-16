@@ -1,8 +1,8 @@
 # Generalized Pareto Derivatives of Orders Three to Five
 
 Return the third, fourth and fifth derivatives of the log-density in
-\\(\sigma, \xi)\\, and for orders three and four their expectations,
-each from its own compiled kernel.
+\\(\sigma, \xi)\\, and for orders three and four their expectations.
+Each of these comes from its own compiled kernel.
 
 ## Arguments
 
@@ -65,9 +65,9 @@ contains \\\phi\\, through \\\partial^j W/\partial\xi^j =
 z^{j+1}\phi^{(j)}(u)\\ with \$\$\phi^{(j)}(u) = \frac{(-1)^j
 j!}{u^{j+1}} \sum\_{i \> j} \frac{v^i}{i}, \qquad v = \frac{u}{1+u},\$\$
 summed as a series in \\v\\ for \\\|v\| \le 3/4\\ and as \\\log t\\
-minus the first \\j\\ terms elsewhere, so that no form divides by
-\\\xi\\ and \\\xi = 0\\ is an ordinary point. \\t\\ is formed from the
-exact product \\\xi y\\, which keeps its relative accuracy near the
+minus the first \\j\\ terms elsewhere, so that the forms do not divide
+by \\\xi\\ and \\\xi = 0\\ is an ordinary point. \\t\\ is formed from
+the exact product \\\xi y\\, which keeps its relative accuracy near the
 upper end of the support when \\\xi \< 0\\.
 
 The expected derivatives follow from \\V = (1 + \xi
@@ -110,7 +110,7 @@ all.equal((up - dn) / (2 * eps), d3$xi_xi_xi, tolerance = 1e-6)
 distrib_deriv4(d, y, list(sigma = 1.5, xi = 0))$xi_xi_xi_xi
 #> [1]  8.0640e-03  1.2000e+00 -3.3792e+03
 
-# The expected third derivatives, NA where they do not exist.
+# The expected third derivatives are NA where they do not exist.
 distrib_deriv3(d, 1, list(sigma = 1.5, xi = c(0.2, -0.4)),
                expected = TRUE)$xi_xi_xi
 #> [1] 8.928571       NA

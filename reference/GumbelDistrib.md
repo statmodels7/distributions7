@@ -1,13 +1,13 @@
 # Gumbel Distribution Class
 
-The S7 class of the Gumbel (type I extreme value) family in the form for
-**maxima**, a location-scale family on the whole real line with location
-\\\mu\\ and scale \\\sigma \> 0\\ and density \\\sigma^{-1}\exp\\-z -
-e^{-z}\\\\ at \\z = (y-\mu)/\sigma\\. Its shape is fixed: the skewness
-and the excess kurtosis are constants and cannot be fitted. It inherits
-from `continuous_distrib`, so every generic of the `distrib` class
-applies to it; the methods listed below are registered on it directly
-and everything else comes from the parent.
+This is the S7 class of the Gumbel (type I extreme value) family in the
+form for maxima, a location-scale family on the whole real line with
+location \\\mu\\ and scale \\\sigma \> 0\\ and density
+\\\sigma^{-1}\exp\\-z - e^{-z}\\\\ at \\z = (y-\mu)/\sigma\\. Its shape
+is fixed: the skewness and the excess kurtosis are constants and cannot
+be fitted. It inherits from `continuous_distrib`, so every generic of
+the `distrib` class applies to it; the methods listed below are
+registered on it directly and everything else comes from the parent.
 
 Build one with
 [`gumbel_distrib()`](https://statmodels7.github.io/distributions7/reference/gumbel_distrib.md),
@@ -99,7 +99,8 @@ they hold `"gumbel"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each of them is
+linked to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GumbelDistrib.md),
@@ -165,7 +166,7 @@ for the other limit law of extremes;
 [`distrib_pdf.GumbelDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GumbelDistrib.md)
 and
 [`distrib_gradient.GumbelDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GumbelDistrib.md)
-for the closed forms this class supplies.
+for the closed forms that this class supplies.
 
 ## Examples
 
@@ -174,7 +175,8 @@ d <- gumbel_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# The properties that a consumer reads to drive the family without any
+# family-specific code.
 d@params
 #> [1] "mu"    "sigma"
 d@params_bounds

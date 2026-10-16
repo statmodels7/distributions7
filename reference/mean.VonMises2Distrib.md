@@ -5,7 +5,7 @@ Returns the ordinary expectation of \\Y\\ as a number on \\\[-\pi,
 [`mean.distrib()`](https://statmodels7.github.io/distributions7/reference/mean.distrib.md)
 at the implied concentration.
 
-It is **not** a circular quantity, and neither parameter describes it.
+It is not a circular quantity, and neither parameter describes it.
 \\\mu\\ is the mean *direction* and \\\rho\\ the mean resultant length;
 \\\mathbb{E}\[Y\]\\ differs from \\\mu\\ whenever \\\mu \ne 0\\, because
 the interval is cut at \\\pm\pi\\ and the density is not symmetric about
@@ -24,8 +24,8 @@ the interval is cut at \\\pm\pi\\ and the density is not symmetric about
 - theta:
 
   A named list with components `mu` and `rho`, each a numeric vector of
-  length 1. `rho` must lie in \\(0, 1)\\. Aligned and validated by name,
-  so a missing or out-of-bounds component signals an error.
+  length 1. `rho` must lie in \\(0, 1)\\. It is aligned and validated by
+  name, so a missing or out-of-bounds component signals an error.
 
 - ...:
 

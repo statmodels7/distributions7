@@ -19,11 +19,11 @@ applies as at the order below.
 - y:
 
   A numeric vector of counts inside the truncation interval. Both
-  endpoints are **included**.
+  endpoints are included.
 
 - theta:
 
-  A named list of the **parent's** parameters; truncation adds none.
+  A named list of the parent's parameters; truncation adds none.
 
 - expected:
 

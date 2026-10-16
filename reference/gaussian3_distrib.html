@@ -4,7 +4,7 @@ by its mean \(\mu\) and its precision \(\tau = 1/\sigma^2 &amp;gt; 0\). The
 returned object carries closed-form derivatives of the log-density to fourth
 order in the response and to fifth order in the parameters, and
 closed-form moments.
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
 identity for
 the mean, which is already free, and the logarithm for the precision, which
@@ -13,7 +13,7 @@ by its mean \(\mu\) and its precision \(\tau = 1/\sigma^2 &amp;gt; 0\). The
 returned object carries closed-form derivatives of the log-density to fourth
 order in the response and to fifth order in the parameters, and
 closed-form moments.
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
 identity for
 the mean, which is already free, and the logarithm for the precision, which
@@ -25,7 +25,7 @@ keeps it positive at every predictor."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@ by its mean \(\mu\) and its precision \(\tau = 1/\sigma^2 &gt; 0\). The
 returned object carries closed-form derivatives of the log-density to fourth
 order in the response and to fifth order in the parameters, and
 closed-form moments.</p>
-<p>The two arguments choose the links that carry each parameter to the
+<p>The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
 identity for
 the mean, which is already free, and the logarithm for the precision, which
@@ -80,9 +80,9 @@ keeps it positive at every predictor.</p>
 
 
 <dl><dt id="arg-link-mu">link_mu<a class="anchor" aria-label="anchor" href="#arg-link-mu"></a></dt>
-<dd><p>A <code>link</code> object from <code>linkfunctions7</code> for the mean
-\(\mu\). Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, the mean ranging
-over the whole line already.</p></dd>
+<dd><p>A <code>link</code> object from <code>linkfunctions7</code> for the mean \(\mu\).
+Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, because the mean already
+ranges over the whole line.</p></dd>
 
 
 <dt id="arg-link-tau">link_tau<a class="anchor" aria-label="anchor" href="#arg-link-tau"></a></dt>
@@ -107,12 +107,12 @@ $$f(y; \mu, \tau) = \sqrt{\dfrac{\tau}{2\pi}}
 with \(\mu \in (-\infty, \infty)\) and \(\tau \in (0, \infty)\). The
 mean is \(\mu\), the variance \(1/\tau\), and both the skewness and the
 excess kurtosis are 0.</p>
-<p>This is the same law as <code><a href="gaussian1_distrib.html">gaussian1_distrib()</a></code> in different coordinates, and
-a separate family for the reason <code><a href="gaussian2_distrib.html">gaussian2_distrib()</a></code> is: the parameter
-here <em>is</em> the precision, and that is what the estimate, the standard error
-and the interval describe. The precision is the parametrization a Bayesian
-conjugate analysis uses, the gamma being conjugate for \(\tau\) at known
-\(\mu\).</p>
+<p>This is the same law as <code><a href="gaussian1_distrib.html">gaussian1_distrib()</a></code> in different coordinates. It
+is a separate family for the same reason as <code><a href="gaussian2_distrib.html">gaussian2_distrib()</a></code>: the
+parameter here <em>is</em> the precision, and the estimate, the standard error and
+the interval describe the precision. The precision is the parametrization
+that a Bayesian conjugate analysis uses, because the gamma is conjugate for
+\(\tau\) at known \(\mu\).</p>
     </div>
     <div class="section level2">
     <h2 id="derivatives">Derivatives<a class="anchor" aria-label="anchor" href="#derivatives"></a></h2>
@@ -129,7 +129,8 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\tau, \quad
       \mathbb{E}\left[\ell^{(\tau\tau)}\right] = -\dfrac{1}{2\tau^2}.$$
 The zero off-diagonal makes the mean and the precision orthogonal, so their
 maximum likelihood estimates are asymptotically independent.</p>
-<p>It is the flattest of the three parametrizations. The log-density is
+<p>It is the flattest of the three parametrizations of the Gaussian. The
+log-density is
 quadratic in \(\mu\) and, in \(\tau\), is \(\tfrac{1}{2}\log\tau\)
 plus a term linear in \(\tau\), so every third and fourth derivative is
 free of the response: at third order only \(\ell^{(\mu\mu\tau)} = -1\) and
@@ -184,7 +185,7 @@ class.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   mu  (mean)               | Link: identity   | Domain: (-Inf, Inf)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   tau (precision)          | Link: log        | Domain: (0, Inf)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The same law as gaussian1 at sigma = 1/sqrt(tau).</span></span></span>
+<span class="r-in"><span><span class="co"># This is the same law as gaussian1 at sigma = 1/sqrt(tau).</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.2</span>, <span class="fl">0.3</span>, <span class="fl">2.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, tau <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, sigma <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>

@@ -51,7 +51,7 @@ for the distribution function,
 [`distrib_gradient.ChisqDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ChisqDistrib.md)
 for the derivative of the log-density,
 [`distrib_pdf.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gamma2Distrib.md)
-for the family this sits inside, and
+for the family that contains this one, and
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
 for the generic.
 

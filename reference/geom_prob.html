@@ -11,7 +11,7 @@ stats::rgeom() take as their prob argument."><meta property="og:image" content="
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,11 +70,12 @@ functions <code><a href="https://rdrr.io/r/stats/Geometric.html" class="external
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The mean number of failures before the first success is \((1-p)/p\), so
-\(p = 1/(1+\mu)\). Writing it once keeps the four methods that call
-<span class="pkg">stats</span> from each repeating the algebra, and keeps them from drifting
+\(p = 1/(1+\mu)\). Because it is written once, the four methods that call
+<span class="pkg">stats</span> use it instead of repeating the algebra, and they cannot drift
 apart if the parametrization ever changes.</p>
 <p>The map is decreasing and carries \((0, \infty)\) onto \((0, 1)\): a
-large mean is a small success probability. No validation is performed. A
+large mean is a small success probability. The function does not validate
+its argument. A
 negative <code>mu</code> other than \(-1\) gives a value outside \([0, 1]\), for
 which the base R functions return <code>NaN</code>, and <code>mu = 0</code> gives 1, which they
 accept as a point mass at zero. The methods are reached through the

@@ -6,7 +6,7 @@ $$\ell^{(\mu\mu)} = -\dfrac{1}{v}, \qquad
       \ell^{(\mu v)} = -\dfrac{r}{v^2}, \qquad
       \ell^{(vv)} = \dfrac{1}{2v^2} - \dfrac{r^2}{v^3}.$$
 Only the curvature in \(\mu\) is free of the data; the other two vary with
-the residual, and their expectations are
+the residual, and their expectations are returned by
 distrib_expected_hessian.Gaussian2Distrib()."><meta property="og:description" content="Computes the three distinct second derivatives of the Gaussian log-density
 with respect to \(\mu\) and \(v = \sigma^2\), one value per observation,
 in closed form. With \(r = y - \mu\),
@@ -14,7 +14,7 @@ $$\ell^{(\mu\mu)} = -\dfrac{1}{v}, \qquad
       \ell^{(\mu v)} = -\dfrac{r}{v^2}, \qquad
       \ell^{(vv)} = \dfrac{1}{2v^2} - \dfrac{r^2}{v^3}.$$
 Only the curvature in \(\mu\) is free of the data; the other two vary with
-the residual, and their expectations are
+the residual, and their expectations are returned by
 distrib_expected_hessian.Gaussian2Distrib()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -23,7 +23,7 @@ distrib_expected_hessian.Gaussian2Distrib()."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@ $$\ell^{(\mu\mu)} = -\dfrac{1}{v}, \qquad
       \ell^{(\mu v)} = -\dfrac{r}{v^2}, \qquad
       \ell^{(vv)} = \dfrac{1}{2v^2} - \dfrac{r^2}{v^3}.$$
 Only the curvature in \(\mu\) is free of the data; the other two vary with
-the residual, and their expectations are
+the residual, and their expectations are returned by
 <code><a href="distrib_expected_hessian.Gaussian2Distrib.html">distrib_expected_hessian.Gaussian2Distrib()</a></code>.</p>
     </div>
 
@@ -88,7 +88,7 @@ recycled. <code>sigma2</code> must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

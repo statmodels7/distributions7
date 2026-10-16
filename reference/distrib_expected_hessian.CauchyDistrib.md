@@ -35,13 +35,13 @@ ignored. `y` is read only for its length.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available. Accepted so that the signature
-  matches the generic's.
+  Ignored, because a closed form is available. It is accepted so that
+  the signature matches the generic's.
 
 - nsim:
 
@@ -55,7 +55,7 @@ ignored. `y` is read only for its length.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -64,11 +64,11 @@ A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\theta\\\partial\theta^\top\]\\,
-the expectation of the **observed information** under the model. The
-Cauchy is a regular family in both parameters, so the second Bartlett
-identity holds and this equals the variance of the score.
+the expectation of the observed information under the model. The Cauchy
+is a regular family in both parameters, so the second Bartlett identity
+holds and this equals the variance of the score.
 
 ## See also
 
@@ -101,7 +101,8 @@ lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 -1 / (2 * 1.5^2)
 #> [1] -0.2222222
 
-# Half the information a Gaussian of the same scale carries in its location.
+# The information in the location is half the information that a Gaussian
+# of the same scale carries.
 distrib_expected_hessian(gaussian1_distrib(), 0, th)$mu_mu
 #> [1] -0.4444444
 

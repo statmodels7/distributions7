@@ -78,8 +78,8 @@ optimizers7 or this:
 
 |  |  |
 |----|----|
-| `method = fisher_scoring()` | Newton's method with the **expected** information |
-| `method = optimizers7::newton()` | Newton's method with the **observed** Hessian |
+| `method = fisher_scoring()` | Newton's method with the expected information |
+| `method = optimizers7::newton()` | Newton's method with the observed Hessian |
 | `method = optimizers7::lbfgs()` | whatever that optimizer does |
 
 ## The step

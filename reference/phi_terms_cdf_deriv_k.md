@@ -45,7 +45,7 @@ natural scale, keyed as
 
 The Leibniz rule splits the positions of the multi-index \\I\\ between
 the weight and the tail. The weight side is \\\partial^{S} e^{w} = e^{w}
-B\_{S}(w)\\, the complete Bell polynomial in the partials of the **log**
+B\_{S}(w)\\, the complete Bell polynomial in the partials of the log
 weight; the tail side is one Faa di Bruno pass over \\x\\, whose outer
 derivatives (those of \\\Phi\\) are the Hermite factors of
 [`phi_hermite()`](https://statmodels7.github.io/distributions7/reference/phi_hermite.md)

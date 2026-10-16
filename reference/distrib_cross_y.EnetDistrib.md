@@ -39,8 +39,8 @@ needs this block.
 - scale:
 
   Either `"parameter"`, the default, or `"link"`. On the link scale the
-  chain rule is the gradient's own first-order diagonal one, the
-  response derivative not interacting with a reparametrization of
+  chain rule is the gradient's own first-order diagonal one, because the
+  response derivative does not interact with a reparametrization of
   `theta`; the transformation is applied in the generic's body.
 
 - ...:
@@ -75,7 +75,8 @@ cy <- distrib_cross_y(d, y, th)
 names(cy)
 #> [1] "mu"     "lambda" "alpha" 
 
-# Against a central difference of the response derivative in a parameter.
+# The analytic value is compared with a central difference of the response
+# derivative in a parameter.
 eps <- 1e-6
 rbind(analytic = cy$lambda,
       numeric = (distrib_grad_y(d, y, list(mu = 0, lambda = 2 + eps,

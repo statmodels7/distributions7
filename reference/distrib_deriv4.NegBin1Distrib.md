@@ -1,7 +1,7 @@
 # NB1 Fourth-Order Derivatives
 
 Computes the five distinct fourth derivatives of the NB1 log-likelihood
-in \\\mu\\ and \\\theta\\, **in closed form**, by the construction
+in \\\mu\\ and \\\theta\\, in closed form, by the construction
 [`distrib_deriv3.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.md)
 describes carried one order further: the same coefficient recursion over
 the powers of \\r = \mu/\theta\\ and the order of \\G(r) =
@@ -38,8 +38,8 @@ instead: the expected fourth derivatives have no closed form.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 

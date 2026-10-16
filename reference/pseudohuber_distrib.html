@@ -29,7 +29,7 @@ information."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -132,12 +132,12 @@ avoids the underflow of the unscaled function at large arguments.</p>
     <div class="section level2">
     <h2 id="the-two-limits-with-their-rates">The two limits, with their rates<a class="anchor" aria-label="anchor" href="#the-two-limits-with-their-rates"></a></h2>
     <p>At \(\nu \to 0\) the exponent is \(|y-\mu|/\sigma\) and the family is
-the <strong>Laplace</strong> with scale \(\sigma\). The normalizing constant satisfies
+the Laplace with scale \(\sigma\). The normalizing constant satisfies
 \(\sqrt{\nu} K_1(\sqrt{\nu}) = 1 + (\nu/4)\log\nu + O(\nu)\), so the
 density approaches the Laplace density at rate \(O(\nu\log(1/\nu))\).</p>
 <p>At \(\nu \to \infty\) the exponent is
 \(\sqrt{\nu} + (y-\mu)^2/(2\sqrt{\nu}\sigma^2)\) and the family is the
-<strong>Gaussian</strong> with standard deviation \(\sigma\nu^{1/4}\): the largest gap
+Gaussian with standard deviation \(\sigma\nu^{1/4}\): the largest gap
 is <code>1.5e-04</code> at \(\nu = 10^4\) and <code>1.5e-07</code> at \(10^8\). Note that the
 spread grows with \(\nu\), so \(\sigma\) alone is not the standard
 deviation.</p>
@@ -179,7 +179,7 @@ is requested. The quantile inverts it by root-finding on the logarithm of
 the smaller tail. The
 generator does not use either: it draws the family as a normal variance
 mixture with a generalized inverse Gaussian mixing variable.</p>
-<p>The <strong>expected information has no elementary form either</strong>, but it depends
+<p>The expected information has no elementary form either, but it depends
 on \(\nu\) alone once the location and the scale are factored out, so it
 is one integral over \(z\) per distinct \(\nu\), taken by the rule of
 <code><a href="loc_scale_expected.html">loc_scale_expected()</a></code>; see
@@ -217,7 +217,7 @@ Deterministic edge-preserving regularization in computed imaging.
 <code><a href="student_t1_distrib.html">student_t1_distrib()</a></code> for the other robust three-parameter family here,
 whose score redescends to zero where this one flattens to a bound;
 <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a
-family of your own against the same battery this one passes;
+family of your own against the same battery that this one passes;
 <a href="PseudoHuberDistrib.html">PseudoHuberDistrib</a> for the class.</p></div>
     </div>
 

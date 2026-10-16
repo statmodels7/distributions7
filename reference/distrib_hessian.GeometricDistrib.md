@@ -4,7 +4,7 @@ Computes the second derivative of the geometric log-mass with respect to
 the mean, one value per observation, in closed form. Differentiating
 \\(y-\mu)/(\mu(1+\mu))\\ gives \$\$\dfrac{\partial^2 \ell}{\partial
 \mu^2} = \dfrac{-\mu(1+\mu) - (y-\mu)(1+2\mu)}{\mu^2(1+\mu)^2},\$\$
-which depends on the data through \\y\\ alone. Its expectation is
+which depends on the data only through \\y\\. Its expectation is
 [`distrib_expected_hessian.GeometricDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GeometricDistrib.md).
 Equivalently the value is \\-(y/\mu^2 - (y+1)/(1+\mu)^2)\\.
 
@@ -37,8 +37,8 @@ however small \\\mu\\ is.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 

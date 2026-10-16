@@ -1,8 +1,8 @@
 # S7 Classes for the Two Multivariate Student t Parametrizations
 
 `MvStudentT1Distrib` is the family whose matrix parametrization is the
-**scale matrix** \\\Sigma\\ and `MvStudentT2Distrib` the family whose
-parametrization is its **inverse** \\\Sigma^{-1}\\. Both inherit from
+scale matrix \\\Sigma\\ and `MvStudentT2Distrib` the family whose
+parametrization is its inverse \\\Sigma^{-1}\\. Both inherit from
 [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md),
 which carries every method; the two differ in what their free values
 describe, and the computations are shared.

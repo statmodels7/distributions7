@@ -25,7 +25,7 @@ y)^2\), with \(\mathrm{se}(\hat\mu) = \hat\sigma/\sqrt{n}\) and
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,8 +60,8 @@ y)^2\), with \(\mathrm{se}(\hat\mu) = \hat\sigma/\sqrt{n}\) and
     <div class="ref-description section level2">
     <p>Fits a <code>distrib</code> object to an i.i.d. sample by maximum likelihood and
 returns a <code><a href="distrib_fit_class.html">distrib_fit()</a></code> carrying the estimates, their standard errors and
-confidence limits on both scales. The optimization runs on the <strong>link
-scale</strong>, where the parameters are unconstrained, driven by the analytical
+confidence limits on both scales. The optimization runs on the link
+scale, where the parameters are unconstrained, driven by the analytical
 score and information the family supplies at <code>scale = "link"</code>; the estimates
 are then mapped back and reported on the parameter scale.</p>
 <p>On a Gaussian the answer is the closed-form estimate to the printed digit:
@@ -98,8 +98,8 @@ a multivariate family. Every observation is read at the same \(\theta\).</p></dd
 
 
 <dt id="arg-start">start<a class="anchor" aria-label="anchor" href="#arg-start"></a></dt>
-<dd><p>Optional named list of starting values <strong>on the parameter
-scale</strong>. <code>NULL</code>, the default, takes the starting values from
+<dd><p>Optional named list of starting values on the parameter
+scale. <code>NULL</code>, the default, takes the starting values from
 <code><a href="distrib_start.html">distrib_start()</a></code>, which computes them from the data for a family that
 registers a method and otherwise draws them from the parameter domains,
 with the restarts below. A value that is
@@ -109,13 +109,13 @@ positionally lands here.</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>How to optimize. One argument taking one of three things:</p><ul><li><p><code><a href="fisher_scoring.html">fisher_scoring()</a></code>, the default: Newton's method with the <strong>expected</strong>
+<dd><p>How to optimize. One argument taking one of three things:</p><ul><li><p><code><a href="fisher_scoring.html">fisher_scoring()</a></code>, the default: Newton's method with the expected
 information in place of the observed Hessian, the object carrying how
 that information is to be obtained when the family has no closed form
 for it. Passing an <code>approx</code> where the family does have one signals an
 error rather than ignoring it;</p></li>
 <li><p>an optimizer object from <span class="pkg">optimizers7</span>, used as given and receiving
-the analytical gradient and the <strong>observed</strong> Hessian, so that
+the analytical gradient and the observed Hessian, so that
 <code>method = lbfgs(criterion = crit_grad(1e-12))</code> selects the algorithm and
 the stopping rule together. A stopping rule the optimizer cannot
 evaluate is rejected here, where the message can name it;</p></li>
@@ -182,7 +182,7 @@ the Hessian divided by \(n\) with it. Scaling by a positive constant moves
 neither the maximum nor any Newton step, since \(H^{-1}g\) is unchanged
 when both are divided by \(n\). What it changes is the meaning of a
 threshold: a tolerance on the gradient of this objective is a tolerance on
-the score <strong>per observation</strong> whatever the sample size, so the same rule
+the score per observation whatever the sample size, so the same rule
 means the same thing at \(n = 10\) and at \(n = 10^7\). <code>loglik</code>, the
 information and every standard error are recomputed unscaled at the optimum.</p>
     </div>

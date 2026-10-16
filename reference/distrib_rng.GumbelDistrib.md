@@ -5,7 +5,8 @@ Draws `n` independent Gumbel variates as \\\mu - \sigma\log E\\ with
 [`stats::rexp()`](https://rdrr.io/r/stats/Exponential.html). That is the
 inverse-transform identity written without a logarithm of a uniform,
 which keeps the left tail accurate: a uniform near zero has few
-significant digits left after one logarithm and none after two.
+significant digits left after one logarithm and loses all of them after
+a second one.
 
 ## Arguments
 
@@ -36,7 +37,7 @@ A numeric vector of `n` draws on the whole real line.
 ## See also
 
 [`distrib_quantile.GumbelDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GumbelDistrib.md)
-for the inverse it rests on,
+for the inverse on which it rests,
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters back from a sample, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
@@ -47,7 +48,8 @@ for the generic.
 ``` r
 d <- gumbel_distrib()
 
-# The identity the method uses: mu - sigma log(E), E standard exponential.
+# The method uses the identity mu - sigma log(E), with E standard
+# exponential.
 set.seed(2)
 a <- distrib_rng(d, 3, list(mu = 0, sigma = 1))
 set.seed(2)

@@ -1,8 +1,8 @@
 # von Mises Distribution, Mean Direction and Mean Resultant Length
 
 Builds the distribution object for the von Mises family parametrized by
-its mean direction \\\mu\\ and its **mean resultant length** \\\rho \in
-(0, 1)\\. The returned object carries closed-form derivatives of the
+its mean direction \\\mu\\ and its mean resultant length \\\rho \in (0,
+1)\\. The returned object carries closed-form derivatives of the
 log-density to fourth order, a closed-form expected information, and the
 same Bessel-series distribution function the concentration
 parametrization uses.
@@ -56,8 +56,8 @@ A^{-1}(\rho),\$\$ with \\A(\kappa) = I_1(\kappa)/I_0(\kappa)\\, and
 \\\mathbb{E}\[\cos(Y-\mu)\] = \rho\\. The map \\\rho = A(\kappa)\\ is a
 strictly increasing bijection from \\(0, \infty)\\ onto \\(0, 1)\\.
 
-**Its inverse has no closed form**, which is why this is a family of its
-own and not a
+Its inverse has no closed form, which is why this is a family of its own
+and not a
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
 of the other. numericals7 obtains \\\kappa\\ by Newton's method on
 \\\kappa\\, and its four derivatives come from the inverse function rule
@@ -73,8 +73,8 @@ direction is therefore far better conditioned in \\\kappa\\ than in
 
 ## Derivatives and information
 
-The map touches the **second parameter only**, so every chain rule is
-the one-variable one and the derivatives are exact at every order. Every
+The map touches the second parameter only, so every chain rule is the
+one-variable one and the derivatives are exact at every order. Every
 component carrying at least one \\\mu\\ collapses to a single term, the
 concentration parametrization's \\\mu\\-derivatives being linear in
 \\\kappa\\.
@@ -94,8 +94,8 @@ returns the ordinary expectation of \\Y\\ on \\\[-\pi, \pi)\\, which
 differs from \\\mu\\ whenever \\\mu \ne 0\\;
 [`vonmises1_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md)
 discusses the same distinction. What this parametrization offers is that
-the **second** parameter can be computed directly from a sample, which
-is not the case for the concentration.
+the second parameter can be computed directly from a sample, which is
+not the case for the concentration.
 
 ## Notation
 
@@ -123,7 +123,7 @@ for another family on \\(0, 1)\\;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
+to validate a family of your own against the same battery that this one
 passes;
 [VonMises2Distrib](https://statmodels7.github.io/distributions7/reference/VonMises2Distrib.md)
 for the class.

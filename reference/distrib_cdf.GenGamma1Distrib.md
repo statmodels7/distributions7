@@ -73,11 +73,11 @@ d <- gengamma1_distrib()
 q <- c(0.5, 1.5, 4)
 th <- list(a = 2, d = 3, p = 1.5)
 
-# The identity written out.
+# The distribution function agrees with the identity written out.
 all.equal(distrib_cdf(d, q, th), pgamma((q / 2)^1.5, shape = 3 / 1.5))
 #> [1] TRUE
 
-# Against a direct quadrature of the density.
+# The values are compared with a direct quadrature of the density.
 rbind(gamma_identity = distrib_cdf(d, q, th),
       quadrature = vapply(q, function(u)
         integrate(function(v) distrib_pdf(d, v, th), 0, u)$value, 0))

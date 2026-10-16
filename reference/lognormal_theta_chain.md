@@ -73,7 +73,7 @@ prime denotes a derivative in \\t\\.
 ## See also
 
 [`distrib_cross2_y.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Lognormal1Distrib.md),
-the three methods it serves, and
+the three methods that it serves, and
 [`mapped_theta2()`](https://statmodels7.github.io/distributions7/reference/mapped_theta2.md),
 the route a family whose transformation DOES carry a parameter takes
 instead.

@@ -53,11 +53,11 @@ converged and that observation is dropped. For a smooth log-likelihood
 nothing is ever dropped, so the check keeps its full strength: a
 gradient made 5\\ still caught.
 
-The two estimates are compared **relative to their own magnitude**
-rather than against a denominator floored at one: near a kink both are
-tiny yet differ by a factor of two, which a floor of one would hide. If
-no observation survives, all are kept, because a systematic disagreement
-is a real failure and is reported; the guard is meant for a local
+The two estimates are compared relative to their own magnitude rather
+than against a denominator floored at one: near a kink both are tiny yet
+differ by a factor of two, which a floor of one would hide. If no
+observation survives, all are kept, because a systematic disagreement is
+a real failure and is reported; the guard is meant for a local
 disagreement only.
 
 ## See also

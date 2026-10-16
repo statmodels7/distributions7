@@ -1,10 +1,10 @@
 # Skew t Distribution Class
 
-The S7 class of Azzalini's skew \\t\\: a Student \\t\\ carrying a shape
-parameter that tilts it, so that the tail weight and the asymmetry are
-modeled by two parameters instead of one. With \\z = (y-\mu)/\sigma\\
-and \\w = \alpha z\sqrt{(\nu+1)/(\nu+z^2)}\\ the density is \\2
-t\_\nu(z)T\_{\nu+1}(w)/\sigma\\.
+This is the S7 class of Azzalini's skew \\t\\: a Student \\t\\ carrying
+a shape parameter that tilts it, so that the tail weight and the
+asymmetry are modeled by two parameters instead of one. With \\z =
+(y-\mu)/\sigma\\ and \\w = \alpha z\sqrt{(\nu+1)/(\nu+z^2)}\\ the
+density is \\2 t\_\nu(z)T\_{\nu+1}(w)/\sigma\\.
 
 It contains three families as limits. At \\\alpha = 0\\ it is the
 Student \\t\\; as \\\nu \to \infty\\ it is the skew normal, approached
@@ -101,7 +101,8 @@ the properties hold `"skew t"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewTDistrib.md),

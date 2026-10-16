@@ -1,8 +1,8 @@
 # Default Numerical Gradient for `distrib` Objects
 
 The fallback for a family that implements no analytical score: the
-gradient of `distrib_pdf(..., log = TRUE)` by one **central difference**
-per parameter, through
+gradient of `distrib_pdf(..., log = TRUE)` by one central difference per
+parameter, through
 [`numerical_gradient()`](https://statmodels7.github.io/distributions7/reference/numerical_gradient.md).
 This is why
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)

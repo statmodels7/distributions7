@@ -6,7 +6,7 @@ non-negative integers. The returned object carries closed-form
 derivatives of the log-mass to fourth order, observed and expected, and
 closed-form moments.
 
-The family is **equidispersed**: its variance equals its mean at every
+The family is equidispersed: its variance equals its mean at every
 parameter value. Real counts are usually more variable than that, so a
 Poisson fit is often the null a count analysis argues against;
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
@@ -27,8 +27,8 @@ poisson_distrib(link_mu = log_link())
   A `link` object from `linkfunctions7` for the mean \\\mu\\. Defaults
   to
   [`linkfunctions7::log_link()`](https://statmodels7.github.io/linkfunctions7/reference/log_link.html),
-  which maps \\(0, \infty)\\ onto the line and is the **canonical** link
-  of this family.
+  which maps \\(0, \infty)\\ onto the line and is the canonical link of
+  this family.
 
 ## Value
 
@@ -80,8 +80,8 @@ data drawn from the family and on data that is not.
 
 \\\ell\\ is the log-mass of one observation and \\\mu \> 0\\ the mean,
 which is also the variance. \\\eta = \log\mu\\ is the parameter on the
-link scale. The **canonical** link of an exponential family is the one
-that makes the log-mass linear in the sufficient statistic.
+link scale. The canonical link of an exponential family is the one that
+makes the log-mass linear in the sufficient statistic.
 
 ## References
 

@@ -4,7 +4,7 @@ Computes the first derivatives, with respect to the parameters, of
 \\\log F(q;\theta)\\ — or of \\\log(1 - F(q;\theta))\\ when
 `lower.tail = FALSE`.
 
-These are what a **censored** observation contributes to the score. An
+These are what a censored observation contributes to the score. An
 observation known only to be at most \\q\\ contributes \\\log F(q)\\,
 one known only to exceed \\q\\ contributes \\\log(1-F(q))\\, and an
 interval censored one contributes \\\log(F(b) - F(a))\\, which is

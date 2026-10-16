@@ -17,7 +17,7 @@ uses mixed_tensor_derivatives() instead."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,7 +107,7 @@ where it is <code>NULL</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="the-quantity-that-is-differenced">The quantity that is differenced<a class="anchor" aria-label="anchor" href="#the-quantity-that-is-differenced"></a></h2>
-    <p>The quantity differenced is the <strong>response gradient</strong>, not the log-density,
+    <p>The quantity differenced is the response gradient, not the log-density,
 so a family with an analytical <code>distrib_grad_y</code> pays for exactly one
 finite-difference layer. Where the response gradient is itself the
 finite-difference fallback the composition is the four-point mixed stencil
@@ -123,8 +123,8 @@ truncation of a central difference against a rounding term growing as
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_cross_y.html">distrib_cross_y()</a></code>, the generic it serves;
-<code><a href="numerical_grad_y.html">numerical_grad_y()</a></code> for the quantity it differences;
+    <div class="dont-index"><p><code><a href="distrib_cross_y.html">distrib_cross_y()</a></code>, the generic that it serves;
+<code><a href="numerical_grad_y.html">numerical_grad_y()</a></code> for the quantity that it differences;
 <code><a href="numerical_cross2_y.html">numerical_cross2_y()</a></code> for the third-order analogue.</p></div>
     </div>
 

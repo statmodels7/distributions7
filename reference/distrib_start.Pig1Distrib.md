@@ -6,10 +6,10 @@ gives \\\hat\mu = \bar y\\ and \\\hat\sigma = (s^2 - \bar y)/\bar y^2\\
 directly, with no root to find.
 
 Both are floored: \\\mu\\ just above zero, and \\\sigma\\ at \\10^{-3}\\
-when the sample is **underdispersed** and the inversion returns a
-negative number. A Poisson sample is the case that produces it, and
-\\10^{-3}\\ is where this family is nearly Poisson, which is the right
-place to start from there.
+when the sample is underdispersed and the inversion returns a negative
+number. A Poisson sample is the case that produces it, and \\10^{-3}\\
+is where this family is nearly Poisson, which is the right place to
+start from there.
 
 ## Arguments
 

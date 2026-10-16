@@ -35,8 +35,8 @@ in that entry.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -46,7 +46,7 @@ in that entry.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

@@ -12,9 +12,9 @@ closed form and with no quadrature or simulation. With \\\alpha =
 {(\sigma^2)^3}.\$\$ They follow from \\\mathbb{E}\[Y\] = \mu\\ and
 \\\mathbb{E}\[\log Y\] = \psi(\alpha) - \log\lambda\\.
 
-**The mixed entry does not vanish**, so the mean and the variance are
-not orthogonal in this parametrization; their maximum likelihood
-estimates are asymptotically correlated.
+The mixed entry does not vanish, so the mean and the variance are not
+orthogonal in this parametrization; their maximum likelihood estimates
+are asymptotically correlated.
 [`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md)
 carries the same law with a dispersion in place of the variance, and
 there the mixed entry is exactly zero. The matrix is negative definite
@@ -47,14 +47,14 @@ ignored. `y` is read only for its length.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available. Accepted so that the signature
-  matches the generic's, where it selects between the Bartlett,
-  quadrature, Monte Carlo and outer-product routes.
+  Ignored, because a closed form is available. It is accepted so that
+  the signature matches the generic's, where it selects between the
+  Bartlett, quadrature, Monte Carlo and outer-product routes.
 
 - nsim:
 
@@ -79,16 +79,16 @@ when the parameters are.
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\theta\\\partial\theta^\top\]\\,
-the expectation of the **observed information** under the model. The
-gamma is a regular family, so the second Bartlett identity holds and
-this equals the variance of the score.
+the expectation of the observed information under the model. The gamma
+is a regular family, so the second Bartlett identity holds and this
+equals the variance of the score.
 
 ## See also
 
 [`distrib_hessian.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Gamma2Distrib.md)
-for the observed quantity this is the expectation of,
+for the observed quantity whose expectation this is,
 [`distrib_expected_hessian.Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gamma1Distrib.md)
 for the orthogonal parametrization of the same law,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
@@ -102,7 +102,7 @@ for the generic.
 d <- gamma2_distrib()
 th <- list(mu = 3, sigma2 = 2)
 
-# The three constants, one value per observation.
+# The three entries are constants, with one value per observation.
 eh <- lapply(distrib_expected_hessian(d, c(1, 3, 5), th), unique)
 eh
 #> $mu_mu
@@ -115,7 +115,7 @@ eh
 #> [1] 0.1788944
 #> 
 
-# Written out with the trigamma function.
+# The three formulas are written out with the trigamma function.
 al <- 9 / 2
 c((3 * 2 - 4 * 9 * trigamma(al)) / 2^2,
   -9 * (9 * trigamma(al) - 2) / 2^4,

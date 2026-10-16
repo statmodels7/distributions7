@@ -87,9 +87,8 @@ under the default link the estimate on the link scale does not exist.
 
 \\\ell\\ is the log-mass of one observation and \\\mu \in (0,1)\\ the
 success probability. \\\eta = \log(\mu/(1-\mu))\\ is the log odds, the
-parameter on the link scale. The **canonical** link of an exponential
-family is the one that makes the log-mass linear in the sufficient
-statistic.
+parameter on the link scale. The canonical link of an exponential family
+is the one that makes the log-mass linear in the sufficient statistic.
 
 ## References
 
@@ -126,11 +125,11 @@ d
 #> Parameters:
 #>   mu (probability)        | Link: logit      | Domain: (0, 1)
 
-# The two masses, summing to one.
+# The two masses sum to one.
 distrib_pdf(d, c(0, 1), list(mu = 0.3))
 #> [1] 0.7 0.3
 
-# Mean and variance are tied, the variance being maximal at 1/2.
+# Mean and variance are tied, and the variance is maximal at 1/2.
 vapply(c(0.1, 0.5, 0.9), function(p) {
   th <- list(mu = p)
   c(mean = mean(d, th), var = variance(d, th), skew = skewness(d, th))

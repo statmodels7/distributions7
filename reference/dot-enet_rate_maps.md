@@ -2,7 +2,7 @@
 
 Returns the partial derivatives of \\(\mu, a, c)\\ as functions of
 \\(\mu, \lambda, \alpha)\\, with \\a = \lambda\alpha\\ and \\c =
-\lambda(1-\alpha)\\, in the keyed-table form
+\lambda(1-\alpha)\\, in the keyed-table form that
 [`chain_assemble()`](https://statmodels7.github.io/distributions7/reference/chain_assemble.md)
 consumes.
 
@@ -29,10 +29,10 @@ A named list of three keyed tables, one per rate coordinate, with keys
 The map is bilinear, so its second partials are the constants \\\pm 1\\
 and its third and higher vanish, so the table leaves them out.
 
-Those second partials are what carries a low-order derivative in the
-rates up to a high-order one in the parameters. That is why the third
-derivatives in \\(\lambda, \alpha)\\ still depend on the data although
-the third derivatives in the rates do not.
+Those second partials carry a low-order derivative in the rates up to a
+high-order one in the parameters. Because of this, the third derivatives
+in \\(\lambda, \alpha)\\ still depend on the data, although the third
+derivatives in the rates do not.
 
 ## Notation
 

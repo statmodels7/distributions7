@@ -53,11 +53,12 @@ d <- chisq_distrib()
 y <- c(1, 4, 9)
 th <- list(mu = 4)
 
-# Written out.
+# The result agrees with the formula as written out.
 all.equal(distrib_grad_y(d, y, th), (4 / 2 - 1) / y - 0.5)
 #> [1] TRUE
 
-# Zero at the mode mu - 2, positive below it and negative above.
+# The derivative is zero at the mode mu - 2, positive below it and
+# negative above.
 c(mode = 4 - 2, at_mode = distrib_grad_y(d, 2, th))
 #>    mode at_mode 
 #>       2       0 

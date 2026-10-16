@@ -23,7 +23,7 @@ p, which overshoots."><meta property="og:image" content="https://statmodels7.git
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@ $$Q(p; \mu, \theta) =
 by calling <code><a href="https://rdrr.io/r/stats/NegBinomial.html" class="external-link">stats::qnbinom()</a></code> at size \(r = \mu/\theta\) and mean
 \(\mu\), so that the success probability \(1/(1+\theta)\) is never
 formed. The support is discrete, so the round trip
-through <code><a href="distrib_cdf.NegBin1Distrib.html">distrib_cdf.NegBin1Distrib()</a></code> does <strong>not</strong> return <code>p</code>: it returns
+through <code><a href="distrib_cdf.NegBin1Distrib.html">distrib_cdf.NegBin1Distrib()</a></code> does not return <code>p</code>: it returns
 the mass up to the smallest integer whose cumulative probability reaches
 <code>p</code>, which overshoots.</p>
     </div>

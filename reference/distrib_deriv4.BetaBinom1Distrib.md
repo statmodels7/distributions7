@@ -1,15 +1,15 @@
 # Beta-Binomial Fourth-Order Derivatives in Mean and Dispersion
 
 Computes the five distinct fourth derivatives of the beta-binomial
-log-mass in \\\mu\\ and \\\sigma\\, **in closed form**, by the
-construction
+log-mass in \\\mu\\ and \\\sigma\\, in closed form, by the construction
+that
 [`distrib_deriv3.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom1Distrib.md)
-describes carried one order further: the shape parametrization's fourth
-derivatives, each a difference of \\\psi^{(3)}\\, carried through the
-map \\(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)\\ by the partition
-sum of
+describes, carried one order further. For \\\sigma \ge 0.1\\ the fourth
+derivatives of the shape parametrization, each of which is a difference
+of \\\psi^{(3)}\\, are carried through the map \\(\alpha, \beta) =
+(\mu/\sigma, (1-\mu)/\sigma)\\ by the partition sum of
 [`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md),
-for \\\sigma \ge 0.1\\, and the direct sums below.
+and the direct sums below are used otherwise.
 
 With `expected = TRUE` the method returns the expectation as an exact
 finite sum over the support, from
@@ -43,13 +43,13 @@ finite sum over the support, from
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, the expectation being an exact finite sum. Accepted so that
-  the signature matches the generic's.
+  Ignored, because the expectation is an exact finite sum. It is
+  accepted so that the signature matches the generic's.
 
 - nsim:
 
@@ -70,8 +70,8 @@ A named list of five numeric vectors, `mu_mu_mu_mu`, `mu_mu_mu_sigma`,
 
 \\\ell\\ is the log-mass of one observation, \\\mu \in (0,1)\\ the mean
 proportion, \\\sigma \> 0\\ the dispersion and \\n\\ the trial count.
-\\\alpha\\ and \\\beta\\ are the two beta shapes the family is written
-in internally.
+\\\alpha\\ and \\\beta\\ are the two beta shapes in which the family is
+written internally.
 
 ## See also
 

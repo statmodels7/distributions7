@@ -25,7 +25,7 @@ the one place on this page where approx and nsim are read."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@ the one place on this page where approx and nsim are read."><meta property="og:i
 in \(\mu\) and \(\kappa\), in closed form, by the construction
 <code><a href="distrib_deriv3.VonMises1Distrib.html">distrib_deriv3.VonMises1Distrib()</a></code> describes carried one order further. The
 log-density is linear in \(\kappa\) apart from the normalizing constant,
-so <strong>two of the five are exactly zero</strong>: <code>mu_mu_kappa_kappa</code> and
+so two of the five are exactly zero: <code>mu_mu_kappa_kappa</code> and
 <code>mu_kappa_kappa_kappa</code>. The pure-direction component is
 \(\kappa\cos(y-\mu)\), the \(\mu\mu\mu\kappa\) one \(-\sin(y-\mu)\),
 and the pure-concentration one \(-A^{(3)}(\kappa)\).</p>
@@ -92,7 +92,7 @@ positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
@@ -118,7 +118,7 @@ or <code>"opg"</code>. Read only when <code>expected = TRUE</code>.</p></dd>
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+whatever the count is. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

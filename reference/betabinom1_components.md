@@ -49,8 +49,9 @@ the recycled length of the inputs.
 
 The shape parametrization
 [`betabinom2_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom2_distrib.md)
-carries closed derivatives at every order, each a difference of
-polygammas, and this parametrization is that one composed with a map.
+carries closed derivatives at every order, and each of them is a
+difference of polygammas. This parametrization is that one composed with
+a map.
 [`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md)
 runs the Faa di Bruno partition sum over the map, with the map's own
 partials supplied by
@@ -59,7 +60,7 @@ as a keyed table; a key absent from the table is an exact zero. Both
 shapes are linear in \\\mu\\ at fixed \\\sigma\\, so every partial
 carrying two or more \\\mu\\ vanishes and the sum is short.
 
-The construction is the one
+The construction is the one that
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
 runs, used here by a family whose first two orders are written out by
 hand in a compiled kernel. A fresh `BetaBinom2Distrib` object is built

@@ -6,7 +6,7 @@ parametrized by its mean \\\mu\\ and its precision \\\tau = 1/\sigma^2
 log-density to fourth order in the response and to fifth order in the
 parameters, and closed-form moments.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
 identity for the mean, which is already free, and the logarithm for the
 precision, which keeps it positive at every predictor.
@@ -24,7 +24,7 @@ gaussian3_distrib(link_mu = identity_link(), link_tau = log_link())
   A `link` object from `linkfunctions7` for the mean \\\mu\\. Defaults
   to
   [`linkfunctions7::identity_link()`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html),
-  the mean ranging over the whole line already.
+  because the mean already ranges over the whole line.
 
 - link_tau:
 
@@ -53,12 +53,12 @@ are 0.
 
 This is the same law as
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
-in different coordinates, and a separate family for the reason
-[`gaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian2_distrib.md)
-is: the parameter here *is* the precision, and that is what the
-estimate, the standard error and the interval describe. The precision is
-the parametrization a Bayesian conjugate analysis uses, the gamma being
-conjugate for \\\tau\\ at known \\\mu\\.
+in different coordinates. It is a separate family for the same reason as
+[`gaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian2_distrib.md):
+the parameter here *is* the precision, and the estimate, the standard
+error and the interval describe the precision. The precision is the
+parametrization that a Bayesian conjugate analysis uses, because the
+gamma is conjugate for \\\tau\\ at known \\\mu\\.
 
 ## Derivatives
 
@@ -73,13 +73,14 @@ Writing \\r = y - \mu\\, the score is \$\$\dfrac{\partial \ell}{\partial
 The zero off-diagonal makes the mean and the precision orthogonal, so
 their maximum likelihood estimates are asymptotically independent.
 
-It is the flattest of the three parametrizations. The log-density is
-quadratic in \\\mu\\ and, in \\\tau\\, is \\\tfrac{1}{2}\log\tau\\ plus
-a term linear in \\\tau\\, so every third and fourth derivative is free
-of the response: at third order only \\\ell^{(\mu\mu\tau)} = -1\\ and
-\\\ell^{(\tau\tau\tau)} = 1/\tau^3\\ survive, and at fourth order only
-\\\ell^{(\tau\tau\tau\tau)} = -3/\tau^4\\. With `expected = TRUE` those
-methods return the same numbers.
+It is the flattest of the three parametrizations of the Gaussian. The
+log-density is quadratic in \\\mu\\ and, in \\\tau\\, is
+\\\tfrac{1}{2}\log\tau\\ plus a term linear in \\\tau\\, so every third
+and fourth derivative is free of the response: at third order only
+\\\ell^{(\mu\mu\tau)} = -1\\ and \\\ell^{(\tau\tau\tau)} = 1/\tau^3\\
+survive, and at fourth order only \\\ell^{(\tau\tau\tau\tau)} =
+-3/\tau^4\\. With `expected = TRUE` those methods return the same
+numbers.
 
 ## Estimation
 
@@ -137,7 +138,7 @@ d
 #>   mu  (mean)               | Link: identity   | Domain: (-Inf, Inf)
 #>   tau (precision)          | Link: log        | Domain: (0, Inf)
 
-# The same law as gaussian1 at sigma = 1/sqrt(tau).
+# This is the same law as gaussian1 at sigma = 1/sqrt(tau).
 y <- c(-1.2, 0.3, 2.5)
 all.equal(distrib_pdf(d, y, list(mu = 1, tau = 0.25)),
           distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))

@@ -23,7 +23,7 @@ beta2_higher(theta, n, order)
 
 - n:
 
-  The length to recycle each component to, normally `length(y)`.
+  The length to which each component is recycled, normally `length(y)`.
 
 - order:
 

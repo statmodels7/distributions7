@@ -5,10 +5,10 @@ With \\z = y-\mu\\, \\a = \lambda\alpha\\ and \\c = \lambda(1-\alpha)\\,
 \$\$\dfrac{\partial\ell}{\partial\mu} = a\\\mathrm{sgn}(z) + cz,\$\$ and
 the two rate components are the data terms less the derivatives of
 \\\log Z\\, which are \\G/\sqrt c\\ in \\a\\ and \\-(1+xG)/(2c)\\ in
-\\c\\. The chain to \\(\lambda, \alpha)\\ is linear, the map being
+\\c\\. The chain to \\(\lambda, \alpha)\\ is linear, because the map is
 bilinear.
 
-The location component is **undefined at \\y = \mu\\**, where
+The location component is undefined at \\y = \mu\\, where
 \\\mathrm{sgn}\\ jumps; `sign(0)` is 0 in R, so the value returned there
 is \\cz = 0\\, one point of the subdifferential. `params_smooth` records
 `mu = FALSE`, which
@@ -46,7 +46,7 @@ location.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -77,11 +77,11 @@ y <- c(-1.5, -0.3, 0.4, 2.1)
 th <- list(mu = 0, lambda = 2, alpha = 0.5)
 g <- distrib_gradient(d, y, th)
 
-# The location component written out.
+# The location component is written out.
 all.equal(g$mu, 1 * sign(y) + 1 * y)
 #> [1] TRUE
 
-# The two rate components against numerical differentiation.
+# The two rate components are compared with numerical differentiation.
 f <- function(p) sum(distrib_pdf(d, y, list(mu = 0, lambda = p[1],
                                             alpha = p[2]), log = TRUE))
 rbind(analytic = c(sum(g$lambda), sum(g$alpha)),

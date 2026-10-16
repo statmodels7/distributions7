@@ -1,14 +1,14 @@
 # Bernoulli Distribution Class
 
-The S7 class of the Bernoulli family parametrized by its success
+This is the S7 class of the Bernoulli family parametrized by its success
 probability \\\mu \in (0, 1)\\, with mass \\P(Y = 1) = \mu\\ and \\P(Y =
 0) = 1 - \mu\\. It inherits from `discrete_distrib`, so expectations
-over its support are sums and no derivative with respect to the response
-is defined.
+over its support are sums, and derivatives with respect to the response
+are not defined.
 
 The mean is \\\mu\\ and the variance \\\mu(1-\mu)\\, so the two are tied
 and the family has no dispersion parameter of its own. The default link
-is the logit, which is the **canonical** link here: on its scale the
+is the logit, which is the canonical link here: on its scale the
 observed and the expected information coincide.
 
 A Bernoulli is a binomial on one trial:
@@ -104,7 +104,8 @@ they hold `"bernoulli"`, `"univariate"`, `c(0, 1)`, `"mu"`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.BernoulliDistrib.md),

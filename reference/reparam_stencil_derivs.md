@@ -4,10 +4,9 @@ The numerical fallback behind
 [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md):
 every partial of the map is one central stencil of
 [`numericals7::fd_derivative()`](https://statmodels7.github.io/numericals7/reference/fd_derivative.html)
-in each direction, applied to the analytic map, iterated across
-**distinct** directions. A cross-variable composition of two first
-differences is one mixed stencil and not the same-variable nesting the
-toolkit forbids.
+in each direction, applied to the analytic map, iterated across distinct
+directions. A cross-variable composition of two first differences is one
+mixed stencil and not the same-variable nesting the toolkit forbids.
 
 ## Usage
 

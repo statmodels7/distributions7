@@ -46,7 +46,7 @@ for the generic.
 ``` r
 d <- gaussian2_distrib()
 
-# Same generator as stats::rnorm at sd = sqrt(sigma2).
+# The generator is the same as stats::rnorm at sd = sqrt(sigma2).
 set.seed(2)
 a <- distrib_rng(d, 3, list(mu = c(0, 1, 2), sigma2 = c(1, 2.25, 4)))
 set.seed(2)

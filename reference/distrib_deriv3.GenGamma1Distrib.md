@@ -1,8 +1,8 @@
 # Generalized Gamma Derivatives of Orders Three to Five
 
 Return the third, fourth and fifth derivatives of the log-density in
-\\(a, d, p)\\, and for orders three and four their expectations, each
-from its own compiled kernel.
+\\(a, d, p)\\, and for orders three and four their expectations. Each of
+them is computed by its own compiled kernel.
 
 ## Arguments
 
@@ -59,7 +59,7 @@ With \\k = d/p\\ and \\U = p\log(y/a)\\, the log-density is \$\$\ell =
 \log p - \log y + kU - e^{U} - \log\Gamma(k),\$\$ and \\e^{U} =
 (y/a)^p\\ is a gamma variable with shape \\k\\ and unit rate. Every
 component is a closed form derived offline and written out: a polynomial
-in \\U\\ and \\e^{U}\\ whose coefficients depend on \\(d, p)\\ alone,
+in \\U\\ and \\e^{U}\\ whose coefficients depend only on \\(d, p)\\,
 multiplied by \\a^{-r}\\ for \\r\\ derivatives in \\a\\. The
 coefficients contain the polygamma functions at \\k + 1\\, through
 \\\psi^{(n)}(k) = \psi^{(n)}(k+1) + (-1)^{n+1} n!/k^{n+1}\\, so that the
@@ -95,11 +95,11 @@ dn <- distrib_hessian(d, y, list(a = 2, d = 1.5, p = 1.3 - eps))$d_p
 all.equal((up - dn) / (2 * eps), d3$d_p_p, tolerance = 1e-6)
 #> [1] TRUE
 
-# The expected fourth derivatives, closed form.
+# The expected fourth derivatives are closed forms.
 distrib_deriv4(d, 1, th, expected = TRUE)$p_p_p_p
 #> [1] -13.64482
 
-# Order five on the link scale.
+# The fifth derivatives are also returned on the link scale.
 distrib_deriv5(d, y, th, scale = "link")$p_p_p_p_p
 #> [1]   6.920295   4.371609 -14.937992
 ```

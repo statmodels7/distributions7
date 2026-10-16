@@ -26,7 +26,7 @@ cauchy_distrib(link_mu = identity_link(), link_sigma = log_link())
   A `link` object from `linkfunctions7` for the location \\\mu\\.
   Defaults to
   [`linkfunctions7::identity_link()`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html),
-  the location ranging over the whole line already.
+  because the location already ranges over the whole line.
 
 - link_sigma:
 
@@ -65,8 +65,8 @@ and
 return `NaN` directly, without attempting a quadrature over a divergent
 integral;
 [`skewness.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/skewness.CauchyDistrib.md)
-gives the argument in full. What the family does have is a median, equal
-to \\\mu\\, and quartiles at \\\mu \pm \sigma\\, so \\\sigma\\ is the
+gives the argument in full. The family has a median, equal to \\\mu\\,
+and quartiles at \\\mu \pm \sigma\\, so \\\sigma\\ is the
 half-interquartile range.
 
 ## Derivatives
@@ -112,8 +112,9 @@ not be.
 ## Notation
 
 \\\ell\\ is the log-density of one observation, \\\mu\\ the location and
-\\\sigma \> 0\\ the scale. Neither is a moment. \\\eta\\ is a parameter
-on the unconstrained scale of its link, with \\\theta = g^{-1}(\eta)\\.
+\\\sigma \> 0\\ the scale. The two parameters are not moments. \\\eta\\
+is a parameter on the unconstrained scale of its link, with \\\theta =
+g^{-1}(\eta)\\.
 
 ## References
 

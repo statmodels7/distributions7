@@ -17,7 +17,7 @@ below bb_direct_cut()."><meta property="og:image" content="https://statmodels7.g
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,13 +96,13 @@ the inputs.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The shape parametrization <code><a href="betabinom2_distrib.html">betabinom2_distrib()</a></code> carries closed derivatives
-at every order, each a difference of polygammas, and this parametrization is
-that one composed with a map. <code><a href="chain_derivatives.html">chain_derivatives()</a></code> runs the Faa di Bruno
+at every order, and each of them is a difference of polygammas. This
+parametrization is that one composed with a map. <code><a href="chain_derivatives.html">chain_derivatives()</a></code> runs the Faa di Bruno
 partition sum over the map, with the map's own partials supplied by
 <code><a href="reparam_map_derivs.html">md_betabinom1()</a></code> as a keyed table; a key absent from the table is an exact
 zero. Both shapes are linear in \(\mu\) at fixed \(\sigma\), so every
 partial carrying two or more \(\mu\) vanishes and the sum is short.</p>
-<p>The construction is the one <code><a href="reparametrize.html">reparametrize()</a></code> runs, used here by a family
+<p>The construction is the one that <code><a href="reparametrize.html">reparametrize()</a></code> runs, used here by a family
 whose first two orders are written out by hand in a compiled kernel. A
 fresh <code>BetaBinom2Distrib</code> object is built on each call, which costs one S7
 construction per evaluation.</p>

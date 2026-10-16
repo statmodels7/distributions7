@@ -9,14 +9,14 @@ observation is \\1/(\mu(1-\mu))\\, the reciprocal of the variance, so it
 is smallest at \\\mu = 1/2\\ and grows without bound as the probability
 approaches either endpoint.
 
-On the **link** scale with the default logit the value is
-\\-\mu(1-\mu)\\, and so is the observed Hessian in exact arithmetic: the
-logit is the canonical link and the observed curvature there carries no
-data. Fisher scoring and Newton's method therefore take the same step on
-a logistic regression, so iteratively reweighted least squares is both
-at once. In floating point the observed value is composed by the generic
-from the derivatives on the parameter scale and loses relative accuracy
-where \\\|\eta\|\\ is large (see
+On the link scale with the default logit the value is \\-\mu(1-\mu)\\,
+and so is the observed Hessian in exact arithmetic: the logit is the
+canonical link and the observed curvature there carries no data. Fisher
+scoring and Newton's method therefore take the same step on a logistic
+regression, so iteratively reweighted least squares is both at once. In
+floating point the observed value is composed by the generic from the
+derivatives on the parameter scale and loses relative accuracy where
+\\\|\eta\|\\ is large (see
 [`distrib_hessian.BernoulliDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BernoulliDistrib.md));
 this value does not.
 
@@ -42,13 +42,13 @@ ignored. `y` is read only for its length.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available. Accepted so that the signature
-  matches the generic's.
+  Ignored, because a closed form is available. It is accepted so that
+  the signature matches the generic's.
 
 - nsim:
 
@@ -70,16 +70,16 @@ A named list of one numeric vector, `mu_mu`, of length
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\mu^2\]\\, the expectation of the
-**observed information** under the model. The Bernoulli is a regular
-family, so the second Bartlett identity holds and this equals the
-variance of the score.
+observed information under the model. The Bernoulli is a regular family,
+so the second Bartlett identity holds and this equals the variance of
+the score.
 
 ## See also
 
 [`distrib_hessian.BernoulliDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BernoulliDistrib.md)
-for the observed quantity this is the expectation of,
+for the observed quantity whose expectation this is,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
 which inverts it, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
@@ -91,13 +91,13 @@ for the generic.
 d <- bernoulli_distrib()
 th <- list(mu = 0.3)
 
-# A single number, the reciprocal of the variance.
+# The result is a single number, the reciprocal of the variance.
 unique(distrib_expected_hessian(d, c(0, 1, 1), th)$mu_mu)
 #> [1] -4.761905
 -1 / (0.3 * 0.7)
 #> [1] -4.761905
 
-# Least information where the outcome is most uncertain.
+# The information is least where the outcome is most uncertain.
 vapply(c(0.5, 0.1, 0.01), function(p)
   -distrib_expected_hessian(d, 0, list(mu = p))$mu_mu, numeric(1))
 #> [1]   4.00000  11.11111 101.01010

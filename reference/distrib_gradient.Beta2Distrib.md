@@ -7,8 +7,8 @@ Computes the first derivatives of the beta log-density with respect to
 \log(1-y) - \psi(\beta) + \psi(\alpha+\beta),\$\$ with \\\psi\\ the
 digamma function. The beta is an exponential family in the shapes with
 sufficient statistics \\\log y\\ and \\\log(1-y)\\, so each component is
-the corresponding statistic minus its expectation. That is also why
-every derivative beyond this one is free of the response.
+the corresponding statistic minus its expectation. Therefore every
+derivative beyond this one is also free of the response.
 
 The value is computed by a compiled kernel, and \\\log(1-y)\\ is formed
 with [`log1p()`](https://rdrr.io/r/base/Log.html) so that it stays
@@ -39,8 +39,8 @@ scale.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -82,7 +82,7 @@ y <- c(0.1, 0.3, 0.7)
 th <- list(alpha = 2, beta = 5)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out with the digamma function.
+# The two closed forms are written out with the digamma function.
 all.equal(g$alpha, log(y) - digamma(2) + digamma(7))
 #> [1] TRUE
 all.equal(g$beta, log1p(-y) - digamma(5) + digamma(7))

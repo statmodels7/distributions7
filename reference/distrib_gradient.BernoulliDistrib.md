@@ -7,9 +7,9 @@ the probability, one value per observation, in closed form:
 divided by the variance, so an observation near a probability of 0 or 1
 that goes the other way contributes an arbitrarily large score.
 
-On the **link** scale with the default logit the generic's chain rule
-gives \\\partial\ell/\partial\eta = y - \mu\\, the raw residual: the
-logit is the canonical link of this family.
+On the link scale with the default logit the generic's chain rule gives
+\\\partial\ell/\partial\eta = y - \mu\\, the raw residual: the logit is
+the canonical link of this family.
 
 ## Arguments
 
@@ -30,8 +30,8 @@ logit is the canonical link of this family.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -53,7 +53,7 @@ A named list of one numeric vector, `mu`, of length
 \\\ell\\ is the log-mass of one observation and \\\mu \in (0,1)\\ the
 success probability, with variance \\\mu(1-\mu)\\. \\\eta =
 \log(\mu/(1-\mu))\\ is the parameter on the link scale, the log odds. A
-**canonical** link makes the log-mass linear in the sufficient statistic
+canonical link makes the log-mass linear in the sufficient statistic
 times \\\eta\\.
 
 ## See also
@@ -72,7 +72,7 @@ d <- bernoulli_distrib()
 y <- c(0, 1, 1)
 th <- list(mu = 0.3)
 
-# The closed form, written out.
+# The method agrees with the closed form written out.
 all.equal(distrib_gradient(d, y, th)$mu, (y - 0.3) / (0.3 * 0.7))
 #> [1] TRUE
 

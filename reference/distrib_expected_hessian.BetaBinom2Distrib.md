@@ -3,8 +3,8 @@
 Returns the expectation of the observed Hessian under the model,
 \\\sum\_{k=0}^{n}
 P(Y=k)\\\partial^2\ell/\partial\theta_i\partial\theta_j\\ evaluated at
-\\y = k\\. The family being discrete on \\\\0, \dots, n\\\\, that is an
-**exact finite sum** of at most \\n+1\\ terms, so the answer is the
+\\y = k\\. Because the family is discrete on \\\\0, \dots, n\\\\, this
+is an exact finite sum of at most \\n+1\\ terms, so the answer is the
 expectation to machine precision. `approx` and `nsim` are therefore
 ignored: every strategy returns the same three numbers.
 
@@ -20,8 +20,8 @@ and their estimates are asymptotically correlated.
 
 - y:
 
-  A numeric vector of counts. Only its length is read, the expectation
-  not depending on the data; the values are ignored.
+  A numeric vector of counts. Only its length is read, because the
+  expectation does not depend on the data; the values are ignored.
 
 - theta:
 
@@ -31,13 +31,13 @@ and their estimates are asymptotically correlated.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored here, the expectation being an exact sum. Accepted so that the
-  signature matches the generic's, where it selects between
+  Ignored here, because the expectation is an exact sum. It is accepted
+  so that the signature matches the generic's, where it selects between
   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 
 - nsim:
@@ -50,8 +50,8 @@ and their estimates are asymptotically correlated.
 
 - threads:
 
-  A single positive integer, the number of threads the compiled kernel
-  may use. Defaults to `1L`.
+  A single positive integer, the number of threads that the compiled
+  kernel may use. Defaults to `1L`.
 
 ## Value
 
@@ -63,7 +63,7 @@ A named list of three numeric vectors, `alpha_alpha`, `beta_beta` and
 [`betabinom2_expected()`](https://statmodels7.github.io/distributions7/reference/betabinom2_expected.md)
 for the summation,
 [`distrib_hessian.BetaBinom2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BetaBinom2Distrib.md)
-for the quantity this is the expectation of, and
+for the quantity whose expectation this method returns, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 for the generic.
 
@@ -84,7 +84,7 @@ vapply(distrib_hessian(d, 0:10, th), function(v) sum(w * v), numeric(1))
 #> alpha_alpha   beta_beta  alpha_beta 
 #>  -0.2589858  -0.1111875   0.1523847 
 
-# The strategy argument is inert, the expectation being an exact sum.
+# The strategy argument is inert because the expectation is an exact sum.
 identical(eh, distrib_expected_hessian(d, 0:10, th, approx = "mc",
                                        nsim = 50))
 #> [1] TRUE

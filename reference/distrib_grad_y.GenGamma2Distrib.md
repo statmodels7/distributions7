@@ -1,8 +1,9 @@
 # Generalized Gamma Derivatives in the Response, Mean
 
-The derivatives of the log-density in the response to order four, and
-the mixed derivatives of orders one and two in the response and one and
-two in \\(m, d, p)\\, each a closed form from its own compiled kernel.
+Return the derivatives of the log-density in the response to order four,
+and the mixed derivatives of orders one and two in the response and one
+and two in \\(m, d, p)\\. Each of them is a closed form from its own
+compiled kernel.
 
 ## Arguments
 

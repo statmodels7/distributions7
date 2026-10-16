@@ -10,10 +10,11 @@ formula of Faa di Bruno over the set partitions of the differentiation
 indices, and those of \\\alpha e(\mu)\\ from the product rule. The
 derivatives of \\G\\ are \\\log\alpha - \psi(\alpha)\\, \\1/\alpha -
 \psi_1(\alpha)\\, \\-1/\alpha^2 - \psi_2(\alpha)\\ and \\2/\alpha^3 -
-\psi_3(\alpha)\\, each evaluated from its asymptotic series at a large
-shape, and \\e\\ from a series near \\z = 1\\, so the components keep
-their digits when \\\alpha\\ is large. Every component of this order
-carries \\\psi_2\\, the second derivative of the digamma function.
+\psi_3(\alpha)\\. The kernel evaluates each of them from its asymptotic
+series at a large shape, and \\e\\ from a series near \\z = 1\\, so the
+components keep their digits when \\\alpha\\ is large. Every component
+of this order carries \\\psi_2\\, the second derivative of the digamma
+function.
 
 With `expected = TRUE` the expectations are returned, obtained by
 replacing \\Y\\ with \\\mu\\ and \\\log Y\\ with \\\psi(\alpha) -
@@ -46,13 +47,13 @@ quadrature and ignores `approx` and `nsim`.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both the observed and the
-  expected values.
+  Ignored, because a closed form is available for both the observed and
+  the expected values.
 
 - nsim:
 

@@ -1,7 +1,8 @@
 # S7 Class for Distributions With Fixed Parameters (Discrete)
 
-The S7 class of a DISCRETE distribution in which some parameters of the
-wrapped distribution are held at known values. It behaves exactly as
+This is the S7 class of a DISCRETE distribution in which some parameters
+of the wrapped distribution are held at known values. It behaves exactly
+as
 [FixedContinuousDistrib](https://statmodels7.github.io/distributions7/reference/FixedContinuousDistrib.md)
 does; the split into three classes exists so that the wrapper inherits
 the right base class, and with it the right defaults for anything the
@@ -97,7 +98,8 @@ An S7 object of class `FixedDiscreteDistrib`, inheriting from
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),

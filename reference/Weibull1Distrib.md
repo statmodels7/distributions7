@@ -1,7 +1,7 @@
 # Weibull Distribution Class, Scale and Shape
 
-The S7 class of the Weibull family parametrized by a scale \\\mu \> 0\\
-and a shape \\\sigma \> 0\\, with density \\f(y) =
+This is the S7 class of the Weibull family parametrized by a scale \\\mu
+\> 0\\ and a shape \\\sigma \> 0\\, with density \\f(y) =
 (\sigma/\mu)(y/\mu)^{\sigma-1}\exp\\-(y/\mu)^{\sigma}\\\\ on the
 positive half line. It inherits from `continuous_distrib`, so every
 generic of the `distrib` class applies to it; the methods listed below
@@ -98,7 +98,8 @@ the interpretations `c(mu = "scale", sigma = "shape")`, `2`, the domain
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Weibull1Distrib.md),
@@ -171,7 +172,8 @@ d <- weibull1_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "mu"    "sigma"
 d@params_interpretation

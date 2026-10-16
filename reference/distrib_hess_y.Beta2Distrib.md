@@ -6,8 +6,8 @@ the response, in closed form: \$\$\dfrac{\partial^2 \ell}{\partial y^2}
 negative throughout, so the log-density is concave in the response,
 whenever both shapes are at least one; a shape below one makes the
 corresponding term positive and can turn the curvature positive near
-that endpoint. At \\\alpha = \beta = 1\\ it is exactly zero, the density
-being the uniform.
+that endpoint. At \\\alpha = \beta = 1\\ it is exactly zero, because the
+density is the uniform.
 
 ## Arguments
 
@@ -57,11 +57,12 @@ all.equal(distrib_hess_y(d, y, th),
           -(2 - 1) / y^2 - (5 - 1) / (1 - y)^2)
 #> [1] TRUE
 
-# Concave everywhere while both shapes exceed one.
+# The log-density is concave everywhere while both shapes exceed one.
 all(distrib_hess_y(d, y, th) < 0)
 #> [1] TRUE
 
-# Exactly flat at alpha = beta = 1, where the beta is the uniform.
+# The log-density is exactly flat at alpha = beta = 1, where the beta is
+# the uniform.
 distrib_hess_y(d, y, list(alpha = 1, beta = 1))
 #> [1] 0 0 0
 ```

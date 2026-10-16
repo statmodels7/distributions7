@@ -4,7 +4,7 @@ Computes the same mass as
 [`distrib_pdf.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Pig1Distrib.md),
 at the dispersion \\\sigma = (\mu + \sqrt{\mu^2 + \alpha^2})/\alpha^2\\
 that \\\alpha\\ implies. The parameter \\\alpha\\ of this
-parametrization **is** the argument \\\sqrt{1 + 2\sigma\mu}/\sigma\\ at
+parametrization is the argument \\\sqrt{1 + 2\sigma\mu}/\sigma\\ at
 which the Bessel function is evaluated, so in this coordinate the mass
 function's own argument is a parameter.
 

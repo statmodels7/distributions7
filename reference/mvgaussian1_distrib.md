@@ -2,14 +2,13 @@
 
 Two families on \\\mathbb{R}^p\\, differing in which matrix of the law
 their parametrization describes: `mvgaussian1_distrib()` parametrizes
-the **covariance** \\\Sigma\\ and `mvgaussian2_distrib()` the
-**precision** \\\Omega = \Sigma^{-1}\\. The mean is a vector of \\p\\
-free parameters and the matrix is carried by a parameters7
-parametrization whose free values become ordinary scalar parameters, so
-every generic of the `distrib` class applies to the object, with `theta`
-a flat named list of numbers. Both default to an unstructured matrix in
-the log-Cholesky parametrization, which has `p * (p + 1) / 2` free
-values.
+the covariance \\\Sigma\\ and `mvgaussian2_distrib()` the precision
+\\\Omega = \Sigma^{-1}\\. The mean is a vector of \\p\\ free parameters
+and the matrix is carried by a parameters7 parametrization whose free
+values become ordinary scalar parameters, so every generic of the
+`distrib` class applies to the object, with `theta` a flat named list of
+numbers. Both default to an unstructured matrix in the log-Cholesky
+parametrization, which has `p * (p + 1) / 2` free values.
 
 ## Usage
 
@@ -57,7 +56,7 @@ and
 one name per parametrization, because in a modeling framework a
 parametrization decides what a linear predictor acts on. Here the choice
 can change the model as well as the coordinates. A matrix
-parametrization is **closed under inversion** when the inverse of every
+parametrization is closed under inversion when the inverse of every
 matrix that it produces is one of its own;
 [`parameters7::log_cholesky()`](https://statmodels7.github.io/parameters7/reference/log_cholesky.html),
 [`parameters7::matrix_log()`](https://statmodels7.github.io/parameters7/reference/matrix_log.html),
@@ -85,7 +84,7 @@ Both constructors accept any parametrization of the right dimension and
 of full rank. `mvgaussian2_distrib(p, parameters7::ar1(p))` is the model
 whose precision has the entries \\\sigma^2\rho^{\|i-j\|}\\, with
 \\\sigma^2\\ the scale of `ar1()`, and it is a valid law. The AR(1)
-**process** written on the precision side is
+process written on the precision side is
 `mvgaussian2_distrib(p, parameters7::ar1_inv(p))`, whose parametrization
 is that inverse.
 

@@ -2,8 +2,8 @@
 
 Builds the distribution object for the lognormal family on \\(0,
 \infty)\\: the law of a variable whose logarithm is Gaussian with mean
-\\\mu\\ and variance \\\sigma^2 \> 0\\. Both parameters are moments **of
-the logarithm**, so neither is the mean or the variance of \\Y\\. The
+\\\mu\\ and variance \\\sigma^2 \> 0\\. Both parameters are moments of
+the logarithm, so neither is the mean or the variance of \\Y\\. The
 returned object carries closed-form derivatives of the log-density to
 fourth order, in the parameters and in the response, closed-form
 derivatives of the distribution function, and closed-form moments. The
@@ -11,7 +11,7 @@ fifth order and
 [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md)
 come from the numerical fallbacks of the base class.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
 identity for \\\mu\\, which ranges over the whole line, and the
 logarithm for \\\sigma^2\\, which keeps it positive at every predictor.
@@ -85,8 +85,8 @@ at \\\log y\\, component for component and at all four orders, observed
 and expected. The two parameters are orthogonal and the information does
 not depend on \\\mu\\.
 
-The derivatives **in the response** are where the two families differ,
-the Jacobian being a function of \\y\\. They are still closed form; see
+The derivatives in the response are where the two families differ, the
+Jacobian being a function of \\y\\. They are still closed form; see
 [`distrib_grad_y.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Lognormal1Distrib.md)
 and
 [`distrib_hess_y.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Lognormal1Distrib.md),
@@ -106,10 +106,10 @@ against the sample.
 ## Notation
 
 \\\ell\\ is the log-density of one observation, \\\mu\\ the mean and
-\\\sigma^2 \> 0\\ the variance **of \\\log Y\\**. \\\Phi\\ is the
-standard normal distribution function and \\r = \log y - \mu\\ the
-residual on the log scale. \\\eta\\ is a parameter on the unconstrained
-scale of its link, with \\\theta = g^{-1}(\eta)\\.
+\\\sigma^2 \> 0\\ the variance of \\\log Y\\. \\\Phi\\ is the standard
+normal distribution function and \\r = \log y - \mu\\ the residual on
+the log scale. \\\eta\\ is a parameter on the unconstrained scale of its
+link, with \\\theta = g^{-1}(\eta)\\.
 
 ## References
 

@@ -45,7 +45,7 @@ stays exact."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,7 @@ observed count of zero, because at \(y = 0\) the log-mass \(-\mu\) is
 linear in \(\mu\). The term is formed by dividing \(y\) by \(\mu\)
 once per power, and a zero count contributes zero, so the value at
 \(y = 0\) stays zero however small \(\mu\) is.</p>
-<p>On the <strong>link</strong> scale with the default logarithm the chain rule gives
+<p>On the link scale with the default logarithm the chain rule gives
 \(\partial^2\ell/\partial\eta^2 = -\mu\), which carries no data; this
 is the defining property of a canonical link, and in exact arithmetic it
 makes the observed and the expected information the same matrix there (see
@@ -120,7 +120,7 @@ of length 1 or of the length of <code>y</code>. <code>mu</code> must be strictly
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

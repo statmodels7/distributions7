@@ -18,7 +18,7 @@ per row.
 
 - y:
 
-  An \\n \times p\\ numeric matrix of observations. Not read.
+  An \\n \times p\\ numeric matrix of observations. It is not read.
 
 - theta:
 

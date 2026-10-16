@@ -25,7 +25,7 @@ sum has terms of one sign, so both components keep their accuracy at any
 concentration; the cost is \\O(n)\\ per observation.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries before returning. This method always returns the
+that the family carries before returning. This method always returns the
 parameter scale. The arithmetic runs in a compiled kernel decomposed
 over the elements of the output, so the result does not depend on the
 thread count.
@@ -51,8 +51,8 @@ thread count.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 

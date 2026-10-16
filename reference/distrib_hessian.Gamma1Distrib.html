@@ -12,8 +12,8 @@ carried across by the one-variable chain rule, with
 evaluated once.
 The curvature in \(\mu\) turns positive wherever \(y &amp;lt; \mu/2\), so
 the observed information of a gamma is not positive definite at every data
-point. Its expectation is, which is one reason a gamma model is fitted by
-Fisher scoring; see distrib_expected_hessian.Gamma1Distrib()."><meta property="og:description" content="Computes the three distinct second derivatives of the gamma log-density
+point. Its expectation is positive definite, which is one reason why a gamma
+model is fitted by Fisher scoring; see distrib_expected_hessian.Gamma1Distrib()."><meta property="og:description" content="Computes the three distinct second derivatives of the gamma log-density
 with respect to \(\mu\) and \(\phi\), one value per observation, in
 closed form. With \(s = 1/\phi\) and \(z = y/\mu\),
 $$\ell^{(\mu\mu)} = \dfrac{s(1 - 2z)}{\mu^2}, \qquad
@@ -26,8 +26,8 @@ carried across by the one-variable chain rule, with
 evaluated once.
 The curvature in \(\mu\) turns positive wherever \(y &amp;lt; \mu/2\), so
 the observed information of a gamma is not positive definite at every data
-point. Its expectation is, which is one reason a gamma model is fitted by
-Fisher scoring; see distrib_expected_hessian.Gamma1Distrib()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+point. Its expectation is positive definite, which is one reason why a gamma
+model is fitted by Fisher scoring; see distrib_expected_hessian.Gamma1Distrib()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -35,7 +35,7 @@ Fisher scoring; see distrib_expected_hessian.Gamma1Distrib()."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,10 +79,10 @@ Every derivative in \(\phi\) is the corresponding derivative in \(s\)
 carried across by the one-variable chain rule, with
 \(s' = -s^2\) and \(s'' = 2s^3\), so each polygamma function is
 evaluated once.</p>
-<p>The curvature in \(\mu\) turns <strong>positive</strong> wherever \(y &lt; \mu/2\), so
+<p>The curvature in \(\mu\) turns positive wherever \(y &lt; \mu/2\), so
 the observed information of a gamma is not positive definite at every data
-point. Its expectation is, which is one reason a gamma model is fitted by
-Fisher scoring; see <code><a href="distrib_expected_hessian.Gamma1Distrib.html">distrib_expected_hessian.Gamma1Distrib()</a></code>.</p>
+point. Its expectation is positive definite, which is one reason why a gamma
+model is fitted by Fisher scoring; see <code><a href="distrib_expected_hessian.Gamma1Distrib.html">distrib_expected_hessian.Gamma1Distrib()</a></code>.</p>
     </div>
 
 
@@ -106,7 +106,7 @@ recycled. Both must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -149,7 +149,7 @@ quantity, <code><a href="distrib_deriv3.Gamma1Distrib.html">distrib_deriv3.Gamma
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, phi <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The curvature in mu, written out, and positive at y = 1 &lt; mu/2 = 1.5.</span></span></span>
+<span class="r-in"><span><span class="co"># The curvature in mu is written out, and it is positive at y = 1 &lt; mu/2 = 1.5.</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">0.5</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">/</span> <span class="fl">3</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">h</span><span class="op">$</span><span class="va">mu_mu</span>, <span class="va">s</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">z</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></span>

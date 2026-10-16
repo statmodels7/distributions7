@@ -63,9 +63,9 @@ and \\H\_{ij}\\ are the parent's score and observed Hessian; and
 [`distrib_grad_y.TruncatedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.TruncatedContinuousDistrib.md)
 and
 [`distrib_hess_y.TruncatedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.TruncatedContinuousDistrib.md),
-the two methods it serves, and
+the two methods that it serves, and
 [`trunc_inside()`](https://statmodels7.github.io/distributions7/reference/trunc_inside.md)
-for the test it applies.
+for the test that it applies.
 
 ## Examples
 

@@ -12,9 +12,9 @@ derivatives in \\s\\ by Faa di Bruno on \\s(\phi) = 1/\phi\\,
 f_2 s' s''' + f_1 s'''',\$\$ with \\s' = -s^2\\, \\s'' = 2s^3\\, \\s'''
 = -6s^4\\, \\s'''' = 24s^5\\ and \\f_k\\ the \\k\\th derivative of
 \\\ell\\ in \\s\\. \\f_2\\, \\f_3\\ and \\f_4\\ are polygamma functions
-of \\s\\, each computed as a polygamma minus its own leading asymptote,
-and \\f_1\\ also contains \\\log z - (z - 1)\\, so the digits survive at
-large shape.
+of \\s\\, and each of them is computed as a polygamma minus its own
+leading asymptote. \\f_1\\ also contains \\\log z - (z - 1)\\, so the
+digits survive at large shape.
 
 With `expected = TRUE` the expectations are returned, obtained by
 replacing \\z\\ with 1 and \\\log z\\ with \\\psi(s) - \log s\\. Both
@@ -46,13 +46,13 @@ routes are closed form, so `approx` and `nsim` are ignored.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both the observed and the
-  expected values.
+  Ignored, because a closed form is available for both the observed and
+  the expected values.
 
 - nsim:
 
@@ -87,7 +87,7 @@ for the order below,
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 for the generic, and
 [`distrib_expected_hessian.Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gamma1Distrib.md)
-for the second-order expectation these extend.
+for the second-order expectation that these extend.
 
 ## Examples
 
@@ -100,7 +100,7 @@ names(d4)
 #> [1] "mu_mu_mu_mu"     "mu_mu_mu_phi"    "mu_mu_phi_phi"   "mu_phi_phi_phi" 
 #> [5] "phi_phi_phi_phi"
 
-# The four components involving mu, written out.
+# The four components involving mu are written out.
 s <- 1 / 0.5
 z <- y / 3
 all.equal(d4$mu_mu_mu_mu, s * (6 - 24 * z) / 3^4)

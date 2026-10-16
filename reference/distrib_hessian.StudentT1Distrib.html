@@ -37,7 +37,7 @@ output, so the result does not depend on the thread count."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@ $$\dfrac{\partial^2 \ell}{\partial \nu^2} = \dfrac{1}{4}\left[-\psi_1\!\left(\df
 $$\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma} = -\dfrac{2\nu(\nu+1)\sigma r}{D^2}, \qquad
       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \nu} = \dfrac{r\left(r^2 - \sigma^2\right)}{D^2}, \qquad
       \dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu} = \dfrac{r^2\left(r^2 - \sigma^2\right)}{\sigma D^2}.$$</p>
-<p>The curvature in \(\mu\) <strong>turns positive</strong> wherever \(|r| &gt;
+<p>The curvature in \(\mu\) turns positive wherever \(|r| &gt;
 \sigma\sqrt{\nu}\), the same point at which the score peaks, so the observed
 information is indefinite in that direction at an outlying observation while
 its expectation is negative definite everywhere.</p>
@@ -109,7 +109,7 @@ numeric vector of length 1 or of the length of <code>y</code>. A component of le
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

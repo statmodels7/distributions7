@@ -16,11 +16,11 @@ and the Student t do.
 
 - y:
 
-  An \\n \times p\\ numeric matrix of observations. Not read.
+  An \\n \times p\\ numeric matrix of observations. It is not read.
 
 - theta:
 
-  A named list of parameters. Not read.
+  A named list of parameters. It is not read.
 
 - ...:
 

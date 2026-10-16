@@ -63,7 +63,8 @@ for the generic.
 d <- beta2_distrib()
 th <- list(alpha = 2, beta = 5)
 
-# A central 95 percent interval, asymmetric about the mean of 2/7.
+# These quantiles form a central 95 percent interval, which is asymmetric
+# about the mean of 2/7.
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #> [1] 0.04327187 0.26444998 0.64123458
 

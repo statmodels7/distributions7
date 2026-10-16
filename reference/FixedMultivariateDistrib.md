@@ -1,7 +1,8 @@
 # S7 Class for Distributions With Fixed Parameters (Multivariate)
 
-The S7 class of a MULTIVARIATE distribution in which some parameters of
-the wrapped distribution are held at known values. It follows
+This is the S7 class of a MULTIVARIATE distribution in which some
+parameters of the wrapped distribution are held at known values. It
+follows
 [FixedContinuousDistrib](https://statmodels7.github.io/distributions7/reference/FixedContinuousDistrib.md)
 in splicing the held values into `theta` and delegating to the parent.
 It has no distribution function, quantile or atoms, and adds the
@@ -117,7 +118,8 @@ and `fixed_params` beside the parent's properties, `n_dim` included.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)

@@ -64,7 +64,7 @@ all.equal(distrib_pdf(d, y, list(mu = 1, sigma2 = 4)),
           dnorm(y, mean = 1, sd = 2))
 #> [1] TRUE
 
-# Same law as gaussian1 at sigma = sqrt(sigma2), to the last bit.
+# The law is the same as gaussian1 at sigma = sqrt(sigma2), to the last bit.
 all.equal(distrib_pdf(d, y, list(mu = 1, sigma2 = 4)),
           distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))
 #> [1] TRUE

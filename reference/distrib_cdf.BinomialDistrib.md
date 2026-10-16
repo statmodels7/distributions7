@@ -65,7 +65,7 @@ all.equal(distrib_cdf(d, c(0, 4, 10), th),
           pbinom(c(0, 4, 10), size = 10, prob = 0.3))
 #> [1] TRUE
 
-# A step function reaching one at size.
+# The distribution function is a step function that reaches one at size.
 distrib_cdf(d, c(3, 3.5, 3.9, 10, 20), th)
 #> [1] 0.6496107 0.6496107 0.6496107 1.0000000 1.0000000
 

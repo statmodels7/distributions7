@@ -29,7 +29,7 @@ independently. approx and nsim are ignored, the expectation being exact."><meta 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,7 @@ $$\mathbb{E}[\ell^{(\mu\mu)}] = -\kappa A(\kappa), \qquad
       \mathbb{E}[\ell^{(\kappa\kappa)}] = -A'(\kappa),$$
 with \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\).</p>
 <p>The zero off-diagonal makes the direction and the concentration
-<strong>orthogonal</strong>: the expected information is diagonal, their estimates are
+orthogonal: the expected information is diagonal, their estimates are
 asymptotically independent, and Fisher scoring updates the two
 independently. <code>approx</code> and <code>nsim</code> are ignored, the expectation being exact.</p>
     </div>
@@ -97,12 +97,12 @@ vector of length 1. <code>kappa</code> must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored here, the expectation being exact. Accepted so that
-the signature matches the generic's, where it selects between
+<dd><p>Ignored here, because the expectation is exact. It is accepted
+so that the signature matches the generic's, where it selects between
 <code>"bartlett"</code>, <code>"integrate"</code>, <code>"mc"</code> and <code>"opg"</code>.</p></dd>
 
 
@@ -117,7 +117,7 @@ the signature matches the generic's, where it selects between
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+whatever the count is. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

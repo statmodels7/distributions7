@@ -46,7 +46,7 @@ for the generic.
 ``` r
 d <- gaussian3_distrib()
 
-# Same generator as stats::rnorm at sd = 1/sqrt(tau).
+# The generator is the same as stats::rnorm at sd = 1/sqrt(tau).
 set.seed(2)
 a <- distrib_rng(d, 3, list(mu = c(0, 1, 2), tau = c(1, 0.25, 0.0625)))
 set.seed(2)

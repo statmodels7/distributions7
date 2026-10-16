@@ -1,11 +1,11 @@
 # Inverse Gaussian Distribution Class, Mean and Shape
 
-The S7 class of the inverse Gaussian family on \\(0, \infty)\\ in its
-classical parametrization, the mean \\\mu \> 0\\ and the shape \\\lambda
-\> 0\\, so that \\\operatorname{Var}(Y) = \mu^3/\lambda\\. It inherits
-from `continuous_distrib`, so every generic of the `distrib` class
-applies to it; the methods listed below are registered on it in this
-file and everything else comes from the parent.
+This is the S7 class of the inverse Gaussian family on \\(0, \infty)\\
+in its classical parametrization, the mean \\\mu \> 0\\ and the shape
+\\\lambda \> 0\\, so that \\\operatorname{Var}(Y) = \mu^3/\lambda\\. It
+inherits from `continuous_distrib`, so every generic of the `distrib`
+class applies to it; the methods listed below are registered on it in
+this file and everything else comes from the parent.
 
 Build one with
 [`invgauss2_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss2_distrib.md),
@@ -99,7 +99,8 @@ both parameters, and the two links.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.InvGauss2Distrib.md),
@@ -170,7 +171,8 @@ d <- invgauss2_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "mu"     "lambda"
 d@params_interpretation

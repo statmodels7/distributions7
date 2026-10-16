@@ -24,14 +24,16 @@ upper value being 1 whatever \\p\\ is.
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical, `TRUE` by default.
+  A single logical, `TRUE` by default; `TRUE` selects the lower tail and
+  `FALSE` the upper tail.
 
 - log:
 
-  Are derivatives of the log probability wanted? A single logical,
-  `TRUE` by default. At \\k = 1\\ the lower-tail probability is 1 and
-  the log-scale derivative is 0; the upper-tail probability is 0 there,
-  and the log-scale derivative is `NaN`.
+  A single logical, `TRUE` by default; `TRUE` selects the derivatives of
+  the log probability and `FALSE` those of the probability. At \\k = 1\\
+  the lower-tail probability is 1 and the log-scale derivative is 0; the
+  upper-tail probability is 0 there, and the log-scale derivative is
+  `NaN`.
 
 - ...:
 

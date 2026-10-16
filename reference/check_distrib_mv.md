@@ -59,9 +59,9 @@ them.
 
 The battery runs the checks that do generalize:
 
-1.  **the density is positive and finite** on a sample;
+1.  the density is positive and finite on a sample;
 
-2.  **the density integrates to one**. For a family that enumerates its
+2.  the density integrates to one. For a family that enumerates its
     support through
     [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md)
     this is an exact sum over that support, with tolerance `1e-10`;
@@ -74,27 +74,27 @@ The battery runs the checks that do generalize:
     simplex. The proposal is not the distribution itself, which would
     make the ratio identically one;
 
-3.  **the score has mean zero**, the first Bartlett identity, under the
+3.  the score has mean zero, the first Bartlett identity, under the
     distribution's own generator, so it is also a check that the
     generator and the density describe the same law;
 
-4.  **gradient and Hessian** against finite differences of the summed
+4.  gradient and Hessian against finite differences of the summed
     log-density;
 
-5.  **the expected information** against the Monte Carlo average of the
+5.  the expected information against the Monte Carlo average of the
     observed Hessian, and against the variance of the score, which is
     the second Bartlett identity;
 
-6.  **the generator** against the first two moments. When the mean or
-    the covariance of the family is not finite (a Student \\t\\ with
-    \\\nu \le 2\\) the row has no statistic, and
+6.  the generator against the first two moments. When the mean or the
+    covariance of the family is not finite (a Student \\t\\ with \\\nu
+    \le 2\\) the row has no statistic, and
     [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
     lists it among the skipped checks with that reason. The tolerance is
     `20 / sqrt(nsim)`, which assumes a finite fourth moment: for a
     Student \\t\\ with \\2 \< \nu \le 4\\ the sample covariance has no
     variance, and the row can fail with a correct generator;
 
-7.  **the response derivatives** against finite differences in \\y\\.
+7.  the response derivatives against finite differences in \\y\\.
 
 The last of these is run only when it applies, as the univariate battery
 omits the checks that have no counterpart for a discrete family. A

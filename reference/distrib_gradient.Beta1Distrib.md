@@ -7,9 +7,9 @@ function, \$\$\dfrac{\partial \ell}{\partial \mu} = \phi\left\\
 \log\dfrac{y}{1-y} - \psi(\alpha) + \psi(\beta)\right\\,\$\$
 \$\$\dfrac{\partial \ell}{\partial \phi} = \psi(\phi) -
 \mu\psi(\alpha) - (1-\mu)\psi(\beta) + \mu\log y + (1-\mu)\log(1-y).\$\$
-The data enter only through \\\log y\\ and \\\log(1-y)\\, the beta being
-an exponential family in the shapes, and the mean component sees them
-only through the log-odds \\\log\\y/(1-y)\\\\.
+The data enter only through \\\log y\\ and \\\log(1-y)\\, because the
+beta is an exponential family in the shapes, and the mean component
+depends on them only through the log-odds \\\log\\y/(1-y)\\\\.
 
 The two expectations that make the score have mean zero are
 \\\mathbb{E}\[\log Y\] = \psi(\alpha) - \psi(\phi)\\ and
@@ -41,8 +41,8 @@ scale.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -84,7 +84,7 @@ y <- c(0.2, 0.5, 0.8)
 th <- list(mu = 0.4, phi = 5)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out with the digamma function.
+# The two closed forms are written out with the digamma function.
 a <- 0.4 * 5
 b <- 0.6 * 5
 all.equal(g$mu, 5 * (log(y / (1 - y)) - digamma(a) + digamma(b)))

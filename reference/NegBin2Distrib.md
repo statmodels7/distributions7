@@ -1,6 +1,6 @@
 # Negative Binomial Distribution Class, NB2
 
-The S7 class of the negative binomial family on the non-negative
+This is the S7 class of the negative binomial family on the non-negative
 integers in the NB2 parametrization: the mean \\\mu \> 0\\ and a
 dispersion \\\theta \> 0\\, so that \\\operatorname{Var}(Y) = \mu +
 \mu^2/\theta\\ and the variance is quadratic in the mean. It inherits
@@ -96,7 +96,8 @@ domain \\(0, \infty)\\ for both parameters, and the two links.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin2Distrib.md),
@@ -151,7 +152,8 @@ d <- negbin2_distrib()
 S7::S7_inherits(d, discrete_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "mu"    "theta"
 d@params_interpretation

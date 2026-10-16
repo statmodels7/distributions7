@@ -1,8 +1,8 @@
 # Exponential First Derivative in the Response
 
 Returns \\-1/\mu\\ for every observation. The log-density is
-\\-\log\mu - y/\mu\\, which is **linear** in \\y\\, so its derivative in
-the response is the constant slope \\-1/\mu\\ and carries no information
+\\-\log\mu - y/\mu\\, which is linear in \\y\\, so its derivative in the
+response is the constant slope \\-1/\mu\\ and carries no information
 about where the observation fell.
 
 That linearity is the memorylessness of the family stated on the log

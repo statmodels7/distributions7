@@ -26,7 +26,7 @@ them and no quadrature is taken.
 
 - theta:
 
-  A named list of the **parent's** parameters; truncation adds none, the
+  A named list of the parent's parameters; truncation adds none, the
   endpoints being constants.
 
 - expected:

@@ -39,18 +39,18 @@ at order 4. Each has the recycled length of the inputs.
 
 With \\L = \log(y/a)\\ the log-density splits into \$\$\ell = \log p -
 d\log a - \log\Gamma(d/p) + (d-1)\log y - e^{pL},\$\$ and each piece is
-either elementary or a univariate function composed with a
-**two-variable** inner map, which the written-out template of
+either elementary or a univariate function composed with a two-variable
+inner map, which the written-out template of
 [`fdb2()`](https://statmodels7.github.io/distributions7/reference/fdb2.md)
 covers.
 
-What keeps the sum from growing is that the two compositions do not
-share a variable pair: \\-\log\Gamma(d/p)\\ involves \\(d, p)\\ and
-\\-e^{pL}\\ involves \\(a, p)\\. Every component of the three-variable
-derivative is therefore one term of one composition plus the elementary
-pieces, and no genuinely three-variable expansion is ever formed. A
-component naming both \\a\\ and \\d\\ comes from the elementary \\-d\log
-a\\ alone.
+The sum does not grow, because the two compositions do not share a
+variable pair: \\-\log\Gamma(d/p)\\ involves \\(d, p)\\ and \\-e^{pL}\\
+involves \\(a, p)\\. Every component of the three-variable derivative is
+therefore one term of one composition plus the elementary pieces, and
+the assembly never forms a genuinely three-variable expansion. A
+component that names both \\a\\ and \\d\\ comes only from the elementary
+term \\-d\log a\\.
 
 The tests compare the assembly at orders one to four with the compiled
 kernels of
@@ -63,7 +63,7 @@ evaluates \\\psi^{(n)}(k)\\ near its pole.
 ## See also
 
 [`distrib_deriv3.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
-for the compiled kernels this assembly is checked against;
+for the compiled kernels against which this assembly is checked;
 [`fdb2()`](https://statmodels7.github.io/distributions7/reference/fdb2.md)
 for the two-variable composition template; and
 [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md)

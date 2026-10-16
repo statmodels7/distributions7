@@ -23,7 +23,7 @@ quadratic variance function."><meta property="og:image" content="https://statmod
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,7 +88,7 @@ recycled. Both must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -108,7 +108,7 @@ length <code>max(length(y), length(mu), length(theta))</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="the-dispersion-at-large-theta">The dispersion at large theta<a class="anchor" aria-label="anchor" href="#the-dispersion-at-large-theta"></a></h2>
-    <p>The dispersion component is <strong>not</strong> computed as written above. As
+    <p>The dispersion component is not computed as written above. As
 \(\theta\) grows the family tends to the Poisson and this derivative
 vanishes, its three terms canceling to leading order:
 \(\psi(y+\theta) - \psi(\theta)\) is \(y/\theta\),
@@ -116,7 +116,7 @@ vanishes, its three terms canceling to leading order:
 \((\mu-y)/\theta\), and the three sum to zero, so the value is
 \(O(\theta^{-2})\) computed from terms of size \(\theta^{-1}\). Written
 directly it is wrong by about one part in a thousand at \(\theta = 10^6\)
-and <strong>changes sign</strong> at \(10^8\).</p>
+and changes sign at \(10^8\).</p>
 <p>The kernel performs each cancellation symbolically instead. With
 \(a = \theta\), \(b = \theta + y\), \(c = \theta + \mu\) and
 \(w = (y-\mu)/c\),
@@ -128,8 +128,8 @@ leading order the result is \(\{y - (y-\mu)^2\}/(2\theta^2)\), which the
 example below reproduces. A fit reaches that regime when the sample is
 nearly equidispersed, because the estimate of \(\theta\) then grows
 without bound.</p>
-<p>With <code>scale = "link"</code> the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+<p>With <code>scale = "link"</code> the generic applies the chain rule for the links that
+the family carries before returning. This method always returns the parameter
 scale.</p>
     </div>
     <div class="section level2">

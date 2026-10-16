@@ -23,9 +23,8 @@ reason.
 
 - expected:
 
-  Logical of length 1, and without effect here, the observed and
-  expected third derivatives being the same numbers. Defaults to
-  `FALSE`.
+  Logical of length 1, without effect here because the observed and
+  expected third derivatives are the same numbers. Defaults to `FALSE`.
 
 - theta:
 
@@ -36,12 +35,12 @@ reason.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available.
+  Ignored, because a closed form is available.
 
 - nsim:
 

@@ -35,7 +35,7 @@ the one place on this page where approx and nsim are read."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,7 @@ the one place on this page where approx and nsim are read."><meta property="og:i
     <div class="ref-description section level2">
     <p>Computes the four distinct third derivatives of the log-density in
 \(\mu\) and \(\rho\), in closed form. Every component carrying at least
-one \(\mu\) collapses to a <strong>single term</strong>
+one \(\mu\) collapses to a single term
 \(D_a \kappa^{(b)}(\rho)\), with \(D_a\) the \(a\)-th
 \(\mu\)-derivative of \(\cos(y-\mu)\) and \(\kappa^{(b)}\) the
 \(b\)-th derivative of \(A^{-1}\): the concentration parametrization's
@@ -107,7 +107,7 @@ vector of length 1 or of the length of <code>y</code>. <code>rho</code> must lie
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
@@ -133,7 +133,7 @@ or <code>"opg"</code>. Read only when <code>expected = TRUE</code>.</p></dd>
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+whatever the count is. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -2,12 +2,12 @@
 
 Computes \\\partial\ell/\partial y = -a\\\mathrm{sgn}(y-\mu) -
 c(y-\mu)\\, with \\a = \lambda\alpha\\ and \\c = \lambda(1-\alpha)\\. It
-is minus the derivative in \\\mu\\, the response and the location
-entering only through their difference.
+is minus the derivative in \\\mu\\, because the response and the
+location enter only through their difference.
 
-It is **undefined at the location**, where the sign jumps. `sign(0)` is
-0 in R, so the value returned there is \\-c(y-\mu) = 0\\, one point of
-the subdifferential.
+It is undefined at the location, where the sign jumps. `sign(0)` is 0 in
+R, so the value returned there is \\-c(y-\mu) = 0\\, one point of the
+subdifferential.
 
 Away from the location the derivative equals \\-a - c(y-\mu)\\ for \\y
 \> \mu\\ and \\a - c(y-\mu)\\ for \\y \< \mu\\, so the Laplace part
@@ -65,7 +65,8 @@ th <- list(mu = 0, lambda = 2, alpha = 0.5)
 all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 #> [1] TRUE
 
-# Against a central difference of the log-density, away from the kink.
+# The analytic derivative is compared with a central difference of the
+# log-density, away from the kink.
 eps <- 1e-6
 rbind(analytic = distrib_grad_y(d, y, th),
       numeric = (distrib_pdf(d, y + eps, th, log = TRUE) -

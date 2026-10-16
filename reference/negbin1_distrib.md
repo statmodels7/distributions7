@@ -1,15 +1,14 @@
 # Negative Binomial Distribution, NB1
 
 Builds the distribution object for the negative binomial family on the
-non-negative integers whose variance is **linear** in the mean: with a
-mean \\\mu \> 0\\ and a dispersion \\\theta \> 0\\,
-\\\operatorname{Var}(Y) = \mu(1+\theta)\\. The returned object carries
-closed-form derivatives of the log-mass to fourth order and closed-form
-moments.
+non-negative integers whose variance is linear in the mean: with a mean
+\\\mu \> 0\\ and a dispersion \\\theta \> 0\\, \\\operatorname{Var}(Y) =
+\mu(1+\theta)\\. The returned object carries closed-form derivatives of
+the log-mass to fourth order and closed-form moments.
 
-The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the
-logarithm, both parameters being positive.
+The two arguments set the links that carry each parameter to the
+unconstrained scale on which an optimizer works. Both default to the
+logarithm, because both parameters are positive.
 
 ## Usage
 
@@ -44,8 +43,8 @@ An S7 object of class `NegBin1Distrib`, inheriting from
 
 ## Relation to the quadratic-variance negative binomial
 
-Two negative binomials are in common use and they are **different
-families**, not two parametrizations of one. Here the variance is
+Two negative binomials are in common use and they are different
+families, not two parametrizations of one. Here the variance is
 \\\mu(1+\theta)\\, growing in proportion to the mean, so the dispersion
 relative to a Poisson is the same at every mean;
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
@@ -55,8 +54,8 @@ nested models.
 
 The difference is visible in where the mean sits. The size is \\r =
 \mu/\theta\\ and the success probability \\1/(1+\theta)\\, so \\\mu\\
-appears **inside** the gamma functions of the mass; in the quadratic
-form the size is \\\theta\\ and the mean stays outside them.
+appears inside the gamma functions of the mass; in the quadratic form
+the size is \\\theta\\ and the mean stays outside them.
 
 ## The parametrization
 
@@ -83,8 +82,8 @@ drops out, its expectation vanishing by the first Bartlett identity, and
 what remains is two sums over the support against the exact mass
 ([`distrib_expected_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md)).
 
-**The mean and the dispersion are not orthogonal here.** The mixed entry
-of the expected information is non-zero, where
+The mean and the dispersion are not orthogonal here. The mixed entry of
+the expected information is non-zero, where
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
 has exactly zero.
 
@@ -151,7 +150,7 @@ for counts with excess zeros;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
+to validate a family of your own against the same battery that this one
 passes;
 [NegBin1Distrib](https://statmodels7.github.io/distributions7/reference/NegBin1Distrib.md)
 for the class.

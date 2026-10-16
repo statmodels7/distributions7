@@ -62,10 +62,10 @@ rather than by the sorted triples
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
 uses at order three.
 
-**The default method differences the family's own expected
-information**, one central stencil per parameter, which is a single
-difference of an analytic quantity wherever that quantity is a
-written-out formula. Where it is not, the method signals an error: see
+The default method differences the family's own expected information,
+one central stencil per parameter, which is a single difference of an
+analytic quantity wherever that quantity is a written-out formula. Where
+it is not, the method signals an error: see
 [`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md).
 
 On `scale = "link"` the difference is taken along the free scale of the

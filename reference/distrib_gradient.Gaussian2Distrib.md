@@ -33,8 +33,8 @@ returns the parameter scale; the transformation happens in the generic.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -77,7 +77,7 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 1, sigma2 = 4)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# We write out the two closed forms.
 r <- y - 1
 all.equal(g$mu, r / 4)
 #> [1] TRUE
@@ -93,7 +93,7 @@ vapply(distrib_gradient(d, z, mle), sum, numeric(1))
 #>            mu        sigma2 
 #> -5.859029e-15 -1.425943e-15 
 
-# Both parametrizations ride a log link on the spread, and log(sigma^2) is
+# Both parametrizations use a log link on the spread, and log(sigma^2) is
 # twice log(sigma), so the link-scale score here is half gaussian1's.
 distrib_gradient(d, y, th, scale = "link")$sigma2 /
   distrib_gradient(gaussian1_distrib(), y, list(mu = 1, sigma = 2),

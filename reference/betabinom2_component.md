@@ -55,10 +55,11 @@ With \\a\\ and \\b\\ the shapes and \\n\\ the size, the log-mass is
 \$\$\log\Gamma(y+a) + \log\Gamma(n-y+b) - \log\Gamma(n+a+b) -
 \log\Gamma(a) - \log\Gamma(b) + \log\Gamma(a+b)\$\$ up to a term free of
 the parameters. A derivative in \\a\\ alone differentiates the first,
-third, fourth and sixth terms; one in \\b\\ alone the second, third,
-fifth and sixth; a **mixed** one only the two terms carrying \\a+b\\,
-which is why a mixed component of any order is \\-\psi^{(k)}(n+a+b) +
-\psi^{(k)}(a+b)\\ and free of the data.
+third, fourth and sixth terms. A derivative in \\b\\ alone
+differentiates the second, third, fifth and sixth terms. A mixed
+derivative differentiates only the two terms that carry \\a+b\\, which
+is why a mixed component of any order is \\-\psi^{(k)}(n+a+b) +
+\psi^{(k)}(a+b)\\ and does not depend on the data.
 
 ## See also
 

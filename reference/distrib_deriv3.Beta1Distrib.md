@@ -36,19 +36,18 @@ differ there. `approx` and `nsim` are ignored.
 
 - expected:
 
-  Logical of length 1, and without effect here, the observed and
-  expected third derivatives being the same numbers. Defaults to
-  `FALSE`.
+  Logical of length 1, without effect here because the observed and
+  expected third derivatives are the same numbers. Defaults to `FALSE`.
 
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available.
+  Ignored, because a closed form is available.
 
 - nsim:
 
@@ -96,7 +95,7 @@ y <- c(0.2, 0.5, 0.8)
 th <- list(mu = 0.4, phi = 5)
 d3 <- distrib_deriv3(d, y, th)
 
-# Four constants: nothing at this order depends on the observation.
+# Four constants: every component at this order is free of the observation.
 lapply(d3, unique)
 #> $mu_mu_mu
 #> [1] 31.25

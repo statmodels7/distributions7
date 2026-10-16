@@ -6,12 +6,11 @@ Writing \\r = y - \mu\\ and \\d = \sigma^2 + r^2\\, \$\$\dfrac{\partial
 \ell}{\partial \mu} = \dfrac{2r}{d}, \qquad \dfrac{\partial
 \ell}{\partial \sigma} = \dfrac{r^2 - \sigma^2}{\sigma d}.\$\$
 
-The score in \\\mu\\ is **redescending**: it rises to \\1/\sigma\\ at
-\\r = \sigma\\ and falls back towards zero as \\\|r\|\\ grows, so an
+The score in \\\mu\\ is redescending: it rises to \\1/\sigma\\ at \\r =
+\sigma\\ and falls back towards zero as \\\|r\|\\ grows, so an
 observation far from the location contributes almost nothing to the
-estimating equation. That is the mechanism behind the robustness of a
-Cauchy likelihood, and it is also why the log-likelihood can have
-several local maxima.
+estimating equation. This behavior makes a Cauchy likelihood robust, and
+it also makes several local maxima of the log-likelihood possible.
 
 ## Arguments
 
@@ -33,8 +32,8 @@ several local maxima.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -44,7 +43,7 @@ several local maxima.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -54,8 +53,8 @@ A named list of two numeric vectors, `mu` and `sigma`, each of length
 ## Notation
 
 \\\ell\\ is the log-density of one observation, \\\mu\\ the location and
-\\\sigma \> 0\\ the scale. Neither is a moment, because the family has
-no moments.
+\\\sigma \> 0\\ the scale. The two parameters are not moments, because
+the family has no moments.
 
 ## See also
 
@@ -76,7 +75,7 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, sigma = 1.5)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two closed forms are written out.
 r <- y - 0.4; dd <- 1.5^2 + r^2
 all.equal(g$mu, 2 * r / dd)
 #> [1] TRUE
@@ -84,7 +83,7 @@ all.equal(g$sigma, (r^2 - 1.5^2) / (1.5 * dd))
 #> [1] TRUE
 
 # The score redescends: it peaks at r = sigma, where it is 1/sigma, and
-# decays afterwards. An outlier is discounted, not chased.
+# decays afterwards. An outlier therefore contributes little to the score.
 r <- c(0, 0.75, 1.5, 3, 6, 12)
 round(distrib_gradient(d, 0.4 + r, th)$mu, 4)
 #> [1] 0.0000 0.5333 0.6667 0.5333 0.3137 0.1641

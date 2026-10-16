@@ -25,8 +25,8 @@ divided by the variance \\\mu(1+\mu)\\, and the sum vanishes exactly at
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -64,7 +64,7 @@ d <- geometric_distrib()
 y <- c(0, 2, 7)
 th <- list(mu = 3)
 
-# The closed form, written out: the residual over the variance.
+# The closed form is written out as the residual over the variance.
 all.equal(distrib_gradient(d, y, th)$mu, (y - 3) / (3 * (1 + 3)))
 #> [1] TRUE
 

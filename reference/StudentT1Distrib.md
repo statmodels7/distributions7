@@ -1,8 +1,8 @@
 # Student t Distribution Class, Location, Scale and Degrees of Freedom
 
-The S7 class of the location-scale Student t family, parametrized by a
-location \\\mu\\, a scale \\\sigma \> 0\\ and degrees of freedom \\\nu
-\> 0\\, with density proportional to \\\\1 +
+This is the S7 class of the location-scale Student t family,
+parametrized by a location \\\mu\\, a scale \\\sigma \> 0\\ and degrees
+of freedom \\\nu \> 0\\, with density proportional to \\\\1 +
 (y-\mu)^2/(\nu\sigma^2)\\^{-(\nu+1)/2}\\ on the whole real line. It
 inherits from `continuous_distrib`, so every generic of the `distrib`
 class applies to it; the methods listed below are registered on it
@@ -100,7 +100,8 @@ they hold `"student t1"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.StudentT1Distrib.md),
@@ -175,7 +176,8 @@ d <- student_t1_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "mu"    "sigma" "nu"   
 d@params_interpretation

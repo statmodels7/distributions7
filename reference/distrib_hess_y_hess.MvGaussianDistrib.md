@@ -25,7 +25,7 @@ The components do not depend on the observation, so `y` is not read.
 
 - y:
 
-  An \\n \times p\\ numeric matrix of observations. Not read.
+  An \\n \times p\\ numeric matrix of observations. It is not read.
 
 - theta:
 

@@ -112,8 +112,8 @@ distrib_fit(
 
 - loglik:
 
-  The maximized log-likelihood, summed over observations and **not**
-  divided by \\n\\.
+  The maximized log-likelihood, summed over observations and not divided
+  by \\n\\.
 
 - aic, bic:
 
@@ -157,7 +157,7 @@ distrib_fit(
 
 - score:
 
-  The max-norm of the score **per observation** at the reported optimum.
+  The max-norm of the score per observation at the reported optimum.
   This is the quantity that the stopping rule tested, so it measures how
   close to stationary a run ended, and it is the number to read on a fit
   that did not converge.

@@ -7,8 +7,8 @@ $$\dfrac{\partial \ell}{\partial \alpha} = \log y - \psi(\alpha)
         + \psi(\alpha+\beta),$$
 with \(\psi\) the digamma function. The beta is an exponential family in
 the shapes with sufficient statistics \(\log y\) and \(\log(1-y)\), so
-each component is the corresponding statistic minus its expectation. That
-is also why every derivative beyond this one is free of the response.
+each component is the corresponding statistic minus its expectation.
+Therefore every derivative beyond this one is also free of the response.
 The value is computed by a compiled kernel, and \(\log(1-y)\) is formed
 with log1p() so that it stays accurate at y near zero.
 With scale = "link" the generic applies the chain rule for the links of the
@@ -21,8 +21,8 @@ $$\dfrac{\partial \ell}{\partial \alpha} = \log y - \psi(\alpha)
         + \psi(\alpha+\beta),$$
 with \(\psi\) the digamma function. The beta is an exponential family in
 the shapes with sufficient statistics \(\log y\) and \(\log(1-y)\), so
-each component is the corresponding statistic minus its expectation. That
-is also why every derivative beyond this one is free of the response.
+each component is the corresponding statistic minus its expectation.
+Therefore every derivative beyond this one is also free of the response.
 The value is computed by a compiled kernel, and \(\log(1-y)\) is formed
 with log1p() so that it stays accurate at y near zero.
 With scale = "link" the generic applies the chain rule for the links of the
@@ -35,7 +35,7 @@ scale.'><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,8 +76,8 @@ $$\dfrac{\partial \ell}{\partial \alpha} = \log y - \psi(\alpha)
         + \psi(\alpha+\beta),$$
 with \(\psi\) the digamma function. The beta is an exponential family in
 the shapes with sufficient statistics \(\log y\) and \(\log(1-y)\), so
-each component is the corresponding statistic minus its expectation. That
-is also why every derivative beyond this one is free of the response.</p>
+each component is the corresponding statistic minus its expectation.
+Therefore every derivative beyond this one is also free of the response.</p>
 <p>The value is computed by a compiled kernel, and \(\log(1-y)\) is formed
 with <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p()</a></code> so that it stays accurate at <code>y</code> near zero.</p>
 <p>With <code>scale = "link"</code> the generic applies the chain rule for the links of the
@@ -107,7 +107,7 @@ recycled. Both must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -148,7 +148,7 @@ precision, <code><a href="beta2_higher.html">beta2_higher()</a></code> for the o
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">2</span>, beta <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The two closed forms, written out with the digamma function.</span></span></span>
+<span class="r-in"><span><span class="co"># The two closed forms are written out with the digamma function.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">alpha</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">beta</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p</a></span><span class="op">(</span><span class="op">-</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span><span class="op">)</span></span></span>

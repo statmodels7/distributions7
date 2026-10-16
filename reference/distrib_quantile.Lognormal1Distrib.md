@@ -7,7 +7,7 @@ Computes the lognormal quantile function \$\$Q(p; \mu, \sigma^2) =
 closed form, the log transformation being monotone, so the round trip
 through
 [`distrib_cdf.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Lognormal1Distrib.md)
-returns `p` exactly. The median is \\e^{\mu}\\, which sits **below** the
+returns `p` exactly. The median is \\e^{\mu}\\, which sits below the
 mean \\e^{\mu + \sigma^2/2}\\.
 
 ## Arguments
@@ -37,8 +37,8 @@ mean \\e^{\mu + \sigma^2/2}\\.
 - log.p:
 
   Logical of length 1. When `TRUE` the values in `p` are read as
-  logarithms of probabilities, which is how a quantile deep in a tail is
-  requested without the probability underflowing. Defaults to `FALSE`.
+  logarithms of probabilities, so that a quantile deep in a tail can be
+  requested without underflow in the probability. Defaults to `FALSE`.
 
 - ...:
 

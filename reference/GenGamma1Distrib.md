@@ -1,14 +1,15 @@
 # Generalized Gamma Distribution Class
 
-The S7 class of the generalized gamma in Stacy's three-parameter form: a
-scale \\a \> 0\\ and two shapes \\d \> 0\\ and \\p \> 0\\, with density
-\\f(y) = p\\y^{d-1}e^{-(y/a)^p}/\\a^d\Gamma(d/p)\\\\ on \\y \> 0\\.
+This S7 class represents the generalized gamma in Stacy's
+three-parameter form: a scale \\a \> 0\\ and two shapes \\d \> 0\\ and
+\\p \> 0\\, with density \\f(y) =
+p\\y^{d-1}e^{-(y/a)^p}/\\a^d\Gamma(d/p)\\\\ on \\y \> 0\\.
 
 It is the flexible family for a positive response, and it nests four
 others exactly: the gamma at \\p = 1\\, the Weibull at \\d = p\\, the
 exponential at \\d = p = 1\\ and the half-normal at \\a = \sqrt2, d = 1,
-p = 2\\. The choice among these special cases can therefore be made by
-estimating \\d\\ and \\p\\.
+p = 2\\. Estimates of \\d\\ and \\p\\ therefore show which of these
+special cases the data support.
 
 Build one with
 [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md),
@@ -98,7 +99,8 @@ the properties hold `"gengamma1"`, `"univariate"`, `c(0, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma1Distrib.md),
@@ -191,7 +193,7 @@ vapply(d@link_params, function(l) l@link_name, character(1))
 #>     a     d     p 
 #> "log" "log" "log" 
 
-# Three of the four exact special cases, at one point each.
+# Three of the four exact special cases are compared at one point each.
 y <- c(0.5, 1.5, 4)
 rbind(gamma = distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
               dgamma(y, shape = 3, scale = 2),

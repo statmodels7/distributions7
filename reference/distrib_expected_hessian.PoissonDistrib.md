@@ -8,14 +8,14 @@ model, in closed form and with no quadrature or simulation:
 so the asymptotic standard error of \\\hat\mu\\ is \\\sqrt{\mu/n}\\, the
 standard error of a sample mean whose variance is \\\mu\\.
 
-On the **link** scale with the default logarithm the value is \\-\mu\\,
-and so is the observed Hessian in exact arithmetic: the log is the
-canonical link and the observed curvature there carries no data. Fisher
-scoring and Newton's method therefore take the same step on a Poisson
-model with a log link, which is why the two are not distinguished in the
-classical generalized-linear-model literature for this case. The
-observed value is composed by the generic and loses relative accuracy
-for a count much larger than the mean (see
+On the link scale with the default logarithm the value is \\-\mu\\, and
+so is the observed Hessian in exact arithmetic: the log is the canonical
+link and the observed curvature there carries no data. Fisher scoring
+and Newton's method therefore take the same step on a Poisson model with
+a log link, which is why the two are not distinguished in the classical
+generalized-linear-model literature for this case. The observed value is
+composed by the generic and loses relative accuracy for a count much
+larger than the mean (see
 [`distrib_hessian.PoissonDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.PoissonDistrib.md));
 this value does not.
 
@@ -41,13 +41,13 @@ ignored. `y` is read only for its length.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available. Accepted so that the signature
-  matches the generic's.
+  Ignored, because a closed form is available. It is accepted so that
+  the signature matches the generic's.
 
 - nsim:
 
@@ -69,16 +69,16 @@ A named list of one numeric vector, `mu_mu`, of length
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\mu^2\]\\, the expectation of the
-**observed information** under the model. The Poisson is a regular
-family, so the second Bartlett identity holds and this equals the
-variance of the score.
+observed information under the model. The Poisson is a regular family,
+so the second Bartlett identity holds and this equals the variance of
+the score.
 
 ## See also
 
 [`distrib_hessian.PoissonDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.PoissonDistrib.md)
-for the observed quantity this is the expectation of,
+for the observed quantity whose expectation this is,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
 which inverts it, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)

@@ -39,13 +39,13 @@ the result does not depend on the thread count.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored here, both branches being exact. Accepted so that the
-  signature matches the generic's.
+  Ignored here, because both branches are exact. It is accepted so that
+  the signature matches the generic's.
 
 - nsim:
 

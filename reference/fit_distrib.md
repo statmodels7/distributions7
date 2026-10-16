@@ -4,7 +4,7 @@ Fits a `distrib` object to an i.i.d. sample by maximum likelihood and
 returns a
 [`distrib_fit()`](https://statmodels7.github.io/distributions7/reference/distrib_fit_class.md)
 carrying the estimates, their standard errors and confidence limits on
-both scales. The optimization runs on the **link scale**, where the
+both scales. The optimization runs on the link scale, where the
 parameters are unconstrained, driven by the analytical score and
 information the family supplies at `scale = "link"`; the estimates are
 then mapped back and reported on the parameter scale.
@@ -42,8 +42,8 @@ fit_distrib(
 
 - start:
 
-  Optional named list of starting values **on the parameter scale**.
-  `NULL`, the default, takes the starting values from
+  Optional named list of starting values on the parameter scale. `NULL`,
+  the default, takes the starting values from
   [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md),
   which computes them from the data for a family that registers a method
   and otherwise draws them from the parameter domains, with the restarts
@@ -56,14 +56,14 @@ fit_distrib(
   How to optimize. One argument taking one of three things:
 
   - [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
-    the default: Newton's method with the **expected** information in
-    place of the observed Hessian, the object carrying how that
-    information is to be obtained when the family has no closed form for
-    it. Passing an `approx` where the family does have one signals an
-    error rather than ignoring it;
+    the default: Newton's method with the expected information in place
+    of the observed Hessian, the object carrying how that information is
+    to be obtained when the family has no closed form for it. Passing an
+    `approx` where the family does have one signals an error rather than
+    ignoring it;
 
   - an optimizer object from optimizers7, used as given and receiving
-    the analytical gradient and the **observed** Hessian, so that
+    the analytical gradient and the observed Hessian, so that
     `method = lbfgs(criterion = crit_grad(1e-12))` selects the algorithm
     and the stopping rule together. A stopping rule the optimizer cannot
     evaluate is rejected here, where the message can name it;
@@ -143,8 +143,8 @@ the Hessian divided by \\n\\ with it. Scaling by a positive constant
 moves neither the maximum nor any Newton step, since \\H^{-1}g\\ is
 unchanged when both are divided by \\n\\. What it changes is the meaning
 of a threshold: a tolerance on the gradient of this objective is a
-tolerance on the score **per observation** whatever the sample size, so
-the same rule means the same thing at \\n = 10\\ and at \\n = 10^7\\.
+tolerance on the score per observation whatever the sample size, so the
+same rule means the same thing at \\n = 10\\ and at \\n = 10^7\\.
 `loglik`, the information and every standard error are recomputed
 unscaled at the optimum.
 

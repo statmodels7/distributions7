@@ -6,7 +6,7 @@ respect to the response, in closed form: \$\$\dfrac{\partial^2
 mean drops out, the log-density depending on \\\mu\\ only through terms
 linear in \\y\\ and constant in it. The sign changes at \\y =
 2/(3\phi)\\: the log-density is concave in the response below that point
-and **convex above it**, so an inverse Gaussian log-likelihood is not a
+and convex above it, so an inverse Gaussian log-likelihood is not a
 concave function of an observation over the whole support.
 
 ## Arguments

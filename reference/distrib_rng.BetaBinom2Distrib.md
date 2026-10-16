@@ -1,7 +1,7 @@
 # Beta-Binomial Random Generation in Its Shapes
 
 Draws `n` independent beta-binomial counts by the two-stage hierarchy
-the family is defined by: a success probability from
+that defines the family: a success probability from
 \\\mathrm{Beta}(\alpha, \beta)\\, then a count from
 \\\mathrm{Binomial}(n\_{\mathrm{trials}}, p)\\ at that probability, one
 fresh probability per draw. The draws are made by one call to
@@ -19,7 +19,7 @@ they depend on `.Random.seed` in the usual way.
 - n:
 
   A single positive integer, the number of draws. Note that the number
-  of **trials** is the object's `size` property, not this argument.
+  of trials is the object's `size` property, not this argument.
 
 - theta:
 

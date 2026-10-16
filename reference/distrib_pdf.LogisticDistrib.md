@@ -18,7 +18,7 @@ Computes the logistic density \$\$f(y; \mu, \sigma) =
 - y:
 
   A numeric vector of observations. Every real value is in the support,
-  so no value is rejected.
+  so every value is accepted.
 
 - theta:
 

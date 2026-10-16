@@ -10,8 +10,8 @@ closed form and with no quadrature or simulation. Under the model
 = I_1(\kappa)/I_0(\kappa)\\.
 
 The zero off-diagonal makes the direction and the concentration
-**orthogonal**: the expected information is diagonal, their estimates
-are asymptotically independent, and Fisher scoring updates the two
+orthogonal: the expected information is diagonal, their estimates are
+asymptotically independent, and Fisher scoring updates the two
 independently. `approx` and `nsim` are ignored, the expectation being
 exact.
 
@@ -35,13 +35,13 @@ exact.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored here, the expectation being exact. Accepted so that the
-  signature matches the generic's, where it selects between
+  Ignored here, because the expectation is exact. It is accepted so that
+  the signature matches the generic's, where it selects between
   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 
 - nsim:
@@ -56,7 +56,7 @@ exact.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

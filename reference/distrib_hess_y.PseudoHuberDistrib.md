@@ -6,8 +6,8 @@ y - \mu\\ and \\D = \sqrt{\nu + (r/\sigma)^2}\\, \$\$\dfrac{\partial^2
 location family, so this equals the pure-location entry of
 [`distrib_hessian.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.PseudoHuberDistrib.md),
 with no sign change; two derivatives in \\\mu\\ carry two factors of
-\\-1\\. It is **negative everywhere**, so the log-density is concave in
-the response, and it decays like \\\|r\|^{-3}\\ in the tails.
+\\-1\\. It is negative everywhere, so the log-density is concave in the
+response, and it decays like \\\|r\|^{-3}\\ in the tails.
 
 ## Arguments
 

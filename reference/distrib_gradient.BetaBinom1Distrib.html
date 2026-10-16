@@ -22,8 +22,8 @@ $$\dfrac{\partial \ell}{\partial \mu}
         - \sum_{i&amp;lt;n} \dfrac{i}{w_i}.$$
 Each sum has terms of one sign, so both components keep their accuracy at
 any concentration; the cost is \(O(n)\) per observation.
-With scale = "link" the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+With scale = "link" the generic applies the chain rule for the links that
+the family carries before returning. This method always returns the parameter
 scale. The arithmetic runs in a compiled kernel decomposed over the elements
 of the output, so the result does not depend on the thread count.'><meta property="og:description" content='Computes the first derivatives of the beta-binomial log-mass with respect to
 the mean proportion \(\mu\) and the dispersion \(\sigma\), one value per
@@ -48,8 +48,8 @@ $$\dfrac{\partial \ell}{\partial \mu}
         - \sum_{i&amp;lt;n} \dfrac{i}{w_i}.$$
 Each sum has terms of one sign, so both components keep their accuracy at
 any concentration; the cost is \(O(n)\) per observation.
-With scale = "link" the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+With scale = "link" the generic applies the chain rule for the links that
+the family carries before returning. This method always returns the parameter
 scale. The arithmetic runs in a compiled kernel decomposed over the elements
 of the output, so the result does not depend on the thread count.'><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -59,7 +59,7 @@ of the output, so the result does not depend on the thread count.'><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,8 +115,8 @@ $$\dfrac{\partial \ell}{\partial \mu}
         - \sum_{i&lt;n} \dfrac{i}{w_i}.$$
 Each sum has terms of one sign, so both components keep their accuracy at
 any concentration; the cost is \(O(n)\) per observation.</p>
-<p>With <code>scale = "link"</code> the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+<p>With <code>scale = "link"</code> the generic applies the chain rule for the links that
+the family carries before returning. This method always returns the parameter
 scale. The arithmetic runs in a compiled kernel decomposed over the elements
 of the output, so the result does not depend on the thread count.</p>
     </div>
@@ -142,7 +142,7 @@ recycled. <code>mu</code> must lie in \((0, 1)\) and <code>sigma</code> be stric
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

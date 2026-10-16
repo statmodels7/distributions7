@@ -26,8 +26,8 @@ family has one parameter, so the returned list has one component.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -37,7 +37,7 @@ family has one parameter, so the returned list has one component.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -65,11 +65,11 @@ d <- exponential_distrib()
 y <- c(0.3, 1.1, 4.0)
 th <- list(mu = 2)
 
-# The closed form, written out.
+# The closed form is written out in R and compared with the method.
 all.equal(distrib_gradient(d, y, th)$mu, (y - 2) / 2^2)
 #> [1] TRUE
 
-# One component, the family having one parameter.
+# There is one component, because the family has one parameter.
 names(distrib_gradient(d, y, th))
 #> [1] "mu"
 

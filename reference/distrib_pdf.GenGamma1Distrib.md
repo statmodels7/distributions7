@@ -69,7 +69,7 @@ d <- gengamma1_distrib()
 y <- c(0.5, 1.5, 4)
 th <- list(a = 2, d = 3, p = 1.5)
 
-# The formula written out.
+# The density agrees with the formula written out.
 all.equal(distrib_pdf(d, y, th),
           1.5 / (2^3 * gamma(3 / 1.5)) * y^(3 - 1) * exp(-(y / 2)^1.5))
 #> [1] TRUE
@@ -78,7 +78,7 @@ all.equal(distrib_pdf(d, y, th),
 integrate(function(v) distrib_pdf(d, v, th), 0, Inf)$value
 #> [1] 1
 
-# The four exact special cases.
+# The four exact special cases are compared with the densities of base R.
 c(gamma = max(abs(distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
                   dgamma(y, shape = 3, scale = 2))),
   weibull = max(abs(distrib_pdf(d, y, list(a = 2, d = 1.5, p = 1.5)) -
@@ -90,7 +90,7 @@ c(gamma = max(abs(distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
 #>        gamma      weibull  exponential  half_normal 
 #> 1.387779e-17 5.551115e-17 1.387779e-17 1.110223e-16 
 
-# d decides what happens at the origin.
+# The value of d determines what happens at the origin.
 distrib_pdf(d, 1e-8, list(a = 2, d = c(0.5, 1, 2), p = 1.5))
 #> [1] 3.959255e+03 5.538661e-01 4.199424e-09
 ```

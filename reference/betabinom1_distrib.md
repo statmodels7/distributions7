@@ -4,8 +4,8 @@ Builds the distribution object for the beta-binomial family parametrized
 by a mean proportion \\\mu \in (0, 1)\\ and a dispersion \\\sigma \>
 0\\, on the finite support \\\\0, 1, \dots, n\\\\. The returned object
 carries closed-form derivatives of the log-mass to fourth order and
-expectations that are exact finite sums over the support, so no
-quadrature is used. The fifth derivative comes from the numerical
+expectations that are exact finite sums over the support, so the object
+does not use quadrature. The fifth derivative comes from the numerical
 fallback of the base class.
 
 The family is the binomial with its success probability drawn from a
@@ -80,9 +80,9 @@ n\mu(1-\mu) \left(1 + (n-1)\dfrac{\sigma}{1+\sigma}\right),\$\$ so the
 inflation over a binomial of the same mean is \\1 +
 (n-1)\sigma/(1+\sigma)\\, above 1 for \\n \> 1\\ and rising with both
 the trial count and the dispersion. The factor \\\sigma/(1+\sigma)\\ is
-the **intraclass correlation** between two trials of the same group. At
-\\n = 10\\ and \\\sigma = 0.5\\ that correlation is \\1/3\\ and the
-variance is four times a binomial's (8.4 against 2.1 at \\\mu = 0.3\\).
+the intraclass correlation between two trials of the same group. At \\n
+= 10\\ and \\\sigma = 0.5\\ that correlation is \\1/3\\ and the variance
+is four times a binomial's (8.4 against 2.1 at \\\mu = 0.3\\).
 
 As \\\sigma \to 0\\ the mass converges to the binomial's at rate
 \\O(\sigma)\\, and the compiled kernel stays accurate all the way there;
@@ -98,7 +98,7 @@ reported components follow by the chain rule of \\(\alpha, \beta) =
 (\mu/\sigma, (1-\mu)/\sigma)\\, which is linear in \\\mu\\ at fixed
 \\\sigma\\, so every partial of the map carrying two or more \\\mu\\ is
 exactly zero and the third and fourth orders are a short partition sum.
-Orders three and four are therefore **closed form** as well, in
+Orders three and four are therefore closed form as well, in
 [`distrib_deriv3.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom1Distrib.md),
 and not the numerical fallback.
 
@@ -110,24 +110,23 @@ log-mass is also \$\$\ell = \log\binom{n}{y} + \sum\_{i\<y}\log u_i +
 = a + b\\, is \$\$c_K\Big\[\sum\_{i\<y}\frac{i^b}{u_i^K} +
 (-1)^a\sum\_{i\<n-y}\frac{i^b}{v_i^K} - \[a =
 0\]\sum\_{i\<n}\frac{i^b}{w_i^K}\Big\], \qquad c_K =
-(-1)^{K-1}(K-1)!.\$\$ Each sum has terms of one sign. These **direct
-sums** are used for \\\sigma \< 0.1\\ at every order, observed and
-expected, and the route through the shapes above it (see the next
-section).
+(-1)^{K-1}(K-1)!.\$\$ Each sum has terms of one sign. These direct sums
+are used for \\\sigma \< 0.1\\ at every order, observed and expected,
+and the route through the shapes above it (see the next section).
 
 Every expectation, including those of the third and fourth derivatives,
-is an **exact finite sum** over \\\\0, \dots, n\\\\: the support is
-bounded, so there is nothing to integrate over.
+is an exact finite sum over \\\\0, \dots, n\\\\, because the support is
+bounded.
 
 ## The cancellation at a small dispersion
 
 The two beta functions of the mass are of magnitude
 \\(\alpha+\beta)\log(\alpha+\beta)\\ while their difference is of order
-one, so writing the mass as that difference loses one digit per factor
-of ten in the concentration \\1/\sigma\\. The kernel computes the
-log-mass as the sum of logarithms above instead. The route through the
-shapes has the same defect in its derivatives: the polygamma differences
-are of order one while the derivatives of the map \\(\alpha, \beta)\\ in
+one, so a mass computed as that difference loses one digit per factor of
+ten in the concentration \\1/\sigma\\. The kernel computes the log-mass
+as the sum of logarithms above instead. The route through the shapes has
+the same defect in its derivatives: the polygamma differences are of
+order one while the derivatives of the map \\(\alpha, \beta)\\ in
 \\\sigma\\ are of order \\\sigma^{-(K+1)}\\, and their products cancel
 among themselves as \\\sigma\\ goes to zero. Below \\\sigma = 0.1\\ the
 derivatives and the expectations built from them therefore come from the
@@ -138,8 +137,8 @@ digits there.
 ## Estimation
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-maximizes the log-likelihood on the link scale. Neither estimate is
-available in closed form. For a sample with no extra-binomial variation,
+maximizes the log-likelihood on the link scale. Both estimates lack a
+closed form. For a sample with no extra-binomial variation,
 \\\hat\sigma\\ tends to zero, the boundary of the parameter space.
 
 ## Notation
@@ -173,7 +172,7 @@ for the unbounded-count analogue, a Poisson mixed over a gamma;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
+to validate a family of your own against the same battery that this one
 passes;
 [BetaBinom1Distrib](https://statmodels7.github.io/distributions7/reference/BetaBinom1Distrib.md)
 for the class.
@@ -196,8 +195,8 @@ th <- list(mu = 0.3, sigma = 0.5)
 sum(distrib_pdf(d, 0:10, th))
 #> [1] 1
 
-# Four times the variance of a binomial with the same mean: the intraclass
-# correlation is sigma / (1 + sigma) = 1/3, and 1 + 9/3 = 4.
+# The variance is four times that of a binomial with the same mean: the
+# intraclass correlation is sigma / (1 + sigma) = 1/3, and 1 + 9/3 = 4.
 c(mean = mean(d, th), var = variance(d, th),
   binomial_var = variance(binomial_distrib(size = 10), list(mu = 0.3)),
   icc = 0.5 / 1.5)
@@ -210,7 +209,7 @@ vapply(c(1e-2, 1e-4, 1e-6), function(s)
           dbinom(0:10, 10, 0.3))), numeric(1))
 #> [1] 1.248997e-02 1.333223e-04 1.334134e-06
 
-# The same law as betabinom2 at the implied shapes.
+# The mass equals that of betabinom2 at the implied shapes.
 all.equal(distrib_pdf(d, 0:10, list(mu = 0.4, sigma = 0.2)),
           distrib_pdf(betabinom2_distrib(size = 10), 0:10,
                       list(alpha = 2, beta = 3)))

@@ -33,8 +33,8 @@ settings, which may be empty.
 ## Details
 
 Every component must have length 1 or the same \\k\\. A length that only
-**divides** \\k\\ signals an error, because R would recycle such a
-component without a warning.
+divides \\k\\ signals an error, because R would recycle such a component
+without a warning.
 
 The meaning is available only because a plot has no data to recycle a
 parameter against.

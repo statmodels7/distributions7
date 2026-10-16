@@ -5,10 +5,9 @@ Computes \\\partial \ell / \partial y\\ in closed form. With \\r = y -
 \ell}{\partial y} = -\dfrac{r}{\sigma^2 D}.\$\$ The family is a location
 family in \\\mu\\, so this is exactly the negative of the location score
 [`distrib_gradient.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.PseudoHuberDistrib.md)`$mu`,
-and like it, it is **bounded**: it tends to \\\mp 1/\sigma\\ as the
-residual runs away. This quantity is what a quantile residual's
-delta-method standard error and a change of variable in the response
-both need.
+and like it, it is bounded: it tends to \\\mp 1/\sigma\\ as the residual
+runs away. This quantity is what a quantile residual's delta-method
+standard error and a change of variable in the response both need.
 
 ## Arguments
 

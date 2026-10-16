@@ -39,12 +39,14 @@ cdf_scale_k(distrib, Fq, dF, order, lower.tail, log)
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical.
+  A single logical; `TRUE` selects the lower tail and `FALSE` the upper
+  tail.
 
 - log:
 
-  Are derivatives of the log probability wanted? A single logical.
-  `FALSE` reads only `dF[[order]]` and the lower tables are then unused.
+  A single logical; `TRUE` selects the derivatives of the log
+  probability and `FALSE` those of the probability. `FALSE` reads only
+  `dF[[order]]` and the lower tables are then unused.
 
 ## Value
 

@@ -25,7 +25,7 @@ mv_sigma(distrib, theta)
 - theta:
 
   A named list or vector of parameters, each component a single number.
-  Aligned by the generic before dispatch.
+  The generic aligns it before dispatch.
 
 ## Value
 

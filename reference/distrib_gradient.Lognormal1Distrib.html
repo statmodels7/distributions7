@@ -39,7 +39,7 @@ scale."><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,7 @@ With \(r = \log y - \mu\),
 $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{\sigma^2}, \qquad
       \dfrac{\partial \ell}{\partial \sigma^2} =
         \dfrac{r^2 - \sigma^2}{2\sigma^4}.$$</p>
-<p><strong>These are exactly the Gaussian's, read at \(\log y\).</strong> The lognormal
+<p>These are exactly the Gaussian's, read at \(\log y\). The lognormal
 log-density is the Gaussian's at \(\log y\) minus \(\log y\), and that
 last term carries no parameter, so it disappears from every derivative in
 \(\mu\) and \(\sigma^2\). The same holds at all four orders and for the
@@ -112,7 +112,7 @@ recycled. <code>sigma2</code> must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -135,7 +135,7 @@ length <code>max(length(y), length(mu), length(sigma2))</code>.</p>
 
 
 <p>\(\ell\) is the log-density of one observation, \(\mu\) the mean and
-\(\sigma^2 &gt; 0\) the variance <strong>of \(\log Y\)</strong>, not of \(Y\).
+\(\sigma^2 &gt; 0\) the variance of \(\log Y\), not of \(Y\).
 \(r = \log y - \mu\) is the residual on the log scale.</p>
     </div>
     <div class="section level2">

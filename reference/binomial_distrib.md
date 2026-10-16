@@ -1,15 +1,15 @@
 # Binomial Distribution
 
 Builds the distribution object for the binomial family: the number of
-successes in `size` independent trials, each succeeding with probability
-\\\mu \in (0, 1)\\. The returned object carries closed-form derivatives
-of the log-mass to fourth order, observed and expected, and closed-form
-moments.
+successes in `size` independent trials, where each trial succeeds with
+probability \\\mu \in (0, 1)\\. The returned object carries closed-form
+derivatives of the log-mass to fourth order, observed and expected, and
+closed-form moments.
 
-**`size` is fixed data, not a parameter.** It is carried on the object,
-it is not estimated, it has no link and no bound, and it does not appear
-in `params`. Giving it one value per observation is how grouped binary
-data with unequal group sizes is described.
+`size` is fixed data, not a parameter. It is carried on the object, it
+is not estimated, it has no link and no bound, and it does not appear in
+`params`. It may be given one value per observation, which describes
+grouped binary data with unequal group sizes.
 
 The default link is the logit, the canonical link here, so the observed
 and the expected information coincide on its scale.
@@ -67,8 +67,8 @@ excess kurtosis \\(1-6\mu(1-\mu))/(n\mu(1-\mu))\\. The skewness shrinks
 like \\1/\sqrt{n}\\ and the excess kurtosis like \\1/n\\, as the central
 limit theorem requires.
 
-As \\n \to \infty\\ with \\n\mu\\ held, the family tends to a Poisson of
-that mean;
+As \\n \to \infty\\ while \\n\mu\\ stays fixed, the family tends to a
+Poisson of that mean;
 [`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md)
 is the limit and is the family to use when the number of trials is large
 and unrecorded.
@@ -87,9 +87,9 @@ others.
 The log-mass is linear in \\y\\ once \\\eta = \log(\mu/(1-\mu))\\ is the
 parameter, so the logit is canonical and on its scale
 \$\$\dfrac{\partial \ell}{\partial \eta} = y - n\mu, \qquad
-\dfrac{\partial^2 \ell}{\partial \eta^2} = -n\mu(1-\mu),\$\$ the second
-carrying no data. Under a probit or a complementary log-log link the
-observed and expected information differ.
+\dfrac{\partial^2 \ell}{\partial \eta^2} = -n\mu(1-\mu),\$\$ where the
+second derivative does not depend on the data. Under a probit or a
+complementary log-log link the observed and expected information differ.
 
 ## Estimation
 
@@ -98,13 +98,13 @@ The maximum likelihood estimate is the pooled proportion, \\\hat\mu =
 variable than \\n\mu(1-\mu)\\ allows, the binomial is the wrong family
 and
 [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
-adds the dispersion parameter it lacks.
+adds the dispersion parameter that the binomial lacks.
 
 ## Notation
 
 \\\ell\\ is the log-mass of one observation, \\n\\ the number of trials
 and \\\mu \in (0,1)\\ the success probability. \\\eta =
-\log(\mu/(1-\mu))\\ is the log odds. The **canonical** link of an
+\log(\mu/(1-\mu))\\ is the log odds. The canonical link of an
 exponential family makes the log-mass linear in the sufficient
 statistic.
 
@@ -167,7 +167,7 @@ rbind(binomial = distrib_pdf(binomial_distrib(size = 1000),
 #> binomial 0.04956308 0.1491367 0.2241537 0.2243786 0.1682839 0.1008691
 #> poisson  0.04978707 0.1493612 0.2240418 0.2240418 0.1680314 0.1008188
 
-# Grouped data with unequal group sizes: one size per observation.
+# Grouped data with unequal group sizes take one size per observation.
 set.seed(5)
 g <- binomial_distrib(size = c(5, 10, 20, 50))
 rbind(size = c(5, 10, 20, 50), draw = distrib_rng(g, 4, list(mu = 0.3)))

@@ -4,8 +4,8 @@ Computes the skew \\t\\ density, with \\z = (y-\mu)/\sigma\\ and \\w =
 \alpha z\sqrt{(\nu+1)/(\nu+z^2)}\\: \$\$f(y; \mu, \sigma, \alpha, \nu) =
 \dfrac{2}{\sigma}\\ t\_\nu(z)\\T\_{\nu+1}(w),\$\$ with \\t\_\nu\\ the
 standard Student \\t\\ density and \\T\_{\nu+1}\\ its distribution
-function on **one more** degree of freedom. The extra degree of freedom
-is deliberate: without it the tilted density would not integrate to one.
+function on one more degree of freedom. The extra degree of freedom is
+deliberate: without it the tilted density would not integrate to one.
 
 The two logarithms are taken separately and added, `dt(log = TRUE)`
 beside `pt(log.p = TRUE)`, so the light tail of the skewed side returns

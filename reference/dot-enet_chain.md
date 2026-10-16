@@ -32,7 +32,7 @@ call, and serves the tests as their reference.
 
 - order:
 
-  A single integer, 1 to 4: the derivative order wanted.
+  A single integer, 1 to 4: the derivative order to compute.
 
 ## Value
 
@@ -73,7 +73,7 @@ a1 <- distributions7:::.enet_chain(y, th, 1L)
 max(abs(unlist(a1[names(g)]) - unlist(g)))
 #> [1] 0
 
-# And at order two, the hand-written Hessian.
+# At order two it reproduces the hand-written Hessian.
 h <- distrib_hessian(d, y, th)
 a2 <- distributions7:::.enet_chain(y, th, 2L)
 max(abs(unlist(a2[names(h)]) - unlist(h)))

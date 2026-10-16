@@ -1,16 +1,16 @@
 # Logistic Distribution Class
 
-The S7 class of the logistic family with mean \\\mu\\ and scale \\\sigma
-\> 0\\, whose distribution function is the logistic sigmoid \\F(q) =
-\[1 + e^{-(q-\mu)/\sigma}\]^{-1}\\ on the whole real line. It inherits
-from `continuous_distrib`, so every generic of the `distrib` class
-applies to it; the methods listed below are registered on it directly
-and everything else comes from the parent.
+This is the S7 class of the logistic family with mean \\\mu\\ and scale
+\\\sigma \> 0\\, whose distribution function is the logistic sigmoid
+\\F(q) = \[1 + e^{-(q-\mu)/\sigma}\]^{-1}\\ on the whole real line. It
+inherits from `continuous_distrib`, so every generic of the `distrib`
+class applies to it; the methods listed below are registered on it
+directly and everything else comes from the parent.
 
 The family is symmetric about \\\mu\\, which is therefore both the mean
 and the median. Its variance is \\\pi^2\sigma^2/3\\, so \\\sigma\\ is
-**not** the standard deviation, and its excess kurtosis is \\6/5\\,
-slightly heavier than a Gaussian's.
+not the standard deviation, and its excess kurtosis is \\6/5\\, slightly
+heavier than a Gaussian's.
 
 Build one with
 [`logistic_distrib()`](https://statmodels7.github.io/distributions7/reference/logistic_distrib.md).
@@ -102,7 +102,8 @@ they hold `"logistic"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.LogisticDistrib.md),

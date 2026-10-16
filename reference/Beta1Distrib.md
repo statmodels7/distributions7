@@ -1,11 +1,12 @@
 # Beta Distribution Class, Mean and Precision
 
-The S7 class of the beta family on \\(0, 1)\\ parametrized by its mean
-\\\mu \in (0, 1)\\ and a precision \\\phi \> 0\\, so that the shapes are
-\\\alpha = \mu\phi\\ and \\\beta = (1-\mu)\phi\\ and the variance is
-\\\mu(1-\mu)/(\phi+1)\\. It inherits from `continuous_distrib`, so every
-generic of the `distrib` class applies to it; the methods listed below
-are registered on it directly and everything else comes from the parent.
+This is the S7 class of the beta family on \\(0, 1)\\ parametrized by
+its mean \\\mu \in (0, 1)\\ and a precision \\\phi \> 0\\, so that the
+shapes are \\\alpha = \mu\phi\\ and \\\beta = (1-\mu)\phi\\ and the
+variance is \\\mu(1-\mu)/(\phi+1)\\. It inherits from
+`continuous_distrib`, so every generic of the `distrib` class applies to
+it; the methods listed below are registered on it directly and
+everything else comes from the parent.
 
 Build one with
 [`beta1_distrib()`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md),
@@ -98,7 +99,8 @@ interpretations `c(mu = "mean", phi = "precision")`, `2`, the domains
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Beta1Distrib.md),
@@ -152,11 +154,11 @@ Every other generic is inherited from
 [`beta1_distrib()`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md)
 to build one;
 [`beta2_distrib()`](https://statmodels7.github.io/distributions7/reference/beta2_distrib.md)
-for the same law in mean and variance;
+for the same law in its two shapes;
 [`distrib_pdf.Beta1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Beta1Distrib.md)
 and
 [`distrib_gradient.Beta1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Beta1Distrib.md)
-for the closed forms this class supplies.
+for the closed forms that this class supplies.
 
 ## Examples
 
@@ -165,7 +167,8 @@ d <- beta1_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These are the properties that a consumer reads to drive the family
+# without any knowledge of which family it is.
 d@params
 #> [1] "mu"  "phi"
 d@params_interpretation

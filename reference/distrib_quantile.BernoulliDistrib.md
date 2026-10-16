@@ -54,7 +54,7 @@ for the generic.
 d <- bernoulli_distrib()
 th <- list(mu = 0.3)
 
-# One step, at p = 1 - mu.
+# The quantile function is one step, at p = 1 - mu.
 distrib_quantile(d, c(0.1, 0.5, 0.69, 0.71, 0.99), th)
 #> [1] 0 0 0 1 1
 

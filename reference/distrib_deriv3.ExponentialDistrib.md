@@ -5,7 +5,7 @@ respect to the mean, in closed form: \$\$\dfrac{\partial^3
 \ell}{\partial \mu^3} = -\dfrac{2}{\mu^3} + \dfrac{6y}{\mu^4}.\$\$ With
 `expected = TRUE` the expectation is returned, obtained by substituting
 \\\mathbb{E}\[Y\] = \mu\\, which gives \\4/\mu^3\\. Both routes are
-closed form, so no quadrature is run and `approx` and `nsim` are
+closed form, so quadrature is not run and `approx` and `nsim` are
 ignored.
 
 The family has one parameter, so there is one component, where a
@@ -36,13 +36,13 @@ two-parameter family carries four at this order.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both the observed and the
-  expected value.
+  Ignored, because a closed form is available for both the observed and
+  the expected value.
 
 - nsim:
 
@@ -84,7 +84,7 @@ d <- exponential_distrib()
 y <- c(0.3, 1.1, 4.0)
 th <- list(mu = 2)
 
-# The closed form, written out.
+# The closed form is written out in R and compared with the method.
 all.equal(distrib_deriv3(d, y, th)$mu_mu_mu, -2 / 2^3 + 6 * y / 2^4)
 #> [1] TRUE
 

@@ -6,7 +6,7 @@ series of the density integrated term by term, through
 The density has no elementary antiderivative, and the quadrature the
 base class would use costs one integration per observation; the series
 replaces \\n\\ quadratures with a few dozen vectorized steps, using only
-the Bessel **ratios** \\I_j/I_0\\ from a backward recurrence.
+the Bessel ratios \\I_j/I_0\\ from a backward recurrence.
 
 Below \\-\pi\\ the value is 0 and at or above \\\pi\\ it is 1, the
 support being the declared interval. Where the requested tail is below

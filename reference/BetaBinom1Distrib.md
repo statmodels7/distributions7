@@ -1,6 +1,6 @@
 # Beta-Binomial Distribution Class, Mean Proportion and Dispersion
 
-The S7 class of the beta-binomial family parametrized by a mean
+This is the S7 class of the beta-binomial family parametrized by a mean
 proportion \\\mu \in (0, 1)\\ and a dispersion \\\sigma \> 0\\, on the
 finite support \\\\0, 1, \dots, n\\\\. It inherits from
 `discrete_distrib`.
@@ -106,7 +106,8 @@ they hold `"beta-binomial [size=n]"`, `"univariate"`, `c(0, size)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.BetaBinom1Distrib.md),
@@ -165,7 +166,8 @@ d@size
 d@bounds
 #> [1]  0 10
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "mu"    "sigma"
 d@params_interpretation

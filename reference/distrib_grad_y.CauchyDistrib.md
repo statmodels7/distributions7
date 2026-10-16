@@ -59,7 +59,7 @@ all.equal(distrib_grad_y(d, y, th), -2 * r / (1.5^2 + r^2))
 all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 #> [1] TRUE
 
-# Bounded by 1/sigma however far out the observation is.
+# The derivative is bounded by 1/sigma however far out the observation is.
 max(abs(distrib_grad_y(d, seq(-1e3, 1e3, length.out = 1e4), th)))
 #> [1] 0.6666667
 1 / 1.5

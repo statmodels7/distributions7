@@ -7,9 +7,9 @@ log-mass is \\y\log\mu - \mu - \log y!\\, so the score is the residual
 divided by the mean and its sum vanishes exactly at \\\hat\mu = \bar
 y\\.
 
-On the **link** scale with the default logarithm the generic's chain
-rule gives \\\partial\ell/\partial\eta = y - \mu\\, the raw residual:
-the log is the canonical link of this family and the score there is the
+On the link scale with the default logarithm the generic's chain rule
+gives \\\partial\ell/\partial\eta = y - \mu\\, the raw residual: the log
+is the canonical link of this family and the score there is the
 sufficient statistic minus its mean.
 
 ## Arguments
@@ -31,8 +31,8 @@ sufficient statistic minus its mean.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -53,8 +53,8 @@ A named list of one numeric vector, `mu`, of length
 
 \\\ell\\ is the log-mass of one observation and \\\mu \> 0\\ the mean,
 which is also the variance. \\\eta = \log\mu\\ is the parameter on the
-link scale. A **canonical** link is the one for which the log-mass is
-linear in the sufficient statistic times \\\eta\\.
+link scale. A canonical link is the one for which the log-mass is linear
+in the sufficient statistic times \\\eta\\.
 
 ## See also
 

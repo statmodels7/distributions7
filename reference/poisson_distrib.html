@@ -23,7 +23,7 @@ both contain this family in a limit."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,7 @@ both contain this family in a limit."><meta property="og:image" content="https:/
 mean \(\mu &gt; 0\), with mass \(e^{-\mu}\mu^y/y!\) on the non-negative
 integers. The returned object carries closed-form derivatives of the
 log-mass to fourth order, observed and expected, and closed-form moments.</p>
-<p>The family is <strong>equidispersed</strong>: its variance equals its mean at every
+<p>The family is equidispersed: its variance equals its mean at every
 parameter value. Real counts are usually more variable than that, so a
 Poisson fit is often the null a count analysis argues against;
 <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> and <code><a href="negbin1_distrib.html">negbin1_distrib()</a></code> add a dispersion parameter and
@@ -79,7 +79,7 @@ both contain this family in a limit.</p>
 <dl><dt id="arg-link-mu">link_mu<a class="anchor" aria-label="anchor" href="#arg-link-mu"></a></dt>
 <dd><p>A <code>link</code> object from <code>linkfunctions7</code> for the mean
 \(\mu\). Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/log_link.html" class="external-link">linkfunctions7::log_link()</a></code>, which maps
-\((0, \infty)\) onto the line and is the <strong>canonical</strong> link of this
+\((0, \infty)\) onto the line and is the canonical link of this
 family.</p></dd>
 
 </dl></div>
@@ -135,7 +135,7 @@ the family and on data that is not.</p>
 
 <p>\(\ell\) is the log-mass of one observation and \(\mu &gt; 0\) the mean,
 which is also the variance. \(\eta = \log\mu\) is the parameter on the
-link scale. The <strong>canonical</strong> link of an exponential family is the one that
+link scale. The canonical link of an exponential family is the one that
 makes the log-mass linear in the sufficient statistic.</p>
     </div>
     <div class="section level2">

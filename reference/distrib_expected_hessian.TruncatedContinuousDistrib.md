@@ -29,7 +29,7 @@ contributes to the second derivative of \\\log Z\\.
 
 - approx:
 
-  Ignored. Present so that the signature matches the generic's.
+  Ignored. It is present so that the signature matches the generic's.
 
 - nsim:
 

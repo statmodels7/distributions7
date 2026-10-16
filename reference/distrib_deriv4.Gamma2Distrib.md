@@ -38,13 +38,13 @@ ignored.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both the observed and the
-  expected values.
+  Ignored, because a closed form is available for both the observed and
+  the expected values.
 
 - nsim:
 
@@ -80,7 +80,7 @@ for the order below,
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 for the generic, and
 [`distrib_expected_hessian.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gamma2Distrib.md)
-for the second-order expectation these extend.
+for the second-order expectation that these extend.
 
 ## Examples
 

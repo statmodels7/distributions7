@@ -36,13 +36,13 @@ the method uses no quadrature and ignores `approx` and `nsim`.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both the observed and the
-  expected values.
+  Ignored, because a closed form is available for both the observed and
+  the expected values.
 
 - nsim:
 
@@ -93,7 +93,7 @@ d3 <- distrib_deriv3(d, y, th)
 d3$mu_mu_mu
 #> [1] 0 0 0
 
-# The other three, written out.
+# We write out the other three.
 r <- y - 1
 all.equal(d3$mu_mu_sigma2, rep(1 / 4^2, 3))
 #> [1] TRUE

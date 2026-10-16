@@ -1,18 +1,18 @@
 # Elastic-Net Distribution Class
 
-The S7 class of the density whose negative logarithm is the elastic-net
-penalty: a Laplace and a Gaussian at the same location, multiplied
-together and normalized, \$\$f(y) \propto
+This is the S7 class of the density whose negative logarithm is the
+elastic-net penalty: a Laplace and a Gaussian at the same location,
+multiplied together and normalized, \$\$f(y) \propto
 \exp\\-\lambda\alpha\|y-\mu\| - \lambda(1-\alpha)(y-\mu)^2/2\\.\$\$ At
 \\\alpha \to 1\\ it is the Laplace of
 [Laplace2Distrib](https://statmodels7.github.io/distributions7/reference/Laplace2Distrib.md)
 and at \\\alpha \to 0\\ the Gaussian; \\\alpha\\ is confined to the open
-interval, as every bounded parameter in this package is, so neither end
-is a member. Both remain families of their own.
+interval, as every bounded parameter in this package is, so the two ends
+are not members. Both remain families of their own.
 
-Like the Laplace, its log-likelihood is **not differentiable in
-\\\mu\\**: the absolute value carries a kink at the location, and
-`params_smooth` records `mu = FALSE`.
+Like the Laplace, its log-likelihood is not differentiable in \\\mu\\:
+the absolute value carries a kink at the location, and `params_smooth`
+records `mu = FALSE`.
 
 Build one with
 [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md),
@@ -102,7 +102,8 @@ domains \\(-\infty,\infty)\\, \\(0,\infty)\\ and \\(0,1)\\, and
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.EnetDistrib.md),
@@ -153,7 +154,7 @@ Registered on this class, each linked to the page that documents it:
 Every other generic is inherited from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
-## The two quantities everything is written in
+## The two quantities in which every derivative is written
 
 With \\a = \lambda\alpha\\, \\c = \lambda(1-\alpha)\\ and \\x = a/\sqrt
 c\\, every derivative in the two rates is a polynomial in \\x\\ and \\G
@@ -172,8 +173,8 @@ to build one;
 [`laplace2_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md)
 and
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
-for the two ends; `penalties7::elasticnet_penalty()`, the consumer this
-family exists for.
+for the two ends; `penalties7::elasticnet_penalty()`, the consumer for
+which this family exists.
 
 ## Examples
 
@@ -195,13 +196,13 @@ d@params_bounds
 #> [1] 0 1
 #> 
 
-# The location carries a kink, so it is declared non-smooth. That is what
-# switches off the finite-difference guard in check_distrib().
+# The location carries a kink, so it is declared non-smooth. This
+# declaration switches off the finite-difference guard in check_distrib().
 d@params_smooth
 #>     mu lambda  alpha 
 #>  FALSE   TRUE   TRUE 
 
-# The two ends, approached but not reached.
+# The two ends are approached but not reached.
 th <- list(mu = 0, lambda = 2, alpha = 0.5)
 c(laplace = distrib_pdf(d, 0.7, list(mu = 0, lambda = 2, alpha = 1 - 1e-10)),
   laplace_exact = distrib_pdf(laplace2_distrib(), 0.7,

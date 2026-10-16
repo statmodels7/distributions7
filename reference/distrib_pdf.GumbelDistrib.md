@@ -1,11 +1,11 @@
 # Gumbel Probability Density Function
 
 Computes the Gumbel density, with \\z = (y - \mu)/\sigma\\, \$\$f(y;
-\mu, \sigma) = \dfrac{1}{\sigma} \exp\left\\-z - e^{-z}\right\\,\$\$
-written out rather than delegated, base R carrying no Gumbel. The two
-tails are of very different weight: the density falls like \\e^{-z}\\ to
-the right and like \\e^{-e^{-z}}\\ to the left, so the left tail is
-doubly exponential and decays much faster.
+\mu, \sigma) = \dfrac{1}{\sigma} \exp\left\\-z - e^{-z}\right\\.\$\$ The
+function evaluates this formula directly because base R has no Gumbel
+density. The two tails are of very different weight: the density falls
+like \\e^{-z}\\ to the right and like \\e^{-e^{-z}}\\ to the left, so
+the left tail is doubly exponential and decays much faster.
 
 With `log = TRUE` the exponent is returned directly and stays finite
 where the density itself underflows.
@@ -20,7 +20,7 @@ where the density itself underflows.
 - y:
 
   A numeric vector of observations. Every real value is in the support,
-  so no value is rejected.
+  so every value is accepted.
 
 - theta:
 
@@ -49,7 +49,7 @@ for the distribution function,
 [`distrib_gradient.GumbelDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GumbelDistrib.md)
 for the derivatives of the log-density,
 [`distrib_pdf.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Weibull1Distrib.md)
-for the family this becomes under \\e^{-Y}\\, and
+for the family that this becomes under \\e^{-Y}\\, and
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
 for the generic.
 
@@ -60,7 +60,7 @@ d <- gumbel_distrib()
 y <- c(-1, 0, 1)
 th <- list(mu = 0, sigma = 1)
 
-# The closed form, written out.
+# The closed form is written out.
 z <- (y - 0) / 1
 all.equal(distrib_pdf(d, y, th), exp(-z - exp(-z)))
 #> [1] TRUE

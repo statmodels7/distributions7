@@ -50,8 +50,8 @@ A numeric vector of steps, the same length as `theta_j`.
 ## Details
 
 The domain clamp is what allows a finite-difference fallback to be
-offered at all. Parameter domains here are **open**: a scale parameter
-is positive, not non-negative. A step chosen from the magnitude alone
+offered at all. Parameter domains here are open: a scale parameter is
+positive, not non-negative. A step chosen from the magnitude alone
 therefore takes a small \\\sigma\\ straight through zero, and the
 log-density comes back `NaN` for reasons that look like a bug in the
 density. Clamping to 49\\ distance to each finite boundary keeps both

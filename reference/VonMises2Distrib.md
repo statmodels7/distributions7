@@ -1,9 +1,9 @@
 # von Mises Distribution Class, Mean Resultant Length
 
-The S7 class of the von Mises family written in its mean direction
-\\\mu\\ and its **mean resultant length** \\\rho \in (0, 1)\\, which is
-the quantity that is conventionally reported in circular statistics and
-equals one minus the circular variance. It inherits from
+This is the S7 class of the von Mises family written in its mean
+direction \\\mu\\ and its mean resultant length \\\rho \in (0, 1)\\,
+which is the quantity that is conventionally reported in circular
+statistics and equals one minus the circular variance. It inherits from
 `continuous_distrib`; the methods listed below are registered on it
 directly.
 
@@ -106,7 +106,8 @@ domains \\(-\pi, \pi)\\ and \\(0, 1)\\.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.VonMises2Distrib.md),

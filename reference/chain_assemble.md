@@ -60,9 +60,9 @@ two rates \\(a, c)\\ and the family is parametrized by \\(\lambda,
 the location-scale cdf derivatives, whose inner coordinate is the
 standardized quantile.
 
-The key into an inner table is **built** from the parameter names and
-never parsed out of one, so a parameter whose own name contains an
-underscore is safe.
+The key into an inner table is built from the parameter names and never
+parsed out of one, so a parameter whose own name contains an underscore
+is safe.
 
 ## See also
 

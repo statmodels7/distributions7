@@ -27,7 +27,7 @@ choice when the data carry gross outliers."><meta property="og:image" content="h
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,8 +84,8 @@ choice when the data carry gross outliers.</p>
 
 <dl><dt id="arg-link-mu">link_mu<a class="anchor" aria-label="anchor" href="#arg-link-mu"></a></dt>
 <dd><p>A <code>link</code> object from <code>linkfunctions7</code> for the location
-\(\mu\). Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, the location
-ranging over the whole line already.</p></dd>
+\(\mu\). Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, because the
+location already ranges over the whole line.</p></dd>
 
 
 <dt id="arg-link-sigma">link_sigma<a class="anchor" aria-label="anchor" href="#arg-link-sigma"></a></dt>
@@ -117,9 +117,9 @@ distribution function is
 for every \(p \ge 1\) and the family has no mean, no variance and no
 higher moment. <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code>, <code><a href="variance.html">variance()</a></code>, <code><a href="skewness.html">skewness()</a></code> and <code><a href="kurtosis.html">kurtosis()</a></code> return
 <code>NaN</code> directly, without attempting a quadrature over a divergent integral;
-<code><a href="skewness.CauchyDistrib.html">skewness.CauchyDistrib()</a></code> gives the argument in full. What the family does
-have is a median, equal to \(\mu\), and quartiles at \(\mu \pm \sigma\),
-so \(\sigma\) is the half-interquartile range.</p>
+<code><a href="skewness.CauchyDistrib.html">skewness.CauchyDistrib()</a></code> gives the argument in full. The family has a
+median, equal to \(\mu\), and quartiles at \(\mu \pm \sigma\), so
+\(\sigma\) is the half-interquartile range.</p>
     </div>
     <div class="section level2">
     <h2 id="derivatives">Derivatives<a class="anchor" aria-label="anchor" href="#derivatives"></a></h2>
@@ -157,7 +157,8 @@ one need not be.</p>
 
 
 <p>\(\ell\) is the log-density of one observation, \(\mu\) the location and
-\(\sigma &gt; 0\) the scale. Neither is a moment. \(\eta\) is a parameter on
+\(\sigma &gt; 0\) the scale. The two parameters are not moments.
+\(\eta\) is a parameter on
 the unconstrained scale of its link, with \(\theta = g^{-1}(\eta)\).</p>
     </div>
     <div class="section level2">

@@ -1,10 +1,10 @@
 # Poisson Distribution Class
 
-The S7 class of the Poisson family parametrized by its mean \\\mu \>
-0\\, with mass \\P(Y = y) = e^{-\mu}\mu^y/y!\\ on the non-negative
-integers. It inherits from `discrete_distrib`, so expectations over its
-support are exact sums and no derivative with respect to the response is
-defined.
+This is the S7 class of the Poisson family parametrized by its mean
+\\\mu \> 0\\, with mass \\P(Y = y) = e^{-\mu}\mu^y/y!\\ on the
+non-negative integers. It inherits from `discrete_distrib`, so
+expectations over its support are exact sums and no derivative with
+respect to the response is defined.
 
 The mean and the variance are both \\\mu\\, which is the constraint a
 count model most often has to relax;
@@ -13,8 +13,8 @@ and
 [`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)
 do that, and both contain this family in the limit.
 
-The default link is the logarithm, which is the **canonical** link here.
-On its scale the observed and the expected information coincide in exact
+The default link is the logarithm, which is the canonical link here. On
+its scale the observed and the expected information coincide in exact
 arithmetic, so Fisher scoring and Newton's method take the same step.
 
 Build one with
@@ -105,7 +105,8 @@ they hold `"poisson"`, `"univariate"`, `c(0, Inf)`, `"mu"`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.PoissonDistrib.md),

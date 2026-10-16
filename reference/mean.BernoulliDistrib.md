@@ -14,8 +14,8 @@ value, and every other moment is a function of \\\mu\\.
 - theta:
 
   A named list with one component, `mu` (the success probability,
-  strictly between 0 and 1), a numeric vector of length 1 or `n`.
-  Aligned and validated by name, so a value at or outside the unit
+  strictly between 0 and 1), a numeric vector of length 1 or `n`. It is
+  aligned and validated by name, so a value at or outside the unit
   interval signals an error.
 
 - ...:

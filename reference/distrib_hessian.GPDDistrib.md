@@ -13,8 +13,8 @@ on the pages of the score and of the higher orders). The two terms that
 individually diverge as \\\xi \to 0\\ cancel, and the limit is an
 ordinary point of the formula.
 
-This is the **observed** curvature at the data. The expected one is
-closed form as well, but only above \\\xi = -1/2\\; see
+This is the observed curvature at the data. The expected one is closed
+form as well, but only above \\\xi = -1/2\\; see
 [`distrib_expected_hessian.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GPDDistrib.md).
 
 ## Arguments
@@ -79,7 +79,7 @@ h <- distrib_hessian(d, y, th)
 names(h)
 #> [1] "sigma_sigma" "xi_xi"       "sigma_xi"   
 
-# Against a central difference of the score.
+# The analytic Hessian is compared with a central difference of the score.
 eps <- 1e-5
 rbind(analytic = h$sigma_xi,
       numeric = (distrib_gradient(d, y, list(sigma = 1.5,

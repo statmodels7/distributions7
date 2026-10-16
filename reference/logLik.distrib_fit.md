@@ -4,8 +4,8 @@ Returns the maximized log-likelihood as a `logLik` object, so that
 [`stats::AIC()`](https://rdrr.io/r/stats/AIC.html),
 [`stats::BIC()`](https://rdrr.io/r/stats/AIC.html) and anything else in
 stats that reads one can be applied to a fit. The value is summed over
-observations and is **not** divided by \\n\\, whatever scaling the
-optimizer worked with.
+observations and is not divided by \\n\\, whatever scaling the optimizer
+worked with.
 
 The `df` attribute is the number of estimated parameters, which for
 these fits is every parameter of the family: a fit estimates all of

@@ -20,8 +20,8 @@ does.
 
 - which:
 
-  An integer vector of coordinates, already validated by the generic.
-  Not read.
+  An integer vector of coordinates, already validated by the generic. It
+  is not read.
 
 - ...:
 

@@ -1,6 +1,6 @@
 # Starting Values for a Regression's Intercepts, Read Off the Data
 
-Returns, on the **parameter** scale, a starting value for each parameter
+Returns, on the parameter scale, a starting value for each parameter
 whose intercept a regression should not take from the intercept-only
 maximum likelihood fit. A modeling layer carries each value onto the
 parameter's own link and writes it to that equation's intercept. The

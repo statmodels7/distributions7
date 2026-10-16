@@ -37,7 +37,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@ quadrature or simulation:
 $$-I(\mu) = -\lambda^2, \qquad
       -I(\lambda) = -\dfrac{1}{\lambda^2}, \qquad
       -I(\mu, \lambda) = 0.$$</p>
-<p>For \(\mu\) this is the <strong>variance of the score</strong>. It is not the
+<p>For \(\mu\) this is the variance of the score. It is not the
 expectation of <code><a href="distrib_hessian.Laplace2Distrib.html">distrib_hessian.Laplace2Distrib()</a></code>, which is identically
 zero: the
 family has a kink at \(y = \mu\) and the second Bartlett identity fails
@@ -109,12 +109,12 @@ recycled. <code>lambda</code> must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, a closed form being available. Accepted so that the
-signature matches the generic's. As for <code><a href="laplace_distrib.html">laplace_distrib()</a></code>, the
+<dd><p>Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's. As for <code><a href="laplace_distrib.html">laplace_distrib()</a></code>, the
 strategy <code>"mc"</code> of the generic, which averages the observed second
 derivative over simulated draws, would give 0 in the location, while
 <code>"opg"</code>, <code>"bartlett"</code> and <code>"integrate"</code> read the product of scores.</p></dd>
@@ -131,7 +131,7 @@ derivative over simulated draws, would give 0 in the location, while
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+whatever the count is. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -143,8 +143,8 @@ whatever the count says. Defaults to <code>1L</code>.</p></dd>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>The <strong>expected information</strong> is the variance of the score. For a regular
-family it also equals the expectation of the <strong>observed information</strong>, by
+<p>The expected information is the variance of the score. For a regular
+family it also equals the expectation of the observed information, by
 the second Bartlett identity; this family is not regular in \(\mu\) and
 the two differ there.</p>
     </div>

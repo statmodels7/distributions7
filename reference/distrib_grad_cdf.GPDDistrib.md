@@ -2,7 +2,7 @@
 
 Return the derivatives in \\(\sigma, \xi)\\ of the distribution function
 or of the survival function, or of their logarithms, at orders one to
-four, each from its own compiled kernel.
+four. Each of these comes from its own compiled kernel.
 
 ## Arguments
 

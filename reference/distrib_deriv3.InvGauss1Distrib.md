@@ -38,13 +38,13 @@ routes are closed form, so the method uses no quadrature and ignores
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both the observed and the
-  expected values.
+  Ignored, because a closed form is available for both the observed and
+  the expected values.
 
 - nsim:
 

@@ -1,9 +1,9 @@
 # Expected Derivatives of the Beta-Binomial by Exact Summation
 
 Averages every component of a derivative of the given order over the
-support \\\\0, \dots, n\\\\, weighted by the mass function. The support
-being finite, the average is the expectation exactly, with no quadrature
-error and no sampling error.
+support \\\\0, \dots, n\\\\, weighted by the mass function. Because the
+support is finite, the average is the expectation exactly, with no
+quadrature error and no sampling error.
 
 ## Usage
 

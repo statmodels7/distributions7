@@ -11,7 +11,7 @@ per observation, in closed form. Writing \\r = y - \mu\\ and \\D =
 \psi\\\left(\dfrac{\nu+1}{2}\right) + \dfrac{(\nu+1)r^2}{\nu D} -
 \log\\\left(1 + \dfrac{r^2}{\nu\sigma^2}\right)\right\].\$\$
 
-The location component **redescends**: it rises to
+The location component redescends: it rises to
 \\(\nu+1)/(2\sigma\sqrt{\nu})\\ at \\\|r\| = \sigma\sqrt{\nu}\\ and
 falls back towards zero beyond it, so a gross outlier contributes almost
 nothing to the estimating equation. A Gaussian's location score
@@ -43,8 +43,8 @@ result does not depend on the thread count.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 

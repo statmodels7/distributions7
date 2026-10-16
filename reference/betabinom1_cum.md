@@ -1,11 +1,11 @@
 # The Beta-Binomial's Cumulative Mass Over Its Support
 
-The cumulative mass over \\\\0, \dots, n\\\\: a vector where both
-parameters are scalar, and otherwise a matrix with one row per
-observation, each observation's parameters crossed with the support.
-With `upper = TRUE` the entry at \\k\\ is \\P(Y \> k)\\, the mass above
-\\k\\ accumulated from the top of the support, in place of \\P(Y \le
-k)\\.
+Returns the cumulative mass over \\\\0, \dots, n\\\\: a vector where
+both parameters are scalar, and otherwise a matrix with one row per
+observation, in which each observation's parameters are crossed with the
+support. With `upper = TRUE` the entry at \\k\\ is \\P(Y \> k)\\, the
+mass above \\k\\ accumulated from the top of the support, in place of
+\\P(Y \le k)\\.
 
 ## Usage
 
@@ -25,7 +25,8 @@ betabinom1_cum(n, theta, len, upper = FALSE)
 
 - len:
 
-  The length of the quantity the caller evaluates at.
+  The length of the quantity at which the caller evaluates the
+  cumulative mass.
 
 - upper:
 

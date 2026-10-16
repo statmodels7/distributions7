@@ -17,7 +17,7 @@ routes are closed form, so approx and nsim are ignored."><meta property="og:imag
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,11 +85,11 @@ model is returned in place of the observed value. Defaults to <code>FALSE</code>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, a closed form being available for both routes.</p></dd>
+<dd><p>Ignored, because a closed form is available for both routes.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -131,12 +131,12 @@ respect to \(\mu\). Parenthesized superscripts name derivatives.</p>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span>, <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The closed form, written out; negative at every admissible mu.</span></span></span>
+<span class="r-in"><span><span class="co"># The closed form is written out, and it is negative at every admissible mu.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv4.html">distrib_deriv4</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu_mu_mu</span>,</span></span>
 <span class="r-in"><span>          <span class="op">-</span><span class="fl">6</span> <span class="op">*</span> <span class="va">y</span> <span class="op">/</span> <span class="fl">0.3</span><span class="op">^</span><span class="fl">4</span> <span class="op">-</span> <span class="fl">6</span> <span class="op">*</span> <span class="op">(</span><span class="fl">10</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span> <span class="op">/</span> <span class="fl">0.7</span><span class="op">^</span><span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The expected value.</span></span></span>
+<span class="r-in"><span><span class="co"># The expected value is checked against its closed form.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv4.html">distrib_deriv4</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu_mu_mu</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -2397.149</span>
 <span class="r-in"><span><span class="op">-</span><span class="fl">6</span> <span class="op">*</span> <span class="fl">10</span> <span class="op">/</span> <span class="fl">0.3</span><span class="op">^</span><span class="fl">3</span> <span class="op">-</span> <span class="fl">6</span> <span class="op">*</span> <span class="fl">10</span> <span class="op">/</span> <span class="fl">0.7</span><span class="op">^</span><span class="fl">3</span></span></span>

@@ -19,7 +19,7 @@ distrib_cdf.Lognormal1Distrib() returns p exactly. The median is
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@ $$Q(p; \mu, \sigma^2) = \exp\left\{\mu + \sigma\,\Phi^{-1}(p)\right\},
 by calling <code><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">stats::qlnorm()</a></code>. It is closed form, the log transformation
 being monotone, so the round trip through
 <code><a href="distrib_cdf.Lognormal1Distrib.html">distrib_cdf.Lognormal1Distrib()</a></code> returns <code>p</code> exactly. The median is
-\(e^{\mu}\), which sits <strong>below</strong> the mean \(e^{\mu + \sigma^2/2}\).</p>
+\(e^{\mu}\), which sits below the mean \(e^{\mu + \sigma^2/2}\).</p>
     </div>
 
 
@@ -89,8 +89,8 @@ recycled. <code>sigma2</code> must be strictly positive.</p></dd>
 
 <dt id="arg-log-p">log.p<a class="anchor" aria-label="anchor" href="#arg-log-p"></a></dt>
 <dd><p>Logical of length 1. When <code>TRUE</code> the values in <code>p</code> are read as
-logarithms of probabilities, which is how a quantile deep in a tail is
-requested without the probability underflowing. Defaults to <code>FALSE</code>.</p></dd>
+logarithms of probabilities, so that a quantile deep in a tail can be
+requested without underflow in the probability. Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

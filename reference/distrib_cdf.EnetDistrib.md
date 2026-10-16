@@ -11,8 +11,8 @@ The method computes the logarithm of the tail beyond \\\|z\|\\,
 tail from it as \\\log(1 - e^{\cdot})\\ with
 [`expm1()`](https://rdrr.io/r/base/Log.html) or
 [`log1p()`](https://rdrr.io/r/base/Log.html); the requested tail is
-returned on the log scale or exponentiated, so neither
-`lower.tail = FALSE` nor `log.p = TRUE` subtracts from one. The
+returned on the log scale or exponentiated, so the method does not
+subtract from one for `lower.tail = FALSE` or for `log.p = TRUE`. The
 denominator \\\Phi(-x)\\ is subnormal from \\x \approx 37.5\\ and zero
 beyond \\x \approx 38.5\\ in double precision, and \\x\\ reaches that at
 ordinary values of \\\alpha\\: at \\\lambda = 20\\, \\\alpha = 0.995\\
@@ -75,7 +75,7 @@ d <- enet_distrib()
 q <- c(-2, -0.5, 0, 0.5, 2)
 th <- list(mu = 0, lambda = 2, alpha = 0.5)
 
-# Against a direct quadrature of the density.
+# The closed form is compared with a direct quadrature of the density.
 rbind(closed = distrib_cdf(d, q, th),
       quadrature = vapply(q, function(u)
         integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))

@@ -8,9 +8,9 @@ against \\n\mu\\, the expected count, and divided by \\\mu(1-\mu)\\. Its
 sum vanishes at \\\hat\mu = \sum y_i / \sum n_i\\, the pooled
 proportion.
 
-On the **link** scale with the default logit the generic's chain rule
-gives \\\partial\ell/\partial\eta = y - n\mu\\, the raw residual: the
-logit is the canonical link of this family.
+On the link scale with the default logit the generic's chain rule gives
+\\\partial\ell/\partial\eta = y - n\mu\\, the raw residual: the logit is
+the canonical link of this family.
 
 ## Arguments
 
@@ -32,8 +32,8 @@ logit is the canonical link of this family.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -73,7 +73,7 @@ d <- binomial_distrib(size = 10)
 y <- c(0, 4, 10)
 th <- list(mu = 0.3)
 
-# The closed form, written out.
+# The closed form is written out.
 all.equal(distrib_gradient(d, y, th)$mu, (y - 10 * 0.3) / (0.3 * 0.7))
 #> [1] TRUE
 

@@ -3,7 +3,7 @@
 The fallback for a family that registers no fourth-order method.
 Observed derivatives come from
 [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md):
-a **second** difference of the family's own
+a second difference of the family's own
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 rather than a difference of the third order, or, for a family without
 its own Hessian, one tensor-product stencil on its score or its

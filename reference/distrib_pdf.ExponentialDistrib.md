@@ -4,8 +4,8 @@ Computes the exponential density \$\$f(y; \mu) =
 \dfrac{1}{\mu}\exp\left(-\dfrac{y}{\mu}\right), \qquad y \ge 0,\$\$ by
 calling [`stats::dexp()`](https://rdrr.io/r/stats/Exponential.html) at
 `rate = 1/mu`. The parametrization here is by the mean, so the
-reciprocal is taken inside the method; a reader passing `rate` where
-`mu` is expected gets the reciprocal distribution.
+reciprocal is taken inside the method; passing `rate` where `mu` is
+expected yields the reciprocal distribution.
 
 ## Arguments
 

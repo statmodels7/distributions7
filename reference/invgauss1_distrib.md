@@ -10,9 +10,9 @@ response, and closed-form moments. The fifth order and the mixed
 derivatives of order three and four in the response and the parameters
 come from the numerical fallbacks of the base class.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm, both parameters being positive.
+logarithm, because both parameters are positive.
 
 ## Usage
 

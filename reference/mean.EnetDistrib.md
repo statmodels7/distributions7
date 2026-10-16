@@ -1,12 +1,12 @@
 # Mean of the Elastic-Net Distribution
 
-Returns \\\mu\\, the location. The density is symmetric about it, both
-factors of the product being symmetric about the same point, so the
-location is the mean, the median and the mode at once.
+Returns \\\mu\\, the location. The density is symmetric about it because
+both factors of the product are symmetric about the same point. The
+location is therefore the mean, the median and the mode at once.
 
-The value is recycled to the length the three parameters imply, so a
-`theta` whose components vary by observation gets one mean per
-observation.
+The value is recycled to the length that the three parameters imply, so
+the result has one mean per observation when the components of `theta`
+vary by observation.
 
 ## Arguments
 
@@ -17,9 +17,9 @@ observation.
 
 - theta:
 
-  A named list with components `mu`, `lambda` and `alpha`. Aligned and
-  validated by name, so a missing or out-of-bounds component signals an
-  error.
+  A named list with components `mu`, `lambda` and `alpha`. It is aligned
+  and validated by name, so a missing or out-of-bounds component signals
+  an error.
 
 - ...:
 
@@ -27,9 +27,9 @@ observation.
 
 ## Value
 
-A numeric vector of means, of the length the recycled parameters imply.
-The value is the location; the two rates do not enter it, so a setting
-that varies one of them repeats one number.
+A numeric vector of means, of the length that the recycled parameters
+imply. The value is the location; the two rates do not enter it, so a
+setting that varies one of them repeats one number.
 
 ## See also
 
@@ -53,7 +53,7 @@ c(mean = mean(d, th), median = distrib_quantile(d, 0.5, th))
 #>   mean median 
 #>      3      3 
 
-# One value per observation when a parameter varies.
+# The result has one value per observation when a parameter varies.
 mean(d, list(mu = c(0, 3, 7), lambda = 2, alpha = 0.5))
 #> [1] 0 3 7
 ```

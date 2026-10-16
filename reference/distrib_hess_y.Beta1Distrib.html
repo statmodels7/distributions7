@@ -8,7 +8,7 @@ It is negative throughout, so the log-density is concave in the response,
 whenever both shapes are at least one; a shape below one makes the
 corresponding term positive and can turn the curvature positive near that
 endpoint. At \(\mu = 1/2\) and \(\phi = 2\) both shapes are 1 and the
-curvature is exactly zero, the density being the uniform."><meta property="og:description" content="Computes the second derivative of the beta log-density with respect to the
+curvature is exactly zero, because the density is the uniform."><meta property="og:description" content="Computes the second derivative of the beta log-density with respect to the
 response, in closed form at the implied shapes \(\alpha = \mu\phi\) and
 \(\beta = (1-\mu)\phi\):
 $$\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{\alpha - 1}{y^2}
@@ -17,7 +17,7 @@ It is negative throughout, so the log-density is concave in the response,
 whenever both shapes are at least one; a shape below one makes the
 corresponding term positive and can turn the curvature positive near that
 endpoint. At \(\mu = 1/2\) and \(\phi = 2\) both shapes are 1 and the
-curvature is exactly zero, the density being the uniform."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+curvature is exactly zero, because the density is the uniform."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +25,7 @@ curvature is exactly zero, the density being the uniform."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@ It is negative throughout, so the log-density is concave in the response,
 whenever both shapes are at least one; a shape below one makes the
 corresponding term positive and can turn the curvature positive near that
 endpoint. At \(\mu = 1/2\) and \(\phi = 2\) both shapes are 1 and the
-curvature is exactly zero, the density being the uniform.</p>
+curvature is exactly zero, because the density is the uniform.</p>
     </div>
 
 
@@ -119,11 +119,12 @@ parameters, and <code><a href="distrib_hess_y.html">distrib_hess_y()</a></code> 
 <span class="r-in"><span>          <span class="op">-</span><span class="op">(</span><span class="va">a</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="va">y</span><span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="op">(</span><span class="va">b</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Concave everywhere while both shapes exceed one.</span></span></span>
+<span class="r-in"><span><span class="co"># The log-density is concave everywhere while both shapes exceed one.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Exactly flat at mu = 1/2, phi = 2, where the beta is the uniform.</span></span></span>
+<span class="r-in"><span><span class="co"># The log-density is exactly flat at mu = 1/2, phi = 2, where the beta is</span></span></span>
+<span class="r-in"><span><span class="co"># the uniform.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.5</span>, phi <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 0 0</span>
 </code></pre></div>

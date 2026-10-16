@@ -62,9 +62,9 @@ its domain.
 ## See also
 
 [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md),
-the generic it serves, and
+the generic that it serves, and
 [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
-for the quantity it differences.
+for the quantity that it differences.
 
 ## Examples
 

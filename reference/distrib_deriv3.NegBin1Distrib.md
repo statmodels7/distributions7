@@ -1,7 +1,7 @@
 # NB1 Third-Order Derivatives
 
 Computes the four distinct third derivatives of the NB1 log-likelihood
-in the mean \\\mu\\ and the dispersion \\\theta\\, **in closed form**,
+in the mean \\\mu\\ and the dispersion \\\theta\\, in closed form,
 through
 [`negbin1_components()`](https://statmodels7.github.io/distributions7/reference/negbin1_components.md).
 In the size \\r = \mu/\theta\\ the log-likelihood is \\G(r) +
@@ -41,8 +41,8 @@ one place on this page where `approx` and `nsim` are read.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 

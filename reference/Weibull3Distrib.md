@@ -1,8 +1,8 @@
 # Weibull Distribution Class, Mean and Shape
 
-The S7 class of the Weibull family parametrized by its mean \\m\\ and
-its shape \\\sigma\\. It inherits from `continuous_distrib`. Build one
-with
+This is the S7 class of the Weibull family parametrized by its mean
+\\m\\ and its shape \\\sigma\\. It inherits from `continuous_distrib`.
+Build one with
 [`weibull3_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull3_distrib.md);
 this page documents the raw S7 constructor; the validator of `distrib`
 checks that the properties are consistent (the parameter count, a bound
@@ -89,7 +89,8 @@ for both.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Weibull3Distrib.md),

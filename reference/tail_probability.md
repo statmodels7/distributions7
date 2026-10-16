@@ -39,7 +39,8 @@ tail_probability(Fq, lower.tail)
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical.
+  A single logical; `TRUE` selects the lower tail and `FALSE` the upper
+  tail.
 
 - Fq:
 

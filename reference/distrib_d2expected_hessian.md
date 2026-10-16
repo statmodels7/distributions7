@@ -66,7 +66,7 @@ information; the components are symmetric in \\(a,b)\\ and in \\(c,d)\\
 separately, and are keyed by
 [`d2expected_names()`](https://statmodels7.github.io/distributions7/reference/d2expected_names.md).
 
-**There is no numerical default.** A difference of
+There is no numerical default. A difference of
 [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md),
 whose own default is already a difference, would be the nested
 differencing that the package does not use, so the base method signals

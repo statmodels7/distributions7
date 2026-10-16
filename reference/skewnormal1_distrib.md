@@ -76,7 +76,7 @@ so are the third and fourth orders, in compiled kernels. Since \\R' =
 and \\R\\; below \\t = -1\\, where these polynomials cancel, the kernels
 use the cumulants of the logarithm of the Mills ratio instead.
 
-The **expected** information has no elementary form. It depends on
+The expected information has no elementary form. It depends on
 \\\alpha\\ alone once the location and the scale are factored out, so it
 is one integral over \\z\\ per distinct \\\alpha\\, and so are its first
 and second derivatives; see

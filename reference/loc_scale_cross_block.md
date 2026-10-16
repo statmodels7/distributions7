@@ -33,15 +33,15 @@ loc_scale_cross_block(distrib, y, theta)
 
 ## Value
 
-An **unnamed** list of two numeric vectors, each of length `length(y)`:
-the location component then the scale one. The caller names them.
+An unnamed list of two numeric vectors, each of length `length(y)`: the
+location component then the scale one. The caller names them.
 
 ## Details
 
 The scale formula uses only that \\\sigma\\ is a scale, so it holds when
 there is no location at all and \\z = y/\sigma\\. That covers the
 exponential's mean, the Weibull's scale and the generalized Pareto's. A
-**shape** parameter is not covered: it is written out per family, or
+shape parameter is not covered: it is written out per family, or
 differenced where it has no elementary form.
 
 Both components are recycled to the length of `y` by the `+ 0 * y` in

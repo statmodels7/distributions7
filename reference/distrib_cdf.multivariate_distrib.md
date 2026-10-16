@@ -24,7 +24,7 @@ package does not provide it.
 
 - theta:
 
-  A named list of parameters. Not read.
+  A named list of parameters. It is not read.
 
 - ...:
 

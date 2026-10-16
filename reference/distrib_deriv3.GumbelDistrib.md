@@ -6,8 +6,8 @@ with respect to \\\mu\\ and \\\sigma\\, in closed form. With \\z =
 \\z\\ and in \\z^j w\\ divided by a power of \\\sigma\\.
 
 With `expected = TRUE` the expectations are returned, also in closed
-form. They rest on \\w\\ being standard exponential under the model,
-which makes \\\mathbb{E}\[z^k w\] = (-1)^k \Gamma^{(k)}(2)\\ and
+form. They rest on the fact that \\w\\ is standard exponential under the
+model, which makes \\\mathbb{E}\[z^k w\] = (-1)^k \Gamma^{(k)}(2)\\ and
 \\\mathbb{E}\[z\] = \gamma\\: every expectation of the family is a
 derivative of \\\Gamma\\ at 1 or at 2, assembled from polygamma
 functions there. Since both routes are closed form, `approx` and `nsim`
@@ -39,13 +39,13 @@ are ignored.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both the observed and the
-  expected values.
+  Ignored, because a closed form is available for both the observed and
+  the expected values.
 
 - nsim:
 
@@ -59,7 +59,7 @@ are ignored.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -95,7 +95,7 @@ names(d3)
 #> [4] "sigma_sigma_sigma"
 
 # The pure location component is -w/sigma^3, which is the curvature in mu
-# divided by sigma. Shown at a scale where the two differ.
+# divided by sigma. The comparison uses a scale at which the two differ.
 th2 <- list(mu = 0, sigma = 2)
 all.equal(distrib_deriv3(d, y, th2)$mu_mu_mu,
           distrib_hessian(d, y, th2)$mu_mu / 2)

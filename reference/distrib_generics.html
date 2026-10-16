@@ -29,7 +29,7 @@ overrides the fallback by ordinary S7 dispatch."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -132,9 +132,9 @@ rather than a generic.</p></dd>
     <h2 id="the-arguments-theta-and-scale">The arguments theta and scale<a class="anchor" aria-label="anchor" href="#the-arguments-theta-and-scale"></a></h2>
     <p><code>theta</code> is normalized before dispatch by <code><a href="align_theta.html">align_theta()</a></code>, which reorders it
 by name, removes the names carried by the values and validates it against
-<code>params_bounds</code>, treated as <strong>open</strong> intervals. The derivative generics in
+<code>params_bounds</code>, treated as open intervals. The derivative generics in
 the parameters of orders one to four also take <code>scale</code>, which the generic
-applies <strong>after</strong> dispatch, so a method returns the parameter scale and
+applies after dispatch, so a method returns the parameter scale and
 never reads it; see <code><a href="link_scale_derivatives.html">link_scale_derivatives()</a></code>. <code><a href="distrib_deriv5.html">distrib_deriv5()</a></code> is the
 exception: its methods read <code>scale</code> and apply it themselves.</p>
     </div>

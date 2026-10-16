@@ -8,16 +8,16 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\sigma^2},
         \dfrac{1 - \gamma}{\sigma^2}, \qquad
       \mathbb{E}\left[\ell^{(\sigma\sigma)}\right] =
         -\dfrac{(1-\gamma)^2 + \pi^2/6}{\sigma^2}.$$
-They are closed form for one reason, and it is the same reason the Weibull's
-are: under the model \(w = e^{-Z}\) is standard exponential whatever the
-parameters, so every expectation the family needs is a derivative of
-\(\Gamma\) at 2. Here that is \(\mathbb{E}[w] = 1\),
+They are closed form for the same reason as those of the Weibull: under the
+model \(w = e^{-Z}\) is standard exponential whatever the parameters, so
+every expectation that the family needs is a derivative of \(\Gamma\) at 2.
+Here that is \(\mathbb{E}[w] = 1\),
 \(\mathbb{E}[w\log w] = 1 - \gamma\) and
 \(\mathbb{E}[w(\log w)^2] = (1-\gamma)^2 + \pi^2/6 - 1\), with
 \(\mathbb{E}[Z] = \gamma\).
 The mixed entry does not vanish. The location and the scale are not
-orthogonal here, where in a symmetric location-scale family such as the
-Gaussian they are, and the reason is that this density is skewed. Their
+orthogonal here because this density is skewed, whereas in a symmetric
+location-scale family such as the Gaussian they are orthogonal. Their
 maximum likelihood estimates are asymptotically correlated.
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
@@ -29,16 +29,16 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\sigma^2},
         \dfrac{1 - \gamma}{\sigma^2}, \qquad
       \mathbb{E}\left[\ell^{(\sigma\sigma)}\right] =
         -\dfrac{(1-\gamma)^2 + \pi^2/6}{\sigma^2}.$$
-They are closed form for one reason, and it is the same reason the Weibull's
-are: under the model \(w = e^{-Z}\) is standard exponential whatever the
-parameters, so every expectation the family needs is a derivative of
-\(\Gamma\) at 2. Here that is \(\mathbb{E}[w] = 1\),
+They are closed form for the same reason as those of the Weibull: under the
+model \(w = e^{-Z}\) is standard exponential whatever the parameters, so
+every expectation that the family needs is a derivative of \(\Gamma\) at 2.
+Here that is \(\mathbb{E}[w] = 1\),
 \(\mathbb{E}[w\log w] = 1 - \gamma\) and
 \(\mathbb{E}[w(\log w)^2] = (1-\gamma)^2 + \pi^2/6 - 1\), with
 \(\mathbb{E}[Z] = \gamma\).
 The mixed entry does not vanish. The location and the scale are not
-orthogonal here, where in a symmetric location-scale family such as the
-Gaussian they are, and the reason is that this density is skewed. Their
+orthogonal here because this density is skewed, whereas in a symmetric
+location-scale family such as the Gaussian they are orthogonal. Their
 maximum likelihood estimates are asymptotically correlated.
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -49,7 +49,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,16 +91,16 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\sigma^2},
         \dfrac{1 - \gamma}{\sigma^2}, \qquad
       \mathbb{E}\left[\ell^{(\sigma\sigma)}\right] =
         -\dfrac{(1-\gamma)^2 + \pi^2/6}{\sigma^2}.$$</p>
-<p>They are closed form for one reason, and it is the same reason the Weibull's
-are: under the model \(w = e^{-Z}\) is standard exponential whatever the
-parameters, so every expectation the family needs is a derivative of
-\(\Gamma\) at 2. Here that is \(\mathbb{E}[w] = 1\),
+<p>They are closed form for the same reason as those of the Weibull: under the
+model \(w = e^{-Z}\) is standard exponential whatever the parameters, so
+every expectation that the family needs is a derivative of \(\Gamma\) at 2.
+Here that is \(\mathbb{E}[w] = 1\),
 \(\mathbb{E}[w\log w] = 1 - \gamma\) and
 \(\mathbb{E}[w(\log w)^2] = (1-\gamma)^2 + \pi^2/6 - 1\), with
 \(\mathbb{E}[Z] = \gamma\).</p>
-<p><strong>The mixed entry does not vanish.</strong> The location and the scale are not
-orthogonal here, where in a symmetric location-scale family such as the
-Gaussian they are, and the reason is that this density is skewed. Their
+<p>The mixed entry does not vanish. The location and the scale are not
+orthogonal here because this density is skewed, whereas in a symmetric
+location-scale family such as the Gaussian they are orthogonal. Their
 maximum likelihood estimates are asymptotically correlated.</p>
 <p>Because the values do not depend on the data, <code>approx</code> and <code>nsim</code> are
 ignored. <code>y</code> is read only for its length.</p>
@@ -127,13 +127,13 @@ must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, a closed form being available. Accepted so that the
-signature matches the generic's, where it selects between the Bartlett,
-quadrature, Monte Carlo and outer-product routes.</p></dd>
+<dd><p>Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's, where it selects between the
+Bartlett, quadrature, Monte Carlo and outer-product routes.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -147,7 +147,7 @@ quadrature, Monte Carlo and outer-product routes.</p></dd>
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+whatever the count is. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -160,19 +160,19 @@ itself when the parameters are.</p>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>The <strong>expected information</strong> is
+<p>The expected information is
 \(\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]\), the
-expectation of the <strong>observed information</strong> under the model. The Gumbel is a
+expectation of the observed information under the model. The Gumbel is a
 regular family, so the second Bartlett identity holds and this equals the
 variance of the score. \(\gamma\) is the Euler-Mascheroni constant,
 \(-\psi(1) \approx 0.5772\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_hessian.GumbelDistrib.html">distrib_hessian.GumbelDistrib()</a></code> for the observed quantity this is
-the expectation of, <code><a href="distrib_expected_hessian.Weibull1Distrib.html">distrib_expected_hessian.Weibull1Distrib()</a></code> for the
-family that shares these expectations, <code><a href="fisher_scoring.html">fisher_scoring()</a></code>, which inverts
-it at each step, and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
+    <div class="dont-index"><p><code><a href="distrib_hessian.GumbelDistrib.html">distrib_hessian.GumbelDistrib()</a></code> for the observed quantity whose
+expectation this is, <code><a href="distrib_expected_hessian.Weibull1Distrib.html">distrib_expected_hessian.Weibull1Distrib()</a></code> for the
+family that shares these expectations, <code><a href="fisher_scoring.html">fisher_scoring()</a></code>, which inverts it
+at each step, and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
     </div>
 
     <div class="section level2">
@@ -191,7 +191,7 @@ it at each step, and <code><a href="distrib_expected_hessian.html">distrib_expec
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4227843</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Written out with the Euler-Mascheroni constant.</span></span></span>
+<span class="r-in"><span><span class="co"># The values are written out with the Euler-Mascheroni constant.</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="op">-</span><span class="op">(</span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">g</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="va">pi</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="fl">6</span><span class="op">)</span>, <span class="fl">1</span> <span class="op">-</span> <span class="va">g</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.0000000 -1.8236807  0.4227843</span>
@@ -200,7 +200,7 @@ it at each step, and <code><a href="distrib_expected_hessian.html">distrib_expec
 <span class="r-in"><span><span class="va">e</span><span class="op">$</span><span class="va">mu_sigma</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4227843</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Negative definite all the same.</span></span></span>
+<span class="r-in"><span><span class="co"># The matrix is negative definite all the same.</span></span></span>
 <span class="r-in"><span><span class="va">M</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">e</span><span class="op">$</span><span class="va">mu_mu</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">e</span><span class="op">$</span><span class="va">mu_sigma</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">e</span><span class="op">$</span><span class="va">mu_sigma</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">e</span><span class="op">$</span><span class="va">sigma_sigma</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/eigen.html" class="external-link">eigen</a></span><span class="op">(</span><span class="va">M</span>, only.values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">values</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.8216208 -2.0020598</span>

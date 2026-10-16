@@ -24,7 +24,7 @@ one to four indices number fourteen.
 
 - theta:
 
-  A named list of the **parent's** parameters; truncation adds none.
+  A named list of the parent's parameters; truncation adds none.
 
 - expected:
 

@@ -6,7 +6,7 @@ value per observation, in closed form: \$\$\dfrac{\partial
 \ell}{\partial \mu} = \kappa \sin(y - \mu), \qquad \dfrac{\partial
 \ell}{\partial \kappa} = \cos(y - \mu) - A(\kappa),\$\$ with \\A(\kappa)
 = I_1(\kappa)/I_0(\kappa)\\ the derivative of \\\log I_0\\ and also the
-**mean resultant length** of the family.
+mean resultant length of the family.
 
 The components are computed by a compiled kernel. The ratio comes from
 numericals7's compiled
@@ -16,7 +16,7 @@ which is finite and accurate at any concentration. R's own scaled
 forming the ratio from two calls gives `NaN` over part of that band.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries. This method always returns the parameter scale.
+that the family carries. This method always returns the parameter scale.
 
 ## Arguments
 
@@ -39,8 +39,8 @@ the family carries. This method always returns the parameter scale.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -50,7 +50,7 @@ the family carries. This method always returns the parameter scale.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

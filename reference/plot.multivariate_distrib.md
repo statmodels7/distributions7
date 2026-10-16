@@ -46,11 +46,12 @@ plot signals the error of
 
 - ...:
 
-  Accepted so that the signature matches the generic's, and not used.
+  It is accepted so that the signature matches the generic's, and not
+  used.
 
 ## Value
 
-`x`, invisibly. Called for the plot it draws.
+`x`, invisibly. The function is called for the plot that it draws.
 
 ## At most three coordinates
 

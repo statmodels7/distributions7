@@ -1,11 +1,11 @@
 # Laplace Second Derivative in the Response
 
 Returns zero for every observation. The Laplace log-density is
-\\-\log(2\sigma) - \|y-\mu\|/\sigma\\, which is **linear** in \\y\\ on
-each side of the location, so its second derivative in the response
-vanishes wherever it exists. At \\y = \mu\\ the first derivative drops
-from \\1/\sigma\\ to \\-1/\sigma\\ and the second derivative does not
-exist; the returned zero is the value away from that single point.
+\\-\log(2\sigma) - \|y-\mu\|/\sigma\\, which is linear in \\y\\ on each
+side of the location, so its second derivative in the response vanishes
+wherever it exists. At \\y = \mu\\ the first derivative drops from
+\\1/\sigma\\ to \\-1/\sigma\\ and the second derivative does not exist;
+the returned zero is the value away from that single point.
 
 The same fact appears in the parameters as the zero `mu_mu` component of
 [`distrib_hessian.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.LaplaceDistrib.md),

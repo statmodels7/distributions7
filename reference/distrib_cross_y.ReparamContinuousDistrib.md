@@ -28,7 +28,7 @@ map.
 
 ## Value
 
-A named list with one numeric vector per parameter of the **new**
+A named list with one numeric vector per parameter of the new
 parametrization, keyed by `distrib@params`, each of length `length(y)`.
 
 ## See also

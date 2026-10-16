@@ -21,7 +21,7 @@ reminder that a family with a closed-form expectation ignores it.
 
 ## Value
 
-`x`, invisibly. Called for the output it writes.
+`x`, invisibly. The function is called for the output that it writes.
 
 ## See also
 

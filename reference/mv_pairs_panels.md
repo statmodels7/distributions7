@@ -79,9 +79,9 @@ mv_pairs_panels(
 
 ## Value
 
-`NULL`, invisibly. Called for the plot it draws. The function sets
-`mfrow`, `mar` and `mgp` for the panel matrix and restores the previous
-values on exit.
+`NULL`, invisibly. The function is called for the plot that it draws.
+The function sets `mfrow`, `mar` and `mgp` for the panel matrix and
+restores the previous values on exit.
 
 ## Details
 

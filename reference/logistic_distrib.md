@@ -23,7 +23,7 @@ logistic_distrib(link_mu = identity_link(), link_sigma = log_link())
   A `link` object from `linkfunctions7` for the mean \\\mu\\. Defaults
   to
   [`linkfunctions7::identity_link()`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html),
-  the mean ranging over the whole line already.
+  because the mean already ranges over the whole line.
 
 - link_sigma:
 

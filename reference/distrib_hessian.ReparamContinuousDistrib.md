@@ -42,8 +42,8 @@ reparam_hessian(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 A named list of numeric vectors keyed as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `y` recycled against `theta`. Note the **order**:
-this route enumerates as
+each the length of `y` recycled against `theta`. Note the order: this
+route enumerates as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 does, diagonal first, while a family written out by hand may enumerate
 lexicographically. Compare two such results by name and not by position.

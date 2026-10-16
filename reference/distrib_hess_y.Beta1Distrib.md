@@ -8,7 +8,7 @@ negative throughout, so the log-density is concave in the response,
 whenever both shapes are at least one; a shape below one makes the
 corresponding term positive and can turn the curvature positive near
 that endpoint. At \\\mu = 1/2\\ and \\\phi = 2\\ both shapes are 1 and
-the curvature is exactly zero, the density being the uniform.
+the curvature is exactly zero, because the density is the uniform.
 
 ## Arguments
 
@@ -60,11 +60,12 @@ all.equal(distrib_hess_y(d, y, th),
           -(a - 1) / y^2 - (b - 1) / (1 - y)^2)
 #> [1] TRUE
 
-# Concave everywhere while both shapes exceed one.
+# The log-density is concave everywhere while both shapes exceed one.
 all(distrib_hess_y(d, y, th) < 0)
 #> [1] TRUE
 
-# Exactly flat at mu = 1/2, phi = 2, where the beta is the uniform.
+# The log-density is exactly flat at mu = 1/2, phi = 2, where the beta is
+# the uniform.
 distrib_hess_y(d, y, list(mu = 0.5, phi = 2))
 #> [1] 0 0 0
 ```

@@ -1,8 +1,8 @@
 # Poisson-Inverse Gaussian Distribution Class, Orthogonal Parametrization
 
-The S7 class of the Poisson-inverse Gaussian in the parametrization
-whose two parameters are orthogonal, gamlss's `PIG2`. It is the same law
-as
+This is the S7 class of the Poisson-inverse Gaussian in the
+parametrization whose two parameters are orthogonal, gamlss's `PIG2`. It
+is the same law as
 [Pig1Distrib](https://statmodels7.github.io/distributions7/reference/Pig1Distrib.md);
 the mean stays \\\mu\\ and the dispersion is replaced by \\\alpha\\, the
 argument the mass function's Bessel function is evaluated at.
@@ -98,7 +98,8 @@ the properties hold `"poisson-inverse gaussian (orthogonal)"`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Pig2Distrib.md)

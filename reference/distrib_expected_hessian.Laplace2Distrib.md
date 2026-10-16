@@ -4,8 +4,8 @@ Returns the negative of the Fisher information, in closed form and with
 no quadrature or simulation: \$\$-I(\mu) = -\lambda^2, \qquad
 -I(\lambda) = -\dfrac{1}{\lambda^2}, \qquad -I(\mu, \lambda) = 0.\$\$
 
-For \\\mu\\ this is the **variance of the score**. It is not the
-expectation of
+For \\\mu\\ this is the variance of the score. It is not the expectation
+of
 [`distrib_hessian.Laplace2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Laplace2Distrib.md),
 which is identically zero: the family has a kink at \\y = \mu\\ and the
 second Bartlett identity fails there, exactly as in
@@ -38,13 +38,13 @@ ignored. `y` is read only for its length.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available. Accepted so that the signature
-  matches the generic's. As for
+  Ignored, because a closed form is available. It is accepted so that
+  the signature matches the generic's. As for
   [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md),
   the strategy `"mc"` of the generic, which averages the observed second
   derivative over simulated draws, would give 0 in the location, while
@@ -62,7 +62,7 @@ ignored. `y` is read only for its length.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -71,10 +71,10 @@ A named list of three numeric vectors, `mu_mu`, `lambda_lambda` and
 
 ## Notation
 
-The **expected information** is the variance of the score. For a regular
-family it also equals the expectation of the **observed information**,
-by the second Bartlett identity; this family is not regular in \\\mu\\
-and the two differ there.
+The expected information is the variance of the score. For a regular
+family it also equals the expectation of the observed information, by
+the second Bartlett identity; this family is not regular in \\\mu\\ and
+the two differ there.
 
 ## See also
 

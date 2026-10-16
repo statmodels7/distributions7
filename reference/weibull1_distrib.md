@@ -9,9 +9,9 @@ response, and closed-form moments. The fifth order and
 [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md)
 come from the numerical fallbacks of the base class.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm, both parameters being positive.
+logarithm, because both parameters are positive.
 
 ## Usage
 

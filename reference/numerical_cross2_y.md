@@ -78,9 +78,9 @@ to the other. \\\ell^{(yy)}\\ is \\\partial^2\ell/\partial y^2\\.
 ## See also
 
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
-the generic it serves,
+the generic that it serves,
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
-for the quantity it differences, and
+for the quantity that it differences, and
 [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
 for the step rule.
 

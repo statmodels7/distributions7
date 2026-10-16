@@ -8,9 +8,9 @@ overdispersed relative to a Poisson. The returned object carries
 closed-form derivatives of the log-mass to fourth order and closed-form
 moments.
 
-The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the
-logarithm, both parameters being positive.
+The two arguments set the links that carry each parameter to the
+unconstrained scale on which an optimizer works. Both default to the
+logarithm, because both parameters are positive.
 
 ## Usage
 
@@ -60,7 +60,7 @@ geometric,
 [`geometric_distrib()`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md),
 and \\\theta \to \infty\\ gives the Poisson,
 [`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md).
-**The dispersion reads the opposite way round from a variance**: a small
+The dispersion reads the opposite way round from a variance: a small
 \\\theta\\ is heavy overdispersion and a large one is nearly a Poisson.
 
 The numbering follows Cameron and Trivedi: NB2 has a variance quadratic
@@ -139,7 +139,7 @@ for counts with excess zeros;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
+to validate a family of your own against the same battery that this one
 passes;
 [NegBin2Distrib](https://statmodels7.github.io/distributions7/reference/NegBin2Distrib.md)
 for the class.

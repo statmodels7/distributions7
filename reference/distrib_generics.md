@@ -104,10 +104,10 @@ pages; the value returned is theirs.
 `theta` is normalized before dispatch by
 [`align_theta()`](https://statmodels7.github.io/distributions7/reference/align_theta.md),
 which reorders it by name, removes the names carried by the values and
-validates it against `params_bounds`, treated as **open** intervals. The
+validates it against `params_bounds`, treated as open intervals. The
 derivative generics in the parameters of orders one to four also take
-`scale`, which the generic applies **after** dispatch, so a method
-returns the parameter scale and never reads it; see
+`scale`, which the generic applies after dispatch, so a method returns
+the parameter scale and never reads it; see
 [`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
 [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
 is the exception: its methods read `scale` and apply it themselves.

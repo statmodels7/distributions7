@@ -13,7 +13,7 @@ closed form and with no quadrature or simulation:
 \mathbb{E}\left\[\dfrac{\partial^2 \ell}{\partial \sigma \\ \partial
 \nu}\right\] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.\$\$
 
-The location is **orthogonal** to both other parameters: the two mixed
+The location is orthogonal to both other parameters: the two mixed
 entries containing \\\mu\\ are exactly zero, the law being symmetric
 about \\\mu\\ while the other two components are even in \\r\\. So
 \\\hat\mu\\ is asymptotically independent of \\\hat\sigma\\ and
@@ -45,13 +45,13 @@ kernel, so the result does not depend on the thread count.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored here, the expectation being exact. Accepted so that the
-  signature matches the generic's, where it selects between
+  Ignored here, because the expectation is exact. It is accepted so that
+  the signature matches the generic's, where it selects between
   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 
 - nsim:

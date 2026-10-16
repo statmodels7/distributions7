@@ -1,15 +1,14 @@
 # Zero-Inflated Third Derivatives
 
 Two regimes, and the observation decides which. At \\y \> 0\\ the
-log-likelihood is \\\log(1-\zeta) + \ell(y;\theta)\\, which
-**separates**: every mixed component in \\\zeta\\ and a parent parameter
-is exactly zero. At \\y = 0\\ it is \\\log L_0\\ with \\L_0 = \zeta +
-(1-\zeta) f(0;\theta)\\, and the derivatives follow from the
-moment-to-cumulant expansion over set partitions, \$\$d^I \log L_0 =
-\sum\_{\pi} (-1)^{\|\pi\|-1}(\|\pi\|-1)! \prod\_{B \in \pi} \frac{d^B
-L_0}{L_0}.\$\$
+log-likelihood is \\\log(1-\zeta) + \ell(y;\theta)\\, which separates:
+every mixed component in \\\zeta\\ and a parent parameter is exactly
+zero. At \\y = 0\\ it is \\\log L_0\\ with \\L_0 = \zeta + (1-\zeta)
+f(0;\theta)\\, and the derivatives follow from the moment-to-cumulant
+expansion over set partitions, \$\$d^I \log L_0 = \sum\_{\pi}
+(-1)^{\|\pi\|-1}(\|\pi\|-1)! \prod\_{B \in \pi} \frac{d^B L_0}{L_0}.\$\$
 
-\\L_0\\ is **affine** in \\\zeta\\, so any block of a partition naming
+\\L_0\\ is affine in \\\zeta\\, so any block of a partition naming
 \\\zeta\\ twice contributes nothing and the sum is shorter than it
 looks. A whole component may still be non-zero: its partition into
 singletons survives.

@@ -5,17 +5,17 @@ non-negative integers whose variance is linear in the mean: with a mean
 \(\operatorname{Var}(Y) = \mu(1+\theta)\). The returned object carries
 closed-form derivatives of the log-mass to fourth order and closed-form
 moments.
-The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
-both parameters being positive."><meta property="og:description" content="Builds the distribution object for the negative binomial family on the
+The two arguments set the links that carry each parameter to the
+unconstrained scale on which an optimizer works. Both default to the
+logarithm, because both parameters are positive."><meta property="og:description" content="Builds the distribution object for the negative binomial family on the
 non-negative integers whose variance is linear in the mean: with a mean
 \(\mu &amp;gt; 0\) and a dispersion \(\theta &amp;gt; 0\),
 \(\operatorname{Var}(Y) = \mu(1+\theta)\). The returned object carries
 closed-form derivatives of the log-mass to fourth order and closed-form
 moments.
-The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
-both parameters being positive."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The two arguments set the links that carry each parameter to the
+unconstrained scale on which an optimizer works. Both default to the
+logarithm, because both parameters are positive."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +23,7 @@ both parameters being positive."><meta property="og:image" content="https://stat
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,14 +57,14 @@ both parameters being positive."><meta property="og:image" content="https://stat
 
     <div class="ref-description section level2">
     <p>Builds the distribution object for the negative binomial family on the
-non-negative integers whose variance is <strong>linear</strong> in the mean: with a mean
+non-negative integers whose variance is linear in the mean: with a mean
 \(\mu &gt; 0\) and a dispersion \(\theta &gt; 0\),
 \(\operatorname{Var}(Y) = \mu(1+\theta)\). The returned object carries
 closed-form derivatives of the log-mass to fourth order and closed-form
 moments.</p>
-<p>The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
-both parameters being positive.</p>
+<p>The two arguments set the links that carry each parameter to the
+unconstrained scale on which an optimizer works. Both default to the
+logarithm, because both parameters are positive.</p>
     </div>
 
     <div class="section level2">
@@ -98,8 +98,8 @@ reason.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="relation-to-the-quadratic-variance-negative-binomial">Relation to the quadratic-variance negative binomial<a class="anchor" aria-label="anchor" href="#relation-to-the-quadratic-variance-negative-binomial"></a></h2>
-    <p>Two negative binomials are in common use and they are <strong>different
-families</strong>, not two parametrizations of one. Here the variance is
+    <p>Two negative binomials are in common use and they are different
+families, not two parametrizations of one. Here the variance is
 \(\mu(1+\theta)\), growing in proportion to the mean, so the dispersion
 relative to a Poisson is the same at every mean; <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> has
 \(\mu + \mu^2/\theta\), growing quadratically. Fitting one is not fitting
@@ -107,7 +107,7 @@ the other, and a likelihood ratio between them is not a test of nested
 models.</p>
 <p>The difference is visible in where the mean sits. The size is
 \(r = \mu/\theta\) and the success probability \(1/(1+\theta)\), so
-\(\mu\) appears <strong>inside</strong> the gamma functions of the mass; in the
+\(\mu\) appears inside the gamma functions of the mass; in the
 quadratic form the size is \(\theta\) and the mean stays outside them.</p>
     </div>
     <div class="section level2">
@@ -135,7 +135,7 @@ and the Hessian is the same chain rule at second order. In the expected
 information every term carrying \(P\) drops out, its expectation vanishing
 by the first Bartlett identity, and what remains is two sums over the
 support against the exact mass (<code><a href="distrib_expected_hessian.NegBin1Distrib.html">distrib_expected_hessian.NegBin1Distrib()</a></code>).</p>
-<p><strong>The mean and the dispersion are not orthogonal here.</strong> The mixed entry of
+<p>The mean and the dispersion are not orthogonal here. The mixed entry of
 the expected information is non-zero, where <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> has exactly
 zero.</p>
     </div>
@@ -187,10 +187,10 @@ tests. <em>Journal of Applied Econometrics</em> <strong>1</strong>, 29-53.</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> for the quadratic-variance family; <code><a href="poisson_distrib.html">poisson_distrib()</a></code>
 for the limit as \(\theta\) goes to zero and <code><a href="geometric_distrib.html">geometric_distrib()</a></code> for the
-case \(\mu = \theta\); <code><a href="pig1_distrib.html">pig1_distrib()</a></code> for a Poisson mixed over an
-inverse Gaussian; <code><a href="zero_inflated.html">zero_inflated()</a></code> and <code><a href="zero_adjusted.html">zero_adjusted()</a></code> for counts with
-excess zeros; <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code>
-to validate a family of your own against the same battery this one passes;
+case \(\mu = \theta\); <code><a href="pig1_distrib.html">pig1_distrib()</a></code> for a Poisson mixed over an inverse
+Gaussian; <code><a href="zero_inflated.html">zero_inflated()</a></code> and <code><a href="zero_adjusted.html">zero_adjusted()</a></code> for counts with excess
+zeros; <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to
+validate a family of your own against the same battery that this one passes;
 <a href="NegBin1Distrib.html">NegBin1Distrib</a> for the class.</p></div>
     </div>
 

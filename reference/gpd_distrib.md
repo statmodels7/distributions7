@@ -7,8 +7,8 @@ threshold, and the natural companion of
 in an analysis of extremes.
 
 At \\\xi = 0\\ it is the exponential, at \\\xi \> 0\\ it has a
-polynomial tail, and at \\\xi \< 0\\ it has a **finite upper endpoint**
-at \\-\sigma/\xi\\. The last case makes the family non-regular, so the
+polynomial tail, and at \\\xi \< 0\\ it has a finite upper endpoint at
+\\-\sigma/\xi\\. The last case makes the family non-regular, so the
 expected information exists only for \\\xi \> -1/2\\.
 
 ## Usage
@@ -30,7 +30,7 @@ gpd_distrib(link_sigma = log_link(), link_xi = identity_link())
   A link object for the shape \\\xi\\, which is unconstrained. Defaults
   to
   [`linkfunctions7::identity_link()`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html),
-  the shape being free to take either sign.
+  because the shape is free to take either sign.
 
 ## Value
 
@@ -66,9 +66,9 @@ are distinct for the multivariate \\t\\.
 ## The support depends on the parameters
 
 For \\\xi \< 0\\ the support is \\\[0, -\sigma/\xi\]\\, so it depends on
-the parameters. What this costs is the automatic license to
-differentiate under the integral sign, on which the Bartlett identities
-rest. Two things survive and one does not:
+the parameters. This removes the automatic license to differentiate
+under the integral sign, on which the Bartlett identities rest. The
+first two results below remain valid and the third fails:
 
 - the derivatives returned are correct as derivatives of the log-density
   at every admissible point, whatever the sign of \\\xi\\;

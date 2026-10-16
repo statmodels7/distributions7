@@ -3,7 +3,7 @@
 Computes the second derivative of the chi-squared log-density with
 respect to \\\mu\\, in closed form: \$\$\dfrac{\partial^2 \ell}{\partial
 \mu^2} = -\dfrac{\psi'(\mu/2)}{4},\$\$ with \\\psi'\\ the trigamma
-function. **It does not involve the response.** The family is a
+function. It does not involve the response. The family is a
 one-parameter exponential family in \\\log y\\, so the data reach the
 log-density only through a term linear in \\\mu\\ and the second
 derivative kills it. The value is constant within a parameter setting,
@@ -11,11 +11,12 @@ is recycled to the length of `y`, and equals
 [`distrib_expected_hessian.ChisqDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ChisqDistrib.md)
 exactly.
 
-The coincidence is on the **parameter** scale. On the link scale the two
-differ, the second-order chain rule adding a term
-\\h''(\eta)\\\partial\ell/\partial\mu\\, which the expected version
-drops because the score has expectation zero; the score of a sample is
-not zero away from the optimum, and the example below measures the term.
+The coincidence is on the parameter scale. On the link scale the two
+differ, because the second-order chain rule adds a term
+\\h''(\eta)\\\partial\ell/\partial\mu\\ to the observed version. The
+expected version drops this term since the score has expectation zero,
+whereas the score of a sample is not zero away from the optimum. The
+example below measures the term.
 
 ## Arguments
 
@@ -37,8 +38,8 @@ not zero away from the optimum, and the example below measures the term.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -48,7 +49,7 @@ not zero away from the optimum, and the example below measures the term.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -80,7 +81,8 @@ d <- chisq_distrib()
 y <- c(1, 4, 9)
 th <- list(mu = 4)
 
-# A constant across the observations, written out with the trigamma.
+# The value is constant across the observations and is written out with
+# the trigamma function.
 distrib_hessian(d, y, th)
 #> $mu_mu
 #> [1] -0.1612335 -0.1612335 -0.1612335
@@ -92,8 +94,8 @@ distrib_hessian(d, y, th)
 identical(distrib_hessian(d, y, th), distrib_expected_hessian(d, y, th))
 #> [1] TRUE
 
-# On the link scale they differ by h''(eta) times the score, which is what
-# makes Fisher scoring and Newton's method take different steps.
+# On the link scale they differ by h''(eta) times the score, so Fisher
+# scoring and Newton's method take different steps.
 obs <- distrib_hessian(d, y, th, scale = "link")$mu_mu
 exp_ <- distrib_expected_hessian(d, y, th, scale = "link")$mu_mu
 rbind(observed = obs, expected = exp_,

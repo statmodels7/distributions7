@@ -8,7 +8,7 @@ With \\r = y - \mu\\ and \\D = \nu\sigma^2 + r^2\\,
 equals the pure-location entry of
 [`distrib_hessian.StudentT1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.StudentT1Distrib.md),
 with no sign change; two derivatives in \\\mu\\ carry two factors of
-\\-1\\. It is negative near the mode and **positive** beyond \\\|r\| =
+\\-1\\. It is negative near the mode and positive beyond \\\|r\| =
 \sigma\sqrt{\nu}\\, so the log-density is not concave in the response,
 unlike a Gaussian's.
 

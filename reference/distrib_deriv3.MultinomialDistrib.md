@@ -44,12 +44,12 @@ chain rule reduces to a univariate partition sum per coordinate, with
 
 - approx:
 
-  Not read: the expectation is in closed form. Present so that the
+  Not read: the expectation is in closed form. It is present so that the
   signature matches the generic's.
 
 - nsim:
 
-  Not read. Present so that the signature matches the generic's.
+  Not read. It is present so that the signature matches the generic's.
 
 - ...:
 

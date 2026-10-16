@@ -1,9 +1,9 @@
 # Geometric Distribution
 
 Builds the distribution object for the geometric family parametrized by
-its **mean** \\\mu \> 0\\: the number of failures before the first
-success in independent trials of success probability \\p = 1/(1+\mu)\\.
-The returned object carries closed-form derivatives of the log-mass to
+its mean \\\mu \> 0\\: the number of failures before the first success
+in independent trials of success probability \\p = 1/(1+\mu)\\. The
+returned object carries closed-form derivatives of the log-mass to
 fourth order, observed and expected, and closed-form moments.
 
 The variance is \\\mu(1+\mu)\\, always above the mean, so a geometric
@@ -62,10 +62,10 @@ Where the amount of overdispersion should itself be estimated,
 adds the parameter and contains this family at \\\theta = 1\\.
 
 The survival function is \\P(Y \> q) = (\mu/(1+\mu))^{q+1}\\, so \\P(Y
-\> s + t \mid Y \> s) = P(Y \> t)\\: the count already accumulated tells
-nothing about the count remaining. The geometric is the only discrete
-law with this property, as the exponential is the only continuous one,
-and the two are counterparts.
+\> s + t \mid Y \> s) = P(Y \> t)\\: the count already accumulated does
+not affect the distribution of the count remaining. The geometric is the
+only discrete law with this property, as the exponential is the only
+continuous one, and the two are counterparts.
 
 ## Estimation
 
@@ -78,7 +78,7 @@ and its sum vanishes there.
 \\\ell\\ is the log-mass of one observation and \\\mu \> 0\\ the mean,
 with variance \\\mu(1+\mu)\\. The success probability is \\p =
 1/(1+\mu)\\. Counting starts at zero: \\Y\\ is the number of failures
-**before** the first success, not the number of trials.
+before the first success, not the number of trials.
 
 ## References
 
@@ -129,7 +129,7 @@ vapply(c(0.5, 3, 20), function(m) {
 #> var  0.750000 12.000000 420.000000
 #> skew 2.309401  2.020726   2.000595
 
-# Memoryless, as the exponential is on the continuous side.
+# The geometric is memoryless, as the exponential is on the continuous side.
 vapply(c(0, 2, 10, 50), function(s)
   distrib_cdf(d, s + 1, list(mu = 3), lower.tail = FALSE) /
     distrib_cdf(d, s, list(mu = 3), lower.tail = FALSE), numeric(1))

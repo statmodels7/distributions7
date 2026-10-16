@@ -17,7 +17,7 @@ distrib_cdf.ChisqDistrib() returns p."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,20 +110,23 @@ logarithms of probabilities. Defaults to <code>FALSE</code>.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="chisq_distrib.html">chisq_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The critical values a test reads, here at four degrees of freedom.</span></span></span>
+<span class="r-in"><span><span class="co"># These are the critical values that a test reads, here at four degrees</span></span></span>
+<span class="r-in"><span><span class="co"># of freedom.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">0.95</span>, <span class="fl">0.99</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  7.779440  9.487729 13.276704</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A central 95 percent interval, asymmetric about the mean of 4.</span></span></span>
+<span class="r-in"><span><span class="co"># These quantiles give a central 95 percent interval, which is asymmetric</span></span></span>
+<span class="r-in"><span><span class="co"># about the mean of 4.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.4844186  3.3566940 11.1432868</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Exact inverse: the round trip returns the probabilities it was given.</span></span></span>
+<span class="r-in"><span><span class="co"># The quantile function is an exact inverse, so the round trip returns the</span></span></span>
+<span class="r-in"><span><span class="co"># probabilities that it was given.</span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">p</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The median falls below the mean, the family being right skewed.</span></span></span>
+<span class="r-in"><span><span class="co"># The median falls below the mean, because the family is right skewed.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>median <span class="op">=</span> <span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.5</span>, <span class="va">th</span><span class="op">)</span>, mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   median     mean </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3.356694 4.000000 </span>

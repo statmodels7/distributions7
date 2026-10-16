@@ -13,8 +13,8 @@ instead from the direct sums over the integer shifts,
 \\\alpha\\ with \\c_K = (-1)^{K-1}(K-1)!\\, whose terms have one sign
 ([`betabinom_direct()`](https://statmodels7.github.io/distributions7/reference/betabinom_direct.md)).
 
-With `expected = TRUE` the expectation is an **exact finite sum** over
-the support, so `approx` and `nsim` are ignored on both branches.
+With `expected = TRUE` the expectation is an exact finite sum over the
+support, so `approx` and `nsim` are ignored on both branches.
 
 ## Arguments
 
@@ -42,13 +42,13 @@ the support, so `approx` and `nsim` are ignored on both branches.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored here, both branches being exact. Accepted so that the
-  signature matches the generic's.
+  Ignored here, because both branches are exact. It is accepted so that
+  the signature matches the generic's.
 
 - nsim:
 

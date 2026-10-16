@@ -14,7 +14,8 @@ second parameter is a dispersion, only the second component does. With
 \(z = y/\mu\) they equal
 \(\{2\mu(g + e) + y - \mu\}/\sigma^2\) and \(-\alpha(g + e)/\sigma^2\),
 where \(g = \log\alpha - \psi(\alpha)\) and \(e = \log z - (z - 1)\),
-and the kernel computes them in that form, each of \(g\) and \(e\)
+and the kernel computes them in that form, evaluating each of \(g\) and
+\(e\)
 without cancellation.
 With scale = "link" the generic applies the chain rule for the links of the
 family before returning. This method always returns the parameter
@@ -33,7 +34,8 @@ second parameter is a dispersion, only the second component does. With
 \(z = y/\mu\) they equal
 \(\{2\mu(g + e) + y - \mu\}/\sigma^2\) and \(-\alpha(g + e)/\sigma^2\),
 where \(g = \log\alpha - \psi(\alpha)\) and \(e = \log z - (z - 1)\),
-and the kernel computes them in that form, each of \(g\) and \(e\)
+and the kernel computes them in that form, evaluating each of \(g\) and
+\(e\)
 without cancellation.
 With scale = "link" the generic applies the chain rule for the links of the
 family before returning. This method always returns the parameter
@@ -45,7 +47,7 @@ scale.'><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,7 +95,8 @@ second parameter is a dispersion, only the second component does. With
 \(z = y/\mu\) they equal
 \(\{2\mu(g + e) + y - \mu\}/\sigma^2\) and \(-\alpha(g + e)/\sigma^2\),
 where \(g = \log\alpha - \psi(\alpha)\) and \(e = \log z - (z - 1)\),
-and the kernel computes them in that form, each of \(g\) and \(e\)
+and the kernel computes them in that form, evaluating each of \(g\) and
+\(e\)
 without cancellation.</p>
 <p>With <code>scale = "link"</code> the generic applies the chain rule for the links of the
 family before returning. This method always returns the parameter
@@ -121,7 +124,7 @@ recycled. Both must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -162,7 +165,7 @@ and <code><a href="distrib_gradient.html">distrib_gradient()</a></code> for the 
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma2 <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The two closed forms, written out with the digamma function.</span></span></span>
+<span class="r-in"><span><span class="co"># The two closed forms are written out with the digamma function.</span></span></span>
 <span class="r-in"><span><span class="va">al</span> <span class="op">&lt;-</span> <span class="fl">9</span> <span class="op">/</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="va">lam</span> <span class="op">&lt;-</span> <span class="fl">3</span> <span class="op">/</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">mu</span>,</span></span>

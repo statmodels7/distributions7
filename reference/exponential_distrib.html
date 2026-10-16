@@ -7,7 +7,7 @@ response, and closed-form moments.
 The family has one parameter and a fixed shape: the standard deviation
 equals the mean, the skewness is 2 and the excess kurtosis is 6 whatever
 \(\mu\) is. It is the only continuous law with a constant hazard, which is
-the memorylessness the details set out."><meta property="og:description" content="Builds the distribution object for the exponential family parametrized by
+the memorylessness that the details set out."><meta property="og:description" content="Builds the distribution object for the exponential family parametrized by
 its mean \(\mu &amp;gt; 0\), with density \(\mu^{-1}e^{-y/\mu}\) on
 \([0, \infty)\). The returned object carries closed-form derivatives of
 the log-density to fifth order in the mean and to fourth order in the
@@ -15,7 +15,7 @@ response, and closed-form moments.
 The family has one parameter and a fixed shape: the standard deviation
 equals the mean, the skewness is 2 and the excess kurtosis is 6 whatever
 \(\mu\) is. It is the only continuous law with a constant hazard, which is
-the memorylessness the details set out."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+the memorylessness that the details set out."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +23,7 @@ the memorylessness the details set out."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,14 +57,14 @@ the memorylessness the details set out."><meta property="og:image" content="http
 
     <div class="ref-description section level2">
     <p>Builds the distribution object for the exponential family parametrized by
-its <strong>mean</strong> \(\mu &gt; 0\), with density \(\mu^{-1}e^{-y/\mu}\) on
+its mean \(\mu &gt; 0\), with density \(\mu^{-1}e^{-y/\mu}\) on
 \([0, \infty)\). The returned object carries closed-form derivatives of
 the log-density to fifth order in the mean and to fourth order in the
 response, and closed-form moments.</p>
 <p>The family has one parameter and a fixed shape: the standard deviation
 equals the mean, the skewness is 2 and the excess kurtosis is 6 whatever
 \(\mu\) is. It is the only continuous law with a constant hazard, which is
-the memorylessness the details set out.</p>
+the memorylessness that the details set out.</p>
     </div>
 
     <div class="section level2">
@@ -98,18 +98,19 @@ with \(\mu \in (0, \infty)\). The distribution function is
 \(F(q) = 1 - e^{-q/\mu}\) and the quantile function
 \(Q(p) = -\mu\log(1-p)\).</p>
 <p>The mean and the standard deviation are both \(\mu\), so the coefficient
-of variation is 1; the skewness is 2 and the excess kurtosis 6, neither
-depending on the parameter. The median is \(\mu\log 2\), below the mean.</p>
-<p>R parametrizes its own <code>dexp</code> by the <strong>rate</strong>, \(1/\mu\), and the methods
+of variation is 1; the skewness is 2 and the excess kurtosis is 6, and both
+are independent of the parameter. The median is \(\mu\log 2\), below the mean.</p>
+<p>R parametrizes its own <code>dexp</code> by the rate, \(1/\mu\), and the methods
 convert. <code><a href="laplace2_distrib.html">laplace2_distrib()</a></code> is the corresponding choice for the Laplace,
-where the rate is what the package carries.</p>
+where the package carries the rate.</p>
     </div>
     <div class="section level2">
     <h2 id="memorylessness">Memorylessness<a class="anchor" aria-label="anchor" href="#memorylessness"></a></h2>
     <p>The survival function is \(P(Y &gt; q) = e^{-q/\mu}\), so
 \(P(Y &gt; s + t \mid Y &gt; s) = P(Y &gt; t)\) for every \(s, t \ge 0\): a wait
-already endured tells nothing about the wait remaining. Equivalently the
-hazard \(f/(1-F)\) is the constant \(1/\mu\). On the log scale this is
+that has already been endured carries no information about the remaining
+wait. Equivalently the hazard \(f/(1-F)\) is the constant \(1/\mu\). On
+the log scale this is
 the statement that both \(\log f\) and \(\log(1-F)\) are straight lines
 in \(y\), which is why <code><a href="distrib_grad_y.ExponentialDistrib.html">distrib_grad_y.ExponentialDistrib()</a></code> is a constant
 and <code><a href="distrib_hess_y.ExponentialDistrib.html">distrib_hess_y.ExponentialDistrib()</a></code> is zero.</p>
@@ -143,7 +144,7 @@ below checks it.</p>
 
 <p>\(\ell\) is the log-density of one observation and \(\mu &gt; 0\) the mean,
 which is also the standard deviation and the reciprocal of the rate. The
-<strong>hazard</strong> is \(f(y)/(1 - F(y))\), the instantaneous failure rate given
+hazard is \(f(y)/(1 - F(y))\), the instantaneous failure rate given
 survival to \(y\).</p>
     </div>
     <div class="section level2">

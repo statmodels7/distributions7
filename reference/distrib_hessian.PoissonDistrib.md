@@ -9,7 +9,7 @@ linear in \\\mu\\. The term is formed by dividing \\y\\ by \\\mu\\ once
 per power, and a zero count contributes zero, so the value at \\y = 0\\
 stays zero however small \\\mu\\ is.
 
-On the **link** scale with the default logarithm the chain rule gives
+On the link scale with the default logarithm the chain rule gives
 \\\partial^2\ell/\partial\eta^2 = -\mu\\, which carries no data; this is
 the defining property of a canonical link, and in exact arithmetic it
 makes the observed and the expected information the same matrix there
@@ -42,8 +42,8 @@ stays exact.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 

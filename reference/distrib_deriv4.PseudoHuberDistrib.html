@@ -21,7 +21,7 @@ place on this page where approx and nsim are read."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,11 +55,11 @@ place on this page where approx and nsim are read."><meta property="og:image" co
 
     <div class="ref-description section level2">
     <p>Computes the fifteen distinct fourth derivatives of the pseudo-Huber
-log-density in \(\mu\), \(\sigma\) and \(\nu\), <strong>in closed form</strong>, in
+log-density in \(\mu\), \(\sigma\) and \(\nu\), in closed form, in
 a compiled kernel. The Bessel functions enter through \(\nu\) alone, and
 their derivatives come from the three routes described in
 <code><a href="distrib_deriv3.PseudoHuberDistrib.html">distrib_deriv3.PseudoHuberDistrib()</a></code>.</p>
-<p><strong>The expected fourth derivatives have no closed form.</strong> With
+<p>The expected fourth derivatives have no closed form. With
 <code>expected = TRUE</code> the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code>, which is the one
 place on this page where <code>approx</code> and <code>nsim</code> are read.</p>
     </div>
@@ -93,7 +93,7 @@ Defaults to <code>FALSE</code>.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>

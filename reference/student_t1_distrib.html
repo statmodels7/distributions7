@@ -35,7 +35,7 @@ unconstrained scale on which an optimizer works."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -132,7 +132,7 @@ $$f(y; \mu, \sigma, \nu) = \dfrac{\Gamma\left(\dfrac{\nu+1}{2}\right)}{\sigma\sq
 the distribution function \(F(q) = T_\nu\{(q-\mu)/\sigma\}\) and the
 quantile function \(Q(p) = \mu + \sigma T_\nu^{-1}(p)\), with \(T_\nu\)
 the standard Student t distribution function.</p>
-<p>\(\sigma\) is the <strong>scale</strong> and not the standard deviation, which is
+<p>\(\sigma\) is the scale and not the standard deviation, which is
 \(\sigma\sqrt{\nu/(\nu-2)}\) and exists only above \(\nu = 2\). Keeping
 the two apart lets the family be fitted where the second moment does not
 exist; <code><a href="student_t2_distrib.html">student_t2_distrib()</a></code> is the parametrization by the standard
@@ -167,7 +167,7 @@ correlated with each other.</p>
 \((\nu+1)/(2\sigma\sqrt{\nu})\) at \(|r| = \sigma\sqrt{\nu}\) and falls
 back towards zero, so an observation far from the location is downweighted
 automatically. The price is that the curvature in \(\mu\) turns
-<strong>positive</strong> past the same point, so the observed information is indefinite
+positive past the same point, so the observed information is indefinite
 at an outlying observation. Fisher scoring is unaffected, the expected
 information being negative definite everywhere, which is why it is the
 default in <code><a href="fit_distrib.html">fit_distrib()</a></code>.</p>

@@ -12,8 +12,8 @@ fall below a tolerance, so this is a truncated exact sum and not a
 quadrature or a simulation. `approx` and `nsim` are ignored, and `y` is
 read only for its length.
 
-**The mixed entry does not vanish**, so the mean and the dispersion are
-not orthogonal in this family; in
+The mixed entry does not vanish, so the mean and the dispersion are not
+orthogonal in this family; in
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
 the same entry is exactly zero. This is a difference between the two
 families, not between two parametrizations of one.
@@ -38,13 +38,13 @@ families, not between two parametrizations of one.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored. The surviving expectation is a truncated exact sum. Accepted
-  so that the signature matches the generic's.
+  Ignored. The surviving expectation is a truncated exact sum. It is
+  accepted so that the signature matches the generic's.
 
 - nsim:
 
@@ -91,16 +91,15 @@ are sums over the same mass and take the same two routes.
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\theta\\\partial\theta^\top\]\\,
-the expectation of the **observed information** under the model. The
-first Bartlett identity is \\\mathbb{E}\[\partial\ell/\partial\theta\] =
-0\\.
+the expectation of the observed information under the model. The first
+Bartlett identity is \\\mathbb{E}\[\partial\ell/\partial\theta\] = 0\\.
 
 ## See also
 
 [`distrib_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.NegBin1Distrib.md)
-for the observed quantity this is the expectation of,
+for the observed quantity whose expectation this is,
 [`distrib_expected_hessian.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin2Distrib.md)
 for the quadratic-variance family, whose mixed entry is exactly zero,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),

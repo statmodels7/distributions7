@@ -73,7 +73,7 @@ the distribution function \\F(q) = T\_\nu\\(q-\mu)/\sigma\\\\ and the
 quantile function \\Q(p) = \mu + \sigma T\_\nu^{-1}(p)\\, with
 \\T\_\nu\\ the standard Student t distribution function.
 
-\\\sigma\\ is the **scale** and not the standard deviation, which is
+\\\sigma\\ is the scale and not the standard deviation, which is
 \\\sigma\sqrt{\nu/(\nu-2)}\\ and exists only above \\\nu = 2\\. Keeping
 the two apart lets the family be fitted where the second moment does not
 exist;
@@ -117,7 +117,7 @@ The location score \\(\nu+1)r/D\\ rises to
 \\(\nu+1)/(2\sigma\sqrt{\nu})\\ at \\\|r\| = \sigma\sqrt{\nu}\\ and
 falls back towards zero, so an observation far from the location is
 downweighted automatically. The price is that the curvature in \\\mu\\
-turns **positive** past the same point, so the observed information is
+turns positive past the same point, so the observed information is
 indefinite at an outlying observation. Fisher scoring is unaffected, the
 expected information being negative definite everywhere, which is why it
 is the default in

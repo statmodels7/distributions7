@@ -1,5 +1,20 @@
 # Changelog
 
+## distributions7 0.79.1
+
+- Documentation, first part: the argument descriptions and other
+  sentences repeated across the families rewritten once with the same
+  wording, bold removed outside references, and the pages of the
+  families from Bernoulli to Gumbel rewritten without relative clauses
+  lacking their pronoun, stranded prepositions, absolute constructions,
+  sentences without a verb (example captions included) and personified
+  descriptions of the code. The pages of
+  [`beta1_distrib()`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md)
+  described
+  [`beta2_distrib()`](https://statmodels7.github.io/distributions7/reference/beta2_distrib.md)
+  as the parametrization in mean and variance; it is the one in the two
+  shapes.
+
 ## distributions7 0.79.0
 
 ### Numerical derivatives

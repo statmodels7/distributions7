@@ -1,6 +1,6 @@
 # Beta-Binomial Distribution Class, Two Shapes
 
-The S7 class of the beta-binomial family in its canonical
+This S7 class represents the beta-binomial family in its canonical
 parametrization, the two beta shapes \\\alpha \> 0\\ and \\\beta \> 0\\,
 on the finite support \\\\0, 1, \dots, n\\\\. It inherits from
 `discrete_distrib`.
@@ -106,7 +106,8 @@ for both, and the two links.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.BetaBinom2Distrib.md)

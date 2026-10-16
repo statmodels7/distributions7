@@ -64,34 +64,34 @@ to \\z\\. Differentiating it by Leibniz, \$\$\partial^{a,b} W =
 \sum\_{j} \binom{b}{j}\\ \partial^{a,j}L \cdot
 \partial^{b-j}(1/\xi),\$\$ produces terms of size \\\xi^{-(b+1)}\\ that
 cancel against each other, so near zero the form loses every digit.
-Below a threshold it is replaced by the series the cancellation leaves,
-\$\$W = \sum\_{k \ge 0} \frac{(-1)^k \xi^k z^{k+1}}{k+1},\$\$
+Below a threshold it is replaced by the series that the cancellation
+leaves, \$\$W = \sum\_{k \ge 0} \frac{(-1)^k \xi^k z^{k+1}}{k+1},\$\$
 differentiated term by term.
 
-The threshold is on \\\lvert\xi z\rvert\\ and **not** on \\\xi\\. At
-order \\b\\ the Leibniz terms are of size \\z\xi^{-b}\\ against an
-answer of size \\z^{b+1}\\, so the relative cancellation is \\(\xi
-z)^{-b}\\ and the accuracy is \\\varepsilon(\xi z)^{-b}\\, which at
-order four reaches 0.3 by \\\xi z = 1.7\times10^{-4}\\. The series needs
-\\\lvert\xi z\rvert \< 1\\ to converge and is cut at 0.2, where forty
-terms leave \\10^{-28}\\ while the Leibniz form still carries
-\\10^{-13}\\, so the two overlap.
+The threshold is on \\\lvert\xi z\rvert\\ and not on \\\xi\\. At order
+\\b\\ the Leibniz terms are of size \\z\xi^{-b}\\ against an answer of
+size \\z^{b+1}\\, so the relative cancellation is \\(\xi z)^{-b}\\ and
+the accuracy is \\\varepsilon(\xi z)^{-b}\\, which at order four reaches
+0.3 by \\\xi z = 1.7\times10^{-4}\\. The series needs \\\lvert\xi
+z\rvert \< 1\\ to converge and is cut at 0.2, where forty terms leave
+\\10^{-28}\\ while the Leibniz form still carries \\10^{-13}\\, so the
+two overlap.
 
 ## What the series branch evaluates
 
-The two elementwise powers the sum appears to need are algebraically
-one: with \\u = \xi z\\, \\\xi^{k-b}z^{k+1} = u^{k-b}z^{b+1}\\, so
-\\z^{b+1}/\sigma^a\\ leaves the sum and what remains is a **polynomial
-in** \\u\\ whose coefficients are scalar in \\k\\. `gpd_poly_cpp()`
-evaluates it by Horner from the highest power down, which sums a
-decaying series smallest first. Each branch also runs on its own
-elements only, so a sample straddling the cut does not pay for both in
-full.
+The two elementwise powers that the sum appears to need are
+algebraically one: with \\u = \xi z\\, \\\xi^{k-b}z^{k+1} =
+u^{k-b}z^{b+1}\\, so \\z^{b+1}/\sigma^a\\ leaves the sum and what
+remains is a polynomial in \\u\\ whose coefficients are scalar in \\k\\.
+`gpd_poly_cpp()` evaluates it by Horner from the highest power down,
+which sums a decaying series smallest first. Each branch also runs on
+its own elements only, so a sample straddling the cut does not pay for
+both in full.
 
 ## See also
 
 [`distrib_deriv3.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md)
-for the compiled kernels this assembly is checked against;
+for the compiled kernels against which this assembly is checked;
 [`fdb2()`](https://statmodels7.github.io/distributions7/reference/fdb2.md)
 for the two-variable composition template; and
 [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md)

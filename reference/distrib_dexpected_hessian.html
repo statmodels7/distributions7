@@ -9,7 +9,7 @@ pair \((a,b)\) and differentiating parameter \(c\)."><meta property="og:image" c
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,8 +103,8 @@ $$\frac{\partial}{\partial\theta_c}\mathbb{E}[\ell_{ab}]
 the first term is fully symmetric and the second is not, so the result is
 keyed by <code><a href="dexpected_names.html">dexpected_names()</a></code> rather than by the sorted triples
 <code><a href="deriv_names.html">deriv_names()</a></code> uses at order three.</p>
-<p><strong>The default method differences the family's own expected
-information</strong>, one central stencil per parameter, which is a single
+<p>The default method differences the family's own expected
+information, one central stencil per parameter, which is a single
 difference of an analytic quantity wherever that quantity is a written-out
 formula. Where it is not, the method signals an error: see
 <code><a href="has_exact_expected_hessian.html">has_exact_expected_hessian()</a></code>.</p>

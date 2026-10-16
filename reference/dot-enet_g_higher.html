@@ -9,7 +9,7 @@ derivatives of \(G = \mathrm{d}\log M/\mathrm{d}x\)."><meta property="og:image" 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@ derivatives of \(G = \mathrm{d}\log M/\mathrm{d}x\).</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p><code>p</code> with two components added: <code>d2g</code> for \(G''\) and <code>d3g</code> for
-\(G'''\), each of the length <code>g</code> has.</p>
+\(G'''\), and each of them has the same length as <code>g</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -85,7 +85,7 @@ terms are of order one), so they are not used.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="enet_distrib.html">enet_distrib()</a></code> for the family and
-<code><a href="distrib_deriv3.EnetDistrib.html">distrib_deriv3.EnetDistrib()</a></code> for the order these serve.</p></div>
+<code><a href="distrib_deriv3.EnetDistrib.html">distrib_deriv3.EnetDistrib()</a></code> for the order that these serve.</p></div>
     </div>
 
     <div class="section level2">
@@ -96,7 +96,7 @@ terms are of order one), so they are not used.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           x           G          dG         d2G         d3G </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1.00000000 -0.52513528  0.19909767 -0.11693120  0.07917498 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># G'' against a central difference of G'.</span></span></span>
+<span class="r-in"><span><span class="co"># G'' is compared with a central difference of G'.</span></span></span>
 <span class="r-in"><span><span class="va">gp</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">.enet_parts</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, lambda <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">x</span><span class="op">^</span><span class="fl">2</span>,</span></span>
 <span class="r-in"><span>                                    alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">dg</span></span></span>

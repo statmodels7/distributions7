@@ -3,7 +3,7 @@
 The body that every mapped family registers at orders 3 and 4, at 2 as
 well where its written-out route stops at the gradient, and at every
 order for the centered skew normal. It tests whether the parent's cdf
-derivatives are exact at **every** order up to the one wanted, takes
+derivatives are exact at every order up to the one wanted, takes
 [`chain_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv_k.md)
 if they are, and falls back to
 [`cdf_tables()`](https://statmodels7.github.io/distributions7/reference/cdf_tables.md)
@@ -59,11 +59,13 @@ mapped_cdf_deriv_k(
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical.
+  A single logical; `TRUE` selects the lower tail and `FALSE` the upper
+  tail.
 
 - log:
 
-  Are derivatives of the log probability wanted? A single logical.
+  A single logical; `TRUE` selects the derivatives of the log
+  probability and `FALSE` those of the probability.
 
 - q_par:
 

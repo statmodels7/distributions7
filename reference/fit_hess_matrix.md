@@ -13,8 +13,7 @@ at \\\sigma = 1\\ with 400 draws the observed matrix is
 \\\partial^2\ell/\partial\mu^2\\ is zero almost everywhere, so the
 determinant is \\-(\sum_i \mathrm{sign}(y_i - \mu))^2/\sigma^2\\, which
 is negative unless the signs balance exactly, and the matrix is
-**indefinite**. The expected information at the same point is \\-400
-I\\.
+indefinite. The expected information at the same point is \\-400 I\\.
 
 ## Usage
 

@@ -19,7 +19,7 @@ expected information exists only for \(\xi &amp;gt; -1/2\)."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@ expected information exists only for \(\xi &amp;gt; -1/2\)."><meta property="og:
 and shape \(\xi\). It is the family of exceedances over a high threshold,
 and the natural companion of <code><a href="gumbel_distrib.html">gumbel_distrib()</a></code> in an analysis of extremes.</p>
 <p>At \(\xi = 0\) it is the exponential, at \(\xi &gt; 0\) it has a
-polynomial tail, and at \(\xi &lt; 0\) it has a <strong>finite upper endpoint</strong> at
+polynomial tail, and at \(\xi &lt; 0\) it has a finite upper endpoint at
 \(-\sigma/\xi\). The last case makes the family non-regular, so the
 expected information exists only for \(\xi &gt; -1/2\).</p>
     </div>
@@ -78,8 +78,8 @@ expected information exists only for \(\xi &gt; -1/2\).</p>
 
 <dt id="arg-link-xi">link_xi<a class="anchor" aria-label="anchor" href="#arg-link-xi"></a></dt>
 <dd><p>A link object for the shape \(\xi\), which is
-unconstrained. Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, the shape
-being free to take either sign.</p></dd>
+unconstrained. Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, because the
+shape is free to take either sign.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -111,9 +111,10 @@ heavy-tailed members of the family. For the same reason <code><a href="mv_sigma.
     <div class="section level2">
     <h2 id="the-support-depends-on-the-parameters">The support depends on the parameters<a class="anchor" aria-label="anchor" href="#the-support-depends-on-the-parameters"></a></h2>
     <p>For \(\xi &lt; 0\) the support is \([0, -\sigma/\xi]\), so it depends on
-the parameters. What this costs is the automatic
+the parameters. This removes the automatic
 license to differentiate under the integral sign, on which the Bartlett
-identities rest. Two things survive and one does not:</p><ul><li><p>the derivatives returned are correct as derivatives of the log-density at
+identities rest. The first two results below remain valid and the third
+fails:</p><ul><li><p>the derivatives returned are correct as derivatives of the log-density at
 every admissible point, whatever the sign of \(\xi\);</p></li>
 <li><p>the expected information exists and is Smith's closed form for
 \(\xi &gt; -1/2\). The condition is exactly that the integrand be

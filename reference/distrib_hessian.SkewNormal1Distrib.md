@@ -14,7 +14,7 @@ with \\R' = -R(t+R)\\, \$\$\dfrac{\partial^2 \ell}{\partial \mu^2} =
 R'}{\sigma}, \qquad \dfrac{\partial^2 \ell}{\partial \alpha^2} = z^2
 R'.\$\$
 
-This is the **observed** curvature at the data. Its expectation has no
+This is the observed curvature at the data. Its expectation has no
 elementary form and is computed by
 [`distrib_expected_hessian.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal1Distrib.md).
 
@@ -49,7 +49,7 @@ elementary form and is computed by
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

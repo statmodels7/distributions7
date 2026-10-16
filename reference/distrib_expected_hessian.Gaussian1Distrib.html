@@ -33,7 +33,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,13 +103,13 @@ recycled. <code>sigma</code> must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, a closed form being available. Accepted so that the
-signature matches the generic's, where it selects between the Bartlett,
-quadrature, Monte Carlo and outer-product routes.</p></dd>
+<dd><p>Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's, where it selects between the
+Bartlett, quadrature, Monte Carlo and outer-product routes.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -137,15 +137,15 @@ when the parameters are.</p>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>The <strong>expected information</strong> is \(\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]\),
-the expectation of the <strong>observed information</strong> under the model. The Gaussian
+<p>The expected information is \(\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]\),
+the expectation of the observed information under the model. The Gaussian
 is a regular family, so the second Bartlett identity holds and this equals
 the variance of the score.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_hessian.Gaussian1Distrib.html">distrib_hessian.Gaussian1Distrib()</a></code> for the observed quantity this
-is the expectation of, <code><a href="fit_distrib.html">fit_distrib()</a></code> and <code><a href="fisher_scoring.html">fisher_scoring()</a></code>, which invert
+    <div class="dont-index"><p><code><a href="distrib_hessian.Gaussian1Distrib.html">distrib_hessian.Gaussian1Distrib()</a></code> for the observed quantity whose
+expectation this is, <code><a href="fit_distrib.html">fit_distrib()</a></code> and <code><a href="fisher_scoring.html">fisher_scoring()</a></code>, which invert
 it at each step, and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
     </div>
 
@@ -154,7 +154,7 @@ it at each step, and <code><a href="distrib_expected_hessian.html">distrib_expec
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span>, sigma <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The three constants, one value per observation.</span></span></span>
+<span class="r-in"><span><span class="co"># The three components are constants, with one value per observation.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.2</span>, <span class="fl">0.3</span>, <span class="fl">2.5</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">unique</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.4444444</span>

@@ -9,10 +9,9 @@ no chain rule through
 is composed.
 
 The property that gives this parametrization its name lives one order
-up: the **expected** value of
-\\\partial^2\ell/\partial\mu\partial\alpha\\ is zero, so the two scores
-are uncorrelated and their maximum likelihood estimates asymptotically
-independent.
+up: the expected value of \\\partial^2\ell/\partial\mu\partial\alpha\\
+is zero, so the two scores are uncorrelated and their maximum likelihood
+estimates asymptotically independent.
 
 ## Arguments
 

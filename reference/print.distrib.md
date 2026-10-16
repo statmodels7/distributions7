@@ -24,7 +24,7 @@ parametrization and no estimate; for estimates see
 
 ## Value
 
-`x`, invisibly. Called for the output it writes.
+`x`, invisibly. The function is called for the output that it writes.
 
 ## See also
 

@@ -3,14 +3,14 @@
 Builds the distribution object for the beta family on \\(0, 1)\\
 parametrized by its mean \\\mu \in (0, 1)\\ and a precision \\\phi \>
 0\\, so that the shapes are \\\alpha = \mu\phi\\ and \\\beta =
-(1-\mu)\phi\\. This is the parametrization beta regression uses. The
-returned object carries closed-form derivatives of the log-density to
-fourth order, in the parameters and in the response, and closed-form
+(1-\mu)\phi\\. This is the parametrization that beta regression uses.
+The returned object carries closed-form derivatives of the log-density
+to fourth order, in the parameters and in the response, and closed-form
 moments. The fifth order and the mixed derivatives of order three and
 four in the response and the parameters come from the numerical
 fallbacks of the base class.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
 logit for the mean, which lives in \\(0, 1)\\, and the logarithm for the
 precision, which is positive.
@@ -51,10 +51,10 @@ An S7 object of class `Beta1Distrib`, inheriting from
 The density on \\y \in (0, 1)\\ is \$\$f(y; \mu, \phi) =
 \dfrac{\Gamma(\phi)}{\Gamma(\alpha)\Gamma(\beta)}\\
 y^{\alpha-1}(1-y)^{\beta-1}, \qquad \alpha = \mu\phi, \quad \beta =
-(1-\mu)\phi,\$\$ the distribution function \\F(q) = I_q(\alpha, \beta)\\
-with \\I\\ the regularized incomplete beta function, and the quantile
-function its numerical inverse. The mean is \\\mu\\, the variance
-\\\mu(1-\mu)/(\phi+1)\\ and the skewness
+(1-\mu)\phi.\$\$ The distribution function is \\F(q) = I_q(\alpha,
+\beta)\\, where \\I\\ is the regularized incomplete beta function, and
+the quantile function is its numerical inverse. The mean is \\\mu\\, the
+variance \\\mu(1-\mu)/(\phi+1)\\ and the skewness
 \\2(1-2\mu)\sqrt{\phi+1}/\\(\phi+2)\sqrt{\mu(1-\mu)}\\\\.
 
 \\\phi\\ is called a precision because at a fixed mean the variance is
@@ -66,10 +66,10 @@ corresponding endpoint.
 
 This is the same law as
 [`beta2_distrib()`](https://statmodels7.github.io/distributions7/reference/beta2_distrib.md),
-which carries the mean and the *variance*, the two being related by
-\\\sigma^2 = \mu(1-\mu)/(\phi+1)\\. They are separate families because
-the second parameter is a different quantity in each, with its own
-interpretation, standard error and interval.
+which carries the two shapes \\\alpha = \mu\phi\\ and \\\beta =
+(1-\mu)\phi\\. They are separate families because the parameters are
+different quantities in each, with their own interpretation, standard
+error and interval.
 
 ## Derivatives
 
@@ -92,7 +92,7 @@ are in general not orthogonal.
 The data reach the log-density only through \\(\alpha-1)\log y +
 (\beta-1)\log(1-y)\\, which is linear in the shapes and so at most
 quadratic in \\(\mu, \phi)\\ through the bilinear map \\\alpha =
-\mu\phi\\. Two consequences follow, and both are visible in the methods:
+\mu\phi\\. This has the following consequences for the methods:
 
 - the observed Hessian equals its expectation in `mu_mu` and `phi_phi`
   and differs in `mu_phi` by the log-odds residual \\\log\\y/(1-y)\\ -
@@ -106,18 +106,18 @@ quadratic in \\(\mu, \phi)\\ through the bilinear map \\\alpha =
   return the same numbers for either value of `expected`.
 
 The derivatives of the *distribution* function in the parameters have no
-elementary form, the derivative of an incomplete beta in its shapes
-being hypergeometric, and are computed by a compiled quadrature of the
-density times the derivatives of the log-density.
+elementary form, because the derivative of an incomplete beta in its
+shapes is hypergeometric. They are computed by a compiled quadrature of
+the density times the derivatives of the log-density.
 
 ## Estimation
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-maximizes the log-likelihood on the link scale. Neither estimate is
-closed form: both estimating equations involve digamma functions of the
-shapes. The method of moments supplies the starting values \\\hat\mu =
-\bar y\\ and \\\hat\phi = \bar y(1-\bar y)/s^2 - 1\\, and the example
-below shows them landing beside the estimates.
+maximizes the log-likelihood on the link scale. Both estimates lack a
+closed form, because both estimating equations involve digamma functions
+of the shapes. The method of moments supplies the starting values
+\\\hat\mu = \bar y\\ and \\\hat\phi = \bar y(1-\bar y)/s^2 - 1\\, and
+the example below shows them landing beside the estimates.
 
 ## Notation
 
@@ -145,8 +145,8 @@ for a response with a point mass at 0;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery of checks that
-this family passes;
+to validate a user-defined family against the same battery of checks
+that this family passes;
 [Beta1Distrib](https://statmodels7.github.io/distributions7/reference/Beta1Distrib.md)
 for the class.
 

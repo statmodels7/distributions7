@@ -1,11 +1,11 @@
 # von Mises Distribution Class
 
-The S7 class of the von Mises family, the natural distribution for an
-angle, parametrized by a mean direction \\\mu\\ and a concentration
-\\\kappa \> 0\\, with density \\f(y) = e^{\kappa\cos(y-\mu)}/\\2\pi
-I_0(\kappa)\\\\ on \\\[-\pi, \pi)\\. It inherits from
-`continuous_distrib`; the methods listed below are registered on it
-directly.
+This is the S7 class of the von Mises family, the natural distribution
+for an angle, parametrized by a mean direction \\\mu\\ and a
+concentration \\\kappa \> 0\\, with density \\f(y) =
+e^{\kappa\cos(y-\mu)}/\\2\pi I_0(\kappa)\\\\ on \\\[-\pi, \pi)\\. It
+inherits from `continuous_distrib`; the methods listed below are
+registered on it directly.
 
 The support of this family has the topology of a circle: the two ends of
 the interval are the same point, so the density need not vanish at
@@ -102,7 +102,8 @@ domains \\(-\pi, \pi)\\ and \\(0, \infty)\\.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.VonMises1Distrib.md),

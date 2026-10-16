@@ -29,7 +29,7 @@ approx and nsim are ignored."><meta property="og:image" content="https://statmod
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,12 +103,12 @@ model are returned in place of the observed values. Defaults to <code>FALSE</cod
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, a closed form being available for both the observed
-and the expected values.</p></dd>
+<dd><p>Ignored, because a closed form is available for both the
+observed and the expected values.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -145,7 +145,7 @@ superscripts name derivatives.</p>
     <div class="dont-index"><p><code><a href="distrib_deriv3.Gaussian2Distrib.html">distrib_deriv3.Gaussian2Distrib()</a></code> for the order below,
 <code><a href="distrib_deriv4.html">distrib_deriv4()</a></code> for the generic, and
 <code><a href="distrib_expected_hessian.Gaussian2Distrib.html">distrib_expected_hessian.Gaussian2Distrib()</a></code> for the second-order
-expectation these extend.</p></div>
+expectation that these extend.</p></div>
     </div>
 
     <div class="section level2">
@@ -159,7 +159,8 @@ expectation these extend.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3] "mu_mu_sigma2_sigma2"         "mu_sigma2_sigma2_sigma2"    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] "sigma2_sigma2_sigma2_sigma2"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Quadratic in mu, so the two components with three or more mu are zero.</span></span></span>
+<span class="r-in"><span><span class="co"># The log-density is quadratic in mu, so the two components with three or</span></span></span>
+<span class="r-in"><span><span class="co"># more mu are zero.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">d4</span><span class="op">$</span><span class="va">mu_mu_mu_mu</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">d4</span><span class="op">$</span><span class="va">mu_mu_mu_sigma2</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 0</span>
 <span class="r-in"><span></span></span>
@@ -167,7 +168,7 @@ expectation these extend.</p></div>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">d4</span><span class="op">$</span><span class="va">mu_mu_sigma2_sigma2</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span> <span class="op">/</span> <span class="fl">4</span><span class="op">^</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Expected values: -9/v^4 in the pure variance component.</span></span></span>
+<span class="r-in"><span><span class="co"># The expected value in the pure variance component is -9/v^4.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv4.html">distrib_deriv4</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="va">unique</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu_mu_mu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>

@@ -41,7 +41,7 @@ order-\\m\\ parameter-scale derivatives.
 ## Details
 
 Faa di Bruno mixes all lower orders into each link-scale component, so
-they must all be to hand before the assembly starts. For **expected**
+they must all be to hand before the assembly starts. For expected
 derivatives the first-order slot is filled with zeros rather than with
 the score, because \\\mathbb{E}\[\ell_i\] = 0\\. The term is absent from
 the expected derivatives, which is also why the expected information

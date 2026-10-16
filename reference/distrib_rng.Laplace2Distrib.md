@@ -1,9 +1,8 @@
 # Laplace Random Number Generator, Rate Parametrization
 
-Draws `n` independent Laplace variates by **inverse transform**: `n`
-uniform variates from
-[`stats::runif()`](https://rdrr.io/r/stats/Uniform.html) are passed
-through
+Draws `n` independent Laplace variates by inverse transform: `n` uniform
+variates from [`stats::runif()`](https://rdrr.io/r/stats/Uniform.html)
+are passed through
 [`distrib_quantile.Laplace2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Laplace2Distrib.md).
 The base class draws the same way for a family with its own quantile
 method, so the method gives the draws that the base class would give.

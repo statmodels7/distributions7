@@ -37,12 +37,12 @@ An S7 object of class `GenGamma2Distrib`, inheriting from
 
 The Stacy parametrization of
 [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md)
-has a scale, a shape and a power, and none of them is the mean. Since
-\\\mathbb{E}\[Y\] = a\\\Gamma((d+1)/p)/\Gamma(d/p)\\, the scale here is
-\$\$a = m\\\dfrac{\Gamma(d/p)}{\Gamma((d+1)/p)},\$\$ and every
-derivative in \\(m, d, p)\\ to order five, the expected information and
-its derivatives, and the derivatives in the response are closed forms,
-each order in its own compiled kernel (see
+has a scale, a shape and a power as parameters, and the mean is not
+among them. Since \\\mathbb{E}\[Y\] = a\\\Gamma((d+1)/p)/\Gamma(d/p)\\,
+the scale here is \$\$a = m\\\dfrac{\Gamma(d/p)}{\Gamma((d+1)/p)},\$\$
+and every derivative in \\(m, d, p)\\ to order five, the expected
+information and its derivatives, and the derivatives in the response are
+closed forms, and each order is computed by its own compiled kernel (see
 [`distrib_gradient.GenGamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma2Distrib.md)).
 
 ## The distribution

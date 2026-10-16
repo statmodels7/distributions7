@@ -29,7 +29,7 @@ difference of an analytical quantity, with the step
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@ family with a density alone it takes second differences of
 <code>distrib_pdf(..., log = TRUE)</code> through <code><a href="numerical_hessian.html">numerical_hessian()</a></code>: a diagonal
 component takes the three-point stencil
 \([\ell(\theta_i+h) - 2\ell(\theta_i) + \ell(\theta_i-h)]/h^2\) and an
-off-diagonal one the four-point mixed stencil, so both are a <strong>single</strong>
+off-diagonal one the four-point mixed stencil, so both are a single
 difference of the log-density. For a family with its own score it takes
 one central difference of that score instead, through
 <code><a href="tensor_derivatives.html">tensor_derivatives()</a></code> with <code>base = 1</code>: the component \((i, j)\) is the
@@ -107,7 +107,7 @@ returns the parameter scale.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of Hessian component vectors, each of length
 <code>length(y)</code>, keyed by <code><a href="hess_names.html">hess_names()</a></code>, which puts the diagonal first and is
-<strong>not</strong> the lexicographic keying <code><a href="deriv_names.html">deriv_names()</a></code> uses above order 2.</p>
+not the lexicographic keying <code><a href="deriv_names.html">deriv_names()</a></code> uses above order 2.</p>
     </div>
     <div class="section level2">
     <h2 id="the-step-and-the-cost">The step and the cost<a class="anchor" aria-label="anchor" href="#the-step-and-the-cost"></a></h2>

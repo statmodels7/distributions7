@@ -24,12 +24,13 @@ are needed as well as its first.
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical, `TRUE` by default.
+  A single logical, `TRUE` by default; `TRUE` selects the lower tail and
+  `FALSE` the upper tail.
 
 - log:
 
-  Are derivatives of the log probability wanted? A single logical,
-  `TRUE` by default.
+  A single logical, `TRUE` by default; `TRUE` selects the derivatives of
+  the log probability and `FALSE` those of the probability.
 
 - ...:
 
@@ -44,9 +45,8 @@ returned alongside.
 
 ## Details
 
-The test requires the parent to be exact at **both** orders. A parent
-with a closed gradient and a differenced Hessian sends this whole method
-to
+The test requires the parent to be exact at both orders. A parent with a
+closed gradient and a differenced Hessian sends this whole method to
 [`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md),
 because carrying an exact first order onto an approximate second would
 not make the second exact.

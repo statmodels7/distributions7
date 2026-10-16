@@ -5,10 +5,10 @@ log-mass with respect to \\\mu\\ and \\\sigma\\, one value per
 observation, in closed form. In the shapes each second derivative is a
 difference of trigammas, \$\$\dfrac{\partial^2 \ell}{\partial \alpha^2}
 = \psi_1(y+\alpha) - \psi_1(\alpha) - \psi_1(n+S) + \psi_1(S), \qquad S
-= \alpha + \beta,\$\$ and the **mixed** shape component carries only the
-\\S\\ part, \\-\psi_1(n+S) + \psi_1(S)\\, the two shapes entering the
-mass separately otherwise. The reported components follow by the
-two-variable chain rule of \\(\alpha, \beta) = (\mu/\sigma,
+= \alpha + \beta,\$\$ and the mixed shape component carries only the
+\\S\\ part, \\-\psi_1(n+S) + \psi_1(S)\\, because the two shapes
+otherwise enter the mass separately. The reported components follow by
+the two-variable chain rule of \\(\alpha, \beta) = (\mu/\sigma,
 (1-\mu)/\sigma)\\, whose own second derivatives contribute the rest.
 This route is taken for \\\sigma \ge 0.1\\; for \\\sigma \< 0.1\\ the
 components are the direct sums of order two given on
@@ -40,8 +40,8 @@ the output, so the result does not depend on the thread count.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 

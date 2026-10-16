@@ -5,11 +5,10 @@ log-density, one value per observation, in closed form:
 \$\$\ell^{(\mu\mu)} = -\kappa\cos(y-\mu), \qquad \ell^{(\mu\kappa)} =
 \sin(y-\mu), \qquad \ell^{(\kappa\kappa)} = -A'(\kappa),\$\$ with
 \\A(\kappa) = I_1(\kappa)/I_0(\kappa)\\. The pure-concentration entry is
-**free of the data**: the log-density is \\\kappa\cos(y-\mu) -
-\log\\2\pi I_0(\kappa)\\\\, linear in \\\kappa\\ apart from the
-normalizing constant, so its second derivative in \\\kappa\\ comes from
-\\\log I_0\\ alone. It therefore equals its own expectation at every
-observation.
+free of the data: the log-density is \\\kappa\cos(y-\mu) - \log\\2\pi
+I_0(\kappa)\\\\, linear in \\\kappa\\ apart from the normalizing
+constant, so its second derivative in \\\kappa\\ comes from \\\log I_0\\
+alone. It therefore equals its own expectation at every observation.
 
 \\A'\\ comes from
 [`numericals7::bessel_i_ratio_d1()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html),
@@ -38,8 +37,8 @@ definite. The components are computed by a compiled kernel.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -49,7 +48,7 @@ definite. The components are computed by a compiled kernel.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

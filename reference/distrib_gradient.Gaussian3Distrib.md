@@ -4,8 +4,8 @@ Computes the first derivatives of the Gaussian log-density with respect
 to \\\mu\\ and \\\tau\\, one value per observation, in closed form. With
 \\r = y - \mu\\, \$\$\dfrac{\partial \ell}{\partial \mu} = \tau r,
 \qquad \dfrac{\partial \ell}{\partial \tau} = \dfrac{1}{2\tau} -
-\dfrac{r^2}{2}.\$\$ The precision component is linear in \\r^2\\. That
-linearity is why every third and fourth derivative of this
+\dfrac{r^2}{2}.\$\$ The precision component is linear in \\r^2\\.
+Because of that linearity, every third and fourth derivative of this
 parametrization is free of the response. The arithmetic runs in a
 compiled kernel decomposed over the elements of the output, so the
 result does not depend on the thread count.
@@ -35,8 +35,8 @@ returns the parameter scale; the transformation happens in the generic.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -79,7 +79,7 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 1, tau = 0.25)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two closed forms are written out.
 r <- y - 1
 all.equal(g$mu, 0.25 * r)
 #> [1] TRUE

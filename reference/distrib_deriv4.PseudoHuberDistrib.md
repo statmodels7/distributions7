@@ -1,12 +1,12 @@
 # Pseudo-Huber Fourth-Order Derivatives
 
 Computes the fifteen distinct fourth derivatives of the pseudo-Huber
-log-density in \\\mu\\, \\\sigma\\ and \\\nu\\, **in closed form**, in a
+log-density in \\\mu\\, \\\sigma\\ and \\\nu\\, in closed form, in a
 compiled kernel. The Bessel functions enter through \\\nu\\ alone, and
 their derivatives come from the three routes described in
 [`distrib_deriv3.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.PseudoHuberDistrib.md).
 
-**The expected fourth derivatives have no closed form.** With
+The expected fourth derivatives have no closed form. With
 `expected = TRUE` the method calls
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
 which is the one place on this page where `approx` and `nsim` are read.
@@ -38,8 +38,8 @@ which is the one place on this page where `approx` and `nsim` are read.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 

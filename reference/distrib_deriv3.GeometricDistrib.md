@@ -3,7 +3,7 @@
 Computes the third derivative of the geometric log-mass with respect to
 the mean, in closed form. The log-mass is \\y\log\mu -
 (y+1)\log(1+\mu)\\, so every derivative is a combination of \\\mu^{-k}\\
-and \\(1+\mu)^{-k}\\ with the data entering linearly through \\y\\: the
+and \\(1+\mu)^{-k}\\, and the data enter linearly through \\y\\. The
 value is \\2(y/\mu^3 - (y+1)/(1+\mu)^3)\\.
 
 The kernel writes the bracket \\y/\mu^k - (y+1)/(1+\mu)^k\\ of order
@@ -18,8 +18,8 @@ however small \\\mu\\ is.
 
 With `expected = TRUE` the expectation is returned, obtained by
 substituting \\\mathbb{E}\[Y\] = \mu\\, which gives \\2(1 - q^2)/\mu^2\\
-with the same device. Both routes are closed form, so no quadrature is
-run and `approx` and `nsim` are ignored.
+with the same device. Both routes are closed form, so the method runs no
+quadrature and ignores `approx` and `nsim`.
 
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order.
@@ -49,12 +49,12 @@ two-parameter family carries four at this order.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both routes.
+  Ignored, because a closed form is available for both routes.
 
 - nsim:
 
@@ -103,7 +103,7 @@ all.equal((up - dn) / (2 * eps), distrib_deriv3(d, y, th)$mu_mu_mu,
           tolerance = 1e-5)
 #> [1] TRUE
 
-# The expected value is one number, the data term having been averaged out.
+# The expected value is one number because the data term is averaged out.
 unique(distrib_deriv3(d, y, th, expected = TRUE)$mu_mu_mu)
 #> [1] 0.09722222
 ```

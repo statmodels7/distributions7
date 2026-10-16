@@ -34,7 +34,7 @@ A numeric vector of `NaN`, of length
 
 ## Details
 
-What the family does have is a **median**, equal to \\\mu\\, and a
+What the family does have is a median, equal to \\\mu\\, and a
 half-interquartile range, equal to \\\sigma\\. Both are exact at every
 parameter value and both come from
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md).

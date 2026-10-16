@@ -6,7 +6,7 @@ observation, in closed form. With \\r = y - \mu\\, \$\$\ell^{(\mu\mu)} =
 -\dfrac{1}{v}, \qquad \ell^{(\mu v)} = -\dfrac{r}{v^2}, \qquad
 \ell^{(vv)} = \dfrac{1}{2v^2} - \dfrac{r^2}{v^3}.\$\$ Only the curvature
 in \\\mu\\ is free of the data; the other two vary with the residual,
-and their expectations are
+and their expectations are returned by
 [`distrib_expected_hessian.Gaussian2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gaussian2Distrib.md).
 
 ## Arguments
@@ -29,8 +29,8 @@ and their expectations are
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 

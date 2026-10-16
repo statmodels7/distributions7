@@ -1,8 +1,8 @@
 # Skew Normal Distribution Class, Centered Parametrization
 
-The S7 class of the skew normal written in its first three moments: the
-mean \\\mu\\, the standard deviation \\\sigma\\ and the skewness
-\\\gamma_1\\. It is the same law as
+This is the S7 class of the skew normal written in its first three
+moments: the mean \\\mu\\, the standard deviation \\\sigma\\ and the
+skewness \\\gamma_1\\. It is the same law as
 [SkewNormal1Distrib](https://statmodels7.github.io/distributions7/reference/SkewNormal1Distrib.md),
 reached through the map of
 [`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md),
@@ -103,7 +103,8 @@ the properties hold `"skew normal2"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewNormal2Distrib.md),

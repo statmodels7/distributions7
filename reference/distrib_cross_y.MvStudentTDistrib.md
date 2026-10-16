@@ -38,7 +38,7 @@ varies with the row, the location block carrying the observation through
 
   One of `"parameter"` (the default) or `"link"`. The method returns the
   parameter scale and the generic applies the link scale to its result.
-  The two differ here, `nu` carrying a log link by default.
+  The two differ here, because `nu` carries a log link by default.
 
 - ...:
 

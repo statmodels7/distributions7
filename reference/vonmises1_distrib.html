@@ -17,7 +17,7 @@ from a Bessel series in place of the quadrature the base class would use."><meta
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +54,8 @@ from a Bessel series in place of the quadrature the base class would use."><meta
 distribution for an angle, parametrized by a mean direction \(\mu\) and a
 concentration \(\kappa &gt; 0\). The returned object carries closed-form
 derivatives of the log-density to fourth order in the parameters and in the
-response, a closed-form expected information, and a <strong>distribution function
-from a Bessel series</strong> in place of the quadrature the base class would use.</p>
+response, a closed-form expected information, and a distribution function
+from a Bessel series in place of the quadrature the base class would use.</p>
     </div>
 
     <div class="section level2">
@@ -115,8 +115,8 @@ and every second derivative is closed form, with
 \(A'\) and the higher derivatives of \(A\) from a power series for
 small \(\kappa\), where that identity cancels, and from the identity in
 extended precision or an asymptotic series above. Since
-\(\mathbb{E}[\sin(Y-\mu)] = 0\) by symmetry, <strong>the two parameters are
-orthogonal</strong>: the expected information is diagonal, and Fisher scoring
+\(\mathbb{E}[\sin(Y-\mu)] = 0\) by symmetry, the two parameters are
+orthogonal: the expected information is diagonal, and Fisher scoring
 updates the direction and the concentration independently.</p>
 <p>\(A(\kappa)\) is the mean resultant length, so \(A'(\kappa)\) is the
 variance of \(\cos(Y-\mu)\) and is positive, which keeps the information
@@ -129,7 +129,7 @@ and two or more \(\kappa\) is exactly zero.</p>
     <h2 id="the-moments-a-generic-returns-are-not-the-circular-ones">The moments a generic returns are not the circular ones<a class="anchor" aria-label="anchor" href="#the-moments-a-generic-returns-are-not-the-circular-ones"></a></h2>
     <p><code><a href="mean.distrib.html">mean.distrib()</a></code>, <code><a href="variance.html">variance()</a></code>, <code><a href="skewness.html">skewness()</a></code> and <code><a href="kurtosis.html">kurtosis()</a></code> are the
 ordinary moments of \(Y\) as a number on \([-\pi, \pi)\), obtained
-numerically. They are <strong>not</strong> the circular quantities that \(\mu\) and
+numerically. They are not the circular quantities that \(\mu\) and
 \(\kappa\) describe. \(\mu\) is the mean <em>direction</em>, and
 \(\mathbb{E}[Y] \ne \mu\) whenever \(\mu \ne 0\), because the interval
 is cut at \(\pm\pi\) rather than at \(\mu \pm \pi\) and the density is
@@ -157,7 +157,7 @@ numerically, once per observation; this class supplies
 <code><a href="distrib_cdf.VonMises1Distrib.html">distrib_cdf.VonMises1Distrib()</a></code> instead, a Fourier series integrated term
 by term with \(\max\{20, \lceil 8.5\sqrt{\kappa}\rceil + 10\}\) terms,
 and a quadrature of the tail where the requested tail is below
-\(10^{-6}\). The <strong>quantile</strong> comes from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>, by
+\(10^{-6}\). The quantile comes from <code><a href="continuous_distrib.html">continuous_distrib()</a></code>, by
 root finding on the logarithm of the smaller tail.</p>
     </div>
     <div class="section level2">
@@ -183,11 +183,11 @@ Wiley, Chichester.</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="vonmises2_distrib.html">vonmises2_distrib()</a></code> for the same law in the mean resultant length;
 <code><a href="gaussian1_distrib.html">gaussian1_distrib()</a></code> for the analogous family on the line, which the von
-Mises approaches at a large concentration;
-<code><a href="https://statmodels7.github.io/numericals7/reference/log_bessel_i.html" class="external-link">numericals7::log_bessel_i()</a></code> and <code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio.html" class="external-link">numericals7::bessel_i_ratio()</a></code> for the
-Bessel machinery; <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters;
-<code><a href="check_distrib.html">check_distrib()</a></code> to validate a family of your own against the same battery
-this one passes; <a href="VonMises1Distrib.html">VonMises1Distrib</a> for the class.</p></div>
+Mises approaches at a large concentration; <code><a href="https://statmodels7.github.io/numericals7/reference/log_bessel_i.html" class="external-link">numericals7::log_bessel_i()</a></code> and
+<code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio.html" class="external-link">numericals7::bessel_i_ratio()</a></code> for the Bessel machinery; <code><a href="fit_distrib.html">fit_distrib()</a></code> to
+estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a family of your own
+against the same battery that this one passes; <a href="VonMises1Distrib.html">VonMises1Distrib</a> for the
+class.</p></div>
     </div>
 
     <div class="section level2">

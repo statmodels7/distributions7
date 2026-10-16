@@ -1,14 +1,14 @@
 # Exponential Distribution Class
 
-The S7 class of the exponential family parametrized by its **mean**
+This is the S7 class of the exponential family parametrized by its mean
 \\\mu \> 0\\, with density \\f(y) = \mu^{-1}e^{-y/\mu}\\ on \\\[0,
 \infty)\\. It inherits from `continuous_distrib`, so every generic of
 the `distrib` class applies to it; the methods listed below are
 registered on it directly.
 
 The family has a single parameter, as does the chi-squared family, so
-every derivative array it returns has one component per order and its
-information is a number.
+every derivative array that it returns has one component per order and
+its information is a number.
 
 The parametrization is by the mean, not by the rate: R's own `dexp`
 takes `rate`, and the methods pass `rate = 1/mu`. The mean is the scale
@@ -102,7 +102,8 @@ they hold `"exponential"`, `"univariate"`, `c(0, Inf)`, `"mu"`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ExponentialDistrib.md),
@@ -174,7 +175,7 @@ d <- exponential_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# One parameter, the mean, on the positive half line.
+# The family has one parameter, the mean, on the positive half line.
 d@params
 #> [1] "mu"
 d@n_params

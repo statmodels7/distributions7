@@ -3,8 +3,8 @@
 Computes the gamma quantile function, the inverse of the regularized
 incomplete gamma function in its argument, by calling
 [`stats::qgamma()`](https://rdrr.io/r/stats/GammaDist.html) at shape
-\\\alpha = \mu^2/\sigma^2\\ and rate \\\lambda = \mu/\sigma^2\\. There
-is no elementary closed form;
+\\\alpha = \mu^2/\sigma^2\\ and rate \\\lambda = \mu/\sigma^2\\. The
+quantile function has no elementary closed form;
 [`qgamma()`](https://rdrr.io/r/stats/GammaDist.html) inverts the
 distribution function numerically. The gamma distribution function is
 strictly increasing on \\(0, \infty)\\, so the round trip through
@@ -38,8 +38,8 @@ returns `p`.
 - log.p:
 
   Logical of length 1. When `TRUE` the values in `p` are read as
-  logarithms of probabilities, which is how a quantile deep in a tail is
-  requested without the probability underflowing. Defaults to `FALSE`.
+  logarithms of probabilities, so that a quantile deep in a tail can be
+  requested without underflow in the probability. Defaults to `FALSE`.
 
 - ...:
 
@@ -65,7 +65,8 @@ for the generic.
 d <- gamma2_distrib()
 th <- list(mu = 3, sigma2 = 2)
 
-# A central 95 percent interval, visibly asymmetric about the mean of 3.
+# This is a central 95 percent interval, visibly asymmetric about the mean
+# of 3.
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #> [1] 0.9001298 2.7809442 6.3409226
 
@@ -74,7 +75,7 @@ p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #> [1] TRUE
 
-# The median falls below the mean, the gamma being right skewed.
+# The median falls below the mean because the gamma is right skewed.
 c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 #>   median     mean 
 #> 2.780944 3.000000 

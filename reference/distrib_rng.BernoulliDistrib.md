@@ -20,9 +20,9 @@ Draws `n` independent zero-one variates by calling
 
   A named list with the single component `mu`, a numeric vector of
   length 1 or of length `n`. A value of length 1 is recycled, so a
-  vector of length `n` draws one variate per probability, the shape a
-  regression on a Bernoulli response supplies. `mu` must lie in \\(0,
-  1)\\.
+  vector of length `n` draws one variate per probability, which is the
+  shape that a regression on a Bernoulli response supplies. `mu` must
+  lie in \\(0, 1)\\.
 
 - ...:
 
@@ -58,7 +58,7 @@ c(proportion = mean(z), variance = var(z), p_times_q = 0.3 * 0.7)
 #> proportion   variance  p_times_q 
 #>  0.3010500  0.2104294  0.2100000 
 
-# A probability per observation, which is what a regression supplies.
+# The probability varies by observation, as it does in a regression.
 set.seed(5)
 p <- plogis(seq(-2, 2, length.out = 6))
 rbind(p = round(p, 3), draw = distrib_rng(d, 6, list(mu = p)))

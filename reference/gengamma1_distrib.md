@@ -3,7 +3,7 @@
 Builds a generalized gamma distribution object in Stacy's form, with a
 scale \\a \> 0\\ and two shapes \\d \> 0\\ and \\p \> 0\\. The family
 contains the gamma, the Weibull and the exponential as special cases, so
-the choice among them can be made by estimating \\d\\ and \\p\\.
+estimates of \\d\\ and \\p\\ show which of them the data support.
 
 ## Usage
 
@@ -67,11 +67,11 @@ Stacy's parametrization is chosen to make these visible:
 
 - \\a = \sqrt2\\, \\d = 1\\, \\p = 2\\ is the half-normal;
 
-- \\p \to 0\\ with \\d/p\\ held large approaches the
+- \\p \to 0\\ while \\d/p\\ is kept large approaches the
   [lognormal](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md).
 
 The first four are exact and are checked in the examples. The fifth is a
-limit, reached at no admissible value.
+limit and is not attained at any admissible parameter value.
 
 ## Score and information
 
@@ -79,12 +79,12 @@ With \\w = (y/a)^{p}\\, \\L = \log(y/a)\\ and \\k = d/p\\,
 \$\$\dfrac{\partial\ell}{\partial a} = \dfrac{pw-d}{a}, \qquad
 \dfrac{\partial\ell}{\partial d} = L - \dfrac{\psi(k)}{p}, \qquad
 \dfrac{\partial\ell}{\partial p} = \dfrac{1}{p} +
-\dfrac{d\psi(k)}{p^{2}} - wL,\$\$ and the expected information is
-**closed form**, because \\u = (Y/a)^p\\ is Gamma with shape \\k\\ and
-unit rate, so every expectation the Hessian needs is one of \\E\[u\] =
-k\\, \\E\[u\log u\] = k\psi(k+1)\\ and \\E\[u(\log u)^2\] =
-k\\\psi(k+1)^2 + \psi'(k+1)\\\\. The same representation gives the
-distribution function, the quantile function and the generator.
+\dfrac{d\psi(k)}{p^{2}} - wL,\$\$ and the expected information is closed
+form, because \\u = (Y/a)^p\\ is Gamma with shape \\k\\ and unit rate,
+so every expectation that the Hessian needs is one of \\E\[u\] = k\\,
+\\E\[u\log u\] = k\psi(k+1)\\ and \\E\[u(\log u)^2\] = k\\\psi(k+1)^2 +
+\psi'(k+1)\\\\. The same representation gives the distribution function,
+the quantile function and the generator.
 
 ## Moments
 
@@ -94,7 +94,7 @@ parameter value.
 
 ## Identification
 
-The three parameters are **weakly identified together**: \\d\\ and \\p\\
+The three parameters are weakly identified together: \\d\\ and \\p\\
 enter the density largely through their ratio, and the profile
 likelihood in that direction is flat (at \\a = 2, d = 3, p = 1.5\\ the
 eigenvalues of the information are 4.72, 0.138 and 0.00321, with the
@@ -124,7 +124,7 @@ of Mathematical Statistics* 33, 1187-1192.
 [`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md)
 and
 [`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md)
-for the families it nests or approaches,
+for the families that it nests or approaches,
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
 for holding a shape, and
 [GenGamma1Distrib](https://statmodels7.github.io/distributions7/reference/GenGamma1Distrib.md)
@@ -141,7 +141,7 @@ th <- list(a = 2, d = 3, p = 1.5)
 distrib_pdf(d, c(0.5, 2, 5), th)
 #> [1] 0.04136704 0.27590958 0.08999981
 
-# The four exact special cases, at three points each.
+# The four exact special cases are compared at three points each.
 y <- c(0.5, 2, 5)
 c(gamma = max(abs(distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
                   dgamma(y, shape = 3, scale = 2))),
@@ -154,13 +154,13 @@ c(gamma = max(abs(distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
 #>        gamma      weibull  exponential  half_normal 
 #> 2.775558e-17 5.551115e-17 2.775558e-17 1.110223e-16 
 
-# The moment formula.
+# The moment formula is compared with the mean method.
 c(closed = 2 * gamma((3 + 1) / 1.5) / gamma(3 / 1.5), ours = mean(d, th))
 #>   closed     ours 
 #> 3.009151 3.009151 
 
-# Two fits at two sizes: the standard errors say how much data the three
-# parameters want.
+# Two fits at two sample sizes show, through the standard errors, how much
+# data a fit of the three parameters requires.
 for (n in c(200, 2000)) {
   set.seed(52)
   f <- fit_distrib(d, distrib_rng(d, n, th))

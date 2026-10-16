@@ -7,13 +7,13 @@ observation, in closed form: \$\$\ell^{(\mu\mu)} = -\dfrac{3y -
 2(y-\mu)^2/(\mu^2 y)}{2\phi^3}, \qquad \ell^{(\mu\phi)} = -\dfrac{y -
 \mu}{\phi^2\mu^3}.\$\$
 
-**Neither diagonal entry is negative at every observation.** The
-curvature in \\\mu\\ turns positive wherever \\y \< 2\mu/3\\, and the
-curvature in \\\phi\\ is negative only where \\\phi \< 2(y-\mu)^2/(\mu^2
-y)\\, so at \\y = \mu\\ it is \\+1/(2\phi^2)\\. An observation near the
-mean therefore contributes positive curvature in the dispersion, and a
-Newton step taken on the observed Hessian can move the wrong way. The
-expected Hessian is negative definite everywhere, which is why
+Neither diagonal entry is negative at every observation. The curvature
+in \\\mu\\ turns positive wherever \\y \< 2\mu/3\\, and the curvature in
+\\\phi\\ is negative only where \\\phi \< 2(y-\mu)^2/(\mu^2 y)\\, so at
+\\y = \mu\\ it is \\+1/(2\phi^2)\\. An observation near the mean
+therefore contributes positive curvature in the dispersion, and a Newton
+step taken on the observed Hessian can move the wrong way. The expected
+Hessian is negative definite everywhere, which is why
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
 is the more stable route here; see
 [`distrib_expected_hessian.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.InvGauss1Distrib.md).
@@ -38,8 +38,8 @@ is the more stable route here; see
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 

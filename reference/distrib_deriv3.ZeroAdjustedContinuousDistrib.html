@@ -23,7 +23,7 @@ check_distrib() tests it correctly: the density integrates to
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,12 +56,12 @@ check_distrib() tests it correctly: the density integrates to
     </div>
 
     <div class="ref-description section level2">
-    <p>A continuous parent puts <strong>no</strong> mass at zero, so there is nothing to
+    <p>A continuous parent puts no mass at zero, so there is nothing to
 truncate away and no normalizing constant to differentiate. Away from the
 atom the log-likelihood is \(\log(1 - \pi) + \ell(y;\theta)\): the
 \(\theta\) derivatives are the parent's unchanged, and every component
 mixing <code>za</code> with a parent parameter is exactly zero.</p>
-<p>The object is a <strong>mixed</strong> distribution, a density on the positive line plus
+<p>The object is a mixed distribution, a density on the positive line plus
 an atom at zero, and it declares that atom through <code><a href="distrib_atoms.html">distrib_atoms()</a></code>, so
 <code><a href="check_distrib.html">check_distrib()</a></code> tests it correctly: the density integrates to
 \(1 - \pi\), not to 1.</p>

@@ -145,7 +145,7 @@ for the support enumeration;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the probabilities;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
+to validate a family of your own against the same battery that this one
 passes;
 [MultinomialDistrib](https://statmodels7.github.io/distributions7/reference/MultinomialDistrib.md)
 for the class.

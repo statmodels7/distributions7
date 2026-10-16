@@ -1,8 +1,8 @@
 # S7 Classes for the Two Multivariate Gaussian Parametrizations
 
 `MvGaussian1Distrib` is the family whose matrix parametrization is the
-**covariance** and `MvGaussian2Distrib` the family whose matrix
-parametrization is the **precision**. Both inherit from
+covariance and `MvGaussian2Distrib` the family whose matrix
+parametrization is the precision. Both inherit from
 [MvGaussianDistrib](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md),
 which carries every method; the two differ in what their free values
 describe, and the computations are shared.

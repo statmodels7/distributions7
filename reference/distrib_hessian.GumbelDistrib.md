@@ -6,7 +6,7 @@ closed form. With \\z = (y-\mu)/\sigma\\ and \\w = e^{-z}\\,
 \$\$\ell^{(\mu\mu)} = -\dfrac{w}{\sigma^2}, \qquad \ell^{(\mu\sigma)} =
 -\dfrac{1 - w + zw}{\sigma^2}, \qquad \ell^{(\sigma\sigma)} = \dfrac{1 -
 2z + 2zw - z^2 w}{\sigma^2}.\$\$ The curvature in the location is
-negative at every observation, \\w\\ being positive, so the
+negative at every observation because \\w\\ is positive, so the
 log-likelihood is concave in \\\mu\\ at any data set. The curvature in
 the scale is not: it is positive wherever \\1 - 2z + 2zw - z^2w \> 0\\,
 which includes \\y = \mu\\.
@@ -31,8 +31,8 @@ which includes \\y = \mu\\.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -42,7 +42,7 @@ which includes \\y = \mu\\.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -86,7 +86,7 @@ h
 #> [1]  4.436564  0.000000 -1.000000
 #> 
 
-# The three closed forms, written out.
+# The three closed forms are written out.
 z <- (y - 0) / 1
 w <- exp(-z)
 all.equal(h$mu_mu, -w)
@@ -96,7 +96,8 @@ all.equal(h$mu_sigma, -(1 - w + z * w))
 all.equal(h$sigma_sigma, 1 - 2 * z + 2 * z * w - z^2 * w)
 #> [1] TRUE
 
-# Concave in mu everywhere, and positive in sigma at y = mu.
+# The log-density is concave in mu everywhere, and the curvature in sigma
+# is positive at y = mu.
 c(all_negative_in_mu = all(h$mu_mu < 0),
   sigma_at_mu = distrib_hessian(d, 0, th)$sigma_sigma)
 #> all_negative_in_mu        sigma_at_mu 

@@ -5,18 +5,18 @@ is
 Gamma with shape \(k = d/p\) and unit rate:
 $$E[u] = k, \qquad E[u\log u] = k\,\psi(k+1), \qquad
       E[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}.$$
-So approx and nsim are ignored and expected_hessian_exact() answers
-TRUE. It is the same device the Weibull and the Gumbel use, where the
-corresponding variable is standard exponential and the expectations are
+So approx and nsim are ignored and expected_hessian_exact() returns
+TRUE. The Weibull and the Gumbel use the same device, with a standard
+exponential variable as the corresponding variable and the expectations as
 derivatives of \(\Gamma\) at 2."><meta property="og:description" content="Returns the expected second derivatives in closed form. Every expectation
 that the observed Hessian requires is a moment of \(u = (Y/a)^{p}\), which
 is
 Gamma with shape \(k = d/p\) and unit rate:
 $$E[u] = k, \qquad E[u\log u] = k\,\psi(k+1), \qquad
       E[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}.$$
-So approx and nsim are ignored and expected_hessian_exact() answers
-TRUE. It is the same device the Weibull and the Gumbel use, where the
-corresponding variable is standard exponential and the expectations are
+So approx and nsim are ignored and expected_hessian_exact() returns
+TRUE. The Weibull and the Gumbel use the same device, with a standard
+exponential variable as the corresponding variable and the expectations as
 derivatives of \(\Gamma\) at 2."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -25,7 +25,7 @@ derivatives of \(\Gamma\) at 2."><meta property="og:image" content="https://stat
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,9 +64,9 @@ is
 Gamma with shape \(k = d/p\) and unit rate:
 $$E[u] = k, \qquad E[u\log u] = k\,\psi(k+1), \qquad
       E[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}.$$
-So <code>approx</code> and <code>nsim</code> are ignored and <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> answers
-<code>TRUE</code>. It is the same device the Weibull and the Gumbel use, where the
-corresponding variable is standard exponential and the expectations are
+So <code>approx</code> and <code>nsim</code> are ignored and <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> returns
+<code>TRUE</code>. The Weibull and the Gumbel use the same device, with a standard
+exponential variable as the corresponding variable and the expectations as
 derivatives of \(\Gamma\) at 2.</p>
     </div>
 
@@ -96,8 +96,8 @@ transformation is applied in the generic's body.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored: the expectation is closed form. Accepted so that the
-signature matches the generic's.</p></dd>
+<dd><p>Ignored: the expectation is closed form. It is accepted so that
+the signature matches the generic's.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -137,9 +137,9 @@ direction.</p>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>\(k = d/p\), \(\psi\) and \(\psi'\) the digamma and trigamma
-functions, and \(u = (Y/a)^p\) the Gamma-distributed transformation the
-family is built on.</p>
+<p>Here \(k = d/p\), \(\psi\) and \(\psi'\) are the digamma and trigamma
+functions, and \(u = (Y/a)^p\) is the Gamma-distributed transformation on
+which the family is built.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -156,12 +156,13 @@ family is built on.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "a_a" "d_d" "p_p" "a_d" "a_p" "d_p"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The scale-shape entry is the observed one, -1/a, the term being bilinear.</span></span></span>
+<span class="r-in"><span><span class="co"># The scale-shape entry is the observed one, -1/a, because the term is</span></span></span>
+<span class="r-in"><span><span class="co"># bilinear.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>expected <span class="op">=</span> <span class="va">e</span><span class="op">$</span><span class="va">a_d</span>, observed <span class="op">=</span> <span class="op">-</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expected observed </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     -0.5     -0.5 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The strategy argument is ignored, the expectation being closed form.</span></span></span>
+<span class="r-in"><span><span class="co"># The strategy argument is ignored, because the expectation is closed form.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">e</span>, <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>, <span class="va">th</span>, approx <span class="op">=</span> <span class="st">"mc"</span>, nsim <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="expected_hessian_exact.html">expected_hessian_exact</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
@@ -175,7 +176,7 @@ family is built on.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>eigenvalues <span class="op">=</span> <span class="va">ev</span><span class="op">$</span><span class="va">values</span>, condition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">ev</span><span class="op">$</span><span class="va">values</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">ev</span><span class="op">$</span><span class="va">values</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> eigenvalues1 eigenvalues2 eigenvalues3    condition </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4.721041e+00 1.379646e-01 3.211472e-03 1.470055e+03 </span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">ev</span><span class="op">$</span><span class="va">vectors</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span>   <span class="co"># the flat direction</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">ev</span><span class="op">$</span><span class="va">vectors</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span>   <span class="co"># this is the flat direction</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.791 -0.517  0.327</span>
 </code></pre></div>
     </div>

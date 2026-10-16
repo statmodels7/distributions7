@@ -9,9 +9,9 @@ too.
 
 The two beta functions are of magnitude
 \\(\alpha+\beta)\log(\alpha+\beta)\\ while their difference is of order
-one, so writing the mass as that difference loses every digit at a small
-\\\sigma\\. The compiled kernel switches to a sum of logarithms instead,
-the shifts being integers, and stays exact to the binomial limit.
+one, so a mass computed as that difference loses every digit at a small
+\\\sigma\\. The compiled kernel uses a sum of logarithms instead,
+because the shifts are integers, and stays exact to the binomial limit.
 
 ## Arguments
 

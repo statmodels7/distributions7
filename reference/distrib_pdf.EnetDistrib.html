@@ -29,7 +29,7 @@ argument reaches \(10^6\)."><meta property="og:image" content="https://statmodel
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -135,13 +135,13 @@ Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/integrate.html" class="external-link">integrate</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">u</span><span class="op">)</span> <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">u</span>, <span class="va">th</span><span class="op">)</span>, <span class="op">-</span><span class="cn">Inf</span>, <span class="cn">Inf</span><span class="op">)</span><span class="op">$</span><span class="va">value</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The kernel written out, up to the constant.</span></span></span>
+<span class="r-in"><span><span class="co"># The density equals the kernel written out, up to a constant.</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span> <span class="op">/</span></span></span>
 <span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">*</span> <span class="va">y</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>     <span class="co"># a = c = 1 at alpha = 0.5</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">r</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The two ends, approached to ten figures.</span></span></span>
+<span class="r-in"><span><span class="co"># The two ends are approached to ten figures.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fl">1e-10</span>, <span class="fl">1e-10</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      enet <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.7</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, lambda <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>                                        alpha <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="fl">1e-10</span><span class="op">)</span><span class="op">)</span>,</span></span>

@@ -1,20 +1,21 @@
 # Binomial Distribution Class
 
-The S7 class of the binomial family: the number of successes in `size`
-independent trials, each succeeding with probability \\\mu \in (0, 1)\\.
-It inherits from `discrete_distrib`, so expectations over its support
-are sums and no derivative with respect to the response is defined.
+This is the S7 class of the binomial family: the number of successes in
+`size` independent trials, where each trial succeeds with probability
+\\\mu \in (0, 1)\\. It inherits from `discrete_distrib`, so expectations
+over its support are sums and the class defines no derivative with
+respect to the response.
 
 The class adds one property to the parent's, `size`, and that property
-is the reason it is documented separately from
+is the reason that the class is documented separately from
 [`bernoulli_distrib()`](https://statmodels7.github.io/distributions7/reference/bernoulli_distrib.md):
-**`size` is a constant of the object, not a parameter**. It is not
+`size` is a constant of the object, not a parameter. It is not
 estimated, it carries no link and no bound, and it does not appear in
 `params`. It may be a single number or one value per observation, which
-is how grouped binary data with unequal group sizes is described.
+describes grouped binary data with unequal group sizes.
 
-The default link is the logit, the **canonical** link here: on its scale
-the observed and the expected information coincide.
+The default link is the logit, the canonical link here: on its scale the
+observed and the expected information coincide.
 
 Build one with
 [`binomial_distrib()`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md).
@@ -98,7 +99,7 @@ BinomialDistrib(
 
   A numeric vector, the number of trials. A single value applies to
   every observation; a vector of the length of the response gives one
-  count of trials per observation. Not a parameter: it is fixed data,
+  count of trials per observation. It is fixed data and not a parameter,
   and the object stores it in the `size` property.
 
 ## Value
@@ -111,11 +112,12 @@ An S7 object of class `BinomialDistrib`, inheriting from
 [`binomial_distrib()`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md)
 they hold `"binomial"`, `"univariate"`, `c(0, max(size))`, `"mu"`,
 `c(mu = "probability")`, `1`, the domain \\(0, 1)\\, the one link, and
-the `size` given.
+the supplied `size`.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.BinomialDistrib.md),

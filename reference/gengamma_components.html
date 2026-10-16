@@ -13,7 +13,7 @@ from the five pieces of the log-density."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,15 +87,15 @@ recycled length of the inputs.</p>
     <p>With \(L = \log(y/a)\) the log-density splits into
 $$\ell = \log p - d\log a - \log\Gamma(d/p) + (d-1)\log y - e^{pL},$$
 and each piece is either elementary or a univariate function composed with a
-<strong>two-variable</strong> inner map, which the written-out template of <code><a href="fdb2.html">fdb2()</a></code>
+two-variable inner map, which the written-out template of <code><a href="fdb2.html">fdb2()</a></code>
 covers.</p>
-<p>What keeps the sum from growing is that the two compositions do not share a
+<p>The sum does not grow, because the two compositions do not share a
 variable pair: \(-\log\Gamma(d/p)\) involves \((d, p)\) and
 \(-e^{pL}\) involves \((a, p)\). Every component of the three-variable
 derivative is therefore one term of one composition plus the elementary
-pieces, and no genuinely three-variable expansion is ever formed. A
-component naming both \(a\) and \(d\) comes from the elementary
-\(-d\log a\) alone.</p>
+pieces, and the assembly never forms a genuinely three-variable expansion.
+A component that names both \(a\) and \(d\) comes only from the
+elementary term \(-d\log a\).</p>
 <p>The tests compare the assembly at orders one to four with the compiled
 kernels of <code><a href="distrib_gradient.GenGamma1Distrib.html">distrib_gradient.GenGamma1Distrib()</a></code>,
 <code><a href="distrib_hessian.GenGamma1Distrib.html">distrib_hessian.GenGamma1Distrib()</a></code> and the orders three and four, which
@@ -105,7 +105,7 @@ loses accuracy, since it evaluates \(\psi^{(n)}(k)\) near its pole.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_deriv3.GenGamma1Distrib.html">distrib_deriv3.GenGamma1Distrib()</a></code> for the compiled kernels
-this assembly is checked against;
+against which this assembly is checked;
 <code><a href="fdb2.html">fdb2()</a></code> for the two-variable composition template; and
 <code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code> for the family.</p></div>
     </div>

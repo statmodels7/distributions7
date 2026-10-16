@@ -1,7 +1,7 @@
 # Pseudo-Huber Third-Order Derivatives
 
 Computes the ten distinct third derivatives of the pseudo-Huber
-log-density in \\\mu\\, \\\sigma\\ and \\\nu\\, **in closed form**, in a
+log-density in \\\mu\\, \\\sigma\\ and \\\nu\\, in closed form, in a
 compiled kernel. Every component but the pure-\\\nu\\ one is a rational
 function of \\r = y - \mu\\, \\\sigma\\ and \\D = \sqrt{\nu +
 (r/\sigma)^2}\\; Bessel functions enter through \\\nu\\ alone. The
@@ -14,7 +14,7 @@ in \\\log t\\; and from \\\nu = 400\\ the asymptotic series of \\K_1\\,
 differentiated term by term in powers of \\\nu^{-1/2}\\. The same routes
 serve the score, the Hessian and the fourth order.
 
-**The expected third derivatives have no closed form.** With
+The expected third derivatives have no closed form. With
 `expected = TRUE` the method calls
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
 which integrates the observed derivatives against the density by the
@@ -48,8 +48,8 @@ strategy `approx` names. That is the one place on this page where
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 

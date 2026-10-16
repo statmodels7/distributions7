@@ -5,8 +5,8 @@ the probability, in closed form: \$\$\dfrac{\partial^3 \ell}{\partial
 \mu^3} = \dfrac{2y}{\mu^3} - \dfrac{2(1-y)}{(1-\mu)^3}.\$\$ With
 `expected = TRUE` the expectation is returned, obtained by substituting
 \\\mathbb{E}\[Y\] = \mu\\, which gives \\2/\mu^2 - 2/(1-\mu)^2\\. Both
-routes are closed form, so no quadrature is run and `approx` and `nsim`
-are ignored.
+routes are closed form, so the method runs no quadrature and ignores
+`approx` and `nsim`.
 
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order.
@@ -36,13 +36,13 @@ two-parameter family carries four at this order.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both the observed and the
-  expected value.
+  Ignored, because a closed form is available for both the observed and
+  the expected value.
 
 - nsim:
 
@@ -83,12 +83,13 @@ d <- bernoulli_distrib()
 y <- c(0, 1, 1)
 th <- list(mu = 0.3)
 
-# The closed form, written out.
+# The method agrees with the closed form written out.
 all.equal(distrib_deriv3(d, y, th)$mu_mu_mu,
           2 * y / 0.3^3 - 2 * (1 - y) / 0.7^3)
 #> [1] TRUE
 
-# The expected value, and zero at mu = 1/2 by symmetry.
+# The expected value agrees with its closed form, and it is zero at
+# mu = 1/2 by symmetry.
 unique(distrib_deriv3(d, y, th, expected = TRUE)$mu_mu_mu)
 #> [1] 18.14059
 2 / 0.3^2 - 2 / 0.7^2

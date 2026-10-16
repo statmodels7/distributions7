@@ -47,13 +47,13 @@ function at even arguments. `approx` and `nsim` are ignored.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
   One of `"integrate"` (the default), `"bartlett"`, `"mc"` or `"opg"`.
-  Ignored, a closed form being available for the expected values;
+  Ignored, because a closed form is available for the expected values;
   accepted so that the signature matches the generic's.
 
 - nsim:

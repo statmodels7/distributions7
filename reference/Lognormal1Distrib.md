@@ -1,9 +1,9 @@
 # Lognormal Distribution Class
 
-The S7 class of the lognormal family on \\(0, \infty)\\: the law of a
-variable whose logarithm is Gaussian with mean \\\mu\\ and variance
-\\\sigma^2 \> 0\\. Both parameters live **on the log scale**, so neither
-is the mean or the variance of \\Y\\ itself. It inherits from
+This is the S7 class of the lognormal family on \\(0, \infty)\\: the law
+of a variable whose logarithm is Gaussian with mean \\\mu\\ and variance
+\\\sigma^2 \> 0\\. Both parameters live on the log scale, so neither is
+the mean or the variance of \\Y\\ itself. It inherits from
 `continuous_distrib`, so every generic of the `distrib` class applies to
 it; the methods listed below are registered on it directly and
 everything else comes from the parent.
@@ -99,7 +99,8 @@ they hold `"lognormal1"`, `"univariate"`, `c(0, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Lognormal1Distrib.md),
@@ -172,7 +173,8 @@ d <- lognormal1_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "mu"     "sigma2"
 d@params_bounds

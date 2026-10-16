@@ -11,7 +11,7 @@ over the support."><meta property="og:image" content="https://statmodels7.github
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,7 +88,7 @@ over the support.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><strong>NB1.</strong> The expected information is \(-A\), \(G\) and \(-\theta
+    <p>NB1. The expected information is \(-A\), \(G\) and \(-\theta
 G/\mu\), with \(A\) and \(G = \mathbb{E}[\ell_{\theta\theta}]\) the two
 sums over the support of <code><a href="distrib_expected_hessian.NegBin1Distrib.html">distrib_expected_hessian.NegBin1Distrib()</a></code>; below
 \(\theta = 0.02\) \(G\) is \(-\mathbb{E}[\sum_{j&lt;Y} j^2/(\mu +
@@ -100,7 +100,7 @@ f(s_c s_e + h_{ce})]\), taken in \((\mu, \theta)\) by a compiled kernel,
 with the scores \(s\) and second derivatives \(h\) of the log-mass
 written so that no term of order \(\mu/\theta^2\) is formed. Every
 component keeps its accuracy down to the Poisson limit \(\theta \to 0\).</p>
-<p><strong>Beta-binomial.</strong> The support \(\{0, \dots, n\}\) is finite, so the
+<p>Beta-binomial. The support \(\{0, \dots, n\}\) is finite, so the
 identities
 $$\partial_c \mathbb{E}[\ell_{ab}] = \mathbb{E}[\ell_{abc} + \ell_{ab}\ell_c]$$
 and its second-order counterpart,

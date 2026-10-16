@@ -7,10 +7,9 @@ order, in the parameters and in the response, and closed-form moments. The
 fifth order and the mixed derivatives of order three and four in the
 response and the parameters come from the numerical fallbacks of the base
 class.
-The two arguments choose the links that carry each parameter to the
+The two arguments specify the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm,
-both parameters being positive."><meta property="og:description" content="Builds the distribution object for the gamma family parametrized by its mean
+logarithm, because both parameters are positive."><meta property="og:description" content="Builds the distribution object for the gamma family parametrized by its mean
 \(\mu &amp;gt; 0\) and its variance \(\sigma^2 &amp;gt; 0\), so that the shape is
 \(\alpha = \mu^2/\sigma^2\) and the rate \(\lambda = \mu/\sigma^2\). The
 returned object carries closed-form derivatives of the log-density to fourth
@@ -18,10 +17,9 @@ order, in the parameters and in the response, and closed-form moments. The
 fifth order and the mixed derivatives of order three and four in the
 response and the parameters come from the numerical fallbacks of the base
 class.
-The two arguments choose the links that carry each parameter to the
+The two arguments specify the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm,
-both parameters being positive."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+logarithm, because both parameters are positive."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +27,7 @@ both parameters being positive."><meta property="og:image" content="https://stat
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,10 +68,9 @@ order, in the parameters and in the response, and closed-form moments. The
 fifth order and the mixed derivatives of order three and four in the
 response and the parameters come from the numerical fallbacks of the base
 class.</p>
-<p>The two arguments choose the links that carry each parameter to the
+<p>The two arguments specify the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm,
-both parameters being positive.</p>
+logarithm, because both parameters are positive.</p>
     </div>
 
     <div class="section level2">
@@ -118,10 +115,11 @@ function its numerical inverse. The mean is \(\mu\), the variance
 \(\sigma^2\), the skewness \(2\sqrt{\sigma^2}/\mu\) and the excess
 kurtosis \(6\sigma^2/\mu^2\).</p>
 <p>This is the same law as <code><a href="gamma1_distrib.html">gamma1_distrib()</a></code>, which carries the mean and a
-<em>dispersion</em>, the two being related by \(\sigma^2 = \phi\mu^2\). They are
-separate families because the second parameter is a different quantity in
+<em>dispersion</em>, and the variance and the dispersion are related by
+\(\sigma^2 = \phi\mu^2\). The two are separate families because the second parameter is a different quantity in
 each, with its own interpretation, standard error and interval. The choice
-between them is not only cosmetic: see the next section.</p>
+between them has consequences beyond notation, which the next section
+describes.</p>
     </div>
     <div class="section level2">
     <h2 id="derivatives-and-orthogonality">Derivatives, and orthogonality<a class="anchor" aria-label="anchor" href="#derivatives-and-orthogonality"></a></h2>
@@ -142,17 +140,18 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] =
 $$\mathbb{E}\left[\ell^{(\mu\sigma^2)}\right] =
         \dfrac{2\mu\left\{\mu^2\psi_1(\alpha) - \sigma^2\right\}}
               {(\sigma^2)^3}.$$</p>
-<p><strong>The mixed entry does not vanish.</strong> The mean and the variance are not
+<p>The mixed entry does not vanish. The mean and the variance are not
 orthogonal here, so their estimates are asymptotically correlated and a
-mean equation fitted with the variance held at a wrong value is biased. In
+mean equation is biased when the variance is held at a wrong value in the
+fit. In
 <code><a href="gamma1_distrib.html">gamma1_distrib()</a></code>, where the second parameter is the dispersion
 \(\phi = \sigma^2/\mu^2\), the same entry is exactly zero.</p>
 <p>Third and fourth orders are closed form as well, observed and expected, in
 <code><a href="distrib_deriv3.Gamma2Distrib.html">distrib_deriv3.Gamma2Distrib()</a></code> and <code><a href="distrib_deriv4.Gamma2Distrib.html">distrib_deriv4.Gamma2Distrib()</a></code>, as
 are the derivatives in the response, <code><a href="distrib_grad_y.Gamma2Distrib.html">distrib_grad_y.Gamma2Distrib()</a></code> and
 <code><a href="distrib_hess_y.Gamma2Distrib.html">distrib_hess_y.Gamma2Distrib()</a></code>. The derivatives of the <em>distribution</em>
-function in the parameters have no elementary form, the derivative of an
-incomplete gamma in its shape being hypergeometric, and are computed by a
+function in the parameters have no elementary form because the derivative
+of an incomplete gamma in its shape is hypergeometric, and are computed by a
 compiled quadrature of the density times the derivatives of the
 log-density.</p>
     </div>
@@ -186,7 +185,7 @@ the orthogonal parametrization; <code><a href="exponential_distrib.html">exponen
 \(\sigma^2 = \mu^2\); <code><a href="invgauss2_distrib.html">invgauss2_distrib()</a></code> and <code><a href="lognormal2_distrib.html">lognormal2_distrib()</a></code> for
 other positive families written in the mean and the variance;
 <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a
-family of your own against the same battery of checks that this family
+user-defined family against the same battery of checks that this family
 passes;
 <a href="Gamma2Distrib.html">Gamma2Distrib</a> for the class.</p></div>
     </div>
@@ -209,7 +208,8 @@ passes;
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">dgamma</a></span><span class="op">(</span><span class="va">y</span>, shape <span class="op">=</span> <span class="fl">9</span> <span class="op">/</span> <span class="fl">2</span>, rate <span class="op">=</span> <span class="fl">3</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Moments: skewness 2 sqrt(sigma2)/mu, excess kurtosis 6 sigma2/mu^2.</span></span></span>
+<span class="r-in"><span><span class="co"># The moments are skewness 2 sqrt(sigma2)/mu and excess kurtosis</span></span></span>
+<span class="r-in"><span><span class="co"># 6 sigma2/mu^2.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, var <span class="op">=</span> <span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  skew <span class="op">=</span> <span class="fu"><a href="skewness.html">skewness</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, kurt <span class="op">=</span> <span class="fu"><a href="kurtosis.html">kurtosis</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     mean      var     skew     kurt </span>

@@ -2,8 +2,8 @@
 
 Return the derivatives of the log-density in \\(m, d, p)\\ of orders one
 to five, the expected information and its expected third and fourth
-derivatives, and the first two derivatives of the expected information,
-each from its own compiled kernel.
+derivatives, and the first two derivatives of the expected information.
+Each of them comes from its own compiled kernel.
 
 ## Arguments
 
@@ -42,8 +42,8 @@ each from its own compiled kernel.
 ## Value
 
 A named list with one numeric vector per component: 3, 6, 10, 15 and 21
-components at orders one to five, the second order keyed `mean_mean`,
-`d_d`, `p_p`, `mean_d`, `mean_p`, `d_p`.
+components at orders one to five. The components of the second order are
+keyed `mean_mean`, `d_d`, `p_p`, `mean_d`, `mean_p`, `d_p`.
 
 ## Details
 
@@ -53,7 +53,7 @@ With \\k = d/p\\, \\k_1 = (d+1)/p\\ and \\w = \log(y/m) -
 component is a closed form derived offline and written out per
 component, one kernel per order. With \\U = p\\w\\, the data enter
 through \\X = U - \psi(k)\\ and \\Q = e^U/k - 1\\, and each component is
-a polynomial in them whose coefficients depend on \\(d, p)\\ alone,
+a polynomial in them whose coefficients depend only on \\(d, p)\\,
 through \\\psi^{(n)}(k)\\ and the differences \\\psi^{(n)}(k_1) -
 \psi^{(n)}(k)\\. As \\k\\ and \\d\\ grow the terms of these coefficients
 agree to several orders, so above \\k = 10\\ or \\d = 10\\ the

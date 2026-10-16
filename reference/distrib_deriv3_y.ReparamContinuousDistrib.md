@@ -24,8 +24,8 @@ the map enters.
 
 - theta:
 
-  A named list of parameters of the **new** parametrization, carried to
-  the parent's by
+  A named list of parameters of the new parametrization, carried to the
+  parent's by
   [`reparam_theta()`](https://statmodels7.github.io/distributions7/reference/reparam_theta.md)
   before the call.
 

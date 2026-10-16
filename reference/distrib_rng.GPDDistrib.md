@@ -37,9 +37,9 @@ when the shape is negative.
 ## See also
 
 [`distrib_quantile.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GPDDistrib.md),
-which it inverts through,
+through which it inverts the distribution function,
 [`distrib_pdf.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GPDDistrib.md)
-for the density the draws follow, and
+for the density that the draws follow, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
 for the generic.
 

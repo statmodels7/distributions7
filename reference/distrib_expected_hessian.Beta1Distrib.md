@@ -10,9 +10,9 @@ closed form and with no quadrature or simulation. With \\\alpha =
 \$\$\mathbb{E}\left\[\ell^{(\mu\phi)}\right\] =
 -\phi\left\\\mu\psi_1(\alpha) - (1-\mu)\psi_1(\beta)\right\\.\$\$
 
-The first two are the observed values themselves, being free of the
-data. The third drops the log-odds residual the observed mixed entry
-carries, whose expectation is zero because
+The first two coincide with the observed values, because they are free
+of the data. The third drops the log-odds residual that the observed
+mixed entry carries, whose expectation is zero because
 \\\mathbb{E}\[\log\\Y/(1-Y)\\\] = \psi(\alpha) - \psi(\beta)\\.
 
 The mixed entry is non-zero except at \\\mu = 1/2\\, where the two
@@ -44,14 +44,14 @@ ignored. `y` is read only for its length.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available. Accepted so that the signature
-  matches the generic's, where it selects between the Bartlett,
-  quadrature, Monte Carlo and outer-product routes.
+  Ignored, because a closed form is available. It is accepted so that
+  the signature matches the generic's, where it selects between the
+  Bartlett, quadrature, Monte Carlo and outer-product routes.
 
 - nsim:
 
@@ -75,16 +75,16 @@ and constant within itself when the parameters are.
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\theta\\\partial\theta^\top\]\\,
-the expectation of the **observed information** under the model. The
-beta is a regular family, so the second Bartlett identity holds and this
-equals the variance of the score.
+the expectation of the observed information under the model. The beta is
+a regular family, so the second Bartlett identity holds and this equals
+the variance of the score.
 
 ## See also
 
 [`distrib_hessian.Beta1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Beta1Distrib.md)
-for the observed quantity this is the expectation of,
+for the observed quantity whose expectation this is,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
 which inverts it at each step, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
@@ -107,7 +107,7 @@ lapply(eh, unique)
 #> [1] -0.1050659
 #> 
 
-# Written out with the trigamma function.
+# The three closed forms are written out with the trigamma function.
 a <- 0.4 * 5
 b <- 0.6 * 5
 c(-5^2 * (trigamma(a) + trigamma(b)),

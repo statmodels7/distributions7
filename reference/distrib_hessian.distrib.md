@@ -6,7 +6,7 @@ family with a density alone it takes second differences of
 [`numerical_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md):
 a diagonal component takes the three-point stencil
 \\\[\ell(\theta_i+h) - 2\ell(\theta_i) + \ell(\theta_i-h)\]/h^2\\ and an
-off-diagonal one the four-point mixed stencil, so both are a **single**
+off-diagonal one the four-point mixed stencil, so both are a single
 difference of the log-density. For a family with its own score it takes
 one central difference of that score instead, through
 [`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md)
@@ -43,7 +43,7 @@ quantity, with the step \\\varepsilon^{1/3}\max(1, \|\theta_j\|)\\.
 A named list of Hessian component vectors, each of length `length(y)`,
 keyed by
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-which puts the diagonal first and is **not** the lexicographic keying
+which puts the diagonal first and is not the lexicographic keying
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
 uses above order 2.
 

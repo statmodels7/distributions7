@@ -12,8 +12,8 @@ derivative drops out and \$\$\mathbb{E}\[\ell^{(\mu\mu)}\] =
 The last equality follows from the transformation rule for the
 information. The information in \\\kappa\\ is \\A'(\kappa)\\ and
 \\\kappa'(\rho) = 1/A'(\kappa)\\, so the information in \\\rho\\ is
-\\A'(\kappa)\\\kappa'(\rho)\\^2 = 1/A'(\kappa)\\, the **reciprocal** of
-the information in \\\kappa\\. The two parameters remain orthogonal.
+\\A'(\kappa)\\\kappa'(\rho)\\^2 = 1/A'(\kappa)\\, the reciprocal of the
+information in \\\kappa\\. The two parameters remain orthogonal.
 
 `approx` and `nsim` are ignored, the expectation being exact.
 
@@ -37,13 +37,13 @@ the information in \\\kappa\\. The two parameters remain orthogonal.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored here, the expectation being exact. Accepted so that the
-  signature matches the generic's, where it selects between
+  Ignored here, because the expectation is exact. It is accepted so that
+  the signature matches the generic's, where it selects between
   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 
 - nsim:
@@ -58,7 +58,7 @@ the information in \\\kappa\\. The two parameters remain orthogonal.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

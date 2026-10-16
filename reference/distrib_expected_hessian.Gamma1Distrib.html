@@ -8,14 +8,15 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\phi\mu^2},
       \mathbb{E}\left[\ell^{(\phi\phi)}\right] =
         s^4\left\{\dfrac{1}{s} - \psi'(s)\right\}.$$
 They follow from \(\mathbb{E}[Y] = \mu\) and
-\(\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s\), the second of which is
-exactly what makes the score in \(\phi\) have mean zero. The quantity
+\(\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s\), and the second of these
+identities is exactly the condition under which the score in \(\phi\)
+has mean zero. The quantity
 \(1/s - \psi'(s)\) is negative for every \(s &amp;gt; 0\), so the pure
 dispersion entry is negative and the information is positive definite
 everywhere, where the observed Hessian is not.
 The off-diagonal entry is zero, so the mean and the dispersion are
 orthogonal. The score in \(\mu\) has the dispersion as a common factor,
-so the mean equation can be solved with the dispersion held at any value.
+so the mean equation can be solved at any fixed value of the dispersion.
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
 form and with no quadrature or simulation. With \(s = 1/\phi\),
@@ -26,14 +27,15 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\phi\mu^2},
       \mathbb{E}\left[\ell^{(\phi\phi)}\right] =
         s^4\left\{\dfrac{1}{s} - \psi'(s)\right\}.$$
 They follow from \(\mathbb{E}[Y] = \mu\) and
-\(\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s\), the second of which is
-exactly what makes the score in \(\phi\) have mean zero. The quantity
+\(\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s\), and the second of these
+identities is exactly the condition under which the score in \(\phi\)
+has mean zero. The quantity
 \(1/s - \psi'(s)\) is negative for every \(s &amp;gt; 0\), so the pure
 dispersion entry is negative and the information is positive definite
 everywhere, where the observed Hessian is not.
 The off-diagonal entry is zero, so the mean and the dispersion are
 orthogonal. The score in \(\mu\) has the dispersion as a common factor,
-so the mean equation can be solved with the dispersion held at any value.
+so the mean equation can be solved at any fixed value of the dispersion.
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -43,7 +45,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,14 +87,15 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\phi\mu^2},
       \mathbb{E}\left[\ell^{(\phi\phi)}\right] =
         s^4\left\{\dfrac{1}{s} - \psi'(s)\right\}.$$
 They follow from \(\mathbb{E}[Y] = \mu\) and
-\(\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s\), the second of which is
-exactly what makes the score in \(\phi\) have mean zero. The quantity
+\(\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s\), and the second of these
+identities is exactly the condition under which the score in \(\phi\)
+has mean zero. The quantity
 \(1/s - \psi'(s)\) is negative for every \(s &gt; 0\), so the pure
 dispersion entry is negative and the information is positive definite
 everywhere, where the observed Hessian is not.</p>
 <p>The off-diagonal entry is zero, so the mean and the dispersion are
 orthogonal. The score in \(\mu\) has the dispersion as a common factor,
-so the mean equation can be solved with the dispersion held at any value.</p>
+so the mean equation can be solved at any fixed value of the dispersion.</p>
 <p>Because the values do not depend on the data, <code>approx</code> and <code>nsim</code> are
 ignored. <code>y</code> is read only for its length.</p>
     </div>
@@ -118,13 +121,13 @@ recycled. Both must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, a closed form being available. Accepted so that the
-signature matches the generic's, where it selects between the Bartlett,
-quadrature, Monte Carlo and outer-product routes.</p></dd>
+<dd><p>Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's, where it selects between the
+Bartlett, quadrature, Monte Carlo and outer-product routes.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -151,16 +154,16 @@ constant within itself when the parameters are.</p>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>The <strong>expected information</strong> is
+<p>The expected information is
 \(\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]\), the
-expectation of the <strong>observed information</strong> under the model. The gamma is a
+expectation of the observed information under the model. The gamma is a
 regular family, so the second Bartlett identity holds and this equals the
 variance of the score. \(\psi'\) is the trigamma function.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_hessian.Gamma1Distrib.html">distrib_hessian.Gamma1Distrib()</a></code> for the observed quantity this is
-the expectation of, <code><a href="fisher_scoring.html">fisher_scoring()</a></code>, which inverts it at each step, and
+    <div class="dont-index"><p><code><a href="distrib_hessian.Gamma1Distrib.html">distrib_hessian.Gamma1Distrib()</a></code> for the observed quantity whose
+expectation this is, <code><a href="fisher_scoring.html">fisher_scoring()</a></code>, which inverts it at each step, and
 <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
     </div>
 
@@ -169,7 +172,7 @@ the expectation of, <code><a href="fisher_scoring.html">fisher_scoring()</a></co
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="gamma1_distrib.html">gamma1_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, phi <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The three constants, one value per observation.</span></span></span>
+<span class="r-in"><span><span class="co"># The three constants take one value per observation.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">unique</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.2222222</span>
@@ -181,7 +184,7 @@ the expectation of, <code><a href="fisher_scoring.html">fisher_scoring()</a></co
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The dispersion entry, written out with the trigamma function.</span></span></span>
+<span class="r-in"><span><span class="co"># The dispersion entry is written out with the trigamma function.</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">0.5</span></span></span>
 <span class="r-in"><span><span class="va">s</span><span class="op">^</span><span class="fl">4</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="va">s</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">trigamma</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -2.318945</span>
@@ -196,8 +199,8 @@ the expectation of, <code><a href="fisher_scoring.html">fisher_scoring()</a></co
 <span class="r-out co"><span class="r-pr">#&gt;</span> observed -0.2222366 -2.288278 -4.310552e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expected -0.2222222 -2.318945  0.000000e+00</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Negative definite at every parameter setting, where the observed Hessian</span></span></span>
-<span class="r-in"><span><span class="co"># is positive in mu wherever y &lt; mu/2.</span></span></span>
+<span class="r-in"><span><span class="co"># The expected Hessian is negative definite at every parameter setting,</span></span></span>
+<span class="r-in"><span><span class="co"># whereas the observed Hessian is positive in mu wherever y &lt; mu/2.</span></span></span>
 <span class="r-in"><span><span class="va">phi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">phi</span>, <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">s</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">p</span></span></span>

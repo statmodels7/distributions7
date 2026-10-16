@@ -39,15 +39,15 @@ given as a vector gives one setting per element, exactly as in
 
 ## Value
 
-`x`, invisibly. Called for the plot it draws.
+`x`, invisibly. The function is called for the plot that it draws.
 
 ## The two keys, and why they are not the continuous ones
 
-Settings are separated by **color and symbol together**, the symbol
-sitting at the top of each stem where the point already is. The line
-type is not used here: dashing a stem is what it would do, and a dashed
-stem reads as a broken one, so at a support of any size the panel fills
-with fragments that cross each other.
+Settings are separated by color and symbol together, the symbol sitting
+at the top of each stem where the point already is. The line type is not
+used here: dashing a stem is what it would do, and a dashed stem reads
+as a broken one, so at a support of any size the panel fills with
+fragments that cross each other.
 
 Several settings are also shifted sideways by a fraction of the spacing,
 so that equal masses at one support point stay countable instead of

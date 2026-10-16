@@ -1,10 +1,10 @@
 # Multinomial Distribution Class
 
-The S7 class of the multinomial family on \\p\\ categories and \\n\\
-trials, parametrized by a probability vector carried on a `parameters7`
-simplex. It inherits from `multivariate_distrib`. Its support is a
-finite set of points: every vector of non-negative integers summing to
-\\n\\.
+This is the S7 class of the multinomial family on \\p\\ categories and
+\\n\\ trials, parametrized by a probability vector carried on a
+`parameters7` simplex. It inherits from `multivariate_distrib`. Its
+support is a finite set of points: every vector of non-negative integers
+summing to \\n\\.
 
 The class carries two properties beyond the parent's: `size`, the number
 of trials, fixed at construction; and `param`, the simplex on which the
@@ -120,7 +120,8 @@ has no dispersion parameter.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MultinomialDistrib.md)

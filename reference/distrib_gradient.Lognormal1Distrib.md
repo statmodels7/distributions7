@@ -6,7 +6,7 @@ With \\r = \log y - \mu\\, \$\$\dfrac{\partial \ell}{\partial \mu} =
 \dfrac{r}{\sigma^2}, \qquad \dfrac{\partial \ell}{\partial \sigma^2} =
 \dfrac{r^2 - \sigma^2}{2\sigma^4}.\$\$
 
-**These are exactly the Gaussian's, read at \\\log y\\.** The lognormal
+These are exactly the Gaussian's, read at \\\log y\\. The lognormal
 log-density is the Gaussian's at \\\log y\\ minus \\\log y\\, and that
 last term carries no parameter, so it disappears from every derivative
 in \\\mu\\ and \\\sigma^2\\. The same holds at all four orders and for
@@ -41,8 +41,8 @@ scale.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -62,8 +62,8 @@ A named list of two numeric vectors, `mu` and `sigma2`, each of length
 ## Notation
 
 \\\ell\\ is the log-density of one observation, \\\mu\\ the mean and
-\\\sigma^2 \> 0\\ the variance **of \\\log Y\\**, not of \\Y\\. \\r =
-\log y - \mu\\ is the residual on the log scale.
+\\\sigma^2 \> 0\\ the variance of \\\log Y\\, not of \\Y\\. \\r = \log
+y - \mu\\ is the residual on the log scale.
 
 ## See also
 

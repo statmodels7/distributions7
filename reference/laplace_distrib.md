@@ -11,8 +11,8 @@ excess kurtosis 3, so it is heavier tailed than a Gaussian. Its maximum
 likelihood estimates are the sample median and the mean absolute
 deviation about it, both available in closed form.
 
-This family is **not regular** in \\\mu\\: the density has a corner at
-\\y = \mu\\ and the observed second derivative there is zero almost
+This family is not regular in \\\mu\\: the density has a corner at \\y =
+\mu\\ and the observed second derivative there is zero almost
 everywhere, while the information is \\1/\sigma^2\\. The object records
 this in `params_smooth`, and the details below say what follows from it.
 
@@ -75,8 +75,8 @@ visible in the methods:
   [`distrib_hessian.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.LaplaceDistrib.md)
   returns a vector of zeros;
 
-- the second Bartlett identity fails, and the information is **defined**
-  as the variance of the score, \\1/\sigma^2\\. That is what
+- the second Bartlett identity fails, and the information is defined as
+  the variance of the score, \\1/\sigma^2\\. That is what
   [`distrib_expected_hessian.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LaplaceDistrib.md)
   returns.
 
@@ -102,11 +102,10 @@ The example below checks the fitted values against both closed forms.
 
 \\\ell\\ is the log-density of one observation, \\\mu\\ the location and
 \\\sigma \> 0\\ the scale, with variance \\2\sigma^2\\. \\r = y - \mu\\
-is the residual. The **observed information** is
+is the residual. The observed information is
 \\-\partial^2\ell/\partial\theta\\\partial\theta^\top\\ at the data; the
-**expected information** is the variance of the score, which for a
-regular family equals the expectation of the observed one and here does
-not.
+expected information is the variance of the score, which for a regular
+family equals the expectation of the observed one and here does not.
 
 ## References
 

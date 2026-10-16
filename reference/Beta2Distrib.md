@@ -1,6 +1,6 @@
 # Beta Distribution Class, the Two Shapes
 
-The S7 class of the beta family on \\(0, 1)\\ in its canonical
+This is the S7 class of the beta family on \\(0, 1)\\ in its canonical
 parametrization, the two shapes \\\alpha \> 0\\ and \\\beta \> 0\\, with
 density \\y^{\alpha-1}(1-y)^{\beta-1}/B(\alpha, \beta)\\. It inherits
 from `continuous_distrib`, so every generic of the `distrib` class
@@ -98,7 +98,8 @@ domain \\(0, \infty)\\ for both parameters, and the two links.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Beta2Distrib.md),
@@ -165,7 +166,8 @@ d <- beta2_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "alpha" "beta" 
 d@params_interpretation
@@ -174,8 +176,8 @@ d@params_interpretation
 d@bounds
 #> [1] 0 1
 
-# Both parameters are shapes, so neither is a mean: the mean is
-# alpha / (alpha + beta).
+# Both parameters are shapes, so the mean is not one of the parameters: the
+# mean is alpha / (alpha + beta).
 mean(d, list(alpha = 2, beta = 5))
 #> [1] 0.2857143
 ```

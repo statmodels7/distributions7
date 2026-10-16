@@ -20,9 +20,9 @@ far in the lower tail on the log scale
 - p:
 
   A numeric vector of probabilities in \\\[0, 1\]\\, or their logarithms
-  when `log.p = TRUE`. Note that the family's third parameter is also
-  called `p`; here the argument is the probability, and the parameter is
-  read from `theta`.
+  when `log.p = TRUE`. The family's third parameter is also called `p`;
+  here the argument is the probability, and the parameter is read from
+  `theta`.
 
 - theta:
 
@@ -65,18 +65,19 @@ for the generic.
 d <- gengamma1_distrib()
 th <- list(a = 2, d = 3, p = 1.5)
 
-# The round trip through the distribution function.
+# Applying the quantile function to the distribution function returns the
+# original values.
 y <- c(0.5, 1.5, 4)
 all.equal(distrib_quantile(d, distrib_cdf(d, y, th), th), y)
 #> [1] TRUE
 
-# The identity written out.
+# The quantile function agrees with the identity written out.
 u <- c(0.1, 0.5, 0.9)
 all.equal(distrib_quantile(d, u, th),
           2 * qgamma(u, shape = 3 / 1.5)^(1 / 1.5))
 #> [1] TRUE
 
-# The median sits below the mean, the family being right-skewed here.
+# The median is below the mean, because the family is right-skewed here.
 c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 #>   median     mean 
 #> 2.824562 3.009151 

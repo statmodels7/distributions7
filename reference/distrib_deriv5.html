@@ -11,7 +11,7 @@ link scale."><meta property="og:image" content="https://statmodels7.github.io/di
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,8 +75,8 @@ parameters. Each parameter must have length 1 or <code>length(y)</code>.</p></dd
 <dd><p><code>"parameter"</code> (the default) for derivatives with respect to
 the parameters, <code>"link"</code> for derivatives with respect to the
 unconstrained predictors. In the numerical default the link scale is
-obtained by differentiating the order-4 component <strong>already on the link
-scale</strong>, which needs neither the fifth derivative of a link nor an
+obtained by differentiating the order-4 component already on the link
+scale, which needs neither the fifth derivative of a link nor an
 order-5 entry in <code><a href="bell_partial.html">bell_partial()</a></code>. A family with a closed-form fifth
 order composes it with the lower orders through <code><a href="to_link_scale.html">to_link_scale()</a></code>, which
 uses both.</p></dd>
@@ -110,7 +110,7 @@ orders.</p>
 <code><a href="skewnormal2_distrib.html">skewnormal2_distrib()</a></code>, <code><a href="skewt_distrib.html">skewt_distrib()</a></code>, <code><a href="student_t1_distrib.html">student_t1_distrib()</a></code>,
 <code><a href="student_t2_distrib.html">student_t2_distrib()</a></code> and <code><a href="weibull3_distrib.html">weibull3_distrib()</a></code>) compute the fifth order
 in closed form with compiled kernels. Every other
-family reaches <code><a href="numerical_deriv5.html">numerical_deriv5()</a></code>, which applies <strong>one</strong> central
+family reaches <code><a href="numerical_deriv5.html">numerical_deriv5()</a></code>, which applies one central
 difference to the fourth order. Where the fourth order is analytic this is
 an ordinary numerical derivative; where the fourth order is itself a
 fallback the result is a difference of a difference, with the accuracy

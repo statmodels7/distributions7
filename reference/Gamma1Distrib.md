@@ -1,7 +1,7 @@
 # Gamma Distribution Class, Mean and Dispersion
 
-The S7 class of the gamma family parametrized by its mean \\\mu \> 0\\
-and a dispersion \\\phi \> 0\\, so that \\\operatorname{Var}(Y) =
+This is the S7 class of the gamma family parametrized by its mean \\\mu
+\> 0\\ and a dispersion \\\phi \> 0\\, so that \\\operatorname{Var}(Y) =
 \phi\mu^2\\. The shape is \\1/\phi\\ and the rate \\1/(\phi\mu)\\. It
 inherits from `continuous_distrib`, so every generic of the `distrib`
 class applies to it; the methods listed below are registered on it
@@ -98,7 +98,8 @@ interpretations `c(mu = "mean", phi = "dispersion")`, `2`, the domain
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gamma1Distrib.md),
@@ -165,7 +166,8 @@ d <- gamma1_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "mu"  "phi"
 d@params_interpretation

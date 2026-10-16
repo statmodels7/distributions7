@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,9 +78,9 @@ draw is accepted in 1000 rounds.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Kept separate from the <code>distrib</code> object so that it can also be run on a
 reparametrized density, which is how the divergence transforms reuse it.</p>
-<p>Two devices make it safe. The kernel is <strong>recentered at the mode</strong>,
+<p>Two devices make it safe. The kernel is recentered at the mode,
 without which a density located at \(\mu = 1000\) produces a degenerate
-bounding box; and it is <strong>normalized to a maximum of one</strong>. With those it
+bounding box; and it is normalized to a maximum of one. With those it
 accepts a Student t with half a degree of freedom and a Pareto with infinite
 mean. A density that diverges at an edge is handled by transforming it away.
 The kernel must be unimodal: with two well-separated modes the search for

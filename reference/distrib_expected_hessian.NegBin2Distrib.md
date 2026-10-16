@@ -39,14 +39,14 @@ not a quadrature or a simulation; `approx` and `nsim` are ignored, and
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
   Ignored. The mean and mixed entries are closed form and the dispersion
-  entry is a truncated exact sum. Accepted so that the signature matches
-  the generic's.
+  entry is a truncated exact sum. It is accepted so that the signature
+  matches the generic's.
 
 - nsim:
 
@@ -79,16 +79,16 @@ example below shows.
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\theta\\\partial\theta^\top\]\\,
-the expectation of the **observed information** under the model. The
+the expectation of the observed information under the model. The
 negative binomial is a regular family, so the second Bartlett identity
 holds and this equals the variance of the score.
 
 ## See also
 
 [`distrib_hessian.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.NegBin2Distrib.md)
-for the observed quantity this is the expectation of,
+for the observed quantity whose expectation this is,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
 which inverts it at each step, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)

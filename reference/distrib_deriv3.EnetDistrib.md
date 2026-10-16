@@ -17,8 +17,8 @@ adds \\\mathrm{sgn}(z) - z\\ per observation.
 [`.enet_chain()`](https://statmodels7.github.io/distributions7/reference/dot-enet_chain.md)
 is the same assembly written in R.
 
-With `expected = TRUE` the value is an expectation, and there it is
-**not** closed form: the call routes to
+With `expected = TRUE` the value is an expectation, and there it is not
+closed form: the call routes to
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
 so `approx` and `nsim` are read.
 
@@ -99,7 +99,8 @@ names(d3)
 #>  [7] "lambda_lambda_lambda" "lambda_lambda_alpha"  "lambda_alpha_alpha"  
 #> [10] "alpha_alpha_alpha"   
 
-# Against a central difference of the analytic Hessian.
+# The component mu_mu_lambda is compared with a central difference of the
+# analytic Hessian.
 eps <- 1e-5
 rbind(analytic = d3$mu_mu_lambda,
       numeric = (distrib_hessian(d, y, list(mu = 0, lambda = 2 + eps,
@@ -115,8 +116,8 @@ rbind(analytic = d3$mu_mu_lambda,
 d3$mu_mu_mu
 #> [1] 0 0 0 0
 
-# The pure-lambda component against one stencil on the log-density, a
-# route that shares no algebra with the assembly.
+# The pure-lambda component is compared with one stencil on the
+# log-density, a route that shares no algebra with the assembly.
 ld <- function(v) sum(distrib_pdf(d, y, list(mu = 0, lambda = v,
                                              alpha = 0.5), log = TRUE))
 c(ours = sum(d3$lambda_lambda_lambda),

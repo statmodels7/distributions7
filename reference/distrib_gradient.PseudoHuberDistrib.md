@@ -17,9 +17,10 @@ to the estimating equation. Unlike the score of a Student t, it does not
 return to zero.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries. This method always returns the parameter scale. The
-arithmetic runs in a compiled kernel; the Bessel ratio enters only the
-\\\nu\\ component and is formed from the exponentially scaled functions.
+that the family carries. This method always returns the parameter scale.
+The arithmetic runs in a compiled kernel; the Bessel ratio enters only
+the \\\nu\\ component and is formed from the exponentially scaled
+functions.
 
 ## Arguments
 
@@ -41,8 +42,8 @@ arithmetic runs in a compiled kernel; the Bessel ratio enters only the
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 

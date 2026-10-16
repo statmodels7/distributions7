@@ -6,9 +6,9 @@ $$\ell^{(\mu\mu)} = -\dfrac{w}{\sigma^2}, \qquad
       \ell^{(\mu\sigma)} = -\dfrac{1 - w + zw}{\sigma^2}, \qquad
       \ell^{(\sigma\sigma)} =
         \dfrac{1 - 2z + 2zw - z^2 w}{\sigma^2}.$$
-The curvature in the location is negative at every observation, \(w\)
-being positive, so the log-likelihood is concave in \(\mu\) at any data
-set. The curvature in the scale is not: it is positive wherever
+The curvature in the location is negative at every observation because
+\(w\) is positive, so the log-likelihood is concave in \(\mu\) at any
+data set. The curvature in the scale is not: it is positive wherever
 \(1 - 2z + 2zw - z^2w &amp;gt; 0\), which includes \(y = \mu\)."><meta property="og:description" content="Computes the three distinct second derivatives of the Gumbel log-density
 with respect to \(\mu\) and \(\sigma\), one value per observation, in
 closed form. With \(z = (y-\mu)/\sigma\) and \(w = e^{-z}\),
@@ -16,9 +16,9 @@ $$\ell^{(\mu\mu)} = -\dfrac{w}{\sigma^2}, \qquad
       \ell^{(\mu\sigma)} = -\dfrac{1 - w + zw}{\sigma^2}, \qquad
       \ell^{(\sigma\sigma)} =
         \dfrac{1 - 2z + 2zw - z^2 w}{\sigma^2}.$$
-The curvature in the location is negative at every observation, \(w\)
-being positive, so the log-likelihood is concave in \(\mu\) at any data
-set. The curvature in the scale is not: it is positive wherever
+The curvature in the location is negative at every observation because
+\(w\) is positive, so the log-likelihood is concave in \(\mu\) at any
+data set. The curvature in the scale is not: it is positive wherever
 \(1 - 2z + 2zw - z^2w &amp;gt; 0\), which includes \(y = \mu\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -27,7 +27,7 @@ set. The curvature in the scale is not: it is positive wherever
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,9 +67,9 @@ $$\ell^{(\mu\mu)} = -\dfrac{w}{\sigma^2}, \qquad
       \ell^{(\mu\sigma)} = -\dfrac{1 - w + zw}{\sigma^2}, \qquad
       \ell^{(\sigma\sigma)} =
         \dfrac{1 - 2z + 2zw - z^2 w}{\sigma^2}.$$
-The curvature in the location is negative at every observation, \(w\)
-being positive, so the log-likelihood is concave in \(\mu\) at any data
-set. The curvature in the scale is not: it is positive wherever
+The curvature in the location is negative at every observation because
+\(w\) is positive, so the log-likelihood is concave in \(\mu\) at any
+data set. The curvature in the scale is not: it is positive wherever
 \(1 - 2z + 2zw - z^2w &gt; 0\), which includes \(y = \mu\).</p>
     </div>
 
@@ -94,7 +94,7 @@ recycled. <code>sigma</code> must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -104,7 +104,7 @@ recycled. <code>sigma</code> must be strictly positive.</p></dd>
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+whatever the count is. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -147,7 +147,7 @@ quantity, <code><a href="distrib_deriv3.GumbelDistrib.html">distrib_deriv3.Gumbe
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  4.436564  0.000000 -1.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The three closed forms, written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The three closed forms are written out.</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fl">0</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">z</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">h</span><span class="op">$</span><span class="va">mu_mu</span>, <span class="op">-</span><span class="va">w</span><span class="op">)</span></span></span>
@@ -157,7 +157,8 @@ quantity, <code><a href="distrib_deriv3.GumbelDistrib.html">distrib_deriv3.Gumbe
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">h</span><span class="op">$</span><span class="va">sigma_sigma</span>, <span class="fl">1</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">z</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">z</span> <span class="op">*</span> <span class="va">w</span> <span class="op">-</span> <span class="va">z</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="va">w</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Concave in mu everywhere, and positive in sigma at y = mu.</span></span></span>
+<span class="r-in"><span><span class="co"># The log-density is concave in mu everywhere, and the curvature in sigma</span></span></span>
+<span class="r-in"><span><span class="co"># is positive at y = mu.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>all_negative_in_mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">h</span><span class="op">$</span><span class="va">mu_mu</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  sigma_at_mu <span class="op">=</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">sigma_sigma</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> all_negative_in_mu        sigma_at_mu </span>

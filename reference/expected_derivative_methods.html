@@ -17,7 +17,7 @@ when the distribution provides an analytical method (which is always preferred).
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,7 @@ when the distribution provides an analytical method (which is always preferred).
 expectation has to be approximated. The generics
 <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>, <code><a href="distrib_deriv3.html">distrib_deriv3()</a></code> and
 <code><a href="distrib_deriv4.html">distrib_deriv4()</a></code> therefore accept an <code>approx</code> argument
-selecting <em>how</em> the expectation is taken. The argument is <strong>ignored</strong>
+selecting <em>how</em> the expectation is taken. The argument is ignored
 when the distribution provides an analytical method (which is always preferred).</p>
     </div>
 
@@ -82,8 +82,8 @@ derivatives. Writing the identity as a sum over set partitions of the
 index set,
 $$\sum_{\pi} \mathbb{E}\left[\prod_{B \in \pi} \ell_B\right] = 0,$$
 the target term (the single-block partition) is obtained from all the
-others. At order 2 this is exactly the familiar <strong>outer product of
-gradients</strong>, \(\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]\);
+others. At order 2 this is exactly the familiar outer product of
+gradients, \(\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]\);
 at order 3, \(\mathbb{E}[\ell_{ijk}] = -\left(\mathbb{E}[\ell_{ij}\ell_k] +
     \mathbb{E}[\ell_{ik}\ell_j] + \mathbb{E}[\ell_{jk}\ell_i] +
     \mathbb{E}[\ell_i\ell_j\ell_k]\right)\), and so on.
@@ -117,7 +117,7 @@ robust option when quadrature struggles (heavy tails, awkward supports),
 but stochastic: the error decreases only as \(1/\sqrt{n_{sim}}\), so
 results are not exactly reproducible unless the seed is fixed. Estimates
 the same quantity as <code>"integrate"</code>.
-<strong>Note:</strong> the cost of this option is the cost of simulating from the
+Note: the cost of this option is the cost of simulating from the
 distribution. A native <code><a href="distrib_rng.html">distrib_rng()</a></code> is best; failing that, the
 default generator uses inverse transform when the family has a quantile
 method of its own and <code><a href="rng_grou.html">rng_grou()</a></code>, which only needs the density,
@@ -126,12 +126,12 @@ quantile function slow enough to make inverse transform sampling the
 bottleneck; prefer <code>"bartlett"</code> or <code>"integrate"</code> in that case.</p></dd>
 
 
-</dl><p><strong>Defaults.</strong> <code>distrib_expected_hessian</code> defaults to <code>"opg"</code>, which needs
+</dl><p>Defaults. <code>distrib_expected_hessian</code> defaults to <code>"opg"</code>, which needs
 one score evaluation per observation and no expectation. <code>distrib_deriv3</code> and
 <code>distrib_deriv4</code> default to <code>"integrate"</code>, since at those orders
 direct integration of the available derivative is usually cheaper and more
 accurate.</p>
-<p><strong>Non-smooth parameters.</strong> Where the log-density has a kink in a
+<p>Non-smooth parameters. Where the log-density has a kink in a
 parameter, the observed second derivative has a point mass at the kink, and
 an average of its pointwise values does not contain that mass. For the
 Laplace location, \(\ell_{\mu\mu}\) is zero almost everywhere, so its

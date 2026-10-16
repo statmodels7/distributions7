@@ -20,7 +20,8 @@ scale_only_cross2_method(at = 1L)
 
 - at:
 
-  The index of the scale parameter in `distrib@params`. Default `1`.
+  The index of the scale parameter in `distrib@params`. The default is
+  `1`.
 
 ## Value
 

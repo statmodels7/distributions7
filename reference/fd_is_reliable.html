@@ -11,7 +11,7 @@ against a reference that is itself reliable."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,7 +96,7 @@ step halved: where the two disagree, finite differencing has not converged and
 that observation is dropped. For a smooth log-likelihood nothing is ever
 dropped, so the check keeps its full strength: a gradient made 5\<!-- % wrong is -->
 still caught.</p>
-<p>The two estimates are compared <strong>relative to their own magnitude</strong> rather
+<p>The two estimates are compared relative to their own magnitude rather
 than against a denominator floored at one: near a kink both are tiny yet
 differ by a factor of two, which a floor of one would hide. If no
 observation survives, all are kept, because a systematic disagreement is a

@@ -11,7 +11,7 @@ The square root is formed as a hypotenuse, \\\max(\|z\|,
 where \\z^2\\ overflows.
 
 The normalizing constant is formed on the log scale through the
-**exponentially scaled** Bessel function, \\\log K_1(x) = \log\\e^x
+exponentially scaled Bessel function, \\\log K_1(x) = \log\\e^x
 K_1(x)\\ - x\\. The identity is exact, and the scaled function stays
 finite where \\K_1(\sqrt{\nu})\\ itself underflows, which happens beyond
 \\\sqrt{\nu} \approx 700\\.
@@ -26,7 +26,7 @@ finite where \\K_1(\sqrt{\nu})\\ itself underflows, which happens beyond
 - y:
 
   A numeric vector of observations. Every real value is in the support,
-  so no value is rejected.
+  so every value is accepted.
 
 - theta:
 

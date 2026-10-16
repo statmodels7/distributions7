@@ -38,7 +38,8 @@ ls_log_tail_derivs(distrib, q, theta, o, spec, lower.tail)
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical.
+  A single logical; `TRUE` selects the lower tail and `FALSE` the upper
+  tail.
 
 ## Value
 

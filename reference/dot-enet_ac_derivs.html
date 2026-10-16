@@ -13,7 +13,7 @@ half of .enet_chain(); the outer half carries the result onto
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,15 +71,16 @@ half of <code><a href="dot-enet_chain.html">.enet_chain()</a></code>; the outer 
 
 
 <dt id="arg-order">order<a class="anchor" aria-label="anchor" href="#arg-order"></a></dt>
-<dd><p>A single integer, 1 to 4: the highest derivative order wanted.</p></dd>
+<dd><p>A single integer, 1 to 4: the highest derivative order to
+compute.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list of length <code>order</code>; element <code>k</code> is a named list of the
 order-<code>k</code> derivatives, keyed as
-<code><a href="deriv_names.html">deriv_names(c("mu", "a", "c"), k)</a></code> names them, each entry
-a numeric vector of the length of <code>y</code>.</p>
+<code><a href="deriv_names.html">deriv_names(c("mu", "a", "c"), k)</a></code> names them, and each
+entry is a numeric vector of the length of <code>y</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="why-these-coordinates">Why these coordinates<a class="anchor" aria-label="anchor" href="#why-these-coordinates"></a></h2>
@@ -87,8 +88,8 @@ a numeric vector of the length of <code>y</code>.</p>
 \(-a|z| - cz^{2}/2 - \log 2 - L(x) + \tfrac{1}{2}\log c\) with
 \(z = y - \mu\), \(x = ac^{-1/2}\) and \(L = \log M\), so the data
 term is quadratic in \(z\) and linear in each rate. Every derivative of
-order three or more is therefore a derivative of the <strong>normalizing
-constant</strong>, apart from \(\partial^{3}\ell/\partial\mu^{2}\partial c = -1\).</p>
+order three or more is therefore a derivative of the normalizing
+constant, apart from \(\partial^{3}\ell/\partial\mu^{2}\partial c = -1\).</p>
 <p>The normalizer is one pass of <code><a href="chain_assemble.html">chain_assemble()</a></code> over \(L(x(a,c))\): the
 inner derivatives are \(-G, -G', -G'', -G'''\) and the map has
 \(\partial^{2}x/\partial a^{2} = 0\), so a key with two or more \(a\)'s
@@ -98,8 +99,8 @@ is an exact zero and the table leaves it out. The remaining
     <div class="section level2">
     <h2 id="the-kink">The kink<a class="anchor" aria-label="anchor" href="#the-kink"></a></h2>
     <p>The location is not differentiable at \(z = 0\), as in the Laplace, and
-the sign function is what the first derivative carries there. Nothing at
-order four touches \(\mu\) at all.</p>
+the first derivative carries the sign function there. Every derivative of
+order four is free of \(\mu\).</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -125,12 +126,12 @@ family.</p></div>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">out</span>, <span class="va">length</span>, <span class="fl">0L</span><span class="op">)</span>          <span class="co"># 3, 6 and 10 components</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  3  6 10</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The one third-order component that carries data.</span></span></span>
+<span class="r-in"><span><span class="co"># This is the one third-order component that carries data.</span></span></span>
 <span class="r-in"><span><span class="va">out</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"mu_mu_c"</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1 -1 -1</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Everything else at order three is free of y, the data term being</span></span></span>
-<span class="r-in"><span><span class="co"># quadratic in z and linear in each rate.</span></span></span>
+<span class="r-in"><span><span class="co"># Every other component at order three is free of y, because the data term</span></span></span>
+<span class="r-in"><span><span class="co"># is quadratic in z and linear in each rate.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">out</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">out</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, <span class="st">"mu_mu_c"</span><span class="op">)</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>       <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mu_mu_mu  mu_mu_a   mu_a_a   mu_a_c   mu_c_c    a_a_a    a_a_c    a_c_c </span>

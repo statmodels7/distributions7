@@ -2,10 +2,9 @@
 
 Computes \\d^I \log L\\ from the ratios \\d^B L / L\\, as \$\$d^I \log L
 = \sum\_{\pi} (-1)^{\|\pi\|-1}(\|\pi\|-1)! \prod\_{B \in \pi} \frac{d^B
-L}{L},\$\$ the moment-to-cumulant relation. Only the **ratios** are
-needed, never \\L\\'s own derivatives and never \\L\\ itself, so a
-wrapper can differentiate a normalizing constant it can only evaluate up
-to scale.
+L}{L},\$\$ the moment-to-cumulant relation. Only the ratios are needed,
+never \\L\\'s own derivatives and never \\L\\ itself, so a wrapper can
+differentiate a normalizing constant it can only evaluate up to scale.
 
 ## Usage
 

@@ -42,13 +42,13 @@ ignores `approx` and `nsim`.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both the observed and the
-  expected values.
+  Ignored, because a closed form is available for both the observed and
+  the expected values.
 
 - nsim:
 
@@ -94,7 +94,7 @@ y <- c(1, 3, 5)
 th <- list(mu = 3, phi = 0.5)
 d3 <- distrib_deriv3(d, y, th)
 
-# The three components involving mu, written out.
+# The three components involving mu are written out.
 s <- 1 / 0.5
 z <- y / 3
 all.equal(d3$mu_mu_mu, s * (6 * z - 2) / 3^3)

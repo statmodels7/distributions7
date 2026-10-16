@@ -5,8 +5,8 @@ with respect to \\\mu\\ and \\\sigma\\, in closed form from the compiled
 kernel of the third order. As at third order, every component is a
 rational function of \\r = y - \mu\\ and \\\sigma\\ with a power of \\d
 = \sigma^2 + r^2\\ in the denominator, and so is bounded in \\y\\; the
-component in \\\sigma\\ alone tends to \\-6/\sigma^4\\ as \\\|r\|\\
-grows, and the others to zero.
+component that is pure in \\\sigma\\ tends to \\-6/\sigma^4\\ as
+\\\|r\|\\ grows, and the others to zero.
 
 With `expected = TRUE` the expectations under the model are returned,
 also in closed form; the two components odd in \\r\\ vanish by symmetry.
@@ -38,13 +38,13 @@ Both routes are closed form, so `approx` and `nsim` are ignored.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both the observed and the
-  expected values.
+  Ignored, because a closed form is available for both the observed and
+  the expected values.
 
 - nsim:
 
@@ -58,7 +58,7 @@ Both routes are closed form, so `approx` and `nsim` are ignored.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

@@ -1,8 +1,8 @@
 # Gamma Distribution Class, Mean and Variance
 
-The S7 class of the gamma family parametrized by its mean \\\mu \> 0\\
-and its variance \\\sigma^2 \> 0\\, so that the shape is \\\alpha =
-\mu^2/\sigma^2\\ and the rate \\\lambda = \mu/\sigma^2\\. It inherits
+This is the S7 class of the gamma family parametrized by its mean \\\mu
+\> 0\\ and its variance \\\sigma^2 \> 0\\, so that the shape is \\\alpha
+= \mu^2/\sigma^2\\ and the rate \\\lambda = \mu/\sigma^2\\. It inherits
 from `continuous_distrib`, so every generic of the `distrib` class
 applies to it; the methods listed below are registered on it directly
 and everything else comes from the parent.
@@ -98,7 +98,8 @@ domain \\(0, \infty)\\ for both parameters, and the two links.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gamma2Distrib.md),
@@ -157,7 +158,7 @@ orthogonal and these are not;
 [`distrib_pdf.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gamma2Distrib.md)
 and
 [`distrib_gradient.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gamma2Distrib.md)
-for the closed forms this class supplies.
+for the closed forms that this class supplies.
 
 ## Examples
 
@@ -166,7 +167,8 @@ d <- gamma2_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "mu"     "sigma2"
 d@params_interpretation
@@ -175,8 +177,8 @@ d@params_interpretation
 d@bounds
 #> [1]   0 Inf
 
-# The second parameter is the variance itself, so it is what variance()
-# returns and what the fitted standard error describes.
+# The second parameter is the variance itself, so variance() returns it and
+# its fitted standard error is the standard error of the variance.
 variance(d, list(mu = 3, sigma2 = 2))
 #> [1] 2
 ```

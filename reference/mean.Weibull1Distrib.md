@@ -1,9 +1,9 @@
 # Mean of the Weibull Distribution
 
 Closed form: \\E\[Y\] = \mu\\\Gamma(1 + 1/\sigma)\\. The first parameter
-of this parametrization is the **scale**, following `gamlss`'s `WEI`, so
-it is not the mean; the gamma factor is what separates the two, and it
-is 1 only at shape 1, where the family is exponential.
+of this parametrization is the scale, following `gamlss`'s `WEI`, so it
+is not the mean; the gamma factor is what separates the two, and it is 1
+only at shape 1, where the family is exponential.
 
 ## Arguments
 

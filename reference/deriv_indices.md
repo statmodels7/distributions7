@@ -37,7 +37,7 @@ so the parsing route is wrong for shipped families as well as
 user-defined ones. Generating the indices and the names from the same
 enumeration removes the possibility of disagreement.
 
-Note that this is **not** interchangeable with
+Note that this is not interchangeable with
 [`deriv_index_list()`](https://statmodels7.github.io/distributions7/reference/deriv_index_list.md)
 in `link_scale.R`: that one is ordered to match
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)

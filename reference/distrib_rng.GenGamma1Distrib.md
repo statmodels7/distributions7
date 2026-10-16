@@ -34,9 +34,9 @@ A numeric vector of `n` strictly positive draws.
 ## See also
 
 [`distrib_pdf.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma1Distrib.md)
-for the density the draws follow,
+for the density that the draws follow,
 [`mean.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma1Distrib.md)
-for the moments they reproduce, and
+for the moments that they reproduce, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
 for the generic.
 
@@ -49,14 +49,14 @@ th <- list(a = 2, d = 3, p = 1.5)
 set.seed(51)
 x <- distrib_rng(d, 2e5, th)
 
-# Two moments against their closed forms.
+# Two sample moments are compared with their closed forms.
 rbind(sample = c(mean(x), var(x)),
       theory = c(mean(d, th), variance(d, th)))
 #>            [,1]     [,2]
 #> sample 3.007083 2.054553
 #> theory 3.009151 2.057644
 
-# The representation, written out at the same seed.
+# The representation, written out at the same seed, reproduces the draws.
 set.seed(51)
 all.equal(x, 2 * rgamma(2e5, shape = 3 / 1.5)^(1 / 1.5))
 #> [1] TRUE

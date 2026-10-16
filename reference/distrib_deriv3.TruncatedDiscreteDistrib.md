@@ -2,8 +2,8 @@
 
 The same construction as for a continuous parent, \\\ell_T = \ell - \log
 Z\\ with \\d^I \log Z\\ from the moment-to-cumulant expansion over set
-partitions, with every expectation taken by **summation over the
-retained support** in place of a quadrature.
+partitions, with every expectation taken by summation over the retained
+support in place of a quadrature.
 
 When both endpoints are finite, the support of a truncated discrete
 family is finite, so each block is a finite sum of terms that the parent
@@ -21,11 +21,11 @@ support.
 - y:
 
   A numeric vector of counts inside the truncation interval. Both
-  endpoints are **included**.
+  endpoints are included.
 
 - theta:
 
-  A named list of the **parent's** parameters; truncation adds none.
+  A named list of the parent's parameters; truncation adds none.
 
 - expected:
 

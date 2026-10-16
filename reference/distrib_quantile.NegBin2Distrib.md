@@ -7,7 +7,7 @@ p\right\\,\$\$ by calling
 `size = theta` and `mu = mu`. The support is discrete, so the round trip
 through
 [`distrib_cdf.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.NegBin2Distrib.md)
-does **not** return `p`: it returns the mass up to the smallest integer
+does not return `p`: it returns the mass up to the smallest integer
 whose cumulative probability reaches `p`, which overshoots.
 
 ## Arguments

@@ -77,7 +77,7 @@ step of the skewing function from a composition that does not cancel.
 divergent contributions cancel, so the information in \\\gamma_1\\ tends
 to \\1/6\\ and the whole matrix stays positive definite at symmetry.
 
-The **observed** curvature does diverge, at the rate the cube root sets:
+The observed curvature does diverge, at the rate the cube root sets:
 \\\gamma_1^{-2/3}\\. The derivatives of order two and more are therefore
 rejected at \\\gamma_1 = 0\\ exactly, with a message naming the cause;
 the score and the expected information are returned there. The density,

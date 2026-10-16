@@ -3,8 +3,8 @@
 Builds a Poisson-inverse Gaussian distribution in its mean-dispersion
 parametrization: mean \\\mu\\ and variance \\\mu + \sigma\mu^2\\, which
 is gamlss's `PIG`. The family is the Poisson mixed over an inverse
-Gaussian rate, an overdispersed count model with a **heavier upper tail
-than the negative binomial at the same variance**.
+Gaussian rate, an overdispersed count model with a heavier upper tail
+than the negative binomial at the same variance.
 
 ## Usage
 
@@ -74,8 +74,8 @@ a large count (see
 
 ## The expected information
 
-The **expected information** is computed exactly, with its first and
-second derivatives, by one pass over the support per observation; see
+The expected information is computed exactly, with its first and second
+derivatives, by one pass over the support per observation; see
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md).
 
 ## The tail

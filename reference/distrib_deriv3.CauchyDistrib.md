@@ -5,7 +5,7 @@ with respect to \\\mu\\ and \\\sigma\\, in closed form from a compiled
 kernel. Every component is a rational function of \\r = y - \mu\\ and
 \\\sigma\\ with a power of \\d = \sigma^2 + r^2\\ in the denominator, so
 all of them are bounded in \\y\\. Three of the four tend to zero as
-\\\|r\|\\ grows; the component in \\\sigma\\ alone tends to
+\\\|r\|\\ grows; the component that is pure in \\\sigma\\ tends to
 \\2/\sigma^3\\. The kernel evaluates them as described in
 [`distrib_deriv5.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.CauchyDistrib.md),
 without forming \\r^2\\.
@@ -13,8 +13,8 @@ without forming \\r^2\\.
 With `expected = TRUE` the expectations under the model are returned,
 also in closed form: the two components odd in \\r\\ vanish by symmetry,
 and the other two are \\1/(2\sigma^3)\\ and \\3/(2\sigma^3)\\. Both
-routes are closed form, so no quadrature is run and `approx` and `nsim`
-are ignored.
+routes are closed form, so the method runs no quadrature and ignores
+`approx` and `nsim`.
 
 ## Arguments
 
@@ -42,13 +42,13 @@ are ignored.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both the observed and the
-  expected values.
+  Ignored, because a closed form is available for both the observed and
+  the expected values.
 
 - nsim:
 
@@ -62,7 +62,7 @@ are ignored.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

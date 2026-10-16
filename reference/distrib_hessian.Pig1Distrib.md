@@ -4,8 +4,8 @@ Returns the exact second derivatives of the log-mass in \\(\mu,
 \sigma)\\, read off columns `d20`, `d02` and `d11` of the compiled
 kernel `pig1_hessian_cpp`.
 
-This is the **observed** curvature at the data. The expected information
-is computed exactly by one pass over the support; see
+This is the observed curvature at the data. The expected information is
+computed exactly by one pass over the support; see
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md).
 
 ## Arguments

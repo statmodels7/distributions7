@@ -62,7 +62,7 @@ applies the same rule to the mixed derivatives, which are zero in `za`.
 [`distrib_grad_y.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ZeroAdjustedContinuousDistrib.md)
 and
 [`distrib_hess_y.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.ZeroAdjustedContinuousDistrib.md),
-the two methods it serves.
+the two methods that it serves.
 
 ## Examples
 

@@ -4,7 +4,8 @@ Computes the Bernoulli probability mass \$\$P(Y = y; \mu) =
 \mu^{y}(1-\mu)^{1-y}, \qquad y \in \\0, 1\\,\$\$ by calling
 [`stats::dbinom()`](https://rdrr.io/r/stats/Binomial.html) at
 `size = 1`. The `pdf` in the generic's name is the density with respect
-to counting measure, so what this returns is a probability.
+to counting measure, so the value that the method returns is a
+probability.
 
 ## Arguments
 

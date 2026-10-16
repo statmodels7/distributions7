@@ -1,14 +1,15 @@
 # Generalized Pareto Distribution Class
 
-The S7 class of the generalized Pareto family, the law of exceedances
-over a high threshold, parametrized by a scale \\\sigma \> 0\\ and a
-shape \\\xi\\: \\f(y) = \sigma^{-1}(1 + \xi y/\sigma)^{-1/\xi-1}\\ on
-\\y \ge 0\\. At \\\xi = 0\\ it is the exponential, reached by a series,
-so a fit may move the shape through zero.
+This is the S7 class of the generalized Pareto family, the law of
+exceedances over a high threshold, parametrized by a scale \\\sigma \>
+0\\ and a shape \\\xi\\: \\f(y) = \sigma^{-1}(1 + \xi
+y/\sigma)^{-1/\xi-1}\\ on \\y \ge 0\\. At \\\xi = 0\\ it is the
+exponential, reached by a series, so a fit may move the shape through
+zero.
 
-For \\\xi \< 0\\ the support ends at \\-\sigma/\xi\\, so it **moves with
-the parameters**. That is what makes the family non-regular, and it is
-why its expected information exists only above \\\xi = -1/2\\.
+For \\\xi \< 0\\ the support ends at \\-\sigma/\xi\\, so it moves with
+the parameters. Because of this the family is non-regular, and for the
+same reason its expected information exists only above \\\xi = -1/2\\.
 
 Build one with
 [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md),
@@ -97,7 +98,8 @@ and \\(-\infty,\infty)\\.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GPDDistrib.md),
@@ -154,11 +156,11 @@ Every other generic is inherited from
 ## Support depending on the parameters
 
 The derivatives are correct as derivatives of the log-density at every
-admissible point, whatever the sign of \\\xi\\. What is not automatic is
-the license to differentiate under the integral sign, which the Bartlett
-identities rest on. The expected information exists for \\\xi \> -1/2\\
-and is Smith's closed form. At or below that value it does not exist,
-and
+admissible point, whatever the sign of \\\xi\\. The license to
+differentiate under the integral sign, on which the Bartlett identities
+rest, is not automatic. The expected information exists for \\\xi \>
+-1/2\\ and is Smith's closed form. At or below that value it does not
+exist, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 returns `NA`; the classical asymptotics of the maximum likelihood
 estimator do not hold either.

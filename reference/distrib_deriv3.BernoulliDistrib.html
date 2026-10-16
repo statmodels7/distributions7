@@ -4,16 +4,16 @@ probability, in closed form:
 $$\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3} - \dfrac{2(1-y)}{(1-\mu)^3}.$$
 With expected = TRUE the expectation is returned, obtained by substituting
 \(\mathbb{E}[Y] = \mu\), which gives
-\(2/\mu^2 - 2/(1-\mu)^2\). Both routes are closed form, so no quadrature
-is run and approx and nsim are ignored.
+\(2/\mu^2 - 2/(1-\mu)^2\). Both routes are closed form, so the method
+runs no quadrature and ignores approx and nsim.
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order."><meta property="og:description" content="Computes the third derivative of the Bernoulli log-mass with respect to the
 probability, in closed form:
 $$\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3} - \dfrac{2(1-y)}{(1-\mu)^3}.$$
 With expected = TRUE the expectation is returned, obtained by substituting
 \(\mathbb{E}[Y] = \mu\), which gives
-\(2/\mu^2 - 2/(1-\mu)^2\). Both routes are closed form, so no quadrature
-is run and approx and nsim are ignored.
+\(2/\mu^2 - 2/(1-\mu)^2\). Both routes are closed form, so the method
+runs no quadrature and ignores approx and nsim.
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +23,7 @@ two-parameter family carries four at this order."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,8 +61,8 @@ probability, in closed form:
 $$\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3} - \dfrac{2(1-y)}{(1-\mu)^3}.$$
 With <code>expected = TRUE</code> the expectation is returned, obtained by substituting
 \(\mathbb{E}[Y] = \mu\), which gives
-\(2/\mu^2 - 2/(1-\mu)^2\). Both routes are closed form, so no quadrature
-is run and <code>approx</code> and <code>nsim</code> are ignored.</p>
+\(2/\mu^2 - 2/(1-\mu)^2\). Both routes are closed form, so the method
+runs no quadrature and ignores <code>approx</code> and <code>nsim</code>.</p>
 <p>The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order.</p>
     </div>
@@ -93,12 +93,12 @@ model is returned in place of the observed value. Defaults to <code>FALSE</code>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, a closed form being available for both the observed
-and the expected value.</p></dd>
+<dd><p>Ignored, because a closed form is available for both the
+observed and the expected value.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -139,12 +139,13 @@ respect to \(\mu\). Parenthesized superscripts name derivatives.</p>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The closed form, written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The method agrees with the closed form written out.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu_mu</span>,</span></span>
 <span class="r-in"><span>          <span class="fl">2</span> <span class="op">*</span> <span class="va">y</span> <span class="op">/</span> <span class="fl">0.3</span><span class="op">^</span><span class="fl">3</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span> <span class="op">/</span> <span class="fl">0.7</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The expected value, and zero at mu = 1/2 by symmetry.</span></span></span>
+<span class="r-in"><span><span class="co"># The expected value agrees with its closed form, and it is zero at</span></span></span>
+<span class="r-in"><span><span class="co"># mu = 1/2 by symmetry.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu_mu</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 18.14059</span>
 <span class="r-in"><span><span class="fl">2</span> <span class="op">/</span> <span class="fl">0.3</span><span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">/</span> <span class="fl">0.7</span><span class="op">^</span><span class="fl">2</span></span></span>

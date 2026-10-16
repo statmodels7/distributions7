@@ -11,7 +11,7 @@ the same way for a family with its own quantile method."><meta property="og:imag
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,8 +78,9 @@ recycled.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_quantile.EnetDistrib.html">distrib_quantile.EnetDistrib()</a></code>, which it inverts through,
-<code><a href="variance.EnetDistrib.html">variance.EnetDistrib()</a></code> for the moment the draws reproduce, and
+    <div class="dont-index"><p><code><a href="distrib_quantile.EnetDistrib.html">distrib_quantile.EnetDistrib()</a></code>, which it uses for the inverse
+transform, <code><a href="variance.EnetDistrib.html">variance.EnetDistrib()</a></code> for the moment that the draws
+reproduce, and
 <code><a href="distrib_rng.html">distrib_rng()</a></code> for the generic.</p></div>
     </div>
 
@@ -91,7 +92,7 @@ recycled.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">71</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">2e5</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Two moments against their closed forms, and the symmetry.</span></span></span>
+<span class="r-in"><span><span class="co"># Two moments and the symmetry are compared with their closed forms.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      theory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, <span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, <span class="fu"><a href="skewness.html">skewness</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                 [,1]      [,2]         [,3]</span>

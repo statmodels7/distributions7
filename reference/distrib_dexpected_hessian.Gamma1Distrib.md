@@ -1,7 +1,7 @@
 # Gamma Derivatives of the Expected Information in Mean and Dispersion
 
-The first and second derivatives of the expected information in \\(\mu,
-\phi)\\, from a compiled kernel. With \\s = 1/\phi\\,
+Computes the first and second derivatives of the expected information in
+\\(\mu, \phi)\\ with a compiled kernel. With \\s = 1/\phi\\,
 \\\mathbb{E}\[\ell^{(\mu\mu)}\] = -s/\mu^2\\,
 \\\mathbb{E}\[\ell^{(\mu\phi)}\] = 0\\ and
 \\\mathbb{E}\[\ell^{(\phi\phi)}\] = q(s) = s^4(1/s - \psi'(s))\\;
@@ -9,9 +9,9 @@ writing \\f_2 = 1/s - \psi'(s)\\ and \\f_3\\, \\f_4\\ its derivatives,
 \$\$\partial\_\phi \mathbb{E}\[\ell\_{\phi\phi}\] = -s^2 q'(s),\qquad
 \partial\_{\phi\phi} \mathbb{E}\[\ell\_{\phi\phi}\] = s^4 q''(s) + 2 s^3
 q'(s),\$\$ with \\q' = f_3 s^4 + 4 f_2 s^3\\ and \\q'' = f_4 s^4 + 8 f_3
-s^3 + 12 f_2 s^2\\, each \\f_k\\ computed in a form free of cancellation
-at large \\s\\. The derivatives of \\-\mu^{-2}\phi^{-1}\\ are monomials.
-On the link scale the result is carried across by
+s^3 + 12 f_2 s^2\\; each \\f_k\\ is computed in a form free of
+cancellation at large \\s\\. The derivatives of \\-\mu^{-2}\phi^{-1}\\
+are monomials. On the link scale the result is carried across by
 [`dexpected_link()`](https://statmodels7.github.io/distributions7/reference/dexpected_link.md).
 
 ## Arguments

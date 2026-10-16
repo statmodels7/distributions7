@@ -66,11 +66,11 @@ step of
 is used directly. On the link scale the domain is the whole line and no
 clamp is needed, so the step is the plain relative one.
 
-**The method signals an error where the expected information is itself
-an approximation.** Where the expected information is obtained by
-quadrature or by simulation, the result would be a difference of a
-difference, which the package does not compute anywhere, and it would
-cost 2p of the most expensive call that the family has.
+The method signals an error where the expected information is itself an
+approximation. Where the expected information is obtained by quadrature
+or by simulation, the result would be a difference of a difference,
+which the package does not compute anywhere, and it would cost 2p of the
+most expensive call that the family has.
 
 ## See also
 

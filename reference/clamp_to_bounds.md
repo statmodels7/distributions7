@@ -5,8 +5,8 @@ bounds. A moment estimate can land exactly on a boundary. A sample of
 non-negative counts gives a median of zero and a sample of proportions a
 maximum of one, and
 [`align_theta()`](https://statmodels7.github.io/distributions7/reference/align_theta.md)
-treats `params_bounds` as **open**, so such a value is rejected by the
-first generic that sees it.
+treats `params_bounds` as open, so such a value is rejected by the first
+generic that sees it.
 
 A value at a finite non-zero bound is moved in by 16 machine epsilons
 relative to the bound. A value at a bound of exactly zero cannot be,

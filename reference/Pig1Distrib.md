@@ -1,10 +1,11 @@
 # Poisson-Inverse Gaussian Distribution Class
 
-The S7 class of the Poisson-inverse Gaussian on \\\\0, 1, 2, \dots\\\\
-in its mean-dispersion parametrization, gamlss's `PIG`: the mean is
-\\\mu\\ and the variance \\\mu + \sigma\mu^2\\. The family is a Poisson
-mixed over an inverse Gaussian rate, an overdispersed count model with a
-heavier tail than the negative binomial at the same variance.
+This is the S7 class of the Poisson-inverse Gaussian on \\\\0, 1, 2,
+\dots\\\\ in its mean-dispersion parametrization, gamlss's `PIG`: the
+mean is \\\mu\\ and the variance \\\mu + \sigma\mu^2\\. The family is a
+Poisson mixed over an inverse Gaussian rate, an overdispersed count
+model with a heavier tail than the negative binomial at the same
+variance.
 
 Build one with
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md),
@@ -93,7 +94,8 @@ the properties hold `"poisson-inverse gaussian"`, `"univariate"`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Pig1Distrib.md)

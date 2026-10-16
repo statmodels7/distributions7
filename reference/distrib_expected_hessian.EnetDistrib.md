@@ -5,7 +5,8 @@ density is an exponential family, so the information in those rates is
 the Hessian of the log normalizing constant, which the observed Hessian
 also uses.
 
-`approx` and `nsim` are accepted and ignored, the answer being exact.
+`approx` and `nsim` are accepted and ignored because the answer is
+exact.
 
 ## Arguments
 
@@ -30,8 +31,8 @@ also uses.
 
 - approx:
 
-  Ignored: the answer is exact. Accepted so that the signature matches
-  the generic's.
+  Ignored: the answer is exact. It is accepted so that the signature
+  matches the generic's.
 
 - nsim:
 
@@ -45,7 +46,7 @@ also uses.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -69,25 +70,26 @@ are therefore their own expectations, which is why `lambda_lambda` and
 `alpha_alpha` repeat them exactly. The third does not: `lambda_alpha`
 carries \\-\|z\| + z^2/2\\, whose expectation \\\partial_a\log Z -
 \partial_c\log Z\\ cancels the constant of the same value sitting beside
-it and leaves the \\\log Z\\ term alone.
+it and leaves only the \\\log Z\\ term.
 
 ## The location, where the kink lives
 
 The observed second derivative in \\\mu\\ is \\-c\\, which misses the
-point mass \\\mathrm{d}\\\mathrm{sgn}(z)/\mathrm{d}z = 2\delta(z)\\ the
-density carries at its own location, exactly as the Laplace does. The
-information is defined there as the variance of the score, and
+point mass \\\mathrm{d}\\\mathrm{sgn}(z)/\mathrm{d}z = 2\delta(z)\\ that
+the density carries at its own location, exactly as the Laplace does.
+The information is defined there as the variance of the score, and
 \$\$I\_{\mu\mu} = E\left\[(a\\\mathrm{sgn}(z) + cz)^2\right\] = a^2 +
 2ac\\E\|z\| + c^2E\[z^2\] = a^2 - 2ac\\\partial_a \log Z - 2c^2
 \partial_c \log Z,\$\$ since \\E\|z\| = -\partial_a\log Z\\ and
 \\E\[z^2\] = -2\partial_c\log Z\\.
 
-Measured at \\\lambda = 2\\: it is 3.99999996 as \\\alpha \to 1\\, which
-is the Laplace's \\\lambda^2 = 1/\sigma^2\\, and exactly 2 as \\\alpha
-\to 0\\, which is the Gaussian's \\c\\.
+Measured at \\\lambda = 2\\, the value of \\I\_{\mu\mu}\\ is 3.99999996
+as \\\alpha \to 1\\, which is the Laplace's \\\lambda^2 = 1/\sigma^2\\,
+and exactly 2 as \\\alpha \to 0\\, which is the Gaussian's \\c\\.
 
-The location stays **orthogonal** to both rates, every cross-expectation
-vanishing by symmetry, so `mu_lambda` and `mu_alpha` are exactly zero.
+The location stays orthogonal to both rates, because every
+cross-expectation vanishes by symmetry. Therefore `mu_lambda` and
+`mu_alpha` are exactly zero.
 
 ## Notation
 
@@ -100,7 +102,7 @@ vanishing by symmetry, so `mu_lambda` and `mu_alpha` are exactly zero.
 for the observed curvature, which differs from this only in the
 location;
 [`distrib_expected_hessian.Laplace2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Laplace2Distrib.md)
-for the same phenomenon in the family this one contains; and
+for the same phenomenon in the family that this one contains; and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 for the generic.
 
@@ -139,7 +141,7 @@ rbind(alpha = c(1 - 1e-8, 0.5, 1e-8),
 #> information    4 2.525135 2e+00
 #> limit          4       NA 2e+00
 
-# The strategy argument is ignored, the answer being exact.
+# The strategy arguments are ignored because the answer is exact.
 identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
 #> [1] TRUE
 ```

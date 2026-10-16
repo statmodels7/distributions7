@@ -81,9 +81,9 @@ the multiset of free values \\t\\.
 [`distrib_deriv3.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvGaussianDistrib.md)
 and
 [`distrib_deriv4.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.MvGaussianDistrib.md),
-the two methods it serves, and
+the two methods that it serves, and
 [`mvg_ptensors()`](https://statmodels7.github.io/distributions7/reference/mvg_ptensors.md)
-for the arrays it reads.
+for the arrays that it reads.
 
 ## Examples
 

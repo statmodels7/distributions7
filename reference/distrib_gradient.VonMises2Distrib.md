@@ -8,15 +8,15 @@ per observation, in closed form: \$\$\dfrac{\partial\ell}{\partial\mu} =
 A^{-1}(\rho)\\ and \\\kappa'(\rho) = 1/A'(\kappa)\\ from the inverse
 function rule.
 
-The map touches the **second parameter only**, so the direction's
-component is unchanged from the concentration parametrization. In the
-second, \\\partial \log I_0(\kappa(\rho))/\partial\rho =
-A(\kappa)\kappa'(\rho) = \rho\\\kappa'(\rho)\\, so the difference
-\\\cos(y-\mu) - \rho\\ is formed from \\\rho\\ itself. The components
-are computed by a compiled kernel.
+The map touches the second parameter only, so the direction's component
+is unchanged from the concentration parametrization. In the second,
+\\\partial \log I_0(\kappa(\rho))/\partial\rho = A(\kappa)\kappa'(\rho)
+= \rho\\\kappa'(\rho)\\, so the difference \\\cos(y-\mu) - \rho\\ is
+formed from \\\rho\\ itself. The components are computed by a compiled
+kernel.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries. This method always returns the parameter scale.
+that the family carries. This method always returns the parameter scale.
 
 ## Arguments
 
@@ -38,8 +38,8 @@ the family carries. This method always returns the parameter scale.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -49,7 +49,7 @@ the family carries. This method always returns the parameter scale.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

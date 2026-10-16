@@ -6,7 +6,7 @@ $$\ell^{(\mu\mu)} = -\tau, \qquad
       \ell^{(\mu\tau)} = r, \qquad
       \ell^{(\tau\tau)} = -\dfrac{1}{2\tau^2}.$$
 Two of the three are free of the data, so the observed and the expected
-Hessians differ in the mixed entry alone. That entry sums to
+Hessians differ only in the mixed entry. That entry sums to
 \(\sum_i (y_i - \mu)\), which vanishes at \(\hat\mu = \bar y\). The
 summed observed and expected Hessians therefore coincide whenever the mean
 equation is solved, whatever the value of \(\tau\), and differ otherwise."><meta property="og:description" content="Computes the three distinct second derivatives of the Gaussian log-density
@@ -16,7 +16,7 @@ $$\ell^{(\mu\mu)} = -\tau, \qquad
       \ell^{(\mu\tau)} = r, \qquad
       \ell^{(\tau\tau)} = -\dfrac{1}{2\tau^2}.$$
 Two of the three are free of the data, so the observed and the expected
-Hessians differ in the mixed entry alone. That entry sums to
+Hessians differ only in the mixed entry. That entry sums to
 \(\sum_i (y_i - \mu)\), which vanishes at \(\hat\mu = \bar y\). The
 summed observed and expected Hessians therefore coincide whenever the mean
 equation is solved, whatever the value of \(\tau\), and differ otherwise."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -27,7 +27,7 @@ equation is solved, whatever the value of \(\tau\), and differ otherwise."><meta
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@ $$\ell^{(\mu\mu)} = -\tau, \qquad
       \ell^{(\mu\tau)} = r, \qquad
       \ell^{(\tau\tau)} = -\dfrac{1}{2\tau^2}.$$
 Two of the three are free of the data, so the observed and the expected
-Hessians differ in the mixed entry alone. That entry sums to
+Hessians differ only in the mixed entry. That entry sums to
 \(\sum_i (y_i - \mu)\), which vanishes at \(\hat\mu = \bar y\). The
 summed observed and expected Hessians therefore coincide whenever the mean
 equation is solved, whatever the value of \(\tau\), and differ otherwise.</p>
@@ -94,7 +94,7 @@ recycled. <code>tau</code> must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

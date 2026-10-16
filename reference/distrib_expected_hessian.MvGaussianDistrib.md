@@ -37,7 +37,7 @@ constant across rows and `y` is used only for its row count.
 - approx:
 
   Ignored: the expectation is exact and no approximation strategy is
-  consulted. Present so that the signature matches the generic's.
+  consulted. It is present so that the signature matches the generic's.
 
 - nsim:
 

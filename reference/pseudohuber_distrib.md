@@ -75,17 +75,15 @@ avoids the underflow of the unscaled function at large arguments.
 ## The two limits, with their rates
 
 At \\\nu \to 0\\ the exponent is \\\|y-\mu\|/\sigma\\ and the family is
-the **Laplace** with scale \\\sigma\\. The normalizing constant
-satisfies \\\sqrt{\nu} K_1(\sqrt{\nu}) = 1 + (\nu/4)\log\nu + O(\nu)\\,
-so the density approaches the Laplace density at rate
-\\O(\nu\log(1/\nu))\\.
+the Laplace with scale \\\sigma\\. The normalizing constant satisfies
+\\\sqrt{\nu} K_1(\sqrt{\nu}) = 1 + (\nu/4)\log\nu + O(\nu)\\, so the
+density approaches the Laplace density at rate \\O(\nu\log(1/\nu))\\.
 
 At \\\nu \to \infty\\ the exponent is \\\sqrt{\nu} +
-(y-\mu)^2/(2\sqrt{\nu}\sigma^2)\\ and the family is the **Gaussian**
-with standard deviation \\\sigma\nu^{1/4}\\: the largest gap is
-`1.5e-04` at \\\nu = 10^4\\ and `1.5e-07` at \\10^8\\. Note that the
-spread grows with \\\nu\\, so \\\sigma\\ alone is not the standard
-deviation.
+(y-\mu)^2/(2\sqrt{\nu}\sigma^2)\\ and the family is the Gaussian with
+standard deviation \\\sigma\nu^{1/4}\\: the largest gap is `1.5e-04` at
+\\\nu = 10^4\\ and `1.5e-07` at \\10^8\\. Note that the spread grows
+with \\\nu\\, so \\\sigma\\ alone is not the standard deviation.
 
 ## Moments
 
@@ -123,10 +121,9 @@ logarithm of the smaller tail. The generator does not use either: it
 draws the family as a normal variance mixture with a generalized inverse
 Gaussian mixing variable.
 
-The **expected information has no elementary form either**, but it
-depends on \\\nu\\ alone once the location and the scale are factored
-out, so it is one integral over \\z\\ per distinct \\\nu\\, taken by the
-rule of
+The expected information has no elementary form either, but it depends
+on \\\nu\\ alone once the location and the scale are factored out, so it
+is one integral over \\z\\ per distinct \\\nu\\, taken by the rule of
 [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md);
 see
 [`distrib_expected_hessian.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.PseudoHuberDistrib.md).
@@ -170,7 +167,7 @@ to zero where this one flattens to a bound;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
+to validate a family of your own against the same battery that this one
 passes;
 [PseudoHuberDistrib](https://statmodels7.github.io/distributions7/reference/PseudoHuberDistrib.md)
 for the class.

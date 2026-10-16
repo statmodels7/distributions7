@@ -60,7 +60,7 @@ c(mean = mean(z), n_p = 10 * 0.3,
 #>     mean      n_p      var    n_p_q 
 #> 2.991200 3.000000 2.089827 2.100000 
 
-# Unequal group sizes, one per draw.
+# Unequal group sizes give one size per draw.
 set.seed(5)
 g <- binomial_distrib(size = c(5, 10, 20, 50))
 rbind(size = c(5, 10, 20, 50), draw = distrib_rng(g, 4, list(mu = 0.3)))

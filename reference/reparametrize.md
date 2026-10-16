@@ -99,7 +99,7 @@ parameter itself unchanged. In a reparametrization the parameter is the
 new quantity, and the estimate, the standard error and the confidence
 interval describe that quantity.
 
-**The map is written in ordinary R.** It takes a named list of the new
+The map is written in ordinary R. It takes a named list of the new
 parameters and returns a named list of the parent's, and nothing in it
 mentions derivatives:
 
@@ -107,7 +107,7 @@ mentions derivatives:
     function(psi) list(mu = psi$mean / gamma(1 + 1 / psi$sigma),
                        sigma = psi$sigma)
 
-**Where the map's derivatives come from.** Two routes, and `map_derivs`
+Where the map's derivatives come from. Two routes, and `map_derivs`
 chooses between them. Supply it, and the tables are hand-written closed
 forms, exact at every order with no chain rule transcribed; the shipped
 second parametrizations all do, and their formulas live in
@@ -121,24 +121,24 @@ chain of differences. The stencil route is accurate to about
 (the third and fourth tables can be wrong in their leading digits), so a
 family used for anything beyond a first exploration needs `map_derivs`.
 
-**What is exact and what is inherited.** The derivatives of the
-log-density are carried by \$\$\ell^{(I)}(\psi) = \sum\_{\pi} \sum\_{i_1
-\dots i\_{\|\pi\|}} \ell^{(i_1 \dots i\_{\|\pi\|})}(\theta) \prod\_{B
-\in \pi} \frac{\partial^{\|B\|}\theta\_{i_B}}{\partial \psi_B},\$\$ the
-sum over set partitions, so every order the parent has in closed form
-survives in closed form. Expectation being linear and the map
-deterministic, the expected derivatives obey the same formula, and the
-term carrying the parent's score (multiplied by a derivative of the map
-of the order being formed) drops because the score has mean zero: a
-parent with an exact expected information gives an exact one here. The
-density, the distribution function, the quantile function, the generator
-and the response derivatives are the parent's at the mapped parameters.
+What is exact and what is inherited. The derivatives of the log-density
+are carried by \$\$\ell^{(I)}(\psi) = \sum\_{\pi} \sum\_{i_1 \dots
+i\_{\|\pi\|}} \ell^{(i_1 \dots i\_{\|\pi\|})}(\theta) \prod\_{B \in \pi}
+\frac{\partial^{\|B\|}\theta\_{i_B}}{\partial \psi_B},\$\$ the sum over
+set partitions, so every order the parent has in closed form survives in
+closed form. Expectation being linear and the map deterministic, the
+expected derivatives obey the same formula, and the term carrying the
+parent's score (multiplied by a derivative of the map of the order being
+formed) drops because the score has mean zero: a parent with an exact
+expected information gives an exact one here. The density, the
+distribution function, the quantile function, the generator and the
+response derivatives are the parent's at the mapped parameters.
 
-**Cost.** The density, the distribution function, the quantile function
-and the generator call the map once per evaluation, on whole vectors.
-When `map_derivs` is `NULL`, the derivatives call the map at the points
-of the stencil, several times for each observation (more at higher
-orders), and separately for each observation when a parameter varies by
+Cost. The density, the distribution function, the quantile function and
+the generator call the map once per evaluation, on whole vectors. When
+`map_derivs` is `NULL`, the derivatives call the map at the points of
+the stencil, several times for each observation (more at higher orders),
+and separately for each observation when a parameter varies by
 observation. A supplied `map_derivs` is called once per evaluation.
 
 ## See also

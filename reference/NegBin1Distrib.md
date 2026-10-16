@@ -1,8 +1,8 @@
 # Negative Binomial Distribution Class, NB1
 
-The S7 class of the negative binomial family on the non-negative
-integers whose variance is **linear** in the mean: with a mean \\\mu \>
-0\\ and a dispersion \\\theta \> 0\\, \\\operatorname{Var}(Y) =
+This is the S7 class of the negative binomial family on the non-negative
+integers whose variance is linear in the mean: with a mean \\\mu \> 0\\
+and a dispersion \\\theta \> 0\\, \\\operatorname{Var}(Y) =
 \mu(1+\theta)\\, so the variance-to-mean ratio is \\1+\theta\\ at every
 mean. It inherits from `discrete_distrib`.
 
@@ -96,7 +96,8 @@ domain \\(0, \infty)\\ for both parameters, and the two links.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin1Distrib.md),
@@ -149,7 +150,8 @@ d <- negbin1_distrib()
 S7::S7_inherits(d, discrete_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "mu"    "theta"
 d@params_interpretation

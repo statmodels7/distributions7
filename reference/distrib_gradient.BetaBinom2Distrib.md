@@ -5,15 +5,15 @@ respect to the two shapes, one value per observation, in closed form:
 \$\$\dfrac{\partial\ell}{\partial\alpha} = \psi(y+\alpha) -
 \psi(\alpha) - \psi(n+\alpha+\beta) + \psi(\alpha+\beta),\$\$ and the
 same with \\n-y\\ and \\\beta\\ in place of \\y\\ and \\\alpha\\. The
-two share the term in \\\alpha+\beta\\, which is the only part a mixed
-second derivative keeps. The compiled kernel evaluates each difference
-of digammas as a series remainder plus one
-[`log1p()`](https://rdrr.io/r/base/Log.html), the form
+two share the term in \\\alpha+\beta\\, which is the only part that a
+mixed second derivative keeps. The compiled kernel evaluates each
+difference of digammas as a series remainder plus one
+[`log1p()`](https://rdrr.io/r/base/Log.html), the form that
 [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
 uses, so that the score keeps its digits as the shapes grow.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries before returning. This method always returns the
+that the family carries before returning. This method always returns the
 parameter scale; the transformation happens in the generic.
 
 ## Arguments
@@ -36,8 +36,8 @@ parameter scale; the transformation happens in the generic.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -45,8 +45,8 @@ parameter scale; the transformation happens in the generic.
 
 - threads:
 
-  A single positive integer, the number of threads the compiled kernel
-  may use. Defaults to `1L`.
+  A single positive integer, the number of threads that the compiled
+  kernel may use. Defaults to `1L`.
 
 ## Value
 
@@ -87,7 +87,7 @@ d <- betabinom2_distrib(size = 10)
 th <- list(alpha = 2, beta = 3)
 g <- distrib_gradient(d, 0:10, th)
 
-# The alpha component, written out.
+# The alpha component is written out.
 ds <- digamma(5) - digamma(15)
 all.equal(g$alpha, digamma(0:10 + 2) - digamma(2) + ds)
 #> [1] TRUE

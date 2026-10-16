@@ -28,12 +28,13 @@ as it does in the scale parametrization, while `lambda_lambda` and
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical, `TRUE` by default.
+  A single logical, `TRUE` by default; `TRUE` selects the lower tail and
+  `FALSE` the upper tail.
 
 - log:
 
-  Are derivatives of the log probability wanted? A single logical,
-  `TRUE` by default.
+  A single logical, `TRUE` by default; `TRUE` selects the derivatives of
+  the log probability and `FALSE` those of the probability.
 
 - ...:
 

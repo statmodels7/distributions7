@@ -28,8 +28,8 @@ estimate, where \\\bar y = \mu\\. The expectation is
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -62,11 +62,11 @@ y <- c(0.3, 1.1, 4.0)
 th <- list(mu = 2)
 h <- distrib_hessian(d, y, th)
 
-# The closed form, written out.
+# The closed form is written out in R and compared with the method.
 all.equal(h$mu_mu, (2 - 2 * y) / 2^3)
 #> [1] TRUE
 
-# Positive below mu/2, negative above it.
+# The second derivative is positive below mu/2 and negative above it.
 data.frame(y = y, mu_mu = h$mu_mu, below_half = y < 2 / 2)
 #>     y  mu_mu below_half
 #> 1 0.3  0.175       TRUE

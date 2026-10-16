@@ -30,13 +30,13 @@ ignored. `y` is read only for its length.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available. Accepted so that the signature
-  matches the generic's.
+  Ignored, because a closed form is available. It is accepted so that
+  the signature matches the generic's.
 
 - nsim:
 
@@ -58,16 +58,16 @@ A named list of one numeric vector, `mu_mu`, of length
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\mu^2\]\\, the expectation of the
-**observed information** under the model. The geometric is a regular
-family, so the second Bartlett identity holds and this equals the
-variance of the score.
+observed information under the model. The geometric is a regular family,
+so the second Bartlett identity holds and this equals the variance of
+the score.
 
 ## See also
 
 [`distrib_hessian.GeometricDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GeometricDistrib.md)
-for the observed quantity this is the expectation of,
+for the observed quantity whose expectation this is,
 [`distrib_expected_hessian.PoissonDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.PoissonDistrib.md)
 for the equidispersed comparison,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
@@ -81,14 +81,14 @@ for the generic.
 d <- geometric_distrib()
 th <- list(mu = 3)
 
-# A single number, the reciprocal of the variance.
+# The value is a single number, the reciprocal of the variance.
 unique(distrib_expected_hessian(d, c(0, 2, 7), th)$mu_mu)
 #> [1] -0.08333333
 -1 / (3 * (1 + 3))
 #> [1] -0.08333333
 
-# Less information than a Poisson of the same mean, the variance being
-# larger.
+# The geometric carries less information than a Poisson of the same mean,
+# because its variance is larger.
 c(geometric = -distrib_expected_hessian(d, 0, th)$mu_mu,
   poisson = -distrib_expected_hessian(poisson_distrib(), 0, th)$mu_mu)
 #>  geometric    poisson 

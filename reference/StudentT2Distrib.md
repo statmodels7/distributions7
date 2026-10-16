@@ -1,8 +1,9 @@
 # Student t Distribution Class, Standard Deviation
 
-The S7 class of the Student t family parametrized by its location
-\\\mu\\, its standard deviation \\\sigma\\ and its degrees of freedom
-\\\nu \> 2\\. It inherits from `continuous_distrib`. Build one with
+This is the S7 class of the Student t family parametrized by its
+location \\\mu\\, its standard deviation \\\sigma\\ and its degrees of
+freedom \\\nu \> 2\\. It inherits from `continuous_distrib`. Build one
+with
 [`student_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t2_distrib.md);
 this page documents the raw S7 constructor; the validator of `distrib`
 checks that the properties are consistent (the parameter count, a bound
@@ -89,7 +90,8 @@ the properties hold `"student t2"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.StudentT2Distrib.md),

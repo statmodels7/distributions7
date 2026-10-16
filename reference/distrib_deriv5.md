@@ -30,9 +30,8 @@ distrib_deriv5(distrib, y, theta, scale = c("parameter", "link"), ...)
   `"parameter"` (the default) for derivatives with respect to the
   parameters, `"link"` for derivatives with respect to the unconstrained
   predictors. In the numerical default the link scale is obtained by
-  differentiating the order-4 component **already on the link scale**,
-  which needs neither the fifth derivative of a link nor an order-5
-  entry in
+  differentiating the order-4 component already on the link scale, which
+  needs neither the fifth derivative of a link nor an order-5 entry in
   [`bell_partial()`](https://statmodels7.github.io/distributions7/reference/bell_partial.md).
   A family with a closed-form fifth order composes it with the lower
   orders through
@@ -84,7 +83,7 @@ and
 compute the fifth order in closed form with compiled kernels. Every
 other family reaches
 [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md),
-which applies **one** central difference to the fourth order. Where the
+which applies one central difference to the fourth order. Where the
 fourth order is analytic this is an ordinary numerical derivative; where
 the fourth order is itself a fallback the result is a difference of a
 difference, with the accuracy described on

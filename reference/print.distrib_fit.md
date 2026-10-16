@@ -9,7 +9,7 @@ note.
 
 The optimizer line names the method that produced the estimates, which
 is not always the one requested, and the convergence line names the
-**stopping rule** that ended the run. Without that rule `converged` says
+stopping rule that ended the run. Without that rule `converged` says
 nothing: it records that some test was met. A run that did not converge
 also prints the score per observation at the point it stopped at, which
 is the one number that says whether the point is usable.
@@ -44,7 +44,7 @@ such as the degrees of freedom of a \\t\\, is printed after them.
 
 ## Value
 
-`x`, invisibly. Called for the output it writes.
+`x`, invisibly. The function is called for the output that it writes.
 
 ## See also
 
@@ -66,7 +66,7 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 print(fit_distrib(d, y))
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 7 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 6 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:

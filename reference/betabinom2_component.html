@@ -19,7 +19,7 @@ kernels."><meta property="og:image" content="https://statmodels7.github.io/distr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,10 +108,11 @@ component not depending on <code>y</code>.</p>
 $$\log\Gamma(y+a) + \log\Gamma(n-y+b) - \log\Gamma(n+a+b)
       - \log\Gamma(a) - \log\Gamma(b) + \log\Gamma(a+b)$$
 up to a term free of the parameters. A derivative in \(a\) alone
-differentiates the first, third, fourth and sixth terms; one in \(b\)
-alone the second, third, fifth and sixth; a <strong>mixed</strong> one only the two
-terms carrying \(a+b\), which is why a mixed component of any order is
-\(-\psi^{(k)}(n+a+b) + \psi^{(k)}(a+b)\) and free of the data.</p>
+differentiates the first, third, fourth and sixth terms. A derivative in
+\(b\) alone differentiates the second, third, fifth and sixth terms. A
+mixed derivative differentiates only the two terms that carry \(a+b\),
+which is why a mixed component of any order is
+\(-\psi^{(k)}(n+a+b) + \psi^{(k)}(a+b)\) and does not depend on the data.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

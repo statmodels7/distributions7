@@ -53,8 +53,8 @@ with \$\$(r+1)\log U \leq \log K(Y).\$\$
 Two devices make this numerically safe for an arbitrary user-supplied
 density:
 
-- **Recentering.** The kernel is shifted to its mode, \\K(z) \propto
-  f(m + z)\\, and the mode is added back to the draws. Without this a
+- Recentering. The kernel is shifted to its mode, \\K(z) \propto f(m +
+  z)\\, and the mode is added back to the draws. Without this a
   distribution located far from the origin (say \\\mu = 1000\\) gives a
   wildly elongated bounding rectangle and an acceptance rate close to
   zero. Recentering also splits the box exactly: \\h(z) =
@@ -62,7 +62,7 @@ density:
   for \\z \ge 0\\, so \\v\_{\min}\\ and \\v\_{\max}\\ are each found on
   one side of the mode.
 
-- **Normalization.** The kernel is rescaled by its value at the mode, so
+- Normalization. The kernel is rescaled by its value at the mode, so
   that \\\max K = 1\\ and \\u\_{\max} = 1\\. Every quantity stays in a
   safe numerical range whatever the height of the density, and all
   computations are carried out on the log scale.

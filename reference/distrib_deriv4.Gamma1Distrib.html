@@ -13,9 +13,9 @@ $$\ell^{(\phi^4)} = f_4 (s')^4 + 6 f_3 (s')^2 s'' + 3 f_2 (s'')^2
 with \(s' = -s^2\), \(s'' = 2s^3\), \(s''' = -6s^4\),
 \(s'''' = 24s^5\) and \(f_k\) the \(k\)th derivative of \(\ell\) in
 \(s\). \(f_2\), \(f_3\) and \(f_4\) are polygamma functions of
-\(s\), each computed as a polygamma minus its own leading asymptote, and
-\(f_1\) also contains \(\log z - (z - 1)\), so the digits survive at
-large shape.
+\(s\), and each of them is computed as a polygamma minus its own leading
+asymptote. \(f_1\) also contains \(\log z - (z - 1)\), so the digits
+survive at large shape.
 With expected = TRUE the expectations are returned, obtained by replacing
 \(z\) with 1 and \(\log z\) with \(\psi(s) - \log s\). Both routes are
 closed form, so approx and nsim are ignored."><meta property="og:description" content="Computes the five distinct fourth derivatives of the gamma log-density with
@@ -32,9 +32,9 @@ $$\ell^{(\phi^4)} = f_4 (s')^4 + 6 f_3 (s')^2 s'' + 3 f_2 (s'')^2
 with \(s' = -s^2\), \(s'' = 2s^3\), \(s''' = -6s^4\),
 \(s'''' = 24s^5\) and \(f_k\) the \(k\)th derivative of \(\ell\) in
 \(s\). \(f_2\), \(f_3\) and \(f_4\) are polygamma functions of
-\(s\), each computed as a polygamma minus its own leading asymptote, and
-\(f_1\) also contains \(\log z - (z - 1)\), so the digits survive at
-large shape.
+\(s\), and each of them is computed as a polygamma minus its own leading
+asymptote. \(f_1\) also contains \(\log z - (z - 1)\), so the digits
+survive at large shape.
 With expected = TRUE the expectations are returned, obtained by replacing
 \(z\) with 1 and \(\log z\) with \(\psi(s) - \log s\). Both routes are
 closed form, so approx and nsim are ignored."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -45,7 +45,7 @@ closed form, so approx and nsim are ignored."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,9 +92,9 @@ $$\ell^{(\phi^4)} = f_4 (s')^4 + 6 f_3 (s')^2 s'' + 3 f_2 (s'')^2
 with \(s' = -s^2\), \(s'' = 2s^3\), \(s''' = -6s^4\),
 \(s'''' = 24s^5\) and \(f_k\) the \(k\)th derivative of \(\ell\) in
 \(s\). \(f_2\), \(f_3\) and \(f_4\) are polygamma functions of
-\(s\), each computed as a polygamma minus its own leading asymptote, and
-\(f_1\) also contains \(\log z - (z - 1)\), so the digits survive at
-large shape.</p>
+\(s\), and each of them is computed as a polygamma minus its own leading
+asymptote. \(f_1\) also contains \(\log z - (z - 1)\), so the digits
+survive at large shape.</p>
 <p>With <code>expected = TRUE</code> the expectations are returned, obtained by replacing
 \(z\) with 1 and \(\log z\) with \(\psi(s) - \log s\). Both routes are
 closed form, so <code>approx</code> and <code>nsim</code> are ignored.</p>
@@ -127,12 +127,12 @@ model are returned in place of the observed values. Defaults to <code>FALSE</cod
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, a closed form being available for both the observed
-and the expected values.</p></dd>
+<dd><p>Ignored, because a closed form is available for both the
+observed and the expected values.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -168,7 +168,7 @@ function.</p>
     <div class="dont-index"><p><code><a href="distrib_deriv3.Gamma1Distrib.html">distrib_deriv3.Gamma1Distrib()</a></code> for the order below,
 <code><a href="distrib_deriv4.html">distrib_deriv4()</a></code> for the generic, and
 <code><a href="distrib_expected_hessian.Gamma1Distrib.html">distrib_expected_hessian.Gamma1Distrib()</a></code> for the second-order
-expectation these extend.</p></div>
+expectation that these extend.</p></div>
     </div>
 
     <div class="section level2">
@@ -181,7 +181,7 @@ expectation these extend.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu_mu_mu_mu"     "mu_mu_mu_phi"    "mu_mu_phi_phi"   "mu_phi_phi_phi" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] "phi_phi_phi_phi"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The four components involving mu, written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The four components involving mu are written out.</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">0.5</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">/</span> <span class="fl">3</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">d4</span><span class="op">$</span><span class="va">mu_mu_mu_mu</span>, <span class="va">s</span> <span class="op">*</span> <span class="op">(</span><span class="fl">6</span> <span class="op">-</span> <span class="fl">24</span> <span class="op">*</span> <span class="va">z</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span><span class="op">^</span><span class="fl">4</span><span class="op">)</span></span></span>

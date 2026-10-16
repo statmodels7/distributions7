@@ -30,19 +30,18 @@ and `nsim` are all without effect.
 
 - expected:
 
-  Logical of length 1, and without effect here, the observed and
-  expected fourth derivatives being the same numbers. Defaults to
-  `FALSE`.
+  Logical of length 1, without effect here because the observed and
+  expected fourth derivatives are the same numbers. Defaults to `FALSE`.
 
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available.
+  Ignored, because a closed form is available.
 
 - nsim:
 
@@ -88,7 +87,7 @@ y <- c(0.2, 0.5, 0.8)
 th <- list(mu = 0.4, phi = 5)
 d4 <- distrib_deriv4(d, y, th)
 
-# Five constants: nothing at this order depends on the observation.
+# Five constants: every component at this order is free of the observation.
 lapply(d4, unique)
 #> $mu_mu_mu_mu
 #> [1] -383.0493

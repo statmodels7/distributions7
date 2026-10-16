@@ -1,8 +1,8 @@
 # Pseudo-Huber Distribution Class, Standard-Deviation Parametrization
 
-The S7 class of the pseudo-Huber family parametrized by its location
-\\\mu\\, its standard deviation \\\sigma\\ and its shape \\\nu\\. It is
-the family of
+This is the S7 class of the pseudo-Huber family parametrized by its
+location \\\mu\\, its standard deviation \\\sigma\\ and its shape
+\\\nu\\. It is the family of
 [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
 with the scale \\\sigma_1\\ of that family replaced by \\\sigma =
 \sigma_1 \sqrt{R(\nu)}\\, where \\R(\nu) = \sqrt{\nu}\\ K_2(\sqrt{\nu})
@@ -96,7 +96,8 @@ and the domains \\(-\infty, \infty)\\, \\(0, \infty)\\, \\(0, \infty)\\.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.PseudoHuber2Distrib.md),

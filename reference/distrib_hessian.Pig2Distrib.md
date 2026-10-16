@@ -4,8 +4,8 @@ Returns the exact second derivatives of the log-mass in \\(\mu,
 \alpha)\\, read off columns `d20`, `d02` and `d11` of the compiled
 kernel `pig2_hessian_cpp`.
 
-The **observed** mixed entry is not zero in general; what vanishes is
-its expectation. At \\\mu = 3\\ and \\\alpha = 3.0104\\ the entry is
+The observed mixed entry is not zero in general; what vanishes is its
+expectation. At \\\mu = 3\\ and \\\alpha = 3.0104\\ the entry is
 proportional to \\y - \mu\\, and its expectation is zero to rounding
 error.
 

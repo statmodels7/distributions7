@@ -11,7 +11,7 @@ size = 1, so the draws come from R's own generator and depend on
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,8 +65,9 @@ size = 1, so the draws come from R's own generator and depend on
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with the single component <code>mu</code>, a numeric vector
 of length 1 or of length <code>n</code>. A value of length 1 is recycled, so a vector
-of length <code>n</code> draws one variate per probability, the shape a regression
-on a Bernoulli response supplies. <code>mu</code> must lie in \((0, 1)\).</p></dd>
+of length <code>n</code> draws one variate per probability, which is the shape that
+a regression on a Bernoulli response supplies. <code>mu</code> must lie in
+\((0, 1)\).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -101,7 +102,7 @@ on a Bernoulli response supplies. <code>mu</code> must lie in \((0, 1)\).</p></d
 <span class="r-out co"><span class="r-pr">#&gt;</span> proportion   variance  p_times_q </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  0.3010500  0.2104294  0.2100000 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A probability per observation, which is what a regression supplies.</span></span></span>
+<span class="r-in"><span><span class="co"># The probability varies by observation, as it does in a regression.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span>, length.out <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">p</span>, <span class="fl">3</span><span class="op">)</span>, draw <span class="op">=</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">6</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">p</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>

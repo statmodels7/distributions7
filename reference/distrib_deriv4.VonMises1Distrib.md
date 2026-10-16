@@ -5,8 +5,8 @@ log-density in \\\mu\\ and \\\kappa\\, in closed form, by the
 construction
 [`distrib_deriv3.VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises1Distrib.md)
 describes carried one order further. The log-density is linear in
-\\\kappa\\ apart from the normalizing constant, so **two of the five are
-exactly zero**: `mu_mu_kappa_kappa` and `mu_kappa_kappa_kappa`. The
+\\\kappa\\ apart from the normalizing constant, so two of the five are
+exactly zero: `mu_mu_kappa_kappa` and `mu_kappa_kappa_kappa`. The
 pure-direction component is \\\kappa\cos(y-\mu)\\, the
 \\\mu\mu\mu\kappa\\ one \\-\sin(y-\mu)\\, and the pure-concentration one
 \\-A^{(3)}(\kappa)\\.
@@ -36,8 +36,8 @@ which is the one place on this page where `approx` and `nsim` are read.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - expected:
 
@@ -63,7 +63,7 @@ which is the one place on this page where `approx` and `nsim` are read.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

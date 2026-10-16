@@ -6,7 +6,7 @@ by calling [`stats::qpois()`](https://rdrr.io/r/stats/Poisson.html). The
 distribution function is a step function, so its inverse is a step
 function too and the round trip through
 [`distrib_cdf.PoissonDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.PoissonDistrib.md)
-returns a probability **at least** `p`, not `p` itself.
+returns a probability at least `p`, not `p` itself.
 
 ## Arguments
 

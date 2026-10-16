@@ -2,8 +2,8 @@
 
 Return the derivatives of the log-density in the response to order four,
 and the mixed derivatives of orders one and two in the response and one
-and two in \\(a, d, p)\\, each a closed form from its own compiled
-kernel, written as
+and two in \\(a, d, p)\\. Each of them is a closed form computed by its
+own compiled kernel, written as
 [`distrib_deriv3.GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
 describes.
 
@@ -51,7 +51,7 @@ d <- gengamma1_distrib()
 th <- list(a = 2, d = 3, p = 1.5)
 y <- c(0.5, 1.5, 4)
 
-# The score in y written out: ((d - 1) - p (y/a)^p) / y.
+# The score in y agrees with the formula ((d - 1) - p (y/a)^p) / y.
 all.equal(distrib_grad_y(d, y, th), (2 - 1.5 * (y / 2)^1.5) / y)
 #> [1] TRUE
 

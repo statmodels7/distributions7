@@ -3,11 +3,11 @@
 \(E\) standard exponential, using stats::rexp(). That is the
 inverse-transform identity written without a logarithm of a uniform, which
 keeps the left tail accurate: a uniform near zero has few significant digits
-left after one logarithm and none after two."><meta property="og:description" content="Draws n independent Gumbel variates as \(\mu - \sigma\log E\) with
+left after one logarithm and loses all of them after a second one."><meta property="og:description" content="Draws n independent Gumbel variates as \(\mu - \sigma\log E\) with
 \(E\) standard exponential, using stats::rexp(). That is the
 inverse-transform identity written without a logarithm of a uniform, which
 keeps the left tail accurate: a uniform near zero has few significant digits
-left after one logarithm and none after two."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+left after one logarithm and loses all of them after a second one."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -15,7 +15,7 @@ left after one logarithm and none after two."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@ left after one logarithm and none after two."><meta property="og:image" content=
 \(E\) standard exponential, using <code><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">stats::rexp()</a></code>. That is the
 inverse-transform identity written without a logarithm of a uniform, which
 keeps the left tail accurate: a uniform near zero has few significant digits
-left after one logarithm and none after two.</p>
+left after one logarithm and loses all of them after a second one.</p>
     </div>
 
 
@@ -85,7 +85,7 @@ so a vector of length <code>n</code> draws one variate per parameter setting.
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_quantile.GumbelDistrib.html">distrib_quantile.GumbelDistrib()</a></code> for the inverse it rests on,
+    <div class="dont-index"><p><code><a href="distrib_quantile.GumbelDistrib.html">distrib_quantile.GumbelDistrib()</a></code> for the inverse on which it rests,
 <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters back from a sample, and
 <code><a href="distrib_rng.html">distrib_rng()</a></code> for the generic.</p></div>
     </div>
@@ -94,7 +94,8 @@ so a vector of length <code>n</code> draws one variate per parameter setting.
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="gumbel_distrib.html">gumbel_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The identity the method uses: mu - sigma log(E), E standard exponential.</span></span></span>
+<span class="r-in"><span><span class="co"># The method uses the identity mu - sigma log(E), with E standard</span></span></span>
+<span class="r-in"><span><span class="co"># exponential.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>

@@ -42,8 +42,8 @@ distrib_expected_hessian(
 
 - approx:
 
-  How the expectation is approximated **when the distribution has no
-  closed-form expected Hessian**; ignored otherwise. One of `"opg"` (the
+  How the expectation is approximated when the distribution has no
+  closed-form expected Hessian; ignored otherwise. One of `"opg"` (the
   default: the outer product of the score, read at each observation
   without taking an expectation), `"bartlett"` (the second Bartlett
   identity, with the expectation taken by summation or quadrature),

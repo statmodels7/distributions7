@@ -8,7 +8,7 @@ p\right\\,\$\$ by calling
 \\1/(1+\theta)\\ is never formed. The support is discrete, so the round
 trip through
 [`distrib_cdf.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.NegBin1Distrib.md)
-does **not** return `p`: it returns the mass up to the smallest integer
+does not return `p`: it returns the mass up to the smallest integer
 whose cumulative probability reaches `p`, which overshoots.
 
 ## Arguments

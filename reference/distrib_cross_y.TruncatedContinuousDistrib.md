@@ -25,7 +25,7 @@ which is one quadrature or one pair of cdf evaluations per component.
 
 - theta:
 
-  A named list of parameters of the **parent**, aligned by the generic.
+  A named list of parameters of the parent, aligned by the generic.
   Truncation adds no parameter, the endpoints being constants.
 
 - scale:

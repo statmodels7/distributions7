@@ -1,8 +1,8 @@
 # Lognormal Distribution Class, Mean and Variance of Y
 
-The S7 class of the lognormal family parametrized by the mean \\m\\ and
-the variance \\v\\ of \\Y\\. It inherits from `continuous_distrib`.
-Build one with
+This is the S7 class of the lognormal family parametrized by the mean
+\\m\\ and the variance \\v\\ of \\Y\\. It inherits from
+`continuous_distrib`. Build one with
 [`lognormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal2_distrib.md);
 this page documents the raw S7 constructor; the validator of `distrib`
 checks that the properties are consistent (the parameter count, a bound
@@ -89,7 +89,8 @@ the properties hold `"lognormal2"`, `"univariate"`, `c(0, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Lognormal2Distrib.md),

@@ -35,8 +35,8 @@ returns `p`.
 - log.p:
 
   Logical of length 1. When `TRUE` the values in `p` are read as
-  logarithms of probabilities, which is how a quantile deep in a tail is
-  requested without the probability underflowing. Defaults to `FALSE`.
+  logarithms of probabilities, so that a quantile deep in a tail can be
+  requested without underflow in the probability. Defaults to `FALSE`.
 
 - ...:
 
@@ -62,7 +62,7 @@ for the generic.
 d <- gamma1_distrib()
 th <- list(mu = 3, phi = 0.5)
 
-# A central 95 percent interval, visibly asymmetric about the mean of 3.
+# The central 95 percent interval is visibly asymmetric about the mean of 3.
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #> [1] 0.3633139 2.5175205 8.3574651
 
@@ -71,7 +71,7 @@ p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #> [1] TRUE
 
-# The median falls below the mean, the gamma being right skewed.
+# The median falls below the mean because the gamma is right skewed.
 c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 #>  median    mean 
 #> 2.51752 3.00000 

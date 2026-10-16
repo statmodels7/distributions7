@@ -1,7 +1,7 @@
 # Laplace Distribution, Location and Rate
 
 Builds the distribution object for the Laplace (double exponential)
-family written by its **rate** \\\lambda \> 0\\, with density
+family written by its rate \\\lambda \> 0\\, with density
 \\(\lambda/2)\exp(-\lambda\|y-\mu\|)\\. It is the same law as
 [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
 at \\\lambda = 1/\sigma\\, and every quantity that does not involve the
@@ -74,7 +74,7 @@ set out on
 
 A second consequence is visible at the higher orders. The log-density is
 \\\log(\lambda/2) - \lambda\|r\|\\, linear in \\\lambda\\ apart from
-\\\log\lambda\\ and piecewise linear in \\\mu\\, so **every** third and
+\\\log\lambda\\ and piecewise linear in \\\mu\\, so every third and
 fourth derivative except the pure-\\\lambda\\ ones is exactly zero, and
 the pure-\\\lambda\\ ones do not depend on the data. Hence
 `expected = TRUE` returns the same values at those orders. The observed

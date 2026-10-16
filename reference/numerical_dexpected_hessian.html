@@ -9,7 +9,7 @@ difference in each parameter of the family's own expected information."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,8 +101,8 @@ both evaluation points stay strictly inside the parameter's open domain;
 with <code>approx = "mc"</code> the step of <code><a href="fd_steps.html">fd_steps()</a></code> is used directly. On the link
 scale the domain is the whole line and no clamp is needed, so the step is
 the plain relative one.</p>
-<p><strong>The method signals an error where the expected information is itself an
-approximation.</strong> Where the expected information is obtained by quadrature
+<p>The method signals an error where the expected information is itself an
+approximation. Where the expected information is obtained by quadrature
 or by simulation, the result would be a difference of a difference, which
 the package does not compute anywhere, and it would cost 2p of the most
 expensive call that the family has.</p>

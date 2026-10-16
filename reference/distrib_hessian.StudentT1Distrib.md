@@ -17,7 +17,7 @@ r^4\right)}{\nu D^2}\right\],\$\$ \$\$\dfrac{\partial^2 \ell}{\partial
 \ell}{\partial \sigma \\ \partial \nu} = \dfrac{r^2\left(r^2 -
 \sigma^2\right)}{\sigma D^2}.\$\$
 
-The curvature in \\\mu\\ **turns positive** wherever \\\|r\| \>
+The curvature in \\\mu\\ turns positive wherever \\\|r\| \>
 \sigma\sqrt{\nu}\\, the same point at which the score peaks, so the
 observed information is indefinite in that direction at an outlying
 observation while its expectation is negative definite everywhere.
@@ -45,8 +45,8 @@ the output, so the result does not depend on the thread count.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 

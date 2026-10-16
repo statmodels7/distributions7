@@ -43,7 +43,7 @@ explains which identity holds and which fails."><meta property="og:image" conten
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,14 +84,14 @@ $$\dfrac{\partial^2 \ell}{\partial \mu^2} = 0,
       \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma - 2|r|}{\sigma^3},
       \qquad
       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma} = -\dfrac{\mathrm{sign}(r)}{\sigma^2}.$$</p>
-<p>The first entry is <strong>exactly zero for every observation</strong>, and that is the
+<p>The first entry is exactly zero for every observation, and that is the
 correct value: the log-density is piecewise linear in \(\mu\), so away
 from \(r = 0\) its second derivative vanishes, and at \(r = 0\) the
 derivative does not exist. The curvature of the log-likelihood in the
 location is concentrated at the single point \(r = 0\), so the
 expectation of this second derivative is 0 although the information is
 positive.</p>
-<p>The consequence is that the observed information here is <strong>not</strong> the
+<p>The consequence is that the observed information here is not the
 information. <code><a href="distrib_expected_hessian.LaplaceDistrib.html">distrib_expected_hessian.LaplaceDistrib()</a></code> returns
 \(-1/\sigma^2\), obtained from the variance of the score, and that page
 explains which identity holds and which fails.</p>
@@ -118,7 +118,7 @@ recycled. <code>sigma</code> must be strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -128,7 +128,7 @@ recycled. <code>sigma</code> must be strictly positive.</p></dd>
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+whatever the count is. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

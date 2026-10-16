@@ -44,7 +44,8 @@ quad_log_tail_prob(distrib, q, theta, lower.tail)
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical.
+  A single logical; `TRUE` selects the lower tail and `FALSE` the upper
+  tail.
 
 - all_orders:
 

@@ -3,11 +3,12 @@
 Returns the expectation of the observed Hessian under the model,
 \\\sum\_{k=0}^{n} P(Y=k)\\
 \partial^2\ell/\partial\theta_i\partial\theta_j\\ evaluated at \\y =
-k\\. The support being finite, that is an **exact finite sum** of
-\\n+1\\ terms rather than a quadrature or a sample, and the summand is
-the observed Hessian of
+k\\. Because the support is finite, the expectation is an exact finite
+sum of \\n+1\\ terms rather than a quadrature or a sample. The summand
+is the observed Hessian of
 [`distrib_hessian.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BetaBinom1Distrib.md),
-from the direct sums for \\\sigma \< 0.1\\ and from the shapes above.
+which comes from the direct sums for \\\sigma \< 0.1\\ and from the
+shapes above.
 
 `approx` and `nsim` are therefore ignored; every strategy returns the
 same three numbers. The compiled kernel is sequential: it evaluates the
@@ -23,8 +24,8 @@ parameters, and `threads` is ignored.
 
 - y:
 
-  A numeric vector of counts. Only its length is read, the expectation
-  not depending on the data; the values are ignored.
+  A numeric vector of counts. Only its length is read, because the
+  expectation does not depend on the data; the values are ignored.
 
 - theta:
 
@@ -36,13 +37,13 @@ parameters, and `threads` is ignored.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored here, the expectation being an exact sum. Accepted so that the
-  signature matches the generic's, where it selects between
+  Ignored here, because the expectation is an exact sum. It is accepted
+  so that the signature matches the generic's, where it selects between
   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 
 - nsim:
@@ -95,7 +96,8 @@ vapply(distrib_hessian(d, 0:10, th), function(v) sum(w * v), numeric(1))
 eh$mu_sigma[1]
 #> [1] 0.9716737
 
-# The strategy argument is inert, the expectation being an exact sum.
+# The strategy argument has no effect, because the expectation is an exact
+# sum.
 identical(eh, distrib_expected_hessian(d, 0:10, th, approx = "mc",
                                        nsim = 50))
 #> [1] TRUE

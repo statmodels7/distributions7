@@ -5,11 +5,12 @@ with respect to \\\mu\\ and \\\sigma^2\\, one value per observation, in
 closed form, by differentiating the score of
 [`distrib_gradient.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gamma2Distrib.md)
 once more. Every component carries the trigamma function of \\\alpha =
-\mu^2/\sigma^2\\, both parameters moving the shape.
+\mu^2/\sigma^2\\, because both parameters move the shape.
 
-The curvature in \\\mu\\ is not negative at every data point, and
-neither is the curvature in \\\sigma^2\\: the observed information of a
-gamma is not positive definite everywhere. Its expectation is; see
+The curvature in \\\mu\\ is not negative at every data point, and the
+same holds for the curvature in \\\sigma^2\\: the observed information
+of a gamma is not positive definite everywhere. Its expectation is
+positive definite; see
 [`distrib_expected_hessian.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gamma2Distrib.md).
 
 The kernel evaluates them through the decomposition described on
@@ -36,8 +37,8 @@ which keeps the digits at a large shape.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 

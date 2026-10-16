@@ -23,7 +23,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,12 +87,12 @@ of length 1 or of the length of <code>y</code>. <code>mu</code> must be strictly
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, a closed form being available. Accepted so that the
-signature matches the generic's.</p></dd>
+<dd><p>Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -117,16 +117,16 @@ use. Defaults to <code>1L</code>.</p></dd>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>The <strong>expected information</strong> is
+<p>The expected information is
 \(\mathbb{E}[-\partial^2\ell/\partial\mu^2]\), the expectation of the
-<strong>observed information</strong> under the model. The geometric is a regular family,
+observed information under the model. The geometric is a regular family,
 so the second Bartlett identity holds and this equals the variance of the
 score.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_hessian.GeometricDistrib.html">distrib_hessian.GeometricDistrib()</a></code> for the observed quantity this
-is the expectation of, <code><a href="distrib_expected_hessian.PoissonDistrib.html">distrib_expected_hessian.PoissonDistrib()</a></code> for the
+    <div class="dont-index"><p><code><a href="distrib_hessian.GeometricDistrib.html">distrib_hessian.GeometricDistrib()</a></code> for the observed quantity whose
+expectation this is, <code><a href="distrib_expected_hessian.PoissonDistrib.html">distrib_expected_hessian.PoissonDistrib()</a></code> for the
 equidispersed comparison, <code><a href="fisher_scoring.html">fisher_scoring()</a></code>, which inverts it, and
 <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
     </div>
@@ -136,14 +136,14 @@ equidispersed comparison, <code><a href="fisher_scoring.html">fisher_scoring()</
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="geometric_distrib.html">geometric_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A single number, the reciprocal of the variance.</span></span></span>
+<span class="r-in"><span><span class="co"># The value is a single number, the reciprocal of the variance.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">7</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.08333333</span>
 <span class="r-in"><span><span class="op">-</span><span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">3</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.08333333</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Less information than a Poisson of the same mean, the variance being</span></span></span>
-<span class="r-in"><span><span class="co"># larger.</span></span></span>
+<span class="r-in"><span><span class="co"># The geometric carries less information than a Poisson of the same mean,</span></span></span>
+<span class="r-in"><span><span class="co"># because its variance is larger.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>geometric <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span>,</span></span>
 <span class="r-in"><span>  poisson <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">0</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometric    poisson </span>

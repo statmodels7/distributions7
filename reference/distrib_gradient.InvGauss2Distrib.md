@@ -5,12 +5,12 @@ respect to \\\mu\\ and \\\lambda\\, one value per observation, in closed
 form: \$\$\dfrac{\partial \ell}{\partial \mu} =
 \dfrac{\lambda(y-\mu)}{\mu^3}, \qquad \dfrac{\partial \ell}{\partial
 \lambda} = \dfrac{1}{2\lambda} - \dfrac{(y-\mu)^2}{2\mu^2 y}.\$\$ The
-log-density is **linear in the shape** apart from
-\\\tfrac12\log\lambda\\. Every derivative of this family is elementary
-for that reason, and every expectation reduces to \\\mathbb{E}\[Y\] =
-\mu\\ and \\\mathbb{E}\[(Y-\mu)^2/Y\] = \mu^2/\lambda\\. The arithmetic
-runs in a compiled kernel decomposed over the elements of the output, so
-the result does not depend on the thread count.
+log-density is linear in the shape apart from \\\tfrac12\log\lambda\\.
+Every derivative of this family is elementary for that reason, and every
+expectation reduces to \\\mathbb{E}\[Y\] = \mu\\ and
+\\\mathbb{E}\[(Y-\mu)^2/Y\] = \mu^2/\lambda\\. The arithmetic runs in a
+compiled kernel decomposed over the elements of the output, so the
+result does not depend on the thread count.
 
 With `scale = "link"` the generic applies the chain rule for the links
 of the family before returning. This method always returns the parameter
@@ -36,8 +36,8 @@ scale.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 

@@ -31,13 +31,13 @@ ignored. `y` is read only for its length.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available. Accepted so that the signature
-  matches the generic's.
+  Ignored, because a closed form is available. It is accepted so that
+  the signature matches the generic's.
 
 - nsim:
 
@@ -59,16 +59,16 @@ A named list of one numeric vector, `mu_mu`, of length
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\mu^2\]\\, the expectation of the
-**observed information** under the model. The exponential is a regular
+observed information under the model. The exponential is a regular
 family, so the second Bartlett identity holds and this equals the
 variance of the score.
 
 ## See also
 
 [`distrib_hessian.ExponentialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ExponentialDistrib.md)
-for the observed quantity this is the expectation of,
+for the observed quantity of which this is the expectation,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
 which inverts it, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
@@ -80,7 +80,7 @@ for the generic.
 d <- exponential_distrib()
 th <- list(mu = 2)
 
-# A single number, -1/mu^2.
+# The result is a single number, -1/mu^2.
 unique(distrib_expected_hessian(d, c(0.3, 1.1, 4.0), th)$mu_mu)
 #> [1] -0.25
 -1 / 2^2
@@ -94,7 +94,7 @@ c(observed = mean(distrib_hessian(d, z, th)$mu_mu),
 #>   observed   expected 
 #> -0.2498915 -0.2500000 
 
-# It is the variance of the score, this family being regular.
+# It is the variance of the score, because this family is regular.
 c(var_of_score = mean(distrib_gradient(d, z, th)$mu^2),
   information = -distrib_expected_hessian(d, 0, th)$mu_mu)
 #> var_of_score  information 

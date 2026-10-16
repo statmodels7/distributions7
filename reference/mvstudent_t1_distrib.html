@@ -27,7 +27,7 @@ and to a log link on nu."><meta property="og:image" content="https://statmodels7
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@ and to a log link on nu."><meta property="og:image" content="https://statmodels7
     <div class="ref-description section level2">
     <p>Two families on \(\mathbb{R}^p\), differing in which matrix their
 parametrization describes: <code>mvstudent_t1_distrib()</code> parametrizes the
-<strong>scale matrix</strong> \(\Sigma\) and <code>mvstudent_t2_distrib()</code> its <strong>inverse</strong>
+scale matrix \(\Sigma\) and <code>mvstudent_t2_distrib()</code> its inverse
 \(\Sigma^{-1}\). Each carries a location vector of \(p\) free
 parameters, the matrix through a <span class="pkg">parameters7</span> parametrization, and a
 positive degrees-of-freedom parameter. The free values become ordinary
@@ -107,7 +107,7 @@ every point of the free scale.</p></dd>
 <dd><p>A <span class="pkg">parameters7</span> parametrization of the inverse scale
 matrix, of dimension <code>n_dim</code> and of full rank. Defaults to
 <code>parameters7::log_cholesky(n_dim)</code>. It is the precision of the response
-only up to the factor \((\nu-2)/\nu\); see <strong>Details</strong>.</p></dd>
+only up to the factor \((\nu-2)/\nu\); see Details.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -123,7 +123,7 @@ which is \((0, \infty)\); and every link is the identity except that of
     <div class="section level2">
     <h2 id="the-two-matrices">The two matrices<a class="anchor" aria-label="anchor" href="#the-two-matrices"></a></h2>
     <p>Neither matrix is a covariance, and neither is a precision. \(\Sigma\) is
-the <strong>scale matrix</strong>, the matrix in the quadratic form of the density, and
+the scale matrix, the matrix in the quadratic form of the density, and
 the moments are obtained from it by scaling in \(\nu\):</p>
 <p>$$\operatorname{Var}(Y) = \frac{\nu}{\nu-2}\,\Sigma \quad (\nu &gt; 2),
   \qquad
@@ -142,14 +142,14 @@ returns the covariance, a moment, which is <code>Inf</code> in every entry for
 \(\nu \le 2\); <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code> returns <code>NaN</code> for \(\nu \le 1\). A fit
 therefore runs at \(\nu = 1.5\).</p>
 <p>Two readings carry over from the matrix to the response without a factor,
-because a positive multiple cancels out of a ratio:</p><ul><li><p>the <strong>correlations</strong> of \(\Sigma\) are the correlations of \(Y\);</p></li>
-<li><p>the <strong>partial correlations</strong> read off \(\Sigma^{-1}\), as
+because a positive multiple cancels out of a ratio:</p><ul><li><p>the correlations of \(\Sigma\) are the correlations of \(Y\);</p></li>
+<li><p>the partial correlations read off \(\Sigma^{-1}\), as
 \(-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}\), are the partial
 correlations of \(Y\).</p></li>
 </ul><p>The conditional variance does not carry over. For a gaussian
 \(1/\Omega_{jj}\) is the conditional variance of \(Y_j\) given the rest;
 here it is the Schur complement of the scale matrix, so it is a conditional
-<strong>scale</strong>, and the conditional law of a \(t\) is itself a \(t\) whose
+scale, and the conditional law of a \(t\) is itself a \(t\) whose
 scale carries a further factor depending on the conditioning values.
 <code><a href="mv_summary.html">mv_summary()</a></code> names that quantity <code>cscale_vj</code> and not <code>cvar_vj</code> for this
 reason, as it names the diagonal quantities <code>scale_sd_vj</code>.</p>

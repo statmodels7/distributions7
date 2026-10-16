@@ -57,7 +57,7 @@ and for the sample versions: a Cauchy sample mean does not converge as
 \\n\\ grows, it is itself Cauchy with the same scale, so no amount of
 data settles it. The example below shows that.
 
-The Cauchy has a **median**, equal to \\\mu\\, and a half-interquartile
+The Cauchy has a median, equal to \\\mu\\, and a half-interquartile
 range, equal to \\\sigma\\. Both are finite at every parameter value and
 both are available from
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md).

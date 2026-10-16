@@ -6,7 +6,7 @@ by calling [`stats::qgeom()`](https://rdrr.io/r/stats/Geometric.html) at
 `prob = 1/(1+mu)`. The distribution function is a step function, so the
 round trip through
 [`distrib_cdf.GeometricDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GeometricDistrib.md)
-returns a probability **at least** `p`.
+returns a probability at least `p`.
 
 ## Arguments
 
@@ -57,11 +57,12 @@ for the generic.
 d <- geometric_distrib()
 th <- list(mu = 3)
 
-# Integers, and the median well below the mean, the mass being at zero.
+# The quantiles are integers, and the median lies well below the mean
+# because the mass is largest at zero.
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #> [1]  0  2 12
 
-# The round trip overshoots, the support being discrete.
+# The round trip overshoots because the support is discrete.
 p <- c(0.025, 0.5, 0.975)
 rbind(asked = p, reached = distrib_cdf(d, distrib_quantile(d, p, th), th))
 #>          [,1]     [,2]      [,3]

@@ -1,8 +1,8 @@
 # Laplace Distribution Class, Location and Rate
 
-The S7 class of the Laplace (double exponential) family written by its
-**rate** \\\lambda \> 0\\ in place of its scale, with density \\f(y) =
-(\lambda/2)\exp(-\lambda\|y-\mu\|)\\ on the whole real line. It is the
+This is the S7 class of the Laplace (double exponential) family written
+by its rate \\\lambda \> 0\\ in place of its scale, with density \\f(y)
+= (\lambda/2)\exp(-\lambda\|y-\mu\|)\\ on the whole real line. It is the
 same law as
 [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
 at \\\lambda = 1/\sigma\\; the parametrization differs and the
@@ -17,7 +17,7 @@ location held at zero.
 
 Like
 [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md),
-this family has a **kink** at \\y = \mu\\ and is non-regular in its
+this family has a kink at \\y = \mu\\ and is non-regular in its
 location; `params_smooth` is `c(mu = FALSE, lambda = TRUE)`.
 
 Build one with
@@ -111,7 +111,8 @@ they hold `"laplace2"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Laplace2Distrib.md),

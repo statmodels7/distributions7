@@ -4,8 +4,9 @@ Computes the second derivative of the Gaussian log-density with respect
 to the response, \$\$\dfrac{\partial^2 \ell}{\partial y^2} = -\tau,\$\$
 in closed form. It does not depend on \\y\\ or on \\\mu\\, so the value
 is constant within a parameter setting and is recycled to the length of
-`y`. Being a location family, the Gaussian has the same curvature in the
-response as in its location, and this equals the `mu_mu` component of
+`y`. Because the Gaussian is a location family, it has the same
+curvature in the response as in its location, and this equals the
+`mu_mu` component of
 [`distrib_hessian.Gaussian3Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Gaussian3Distrib.md).
 In this parametrization that curvature is minus the precision, so a
 larger precision gives a sharper peak of the log-density.

@@ -17,7 +17,7 @@ new family's own cdf if they are not."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@ new family's own cdf if they are not."><meta property="og:image" content="https:
     <p>The body that every mapped family registers at orders 3 and 4, at 2 as well
 where its written-out route stops at the gradient, and at every order for
 the centered skew normal. It tests whether the parent's cdf derivatives
-are exact at <strong>every</strong> order up to the one wanted, takes
+are exact at every order up to the one wanted, takes
 <code><a href="chain_cdf_deriv_k.html">chain_cdf_deriv_k()</a></code> if they are, and falls back to <code><a href="cdf_tables.html">cdf_tables()</a></code> on the
 new family's own cdf if they are not.</p>
     </div>
@@ -108,11 +108,13 @@ new family's own cdf if they are not.</p>
 
 
 <dt id="arg-lower-tail">lower.tail<a class="anchor" aria-label="anchor" href="#arg-lower-tail"></a></dt>
-<dd><p>Is the lower tail wanted? A single logical.</p></dd>
+<dd><p>A single logical; <code>TRUE</code> selects the lower tail and <code>FALSE</code>
+the upper tail.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>
-<dd><p>Are derivatives of the log probability wanted? A single logical.</p></dd>
+<dd><p>A single logical; <code>TRUE</code> selects the derivatives of the log
+probability and <code>FALSE</code> those of the probability.</p></dd>
 
 
 <dt id="arg-q-par">q_par<a class="anchor" aria-label="anchor" href="#arg-q-par"></a></dt>

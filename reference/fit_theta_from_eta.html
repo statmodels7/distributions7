@@ -29,7 +29,7 @@ the link scale and mapped back cannot run outside the domain."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@ the link scale and mapped back cannot run outside the domain."><meta property="o
     <p>Applies each parameter's inverse link, \(\theta_i = g_i^{-1}(\eta_i)\),
 and returns the parameters as the named list every generic in the package
 expects. It is the inverse of <code><a href="fit_eta_from_theta.html">fit_eta_from_theta()</a></code>.</p>
-<p>Every link maps onto the <strong>open</strong> interior of its parameter's domain, and
+<p>Every link maps onto the open interior of its parameter's domain, and
 <code>linkfunctions7</code> clamps the result strictly inside when the arithmetic
 saturates, so a \(\theta\) obtained this way is admissible whatever the
 optimizer proposed. On a Gaussian scale carried by the logarithm,

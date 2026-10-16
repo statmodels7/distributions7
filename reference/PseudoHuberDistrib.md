@@ -1,12 +1,12 @@
 # Pseudo-Huber Distribution Class
 
-The S7 class of the pseudo-Huber family, a location-scale family on the
-whole real line whose log-density is the negative pseudo-Huber loss
-\\-\sqrt{\nu + z^2}\\, with a shape \\\nu \> 0\\ interpolating between a
-Laplace at \\\nu \to 0\\ and a Gaussian at \\\nu \to \infty\\. It is the
-symmetric hyperbolic distribution, a special case of the generalized
-hyperbolic. It inherits from `continuous_distrib`; the eleven methods
-listed below are registered on it in this file.
+This is the S7 class of the pseudo-Huber family, a location-scale family
+on the whole real line whose log-density is the negative pseudo-Huber
+loss \\-\sqrt{\nu + z^2}\\, with a shape \\\nu \> 0\\ interpolating
+between a Laplace at \\\nu \to 0\\ and a Gaussian at \\\nu \to \infty\\.
+It is the symmetric hyperbolic distribution, a special case of the
+generalized hyperbolic. It inherits from `continuous_distrib`; the
+eleven methods listed below are registered on it in this file.
 
 Build one with
 [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md),
@@ -99,7 +99,8 @@ domains \\(-\infty, \infty)\\, \\(0, \infty)\\, \\(0, \infty)\\.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.PseudoHuberDistrib.md),
@@ -178,7 +179,8 @@ d <- pseudohuber_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "mu"    "sigma" "nu"   
 d@params_interpretation

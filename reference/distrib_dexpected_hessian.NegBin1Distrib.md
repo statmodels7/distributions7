@@ -43,9 +43,9 @@ or
 
 ## Details
 
-**NB1.** The expected information is \\-A\\, \\G\\ and \\-\theta
-G/\mu\\, with \\A\\ and \\G = \mathbb{E}\[\ell\_{\theta\theta}\]\\ the
-two sums over the support of
+NB1. The expected information is \\-A\\, \\G\\ and \\-\theta G/\mu\\,
+with \\A\\ and \\G = \mathbb{E}\[\ell\_{\theta\theta}\]\\ the two sums
+over the support of
 [`distrib_expected_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md);
 below \\\theta = 0.02\\ \\G\\ is \\-\mathbb{E}\[\sum\_{j\<Y} j^2/(\mu +
 j\theta)^2\] - \mu q'(\theta)\\, whose summands are all positive, and
@@ -58,7 +58,7 @@ and second derivatives \\h\\ of the log-mass written so that no term of
 order \\\mu/\theta^2\\ is formed. Every component keeps its accuracy
 down to the Poisson limit \\\theta \to 0\\.
 
-**Beta-binomial.** The support \\\\0, \dots, n\\\\ is finite, so the
+Beta-binomial. The support \\\\0, \dots, n\\\\ is finite, so the
 identities \$\$\partial_c \mathbb{E}\[\ell\_{ab}\] =
 \mathbb{E}\[\ell\_{abc} + \ell\_{ab}\ell_c\]\$\$ and its second-order
 counterpart, \$\$\partial\_{cd} \mathbb{E}\[\ell\_{ab}\] =

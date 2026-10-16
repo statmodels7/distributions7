@@ -1,7 +1,7 @@
 # Gaussian Distribution Class, Mean and Variance
 
-The S7 class of the Gaussian (normal) family parametrized by its mean
-\\\mu\\ and its variance \\\sigma^2 \> 0\\, with density \\f(y) =
+This is the S7 class of the Gaussian (normal) family parametrized by its
+mean \\\mu\\ and its variance \\\sigma^2 \> 0\\, with density \\f(y) =
 (2\pi\sigma^2)^{-1/2}\exp\\-(y-\mu)^2/(2\sigma^2)\\\\ on the whole real
 line. It inherits from `continuous_distrib`, so every generic of the
 `distrib` class applies to it; the methods listed below are registered
@@ -99,7 +99,8 @@ they hold `"gaussian2"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The methods registered on this class are listed below, and each is
+linked to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gaussian2Distrib.md),
@@ -165,7 +166,7 @@ for mean and precision;
 [`distrib_pdf.Gaussian2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gaussian2Distrib.md)
 and
 [`distrib_gradient.Gaussian2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gaussian2Distrib.md)
-for the closed forms this class supplies.
+for the closed forms that this class supplies.
 
 ## Examples
 
@@ -174,7 +175,8 @@ d <- gaussian2_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "mu"     "sigma2"
 d@params_interpretation

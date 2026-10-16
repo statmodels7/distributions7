@@ -26,16 +26,17 @@ A numeric vector of probabilities in \\(0, 1)\\, of the length of `mu`.
 ## Details
 
 The mean number of failures before the first success is \\(1-p)/p\\, so
-\\p = 1/(1+\mu)\\. Writing it once keeps the four methods that call
-stats from each repeating the algebra, and keeps them from drifting
-apart if the parametrization ever changes.
+\\p = 1/(1+\mu)\\. Because it is written once, the four methods that
+call stats use it instead of repeating the algebra, and they cannot
+drift apart if the parametrization ever changes.
 
 The map is decreasing and carries \\(0, \infty)\\ onto \\(0, 1)\\: a
-large mean is a small success probability. No validation is performed. A
-negative `mu` other than \\-1\\ gives a value outside \\\[0, 1\]\\, for
-which the base R functions return `NaN`, and `mu = 0` gives 1, which
-they accept as a point mass at zero. The methods are reached through the
-generics, which signal an error for a non-positive `mu` first.
+large mean is a small success probability. The function does not
+validate its argument. A negative `mu` other than \\-1\\ gives a value
+outside \\\[0, 1\]\\, for which the base R functions return `NaN`, and
+`mu = 0` gives 1, which they accept as a point mass at zero. The methods
+are reached through the generics, which signal an error for a
+non-positive `mu` first.
 
 ## See also
 

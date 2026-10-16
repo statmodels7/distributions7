@@ -1,7 +1,7 @@
 # Dirichlet Distribution Class, Mean Vector and Concentration
 
-The S7 class of the Dirichlet family on the open simplex of \\p\\
-coordinates, parametrized by a mean vector \\\mu\\ carried on a
+This is the S7 class of the Dirichlet family on the open simplex of
+\\p\\ coordinates, parametrized by a mean vector \\\mu\\ carried on a
 `parameters7` simplex and a concentration \\\phi \> 0\\. It inherits
 from `multivariate_distrib`, so the distribution function and the
 quantile signal an error and are not approximated.
@@ -115,7 +115,8 @@ unconstrained already.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.DirichletDistrib.md)

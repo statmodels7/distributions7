@@ -31,7 +31,7 @@ this in params_smooth, and the details below say what follows from it."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,7 @@ moments.</p>
 excess kurtosis 3, so it is heavier tailed than a Gaussian. Its maximum
 likelihood estimates are the sample median and the mean absolute deviation
 about it, both available in closed form.</p>
-<p>This family is <strong>not regular</strong> in \(\mu\): the density has a corner at
+<p>This family is not regular in \(\mu\): the density has a corner at
 \(y = \mu\) and the observed second derivative there is zero almost
 everywhere, while the information is \(1/\sigma^2\). The object records
 this in <code>params_smooth</code>, and the details below say what follows from it.</p>
@@ -129,7 +129,7 @@ visible in the methods:</p><ul><li><p>the score in \(\mu\) is \(\mathrm{sign}(r)
 the sign of the residual;</p></li>
 <li><p>the observed second derivative in \(\mu\) is 0 wherever it exists, so
 <code><a href="distrib_hessian.LaplaceDistrib.html">distrib_hessian.LaplaceDistrib()</a></code> returns a vector of zeros;</p></li>
-<li><p>the second Bartlett identity fails, and the information is <strong>defined</strong> as
+<li><p>the second Bartlett identity fails, and the information is defined as
 the variance of the score, \(1/\sigma^2\). That is what
 <code><a href="distrib_expected_hessian.LaplaceDistrib.html">distrib_expected_hessian.LaplaceDistrib()</a></code> returns.</p></li>
 </ul><p><code>params_smooth</code> is <code>c(mu = FALSE, sigma = TRUE)</code>. When an entry is <code>FALSE</code>,
@@ -153,9 +153,9 @@ the fitted values against both closed forms.</p>
 
 <p>\(\ell\) is the log-density of one observation, \(\mu\) the location and
 \(\sigma &gt; 0\) the scale, with variance \(2\sigma^2\). \(r = y - \mu\)
-is the residual. The <strong>observed information</strong> is
+is the residual. The observed information is
 \(-\partial^2\ell/\partial\theta\,\partial\theta^\top\) at the data; the
-<strong>expected information</strong> is the variance of the score, which for a regular
+expected information is the variance of the score, which for a regular
 family equals the expectation of the observed one and here does not.</p>
     </div>
     <div class="section level2">

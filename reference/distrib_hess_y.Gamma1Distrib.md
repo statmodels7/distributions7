@@ -3,7 +3,7 @@
 Computes the second derivative of the gamma log-density with respect to
 the response, in closed form at the implied shape \\a = 1/\phi\\:
 \$\$\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{a - 1}{y^2}.\$\$ The
-rate drops out, the log-density being linear in \\y\\ apart from the
+rate drops out because the log-density is linear in \\y\\ apart from the
 \\(a-1)\log y\\ term. The sign follows the shape: the log-density is
 concave in the response for \\\phi \< 1\\, exactly flat at \\\phi = 1\\,
 where the family is exponential, and convex for \\\phi \> 1\\.
@@ -23,8 +23,8 @@ where the family is exponential, and convex for \\\phi \> 1\\.
 - theta:
 
   A named list with components `mu` and `phi`, each a numeric vector of
-  length 1 or of the length of `y`. `mu` is not read, the rate having
-  canceled. `phi` must be strictly positive.
+  length 1 or of the length of `y`. `mu` is not read, because the rate
+  has canceled. `phi` must be strictly positive.
 
 - ...:
 
@@ -59,7 +59,7 @@ identical(distrib_hess_y(d, y, th),
           distrib_hess_y(d, y, list(mu = 300, phi = 0.5)))
 #> [1] TRUE
 
-# Concave below phi = 1, flat at it, convex above.
+# The log-density is concave below phi = 1, flat at it and convex above.
 vapply(c(0.5, 1, 2), function(p) distrib_hess_y(d, 3, list(mu = 3, phi = p)),
        numeric(1))
 #> [1] -0.11111111  0.00000000  0.05555556

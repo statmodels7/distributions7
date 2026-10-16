@@ -11,10 +11,10 @@ derivative in \\s\\ carried across by the one-variable chain rule, with
 \\s' = -s^2\\ and \\s'' = 2s^3\\, so each polygamma function is
 evaluated once.
 
-The curvature in \\\mu\\ turns **positive** wherever \\y \< \mu/2\\, so
-the observed information of a gamma is not positive definite at every
-data point. Its expectation is, which is one reason a gamma model is
-fitted by Fisher scoring; see
+The curvature in \\\mu\\ turns positive wherever \\y \< \mu/2\\, so the
+observed information of a gamma is not positive definite at every data
+point. Its expectation is positive definite, which is one reason why a
+gamma model is fitted by Fisher scoring; see
 [`distrib_expected_hessian.Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gamma1Distrib.md).
 
 ## Arguments
@@ -37,8 +37,8 @@ fitted by Fisher scoring; see
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -82,7 +82,7 @@ y <- c(1, 3, 5)
 th <- list(mu = 3, phi = 0.5)
 h <- distrib_hessian(d, y, th)
 
-# The curvature in mu, written out, and positive at y = 1 < mu/2 = 1.5.
+# The curvature in mu is written out, and it is positive at y = 1 < mu/2 = 1.5.
 s <- 1 / 0.5
 z <- y / 3
 all.equal(h$mu_mu, s * (1 - 2 * z) / 3^2)

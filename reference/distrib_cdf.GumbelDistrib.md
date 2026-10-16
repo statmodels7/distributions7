@@ -48,10 +48,11 @@ values are logarithms and are non-positive.
 
 Both tails are computed on the scale that keeps them accurate. The lower
 tail is exact on the log scale, \\\log F = -e^{-z}\\, and the upper tail
-goes through [`base::expm1()`](https://rdrr.io/r/base/Log.html), so
-neither loses precision where it is small. Where \\w = e^{-z}\\ is below
-\\10^{-10}\\ the logarithm of the upper tail is taken as \\-z - w/2\\,
-which stays finite where \\w\\ underflows.
+goes through [`base::expm1()`](https://rdrr.io/r/base/Log.html), so both
+computations keep their precision where the tail probability is small.
+Where \\w = e^{-z}\\ is below \\10^{-10}\\ the logarithm of the upper
+tail is taken as \\-z - w/2\\, which stays finite where \\w\\
+underflows.
 
 ## See also
 
@@ -69,7 +70,7 @@ d <- gumbel_distrib()
 th <- list(mu = 0, sigma = 1)
 q <- c(-1, 0, 1)
 
-# The closed form, written out.
+# The closed form is written out.
 all.equal(distrib_cdf(d, q, th), exp(-exp(-q)))
 #> [1] TRUE
 

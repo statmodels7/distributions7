@@ -3,14 +3,14 @@
 Returns the same number as
 [`distrib_hessian.ChisqDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ChisqDistrib.md),
 \$\$\mathbb{E}\left\[\dfrac{\partial^2 \ell}{\partial \mu^2}\right\] =
--\dfrac{\psi'(\mu/2)}{4},\$\$ the observed second derivative being free
-of the response and so equal to its own expectation. Nothing is
-averaged, integrated or simulated, so `approx` and `nsim` are ignored
+-\dfrac{\psi'(\mu/2)}{4},\$\$ because the observed second derivative is
+free of the response and so equals its own expectation. The method does
+not average, integrate or simulate, so `approx` and `nsim` are ignored
 and `y` is read only for its length. The value is negative at every
-\\\mu\\, the trigamma function being positive, so the information is
+\\\mu\\ because the trigamma function is positive, so the information is
 positive throughout.
 
-The identity holds on the **parameter** scale. On the link scale the
+The identity holds on the parameter scale. On the link scale the
 second-order chain rule adds \\h''(\eta)\\\partial\ell/\partial\mu\\ to
 the observed Hessian. The expected version drops that term because the
 score has expectation zero, whereas the score of a finite sample is not
@@ -38,14 +38,14 @@ score vanishes.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, the expectation being exact. Accepted so that the signature
-  matches the generic's, where it selects between the Bartlett,
-  quadrature, Monte Carlo and outer-product routes.
+  Ignored because the expectation is exact. It is accepted so that the
+  signature matches the generic's, where it selects between the
+  Bartlett, quadrature, Monte Carlo and outer-product routes.
 
 - nsim:
 
@@ -59,7 +59,7 @@ score vanishes.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -69,9 +69,9 @@ parameter is.
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\mu^2\]\\, the expectation of the
-**observed information** under the model. The chi-squared is a regular
+observed information under the model. The chi-squared is a regular
 family, so the second Bartlett identity holds and this equals the
 variance of the score. \\\psi'\\ is the trigamma function.
 
@@ -90,14 +90,15 @@ for the generic.
 d <- chisq_distrib()
 th <- list(mu = 4)
 
-# A constant, and identical to the observed Hessian.
+# The value is a constant and is identical to the observed Hessian.
 unique(distrib_expected_hessian(d, c(1, 4, 9), th)$mu_mu)
 #> [1] -0.1612335
 identical(distrib_expected_hessian(d, c(1, 4, 9), th),
           distrib_hessian(d, c(1, 4, 9), th))
 #> [1] TRUE
 
-# Negative at every mu, the trigamma function being positive.
+# The value is negative at every mu, because the trigamma function is
+# positive.
 vapply(c(0.5, 4, 40),
        function(m) distrib_expected_hessian(d, 0, list(mu = m))$mu_mu,
        numeric(1))

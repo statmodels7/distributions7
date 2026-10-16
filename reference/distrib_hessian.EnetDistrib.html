@@ -7,7 +7,7 @@ the \(\lambda\alpha\) entry. In the location the curvature is simply
 \(-c\).
 That \(-c\) is the observed curvature and not the information. It
 misses the point mass \(\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z =
-2\delta(z)\) the absolute value carries at the location, exactly as the
+2\delta(z)\) that the absolute value carries at the location, exactly as the
 Laplace does; see distrib_expected_hessian.EnetDistrib() for what the
 information is instead."><meta property="og:description" content="Computes the six second derivatives of the log-density in closed form. The
 data term of the log-density is linear in the two rates, so every rate
@@ -17,7 +17,7 @@ the \(\lambda\alpha\) entry. In the location the curvature is simply
 \(-c\).
 That \(-c\) is the observed curvature and not the information. It
 misses the point mass \(\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z =
-2\delta(z)\) the absolute value carries at the location, exactly as the
+2\delta(z)\) that the absolute value carries at the location, exactly as the
 Laplace does; see distrib_expected_hessian.EnetDistrib() for what the
 information is instead."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -27,7 +27,7 @@ information is instead."><meta property="og:image" content="https://statmodels7.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,14 +61,14 @@ information is instead."><meta property="og:image" content="https://statmodels7.
 
     <div class="ref-description section level2">
     <p>Computes the six second derivatives of the log-density in closed form. The
-data term of the log-density is <strong>linear in the two rates</strong>, so every rate
+data term of the log-density is linear in the two rates, so every rate
 block is a second derivative of \(\log Z\) carried through the bilinear
 map \((\lambda,\alpha) \mapsto (a, c)\), whose own cross term contributes
 the \(\lambda\alpha\) entry. In the location the curvature is simply
 \(-c\).</p>
-<p>That \(-c\) is the observed curvature and <strong>not</strong> the information. It
+<p>That \(-c\) is the observed curvature and not the information. It
 misses the point mass \(\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z =
-2\delta(z)\) the absolute value carries at the location, exactly as the
+2\delta(z)\) that the absolute value carries at the location, exactly as the
 Laplace does; see <code><a href="distrib_expected_hessian.EnetDistrib.html">distrib_expected_hessian.EnetDistrib()</a></code> for what the
 information is instead.</p>
     </div>
@@ -103,7 +103,7 @@ transformation is applied in the generic's body.</p></dd>
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+whatever the count is. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -138,8 +138,8 @@ data at all and are their own expectations.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu_mu"         "lambda_lambda" "alpha_alpha"   "mu_lambda"    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] "mu_alpha"      "lambda_alpha" </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The curvature in the location is -c at every observation, the absolute</span></span></span>
-<span class="r-in"><span><span class="co"># value contributing nothing away from the kink.</span></span></span>
+<span class="r-in"><span><span class="co"># The curvature in the location is -c at every observation, because the</span></span></span>
+<span class="r-in"><span><span class="co"># absolute value contributes nothing away from the kink.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>observed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">h</span><span class="op">$</span><span class="va">mu_mu</span><span class="op">)</span>, minus_c <span class="op">=</span> <span class="op">-</span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> observed  minus_c </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       -1       -1 </span>
@@ -152,7 +152,7 @@ data at all and are their own expectations.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> observed -0.1702646 -0.1159321 -1.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expected -0.1702646 -0.1159321 -2.525135</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a central difference of the score.</span></span></span>
+<span class="r-in"><span><span class="co"># The analytic entry is compared with a central difference of the score.</span></span></span>
 <span class="r-in"><span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-5</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>analytic <span class="op">=</span> <span class="va">h</span><span class="op">$</span><span class="va">lambda_alpha</span>,</span></span>
 <span class="r-in"><span>      numeric <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, lambda <span class="op">=</span> <span class="fl">2</span>,</span></span>

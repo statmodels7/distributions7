@@ -8,15 +8,15 @@ observation, in closed form. Writing \\r = y - \mu\\,
 2\|r\|}{\sigma^3}, \qquad \dfrac{\partial^2 \ell}{\partial \mu \\
 \partial \sigma} = -\dfrac{\mathrm{sign}(r)}{\sigma^2}.\$\$
 
-The first entry is **exactly zero for every observation**, and that is
-the correct value: the log-density is piecewise linear in \\\mu\\, so
-away from \\r = 0\\ its second derivative vanishes, and at \\r = 0\\ the
+The first entry is exactly zero for every observation, and that is the
+correct value: the log-density is piecewise linear in \\\mu\\, so away
+from \\r = 0\\ its second derivative vanishes, and at \\r = 0\\ the
 derivative does not exist. The curvature of the log-likelihood in the
 location is concentrated at the single point \\r = 0\\, so the
 expectation of this second derivative is 0 although the information is
 positive.
 
-The consequence is that the observed information here is **not** the
+The consequence is that the observed information here is not the
 information.
 [`distrib_expected_hessian.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LaplaceDistrib.md)
 returns \\-1/\sigma^2\\, obtained from the variance of the score, and
@@ -42,8 +42,8 @@ that page explains which identity holds and which fails.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -53,7 +53,7 @@ that page explains which identity holds and which fails.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

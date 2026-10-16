@@ -6,9 +6,9 @@ with respect to \\\alpha\\ and \\\beta\\, in closed form:
 \qquad \ell^{(\alpha\alpha\beta)} = \ell^{(\alpha\beta\beta)} =
 \psi''(\alpha+\beta), \qquad \ell^{(\beta\beta\beta)} =
 \psi''(\alpha+\beta) - \psi''(\beta),\$\$ with \\\psi''\\ the second
-derivative of the digamma function. The two mixed components are equal,
-every mixed derivative of \\\log B(\alpha,\beta)\\ of a given order
-being the same polygamma of the sum.
+derivative of the digamma function. The two mixed components are equal
+because every mixed derivative of \\\log B(\alpha,\beta)\\ of a given
+order is the same polygamma of the sum.
 
 The values are free of the response, so `expected` selects nothing: the
 same computation runs either way and the two results are identical to
@@ -32,19 +32,18 @@ the bit. `approx` and `nsim` are ignored for the same reason.
 
 - expected:
 
-  Logical of length 1, and without effect here, the observed and
-  expected third derivatives being the same numbers. Defaults to
-  `FALSE`.
+  Logical of length 1, without effect here because the observed and
+  expected third derivatives are the same numbers. Defaults to `FALSE`.
 
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available.
+  Ignored, because a closed form is available.
 
 - nsim:
 

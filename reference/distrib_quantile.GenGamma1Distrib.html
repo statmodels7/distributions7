@@ -19,7 +19,7 @@ scale qgamma() returns 0."><meta property="og:image" content="https://statmodels
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,9 +72,9 @@ scale <code><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-lin
 
 <dt id="arg-p">p<a class="anchor" aria-label="anchor" href="#arg-p"></a></dt>
 <dd><p>A numeric vector of probabilities in \([0, 1]\), or their
-logarithms when <code>log.p = TRUE</code>. Note that the family's third parameter is
-also called <code>p</code>; here the argument is the probability, and the parameter
-is read from <code>theta</code>.</p></dd>
+logarithms when <code>log.p = TRUE</code>. The family's third parameter is also
+called <code>p</code>; here the argument is the probability, and the parameter is
+read from <code>theta</code>.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -115,18 +115,19 @@ the generic.</p></div>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="gengamma1_distrib.html">gengamma1_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2</span>, d <span class="op">=</span> <span class="fl">3</span>, p <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The round trip through the distribution function.</span></span></span>
+<span class="r-in"><span><span class="co"># Applying the quantile function to the distribution function returns the</span></span></span>
+<span class="r-in"><span><span class="co"># original values.</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The identity written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The quantile function agrees with the identity written out.</span></span></span>
 <span class="r-in"><span><span class="va">u</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">u</span>, <span class="va">th</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">qgamma</a></span><span class="op">(</span><span class="va">u</span>, shape <span class="op">=</span> <span class="fl">3</span> <span class="op">/</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The median sits below the mean, the family being right-skewed here.</span></span></span>
+<span class="r-in"><span><span class="co"># The median is below the mean, because the family is right-skewed here.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>median <span class="op">=</span> <span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.5</span>, <span class="va">th</span><span class="op">)</span>, mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   median     mean </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2.824562 3.009151 </span>

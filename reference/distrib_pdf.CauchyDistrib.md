@@ -19,7 +19,7 @@ to zero.
 - y:
 
   A numeric vector of observations. Every real value is in the support,
-  so no value is rejected.
+  so every value is accepted.
 
 - theta:
 
@@ -59,7 +59,8 @@ for the generic.
 d <- cauchy_distrib()
 y <- c(-1.2, 0.3, 2.5)
 
-# The same values as stats::dcauchy at this parametrization.
+# The density takes the same values as stats::dcauchy at this
+# parametrization.
 all.equal(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5)),
           dcauchy(y, location = 0.4, scale = 1.5))
 #> [1] TRUE

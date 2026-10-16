@@ -1,11 +1,11 @@
 # Shape and Rate of the Gamma from Its Mean and Dispersion
 
-Converts the `gamma1` parameters to the shape and rate
+Converts the `gamma1` parameters to the shape and rate that
 [`stats::dgamma()`](https://rdrr.io/r/stats/GammaDist.html) takes: \\a =
 1/\phi\\ and \\b = 1/(\phi\mu)\\. Under that pairing the mean \\a/b\\ is
-\\\mu\\ and the variance \\a/b^2\\ is \\\phi\mu^2\\. Nothing is
-validated; a non-positive `phi` or `mu` propagates as an infinite or
-negative value to the caller.
+\\\mu\\ and the variance \\a/b^2\\ is \\\phi\mu^2\\. The function does
+not validate its input; a non-positive `phi` or `mu` propagates as an
+infinite or negative value to the caller.
 
 ## Usage
 
@@ -23,8 +23,8 @@ gamma1_shape_rate(theta)
 
 ## Value
 
-A list of two numeric vectors, `shape` and `rate`, of the lengths the
-arithmetic produces.
+A list of two numeric vectors, `shape` and `rate`, of the lengths that
+the arithmetic produces.
 
 ## See also
 

@@ -7,9 +7,9 @@ expectation that the observed Hessian requires is a moment of \\u =
 u)^{2}\] = k\\\psi(k+1)^{2} + \psi'(k+1)\\.\$\$ So `approx` and `nsim`
 are ignored and
 [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
-answers `TRUE`. It is the same device the Weibull and the Gumbel use,
-where the corresponding variable is standard exponential and the
-expectations are derivatives of \\\Gamma\\ at 2.
+returns `TRUE`. The Weibull and the Gumbel use the same device, with a
+standard exponential variable as the corresponding variable and the
+expectations as derivatives of \\\Gamma\\ at 2.
 
 ## Arguments
 
@@ -36,7 +36,7 @@ expectations are derivatives of \\\Gamma\\ at 2.
 
 - approx:
 
-  Ignored: the expectation is closed form. Accepted so that the
+  Ignored: the expectation is closed form. It is accepted so that the
   signature matches the generic's.
 
 - nsim:
@@ -74,9 +74,9 @@ removes the flat direction.
 
 ## Notation
 
-\\k = d/p\\, \\\psi\\ and \\\psi'\\ the digamma and trigamma functions,
-and \\u = (Y/a)^p\\ the Gamma-distributed transformation the family is
-built on.
+Here \\k = d/p\\, \\\psi\\ and \\\psi'\\ are the digamma and trigamma
+functions, and \\u = (Y/a)^p\\ is the Gamma-distributed transformation
+on which the family is built.
 
 ## See also
 
@@ -96,12 +96,13 @@ e <- distrib_expected_hessian(d, 0, th)
 names(e)
 #> [1] "a_a" "d_d" "p_p" "a_d" "a_p" "d_p"
 
-# The scale-shape entry is the observed one, -1/a, the term being bilinear.
+# The scale-shape entry is the observed one, -1/a, because the term is
+# bilinear.
 c(expected = e$a_d, observed = -1 / 2)
 #> expected observed 
 #>     -0.5     -0.5 
 
-# The strategy argument is ignored, the expectation being closed form.
+# The strategy argument is ignored, because the expectation is closed form.
 identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
 #> [1] TRUE
 distributions7:::expected_hessian_exact(d)
@@ -115,6 +116,6 @@ ev <- eigen(-M)
 c(eigenvalues = ev$values, condition = max(ev$values) / min(ev$values))
 #> eigenvalues1 eigenvalues2 eigenvalues3    condition 
 #> 4.721041e+00 1.379646e-01 3.211472e-03 1.470055e+03 
-round(ev$vectors[, 3], 3)   # the flat direction
+round(ev$vectors[, 3], 3)   # this is the flat direction
 #> [1]  0.791 -0.517  0.327
 ```

@@ -10,7 +10,7 @@ from \\-\log\sigma\\ and from \\\|r\|/\sigma\\.
 With `expected = TRUE` the expectations under the model are returned,
 also in closed form, using \\\mathbb{E}\|r\| = \sigma\\ and
 \\\mathbb{E}\[\mathrm{sign}(r)\] = 0\\. Both routes are closed form, so
-no quadrature is run and `approx` and `nsim` are ignored.
+the method runs no quadrature and ignores `approx` and `nsim`.
 
 ## Arguments
 
@@ -38,13 +38,13 @@ no quadrature is run and `approx` and `nsim` are ignored.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both the observed and the
-  expected values.
+  Ignored, because a closed form is available for both the observed and
+  the expected values.
 
 - nsim:
 

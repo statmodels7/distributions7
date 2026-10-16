@@ -25,17 +25,18 @@ here is particular to the Gaussian beyond its density.
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical, `TRUE` by default. With
-  `log = FALSE`, `FALSE` flips the sign of every component; with
-  `log = TRUE` it returns the derivatives of \\\log S\\, where \\S = 1 -
-  F\\, which are not the negatives of the lower-tail ones.
+  A single logical, `TRUE` by default; `TRUE` selects the lower tail and
+  `FALSE` the upper tail. With `log = FALSE`, `FALSE` flips the sign of
+  every component; with `log = TRUE` it returns the derivatives of
+  \\\log S\\, where \\S = 1 - F\\, which are not the negatives of the
+  lower-tail ones.
 
 - log:
 
-  Are derivatives of the log probability wanted? A single logical,
-  `TRUE` by default. The ratio \\f/P\\ is formed as \\\exp(\log f - \log
-  P)\\, so the result stays finite far into either tail, where \\f\\ and
-  \\P\\ underflow.
+  A single logical, `TRUE` by default; `TRUE` selects the derivatives of
+  the log probability and `FALSE` those of the probability. The ratio
+  \\f/P\\ is formed as \\\exp(\log f - \log P)\\, so the result stays
+  finite far into either tail, where \\f\\ and \\P\\ underflow.
 
 ## Value
 

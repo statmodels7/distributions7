@@ -39,15 +39,15 @@ share a mean and differ in scale.
 
 ## Value
 
-`x`, invisibly. Called for the plot it draws.
+`x`, invisibly. The function is called for the plot that it draws.
 
 ## The two keys
 
-Curves are separated by **color and line type together**, so that a
-printed copy with no color is still readable. The parameters that vary
-are named in a legend and those held fixed are stated once in the title,
-so a reader sees what the panel is about without counting curves. The
-legend goes in whichever top corner the mass leaves emptier. See
+Curves are separated by color and line type together, so that a printed
+copy with no color is still readable. The parameters that vary are named
+in a legend and those held fixed are stated once in the title, so a
+reader sees what the panel is about without counting curves. The legend
+goes in whichever top corner the mass leaves emptier. See
 [`plot_settings()`](https://statmodels7.github.io/distributions7/reference/plot_settings.md)
 for the rule on lengths and
 [`plot_keys()`](https://statmodels7.github.io/distributions7/reference/plot_keys.md)

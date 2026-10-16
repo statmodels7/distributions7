@@ -58,7 +58,7 @@ contours over the observations below it, the fitted correlation above.
 
 ## Value
 
-`x`, invisibly. Called for the plot it draws.
+`x`, invisibly. The function is called for the plot that it draws.
 
 ## See also
 

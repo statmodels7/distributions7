@@ -23,7 +23,7 @@ has p * (p + 1) / 2 free values."><meta property="og:image" content="https://sta
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@ has p * (p + 1) / 2 free values."><meta property="og:image" content="https://sta
     <div class="ref-description section level2">
     <p>Two families on \(\mathbb{R}^p\), differing in which matrix of the law
 their parametrization describes: <code>mvgaussian1_distrib()</code> parametrizes the
-<strong>covariance</strong> \(\Sigma\) and <code>mvgaussian2_distrib()</code> the <strong>precision</strong>
+covariance \(\Sigma\) and <code>mvgaussian2_distrib()</code> the precision
 \(\Omega = \Sigma^{-1}\). The mean is a vector of \(p\) free parameters
 and the matrix is carried by a <span class="pkg">parameters7</span> parametrization whose free
 values become ordinary scalar parameters, so every generic of the <code>distrib</code>
@@ -109,8 +109,8 @@ prefixed free names, <code>n_params</code> is <code>p + param@n_free</code>, eve
 <code><a href="gaussian1_distrib.html">gaussian1_distrib()</a></code>, <code><a href="gaussian2_distrib.html">gaussian2_distrib()</a></code> and <code><a href="gaussian3_distrib.html">gaussian3_distrib()</a></code>: one
 name per parametrization, because in a modeling framework a parametrization
 decides what a linear predictor acts on. Here the choice can change the model
-as well as the coordinates. A matrix parametrization is <strong>closed under
-inversion</strong> when the inverse of every matrix that it produces is one of its
+as well as the coordinates. A matrix parametrization is closed under
+inversion when the inverse of every matrix that it produces is one of its
 own; <code><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">parameters7::log_cholesky()</a></code>, <code><a href="https://statmodels7.github.io/parameters7/reference/matrix_log.html" class="external-link">parameters7::matrix_log()</a></code>,
 <code><a href="https://statmodels7.github.io/parameters7/reference/diagonal_matrix.html" class="external-link">parameters7::diagonal_matrix()</a></code>, <code><a href="https://statmodels7.github.io/parameters7/reference/scalar_matrix.html" class="external-link">parameters7::scalar_matrix()</a></code>,
 <code><a href="https://statmodels7.github.io/parameters7/reference/compound_symmetry.html" class="external-link">parameters7::compound_symmetry()</a></code> and <code><a href="https://statmodels7.github.io/parameters7/reference/dr_prod.html" class="external-link">parameters7::dr_prod()</a></code> are, and
@@ -124,7 +124,7 @@ covariance and on the precision give different maximized log-likelihoods.</p>
 <p>Both constructors accept any parametrization of the right dimension and of
 full rank. <code>mvgaussian2_distrib(p, parameters7::ar1(p))</code> is the model whose
 precision has the entries \(\sigma^2\rho^{|i-j|}\), with \(\sigma^2\)
-the scale of <code>ar1()</code>, and it is a valid law. The AR(1) <strong>process</strong> written
+the scale of <code>ar1()</code>, and it is a valid law. The AR(1) process written
 on the precision side is <code>mvgaussian2_distrib(p, parameters7::ar1_inv(p))</code>,
 whose parametrization is that inverse.</p>
     </div>

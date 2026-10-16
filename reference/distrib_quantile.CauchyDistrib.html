@@ -4,13 +4,13 @@ $$Q(p; \mu, \sigma) = \mu + \sigma \tan\left(\pi\left(p - \dfrac{1}{2}\right)\ri
 by calling stats::qcauchy(). The median is \(\mu\) and the quartiles are
 \(\mu \pm \sigma\), so the two parameters are read off this function
 directly: they are the median and the half-interquartile range, the
-location and spread this family has in place of a mean and a standard
+location and spread that this family has in place of a mean and a standard
 deviation."><meta property="og:description" content="Computes the Cauchy quantile function
 $$Q(p; \mu, \sigma) = \mu + \sigma \tan\left(\pi\left(p - \dfrac{1}{2}\right)\right)$$
 by calling stats::qcauchy(). The median is \(\mu\) and the quartiles are
 \(\mu \pm \sigma\), so the two parameters are read off this function
 directly: they are the median and the half-interquartile range, the
-location and spread this family has in place of a mean and a standard
+location and spread that this family has in place of a mean and a standard
 deviation."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -19,7 +19,7 @@ deviation."><meta property="og:image" content="https://statmodels7.github.io/dis
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@ $$Q(p; \mu, \sigma) = \mu + \sigma \tan\left(\pi\left(p - \dfrac{1}{2}\right)\ri
 by calling <code><a href="https://rdrr.io/r/stats/Cauchy.html" class="external-link">stats::qcauchy()</a></code>. The median is \(\mu\) and the quartiles are
 \(\mu \pm \sigma\), so the two parameters are read off this function
 directly: they are the median and the half-interquartile range, the
-location and spread this family has in place of a mean and a standard
+location and spread that this family has in place of a mean and a standard
 deviation.</p>
     </div>
 
@@ -104,8 +104,9 @@ logarithms of probabilities. Defaults to <code>FALSE</code>.</p></dd>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_cdf.CauchyDistrib.html">distrib_cdf.CauchyDistrib()</a></code>, which this inverts;
-<code><a href="skewness.CauchyDistrib.html">skewness.CauchyDistrib()</a></code> for why the median and the half-interquartile
-range are what this family offers; <code><a href="distrib_quantile.html">distrib_quantile()</a></code> for the generic.</p></div>
+<code><a href="skewness.CauchyDistrib.html">skewness.CauchyDistrib()</a></code> for why this family has the median and the
+half-interquartile range in place of moments; <code><a href="distrib_quantile.html">distrib_quantile()</a></code> for the
+generic.</p></div>
     </div>
 
     <div class="section level2">
@@ -117,7 +118,7 @@ range are what this family offers; <code><a href="distrib_quantile.html">distrib
 <span class="r-in"><span><span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.1  0.4  1.9</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Exact inverse: the round trip returns the probabilities it was given.</span></span></span>
+<span class="r-in"><span><span class="co"># Exact inverse: the round trip returns the probabilities that it was given.</span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.5</span>, <span class="fl">0.99</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">p</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

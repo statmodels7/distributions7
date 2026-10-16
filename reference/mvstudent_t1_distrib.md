@@ -2,7 +2,7 @@
 
 Two families on \\\mathbb{R}^p\\, differing in which matrix their
 parametrization describes: `mvstudent_t1_distrib()` parametrizes the
-**scale matrix** \\\Sigma\\ and `mvstudent_t2_distrib()` its **inverse**
+scale matrix \\\Sigma\\ and `mvstudent_t2_distrib()` its inverse
 \\\Sigma^{-1}\\. Each carries a location vector of \\p\\ free
 parameters, the matrix through a parameters7 parametrization, and a
 positive degrees-of-freedom parameter. The free values become ordinary
@@ -48,7 +48,7 @@ mvstudent_t2_distrib(n_dim, omega = NULL, link_nu = linkfunctions7::log_link())
   A parameters7 parametrization of the inverse scale matrix, of
   dimension `n_dim` and of full rank. Defaults to
   `parameters7::log_cholesky(n_dim)`. It is the precision of the
-  response only up to the factor \\(\nu-2)/\nu\\; see **Details**.
+  response only up to the factor \\(\nu-2)/\nu\\; see Details.
 
 ## Value
 
@@ -66,8 +66,8 @@ which is \\(0, \infty)\\; and every link is the identity except that of
 ## The two matrices
 
 Neither matrix is a covariance, and neither is a precision. \\\Sigma\\
-is the **scale matrix**, the matrix in the quadratic form of the
-density, and the moments are obtained from it by scaling in \\\nu\\:
+is the scale matrix, the matrix in the quadratic form of the density,
+and the moments are obtained from it by scaling in \\\nu\\:
 
 \$\$\operatorname{Var}(Y) = \frac{\nu}{\nu-2}\\\Sigma \quad (\nu \> 2),
 \qquad \operatorname{Var}(Y)^{-1} = \frac{\nu-2}{\nu}\\\Sigma^{-1}.\$\$
@@ -94,17 +94,17 @@ returns the covariance, a moment, which is `Inf` in every entry for
 Two readings carry over from the matrix to the response without a
 factor, because a positive multiple cancels out of a ratio:
 
-- the **correlations** of \\\Sigma\\ are the correlations of \\Y\\;
+- the correlations of \\\Sigma\\ are the correlations of \\Y\\;
 
-- the **partial correlations** read off \\\Sigma^{-1}\\, as
+- the partial correlations read off \\\Sigma^{-1}\\, as
   \\-\Omega\_{jk}/\sqrt{\Omega\_{jj}\Omega\_{kk}}\\, are the partial
   correlations of \\Y\\.
 
 The conditional variance does not carry over. For a gaussian
 \\1/\Omega\_{jj}\\ is the conditional variance of \\Y_j\\ given the
 rest; here it is the Schur complement of the scale matrix, so it is a
-conditional **scale**, and the conditional law of a \\t\\ is itself a
-\\t\\ whose scale carries a further factor depending on the conditioning
+conditional scale, and the conditional law of a \\t\\ is itself a \\t\\
+whose scale carries a further factor depending on the conditioning
 values.
 [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
 names that quantity `cscale_vj` and not `cvar_vj` for this reason, as it

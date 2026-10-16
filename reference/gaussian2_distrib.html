@@ -4,20 +4,18 @@ by its mean \(\mu\) and its variance \(\sigma^2 &amp;gt; 0\). The returned
 object carries closed-form derivatives of the log-density to fourth order
 in the response and to fifth order in the parameters, and closed-form
 moments.
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
-identity for
-the mean, which is already free, and the logarithm for the variance, which
-keeps it positive at every predictor."><meta property="og:description" content="Builds the distribution object for the Gaussian (normal) family parametrized
+identity for the mean, which is already free, and the logarithm for the
+variance, which keeps it positive at every predictor."><meta property="og:description" content="Builds the distribution object for the Gaussian (normal) family parametrized
 by its mean \(\mu\) and its variance \(\sigma^2 &amp;gt; 0\). The returned
 object carries closed-form derivatives of the log-density to fourth order
 in the response and to fifth order in the parameters, and closed-form
 moments.
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
-identity for
-the mean, which is already free, and the logarithm for the variance, which
-keeps it positive at every predictor."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+identity for the mean, which is already free, and the logarithm for the
+variance, which keeps it positive at every predictor."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +23,7 @@ keeps it positive at every predictor."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,11 +61,10 @@ by its mean \(\mu\) and its variance \(\sigma^2 &gt; 0\). The returned
 object carries closed-form derivatives of the log-density to fourth order
 in the response and to fifth order in the parameters, and closed-form
 moments.</p>
-<p>The two arguments choose the links that carry each parameter to the
+<p>The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
-identity for
-the mean, which is already free, and the logarithm for the variance, which
-keeps it positive at every predictor.</p>
+identity for the mean, which is already free, and the logarithm for the
+variance, which keeps it positive at every predictor.</p>
     </div>
 
     <div class="section level2">
@@ -80,9 +77,9 @@ keeps it positive at every predictor.</p>
 
 
 <dl><dt id="arg-link-mu">link_mu<a class="anchor" aria-label="anchor" href="#arg-link-mu"></a></dt>
-<dd><p>A <code>link</code> object from <code>linkfunctions7</code> for the mean
-\(\mu\). Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, the mean ranging
-over the whole line already.</p></dd>
+<dd><p>A <code>link</code> object from <code>linkfunctions7</code> for the mean \(\mu\).
+Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, because the mean already
+ranges over the whole line.</p></dd>
 
 
 <dt id="arg-link-sigma-">link_sigma2<a class="anchor" aria-label="anchor" href="#arg-link-sigma-"></a></dt>
@@ -108,8 +105,8 @@ with \(\mu \in (-\infty, \infty)\) and \(\sigma^2 \in (0, \infty)\). The
 mean is \(\mu\), the variance \(\sigma^2\), and both the skewness and
 the excess kurtosis are 0. The numbering follows the literature where it has
 one: this parametrization is <code>NO2</code> in the gamlss family catalog.</p>
-<p>This is the same law as <code><a href="gaussian1_distrib.html">gaussian1_distrib()</a></code> in different coordinates,
-\(\sigma^2\) here being the square of the \(\sigma\) there. The two are
+<p>This is the same law as <code><a href="gaussian1_distrib.html">gaussian1_distrib()</a></code> in different coordinates;
+here \(\sigma^2\) is the square of the \(\sigma\) there. The two are
 separate families and not one family under a link. A link changes the
 scale on which a parameter is modeled and leaves the parameter unchanged,
 whereas here the parameter, its interpretation, its standard error and its
@@ -130,8 +127,9 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{v}, \quad
       \mathbb{E}\left[\ell^{(vv)}\right] = -\dfrac{1}{2v^2}.$$
 The zero off-diagonal makes the mean and the variance orthogonal, so their
 maximum likelihood estimates are asymptotically independent. Orthogonality
-holds in all three parametrizations of this family, the mean being
-orthogonal to any smooth function of the spread alone.</p>
+holds in all three parametrizations of this family, because the mean is
+orthogonal to any smooth function of the spread that does not involve the
+mean.</p>
 <p>Third and fourth orders are closed form as well, observed and expected, in
 <code><a href="distrib_deriv3.Gaussian2Distrib.html">distrib_deriv3.Gaussian2Distrib()</a></code> and <code><a href="distrib_deriv4.Gaussian2Distrib.html">distrib_deriv4.Gaussian2Distrib()</a></code>,
 as are the derivatives in the response,
@@ -182,13 +180,13 @@ of checks that this family passes; <a href="Gaussian2Distrib.html">Gaussian2Dist
 <span class="r-out co"><span class="r-pr">#&gt;</span>   mu     (mean)               | Link: identity   | Domain: (-Inf, Inf)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   sigma2 (variance)           | Link: log        | Domain: (0, Inf)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The same law as gaussian1 at sigma = sqrt(sigma2).</span></span></span>
+<span class="r-in"><span><span class="co"># The law is the same as gaussian1 at sigma = sqrt(sigma2).</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.2</span>, <span class="fl">0.3</span>, <span class="fl">2.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, sigma2 <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, sigma <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Moments in closed form: the variance is the parameter itself.</span></span></span>
+<span class="r-in"><span><span class="co"># The moments are in closed form, and the variance is the parameter itself.</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, sigma2 <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, var <span class="op">=</span> <span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  skew <span class="op">=</span> <span class="fu"><a href="skewness.html">skewness</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, kurt <span class="op">=</span> <span class="fu"><a href="kurtosis.html">kurtosis</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>

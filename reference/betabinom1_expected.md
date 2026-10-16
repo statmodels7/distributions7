@@ -37,7 +37,8 @@ betabinom1_expected(distrib, y, theta, order)
 
 A named list of numeric vectors keyed as
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
-keys them, each of the recycled length of `y` and the parameters.
+keys them. Each vector has the recycled length of `y` and the
+parameters.
 
 ## See also
 

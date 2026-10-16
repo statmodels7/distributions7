@@ -4,20 +4,18 @@ by its mean \(\mu\) and its standard deviation \(\sigma &amp;gt; 0\). The
 returned object carries closed-form derivatives of the log-density to fourth
 order in the response and to fifth order in the parameters, and closed-form
 moments.
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
-identity for
-the mean, which is already free, and the logarithm for the standard
-deviation, which keeps it positive at every predictor."><meta property="og:description" content="Builds the distribution object for the Gaussian (normal) family parametrized
+identity for the mean, which is already free, and the logarithm for the
+standard deviation, which keeps it positive at every predictor."><meta property="og:description" content="Builds the distribution object for the Gaussian (normal) family parametrized
 by its mean \(\mu\) and its standard deviation \(\sigma &amp;gt; 0\). The
 returned object carries closed-form derivatives of the log-density to fourth
 order in the response and to fifth order in the parameters, and closed-form
 moments.
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
-identity for
-the mean, which is already free, and the logarithm for the standard
-deviation, which keeps it positive at every predictor."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+identity for the mean, which is already free, and the logarithm for the
+standard deviation, which keeps it positive at every predictor."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +23,7 @@ deviation, which keeps it positive at every predictor."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,11 +61,10 @@ by its mean \(\mu\) and its standard deviation \(\sigma &gt; 0\). The
 returned object carries closed-form derivatives of the log-density to fourth
 order in the response and to fifth order in the parameters, and closed-form
 moments.</p>
-<p>The two arguments choose the links that carry each parameter to the
+<p>The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
-identity for
-the mean, which is already free, and the logarithm for the standard
-deviation, which keeps it positive at every predictor.</p>
+identity for the mean, which is already free, and the logarithm for the
+standard deviation, which keeps it positive at every predictor.</p>
     </div>
 
     <div class="section level2">
@@ -81,8 +78,8 @@ deviation, which keeps it positive at every predictor.</p>
 
 <dl><dt id="arg-link-mu">link_mu<a class="anchor" aria-label="anchor" href="#arg-link-mu"></a></dt>
 <dd><p>A <code>link</code> object from <code>linkfunctions7</code> for the mean
-\(\mu\). Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, the mean ranging
-over the whole line already.</p></dd>
+\(\mu\). Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, because the mean
+already ranges over the whole line.</p></dd>
 
 
 <dt id="arg-link-sigma">link_sigma<a class="anchor" aria-label="anchor" href="#arg-link-sigma"></a></dt>
@@ -201,7 +198,8 @@ passes;
 <span class="r-out co"><span class="r-pr">#&gt;</span> fitted 3.091666 2.011761</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> closed 3.091666 2.011761</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A different link changes the scale the optimizer moves on, not the answer.</span></span></span>
+<span class="r-in"><span><span class="co"># A different link changes the scale on which the optimizer moves, not the</span></span></span>
+<span class="r-in"><span><span class="co"># answer.</span></span></span>
 <span class="r-in"><span><span class="va">d2</span> <span class="op">&lt;-</span> <span class="fu">gaussian1_distrib</span><span class="op">(</span>link_sigma <span class="op">=</span> <span class="fu">linkfunctions7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/linkfunctions7/reference/sqrt_link.html" class="external-link">sqrt_link</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d2</span>, <span class="va">z</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>, tolerance <span class="op">=</span> <span class="fl">1e-6</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

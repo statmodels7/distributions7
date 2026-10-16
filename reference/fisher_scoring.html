@@ -23,7 +23,7 @@ object holds."><meta property="og:image" content="https://statmodels7.github.io/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,8 +122,8 @@ default) for the limit of <code><a href="https://statmodels7.github.io/optimizer
     <p><code><a href="fit_distrib.html">fit_distrib()</a></code> takes one argument saying how to optimize, and it takes an
 optimizer of <span class="pkg">optimizers7</span> or this:</p>
 <table class="table table"><tr><td><code>method = fisher_scoring()</code></td><td>Newton's method with the
-<strong>expected</strong> information</td></tr><tr><td><code>method = optimizers7::newton()</code></td><td>Newton's method with the
-<strong>observed</strong> Hessian</td></tr><tr><td><code>method = optimizers7::lbfgs()</code></td><td>whatever that optimizer does</td></tr></table></div>
+expected information</td></tr><tr><td><code>method = optimizers7::newton()</code></td><td>Newton's method with the
+observed Hessian</td></tr><tr><td><code>method = optimizers7::lbfgs()</code></td><td>whatever that optimizer does</td></tr></table></div>
     <div class="section level2">
     <h2 id="the-step">The step<a class="anchor" aria-label="anchor" href="#the-step"></a></h2>
     <p>Writing \(s(\eta) = \partial \ell / \partial \eta\) for the score on the

@@ -1,9 +1,9 @@
 # Generalized Gamma Density, Distribution and Generator in the Mean
 
-The generalized gamma with shape \\d\\, power \\p\\ and scale \\a =
-m\\\Gamma(d/p)/\Gamma((d+1)/p)\\, so that \\E\[Y\] = m\\. The density,
-the distribution function, the quantile function and the generator are
-those of
+The distribution is the generalized gamma with shape \\d\\, power \\p\\
+and scale \\a = m\\\Gamma(d/p)/\Gamma((d+1)/p)\\, so that \\E\[Y\] =
+m\\. The density, the distribution function, the quantile function and
+the generator are those of
 [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md)
 at that scale: \\(Y/a)^p\\ is a gamma variable with shape \\d/p\\ and
 unit rate, with the same treatment of the far lower tail

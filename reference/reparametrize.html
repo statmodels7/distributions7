@@ -23,7 +23,7 @@ are written."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -153,14 +153,14 @@ otherwise.</p></dd>
 parameter itself unchanged. In a reparametrization the parameter is the new
 quantity, and the estimate, the standard error and the confidence interval
 describe that quantity.</p>
-<p><strong>The map is written in ordinary R.</strong> It takes a named list of the new
+<p>The map is written in ordinary R. It takes a named list of the new
 parameters and returns a named list of the parent's, and nothing in it
 mentions derivatives:</p>
 <div class="sourceCode"><pre><code><span></span>
 <span><span class="kw">function</span><span class="op">(</span><span class="va">psi</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">psi</span><span class="op">$</span><span class="va">mean</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">gamma</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">psi</span><span class="op">$</span><span class="va">sigma</span><span class="op">)</span>,</span>
 <span>                   sigma <span class="op">=</span> <span class="va">psi</span><span class="op">$</span><span class="va">sigma</span><span class="op">)</span></span></code></pre></div>
 
-<p><strong>Where the map's derivatives come from.</strong> Two routes, and <code>map_derivs</code>
+<p>Where the map's derivatives come from. Two routes, and <code>map_derivs</code>
 chooses between them. Supply it, and the tables are hand-written closed
 forms, exact at every order with no chain rule transcribed; the shipped
 second parametrizations all do, and their formulas live in
@@ -171,7 +171,7 @@ differences. The stencil route is accurate to about \(10^{-11}\) at first
 order and loses accuracy quickly with the order (the third and fourth tables
 can be wrong in their leading digits), so a family used for anything beyond a
 first exploration needs <code>map_derivs</code>.</p>
-<p><strong>What is exact and what is inherited.</strong> The derivatives of the
+<p>What is exact and what is inherited. The derivatives of the
 log-density are carried by
 $$\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
       \ell^{(i_1 \dots i_{|\pi|})}(\theta)
@@ -184,7 +184,7 @@ order being formed) drops because the score has mean zero: a parent with an
 exact expected information gives an exact one here. The density, the
 distribution function, the quantile function, the generator and the response
 derivatives are the parent's at the mapped parameters.</p>
-<p><strong>Cost.</strong> The density, the distribution function, the quantile function and
+<p>Cost. The density, the distribution function, the quantile function and
 the generator call the map once per evaluation, on whole vectors. When
 <code>map_derivs</code> is <code>NULL</code>, the derivatives call the map at the points of the
 stencil, several times for each observation (more at higher orders), and

@@ -4,9 +4,9 @@ Builds the distribution object for the von Mises family, the natural
 distribution for an angle, parametrized by a mean direction \\\mu\\ and
 a concentration \\\kappa \> 0\\. The returned object carries closed-form
 derivatives of the log-density to fourth order in the parameters and in
-the response, a closed-form expected information, and a **distribution
-function from a Bessel series** in place of the quadrature the base
-class would use.
+the response, a closed-form expected information, and a distribution
+function from a Bessel series in place of the quadrature the base class
+would use.
 
 ## Usage
 
@@ -68,8 +68,8 @@ A(\kappa),\$\$ and every second derivative is closed form, with
 evaluates \\A'\\ and the higher derivatives of \\A\\ from a power series
 for small \\\kappa\\, where that identity cancels, and from the identity
 in extended precision or an asymptotic series above. Since
-\\\mathbb{E}\[\sin(Y-\mu)\] = 0\\ by symmetry, **the two parameters are
-orthogonal**: the expected information is diagonal, and Fisher scoring
+\\\mathbb{E}\[\sin(Y-\mu)\] = 0\\ by symmetry, the two parameters are
+orthogonal: the expected information is diagonal, and Fisher scoring
 updates the direction and the concentration independently.
 
 \\A(\kappa)\\ is the mean resultant length, so \\A'(\kappa)\\ is the
@@ -88,8 +88,8 @@ and two or more \\\kappa\\ is exactly zero.
 and
 [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
 are the ordinary moments of \\Y\\ as a number on \\\[-\pi, \pi)\\,
-obtained numerically. They are **not** the circular quantities that
-\\\mu\\ and \\\kappa\\ describe. \\\mu\\ is the mean *direction*, and
+obtained numerically. They are not the circular quantities that \\\mu\\
+and \\\kappa\\ describe. \\\mu\\ is the mean *direction*, and
 \\\mathbb{E}\[Y\] \ne \mu\\ whenever \\\mu \ne 0\\, because the interval
 is cut at \\\pm\pi\\ rather than at \\\mu \pm \pi\\ and the density is
 not symmetric about \\\mu\\ on it: at \\\mu = 1.2\\ and \\\kappa = 2\\
@@ -117,8 +117,8 @@ it numerically, once per observation; this class supplies
 [`distrib_cdf.VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.VonMises1Distrib.md)
 instead, a Fourier series integrated term by term with \\\max\\20,
 \lceil 8.5\sqrt{\kappa}\rceil + 10\\\\ terms, and a quadrature of the
-tail where the requested tail is below \\10^{-6}\\. The **quantile**
-comes from
+tail where the requested tail is below \\10^{-6}\\. The quantile comes
+from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
 by root finding on the logarithm of the smaller tail.
 
@@ -154,7 +154,7 @@ for the Bessel machinery;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
+to validate a family of your own against the same battery that this one
 passes;
 [VonMises1Distrib](https://statmodels7.github.io/distributions7/reference/VonMises1Distrib.md)
 for the class.

@@ -2,8 +2,8 @@
 
 Computes the four distinct third derivatives of the log-density in
 \\\mu\\ and \\\rho\\, in closed form. Every component carrying at least
-one \\\mu\\ collapses to a **single term** \\D_a \kappa^{(b)}(\rho)\\,
-with \\D_a\\ the \\a\\-th \\\mu\\-derivative of \\\cos(y-\mu)\\ and
+one \\\mu\\ collapses to a single term \\D_a \kappa^{(b)}(\rho)\\, with
+\\D_a\\ the \\a\\-th \\\mu\\-derivative of \\\cos(y-\mu)\\ and
 \\\kappa^{(b)}\\ the \\b\\-th derivative of \\A^{-1}\\: the
 concentration parametrization's \\\mu\\-derivatives are linear in
 \\\kappa\\, so the composition has nothing to expand. Since
@@ -37,8 +37,8 @@ which is the one place on this page where `approx` and `nsim` are read.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - expected:
 
@@ -64,7 +64,7 @@ which is the one place on this page where `approx` and `nsim` are read.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

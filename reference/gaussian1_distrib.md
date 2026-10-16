@@ -6,7 +6,7 @@ parametrized by its mean \\\mu\\ and its standard deviation \\\sigma \>
 log-density to fourth order in the response and to fifth order in the
 parameters, and closed-form moments.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
 identity for the mean, which is already free, and the logarithm for the
 standard deviation, which keeps it positive at every predictor.
@@ -24,7 +24,7 @@ gaussian1_distrib(link_mu = identity_link(), link_sigma = log_link())
   A `link` object from `linkfunctions7` for the mean \\\mu\\. Defaults
   to
   [`linkfunctions7::identity_link()`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html),
-  the mean ranging over the whole line already.
+  because the mean already ranges over the whole line.
 
 - link_sigma:
 
@@ -164,7 +164,8 @@ rbind(fitted = coef(fit),
 #> fitted 3.091666 2.011761
 #> closed 3.091666 2.011761
 
-# A different link changes the scale the optimizer moves on, not the answer.
+# A different link changes the scale on which the optimizer moves, not the
+# answer.
 d2 <- gaussian1_distrib(link_sigma = linkfunctions7::sqrt_link())
 all.equal(coef(fit_distrib(d2, z)), coef(fit), tolerance = 1e-6)
 #> [1] TRUE

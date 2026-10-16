@@ -1,11 +1,11 @@
 # Cauchy Distribution Class
 
-The S7 class of the Cauchy family with location \\\mu\\ and scale
-\\\sigma \> 0\\, the Student's t on one degree of freedom, with density
-\\f(y) = \[\pi\sigma(1 + ((y-\mu)/\sigma)^2)\]^{-1}\\ on the whole real
-line. It inherits from `continuous_distrib`, so every generic of the
-`distrib` class applies to it; the methods listed below are registered
-on it directly and everything else comes from the parent.
+This is the S7 class of the Cauchy family with location \\\mu\\ and
+scale \\\sigma \> 0\\, the Student's t on one degree of freedom, with
+density \\f(y) = \[\pi\sigma(1 + ((y-\mu)/\sigma)^2)\]^{-1}\\ on the
+whole real line. It inherits from `continuous_distrib`, so every generic
+of the `distrib` class applies to it; the methods listed below are
+registered on it directly and everything else comes from the parent.
 
 The family has no moments, so
 [`mean()`](https://rdrr.io/r/base/mean.html),
@@ -107,7 +107,8 @@ they hold `"cauchy"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.CauchyDistrib.md),
@@ -191,7 +192,7 @@ th <- list(mu = 0.4, sigma = 1.5)
 c(mean(d, th), variance(d, th))
 #> [1] NaN NaN
 
-# What does exist is the median and the half-interquartile range.
+# The median and the half-interquartile range exist.
 q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 c(median = q[2], half_iqr = (q[3] - q[1]) / 2)
 #>   median half_iqr 

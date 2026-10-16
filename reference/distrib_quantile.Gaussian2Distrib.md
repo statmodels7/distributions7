@@ -35,8 +35,8 @@ returns `p`.
 - log.p:
 
   Logical of length 1. When `TRUE` the values in `p` are read as
-  logarithms of probabilities, which is how a quantile deep in a tail is
-  requested without the probability underflowing. Defaults to `FALSE`.
+  logarithms of probabilities, so that a quantile deep in a tail can be
+  requested without underflow in the probability. Defaults to `FALSE`.
 
 - ...:
 
@@ -71,7 +71,7 @@ p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #> [1] TRUE
 
-# A quantile 40 standard deviations out, computed on the log scale
+# The quantile 40 standard deviations out is computed on the log scale
 # because the probability itself is zero in double precision.
 distrib_quantile(d, pnorm(-40, log.p = TRUE), list(mu = 0, sigma2 = 1),
                  log.p = TRUE)

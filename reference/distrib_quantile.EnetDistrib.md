@@ -2,17 +2,17 @@
 
 Inverts
 [`distrib_cdf.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.EnetDistrib.md)
-in closed form, each half of the density being a truncated Gaussian.
-Below the median the quantile is \\\mu + \\x +
-\Phi^{-1}(2p\\\Phi(-x))\\/\sqrt c\\ and above it the reflection. Nothing
-is inverted by root finding, so
+in closed form, because each half of the density is a truncated
+Gaussian. Below the median the quantile is \\\mu + \\x +
+\Phi^{-1}(2p\\\Phi(-x))\\/\sqrt c\\ and above it the reflection. The
+inversion does not use root finding, so
 [`distrib_rng.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.EnetDistrib.md)
 can use the inverse transform.
 
 The probability is first turned into the logarithms of both tails,
 without forming \\1 - p\\ or exponentiating a logarithm, and each half
-is inverted from the logarithm of its own tail. The `qnorm` call is made
-on the **log** scale, its argument being \\\log P + \log 2 +
+is inverted from the logarithm of its own tail. The inversion calls
+`qnorm` on the log scale, where its argument is \\\log P + \log 2 +
 \log\Phi(-x)\\, because \\\Phi(-x)\\ underflows to zero beyond \\x
 \approx 38.5\\. A probability outside \\\[0, 1\]\\ gives `NaN`.
 
@@ -66,17 +66,18 @@ for the generic.
 d <- enet_distrib()
 th <- list(mu = 0, lambda = 2, alpha = 0.5)
 
-# The round trip is exact, both functions being closed form.
+# The round trip is exact because both functions are closed form.
 q <- c(-2, -0.5, 0.5, 2)
 all.equal(distrib_quantile(d, distrib_cdf(d, q, th), th), q)
 #> [1] TRUE
 
-# Symmetric about the location.
+# The quantiles are symmetric about the location.
 p <- c(0.1, 0.25, 0.5, 0.75, 0.9)
 round(distrib_quantile(d, p, th), 10)
 #> [1] -0.8559401 -0.4096087  0.0000000  0.4096087  0.8559401
 
-# It still answers where the Mills argument has passed 38.
+# The quantile function still returns values where the Mills argument
+# exceeds 38.
 distrib_quantile(d, c(0.25, 0.75),
                  list(mu = 0, lambda = 20, alpha = 0.995))
 #> [1] -0.03481968  0.03481968

@@ -35,7 +35,7 @@ definite. The components are computed by a compiled kernel."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@ $$\ell^{(\mu\mu)} = -\kappa\cos(y-\mu), \qquad
       \ell^{(\mu\kappa)} = \sin(y-\mu), \qquad
       \ell^{(\kappa\kappa)} = -A'(\kappa),$$
 with \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\). The
-pure-concentration entry is <strong>free of the data</strong>: the log-density is
+pure-concentration entry is free of the data: the log-density is
 \(\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}\), linear in \(\kappa\)
 apart from the normalizing constant, so its second derivative in
 \(\kappa\) comes from \(\log I_0\) alone. It therefore equals its own
@@ -107,7 +107,7 @@ positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -117,7 +117,7 @@ positive.</p></dd>
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+whatever the count is. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

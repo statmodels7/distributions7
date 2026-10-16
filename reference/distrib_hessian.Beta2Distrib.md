@@ -5,7 +5,7 @@ with respect to \\\alpha\\ and \\\beta\\, in closed form:
 \$\$\ell^{(\alpha\alpha)} = \psi'(\alpha+\beta) - \psi'(\alpha), \qquad
 \ell^{(\alpha\beta)} = \psi'(\alpha+\beta), \qquad \ell^{(\beta\beta)} =
 \psi'(\alpha+\beta) - \psi'(\beta),\$\$ with \\\psi'\\ the trigamma
-function. **All three are free of the response**, the data entering the
+function. All three are free of the response, because the data enter the
 log-density only through a term linear in the parameters. The values are
 constant within a parameter setting and are recycled to the length of
 `y`, and they equal
@@ -31,8 +31,8 @@ exactly.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -84,7 +84,7 @@ h
 #> [1] 0.1535452 0.1535452 0.1535452
 #> 
 
-# Written out with the trigamma function.
+# The same values are written out with the trigamma function.
 c(trigamma(7) - trigamma(2), trigamma(7) - trigamma(5), trigamma(7))
 #> [1] -0.49138889 -0.06777778  0.15354518
 

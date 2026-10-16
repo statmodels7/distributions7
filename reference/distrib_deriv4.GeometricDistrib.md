@@ -2,9 +2,9 @@
 
 Computes the fourth derivative of the geometric log-mass with respect to
 the mean, in closed form. As at third order it is a combination of
-\\\mu^{-k}\\ and \\(1+\mu)^{-k}\\ with the data entering linearly
-through \\y\\: the value is \\-6(y/\mu^4 - (y+1)/(1+\mu)^4)\\, and the
-bracket is computed as at third order (see
+\\\mu^{-k}\\ and \\(1+\mu)^{-k}\\, and the data enter linearly through
+\\y\\. The value is \\-6(y/\mu^4 - (y+1)/(1+\mu)^4)\\, and the bracket
+is computed as at third order (see
 [`distrib_deriv3.GeometricDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GeometricDistrib.md)).
 
 With `expected = TRUE` the expectation is returned, obtained by
@@ -37,12 +37,12 @@ ignored.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both routes.
+  Ignored, because a closed form is available for both routes.
 
 - nsim:
 

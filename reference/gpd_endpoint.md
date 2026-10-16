@@ -13,7 +13,8 @@ gpd_endpoint(sigma, xi)
 
 - sigma:
 
-  A numeric vector of scales, strictly positive. Nothing is validated.
+  A numeric vector of scales, strictly positive. The function does not
+  validate its arguments.
 
 - xi:
 
@@ -30,8 +31,8 @@ The endpoint depends on the parameters, which is the whole reason this
 family needs care. For \\\xi \< 0\\ the support is \\\[0,
 -\sigma/\xi\]\\ and both ends of the interval move as the parameters do,
 so differentiating an expectation under the integral sign is not
-automatically licensed. The consequence a user meets is that the
-expected information exists only for \\\xi \> -1/2\\; see
+automatically licensed. As a consequence, the expected information
+exists only for \\\xi \> -1/2\\; see
 [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md).
 
 The two arguments are recycled to a common length before the branch on
@@ -48,7 +49,7 @@ for where it stops existing.
 ## Examples
 
 ``` r
-# Finite only for a negative shape.
+# The endpoint is finite only for a negative shape.
 distributions7:::gpd_endpoint(2, c(-0.4, -0.1, 0, 0.3))
 #> [1]   5  20 Inf Inf
 

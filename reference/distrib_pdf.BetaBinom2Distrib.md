@@ -78,7 +78,7 @@ all.equal(m, choose(10, 0:10) * beta(0:10 + 2, 10 - 0:10 + 3) / beta(2, 3))
 distrib_pdf(d, c(-1, 2.5, 11), th)
 #> [1] 0 0 0
 
-# The same law as betabinom1 at mu = alpha / (alpha + beta) and
+# This is the same law as betabinom1 at mu = alpha / (alpha + beta) and
 # sigma = 1 / (alpha + beta).
 all.equal(m, distrib_pdf(betabinom1_distrib(size = 10), 0:10,
                          list(mu = 0.4, sigma = 0.2)))

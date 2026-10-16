@@ -6,16 +6,16 @@ closed form and with no quadrature or simulation. With \\s = 1/\phi\\,
 \qquad \mathbb{E}\left\[\ell^{(\mu\phi)}\right\] = 0, \qquad
 \mathbb{E}\left\[\ell^{(\phi\phi)}\right\] = s^4\left\\\dfrac{1}{s} -
 \psi'(s)\right\\.\$\$ They follow from \\\mathbb{E}\[Y\] = \mu\\ and
-\\\mathbb{E}\[\log(Y/\mu)\] = \psi(s) - \log s\\, the second of which is
-exactly what makes the score in \\\phi\\ have mean zero. The quantity
-\\1/s - \psi'(s)\\ is negative for every \\s \> 0\\, so the pure
-dispersion entry is negative and the information is positive definite
-everywhere, where the observed Hessian is not.
+\\\mathbb{E}\[\log(Y/\mu)\] = \psi(s) - \log s\\, and the second of
+these identities is exactly the condition under which the score in
+\\\phi\\ has mean zero. The quantity \\1/s - \psi'(s)\\ is negative for
+every \\s \> 0\\, so the pure dispersion entry is negative and the
+information is positive definite everywhere, where the observed Hessian
+is not.
 
 The off-diagonal entry is zero, so the mean and the dispersion are
 orthogonal. The score in \\\mu\\ has the dispersion as a common factor,
-so the mean equation can be solved with the dispersion held at any
-value.
+so the mean equation can be solved at any fixed value of the dispersion.
 
 Because the values do not depend on the data, `approx` and `nsim` are
 ignored. `y` is read only for its length.
@@ -40,14 +40,14 @@ ignored. `y` is read only for its length.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available. Accepted so that the signature
-  matches the generic's, where it selects between the Bartlett,
-  quadrature, Monte Carlo and outer-product routes.
+  Ignored, because a closed form is available. It is accepted so that
+  the signature matches the generic's, where it selects between the
+  Bartlett, quadrature, Monte Carlo and outer-product routes.
 
 - nsim:
 
@@ -71,17 +71,16 @@ within itself when the parameters are.
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\theta\\\partial\theta^\top\]\\,
-the expectation of the **observed information** under the model. The
-gamma is a regular family, so the second Bartlett identity holds and
-this equals the variance of the score. \\\psi'\\ is the trigamma
-function.
+the expectation of the observed information under the model. The gamma
+is a regular family, so the second Bartlett identity holds and this
+equals the variance of the score. \\\psi'\\ is the trigamma function.
 
 ## See also
 
 [`distrib_hessian.Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Gamma1Distrib.md)
-for the observed quantity this is the expectation of,
+for the observed quantity whose expectation this is,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
 which inverts it at each step, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
@@ -93,7 +92,7 @@ for the generic.
 d <- gamma1_distrib()
 th <- list(mu = 3, phi = 0.5)
 
-# The three constants, one value per observation.
+# The three constants take one value per observation.
 lapply(distrib_expected_hessian(d, c(1, 3, 5), th), unique)
 #> $mu_mu
 #> [1] -0.2222222
@@ -105,7 +104,7 @@ lapply(distrib_expected_hessian(d, c(1, 3, 5), th), unique)
 #> [1] 0
 #> 
 
-# The dispersion entry, written out with the trigamma function.
+# The dispersion entry is written out with the trigamma function.
 s <- 1 / 0.5
 s^4 * (1 / s - trigamma(s))
 #> [1] -2.318945
@@ -120,8 +119,8 @@ rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
 #> observed -0.2222366 -2.288278 -4.310552e-05
 #> expected -0.2222222 -2.318945  0.000000e+00
 
-# Negative definite at every parameter setting, where the observed Hessian
-# is positive in mu wherever y < mu/2.
+# The expected Hessian is negative definite at every parameter setting,
+# whereas the observed Hessian is positive in mu wherever y < mu/2.
 phi <- c(0.05, 0.5, 5)
 vapply(phi, function(p) {
   s <- 1 / p

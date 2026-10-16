@@ -3,9 +3,9 @@
 Computes the five distinct fourth derivatives of the beta log-density
 with respect to \\\alpha\\ and \\\beta\\, in closed form:
 \$\$\ell^{(\alpha^4)} = \psi'''(\alpha+\beta) - \psi'''(\alpha), \qquad
-\ell^{(\beta^4)} = \psi'''(\alpha+\beta) - \psi'''(\beta),\$\$ and every
-one of the three mixed components equal to \\\psi'''(\alpha+\beta)\\,
-with \\\psi'''\\ the third derivative of the digamma function.
+\ell^{(\beta^4)} = \psi'''(\alpha+\beta) - \psi'''(\beta).\$\$ Each of
+the three mixed components is equal to \\\psi'''(\alpha+\beta)\\, with
+\\\psi'''\\ the third derivative of the digamma function.
 
 As at third order the values are free of the response, so `expected`,
 `approx` and `nsim` are all without effect and the result is the same
@@ -29,19 +29,18 @@ for every value of them.
 
 - expected:
 
-  Logical of length 1, and without effect here, the observed and
-  expected fourth derivatives being the same numbers. Defaults to
-  `FALSE`.
+  Logical of length 1, without effect here because the observed and
+  expected fourth derivatives are the same numbers. Defaults to `FALSE`.
 
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available.
+  Ignored, because a closed form is available.
 
 - nsim:
 

@@ -9,10 +9,11 @@ in \(\mu\) and the second derivative kills it. The value is constant
 within a parameter setting, is recycled to the length of y, and equals
 distrib_expected_hessian.ChisqDistrib() exactly.
 The coincidence is on the parameter scale. On the link scale the two
-differ, the second-order chain rule adding a term
-\(h''(\eta)\,\partial\ell/\partial\mu\), which the expected version
-drops because the score has expectation zero; the score of a sample is not
-zero away from the optimum, and the example below measures the term."><meta property="og:description" content="Computes the second derivative of the chi-squared log-density with respect
+differ, because the second-order chain rule adds a term
+\(h''(\eta)\,\partial\ell/\partial\mu\) to the observed version. The
+expected version drops this term since the score has expectation zero,
+whereas the score of a sample is not zero away from the optimum. The
+example below measures the term."><meta property="og:description" content="Computes the second derivative of the chi-squared log-density with respect
 to \(\mu\), in closed form:
 $$\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{\psi'(\mu/2)}{4},$$
 with \(\psi'\) the trigamma function. It does not involve the
@@ -22,10 +23,11 @@ in \(\mu\) and the second derivative kills it. The value is constant
 within a parameter setting, is recycled to the length of y, and equals
 distrib_expected_hessian.ChisqDistrib() exactly.
 The coincidence is on the parameter scale. On the link scale the two
-differ, the second-order chain rule adding a term
-\(h''(\eta)\,\partial\ell/\partial\mu\), which the expected version
-drops because the score has expectation zero; the score of a sample is not
-zero away from the optimum, and the example below measures the term."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+differ, because the second-order chain rule adds a term
+\(h''(\eta)\,\partial\ell/\partial\mu\) to the observed version. The
+expected version drops this term since the score has expectation zero,
+whereas the score of a sample is not zero away from the optimum. The
+example below measures the term."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -33,7 +35,7 @@ zero away from the optimum, and the example below measures the term."><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,17 +71,18 @@ zero away from the optimum, and the example below measures the term."><meta prop
     <p>Computes the second derivative of the chi-squared log-density with respect
 to \(\mu\), in closed form:
 $$\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{\psi'(\mu/2)}{4},$$
-with \(\psi'\) the trigamma function. <strong>It does not involve the
-response.</strong> The family is a one-parameter exponential family in
+with \(\psi'\) the trigamma function. It does not involve the
+response. The family is a one-parameter exponential family in
 \(\log y\), so the data reach the log-density only through a term linear
 in \(\mu\) and the second derivative kills it. The value is constant
 within a parameter setting, is recycled to the length of <code>y</code>, and equals
 <code><a href="distrib_expected_hessian.ChisqDistrib.html">distrib_expected_hessian.ChisqDistrib()</a></code> exactly.</p>
-<p>The coincidence is on the <strong>parameter</strong> scale. On the link scale the two
-differ, the second-order chain rule adding a term
-\(h''(\eta)\,\partial\ell/\partial\mu\), which the expected version
-drops because the score has expectation zero; the score of a sample is not
-zero away from the optimum, and the example below measures the term.</p>
+<p>The coincidence is on the parameter scale. On the link scale the two
+differ, because the second-order chain rule adds a term
+\(h''(\eta)\,\partial\ell/\partial\mu\) to the observed version. The
+expected version drops this term since the score has expectation zero,
+whereas the score of a sample is not zero away from the optimum. The
+example below measures the term.</p>
     </div>
 
 
@@ -103,7 +106,7 @@ strictly positive.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -113,7 +116,7 @@ strictly positive.</p></dd>
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+whatever the count is. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -145,7 +148,8 @@ above; and <code><a href="distrib_hessian.html">distrib_hessian()</a></code> for
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">9</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A constant across the observations, written out with the trigamma.</span></span></span>
+<span class="r-in"><span><span class="co"># The value is constant across the observations and is written out with</span></span></span>
+<span class="r-in"><span><span class="co"># the trigamma function.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.1612335 -0.1612335 -0.1612335</span>
@@ -157,8 +161,8 @@ above; and <code><a href="distrib_hessian.html">distrib_hessian()</a></code> for
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span>, <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># On the link scale they differ by h''(eta) times the score, which is what</span></span></span>
-<span class="r-in"><span><span class="co"># makes Fisher scoring and Newton's method take different steps.</span></span></span>
+<span class="r-in"><span><span class="co"># On the link scale they differ by h''(eta) times the score, so Fisher</span></span></span>
+<span class="r-in"><span><span class="co"># scoring and Newton's method take different steps.</span></span></span>
 <span class="r-in"><span><span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, scale <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span></span></span>
 <span class="r-in"><span><span class="va">exp_</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, scale <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>observed <span class="op">=</span> <span class="va">obs</span>, expected <span class="op">=</span> <span class="va">exp_</span>,</span></span>

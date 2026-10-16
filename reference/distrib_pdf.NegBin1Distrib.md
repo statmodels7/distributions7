@@ -13,7 +13,7 @@ digits long before, so the mass stays accurate down to the Poisson
 limit. The log-mass is exponentiated when `log` is `FALSE`, and
 `log = TRUE` is the accurate route far into the tail.
 
-The mean sits **inside** the gamma functions here, through the size. In
+The mean sits inside the gamma functions here, through the size. In
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
 the size is \\\theta\\ and the mean stays outside them, which is the
 concrete difference between the two families.

@@ -33,8 +33,8 @@ returns the parameter scale; the transformation happens in the generic.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -77,7 +77,7 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, sigma = 1.5)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two components agree with their closed forms.
 all.equal(g$mu, (y - 0.4) / 1.5^2)
 #> [1] TRUE
 all.equal(g$sigma, ((y - 0.4)^2 - 1.5^2) / 1.5^3)

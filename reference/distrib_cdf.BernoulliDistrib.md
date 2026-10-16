@@ -55,7 +55,7 @@ for the generic.
 d <- bernoulli_distrib()
 th <- list(mu = 0.3)
 
-# Three values, whatever q is.
+# The distribution function takes three values, whatever q is.
 distrib_cdf(d, c(-1, 0, 0.5, 1, 2), th)
 #> [1] 0.0 0.7 0.7 1.0 1.0
 

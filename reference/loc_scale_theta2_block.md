@@ -37,7 +37,7 @@ loc_scale_theta2_block(distrib, y, theta, order = 1L)
   [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md),
   `2` for that of
   [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md).
-  Default `1`.
+  The default is `1`.
 
 ## Value
 

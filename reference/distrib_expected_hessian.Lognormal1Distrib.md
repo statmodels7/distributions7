@@ -35,14 +35,14 @@ variance of \\\log Y\\. Because the values do not depend on the data,
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available. Accepted so that the signature
-  matches the generic's, where it selects between the Bartlett,
-  quadrature, Monte Carlo and outer-product routes.
+  Ignored, because a closed form is available. It is accepted so that
+  the signature matches the generic's, where it selects between the
+  Bartlett, quadrature, Monte Carlo and outer-product routes.
 
 - nsim:
 
@@ -67,16 +67,16 @@ when the parameters are.
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\theta\\\partial\theta^\top\]\\,
-the expectation of the **observed information** under the model. The
+the expectation of the observed information under the model. The
 lognormal is a regular family, so the second Bartlett identity holds and
 this equals the variance of the score.
 
 ## See also
 
 [`distrib_hessian.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Lognormal1Distrib.md)
-for the observed quantity this is the expectation of,
+for the observed quantity whose expectation this is,
 [`distrib_expected_hessian.Gaussian2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gaussian2Distrib.md),
 which returns the same numbers,
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),

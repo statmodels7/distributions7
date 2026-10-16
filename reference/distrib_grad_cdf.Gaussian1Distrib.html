@@ -17,7 +17,7 @@ beyond its density."><meta property="og:image" content="https://statmodels7.gith
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,17 +77,18 @@ a numeric vector of length 1 or <code>n</code>.</p></dd>
 
 
 <dt id="arg-lower-tail">lower.tail<a class="anchor" aria-label="anchor" href="#arg-lower-tail"></a></dt>
-<dd><p>Is the lower tail wanted? A single logical, <code>TRUE</code> by
-default. With <code>log = FALSE</code>, <code>FALSE</code> flips the sign of every component;
-with <code>log = TRUE</code> it returns the derivatives of \(\log S\), where
-\(S = 1 - F\), which are not the negatives of the lower-tail ones.</p></dd>
+<dd><p>A single logical, <code>TRUE</code> by default; <code>TRUE</code> selects the
+lower tail and <code>FALSE</code> the upper tail. With <code>log = FALSE</code>, <code>FALSE</code> flips
+the sign of every component; with <code>log = TRUE</code> it returns the derivatives
+of \(\log S\), where \(S = 1 - F\), which are not the negatives of the
+lower-tail ones.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>
-<dd><p>Are derivatives of the log probability wanted? A single logical,
-<code>TRUE</code> by default. The ratio \(f/P\) is formed as
-\(\exp(\log f - \log P)\), so the result stays finite far into either
-tail, where \(f\) and \(P\) underflow.</p></dd>
+<dd><p>A single logical, <code>TRUE</code> by default; <code>TRUE</code> selects the
+derivatives of the log probability and <code>FALSE</code> those of the probability.
+The ratio \(f/P\) is formed as \(\exp(\log f - \log P)\), so the result
+stays finite far into either tail, where \(f\) and \(P\) underflow.</p></dd>
 
 </dl></div>
     <div class="section level2">

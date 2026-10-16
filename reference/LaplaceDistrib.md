@@ -1,13 +1,13 @@
 # Laplace Distribution Class, Location and Scale
 
-The S7 class of the Laplace (double exponential) family with location
-\\\mu\\ and scale \\\sigma \> 0\\, with density \\f(y) =
+This is the S7 class of the Laplace (double exponential) family with
+location \\\mu\\ and scale \\\sigma \> 0\\, with density \\f(y) =
 (2\sigma)^{-1}\exp(-\|y-\mu\|/\sigma)\\ on the whole real line. It
 inherits from `continuous_distrib`, so every generic of the `distrib`
 class applies to it; the methods listed below are registered on it
 directly and everything else comes from the parent.
 
-The density has a **kink** at \\y = \mu\\, where \\\|y - \mu\|\\ is not
+The density has a kink at \\y = \mu\\, where \\\|y - \mu\|\\ is not
 differentiable. This makes the family non-regular in its location: the
 observed second derivative in \\\mu\\ is 0 almost everywhere while the
 information is \\1/\sigma^2\\. The class records that by setting
@@ -106,7 +106,8 @@ they hold `"laplace"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.LaplaceDistrib.md),

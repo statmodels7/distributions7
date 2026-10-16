@@ -23,7 +23,7 @@ is the only discrete law that is memoryless."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@ is the only discrete law that is memoryless."><meta property="og:image" content=
 
     <div class="ref-description section level2">
     <p>Builds the distribution object for the geometric family parametrized by its
-<strong>mean</strong> \(\mu &gt; 0\): the number of failures before the first success in
+mean \(\mu &gt; 0\): the number of failures before the first success in
 independent trials of success probability \(p = 1/(1+\mu)\). The returned
 object carries closed-form derivatives of the log-mass to fourth order,
 observed and expected, and closed-form moments.</p>
@@ -108,14 +108,14 @@ value.</p>
     <p>The variance exceeds the mean by \(\mu^2\), so this family sits above a
 Poisson of the same mean and is a one-parameter answer to overdispersion.
 The information about the mean is \(1/(\mu(1+\mu))\), against a
-Poisson's \(1/\mu\), so the mean is estimated less precisely. Where the amount of overdispersion should itself be
-estimated, <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> adds the parameter and contains this family
-at \(\theta = 1\).</p>
+Poisson's \(1/\mu\), so the mean is estimated less precisely. Where the
+amount of overdispersion should itself be estimated, <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code>
+adds the parameter and contains this family at \(\theta = 1\).</p>
 <p>The survival function is \(P(Y &gt; q) = (\mu/(1+\mu))^{q+1}\), so
 \(P(Y &gt; s + t \mid Y &gt; s) = P(Y &gt; t)\): the count already accumulated
-tells nothing about the count remaining. The geometric is the only discrete
-law with this property, as the exponential is the only continuous one, and
-the two are counterparts.</p>
+does not affect the distribution of the count remaining. The geometric is
+the only discrete law with this property, as the exponential is the only
+continuous one, and the two are counterparts.</p>
     </div>
     <div class="section level2">
     <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>
@@ -130,7 +130,7 @@ sum vanishes there.</p>
 <p>\(\ell\) is the log-mass of one observation and \(\mu &gt; 0\) the mean,
 with variance \(\mu(1+\mu)\). The success probability is
 \(p = 1/(1+\mu)\). Counting starts at zero: \(Y\) is the number of
-failures <strong>before</strong> the first success, not the number of trials.</p>
+failures before the first success, not the number of trials.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -175,7 +175,7 @@ Wiley, Hoboken.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> var  0.750000 12.000000 420.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> skew 2.309401  2.020726   2.000595</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Memoryless, as the exponential is on the continuous side.</span></span></span>
+<span class="r-in"><span><span class="co"># The geometric is memoryless, as the exponential is on the continuous side.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">10</span>, <span class="fl">50</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">s</span> <span class="op">+</span> <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">/</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">s</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>

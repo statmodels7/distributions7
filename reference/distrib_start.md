@@ -3,10 +3,9 @@
 Returns the starting values that
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 begins from, computed from the response where the family has a method
-for it. The result is a list of named parameter lists on the
-**parameter** scale. The fit tries them in order until two converged
-runs agree on the best objective, so the first element is the one tried
-first.
+for it. The result is a list of named parameter lists on the parameter
+scale. The fit tries them in order until two converged runs agree on the
+best objective, so the first element is the one tried first.
 
 ## Usage
 

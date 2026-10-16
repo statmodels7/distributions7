@@ -6,8 +6,8 @@ The family is a location family on the circle, so this equals the
 pure-direction entry of
 [`distrib_hessian.VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.VonMises1Distrib.md),
 with no sign change. It is negative within a quarter turn of the mode
-and **positive** on the other half of the circle, where the density has
-its minimum at the antimode.
+and positive on the other half of the circle, where the density has its
+minimum at the antimode.
 
 ## Arguments
 

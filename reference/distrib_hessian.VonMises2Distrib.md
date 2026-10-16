@@ -9,8 +9,8 @@ the score's \\\\\cos(y-\mu) - \rho\\\kappa'(\rho)\\. The components are
 computed by a compiled kernel.
 
 Unlike in the concentration parametrization, the pure second derivative
-is **not** free of the data: the term in \\\kappa''\\, the curvature of
-the map, multiplies \\\cos(y-\mu)\\.
+is not free of the data: the term in \\\kappa''\\, the curvature of the
+map, multiplies \\\cos(y-\mu)\\.
 
 ## Arguments
 
@@ -32,8 +32,8 @@ the map, multiplies \\\cos(y-\mu)\\.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -43,7 +43,7 @@ the map, multiplies \\\cos(y-\mu)\\.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

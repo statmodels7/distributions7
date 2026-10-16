@@ -7,7 +7,7 @@ the expectation has to be approximated. The generics
 and
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 therefore accept an `approx` argument selecting *how* the expectation is
-taken. The argument is **ignored** when the distribution provides an
+taken. The argument is ignored when the distribution provides an
 analytical method (which is always preferred).
 
 ## Value
@@ -35,7 +35,7 @@ derivatives with respect to the parameters. The strategies are:
   partitions of the index set, \$\$\sum\_{\pi}
   \mathbb{E}\left\[\prod\_{B \in \pi} \ell_B\right\] = 0,\$\$ the target
   term (the single-block partition) is obtained from all the others. At
-  order 2 this is exactly the familiar **outer product of gradients**,
+  order 2 this is exactly the familiar outer product of gradients,
   \\\mathbb{E}\[\ell\_{ij}\] = -\mathbb{E}\[\ell_i \ell_j\]\\; at order
   3, \\\mathbb{E}\[\ell\_{ijk}\] =
   -\left(\mathbb{E}\[\ell\_{ij}\ell_k\] +
@@ -71,8 +71,8 @@ derivatives with respect to the parameters. The strategies are:
   when quadrature struggles (heavy tails, awkward supports), but
   stochastic: the error decreases only as \\1/\sqrt{n\_{sim}}\\, so
   results are not exactly reproducible unless the seed is fixed.
-  Estimates the same quantity as `"integrate"`. **Note:** the cost of
-  this option is the cost of simulating from the distribution. A native
+  Estimates the same quantity as `"integrate"`. Note: the cost of this
+  option is the cost of simulating from the distribution. A native
   [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
   is best; failing that, the default generator uses inverse transform
   when the family has a quantile method of its own and
@@ -82,22 +82,22 @@ derivatives with respect to the parameters. The strategies are:
   inverse transform sampling the bottleneck; prefer `"bartlett"` or
   `"integrate"` in that case.
 
-**Defaults.** `distrib_expected_hessian` defaults to `"opg"`, which
-needs one score evaluation per observation and no expectation.
+Defaults. `distrib_expected_hessian` defaults to `"opg"`, which needs
+one score evaluation per observation and no expectation.
 `distrib_deriv3` and `distrib_deriv4` default to `"integrate"`, since at
 those orders direct integration of the available derivative is usually
 cheaper and more accurate.
 
-**Non-smooth parameters.** Where the log-density has a kink in a
-parameter, the observed second derivative has a point mass at the kink,
-and an average of its pointwise values does not contain that mass. For
-the Laplace location, \\\ell\_{\mu\mu}\\ is zero almost everywhere, so
-its pointwise average is zero, while the information is \\1/\sigma^2\\.
-The information of such a family is the variance of the score, which is
-what the second Bartlett identity evaluates. `"bartlett"`, `"opg"` and,
-at order 2, `"integrate"` therefore return \\-1/\sigma^2\\ per
-observation; `"mc"` averages the observed \\\ell\_{\mu\mu}\\ and returns
-0. When the family declares where its kink is, through
+Non-smooth parameters. Where the log-density has a kink in a parameter,
+the observed second derivative has a point mass at the kink, and an
+average of its pointwise values does not contain that mass. For the
+Laplace location, \\\ell\_{\mu\mu}\\ is zero almost everywhere, so its
+pointwise average is zero, while the information is \\1/\sigma^2\\. The
+information of such a family is the variance of the score, which is what
+the second Bartlett identity evaluates. `"bartlett"`, `"opg"` and, at
+order 2, `"integrate"` therefore return \\-1/\sigma^2\\ per observation;
+`"mc"` averages the observed \\\ell\_{\mu\mu}\\ and returns 0. When the
+family declares where its kink is, through
 [`kink_decomposition()`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.md),
 the quadrature of
 [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)

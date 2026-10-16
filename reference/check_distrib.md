@@ -77,33 +77,33 @@ which is present only when some check was skipped.
 
 The checks performed are:
 
-- **density**: non-negativity and integration/summation to 1 over the
+- density: non-negativity and integration/summation to 1 over the
   support.
 
-- **cdf**: values in \\\[0,1\]\\ and monotonicity along a grid of
-  quantiles, and its agreement with the density: for a continuous family
-  a central difference of the cdf against the density, with the step the
-  response derivatives use, and for a discrete one \\F(k) - F(k-1)\\
-  against the mass.
+- cdf: values in \\\[0,1\]\\ and monotonicity along a grid of quantiles,
+  and its agreement with the density: for a continuous family a central
+  difference of the cdf against the density, with the step the response
+  derivatives use, and for a discrete one \\F(k) - F(k-1)\\ against the
+  mass.
 
-- **quantile**: round-trip against the CDF (\\F(Q(p)) = p\\ for
-  continuous distributions, and the generalized-inverse inequalities for
-  discrete ones).
+- quantile: round-trip against the CDF (\\F(Q(p)) = p\\ for continuous
+  distributions, and the generalized-inverse inequalities for discrete
+  ones).
 
-- **rng**: the empirical distribution function of a large draw, at the
+- rng: the empirical distribution function of a large draw, at the
   quantiles for the probabilities 0.05, 0.10, ..., 0.95, agrees with
   [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
   within Monte Carlo error (the largest standardized difference stays
   below 6).
 
-- **gradient, hessian, deriv3, deriv4**: analytical values against
+- gradient, hessian, deriv3, deriv4: analytical values against
   [`numerical_gradient()`](https://statmodels7.github.io/distributions7/reference/numerical_gradient.md),
   [`numerical_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md),
   [`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md)
   and
   [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md).
 
-- **deriv5**, when `5` is among `orders`:
+- deriv5, when `5` is among `orders`:
   [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
   against
   [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md)
@@ -121,7 +121,7 @@ The checks performed are:
   statistic is an absolute error for a small component. The row appears
   only when `5` is among `orders`, which default to `1:4`.
 
-- **expected information**:
+- expected information:
   [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
   against a Monte Carlo estimate of
   \\-\mathbb{E}\[\nabla\ell\\\nabla\ell^\top\]\\. The outer product of
@@ -134,7 +134,7 @@ The checks performed are:
   that is not finite at an interior point still leaves the row without a
   statistic.
 
-- **response derivatives** (continuous only):
+- response derivatives (continuous only):
   [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
   and
   [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
@@ -148,8 +148,8 @@ The checks performed are:
   of doubles is absolute and no central difference compares a
   derivative, is left out and counted in the row's `detail`.
 
-- **link scale**: `scale = "link"` derivatives against finite
-  differences of the log-likelihood in \\\eta\\.
+- link scale: `scale = "link"` derivatives against finite differences of
+  the log-likelihood in \\\eta\\.
 
 A parameter-derivative check of an order for which the family registers
 no method of its own is not run: the value would be the numerical

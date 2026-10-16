@@ -4,7 +4,7 @@
 $$\dfrac{\partial\ell}{\partial\mu} = a\,\mathrm{sgn}(z) + cz,$$
 and the two rate components are the data terms less the derivatives of
 \(\log Z\), which are \(G/\sqrt c\) in \(a\) and \(-(1+xG)/(2c)\) in
-\(c\). The chain to \((\lambda, \alpha)\) is linear, the map being
+\(c\). The chain to \((\lambda, \alpha)\) is linear, because the map is
 bilinear.
 The location component is undefined at \(y = \mu\), where
 \(\mathrm{sgn}\) jumps; sign(0) is 0 in R, so the value returned there
@@ -15,7 +15,7 @@ finite-difference references that straddle the location."><meta property="og:des
 $$\dfrac{\partial\ell}{\partial\mu} = a\,\mathrm{sgn}(z) + cz,$$
 and the two rate components are the data terms less the derivatives of
 \(\log Z\), which are \(G/\sqrt c\) in \(a\) and \(-(1+xG)/(2c)\) in
-\(c\). The chain to \((\lambda, \alpha)\) is linear, the map being
+\(c\). The chain to \((\lambda, \alpha)\) is linear, because the map is
 bilinear.
 The location component is undefined at \(y = \mu\), where
 \(\mathrm{sgn}\) jumps; sign(0) is 0 in R, so the value returned there
@@ -29,7 +29,7 @@ finite-difference references that straddle the location."><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,9 +67,9 @@ finite-difference references that straddle the location."><meta property="og:ima
 $$\dfrac{\partial\ell}{\partial\mu} = a\,\mathrm{sgn}(z) + cz,$$
 and the two rate components are the data terms less the derivatives of
 \(\log Z\), which are \(G/\sqrt c\) in \(a\) and \(-(1+xG)/(2c)\) in
-\(c\). The chain to \((\lambda, \alpha)\) is linear, the map being
+\(c\). The chain to \((\lambda, \alpha)\) is linear, because the map is
 bilinear.</p>
-<p>The location component is <strong>undefined at \(y = \mu\)</strong>, where
+<p>The location component is undefined at \(y = \mu\), where
 \(\mathrm{sgn}\) jumps; <code>sign(0)</code> is 0 in R, so the value returned there
 is \(cz = 0\), one point of the subdifferential. <code>params_smooth</code>
 records <code>mu = FALSE</code>, which <code><a href="check_distrib.html">check_distrib()</a></code> reads to discard the
@@ -107,7 +107,7 @@ method always returns the parameter scale.</p></dd>
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
 <dd><p>A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to <code>1L</code>.</p></dd>
+whatever the count is. Defaults to <code>1L</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -138,11 +138,11 @@ not agree with the observed curvature at the kink, and
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, lambda <span class="op">=</span> <span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The location component written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The location component is written out.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">mu</span>, <span class="fl">1</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">*</span> <span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The two rate components against numerical differentiation.</span></span></span>
+<span class="r-in"><span><span class="co"># The two rate components are compared with numerical differentiation.</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, lambda <span class="op">=</span> <span class="va">p</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>                                            alpha <span class="op">=</span> <span class="va">p</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>analytic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">lambda</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">alpha</span><span class="op">)</span><span class="op">)</span>,</span></span>

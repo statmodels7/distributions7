@@ -1,8 +1,8 @@
 # S7 Class for Distributions With Fixed Parameters (Continuous)
 
-The S7 class of a CONTINUOUS distribution in which some parameters of
-the wrapped distribution are held at known values. It is the only
-wrapper in this package that REMOVES parameters: the law is the
+This is the S7 class of a CONTINUOUS distribution in which some
+parameters of the wrapped distribution are held at known values. It is
+the only wrapper in this package that REMOVES parameters: the law is the
 parent's, evaluated at a `theta` short by however many were fixed. Build
 one with
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md),
@@ -100,7 +100,8 @@ parent's with the held values in brackets.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),

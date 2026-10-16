@@ -34,7 +34,7 @@ exact and otherwise is the value the parent's own default route returns.
 
 - approx:
 
-  Ignored: the delegation is exact. Present so that the signature
+  Ignored: the delegation is exact. It is present so that the signature
   matches the generic's. Note that it is not forwarded, so a parent
   whose OWN expected Hessian is approximate takes its own default.
 

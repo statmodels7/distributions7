@@ -3,7 +3,7 @@
 Computes the quantiles in closed form, \$\$Q(p; \sigma, \xi) =
 \dfrac{\sigma}{\xi}\left\\(1-p)^{-\xi} - 1\right\\,\$\$ with
 \\-\sigma\log(1-p)\\ at \\\xi = 0\\. The quantile function is
-elementary, so nothing is inverted numerically and
+elementary, so the method does not invert numerically and
 [`distrib_rng.GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GPDDistrib.md)
 uses the inverse transform.
 
@@ -13,7 +13,7 @@ for a lower-tail probability, \\\log p\\ for an upper-tail one, and the
 corresponding forms when `log.p = TRUE`. The quantile is then
 \\\sigma\\\mathrm{expm1}(-\xi\log S)/\xi\\, and \\-\sigma\log S\\ at
 \\\xi = 0\\, so a probability close to zero or close to one keeps its
-digits whichever tail it is given in.
+digits in whichever tail it is given.
 
 ## Arguments
 
@@ -66,7 +66,7 @@ for the generic.
 d <- gpd_distrib()
 th <- list(sigma = 1.5, xi = 0.3)
 
-# The round trip is exact, both functions being closed form.
+# The round trip is exact because both functions are closed form.
 y <- c(0.2, 1, 4)
 all.equal(distrib_quantile(d, distrib_cdf(d, y, th), th), y)
 #> [1] TRUE

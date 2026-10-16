@@ -23,7 +23,7 @@ penalties7::lasso_penalty() is this family with the location held at zero."><met
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@ penalties7::lasso_penalty() is this family with the location held at zero."><met
 
     <div class="ref-description section level2">
     <p>Builds the distribution object for the Laplace (double exponential) family
-written by its <strong>rate</strong> \(\lambda &gt; 0\), with density
+written by its rate \(\lambda &gt; 0\), with density
 \((\lambda/2)\exp(-\lambda|y-\mu|)\). It is the same law as
 <code><a href="laplace_distrib.html">laplace_distrib()</a></code> at \(\lambda = 1/\sigma\), and every quantity that
 does not involve the second parameter is identical between them.</p>
@@ -121,7 +121,7 @@ is <code>c(mu = FALSE, lambda = TRUE)</code>. The consequences are set out on
 <code><a href="distrib_expected_hessian.LaplaceDistrib.html">distrib_expected_hessian.LaplaceDistrib()</a></code>.</p>
 <p>A second consequence is visible at the higher orders. The log-density is
 \(\log(\lambda/2) - \lambda|r|\), linear in \(\lambda\) apart from
-\(\log\lambda\) and piecewise linear in \(\mu\), so <strong>every</strong> third and
+\(\log\lambda\) and piecewise linear in \(\mu\), so every third and
 fourth derivative except the pure-\(\lambda\) ones is exactly zero, and
 the pure-\(\lambda\) ones do not depend on the data. Hence
 <code>expected = TRUE</code> returns the same values at those orders. The observed

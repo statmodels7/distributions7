@@ -5,12 +5,12 @@ log-mass with respect to the two shapes, one value per observation, in
 closed form. They are the score's digamma differences with the trigamma
 function in its place: \$\$\dfrac{\partial^2\ell}{\partial\alpha^2} =
 \psi_1(y+\alpha) - \psi_1(\alpha) - \psi_1(n+S) + \psi_1(S), \qquad S =
-\alpha+\beta,\$\$ and the same with \\n-y\\ and \\\beta\\. The **mixed**
-component keeps only the shared term, \\-\psi_1(n+S) + \psi_1(S)\\, the
-two shapes entering the log-mass separately otherwise, so it does not
-depend on the data at all and equals its own expectation at every
-observation. The compiled kernel evaluates the differences of trigammas
-as series remainders, as for the score.
+\alpha+\beta,\$\$ and the same with \\n-y\\ and \\\beta\\. The mixed
+component keeps only the shared term, \\-\psi_1(n+S) + \psi_1(S)\\,
+because the two shapes otherwise enter the log-mass separately. It
+therefore does not depend on the data at all and equals its own
+expectation at every observation. The compiled kernel evaluates the
+differences of trigammas as series remainders, as for the score.
 
 ## Arguments
 
@@ -32,8 +32,8 @@ as series remainders, as for the score.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -41,8 +41,8 @@ as series remainders, as for the score.
 
 - threads:
 
-  A single positive integer, the number of threads the compiled kernel
-  may use. Defaults to `1L`.
+  A single positive integer, the number of threads that the compiled
+  kernel may use. Defaults to `1L`.
 
 ## Value
 

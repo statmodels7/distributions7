@@ -3,8 +3,9 @@
 Computes the exponential quantile function \$\$Q(p; \mu) = -\mu \log(1 -
 p)\$\$ by calling
 [`stats::qexp()`](https://rdrr.io/r/stats/Exponential.html) at
-`rate = 1/mu`. The median is \\\mu \log 2 \approx 0.693\mu\\, below the
-mean, the distribution being right skewed at every parameter value.
+`rate = 1/mu`. The median is \\\mu \log 2 \approx 0.693\mu\\, which is
+below the mean because the distribution is right skewed at every
+parameter value.
 
 ## Arguments
 
@@ -62,12 +63,12 @@ c(median = distrib_quantile(d, 0.5, th), mu_log2 = 2 * log(2), mean = 2)
 #>   median  mu_log2     mean 
 #> 1.386294 1.386294 2.000000 
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# Exact inverse: the round trip returns the probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #> [1] TRUE
 
-# Asked from the upper tail the quantile is -mu log p, exact however small.
+# With lower.tail = FALSE the quantile is -mu log p, exact however small.
 distrib_quantile(d, 1e-300, th, lower.tail = FALSE)
 #> [1] 1381.551
 -2 * log(1e-300)

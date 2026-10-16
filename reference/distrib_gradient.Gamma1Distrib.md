@@ -40,8 +40,8 @@ scale.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -83,11 +83,12 @@ y <- c(1, 3, 5)
 th <- list(mu = 3, phi = 0.5)
 g <- distrib_gradient(d, y, th)
 
-# The generalized linear model score: residual over the variance function.
+# The generalized linear model score is the residual over the variance
+# function.
 all.equal(g$mu, (y - 3) / (0.5 * 3^2))
 #> [1] TRUE
 
-# The dispersion component, written out with the digamma function.
+# The dispersion component is written out with the digamma function.
 s <- 1 / 0.5
 z <- y / 3
 all.equal(g$phi, -s^2 * (log(s) + 1 - digamma(s) + log(z) - z))

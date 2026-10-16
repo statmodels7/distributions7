@@ -1,10 +1,10 @@
 # Gaussian Distribution Class, Mean and Standard Deviation
 
-The S7 class of the Gaussian (normal) family parametrized by its mean
-\\\mu\\ and its standard deviation \\\sigma \> 0\\, with density \\f(y)
-= (2\pi)^{-1/2}\sigma^{-1}\exp\\-(y-\mu)^2/(2\sigma^2)\\\\ on the whole
-real line. It inherits from `continuous_distrib`, so every generic of
-the `distrib` class applies to it; the methods listed below are
+This is the S7 class of the Gaussian (normal) family parametrized by its
+mean \\\mu\\ and its standard deviation \\\sigma \> 0\\, with density
+\\f(y) = (2\pi)^{-1/2}\sigma^{-1}\exp\\-(y-\mu)^2/(2\sigma^2)\\\\ on the
+whole real line. It inherits from `continuous_distrib`, so every generic
+of the `distrib` class applies to it; the methods listed below are
 registered on it directly and everything else comes from the parent.
 
 Build one with
@@ -99,7 +99,8 @@ they hold `"gaussian1"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gaussian1Distrib.md),
@@ -165,7 +166,7 @@ for mean and precision;
 [`distrib_pdf.Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gaussian1Distrib.md)
 and
 [`distrib_gradient.Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gaussian1Distrib.md)
-for the closed forms this class supplies.
+for the closed forms that this class supplies.
 
 ## Examples
 
@@ -174,7 +175,8 @@ d <- gaussian1_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "mu"    "sigma"
 d@params_bounds
@@ -188,8 +190,9 @@ d@params_interpretation
 #>                   mu                sigma 
 #>               "mean" "standard deviation" 
 
-# The links carry each parameter to the unconstrained scale an optimizer
-# moves on: the mean is already free, the standard deviation rides a log.
+# The links carry each parameter to the unconstrained scale on which an
+# optimizer moves: the mean is already free, the standard deviation rides
+# a log.
 vapply(d@link_params, function(l) l@link_name, character(1))
 #>         mu      sigma 
 #> "identity"      "log" 

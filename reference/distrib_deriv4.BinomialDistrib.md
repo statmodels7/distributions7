@@ -33,12 +33,12 @@ Both routes are closed form, so `approx` and `nsim` are ignored.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available for both routes.
+  Ignored, because a closed form is available for both routes.
 
 - nsim:
 
@@ -79,12 +79,12 @@ d <- binomial_distrib(size = 10)
 y <- c(0, 4, 10)
 th <- list(mu = 0.3)
 
-# The closed form, written out; negative at every admissible mu.
+# The closed form is written out, and it is negative at every admissible mu.
 all.equal(distrib_deriv4(d, y, th)$mu_mu_mu_mu,
           -6 * y / 0.3^4 - 6 * (10 - y) / 0.7^4)
 #> [1] TRUE
 
-# The expected value.
+# The expected value is checked against its closed form.
 unique(distrib_deriv4(d, y, th, expected = TRUE)$mu_mu_mu_mu)
 #> [1] -2397.149
 -6 * 10 / 0.3^3 - 6 * 10 / 0.7^3

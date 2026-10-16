@@ -33,19 +33,20 @@ differ. `approx` and `nsim` are ignored.
 
 - expected:
 
-  Logical of length 1. On the parameter scale it has no effect, the
-  observed and expected third derivatives being the same number; on the
-  link scale it selects the expected composition. Defaults to `FALSE`.
+  Logical of length 1. On the parameter scale it has no effect, because
+  the observed and expected third derivatives are the same number; on
+  the link scale it selects the expected composition. Defaults to
+  `FALSE`.
 
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, a closed form being available.
+  Ignored, because a closed form is available.
 
 - nsim:
 
@@ -59,7 +60,7 @@ differ. `approx` and `nsim` are ignored.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -89,7 +90,8 @@ d <- chisq_distrib()
 y <- c(1, 4, 9)
 th <- list(mu = 4)
 
-# A constant, written out with the second derivative of the digamma.
+# The value is a constant and is written out with the second derivative
+# of the digamma function.
 unique(distrib_deriv3(d, y, th)$mu_mu_mu)
 #> [1] 0.05051423
 -psigamma(2, deriv = 2) / 8

@@ -1,12 +1,12 @@
 # Chi-Squared Distribution Class
 
-The S7 class of the chi-squared family on \\(0, \infty)\\, parametrized
-by its mean \\\mu \> 0\\, which is the degrees of freedom. They are
-treated as a continuous positive parameter, so the one-parameter family
-is estimable; the variance is then \\2\mu\\. It inherits from
-`continuous_distrib`, so every generic of the `distrib` class applies to
-it; the methods listed below are registered on it directly and
-everything else comes from the parent.
+This is the S7 class of the chi-squared family on \\(0, \infty)\\,
+parametrized by its mean \\\mu \> 0\\, which is the degrees of freedom.
+They are treated as a continuous positive parameter, so the
+one-parameter family is estimable; the variance is then \\2\mu\\. It
+inherits from `continuous_distrib`, so every generic of the `distrib`
+class applies to it; the methods listed below are registered on it
+directly and everything else comes from the parent.
 
 Build one with
 [`chisq_distrib()`](https://statmodels7.github.io/distributions7/reference/chisq_distrib.md),
@@ -98,7 +98,8 @@ the one link.
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ChisqDistrib.md),

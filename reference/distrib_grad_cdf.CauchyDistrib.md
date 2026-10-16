@@ -24,13 +24,15 @@ as \\-\mathrm{Im}(\mathrm{i}^k Y^{-1})/\pi\\ with \\Y = q - \mu +
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical, `TRUE` by default.
+  A single logical, `TRUE` by default; `TRUE` selects the lower tail and
+  `FALSE` the upper tail.
 
 - log:
 
-  Are derivatives of the log probability wanted? A single logical,
-  `TRUE` by default. The Cauchy's tails are heavy, so the probability
-  underflows far later here than for a Gaussian.
+  A single logical, `TRUE` by default; `TRUE` selects the derivatives of
+  the log probability and `FALSE` those of the probability. The Cauchy's
+  tails are heavy, so the probability underflows far later here than for
+  a Gaussian.
 
 ## Value
 

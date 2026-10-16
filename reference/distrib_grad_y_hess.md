@@ -25,8 +25,8 @@ distrib_grad_y_hess(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 - theta:
 
-  A named list, or named numeric vector, of distribution parameters.
-  Aligned by the generic before dispatch.
+  A named list, or named numeric vector, of distribution parameters. The
+  generic aligns it before dispatch.
 
 - scale:
 

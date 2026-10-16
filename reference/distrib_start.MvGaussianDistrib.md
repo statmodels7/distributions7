@@ -2,7 +2,7 @@
 
 Returns the sample mean and the sample covariance, carried onto the
 distribution's matrix parametrization. For an unstructured covariance
-those **are** the maximum likelihood estimate, so the fit begins at the
+those are the maximum likelihood estimate, so the fit begins at the
 answer and confirms it in one step. For a structured one the matrix is
 carried onto the structure exactly where the structure can represent it,
 and otherwise approximated by least squares on the entries (see
@@ -39,8 +39,8 @@ components followed by the structure's free values, named and ordered as
 
 ## Details
 
-Where the object parametrizes the **precision**, the sample covariance
-is inverted first: the matrix the structure has to represent is
+Where the object parametrizes the precision, the sample covariance is
+inverted first: the matrix the structure has to represent is
 \\\hat\Sigma^{-1}\\, not \\\hat\Sigma\\.
 
 The covariance divides by \\n\\, which is the maximum likelihood

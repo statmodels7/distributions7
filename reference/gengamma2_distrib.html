@@ -9,7 +9,7 @@ mean."><meta property="og:image" content="https://statmodels7.github.io/distribu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,12 +80,12 @@ mean.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The Stacy parametrization of <code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code> has a scale, a shape and
-a power, and none of them is the mean. Since
+a power as parameters, and the mean is not among them. Since
 \(\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)\), the scale here is
 $$a = m\,\dfrac{\Gamma(d/p)}{\Gamma((d+1)/p)},$$
 and every derivative in \((m, d, p)\) to order five, the expected
 information and its derivatives, and the derivatives in the response are
-closed forms, each order in its own compiled kernel (see
+closed forms, and each order is computed by its own compiled kernel (see
 <code><a href="distrib_gradient.GenGamma2Distrib.html">distrib_gradient.GenGamma2Distrib()</a></code>).</p>
     </div>
     <div class="section level2">

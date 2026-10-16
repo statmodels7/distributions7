@@ -31,7 +31,7 @@ optimization is normally carried out, since \(\eta \in \mathbb{R}^p\).
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,7 @@ derivative generics named above; the value returned is theirs.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Write \(h_i = g_i^{-1}\), so that \(\theta_i = h_i(\eta_i)\). Because each
 parameter carries its own link, the Jacobian \(\partial\theta/\partial\eta\)
-is <strong>diagonal</strong> and the multivariate Faa di Bruno formula factorizes. For a
+is diagonal and the multivariate Faa di Bruno formula factorizes. For a
 derivative whose multi-index involves the distinct parameters
 \(p_1,\dots,p_r\) with multiplicities \(m_1,\dots,m_r\),
 $$\frac{\partial^k \ell}{\partial \eta_{p_1}^{m_1} \cdots \partial \eta_{p_r}^{m_r}}
@@ -101,7 +101,7 @@ $$\frac{\partial^4 \ell}{\partial \eta_a^4} = \ell_{aaaa}(h')^4 + 6\ell_{aaa}(h'
 while mixed derivatives across <em>different</em> parameters simply multiply the
 corresponding factors (e.g.
 \(\partial^2\ell/\partial\eta_a\partial\eta_b = \ell_{ab} h_a' h_b'\)).</p>
-<p>For the <strong>expected</strong> Hessian the first-order term vanishes because the
+<p>For the expected Hessian the first-order term vanishes because the
 score has zero expectation, so the information transforms as the congruence
 \(\mathrm{diag}(h')\,\mathbb{E}[H]\,\mathrm{diag}(h')\).</p>
 <p>The inverse-link derivatives \(h', h'', \dots, h^{(5)}\) are obtained

@@ -9,9 +9,9 @@ moments. The fifth order and the mixed derivatives of order three and
 four in the response and the parameters come from the numerical
 fallbacks of the base class.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments specify the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm, both parameters being positive.
+logarithm, because both parameters are positive.
 
 ## Usage
 
@@ -57,11 +57,12 @@ inverse. The mean is \\\mu\\, the variance \\\sigma^2\\, the skewness
 
 This is the same law as
 [`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md),
-which carries the mean and a *dispersion*, the two being related by
-\\\sigma^2 = \phi\mu^2\\. They are separate families because the second
-parameter is a different quantity in each, with its own interpretation,
-standard error and interval. The choice between them is not only
-cosmetic: see the next section.
+which carries the mean and a *dispersion*, and the variance and the
+dispersion are related by \\\sigma^2 = \phi\mu^2\\. The two are separate
+families because the second parameter is a different quantity in each,
+with its own interpretation, standard error and interval. The choice
+between them has consequences beyond notation, which the next section
+describes.
 
 ## Derivatives, and orthogonality
 
@@ -79,10 +80,10 @@ y\right\\}{(\sigma^2)^2},\$\$ and the expected Hessian is
 \dfrac{2\mu\left\\\mu^2\psi_1(\alpha) - \sigma^2\right\\}
 {(\sigma^2)^3}.\$\$
 
-**The mixed entry does not vanish.** The mean and the variance are not
+The mixed entry does not vanish. The mean and the variance are not
 orthogonal here, so their estimates are asymptotically correlated and a
-mean equation fitted with the variance held at a wrong value is biased.
-In
+mean equation is biased when the variance is held at a wrong value in
+the fit. In
 [`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md),
 where the second parameter is the dispersion \\\phi = \sigma^2/\mu^2\\,
 the same entry is exactly zero.
@@ -97,9 +98,9 @@ as are the derivatives in the response,
 and
 [`distrib_hess_y.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Gamma2Distrib.md).
 The derivatives of the *distribution* function in the parameters have no
-elementary form, the derivative of an incomplete gamma in its shape
-being hypergeometric, and are computed by a compiled quadrature of the
-density times the derivatives of the log-density.
+elementary form because the derivative of an incomplete gamma in its
+shape is hypergeometric, and are computed by a compiled quadrature of
+the density times the derivatives of the log-density.
 
 ## Estimation
 
@@ -137,8 +138,8 @@ for other positive families written in the mean and the variance;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery of checks that
-this family passes;
+to validate a user-defined family against the same battery of checks
+that this family passes;
 [Gamma2Distrib](https://statmodels7.github.io/distributions7/reference/Gamma2Distrib.md)
 for the class.
 
@@ -161,7 +162,8 @@ th <- list(mu = 3, sigma2 = 2)
 all.equal(distrib_pdf(d, y, th), dgamma(y, shape = 9 / 2, rate = 3 / 2))
 #> [1] TRUE
 
-# Moments: skewness 2 sqrt(sigma2)/mu, excess kurtosis 6 sigma2/mu^2.
+# The moments are skewness 2 sqrt(sigma2)/mu and excess kurtosis
+# 6 sigma2/mu^2.
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))
 #>     mean      var     skew     kurt 

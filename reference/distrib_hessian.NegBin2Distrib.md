@@ -20,7 +20,7 @@ accuracy, and a term with a zero coefficient contributes zero.
 The dispersion entry cancels at large \\\theta\\ for the same reason the
 score does, and the kernel handles it the same way. Here the collapse is
 better than a series: with \\a = \theta\\, \\b = \theta + y\\ and \\c =
-\theta + \mu\\ the three leading terms combine **exactly**,
+\theta + \mu\\ the three leading terms combine exactly,
 \$\$-\dfrac{y}{ab} + \dfrac{\mu}{ac} + \dfrac{y-\mu}{c^2} =
 \dfrac{(y-\mu)^2}{b\\c^2},\$\$ so what is computed is that quotient plus
 the remainder \\\psi_1(b) - \psi_1(a) + y/(ab)\\, and only the remainder
@@ -48,8 +48,8 @@ is how the two derivations check each other.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 

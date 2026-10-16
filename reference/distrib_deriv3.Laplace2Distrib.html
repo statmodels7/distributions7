@@ -27,7 +27,7 @@ effect."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,8 +62,8 @@ effect."><meta property="og:image" content="https://statmodels7.github.io/distri
     <div class="ref-description section level2">
     <p>Computes the four distinct third derivatives of the Laplace log-density with
 respect to \(\mu\) and \(\lambda\). In this parametrization the
-log-density is \(\log(\lambda/2) - \lambda|y-\mu|\), which is <strong>linear in
-\(\lambda\)</strong> apart from \(\log\lambda\), and piecewise linear in
+log-density is \(\log(\lambda/2) - \lambda|y-\mu|\), which is linear in
+\(\lambda\) apart from \(\log\lambda\), and piecewise linear in
 \(\mu\). Every third derivative involving \(\mu\) at all is therefore
 zero, and the only surviving component comes from \(\log\lambda\):
 $$\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},$$
@@ -99,7 +99,7 @@ they are already their own expectations. Defaults to <code>FALSE</code>.</p></dd
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>

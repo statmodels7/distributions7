@@ -2,8 +2,8 @@
 
 Verifies that every supplied parameter value lies strictly inside the
 distribution's `params_bounds`, and is finite. Domains are treated as
-**open** intervals: for instance a Gaussian requires \\\sigma \> 0\\ and
-a Bernoulli requires \\0 \< \mu \< 1\\, since the log-likelihood and its
+open intervals: for instance a Gaussian requires \\\sigma \> 0\\ and a
+Bernoulli requires \\0 \< \mu \< 1\\, since the log-likelihood and its
 derivatives are not defined at the boundary.
 
 This is called automatically by every generic (through the internal

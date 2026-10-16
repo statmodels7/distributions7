@@ -21,7 +21,7 @@ and they differ.
 
 - theta:
 
-  A named list of parameters. Not read.
+  A named list of parameters. It is not read.
 
 - ...:
 

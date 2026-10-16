@@ -19,7 +19,7 @@ expected fourth derivatives have no closed form."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@ expected fourth derivatives have no closed form."><meta property="og:image" cont
 
     <div class="ref-description section level2">
     <p>Computes the five distinct fourth derivatives of the NB1 log-likelihood in
-\(\mu\) and \(\theta\), <strong>in closed form</strong>, by the construction
+\(\mu\) and \(\theta\), in closed form, by the construction
 <code><a href="distrib_deriv3.NegBin1Distrib.html">distrib_deriv3.NegBin1Distrib()</a></code> describes carried one order further: the
 same coefficient recursion over the powers of \(r = \mu/\theta\) and the
 order of \(G(r) = \log\Gamma(y+r) - \log\Gamma(r)\).</p>
@@ -89,7 +89,7 @@ Defaults to <code>FALSE</code>.</p></dd>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>

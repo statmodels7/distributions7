@@ -64,10 +64,10 @@ Writing \\\alpha = \phi\mu\\ for the shapes, the density on the simplex
 \frac{\Gamma(\phi)}{\prod\_{j=1}^{p}\Gamma(\alpha_j)} \prod\_{j=1}^{p}
 y_j^{\alpha_j - 1},\$\$ with \$\$\mathbb{E}\[Y_j\] = \mu_j, \qquad
 \operatorname{Cov}(Y_i, Y_j) = \frac{\delta\_{ij}\mu_i -
-\mu_i\mu_j}{\phi + 1}.\$\$ So \\\phi\\ is a **precision**: the larger it
-is, the tighter the draws sit about the mean. The covariance is
-singular, the coordinates summing to one, and every off-diagonal entry
-is negative.
+\mu_i\mu_j}{\phi + 1}.\$\$ So \\\phi\\ is a precision: the larger it is,
+the tighter the draws sit about the mean. The covariance is singular,
+the coordinates summing to one, and every off-diagonal entry is
+negative.
 
 The parametrization follows the design of the multivariate gaussian. The
 constrained object, here a point of the simplex, is carried by a
@@ -151,7 +151,7 @@ for the chart the mean rides;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery this one
+to validate a family of your own against the same battery that this one
 passes;
 [DirichletDistrib](https://statmodels7.github.io/distributions7/reference/DirichletDistrib.md)
 for the class.

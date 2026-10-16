@@ -5,7 +5,7 @@ Returns the exact third derivatives of the log-mass in \\(\mu,
 compiled kernel `pig2_deriv3_cpp`, which computes the third order alone.
 
 With `expected = TRUE` the value is an expectation instead, and there it
-is **not** closed form: the call routes to
+is not closed form: the call routes to
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
 so `approx` and `nsim` are read.
 

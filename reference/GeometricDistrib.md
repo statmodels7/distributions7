@@ -1,10 +1,11 @@
 # Geometric Distribution Class
 
-The S7 class of the geometric family parametrized by its **mean** \\\mu
-\> 0\\: the number of failures before the first success in independent
-trials, each succeeding with probability \\p = 1/(1+\mu)\\. It inherits
-from `discrete_distrib`, so expectations over its support are sums and
-no derivative with respect to the response is defined.
+`GeometricDistrib` is the S7 class of the geometric family parametrized
+by its mean \\\mu \> 0\\. The family describes the number of failures
+before the first success in independent trials, each of which succeeds
+with probability \\p = 1/(1+\mu)\\. It inherits from `discrete_distrib`,
+so expectations over its support are sums and derivatives with respect
+to the response are undefined.
 
 The parametrization is by the mean, so that a link can carry \\\mu\\ to
 the unconstrained scale; the success probability is computed from
@@ -105,7 +106,8 @@ they hold `"geometric"`, `"univariate"`, `c(0, Inf)`, `"mu"`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GeometricDistrib.md),

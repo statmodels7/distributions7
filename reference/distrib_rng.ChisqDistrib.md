@@ -48,7 +48,7 @@ for the generic.
 ``` r
 d <- chisq_distrib()
 
-# Same generator as stats::rchisq at df = mu.
+# The method uses the same generator as stats::rchisq at df = mu.
 set.seed(2)
 a <- distrib_rng(d, 3, list(mu = 4))
 set.seed(2)
@@ -56,7 +56,7 @@ identical(a, rchisq(3, df = 4))
 #> [1] TRUE
 
 # The sample mean recovers the degrees of freedom, and the variance is
-# about twice it, the two being tied.
+# about twice the mean, because the two are tied.
 set.seed(7)
 z <- distrib_rng(d, 2e4, list(mu = 4))
 c(mean = mean(z), var = var(z))

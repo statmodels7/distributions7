@@ -39,14 +39,16 @@ cdf_tail_scale(distrib, Fq, dF1, dF2 = NULL, lower.tail, log)
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical. `TRUE` leaves the signs
-  alone and `FALSE` flips every one of them.
+  A single logical; `TRUE` selects the lower tail and `FALSE` the upper
+  tail. `TRUE` leaves the signs alone and `FALSE` flips every one of
+  them.
 
 - log:
 
-  Are derivatives of the log probability wanted? A single logical.
-  `TRUE` divides by the probability, which returns `-Inf` or `NaN` in a
-  tail where that probability has underflowed to zero.
+  A single logical; `TRUE` selects the derivatives of the log
+  probability and `FALSE` those of the probability. `TRUE` divides by
+  the probability, which returns `-Inf` or `NaN` in a tail where that
+  probability has underflowed to zero.
 
 ## Value
 

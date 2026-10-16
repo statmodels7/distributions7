@@ -7,13 +7,13 @@ Computes the first derivatives of the Gumbel log-density with respect to
 \ell}{\partial \sigma} = \dfrac{z(1 - w) - 1}{\sigma}.\$\$
 
 The whole family is written in \\w\\, and under the model \\w\\ is
-**standard exponential** whatever the parameters. Every expectation of
-this family is therefore a derivative of \\\Gamma\\ at 1 or at 2. The
-score in \\\mu\\ is bounded above by \\1/\sigma\\ and unbounded below,
-because a value far to the left makes \\w\\ large.
+standard exponential whatever the parameters. Every expectation of this
+family is therefore a derivative of \\\Gamma\\ at 1 or at 2. The score
+in \\\mu\\ is bounded above by \\1/\sigma\\ and unbounded below, because
+a value far to the left makes \\w\\ large.
 
 With `scale = "link"` the generic applies the chain rule for the links
-the family carries before returning. This method always returns the
+that the family carries before returning. This method always returns the
 parameter scale.
 
 ## Arguments
@@ -36,8 +36,8 @@ parameter scale.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -47,7 +47,7 @@ parameter scale.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -79,7 +79,7 @@ y <- c(-1, 0, 1)
 th <- list(mu = 0, sigma = 1)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two closed forms are written out.
 z <- (y - 0) / 1
 w <- exp(-z)
 all.equal(g$mu, (1 - w) / 1)

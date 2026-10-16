@@ -9,9 +9,9 @@ is smallest at \(\mu = 1/2\).
 On the link scale with the default logit the value is
 \(-n\mu(1-\mu)\), and so is the observed Hessian in exact arithmetic: the
 logit is the canonical link, so iteratively reweighted least squares is
-Fisher scoring and Newton's method at once. The observed value is composed
-by the generic and loses relative accuracy where \(|\eta|\) is large
-(see distrib_hessian.BinomialDistrib()); this value does not.
+Fisher scoring and Newton's method at once. The generic composes the
+observed value, which loses relative accuracy where \(|\eta|\) is large
+(see distrib_hessian.BinomialDistrib()); the value returned here does not.
 Because the value does not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:description" content="Returns the expectation of the observed second derivative under the model,
 in closed form and with no quadrature or simulation:
@@ -23,9 +23,9 @@ is smallest at \(\mu = 1/2\).
 On the link scale with the default logit the value is
 \(-n\mu(1-\mu)\), and so is the observed Hessian in exact arithmetic: the
 logit is the canonical link, so iteratively reweighted least squares is
-Fisher scoring and Newton's method at once. The observed value is composed
-by the generic and loses relative accuracy where \(|\eta|\) is large
-(see distrib_hessian.BinomialDistrib()); this value does not.
+Fisher scoring and Newton's method at once. The generic composes the
+observed value, which loses relative accuracy where \(|\eta|\) is large
+(see distrib_hessian.BinomialDistrib()); the value returned here does not.
 Because the value does not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -35,7 +35,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,12 +75,12 @@ which follows from \(\mathbb{E}[Y] = n\mu\) in
 \(-y/\mu^2 - (n-y)/(1-\mu)^2\). The Fisher information is
 \(n/(\mu(1-\mu))\), so it grows in proportion to the number of trials and
 is smallest at \(\mu = 1/2\).</p>
-<p>On the <strong>link</strong> scale with the default logit the value is
+<p>On the link scale with the default logit the value is
 \(-n\mu(1-\mu)\), and so is the observed Hessian in exact arithmetic: the
 logit is the canonical link, so iteratively reweighted least squares is
-Fisher scoring and Newton's method at once. The observed value is composed
-by the generic and loses relative accuracy where \(|\eta|\) is large
-(see <code><a href="distrib_hessian.BinomialDistrib.html">distrib_hessian.BinomialDistrib()</a></code>); this value does not.</p>
+Fisher scoring and Newton's method at once. The generic composes the
+observed value, which loses relative accuracy where \(|\eta|\) is large
+(see <code><a href="distrib_hessian.BinomialDistrib.html">distrib_hessian.BinomialDistrib()</a></code>); the value returned here does not.</p>
 <p>Because the value does not depend on the data, <code>approx</code> and <code>nsim</code> are
 ignored. <code>y</code> is read only for its length.</p>
     </div>
@@ -106,12 +106,12 @@ of length 1 or of the length of <code>y</code>. <code>mu</code> must lie in \((0
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> (the default) or <code>"link"</code>, matched by
-<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. Read by the generic, not by this method.</p></dd>
+<code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, a closed form being available. Accepted so that the
-signature matches the generic's.</p></dd>
+<dd><p>Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -139,16 +139,16 @@ signals an error.</p>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>The <strong>expected information</strong> is
+<p>The expected information is
 \(\mathbb{E}[-\partial^2\ell/\partial\mu^2]\), the expectation of the
-<strong>observed information</strong> under the model. The binomial is a regular family,
+observed information under the model. The binomial is a regular family,
 so the second Bartlett identity holds and this equals the variance of the
 score.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_hessian.BinomialDistrib.html">distrib_hessian.BinomialDistrib()</a></code> for the observed quantity this
-is the expectation of, <code><a href="fisher_scoring.html">fisher_scoring()</a></code>, which inverts it, and
+    <div class="dont-index"><p><code><a href="distrib_hessian.BinomialDistrib.html">distrib_hessian.BinomialDistrib()</a></code> for the observed quantity whose
+expectation this is, <code><a href="fisher_scoring.html">fisher_scoring()</a></code>, which inverts it, and
 <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
     </div>
 
@@ -157,7 +157,7 @@ is the expectation of, <code><a href="fisher_scoring.html">fisher_scoring()</a><
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="binomial_distrib.html">binomial_distrib</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A single number, -n divided by the Bernoulli variance.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is a single number, -n divided by the Bernoulli variance.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span>, <span class="fl">10</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -47.61905</span>
 <span class="r-in"><span><span class="op">-</span><span class="fl">10</span> <span class="op">/</span> <span class="op">(</span><span class="fl">0.3</span> <span class="op">*</span> <span class="fl">0.7</span><span class="op">)</span></span></span>

@@ -30,10 +30,10 @@ quantity does not exist.
 ## Value
 
 A named list with components `mu` and `sigma`, each a numeric vector of
-length `length(y)`. The `mu` component is **exactly zero** everywhere,
-the second response derivative of a Laplace being zero almost
-everywhere, and the `sigma` component is
-\\\mathrm{sign}(y-\mu)/\sigma^2\\, which jumps sign at the kink.
+length `length(y)`. The `mu` component is exactly zero everywhere, the
+second response derivative of a Laplace being zero almost everywhere,
+and the `sigma` component is \\\mathrm{sign}(y-\mu)/\sigma^2\\, which
+jumps sign at the kink.
 
 ## See also
 

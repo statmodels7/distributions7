@@ -16,8 +16,8 @@ parametrization are recovered as \\a = \mu\phi\\ and \\b =
 
   A named list with components `mu` (the mean, strictly between 0 and 1)
   and `phi` (the precision, positive), each a numeric vector of length 1
-  or `n`. Aligned and validated by name, so a mean at or outside the
-  unit interval signals an error.
+  or `n`. It is aligned and validated by name, so a mean at or outside
+  the unit interval signals an error.
 
 - ...:
 

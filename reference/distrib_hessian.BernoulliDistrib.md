@@ -5,11 +5,11 @@ the probability, one value per observation, in closed form:
 \$\$\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} -
 \dfrac{1-y}{(1-\mu)^2}.\$\$ It is negative for every admissible \\\mu\\
 and takes one of two values according to whether the observation is 0
-or 1. Each term is formed by dividing its coefficient by the base once
+or 1. The kernel divides the coefficient of each term by the base once
 per power, and a term with a zero coefficient contributes zero, so at
 \\y = 0\\ the value is \\-1/(1-\mu)^2\\ however small \\\mu\\ is.
 
-On the **link** scale with the default logit the chain rule gives
+On the link scale with the default logit the chain rule gives
 \\\partial^2\ell/\partial\eta^2 = -\mu(1-\mu)\\, which carries no data;
 this is the defining property of a canonical link, and in exact
 arithmetic it makes the observed and the expected information the same
@@ -42,8 +42,8 @@ directly and stays exact.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -75,7 +75,8 @@ d <- bernoulli_distrib()
 y <- c(0, 1, 1)
 th <- list(mu = 0.3)
 
-# The closed form, written out; two values only.
+# The method agrees with the closed form written out, and the result has
+# two values only.
 all.equal(distrib_hessian(d, y, th)$mu_mu,
           -y / 0.3^2 - (1 - y) / 0.7^2)
 #> [1] TRUE

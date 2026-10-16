@@ -9,11 +9,11 @@ closed form. Writing \\r = y - \mu\\ and \\d = \sigma^2 + r^2\\,
 \dfrac{\partial^2 \ell}{\partial \mu \\ \partial \sigma} =
 -\dfrac{4\sigma r}{d^2}.\$\$
 
-The curvature in \\\mu\\ turns **positive** wherever \\\|r\| \>
-\sigma\\, so a single observation beyond one scale unit contributes
-convexity and the observed information can fail to be positive definite.
-The expected values are well behaved, which is why Fisher scoring is the
-steadier route on this family; see
+The curvature in \\\mu\\ turns positive wherever \\\|r\| \> \sigma\\, so
+a single observation beyond one scale unit contributes convexity and the
+observed information can fail to be positive definite. The expected
+values are well behaved, so Fisher scoring is the steadier route on this
+family; see
 [`distrib_expected_hessian.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.CauchyDistrib.md).
 
 ## Arguments
@@ -36,8 +36,8 @@ steadier route on this family; see
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -47,7 +47,7 @@ steadier route on this family; see
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -75,7 +75,7 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, sigma = 1.5)
 h <- distrib_hessian(d, y, th)
 
-# The closed forms, written out.
+# The closed forms are written out.
 r <- y - 0.4; dd <- 1.5^2 + r^2
 all.equal(h$mu_mu, 2 * (r^2 - 1.5^2) / dd^2)
 #> [1] TRUE

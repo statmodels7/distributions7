@@ -31,7 +31,7 @@ distrib_expected_hessian.GPDDistrib()."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@ the analytic function \(\Lambda(u) = \log(1+u)/u\) (written
 \(\phi\) on the pages of the score and of the higher orders). The two
 terms that individually diverge as \(\xi \to 0\) cancel, and the limit
 is an ordinary point of the formula.</p>
-<p>This is the <strong>observed</strong> curvature at the data. The expected one is closed
+<p>This is the observed curvature at the data. The expected one is closed
 form as well, but only above \(\xi = -1/2\); see
 <code><a href="distrib_expected_hessian.GPDDistrib.html">distrib_expected_hessian.GPDDistrib()</a></code>.</p>
     </div>
@@ -140,7 +140,7 @@ the log-density of one observation.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">h</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "sigma_sigma" "xi_xi"       "sigma_xi"   </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a central difference of the score.</span></span></span>
+<span class="r-in"><span><span class="co"># The analytic Hessian is compared with a central difference of the score.</span></span></span>
 <span class="r-in"><span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-5</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>analytic <span class="op">=</span> <span class="va">h</span><span class="op">$</span><span class="va">sigma_xi</span>,</span></span>
 <span class="r-in"><span>      numeric <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sigma <span class="op">=</span> <span class="fl">1.5</span>,</span></span>

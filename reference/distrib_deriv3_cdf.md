@@ -34,16 +34,17 @@ distrib_deriv4_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 
 - lower.tail:
 
-  Is the lower tail wanted? A single logical, `TRUE` by default. With
-  `log = FALSE`, `FALSE` flips the sign of every component; with
-  `log = TRUE` it returns the derivatives of \\\log S\\, which are not
-  the negatives of the lower-tail ones.
+  A single logical, `TRUE` by default; `TRUE` selects the lower tail and
+  `FALSE` the upper tail. With `log = FALSE`, `FALSE` flips the sign of
+  every component; with `log = TRUE` it returns the derivatives of
+  \\\log S\\, which are not the negatives of the lower-tail ones.
 
 - log:
 
-  Are derivatives of the log probability wanted? A single logical,
-  `TRUE` by default. Far into a tail the probability underflows to zero
-  and the result is `-Inf` or `NaN`.
+  A single logical, `TRUE` by default; `TRUE` selects the derivatives of
+  the log probability and `FALSE` those of the probability. Far into a
+  tail the probability underflows to zero and the result is `-Inf` or
+  `NaN`.
 
 - ...:
 

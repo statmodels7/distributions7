@@ -10,8 +10,8 @@ use for the Cauchy, at one order. With \\Y = q - \mu + i\sigma\\, \\F =
 1 - \mathrm{Im}(\log Y)/\pi\\, so every derivative of order \\n\\ with
 \\j\\ derivatives in \\\mu\\ and \\k\\ in \\\sigma\\ is one term,
 \$\$-\tfrac{1}{\pi}(-1)^{j+n-1}(n-1)!\\\mathrm{Im}(i^k Y^{-n}),\$\$
-computed by a compiled kernel without squaring the residual. The log
-scale divides by the probability of the requested tail, which
+computed by a compiled kernel without squaring the residual. On the log
+scale the method divides by the probability of the requested tail, which
 [`stats::pcauchy()`](https://rdrr.io/r/stats/Cauchy.html) returns for
 either tail.
 

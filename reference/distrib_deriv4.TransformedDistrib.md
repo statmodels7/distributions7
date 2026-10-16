@@ -21,8 +21,7 @@ evaluates the parent's fourth derivative at \\x = g^{-1}(y)\\.
 
 - theta:
 
-  A named list of the **parent's** parameters; a transformation adds
-  none.
+  A named list of the parent's parameters; a transformation adds none.
 
 - expected:
 

@@ -14,7 +14,7 @@ where the second parameter is a dispersion, only the second component
 does. With \\z = y/\mu\\ they equal \\\\2\mu(g + e) + y -
 \mu\\/\sigma^2\\ and \\-\alpha(g + e)/\sigma^2\\, where \\g =
 \log\alpha - \psi(\alpha)\\ and \\e = \log z - (z - 1)\\, and the kernel
-computes them in that form, each of \\g\\ and \\e\\ without
+computes them in that form, evaluating each of \\g\\ and \\e\\ without
 cancellation.
 
 With `scale = "link"` the generic applies the chain rule for the links
@@ -41,8 +41,8 @@ scale.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -84,7 +84,7 @@ y <- c(1, 3, 5)
 th <- list(mu = 3, sigma2 = 2)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out with the digamma function.
+# The two closed forms are written out with the digamma function.
 al <- 9 / 2
 lam <- 3 / 2
 all.equal(g$mu,

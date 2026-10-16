@@ -2,8 +2,8 @@
 
 Returns the same three numbers as
 [`distrib_hessian.Beta2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Beta2Distrib.md),
-the observed Hessian being free of the response and so equal to its own
-expectation: \$\$\mathbb{E}\left\[\ell^{(\alpha\alpha)}\right\] =
+because the observed Hessian is free of the response and so equals its
+own expectation: \$\$\mathbb{E}\left\[\ell^{(\alpha\alpha)}\right\] =
 \psi'(\alpha+\beta) - \psi'(\alpha), \qquad
 \mathbb{E}\left\[\ell^{(\alpha\beta)}\right\] = \psi'(\alpha+\beta),
 \qquad \mathbb{E}\left\[\ell^{(\beta\beta)}\right\] =
@@ -12,9 +12,9 @@ method does not average, integrate or simulate; it ignores `approx` and
 `nsim` and reads `y` only for its length.
 
 The consequence for fitting is that Fisher scoring and Newton's method
-take the same step on the parameter scale, both inverting the same
-matrix. On the **link** scale they differ, the chain rule there adding a
-term in the score, which does read the data.
+take the same step on the parameter scale, because both invert the same
+matrix. On the link scale they differ, because the chain rule there adds
+a term in the score, which does read the data.
 
 The mixed entry \\\psi'(\alpha+\beta)\\ is positive and never zero, so
 the two shapes are not orthogonal at any parameter setting.
@@ -38,14 +38,14 @@ the two shapes are not orthogonal at any parameter setting.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored, the expectation being exact. Accepted so that the signature
-  matches the generic's, where it selects between the Bartlett,
-  quadrature, Monte Carlo and outer-product routes.
+  Ignored, because the expectation is exact. It is accepted so that the
+  signature matches the generic's, where it selects between the
+  Bartlett, quadrature, Monte Carlo and outer-product routes.
 
 - nsim:
 
@@ -69,11 +69,11 @@ A named list of three numeric vectors, `alpha_alpha`, `beta_beta` and
 
 ## Notation
 
-The **expected information** is
+The expected information is
 \\\mathbb{E}\[-\partial^2\ell/\partial\theta\\\partial\theta^\top\]\\,
-the expectation of the **observed information** under the model. The
-beta is a regular family, so the second Bartlett identity holds and this
-equals the variance of the score.
+the expectation of the observed information under the model. The beta is
+a regular family, so the second Bartlett identity holds and this equals
+the variance of the score.
 
 ## See also
 

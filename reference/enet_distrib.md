@@ -8,7 +8,7 @@ over a
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
 family, instead of a branch of its own.
 
-The parametrization is the one a reader of the penalty expects: an
+The parametrization is the one that a reader of the penalty expects: an
 overall rate \\\lambda\\ and a mixing weight \\\alpha\\, with \\a =
 \lambda\alpha\\ the Laplace rate and \\c = \lambda(1-\alpha)\\ the
 Gaussian one.
@@ -57,16 +57,16 @@ inheriting from `continuous_distrib`. Its `params` are
 \\Z = 2M(a/\sqrt{c})/\sqrt{c}\\ with \\M\\ the Mills ratio, finite at
 both ends: \\2/a\\ as \\\alpha \to 1\\ and \\\sqrt{2\pi/c}\\ as \\\alpha
 \to 0\\. Every derivative in the two rates is a polynomial in \\x =
-a/\sqrt c\\ and \\G = \mathrm{d}\log M/\mathrm{d}x\\, with \\G' = 1 +
-xG - G^2\\ closing the recursion, and the chain to \\(\lambda, \alpha)\\
-is bilinear.
+a/\sqrt c\\ and \\G = \mathrm{d}\log M/\mathrm{d}x\\, and \\G' = 1 +
+xG - G^2\\ closes the recursion. The chain to \\(\lambda, \alpha)\\ is
+bilinear.
 
-## What is closed form
+## Closed-form quantities
 
-All four derivative orders in the parameters, the expected information,
+The four derivative orders in the parameters, the expected information,
 the distribution function, the quantile function, the mean, the variance
-and the skewness. The **kurtosis** is not, and comes from the base class
-by quadrature.
+and the skewness are closed form. The kurtosis is not, and comes from
+the base class by quadrature.
 
 The expected information is closed form because, in the two rates, the
 density is an exponential family with sufficient statistics \\-\|z\|\\
@@ -83,9 +83,6 @@ defined as the variance of the score instead. The two agree at every
 other entry.
 
 ## Numerical points
-
-Three points concern the normalizing constant, its derivatives and the
-tails.
 
 - \\\log M(x)\\ written directly adds \\x^2/2\\ to a log-probability of
   the same size and opposite sign, and loses a digit per factor of ten
@@ -149,7 +146,8 @@ and
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
 for the two ends, `penalties7::elasticnet_penalty()` for the consumer,
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
-for holding the location at zero, which is how a penalty uses this, and
+for holding the location at zero, as a penalty does when it uses this
+family, and
 [EnetDistrib](https://statmodels7.github.io/distributions7/reference/EnetDistrib.md)
 for the class and its method list.
 
@@ -190,7 +188,7 @@ rbind(observed = unlist(distrib_hessian(d, 0, th)),
 #> observed -1.000000    -0.1702646  -0.1159321         0        0   0.24452821
 #> expected -2.525135    -0.1702646  -0.1159321         0        0  -0.04317471
 
-# Held at zero, this is the prior a penalty is written from.
+# Held at zero, this is the prior from which a penalty is written.
 p <- fixed(d, mu = 0)
 p@params
 #> [1] "lambda" "alpha" 

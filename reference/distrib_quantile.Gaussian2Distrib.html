@@ -15,7 +15,7 @@ trip through distrib_cdf.Gaussian2Distrib() returns p."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,8 +83,8 @@ recycled. <code>sigma2</code> must be strictly positive.</p></dd>
 
 <dt id="arg-log-p">log.p<a class="anchor" aria-label="anchor" href="#arg-log-p"></a></dt>
 <dd><p>Logical of length 1. When <code>TRUE</code> the values in <code>p</code> are read as
-logarithms of probabilities, which is how a quantile deep in a tail is
-requested without the probability underflowing. Defaults to <code>FALSE</code>.</p></dd>
+logarithms of probabilities, so that a quantile deep in a tail can be
+requested without underflow in the probability. Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -117,7 +117,7 @@ requested without the probability underflowing. Defaults to <code>FALSE</code>.<
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">p</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A quantile 40 standard deviations out, computed on the log scale</span></span></span>
+<span class="r-in"><span><span class="co"># The quantile 40 standard deviations out is computed on the log scale</span></span></span>
 <span class="r-in"><span><span class="co"># because the probability itself is zero in double precision.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>, log.p <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma2 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 log.p <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>

@@ -4,9 +4,9 @@ Computes the second derivative of the Gaussian log-density with respect
 to the response, \$\$\dfrac{\partial^2 \ell}{\partial y^2} =
 -\dfrac{1}{\sigma^2},\$\$ in closed form. It does not depend on \\y\\ or
 on \\\mu\\, so the value is constant within a parameter setting and is
-recycled to the length of `y`. Being a location family, the Gaussian has
-the same curvature in the response as in its location, and this equals
-the `mu_mu` component of
+recycled to the length of `y`. Because the Gaussian is a location
+family, it has the same curvature in the response as in its location,
+and this equals the `mu_mu` component of
 [`distrib_hessian.Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Gaussian1Distrib.md).
 
 ## Arguments
@@ -53,7 +53,8 @@ th <- list(mu = 0.4, sigma = 1.5)
 distrib_hess_y(d, y, th)
 #> [1] -0.4444444 -0.4444444 -0.4444444
 
-# A location family: the same curvature as in the location.
+# The Gaussian is a location family, so the curvature is the same as in the
+# location.
 all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 #> [1] TRUE
 

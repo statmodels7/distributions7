@@ -34,9 +34,9 @@ A numeric vector of `n` draws, symmetric about `mu`.
 ## See also
 
 [`distrib_quantile.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.EnetDistrib.md),
-which it inverts through,
+which it uses for the inverse transform,
 [`variance.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/variance.EnetDistrib.md)
-for the moment the draws reproduce, and
+for the moment that the draws reproduce, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
 for the generic.
 
@@ -49,7 +49,7 @@ th <- list(mu = 0, lambda = 2, alpha = 0.5)
 set.seed(71)
 x <- distrib_rng(d, 2e5, th)
 
-# Two moments against their closed forms, and the symmetry.
+# Two moments and the symmetry are compared with their closed forms.
 rbind(sample = c(mean(x), var(x), mean((x - mean(x))^3) / sd(x)^3),
       theory = c(mean(d, th), variance(d, th), skewness(d, th)))
 #>                 [,1]      [,2]         [,3]

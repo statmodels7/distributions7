@@ -1,14 +1,14 @@
 # Beta-Binomial Fourth-Order Derivatives in Its Shapes
 
 Computes the five distinct fourth derivatives of the beta-binomial
-log-mass in the two shapes, in closed form, by the construction
+log-mass in the two shapes, in closed form, by the construction that
 [`distrib_deriv3.BetaBinom2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom2Distrib.md)
-describes carried one order further: the same sum of terms with
+describes, carried one order further: the same sum of terms with
 \\\psi_3\\, the third polygamma, in place of \\\log\Gamma\\, and the
 direct sums where \\\alpha+\beta \> 10\\.
 
-With `expected = TRUE` the expectation is an **exact finite sum** over
-the support, so `approx` and `nsim` are ignored on both branches.
+With `expected = TRUE` the expectation is an exact finite sum over the
+support, so `approx` and `nsim` are ignored on both branches.
 
 ## Arguments
 
@@ -36,13 +36,13 @@ the support, so `approx` and `nsim` are ignored on both branches.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - approx:
 
-  Ignored here, both branches being exact. Accepted so that the
-  signature matches the generic's.
+  Ignored here, because both branches are exact. It is accepted so that
+  the signature matches the generic's.
 
 - nsim:
 

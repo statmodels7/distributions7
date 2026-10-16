@@ -29,7 +29,7 @@ that support.
 
 - approx:
 
-  Ignored. Present so that the signature matches the generic's.
+  Ignored. It is present so that the signature matches the generic's.
 
 - nsim:
 

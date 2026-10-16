@@ -25,9 +25,9 @@ every \\\alpha \> 0\\.
 
 The size of the kink is \\2\lambda\alpha\\ and goes to zero with
 \\\alpha\\. A detector based on the second Bartlett identity therefore
-sees the missing curvature less clearly at small \\\alpha\\, where the
-family is nearly Gaussian. The kink exists at every \\\alpha \> 0\\, and
-the declaration records it independently of any measurement of the
+detects the missing curvature less clearly at small \\\alpha\\, where
+the family is nearly Gaussian. The kink exists at every \\\alpha \> 0\\,
+and the declaration records it independently of any measurement of the
 curvature.
 
 ## See also

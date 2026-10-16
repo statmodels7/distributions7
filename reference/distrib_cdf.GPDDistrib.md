@@ -70,7 +70,7 @@ d <- gpd_distrib()
 q <- c(0.2, 1, 4)
 th <- list(sigma = 1.5, xi = 0.3)
 
-# The formula written out.
+# The distribution function is compared with the formula written out.
 all.equal(distrib_cdf(d, q, th), 1 - (1 + 0.3 * q / 1.5)^(-1 / 0.3))
 #> [1] TRUE
 

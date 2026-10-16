@@ -1,11 +1,11 @@
 # Hurdle Third Derivatives
 
-The hurdle likelihood **factorizes** into a binary part and a positive
-part, so at every order the mixed components in `za` and a parent
-parameter are exactly zero, and the two halves are differentiated
-separately. The \\\theta\\ part is the parent's derivative less that of
-the truncation constant \\\log(1 - f_0)\\, which is the mass the parent
-puts at zero and the hurdle removes.
+The hurdle likelihood factorizes into a binary part and a positive part,
+so at every order the mixed components in `za` and a parent parameter
+are exactly zero, and the two halves are differentiated separately. The
+\\\theta\\ part is the parent's derivative less that of the truncation
+constant \\\log(1 - f_0)\\, which is the mass the parent puts at zero
+and the hurdle removes.
 
 This is the structural difference from
 [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md),

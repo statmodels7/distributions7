@@ -5,7 +5,7 @@ log-density with respect to \\\mu\\ and \\\tau\\, one value per
 observation, in closed form. With \\r = y - \mu\\, \$\$\ell^{(\mu\mu)} =
 -\tau, \qquad \ell^{(\mu\tau)} = r, \qquad \ell^{(\tau\tau)} =
 -\dfrac{1}{2\tau^2}.\$\$ Two of the three are free of the data, so the
-observed and the expected Hessians differ in the mixed entry alone. That
+observed and the expected Hessians differ only in the mixed entry. That
 entry sums to \\\sum_i (y_i - \mu)\\, which vanishes at \\\hat\mu = \bar
 y\\. The summed observed and expected Hessians therefore coincide
 whenever the mean equation is solved, whatever the value of \\\tau\\,
@@ -31,8 +31,8 @@ and differ otherwise.
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 

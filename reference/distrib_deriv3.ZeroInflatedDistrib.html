@@ -29,7 +29,7 @@ survives."><meta property="og:image" content="https://statmodels7.github.io/dist
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,14 +63,14 @@ survives."><meta property="og:image" content="https://statmodels7.github.io/dist
 
     <div class="ref-description section level2">
     <p>Two regimes, and the observation decides which. At \(y &gt; 0\) the
-log-likelihood is \(\log(1-\zeta) + \ell(y;\theta)\), which <strong>separates</strong>:
+log-likelihood is \(\log(1-\zeta) + \ell(y;\theta)\), which separates:
 every mixed component in \(\zeta\) and a parent parameter is exactly zero.
 At \(y = 0\) it is \(\log L_0\) with
 \(L_0 = \zeta + (1-\zeta) f(0;\theta)\), and the derivatives follow from
 the moment-to-cumulant expansion over set partitions,
 $$d^I \log L_0 = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
       \prod_{B \in \pi} \frac{d^B L_0}{L_0}.$$</p>
-<p>\(L_0\) is <strong>affine</strong> in \(\zeta\), so any block of a partition naming
+<p>\(L_0\) is affine in \(\zeta\), so any block of a partition naming
 \(\zeta\) twice contributes nothing and the sum is shorter than it looks.
 A whole component may still be non-zero: its partition into singletons
 survives.</p>

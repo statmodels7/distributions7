@@ -40,11 +40,11 @@ series converges rapidly. From \\e^{\kappa\cos\theta} = I_0(\kappa) +
 \\x\\, \$\$F(x) = \frac{x + \pi}{2\pi} + \frac{1}{\pi I_0(\kappa)}
 \sum\_{j\ge1} \frac{I_j(\kappa)}{j} \big\[\sin(j(x - \mu)) +
 \sin(j(\pi + \mu))\big\].\$\$ The second sine is the lower limit, and it
-makes this the distribution function of the family **as written**: the
+makes this the distribution function of the family as written: the
 support is \\\[-\pi, \pi)\\ with the direction inside it, not a variable
 wrapped around the circle.
 
-Only the **ratios** \\I_j/I_0\\ are needed, and
+Only the ratios \\I_j/I_0\\ are needed, and
 [`numericals7::bessel_i_ratios()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratios.html)
 gives them by a backward recurrence whose loop runs over the series
 index and not over the data. The series is cheap for that reason: \\n\\

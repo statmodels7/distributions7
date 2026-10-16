@@ -26,14 +26,14 @@ the outer half carries the result onto \\(\mu, \lambda, \alpha)\\.
 
 - order:
 
-  A single integer, 1 to 4: the highest derivative order wanted.
+  A single integer, 1 to 4: the highest derivative order to compute.
 
 ## Value
 
 A list of length `order`; element `k` is a named list of the order-`k`
 derivatives, keyed as
 [`deriv_names(c("mu", "a", "c"), k)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
-names them, each entry a numeric vector of the length of `y`.
+names them, and each entry is a numeric vector of the length of `y`.
 
 ## Why these coordinates
 
@@ -41,7 +41,7 @@ In them the log-density is \\-a\|z\| - cz^{2}/2 - \log 2 - L(x) +
 \tfrac{1}{2}\log c\\ with \\z = y - \mu\\, \\x = ac^{-1/2}\\ and \\L =
 \log M\\, so the data term is quadratic in \\z\\ and linear in each
 rate. Every derivative of order three or more is therefore a derivative
-of the **normalizing constant**, apart from
+of the normalizing constant, apart from
 \\\partial^{3}\ell/\partial\mu^{2}\partial c = -1\\.
 
 The normalizer is one pass of
@@ -55,8 +55,8 @@ component.
 ## The kink
 
 The location is not differentiable at \\z = 0\\, as in the Laplace, and
-the sign function is what the first derivative carries there. Nothing at
-order four touches \\\mu\\ at all.
+the first derivative carries the sign function there. Every derivative
+of order four is free of \\\mu\\.
 
 ## Notation
 
@@ -83,12 +83,12 @@ out <- distributions7:::.enet_ac_derivs(y, p, 3L)
 vapply(out, length, 0L)          # 3, 6 and 10 components
 #> [1]  3  6 10
 
-# The one third-order component that carries data.
+# This is the one third-order component that carries data.
 out[[3]][["mu_mu_c"]]
 #> [1] -1 -1 -1
 
-# Everything else at order three is free of y, the data term being
-# quadratic in z and linear in each rate.
+# Every other component at order three is free of y, because the data term
+# is quadratic in z and linear in each rate.
 vapply(out[[3]][setdiff(names(out[[3]]), "mu_mu_c")],
        function(v) diff(range(v)), 0)
 #> mu_mu_mu  mu_mu_a   mu_a_a   mu_a_c   mu_c_c    a_a_a    a_a_c    a_c_c 

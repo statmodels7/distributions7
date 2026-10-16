@@ -53,13 +53,14 @@ d <- beta1_distrib()
 y <- c(0.2, 0.5, 0.8)
 th <- list(mu = 0.4, phi = 5)
 
-# Written out at the implied shapes.
+# The first derivative is written out at the implied shapes.
 a <- 0.4 * 5
 b <- 0.6 * 5
 all.equal(distrib_grad_y(d, y, th), (a - 1) / y - (b - 1) / (1 - y))
 #> [1] TRUE
 
-# Zero at the mode (a - 1)/(a + b - 2), positive below and negative above.
+# The derivative is zero at the mode (a - 1)/(a + b - 2), positive below it
+# and negative above it.
 mode <- (a - 1) / (a + b - 2)
 c(mode = mode, at_mode = distrib_grad_y(d, mode, th))
 #>         mode      at_mode 

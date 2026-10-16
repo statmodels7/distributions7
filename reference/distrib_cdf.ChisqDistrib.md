@@ -56,9 +56,9 @@ for the density,
 for the derivatives of this function in the parameter, which the
 chi-squared computes by a compiled quadrature of the derivatives of the
 density
-([`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)),
-the derivative of an incomplete gamma in its shape being hypergeometric;
-and
+([`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md))
+because the derivative of an incomplete gamma in its shape is
+hypergeometric; and
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
 for the generic.
 

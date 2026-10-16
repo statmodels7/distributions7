@@ -7,8 +7,8 @@ Writing \\r = y - \mu\\, \$\$\dfrac{\partial \ell}{\partial \mu} =
 \sigma} = \dfrac{1}{\sigma}\left(\dfrac{\|r\|}{\sigma} - 1\right).\$\$
 
 The score in \\\mu\\ takes only the three values \\-1/\sigma\\, 0 and
-\\+1/\sigma\\: it carries the **sign** of the residual and nothing about
-its size, which is why the maximum likelihood estimate of \\\mu\\ is the
+\\+1/\sigma\\: it carries the sign of the residual and nothing about its
+size, which is why the maximum likelihood estimate of \\\mu\\ is the
 sample median. At \\r = 0\\ exactly, `sign(0)` is 0 and the method
 returns 0, the midpoint of the subdifferential \\\[-1/\sigma,
 1/\sigma\]\\; the derivative does not exist there.
@@ -33,8 +33,8 @@ returns 0, the midpoint of the subdifferential \\\[-1/\sigma,
 - scale:
 
   One of `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
-  the generic, not by this method.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic reads it, and this method does not.
 
 - ...:
 
@@ -44,7 +44,7 @@ returns 0, the midpoint of the subdifferential \\\[-1/\sigma,
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 

@@ -1,7 +1,7 @@
 # Gaussian Distribution Class, Mean and Precision
 
-The S7 class of the Gaussian (normal) family parametrized by its mean
-\\\mu\\ and its precision \\\tau = 1/\sigma^2 \> 0\\, with density
+This is the S7 class of the Gaussian (normal) family parametrized by its
+mean \\\mu\\ and its precision \\\tau = 1/\sigma^2 \> 0\\, with density
 \\f(y) = (\tau/2\pi)^{1/2}\exp\\-\tau(y-\mu)^2/2\\\\ on the whole real
 line. It inherits from `continuous_distrib`, so every generic of the
 `distrib` class applies to it; the methods listed below are registered
@@ -99,7 +99,8 @@ they hold `"gaussian3"`, `"univariate"`, `c(-Inf, Inf)`,
 
 ## Methods
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked
+to the page that documents it:
 
 - the distribution:
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gaussian3Distrib.md),
@@ -174,7 +175,8 @@ d <- gaussian3_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 #> [1] "mu"  "tau"
 d@params_interpretation

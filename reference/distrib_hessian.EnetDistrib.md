@@ -1,16 +1,16 @@
 # Elastic-Net Observed Hessian
 
 Computes the six second derivatives of the log-density in closed form.
-The data term of the log-density is **linear in the two rates**, so
-every rate block is a second derivative of \\\log Z\\ carried through
-the bilinear map \\(\lambda,\alpha) \mapsto (a, c)\\, whose own cross
-term contributes the \\\lambda\alpha\\ entry. In the location the
-curvature is simply \\-c\\.
+The data term of the log-density is linear in the two rates, so every
+rate block is a second derivative of \\\log Z\\ carried through the
+bilinear map \\(\lambda,\alpha) \mapsto (a, c)\\, whose own cross term
+contributes the \\\lambda\alpha\\ entry. In the location the curvature
+is simply \\-c\\.
 
-That \\-c\\ is the observed curvature and **not** the information. It
-misses the point mass \\\mathrm{d}\\\mathrm{sgn}(z)/\mathrm{d}z =
-2\delta(z)\\ the absolute value carries at the location, exactly as the
-Laplace does; see
+That \\-c\\ is the observed curvature and not the information. It misses
+the point mass \\\mathrm{d}\\\mathrm{sgn}(z)/\mathrm{d}z = 2\delta(z)\\
+that the absolute value carries at the location, exactly as the Laplace
+does; see
 [`distrib_expected_hessian.EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.EnetDistrib.md)
 for what the information is instead.
 
@@ -43,7 +43,7 @@ for what the information is instead.
 
   A single positive integer, how many threads the kernel may use. Below
   the measured internal threshold the kernel stays sequential whatever
-  the count says. Defaults to `1L`.
+  the count is. Defaults to `1L`.
 
 ## Value
 
@@ -80,8 +80,8 @@ names(h)
 #> [1] "mu_mu"         "lambda_lambda" "alpha_alpha"   "mu_lambda"    
 #> [5] "mu_alpha"      "lambda_alpha" 
 
-# The curvature in the location is -c at every observation, the absolute
-# value contributing nothing away from the kink.
+# The curvature in the location is -c at every observation, because the
+# absolute value contributes nothing away from the kink.
 c(observed = unique(h$mu_mu), minus_c = -(2 * (1 - 0.5)))
 #> observed  minus_c 
 #>       -1       -1 
@@ -94,7 +94,7 @@ rbind(observed = c(h$lambda_lambda[1], h$alpha_alpha[1], h$mu_mu[1]),
 #> observed -0.1702646 -0.1159321 -1.000000
 #> expected -0.1702646 -0.1159321 -2.525135
 
-# Against a central difference of the score.
+# The analytic entry is compared with a central difference of the score.
 eps <- 1e-5
 rbind(analytic = h$lambda_alpha,
       numeric = (distrib_gradient(d, y, list(mu = 0, lambda = 2,
