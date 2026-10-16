@@ -19,7 +19,7 @@ check_distrib_mv(), which has no CDF or quantile rows."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.78.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -143,8 +143,9 @@ difference stays below 6).</p></li>
 <code><a href="numerical_gradient.html">numerical_gradient()</a></code>, <code><a href="numerical_hessian.html">numerical_hessian()</a></code>,
 <code><a href="numerical_deriv3.html">numerical_deriv3()</a></code> and <code><a href="numerical_deriv4.html">numerical_deriv4()</a></code>.</p></li>
 <li><p><strong>deriv5</strong>, when <code>5</code> is among <code>orders</code>: <code><a href="distrib_deriv5.html">distrib_deriv5()</a></code> against
-<code><a href="numerical_deriv5.html">numerical_deriv5()</a></code> at a higher accuracy, five stencil nodes instead of
-three. For a family that reaches the numerical fifth order the row checks
+<code><a href="numerical_deriv5.html">numerical_deriv5()</a></code> at a higher accuracy, the sixth-order rule (six
+evaluations of the fourth order per parameter) in place of the default
+fourth-order one. For a family that reaches the numerical fifth order the row checks
 the differencing; for a family that registers its own <code><a href="distrib_deriv5.html">distrib_deriv5()</a></code>
 it checks that method. It is emitted only where <code><a href="has_exact_deriv4.html">has_exact_deriv4()</a></code> is
 <code>TRUE</code>: where the fourth order is itself a fallback the fifth is a

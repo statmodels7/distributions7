@@ -107,8 +107,9 @@ The checks performed are:
   [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
   against
   [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md)
-  at a higher accuracy, five stencil nodes instead of three. For a
-  family that reaches the numerical fifth order the row checks the
+  at a higher accuracy, the sixth-order rule (six evaluations of the
+  fourth order per parameter) in place of the default fourth-order one.
+  For a family that reaches the numerical fifth order the row checks the
   differencing; for a family that registers its own
   [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
   it checks that method. It is emitted only where

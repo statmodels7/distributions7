@@ -331,7 +331,7 @@ Rarely called directly; they show what the default methods compute.
 - [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md)
   : Numerical Fourth-Order Derivatives of the Log-Density
 - [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md)
-  : Fifth-Order Derivatives by One Central Difference
+  : Fifth-Order Derivatives by One Tensor Stencil
 - [`numerical_grad_y()`](https://statmodels7.github.io/distributions7/reference/numerical_grad_y.md)
   : Numerical Gradient of the Log-Density with Respect to the Response
 - [`numerical_hess_y()`](https://statmodels7.github.io/distributions7/reference/numerical_hess_y.md)
@@ -2275,6 +2275,9 @@ transforms that make it work on a divergent density.
 - [`declares_atoms()`](https://statmodels7.github.io/distributions7/reference/declares_atoms.md)
   : Does a Distribution Declare Atoms
 
+- [`deriv5_base()`](https://statmodels7.github.io/distributions7/reference/deriv5_base.md)
+  : The Order a Fifth Derivative Is Differenced From
+
 - [`deriv5_scale()`](https://statmodels7.github.io/distributions7/reference/deriv5_scale.md)
   : Carry an Analytic Fifth Order to the Link Scale
 
@@ -4164,6 +4167,9 @@ transforms that make it work on a divergent density.
 
 - [`tail_quantile_refine()`](https://statmodels7.github.io/distributions7/reference/tail_quantile_refine.md)
   : Refine a Quantile Far in a Tail
+
+- [`tensor_coords()`](https://statmodels7.github.io/distributions7/reference/tensor_coords.md)
+  : The Coordinates of a Tensor Stencil over the Parameters
 
 - [`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md)
   : Derivatives by One Stencil on the Highest Analytical Order

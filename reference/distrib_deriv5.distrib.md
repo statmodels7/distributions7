@@ -1,7 +1,8 @@
 # Default Fifth-Order Derivatives for `distrib` Objects
 
 The route that a family takes at the fifth order when it registers no
-method of its own: one central difference of the fourth, through
+method of its own: one tensor-product difference of its highest analytic
+order, through
 [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md).
 
 ## Arguments

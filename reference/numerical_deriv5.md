@@ -1,7 +1,8 @@
-# Fifth-Order Derivatives by One Central Difference
+# Fifth-Order Derivatives by One Tensor Stencil
 
-The fifth-order derivative components, obtained by differentiating the
-fourth-order ones once in each parameter.
+The fifth-order derivative components, each a single tensor-product
+central difference of the highest analytic order below it, through
+[`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md).
 
 ## Usage
 
@@ -11,7 +12,7 @@ numerical_deriv5(
   y,
   theta,
   scale = c("parameter", "link"),
-  accuracy = 2L
+  accuracy = 4L
 )
 ```
 
@@ -31,17 +32,15 @@ numerical_deriv5(
 
 - scale:
 
-  `"parameter"` or `"link"`; the scale on which the fourth order is read
-  and on which the perturbation is applied.
+  `"parameter"` or `"link"`; the scale on which the differenced quantity
+  is read and on which the perturbation is applied.
 
 - accuracy:
 
-  The order of accuracy of the central rule, passed to
-  [`numericals7::fd_offsets()`](https://statmodels7.github.io/numericals7/reference/fd_offsets.html)
-  and
-  [`numericals7::fd_step()`](https://statmodels7.github.io/numericals7/reference/fd_step.html).
-  The default 2 is the three-point rule; 4 costs four evaluations of the
-  fourth order per parameter instead of two.
+  The order of accuracy of the central rules, passed to
+  [`numericals7::fd_tensor()`](https://statmodels7.github.io/numericals7/reference/fd_tensor.html).
+  The default 4 uses four evaluations of the fourth order per parameter
+  where it is analytic; 2 uses two.
 
 ## Value
 
@@ -52,48 +51,27 @@ gives them.
 
 ## Details
 
-The fifth order is one central difference of the fourth order, a single
-stencil in each parameter, and never a difference of a difference.
-[`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md)
-also uses a single stencil, a second difference of the analytic Hessian.
-A fifth order obtained by differencing the analytic third order three
-times would be less accurate.
+The quantity differenced is the fourth order where it is analytic, as
+[`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
+reads it, and each component is then one central difference of a
+fourth-order component in one parameter: the component of a
+non-decreasing five-tuple is the four-tuple left when one index is
+dropped, and the whole order costs one stencil per parameter. Where the
+fourth order is not analytic, a family that registers no wrapper reads
+the highest order it implements itself, as
+[`analytic_order()`](https://statmodels7.github.io/distributions7/reference/analytic_order.md)
+gives it, and a wrapper of a parent without an analytic fourth order
+differences its log-density, because its lower orders are partition sums
+over the parent's fallbacks. A difference of a difference is never
+formed.
 
-The component of a non-decreasing five-tuple is the four-tuple that
-remains when its last index is dropped, differentiated in the parameter
-that index names. The tuple is non-decreasing, so dropping the last
-index leaves a valid order-4 key, and mixed partials commute, so which
-index is dropped does not matter. Components are grouped by that last
-index, so the whole order costs `2p` evaluations of the fourth rather
-than two per component.
-
-## The stencil, and the step
-
-The nodes, the weights and the step are all numericals7's, so the rule
-lives in one place and raising `accuracy` is an argument rather than new
-arithmetic.
-[`numericals7::fd_derivative()`](https://statmodels7.github.io/numericals7/reference/fd_derivative.html)
-is not called directly for the reason
-[`numDeriv_grad()`](https://statmodels7.github.io/distributions7/reference/numDeriv_grad.md)
-already records: its `f` maps a vector of points to the values at those
-points, while this one reads a whole named list at each node and keeps
-every component that shares the differentiated index. A node of zero
-weight is skipped, so the default central rule costs two evaluations of
-the fourth order per parameter and not three.
-
-[`numericals7::fd_step()`](https://statmodels7.github.io/numericals7/reference/fd_step.html)
-at order 1 is \\\epsilon^{1/3}\\ scaled by the magnitude of the
-evaluation point and shrunk to keep the stencil inside the parameter's
-domain. It is the right rule here because the quantity being differenced
-is evaluated to machine precision. The same rule would be too small for
-a quantity that is itself a fitted optimum, whose accuracy is limited by
-the reproducibility of the fit rather than by the rounding of an
-arithmetic expression.
-
-On the link scale the perturbation is applied to \\\eta\\ and the fourth
-order is evaluated on the link scale as well, so the result is the
-derivative of an analytic link-scale quantity. This route requires
-neither the fifth derivative of a link nor an order-5 entry in
+The step of a difference of order \\r\\ is
+\\\varepsilon^{1/(r+a)}\max(1, \|\theta_j\|)\\, with \\a\\ the accuracy,
+reduced so that every node stays inside the parameter's domain. On the
+link scale the perturbation is applied to \\\eta\\ and the differenced
+quantity is read on the link scale as well, so the result is the
+derivative of a link-scale quantity. This route requires neither the
+fifth derivative of a link nor an order-5 entry in
 [`bell_partial()`](https://statmodels7.github.io/distributions7/reference/bell_partial.md),
 both of which the chain rule route uses.
 
@@ -102,7 +80,9 @@ both of which the chain rule route uses.
 [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md),
 the generic;
 [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md),
-the order below.
+the order below;
+[`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md),
+which does the differencing.
 
 ## Examples
 

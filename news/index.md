@@ -1,5 +1,41 @@
 # Changelog
 
+## distributions7 0.79.0
+
+### Numerical derivatives
+
+- The tensor-product fallbacks are computed by
+  [`numericals7::fd_tensor()`](https://statmodels7.github.io/numericals7/reference/fd_tensor.html)
+  (numericals7 0.23.0 is now required).
+  [`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md),
+  which serves the third and fourth orders of a family without its own
+  Hessian and the Hessian of a family with a score alone, and
+  [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md),
+  which serves the mixed derivatives in the response and the parameters,
+  declare the family’s analytic quantities to it and keep their choice
+  of the quantity differenced. At accuracy 2 they reproduce the previous
+  R implementations bit for bit, except the fourth order from the
+  log-density, whose weights are now exact and which moves by the
+  rounding of the stencil.
+- The fallbacks use fourth-order accuracy by default, where they used
+  second-order accuracy. From the log-density alone, the third to fifth
+  derivatives of a gaussian move from 4.0e-6, 4.3e-5 and 6.3e-4
+  (normwise, against the closed forms) to 1.1e-7, 1.4e-6 and 5.1e-5, at
+  two to four times the evaluations; on the measured cells the product
+  of error and evaluations is the smallest at accuracy 4 in 13 of 18.
+- [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md)
+  no longer differences the fourth order when the fourth order is itself
+  a fallback. It differences the fourth order where
+  [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
+  is `TRUE`, the highest order the family implements itself otherwise,
+  and the log-density for a wrapper of a parent without an analytic
+  fourth order; each component is one tensor-product stencil. For a
+  gaussian with a density alone the fifth order moves from 2.2e-2 to
+  5.1e-5 normwise. Its `accuracy` argument defaults to 4, and the
+  order-5 row of
+  [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+  compares against accuracy 6.
+
 ## distributions7 0.78.1
 
 ### Performance

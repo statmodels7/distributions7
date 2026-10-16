@@ -21,7 +21,7 @@ difference."><meta property="og:image" content="https://statmodels7.github.io/di
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.78.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@ difference.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mixed_tensor_derivatives</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">y</span>, <span class="va">theta</span>, <span class="va">ay</span>, <span class="va">ctheta</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mixed_tensor_derivatives</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">y</span>, <span class="va">theta</span>, <span class="va">ay</span>, <span class="va">ctheta</span>, accuracy <span class="op">=</span> <span class="fl">4L</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -92,6 +92,11 @@ difference.</p>
 <dt id="arg-ctheta">ctheta<a class="anchor" aria-label="anchor" href="#arg-ctheta"></a></dt>
 <dd><p>The order in the parameters, 1 or 2.</p></dd>
 
+
+<dt id="arg-accuracy">accuracy<a class="anchor" aria-label="anchor" href="#arg-accuracy"></a></dt>
+<dd><p>The order of accuracy of the one-dimensional stencils,
+passed to <code><a href="https://statmodels7.github.io/numericals7/reference/fd_tensor.html" class="external-link">numericals7::fd_tensor()</a></code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -101,23 +106,22 @@ where <code>ctheta</code> is 1; one vector per unordered pair, keyed as
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>A candidate quantity of order \((a, c)\) in the response and the
-parameters can serve where \(a \le\) <code>ay</code> and \(c \le\) <code>ctheta</code>, and it
-leaves \(r = (\mathrm{ay} - a) + (\mathrm{ctheta} - c)\) orders to the
-stencil. The log-density always serves; another quantity serves only where
-the family's class registers its method, as <code><a href="owns_method.html">owns_method()</a></code> reads it, so
-that a numerical fallback is never differenced again. The candidate with
-the smallest \(r\) is used, and among equal ones the one with more
-derivatives in the parameters.</p>
-<p>The stencil is the tensor product of one-dimensional central stencils of
-<code><a href="https://statmodels7.github.io/numericals7/reference/fd_weights.html" class="external-link">numericals7::fd_weights()</a></code> at second-order accuracy, one in the response
-and one in each parameter that still has to be differenced, with the
-parameters that occur most often taken by the analytical quantity first,
-as <code><a href="tensor_derivatives.html">tensor_derivatives()</a></code> does. The step is
-\(h = \varepsilon^{1/(r+2)}\max(1, |x|)\) in every direction, the
-response step clamped inside the support by <code><a href="fd_steps_y.html">fd_steps_y()</a></code> and a
-parameter's step inside its bounds. Values shared by several components
-are computed once.</p>
+    <p>The computation is <code><a href="https://statmodels7.github.io/numericals7/reference/fd_tensor.html" class="external-link">numericals7::fd_tensor()</a></code> over the coordinates
+\((y, \theta_1, \dots, \theta_p)\). A candidate quantity of order
+\((a, c)\) in the response and the parameters is declared to it where
+\(a \le\) <code>ay</code>, \(c \le\) <code>ctheta</code>, \((a, c)\) is not the target
+itself, and the family's class registers its method, as <code><a href="owns_method.html">owns_method()</a></code>
+reads it, so that a numerical fallback is never differenced again. The
+log-density is always available. The candidate with the smallest residual
+order \(r = (\mathrm{ay} - a) + (\mathrm{ctheta} - c)\) is used, and
+among equal ones the one with more derivatives in the parameters, which
+declares more multi-indices; the candidates are declared in decreasing
+\(c\), so that the order of declaration decides the same way when there
+is a single parameter.</p>
+<p>The step is \(h = \varepsilon^{1/(r+a)}\max(1, |x|)\) in every
+direction, with \(a\) the accuracy, reduced so that every node stays
+inside the support in the response and inside the bounds of each
+parameter. Values shared by several components are computed once.</p>
 <p>For <code><a href="transformation.html">transformation()</a></code>, which carries the parent's score and Hessian in
 the parameters and no response derivative, the fourth-order
 \(\partial^4\ell/\partial y^2\,\partial\theta^2\) is a second difference
@@ -138,10 +142,10 @@ fallbacks call this.</p></div>
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="fixed.html">fixed</a></span><span class="op">(</span><span class="fu"><a href="transformation.html">transformation</a></span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="log_transform.html">log_transform</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, mu <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.4</span>, <span class="fl">0.3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">0.26</span></span></span>
-<span class="r-in"><span><span class="va">got</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">mixed_tensor_derivatives</span><span class="op">(</span><span class="va">d</span>, <span class="va">b</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sigma2 <span class="op">=</span> <span class="fl">0.26</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">got</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">mixed_tensor_derivatives</span><span class="op">(</span><span class="va">d</span>, <span class="va">b</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sigma2 <span class="op">=</span> <span class="fl">0.26</span><span class="op">)</span>, <span class="fl">2L</span>, <span class="fl">2L</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">got</span><span class="op">$</span><span class="va">sigma2_sigma2</span>, <span class="op">-</span><span class="fl">2</span> <span class="op">*</span> <span class="va">k</span><span class="op">^</span><span class="fl">3</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -76.27677 -153.6024</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -76.27675 -153.6025</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -76.27675 -153.6025</span>
 </code></pre></div>
     </div>

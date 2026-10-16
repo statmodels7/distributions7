@@ -455,7 +455,7 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit_distrib(d, y)
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 24 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 21 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -480,7 +480,7 @@ set.seed(2)
 fit_distrib(bernoulli_distrib(), rbinom(50, 1, 0.9))
 #> Maximum-likelihood fit: bernoulli
 #> Observations: 50   Log-likelihood: -20.25   AIC: 42.5   BIC: 44.41
-#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 2   time: 6 ms
+#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 1   time: 5 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -527,7 +527,7 @@ Laplace location, where $`-\mathbb{E}[H]`$ would give a degenerate zero:
 
 th <- list(mu = 1, b = 2)
 distrib_hessian(d, c(-1, 0, 2), th)$mu_mu          # observed curvature: 0
-#> [1] 0 0 0
+#> [1] -2.8127e-14 -2.8127e-14  2.8127e-14
 distrib_expected_hessian(d, 0, th)$mu_mu           # minus the information: -1/b^2
 #> [1] -0.25
 ```

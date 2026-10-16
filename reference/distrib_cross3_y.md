@@ -120,7 +120,7 @@ numDeriv::grad(f, 1.3)
 # A family whose response is not a location takes the difference.
 distrib_cross3_y(gamma1_distrib(), c(0.5, 1, 2), list(mu = 1.5, phi = 0.8))
 #> $mu
-#> [1] 0 0 0
+#> [1] 1.500107e-13 1.875134e-14 2.343917e-15
 #> 
 #> $phi
 #> [1] -25.000000  -3.125000  -0.390625
